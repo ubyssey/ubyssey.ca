@@ -15,8 +15,5 @@ module.exports = {
       loaders: [
         {test: /\.jsx$/, include: __dirname + '/src/js', loader: 'babel-loader'}
       ]
-    },
-    plugins: [
-      new webpack.optimize.UglifyJsPlugin()
-    ]
+    }
 };

@@ -45,7 +45,10 @@ var Gallery = React.createClass({
 
         $(window).on("load resize orientationchange", function() {
             this.setPaneDimensions();
+            console.log('111');
+            console.log('slide_width', $(window).width());
             this.setState({ slide_width: $(window).width() });
+            console.log('222');
         }.bind(this));
 
         if(this.pane_count > 1){

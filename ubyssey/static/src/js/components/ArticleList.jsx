@@ -43,6 +43,8 @@ var ArticleList = React.createClass({
 
     },
     getArticle: function(id){
+      console.log('getting article', id);
+      console.log(this.articlesTable);
         return this.state.articles[this.articlesTable[id]];
     },
     getArticlePoints: function(){
@@ -151,23 +153,31 @@ var ArticleList = React.createClass({
         return this.loaded.indexOf(id) !== -1;
     },
     loadArticle: function(article_id){
+      console.log('Loading article ' + article_id);
         this.setState({ loading: true });
         dispatch.articleRendered(article_id, function(data){
+
+          console.log('loaded 1!', data);
+
             this.loaded.push(parseInt(article_id));
             this.renderArticle(data);
+
+            console.log('loaded 2!', this.loaded);
+
         }.bind(this));
     },
     renderArticle: function(data){
         var articles = this.state.articles;
         articles.push(data);
 
-        this.setState({ loading: false, articles: articles }, function(){
+        this.articlesTable[data.id] = articles.length - 1;
 
-            this.articlesTable[data.id] = articles.length - 1;
+        this.setState({ loading: false, articles: articles }, function(){
 
             if(!this.afterLoad){
                 return
             }
+
             this.afterLoad();
             this.afterLoad = null;
         });
@@ -176,6 +186,9 @@ var ArticleList = React.createClass({
         var articles = this.state.articles.map(function(article, i){
             return (<Article articleId={article.id} html={article.html} key={article.id} />);
         });
+
+        console.log('active article', this.state.active.data);
+
         return (
             <div>
                 <ArticleHeader name={this.props.name} headline={this.getArticle(this.state.active.data).headline} />
