@@ -45,9 +45,13 @@
                 {% else %}
                 <div class="sidebar">
                 {% endif %}
-                    <div class="advertisement box sidebar">
-                        <div class="adslot" id="div-gpt-ad-1443288719995-15-{{ article.id }}" data-size="box" data-dfp="News_BoxA_300x250"></div>
+                  {% for article in suggested %}
+                    <div class="suggested-article">
+                      <img src="{{ article.featured_image.image.get_absolute_url }}" alt="image not loaded" />
+                      <h4 class="headline"><a href="{{ article.get_absolute_url }}">{{article.headline}}</a></h4>
+                      <div class="date">{{article.published_at}}</div>
                     </div>
+                  {% endfor %}
                 </div>
             </div>
             {% endblock %}
