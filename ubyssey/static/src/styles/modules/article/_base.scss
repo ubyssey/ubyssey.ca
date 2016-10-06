@@ -223,3 +223,16 @@ div.right-column {
 div.side {
     float: right;
 }
+
+
+div.suggested-article {
+  margin-bottom: 20px;
+  h4 {
+    font-size: 16px;
+  }
+
+  .date {
+    font-size: 14px;
+    color: gray;
+  }
+}

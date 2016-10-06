@@ -96,6 +96,8 @@ class UbysseyTheme(DefaultTheme):
 
         article.add_view()
 
+        suggested = Article.objects.filter(is_published=True)[:2]
+
         ref = request.GET.get('ref', None)
         dur = request.GET.get('dur', None)
 
@@ -103,6 +105,7 @@ class UbysseyTheme(DefaultTheme):
             'title': "%s - %s" % (article.headline, self.SITE_TITLE),
             'meta': self.get_article_meta(article),
             'article': article,
+            'suggested': suggested,
             'reading_list': ArticleHelper.get_reading_list(article, ref=ref, dur=dur),
             'base_template': 'base.html'
         }
