@@ -45,11 +45,7 @@
                 {% endwith %}
             </div>
             <div class="multi-zone cell right">
-                {% if day_of_week == 5 or day_of_week == 6 %}
-                    {{ components.multi_zone|safe }}
-                {% else %}
-                    {{ components.print_issue|safe }}
-                {% endif %}
+                {{ components.print_issue|safe }}
             </div>
         </div>
     </div>
@@ -84,20 +80,16 @@
                     <li>
 												<a class="clearfix" href="{{ article.get_absolute_url }}">
 	                          <div class="featured-image-container">
-																<div class="featured" style="background-image: url('{{ article.featured_image.image.get_medium_url }}');"></div>
+														    <div class="featured" style="background-image: url('{{ article.featured_image.image.get_medium_url }}');"></div>
 	                          </div>
-	                          <h4 class="headline">{{ article.headline|safe }}</h4>
-	                      </a>
+                            <h4 class="headline">{{ article.headline|safe }}</h4>
+                        </a>
                     </li>
                     {% endfor %}
                 </ul>
             </div>
             <div class="multi-zone cell right">
-                {% if day_of_week == 5 or day_of_week == 6 %}
-                    {{ components.print_issue|safe }}
-                {% else %}
-                    {{ components.multi_zone|safe }}
-                {% endif %}
+                {{ components.print_issue|safe }}
             </div>
         </div>
     </div>

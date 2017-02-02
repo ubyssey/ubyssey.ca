@@ -19,7 +19,13 @@ from ubyssey.helpers import ArticleHelper
 # Python imports
 from datetime import datetime
 import json
-aa
+
+def parse_int_or_none(maybe_int):
+    try:
+        return int(maybe_int)
+    except (TypeError, ValueError):
+        return None
+
 class UbysseyTheme(DefaultTheme):
 
     SITE_TITLE = 'The Ubyssey'
@@ -248,7 +254,9 @@ class UbysseyTheme(DefaultTheme):
 
         sections = Section.objects.all()
 
-        order = request.GET.get('order', 'newest')
+        order = request.GET.get('order')
+        if order != 'oldest':
+            order = 'newest'
 
         filters = []
 
@@ -263,33 +271,30 @@ class UbysseyTheme(DefaultTheme):
             'order': order
         }
 
-        query = request.GET.get('q', None)
-        section_id = request.GET.get('section_id', None)
+        query = request.GET.get('q', '').strip() or None
+        section_id = parse_int_or_none(request.GET.get('section_id'))
 
-        year = request.GET.get('year', None)
+        year = parse_int_or_none(request.GET.get('year'))
 
         article_list = Article.objects.filter(is_published=True).order_by(order_by)
 
-        if query == '':
-            query = None
-
-        if year is not None:
-            context['year'] = int(year)
+        if year:
+            context['year'] = year
             article_list = article_list.filter(published_at__icontains=str(year))
             filters.append('year=%s' % year)
 
-        if query is not None:
+        if query:
             article_list = article_list.filter(headline__icontains=query)
             context['q'] = query
             filters.append('q=%s' % query)
 
-        if section_id is not None:
-            article_list = article_list.filter(section = section_id)
-            context['section_id'] = int(section_id)
+        if section_id:
+            article_list = article_list.filter(section=section_id)
+            context['section_id'] = section_id
             context['section_name'] = Section.objects.get(id=section_id)
             filters.append('section_id=%s' % section_id)
 
-        if len(filters):
+        if filters:
             query_string = '?' + '&'.join(filters)
         else:
             query_string = ''
@@ -344,8 +349,7 @@ class UbysseyTheme(DefaultTheme):
 
     def guide_index(self, request):
 
-        context = {
-        }
+        context = {}
 
         return render(request, 'guide/index.html', context)
 

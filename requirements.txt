@@ -1,4 +1,4 @@
-dispatch==0.2.30
+dispatch==0.2.31
 django-storages
 boto
 mysql-python

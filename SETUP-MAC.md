@@ -50,7 +50,7 @@ Download the sample [project settings file](https://ubyssey.s3.amazonaws.com/dro
 
 ### Database
 
-Dispatch requires a MySQL database to store information. Install mysql with Homebrew. 
+Dispatch requires a MySQL database to store information. Install mysql with Homebrew.
 
 ```bash
 brew install mysql56
@@ -61,12 +61,24 @@ Now run the server and create a fresh database:
 ```bash
 mysql.server start
 echo "CREATE DATABASE ubyssey" | mysql -u root
+
+# If you're seeing "ERROR 1045 (28000): Access denied for user 'root'@'localhost'"
+# try
+# echo "CREATE DATABASE ubyssey" | mysql -u root -p
 ```
 
 Next, populate the database with sample data:
 
 ```bash
 curl https://ubyssey.s3.amazonaws.com/dropbox/ubyssey.sql | mysql -u root ubyssey
+
+# If you're seeing "curl: (23) Failed writing body"
+# try
+# curl https://ubyssey.s3.amazonaws.com/dropbox/ubyssey.sql | tac | tac | mysql -u root ubyssey
+
+# If you're seeing "ERROR 1045 (28000): Access denied for user 'root'@'localhost'"
+# try
+# curl https://ubyssey.s3.amazonaws.com/dropbox/ubyssey.sql | mysql -u root ubyssey -p
 ```
 
 ### Static files
@@ -95,6 +107,11 @@ Now start the server!
 
 ```bash
 python manage.py runserver
+
+# If you're seeing "django.core.exceptions.ImproperlyConfigured: Error loading MySQLdb module: No module named MySQLdb"
+# run
+# pip install MySQL-python
+# and try again
 ```
 
 ### Admin Panel

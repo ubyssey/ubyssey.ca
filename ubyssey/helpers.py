@@ -67,8 +67,9 @@ class ArticleHelper(object):
         return list(Article.objects.raw(query, context))
 
     @staticmethod
-    def get_frontpage_sections(exclude=[]):
+    def get_frontpage_sections(exclude=None):
 
+        exclude = exclude or []
         results = {}
 
         sections = Section.objects.all()
