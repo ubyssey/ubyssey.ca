@@ -1,20 +1,17 @@
-<div class="video-attachment youtube attachment" data-id="{{ id }}">
-    <div class="video-launch wrapper">
-        <div class="inner" style="background-image: url('http://img.youtube.com/vi/{{ id }}/0.jpg');">
-            <div class="meta row">
-                <div class="eight columns">
-                    <h2>{{ title }}</h2>
-                </div>
-                <div class="four columns u-text-right">
-                    <button>Play Video</button>
-                </div>
+<div class="o-article-embed o-article-embed--video js-video-youtube" data-id="{{ id }}">
+    <div class="o-article-embed--video__wrapper js-video-launch">
+        <div class="o-article-embed--video__inner" style="background-image: url('http://img.youtube.com/vi/{{ id }}/0.jpg');">
+            <div class="o-article-embed--video__play"></div>
+            <div class="o-article-embed--video__info o-article-embed__overlay">
+                <h2 class="o-article-embed--video__title">{{ title }}</h2>
+                {% if caption %}
+                <p class="o-article-embed--video__caption">{{ caption|safe }}</p>
+                {% endif %}
             </div>
         </div>
     </div>
-    <div class="video-container" id="video-{{ id }}"></div>
-    {% if caption or credit %}
-    <div class="caption">
-        {{ caption|safe }} <span class="credit">{{ credit }}</span>
-    </div>
+    <div class="o-article-embed--video__container" id="video-{{ id }}"></div>
+    {% if credit %}
+    <div class="caption"><span class="credit">{{ credit }}</span></div>
     {% endif %}
 </div>

@@ -127,36 +127,103 @@
 }
 
 
-.video-attachment {
+.o-article-embed--video {
+  // Structure
   position: relative;
   width: 100%;
-  .wrapper {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    &:after {
-      padding-top: 56.25%;
-      /* 16:9 ratio */
-      display: block;
-      content: '';
-    }
-    .inner {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      left: 0;
-      background-size: 100% auto;
-      background-position: center;
-    }
+}
+
+.o-article-embed--video__wrapper {
+  // Structure
+  display: inline-block;
+  position: relative;
+  width: 100%;
+
+  &:after {
+    // Structure
+    padding-top: 56.25%; // 16:9 ratio
+    display: block;
+    content: '';
   }
-  .video-container {
-    position: relative;
-    display: none;
-    top: 0;
-  }
-  .video-launch:hover {
-    cursor: pointer;
+}
+
+.o-article-embed--video__inner {
+  // Structure
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  // Background
+  background-size: 100% auto;
+  background-position: center;
+}
+
+.o-article-embed--video__play {
+  // Structure
+  content: "";
+  display: block;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  margin: -15px auto auto -23px;
+
+  // Border
+  border-style: solid;
+  border-width: 30px 0 30px 46px;
+  border-color: transparent transparent transparent white;
+
+  // Extras
+  z-index: 2;
+}
+
+.o-article-embed--video__info {
+  // Structure
+  position: absolute;
+  bottom: 0;
+  padding-top: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+
+  // Background
+  background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 1%, rgba(0,0,0,0.88) 99%);
+
+}
+
+.o-article-embed--video__title {
+  // Structure
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  // Text
+  color: $color-white;
+}
+
+.o-article-embed--video__caption {
+  // Structure
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+
+
+  // Text
+  color: $color-white;
+  font-size: font-size(15);
+  line-height: 1.35em;
+}
+
+.o-article-embed--video__container {
+  // Structure
+  position: relative;
+  display: none;
+  top: 0;
+}
+
+.js-video-launch:hover {
+  cursor: pointer;
+  .o-article-embed--video__play {
+    border-color: transparent transparent transparent rgb(0, 113, 201);
   }
 }
 

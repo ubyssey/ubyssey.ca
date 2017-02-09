@@ -25,7 +25,7 @@ var YoutubePlayer = function(element){
         }
     }
 
-    $(element).find('.video-launch').click(function(){
+    $(element).find('.js-video-launch').click(function(){
         $(this).hide();
         $('#video-' + node.data('id')).show();
         if(playerReady){
@@ -49,8 +49,7 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 // 3. This function creates an <iframe> (and YouTube player)
 //    after the API code downloads.
 window.onYouTubeIframeAPIReady = function() {
-    $('.video-attachment.youtube').each(function(){
+    $('.js-video-youtube').each(function(){
         YoutubePlayer(this);
     });
 }
-
