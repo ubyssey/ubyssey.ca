@@ -155,8 +155,30 @@
     display: none;
     top: 0;
   }
-  .video-launch:hover {
+  .play-button {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    margin: -15px auto auto -23px;
+    border-style: solid;
+    border-width: 30px 0 30px 46px;
+    border-color: transparent transparent transparent white;
+    z-index: 2;
+  }
+  .video-caption {
+    margin-top: 6px;
+    font-family: "ub-minion-pro", "Minion Pro", "Georgia", serif;
+    font-size: 17px;
+    color: #CACACA;
+    line-height: 19px;
+  }
+  .video-launch:hover { 
     cursor: pointer;
+    .play-button {
+      border-color: transparent transparent transparent rgb(0, 113, 201);
+    }
   }
 }
 
