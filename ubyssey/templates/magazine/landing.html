@@ -1,0 +1,51 @@
+{% extends 'magazine/base.html' %}
+
+{% block content %}
+
+<div class="magazine-container">
+  <h1 class="headline">DIVERSITY</h1>
+  <div class="cover-article" style="background-image: url('../../static/images/magazine/farsi.png')">
+    <div class="title-overlay">
+      <div class="title"> Farsi at Home </div>
+      <div class="description">Tina Madani Kia</div>
+    </div>
+  </div>
+
+  <div class="sub-article-container">
+    <div class="sub-article" style="background-image: url('https://i.cbc.ca/1.3642875.1466385363!/fileImage/httpImage/image.jpg_gen/derivatives/16x9_620/trump-tower-protest-vancouver-lgbt-muslims.jpg')">
+      <div class="title-overlay">
+        <div class="title"> Coming out here [to the rally], it's about standing up ... </div>
+      </div>
+    </div>
+
+    <div class="sub-article" style="background-image: url('https://www.mabonline.net/wp-content/uploads/2015/01/World-Hijab-Day.jpg')">
+      <div class="title-overlay">
+        <div class="title"> Something about life </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="article-grid-container">
+    <div class="article-grid-3 static"><span class="tile-category">Recipes:</span></div>
+    <div class="article-grid-3" style="background-image: url('../../static/images/magazine/food1.png')">
+      <span>Title 5</span>
+    </div>
+    <div class="article-grid-3" style="background-image: url('../../static/images/magazine/food2.png')">
+      <span>Title 6</span>
+    </div>
+  </div>
+
+  <div class="article-grid-container">
+    <div class="article-grid-3 static">
+      <span class="tile-category"> Poetry:</span>
+    </div>
+    <div class="article-grid-3" style="background-image: url('../../static/images/magazine/poetry1.png')">
+      <span>Title 7</span>
+    </div>
+    <div class="article-grid-3" style="background-image: url('../../static/images/magazine/poetry2.png')">
+      <span>Title 8</span>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

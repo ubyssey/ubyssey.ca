@@ -1,0 +1,48 @@
+{% extends 'magazine/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+  <article class="c-poetry">
+
+    <div clss="c-poetry__top" style="background-color: #eee2cd;">
+      {% include 'magazine/header.html' %}
+    </div>
+
+    <div class="c-poetry__backdrop" style="background-image: url('{% static 'images/magazine/poetry-1.png' %}'); background-color: #fbce98;">
+
+      <div class="c-poetry__container" style="padding-top: 34%;">
+
+        <div class="c-poetry__content u-container u-container--small">
+          <h1 class="c-poetry__headline">Cosmopolis</h1>
+          <div class="c-poetry__byline">by Tina Madani Kia</div>
+          <div class="c-poetry__body">
+            <p>We walk through crowds thicker</p>
+            <p>Than our skin,</p>
+            <p>Molecules of all tones and textures, Ninety-nine point nine percent the same.</p>
+            <br/>
+            <p>The lull in our voices,</p>
+            <p>Estranged ears bridging</p>
+            <p>Paths across oceans and seas,</p>
+            <p>Gifting new alphabets to our neighbours.</p>
+            <br/>
+            <p>Synchronized,</p>
+            <p>Fingertips on touch screens A tap away from Budapest, Abu Dhabi or Brazzaville.</p>
+            <br/>
+            <p>Our eccentricities mingled,</p>
+            <p>Soaking in our drinks,</p>
+            <p>Sprinkled in our plates of food, Tabled multitude under pub lighting.</p>
+            <br/>
+            <p>A crack in our eggshell heads, Gaping for all to peak through, Swirls of all colours,</p>
+            <p>Where language is but façade.</p>
+            <br/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </article>
+
+  {% include 'magazine/footer.html' %}
+{% endblock %}

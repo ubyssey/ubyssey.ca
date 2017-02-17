@@ -1,0 +1,30 @@
+.c-header {
+  // Structure
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.c-header__logo {
+  // Structure
+  display: inline-block;
+  padding-bottom: 0.4rem;
+
+  // Border
+  border-bottom: 4px solid $color-pink;
+
+  // Text
+  font-family: $font-secondary;
+  text-transform: uppercase;
+  font-size: font-size(24);
+  font-weight: 400;
+  user-select: none;
+  color: $color-text-black;
+  text-decoration: none;
+
+  transition: color 0.2s;
+
+  &:hover {
+    color: $color-pink;
+  }
+
+}

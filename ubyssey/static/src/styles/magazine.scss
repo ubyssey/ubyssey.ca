@@ -1,0 +1,142 @@
+// Magazine styles go here
+@import 'modules/mixins';
+
+@import 'modules/magazine/colors';
+@import 'modules/magazine/mixins';
+@import 'modules/magazine/utilities';
+@import 'modules/magazine/text';
+@import 'modules/magazine/header';
+@import 'modules/magazine/article';
+@import 'modules/magazine/poetry';
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700,900');
+
+$turqoise: #21988a;
+$yellow: #f5cd3a;
+$blue: #8ec9cd;
+$notha-blue: #32a9bb; // lol i have to change this name
+$mauve: #787695;
+$green: #b6b46d;
+$grey: #cbcbcb;
+$white: #fff;
+$pink: #ed028c;
+
+$font: 'Roboto', sans-serif; // Will change when we get the font files
+
+html, body {
+	// Structure
+	margin: 0;
+	padding: 0;
+}
+
+.magazine-container {
+	margin: 5em 3em;
+	font-family: $font; // TODO remove this when we have different fonts for different headings
+
+	.headline {
+		font-size: 70px;
+		text-align: center;
+		margin-bottom: 0;
+		font-family: $font;
+		line-height: 60px;
+		border-top: 20px solid $blue;
+	}
+
+	.cover-article {
+		width: 100%;
+		height: 350px;
+		background-size: cover;
+		background-repeat: no-repeat;
+		position: relative;
+		border-bottom: 20px solid $yellow;
+
+		.title-overlay {
+			position: absolute;
+			color: $white;
+			top: 40%;
+			left: 5%;
+
+			.title {
+				font-weight: bold;
+				font-size: 40px;
+				border-bottom: 1px solid $grey;
+			}
+
+			.description {
+				color: $grey;
+			}
+		}
+	}
+
+	.sub-article-container {
+		@include flex;
+		@include align-items(center);
+		@include justify-content(center);
+		height: 300px;
+
+		.sub-article {
+			@include flex;
+			@include justify-content(center);
+			@include align-items(center);
+			position: relative;
+			background-repeat: no-repeat;
+			background-size: cover;
+			width: 50%;
+			height: 100%;
+			opacity: 0.8;
+		}
+		.title-overlay {
+			position: absolute;
+			color: $white;
+			padding: 5px 30px;
+
+			.title {
+				font-weight: bold;
+				font-size: 30px;
+				text-decoration: underline;
+			}
+		}
+		// height: 300px;
+		// opacity: 0.7;
+	}
+
+	.flex-item-1 {
+		width: 100%;
+		height: 100%;
+		margin: 10px;
+	}
+
+	.article-grid-container {
+		@include flex;
+		@include justify-content(space-between);
+
+		.article-grid-3 {
+			@include flex;
+			background-color: $blue;
+			width: 30%;
+			background-repeat: no-repeat;
+			background-size: cover;
+			height: 200px;
+			margin: 10px;
+			position: relative;
+			color: $yellow;
+
+			span {
+				font-size: 1.5em;
+				font-weight: bold;
+				margin: auto;
+			}
+
+			.tile-category {
+				margin: auto;
+				padding: 5px 10px;
+				border: 4px solid $yellow;
+			}
+		}
+	}
+
+	img {
+		width: 100%;
+		height: 340px; // TODO - remove the hardcoded numbers ...
+	}
+}

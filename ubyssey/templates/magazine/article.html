@@ -1,0 +1,29 @@
+{% extends 'magazine/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  {% include 'magazine/header.html' %}
+
+  <article class="c-article">
+    <div class="u-container u-container--small">
+      <h1 class="c-article__headline"><span class="arrow--{{ article.color }}"></span>{{ article.title }}</h1>
+      {% if article.snippet %}
+      <div class="c-article__snippet c-article__snippet--{{ article.color }}">{{ article.snippet }}</div>
+      {% endif %}
+      <div class="c-article__byline">{{ article.byline }}</div>
+    </div>
+
+    <div class="c-article__featured-image u-container u-container--large u-container--no-padding">
+      <img src="{% static image_url %}" />
+    </div>
+
+    <div class="u-container u-container--small">
+      <div class="c-article__body">
+        <p>VP Finance Louis Retief is proposing a new investment strategy for the AMS which could result in an increase of an estimated $500,000 in yearly returns that the AMS could spend.  First, the question needs to be approved by students in the form of a referendum question.</p><p>The AMS’s bylaws currently mandate that their $16.8 million reserve fund is placed in fixed income investments. This change in strategy would amend the bylaws to allow for a 70 per cent fixed income and 30 per cent equities investment. Essentially, this means that the AMS will be able to change its bylaws to allow it to use some of its money to invest in more risky (but also greater return) mechanisms, instead of bonds that give a relatively low and stagnant return.&nbsp;</p><p>With this change, the returns that the AMS gets on its investments are predicted to move from an average of one to two per cent, to an increased five to six per cent which would amount to an additional $500,000 in investment returns each year.</p><p>“[What this change is] is how grandmas invest,” said Retief in an interview with <i>The Ubyssey</i>. “The chances of losing money are slim.”&nbsp;</p><p>The AMS’s $16.8 million reserve fund is made up of money that comes from separate student fees slotted for a specific purpose. So the AMS can’t spend the $4.5 million health and dental reserve, one of the components that makes up the $16.8 million, even though it is leftover money that hasn’t had to be used to fill student insurance claims. This leaves the lump sum of slowly increasing money in a permanent limbo of sorts. However, the AMS is able to spend money from the returns made by investing this reserve fund. This extra money would go into the AMS’s operating budget, and could be put towards “whatever the student body wants us to [do],” according to Retief. </p><p>“It’s going to get the AMS out of that financial trouble it’s been in for the last few years running deficits. This might even potentially allow us to run a surplus,” said Retief.&nbsp;</p><p>Another subset of the $16.8 million is the AMS’s $2.1 million endowment fund.<i> </i>Any investment return on the endowment specifically is to go back into it, according to bylaw — causing the endowment to grow faster if this change is approved.&nbsp;</p><p>The $4.20 fee that the AMS tried to pass last year at referendum — <a href="http://www.ubyssey.ca/news/ams-referendum-results/">which failed</a> — would have resulted in only an extra $205,800 for the AMS to spend.&nbsp;</p><p>Since the advent of his term, which began just after that referendum response, Retief has been trying to come up with the best plan for one of <a href="http://www.ubyssey.ca/news/ams-exec-summer-update/#louis-retief">his initial goals</a> to restructure the AMS fees. In contrast to what the $4.20 additional fee would have added to the AMS budget, said Retief, “This simple change of charging students no more money will not only double that, but probably more.” He sees this as a solution that will also prove better in coming years.</p><p>While Retief notes that the absence of fee increases can’t be promised in the long term, this new strategy will replace the AMS’s financial need to pose referendums to increase fees.&nbsp;</p><p>“We won’t have to increase the AMS fee for quite a while because we are doing this without costing students any more money,” said Retief. “We’re going to have an additional [few hundred thousand, ideally] to invest into … whatever the student body wants.”&nbsp;</p><p>The referendum proposal will be presented at Council this Wednesday, to be approved as an official question. To pass, the referendum question needs to reach an eight per cent quorum of “yes” votes from eligible students, and a majority over “no” votes.</p>
+      </div>
+    </div>
+
+  </article>
+
+  {% include 'magazine/footer.html' %}
+{% endblock %}

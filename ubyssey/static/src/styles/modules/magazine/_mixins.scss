@@ -1,0 +1,19 @@
+@mixin arrow($color) {
+  display: inline-block;
+  width: 0;
+  height: 0;
+
+  border-top: 0.37em solid transparent;
+  border-bottom: 0.37em solid transparent;
+  border-left: 0.6em solid $color;
+
+  margin-right: 0.25em;
+}
+
+.arrow--green {
+  @include arrow($color-green);
+}
+
+.arrow--pink {
+  @include arrow($color-pink);
+}

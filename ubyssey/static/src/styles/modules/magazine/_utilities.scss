@@ -1,0 +1,29 @@
+.u-container {
+  // Structure
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+}
+
+.u-container--extra-large {
+  // Structure
+  max-width: 1200px;
+}
+
+.u-container--large {
+  // Structure
+  max-width: 890px;
+}
+
+.u-container--small {
+  // Structure
+  max-width: 600px;
+}
+
+.u-container--no-padding {
+  // Structure
+  padding-left: 0;
+  padding-right: 0;
+}
