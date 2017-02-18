@@ -1,0 +1,97 @@
+.c-header {
+  // Structure
+  display: flex;
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.5rem;
+
+  // Background
+  background: $color-pink;
+
+  &--pink {
+    // Background
+    background: $color-pink;
+  }
+
+  &--green {
+    // Background
+    background: $color-green;
+  }
+
+  &--poetry {
+    background: none;
+    margin-bottom: 0;
+
+    .c-header__logo {
+      // Structure
+      padding-bottom: 0.4rem;
+      
+      // Border
+      border-bottom: 4px solid $color-pink;
+    }
+  }
+
+  @media($bp-larger-than-mobile) {
+    // Structure
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    margin-bottom: 0;
+
+    // Background
+    background: none;
+  }
+}
+
+.c-header__logo,
+.c-header__right {
+  // Structure
+  display: inline-block;
+
+  // Text
+  font-family: $font-secondary;
+  text-transform: uppercase;
+  font-size: font-size(20);
+  font-weight: 400;
+}
+
+.c-header__logo {
+  // Text
+  color: #fff;
+  user-select: none;
+  text-decoration: none;
+
+  transition: color 0.2s;
+
+  @media($bp-larger-than-mobile) {
+    // Structure
+    padding-bottom: 0.4rem;
+
+    // Border
+    border-bottom: 4px solid $color-pink;
+
+    // Text
+    font-size: font-size(24);
+    color: $color-text-black;
+
+    &:hover {
+      color: $color-pink;
+    }
+  }
+}
+
+.c-header__right {
+  // Structure
+  display: none;
+  flex: 1;
+
+  // Text
+  text-align: right;
+  font-size: font-size(18);
+  line-height: font-size(28);
+  color: $color-text-gray;
+
+  @media($bp-larger-than-mobile) {
+    // Structure
+    display: block;
+  }
+}

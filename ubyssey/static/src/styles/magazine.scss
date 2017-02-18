@@ -1,0 +1,213 @@
+// Magazine styles go here
+@import 'modules/mixins';
+
+@import 'modules/magazine/colors';
+@import 'modules/magazine/mixins';
+@import 'modules/magazine/utilities';
+@import 'modules/magazine/text';
+@import 'modules/magazine/header';
+@import 'modules/magazine/article';
+@import 'modules/magazine/poetry';
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700,900');
+
+$turqoise: #21988a;
+$yellow: #f5cd3a;
+$blue: #8ec9cd;
+$notha-blue: #32a9bb; // lol i have to change this name
+$mauve: #787695;
+$purple: #7e88c4;
+$green: #b6b46d;
+$grey: #cbcbcb;
+$white: #fff;
+$pink: #ed028c;
+
+$bp-larger-than-mobile    : "min-width: 401px" !default;
+$bp-smaller-than-mobile   : "max-width: 400px" !default;
+
+$bp-larger-than-phablet   : "min-width: 550px" !default;
+$bp-larger-than-tablet    : "min-width: 960px" !default;
+
+$bp-larger-than-desktop   : "min-width: 1200px" !default;
+
+$border: 20px solid $turqoise;
+
+html, body {
+	// Structure
+	margin: 0;
+	padding: 0;
+}
+
+.magazine-container {
+
+ 	@media($bp-smaller-than-mobile) {
+ 		margin: 1em;
+ 	}
+
+	@media($bp-larger-than-mobile) {
+		margin: 3em 2em;
+	}
+
+	@media($bp-larger-than-tablet) {
+		margin: 3em 4em;
+	}
+
+	@media($bp-larger-than-desktop) {
+		margin: 5em 13em;
+	}
+
+	font-family: $font-default;
+
+	// Overriding default header styles
+	.c-header {
+		padding: 0;
+		max-width: none; 
+	}
+
+	.c-header__logo {
+		display: block;
+		font-size: font-size(60);
+		text-align: center;
+		border-bottom: 0;
+		border-top: $border;
+	}
+
+	.headline {
+		font-size: 70px;
+		text-align: center;
+		margin-bottom: 0;
+		line-height: 60px;
+		border-top: 20px solid $blue;
+	}
+
+	.cover-photo-container {
+		position: relative;
+		padding-bottom: 1.5em;
+		border-bottom: $border;
+
+		.cover-photo {
+			display: block;
+			width: 80%;
+			margin: auto;
+		}
+		.title-overlay {
+			position: absolute;
+			color: $white;
+			bottom: 5%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+
+			.title {
+				font-weight: bold;
+				font-size: font-size(80);
+				text-decoration: underline;
+				color: $white;
+			}
+		}
+	}
+
+	.sub-article-container {
+		@include flex;
+		@include align-items(center);
+		@include justify-content(center);
+		height: 700px;
+		padding: 20px 0;
+
+		.sub-article {
+			@include flex;
+			@include justify-content(center);
+			@include align-items(center);
+			position: relative;
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: 50%;
+			width: 50%;
+			height: 100%;
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			&:before {
+				content: '';
+				width: 100%;
+				position: absolute;
+				bottom: 0;
+				top: 0;
+				z-index: 10;
+				pointer-events: none;
+				background-image: linear-gradient(-180deg, transparent 0%, rgba(0,0,0,0.66) 99%);
+			}
+		}
+		.title-overlay {
+			position: absolute;
+			padding: 5px 30px;
+			z-index: 20;
+
+			.title {
+				color: $white;
+				font-weight: bold;
+				font-size: font-size(40);
+			}
+		}
+	}
+
+	.article-grid-container {
+		border-top: $border;
+		padding-top: 20px;
+
+		.article-grid-row {
+			@include flex;
+			@include justify-content(space-between);
+
+
+			.article-grid-3 {
+				@include flex;
+				background-color: $blue;
+				width: 30%;
+				background-repeat: no-repeat;
+				background-size: cover;
+				height: 400px;
+				margin: 10px;
+				position: relative;
+				color: $white;
+
+				.title {
+					margin: auto;
+					font-size: font-size(50);
+					font-weight: 700;
+					z-index: 20;
+				}
+
+				&:not(.static) {
+					&:before {
+						content: '';
+						width: 100%;
+						position: absolute;
+						bottom: 0;
+						top: 0;
+						z-index: 10;
+						pointer-events: none;
+						background-image: linear-gradient(-180deg, transparent 0%, rgba(0,0,0,0.66) 99%);
+					}
+				}
+
+				&:last-child {
+					margin-right: 0;
+				}
+
+				&:first-child {
+					margin-left: 0;
+				}
+
+				.tile-category {
+					margin: auto;
+					padding: 0.2em 0.1em;
+					border: 4px solid $yellow;
+					font-size: font-size(50);
+					font-weight: bold;
+				}
+			}
+		}
+	}
+}

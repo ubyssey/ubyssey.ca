@@ -1,0 +1,29 @@
+{% extends 'magazine/base.html' %}
+
+{% block content %}
+  {% include 'magazine/header.html' with color=article.template_fields.color %}
+
+  <article class="c-article c-article--{{ article.template_fields.color }}">
+    <div class="u-container u-container--small">
+      <h1 class="c-article__headline"><span class="arrow--{{ article.template_fields.color }}"></span>{{ article.headline }}</h1>
+      {% if article.template_fields.description %}
+      <div class="c-article__snippet c-article__snippet--{{ article.template_fields.color }}">{{ article.template_fields.description }}</div>
+      {% endif %}
+      <div class="c-article__byline">{{ article.template_fields.byline }}</div>
+      {% if article.template_fields.byline_2 %}
+      <div class="c-article__byline">{{ article.template_fields.byline_2 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="c-article__featured-image u-container u-container--large u-container--no-padding">
+      <img src="{{ article.featured_image.image.get_medium_url }}" />
+    </div>
+
+    <div class="u-container u-container--small">
+      <div class="c-article__body">{{ article.get_html|safe }}</div>
+    </div>
+
+  </article>
+
+  {% include 'magazine/footer.html' %}
+{% endblock %}

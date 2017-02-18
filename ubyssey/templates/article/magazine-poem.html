@@ -1,0 +1,30 @@
+{% extends 'magazine/base.html' %}
+
+{% block content %}
+
+  <article class="c-poetry">
+
+    <div clss="c-poetry__top" style="background-color: {{ article.template_fields.top_color }};">
+      {% include 'magazine/header-poetry.html' with color_a=article.template_fields.text_color_a color_b=article.template_fields.text_color_b %}
+    </div>
+
+    <div class="c-poetry__backdrop" style="background-image: url('{{ article.featured_image.image.get_absolute_url }}'); background-color: {{ article.template_fields.bottom_color }};">
+
+      <div class="c-poetry__container" style="padding-top: {{ article.template_fields.offset }};">
+
+        <div class="c-poetry__content u-container u-container--small">
+          <h1 class="c-poetry__headline" style="color: {{ article.template_fields.text_color_a }};">Cosmopolis</h1>
+          <div class="c-poetry__byline">{{ article.template_fields.byline }}</div>
+          {% if article.template_fields.byline_2 %}
+          <div class="c-poetry__byline">{{ article.template_fields.byline_2 }}</div>
+          {% endif %}
+          <div class="c-poetry__body">{{ article.get_html|safe }}</div>
+        </div>
+
+      </div>
+    </div>
+
+  </article>
+
+  {% include 'magazine/footer.html' %}
+{% endblock %}

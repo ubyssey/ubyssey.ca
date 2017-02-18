@@ -1,0 +1,61 @@
+$font-default: 'ub-lft-etica', 'LFT Etica', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-secondary: 'ub-gobold', 'Gobold', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-serif: Georgia;
+
+$font-size-base: 16;
+
+@font-face {
+	font-family:'ub-lft-etica';
+	src: url('../fonts/LFTEtica-SemiBold.eot');
+	src: url('../fonts/LFTEtica-SemiBold.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/LFTEtica-SemiBold.woff') format('woff'),
+		url('../fonts/LFTEtica-SemiBold.ttf') format('truetype');
+	font-weight: 600;
+	font-style: normal;
+}
+
+@font-face {
+	font-family:'ub-lft-etica';
+	src: url('../fonts/LFTEtica-Regular_gdi.eot');
+	src: url('../fonts/LFTEtica-Regular_gdi.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/LFTEtica-Regular_gdi.woff') format('woff'),
+		url('../fonts/LFTEtica-Regular_gdi.ttf') format('truetype'),
+		url('../fonts/LFTEtica-Regular_gdi.svg#LFTEtica-Regular') format('svg');
+	font-weight: 400;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'ub-gobold';
+	src: url('../fonts/Gobold.eot');
+	src: url('../fonts/Gobold.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/Gobold.woff') format('woff'),
+		url('../fonts/Gobold.svg#Gobold') format('svg');
+	font-weight: 400;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@function font-size($size) {
+  $scaled-size: ($size / $font-size-base) + em;
+  @return $scaled-size;
+}
+
+body {
+  font-family: $font-default;
+  font-size: $font-size-base;
+  color: $color-text-black;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h3, h3, h4 {
+  // Structure
+  margin: 0;
+
+  // Text
+  font-family: $font-default;
+}

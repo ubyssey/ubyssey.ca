@@ -385,3 +385,71 @@ class UbysseyTheme(DefaultTheme):
         }
 
         return render(request, 'guide/article.html', context)
+
+
+class UbysseyMagazineTheme(DefaultTheme):
+    """Views for The Ubyssey Magazine microsite."""
+
+    def landing(self, request):
+        """The Ubyssey Magazine landing page view."""
+
+        context = {}
+
+        return render(request, 'magazine/landing.html', context)
+
+    def article(self, request, slug=None):
+        """The Ubyssey Magazine article page view."""
+
+        ARTICLES = {
+            'farsi-at-home': {
+                'title': 'Farsi at home',
+                'byline': 'By Tina Madani Kia',
+                'color': 'green'
+            },
+            'one-in-twenty': {
+                'title': 'One in Twenty',
+                'byline': 'Written by Marissa Birnie, illustrations by Jerry Yin',
+                'color': 'pink',
+                'snippet': 'How students with disabilities navigate campus life'
+            }
+        }
+
+        context = {
+            'slug': slug,
+            'image_url': 'images/magazine/%s.jpg' % slug,
+            'article': ARTICLES[slug]
+        }
+
+        return render(request, 'magazine/article.html', context)
+
+    def article_1(self, request, slug=None):
+        """The Ubyssey Magazine article page view."""
+
+        ARTICLES = {
+            'farsi-at-home': {
+                'title': 'Farsi at home',
+                'byline': 'By Tina Madani Kia',
+                'color': 'green'
+            },
+            'one-in-twenty': {
+                'title': 'One in Twenty',
+                'byline': 'Written by Marissa Birnie, illustrations by Jerry Yin',
+                'color': 'pink',
+                'snippet': 'How students with disabilities navigate campus life'
+            }
+        }
+
+        context = {
+            'slug': slug,
+            'image_url': 'images/magazine/%s.jpg' % slug,
+            'article': ARTICLES['farsi-at-home']
+        }
+
+        return render(request, 'magazine/article-1.html', context)
+
+    def poetry(self, request):
+        """The Ubyssey Magazine poem page view."""
+
+        context = {}
+
+        return render(request, 'magazine/poetry.html', context)

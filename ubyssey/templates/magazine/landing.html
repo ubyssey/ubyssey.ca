@@ -1,0 +1,55 @@
+{% extends 'magazine/base.html' %}
+
+{% block content %}
+
+<div class="magazine-container">
+  {% include 'magazine/header.html' %}
+  <div class="cover-photo-container">
+    <img class="cover-photo" src='../../static/images/magazine/cover-2-cropped.png'>
+    <div class="title-overlay">
+      <div class="title"> DIVERSITY </div>
+    </div>
+  </div>
+  <div class="sub-article-container">
+    <div class="sub-article" style="background-image: url('../../static/images/magazine/twinkie-cropped.png')">
+      <!-- <img class="article-photo" src="../../static/images/magazine/twinkie-cropped.png"> -->
+      <div class="title-overlay">
+        <a class="title"> <p> You're like a Twinkie -- </p> <p> yellow on the outside, white on the inside </p></a>
+      </div>
+    </div>
+
+    <div class="sub-article" style="background-image: url('../../static/images/magazine/farsi-at-home-article.jpg')">
+      <!-- <img class="article-photo" src="../../static/images/magazine/farsi-at-home-article.jpg"> -->
+      <div class="title-overlay">
+        <a class="title"> Farsi At Home </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="article-grid-container">
+    <div class="article-grid-row">
+      <div class="article-grid-3 static"><span class="tile-category">Recipes:</span></div>
+      <div class="article-grid-3" style="background-image: url('../../static/images/magazine/food1.png')">
+      <a class="title">Title 5</a>
+      </div>
+      <div class="article-grid-3" style="background-image: url('../../static/images/magazine/food2.png')">
+        <a class="title">Title 6</a>
+      </div>
+    </div>
+
+    <div class="article-grid-row">
+      <div class="article-grid-3 static">
+        <span class="tile-category"> Poetry:</span>
+      </div>
+      <div class="article-grid-3" style="background-image: url('../../static/images/magazine/poetry1.png')">
+        <a class="title">Title 7</a>
+      </div>
+      <div class="article-grid-3" style="background-image: url('../../static/images/magazine/poetry2.png')">
+        <a class="title">Title 8</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
