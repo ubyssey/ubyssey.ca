@@ -107,11 +107,14 @@ class UbysseyTheme(DefaultTheme):
 
         authors_json = json.dumps([a.full_name for a in article.authors.all()])
 
+        top_articles = Article.objects.filter(is_published=True)[:5]
+
         context = {
             'title': "%s - %s" % (article.headline, self.SITE_TITLE),
             'meta': self.get_article_meta(article),
             'article': article,
             'authors_json': authors_json,
+            'top_articles': top_articles,
             'reading_list': ArticleHelper.get_reading_list(article, ref=ref, dur=dur),
             'base_template': 'base.html'
         }
