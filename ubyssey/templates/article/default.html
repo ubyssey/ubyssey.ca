@@ -51,7 +51,7 @@
           <h2 class="block-title">Most popular this week</h2>
           <ol class="article-list">
           {% for a in top_articles %}
-            <li><h4 class="headline"><a href="{{ a.get_absolute_url }}"></a>{{ a.headline|safe }}</h4></li>
+              <li><h4 class="headline"><a href="{{ a.get_absolute_url }}">{{ a.headline|safe }}</a></h4></li>
 
           {% endfor %}
           </ol>
