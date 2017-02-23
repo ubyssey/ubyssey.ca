@@ -353,7 +353,8 @@ html.hairlines {
 }
 
 a.store-link {
-  padding: 5px 7px;
+  font-size: 12px;
+  padding: 5px 7px 5px 10px;
   border-radius: 3px;
   color: $color-accent-blue;
   background: rgba(0, 113, 201, 0.1);
@@ -366,6 +367,10 @@ a.store-link {
     vertical-align: middle;
     margin-top: -3px;
     margin-right: 4px;
+  }
+
+  span {
+    font-size: 13px;
   }
 
   &:hover {
