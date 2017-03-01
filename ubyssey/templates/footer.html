@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <footer>
-    <div class="u-container">
+    <div class="u-container{% if homepage %} u-container--large{% endif %}">
         <div class="left">
             <a class="home-link" href="{% url 'home' %}"><img class="logo" src="{% static 'images/ubyssey-logo-small-grey.svg' %}" /></a>
             <ul class="sections">
@@ -18,6 +18,7 @@
               <li><a href="{% url 'page' 'volunteer' %}">Volunteer</a></li>
               <li><a href="{% url 'page' 'about' %}">About</a></li>
               <li><a href="{% url 'page' 'advertise' %}">Advertise</a></li>
+              <li><a href="https://store.ubyssey.ca/">Store</a></li>
               <li><a href="{% url 'archive' %}">Archive</a></li>
               <li><a href="{% url 'frontpage-feed' %}">Feed</a></li>
             </ul>

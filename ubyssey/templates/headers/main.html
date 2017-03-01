@@ -1,50 +1,54 @@
 {% load staticfiles %}
 <header class="main">
-    <div class="u-container u-container--large">
-        <div class="branding row">
-            <div class="left"><span class="since-line">UBC’s student newspaper since 1918</span></div>
-            <div class="middle">
-                <img class="top-logo" src="{% static 'images/ubyssey-logo.svg' %}" />
-            </div>
-            <div class="right">
-                <a class="o-snapchat-icon"><i class="fa fa-snapchat"></i><div class="o-snapchat-icon__code"></div></a>
-                <a href="https://www.facebook.com/ubyssey" target="_blank"><i class="fa fa-facebook-square"></i></a>
-                <a href="https://www.instagram.com/ubyssey/" target="_blank"><i class="fa fa-instagram"></i></a>
-                <a href="https://twitter.com/Ubyssey" target="_blank"><i class="fa fa-twitter"></i></a>
-                <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a>
-            </div>
-        </div>
-        <nav class="main">
-            <div class="inner row">
-                <div class="left">
-                    <ul class="meta">
-                        <li>{% now "F j, Y" %}</li>
-                    </ul>
-                </div>
-                <div class="middle">
-                    <ul class="sections">
-                        <li><a href="{% url 'page' 'news' %}">News</a></li>
-                        <li><a href="{% url 'page' 'culture' %}">Culture</a></li>
-                        <li><a href="{% url 'page' 'features' %}">Features</a></li>
-                        <li><a href="{% url 'page' 'opinion' %}">Opinion</a></li>
-                        <li><a href="{% url 'page' 'sports' %}">Sports</a></li>
-                        <li><a href="{% url 'page' 'blog' %}">Blog</a></li>
-                        <li><a href="{% url 'page' 'science'%}">Science</a></li>
-                    </ul>
-                </div>
-                <div class="right">
-                    <ul class="meta large">
-                        <li><a href="{% url 'page' 'volunteer' %}">Volunteer</a></li>
-                        <li><a href="{% url 'page' 'about' %}">About</a></li>
-                        <li><a href="{% url 'page' 'advertise' %}">Advertise</a></li>
-                        <li><a href="{% url 'archive' %}">Archive</a></li>
-                    </ul>
-                    <ul class="meta small">
-                        <li><a href="{% url 'page' 'volunteer' %}">Volunteer</a></li>
-                        <li><a href="{% url 'page' 'about' %}">About</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+  <div class="u-container u-container--large">
+    <div class="branding row">
+      <div class="left"><span class="since-line">UBC’s student newspaper since 1918</span></div>
+      <div class="middle">
+        <img class="top-logo" src="{% static 'images/ubyssey-logo.svg' %}" />
+      </div>
+      <div class="right">
+        <a class="store-link" href="https://store.ubyssey.ca/">
+          <i class="fa fa-shopping-bag"></i><span>Store</span>
+        </a>
+        <a class="o-snapchat-icon"><i class="fa fa-snapchat"></i><div class="o-snapchat-icon__code"></div></a>
+        <a href="https://www.facebook.com/ubyssey" target="_blank"><i class="fa fa-facebook-square"></i></a>
+        <a href="https://www.instagram.com/ubyssey/" target="_blank"><i class="fa fa-instagram"></i></a>
+        <a href="https://twitter.com/Ubyssey" target="_blank"><i class="fa fa-twitter"></i></a>
+        <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a>
+      </div>
     </div>
+    <nav class="main">
+      <div class="inner row">
+        <div class="left">
+          <ul class="meta">
+            <li><a href="{% url 'page' 'about' %}">About</a></li>
+            <li><a href="{% url 'page' 'advertise' %}">Advertise</a></li>
+            <li><a href="{% url 'page' 'volunteer' %}">Volunteer</a></li>
+          </ul>
+        </div>
+        <div class="middle">
+          <ul class="sections">
+            <li><a href="{% url 'page' 'news' %}">News</a></li>
+            <li><a href="{% url 'page' 'culture' %}">Culture</a></li>
+            <li><a href="{% url 'page' 'features' %}">Features</a></li>
+            <li><a href="{% url 'page' 'opinion' %}">Opinion</a></li>
+            <li><a href="{% url 'page' 'sports' %}">Sports</a></li>
+            <li><a href="{% url 'page' 'blog' %}">Blog</a></li>
+            <li><a href="{% url 'page' 'science'%}">Science</a></li>
+          </ul>
+        </div>
+        <div class="right">
+          <ul class="meta large">
+            <li><a href="{% url 'archive' %}">Archive</a></li>
+            <li><a href="{% url 'page' 'advice' %}">Get advice</a></li>
+            <li><a href="{% url 'page' 'submit-an-opinion' %}">Submit an opinion</a></li>
+          </ul>
+          <ul class="meta small">
+            <li><a href="{% url 'archive' %}">Archive</a></li>
+            <li><a href="{% url 'page' 'advice' %}">Get advice</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+</div>
 </header>

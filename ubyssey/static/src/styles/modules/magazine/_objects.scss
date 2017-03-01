@@ -1,0 +1,99 @@
+.o-article-box {
+  // Structure
+  flex: 1;
+  height: 15rem;
+  position: relative;
+  display: block;
+  margin-bottom: 1.5rem;
+
+  // Background
+  background-color: $color-pink;
+  background-size: cover;
+  background-position: center;
+
+  &--green {
+    background-color: $color-green;
+  }
+
+  &--blue {
+    background-color: $color-blue;
+  }
+
+  // Extra
+  transition: opacity 0.3s;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    // Extra
+    opacity: 0.75;
+  }
+
+  @media($bp-larger-than-mobile) {
+    // Structure
+    margin-bottom: 0;
+    height: 20rem;
+
+    &--featured {
+      height: 15rem;
+    }
+
+    &--grid {
+      height: 100%;
+      margin-right: 1.5rem;
+    }
+
+    &:first-child {
+      // Structre
+      margin-right: 1.5rem;
+    }
+
+    &--featured:first-child {
+      margin-right: 1rem;
+    }
+
+    &:last-child {
+      // Structre
+      margin-left: 1.5rem;
+    }
+
+    &--featured:last-child {
+      margin-left: 1rem;
+    }
+
+    &--grid:first-child {
+      margin-right: 0;
+    }
+
+    &--grid:last-child {
+      margin-left: 0;
+    }
+
+  }
+}
+
+.o-article-box > h2 {
+  // Structure
+  position: absolute;
+  padding: 1rem;
+  bottom: 2rem;
+  margin: 0;
+
+  // Background
+  background: $color-pink;
+
+  // Text
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.o-article-box--green > h2 {
+  background: $color-green;
+}
+
+.o-article-box--pink > h2 {
+  background: $color-pink;
+}
+
+.o-article-box--blue > h2 {
+  background: $color-blue;
+}
