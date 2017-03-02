@@ -1,6 +1,19 @@
 .advertisement {
-  &.box .adslot {
+   &.box .adslot {
     width: 300px;
     height: 250px;
+   }
+}
+.mobile-advertisement{
+  display: none;
+  border-color: black;
+  font-family: serif;
+  &.box .adslot {
+   width: 300px;
+   height: 250px;
+  }
+  //only displays for mobile 
+  @media($bp-smaller-than-phablet){
+    display:block;
   }
 }
