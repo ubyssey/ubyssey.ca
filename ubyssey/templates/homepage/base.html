@@ -53,11 +53,10 @@
         <div class="sections">
             {% include 'homepage/blocks/section_1.html' with section="news" articles=sections.news %}
             {% include 'homepage/blocks/section_2.html' with section="culture" articles=sections.culture %}
-            <div class = "mobile-advertisement">
-              <p> hello styling is not working rn but I am trying </p>
-              <p> ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-                hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh </p>
-              {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' %}
+            <div class="mobile-advertisement">
+              <p> yay styling is running, note to self run gulp and also make sure your commands are valid </p>
+               <img src="https://lh6.ggpht.com/x6wxcwMSL3y7LiBXPOat8ptjMsYPLt-EEOU3Ic6XDlJJt6kUjZ9Qotgkul3mIyH3QNSYZsMl6g=w320-h50" style="height: 50px; width: 300px;" />
+              {% comment %}{% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' %}{% endcomment %}
             </div>
             {% include 'homepage/blocks/section_2.html' with section="sports" articles=sections.sports %}
             {% include 'homepage/blocks/section_2.html' with section="opinion" articles=sections.opinion %}

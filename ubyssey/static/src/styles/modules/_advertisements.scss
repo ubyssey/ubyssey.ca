@@ -94,3 +94,23 @@ main.article .o-advertisement--leaderboard {
     margin-right: auto;
   }
 }
+
+.mobile-advertisement {
+  display: none;
+  font-family: serif;
+  &.box .adslot {
+   width: 300px;
+   height: 250px;
+  }
+  //only displays for mobile
+  @media($bp-smaller-than-phablet){
+    display:block;
+    color: pink;
+    border-style: double;
+    // &.box .adslot {
+    //  width: 300px;
+    //  height: 250px;
+    // }
+
+  }
+}
