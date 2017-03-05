@@ -105,12 +105,24 @@ main.article .o-advertisement--leaderboard {
   //only displays for mobile
   @media($bp-smaller-than-phablet){
     display:block;
-    color: pink;
-    border-style: double;
+    //border-style:double;
+    text-align:center;
+    width: 95%;
+    margin: auto;
+    padding-bottom: 1em ;
+    img{
+      display: block;
+      margin: 0 auto;
+      //height: 50px;
+      //width: 300px;
+      max-width: 100%;
+      height: auto;
+      width: auto\9; /* ie8 */
+     }
+
     // &.box .adslot {
     //  width: 300px;
     //  height: 250px;
     // }
-
   }
 }
