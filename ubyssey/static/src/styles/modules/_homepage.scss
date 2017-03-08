@@ -60,7 +60,9 @@ div.frontpage {
       border-right: 1px solid #E6E6E6;
     }
 
-
+    &.right {
+      display: table-header-group;
+    }
 
   }
 

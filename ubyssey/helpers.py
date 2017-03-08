@@ -117,3 +117,11 @@ class ArticleHelper(object):
         years = [r[0] for r in results]
 
         return filter(lambda y: y is not None, years)
+
+    @staticmethod
+    def get_topic(topic_name):
+
+        return Article.objects.filter(
+            is_published=True,
+            topic__name=topic_name
+        )

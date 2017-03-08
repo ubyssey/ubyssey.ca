@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block header %}
+    {% include 'headers/topbar.html' %}
+    {% include 'headers/mobile.html' %}
+{% endblock %}
+{% block content %}
+    <main class="page">
+        <div class="u-container u-container--content">
+          {{ page.get_html|safe }}
+        </div>
+    </main>
+{% endblock %}

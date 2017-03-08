@@ -50,13 +50,14 @@ class UbysseyTheme(DefaultTheme):
             'author': article.get_author_string()
         }
 
-
     def home(self, request):
 
         frontpage = ArticleHelper.get_frontpage(
             sections=('news', 'culture', 'opinion', 'sports', 'features', 'science'),
             max_days=7
         )
+
+        elections = ArticleHelper.get_topic('AMS Elections').order_by('-published_at')
 
         frontpage_ids = [int(a.id) for a in frontpage[:2]]
 
@@ -68,6 +69,10 @@ class UbysseyTheme(DefaultTheme):
                 'secondary': frontpage[1],
                 'thumbs': frontpage[2:4],
                 'bullets': frontpage[4:6],
+                'elections': {
+                    'first': elections[0],
+                    'rest': elections[1:3]
+                }
              }
         except IndexError:
             raise Exception('Not enough articles to populate the frontpage!')
@@ -151,14 +156,52 @@ class UbysseyTheme(DefaultTheme):
 
         page.add_view()
 
+        try:
+            image = page.featured_image.image.get_medium_url()
+        except:
+            image = None
+
         context = {
             'meta': {
-                'title': page.title
+                'title': page.title,
+                'image': image,
+                'url': settings.BASE_URL[:-1] + reverse('page', args=[page.slug]),
+                'description': page.snippet if page.snippet else ''
             },
             'page': page
         }
 
-        return render(request, 'page/base.html', context)
+        if page.get_template() != 'article/default.html':
+            templates = [page.get_template(), 'page/base.html']
+        else:
+            templates = ['page/base.html']
+
+        t = loader.select_template(templates)
+        return HttpResponse(t.render(context))
+
+    def elections(self, request):
+
+        articles = ArticleHelper.get_topic('AMS Elections').order_by('-published_at')
+
+        topic = Topic.objects.filter(name='AMS Elections')[0]
+
+        context = {
+            'meta': {
+                'title': '2017 AMS Elections'
+            },
+            'section': {
+                'name': '2017 AMS Elections',
+                'slug': 'elections',
+                'id': topic.id
+            },
+            'type': 'topic',
+            'articles': {
+                'first': articles[0],
+                'rest': articles[1:9]
+            }
+        }
+
+        return render(request, 'section.html', context)
 
     def section(self, request, slug=None):
 

@@ -16,6 +16,13 @@ class Default(BaseTemplate):
         ('image_size', 'Image Size', SelectField(options=IMAGE_SIZE_OPTIONS)),
     )
 
+class Blank(BaseTemplate):
+
+    NAME = 'Blank'
+    SLUG = 'blank'
+
+    fields = ()
+
 class FullWidth(BaseTemplate):
 
     NAME = 'Full width story'
@@ -85,6 +92,7 @@ class MagazinePoem(BaseTemplate):
 
 
 templates.register(Default)
+templates.register(Blank)
 templates.register(FullWidth)
 templates.register(Guide)
 templates.register(Magazine)

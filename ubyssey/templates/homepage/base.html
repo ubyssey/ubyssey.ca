@@ -45,7 +45,7 @@
                 {% endwith %}
             </div>
             <div class="multi-zone cell right">
-                {{ components.print_issue|safe }}
+              {% include 'homepage/elections.html' with articles=articles.elections %}
             </div>
         </div>
     </div>

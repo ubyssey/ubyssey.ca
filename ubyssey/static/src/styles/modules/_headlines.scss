@@ -45,6 +45,16 @@
   }
 }
 
+.o-headline--blog {
+  // Structure
+  margin-bottom: 0.85rem;
+
+  // Text
+  font-family: $font-default;
+  font-size: font-size(30);
+  line-height: 1.15em;
+}
+
 h1, h2, h3, h4, h5 {
   &.headline {
     margin-top: 0;

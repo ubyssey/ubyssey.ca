@@ -1,0 +1,45 @@
+{% load humanize %}
+
+<div class="c-elections-sidebar">
+  <h2 class="c-elections-sidebar__header"><a href="{% url 'page' 'elections' %}"><u>2017 AMS Elections</u></a></h2>
+  <div class="c-elections-sidebar__compass">
+    <p class="c-elections-sidebar__compass__text">Not sure who to vote for? Try our vote compass!</p>
+    <a class="c-elections-sidebar__compass__button" href="{% url 'page' 'compass' %}">Vote Compass</a>
+  </div>
+  {% with articles.first as article %}
+    <article class="o-article o-article--secondary">
+      <div class="o-article__meta">
+        {% if article.tags %}
+        <span class="c-elections-sidebar__tag">{{ article.tags.first.name }}</span>
+        {% endif %}
+        <h3 class="o-article__headline o-headline o-headline--h3">
+          <a href="{{ article.get_absolute_url }}">{{ article.headline|safe }}</a>
+        </h3>
+      </div>
+      <p class="o-article__snippet">{{ article.snippet|safe }}</p>
+    </article>
+  {% endwith %}
+  <div class="c-elections-sidebar__list">
+  {% for article in articles.rest %}
+    <article class="o-article o-article--sidebar">
+      {% if article.featured_image %}
+      <div class="o-article__left">
+        <a href="{{ article.get_absolute_url }}">
+          <img class="o-article__image" src="{{ article.featured_image.image.get_thumbnail_url }}"/>
+        </a>
+      </div>
+      {% endif %}
+      <div class="o-article__right">
+        <div class="o-article__meta">
+          {% if article.tags %}
+          <span class="c-elections-sidebar__tag">{{ article.tags.first.name }}</span>
+          {% endif %}
+          <h3 class="o-article__headline o-headline o-headline--h3">
+            <a href="{{ article.get_absolute_url }}">{{ article.headline|safe }}</a>
+          </h3>
+        </div>
+      </div>
+    </article>
+  {% endfor %}
+  </div>
+</div>

@@ -17,7 +17,9 @@
                 </li><li {% if section == 'blog' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'blog' %}">Blog</a>
                 </li><li>
-                    <a href="{% url 'page' 'science'%}">Science</a>
+                    <a href="{% url 'page' 'science' %}">Science</a>
+                </li><li class="elections">
+                    <a href="{% url 'page' 'elections' %}">Elections</a>
                 </li>
             </ul>
         </nav>
