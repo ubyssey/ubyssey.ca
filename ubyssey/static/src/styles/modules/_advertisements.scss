@@ -94,3 +94,32 @@ main.article .o-advertisement--leaderboard {
     margin-right: auto;
   }
 }
+
+.o-advertisement--shop {
+  // Structure
+  width: 585px;
+  display: inline-block;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+
+  // Text
+  text-align: center;
+}
+
+.o-advertisement--shop > img {
+  // Structure
+  display: block;
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+.o-advertisement--shop:before {
+  // Structure
+  content: 'advertisement';
+
+  // Text
+  font-size: .6875em;
+  color: #9e9e9e;
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+}
