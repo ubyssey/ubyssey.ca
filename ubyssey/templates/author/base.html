@@ -3,6 +3,12 @@
 {% block content %}
     {% include 'headers/topbar.html' %}
     <main class="author">
+    	<div class="c-header-banner">
+		<div class="c-header-banner__container u-container">
+			<h1 class="basic">{{ person.full_name }}</h1>
+		</div>
+		<div class="c-header-banner__mask"></div>
+	</div>
         <div class="u-container u-container--padded">
             <div class="profile table-row">
                 {% if person.image %}
@@ -10,34 +16,44 @@
                     <img src="{{ person.get_image_url }}" />
                 </div>
                 {% endif %}
-                <div class="cell middle">
-                    <h1 class="basic">{{ person.full_name }}</h1>
-                    {% if person.description %}<p class="snippet">{{ person.description }}</p>{% endif %}
-                </div>
             </div>
+
             <div class="article-search">
-                <form method="get" action="{% url 'author-articles' person.slug %}">
+                <form method="get" action="{% url 'author' person.slug %}">
                 <label for="author-search"><i class="fa fa-search"></i></label>
-                <input name="q" id="author-search" type="text" {% if q %}value="{{ q }}"{% endif %} placeholder="Search author archive" />
+                <input name="q" id="author-search" type="text" {% if q %}value="{{ q }}"{% endif %} placeholder="Search author's articles" />
                 </form>
             </div>
+
+                        <div class="c-archive__header">
+						<h3 class="c-archive__header__title">
+                            {% if articles %} {{ articles|length }} RESULTS {% else %}NO RESULTS.{% endif %}
+						</h3>
+						<div class="c-archive__header__sort o-dropdown js-dropdown">
+							<a class="o-button o-dropdown__button">
+								<span>{{ order|title }}</span>
+								<i class="fa fa-sort-desc"></i>
+							</a>
+							<ul class="o-dropdown__list js-dropdown-list">
+								<li class="o-dropdown__item{% if order == 'newest' %} o-dropdown__item--is-active{% endif %}">
+									<a href="{% url 'author' person.slug %}?{% if q %}q={{ q }}&{% endif %}{% if section_id %}section_id={{ section_id}}&{% endif %}{% if year %}year={{ year}}&{% endif %}order=newest">Newest</a>
+								</li>
+								<li class="o-dropdown__item{% if order == 'oldest' %} o-dropdown__item--is-active{% endif %}">
+									<a href="{% url 'author' person.slug %}?{% if q %}q={{ q }}&{% endif %}{% if section_id %}section_id={{ section_id}}&{% endif %}{% if year %}year={{ year}}&{% endif %}order=oldest">Oldest</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+
             {% block author_archive %}
             <div class="article-archive clearfix">
-                <h3 class="basic uppercase">Recent Articles</h2>
-                <div class="blocks">
+                <div class="c-article__main__list">
                     {% for article in articles %}
-                    <article>
-                        <a href="{{ article.get_absolute_url }}"><h2 class="headline">{{ article.headline }}</h2></a>
-                        <span class="byline"><span class="author">By {{ article.get_author_string }}</span> &nbsp;·&nbsp; <span class="published">{{ article.published_at }}</span></span>
-                        <p class="snippet">{{ article.snippet }}</p>
-                    </article>
+                        {% include 'objects/articles/list.html' with article=article %}
                     {% endfor %}
                 </div>
-                {% if articles|length == 6 %}
-                <div class="more">
-                    <a class="button large" href="{% url 'author-articles' person.slug %}">View all (showing 6 of 124)</a>
-                </div>
-                {% endif %}
+
             </div>
             {% endblock %}
         </div>

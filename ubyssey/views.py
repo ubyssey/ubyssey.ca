@@ -5,9 +5,6 @@ from django.template import loader
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models.aggregates import Count
-from django.core.urlresolvers import reverse
-from django.contrib.staticfiles.templatetags.staticfiles import static
 
 # Dispatch imports
 from dispatch.apps.content.models import Article, Page, Section, Topic
@@ -22,7 +19,6 @@ from ubyssey.helpers import ArticleHelper
 # Python imports
 from datetime import datetime
 import json
-from random import randint
 
 def parse_int_or_none(maybe_int):
     try:
@@ -35,12 +31,12 @@ class UbysseyTheme(DefaultTheme):
     SITE_TITLE = 'The Ubyssey'
     SITE_URL = settings.BASE_URL
 
-    def get_article_meta(self, article, default_image=None):
+    def get_article_meta(self, article):
 
         try:
             image = article.featured_image.image.get_medium_url()
         except:
-            image = default_image
+            image = None
 
         return {
             'title': article.headline,
@@ -53,7 +49,7 @@ class UbysseyTheme(DefaultTheme):
     def home(self, request):
 
         frontpage = ArticleHelper.get_frontpage(
-            sections=('news', 'culture', 'opinion', 'sports', 'features', 'science'),
+            sections=('news', 'culture', 'sports', 'features', 'science'),
             max_days=7
         )
 
@@ -238,23 +234,6 @@ class UbysseyTheme(DefaultTheme):
         except:
             raise Http404("Author could not be found.")
 
-        articles = Article.objects.filter(authors=person, is_published=True)[:6]
-
-        context = {
-            'meta': self.get_author_meta(person),
-            'person': person,
-            'articles': articles
-        }
-
-        return render(request, 'author/base.html', context)
-
-    def author_articles(self, request, slug=None):
-
-        try:
-            person = Person.objects.get(slug=slug)
-        except:
-            raise Http404("Author could not be found.")
-
         order = request.GET.get('order', 'newest')
 
         if order == 'newest':
@@ -290,7 +269,8 @@ class UbysseyTheme(DefaultTheme):
             'q': query
         }
 
-        return render(request, 'author/articles.html', context)
+        return render(request, 'author/base.html', context)
+
 
     def archive(self, request):
 
@@ -430,82 +410,6 @@ class UbysseyTheme(DefaultTheme):
 
         return render(request, 'guide/article.html', context)
 
+    def newsletter(self, request):
 
-class UbysseyMagazineTheme(UbysseyTheme):
-    """Views for The Ubyssey Magazine microsite."""
-
-    def get_random_articles(self, n, exclude=None):
-        """Returns `n` random articles from the Magazine section."""
-
-        # Get all magazine articles
-        queryset = Article.objects.filter(is_published=True, section__slug='magazine')
-
-        # Exclude article (optional)
-        if exclude:
-            queryset = queryset.exclude(id=exclude)
-
-        # Get article count
-        count = queryset.aggregate(count=Count('id'))['count']
-
-        # Get all articles
-        articles = queryset.all()
-
-        # Force a query (to optimize later calls to articles[index])
-        list(articles)
-
-        results = []
-        indices = set()
-
-        # n is bounded by number of articles in database
-        n = min(count, n)
-
-        while len(indices) < n:
-            index = randint(0, count - 1)
-
-            # Prevent duplicate articles
-            if index not in indices:
-                indices.add(index)
-                results.append(articles[index])
-
-        return results
-
-
-    def landing(self, request):
-        """The Ubyssey Magazine landing page view."""
-
-        # Get all magazine articles
-        articles = Article.objects.filter(is_published=True, section__slug='magazine').order_by('-importance')
-
-        context = {
-            'meta': {
-                'title': 'The Ubyssey Magazine',
-                'description': 'The Ubyssey\'s first magazine.',
-                'url': reverse('magazine-landing'),
-                'image': static('images/magazine/cover-social.png')
-            },
-            'cover': 'images/magazine/cover-%d.jpg' % randint(1, 2),
-            'articles': articles
-        }
-
-        return render(request, 'magazine/landing.html', context)
-
-    def article(self, request, slug=None):
-
-        try:
-            article = self.find_article(request, slug, 'magazine')
-        except:
-            raise Http404("Article could not be found.")
-
-        article.add_view()
-
-        context = {
-            'title': "%s - %s" % (article.headline, self.SITE_TITLE),
-            'meta': self.get_article_meta(article, default_image=static('images/magazine/cover-social.png')),
-            'article': article,
-            'suggested': self.get_random_articles(2, exclude=article.id),
-            'base_template': 'magazine/base.html'
-        }
-
-        t = loader.select_template(["%s/%s" % (article.section.slug, article.get_template()), article.get_template()])
-
-        return HttpResponse(t.render(context))
+        return render(request, 'objects/newsletter.html', {})

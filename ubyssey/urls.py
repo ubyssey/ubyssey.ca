@@ -3,10 +3,9 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 
 from feed import FrontpageFeed, SectionFeed
-from views import UbysseyTheme, UbysseyMagazineTheme
+from views import UbysseyTheme
 
 theme = UbysseyTheme()
-magazine = UbysseyMagazineTheme()
 
 theme_urls = [
     url(r'^$', theme.home, name='home'),
@@ -14,7 +13,6 @@ theme_urls = [
     url(r'^archive/$', theme.archive, name='archive'),
     url(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
     url(r'^(?P<slug>[-\w]+)/rss/$', SectionFeed(), name='section-feed'),
-    url(r'^author/(?P<slug>[-\w]+)/articles/$', theme.author_articles, name='author-articles'),
     url(r'^author/(?P<slug>[-\w]+)/$', theme.author, name='author'),
     url(r'^topic/(\d*)/$', theme.topic, name='topic'),
     url(r'^guide/$', theme.guide_index, name='guide-index'),
