@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+{% include 'headers/topbar.html' %}
+{% include 'headers/mobile.html' %}
+<main class="c-page c-page--author">
+  <div class="u-container u-container--padded">
+
+    <div class="c-page__header">
+      {% if person.image %}
+      <div class="c-page__header__thumbnail">
+        <img src="{{ person.image }}" alt="{{ person.full_name }}" />
+      </div>
+      {% endif %}
+      <div class="c-page__header__meta">
+        <h1 class="c-page__heading">{{ person.full_name }}</h1>
+        <h3 class="c-page__sub-heading">{{ person.title }}</h3>
+        <p class="c-page__description">{{ person.description|safe }}</p>
+      </div>
+    </div>
+
+    {% include 'objects/archive.html' %}
+
+  </div>
+</main>
+{% endblock %}

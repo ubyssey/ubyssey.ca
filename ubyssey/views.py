@@ -80,7 +80,7 @@ class UbysseyTheme(DefaultTheme):
 
         blog = ArticleHelper.get_frontpage(section='blog', limit=5)
 
-        title = "%s - UBC's official student newspaper" % self.SITE_TITLE
+        title = '%s - UBC\'s official student newspaper' % self.SITE_TITLE
 
         context = {
             'title': title,
@@ -89,7 +89,7 @@ class UbysseyTheme(DefaultTheme):
                 'description': 'Weekly student newspaper of the University of British Columbia.',
                 'url': self.SITE_URL
             },
-            'title': "%s - UBC's official student newspaper" % self.SITE_TITLE,
+            'title': '%s - UBC\'s official student newspaper' % self.SITE_TITLE,
             'articles': articles,
             'sections': sections,
             'popular': popular,
@@ -104,7 +104,7 @@ class UbysseyTheme(DefaultTheme):
         try:
             article = self.find_article(request, slug, section)
         except:
-            raise Http404("Article could not be found.")
+            raise Http404('Article could not be found.')
 
         article.add_view()
 
@@ -114,7 +114,7 @@ class UbysseyTheme(DefaultTheme):
         authors_json = json.dumps([a.full_name for a in article.authors.all()])
 
         context = {
-            'title': "%s - %s" % (article.headline, self.SITE_TITLE),
+            'title': '%s - %s' % (article.headline, self.SITE_TITLE),
             'meta': self.get_article_meta(article),
             'article': article,
             'authors_json': authors_json,
@@ -122,7 +122,7 @@ class UbysseyTheme(DefaultTheme):
             'base_template': 'base.html'
         }
 
-        t = loader.select_template(["%s/%s" % (article.section.slug, article.get_template()), article.get_template()])
+        t = loader.select_template(['%s/%s' % (article.section.slug, article.get_template()), article.get_template()])
         return HttpResponse(t.render(context))
 
     def article_ajax(self, request, pk=None):
@@ -149,7 +149,7 @@ class UbysseyTheme(DefaultTheme):
         try:
             page = self.find_page(request, slug)
         except:
-            raise Http404("Page could not be found.")
+            raise Http404('Page could not be found.')
 
         page.add_view()
 
@@ -221,39 +221,15 @@ class UbysseyTheme(DefaultTheme):
             }
         }
 
-        t = loader.select_template(["%s/%s" % (section.slug, 'section.html'), 'section.html'])
+        t = loader.select_template(['%s/%s' % (section.slug, 'section.html'), 'section.html'])
         return HttpResponse(t.render(context))
-
-    def get_author_meta(self, person):
-
-        return {
-            'title': person.full_name,
-            'image': person.get_image_url if person.image is not None else None,
-        }
 
     def author(self, request, slug=None):
 
         try:
             person = Person.objects.get(slug=slug)
         except:
-            raise Http404("Author could not be found.")
-
-        articles = Article.objects.filter(authors=person, is_published=True)[:6]
-
-        context = {
-            'meta': self.get_author_meta(person),
-            'person': person,
-            'articles': articles
-        }
-
-        return render(request, 'author/base.html', context)
-
-    def author_articles(self, request, slug=None):
-
-        try:
-            person = Person.objects.get(slug=slug)
-        except:
-            raise Http404("Author could not be found.")
+            raise Http404('Author could not be found.')
 
         order = request.GET.get('order', 'newest')
 
@@ -283,14 +259,17 @@ class UbysseyTheme(DefaultTheme):
             articles = paginator.page(paginator.num_pages)
 
         context = {
-            'meta': self.get_author_meta(person),
+            'meta': {
+                'title': person.full_name,
+                'image': person.get_image_url if person.image is not None else None,
+            },
             'person': person,
             'articles': articles,
             'order': order,
             'q': query
         }
 
-        return render(request, 'author/articles.html', context)
+        return render(request, 'author.html', context)
 
     def archive(self, request):
 
@@ -373,7 +352,7 @@ class UbysseyTheme(DefaultTheme):
         try:
             topic = Topic.objects.get(id=pk)
         except Topic.DoesNotExist:
-            raise Http404("Topic does not exist.")
+            raise Http404('Topic does not exist.')
 
         articles = Article.objects.filter(topic=topic, is_published=True).order_by('-published_at')
 
@@ -407,8 +386,6 @@ class UbysseyTheme(DefaultTheme):
 
         template_fields = article.get_template_fields()
 
-        print template_fields
-
         try:
             next_a = self.find_article(request, template_fields['next_a'], 'guide')
         except:
@@ -430,12 +407,15 @@ class UbysseyTheme(DefaultTheme):
 
         return render(request, 'guide/article.html', context)
 
+    def newsletter(self, request):
+
+        return render(request, 'objects/newsletter.html', {})
 
 class UbysseyMagazineTheme(UbysseyTheme):
-    """Views for The Ubyssey Magazine microsite."""
+    '''Views for The Ubyssey Magazine microsite.'''
 
     def get_random_articles(self, n, exclude=None):
-        """Returns `n` random articles from the Magazine section."""
+        '''Returns `n` random articles from the Magazine section.'''
 
         # Get all magazine articles
         queryset = Article.objects.filter(is_published=True, section__slug='magazine')
@@ -471,7 +451,7 @@ class UbysseyMagazineTheme(UbysseyTheme):
 
 
     def landing(self, request):
-        """The Ubyssey Magazine landing page view."""
+        '''The Ubyssey Magazine landing page view.'''
 
         # Get all magazine articles
         articles = Article.objects.filter(is_published=True, section__slug='magazine').order_by('-importance')
@@ -494,18 +474,18 @@ class UbysseyMagazineTheme(UbysseyTheme):
         try:
             article = self.find_article(request, slug, 'magazine')
         except:
-            raise Http404("Article could not be found.")
+            raise Http404('Article could not be found.')
 
         article.add_view()
 
         context = {
-            'title': "%s - %s" % (article.headline, self.SITE_TITLE),
+            'title': '%s - %s' % (article.headline, self.SITE_TITLE),
             'meta': self.get_article_meta(article, default_image=static('images/magazine/cover-social.png')),
             'article': article,
             'suggested': self.get_random_articles(2, exclude=article.id),
             'base_template': 'magazine/base.html'
         }
 
-        t = loader.select_template(["%s/%s" % (article.section.slug, article.get_template()), article.get_template()])
+        t = loader.select_template(['%s/%s' % (article.section.slug, article.get_template()), article.get_template()])
 
         return HttpResponse(t.render(context))

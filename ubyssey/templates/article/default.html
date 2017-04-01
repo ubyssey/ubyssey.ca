@@ -16,7 +16,7 @@
       <h1 class="o-headline o-headline--article">{{ article.headline|safe }}</h1>
       <div class="c-article__info">
         <div class="c-article__byline">
-          <div class="c-article__author">By {{ article.get_author_string|safe }}</div>
+          <div class="c-article__author">By {{ article.get_author_url|safe }}</div>
           <div class="c-article__byline__meta">
             <span class="c-article__published-at">{{ article.published_at|date:'N j, Y' }}</span>
             {% with article.calc_est_reading_time as reading_time %}
