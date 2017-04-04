@@ -48,14 +48,15 @@
         <div class="sidebar">
         {% endif %}
           {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
-          <h2 class="block-title">Most popular this week</h2>
-          <ol class="article-list">
-          {% for a in top_articles %}
-              <li><h4 class="headline"><a href="{{ a.get_absolute_url }}">{{ a.headline|safe }}</a></h4></li>
 
-          {% endfor %}
-          </ol>
-
+            <div class="o-sidebar-block">
+                <h2 class="o-sidebar-block__title">Most popular this week</h2>
+                <ol class="o-articles-list">
+                    {% for a in top_articles %}
+                    <li class="article-heading"><h4 class="headline"><a href="{{ a.get_absolute_url }}">{{ a.headline|safe }}</a></h4></li>
+                    {% endfor %}
+                </ol>
+            </div>
         </div>
       </div>
       {% endblock %}
