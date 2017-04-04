@@ -45,6 +45,26 @@ div.indicator {
   }
 }
 
+.c-article__tag {
+  // Structure
+  display: inline-block;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+
+  // Border
+  border-radius: 4px;
+
+  // Background
+  background: $color-red;
+
+  // Text
+  color: $color-white;
+  font-weight: $font-weight-semi-bold;
+  letter-spacing: 0.5px;
+  font-size: font-size(15);
+  text-transform: uppercase;
+}
+
 .c-article__info {
   margin-bottom: 1rem;
 
@@ -90,6 +110,16 @@ div.indicator {
   margin-right: 0.5em;
   @media($bp-larger-than-tablet) {
     margin-right: 0;
+  }
+}
+
+.c-article__featured-image {
+  // Structure
+  max-width: 585px;
+  margin-bottom: 1.5rem;
+
+  .article-attachment {
+    width: 100%;
   }
 }
 

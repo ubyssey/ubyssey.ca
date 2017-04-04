@@ -83,6 +83,20 @@ main.article .o-advertisement--leaderboard {
   }
 }
 
+.o-advertisement--mobile-frontpage-box {
+  // Structure
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  // Border
+  border-bottom: thin dotted #C8C8C8;
+
+  @media($bp-larger-than-phablet) {
+    // Structure
+    display: none;
+  }
+}
+
 .o-advertisement--box {
   $width: nth(map-get($adslots, box), 1);
   $height: nth(map-get($adslots, box), 2);

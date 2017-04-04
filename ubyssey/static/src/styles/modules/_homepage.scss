@@ -60,8 +60,6 @@ div.frontpage {
       border-right: 1px solid #E6E6E6;
     }
 
-
-
   }
 
 
@@ -555,7 +553,14 @@ div.sidebar-home {
     padding-bottom: 25px;
   }
 
-  @media($bp-larger-than-tablet){
+  .sidebar-block--advertisement {
+    display: none;
+    @media($bp-larger-than-tablet) {
+      display: block;
+    }
+  }
+
+  @media($bp-larger-than-tablet) {
 
     padding-left: 20px;
     vertical-align: top;
@@ -571,7 +576,7 @@ div.sidebar-home {
     }
   }
 
-  @media($bp-larger-than-desktop){
+  @media($bp-larger-than-desktop) {
     box-sizing: border-box;
     width: 353px;
   }

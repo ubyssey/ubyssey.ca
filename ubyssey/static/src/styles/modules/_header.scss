@@ -79,7 +79,7 @@ nav.main {
   padding-right: 10px;
 
   .inner {
-    //padding: 15px 0px 13px 0;
+	   overflow: hidden;
   }
 
   .left, .middle, .right {
@@ -117,6 +117,10 @@ nav.main {
         font-weight: $font-weight-semi-bold;
         color: #2B2B2B;
         margin: 0 6px;
+
+        &.elections a {
+          color: $color-red;
+        }
       }
     }
 
@@ -223,6 +227,16 @@ header.topbar {
         }
         &.current, &:hover {
           border-bottom: 3px solid rgba(52, 144, 214, 1);
+        }
+
+        &.elections {
+          a {
+            color: $color-red;
+          }
+
+          &.current, &:hover {
+            border-bottom: 3px solid $color-red;
+          }
         }
       }
     }

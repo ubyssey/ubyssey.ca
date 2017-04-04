@@ -15,6 +15,7 @@
                     <p class="snippet"><span class="timestamp">{{ article.published_at|naturaltime }}</span>{{ article.snippet|safe }}</p>
                 </article>
             {% endwith %}
+            {% include 'objects/advertisement.html' with size='box' name='Box_A' class='mobile-frontpage-box' id=2 %}
             {% for article in articles.thumbs %}
                 <article class="thumb row padded">
                     <div class="image">
@@ -45,7 +46,7 @@
                 {% endwith %}
             </div>
             <div class="multi-zone cell right">
-                {{ components.print_issue|safe }}
+              {{ components.print_issue|safe }}
             </div>
         </div>
     </div>
@@ -59,8 +60,8 @@
             {% include 'homepage/blocks/section_2.html' with section="science" articles=sections.science %}
         </div>
         <div class="sidebar-home">
-            <div class="sidebar-block">
-              {% include 'objects/advertisement.html' with size='box' name='Box_A' id=2 %}
+            <div class="sidebar-block sidebar-block--advertisement">
+              {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 %}
             </div>
             <div class="popular sidebar-block">
                 <h2 class="block-title">Most popular this week</h2>
@@ -70,8 +71,8 @@
                     {% endfor %}
                 </ol>
             </div>
-            <div class="sidebar-block">
-              {% include 'objects/advertisement.html' with size='box' name='Box_B' id=3 %}
+            <div class="sidebar-block sidebar-block--advertisement">
+              {% include 'objects/advertisement.html' with size='box' name='Box_B' id=4 %}
             </div>
             <div class="article-list blog sidebar-block">
                 <h2 class="block-title">From the blog</h2>

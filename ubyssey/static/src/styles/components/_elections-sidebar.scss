@@ -1,0 +1,110 @@
+.c-elections-sidebar__header {
+  // Structure
+  margin-top: 0;
+  padding-top: 0.65rem;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1rem;
+
+  // Border
+  border-bottom: thin dotted $color-border-gray-dark;
+
+  // Text
+  font-size: font-size(16);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+
+  a {
+    u {
+      text-decoration: none;
+      border-bottom: 2px solid black;
+    }
+
+    &:hover {
+      color: $color-red;
+
+      u {
+        border-bottom: 2px solid $color-red;
+      }
+    }
+  }
+
+  @media($bp-larger-than-mobile) {
+    // Border
+    border-top: thin dotted $color-border-gray-dark;
+  }
+
+}
+
+.c-elections-sidebar__list {
+  // Border
+  border-top: thin dotted $color-border-gray-dark;
+}
+
+.c-elections-sidebar__tag {
+  // Structure
+  display: block;
+  margin-bottom: 0.15rem;
+
+  // Text
+  font-family: $font-default;
+  font-size: font-size(10);
+  letter-spacing: 0.05em;
+  font-weight: $font-weight-semi-bold;
+  color: $color-red;
+  text-transform: uppercase;
+}
+
+.c-elections-sidebar__compass {
+  // Structure
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem;
+
+  // Border
+  border-bottom: thin dotted $color-border-gray-dark;
+
+  @media($bp-larger-than-phablet) {
+    // Structure
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.c-elections-sidebar__compass__text {
+  // Structure
+  margin-top: 1rem;
+  margin-bottom: 1em;
+
+  // Text
+  text-align: center;
+  font-size: font-size(13);
+  color: gray;
+}
+
+.c-elections-sidebar__compass__button {
+  display: block;
+  padding: 0.75rem;
+
+  // Border
+  border-radius: 5px;
+
+  // Background
+  background: #c91515;
+
+  // Text
+  text-align: center;
+  color: $color-white;
+  font-size: font-size(18);
+  text-transform: uppercase;
+  font-weight: $font-weight-semi-bold;
+  letter-spacing: 0.5px;
+
+  // Extras
+  box-shadow: 0 4px #8d1010;
+
+  &:hover {
+    color: $color-white;
+  }
+}

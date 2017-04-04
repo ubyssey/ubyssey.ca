@@ -53,29 +53,127 @@
   padding-bottom: 1.5rem;
 
   // Border
-  border-bottom: 1px dotted $color-border-gray;
-}
+  border-bottom: thin dotted $color-border-gray-dark;
 
-.o-article--list .o-article__left {
-  // Structure
-  width: 6rem;
-  padding-right: 1rem;
+  .o-article__left {
+    // Structure
+    width: 6rem;
+    padding-right: 1rem;
 
-  @media($bp-larger-than-mobile) {
-    width: 8rem;
-    padding-right: 2rem;
+    @media($bp-larger-than-mobile) {
+      width: 8rem;
+      padding-right: 2rem;
+    }
+  }
+
+  .o-article__right {
+    flex: 1;
+  }
+
+  .o-article__snippet {
+    // Structure
+    display: none;
+
+    @media($bp-larger-than-mobile) {
+      display: block;
+    }
   }
 }
 
-.o-article--list .o-article__right {
-  flex: 1;
+
+// Article Sidebar Item
+
+.o-article--sidebar {
+  // Structure
+  display: flex;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  // Border
+  border-bottom: thin dotted $color-border-gray-dark;
+
+  @media($bp-larger-than-phablet) {
+    // Structure
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  &:last-child {
+    // Structure
+    margin-bottom: 0;
+  }
+
+  .o-article__meta {
+    // Structure
+    margin-bottom: 0;
+  }
+
+  .o-article__headline {
+    // Structure
+    margin-bottom: 0;
+
+    // Text
+    font-size: font-size(18);
+  }
+
+  .o-article__left {
+    // Structure
+    display: none;
+    width: 6rem;
+    padding-right: 0.5rem;
+
+    @media($bp-larger-than-mobile) {
+      padding-right: 0.75rem;
+    }
+  }
+
+  &:first-child .o-article__left,
+  &:nth-child(2) .o-article__left {
+    // Structure
+    display: block;
+  }
+
+  .o-article__right {
+    flex: 1;
+  }
+
 }
 
-.o-article--list .o-article__snippet {
-  // Structure
-  display: none;
+// Article Secondary
 
-  @media($bp-larger-than-mobile) {
-    display: block;
+.o-article--secondary {
+  // Structure
+  padding-bottom: 0.5rem;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  @media($bp-larger-than-phablet) {
+    // Structure
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .o-article__headline {
+    // Structure
+    margin-bottom: 0.35rem;
+
+    // Text
+    font-size: font-size(22);
+  }
+
+  .o-article__meta {
+    // Structure
+    margin-bottom: 0.25rem;
+  }
+
+  .o-article__snippet {
+    // Structure
+    margin-top: 0.25rem;
+
+    // Text
+    font-size: font-size(13);
   }
 }

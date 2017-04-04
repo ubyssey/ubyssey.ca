@@ -10,7 +10,7 @@
   {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 article=article.id %}
   {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=2 article=article.id %}
   {% endblock %}
-  <article class="c-article c-article--{{ article.template }} js-article" {% if user.is_authenticated %}data-user-id="{{ user.id }}"{% endif %} data-id="{{ article.parent_id }}" data-list="{{ reading_list.ids }}" data-list-name="{{ reading_list.name }}" data-headline="{{ article.headline }}" data-author="{{ authors_json }}" data-section="{{ article.section.slug }}" data-url="{{ article.get_absolute_url }}">
+  <article class="c-article c-article--{{ article.template }} c-article--{{ article.section.slug }} js-article" {% if user.is_authenticated %}data-user-id="{{ user.id }}"{% endif %} data-id="{{ article.parent_id }}" data-list="{{ reading_list.ids }}" data-list-name="{{ reading_list.name }}" data-headline="{{ article.headline }}" data-author="{{ authors_json }}" data-section="{{ article.section.slug }}" data-url="{{ article.get_absolute_url }}">
   {% block banner %}
     <div class="u-container u-container--content u-container--padded">
       <h1 class="o-headline o-headline--article">{{ article.headline|safe }}</h1>

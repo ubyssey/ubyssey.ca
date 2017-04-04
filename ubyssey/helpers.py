@@ -1,4 +1,7 @@
+from random import randint
+
 from django.db import connection
+from django.db.models.aggregates import Count
 
 from dispatch.apps.content.models import Article, Section
 
@@ -117,3 +120,47 @@ class ArticleHelper(object):
         years = [r[0] for r in results]
 
         return filter(lambda y: y is not None, years)
+
+    @staticmethod
+    def get_topic(topic_name):
+
+        return Article.objects.filter(
+            is_published=True,
+            topic__name=topic_name
+        )
+
+    @staticmethod
+    def get_random_articles(n, section, exclude=None):
+        """Returns `n` random articles from the given section."""
+
+        # Get all magazine articles
+        queryset = Article.objects.filter(is_published=True, section__slug=section)
+
+        # Exclude article (optional)
+        if exclude:
+            queryset = queryset.exclude(id=exclude)
+
+        # Get article count
+        count = queryset.aggregate(count=Count('id'))['count']
+
+        # Get all articles
+        articles = queryset.all()
+
+        # Force a query (to optimize later calls to articles[index])
+        list(articles)
+
+        results = []
+        indices = set()
+
+        # n is bounded by number of articles in database
+        n = min(count, n)
+
+        while len(indices) < n:
+            index = randint(0, count - 1)
+
+            # Prevent duplicate articles
+            if index not in indices:
+                indices.add(index)
+                results.append(articles[index])
+
+        return results

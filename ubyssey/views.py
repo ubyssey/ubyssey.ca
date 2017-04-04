@@ -5,7 +5,6 @@ from django.template import loader
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models.aggregates import Count
 from django.core.urlresolvers import reverse
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
@@ -50,13 +49,14 @@ class UbysseyTheme(DefaultTheme):
             'author': article.get_author_string()
         }
 
-
     def home(self, request):
 
         frontpage = ArticleHelper.get_frontpage(
             sections=('news', 'culture', 'opinion', 'sports', 'features', 'science'),
             max_days=7
         )
+
+        elections = ArticleHelper.get_topic('AMS Elections').order_by('-published_at')
 
         frontpage_ids = [int(a.id) for a in frontpage[:2]]
 
@@ -68,6 +68,7 @@ class UbysseyTheme(DefaultTheme):
                 'secondary': frontpage[1],
                 'thumbs': frontpage[2:4],
                 'bullets': frontpage[4:6],
+
              }
         except IndexError:
             raise Exception('Not enough articles to populate the frontpage!')
@@ -120,6 +121,7 @@ class UbysseyTheme(DefaultTheme):
             'authors_json': authors_json,
             'top_articles': top_articles,
             'reading_list': ArticleHelper.get_reading_list(article, ref=ref, dur=dur),
+            'suggested': lambda: ArticleHelper.get_random_articles(2, section, exclude=article.id),
             'base_template': 'base.html'
         }
 
@@ -154,14 +156,52 @@ class UbysseyTheme(DefaultTheme):
 
         page.add_view()
 
+        try:
+            image = page.featured_image.image.get_medium_url()
+        except:
+            image = None
+
         context = {
             'meta': {
-                'title': page.title
+                'title': page.title,
+                'image': image,
+                'url': settings.BASE_URL[:-1] + reverse('page', args=[page.slug]),
+                'description': page.snippet if page.snippet else ''
             },
             'page': page
         }
 
-        return render(request, 'page/base.html', context)
+        if page.get_template() != 'article/default.html':
+            templates = [page.get_template(), 'page/base.html']
+        else:
+            templates = ['page/base.html']
+
+        t = loader.select_template(templates)
+        return HttpResponse(t.render(context))
+
+    def elections(self, request):
+
+        articles = ArticleHelper.get_topic('AMS Elections').order_by('-published_at')
+
+        topic = Topic.objects.filter(name='AMS Elections')[0]
+
+        context = {
+            'meta': {
+                'title': '2017 AMS Elections'
+            },
+            'section': {
+                'name': '2017 AMS Elections',
+                'slug': 'elections',
+                'id': topic.id
+            },
+            'type': 'topic',
+            'articles': {
+                'first': articles[0],
+                'rest': articles[1:9]
+            }
+        }
+
+        return render(request, 'section.html', context)
 
     def section(self, request, slug=None):
 
@@ -397,42 +437,6 @@ class UbysseyTheme(DefaultTheme):
 class UbysseyMagazineTheme(UbysseyTheme):
     """Views for The Ubyssey Magazine microsite."""
 
-    def get_random_articles(self, n, exclude=None):
-        """Returns `n` random articles from the Magazine section."""
-
-        # Get all magazine articles
-        queryset = Article.objects.filter(is_published=True, section__slug='magazine')
-
-        # Exclude article (optional)
-        if exclude:
-            queryset = queryset.exclude(id=exclude)
-
-        # Get article count
-        count = queryset.aggregate(count=Count('id'))['count']
-
-        # Get all articles
-        articles = queryset.all()
-
-        # Force a query (to optimize later calls to articles[index])
-        list(articles)
-
-        results = []
-        indices = set()
-
-        # n is bounded by number of articles in database
-        n = min(count, n)
-
-        while len(indices) < n:
-            index = randint(0, count - 1)
-
-            # Prevent duplicate articles
-            if index not in indices:
-                indices.add(index)
-                results.append(articles[index])
-
-        return results
-
-
     def landing(self, request):
         """The Ubyssey Magazine landing page view."""
 
@@ -465,7 +469,7 @@ class UbysseyMagazineTheme(UbysseyTheme):
             'title': "%s - %s" % (article.headline, self.SITE_TITLE),
             'meta': self.get_article_meta(article, default_image=static('images/magazine/cover-social.png')),
             'article': article,
-            'suggested': self.get_random_articles(2, exclude=article.id),
+            'suggested': ArticleHelper.get_random_articles(2, 'magazine', exclude=article.id),
             'base_template': 'magazine/base.html'
         }
 

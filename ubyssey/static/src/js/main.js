@@ -84,7 +84,15 @@ function enableScroll($document) {
     }
   });
 
-  $('a.search').click(function(e){
+  $(document).click(function() {
+    $searchform.hide();
+  });
+
+  $(document).on('click', '#search-form > .u-container', function(e){
+    e.stopPropagation();
+  });
+
+  $(document).on('click', 'a.search', function(e){
     e.preventDefault();
     if($searchform.is(':visible')){
       $searchform.hide();
@@ -98,6 +106,7 @@ function enableScroll($document) {
       $('#search-bar').focus();
       $(this).addClass('active');
     }
+    e.stopPropagation();
   });
 
   $document.on('click', 'a.facebook', function(e){

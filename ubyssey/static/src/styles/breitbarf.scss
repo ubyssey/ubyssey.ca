@@ -1,0 +1,155 @@
+@import 'modules/variables';
+@import 'modules/advertisements';
+
+@font-face {
+    font-family: 'BebasNeue';
+    src: url('../fonts/BebasNeue.eot');
+    src: url('../fonts/BebasNeue.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/BebasNeue.woff2') format('woff2'),
+         url('../fonts/BebasNeue.woff') format('woff'),
+         url('../fonts/BebasNeue.ttf') format('truetype'),
+         url('../fonts/BebasNeue.svg#BebasNeue') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+  margin: 0;
+}
+
+body {
+  background: #000;
+  font-family: 'BebasNeue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+.u-container {
+  max-width: 970px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.c-header {
+  padding: 20px;
+}
+
+.c-header__logo {
+  height: 50px;
+  width: auto;
+
+  @media($bp-larger-than-tablet) {
+    height: 75px;
+  }
+}
+
+.c-content {
+  background: #fff;
+  padding: 20px;
+
+  @media($bp-larger-than-tablet) {
+    display: flex;
+  }
+}
+
+.c-content__left {
+  flex: 1;
+}
+
+.c-content__right {
+  max-width: 300px;
+  width: 100%;
+  padding-left: 20px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media($bp-larger-than-tablet) {
+    margin: 0;
+  }
+
+}
+
+.c-article {
+
+}
+
+h2 {
+  margin-bottom: 15px;
+  color: #f50;
+}
+
+.c-article__headline {
+  text-transform: uppercase;
+  font-size: 48px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  line-height: .9em;
+}
+
+.c-article__image {
+  width: 100%;
+  height: auto;
+}
+
+.c-article__byline {
+  font: 11px/1.4 Georgia, serif;
+  color: #777;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.c-article__content {
+  font: 16px/1.4 Georgia, serif;
+}
+
+.c-article__content > p {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.c-article__content > a {
+  color: #f50;
+  text-decoration: underline;
+  &:hover {
+    color: #f50;
+  }
+}
+
+.o-article {
+  margin-bottom: 15px;
+}
+
+.o-article__image {
+  width: 100%;
+  height: auto;
+}
+
+.o-article__headline {
+  font-size: 24px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  a {
+    color: #000;
+    text-decoration: none;
+    &:hover {
+      color: #f50;
+    }
+  }
+}
+
+
+.c-footer {
+  padding: 20px;
+  color: #f50;
+  text-align: center;
+  font-size: 18px;
+
+  a {
+    color: #f50;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}

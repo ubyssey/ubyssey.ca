@@ -1,0 +1,42 @@
+{% extends 'article/default.html' %}
+
+{% block banner %}
+<div class="u-container u-container--content u-container--padded">
+  <span class="c-article__tag">From the Blog</span>
+  <h1 class="o-headline o-headline--blog">{{ article.headline|safe }}</h1>
+  <div class="c-article__info">
+    <div class="c-article__byline">
+      <div class="c-article__author">By {{ article.get_author_string|safe }}</div>
+      <div class="c-article__byline__meta">
+        <span class="c-article__published-at">{{ article.published_at|date:'N j, Y' }}</span>
+        {% with article.calc_est_reading_time as reading_time %}
+        {% if reading_time %}
+        <span> &nbsp;&middot;&nbsp; </span>
+        <span class="c-article__reading-time">{{ reading_time }} min read</span>
+        {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+    {% include 'objects/social-icons.html' with article=article layout='top' %}
+  </div>
+</div>
+{% endblock %}
+
+{% block pre-content %}
+<div class="c-article__featured-image c-article__featured-image--blog">
+  <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %}" data-credit="{% if article.featured_image.get_credit %}{{ article.featured_image.get_credit }}{% endif %}" data-url="{{ article.featured_image.image.get_absolute_url }}" src="{{ article.featured_image.image.get_medium_url }}"/>
+  {% if article.featured_image.caption or article.featured_image.get_credit %}
+  <div class="caption">
+    {% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %} {% if article.featured_image.get_credit %}<span class="credit">{{ article.featured_image.get_credit }}{% if not article.featured_image.has_custom_credit %} / The Ubyssey{% endif %}</span>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block right-column %}
+<div class="right-column">
+  <div class="sidebar">
+    {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
+  </div>
+</div>
+{% endblock %}
