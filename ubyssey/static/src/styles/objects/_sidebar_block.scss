@@ -1,16 +1,30 @@
 // Border for articles
 .o-articles-list {
-  border-style: dotted;
-  border-width: 1px;
-  border-color: dimgrey;
   margin-bottom: 50px;
+  list-style-type: none;
+  padding-left: 0;
 }
 
-.headline {
-  font-family: "ub-minion-pro","Minion Pro","Georgia",serif;
+.o-sidebar-block__title {
+  font-size: 25px;
 }
 
-.article-heading {
-  margin-top: 25px;
-  margin-bottom: 25px;
+.headline-article {
+  font-family: $font-headline;
+  color: #333333;
+  font-size: 19px;
+}
+
+.top-5-article-heading {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.top-5-article-author {
+  font-size: 15px;
+  border-bottom-style: dotted;
+  border-width: 1px;
+  border-color: grey;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
 }

@@ -51,11 +51,12 @@
 
             <div class="o-sidebar-block">
                 <h2 class="o-sidebar-block__title">Most popular this week</h2>
-                <ol class="o-articles-list">
+                <ul class="o-articles-list">
                     {% for a in top_articles %}
-                    <li class="article-heading"><h4 class="headline"><a href="{{ a.get_absolute_url }}">{{ a.headline|safe }}</a></h4></li>
+                    <li class="top-5-article-heading"><h4 class="headline-article"><a href="{{ a.get_absolute_url }}">{{ a.headline|safe }}</a></h4></li>
+                    <li class="top-5-article-author">By {{ a.get_author_string|safe }} &middot; {{ a.published_at|date:'N j, Y' }}</li>
                     {% endfor %}
-                </ol>
+                </ul>
             </div>
         </div>
       </div>
