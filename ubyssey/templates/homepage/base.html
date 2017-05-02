@@ -54,6 +54,13 @@
         <div class="sections">
             {% include 'homepage/blocks/section_1.html' with section="news" articles=sections.news %}
             {% include 'homepage/blocks/section_2.html' with section="culture" articles=sections.culture %}
+            <div class="mobile-advertisement">
+              <p> 
+              <img src="https://lh6.ggpht.com/x6wxcwMSL3y7LiBXPOat8ptjMsYPLt-EEOU3Ic6XDlJJt6kUjZ9Qotgkul3mIyH3QNSYZsMl6g=w320-h50"  />
+              </p>
+
+              {% comment %}{% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' %}{% endcomment %}
+            </div>
             {% include 'homepage/blocks/section_2.html' with section="sports" articles=sections.sports %}
             {% include 'homepage/blocks/section_2.html' with section="opinion" articles=sections.opinion %}
             {% include 'homepage/blocks/section_2.html' with section="features" articles=sections.features %}
