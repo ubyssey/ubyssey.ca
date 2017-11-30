@@ -210,7 +210,9 @@ class UbysseyTheme(object):
             'type': 'section',
             'featured_articles': {
                 'first': featured_articles[0],
-                'rest': featured_articles[1:4]
+                'row1': featured_articles[1:4],
+                'row2': featured_articles[4:7],
+                'row3': featured_articles[7:10]
             },
             'articles': articles,
             'order': order,
