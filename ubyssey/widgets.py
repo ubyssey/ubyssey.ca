@@ -1,5 +1,8 @@
 from datetime import datetime
 
+import requests
+from bs4 import BeautifulSoup
+
 from dispatch.models import Article
 from dispatch.theme import register
 from dispatch.theme.widgets import Widget
@@ -31,6 +34,27 @@ class EventWidget(Widget):
       if not result.get('event'):
           result['event'] = Event.objects.get_random_event()
       return result
+
+@register.widget
+class PrintIssue(Widget):
+    id = 'print-issue'
+    name = 'Print Issue'
+    template = 'widgets/frontpage/print-issue.html'
+    zones = (HomePageSidebarBottom, )
+
+    issuu_url = TextField('Latest print issue url')
+    issuu_img = TextField('Latest print issue cover image')
+
+    def before_save(self, result):
+        # Scraping the URL and cover image URL of Ubyssey's latest print issue
+        page = requests.get('http://search.issuu.com/ubyssey/docs/recent.rss')
+        soup = BeautifulSoup(page.content, 'xml')
+        latestIssue = soup.findAll('item')[0]
+
+        result['issuu_url'] = latestIssue.find('link').get_text()
+        result['issuu_img'] = latestIssue.find('media:content').get('url')
+
+        return result
 
 @register.widget
 class UpcomingEventsWidget(Widget):
