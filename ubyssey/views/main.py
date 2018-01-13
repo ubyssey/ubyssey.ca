@@ -1,7 +1,5 @@
 from datetime import datetime
 import json
-import requests
-from bs4 import BeautifulSoup
 
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, Http404
@@ -55,14 +53,6 @@ class UbysseyTheme(object):
 
         title = '%s - UBC\'s official student newspaper' % self.SITE_TITLE
 
-        # Scraping the URL and cover image URL of Ubyssey's latest print issue
-        page = requests.get('http://search.issuu.com/ubyssey/docs/recent.rss')
-        soup = BeautifulSoup(page.content, 'xml')
-        latestIssue = soup.findAll('item')[0]
-
-        issuu_url = latestIssue.find('link').get_text()
-        issuu_img = latestIssue.find('media:content').get('url')
-
         context = {
             'title': title,
             'meta': {
@@ -76,8 +66,6 @@ class UbysseyTheme(object):
             'popular': popular,
             'blog': blog,
             'day_of_week': datetime.now().weekday(),
-            'issuu_url': issuu_url,
-            'issuu_img': issuu_img
         }
         return render(request, 'homepage/base.html', context)
 
