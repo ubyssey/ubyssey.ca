@@ -221,7 +221,7 @@ class ArticleHelper(object):
             'description': article.seo_description if article.seo_description is not None else article.snippet,
             'url': article.get_absolute_url,
             'image': image,
-            'author': article.get_author_string()
+            'author': article.get_author_type_string()
         }
 
 class PageHelper(object):

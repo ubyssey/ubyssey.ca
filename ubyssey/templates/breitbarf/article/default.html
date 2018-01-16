@@ -69,7 +69,7 @@
         <article class="c-article">
           <h1 class="c-article__headline">{{ article.headline }}</h1>
           <img class="c-article__image" src="{{ article.featured_image.image.get_medium_url }}"></img>
-          <div class="c-article__byline">By {{ article.get_author_string }} | {{ article.published_at|date:'N j, Y' }}</div>
+          <div class="c-article__byline">By {{ article.get_author_string_type }} | {{ article.published_at|date:'N j, Y' }}</div>
           <div class="c-article__content">{{ article.html|safe }}</div>
         </article>
       </div>
@@ -80,7 +80,7 @@
         <article class="o-article">
           <a href="{{ a.get_absolute_url }}"><img class="o-article__image" src="{{ a.featured_image.image.get_medium_url }}"></img></a>
           <h3 class="o-article__headline"><a href="{{ a.get_absolute_url }}">{{ a.headline }}</a></h3>
-          <div class="o-article__byline">By {{ a.get_author_string }} | {{ a.published_at|date:'N j, Y' }}</div>
+          <div class="o-article__byline">By {{ a.get_author_string_type }} | {{ a.published_at|date:'N j, Y' }}</div>
         </article>
         {% endfor %}
       </div>

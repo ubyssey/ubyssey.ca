@@ -108,3 +108,10 @@ main.article .o-advertisement--leaderboard {
     margin-right: auto;
   }
 }
+
+// Hide ads when printed
+.o-advertisement {
+  @media print {
+    display: none;
+  }
+}

@@ -84,6 +84,11 @@ footer {
           font-weight: 300;
         }
       }
+
+      // Hide when printed
+      @media print {
+        display: none;
+      }
     }
   }
 

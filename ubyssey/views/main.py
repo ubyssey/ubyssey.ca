@@ -10,7 +10,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from dispatch.models import Article, Page, Section, Topic, Person
 
 from ubyssey.helpers import ArticleHelper, PageHelper
 
@@ -81,13 +80,12 @@ class UbysseyTheme(object):
         ref = request.GET.get('ref', None)
         dur = request.GET.get('dur', None)
 
-        authors_json = json.dumps([a.full_name for a in article.authors.all()])
+        authors_json_name = json.dumps([a.person.full_name for a in article.authors.all()])
 
         context = {
             'title': '%s - %s' % (article.headline, self.SITE_TITLE),
             'meta': ArticleHelper.get_meta(article),
             'article': article,
-            'authors_json': authors_json,
             'reading_list': ArticleHelper.get_reading_list(article, ref=ref, dur=dur),
             'suggested': lambda: ArticleHelper.get_random_articles(2, section, exclude=article.id),
             'base_template': 'base.html',

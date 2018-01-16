@@ -7,6 +7,11 @@
   padding: 0;
 
   list-style-type: none;
+
+  // Hide when printed
+  @media print {
+    display: none;
+  }
 }
 
 .o-social-icons--top {

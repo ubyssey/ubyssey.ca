@@ -455,6 +455,11 @@ ul.article-list, ol.article-list {
     }
 
   }
+
+  // Hide when printed
+  @media print {
+    display: none;
+  }
 }
 
 
