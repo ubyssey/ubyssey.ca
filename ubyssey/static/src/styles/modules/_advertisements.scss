@@ -110,9 +110,8 @@ main.article .o-advertisement--leaderboard {
 }
 
 // Hide ads when printed
-div[class^="o-advertisement"] {
+.o-advertisement {
   @media print {
     display: none;
   }
 }
-
