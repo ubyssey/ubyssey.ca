@@ -293,6 +293,11 @@ header.mobile {
       background: rgba(249, 249, 249, 0.99);
       bottom: -1px;
     }
+
+    // Hide when printed
+    @media print {
+      display: none;
+    }
   }
 
   a.left {
