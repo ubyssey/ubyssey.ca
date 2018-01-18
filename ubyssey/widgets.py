@@ -52,7 +52,7 @@ class PrintIssue(Widget):
         latestIssue = soup.findAll('item')[0]
 
         result['issuu_url'] = latestIssue.find('link').get_text()
-        result['issuu_img'] = latestIssue.find('media:content').get('url')
+        result['issuu_img'] = latestIssue.find('content').get('url')
 
         return result
 
