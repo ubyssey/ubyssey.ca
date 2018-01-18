@@ -60,14 +60,17 @@
 body, html, #page-wrapper {
   max-height: 100%;
   height: 100%;
+
   @media screen {
     overflow: hidden;
   }
 }
 
 #page-wrapper {
-  display: flex;
-  flex-direction: column;
+  @media screen {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 #content-wrapper {
