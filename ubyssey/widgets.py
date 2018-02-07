@@ -43,6 +43,7 @@ class PrintIssue(Widget):
     zones = (HomePageSidebarBottom, )
 
     issuu_url = TextField('Latest print issue url')
+    issuu_title = TextField('Latest print issue title')
     issuu_img = TextField('Latest print issue cover image')
 
     def before_save(self, result):
@@ -52,6 +53,7 @@ class PrintIssue(Widget):
         latestIssue = soup.findAll('item')[0]
 
         result['issuu_url'] = latestIssue.find('link').get_text()
+        result['issuu_title'] = latestIssue.find('title').get_text()
         result['issuu_img'] = latestIssue.find('content').get('url')
 
         return result
@@ -147,7 +149,9 @@ class FrontPageDefault(Widget):
 
     accepted_keywords = ('articles', )
 
-    sidebar = WidgetField('Sidebar', [UpcomingEventsWidget], required=True)
+    sidebar = WidgetField('Sidebar', [UpcomingEventsWidget, PrintIssue], required=True)
+
+    sidebar2 = WidgetField('Sidebar2', [UpcomingEventsWidget, PrintIssue], required=False)
 
 def in_date_range(start, end):
     today = datetime.today()
