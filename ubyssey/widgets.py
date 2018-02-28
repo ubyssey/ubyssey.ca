@@ -39,7 +39,7 @@ class EventWidget(Widget):
 class PrintIssue(Widget):
     id = 'print-issue'
     name = 'Print Issue'
-    template = 'widgets/frontpage/print-issue.html'
+    template = 'widgets/print-issue.html'
     zones = (HomePageSidebarBottom, )
 
     issuu_url = TextField('Latest print issue url')
