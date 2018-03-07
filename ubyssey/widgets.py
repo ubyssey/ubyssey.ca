@@ -141,6 +141,39 @@ class UpcomingEventsHorizontalWidget(Widget):
         return result
 
 @register.widget
+class TopStoryDefault(Widget):
+    id = 'top-story-default'
+    name = 'Top Story Default'
+    template = 'widgets/frontpage/topstory-default.html'
+
+    accepted_keywords = ('articles', )
+
+    zones = (ArticleHorizontal,)
+
+@register.widget
+class TopStoryLive(Widget):
+    id = 'top-story-live'
+    name = 'Top Story Live'
+    template = 'widgets/frontpage/topstory-live.html'
+    zones = (FrontPage,)
+
+    title = CharField('Title')
+    video_url = CharField('Video URL')
+    summary = CharField('Video Summary')
+
+    accepted_keywords = ('articles', )
+    zones = (ArticleHorizontal,)
+
+
+@register.widget
+class TwitterFrontPage(Widget):
+    id = 'twitter-front-page'
+    name = 'Twitter Front Page'
+    template = 'widgets/frontpage/twitter-front-page.html'
+    zones = (HomePageSidebarBottom,)
+
+
+@register.widget
 class FrontPageDefault(Widget):
     id = 'frontpage-default'
     name = 'Default Front Page'
@@ -150,7 +183,6 @@ class FrontPageDefault(Widget):
     accepted_keywords = ('articles', )
 
     sidebar = WidgetField('Sidebar', [UpcomingEventsWidget, PrintIssue], required=True)
-
     sidebar2 = WidgetField('Sidebar2', [UpcomingEventsWidget, PrintIssue], required=False)
 
 def in_date_range(start, end):
@@ -183,6 +215,19 @@ class FacebookVideoBig(Widget):
     def context(self, result):
         result['do_show'] = in_date_range(result['start_time'], result['end_time'])
         return result
+
+@register.widget
+class Election2018(Widget):
+    id = 'ams_election_2018'
+    name = 'AMS Election 2018'
+    template = 'widgets/frontpage/election_2018.html'
+    zones = (FrontPage, )
+    accepted_keywords = ('articles', )
+
+    video_url = CharField('Facebook Live Video URL')
+
+    top_story = WidgetField('Top Story', [TopStoryDefault, TopStoryLive], required=True)
+    sidebar = WidgetField('Sidebar', [TwitterFrontPage], required=True)
 
 @register.widget
 class AlertBanner(Widget):

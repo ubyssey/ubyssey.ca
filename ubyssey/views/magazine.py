@@ -18,17 +18,17 @@ class MagazineTheme(object):
     def landing(self, request):
         """Magazine landing page view."""
 
-        # Get all magazine articles
-        articles = Article.objects.filter(is_published=True, section__slug='magazine').order_by('-importance')
+        # Get all 2018 magazine articles
+        articles = Article.objects.filter(is_published=True, section__slug='magazine', tags__name='2018').order_by('-importance')
 
         context = {
             'meta': {
-                'title': 'The Ubyssey Magazine',
-                'description': 'The Ubyssey\'s first magazine.',
+                'title': 'The Ubyssey Magazine - How we live',
+                'description': 'The February 2018 issue of the Ubyssey magazine.',
                 'url': reverse('magazine-landing'),
-                'image': static('images/magazine/cover-social.png')
+                'image': static('images/magazine/cover-social.jpg')
             },
-            'cover': 'images/magazine/cover-%d.jpg' % randint(1, 2),
+            'cover': 'images/magazine/cover.jpg',
             'articles': articles
         }
 
@@ -55,3 +55,22 @@ class MagazineTheme(object):
         t = loader.select_template(['%s/%s' % (article.section.slug, article.get_template_path()), article.get_template_path()])
 
         return HttpResponse(t.render(context))
+
+    def landing_2017(self, request, year=None):
+        """Archive landing page."""
+
+        # Get all 2017 magazine articles
+        articles = Article.objects.filter(is_published=True, section__slug='magazine', tags__name='2017').order_by('-importance')
+
+        context = {
+            'meta': {
+                'title': 'The Ubyssey Magazine - 2017',
+                'description': 'The Ubyssey\'s first magazine.',
+                'url': reverse('magazine-landing-2017'),
+                'image': static('images/magazine/2017/cover-social.png')
+            },
+            'cover': 'images/magazine/2017/cover-%d.jpg' % randint(1, 2),
+            'articles': articles
+        }
+
+        return render(request, 'magazine/2017/landing.html', context)

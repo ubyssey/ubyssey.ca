@@ -32,24 +32,6 @@ html, body {
 	padding: 0;
 }
 
-.c-cover__logo {
-	font-family: $font-secondary;
-	font-weight: 400;
-	font-size: font-size(40);
-	position: absolute;
-	margin-top: 2rem;
-	width: 100%;
-	text-align: center;
-	color: #fff;
-	text-transform: uppercase;
-	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-
-	@media($bp-larger-than-mobile) {
-		font-size: font-size(50);
-		margin-top: 3.5rem;
-	}
-}
-
 .magazine-container {
 
 	max-width: 700px;

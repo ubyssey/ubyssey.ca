@@ -111,25 +111,29 @@
     line-height: 1.6em;
   }
 
-  // Drop cap
-  > p:first-child:first-letter {
-    // Structure
-    float: left;
-    margin-top: 0.1em;
-    margin-right: 0.2em;
-    padding-right: 0.25em;
-    padding-left: 0.25em;
-
-    // Background
-    background: $color-pink;
-
+  > p > a {
     // Text
-    font-size: 3em;
-    line-height: 1.4em;
-    color: #fff;
+    color: $color-pink;
   }
 
-  >ul li {
+  // Pull quote
+  p.quote {
+    // Text
+    font-family: $font-serif;
+    font-size: font-size(24);
+    line-height: 1.5em;
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  p.source {
+    // Text
+    text-transform: uppercase;
+    color: $color-pink;
+    font-weight: 600;
+  }
+
+  > ul li {
     // Structure
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -145,21 +149,48 @@
 
 }
 
+// Drop cap
+.c-article:not(.c-article--basic) .c-article__body > p:first-child:first-letter {
+  // Structure
+  float: left;
+  margin-top: 0.1em;
+  margin-right: 0.2em;
+  padding-right: 0.25em;
+  padding-left: 0.25em;
+
+  // Background
+  background: $color-pink;
+
+  // Text
+  font-size: 3em;
+  line-height: 1.4em;
+  color: #fff;
+}
+
+
 .c-article--pink .c-article__body {
-  h1, h2, h3 { color: $color-pink; }
+  h1, h2, h3, > p > a, p.source { color: $color-pink; }
+}
+
+.c-article--pink:not(.c-article--basic) .c-article__body {
   > p:first-child:first-letter { background: $color-pink; }
 }
 
 .c-article--green .c-article__body {
-  h1, h2, h3 { color: $color-green; }
+  h1, h2, h3, > p > a, p.source { color: $color-green; }
+}
+
+.c-article--green:not(.c-article--basic) .c-article__body {
   > p:first-child:first-letter { background: $color-green; }
 }
 
 .c-article--blue .c-article__body {
-  h1, h2, h3 { color: $color-blue; }
-  > p:first-child:first-letter { background: $color-blue; }
+  h1, h2, h3, > p > a, p.source { color: $color-blue; }
 }
 
+.c-article--blue:not(.c-article--basic) .c-article__body {
+  > p:first-child:first-letter { background: $color-blue; }
+}
 
 .c-article__suggested {
   // Structure

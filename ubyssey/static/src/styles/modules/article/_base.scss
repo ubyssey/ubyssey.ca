@@ -7,7 +7,6 @@
   }
 }
 
-
 // Article Slide
 
 div.article-slide {
@@ -250,9 +249,17 @@ div.right-column {
     }
   }
 
-
 }
 
 div.side {
     float: right;
 }
+
+// Article-list
+#article-list {
+  // Hide when printed
+  @media print {
+    display: none;
+  }
+}
+

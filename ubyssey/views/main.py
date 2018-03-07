@@ -10,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
+from dispatch.models import Article, Section, Topic, Person
 
 from ubyssey.helpers import ArticleHelper, PageHelper
 
@@ -98,7 +99,7 @@ class UbysseyTheme(object):
 
     def article_ajax(self, request, pk=None):
         article = Article.objects.get(parent_id=pk, is_published=True)
-        authors_json = json.dumps([a.full_name for a in article.authors.all()])
+        authors_json = json.dumps([a.person.full_name for a in article.authors.all()])
 
         context = {
             'article': article,
@@ -233,7 +234,7 @@ class UbysseyTheme(object):
 
         query = request.GET.get('q', False)
 
-        article_list = Article.objects.filter(authors=person, is_published=True).order_by(order_by)
+        article_list = Article.objects.filter(authors__person=person, is_published=True).order_by(order_by)
 
         if query:
             article_list = article_list.filter(headline__icontains=query)

@@ -30,6 +30,63 @@ div.frontpage-container {
   }
 }
 
+div.main-widget {
+
+  @media($bp-smaller-than-desktop) {
+    display: flex;
+    justify-content: center;
+  }
+
+  @media($bp-smaller-than-phablet) {
+    padding-bottom: 25px;
+  }
+
+}
+
+div.c-election-banner-container {
+
+  padding-top: 20px;
+
+  img.election-banner {
+    width: 100%;
+    height: 100%;
+  }
+
+}
+
+div.c-election-fb-live {
+
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media($bp-smaller-than-mobile) {
+    min-width: 300px;
+  }
+
+  @media($bp-larger-than-mobile) {
+    min-width: 400px;
+  }
+
+  @media($bp-larger-than-phablet) {
+    min-width: 500px;
+  }
+
+  @media($bp-larger-than-desktop) {
+    margin-right: 15px;
+  }
+
+}
+
 div.frontpage {
 
   display: table-row;
@@ -454,11 +511,6 @@ ul.article-list, ol.article-list {
       }
     }
 
-  }
-
-  // Hide when printed
-  @media print {
-    display: none;
   }
 }
 

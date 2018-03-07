@@ -61,10 +61,16 @@ class Magazine(Template):
         ('blue', 'Blue')
     )
 
+    DISPLAY_OPTIONS = (
+        ('default', 'Default'),
+        ('basic', 'Basic')
+    )
+
     byline = TextField('Byline')
     byline_2 = TextField('Byline 2')
     description = TextField('Description')
     color = SelectField('Accent Color', options=COLOR_OPTIONS)
+    display = SelectField('Display type', options=DISPLAY_OPTIONS)
 
 @register.template
 class MagazinePoem(Template):
@@ -78,3 +84,11 @@ class MagazinePoem(Template):
     text_color_a = CharField('Text Color A')
     text_color_b = CharField('Text Color B')
     offset = CharField('Top Offset')
+
+@register.template
+class VoteCompass(Template):
+    id = 'vote-compass'
+    name = 'Vote Compass'
+
+    css = CharField('CSS')
+    js = CharField('JavaScript')

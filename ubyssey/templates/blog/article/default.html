@@ -22,10 +22,10 @@
 
 {% block pre-content %}
 <div class="c-article__featured-image c-article__featured-image--blog">
-  <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %}" data-credit="{% if article.featured_image.get_credit %}{{ article.featured_image.get_credit }}{% endif %}" data-url="{{ article.featured_image.image.get_absolute_url }}" src="{{ article.featured_image.image.get_medium_url }}"/>
-  {% if article.featured_image.caption or article.featured_image.get_credit %}
+  <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %}" data-credit="{% if article.featured_image.credit %}{{ article.featured_image.credit }}{% endif %}" data-url="{{ article.featured_image.image.get_absolute_url }}" src="{{ article.featured_image.image.get_medium_url }}"/>
+  {% if article.featured_image.caption or article.featured_image.credit %}
   <div class="caption">
-    {% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %} {% if article.featured_image.get_credit %}<span class="credit">{{ article.featured_image.get_credit }}{% if not article.featured_image.has_custom_credit %} / The Ubyssey{% endif %}</span>{% endif %}
+    {% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %} {% if article.featured_image.credit %}<span class="credit">{{ article.featured_image.credit }}{% if not article.featured_image.has_custom_credit %}{% endif %}</span>{% endif %}
   </div>
   {% endif %}
 </div>

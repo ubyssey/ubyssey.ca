@@ -1,0 +1,32 @@
+{% load staticfiles %}
+<div class="c-election-banner-container">
+  <img class="election-banner"
+       srcset="{% static 'images/banners/election_350x50.png' %} 350w,
+             {% static 'images/banners/election_500x60.png' %} 500w,
+             {% static 'images/banners/election_800x60.png' %} 800w,
+             {% static 'images/banners/election_1220x70.png' %} 1000w"
+       sizes="(max-width: 350px) 350px,
+              (max-width: 500px) 500px,
+              (max-width: 800px) 800px,
+              1000px"
+       src="{% static 'images/banners/election_1220x70.png' %}"
+       alt="AMS Election Facebook Live Video">
+</div>
+<div class="homepage-section frontpage-container main-widget">
+  <div class="frontpage">
+      <h2>Live Debate</h2>
+      <div class="c-election-fb-live">
+        <article>
+        <iframe src="https://www.facebook.com/plugins/video.php?href={{ video_url }}"
+          style="border:none;overflow:hidden"
+          scrolling="no"
+          frameborder="0"
+          allowTransparency="true"
+          allowFullScreen="true"></iframe>
+        <article>
+      </div>
+    <div class="multi-zone cell right">
+      {{ sidebar.render }}
+    </div>
+  </div>
+</div>

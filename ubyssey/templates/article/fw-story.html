@@ -27,7 +27,7 @@
                         <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}"/>
                         {% if article.featured_image.caption %}
                         <div class="caption">
-                            {{ article.featured_image.caption }} <span class="credit">{{ article.featured_image.credit }} / The Ubyssey</span>
+                          {{ article.featured_image.caption }} <span class="credit">{{ article.featured_image.credit }}</span>
                         </div>
                         {% endif %}
                     </div>
@@ -71,7 +71,7 @@
                 </div>
                 {% if article.featured_image.caption or article.featured_image.credit %}
                 <div class="caption">
-                	{{ article.featured_image.caption }} <span class="credit">{{ article.featured_image.credit }} / The Ubyssey</span>
+                	{{ article.featured_image.caption }} <span class="credit">{{ article.featured_image.credit }}</span>
                 </div>
                 {% endif %}
             </div>
