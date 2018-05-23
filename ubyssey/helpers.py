@@ -1,5 +1,6 @@
 import datetime
-from random import randint
+import pytz
+from random import randint, choice
 
 from django.http import Http404
 from django.db import connection
@@ -208,6 +209,28 @@ class ArticleHelper(object):
             articles = articles.filter(created_at__range=(time_range))
 
         return articles.order_by('-views')
+
+    @staticmethod
+    def get_trending():
+        """Returns the most trending articles in the time period."""
+
+        DURATION = 6
+
+        articles = Article.objects.filter(is_published=True)
+
+        end = datetime.datetime.now()
+        start = end - datetime.timedelta(hours=DURATION)
+        time_range = (pytz.utc.localize(start), pytz.utc.localize(end))
+        trending_articles = articles.filter(
+            published_at__range=(time_range),
+            views__gt=1000)
+
+        if len(trending_articles) == 0:
+            trending_article = None
+        else:
+            trending_article = choice(trending_articles)
+
+        return trending_article
 
     @staticmethod
     def get_meta(article, default_image=None):

@@ -10,6 +10,9 @@ __pycache__/
 
 node_modules/
 
+# Ignore Mac specific empty file
+.DS_Store
+
 ubyssey/settings*.py
 
 # Client secret for Travis

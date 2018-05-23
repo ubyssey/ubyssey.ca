@@ -5,6 +5,7 @@ class EventSerializer(DispatchModelSerializer):
 
     class Meta:
         model = Event
+
         fields = (
             'id',
             'secret_id',
@@ -24,4 +25,10 @@ class EventSerializer(DispatchModelSerializer):
             'is_submission',
             'submitter_email',
             'submitter_phone',
+        )
+
+        authenticated_fields = (
+            'secret_id',
+            'submitter_email',
+            'submitter_phone'
         )
