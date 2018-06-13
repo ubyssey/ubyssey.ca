@@ -1,6 +1,6 @@
 const SIZES = {
-    'box': [300, 250],
-    'leaderboard': [728, 90],
+    'box': [[300, 250], [336,280], [300, 600], [468, 60]],
+    'leaderboard': [[728, 90], [970, 90]],
     'mobile-leaderboard': [300, 50]
 };
 

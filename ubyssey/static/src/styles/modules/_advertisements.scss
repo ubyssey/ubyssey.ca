@@ -15,6 +15,7 @@ $adslots: (
   background-color: red;
   background-clip: content-box !important;
 }
+
 // Desktop leaderboard ad
 .o-advertisement--leaderboard {
   $width: nth(map-get($adslots, leaderboard), 1);
@@ -60,19 +61,6 @@ $adslots: (
   }
 }
 
-.o-advertisement--banner {
-  $width: nth(map-get($adslots, banner), 1);
-  $height: nth(map-get($adslots, banner), 2);
-
-  .adslot {
-    margin-left: auto;
-    margin-right: auto;
-    width: $width;
-    height: $height;
-    padding-top: 1.5rem;
-  }
-}
-
 #article-list {
   .o-advertisement--leaderboard {
     @media( min-width: 1010px ){
@@ -85,8 +73,6 @@ $adslots: (
       }
     }
   }
-
-
 }
 
 main.article .o-advertisement--leaderboard {
@@ -148,13 +134,25 @@ main.article .o-advertisement--leaderboard {
   }
 }
 
+.o-article-embed--advertisement {
+  .o-advertisement--box {
+    $width: nth(map-get($adslots, banner), 1);
+    $height: nth(map-get($adslots, banner), 2);
+
+    .adslot {
+      width: $width;
+      height: $height;
+    }
+  }
+}
+
 .o-advertisement--box {
   $width: nth(map-get($adslots, box), 1);
   $height: nth(map-get($adslots, box), 2);
 
   .adslot {
     width: $width;
-    min-height: $height;
+    height: $height;
     margin-left: auto;
     margin-right: auto;
     padding-top: 1.5rem;
@@ -200,7 +198,7 @@ main.article .o-advertisement--leaderboard {
   }
 
   @media($bp-larger-than-tablet){
-    $width: nth(map-get($adslots, large-box), 1);
+    $width: nth(map-get($adslots, large-skyscraper), 1);
     $height: nth(map-get($adslots, large-skyscraper), 2);
 
     width: $width;

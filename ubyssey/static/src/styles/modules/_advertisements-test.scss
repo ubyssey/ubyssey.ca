@@ -60,19 +60,6 @@ $adslots: (
   }
 }
 
-.o-advertisement--banner {
-  $width: nth(map-get($adslots, banner), 1);
-  $height: nth(map-get($adslots, banner), 2);
-
-  .adslot-test {
-    margin-left: auto;
-    margin-right: auto;
-    width: $width;
-    height: $height;
-    padding-top: 1.5rem;
-  }
-}
-
 #article-list {
   .o-advertisement--leaderboard {
     @media( min-width: 1010px ){
@@ -145,6 +132,16 @@ main.article .o-advertisement--leaderboard {
   @media($bp-larger-than-phablet) {
     // Structure
     display: none;
+  }
+}
+
+.o-article-embed--advertisement {
+  $width: nth(map-get($adslots, banner), 1);
+  $height: nth(map-get($adslots, banner), 2);
+
+  .adslot-test {
+    width: $width;
+    min-height: $height;
   }
 }
 
