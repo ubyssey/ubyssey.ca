@@ -105,7 +105,6 @@ class UbysseyTheme(object):
             'meta': ArticleHelper.get_meta(article),
             'article': article,
             'reading_list': ArticleHelper.get_reading_list(article, ref=ref, dur=dur),
-            # 'suggested': lambda: ArticleHelper.get_random_articles(2, section, exclude=article.id),
             'base_template': 'base.html',
             'popular': popular,
             'reading_time': ArticleHelper.get_reading_time(article),

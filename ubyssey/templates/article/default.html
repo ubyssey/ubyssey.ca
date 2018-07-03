@@ -9,8 +9,8 @@
 <main id="article-{{ article.parent_id }}" class="article">
   {% block banner_ad %}
   {% if explicit is not True %}
-  {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 article=article.id %}
-  {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=2 article=article.id %}
+    {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 article=article.id %}
+    {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=2 article=article.id %}
   {% endif %}
   {% endblock %}
   <article class="c-article c-article--{{ article.template }} js-article" {% if user.is_authenticated %}data-user-id="{{ user.id }}"{% endif %} data-id="{{ article.parent_id }}" data-list="{{ reading_list.ids }}" data-list-name="{{ reading_list.name }}" data-headline="{{ article.headline }}" data-author="{{ authors_json }}" data-section="{{ article.section.slug }}" data-url="{{ article.get_absolute_url }}" data-explicit="{{ explicit }}">

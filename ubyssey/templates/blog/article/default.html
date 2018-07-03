@@ -34,7 +34,9 @@
 {% block right-column %}
 <div class="right-column">
   <div class="sidebar">
-    {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
+    {% if explicit is not True %}
+      {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
+    {% endif %}
   </div>
 </div>
 {% endblock %}
