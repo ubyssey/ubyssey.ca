@@ -16,7 +16,17 @@
     <div class="c-section__featured">
       {% include 'objects/articles/featured.html' with article=featured_articles.first %}
       <div class="c-section__featured__articles u-flex--tablet">
-      {% for article in featured_articles.rest %}
+      {% for article in featured_articles.row1 %}
+        {% include 'objects/articles/column.html' with article=article %}
+      {% endfor %}
+      </div>
+      <div class="c-section__featured__articles u-flex--tablet">
+      {% for article in featured_articles.row2 %}
+        {% include 'objects/articles/column.html' with article=article %}
+      {% endfor %}
+      </div>
+      <div class="c-section__featured__articles u-flex--tablet">
+      {% for article in featured_articles.row3 %}
         {% include 'objects/articles/column.html' with article=article %}
       {% endfor %}
       </div>
