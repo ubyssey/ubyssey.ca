@@ -15,6 +15,7 @@ from django_user_agents.utils import get_user_agent
 from dispatch.models import Article, Section, Topic, Person
 
 import ubyssey
+import ubyssey.cron
 from ubyssey.helpers import ArticleHelper, PageHelper
 
 def parse_int_or_none(maybe_int):

@@ -59,6 +59,18 @@ function postRequest(route, id=null, payload={}) {
   .then(parseJSON)
 }
 
+function patchRequest(route, id=null, payload={}, token=null) {
+  return fetch(
+    buildRoute(route, id),
+    {
+      method: 'PATCH',
+      headers: DEFAULT_HEADERS,
+      body: JSON.stringify(payload)
+    }
+  )
+    .then(parseJSON)
+}
+
 const DispatchAPI = {
   polls: {
     vote: (poll_id, payload) => {
@@ -74,6 +86,14 @@ const DispatchAPI = {
     },
     search: (query) => {
       return getRequest('articles', null, query)
+    }
+  },
+  notifications: {
+    subscribe: (subscription) => {
+      return postRequest('notifications.subscribe', 1, subscription)
+    },
+    updateSubscription: (uuid, subscription) => {
+      return patchRequest('notifications.subscribe', uuid, subscription)
     }
   }
 }

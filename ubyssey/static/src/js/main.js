@@ -1,5 +1,46 @@
 import * as mp from './modules/Mixpanel';
 import upcomingEvents from './widgets/upcoming-events';
+import {initializeUI} from './notifications';
+
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+  navigator.serviceWorker.register('/service-worker.js')
+  .then(function(swReg) {
+    
+    $('#beta-test-push-notifications').click(() => {
+      const delay_1 = 500
+      const prompt = 'beta-prompt'
+      let promptMessage = ''
+      if (Notification.permission === 'default') {
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            initializeUI(swReg)
+          }
+        })
+      } else if (Notification.permission === 'granted') {
+        promptMessage = 'You are already subscribed!'
+        initializeUI(swReg)
+      } else if (Notification.permission === 'denied') {
+        promptMessage = `It lookes like you are currently blocking notifications from ubyssey.ca.
+          If you would like to allow notifications please change your settings. For more information, please visit
+          <a href='https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop&hl=en'> here </a>`
+        initializeUI(swReg)
+      }
+      if (promptMessage !== '') {
+        $('body').append("<div class='beta-prompt'><div class='beta-prompt-internal'></div></div>")
+        $('.beta-prompt-internal').html(promptMessage)
+
+        setTimeout(() => {
+          $('.beta-prompt').remove()
+        }, 3000)
+      }
+    })
+  })
+  .catch(function(error) {
+    console.error('Service Worker Error', error);
+  });
+} else {
+  console.warn('Push messaging is not supported');
+}
 
 function disableScroll($document) {
   $document.on('touchmove', function(e) {

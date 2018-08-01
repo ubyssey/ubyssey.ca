@@ -1,8 +1,12 @@
 {% load staticfiles %}
 <footer>
     <div class="u-container{% if homepage %} u-container--large{% endif %}">
-        <div class="left">
+        <div class="top-row">
             <a class="home-link" href="{% url 'home' %}"><img class="logo" src="{% static 'images/ubyssey-logo-small-grey.svg' %}" /></a>
+            <div class='beta-features'>
+                <em>Want to beta test our notification feature! Note: It may not work on ios devices.</em>
+                <div id="beta-test-push-notifications" class='c-button'>Subscribe</div>
+            </div>
             <ul class="sections">
                 <li><a href="{% url 'page' 'news' %}">News</a></li>
                 <li><a href="{% url 'page' 'culture' %}">Culture</a></li>
@@ -13,7 +17,7 @@
                 <li><a href="{% url 'page' 'science' %}">Science</a></li>
             </ul>
         </div>
-        <div class="right">
+        <div class="bottom-row">
             <ul class="light">
               <li><a href="{% url 'page' 'volunteer' %}">Volunteer</a></li>
               <li><a href="{% url 'page' 'about' %}">About</a></li>
