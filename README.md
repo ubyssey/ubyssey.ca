@@ -8,11 +8,11 @@ For overall documentation, head over to [code.ubyssey.ca](https://code.ubyssey.c
 
 ## Installation
 
-[Docker Instructions](https://code.ubyssey.ca/getting-started/installation/docker.html)
+[Docker Instructions](https://code.ubyssey.ca/installation/docker.html)
 
-[Mac Instructions](https://code.ubyssey.ca/getting-started/installation/mac.html)
+[Mac Instructions](https://code.ubyssey.ca/installation/mac.html)
 
-[Windows Instructions](https://code.ubyssey.ca/getting-started/installation/windows.html)
+[Windows Instructions](https://code.ubyssey.ca/installation/windows.html)
 
 ## Development
 
