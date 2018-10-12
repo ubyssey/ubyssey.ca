@@ -22,34 +22,50 @@ MIDDLEWARE = (
     'django_user_agents.middleware.UserAgentMiddleware',
 )
 
+TIME_ZONE = 'America/Vancouver'
+
 DEBUG = True
 USE_TZ = True
 
-TIME_ZONE = 'America/Vancouver'
+DEV_OPTIONS = ['LOCAL_DOCKER', 'LOCAL', 'PRODUCTION']
+DEV_ENV = DEV_OPTIONS[0]
 
-################ LOCAL MYSQL ##################
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'ubyssey',
-#         'USER': 'root',
-#         'PASSWORD': 'ubyssey',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306',
-#     },
-# }
-
+###############  PRD MYSQL  #################
+if DEV_ENV == DEV_OPTIONS[2]:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'ubyssey',
+            'USER': 'production',
+            'PASSWORD': '<PRODUCTION_PASSWORD>',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+        },
+    }
+############### LOCAL MYSQL ##################
+elif DEV_ENV == DEV_OPTIONS[1]:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'ubyssey',
+            'USER': 'root',
+            'PASSWORD': 'ubyssey',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+        },
+    }
 ############## DOCKER MYSQL ###################
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ubyssey',
-        'USER': 'root',
-        'PASSWORD': 'ubyssey',
-        'HOST': 'db',
-        'PORT': '3306',
-    },
-}
+elif DEV_ENV == DEV_OPTIONS[0]:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'ubyssey',
+            'USER': 'root',
+            'PASSWORD': 'ubyssey',
+            'HOST': 'db',
+            'PORT': '3306',
+        },
+    }
 ###############################################
 
 TEMPLATES += [
