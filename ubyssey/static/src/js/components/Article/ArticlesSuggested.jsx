@@ -37,6 +37,11 @@ class ArticlesSuggested extends React.Component{
     const articles = this.state.articles.map((article, index) => {
       // only show 3 suggested articles
       if (index !== 0 && article.headline !== this.props.currentArticle.headline) {
+        let featuredImage = article.featured_image
+        if(featuredImage) {
+          featuredImage = featuredImage.image.url
+        }
+
         return (
           <ArticlePreview
             articleId={article.id}
@@ -44,7 +49,7 @@ class ArticlesSuggested extends React.Component{
             url={article.url}
             authorString={article.authors_string}
             publishTime={article.published_at}
-            featuredImageUrl={article.featured_image.image.url}
+            featuredImageUrl={featuredImage}
             key={index} />
         )
       }
