@@ -11,6 +11,7 @@ from ubyssey.views.main import UbysseyTheme
 from ubyssey.views.guide import GuideTheme
 from ubyssey.views.magazine import MagazineTheme
 from ubyssey.views.advertise import AdvertiseTheme
+from ubyssey.views.about import AboutTheme
 
 from ubyssey.zones import *
 from ubyssey.widgets import *
@@ -25,6 +26,7 @@ theme = UbysseyTheme()
 guide = GuideTheme()
 magazine = MagazineTheme()
 advertise = AdvertiseTheme()
+about = AboutTheme()
 
 urlpatterns = [
     url(r'^admin', include(admin_urls)),
@@ -52,6 +54,9 @@ urlpatterns = [
     # Advertising
     url(r'^advertise/$', advertise.landing, name='advertise-landing'),
     url(r'^advertise/new/$', advertise.new, name='advertise-new'),
+
+    # About
+    url(r'^about/$', about.landing, name='about-landing'),
 
     # Elections
     url(r'^elections/$', theme.elections, name='elections'),
