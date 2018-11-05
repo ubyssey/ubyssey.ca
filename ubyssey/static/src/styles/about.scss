@@ -61,6 +61,8 @@ html, body {
   position: relative;
   overflow: hidden;
   padding-bottom: 150px;
+  height:100vh;
+  animation: 1.5s slide-up 3s forwards;
 
   // Background
   background-image: linear-gradient(-178deg, #0C78ED 0%, #00B6D6 83%);
@@ -79,24 +81,56 @@ html, body {
   }
 }
 
+@keyframes slide-up {
+  100% {
+    height: 70vh;
+  }
+}
+
   #header-main-cont {
         display:flex;
         justify-content:space-between;
 
-    #broadcast-icon {
-      padding-top:30px;
-      padding-left: 40px;
-      margin-right: 6%;
-      height: 14em;
-      width: 12em;
+      svg#broadcast-icon {
+        width:240px;
+        padding-top: 10vh;
+        polygon {
+          opacity: 0;
+          animation: 3s flash forwards;
+        }
+      }
+    
+
+        @keyframes flash {
+          20% {
+            opacity: 1;
+          }
+          40% {
+            opacity: 0;
+          }
+          60% {
+            opacity: 1;
+          }
+          80% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
     }
 
-    @media screen and (max-width: 502px) {
+
+
+    @media screen and (max-width: 740px) {
       text-align: center;
       flex-direction: column;
-      #broadcast-icon {
+      margin: 0 auto;
+      svg#broadcast-icon {
         margin: 0 auto;
         padding:0;
+      }
+      .c-header__hook {
+      margin: 0 auto;
       }
     }
   }
@@ -105,7 +139,7 @@ html, body {
   // Structure
   display: flex;
   align-items: center;
-  padding: 28px;
+  padding-top:28px;
   padding-bottom: 0;
 
   .c-header__logo__image {
@@ -124,7 +158,7 @@ html, body {
     font-weight: $font-weight-light;
   }
 
-  @media screen and (max-width: 502px) {
+  @media screen and (max-width: 740px) {
   	// Structure
   	justify-content: space-around;
   	width: 280px;
