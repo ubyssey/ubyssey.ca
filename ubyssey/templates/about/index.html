@@ -54,27 +54,33 @@
 	{% include 'about/header.html' %}
 
 
-
 <div class="c-section">
-	<div class="u-container">
+  
+	<div class="u-container content-body">
 		<h2 class="o-heading o-heading--blue">About the Ubyssey</h2>
 		<p class="o-paragraph">Published every Tuesday during the school year, it is the largest student paper in Western Canada. The Ubyssey is published by an independent non-profit society, written and edited by students, and funded by a combination of student fees and advertising. All UBC students are welcome to join the staff of the paper; absolutely no experience is necessary.
 		</p>
 
 	</div>
-</div>
 
-	<div class="u-container">
 
-		<h2 class="o-heading o-heading--blue">Get involved</h2>
-		
-		<p class="o-paragraph">
-		Training is provided by editors, as well as many professional journalists who are Ubyssey alumni. Students can hone their written and verbal communication abilities, learn computer and technical skills, and develop their graphic design talents — applied knowledge that will complement what they learn in the classroom. Students will also gain the satisfaction that comes with seeing their hard work splashed across the front page.
-		</p>
+	<div class="row">
+
+    <div class="col span-8 slide-left">
+      <h2 class="o-heading o-heading--blue">Get involved</h2>
+    
+      <p class="o-paragraph">
+      Training is provided by editors, as well as many professional journalists who are Ubyssey alumni. Students can hone their written and verbal communication abilities, learn computer and technical skills, and develop their graphic design talents — applied knowledge that will complement what they learn in the classroom. Students will also gain the satisfaction that comes with seeing their hard work splashed across the front page.
+      </p>
+    </div>
+
+		<div class="col span-4 icon-div slide-right">
+       <img src="{% static 'images/about/high-fiveAsset 1.svg' %}">
+    </div>
 
 	</div>
 
-	<div class="u-container">
+	<div class="u-container content-body">
 		<p class="o-paragraph">
 		We’re a founding member of Canadian University Press (CUP), an organization which links student papers across the country. CUP provides the paper news from campuses all over Canada, and Ubyssey staff members attend three CUP conferences per year to obtain additional training and discuss issues facing students and the student press. We left CUP in 2013 and joined the National University Wire (NUW), which we helped create with other Canadian student newspapers to share information and news.
 		</p>
@@ -88,23 +94,41 @@
 		The Ubyssey has played host to a wide array of budding writers. Famed poet Earle Birney edited the paper in the 1920s. Canadian icon Pierre Berton held the reins during World War II and freely admits that he came to UBC to skip his classes and work on the paper. Future Prime Minister John “Chick” Turner was an associate sports editor. Following World War II, some of the finest journalists to grace our country began their careers here, including Allan Fotheringham, Peter Worthington and Michael Valpy.
 		</p>
 	</div>
-	<div class="u-container c-section">
-		<h2 class="o-heading o-heading--blue">Our alumni</h2>
-		<p class="o-paragraph">
-		Today, you can see our alumni in newspapers across the country. Vaughn Palmer and Katherine Monk of the Vancouver Sun got their start here, as did sports pundit Tony Gallagher of The Province. Among our more recent alumni are Bruce Arthur of The National Post, and Jon Woodward and Sarah Galashan of CTV News.
-		</p>
-		<p style="font-style: italic;" class="o-paragraph">
-		Who knows? You could be next…
-		</p>
-		<hr>
-		<div id="acknowledgement">
-			<p class="o-paragraph">
-			The Ubyssey would like to acknowledge that our office resides and our production takes place on the ancestral, unceded territories of the xʷməθkʷəy̓əm (Musqueam), sḵwx̱wú7mesh (Squamish) and sel̓íl̓witulh (Tsleil-Waututh) nations. We make this acknowledgement to pay respect to the keepers of the land, and to help fulfill our responsibility to view our own colonial history and their present-day implications through a critical lens.
-			</p>
-		</div>
-		
 
+
+    <div class="row">
+
+      <div class="col span-8 slide-left">
+        <h2 class="o-heading o-heading--blue">Our alumni</h2>
+        <p class="o-paragraph">
+        Today, you can see our alumni in newspapers across the country. Vaughn Palmer and Katherine Monk of the Vancouver Sun got their start here, as did sports pundit Tony Gallagher of The Province. Among our more recent alumni are Bruce Arthur of The National Post, and Jon Woodward and Sarah Galashan of CTV News.
+        </p>
+        <p style="font-style: italic;" class="o-paragraph">
+        Who knows? You could be next…
+        </p>
+      </div>
+
+      <div class="col span-4 icon-div slide-right">
+        <img src="{% static 'images/about/grad-capAsset 1.svg' %}">
+      </div>
+
+    </div>
+
+    
+
+</div>
+
+
+	<hr>
+
+	<div class="c-section u-container content-body" id="acknowledgement">
+		<p class="o-paragraph">
+		The Ubyssey would like to acknowledge that our office resides and our production takes place on the ancestral, unceded territories of the xʷməθkʷəy̓əm (Musqueam), sḵwx̱wú7mesh (Squamish) and sel̓íl̓witulh (Tsleil-Waututh) nations. We make this acknowledgement to pay respect to the keepers of the land, and to help fulfill our responsibility to view our own colonial history and their present-day implications through a critical lens.
+		</p>
 	</div>
+	
+
+</div>
 
 
 {% include 'about/contact.html' %}

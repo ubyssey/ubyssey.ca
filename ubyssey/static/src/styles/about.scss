@@ -22,11 +22,16 @@ $rotation: 3deg;
 
 $bp-larger-than-mobile: "min-width: 1000px";
 
+
+
+
 // Functions
 
 @function font-size($size) {
   @return ($size / $font-size-base) + rem;
 }
+
+
 
 // Base
 
@@ -41,6 +46,53 @@ html, body {
   @media($bp-larger-than-mobile) {
     font-size: 16px;
   }
+}
+
+// Column Widths
+$span-12: 100%;
+$span-9: 75%;
+$span-8: 67%;
+$span-6: 50%;
+$span-4: 33%;
+$span-3: 25%;
+
+.row {
+  display: flex;
+  justify-content: space-around;
+  padding: 68px 28px;
+}
+
+.col { 
+  display: block;
+  padding: 0 28px; 
+
+}
+
+.span-12 {
+  width: $span-12;
+}
+.span-9 {
+  width: $span-9;
+}
+.span-8 {
+  width: $span-8;
+}
+.span-6 {
+  width: $span-6
+}
+.span-4 {
+  width: $span-4;
+}
+.span-3 {
+  width: $span-3;
+}
+
+
+
+// Class used for animation triggers
+
+.anim-trigger {
+  display: none;
 }
 
 // Utilities
@@ -381,6 +433,51 @@ html, body {
   font-weight: $font-weight-light;
 }
 
+// Icon div
+
+.icon-div {
+  background-image: linear-gradient(-178deg, #0C78ED 0%, #00B6D6 83%);
+  border-radius: 50%;
+  width: 250px;
+  height: 250px;
+  padding: 68px;
+  img {
+    max-height: 220px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+
+// Sliding Animation Content
+
+.slide-left {
+  opacity: 0;
+  transform: translate(-300px);
+  animation: 1s slide-in-l forwards;
+}
+
+.slide-right {
+  opacity: 0;
+  transform: translate(300px);
+  animation: 1s slide-in-r forwards;
+}
+
+@keyframes slide-in-l {
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-r {
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
 // Acknowledgement
 
     hr {
@@ -397,7 +494,7 @@ html, body {
     div#acknowledgement {
     	//Structure
     	max-width: 75vw;
-    	margin: 0 auto;
+    	margin: 0 auto 60px;
     	padding: 1.5rem 2rem;
 
     	// Background
