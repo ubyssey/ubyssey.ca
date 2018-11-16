@@ -34,6 +34,8 @@
 
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700" rel="stylesheet">
 
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+
   <script>
     var googletag = googletag || {};
     googletag.cmd = googletag.cmd || [];
@@ -47,6 +49,27 @@
     var node = document.getElementsByTagName('script')[0];
     node.parentNode.insertBefore(gads, node);
     })();
+
+
+    // scroll event for animations
+
+    $(document).ready(function() {
+
+    $(window).scroll(function(e) {
+      var y = $(this).scrollTop();
+
+      if (y >= 360) {
+        $('.slide-left').addClass('slide-anim');
+        $('.slide-right').addClass('slide-anim');
+      }
+
+      if (y >= 1680) {
+        $('.slide-left-b').addClass('slide-anim');
+        $('.slide-right-b').addClass('slide-anim');
+      }
+    })
+
+    })
   </script>
 </head>
 <body>
@@ -64,7 +87,7 @@
 	</div>
 
 
-	<div class="row">
+	<div class="u-container row">
 
     <div class="col span-8 slide-left">
       <h2 class="o-heading o-heading--blue">Get involved</h2>
@@ -96,9 +119,9 @@
 	</div>
 
 
-    <div class="row">
+    <div class="row u-container">
 
-      <div class="col span-8 slide-left">
+      <div class="col span-8 slide-left-b">
         <h2 class="o-heading o-heading--blue">Our alumni</h2>
         <p class="o-paragraph">
         Today, you can see our alumni in newspapers across the country. Vaughn Palmer and Katherine Monk of the Vancouver Sun got their start here, as did sports pundit Tony Gallagher of The Province. Among our more recent alumni are Bruce Arthur of The National Post, and Jon Woodward and Sarah Galashan of CTV News.
@@ -108,7 +131,7 @@
         </p>
       </div>
 
-      <div class="col span-4 icon-div slide-right">
+      <div class="col span-4 icon-div slide-right-b">
         <img src="{% static 'images/about/grad-capAsset 1.svg' %}">
       </div>
 

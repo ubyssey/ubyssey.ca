@@ -452,25 +452,26 @@ $span-3: 25%;
 // Sliding Animation Content
 
 .slide-left {
-  opacity: 0;
   transform: translate(-300px);
-  animation: 1s slide-in-l forwards;
 }
 
 .slide-right {
-  opacity: 0;
   transform: translate(300px);
-  animation: 1s slide-in-r forwards;
 }
 
-@keyframes slide-in-l {
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.slide-left-b {
+  transform: translate(-300px);
 }
 
-@keyframes slide-in-r {
+.slide-right-b {
+  transform: translate(300px);
+}
+
+.slide-anim {
+  animation: 1s slide-in forwards;
+}
+
+@keyframes slide-in {
   100% {
     opacity: 1;
     transform: translateX(0);
