@@ -1,5 +1,19 @@
-// Styles for the /advertise/ page
-// Renamed from 'advertise_new.scss' to 'a_new.scss' to prevent AdBlocker blocking.
+
+
+
+
+
+
+
+
+
+
+
+
+
+// revised css
+
+// Styles for the /about/ page
 
 // Variables
 $color-white: #fff;
@@ -33,20 +47,6 @@ $bp-larger-than-mobile: "min-width: 1000px";
 
 
 
-// Base
-
-html, body {
-  // Structure
-  margin: 0;
-  // Text
-  font-family: 'Roboto', Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  -webkit-font-smoothing: antialiased;
-
-  @media($bp-larger-than-mobile) {
-    font-size: 16px;
-  }
-}
 
 // Column Widths
 $span-12: 100%;
@@ -59,15 +59,7 @@ $span-3: 25%;
 .row {
   display: flex;
   justify-content: space-around;
-  padding: 68px 28px;
 }
-
-.col { 
-  display: block;
-  padding: 0 28px; 
-
-}
-
 .span-12 {
   width: $span-12;
 }
@@ -88,6 +80,20 @@ $span-3: 25%;
 }
 
 
+html, body {
+  // Structure
+  margin: 0;
+  // Text
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+
+  @media($bp-larger-than-mobile) {
+    font-size: 16px;
+  }
+}
+
+
 
 // Class used for animation triggers
 
@@ -97,7 +103,7 @@ $span-3: 25%;
 
 // Utilities
 
-.u-container {
+.cont{
   // Structure
   max-width: 1050px;
   margin-left: auto;
@@ -108,7 +114,7 @@ $span-3: 25%;
 
 // Header
 
-.c-header {
+.header {
   // Structure
   position: relative;
   overflow: hidden;
@@ -148,32 +154,11 @@ $span-3: 25%;
         padding-top: 10vh;
         polygon {
           opacity: 0;
-          animation: 3s flash forwards;
+          animation: 2s flash forwards;
         }
       }
-    
 
-        @keyframes flash {
-          20% {
-            opacity: 1;
-          }
-          40% {
-            opacity: 0;
-          }
-          60% {
-            opacity: 1;
-          }
-          80% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
-          }
-    }
-
-
-
-    @media screen and (max-width: 740px) {
+    @media(max-width: 740px) {
       text-align: center;
       flex-direction: column;
       margin: 0 auto;
@@ -187,7 +172,8 @@ $span-3: 25%;
     }
   }
 
-.c-header__logo {
+
+  .c-header__logo {
   // Structure
   display: flex;
   align-items: center;
@@ -211,18 +197,17 @@ $span-3: 25%;
   }
 
   @media screen and (max-width: 740px) {
-  	// Structure
-  	justify-content: space-around;
-  	width: 280px;
-  	margin: 0 auto;
+    // Structure
+    justify-content: space-around;
+    width: 280px;
+    margin: 0 auto;
 
-  	.c-header__logo__text {
-  		margin: 0;
-  	}
+    .c-header__logo__text {
+      margin: 0;
+    }
   }
 
 }
-
 
 .c-header__hook {
   // Structure
@@ -239,106 +224,7 @@ $span-3: 25%;
 }
 
 
-// Sections
 
-.c-section {
-  // Structure
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-
-  @media(min-width: 600px) {
-    // Structure
-    padding-top: 5rem;
-    padding-top: 5rem;
-  }
-}
-
-.c-section--inset {
-  // Structure
-  position: relative;
-  overflow: hidden;
-
-  // Background
-  background-image: linear-gradient(-178deg, #0C78ED 0%, #00B6D6 83%);
-
-  &:last-of-type::after {
-    display: none;
-  }
-
-  @media(min-width: 600px) {
-    // Structure
-    padding-bottom: 3%;
-  }
-}
-
-.c-section--web__container {
-  @media($bp-larger-than-mobile) {
-    // Structure
-    display: flex;
-    margin-top: 2rem;
-  }
-}
-
-.c-section--web__icons {
-  // Structure
-  flex: 3;
-  display: flex;
-  flex-wrap: wrap;
-  padding-bottom: 2rem;
-
-  @media($bp-larger-than-mobile) {
-    // Structure
-    padding-bottom: 5rem;
-  }
-}
-
-.c-section--web__icon {
-  // Structure
-  flex-basis: 50%;
-  width: 50%;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  box-sizing: border-box;
-
-  // Text
-  text-align: center;
-  color: $color-white;
-
-  img {
-    // Structure
-    width: 100%;
-    max-width: 150px;
-  }
-
-  h2 {
-    // Structure
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-
-    // Text
-    font-size: font-size(28);
-  }
-
-  p {
-    // Structure
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-
-    // Text
-    font-size: font-size(18);
-    font-weight: $font-weight-light;
-  }
-
-  &:nth-child(odd) {
-    // Structure
-    padding-right: 1rem;
-  }
-
-  &:nth-child(even) {
-    // Structure
-    padding-left: 2rem;
-  }
-}
 
 // Headings
 
@@ -361,62 +247,6 @@ $span-3: 25%;
   }
 }
 
-.o-heading--small {
-  // Structure
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-
-  // Text
-  font-weight: $font-weight-bold;
-  font-size: font-size(14);
-  line-height: 1.5em;
-  letter-spacing: 2px;
-  color: $color-text-gray-light;
-  text-transform: uppercase;
-  //text-shadow: none;
-
-  &:before {
-    // Structure
-    display: none;
-  }
-}
-
-.o-heading--white {
-  // Text
-  color: $color-white;
-
-  &:before {
-    // Border
-    border-color: #dcdcdc;
-
-    // Background
-    background: $color-white;
-  }
-}
-
-.o-row {
-  @media($bp-larger-than-mobile) {
-    // Structure
-    display: flex;
-  }
-
-  > div {
-    // Structure
-    flex: 1;
-    padding-right: 2rem;
-
-    &.o-row__grow {
-      flex: none;
-    }
-
-    &:last-child {
-      // Structure
-      padding-right: 0;
-    }
-  }
-}
-
 // Paragraphs
 
 .o-paragraph {
@@ -433,51 +263,41 @@ $span-3: 25%;
   font-weight: $font-weight-light;
 }
 
+
+// icon and paragraph container
+.icon-cont-row {
+  margin: 1rem auto;
+  max-width: 75vw;
+  p {
+      // Text
+      color: $color-text-gray;
+      font-size: font-size(20);
+      line-height: font-size(32);
+      font-weight: $font-weight-light;
+  }
+  @media(max-width: 840px) {
+    flex-direction: column-reverse;
+    * {
+      margin: 0 auto;
+    }
+    p {
+      margin-top: 20px;
+    }
+  }
+}
+
+
 // Icon div
 
 .icon-div {
-  background-image: linear-gradient(-178deg, #0C78ED 0%, #00B6D6 83%);
-  border-radius: 50%;
-  width: 250px;
-  height: 250px;
-  padding: 68px;
+  width: 300px;
+  height: 300px;
   img {
-    max-height: 220px;
+    max-height: 100%;
     display: inline-block;
     vertical-align: middle;
   }
 }
-
-
-// Sliding Animation Content
-
-.slide-left {
-  transform: translate(-300px);
-}
-
-.slide-right {
-  transform: translate(300px);
-}
-
-.slide-left-b {
-  transform: translate(-300px);
-}
-
-.slide-right-b {
-  transform: translate(300px);
-}
-
-.slide-anim {
-  animation: 1s slide-in forwards;
-}
-
-@keyframes slide-in {
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 
 // Acknowledgement
 
@@ -485,40 +305,41 @@ $span-3: 25%;
       // Structure
       width: 20%;
       margin: 3rem auto;
-  	  max-width: 75vw;
+      max-width: 75vw;
 
-  	  // Border
+      // Border
       border: 0;
       border-top: 1px dotted #4E4E4E;
     }
 
     div#acknowledgement {
-    	//Structure
-    	max-width: 75vw;
-    	margin: 0 auto 60px;
-    	padding: 1.5rem 2rem;
+      //Structure
+      max-width: 75vw;
+      margin: 0 auto 60px;
+      padding: 1.5rem 2rem;
 
-    	// Background
-    	background-color: rgba(0, 113, 201, 0.1);
-    	border-radius: 10px;
+      // Background
+      background-color: rgba(0, 113, 201, 0.1);
+      border-radius: 10px;
     }
 
 // Contact
 
 #contact {
-	display:flex;
-	align-items: center;
-	padding: 5vh;
-	height: 20vh;
-	a {
-		margin: 0 auto;
-		text-align: center;
-	}
+  display:flex;
+  align-items: center;
+  padding: 5vh;
+  height: 20vh;
+  background-image: linear-gradient(-178deg, #0C78ED 0%, #00B6D6 83%);
+  a {
+    margin: 0 auto;
+    text-align: center;
+  }
 }
 
 
 // Button
-.o-button {
+.btn {
   // Structure
   width: 240px;
   height: 56px;
@@ -542,15 +363,65 @@ $span-3: 25%;
   transition: all 0.3s ease;
 
   p {
-  	// Text
-  	color: #0C78ED;
-  	margin: 0;
+    // Text
+    color: #0C78ED;
+    margin: 0;
   }
 
   // Hover
   &:hover {
-  	box-shadow: none;
-  	cursor: pointer;
+    box-shadow: none;
+    cursor: pointer;
   }
 }
+
+
+// Sliding Animation Content
+
+.slide-left {
+  transform: translate(-300px);
+}
+
+.slide-right {
+  transform: translate(300px);
+}
+
+.slide-anim {
+  animation: 1s slide-in forwards;
+}
+
+
+
+  // KEYFRAME ANIMATIONS
+
+
+  // animation for broadcast tower flash
+        @keyframes flash {
+          20% {
+            opacity: 1;
+          }
+          40% {
+            opacity: 0;
+          }
+          60% {
+            opacity: 1;
+          }
+          80% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+    }
+
+    @keyframes slide-in {
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+
+
 
