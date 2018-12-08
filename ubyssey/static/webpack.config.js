@@ -10,6 +10,7 @@ module.exports = {
         a:                './src/js/advertise.js',
         a_new:            './src/js/advertise_new.js',
         'one-year-later': './src/js/one-year-later.js',
+        about:            './src/js/about.js',
         blockadblock:     './src/js/blockadblock.js'
     },
     output: {
