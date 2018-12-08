@@ -1,18 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-// revised css
-
 // Styles for the /about/ page
 
 // Variables
@@ -46,40 +32,6 @@ $bp-larger-than-mobile: "min-width: 1000px";
 }
 
 
-
-
-// Column Widths
-$span-12: 100%;
-$span-9: 75%;
-$span-8: 67%;
-$span-6: 50%;
-$span-4: 33%;
-$span-3: 25%;
-
-.row {
-  display: flex;
-  justify-content: space-around;
-}
-.span-12 {
-  width: $span-12;
-}
-.span-9 {
-  width: $span-9;
-}
-.span-8 {
-  width: $span-8;
-}
-.span-6 {
-  width: $span-6
-}
-.span-4 {
-  width: $span-4;
-}
-.span-3 {
-  width: $span-3;
-}
-
-
 html, body {
   // Structure
   margin: 0;
@@ -105,9 +57,8 @@ html, body {
 
 .cont{
   // Structure
-  max-width: 1050px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 75vw;
+  margin: 3rem auto;
   padding-left: 2rem;
   padding-right: 2rem;
 }
@@ -251,11 +202,8 @@ html, body {
 
 .o-paragraph {
   // Structure
-  margin: 1rem auto;
+  margin: 3rem auto;
   max-width: 75vw;
-
-
-
   // Text
   color: $color-text-gray;
   font-size: font-size(20);
@@ -266,6 +214,8 @@ html, body {
 
 // icon and paragraph container
 .icon-cont-row {
+  display: flex;
+  justify-content: space-between;
   margin: 1rem auto;
   max-width: 75vw;
   p {
@@ -274,6 +224,7 @@ html, body {
       font-size: font-size(20);
       line-height: font-size(32);
       font-weight: $font-weight-light;
+      padding-right: 40px;
   }
   @media(max-width: 840px) {
     flex-direction: column-reverse;
@@ -282,6 +233,10 @@ html, body {
     }
     p {
       margin-top: 20px;
+      padding:0;
+    }
+    h2 {
+      margin-top: 3rem;
     }
   }
 }
