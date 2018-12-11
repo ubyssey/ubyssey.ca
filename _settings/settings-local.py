@@ -7,7 +7,7 @@ BASE_URL = 'http://localhost:8000/'
 SECRET_KEY = '&t7b#38ncrab5lmpe#pe#41coa-8ctwuy@tm0!x8*n_r38x_m*'
 NOTIFICATION_KEY = "Mp2OSApC5ZQ11iHtKfTfAWycrr-YYl9yphpkeqKIy9E"
 
-VERSION = '1.4.87' 
+VERSION = '1.4.87'
 
 ALLOWED_HOSTS = ['localhost', '*']
 
@@ -17,10 +17,10 @@ INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
 ROOT_URLCONF = 'ubyssey.urls'
 
-MIDDLEWARE = (
+MIDDLEWARE_CLASSES += [
     # other middlewares...
     'django_user_agents.middleware.UserAgentMiddleware',
-)
+]
 
 DEBUG = True
 USE_TZ = True
