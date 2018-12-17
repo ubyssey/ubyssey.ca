@@ -1,13 +1,12 @@
-
 // Styles for the /about/ page
 
 // Variables
 $color-white: #fff;
-$color-accent: #0C78ED;
+$color-accent: #0c78ed;
 $color-accent-light: #f78e8c;
-$color-text-gray: #4E4E4E;
+$color-text-gray: #4e4e4e;
 $color-text-gray-light: #646464;
-$color-gray-light: #EFEFEF;
+$color-gray-light: #efefef;
 
 $font-size-base: 16;
 $font-weight-light: 300;
@@ -22,30 +21,25 @@ $rotation: 3deg;
 
 $bp-larger-than-mobile: "min-width: 1000px";
 
-
-
-
 // Functions
 
 @function font-size($size) {
   @return ($size / $font-size-base) + rem;
 }
 
-
-html, body {
+html,
+body {
   // Structure
   margin: 0;
   // Text
-  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     font-size: 16px;
   }
 }
-
-
 
 // Class used for animation triggers
 
@@ -55,7 +49,7 @@ html, body {
 
 // Utilities
 
-.cont{
+.cont {
   // Structure
   max-width: 75vw;
   margin: 3rem auto;
@@ -70,11 +64,11 @@ html, body {
   position: relative;
   overflow: hidden;
   padding-bottom: 150px;
-  height:100vh;
-  animation: 1.5s slide-up 3s forwards;
+  height: 100vh;
+  animation: 1.5s slide-up 1.5s forwards;
 
   // Background
-  background-image: linear-gradient(-178deg, #0C78ED 0%, #00B6D6 83%);
+  background-image: linear-gradient(-178deg, #0c78ed 0%, #00b6d6 83%);
 
   &::after {
     // Structure
@@ -96,39 +90,38 @@ html, body {
   }
 }
 
-  #header-main-cont {
-        display:flex;
-        justify-content:space-between;
+#header-main-cont {
+  display: flex;
+  justify-content: space-between;
 
-      svg#broadcast-icon {
-        width:240px;
-        padding-top: 10vh;
-        polygon {
-          opacity: 0;
-          animation: 2s flash forwards;
-        }
-      }
-
-    @media(max-width: 740px) {
-      text-align: center;
-      flex-direction: column;
-      margin: 0 auto;
-      svg#broadcast-icon {
-        margin: 0 auto;
-        padding:0;
-      }
-      .c-header__hook {
-      margin: 0 auto;
-      }
+  svg#broadcast-icon {
+    width: 240px;
+    padding-top: 10vh;
+    polygon {
+      opacity: 0;
+      animation: 2s flash forwards;
     }
   }
 
+  @media (max-width: 740px) {
+    text-align: center;
+    flex-direction: column;
+    margin: 0 auto;
+    svg#broadcast-icon {
+      margin: 0 auto;
+      padding: 0;
+    }
+    .c-header__hook {
+      margin: 0 auto;
+    }
+  }
+}
 
-  .c-header__logo {
+.c-header__logo {
   // Structure
   display: flex;
   align-items: center;
-  padding-top:28px;
+  padding-top: 28px;
   padding-bottom: 0;
 
   .c-header__logo__image {
@@ -157,7 +150,6 @@ html, body {
       margin: 0;
     }
   }
-
 }
 
 .c-header__hook {
@@ -174,9 +166,6 @@ html, body {
   font-weight: $font-weight-light;
 }
 
-
-
-
 // Headings
 
 .o-heading {
@@ -192,7 +181,7 @@ html, body {
   letter-spacing: 1px;
   text-transform: uppercase;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Text
     font-size: font-size(32);
   }
@@ -211,7 +200,6 @@ html, body {
   font-weight: $font-weight-light;
 }
 
-
 // icon and paragraph container
 .icon-cont-row {
   display: flex;
@@ -219,28 +207,27 @@ html, body {
   margin: 1rem auto;
   max-width: 75vw;
   p {
-      // Text
-      color: $color-text-gray;
-      font-size: font-size(20);
-      line-height: font-size(32);
-      font-weight: $font-weight-light;
-      padding-right: 40px;
+    // Text
+    color: $color-text-gray;
+    font-size: font-size(20);
+    line-height: font-size(32);
+    font-weight: $font-weight-light;
+    padding-right: 40px;
   }
-  @media(max-width: 840px) {
+  @media (max-width: 840px) {
     flex-direction: column-reverse;
     * {
       margin: 0 auto;
     }
     p {
       margin-top: 20px;
-      padding:0;
+      padding: 0;
     }
     h2 {
       margin-top: 3rem;
     }
   }
 }
-
 
 // Icon div
 
@@ -256,42 +243,41 @@ html, body {
 
 // Acknowledgement
 
-    hr {
-      // Structure
-      width: 20%;
-      margin: 3rem auto;
-      max-width: 75vw;
+hr {
+  // Structure
+  width: 20%;
+  margin: 3rem auto;
+  max-width: 75vw;
 
-      // Border
-      border: 0;
-      border-top: 1px dotted #4E4E4E;
-    }
+  // Border
+  border: 0;
+  border-top: 1px dotted #4e4e4e;
+}
 
-    div#acknowledgement {
-      //Structure
-      max-width: 75vw;
-      margin: 0 auto 60px;
-      padding: 1.5rem 2rem;
+div#acknowledgement {
+  //Structure
+  max-width: 75vw;
+  margin: 0 auto 60px;
+  padding: 1.5rem 2rem;
 
-      // Background
-      background-color: rgba(0, 113, 201, 0.1);
-      border-radius: 10px;
-    }
+  // Background
+  background-color: rgba(0, 113, 201, 0.1);
+  border-radius: 10px;
+}
 
 // Contact
 
 #contact {
-  display:flex;
+  display: flex;
   align-items: center;
   padding: 5vh;
   height: 20vh;
-  background-image: linear-gradient(-178deg, #0C78ED 0%, #00B6D6 83%);
+  background-image: linear-gradient(-178deg, #0c78ed 0%, #00b6d6 83%);
   a {
     margin: 0 auto;
     text-align: center;
   }
 }
-
 
 // Button
 .btn {
@@ -319,7 +305,7 @@ html, body {
 
   p {
     // Text
-    color: #0C78ED;
+    color: #0c78ed;
     margin: 0;
   }
 
@@ -329,7 +315,6 @@ html, body {
     cursor: pointer;
   }
 }
-
 
 // Sliding Animation Content
 
@@ -345,38 +330,30 @@ html, body {
   animation: 1s slide-in forwards;
 }
 
+// KEYFRAME ANIMATIONS
 
+// animation for broadcast tower flash
+@keyframes flash {
+  20% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 
-  // KEYFRAME ANIMATIONS
-
-
-  // animation for broadcast tower flash
-        @keyframes flash {
-          20% {
-            opacity: 1;
-          }
-          40% {
-            opacity: 0;
-          }
-          60% {
-            opacity: 1;
-          }
-          80% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
-          }
-    }
-
-    @keyframes slide-in {
+@keyframes slide-in {
   100% {
     opacity: 1;
     transform: translateX(0);
   }
 }
-
-
-
-
-

@@ -10,30 +10,13 @@
   <title>About - UBC's Official Student Newspaper</title>
   <meta name="description" content="The Ubyssey, founded in 1918, is the definitive source of news on campus. Published every Tuesday during the school year, The Ubyssey is the largest student paper in Western Canada, employs more than 12 full- and half-time editorial staff throughout the year and is supported by an independent, full-time business office." />
 
-  <link rel="apple-touch-icon" sizes="57x57" href="{% static 'images/favicons/apple-touch-icon-57x57.png' %}">
-  <link rel="apple-touch-icon" sizes="60x60" href="{% static 'images/favicons/apple-touch-icon-60x60.png' %}">
-  <link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/favicons/apple-touch-icon-72x72.png' %}">
-  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'images/favicons/apple-touch-icon-76x76.png' %}">
-  <link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/favicons/apple-touch-icon-114x114.png' %}">
-  <link rel="apple-touch-icon" sizes="120x120" href="{% static 'images/favicons/apple-touch-icon-120x120.png' %}">
-  <link rel="apple-touch-icon" sizes="144x144" href="{% static 'images/favicons/apple-touch-icon-144x144.png' %}">
-  <link rel="apple-touch-icon" sizes="152x152" href="{% static 'images/favicons/apple-touch-icon-152x152.png' %}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicons/apple-touch-icon-180x180.png' %}">
-  <link rel="icon" type="image/png" href="{% static 'images/favicons/favicon-32x32.png' %}" sizes="32x32">
-  <link rel="icon" type="image/png" href="{% static 'images/favicons/android-chrome-192x192.png' %}" sizes="192x192">
-  <link rel="icon" type="image/png" href="{% static 'images/favicons/favicon-96x96.png' %}" sizes="96x96">
-  <link rel="icon" type="image/png" href="{% static 'images/favicons/favicon-16x16.png' %}" sizes="16x16">
-  <link rel="manifest" href="{% static 'images/favicons/manifest.json' %}">
-  <meta name="msapplication-TileColor" content="#da532c">
-  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
-  <meta name="theme-color" content="#ffffff">
-  <meta property="fb:pages" content="99164676792" />
-
+  {% include 'components/favicons.html' %}
 
   <link rel="stylesheet" href="{% add_version 'css/about.css' %}" type="text/css"/>
 
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+
   <script>
     var googletag = googletag || {};
     googletag.cmd = googletag.cmd || [];
@@ -51,8 +34,7 @@
 </head>
 <body>
 
-	{% include 'about/header.html' %}
-
+{% include 'about/header.html' %}
 
 <div class="c-section">
   
@@ -60,26 +42,20 @@
 		<h2 class="o-heading o-heading--blue">About the Ubyssey</h2>
 		<p class="o-paragraph">Published every Tuesday during the school year, it is the largest student paper in Western Canada. The Ubyssey is published by an independent non-profit society, written and edited by students, and funded by a combination of student fees and advertising. All UBC students are welcome to join the staff of the paper; absolutely no experience is necessary.
 		</p>
-
 	</div>
 
-
 	<div class="cont icon-cont-row">
-
     <div class="col slide-left">
       <h2 class="o-heading o-heading--blue">Get involved</h2>
-    
       <p>
       Training is provided by editors, as well as many professional journalists who are Ubyssey alumni. Students can hone their written and verbal communication abilities, learn computer and technical skills, and develop their graphic design talents — applied knowledge that will complement what they learn in the classroom. Students will also gain the satisfaction that comes with seeing their hard work splashed across the front page.
       </p>
     </div>
-
 		<div class="col icon-div slide-right">
        <img src="{% static 'images/about/involved-icon.png' %}" alt="high five icon">
     </div>
-
-	</div>
-
+  </div>
+  
 	<div class="cont">
 		<p class="o-paragraph">
 		We’re a founding member of Canadian University Press (CUP), an organization which links student papers across the country. CUP provides the paper news from campuses all over Canada, and Ubyssey staff members attend three CUP conferences per year to obtain additional training and discuss issues facing students and the student press. We left CUP in 2013 and joined the National University Wire (NUW), which we helped create with other Canadian student newspapers to share information and news.
@@ -93,31 +69,24 @@
 		<p class="o-paragraph">
 		The Ubyssey has played host to a wide array of budding writers. Famed poet Earle Birney edited the paper in the 1920s. Canadian icon Pierre Berton held the reins during World War II and freely admits that he came to UBC to skip his classes and work on the paper. Future Prime Minister John “Chick” Turner was an associate sports editor. Following World War II, some of the finest journalists to grace our country began their careers here, including Allan Fotheringham, Peter Worthington and Michael Valpy.
 		</p>
-	</div>
-
-
-    <div class="cont icon-cont-row">
-
-      <div class="col slide-left">
-        <h2 class="o-heading o-heading--blue">Our alumni</h2>
-        <p>
-        Today, you can see our alumni in newspapers across the country. Vaughn Palmer and Katherine Monk of the Vancouver Sun got their start here, as did sports pundit Tony Gallagher of The Province. Among our more recent alumni are Bruce Arthur of The National Post, and Jon Woodward and Sarah Galashan of CTV News.
-        </p>
-        <p style="font-style: italic;">
-        Who knows? You could be next…
-        </p>
-      </div>
-
-      <div class="col icon-div slide-right">
-        <img src="{% static 'images/about/alum-icon.png' %}" alt="graduation cap icon">
-      </div>
-
+  </div>
+  
+  <div class="cont icon-cont-row">
+    <div class="col slide-left">
+      <h2 class="o-heading o-heading--blue">Our alumni</h2>
+      <p>
+      Today, you can see our alumni in newspapers across the country. Vaughn Palmer and Katherine Monk of the Vancouver Sun got their start here, as did sports pundit Tony Gallagher of The Province. Among our more recent alumni are Bruce Arthur of The National Post, and Jon Woodward and Sarah Galashan of CTV News.
+      </p>
+      <p style="font-style: italic;">
+      Who knows? You could be next…
+      </p>
     </div>
-
-    
+    <div class="col icon-div slide-right">
+      <img src="{% static 'images/about/alum-icon.png' %}" alt="graduation cap icon">
+    </div>
+  </div>
 
 </div>
-
 
 	<hr>
 
@@ -127,9 +96,7 @@
 		</p>
 	</div>
 	
-
 </div>
-
 
 {% include 'about/contact.html' %}
 
@@ -140,17 +107,9 @@
 
 {% endblock %}
 
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+{% include 'components/google_analytics.html' %}
 
-  ga('create', 'UA-2313592-2', 'auto');
-  ga('send', 'pageview');
-</script>
 <script src="{% add_version 'js/about.js' %}" type="text/javascript"></script>
-
 
 </body>
 </html>
