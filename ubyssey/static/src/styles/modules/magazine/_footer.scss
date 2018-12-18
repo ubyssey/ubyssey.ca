@@ -7,7 +7,7 @@
   // Text
   color: $color-text-dark-gray;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     padding-top: 3rem;
     padding-bottom: 3rem;
@@ -22,7 +22,7 @@
 }
 
 .c-footer__right,
-.c-footer__left, {
+.c-footer__left {
   // Structure
   flex: 1;
 
@@ -44,7 +44,7 @@
   font-size: font-size(18);
   line-height: font-size(28);
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     display: block;
   }
@@ -72,7 +72,7 @@
   font-size: font-size(18);
   line-height: font-size(28);
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     display: block;
   }

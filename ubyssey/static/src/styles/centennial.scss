@@ -3,7 +3,7 @@
 
 $color-white: #fff;
 $color-background: rgba(36, 65, 135, 0.9);
-$color-secondary: #2F4F97;
+$color-secondary: #2f4f97;
 
 html {
   min-height: 100%;
@@ -41,7 +41,7 @@ body {
   padding-top: 2rem;
   margin-bottom: 2rem;
 
-  @media(min-width: 500px) {
+  @media (min-width: 500px) {
     padding-top: 3rem;
     margin-bottom: 3rem;
   }
@@ -55,7 +55,7 @@ body {
   background-repeat: no-repeat;
 
   background-size: 100% auto;
-  @media(min-width: 500px) {
+  @media (min-width: 500px) {
     background-size: auto 100%;
   }
 }
@@ -82,11 +82,11 @@ p {
   font-size: 18px;
   font-weight: 500;
   line-height: 1.5em;
-  text-shadow: 0 0 3px rgba(0,0,0,0.21);
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.21);
   margin-top: 0;
   margin-bottom: 1.5rem;
 
-  @media(min-width: 840px) {
+  @media (min-width: 840px) {
     font-size: 20px;
     font-weight: 600;
   }
@@ -115,7 +115,7 @@ a.c-button--white {
 }
 
 .c-join {
-  @media(min-width: 840px) {
+  @media (min-width: 840px) {
     display: flex;
     margin-top: 3rem;
     margin-bottom: 4rem;
@@ -129,7 +129,7 @@ a.c-button--white {
 .c-join__left {
   flex: 2;
 
-  @media(min-width: 840px) {
+  @media (min-width: 840px) {
     padding-right: 3rem;
     max-width: none;
     text-align: right;
@@ -140,7 +140,8 @@ a.c-button--white {
   padding-top: 2rem;
 }
 
-.c-join__left, .c-join__right {
+.c-join__left,
+.c-join__right {
   max-width: 480px;
   margin-left: auto;
   margin-right: auto;
@@ -149,7 +150,6 @@ a.c-button--white {
 .c-join__right {
   flex: 2;
   text-align: center;
-
 }
 
 .c-join__box {
@@ -167,7 +167,7 @@ a.c-button--white {
 }
 
 .c-join__itinerary {
-  P {
+  p {
     font-size: 20px;
   }
 }
@@ -186,7 +186,7 @@ a.c-button--white {
 }
 
 .c-date {
-  @media(min-width: 840px) {
+  @media (min-width: 840px) {
     display: flex;
     margin-top: 3rem;
     margin-bottom: 4rem;
@@ -197,13 +197,13 @@ a.c-button--white {
   margin-bottom: 2rem;
 }
 
-
 .c-date__left {
   flex: 2;
   text-align: center;
 }
 
-.c-date__left, .c-date__right {
+.c-date__left,
+.c-date__right {
   max-width: 480px;
   margin-left: auto;
   margin-right: auto;
@@ -212,7 +212,7 @@ a.c-button--white {
 .c-date__right {
   flex: 3;
 
-  @media(min-width: 840px) {
+  @media (min-width: 840px) {
     padding-left: 3rem;
     padding-top: 3.5rem;
     max-width: none;
@@ -261,10 +261,10 @@ a.c-button--white {
   margin-right: auto;
 
   margin-top: 3rem;
-  &:last-child{
+  &:last-child {
     padding-bottom: 3rem;
   }
-  @media(min-width: 840px) {
+  @media (min-width: 840px) {
     margin-top: 4rem;
   }
 }

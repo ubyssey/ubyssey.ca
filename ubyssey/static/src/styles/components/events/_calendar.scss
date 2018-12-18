@@ -21,7 +21,7 @@ $color-today: #ff5555;
   // Structure
   flex: 1;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     // Structure
     padding-right: 2rem;
   }
@@ -73,7 +73,7 @@ $color-today: #ff5555;
 
 .c-calendar__weeks__day {
   // Background
-  background: #F2F2F2;
+  background: #f2f2f2;
 
   // Text
   color: $color-text-gray;
@@ -107,7 +107,6 @@ $color-today: #ff5555;
 
 .c-calendar__weeks__week:active,
 .c-calendar__weeks__week--selected {
-
   .c-calendar__weeks__day {
     // Background
     background: $color-ub-blue-light;
@@ -122,7 +121,6 @@ $color-today: #ff5555;
   }
 }
 
-
 .c-calendar__weeks__day--selected {
   // Background
   background: $color-today;
@@ -135,7 +133,7 @@ $color-today: #ff5555;
   // Structure
   display: none;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     // Structure
     display: block;
   }
@@ -158,7 +156,7 @@ $color-today: #ff5555;
 }
 
 .c-calendar__results__list {
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     display: flex;
     flex-wrap: wrap;
@@ -170,18 +168,18 @@ $color-today: #ff5555;
   // Structure
   padding-bottom: 1.5rem;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     width: 50%;
   }
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     width: 33.33%;
   }
 }
 
 .c-calendar__results__event__inner {
   // Structure
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     height: 100%;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
@@ -193,31 +191,31 @@ $color-today: #ff5555;
   }
 }
 
-@media($bp-larger-than-phablet) {
-  .c-calendar__results__event:nth-child(2n+1) .c-calendar__results__event__inner {
+@media ($bp-larger-than-phablet) {
+  .c-calendar__results__event:nth-child(2n + 1) .c-calendar__results__event__inner {
     padding-left: 0;
     padding-right: 0.75rem;
   }
 
-  .c-calendar__results__event:nth-child(2n+2) .c-calendar__results__event__inner {
+  .c-calendar__results__event:nth-child(2n + 2) .c-calendar__results__event__inner {
     padding-right: 0;
     padding-left: 0.75rem;
   }
 }
 
-@media($bp-larger-than-tablet) {
-  .c-calendar__results__event:nth-child(2n+1) .c-calendar__results__event__inner,
-  .c-calendar__results__event:nth-child(2n+2) .c-calendar__results__event__inner {
+@media ($bp-larger-than-tablet) {
+  .c-calendar__results__event:nth-child(2n + 1) .c-calendar__results__event__inner,
+  .c-calendar__results__event:nth-child(2n + 2) .c-calendar__results__event__inner {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
 
-  .c-calendar__results__event:nth-child(3n+1) .c-calendar__results__event__inner {
+  .c-calendar__results__event:nth-child(3n + 1) .c-calendar__results__event__inner {
     padding-left: 0;
     padding-right: 1rem;
   }
 
-  .c-calendar__results__event:nth-child(3n+3) .c-calendar__results__event__inner {
+  .c-calendar__results__event:nth-child(3n + 3) .c-calendar__results__event__inner {
     padding-right: 0;
     padding-left: 1rem;
   }

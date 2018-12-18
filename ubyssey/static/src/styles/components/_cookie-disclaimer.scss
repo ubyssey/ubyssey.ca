@@ -33,7 +33,7 @@
       flex-direction: column;
 
       // Text
-      font-size: .8rem;
+      font-size: 0.8rem;
 
       .c-button {
         // Structure
@@ -41,15 +41,15 @@
 
         // Background
         background-color: white;
-  
+
         // Text
         font-size: 1rem;
         color: $color-accent-blue;
-  
+
         &:hover {
           // Background
           background-color: #338dd4;
-  
+
           // Text
           color: white;
         }
@@ -59,10 +59,10 @@
         margin-top: 0;
         margin-bottom: 15px;
       }
-  
+
       a {
         &:hover {
-          color: #DADADA;
+          color: #dadada;
           cursor: pointer;
         }
       }

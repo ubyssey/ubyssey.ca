@@ -44,6 +44,7 @@
     "js-cookie": "^2.2.0",
     "keymaster": "^1.6.2",
     "lru-cache": "^2.7.0",
+    "prettier": "1.15.3",
     "react": "^0.13.3",
     "react-textarea-autosize": "^2.5.1",
     "webpack": "^1.13.1"

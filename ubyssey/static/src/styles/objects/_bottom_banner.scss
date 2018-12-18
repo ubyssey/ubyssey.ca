@@ -1,4 +1,4 @@
-.bottom-banner-wrapper{
+.bottom-banner-wrapper {
   // Structure
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
@@ -15,13 +15,13 @@
     // Sructure
     flex: 1;
 
-    @media($bp-larger-than-tablet) {
+    @media ($bp-larger-than-tablet) {
       // Structure
       flex: 3;
       padding-right: 1.5rem;
 
       // Border
-      border-right: 1px dotted #DADADA;
+      border-right: 1px dotted #dadada;
     }
   }
 
@@ -31,7 +31,7 @@
     padding-left: 1.5rem;
     display: none;
 
-    @media($bp-larger-than-tablet) {
+    @media ($bp-larger-than-tablet) {
       display: block;
     }
   }
@@ -41,7 +41,7 @@
     height: 100%;
   }
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     flex-direction: row;
 
     .bottom-banner-container {

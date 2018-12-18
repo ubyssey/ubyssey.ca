@@ -4,7 +4,7 @@ $mapWidth: 95vw;
 $mapHeight: 675px;
 
 .nationals-description {
-  font-family: "ub-minion-pro", "Minion Pro", "Georgia", serif;
+  font-family: 'ub-minion-pro', 'Minion Pro', 'Georgia', serif;
   font-size: 16px;
   text-align: left;
   color: #333;
@@ -17,14 +17,14 @@ $mapHeight: 675px;
 .grey-border-top {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #E4E4E4;
+  border-top: 1px solid #e4e4e4;
 }
 .c-soccer-loading {
   width: $mapWidth;
   height: $mapHeight;
   display: flex;
   justify-content: center;
-  align-items:center;
+  align-items: center;
 }
 
 .no-margin-top {
@@ -32,10 +32,13 @@ $mapHeight: 675px;
 }
 
 .c-n-container {
-  position:relative;
+  position: relative;
   display: flex;
   justify-content: center;
-  h1,h2,h3,h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     text-align: center;
     font-family: 'Sanchez', 'Hind Siliguri', sans-serif;
     font-weight: 600;
@@ -50,7 +53,7 @@ $mapHeight: 675px;
   position: absolute;
   top: 1.5rem;
   text-align: center;
-  font-size:2rem;
+  font-size: 2rem;
   font-weight: 700;
   .first {
     font-size: 1.5rem;
@@ -60,28 +63,28 @@ $mapHeight: 675px;
 .c-n-headshot {
   display: flex;
   flex-direction: column;
-  align-items:center;
+  align-items: center;
   margin-bottom: -2.5rem;
   .c-n-headshot--image-container {
     position: relative;
     width: 50%;
 
     &::before {
-      content: "";
+      content: '';
       display: block;
-      padding-top: 100%; 	/* initial ratio of 1:1*/
+      padding-top: 100%; /* initial ratio of 1:1*/
     }
     .c-n-headshot--image {
       // STRUCTURE
-      position:  absolute;
+      position: absolute;
       top: 0;
       left: 0;
       bottom: 0;
       right: 0;
-  
+
       // BORDER
       border-radius: 300px;
-  
+
       // BACKGROUND
       background-size: 100% auto;
       background-repeat: no-repeat;
@@ -107,11 +110,11 @@ $mapHeight: 675px;
     width: 60%;
   }
   .c-n-team-container {
-    margin: .25rem;
+    margin: 0.25rem;
     .c-n-team-header {
       display: flex;
       justify-content: space-between;
-      align-items:center;
+      align-items: center;
       width: 100%;
       height: 120px;
       color: white;
@@ -120,7 +123,7 @@ $mapHeight: 675px;
         position: relative;
         top: 0;
       }
-  
+
       .c-n-image-container {
         width: 35%;
         height: 100%;
@@ -135,38 +138,37 @@ $mapHeight: 675px;
           background-position: center;
         }
       }
-  
-      .c-n-title{
+
+      .c-n-title {
         padding-right: 1rem;
         font-size: 1.5rem;
         text-align: center;
         width: 65%;
       }
     }
-
   }
 
-    .c-n-content-box {
-      margin: 1rem;
-    }
-    .c-n-mvp {
-      padding: 1rem;
-    }
-    div[id*=c-n-team-] {
-      overflow: hidden;
-      height: 0;
-      transition: all .25s ease-in-out;
-    }
+  .c-n-content-box {
+    margin: 1rem;
+  }
+  .c-n-mvp {
+    padding: 1rem;
+  }
+  div[id*='c-n-team-'] {
+    overflow: hidden;
+    height: 0;
+    transition: all 0.25s ease-in-out;
+  }
 }
 
 // RIBBONS
-.non-semantic-protector { 
-  position: relative; 
+.non-semantic-protector {
+  position: relative;
   top: -2.5rem;
   height: 5rem;
   width: 100%;
-  z-index: 1; 
-  display:flex;
+  z-index: 1;
+  display: flex;
   justify-content: center;
   margin: 0 auto;
 }
@@ -174,60 +176,62 @@ $mapHeight: 675px;
 .ribbon {
   font-size: 16px !important;
   position: absolute;
-  top: -.25rem;
-  left:2rem;
-  right:2rem;
+  top: -0.25rem;
+  left: 2rem;
+  right: 2rem;
   color: #fff;
   text-align: center;
   padding: 1rem 2rem; /* Adjust to suit */
   margin: 1rem auto 1rem; /* Based on 24px vertical rhythm. 48px bottom margin - normally 24 but the ribbon 'graphics' take up 24px thremselves so we double it. */
- }
- .ribbon-before, .ribbon-after {
-  content: "";
+}
+.ribbon-before,
+.ribbon-after {
+  content: '';
   position: absolute;
   display: block;
   bottom: 0.5rem;
   border: 1.5rem solid #986794;
   z-index: -1;
- }
- .ribbon-before{
-  left:0;
+}
+.ribbon-before {
+  left: 0;
   border-right-width: 1.5rem;
   border-left-color: transparent;
- }
- .ribbon-after{
+}
+.ribbon-after {
   right: 0;
   border-left-width: 1.5rem;
   border-right-color: transparent;
- }
- .ribbon .ribbon-content:before, .ribbon .ribbon-content:after {
-  content: "";
+}
+.ribbon .ribbon-content:before,
+.ribbon .ribbon-content:after {
+  content: '';
   position: absolute;
   display: block;
   border-style: solid;
   border-color: #484848 transparent transparent transparent;
-  bottom: -.5rem;
- }
- .ribbon .ribbon-content:before {
+  bottom: -0.5rem;
+}
+.ribbon .ribbon-content:before {
   left: 0;
-  border-width: .5rem 0 0 1rem;
- }
- .ribbon .ribbon-content:after {
+  border-width: 0.5rem 0 0 1rem;
+}
+.ribbon .ribbon-content:after {
   right: 0;
-  border-width: .5rem 1rem 0 0;
- }
+  border-width: 0.5rem 1rem 0 0;
+}
 
- @media (min-width: 960px) {
-   .c-soccer-nationals {
+@media (min-width: 960px) {
+  .c-soccer-nationals {
     width: $mapWidth;
     left: calc(-#{$mapWidth}/2 + 960px/2);
-   }
+  }
   .c-n-desktop {
-    position:relative;
+    position: relative;
     overflow: hidden;
     width: 100%;
     min-height: $mapHeight;
-    display:flex;
+    display: flex;
     align-items: center;
   }
   .c-n-content-container {
@@ -240,61 +244,63 @@ $mapHeight: 675px;
 
     .c-n-content {
       display: flex;
-      width:100%;
+      width: 100%;
       padding: 0 1rem;
 
       .c-n-content-box-container {
         width: 30%;
         min-width: 375px;
         max-width: 500px;
-        transition: all .25s;
+        transition: all 0.25s;
         position: absolute;
         top: 0;
         margin: 1rem;
         background-color: white;
         right: calc(-100%);
-        &:last-child{
+        &:last-child {
           left: calc(-100%);
         }
         .c-n-content-box {
           padding: 1rem;
           margin: 0;
-          border: .25rem solid black;
+          border: 0.25rem solid black;
         }
         .c-n-team {
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
           align-items: center;
-          h1, h2, h3, h4 {
+          h1,
+          h2,
+          h3,
+          h4 {
             text-align: center;
- 
           }
         }
       }
     }
   }
- }
-
- span.c-n-team-stat {
-  padding-left: .25rem;
-  padding-right: .25rem;
 }
 
- #c-nationals-map {
+span.c-n-team-stat {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+#c-nationals-map {
   position: relative;
   height: auto;
   width: 80%;
   margin: 2rem auto;
-  
-  $time1: .25s;
+
+  $time1: 0.25s;
   .c-n-map {
     cursor: pointer;
     path {
       opacity: 0;
       animation-fill-mode: forwards !important;
     }
-    .c-n-path-red{
+    .c-n-path-red {
       animation: fade-in $time1 linear $time1;
     }
 
@@ -305,16 +311,16 @@ $mapHeight: 675px;
     path.c-n-path-blue {
       animation: fade-in $time1 linear 3*$time1;
     }
-    
+
     path.c-n-path-purple {
       animation: fade-in $time1 linear 4*$time1;
     }
   }
-  
+
   .c-nationals-map-marker {
     opacity: 0;
     animation: fade-in $time1 linear 5*$time1 forwards;
-    transition: all .3s;
+    transition: all 0.3s;
     height: 60px;
     width: auto;
     position: absolute;
@@ -328,6 +334,10 @@ $mapHeight: 675px;
 }
 
 @keyframes fade-in {
-  0%   {opacity: 0;}
-  100% {opacity: 1;}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

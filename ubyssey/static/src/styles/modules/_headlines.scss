@@ -40,7 +40,7 @@
 
   font-size: font-size(30);
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     font-size: font-size(36);
   }
 }
@@ -55,7 +55,11 @@
   line-height: 1.15em;
 }
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   &.headline {
     margin-top: 0;
     margin-bottom: 10px;
@@ -77,7 +81,7 @@ h1, h2, h3, h4, h5 {
     margin: 0;
   }
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     &.headline {
       margin: 7px 0;
       &:first-child {
@@ -103,7 +107,7 @@ h4.headline {
   font-size: 18px;
 }
 
-@media($bp-larger-than-phablet){
+@media ($bp-larger-than-phablet) {
   h4.headline {
     font-size: 20px;
   }

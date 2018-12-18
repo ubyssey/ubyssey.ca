@@ -16,7 +16,7 @@ $show-more-height: 60px;
   max-width: 600px;
   .c-page__header {
     // Structure
-    display:flex;
+    display: flex;
     flex-direction: column;
     h1 {
       // Structure
@@ -27,7 +27,7 @@ $show-more-height: 60px;
       // Structure
       margin-top: 0;
       // Text
-      font-family: "ub-minion-pro", "Minion Pro", "Georgia", serif;
+      font-family: 'ub-minion-pro', 'Minion Pro', 'Georgia', serif;
       font-size: 1.2rem;
     }
   }
@@ -36,14 +36,14 @@ $show-more-height: 60px;
   // Structure
   margin-bottom: 3rem;
 }
-.c-podcast{
+.c-podcast {
   // Structure
   display: flex;
   flex-direction: column;
   align-items: center;
   .c-podcast-episode {
     // Structure
-    display:flex;
+    display: flex;
     justify-content: center;
   }
 }
@@ -59,9 +59,9 @@ $show-more-height: 60px;
   // Text
   font-family: $font-headline;
   // Extras
-  transition: max-height .5s;
+  transition: max-height 0.5s;
   overflow: hidden;
-  h3{
+  h3 {
     // Text
     font-size: 1.5rem;
     font-weight: 600;
@@ -70,10 +70,11 @@ $show-more-height: 60px;
       cursor: pointer;
     }
   }
-  h3, h4 {
+  h3,
+  h4 {
     // Structure
     margin-top: 0;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
   .c-episode-flex-wrapper-top {
     // Structure
@@ -96,7 +97,8 @@ $show-more-height: 60px;
   .c-episode-flex-wrapper-mid-col {
     flex-direction: column;
   }
-  .c-episode-flex-wrapper-mid-row, .c-episode-flex-wrapper-mid-col {
+  .c-episode-flex-wrapper-mid-row,
+  .c-episode-flex-wrapper-mid-col {
     // Structure
     display: flex;
     justify-content: space-between;
@@ -127,19 +129,19 @@ $show-more-height: 60px;
       // Background
       background-size: contain;
       background-repeat: no-repeat;
-      background-position: center; 
+      background-position: center;
     }
   }
   .c-episode-obscure {
     // Structure
     position: absolute;
     display: flex;
-    align-items:flex-end;
+    align-items: flex-end;
     justify-content: center;
     width: 100%;
     height: $show-more-height;
     bottom: 0;
-    padding-bottom:1rem;
+    padding-bottom: 1rem;
     // Text
     font-size: 1.3rem;
     // Background
@@ -156,7 +158,7 @@ $show-more-height: 60px;
   }
 }
 
-@media($bp-larger-than-phablet){
+@media ($bp-larger-than-phablet) {
   .c-episode-container {
     .c-episode-flex-wrapper-top {
       // Structure

@@ -1,20 +1,23 @@
 @import 'modules/blog/header';
 
 body {
-  font-family: "Montserrat";
+  font-family: 'Montserrat';
 }
 
 main.blog {
   margin-top: 0;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   margin-top: 0;
   margin-bottom: 15px;
 }
 
 h1.headline {
-  font-family: "Montserrat";
+  font-family: 'Montserrat';
   font-weight: 600;
   font-size: 36px;
   line-height: 1.3em;
@@ -32,7 +35,7 @@ h3.headline {
 h4.caps {
   font-weight: 500;
   font-size: 16px;
-  color: #A5A5A5;
+  color: #a5a5a5;
   letter-spacing: 0.75px;
   text-transform: uppercase;
   margin-bottom: 15px;
@@ -43,7 +46,7 @@ a.article {
 }
 
 a:hover {
-  color: #F11D1D;
+  color: #f11d1d;
 }
 
 p.snippet {
@@ -63,7 +66,7 @@ div.blog-header {
     background-size: cover;
     background-position: center center;
 
-    opacity: .85;
+    opacity: 0.85;
     -webkit-filter: contrast(60%);
   }
 
@@ -103,12 +106,11 @@ div.blog-header {
 }
 
 div.featured-articles {
-
   overflow: auto;
-  background: #F1F1F1;
+  background: #f1f1f1;
 
   .topbar {
-    border-bottom: 1px solid #D6D6D6;
+    border-bottom: 1px solid #d6d6d6;
     background: #fff;
   }
 
@@ -121,7 +123,7 @@ div.featured-articles {
       a {
         font-weight: 500;
         font-size: 16px;
-        color: #A5A5A5;
+        color: #a5a5a5;
         letter-spacing: 0.75px;
         text-transform: uppercase;
         padding: 20px 0;
@@ -146,7 +148,6 @@ div.featured-articles {
     }
   }
 }
-
 
 article.blog {
   margin: 25px 0;

@@ -1,30 +1,30 @@
 // Breakpoints
-$bp-mobile-size             : 401;
-$bp-phablet-size            : 760;
-$bp-tablet-size             : 960;
-$bp-desktop-size            : 1200;
-$bp-desktophd-size          : 1400;
+$bp-mobile-size: 401;
+$bp-phablet-size: 760;
+$bp-tablet-size: 960;
+$bp-desktop-size: 1200;
+$bp-desktophd-size: 1400;
 
-$bp-larger-than-mobile      : "min-width: #{$bp-mobile-size}px" !default;
-$bp-smaller-than-mobile     : "max-width: #{$bp-mobile-size - 1}px" !default;
-$bp-larger-than-phablet     : "min-width: #{$bp-phablet-size}px" !default;
-$bp-smaller-than-phablet    : "max-width: #{$bp-phablet-size - 1}px" !default;
-$bp-larger-than-tablet      : "min-width: #{$bp-tablet-size}px" !default;
-$bp-smaller-than-tablet     : "max-width: #{$bp-tablet-size - 1}px" !default;
-$bp-larger-than-desktop     : "min-width: #{$bp-desktop-size}px" !default;
-$bp-smaller-than-desktop    : "max-width: #{$bp-desktop-size - 1}px" !default;
-$bp-larger-than-desktophd   : "min-width: #{$bp-desktophd-size}px" !default;
-$bp-smaller-than-desktophd  : "max-width: #{$bp-desktophd-size - 1}px" !default;
+$bp-larger-than-mobile: 'min-width: #{$bp-mobile-size}px' !default;
+$bp-smaller-than-mobile: 'max-width: #{$bp-mobile-size - 1}px' !default;
+$bp-larger-than-phablet: 'min-width: #{$bp-phablet-size}px' !default;
+$bp-smaller-than-phablet: 'max-width: #{$bp-phablet-size - 1}px' !default;
+$bp-larger-than-tablet: 'min-width: #{$bp-tablet-size}px' !default;
+$bp-smaller-than-tablet: 'max-width: #{$bp-tablet-size - 1}px' !default;
+$bp-larger-than-desktop: 'min-width: #{$bp-desktop-size}px' !default;
+$bp-smaller-than-desktop: 'max-width: #{$bp-desktop-size - 1}px' !default;
+$bp-larger-than-desktophd: 'min-width: #{$bp-desktophd-size}px' !default;
+$bp-smaller-than-desktophd: 'max-width: #{$bp-desktophd-size - 1}px' !default;
 
-$bp-phablet               : "550px";
-$bp-tablet                : "960px";
+$bp-phablet: '550px';
+$bp-tablet: '960px';
 
-$bp-960px                 : "min-width: 960px" !default;
+$bp-960px: 'min-width: 960px' !default;
 
 // Colors
 $color-white: #fff;
-$color-ub-blue: #3A6BCC;
-$color-ub-blue-light: #006DCC;
+$color-ub-blue: #3a6bcc;
+$color-ub-blue-light: #006dcc;
 $color-accent-blue: #0071c9;
 $color-social-facebook: #4267b2;
 $color-social-facebook-dark: #365899;
@@ -36,9 +36,9 @@ $color-text-black: #1b1b1b;
 $color-text-gray: #4e4e4e;
 $color-text-gray-light: #8c8c8c;
 
-$color-border-gray-light: #DADADA;
-$color-border-gray: #E6E6E6;
-$color-border-gray-dark: #C8C8C8;
+$color-border-gray-light: #dadada;
+$color-border-gray: #e6e6e6;
+$color-border-gray-dark: #c8c8c8;
 
 // Z-Index Scale
 $z-scale-1: 100;

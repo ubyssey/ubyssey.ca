@@ -28,7 +28,7 @@
     opacity: 0.75;
   }
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     margin-bottom: 0;
     height: 20rem;
@@ -67,7 +67,6 @@
     &--grid:last-child {
       margin-left: 0;
     }
-
   }
 }
 

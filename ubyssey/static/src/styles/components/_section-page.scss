@@ -7,31 +7,29 @@
   ul {
     // Structure
     margin: 0;
-    padding-left:0;
+    padding-left: 0;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 
     // Border
-    border-top: 1px solid #e2e2e2;;
-    border-bottom: thin groove #C8C8C8;
+    border-top: 1px solid #e2e2e2;
+    border-bottom: thin groove #c8c8c8;
 
     list-style-type: none;
 
     li {
       display: inline-block;
-      
+
       &:not(:last-child):after {
-        content: "  |  ";
+        content: '  |  ';
       }
     }
   }
 }
 
 .c-section__featured__articles {
-
   padding-bottom: 1rem;
   .o-article--column {
-
     // Structure
     margin-bottom: 1rem;
     padding-bottom: 1rem;
@@ -45,7 +43,7 @@
       border-bottom: none;
     }
 
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       // Structure
       margin-left: 0.5rem;
       margin-right: 0.5rem;
@@ -74,5 +72,4 @@
       }
     }
   }
-
 }

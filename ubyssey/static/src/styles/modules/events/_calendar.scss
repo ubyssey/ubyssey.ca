@@ -1,6 +1,6 @@
-$border                           : 1px dotted $color-border-gray-dark;
-$calendar-event-time-label-color  : #006fcc;
-$tiles-margin                     : 35px;
+$border: 1px dotted $color-border-gray-dark;
+$calendar-event-time-label-color: #006fcc;
+$tiles-margin: 35px;
 
 @import 'calendar_categories';
 
@@ -8,11 +8,11 @@ $tiles-margin                     : 35px;
   min-height: 500px;
   margin-bottom: 40px;
 
-  @media($bp-smaller-than-phablet) {
+  @media ($bp-smaller-than-phablet) {
     padding: 0 2px;
 
     h1 {
-       padding: 0 5px;
+      padding: 0 5px;
     }
   }
 }
@@ -28,7 +28,7 @@ $tiles-margin                     : 35px;
   width: 11.5rem;
   padding-right: 2rem;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     // Structure
     display: block;
   }
@@ -58,7 +58,7 @@ $tiles-margin                     : 35px;
   // Border
   border-top: $border;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     display: flex;
   }
 
@@ -85,7 +85,7 @@ $tiles-margin                     : 35px;
 }
 
 .c-event-calendar__event-list-container {
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -97,18 +97,18 @@ $tiles-margin                     : 35px;
   // Structure
   padding-bottom: 1.5rem;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     flex: 1 0;
 
-    &:nth-child(3n+1) {
+    &:nth-child(3n + 1) {
       flex-basis: 100%;
     }
 
-    &:nth-child(3n+2) {
+    &:nth-child(3n + 2) {
       padding-right: 0.75rem;
     }
 
-    &:nth-child(3n+3) {
+    &:nth-child(3n + 3) {
       padding-left: 0.75rem;
     }
   }

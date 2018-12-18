@@ -2,11 +2,10 @@ $font-default: 'dk-saffron-walden', serif;
 $font-secondary: 'lft-etica', Helvetica, sans-serif;
 
 @font-face {
-	font-family: 'dk-saffron-walden';
-	src: url('../fonts/DKSaffronWalden.eot');
-	src: url('../fonts/DKSaffronWalden.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/DKSaffronWalden.woff') format('woff'),
-		url('../fonts/DKSaffronWalden.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
+  font-family: 'dk-saffron-walden';
+  src: url('../fonts/DKSaffronWalden.eot');
+  src: url('../fonts/DKSaffronWalden.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/DKSaffronWalden.woff') format('woff'), url('../fonts/DKSaffronWalden.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }

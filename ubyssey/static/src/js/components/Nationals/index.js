@@ -1,1 +1,1 @@
-export {default as Nationals } from './Nationals.jsx';
+export { default as Nationals } from './Nationals.jsx'

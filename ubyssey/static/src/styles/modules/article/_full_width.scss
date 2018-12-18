@@ -1,22 +1,25 @@
 @import 'modules/fonts';
 @import 'modules/variables';
 
-.c-article--fw-story, div.container.clearfix.fw-story, .c-article--timeline {
+.c-article--fw-story,
+div.container.clearfix.fw-story,
+.c-article--timeline {
   .fw-banner {
     overflow: auto;
     .header-container {
       margin: 40px 0 20px 0;
       padding-bottom: 1rem;
       display: table;
-      border-bottom: 1px solid #E4E4E4;
-      @media($bp-larger-than-tablet) {
+      border-bottom: 1px solid #e4e4e4;
+      @media ($bp-larger-than-tablet) {
         padding-bottom: 1.5rem;
       }
     }
     .headline-container {
       text-align: center;
     }
-    .left, .right {
+    .left,
+    .right {
       display: table-cell;
       box-sizing: border-box;
     }
@@ -71,7 +74,7 @@
         line-height: 24px;
       }
 
-      @media($bp-larger-than-mobile){
+      @media ($bp-larger-than-mobile) {
         .header-container {
           margin-top: 1.5rem;
           margin-bottom: 1.5rem;
@@ -82,7 +85,7 @@
     &.banner-image {
       margin-bottom: 1.5rem;
 
-      @media($bp-larger-than-tablet) {
+      @media ($bp-larger-than-tablet) {
         margin-bottom: 2rem;
       }
 
@@ -130,8 +133,12 @@
         position: absolute;
         bottom: 0;
         padding: 70px 0 2rem 0;
-        background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 1%, rgba(0,0,0,0.84) 99%);
-        h1.headline, p.fw-description, div.article-byline, span.author, span.published {
+        background-image: linear-gradient(-180deg, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 0.84) 99%);
+        h1.headline,
+        p.fw-description,
+        div.article-byline,
+        span.author,
+        span.published {
           color: #fff;
         }
         h1.headline {
@@ -142,11 +149,12 @@
         div.article-byline {
           font-size: font-size(15);
         }
-        span.author, span.published {
+        span.author,
+        span.published {
           font-weight: 300;
         }
       }
-      @media($bp-larger-than-mobile) {
+      @media ($bp-larger-than-mobile) {
         div.banner-image {
           height: 500px;
         }
@@ -165,7 +173,7 @@
     margin-right: auto;
     width: auto;
     height: 36px;
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       width: 585px;
       height: 54px;
     }

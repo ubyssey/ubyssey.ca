@@ -1,93 +1,92 @@
 .c-facebook-video {
-	width: 100%;
-	box-sizing: border-box;
-	margin-top: 15px;
-	margin-bottom: 15px;
-	padding: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 15px;
 
-	border: 1px solid $color-border-gray;
-	border-radius: 1px;
+  border: 1px solid $color-border-gray;
+  border-radius: 1px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
 
-	h1 {
-		margin-top: 0;
-		margin-bottom: 0.75rem;
-	}
+  h1 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
 }
 
 .c-facebook-video__title-container {
-	display: flex;
-	font-weight: 800;
-	margin-bottom: 1rem;
-	padding-left: 1rem;
-	padding-right: 1rem;
+  display: flex;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 
-	.c-facebook-video__title {
-		flex: 1;
-		font-size: font-size(22);
-		font-weight: $font-weight-bold;
-		padding-left: 1rem;
-		padding-right: 0rem;
-		font-family: $font-default;
-		margin-top: 1rem;
-		margin-bottom: 0rem;
-	}
+  .c-facebook-video__title {
+    flex: 1;
+    font-size: font-size(22);
+    font-weight: $font-weight-bold;
+    padding-left: 1rem;
+    padding-right: 0rem;
+    font-family: $font-default;
+    margin-top: 1rem;
+    margin-bottom: 0rem;
+  }
 }
 
 .c-facebook-video__container {
-	width: 100%;
-	display: flex;
+  width: 100%;
+  display: flex;
 
-	@media($bp-smaller-than-tablet) {
-		display: block;
+  @media ($bp-smaller-than-tablet) {
+    display: block;
 
-		.fb-comments {
-			margin-top: 15px;
-			width: 100%;
+    .fb-comments {
+      margin-top: 15px;
+      width: 100%;
 
-			&> span {
-				width: 100% !important;
+      & > span {
+        width: 100% !important;
 
-				&> iframe {
-					width: 100% !important;
-				}
-			}
-		}
-	}
+        & > iframe {
+          width: 100% !important;
+        }
+      }
+    }
+  }
 
-	.fb-video {
-		flex: 1;
-		margin-right: 15px;
+  .fb-video {
+    flex: 1;
+    margin-right: 15px;
 
-		@media($bp-smaller-than-tablet) {
-			display: block;
-		}
-	}
-
+    @media ($bp-smaller-than-tablet) {
+      display: block;
+    }
+  }
 }
 
-@media($bp-larger-than-tablet) {
-	.c-facebook-video__comments {
-	  max-height: 450px;
-	  overflow-y: auto;
-	}
+@media ($bp-larger-than-tablet) {
+  .c-facebook-video__comments {
+    max-height: 450px;
+    overflow-y: auto;
+  }
 }
 
 .c-facebook-video__info {
-	font-size: font-size(14);
-	margin-bottom: 0.5rem;
+  font-size: font-size(14);
+  margin-bottom: 0.5rem;
 }
 
 .c-facebook-video__host {
-	font-weight: $font-weight-bold;
+  font-weight: $font-weight-bold;
 }
 
 .c-facebook-video__start-time,
 .c-facebook-video__end-time,
 .c-facebook-video__description {
-	color: $color-text-gray;
+  color: $color-text-gray;
 }
 
 .c-facebook-video__description {
-	margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }

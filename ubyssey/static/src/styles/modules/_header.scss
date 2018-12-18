@@ -3,9 +3,10 @@
 
 // Main header
 
-header.main, header.topbar {
+header.main,
+header.topbar {
   display: none;
-  @media($bp-larger-than-tablet){
+  @media ($bp-larger-than-tablet) {
     display: block;
   }
 }
@@ -15,13 +16,16 @@ div.branding {
   height: 50px;
   overflow: visible;
 
-  .left, .middle, .right {
+  .left,
+  .middle,
+  .right {
     display: inline-block;
     height: 100%;
     line-height: 50px;
   }
 
-  .left, .right {
+  .left,
+  .right {
     width: 30%;
     padding: 0 20px;
     box-sizing: border-box;
@@ -36,19 +40,18 @@ div.branding {
     text-align: right;
 
     a {
-        position: relative;
-        margin-right: 20px;
-        font-size: font-size(16);
-        &:last-child {
-            margin-right: 0;
-        }
+      position: relative;
+      margin-right: 20px;
+      font-size: font-size(16);
+      &:last-child {
+        margin-right: 0;
+      }
     }
-
   }
 
   span.since-line {
     font-size: 13px;
-    color: #7D7D7D;
+    color: #7d7d7d;
   }
 
   h1.section-title {
@@ -69,7 +72,7 @@ div.branding {
 }
 
 $header-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
-$header-border: 1px solid #D3D3D3;
+$header-border: 1px solid #d3d3d3;
 
 nav.main {
   border: $header-border;
@@ -79,17 +82,20 @@ nav.main {
   padding-right: 10px;
 
   .inner {
-	   overflow: hidden;
+    overflow: hidden;
   }
 
-  .left, .middle, .right {
+  .left,
+  .middle,
+  .right {
     float: left;
     line-height: 45px;
     vertical-align: middle;
     height: 47px;
   }
 
-  .left, .right {
+  .left,
+  .right {
     width: 22%;
   }
 
@@ -115,7 +121,7 @@ nav.main {
         font-family: $font-default;
         font-size: font-size(14);
         font-weight: $font-weight-semi-bold;
-        color: #2B2B2B;
+        color: #2b2b2b;
         margin: 0 6px;
 
         &.elections a {
@@ -128,13 +134,12 @@ nav.main {
       li {
         font-family: $font-default;
         font-size: 13px;
-        color: #33331E;
+        color: #33331e;
         margin: 0 6px;
 
         &.store {
           margin: 0 3px;
         }
-
       }
     }
 
@@ -143,8 +148,9 @@ nav.main {
     }
   }
 
-  @media(min-width: 1080px){
-    .left, .right {
+  @media (min-width: 1080px) {
+    .left,
+    .right {
       width: 25%;
     }
     .middle {
@@ -163,12 +169,13 @@ nav.main {
 
 // Mobile & topbar header
 
-header.topbar, header.mobile {
+header.topbar,
+header.mobile {
   width: 100%;
   z-index: $z-scale-2;
   position: relative;
   position: fixed;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
   top: 0;
 }
 
@@ -181,31 +188,31 @@ header.topbar {
   @include box-shadow($header-box-shadow);
 
   .section-name {
-      display: inline-block;
-      margin-right: 10px;
-      span {
-        margin-left: 7px;
-        font-family: $font-default;
-        font-weight: $font-weight-semi-bold;
-        font-size: font-size(12.5);
-        text-transform: uppercase;
-        color: #33331E;
-      }
+    display: inline-block;
+    margin-right: 10px;
+    span {
+      margin-left: 7px;
+      font-family: $font-default;
+      font-weight: $font-weight-semi-bold;
+      font-size: font-size(12.5);
+      text-transform: uppercase;
+      color: #33331e;
+    }
   }
 
   &.header-article {
-      display: none;
-      position: absolute;
+    display: none;
+    position: absolute;
   }
 
   img.logo {
-      vertical-align: middle;
-      height: 20px;
+    vertical-align: middle;
+    height: 20px;
   }
 
   nav {
     display: none;
-    @media($bp-larger-than-phablet){
+    @media ($bp-larger-than-phablet) {
       display: inline-block;
     }
 
@@ -228,7 +235,8 @@ header.topbar {
         a {
           display: inline-block;
         }
-        &.current, &:hover {
+        &.current,
+        &:hover {
           border-bottom: 3px solid rgba(52, 144, 214, 1);
         }
 
@@ -237,7 +245,8 @@ header.topbar {
             color: $color-red;
           }
 
-          &.current, &:hover {
+          &.current,
+          &:hover {
             border-bottom: 3px solid $color-red;
           }
         }
@@ -279,15 +288,18 @@ header.mobile {
   height: 54px;
   min-height: 54px;
   line-height: 54px;
-  border-bottom: 1px solid #DADADA;
+  border-bottom: 1px solid #dadada;
 
-  a.left, a.right, a.logo {
+  a.left,
+  a.right,
+  a.logo {
     position: absolute;
     vertical-align: middle;
     background: rgba(255, 255, 255, 0.99);
   }
 
-  a.left, a.right {
+  a.left,
+  a.right {
     top: 0;
     bottom: 0;
     z-index: 600;
@@ -313,7 +325,7 @@ header.mobile {
     left: 0;
     border-right: 1px solid transparent;
     &.active {
-      border-right: 1px solid #DADADA;
+      border-right: 1px solid #dadada;
     }
   }
 
@@ -321,7 +333,7 @@ header.mobile {
     right: 0;
     border-left: 1px solid transparent;
     &.active {
-      border-left: 1px solid #DADADA;
+      border-left: 1px solid #dadada;
     }
   }
 
@@ -335,7 +347,7 @@ header.mobile {
       max-height: 24px;
     }
   }
-  @media($bp-larger-than-tablet){
+  @media ($bp-larger-than-tablet) {
     display: none;
   }
 }
@@ -343,11 +355,11 @@ header.mobile {
 nav.mobile {
   display: none; // Initially
   position: fixed;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
   width: 100%;
   top: 55px;
   background: rgba(249, 249, 249, 0.99); // Barely transparent
-  border-bottom: 1px solid rgb(178,178,178);
+  border-bottom: 1px solid rgb(178, 178, 178);
   overflow: auto;
   padding: 10px 20px;
   z-index: 200;
@@ -363,7 +375,8 @@ nav.mobile {
       font-size: 16px;
     }
   }
-  .left, .right {
+  .left,
+  .right {
     float: left;
     width: 50%;
   }
@@ -371,15 +384,17 @@ nav.mobile {
     font-size: 14px;
     text-transform: uppercase;
     font-weight: 500;
-    color: #5D5D5D;
+    color: #5d5d5d;
   }
 }
 
 html.hairlines {
-  header.mobile, nav.mobile {
-    border-bottom: 0.5px solid rgb(178,178,178);
+  header.mobile,
+  nav.mobile {
+    border-bottom: 0.5px solid rgb(178, 178, 178);
   }
-  nav.mobile, #search-form {
+  nav.mobile,
+  #search-form {
     margin-top: -0.5px;
   }
 }
@@ -406,6 +421,6 @@ a.store-link {
   }
 
   &:hover {
-    background: rgba(0, 113, 201, 0.2)
+    background: rgba(0, 113, 201, 0.2);
   }
 }

@@ -30,7 +30,8 @@
   // Text
   line-height: 1.4em;
 
-  h3, p {
+  h3,
+  p {
     // Structure
     margin: 0;
     padding: 0;
@@ -120,7 +121,7 @@
     }
   }
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     .c-event__meta {
       // Structure
       margin-top: 1.5rem;

@@ -11,7 +11,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   // Extra
   z-index: 10;
 }
@@ -22,12 +22,12 @@
   width: 100vw;
   top: 0;
   right: 0;
-  
+
   // Background
   background-color: white;
-  
+
   // Extra
-  opacity: .5;
+  opacity: 0.5;
   z-index: 10;
 }
 
@@ -37,17 +37,17 @@
   height: auto;
   max-width: 500px;
   padding: 25px;
-  
+
   // Background
   background-color: $color-ub-blue;
-  
+
   // Extra
   opacity: 1;
   z-index: 11;
-  
+
   // Fonts
   color: white;
-  h1{
+  h1 {
     margin-top: 0;
   }
   h3 {
@@ -69,17 +69,17 @@
   // Background
   background-color: white;
   background-image: none;
-  
+
   // Font
   color: $color-ub-blue;
-  
+
   // Borders
   border: none;
 
   // Extra
-  transition: opacity .1s;
+  transition: opacity 0.1s;
   &:hover {
-    opacity: .8;
+    opacity: 0.8;
   }
 }
 
@@ -98,7 +98,8 @@
     opacity: 1;
   }
 }
-.adblock-close:before, .adblock-close:after {
+.adblock-close:before,
+.adblock-close:after {
   // Structure
   position: absolute;
   left: 15px;

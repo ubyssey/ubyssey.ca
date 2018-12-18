@@ -29,11 +29,10 @@
     }
   }
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Border
     border-top: thin dotted $color-border-gray-dark;
   }
-
 }
 
 .c-elections-sidebar__list {
@@ -65,7 +64,7 @@
   // Border
   border-bottom: thin dotted $color-border-gray-dark;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     padding-left: 0;
     padding-right: 0;

@@ -9,11 +9,10 @@ main {
 }
 
 footer {
-
   padding: 15px 0;
   line-height: 40px;
 
-  border-top: 1px solid #DADADA;
+  border-top: 1px solid #dadada;
 
   text-align: center;
 
@@ -61,13 +60,13 @@ footer {
   max-width: 320px;
   margin: 20px auto;
   text-align: center;
-  
+
   em {
     display: inline-block;
   }
 
   // Font
-  font-size: .8rem;
+  font-size: 0.8rem;
   line-height: 1rem;
 }
 
@@ -76,12 +75,12 @@ footer {
   height: 100%;
   position: fixed;
   display: flex;
-  align-items:center;
+  align-items: center;
   justify-content: center;
 
   .beta-prompt-internal {
     a:hover {
-      color:  white;
+      color: white;
       text-decoration: underline;
     }
     border-radius: 2px;

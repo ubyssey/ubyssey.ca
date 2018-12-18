@@ -1,29 +1,29 @@
 .c-header-banner {
-	position: relative;
-	height: 125px;
-	line-height: 125px;
-	background: #004377;
-	color: white;
+  position: relative;
+  height: 125px;
+  line-height: 125px;
+  background: #004377;
+  color: white;
 
-	padding-left: 15px;
-	padding-right: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
 
-	h1 {
-		font-weight: 600;
-	}
+  h1 {
+    font-weight: 600;
+  }
 }
 
 .c-header-banner__container {
-	position: relative;
-	z-index: 100;
+  position: relative;
+  z-index: 100;
 }
 
 .c-header-banner__mask {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 95%, rgba(0,0,0,0.1) 100%);
-	z-index: 50;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: linear-gradient(-180deg, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.1) 100%);
+  z-index: 50;
 }

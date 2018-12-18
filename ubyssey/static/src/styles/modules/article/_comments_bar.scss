@@ -1,18 +1,21 @@
 @import 'modules/variables';
 
-$bp-comments-bar: "min-width: 960px" !default;
+$bp-comments-bar: 'min-width: 960px' !default;
 
 #comments-bar {
   .inner {
     font-family: $font-default;
   }
 
-  div.close, div.sort, div.comments-list, div.comments-field {
+  div.close,
+  div.sort,
+  div.comments-list,
+  div.comments-field {
     padding-left: 20px;
     padding-right: 20px;
   }
 
-  @media($bp-comments-bar){
+  @media ($bp-comments-bar) {
     position: fixed;
     top: 49px;
     bottom: 0;
@@ -22,7 +25,7 @@ $bp-comments-bar: "min-width: 960px" !default;
       position: absolute;
       flex-direction: column;
       background: #fff;
-      border-left: 1px solid #D8D8D8;
+      border-left: 1px solid #d8d8d8;
       width: 525px;
       right: -526px;
       height: 100%;
@@ -32,12 +35,15 @@ $bp-comments-bar: "min-width: 960px" !default;
       transition: right 0.3s ease-in-out;
 
       &.active {
-        box-shadow: rgba(0,0,0,0.025) -2px 0 3px 0;
+        box-shadow: rgba(0, 0, 0, 0.025) -2px 0 3px 0;
         right: 0;
       }
     }
 
-    div.close, div.sort, div.comments-list, div.comments-field {
+    div.close,
+    div.sort,
+    div.comments-list,
+    div.comments-field {
       padding-left: 30px;
       padding-right: 30px;
     }
@@ -50,13 +56,13 @@ $bp-comments-bar: "min-width: 960px" !default;
 
 div.comment {
   padding: 15px 0;
-  border-bottom: 1px solid #D8D8D8;
+  border-bottom: 1px solid #d8d8d8;
   &:last-child {
     border-bottom: none;
   }
   div.meta {
     font-size: 12px;
-    color: #9C9C9C;
+    color: #9c9c9c;
     > span {
       margin: 0 3px;
       &:first-child {
@@ -79,15 +85,14 @@ div.comment {
   }
 }
 
-
 div.sort {
   padding: 8px 30px;
-  border-bottom: 1px solid #D8D8D8;
-  box-shadow: rgba(0,0,0,0.025) 0 2px 3px 0;
+  border-bottom: 1px solid #d8d8d8;
+  box-shadow: rgba(0, 0, 0, 0.025) 0 2px 3px 0;
   a {
     font-size: 13px;
     font-weight: 500;
-    color: #9C9C9C;
+    color: #9c9c9c;
     margin: 0 10px;
     &:first-child {
       margin-left: 0;
@@ -119,17 +124,18 @@ div.comments-field {
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 2px;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
     padding: 8px 10px;
     font-size: 13px;
     line-height: 1.5em;
     width: 100%;
   }
-  button, a.button {
+  button,
+  a.button {
     font-family: Helvetica, Arial, sans-serif;
     display: inline-block;
     border-radius: 2px;
-    color: #4E4D4D;
+    color: #4e4d4d;
     font-size: 12px;
     font-weight: 600;
     line-height: 28px;
@@ -141,10 +147,10 @@ div.comments-field {
     border-color: #d5d5d5;
     background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
     background-size: 100%;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcfcfc),color-stop(100%, #eeeeee));
-    background-image: -moz-linear-gradient(#fcfcfc,#eeeeee);
-    background-image: -webkit-linear-gradient(#fcfcfc,#eeeeee);
-    background-image: linear-gradient(#fcfcfc,#eeeeee);
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcfcfc), color-stop(100%, #eeeeee));
+    background-image: -moz-linear-gradient(#fcfcfc, #eeeeee);
+    background-image: -webkit-linear-gradient(#fcfcfc, #eeeeee);
+    background-image: linear-gradient(#fcfcfc, #eeeeee);
 
     margin-right: 8px;
 
@@ -183,7 +189,6 @@ div.close {
   }
 }
 
-
 .spinner {
   margin: 20px auto;
   height: 26px;
@@ -192,7 +197,7 @@ div.close {
 }
 
 .spinner > div {
-  background-color: #B5B5B5;
+  background-color: #b5b5b5;
   height: 100%;
   width: 4px;
   margin-right: 1px;
@@ -209,8 +214,8 @@ div.close {
 }
 
 .spinner .rect3 {
-  -webkit-animation-delay: -1.0s;
-  animation-delay: -1.0s;
+  -webkit-animation-delay: -1s;
+  animation-delay: -1s;
 }
 
 .spinner .rect4 {
@@ -224,17 +229,25 @@ div.close {
 }
 
 @-webkit-keyframes sk-stretchdelay {
-  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
-  20% { -webkit-transform: scaleY(1.0) }
-}
-
-@keyframes sk-stretchdelay {
-  0%, 40%, 100% {
-    transform: scaleY(0.4);
+  0%,
+  40%,
+  100% {
     -webkit-transform: scaleY(0.4);
-  }  20% {
-    transform: scaleY(1.0);
-    -webkit-transform: scaleY(1.0);
+  }
+  20% {
+    -webkit-transform: scaleY(1);
   }
 }
 
+@keyframes sk-stretchdelay {
+  0%,
+  40%,
+  100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }
+  20% {
+    transform: scaleY(1);
+    -webkit-transform: scaleY(1);
+  }
+}

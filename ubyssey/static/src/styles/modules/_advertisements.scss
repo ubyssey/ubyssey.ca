@@ -39,14 +39,14 @@ $adslots: (
     }
   }
 
-  @media(min-width: $width + 40) {
+  @media (min-width: $width + 40) {
     display: flex;
     &.o-advertisement--homepage {
       display: flex;
     }
   }
 
-  @media( min-width: 1010px ){
+  @media (min-width: 1010px) {
     .adslot {
       min-width: nth(map-get($adslots, leaderboard), 1);
       max-width: nth(map-get($adslots, large-leaderboard), 1);
@@ -54,7 +54,7 @@ $adslots: (
     }
   }
 
-  @media($bp-larger-than-tablet){
+  @media ($bp-larger-than-tablet) {
     &.o-advertisement--homepage {
       display: flex;
     }
@@ -63,7 +63,7 @@ $adslots: (
 
 #article-list {
   .o-advertisement--leaderboard {
-    @media( min-width: 1010px ){
+    @media (min-width: 1010px) {
       $width: nth(map-get($adslots, billboard), 1);
       $height: nth(map-get($adslots, billboard), 2);
 
@@ -85,9 +85,9 @@ main.article .o-advertisement--leaderboard {
 
 .article-slide .o-advertisement--leaderboard,
 .article-slide .o-advertisement--mobile-leaderboard {
-  background: #F5F5F5;
+  background: #f5f5f5;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #DADADA;
+  border-bottom: 1px solid #dadada;
 }
 
 .article-slide .o-advertisement--leaderboard {
@@ -97,7 +97,6 @@ main.article .o-advertisement--leaderboard {
 .article-slide .o-advertisement--mobile-leaderboard {
   margin-bottom: 0.5rem;
 }
-
 
 // Mobile leaderboard ad
 .o-advertisement--mobile-leaderboard {
@@ -114,7 +113,7 @@ main.article .o-advertisement--leaderboard {
     margin-right: auto;
   }
 
-  @media(min-width: $desktop-width + 40) {
+  @media (min-width: $desktop-width + 40) {
     display: none;
   }
 }
@@ -125,9 +124,9 @@ main.article .o-advertisement--leaderboard {
   padding-bottom: 1rem;
 
   // Border
-  border-bottom: thin dotted #C8C8C8;
+  border-bottom: thin dotted #c8c8c8;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     display: none;
   }
@@ -177,14 +176,14 @@ main.article .o-advertisement--leaderboard {
     }
   }
 
-  @media(min-width: $width + 40) {
+  @media (min-width: $width + 40) {
     display: block;
     &.o-advertisement--homepage {
       display: none;
     }
   }
 
-  @media($bp-larger-than-tablet){
+  @media ($bp-larger-than-tablet) {
     &.o-advertisement--homepage {
       display: block;
     }

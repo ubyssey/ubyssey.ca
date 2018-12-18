@@ -1,1 +1,1 @@
-export {default as FoodInsecurity } from './FoodInsecurity.jsx';
+export { default as FoodInsecurity } from './FoodInsecurity.jsx'

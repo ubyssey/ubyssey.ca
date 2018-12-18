@@ -10,14 +10,14 @@
 // Article Slide
 
 div.article-slide {
-  border-top: 1px solid #DADADA;
+  border-top: 1px solid #dadada;
   margin-top: 50px;
 
   main.article {
     padding-top: 0;
   }
 
-  @media($bp-larger-than-tablet){
+  @media ($bp-larger-than-tablet) {
     margin-bottom: 50px;
   }
 }
@@ -29,11 +29,11 @@ div.indicator {
   z-index: 2000;
 }
 
-.o-breaking-news-article{
-  display:flex;
+.o-breaking-news-article {
+  display: flex;
   border-radius: 3px;
-  background-color:#e41818;
-  display:flex;
+  background-color: #e41818;
+  display: flex;
 
   &:hover {
     opacity: 0.8;
@@ -49,17 +49,16 @@ div.indicator {
   }
 }
 
-
 // Article
 .c-article--default {
   .o-headline--article {
-    @media($bp-larger-than-tablet) {
+    @media ($bp-larger-than-tablet) {
       line-height: 1.277em;
       padding-top: 25px;
       padding-bottom: 25px;
       margin: 0;
-      border-top: 2px solid #3E3E3E;
-      border-bottom: 1px solid #D2D2D2;
+      border-top: 2px solid #3e3e3e;
+      border-bottom: 1px solid #d2d2d2;
     }
   }
 }
@@ -87,7 +86,7 @@ div.indicator {
 .c-article__info {
   margin-bottom: 1rem;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     margin-top: 1em;
 
     display: flex;
@@ -100,7 +99,7 @@ div.indicator {
   font-size: $font-size-15px;
   font-weight: $font-weight-semi-bold;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     display: flex;
     flex: 1 0;
     line-height: 2rem;
@@ -108,7 +107,7 @@ div.indicator {
   }
 }
 
-.c-article__byline-center{
+.c-article__byline-center {
   display: flex;
   justify-content: center;
 }
@@ -116,7 +115,7 @@ div.indicator {
 .960px {
   margin-bottom: 0.9rem;
   display: inline-block;
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     margin-bottom: 0;
   }
 }
@@ -126,7 +125,7 @@ div.indicator {
 
   color: #777;
   font-weight: $font-weight-normal;
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     display: inline-block;
     margin-right: 0.75em;
     margin-bottom: 0;
@@ -136,7 +135,7 @@ div.indicator {
 .c-article__author {
   margin-bottom: 0.75rem;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     display: inline-block;
     margin-right: 0.75em;
     margin-bottom: 0;
@@ -174,7 +173,7 @@ div.article-content {
     padding-top: 0px;
     padding-bottom: 0px;
     padding-left: $article-content-div-child-padding;
-    @media($bp-larger-than-phablet){
+    @media ($bp-larger-than-phablet) {
       padding: 0;
       max-width: 585px;
     }
@@ -183,7 +182,7 @@ div.article-content {
   > ul {
     padding-left: $article-content-ul-padding-left + 15;
     padding-right: 15px;
-    @media($bp-larger-than-phablet){
+    @media ($bp-larger-than-phablet) {
       padding-left: $article-content-ul-padding-left;
       max-width: 585px - $article-content-ul-padding-left;
       padding-right: 0;
@@ -191,25 +190,23 @@ div.article-content {
   }
 }
 
-
-
 div.caption {
   margin-top: 6px;
   font-family: $font-headline;
   font-size: 15px;
-  color: #5A5A5A;
+  color: #5a5a5a;
   line-height: 19px;
 
   padding-left: 15px;
   padding-right: 15px;
-  @media($bp-larger-than-phablet){
+  @media ($bp-larger-than-phablet) {
     padding: 0;
   }
 }
 
 div.article-content {
-
-  > p, > ul {
+  > p,
+  > ul {
     font-family: $font-body !important;
     font-size: font-size(17) !important;
     color: #333333 !important;
@@ -222,8 +219,8 @@ div.article-content {
     }
 
     &:first-child {
-        margin-top: 5px;
-        margin-right: auto;
+      margin-top: 5px;
+      margin-right: auto;
     }
   }
 
@@ -233,10 +230,9 @@ div.article-content {
     font-size: 28px;
     margin: 30px 0 0 0;
   }
-
 }
 
-@media($bp-larger-than-mobile){
+@media ($bp-larger-than-mobile) {
   div.headline-container {
     padding: 0;
   }
@@ -245,7 +241,6 @@ div.article-content {
 // Right column
 
 div.right-column {
-
   img {
     width: 100%;
   }
@@ -258,8 +253,7 @@ div.right-column {
     margin-bottom: 20px;
   }
 
-  @media($bp-larger-than-tablet){
-
+  @media ($bp-larger-than-tablet) {
     position: relative;
     float: right;
     padding: 0 0 40px 40px;
@@ -283,14 +277,15 @@ div.right-column {
 }
 
 div.side {
-    float: right;
+  float: right;
 }
 
-.fw-story, .timeline {
+.fw-story,
+.timeline {
   div.right-column {
     display: none;
     right: -150px;
-    @media($bp-larger-than-desktophd){
+    @media ($bp-larger-than-desktophd) {
       display: block;
     }
   }

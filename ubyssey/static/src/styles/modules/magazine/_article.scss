@@ -4,7 +4,7 @@
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     margin-top: 0;
   }
@@ -16,7 +16,7 @@
   text-transform: uppercase;
   margin-bottom: 0.5rem;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Text
     font-size: font-size(54);
   }
@@ -68,7 +68,7 @@
   // Background
   // background: $color-green;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -87,7 +87,6 @@
     &:hover {
       opacity: 1;
     }
-
   }
 }
 
@@ -95,12 +94,13 @@
   // Structure
   margin-bottom: 2rem;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     margin-bottom: 4rem;
   }
 
-  > p, > ul {
+  > p,
+  > ul {
     // Structure
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
@@ -139,14 +139,15 @@
     margin-bottom: 1rem;
   }
 
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     // Structure
     margin-top: 2rem;
 
     // Text
     text-transform: uppercase;
   }
-
 }
 
 // Drop cap
@@ -167,29 +168,52 @@
   color: #fff;
 }
 
-
 .c-article--pink .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-pink; }
+  h1,
+  h2,
+  h3,
+  > p > a,
+  p.source {
+    color: $color-pink;
+  }
 }
 
 .c-article--pink:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-pink; }
+  > p:first-child:first-letter {
+    background: $color-pink;
+  }
 }
 
 .c-article--green .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-green; }
+  h1,
+  h2,
+  h3,
+  > p > a,
+  p.source {
+    color: $color-green;
+  }
 }
 
 .c-article--green:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-green; }
+  > p:first-child:first-letter {
+    background: $color-green;
+  }
 }
 
 .c-article--blue .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-blue; }
+  h1,
+  h2,
+  h3,
+  > p > a,
+  p.source {
+    color: $color-blue;
+  }
 }
 
 .c-article--blue:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-blue; }
+  > p:first-child:first-letter {
+    background: $color-blue;
+  }
 }
 
 .c-article__suggested {
@@ -197,7 +221,7 @@
   margin-top: 2rem;
   margin-bottom: 1.5rem;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     display: flex;
     margin-bottom: 3rem;
@@ -242,7 +266,6 @@
   margin-bottom: 2.5rem;
   width: 100%;
 }
-
 
 .image-attachment > img {
   // Structure

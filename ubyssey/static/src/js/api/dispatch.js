@@ -31,44 +31,31 @@ function handleError(response) {
 }
 
 function parseJSON(response) {
-  return response.json()
-    .then(json => response.ok ? json : Promise.reject(json))
+  return response.json().then(json => (response.ok ? json : Promise.reject(json)))
 }
 
-function getRequest(route, id=null, query={}) {
+function getRequest(route, id = null, query = {}) {
   let urlString = buildRoute(route, id) + url.format({ query: query })
-  return fetch(
-    urlString,
-    {
-      method: 'GET',
-      headers: DEFAULT_HEADERS
-    }
-  )
-  .then(parseJSON)
+  return fetch(urlString, {
+    method: 'GET',
+    headers: DEFAULT_HEADERS
+  }).then(parseJSON)
 }
 
-function postRequest(route, id=null, payload={}) {
-  return fetch(
-    buildRoute(route, id),
-    {
-      method: 'POST',
-      headers: DEFAULT_HEADERS,
-      body: JSON.stringify(payload),
-    }
-  )
-  .then(parseJSON)
+function postRequest(route, id = null, payload = {}) {
+  return fetch(buildRoute(route, id), {
+    method: 'POST',
+    headers: DEFAULT_HEADERS,
+    body: JSON.stringify(payload)
+  }).then(parseJSON)
 }
 
-function patchRequest(route, id=null, payload={}, token=null) {
-  return fetch(
-    buildRoute(route, id),
-    {
-      method: 'PATCH',
-      headers: DEFAULT_HEADERS,
-      body: JSON.stringify(payload)
-    }
-  )
-    .then(parseJSON)
+function patchRequest(route, id = null, payload = {}, token = null) {
+  return fetch(buildRoute(route, id), {
+    method: 'PATCH',
+    headers: DEFAULT_HEADERS,
+    body: JSON.stringify(payload)
+  }).then(parseJSON)
 }
 
 const DispatchAPI = {
@@ -76,20 +63,20 @@ const DispatchAPI = {
     vote: (poll_id, payload) => {
       return postRequest('polls.vote', poll_id, payload)
     },
-    get: (id) => {
+    get: id => {
       return getRequest('polls', id, null)
-    },
+    }
   },
   articles: {
-    rendered: (id) => {
+    rendered: id => {
       return getRequest('articles', id, null)
     },
-    search: (query) => {
+    search: query => {
       return getRequest('articles', null, query)
     }
   },
   notifications: {
-    subscribe: (subscription) => {
+    subscribe: subscription => {
       return postRequest('notifications.subscribe', 1, subscription)
     },
     updateSubscription: (uuid, subscription) => {

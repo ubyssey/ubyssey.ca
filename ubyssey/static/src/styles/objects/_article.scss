@@ -45,7 +45,7 @@
 
 .o-article__published {
   // Text
-  color: #6B6B6B;
+  color: #6b6b6b;
 }
 
 .o-article__snippet {
@@ -63,7 +63,7 @@
   padding-left: 15px;
   padding-right: 15px;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     padding-left: 0;
     padding-right: 0;
@@ -73,13 +73,12 @@
 // Default article
 
 .o-article--default {
-
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     display: flex;
   }
 
-  @media($bp-larger-than-desktop) {
+  @media ($bp-larger-than-desktop) {
     // Structure
     display: block;
   }
@@ -88,14 +87,14 @@
     // Structure
     margin-bottom: 0.5rem;
 
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       // Structure
       width: 15rem;
       margin-right: 1rem;
       margin-bottom: 0;
     }
 
-    @media($bp-larger-than-desktop) {
+    @media ($bp-larger-than-desktop) {
       // Structure
       width: 100%;
       margin-bottom: 0.5rem;
@@ -103,7 +102,7 @@
   }
 
   .o-article__right {
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       // Structure
       flex: 1;
     }
@@ -124,7 +123,7 @@
   // Border
   border-bottom: thin dotted $color-border-gray-dark;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
@@ -135,7 +134,7 @@
     // Text
     font-size: font-size(20);
 
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       // Text
       font-size: font-size(24);
     }
@@ -146,7 +145,7 @@
     width: 6rem;
     padding-right: 1rem;
 
-    @media($bp-larger-than-mobile) {
+    @media ($bp-larger-than-mobile) {
       // Structure
       width: 9rem;
       padding-right: 1.25rem;
@@ -162,7 +161,7 @@
     // Structure
     margin-bottom: 0;
 
-    @media($bp-larger-than-mobile) {
+    @media ($bp-larger-than-mobile) {
       // Structure
       margin-bottom: 0.5rem;
     }
@@ -173,7 +172,7 @@
     display: none;
     margin-bottom: 0;
 
-    @media($bp-larger-than-mobile) {
+    @media ($bp-larger-than-mobile) {
       // Structure
       display: block;
     }
@@ -184,7 +183,7 @@
   // Structure
   display: block;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     display: flex;
   }
@@ -194,13 +193,13 @@
     width: 100%;
     margin-bottom: 0.5rem;
 
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       // Structure
       width: 15rem;
       margin-bottom: 0;
     }
 
-    @media($bp-larger-than-tablet) {
+    @media ($bp-larger-than-tablet) {
       // Structure
       width: 20rem;
     }
@@ -210,7 +209,6 @@
     // Text
     font-size: font-size(22);
   }
-
 }
 
 // Article Sidebar Item
@@ -227,7 +225,7 @@
   // Border
   border-bottom: thin dotted $color-border-gray-dark;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     padding-left: 0;
     padding-right: 0;
@@ -257,7 +255,7 @@
     width: 6rem;
     padding-right: 0.5rem;
 
-    @media($bp-larger-than-mobile) {
+    @media ($bp-larger-than-mobile) {
       padding-right: 0.75rem;
     }
   }
@@ -271,7 +269,6 @@
   .o-article__right {
     flex: 1;
   }
-
 }
 
 // Article Secondary
@@ -282,7 +279,7 @@
   padding-left: 15px;
   padding-right: 15px;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     padding-left: 0;
     padding-right: 0;
@@ -313,7 +310,6 @@
 // Article column
 
 .o-article--column {
-
   .o-article__image {
     // Structure
     width: 4.5rem;
@@ -347,9 +343,7 @@
     font-size: font-size(18);
     line-height: 1.2em;
   }
-
 }
-
 
 // Article bullet point
 .o-article--bullet {
@@ -369,13 +363,13 @@
   }
 
   // Border
-  border: solid 1px #E6E6E6;
+  border: solid 1px #e6e6e6;
   border-radius: 2px;
 
   // Extras
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     margin-bottom: 0;
     padding-left: 0.5rem;
@@ -407,7 +401,7 @@
     margin-bottom: 0.5rem;
     background-size: cover;
 
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       // Structure
       padding-top: 67%;
     }
@@ -420,7 +414,7 @@
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       // Structure
       padding: 0;
     }

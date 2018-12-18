@@ -12,14 +12,14 @@ $colorPrimary: white;
 $colorSecondary: black;
 
 .timeline-banner {
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     padding-top: $bannerHeight;
   }
 }
 
 .c-timeline {
   position: fixed;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
   left: 0;
   width: 1px;
   z-index: 100;
@@ -29,7 +29,7 @@ $colorSecondary: black;
     top: -$bannerHeight;
     top: 0;
     background-color: $colorPrimary;
-    transition: margin .2s;
+    transition: margin 0.2s;
     color: $colorPrimary;
 
     &:hover {
@@ -62,7 +62,7 @@ $colorSecondary: black;
     }
 
     h3 {
-      font-size: .9rem;
+      font-size: 0.9rem;
     }
     .t-tree-container {
       overflow: scroll;
@@ -79,10 +79,10 @@ $colorSecondary: black;
           display: flex;
           flex: 1.1;
           justify-content: center;
-          align-items:center;
+          align-items: center;
           height: 100%;
           background-color: $backgroundColor;
-          .c-button{
+          .c-button {
             background-color: transparent;
             min-width: auto;
           }
@@ -116,7 +116,7 @@ $colorSecondary: black;
           font-size: 18px;
           padding: 5px;
           font-weight: 600;
-          transition: margin .25s;
+          transition: margin 0.25s;
           width: 100%;
           background-color: $backgroundColor;
         }
@@ -124,13 +124,13 @@ $colorSecondary: black;
           display: none;
           height: 0px;
           width: 100%;
-          transition: height .25s;
+          transition: height 0.25s;
         }
       }
     }
   }
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     width: 100%;
     margin-left: 0px;
     .t-container {
@@ -177,17 +177,16 @@ $colorSecondary: black;
           align-items: center;
           width: 85%;
 
-
           .t-node-container {
             height: $nodeRadius*$scaleModifier + 2*$nodeThickness;
-            width: $nodeRadius*$scaleModifier  + 2*$nodeThickness;
+            width: $nodeRadius*$scaleModifier + 2*$nodeThickness;
             flex-direction: row;
             justify-content: center;
             align-items: center;
             position: relative;
             padding: 0;
             border-top: 0px solid transparent;
-            background-color:transparent;
+            background-color: transparent;
 
             .t-node {
               border-radius: $nodeRadius;
@@ -201,7 +200,6 @@ $colorSecondary: black;
               transition: border-width 0.25s, transform 0.25s;
               -webkit-transition: border-width 0.25s, transform 0.25s;
               -moz-transition: border-width 0.25s, transform 0.25s;
-
             }
             &.t-node-selected {
               .t-node {
@@ -230,8 +228,8 @@ $colorSecondary: black;
               width: 2*$nodeThickness;
               height: 2*$nodeThickness;
             }
-            &:hover{
-              .t-node{
+            &:hover {
+              .t-node {
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -244,7 +242,7 @@ $colorSecondary: black;
                 width: $nodeThickness*2;
                 height: $nodeThickness*2;
                 opacity: 0;
-                animation: fadeIn .25s linear forwards;
+                animation: fadeIn 0.25s linear forwards;
                 @keyframes fadeIn {
                   to {
                     opacity: 1;
@@ -295,13 +293,13 @@ $colorSecondary: black;
                     top: 0;
                     transition: left 0.5s;
                     &:before {
-                      border-color: rgba(194,225,245,0);
+                      border-color: rgba(194, 225, 245, 0);
                       border-bottom-color: #d2d2d2;
                       border-width: 17px;
                       margin-left: -17px;
                     }
                     &:after {
-                      border-color: rgba(194,225,245,0);
+                      border-color: rgba(194, 225, 245, 0);
                       border-bottom-color: #d2d2d2;
                       border-width: 17px;
                       margin-left: -17px;

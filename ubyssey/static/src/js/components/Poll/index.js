@@ -1,1 +1,1 @@
-export { default as Poll } from './Poll.jsx';
+export { default as Poll } from './Poll.jsx'

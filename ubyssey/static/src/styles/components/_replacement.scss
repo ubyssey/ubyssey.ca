@@ -28,14 +28,14 @@ $adslots: (
     }
   }
 
-  @media(min-width: $width + 40) {
+  @media (min-width: $width + 40) {
     display: block;
     &.o-replacement--homepage {
       display: none;
     }
   }
 
-  @media( min-width: 1010px ){
+  @media (min-width: 1010px) {
     $width: nth(map-get($adslots, large-leaderboard), 1);
     $height: nth(map-get($adslots, large-leaderboard), 2);
 
@@ -45,7 +45,7 @@ $adslots: (
     }
   }
 
-  @media($bp-larger-than-tablet){
+  @media ($bp-larger-than-tablet) {
     &.o-replacement--homepage {
       display: block;
     }
@@ -74,9 +74,9 @@ main.article .o-replacement--leaderboard {
 
 .article-slide .o-replacement--leaderboard,
 .article-slide .o-replacement--mobile-leaderboard {
-  background: #F5F5F5;
+  background: #f5f5f5;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #DADADA;
+  border-bottom: 1px solid #dadada;
 }
 
 .article-slide .o-replacement--leaderboard {
@@ -86,7 +86,6 @@ main.article .o-replacement--leaderboard {
 .article-slide .o-replacement--mobile-leaderboard {
   margin-bottom: 0.5rem;
 }
-
 
 // Mobile leaderboard ad
 .o-replacement--mobile-leaderboard {
@@ -103,7 +102,7 @@ main.article .o-replacement--leaderboard {
     margin-right: auto;
   }
 
-  @media(min-width: $desktop-width + 40) {
+  @media (min-width: $desktop-width + 40) {
     display: none;
   }
 }
@@ -115,9 +114,9 @@ main.article .o-replacement--leaderboard {
   padding-bottom: 1rem;
 
   // Border
-  border-bottom: thin dotted #C8C8C8;
+  border-bottom: thin dotted #c8c8c8;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     display: none;
   }
@@ -133,7 +132,6 @@ main.article .o-replacement--leaderboard {
   margin-right: auto;
   background-size: 100% 100%;
 }
-
 
 // Hide ads when printed
 .o-replacement {

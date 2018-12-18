@@ -12,17 +12,17 @@
   font-style: italic;
   letter-spacing: 0.72px;
 
-  text-shadow: 0px 1px 1px rgba(0,0,0,0.16);
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.16);
 
   font-size: 0.77em;
 
   display: none;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     display: block;
   }
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     font-size: 1em;
   }
 
@@ -41,16 +41,16 @@
 .c-nav-footer {
   margin-top: 30px;
 
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
 }
 
 .c-nav-footer__column {
   flex-basis: 50%;
   margin-bottom: 30px;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     flex: 1;
     flex-basis: auto;
     margin-bottom: 0;
