@@ -53,3 +53,13 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
+    # deploy cron jobs
+  - provider: gae
+    keyfile: client-secret.json
+    project: ubyssey-prd
+    config: "cron.yaml"
+    default: true
+    version: ubyssey-${TRAVIS_TAG//./-} # Replace periods with hyphens
+    skip_cleanup: true
+    on:
+      tags: true
