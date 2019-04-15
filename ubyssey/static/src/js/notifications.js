@@ -1,10 +1,9 @@
 import DispatchAPI from './api/dispatch';
 import Cookies from 'js-cookie'
 
-const applicationServerPublicKey = 'BOValqIGLJdBIl-qoqRvhPKIa4YxQYDBJsrTCdi7JTVKXGcMpPi6lI26M7s2nteLhAj8zBjDqi40B_vl7Re_iyE';
+const applicationServerPublicKey = 'BL0AJhJ5cnCGuRc6SLH_WEX1FvUczLQjPyyDs615ZFPrOaxxMETNBrg4mi87yZfEBkux_oLs5S91djPXgU-2tQQ';
 
-let isSubscribed = false;
-let swRegistration = null;
+let subscribed = false;
 
 function urlB64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -38,8 +37,8 @@ function getCookie(field) {
 function setCookie(uuid) {
   Cookies.set(
     cookieName,
-    {uuid: uuid},
-    { path: '/' }
+    { uuid: uuid },
+    { path: '/'  }
   )
 }
 
@@ -55,16 +54,16 @@ function updateSubscriptionOnServer(subscription) {
   }
 }
 
-function subscribeUser() {
+function subscribeUser(swReg) {
   const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
-  swRegistration.pushManager.subscribe({
+  swReg.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: applicationServerKey
   })
   .then(function(subscription) {
     updateSubscriptionOnServer(subscription);
 
-    isSubscribed = true;
+    subscribed = true;
   })
   .catch(function(err) {
     console.error('Failed to subscribe the user: ', err);
@@ -72,18 +71,19 @@ function subscribeUser() {
 }
 
 export function initializeUI(swReg) {
-  swRegistration = swReg
-  subscribeUser()
+  subscribeUser(swReg)
 
   // Set the initial subscription value
-  swRegistration.pushManager.getSubscription()
+  swReg.pushManager.getSubscription()
   .then(function(subscription) {
-    isSubscribed = !(subscription === null);
+    subscribed = !(subscription === null);
     
     updateSubscriptionOnServer(subscription);
 
-    if (!isSubscribed) {
+    if (!subscribed) {
       console.warn('User is NOT subscribed.');
+    } else {
+      console.warn('User IS subscribed');
     }
   });
 }

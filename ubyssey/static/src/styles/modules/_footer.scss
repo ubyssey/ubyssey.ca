@@ -58,17 +58,24 @@ footer {
 
 .beta-features {
   // Structure
-  max-width: 320px;
-  margin: 20px auto;
-  text-align: center;
-  
-  em {
-    display: inline-block;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  min-height: 60vh;
+  box-sizing: border-box;
 
   // Font
-  font-size: .8rem;
   line-height: 1rem;
+  
+  em {
+    width: 320px;
+    font-size: 1rem;
+    text-align: center;
+    display: inline-block;
+  }
 }
 
 .beta-prompt {

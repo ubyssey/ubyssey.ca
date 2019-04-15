@@ -8,7 +8,7 @@ SECRET_KEY = 'TEMP-KEY'
 
 ALLOWED_HOSTS = ['*']
 
-INSTALLED_APPS += ['ubyssey.events',]
+INSTALLED_APPS += ['ubyssey.events', 'ubyssey.notifications']
 
 STATICFILES_DIRS += (
     os.path.join(os.path.dirname(__file__), 'static/dist'),

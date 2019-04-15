@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS += [
     'ubyssey',
     'ubyssey.events',
+    'ubyssey.notifications',
     'django_user_agents',
 ]
 

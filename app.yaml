@@ -17,6 +17,12 @@ handlers:
 - url: .*
   script: ubyssey.wsgi.application
   secure: always
+- url: /api/notifications/push
+  login: admin
+  secure: always
+- url: /api/subscriptioncount/list
+  login: admin
+  secure: always
 
 libraries:
 - name: django

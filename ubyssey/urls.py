@@ -70,7 +70,7 @@ urlpatterns += [
     url(r'^100/$', theme.centennial, name='centennial-landing'),
 
     # Beta-features
-    # url(r'^beta/notifications/$', theme.notification, name='notification-beta'),
+    url(r'^beta/notifications/$', theme.notification, name='notification-beta'),
 
     # Podcasts
     url(r'^podcast/(?P<slug>[-\w]+)', theme.podcast, name='podcasts'),

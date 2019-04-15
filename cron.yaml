@@ -1,0 +1,13 @@
+cron:
+- description: "send scheduled notifications"
+  url: /api/notifications/push
+  schedule: every minute
+  retry_parameters:
+    min_backoff_seconds: 2.5
+    max_doublings: 5
+- description: "count the current total subscriptions"
+  url: /api/subscriptioncount/list
+  schedule: every minute
+  retry_parameters:
+    min_backoff_seconds: 2.5
+    max_doublings: 5

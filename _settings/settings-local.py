@@ -5,13 +5,13 @@ from dispatch.default_settings import *
 BASE_URL = 'http://localhost:8000/'
 
 SECRET_KEY = '&t7b#38ncrab5lmpe#pe#41coa-8ctwuy@tm0!x8*n_r38x_m*'
-NOTIFICATION_KEY = "Mp2OSApC5ZQ11iHtKfTfAWycrr-YYl9yphpkeqKIy9E"
+NOTIFICATION_KEY = "Fill with key"
 
 VERSION = '1.4.130'
 
 ALLOWED_HOSTS = ['localhost', '*']
 
-INSTALLED_APPS += ['ubyssey.events', 'django_user_agents',]
+INSTALLED_APPS += ['ubyssey.events', 'ubyssey.notifications', 'django_user_agents',]
 
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 

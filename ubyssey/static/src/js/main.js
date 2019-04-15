@@ -4,11 +4,22 @@ import {initializeUI} from './notifications';
 
 if ('serviceWorker' in navigator && 'PushManager' in window) {
   navigator.serviceWorker.register('/service-worker.js')
-  .then(function(swReg) {
-    
+  .then(swReg => {
+    if (swReg.installing) {
+      console.warn("sw installing")
+    } if (swReg.waiting) {
+      console.warn("sw installed")
+    } if (swReg.active) {
+      console.warn("sw active")
+    }
+  })
+  .catch(error => {
+    console.error('Service Worker Error', error);
+  });
+
+  navigator.serviceWorker.ready
+  .then(swReg => {
     $('#beta-test-push-notifications').click(() => {
-      const delay_1 = 500
-      const prompt = 'beta-prompt'
       let promptMessage = ''
       if (Notification.permission === 'default') {
         Notification.requestPermission().then((permission) => {
@@ -35,9 +46,9 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
       }
     })
   })
-  .catch(function(error) {
+  .catch(error => {
     console.error('Service Worker Error', error);
-  });
+  })
 } else {
   console.warn('Push messaging is not supported');
 }
