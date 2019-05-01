@@ -71,6 +71,8 @@
           {% include 'components/event-box.html' with event=event %}
           </div>
         </div>
+      {% empty %}
+        There is no scheduled event for this week.
       {% endfor %}
       </div>
     </div>
