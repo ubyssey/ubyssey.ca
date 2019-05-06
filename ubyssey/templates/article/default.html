@@ -1,6 +1,7 @@
 {% extends base_template %}
 {% load staticfiles %}
 {% load dispatch_tags %}
+{% load dispatch_filters %}
 {% block header %}
     {% include 'headers/topbar.html' with article=article section=article.section.slug %}
     {% include 'headers/mobile.html' %}
@@ -43,11 +44,20 @@
       {% block right-column %}
       <div class="right-column">
         {% if article.featured_image %}
-        <div class="featured-image">
+        <div class="featured-media">
           <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %}" data-credit="{% if article.featured_image.credit %}{{ article.featured_image.credit }}{% endif %}" data-url="{{ article.featured_image.image.get_absolute_url }}" src="{{ article.featured_image.image.get_medium_url }}"/>
           {% if article.featured_image.caption or article.featured_image.credit %}
           <div class="caption">
             {% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %} {% if article.featured_image.credit %}<span class="credit">{{ article.featured_image.credit }}{% if not article.featured_image.has_custom_credit %}{% endif %}</span>{% endif %}
+          </div>
+          {% endif %}
+        </div>
+        {% elif article.featured_video %}
+        <div class="featured-media">
+          <iframe width="500px" height="281px" src="{{ article.featured_video.video.url|youtube_embed_url|safe }}"></iframe>
+          {% if article.featured_video.caption or article.featured_video.credit %}
+          <div class="caption">
+            {% if article.featured_video.caption %}{{ article.featured_video.caption }}{% endif %} {% if article.featured_video.credit %}<span class="credit">{{ article.featured_video.credit }}{% if not article.featured_video.has_custom_credit %}{% endif %}</span>{% endif %}
           </div>
           {% endif %}
         </div>

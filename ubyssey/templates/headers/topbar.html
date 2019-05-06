@@ -25,6 +25,9 @@
                 <li {% if section == 'science' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'science' %}">Science</a>
                 </li>
+                <li {% if section == 'videos' %}class="current"{% endif %}>
+                    <a href="{% url 'page' 'videos' %}">Videos</a>
+                </li>
                 <li {% if section in 'events,podcast,magazine' %}class="current"{% endif %} id="sections-more-dropdown">
                     <a href="#">More <span class='upper-right-decorator'>New</span></a>
                     <ul class="sections-more">

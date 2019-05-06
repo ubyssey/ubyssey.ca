@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="right">
-                    <div class="full-width featured-image">
+                    <div class="full-width featured-media">
                         <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}"/>
                         {% if article.featured_image.caption %}
                         <div class="caption">
@@ -36,7 +36,7 @@
             </div>
         {% elif header_layout == 'top-image' %}
             <div class="header-container">
-                <div class="featured-image">
+                <div class="featured-media">
                     <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}"/>
                     {% if article.featured_image.caption or article.featured_image.credit %}
                     <div class="caption">

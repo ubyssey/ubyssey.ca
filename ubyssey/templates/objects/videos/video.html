@@ -1,0 +1,3 @@
+{% load dispatch_filters %}
+<h3>{{video.title|safe}}</h3>
+<iframe width="500px" height="281px" src="{{ video.url|youtube_embed_url|safe }}"></iframe>

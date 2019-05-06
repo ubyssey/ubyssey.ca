@@ -14,7 +14,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django_user_agents.utils import get_user_agent
 
-from dispatch.models import Article, Section, Subsection, Topic, Person, Podcast, PodcastEpisode
+from dispatch.models import Article, Section, Subsection, Topic, Person, Podcast, PodcastEpisode, Video
 
 import ubyssey
 import ubyssey.cron
@@ -565,3 +565,30 @@ class UbysseyTheme(object):
         }
 
         return render(request, 'podcasts/podcast.html', context)
+
+    def video(self, request, slug=None):
+
+        videos = Video.objects.order_by('id')
+        paginator = Paginator(videos, 15) # Show 15 articles per page
+        page = request.GET.get('page')
+
+        meta = {
+            'title': 'Videos'
+        }
+
+        try:
+            videos = paginator.page(page)
+        except PageNotAnInteger:
+            videos = paginator.page(1)
+        except EmptyPage:
+            videos = paginator.page(paginator.num_pages)
+
+        print(videos)
+
+        context = {
+            'videos': videos,
+            'count': paginator.count,
+            'meta': meta
+        }
+
+        return render(request, 'videos/videos.html', context)

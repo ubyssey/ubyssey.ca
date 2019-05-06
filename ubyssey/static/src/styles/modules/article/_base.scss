@@ -1,7 +1,7 @@
 @import 'full_width';
 @import 'modules/variables';
 
-.featured-image {
+.featured-media {
   img {
     width: 100%;
   }
@@ -143,7 +143,7 @@ div.indicator {
   }
 }
 
-.c-article__featured-image {
+.c-article__featured-media {
   // Structure
   max-width: 585px;
   margin-bottom: 1.5rem;
@@ -254,7 +254,7 @@ div.right-column {
     display: none;
   }
 
-  div.featured-image {
+  div.featured-media {
     margin-bottom: 20px;
   }
 
@@ -264,7 +264,7 @@ div.right-column {
     float: right;
     padding: 0 0 40px 40px;
 
-    div.featured-image {
+    div.featured-media {
       display: block;
       width: 500px;
       margin-bottom: 0;
