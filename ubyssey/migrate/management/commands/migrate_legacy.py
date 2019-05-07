@@ -13,7 +13,7 @@ def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
     columns = [col[0] for col in cursor.description]
     return [
-        dict(zip(columns, row))
+        dict(list(zip(columns, row)))
         for row in cursor.fetchall()
     ]
 
@@ -57,14 +57,14 @@ def convert_content(content):
     try:
         old_content = json.loads(content)
     except:
-        print "ERROR ERROR 1"
-        print content
-        print
+        print("ERROR ERROR 1")
+        print(content)
+        print()
         return new_content
 
     for block in old_content:
         try:
-            if isinstance(block, basestring):
+            if isinstance(block, str):
                 new_content.append(convert_paragraph(block))
             elif block['type'] == 'image':
                 new_content.append(convert_image(block['data']))
@@ -74,9 +74,9 @@ def convert_content(content):
             else:
                 new_content.append(block)
         except:
-            print "ERROR ERROR 2"
-            print block
-            print
+            print("ERROR ERROR 2")
+            print(block)
+            print()
 
     return new_content
 
@@ -86,7 +86,7 @@ def set_timezone(date):
     return make_aware(date, get_current_timezone(), is_dst=False)
 
 def migrate_articles():
-    print 'Articles...'
+    print('Articles...')
     # Clear table
     Article.objects.all().delete()
 
@@ -138,7 +138,7 @@ def migrate_articles():
 
             template_data = get_template_data(new_article)
 
-            print 'Article %d, parent %d -- %s' % (new_article.id, row['parent_id'], new_article.headline)
+            print('Article %d, parent %d -- %s' % (new_article.id, row['parent_id'], new_article.headline))
             #print template_data
 
             new_article.parent_id = row['parent_id']
@@ -148,7 +148,7 @@ def migrate_articles():
             errors.append(row)
 
 def migrate_article_content():
-    print 'Article content...'
+    print('Article content...')
 
     cursor = connections['legacy'].cursor()
     cursor.execute("SELECT * FROM content_article")
@@ -157,12 +157,12 @@ def migrate_article_content():
             article = Article.objects.get(id=row['id'])
             article.content = convert_content(row['content'])
             article.save(revision=False)
-            print 'Article %d' % article.id
+            print('Article %d' % article.id)
         except:
             errors.append(row)
 
 def migrate_page_content():
-    print 'Page content...'
+    print('Page content...')
 
     cursor = connections['legacy'].cursor()
     cursor.execute("SELECT * FROM content_page")
@@ -171,12 +171,12 @@ def migrate_page_content():
             page = Page.objects.get(id=row['id'])
             page.content = convert_content(row['content'])
             page.save(revision=False)
-            print 'Page %d' % page.id
+            print('Page %d' % page.id)
         except:
             errors.append(row)
 
 def migrate_featured_images():
-    print 'Featured images...'
+    print('Featured images...')
 
     cursor = connections['legacy'].cursor()
     cursor.execute("SELECT * FROM content_article")
@@ -185,7 +185,7 @@ def migrate_featured_images():
             article = Article.objects.get(id=row['id'])
             article.featured_image_id = row['featured_image_id']
             article.save(revision=False)
-            print 'Article %d' % article.id
+            print('Article %d' % article.id)
         except:
             errors.append(row)
             #print 'ERROR: Article %s, feat image %d' % (article.slug, row['featured_image_id'])
@@ -197,12 +197,12 @@ def migrate_featured_images():
             page = Page.objects.get(id=row['id'])
             page.featured_image_id = row['featured_image_id']
             page.save(revision=False)
-            print 'Page %d' % page.id
+            print('Page %d' % page.id)
         except:
             errors.append(row)
 
 def migrate_pages():
-    print 'Pages...'
+    print('Pages...')
 
     # Clear table
     Page.objects.all().delete()
@@ -244,7 +244,7 @@ def migrate_pages():
 
             new_page.save(revision=False)
 
-            print 'Page %d, parent %d -- %s' % (new_page.id, row['parent_id'], new_page.title)
+            print('Page %d, parent %d -- %s' % (new_page.id, row['parent_id'], new_page.title))
             #print
 
             new_page.parent_id = row['parent_id']
@@ -254,7 +254,7 @@ def migrate_pages():
             errors.append(row)
 
 def migrate_persons():
-    print 'Persons...'
+    print('Persons...')
 
     # Clear table
     Person.objects.all().delete()
@@ -281,7 +281,7 @@ def migrate_persons():
             new_person.save()
 
 def migrate_images():
-    print 'Images...'
+    print('Images...')
 
     # Clear table
     # Image.objects.all().delete()
@@ -305,13 +305,13 @@ def migrate_images():
             image.img = row['img']
             image.save()
 
-            print 'Image %d, %s' % (image.id, image.img)
+            print('Image %d, %s' % (image.id, image.img))
             #new_image.save()
         except:
-           print 'ERROR: Image %d, %s not saved' % (row['id'], row['img'])
+           print('ERROR: Image %d, %s not saved' % (row['id'], row['img']))
 
 def migrate_sections():
-    print 'Sections...'
+    print('Sections...')
 
     Section.objects.all().delete()
 
@@ -329,11 +329,11 @@ def migrate_sections():
         except:
             errors.append(row)
 
-        print 'Section %s %s' % (new_section.name, new_section.slug)
+        print('Section %s %s' % (new_section.name, new_section.slug))
 
 
 def migrate_attachments():
-    print 'Attachents...'
+    print('Attachents...')
 
     # Clear table
     ImageAttachment.objects.all().delete()
@@ -354,14 +354,14 @@ def migrate_attachments():
                 image_id=row['image_id'],
             )
 
-            print 'Image attachment %d, %s' % (new_attachment.id, new_attachment.caption)
+            print('Image attachment %d, %s' % (new_attachment.id, new_attachment.caption))
             new_attachment.save()
         except Exception as e:
-            print e
-            print 'ERROR: Image attachment %d, %s' % (new_attachment.id, new_attachment.caption)
+            print(e)
+            print('ERROR: Image attachment %d, %s' % (new_attachment.id, new_attachment.caption))
 
 def migrate_authors():
-    print 'Authors...'
+    print('Authors...')
     # Clear table
     Author.objects.all().delete()
 
@@ -377,14 +377,14 @@ def migrate_authors():
                 person_id=row['person_id'],
             )
 
-            print 'Author %d' % new_author.id
+            print('Author %d' % new_author.id)
             new_author.save()
         except:
             errors.append(row)
             #print 'ERROR Author %d' % row['id']
 
 def migrate_versions():
-    print 'Versions...'
+    print('Versions...')
 
     for a in Article.objects.filter(head=True):
         try:
@@ -396,7 +396,7 @@ def migrate_versions():
 
         Article.objects.filter(parent=a.parent).update(published_version=published_version, latest_version=latest_version)
 
-        print 'Article %d - latest: %d, published: %d' % (a.parent_id, latest_version, published_version or 0)
+        print('Article %d - latest: %d, published: %d' % (a.parent_id, latest_version, published_version or 0))
 
     for a in Page.objects.filter(head=True):
         try:
@@ -408,10 +408,10 @@ def migrate_versions():
 
         Page.objects.filter(parent=a.parent).update(published_version=published_version, latest_version=latest_version)
 
-        print 'Page %d - latest: %d, published: %d' % (a.parent_id, latest_version, published_version or 0)
+        print('Page %d - latest: %d, published: %d' % (a.parent_id, latest_version, published_version or 0))
 
 def migrate_tags():
-    print 'Tags...'
+    print('Tags...')
 
     Tag.objects.all().delete()
 
@@ -420,10 +420,10 @@ def migrate_tags():
     for row in dictfetchall(cursor):
         tag = Tag(id=row['id'], name=row['name'])
         tag.save()
-        print 'Tag %s' % tag.name
+        print('Tag %s' % tag.name)
 
 def migrate_topics():
-    print 'Topics...'
+    print('Topics...')
 
     Topic.objects.all().delete()
 
@@ -432,10 +432,10 @@ def migrate_topics():
     for row in dictfetchall(cursor):
         topic = Topic(id=row['id'], name=row['name'])
         topic.save()
-        print 'Topic %s' % topic.name
+        print('Topic %s' % topic.name)
 
 def migrate_imagegallery():
-    print 'Galleries...'
+    print('Galleries...')
 
     cursor = connections['legacy'].cursor()
     cursor.execute("SELECT * FROM content_imagegallery")
@@ -449,17 +449,17 @@ def migrate_imagegallery():
 
 
 def migrate_imagegallery_images():
-    print 'Gallery images...'
+    print('Gallery images...')
 
     cursor = connections['legacy'].cursor()
     for gal in ImageGallery.objects.all():
         cursor.execute("SELECT * FROM content_imagegallery_images WHERE imagegallery_id = %s", [gal.id])
-        print 'Gallery %d, %s' % (gal.id, gal.title)
+        print('Gallery %d, %s' % (gal.id, gal.title))
         gal.images.clear()
         for img in dictfetchall(cursor):
             try:
                 attach = ImageAttachment.objects.get(id=img['imageattachment_id'])
-                print '  Attachment %d' % attach.id
+                print('  Attachment %d' % attach.id)
                 gal.images.add(attach)
             except:
                 errors.append(img)
@@ -489,7 +489,7 @@ class Command(BaseCommand):
         #migrate_versions()
         #migrate_imagegallery_images()
 
-        print errors
+        print(errors)
 
         #table = options['table'][0]
 
