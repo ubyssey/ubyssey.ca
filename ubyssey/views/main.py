@@ -568,8 +568,8 @@ class UbysseyTheme(object):
 
     def video(self, request, slug=None):
 
-        videos = Video.objects.order_by('id')
-        paginator = Paginator(videos, 15) # Show 15 articles per page
+        videos = Video.objects.order_by('-created_at')
+        paginator = Paginator(videos, 5) # Show 15 articles per page
         page = request.GET.get('page')
 
         meta = {
