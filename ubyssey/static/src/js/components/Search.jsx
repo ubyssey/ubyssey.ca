@@ -9,7 +9,7 @@ class Search extends React.Component {
 
       this.state = {
         results: [],
-        cache: LRU(this.props.cacheOptions),  // entries are {q: results}
+        cache: new LRU(this.props.cacheOptions),  // entries are {q: results}
         q: '',
         prevQ: '',
       }
