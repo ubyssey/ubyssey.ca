@@ -56,7 +56,7 @@ class UpcomingEventsWidget(Widget):
                result['featured_events'] = None
 
         if result['featured_events']:
-            exclusions = map(lambda e: e.pk, result['featured_events'])
+            exclusions = [e.pk for e in result['featured_events']]
         else:
             exclusions = []
 
@@ -104,7 +104,7 @@ class UpcomingEventsHorizontalWidget(Widget):
                 .filter(is_submission=False) \
                 .filter(is_published=True) \
                 .filter(start_time__gt=datetime.today()) \
-                .exclude(pk__in=map(lambda e: e.pk, result['events'])) \
+                .exclude(pk__in=[e.pk for e in result['events']]) \
                 .order_by('start_time')[:3 - num]
 
             result['events'].extend(events)
