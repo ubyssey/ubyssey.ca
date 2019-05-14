@@ -184,9 +184,17 @@
   margin-bottom: 1.5rem;
 }
 
+.c-videos__video {
+  margin-bottom: 3rem;
+}
+
 .c-videos__title {
   display: flex;
   justify-content: space-between;
+
+  h3 {
+    max-width: 75%;
+  }
 }
 
 .c-videos__wrapper {

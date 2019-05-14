@@ -1,11 +1,13 @@
 {% load dispatch_filters %}
-<div class="c-videos__title">
-  <h3>{{video.title|safe}}</h3>
-  <h4>{{video.created_at|date:'N j, Y'}}</h4>
+<div class="c-videos__video">
+  <div class="c-videos__title">
+    <h3>{{video.title|safe}}</h3>
+    <h4>{{video.created_at|date:'N j, Y'}}</h4>
+  </div>
+  
+  <div class='c-videos__wrapper'>
+    <iframe src="{{ video.url|youtube_embed_url|safe }}"></iframe>
+  </div>
+  
+  <em>Credits: {{video.get_author_url|safe}}</em>
 </div>
-
-<div class='c-videos__wrapper'>
-  <iframe src="{{ video.url|youtube_embed_url|safe }}"></iframe>
-</div>
-
-<em>Credits: {{video.get_author_url|safe}}</em>
