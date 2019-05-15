@@ -1,6 +1,6 @@
 dispatch==0.5.31
-mysql-python
-django-phonenumber-field
+mysqlclient
+django-phonenumber-field==2.0.0
 phonenumbers
 beautifulsoup4
 feedparser
