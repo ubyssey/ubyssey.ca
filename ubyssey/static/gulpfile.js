@@ -8,8 +8,8 @@ const clean = require('gulp-clean');
 const rename = require('gulp-rename');
 
 const webpack = require('webpack');
-const webpackProdConfig = require('./webpack.config.js');
-const webpackDevConfig = require('./webpack.dev.config.js');
+const webpackProdConfig = require('./webpack.prod.js');
+const webpackDevConfig = require('./webpack.dev.js');
 
 const sass = require('gulp-sass');
 const sourcemaps = require('gulp-sourcemaps');
