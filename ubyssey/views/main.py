@@ -583,8 +583,6 @@ class UbysseyTheme(object):
         except EmptyPage:
             videos = paginator.page(paginator.num_pages)
 
-        print(videos)
-
         context = {
             'videos': videos,
             'count': paginator.count,

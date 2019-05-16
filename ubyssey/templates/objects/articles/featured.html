@@ -1,8 +1,13 @@
+{% load dispatch_filters %}
 <article class="o-article o-article--featured{% if padded %} o-article--padded{% endif %}">
-  {% if article.featured_image %}
+  {% if article.featured_image or article.featured_video %}
   <div class="o-article__left">
     <a class="o-article__image" href="{{ article.get_absolute_url }}">
-      <img src="{{ article.featured_image.image.get_medium_url }}" />
+      {% if article.featured_image %}
+        <img src="{{ article.featured_image.image.get_medium_url }}" />
+      {% else %}
+        <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" />
+      {% endif %}
     </a>
   </div>
   {% endif %}
