@@ -7,7 +7,13 @@
   
   <div class='c-videos__wrapper'>
     Loading Video...
-    <iframe src="{{ video.url|youtube_embed_url|safe }}"></iframe>
+    <iframe 
+      src="{{ video.url|youtube_embed_url|safe }}"
+      allowfullscreen="allowfullscreen"
+      mozallowfullscreen="mozallowfullscreen" 
+      msallowfullscreen="msallowfullscreen" 
+      oallowfullscreen="oallowfullscreen" 
+      webkitallowfullscreen="webkitallowfullscreen"></iframe>
   </div>
   
   <em>Credits: {{video.get_author_url|safe}}</em>

@@ -54,7 +54,15 @@
         </div>
         {% elif article.featured_video %}
         <div class="featured-media">
-          <iframe width="500px" height="281px" src="{{ article.featured_video.video.url|youtube_embed_url|safe }}"></iframe>
+          <iframe 
+            width="500px" 
+            height="281px" 
+            allowfullscreen="allowfullscreen"
+            mozallowfullscreen="mozallowfullscreen" 
+            msallowfullscreen="msallowfullscreen" 
+            oallowfullscreen="oallowfullscreen" 
+            webkitallowfullscreen="webkitallowfullscreen"
+            src="{{ article.featured_video.video.url|youtube_embed_url|safe }}"></iframe>
           {% if article.featured_video.caption or article.featured_video.credit %}
           <div class="caption">
             {% if article.featured_video.caption %}{{ article.featured_video.caption }}{% endif %} {% if article.featured_video.credit %}<span class="credit">{{ article.featured_video.credit }}{% if not article.featured_video.has_custom_credit %}{% endif %}</span>{% endif %}
