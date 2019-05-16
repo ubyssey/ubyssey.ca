@@ -31,7 +31,7 @@ class ArticleHelper(object):
             if block['type'] == 'paragraph':
                 word_count += len(block['data'].split(' '))
 
-        reading_time = word_count / words_per_min
+        reading_time = word_count // words_per_min
         return reading_time
 
     @staticmethod
