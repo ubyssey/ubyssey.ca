@@ -79,7 +79,7 @@ urlpatterns += [
     url(r'^events/', include(events_urls)),
     url(r'^api/events/', include(event_api_urls)),
 
-    # Podcasts
+    # Videos
     url(r'^videos/', theme.video, name='videos'),
 
     url(r'^(?P<section>[-\w]+)/(?P<slug>[-\w]+)/$', theme.article, name='article'),
