@@ -2,15 +2,14 @@ import React from 'react';
 var Comment = require('./Comment.jsx');
 var CommentBox = require('./CommentBox.jsx');
 
-var CommentsBar = React.createClass({
-    getInitialState: function(){
-        return {
-            comments: [],
-            sort: "recent",
-            active: false,
-        }
-    },
-    componentDidMount: function(){
+class CommentsBar extends React.Component {
+    state = {
+        comments: [],
+        sort: "recent",
+        active: false,
+    };
+
+    componentDidMount() {
 
         this.initialized = false;
 
@@ -18,45 +17,51 @@ var CommentsBar = React.createClass({
             this.loadComments(this.props.articleId);
         }
 
-        $(document).on('click', '.open-comments', function(e){
+        $(document).on('click', '.open-comments', (e) => {
             e.preventDefault();
             if (!this.initialized){
                 this.loadComments(this.props.articleId);
             }
             this.toggle(true);
-        }.bind(this));
+        });
 
-    },
-    componentWillReceiveProps: function(nextProps){
+    }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.articleId != this.props.articleId){
             this.initialized = false;
             this.toggle(false);
         }
-    },
-    loadComments: function(article_id){
+    }
+
+    loadComments = (article_id) => {
         this.setState({ loading: true });
-        dispatch.articleComments(article_id, function(data){
+        dispatch.articleComments(article_id, (data) => {
             this.initialized = true;
             this.setState({
                 comments: data.results,
                 loading: false
             });
-        }.bind(this));
-    },
-    postComment: function(content, callback){
-        dispatch.postComment(this.props.articleId, content, function(data){
+        });
+    };
+
+    postComment = (content, callback) => {
+        dispatch.postComment(this.props.articleId, content, (data) => {
             this.loadComments();
             callback();
-        }.bind(this));
-    },
-    changeSort: function(sort, event){
+        });
+    };
+
+    changeSort = (sort, event) => {
         event.preventDefault();
         this.setState({ sort: sort });
-    },
-    toggle: function(active){
+    };
+
+    toggle = (active) => {
         this.setState({ active: active });
-    },
-    renderSpinner: function(){
+    };
+
+    renderSpinner = () => {
         return (
             <div className="spinner">
               <div className="rect1"></div>
@@ -66,11 +71,12 @@ var CommentsBar = React.createClass({
               <div className="rect5"></div>
             </div>
             );
-    },
-    render: function(){
-        var comments = this.state.comments.map(function(comment, i){
+    };
+
+    render() {
+        var comments = this.state.comments.map((comment, i) => {
             return (<Comment key={comment.id} comment={comment} />);
-        }.bind(this));
+        });
 
         return (
             <div id="comments-bar">
@@ -80,14 +86,14 @@ var CommentsBar = React.createClass({
                             <h3><i className="fa fa-comment"></i> {this.state.comments.length + " comments"}</h3>
                         </div>
                         <div className="u-pull-right">
-                            <button onClick={this.toggle.bind(this, false)}><i className="fa fa-close"></i></button>
+                            <button onClick={() => this.toggle(false)}><i className="fa fa-close"></i></button>
                         </div>
                     </div>
                     <CommentBox loggedIn={this.props.userId ? true : false} postHandler={this.postComment} />
                     <div className="sort">
-                        <a href="#" className={this.state.sort == 'recent' ? 'active' : ''} onClick={this.changeSort.bind(this, 'recent')}>Recent</a>
+                        <a href="#" className={this.state.sort == 'recent' ? 'active' : ''} onClick={() => this.changeSort('recent')}>Recent</a>
                         &middot;
-                        <a href="#" className={this.state.sort == 'top' ? 'active' : ''} onClick={this.changeSort.bind(this, 'top')}>Top</a>
+                        <a href="#" className={this.state.sort == 'top' ? 'active' : ''} onClick={() => this.changeSort('top')}>Top</a>
                     </div>
                     <div className="comments-list">
                         {this.state.loading ? this.renderSpinner() : comments}
@@ -96,6 +102,6 @@ var CommentsBar = React.createClass({
             </div>
             );
     }
-});
+}
 
 module.exports = CommentsBar;

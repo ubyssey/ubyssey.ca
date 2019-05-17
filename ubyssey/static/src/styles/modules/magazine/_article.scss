@@ -49,15 +49,15 @@
 }
 
 .c-article__snippet--green {
-  background: $color-green;
+  background: $color-primary-2;
 }
 
 .c-article__snippet--pink {
-  background: $color-pink;
+  background: $color-primary-1;
 }
 
 .c-article__snippet--blue {
-  background: $color-blue;
+  background: $color-primary-3;
 }
 
 .c-article__featured-image {
@@ -66,7 +66,7 @@
   margin-bottom: 1.5rem;
 
   // Background
-  // background: $color-green;
+  // background: $color-primary-2;
 
   @media($bp-larger-than-mobile) {
     // Structure
@@ -113,7 +113,7 @@
 
   > p > a {
     // Text
-    color: $color-pink;
+    color: $color-primary-1;
   }
 
   // Pull quote
@@ -129,7 +129,7 @@
   p.source {
     // Text
     text-transform: uppercase;
-    color: $color-pink;
+    color: $color-primary-1;
     font-weight: 600;
   }
 
@@ -159,7 +159,7 @@
   padding-left: 0.25em;
 
   // Background
-  background: $color-pink;
+  background: $color-primary-1;
 
   // Text
   font-size: 3em;
@@ -169,27 +169,27 @@
 
 
 .c-article--pink .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-pink; }
+  h1, h2, h3, > p > a, p.source { color: $color-primary-1; }
 }
 
 .c-article--pink:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-pink; }
+  > p:first-child:first-letter { background: $color-primary-1; }
 }
 
 .c-article--green .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-green; }
+  h1, h2, h3, > p > a, p.source { color: $color-primary-2; }
 }
 
 .c-article--green:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-green; }
+  > p:first-child:first-letter { background: $color-primary-2; }
 }
 
 .c-article--blue .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-blue; }
+  h1, h2, h3, > p > a, p.source { color: $color-primary-3; }
 }
 
 .c-article--blue:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-blue; }
+  > p:first-child:first-letter { background: $color-primary-3; }
 }
 
 .c-article__suggested {
@@ -215,7 +215,7 @@
   padding: 1rem;
 
   // Background
-  background: $color-pink;
+  background: $color-primary-1;
 
   // Text
   color: #fff;

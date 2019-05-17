@@ -169,8 +169,25 @@
 
       {% if articles|length > 0 %}
       <div class="o-archive__main__list">
-      {% for article in articles %}
-        {% include 'objects/articles/list.html' with article=article %}
+      {% for object in articles %}
+        {% if object == "articles" %}
+          <div class="o-archive__divider">
+            <div class="o-archive__line"></div>
+            <div class="o-archive__line_text">Articles</div>
+            <div class="o-archive__line"></div>
+          </div>
+          
+        {% elif object == "people" %}
+        <div class="o-archive__divider">
+            <div class="o-archive__line"></div>
+            <div class="o-archive__line_text">People</div>
+            <div class="o-archive__line"></div>
+          </div>
+        {% elif object.headline %}
+          {% include 'objects/articles/list.html' with article=object %}
+        {% else %}
+          {% include 'objects/author_list.html' with person=object %}
+        {% endif %}
       {% endfor %}
       </div>
 

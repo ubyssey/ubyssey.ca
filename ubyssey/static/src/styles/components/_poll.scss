@@ -75,8 +75,8 @@
   position: absolute;
   display: flex;
   left: 0;
+  top: 0;
   height: 100%;
-  z-index: -1;
   width: 0;
 
   // Extra
@@ -188,7 +188,6 @@
     transform: rotate(45deg);
 
     // Border
-    //border: 2px solid $color-ub-blue;
     border: 2px solid #045594;
     border-width: 0 2px 2px 0;
   }
@@ -197,6 +196,9 @@
 .poll-answer-text {
   // Structure
   margin-left: 3rem;
+
+  // Extra
+  z-indeX: 1;
 }
 
 .poll-edit-button {

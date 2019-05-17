@@ -1,0 +1,48 @@
+.c-poetry__backdrop {
+  // Structure
+  width: 100%;
+
+  // Background
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.c-poetry__headline {
+  // Structure
+  margin-bottom: 0.25em;
+
+  // Text
+  font-size: font-size(34);
+}
+
+.c-poetry__content {
+  // Structure
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-bottom: 3rem;
+  margin-top: 3rem;
+}
+
+.c-poetry__byline {
+  // Text
+  font-family: $font-serif;
+  font-size: font-size(17);
+  line-height: 1.75em;
+}
+
+.c-poetry__body  {
+  // Structure
+  max-width: 450px;
+  margin-top: 2rem;
+}
+
+.c-poetry__body > p {
+  // Structure
+  margin-top: 0;
+  margin-bottom: 0;
+
+  // Text
+  font-family: $font-serif;
+  font-size: font-size(17);
+  line-height: 2em;
+}

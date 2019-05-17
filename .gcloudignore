@@ -1,0 +1,5 @@
+lib/PIL*
+lib/django/
+.git
+^(.*/)?.*\.pyc
+ubyssey/static/

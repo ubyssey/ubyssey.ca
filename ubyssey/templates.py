@@ -56,6 +56,7 @@ class Magazine(Template):
     name = 'Magazine - Article'
 
     COLOR_OPTIONS = (
+        ('', 'None'),
         ('green', 'Green'),
         ('pink', 'Pink'),
         ('blue', 'Blue')
@@ -144,7 +145,7 @@ class Timeline(Template):
     instruction = (   '<p>To add this article to a timeline, you must include the relevant timeline'
                             '<b style="font-weight: bold;">Tag</b> in the <b style="font-weight: bold;">Basic fields</b> tab. </p>'
                             '<p>If creating a new timeline, timeline tags must be prefixed with <b style="font-weight: bold;">"timeline-"</b>'
-                            'and followed by the timeline title with each word separated by hyphen e.g. ' 
+                            'and followed by the timeline title with each word separated by hyphen e.g. '
                             '<b style="font-weight: bold;">"timeline-The-Galloway-Case"</b>.</p>' )
     INSTRUCTIONS = (
         ('instruction', instruction )
@@ -179,4 +180,4 @@ class SoccerNationals(Template):
 
     instructions = InstructionField('Instructions', options=INSTRUCTIONS)
     description = TextField('Description', required=True)
-    
+

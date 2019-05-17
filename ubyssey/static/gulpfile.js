@@ -1,118 +1,134 @@
-require('babel-register'); // Pass require()s through babel (for running jasmine)
+require('@babel/register'); // Pass require()s through babel (for running jasmine)
 
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var jasmine = require('gulp-jasmine');
-var clean = require('gulp-clean');
-var rename = require('gulp-rename');
+const {series, parallel, src, dest, watch} = require('gulp');
+const log = require('fancy-log');
+const PluginError = require('plugin-error');
+const jasmine = require('gulp-jasmine');
+const clean = require('gulp-clean');
+const rename = require('gulp-rename');
 
-var webpack = require('webpack');
-var webpackProdConfig = require('./webpack.config.js');
-var webpackDevConfig = require('./webpack.dev.config.js');
+const webpack = require('webpack');
+const webpackProdConfig = require('./webpack.prod.js');
+const webpackDevConfig = require('./webpack.dev.js');
 
-var sass = require('gulp-sass');
-var sourcemaps = require('gulp-sourcemaps');
+const sass = require('gulp-sass');
+const sourcemaps = require('gulp-sourcemaps');
 
-var fs = require('fs');
-var version = JSON.parse(fs.readFileSync('./package.json')).version;
+const fs = require('fs');
+const version = JSON.parse(fs.readFileSync('./package.json')).version;
 
-gulp.task('webpack:build', ['clean:js'], function(callback) {
+function cleanJsTask() {
+  return src('./dist/js/', {read: false, allowEmpty: true})
+    .pipe(clean());
+}
+
+function cleanCssTask() {
+  return src('./dist/css/', {read: false, allowEmpty: true})
+    .pipe(clean());
+}
+
+function cleanImagesTask() {
+  return src('./dist/images/', {read: false, allowEmpty: true})
+    .pipe(clean());
+}
+
+function cleanVideosTask() {
+  return src('./dist/videos/', {read: false, allowEmpty: true})
+    .pipe(clean());
+}
+
+function cleanFontsTask() {
+  return src('./dist/fonts/', {read: false, allowEmpty: true})
+    .pipe(clean());
+}
+
+function webpackBuildTask(callback) {
   webpack(webpackProdConfig, function(err, stats) {
     if (err) {
-      throw new gutil.PluginError('webpack:build', err);
+      throw new PluginError('webpackBuildTask', err);
     }
 
-    gutil.log('[webpack:build]', stats.toString({ colors: true }));
+    log('[webpackBuildTask]', stats.toString({ colors: true }));
 
     callback();
   });
-});
+}
 
-gulp.task('webpack:build-dev', ['clean:js'], function(callback) {
+function webpackBuildDevTask(callback) {
   webpack(webpackDevConfig, function(err, stats) {
     if (err) {
-      throw new gutil.PluginError('webpack:build-dev', err);
+      throw new PluginError('webpackBuildDevTask', err);
     }
 
-    gutil.log('[webpack:build-dev]', stats.toString({ colors: true }));
-
+    log('[webpackBuildDevTask]', stats.toString({ colors: true }));
+    
     callback();
   });
-});
+}
 
-gulp.task('jasmine', function() {
-  gulp.src('./src/**/*.spec.js')
+function jasmineTask() {
+  return src('./src/**/*.spec.js')
     .pipe(jasmine({verbose: true}));
-});
+}
 
 function renameFunc(path) {
   path.basename += '-' + version;
 }
 
-gulp.task('sass:build', ['clean:css'], function() {
-  return gulp.src('./src/styles/**/*.scss')
-    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
-    .pipe(rename(renameFunc))
-    .pipe(gulp.dest('./dist/css/'));
-});
+function sassBuildTask() {
+  return src('./src/styles/**/*.scss')
+      .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+      .pipe(rename(renameFunc))
+      .pipe(dest('./dist/css/'));
+}
 
-gulp.task('sass:build-dev', ['clean:css'], function() {
-  return gulp.src('./src/styles/**/*.scss')
+function sassBuildDevTask(){
+  return src('./src/styles/**/*.scss')
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(rename(renameFunc))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./dist/css/'));
-});
+    .pipe(dest('./dist/css/'));
+}
 
-gulp.task('copy:images', ['clean:images'], function() {
-  return gulp.src('./src/images/**/*')
-    .pipe(gulp.dest('./dist/images/'));
-});
+function copyImagesTask() {
+  return src('./src/images/**/*')
+    .pipe(dest('./dist/images/'));
+}
 
-gulp.task('copy:videos', ['clean:videos'], function() {
-  return gulp.src('./src/videos/**/*')
-    .pipe(gulp.dest('./dist/videos/'));
-});
+function copyVideosTask() {
+  return src('./src/videos/**/*')
+    .pipe(dest('./dist/videos/'));
+}
 
-gulp.task('copy:fonts', ['clean:fonts'], function() {
-  return gulp.src('./src/fonts/**/*')
-    .pipe(gulp.dest('./dist/fonts/'));
-});
+function copyFontsTask() {
+  return src('./src/fonts/**/*')
+    .pipe(dest('./dist/fonts/'));
+}
 
-gulp.task('clean:js', function() {
-  return gulp.src('./dist/js/', {read: false})
-    .pipe(clean());
-});
+function watchTask() { 
+  watch('./src/js/**/*', series(cleanJsTask, webpackBuildDevTask));
+  watch('./src/styles/**/*', series(cleanCssTask, sassBuildDevTask));
+  watch('./src/images/**/*', series(cleanImagesTask, copyImagesTask));
+  watch('./src/videos/**/*', series(cleanVideosTask, copyVideosTask));
+  watch('./src/fonts/**/*',  series(cleanFontsTask, copyFontsTask));
+}
 
-gulp.task('clean:css', function() {
-  return gulp.src('./dist/css/', {read: false})
-    .pipe(clean());
-});
-
-gulp.task('clean:images', function() {
-  return gulp.src('./dist/images/', {read: false})
-    .pipe(clean());
-});
-
-gulp.task('clean:videos', function() {
-  return gulp.src('./dist/videos/', {read: false})
-    .pipe(clean());
-});
-
-gulp.task('clean:fonts', function() {
-  return gulp.src('./dist/fonts/', {read: false})
-    .pipe(clean());
-});
-
-gulp.task('build', ['webpack:build', 'sass:build', 'copy:images', 'copy:videos', 'copy:fonts']);
-
-gulp.task('build-dev', ['webpack:build-dev', 'sass:build-dev', 'copy:images', 'copy:videos', 'copy:fonts']);
-
-gulp.task('default', ['build-dev'], function() {
-  gulp.watch(['./src/js/**/*'],     ['webpack:build-dev']);
-  gulp.watch(['./src/styles/**/*'], ['sass:build-dev']);
-  gulp.watch(['./src/images/**/*'], ['copy:images']);
-  gulp.watch(['./src/videos/**/*'], ['copy:videos']);
-  gulp.watch(['./src/fonts/**/*'],  ['copy:fonts']);
-});
+exports.jasmine = jasmineTask
+exports.webpackBuild = series(cleanJsTask, webpackBuildTask)
+exports.webpackBuildDev = series(cleanJsTask, webpackBuildDevTask)
+exports.sassBuild = series(cleanCssTask, sassBuildTask)
+exports.sassBuildDev = series(cleanCssTask, sassBuildDevTask)
+exports.copyImages = series(cleanImagesTask, copyImagesTask)
+exports.copyVideos = series(cleanVideosTask, copyVideosTask)
+exports.copyFonts = series(cleanFontsTask, copyFontsTask)
+exports.build = series(
+  parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask),
+  parallel(webpackBuildTask, sassBuildTask, copyImagesTask, copyVideosTask, copyFontsTask))
+exports.buildDev = series(
+  parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask),
+  parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask))
+exports.default = series(
+  parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask), 
+  parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask), 
+  watchTask)

@@ -71,6 +71,30 @@ div.branding {
 $header-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
 $header-border: 1px solid #D3D3D3;
 
+@mixin sectionsMore {
+  display:none;
+  position: absolute;
+  margin-left: calc(-1rem - 10px);
+  width: 100px;
+  background-color: white;
+  padding: 1rem;
+  z-index: 10000;
+  border: 1px solid #D3D3D3;
+  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+  li {
+    display: block;
+    float: left;
+    clear: left;
+    border-bottom: 3px solid transparent;
+    &:hover {
+      border-bottom: 3px solid #3490d6;
+    }
+  }
+}
+
 nav.main {
   border: $header-border;
   @include box-shadow($header-box-shadow);
@@ -123,6 +147,10 @@ nav.main {
         }
       }
     }
+
+    &.sections-more {
+      @include sectionsMore;
+    } 
 
     &.meta {
       li {
@@ -242,6 +270,10 @@ header.topbar {
           }
         }
       }
+
+      &.sections-more {
+        @include sectionsMore;
+      }
     }
   }
 
@@ -266,6 +298,7 @@ header.topbar {
     vertical-align: middle;
   }
 }
+
 #header-mobile-spacer {
   height: 54px;
   min-height: 54px;
@@ -409,3 +442,4 @@ a.store-link {
     background: rgba(0, 113, 201, 0.2)
   }
 }
+

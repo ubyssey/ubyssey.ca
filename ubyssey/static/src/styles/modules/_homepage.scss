@@ -525,7 +525,8 @@ ol.article-list {
     position: relative;
     padding-top: 0;
     padding-bottom: 15px;
-    padding-left: 30px;
+    padding-left: 3rem;
+    padding-right: 1rem;
     a {
       display: inline-block;
     }
@@ -541,6 +542,7 @@ ol.article-list {
       position: absolute;
       top: 0;
       left: 0;
+      margin-left: 1rem;
       width: 30px;
       font-size: 15px;
       line-height: 24px;

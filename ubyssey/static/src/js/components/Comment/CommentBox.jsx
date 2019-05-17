@@ -1,21 +1,22 @@
 import React from 'react';
 var Textarea = require('react-textarea-autosize');
 
-const CommentBox = React.createClass({
-    getInitialState: function(){
-        return {
-            content: "",
-        }
-    },
-    updateContent: function(event){
+class CommentBox extends React.Component {
+    state = {
+        content: "",
+    };
+
+    updateContent = (event) => {
         this.setState({ content: event.target.value });
-    },
-    handlePost: function(){
-        this.props.postHandler(this.state.content, function(){
+    };
+
+    handlePost = () => {
+        this.props.postHandler(this.state.content, () => {
             this.setState({ content: "" });
-        }.bind(this));
-    },
-    renderLogin: function(){
+        });
+    };
+
+    renderLogin = () => {
         return (
             <div className="comments-field login">
                 <p>You must login or register before posting a comment.</p>
@@ -23,18 +24,20 @@ const CommentBox = React.createClass({
                 <a href="/register/" className="button">Register</a>
             </div>
             );
-    },
-    renderInput: function(){
+    };
+
+    renderInput = () => {
         return (
             <div className="comments-field">
                 <Textarea rows={2} placeholder="Join the conversation..." onChange={this.updateContent} value={this.state.content} />
                 <button className="right" onClick={this.handlePost}>Post Comment</button>
             </div>
             );
-    },
-    render: function(){
+    };
+
+    render() {
         return this.props.loggedIn ? this.renderInput() : this.renderLogin();
     }
-});
+}
 
 export default CommentBox;

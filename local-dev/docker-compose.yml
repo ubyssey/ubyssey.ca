@@ -47,6 +47,7 @@ services:
       - yarn
     ports:
       - "8000:8000"
+      - "4444:4444"
     depends_on:
       db:
         condition: service_healthy

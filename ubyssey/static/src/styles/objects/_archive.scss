@@ -306,3 +306,30 @@ $search-bar-height: 46px;
   text-align: center;
   color: $color-text-gray;
 }
+.o-archive__divider {
+	// Structure
+	height: 30px;
+	display: flex;
+	flex-direction: row;
+	align-items:center;
+	
+	//Text
+	font-size: 2rem;
+	font-family: "ub-minion-pro", "Minion Pro", "Georgia", serif;
+
+	.o-archive__line {
+		// Structure
+		height: 1px;
+		width: 100%;
+		background-color: #313131;
+		&:first-child {
+			margin-right: 1rem;
+		}
+		&:last-child {
+			margin-left: 1rem;
+		}
+		
+	}
+}
+
+

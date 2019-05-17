@@ -8,7 +8,7 @@
   padding-right: 0;
 
   // Background
-  background: $color-pink;
+  background: $color-primary-1;
 
   // Text
   text-align: center;
@@ -20,17 +20,17 @@
 
   &--pink {
     // Background
-    background: $color-pink;
+    background: $color-primary-1;
   }
 
   &--green {
     // Background
-    background: $color-green;
+    background: $color-primary-2;
   }
 
   &--blue {
     // Background
-    background: $color-blue;
+    background: $color-primary-3;
   }
 
   &--poetry {
@@ -51,7 +51,7 @@
       padding-bottom: 0.4rem;
 
       // Border
-      border-bottom: 4px solid $color-pink;
+      border-bottom: 4px solid $color-primary-1;
     }
   }
 
@@ -109,41 +109,41 @@
     padding-bottom: 0.4rem;
 
     // Border
-    border-bottom: 4px solid $color-pink;
+    border-bottom: 4px solid $color-primary-1;
 
     // Text
     font-size: font-size(24);
     color: $color-text-black;
 
     &:hover {
-      color: $color-pink;
+      color: $color-primary-1;
     }
   }
 }
 
 .c-header--pink .c-header__logo {
-  border-color: $color-pink;
+  border-color: $color-primary-1;
   @media($bp-larger-than-mobile) {
     &:hover {
-      color: $color-pink;
+      color: $color-primary-1;
     }
   }
 }
 
 .c-header--green .c-header__logo {
-  border-color: $color-green;
+  border-color: $color-primary-2;
   @media($bp-larger-than-mobile) {
     &:hover {
-      color: $color-green;
+      color: $color-primary-2;
     }
   }
 }
 
 .c-header--blue .c-header__logo {
-  border-color: $color-blue;
+  border-color: $color-primary-3;
   @media($bp-larger-than-mobile) {
     &:hover {
-      color: $color-blue;
+      color: $color-primary-3;
     }
   }
 }

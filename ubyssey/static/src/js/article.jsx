@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import './modules/Youtube'
 import { ArticlesSuggested } from './components/Article'
 import { Poll } from './components/Poll'
@@ -16,21 +17,21 @@ const SKYSCRAPER_HEIGHT = 624
 
 $(function () {
     $('.c-widget-poll').each(function () {
-        React.render(
+        ReactDOM.render(
             <Poll id={$(this).data('id')} loaderHTML={$(this).html()} />,
             $(this).get(0)
         )
     })
-    React.render(
+    ReactDOM.render(
         <AdblockSplash />,
         document.getElementById('adblock-splash')
     )
-    React.render(
+    ReactDOM.render(
         <CookieDisclaimer />,
         document.getElementById('cookie-disclaimer')
     )
     $('.c-timeline').each(function() {
-        React.render(
+        ReactDOM.render(
             <Timeline   id={$(this).data('currentArticleId')}
                         title={$(this).data('timelineTitle')}
                         nodes={$(this).data('nodes')} />,
@@ -38,7 +39,7 @@ $(function () {
         )
     })
     $('.c-soccer-nationals').each(function() {
-        React.render(
+        ReactDOM.render(
             <Nationals  id={$(this).data('currentArticleId')}
                         map={$(this).data('map')} 
                         teamData={$(this).data('teamData')} />,
@@ -46,7 +47,7 @@ $(function () {
         )
     })
     $('.c-podcast-episode').each(function() {
-        React.render(
+        ReactDOM.render(
             <Episode    author = {$(this).data('author')}
                         description = {$(this).data('description')}
                         file = {$(this).data('file')}
@@ -184,7 +185,7 @@ if ($('main.article').length) {
 
     articleAds()
 
-    var articleList = React.render(
+    const articleList = ReactDOM.render(
         <ArticlesSuggested
           breakpoint={960}
           name={listName}
@@ -194,7 +195,7 @@ if ($('main.article').length) {
           document.getElementById('article-list')
     );
 
-    const gatherImages = function(gallery) {
+    const gatherImages = (gallery) => {
         var selector, trigger;
 
         if (gallery) {
@@ -231,22 +232,22 @@ if ($('main.article').length) {
           list: images,
           table: imagesTable,
         };
-      }.bind(this);
+      };
 
 
-    var galleries = [
+    const galleries = [
         gatherImages(),
         ...$(`#article-${articleId} .gallery-attachment`)
           .map((_, elem) => gatherImages(elem)).get()
       ];
 
-    var gallery = React.render(
+    const gallery = ReactDOM.render(
         <Galleries galleries={galleries} />,
         document.getElementById('gallery')
     );
 }
 
-React.render(
+ReactDOM.render(
     <Search />,
     document.getElementById('search-form')
 );

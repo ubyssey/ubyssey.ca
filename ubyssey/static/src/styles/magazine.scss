@@ -1,7 +1,7 @@
 // Magazine styles go here
 @import 'modules/mixins';
 
-@import 'modules/magazine/colors';
+@import 'modules/magazine/2017/colors';
 @import 'modules/magazine/mixins';
 @import 'modules/magazine/utilities';
 @import 'modules/magazine/text';
@@ -22,7 +22,7 @@ $grey: #cbcbcb;
 $white: #fff;
 $pink: #ed028c;
 
-$border: 15px solid $color-pink;
+$border: 15px solid $color-primary-1;
 
 $spacing: 1.5rem;
 
@@ -89,7 +89,7 @@ html, body {
 				color: $white;
 				text-transform: uppercase;
 
-				border-bottom: 15px solid $color-pink;
+				border-bottom: 15px solid $color-primary-1;
 			}
 
 			@media($bp-larger-than-mobile) {

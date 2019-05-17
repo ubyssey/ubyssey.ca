@@ -11,13 +11,13 @@
 }
 
 .arrow--green {
-  @include arrow($color-green);
+  @include arrow($color-primary-2);
 }
 
 .arrow--pink {
-  @include arrow($color-pink);
+  @include arrow($color-primary-1);
 }
 
 .arrow--blue {
-  @include arrow($color-blue);
+  @include arrow($color-primary-3);
 }

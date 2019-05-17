@@ -1,0 +1,22 @@
+<article class="o-article o-article--list">
+  {% if not hide_image and person.image %}
+  <div class="o-article__left">
+    <a class="o-article__image" href="{{ person.get_absolute_url }}">
+      <img src="{{ person.get_absolute_image_url }}" alt="{{person.full_name}}"/>
+    </a>
+  </div>
+  {% endif %}
+  <div class="o-article__right">
+    <div class="o-article__meta">
+      <h3 class="o-author__name">
+        <a href="/authors/{{person.slug}}/">{{ person.full_name|safe }}</a>
+      </h3>
+      {% if person.title %}
+        <h3 class="o-article__byline o-article__author">{{ person.title }}</h3>
+      {% endif %}
+      {% if person.description %}
+        <p class="o-article__snippet">{{ person.description|safe }}</p>
+      {% endif %}
+    </div>
+  </div>
+</article>

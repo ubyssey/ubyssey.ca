@@ -4,18 +4,18 @@ FROM python:2.7
 ENV PYTHONUNBUFFERED 1
 RUN export DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-&& apt-get -y install build-essential curl \
-&& apt-get -y install vim\ 
-&& curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-&& apt-get install -y nodejs \
-&& nodejs -v \
-&& npm -v
+  && apt-get -y install build-essential curl \
+  && apt-get -y install vim\ 
+  && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
+  && apt-get install -y nodejs \
+  && nodejs -v \
+  && npm -v
 COPY ./ubyssey.ca ./ubyssey.ca
 WORKDIR ./ubyssey.ca/
 RUN pip install -r requirements.txt
 RUN cp _settings/settings-local.py ubyssey/settings.py
 WORKDIR ./ubyssey/static
-RUN npm install && npm install -g gulp && npm rebuild node-sass && gulp build-dev
+RUN npm i && npm i -g gulp && npm i -g gulp-cli && npm rebuild node-sass && gulp buildDev
 CMD ["gulp"]
 WORKDIR ./../../../
 COPY ./dispatch ./dispatch

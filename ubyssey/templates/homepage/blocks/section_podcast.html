@@ -1,5 +1,5 @@
 {% load humanize %}
-<h1 class="section"><a href="{{podcast.url}}">Podcast <span class='upper-right-decorator'>New</span></a></h1>
+<h1 class="section"><a href="{{podcast.url}}">Podcast</a></h1>
 <section class="c-homepage__section c-homepage__section--2">
   {% with podcast.episodes.first as episode_tuple %}
     {% include 'objects/podcasts/featured.html' with episode=episode_tuple.0 episode_url=episode_tuple.1 padded=True %}

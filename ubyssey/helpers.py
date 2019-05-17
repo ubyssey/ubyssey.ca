@@ -1,4 +1,5 @@
 import datetime
+
 from django.utils import timezone
 import pytz
 from random import randint, choice
@@ -158,6 +159,8 @@ class ArticleHelper(object):
 
     @staticmethod
     def get_reading_list(article, ref=None, dur=None):
+        articles = []
+        name = None
         if ref is not None:
             if ref == 'frontpage':
                 articles = ArticleHelper.get_frontpage(exclude=[article.parent_id])
@@ -249,8 +252,8 @@ class ArticleHelper(object):
         articles = Article.objects.filter(is_published=True)
 
         if dur in durations:
-            end = datetime.datetime.now() + datetime.timedelta(days=1)
-            start = end - datetime.timedelta(days=durations[dur])
+            end = timezone.now() + timezone.timedelta(days=1)
+            start = end - timezone.timedelta(days=durations[dur])
             time_range = (start, end)
             articles = articles.filter(created_at__range=(time_range))
 
@@ -269,9 +272,9 @@ class ArticleHelper(object):
 
         articles = Article.objects.filter(is_published=True)
 
-        end = datetime.datetime.now()
-        start = end - datetime.timedelta(hours=DURATION)
-        time_range = (pytz.utc.localize(start), pytz.utc.localize(end))
+        end = timezone.now()
+        start = end - timezone.timedelta(hours=DURATION)
+        time_range = (start, end)
         trending_articles = articles.filter(
             published_at__range=(time_range),
             views__gt=1000)
@@ -341,7 +344,7 @@ class PodcastHelper(object):
         """ Return the podcast episode url"""
         podcast = Podcast.objects.get(id=podcast_id)
         return "%spodcast/%s#%s" % (settings.BASE_URL, podcast.slug, id)
-    
+
     @staticmethod
     def get_podcast_url(id=None):
         """ Return the podcast url"""
@@ -356,15 +359,15 @@ class NationalsHelper(object):
         result = {
             "content": [],
             "code": {}
-        }  
-        
+        }
+
         for chunk in content:
             if chunk['type'] == 'code':
                 result['code'] = json.loads(chunk['data']['content'])
-                
+
             elif chunk['type'] == 'gallery':
                 gallery = ImageAttachment.objects.all().filter(gallery__id=int(chunk['data']['id']))
-                
+
                 for index, image in enumerate(gallery):
                     if index % 2 == 0:
                         result['code'][int(math.floor(index/2))]['image'] = {
@@ -378,7 +381,7 @@ class NationalsHelper(object):
                         }
             else:
                 result['content'].append(chunk)
-        
+
         return result
 
 class FoodInsecurityHelper(object):
@@ -389,13 +392,12 @@ class FoodInsecurityHelper(object):
         result = {
             "content": [],
             "code": None
-        }  
-        
+        }
+
         for chunk in content:
             if chunk['type'] == 'code':
                 result['code'] = json.loads(chunk['data']['content'])
             else:
                 result['content'].append(chunk)
-        
+
         return result
-    

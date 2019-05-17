@@ -2,6 +2,8 @@ from datetime import datetime
 import random
 import json
 
+from itertools import chain
+
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, Http404
 from django.template import loader
@@ -51,19 +53,19 @@ class UbysseyTheme(object):
             podcast = None
             podcast_url = None
 
-        episode_list = None    
+        episode_list = None
         episode_urls = []
         episodes = None
 
         if (podcast):
             try:
                 episode_list = PodcastEpisode.objects.filter(podcast_id=podcast.id).order_by('-published_at')
-            except: 
+            except:
                 episode_list = None
-            if episode_list:    
+            if episode_list:
                 for episode in episode_list:
                     episode_urls += [PodcastHelper.get_podcast_episode_url(episode.podcast_id, episode.id)]
-            
+
             episodes = zip(episode_list, episode_urls)
 
         breaking = ArticleHelper.get_breaking_news().first()
@@ -155,7 +157,7 @@ class UbysseyTheme(object):
             data = FoodInsecurityHelper.prepare_data(article.content)
             article.content = data['content']
             article.point_data = json.dumps(data['code']) if data['code'] is not None else None
-       
+
         ref = request.GET.get('ref', None)
         dur = request.GET.get('dur', None)
 
@@ -282,7 +284,7 @@ class UbysseyTheme(object):
 
         featured_subsection = None
         featured_subsection_articles = None
-        
+
         if subsections:
             featured_subsection = subsections[0]
             featured_subsection_articles = SubsectionHelper.get_featured_subsection_articles(featured_subsection, featured_articles)
@@ -457,12 +459,9 @@ class UbysseyTheme(object):
 
         year = parse_int_or_none(request.GET.get('year'))
 
-        article_list = Article.objects.filter(is_published=True).order_by(order_by)
-
-        try:
-            person = Person.objects.get(full_name__icontains=query)
-        except:
-            person = None
+        article_list = Article.objects.prefetch_related('authors', 'authors__person').select_related(
+            'section', 'featured_image').filter(is_published=True).order_by(order_by)
+        person_list = None
 
         if year:
             context['year'] = year
@@ -470,7 +469,8 @@ class UbysseyTheme(object):
             filters.append('year=%s' % year)
 
         if query:
-            article_list = article_list.filter(headline__icontains=query) | article_list.filter(authors__person=person) | article_list.filter(seo_keyword__icontains=query)
+            person_list = Person.objects.filter(full_name__icontains=query)
+            article_list = article_list.filter(headline__icontains=query)
             context['q'] = query
             filters.append('q=%s' % query)
 
@@ -484,6 +484,9 @@ class UbysseyTheme(object):
             query_string = '?' + '&'.join(filters)
         else:
             query_string = ''
+
+        if (person_list is not None and person_list.exists()):
+            article_list = list(chain({'people': True}, person_list, {'articles': True}, article_list))
 
         paginator = Paginator(article_list, 15) # Show 15 articles per page
         page = request.GET.get('page')
@@ -561,4 +564,4 @@ class UbysseyTheme(object):
             'episodes': episodes
         }
 
-        return render(request, 'podcasts/podcast.html', context)  
+        return render(request, 'podcasts/podcast.html', context)

@@ -7,16 +7,37 @@
   margin-bottom: 1.5rem;
 
   // Background
-  background-color: $color-pink;
+  background-color: $color-primary-1;
   background-size: cover;
   background-position: center;
 
   &--green {
-    background-color: $color-green;
+    background-color: $color-primary-2;
   }
 
   &--blue {
-    background-color: $color-blue;
+    background-color: $color-primary-3;
+  }
+
+  &.redefine {
+    background-color: $color-primary-1;
+    & > h2 {
+      background: $color-primary-1;
+    }
+  }
+
+  &.resolve {
+    background-color: $color-primary-2;
+    & > h2 {
+      background: $color-primary-2;
+    }
+  }
+
+  &.reclaim {
+    background-color: $color-primary-3;
+    & > h2 {
+      background: $color-primary-3;
+    }
   }
 
   // Extra
@@ -79,7 +100,7 @@
   margin: 0;
 
   // Background
-  background: $color-pink;
+  background: #333;
 
   // Text
   color: #fff;
@@ -87,13 +108,13 @@
 }
 
 .o-article-box--green > h2 {
-  background: $color-green;
+  background: $color-primary-2;
 }
 
 .o-article-box--pink > h2 {
-  background: $color-pink;
+  background: $color-primary-1;
 }
 
 .o-article-box--blue > h2 {
-  background: $color-blue;
+  background: $color-primary-3;
 }

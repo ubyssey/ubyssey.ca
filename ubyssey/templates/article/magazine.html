@@ -1,9 +1,16 @@
 {% extends 'magazine/base.html' %}
+{% load dispatch_tags %}
+
+{% block css %}
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% add_version specific_css %}" type=text/css />
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
-  {% include 'magazine/header.html' with color=article.template_fields.color %}
+  {% include 'magazine/header.html' with title=magazine_title color=article.template_fields.color subsection=subsection%}
 
-  <article class="c-article c-article--{{ article.template_fields.color }} c-article--{{ article.template_fields.display }}">
+  <article class="c-article c-article--{{ article.template_fields.color }} c-article--{{ article.template_fields.display }} c-article--{{ subsection }}">
     <div class="u-container u-container--small">
       <h1 class="c-article__headline"><span class="arrow--{{ article.template_fields.color }}"></span>{{ article.headline }}</h1>
       {% if article.template_fields.description %}
@@ -27,7 +34,7 @@
 
     <div class="c-article__suggested u-container u-container--large">
       {% for a in suggested %}
-      <a class="o-article-box o-article-box--{{ a.template_fields.color }}" href="{{ a.get_absolute_url }}" style="background-image: url('{{ a.featured_image.image.get_medium_url }}');">
+      <a class="o-article-box {{subsection}} o-article-box--{{ a.template_fields.color }}" href="{{ a.get_absolute_url }}" style="background-image: url('{{ a.featured_image.image.get_medium_url }}');">
         <h2>{{ a.headline }}</h2>
       </a>
       {% endfor %}

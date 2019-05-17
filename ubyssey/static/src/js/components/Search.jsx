@@ -1,4 +1,5 @@
 import React from 'react';
+import {findDOMNode} from 'react-dom';
 import LRU from 'lru-cache';
 import DispatchAPI from '../api/dispatch'
 
@@ -15,7 +16,7 @@ class Search extends React.Component {
     }
 
     componentDidMount() {
-      this.refs.search.getDOMNode().focus();
+      findDOMNode(this.refs.search).focus();
     }
 
     updateQuery(event) {

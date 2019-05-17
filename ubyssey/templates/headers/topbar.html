@@ -6,22 +6,41 @@
             <ul>
                 <li {% if section == 'news' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'news' %}">News</a>
-                </li><li {% if section == 'culture' %}class="current"{% endif %}>
+                </li>
+                <li {% if section == 'culture' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'culture' %}">Culture</a>
-                </li><li {% if section == 'opinion' %}class="current"{% endif %}>
+                </li>
+                <li {% if section == 'opinion' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'opinion' %}">Opinion</a>
-                </li><li {% if section == 'features' %}class="current"{% endif %}>
+                </li>
+                <li {% if section == 'features' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'features' %}">Features</a>
-                </li><li {% if section == 'sports' %}class="current"{% endif %}>
+                </li>
+                <li {% if section == 'sports' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'sports' %}">Sports</a>
-                </li><li {% if section == 'blog' %}class="current"{% endif %}>
+                </li>
+                <li {% if section == 'blog' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'blog' %}">Blog</a>
-                </li><li {% if section == 'science' %}class="current"{% endif %}>
+                </li>
+                <li {% if section == 'science' %}class="current"{% endif %}>
                     <a href="{% url 'page' 'science' %}">Science</a>
-                </li><li {% if section == 'events' %}class="current"{% endif %}>
-                    <a href="{% url 'events' %}">Events</a>
-                </li><li {% if section == 'podcast' %}class="current"{% endif %}>
-                    <a href="{% url 'podcasts' 'episodes' %}">Podcast <span class='upper-right-decorator'>New</span></a>
+                </li>
+                <li {% if section in 'events,podcast,magazine' %}class="current"{% endif %} id="sections-more-dropdown">
+                    <a href="#">More <span class='upper-right-decorator'>New</span></a>
+                    <ul class="sections-more">
+                        <li {% if section == 'events' %}class="current"{% endif %}>
+                            <a href="{% url 'events' %}">Events</a>
+                        </li>
+                        <li {% if section == 'podcast' %}class="current"{% endif %}>
+                            <a href="{% url 'podcasts' 'episodes' %}">Podcast</a>
+                        </li>
+                        <li {% if section == 'magazine' %}class="current"{% endif %}>
+                            <a href="{% url 'magazine-landing' %}">Magazine<span class='upper-right-decorator'>New</span></a>
+                        </li>
+                        <li {% if section == 'whobyssey' %}class="current"{% endif %}>
+                            <a href="{% url 'page' 'whobyssey' %}">Who?byssey</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

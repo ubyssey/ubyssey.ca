@@ -24,8 +24,7 @@ You can open issues for bugs you've found or features you think are missing. You
 
 ## Office hours
 
-Our office hours for 2018 is 12:30 - 2:00 every Thursday.
-
+Our office hours for 2019 Spring Term is 1:00 - 2:00 every Thursday.
 
 ## License
 

@@ -1,10 +1,11 @@
 import React from 'react';
 
-const ArticleHeader = React.createClass({
-    componentWillMount() {
+class ArticleHeader extends React.Component {
+    UNSAFE_componentWillMount() {
         this.logo = $('img.logo').attr('src');
         this.home = $('a.home-link').attr('href');
-    },
+    }
+
     render() {
         return (
             <header className="topbar header-article">
@@ -22,6 +23,6 @@ const ArticleHeader = React.createClass({
             </header>
         );
     }
-});
+}
 
 export default ArticleHeader;

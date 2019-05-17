@@ -1,11 +1,17 @@
 {% extends 'magazine/base.html' %}
+{% load dispatch_tags %}
+
+{% block css %}
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% add_version specific_css %}" type=text/css />
+{% endblock %}
 
 {% block content %}
 
   <article class="c-poetry">
 
     <div clss="c-poetry__top" style="background-color: {{ article.template_fields.top_color }};">
-      {% include 'magazine/header-poetry.html' with color_a=article.template_fields.text_color_a color_b=article.template_fields.text_color_b %}
+      {% include 'magazine/header-poetry.html' with title=magazine_title color_a=article.template_fields.text_color_a color_b=article.template_fields.text_color_b %}
     </div>
 
     <div class="c-poetry__backdrop" style="background-image: url('{{ article.featured_image.image.get_absolute_url }}'); background-color: {{ article.template_fields.bottom_color }};">
