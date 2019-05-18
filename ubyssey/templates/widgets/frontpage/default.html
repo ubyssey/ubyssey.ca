@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load humanize %}
 {% load dispatch_tags %}
+{% load dispatch_filters %}
 <div class="homepage-section frontpage-container">
     <div class="frontpage">
       <div class="frontpage__columns">
@@ -30,7 +31,13 @@
         {% for article in articles.thumbs %}
             <article class="thumb row padded">
                 <div class="image">
-                    <a href="{{ article.get_absolute_url}}?ref=frontpage"><img src="{{ article.featured_image.image.get_thumbnail_url }}"/></a>
+                    <a href="{{ article.get_absolute_url}}?ref=frontpage">
+                      {% if article.featured_image %}
+                        <img src="{{ article.featured_image.image.get_thumbnail_url }}"/>
+                      {% elif article.featured_video %}
+                        <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"/>
+                      {% endif %}  
+                    </a>
                 </div>
                 <div>
                     <h2 class="headline"><a href="{{ article.get_absolute_url}}?ref=frontpage">{{ article.headline|safe }}</a></h2>
@@ -47,15 +54,22 @@
         <div class="cell middle">
             {% with articles.primary as article %}
             <article class="primary {{ article.template }}">
-                <a class="image" href="{{ article.get_absolute_url }}?ref=frontpage"><img src="{{ article.featured_image.image.get_medium_url }}"/></a>
+                <a class="image" href="{{ article.get_absolute_url }}?ref=frontpage">
+                  {% if article.featured_image %}
+                    <img src="{{ article.featured_image.image.get_medium_url }}"/>
+                  {% elif article.featured_video %} 
+                    <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"/>
+                  {% endif %}
+                </a>
+                
                 <div class="meta">
-                    <a href="{{ article.get_absolute_url }}?ref=frontpage"><h1 class="headline">{{ article.headline|safe }}</h1></a>
-                    <div class="o-article__byline">
-                      <span class="o-article__author">By {{ article.get_author_url|safe }}</span>
-                      <span> &nbsp;·&nbsp; </span>
-                      <span class="o-article__published">{{ article.published_at }}</span>
-                    </div>
-                    <p class="o-article__snippet"><span class="timestamp hide-desktop">{{ article.published_at|naturaltime }}</span>{{ article.snippet|safe }}</p>
+                  <a href="{{ article.get_absolute_url }}?ref=frontpage"><h1 class="headline">{{ article.headline|safe }}</h1></a>
+                  <div class="o-article__byline">
+                    <span class="o-article__author">By {{ article.get_author_url|safe }}</span>
+                    <span> &nbsp;·&nbsp; </span>
+                    <span class="o-article__published">{{ article.published_at }}</span>
+                  </div>
+                  <p class="o-article__snippet"><span class="timestamp hide-desktop">{{ article.published_at|naturaltime }}</span>{{ article.snippet|safe }}</p>
                 </div>
             </article>
             {% endwith %}
