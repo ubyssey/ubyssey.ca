@@ -1,6 +1,6 @@
 # This Dockerfile should be moved to a directory containing both ubyssey.ca and dispatch repos
 # This docker image runs on Debian Jessie, a popular linux distro
-FROM python:2.7
+FROM python:3
 ENV PYTHONUNBUFFERED 1
 RUN export DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \

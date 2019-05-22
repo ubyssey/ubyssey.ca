@@ -31,7 +31,7 @@ class ArticleHelper(object):
             if block['type'] == 'paragraph':
                 word_count += len(block['data'].split(' '))
 
-        reading_time = word_count / words_per_min
+        reading_time = word_count // words_per_min
         return reading_time
 
     @staticmethod
@@ -46,7 +46,7 @@ class ArticleHelper(object):
         paragraph_count = 1
 
         for block in content:
-            paragraph_count = len(filter(lambda b: b['type'] == 'paragraph', content))
+            paragraph_count = len([b for b in content if b['type'] == 'paragraph'])
 
         number_of_ads = 1
         paragraphs_per_ad = 6

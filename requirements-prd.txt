@@ -2,8 +2,8 @@ dispatch==0.5.31
 git+git://github.com/ubyssey/django-google-storage.git
 django-gae-backends
 django-canonical-domain
-mysql-python
-django-phonenumber-field
+mysqlclient
+django-phonenumber-field==2.0.0
 phonenumbers
 beautifulsoup4
 feedparser

@@ -42,11 +42,12 @@ services:
     volumes:
       - ./dispatch/dispatch:/dispatch/dispatch
       - .:/ubyssey.ca
-    volumes_from:
+    volumes_from: 
       - gulp
       - yarn
     ports:
       - "8000:8000"
+      - "4444:4444"
     depends_on:
       db:
         condition: service_healthy

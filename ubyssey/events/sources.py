@@ -144,7 +144,7 @@ class UBCEvent(object):
 
         # Split the start and end times into two elements in a list
         date_time_string = str(dates_string.text)
-        time_strings = map(str.strip, date_time_string.split('-'))
+        time_strings = list(map(str.strip, date_time_string.split('-')))
 
         # Start time is always the same format.
         start_time = datetime.strptime(time_strings[0], '%A, %B %d, %Y %I:%M %p')

@@ -1,4 +1,4 @@
-require('babel-register'); // Pass require()s through babel (for running jasmine)
+require('@babel/register'); // Pass require()s through babel (for running jasmine)
 
 const {series, parallel, src, dest, watch} = require('gulp');
 const log = require('fancy-log');
@@ -132,4 +132,3 @@ exports.default = series(
   parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask), 
   parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask), 
   watchTask)
-
