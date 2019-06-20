@@ -2,9 +2,7 @@ runtime: python37
 entrypoint: gunicorn -b :$PORT --chdir ubyssey/ wsgi:application
 
 automatic_scaling:
-  target_cpu_utilization: .65
-  max_instances: 100
-  min_idle_instances: 2
+  target_cpu_utilization: .75
 
 handlers:
 - url: /robots.txt
