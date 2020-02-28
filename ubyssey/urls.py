@@ -8,7 +8,7 @@ from dispatch.urls import admin_urls, api_urls, podcasts_urls
 from ubyssey.views.feed import FrontpageFeed, SectionFeed
 from ubyssey.views.main import UbysseyTheme
 from ubyssey.views.guide import GuideTheme
-from ubyssey.views.magazine import MagazineTheme
+from ubyssey.views.magazine import theme as magazine_theme
 from ubyssey.views.advertise import AdvertiseTheme
 
 from ubyssey.zones import *
@@ -22,7 +22,6 @@ from django.views.generic import TemplateView
 
 theme = UbysseyTheme()
 guide = GuideTheme()
-magazine = MagazineTheme()
 advertise = AdvertiseTheme()
 
 urlpatterns = []
@@ -54,10 +53,12 @@ urlpatterns += [
     re_path(r'^guide/(?P<slug>[-\w]+)/$', guide.article, name='guide-article'),
 
     # Magazine
-    re_path(r'^magazine/$', magazine.landing, name='magazine-landing'),
-    re_path(r'^magazine/2017/$', magazine.landing_2017, name='magazine-landing-2017'),
-    re_path(r'^magazine/2018/$', magazine.landing_2018, name='magazine-landing-2018'),
-    re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
+    # re_path(r'^magazine/$', magazine.landing, name='magazine-landing'),
+    # re_path(r'^magazine/2017/$', magazine.landing_2017, name='magazine-landing-2017'),
+    # re_path(r'^magazine/2018/$', magazine.landing_2018, name='magazine-landing-2018'),
+    # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
+
+    re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine_theme.magazine, name='magazine-landing'),
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),

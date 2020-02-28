@@ -14,75 +14,49 @@ import ubyssey
 from ubyssey.helpers import ArticleHelper
 
 class MagazineTheme(object):
-    """Views for The Ubyssey Magazine microsite."""
 
-    SITE_TITLE = 'The Ubyssey Magazine'
-
-    mag_titles = {
-        "2017": "Diversity",
-        "2018": "How we Live",
-        "2019": "Presence"
-    }
+    def __init__(self): 
+        self.mags = {}
+    
+    def add_magazine(self, magazine):
+        self.mags[magazine.year]=magazine
 
     def landing(self, request):
-        """Magazine landing page view."""
+        # homepage for all magazines
+        pass
 
-        # Get all 2019 magazine articles
-        articles = Article.objects.select_related('section', 'subsection').filter(is_published=True, section__slug='magazine', tags__name='2019').order_by('-importance')
-        reclaim = []
-        resolve = []
-        redefine = []
+    def magazine(self, request, year=None):
+        """Landing page for a specific magazine year."""
+        if year in self.mags:
+            return self.mags[year].landing(request)
 
-        for article in articles:
-            featuredImage = article.featured_image.image.get_medium_url() if article.featured_image is not None else None
-            color = article.template_fields['color'] if 'color' in article.template_fields else None
-            temp = {
-                    'headline': article.headline,
-                    'url': article.get_absolute_url(),
-                    'featured_image': featuredImage,
-                    'color': color
-            }
-            if article.subsection.slug == 'reclaim':
-                reclaim.append(temp.copy())
-            elif article.subsection.slug == 'resolve':
-                resolve.append(temp.copy())
-            elif article.subsection.slug == 'redefine':
-                redefine.append(temp.copy())
-
-        articles = json.dumps({
-                'reclaim': reclaim,
-                'resolve': resolve,
-                'redefine': redefine,
-            })
-
-        context = {
-            'meta': {
-                'title': 'The Ubyssey Magazine - Presence',
-                'description': 'The February 2019 issue of the Ubyssey magazine.',
-                'url': reverse('magazine-landing'),
-                'image': static('images/magazine/2019/cover.gif')
-            },
-            'cover': 'images/magazine/2019/cover.gif',
-            'reclaimImage': 'images/magazine/2019/subsection-reclaim.png',
-            'redefineImage': 'images/magazine/2019/subsection-redefine.png',
-            'resolveImage': 'images/magazine/2019/subsection-resolve.png',
-            'articles': articles,
-            'url': reverse('magazine-landing')
-        }
-        return render(request, 'magazine/2019/landing.html', context)
+        raise Http404("Page cannot be found") 
 
     def article(self, request, slug=None):
-        """Magazine article page view."""
-
         try:
             article = ArticleHelper.get_article(request, slug)
         except:
             raise Http404('Article could not be found.')
 
         article.add_view()
+
         year = article.tags.get(name__icontains="20").name
 
-        magazine_title = self.mag_titles[year]
+        if year in self.mags:
+            return self.mags[year].article(request, article)
+
+        raise Http404("Magazine for the year %d does not exist." % year) 
+
+class Magazine(object):
+
+    SITE_TITLE = 'The Ubyssey Magazine'
+
+    def __init__(self, year, title): 
+        self.year = str(year)
+        self.title = title
+    
+    def article(self, request, article):
+        """Magazine article page view."""
 
         subsection = article.subsection.name.lower() if article.subsection else ""
 
@@ -103,47 +77,157 @@ class MagazineTheme(object):
             'specific_css': 'css/magazine-' + year + '.css',
             'suggested': ArticleHelper.get_random_articles(2, 'magazine', exclude=article.id),
             'base_template': 'magazine/base.html',
-            'magazine_title': magazine_title
+            'magazine_title': self.title,
         }
 
         t = loader.select_template(['%s/%s' % (article.section.slug, article.get_template_path()), article.get_template_path()])
 
         return HttpResponse(t.render(context))
 
-    def landing_2017(self, request, year=None):
+
+class MagazineV1(Magazine):
+    """View type 1 for The Ubyssey Magazine 2017 2018 microsite."""
+
+    def __init__(self, year, title, description, get_cover, social_cover, template):
+        super().__init__(year, title)
+ 
+        self.description = description
+        self.get_cover = get_cover
+        self.social_cover = social_cover
+        self.template = template
+
+    def landing(self, request, year=None):
         """Archive landing page."""
 
-        # Get all 2017 magazine articles
-        articles = Article.objects.filter(is_published=True, section__slug='magazine', tags__name='2017').order_by('-importance')
+        articles = Article.objects.filter(is_published=True, section__slug='magazine', tags__name=self.year).order_by('-importance')
 
         context = {
             'meta': {
-                'title': 'The Ubyssey Magazine - 2017',
-                'description': 'The Ubyssey\'s first magazine.',
-                'url': reverse('magazine-landing-2017'),
-                'image': static('images/magazine/2017/cover-social.png')
+                'title': self.title,
+                'description': self.description,
+                'url': reverse('magazine-landing', kwargs={'year': self.year}),
+                'image': static(self.social_cover)
             },
-            'cover': 'images/magazine/2017/cover-%d.jpg' % randint(1, 2),
-            'articles': articles
+            'cover': self.get_cover,
+            'articles': articles,
+            'year': self.year
         }
 
-        return render(request, 'magazine/2017/landing.html', context)
+        return render(request, self.template, context)
 
-    def landing_2018(self, request):
+class MagazineV2(Magazine):
+    """View type 2 for The Ubyssey Magazine 2019 2020 microsite."""
+    def __init__(self, year, title, description, get_cover, template, section1_img, section2_img, section3_img, section1_name, section2_name, section3_name):
+        super().__init__(year, title)
+ 
+        self.description = description
+        self.get_cover = get_cover
+        self.template = template
+        self.section1_name = section1_name
+        self.section2_name = section2_name
+        self.section3_name = section3_name
+        self.section1_img = section1_img
+        self.section2_img = section2_img
+        self.section3_img = section3_img
+
+    def landing(self, request, year=None):
         """Magazine landing page view."""
 
-        # Get all 2018 magazine articles
-        articles = Article.objects.filter(is_published=True, section__slug='magazine', tags__name='2018').order_by('-importance')
+        # Get all 2019 magazine articles
+        articles = Article.objects.select_related('section', 'subsection').filter(is_published=True, section__slug='magazine', tags__name=self.year).order_by('-importance')
+        section1 = [] #reclaim
+        section2 = [] #resolve
+        section3 = [] #redefine
+
+        for article in articles:
+            featuredImage = article.featured_image.image.get_medium_url() if article.featured_image is not None else None
+            color = article.template_fields['color'] if 'color' in article.template_fields else None
+            temp = {
+                    'headline': article.headline,
+                    'url': article.get_absolute_url(),
+                    'featured_image': featuredImage,
+                    'color': color
+            }
+            if article.subsection.slug == section1_name:
+                section1.append(temp.copy())
+            elif article.subsection.slug == section2_name:
+                resolve.append(temp.copy())
+            elif article.subsection.slug == section3_name:
+                redefine.append(temp.copy())
+
+        articles = json.dumps({
+                self.section1_name: section1,
+                self.section2_name: section2,
+                self.section3_name: section3,
+            })
 
         context = {
             'meta': {
-                'title': 'The Ubyssey Magazine - How we live',
-                'description': 'The February 2018 issue of the Ubyssey magazine.',
-                'url': reverse('magazine-landing-2018'),
-                'image': static('images/magazine/cover-social.jpg')
+                'title': self.title,
+                'description': self.description,
+                'url': reverse('magazine-landing', kwargs={'year': self.year}),
+                'image': static(self.get_cover)
             },
-            'cover': 'images/magazine/2018/cover.jpg',
+            'cover': self.get_cover,
+            'year': self.year,
+            'section1Image': self.section1_img,
+            'section2Image': self.section2_img,
+            'section3Image': self.section3_img,
             'articles': articles
         }
+        return render(request, self.template, context)
 
-        return render(request, 'magazine/2018/landing.html', context)
+
+theme = MagazineTheme()
+
+mag2017 = MagazineV1(
+    2017,
+    'The Ubyssey Magazine',
+    'The Ubyssey\'s first magazine.',
+    lambda: 'images/magazine/2017/cover-%d.jpg' % randint(1, 2),
+    'images/magazine/2017/cover-social.png',
+    'magazine/2017/landing.html',
+)
+
+mag2018 = MagazineV1(
+    2018,
+    'The Ubyssey Magazine - How we live',
+    'The February 2018 issue of the Ubyssey magazine.',
+    'images/magazine/2018/cover.jpg',
+    'images/magazine/2018/cover-social.jpg',
+    'magazine/2018/landing.html',
+)
+
+mag2019 = MagazineV2(
+    2019,
+    'The Ubyssey Magazine - Presence',
+    'The February 2019 issue of the Ubyssey magazine.',
+    'images/magazine/2019/cover.gif',
+    'magazine/2019/landing.html',
+    'images/magazine/2019/subsection-reclaim.png',
+    'images/magazine/2019/subsection-redefine.png',
+    'images/magazine/2019/subsection-resolve.png',
+    'reclaim',
+    'redefine',
+    'resolve',
+)
+
+# mag2020 = MagazineV2(
+#     2020,
+#     'The Ubyssey Magazine - Presence',
+#     'The February 2019 issue of the Ubyssey magazine.',
+#     'images/magazine/2018/cover-social.jpg',
+#     'images/magazine/2019/subsection-reclaim.png',
+#     'images/magazine/2019/subsection-redefine.png',
+#     'images/magazine/2019/subsection-resolve.png',
+#     'reclaim',
+#     'redefine',
+#     'resolve',
+#     'magazine/2019/landing.html',
+# )
+# return render(request, 'magazine/2018/landing.html', context)
+theme.add_magazine(mag2017)
+theme.add_magazine(mag2018)
+theme.add_magazine(mag2019)
+# theme.add_magazine(mag2020)
+
