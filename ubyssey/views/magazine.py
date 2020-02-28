@@ -212,22 +212,22 @@ mag2019 = MagazineV2(
     'resolve',
 )
 
-# mag2020 = MagazineV2(
-#     2020,
-#     'The Ubyssey Magazine - Presence',
-#     'The February 2019 issue of the Ubyssey magazine.',
-#     'images/magazine/2018/cover-social.jpg',
-#     'images/magazine/2019/subsection-reclaim.png',
-#     'images/magazine/2019/subsection-redefine.png',
-#     'images/magazine/2019/subsection-resolve.png',
-#     'reclaim',
-#     'redefine',
-#     'resolve',
-#     'magazine/2019/landing.html',
-# )
+mag2020 = MagazineV2(
+    2020,
+    'The Ubyssey Magazine - Hot Mess',
+    'The February 2020 issue of the Ubyssey magazine.',
+    'images/magazine/2020/MagCover2020.png',
+    'magazine/2020/landing.html',
+    'images/magazine/2020/WhatGoesAround.png',
+    'images/magazine/2020/ComesAround.png',
+    'images/magazine/2020/WaysForward.png',
+    'What Goes Around',
+    'Comes Around',
+    'Ways Forward',
+)
 # return render(request, 'magazine/2018/landing.html', context)
 theme.add_magazine(mag2017)
 theme.add_magazine(mag2018)
 theme.add_magazine(mag2019)
-# theme.add_magazine(mag2020)
+theme.add_magazine(mag2020)
 
