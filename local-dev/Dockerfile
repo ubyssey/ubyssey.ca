@@ -5,9 +5,10 @@ ENV PYTHONUNBUFFERED 1
 RUN export DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && apt-get -y install build-essential curl \
-  && apt-get -y install vim\ 
+  && apt-get -y install vim \ 
   && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-  && apt-get install -y nodejs \
+  && apt-get -y install nodejs \
+  && apt-get -y install npm \
   && nodejs -v \
   && npm -v
 COPY ./ubyssey.ca ./ubyssey.ca
