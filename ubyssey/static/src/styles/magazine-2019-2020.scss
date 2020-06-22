@@ -49,7 +49,7 @@ video {
 .c-cover__logo {
   // Structure
   position: fixed;
-  top: 50%;
+  top: 45%;
   left: 50%;
   width: auto;
   height: auto;
@@ -161,15 +161,16 @@ h4 {
 
 #magazine-nav {
   // Structure
-  width: 100%;
-  height: $headerHeight;
+  width:100%;
+  background-color: transparent;
   z-index: 100;
-  position: relative;
+  position: relative; 
+  height: $headerHeight;
   left: 0;
   right: 0;
   display: flex;
   align-items: center;
-  box-shadow: 1px 1px rgba(0, 0, 0, .3);
+  box-shadow: 1px 1px rgba(0, 0, 0, .35);
   // Text
   color: #333333;
 
@@ -179,12 +180,12 @@ h4 {
 
   .item {
     // Structure
-    max-width: 500px;
-    margin: auto;
-    display: flex;
+    max-width: 630px;
+    margin:auto;
     justify-content: space-around;
+    display:flex;
     position: absolute;
-
+    align-items: center;
     // Text
     font-family: "Montserrat", sans-serif;
 
@@ -217,7 +218,14 @@ h4 {
       // Structure
       left: 50%;
       transform: translateX(-50%);
-
+      text-align:center;
+      padding: 0;
+      @media ($bp-larger-than-tablet) {
+        color: #fff;
+      }
+      @media (max-width: 640px) {
+        width:95%;
+      }
       // Text
       text-transform: capitalize;
       h1 {
@@ -231,7 +239,10 @@ h4 {
     &.right {
       // Structure
       right: 1rem;
-
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 700px;
+      height: 200px;
       // Text
       text-transform: capitalize;
     }
@@ -243,18 +254,31 @@ h4 {
       border-bottom: 1px solid transparent;
       border-color: #333333;
       transition: border-color #{$time/2};
-      font-size: 1.15rem;
+      font-size: 1.5rem;
+      @media (max-width: 640px) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 4.3vw;
+        margin-right: 0;
+        width:23.75%;
+      }
+      @media ($bp-larger-than-tablet) {
+        border-color: #fff;
+      }
+      
       &.selected,
       &:hover {
         border-color: #000000;
       }
-      :hover {
-        font-size: 1.2rem;
+      &:hover {
+        font-size: 1.55rem;
+        @media (max-width: 640px) {
+          font-size: 1.15rem;
+        }
       }
     }
   }
 }
-
 .subsection-container {
   display: flex;
   flex-direction: column;
@@ -288,7 +312,7 @@ h4 {
     // Text
     color: white;
     text-transform: uppercase;
-    font-size: 6rem;
+    font-size: 3rem;
     text-shadow: -1px 1px 0px rgba(0, 0, 0, 0.6);
     // Structure
     position: absolute;
@@ -403,7 +427,7 @@ h4 {
       top: 0;
       left: 0;
       right: 0;
-      bottom: 65px;
+      bottom: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -423,7 +447,7 @@ h4 {
     width: 100%;
     @media ($bp-larger-than-tablet) {
       overflow-y: scroll;
-      height: calc(100vh -65px);
+      height: calc(100vh - 65px);
       margin-left: 114px;
     }
   }
@@ -438,13 +462,17 @@ h4 {
     min-height: 100vh;
 
     // Background
-    background-color: white;
+    background-color: rgba(255,255,255, 0.3);
+    @media ($bp-larger-than-tablet) {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
 
     // Other
     transition: margin $time;
 
     &.slide-up {
       // Structure
+      background-color: #fff;
       margin-top: -100vh;
       padding-top: $headerHeight;
       min-height: 100vh; 

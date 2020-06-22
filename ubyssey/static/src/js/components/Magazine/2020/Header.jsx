@@ -4,11 +4,11 @@ import {colors} from "./colors.js"
 class Header extends React.Component {
   renderSubsection(subsection) {
     return (
-      <div
+      <li
         className={`subsection ${this.props.selected === subsection ? "selected" : ""}`}
         onClick={() => this.props.selectSubsection(subsection)}>
         <span>{subsection}</span>
-      </div>
+      </li>
     )
   }
 
@@ -27,18 +27,18 @@ class Header extends React.Component {
             onClick={() => {
               this.props.selectSubsection()
             }}>
-            The Ubyssey Magazine
+            The Ubyssey:Hot Mess
           </a>
         </div>
-        <div className={`item center ${show}`}>
+        {/* <div className={`item center ${show}`}>
           <h1>{this.props.title}</h1>
-        </div>
+        </div> */}
 
-        <div className={`item show ${show ? "right" : "center"}`}>
+        <ul className={`item show ${show ? "right" : "center"}`}>
           {this.props.subsections.map((subsection) => {
             return this.renderSubsection(subsection)
           })}
-        </div>
+        </ul>
       </div>
     )
   }
