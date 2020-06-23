@@ -13,10 +13,11 @@ user-agents
 django-user_agents
 gunicorn
 Pillow
-django-debug-toolbar
 google-cloud-datastore
 google-cloud-storage
 google-cloud-secret-manager
 python-memcached
 django-environ
 requests
+django-debug-toolbar
+pylint

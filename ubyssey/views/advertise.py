@@ -32,8 +32,6 @@ class AdvertiseTheme(object):
     def new(self, request):
         """Advertising microsite landing page."""
 
-        version = sys.version
-
         if request.method == 'POST':
             name = request.POST.get('name')
             email = request.POST.get('email')

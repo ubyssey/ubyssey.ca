@@ -43,7 +43,7 @@ class GuideTheme(object):
             'article': article,
             'next': [next_a, next_b]
         }
-        article_page = 'guide/' + year + 'article.html'
+        article_page = 'guide/' + 'article.html'
         return render(request, article_page , context)
 
 guide = GuideTheme(2016, "Guide")

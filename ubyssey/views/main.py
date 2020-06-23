@@ -39,7 +39,7 @@ class UbysseyTheme(object):
 
         trending_article = ArticleHelper.get_trending()
 
-        elections = ArticleHelper.get_topic('AMS Elections').order_by('-published_at')
+        #elections = ArticleHelper.get_topic('AMS Elections').order_by('-published_at')
 
         frontpage_ids = [int(a.id) for a in frontpage[:2]]
 
