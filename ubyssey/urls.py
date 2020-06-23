@@ -49,7 +49,7 @@ urlpatterns += [
 
     # Guide to UBC
     re_path(r'^guide/(?P<year>[0-9]{4})/$', guide.landing, name='guide-landing'),
-    re_path(r'^guide/(?P<slug>[-\w]+)/$', guide.article, name='guide-article'),
+    re_path(r'^guide/(?P<year>[0-9]{4})/(?P<slug>[-\w]+)/$', guide.article, name='guide-article'),
 
     # Magazine
     re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),

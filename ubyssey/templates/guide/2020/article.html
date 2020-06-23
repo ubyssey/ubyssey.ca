@@ -1,4 +1,4 @@
-{% extends 'guide/2016/base.html' %}
+{% extends 'guide/2020/base.html' %}
 
 {% block content %}
 
@@ -9,14 +9,26 @@
         <div class="c-banner--article__inner">
           <div class="c-banner--article__nav">
             <nav class="c-nav-top">
-              <a class="o-logo--small" href="{% url 'guide-landing' 2016 %}"></a>
+              <a class="o-logo--small" href="{% url 'guide-landing' 2020 %}"></a>
               <div class="c-nav-top__message">From your friends at <a href="{% url 'home' %}">The Ubyssey</a></div>
-            </nav>
+               </nav>
           </div>
           <div class="c-banner--article__headings">
             <h1 class="c-heading--main">{{ article.headline }}</h1>
             {% if article.template_fields.subheading %}<h2 class="c-heading--subheading">{{ article.template_fields.subheading }}<h2>{% endif %}
           </div>
+          {% if article.template_fields.banner_quote %}
+          <div class="c-banner--quote">
+            <div class="c-banner--quote__text">
+              {{ article.template_fields.banner_quote }}
+            </div>
+            {% if article.template_fields.banner_quote_source %}
+              <div class="c-banner--quote__source">
+                {{ article.template_fields.banner_quote_source }}
+              </div>
+            {% endif %}
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -41,7 +53,7 @@
   </div>
   <div class="c-tiles">
     {% for a in next %}
-      {% include 'guide/2016/tile.html' with type='3' title=a.headline slug=a.slug image=a.featured_image.image.get_absolute_url %}
+      {% include 'guide/2020/tile.html' with type='3' title=a.headline slug=a.slug image=a.featured_image.image.get_absolute_url %}
     {% endfor %}
   </div>
 </main>

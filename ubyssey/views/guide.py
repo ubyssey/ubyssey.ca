@@ -11,12 +11,12 @@ class GuideTheme(object):
         self.year = str(year)
         self.title = title
 
-    def landing(self, request, year = None):
+    def landing(self, request, year):
         """The Guide to UBC landing page."""
         landing_page = 'guide/' + year + '/index.html'
         return render(request, landing_page, {})
 
-    def article(self, request, slug=None):
+    def article(self, request, year=None, slug=None):
         """Guide article page."""
         try:
             article = ArticleHelper.get_article(request, slug)
@@ -43,7 +43,7 @@ class GuideTheme(object):
             'article': article,
             'next': [next_a, next_b]
         }
-        article_page = 'guide/' + 'article.html'
+        article_page = 'guide/' + year + '/article.html'
         return render(request, article_page , context)
 
 guide = GuideTheme(2016, "Guide")

@@ -46,6 +46,8 @@ class Guide(Template):
     name = 'Guide to UBC'
 
     subheading = CharField('Sub-heading')
+    banner_quote = CharField('Banner-quote')
+    banner_quote_source = CharField('Banner-quote-source')
     intro = TextField('Intro text')
     next_a = CharField('Up next A')
     next_b = CharField('Up next B')
