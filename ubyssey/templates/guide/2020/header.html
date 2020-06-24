@@ -1,0 +1,16 @@
+<header class="c-header">
+    {% if next.1 %}
+        <nav class="c-nav-prev">
+            <a class="o-logo--small" href="{% url 'guide-article' 2020 next.1.slug %}"> {{ next.1.headline }} </a>
+        </nav>
+    {% endif %}
+    <nav class="c-nav-home">
+      <a class="o-logo--small" href="{% url 'guide-landing' 2020 %}"></a>
+    </nav>
+    {% if next.2 %}
+        <nav class="c-nav-next">
+            <a class="o-logo--small" href="{% url 'guide-article' 2020 next.2.slug %}"> {{ next.2.headline }} </a>
+        </nav>
+    {% endif %}
+
+</header>

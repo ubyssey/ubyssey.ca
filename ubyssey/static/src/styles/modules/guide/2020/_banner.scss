@@ -135,16 +135,26 @@
 
   position: absolute;
   background-color: $color-lightblue;
-  width:350px;
-  height:115px;
   font-family: $font-default;
+  color: #ffffff;
 
+  // width:350px;
+  // height:115px;
+  
   width:100%;
   height:110px;
   @media (min-width: 580px) {
     height:80px;
+    bottom: -80px;
   }
-  @media (min-width: 889px) {
+
+  @media (min-width: 865px) {
+    bottom: -40px;
+    right: 0px;
+    width: 400px;
+    height: 110px;
+  }
+  @media (min-width: 1051px) {
     bottom:-40px;
     right: -50px;
     width:400px;
@@ -153,9 +163,8 @@
   &__text{
     position: relative;
     margin:10px;
-    font-family: "Minion Pro";
     line-height: 1.3em;
-    font-weight: bold;
+    font-weight: normal;
     text-align: left;
   }
   &__source{
@@ -164,8 +173,7 @@
     bottom: 10px;
     text-transform: uppercase;
     text-align: right;
-    color: #000000;
-    font-weight: 100;
+    font-weight: bold;
     font-style: italic;
     font-size: 0.77em;
   }

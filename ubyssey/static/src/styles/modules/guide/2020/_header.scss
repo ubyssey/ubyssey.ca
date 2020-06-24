@@ -1,0 +1,18 @@
+.c-header{
+    display: block;
+    position: fixed;
+    background-color: black;
+    top: 60px;
+    .c-nav-prev{
+        background-color: yellow;
+        left:0;
+    }
+    .c-nav-next{
+        background-color: green;
+        right:0;
+    }
+    .c-nav-home{
+        background-color: red;
+        margin:auto;
+    }
+}
