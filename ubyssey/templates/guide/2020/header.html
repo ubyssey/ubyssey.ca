@@ -1,16 +1,29 @@
-<header class="c-header">
-    {% if next.1 %}
-        <nav class="c-nav-prev">
-            <a class="o-logo--small" href="{% url 'guide-article' 2020 next.1.slug %}"> {{ next.1.headline }} </a>
-        </nav>
+<header class = "c-header">
+    <ul class = "c-nav-bar">
+    {% if next.0 %}
+        <li class="c-nav-prev">
+            <a href="{% url 'guide-article' 2020 next.0.slug %}"> {{ next.0.headline }} </a>
+        </li>
     {% endif %}
-    <nav class="c-nav-home">
+    <li id="c-nav-home">
       <a class="o-logo--small" href="{% url 'guide-landing' 2020 %}"></a>
-    </nav>
-    {% if next.2 %}
-        <nav class="c-nav-next">
-            <a class="o-logo--small" href="{% url 'guide-article' 2020 next.2.slug %}"> {{ next.2.headline }} </a>
-        </nav>
+        <ul class = c-home-more>
+        {% if next.0 %}
+        <li class = c-prev>
+            <a href="{% url 'guide-article' 2020 next.0.slug %}"> {{ next.0.headline }} </a>
+        </li>
+        {% endif %}
+        {% if next.1 %}
+        <li>
+            <a href="{% url 'guide-article' 2020 next.1.slug %}"> {{ next.1.headline }} </a>
+        </li>
+        {% endif %}
+        </ul>
+    </li>
+    {% if next.1 %}
+        <li class="c-nav-next">
+            <a href="{% url 'guide-article' 2020 next.1.slug %}"> {{ next.1.headline }} </a>
+        </li>
     {% endif %}
-
+    </ul>
 </header>
