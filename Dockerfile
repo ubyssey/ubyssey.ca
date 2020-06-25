@@ -15,7 +15,6 @@ RUN if [ "$ENVIRON" = "production" ]; then pip install --requirement requirement
 WORKDIR /workspaces/ubyssey.ca/ubyssey/static/
 RUN npm install && npm install -g gulp
 RUN if [ "$ENVIRON" = "production" ]; then gulp build; else gulp buildDev; fi
-RUN rm -rf node_modules
 
 # Clone the Dispatch app into typical app location. These steps are for ease of development
 WORKDIR /workspaces/
@@ -25,7 +24,6 @@ WORKDIR /workspaces/dispatch/
 RUN pip install -e .[dev] && python setup.py develop
 WORKDIR /workspaces/dispatch/dispatch/static/manager
 RUN npm install && npm run-script dev
-RUN rm -rf node_modules
 # Spin the project up
 WORKDIR /workspaces/ubyssey.ca/
 ENV PYTHONUNBUFFERED=1
