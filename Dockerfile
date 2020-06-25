@@ -29,4 +29,4 @@ WORKDIR /workspaces/ubyssey.ca/
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8000
 EXPOSE 8000
-ENTRYPOINT gunicorn --bind :$PORT --chdir ubyssey/ wsgi:application
+#ENTRYPOINT gunicorn --bind :$PORT --chdir ubyssey/ wsgi:application
