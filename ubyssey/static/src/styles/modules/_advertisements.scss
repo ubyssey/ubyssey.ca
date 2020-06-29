@@ -180,6 +180,7 @@ main.article .o-advertisement--leaderboard {
 
   @media(min-width: $width + 40) {
     display: block;
+    z-index: -1;
     &.o-advertisement--homepage {
       display: none;
     }
