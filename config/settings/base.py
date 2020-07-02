@@ -22,7 +22,7 @@ PROJECT_DIR = environ.Path(__file__) - 3 # i.e. the "project root" or /ubyssey.c
 DISPATCH_APP_DIR = DispatchConfig.path
 
 ORGANIZATION_NAME = 'Ubyssey'
-VERSION = '1.9.9'
+VERSION = '1.9.12'
 env = environ.Env() # will reinitialize later once "earliest" configs have been set
 FORCE_GOOGLE_AUTHENTICATION = env.bool("FORCE_GOOGLE_AUTHENTICATION", default=False)
 
