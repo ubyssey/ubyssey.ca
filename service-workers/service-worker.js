@@ -1,7 +1,7 @@
 // var file = new File("../version.txt");
 // var reader = new FileReader(file);
 // var VERSION = reader.readAsText(file);
-var VERSION ='1.9.12'
+var VERSION ='1.9.14'
 var CACHE_NAME = 'ubyssey-cache-v' + VERSION;
 var urlsToCache = [
   // js files

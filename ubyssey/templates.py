@@ -97,6 +97,26 @@ class VoteCompass(Template):
     js = CharField('JavaScript')
 
 @register.template
+class Covid311(Template):
+    id = 'covid-311'
+    name = 'Covid-311'
+
+    IMAGE_SIZE_OPTIONS = (
+        ('default', 'Default'),
+        ('full', 'Full')
+    )
+
+    HEADER_LAYOUT_OPTIONS = (
+        ('right-image', 'Right Image'),
+        ('top-image', 'Top Image'),
+        ('banner-image', 'Banner Image')
+    )
+
+    description = TextField('Description', required=True)
+    image_size = SelectField('Image Size', options=IMAGE_SIZE_OPTIONS)
+    header_layout = SelectField('Header Layout', options=HEADER_LAYOUT_OPTIONS, required=True)
+
+@register.template
 class OneYearLater(Template):
     id = 'one-year-later'
     name = 'Feature: One Year Later'

@@ -1,6 +1,8 @@
 from datetime import datetime
 import random
 import json
+import re
+import logging
 
 from itertools import chain
 
@@ -30,6 +32,8 @@ class UbysseyTheme(object):
 
     SITE_TITLE = 'The Ubyssey'
     SITE_URL = settings.BASE_URL
+    logger = logging.getLogger(__name__)
+    youtube_regex = re.compile(r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})')
 
     def home(self, request):
         frontpage = ArticleHelper.get_frontpage(
@@ -112,8 +116,12 @@ class UbysseyTheme(object):
                     person = Person.objects.get(id=person_id)
                     video_list[index].videoAuthors.append({'name': person.full_name, 'link': VideoHelper.get_media_author_url(person.slug)})
 
+                match = UbysseyTheme.youtube_regex.match(video.url)
+                if match:
+                    video_list[index].youtube_slug = match.group('id')
+                else:
+                    UbysseyTheme.logger.warning("Could not parse youtube slug from given url: %s", video.url)
                 video_list[index].numAuthors = len(video.videoAuthors)
-                video_list[index].youtube_slug = video.url.split('=')[1]
                 video_urls += [VideoHelper.get_video_url(video.id)]
             videos = list(zip(video_list, video_urls))
         
@@ -476,8 +484,12 @@ class UbysseyTheme(object):
                 author_person = Person.objects.get(id=person_id)
                 video_list[index].videoAuthors.append({'name': author_person.full_name, 'link': VideoHelper.get_media_author_url(author_person.slug)})
 
+            match = UbysseyTheme.youtube_regex.match(video.url)
+            if match:
+                video_list[index].youtube_slug = match.group('id')
+            else:
+                UbysseyTheme.logger.warning("Could not parse youtube slug from given url: %s", video.url)
             video_list[index].numAuthors = len(video.videoAuthors)
-            video_list[index].youtube_slug = video.url.split('=')[1]
             video_list[index].video_url = VideoHelper.get_video_url(video.id)
 
         object_list = list(chain(article_list, video_list, image_list, podcasts, episodes))
@@ -622,8 +634,12 @@ class UbysseyTheme(object):
                 person = Person.objects.get(id=person_id)
                 video_list[index].videoAuthors.append({'name': person.full_name, 'link': VideoHelper.get_media_author_url(person.slug)})
 
+            match = UbysseyTheme.youtube_regex.match(video.url)
+            if match:
+                video_list[index].youtube_slug = match.group('id')
+            else:
+                UbysseyTheme.logger.warning("Could not parse youtube slug from given url: %s", video.url)
             video_list[index].numAuthors = len(video.videoAuthors)
-            video_list[index].youtube_slug = video.url.split('=')[1]
             video_list[index].video_url = VideoHelper.get_video_url(video.id)
 
         object_list = list(chain(article_list, person_list, video_list, image_list, podcasts, episodes))

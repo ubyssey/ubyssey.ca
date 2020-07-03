@@ -14,6 +14,7 @@ module.exports = {
       'guide-2020':       './src/js/guide-2020.js',
       'magazine-2019':    './src/js/magazine-2019.js',
       'magazine-2020':    './src/js/magazine-2020.js',
+      'covid-311':        './src/js/covid-311.js',
       blockadblock:       './src/js/blockadblock.js'
   },
   output: {

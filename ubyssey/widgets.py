@@ -1,3 +1,6 @@
+import re
+import logging
+
 from datetime import datetime
 
 from dispatch.models import Article, Subsection, Video, Tag, Author, Person
@@ -111,6 +114,8 @@ class FeaturedVideosWidget(Widget):
     name = 'Featured Videos Widget'
     template = 'widgets/featured-videos.html'
     zones = (HomePageSidebarBottom, )
+    youtube_regex = re.compile(r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})')
+    logger = logging.getLogger(__name__)
 
     featured_tag = CharField('Featured Tag')
     number_of_videos = IntegerField('Number of videos', min_value=1)
@@ -141,8 +146,12 @@ class FeaturedVideosWidget(Widget):
                     person = Person.objects.get(id=person_id)
                     video_list[index].videoAuthors.append({'name': person.full_name, 'link': VideoHelper.get_media_author_url(person.slug)})
 
-                video_list[index].numAuthors = len(video.videoAuthors)
-                video_list[index].youtube_slug = video.url.split('=')[1]
+                match = FeaturedVideosWidget.youtube_regex.match(video.url)
+                if match:
+                    video_list[index].youtube_slug = match.group('id')
+                else:
+                    FeaturedVideosWidget.logger.warning("Could not parse youtube slug from given url: %s", video.url)
+                video_list[index].numAuthors = len(video.videoAuthors)                                
                 video_urls.append(VideoHelper.get_video_url(video.id))
             
             videos = list(zip(video_list, video_urls))

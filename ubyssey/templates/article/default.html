@@ -97,8 +97,8 @@
       <div class="article-content">
       {% block pre-content %}{% endblock %}
         {{ article.html|safe }}
+      {% block post-content %}{% endblock %}
       </div>
-
       {% include 'objects/social-icons-bottom.html' with article=article %}
   </article>
 </main>
