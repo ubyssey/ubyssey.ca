@@ -1,4 +1,6 @@
-<div class="pull-quote attachment">
-    <p class="quote">{{ content }}</p>
-    {% if source %}<p class="source">&mdash; {{ source }}</p>{% endif %}
+<div class="pull-quote attachment __{{ type }}">
+    <div class="pull-quote attachment __{{ type }} -container">
+        <p class="quote">{{ content }}</p>
+        {% if source %}<p class="source">&mdash; {{ source }}</p>{% endif %}
+    </div>
 </div>

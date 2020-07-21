@@ -409,6 +409,24 @@
 }
 
 .pull-quote {
+  &.__left{
+    float: left;
+    margin: 0;
+    margin-right: 15px;
+  }
+  &.__right{
+    float: right;
+    margin: 0;
+    margin-left: 15px;
+  }
+  &.__left,&.__right{
+    &.-container{
+      padding: 0 50px 15px 50px;
+      background: blue;
+      margin: 0;
+    }
+  }
+
   p.quote {
     // font-family: $font-body;
     // font-size: 24px;
@@ -436,6 +454,7 @@
     font-size: 0.77em;
   }
 }
+
 
 hr.page-break{
       display: flex;
