@@ -36,7 +36,7 @@ TEMPLATES += [
 ]
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-STATIC_URL = 'https://ubyssey.storage.googleapis.com/static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 
 # TODO: Figure out why this is development only!
