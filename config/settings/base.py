@@ -121,7 +121,7 @@ NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 # Application definition
 INSTALLED_APPS = [
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
-    'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
+    'ubyssey.apps.UbysseyConfig',
     'dispatch.apps.DispatchConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
