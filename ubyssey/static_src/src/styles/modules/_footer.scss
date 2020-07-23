@@ -95,13 +95,13 @@ footer {
 }
 
 .bottom-row{
-  .archive, .events{
+  .advice, .events{
     @media (min-width: 1200px) {
         display:none;
     }
   }
   
-  .volunteer, .advice {
+  .volunteer, .opinion {
     @media (min-width: 1060px) {
       display:none;
     }

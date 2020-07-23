@@ -1,0 +1,43 @@
+.c-widget-subscribe{
+    height: 300px;
+    position: relative;
+    background-color: #0073A9;
+    .subscribe-message{
+        text-align: center;
+        color: white;
+        img{
+            margin-top: 30px;
+            width: 95%;
+            margin-left: 2%;
+        }
+        .subscribe-content-container{
+            padding: 0 30px;
+            p{
+                text-align: left;
+                line-height: 1.5em;
+            }
+        }
+    }
+    #subscribe-form-widget{
+        display: flex;
+
+        #subscriber-email-widget{
+            width: 70%;
+            height: 25px;
+            &:focus{
+                outline: none;
+            }
+        }
+        button{
+            padding: 0 15px;
+            margin: 0 10px;
+            background-color: rgba(#002145, 0.8);
+            background-image: none;
+            border-color: rgba(#002145, 0.8);
+            color: white;
+        }
+    }
+}
+
+
+

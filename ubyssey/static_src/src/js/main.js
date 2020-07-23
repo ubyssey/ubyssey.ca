@@ -42,6 +42,17 @@ import {initializeUI} from './notifications';
 //   console.warn('Push messaging is not supported');
 // }
 
+$(document).on('submit', '#subscribe-form-widget', function() {
+  // Suscriber stufF TO BE IMPLEMENTED
+  return false;
+});
+
+$(document).on('submit', '#subscribe-form-splash', function() {
+  // Suscriber stufF TO BE IMPLEMENTED
+  return false;
+});
+
+
 function disableScroll($document) {
   $document.on('touchmove', function(e) {
     e.preventDefault();
