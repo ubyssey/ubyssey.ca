@@ -37,3 +37,6 @@ ubyssey/settings*.py
 client-secret.json
 # Keyfile for accessing gcs bucket
 gcs-local.json
+
+# keep migrations out of repo while developing
+migrations/
