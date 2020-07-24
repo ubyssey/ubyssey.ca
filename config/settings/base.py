@@ -123,6 +123,7 @@ INSTALLED_APPS = [
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
     'ubyssey.apps.UbysseyConfig',
     'dispatch.apps.DispatchConfig',
+    'newsletter.apps.NewsletterConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
