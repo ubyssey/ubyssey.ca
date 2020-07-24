@@ -2,7 +2,7 @@
 <footer>
     <div class="u-container{% if homepage %} u-container--large{% endif %}">
         <div class="top-row">
-            <a class="home-link" href="{% url 'home' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small-grey.svg' %}" /></a>
+            <a class="home-link" href="{% url 'home' %}"><img class="logo" src="{% static 'images/ubyssey-logo-small-grey.svg' %}" /></a>
             <ul class="sections">
                 <!-- <li><a href="{% url 'page' 'themainmaller' %}">The Main Maller</a></li> -->
                 <li><a href="{% url 'page' 'news' %}">News</a></li>
@@ -15,6 +15,7 @@
                 <li><a href="{% url 'podcasts' 'episodes' %}">Podcast</a></li>
                 <li><a href="{% url 'videos' %}">Video<!--<span class='upper-right-decorator'>New</span>--></a></li>
                 <li><a href="{% url 'magazine-landing' 2020 %}">Magazine</a></li>
+                <li><a class = "archive" href="{% url 'archive' %}">Archive</a></li>
             </ul>
         </div>
         <div class="bottom-row">
@@ -27,9 +28,9 @@
               <li><a href="{% url 'centennial-landing' %}">Alumni</a></li>
               <li><a href="{% url 'frontpage-feed' %}">Feed</a></li>
               <li><a href="{% url 'page' 'cookie-policy-2020' %}">Cookie Policy</a></li>
-              <li><a class = "archive" href="{% url 'archive' %}">Archive</a></li>
               <li><a class = "events" href="{% url 'events' %}">Events</a></li>
               <li><a class = "advice" href="{% url 'page' 'advice' %}">Get advice</a></li>
+              <li><a class = "opinion" href="{% url 'page' 'opinion' %}">Submit an Opinion</a></li>
             </ul>
             <div class="copyright">&copy; {% now "Y" %} The Ubyssey</div>
         </div>

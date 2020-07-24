@@ -1,0 +1,16 @@
+{% load static %}
+<div class='c-widget-subscribe'>
+    <div class='subscribe-message'>
+        <img src="{% static 'ubyssey/images/ubyssey-logo-white.png' %}"></img>
+        <div class='subscribe-content-container'>
+            <p>We now have a weekly newsletter! Receive a summary of campus
+                news every Wednesday.
+            </p>
+            <p class='subscribe-signup-message'>Sign up with your email:</p>
+            <form id='subscribe-form-widget'>
+                <input type='text' id='subscriber-email-widget' name='subscriber-email-widget' placeholder='Enter email...'></input>
+                <button type='submit' form='subscribe-form-widget' value='subscribe'>Subscribe</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -21,27 +21,27 @@ const version = JSON.parse(fs.readFileSync('./package.json')).version;
 
 function cleanJsTask() {
   return src('../static/ubyssey/js/', {read: false, allowEmpty: true})
-    .pipe(clean());
+    .pipe(clean({force: true}));
 }
 
 function cleanCssTask() {
   return src('../static/ubyssey/css/', {read: false, allowEmpty: true})
-    .pipe(clean());
+    .pipe(clean({force: true}));
 }
 
 function cleanImagesTask() {
   return src('../static/ubyssey/images/', {read: false, allowEmpty: true})
-    .pipe(clean());
+    .pipe(clean({force: true}));
 }
 
 function cleanVideosTask() {
   return src('../static/ubyssey/videos/', {read: false, allowEmpty: true})
-    .pipe(clean());
+    .pipe(clean({force: true}));
 }
 
 function cleanFontsTask() {
   return src('../static/ubyssey/fonts/', {read: false, allowEmpty: true})
-    .pipe(clean());
+    .pipe(clean({force: true}));
 }
 
 function webpackBuildTask(callback) {
