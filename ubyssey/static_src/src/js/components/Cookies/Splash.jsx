@@ -73,7 +73,7 @@ class Splash extends React.Component {
       } else {
         this.setState({ showAdvertisementSplash: false })
       }
-      if (enableSubscribeSplash === undefined || (visitCount%3 == 0 && enableSubscribeSplash)) {
+      if (enableSubscribeSplash === undefined || (visitCount%1 == 0 && enableSubscribeSplash)) {
         this.setState({ showSubscribeSplash: true })
       } else{
         this.setState({ showSubscribeSplash: false })
