@@ -89,7 +89,8 @@ class Splash extends React.Component {
             <div className='subscribe-container'>
               <div className='subscribe-fullscreen' />
               <div className='subscribe-content'>
-                <div className='subscribe-close-message'>
+                <div className='subscribe-close-message'
+                  onClick={() => this.setState({showSubscribeSplash: false})}>
                   Not now, thank you
                 </div>
                 <div className='subscribe-close-arrow'
