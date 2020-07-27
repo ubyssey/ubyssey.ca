@@ -1,7 +1,9 @@
 import * as mp from './modules/Mixpanel';
 import upcomingEvents from './widgets/upcoming-events';
+import {showNewsletter} from './components/Cookies/NewsLetterSplash'
 import {initializeUI} from './notifications';
 
+showNewsletter();
 // if ('serviceWorker' in navigator && 'PushManager' in window) {
 //   navigator.serviceWorker.register('/service-worker.js')
 //   .then(function(swReg) {
@@ -41,17 +43,6 @@ import {initializeUI} from './notifications';
 // } else {
 //   console.warn('Push messaging is not supported');
 // }
-
-$(document).on('submit', '#subscribe-form-widget', function() {
-  // Suscriber stufF TO BE IMPLEMENTED
-  return false;
-});
-
-$(document).on('submit', '#subscribe-form-splash', function() {
-  // Suscriber stufF TO BE IMPLEMENTED
-  return false;
-});
-
 
 function disableScroll($document) {
   $document.on('touchmove', function(e) {

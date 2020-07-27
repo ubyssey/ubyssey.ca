@@ -72,4 +72,5 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 25621440
 
 ADMINS = [
 	('Keegan', 'k.landrigan@ubyssey.ca'),
+    ('David', 'd.kao@ubyssey.ca')
 ]

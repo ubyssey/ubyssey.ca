@@ -103,7 +103,34 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 </script>
 
 <div id="page-wrapper">
-<div id="ubyssey-splash"></div>
+<div id="adblock-splash"></div>
+<div id='subscribe-splash'>        
+  <div class='subscribe-container'>
+    <div class='subscribe-fullscreen'></div>
+    <div class='subscribe-content'>
+      <div id='subscribe-close-message'>
+        Not now, thank you
+        <div class='subscribe-close-arrow'></div>
+      </div>
+      
+      <img></img>
+      <h1>Enjoying the Ubyssey?</h1>
+      <p>If you like our content, don't forget to subscribe to our weekly newsletter.
+          Always stay up to date on the news!
+      </p>
+      <div class='subscribe-form-splash-container'>
+          <form id='subscribe-form-splash'>
+          <input type='text' id='subscriber-email-splash' name='subscriber-email-splash' value='{{ subscriber_email }}' placeholder='Enter email...'></input>
+          <button type='submit' form='subscribe-form-widget' value='subscribe'>Subscribe</button>
+          </form>
+          <button id='already-sub-button'>
+          Already Subscribed?
+          </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="cookie-disclaimer"></div>
 {% zone 'site-banner' %}
 {% block header %}{% endblock %}

@@ -222,7 +222,7 @@ class AdvertisementWidget(Widget):
 class SubscribeWidget(Widget):
     id = 'subscribe'
     name = 'Subscribe'
-    template = 'widgets/subscribe.html'
+    template = 'widgets/newsletter.html'
     zones = (FrontPage, HomePageSidebarBottom,)
 
 @register.widget
