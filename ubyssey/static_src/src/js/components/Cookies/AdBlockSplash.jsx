@@ -1,7 +1,7 @@
 import React from 'react'
 import Cookies from 'js-cookie'
 
-class Splash extends React.Component {
+class AdBlockSplash extends React.Component {
   constructor(props){
     super(props)
     this.state = {
@@ -73,54 +73,13 @@ class Splash extends React.Component {
       } else {
         this.setState({ showAdvertisementSplash: false })
       }
-      if (enableSubscribeSplash === undefined || (visitCount%1 == 0 && enableSubscribeSplash)) {
-        this.setState({ showSubscribeSplash: true })
-      } else{
-        this.setState({ showSubscribeSplash: false })
-      }
     }
   }
 
   render() {
     return (
       <div>
-        { this.state.showSubscribeSplash && 
-          <div id='subscribe-splash'>
-            <div className='subscribe-container'>
-              <div className='subscribe-fullscreen' />
-              <div className='subscribe-content'>
-                <div className='subscribe-close-message'
-                  onClick={() => this.setState({showSubscribeSplash: false})}>
-                  Not now, thank you
-                </div>
-                <div className='subscribe-close-arrow'
-                      onClick={() => this.setState({showSubscribeSplash: false})}>
-                    </div>
-                <img></img>
-                <h1>Enjoying the Ubyssey?</h1>
-                <p>If you like our content, don't forget to subscribe to our weekly newsletter.
-                    Always stay up to date on the news!
-                </p>
-                { !navigator.cookieEnabled &&
-                  <em>It looks like you have disabled cookies, the 'Don't ask again' button may not work while cookies are disabled</em>
-                }
-                <div className='subscribe-form-splash-container'>
-                    <form id='subscribe-form-splash'>
-                    <input type='text' id='subscriber-email-splash' name='subscriber-email-splash' placeholder='Enter email...'></input>
-                    <button type='submit' form='subscribe-form-splash' value='subscribe'>Subscribe</button>
-                    </form>
-                    <button
-                    className='already-sub-button'
-                    onClick={() => this.disableSubscribeSplash()}>
-                    Already Subscribed?
-                    </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
         { this.state.showAdvertisementSplash &&
-          <div id='adblock-splash'>
             <div className='adblock-container'>
               <div className='adblock-fullscreen' />
               <div className='adblock-content'>
@@ -142,11 +101,10 @@ class Splash extends React.Component {
                   </div>
               </div>
             </div>
-          </div>
         }
       </div>
     )
   }
 }
 
-export default Splash
+export default AdBlockSplash

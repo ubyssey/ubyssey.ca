@@ -118,7 +118,7 @@
 
 #subscribe-splash {
   // Structure
-  display: inline;
+  display: none;
 }
 
 .subscribe-container {
@@ -228,7 +228,7 @@
   }
 }
 
-.already-sub-button {
+#already-sub-button {
   background: none;
   border: none;
   color: white;
@@ -246,30 +246,30 @@
   }
 }
 
-.subscribe-close-message{
+#subscribe-close-message{
+  display: flex;
   position: absolute;
   opacity: 0.6;
-  right: 47px;
+  right: 45px;
   font-size: 12px;
-  top: 26px;
+  top: 25px;
   height: 25px;
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .subscribe-close-arrow {
   // Structure
   position: absolute;
-  right: 25px;
-  top: 25px;
+  right: -20px;
   width: 25px;
   height: 25px;
 
   // Extra
-  opacity: 0.5;
   cursor: pointer;
-  &:hover {
-    opacity: 1;
-  }
 }
+
 .subscribe-close-arrow:before, .subscribe-close-arrow:after {
   // Structure
   position: absolute;

@@ -4,7 +4,7 @@ import './modules/Youtube'
 import { ArticlesSuggested } from './components/Article'
 import { Poll } from './components/Poll'
 import Search from './components/Search.jsx';
-import { Splash, CookieDisclaimer } from './components/Cookies'
+import { AdBlockSplash, CookieDisclaimer } from './components/Cookies'
 import { Galleries } from './components/Gallery'
 import Timeline from './components/Timeline.jsx'
 import Episode from './components/Podcast/Episode.jsx'
@@ -23,8 +23,8 @@ $(function () {
         )
     })
     ReactDOM.render(
-        <Splash />,
-        document.getElementById('ubyssey-splash')
+        <AdBlockSplash />,
+        document.getElementById('adblock-splash')
     )
     ReactDOM.render(
         <CookieDisclaimer />,

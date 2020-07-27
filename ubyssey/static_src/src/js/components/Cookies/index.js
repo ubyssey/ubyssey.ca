@@ -1,6 +1,6 @@
-import Splash from './Splash.jsx'
+import AdBlockSplash from './AdBlockSplash.jsx'
 import CookieDisclaimer from './CookieDisclaimer.jsx'
 export {
-  Splash as Splash,
+  AdBlockSplash as AdBlockSplash,
   CookieDisclaimer as CookieDisclaimer,
 }

@@ -1,7 +1,9 @@
 import * as mp from './modules/Mixpanel';
 import upcomingEvents from './widgets/upcoming-events';
+import {showNewsletter} from './components/Cookies/NewsLetterSplash'
 import {initializeUI} from './notifications';
 
+showNewsletter();
 // if ('serviceWorker' in navigator && 'PushManager' in window) {
 //   navigator.serviceWorker.register('/service-worker.js')
 //   .then(function(swReg) {
