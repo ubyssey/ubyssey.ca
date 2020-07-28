@@ -132,6 +132,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'rest_framework.authtoken',
+    'widget_tweaks',
 ]
 
 # Replace default user model
