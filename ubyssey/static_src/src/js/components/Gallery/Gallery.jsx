@@ -272,7 +272,7 @@ class Gallery extends React.Component{
             var imageStyle = { maxHeight: $(window).height() - 200 };
             return (
                 <div className="slide">
-                    <img className="slide-image" style={imageStyle} src={this.state.image} />
+                    <img className="slide-image" style={imageStyle} src={this.state.image} alt=""/>
                     <p className="slide-caption">{this.state.caption}</p>
                     {this.renderControls()}
                 </div>

@@ -34,9 +34,9 @@
                 <div class="image">
                     <a href="{{ article.get_absolute_url}}?ref=frontpage">
                       {% if article.featured_image %}
-                        <img src="{{ article.featured_image.image.get_thumbnail_url }}"/>
+                        <img src="{{ article.featured_image.image.get_thumbnail_url }}" alt=""/>
                       {% elif article.featured_video %}
-                        <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"/>
+                        <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
                       {% endif %}  
                     </a>
                 </div>
@@ -57,9 +57,9 @@
             <article class="primary {{ article.template }}">
                 <a class="image" href="{{ article.get_absolute_url }}?ref=frontpage">
                   {% if article.featured_image %}
-                    <img src="{{ article.featured_image.image.get_medium_url }}"/>
+                    <img src="{{ article.featured_image.image.get_medium_url }}" alt=""/>
                   {% elif article.featured_video %} 
-                    <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"/>
+                    <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
                   {% endif %}
                 </a>
                 

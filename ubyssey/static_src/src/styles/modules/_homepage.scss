@@ -632,3 +632,26 @@ ol.article-list {
     }
   }
 }
+
+.sidebar-issue{
+  @media($bp-smaller-than-phablet){
+    text-align: center;
+  }
+}
+.issue{
+  margin-left:15px;
+  transition: 0.2s;
+  &:hover{
+    font-size: 15px; 
+  }
+}
+#issue-photo{
+  margin-top: 20px;
+  @media($bp-smaller-than-phablet){
+    width: 60%;
+    margin: 20px auto 0 auto;
+    img{
+      width: 100%;
+    }
+  }
+}

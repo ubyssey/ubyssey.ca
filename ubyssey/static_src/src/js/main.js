@@ -104,7 +104,7 @@ function embedMargins() {
         var issueID = '#issue' + (i+1);
         $(issueID).attr('href', 'https://issuu.com/ubyssey/docs/' + docName).text(title);
         if(i == 0)
-        $(issueID).append('<img src="https://image.isu.pub/' + docId +'/jpg/page_1_thumb_large.jpg">');
+        $(issueID).append('<img src="https://image.isu.pub/' + docId +'/jpg/page_1_thumb_large.jpg" alt="To our digital issue>');
       }
     };
     req.send();

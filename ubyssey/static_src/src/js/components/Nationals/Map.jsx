@@ -23,6 +23,7 @@ class Map extends React.Component {
     return(
       <img className='c-nationals-map-marker'
         src={team.image.thumbnail} 
+        alt=""
         onClick={() => {this.props.selectTeam(team)}}
         style={logoStyle}/>
     )

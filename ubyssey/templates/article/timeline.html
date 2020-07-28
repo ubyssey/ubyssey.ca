@@ -26,7 +26,7 @@
                 </div>
                 <div class="right">
                     <div class="full-width featured-media">
-                        <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}"/>
+                        <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}" alt=""/>
                         {% if article.featured_image.caption %}
                         <div class="caption">
                             {{ article.featured_image.caption }} <span class="credit">{{ article.featured_image.credit }}</span>
@@ -38,7 +38,7 @@
         {% elif header_layout == 'top-image' %}
             <div class="header-container">
                 <div class="featured-media">
-                    <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}"/>
+                    <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}" alt=""/>
                 </div>
                 <div class="headline-container">
                     <h1 class="o-headline o-headline--article">{{ article.headline|safe }}</h1>

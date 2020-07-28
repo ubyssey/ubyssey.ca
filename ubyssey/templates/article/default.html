@@ -51,7 +51,7 @@
       <div class="right-column">
         {% if article.featured_image %}
         <div class="featured-media">
-          <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %}" data-credit="{% if article.featured_image.credit %}{{ article.featured_image.credit }}{% endif %}" data-url="{{ article.featured_image.image.get_absolute_url }}" src="{{ article.featured_image.image.get_medium_url }}"/>
+          <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %}" data-credit="{% if article.featured_image.credit %}{{ article.featured_image.credit }}{% endif %}" data-url="{{ article.featured_image.image.get_absolute_url }}" src="{{ article.featured_image.image.get_medium_url }}" alt=""/>
           {% if article.featured_image.caption or article.featured_image.credit %}
           <div class="caption">
             {% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %} {% if article.featured_image.credit %}<span class="credit">{{ article.featured_image.credit }}{% if not article.featured_image.has_custom_credit %}{% endif %}</span>{% endif %}
@@ -108,7 +108,7 @@
   <div class="image-container">
     <div class="image-inner">
       <div class="slide">
-        <img class="slide-image" />
+        <img class="slide-image" alt=""/>
         <p class="slide-caption"></p>
         <div class="navigation">
           <a class="prev-slide" href="#"><i class="fa fa-chevron-left"></i></a>

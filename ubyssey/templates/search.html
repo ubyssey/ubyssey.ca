@@ -29,7 +29,7 @@
                     <article>
                         {% if article.featured_image %}
                         <a href="{{ article.get_absolute_url }}" class="image">
-                            <img src="{{ article.featured_image.image.get_absolute_url }}" />
+                            <img src="{{ article.featured_image.image.get_absolute_url }}" alt=""/>
                         </a>
                         {% endif %}
                         <a href="{{ article.get_absolute_url }}"><h2 class="headline">{{ article.headline|safe }}</h2></a>

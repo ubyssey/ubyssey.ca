@@ -5,9 +5,9 @@
       <div class="o-article__left">
         <a class="o-article__image" href="{{ article.get_absolute_url }}">
           {% if article.featured_image %}
-            <img src="{{ article.featured_image.image.get_thumbnail_url }}" />
+            <img src="{{ article.featured_image.image.get_thumbnail_url }}" alt=""/>
           {% else %}
-            <img src="https://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" />
+            <img src="https://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
           {% endif %}
         </a>
       </div>

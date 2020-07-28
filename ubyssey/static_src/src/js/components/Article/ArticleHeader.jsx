@@ -12,7 +12,7 @@ class ArticleHeader extends React.Component {
                 <div className="u-container">
                     <div className="section-name">
                         <a href={this.home} className="icon-logo">
-                            <img className="logo" src={this.logo} />
+                            <img className="logo" src={this.logo} alt=""/>
                         </a>
                         <span>{this.props.name}</span>
                     </div>
