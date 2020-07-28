@@ -4,9 +4,10 @@ __pycache__/
 *$py.class
 
 # Static file folders
+/gcs/
 /media/
 /static/
-/ubyssey/static/dist/
+/ubyssey/static/
 
 # env files
 *.env
@@ -36,4 +37,3 @@ ubyssey/settings*.py
 client-secret.json
 # Keyfile for accessing gcs bucket
 gcs-local.json
-.gitignore

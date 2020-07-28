@@ -1,0 +1,277 @@
+$more-column-left-start: 2;
+$more-column-left-end: 8;
+
+$more-column-right-start: 6;
+$more-column-right-end: 12;
+
+$normal-column-left-start: 2;
+$normal-column-left-end: 7;
+
+$normal-column-right-start: 7;
+$normal-column-right-end: 12;
+
+$less-column-left-start: 2;
+$less-column-left-end: 6;
+
+$less-column-right-start: 8;
+$less-column-right-end: 12;
+
+$row-start: 2;
+$row-height300-end: 8;
+$row-height350-end: 9;
+$row-height400-end: 10;
+$row-height450-end: 11;
+
+$margin-size: 10px;
+@media($bp-smaller-than-tablet){
+    $margin-size: 5px;
+}
+
+.section-grid-container {
+    .section-title{
+        width: 100%;
+        font-family: $header-font;
+        font-weight: $header-weight;
+        text-transform: uppercase;
+    }
+
+    .quote-box-content{
+        &.-container{
+            width: 100%;
+            margin: 0;
+            position: relative;
+        }
+
+        &.quote{
+            height: 75%;
+            padding: 10% 7%;
+        }
+        
+        &.source{
+            position: absolute;
+            bottom: 10%;
+            right: 5%;
+        }
+    }
+}
+
+@media($bp-larger-than-tablet){
+    .section-grid-container {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        @media (max-width: 1600px) {
+            grid-auto-rows: minmax(3.5vw, auto);
+        }
+        grid-auto-rows: 60px;
+        .section-title{
+            @media (max-width: 1600px) {
+                font-size: 4vw;
+                line-height: 5vw;
+            }
+            font-size: 65px;
+            line-height: 70px;
+            grid-column: 7 / 12;
+            grid-row: 2 / 5;
+            
+
+            p{
+                width: 85%;
+                margin: 0.3em 1.2em;
+            }
+        }
+
+        .article-box{
+            margin: $margin-size;
+            &.__type-{
+                &1,&3,&5,&8,&11,&14{
+                    grid-column-start: $normal-column-left-start;
+                    grid-column-end: $normal-column-left-end;
+                }
+                &7,&13,&17{
+                    grid-column-start: $more-column-left-start;
+                    grid-column-end: $more-column-left-end;
+                }
+                &2,&6,&9,&10,&12,&15,&16{
+                    grid-column-start: $normal-column-right-start;
+                    grid-column-end: $normal-column-right-end;
+                }
+                &4{
+                    grid-column-start: $more-column-right-start;
+                    grid-column-end: $more-column-right-end;
+                }
+
+                &1{
+                    grid-row-start: $row-start;
+                    grid-row-end: $row-height300-end;
+                }
+                &2{
+                    grid-row-start: $row-start+3;
+                    grid-row-end: $row-height350-end+3; 
+                }
+                &3{
+                    grid-row-start: $row-start+6;
+                    grid-row-end: $row-height450-end+6;
+                }
+                &4{
+                    grid-row-start: $row-start+15;
+                    grid-row-end: $row-height350-end+15;
+                }
+                &5{
+                    grid-row-start: $row-start+22;
+                    grid-row-end: $row-height450-end+22;
+                }
+                &6{
+                    grid-row-start: $row-start+22;
+                    grid-row-end: $row-height450-end+22;
+                }
+                &7{
+                    grid-row-start: $row-start+31;
+                    grid-row-end: $row-height350-end+31;
+                }
+                &8{
+                    grid-row-start: $row-start+38;
+                    grid-row-end: $row-height350-end+38;
+                }
+                &9{
+                    grid-row-start: $row-start+38;
+                    grid-row-end: $row-height450-end+38;
+                }
+                &10{
+                    grid-row-start: $row-start+47;
+                    grid-row-end: $row-height300-end+47;
+                }
+                &11{
+                    grid-row-start: $row-start+53;
+                    grid-row-end: $row-height450-end+53;
+                }
+                &12{
+                    grid-row-start: $row-start+53;
+                    grid-row-end: $row-height450-end+53;
+                }
+                &13{
+                    grid-row-start: $row-start+62;
+                    grid-row-end: $row-height350-end+62;
+                }
+                &14{
+                    grid-row-start: $row-start+69;
+                    grid-row-end: $row-height350-end+69;
+                }
+                &15{
+                    grid-row-start: $row-start+69;
+                    grid-row-end: $row-height450-end+69;
+                }
+                &16{
+                    grid-row-start: $row-start+78;
+                    grid-row-end: $row-height300-end+78;
+                }
+                &17{
+                    grid-row-start: $row-start+84;
+                    grid-row-end: $row-height350-end+84;
+                }
+            }
+        }
+
+        .quote-box{
+            margin: $margin-size;
+            &-content{
+                &.-container{
+                    width: 100%;
+                    height: 95%;
+                    margin: 0;
+                    position: relative;
+                }
+            }
+            &.__type-{
+                &1{
+                    grid-column-start: $normal-column-right-start;
+                    grid-column-end: $normal-column-right-end;
+
+                    &.quote{
+                        height: 70%;
+                    }
+                }
+                &2{
+                    grid-column-start: $less-column-left-start;
+                    grid-column-end: $less-column-left-end;
+                }
+                &3,&5,&7{
+                    grid-column-start: $less-column-right-start;
+                    grid-column-end: $less-column-right-end;
+                }
+                &4,&6{
+                    grid-column-start: $normal-column-left-start;
+                    grid-column-end: $normal-column-left-end;
+                }
+                    
+
+                &1{
+                    grid-row-start: 12;
+                    grid-row-end: 17;
+                }
+                &2{
+                    grid-row-start: $row-start+15;
+                    grid-row-end: $row-height350-end+15;
+                }
+                &3{
+                    grid-row-start: $row-start+31;
+                    grid-row-end: $row-height350-end+31;
+                }
+                &4{
+                    grid-row-start: $row-start+45;
+                    grid-row-end: $row-height400-end+45;
+                }
+                &5{
+                    grid-row-start: $row-start+62;
+                    grid-row-end: $row-height350-end+62;
+                }
+                &6{
+                    grid-row-start: $row-start+76;
+                    grid-row-end: $row-height400-end+76;
+                }
+                &7{
+                    grid-row-start: $row-start+84;
+                    grid-row-end: $row-height350-end+84;
+                }
+            }
+        }
+    }
+}
+
+@media($bp-smaller-than-tablet){
+    .section-grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: minmax(3.5vw, auto);
+        .section-title{
+            height: 20vw;
+            grid-column: 1 / 3;
+            font-size: 5vw;
+            line-height: 5vw;
+            p{
+                text-align: center;
+                margin-top: 9%;
+            }
+        }
+        .article-box{
+            margin: $margin-size;
+            height: 40vw;
+            &.__type-{
+                &1,&4,&9,&14,&17{
+                    grid-column: 1 / 3;
+                }
+                &2,&5,&7,&10,&12,&15{
+                    grid-column: 1;
+                }
+                &3,&6,&8,&11,&13,&16{
+                    grid-column: 2;
+                }
+            }
+        }
+
+        .quote-box{
+            height: 30vw;
+            margin: $margin-size;
+            grid-column: 1 / 3;
+        }
+    }
+}

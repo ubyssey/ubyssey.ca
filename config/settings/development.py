@@ -18,14 +18,12 @@ MIDDLEWARE = (
     'django_user_agents.middleware.UserAgentMiddleware',
 )
 
-
-# TODO: Figure out why this is development only!
 TEMPLATES += [
- {
+{
         'NAME': 'ubyssey',
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-			PROJECT_DIR('ubyssey/templates/')
+			BASE_DIR('ubyssey/templates/')
         ],
         'OPTIONS': {
             'context_processors': [
@@ -35,22 +33,16 @@ TEMPLATES += [
     }
 ]
 
-# TODO: Figure out why this is development only!
-STATICFILES_DIRS += [
-    PROJECT_DIR('ubyssey/static/dist'),
-    PROJECT_DIR('service-workers'),
-]
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# TODO: Figure out why this is development only!
 GCS_CREDENTIALS_FILE = '../gcs-local.json'
 
-# TODO: Figure out why this is development only!
-SERVICE_WORKER_URL = '/service-worker.js'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# TODO: Figure out why this is development only!
-MEDIA_ROOT = PROJECT_DIR('media')
+GCS_CREDENTIALS_FILE = '../gcs-local.json'
 
-# TODO: Figure out why this is NOT in deployment!
 # Use in-memory file handler on Google App Engine
 FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.MemoryFileUploadHandler',]
 FILE_UPLOAD_MAX_MEMORY_SIZE = 25621440

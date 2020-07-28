@@ -1,0 +1,33 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  font-size: 18px;
+  @media($bp-smaller-than-mobile) {
+    font-size: 14px;
+  }
+}
+
+body {
+  font-family: $font-secondary;
+  font-size: 1rem;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+.quote{
+  color: $color-white;
+  font-family: $quote-font;
+  font-size: $quote-size;
+  font-weight: $quote-weight;
+  line-height: 1.6rem;
+}
+
+
+.source{
+  color: $color-white;
+  font-family: $credit-font;
+  font-style: $credit-style;
+  font-size: $credit-size;
+  line-height: 1.3rem;
+}

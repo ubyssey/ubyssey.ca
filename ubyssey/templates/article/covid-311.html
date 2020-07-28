@@ -25,7 +25,7 @@
                 </div>
                 <div class="right">
                     <div class="full-width featured-media">
-                        <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}"/>
+                        <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}" alt=""/>
                         {% if article.featured_image.caption %}
                         <div class="caption">
                           {{ article.featured_image.caption }} <span class="credit">{{ article.featured_image.credit }}</span>
@@ -37,7 +37,7 @@
         {% elif header_layout == 'top-image' %}
             <div class="header-container">
                 <div class="featured-media">
-                    <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}"/>
+                    <img class="article-attachment" data-id="{{ article.featured_image.id }}" data-caption="{{ article.featured_image.caption }}" data-url="{{ article.featured_image.image.get_absolute_url }}" data-credit="{{ article.featured_image.credit }}" src="{{ article.featured_image.image.get_absolute_url }}" alt=""/>
                     {% if article.featured_image.caption or article.featured_image.credit %}
                     <div class="caption">
                       {% if article.featured_image.caption %}{{ article.featured_image.caption }}{% endif %} {% if article.featured_image.credit %}<span class="credit">{{ article.featured_image.credit }}{% if not article.featured_image.has_custom_credit %}{% endif %}</span>{% endif %}
@@ -97,36 +97,61 @@
 {% endif %}
 
 {% block pre-content %}
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <div id="covid_call_types_chart1" style="background-color: white;">
-      <div id="chart_title"></div>
-      <div id="chart_body"></div>
-      <div id="chart_labels"></div>
-      <button id='March2020'>March 2020</button>
-      <button id='April2020'>April 2020</button>    
-  </div>
 {% endblock %}
 
 {% block post-content %}
-<div id="covid_call_types_chart2" style="background-color: white;">
-  <div id="chart_title"></div>
-  <div id="chart_keyword"></div>
-  <div id="chart_body"></div>
-  <div id="chart_labels"></div>
-  <button id='Total'>Total</button>
-  <button id='Complaint'>Complaint</button>
-  <button id='Event'>Event</button>
-  <button id='Film'>Film</button>
-  <button id='Traffic'>Traffic</button>
-  <br>
-  <button id='Transit'>Transit</button>
-  <button id='Noise complaint'>Noise complaint</button>
-  <button id='Homelessness'>Homelessness</button>
-  <button id='Donation'>Donation</button>
-  <button id='Volunteer'>Volunteer</button>
-</div>
+    <p>As Vancouver settles into a ‘new normal’ of physical distancing, telecommuting and taking classes online, these new patterns are affecting everyday life and the operations of the city. 
+        <em>The Ubyssey</em> analyzed the <a href="https://opendata.vancouver.ca/explore/?disjunctive.features&amp;disjunctive.theme&amp;disjunctive.keyword&amp;disjunctive.data-owner&amp;
+        disjunctive.data-team&amp;sort=modified&amp;q=311" target="_blank">content data</a> 
+        on the city’s non-emergency phone line, available through Vancouver’s open data portal, to catch a glimpse of how things on a municipal level have been affected by the COVID-19 pandemic.</p>
+    <p>Since 2009, the City of Vancouver has run a call centre line that can be reached at 311, by email or through VanConnect, an app run by the city. 
+        The centre fields questions and complaints on subjects ranging from noise and broken traffic lights, to large-event-planning and issues of homelessness.</p>
+    <p>Since March, the centre has also taken calls relating to COVID-19. Data on 311 interactions published by the city is one resource we can utilize to see just how operations in the city have changed during the pandemic.</p>
+    <div id="covid_call_types_chart1" style="background-color: white; text-align: center;">
+        <div id="chart_title"></div>
+        <div id="chart_body"></div>
+        <div id="chart_labels"></div>
+        <button id='March2020'>March 2020</button>
+        <button id='April2020'>April 2020</button>    
+    </div>
+    <h2>COVID-19 interactions</h2>
+        <p>The city’s records arrange COVID-19-related interactions with the centre into 26 different categories, which include complaints about physical distancing violations, referrals to different organizations and inquiries relating to the pandemic.</p>
+        <p>Interactions relating to physical distancing — complaints, violations and inquiries — have increased from March to April. As well, more specific inquiries such as for business community support, donations and volunteering have increased. 
+            Inquiries about COVID-19, interactions related to COVID-19 cases and referrals to outside organizations have mostly decreased from March to April.</p>
+        <p>In total, there have been more than 11,500 COVID-related inquiries to 311 through March and April 2020. The most reported interaction type was for COVID-19 cases, coming in at 41 per cent of the inquiries.</p>
+    <div id="covid_call_types_chart2" style="background-color: white; text-align: center;">
+        <div id="chart_title"></div>
+        <div id="chart_keyword"></div>
+        <div id="chart_body"></div>
+        <div id="chart_labels"></div>
+        <button id='Total'>Total</button>
+        <button id='Complaint'>Complaint</button>
+        <button id='Event'>Event</button>
+        <button id='Film'>Film</button>
+        <button id='Traffic'>Traffic</button>
+        <br>
+        <button id='Transit'> Transit</button>
+        <button id='Noise complaint'>Noise complaint</button>
+        <button id='Homelessness'>Homelessness</button>
+        <button id='Donation'>Donation</button>
+        <button id='Volunteer'>Volunteer</button>
+        </div>
+    <h2>Other interactions</h2>
+        <p>Outside of interactions specific to COVID-19, hardly any of the call types have been unchanged between March and April of 2019 and 2020.</p>
+        <p>Total interactions in March and April 2020 are down from what they were in March and April 2019, and the total number of “complaint” interactions isn’t significantly different. 
+            However, there was a decrease in interactions relating to events, filming, traffic and transit, and an increase in interactions relating to noise complaints, homelessness, donations and volunteering.</p>
+        <p>For example, Arbutus Greenway inquiries by phone have increased 68 per cent over the last year. The Arbutus Greenway is a nine-kilometre walking and biking path stretching from False Creek to the Fraser River and attracts thousands of car-free commuters every day.
+            Given the amount of citizens who have made the move to working from home and have chosen to avoid taking public transit during the pandemic, 311 may have seen this increase in inquiries about the greenway as Vancouverites look for alternate transportation and recreation options.</p>
+        <p>On the other hand, given the broad nature of the homelessness and urban issues category, it would be inappropriate to speculate about whether the changes in call types were due to the pandemic or to a number of other factors during this time. 
+            The City of Vancouver has been working with Vancouver Coastal Health and BC Housing to establish resources to reduce the risk of those experiencing homelessness being exposed to COVID-19, such as providing hygiene services and securing hotel rooms as temporary housing options.</p>
+        <p>However, as Provincial Health Officer Dr. Bonnie Henry has acknowledged numerous times over the past three months, BC isn’t currently facing one pandemic, but two. The opioid crisis is still classified as a pandemic within the province, and those experiencing homelessness are particularly at risk to opioid-related harms.</p>
+        <p>As such, the change in homelessness and urban issues-related inquiries cannot justifiably be pinpointed to the COVID-19 pandemic. In cases such as these, the 311 data only acts as a window into much more complex issues.</p>
+        <p>There are countless factors that have gone into the trends seen in these records — the pandemic has impacted almost everything about daily life. Raw numbers like these cannot fully describe everything that Vancouverites have gone through in the past three months. 
+            Yet the data can provide a glimpse into just how both day-to-day interactions and overarching systems have been affected by COVID-19.</p>
+        <p><em>The inspiration for this piece came from the data work done by <a href="https://www.instagram.com/monachalabi/?hl=en" target="_blank">@monachalabi</a>.</em></p>
 {% endblock %}
 </div>
+
 
 {% block right-column %}
     <div class="right-column">
@@ -147,5 +172,6 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% add_version 'js/covid-311.js' %}"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="{% static 'ubyssey/js/covid-311.js' %}"></script>
 {% endblock %}

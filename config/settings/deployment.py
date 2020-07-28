@@ -10,8 +10,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS += ['ubyssey.events',]
 
-STATICFILES_DIRS += [
-    PROJECT_DIR('ubyssey/static/dist'),
-]
-
-STATIC_ROOT = '/home/travis/build/ubyssey/ubyssey.ca/gcs/static'
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'gcs/static')

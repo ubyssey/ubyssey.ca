@@ -69,12 +69,13 @@ class Magazine(object):
         if not ArticleHelper.is_explicit(article):
             article.content = ArticleHelper.insert_ads(article.content, article_type)
 
+        #TODO: Fix hardcoding on default_image; no good available default
         context = {
             'title': '%s - %s' % (article.headline, self.SITE_TITLE),
-            'meta': ArticleHelper.get_meta(article, default_image=static('images/magazine/cover-social.png')),
+            'meta': ArticleHelper.get_meta(article, default_image=static('ubyssey/images/magazine/2017/cover-social.png')),
             'article': article,
             'subsection': subsection,
-            'specific_css': 'css/magazine-' + self.year + '.css',
+            'specific_css': 'ubyssey/css/magazine-' + self.year + '.css',
             'year': self.year,
             'suggested': ArticleHelper.get_random_articles(2, 'magazine', exclude=article.id),
             'base_template': 'magazine/base.html',
@@ -187,8 +188,8 @@ mag2017 = MagazineV1(
     2017,
     'The Ubyssey Magazine',
     'The Ubyssey\'s first magazine.',
-    lambda: 'images/magazine/2017/cover-%d.jpg' % randint(1, 2),
-    'images/magazine/2017/cover-social.png',
+    lambda: 'ubyssey/images/magazine/2017/cover-%d.jpg' % randint(1, 2),
+    'ubyssey/images/magazine/2017/cover-social.png',
     'magazine/2017/landing.html',
 )
 
@@ -196,8 +197,8 @@ mag2018 = MagazineV1(
     2018,
     'The Ubyssey Magazine - How we live',
     'The February 2018 issue of the Ubyssey magazine.',
-    'images/magazine/2018/cover.jpg',
-    'images/magazine/2018/cover-social.jpg',
+    'ubyssey/images/magazine/2018/cover.jpg',
+    'ubyssey/images/magazine/2018/cover-social.jpg',
     'magazine/2018/landing.html',
 )
 
@@ -205,11 +206,11 @@ mag2019 = MagazineV2(
     2019,
     'The Ubyssey Magazine - Presence',
     'The February 2019 issue of the Ubyssey magazine.',
-    'images/magazine/2019/cover.gif',
+    'ubyssey/images/magazine/2019/cover.gif',
     'magazine/2019/landing.html',
-    'images/magazine/2019/subsection-reclaim.png',
-    'images/magazine/2019/subsection-redefine.png',
-    'images/magazine/2019/subsection-resolve.png',
+    'ubyssey/images/magazine/2019/subsection-reclaim.png',
+    'ubyssey/images/magazine/2019/subsection-redefine.png',
+    'ubyssey/images/magazine/2019/subsection-resolve.png',
     'reclaim',
     'redefine',
     'resolve',
@@ -219,11 +220,11 @@ mag2020 = MagazineV2(
     2020,
     'The Ubyssey Magazine - Hot Mess',
     'The February 2020 issue of the Ubyssey magazine.',
-    'images/magazine/2020/cover.png',
+    'ubyssey/images/magazine/2020/cover.png',
     'magazine/2020/landing.html',
-    'images/magazine/2020/section1.png',
-    'images/magazine/2020/section2.png',
-    'images/magazine/2020/section3.jpg',
+    'ubyssey/images/magazine/2020/section1.png',
+    'ubyssey/images/magazine/2020/section2.png',
+    'ubyssey/images/magazine/2020/section3.jpg',
     'goesAround',
     'comesAround',
     'waysForward',

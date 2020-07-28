@@ -2,22 +2,137 @@
 
 {% block content %}
 
-<header class="c-banner c-banner--welcome">
+<div class="c-banner c-banner--welcome">
   <div class="c-banner__container">
     <div class="c-banner--welcome__inner">
       <h2 class="c-banner--welcome__intro">The Ubyssey presents</h2>
-      <div class="o-logo">Guide To UBC</div>
-      <p class="c-banner--welcome__snippet">Your no-nonsense guide to life at UBC</p>
-    </div>
-    <div class="o-welcome-arrow">
-      <div class="o-welcome-arrow__text">Start here!</div>
-      <div class="o-welcome-arrow__icon"></div>
+      <p class="c-banner--welcome__snippet">Guide To UBC</p>
     </div>
   </div>
-</header>
+</div>
 
-<main class="c-tiles">
+<main class="home-content-container">
+    <div class="editorial-container">
+      <div class="editorial__credits-container">
+        <div class="editorial__credits-content">
+          <h1>Editor-in-Chief</h1>
+          <h2>Texas James</h2>
+          <h1>Visuals Editor</h1>
+          <h2>Alex Vanderput</h2>
+          <h1>Science Editor</h1>
+          <h2>Kevin Jiang</h2>
+          <h1>Design Editor</h1>
+          <h2>Lua Presidio</h2>
+          <h1>News Editor</h1>
+          <h2>Bailey Martens</h2>
+          <h1>Culture Editor</h1>
+          <h2>Riya Talitha</h2>
+          <h1>Layout Editor</h1>
+          <h2>Ella Chan</h2>
+          <h1>Recreation Editor</h1>
+          <h2>Sarah Zhao</h2>
+          <h1>Personal Essay Editor</h1>
+          <h2>Sonia Pathak</h2>
+          <h1>Written Content Editors</h1>
+          <h2>Kevin Jiang</h2>
+          <h2>Bailey Martens</h2>
+          <h2>Riya Talitha</h2>
+          <h2>Sarah Zhao</h2>
+          <h2>Kevin Jiang</h2>
+          <h1>Web Design</h1>
+          <h2>Amelia He</h2>
+        </div>
+      </div>
+      <div class="editorial__note-container">
+        <div class="editorial__ home-content">
+          <div class="title">Editor's Note</div>
+          <p>While the title of this year’s magazine is more than a little tongue-in-cheek, the subject matter is serious.
+            The climate crisis is quickly becoming one of the defining issues of our time, and its importance will only continue 
+            to grow as its impacts become more severe and are felt in more places. It is a problem that political scientists love 
+            to call “super wicked” and that’s how it feels so much of the time, like something so big and complex that there’s nothing 
+            we as individuals can do. We think that’s part of where our tendency to make light of it comes from. When we joke 
+            about something it gives us a semblance of control. We hope that by seeing a different side of the crisis and hearing about 
+            the ways — big and small — that people and institutions are trying to make change, you will be inspired to act, whether that 
+            means changing your consumption or just signing a petition. Because at the end of the day, no matter how cheeky our discussion 
+            of the crisis is, it is here and happening now. And even if you’re not a policy-maker or a politician, we all need to have our eyes 
+            wide open when it comes to where our planet is headed. 
+            <a class="editorial__ home-content__nav" href="{% url 'guide-landing-sub' 2020 'academics' %}">To the guide  <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+          </p>
+        </div>
+      </div>
+    </div>
 
+    <div class="panel-quote">
+      <div class="panel-quote __1-container">
+        <div class="panel-quote __1-container-text">
+          <div class="panel-quote __1-container-image">
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Girl in a jacket">
+          </div>
+          <div class="panel-quote __1-text">
+            <div class="panel-quote __1-text__ quote">
+              This is a quote box 1, and this is a test whether or not if the format works properly
+            </div>
+            <div class="panel-quote __1-text__ source">
+             -By Illustrator David Kao
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="who-container">
+      <div class="who__ home-content">
+        <div class="title">Who's the Ubyssey?</div>
+        <p>While the title of this year’s magazine is more than a little tongue-in-cheek, the subject matter is serious.
+          The climate crisis is quickly becoming one of the defining issues of our time, and its importance will only continue 
+          to grow as its impacts become more severe and are felt in more places. It is a problem that political scientists love 
+          to call “super wicked” and that’s how it feels so much of the time, like something so big and complex that there’s nothing 
+          we as individuals can do. We think that’s part of where our tendency to make light of it comes from. When we joke 
+          about something it gives us a semblance of control. We hope that by seeing a different side of the crisis and hearing about 
+          the ways — big and small — that people and institutions are trying to make change, you will be inspired to act, whether that 
+          means changing your consumption or just signing a petition. Because at the end of the day, no matter how cheeky our discussion 
+          of the crisis is, it is here and happening now. And even if you’re not a policy-maker or a politician, we all need to have our eyes 
+          wide open when it comes to where our planet is headed.
+          <a class="who__ home-content__nav" href="https://www.ubyssey.ca/about/">more about us <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+        </p>
+    </div>
+  </div>
+
+  <div class="panel-quote">
+    <div class="panel-quote __2-container">
+      <div class="panel-quote __2-container-text">
+        <div class="panel-quote __2-container-image">
+          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Girl in a jacket">
+        </div>
+        <div class="panel-quote __2-text">
+          <div class="panel-quote __2-text__ quote">
+            This is a quote box 2, and this is a test whether or not if the format works properly
+          </div>
+          <div class="panel-quote __2-text__ source">
+           -By Illustrator David Kao
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="involved-container">
+      <div class="involved__ home-content">
+        <div class="title">How to get involved</div>
+        <p>While the title of this year’s magazine is more than a little tongue-in-cheek, the subject matter is serious.
+          The climate crisis is quickly becoming one of the defining issues of our time, and its importance will only continue 
+          to grow as its impacts become more severe and are felt in more places. It is a problem that political scientists love 
+          to call “super wicked” and that’s how it feels so much of the time, like something so big and complex that there’s nothing 
+          we as individuals can do. We think that’s part of where our tendency to make light of it comes from. When we joke 
+          about something it gives us a semblance of control. We hope that by seeing a different side of the crisis and hearing about 
+          the ways — big and small — that people and institutions are trying to make change, you will be inspired to act, whether that 
+          means changing your consumption or just signing a petition. Because at the end of the day, no matter how cheeky our discussion 
+          of the crisis is, it is here and happening now. And even if you’re not a policy-maker or a politician, we all need to have our eyes 
+          wide open when it comes to where our planet is headed.
+          <a class="involved__ home-content__nav" href="https://www.ubyssey.ca/contact/">contact us <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+        </p>
+    </div>
+  </div>
 </main>
 
 {% endblock %}

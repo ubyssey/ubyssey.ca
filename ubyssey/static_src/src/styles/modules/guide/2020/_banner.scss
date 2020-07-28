@@ -1,0 +1,126 @@
+.c-banner {
+  margin-top: 50px;
+  position: relative;
+  width: 100%;
+
+  background-size: cover;
+  background-position: center;
+
+  &:before {
+    content: '';
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    z-index: 10;
+    pointer-events: none;
+
+    background-image: linear-gradient(-180deg, transparent 0%, rgba(0,0,0,0.66) 99%);
+  }
+
+  &:after {
+    content: '';
+    display: block;
+  }
+
+  .o-wrapper {
+    height: 100%;
+  }
+}
+
+.c-banner--welcome {
+  background-image: url('https://s3-us-west-1.amazonaws.com/ubyssey/media/guide/banner.jpg');
+  align-items: center;
+
+  .c-banner__container {
+    position: absolute;
+    align-items: center;
+
+    .o-container {
+      height: 100%;
+    }
+  }
+
+  &:after {
+    padding-top: 60%;
+
+    @media($bp-larger-than-mobile) {
+      padding-top: 55%;
+    }
+
+    @media($bp-larger-than-desktop) {
+      padding-top: 37%;
+    }
+  }
+}
+
+.c-banner__container {
+  position: relative;
+  z-index: 100;
+  height: 100%;
+  width: 100%;
+}
+
+.c-banner--welcome__inner {
+  position: absolute;
+  left: 5%;
+  bottom: 10%;
+}
+
+.c-banner--welcome__intro {
+  color: $color-white;
+  font-family: $header-font;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  text-transform: uppercase;
+  margin-bottom: 1em;
+}
+
+.c-banner--welcome__snippet {
+  color: $color-white;
+  font-family: $accent-font;
+  margin-top: 5%;
+  font-size: 4rem;
+  line-height: 4.3rem;
+  text-transform: uppercase;
+  // @media ($bp-smaller-than-tablet) {
+  //   font-size: 40px;
+  //   line-height: 26px;
+  //   margin-top: 10%;
+  // }
+  @media ($bp-smaller-than-mobile) {
+    margin-top: 5%;
+    font-size: 3rem;
+    line-height: 3rem;
+  }
+}
+
+.c-banner--article__inner {
+  position: relative;
+  height: 100%;
+  z-index: 20;
+}
+
+.c-banner--article__nav {
+  padding: 2em 0;
+
+  @media($bp-larger-than-desktop) {
+    padding: 3em 0;
+  }
+}
+
+.c-banner--article__headings {
+  padding-bottom: 5%;
+
+  @media($bp-larger-than-tablet) {
+    position: absolute;
+    bottom: 0;
+  }
+
+  @media($bp-larger-than-desktop) {
+    padding-bottom: 12%;
+  }
+
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+}

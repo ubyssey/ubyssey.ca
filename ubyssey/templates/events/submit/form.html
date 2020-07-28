@@ -82,7 +82,7 @@
         <div class="c-form__input">
           <label for="{{ form.facebook_image_url.id_for_label }}">Image</label>
 
-          <img id="previewImage" src="{{ form.facebook_image_url.value }}" >
+          <img id="previewImage" src="{{ form.facebook_image_url.value }}" alt="">
 
           <label for="{{ form.image.id_for_label }}">Or choose your own image</label>
           <input id="imgInp" type="file" onchange="readUrl(this);" name="image"/>
@@ -101,9 +101,9 @@
           <label for="{{ form.image.id_for_label }}">Image</label>
           <input id="imgInp" type="file" onchange="readUrl(this);" name="image"/>
           {% if form.instance and form.instance.image %}
-          <img id="previewImage" src="{{ form.instance.image.url }}" />
+          <img id="previewImage" src="{{ form.instance.image.url }}" alt=""/>
           {% else %}
-          <img id="previewImage" />
+          <img id="previewImage" alt=""/>
           {% endif %}
           {{ form.image.errors }}
         </div>

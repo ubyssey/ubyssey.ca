@@ -8,29 +8,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>{{ article.headline }} - The Ubyssey</title>
 
-    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'images/favicons/apple-touch-icon-57x57.png' %}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'images/favicons/apple-touch-icon-60x60.png' %}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/favicons/apple-touch-icon-72x72.png' %}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'images/favicons/apple-touch-icon-76x76.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/favicons/apple-touch-icon-114x114.png' %}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'images/favicons/apple-touch-icon-120x120.png' %}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'images/favicons/apple-touch-icon-144x144.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'images/favicons/apple-touch-icon-152x152.png' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicons/apple-touch-icon-180x180.png' %}">
-    <link rel="icon" type="image/png" href="{% static 'images/favicons/favicon-32x32.png' %}" sizes="32x32">
-    <link rel="icon" type="image/png" href="{% static 'images/favicons/android-chrome-192x192.png' %}" sizes="192x192">
-    <link rel="icon" type="image/png" href="{% static 'images/favicons/favicon-96x96.png' %}" sizes="96x96">
-    <link rel="icon" type="image/png" href="{% static 'images/favicons/favicon-16x16.png' %}" sizes="16x16">
-    <link rel="manifest" href="{% static 'images/favicons/manifest.json' %}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'ubyssey/images/favicons/apple-touch-icon-57x57.png' %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'ubyssey/images/favicons/apple-touch-icon-60x60.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'ubyssey/images/favicons/apple-touch-icon-72x72.png' %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'ubyssey/images/favicons/apple-touch-icon-76x76.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'ubyssey/images/favicons/apple-touch-icon-114x114.png' %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'ubyssey/images/favicons/apple-touch-icon-120x120.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'ubyssey/images/favicons/apple-touch-icon-144x144.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'ubyssey/images/favicons/apple-touch-icon-152x152.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'ubyssey/images/favicons/apple-touch-icon-180x180.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'ubyssey/images/favicons/android-chrome-192x192.png' %}" sizes="192x192">
+    <link rel="icon" type="image/png" href="{% static 'ubyssey/images/favicons/favicon-16x16.png' %}" sizes="16x16">
+    <link rel="icon" type="image/png" href="{% static 'ubyssey/images/favicons/favicon-32x32.png' %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{% static 'ubyssey/images/favicons/favicon-96x96.png' %}" sizes="96x96">
+    <link rel="manifest" href="{% static 'ubyssey/images/favicons/manifest.json' %}">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <meta property="fb:pages" content="99164676792" />
     
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% add_version 'css/one-year-later.css' %}" />
-    <link rel="stylesheet" href="{% add_version 'css/food-insecurity.css' %}" />
-    <link rel="stylesheet" href="{% add_version 'css/interactive-map.css' %}" />
+    <link rel="stylesheet" href="{% static 'ubyssey/css/one-year-later.css' %}" />
+    <link rel="stylesheet" href="{% static 'ubyssey/css/food-insecurity.css' %}" />
+    <link rel="stylesheet" href="{% static 'ubyssey/css/interactive-map.css' %}" />
 
     <link rel="canonical" href="{{ meta.url }}">
     <meta name="description" content="{{ meta.description }}" />
@@ -40,7 +40,7 @@
     <meta property="og:title" content="{{ meta.title|striptags|safe }}" />
     <meta property="og:type" content="{% if article %}article{% else %}website{% endif %}" />
     <meta property="og:url" content="{{ meta.url }}" />
-    <meta property="og:image" content="{% if meta.image %}{{ meta.image }}{% else %}{% static 'images/ubyssey-logo-square.png' %}{% endif %}" />
+    <meta property="og:image" content="{% if meta.image %}{{ meta.image }}{% else %}{% static 'ubyssey/images/ubyssey-logo-square.png' %}{% endif %}" />
     <meta property="og:description" content="{{ meta.description }}" />
     <meta property="og:site_name" content="The Ubyssey" />
 
@@ -146,7 +146,7 @@
       ga('create', 'UA-2313592-2', 'auto');
       ga('send', 'pageview');
     </script>
-    <script src="{% add_version 'js/one-year-later.js' %}" type="text/javascript"></script>
-    <script src="{% add_version 'js/food-insecurity.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ubyssey/js/one-year-later.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ubyssey/js/food-insecurity.js' %}" type="text/javascript"></script>
   </body>
 </html>

@@ -3,4 +3,4 @@ import environ
 
 class ConfigConfig(AppConfig):
     name = 'config'
-    path = environ.Path(__file__)
+    path = environ.Path(__file__) - 1

@@ -3,7 +3,7 @@
         <div class="inner">
             <article class="section-xl">
             {% with articles.0 as article %}
-                <img class="featured" src="{{ article.featured_image.image.get_medium_url }}" />
+                <img class="featured" src="{{ article.featured_image.image.get_medium_url }}" alt="Featured"/>
                 <h3 class="headline">{{ article.headline|safe }}</h3>
                 <p class="snippet">{{ article.snippet|safe }}</p>
             {% endwith %}

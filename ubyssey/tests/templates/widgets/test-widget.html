@@ -1,8 +1,8 @@
 <div class="widget">
-    {% if title %}<img class="title">{{ title|safe }}</div>{% endif %}
+    {% if title %}<img class="title" alt="">{{ title|safe }}</div>{% endif %}
     {% if description %}<div class="description">{{ description|safe }}</div>{% endif %}
     {% if article %}<div class="article">{{ article|safe }}</div>{% endif %}
-    {% if image %}<img class="image" src="{{ image.get_absolute_url }}"/>{% endif %}
+    {% if image %}<img class="image" src="{{ image.get_absolute_url }}" alt=""/>{% endif %}
     {% if events %}{% for event in events %}
       <div class="events">{{ event.title|safe }}</div>
     {% endfor %}{% endif %}{{ extra }}

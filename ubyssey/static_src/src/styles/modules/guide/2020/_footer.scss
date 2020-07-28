@@ -1,0 +1,102 @@
+.c-footer {
+  display: flex;
+  padding-top: 3%;
+  margin-top: 5%;
+  .o-logo--small{
+    @media ($bp-smaller-than-mobile) {
+      display: none;
+    }
+  }
+  &__copyright{
+    color: white;
+    line-height: 2.5em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 8px 0;
+  }
+  &__social{
+    ul{
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    li{
+      display: inline-block;
+      margin: 35px auto 0 auto;
+      font-size: 1.4em
+    }
+    a{
+      display: block;
+      color: white;
+      margin: 0 6px;
+      text-decoration: none;
+    }
+  }
+}
+
+.c-nav-footer {
+  margin-top: 30px;
+
+    display: flex;
+    @media ($bp-smaller-than-mobile) {
+      display: block;
+    }
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.c-nav-footer__column {
+  flex-basis: 50%;
+  margin-bottom: 30px;
+
+  @media($bp-larger-than-tablet) {
+    flex: 1;
+    flex-basis: auto;
+    margin-bottom: 0;
+  }
+
+  h2 {
+    font-size: 1rem;
+    font-weight: bold;
+    color: $color-white;
+    letter-spacing: 0.45px;
+    line-height: 1.4rem;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    @media ($bp-smaller-than-mobile) {
+      font-size: 1.4em;
+    }
+    @media ($bp-smaller-than-tablet) {
+      font-size: 1.2em;
+    }
+  }
+
+  li {
+    line-height: 1.2em;
+    @media ($bp-smaller-than-mobile) {
+      font-size: 1.7em;
+    }
+    @media ($bp-smaller-than-tablet) {
+      font-size: 1.3em;
+    }
+    a {
+      color: $color-white;
+      text-decoration: none;
+      font-size: 0.8em;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  @media($bp-smaller-than-mobile) {
+    &#footer-{
+      &academics,&vancouver,&adulting,&sdp,&ubc{
+        display: none;
+      }
+    }
+  }
+}
+

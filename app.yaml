@@ -10,9 +10,6 @@ handlers:
 - url: /robots.txt
   static_files: robots.txt
   upload: robots.txt
-- url: /service-worker.js
-  static_files: service-workers/service-worker.js
-  upload: service-workers/service-worker.js
 - url: .*
   script: auto
   secure: always

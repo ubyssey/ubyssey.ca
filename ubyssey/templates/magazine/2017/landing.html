@@ -4,12 +4,12 @@
 {% load dispatch_tags %}
 {% block content %}
 
-<link rel="stylesheet" href="{% add_version 'css/magazine-2017.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'ubyssey/css/magazine-2017.css' %}" type="text/css" />
 
 <div class="magazine-container">
   <div class="cover-photo-container">
     <h1 class="c-cover__logo">The Ubyssey Magazine</h1>
-    <img class="cover-photo" src="{% static cover %}" />
+    <img class="cover-photo" src="{% static cover %}" alt=""/>
     <div class="title-overlay">
       <div class="title">DIVERSITY</div>
     </div>

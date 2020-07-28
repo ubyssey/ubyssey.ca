@@ -1,0 +1,85 @@
+.c-header{
+    display: block;
+    position: fixed;
+    width: 100%;
+    height: 50px;
+    top: 0;
+    z-index: 10000;
+
+    a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .c-nav-bar{
+        display: flex;
+        font-size: 1.3em;
+        height: 50px;
+    }
+
+    .c-nav-ubyssey{
+        position: absolute;
+        width: 166px;
+        left: 40px;
+        top: 1em;
+        text-align: center;
+        text-transform: uppercase;
+        height: 26px;
+        font-family: Montserrat, sans-serif;
+        font-weight: 500;
+        font-size: 1rem;
+        a{
+            transition: 0.1s;
+        }
+        &:hover{
+            a{
+                font-size: 1.1rem;
+            }
+        }
+        @media($bp-smaller-than-mobile) {
+            display:none;
+        }
+    }
+
+    #c-nav-home{
+        display: inline-block;
+        position:absolute;
+        right: 40px;
+        top: 5px;
+        @media ($bp-smaller-than-mobile){
+            margin: auto;
+            position: initial;
+        }
+        .c-home-more{
+            display:none;
+            position: absolute;
+            width: 166px;
+            background-color: $color-home;
+            z-index: 10000;
+            
+            li {
+              display: block;
+              margin: 0 auto 0 auto;
+              clear: left;
+              line-height: 2;
+              padding: 0;
+              width:100%;
+              text-align: center;
+              @media($bp-smaller-than-mobile){
+                  line-height: 2.5;
+              }
+              
+              a{
+                height:40px;
+                display: block;
+                font-family: $accent-font;
+                font-size: $accent-size;
+                &:hover {
+                    font-weight: bold;
+                    font-size: 1.05em;
+                  } 
+               }
+            }   
+        }
+    }
+}

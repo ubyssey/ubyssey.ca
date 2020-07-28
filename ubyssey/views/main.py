@@ -91,7 +91,7 @@ class UbysseyTheme(object):
 
         popular = ArticleHelper.get_popular()[:5]
 
-        blog = ArticleHelper.get_frontpage(section='blog', limit=5)
+        blog = ArticleHelper.get_frontpage(sections=['blog'], limit=5)
 
         title = '%s - UBC\'s official student newspaper' % self.SITE_TITLE
 

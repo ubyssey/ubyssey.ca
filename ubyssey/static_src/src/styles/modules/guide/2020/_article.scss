@@ -1,0 +1,177 @@
+.c-article {
+
+  padding-top: 60px;
+  .o-wrapper{
+    position: relative;
+    @media($bp-smaller-than-desktop) {
+      margin-bottom: 170px;
+    }
+  }
+}
+
+  
+
+.c-article__intro{
+  &__subheading {
+    font-family: $header-font;
+    font-size: 2.5rem;
+    font-weight: $header-weight;
+    text-transform: uppercase;
+    line-height: 3rem;
+    letter-spacing: 0.5px;
+    margin: 2em 0 1em 0;
+    @media($bp-smaller-than-desktop){
+      margin: 0.5em 0;
+    }
+  }
+  &__text{
+    font-family: $header-font;
+    font-weight: 500;
+    line-height: 1.2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.c-article__content {
+
+  h1, h2, h3 {
+    text-align: left;
+    font-family: $header-font;
+    font-size: 1.3rem;
+    line-height: 1.6rem;
+    font-weight: 500;
+    margin-bottom: 1em;
+  }
+
+  > p, ul {
+    font-family: $text-font;
+    font-size: $text-size;
+    font-weight: normal;
+    letter-spacing: 0.2px;
+    line-height: 1.3rem;
+    margin-bottom: 1.5em;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  b {
+    font-weight: 800;
+  }
+
+  .image-attachment {
+    margin-bottom: 1.5rem;
+    width: 100%;
+    max-width: 600px;
+
+    @media($bp-larger-than-desktop) {
+      max-width: 700px;
+      margin-left: -100px;
+    }
+
+    img {
+      width: 100%;
+    }
+
+    .caption {
+      display: none;
+    }
+  }
+
+  .advertisement, .pull-quote {
+    width: 300px;
+
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 35px;
+
+    @media($bp-larger-than-phablet) {
+      margin: 0;
+      float: right;
+      padding-left: 35px;
+    }
+
+  }
+}
+
+p{
+  text-align: left;
+}
+
+.c-up-next {
+  width: 100%;
+  padding: 30px 0;
+  text-align: center;
+  background-image: linear-gradient(white 50%, rgba(222, 222, 222, 0.29) 175%);
+}
+
+.c-up-next__arrow, .c-up-next__text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.c-up-next__arrow {
+  background-image: url('../images/guide/up-next-arrow-left.png');
+  background-size: 100%;
+  width: 21px;
+  height: 22px;
+  margin-top: 20px;
+
+  &--right {
+    background-image: url('../images/guide/up-next-arrow-right.png');
+  }
+}
+
+.c-up-next__text {
+  margin: 0 15px;
+  font-family: $header-font;
+  text-transform: lowercase;
+  font-weight: 500;
+  line-height: 1.2rem;
+  color: #6E6E6E;
+}
+
+
+.c-welcome-article{
+
+  position: absolute;
+  font-family: $font-default;
+  color: #ffffff;
+  z-index: 1000;
+  left: 0;
+  bottom: -170px;
+  width: 100%;
+  height: 150px;
+  @media($bp-larger-than-desktop) {
+    left: auto;
+    top: -270px;
+    right: -10%;
+    width: 450px;
+    height: 200px;
+  }
+  &__.quote{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    p{
+      @media($bp-larger-than-desktop) {
+        height: 70%;
+        margin: 5% 10%;
+        width: 80%;
+      }
+      height: 65%;
+      margin: 2% 5%;
+      width: 90%;
+    }
+  }
+  &__.source{
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+    text-transform: uppercase;
+    text-align: right;
+    @media($bp-smaller-than-desktop) {
+      right: 30px;
+    }
+  }
+}

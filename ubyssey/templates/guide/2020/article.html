@@ -1,38 +1,31 @@
 {% extends 'guide/2020/base.html' %}
-{% block header %}
-{% include 'guide/2020/header.html' %}
-{% endblock %}
 {% block content %}
-<div class="c-banner c-banner--article" style="background-image: url('{{ article.featured_image.image.get_absolute_url }}');">
+<div class="c-banner c-banner--welcome" style="background-image: url('{{ article.featured_image.image.get_absolute_url }}');">
   <div class="c-banner__container">
-    <div class="o-container">
-      <div class="o-wrapper">
-        <div class="c-banner--article__inner">
-          <div class="c-banner--article__headings">
-            <h1 class="c-heading--main">{{ article.headline }}</h1>
-            {% if article.template_fields.subheading %}<h2 class="c-heading--subheading">{{ article.template_fields.subheading }}<h2>{% endif %}
-          </div>
-          {% if article.template_fields.banner_quote %}
-          <div class="c-banner--quote">
-            <div class="c-banner--quote__text">
-              {{ article.template_fields.banner_quote }}
-            </div>
-            {% if article.template_fields.banner_quote_source %}
-              <div class="c-banner--quote__source">
-                {{ article.template_fields.banner_quote_source }}
-              </div>
-            {% endif %}
-          </div>
-          {% endif %}
-        </div>
-      </div>
+    <div class="c-banner--welcome__inner">
+        <p class="c-banner--welcome__snippet">{{ article.headline }}</p>
     </div>
   </div>
 </div>
+
 <main class="c-article">
   <div class="o-container">
     <div class="o-wrapper">
-      {% if article.template_fields.intro %}<p class="c-article__intro">{{ article.template_fields.intro }}</p>{% endif %}
+      {% if article.template_fields.banner_quote %}
+      <div class="c-welcome-article __{{ subsection }}">
+        <div class="c-welcome-article__ quote">
+          <p>{{ article.template_fields.banner_quote }}</p>
+        </div>
+        {% if article.template_fields.banner_quote_source %}
+          <div class="c-welcome-article__ source">
+            {{ article.template_fields.banner_quote_source }}
+          </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+      {% if article.template_fields.subheading %}<p class="c-article__intro__subheading">{{ article.template_fields.subheading }}</p>{% endif %}
+      {% if article.template_fields.intro %}<p class="c-article__intro__text">{{ article.template_fields.intro }}</p>{% endif %}
       <div class="c-article__content">
         <div class="advertisement box sidebar">
             <div class="adslot" id="div-gpt-ad-1443288719995-15-{{ article.id }}" data-size="box" data-dfp="Box_A"></div>
@@ -43,12 +36,12 @@
   </div>
   <div class="c-up-next">
     <div class="c-up-next__arrow"></div>
-    <div class="c-up-next__text">Pick one</div>
+    <div class="c-up-next__text">What's next?</div>
     <div class="c-up-next__arrow c-up-next__arrow--right"></div>
   </div>
-  <div class="c-tiles">
+  <div class="article-boxes">
     {% for a in next %}
-      {% include 'guide/2020/tile.html' with type='3' title=a.headline slug=a.slug image=a.featured_image.image.get_absolute_url %}
+      {% include 'guide/2020/article-box.html' with style='article' title=a.headline subsection=subsection slug=a.slug  image=a.featured_image.image.get_absolute_url %}
     {% endfor %}
   </div>
 </main>

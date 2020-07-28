@@ -1,0 +1,24 @@
+$color-home: #0073A9;
+$color-adulting: #59A3AC;
+$color-academics: #FBCC80;
+$color-sdp: #E2BEB0;
+$color-vancouver: #EA8392;
+$color-ubc: #002145;
+.__home{
+    background-color: $color-home;
+}
+.__academics{
+    background-color: $color-academics;
+}
+.__vancouver{
+    background-color: $color-vancouver;
+}
+.__sdp{
+    background-color: $color-sdp;
+}
+.__adulting{
+    background-color: $color-adulting;
+}
+.__ubc{
+    background-color: $color-ubc;
+}

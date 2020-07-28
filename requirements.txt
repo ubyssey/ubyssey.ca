@@ -1,4 +1,4 @@
-dispatch==1.3.2
+dispatch==1.3.4
 Django==3.0.7
 git+git://github.com/ubyssey/django-google-storage.git@v0.5.4#egg=django-google-storage-updated
 django-canonical-domain
@@ -21,3 +21,4 @@ django-environ
 requests
 django-debug-toolbar
 pylint
+whitenoise==5.1.0

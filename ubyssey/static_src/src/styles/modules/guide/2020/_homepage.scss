@@ -1,0 +1,274 @@
+.home-content-container{
+  .editorial{
+    &-container{
+      display: flex;
+      overflow: hidden;
+      @media($bp-smaller-than-tablet) {
+        display: block;
+      }
+    }
+
+    &__credits-{
+      &container{
+        width: 35%;
+        background-color: $color-academics;
+        @media($bp-smaller-than-tablet) {
+          width: 100%;
+        }
+      }
+      &content{
+        padding: 15% 20%;
+        letter-spacing: 1px;
+        h1{
+          text-transform: uppercase;
+          font-family: $header-font;
+          text-align: right;
+        }
+        h2{
+          font-weight: 300;
+          text-align: right;
+          font-family: $header-font;
+        }
+      }
+    }
+    &__note-{
+      &container{
+        position: relative;
+        width: 65%;
+        @media($bp-smaller-than-tablet) {
+          width: 100%;
+        }
+      }
+    }
+    &__.home-content{
+      padding: 8% 18%;
+      @media($bp-smaller-than-tablet) {
+        padding: 8% 5%;
+      }
+      p{
+        padding: 5% 18%;
+      }
+      &__nav{
+        position: absolute;
+        right: 0;
+        bottom: 5px;
+        padding-right: 15%;
+        @media($bp-smaller-than-tablet){
+          bottom: 20px;
+        }
+      }
+    }
+  }
+
+  .who{
+    &-container{
+      position: relative;
+      margin-left: 10%;
+      margin-right: 25%;
+      @media($bp-smaller-than-tablet) {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+    &__.home-content{
+      padding: 8%;
+
+      &__nav{
+        position: absolute;
+        left: 20%;
+        bottom: 5px;
+        @media($bp-smaller-than-tablet){
+          position: absolute;
+          right: 0;
+          bottom: 20px;
+          padding-right: 20%;
+        }
+      }
+    }
+  }
+
+  .involved{
+    &-container{
+      position: relative;
+      margin-left: 30%;
+      margin-right: 10%;
+      @media($bp-smaller-than-tablet) {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+    &__.home-content{
+      padding: 8% 5%;
+
+      &__nav{
+        position: absolute;
+        left: 18%;
+        bottom: 5px;
+        @media($bp-smaller-than-tablet){
+          position: absolute;
+          right: 0;
+          bottom: 20px;
+          padding-right: 20%;
+        }
+      }
+    }
+  }
+
+.home-content{
+  .title{
+    text-align: center;
+    text-transform: uppercase;
+    font-size: $header-size;
+    font-family: $header-font;
+    font-weight: $header-weight;
+    line-height: 3.8rem;
+  }
+  p{
+    padding: 5% 15%;
+    line-height: 1.3rem;
+    font-family: $text-font;
+    font-size: $text-size;
+    @media($bp-smaller-than-mobile){
+      margin-bottom: 50px;
+      padding: 5% 15%;
+    }
+  }
+  &__nav{
+    font-family: $accent-font;
+    font-size: $accent-size;
+    line-height: 1.4rem;
+    text-transform: lowercase;
+    text-decoration: none!important;
+    color: black;
+    transition: 0.1s;
+    &:hover{
+      font-weight: bold;
+      font-size: $accent-size + 0.1rem;
+    }
+  }
+}
+
+.panel-quote{
+  margin-top: 5%;
+  @media ($bp-smaller-than-mobile){
+    margin-bottom: 5%;
+  }
+  &.__1-{
+    &container{
+      &-text{
+        background-color: $color-vancouver;
+        width: 55%;
+        margin-left: 45%;
+        height: 260px;
+        position: relative;
+        @media($bp-smaller-than-tablet) {
+          margin-left: 40%;
+        }
+      }
+      &-image{
+        position: absolute;
+        margin-top: -200px;
+        left: -45%;
+        z-index: 100;
+        width: 50%;
+        margin-bottom: 7%;
+        img{
+          height: auto;
+          width: 100%;
+        }
+        @media($bp-smaller-than-tablet) {
+          margin-left: -22%;
+        }
+      }
+    }
+    &text{
+      height:55%;
+      overflow: hidden;
+      padding: 5% 15%;
+      &__.source{
+        position: absolute;
+        bottom: 15%;
+        right: 10%;
+      }
+    }    
+  }
+
+  &.__2-{
+    &container{
+      &-text{
+        background-color: $color-adulting;
+        width: 70%;
+        height: 200px;
+        position: relative;
+      }
+      &-image{
+        position: absolute;
+        right: -37%;
+        z-index: 100;
+        width: 40%;
+        margin-bottom: 5%;
+        img{
+          height: auto;
+          width: 100%;
+        }
+        @media($bp-smaller-than-tablet) {
+          margin-right: -30%;
+        }
+      }
+    }
+    &text{
+      height: 50%;
+      overflow: hidden;
+      padding: 3% 5%;
+      &__.quote{
+        margin-top: 0;
+      }
+      &__.source{
+        position: absolute;
+        bottom: 10%;
+        right: 10%;
+      }
+    }
+  }
+
+    &.__1-, &.__2-{
+      @media($bp-larger-than-tablet){
+        &container{
+          &-image{
+            top: auto;
+            bottom: 0;
+          }
+        }
+      }
+      @media($bp-smaller-than-tablet){
+        &container{
+          &-text{
+            width: 60%;
+            height: 300px;
+          }
+          &-image{
+            margin-top: 0;
+            width: 67%;
+            img{
+              height: 300px;
+            }
+          }
+        }
+      }
+
+      @media($bp-smaller-than-phablet){
+        &container{
+          &-text{
+            width: 100%;
+            height: 200px;
+            margin: 0;
+          }
+          &-image{
+            display: none;
+          }
+        }
+      }
+
+    }
+  }
+}

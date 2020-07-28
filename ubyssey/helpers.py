@@ -1,4 +1,5 @@
 import datetime
+from datetime import datetime
 
 from django.utils import timezone
 import pytz
@@ -7,6 +8,7 @@ from random import randint, choice
 from django.conf import settings
 from django.http import Http404
 from django.db import connection
+from django.db.models import Case, ExpressionWrapper, DurationField, F, FloatField, OuterRef, Subquery, Value, When 
 from django.db.models.aggregates import Count
 
 from dispatch.models import Article, Page, Section, Subsection, Podcast, Image, ImageAttachment
@@ -76,66 +78,41 @@ class ArticleHelper(object):
         return ad_placements
 
     @staticmethod
-    def get_frontpage(reading_times=None, section=None, section_id=None, sections=[], exclude=[], limit=7, is_published=True, max_days=14):
+    def get_frontpage(sections=[], exclude=[], limit=7, is_published=True, max_days=14):
 
-        if is_published:
-            is_published = 1
-        else:
-            is_published = 0
-
-        if reading_times is None:
-            reading_times = {
-                'morning_start': '9:00:00',
-                'midday_start': '11:00:00',
-                'midday_end': '16:00:00',
-                'evening_start': '16:00:00',
-            }
-
-        context = {
-            'section': section,
-            'section_id': section_id,
-            'excluded': ",".join(map(str, exclude)),
-            'sections': ",".join(sections),
-            'limit': limit,
-            'is_published': is_published,
-            'max_days': max_days
+        reading_times = {
+            'morning_start': '9:00:00',
+            'midday_start': '11:00:00',
+            'midday_end': '16:00:00',
+            'evening_start': '16:00:00',
         }
-
-        context.update(reading_times)
-
-        query = """
-            SELECT *, TIMESTAMPDIFF(SECOND, published_at, NOW()) as age,
-            CASE reading_time
-                 WHEN 'morning' THEN IF( CURTIME() < %(morning_start)s, 1, 0 )
-                 WHEN 'midday'  THEN IF( CURTIME() >= %(midday_start)s AND CURTIME() < %(midday_end)s, 1, 0 )
-                 WHEN 'evening' THEN IF( CURTIME() >= %(evening_start)s, 1, 0 )
-                 ELSE 0.5
-            END as reading,
-            TIMESTAMPDIFF(DAY, published_at, NOW()) <= %(max_days)s as age_deadline
-            FROM dispatch_article
-        """
-
-        query_where = """
-            WHERE head = 1 AND
-            is_published = %(is_published)s AND
-            parent_id NOT IN (%(excluded)s)
-        """
-
-        if section is not None:
-            query += """
-                INNER JOIN dispatch_section on dispatch_article.section_id = dispatch_section.id AND dispatch_section.slug = %(section)s
-            """
-        elif section_id is not None:
-            query_where += " AND section_id = %(section_id)s "
-        elif sections:
-            query_where += "AND section_id in (SELECT id FROM dispatch_section WHERE FIND_IN_SET(slug,%(sections)s))"
-
-        query += query_where + """
-            ORDER BY age_deadline DESC, reading DESC, ( age * ( 1 / ( 4 * importance ) ) ) ASC
-            LIMIT %(limit)s
-        """
-
-        return list(Article.objects.raw(query, context))
+        timeformat = '%H:%M:%S'
+        articles = Article.objects.annotate(
+            age = ExpressionWrapper(
+                F('published_at') - timezone.now(),
+                output_field=DurationField()
+            ),
+            reading = Case( 
+                When(reading_time='morning', then=1.0 if timezone.now().time() < datetime.strptime(reading_times['morning_start'],timeformat).time() else 0.0),
+                When(reading_time='midday', 
+                    then=1.0 if (
+                        timezone.now().time() >= datetime.strptime(reading_times['midday_start'],timeformat).time() and timezone.now().time() < datetime.strptime(reading_times['midday_start'],timeformat).time()
+                    )  else 0.0),
+                When(reading_time='evening', then=1.0 if timezone.now().time() <= datetime.strptime(reading_times['evening_start'],timeformat).time() else 0.0),
+                default = Value(0.5),
+                output_field=FloatField()
+            ),
+        ).filter(
+            head=1,
+            is_published=is_published,
+            section__slug__in=sections # See this link for why you can do this instead of SQL joining: https://docs.djangoproject.com/en/3.0/topics/db/queries/#lookups-that-span-relationships
+        ).exclude(
+            parent_id__in=exclude
+        ).order_by(
+            '-published_at'
+        )[:limit]
+        
+        return list(articles)
 
     @staticmethod
     def get_frontpage_sections(exclude=None):
@@ -326,22 +303,21 @@ class SubsectionHelper(object):
 
     @staticmethod
     def get_subsections(section):
-        context = {
-            'section_id': section.id
-        }
-
-        query = """
-            SELECT dispatch_subsection.id, MAX(dispatch_article.published_at) as published_at
-            FROM dispatch_subsection
-            INNER JOIN dispatch_article on dispatch_article.subsection_id = dispatch_subsection.id
-            WHERE dispatch_subsection.is_active = 1
-            AND dispatch_subsection.section_id = %(section_id)s
-            AND dispatch_article.is_published = 1
-            GROUP BY dispatch_subsection.id
-            ORDER BY published_at DESC
-        """
-
-        return list(Subsection.objects.raw(query, context))
+        article_query = Article.objects.filter(
+           subsection_id=OuterRef("id"),
+           is_published=True
+        ).order_by(
+            F('published_at').desc(nulls_last=True)
+        )
+        subsection_query = Subsection.objects.annotate(
+            published_at=Subquery(
+                article_query.values('published_at')[:1]
+            )
+        ).filter(
+            is_active=True,
+            section_id=section.id
+        )
+        return list(subsection_query)
 
     @staticmethod
     def get_featured_subsection_articles(subsection, featured_articles):

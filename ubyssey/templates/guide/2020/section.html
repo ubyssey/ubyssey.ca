@@ -1,0 +1,71 @@
+{% extends 'guide/2020/base.html' %}
+
+{% block content %}
+
+<div class="c-banner c-banner--welcome">
+    <div class="c-banner__container">
+      <div class="c-banner--welcome__inner">
+        <h2 class="c-banner--welcome__intro">Welcome To</h2>
+        <p class="c-banner--welcome__snippet">{% if subsection == 'sdp' %}Sex, Drugs, Party{% else %}{{ subsection }}{% endif %}</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="section-grid-container">
+    <div class="section-title"><p>What are you looking for ?</p></div>
+    {% include 'guide/2020/article-box.html' with type=1 title=article.headline subsection=subsection slug=article.slug image=article.featured_image %}
+    {% include 'guide/2020/quote-box.html' with type=1 %}
+    {% include 'guide/2020/article-box.html' with type=2 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=3 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=4 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/quote-box.html' with type=2 %}
+    {% include 'guide/2020/article-box.html' with type=5 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=6 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/quote-box.html' with type=3 %}
+    {% include 'guide/2020/article-box.html' with type=7 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=8 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=9 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/quote-box.html' with type=4 %}
+    {% include 'guide/2020/article-box.html' with type=10 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=11 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/quote-box.html' with type=5 %}
+    {% include 'guide/2020/article-box.html' with type=12 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=13 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=14 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/quote-box.html' with type=6 %}
+    {% include 'guide/2020/article-box.html' with type=15 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/article-box.html' with type=16 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    {% include 'guide/2020/quote-box.html' with type=7 %}
+    {% include 'guide/2020/article-box.html' with type=17 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+    
+ 
+
+
+
+
+
+
+  <!-- {% if subsection == 'academics' %}
+      {% for article in articles.academics %}
+            {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+      {% endfor %}
+  {% elif subsection == 'ubc' %}
+      {% for article in articles.ubc %}
+        {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+      {% endfor %}
+  {% elif subsection == 'adulting' %}
+      {% for article in articles.adulting %}
+        {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+      {% endfor %}
+  {% elif subsection == 'sdp' %}
+      {% for article in articles.sdp %}
+        {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+      {% endfor %}
+  {% elif subsection == 'vancouver' %}
+      {% for article in articles.vancouver %}
+        {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image %}
+      {% endfor %}
+  {% endif %} -->
+</main>
+
+{% endblock %}

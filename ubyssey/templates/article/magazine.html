@@ -3,7 +3,7 @@
 
 {% block css %}
   {% load static %}
-  <link rel="stylesheet" href="{% add_version specific_css %}" type=text/css />
+  <link rel="stylesheet" href="{% static specific_css %}" type=text/css />
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 {% endblock %}
 
@@ -24,7 +24,7 @@
 
     {% if article.featured_image %}
     <div class="c-article__featured-media u-container u-container--large u-container--no-padding">
-      <img src="{{ article.featured_image.image.get_medium_url }}" />
+      <img src="{{ article.featured_image.image.get_medium_url }}" alt=""/>
     </div>
     {% endif %}
 
