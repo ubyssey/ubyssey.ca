@@ -28,6 +28,7 @@
   <meta name="theme-color" content="#ffffff">
   <meta property="fb:pages" content="99164676792" />
   <link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css"/>
+  <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}"> {#For django-bootstrap-modal-forms#}
 
   <script>
     var googletag = googletag || {};
@@ -104,7 +105,13 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 
 <div id="page-wrapper">
 <div id="adblock-splash"></div>
-{% include "newsletter/subscribe.html" %}
+{% comment %} {% include "newsletter/subscribe.html" %} {% endcomment %}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<button id="subscribe" class="btn btn-primary" type="button" name="button">Subscribe</button>
 {% comment %} <div id='subscribe-splash'>        
   <div class='subscribe-container'>
     <div class='subscribe-fullscreen'></div>
@@ -158,9 +165,12 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
   mixpanel.init("4941b226d03a988d5f2bc8fea8e0e70d");
 </script>
 
+
+{# TODO: Update jquery reference here?#}
+{%include 'newsletter/include_scripts.html'%}
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.min.css" />
-<script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+{% comment %} <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script> {% endcomment %}
 <script src="//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js" type="text/javascript"></script>
 <script src="{% static 'ubyssey/js/vendors.js' %}" type="text/javascript"></script>
 <script src="{% static 'ubyssey/js/main.js' %}" type="text/javascript"></script>
@@ -202,5 +212,19 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
   	blockAdBlock.on(true, adBlockDetected).onNotDetected(adBlockNotDetected);
   }
 </script>
+
+<script type="text/javascript">
+{% comment%}
+For django-bootstrap-modal-forms
+{% endcomment%}
+$(document).ready(function() {
+
+    $("#subscribe").modalForm({
+        formURL: "{% url 'subscribe' %}"
+    });
+
+});
+</script>
+
 </body>
 </html>

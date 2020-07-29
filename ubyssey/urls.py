@@ -39,7 +39,7 @@ urlpatterns += [
     re_path(r'^admin', include(admin_urls)),
     re_path(r'^api/', include(api_urls)),
     re_path(r'^podcasts/', include(podcasts_urls)),
-    re_path(r'^newsletter', include(newsletter_urls)),
+    re_path(r'^newsletter/', include(newsletter_urls)),
 
     re_path(r'^$', theme.home, name='home'),
     re_path(r'^search/$', theme.search, name='search'),
