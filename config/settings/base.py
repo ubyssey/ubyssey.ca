@@ -133,6 +133,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'widget_tweaks',
+    'bootstrap_modal_forms',
 ]
 
 # Replace default user model

@@ -21,3 +21,4 @@ django-environ
 requests
 whitenoise==5.1.0
 django-widget-tweaks==1.4.8
+bootstrap_modal_forms=2.0.0
