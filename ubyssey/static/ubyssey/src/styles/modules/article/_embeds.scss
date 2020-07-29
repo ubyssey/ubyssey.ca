@@ -413,22 +413,21 @@
   max-width: 450px;
   margin: 0;
   &.__left{
-    
+    &-container{
+      float: left;
+      margin-right: 1rem;
+    }
   }
   &.__right{
-    float: right;
-    margin-left: 1rem;
+    &-container{
+      float: right;
+      margin-left: 1rem;
+    }
   }
   &.__left,&.__right{
-    &-container{
-      
+    &-container{    
       padding: 0 50px 15px 50px;
       background: blue;
-      margin: 0;
-      float: left;
-    margin-left: -125px;
-    margin-right: 1rem;
-    width: 250px;
     }
   }
 

@@ -59,6 +59,19 @@ $(function () {
             $(this).get(0)
         )
     })
+
+    let quote;
+    let leftQuotes = document.getElementsByClassName('pull-quote attachment __left-container');
+    for(quote of leftQuotes) {
+        console.log(quote);
+        quote.style.marginLeft = '-' + quote.offsetWidth/2 + 'px';
+    }
+
+    let rightQuotes = document.getElementsByClassName('pull-quote attachment __right-container');
+    for(quote of rightQuotes) {
+        console.log(quote);
+        quote.style.marginRight= '-' + quote.offsetWidth/2 + 'px';
+    }
 });
 
 if ($('main.article').length) {
