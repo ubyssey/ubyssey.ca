@@ -188,15 +188,17 @@ if ($('main.article').length) {
 
     articleAds()
 
-    const articleList = ReactDOM.render(
-        <ArticlesSuggested
-          breakpoint={960}
-          name={listName}
-          currentArticle={firstArticle}
-          articles={articleIds}
-          userId={userId} />,
-          document.getElementById('article-list')
-    );
+    if(document.getElementById('article-list') !== null) {
+        const articleList = ReactDOM.render(
+            <ArticlesSuggested
+            breakpoint={960}
+            name={listName}
+            currentArticle={firstArticle}
+            articles={articleIds}
+            userId={userId} />,
+            document.getElementById('article-list')
+        );
+    }
 
     const gatherImages = (gallery) => {
         var selector, trigger;

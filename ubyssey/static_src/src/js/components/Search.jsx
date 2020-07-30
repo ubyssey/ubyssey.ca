@@ -6,7 +6,6 @@ import DispatchAPI from '../api/dispatch'
 class Search extends React.Component {
     constructor(props) {
       super(props)
-
       this.state = {
         results: [],
         cache: LRU(this.props.cacheOptions),  // entries are {q: results}
