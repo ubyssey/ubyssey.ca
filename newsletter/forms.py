@@ -15,10 +15,10 @@ class SubscriberForm(BSModalModelForm):
         """
         model = Subscriber
         fields = ['email']
-        widgets = {
-            'text' : forms.TextInput(attrs={
-                'id': 'post-subscriber',
-                'required': True,
-                'placeholder': 'Your email...'
-            }),
-        }
+        # widgets = {
+        #     'text' : forms.TextInput(attrs={
+        #         'id': 'post-subscriber',
+        #         'required': True,
+        #         'placeholder': 'Your email...'
+        #     }),
+        # }
