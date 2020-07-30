@@ -5,5 +5,6 @@ from . import views
 
 app_name = 'newsletter'
 urlpatterns = [
+    # path('', views.Index.as_view(), name='index'),
     path('subscribe/', views.SubscriberCreateView.as_view(), name='subscribe'),
 ]
