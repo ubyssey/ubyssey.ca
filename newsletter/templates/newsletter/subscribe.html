@@ -3,7 +3,7 @@
 Originally modified from usage instructions on 
 https://pypi.org/project/django-bootstrap-modal-forms/
 {% endcomment %}
-<form method="post" action="">
+<form id="modal-form" method="post" action="#">
     {% csrf_token %}
 
     <div class="modal-header">
@@ -36,3 +36,11 @@ https://pypi.org/project/django-bootstrap-modal-forms/
         <button type="button" class="submit-btn btn btn-primary">Create</button>
     </div>
 </form>
+{% comment %} <script src={% static 'newsletter/js/form_behaviour.js' %}></script> {% endcomment %}
+<script>
+    $('#modal-form').on('submit', function(event){
+      event.preventDefault();
+      console.log("email submitted!")
+      create_subscriber();
+    });
+</script>

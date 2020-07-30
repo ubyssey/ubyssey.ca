@@ -106,12 +106,16 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 <div id="page-wrapper">
 <div id="adblock-splash"></div>
 {% comment %} {% include "newsletter/subscribe.html" %} {% endcomment %}
+{% comment %}
+Modals are used for lightboxes, notifications, etc.
+
+https://getbootstrap.com/docs/4.0/components/modal/
+{% endcomment %}
 <div class="modal fade" tabindex="-1" role="dialog" id="modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content"></div>
   </div>
 </div>
-<button id="subscribe" class="btn btn-primary" type="button" name="button">Subscribe</button>
 {% comment %} <div id='subscribe-splash'>        
   <div class='subscribe-container'>
     <div class='subscribe-fullscreen'></div>
@@ -219,12 +223,11 @@ For django-bootstrap-modal-forms
 {% endcomment%}
 $(document).ready(function() {
 
-    $("#subscribe").modalForm({
+    $("#subscribe-button").modalForm({
         formURL: "{% url 'subscribe' %}"
     });
-
 });
 </script>
-
+<button id="subscribe-button" class="btn btn-primary" type="button" name="button">Subscribe</button>
 </body>
 </html>

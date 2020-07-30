@@ -1,9 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 from django.urls import reverse_lazy
 from .forms import SubscriberForm
 from .models import Subscriber
-from django.http import HttpResponseRedirect
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 # Create your views here.
@@ -12,7 +11,10 @@ class SubscriberCreateView(BSModalCreateView):
     form_class = SubscriberForm
     template_name = 'newsletter/subscribe.html'
     # success_message = 'Success! Thank you for subscribing!'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('success')
+    
+class SuccessView(TemplateView):
+    template_name = 'newsletter/success.html'
 
 # class SubscriberFormView(View):
 #     form_class = SubscriberForm
