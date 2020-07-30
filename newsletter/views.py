@@ -12,7 +12,7 @@ class SubscriberCreateView(BSModalCreateView):
     form_class = SubscriberForm
     template_name = 'newsletter/subscribe.html'
     success_message = 'Success! Thank you for subscribing!'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('home')
 
 # class SubscriberFormView(View):
 #     form_class = SubscriberForm
