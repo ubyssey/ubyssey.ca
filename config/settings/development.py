@@ -19,7 +19,7 @@ MIDDLEWARE = (
 )
 
 TEMPLATES += [
-{
+    {
         'NAME': 'ubyssey',
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
@@ -28,6 +28,7 @@ TEMPLATES += [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     }
