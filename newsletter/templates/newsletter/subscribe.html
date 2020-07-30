@@ -20,7 +20,7 @@ https://pypi.org/project/django-bootstrap-modal-forms/
         {% for field in form %}
         <div class="form-group{% if field.errors %} invalid{% endif %}">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
+            {% render_field field id="test_field_id" %}
             {% for error in field.errors %}
                 <p class="help-block">{{ error }}</p>
             {% endfor %}
@@ -36,11 +36,15 @@ https://pypi.org/project/django-bootstrap-modal-forms/
         <button type="button" class="submit-btn btn btn-primary">Create</button>
     </div>
 </form>
-{% comment %} <script src={% static 'newsletter/js/form_behaviour.js' %}></script> {% endcomment %}
 <script>
     $('#modal-form').on('submit', function(event){
       event.preventDefault();
       console.log("email submitted!")
       create_subscriber();
     });
+
+    function create_subscriber() {
+        console.log("create_subscriber is working!") // sanity check
+        console.log($('#modal-form').val())
+    };
 </script>
