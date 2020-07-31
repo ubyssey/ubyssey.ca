@@ -1,7 +1,8 @@
+{% load widget_tweaks %}
 {# newsletter/subscribe.html #}
 {% comment %} 
-Originally modified from usage instructions on 
-https://pypi.org/project/django-bootstrap-modal-forms/
+    Originally modified from usage instructions on 
+    https://pypi.org/project/django-bootstrap-modal-forms/
 {% endcomment %}
 <form id="modal-form" method="post" action="#">
     {% csrf_token %}
@@ -20,7 +21,7 @@ https://pypi.org/project/django-bootstrap-modal-forms/
         {% for field in form %}
         <div class="form-group{% if field.errors %} invalid{% endif %}">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {% render_field field id="test_field_id" %}
+            {% render_field field id="subscriber_email_field" %}
             {% for error in field.errors %}
                 <p class="help-block">{{ error }}</p>
             {% endfor %}
@@ -29,6 +30,8 @@ https://pypi.org/project/django-bootstrap-modal-forms/
         <button id='already-sub-button'>
             Already Subscribed?
         </button>
+        <div id="results">           
+        </div>
     </div>
 
     <div class="modal-footer">
@@ -38,13 +41,37 @@ https://pypi.org/project/django-bootstrap-modal-forms/
 </form>
 <script>
     $('#modal-form').on('submit', function(event){
-      event.preventDefault();
-      console.log("email submitted!")
-      create_subscriber();
+        event.preventDefault(); //stops Django's automatic redirect
+        create_subscriber();
     });
 
+    {% comment %}        
+        create_subscriber() uses AJAX to make a POST request
+        Based on: https://realpython.com/django-and-ajax-form-submissions/
+    {% endcomment %}
     function create_subscriber() {
-        console.log("create_subscriber is working!") // sanity check
-        console.log($('#modal-form').val())
+        $.ajax({
+            url : "newsletter/subscribe/", // the endpoint
+            type : "POST", // http method
+            data : { email : $('#subscriber_email_field').val() },
+
+            // handle a successful response
+            success : function(json) {
+                $('#subscriber_email_field').val(''); // remove the value from the input
+                $('#results').html("<div>Success! This pop-up will close in a few seconds.</div");
+                console.log(json); // log the returned json to the console
+                // close the modal after 3 seconds
+                setTimeout(function() {
+                    $('#modal').modal('hide');
+                }, 3000);
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>");
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
     };
 </script>
