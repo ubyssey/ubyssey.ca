@@ -28,7 +28,7 @@
   <meta name="theme-color" content="#ffffff">
   <meta property="fb:pages" content="99164676792" />
   <link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css"/>
-  <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}"> {#For django-bootstrap-modal-forms#}
+  {% comment %} <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}"> {#For django-bootstrap-modal-forms#} {% endcomment %}
 
   <script>
     var googletag = googletag || {};
@@ -105,7 +105,6 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 
 <div id="page-wrapper">
 <div id="adblock-splash"></div>
-{% comment %} {% include "newsletter/subscribe.html" %} {% endcomment %}
 {% comment %}
 Modals are used for lightboxes, notifications, etc.
 
@@ -113,35 +112,13 @@ https://getbootstrap.com/docs/4.0/components/modal/
 {% endcomment %}
 <div class="modal fade" tabindex="-1" role="dialog" id="modal">
   <div class="modal-dialog" role="document">
-    <div class="modal-content"></div>
-  </div>
-</div>
-{% comment %} <div id='subscribe-splash'>        
-  <div class='subscribe-container'>
-    <div class='subscribe-fullscreen'></div>
-    <div class='subscribe-content'>
-      <div id='subscribe-close-message'>
-        Not now, thank you
-        <div class='subscribe-close-arrow'></div>
-      </div>
-      
-      <img></img>
-      <h1>Enjoying the Ubyssey?</h1>
-      <p>If you like our content, don't forget to subscribe to our weekly newsletter.
-          Always stay up to date on the news!
-      </p>
-      <div class='subscribe-form-splash-container'>
-          <form id='subscribe-form-splash'>
-          <input type='text' id='subscriber-email-splash' name='subscriber-email-splash' value='{{ subscriber_email }}' placeholder='Enter email...'></input>
-          <button type='submit' form='subscribe-form-widget' value='subscribe'>Subscribe</button>
-          </form>
-          <button id='already-sub-button'>
-          Already Subscribed?
-          </button>
-      </div>
+    <div class="modal-content">
+      {% comment %}
+      This element embeds a the contents of a template when triggered by .modalForm(...)
+      {% endcomment %}
     </div>
   </div>
-</div> {% endcomment %}
+</div>
 
 <div id="cookie-disclaimer"></div>
 {% zone 'site-banner' %}
