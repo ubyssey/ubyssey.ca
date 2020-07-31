@@ -1,10 +1,8 @@
 import json
 from .forms import SubscriberForm
 from .models import Subscriber
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic import View, TemplateView
+from django.http import HttpResponse
+# from django.views.generic import View, TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 class SubscriberCreateView(BSModalCreateView):
