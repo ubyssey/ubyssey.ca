@@ -2,7 +2,7 @@ import json
 from .forms import SubscriberForm
 from .models import Subscriber
 from django.http import HttpResponse
-# from django.views.generic import View, TemplateView
+from django.views.generic import DeleteView
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 class SubscriberCreateView(BSModalCreateView):
@@ -36,3 +36,6 @@ class SubscriberCreateView(BSModalCreateView):
             json.dumps(response_data),
             content_type="application/json"
         )
+
+class SubscriberDeleteView(DeleteView):
+    form_class = SubscriberForm
