@@ -1,7 +1,6 @@
-import AdblockSplash from './AdblockSplash.jsx'
+import AdBlockSplash from './AdBlockSplash.jsx'
 import CookieDisclaimer from './CookieDisclaimer.jsx'
-
 export {
-  AdblockSplash as AdblockSplash,
-  CookieDisclaimer as CookieDisclaimer
+  AdBlockSplash as AdBlockSplash,
+  CookieDisclaimer as CookieDisclaimer,
 }

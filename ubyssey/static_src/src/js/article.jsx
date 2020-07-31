@@ -4,7 +4,7 @@ import './modules/Youtube'
 import { ArticlesSuggested } from './components/Article'
 import { Poll } from './components/Poll'
 import Search from './components/Search.jsx';
-import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
+import { AdBlockSplash, CookieDisclaimer } from './components/Cookies'
 import { Galleries } from './components/Gallery'
 import Timeline from './components/Timeline.jsx'
 import Episode from './components/Podcast/Episode.jsx'
@@ -23,7 +23,7 @@ $(function () {
         )
     })
     ReactDOM.render(
-        <AdblockSplash />,
+        <AdBlockSplash />,
         document.getElementById('adblock-splash')
     )
     ReactDOM.render(
@@ -188,15 +188,17 @@ if ($('main.article').length) {
 
     articleAds()
 
-    const articleList = ReactDOM.render(
-        <ArticlesSuggested
-          breakpoint={960}
-          name={listName}
-          currentArticle={firstArticle}
-          articles={articleIds}
-          userId={userId} />,
-          document.getElementById('article-list')
-    );
+    if(document.getElementById('article-list') !== null) {
+        const articleList = ReactDOM.render(
+            <ArticlesSuggested
+            breakpoint={960}
+            name={listName}
+            currentArticle={firstArticle}
+            articles={articleIds}
+            userId={userId} />,
+            document.getElementById('article-list')
+        );
+    }
 
     const gatherImages = (gallery) => {
         var selector, trigger;

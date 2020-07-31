@@ -16,6 +16,7 @@ from ubyssey.zones import *
 from ubyssey.widgets import *
 from ubyssey.templates import *
 
+from newsletter.urls import urlpatterns as newsletter_urls
 from ubyssey.events.api.urls import urlpatterns as event_api_urls
 from ubyssey.events.urls import urlpatterns as events_urls
 
@@ -38,6 +39,7 @@ urlpatterns += [
     re_path(r'^admin', include(admin_urls)),
     re_path(r'^api/', include(api_urls)),
     re_path(r'^podcasts/', include(podcasts_urls)),
+    re_path(r'^newsletter/', include(newsletter_urls)),
 
     re_path(r'^$', theme.home, name='home'),
     re_path(r'^search/$', theme.search, name='search'),

@@ -219,6 +219,13 @@ class AdvertisementWidget(Widget):
     zones = (FrontPage, HomePageSidebarBottom,)
 
 @register.widget
+class SubscribeWidget(Widget):
+    id = 'subscribe'
+    name = 'Subscribe'
+    template = 'widgets/newsletter.html'
+    zones = (FrontPage, HomePageSidebarBottom,)
+
+@register.widget
 class TopStoryDefault(Widget):
     id = 'top-story-default'
     name = 'Top Story Default'
@@ -261,8 +268,8 @@ class FrontPageDefault(Widget):
 
     # top_story is unused as of now
     top_story = WidgetField('Top Story', [TopStoryDefault, TopStoryLive], required=True)
-    sidebar = WidgetField('First Widget on Sidebar', [UpcomingEventsWidget, TwitterFrontPage, FeaturedSubsectionWidget, FeaturedVideosWidget, AdvertisementWidget], required=True)
-    sidebar2 = WidgetField('Second Widget on Sidebar', [UpcomingEventsWidget, TwitterFrontPage, FeaturedSubsectionWidget, FeaturedVideosWidget, AdvertisementWidget], required=False)
+    sidebar = WidgetField('First Widget on Sidebar', [UpcomingEventsWidget, TwitterFrontPage, FeaturedSubsectionWidget, FeaturedVideosWidget, AdvertisementWidget, SubscribeWidget], required=True)
+    sidebar2 = WidgetField('Second Widget on Sidebar', [UpcomingEventsWidget, TwitterFrontPage, FeaturedSubsectionWidget, FeaturedVideosWidget, AdvertisementWidget, SubscribeWidget], required=False)
 
 
 def in_date_range(start, end):

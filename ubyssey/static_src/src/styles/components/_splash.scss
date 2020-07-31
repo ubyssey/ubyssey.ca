@@ -1,0 +1,290 @@
+#adblock-splash {
+  // Structure
+  display: none;
+}
+
+.adblock-container {
+  // Structure
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  // Extra
+  z-index: 10;
+}
+.adblock-fullscreen {
+  // Structure
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  right: 0;
+
+  // Background
+  background-color: white;
+
+  // Extra
+  opacity: .5;
+  z-index: 10;
+}
+
+.adblock-content {
+  // Structure
+  position: relative;
+  height: auto;
+  max-width: 500px;
+  padding: 25px;
+
+  // Background
+  background-color: $color-ub-blue;
+
+  // Extra
+  opacity: 1;
+  z-index: 11;
+
+  // Fonts
+  color: white;
+  h1{
+    margin-top: 0;
+  }
+  h3 {
+    margin: 1rem 0;
+  }
+  p {
+    margin-bottom: 5px;
+  }
+}
+
+.adblock-button {
+  // Structure
+  position: absolute;
+  width: 120px;
+  right: 25px;
+  bottom: 25px;
+  margin-right: 0;
+
+  // Background
+  background-color: white;
+  background-image: none;
+
+  // Font
+  color: $color-ub-blue;
+
+  // Borders
+  border: none;
+
+  // Extra
+  transition: opacity .1s;
+  &:hover {
+    opacity: .8;
+  }
+}
+
+.adblock-close {
+  // Structure
+  position: absolute;
+  right: 25px;
+  top: 25px;
+  width: 25px;
+  height: 25px;
+
+  // Extra
+  opacity: 0.5;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+  }
+}
+.adblock-close:before, .adblock-close:after {
+  // Structure
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 15px;
+  width: 2px;
+
+  // Background
+  background-color: white;
+}
+.adblock-close:before {
+  transform: rotate(45deg);
+}
+.adblock-close:after {
+  transform: rotate(-45deg);
+}
+
+#subscribe-splash {
+  // Structure
+  display: none;
+}
+
+.subscribe-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+.subscribe-fullscreen {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  right: 0;
+
+  // Background
+  background-color: black;
+
+  // Extra
+  opacity: .33;
+  z-index: 10;
+}
+
+.subscribe-content {
+  // Structure
+  position: relative;
+  top: 25%;
+  height: auto;
+  margin: auto;
+  max-width: 500px;
+  padding: 20px 30px;
+
+  img{
+    content: url("/static/ubyssey/images/ubyssey-dingbat-white.png");
+    width: 60px;
+  }
+
+
+  // Background
+  background-color: $color-ubc;
+
+  // Extra
+  opacity: 1;
+  z-index: 11;
+
+  // Fonts
+  color: white;
+  h1{
+    margin: 0;
+    margin-top: 1rem;
+    font-size: 2.7rem;
+  }
+  h3 {
+    margin: 1rem 0;
+  }
+  p{
+    margin: 1.5rem 0;
+  }
+  @media(max-width: 600px) {
+    width: 75%;
+    padding: 5% 10%;
+  }
+}
+
+.subscribe-form-splash-container{
+  text-align: right;
+  width: 95%;
+  @media(max-width: 600px) {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+#subscribe-form-splash{
+  text-align: left;
+  position: relative;
+  @media(max-width: 600px) {
+    text-align: center;
+  }
+  #subscriber-email-splash{
+      width: 70%;
+      height: 25px;
+      &:focus{
+        outline: none;
+      }
+      @media(max-width: 600px) {
+        text-align: center;
+        width: 100%;
+        padding: 0;
+        border: 0;
+        margin: 0;
+      }
+  }
+  button{
+    padding: 0 15px;
+    margin: 0 13px;
+    background-color: rgba(#002145, 0.8);
+    background-image: none;
+    border-color: rgba(#002145, 0.8);
+    color: white;
+    @media(max-width: 600px) {
+      margin: 0;
+      margin-top: 10px;
+      width: 100%;
+    }
+  }
+}
+
+#already-sub-button {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: normal;
+  opacity: 0.6;
+  // Font
+  // Extra
+  transition: opacity .1s;
+  &:hover {
+    opacity: .8;
+  }
+
+  @media(max-width: 600px) {
+    margin: 0;
+  }
+}
+
+#subscribe-close-message{
+  display: flex;
+  position: absolute;
+  opacity: 0.6;
+  right: 45px;
+  font-size: 12px;
+  top: 25px;
+  height: 25px;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.subscribe-close-arrow {
+  // Structure
+  position: absolute;
+  top: 0;
+  right: -20px;
+  width: 25px;
+  height: 25px;
+
+  // Extra
+  cursor: pointer;
+}
+
+.subscribe-close-arrow:before, .subscribe-close-arrow:after {
+  // Structure
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 15px;
+  width: 2px;
+
+  // Background
+  background-color: white;
+}
+.subscribe-close-arrow:before {
+  transform: rotate(45deg);
+}
+.subscribe-close-arrow:after {
+  transform: rotate(-45deg);
+}

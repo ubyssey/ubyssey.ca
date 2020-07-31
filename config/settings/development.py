@@ -19,7 +19,7 @@ MIDDLEWARE = (
 )
 
 TEMPLATES += [
-{
+    {
         'NAME': 'ubyssey',
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
@@ -28,6 +28,7 @@ TEMPLATES += [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     }
@@ -35,6 +36,9 @@ TEMPLATES += [
 
 # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS += [
+    os.path.join(BASE_DIR,'assets')
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 GCS_CREDENTIALS_FILE = '../gcs-local.json'

@@ -30,7 +30,7 @@
 @import 'objects/archive';
 @import 'objects/bottom_banner';
 
-@import 'components/adblock-splash';
+@import 'components/splash';
 @import 'components/button';
 @import 'components/cookie-disclaimer';
 @import 'components/elections-sidebar';
@@ -61,6 +61,7 @@
 @import 'modules/events/date_box';
 
 @import 'modules/widgets/event';
+@import 'modules/widgets/subscribe';
 @import 'modules/widgets/upcoming_events';
 @import 'modules/widgets/upcoming_events_horizontal';
 @import 'modules/widgets/facebook_video_big';

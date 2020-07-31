@@ -125,7 +125,7 @@ nav.main {
   }
 
   .left, .right {
-    width: 22%;
+    width: 25%;
   }
 
   .right {
@@ -133,8 +133,18 @@ nav.main {
   }
 
   .middle {
-    width: 56%;
+    width: 50%;
     text-align: center;
+  }
+
+  @media (max-width: 1200px) {
+    .left, .right {
+      width: 20%;
+    }
+    .middle {
+      width: 60%;
+      text-align: center;
+    }
   }
 
   @media (max-width: 1060px) {
@@ -181,21 +191,23 @@ nav.main {
         font-family: $font-default;
         font-size: 13px;
         color: #33331E;
-        margin: 0 6px;
+        margin: 0 3px;
 
         &.store {
           margin: 0 3px;
         }
       }
-      .archive, .events{
+      .advice, .events{
         @media (max-width: 1200px) {
             display:none;
         }
       }
-      
-      .volunteer, .advice {
-        @media (max-width: 1060px) {
+      @media (max-width: 1060px) {
+        .volunteer, .opinion {
           display:none;
+        }
+        .advice{
+          display: block;
         }
       }
     }

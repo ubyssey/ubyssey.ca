@@ -13,25 +13,29 @@ function registerWidget() {
     carousel.currentSlide = 0;
     carousel.slides = [];
 
-    var containerHeight = 0;
+    let containerHeight = 0;
+    let containerWidth = 0;
 
     carousel.find('.js-carousel__item').each(function(i) {
       var item = $(this);
       item.css('display', 'block');
       item.slideIndex = i;
       carousel.slides.push(item);
-
-      containerHeight = Math.max(containerHeight, item.outerHeight());
-      var width = item.outerWidth();
+      if(window.innerWidth >= 1200) {
+        containerHeight = Math.max(containerHeight, item.outerHeight());
+        containerWidth = item.outerWidth();
+      } else {
+        containerHeight = 200;
+        containerWidth = 338;
+      }
       item.css('position', 'absolute');
       item.css('height', containerHeight);
-      item.css('width', width);
+      item.css('width', containerWidth);
 
       if (i) {
         item.css('display', 'none');
       }
     });
-
     carousel.find('.js-carousel-inner').css('height', containerHeight);
 
     var numSlides = carousel.slides.length;
