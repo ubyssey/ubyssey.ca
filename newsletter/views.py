@@ -8,13 +8,20 @@ from django.views.generic import View, TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 class SubscriberCreateView(BSModalCreateView):
+    """
+    Class view for creating Subscribers through a form embedded in a bootstrap modal.
+    Bootstrap modal and AJAX are intended to let this view to be used as long as a modal can be triggered, without refreshing or redirecting the page, so a user doesn't lose what they were reading.
+    """
     form_class = SubscriberForm
     template_name = 'newsletter/subscribe.html'
-    # success_message = 'Success! Thank you for subscribing!'
-    # success_url = reverse_lazy('success')
 
     def post(self, request, *args, **kwards):
-        response_data = {} #dict that will hold stats of the submitted subscriber
+        """
+        POST request is expected to use AJAX and will not redirect user to a different page
+
+        This was based on this blog post (for reference): https://realpython.com/django-and-ajax-form-submissions/
+        """
+        response_data = {} # Dict that will hold stats of the submitted subscriber, or else let us know something odd happened, like a malformed POST request being made to the URL corresponding to this view
         form = self.get_form()
         if form.is_valid():
             subscribers_email = request.POST.get('email')        
