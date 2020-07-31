@@ -30,8 +30,16 @@
         <button id='already-sub-button'>
             Already Subscribed?
         </button>
-        <div id="results">           
+        <div id="subscribe_results">           
+            {% comment %}
+                This container will contain the success message or error message depending if the ajax POST was successful
+                See create_subscriber() below
+            {% endcomment %}
         </div>
+        <div id='subscribe-close-message'>
+            Not now, thank you
+        <div class='subscribe-close-arrow'></div>
+      </div>
     </div>
 
     <div class="modal-footer">
@@ -46,8 +54,8 @@
     });
 
     {% comment %}        
-        create_subscriber() uses AJAX to make a POST request
-        Based on: https://realpython.com/django-and-ajax-form-submissions/
+    create_subscriber() uses AJAX to make a POST request
+    Based on: https://realpython.com/django-and-ajax-form-submissions/
     {% endcomment %}
     function create_subscriber() {
         $.ajax({
@@ -58,7 +66,7 @@
             // handle a successful response
             success : function(json) {
                 $('#subscriber_email_field').val(''); // remove the value from the input
-                $('#results').html("<div>Success! This pop-up will close in a few seconds.</div");
+                $('#subscribe_results').html("<div>Success! This pop-up will close in a few seconds.</div");
                 console.log(json); // log the returned json to the console
                 // close the modal after 3 seconds
                 setTimeout(function() {
@@ -68,7 +76,7 @@
 
             // handle a non-successful response
             error : function(xhr,errmsg,err) {
-                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                $('#subscribe_results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
                     " <a href='#' class='close'>&times;</a></div>");
                 console.log(xhr.status + ": " + xhr.responseText);
             }
