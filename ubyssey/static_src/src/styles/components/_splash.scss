@@ -193,29 +193,41 @@
   }
 }
 
+#modal{
+  &:focus{
+    outline: none;
+  }
+}
 #subscribe-form-splash{
+  display: flex;
   text-align: left;
   position: relative;
   @media(max-width: 600px) {
     text-align: center;
+    display: block;
   }
-  #subscriber-email-splash{
-      width: 70%;
+  .form-group{
+    width: 70%;
+    @media(max-width: 600px) {
+      width: 100%;
+    }
+  }
+  #subscriber_email_field{
       height: 25px;
+      width: 100%;
       &:focus{
         outline: none;
       }
       @media(max-width: 600px) {
         text-align: center;
-        width: 100%;
         padding: 0;
         border: 0;
         margin: 0;
       }
   }
-  button{
+  #subscribe-button{
     padding: 0 15px;
-    margin: 0 13px;
+    margin: 0 22px;
     background-color: rgba(#002145, 0.8);
     background-image: none;
     border-color: rgba(#002145, 0.8);

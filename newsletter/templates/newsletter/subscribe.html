@@ -4,49 +4,52 @@
     Originally modified from usage instructions on 
     https://pypi.org/project/django-bootstrap-modal-forms/
 {% endcomment %}
+
 <form id="modal-form" method="post" action="#">
     {% csrf_token %}
 
     <div class="modal-header">
-        <h5 class="modal-title">Enjoying the Ubyssey?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+        <img></img>
+        <div id="subscribe-close-message" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"> Not now, thank you
+                <div class='subscribe-close-arrow'></div></span>
         </button>
     </div>
 
     <div class="modal-body">
-        <p>If you like our content, don't forget to subscribe to our weekly newsletter.
-        Always stay up to date on the news!
-        </p>
-        {% for field in form %}
-        <div class="form-group{% if field.errors %} invalid{% endif %}">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {% render_field field id="subscriber_email_field" %}
-            {% for error in field.errors %}
-                <p class="help-block">{{ error }}</p>
-            {% endfor %}
+        <h1>Enjoying the Ubyssey?</h1>
+      <p>If you like our content, don't forget to subscribe to our weekly newsletter.
+          Always stay up to date on the news!
+      </p>
+        <div class='subscribe-form-splash-container'>
+            <div id='subscribe-form-splash'>
+                {% for field in form %}
+                <div class="form-group{% if field.errors %} invalid{% endif %}">
+                    {% render_field field id="subscriber_email_field" placeholder="Enter email..." %}
+                    {% for error in field.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <button id='subscribe-button' type="button" class="submit-btn btn btn-primary">Subscribe</button>
+            </div>
+            <button id='already-sub-button'>
+                Already Subscribed?
+            </button>
         </div>
-        {% endfor %}
-        <button id='already-sub-button'>
-            Already Subscribed?
-        </button>
         <div id="subscribe_results">           
             {% comment %}
                 This container will contain the success message or error message depending if the ajax POST was successful
                 See create_subscriber() below
             {% endcomment %}
         </div>
-        <div id='subscribe-close-message'>
-            Not now, thank you
-        <div class='subscribe-close-arrow'></div>
-      </div>
     </div>
-
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="submit-btn btn btn-primary">Create</button>
-    </div>
+</div>
 </form>
+
+</div>
+</div>
+</div> 
 <script>
     $('#modal-form').on('submit', function(event){
         event.preventDefault(); //stops Django's automatic redirect
