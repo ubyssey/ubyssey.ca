@@ -35,7 +35,8 @@ function disableSubscribeSplash() {
 }
 
 function showSubscribeSplash() {
-    document.getElementById('subscribe-splash').style.display = 'inline';
+    // hardcoding whoops lol
+    $('#subscribe-link').trigger("click");
 }
 
 const visitCount = getCookie('visitCount')
@@ -53,4 +54,3 @@ export function showNewsletter() {
         showSubscribeSplash();
     }
 }
-
