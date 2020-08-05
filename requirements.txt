@@ -25,3 +25,4 @@ whitenoise==5.1.0
 django-widget-tweaks==1.4.8
 django-bootstrap-modal-forms==2.0.0
 mailchimp==2.0.9
+mailchimp-marketing==3.0.12
