@@ -374,6 +374,13 @@
   // Structure
   margin-bottom: 1rem;
   max-width: 50%;
+  @media($bp-smaller-than-phablet) {
+    margin: auto;
+    max-width: 60%;
+  }
+  @media($bp-smaller-than-mobile) {
+    max-width: 80%;
+  }
 
   &:last-child {
     // Structure

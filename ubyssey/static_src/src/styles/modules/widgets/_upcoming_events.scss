@@ -76,7 +76,7 @@
   $button-color: lighten($color-text-gray-light, 10%);
 
   .carousel-button-row {
-    margin: 5px 0;
+    margin: 20px 0;
     display: flex;
     justify-content: center;
   }
@@ -98,4 +98,19 @@
 
 .js-carousel-inner {
   position: relative;
+  .o-article{
+    &__headline{
+      a{
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 4.8em;
+        line-height: 1.2em;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+      }
+    }
+  }
 }
+

@@ -63,6 +63,35 @@ function embedMargins() {
   $('.image-attachment.right').css('marginRight', marginRight)
 }
 
+function fullWidthStory(){
+  if($('.fw-banner banner-image') !== undefined) {
+    let captionHeight = $('.caption').height();
+    let headlineHeight = $('.headline-container').height();
+    $('.banner-image').height(30+captionHeight+headlineHeight);
+  }
+}
+
+function issueParser() {
+  var req = new XMLHttpRequest();
+  req.open('GET', 'https://cors-anywhere.herokuapp.com/https://search.issuu.com/api/2_0/document?q=username%3Aubyssey&responseParams=title&sortBy=epoch&pageSize=4');
+  req.setRequestHeader('Ubyssey', 'XMLHttpRequest');
+  req.onload = function() {
+    var res = req.responseText;
+    var jsonQuery = '[' + res.split('[')[1].split(']')[0] + ']';
+    var issueArray = JSON.parse(jsonQuery);
+    for(var i = 0; i < issueArray.length; i++) {
+      var docName = issueArray[i].docname;
+      var docId = issueArray[i].documentId;
+      var title = issueArray[i].title;
+      var issueID = '#issue' + (i+1);
+      $(issueID).attr('href', 'https://issuu.com/ubyssey/docs/' + docName).text(title);
+      if(i == 0)
+        $(issueID).append('<img src="https://image.isu.pub/' + docId +'/jpg/page_1_thumb_large.jpg">');
+    }
+  };
+  req.send();
+}
+
 (function() {
   var $searchform = $('#search-form'),
       $document = $(document);
@@ -88,29 +117,6 @@ function embedMargins() {
     $('.sections-more').fadeOut(300);
   })
   );
-
-  function issueParser() {
-    var req = new XMLHttpRequest();
-    req.open('GET', 'https://cors-anywhere.herokuapp.com/https://search.issuu.com/api/2_0/document?q=username%3Aubyssey&responseParams=title&sortBy=epoch&pageSize=4');
-    req.setRequestHeader('Ubyssey', 'XMLHttpRequest');
-    req.onload = function() {
-      var res = req.responseText;
-      var jsonQuery = '[' + res.split('[')[1].split(']')[0] + ']';
-      var issueArray = JSON.parse(jsonQuery);
-      for(var i = 0; i < issueArray.length; i++) {
-        var docName = issueArray[i].docname;
-        var docId = issueArray[i].documentId;
-        var title = issueArray[i].title;
-        var issueID = '#issue' + (i+1);
-        $(issueID).attr('href', 'https://issuu.com/ubyssey/docs/' + docName).text(title);
-        if(i == 0)
-        $(issueID).append('<img src="https://image.isu.pub/' + docId +'/jpg/page_1_thumb_large.jpg" alt="To our digital issue>');
-      }
-    };
-    req.send();
-  }
-
-  issueParser();
   
   // $document.on('click', function(e){
   //   $('.dropdown .list').hide();
@@ -228,9 +234,29 @@ function embedMargins() {
     mp.pageView();
   }
 
-  $document.ready(embedMargins())
+  let isUpcomingEventsCreated = false;
+  
+  $( document ).ready(function() {
+    embedMargins();
+    fullWidthStory();
+    // register widgets
+    if(!isUpcomingEventsCreated && $(this).width() >= 1200) {
+      isUpcomingEventsCreated = true;
+      upcomingEvents();
+    }
+    if(window.location.pathname === '/'){ issueParser(); }
+  });
 
-  // register widgets
-  upcomingEvents();
+  
+  $(window).resize(function() {
+    if(!isUpcomingEventsCreated && $(this).width() >= 1200) {
+      isUpcomingEventsCreated = true;
+      upcomingEvents();
+    }
+    if($(this).width() <= 500)
+      fullWidthStory();
+  });
+  
+  
 
 })();

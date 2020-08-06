@@ -21,13 +21,10 @@ function registerWidget() {
       item.css('display', 'block');
       item.slideIndex = i;
       carousel.slides.push(item);
-      if(window.innerWidth >= 1200) {
-        containerHeight = Math.max(containerHeight, item.outerHeight());
-        containerWidth = item.outerWidth();
-      } else {
-        containerHeight = 200;
-        containerWidth = 338;
-      }
+      containerHeight = Math.max(containerHeight, item.outerHeight());
+      containerWidth = item.outerWidth();
+      if(containerHeight == 0) { containerHeight = 150; }
+      if(containerWidth == 0) { containerWidth = 318; }
       item.css('position', 'absolute');
       item.css('height', containerHeight);
       item.css('width', containerWidth);
@@ -36,7 +33,7 @@ function registerWidget() {
         item.css('display', 'none');
       }
     });
-    carousel.find('.js-carousel-inner').css('height', containerHeight);
+    carousel.find('.js-carousel-inner').css('height', containerHeight+5);
 
     var numSlides = carousel.slides.length;
 

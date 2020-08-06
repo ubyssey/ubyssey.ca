@@ -61,4 +61,7 @@
   font-weight: 600;
   letter-spacing: 0.045em;
   text-transform: uppercase;
+  @media($bp-smaller-than-phablet) {
+    text-align: center;
+  }
 }

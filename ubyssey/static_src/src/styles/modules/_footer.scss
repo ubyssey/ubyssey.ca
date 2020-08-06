@@ -32,6 +32,10 @@ footer {
     li {
       margin: 0 8px;
       display: inline-block;
+      @media($bp-smaller-than-mobile){
+        margin: 0;
+        width: 45%;
+      }
     }
     &.light {
       margin-left: 0;

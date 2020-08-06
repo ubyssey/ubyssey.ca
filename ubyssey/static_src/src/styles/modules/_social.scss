@@ -36,7 +36,7 @@
   padding-right: 15px;
   text-align: center;
 
-  @media($bp-larger-than-mobile){
+  @media($bp-larger-than-phablet){
     text-align: unset;
   }
 
