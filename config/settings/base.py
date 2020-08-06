@@ -84,7 +84,10 @@ env = environ.Env(
     SECRET_KEY = (str, 'thisisakey'),
     NOTIFICATION_KEY= (str, 'thisisakeytoo'),
     MAILCHIMP_API_KEY = (str, 'thisisthemailchimpapikey'),
+
+    # Mailchimp stuff (other than the key)
     MAILCHIMP_SUBSCRIBE_LIST_ID = (str, 'thisisthesubscribelistkey'),
+    MAILCHIMP_SERVER_PREFIX = (str, 'usXX'),
 )
 
 # Read the .env file into os.environ.
@@ -214,4 +217,5 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 # Mailchimp stuff
 MAILCHIMP_API_KEY = env('MAILCHIMP_API_KEY')
+MAILCHIMP_SERVER_PREFIX = env('MAILCHIMP_SERVER_PREFIX')
 MAILCHIMP_SUBSCRIBE_LIST_ID = env('MAILCHIMP_SUBSCRIBE_LIST_ID')
