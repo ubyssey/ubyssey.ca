@@ -7,23 +7,20 @@ const colors = {
   colorUBC: "#002145"
 }
 
-$(document).ready(function(){
-  checkFooter();
-  $('#c-nav-home').hover(function(e) {
+
+function dropDownHeader(dropDownParentName, dropDownName) {
+  console.log($(dropDownParentName), $(dropDownName))
+  $(dropDownParentName).hover(function(e) {
     e.stopPropagation();
-    $('.c-home-more').finish();
-    $('.c-home-more').slideToggle(300);
+    $(dropDownName).finish();
+    $(dropDownName).slideToggle(300);
     }, (function(e) {
       e.stopPropagation();
-      $('.c-home-more').finish();
-      $('.c-home-more').fadeOut(300);
+      $(dropDownName).finish();
+      $(dropDownName).fadeOut(300);
     })
   );
-});
-
-$(window).resize(function() {
-  checkFooter();
-});
+}
 
 function checkFooter() {
   if(window.screen.width < 500) {
@@ -66,3 +63,20 @@ function checkFooter() {
      }
   }
 }
+
+$(document).ready(function(){
+  checkFooter();
+  dropDownHeader('#c-nav-home-mobile', '.c-home-more');
+  dropDownHeader('#c-nav-home-tablet', '.c-home-more');
+  dropDownHeader('.c-nav-current', '#c-section-more--current');
+  dropDownHeader('#c-nav-section--academic', '#c-section-more--academic');
+  dropDownHeader('#c-nav-section--ubc', '#c-section-more--ubc');
+  dropDownHeader('#c-nav-section--adulting', '#c-section-more--adulting');
+  dropDownHeader('#c-nav-section--sdp', '#c-section-more--sdp');
+  dropDownHeader('#c-nav-section--vancouver', '#c-section-more--vancouver');
+});
+
+$(window).resize(function() {
+  checkFooter();
+  
+});

@@ -34,16 +34,24 @@
     }
   }
 }
-
+.ubyssey-dingbat{
+  img{
+    width: 40px;
+    height: 40px;
+  }
+}
 .c-nav-footer {
   margin-top: 30px;
+  @media($bp-larger-than-tablet){
+    margin-left: 70px;
+  }
 
-    display: flex;
-    @media ($bp-smaller-than-mobile) {
-      display: block;
-    }
-    flex-wrap: wrap;
-    align-items: stretch;
+  display: flex;
+  @media ($bp-smaller-than-mobile) {
+    display: block;
+  }
+  flex-wrap: wrap;
+  align-items: stretch;
 }
 
 .c-nav-footer__column {

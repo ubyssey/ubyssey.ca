@@ -1,7 +1,8 @@
+{% load static %}
 <footer class="c-footer{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}">
   <div class="o-container">
     <div class="o-wrapper">
-      <a class="o-logo--small" href="{% url 'guide-landing' 2020 %}"></a>
+      <a class='ubyssey-dingbat' href="https://www.ubyssey.ca"><img src="{% static 'ubyssey/images/ubyssey-dingbat-white.png' %}"/></a>
       <nav class="c-nav-footer">
         <div class="c-nav-footer__column" id="footer-academics">
           <h2>Academics</h2>
