@@ -49,13 +49,16 @@ class Mailchimp(object):
         }
 
     def create_list(self):
+        """
+        Expected to fail because at the moment we lack paid access to the mailchimp API
+        """
         try:
             response = self.mailchimp_client.lists.create_list(self.body)
             print("Response: {}".format(response))
         except ApiClientError as error:
             print("An exception occurred: {}".format(error.text))
 
-    def add_subscriber_to_list(self, subscriber, list_id):
+    def add_subscriber_to_list(self, subscriber, list_id=settings.MAILCHIMP_SUBSCRIBE_LIST_ID):
         try:
             member_info = {
                 "email": subscriber.email, 
