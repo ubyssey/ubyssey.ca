@@ -1,48 +1,5 @@
 import * as mp from './modules/Mixpanel';
 import upcomingEvents from './widgets/upcoming-events';
-import {showNewsletter} from './components/Cookies/NewsLetterSplash'
-import {initializeUI} from './notifications';
-
-showNewsletter();
-// if ('serviceWorker' in navigator && 'PushManager' in window) {
-//   navigator.serviceWorker.register('/service-worker.js')
-//   .then(function(swReg) {
-    
-//     $('#beta-test-push-notifications').click(() => {
-//       const delay_1 = 500
-//       const prompt = 'beta-prompt'
-//       let promptMessage = ''
-//       if (Notification.permission === 'default') {
-//         Notification.requestPermission().then((permission) => {
-//           if (permission === 'granted') {
-//             initializeUI(swReg)
-//           }
-//         })
-//       } else if (Notification.permission === 'granted') {
-//         promptMessage = 'You are already subscribed!'
-//         initializeUI(swReg)
-//       } else if (Notification.permission === 'denied') {
-//         promptMessage = `It lookes like you are currently blocking notifications from ubyssey.ca.
-//           If you would like to allow notifications please change your settings. For more information, please visit
-//           <a href='https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop&hl=en'> here </a>`
-//         initializeUI(swReg)
-//       }
-//       if (promptMessage !== '') {
-//         $('body').append("<div class='beta-prompt'><div class='beta-prompt-internal'></div></div>")
-//         $('.beta-prompt-internal').html(promptMessage)
-
-//         setTimeout(() => {
-//           $('.beta-prompt').remove()
-//         }, 3000)
-//       }
-//     })
-//   })
-//   .catch(function(error) {
-//     console.error('Service Worker Error', error);
-//   });
-// } else {
-//   console.warn('Push messaging is not supported');
-// }
 
 function disableScroll($document) {
   $document.on('touchmove', function(e) {
@@ -65,9 +22,13 @@ function embedMargins() {
 
 function fullWidthStory(){
   if($('.fw-banner banner-image') !== undefined) {
+    let bannerHeight = $('.banner-image').height();
     let captionHeight = $('.caption').height();
     let headlineHeight = $('.headline-container').height();
-    $('.banner-image').height(30+captionHeight+headlineHeight);
+    let minimumHeight = captionHeight+headlineHeight+30;
+    if(bannerHeight < minimumHeight) {
+      $('.banner-image').height(minimumHeight);
+    }
   }
 }
 
@@ -216,12 +177,14 @@ function issueParser() {
 
   $document.on('click', 'a.twitter', function(e){
     e.preventDefault();
-    window.open('http://twitter.com/share?url=' + $(this).data('url') + '&text=' + $(this).data('title') + '&', 'twitterwindow', 'height=450, width=550, top='+($(window).height()/2 - 225) +', left='+($(window).width()/2 - 225) +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+    window.open('http://twitter.com/share?url=' + $(this).data('url') + '&text=' + $(this).data('title') + '&', 'twitterwindow', 
+    'height=450, width=550, top='+($(window).height()/2 - 225) +', left='+($(window).width()/2 - 225) +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
   $document.on('click', 'a.reddit', function(e){
     e.preventDefault();
-    window.open('http://www.reddit.com/submit?url=' + $(this).data('url') + '&title=' + $(this).data('title') + '&', 'redditwindow', 'height=450, width=550, top='+($(window).height()/2 - 225) +', left='+($(window).width()/2 - 225) +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+    window.open('http://www.reddit.com/submit?url=' + $(this).data('url') + '&title=' + $(this).data('title') + '&', 'redditwindow', 
+    'height=450, width=550, top='+($(window).height()/2 - 225) +', left='+($(window).width()/2 - 225) +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
   
   $document.on('touchstart', function () {});
@@ -235,25 +198,26 @@ function issueParser() {
   }
 
   let isUpcomingEventsCreated = false;
-  
-  $( document ).ready(function() {
+
+  $(document).ready(function() {
     embedMargins();
-    fullWidthStory();
+    if($(window).width() <= 500)
+      fullWidthStory();
     // register widgets
-    if(!isUpcomingEventsCreated && $(this).width() >= 1200) {
+    if(!isUpcomingEventsCreated && $(window).width() >= 1200) {
       isUpcomingEventsCreated = true;
       upcomingEvents();
     }
     if(window.location.pathname === '/'){ issueParser(); }
-  });
-
+    
+  }); 
   
   $(window).resize(function() {
-    if(!isUpcomingEventsCreated && $(this).width() >= 1200) {
+    if(!isUpcomingEventsCreated && $(window).width() >= 1200) {
       isUpcomingEventsCreated = true;
       upcomingEvents();
     }
-    if($(this).width() <= 500)
+    if($(window).width() <= 500)
       fullWidthStory();
   });
   

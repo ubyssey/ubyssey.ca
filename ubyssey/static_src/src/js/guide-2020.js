@@ -9,7 +9,6 @@ const colors = {
 
 
 function dropDownHeader(dropDownParentName, dropDownName) {
-  console.log($(dropDownParentName), $(dropDownName))
   $(dropDownParentName).hover(function(e) {
     e.stopPropagation();
     $(dropDownName).finish();
