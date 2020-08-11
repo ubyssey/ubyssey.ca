@@ -27,8 +27,6 @@ class AdBlockSplash extends React.Component {
   }
 
   setCookie(visitCount, enableAdvertisementSplash, enableSubscribeSplash) {
-    console.log('setting cookie', visitCount, enableAdvertisementSplash, enableSubscribeSplash
-    );
     Cookies.set(
       this.getCookieName(),
       {'visitCount': visitCount, 'enableAdvertisementSplash': enableAdvertisementSplash, 'enableSubscribeSplash': enableSubscribeSplash},

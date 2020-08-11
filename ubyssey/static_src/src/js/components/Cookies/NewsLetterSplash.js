@@ -35,7 +35,8 @@ function disableSubscribeSplash() {
 }
 
 function showSubscribeSplash() {
-    document.getElementById('subscribe-splash').style.display = 'inline';
+    // hardcoding whoops lol
+    $('#subscribe-link').trigger("click");
 }
 
 const visitCount = getCookie('visitCount')
@@ -43,10 +44,13 @@ const enableSubscribeSplash = getCookie('enableSubscribeSplash')
 
 // cookies are disabled or visited more than 3 times without disabling splash
 export function showNewsletter() {
-    document.getElementById('already-sub-button').onclick = function(){disableSubscribeSplash()};
-    document.getElementById('subscribe-close-message').onclick = function(){hideSubscribeSplash()};
+     //document.getElementById('subscriber_email_field').removeAttr("required");
+    //  document.getElementById('already-sub-button').onclick = function(){disableSubscribeSplash()};
+    //  document.getElementById('subscribe-close-message').onclick = function(){hideSubscribeSplash()};
     if (!navigator.cookieEnabled || enableSubscribeSplash === undefined || (visitCount%1 == 0 && enableSubscribeSplash)) {
+        // $('#subscribe-splash').modalForm({
+        //     formURL: "{% url 'subscribe' %}"
+        // });
         showSubscribeSplash();
     }
 }
-

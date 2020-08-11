@@ -196,11 +196,12 @@ https://getbootstrap.com/docs/4.0/components/modal/
 For django-bootstrap-modal-forms
 {% endcomment%}
 $(document).ready(function() {
-
+    $("#subscribe-link").hide()
     $("#subscribe-link").modalForm({
         formURL: "{% url 'subscribe' %}"
     });
 });
+
 </script>
 <a ref="#" id="subscribe-link">Subscribe</a>
 </body>
