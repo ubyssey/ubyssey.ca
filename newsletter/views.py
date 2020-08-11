@@ -1,7 +1,7 @@
 import json
 from .forms import SubscriberForm
 from .models import Subscriber
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 from django.views.generic import DeleteView, View
 from bootstrap_modal_forms.generic import BSModalCreateView
 
