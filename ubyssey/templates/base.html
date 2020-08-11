@@ -114,7 +114,7 @@ https://getbootstrap.com/docs/4.0/components/modal/
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       {% comment %}
-      This element embeds a the contents of a template when triggered by .modalForm(...)
+      This element embeds the contents of a template when triggered by .modalForm(...)
       {% endcomment %}
     </div>
   </div>
@@ -197,11 +197,11 @@ For django-bootstrap-modal-forms
 {% endcomment%}
 $(document).ready(function() {
 
-    $("#subscribe-button").modalForm({
+    $("#subscribe-link").modalForm({
         formURL: "{% url 'subscribe' %}"
     });
 });
 </script>
-<button id="subscribe-button" class="btn btn-primary" type="button" name="button">Subscribe</button>
+<a ref="#" id="subscribe-link">Subscribe</a>
 </body>
 </html>
