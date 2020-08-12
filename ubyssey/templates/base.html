@@ -110,7 +110,7 @@ Modals are used for lightboxes, notifications, etc.
 
 https://getbootstrap.com/docs/4.0/components/modal/
 {% endcomment %}
-<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+<div id="modal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       {% comment %}
@@ -191,17 +191,7 @@ https://getbootstrap.com/docs/4.0/components/modal/
   }
 </script>
 
-<script type="text/javascript">
-{% comment%}
-For django-bootstrap-modal-forms
-{% endcomment%}
-$(document).ready(function() {
-
-    $("#subscribe-button").modalForm({
-        formURL: "{% url 'subscribe' %}"
-    });
-});
-</script>
+<script src="{% static 'newsletter/js/subscribe_modal.js' %}" type="text/javascript"></script>
 <button id="subscribe-button" class="btn btn-primary" type="button" name="button">Subscribe</button>
 </body>
 </html>
