@@ -23,4 +23,7 @@ from django.db import models
 # @TODO: Make it visible to admin!
 
 class Subscriber(models.Model):
-    email = models.EmailField(verbose_name="Subscriber's email")
+    email = models.EmailField(
+        verbose_name="Subscriber's email",
+        unique = True
+    )
