@@ -66,7 +66,7 @@
             // handle a successful response
             success : function(json) {
                 $('#subscriber_email_field').val(''); // remove the value from the input
-                $('#subscribe_results').html("<div>Success! This pop-up will close in a few seconds.</div");
+                $('#subscribe_results').html("<div>Success! You should get a confirmation email soon. This pop-up will close in a few seconds.</div");
                 console.log(json); // log the returned json to the console
                 // close the modal after 3 seconds
                 setTimeout(function() {
