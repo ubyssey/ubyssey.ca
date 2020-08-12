@@ -12,7 +12,7 @@ See also:
 https://mailchimp.com/developer/guides/create-your-first-audience
 """
 
-class Mailchimp(object):
+class MailchimpService(object):
     """
     Abstracts common mailchimp tasks for newsletter use 
     """
@@ -51,25 +51,36 @@ class Mailchimp(object):
     def create_list(self):
         """
         Expected to fail because at the moment we lack paid access to the mailchimp API
+        Returns:
+            The Mailchimp service's response in string format
         """
         try:
             response = self.mailchimp_client.lists.create_list(self.body)
-            print("Response: {}".format(response))
+            return "Response: {}".format(response)
         except ApiClientError as error:
-            print("An exception occurred: {}".format(error.text))
+            return "An exception occurred: {}".format(error.text)
 
     def add_subscriber_to_list(self, subscriber, list_id=settings.MAILCHIMP_SUBSCRIBE_LIST_ID):
+        """
+        Parameters:
+            subscriber (Subscriber): Subscriber model is used rather than simply a string so we can do front and back end validation on the email before sending data to Mailchimp
+        
+            list_id (str): This is set by default in Django settings because in production, it ought to receive the list ID from a secret manager (and so it ought to be treated as an external config)
+        
+        Returns:
+            The Mailchimp service's response in string format
+        """
         try:
             member_info = {
-                "email": subscriber.email, 
+                "email_address": subscriber.email, 
                 "status": "pending",
                 "merge_fields": {
                 }
             }
             try:
                 response = self.mailchimp_client.lists.add_list_member(list_id, member_info)
-                print("response: {}".format(response))
+                return "response: {}".format(response)
             except ApiClientError as error:
-                print("An exception occurred: {}".format(error.text))
+                return "An exception occurred: {}".format(error.text)
         except AttributeError as error:
-            print("An exception occurred: {}".format(error.text))
+            return "An exception occurred: {}".format(error)
