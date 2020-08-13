@@ -1,1 +1,0 @@
-This directory is where static files that don't straightforwardly belong to any Django app go.
