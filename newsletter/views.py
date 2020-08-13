@@ -31,28 +31,31 @@ class SubscriberCreateView(BSModalCreateView):
 
         This was based on this blog post (for reference): https://realpython.com/django-and-ajax-form-submissions/
         """
+        status = 200
         response_data = {} # Dict that will hold stats of the submitted subscriber, or else let us know something odd happened, like a malformed POST request being made to the URL corresponding to this view
         form = self.get_form()
         if form.is_valid():
-            subscribers_email = request.POST.get('email')        
+            response_data['email'] = request.POST.get('email')
+            subscriber = Subscriber(email=response_data['email'])
             try:
-                subscriber = Subscriber(email=subscribers_email)
-                subscriber.full_clean()
                 # subscriber.save() #Doesn't need to be saved yet, mailchimp will sync with it later
                 # response_data['created'] = subscriber.created.strftime('%B %d, %Y %I:%M %p') #consider adding 'created' field so we can tell how old a subscriber is
 
                 self.mailchimp_service_object.add_subscriber_to_list(subscriber=subscriber)
                 response_data['result'] = 'Subscriber added!'
             except IntegrityError:
-                response_data['result'] = 'IntegrityError. Check whether this email is already in the mailing list, or else whether it is properly formed!'                     
+                response_data['result'] = 'IntegrityError. Check whether this email is already in the mailing list, or else whether it is properly formed!'
+                status = 400                     
             except ValidationError:
                 response_data['result'] = "ValidationError"
+                status = 400
         else:
             response_data['result'] = 'form.is_valid() check failed!'            
-        response_data['email'] = subscriber.email
+            status = 400
         return HttpResponse(
             json.dumps(response_data),
-            content_type="application/json"
+            content_type="application/json",
+            status=status
         )
 
 class SubscriberDeleteView(DeleteView):
