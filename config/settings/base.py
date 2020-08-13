@@ -127,7 +127,7 @@ NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 # Application definition
 INSTALLED_APPS = [
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
-    'ubyssey.apps.UbysseyConfig',
+    'ubyssey',
     'dispatch.apps.DispatchConfig',
     'newsletter.apps.NewsletterConfig',
     'django.contrib.auth',
@@ -138,8 +138,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'rest_framework.authtoken',
-    'widget_tweaks',
-    'bootstrap_modal_forms',
 ]
 
 # Replace default user model
