@@ -88,6 +88,7 @@ env = environ.Env(
     # Mailchimp stuff (other than the key)
     MAILCHIMP_SUBSCRIBE_LIST_ID = (str, 'thisisthesubscribelistkey'),
     MAILCHIMP_SERVER_PREFIX = (str, 'usXX'),
+    MAILCHIMP_WEBHOOK_ENDPOINT_URL = (str, 'thisisaurl/'),
 )
 
 # Read the .env file into os.environ.
@@ -219,3 +220,4 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1
 MAILCHIMP_API_KEY = env('MAILCHIMP_API_KEY')
 MAILCHIMP_SERVER_PREFIX = env('MAILCHIMP_SERVER_PREFIX')
 MAILCHIMP_SUBSCRIBE_LIST_ID = env('MAILCHIMP_SUBSCRIBE_LIST_ID')
+MAILCHIMP_WEBHOOK_ENDPOINT_URL = env('MAILCHIMP_WEBHOOK_ENDPOINT_URL')
