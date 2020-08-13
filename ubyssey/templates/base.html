@@ -28,8 +28,6 @@
   <meta name="theme-color" content="#ffffff">
   <meta property="fb:pages" content="99164676792" />
   <link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css"/>
-  {% comment %} <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}"> {#For django-bootstrap-modal-forms#} {% endcomment %}
-
   <script>
     var googletag = googletag || {};
     googletag.cmd = googletag.cmd || [];
@@ -105,21 +103,6 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 
 <div id="page-wrapper">
 <div id="adblock-splash"></div>
-{% comment %}
-Modals are used for lightboxes, notifications, etc.
-
-https://getbootstrap.com/docs/4.0/components/modal/
-{% endcomment %}
-<div id="modal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      {% comment %}
-      This element embeds a the contents of a template when triggered by .modalForm(...)
-      {% endcomment %}
-    </div>
-  </div>
-</div>
-
 <div id="cookie-disclaimer"></div>
 {% zone 'site-banner' %}
 {% block header %}{% endblock %}
@@ -190,8 +173,5 @@ https://getbootstrap.com/docs/4.0/components/modal/
   	blockAdBlock.on(true, adBlockDetected).onNotDetected(adBlockNotDetected);
   }
 </script>
-
-<script src="{% static 'newsletter/js/subscribe_modal.js' %}" type="text/javascript"></script>
-<button id="subscribe-button" class="btn btn-primary" type="button" name="button">Subscribe</button>
 </body>
 </html>
