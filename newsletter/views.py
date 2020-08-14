@@ -1,7 +1,12 @@
 import json
 from .models import Subscriber
 from django.http import HttpResponse, HttpResponseServerError
+from django.shortcuts import redirect
 from django.views.generic import View
+
+def mailchimp_landing_redirect(self, request):
+    response = redirect('https://mailchi.mp/811f064f8f4f/newsletter')
+    return response
 
 class WebhookResponseHandlerView(View):    
     """
