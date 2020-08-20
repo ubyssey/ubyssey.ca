@@ -21,7 +21,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 import ubyssey
 import ubyssey.cron
-from ubyssey.helpers import SubsectionHelper, PodcastHelper, NationalsHelper, FoodInsecurityHelper, VideoHelper
+from ubyssey.helpers import PodcastHelper, NationalsHelper, FoodInsecurityHelper, VideoHelper
 from ubyssey.mixins import ArticleMixin, ArchiveListViewMixin, DispatchPublishableViewMixin, SectionMixin, SubsectionMixin
 
 def parse_int_or_none(maybe_int):
