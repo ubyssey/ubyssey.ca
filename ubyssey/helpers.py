@@ -172,31 +172,6 @@ class ArticleHelper(object):
             'author': article.get_author_type_string()
         }
 
-class SubsectionHelper(object):
-
-    @staticmethod
-    def get_subsections(section):
-        article_query = Article.objects.filter(
-           subsection_id=OuterRef("id"),
-           is_published=True
-        ).order_by(
-            F('published_at').desc(nulls_last=True)
-        )
-        subsection_query = Subsection.objects.annotate(
-            published_at=Subquery(
-                article_query.values('published_at')[:1]
-            )
-        ).filter(
-            is_active=True,
-            section_id=section.id
-        )
-        return list(subsection_query)
-
-    @staticmethod
-    def get_featured_subsection_articles(subsection, featured_articles):
-        featured_articles_ids = list(featured_articles.values_list('id', flat=True)[0:4])
-        return subsection.get_published_articles().exclude(id__in=featured_articles_ids)[0:3] if subsection.get_published_articles().exclude(id__in=featured_articles_ids).exists() else subsection.get_published_articles()[0:3]
-
 class PodcastHelper(object):
     @staticmethod
     def get_podcast_episode_url(podcast_id, id):
