@@ -1,3 +1,7 @@
+# Helper classes are generally considered code smell. These are left in the code insofar as some functionality still depends upon them.
+# Their use should be minimized. These were typically used with Views, but the standard pattern for code reuse for views in 
+# Django is instead to create mixins for class Views
+
 import datetime
 from datetime import datetime
 
@@ -16,6 +20,11 @@ from dispatch.models import Article, Page, Section, Subsection, Podcast, Image, 
 from ubyssey.events.models import Event
 
 class ArticleHelper(object):
+    """
+    Deprecated legacy code, left intact only insofar as necessary for compatibility.
+
+    Use ArticleMixin instead if necessary
+    """
     @staticmethod
     def get_article(request, slug):
         """If the url requested includes the querystring parameters 'version' and 'preview_id',
@@ -24,17 +33,6 @@ class ArticleHelper(object):
         Otherwise, get the published version of the article.
         """
         return Article.objects.get(request=request, slug=slug, is_published=True)
-
-    @staticmethod
-    def get_reading_time(article):
-        word_count = 0
-        words_per_min = 150
-        for block in article.content:
-            if block['type'] == 'paragraph':
-                word_count += len(block['data'].split(' '))
-
-        reading_time = word_count // words_per_min
-        return reading_time
 
     @staticmethod
     def insert_ads(content, article_type='desktop'):
@@ -115,56 +113,6 @@ class ArticleHelper(object):
         return list(articles)
 
     @staticmethod
-    def get_frontpage_sections(exclude=None):
-
-        exclude = exclude or []
-        results = {}
-
-        sections = Section.objects.all()
-
-        for section in sections:
-            articles = Article.objects.exclude(id__in=exclude).filter(section=section,is_published=True).order_by('-published_at').select_related()[:5]
-            if len(articles):
-                results[section.slug] = {
-                    'first': articles[0],
-                    'stacked': articles[1:3],
-                    'bullets': articles[3:],
-                    'rest': articles[1:4],
-                }
-
-        return results
-
-    @staticmethod
-    def get_reading_list(article, ref=None, dur=None):
-        articles = []
-        name = None
-        if ref is not None:
-            if ref == 'frontpage':
-                articles = ArticleHelper.get_frontpage(exclude=[article.parent_id])
-                name = 'Top Stories'
-            elif ref == 'popular':
-                articles = ArticleHelper.get_popular(dur=dur).exclude(pk=article.id)[:5]
-                name = "Most popular this week"
-        else:
-            articles = article.get_related()
-            name = article.section.name
-
-        return {
-            'ids': ",".join([str(a.parent_id) for a in articles]),
-            'name': name
-        }
-
-    @staticmethod
-    def get_years():
-        publish_dates = Article.objects.filter(is_published=True).dates('published_at','year',order='DESC')
-        years = []
-
-        for publish_date in publish_dates:
-            years.append(publish_date.year)
-
-        return years
-
-    @staticmethod
     def is_explicit(article):
         explicit_tags = ['sex', 'explicit']
         tags = article.tags.all().values_list('name', flat=True)
@@ -208,63 +156,7 @@ class ArticleHelper(object):
                 results.append(articles[index])
 
         return results
-
-    @staticmethod
-    def get_popular(dur='week'):
-        """Returns the most popular articles in the time period."""
-
-        durations = {
-            'week': 7,
-            'month': 30
-        }
-
-        articles = Article.objects.filter(is_published=True)
-
-        if dur in durations:
-            end = timezone.now() + timezone.timedelta(days=1)
-            start = end - timezone.timedelta(days=durations[dur])
-            time_range = (start, end)
-            articles = articles.filter(created_at__range=(time_range))
-
-        return articles.order_by('-views')
-
-    @staticmethod
-    def get_suggested(article):
-        """Returns the suggested articles for a current article"""
-        subsection = article.get_subsection()
-
-        if subsection:
-            return subsection.get_published_articles().exclude(id=article.id)
-
-        return Article.objects.filter(is_published=True).order_by('-published_at').exclude(id=article.id)
         
-    @staticmethod
-    def get_breaking_news():
-        """Returns breaking news stories"""
-        return Article.objects.filter(is_published=True, is_breaking=True, breaking_timeout__gte=timezone.now())
-
-    @staticmethod
-    def get_trending():
-        """Returns the most trending articles in the time period."""
-
-        DURATION = 6
-
-        articles = Article.objects.filter(is_published=True)
-
-        end = timezone.now()
-        start = end - timezone.timedelta(hours=DURATION)
-        time_range = (start, end)
-        trending_articles = articles.filter(
-            published_at__range=(time_range),
-            views__gt=1000)
-
-        if len(trending_articles) == 0:
-            trending_article = None
-        else:
-            trending_article = choice(trending_articles)
-
-        return trending_article
-
     @staticmethod
     def get_meta(article, default_image=None):
         try:

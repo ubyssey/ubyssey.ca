@@ -240,7 +240,6 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         context['reading_list'] = self.get_reading_list(self.object, ref=self.ref, dur=self.dur)
         context['reading_time'] = self.get_reading_time(self.object)
         context['suggested'] = self.get_suggested(self.object)[:3]
-        # context['suggested'] = lambda: ArticleHelper.get_random_articles(2, section, exclude=article.id),
 
         return context
 
