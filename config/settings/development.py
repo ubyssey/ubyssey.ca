@@ -11,7 +11,7 @@ ALLOWED_HOSTS = ['localhost', '*']
 
 INSTALLED_APPS += ['ubyssey.events', 'django_user_agents', ]
 
-INTERNAL_IPS = ['127.0.0.1', 'localhost']
+INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 
 MIDDLEWARE += [
     # other middlewares...
