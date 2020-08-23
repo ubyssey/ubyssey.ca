@@ -129,6 +129,7 @@ INSTALLED_APPS = [
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
     'dispatch.apps.DispatchConfig',
     'newsletter.apps.NewsletterConfig',
+    'dispatchwagtail.apps.DispatchwagtailConfig'
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -232,3 +233,6 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 SECRET_URL = env('SECRET_URL')
 WAGTAIL_SITE_NAME = 'The Ubyssey'
+WAGTAIL_USER_EDIT_FORM = 'dispatchwagtail.forms.DispatchUserEditForm'
+WAGTAIL_USER_CREATION_FORM = 'dispatchwagtail.forms.DispatchUserCreationForm'
+WAGTAIL_USER_CUSTOM_FIELDS = ['person', 'is_active']
