@@ -13,10 +13,10 @@ INSTALLED_APPS += ['ubyssey.events', 'django_user_agents', ]
 
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
-MIDDLEWARE = (
+MIDDLEWARE += [
     # other middlewares...
     'django_user_agents.middleware.UserAgentMiddleware',
-)
+]
 
 TEMPLATES += [
 {
