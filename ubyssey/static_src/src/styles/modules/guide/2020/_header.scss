@@ -1,3 +1,40 @@
+.c-section-more{
+    display:none;
+    position: absolute;
+    width: 165px;
+    top: 30px;
+    margin-left: -25px;
+    z-index: 10000;
+    max-height: 205px;
+    overflow-y: scroll;
+
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* Chrome/Safari/Webkit */
+    }
+    
+    li {
+      display: block;
+      margin: 0 auto 0 auto;
+      clear: left;
+      line-height: 1.5;
+      padding: 5px 0;
+      width:100%;
+      text-align: center;
+      border-bottom: 1px solid #fff;
+      a{
+        height: auto;
+        text-transform: capitalize;
+        font-size: 0.9rem;
+        padding: 0 10px;
+        letter-spacing: -0.5px;
+        display: block;
+       }
+    }   
+}
+
 .c-header{
     display: none;
     @media($bp-larger-than-tablet){
@@ -33,7 +70,7 @@
         
         
         right: 25px;
-        width: 575px;
+        width: 730px;
         height: 100%;
         text-align: center;
         text-transform: uppercase;
@@ -131,7 +168,7 @@
     .c-nav-current{
         position:absolute;
         right: 0;
-        width: 165px;
+        width: 220px;
         height: 100%;
         text-align: center;
         text-transform: uppercase;
@@ -146,6 +183,10 @@
         a:hover{
             text-decoration: underline;
         }
+    }
+    .c-section-more{
+        top: 34px;
+        width: 220px;
     }
 }
 
@@ -207,36 +248,33 @@
     }
 }
 
-.c-section-more{
-    display:none;
-    position: absolute;
-    width: 165px;
-    top: 30px;
-    margin-left: -25px;
-    z-index: 10000;
-    max-height: 205px;
-    overflow: scroll;
-    
-    li {
-      display: block;
-      margin: 0 auto 0 auto;
-      clear: left;
-      line-height: 2;
-      padding: 0;
-      width:100%;
-      text-align: center;
-      border-bottom: 1px solid #fff;
-      a{
-        height: auto;
-        text-transform: capitalize;
-        font-size: 0.9rem;
-        padding: 0 10px;
-        letter-spacing: -0.5px;
-        display: block;
-       }
-    }   
+#c-nav-section--sdp{
+    width: 220px;
 }
-
+#c-section-more--sdp{
+    width: 220px;
+    margin: 0;
+}
+#c-nav-section--adulting{
+    width: 165px;
+}
+#c-section-more--adulting{
+    width: 165px;
+    margin: 0;
+}
 #c-section-more--current{
     margin: 0;
+}
+
+.home{
+    display: none !important;
+}
+
+@media (pointer:none), (pointer:coarse) {
+    .home{
+        display: block !important;
+    }
+    .section-title-link{
+        pointer-events: none;
+    }
 }

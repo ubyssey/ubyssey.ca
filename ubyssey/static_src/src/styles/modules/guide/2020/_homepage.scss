@@ -28,6 +28,7 @@
           font-weight: 300;
           text-align: right;
           font-family: $header-font;
+          margin-bottom: 10px;
         }
       }
     }
@@ -41,21 +42,12 @@
       }
     }
     &__.home-content{
-      padding: 8% 18%;
+      padding: 5% 18%;
       @media($bp-smaller-than-tablet) {
-        padding: 8% 5%;
+        padding: 5% 5%;
       }
       .content-wrapper{
         padding: 5% 18%;
-      }
-      &__nav{
-        position: absolute;
-        right: 0;
-        bottom: 5px;
-        padding-right: 15%;
-        @media($bp-smaller-than-tablet){
-          bottom: 20px;
-        }
       }
     }
   }
@@ -71,19 +63,7 @@
       }
     }
     &__.home-content{
-      padding: 8%;
-
-      &__nav{
-        position: absolute;
-        left: 20%;
-        bottom: 5px;
-        @media($bp-smaller-than-tablet){
-          position: absolute;
-          right: 0;
-          bottom: 20px;
-          padding-right: 20%;
-        }
-      }
+      padding: 5% 8%;
     }
   }
 
@@ -98,18 +78,9 @@
       }
     }
     &__.home-content{
-      padding: 8% 5%;
-
+      padding: 5% 5%;
       &__nav{
-        position: absolute;
-        left: 18%;
-        bottom: 5px;
-        @media($bp-smaller-than-tablet){
-          position: absolute;
-          right: 0;
-          bottom: 20px;
-          padding-right: 20%;
-        }
+        text-align: right;
       }
     }
   }
@@ -138,6 +109,10 @@
     }
   }
   &__nav{
+    display: block;
+    text-align: left;
+    padding-top: 8%;
+
     font-family: $accent-font;
     font-size: $accent-size;
     line-height: 1.4rem;
@@ -153,18 +128,13 @@
 }
 
 .panel-quote{
-  margin-top: 5%;
-  @media ($bp-smaller-than-mobile){
-    margin-bottom: 5%;
-  }
   &.__1-{
     &container{
       &-text{
         background-color: $color-vancouver;
         width: 55%;
         margin-left: 45%;
-        height: auto;
-        padding-bottom: 40px;
+        height: fit-content;
         position: relative;
         @media($bp-smaller-than-tablet) {
           margin-left: 40%;
@@ -187,12 +157,10 @@
       }
     }
     &text{
-      height: 70%;
-      padding: 3% 15%;
+      padding: 5% 15%;
       &__.source{
-        position: absolute;
-        bottom: 30px;
-        right: 10%;
+        text-align: right;
+        padding-top: 20px;
       }
     }    
   }
@@ -202,8 +170,7 @@
       &-text{
         background-color: $color-adulting;
         width: 70%;
-        height: auto;
-        padding-bottom: 40px;
+        height: fit-content;
         position: relative;
       }
       &-image{
@@ -222,15 +189,13 @@
       }
     }
     &text{
-      height: 50%;
-      padding: 4% 10%;
+      padding: 5% 10%;
       &__.quote{
         margin-top: 0;
       }
       &__.source{
-        position: absolute;
-        bottom: 30px;
-        right: 10%;
+        text-align: right;
+        padding-top: 20px;
       }
     }
   }

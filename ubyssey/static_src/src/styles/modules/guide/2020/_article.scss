@@ -1,16 +1,6 @@
-.c-article {
-
-  padding-top: 60px;
-  .o-wrapper{
-    position: relative;
-    @media($bp-smaller-than-desktop) {
-      margin-bottom: 170px;
-    }
-  }
+.c-article{
+  padding: 3em 0;
 }
-
-  
-
 .c-article__intro{
   &__subheading {
     font-family: $header-font;
@@ -33,14 +23,17 @@
 }
 
 .c-article__content {
-
   h1, h2, h3 {
     text-align: left;
     font-family: $header-font;
     font-size: 1.3rem;
     line-height: 1.6rem;
     font-weight: 500;
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
+  }
+  h1{
+    font-size: 1.45rem;
+    margin-bottom: 1.5em;
   }
 
   > p, ul {
@@ -58,23 +51,8 @@
     font-weight: 800;
   }
 
-  .image-attachment {
-    margin-bottom: 1.5rem;
-    width: 100%;
-    max-width: 600px;
-
-    @media($bp-larger-than-desktop) {
-      max-width: 700px;
-      margin-left: -100px;
-    }
-
-    img {
-      width: 100%;
-    }
-
-    .caption {
-      display: none;
-    }
+  em {
+    font-style: italic;
   }
 
   .advertisement, .pull-quote {
@@ -132,46 +110,66 @@ p{
 
 
 .c-welcome-article{
-
   position: absolute;
+  display: none;
+  bottom: 999999px;
+  left: auto;
+  right: 5%;
+  z-index: 1000;
+
+  width: 450px;
+  height: auto;
+
   font-family: $font-default;
   color: #ffffff;
-  z-index: 1000;
-  left: 0;
-  bottom: -170px;
-  width: 100%;
-  height: 150px;
+  
   @media($bp-larger-than-desktop) {
-    left: auto;
-    top: -270px;
-    right: -10%;
-    width: 450px;
-    height: 200px;
+    display: block;
   }
+
+  .quote-content--container{
+    padding: 30px 5%;
+  }
+
   &__.quote{
-    position: relative;
     width: 100%;
     height: 100%;
     text-align: left;
-    p{
-      @media($bp-larger-than-desktop) {
-        height: 70%;
-        margin: 5% 10%;
-        width: 80%;
-      }
-      height: 65%;
-      margin: 2% 5%;
-      width: 90%;
-    }
   }
   &__.source{
-    position: absolute;
-    right: 15px;
-    bottom: 10px;
-    text-transform: uppercase;
+    padding-top: 20px;
+    text-transform: capitalize;
     text-align: right;
-    @media($bp-smaller-than-desktop) {
-      right: 30px;
-    }
   }
+}
+
+.c-welcome-article-bottom{
+  position: relative;
+  font-family: $font-default;
+  color: #ffffff;
+  z-index: 1000;
+  display: block;
+  @media($bp-larger-than-desktop) {
+    display: none;
+  }
+  .quote-content--container{
+    padding: 30px 0;
+    margin: 0% 5%;
+  }
+  &__.quote{
+    width: 100%;
+    height: 100%;
+    text-align: left;
+  }
+  &__.source{
+    padding-top: 20px;
+    text-transform: capitalize;
+    text-align: right;
+  }
+}
+
+.article .o-article-embed{
+  margin: 0;
+  max-width: 600px;
+  display: block;
 }

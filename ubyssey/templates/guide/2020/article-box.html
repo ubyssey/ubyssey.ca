@@ -1,19 +1,9 @@
-<div class="article-box{% if style %}--{{ style }}{% endif %}{% if type %} __type-{{ type }}{% endif %}" style="background-image: url('{{ image }}'); background-position: center;">
+
+<div class="article-box{% if style %}--{{ style }}{% endif %}{% if type %} __type-{{ type }}{% endif %}" style="background-image: url('{{ image }}');">
     <nav class="article-box{% if style %}--{{ style }}{% endif %}-container">
-        <a class="article-box--nav" href="{% url 'guide-article' 2020 subsection slug %}">
+        <a class="article-box--nav" href="{% if slug %}{% url 'guide-article' 2020 subsection slug %}{% else %}#{%endif%}">
             <p>{{ title }}</p>
             <div class="article-box-gradient"></div>
         </a> 
     </nav>
 </div>
-
-{% comment %}
-<div class="article-box{% if style %}--{{ style }}{% endif %}{% if type %} __type-{{ type }}{% endif %}" style="background-image: url('https://img.freepik.com/free-vector/abstract-technology-particle-background_52683-25766.jpg?size=626&ext=jpg')">
-    <nav class="article-box{% if style %}--{{ style }}{% endif %}-container">
-        <a class="article-box--nav" href="http://127.0.0.1:49900/guide/2020/academics/">
-            <p>this is the title</p>
-            <div class="article-box-gradient"></div>
-        </a> 
-    </nav>
-</div>
-{% endcomment %}

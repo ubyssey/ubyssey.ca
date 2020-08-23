@@ -6,9 +6,9 @@
         </li>
         <li class="c-nav-right">
             <div class="c-nav-section" id="c-nav-section--academic">
-                Academics
+                <a class='section-title-link' href="{% url 'guide-landing-sub' 2020 'academics' %}">Academics</a>
                 <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--academic'>
-                    <li>
+                    <li class='home'>
                         <a class="header-button" href="{% url 'guide-landing-sub' 2020 'academics' %}">Home</a>
                     </li>
                     {% for article in articles.academics %}
@@ -19,9 +19,9 @@
                 </ul>
             </div>
             <div class="c-nav-section" id="c-nav-section--ubc">
-                UBC
+                <a class='section-title-link' href="{% url 'guide-landing-sub' 2020 'ubc' %}">UBC</a>
                 <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--ubc'>
-                    <li>
+                    <li class='home'>
                         <a class="header-button" href="{% url 'guide-landing-sub' 2020 'ubc' %}">Home</a>
                     </li>
                     {% for article in articles.ubc %}
@@ -32,9 +32,9 @@
                 </ul>
             </div>
             <div class="c-nav-section" id="c-nav-section--adulting">
-                Adulting
+                <a class='section-title-link' href="{% url 'guide-landing-sub' 2020 'adulting' %}">Grown-Up Life</a>
                 <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--adulting'>
-                    <li>
+                    <li class='home'>
                         <a class="header-button" href="{% url 'guide-landing-sub' 2020 'adulting' %}">Home</a>
                     </li>
                     {% for article in articles.adulting %}
@@ -45,9 +45,9 @@
                 </ul>
             </div>
             <div class="c-nav-section" id="c-nav-section--sdp">
-                S.D.P
+                <a class='section-title-link' href="{% url 'guide-landing-sub' 2020 'sdp' %}">Sex, Drugs, Parties</a>
                 <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--sdp'>
-                    <li>
+                    <li class='home'>
                         <a class="header-button" href="{% url 'guide-landing-sub' 2020 'sdp' %}">Home</a>
                     </li>
                     {% for article in articles.sdp %}
@@ -58,9 +58,9 @@
                 </ul>
             </div>
             <div class="c-nav-section" id="c-nav-section--vancouver">
-                Vancouver
+                <a class='section-title-link' href="{% url 'guide-landing-sub' 2020 'vancouver' %}">Vancouver</a>
                 <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--vancouver'>
-                        <li>
+                        <li class='home'>
                             <a class="header-button" href="{% url 'guide-landing-sub' 2020 'vancouver' %}">Home</a>
                         </li>
                     {% for article in articles.vancouver %}
@@ -92,7 +92,7 @@
                 <a class="header-button __ubc" href="{% url 'guide-landing-sub' 2020 'ubc' %}">UBC</a>
             </li>
             <li>
-                <a class="header-button __adulting" href="{% url 'guide-landing-sub' 2020 'adulting' %}">Adulting</a>
+                <a class="header-button __adulting" href="{% url 'guide-landing-sub' 2020 'adulting' %}">Grown-Up Life</a>
             </li>
             <li>
                 <a class="header-button __sdp" href="{% url 'guide-landing-sub' 2020 'sdp' %}">S.D.P</a>
@@ -106,7 +106,7 @@
             <a href="https://www.ubyssey.ca"><img src="{% static 'ubyssey/images/ubyssey-dingbat-white.png' %}"/></a>
         </li>
         <li class='c-nav-current'>
-            {% if subsection %}{{ subsection }}{% endif %}
+            {% if subsection %}{% if subsection == 'sdp' %}Sex, Drugs, Parties{% elif subsection == 'adulting' %}Grown-Up Life{% else %}{{ subsection }}{% endif %}{% endif %}
             <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--current'>
                 {% if subsection %}
                     <li>
@@ -164,7 +164,7 @@
                 <a class="header-button __ubc" href="{% url 'guide-landing-sub' 2020 'ubc' %}">UBC</a>
             </li>
             <li>
-                <a class="header-button __adulting" href="{% url 'guide-landing-sub' 2020 'adulting' %}">Adulting</a>
+                <a class="header-button __adulting" href="{% url 'guide-landing-sub' 2020 'adulting' %}">Grown-Up Life</a>
             </li>
             <li>
                 <a class="header-button __sdp" href="{% url 'guide-landing-sub' 2020 'sdp' %}">S.D.P</a>

@@ -148,7 +148,7 @@
 
       <div class="o-archive__header">
         <h3 class="o-archive__header__title">
-          {% if articles %} {{ articles.paginator.count }} RESULTS {% else %}NO RESULTS{% endif %}
+          {% if page_obj %} {{ page_obj.paginator.count }} RESULTS {% else %}NO RESULTS{% endif %}
           {% if q %} FOR "{{ q }}"{% endif %}
         </h3>
         <div class="o-archive__header__sort o-dropdown js-dropdown">
@@ -167,10 +167,10 @@
         </div>
       </div>
 
-      {% if articles|length > 0 %}
+      {% if page_obj|length > 0 %}
       <div class="o-archive__main__list">
-      {% for object in articles %}
-        {% if forloop.counter0 == articles_start_idx and articles.number == articles_start_page %}
+      {% for object in page_obj %}
+        {% if forloop.counter0 == articles_start_idx and page_obj.number == articles_start_page %}
           <div class="o-archive__divider">
             <div class="o-archive__line"></div>
             <div class="o-archive__line_text">Articles</div>
@@ -178,7 +178,7 @@
           </div>
         {% endif %}
        
-        {% if forloop.counter0 == people_start_idx and articles.number == people_start_page %}
+        {% if forloop.counter0 == people_start_idx and page_obj.number == people_start_page %}
           <div class="o-archive__divider">
             <div class="o-archive__line"></div>
             <div class="o-archive__line_text">People</div>
@@ -186,7 +186,7 @@
           </div>
         {% endif %}
 
-        {% if forloop.counter0 == videos_start_idx and articles.number == videos_start_page %}
+        {% if forloop.counter0 == videos_start_idx and page_obj.number == videos_start_page %}
           <div class="o-archive__divider">
             <div class="o-archive__line"></div>
             <div class="o-archive__line_text">Videos</div>
@@ -194,7 +194,7 @@
           </div>
         {% endif %}
 
-        {% if forloop.counter0 == images_start_idx and articles.number == images_start_page %}
+        {% if forloop.counter0 == images_start_idx and page_obj.number == images_start_page %}
           <div class="o-archive__divider">
             <div class="o-archive__line"></div>
             <div class="o-archive__line_text">Images</div>
@@ -202,7 +202,7 @@
           </div>
         {% endif %}
 
-        {% if forloop.counter0 == podcasts_start_idx and articles.number == podcasts_start_page %}
+        {% if forloop.counter0 == podcasts_start_idx and page_obj.number == podcasts_start_page %}
           <div class="o-archive__divider">
             <div class="o-archive__line"></div>
             <div class="o-archive__line_text">Podcasts</div>
@@ -210,7 +210,7 @@
           </div>
         {% endif %}
 
-        {% if forloop.counter0 == episodes_start_idx and articles.number == episodes_start_page %}
+        {% if forloop.counter0 == episodes_start_idx and page_obj.number == episodes_start_page %}
           <div class="o-archive__divider">
             <div class="o-archive__line"></div>
             <div class="o-archive__line_text">Episodes</div>
@@ -235,16 +235,16 @@
       </div>
 
       <div class="o-archive__pagination">
-        {% if articles.has_previous %}
-        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ articles.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+        {% if page_obj.has_previous %}
+        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
         {% endif %}
 
         <span class="o-archive__pagination__current" >
-          Page {{ articles.number }} of {{ articles.paginator.num_pages }}
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
         </span>
 
-        {% if articles.has_next %}
-          <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ articles.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+        {% if page_obj.has_next %}
+          <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
         {% endif %}
       </div>
 

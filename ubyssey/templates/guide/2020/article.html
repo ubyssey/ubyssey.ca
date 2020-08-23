@@ -1,39 +1,61 @@
 {% extends 'guide/2020/base.html' %}
 {% block content %}
+<main id="article-{{ article.parent_id }}" class="article">
+
+  {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 article=article.id %}
+  {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=2 article=article.id %}
+
 <div class="c-banner c-banner--welcome" style="background-image: url('{{ article.featured_image.image.get_absolute_url }}');">
   <div class="c-banner__container">
     <div class="c-banner--welcome__inner">
         <p class="c-banner--welcome__snippet">{{ article.headline }}</p>
     </div>
+    <div class="c-banner-credits article">{{ article.featured_image.credit }}</div>
+    {% if article.template_fields.banner_quote and article.template_fields.banner_quote != ' ' %}
+      <div id='quote-top' class="c-welcome-article __{{ subsection }}">
+        <div class="c-banner-credits inside-quote">{{ article.featured_image.credit }}</div>
+        <div class='quote-content--container'>
+          <div class="c-welcome-article__ quote">
+            <p>{{ article.template_fields.banner_quote }}</p>
+          </div>
+          {% if article.template_fields.banner_quote_source and article.template_fields.banner_quote_source != ' ' %}
+            <div class="c-welcome-article__ source">
+              {{ article.template_fields.banner_quote_source }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 
 <main class="c-article">
   <div class="o-container">
     <div class="o-wrapper">
-      {% if article.template_fields.banner_quote %}
-      <div class="c-welcome-article __{{ subsection }}">
-        <div class="c-welcome-article__ quote">
-          <p>{{ article.template_fields.banner_quote }}</p>
-        </div>
-        {% if article.template_fields.banner_quote_source %}
-          <div class="c-welcome-article__ source">
-            {{ article.template_fields.banner_quote_source }}
-          </div>
-        {% endif %}
-      </div>
-      {% endif %}
-      
-      {% if article.template_fields.subheading %}<p class="c-article__intro__subheading">{{ article.template_fields.subheading }}</p>{% endif %}
-      {% if article.template_fields.intro %}<p class="c-article__intro__text">{{ article.template_fields.intro }}</p>{% endif %}
+      {% if article.template_fields.subheading and article.template_fields.subheading != ' ' %}<p class="c-article__intro__subheading">{{ article.template_fields.subheading }}</p>{% endif %}
+      {% if article.template_fields.intro and article.template_fields.intro != ' ' %}<p class="c-article__intro__text">{{ article.template_fields.intro }}</p>{% endif %}
       <div class="c-article__content">
         <div class="advertisement box sidebar">
-            <div class="adslot" id="div-gpt-ad-1443288719995-15-{{ article.id }}" data-size="box" data-dfp="Box_A"></div>
+          {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
         </div>
         {{ article.html|safe }}
       </div>
     </div>
   </div>
+  {% if article.template_fields.banner_quote and article.template_fields.banner_quote != ' ' %}
+  <div id='quote-bottom' class="c-welcome-article-bottom __{{ subsection }}">
+    <div class='quote-content--container'>
+      <div class="c-welcome-article-bottom__ quote">
+        <p>{{ article.template_fields.banner_quote }}</p>
+      </div>
+      {% if article.template_fields.banner_quote_source and article.template_fields.banner_quote_source != ' ' %}
+        <div class="c-welcome-article-bottom__ source">
+          {{ article.template_fields.banner_quote_source }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
   <div class="c-up-next">
     <div class="c-up-next__arrow"></div>
     <div class="c-up-next__text">What's next?</div>
@@ -46,3 +68,4 @@
   </div>
 </main>
 {% endblock %}
+</main>

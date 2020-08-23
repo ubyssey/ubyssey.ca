@@ -38,19 +38,17 @@ $margin-size: 10px;
     .quote-box-content{
         &.-container{
             width: 100%;
+            padding: 30px 0;
             margin: 0;
             position: relative;
         }
 
         &.quote{
-            height: 75%;
-            padding: 10% 7%;
-        }
-        
-        &.source{
-            position: absolute;
-            bottom: 10%;
-            right: 5%;
+            padding: 5%;
+            .source{
+                text-align: right;
+                padding-top: 20px;
+            }
         }
     }
 }
@@ -82,6 +80,8 @@ $margin-size: 10px;
 
         .article-box{
             margin: $margin-size;
+            background-position: center;
+            background-size: cover;
             &.__type-{
                 &1,&3,&5,&8,&11,&14{
                     grid-column-start: $normal-column-left-start;
@@ -173,10 +173,12 @@ $margin-size: 10px;
 
         .quote-box{
             margin: $margin-size;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             &-content{
                 &.-container{
                     width: 100%;
-                    height: 95%;
                     margin: 0;
                     position: relative;
                 }
@@ -185,10 +187,6 @@ $margin-size: 10px;
                 &1{
                     grid-column-start: $normal-column-right-start;
                     grid-column-end: $normal-column-right-end;
-
-                    &.quote{
-                        height: 70%;
-                    }
                 }
                 &2{
                     grid-column-start: $less-column-left-start;
@@ -269,7 +267,6 @@ $margin-size: 10px;
         }
 
         .quote-box{
-            height: 30vw;
             margin: $margin-size;
             grid-column: 1 / 3;
         }

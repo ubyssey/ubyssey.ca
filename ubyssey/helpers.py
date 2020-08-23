@@ -165,14 +165,6 @@ class ArticleHelper(object):
         return years
 
     @staticmethod
-    def get_topic(topic_name):
-
-        return Article.objects.filter(
-            is_published=True,
-            topic__name=topic_name
-        )
-
-    @staticmethod
     def is_explicit(article):
         explicit_tags = ['sex', 'explicit']
         tags = article.tags.all().values_list('name', flat=True)
@@ -287,17 +279,6 @@ class ArticleHelper(object):
             'image': image,
             'author': article.get_author_type_string()
         }
-
-class PageHelper(object):
-    @staticmethod
-    def get_page(request, slug):
-        """If the url requested includes the querystring parameters 'version' and 'preview_id',
-        get the page with the specified version and preview_id.
-
-        Otherwise, get the published version of the page.
-        """
-
-        return Page.objects.get(request=request, slug=slug, is_published=True)
 
 class SubsectionHelper(object):
 

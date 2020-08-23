@@ -68,6 +68,7 @@ env = environ.Env(
     # URL defaults
     STATIC_URL = (str,'/static/'),
     MEDIA_URL = (str,'/media/'),
+    ADS_TXT_URL = (str, 'https://ubyssey.storage.googleapis.com/ads.txt'),
     ROOT_URLCONF = (str,'ubyssey.urls'),
 
     # Time zone defaults
@@ -83,6 +84,9 @@ env = environ.Env(
     # Keys
     SECRET_KEY = (str, 'thisisakey'),
     NOTIFICATION_KEY= (str, 'thisisakeytoo'),
+
+    # delete me
+    SECRET_URL = (str, 'somethingsilly')
 )
 
 # Read the .env file into os.environ.
@@ -97,6 +101,7 @@ TIME_ZONE = env('TIME_ZONE')
 
 STATIC_URL = env('STATIC_URL')
 MEDIA_URL = env('MEDIA_URL')
+ADS_TXT_URL = env('ADS_TXT_URL')
 ROOT_URLCONF = env('ROOT_URLCONF')
 
 # Initialize the databases.
@@ -207,3 +212,5 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'CA'
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1
+
+SECRET_URL = env('SECRET_URL')

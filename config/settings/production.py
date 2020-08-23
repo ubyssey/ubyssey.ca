@@ -53,6 +53,7 @@ STATICFILES_DIRS += [
 ]
 
 MEDIA_URL = 'https://ubyssey.storage.googleapis.com/media/'
+ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 
 # Facebook - Production Only
 FACEBOOK_CLIENT_ID = env('FACEBOOK_CLIENT_ID')

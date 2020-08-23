@@ -17,27 +17,26 @@
         <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a>
       </div>
     </div>
-    <nav class="main">
-      <div class="inner row">
+    <nav class="main row">
         <div class="left">
           <ul class="meta">
-            <li><a class = "about"  href="{% url 'page' 'about' %}">About</a></li>
-            <li><a class = "advertise" href="{% url 'page' 'advertise' %}">Advertise</a></li>
-            <li><a class = "volunteer" href="{% url 'page' 'volunteer' %}">Volunteer</a></li>
-            <li><a class = "events" href="{% url 'events' %}">Events</a></li>
+            <li><a href="{% url 'page' 'about' %}">About</a></li>
+            <li><a href="{% url 'page' 'advertise' %}">Advertise</a></li>
+            <li><a href="{% url 'page' 'volunteer' %}">Volunteer</a></li>
+            <li><a href="{% url 'events' %}">Events</a></li>
           </ul>
         </div>
         <div class="middle">
           <ul class="sections">
-            <!-- <li><a href="{% url 'page' 'themainmaller' %}">The Main Maller</a></li> -->
-            <li><a href="{% url 'page' 'news' %}">News</a></li>
-            <li><a href="{% url 'page' 'culture' %}">Culture</a></li>
-            <li><a href="{% url 'page' 'features' %}">Features</a></li>
-            <li><a href="{% url 'page' 'opinion' %}">Opinion</a></li>
-            <li><a href="{% url 'page' 'sports' %}">Sports</a></li>
-            <li><a href="{% url 'page' 'blog' %}">Blog</a></li>
-            <li><a href="{% url 'page' 'science' %}">Science</a></li>
-            <li><a href="{% url 'page' 'videos' %}">Video<!--<span class='upper-right-decorator'>New</span>--></a></li>
+            <!-- <li><a href="{% url 'section' 'themainmaller' %}">The Main Maller</a></li> -->
+            <li><a href="{% url 'section' 'news' %}">News</a></li>
+            <li><a href="{% url 'section' 'culture' %}">Culture</a></li>
+            <li><a href="{% url 'section' 'features' %}">Features</a></li>
+            <li><a href="{% url 'section' 'opinion' %}">Opinion</a></li>
+            <li><a href="{% url 'section' 'sports' %}">Sports</a></li>
+            <li><a href="{% url 'section' 'blog' %}">Blog</a></li>
+            <li><a href="{% url 'section' 'science' %}">Science</a></li>
+            <li><a href="{% url 'section' 'videos' %}">Video<!--<span class='upper-right-decorator'>New</span>--></a></li>
             <li {% if section == 'magazine' %}class="current"{% endif %} id="sections-more-dropdown">
               <a>Magazine</a>
               <ul class="sections-more">
@@ -55,24 +54,24 @@
                 </li>
               </ul>
             </li>
+            <li><a href="{% url 'guide-landing' 2020 %}">Guide</a></li>
 
             <!--<li id="sections-more-dropdown"><a href="#">More</a>
               <ul class="sections-more">
                 <li><a href="{% url 'events' %}">Events</a></li>
                 <li><a href="{% url 'podcasts' 'episodes' %}">Podcast</a></li>
-                <li><a href="{% url 'page' 'whobyssey' %}">Who?byssey</a></li>
+                <li><a href="{% url 'section' 'whobyssey' %}">Who?byssey</a></li>
               </ul>
             </li>-->
           </ul>
         </div>
         <div class="right">
           <ul class="meta">
-            <li><a class = "archive" href="{% url 'archive' %}">Archive</a></li>
-            <li><a class = "advice" href="{% url 'page' 'advice' %}">Get advice</a></li>
-            <li><a class = "opinion" href="{% url 'page' 'submit-an-opinion' %}">Submit an opinion</a></li>
+            <li><a href="{% url 'newsletter' %}">Newsletter</a></li>
+            <li><a href="{% url 'page' 'advice' %}">Get advice</a></li>
+            <li><a href="{% url 'page' 'submit-an-opinion' %}">Submit an opinion</a></li>
           </ul>
         </div>
-      </div>
     </nav>
 </div>
 </header>

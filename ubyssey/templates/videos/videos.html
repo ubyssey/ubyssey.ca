@@ -14,36 +14,36 @@
     </div>
 
     <div class="o-archive__pagination">
-      {% if videos.has_previous %}
-      <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ videos.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+      {% if page_obj.has_previous %}
+      <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
       {% endif %}
 
       <span class="o-archive__pagination__current" >
-        Page {{ videos.number }} of {{ videos.paginator.num_pages }}
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
       </span>
 
-      {% if videos.has_next %}
-        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ videos.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+      {% if page_obj.has_next %}
+        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
       {% endif %}
     </div>
 
     <div class='c-podcast-episode-list'>
-      {% for video in videos %}
+      {% for video in page_obj %}
         {% include 'objects/videos/video.html' with video=video %}
       {% endfor %}
     </div>
 
     <div class="o-archive__pagination">
-      {% if videos.has_previous %}
-      <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ videos.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+      {% if page_obj.has_previous %}
+      <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
       {% endif %}
 
       <span class="o-archive__pagination__current" >
-        Page {{ videos.number }} of {{ videos.paginator.num_pages }}
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
       </span>
 
-      {% if videos.has_next %}
-        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ videos.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+      {% if page_obj.has_next %}
+        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
       {% endif %}
     </div>
 

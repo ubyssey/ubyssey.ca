@@ -1,7 +1,6 @@
 .c-footer {
   display: flex;
   padding-top: 3%;
-  margin-top: 5%;
   .o-logo--small{
     @media ($bp-smaller-than-mobile) {
       display: none;
@@ -80,6 +79,7 @@
   li {
     line-height: 1.2em;
     padding: 0 10px;
+    text-transform: lowercase;
     @media ($bp-smaller-than-mobile) {
       font-size: 1.7em;
     }

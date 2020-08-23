@@ -1,6 +1,8 @@
 .article-box--nav{
     margin: 0;
     position: absolute;
+    display: grid;
+    place-items: center;
     width: 100%;
     height: 100%;
     font-size: 2.5rem;
@@ -10,9 +12,8 @@
     transition: 0.1s;
     p{
         text-align: center;
-        position: absolute;
-        top: 45%;
-        width: 100%;
+        padding: 5%;
+        width: 90%;
         z-index: 100;
 
         font-family: $accent-font;

@@ -9,37 +9,42 @@
     <div class="left">
         <h3>Sections</h3>
         <ul class="sections">
-            <!-- <li><a href="{% url 'page' 'themainmaller' %}">The Main Maller</a></li> -->
-            <li><a href="{% url 'page' 'news' %}">News</a></li>
-            <li><a href="{% url 'page' 'culture' %}">Culture</a></li>
-            <li><a href="{% url 'page' 'features' %}">Features</a></li>
-            <li><a href="{% url 'page' 'opinion' %}">Opinion</a></li>
-            <li><a href="{% url 'page' 'sports' %}">Sports</a></li>
-            <li><a href="{% url 'page' 'blog' %}">Blog</a></li>
-            <li><a href="{% url 'page' 'science'%}">Science</a></li>
-            <li><a href="{% url 'page' 'videos'%}">Video<!--<span class='upper-right-decorator'>New</span>--></a></li>
-            <li>
-                <a href="{% url 'magazine-landing' 2020 %}">Hot Mess 2020</a>
+            <!-- <li><a href="{% url 'section' 'themainmaller' %}">The Main Maller</a></li> -->
+            <li><a href="{% url 'section' 'news' %}">News</a></li>
+            <li><a href="{% url 'section' 'culture' %}">Culture</a></li>
+            <li><a href="{% url 'section' 'features' %}">Features</a></li>
+            <li><a href="{% url 'section' 'opinion' %}">Opinion</a></li>
+            <li><a href="{% url 'section' 'sports' %}">Sports</a></li>
+            <li><a href="{% url 'section' 'blog' %}">Blog</a></li>
+            <li><a href="{% url 'section' 'science'%}">Science</a></li>
+            <li><a href="{% url 'section' 'videos'%}">Video<!--<span class='upper-right-decorator'>New</span>--></a></li>
+            <li id='magazine-mobile'>
+                <a>Magazine</a>
             </li>
-            <li>
-                <a href="{% url 'magazine-landing' 2019 %}">Presence 2019</a>
-            </li>
-            <li>
-                <a href="{% url 'magazine-landing' 2018 %}">How We Live 2018</a>
-            </li>
-            <li>
-                <a href="{% url 'magazine-landing' 2017 %}">Diversity 2017</a>
-            </li>
-            <li><a href="{% url 'events' %}">Events</a></li>
-            <li><a href="{% url 'page' 'whobyssey' %}">Who?byssey</a></li> -->
+            <div id='magazine-more'>
+                <li>
+                    <a href="{% url 'magazine-landing' 2020 %}">Hot Mess 2020</a>
+                </li>
+                <li>
+                    <a href="{% url 'magazine-landing' 2019 %}">Presence 2019</a>
+                </li>
+                <li>
+                    <a href="{% url 'magazine-landing' 2018 %}">How We Live 2018</a>
+                </li>
+                <li>
+                    <a href="{% url 'magazine-landing' 2017 %}">Diversity 2017</a>
+                </li>
+            </div>
+            <li><a href="{% url 'guide-landing' 2020 %}">Guide</a></li>
             
             <!-- <li><a href="{% url 'podcasts' 'episodes' %}">Podcast</a></li>
-            <li><a href="{% url 'page' 'whobyssey' %}">Who?byssey</a></li> -->
+            <li><a href="{% url 'section' 'whobyssey' %}">Who?byssey</a></li> -->
         </ul>
     </div>
     <div class="right">
         <h3>Links</h3>
         <ul class="links">
+            <li><a href="{% url 'newsletter' %}">Newsletter</a></li>
             <li><a href="{% url 'page' 'volunteer' %}">Volunteer</a></li>
             <li><a href="{% url 'page' 'about' %}">About</a></li>
             <li><a href="{% url 'page' 'contact' %}">Contact</a></li>

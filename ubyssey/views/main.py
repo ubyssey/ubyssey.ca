@@ -15,11 +15,14 @@ from django.urls import reverse
 from django.templatetags.static import static
 from django_user_agents.utils import get_user_agent
 
-from dispatch.models import Article, Section, Subsection, Topic, Person, Podcast, PodcastEpisode, Video, Author, Image
-
+from dispatch.models import Article, Section, Subsection, Topic, Page, Person, Podcast, PodcastEpisode, Video, Author, Image
+from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 import ubyssey
 import ubyssey.cron
-from ubyssey.helpers import ArticleHelper, PageHelper, SubsectionHelper, PodcastHelper, NationalsHelper, FoodInsecurityHelper, VideoHelper
+from ubyssey.helpers import ArticleHelper, SubsectionHelper, PodcastHelper, NationalsHelper, FoodInsecurityHelper, VideoHelper
+from ubyssey.mixins import ArticleMixin, ArchiveListViewMixin, DispatchPublishableViewMixin, SectionMixin, SubsectionMixin
 
 def parse_int_or_none(maybe_int):
     try:
@@ -27,28 +30,78 @@ def parse_int_or_none(maybe_int):
     except (TypeError, ValueError):
         return None
 
+def ads_txt(request):
+    return redirect(settings.ADS_TXT_URL)
 
-class UbysseyTheme(object):
+def decorrupt(request):
+    desktop_ad = {"type":"ad","data":"desktop"}
+    mobile_ad = {"type":"ad","data":"mobile"}
 
-    SITE_TITLE = 'The Ubyssey'
-    SITE_URL = settings.BASE_URL
-    logger = logging.getLogger(__name__)
+    data = {}
+    article_qs = Article.objects.filter(is_published=True,published_at__gte=datetime(year=2020,month=8,day=1)) 
+    for article in article_qs:
+        while desktop_ad in article.content:
+            try:
+                article.content.remove(desktop_ad)
+            except ValueError:
+                data[article.slug] = 'ValueError'
+                break            
+        while mobile_ad in article.content:
+            try:
+                article.content.remove(mobile_ad)
+            except ValueError:
+                data[article.slug] = 'ValueError'
+                break
+        article.save(revision=False)
+        if not article.slug in data:
+            data[article.slug] = 'Done error free!'
+    return HttpResponse(json.dumps(data))
+
+class HomePageView(ArticleMixin, TemplateView):
+    """
+    View logic for the page the reader first sees upon going to https://ubyssey.ca/
+    """
+    template_name = 'homepage/base.html'
     youtube_regex = re.compile(r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})')
 
-    def home(self, request):
-        frontpage = ArticleHelper.get_frontpage(
+    def get_context_data(self, **kwargs):        
+        context = super().get_context_data(**kwargs)
+
+        #set context stuff that will be used for other context stuff as we go
+        context['title'] = 'The Ubyssey - UBC\'s official student newspaper'
+        context['breaking'] = self.get_breaking_news().first()
+
+        #set 'articles' section of context
+        frontpage = self.get_frontpage(
             sections=('news', 'culture', 'opinion', 'sports', 'features', 'science', 'themainmaller'),
             max_days=7
         )
+        trending_article = self.get_trending()
+        try:
+            #TODO: fail more gracefully!
+            articles = {
+                'primary': frontpage[0],
+                'secondary': frontpage[1],
+                'thumbs': frontpage[2:4],
+                'bullets': frontpage[4:6],
+                # Get random trending article
+                'trending': trending_article,
+                'breaking': context['breaking']
+             }
+        except IndexError:
+            raise Exception('Not enough articles to populate the frontpage!')
+        context['articles'] = articles
 
-        trending_article = ArticleHelper.get_trending()
+        #context['elections'] = self.get_topic('AMS Elections').order_by('-published_at')
 
-        #elections = ArticleHelper.get_topic('AMS Elections').order_by('-published_at')
-
+        #set 'sections' entry of context
         frontpage_ids = [int(a.id) for a in frontpage[:2]]
+        context['sections'] = self.get_frontpage_sections(exclude=frontpage_ids)
+               
+        #set 'is_mobile' entry of context
+        context['is_mobile'] = self.is_mobile
 
-        sections = ArticleHelper.get_frontpage_sections(exclude=frontpage_ids)
-
+        #set 'podcast' entry of context
         try:
             podcast = Podcast.objects.all()[:1].get()
             podcast_url = PodcastHelper.get_podcast_url(podcast.id)
@@ -71,34 +124,12 @@ class UbysseyTheme(object):
 
             episodes = list(zip(episode_list, episode_urls))
 
-        breaking = ArticleHelper.get_breaking_news().first()
-
-        # determine if user is viewing from mobile
-        user_agent = get_user_agent(request)
-
-        try:
-            articles = {
-                'primary': frontpage[0],
-                'secondary': frontpage[1],
-                'thumbs': frontpage[2:4],
-                'bullets': frontpage[4:6],
-                # Get random trending article
-                'trending': trending_article,
-                'breaking': breaking
-             }
-        except IndexError:
-            raise Exception('Not enough articles to populate the frontpage!')
-
-        popular = ArticleHelper.get_popular()[:5]
-
-        blog = ArticleHelper.get_frontpage(sections=['blog'], limit=5)
-
-        title = '%s - UBC\'s official student newspaper' % self.SITE_TITLE
-
         podcast_obj = None
         if podcast and episode_list:
             podcast_obj = { 'title': podcast.title, 'url': podcast_url, 'episodes': {'first': episodes[0], 'rest': episodes[1:4]} }
+        context['podcast'] = podcast_obj
 
+        #set 'video' entry of context
         video_obj = { 'url': VideoHelper.get_video_page_url(), 'videos': {'first': [], 'rest':[]} }
         video_list = None
         video_urls = []
@@ -116,7 +147,7 @@ class UbysseyTheme(object):
                     person = Person.objects.get(id=person_id)
                     video_list[index].videoAuthors.append({'name': person.full_name, 'link': VideoHelper.get_media_author_url(person.slug)})
 
-                match = UbysseyTheme.youtube_regex.match(video.url)
+                match = self.youtube_regex.match(video.url)
                 if match:
                     video_list[index].youtube_slug = match.group('id')
                 else:
@@ -124,47 +155,71 @@ class UbysseyTheme(object):
                 video_list[index].numAuthors = len(video.videoAuthors)
                 video_urls += [VideoHelper.get_video_url(video.id)]
             videos = list(zip(video_list, video_urls))
-        
             video_obj['videos'] =  { 'first': videos[0], 'rest': videos[1:4] } 
+        context['video'] = video_obj
 
-        context = {
-            'title': title,
-            'meta': {
-                'title': title,
+        #set 'meta' entry of context
+        context['meta'] = {
+                'title': context['title'],
                 'description': 'Weekly student newspaper of the University of British Columbia.',
-                'url': self.SITE_URL
-            },
-            'title': '%s - UBC\'s official student newspaper' % self.SITE_TITLE,
-            'articles': articles,
-            'sections': sections,
-            'podcast': podcast_obj,
-            'video': video_obj,
-            'popular': popular,
-            'breaking': breaking,
-            'blog': blog,
-            'day_of_week': datetime.now().weekday(),
-            'is_mobile': user_agent.is_mobile
+                'url': settings.BASE_URL
         }
 
-        return render(request, 'homepage/base.html', context)
+        #set all the parts of the context that only need a single line
+        context['popular'] = self.get_popular()[:5]
+        context['blog'] = self.get_frontpage(sections=['blog'], limit=5)
+        context['day_of_week'] = datetime.now().weekday()
+        return context
 
-    def article(self, request, section=None, slug=None):
-        try:
-            article = ArticleHelper.get_article(request, slug)
-        except:
-            raise Http404('Article could not be found.')
+class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
+    """
+    Initializes attributes from URL: section, slug/
 
-        article.add_view()
+    Please consult official Django documentation on DetailView: 
+    https://docs.djangoproject.com/en/3.0/ref/class-based-views/generic-display/#django.views.generic.detail.DetailView
+    """
+    model = Article #is queried by section and slug
+    
+    def setup(self, request, *args, **kwargs):
+        """
+        Overrides class view setup.
 
-        breaking = ArticleHelper.get_breaking_news().exclude(id=article.id).first()
+        According to official Django documentation:
+        'Overriding this method allows mixins to setup instance attributes for reuse in child classes. When overriding this method, you must call super().'
+        https://docs.djangoproject.com/en/3.0/ref/class-based-views/base/#django.views.generic.base.View.setup
+        """
+        self.ref = request.GET.get('ref', None)
+        self.dur = request.GET.get('dur', None)
+        return super().setup(request, *args, **kwargs)        
+
+    def get_template_names(self):
+        """
+        Because this is called during render_to_response(), but also appears earlier than get_queryset in the DetailView flowchart,
+        we use an if conditional to confirm whether the object has been queried and set
+        """
+        template_names = []
+        if self.object:
+            object_section_slug = str(self.object.section.slug)
+            object_template = str(self.object.get_template_path())
+            template_names += ['%s/%s' % (object_section_slug, object_template), object_template, 'article/default.html'] 
+        template_names += super().get_template_names()
+        return template_names
+
+    def get_context_data(self, **kwargs):
+        """
+        We're overriding the defaults listed here:
+        https://docs.djangoproject.com/en/3.0/ref/class-based-views/mixins-single-object/
+        """        
+        context = super().get_context_data(**kwargs)
+        article = self.object
+        context['title'] = '%s - The Ubyssey' % (article.headline)
+        context['breaking'] = self.get_breaking_news().exclude(id=article.id).first()
 
         # determine if user is viewing from mobile
-        article_type = 'desktop'
-        user_agent = get_user_agent(request)
-        if user_agent.is_mobile:
-            article_type = 'mobile'
+        article_type = 'mobile' if self.is_mobile else 'desktop'
 
-        if article.template == 'timeline':
+        # add a few fields to the article if it happens to have a "special" template
+        if self.object.template == 'timeline':
             timeline_tag = article.tags.filter(name__icontains='timeline-')
             timeline_articles = Article.objects.filter(tags__in=timeline_tag, is_published=True)
 
@@ -189,53 +244,198 @@ class UbysseyTheme(object):
             article.timeline_articles = json.dumps(sorted_timeline_articles)
             article.timeline_title = list(timeline_tag)[0].name.replace('timeline-', '').replace('-', ' ')
 
-        if article.template == 'soccer-nationals':
-            teamData = NationalsHelper.prepare_data(article.content)
-            article.content = teamData['content']
-            article.team_data = json.dumps(teamData['code'])
+        if self.object.template == 'soccer-nationals':
+            teamData = NationalsHelper.prepare_data(self.object.content)
+            self.object.content = teamData['content']
+            self.object.team_data = json.dumps(teamData['code'])
 
-        if article.template == 'food-insecurity':
+        if self.object.template == 'food-insecurity':
             data = FoodInsecurityHelper.prepare_data(article.content)
             article.content = data['content']
             article.point_data = json.dumps(data['code']) if data['code'] is not None else None
 
-        ref = request.GET.get('ref', None)
-        dur = request.GET.get('dur', None)
+        # set explicit status (TODO: ADDRESS SIDE EFFECT: inserting ads!)
+        context['explicit'] = self.is_explicit(self.object)        
+        if not context['explicit']:
+            self.object.content = self.insert_ads(self.object.content, article_type)
 
-        if not ArticleHelper.is_explicit(article):
-            article.content = ArticleHelper.insert_ads(article.content, article_type)
+        # set the rest of the context
+        context['article'] = self.object
+        context['base_template'] = 'base.html'
+        context['meta'] = self.get_article_meta()
+        context['popular'] = self.get_popular()[:5]
+        context['reading_list'] = self.get_reading_list(self.object, ref=self.ref, dur=self.dur)
+        context['reading_time'] = self.get_reading_time(self.object)
+        context['suggested'] = self.get_suggested(self.object)[:3]
+        # context['suggested'] = lambda: ArticleHelper.get_random_articles(2, section, exclude=article.id),
 
-        popular = ArticleHelper.get_popular()[:5]
-        suggested = ArticleHelper.get_suggested(article)[:3]
+        return context
 
-        context = {
-            'title': '%s - %s' % (article.headline, self.SITE_TITLE),
-            'meta': ArticleHelper.get_meta(article),
-            'article': article,
-            'reading_list': ArticleHelper.get_reading_list(article, ref=ref, dur=dur),
-            # 'suggested': lambda: ArticleHelper.get_random_articles(2, section, exclude=article.id),
-            'base_template': 'base.html',
-            'popular': popular,
-            'suggested': suggested,
-            'reading_time': ArticleHelper.get_reading_time(article),
-            'explicit': ArticleHelper.is_explicit(article),
-            'breaking': breaking,
+class SectionView(SectionMixin, ListView):
+    """
+    For rendering the list of articles corresponding to a section.
+    NOT a DetailView of the "Section" model.
+    
+    Expects to get Section slug from URL and raises Http404 if not present
+    """
+
+    def setup(self, request, *args, **kwargs):
+        self.default_template = 'section.html'
+        try:
+            self.section = Section.objects.get(slug=kwargs['slug']) 
+        except Section.DoesNotExist:
+            raise Http404() #TODO: figure out if 404 handling is consistent throughout our app!
+
+        return super().setup(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return super().get_queryset().filter(section=self.section)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        featured_subsection = None
+        featured_subsection_articles = None
+
+        context['subsections'] = self.get_subsections(self.section)
+        if context['subsections']:
+            featured_subsection = context['subsections'][0]
+            featured_subsection_articles = self.get_featured_subsection_articles(featured_subsection, self.featured_articles)
+        
+        context['featured_subsection'] = {
+            'subsection': featured_subsection,
+            'articles' : featured_subsection_articles
         }
 
-        template = article.get_template_path()
-        t = loader.select_template(['%s/%s' % (article.section.slug, template), template, 'article/default.html'])
-        return HttpResponse(t.render(context))
+        context['section'] = self.section
+        context['type'] = 'section'
+        return context
 
-    def article_ajax(self, request, pk=None):
-        article = Article.objects.get(parent_id=pk, is_published=True)
-        authors_json = [a.person.full_name for a in article.authors.all()]
+class SubsectionView(SectionMixin, ListView):
+    """
+    For subsection views. Largely the same in functionality to SectionView, but subsections don't have any polymorphism with Sections, unfortunately.
+    """
+    def setup(self, request, *args, **kwargs):
+        self.default_template = 'subsection.html'
+        try:
+            self.section = Subsection.objects.get(slug=kwargs['slug']) 
+        except:
+            raise Http404()
+        return super().setup(request, *args, **kwargs)
+    def get_queryset(self):
+        return super().get_queryset().filter(subsection=self.section)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subsection'] = self.section
+        context['type'] = 'subsection'
+        
+        return context
+
+class PageView(DispatchPublishableViewMixin, DetailView):
+    """
+    For special pages such as "About", "Volunteer", etc.
+    Occasionally called by "legacy" URLs which otherwise share a pattern with Section URLs.
+    This is due to the need to maintain permalinks after correcting a design flaw from an earlier version of this app.
+    """
+    model = Page
+  
+    def get_template_names(self):
+        template_names = []
+        template_path = self.object.get_template_path()
+        if template_path != 'article/default.html':
+            template_names = [template_path, 'page/base.html']
+        else:
+            template_names = ['page/base.html']
+        return template_names
+
+    def get_context_data(self, **kwargs):
+        try:
+            image = self.object.featured_image.image.get_medium_url()
+        except:
+            image = None
 
         context = {
-            'article': article,
-            'authors_json': authors_json,
+            'meta': {
+                'title': self.object.title,
+                'image': image,
+                'url': settings.BASE_URL[:-1] + reverse('page', args=[self.object.slug]), #TODO: double check this
+                'description': self.object.snippet if self.object.snippet else ''
+            },
+            'page': self.object
+        }
+        # assert False
+        return context
+
+class PodcastView(DetailView):
+    """
+    DetailView. Expects to get slug from URL
+    """
+    model = Podcast
+
+    def get_template_names(self):
+        return ['podcasts/podcast.html']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        podcast_id = self.object.id
+        podcast_slug = self.object.slug
+
+        episode_list = PodcastEpisode.objects.filter(podcast_id=podcast_id).order_by('-published_at')
+
+        episode_urls = []
+        for episode in episode_list:
+            episode_urls += "%spodcast/%s#%s" % (settings.BASE_URL, podcast_slug, episode.id)
+            
+        episodes = list(zip(episode_list, episode_urls))
+
+        url = "%spodcast/episodes" % (settings.BASE_URL)
+        context['podcast'] = self.object
+        context['url'] = url
+        context['episodes'] = episodes
+        return context
+
+class VideoView(ListView):
+    """
+    ListView. Gets slug from URL
+    """
+    model = Video
+    paginate_by = 5
+    def get_template_names(self):
+        return ['videos/videos.html']
+    def get_queryset(self):
+        return super().get_queryset().order_by('-created_at')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['meta'] = {
+            'title': 'Video'
+        }
+        return context
+
+class ArticleAjaxView(DispatchPublishableViewMixin, DetailView):
+    model = Article
+
+    def setup(self, request, *args, **kwargs):
+        article = Article.objects.get(id=kwargs['pk'])
+        authors = article.authors.all()
+        self.authors_json = [a.person.full_name for a in authors]
+        return super().setup(request, *args, **kwargs)
+    def get_template_names(self):
+        return ['author.html']
+
+    def get_context_data(self, **kwargs):
+        """
+        Possibly rendered useless by overriding render_to_response in such a way that does not use this. 
+        Was originally part of the pre-refactored version. Preserved here anyways.
+        """
+        context = {
+            'article': self.object,
+            'authors_json': self.authors_json,
             'base_template': 'blank.html'
         }
+        return context
 
+    def render_to_response(self, context, **response_kwargs):
+        article = self.object
         try:
             featured_image = article.featured_image.image.get_thumbnail_url()
         except:
@@ -245,197 +445,41 @@ class UbysseyTheme(object):
             'id': article.parent_id,
             'headline': article.headline,
             'url': article.get_absolute_url(),
-            'authors': authors_json,
+            'authors': self.authors_json,
             'published_at': str(article.published_at),
             'featured_image': featured_image
         }
 
         return HttpResponse(json.dumps(data), content_type='application/json')
 
-    def page(self, request, slug=None):
-        try:
-            page = PageHelper.get_page(request, slug)
-        except:
-            return self.subsection(request, slug)
+class AuthorView(DetailView):
+    """
+    DetailView. Shares a lot of expected behaviour with ArchiveView.
+    TODO: rework to use ArchiveListViewMixin
+    """
 
-        page.add_view()
+    model = Person
+    
+    def setup(self, request, *args, **kwargs):
+        self.order = request.GET.get('order', 'newest')
+        self.page = request.GET.get('page')
+        self.query = request.GET.get('q', False)
+        self.youtube_regex = re.compile(r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})')
 
-        try:
-            image = page.featured_image.image.get_medium_url()
-        except:
-            image = None
+        return super().setup(request, *args, **kwargs)
 
-        context = {
-            'meta': {
-                'title': page.title,
-                'image': image,
-                'url': settings.BASE_URL[:-1] + reverse('page', args=[page.slug]),
-                'description': page.snippet if page.snippet else ''
-            },
-            'page': page
-        }
+    def get_template_names(self):
+        return ['author.html']
 
-        if page.get_template_path() != 'article/default.html':
-            templates = [page.get_template_path(), 'page/base.html']
-        else:
-            templates = ['page/base.html']
-
-        t = loader.select_template(templates)
-        return HttpResponse(t.render(context))
-
-    def elections(self, request):
-        articles = ArticleHelper.get_topic('AMS Elections').order_by('-published_at')
-
-        topic = Topic.objects.filter(name='AMS Elections')[0]
-
-        context = {
-            'meta': {
-                'title': '2017 AMS Elections'
-            },
-            'section': {
-                'name': '2017 AMS Elections',
-                'slug': 'elections',
-                'id': topic.id
-            },
-            'type': 'topic',
-            'articles': {
-                'first': articles[0],
-                'rest': articles[1:9]
-            }
-        }
-
-        return render(request, 'section.html', context)
-
-    def section(self, request, slug=None):
-        try:
-            section = Section.objects.get(slug=slug)
-        except:
-            return self.page(request, slug)
-
-        order = request.GET.get('order', 'newest')
-
-        if order == 'newest':
-            order_by = '-published_at'
-        else:
-            order_by = 'published_at'
-
-        query = request.GET.get('q', False)
-
-        featured_articles = Article.objects.filter(section=section, is_published=True).order_by('-published_at')
-
-        subsections = SubsectionHelper.get_subsections(section)
-
-        featured_subsection = None
-        featured_subsection_articles = None
-
-        if subsections:
-            featured_subsection = subsections[0]
-            featured_subsection_articles = SubsectionHelper.get_featured_subsection_articles(featured_subsection, featured_articles)
-
-        article_list = Article.objects.filter(section=section, is_published=True).order_by(order_by)
-
-        if query:
-            article_list = article_list.filter(headline__icontains=query)
-
-        paginator = Paginator(article_list, 15) # Show 15 articles per page
-
-        page = request.GET.get('page')
-
-        try:
-            articles = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            articles = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            articles = paginator.page(paginator.num_pages)
-
-        context = {
-            'meta': {
-                'title': section.name,
-            },
-            'section': section,
-            'subsections': subsections,
-            'featured_subsection': {
-                'subsection': featured_subsection,
-                'articles' : featured_subsection_articles
-            },
-            'type': 'section',
-            'featured_articles': {
-                'first': featured_articles[0],
-                'rest': featured_articles[1:4]
-            },
-            'articles': articles,
-            'order': order,
-            'q': query
-        }
-
-        t = loader.select_template(['%s/%s' % (section.slug, 'section.html'), 'section.html'])
-        return HttpResponse(t.render(context))
-
-    def subsection(self, request, slug=None):
-        try:
-            subsection = Subsection.objects.get(slug=slug, is_active=True)
-        except:
-            raise Http404('Page could not be found')
-
-        if not subsection.get_published_articles().exists():
-            raise Http404('Page could not be found')
-
-        order = request.GET.get('order', 'newest')
-
-        if order == 'newest':
-            order_by = '-published_at'
-        else:
-            order_by = 'published_at'
-
-        query = request.GET.get('q', False)
-
-        featured_articles = Article.objects.filter(subsection=subsection, is_published=True).order_by('-published_at')
-
-        article_list = Article.objects.filter(subsection=subsection, is_published=True).order_by(order_by)
-
-        if query:
-            article_list = article_list.filter(headline__icontains=query)
-
-        paginator = Paginator(article_list, 15) # Show 15 articles per page
-
-        page = request.GET.get('page')
-
-        try:
-            articles = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            articles = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range, deliver last page of results.
-            articles = paginator.page(paginator.num_pages)
-
-        context = {
-            'meta': {
-                'title': subsection.name
-            },
-            'subsection': subsection,
-            'type': 'subsection',
-            'featured_articles': {
-                'first': featured_articles[0],
-                'rest': featured_articles[1:4]
-            },
-            'articles': articles,
-            'order': order,
-            'q': query
-        }
-
-        t = loader.select_template(['%s/%s' % (subsection.slug, 'subsection.html'), 'subsection.html'])
-        return HttpResponse(t.render(context))
-
-    def author(self, request, slug=None):
-        try:
-            person = Person.objects.get(slug=slug)
-        except:
-            raise Http404('Author could not be found.')
-
-        order = request.GET.get('order', 'newest')
+    def get_context_data(self, **kwargs):
+        """
+        TODO: the logic in get_context_data in AuthorView and ArchiveView is very similar and very bloated. Abstract it out.
+        """
+        person = self.object
+        order = self.order
+        page = self.page
+        query = self.query
+        context = super().get_context_data(**kwargs)
 
         if order == 'newest':
             publishable_order_by = '-published_at'
@@ -443,8 +487,6 @@ class UbysseyTheme(object):
         else:
             publishable_order_by = 'published_at'
             media_order_by = 'created_at'
-
-        query = request.GET.get('q', False)
 
         article_list = Article.objects.filter(authors__person=person, is_published=True).order_by(publishable_order_by)
         video_list = Video.objects.filter(authors__person=person).order_by(media_order_by)
@@ -484,7 +526,7 @@ class UbysseyTheme(object):
                 author_person = Person.objects.get(id=person_id)
                 video_list[index].videoAuthors.append({'name': author_person.full_name, 'link': VideoHelper.get_media_author_url(author_person.slug)})
 
-            match = UbysseyTheme.youtube_regex.match(video.url)
+            match = self.youtube_regex.match(video.url)
             if match:
                 video_list[index].youtube_slug = match.group('id')
             else:
@@ -495,7 +537,6 @@ class UbysseyTheme(object):
         object_list = list(chain(article_list, video_list, image_list, podcasts, episodes))
         objects_per_page = 15
         paginator = Paginator(object_list, objects_per_page) # Show 15 objects per page
-        page = request.GET.get('page')
 
         try:
             articles = paginator.page(page)
@@ -512,7 +553,7 @@ class UbysseyTheme(object):
                 'image': person.get_image_url if person.image is not None else None,
             },
             'person': person,
-            'articles': articles,
+            'page_obj': articles,
             'order': order,
             'q': query
         }
@@ -537,167 +578,81 @@ class UbysseyTheme(object):
         context['episodes_start_page'] = episodes_start // objects_per_page + 1 if episodes_start is not None else None
         context['episodes_start_idx'] = episodes_start % objects_per_page if episodes_start is not None else None
 
-        return render(request, 'author.html', context)
+        return context
 
-    def archive(self, request):
-        years = ArticleHelper.get_years()
+class ArchiveView(ArchiveListViewMixin, ListView):
+    """
+    View for http://ubyssey.ca/archive/
 
-        sections = Section.objects.all()
+    Bugs:
+        Cannot click on "All years" or "All sections" once you have selected a particular year or section
+    """
 
-        order = request.GET.get('order')
-        if order != 'oldest':
-            order = 'newest'
+    def __parse_int_or_none(self, maybe_int):
+        """
+        Private helper that enforces stricter discipline on section id and year values in request headers.
+        
+        Returns:
+            maybe_int cast to an integer or None if the cast fails. 
+        """
+        try:
+            return int(maybe_int)
+        except (TypeError, ValueError):
+            return None
 
-        filters = []
+    def setup(self, request, *args, **kwargs):
+        """
+        Sets self.section_id and self.year variables. These variables are optional for a ArchiveListViewMixin, 
+        but it will add features to the archive page if they are present.
+        """        
+        self.section_id = self.__parse_int_or_none(request.GET.get('section_id'))
+        self.year = self.__parse_int_or_none(request.GET.get('year'))
+        return super().setup(request, *args, **kwargs)
+    
+    def get_template_names(self):
+        return ['archive.html']
 
-        if order == 'oldest':
-            filters.append('order=%s' % order)
+class ElectionsView(TemplateView):
+    """
+    Currently unused, minimally refactored from its function view form.
+    Preserved at the moment for possible future use.
+    """
+    template_name = 'section.html'
 
-        publishable_order_by = '-published_at' if order == 'newest' else 'published_at'
-        media_order_by = '-created_at' if order == 'newest' else 'created_at'
+    def get_context_data(self, **kwargs):
+        articles = Article.objects.filter(is_published=True, topic__name='AMS Elections').order_by('-published_at')
+        topic = Topic.objects.filter(name='AMS Elections')[0]
 
         context = {
-            'sections': sections,
-            'years': years,
-            'order': order
+            'meta': {
+                'title': '2017 AMS Elections'
+            },
+            'section': {
+                'name': '2017 AMS Elections',
+                'slug': 'elections',
+                'id': topic.id
+            },
+            'type': 'topic',
+            'articles': {
+                'first': articles[0],
+                'rest': articles[1:9]
+            }
         }
 
-        query = request.GET.get('q', '').strip() or None
-        section_id = parse_int_or_none(request.GET.get('section_id'))
+        return context
 
-        year = parse_int_or_none(request.GET.get('year'))
+class TopicView(DetailView):
+    """
+    Currently unused, minimally refactored from its function view form.
+    Preserved at the moment for possible future use.
+    """
+    model = Topic
 
-        article_list = Article.objects.prefetch_related('authors', 'authors__person').select_related(
-            'section', 'featured_image').filter(is_published=True).order_by(publishable_order_by)
-        person_list = Person.objects.all() if query else Person.objects.none()
-        video_list = Video.objects.prefetch_related('authors', 'authors__person').order_by(media_order_by) if query else Video.objects.none()
-        image_list = Image.objects.prefetch_related('authors', 'authors__person').order_by(media_order_by) if query else Image.objects.none()
-        
-        podcast_list = Podcast.objects.all() if query else Podcast.objects.none()
-        podcast = Podcast.objects.all()[:1].get()
-        episode_list = PodcastEpisode.objects.filter(podcast_id=podcast.id).order_by(publishable_order_by) if query else PodcastEpisode.objects.none()
+    def get_template_names(self):
+        return ['section.html']
 
-        if year:
-            context['year'] = year
-            article_list = article_list.filter(published_at__icontains=str(year))
-            episode_list = episode_list.filter(published_at__icontains=str(year))
-            video_list = video_list.filter(created_at__icontains=str(year))
-            image_list = image_list.filter(created_at__icontains=str(year))
-            filters.append('year=%s' % year)
-
-        if query:
-            person_list = Person.objects.filter(full_name__icontains=query)
-            article_list = article_list.filter(headline__icontains=query)
-            video_list = video_list.filter(title__icontains=query)
-            image_list = image_list.filter(title__icontains=query)
-            podcast_list = podcast_list.filter(title__icontains=query)
-            episode_list = episode_list.filter(title__icontains=query)
-            context['q'] = query
-            filters.append('q=%s' % query)
-
-        if section_id:
-            article_list = article_list.filter(section=section_id)
-            context['section_id'] = section_id
-            context['section_name'] = Section.objects.get(id=section_id)
-            filters.append('section_id=%s' % section_id)
-
-        if filters:
-            query_string = '?' + '&'.join(filters)
-        else:
-            query_string = ''
-
-        image_list = image_list[:1500]
-        video_list = video_list[:200]
-        article_list = article_list[:7000]
-        person_list = person_list[:2000]
-
-        episode_urls = []
-        for episode in episode_list:
-            episode_urls += [PodcastHelper.get_podcast_episode_url(episode.podcast_id, episode.id)]
-
-        episodes = list(zip(episode_list, episode_urls))
-        podcasts = list(zip([podcast], [PodcastHelper.get_podcast_url(id=podcast.id)])) if podcast_list is not None and podcast_list.exists() else []
-
-        for index, image in enumerate(image_list):
-            image_list[index].imageAuthors = []
-            for author in image.authors.all():
-                person_id = Author.objects.get(id=author.id).person_id
-                person = Person.objects.get(id=person_id)
-                image_list[index].imageAuthors.append({'name': person.full_name, 'link': VideoHelper.get_media_author_url(person.slug)})
-
-            image_list[index].numAuthors = len(image.imageAuthors)
-
-        for index, video in enumerate(video_list):
-            video_list[index].videoAuthors = []
-            for author in video.authors.all():
-                person_id = Author.objects.get(id=author.id).person_id
-                person = Person.objects.get(id=person_id)
-                video_list[index].videoAuthors.append({'name': person.full_name, 'link': VideoHelper.get_media_author_url(person.slug)})
-
-            match = UbysseyTheme.youtube_regex.match(video.url)
-            if match:
-                video_list[index].youtube_slug = match.group('id')
-            else:
-                UbysseyTheme.logger.warning("Could not parse youtube slug from given url: %s", video.url)
-            video_list[index].numAuthors = len(video.videoAuthors)
-            video_list[index].video_url = VideoHelper.get_video_url(video.id)
-
-        object_list = list(chain(article_list, person_list, video_list, image_list, podcasts, episodes))
-        objects_per_page = 15
-        paginator = Paginator(object_list, objects_per_page) # Show 15 objects per page
-        page = request.GET.get('page')
-
-        try:
-            articles = paginator.page(page)
-        except PageNotAnInteger:
-            articles = paginator.page(1)
-        except EmptyPage:
-            articles = paginator.page(paginator.num_pages)
-
-        meta = {
-            'title': 'Archive'
-        }
-
-        context['articles'] = articles
-        context['count'] = paginator.count
-        context['meta'] = meta
-        context['query_string'] = query_string
-        
-        articles_start = 0 if article_list is not None and article_list.exists() else None
-        context['articles_start_page'] = articles_start // objects_per_page + 1 if articles_start is not None else None
-        context['articles_start_idx'] = articles_start % objects_per_page if articles_start is not None else None
-        
-        people_start = len(article_list) if person_list is not None and person_list.exists() else None
-        context['people_start_page'] = people_start // objects_per_page + 1 if people_start is not None else None
-        context['people_start_idx'] = people_start % objects_per_page if people_start is not None else None
-
-        videos_start = len(person_list) + len(article_list) if video_list is not None and video_list.exists() else None
-        context['videos_start_page'] = videos_start // objects_per_page + 1 if videos_start is not None else None
-        context['videos_start_idx'] = videos_start % objects_per_page if videos_start is not None else None
-        
-        images_start = len(person_list) + len(article_list) + len(video_list) if image_list is not None and image_list.exists() else None
-        context['images_start_page'] = images_start // objects_per_page + 1 if images_start is not None else None
-        context['images_start_idx'] = images_start % objects_per_page if images_start is not None else None
-        
-        podcasts_start = len(person_list) + len(article_list) + len(video_list) + len(image_list) if podcasts is not None and len(podcasts) > 0 else None
-        context['podcasts_start_page'] = podcasts_start // objects_per_page + 1 if podcasts_start is not None else None
-        context['podcasts_start_idx'] = podcasts_start % objects_per_page if podcasts_start is not None else None
-        
-        episodes_start = len(person_list) + len(article_list) + len(video_list) + len(image_list) + len(podcasts) if episodes is not None and len(episodes) > 0 else None
-        context['episodes_start_page'] = episodes_start // objects_per_page + 1 if episodes_start is not None else None
-        context['episodes_start_idx'] = episodes_start % objects_per_page if episodes_start is not None else None
-
-        return render(request, 'archive.html', context)
-
-    def search(self, request):
-        return redirect(self.archive)
-
-    def topic(self, request, pk=None):
-        try:
-            topic = Topic.objects.get(id=pk)
-        except Topic.DoesNotExist:
-            raise Http404('Topic does not exist.')
-
+    def get_context_data(self, **kwargs):
+        topic = self.object
         articles = Article.objects.filter(topic=topic, is_published=True).order_by('-published_at')
 
         context = {
@@ -706,67 +661,14 @@ class UbysseyTheme(object):
             },
             'section': topic,
             'type': 'topic',
-            'articles': {
+            'articles': { #TODO: FIGURE OUT IF SHOULD BE page_obj
                 'first': articles[0] if articles else None,
                 'rest': articles[1:9]
             }
         }
+        return context
 
-        return render(request, 'section.html', context)
-
-    def newsletter(self, request):
-        return render(request, 'objects/newsletter.html', {})
-
-    def centennial(self, request):
+class UbysseyTheme:
+    @staticmethod
+    def centennial(request):
         return render(request, 'centennial.html', {})
-
-    def notification(self, request):
-        return render(request, 'notification_signup.html', {})
-
-    def podcast(self, request, slug=None):
-        try:
-            podcast = Podcast.objects.all()[:1].get()
-        except:
-            raise Http404('We could not find the podcast')
-
-        episode_list = PodcastEpisode.objects.filter(podcast_id=podcast.id).order_by('-published_at')
-
-        episode_urls = []
-        for episode in episode_list:
-            episode_urls += [PodcastHelper.get_podcast_episode_url(episode.podcast_id, episode.id)]
-
-        episodes = list(zip(episode_list, episode_urls))
-
-        url = PodcastHelper.get_podcast_url(id=podcast.id)
-        context = {
-            'podcast': podcast,
-            'url': url,
-            'episodes': episodes
-        }
-
-        return render(request, 'podcasts/podcast.html', context)
-
-    def video(self, request, slug=None):
-
-        videos = Video.objects.order_by('-created_at')
-        paginator = Paginator(videos, 5) # Show 5 videos per page
-        page = request.GET.get('page')
-
-        meta = {
-            'title': 'Video'
-        }
-
-        try:
-            videos = paginator.page(page)
-        except PageNotAnInteger:
-            videos = paginator.page(1)
-        except EmptyPage:
-            videos = paginator.page(paginator.num_pages)
-
-        context = {
-            'videos': videos,
-            'count': paginator.count,
-            'meta': meta
-        }
-
-        return render(request, 'videos/videos.html', context)

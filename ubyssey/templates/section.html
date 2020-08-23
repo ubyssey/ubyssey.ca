@@ -17,7 +17,7 @@
       <div class="c-page__header__subsections">
         <ul>
           {% for subsection in subsections %}
-            <li><a href="{% url 'page' subsection.slug %}">{{ subsection.name }}</a></li>
+            <li><a href="{% url 'subsection' subsection.slug %}">{{ subsection.name }}</a></li>
           {% endfor %}
         </ul>
       </div>

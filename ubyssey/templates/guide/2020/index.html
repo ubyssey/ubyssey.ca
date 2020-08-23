@@ -1,13 +1,14 @@
 {% extends 'guide/2020/base.html' %}
-
+{% load static %}
 {% block content %}
 
-<div class="c-banner c-banner--welcome">
+<div class="c-banner c-banner--welcome" style="background-image: url({% static 'ubyssey/images/guide/guide-2020-cover.jpg' %})">
   <div class="c-banner__container">
     <div class="c-banner--welcome__inner">
       <h2 class="c-banner--welcome__intro">The Ubyssey presents</h2>
       <p class="c-banner--welcome__snippet">Guide To UBC</p>
     </div>
+    <div class="c-banner-credits">Zubair Hirji</div>
   </div>
 </div>
 
@@ -63,14 +64,14 @@
       <div class="panel-quote __1-container">
         <div class="panel-quote __1-container-text">
           <div class="panel-quote __1-container-image">
-            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Girl in a jacket">
+            <img src="{% static 'ubyssey/images/guide/guide-2020-cover-1.jpg' %}" alt="cover">
           </div>
           <div class="panel-quote __1-text">
             <div class="panel-quote __1-text__ quote">
-              <p>Yeah, online classes aren't exactly the intro you wanted to university life. But you WILL get your iconic first-year moments when we can all return to campus. Remember - you're in university to learn, and you will still get to do that this year. Plus, it's a way better way to make the most of your time in quarantine - it's not like any of us can do the typical gap year of travel or work right now anyway.</p>
+              <p>“Yeah, online classes aren't exactly the intro you wanted to university life. But you WILL get your iconic first-year moments when we can all return to campus. Remember - you're in university to learn, and you will still get to do that this year. Plus, it's a way better way to make the most of your time in quarantine - it's not like any of us can do the typical gap year of travel or work right now anyway.”</p>
             </div>
             <div class="panel-quote __1-text__ source">
-             -Julia Burnham
+              — Julia Burnham
             </div>
           </div>
         </div>
@@ -119,7 +120,7 @@
           <br>
           <h1>Web</h1>
           <p> is what makes our stories go viral. Our web devs coded our website from scratch.</p>
-          <a class="who__ home-content__nav" href="https://www.ubyssey.ca/about/">more about us <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+          <a class="who__ home-content__nav" href="{% url 'page' 'about' %}">more about us <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
         </div>
     </div>
   </div>
@@ -128,14 +129,14 @@
     <div class="panel-quote __2-container">
       <div class="panel-quote __2-container-text">
         <div class="panel-quote __2-container-image">
-          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Girl in a jacket">
+          <img src="{% static 'ubyssey/images/guide/guide-2020-cover-2.jpg' %}" alt="cover">
         </div>
         <div class="panel-quote __2-text">
           <div class="panel-quote __2-text__ quote">
-            <p>University can seem scary, especially for a large university, but everyone is so excited to make new friends that the size really doesn’t matter. And for all the first-years who are upset about their experience: just know that you are going through the same thing that everyone else is going through, and you are not alone.</p>
+            <p>“University can seem scary, especially for a large university, but everyone is so excited to make new friends that the size really doesn’t matter. And for all the first-years who are upset about their experience: just know that you are going through the same thing that everyone else is going through, and you are not alone.”</p>
           </div>
           <div class="panel-quote __2-text__ source">
-           -Ioana David
+            — Ioana David
           </div>
         </div>
       </div>
@@ -158,7 +159,7 @@
           <br>
           <h1>Visit our office</h1>
           <p>When there isn’t a pandemic ravaging the world, you can come find the editors working away 11 a.m. – 5 p.m. in our office, room 2208 in the Nest. You can talk to us about pitch ideas or anything at all. Every week, we hold weekly staff meetings where you can come meet fellow contributors. Check out our Facebook page for more details. We’re lonely. Please come bother us.</p>
-          <a class="involved__ home-content__nav" href="https://www.ubyssey.ca/contact/">contact us <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+          <a class="involved__ home-content__nav" href="{% url 'page' 'contact' %}">contact us <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
         </div>
     </div>
   </div>
