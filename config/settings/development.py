@@ -9,7 +9,11 @@ BASE_URL = 'http://localhost:8000/'
 
 ALLOWED_HOSTS = ['localhost', '*']
 
-INSTALLED_APPS += ['ubyssey.events', 'django_user_agents', ]
+INSTALLED_APPS += [
+    'ubyssey.events', 
+    'django_user_agents', 
+    'debug_toolbar'
+]
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 
