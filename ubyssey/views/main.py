@@ -212,6 +212,7 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         https://docs.djangoproject.com/en/3.0/ref/class-based-views/mixins-single-object/
         """        
         context = super().get_context_data(**kwargs)
+        context += self.object.get_context_data()
         article = self.object
         context['title'] = '%s - The Ubyssey' % (article.headline)
         context['breaking'] = self.get_breaking_news().exclude(id=article.id).first()
