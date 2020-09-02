@@ -70,6 +70,7 @@ class HomePageView(ArticleMixin, TemplateView):
 
         #set context stuff that will be used for other context stuff as we go
         context['title'] = 'The Ubyssey - UBC\'s official student newspaper'
+        context['breaking'] = Article.objects.get_current_breaking_qs().first() 
 
         #set 'articles' section of context
         frontpage = self.get_frontpage(
@@ -213,6 +214,8 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context += self.object.get_context_data()
 
+        context['breaking'] = self.objects.get_current_breaking_qs().exclude(id=self.id).first() #TODO: figure out if we can do with fewer DB hits!
+
         # determine if user is viewing from mobile
         article_type = 'mobile' if self.is_mobile else 'desktop'
 
@@ -252,9 +255,8 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
             article.content = data['content']
             article.point_data = json.dumps(data['code']) if data['code'] is not None else None
 
-        # set explicit status (TODO: ADDRESS SIDE EFFECT: inserting ads!)
-        context['explicit'] = self.is_explicit(self.object)        
-        if not context['explicit']:
+        # set explicit status (TODO: ADDRESS SIDE EFFECT: inserting ads!) 
+        if not self.object.is_explicit():
             self.object.content = self.insert_ads(self.object.content, article_type)
 
         # set the rest of the context
