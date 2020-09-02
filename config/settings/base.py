@@ -129,6 +129,7 @@ INSTALLED_APPS = [
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
     'dispatch.apps.DispatchConfig',
     'newsletter.apps.NewsletterConfig',
+    'dispatchwagtail.apps.DispatchwagtailConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -137,6 +138,22 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'rest_framework.authtoken',
+
+    # wagtail stuff
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail.core',
+
+    'modelcluster',
+    'taggit',
 ]
 
 # Replace default user model
@@ -165,6 +182,11 @@ TEMPLATES = [
         'NAME': 'app_dirs',
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+            ],
+        },
     },
     {
         'NAME': 'dispatch',
@@ -195,15 +217,17 @@ REST_FRAMEWORK = {
 STATICFILES_DIRS = []
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+	'django.middleware.security.SecurityMiddleware',
+	'whitenoise.middleware.WhiteNoiseMiddleware',
+	'debug_toolbar.middleware.DebugToolbarMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
-
 GS_LOCATION = None
 GS_STORAGE_BUCKET_NAME = None
 GS_USE_SIGNED_URLS = False
@@ -214,3 +238,7 @@ PHONENUMBER_DEFAULT_REGION = 'CA'
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 SECRET_URL = env('SECRET_URL')
+WAGTAIL_SITE_NAME = 'The Ubyssey'
+WAGTAIL_USER_EDIT_FORM = 'dispatchwagtail.forms.DispatchUserEditForm'
+WAGTAIL_USER_CREATION_FORM = 'dispatchwagtail.forms.DispatchUserCreationForm'
+WAGTAIL_USER_CUSTOM_FIELDS = ['person', 'is_active']

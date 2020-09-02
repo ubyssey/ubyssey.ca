@@ -22,6 +22,11 @@ from ubyssey.events.urls import urlpatterns as events_urls
 
 from django.views.generic import TemplateView
 
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
+
+theme = UbysseyTheme()
 advertise = AdvertiseTheme()
 
 urlpatterns = []
@@ -39,6 +44,11 @@ urlpatterns += [
     path(settings.SECRET_URL,decorrupt,name='decorrupt'),
 
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
+
+    # Wagtail
+    path('cms/', include(wagtailadmin_urls)),
+    path('documents/', include(wagtaildocs_urls)),
+    path('pages/', include(wagtail_urls)),
 
     re_path(r'^admin', include(admin_urls)),
     re_path(r'^api/', include(api_urls)),
@@ -95,8 +105,10 @@ urlpatterns += [
 
     # Subsections
     re_path(r'^subsection/(?P<slug>[-\w]+)/$', SubsectionView.as_view(), name='subsection'), #Dislike this, 
-    
+
     re_path(r'^(?P<section>[-\w]+)/(?P<slug>[-\w]+)/$', ArticleView.as_view(), name='article'),
     re_path(r'^(?P<slug>[-\w]+)/$', SectionView.as_view(), name='section'),
     re_path(r'^api/articles/(?P<pk>[0-9]+)/rendered/$', ArticleAjaxView.as_view(), name='article-ajax'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
