@@ -4,7 +4,7 @@ from wagtail.core.models import Page
 from wagtail.admin.edit_handlers import FieldPanel
 
 class HomePage(Page):
-    template = 'homepage/base.html'
+    template = 'homepage/homepage.html'
     max_count = 1
     banner_title = models.CharField(max_length=100, blank=False, null=False)
 
