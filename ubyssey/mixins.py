@@ -227,7 +227,7 @@ class ArticleMixin(object):
             end = timezone.now() + timezone.timedelta(days=1)
             start = end - timezone.timedelta(days=durations[dur])
             time_range = (start, end)
-            articles = articles.filter(created_at__range=(time_range))
+            articles = articles.filter(published_at__range=(time_range))
 
         return articles.order_by('-views')
 
@@ -269,15 +269,29 @@ class DispatchPublishableViewMixin(object):
     """
     Abstracts out typical function overrides when dealing with a Publishable object from the Dispatch app (i.e. and Article or a Page). Most commonly, this is to append .filter(is_published=True) to the queryset a class uses to account for non-unique slugs.
     This logic was originally in the Ubyssey app, but because it deals with Dispatch models, it may be desirable to move it 
-    """
-    # def setup(self, request, *args, **kwargs):
-    #     pass
-    # TODO: check that this mixin is being used with a compatable class
 
+    Attributes:
+
+        version: the version number of a particular Dispatch article, read from a querystring. Default to None (typical case)
+        preview_id: the preview_id of a particular Dispatch article, read from a querystring. Default to None (typical case)
+    """
+    def setup(self, request, *args, **kwargs):
+        # TODO: check that this mixin is being used with a compatable class
+        # Both attributes should usually be None!
+        self.preview_id = request.GET.get('preview_id', None)
+        self.version = request.GET.get('version', None)
+        return super().setup(request, *args, **kwargs)        
+    
     def get_queryset(self):
+        """If the url requested includes the querystring parameters 'version' and 'preview_id',
+        get the article with the specified version and preview_id.
+
+        Otherwise, get the published version of the article.
         """
-        Because in Dispatch, slugs pick multiple revisions of the same article, we filter the default by is_published=True
-        """
+        if self.preview_id is not None and self.version is not None:
+            # Special condition which should be fulfilled only when the user is trying to preview an article
+            # Hence, we do the preview_id check first; that should fail in all but the case we're trying to preview
+            return super().get_queryset().filter(revision_id=self.version, preview_id=self.preview_id)
         return super().get_queryset().filter(is_published=True)
     
     def render_to_response(self, context, **response_kwargs):
