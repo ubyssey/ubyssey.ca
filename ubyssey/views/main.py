@@ -251,9 +251,9 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
             self.object.team_data = json.dumps(teamData['code'])
 
         if self.object.template == 'food-insecurity':
-            data = FoodInsecurityHelper.prepare_data(article.content)
-            article.content = data['content']
-            article.point_data = json.dumps(data['code']) if data['code'] is not None else None
+            data = FoodInsecurityHelper.prepare_data(self.object.content)
+            self.object.content = data['content']
+            self.object.point_data = json.dumps(data['code']) if data['code'] is not None else None
 
         # set explicit status (TODO: ADDRESS SIDE EFFECT: inserting ads!) 
         if not self.object.is_explicit():
@@ -262,7 +262,6 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         # set the rest of the context
         context['article'] = self.object
         context['base_template'] = 'base.html'
-        context['meta'] = self.get_article_meta()
         context['popular'] = self.get_popular()[:5]
         context['reading_list'] = self.get_reading_list(self.object, ref=self.ref, dur=self.dur)
         context['reading_time'] = self.get_reading_time(self.object)
