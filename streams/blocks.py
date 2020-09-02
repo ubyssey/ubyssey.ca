@@ -1,3 +1,4 @@
+from dispatch.models import Article
 from wagtail.core import blocks
 
 class FrontpageBlock(blocks.StructBlock):
