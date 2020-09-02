@@ -94,6 +94,7 @@ header.main{
   }
 
   nav.main {
+    grid-template-rows: 51px;
     border: $header-border;
     @include box-shadow($header-box-shadow);
     border-radius: 2px;

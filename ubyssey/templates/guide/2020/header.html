@@ -45,7 +45,7 @@
                 </ul>
             </div>
             <div class="c-nav-section" id="c-nav-section--sdp">
-                <a class='section-title-link' href="{% url 'guide-landing-sub' 2020 'sdp' %}">Sex, Drugs, Party</a>
+                <a class='section-title-link' href="{% url 'guide-landing-sub' 2020 'sdp' %}">Sex, Drugs, Parties</a>
                 <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--sdp'>
                     <li class='home'>
                         <a class="header-button" href="{% url 'guide-landing-sub' 2020 'sdp' %}">Home</a>
@@ -106,7 +106,7 @@
             <a href="https://www.ubyssey.ca"><img src="{% static 'ubyssey/images/ubyssey-dingbat-white.png' %}"/></a>
         </li>
         <li class='c-nav-current'>
-            {% if subsection %}{% if subsection == 'sdp' %}Sex, Drugs, Party{% elif subsection == 'adulting' %}Grown-Up Life{% else %}{{ subsection }}{% endif %}{% endif %}
+            {% if subsection %}{% if subsection == 'sdp' %}Sex, Drugs, Parties{% elif subsection == 'adulting' %}Grown-Up Life{% else %}{{ subsection }}{% endif %}{% endif %}
             <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--current'>
                 {% if subsection %}
                     <li>

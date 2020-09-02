@@ -9,6 +9,7 @@ from ubyssey.helpers import ArticleHelper
 from ubyssey.mixins import DispatchPublishableViewMixin, GuideViewMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
+from django.db.models import F
 
 
 class Guide2016(object):
@@ -24,6 +25,7 @@ class Guide2016(object):
 
     def article(self, request, slug=None):
         """Guide article page."""
+        #TODO: tidy these remaining views up
         try:
             article = ArticleHelper.get_article(request, slug)
         except:
@@ -41,7 +43,7 @@ class Guide2016(object):
         except:
             next_b = None
 
-        article.add_view()
+        Article.objects.filter(slug=slug, is_published=True).update(views=F('views')+1) #Not great, but this whole view is bad and is mostly sloppy legacy code
 
         context = {
             'title': article.headline,

@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.urls import include, re_path
+from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib.staticfiles.views import serve as serve_static
 
@@ -7,7 +7,7 @@ from dispatch.urls import admin_urls, api_urls, podcasts_urls
 from newsletter.urls import urlpatterns as newsletter_urls
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed
-from ubyssey.views.main import UbysseyTheme, HomePageView, ArticleView, SectionView, SubsectionView, VideoView, PageView, PodcastView, ArticleAjaxView, AuthorView, ArchiveView
+from ubyssey.views.main import ads_txt, decorrupt, UbysseyTheme, HomePageView, ArticleView, SectionView, SubsectionView, VideoView, PageView, PodcastView, ArticleAjaxView, AuthorView, ArchiveView
 from ubyssey.views.guide import guide2016, GuideArticleView, GuideLandingView
 
 from ubyssey.views.advertise import AdvertiseTheme
@@ -35,6 +35,11 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += [
+    #For Google Adsense, because of our serverless setup with GCP
+    path(settings.SECRET_URL,decorrupt,name='decorrupt'),
+
+    re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
+
     re_path(r'^admin', include(admin_urls)),
     re_path(r'^api/', include(api_urls)),
     re_path(r'^podcasts/', include(podcasts_urls)),
@@ -94,4 +99,4 @@ urlpatterns += [
     re_path(r'^(?P<section>[-\w]+)/(?P<slug>[-\w]+)/$', ArticleView.as_view(), name='article'),
     re_path(r'^(?P<slug>[-\w]+)/$', SectionView.as_view(), name='section'),
     re_path(r'^api/articles/(?P<pk>[0-9]+)/rendered/$', ArticleAjaxView.as_view(), name='article-ajax'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -6,14 +6,21 @@
     margin-left: -25px;
     z-index: 10000;
     max-height: 205px;
-    overflow: scroll;
+    overflow-y: scroll;
+
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* Chrome/Safari/Webkit */
+    }
     
     li {
       display: block;
       margin: 0 auto 0 auto;
       clear: left;
-      line-height: 2;
-      padding: 0;
+      line-height: 1.5;
+      padding: 5px 0;
       width:100%;
       text-align: center;
       border-bottom: 1px solid #fff;

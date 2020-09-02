@@ -40,9 +40,6 @@ import upcomingEvents from './widgets/upcoming-events';
     //Calls issue parser only in homepage
     if(window.location.pathname === '/'){ issueParser(); }
     
-    //Automatically open mobile mailchimp pop up
-    $( ".button.bannerContent__subscribeButton" ).click();
-
   }); 
   
   $(window).resize(function() {

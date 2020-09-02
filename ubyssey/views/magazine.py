@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.templatetags.static import static
 from django_user_agents.utils import get_user_agent
+from django.db.models import F
 
 from dispatch.models import Article, Tag
 
@@ -33,12 +34,13 @@ class MagazineTheme(object):
         raise Http404("Page cannot be found") 
 
     def article(self, request, slug=None):
+        #TODO: tidy these remaining views up
         try:
             article = ArticleHelper.get_article(request, slug)
         except:
             raise Http404('Article could not be found.')
 
-        article.add_view()
+        Article.objects.filter(slug=slug, is_published=True).update(views=F('views')+1) #Not great, but this whole view is bad and is mostly sloppy legacy code
 
         year = article.tags.get(name__icontains="20").name
 
