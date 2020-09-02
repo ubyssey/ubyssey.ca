@@ -170,14 +170,6 @@ class ArticleMixin(object):
             'name': name
         }
 
-    def is_explicit(self, article):
-        explicit_tags = ['sex', 'explicit']
-        tags = article.tags.all().values_list('name', flat=True)
-        for tag in tags:
-            if tag.lower() in explicit_tags:
-                return True
-        return False
-
     def get_random_articles(self, n, section, exclude=None):
         """Returns `n` random articles from the given section."""
 
@@ -240,10 +232,6 @@ class ArticleMixin(object):
 
         return Article.objects.filter(is_published=True).order_by('-published_at').exclude(id=article.id)
         
-    def get_breaking_news(self):
-        """Returns breaking news stories"""
-        return Article.objects.filter(is_published=True, is_breaking=True, breaking_timeout__gte=timezone.now())
-
     def get_trending(self):
         """Returns the most trending articles in the time period."""
 

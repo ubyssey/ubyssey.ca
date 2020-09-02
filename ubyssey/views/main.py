@@ -70,7 +70,6 @@ class HomePageView(ArticleMixin, TemplateView):
 
         #set context stuff that will be used for other context stuff as we go
         context['title'] = 'The Ubyssey - UBC\'s official student newspaper'
-        context['breaking'] = self.get_breaking_news().first()
 
         #set 'articles' section of context
         frontpage = self.get_frontpage(
@@ -213,9 +212,6 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         """        
         context = super().get_context_data(**kwargs)
         context += self.object.get_context_data()
-        article = self.object
-        context['title'] = '%s - The Ubyssey' % (article.headline)
-        context['breaking'] = self.get_breaking_news().exclude(id=article.id).first()
 
         # determine if user is viewing from mobile
         article_type = 'mobile' if self.is_mobile else 'desktop'
