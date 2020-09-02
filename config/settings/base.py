@@ -194,8 +194,17 @@ REST_FRAMEWORK = {
 
 STATICFILES_DIRS = []
 
+# Set the middleware
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
+]
+
+if DEBUG:
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+
+MIDDLEWARE += [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
