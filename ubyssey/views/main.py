@@ -214,7 +214,7 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         # context += self.object.get_context_data() #@TODO: figure out how to append dicts?
 
-        context['breaking'] = Article.objects.get_current_breaking_qs().exclude(id=self.id).first() #TODO: figure out if we can do with fewer DB hits!
+        context['breaking'] = Article.objects.get_current_breaking_qs().exclude(id=self.object.id).first() #TODO: figure out if we can do with fewer DB hits!
 
         # determine if user is viewing from mobile
         article_type = 'mobile' if self.is_mobile else 'desktop'

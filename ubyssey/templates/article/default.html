@@ -9,7 +9,7 @@
 {% block content %}
 <main id="article-{{ article.parent_id }}" class="article">
   {% block banner_ad %}
-  {% if not article.is_explicit() %}
+  {% if not article.is_explicit %}
   {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 article=article.id %}
   {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=2 article=article.id %}
   {% endif %}
