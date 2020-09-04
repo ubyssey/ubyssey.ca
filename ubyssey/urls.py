@@ -36,8 +36,6 @@ if settings.DEBUG:
 
 urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
-    path(settings.SECRET_URL,decorrupt,name='decorrupt'),
-
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
     re_path(r'^admin', include(admin_urls)),

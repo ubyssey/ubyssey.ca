@@ -223,4 +223,7 @@ PHONENUMBER_DEFAULT_REGION = 'CA'
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
-SECRET_URL = env('SECRET_URL')
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
