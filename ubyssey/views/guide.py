@@ -43,7 +43,7 @@ class Guide2016(object):
         except:
             next_b = None
 
-        Article.objects.filter(slug=slug, is_published=True).update(views=F('views')+1) #Not great, but this whole view is bad and is mostly sloppy legacy code
+        # Article.objects.filter(slug=slug, is_published=True).update(views=F('views')+1) #Not great, but this whole view is bad and is mostly sloppy legacy code
 
         context = {
             'title': article.headline,

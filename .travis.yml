@@ -20,12 +20,8 @@ after_success:
 - rm -rf node_modules
 - cd ${TRAVIS_BUILD_DIR}
 # use deploy settings
-- export DJANGO_SETTINGS_MODULE="config.settings.deployment"
-- travis_wait python manage.py collectstatic --noinput
-# gzip static files - Unnecessary due to Whitenoise
-# - find ${TRAVIS_BUILD_DIR}/gcs -type f -exec gzip "{}" \; -exec mv "{}.gz" "{}" \;
-# replace deploy settings with production settings
 - export DJANGO_SETTINGS_MODULE="config.settings.production"
+- travis_wait python manage.py collectstatic --noinput
 - rm -rf .git/ ubyssey/static_src/
 - pip install -I google-cloud-storage==1.13.2 -t lib/
 - ls lib/
@@ -33,19 +29,6 @@ after_success:
 
 
 deploy:
-  - provider: gcs
-    access_key_id: GOOG6VXJ7FN5TYTTPSQI
-    secret_access_key:
-      secure: saCd6ww5nyVA1vUKjmKoe1s+Xf6B+gWWQOTFs8pnQyacSPI9KnGZ3/+H41OoZyMkV8gNEOzgMaFd1eKyO5npisaVas/a0VDtStPek0WtfzTGpEsUDfzAPzC18H2dOzwv25EmpRDcY6YIe9qaove7yOQ5ptAKkWlbUlh9jsG7r88shQtJNP91TYoSaBtpX8YMvmxkFTFuzgQ/M5Mxmz/ObtMfNj9WyGBRtSVKss1tIMvhwxHHUc+R7EYIcVoUgsLIdOtkdqe6iDPEx3qBJsrg2uu1i7SmGvpoQwIPXheqZEKxpbaSzenxy2UXD6zXjFgS9xP0nz06t3OKjIce10jhR3+d2FNffeadwbEEj/UuLqSmU/p0W2S4pzdGDxZRpgADxmfMwqG+qP8l177Pyui1c+npCUvVtON0F850Ih8P3G9gQZiyz3rKOFzISEym62H8HiPYA04dqnis/F5+ELa6QkMwNQZKlGQAHBJ849bT4K72/X8yq6ywZiXVE+6meqsIdAWmUDUBvoDAVNCuLW6AMtW387/WwqzKG5+qcx7tvuRrgowhk1JNdldLdw+7XtEuZ82XRO/EMeytdubDLwqpNjflqpRGTb0qDvByffSrzBrPAVXp5/zC3D1E5uQI/eONiYeAlR+vhOLm5UIAIor5KXojFb5eVTKd1xcCPI8uZpg=
-    bucket: ubyssey
-    skip_cleanup: true
-    acl: public-read
-    local-dir: ${TRAVIS_BUILD_DIR}/gcs
-    detect_encoding: true
-    cache_control: "max-age=31536000"
-    on:
-      tags: true
-    edge: true
   - provider: gae
     keyfile: client-secret.json
     project: ubyssey-prd

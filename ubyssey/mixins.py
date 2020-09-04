@@ -298,7 +298,7 @@ class DispatchPublishableViewMixin(object):
         """
         Adds to the view counter before rendering the page. We do this as late as possible to try to prevent adding to the view counter in the event of errors
         """
-        self.get_queryset().update(views=F('views')+1) # We call this at the last possible second once everything has been done correctly so that we only count successful attempts to read the article
+        # self.get_queryset().update(views=F('views')+1) # We call this at the last possible second once everything has been done correctly so that we only count successful attempts to read the article
         return super().render_to_response(context, **response_kwargs)
 
     def get_article_meta(self, default_image=None):

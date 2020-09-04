@@ -40,7 +40,7 @@ class MagazineTheme(object):
         except:
             raise Http404('Article could not be found.')
 
-        Article.objects.filter(slug=slug, is_published=True).update(views=F('views')+1) #Not great, but this whole view is bad and is mostly sloppy legacy code
+        # Article.objects.filter(slug=slug, is_published=True).update(views=F('views')+1) #Not great, but this whole view is bad and is mostly sloppy legacy code
 
         year = article.tags.get(name__icontains="20").name
 
