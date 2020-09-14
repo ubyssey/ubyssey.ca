@@ -17,8 +17,6 @@ ALLOWED_HOSTS = [
 ]
 
 INSTALLED_APPS += [
-    'ubyssey.events',
-    'django_user_agents',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'

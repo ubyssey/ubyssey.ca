@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.views.generic import View
 
 def mailchimp_landing_redirect(self):
-    response = redirect('https://mailchi.mp/811f064f8f4f/newsletter')
+    response = redirect('https://mailchi.mp/8c879257bf61/subscribe-to-our-newsletter')
     return response
 
 # class WebhookResponseHandlerView(View):    
