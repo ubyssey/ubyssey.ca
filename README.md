@@ -24,7 +24,7 @@ You can open issues for bugs you've found or features you think are missing. You
 
 ## Office hours
 
-Our office hours for 2019 Spring Term is 1:00 - 2:00 every Thursday.
+Our (online) office hours for the Fall 2020 Term are 11:00am - 1:00pm every Tuesday.
 
 ## License
 

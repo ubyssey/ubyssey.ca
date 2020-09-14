@@ -34,31 +34,6 @@ def parse_int_or_none(maybe_int):
 def ads_txt(request):
     return redirect(settings.ADS_TXT_URL)
 
-def decorrupt(request):
-    desktop_ad = {"type":"ad","data":"desktop"}
-    mobile_ad = {"type":"ad","data":"mobile"}
-
-    data = {}
-    article_qs = Article.objects.filter(is_published=True,published_at__gte=datetime(year=2017,month=1,day=1),published_at__lte=datetime(year=2017,month=5,day=1)) 
-    for article in article_qs:
-        if desktop_ad in article.content or mobile_ad in article.content:
-            while desktop_ad in article.content:
-                try:
-                    article.content.remove(desktop_ad)
-                except ValueError:
-                    data[article.slug] = 'ValueError'
-                    break            
-            while mobile_ad in article.content:
-                try:
-                    article.content.remove(mobile_ad)
-                except ValueError:
-                    data[article.slug] = 'ValueError'
-                    break
-            article.save(revision=False)
-        if not article.slug in data:
-            data[article.slug] = 'Done error free!'
-    return HttpResponse(json.dumps(data))
-
 class HomePageView(ArticleMixin, TemplateView):
     """
     View logic for the page the reader first sees upon going to https://ubyssey.ca/

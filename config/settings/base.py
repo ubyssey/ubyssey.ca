@@ -137,6 +137,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'rest_framework.authtoken',
+    'ubyssey.events',
+    'django_user_agents',
 ]
 
 # Replace default user model

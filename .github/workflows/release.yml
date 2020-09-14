@@ -1,0 +1,62 @@
+name: Release and Deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the develop branch
+on:
+  release:
+    types: [released]
+        
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.7 ]
+
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get Google Cloud credentials
+        run: |
+          echo $GCP_SA_KEY > client-secret.json
+          sed -n 2,3p ./client-secret.json
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      - name: Install Python packages and dependencies
+        run: |
+          pip install -r requirements-prd.txt
+          pip install requests --upgrade
+          sudo apt-get install -qq libexempi3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1.4.3
+        with:
+          node-version: 14.x  
+      - name: Run gulp to ready frontend static files for production
+        run: |
+          cd ubyssey/static_src
+          npm install -g gulp
+          npm install
+          npm ddp
+          gulp build
+          rm -rf node_modules
+          cd ../../
+      - name: Collect static files
+        run: |
+          python manage.py collectstatic --noinput
+          rm -rf .git/ ubyssey/static_src/
+      - name: Final prep for deploy
+        run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.production"
+          pip install -I google-cloud-storage==1.13.2 -t lib/
+      - name: Deploy to Google App Engine
+        uses: GoogleCloudPlatform/github-actions/appengine-deploy@master
+        with:
+          credentials: ${{ secrets.GCP_SA_KEY }}

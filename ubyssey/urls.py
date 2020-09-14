@@ -7,7 +7,7 @@ from dispatch.urls import admin_urls, api_urls, podcasts_urls
 from newsletter.urls import urlpatterns as newsletter_urls
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed
-from ubyssey.views.main import ads_txt, decorrupt, UbysseyTheme, HomePageView, ArticleView, SectionView, SubsectionView, VideoView, PageView, PodcastView, ArticleAjaxView, AuthorView, ArchiveView
+from ubyssey.views.main import ads_txt, UbysseyTheme, HomePageView, ArticleView, SectionView, SubsectionView, VideoView, PageView, PodcastView, ArticleAjaxView, AuthorView, ArchiveView
 from ubyssey.views.guide import guide2016, GuideArticleView, GuideLandingView
 
 from ubyssey.views.advertise import AdvertiseTheme
