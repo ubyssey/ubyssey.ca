@@ -9,10 +9,6 @@ BASE_URL = 'http://localhost:8000/'
 
 ALLOWED_HOSTS = ['localhost', '*']
 
-INSTALLED_APPS += [
-    'debug_toolbar'
-]
-
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 
 MIDDLEWARE += [

@@ -47,6 +47,9 @@ class HomePageView(ArticleMixin, TemplateView):
         #set context stuff that will be used for other context stuff as we go
         context['title'] = 'The Ubyssey - UBC\'s official student newspaper'
         context['breaking'] = self.get_breaking_news().first()
+        context['special_message'] = settings.SPECIAL_MESSAGE_AVAILABLE
+        
+        # context['subsection_banner_message'] = Subsection.objects.first().description
 
         #set 'articles' section of context. Do some speed optimization for getting sections later
         frontpage = self.get_frontpage_qs(
@@ -199,6 +202,7 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         article = self.object
         context['title'] = '%s - The Ubyssey' % (article.headline)
         context['breaking'] = self.get_breaking_news().exclude(id=article.id).first()
+        context['special_message'] = settings.SPECIAL_MESSAGE_AVAILABLE
 
         # determine if user is viewing from mobile
         article_type = 'mobile' if self.is_mobile else 'desktop'

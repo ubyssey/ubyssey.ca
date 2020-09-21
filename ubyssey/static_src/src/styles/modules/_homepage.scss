@@ -585,11 +585,10 @@ ol.article-list {
   }
 }
 
-.o-breaking-news{
+.o-breaking-news, .o-subsection-banner{
   width: 100%;
   display:flex;
   border-radius: 3px;
-  background-color:#e41818;
   margin-top: 16px;
   &:hover {
     opacity: 0.8;
@@ -603,6 +602,14 @@ ol.article-list {
       font-weight: lighter;
     }
   }
+}
+
+.o-breaking-news{
+  background-color:#e41818;
+}
+
+.o-subsection-banner{
+  background-color: green;
 }
 
 @media($bp-larger-than-phablet){
