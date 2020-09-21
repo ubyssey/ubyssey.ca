@@ -46,7 +46,10 @@ class HomePageView(ArticleMixin, TemplateView):
 
         #set context stuff that will be used for other context stuff as we go
         context['title'] = 'The Ubyssey - UBC\'s official student newspaper'
-        context['breaking'] = Article.objects.get_current_breaking_qs().first() 
+        context['breaking'] = self.get_breaking_news().first()
+        context['special_message'] = settings.SPECIAL_MESSAGE_AVAILABLE
+        
+        # context['subsection_banner_message'] = Subsection.objects.first().description
 
         #set 'articles' section of context. Do some speed optimization for getting sections later
         frontpage = self.get_frontpage_qs(
@@ -196,9 +199,10 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         https://docs.djangoproject.com/en/3.0/ref/class-based-views/mixins-single-object/
         """        
         context = super().get_context_data(**kwargs)
-        # context += self.object.get_context_data() #@TODO: figure out how to append dicts?
-
-        context['breaking'] = Article.objects.get_current_breaking_qs().exclude(id=self.object.id).first() #TODO: figure out if we can do with fewer DB hits!
+        article = self.object
+        context['title'] = '%s - The Ubyssey' % (article.headline)
+        context['breaking'] = self.get_breaking_news().exclude(id=article.id).first()
+        context['special_message'] = settings.SPECIAL_MESSAGE_AVAILABLE
 
         # determine if user is viewing from mobile
         article_type = 'mobile' if self.is_mobile else 'desktop'
@@ -235,17 +239,19 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
             self.object.team_data = json.dumps(teamData['code'])
 
         if self.object.template == 'food-insecurity':
-            data = FoodInsecurityHelper.prepare_data(self.object.content)
-            self.object.content = data['content']
-            self.object.point_data = json.dumps(data['code']) if data['code'] is not None else None
+            data = FoodInsecurityHelper.prepare_data(article.content)
+            article.content = data['content']
+            article.point_data = json.dumps(data['code']) if data['code'] is not None else None
 
-        # set explicit status (TODO: ADDRESS SIDE EFFECT: inserting ads!) 
-        if not self.object.is_explicit():
+        # set explicit status (TODO: ADDRESS SIDE EFFECT: inserting ads!)
+        context['explicit'] = self.is_explicit(self.object)        
+        if not context['explicit']:
             self.object.content = self.insert_ads(self.object.content, article_type)
 
         # set the rest of the context
         context['article'] = self.object
         context['base_template'] = 'base.html'
+        context['meta'] = self.get_article_meta()
         context['popular'] = self.get_popular()[:5]
         context['reading_list'] = self.get_reading_list(self.object, ref=self.ref, dur=self.dur) # Dependent on get_frontpage, get_popular, get_related 
         context['reading_time'] = self.get_reading_time(self.object)

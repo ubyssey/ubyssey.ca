@@ -27,15 +27,22 @@ jobs:
       - name: Get Google Cloud credentials
         run: |
           echo $GCP_SA_KEY > client-secret.json
-          sed -n 2,3p ./client-secret.json
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      - name: Get .env file
+        run: |
+          mkdir tmp
+          cd tmp
+          echo $DEPLOYMENT_ENV_VARS > .env
+          cd ../
+        env:
+          DEPLOYMENT_ENV_VARS: ${{ secrets.DEPLOYMENT_ENV_VARS }}
       - name: Install Python packages and dependencies
         run: |
           pip install -r requirements-prd.txt
           pip install requests --upgrade
           sudo apt-get install -qq libexempi3
-      - name: Setup Node.js environment
+      - name: Set up Node.js environment
         uses: actions/setup-node@v1.4.3
         with:
           node-version: 14.x  
@@ -50,10 +57,12 @@ jobs:
           cd ../../
       - name: Collect static files
         run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py collectstatic --noinput
           rm -rf .git/ ubyssey/static_src/
-      - name: Final prep for deploy
+      - name: Make final preparations before deployment to Google App Engine
         run: |
+          rm -rf tmp/
           export DJANGO_SETTINGS_MODULE="config.settings.production"
           pip install -I google-cloud-storage==1.13.2 -t lib/
       - name: Deploy to Google App Engine
