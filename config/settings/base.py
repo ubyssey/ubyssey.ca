@@ -32,7 +32,6 @@ if not "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
 env_file = os.path.join(BASE_DIR, 'tmp/.env')
 
 # In production we can get .envfrom Google Cloud if we don't have it. This requires authentication.
-# Set FORCE_GOOGLE_AUTHENTICATION
 if os.environ['DJANGO_SETTINGS_MODULE'] == 'config.settings.production' and not os.path.isfile(env_file):
     import google.auth
     from google.cloud import secretmanager as sm
@@ -133,6 +132,22 @@ INSTALLED_APPS = [
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
     'dispatch.apps.DispatchConfig',
     'newsletter.apps.NewsletterConfig',
+
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail.core',
+
+    'taggit',
+    'modelcluster',
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -176,6 +191,11 @@ TEMPLATES = [
         'NAME': 'app_dirs',
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+            ],
+        },
     },
     {
         'NAME': 'dispatch',
@@ -223,6 +243,8 @@ MIDDLEWARE += [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
 GS_LOCATION = None
