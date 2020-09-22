@@ -22,6 +22,9 @@ from ubyssey.events.urls import urlpatterns as events_urls
 
 from django.views.generic import TemplateView
 
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
 advertise = AdvertiseTheme()
 
 urlpatterns = []
@@ -37,6 +40,11 @@ if settings.DEBUG:
 urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
+
+    # Wagtail
+    path('cms/', include(wagtailadmin_urls)),
+    path('documents/', include(wagtaildocs_urls)),
+    path('pages/', include(wagtail_urls)),
 
     re_path(r'^admin', include(admin_urls)),
     re_path(r'^api/', include(api_urls)),
