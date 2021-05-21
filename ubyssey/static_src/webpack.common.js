@@ -16,6 +16,10 @@ module.exports = {
     'magazine-2019': './src/js/magazine-2019.js',
     'magazine-2020': './src/js/magazine-2020.js',
     'magazine-2021': './src/js/magazine-2021.js',
+    'infinite-min': './src/js/infinite.min.js',
+    'jquery-waypoints-min': './src/js/jquery.waypoints.min.js',
+    'ajax_homepage': './src/js/ajax_homepage.js',
+    '404': './src/js/404.js',
     blockadblock: './src/js/blockadblock.js'
   },
   output: {
