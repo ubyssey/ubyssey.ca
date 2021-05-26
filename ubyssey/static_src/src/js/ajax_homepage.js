@@ -45,6 +45,8 @@ $.ajaxSetup({
 
 
 function default_template(padded, hide_image, article, absolute_url, authors) {
+
+
     const date = new Date(article.published_at);
 
     var hours = date.getHours();
@@ -75,9 +77,14 @@ function default_template(padded, hide_image, article, absolute_url, authors) {
                         </a>
                     </div>`
     } else if (article.featured_video !== null) {
+        var video_id = article.featured_video.video.url.split('v=')[1];
+        var ampersandPosition = video_id.indexOf('&');
+        if (ampersandPosition != -1) {
+            video_id = video_id.substring(0, ampersandPosition);
+        }
         meida = ` <div class="o-article__left">
                      <a class="o-article__image" href="${absolute_url[article.slug]}">
-                         <img src="http://img.youtube.com/vi/${article.featured_video.video.url}/0.jpg" alt=""/>
+                         <img src="http://img.youtube.com/vi/${video_id}/0.jpg" alt=""/>
                     </a>
                  </div>`
     } else {
@@ -140,9 +147,14 @@ function featured_template(article, padded, absolute_url, authors) {
                     </div>`
 
     } else if (article.featured_video !== null) {
+        var video_id = article.featured_video.video.url.split('v=')[1];
+        var ampersandPosition = video_id.indexOf('&');
+        if (ampersandPosition != -1) {
+            video_id = video_id.substring(0, ampersandPosition);
+        }
         media = ` <div class="o-article__left">
                         <a class="o-article__image" href="${absolute_url[article.slug]}">
-                            <img src="http://img.youtube.com/vi/${article.featured_video.video.url}/0.jpg" alt=""/>
+                            <img src="http://img.youtube.com/vi/${video_id}/0.jpg" alt=""/>
                         </a>
                     </div>`
     } else {
@@ -198,7 +210,13 @@ function column_template(article, padded, absolute_url, authors) {
     if (article.featured_image !== null) {
         featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('${article.featured_image.image.url_thumb}');"></a>`
     } else if (article.featured_video !== null) {
-        featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('http://img.youtube.com/vi/${article.featured_video.video.url}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>`
+        var video_id = article.featured_video.video.url.split('v=')[1];
+        var ampersandPosition = video_id.indexOf('&');
+        if (ampersandPosition != -1) {
+            video_id = video_id.substring(0, ampersandPosition);
+        }
+
+        featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('http://img.youtube.com/vi/${video_id}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>`
     } else {
         featured = ``
     }
