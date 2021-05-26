@@ -41,6 +41,8 @@ $.ajaxSetup({
 
 
 function default_template(padded, hide_image, article, absolute_url, authors) {
+    console.log(article)
+
     padded = ''
     media = ''
 
@@ -50,19 +52,22 @@ function default_template(padded, hide_image, article, absolute_url, authors) {
         padded = ``
     }
 
-
-    if (hide_image && (article.featured_image || article.featured_video)) {
-        if (article.featured_image !== null) {
-            featured = ` <img src="${article.featured_image.image.get_medium_url}" alt=""/> `
-        } else {
-            featured = ` <img src="http://img.youtube.com/vi/${article.featured_video.video.url}/0.jpg" alt=""/> `
-        }
-
-        media = `<div class="o-article__left">
-                    <a class="o-article__image" href="${absolute_url[article.slug]}">
-                  
+    if (hide_image === true) {
+        media = ``
+    } else if (article.featured_image !== null) {
+        media = ` <div class="o-article__left">
+                     <a class="o-article__image" href="${absolute_url[article.slug]}">
+                         <img src="${article.featured_image.image.url_medium}" alt=""/>
+                        </a>
+                    </div>`
+    } else if (article.featured_video !== null) {
+        meida = ` <div class="o-article__left">
+                     <a class="o-article__image" href="${absolute_url[article.slug]}">
+                         <img src="http://img.youtube.com/vi/${article.featured_video.video.url | youtube_embed_id}/0.jpg" alt=""/>
                     </a>
                  </div>`
+    } else {
+        media = ``
     }
 
     return (
@@ -88,6 +93,7 @@ function default_template(padded, hide_image, article, absolute_url, authors) {
 }
 
 function featured_template(article, padded, absolute_url, authors) {
+
     var padded = '';
     var media = '';
 
@@ -97,18 +103,22 @@ function featured_template(article, padded, absolute_url, authors) {
         padded = ``
     }
 
-    if (article.featured_image || article.featured_image) {
-        if (article.featured_image) {
-            featured = `<img src="${article.featured_image.image.get_medium_url}" alt=""/>`
-        } else {
-            featured = ` <img src="http://img.youtube.com/vi/${article.featured_video.video.url | youtube_embed_id}/0.jpg" alt=""/>`
-        }
 
+    if (article.featured_image !== null) {
         media = ` <div class="o-article__left">
-                    <a class="o-article__image" href="${absolute_url[article.slug]}">
-                    ${featured}
-                    </a>
-                </div>`
+                        <a class="o-article__image" href="${absolute_url[article.slug]}">
+                            <img src="${article.featured_image.image.url_medium}" alt=""/>
+                        </a>
+                    </div>`
+
+    } else if (article.featured_video !== null) {
+        media = ` <div class="o-article__left">
+                        <a class="o-article__image" href="${absolute_url[article.slug]}">
+                            <img src="http://img.youtube.com/vi/${article.featured_video.video.url | youtube_embed_id}/0.jpg" alt=""/>
+                        </a>
+                    </div>`
+    } else {
+        media = ``
     }
 
     return (
@@ -134,6 +144,8 @@ function featured_template(article, padded, absolute_url, authors) {
 
 
 function column_template(article, padded, absolute_url, authors) {
+
+
     var padded = ''
 
 
@@ -143,11 +155,12 @@ function column_template(article, padded, absolute_url, authors) {
         padded = ``
     }
 
-    if (article.featured_image) {
-        featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('${article.featured_image.image.get_thumbnail_url}');"></a>`
+    if (article.featured_image !== null) {
+        featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('${article.featured_image.image.url_thumb}');"></a>`
+    } else if (article.featured_video !== null) {
+        featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('http://img.youtube.com/vi/${article.featured_video.video.url | youtube_embed_id}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>`
     } else {
         featured = ``
-        //featured = `<a class="o-article__image" href="${article.get_absolute_url}" style="background-image: url('http://img.youtube.com/vi/${article.featured_video.video.url | youtube_embed_id}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>`
     }
 
     return (
@@ -166,7 +179,7 @@ function column_template(article, padded, absolute_url, authors) {
                             <span class="o-article__published">${article.published_at}</span>
                             </div>
                         </div>
-                        <p class="o-article__snippet">${article.snippe}</p>
+                        <p class="o-article__snippet">${article.snippet}</p>
             </article>
 
         `
@@ -190,8 +203,6 @@ function bullet_template(article, absolute_url) {
 
 
 function create_section_1(id, articles, absolute_url, authors) {
-
-    console.log(articles)
 
     const first = articles[id].first
     const stack = articles[id].stacked
@@ -226,8 +237,6 @@ function create_section_1(id, articles, absolute_url, authors) {
 
 function create_section_2(id, articles, absolute_url, authors) {
 
-    console.log(articles[id])
-    console.log(articles[id].first)
 
     const first = articles[id].first
     const rest = articles[id].rest
@@ -253,7 +262,7 @@ function create_section_2(id, articles, absolute_url, authors) {
 
 $(document).ready(function () {
 
-    console.log(document.domain)
+
 
     window.addEventListener("scroll", function () {
         var news_elementTarget = document.getElementById("news");
@@ -391,7 +400,7 @@ $(document).ready(function () {
                 section: 'news',
             },
             success: function (response) {
-                console.log(response.authors)
+
                 create_section_1(response.id, response.sections, response.absolute_url, response.authors)
             }
         })
