@@ -1,0 +1,54 @@
+{% extends 'article/blank.html' %}
+{% load static %}
+{% load dispatch_tags %}
+
+
+{% block content %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<body>
+
+ <div class="infinite-container">
+    {% for article in articles %}
+      <div class="infinite-item">{{ article.headline }}</div>
+    {% endfor %}
+  </div>
+
+  {% if articles.has_next %}
+    <a class="infinite-more-link" href="?page={{ articles.next_page_number }}">More</a>
+  {% endif %}
+
+
+</body>
+
+<body>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
+  <script src="{% static 'ubyssey/js/jquery-waypoints-min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'ubyssey/js/infinite-min.js' %}" type="text/javascript"></script>
+
+
+  <script>  
+
+   var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+
+            offset: 'bottom-in-view',
+
+            onBeforePageLoad: function () {
+                $('.loading').show();
+            },
+            onAfterPageLoad: function () {
+                $('.loading').hide();
+            }
+
+        });
+  
+  
+  
+  </script>
+
+</body>
+
+
+{% endblock %}

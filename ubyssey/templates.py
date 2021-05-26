@@ -2,6 +2,13 @@ from dispatch.theme import register
 from dispatch.theme.templates import Template
 from dispatch.theme.fields import SelectField, CharField, TextField, ArticleField, DateTimeField, InstructionField
 
+
+@register.template
+class Test_template(Template):
+    id = 'test_template'
+    name = 'Test_Template'
+    
+
 @register.template
 class Default(Template):
     id = 'default'

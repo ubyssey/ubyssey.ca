@@ -8,7 +8,7 @@ from dispatch.urls import admin_urls, api_urls, podcasts_urls
 from newsletter.urls import urlpatterns as newsletter_urls
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed
-from ubyssey.views.main import ads_txt, UbysseyTheme, HomePageView, ArticleView, SectionView, SubsectionView, VideoView, PageView, PodcastView, ArticleAjaxView, AuthorView, ArchiveView, IsolationView
+from ubyssey.views.main import ads_txt, UbysseyTheme, HomePageView, ArticleView, SectionView, SubsectionView, VideoView, PageView, PodcastView, ArticleAjaxView, AuthorView, ArchiveView, IsolationView , HomePageTestAjax
 from ubyssey.views.guide import guide2016, GuideArticleView, GuideLandingView
 
 from ubyssey.views.advertise import AdvertiseTheme
@@ -39,6 +39,8 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += [
+
+    re_path(r'^ajax/home/' , HomePageTestAjax.as_view() , name='Ajax-homePage'),
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 

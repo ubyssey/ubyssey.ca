@@ -6,8 +6,6 @@ var features_fetched = false;
 var sports_fetched = false;
 var science_fetched = false;
 
-document.domain = 'localhost'
-
 
 function getCookie(name) {
     let cookieValue = null;
@@ -27,135 +25,22 @@ function getCookie(name) {
 const csrftoken = getCookie('csrftoken');
 
 
-
-window.addEventListener("scroll", function () {
-    var news_elementTarget = document.getElementById("news");
-    var culture_elementTarget = document.getElementById("culture");
-    var opinion_elementTarget = document.getElementById("opinion");
-    var features_elementTarget = document.getElementById("features");
-    var sports_elementTarget = document.getElementById("sports");
-    var science_elementTarget = document.getElementById("science");
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
 
 
-
-    if (window.scrollY > news_elementTarget.offsetTop) {
-        console.log('fetching')
-        if (!news_fetched) {
-            $.ajax({
-                url: '',
-                type: 'get',
-                data: {
-                    button_test: $(this).text(),
-                    section: 'news',
-                    CSRF: csrftoken,
-                },
-                success: function (response) {
-                    create_section_1(response.id, response.sections)
-                    news_fetched = true
-                }
-            })
+$.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     }
-
-    if (window.scrollY > culture_elementTarget.offsetTop) {
-        if (!culture_fetched) {
-            $.ajax({
-                url: '',
-                type: 'get',
-                data: {
-                    button_test: $(this).text(),
-                    section: 'culture',
-                    CSRF: csrftoken,
-                },
-                success: function (response) {
-                    create_section_2(response.id, response.sections)
-                    culture_fetched = true
-                }
-            })
-        }
-    }
-
-    if (window.scrollY > opinion_elementTarget.offsetTop) {
-        if (!opinion_fetched) {
-            $.ajax({
-                url: '',
-                type: 'get',
-                data: {
-                    button_test: $(this).text(),
-                    section: 'opinion',
-                    CSRF: csrftoken,
-                },
-                success: function (response) {
-                    create_section_2(response.id, response.sections)
-                    opinion_fetched = true
-                }
-            })
-        }
-    }
-
-    if (window.scrollY > features_elementTarget.offsetTop) {
-        if (!features_fetched) {
-            $.ajax({
-                url: '',
-                type: 'get',
-                data: {
-                    button_test: $(this).text(),
-                    section: 'features',
-                    CSRF: csrftoken,
-                },
-                success: function (response) {
-                    create_section_2(response.id, response.sections)
-                    features_fetched = true
-                }
-            })
-        }
-    }
-
-    if (window.scrollY > sports_elementTarget.offsetTop) {
-        if (!sports_fetched) {
-            $.ajax({
-                url: '',
-                type: 'get',
-                data: {
-                    button_test: $(this).text(),
-                    section: 'sports',
-                    CSRF: csrftoken,
-                },
-                success: function (response) {
-                    create_section_2(response.id, response.sections)
-                    sports_fetched = true
-                }
-            })
-        }
-    }
-
-    if (window.scrollY > science_elementTarget.offsetTop) {
-        if (!science_fetched) {
-            $.ajax({
-                url: '',
-                type: 'get',
-                data: {
-                    button_test: $(this).text(),
-                    section: 'science',
-                    CSRF: csrftoken,
-                },
-                success: function (response) {
-                    create_section_2(response.id, response.sections)
-                    science_fetched = true
-                }
-            })
-        }
-    }
-
-
-
 });
 
 
-
-
-
-function default_template(padded, hide_image, article) {
+function default_template(padded, hide_image, article, absolute_url, authors) {
     padded = ''
     media = ''
 
@@ -174,14 +59,13 @@ function default_template(padded, hide_image, article) {
         }
 
         media = `<div class="o-article__left">
-                    <a class="o-article__image" href="${article.get_absolute_url}">
+                    <a class="o-article__image" href="${absolute_url[article.slug]}">
                   
                     </a>
                  </div>`
     }
 
     return (
-        // <span class="o-article__author">By ${article.get_author_url}</span>
 
         `<article class="o-article o-article--default ${padded}">
                 ${media}
@@ -189,10 +73,10 @@ function default_template(padded, hide_image, article) {
                 <div class="o-article__right">
                 <div class="o-article__meta">
                     <h3 class="o-article__headline">
-                    <a href="${article.get_absolute_url}">${article.headline}</a>
+                    <a href="${absolute_url[article.slug]}">${article.headline}</a>
                     </h3>
                     <div class="o-article__byline">
-                   
+                    <span class="o-article__author">By ${authors[article.slug]}</span>
                     <span> &nbsp;·&nbsp; </span>
                     <span class="o-article__published">${article.published_at}</span>
                     </div>
@@ -203,7 +87,7 @@ function default_template(padded, hide_image, article) {
     )
 }
 
-function featured_template(article, padded) {
+function featured_template(article, padded, absolute_url, authors) {
     var padded = '';
     var media = '';
 
@@ -221,7 +105,7 @@ function featured_template(article, padded) {
         }
 
         media = ` <div class="o-article__left">
-                    <a class="o-article__image" href="${article.get_absolute_url}">
+                    <a class="o-article__image" href="${absolute_url[article.slug]}">
                     ${featured}
                     </a>
                 </div>`
@@ -233,10 +117,10 @@ function featured_template(article, padded) {
         <div class="o-article__right">
           <div class="o-article__meta">
             <h3 class="o-article__headline">
-              <a href="${article.get_absolute_url}">${article.headline}</a>
+              <a href="${absolute_url[article.slug]}">${article.headline}</a>
             </h3>
             <div class="o-article__byline">
-              <span class="o-article__author">By ${article.get_author_url}</span>
+              <span class="o-article__author">By ${authors[article.slug]}</span>
               <span> &nbsp;·&nbsp; </span>
               <span class="o-article__published">${article.published_at}</span>
             </div>
@@ -249,7 +133,7 @@ function featured_template(article, padded) {
 }
 
 
-function column_template(article, padded) {
+function column_template(article, padded, absolute_url, authors) {
     var padded = ''
 
 
@@ -260,7 +144,7 @@ function column_template(article, padded) {
     }
 
     if (article.featured_image) {
-        featured = `<a class="o-article__image" href="${article.get_absolute_url}" style="background-image: url('${article.featured_image.image.get_thumbnail_url}');"></a>`
+        featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('${article.featured_image.image.get_thumbnail_url}');"></a>`
     } else {
         featured = ``
         //featured = `<a class="o-article__image" href="${article.get_absolute_url}" style="background-image: url('http://img.youtube.com/vi/${article.featured_video.video.url | youtube_embed_id}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>`
@@ -273,11 +157,11 @@ function column_template(article, padded) {
                             <div class="o-article__meta__image">
                             ${featured}
                             <h3 class="o-article__headline">
-                                <a href="${article.get_absolute_url}">${article.headline}</a>
+                                <a href="${absolute_url[article.slug]}">${article.headline}</a>
                             </h3>
                             </div>
                             <div class="o-article__byline">
-                            <span class="o-article__author">By ${article.get_author_url}</span>
+                            <span class="o-article__author"> By ${authors[article.slug]}  </span>
                             <span> &nbsp;·&nbsp; </span>
                             <span class="o-article__published">${article.published_at}</span>
                             </div>
@@ -292,12 +176,12 @@ function column_template(article, padded) {
 
 
 
-function bullet_template(article) {
-    //   <a href=${article.get_absolute_url}">${article.headline}</a>
+function bullet_template(article, absolute_url) {
+
     return (
         `<article class="o-article o-article--bullet">
         <h3 class="o-article__headline">
-        <a>${article.headline}</a>
+          <a href="${absolute_url[article.slug]}">${article.headline}</a>
         </h3>
       </article>`
     )
@@ -305,7 +189,7 @@ function bullet_template(article) {
 }
 
 
-function create_section_1(id, articles) {
+function create_section_1(id, articles, absolute_url, authors) {
 
     console.log(articles)
 
@@ -314,22 +198,22 @@ function create_section_1(id, articles) {
     const bullets = articles[id].bullets
 
     if (bullets.length !== 0) {
-        bullet_li = `<li>${bullet_template(bullets[0])}</li>
-                    <li>${bullet_template(bullets[1])}</li>`
+        bullet_li = `<li>${bullet_template(bullets[0], absolute_url)}</li>
+                    <li>${bullet_template(bullets[1], absolute_url)}</li>`
     } else {
         bullet_li = ``
     }
 
     const section_articles = ` <div class="c-homepage__section__left">
 
-                                    ${default_template(true, false, first)}
+                                    ${default_template(true, false, first, absolute_url, authors)}
                                 
                         </div>
                         <div class="c-homepage__section__right">
 
                                     <div class="c-homepage__section__stacked">
-                                     ${default_template(true, true, stack[0])}
-                                    ${default_template(true, true, stack[1])}
+                                     ${default_template(true, true, stack[0], absolute_url, authors)}
+                                    ${default_template(true, true, stack[1], absolute_url, authors)}
                                     </div>
                                     <ul class="c-homepage__section__bullets">
                                     
@@ -340,7 +224,7 @@ function create_section_1(id, articles) {
     document.getElementById(id).innerHTML += `${section_articles}`
 }
 
-function create_section_2(id, articles) {
+function create_section_2(id, articles, absolute_url, authors) {
 
     console.log(articles[id])
     console.log(articles[id].first)
@@ -350,15 +234,16 @@ function create_section_2(id, articles) {
 
 
     const section_articles = `
-                                    ${featured_template(first, true)}
+                                    ${featured_template(first, true, absolute_url, authors)}
                                     <div class="u-flex--tablet">
-                                        ${column_template(rest[0], true)}
-                                        ${column_template(rest[1], true)}
+                                        ${column_template(rest[0], true, absolute_url, authors)}
+                                        ${column_template(rest[1], true, absolute_url, authors)}
                                     
                                     </div>
                              `
 
     document.getElementById(id).innerHTML += `${section_articles}`
+
 
 }
 
@@ -368,16 +253,146 @@ function create_section_2(id, articles) {
 
 $(document).ready(function () {
 
+    console.log(document.domain)
+
+    window.addEventListener("scroll", function () {
+        var news_elementTarget = document.getElementById("news");
+        var culture_elementTarget = document.getElementById("culture");
+        var opinion_elementTarget = document.getElementById("opinion");
+        var features_elementTarget = document.getElementById("features");
+        var sports_elementTarget = document.getElementById("sports");
+        var science_elementTarget = document.getElementById("science");
+
+
+
+        if (window.scrollY > news_elementTarget.offsetTop) {
+            console.log('fetching')
+
+            if (!news_fetched) {
+                console.log('hehe')
+                $.ajax({
+                    url: '/ajax/home',
+                    type: 'get',
+
+                    data: {
+                        button_test: $(this).text(),
+                        section: 'news',
+                        CSRF: csrftoken,
+                    },
+                    success: function (response) {
+                        console.log('success')
+                        create_section_1(response.id, response.sections)
+                        news_fetched = true
+                    }
+                })
+            }
+        }
+
+        if (window.scrollY > culture_elementTarget.offsetTop) {
+            if (!culture_fetched) {
+                $.ajax({
+                    url: '',
+                    type: 'get',
+                    data: {
+                        button_test: $(this).text(),
+                        section: 'culture',
+                        CSRF: csrftoken,
+                    },
+                    success: function (response) {
+                        create_section_2(response.id, response.sections)
+                        culture_fetched = true
+                    }
+                })
+            }
+        }
+
+        if (window.scrollY > opinion_elementTarget.offsetTop) {
+            if (!opinion_fetched) {
+                $.ajax({
+                    url: '',
+                    type: 'get',
+                    data: {
+                        button_test: $(this).text(),
+                        section: 'opinion',
+                        CSRF: csrftoken,
+                    },
+                    success: function (response) {
+                        create_section_2(response.id, response.sections)
+                        opinion_fetched = true
+                    }
+                })
+            }
+        }
+
+        if (window.scrollY > features_elementTarget.offsetTop) {
+            if (!features_fetched) {
+                $.ajax({
+                    url: '',
+                    type: 'get',
+                    data: {
+                        button_test: $(this).text(),
+                        section: 'features',
+                        CSRF: csrftoken,
+                    },
+                    success: function (response) {
+                        create_section_2(response.id, response.sections)
+                        features_fetched = true
+                    }
+                })
+            }
+        }
+
+        if (window.scrollY > sports_elementTarget.offsetTop) {
+            if (!sports_fetched) {
+                $.ajax({
+                    url: '',
+                    type: 'get',
+                    data: {
+                        button_test: $(this).text(),
+                        section: 'sports',
+                        CSRF: csrftoken,
+                    },
+                    success: function (response) {
+                        create_section_2(response.id, response.sections)
+                        sports_fetched = true
+                    }
+                })
+            }
+        }
+
+        if (window.scrollY > science_elementTarget.offsetTop) {
+            if (!science_fetched) {
+                $.ajax({
+                    url: '',
+                    type: 'get',
+                    data: {
+                        button_test: $(this).text(),
+                        section: 'science',
+                        CSRF: csrftoken,
+                    },
+                    success: function (response) {
+                        create_section_2(response.id, response.sections)
+                        science_fetched = true
+                    }
+                })
+            }
+        }
+
+
+
+    });
+
     $(".news-btn").click(function () {
         $.ajax({
-            url: '',
+            url: '/ajax/home',
             type: 'get',
             data: {
                 button_test: $(this).text(),
                 section: 'news',
             },
             success: function (response) {
-                create_section_1(response.id, response.sections)
+                console.log(response.authors)
+                create_section_1(response.id, response.sections, response.absolute_url, response.authors)
             }
         })
     })
@@ -391,7 +406,7 @@ $(document).ready(function () {
                 section: 'culture',
             },
             success: function (response) {
-                create_section_2(response.id, response.sections)
+                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
             }
         })
 
@@ -406,7 +421,7 @@ $(document).ready(function () {
                 section: 'sports',
             },
             success: function (response) {
-                create_section_2(response.id, response.sections)
+                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
             }
         })
 
@@ -421,7 +436,7 @@ $(document).ready(function () {
                 section: 'opinion',
             },
             success: function (response) {
-                create_section_2(response.id, response.sections)
+                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
             }
         })
 
@@ -436,7 +451,7 @@ $(document).ready(function () {
                 section: 'features'
             },
             success: function (response) {
-                create_section_2(response.id, response.sections)
+                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
             }
         })
 
@@ -451,11 +466,13 @@ $(document).ready(function () {
                 section: 'science',
             },
             success: function (response) {
-                create_section_2(response.id, response.sections)
+                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
             }
         })
 
     })
 
 })
+
+
 

@@ -164,6 +164,8 @@ INSTALLED_APPS = [
     'ubyssey.events',
     'django_user_agents',
     'django.contrib.admin',
+
+    'corsheaders',
 ]
 
 if DEBUG:
@@ -253,7 +255,18 @@ MIDDLEWARE += [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+
+    "http://localhost:8000",
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 GS_LOCATION = None
 GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readthedocs.io/en/latest/backends/gcloud.html

@@ -7,7 +7,6 @@ from itertools import chain
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse
 
 from dispatch.models import Article, Section, Subsection, Topic, Page, Person, Podcast, PodcastEpisode, Video, Author, Image
@@ -17,6 +16,16 @@ from django.views.generic.list import ListView
 from ubyssey.helpers import ArticleHelper, SubsectionHelper, PodcastHelper, NationalsHelper, FoodInsecurityHelper, VideoHelper
 from ubyssey.mixins import ArticleMixin, ArchiveListViewMixin, DispatchPublishableViewMixin, SectionMixin, SubsectionMixin
 
+#Lazy loading test
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_GET, require_POST
+from django.http import Http404 , JsonResponse
+from django.forms.models import model_to_dict
+from dispatch.api.serializers import ArticleSerializer
+
+from django.views.decorators.csrf import csrf_exempt
+
 def parse_int_or_none(maybe_int):
     try:
         return int(maybe_int)
@@ -25,6 +34,110 @@ def parse_int_or_none(maybe_int):
 
 def ads_txt(request):
     return redirect(settings.ADS_TXT_URL)
+
+
+class HomePageTestAjax(ArticleMixin,TemplateView):
+
+    template_name = 'testHomepage/ajax_homepage.html'
+
+
+    def get(self, request):
+        breaking_news = self.get_breaking_news().first()
+        special_message = settings.SPECIAL_MESSAGE_AVAILABLE
+
+         #set 'articles' section of context. Do some speed optimization for getting sections later
+        frontpage = self.get_frontpage_qs(
+            sections=('news', 'culture', 'opinion', 'sports', 'features', 'science'),
+            max_days=7
+        ).select_related(
+            'section'
+        )
+        frontpage = list(frontpage)
+        try:
+            #TODO: fail more gracefully!
+            articles = {
+                'primary': frontpage[0],
+                'secondary': frontpage[1],
+                'thumbs': frontpage[2:4],
+                'bullets': frontpage[4:6],
+                # Get random trending article
+                # 'trending': trending_article,
+                'breaking': breaking_news
+             }
+        except IndexError:
+            raise Exception('Not enough articles to populate the frontpage!')
+
+        frontpage_ids = [int(a.id) for a in frontpage[:2]]
+ 
+        if request.is_ajax():
+            sections = Section.objects.all()
+            section_div = request.GET.get('section')
+            results = {}
+
+
+           
+            for section in sections:
+
+                if section_div == section.slug:
+                    current_section = section
+
+            
+
+           
+
+            if current_section:
+                section_articles = Article.objects.exclude(id__in=frontpage_ids).filter(section=current_section,is_published=True).order_by('-published_at').select_related()[:5]
+                if len(section_articles):
+                    first = ArticleSerializer(section_articles[0]).data
+                    stack= []
+                    bullets = []
+                    rest = []
+                    absolute_urls = {}
+                    authors = {}
+
+                    for article in section_articles[1:3]:
+                        stack.append(ArticleSerializer(article).data)
+
+                    for article in section_articles[3:]:
+                        bullets .append(ArticleSerializer(article).data)
+
+                    for article in section_articles[1:4]:
+                        rest.append(ArticleSerializer(article).data)
+                    
+                    for article in section_articles:
+                      
+                        absolute_urls[article.slug] = article.get_absolute_url()
+                        authors[article.slug] = article.get_author_url()
+
+                    absolute_urls_object = json.dumps(absolute_urls, indent = 4)  
+                    loaded_absolute_urls = json.loads(absolute_urls_object )
+
+                    authors_object = json.dumps(authors , indent = 4 )
+                    loaded_authors = json.loads(authors_object)
+
+                    results[current_section.slug] = {
+                        'first': first,
+                        'stacked': stack,
+                        'bullets': bullets,
+                        'rest': rest,
+                    }
+
+                
+
+
+            return JsonResponse({ "sections": results , 
+                                  "id" : current_section.slug , 
+                                  "absolute_url" : loaded_absolute_urls , 
+                                  "authors" : loaded_authors 
+                                  } , status = 200)
+
+            
+
+        return render(request, self.template_name , {
+            'breaking' : breaking_news , 
+            'special_message' : special_message,
+            'articles': articles,
+        })
 
 
 class HomePageAJAX(TemplateView):
@@ -77,12 +190,14 @@ class HomePageView(ArticleMixin, TemplateView):
         except IndexError:
             raise Exception('Not enough articles to populate the frontpage!')
         context['articles'] = articles
+       
 
         #context['elections'] = self.get_topic('AMS Elections').order_by('-published_at')
 
         #set 'sections' entry of context
         frontpage_ids = [int(a.id) for a in frontpage[:2]]
         context['sections'] = self.get_frontpage_sections(exclude=frontpage_ids)
+
                
         #set 'is_mobile' entry of context
         context['is_mobile'] = self.is_mobile
@@ -109,6 +224,7 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
     https://docs.djangoproject.com/en/3.0/ref/class-based-views/generic-display/#django.views.generic.detail.DetailView
     """
     model = Article #is queried by section and slug
+    
     
     def setup(self, request, *args, **kwargs):
         """
@@ -209,6 +325,20 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
         # context['reading_time'] = self.get_reading_time(self.object)
         # context['suggested'] = self.get_suggested(self.object)[:3]
         # context['suggested'] = lambda: ArticleHelper.get_random_articles(2, section, exclude=article.id),
+
+        #Articles for testing lazy loading
+        all_articles = Article.objects.order_by('-pk').all()
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(all_articles, 5)
+        try:
+            articles = paginator.page(page)
+        except PageNotAnInteger:
+            articles = paginator.page(1)
+        except EmptyPage:
+            articles = paginator.page(paginator.num_pages)
+
+
+        context['articles'] = articles
 
         return context
 

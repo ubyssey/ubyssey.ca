@@ -116,8 +116,12 @@ class ArticleMixin(object):
 
         sections = Section.objects.all()
 
+
+
+
         for section in sections:
-            articles = Article.objects.exclude(id__in=exclude).filter(section=section,is_published=True).order_by('-published_at').select_related()[:5]
+            
+            articles = Article.objects.exclude(id__in=exclude).filter(section=section,is_published=True).order_by('-published_at')[:5]
             if len(articles):
                 results[section.slug] = {
                     'first': articles[0],
@@ -125,6 +129,7 @@ class ArticleMixin(object):
                     'bullets': articles[3:],
                     'rest': articles[1:4],
                 }
+      
 
         return results
 
