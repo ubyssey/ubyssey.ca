@@ -315,6 +315,7 @@ function create_section_2(id, articles, absolute_url, authors) {
 }
 
 window.addEventListener("scroll", function () {
+    console.log(document.domain)
     var news_elementTarget = document.getElementById("news");
     var culture_elementTarget = document.getElementById("culture");
     var opinion_elementTarget = document.getElementById("opinion");
@@ -323,30 +324,30 @@ window.addEventListener("scroll", function () {
     var science_elementTarget = document.getElementById("science");
 
 
-    /*
-        if (window.scrollY > news_elementTarget.offsetTop) {
-            console.log('fetching')
-    
-            if (!news_fetched) {
-                console.log('hehe')
-                $.ajax({
-                    url: '/ajax/home',
-                    type: 'get',
-    
-                    data: {
-                        button_test: $(this).text(),
-                        section: 'news',
-                        CSRF: csrftoken,
-                    },
-                    success: function (response) {
-                        console.log('success')
-                        create_section_1(response.id, response.sections)
-                        news_fetched = true
-                    }
-                })
-            }
+
+    if (window.scrollY > news_elementTarget.offsetTop) {
+        console.log('fetching')
+
+        if (!news_fetched) {
+            console.log('hehe')
+            $.ajax({
+                url: 'http://localhost:8000/ajax/home/',
+                type: 'get',
+
+                data: {
+                    button_test: $(this).text(),
+                    section: 'news',
+                    CSRF: csrftoken,
+                },
+                success: function (response) {
+                    console.log('success')
+                    create_section_1(response.id, response.sections)
+                    news_fetched = true
+                }
+            })
         }
-        */
+    }
+
 
 })
 
