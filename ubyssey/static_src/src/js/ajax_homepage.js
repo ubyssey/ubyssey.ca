@@ -415,6 +415,12 @@ function load_news(scrollHandler) {
         data: {
             section: 'news',
         },
+        beforeSend: function () {
+            $('.loader').show();
+        },
+        complete: function () {
+            $('.loader').hide();
+        },
         success: function (response) {
             console.log('success')
             create_section_1(response.id, response.sections, response.absolute_url, response.authors);
@@ -433,6 +439,12 @@ function load_others(section, scrollHandler) {
         type: 'get',
         data: {
             section: section,
+        },
+        beforeSend: function () {
+            $('.loader').show();
+        },
+        complete: function () {
+            $('.loader').hide();
         },
         success: function (response) {
             console.log('success')
