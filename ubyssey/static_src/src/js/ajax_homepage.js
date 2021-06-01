@@ -26,6 +26,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 const csrftoken = getCookie('csrftoken');
 
 
@@ -42,6 +43,9 @@ $.ajaxSetup({
         }
     }
 });
+
+
+// Templates
 
 
 function default_template(padded, hide_image, article, absolute_url, authors) {
@@ -245,6 +249,42 @@ function column_template(article, padded, absolute_url, authors) {
 
 }
 
+function blog_column_template(article, absolute_url) {
+
+    if (article.featured_image !== null) {
+        featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('${article.featured_image.image.url_thumb}');"></a>`
+    } else if (article.featured_video !== null) {
+        var video_id = article.featured_video.video.url.split('v=')[1];
+        var ampersandPosition = video_id.indexOf('&');
+        if (ampersandPosition != -1) {
+            video_id = video_id.substring(0, ampersandPosition);
+        }
+
+        featured = `<a class="o-article__image" href="${absolute_url[article.slug]}" style="background-image: url('http://img.youtube.com/vi/${video_id}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>`
+    } else {
+        featured = ``
+    }
+
+    return (
+
+        `<article class="o-article o-article--column o-article--padded">
+        <div class="o-article__meta">
+          <div class="o-article__meta__image">
+           ${featured}
+            <h3 class="o-article__headline">
+              <a href="${absolute_url[article.slug]}">${article.headline}</a>
+            </h3>
+          </div>
+        </div>
+      </article>`
+    )
+
+
+
+
+
+}
+
 
 
 function bullet_template(article, absolute_url) {
@@ -256,6 +296,28 @@ function bullet_template(article, absolute_url) {
         </h3>
       </article>`
     )
+
+}
+
+
+//creating sections 
+
+function create_blogsection(articles, absolute_url) {
+
+    var blogs = ''
+    var i;
+
+
+    for (i = 0; i < articles.length; i++) {
+        blogs = blogs + blog_column_template(articles[i], absolute_url)
+    }
+
+    const inserting_html = ` <h2 class="block-title">From the blog</h2>
+                                <ul class="article-list">
+                                   ${blogs}
+                                </ul>`
+
+    document.getElementById('blog').innerHTML += inserting_html
 
 }
 
@@ -273,24 +335,45 @@ function create_section_1(id, articles, absolute_url, authors) {
         bullet_li = ``
     }
 
-    const section_articles = ` <div class="c-homepage__section__left">
+    <section class="{{ section|safe }} homepage row" >
+        <h1 class="section"> News  <button class="news-btn"> News Ajax </button> </h1>
 
-                                    ${default_template(true, false, first, absolute_url, authors)}
-                                
-                        </div>
-                        <div class="c-homepage__section__right">
 
-                                    <div class="c-homepage__section__stacked">
-                                     ${default_template(true, true, stack[0], absolute_url, authors)}
-                                    ${default_template(true, true, stack[1], absolute_url, authors)}
-                                    </div>
-                                    <ul class="c-homepage__section__bullets">
-                                    
-                                    ${bullet_li}
-                                    </ul>
-                        </div>`
+        <section class="c-homepage__section c-homepage__section--1" id="news">
 
-    document.getElementById(id).innerHTML += `${section_articles}`
+
+        </section>
+    </section>
+
+    const section_articles = ` 
+    
+                <section class="{{ section|safe }} homepage row" >
+
+                    <h1 class="section"> News </h1>
+
+                    <section class="c-homepage__section c-homepage__section--1" id="news"> 
+    
+                                <div class="c-homepage__section__left">
+
+                                            ${default_template(true, false, first, absolute_url, authors)}
+                                        
+                                </div>
+                                <div class="c-homepage__section__right">
+
+                                            <div class="c-homepage__section__stacked">
+                                            ${default_template(true, true, stack[0], absolute_url, authors)}
+                                            ${default_template(true, true, stack[1], absolute_url, authors)}
+                                            </div>
+                                            <ul class="c-homepage__section__bullets">
+                                            
+                                            ${bullet_li}
+                                            </ul>
+                                </div>
+                    </section>
+                
+                </section>`
+
+    document.getElementById('section_container').innerHTML += `${section_articles}`
 }
 
 function create_section_2(id, articles, absolute_url, authors) {
@@ -300,154 +383,163 @@ function create_section_2(id, articles, absolute_url, authors) {
     const rest = articles[id].rest
 
 
-    const section_articles = `
-                                    ${featured_template(first, true, absolute_url, authors)}
-                                    <div class="u-flex--tablet">
-                                        ${column_template(rest[0], true, absolute_url, authors)}
-                                        ${column_template(rest[1], true, absolute_url, authors)}
-                                    
-                                    </div>
-                             `
 
-    document.getElementById(id).innerHTML += `${section_articles}`
+    const section_articles = `
+
+                    <section class="{{ section|safe }} homepage row" >
+
+                        <h1 class="section"> ${id}  </h1>
+
+                            <section class="c-homepage__section c-homepage__section--2" id="culture"> 
+
+                                                            ${featured_template(first, true, absolute_url, authors)}
+                                                            <div class="u-flex--tablet">
+                                                                ${column_template(rest[0], true, absolute_url, authors)}
+                                                                ${column_template(rest[1], true, absolute_url, authors)}
+                                                            
+                                                            </div>
+                            </section>
+                    </section>
+                `
+
+    document.getElementById('section_container').innerHTML = document.getElementById('section_container').innerHTML + `${section_articles}`
 
 
 }
 
-window.addEventListener("scroll", function () {
-    console.log(document.domain)
-    var news_elementTarget = document.getElementById("news");
-    var culture_elementTarget = document.getElementById("culture");
-    var opinion_elementTarget = document.getElementById("opinion");
-    var features_elementTarget = document.getElementById("features");
-    var sports_elementTarget = document.getElementById("sports");
-    var science_elementTarget = document.getElementById("science");
+function load_news(scrollHandler) {
 
-
-
-    if (window.scrollY > news_elementTarget.offsetTop) {
-        console.log('fetching')
-
-        if (!news_fetched) {
-            console.log('hehe')
-            $.ajax({
-                url: 'http://localhost:8000/ajax/home/',
-                type: 'get',
-
-                data: {
-                    button_test: $(this).text(),
-                    section: 'news',
-                    CSRF: csrftoken,
-                },
-                success: function (response) {
-                    console.log('success')
-                    create_section_1(response.id, response.sections)
-                    news_fetched = true
-                }
-            })
+    $.ajax({
+        url: '/ajax/home',
+        type: 'get',
+        data: {
+            section: 'news',
+        },
+        success: function (response) {
+            console.log('success')
+            create_section_1(response.id, response.sections, response.absolute_url, response.authors);
+            news_fetched = true
+            $(window).scroll(scrollHandler);
         }
+    })
+
+
+}
+
+function load_others(section, scrollHandler) {
+
+    $.ajax({
+        url: '/ajax/home',
+        type: 'get',
+        data: {
+            section: section,
+        },
+        success: function (response) {
+            console.log('success')
+            create_section_2(response.id, response.sections, response.absolute_url, response.authors);
+            setTrue(section)
+            $(window).scroll(scrollHandler);
+        }
+    })
+
+
+
+}
+
+function load_prints() {
+    prints = ` <h2 class="block-title">Check Out Our Digital Print Issue</h2>
+    <div class='sidebar-issue'>
+      <h5 class="headline" id='issue-photo'><a class='issue' id ='issue1' href="https://issuu.com/ubyssey/docs/the_ubyssey_september_29">September 29, 2020<img src="https://image.isu.pub/201001002709-c77a1db2115eeeab32729a767143d27e/jpg/page_1_thumb_large.jpg"></a></h5>
+      <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_aug_25">August 25, 2020</a></h5>
+      <h5 class="headline"><a class='issue' id ='issue3' href="https://issuu.com/ubyssey/docs/the_ubyssey_the_guide_2020">Guide to UBC 2020/21</a></h5>
+      <h5 class="headline"><a class='issue' id ='issue4' href="https://issuu.com/ubyssey/docs/the_ubyssey_july_28">July 28, 2020</a></h5>
+    </div>`
+
+    document.getElementById('sidebar-block').innerHTML = prints
+
+
+}
+
+function load_blog() {
+
+    $.ajax({
+        url: '/ajax/home',
+        type: 'get',
+        data: {
+            section: 'blog',
+        },
+        success: function (response) {
+            create_blogsection(response.blogs, response.absolute_url)
+        }
+    })
+
+}
+
+function setTrue(section) {
+
+    switch (section) {
+        case 'culture':
+            culture_fetched = true
+            break;
+        case 'opinion':
+            opinion_fetched = true
+            break;
+        case 'features':
+            features_fetched = true
+            break;
+        case 'sports':
+            sports_fetched = true
+            break;
+        case 'science':
+            science_featched = true
+            break;
     }
 
+}
 
-})
+$(window).scroll(function scrollHandler() {
+    if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+        if (!news_fetched) {
+            $(window).off("scroll", scrollHandler);
+            load_news(scrollHandler)
+            load_prints()
+            load_blog()
+        }
+
+        if (news_fetched && !culture_fetched) {
+            $(window).off("scroll", scrollHandler);
+            load_others('culture', scrollHandler);
+        }
+
+        if (culture_fetched && !sports_fetched) {
+            $(window).off("scroll", scrollHandler);
+            load_others('sports', scrollHandler)
+
+        }
+
+        if (sports_fetched && !opinion_fetched) {
+            $(window).off("scroll", scrollHandler);
+            load_others('opinion', scrollHandler)
+
+        }
+
+        if (opinion_fetched && !features_fetched) {
+            $(window).off("scroll", scrollHandler);
+            load_others('features', scrollHandler)
+        }
+
+        if (features_fetched && !science_fetched) {
+            alert('bottom')
+        }
+    }
+});
 
 
 
 
 
-$(document).ready(function () {
 
-    $(".news-btn").click(function () {
-        $.ajax({
-            url: '/ajax/home',
-            type: 'get',
-            data: {
-                button_test: $(this).text(),
-                section: 'news',
-            },
-            success: function (response) {
 
-                create_section_1(response.id, response.sections, response.absolute_url, response.authors)
-            }
-        })
-    })
-
-    $(".culture-btn").click(function () {
-        $.ajax({
-            url: '',
-            type: 'get',
-            data: {
-                button_test: $(this).text(),
-                section: 'culture',
-            },
-            success: function (response) {
-                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
-            }
-        })
-
-    })
-
-    $(".sports-btn").click(function () {
-        $.ajax({
-            url: '',
-            type: 'get',
-            data: {
-                button_test: $(this).text(),
-                section: 'sports',
-            },
-            success: function (response) {
-                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
-            }
-        })
-
-    })
-
-    $(".opinion-btn").click(function () {
-        $.ajax({
-            url: '',
-            type: 'get',
-            data: {
-                button_test: $(this).text(),
-                section: 'opinion',
-            },
-            success: function (response) {
-                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
-            }
-        })
-
-    })
-
-    $(".features-btn").click(function () {
-        $.ajax({
-            url: '',
-            type: 'get',
-            data: {
-                button_test: $(this).text(),
-                section: 'features'
-            },
-            success: function (response) {
-                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
-            }
-        })
-
-    })
-
-    $(".science-btn").click(function () {
-        $.ajax({
-            url: '',
-            type: 'get',
-            data: {
-                button_test: $(this).text(),
-                section: 'science',
-            },
-            success: function (response) {
-                create_section_2(response.id, response.sections, response.absolute_url, response.authors)
-            }
-        })
-
-    })
-
-})
 
 
 

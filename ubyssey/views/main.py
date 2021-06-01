@@ -72,34 +72,35 @@ class HomePageTestAjax(ArticleMixin,TemplateView):
         if request.is_ajax():
             sections = Section.objects.all()
             section_div = request.GET.get('section')
+            absolute_urls = {}
+            loaded_absolute_urls = []
+            loaded_authors=[]
             results = {}
-
-
-           
+            pre_blog = list(self.get_frontpage_qs(sections=['blog'], limit=5))
+            blog = []
+ 
             for section in sections:
 
                 if section_div == section.slug:
                     current_section = section
 
-            
+          
 
-           
 
-            if current_section:
+            if current_section.slug != 'blog':
                 section_articles = Article.objects.exclude(id__in=frontpage_ids).filter(section=current_section,is_published=True).order_by('-published_at').select_related()[:5]
                 if len(section_articles):
                     first = ArticleSerializer(section_articles[0]).data
                     stack= []
                     bullets = []
                     rest = []
-                    absolute_urls = {}
                     authors = {}
 
                     for article in section_articles[1:3]:
                         stack.append(ArticleSerializer(article).data)
 
                     for article in section_articles[3:]:
-                        bullets .append(ArticleSerializer(article).data)
+                        bullets.append(ArticleSerializer(article).data)
 
                     for article in section_articles[1:4]:
                         rest.append(ArticleSerializer(article).data)
@@ -108,12 +109,9 @@ class HomePageTestAjax(ArticleMixin,TemplateView):
                       
                         absolute_urls[article.slug] = article.get_absolute_url()
                         authors[article.slug] = article.get_author_url()
-
-                    absolute_urls_object = json.dumps(absolute_urls, indent = 4)  
-                    loaded_absolute_urls = json.loads(absolute_urls_object )
-
-                    authors_object = json.dumps(authors , indent = 4 )
-                    loaded_authors = json.loads(authors_object)
+ 
+                    loaded_absolute_urls = json.loads(json.dumps(absolute_urls, indent = 4)  )
+                    loaded_authors = json.loads(json.dumps(authors , indent = 4 ))
 
                     results[current_section.slug] = {
                         'first': first,
@@ -122,13 +120,22 @@ class HomePageTestAjax(ArticleMixin,TemplateView):
                         'rest': rest,
                     }
 
+            else:
+
+                for article in pre_blog:
+                    blog.append(ArticleSerializer(article).data)
+                    absolute_urls[article.slug] = article.get_absolute_url()
+
+                loaded_absolute_urls = json.loads(json.dumps(absolute_urls, indent = 4)  )
+
                 
 
 
             return JsonResponse({ "sections": results , 
                                   "id" : current_section.slug , 
                                   "absolute_url" : loaded_absolute_urls , 
-                                  "authors" : loaded_authors 
+                                  "authors" : loaded_authors,
+                                  "blogs":blog
                                   } , status = 200)
 
             

@@ -26,70 +26,25 @@
 
     {% zone 'frontpage' articles=articles %}
     <div class="homepage-section row">
-         <div class="sections"> 
 
-                <section class="{{ section|safe }} homepage row" >
-                       <h1 class="section"> News  <button class="news-btn"> News Ajax </button> </h1>
-                
-                        <section class="c-homepage__section c-homepage__section--1" id="news"> 
-                        
-                        
-                        </section>
-                </section>
-
-                 <section class="{{ section|safe }} homepage row" >
-                         <h1 class="section"> Culture <button class="culture-btn">  Culture Ajax </button> </h1>
-            
-                        <section class="c-homepage__section c-homepage__section--2" id="culture"> </section>
-                
-                
-                </section>
-
-                 <section class="{{ section|safe }} homepage row">
-                        <h1 class="section"> Sports <button class="sports-btn"> Sports Ajax </button> </h1>
-                        
-                        <section class="c-homepage__section c-homepage__section--2" id="sports"> </section>
-                </section>
-
-                 <section class="{{ section|safe }} homepage row" >
-                        <h1 class="section">Opinion <button class="opinion-btn"> Opinion Ajax </button> </h1>
-
-                        <section class="c-homepage__section c-homepage__section--2" id="opinion"> </section>
-                </section>
-
-                 <section class="{{ section|safe }} homepage row">
-                        <h1 class="section">  Features    <button class="features-btn">   Features Ajax </button> </h1>
-
-                        <section class="c-homepage__section c-homepage__section--2" id="features"> </section>
-                </section>
-
-                 <section class="{{ section|safe }} homepage row">
-                        <h1 class="section">   Science <button class="science-btn"> Science Ajax </button> </h1>
-
-                        <section class="c-homepage__section c-homepage__section--2" id="science"> </section>
-                </section>
-
-
+   
+         <div class="sections" id="section_container"> 
          </div>
+       
          <div class="sidebar-home">
 
              <div class="sidebar-block sidebar-block--advertisement">
               {% include 'objects/advertisement.html' with size='box' name='Box_A' id=4 %}
             </div>
 
-             <div class=" sidebar-block">
-                <h2 class="block-title">Check Out Our Digital Print Issue</h2>
-                <div class='sidebar-issue'>
-                  <h5 class="headline" id='issue-photo'><a class='issue' id ='issue1' href="https://issuu.com/ubyssey/docs/the_ubyssey_september_29">September 29, 2020<img src="https://image.isu.pub/201001002709-c77a1db2115eeeab32729a767143d27e/jpg/page_1_thumb_large.jpg"></a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_aug_25">August 25, 2020</a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue3' href="https://issuu.com/ubyssey/docs/the_ubyssey_the_guide_2020">Guide to UBC 2020/21</a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue4' href="https://issuu.com/ubyssey/docs/the_ubyssey_july_28">July 28, 2020</a></h5>
-                </div>
+             <div class=" sidebar-block" id="sidebar-block">
             </div>
+           
             <div class="sidebar-block sidebar-block--advertisement">
               {% include 'objects/advertisement.html' with size='box' name='Box_B' id=6 %}
             </div>
-            <div class="article-list blog sidebar-block">
+            <div class="article-list blog sidebar-block" id="blog">
+            <!--
                 <h2 class="block-title">From the blog</h2>
                 <ul class="article-list">
                     {% for article in blog %}
@@ -98,6 +53,7 @@
                     </li>
                     {% endfor %}
                 </ul>
+                -->
             </div>
             <div class="multi-zone cell right">
               {% zone 'homepage-sidebar-bottom' %}
