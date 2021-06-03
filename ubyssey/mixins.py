@@ -133,6 +133,27 @@ class ArticleMixin(object):
 
         return results
 
+    def get_single_section(self, section_selected,  exclude=None):
+
+        exclude = exclude or []
+        results = {}
+
+        section = Section.objects.get(name = section_selected)
+
+
+        articles = Article.objects.exclude(id__in=exclude).filter(section= section ,is_published=True).order_by('-published_at')[:5]
+        if len(articles):
+                results[section.slug] = {
+                    'first': articles[0],
+                    'stacked': articles[1:3],
+                    'bullets': articles[3:],
+                    'rest': articles[1:4],
+                }
+      
+
+        return results
+
+
     def get_reading_list(self, article, ref=None, dur=None):
         articles = []
         name = None

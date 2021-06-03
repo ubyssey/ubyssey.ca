@@ -42,8 +42,11 @@ class HomePageTestAjax(ArticleMixin,TemplateView):
 
 
     def get(self, request):
+
+        #getting breaking news article , special message , blogs. This is fetched when the homepage first loads, so it's not ajax
         breaking_news = self.get_breaking_news().first()
         special_message = settings.SPECIAL_MESSAGE_AVAILABLE
+        blog = list(self.get_frontpage_qs(sections=['blog'], limit=5))
 
          #set 'articles' section of context. Do some speed optimization for getting sections later
         frontpage = self.get_frontpage_qs(
@@ -68,82 +71,67 @@ class HomePageTestAjax(ArticleMixin,TemplateView):
             raise Exception('Not enough articles to populate the frontpage!')
 
         frontpage_ids = [int(a.id) for a in frontpage[:2]]
- 
+
+        #fecthing the news section when the homepage first loads 
+        news = self.get_single_section(section_selected = 'news', exclude=frontpage_ids)
+
+
+        #when there is an ajax request from the front-end
         if request.is_ajax():
-            sections = Section.objects.all()
-            section_div = request.GET.get('section')
-            absolute_urls = {}
-            loaded_absolute_urls = []
-            loaded_authors=[]
-            results = {}
-            pre_blog = list(self.get_frontpage_qs(sections=['blog'], limit=5))
-            blog = []
+            sections = Section.objects.all()                            #Gets all avaliable sections 
+            section_div = request.GET.get('section')                    #The body of the request has a key called 'section' 
+            current_section = sections.get(name=section_div)            #The section that is making this request                           
+            results = {}                                                #The jsonRepsone
+            
  
-            for section in sections:
+            section_articles = Article.objects.exclude(id__in=frontpage_ids).filter(section=current_section,is_published=True).order_by('-published_at').select_related()[:5]
+            if len(section_articles):
+                            first = ArticleSerializer(section_articles[0]).data
+                            stack= []
+                            bullets = []
+                            rest = []
+                            authors = {}
+                            absolute_urls = {}
 
-                if section_div == section.slug:
-                    current_section = section
+                            for article in section_articles[1:3]:
+                                #We need the serializer to make the article objects a json
+                                stack.append(ArticleSerializer(article).data)
 
-          
+                            for article in section_articles[3:]:
+                                bullets.append(ArticleSerializer(article).data)
 
+                            for article in section_articles[1:4]:
+                                rest.append(ArticleSerializer(article).data)
+                            
+                            for article in section_articles:
+                                absolute_urls[article.slug] = article.get_absolute_url()
+                                authors[article.slug] = article.get_author_url()
+        
+                            #json.loads and json.dumps makes absolute_urls and loaded_authors json objects
+                            loaded_absolute_urls = json.loads(json.dumps(absolute_urls, indent = 4))
+                            loaded_authors = json.loads(json.dumps(authors , indent = 4 ))
 
-            if current_section.slug != 'blog':
-                section_articles = Article.objects.exclude(id__in=frontpage_ids).filter(section=current_section,is_published=True).order_by('-published_at').select_related()[:5]
-                if len(section_articles):
-                    first = ArticleSerializer(section_articles[0]).data
-                    stack= []
-                    bullets = []
-                    rest = []
-                    authors = {}
+                            results[current_section.slug] = {
+                                'first': first,
+                                'stacked': stack,
+                                'bullets': bullets,
+                                'rest': rest,
+                            }
 
-                    for article in section_articles[1:3]:
-                        stack.append(ArticleSerializer(article).data)
-
-                    for article in section_articles[3:]:
-                        bullets.append(ArticleSerializer(article).data)
-
-                    for article in section_articles[1:4]:
-                        rest.append(ArticleSerializer(article).data)
-                    
-                    for article in section_articles:
-                      
-                        absolute_urls[article.slug] = article.get_absolute_url()
-                        authors[article.slug] = article.get_author_url()
- 
-                    loaded_absolute_urls = json.loads(json.dumps(absolute_urls, indent = 4)  )
-                    loaded_authors = json.loads(json.dumps(authors , indent = 4 ))
-
-                    results[current_section.slug] = {
-                        'first': first,
-                        'stacked': stack,
-                        'bullets': bullets,
-                        'rest': rest,
-                    }
-
-            else:
-
-                for article in pre_blog:
-                    blog.append(ArticleSerializer(article).data)
-                    absolute_urls[article.slug] = article.get_absolute_url()
-
-                loaded_absolute_urls = json.loads(json.dumps(absolute_urls, indent = 4)  )
-
-                
-
-
+            #returning the JsonResponse
             return JsonResponse({ "sections": results , 
                                   "id" : current_section.slug , 
                                   "absolute_url" : loaded_absolute_urls , 
                                   "authors" : loaded_authors,
-                                  "blogs":blog
                                   } , status = 200)
 
             
-
         return render(request, self.template_name , {
             'breaking' : breaking_news , 
             'special_message' : special_message,
             'articles': articles,
+            'blogs': blog,
+            'news': news,
         })
 
 

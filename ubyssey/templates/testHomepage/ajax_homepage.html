@@ -29,6 +29,9 @@
 
    
          <div class="sections" id="section_container"> 
+          {% include 'homepage/blocks/section_1.html' with section="news" articles=news.news %}
+          
+
          </div>
        
          <div class="sidebar-home">
@@ -38,22 +41,29 @@
             </div>
 
              <div class=" sidebar-block" id="sidebar-block">
+                <h2 class="block-title">Check Out Our Digital Print Issue</h2>
+                <div class='sidebar-issue'>
+                  <h5 class="headline" id='issue-photo'><a class='issue' id ='issue1' href="https://issuu.com/ubyssey/docs/the_ubyssey_september_29">September 29, 2020<img src="https://image.isu.pub/201001002709-c77a1db2115eeeab32729a767143d27e/jpg/page_1_thumb_large.jpg"></a></h5>
+                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_aug_25">August 25, 2020</a></h5>
+                  <h5 class="headline"><a class='issue' id ='issue3' href="https://issuu.com/ubyssey/docs/the_ubyssey_the_guide_2020">Guide to UBC 2020/21</a></h5>
+                  <h5 class="headline"><a class='issue' id ='issue4' href="https://issuu.com/ubyssey/docs/the_ubyssey_july_28">July 28, 2020</a></h5>
+                </div>
             </div>
            
             <div class="sidebar-block sidebar-block--advertisement">
               {% include 'objects/advertisement.html' with size='box' name='Box_B' id=6 %}
             </div>
             <div class="article-list blog sidebar-block" id="blog">
-            <!--
+       
                 <h2 class="block-title">From the blog</h2>
                 <ul class="article-list">
-                    {% for article in blog %}
+                    {% for article in blogs %}
                     <li>
                       {% include 'objects/articles/column.html' with article=article padded=True hide_image=True hide_snippet=True hide_byline=True %}
                     </li>
                     {% endfor %}
                 </ul>
-                -->
+           
             </div>
             <div class="multi-zone cell right">
               {% zone 'homepage-sidebar-bottom' %}
