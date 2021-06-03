@@ -80,11 +80,17 @@ class HomePageTestAjax(ArticleMixin,TemplateView):
         if request.is_ajax():
             sections = Section.objects.all()                            #Gets all avaliable sections 
             section_div = request.GET.get('section')                    #The body of the request has a key called 'section' 
-            current_section = sections.get(name=section_div)            #The section that is making this request                           
+            current_section = sections.get(name=section_div)            #The section that is making this request 
+            loaded_absolute_urls = {}
+            loaded_authors = {}                         
             results = {}                                                #The jsonRepsone
+
+
+            print(current_section.slug)
             
  
             section_articles = Article.objects.exclude(id__in=frontpage_ids).filter(section=current_section,is_published=True).order_by('-published_at').select_related()[:5]
+            print(len(section_articles))
             if len(section_articles):
                             first = ArticleSerializer(section_articles[0]).data
                             stack= []

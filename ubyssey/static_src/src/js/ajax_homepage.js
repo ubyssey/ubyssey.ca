@@ -179,17 +179,28 @@ function column_template(article, padded, absolute_url, authors) {
 
 }
 
+function isEmpty(obj) {
+    for (var prop in obj) {
+        if (obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+}
+
 //creating sections using the section template 
 
 function create_section(id, articles, absolute_url, authors) {
 
-
-    const first = articles[id].first
-    const rest = articles[id].rest
+    if (!isEmpty(articles)) {
 
 
+        const first = articles[id].first
+        const rest = articles[id].rest
 
-    const section_articles = `
+
+
+        const section_articles = `
 
                     <section class="{{ section|safe }} homepage row" >
 
@@ -207,7 +218,9 @@ function create_section(id, articles, absolute_url, authors) {
                     </section>
                 `
 
-    document.getElementById('section_container').innerHTML = document.getElementById('section_container').innerHTML + `${section_articles}`
+        document.getElementById('section_container').innerHTML = document.getElementById('section_container').innerHTML + `${section_articles}`
+
+    }
 
 
 }
@@ -257,7 +270,7 @@ function setTrue(section) {
             sports_fetched = true
             break;
         case 'science':
-            science_featched = true
+            science_fetched = true
             break;
     }
 
@@ -298,6 +311,8 @@ $(window).scroll(function scrollHandler() {
             $(window).off("scroll", scrollHandler);
             load_sections('science', scrollHandler)
         }
+
+
     }
 });
 
