@@ -44,6 +44,17 @@ $.ajaxSetup({
 });
 
 
+//check if dictionary is empty
+function isEmpty(obj) {
+    for (var prop in obj) {
+        if (obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+}
+
+
 // Templates
 
 //The featured tempalate
@@ -177,15 +188,6 @@ function column_template(article, padded, absolute_url, authors) {
         `
     )
 
-}
-
-function isEmpty(obj) {
-    for (var prop in obj) {
-        if (obj.hasOwnProperty(prop))
-            return false;
-    }
-
-    return true;
 }
 
 //creating sections using the section template 
