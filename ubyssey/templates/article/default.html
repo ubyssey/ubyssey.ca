@@ -21,14 +21,13 @@
       <a class="o-breaking-news" href="{{ breaking.get_absolute_url }}">
         <h3>BREAKING: {{ breaking.headline|safe }}</h3>
       </a>
-     {% endif %}
-
-      {% if special_message %}
-        <a class="o-breaking-news-article" href="{% url 'special-isolation' %}">
-          <h3>Stories from self-isolation</h3>
-        </a>
-      {% comment %} If there are any special Banner message needed {% endcomment %}
-      {% endif %}
+    </div>
+    {% endif %}
+    {% if special_message %}
+      <a class="o-breaking-news-article" href="{% url 'special-isolation' %}">
+        <h3>Stories from Self Isolation is here: Click to see more!</h3>
+      </a>
+    {% endif %}
     </div>
     <div class="u-container u-container--content u-container--padded">
       <h1 class="o-headline o-headline--article">{{ article.headline|safe }}</h1>

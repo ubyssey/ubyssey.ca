@@ -295,7 +295,9 @@ class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):
             article.timeline_title = list(timeline_tag)[0].name.replace('timeline-', '').replace('-', ' ')
 
         if self.object.template == 'soccer-nationals':
+         
             teamData = NationalsHelper.prepare_data(self.object.content)
+         
             self.object.content = teamData['content']
             self.object.team_data = json.dumps(teamData['code'])
 

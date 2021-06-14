@@ -8,7 +8,7 @@ import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import { Galleries } from './components/Gallery'
 import Timeline from './components/Timeline.jsx'
 import Episode from './components/Podcast/Episode.jsx'
-import { Nationals } from './components/Nationals'
+
 
 window.articleHeader = false;
 
@@ -38,14 +38,7 @@ $(function () {
             $(this).get(0)
         )
     })
-    $('.c-soccer-nationals').each(function () {
-        ReactDOM.render(
-            <Nationals id={$(this).data('currentArticleId')}
-                map={$(this).data('map')}
-                teamData={$(this).data('teamData')} />,
-            $(this).get(0)
-        )
-    })
+
     $('.c-podcast-episode').each(function () {
         ReactDOM.render(
             <Episode author={$(this).data('author')}
