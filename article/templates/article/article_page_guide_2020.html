@@ -1,0 +1,93 @@
+{% extends 'guide/2020/base.html' %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% block content %}
+    <main id="article-{{ self.id }}" class="article">
+
+        {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 article=self.id %}
+        {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=2 article=self.id %}
+        {% with self.featured_media.first as featured_image_object %}
+            {% image featured_image_object.image original as featured_image %}
+            <div class="c-banner c-banner--welcome" style="background-image: url('{{ featured_image.url }}');">
+                <div class="c-banner__container">
+                    <div class="c-banner--welcome__inner">
+                        <p class="c-banner--welcome__snippet">{{ self.title }}</p>
+                    </div>
+                    <div class="c-banner-credits article">
+                        {% if featured_image_object.credit %}
+                            {{ featured_image_object.credit }}
+                        {% endif %}
+                    </div>
+                    {% comment %} TODO: address weird field {% endcomment %}
+                    {% if article.template_fields.banner_quote and article.template_fields.banner_quote != ' ' %}
+                        {% comment %} TODO address "subsection" context variable use {% endcomment %}
+                        <div id='quote-top' class="c-welcome-article __{{ subsection }}"> 
+                            <div class="c-banner-credits inside-quote">{{ article.featured_image.credit }}</div>
+                                <div class='quote-content--container'>
+                                    <div class="c-welcome-article__ quote">
+                                        <p>{{ article.template_fields.banner_quote }}</p>
+                                    </div>
+                                    {% if article.template_fields.banner_quote_source and article.template_fields.banner_quote_source != ' ' %}
+                                        <div class="c-welcome-article__ source">
+                                            {{ article.template_fields.banner_quote_source }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <main class="c-article">
+                <div class="o-container">
+                    <div class="o-wrapper">
+                        {% if article.template_fields.subheading and article.template_fields.subheading != ' ' %}
+                            <p class="c-article__intro__subheading">
+                                {{ article.template_fields.subheading }}
+                            </p>
+                        {% endif %}
+                        {% if article.template_fields.intro and article.template_fields.intro != ' ' %}
+                            <p class="c-article__intro__text">
+                                {{ article.template_fields.intro }}
+                            </p>
+                        {% endif %}
+                        <div class="c-article__content">
+                            <div class="advertisement box sidebar">
+                                {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
+                            </div>
+                            {% for block in self.content %}
+                                {% include_block block %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% if article.template_fields.banner_quote and article.template_fields.banner_quote != ' ' %}
+                    <div id='quote-bottom' class="c-welcome-article-bottom __{{ subsection }}">
+                        <div class='quote-content--container'>
+                            <div class="c-welcome-article-bottom__ quote">
+                                <p>{{ article.template_fields.banner_quote }}</p>
+                            </div>
+                            {% if article.template_fields.banner_quote_source and article.template_fields.banner_quote_source != ' ' %}
+                                <div class="c-welcome-article-bottom__ source">
+                                    {{ article.template_fields.banner_quote_source }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="c-up-next">
+                    <div class="c-up-next__arrow"></div>
+                    <div class="c-up-next__text">What's next?</div>
+                    <div class="c-up-next__arrow c-up-next__arrow--right"></div>
+                </div>
+                <div class="article-boxes">
+                    {% image prev.featured_media.first.image original as prev_image %}
+                    {% include 'article/objects/guide/article-box2020.html' with style='article' title=prev.title page=prev image=prev_image.url %}
+                    {% image next.featured_media.first.image original as next_image %}
+                    {% include 'article/objects/guide/article-box2020.html' with style='article' title=next.title page=next image=next_image.url %}
+                </div>
+            </main>
+        {% endwith %}        
+    </main>
+{% endblock %}

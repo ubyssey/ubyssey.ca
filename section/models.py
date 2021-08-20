@@ -120,6 +120,8 @@ class SectionPage(SectionablePage):
         'home.HomePage',
     ]
 
+    show_in_menus_default = True
+
     content_panels = wagtail_core_models.Page.content_panels + [
         MultiFieldPanel(
             [

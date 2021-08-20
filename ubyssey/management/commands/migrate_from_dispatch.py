@@ -1,5 +1,6 @@
 import json
 import hashlib
+from specialfeaturelanding.models import SpecialLandingPage
 from dispatch.modules.content.models import Section
 import requests
 
@@ -612,6 +613,19 @@ def _migrate_all_articles():
                     log_entry_publication = PageLogEntry.objects.all()[0]
                     log_entry_publication.timestamp = dispatch_article_revision.updated_at
                     log_entry_publication.save()
+
+def _fix_guide_articles():
+    guide2020 = SpecialLandingPage.objects.get(id=10706)
+    guide_articles_qs = guide2020.get_descendants().type(ArticlePage).specific() # important!
+
+    for guide_article in guide_articles_qs:
+        guide_article.explicit_published_at = guide_article.first_published_at
+        guide_article.layout = 'guide-2020'
+        guide_article.header_layout = 'right-image'
+        
+        print(guide_article.slug + " publish date set to: " + str(guide_article.explicit_published_at))
+        print(guide_article.slug + " layout set to: " + str(guide_article.layout))
+        guide_article.save()
 
 class Command(BaseCommand):
     """

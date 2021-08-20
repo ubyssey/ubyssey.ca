@@ -181,6 +181,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'dbtemplates',
     'wagtailmodelchooser',
+    'wagtailmenus',
 ]
 
 if DEBUG:
@@ -220,6 +221,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'wagtail.contrib.settings.context_processors.settings',
+                'wagtailmenus.context_processors.wagtailmenus',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',

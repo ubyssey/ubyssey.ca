@@ -1,5 +1,7 @@
 {% load static %}
 {% load cache %}
+{% load menu_tags %}
+
 <header class="main">
   <div class="u-container u-container--large">
     <div class="branding row">
@@ -31,9 +33,10 @@
         <div class="middle">
           <ul class="sections">
             {% cache 604800 main_header_menu %}
-              {% for menu_item in settings.navigation.SitewideMenus.main_header_menu.all %}
+              {% main_menu %}
+              {% comment %} {% for menu_item in settings.navigation.SitewideMenus.main_header_menu.all %}
                 <li><a href="{{ menu_item.link }}">{{ menu_item.text }}</a></li>
-              {% endfor %}
+              {% endfor %} {% endcomment %}
             {% endcache %}
           </ul>
         </div>

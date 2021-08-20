@@ -11,6 +11,7 @@ from wagtail.core.fields import StreamField
 # Create your models here.
 
 class HomePage(Page):
+    show_in_menus_default = True
     template = "home/home_page.html"
 
     ajax_template = "home/ajax_section.html"

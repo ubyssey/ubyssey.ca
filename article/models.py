@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from wagtail.admin import edit_handlers
 from images.models import GallerySnippet
@@ -120,7 +121,7 @@ class ArticleAuthorsOrderable(Orderable):
         max_length=50,
         null=False,
         blank=True,
-        default='',
+        default='author',
     )
     panels = [
         MultiFieldPanel(
@@ -130,7 +131,6 @@ class ArticleAuthorsOrderable(Orderable):
                     "author_role",
                     widget=Select(
                         choices=[
-                            ('', ''), 
                             ('author', 'Author'), 
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
@@ -141,7 +141,7 @@ class ArticleAuthorsOrderable(Orderable):
             ],
             heading="Author",
         ),
-    ]
+    ] # panels for ArticleAuthorsOrderable
 
 class MagazineArticleBylineOrderable(Orderable):
     byline = models.TextField(blank=True, null=False, default='')
@@ -307,6 +307,60 @@ class ArticleScriptOrderable(Orderable):
         ),
     ]
 
+# Timeline Snippets
+@register_snippet
+class TimelineSnippet(models.Model):
+    """
+    Users select a TimelineSnippet in article admin for Article.
+    Data field will automatically update whenever save() is hit.
+    """
+
+    title = fields.CharField(blank=False, null=False, max_length=200)
+    slug = fields.SlugField(unique=True, blank=False, null=False, max_length=200)
+    data = fields.TextField(blank=True, null=False)
+
+    panels = [
+        MultiFieldPanel(
+            [
+                FieldPanel('title'),
+                FieldPanel('slug'),
+            ],
+            heading="Essentials",
+        ),
+    ]
+
+    def save(self, *args, **kwargs) -> None:
+        """
+        Forces update of the "data" field every time a timeline is saved.
+
+        Should be called during the pre_save of ArticlePage when the ArticlePage happens to have a corresponding timeline.
+        """
+        self.update_data()
+        return super().save(*args, **kwargs)
+    
+    def update_data(self) -> None:
+        self.data = '' # Wipe our slate clean before we update. Otherwise, an article that once had articles but no longer does will end up with "leftover" data
+        qs = self.timeline_articles.all().live().order_by('timeline_date')
+        if len(qs) > 0:
+            list_of_dictified_articles = list(qs.values('id','fw_above_cut_lede','timeline_date','slug','title','featured_media'))
+
+            for i, dictified_article in enumerate(list_of_dictified_articles):
+                try:
+                    list_of_dictified_articles[i]['featured_media'] = ArticleFeaturedMediaOrderable.objects.get(id=[dictified_article['featured_media']]).image.get_rendition('fill-200x200').url
+                except:
+                    list_of_dictified_articles[i]['featured_media'] = ''
+
+                try: 
+                    list_of_dictified_articles[i]['timeline_date'] = dictified_article['timeline_date'].strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+                except:
+                    list_of_dictified_articles[i]['timeline_date'] = timezone.now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+            self.data = json.dumps(list_of_dictified_articles)
+        return
+
+    def __str__(self) -> str:
+        return self.title
+
+
 #-----Taggit models-----
 class ArticlePageTag(TaggedItemBase):
     """
@@ -346,6 +400,8 @@ class ArticlePage(SectionablePage):
     ]
 
     subpage_types = [] #Prevents article pages from having child pages
+
+    show_in_menus_default = False
 
     #-----Field attributes-----
     content = StreamField(
@@ -524,20 +580,30 @@ class ArticlePage(SectionablePage):
         verbose_name='About This Article (Optional)',
     )
 
-    # Featured image stuff used for tempalte customization. Legacy
-    image_size = models.CharField(
-        null=False,
-        blank=False,
-        default='default',
-        max_length=50,
-        help_text="Legacy from Dispatch's \"Templates\" feature",
+    # Timelines
+    show_timeline = models.BooleanField(
+        default=False,
+        help_text="Layout MUST be full-width (or else customized) to display a timeline",
     )
+    timeline = models.ForeignKey(
+        TimelineSnippet,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="timeline_articles",
+        help_text="Create a timeline in the Snippets menu and set it here."
+    )
+    timeline_date = models.DateTimeField(
+        default=timezone.now,
+    )
+
+    # Featured image stuff used for tempalte customization
     header_layout = models.CharField(
         null=False,
         blank=False,
         default='right-image',
         max_length=50,
-        help_text="Legacy from Dispatch's \"Templates\" feature",
+        help_text="Based on from Dispatch's obselete \"Templates\" feature",
     )
 
     #-----Advanted, custom layout etc-----
@@ -558,17 +624,28 @@ class ArticlePage(SectionablePage):
 
         if self.layout == 'fw-story':
             return "article/article_page_fw_story.html"
+        elif self.layout == 'guide-2020':
+            return "article/article_page_guide_2020.html"
                         
         return "article/article_page.html"
 
     #-----For Wagtail's user interface-----
     content_panels = Page.content_panels + [
+        FieldRowPanel(
+            [
+                FieldPanel("explicit_published_at"),
+                FieldPanel("show_last_modified"),
+            ],
+            heading="Publication Date",
+        ),
         MultiFieldPanel(
             [
+                HelpPanel(
+                    content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
+                ),
                 StreamFieldPanel("content"),
             ],
             heading="Article Content",
-            help_text = "The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!",
             classname="collapsible",
         ),
         MultiFieldPanel(
@@ -580,27 +657,19 @@ class ArticlePage(SectionablePage):
         ),
         MultiFieldPanel(
             [
+                HelpPanel(content="Authors may be created under \"Snippets\", then selected here."),
                 InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
             ],
             heading="Author(s)",
-            help_text="Authors may be created under \"Snippets\", then selected here.",
             classname="collapsible",
-        ),
-        FieldRowPanel(
-            [
-                FieldPanel("explicit_published_at"),
-                FieldPanel("show_last_modified"),
-            ],
-            heading="Publication Date",
-            classname="collapsible",
-        ),
+        ), # Author(s)
         MultiFieldPanel(
             [
                 # FieldPanel("section"),
                 SnippetChooserPanel("category"),
                 FieldPanel("tags"),
             ],
-            heading="Sections and Tags",
+            heading="Categories and Tags",
             classname="collapsible",
         ),
         MultiFieldPanel(
@@ -610,15 +679,15 @@ class ArticlePage(SectionablePage):
             heading="Featured Media",
             classname="collapsible",
         ),
-    ]
+    ] # content_panels
     promote_panels = Page.promote_panels + [
         MultiFieldPanel(
             [
+                HelpPanel(content="\"Breaking Timeout\" is irrelevant if news is not breaking news."),
                 FieldPanel("is_breaking"),
                 FieldPanel("breaking_timeout"),
             ],
-            heading="Old SEO stuff",
-            help_text="\"Breaking Timeout\" is irrelevant if news is not breaking news."
+            heading="Breaking",
         ),
         MultiFieldPanel(
             [
@@ -628,7 +697,7 @@ class ArticlePage(SectionablePage):
             heading="Old SEO stuff",
             help_text="In Dispatch, \"SEO Keyword\" was referred to as \"Focus Keywords\", and  \"SEO Description\" was referred to as \"Meta Description\""
         )
-    ]
+    ] # promote_panels
     settings_panels = Page.settings_panels + [
         MultiFieldPanel(
             [
@@ -648,10 +717,10 @@ class ArticlePage(SectionablePage):
             ],
             heading='Legacy stuff'
         ),
-    ]    
+    ] # settings_panels   
     fw_article_panels = [
         HelpPanel(
-            content = "<p>If you need to use an alternate layout for your article, but still a the frequently-used stock layout (such as the layout with a full-width banner) rather than a highly customized frontend, select the options you require here.</p> <p>The majority of articles will just use the default layout. Thus, for the majority of articles, nothing on this tab should be touched; the majority of these fields are not even used in most layouts. They primarily exist to keep our data organized.</p>"
+            content = "<h1>Help</h1><p>IF you need an alternate layout for your article, but still a frequently-used layout (such as including a full-width banner), THEN, rather making than a highly customized frontend (as you can do in the next tab over), select the options you require here.</p> <p>The majority of articles will just use the default layout. Thus, <u>for the majority of articles, nothing on this tab should be touched</u>; the majority of these fields are not even used in most layouts. They primarily exist to keep our data organized.</p>"
         ),
         MultiFieldPanel(
             [
@@ -661,44 +730,17 @@ class ArticlePage(SectionablePage):
                         choices=[
                             ('default', 'Default'), 
                             ('fw-story', 'Full-Width Story'),
+                            ('guide-2020', 'Guide (2020 style)'),
                         ],
                     ),
                 ),
             ],
-            heading = "Stock Layouts",
-        ),
+            heading = "Select Stock Layout",
+            classname="collapsible collapsed",
+        ), # Select Stock Layout
         MultiFieldPanel(
             [
                 HelpPanel(content="<p>This information is generally used in articles that use a full-width banner of some sort.</p>"),
-                FieldPanel('fw_alternate_title'),
-                FieldPanel('fw_optional_subtitle'),
-                FieldPanel('fw_above_cut_lede'),
-            ],
-            heading = "Header fields, etc.",
-        ),
-        MultiFieldPanel(
-            [
-                HelpPanel(content="<p>This information is generally used in a special article that has additional credits beyond the normal byline.</p>"),
-                FieldPanel('fw_about_this_article'),
-            ],
-            heading = "Additional credits, etc.",
-        ),
-
-        MultiFieldPanel(
-            [
-                HelpPanel(
-                    content="These were at one time parts of Dispatch's now-obselete \"Templates\" feature. \n\n" + 
-                    "Care should be taken to ensure these fields are actually used in their corresponding templates files (in the Django sense of template).\n",
-                ),
-                FieldPanel(
-                    "image_size",
-                    widget=Select(
-                        choices=[
-                            ('default', 'Default'),
-                            ('full', 'Full'),
-                        ],
-                    ),
-                ),
                 FieldPanel(
                     "header_layout",
                     widget=Select(
@@ -707,22 +749,46 @@ class ArticlePage(SectionablePage):
                             ('top-image', 'Top Image'),
                             ('banner-image', 'Banner Image')
                         ],
-                    )
+                    ),
+                    help_text='This field is used to set variations on the \"Full-Width Story\" and similar layouts.',
                 ),
+                FieldPanel('fw_alternate_title'),
+                FieldPanel('fw_optional_subtitle'),
+                FieldPanel('fw_above_cut_lede'),
             ],
-            heading="Image Size and Position",
-        ),
+            heading = "Optional Header/Banner Fields",
+            classname="collapsible collapsed",
+        ), # Optional Header/Banner Fields
+        MultiFieldPanel(
+            [
+                HelpPanel(content='<h1>Warning</h1><p>If a timeline is included in your article, <u>additional processing will be required when the article is saved</u>.</p><p>It is recommended you add a Timeline snippet LAST, <i>after</i> your article is otherwise written.</p><p><u>Developers</u> should note: the Timeline/Article sync is accomplished with Django signals, to prevent tight coupling of the two classes. Do not allow use of signals to turn into noodle logic.</p>'),
+                FieldPanel('show_timeline'),
+                FieldPanel('timeline_date'),
+                SnippetChooserPanel('timeline'),
+            ],
+            heading = "Timeline",
+            classname="collapsible collapsed",
+        ), # Timeline
+        MultiFieldPanel(
+            [
+                HelpPanel(content="<p>This information is generally used in a special article that has additional credits beyond the normal byline.</p>"),
+                FieldPanel('fw_about_this_article'),
+            ],
+            heading = "Additional Credits",
+            classname="collapsible collapsed",
+        ), # Additional Credits
         MultiFieldPanel(
             [
                 HelpPanel(content="Somewhat legacy. These will not be used with the majority of templates, but are used with how Magazines or Guides or some special articles have traditionally been set up."),
                 InlinePanel("connected_articles"),
             ],
             heading="Connected or Related Article Links (Non-Series)",
-        ),
-    ]
+            classname="collapsible collapsed",
+        ), # Connected or Related Article Links (Non-Series)
+    ] # fw_article_panels
     customization_panels = [
         HelpPanel(
-            content="<p>This tab exists so that every aspect of the frontend for an individual article may be customized, down to the finest detail. There are three fundamental tools of frontend web programming - HTML, CSS and JavaScript, and here you may utilize all three.</p><p>Custom HTML templates, which use the Django templating language, should be uploaded not as files/documents but as \"Custom HTML\" in the site admin.\n\n Custom CSS or JavaScript should be uploaded to \"Documents\"</p>"
+            content="<h1>Help</h1><p>This tab exists so that every aspect of the frontend for an individual article may be customized, down to the finest detail. There are three fundamental tools of frontend web programming - HTML, CSS and JavaScript, and here you may utilize all three.</p><p>Custom HTML templates, which use the Django templating language, should be uploaded not as files/documents but as \"Custom HTML\" in the site admin.\n\n Custom CSS or JavaScript should be uploaded to \"Documents\"</p>"
         ),
         MultiFieldPanel(
             [
@@ -733,23 +799,27 @@ class ArticlePage(SectionablePage):
                 ModelChooserPanel("db_template"),
             ],
             heading="Custom HTML",
-        ),
+            classname="collapsible collapsed",
+        ), # Custom HTML
         MultiFieldPanel(
             [
                 InlinePanel("styles"),
             ],
             heading="Custom CSS",
             help_text="Please upload any custom CSS to \"Documents\", then select the appropriate document here.\n\nSelecting a non-CSS Document will cause errors.",
-        ),
+            classname="collapsible collapsed",
+        ), # Custom CSS
         MultiFieldPanel(
             [
                 InlinePanel("scripts"),
             ],
             heading="Custom JavaScript",
             help_text="Please upload any custom JavaScript to \"Documents\", then select the appropriate document here.\n\nSelecting a non-JavaScript Document will cause errors.",
-        ),
-    ]
+            classname="collapsible collapsed",
+        ), # Custom JavaScript
+    ] # customization_panels
 
+    # This overrides the default Wagtail edit handler, in order to add custom tabs to the article editting interface
     edit_handler = TabbedInterface(
         [
             ObjectList(content_panels, heading='Content'),
@@ -758,9 +828,30 @@ class ArticlePage(SectionablePage):
             ObjectList(fw_article_panels, heading='Layout (Stock Templates)'),
             ObjectList(customization_panels, heading='Custom Frontend (Advanced!)'),
         ],
-    )
+    ) # edit_handler
 
     #-----Properties, getters, setters, etc.-----
+
+    def get_context(self, request, *args, **kwargs):
+        """
+        Wagtail uses this method to add context variables following a request at a URL.
+        All the below code occurs after the user submits a request and before they receive it.
+        Therefore, keep the length of this method to a minimum; otherwise users will be kept waiting
+        """
+        context = super().get_context(request, *args, **kwargs)
+        context['prev'] = self.get_prev_sibling()
+        context['next'] = self.get_next_sibling()
+
+        if self.current_section == 'guide':
+            # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
+            if not context['prev']:
+                context['prev'] = self.get_last_sibling()
+            if not context['next']:
+                context['next'] = self.get_first_sibling()
+
+        context['prev'] = context['prev'].specific
+        context['next'] = context['next'].specific
+        return context
 
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
