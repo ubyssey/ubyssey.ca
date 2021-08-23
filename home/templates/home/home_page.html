@@ -24,29 +24,43 @@
     {% include 'home/objects/above_cut.html' with articles=above_cut_articles %}
     <div class="homepage-section row">
       <div class="sections" id="section_container">  
+        
+        {% include 'home/stream_blocks/section_news.html' with section="News" articles=News %}
+        {% include 'home/stream_blocks/section_non_news.html' with section="Culture" articles=Culture %}
+        {% include 'home/stream_blocks/section_non_news.html' with section="Sports" articles=Sports %}
+        {% include 'home/stream_blocks/section_non_news.html' with section="Opinion" articles=Opinion %}
+        {% include 'home/stream_blocks/section_non_news.html' with section="Features" articles=Features %}
+        {% include 'home/stream_blocks/section_non_news.html' with section="Science" articles=Science %}
+        
+        
+        
         {% comment %} 
+         ** this part is commented out because We are not using lazyloading ** 
+
           This is where we put the contents of the main StreamField of section blocks 
           This StreamField consists of blocks that each show off the contents of some section.
           See the models.py of this app for implementation details
-        {% endcomment %}        
-
-        {% comment %}
+              
           Only the first section, "News", is not an ajax request so we can display it with the include_block template tag
+       
+            {% with self.sections_stream.0 as first_section %}
+              TODO: Review this 
+              {% include_block first_section  %}          
+            {% endwith %}
         {% endcomment %}
-        {% with self.sections_stream.0 as first_section %}
-          {% comment %} TODO: Review this {% endcomment %}
-          {% include_block first_section  %}          
-        {% endwith %}
+
+
       </div>
 
       <div class="sidebar-home">
         <div class=" sidebar-block">
           <h2 class="block-title">Check Out Our Digital Print Issue</h2>
           <div class='sidebar-issue'>
-            <h5 class="headline" id='issue-photo'><a class='issue' id ='issue1' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_may_26_2021">May 26, 2021<img src="https://image.isu.pub/210525220016-c93553f75ca5b8987d841dd8bf6add96/jpg/page_1_thumb_large.jpg"></a></h5>
-            <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_april_7">April 7, 2021 - Year in Review </a></h5>
-            <h5 class="headline"><a class='issue' id ='issue3' href="https://issuu.com/ubyssey/docs/march_30_spoof_-_no_bleed">March 30, 2021 - NICE: The Ubyssey's Spoof Issue</a></h5>
-            <h5 class="headline"><a class='issue' id ='issue4' href="https://issuu.com/ubyssey/docs/the_ubyssey_march_16">March 16, 2021</a></h5>
+                  <h5 class="headline" id='issue-photo'><a class='issue' id ='issue1' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_july_27_2021">July 27, 2021<img src="https://image.isu.pub/210727150151-561948f393e2776d2f61fe34036ec330/jpg/page_1_thumb_large.jpg"></a></h5>
+                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/june_29_2021">June 29, 2021 </a></h5>
+                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_may_26_2021">May 26, 2021 </a></h5>
+                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_april_7">April 7, 2021 - Year in Review </a></h5>
+     
           </div>
         </div>
         <div class="article-list blog sidebar-block">
@@ -82,7 +96,14 @@
   {% include 'navigation/footer.html' with homepage=True %}
 {% endblock %}
 
+
+{% comment %}
+
+This javascript file is used for lazyloading if need 
+
 {% block scripts %}
   <script src="{% static 'home/js/lazyloading.js' %}" type="text/javascript"></script>
 {% endblock %}
+
+{% endcomment %}
  

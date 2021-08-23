@@ -1,8 +1,8 @@
 {% load humanize %}
-<h1 class="section"><a href=''>{{ self.section|title }}</a></h1>
+<h1 class="section"><a href=''>{{ section }}</a></h1>
 <section class="c-homepage__section c-homepage__section--1">
     <div class="c-homepage__section__left">
-      {% with self.section.featured_articles.0 as article %}
+      {% with articles.0 as article %}
         {% if article %}
           {% include 'article/objects/default.html' with article=article padded=True %}
         {% endif %}
@@ -10,19 +10,19 @@
     </div>
     <div class="c-homepage__section__right">
       <div class="c-homepage__section__stacked">
-        {% with self.section.featured_articles.1 as article %}
+        {% with articles.1 as article %}
           {% if article %}
             {% include 'article/objects/default.html' with article=article hide_image=True padded=True %}
           {% endif %}
         {% endwith %}
-        {% with self.section.featured_articles.2 as article %}
+        {% with articles.2 as article %}
           {% if article %}
             {% include 'article/objects/default.html' with article=article hide_image=True padded=True %}
           {% endif %}
         {% endwith %}
       </div>
       <ul class="c-homepage__section__bullets">
-        {% with self.section.featured_articles.3 as article %}
+        {% with articles.3 as article %}
           {% if article %}
             <li>{% include 'article/objects/bullet.html' with article=article %}</li>
           {% endif %}

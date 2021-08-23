@@ -44,6 +44,13 @@ class HomePage(Page):
         context['above_cut_articles'] = qs[:6]
         context['breaking_news_article'] = qs.filter(is_breaking=True)
 
+        context['News'] = self.get_section_articles(section_slug = 'news')
+        context['Culture'] = self.get_section_articles(section_slug = 'culture')
+        context['Science'] = self.get_section_articles(section_slug = 'science')
+        context['Sports'] = self.get_section_articles(section_slug = 'sports')
+        context['Opinion'] = self.get_section_articles(section_slug = 'opinion')
+        context['Features'] = self.get_section_articles(section_slug = 'features')
+
         ajax_section_blocks = []
 
         #remove "blog" from the sections that are about to be loaded because "blog" is a section that will be loaded on the right-side bar under digital print issuses on the homepage
