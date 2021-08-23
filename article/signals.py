@@ -16,6 +16,9 @@ def update_timeline_on_article_alteration_pre_save(instance, **kwargs):
         instance._old_timeline = previous_version.timeline
         print("Set instance._old_timeline: ")
         print(instance._old_timeline)
+    else:
+        # Exists to prevent AttributeError later
+        instance._old_timeline = None
     return
 
 @receiver(post_save, sender=ArticlePage)

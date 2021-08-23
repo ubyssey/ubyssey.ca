@@ -1,8 +1,11 @@
 from django.db import models
+from django.db.models.fields.related import ForeignKey
 
 from section.sectionable.models import SectionablePage
 
 from wagtail.core.models import Page
+from wagtailmenus.models import FlatMenu
+from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
 class SpecialLandingPage(SectionablePage):
     """
@@ -22,8 +25,19 @@ class SpecialLandingPage(SectionablePage):
     
     show_in_menus_default = True
 
+    #-----Fields-----
+    menu = ForeignKey(
+        FlatMenu,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+    )
+
     content_panels = Page.content_panels + [
+        ModelChooserPanel('menu'),
     ]
+
 
     def get_context(self, request, *args, **kwargs):        
         context = super().get_context(request, *args, **kwargs)

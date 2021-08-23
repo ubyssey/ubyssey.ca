@@ -1,10 +1,19 @@
-{% extends 'base.html' %} {% comment %}base.html found in ubyssey app{% endcomment %}
+{% extends 'ubyssey/base.html' %}
 {% load static %}
-{% load dispatch_tags %}
+{% load menu_tags %}
 {% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+
+{% block header %}
+  {% include 'navigation/headers/topbar.html' %}
+  {% include 'navigation/headers/mobile.html' %}
+{% endblock %}
 
 {% block content %}
-  {% for block in page.body %}
-    {% include_block block %}
-  {% endfor %}
+  {% if self.menu %}
+    {% flat_menu self.menu.handle %}
+  {% else %}
+    {% children_menu max_levels=2 %}
+  {% endif %}
 {% endblock %}

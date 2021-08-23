@@ -182,6 +182,7 @@ INSTALLED_APPS = [
     'dbtemplates',
     'wagtailmodelchooser',
     'wagtailmenus',
+    'wagtailcache',
 ]
 
 if DEBUG:
@@ -260,6 +261,7 @@ STATICFILES_DIRS = []
 
 # Set the middleware
 MIDDLEWARE = [
+    'wagtailcache.cache.UpdateCacheMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.gzip.GZipMiddleware',
 ]
@@ -278,6 +280,7 @@ MIDDLEWARE += [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    'wagtailcache.cache.UpdateCacheMiddleware',
 ]
 
 GS_LOCATION = None
