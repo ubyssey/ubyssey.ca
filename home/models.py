@@ -60,10 +60,7 @@ class HomePage(Page):
 
             for section in childrenPages:
                   if(str(section_stream.value['section']) == section.title and section.title != "Blog"):
-                        section_blocks.append(section)
-
-        for section in section_blocks:
-            context[section.title] = section.get_featured_articles()
+                         context[section.title] = section.get_featured_articles()
                   
         return context
 
