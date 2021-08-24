@@ -1,9 +1,22 @@
+from .blocks import (
+    QuoteBlock, 
+    CustomStylingCTABlock,
+)
+
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 
 from section.sectionable.models import SectionablePage
 
+from wagtail.admin.edit_handlers import (
+    MultiFieldPanel,
+    StreamFieldPanel,
+    HelpPanel,
+)
+
 from wagtail.core.models import Page
+from wagtail.core.fields import StreamField
+
 from wagtailmenus.models import FlatMenu
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
@@ -34,8 +47,31 @@ class SpecialLandingPage(SectionablePage):
         related_name='+',
     )
 
+    content = StreamField(
+        [
+            ('quote', QuoteBlock(
+                label="Quote Block",
+            )),
+            ('stylecta',CustomStylingCTABlock(
+                label="Custom Styling CTA",
+            )),
+        ],
+        null=True,
+        blank=True,
+    )
     content_panels = Page.content_panels + [
         ModelChooserPanel('menu'),
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content='<h1>TODO</h1><p>Write something here</p>'
+                ),
+                StreamFieldPanel("content"),
+            ],
+            heading="Article Content",
+            classname="collapsible",
+        ),
+
     ]
 
 

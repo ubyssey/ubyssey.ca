@@ -1,0 +1,13 @@
+{% load wagtailcore_tags %}
+
+<div class="{{ self.class_name }}-container">
+    <div class="{{ self.class_name }}__ home-content">
+        <div class="title">
+            {{ self.title }}
+        </div>
+        <div class='content-wrapper'>
+            {{ self.content }}
+            <a class="{{ self.class_name }}__ home-content__nav" href="{% page_url self.link %}">{{ self.link_text }}<i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+        </div>
+    </div>
+</div>
