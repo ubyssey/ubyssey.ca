@@ -55,6 +55,9 @@ class CategorySnippet(index.Indexed, ClusterableModel):
     )
     search_fields = [
         index.SearchField('title', partial_match=True),
+        index.RelatedFields('section_page', [
+            index.SearchField('title'),
+        ]),
     ]
 
     panels = [
