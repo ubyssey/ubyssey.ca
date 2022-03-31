@@ -10,7 +10,6 @@ from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.settings.models import BaseSetting, register_setting
 from wagtail.core.models import Orderable
 
-
 class NavigationMenuOrderable(Orderable):
     """
     Abstract class for DRY implementation of different menus
