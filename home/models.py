@@ -28,10 +28,12 @@ class HomePage(Page):
         'authors.AllAuthorsPage',
         'videos.VideosPage',
     ]
-
     sections_stream = StreamField(
         [
-            ("home_page_section_block", homeblocks.HomepageFeaturedSectionBlock())
+            # News section
+            ("home_page_featured_section_block", homeblocks.HomePageFeaturedSectionBlock()),
+            # non-News sections
+            ("home_page_section_block", homeblocks.HomePageSectionBlock())
         ],
         null=True,
         blank=True,

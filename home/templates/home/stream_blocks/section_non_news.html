@@ -1,7 +1,6 @@
 {% load humanize %}
 {% load wagtailcore_tags %}
-<h1 class="section"><a href={{ section_slug }}>{{ section|title }}</a></h1>
-
+<h1 class="section"><a href={{ value.section.slug }}>{{ value.section.title }}</a></h1>
 <section class="c-homepage__section c-homepage__section--2">
-  {% include 'section/objects/section_featured.html' with featured_articles=articles %}
+  {% include 'section/objects/section_featured.html' with featured_articles=value.section.get_featured_articles %}
 </section>

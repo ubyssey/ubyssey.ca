@@ -18,6 +18,7 @@ class SectionChooserBlock(blocks.ChooserBlock):
     target_model = Section
     widget = forms.Select
 
+# non-News section blocks
 class HomePageSectionBlock(blocks.StructBlock):
     # section = blocks.CharBlock(required=True)
 
@@ -28,7 +29,9 @@ class HomePageSectionBlock(blocks.StructBlock):
     class Meta:
         template = "home/stream_blocks/section_non_news.html"
 
-class HomepageFeaturedSectionBlock(blocks.StructBlock):
+
+# News section block
+class HomePageFeaturedSectionBlock(blocks.StructBlock):
 
     section = field_block.PageChooserBlock(
         page_type='section.SectionPage'
