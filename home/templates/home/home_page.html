@@ -27,22 +27,16 @@
     {% include 'home/objects/above_cut.html' with articles=above_cut_articles %}
 
     <div class="homepage-section row">
+      {% comment %}
+        Includes each Section block (i.e. News, Culture, etc.)
+      {% endcomment %}
       {% for block in self.sections_stream %}
         <section>{% include_block block %}</section>
       {% endfor %}
 
-      {% comment %} <div class="sections" >  
-
-        
-        {% include 'home/stream_blocks/section_news.html' with section="News" section_slug="news" articles=News %}
-
-        {% include 'home/stream_blocks/section_non_news.html' with section="Culture" section_slug="culture" articles=Culture %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Sports" section_slug="sports" articles=Sports %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Opinion" section_slug="opinion" articles=Opinion %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Features" section_slug="features" articles=Features %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Science" section_slug="science" articles=Science %}
-      </div> {% endcomment %}
-
+      {% comment %}
+        Side bars (i.e. ad slots, digital print issues, From the Blog, )
+      {% endcomment %}
       <div class="sidebar-home">
         <div class="sidebar-block sidebar-block--advertisement">
           {% adslot self.home_sidebar_ad_slot1.slug %}
