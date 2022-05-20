@@ -1,23 +1,25 @@
 import * as mp from './modules/Mixpanel';
 import upcomingEvents from './widgets/upcoming-events';
 
+// self-executing js anonymous function
 (function () {
 
-  initializeSearchFormActions();
-  initializeSocialMediaActions();
+  initializeSearchFormActions();    // Listeners for showing/hiding search form
+  initializeSocialMediaActions();   // Listeners for Facebook, Twitter and Reddit sharing
 
-  ubysseyHeaderMobilePopUp();
-  ubysseyHeaderMagazineDropDown(); // appears to be custom js for Magazine menu dropdown Keegan has talked about
-  ubysseyHeaderCultureDropDown();  // appears to be custom js for Culture menu dropdown
-  archiveMobileDropDown();
+  ubysseyHeaderMobilePopUp();       // listeners for showing and hiding mobile navigation bar vs search form
+  ubysseyHeaderMagazineDropDown();  // appears to be custom js for Magazine menu dropdown Keegan has talked about
+  ubysseyHeaderCultureDropDown();   // appears to be custom js for Culture menu dropdown
+  archiveMobileDropDown();          // listeners for dropdown menu for elements js-dropdown-container/js-dropdown-list/js-dropdown
 
+  // Track page views through Mixpanel (for articles & for non-article pages)
   if ($('.js-article').length) {
-    mp.pageView('article', $('.js-article'), 1)
+    mp.pageView('article', $('.js-article'), 1) // article pages
   } else {
-    mp.pageView();
+    mp.pageView();                              // non-article pages
   }
 
-  //listener for magazine in mobile header pop up
+  //listeners for magazine & culture dropdowns in mobile header pop up
   $('#magazine-mobile').click(function () {
     $('#magazine-more').slideToggle(200);
   });
@@ -28,53 +30,43 @@ import upcomingEvents from './widgets/upcoming-events';
 
   let isUpcomingEventsCreated = false;
 
+  // upon page load, set margins, set full width story banner height, register widgets, parse issues
   $(document).ready(function () {
-
-    embedMargins();
-
+    embedMargins(); // set margins
     if ($(window).width() <= 500) {
-      resizeFullWidthStoryBanner();
+      resizeFullWidthStoryBanner();   // set banner height
     }
-
     // register widgets
     if (!isUpcomingEventsCreated && $(window).width() >= 1200) {
       isUpcomingEventsCreated = true;
       upcomingEvents();
     }
-
     //Calls issue parser only in homepage
     if (window.location.pathname === '/') { issueParser(); }
-
   });
 
+  // upon page resize, register/reset widget size, full width story banner size
   $(window).resize(function () {
-
     //make sure the carousel widget has correct size
     if (!isUpcomingEventsCreated && $(window).width() >= 1200) {
       isUpcomingEventsCreated = true;
       upcomingEvents();
     }
-
     if ($(window).width() <= 500) {
       resizeFullWidthStoryBanner();
     }
-
   });
-
 })();
 
-
+// Triggered once for each movement, continue to be triggered until finger is released
+// Default touchmove behaviour prevented. Only for touchscreen.
 function disableScroll() {
-  // Triggered once for each movement
-  // Continue to be triggered until finger is released
-  // Default touchmove behaviour prevented. Only for touchscreen.
   $(document).on('touchmove', function (e) {
     e.preventDefault();
   });
   $('body').addClass('u-no-scroll');
 }
 
-// jQuery
 // Remove event handler for touchmove, default touchmove behaviour enabled
 // Remove class u-no-scroll
 function enableScroll() {
@@ -82,6 +74,8 @@ function enableScroll() {
   $('body').removeClass('u-no-scroll');
 }
 
+// Set element image-attachment variables left and right's respective margins to that of 
+// the first child of parent element p (with direct parent element article-content)
 function embedMargins() {
   const marginLeft = $('.article-content > p:first-child').css('marginLeft')
   const marginRight = $('.article-content > p:first-child').css('marginRight')
@@ -89,6 +83,7 @@ function embedMargins() {
   $('.image-attachment.right').css('marginRight', marginRight)
 }
 
+// Set banner height to minimum height
 function resizeFullWidthStoryBanner() {
   if ($('.fw-banner banner-image') !== undefined) {
     let bannerHeight = $('.banner-image').height();
@@ -157,10 +152,11 @@ function ubysseyHeaderCultureDropDown() {
   );
 }
 
+// Listeners for hiding and showing dropdown menus (while enabling/disabling touch scrolling) on click
 function archiveMobileDropDown() {
   let DROPDOWN_FADE_TIME = 100;
 
-  // on click, element parent fades (visible to hidden)
+  // on click, element parent fades (visible to hidden), scroll using touch enabled for touchscreens
   $('.js-dropdown-container').click(function (e) {
     e.preventDefault();
     var dropdown = $(this).parent();
@@ -169,6 +165,9 @@ function archiveMobileDropDown() {
     return false;
   });
 
+  // When any element a directly within the js-dropdown element (immediate parent) is clicked,
+  // If js-dropdown-list element visible, make non-visible and enable scrolling
+  // If it is not visible, make visible (and check whether or not to disable scrolling)
   $('.js-dropdown > a').click(function (e) {
     e.preventDefault();
     var dropdown = $(this).parent().find('.js-dropdown-list');
@@ -184,11 +183,14 @@ function archiveMobileDropDown() {
     return false;
   });
 
+  // When any element a within the js-dropdown element (can be non-immediate parent) is clicked,
+  // Stop propagation
   $('.js-dropdown-list a').click(function (e) {
     e.stopPropagation();
   });
 }
 
+// Listener for showing and hiding mobile navigation bar vs search form
 function ubysseyHeaderMobilePopUp() {
   // on clicking on the a element w/ class=='menu'
   $('a.menu').click(function (e) {
@@ -222,11 +224,9 @@ function initializeSearch() {
     }
     return false;
   });
-
-
-
 }
 
+// Listeners for showing/hiding search form
 function initializeSearchFormActions() {
 
   // on clicking the a element w/ class=='search'
@@ -273,7 +273,9 @@ function initializeSearchFormActions() {
   });
 }
 
+// Listeners for Facebook, Twitter and Reddit sharing
 function initializeSocialMediaActions() {
+
   // on clicking on the a element w/ class=='facebook'
   // likes the page
   // source: https://washamdev.com/facebook-sdk-javascript-tutorial-graph-api-facebook-login/
@@ -288,14 +290,14 @@ function initializeSocialMediaActions() {
     }, function (response) { });
   });
 
-  // on clicking on the a element w/ class=='twitter'
+  // on clicking on the a element w/ class=='twitter', share on twitter
   $(document).on('click', 'a.twitter', function (e) {
     e.preventDefault();
     window.open('http://twitter.com/share?url=' + $(this).data('url') + '&text=' + $(this).data('title') + '&', 'twitterwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
-  // on clicking on the a element w/ class=='reddit'
+  // on clicking on the a element w/ class=='reddit', share on reddit
   $(document).on('click', 'a.reddit', function (e) {
     e.preventDefault();
     window.open('http://www.reddit.com/submit?url=' + $(this).data('url') + '&title=' + $(this).data('title') + '&', 'redditwindow',
