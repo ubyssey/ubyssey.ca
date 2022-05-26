@@ -16,20 +16,30 @@ const BOX_HEIGHT = 274
 const SKYSCRAPER_HEIGHT = 624
 
 $(function () {
+    // 2022/05/25 — Widget polls are a removed feature and the below is therefore unused
     $('.c-widget-poll').each(function () {
         ReactDOM.render(
             <Poll id={$(this).data('id')} loaderHTML={$(this).html()} />,
             $(this).get(0)
         )
     })
+    // 2022/05/25 — Adblock response is not a maintained feature e and the below is therefore unused
     ReactDOM.render(
         <AdblockSplash />,
         document.getElementById('adblock-splash')
     )
+    // 2022/05/25 - Cookie disclaimer IS used.
+    // HOWEVER it must be capable of appearing on ANY page on the site
+    // Its presence in JavaScript associated with ARTICLES seems confusing, code smell
     ReactDOM.render(
         <CookieDisclaimer />,
         document.getElementById('cookie-disclaimer')
     )
+    // 2022/05/25 - Timelines ARE used; note however they require very heavy lifting from the backend.
+    // Consider isolating timeline related scripts in the static folder corresponding to the template
+    // folder in its own Django app so that feature-relevant code is "all in one place".
+    // Having timeline frontend in this file feels like it's "hiding" functionality which is
+    // required to be "magic" 
     $('.c-timeline').each(function () {
         ReactDOM.render(
             <Timeline id={$(this).data('currentArticleId')}
@@ -38,7 +48,7 @@ $(function () {
             $(this).get(0)
         )
     })
-
+    // 2022/05/25 - Podcast episodes are a removed feature
     $('.c-podcast-episode').each(function () {
         ReactDOM.render(
             <Episode author={$(this).data('author')}
@@ -78,6 +88,9 @@ if ($('main.article').length) {
         url: articleURL
     };
 
+    // 2022/05/25 - Sticky ads have never worked correctly and caused more complaints than anything
+    // Inteded functionality not clear.
+    // Strong candidate for permanent removal
     function stickyAds(scrollTop, stickyElements) {
 
         const headerHeight = $('.topbar').outerHeight(true)
@@ -179,8 +192,16 @@ if ($('main.article').length) {
         })
     }
 
+    // Why even name this function if we're just going to immediately invoke it where it was defined, like an anonymous function?
+    // It's not for documentation's sake; no one's been able to understand this function anyways.
+    // Code smell, suggests this was written by someone that does not understand JavaScript
     articleAds()
 
+    // Pointless "article list" code. "Suggested articles" is not a well defined feature for the site;
+    // while it is currently being reworked, there's no reason not to simply describe the elements involved using HTML.
+    // This separates the description of the element into a different language.
+    // It requires anyone who wants maintain a feature that would USUALLY have been done in HTML on our site know React.
+    // Such code as this makes sense when making a Single Page App (SPA), but only causes trouble here
     if (document.getElementById('article-list') !== null) {
         const articleList = ReactDOM.render(
             <ArticlesSuggested
@@ -193,7 +214,7 @@ if ($('main.article').length) {
         );
     }
 
-
+    // 2022/05/25 - Galleries are a good idea, but broken. For all the below the best idea is likely "preserve and debug"
     const gatherImages = (gallery) => {
         var selector, trigger;
 
@@ -250,7 +271,11 @@ if ($('main.article').length) {
 
 }
 
-
+// 2022/05/25 - Search forms need fixing but are a feature we intend to maintain into the future
+// Since all that's being done here is rendering an element, the question comes up again, why bother with React at all?
+// Why not just do it with HTML? It's not like we're responsively narrowing down search requests as the user types,
+// All that we can reasonably do is send an HTTP request with POST content, and get a normal response from the backend
+// no AJAX dynamic webpage. Which is bare bones webdev that doesn't require React.
 ReactDOM.render(
     <Search />,
     document.getElementById('search-form')
