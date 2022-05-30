@@ -3,21 +3,22 @@ COPY . /workspaces/ubyssey.ca/
 WORKDIR /workspaces/ubyssey.ca/
 # Installs some basics
 RUN apt-get update
-RUN apt-get install -y git
-RUN apt-get install -y curl
+  && apt-get install -y git 
+  && curl 
+
 # Installs Node 14.x and npm 6.x
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \ 
+  && apt-get install -y nodejs
+
 # Install the Django app’s dependencies
 RUN pip install -r requirements.txt
+
 # Set up static files - clears old old version of node_modules that may be around, tides up new version
 WORKDIR /workspaces/ubyssey.ca/ubyssey/static_src/
-RUN rm -rf node_modules
-RUN npm install
-RUN npm install -g gulp
-RUN npm rebuild node-sass
-RUN gulp buildDev
-RUN rm -rf node_modules
+RUN rm -rf node_modules \ 
+  && npm install && npm install -g gulp && npm rebuild node-sass \ 
+  && gulp buildDev \ 
+  && rm -rf node_modules
 
 # See https://stackoverflow.com/questions/28372328/how-to-install-the-google-cloud-sdk-in-a-docker-image
 # Downloading gcloud package
