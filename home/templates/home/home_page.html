@@ -16,7 +16,7 @@
     {% comment %}
       breaking_news_article is passed through from context and it contains all of the breaking articles from each section
     {% endcomment %}
-    {% for article in breaking_news_article%}      
+    {% for article in breaking_news_article %}      
       <a class="o-breaking-news" href={% pageurl article %}>
         <h3>BREAKING: {{ article.title|safe }}</h3>
       </a>
@@ -24,48 +24,29 @@
     {% comment %}
       Additional fields/blocks will go here to alert students to some special events
     {% endcomment %}
-    {% include 'home/objects/above_cut.html' with articles=above_cut_articles %}
 
+    {% comment %}
+      Display user-selected bocks that will be the first thing the user sees when going to the site, before scrolling down
+      (hence, "above the cut")
+    {% endcomment %}
+    {% for block in self.above_cut_stream %}
+      {% include_block block %}
+    {% endfor %}
+
+    {% comment %}
+      Below-cut content
+    {% endcomment%}
     <div class="homepage-section row">
       <div class="sections" >  
-        {% include 'home/stream_blocks/section_news.html' with section="News" articles=News %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Culture" articles=Culture %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Sports" articles=Sports %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Opinion" articles=Opinion %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Features" articles=Features %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Science" articles=Science %}
+        {% for block in self.sections_stream %}
+          {% include_block block %}
+        {% endfor %}
       </div>
 
       <div class="sidebar-home">
-        <div class="sidebar-block sidebar-block--advertisement">
-          {% adslot self.home_sidebar_ad_slot1.slug %}
-        </div>
-        <div class=" sidebar-block">
-          <h2 class="block-title">Check Out Our Digital Print Issue</h2>
-          <div class='sidebar-issue'>
-                  <h5 class="headline" id='issue-photo'><a class='issue' id ='issue1' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_july_27_2021">July 27, 2021<img src="https://image.isu.pub/210727150151-561948f393e2776d2f61fe34036ec330/jpg/page_1_thumb_large.jpg"></a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/june_29_2021">June 29, 2021 </a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_may_26_2021">May 26, 2021 </a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_april_7">April 7, 2021 - Year in Review </a></h5>
-
-          </div>
-        </div>
-        <div class="sidebar-block sidebar-block--advertisement">
-          {% adslot self.home_sidebar_ad_slot2.slug %}
-        </div>
-        <div class="article-list blog sidebar-block">
-          <h2 class="block-title">From the blog</h2>
-          <ul class="article-list">
-            {% comment %}
-              blog is passed through from context
-            {% endcomment %}
-            {% for article in Blog %}
-              <li>
-                {% include 'article/objects/blog_column.html' with article=article padded=True   %}
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
+        {% for block in self.sidebar_stream %}
+          {% include_block block %}
+        {% endfor %}
         <div class="multi-zone cell right">
           {% comment %} 
             This should probably be renamed, because "zones"

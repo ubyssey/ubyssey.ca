@@ -19,7 +19,7 @@
 	{% endif %}
 	<div class="c-article__byline c-article__byline-center">
         <div class="c-article__author">
-            By {{ self.get_author_url|safe }}
+            By {{ self.authors_with_urls|safe }} 
         </div>
         <div class="c-article__byline__meta">
             <span class="c-article__published-at">

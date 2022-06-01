@@ -10,12 +10,12 @@
 @import "modules/magazine/2019-2020/poetry";
 @import "modules/magazine/objects";
 
-@font-face {
-  font-family: "ub-avenir-sans";
-  src: url("../fonts/Avenir-Regular.woff2") format("woff2"), url("../fonts/Avenir-Regular.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
+// $font-mont: "Montserrat", sans-serif;
+$font-mont: Montserrat, sans-serif;
+// font-avenir: "ub-avenir", Avenir, serif;
+$font-avenir: Avenir, serif;
+
+
 
 $border: 15px solid $color-primary-1;
 
@@ -61,7 +61,7 @@ video {
   min-height: 3em;
 
   // Text
-  font-family: "Montserrat", sans-serif;
+  font-family: $font-mont;
   font-weight: 500;
   font-size: font-size(40);
   text-align: center;
@@ -95,14 +95,14 @@ video {
   h1 {
     font-size: 1em;
     text-transform: uppercase;
-    font-family: "montserrat";
+    font-family: $font-mont;
     font-weight: 600;
   }
 
   h2 {
     font-size: 1.1em;
     margin: 0.25rem;
-    font-family: "montserrat";
+    font-family: $font-mont;
     font-weight: 300;
   }
 }
@@ -140,7 +140,7 @@ video {
 h3,
 h4 {
   // Text
-  font-family: "ub-avenir", Avenir, serif;
+  font-family: $font-avenir;
   font-weight: 300;
 }
 
@@ -153,7 +153,7 @@ h4 {
   border: 1px solid white;
 
   // Text
-  font-family: "Montserrat", sans-serif;
+  font-family: $font-mont;
   text-transform: uppercase;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   color: white;
@@ -187,7 +187,7 @@ h4 {
     position: absolute;
     align-items: center;
     // Text
-    font-family: "Montserrat", sans-serif;
+    font-family: $font-mont;
 
     // Other
     transition: transition $time, opacity $time;
@@ -233,7 +233,7 @@ h4 {
         font-weight: 400;
         text-shadow: 1px 1px rgba(0, 0, 0, 0.30196078431372547);
         text-transform: capitalize;
-        font-family: "Montserrat", sans-serif;
+        font-family: $font-mont;
       }
     }
     &.right {
@@ -376,7 +376,7 @@ h4 {
   .title {
     // Text
     font-size: 2rem;
-    font-family: "Montserrat", sans-serif;
+    font-family: $font-mont;
     font-weight: 300;
     @media ($bp-larger-than-tablet) {
       // Structure

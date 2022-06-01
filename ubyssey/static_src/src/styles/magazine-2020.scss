@@ -10,12 +10,8 @@
 @import "modules/magazine/2019-2020/poetry";
 @import "modules/magazine/objects";
 
-@font-face {
-  font-family: "ub-avenir-sans";
-  src: url("../fonts/Avenir-Regular.woff2") format("woff2"), url("../fonts/Avenir-Regular.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
+$font-avenir: Avenir, serif;
+
 
 $border: 15px solid $color-primary-1;
 
@@ -95,14 +91,14 @@ video {
   h1 {
     font-size: 1em;
     text-transform: uppercase;
-    font-family: "montserrat";
+    font-family: "montserrat", sans-serif;
     font-weight: 600;
   }
 
   h2 {
     font-size: 1.1em;
     margin: 0.25rem;
-    font-family: "montserrat";
+    font-family: "montserrat", sans-serif;
     font-weight: 300;
   }
 }
@@ -140,7 +136,7 @@ video {
 h3,
 h4 {
   // Text
-  font-family: "ub-avenir", Avenir, serif;
+  font-family: $font-avenir;
   font-weight: 300;
 }
 

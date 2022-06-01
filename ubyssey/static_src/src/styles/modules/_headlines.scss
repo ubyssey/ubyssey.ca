@@ -1,7 +1,7 @@
 // Headlines
 .o-headline {
   font-family: $font-headline;
-  font-weight: $font-weight-bold;
+  font-weight: $font-weight-headline;
   line-height: 1.177em;
   margin-top: 0;
   margin-bottom: 0;
@@ -60,7 +60,7 @@ h1, h2, h3, h4, h5 {
     margin-top: 0;
     margin-bottom: 10px;
     font-family: $font-headline;
-    font-weight: 800;
+    font-weight: $font-weight-headline;
     line-height: 1.177em;
     a {
       color: inherit;

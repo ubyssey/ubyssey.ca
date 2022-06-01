@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from section.sectionable.models import SectionablePage # self made abstract model
+
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from django_extensions.db.fields import AutoSlugField
 
@@ -11,8 +14,9 @@ from taggit.managers import TaggableManager
 
 from ubyssey.validators import validate_youtube_url
 
+from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
-from wagtail.core.models import Orderable
+from wagtail.core.models import Orderable, Page
 from wagtail.snippets.models import register_snippet
 
 #-----Taggit stuff-----
@@ -43,10 +47,50 @@ class VideoAuthorsOrderable(Orderable):
         ),
     ]
 
+class VideosPage(SectionablePage):
+    template = 'videos/videos_page.html'
+
+    parent_page_types = [
+        'home.HomePage',
+    ]
+    max_count_per_parent = 1
+    show_in_menus_default = True
+    
+    def __str__(self):
+        """String rep of VideosPage"""
+        return self.title
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        all_videos = VideoSnippet.objects.all()
+
+        paginator = Paginator(all_videos, per_page=15)
+
+        page = request.GET.get("page")
+        try:
+            # If the page exists and the ?page=x is an int
+            paginated_videos = paginator.page(page)
+            
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            paginated_videos = paginator.page(1)
+        
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            paginated_videos = paginator.page(paginator.num_pages)
+
+        context["paginated_videos"] = paginated_videos
+        
+        return context
+
+
 #-----Snippet models-----
 
 @register_snippet
 class VideoSnippet(ClusterableModel):
+
     title = models.CharField(
         max_length=255,
         null=False,
@@ -72,7 +116,7 @@ class VideoSnippet(ClusterableModel):
         validators=[validate_youtube_url,]
     )
 
-    # authors = ManyToManyField(Author, related_name='video_authors')
+    # v_authors = models.ManyToManyField(VideoAuthorsOrderable, related_name='video_authors')
     tags = TaggableManager(through=VideoTag, blank=True)
 
     created_at = models.DateTimeField(default=timezone.now)
@@ -80,6 +124,39 @@ class VideoSnippet(ClusterableModel):
 
     def __str__(self):
         return self.title
+
+    def get_authors_string(self, authors_list=[]) -> str:
+        """
+        Returns html-friendly list of the VideoPage's authors as a comma-separated string (with 'and' before last author).
+        Keeps large amounts of logic out of templates.
+        """
+        def format_author(video_author):
+            return '<a href="%s">%s</a>' % (video_author.author.full_url, video_author.author.full_name)
+            
+            # if links:
+            #     return '<a href="%s">%s</a>' % (self.video_authors.all()[0].author.full_url, self.video_authors.all()[0].author.full_name)
+            # return self.video_authors.all()[0].author.full_name
+
+        if not authors_list:
+            authors = list(map(format_author, self.video_authors.all()))
+        else:
+            authors = list(map(format_author, authors_list))
+
+        if not authors:
+            return ""
+        elif len(authors) == 1:
+            # If this is the only author, just return author name
+            return authors[0]
+
+        return ", ".join(authors[0:-1]) + " and " + authors[-1]        
+    authors_string = property(fget=get_authors_string)
+
+    def get_authors_with_urls(self) -> str:
+        """
+        Wrapper for get_authors_string for easy use in templates.
+        """
+        return self.get_authors_string(links=True)
+    authors_with_urls = property(fget=get_authors_with_urls)
 
     panels = [
         MultiFieldPanel(
@@ -107,3 +184,4 @@ class VideoSnippet(ClusterableModel):
     class Meta:
         verbose_name = "Video"
         verbose_name_plural = "Videos"
+        ordering = ['-created_at']

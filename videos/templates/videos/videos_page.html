@@ -1,0 +1,88 @@
+{% extends 'ubyssey/base.html' %}
+{% load humanize %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load wagtailuserbar %}
+
+{% block header %}
+  {% include 'navigation/headers/topbar.html' %}
+  {% include 'navigation/headers/mobile.html' %}
+{% endblock %}
+
+{% block content %}
+<main class="section">
+  {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 %}
+  {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=5 %}
+  <div class="u-container u-container--padded u-podcast-container">
+    <div class="c-page__header">
+      <h1 class="c-page__heading">Videos</h1>
+    </div>
+
+    {% comment %} Un-DRY alert: this div is repeated later {% endcomment %}
+    <div class="o-archive__pagination">
+      {% if paginated_videos.has_previous %}
+        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+      {% endif %}
+
+      <span class="o-archive__pagination__current" >
+        Page {{ paginated_videos.number }} of {{ paginated_videos.paginator.num_pages }}
+      </span>
+
+      {% if paginated_videos.has_next %}
+        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+      {% endif %}
+    </div>
+
+    <div class='c-podcast-episode-list'>
+      {% for video in paginated_videos %}
+        {% load dispatch_filters %}
+          <div class="c-videos__video">
+            <div class="c-videos__title">
+              <h3><a name="video-{{video.url}}" href="#video-{{video.url}}">{{video.title|safe}}</a></h3>
+            </div>
+            
+            <div class='c-videos__wrapper'>
+              Loading Video...
+              <iframe 
+                src="{{ video.url|youtube_embed_url|safe }}"
+                allowfullscreen="allowfullscreen"
+                mozallowfullscreen="mozallowfullscreen" 
+                msallowfullscreen="msallowfullscreen" 
+                oallowfullscreen="oallowfullscreen" 
+                webkitallowfullscreen="webkitallowfullscreen"></iframe>
+            </div>
+            <div class="c-video__authors">Credits: {{ video.get_authors_string|safe }}</div>
+
+          </div>
+        {% comment %} <p>
+            <a href="{{ video_placement.video.url }}">
+                {{ video_placement.video.text }}
+            </a>
+        </p> {% endcomment %}
+        {% comment %} <li>
+          {% include "videos/video_snippet.html" %}
+        </li> {% endcomment %}
+      {% endfor %}
+    </div>
+
+    {% comment %} Un-DRY repetition of above {% endcomment %}
+    <div class="o-archive__pagination">
+      {% if paginated_videos.has_previous %}
+        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+      {% endif %}
+
+      <span class="o-archive__pagination__current" >
+        Page {{ paginated_videos.number }} of {{ paginated_videos.paginator.num_pages }}
+      </span>
+
+      {% if paginated_videos.has_next %}
+        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+      {% endif %}
+    </div>
+
+  </div>
+
+</main>
+{% endblock %}
+

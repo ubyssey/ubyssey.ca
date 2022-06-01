@@ -1,5 +1,4 @@
 {% load static %}
-{% load cache %}
 {% load menu_tags %}
 
 <header class="main">
@@ -17,38 +16,25 @@
         <a class = "facebook-icon" href="https://www.facebook.com/ubyssey" target="_blank"><i class="fa fa-facebook-square"></i></a>
         <a class = "instagram-icon" href="https://www.instagram.com/ubyssey/" target="_blank"><i class="fa fa-instagram"></i></a>
         <a class = "twitter-icon" href="https://twitter.com/Ubyssey" target="_blank"><i class="fa fa-twitter"></i></a>
-        <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a>
+        {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
       </div>
     </div>
     <nav class="main row">
-        <div class="left">
-          <ul class="meta">
-            {% cache 604800 left_header_menu %}
-              {% for menu_item in settings.navigation.SitewideMenus.left_header_menu.all %}
-                <li><a href="{{ menu_item.link }}">{{ menu_item.text }}</a></li>
-              {% endfor %}
-            {% endcache %}
-          </ul>
-        </div>
-        <div class="middle">
-          <ul class="sections">
-            {% cache 604800 main_header_menu %}
-              {% main_menu %}
-              {% comment %} {% for menu_item in settings.navigation.SitewideMenus.main_header_menu.all %}
-                <li><a href="{{ menu_item.link }}">{{ menu_item.text }}</a></li>
-              {% endfor %} {% endcomment %}
-            {% endcache %}
-          </ul>
-        </div>
-        <div class="right">
-          <ul class="meta">
-            {% cache 604800 right_header_menu %}
-              {% for menu_item in settings.navigation.SitewideMenus.right_header_menu.all %}
-                <li><a href="{{ menu_item.link }}">{{ menu_item.text}}</a></li>
-              {% endfor %}
-            {% endcache %}
-          </ul>
-        </div>
+      <div class="left">
+        <ul class="meta">
+          {% flat_menu 'left_header_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+        </ul> 
+      </div>
+      <div class="middle">
+        <ul class="sections">
+          {% main_menu %}
+        </ul>
+      </div>
+      <div class="right">
+        <ul class="meta">
+          {% flat_menu 'right_header_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+        </ul>
+      </div>
     </nav>
 </div>
 </header>

@@ -1,31 +1,9 @@
-$font-default: "Montserrat", sans-serif;
+$font-default: Montserrat, sans-serif;
 $font-secondary: $font-default;
-$font-serif: 'ub-lft-etica', 'LFT Etica', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-serif: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+
 
 $font-size-base: 12;
-
-@font-face {
-	font-family:'ub-lft-etica';
-	src: url('../fonts/LFTEtica-SemiBold.eot');
-	src: url('../fonts/LFTEtica-SemiBold.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/LFTEtica-SemiBold.woff') format('woff'),
-		url('../fonts/LFTEtica-SemiBold.ttf') format('truetype');
-	font-weight: 600;
-	font-style: normal;
-}
-
-@font-face {
-	font-family:'ub-lft-etica';
-	src: url('../fonts/LFTEtica-Regular_gdi.eot');
-	src: url('../fonts/LFTEtica-Regular_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/LFTEtica-Regular_gdi.woff') format('woff'),
-		url('../fonts/LFTEtica-Regular_gdi.ttf') format('truetype'),
-		url('../fonts/LFTEtica-Regular_gdi.svg#LFTEtica-Regular') format('svg');
-	font-weight: 400;
-	font-style: normal;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
 
 @function font-size($size) {
   $scaled-size: ($size / $font-size-base) + em;

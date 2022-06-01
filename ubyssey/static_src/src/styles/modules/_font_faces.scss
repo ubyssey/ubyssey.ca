@@ -1,36 +1,66 @@
+// font faces
+
+// Playfair Display, Noto Serif, Noto Sans
+
 @font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-Bold_gdi.eot');
-	src: url('../fonts/MinionPro-Bold_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-Bold_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-Bold_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-Bold_gdi.svg#MinionPro-Bold') format('svg');
-	font-weight: 800;
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-Medium.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-Medium.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-Medium.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-Medium.svg#PlayfairDisplay-Medium') format('svg');
+	font-weight: 500;
 	font-style: normal;
 	font-stretch: normal;
 	unicode-range: U+0020-25CA;
 }
 
 @font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-BoldIt_gdi.eot');
-	src: url('../fonts/MinionPro-BoldIt_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-BoldIt_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-BoldIt_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-BoldIt_gdi.svg#MinionPro-BoldIt') format('svg');
-	font-weight: 800;
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-MediumItalic.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-MediumItalic.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-MediumItalic.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-MediumItalic.svg#PlayfairDisplay-MediumItalic') format('svg');
+	font-weight: 500;
 	font-style: italic;
 	font-stretch: normal;
 	unicode-range: U+0020-25CA;
 }
 
 @font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-Regular_gdi.eot');
-	src: url('../fonts/MinionPro-Regular_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-Regular_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-Regular_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-Regular_gdi.svg#MinionPro-Regular') format('svg');
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-Bold.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-Bold.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-Bold.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-Bold.svg#PlayfairDisplay-Bold') format('svg');
+	font-weight: 700;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-BoldItalic.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-BoldItalic.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-BoldItalic.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-BoldItalic.svg#PlayfairDisplay-BoldItalic') format('svg');
+	font-weight: 700;
+	font-style: italic;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'noto-serif';
+	src: 
+		url('../fonts/NotoSerif-Regular.woff2') format('woff2'),
+		url('../fonts/NotoSerif-Regular.woff') format('woff'),
+		url('../fonts/NotoSerif-Regular.ttf') format('truetype'),
+		url('../fonts/NotoSerif-Regular.svg#NotoSerif-Regular') format('svg');
 	font-weight: 400;
 	font-style: normal;
 	font-stretch: normal;
@@ -38,12 +68,12 @@
 }
 
 @font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-It_gdi.eot');
-	src: url('../fonts/MinionPro-It_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-It_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-It_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-It_gdi.svg#MinionPro-It') format('svg');
+	font-family:'noto-serif';
+	src: 
+		url('../fonts/NotoSerif-Italic.woff2') format('woff2'),
+		url('../fonts/NotoSerif-Italic.woff') format('woff'),
+		url('../fonts/NotoSerif-Italic.ttf') format('truetype'),
+		url('../fonts/NotoSerif-Italic.svg#NotoSerif-Italic') format('svg');
 	font-weight: 400;
 	font-style: italic;
 	font-stretch: normal;
@@ -51,37 +81,80 @@
 }
 
 @font-face {
-	font-family:'ub-lft-etica';
-	src: url('../fonts/LFTEtica-Bold_gdi.eot');
-	src: url('../fonts/LFTEtica-Bold_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/LFTEtica-Bold_gdi.woff') format('woff'),
-		url('../fonts/LFTEtica-Bold_gdi.ttf') format('truetype'),
-		url('../fonts/LFTEtica-Bold_gdi.svg#LFTEtica-Bold') format('svg');
-	font-weight: 800;
+	font-family:'noto-serif';
+	src: 
+		url('../fonts/NotoSerif-Bold.woff2') format('woff2'),
+		url('../fonts/NotoSerif-Bold.woff') format('woff'),
+		url('../fonts/NotoSerif-Bold.ttf') format('truetype'),
+		url('../fonts/NotoSerif-Bold.svg#NotoSerif-Bold') format('svg');
+	font-weight: 700;
 	font-style: normal;
 	font-stretch: normal;
 	unicode-range: U+0020-25CA;
 }
 
 @font-face {
-	font-family:'ub-lft-etica';
-	src: url('../fonts/LFTEtica-SemiBold.eot');
-	src: url('../fonts/LFTEtica-SemiBold.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/LFTEtica-SemiBold.woff') format('woff'),
-		url('../fonts/LFTEtica-SemiBold.ttf') format('truetype');
-	font-weight: 600;
+	font-family:'noto-serif';
+	src: 
+		url('../fonts/NotoSerif-BoldItalic.woff2') format('woff2'),
+		url('../fonts/NotoSerif-BoldItalic.woff') format('woff'),
+		url('../fonts/NotoSerif-BoldItalic.ttf') format('truetype'),
+		url('../fonts/NotoSerif-BoldItalic.svg#NotoSerif-BoldItalic') format('svg');
+	font-weight: 700;
+	font-style: italic;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+	
+
+@font-face {
+	font-family:'noto-sans';
+	src: 
+		url('../fonts/NotoSans-Regular.woff2') format('woff2'),
+		url('../fonts/NotoSans-Regular.woff') format('woff'),
+		url('../fonts/NotoSans-Regular.ttf') format('truetype'),
+		url('../fonts/NotoSans-Regular.svg#NotoSans-Regular') format('svg');
+	font-weight: 400;
 	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
 }
 
 @font-face {
-	font-family:'ub-lft-etica';
-	src: url('../fonts/LFTEtica-Regular_gdi.eot');
-	src: url('../fonts/LFTEtica-Regular_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/LFTEtica-Regular_gdi.woff') format('woff'),
-		url('../fonts/LFTEtica-Regular_gdi.ttf') format('truetype'),
-		url('../fonts/LFTEtica-Regular_gdi.svg#LFTEtica-Regular') format('svg');
+	font-family:'noto-sans';
+	src: 
+		url('../fonts/NotoSans-Italic.woff2') format('woff2'),
+		url('../fonts/NotoSans-Italic.woff') format('woff'),
+		url('../fonts/NotoSans-Italic.ttf') format('truetype'),
+		url('../fonts/NotoSans-Italic.svg#NotoSans-Italic') format('svg');
 	font-weight: 400;
+	font-style: italic;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'noto-sans';
+	src: 
+		url('../fonts/NotoSans-Bold.woff2') format('woff2'),
+		url('../fonts/NotoSans-Bold.woff') format('woff'),
+		url('../fonts/NotoSans-Bold.ttf') format('truetype'),
+		url('../fonts/NotoSans-Bold.svg#NotoSans-Bold') format('svg');
+	font-weight: 700;
 	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'noto-sans';
+	src: 
+		url('../fonts/NotoSans-BoldItalic.woff2') format('woff2'),
+		url('../fonts/NotoSans-BoldItalic.woff') format('woff'),
+		url('../fonts/NotoSans-BoldItalic.ttf') format('truetype'),
+		url('../fonts/NotoSans-BoldItalic.svg#NotoSans-BoldItalic') format('svg');
+	font-weight: 700;
+	font-style: italic;
 	font-stretch: normal;
 	unicode-range: U+0020-25CA;
 }

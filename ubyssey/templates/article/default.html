@@ -1,10 +1,10 @@
-{% extends base_template %}
+{% extends 'ubyssey/base.html' %}
 {% load static %}
 {% load dispatch_tags %}
 {% load dispatch_filters %}
 {% block header %}
-    {% include 'headers/topbar.html' with article=article section=article.section.slug %}
-    {% include 'headers/mobile.html' %}
+    {% include 'navigation/headers/topbar.html' %}
+    {% include 'navigation/headers/mobile.html' %}
 {% endblock %}
 {% block content %}
 <main id="article-{{ article.parent_id }}" class="article">

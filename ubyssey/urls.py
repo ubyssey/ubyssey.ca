@@ -43,77 +43,80 @@ urlpatterns += [
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
     re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
-
-    re_path(r'^djadmin/', admin.site.urls),
-
-    re_path(r'^admin', include(admin_urls)),
-    re_path(r'^api/', include(api_urls)),
-    re_path(r'^podcasts/', include(podcasts_urls)),
-    re_path(r'^newsletter/', include(newsletter_urls)),
-
-    # Wagtail
-    path('beta/wagtail/', include(wagtailadmin_urls)),
-    path('beta/documents/', include(wagtaildocs_urls)),
-    path('beta/', include(wagtail_urls)),
-
-    # standard Ubyssey site
-    re_path(r'^$', HomePageView.as_view(), name='home'),
-    re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
-    re_path(r'^archive/$', ArchiveView.as_view(), name='archive'),
-    re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
-
-    # Page views that have been grandfathered in to having special URLs as permalink
-    re_path(r'^(?P<slug>about)/$', PageView.as_view(), name='about'),
-    re_path(r'^(?P<slug>volunteer)/$', PageView.as_view(), name='volunteer'),
-    re_path(r'^(?P<slug>advice)/$', PageView.as_view(), name='advice'),
-    re_path(r'^(?P<slug>submit-an-opinion)/$', PageView.as_view(), name='submit-an-opinion'),
-
-    # Other pages
-    re_path(r'^page/(?P<slug>[-\w]+)/$', PageView.as_view(), name='page'),
-
-    re_path(r'^(?P<slug>[-\w]+)/rss/$', SectionFeed(), name='section-feed'),
-    re_path(r'^authors/(?P<slug>[-\w]+)/$', AuthorView.as_view(), name='author'),
-
-    # Guide to UBC
-    re_path(r'^guide/2016/$', guide2016.landing, name='guide-landing-2016'),
-    re_path(r'^guide/2016/(?P<slug>[-\w]+)/$', guide2016.article, name='guide-article-2016'),
-
-    re_path(r'^guide/(?P<year>[0-9]{4})/$', GuideLandingView.as_view(), name='guide-landing'),
-    re_path(r'^guide/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/$', GuideLandingView.as_view(), name='guide-landing-sub'),
-    re_path(r'^guide/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/(?P<slug>[-\w]+)/$', GuideArticleView.as_view(), name='guide-article'),
-
-    # Magazine
+    re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
     re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
     re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
 
-    # # Magazine new = on pause until wagtail happens a bit more
-    # re_path(r'^mag/(?P<year>[0-9]{4})/$', MagazineLandingView.as_view(), name='mag-landing'),
-    # re_path(r'^mag/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/$', MagazineLandingView.as_view(), name='mag-landing-sub'),
-    # re_path(r'^mag/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/(?P<slug>[-\w]+)/$', MagazineArticleView.as_view(), name='mag-article'),
+    re_path(r'^djadmin/', admin.site.urls),
 
-    # Advertising
-    re_path(r'^advertise/$', advertise.new, name='advertise-new'),
-
-    # Centennial
-    re_path(r'^100/$', UbysseyTheme.centennial, name='centennial-landing'), #was for special 2018 event. Consider removing.
-
-    # Beta-features
-    # re_path(r'^beta/notifications/$', theme.notification, name='notification-beta'),
-
-    # Podcasts
-    re_path(r'^podcast/(?P<slug>[-\w]+)', PodcastView.as_view(), name='podcasts'),
+    # re_path(r'^admin', include(admin_urls)),
+    # re_path(r'^api/', include(api_urls)),
+    # re_path(r'^podcasts/', include(podcasts_urls)),
+    re_path(r'^newsletter/', include(newsletter_urls)),
 
     # Events
-    re_path(r'^events/', include(events_urls)),
-    re_path(r'^api/events/', include(event_api_urls)),
+    # re_path(r'^events/', include(events_urls)),
+    # re_path(r'^api/events/', include(event_api_urls)),
 
-    # Videos
-    re_path(r'^videos/', VideoView.as_view(), name='videos'),
+    # Wagtail
+    re_path(r'^admin/', include(wagtailadmin_urls)),
+    re_path(r'^documents/', include(wagtaildocs_urls)),
+    path('', include(wagtail_urls)),
 
-    # Subsections
-    re_path(r'^subsection/(?P<slug>[-\w]+)/$', SubsectionView.as_view(), name='subsection'), #Dislike this, 
+    # # standard Ubyssey site
+    # re_path(r'^$', HomePageView.as_view(), name='home'),
+    re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
+    # re_path(r'^archive/$', ArchiveView.as_view(), name='archive'),
+    # re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
+
+    # # Page views that have been grandfathered in to having special URLs as permalink
+    # re_path(r'^(?P<slug>about)/$', PageView.as_view(), name='about'),
+    # re_path(r'^(?P<slug>volunteer)/$', PageView.as_view(), name='volunteer'),
+    # re_path(r'^(?P<slug>advice)/$', PageView.as_view(), name='advice'),
+    # re_path(r'^(?P<slug>submit-an-opinion)/$', PageView.as_view(), name='submit-an-opinion'),
+
+    # # Other pages
+    # re_path(r'^page/(?P<slug>[-\w]+)/$', PageView.as_view(), name='page'),
+
+    # re_path(r'^(?P<slug>[-\w]+)/rss/$', SectionFeed(), name='section-feed'),
+    # re_path(r'^authors/(?P<slug>[-\w]+)/$', AuthorView.as_view(), name='author'),
+
+    # # Guide to UBC
+    # re_path(r'^guide/2016/$', guide2016.landing, name='guide-landing-2016'),
+    # re_path(r'^guide/2016/(?P<slug>[-\w]+)/$', guide2016.article, name='guide-article-2016'),
+
+    # re_path(r'^guide/(?P<year>[0-9]{4})/$', GuideLandingView.as_view(), name='guide-landing'),
+    # re_path(r'^guide/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/$', GuideLandingView.as_view(), name='guide-landing-sub'),
+    # re_path(r'^guide/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/(?P<slug>[-\w]+)/$', GuideArticleView.as_view(), name='guide-article'),
+
+    # # Magazine
+    # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
+    # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
+
+    # # # Magazine new = on pause until wagtail happens a bit more
+    # # re_path(r'^mag/(?P<year>[0-9]{4})/$', MagazineLandingView.as_view(), name='mag-landing'),
+    # # re_path(r'^mag/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/$', MagazineLandingView.as_view(), name='mag-landing-sub'),
+    # # re_path(r'^mag/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/(?P<slug>[-\w]+)/$', MagazineArticleView.as_view(), name='mag-article'),
+
+    # # Advertising
+    # re_path(r'^advertise/$', advertise.new, name='advertise-new'),
+
+    # # Centennial
+    # re_path(r'^100/$', UbysseyTheme.centennial, name='centennial-landing'), #was for special 2018 event. Consider removing.
+
+    # # Beta-features
+    # # re_path(r'^beta/notifications/$', theme.notification, name='notification-beta'),
+
+    # # Podcasts
+    # re_path(r'^podcast/(?P<slug>[-\w]+)', PodcastView.as_view(), name='podcasts'),
+
+    # # Videos
+    # re_path(r'^videos/', VideoView.as_view(), name='videos'),
+
+    # # Subsections
+    # re_path(r'^subsection/(?P<slug>[-\w]+)/$', SubsectionView.as_view(), name='subsection'), #Dislike this, 
     
-    re_path(r'^(?P<section>[-\w]+)/(?P<slug>[-\w]+)/$', ArticleView.as_view(), name='article'),
-    re_path(r'^(?P<slug>[-\w]+)/$', SectionView.as_view(), name='section'),
-    re_path(r'^api/articles/(?P<pk>[0-9]+)/rendered/$', ArticleAjaxView.as_view(), name='article-ajax'),
+    # re_path(r'^(?P<section>[-\w]+)/(?P<slug>[-\w]+)/$', ArticleView.as_view(), name='article'),
+    # re_path(r'^(?P<slug>[-\w]+)/$', SectionView.as_view(), name='section'),
+    # re_path(r'^api/articles/(?P<pk>[0-9]+)/rendered/$', ArticleAjaxView.as_view(), name='article-ajax'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

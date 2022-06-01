@@ -1,4 +1,4 @@
-$font-default: 'dk-saffron-walden', serif;
+$font-default: serif;
 $font-secondary: Montserrat, Helvetica, sans-serif;
 
 $header-font: Montserrat, sans-serif;
@@ -16,12 +16,5 @@ $credit-font: Lora, serif;
 $credit-style: italic;
 $credit-size: 1rem;
 
-$accent-font: 'dk-saffron-walden', serif;
+$accent-font: serif;
 $accent-size: 1.3rem;
-
-@font-face {
-	font-family: 'dk-saffron-walden';
-	src: url('../fonts/DKSaffronWalden.woff');
-	font-weight: normal;
-	font-style: normal;
-}

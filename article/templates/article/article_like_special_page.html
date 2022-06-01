@@ -1,0 +1,43 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load ubyssey_ad_filters %}
+{% load ubyssey_ad_tags %}
+
+
+{% block header %}
+    {% include 'navigation/headers/topbar.html' %}
+    {% include 'navigation/headers/mobile.html' %}
+{% endblock %}
+
+{% block content %}
+    <main class="page">
+        <div class="u-container u-container--content u-container--padded">
+            <h1>{{ page.title }}</h1>
+        </div>
+        <div class="u-container">
+            <div class="row">
+                <div class="seven columns">
+                    <div class="article-content">
+                        {% for block in self.content %}
+                            {% include_block block %}
+                        {% endfor %}                        
+                    </div>
+                </div>
+                <div class="five columns u-text-right">
+                    {% comment %}ad goes here{% endcomment %}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+
+<!-- Article-specific scripts -->
+{% block scripts %}
+    {% for script_obj in self.scripts.all %}
+        <script src="{{ script_obj.script.file.url }}" type="text/javascript"></script>
+    {% endfor %}
+{% endblock %}

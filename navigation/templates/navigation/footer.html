@@ -13,11 +13,7 @@
             </div>
             <div class="bottom-row">
                 <ul class="pages">
-                    {% cache 604800 second_footer_menu %}
-                        {% for menu_item in settings.navigation.SitewideMenus.second_footer_menu.all %}
-                            <li><a href="{{ menu_item.link }}">{{ menu_item.text }}</a></li>
-                        {% endfor %}
-                    {% endcache %}
+                    {% flat_menu 'second_footer_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
                 </ul>
             </div>
         </nav>

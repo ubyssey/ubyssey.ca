@@ -43,7 +43,7 @@
                                 <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
                             {% endif %}
                             <div class="article-byline c-article__byline-center">
-                                <span class="author">By {{ self.get_author_url|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at }}</span>
+                                <span class="author">By {{ self.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at }}</span>
                             </div>
                         </div>
                         {% if featured_image_object.caption or featured_image_object.credit %}

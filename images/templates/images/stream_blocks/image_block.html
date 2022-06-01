@@ -1,9 +1,11 @@
 {% load wagtailcore_tags %}
-<div class="image-attachment attachment  {{ style }} {{ width }}" >
-    <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ caption }}" data-credit="{{ credit }}" data-url="{{ image.get_absolute_url }}" src="{{ image.get_absolute_url }}" alt="{{ caption }}" />
-    {% if caption or credit %}
+{% load wagtailimages_tags %}
+<div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
+    {% image self.image original as image %}
+    <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{{ self.caption }}" />
+    {% if self.caption or self.credit %}
         <div class="caption">
-            {% if caption %}{{ caption|safe }}{% endif %} <span class="credit">{% if credit %}{{ credit }}{% endif %}</span>
+            {% if self.caption %}{{ self.caption|safe }}{% endif %} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
         </div>
     {% endif %}
 </div>

@@ -1,5 +1,6 @@
 import datetime
 import json
+from tabnanny import verbose
 
 from wagtail.admin import edit_handlers
 from images.models import GallerySnippet
@@ -49,6 +50,7 @@ from wagtail.core.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
 from wagtail.documents.edit_handlers import DocumentChooserPanel
 from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.search import index
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
@@ -449,8 +451,8 @@ class ArticlePage(SectionablePage):
     explicit_published_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name="Published At (Override)",
-        help_text = "Optional. Publication date which is explicitly shown to the reader. Articles are seperately date/timestamped for database use; if this field is blank front page etc. will display the database publication date.",
+        verbose_name="Publication Date/Time",
+        help_text = "Techically optional (computer will fill it in for you if you do not). Publication date which is explicitly shown to the reader. Articles are seperately date/timestamped for database use; if this field is left blank, it will by default be set to the \"first published date\" on publication.",
     )
     last_modified_at = models.DateTimeField(
         # updates to current date/time every time the model's .save() method is hit
@@ -658,7 +660,7 @@ class ArticlePage(SectionablePage):
         ),
         MultiFieldPanel(
             [
-                HelpPanel(content="Authors may be created under \"Snippets\", then selected here."),
+                HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
                 InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
             ],
             heading="Author(s)",
@@ -831,6 +833,24 @@ class ArticlePage(SectionablePage):
         ],
     ) # edit_handler
 
+    #-----Search fields etc-----
+    #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
+    search_fields = Page.search_fields + [
+        index.SearchField('lede'),
+        index.SearchField('content'),
+        
+        index.FilterField('current_section'),
+        index.FilterField('author_id'),
+        index.FilterField('slug'),
+
+        index.RelatedFields('category', [
+            index.FilterField('slug'),
+        ]),
+        index.RelatedFields('article_authors', [
+            index.SearchField('full_name'),
+        ]),
+    ]
+
     #-----Properties, getters, setters, etc.-----
 
     def get_context(self, request, *args, **kwargs):
@@ -958,3 +978,30 @@ class ArticlePage(SectionablePage):
             models.Index(fields=['last_modified_at']),
             models.Index(fields=['category',]),
         ]
+
+class SpecialArticleLikePage(ArticlePage):
+
+    show_in_menus_default = True
+
+    parent_page_types = [
+        'specialfeaturelanding.SpecialLandingPage',
+        'section.SectionPage',
+    ]
+
+    subpage_types = [] #Prevents article pages from having child pages
+
+    def get_template(self, request):
+        if not self.use_default_template:
+            if self.db_template:
+                return self.db_template.name
+
+        if self.layout == 'fw-story':
+            return "article/article_page_fw_story.html"
+        elif self.layout == 'guide-2020':
+            return "article/article_page_guide_2020.html"
+                        
+        return "article/article_like_special_page.html"
+
+    class Meta:
+        verbose_name = "Special Article-Like Page (for About Page, Contact, etc.)"
+        verbose_name_plural = "Articles"

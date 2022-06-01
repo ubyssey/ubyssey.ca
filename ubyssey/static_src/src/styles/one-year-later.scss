@@ -1,78 +1,10 @@
-@font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-Bold_gdi.eot');
-	src: url('../fonts/MinionPro-Bold_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-Bold_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-Bold_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-Bold_gdi.svg#MinionPro-Bold') format('svg');
-	font-weight: 800;
-	font-style: normal;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
+// font-family: 'ub-avenir', Avenir, serif;
 
-@font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-BoldIt_gdi.eot');
-	src: url('../fonts/MinionPro-BoldIt_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-BoldIt_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-BoldIt_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-BoldIt_gdi.svg#MinionPro-BoldIt') format('svg');
-	font-weight: 800;
-	font-style: italic;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
+$font-serif: Avenir, serif;
 
-@font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-Regular_gdi.eot');
-	src: url('../fonts/MinionPro-Regular_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-Regular_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-Regular_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-Regular_gdi.svg#MinionPro-Regular') format('svg');
-	font-weight: 400;
-	font-style: normal;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
+// 'ub-minion-pro'
+$font-minion: serif;
 
-@font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-It_gdi.eot');
-	src: url('../fonts/MinionPro-It_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-It_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-It_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-It_gdi.svg#MinionPro-It') format('svg');
-	font-weight: 400;
-	font-style: italic;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
-
-@font-face {
-    font-family: 'ub-avenir';
-    src: url('../fonts/Avenir-Bold.woff2') format('woff2'),
-        url('../fonts/Avenir-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'ub-avenir';
-    src: url('../fonts/Avenir-It.woff2') format('woff2'),
-        url('../fonts/Avenir-It.woff') format('woff');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'ub-avenir';
-    src: url('../fonts/Avenir-Regular.woff2') format('woff2'),
-        url('../fonts/Avenir-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
 
 html, body {
   margin: 0;
@@ -161,7 +93,7 @@ html, body {
 }
 
 .oyl-nav__title {
-  font-family: 'ub-avenir', Avenir, serif;
+  font-family: $font-serif;
   font-size: 16px;
   color: #F5A623;
   line-height: 50px;
@@ -206,7 +138,7 @@ html, body {
 
     a {
       color: #fff;
-      font-family: 'ub-avenir', Avenir, serif;
+      font-family: $font-serif;
       font-weight: bold;
       font-size: 18px;
       text-shadow: 0 2px 0 rgba(0,0,0,0.23);
@@ -309,7 +241,7 @@ html, body {
 }
 
 .oyl-article__subtitle {
-  font-family: 'ub-avenir', Avenir, serif;
+  font-family: $font-serif;
   font-weight: bold;
   font-size: 22px;
   color: #FFFFFF;
@@ -319,7 +251,7 @@ html, body {
 }
 
 .oyl-article__title {
-  font-family: 'ub-minion-pro', serif;
+  font-family: $font-minion;
   color: #F5A623;
   text-align: center;
   text-shadow: 0 2px 0 rgba(0,0,0,0.42);
@@ -336,7 +268,7 @@ html, body {
 }
 
 .oyl-article__snippet {
-  font-family: 'ub-avenir', Avenir, serif;
+  font-family: $font-serif;
   font-weight: bold;
   font-size: 18px;
   color: #FFFFFF;
@@ -354,7 +286,7 @@ html, body {
 
 .oyl-article__byline {
   opacity: 0.85;
-  font-family: 'ub-avenir', Avenir, serif;
+  font-family: $font-serif;
   font-size: 16px;
   color: rgba(255, 255, 255, 0.75);
   letter-spacing: 0;
@@ -397,7 +329,7 @@ html, body {
 
   .quote {
     margin: 0;
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-serif;
     font-weight: bold;
     font-size: 22px;
     color: #ffffff;
@@ -407,7 +339,7 @@ html, body {
   .source {
     margin-top: 0.5rem;
     margin-bottom: 0;
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-serif;
     color: white;
   }
 }
@@ -423,7 +355,7 @@ html, body {
 
     li {
       margin: 0;
-      font-family: 'ub-avenir', Avenir, serif;
+      font-family: $font-serif;
       font-weight: bold;
       font-size: 16px;
       color: #ffffff;
@@ -468,7 +400,7 @@ html, body {
   }
 
   .caption {
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-serif;
     font-size: 14px;
     color: #666;
     margin-top: 0.25rem;
@@ -530,7 +462,7 @@ html, body {
   }
 
   h3 {
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-serif;
     font-size: 16px;
     color: #F5A623;
     letter-spacing: 1px;
@@ -542,7 +474,7 @@ html, body {
   h2 {
     margin-bottom: 0;
     margin-top: 0.25rem;
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-serif;
     font-size: 36px;
     color: #FFFFFF;;
   }
@@ -551,7 +483,7 @@ html, body {
     color: #fff;
     padding: 0;
     margin-top: 0.25rem;
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-serif;
     margin-bottom: 0;
   }
 }
@@ -579,7 +511,7 @@ html, body {
   padding-right: 15px;
 
   h3, p {
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-serif;
     color: #555;
   }
 

@@ -16,6 +16,7 @@ https://codelabs.developers.google.com/codelabs/cloud-run-django/index.html?inde
 import os
 import sys
 import environ
+import google_crc32c
 from dispatch.apps import DispatchConfig
 
 BASE_DIR = environ.Path(__file__) - 3
@@ -41,9 +42,18 @@ if os.environ['DJANGO_SETTINGS_MODULE'] == 'config.settings.production' and not 
         _, project = google.auth.default()
 
         if project:
+            # See documentation https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets
+            # (Accessed 2022/05/25)
             client = sm.SecretManagerServiceClient()
-            path = client.secret_version_path(project, "ubyssey_env_configs", "latest")
-            payload = client.access_secret_version(path).payload.data.decode("UTF-8")
+            # path = client.secret_version_path(project, "ubyssey_env_configs", "latest")
+            name = f"projects/{project}/secrets/ubyssey_env_configs/versions/latest"
+            response = client.access_secret_version(request={"name": name})
+            crc32c = google_crc32c.Checksum()
+            crc32c.update(response.payload.data)
+            if response.payload.data_crc32c != int(crc32c.hexdigest(), 16):                
+                raise Exception("Data corruption detected when accessing secret from secret manager!")      
+            payload = response.payload.data.decode("UTF-8")
+
             with open(env_file, "w") as f:
                 f.write(payload)
         else:
@@ -280,7 +290,7 @@ MIDDLEWARE += [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'wagtailcache.cache.UpdateCacheMiddleware',
 ]
 

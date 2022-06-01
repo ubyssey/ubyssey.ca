@@ -6,6 +6,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from article.models import ArticlePage
 from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.core.models import Page
+from wagtail.search import index
 from wagtail.images.edit_handlers import ImageChooserPanel
 
 class AllAuthorsPage(Page):
@@ -44,6 +45,7 @@ class AuthorPage(Page):
         null=False,
         blank=True,
         default='',
+        verbose_name='Role at The Ubyssey',
     )
     facebook_url = models.URLField(
         null=True,
@@ -74,6 +76,7 @@ class AuthorPage(Page):
         MultiFieldPanel(
             [
                 ImageChooserPanel("image"),
+                FieldPanel("ubyssey_role"),
                 FieldPanel("description"),
                 FieldPanel("facebook_url"),
                 FieldPanel("twitter_url"),
@@ -81,31 +84,48 @@ class AuthorPage(Page):
             heading="Optional Stuff",
         ),
     ]
+    #-----Search fields etc-----
+    #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
+    search_fields = Page.search_fields + [
+        index.SearchField('full_name'),
+        index.SearchField('description'),
+    ]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        all_articles = ArticlePage.objects.all()
 
-          # Paginate all posts by 15 per page
-        paginator = Paginator(all_articles, per_page=5)
-        # Try to get the ?page=x value
-        
+        search_query = request.GET.get("q")
         page = request.GET.get("page")
+        order = request.GET.get("order")
+
+        if order == 'oldest':
+            article_order = "explicit_published_at"
+        else:            
+            article_order = "-explicit_published_at"
+        context["order"] = order
+
+        # Hit the db
+        authors_articles = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
+        if search_query:
+            context["search_query"] = search_query
+            authors_articles = authors_articles.search(search_query)
+
+        # Paginate all posts by 15 per page
+        paginator = Paginator(authors_articles, per_page=15)
         try:
             # If the page exists and the ?page=x is an int
             paginated_articles = paginator.page(page)
-            
+            context["current_page"] = page
         except PageNotAnInteger:
             # If the ?page=x is not an int; show the first page
             paginated_articles = paginator.page(1)
-           
         except EmptyPage:
             # If the ?page=x is out of range (too high most likely)
             # Then return the last page
             paginated_articles = paginator.page(paginator.num_pages)
+
         context["paginated_articles"] = paginated_articles #this object is often called page_obj in Django docs, but Page means something else in Wagtail
 
-    
         return context
     
    

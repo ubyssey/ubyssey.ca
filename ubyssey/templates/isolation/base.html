@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ubyssey/base.html' %}
 {% load static %}
 {% load dispatch_tags %}
 {% block stylesheet %}
@@ -6,8 +6,8 @@
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 {% endblock %}
 {% block header %}
-    {% include 'headers/topbar.html' %}
-    {% include 'headers/mobile.html' %}
+    {% include 'navigation/headers/topbar.html' %}
+    {% include 'navigation/headers/mobile.html' %}
 {% endblock %}
 
 {% block content %}

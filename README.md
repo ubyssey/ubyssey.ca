@@ -1,4 +1,4 @@
-# Ubyssey Dispatch Theme
+# The Ubyssey website
 
 ![ubyssey_top](https://user-images.githubusercontent.com/9669739/46310069-2e177400-c573-11e8-8b94-bf567daf5f45.png)
 
@@ -20,11 +20,7 @@ Once you have your local environment configured, follow [the steps here](https:/
 
 ## Contributing
 
-You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository. We welcome volunteers to help make student journalism better! Head over to the [Getting Started Guide](https://code.ubyssey.ca/getting-started) to get stared. Hope to see you at one of our [Office Hours](https://code.ubyssey.ca/office-hour)!
-
-## Office hours
-
-Our (online) office hours for the Fall 2020 Term are 11:00am - 1:00pm every Tuesday.
+You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository. We welcome volunteers to help make student journalism better! Head over to the [Getting Started Guide](https://code.ubyssey.ca/getting-started) to get stared. 
 
 ## License
 

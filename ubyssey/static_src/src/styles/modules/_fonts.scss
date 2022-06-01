@@ -1,8 +1,10 @@
 // Font families
-$font-default: 'ub-lft-etica', 'LFT Etica', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-default: 'noto-sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+
 $font-secondary: $font-default;
-$font-headline: 'ub-minion-pro', 'Minion Pro', 'Georgia', serif;
-$font-body: 'Georgia', serif;
+$font-headline: 'playfair-display', 'Georgia', serif;
+
+$font-body: 'noto-serif', 'Georgia', serif;
 
 $font-size-base: 16;
 
@@ -23,6 +25,13 @@ $font-size-26px:  1.625em;
 $font-size-36px:  2.250em;
 
 // Font weights
+$font-weight-light: 300;
 $font-weight-normal: 400;
+$font-weight-medium: 500;
 $font-weight-semi-bold: 600;
-$font-weight-bold: 800;
+$font-weight-bold: 700;
+
+$font-weight-headline: 700;
+
+// Letter spacing
+$letter-spacing-noto-sans: -0.025em;

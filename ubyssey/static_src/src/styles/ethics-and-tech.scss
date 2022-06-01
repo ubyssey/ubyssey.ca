@@ -21,6 +21,10 @@ $dot-green:     #74BE45;
     src: url("https://storage.googleapis.com/ubyssey/fonts/Azonix.otf");
 }
 
+// font-family: 'ub-avenir', Avenir, serif;
+$font-avenir: Avenir, serif;
+
+
 .tableauholder {
   margin-bottom: 1.25rem;
   width: 100%;
@@ -69,7 +73,7 @@ $dot-green:     #74BE45;
   }
 
   .card-body {
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-avenir;
     font-size: 1.08em;
     // font-family: "Georgia", serif;
     // font-size: 1.0625em;
@@ -132,7 +136,7 @@ $dot-green:     #74BE45;
 }
 
 .eit-snippet {
-  font-family: 'ub-avenir', Avenir, serif;
+  font-family: $font-avenir;
   font-size: 18pt;
   color: $dark-purple;
   text-align: center;
@@ -141,7 +145,7 @@ $dot-green:     #74BE45;
 }
 
 .eit-byline {
-  font-family: 'ub-avenir', Avenir, serif;
+  font-family: $font-avenir;
   font-size: 15pt;
   color: $dark-purple;
   text-align: center;
@@ -215,7 +219,7 @@ $dot-green:     #74BE45;
   
     .quote {
       margin: 0;
-      font-family: 'ub-avenir', Avenir, serif;
+      font-family: $font-avenir;
       font-weight: bold;
       font-size: 22px;
       color: $dark-accent-1;
@@ -225,7 +229,7 @@ $dot-green:     #74BE45;
     .source {
       margin-top: 0.5rem;
       margin-bottom: 0;
-      font-family: 'ub-avenir', Avenir, serif;
+      font-family: $font-avenir;
       color: $dark-accent-2;
     }
   }
@@ -307,7 +311,7 @@ $dot-green:     #74BE45;
     }
   
     p {
-      font-family: 'ub-avenir', Avenir, serif;
+      font-family: $font-avenir;
       //font-family: "Georgia", serif;
       //font-size: 1.0625em;
       font-size: 1.08em;
@@ -336,7 +340,7 @@ $dot-green:     #74BE45;
     border-radius: 5px;
     border: 2px solid $dark-accent-1;
     background: linear-gradient(to bottom right, $pastel-pink, $pastel-blue);
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-avenir;
 
   
     h3 {
@@ -349,91 +353,13 @@ $dot-green:     #74BE45;
   
     p {
       color: $dark-accent-1;
-      // font-family: 'ub-avenir', Avenir, serif;
+      // font-family: $font-avenir;
       margin-top: 1rem;
       margin-bottom: 1.5rem;
       font-size: 17px;
       line-height: 1.5em;
     }
   
-}
-
-
-
-@font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-Bold_gdi.eot');
-	src: url('../fonts/MinionPro-Bold_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-Bold_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-Bold_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-Bold_gdi.svg#MinionPro-Bold') format('svg');
-	font-weight: 800;
-	font-style: normal;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
-
-@font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-BoldIt_gdi.eot');
-	src: url('../fonts/MinionPro-BoldIt_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-BoldIt_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-BoldIt_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-BoldIt_gdi.svg#MinionPro-BoldIt') format('svg');
-	font-weight: 800;
-	font-style: italic;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
-
-@font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-Regular_gdi.eot');
-	src: url('../fonts/MinionPro-Regular_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-Regular_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-Regular_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-Regular_gdi.svg#MinionPro-Regular') format('svg');
-	font-weight: 400;
-	font-style: normal;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
-
-@font-face {
-	font-family:'ub-minion-pro';
-	src: url('../fonts/MinionPro-It_gdi.eot');
-	src: url('../fonts/MinionPro-It_gdi.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/MinionPro-It_gdi.woff') format('woff'),
-		url('../fonts/MinionPro-It_gdi.ttf') format('truetype'),
-		url('../fonts/MinionPro-It_gdi.svg#MinionPro-It') format('svg');
-	font-weight: 400;
-	font-style: italic;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
-
-@font-face {
-    font-family: 'ub-avenir';
-    src: url('../fonts/Avenir-Bold.woff2') format('woff2'),
-        url('../fonts/Avenir-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'ub-avenir';
-    src: url('../fonts/Avenir-It.woff2') format('woff2'),
-        url('../fonts/Avenir-It.woff') format('woff');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'ub-avenir';
-    src: url('../fonts/Avenir-Regular.woff2') format('woff2'),
-        url('../fonts/Avenir-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
 }
 
 html, body {
@@ -489,7 +415,7 @@ html, body {
   }
 
   h3 {
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-avenir;
     font-size: 16px;
     color: #F5A623;
     letter-spacing: 1px;
@@ -501,7 +427,7 @@ html, body {
   h2 {
     margin-bottom: 0;
     margin-top: 0.25rem;
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-avenir;
     font-size: 36px;
     color: #FFFFFF;;
   }
@@ -510,7 +436,7 @@ html, body {
     color: #fff;
     padding: 0;
     margin-top: 0.25rem;
-    font-family: 'ub-avenir', Avenir, serif;
+    font-family: $font-avenir;
     margin-bottom: 0;
   }
 }

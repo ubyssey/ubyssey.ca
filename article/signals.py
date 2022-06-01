@@ -1,7 +1,13 @@
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
+from wagtail.core.signals import page_published
 from .models import ArticlePage
 
+@receiver(page_published, sender=ArticlePage)
+def update_default_explicit_published_at(instance, **kwargs):
+    if not instance.explicit_published_at:
+        instance.explicit_published_at = instance.first_published_at
+        instance.save()
 
 @receiver(pre_save, sender=ArticlePage)
 def update_timeline_on_article_alteration_pre_save(instance, **kwargs):

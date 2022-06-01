@@ -7,7 +7,7 @@
   <div class="o-archive__search">
     <form method="get">
       <label class="o-archive__search__label" for="c-articles-list__searchbar"><i class="fa fa-search"></i></label>
-      <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text" {% if q %}value="{{ q }}"{% endif %} placeholder="Search" />
+      <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text" {% if search_query %}value="{{ search_query }}"{% endif %} placeholder="Search" />
     </form>
   </div>
 
@@ -30,10 +30,10 @@
                 </div>
                 <ul>
                   <li class="o-mobile-dropdown__item{% if order == 'newest' %} o-mobile-dropdown__item--is-active{% endif %}">
-                    <a href="{{ request.path }}?{% if q %}q={{ q }}&{% endif %}{% if section_id %}section_id={{ section_id}}&{% endif %}{% if year %}year={{ year}}&{% endif %}order=newest">Newest</a>
+                    <a href ="?order=newest{% for key, value in request.GET.items %}{% if key != 'order' and key != "page" %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Newest</a>
                   </li>
                   <li class="o-mobile-dropdown__item{% if order == 'oldest' %} o-mobile-dropdown__item--is-active{% endif %}">
-                    <a href="{{ request.path }}?{% if q %}q={{ q }}&{% endif %}{% if section_id %}section_id={{ section_id}}&{% endif %}{% if year %}year={{ year}}&{% endif %}order=oldest">Oldest</a>
+                    <a href ="?order=oldest{% for key, value in request.GET.items %}{% if key != 'order' and key != "page" %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Oldest</a>
                   </li>
                 </ul>
               </div>
@@ -43,8 +43,8 @@
       </div>
       <div class="o-archive__header">
         <h3 class="o-archive__header__title">
-          {% if apaginated_articles %} {{ paginated_articles.paginator.count }} RESULTS {% else %}NO RESULTS{% endif %}
-          {% if q %} FOR "{{ q }}"{% endif %}
+          {% if paginated_articles %} {{ paginated_articles.paginator.count }} RESULTS {% else %}NO RESULTS{% endif %}
+          {% if search_query %} FOR "{{ search_query }}"{% endif %}
         </h3>
         <div class="o-archive__header__sort o-dropdown js-dropdown">
           <a class="o-button o-dropdown__button">
@@ -53,10 +53,10 @@
           </a>
           <ul class="o-dropdown__list js-dropdown-list">
             <li class="o-dropdown__item{% if order == 'newest' %} o-dropdown__item--is-active{% endif %}">
-              <a href="{{ request.path }}?{% if q %}q={{ q }}&{% endif %}{% if section_id %}section_id={{ section_id}}&{% endif %}{% if year %}year={{ year}}&{% endif %}order=newest">Newest</a>
+              <a href ="?order=newest{% for key, value in request.GET.items %}{% if key != 'order' and key != "page" %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Newest</a>
             </li>
             <li class="o-dropdown__item{% if order == 'oldest' %} o-dropdown__item--is-active{% endif %}">
-              <a href="{{ request.path }}?{% if q %}q={{ q }}&{% endif %}{% if section_id %}section_id={{ section_id}}&{% endif %}{% if year %}year={{ year}}&{% endif %}order=oldest">Oldest</a>
+              <a href ="?order=oldest{% for key, value in request.GET.items %}{% if key != 'order' and key != "page" %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Oldest</a>
             </li>
           </ul>
         </div>
@@ -98,7 +98,7 @@
 
         <div class="o-archive__pagination">
           {% if paginated_articles.has_previous %}
-            <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_articles.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+            <a class="o-button o-archive__pagination__prev" href="?page={{ paginated_articles.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
           {% endif %}
 
           <span class="o-archive__pagination__current" >
@@ -106,7 +106,7 @@
           </span>
 
           {% if paginated_articles.has_next %}
-            <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_articles.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+            <a class="o-button o-archive__pagination__next" href="?page={{ paginated_articles.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
           {% endif %}
         </div>
 

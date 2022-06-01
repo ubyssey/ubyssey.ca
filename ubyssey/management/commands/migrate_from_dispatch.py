@@ -4,7 +4,7 @@ from specialfeaturelanding.models import SpecialLandingPage
 from dispatch.modules.content.models import Section
 import requests
 
-from article.models import ArticlePage, ArticleAuthorsOrderable, ArticleFeaturedMediaOrderable
+from article.models import ArticlePage, SpecialArticleLikePage, ArticleAuthorsOrderable, ArticleFeaturedMediaOrderable
 from authors.models import AuthorPage, AllAuthorsPage
 
 from dispatch import models as dispatch_models
@@ -164,6 +164,7 @@ def _migrate_all_categories():
             for author_obj in dispatch_subsection.authors.all():
                 try:
                     category_author = CategoryAuthor()
+                    print('Getting author from Wagtail table for categories: ' + author_obj.person.full_name)
                     category_author.author = AuthorPage.objects.get(full_name=author_obj.person.full_name)
                     category_author.category = wagtail_category
                     category_author.save()
@@ -315,9 +316,240 @@ def _migrate_all_videos():
                         wagtail_author_orderable.author = AuthorPage.objects.get(legacy_slug=dispatch_author.person.slug)
                         wagtail_author_orderable.save()
 
+def _migrate_all_pages():
+    dispatch_head_pages_qs = dispatch_models.Page.objects.filter(head=True)
+    for head_page in dispatch_head_pages_qs:
+        current_slug = head_page.slug
+        print("Sending " + current_slug + " to wagtail")
+        dispatch_page_qs = dispatch_models.Page.objects.filter(slug=current_slug).order_by('revision_id')
+        for dispatch_page_revision in dispatch_page_qs:
+            print ("Sending article revision " + str(dispatch_page_revision) + " to wagtail")
+            # first check if there's an article with this slug already:
+            wagtail_special_article_qs = SpecialArticleLikePage.objects.filter(slug=current_slug)
+
+            if len(wagtail_special_article_qs) < 1:
+                # initialize a new wagtail article
+                print("Sending article revision PK " + str(dispatch_page_revision.pk) + " " + str(dispatch_page_revision.slug) + " to wagtail")
+                wagtail_special_article = SpecialArticleLikePage()
+                wagtail_special_article.created_at_time = dispatch_page_revision.created_at
+                wagtail_special_article.slug = dispatch_page_revision.slug
+                wagtail_special_article.title = dispatch_page_revision.title
+                wagtail_section = SectionPage.objects.get(slug="pages") #note - assumes 'pages' section exists
+                wagtail_section.add_child(instance=wagtail_special_article) 
+            else:
+                wagtail_special_article = wagtail_special_article_qs.get(slug=current_slug)
+
+            if dispatch_page_revision.revision_id > wagtail_special_article.legacy_revision_number:
+                wagtail_special_article.legacy_revision_number = dispatch_page_revision.revision_id
+                # Headline/Title
+                wagtail_special_article.title = dispatch_page_revision.title
+                # Author
+                if AuthorPage.objects.get(legacy_slug="ubyssey-staff"):
+                    # Unfortunately, first we need to see if there is already an author orderable corresponding to this author already
+                    # Otherwise we'll just get a bunch of redundant orderables
+                    has_author_already = any(article_author.author.legacy_slug == "ubyssey-staff" for article_author in wagtail_special_article.article_authors.all())
+                    if not has_author_already:
+                        wagtail_author_orderable = ArticleAuthorsOrderable()
+                        wagtail_author_orderable.article_page = wagtail_special_article
+                        wagtail_author_orderable.author_role = 'author'
+                        wagtail_author_orderable.sort_order = 0
+                        wagtail_author_orderable.author = AuthorPage.objects.get(legacy_slug="ubyssey-staff")
+                        wagtail_author_orderable.save()
+                # SEO stuff
+                if dispatch_page_revision.seo_keyword:
+                    wagtail_special_article.seo_keyword = dispatch_page_revision.seo_keyword 
+                if dispatch_page_revision.seo_description:
+                    wagtail_special_article.seo_description = dispatch_page_revision.seo_description
+                # "template"
+                wagtail_special_article.header_layout = 'right-image' # "safe default"
+                # Lede
+                if dispatch_page_revision.snippet:
+                    wagtail_special_article.lede = dispatch_page_revision.snippet
+
+                # Featured image:
+                if dispatch_page_revision.featured_image:
+                    if len(wagtail_special_article.featured_media.all()) < 1:                    
+                        old_img_obj = dispatch_page_revision.featured_image
+                        featured_media_orderable = ArticleFeaturedMediaOrderable()
+                        featured_media_orderable.sort_order = 0
+                        featured_media_orderable.article_page = wagtail_special_article
+                        if old_img_obj.caption:
+                            featured_media_orderable.caption = old_img_obj.caption
+                        if old_img_obj.credit:
+                            featured_media_orderable.credit = old_img_obj.credit
+                        if old_img_obj.image:
+                            featured_media_orderable.image = CustomImage.objects.get(legacy_pk=old_img_obj.image.pk)
+                            featured_media_orderable.save()
+                    else:
+                        # There is an image orderable ALREADY associated with this article
+                        if any(featured_media_orderable.image for featured_media_orderable in wagtail_special_article.featured_media.all()):
+                            old_img_obj = dispatch_page_revision.featured_image
+                            featured_media_orderable = wagtail_special_article.featured_media.all()[0]
+                            if old_img_obj.caption:
+                                featured_media_orderable.caption = old_img_obj.caption
+                            if old_img_obj.credit:
+                                featured_media_orderable.credit = old_img_obj.credit
+                            if old_img_obj.image:
+                                if old_img_obj.image.pk != featured_media_orderable.image.legacy_pk:
+                                    try:
+                                        featured_media_orderable.image = CustomImage.objects.get(legacy_pk=old_img_obj.image.pk)
+                                    except Exception as e:
+                                        print("No image found corresponding to " + str(old_img_obj.image.pk))
+                            featured_media_orderable.save()
+
+                wagtail_article_nodes = []
+                try:
+                    for node in dispatch_page_revision.content:
+                        node_type = node['type']
+                        block_type = 'richtext'
+                        if node_type == 'paragraph':
+                            block_type = 'richtext'
+                            block_value = '<p>' + node['data'] + '</p>'
+                        elif node_type == 'image':
+                            try:
+                                old_image = dispatch_models.Image.objects.get(pk=node['data']['image_id'])
+                                new_image = CustomImage.objects.get(legacy_pk=old_image.pk)
+                                block_type = 'image'
+                                block_value = {}
+                                block_value['image'] = new_image.pk
+                                block_value['style'] = node['data'].get('style', 'default')
+                                block_value['width'] = node['data'].get('width', 'full')
+                                block_value['caption'] = node['data'].get('width', ''),
+                                block_value['credit'] = node['data'].get('credit', '')
+                            except dispatch_models.Image.DoesNotExist as e:
+                                print(e)
+                                block_type = 'richtext'
+                                block_value = '<p>DISPATCH IMAGE EMBED ERROR WITH ARTICLE</p>'
+                            except CustomImage.DoesNotExist as e:
+                                print(e)
+                                block_type = 'richtext'
+                                block_value = '<p>WAGTAIL IMAGE EMBED ERROR WITH ARTICLE</p>'
+                        elif node_type == 'code':
+                            block_type = 'raw_html'
+                            try:
+                                if node['data']['mode'] == 'html':
+                                    block_value = node['data'].get('content', '')
+                                elif node['data']['mode'] == 'css':
+                                    block_value = '<style>' + node['data'].get('content', '') + '</style>'
+                                elif node['data']['mode'] == 'javascript':
+                                    block_value = '<script>' + node['data'].get('content', '') + '</script>'
+                            except:
+                                block_value = 'CODE BLOCK ERROR'
+                        elif node_type == 'video':
+                            block_type = 'video'
+                            block_value = {}
+                            block_value['embed'] = node['data'].get('caption', 'https://www.youtube.com/watch?v=e_fTr5XHh9U') # Look for this later when 
+                            block_value['caption'] = node['data'].get('caption', '')
+                            block_value['credit'] = node['data'].get('credit', '')
+                        elif node_type == 'quote':
+                            block_type = 'quote'
+                            block_value = {}
+                            block_value['content'] = node['data'].get('content', '')
+                            block_value['source'] = node['data'].get('source', '')
+                        elif node_type == 'gallery':
+                            block_type = 'gallery'
+                            if node['data'].get('id',0) != 0:
+                                try:
+                                    old_gallery = dispatch_models.ImageGallery.objects.get(id=node['data']['id'])
+                                    block_value = slugify(old_gallery.title)[:48] + str(old_gallery.pk) 
+                                except exceptions.ObjectDoesNotExist as e:
+                                    print(e)
+                                    block_value = 'default'
+                            else:
+                                block_value = 'default'
+                        elif node_type == 'widget':
+                            # This is the "worst case scenario" way of migrating old Dispatch stuff, when it depdnds on features we no longer intend to support
+                            # SQL queries say there are no widgets used this way on the entire site
+                            block_type = 'raw_html'
+                            try:
+                                block_value = embeds.WidgetEmbed.render(data=node['data'])
+                            except KeyError as e:
+                                print(e)
+                                block_value = 'WIDGET DATA ERROR'
+                            except:
+                                block_value = 'WIDGET ERROR'
+                        elif node_type == 'poll':
+                            block_type = 'raw_html'
+                            try:
+                                block_value = embeds.WidgetEmbed.render(data=node['data'].get('data', ''))
+                            except KeyError as e:
+                                print(e)
+                                block_value = 'WIDGET DATA ERROR'
+                            except:
+                                block_value = 'WIDGET ERROR'
+                        # elif node_type == 'podcast':
+                        #     pass #TODO
+                        # SQL says this never actually occurs
+                        elif node_type == 'interactive_map':
+                            block_type = 'raw_html'
+                            try:
+                                block_value = node['data']['svg'] + node['data']['initScript']
+                            except:
+                                block_value = 'INTERACTIVE MAP ERROR'
+                        elif node_type == 'pagebreak':
+                            block_type = 'raw_html'
+                            block_value = '<div class="page-break"><hr class = "page-break"></div>'
+                        elif node_type == 'drop_cap':
+                            block_type = 'raw_html'
+                            block_value = '<p class="drop-cap">' + node['data'].get('paragraph', '') + '</p>'
+                        elif node_type == 'header':
+                            block_type = 'raw_html'
+                            block_value = embeds.HeaderEmbed.render(data=node['data'])
+                        elif node_type == 'list':
+                            block_type = 'raw_html'
+                            block_value = embeds.ListEmbed.render(data=node['data'])
+
+                        wagtail_streamfield_node = {
+                            'type':'',
+                            'value':'',
+                        }
+                        wagtail_streamfield_node['type'] = block_type
+                        wagtail_streamfield_node['value'] = block_value
+                        wagtail_streamfield_node['id'] = hashlib.sha1(str(wagtail_streamfield_node).encode('utf-8')).hexdigest()
+                        wagtail_article_nodes.append(wagtail_streamfield_node)
+
+
+                except TypeError:
+                    print("Article contents could not be interpreted as valid JSON")
+                    wagtail_article_nodes = [
+                        {
+                            'type':'raw_html',
+                            'value':str(wagtail_special_article.content),
+                        }
+                    ]
+                
+                wagtail_special_article.content = json.dumps(wagtail_article_nodes)
+
+                # Wagtail revision created corresponding to the Dispatch revision
+                wagtail_special_article.save_revision(log_action=True)
+                
+                # Ensure all Wagtail _creation_ timestamps correspond to their Dispatch counterparts
+                if len(wagtail_special_article_qs) < 1:
+                    log_entry_creation = PageLogEntry.objects.all()[0]
+                    log_entry_creation.timestamp = dispatch_page_revision.updated_at
+                    log_entry_creation.save()
+                # Ensure all Wagtail _draft_ timestamps correspond to their Dispatch counterparts
+                wagtail_revision = wagtail_special_article.get_latest_revision()
+                wagtail_revision.created_at = dispatch_page_revision.updated_at
+                wagtail_revision.save()
+                log_entry_change = PageLogEntry.objects.all()[0]
+                log_entry_change.timestamp = dispatch_page_revision.updated_at
+                log_entry_change.save()
+                wagtail_special_article.latest_revision_created_at = dispatch_page_revision.updated_at
+                wagtail_special_article.save()
+                # Ensure all Wagtail _publish_ timestamps correspond to their Dispatch counterparts
+                if dispatch_page_revision.published_at:
+                    wagtail_revision.publish()
+                    wagtail_special_article.first_published_at = dispatch_page_revision.published_at
+                    wagtail_special_article.last_published_at = dispatch_page_revision.updated_at
+                    wagtail_special_article.save()
+                    log_entry_publication = PageLogEntry.objects.all()[0]
+                    log_entry_publication.timestamp = dispatch_page_revision.updated_at
+                    log_entry_publication.save()
+
 def _migrate_all_articles():
     # dispatch_article 
-    dispatch_head_articles_qs = dispatch_models.Article.objects.filter(head=True)
+    dispatch_head_articles_qs = dispatch_models.Article.objects.filter(head=True).filter(id__gte=101000)
 
     for head_article in dispatch_head_articles_qs:
         current_slug = head_article.slug
@@ -327,7 +559,7 @@ def _migrate_all_articles():
         for dispatch_article_revision in dispatch_article_qs:
             print ("Sending article revision " + str(dispatch_article_revision) + " to wagtail")
             # first check if there's an article with this slug already:
-            wagtail_article_qs = ArticlePage.objects.filter(slug=current_slug)
+            wagtail_article_qs = ArticlePage.objects.filter(slug=current_slug).exclude(url_path__istartswith='/ubyssey/guide/2021')
 
             if len(wagtail_article_qs) < 1:
                 # initialize a new wagtail article
@@ -370,10 +602,15 @@ def _migrate_all_articles():
                 if dispatch_article_revision.seo_description:
                     wagtail_article.seo_description = dispatch_article_revision.seo_description
                 # "template"
+                wagtail_article.header_layout = 'right-image' # "safe default"
                 if dispatch_article_revision.template:
                     wagtail_article.legacy_template = dispatch_article_revision.template 
                 if dispatch_article_revision.template_data:
+                    processed_template_data = dispatch_article_revision.template_fields
+                    if 'header_layout' in processed_template_data:
+                        wagtail_article.header_layout = processed_template_data['header_layout']
                     wagtail_article.legacy_template_data = dispatch_article_revision.template_data
+                
                 # Lede
                 if dispatch_article_revision.snippet:
                     wagtail_article.lede = dispatch_article_revision.snippet
@@ -609,10 +846,22 @@ def _migrate_all_articles():
                     wagtail_revision.publish()
                     wagtail_article.first_published_at = dispatch_article_revision.published_at
                     wagtail_article.last_published_at = dispatch_article_revision.updated_at
+                    wagtail_article.explicit_published_at = wagtail_article.last_published_at
                     wagtail_article.save()
                     log_entry_publication = PageLogEntry.objects.all()[0]
                     log_entry_publication.timestamp = dispatch_article_revision.updated_at
                     log_entry_publication.save()
+
+def _fix_article_pages():
+    qs = ArticlePage.objects.filter(first_published_at__isnull=False, explicit_published_at__isnull=True)
+    for article in qs:
+        print(article.slug)
+        if article.header_layout == '':
+            print('Hello World')
+            article.header_layout = 'right-image'
+        print(article.header_layout)
+        article.explicit_published_at = article.last_published_at
+        article.save()
 
 def _fix_guide_articles():
     guide2020 = SpecialLandingPage.objects.get(id=10706)
@@ -626,6 +875,9 @@ def _fix_guide_articles():
         print(guide_article.slug + " publish date set to: " + str(guide_article.explicit_published_at))
         print(guide_article.slug + " layout set to: " + str(guide_article.layout))
         guide_article.save()
+
+def fix_explicit_published_at_date():
+    qs = ArticlePage.objects.all()
 
 class Command(BaseCommand):
     """
