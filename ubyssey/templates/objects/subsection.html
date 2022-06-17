@@ -1,8 +1,0 @@
-<div class="c-subsection">
-  <h3 class="c-subsection__heading"><a href="{{ featured_subsection.subsection.get_absolute_url }}">{{ featured_subsection.subsection.name|safe }}</a></h3>
-  <div class="c-section__featured__articles u-flex--tablet">
-  {% for article in featured_subsection.articles %}
-    {% include 'objects/articles/column.html' with article=article %}
-  {% endfor %}
-  </div>
-</div>

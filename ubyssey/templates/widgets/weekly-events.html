@@ -1,8 +1,0 @@
-<div class="c-weekly-events">
-{% for event in events %}
-  <div class="c-weekly-events__event">
-    <div class="c-weekly-events__event__day">{{ event.start_time|date:"l M j" }}</div>
-    {% include 'components/event-box.html' with event=event size="card" hide_datebox=True %}
-  </div>
-{% endfor %}
-</div>

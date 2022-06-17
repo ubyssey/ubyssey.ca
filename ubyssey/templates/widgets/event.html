@@ -1,7 +1,0 @@
-{% load static %}
-<div class="c-widget-event">
-{% include 'components/event-box.html' with event=event %}
-{% if event %}
-  <div class="c-widget-event__view-all"><a class="c-button c-button--small" href="{% url 'events'%}">SEE MORE EVENTS</a></div>
-{% endif %}
-</div>

@@ -1,8 +1,0 @@
-<div class="image-attachment attachment  {{ style }} {{ width }}" >
-    <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ caption }}" data-credit="{{ credit }}" data-url="{{ image.get_absolute_url }}" src="{{ image.get_absolute_url }}" alt="{{ caption }}" />
-    {% if caption or credit %}
-        <div class="caption">
-            {{ caption|safe }} <span class="credit">{% if credit %}{{ credit }}{% if not has_custom_credit %}{% endif %}{% endif %}</span>
-        </div>
-    {% endif %}
-</div>
