@@ -5,8 +5,7 @@
   .fw-banner {
     overflow: auto;
     .header-container {
-      // margin: 40px 0 20px 0;
-      margin: 0;
+      margin: 40px 0 20px 0;
       padding-bottom: 1rem;
       display: table;
       border-bottom: 1px solid #E4E4E4;
@@ -22,13 +21,13 @@
       box-sizing: border-box;
     }
     .left {
-      width: 50%;
-      padding: 25px 7% 25px 10%;
+      width: 55%;
+      padding-right: 50px;
+      padding-bottom: 25px;
       vertical-align: middle;
     }
     .right {
-      // width: 45%;
-      width: 50%;
+      width: 45%;
     }
     .article-byline {
       opacity: 0.75;
@@ -169,22 +168,6 @@
             font-size: 42px;
           }
         }
-      }
-    }
-
-  }
-
-  .fw-banner.right-image {
-    .headline-container {
-      text-align: left;
-    }
-    .c-article__byline {
-      display: block;
-      .c-article__author {
-        display: block;
-      }
-      .c-article__byline__meta {
-        display: block;
       }
     }
   }

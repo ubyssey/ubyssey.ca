@@ -2,6 +2,15 @@
 <div>
     <div class="o-advertisement o-advertisement--{{ size }}{% if class %} o-advertisement--{{ div_class }}{% endif %}">
         <div class="adslot" id="{{ div_id }}" data-size="{{ size }}" data-dfp="{{ dfp }}">
+            {% comment %}
+                See: 
+                https://developers.google.com/publisher-tag/guides/get-started
+            {% endcomment %}
+            <script>
+                googletag.cmd.push(function() {
+                  googletag.display('{{ div_id }}');
+                });
+            </script>          
         </div>
     </div>
     {% if size == "box" %}

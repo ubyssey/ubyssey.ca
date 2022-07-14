@@ -3,6 +3,14 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load ubyssey_ad_tags %}
+{% load ubyssey_ad_filters %}
+
+{% block head_scripts %}
+  <!-- Register ads for home page -->
+  {% for orderable in settings.ads.AdTagSettings.home_head_tags.all %}
+    {% gpt_define_tag orderable.ad_slot %}
+  {% endfor %}
+{% endblock %}
 
 {% block header %}
   {% include 'navigation/headers/main.html' %}
@@ -10,57 +18,49 @@
 {% endblock %}
 
 {% block content %}
-  {% adslot self.home_leaderboard_ad_slot.slug %}
-  {% adslot self.home_mobile_leaderboard_ad_slot.slug %}
-  <main class="u-container u-container--large homepage">
-    {% comment %}
-      breaking_news_article is passed through from context and it contains all of the breaking articles from each section
-    {% endcomment %}
-    {% for article in breaking_news_article %}      
-      <a class="o-breaking-news" href={% pageurl article %}>
-        <h3>BREAKING: {{ article.title|safe }}</h3>
-      </a>
-    {% endfor %}
-    {% comment %}
-      Additional fields/blocks will go here to alert students to some special events
-    {% endcomment %}
-
-    {% comment %}
-      Display user-selected bocks that will be the first thing the user sees when going to the site, before scrolling down
-      (hence, "above the cut")
-    {% endcomment %}
-    {% for block in self.above_cut_stream %}
-      {% include_block block %}
+  {% filter specify_homepage_sidebar_ads:request %}
+    <!-- Place header ads for home page -->
+    {% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
+      {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
 
-    {% comment %}
-      Below-cut content
-    {% endcomment%}
-    <div class="homepage-section row">
-      <div class="sections" >  
-        {% for block in self.sections_stream %}
-          {% include_block block %}
-        {% endfor %}
-      </div>
+    <main class="u-container u-container--large homepage">
+      {% comment %}
+        breaking_news_article is passed through from context and it contains all of the breaking articles from each section
+      {% endcomment %}
+      {% for article in breaking_news_article %}      
+        <a class="o-breaking-news" href={% pageurl article %}>
+          <h3>BREAKING: {{ article.title|safe }}</h3>
+        </a>
+      {% endfor %}
+      {% comment %}
+        Additional fields/blocks will go here to alert students to some special events
+      {% endcomment %}
 
-      <div class="sidebar-home">
-        {% for block in self.sidebar_stream %}
-          {% include_block block %}
-        {% endfor %}
-        <div class="multi-zone cell right">
-          {% comment %} 
-            This should probably be renamed, because "zones"
-            were a mis-designed feature.
+      <!-- Above the cut content. Likely the first things the user sees when going to the site, before scrolling down -->
+      {% for block in self.above_cut_stream %}
+        {% include_block block %}
+      {% endfor %}
 
-            In all likelihood, it will contain another set of blocks
-          {% endcomment %}
+      <!-- Below cut content. The content below this point is likely to require scrolling etc. for a user to read in a browser. -->
+      <div class="homepage-section row">
+        <div class="sections" >  
+          {% for block in self.sections_stream %}
+            {% include_block block %}
+          {% endfor %}
         </div>
+
+        <aside class="sidebar-home">
+          {% for block in self.sidebar_stream %}
+            {% include_block block %}
+          {% endfor %}
+        </aside>
       </div>
-    </div>
-    <div class="loader-container">
-      <div class="loader"></div>
-    </div>
-  </main>
+      <div class="loader-container">
+        <div class="loader"></div>
+      </div>
+    </main>
+  {% endfilter %}
 {% endblock %}
 
 {% block footer %}

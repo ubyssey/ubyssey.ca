@@ -186,7 +186,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         section_articles = ArticlePage.objects.live().public().filter(current_section=self.slug).order_by(order)
         return section_articles
 
-    def get_featured_articles(self, queryset=None, number_featured=6) -> QuerySet:
+    def get_featured_articles(self, queryset=None, number_featured=4) -> QuerySet:
         """
         Returns a truncated queryset of articles
             queryset: if not included, will default to all live, public, ArticlePage descendents of this SectionPage

@@ -879,8 +879,6 @@ class ArticlePage(SectionablePage):
         if context['next']:
             context['next'] = context['next'].specific
 
-        context['suggested_articles'] = self.get_parent().specific.featured_articles
-
         return context
 
     def get_authors_string(self, links=False, authors_list=[]) -> str:
@@ -991,6 +989,46 @@ class SpecialArticleLikePage(ArticlePage):
 
     subpage_types = [] #Prevents article pages from having child pages
 
+    right_column_content = StreamField(
+        # intended for use only for the About/Contant Us page as of Jun 9, 2022
+        [
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+            )),
+            ('plaintext',blocks.TextBlock(
+                label="Plain Text Block",
+                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
+        ],
+        null=True,
+        blank=True,
+    )
+
+    content_panels = ArticlePage.content_panels + [
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content=''
+                ),
+                StreamFieldPanel("right_column_content")
+            ],
+            heading="Article Right Column Content",
+            classname="collapsible",
+        ),
+    ]
+
+    # This overrides the default Wagtail edit handler, in order to add custom tabs to the article editing interface
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(ArticlePage.promote_panels, heading='Promote'),
+            ObjectList(ArticlePage.settings_panels, heading='Settings'),
+            ObjectList(ArticlePage.fw_article_panels, heading='Layout (Stock Templates)'),
+            ObjectList(ArticlePage.customization_panels, heading='Custom Frontend (Advanced!)'),
+        ],
+    ) # edit_handler
+    
     def get_template(self, request):
         if not self.use_default_template:
             if self.db_template:

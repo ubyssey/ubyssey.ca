@@ -53,43 +53,43 @@ class HomePage(Page):
         blank=True,
     )
 
-    home_leaderboard_ad_slot = models.ForeignKey(
-        AdSlot,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='+'
-    )
-    home_mobile_leaderboard_ad_slot = models.ForeignKey(
-        AdSlot,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='+'
-    )
-    home_sidebar_ad_slot1 = models.ForeignKey(
-        AdSlot,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='+'
-    )
-    home_sidebar_ad_slot2 = models.ForeignKey(
-        AdSlot,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='+'
-    )
+    # home_leaderboard_ad_slot = models.ForeignKey(
+    #     AdSlot,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name='+'
+    # )
+    # home_mobile_leaderboard_ad_slot = models.ForeignKey(
+    #     AdSlot,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name='+'
+    # )
+    # home_sidebar_ad_slot1 = models.ForeignKey(
+    #     AdSlot,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name='+'
+    # )
+    # home_sidebar_ad_slot2 = models.ForeignKey(
+    #     AdSlot,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name='+'
+    # )
 
     content_panels = Page.content_panels + [
         StreamFieldPanel("above_cut_stream", heading="\"Above the Cut\" Content"),
         StreamFieldPanel("sections_stream", heading="Sections"),
         StreamFieldPanel("sidebar_stream", heading="Sidebar"),
-        ModelChooserPanel('home_leaderboard_ad_slot'),
-        ModelChooserPanel('home_mobile_leaderboard_ad_slot'),
-        ModelChooserPanel('home_sidebar_ad_slot1'),
-        ModelChooserPanel('home_sidebar_ad_slot2'),
+        # ModelChooserPanel('home_leaderboard_ad_slot'),
+        # ModelChooserPanel('home_mobile_leaderboard_ad_slot'),
+        # ModelChooserPanel('home_sidebar_ad_slot1'),
+        # ModelChooserPanel('home_sidebar_ad_slot2'),
     ]
                  
     def get_all_section_slug(self):

@@ -116,13 +116,11 @@
             {% endwith %}
         </div>
         <div class="multi-zone cell right">
-          <div class="c-widget-advertisement">
-            {% if above_cut_ad_slot %}
-              {% adslot above_cut_ad_slot.slug %}
-            {% endif %}
-            {% comment %} {% include 'objects/advertisement.html' with size='box' name='Widget' id=3 %} {% endcomment %}
+          {% comment %}
+            TODO make editable through interface with structblock
+          {% endcomment %}
+          <div class="sidebar-block sidebar-block--advertisement">            
           </div>
-          
           {{ sidebar.render }}
           {% if sidebar2 %} <br> {{ sidebar2.render }} {% endif %}
         </div>

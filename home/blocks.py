@@ -1,16 +1,14 @@
 """
 Blocks used on the home page of the site
 """
-from ads.models import AdSlot
+from ads.models import HomeSidebarPlacementOrderable
 from article.models import ArticlePage
 
 from django import forms
-from django.db import models
 from dispatch.models import Section
 
 from wagtail.core import blocks
 from wagtail.core.blocks import field_block
-from wagtail.admin.edit_handlers import PageChooserPanel
 
 from wagtailmodelchooser.blocks import ModelChooserBlock
 
@@ -55,32 +53,28 @@ class AboveCutBlock(blocks.StructBlock):
     # Ideally this will be used to grant the user more control of what happens "above the cut"
     # As of 2022/05/18, all it does is expose to the user what was previously just implemented with a hardcoded "include"
     # As of 2022/05/25, adding ad block selection
+    # As of 2022/06/23, selecting from settings orderable instead
 
-    above_cut_ad_slot = ModelChooserBlock(
-        target_model=AdSlot,
-        required=False,
-    )
+
+    # NOTE 7/05 - DO NOT WORK AS I HOPED
+    # sidebar_placement_orderable = ModelChooserBlock(
+    #     target_model=HomeSidebarPlacementOrderable,
+    #     required=False,
+    # )
     
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         qs = ArticlePage.objects.live().public().order_by('-explicit_published_at')
         context['articles'] = qs[:6]
-        context['above_cut_ad_slot'] = value['above_cut_ad_slot']
+        # context['sidebar_placement_orderable'] = value['sidebar_placement_orderable']
         return context
 
     class Meta:
         template = "home/stream_blocks/above_cut_block.html"
 
 class SidebarAdvertisementBlock(blocks.StructBlock):
-    # DRY insertion of the recurring ad pattern for home page side bar
-
-    ad_slot = ModelChooserBlock(target_model=AdSlot)
-
-    def get_context(self, value, parent_context=None):
-        context = super().get_context(value, parent_context=parent_context)
-        context['ad_slot'] = value['ad_slot']
-        return context
-
+    # Inserts of the recurring ad pattern for home page side bar
+    # Use in conjunction with specify_homepage_sidebar_ads to cause a specific ad to be placed in the divs provided by this block
     class Meta:
         template = "home/stream_blocks/sidebar_advertisement_block.html"
 

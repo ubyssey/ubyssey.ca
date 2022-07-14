@@ -4,6 +4,14 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load wagtailuserbar %}
+{% load ubyssey_ad_tags %}
+
+{% block head_scripts %}
+  <!-- Register ads for section page -->
+  {% for orderable in settings.ads.AdTagSettings.section_head_tags.all %}
+    {% gpt_define_tag orderable.ad_slot %}
+  {% endfor %}
+{% endblock %}
 
 {% block header %}
   {% include 'navigation/headers/topbar.html' %}
@@ -11,60 +19,62 @@
 {% endblock %}
 
 {% block content %}
-<main class="section">
-  {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 %}
-  {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=5 %}
-  <div class="u-container u-container--padded">
-    <div class="c-page__header">
-      <h1 class="c-page__heading">{{ self.title }}</h1>
-    </div>
-    {% comment %} CATEGORY MENU {% endcomment %}
-    {% if self.category_menu.count %}
-      <div class="c-page__header__subsections">
-        <ul>
-          {% for category_menu_item in self.category_menu.all %}
-            {% if category_menu_item.category %}
-              <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
-            {% else %}
-              {% comment %} Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! {% endcomment %}
-              <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
+  <main class="section">
+    <!-- Place header ads for section page -->
+    {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
+      {% gpt_placement_tag orderable.ad_slot %}
+    {% endfor %}
+    <div class="u-container u-container--padded">
+      <div class="c-page__header">
+        <h1 class="c-page__heading">{{ self.title }}</h1>
+      </div>
+      {% comment %} CATEGORY MENU {% endcomment %}
+      {% if self.category_menu.count %}
+        <div class="c-page__header__subsections">
+          <ul>
+            {% for category_menu_item in self.category_menu.all %}
+              {% if category_menu_item.category %}
+                <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
+              {% else %}
+                {% comment %} Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! {% endcomment %}
+                <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      {% comment %}
+        featured_articles is added to context by SectionPage
+        by default it containes the most recent 4 articles
+      {% endcomment %}
+    <div class="c-section__featured">
+        {% include 'article/objects/featured.html' with article=featured_articles.first %}
+        <div class="c-section__featured__articles u-flex--tablet">
+          {% for article in featured_articles %}
+            {% if forloop.counter0 != 0 %}
+              {% include 'article/objects/column.html' with article=article %}
             {% endif %}
           {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
+        </div>
+        {% comment %}
 
-    {% comment %}
-      featured_articles is added to context by SectionPage
-      by default it containes the most recent 4 articles
-    {% endcomment %}
-   <div class="c-section__featured">
-      {% include 'article/objects/featured.html' with article=featured_articles.first %}
-      <div class="c-section__featured__articles u-flex--tablet">
-        {% for article in featured_articles %}
-          {% if forloop.counter0 != 0 %}
-            {% include 'article/objects/column.html' with article=article %}
-          {% endif %}
-        {% endfor %}
+        #TODO furthur discussion about featured subsection
+
+        {% endcomment %}
       </div>
+
       {% comment %}
-
-      #TODO furthur discussion about featured subsection
-
+        DESIGN NOTE:
+        The below will be turned into _blocks_,
+        allowing editors to have user to have some level of control
       {% endcomment %}
-    </div>
+    
 
-    {% comment %}
-      DESIGN NOTE:
-      The below will be turned into _blocks_,
-      allowing editors to have user to have some level of control
-    {% endcomment %}
+      <h3 class="c-page__section">Archive</h3>
+      {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}
   
 
-    <h3 class="c-page__section">Archive</h3>
-    {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}
- 
-
-  </div>
-</main>
+    </div>
+  </main>
 {% endblock %}
