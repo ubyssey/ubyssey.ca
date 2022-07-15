@@ -879,6 +879,8 @@ class ArticlePage(SectionablePage):
         if context['next']:
             context['next'] = context['next'].specific
 
+        context['suggested_articles'] = self.get_parent().specific.featured_articles
+
         return context
 
     def get_authors_string(self, links=False, authors_list=[]) -> str:

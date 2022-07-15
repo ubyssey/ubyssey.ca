@@ -1,0 +1,36 @@
+{% comment %}
+This template is for the columns for the blog section on the home page under the digital prints section
+{% endcomment %}
+
+
+{% load cache %}
+{% load humanize %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+<article class="o-article o-article--column{% if padded %} o-article--padded{% endif %}">
+  <div class="o-article__meta">
+    <div class="o-article__meta__image">
+      {% if article.featured_media.first %}
+        {% if article.featured_media.first.image %}
+          <a class="o-article__image" href="{% pageurl article %}">
+            {% image article.featured_media.first.image fill-250x250-c100 %}
+          </a>
+        {% elif article.featured_media.first.video %}
+          <a class="o-article__image" href="{% pageurl article %}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
+        {% endif %}
+      {% endif %}
+
+    </div>
+    <div class="o-article__headline__byline">
+      <h3 class="o-article__headline">
+        <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+      </h3>
+      <div class="o-article__byline">
+        <span class="o-article__author">By {{ article.get_authors_with_urls|safe }}</span>
+        <span class="o-article__interpunct-dot"> &nbsp;·&nbsp; </span>
+        <span class="o-article__published">{{ article.first_published_at|naturaltime }}</span>
+      </div>
+    </div>
+  </div>
+</article>
