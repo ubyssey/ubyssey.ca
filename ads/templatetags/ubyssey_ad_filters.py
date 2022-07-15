@@ -50,15 +50,6 @@ def inject_ads(value, is_mobile):
         value = "</p>".join(paragraphs)
     return value
 
-@register.filter(name='add_slug_to_ad_divs')
-@stringfilter
-def add_slug_to_ad_divs(value, slug):
-    soup = BeautifulSoup(value, 'html5lib')
-    adslot_divs = soup.find_all("div", {"class": "adslot"})
-    for div in adslot_divs:
-        div['id'] = div['id'] + '-' + slug
-    return soup
-
 @register.filter(name='specify_homepage_sidebar_ads')
 @stringfilter
 def specify_homepage_sidebar_ads(value, request):

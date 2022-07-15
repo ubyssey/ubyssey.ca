@@ -22,11 +22,9 @@
     <main id="article-{{ self.slug }}" class="article">
         {% block banner_ad %}
         <!-- Article Page header ads go here -->
-            {% filter add_slug_to_ad_divs:self.slug %}
-                {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
-                    {% gpt_placement_tag orderable.ad_slot %}
-                {% endfor %}
-            {% endfilter %}
+            {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
+                {% gpt_placement_tag orderable.ad_slot %}
+            {% endfor %}
         {% endblock %}
 
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
@@ -127,15 +125,13 @@
                         {% endif %}
                         <div class="sidebar{% if self.featured_media.first.image or self.featured_media.first.video %} offset{% endif %}">
                             <!-- Article Page sidebar ads go here -->
-                            {% filter add_slug_to_ad_divs:self.slug %}
-                                {% if self.is_explicit is not True %}
-                                    {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
-                                        {% gpt_placement_tag orderable.ad_slot %}
-                                    {% endfor %}            
-                                {% else %}
-                                    {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
-                                {% endif %}
-                            {% endfilter %}
+                            {% if self.is_explicit is not True %}
+                                {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
+                                    {% gpt_placement_tag orderable.ad_slot %}
+                                {% endfor %}            
+                            {% else %}
+                                {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
+                            {% endif %}
                         </div>                        
                     </div>
                 {% endblock %}
@@ -143,14 +139,12 @@
                     {% block pre-content %}
                     {% endblock %}
                     {% if not self.is_explicit %}
-                        {% filter add_slug_to_ad_divs:self.slug %}
-                            {% filter inject_ads:is_mobile %}
-                                <!-- Content unique to the article starts here -->
-                                {% for block in self.content %}
-                                    {% include_block block %}
-                                {% endfor %}
-                                <!-- Content unique to the article ends here -->
-                            {% endfilter %}
+                        {% filter inject_ads:is_mobile %}
+                            <!-- Content unique to the article starts here -->
+                            {% for block in self.content %}
+                                {% include_block block %}
+                            {% endfor %}
+                            <!-- Content unique to the article ends here -->
                         {% endfilter %}
                     {% else %}
                         <!-- Content unique to the article starts here -->
