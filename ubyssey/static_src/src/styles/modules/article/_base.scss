@@ -1,4 +1,3 @@
-@import 'full_width';
 @import 'modules/variables';
 
 .featured-media {
@@ -284,86 +283,89 @@ div.article-content {
 
 // Right column
 
-aside.right-column {
+// aside.right-column {
 
-  width: 37%;
-  vertical-align: top;
-  box-sizing: border-box;
-  display: table-cell;
+//   width: 37%;
+//   vertical-align: top;
+//   box-sizing: border-box;
+//   display: table-cell;
 
-  img {
-    width: 100%;
-  }
+//   img {
+//     width: 100%;
+//   }
 
-  // div.sidebar {
-  //   display: none;
-  // }
+//   // div.sidebar {
+//   //   display: none;
+//   // }
 
-  // div.featured-media {
-  //   margin-bottom: 20px;
-  // }
+//   // div.featured-media {
+//   //   margin-bottom: 20px;
+//   // }
 
-  // < small
-  @media($bp-smaller-than-mobile) {
-    padding: 0 3%;
-  }
+//   // < small
+//   @media($bp-smaller-than-mobile) {
+//     padding: 0 3%;
+//   }
 
-  // < medium
-  @media($bp-smaller-than-tablet) {
+//   // < medium
+//   @media($bp-smaller-than-tablet) {
     
-  }
+//   }
 
-  // > medium
-  @media($bp-larger-than-tablet) {
+//   // > medium
+//   @media($bp-larger-than-tablet) {
 
-    position: relative;
-    // float: right;
-    padding: 0 0 40px 15px;
-    max-width: 300px;
+//     position: relative;
+//     // float: right;
+//     padding: 0 0 40px 15px;
+//     // max-width: 300px;
 
-    div.featured-media {
-      display: block;
-      // width: 500px;
-      margin-bottom: 0;
-    }
+//     div.featured-media {
+//       display: block;
+//       // width: 500px;
+//       margin-bottom: 0;
+//     }
 
- div.suggested-articles {
-      display: block;
-      position: absolute;
-      // right: 0;
-      // width: 300px;
-      // &.offset {
-      //   margin-top: 3em;
-      // }
-    }
-  }
+//  div.suggested-articles {
+//       display: block;
+//       position: relative;
+//       max-width: 300px;
+//       // right: 0;
+//       // width: 300px;
+//       // &.offset {
+//       //   margin-top: 3em;
+//       // }
+//     }
+//   }
 
-  // < large
-  @media only screen and ($bp-smaller-than-tablet) {
-    float: left;
-    padding: 15px 0;
-    width: 100%;
-    div.suggested-articles {
-      width: 100%;
-    }
-    max-width: 585px;
-  }
-}
+//   // < large
+//   @media only screen and ($bp-smaller-than-tablet) {
+//     float: left;
+//     padding: 15px 0;
+//     width: 100%;
+//     div.suggested-articles {
+//       width: 100%;
+//     }
+//     max-width: 585px;
+//   }
+// }
 
 .fw-story, .timeline {
 
-  div.right-column {
-    display: none;
-    right: -150px;
-    @media($bp-larger-than-desktophd){
-      display: block;
-    }
-  }
+  // aside.right-column {
+  //   display: none;
+  //   right: -150px;
+  //   @media($bp-larger-than-desktophd){
+  //     display: block;
+  //   }
+  // }
 
   div.media-column {
     display: none;
   }
   div.article-content {
+    width: 100%;
+
     border-right: none;
     display: block;
     padding-right: 0;

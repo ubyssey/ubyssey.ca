@@ -151,8 +151,8 @@
                     {% endblock %}
                 </div>
                 <!-- Below is the container for the right column article content, not entirely unique to the article -->
-                <aside class="cell right right-column sidebar">
-                    {% block right-column %}
+                <aside class="cell right sidebar">
+                    {% block sidebar %}
                         <!-- Article Page sidebar ads go here -->
                         {% if self.is_explicit is not True %}
                             {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}

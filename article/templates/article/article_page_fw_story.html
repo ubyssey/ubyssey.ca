@@ -3,6 +3,10 @@
 {% load dispatch_tags %}
 {% load wagtailimages_tags %}
 
+{% comment %} {% block style_sheet %}
+    {% block article_style_sheet %}
+    {% endblock %}
+{% endblock %} {% endcomment %}
 {% block specific_article_class %}
     c-article--fw-story
 {% endblock %}
