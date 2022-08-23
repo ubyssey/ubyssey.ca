@@ -5,6 +5,7 @@
 
 {% comment %} {% block style_sheet %}
     {% block article_style_sheet %}
+    TODO: move CSS from static to here (fw articles not used very often)
     {% endblock %}
 {% endblock %} {% endcomment %}
 {% block specific_article_class %}
@@ -85,24 +86,8 @@
 {% block pre-content %}
 {% endblock %}
 
-{% block right-column %}
-    <div class="right-column">
-        <div class="sidebar">
-            {% zone 'article-sidebar' %}
-            {% if explicit is not True %}
-                {% if self.minutes_to_read >= 3 %}
-                    {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}
-                    {% include 'objects/advertisement.html' with size='box' name='Box_B' id=4 article=article.id %}
-                {% else %}
-                    {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
-                {% endif %}
-            {% else %}
-                {% include 'objects/replacement.html' with size='box' %}
-            {% endif %}
-        </div>
-    </div>
+{% block sidebar %}
 {% endblock %}
-
 
 
 {% block scripts %} 
