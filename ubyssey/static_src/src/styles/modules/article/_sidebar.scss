@@ -6,7 +6,6 @@
 div.article-content {
   float: left;
   border-right: none;
-  // width: 60%;
 
   @media($bp-larger-than-tablet) {
     border-right: 1px solid #e6e6e6;
@@ -31,20 +30,19 @@ aside.sidebar {
   box-sizing: border-box;
   display: table-cell;
 
-  // div.sidebar {
-  //   display: none;
-  // }
-
-  // div.featured-media {
-  //   margin-bottom: 20px;
-  // }
-
   .o-article__headline {
     font-weight: 600;
     font-size: 1.2em;
   }
 
-  // < small
+  // < medium
+    @media($bp-smaller-than-tablet) {
+      .o-article__meta {
+        display: flex;
+      }
+  }
+
+  // if even smaller, < small
   @media($bp-smaller-than-mobile) {
     padding: 0 3%;
     .o-article__meta {
@@ -55,26 +53,11 @@ aside.sidebar {
     }
   }
 
-  // < medium
-  @media($bp-smaller-than-tablet) {
-    .o-article__meta {
-      display: flex;
-    }
-  }
-
   // > medium; screensize just greater than the min width of article content + sidebar
   @media($bp-larger-than-tablet) {
 
-    // position: relative;
-    // float: right;
     padding: 0 0 40px 15px;
     // max-width: 300px;
-
-    // div.featured-media {
-    //   display: block;
-    //   // width: 500px;
-    //   margin-bottom: 0;
-    // }
 
     div.suggested-articles {
       display: block;
@@ -88,8 +71,9 @@ aside.sidebar {
       display: none;
     }
 
-    // for the first child in the sidebar, remove .o-article__meta spacing 
-
+    .o-article--padded {
+      padding-bottom: 15px;
+    }
   }
 
   // Smaller than tablet size, have sidebar on the bottom
@@ -108,8 +92,5 @@ aside.sidebar {
   div.sidebar {
     display: none;
     right: -150px;
-    // @media($bp-larger-than-desktophd){
-    //   display: block;
-    // }
   }
 }
