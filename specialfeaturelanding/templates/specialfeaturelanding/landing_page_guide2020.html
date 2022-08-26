@@ -1,0 +1,113 @@
+{% extends 'guide/2020/base.html' %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailuserbar %}
+
+
+{% block content %}
+<div class="c-banner c-banner--welcome"
+	style="background-image: url({% static 'ubyssey/images/guide/guide-2020-cover.jpg' %})">
+	<div class="c-banner__container">
+		<div class="c-banner--welcome__inner">
+			<h2 class="c-banner--welcome__intro">The Ubyssey presents</h2>
+			<p class="c-banner--welcome__snippet">Guide To UBC</p>
+		</div>
+		<div class="c-banner-credits">
+			Zubair Hirji
+		</div>
+	</div>
+</div>
+
+<main class="{{ self.main_class_name }}">
+	<div class="editorial-container">
+		<div class="editorial__credits-container">
+			<div class="editorial__credits-content">
+				<h1>Coordinating Editor</h1>
+				<h2>Pawan Minhas</h2>
+				<h1>Visuals Editor</h1>
+				<h2>Lua Presidio</h2>
+				<h1>News Editors</h1>
+				<h2>Charlotte Alden and Andrew Ha</h2>
+				<h1>Culture Editor</h1>
+				<h2>Danni Olusanya</h2>
+				<h1>Sports + Rec Editor</h1>
+				<h2>Diana Hong</h2>
+				<h1>Video Editor</h1>
+				<h2>Akshay Khandelwal</h2>
+				<h1>Opinion + Blog Editor</h1>
+				<h2>Sam Smart</h2>
+				<h1>Science Editor</h1>
+				<h2>Myla White</h2>
+				<h1>Photo Editor</h1>
+				<h2>Sophie Galloway</h2>
+				<h1>Features Editor</h1>
+				<h2>Bailey Martens</h2>
+				<br>
+				<h1>Web Developer</h1>
+				<h2>David Kao</h2>
+				<h1>Web Developer</h1>
+				<h2>Keegan Landrigan</h2>
+				<br>
+				<h1>Contributors</h1>
+				<h2 style="font-size: 0.95rem;">Sarah Zhao
+					<br>Anupriya Dasgupta
+					<br>Sanjana Subramanian
+					<br>Campbell Speedy
+					<br>Jasmine Arora
+					<br>Kaila Johnson
+					<br>Lara Radovic
+					<br>Angela Villavicencio
+					<br>Taman Mohamed
+					<br>Arumann Dhillon
+					<br>Semeion Wong
+					<br>Shereen Lee
+					<br>Benoit Dupras
+					<br>Kyle Delgatty
+					<br>Shanzeh Chaudhry
+					<br>Sebastian Geraldo
+					<br>Zubair Hirji
+					<br>Theresa Wong
+					<br>Thomas O’Donnell
+				</h2>
+			</div>
+		</div>
+
+		<div class="editorial__note-container">
+			<div class="editorial__ home-content">
+				<div class="title">Editor's Note</div>
+				<div class='content-wrapper'>
+					<p>There’s a saying back home that goes ‘If something’s tough, that just means it’s worth doing.’
+						I’m sure I
+						don’t need to tell you this year’s going to be tough. The articles in this guide are to help you
+						see that
+						this year — with its Zoom calls, video lectures and Canvas aplenty — is worth doing. </p>
+					<br>
+					<p>The common thread throughout this guide is that you’re going to find some of the best folks
+						you’ve ever
+						known in your classes and clubs meetings — it’s just a matter of getting out there and
+						attending. The caveat
+						to that thread is that online learning means you’ve got to put in a bit more legwork to develop
+						those
+						connections, but after plenty of time spent inside, you’re likely itching to meet new people. So
+						take those
+						leaps of faith, turn on your trash webcam once in a while and try engaging with the course
+						material — if
+						you’re lucky, you’ll find some folks who make the next few years pass like a breeze. I know I
+						did.</p>
+					<br>
+					<p>And one last thing: if you’re new to BC, here’s an important piece of culture to welcome you. A
+						quote from
+						one of the smartest folks around: “Be kind, be calm, be safe.”</p>
+
+					<a class="editorial__ home-content__nav" href="{% url 'guide-landing-sub' 2020 'academics' %}">To
+						the guide <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% for block in self.content %}
+	{% include_block block %}
+	{% endfor %}
+	{% wagtailuserbar %}
+</main>
+{% endblock %}

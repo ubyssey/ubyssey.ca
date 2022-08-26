@@ -1,0 +1,13 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% image self.image original as cover_image %}
+
+<div class="{{ self.div_class_name }}">
+        <a src="{{ self.link }}">
+                <img class="{{ self.img_class_name }}" src="{{ cover_image.url }}"
+                        width={% if self.width %}"{{ self.width }}"{% else %}"{{ cover_image.width }}"{% endif %}
+                        height={% if self.height %}"{{ self.height }}"{% else %}"{{ cover_image.height }}"{% endif %}
+                        alt="{{ cover_image.alt }}">
+        </a>
+</div>

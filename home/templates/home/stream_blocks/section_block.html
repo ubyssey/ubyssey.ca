@@ -1,8 +1,9 @@
 {% comment %}
 
-Non-elegent solution to the fact that Wagtail cannot yet (as of 2022/05/17) allow a user to select their preferred template from a block
+Non-elegent solution to the fact that Wagtail cannot yet (as of 2022/05/17) allow a user to select their preferred
+template from a block
 
-Includes 
+Includes
 
 See https://github.com/wagtail/wagtail/issues/6053
 
@@ -10,7 +11,7 @@ See https://github.com/wagtail/wagtail/issues/6053
 
 
 {% if layout == 'news' %}
-    {% include "home/stream_blocks/section_news.html" %}
+{% include "home/stream_blocks/section_news.html" %}
 {% else %}
-    {% include "home/stream_blocks/section_non_news.html" %}
+{% include "home/stream_blocks/section_non_news.html" %}
 {% endif %}

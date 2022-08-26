@@ -7,123 +7,135 @@
 {% load ubyssey_ad_tags %}
 
 <div class="homepage-section frontpage-container">
-    <h1 class="homepage_heading">Home</h1>
-    <div class="frontpage">
-      <div class="frontpage__columns">
-        <div class="cell left">
-          {% with articles.1 as article %}
-            {% if article %}
-              <article class="secondary padded">
-                <h2 class="headline"><a href={% pageurl article %}>{{ article.title|safe }}</a></h2>
-                <p class="o-article__snippet"><span class="timestamp">{{ article.published_at|naturaltime }}</span>{{ article.lede|safe }}</p>
-              </article>
-            {% endif %}
-          {% endwith %}
+	<h1 class="homepage_heading">Home</h1>
+	<div class="frontpage">
+		<div class="frontpage__columns">
+			<div class="cell left">
+				{% with articles.1 as article %}
+				{% if article %}
+				<article class="secondary padded">
+					<h2 class="headline"><a href={% pageurl article %}>{{ article.title|safe }}</a></h2>
+					<p class="o-article__snippet"><span
+							class="timestamp">{{ article.published_at|naturaltime }}</span>{{ article.lede|safe }}</p>
+				</article>
+				{% endif %}
+				{% endwith %}
 
-          {% comment %} {% include 'objects/advertisement.html' with size='box' name='Box_A' class='mobile-frontpage-box' id=2 %} {% endcomment %}
-        
-          {% with articles.2 as article %}
-            {% if article %}
-              <article class="thumb row padded">
-                <div class="image">
-                    <a href={% pageurl article %}>
-                      {% if article.featured_media.first.image %}
-                        {% image article.featured_media.first.image fill-250x250 %}
-                      {% elif article.featured_video %}
-                        <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
-                      {% endif %}  
-                    </a>
-                </div>
-                <div>
-                    <h2 class="headline"><a href={% pageurl article %}>{{ article.title|safe }}</a></h2>
-                    <p class="o-article__snippet"><span class="timestamp hide-desktop">{{ article.published_at|naturaltime }}</span></p>
-                </div>
-              </article>
-            {% endif %}
-          {% endwith %}
+				{% comment %}
+				{% include 'objects/advertisement.html' with size='box' name='Box_A' class='mobile-frontpage-box' id=2 %}
+				{% endcomment %}
 
-          {% with articles.3 as article %}
-            {% if article %}
-              <article class="thumb row padded">
-                  <div class="image">
-                      <a href={% pageurl article %}>
-                        {% if article.featured_media.first.image %}
-                          {% image article.featured_media.first.image fill-250x250 %}
-                        {% elif article.featured_video %}
-                          <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
-                        {% endif %}  
-                      </a>
-                  </div>
-                  <div>
-                    <h2 class="headline"><a href={% pageurl article %}>{{ article.title|safe }}</a></h2>
-                    <p class="o-article__snippet"><span class="timestamp hide-desktop">{{ article.published_at|naturaltime }}</span></p>
-                  </div>
-              </article>
-            {% endif %}
-          {% endwith %}
+				{% with articles.2 as article %}
+				{% if article %}
+				<article class="thumb row padded">
+					<div class="image">
+						<a href={% pageurl article %}>
+							{% if article.featured_media.first.image %}
+							{% image article.featured_media.first.image fill-250x250 %}
+							{% elif article.featured_video %}
+							<img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"
+								alt="" />
+							{% endif %}
+						</a>
+					</div>
+					<div>
+						<h2 class="headline"><a href={% pageurl article %}>{{ article.title|safe }}</a></h2>
+						<p class="o-article__snippet"><span
+								class="timestamp hide-desktop">{{ article.published_at|naturaltime }}</span></p>
+					</div>
+				</article>
+				{% endif %}
+				{% endwith %}
+
+				{% with articles.3 as article %}
+				{% if article %}
+				<article class="thumb row padded">
+					<div class="image">
+						<a href={% pageurl article %}>
+							{% if article.featured_media.first.image %}
+							{% image article.featured_media.first.image fill-250x250 %}
+							{% elif article.featured_video %}
+							<img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"
+								alt="" />
+							{% endif %}
+						</a>
+					</div>
+					<div>
+						<h2 class="headline"><a href={% pageurl article %}>{{ article.title|safe }}</a></h2>
+						<p class="o-article__snippet"><span
+								class="timestamp hide-desktop">{{ article.published_at|naturaltime }}</span></p>
+					</div>
+				</article>
+				{% endif %}
+				{% endwith %}
 
 
-          <ul class="c-homepage__bullets">
-            {% with articles.4 as article %}
-              {% if article %}
-                <li>
-                  <article class="o-article o-article--bullet">
-                    <h3 class="o-article__headline">
-                      <a href={% pageurl article %}>{{ article.title|safe }}</a>
-                    </h3>
-                  </article>
-                </li>
-              {% endif %}
-            {% endwith %}
+				<ul class="c-homepage__bullets">
+					{% with articles.4 as article %}
+					{% if article %}
+					<li>
+						<article class="o-article o-article--bullet">
+							<h3 class="o-article__headline">
+								<a href={% pageurl article %}>{{ article.title|safe }}</a>
+							</h3>
+						</article>
+					</li>
+					{% endif %}
+					{% endwith %}
 
-            {% with articles.5 as article %}
-              {% if article %}
-                <li>
-                  <article class="o-article o-article--bullet">
-                    <h3 class="o-article__headline">
-                      <a href={% pageurl article %}>{{ article.title|safe }}</a>
-                    </h3>
-                  </article>
-                </li>
-              {% endif %}
-            {% endwith %}
+					{% with articles.5 as article %}
+					{% if article %}
+					<li>
+						<article class="o-article o-article--bullet">
+							<h3 class="o-article__headline">
+								<a href={% pageurl article %}>{{ article.title|safe }}</a>
+							</h3>
+						</article>
+					</li>
+					{% endif %}
+					{% endwith %}
 
-          </ul>
-        </div>
-        <div class="cell middle">
-            {% with articles.0 as article %}
-              {% if article %}
-                <article class="primary {{ article.template }}">
-                    <a class="image" href={% pageurl article %}>
-                      {% if article.featured_media.first.image %}
-                        {% image article.featured_media.first.image width-715 %}
-                      {% elif article.featured_video %} 
-                        <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
-                      {% endif %}
-                    </a>
-                    
-                    <div class="meta">
-                      <a href={% pageurl article %}><h1 class="headline">{{ article.title|safe }}</h1></a>
-                      <div class="o-article__byline">
-                        <span class="o-article__author">By {{ article.get_authors_with_urls|safe }}</span>
-                        <span> &nbsp;·&nbsp; </span>
-                        <span class="o-article__published">{{ article.published_at }}</span>
-                      </div>
-                      <p class="o-article__snippet"><span class="timestamp hide-desktop">{{ article.published_at|naturaltime }}</span>{{ article.lede|safe }}</p>
-                    </div>
-                </article>
-              {% endif %}
-            {% endwith %}
-        </div>
-        <div class="multi-zone cell right">
-          {% comment %}
-            TODO make editable through interface with structblock
-          {% endcomment %}
-          <div class="sidebar-block sidebar-block--advertisement">            
-          </div>
-          {{ sidebar.render }}
-          {% if sidebar2 %} <br> {{ sidebar2.render }} {% endif %}
-        </div>
-      </div>
-    </div>
+				</ul>
+			</div>
+			<div class="cell middle">
+				{% with articles.0 as article %}
+				{% if article %}
+				<article class="primary {{ article.template }}">
+					<a class="image" href={% pageurl article %}>
+						{% if article.featured_media.first.image %}
+						{% image article.featured_media.first.image width-715 %}
+						{% elif article.featured_video %}
+						<img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"
+							alt="" />
+						{% endif %}
+					</a>
+
+					<div class="meta">
+						<a href={% pageurl article %}>
+							<h1 class="headline">{{ article.title|safe }}</h1>
+						</a>
+						<div class="o-article__byline">
+							<span class="o-article__author">By {{ article.get_authors_with_urls|safe }}</span>
+							<span> &nbsp;·&nbsp; </span>
+							<span class="o-article__published">{{ article.published_at }}</span>
+						</div>
+						<p class="o-article__snippet"><span
+								class="timestamp hide-desktop">{{ article.published_at|naturaltime }}</span>{{ article.lede|safe }}
+						</p>
+					</div>
+				</article>
+				{% endif %}
+				{% endwith %}
+			</div>
+			<div class="multi-zone cell right">
+				{% comment %}
+				TODO make editable through interface with structblock
+				{% endcomment %}
+				<div class="sidebar-block sidebar-block--advertisement">
+				</div>
+				{{ sidebar.render }}
+				{% if sidebar2 %} <br> {{ sidebar2.render }} {% endif %}
+			</div>
+		</div>
+	</div>
 </div>

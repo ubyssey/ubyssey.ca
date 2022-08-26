@@ -38,9 +38,9 @@ class QuoteBlock(blocks.StructBlock):
         # Rather than the "normal" template logic, we look at our self.template variable
         block_template = value.get('template')
         if block_template == 'guide-2020':
-            template = 'specialfeatureslanding/blocks/guide-2020-panel-quote.html'
+            template = 'specialfeaturelanding/blocks/guide-2020-panel-quote.html'
         else:
-            template = 'specialfeatureslanding/blocks/guide-2020-panel-quote.html' #TODO better default
+            template = 'specialfeaturelanding/blocks/guide-2020-panel-quote.html' #TODO better default
 
         # Below this point, this render() is identical to its original counterpart
         if context is None:
@@ -49,6 +49,28 @@ class QuoteBlock(blocks.StructBlock):
             new_context = self.get_context(value, parent_context=dict(context))
 
         return mark_safe(render_to_string(template, new_context))
+
+class GuideBannerBlock(blocks.StructBlock):
+    template = 'specialfeaturelanding/blocks/guide_banner_block.html'
+
+    image = ImageChooserBlock(
+        required=True,
+    )
+    title_intro = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='The Ubyssey presents'
+    )
+    title = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='Guide To UBC'
+    )
+    credit = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='Author Name Goes Here'
+    )
 
 class CustomStylingCTABlock(blocks.StructBlock):
 
@@ -96,9 +118,9 @@ class CustomStylingCTABlock(blocks.StructBlock):
         # Rather than the "normal" template logic, we look at our self.template variable
         block_template = value.get('template')
         if block_template == 'guide-2020':
-            template = 'specialfeatureslanding/blocks/guide-2020-cta.html'
+            template = 'specialfeaturelanding/blocks/guide-2020-cta.html'
         else:
-            template = 'specialfeatureslanding/blocks/guide-2020-cta.html' #TODO better default
+            template = 'specialfeaturelanding/blocks/guide-2020-cta.html' #TODO better default
 
         # Below this point, this render() is identical to its original counterpart
         if context is None:
@@ -107,3 +129,51 @@ class CustomStylingCTABlock(blocks.StructBlock):
             new_context = self.get_context(value, parent_context=dict(context))
 
         return mark_safe(render_to_string(template, new_context))
+
+class GraphicalMenuItemBlock(blocks.StructBlock):
+    
+    template = 'specialfeaturelanding/blocks/graphical-menu-item.html'
+    
+    div_class_name = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='box'
+    )
+
+    img_class_name = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='photo_cover'
+    )
+
+    link = blocks.URLBlock(
+        required=True,
+    )
+
+    image = ImageChooserBlock(
+        required=True,
+    )
+
+    width = blocks.IntegerBlock(
+        required = False
+    )
+
+    height = blocks.IntegerBlock(
+        required = False
+    )
+
+class TextDivBlock(blocks.StructBlock):
+
+    template = 'specialfeaturelanding/blocks/graphical-menu-item.html'
+
+    class_name = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='class'
+    )
+
+    text = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='text'
+    )

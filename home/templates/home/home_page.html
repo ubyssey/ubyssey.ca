@@ -6,65 +6,63 @@
 {% load ubyssey_ad_filters %}
 
 {% block head_scripts %}
-  <!-- Register ads for home page -->
-  {% for orderable in settings.ads.AdTagSettings.home_head_tags.all %}
-    {% gpt_define_tag orderable.ad_slot %}
-  {% endfor %}
+<!-- Register ads for home page -->
+{% for orderable in settings.ads.AdTagSettings.home_head_tags.all %}
+{% gpt_define_tag orderable.ad_slot %}
+{% endfor %}
 {% endblock %}
 
 {% block header %}
-  {% include 'navigation/headers/main.html' %}
-  {% include 'navigation/headers/mobile.html' with class='homepage' %}
+{% include 'navigation/headers/main.html' %}
+{% include 'navigation/headers/mobile.html' with class='homepage' %}
 {% endblock %}
 
 {% block content %}
-  {% filter specify_homepage_sidebar_ads:request %}
-    <!-- Place header ads for home page -->
-    {% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
-      {% gpt_placement_tag orderable.ad_slot %}
-    {% endfor %}
+{% filter specify_homepage_sidebar_ads:request %}
+<!-- Place header ads for home page -->
+{% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
+{% gpt_placement_tag orderable.ad_slot %}
+{% endfor %}
 
-    <main class="u-container u-container--large homepage">
-      {% comment %}
-        breaking_news_article is passed through from context and it contains all of the breaking articles from each section
-      {% endcomment %}
-      {% for article in breaking_news_article %}      
-        <a class="o-breaking-news" href={% pageurl article %}>
-          <h3>BREAKING: {{ article.title|safe }}</h3>
-        </a>
-      {% endfor %}
-      {% comment %}
-        Additional fields/blocks will go here to alert students to some special events
-      {% endcomment %}
+<main class="u-container u-container--large homepage">
+	{% comment %}
+	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
+	{% endcomment %}
+	{% for article in breaking_news_article %}
+	<a class="o-breaking-news" href={% pageurl article %}>
+		<h3>BREAKING: {{ article.title|safe }}</h3>
+	</a>
+	{% endfor %}
+	{% comment %}
+	Additional fields/blocks will go here to alert students to some special events
+	{% endcomment %}
 
-      <!-- Above the cut content. Likely the first things the user sees when going to the site, before scrolling down -->
-      {% for block in self.above_cut_stream %}
-        {% include_block block %}
-      {% endfor %}
+	<!-- Above the cut content. Likely the first things the user sees when going to the site, before scrolling down -->
+	{% for block in self.above_cut_stream %}
+	{% include_block block %}
+	{% endfor %}
 
-      <!-- Below cut content. The content below this point is likely to require scrolling etc. for a user to read in a browser. -->
-      <div class="homepage-section row">
-        <div class="sections" >  
-          {% for block in self.sections_stream %}
-            {% include_block block %}
-          {% endfor %}
-        </div>
+	<!-- Below cut content. The content below this point is likely to require scrolling etc. for a user to read in a browser. -->
+	<div class="homepage-section row">
+		<div class="sections">
+			{% for block in self.sections_stream %}
+			{% include_block block %}
+			{% endfor %}
+		</div>
 
-        <aside class="sidebar-home">
-          {% for block in self.sidebar_stream %}
-            {% include_block block %}
-          {% endfor %}
-        </aside>
-      </div>
-      <div class="loader-container">
-        <div class="loader"></div>
-      </div>
-    </main>
-  {% endfilter %}
+		<aside class="sidebar-home">
+			{% for block in self.sidebar_stream %}
+			{% include_block block %}
+			{% endfor %}
+		</aside>
+	</div>
+	<div class="loader-container">
+		<div class="loader"></div>
+	</div>
+</main>
+{% endfilter %}
 {% endblock %}
 
 {% block footer %}
-  {% include 'navigation/footer.html' with homepage=True %}
+{% include 'navigation/footer.html' with homepage=True %}
 {% endblock %}
-
- 

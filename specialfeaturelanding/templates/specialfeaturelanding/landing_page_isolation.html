@@ -6,13 +6,15 @@
 </div>
 <div class="house">
     <div class="roof" style="background-image:url({% static 'ubyssey/images/isolation/moon.png' %});">
-        <img class="roof-image" src="{% static 'ubyssey/images/isolation/dollhouseroof.png' %}"/>
+        <img class="roof-image" src="{% static 'ubyssey/images/isolation/dollhouseroof.png' %}" />
         <div class="roof-headline">Stories from self-isolation</div>
     </div>
-    
+
     <main class="section-flex-container">
         <div class="isolation-description">
-            <p>This is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph</p>
+            <p>This is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a
+                paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph his is a paragraph
+                his is a paragraph his is a paragraph his is a paragraph</p>
         </div>
         <div class="isolation-row">
             {% include 'isolation/article-box.html' with type=1 title=Title1 subsection=subsection slug=article.slug image=article.featured_image.image.get_absolute_url%}
@@ -31,7 +33,7 @@
             {% include 'isolation/article-box.html' with type=1 title=article.headline subsection=subsection slug=article.slug  image=article.featured_image.image.get_absolute_url%}
         </div>
     </main>
-     
+
 </div>
 
 {% endblock %}

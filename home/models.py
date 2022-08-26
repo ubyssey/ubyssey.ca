@@ -25,6 +25,7 @@ class HomePage(Page):
         'section.SectionPage',
         'authors.AllAuthorsPage',
         'videos.VideosPage',
+        'archive.ArchivePage',
     ]
 
     above_cut_stream = StreamField(
@@ -46,7 +47,7 @@ class HomePage(Page):
     sidebar_stream = StreamField(
         [
             ("sidebar_advertisement_block", homeblocks.SidebarAdvertisementBlock()),
-            ("sidebar_issuu_block", homeblocks.SidebarIssuuBlock()),
+            ("sidebar_issues_block", homeblocks.SidebarIssuesBlock()),
             ("sidebar_section_block", homeblocks.SidebarSectionBlock()),            
         ],
         null=True,

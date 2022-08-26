@@ -1,0 +1,40 @@
+{% comment %}
+context inputs:
+background_color - hex color
+
+{% endcomment %}
+
+{% load static %}
+{% load menu_tags %}
+
+<nav class="navbar navbar-expand-sm navbar-dark"
+    style="background-color: {% if background_color %}#{{ background_color }}{% else %}#0073A9{% endif%}">
+    <div class="container-fluid">
+        {% comment %} Link below is a funny combination of Bootstrap convention and some weird existing Ubyssey
+        conventions
+        {% endcomment %}
+        <a class="navbar-brand o-logo--small" href="#"></a>
+        {% comment %} Strictly from Bootstrap. Allows button for navbar to appear on mobile. See
+        https://www.w3schools.com/bootstrap5/bootstrap_navbar.php
+        {% endcomment %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                {% for item in menu_items %}
+                    {% if item.has_children_in_menu %} 
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ item.href }}" role="button" data-bs-toggle="dropdown">{{ item.text }}</a>
+                        {% sub_menu item template="navigation/bootstrap/topbar_with_dropdowns_submenu.html"%}
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ item.href}}">{{ item.text }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</nav>

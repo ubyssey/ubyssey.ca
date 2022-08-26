@@ -1,0 +1,6 @@
+{% load menu_tags %}
+<ul class="dropdown-menu">
+    {% for item in menu_items %}
+    <li><a class="dropdown-item" href="{{ item.href }}">{{ item.text }}</a></li>
+    {% endfor %}
+</ul>

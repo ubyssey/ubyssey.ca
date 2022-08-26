@@ -1,7 +1,6 @@
-from .blocks import (
-    QuoteBlock, 
-    CustomStylingCTABlock,
-)
+import specialfeaturelanding.blocks as special_blocks
+
+from article.models import UbysseyMenuMixin
 
 from django.db import models
 from django.db.models.fields.related import ForeignKey
@@ -11,22 +10,29 @@ from section.sectionable.models import SectionablePage
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     MultiFieldPanel,
+    InlinePanel,
     StreamFieldPanel,
     HelpPanel,
 )
 
-from wagtail.core.models import Page
+from modelcluster.fields import ParentalKey
+
+from wagtail.core import blocks
+from wagtail.core.models import Page, Orderable
 from wagtail.core.fields import StreamField
+from wagtail.images.blocks import ImageChooserBlock
 
 from wagtailmenus.models import FlatMenu
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
-class SpecialLandingPage(SectionablePage):
+class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     """
     This is the general model for "special features" landing pages, such as for the guide, or a magazine.
+
+    Pages can select them to automatically create
     """
-    # template = "specialfeatureslanding/base.html"
-    template = "specialfeatureslanding/landing_page_guide2021.html"
+    # template = "specialfeaturelanding/base.html"
+    template = "specialfeaturelanding/landing_page_guide_2020_style.html"
 
     parent_page_types = [
         'section.SectionPage',
@@ -41,14 +47,6 @@ class SpecialLandingPage(SectionablePage):
     show_in_menus_default = True
 
     #-----Fields-----
-    menu = ForeignKey(
-        FlatMenu,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-    )
-
     main_class_name = models.CharField(
         null=False,
         blank=True,
@@ -56,20 +54,53 @@ class SpecialLandingPage(SectionablePage):
         max_length=255,
     )
 
+    editorial_stream = StreamField(
+        [
+            ('credits',blocks.StreamBlock([
+                ('title',blocks.CharBlock()),
+                ('rich_text',blocks.RichTextBlock()),
+                ('editor_credit',blocks.StructBlock([
+                    ('role',blocks.CharBlock()),
+                    ('name',blocks.CharBlock()),
+                ])),
+            ])),
+            ('image', ImageChooserBlock()),
+            ('note_with_header', blocks.StructBlock([
+                ('title',blocks.CharBlock()),
+                ('rich_text',blocks.RichTextBlock()),
+            ])),
+        ],
+        null=True,
+        blank=True,
+    )
+
     content = StreamField(
         [
-            ('quote', QuoteBlock(
+            ('quote', special_blocks.QuoteBlock(
                 label="Quote Block",
             )),
-            ('stylecta',CustomStylingCTABlock(
+            ('stylecta',special_blocks.CustomStylingCTABlock(
                 label="Custom Styling CTA",
             )),
         ],
         null=True,
         blank=True,
     )
-    content_panels = Page.content_panels + [
-        ModelChooserPanel('menu'),
+
+    graphical_menu = StreamField(
+        [
+            ('menu_item', special_blocks.GraphicalMenuItemBlock(
+                label="Graphical (Cover) Link"
+            )), 
+            ('menu_item', special_blocks.TextDivBlock(
+                label="Text"
+            )), 
+        ],
+        null=True,
+        blank=True,
+    )
+
+    content_panels = Page.content_panels + UbysseyMenuMixin.menu_content_panels + [
         MultiFieldPanel(
             [
                 HelpPanel(content='Used for targetting <main> by the css'),
@@ -77,17 +108,33 @@ class SpecialLandingPage(SectionablePage):
             ],
             heading="Styling",
         ),
+        # MultiFieldPanel(
+        #     [
+        #         HelpPanel(
+        #             content='<h1>TODO</h1><p>Write something here</p>'
+        #         ),
+        #         StreamFieldPanel("content"),
+        #     ],
+        #     heading="Article Content",
+        #     classname="collapsible",
+        # ),
         MultiFieldPanel(
             [
-                HelpPanel(
-                    content='<h1>TODO</h1><p>Write something here</p>'
-                ),
-                StreamFieldPanel("content"),
+                StreamFieldPanel("editorial_stream"),
             ],
-            heading="Article Content",
-            classname="collapsible",
+            heading="Editorial Content"
         ),
 
+        MultiFieldPanel(
+            [
+                InlinePanel(
+                    "feature_credits",
+                    label="Credits",                    
+                )
+            ],
+            heading="Feature Credits",
+            classname="collapsible",
+        )
     ]
 
 
@@ -97,3 +144,30 @@ class SpecialLandingPage(SectionablePage):
         #     print('hello world ' + i)
         #     context['article' + i] = Article.objects.get(is_published=1, slug=block)
         return context
+
+class CreditsOrderable(Orderable):
+    special_landing_page = ParentalKey(
+        "specialfeaturelanding.SpecialLandingPage",
+        related_name="feature_credits",
+    )
+
+    role = models.CharField(
+        max_length=100,
+        blank=True,
+        null=False,
+    )
+
+    author = models.ForeignKey(
+        "authors.AuthorPage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="If null or blank, will use the name entered in \"Author Name\" field",
+    )
+
+    author_name = models.CharField(
+        max_length=100,
+        blank=True,
+        null=False,
+    )

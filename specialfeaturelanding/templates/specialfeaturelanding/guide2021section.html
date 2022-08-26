@@ -1,0 +1,61 @@
+{% extends 'guide/2021/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="guide-section-container">
+
+    <div class="section-img">
+        {% if self.slug == 'the-ubyssey' %}
+        <img class="photo_cover" src="{% static 'ubyssey/images/guide/2021/section-covers/Ubyssey-cover.jpg' %}">
+        {% elif self.slug == 'parties-sex-and-drugs' %}
+        <img class="photo_cover" src="{% static 'ubyssey/images/guide/2021/section-covers/Parties-cover.jpg' %}">
+
+        {% elif self.slug == 'vancouver' %}
+
+        <img class="photo_cover" src="{% static 'ubyssey/images/guide/2021/section-covers/Vancouver-cover.jpg' %}">
+
+        {% elif self.slug == 'student-resources' %}
+
+        <img class="photo_cover"
+            src="{% static 'ubyssey/images/guide/2021/section-covers/Student-resources-cover.jpg' %}">
+
+        {% elif self.slug == 'student-life' %}
+
+        <img class="photo_cover" src="{% static 'ubyssey/images/guide/2021/section-covers/Student-life-cover.jpg' %}">
+
+        {% elif self.slug == 'ubc' %}
+
+        <img class="photo_cover" src="{% static 'ubyssey/images/guide/2021/section-covers/UBC-cover.jpg' %}">
+
+        {% elif self.slug == 'academics' %}
+
+        <img class="photo_cover" src="{% static 'ubyssey/images/guide/2021/section-covers/Academics-cover.jpg' %}">
+
+        {% else %}
+
+        <img class="photo_cover" src="{% static 'ubyssey/images/guide/2021/section-covers/Academics-cover.jpg' %}">
+
+
+        {% endif %}
+
+
+    </div>
+
+    <div class="section-articles">
+
+        <h2 class="{{self.slug}}"> {{self.title}} </h2>
+
+        <ul class="section-articles-list">
+
+            {% for article in self.get_children.specific %}
+            <li>
+                {{article.title}}
+            </li>
+            {% endfor %}
+
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

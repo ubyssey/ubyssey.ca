@@ -1,0 +1,20 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% block header %}
+{% include 'navigation/headers/topbar.html' %}
+{% include 'navigation/headers/mobile.html' %}
+{% endblock %}
+
+{% block content %}
+<main class="c-page c-page--archive">
+    <div class="u-container u-container--padded">
+
+        <div class="c-page__header">
+            <h1 class="c-page__heading">Search the archive</h1>
+        </div>
+
+        {% include 'archive/objects/archive.html' %}
+
+    </div>
+</main>
+{% endblock %}
