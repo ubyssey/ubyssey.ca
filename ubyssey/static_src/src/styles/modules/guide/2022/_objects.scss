@@ -20,9 +20,9 @@
 
 .o-container {
   width: 100%;
-  max-width: 1000px;
+  max-width: 600px;
   display: grid;
-  justify-items: center;
+  justify-items: left;
   margin: auto;
   padding-bottom: 5%;
   @media($bp-larger-than-tablet) {
