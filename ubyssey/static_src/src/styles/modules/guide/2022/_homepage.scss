@@ -56,21 +56,24 @@
     background-color: lightblue;
 }
 
-.land_mark_image-container{
-    height: 50%;
+.land_mark_image-container {
+    width: 35%;
 }
 
 .land_mark_image-container img{
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
     max-width: 100%;
-    
+    object-fit: cover;
+    object-position: 0 0;
 }
 
 .land_mark_note-container{
+    width: 65%;
     display: flex;
     flex-direction: column;
     text-align: left;
-    // align-items: left;
+    align-items: flex-start;
     justify-content: center;
     background-color: lightblue;
     font-family: 'Noto Sans', sans-serif;
@@ -78,25 +81,38 @@
     font-size: 1.3rem;
     font-weight: 300;
     line-height: 1.6rem;
-
 }
 
-.land_mark_note-container div{
-    padding-bottom: 1.5em;
-    padding-left: 1.5em;
-    padding-right: 1.5em;
+.land_mark_note-container div{  // div containing land acknowledgement text
+    padding-bottom: 3rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
 }
 
 .land_mark_note-container h1{
-    padding-top: 1.5em;
-    padding-left: 1.5em;
-    padding-right: 1.5em;
+    padding-top: 3rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
 }
 
 
 .land_mark_note-container h1{
     font-weight: bold;
-    margin-bottom: 1em;
+}
+
+.land_mark_note-container div p {
+    margin: 0;
+}
+
+@media (max-width: 959px) {
+
+    .land_mark_image-container {
+        width: 100%;
+    }
+
+    .land_mark_note-container {
+        width: 100%;
+    }
 }
 
 .panelist-container{
@@ -157,28 +173,6 @@
     font-size: 3.5em;
     font-weight: bold;
     
-}
-
-@media (min-width: 1000px) {
-    .land_mark_image-container{
-        width: 35%;
-        height: 50%;
-    }
-
-    .land_mark_note-container{
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        align-items: left;
-        justify-content: center;
-        width: 65%;
-        background-color: lightblue;
-        font-family: Montserrat, sans-serif;
-        font-size: 1.3rem;
-        font-weight: 300;
-        line-height: 1.6rem;
-
-    }
 }
 
 .section-grid-container{
