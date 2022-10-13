@@ -1,0 +1,9 @@
+{% load menu_tags %}
+<ul style="padding-left:1rem;padding-right:1rem">
+    {% for item in menu_items %}
+    <li>
+        <a class="header-button" style="color:white"
+            href="{{ item.href }}">{{ item.text }}</a>
+    </li>
+    {% endfor %}
+</ul>

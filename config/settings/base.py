@@ -195,6 +195,7 @@ INSTALLED_APPS = [
     'wagtailmodelchooser',
     'wagtailmenus',
     'wagtailcache',
+    'wagtail_color_panel',
 ]
 
 if DEBUG:

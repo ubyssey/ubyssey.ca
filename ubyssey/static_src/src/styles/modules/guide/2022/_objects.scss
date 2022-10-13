@@ -1,0 +1,40 @@
+.o-logo--small {
+  display: block;
+  height: 40px;
+  width: 166px;
+  background-image: url('../images/guide/guide-logo.png');
+  background-size: 100%;
+
+  transition: background-image 0.15s;
+
+  &:hover {
+    background-image: url('../images/guide/guide-logo-hover.png');
+  }
+}
+
+.o-site-wrapper {
+  width: 100%;
+  max-width: 1600px;
+  margin: 50px auto 0 auto;
+}
+
+.o-container {
+  width: 100%;
+  max-width: 1000px;
+  display: grid;
+  justify-items: center;
+  margin: auto;
+  padding-bottom: 5%;
+  @media($bp-larger-than-tablet) {
+    min-width: 600px;
+  }
+  @media($bp-smaller-than-tablet) {
+    padding: 0 5% 0 5%;
+  }
+}
+
+.o-wrapper {
+  padding: 0 25px;
+  text-align: center;
+}
+

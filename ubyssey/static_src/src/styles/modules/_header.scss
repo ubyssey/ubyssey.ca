@@ -37,7 +37,7 @@ $header-border: 1px solid #D3D3D3;
 // Main header
 header.main, header.topbar {
   display: none;
-  @media($bp-larger-than-tablet){
+  @media($bp-larger-than-desktop){
     display: block;
   }
 }
@@ -265,7 +265,7 @@ header.topbar {
 #header-mobile-spacer {
   height: 54px;
   min-height: 54px;
-  @media ($bp-larger-than-tablet) {
+  @media ($bp-larger-than-desktop) {
     height: 48px;
     min-height: 48px;
   }
@@ -274,7 +274,7 @@ header.topbar {
 #header-mobile-spacer--homepage {  
   height: 54px;
   min-height: 54px;
-  @media ($bp-larger-than-tablet) {
+  @media ($bp-larger-than-desktop) {
     height: 0;
     min-height: 0;
   }
@@ -340,7 +340,7 @@ header.mobile {
       max-height: 24px;
     }
   }
-  @media($bp-larger-than-tablet){
+  @media($bp-larger-than-desktop){
     display: none;
   }
 }

@@ -32,7 +32,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     Pages can select them to automatically create
     """
     # template = "specialfeaturelanding/base.html"
-    template = "specialfeaturelanding/landing_page_guide_2020_style.html"
+    template = "specialfeaturelanding/landing_page_guide_2022_style.html"
 
     parent_page_types = [
         'section.SectionPage',
@@ -56,19 +56,13 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
     editorial_stream = StreamField(
         [
-            ('credits',blocks.StreamBlock([
-                ('title',blocks.CharBlock()),
-                ('rich_text',blocks.RichTextBlock()),
-                ('editor_credit',blocks.StructBlock([
-                    ('role',blocks.CharBlock()),
-                    ('name',blocks.CharBlock()),
-                ])),
-            ])),
+            ('banner', special_blocks.BannerBlock()),
+            ('credits', special_blocks.EditorialBlock()),
             ('image', ImageChooserBlock()),
-            ('note_with_header', blocks.StructBlock([
-                ('title',blocks.CharBlock()),
-                ('rich_text',blocks.RichTextBlock()),
-            ])),
+            ('note_with_header', special_blocks.NoteWithHeaderBlock()),
+            ('graphical_menu', special_blocks.GraphicalMenuBlock()),
+            ('child_articles', special_blocks.ChildArticlesBlock()),
+            ('flex_stream', special_blocks.DivStreamBlock()),
         ],
         null=True,
         blank=True,

@@ -105,10 +105,12 @@
 		{% block post_main_content %}
 		{% endblock %}
 	</div>
+
+	{% block footer %}
 	{% with self.slug as section %}
 	{% include 'guide/2021/footer.html' with section=section %}
 	{% endwith %}
-
+	{% endblock %}
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
 	<script src="{% static 'ubyssey/js/main.js' %}" type="text/javascript"></script>

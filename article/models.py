@@ -668,6 +668,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             return "article/article_page_fw_story.html"
         elif self.layout == 'guide-2020':
             return "article/article_page_guide_2020.html"
+        elif self.layout == 'guide-2022':
+            return "article/article_page_guide_2022.html"
                         
         return "article/article_page.html"
 
@@ -741,7 +743,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             help_text="In Dispatch, \"SEO Keyword\" was referred to as \"Focus Keywords\", and  \"SEO Description\" was referred to as \"Meta Description\""
         )
     ] # promote_panels
-    settings_panels = Page.settings_panels + [
+    settings_panels = SectionablePage.settings_panels + [
         MultiFieldPanel(
             [
                 FieldPanel(
@@ -773,7 +775,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                         choices=[
                             ('default', 'Default'), 
                             ('fw-story', 'Full-Width Story'),
-                            ('guide-2020', 'Guide (2020 style)'),
+                            ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
+                            ('guide-2022', 'Guide (2022 style)'),
                         ],
                     ),
                 ),

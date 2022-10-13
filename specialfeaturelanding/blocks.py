@@ -3,6 +3,41 @@ from django.utils.safestring import mark_safe
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
+TEMPLATE_DIRECTORY = "specialfeaturelanding/blocks/"
+
+class TemplateSelectStructBlock(blocks.StructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+        ],
+        required=False,
+    )
+
+    def render(self, value, context=None):
+        """
+        According to the below stackoverflow, we need to modify this specific method in order to allow template selection
+        in such a way that the block itself tracks
+        https://stackoverflow.com/questions/55875597/wagtail-how-to-access-structblock-class-attribute-inside-block
+
+        In some ways this is a proof of concept for modifiable blocks
+        """
+
+        # Rather than the "normal" template logic, we look at our self.template variable
+        block_template = value.get('template')
+        if block_template != '':
+            template = TEMPLATE_DIRECTORY + block_template
+        else:
+            return self.render_basic(value, context=context) # Wagtail's default for when 
+
+        # Below this point, this render() is identical to its original counterpart
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+        return mark_safe(render_to_string(template, new_context))
+
+
 class QuoteBlock(blocks.StructBlock):
 
     quote = blocks.RichTextBlock(
@@ -130,9 +165,83 @@ class CustomStylingCTABlock(blocks.StructBlock):
 
         return mark_safe(render_to_string(template, new_context))
 
-class GraphicalMenuItemBlock(blocks.StructBlock):
-    
+class TextDivBlock(blocks.StructBlock):
+
     template = 'specialfeaturelanding/blocks/graphical-menu-item.html'
+
+    class_name = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='class'
+    )
+
+    text = blocks.CharBlock(
+        max_length=255,
+        required=True,
+        default='text'
+    )
+
+class NoteWithHeaderBlock(TemplateSelectStructBlock):
+
+    title = blocks.CharBlock()
+    rich_text = blocks.RichTextBlock()
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('guide-2021-editors-note.html', 'guide-2021-editors-note.html'),
+            ('guide-2021-land-acknowledgement.html', 'guide-2021-land-acknowledgement.html'),
+        ],
+        required=False,
+    )
+
+class EditorCreditBlock(TemplateSelectStructBlock):
+
+    role = blocks.CharBlock()
+    name = blocks.CharBlock()
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('guide-2021-editor-credit.html', 'guide-2021-editor-credit.html'),
+        ],
+        required=False,
+    )
+
+class EditorialStreamBlock(blocks.StreamBlock):
+
+    raw_html = blocks.RawHTMLBlock()
+    rich_text = blocks.RichTextBlock()
+    editor_credit = EditorCreditBlock()
+
+class EditorialBlock(TemplateSelectStructBlock):
+
+    stream = EditorialStreamBlock()
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('guide-2021-editorial-stream.html', 'guide-2021-editorial-stream.html'),
+        ],
+        required=False,
+    )
+
+class BannerBlock(TemplateSelectStructBlock):
+
+    image = ImageChooserBlock(
+        required=True,
+    )
+    title1 = blocks.CharBlock()
+    title2 = blocks.CharBlock()
+    credit = blocks.CharBlock()
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('guide-2021-banner.html', 'guide-2021-banner.html'),
+        ],
+        required=False,
+    )
+
+class GraphicalMenuItemBlock(TemplateSelectStructBlock):
     
     div_class_name = blocks.CharBlock(
         max_length=255,
@@ -162,18 +271,60 @@ class GraphicalMenuItemBlock(blocks.StructBlock):
         required = False
     )
 
-class TextDivBlock(blocks.StructBlock):
-
-    template = 'specialfeaturelanding/blocks/graphical-menu-item.html'
-
-    class_name = blocks.CharBlock(
-        max_length=255,
-        required=True,
-        default='class'
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('guide-2021-graphical-menu-item.html', 'guide-2021-graphical-menu-item.html'),
+        ],
+        required=False,
     )
 
-    text = blocks.CharBlock(
-        max_length=255,
-        required=True,
-        default='text'
+class GraphicalMenuStreamBlock(blocks.StreamBlock):
+    raw_html = blocks.RawHTMLBlock()
+    rich_text = blocks.RichTextBlock()
+    graphical_menu_item = GraphicalMenuItemBlock()
+
+class GraphicalMenuBlock(TemplateSelectStructBlock):
+    stream = GraphicalMenuStreamBlock()
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('guide-2021-graphical-menu.html', 'guide-2021-graphical-menu.html'),
+        ],
+        required=False,
+    )
+
+class ChildArticlesBlock(blocks.StructBlock):
+
+    class Meta:
+        template = TEMPLATE_DIRECTORY + 'guide-2021-child-articles.html'
+
+class RenditionBlock(TemplateSelectStructBlock):
+    image = ImageChooserBlock()
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('rendition-fill-1200x1000.html', 'rendition-fill-1200x1000.html'),
+        ],
+        required=False,
+    )
+
+class FlexStream(blocks.StreamBlock):
+    raw_html = blocks.RawHTMLBlock()
+    rich_text = blocks.RichTextBlock()
+    image = ImageChooserBlock()
+    rendition = RenditionBlock()
+
+class DivStreamBlock(TemplateSelectStructBlock):
+    class_selector = blocks.CharBlock()    
+    stream = FlexStream()
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('2022-div-stream-block.html', '2022-div-stream-block.html'),
+        ],
+        required=False,
     )

@@ -1,0 +1,6 @@
+{% load wagtailcore_tags %}
+<div class="{{ self.class_selector }}">
+{% for block in self.stream %}
+    {% include_block block %}
+{% endfor %}
+</div>

@@ -1,0 +1,15 @@
+{% load wagtailcore_tags %}
+<div class="article-box{% if style %}--{{ style }}{% endif %}{% if type %} __type-{{ type }}{% endif %}"{% comment %} style="background-image: url('{{ image }}');"{% endcomment %}>
+    <nav class="article-box{% if style %}--{{ style }}{% endif %}-container">
+        <a class="article-box--nav" href="{% pageurl page %}">
+            {% if prevornext == 'prev' %}
+                <p class="article-box--article_prev">previous article</p>
+                <p class="article-box--article_prev">{{title}}</p>
+            {% elif prevornext == 'next' %}
+                <p class="article-box--article_next">next article</p>
+                <p class="article-box--article_next">{{title}}</p>
+            {% endif %}
+            {% comment %} <div class="article-box-gradient"></div> {% endcomment %}
+        </a> 
+    </nav>
+</div>

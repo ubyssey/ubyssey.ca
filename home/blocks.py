@@ -5,6 +5,7 @@ from ads.models import HomeSidebarPlacementOrderable
 from article.models import ArticlePage
 
 from django import forms
+from django.db.models import Q
 from dispatch.models import Section
 
 from wagtail.core import blocks
@@ -65,7 +66,7 @@ class AboveCutBlock(blocks.StructBlock):
     
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        qs = ArticlePage.objects.live().public().order_by('-explicit_published_at')
+        qs = ArticlePage.objects.live().public().filter(~(Q(current_section='guide'))).order_by('-explicit_published_at')
         context['articles'] = qs[:6]
         # context['sidebar_placement_orderable'] = value['sidebar_placement_orderable']
         return context

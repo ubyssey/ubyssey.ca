@@ -6,7 +6,7 @@
 {% load menu_tags %}
 
 <header class="topbar header-site">
-    <div class="u-container">
+    <div class="u-container u-container-topbar">
         <a class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt=""/></a>
         <nav>
             {% main_menu show_multiple_levels=False apply_active_classes=True %}

@@ -48,7 +48,7 @@
   <script src="https://use.typekit.net/cbr3nmy.js"></script>
   <script>try{Typekit.on('load', ({ async: true });}catch(e){})</script>
   <link rel="stylesheet" href="{% static 'ubyssey/css/guide-2020.css' %}" type="text/css"/>
-  <link rel="stylesheet" href="{% static 'ubyssey/css/guide-2021.css' %}" type="text/css"/>
+  <link rel="stylesheet" href="{% static 'ubyssey/css/guide-2022.css' %}" type="text/css"/>
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script>
     // Initialize DFP
@@ -71,7 +71,7 @@
   {% block header %}
   {% with self.slug as section %}
 
-   {% flat_menu 'guide2021' template="navigation/headers/guide/2021/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True  section=section %}
+   {% flat_menu 'guide2021' template="navigation/headers/guide/2022/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True  section=section %}
 
   {% endwith %}
   
@@ -81,7 +81,7 @@
   {% endblock %}
   </div>
   {% with self.slug as section %}
-    {% include 'guide/2021/footer.html' with section=section %} 
+    {% include 'guide/2022/footer.html' with section=section %} 
   {% endwith %}
 
 
