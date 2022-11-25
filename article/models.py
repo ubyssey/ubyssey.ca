@@ -914,12 +914,16 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 context['prev'] = self.get_last_sibling()
             if not context['next']:
                 context['next'] = self.get_first_sibling()
+        
+        if self.current_section != 'guide':
+            context['suggested_articles'] = self.get_parent().specific.suggested_articles
 
         if context['prev']:
             context['prev'] = context['prev'].specific
         if context['next']:
             context['next'] = context['next'].specific
 
+        
         return context
 
     def get_authors_string(self, links=False, authors_list=[]) -> str:

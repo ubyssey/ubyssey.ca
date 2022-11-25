@@ -11,6 +11,7 @@
 
     // header
     .header-container {
+      // margin: 40px 0 20px 0;
       margin: 0 0 20px 0;
       padding-bottom: 1rem;
       display: table;
@@ -31,21 +32,25 @@
       box-sizing: border-box;
     }
     .left {
+      // width: 55%;
+      // padding-right: 50px;
+      // padding-bottom: 25px;
       width: 50%;
       padding: 25px 10%;
       vertical-align: middle;
     }
     .right {
+      // width: 45%;
       width: 50%;
     }
 
     // sidebar
-    // .right {
-    //   @media($bp-larger-than-phablet){
-    //     padding: 0;
-    //     max-width: 585px;
-    //   } 
-    // }
+    .right {
+      @media($bp-larger-than-phablet){
+        padding: 0;
+        max-width: 585px;
+      } 
+    }
 
     .article-byline {
       opacity: 0.75;

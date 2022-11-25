@@ -156,6 +156,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             all_articles = all_articles.filter(category__slug=kwargs['category_slug'])
 
         context["featured_articles"] = self.get_featured_articles()
+        context["suggested_articles"] = self.get_featured_articles(number_featured=6)
 
         if search_query:
             context["search_query"] = search_query

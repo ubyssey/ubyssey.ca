@@ -1,6 +1,28 @@
 @import 'modules/fonts';
 @import 'modules/variables';
 
+
+// Article content accomodations
+div.article-content {
+  float: left;
+  border-right: none;
+  // width: 60%;
+
+  @media($bp-larger-than-tablet) {
+    border-right: 1px solid #e6e6e6;
+    display: table-cell;
+    padding-right: 15px;
+    padding-left: 0;
+    vertical-align: top;
+    box-sizing: border-box;
+    width: 65%;
+    :last-child {
+      margin-bottom: 1.4rem;
+    }
+  }
+}
+
+
 // Right column
 aside.sidebar {
 
@@ -9,20 +31,65 @@ aside.sidebar {
   box-sizing: border-box;
   display: table-cell;
 
-  // < medium
-    @media($bp-smaller-than-tablet) {
+  // div.sidebar {
+  //   display: none;
+  // }
+
+  // div.featured-media {
+  //   margin-bottom: 20px;
+  // }
+
+  .o-article__headline {
+    font-weight: 600;
+    font-size: 1.2em;
   }
 
-  // if even smaller, < small
+  // < small
   @media($bp-smaller-than-mobile) {
     padding: 0 3%;
+    .o-article__meta {
+      display: block;
+    }
+    .o-article__meta__image {
+      display: block;
+    }
+  }
+
+  // < medium
+  @media($bp-smaller-than-tablet) {
+    .o-article__meta {
+      display: flex;
+    }
   }
 
   // > medium; screensize just greater than the min width of article content + sidebar
   @media($bp-larger-than-tablet) {
 
+    // position: relative;
+    // float: right;
     padding: 0 0 40px 15px;
     // max-width: 300px;
+
+    // div.featured-media {
+    //   display: block;
+    //   // width: 500px;
+    //   margin-bottom: 0;
+    // }
+
+    div.suggested-articles {
+      display: block;
+      position: absolute;
+      max-width: 300px;
+      min-width: 300px;
+    }
+
+    // don't display sidebar article image and publication date if displayed on the side
+    .o-article__meta__image, .o-article__interpunct-dot, .o-article__published {
+      display: none;
+    }
+
+    // for the first child in the sidebar, remove .o-article__meta spacing 
+
   }
 
   // Smaller than tablet size, have sidebar on the bottom
@@ -30,13 +97,16 @@ aside.sidebar {
     float: left;
     padding: 15px 0;
     width: 100%;
+    div.suggested-articles {
+      width: 100%;
+    }
     max-width: 585px;
   }
 }
 
 .fw-story, .timeline {
-  div.sidebar {
+  aside.sidebar {
     display: none;
-    right: -150px;
+    // right: -150px;
   }
 }
