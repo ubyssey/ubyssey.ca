@@ -53,6 +53,10 @@ body {
   }
 }
 
+.u-container-topbar {
+  max-width: 1200px;
+}
+
 
 @media($bp-larger-than-phablet){
   div.table-row {

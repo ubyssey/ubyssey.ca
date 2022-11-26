@@ -1,0 +1,243 @@
+.o-site-wrapper {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.c-banner {
+    margin-top: 0;
+}
+
+.editorial__credits-content h1{
+    font-weight: bold;
+    font-size: 0.75em;
+}
+
+.home-content-container .editorial__credits-content h2{
+    margin-bottom: 25px;
+    font-size: 0.75em;
+}
+
+.ubyseey_title{
+    font-size: 2.5em;
+    margin-bottom: 5%;
+    text-align: right;
+    font-weight: bold;
+}
+
+.home-content-container .editorial__.home-content .content-wrapper{
+    padding: 5%
+}
+
+.home-content-container .home-content .content-wrapper {
+    line-height: 2em;
+    font-family: 'Noto Sans', serif;
+    font-size: 1rem;
+}
+
+
+
+.home-content-container .home-content .title {
+    text-align: left;
+    padding-top: 5%;
+    @media($bp-larger-than-mobile) {
+        padding-left: 5%;
+    }
+    color: #0471a7;
+}
+
+
+.editorial-container{
+    flex-wrap: wrap;
+}
+.home-content-container .editorial__credits-container{
+    background-color: lightblue;
+}
+
+.land_mark_image-container{
+    height: 50%;
+}
+
+.land_mark_image-container img{
+    max-height: 100%;
+    max-width: 100%;
+    
+}
+
+.land_mark_note-container{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    // align-items: left;
+    justify-content: center;
+    background-color: lightblue;
+    font-family: 'Noto Sans', sans-serif;
+    
+    font-size: 1.3rem;
+    font-weight: 300;
+    line-height: 1.6rem;
+
+}
+
+.land_mark_note-container div{
+    padding-bottom: 1.5em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+}
+
+.land_mark_note-container h1{
+    padding-top: 1.5em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+}
+
+
+.land_mark_note-container h1{
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+
+.panelist-container{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(60px, auto);
+    grid-gap: 2em;
+    margin-left: 4em;
+    margin-right: 4em;
+}
+
+.p-bio{
+    text-align: left;
+    line-height: 2em;
+    margin: 8%;
+}
+
+
+
+.p-img{
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    margin-bottom: 20px;
+    
+
+}
+
+.p-img img{
+    border-radius: 10%;
+}
+
+.p-bio-container{ 
+    border:1px solid black;
+    width: 100%;
+    height: 60%;
+}
+
+.p-bio-container h3{
+    text-align: left;
+    padding: 2em;
+}
+
+
+
+.p-bio h3{
+    font-weight: bold;
+    
+}
+
+.p-title{
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    color: #6F8FAF;
+    font-size: 3.5em;
+    font-weight: bold;
+    
+}
+
+@media (min-width: 1000px) {
+    .land_mark_image-container{
+        width: 35%;
+        height: 50%;
+    }
+
+    .land_mark_note-container{
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        align-items: left;
+        justify-content: center;
+        width: 65%;
+        background-color: lightblue;
+        font-family: Montserrat, sans-serif;
+        font-size: 1.3rem;
+        font-weight: 300;
+        line-height: 1.6rem;
+
+    }
+}
+
+.section-grid-container{
+    display: grid;
+    grid-template-columns: auto auto;
+    margin: 4em auto;
+    grid-gap: 1.5em;
+}
+
+.section-grid-container .section-title{
+    grid-column: 1 / 2;
+}
+
+
+.section-title{
+    color: #6FA8DC;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    background-color: lightblue;
+}
+
+.section-quote{
+    color: #6FA8DC;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    font-size: 4vw;
+    font-weight: bold;
+    line-height: 5vw;
+    background-color: lightblue;
+    grid-column: 1 / 5;
+
+}
+
+.section-quote h3{
+    margin: auto;
+}
+
+.box > a > img {
+    width: 100%;
+    height: auto;
+    
+}
+
+.photo_cover {
+    object-fit: cover;
+    max-width: 100%; 
+}
+
+@media($bp-smaller-than-tablet) {
+
+    .section-grid-container {
+        display: block;
+        // grid-template-columns: auto;
+        margin: 0;
+    }
+
+}
+

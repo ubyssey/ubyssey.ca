@@ -23,11 +23,13 @@
   width: 166px;
   background-image: url('../images/guide/guide-logo.png');
   background-size: 100%;
+  background-repeat: no-repeat;
 
   transition: background-image 0.15s;
 
   &:hover {
     background-image: url('../images/guide/guide-logo-hover.png');
+    background-repeat: no-repeat;
   }
 }
 

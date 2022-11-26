@@ -14,7 +14,7 @@ from wagtail_color_panel.edit_handlers import NativeColorPanel
 #-----Page models-----
 class SectionablePage(models.Page):
     """
-    Abstract class for pages. Allows a page to be aware of which section it belongs to, based on the structure of the site hierarchy. Also contains fields common to any subtree of the site, such as subtree_colour
+    Abstract class for pages. Allows a page to be aware of which section it belongs to, based on the structure of the site hierarchy. Also contains fields common to any subtree of the site, such as colour
 
     Pages in the site heirarchy tend to belong to a section.
     Sections correspond to child nodes of the HomePage that themselves have many children.
@@ -28,6 +28,7 @@ class SectionablePage(models.Page):
         default='',
     )
 
+    use_parent_colour = fields.BooleanField(default=True)
     colour = ColorField(default="#3490d6")
     apply_colour_to_subtree_when_saved = fields.BooleanField(default=False)
     lock_colour = fields.BooleanField(default=False)
@@ -36,13 +37,14 @@ class SectionablePage(models.Page):
         MultiFieldPanel(
             [
                 HelpPanel(
-                    content='<p>Colour is intended to be applied to EVERY page that is descendent of a single page at once. This could be <b>extremely</b> slow.</p><p>The application of colours to the descendent pages therefore <b>ONLY</b> occurs when \"Apply colour to subtree when saved\" is checked, and this field will uncheck itself after the save is done.</p><p>"Lock Colour will prevent" any page higher in the hierarchy from modifying colour properties of either this page OR the descendents of this page. If you tried to change the colour of some ancestor node and did not see the change propagate to the descendents, double-check this field.</p>',
+                    content='<p>Colour will be propagated from a <b>published</b> parent page to its children when the child page is saved, automatically overriding anything entered in the colour field.</p><p> Uncheck the below if you intend to manually set a colour</p><p>Since the value is set upon save, try re-saving if you see a colour value you did not expect. The parent page may have changed since the last time this page was saved.</p>',
                 ),
+                FieldPanel('use_parent_colour', heading="Change colour of article to most recent non-draft version of parent's colour?"),
                 NativeColorPanel('colour'),
-                FieldPanel('apply_colour_to_subtree_when_saved'),
-                FieldPanel('lock_colour'),
+                # FieldPanel('apply_colour_to_subtree_when_saved'),
+                # FieldPanel('lock_colour'),
             ],
-            heading="Advertising-Releated",
+            heading="Colour",
         ),
     ]
 
@@ -51,15 +53,22 @@ class SectionablePage(models.Page):
         context["current_section"] = self.current_section
         return context
 
+    def clean(self):
+        """
+        Looks at the most recently published version of the parent article for colours.
+        """
+        if self.use_parent_colour:
+            if self.get_parent() is not None:
+                parent_page = self.get_parent().specific
+                if hasattr(parent_page,'colour'):
+                    self.colour = parent_page.colour
+
     def save(self, *args, **kwargs):
         """
-        Several out-the-norm features:
+        Ensures the page's current section is synced with its parents/ancestors. Or else, if this is a section page, its section is itself.
 
-        1. Ensures the page's current section is synced with its parents/ancestors. Or else, if this is a section page, its section is itself.
-        2. Can apply colour to all items in subtree
+        TODO 2022/09/02: move to clean()?
         """
-
-
         if self.current_section != self.slug:
             # saves ourselves some queries - the above situation should only ever obtain if we're in a section named after our current page, i.e. at the "Section Root".
             # All the special operations required by a save 
@@ -78,17 +87,6 @@ class SectionablePage(models.Page):
                 except Exception as e:
                     # This shouldn't ever be hit, but worst case scenario the current_section field's use with caching etc. can still work with "ERROR_SECTION"
                     self.current_section = 'ERROR_SECTION'
-
-        if self.apply_colour_to_subtree_when_saved:
-            children_qs = self.get_children()
-
-            for child in children_qs:
-                if hasattr(child, "lock_colour") and not child.lock_colour:
-                    child.apply_colour_to_subtree_when_saved = True
-                    child.save()
-
-            self.apply_colour_to_subtree_when_saved = False
-            return super().save(*args, **kwargs)    
         return super().save(*args, **kwargs)
 
     class Meta:
