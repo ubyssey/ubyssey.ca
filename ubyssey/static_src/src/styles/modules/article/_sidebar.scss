@@ -1,28 +1,6 @@
 @import 'modules/fonts';
 @import 'modules/variables';
 
-
-// Article content accomodations
-div.article-content {
-  float: left;
-  border-right: none;
-  // width: 60%;
-
-  @media($bp-larger-than-tablet) {
-    border-right: 1px solid #e6e6e6;
-    display: table-cell;
-    padding-right: 15px;
-    padding-left: 0;
-    vertical-align: top;
-    box-sizing: border-box;
-    width: 65%;
-    :last-child {
-      margin-bottom: 1.4rem;
-    }
-  }
-}
-
-
 // Right column
 aside.sidebar {
 
@@ -31,50 +9,30 @@ aside.sidebar {
   box-sizing: border-box;
   display: table-cell;
 
-  // div.sidebar {
-  //   display: none;
-  // }
-
-  // div.featured-media {
-  //   margin-bottom: 20px;
-  // }
-
   .o-article__headline {
-    font-weight: 600;
-    font-size: 1.2em;
+    font-family: $font-default;
+    font-weight: $font-weight-bold;
+    font-size: 1.1em;
   }
 
-  // < small
-  @media($bp-smaller-than-mobile) {
-    padding: 0 3%;
-    .o-article__meta {
-      display: block;
-    }
-    .o-article__meta__image {
-      display: block;
-    }
+  .o-article__author {
+    font-weight: 400;
   }
 
-  // < medium
-  @media($bp-smaller-than-tablet) {
-    .o-article__meta {
-      display: flex;
-    }
+  .o-article--padded {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    border-bottom: 1px dotted #C8C8C8;
+  }
+
+  .o-article--padded:last-child {
+    border-bottom: none;
   }
 
   // > medium; screensize just greater than the min width of article content + sidebar
   @media($bp-larger-than-tablet) {
 
-    // position: relative;
-    // float: right;
     padding: 0 0 40px 15px;
-    // max-width: 300px;
-
-    // div.featured-media {
-    //   display: block;
-    //   // width: 500px;
-    //   margin-bottom: 0;
-    // }
 
     div.suggested-articles {
       display: block;
@@ -88,8 +46,13 @@ aside.sidebar {
       display: none;
     }
 
-    // for the first child in the sidebar, remove .o-article__meta spacing 
+  }
 
+  // < medium
+  @media($bp-smaller-than-tablet) {
+    .o-article__meta {
+      display: flex;
+    }
   }
 
   // Smaller than tablet size, have sidebar on the bottom
@@ -101,7 +64,20 @@ aside.sidebar {
       width: 100%;
     }
     max-width: 585px;
+      
   }
+
+  // < small
+  @media($bp-smaller-than-mobile) {
+    padding: 0 3%;
+    .o-article__meta {
+      display: block;
+    }
+    .o-article__meta__image {
+      display: block;
+    }
+  }
+
 }
 
 .fw-story, .timeline {

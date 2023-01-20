@@ -919,7 +919,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 context['next'] = self.get_first_sibling()
         
         if self.current_section != 'guide':
-            context['suggested_articles'] = self.get_parent().specific.get_featured_article(number_featured=6)
+            context['suggested_articles'] = self.get_parent().specific.get_featured_articles(number_featured=6)
 
         if context['prev']:
             context['prev'] = context['prev'].specific
