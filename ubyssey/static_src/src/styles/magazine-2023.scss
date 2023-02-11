@@ -1,0 +1,95 @@
+// prelim copied from magazine-2022.scss, 2023 Feb 10
+
+@import "modules/magazine/2021/index";
+@import "modules/magazine/2021/editorial";
+@import "modules/magazine/2021/nav";
+@import "modules/magazine/2021/sections";
+@import "modules/magazine/2021/sideBar";
+@import "modules/magazine/2021/loading.scss";
+
+
+
+@font-face {
+  font-family: 'Azonix';
+  src: url("https://storage.googleapis.com/ubyssey/fonts/Azonix.otf");
+  }
+  
+
+h1{
+    font-family: 'Azonix';
+}
+
+
+ h2 , h3 , h4, p {
+    margin: 1rem;
+    font-family: 'Azonix';
+}
+
+p{
+  font-family: "montserrat";
+
+}
+
+.c-header a{
+  font-family: 'Azonix';
+
+}
+
+.editor_note p{
+  margin-left: 0rem;
+
+}
+
+
+  
+  .footer {
+    font-family: 'Azonix';
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 150px;
+  }
+  
+  .footer a {
+    margin-top: 3%;
+  }
+
+  .menu_button{
+      background: transparent;
+      color:white;
+      padding:5px;
+      border: 1px solid white;
+  }
+
+
+
+  .c-article {
+    color: white;
+  }
+
+  .c-header a{
+    color: white;
+
+  }
+
+  .u-container--small{
+    max-width: 890px;
+  }
+
+  .c-article__byline{
+    color: white;
+  }
+
+  .next_article{
+    color: white;
+
+  }
+
+  .next_article_container{
+    display: flex;
+    justify-content: flex-end;
+    align-items: right;
+  }
+  
+  
