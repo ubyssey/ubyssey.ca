@@ -1,0 +1,41 @@
+
+// logo on top left, originally in _objects.scss
+// now here with additions
+.o-logo--small {
+    display: block;
+    height: 40px;
+    width: 166px;
+    background-image: url('../images/guide/guide-logo.png');
+    background-size: 100%;
+    background-repeat: no-repeat; 
+    transition: background-image 0.15s;
+    flex-shrink: 0; // logo does not shrink with screen size changes (used in conjunction with backg-size 100%)
+    &:hover {
+      background-image: url('../images/guide/guide-logo-hover.png');
+    }
+}
+
+.c-header .c-nav-right .c-nav-section{
+   
+    font-size: 0.8em;
+    width: 150px;
+    margin-top: 0.8em;
+   
+}
+
+.c-section-more{
+    margin-left: 0px;
+    width: 150px;
+}
+
+.c-header-tablet #c-nav-home-tablet .c-home-more li a{
+    height: 100%;
+}
+
+.c-header-mobile #c-nav-home-mobile .c-home-more li a{
+    height: 100%;
+}
+
+.c-header-tablet .c-nav-current{
+    margin-top: 0.7em;
+}

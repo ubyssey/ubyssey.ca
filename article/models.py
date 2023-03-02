@@ -670,6 +670,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             return "article/article_page_guide_2020.html"
         elif self.layout == 'guide-2022':
             return "article/article_page_guide_2022.html"
+        elif self.layout == 'magazine-2023':
+            return "article/article_page_magazine_2023.html"
                         
         return "article/article_page.html"
 
@@ -777,6 +779,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                             ('fw-story', 'Full-Width Story'),
                             ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
                             ('guide-2022', 'Guide (2022 style)'),
+                            ('magazine-2023', 'Magazine (2023 style)'),
                         ],
                     ),
                 ),
