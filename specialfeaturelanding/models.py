@@ -2,8 +2,11 @@ import specialfeaturelanding.blocks as special_blocks
 
 from article.models import UbysseyMenuMixin
 
+from dbtemplates.models import Template as DBTemplate
+
 from django.db import models
 from django.db.models.fields.related import ForeignKey
+from django.forms.widgets import Select
 
 from section.sectionable.models import SectionablePage
 
@@ -31,8 +34,41 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
     Pages can select them to automatically create
     """
+    #-----Layout stuff-----
     # template = "specialfeaturelanding/base.html"
-    template = "specialfeaturelanding/landing_page_guide_2022_style.html"
+    # template = "specialfeaturelanding/landing_page_guide_2022_style.html"
+
+    use_default_template = models.BooleanField(default=True)
+    layout = models.CharField(
+        null=False,
+        blank=False,
+        default='default',
+        verbose_name='Article Layout',
+        help_text="These correspond to very frequently used templates. More \"bespoke\", one-off templates should be added to the library of DB Templates",
+        max_length=100,
+    )
+
+    db_template = models.ForeignKey(
+        DBTemplate,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',        
+    )
+
+    def get_template(self, request):
+        if not self.use_default_template:
+            if self.db_template:
+                return self.db_template.name
+
+        if self.layout == 'default':
+            return "specialfeaturelanding/base.html"
+        elif self.layout == 'guide-2022':
+            return "specialfeaturelanding/landing_page_guide_2022_style.html"
+        elif self.layout == 'mag-2023':
+            return "specialfeaturelanding/mag_2023_style.html"
+          
+        return "specialfeaturelanding/base.html"
 
     parent_page_types = [
         'section.SectionPage',
@@ -128,7 +164,29 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
             ],
             heading="Feature Credits",
             classname="collapsible",
-        )
+        ),
+
+        HelpPanel(
+            content = "<h1>Help</h1><p>IF you need an alternate layout for your article, but still a frequently-used layout (such as including a full-width banner), THEN, rather making than a highly customized frontend (as you can do in the next tab over), select the options you require here.</p> <p>The majority of articles will just use the default layout. Thus, <u>for the majority of articles, nothing on this tab should be touched</u>; the majority of these fields are not even used in most layouts. They primarily exist to keep our data organized.</p>"
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel(
+                    "layout",
+                    widget=Select(
+                        choices=[
+                            ('default', 'Default'), 
+                            ('fw-story', 'Full-Width Story'),
+                            ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
+                            ('guide-2022', 'Guide (2022 style)'),
+                        ],
+                    ),
+                ),
+            ],
+            heading = "Select Stock Layout",
+            classname="collapsible collapsed",
+        ), # Select Stock Layout
+
     ]
 
 
