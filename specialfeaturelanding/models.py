@@ -176,9 +176,8 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
                     widget=Select(
                         choices=[
                             ('default', 'Default'), 
-                            ('fw-story', 'Full-Width Story'),
-                            ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
                             ('guide-2022', 'Guide (2022 style)'),
+                            ('mag-2023', 'Magazine (2023 style)'),
                         ],
                     ),
                 ),
