@@ -68,8 +68,16 @@ jobs:
           rm -rf tmp/
           export DJANGO_SETTINGS_MODULE="config.settings.production"
           pip install -I google-cloud-storage==1.13.2 -t lib/
-      - name: Deploy to Google App Engine
-        uses: google-github-actions/deploy-appengine@main
+      - id: 'auth'
+        name: Authenticate with Google App Engine
+        uses: google-github-actions/auth@v1
         with:
-          credentials: ${{ secrets.GCP_SA_KEY }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - id: 'deploy'
+        name: Deploy to Google App Engine
+        uses: google-github-actions/deploy-appengine@v1
+        with:
           project_id: ubyssey-prd
+      - id: 'test'
+        name: Test output of deployment
+        run: 'curl "${{ steps.deploy.outputs.url }}"'          
