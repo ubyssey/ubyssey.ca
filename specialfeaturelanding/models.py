@@ -165,10 +165,6 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
             heading="Feature Credits",
             classname="collapsible",
         ),
-
-        HelpPanel(
-            content = "<h1>Help</h1><p>IF you need an alternate layout for your article, but still a frequently-used layout (such as including a full-width banner), THEN, rather making than a highly customized frontend (as you can do in the next tab over), select the options you require here.</p> <p>The majority of articles will just use the default layout. Thus, <u>for the majority of articles, nothing on this tab should be touched</u>; the majority of these fields are not even used in most layouts. They primarily exist to keep our data organized.</p>"
-        ),
         MultiFieldPanel(
             [
                 FieldPanel(
