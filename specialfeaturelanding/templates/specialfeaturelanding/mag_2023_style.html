@@ -7,8 +7,10 @@
 {% load menu_tags %}
 
 {% block stylesheet %}
-<link rel="stylesheet" href="{% static 'ubyssey/css/guide-2020.css' %}" type="text/css" />
-<link rel="stylesheet" href="{% static 'ubyssey/css/guide-2022.css' %}" type="text/css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Montserrat:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'ubyssey/css/magazine-2023.css' %}" type="text/css" />
 {% endblock %}
 
 {% block head_scripts %}
@@ -43,6 +45,39 @@
 <main class="{{ self.main_class_name }} o-site-wrapper">
 	{% if page.editorial_stream %}
 	<div class="editorial-container">
+
+		{% comment %} Will {% endcomment %}
+		<div class="cardstack1">
+			<div class="card cs1_three-across">
+			</div>
+			<div class="card cs1_three-across">
+			</div>
+			<div class="card cs1_three-across">
+			</div>
+
+			<div class="card cs1_two-across">
+			</div>
+			<div class="card cs1_two-across">
+			</div>
+
+		</div>
+
+		<div class="cardstack2">
+			<div class="card cs2_two-across">
+			</div>
+			<div class="card cs2_full-width-card">
+			</div>
+		</div>
+
+		{% comment %} Will {% endcomment %}
+		<div class="cardstack3">
+
+		</div>
+
+		
+		<div class="cardstack4">
+
+		</div>
 		{% for block in page.editorial_stream %}
 			{% include_block block %}
 		{% endfor %}

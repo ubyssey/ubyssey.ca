@@ -20,24 +20,15 @@
     font-size: 0.75em;
 }
 
-.ubyseey_title{
-    font-size: 2.5em;
-    margin-bottom: 5%;
-    text-align: right;
-    font-weight: bold;
-}
-
 .home-content-container .editorial__.home-content .content-wrapper{
     padding: 5%
 }
 
 .home-content-container .home-content .content-wrapper {
     line-height: 2em;
-    font-family: 'Noto Sans', serif;
+    font-family: $text-font;
     font-size: 1rem;
 }
-
-
 
 .home-content-container .home-content .title {
     text-align: left;
@@ -73,7 +64,7 @@
     // align-items: left;
     justify-content: center;
     background-color: lightblue;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: $text-font;
     
     font-size: 1.3rem;
     font-weight: 300;
@@ -173,7 +164,7 @@
         justify-content: center;
         width: 65%;
         background-color: lightblue;
-        font-family: Montserrat, sans-serif;
+        font-family: $text-font;
         font-size: 1.3rem;
         font-weight: 300;
         line-height: 1.6rem;

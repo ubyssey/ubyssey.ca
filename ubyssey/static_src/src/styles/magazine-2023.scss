@@ -12,33 +12,23 @@
 
 @import 'modules/magazine/2023/homepage';
 @import 'modules/magazine/2023/article';
-
-@font-face {
-  font-family: 'Azonix';
-  src: url("https://storage.googleapis.com/ubyssey/fonts/Azonix.otf");
-  }
   
 body {
   color: black;
 }
 
-h1{
-    font-family: 'Azonix';
-}
-
-
  h2 , h3 , h4, p {
     margin: 1rem;
-    font-family: 'Azonix';
+    font-family: $text-font;
 }
 
 p{
-  font-family: "montserrat";
+  font-family: $text-font;
 
 }
 
 .c-header a{
-  font-family: 'Azonix';
+  font-family: $header-font;
 
 }
 
@@ -47,10 +37,8 @@ p{
 
 }
 
-
-  
   .footer {
-    font-family: 'Azonix';
+    font-family: $credit-font;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -72,11 +60,11 @@ p{
 
 
   .c-article {
-    color: white;
+    color: black;
   }
 
   .c-header a{
-    color: white;
+    color: black;
 
   }
 
@@ -85,11 +73,11 @@ p{
   }
 
   .c-article__byline{
-    color: white;
+    color: black;
   }
 
   .next_article{
-    color: white;
+    color: black;
 
   }
 
