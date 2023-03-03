@@ -1,0 +1,17 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% image self.card_image original as banner_image %}
+
+<div class="{{ self.class_name}}">
+
+    <a href = "{{self.card_page.url}}">
+        <img src="{{ banner_image.url }}" class= "card__image">
+    </a>
+    <p class = "card__title">
+        {{ self.card_title }}
+    </p>
+    <p class = "card__credit">
+        {{ self.card_credit }}
+    </p>
+    
+</div>
