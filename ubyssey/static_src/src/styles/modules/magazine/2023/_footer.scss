@@ -1,0 +1,60 @@
+.c-nav-footer {
+  padding-top: 4rem;
+  display: flex;
+  @media ($bp-smaller-than-mobile) {
+    display: block;
+  }
+  flex-wrap: wrap;
+  align-items: stretch;
+  background-color:#3C3C3C;
+  font-family: $text-font;
+  * {
+    color:white;
+    text-decoration: none;
+  }
+  
+  .c-footer__self-link {
+    font-family: $header-font;
+    h1 {
+      font-size: 6rem;
+    }
+
+  }
+
+  .c-footer__magazine {
+    font-size: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: $text-weight-bold;
+  }
+
+  p {
+    font-size: 1rem;
+    font-weight: $text-weight;
+    text-align: center;
+  }
+
+  .c-footer__land-ack {
+    margin-bottom: 2rem;
+  }
+
+  .c-footer__legal {
+    margin-bottom: 4rem;
+  }
+
+  img {
+    margin-bottom: 2rem;
+  }
+
+  .c-footer__address {
+    margin-bottom: 1rem;
+  }
+
+  .c-footer__copyright {
+    margin: 2rem;
+  }
+
+}

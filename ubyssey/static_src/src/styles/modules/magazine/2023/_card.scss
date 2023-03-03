@@ -1,0 +1,68 @@
+// Note: Will's contribution to this file March 3, 2023
+.cs1, .cs3, .cs2, .cs4 {
+  text-align: center;
+  margin: 5%;
+  @media($bp-smaller-than-tablet) {
+    margin: 10px;
+  }
+}
+
+.card {
+  img {
+    width: 100%;
+    max-height: auto;
+  }
+  @media($bp-smaller-than-desktop) {
+    margin: 0 5% 5%;
+  }
+}
+
+.card__text {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  p.card__title {
+    font-family: $header-font;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+  }
+  p.card__credit {
+    font-family: $credit-font;
+    font-weight: $credit-weight;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+}
+
+.cs__three-across {
+  display: grid;
+  grid-template-columns:repeat(auto-fit, minmax(100px, 450px));
+  gap:10px;
+  align-items: center;
+  justify-items: center; 
+  justify-content: center;
+  width:100%; 
+  @media($bp-smaller-than-desktop) {
+    grid-template-columns: none;
+  }
+}
+
+.cs__two-across {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 680px));
+  gap: 10px;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  width: 100%;
+  @media($bp-smaller-than-desktop) {
+    grid-template-columns: none;
+  }
+}
+
+.cs__one-across {
+  align-items: center;
+  justify-items: center; 
+  justify-content: center;
+  width:100%; 
+}

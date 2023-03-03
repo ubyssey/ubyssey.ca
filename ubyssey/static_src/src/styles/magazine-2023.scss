@@ -1,0 +1,85 @@
+@import 'modules/_variables.scss';
+
+@import 'modules/magazine/2023/fonts';
+
+@import 'modules/magazine/2023/objects';
+@import 'modules/magazine/2023/card';
+
+@import 'modules/magazine/2023/banner';
+
+@import 'modules/magazine/2023/footer';
+@import 'modules/magazine/2023/header';
+@import 'modules/magazine/2023/article-box';
+
+@import 'modules/magazine/2023/homepage';
+@import 'modules/magazine/2023/article';
+  
+body {
+  color: black;
+}
+
+ h2 , h3 , h4, p {
+    margin: 1rem;
+}
+
+.c-header a{
+  font-family: $header-font;
+
+}
+
+.editor_note p{
+  margin-left: 0rem;
+
+}
+
+  .footer {
+    font-family: $credit-font;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 150px;
+  }
+  
+  .footer a {
+    margin-top: 3%;
+  }
+
+  .menu_button{
+      background: transparent;
+      color:white;
+      padding:5px;
+      border: 1px solid white;
+  }
+
+
+
+  .c-article {
+    color: black;
+  }
+
+  .c-header a{
+    color: black;
+
+  }
+
+  .u-container--small{
+    max-width: 890px;
+  }
+
+  .c-article__byline{
+    color: black;
+  }
+
+  .next_article{
+    color: black;
+
+  }
+
+  .next_article_container{
+    display: flex;
+    justify-content: flex-end;
+    align-items: right;
+  }
+  
+  

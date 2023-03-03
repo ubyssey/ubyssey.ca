@@ -7,11 +7,12 @@
     <a href = "{{self.card_page.url}}">
         <img src="{{ banner_image.url }}" class= "card__image">
     </a>
-    <p class = "card__title">
-        {{ self.card_title }}
-    </p>
-    <p class = "card__credit">
-        {{ self.card_credit }}
-    </p>
-    
+    <div class="card__text"> 
+        <p class = "card__title">
+            {{ self.card_title }}
+        </p>
+        <p class = "card__credit">
+            {{ self.card_credit }}
+        </p>
+    </div>
 </div>
