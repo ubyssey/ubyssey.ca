@@ -1,6 +1,3 @@
-
-// logo on top left, originally in _objects.scss
-// now here with additions
 .u-container-topbar {
     background-color:#3C3C3C;
     display: flex;
@@ -8,7 +5,7 @@
     text-align: center;
 }
 
-.home-link {
+.ubyssey-link {
     position: absolute;
     height: auto;
     width: auto;
@@ -18,7 +15,6 @@
         height: 20px;
     }
 }
-
 
 .self-link {
     text-decoration: none;
