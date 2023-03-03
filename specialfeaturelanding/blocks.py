@@ -225,24 +225,34 @@ class EditorialBlock(TemplateSelectStructBlock):
     )
 
 class BannerBlock(TemplateSelectStructBlock):
-
+    class_selector = blocks.CharBlock(
+        required=False,
+    )
     image = ImageChooserBlock(
         required=True,
     )
-    title1 = blocks.CharBlock()
-    title2 = blocks.CharBlock()
-    credit = blocks.CharBlock()
+    title1 = blocks.CharBlock(
+        required=False,
+    )
+    title2 = blocks.CharBlock(
+        required=False,
+    )
+    credit = blocks.CharBlock(
+        required=False,
+    )
 
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
             ('guide-2021-banner.html', 'guide-2021-banner.html'),
+            ('textless_banner_block.html','textless_banner_block.html'),
         ],
         required=False,
     )
 
 class GraphicalMenuItemBlock(TemplateSelectStructBlock):
-    
+  
+
     div_class_name = blocks.CharBlock(
         max_length=255,
         required=True,
@@ -310,12 +320,43 @@ class RenditionBlock(TemplateSelectStructBlock):
         ],
         required=False,
     )
+class CardBlock(TemplateSelectStructBlock):
+    """Card Block for magazine 2023: Title, Credit, Image, URL Link"""
+    
+    class_name = blocks.CharBlock(
+        required = True,
+    )
+
+    card_title = blocks.CharBlock(
+        required=True, 
+        help_text='Add your title'
+    )
+    card_credit = blocks.CharBlock(
+        required=True, 
+        help_text='Credit Author'
+    )
+    card_image = ImageChooserBlock(
+        required=True,
+    )
+
+    card_page = blocks.PageChooserBlock(
+        required = True,
+    )
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('mag_2023_card.html','mag_2023_card.html'), 
+        ],
+        required=False,
+    )
 
 class FlexStream(blocks.StreamBlock):
     raw_html = blocks.RawHTMLBlock()
     rich_text = blocks.RichTextBlock()
     image = ImageChooserBlock()
     rendition = RenditionBlock()
+    card = CardBlock()
 
 class DivStreamBlock(TemplateSelectStructBlock):
     class_selector = blocks.CharBlock()    
@@ -328,3 +369,4 @@ class DivStreamBlock(TemplateSelectStructBlock):
         ],
         required=False,
     )
+
