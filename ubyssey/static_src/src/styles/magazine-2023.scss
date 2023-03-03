@@ -3,6 +3,7 @@
 @import 'modules/magazine/2023/fonts';
 
 @import 'modules/magazine/2023/objects';
+@import 'modules/magazine/2023/card';
 
 @import 'modules/magazine/2023/banner';
 
@@ -19,12 +20,6 @@ body {
 
  h2 , h3 , h4, p {
     margin: 1rem;
-    font-family: $text-font;
-}
-
-p{
-  font-family: $text-font;
-
 }
 
 .c-header a{
