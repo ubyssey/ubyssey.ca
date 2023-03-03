@@ -1,18 +1,32 @@
 
 // logo on top left, originally in _objects.scss
 // now here with additions
-.o-logo--small {
-    display: block;
-    height: 40px;
-    width: 166px;
-    background-image: url('../images/guide/guide-logo.png');
-    background-size: 100%;
-    background-repeat: no-repeat; 
-    transition: background-image 0.15s;
-    flex-shrink: 0; // logo does not shrink with screen size changes (used in conjunction with backg-size 100%)
-    &:hover {
-      background-image: url('../images/guide/guide-logo-hover.png');
+.u-container-topbar {
+    background-color:#3C3C3C;
+    display: flex;
+    position: relative;
+    text-align: center;
+}
+
+.home-link {
+    position: absolute;
+    height: auto;
+    width: auto;
+    text-decoration: none;
+    padding: 1%;
+    img {
+        height: 20px;
     }
+}
+
+
+.self-link {
+    text-decoration: none;
+    color:white;
+    text-transform: uppercase;
+    margin: 0.5% auto;
+    font-size: 1.5rem;
+    font-family: $header-font;
 }
 
 .c-header .c-nav-right .c-nav-section{

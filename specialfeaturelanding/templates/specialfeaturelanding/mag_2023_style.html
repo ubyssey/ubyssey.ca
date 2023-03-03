@@ -23,14 +23,6 @@
 {% endblock %}
 
 {% block header %}
-	{% comment %} {% flat_menu 'guide2021' template="navigation/headers/guide/2021/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True %} {% endcomment %}
-	{% if page.menu %}
-		<!-- Manually selected menu: {{ page.menu.handle }} -->
-		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
-	{% elif create_menu_from_parent %}
-		<!-- Menu created from parent page -->	 
-		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
-	{% endif %}
 {% endblock %}
 
 {% block pre_main_content %}
@@ -43,29 +35,83 @@
 
 {% block content %}
 <main class="{{ self.main_class_name }} o-site-wrapper">
+	<div class="u-container u-container-topbar">
+        <a class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small-white.svg' %}" alt="" viewBox="0 0 100 100"/></a>
+		<a class="self-link" href="/magazine/self">SELF</a>
+	</div>
 	{% if page.editorial_stream %}
 	<div class="editorial-container">
 
-		{% comment %} Will {% endcomment %}
+		{% comment %} First cluster of articles {% endcomment %}
 		<div class="cardstack1">
-			<div class="card cs1_three-across">
+			{% comment %} First row of articles in this cluster {% endcomment %}
+			<div class="card cs1__three-across">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
+			</div>
+			<div class="card cs1__three-across">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
 			</div>
 			<div class="card cs1_three-across">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
 			</div>
-			<div class="card cs1_three-across">
-			</div>
-
+			{% comment %} Second row of articles in this cluster {% endcomment %}
 			<div class="card cs1_two-across">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
 			</div>
 			<div class="card cs1_two-across">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
 			</div>
-
+			{% comment %} Third row of articles in this cluster {% endcomment %}
+			<div class="card cs1_two-across">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
+			</div>
+			<div class="card cs1_two-across">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
+			</div>
 		</div>
 
 		<div class="cardstack2">
 			<div class="card cs2_two-across">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
 			</div>
 			<div class="card cs2_full-width-card">
+				<img class="card__image" />
+				<p class="card__title">
+				</p>
+				<p class="card__credit">
+				</p>
 			</div>
 		</div>
 
