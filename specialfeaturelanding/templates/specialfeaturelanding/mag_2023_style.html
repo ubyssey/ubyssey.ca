@@ -37,7 +37,7 @@
 <main class="{{ self.main_class_name }} o-site-wrapper">
 	<div class="u-container u-container-topbar">
         <a class="ubyssey-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small-white.svg' %}" alt="" viewBox="0 0 100 100"/></a>
-		<a class="self-link" href="/magazine/self">SELF</a>
+		<a class="self-link" href="/magazine/{{self.slug}}">SELF</a>
 	</div>
 	{% if page.editorial_stream %}
 	<div class="editorial-container">
@@ -158,7 +158,7 @@
 <footer class="c-nav-footer{% if subsection %} __{{ subsection }}{% else %} __home{% endif %} {{section}}">
 	<div class="o-container">
 		<div class="o-wrapper">
-			<a class="c-footer__self-link" href="/magazine/self"><h1>SELF</h1></a>
+			<a class="c-footer__self-link" href="/magazine/{{self.slug}}"><h1>SELF</h1></a>
 			<h2 class="c-footer__magazine">The Ubyssey’s Magazine 2023</h2>
 			<div class="c-footer__land-ack">
 				<h3 class="c-footer__land-ack__title">LAND ACKNOWLEDGEMENT</h3>

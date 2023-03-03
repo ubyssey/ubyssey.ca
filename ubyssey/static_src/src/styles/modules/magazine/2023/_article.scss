@@ -32,7 +32,8 @@
 }
 
 .featured-media {
-  width: 1000px; 
+  width: 100%;
+  max-width: 1000px;
   height: auto; 
   margin-top: 4%;
   margin-bottom: 5%;
@@ -50,9 +51,9 @@
 .c-article__content {
   
   color: #000000;
-  font-family: $font-secondary;
-  margin: 50%;
-  margin: auto;
+  font-family: $text-font;
+  // margin: 50%;
+  // margin: auto;
   h1, h2, h3 {
     text-align: left;
     font-family: $header-font;
@@ -72,13 +73,10 @@
     font-weight: normal;
     letter-spacing: 0.2px;
     line-height: 1.3rem;
-    margin-bottom: 1.5em;
     width: 100%;
     max-width: 600px;
-  }
-
-  b {
-    font-weight: 800;
+    margin: 0 0 1.5rem 0;
+    padding: 0 0.5rem 0 0.5rem;
   }
 
   em {
@@ -101,103 +99,6 @@
   }
 }
 
-p {
-  text-align: left;
-  font-family: $text-font;
-}
-
-.c-up-next {
-  width: 200px;
-  margin: auto;
-  padding: 30px 0;
-  text-align: center;
-}
-
-.c-up-next__arrow, .c-up-next__text {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.c-up-next__arrow {
-  background-image: url('../images/guide/up-next-arrow-left.png');
-  background-size: 100%;
-  width: 21px;
-  height: 22px;
-  margin-top: 20px;
-
-  &--right {
-    background-image: url('../images/guide/up-next-arrow-right.png');
-  }
-}
-
-.c-up-next__text {
-  margin: 0 15px;
-  font-family: $header-font;
-  text-transform: lowercase;
-  font-weight: 500;
-  line-height: 1.2rem;
-  color: #6E6E6E;
-}
-
-
-.c-welcome-article{
-  position: absolute;
-  display: none;
-  bottom: 999999px;
-  left: auto;
-  right: 5%;
-  z-index: 1000;
-
-  width: 450px;
-  height: auto;
-
-  font-family: $font-default;
-  color: #ffffff;
-  
-  @media($bp-larger-than-desktop) {
-    display: block;
-  }
-
-  .quote-content--container{
-    padding: 30px 5%;
-  }
-
-  &__.quote{
-    width: 100%;
-    height: 100%;
-    text-align: left;
-  }
-  &__.source{
-    padding-top: 20px;
-    text-transform: capitalize;
-    text-align: right;
-  }
-}
-
-.c-welcome-article-bottom{
-  position: relative;
-  font-family: $font-default;
-  color: #ffffff;
-  z-index: 1000;
-  display: block;
-  @media($bp-larger-than-desktop) {
-    display: none;
-  }
-  .quote-content--container{
-    padding: 30px 0;
-    margin: 0% 5%;
-  }
-  &__.quote{
-    width: 100%;
-    height: 100%;
-    text-align: left;
-  }
-  &__.source{
-    padding-top: 20px;
-    text-transform: capitalize;
-    text-align: right;
-  }
-}
 
 .article .o-article-embed{
   margin: 0;
