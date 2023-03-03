@@ -1,4 +1,11 @@
 // Note: Will's contribution to this file March 3, 2023
+.cs1, .cs3, .cs2, .cs4 {
+  text-align: center;
+  margin: 5%;
+  @media($bp-smaller-than-tablet) {
+    margin: 10px;
+  }
+}
 
 .card {
   img {
@@ -58,18 +65,4 @@
   justify-items: center; 
   justify-content: center;
   width:100%; 
-}
-
-.cs1, .cs3, .cs2, .cs4 {
-  text-align: center;
-  margin: 5%;
-  @media($bp-smaller-than-tablet) {
-    margin: 10px;
-  }
-}
-
-.cs2, .cs4 {
-  .card {
-    border: none !important;
-  }
 }

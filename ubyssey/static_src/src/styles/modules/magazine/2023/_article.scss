@@ -4,7 +4,7 @@
 
 .c-article__title, .o-article__snippet {
   text-align: center;
-  color: #000000;
+  color: #3C3C3C;
   font-family: $font-default;
   padding: 0 5% 0 5%;
   margin: 2.5% 0 2.5% 0;
@@ -27,8 +27,11 @@
 
 .c-article__info {
   text-align: center;
-  color: #000000;
   font-family: $text-font;
+  * {
+    color: #3C3C3C;
+    text-decoration: none;
+  }
 }
 
 .featured-media {
@@ -47,10 +50,8 @@
   }
 }
 
-
-.c-article__content {
-  
-  color: #000000;
+.c-article__content {  
+  color: #3C3C3C;
   font-family: $text-font;
   // margin: 50%;
   // margin: auto;
