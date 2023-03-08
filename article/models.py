@@ -545,6 +545,13 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         default='',
         verbose_name="SEO Description",
     ) # AKA "Meta Description" in the old Dispatch frontend
+    noindex = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        verbose_name="Add 'noindex' tag?",
+        help_text="Warning: Only to be used when an article is requested to be unpublished, as per unpublishing policy. Should be FALSE in all but exceptional circumstances!",
+    )
     #-----Setting panel stuff-----
     is_explicit = models.BooleanField(
         default=False,
@@ -741,8 +748,14 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 FieldPanel("seo_keyword"),
                 FieldPanel("seo_description"),
             ],
-            heading="Old SEO stuff",
+            heading="Old Search Engine/SEO stuff",
             help_text="In Dispatch, \"SEO Keyword\" was referred to as \"Focus Keywords\", and  \"SEO Description\" was referred to as \"Meta Description\""
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("noindex"),
+            ],
+            heading="Special search engine-related meta tagging",
         )
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [

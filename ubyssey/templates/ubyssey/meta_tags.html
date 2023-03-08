@@ -5,6 +5,14 @@
 {% if self %}
     <title>{{ self.title|striptags|safe }}</title>
     <link rel="canonical" href="https://ubyssey.ca{% pageurl self %}">
+    
+    {% if self.noindex %}
+        {% comment %}
+            Set by editors if someone requests the removal of an article from the website.
+        {% endcomment %}
+        <meta name="robots" content="noindex">
+    {% endif %}
+
     <meta name="description" content="{{ meta.description }}" />
     {% if self.authors_with_roles %}<meta name="author" content="{{ self.get_authors_string }}" />{% endif %}
 
