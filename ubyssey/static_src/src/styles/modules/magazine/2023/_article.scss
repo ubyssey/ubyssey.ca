@@ -41,12 +41,16 @@
   margin-top: 4%;
   margin-bottom: 5%;
   img {
-    width: 100%;
+    width: 1000px;
     height: auto;
     margin-bottom: 1%;
+    @media($bp-smaller-than-desktop) {
+      width: 100%;
+    }
   }
   .caption {
     text-align: right;
+    color:#3C3C3C;
   }
 }
 
@@ -62,6 +66,7 @@
     line-height: 1.6rem;
     font-weight: 500;
     margin-bottom: 0.5em;
+    margin-left: 0.5rem;
   }
   h1{
     font-size: 1.45rem;

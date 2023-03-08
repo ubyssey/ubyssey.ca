@@ -53,16 +53,6 @@
 {% block post_main_content %}
 
 
-{% comment %} <div class="section-grid-container">
-	{% if page.graphical_menu %}
-	<div class="editorial-container">
-		{% for block in page.graphical_menu %}
-			{% include_block block %}
-		{% endfor %}
-	</div>
-	{% endif %}
-</div> {% endcomment %}
-
 {% for block in self.content %}
 {% include_block block %}
 {% endfor %}
