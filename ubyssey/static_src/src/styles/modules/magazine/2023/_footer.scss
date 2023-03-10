@@ -21,6 +21,10 @@
 
   }
 
+  .c-footer__self-link:hover {
+    color: #D9D9D9;
+  }
+
   .c-footer__magazine {
     font-size: 2rem;
     margin-bottom: 4rem;
@@ -32,7 +36,7 @@
   }
 
   p {
-    font-size: 1rem;
+    font-size: 0.625em;
     font-weight: $text-weight;
     text-align: center;
   }
@@ -43,6 +47,10 @@
 
   .c-footer__legal {
     margin-bottom: 4rem;
+  }
+
+  .c-footer__ubyssey-link:hover {
+    color:#D9D9D9;
   }
 
   img {
