@@ -1,7 +1,9 @@
 .c-nav-footer {
+  margin-top: 2rem;
   padding-top: 4rem;
   display: flex;
   @media ($bp-smaller-than-mobile) {
+    margin-top: 1rem;
     display: block;
   }
   flex-wrap: wrap;

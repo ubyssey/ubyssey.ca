@@ -1,10 +1,6 @@
-// Note: Will's contribution to this file March 3, 2023
+// Note: Will's contribution to this file is noted March 3, 2023
 .cs1, .cs3, .cs2, .cs4 {
   text-align: center;
-  margin: 5%;
-  @media($bp-smaller-than-tablet) {
-    margin: 10px;
-  }
 }
 
 .card {
@@ -12,8 +8,12 @@
     width: 100%;
     max-height: auto;
   }
+  // design choices with margin are unconventional here due to the way elements on the html are structured
+  // the below margins along with those for the mag-hp-spread in homepage.scss fixes visual margin problems.
+  margin: 2em 2em 1em 2em;
   @media($bp-smaller-than-desktop) {
-    margin: 0 5% 5%;
+    margin: 0 1em 1em;
+
   }
   * {
     text-decoration: none;
@@ -37,6 +37,8 @@
     margin-bottom: 1rem;
   }
 }
+
+// Will's contribution for the grid-template-columns setup starts here
 
 .cs__three-across {
   display: grid;

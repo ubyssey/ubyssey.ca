@@ -14,11 +14,20 @@
     width: 100%;
     height: auto;
     display: block;
-    margin-bottom: 5%;
+    // design choices with margin are unconventional here due to the way elements are structured
+    // the below margins along with those for the cards in card.scss fixes visual margin problems.
+    margin: 3em 0 2em;
+    @media($bp-smaller-than-desktop) {
+        margin: 0.5em 0 2em;
+    }
 }
 
 .mag-hp-spread:first-of-type {
-    margin-bottom: 0;
+    margin: 0;
+}
+
+.mag-hp-spread:nth-of-type(2) {
+    margin-top: 0;
 }
 
 .editorial__credits-content h1{
