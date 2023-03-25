@@ -9,7 +9,6 @@ from random import randint
 
 register = template.Library()
 
-MAX_ADS = 5 # based on the max number of "Intra_Article_X" slots available in Google Ad Manager
 PARAGRAPHS_PER_AD = 6
 
 @register.filter(name='inject_ads')
@@ -22,22 +21,27 @@ def inject_ads(value, is_mobile):
         # Doing so will cause the ads displayed to appear as "box" rather than "banner" size. Both work fine on desktop. Only box works well on mobile.
         is_mobile = True
 
+    # Get ads from settings
+    ad_settings = AdTagSettings.for_request(request) # this doesn't work because the request is only visible to tags, not filters https://stackoverflow.com/questions/1493874/django-accessing-the-requestcontext-from-within-a-custom-filter
+    inline_ads = list(ad_settings.home_inline_placements.all())
+
     # Break down content into paragraphs
     paragraphs = value.split("</p>")
 
     if PARAGRAPHS_PER_AD < len(paragraphs): # If the article is somehow too short for even one ad, it doesn't get any
         x = range(0, len(paragraphs), PARAGRAPHS_PER_AD)
-        for n in x:
+        for idx, n in enumerate(x):
             if n > 0: # Don't put an ad at the very beginning of the article                
-                if (n // PARAGRAPHS_PER_AD) > MAX_ADS: # if we're above the max number of ads per article, stop!
+                if idx > len(inline_ads): # if we're above the max number of ads per article, stop!
                     break
 
-                dfp = 'Intra_Article_' + str((n // PARAGRAPHS_PER_AD))
-                div_id = dfp
+                # dfp = 'Intra_Article_' + str((n // PARAGRAPHS_PER_AD))
+                dfp = inline_ads[idx].ad_slot.dfp
+                div_id = inline_ads[idx].ad_slot.div_id
                 if is_mobile:
                     size = 'box'
                 else:
-                    size = 'banner'
+                    size = inline_ads[idx].ad_slot.dfp.size
                 ad_context = {
                     'div_id' : div_id,
                     'dfp' : dfp,
