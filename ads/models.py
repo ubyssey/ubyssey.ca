@@ -148,7 +148,7 @@ class AdTagSettings(ClusterableModel, BaseSetting):
         ),
         MultiFieldPanel(
             [
-                InlinePanel("inline_sidebar_placements", label="Article inline placement tags"),
+                InlinePanel("article_inline_placements", label="Article inline placement tags"),
             ],
             heading="Inline Placement Tags"
         ),
