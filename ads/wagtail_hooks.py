@@ -4,7 +4,7 @@ from wagtail.contrib.modeladmin.options import (
 
 class AdAdmin(ModelAdmin):
     model = AdSlot
-    menu_label = 'Add/Remove Ad Slots'
+    menu_label = 'Register Ad Slots'
     menu_icon = 'cogs'
     menu_order = 1000
     add_to_settings_menu = True
