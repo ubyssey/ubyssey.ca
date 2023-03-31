@@ -1,18 +1,50 @@
+// load in base template
 {% extends 'base.html' %}
+//load in static
 {% load static %}
+// block of content for actual page
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
 {% block content %}
+//header for website
     {% include 'headers/topbar.html' %}
+//header for mobile app
     {% include 'headers/mobile.html' %}
+//new 404 class
     <main class="404">
         <div class="u-container u-container--padded">
-            <h1>Where do you think you’re going?</h1>
-            <h2>The page you’re looking for doesn’t exist. Make sure you entered the correct URL, or try searching our site.</h2>
+            //Load in image template from images section
+            //DOES THIS NEED TO BE MODIFIED???
+            //start
+            <div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
+                {% image self.image original as image %}
+                //img src and alt modified to be the image now added in the images folder
+                //what else needs to be changed
+                <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{% static 'images/404graphic.png' %}" alt="404 image" />
+                {% if self.caption or self.credit %}
+                //does this need to be modified
+                <div class="caption">
+                    {% if self.caption %}{{ self.caption|safe }}{% endif %} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
+                </div> 
+                {% endif %}
+            </div>
+            //end
+
+            //Was this was what was referred to in the search functionality 
+            //what needs to be changed
+            //start
             <div class="article-search">
                 <form method="get" action="{% url 'search' %}">
                 <label for="author-search"><i class="fa fa-search"></i></label>
                 <input name="q" type="text" {% if q %}value="{{ q }}"{% endif %} placeholder="Search ubyssey.ca" />
                 </form>
             </div>
+            //end
+
+            //Should this block of code be instead
+        {% comment %} {% include 'archive/objects/archive.html' %} {% endcomment %}
         </div>
     </main>
 {% endblock %}
+//end of block

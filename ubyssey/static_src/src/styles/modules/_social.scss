@@ -134,17 +134,17 @@
   }
 }
 
-.o-snapchat-icon {
+.o-tiktok-icon {
   // Extras
   cursor: pointer;
 
-  &:hover .o-snapchat-icon__code {
+  &:hover .o-tiktok-icon__code {
     // Structure
     display: block;
   }
 }
 
-.o-snapchat-icon__code {
+.o-tiktok-icon__code {
   // Structure
   display: none;
   position: absolute;
@@ -159,7 +159,7 @@
   @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.4));
 
   // Background
-  background-image: url('../images/ubyssey-snapchat-code.png');
+  // background-image: url('../images/ubyssey-snapchat-code.png');
   background-size: 100%;
   background-repeat: no-repeat;
 
