@@ -125,3 +125,11 @@ class SidebarSectionBlock(blocks.StructBlock):
         return context
     class Meta:
         template = "home/stream_blocks/sidebar_section_block.html"
+
+class SidebarImageLinkBlock(blocks.StructBlock):
+    image = ImageChooserBlock(required=True)
+    link = blocks.URLBlock(required=False)
+    class Meta:
+        template = "home/stream_blocks/sidebar_image_link_block.html"
+        verbose_name = "Sidebar Image with Optional Link"
+        verbose_name_plural = "Sidebar Images with Optional Link"

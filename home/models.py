@@ -48,7 +48,8 @@ class HomePage(Page):
         [
             ("sidebar_advertisement_block", homeblocks.SidebarAdvertisementBlock()),
             ("sidebar_issues_block", homeblocks.SidebarIssuesBlock()),
-            ("sidebar_section_block", homeblocks.SidebarSectionBlock()),            
+            ("sidebar_section_block", homeblocks.SidebarSectionBlock()),         
+            ("sidebar_image_link_block", homeblocks.SidebarImageLinkBlock()),         
         ],
         null=True,
         blank=True,
