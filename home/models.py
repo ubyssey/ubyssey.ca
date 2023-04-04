@@ -49,7 +49,7 @@ class HomePage(Page):
             ("sidebar_advertisement_block", homeblocks.SidebarAdvertisementBlock()),
             ("sidebar_issues_block", homeblocks.SidebarIssuesBlock()),
             ("sidebar_section_block", homeblocks.SidebarSectionBlock()),         
-            ("sidebar_image_link_block", homeblocks.SidebarImageLinkBlock()),         
+            ("sidebar_flex_stream", homeblocks.SidebarFlexStream()),         
         ],
         null=True,
         blank=True,

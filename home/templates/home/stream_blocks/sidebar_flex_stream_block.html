@@ -1,0 +1,10 @@
+{% load wagtailcore_tags %}
+<!-- Sidebar block for miscellaneous entities-->
+<div class=" sidebar-block">
+    <h2 class="block-title">{{ self.title }}</h2>
+    <div class='flex-stream'>
+        {% for block in self.block %}
+        {% include_block block with iteration=forloop.counter %}
+        {% endfor %}
+    </div>
+</div>
