@@ -125,3 +125,27 @@ class SidebarSectionBlock(blocks.StructBlock):
         return context
     class Meta:
         template = "home/stream_blocks/sidebar_section_block.html"
+
+class SidebarImageLinkBlock(blocks.StructBlock):
+    image = ImageChooserBlock(required=True)
+    link = blocks.URLBlock(required=False)
+    class Meta:
+        template = "home/stream_blocks/sidebar_image_link_block.html"
+        verbose_name = "Sidebar Image with Optional Link"
+        verbose_name_plural = "Sidebar Images with Optional Link"
+
+class SidebarFlexStream(blocks.StreamBlock):
+    """
+    Stream to be used by various things, similar to SidebarIssuesBlock except more "miscellaneous"
+    """
+    title = blocks.CharBlock(
+        required=True,
+        max_length=255,
+    )
+    image_link = SidebarImageLinkBlock()
+
+    class Meta:
+        template = "home/stream_blocks/sidebar_flex_stream_block.html"
+        verbose_name = "Sidebar Flex Block"
+        verbose_name_plural = "Sidebar Flex Blocks"
+
