@@ -44,7 +44,6 @@ jobs:
         run: |
           pip install -r requirements-prd.txt --use-pep517 
           pip install requests --upgrade
-          sudo apt-get install -qq libexempi3
       - name: Set up Node.js environment
         uses: actions/setup-node@v2.1.4
         with:
