@@ -138,14 +138,18 @@ class SidebarFlexStream(blocks.StreamBlock):
     """
     Stream to be used by various things, similar to SidebarIssuesBlock except more "miscellaneous"
     """
+    image_link = SidebarImageLinkBlock()
+
+class SidebarFlexStreamBlock(blocks.StructBlock):
+
     title = blocks.CharBlock(
         required=True,
         max_length=255,
     )
-    image_link = SidebarImageLinkBlock()
+
+    stream = SidebarFlexStream()
 
     class Meta:
         template = "home/stream_blocks/sidebar_flex_stream_block.html"
-        verbose_name = "Sidebar Flex Block"
-        verbose_name_plural = "Sidebar Flex Blocks"
-
+        verbose_name = "Sidebar Stream Flex Block"
+        verbose_name_plural = "Sidebar Stream Flex Blocks"

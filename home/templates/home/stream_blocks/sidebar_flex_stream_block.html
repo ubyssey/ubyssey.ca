@@ -3,8 +3,8 @@
 <div class=" sidebar-block">
     <h2 class="block-title">{{ self.title }}</h2>
     <div class='flex-stream'>
-        {% for block in self.block %}
-        {% include_block block with iteration=forloop.counter %}
+        {% for block in self.stream %}
+            {% include_block block with iteration=forloop.counter %}
         {% endfor %}
     </div>
 </div>
