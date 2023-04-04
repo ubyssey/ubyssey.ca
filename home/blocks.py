@@ -142,7 +142,7 @@ class SidebarFlexStream(blocks.StreamBlock):
         required=True,
         max_length=255,
     )
-    image_link = SinglePrintIssueBlock()
+    image_link = SidebarImageLinkBlock()
 
     class Meta:
         template = "home/stream_blocks/sidebar_flex_stream_block.html"
