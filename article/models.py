@@ -61,7 +61,7 @@ from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
 
 UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17)
-
+ 
 #-----Mixins-----
 class UbysseyMenuMixin(models.Model):
 
