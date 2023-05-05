@@ -61,13 +61,15 @@ urlpatterns += [
     # Wagtail
     re_path(r'^admin/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
+    re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
+    re_path(r'^(?P<slug>[-\w]+)/rss/$', SectionFeed(), name='section-feed'),
     path('', include(wagtail_urls)),
 
     # # standard Ubyssey site
     # re_path(r'^$', HomePageView.as_view(), name='home'),
     re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
     # re_path(r'^archive/$', ArchiveView.as_view(), name='archive'),
-    # re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
+    
 
     # # Page views that have been grandfathered in to having special URLs as permalink
     # re_path(r'^(?P<slug>about)/$', PageView.as_view(), name='about'),
