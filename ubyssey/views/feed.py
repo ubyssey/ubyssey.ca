@@ -40,7 +40,7 @@ class FrontpageFeed(Feed):
 
     title = 'The Ubyssey'
     link = 'https://ubyssey.ca'
-    description = "UBC's student run paper"
+    description = "From your friends at The Ubyssey"
     feed_url = 'https://ubyssey.ca/rss'
 
     feed_type = RssFeedWithImage
@@ -100,7 +100,7 @@ class SectionFeed(Feed):
         return 'Ubyssey %s' % section.title
 
     def description(self, section):
-        return 'Daily updates from Ubyssey %s' % section.title
+        return 'From your friends at The Ubyssey %s' % section.title
 
     def link(self, section):
         return 'https://ubyssey.ca/%s/' % section.slug
