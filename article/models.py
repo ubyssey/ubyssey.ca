@@ -59,6 +59,9 @@ from wagtailmenus.models import FlatMenu
 
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
+from wagtail_color_panel.fields import ColorField
+from wagtail_color_panel.edit_handlers import NativeColorPanel
+
 
 UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17)
 
@@ -483,6 +486,16 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
+            ('page_link', blocks.ListBlock(
+                blocks.StructBlock(
+                [
+                    ('title', blocks.CharBlock()),
+                    ('id',blocks.CharBlock()),
+                    ('colour',blocks.CharBlock()),
+                ],
+                label = "Page Links",
+                template = 'article/stream_blocks/pageLink.html',
+            ))),
         ],
         null=True,
         blank=True,
