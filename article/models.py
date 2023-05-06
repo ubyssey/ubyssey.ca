@@ -486,16 +486,22 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
-            ('page_link', blocks.ListBlock(
-                blocks.StructBlock(
-                [
-                    ('title', blocks.CharBlock()),
-                    ('id',blocks.CharBlock()),
-                    ('colour',blocks.CharBlock()),
-                ],
-                label = "Page Links",
-                template = 'article/stream_blocks/pageLink.html',
-            ))),
+            ('page_link', 
+             blocks.StructBlock(
+            [
+                ('list', blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ('title', blocks.CharBlock()),
+                            ('id',blocks.CharBlock()),
+                            ('colour',blocks.CharBlock()),
+                        ],
+                        label = "Page Link",
+                    ),
+                label = "Page Links",)),
+            ],
+            template = 'article/stream_blocks/pageLink.html',
+            )),
         ],
         null=True,
         blank=True,

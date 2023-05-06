@@ -1,2 +1,86 @@
+<div class="referendum-menu">
+     <ul>
+          {% for item in self.list %}
+               <li class="question-title" style="background-color: #{{item.colour}}">
+                    <a href="#{{item.id}}">{{item.title}}</a>
+               </li>
+          {% endfor %}
+     </ul>
+  </div>
 
-<div style="background: #{{self.colour}}"><a href="#{{self.id}}">{{self.title}}</a></div>
+<style>
+.referendum-menu ul {
+     list-style-type:none;
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: center;
+     align-items:center;
+     margin-bottom: 1rem !important;;
+     padding: 0px !important;;
+ }
+ .referendum-menu a{
+     display: block;
+ }
+ .question-title {
+     flex-grow: 1;
+     font-size: 1.2rem;
+     text-align: center;
+     border: 1px solid transparent;
+     margin: .25rem !important;
+     padding: .25rem .5rem;
+     color: white;
+     transition: .2s;
+     cursor: default;
+ }
+
+ .question-title:hover {
+     background-color: transparent;
+     border-color: #555;
+     color: #555;
+ }
+
+ #Header_President {
+     padding: 0.75rem;
+     color: white;
+     font-weight: 600;
+     background-color: #0D3B66;
+     scroll-margin-top: 60px;
+ }
+
+ #myBtn {
+   display: none; 
+   position: fixed; 
+   bottom: 20px;
+   right: 30px; 
+   z-index: 99; 
+   border: none; 
+   outline: none; 
+    background-image:-webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0D3B66),    color-stop(100%, #eee));
+  background-image:-moz-linear-gradient(#0D3B66, #eee);
+  background-image:-webkit-linear-gradient(#0D3B66, #eee);
+  background-image:linear-gradient(#0D3B66, #eee);
+   color: white; 
+   cursor: pointer; 
+   padding: 15px; 
+   border-radius: 10px; 
+   font-size: 18px;
+ }
+ 
+ #myBtn:hover {
+   background-color: #555; 
+ }
+ img.article-attachment {
+ width: 500px;
+ margin-right: 45px;
+ margin-left: 40px !important;
+ }
+ div.right-column div.sidebar{
+ display:none;
+ }
+ div.caption{
+ margin-left: 40px !important;
+ }
+ div.featured-media{
+ display:none !important;
+ }
+</style>
