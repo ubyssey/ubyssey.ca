@@ -14,6 +14,16 @@
 				{% with articles.1 as article %}
 				{% if article %}
 				<article class="secondary padded">
+					<div class="image">
+						<a href={% pageurl article %}>
+							{% if article.featured_media.first.image %}
+							{% image article.featured_media.first.image fill-250x250 %}
+							{% elif article.featured_video %}
+							<img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"
+								alt="" />
+							{% endif %}
+						</a>
+					</div>
 					<h2 class="headline"><a href={% pageurl article %}>{{ article.title|safe }}</a></h2>
 					<p class="o-article__snippet"><span
 							class="timestamp">{{ article.published_at|naturaltime }}</span>{{ article.lede|safe }}</p>
