@@ -12,6 +12,7 @@
           {% endfor %}
      </ul>
   </div>
+  <button onclick="topFunction()" id="myBtn" title="Go to top" style="display: block;">Back to top</button>
 
 <style>
 .referendum-menu ul {
@@ -44,14 +45,6 @@
      color: #555;
  }
 
- #Header_President {
-     padding: 0.75rem;
-     color: white;
-     font-weight: 600;
-     background-color: #0D3B66;
-     scroll-margin-top: 60px;
- }
-
  #myBtn {
    display: none; 
    position: fixed; 
@@ -59,16 +52,17 @@
    right: 30px; 
    z-index: 99; 
    border: none; 
-   outline: none; 
-    background-image:-webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0D3B66),    color-stop(100%, #eee));
-  background-image:-moz-linear-gradient(#0D3B66, #eee);
-  background-image:-webkit-linear-gradient(#0D3B66, #eee);
-  background-image:linear-gradient(#0D3B66, #eee);
+   outline: none;
+   background-image:-webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0D3B66),    color-stop(100%, #253c62));
+   background-image:-moz-linear-gradient(#0D3B66, #253c62);
+   background-image:-webkit-linear-gradient(#0D3B66, #253c62);
+   background-image:linear-gradient(#0D3B66, #253c62);
    color: white; 
    cursor: pointer; 
    padding: 15px; 
    border-radius: 10px; 
    font-size: 18px;
+   opacity: 0.9;
  }
  
  #myBtn:hover {
@@ -89,3 +83,25 @@
  display:none !important;
  }
 </style>
+
+<script>
+     //Get the button:
+     mybutton = document.getElementById("myBtn");
+     
+     // When the user scrolls down 20px from the top of the document, show the button
+     window.onscroll = function() {scrollFunction()};
+     
+     function scrollFunction() {
+       if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+         mybutton.style.display = "block";
+       } else {
+         mybutton.style.display = "none";
+       }
+     }
+     
+     // When the user clicks on the button, scroll to the top of the document
+     function topFunction() {
+       document.body.scrollTop = 0; // For Safari
+       document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+     } 
+</script>
