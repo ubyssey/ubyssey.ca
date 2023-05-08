@@ -493,8 +493,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                     blocks.StructBlock(
                         [
                             ('title', blocks.CharBlock()),
-                            ('id',blocks.CharBlock()),
-                            ('colour',blocks.CharBlock()),
+                            ('id',blocks.CharBlock(help_text="Intended to be shared with a header so that this button will send the user to the section of the page with said header")),
+                            ('colour',blocks.CharBlock(default='0071c9')),
                         ],
                         label = "Page Link",
                     ),
@@ -502,6 +502,15 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             ],
             template = 'article/stream_blocks/pageLink.html',
             )),
+            ('header_link',
+             blocks.StructBlock(
+            [
+                ('title', blocks.CharBlock()),
+                ('id', blocks.CharBlock(help_text="Intended to be shared with a page link button so that clicking the button will scroll the user to this header")),
+            ],
+            template = 'article/stream_blocks/header.html',
+            label = "Header",
+             ))
         ],
         null=True,
         blank=True,

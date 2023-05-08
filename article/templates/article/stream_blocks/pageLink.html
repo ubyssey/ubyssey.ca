@@ -1,7 +1,12 @@
 <div class="referendum-menu">
      <ul>
           {% for item in self.list %}
-               <li class="question-title" style="background-color: #{{item.colour}}">
+               <style>
+                    .pageLink{{item.id}} {
+                         background-color: #{{item.colour}} !important;
+                    }
+               </style>
+               <li class="question-title pageLink{{item.id}}">
                     <a href="#{{item.id}}">{{item.title}}</a>
                </li>
           {% endfor %}
@@ -15,8 +20,8 @@
      flex-wrap: wrap;
      justify-content: center;
      align-items:center;
-     margin-bottom: 1rem !important;;
-     padding: 0px !important;;
+     margin-bottom: 1rem !important;
+     padding: 0px !important;
  }
  .referendum-menu a{
      display: block;
@@ -34,7 +39,7 @@
  }
 
  .question-title:hover {
-     background-color: transparent;
+     background-color: transparent !important;
      border-color: #555;
      color: #555;
  }
