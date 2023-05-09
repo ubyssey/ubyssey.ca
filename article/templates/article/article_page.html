@@ -165,7 +165,7 @@
                         <div class="suggested-articles">
                             {% for article in suggested_articles %}
                                 {% if article.slug != self.slug %} 
-                                    {% include 'article/objects/column.html' with article=article padded=True   %}
+                                    {% include 'article/objects/blog_column.html' with article=article padded=True   %}
                                 {% endif %}
                             {% endfor %}
                         </div>

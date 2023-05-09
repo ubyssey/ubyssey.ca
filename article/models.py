@@ -1007,11 +1007,11 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
     authors_with_roles = property(fget=get_authors_with_roles)
  
     def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
-        # return ArticlePage.objects.from_section(section_root=self)
-        section_articles = ArticlePage.objects.live().public()
+
+        section_articles = ArticlePage.objects.live().public().filter(current_section=self.current_section).order_by(order)
         return section_articles
 
-    def get_suggested_articles(self, queryset=None, number_featured=2) -> QuerySet:
+    def get_suggested_articles(self, queryset=None, number_suggested=6) -> QuerySet:
         """
         Returns a truncated queryset of articles
             queryset: if not included, will default to all live, public, ArticlePage descendents of this SectionPage
@@ -1021,7 +1021,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         if queryset == None:
             # queryset = ArticlePage.objects.from_section(section_root=self)
             queryset = self.get_section_articles()
-        return queryset[:number_featured]    
+        return queryset[:number_suggested]    
     suggested_articles = property(fget=get_suggested_articles)
 
     @property
