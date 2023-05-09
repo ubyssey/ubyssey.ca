@@ -162,7 +162,9 @@
                             {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
                         {% endif %}
                         {% comment %} Suggested articles in same Section up to 6 articles that are not itself {% endcomment %}
-                        <div class="suggested-articles">
+                        <div class="article-list blog sidebar-block suggested-articles">
+                            <h2 class="block-title">FROM THE {{ self.current_section }}</h2>
+                            <br>
                             {% for article in suggested_articles %}
                                 {% if article.slug != self.slug %} 
                                     {% include 'article/objects/blog_column.html' with article=article padded=True   %}
