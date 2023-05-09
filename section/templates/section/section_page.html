@@ -50,12 +50,7 @@
         featured_articles is added to context by SectionPage
         by default it containes the most recent 4 articles
       {% endcomment %}
-      {% comment %}
-        if category_selected==NONE:
-          show featured selection and the archive search
-        else:
-         Carosal of articles in category
-      {% endcomment %}
+
         
       
 
@@ -84,7 +79,7 @@
 
       <h3 class="c-page__section">Archive</h3>
       
-      {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}
+      {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles %}
   
 
     </div>

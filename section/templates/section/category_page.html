@@ -5,7 +5,7 @@
 {% load wagtailimages_tags %}
 {% load wagtailuserbar %}
 {% load ubyssey_ad_tags %}
-
+{% load video_filters %}
 
 {% block head_scripts %}
   <!-- Register ads for section page -->
@@ -45,9 +45,20 @@
           </ul>
         </div>
       {% endif %}
+      {% comment %}
+        Carosal of articles in category
+      {% endcomment %}
+
+      {% include 'section/objects/section_featured.html' with featured_articles=paginated_articles %}
+
+      
 
       <h3 class="c-page__section">Archive</h3>
       
+        {% comment %}
+            We can change the category_features.html to only have the search form. To look further into
+        {% endcomment %}
+
       {% include 'section/objects/category_features.html' with paginated_articles=paginated_articles%}
   
 
