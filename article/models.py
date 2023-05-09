@@ -926,7 +926,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
         context['prev'] = self.get_prev_sibling()
         context['next'] = self.get_next_sibling()
-
+        context["suggested_articles"] = self.get_suggested_articles()
         if self.current_section == 'guide':
             # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
             if not context['prev']:
@@ -938,6 +938,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             context['prev'] = context['prev'].specific
         if context['next']:
             context['next'] = context['next'].specific
+
 
         return context
 
@@ -1005,6 +1006,24 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         return authors_with_roles
     authors_with_roles = property(fget=get_authors_with_roles)
  
+    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+        # return ArticlePage.objects.from_section(section_root=self)
+        section_articles = ArticlePage.objects.live().public()
+        return section_articles
+
+    def get_suggested_articles(self, queryset=None, number_featured=2) -> QuerySet:
+        """
+        Returns a truncated queryset of articles
+            queryset: if not included, will default to all live, public, ArticlePage descendents of this SectionPage
+            number_featured: defaults to 4 as brute fact about our template's design
+        """
+        
+        if queryset == None:
+            # queryset = ArticlePage.objects.from_section(section_root=self)
+            queryset = self.get_section_articles()
+        return queryset[:number_featured]    
+    suggested_articles = property(fget=get_suggested_articles)
+
     @property
     def published_at(self):
         if self.explicit_published_at:
