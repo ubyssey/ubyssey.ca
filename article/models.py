@@ -1011,11 +1011,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
         return category_articles
     
-    def get_category_articles_len(self, order='-explicit_published_at') -> QuerySet:
-        category_articles = self.get_category_articles()
-
-        return len(category_articles)
-    category_articles_len = property(fget=get_category_articles_len)
+    category_articles = property(fget=get_category_articles)
     
     def get_articles(self, order='-explicit_published_at') -> QuerySet:
         """

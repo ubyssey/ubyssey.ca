@@ -164,7 +164,7 @@
                         {% comment %} Suggested articles in same Section up to 6 articles that are not itself {% endcomment %}
                         <div class="article-list blog sidebar-block suggested-articles">
                         
-                            {% if self.category == None or self.category_articles_len == 1 %}
+                            {% if self.category == None or self.category_articles|length == 1 %}
                                 <h2 class="block-title">FROM THE {{ self.current_section }}</h2>
                             {% else %}
                                 <h2 class="block-title">FROM THE {{ self.category }}</h2>
