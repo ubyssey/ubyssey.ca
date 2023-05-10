@@ -1006,21 +1006,41 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         return authors_with_roles
     authors_with_roles = property(fget=get_authors_with_roles)
  
-    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+    def get_category_articles(self, order='-explicit_published_at') -> QuerySet:
+        category_articles = ArticlePage.objects.live().public().filter(category=self.category).order_by(order)
 
-        section_articles = ArticlePage.objects.live().public().filter(current_section=self.current_section).order_by(order)
-        return section_articles
+        return category_articles
+    
+    def get_category_articles_len(self, order='-explicit_published_at') -> QuerySet:
+        category_articles = self.get_category_articles()
+
+        return len(category_articles)
+    category_articles_len = property(fget=get_category_articles_len)
+    
+    def get_articles(self, order='-explicit_published_at') -> QuerySet:
+        """
+        Returns a list of articles within the Article's category. If there are no articles within the category then provide recent articles within the section
+        """
+
+        category_articles = self.get_category_articles()
+        
+        if self.category == None or len(category_articles) == 1:
+            articles = ArticlePage.objects.live().public().filter(current_section=self.current_section).order_by(order)
+            return articles
+        else:
+            print("Category articles: ", category_articles)
+            return category_articles
 
     def get_suggested_articles(self, queryset=None, number_suggested=6) -> QuerySet:
         """
         Returns a truncated queryset of articles
             queryset: if not included, will default to all live, public, ArticlePage descendents of this SectionPage
-            number_featured: defaults to 4 as brute fact about our template's design
+            number_featured: defaults to 6 as brute fact about our template's design
         """
         
         if queryset == None:
             # queryset = ArticlePage.objects.from_section(section_root=self)
-            queryset = self.get_section_articles()
+            queryset = self.get_articles()
         return queryset[:number_suggested]    
     suggested_articles = property(fget=get_suggested_articles)
 
