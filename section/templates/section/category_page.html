@@ -49,7 +49,7 @@
         Carosal of articles in category
       {% endcomment %}
 
-      {% include 'section/objects/section_featured.html' with featured_articles=paginated_articles %}
+      {% include 'section/objects/section_featured.html' with featured_articles=category_articles %}
 
       
 
@@ -59,7 +59,7 @@
             We can change the category_features.html to only have the search form. To look further into
         {% endcomment %}
 
-      {% include 'section/objects/category_features.html' with paginated_articles=paginated_articles%}
+      {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}
   
 
     </div>

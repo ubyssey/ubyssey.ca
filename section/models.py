@@ -153,7 +153,10 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
         all_articles = self.get_section_articles(order=article_order)
         if 'category_slug' in kwargs:            
-            all_articles = all_articles.filter(category__slug=kwargs['category_slug'])
+            category_articles = all_articles.filter(category__slug=kwargs['category_slug'])
+            context["category_articles"] = category_articles
+        else:
+            category_articles = None
 
         context["featured_articles"] = self.get_featured_articles()
 
@@ -161,7 +164,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             context["search_query"] = search_query
             all_articles = all_articles.search(search_query)
 
-        # Paginate all posts by 15 per page
+        # Paginate all posts by 154 per page
         paginator = Paginator(all_articles, per_page=15)       
         try:
             # If the page exists and the ?page=x is an int
@@ -201,7 +204,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     @route(r'^category/(?P<category_slug>[-\w]+)/$', name='category_view')
     def category_view(self, request, category_slug):
         context = self.get_context(request, category_slug=category_slug)
-        print(request)
+        print(context)
         return render(request, 'section/category_page.html', context)
 
 
