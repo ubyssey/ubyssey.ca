@@ -6,6 +6,7 @@ img.featured {
 
 div.homepage-section {
   @media($bp-larger-than-phablet){
+    padding-top: 25px;
     padding-bottom: 25px;
     border-bottom: 1px solid #E6E6E6;
     margin-bottom: 25px;
@@ -116,8 +117,7 @@ div.frontpage {
       display: table-header-group;
 
       width: 42%;
-      padding: 0 15px;
-      border-right: 1px solid #E6E6E6;
+      padding-left: 20px;
     }
 
   }

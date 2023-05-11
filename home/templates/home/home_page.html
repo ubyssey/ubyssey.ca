@@ -37,14 +37,15 @@
 	Additional fields/blocks will go here to alert students to some special events
 	{% endcomment %}
 
-	<!-- Above the cut content. Likely the first things the user sees when going to the site, before scrolling down -->
-	{% for block in self.above_cut_stream %}
-	{% include_block block %}
-	{% endfor %}
-
 	<!-- Below cut content. The content below this point is likely to require scrolling etc. for a user to read in a browser. -->
 	<div class="homepage-section row">
 		<div class="sections">
+			
+			<!-- Above the cut content. Likely the first things the user sees when going to the site, before scrolling down -->
+			{% for block in self.above_cut_stream %}
+			{% include_block block %}
+			{% endfor %}
+
 			{% for block in self.sections_stream %}
 			{% include_block block %}
 			{% endfor %}
