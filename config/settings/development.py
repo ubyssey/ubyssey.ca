@@ -23,6 +23,7 @@ CACHES = {
 MIDDLEWARE += [
     # other middlewares...
     'django_user_agents.middleware.UserAgentMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 TEMPLATES += [
