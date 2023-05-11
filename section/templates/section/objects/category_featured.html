@@ -1,0 +1,21 @@
+{% comment %} 
+Arguments: featured_articles a list of article pages
+Used in both section pages and homepage
+{% endcomment %}
+
+{% load my_tags %}
+
+{% include 'article/objects/featured.html' with article=featured_articles|first %}
+  <div class="c-section__featured__articles u-flex--tablet">
+{% for article in featured_articles|indexing_from:1 %}
+    {% if forloop.counter|divisibleby:3 %}
+      <div class="c-section__featured__articles u-flex--tablet">
+    {% endif %}
+      {% include 'article/objects/column.html' with article=article%}
+      
+      {% if forloop.counter|modulo:3 == 2 or forloop.last %}
+        </div>
+      {% endif %}
+{% endfor %}
+</div>
+

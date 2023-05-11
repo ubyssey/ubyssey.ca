@@ -204,7 +204,6 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     @route(r'^category/(?P<category_slug>[-\w]+)/$', name='category_view')
     def category_view(self, request, category_slug):
         context = self.get_context(request, category_slug=category_slug)
-        print(context)
         return render(request, 'section/category_page.html', context)
 
 

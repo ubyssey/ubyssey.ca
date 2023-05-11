@@ -49,18 +49,19 @@
         Carosal of articles in category
       {% endcomment %}
 
-      {% include 'section/objects/section_featured.html' with featured_articles=category_articles %}
+      <div class="c-section__featured">
+        {% include 'section/objects/category_featured.html' with featured_articles=category_articles %}
 
       
 
-      <h3 class="c-page__section">Archive</h3>
+        <h3 class="c-page__section">Archive</h3>
       
         {% comment %}
             We can change the category_features.html to only have the search form. To look further into
         {% endcomment %}
 
-      {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}
-  
+        {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}
+      </div>
 
     </div>
   </main>
