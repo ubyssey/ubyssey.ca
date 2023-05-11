@@ -1,8 +1,9 @@
 {% load wagtailimages_tags %}
+{% load lazyimages_tags %}
 {% if self.link %}
     <a href={{ self.link }}>
 {% endif %}
-{% image self.image width-320 %}
+{% lazy_image self.image width-320 class="lazy" %}
 {% if self.link %}
     </a>
 {% endif %}

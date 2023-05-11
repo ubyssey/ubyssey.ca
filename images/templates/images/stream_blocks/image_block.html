@@ -1,7 +1,8 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load lazyimages_tags %}
 <div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
-    {% image self.image original as image %}
+    {% lazy_image self.image original as image class="lazy" %}
     <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{{ self.caption }}" />
     {% if self.caption or self.credit %}
         <div class="caption">

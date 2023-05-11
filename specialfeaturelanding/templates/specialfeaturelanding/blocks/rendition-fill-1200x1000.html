@@ -1,3 +1,4 @@
 {% load wagtailimages_tags %}
-{% image self.image fill-1200x1000 as cover_photo %}
+{% load lazyimages_tags %}
+{% lazy_image self.image fill-1200x1000 as cover_photo class="lazy" %}
 <img src="{{ cover_photo.url }}" alt="{{ cover_photo.alt }}" style="object-fit:cover;"/>

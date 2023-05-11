@@ -5,6 +5,7 @@
 {% load video_filters %}
 {% load ubyssey_ad_filters %}
 {% load ubyssey_ad_tags %}
+{% load lazyimages_tags %}
 
 <div class="homepage-section frontpage-container">
 	<h1 class="homepage_heading">Home</h1>
@@ -31,7 +32,7 @@
 					<div class="image">
 						<a href={% pageurl article %}>
 							{% if article.featured_media.first.image %}
-							{% image article.featured_media.first.image fill-250x250 %}
+							{% lazy_image article.featured_media.first.image fill-250x250 class="lazy" %}
 							{% elif article.featured_video %}
 							<img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"
 								alt="" />
@@ -53,7 +54,7 @@
 					<div class="image">
 						<a href={% pageurl article %}>
 							{% if article.featured_media.first.image %}
-							{% image article.featured_media.first.image fill-250x250 %}
+							{% lazy_image article.featured_media.first.image fill-250x250 class="lazy" %}
 							{% elif article.featured_video %}
 							<img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"
 								alt="" />
@@ -103,7 +104,7 @@
 				<article class="primary {{ article.template }}">
 					<a class="image" href={% pageurl article %}>
 						{% if article.featured_media.first.image %}
-						{% image article.featured_media.first.image width-715 %}
+						{% lazy_image article.featured_media.first.image width-715 class="lazy" %}
 						{% elif article.featured_video %}
 						<img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg"
 							alt="" />

@@ -1,11 +1,12 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load lazyimages_tags %}
 
 <div class="panel-quote">
     <div class="{{ self.class_name }}-container">
         <div class="{{ self.class_name }}-container-text">
             <div class="{{ self.class_name }}-container-image">
-                {% image self.image original as image %}
+                {% lazy_image self.image original as image class="lazy" %}
                 <img src="{{ image.url }}" alt="cover">
             </div>
             <div class="{{ self.class_name }}-text">

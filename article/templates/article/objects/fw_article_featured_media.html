@@ -3,10 +3,11 @@
     It was seperated out to try to make the code more readable
 {% endcomment %}
 {% load wagtailimages_tags %}
+{% load lazyimages_tags %}
 
 {% if self.featured_media.first.image %}
     {% with self.featured_media.first as featured_image_object %}
-        {% image featured_image_object.image original as featured_image %}
+        {% lazy_image featured_image_object.image original as featured_image class="lazy" %}
         <img
             class="article-attachment"
             data-id="{{ featured_image_object.image.id }}"

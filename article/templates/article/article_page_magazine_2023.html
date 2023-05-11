@@ -8,6 +8,7 @@
 {% load ubyssey_ad_filters %}
 {% load ubyssey_ad_tags %}
 {% load menu_tags %}
+{% load lazyimages_tags %}
 
 {% block stylesheet %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,8 +61,8 @@
                     {% if self.featured_media.first.image %}
                         {% with self.featured_media.first as featured_image_object %}
                             <div class="featured-media">
-                                {% image featured_image_object.image original as original_image %}
-                                {% image featured_image_object.image width-1000 as featured_image %}
+                                {% lazy_image featured_image_object.image original as original_image class="lazy" %}
+                                {% lazy_image featured_image_object.image width-1000 as featured_image class="lazy" %}
                                 <img class="article-attachment" 
                                     data-id="{{ featured_image_object.id }}"
                                     data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"

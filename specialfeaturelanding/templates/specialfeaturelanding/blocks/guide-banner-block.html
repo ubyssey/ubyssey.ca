@@ -1,5 +1,6 @@
 {% load wagtailimages_tags %}
-{% image self.image original as banner_image %}
+{% load lazyimages_tags %}
+{% lazy_image self.image original as banner_image class="lazy" %}
 
 <div class="c-banner c-banner--welcome"
 	style="background-image: url({{ banner_image.url }})">

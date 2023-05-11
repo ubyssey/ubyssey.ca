@@ -2,6 +2,7 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load lazyimages_tags %}
 
 {% block content %}
 
@@ -16,7 +17,7 @@
 		<div class="c-page__header">
 			{% if self.image %}
 			<div class="c-page__header__thumbnail">
-				{% image self.image fill-150x200   %}
+				{% lazy_image self.image fill-150x200 class="lazy" %}
 
 			</div>
 			{% endif %}

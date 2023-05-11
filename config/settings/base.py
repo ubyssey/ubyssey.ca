@@ -196,6 +196,7 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
+    'wagtail_lazyimages',
 ]
 
 if DEBUG:

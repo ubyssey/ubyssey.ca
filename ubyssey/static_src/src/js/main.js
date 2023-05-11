@@ -1,6 +1,10 @@
 import * as mp from './modules/Mixpanel';
 import upcomingEvents from './widgets/upcoming-events';
 
+// Loads lazy images 
+const observer = lozad('.lazy');
+observer.observe();
+
 (function () {
 
   initializeSearchFormActions();

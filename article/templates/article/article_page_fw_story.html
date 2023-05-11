@@ -2,6 +2,7 @@
 {% load static %}
 {% load dispatch_tags %}
 {% load wagtailimages_tags %}
+{% load lazyimages_tags %}
 
 {% block specific_article_class %}
     c-article--fw-story
@@ -34,7 +35,7 @@
         {% elif self.header_layout == 'banner-image' %}
             {% with self.featured_media.first as featured_image_object %}
                 <div class="banner-image">
-                    {% image featured_image_object.image original as featured_image %}
+                    {% lazy_image featured_image_object.image original as featured_image class="lazy"%}
                     <div class="backdrop" style="background-image: url('{{ featured_image.url }}');"></div>
                     <div class="headline-container">
                         <div class="u-container u-container--padded">

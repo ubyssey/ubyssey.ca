@@ -1,7 +1,8 @@
 {% load wagtailimages_tags %}
+{% load lazyimages_tags %}
 <div id="gallery-{{ self.pk }}" data-id="{{ self.id }}" data-title="{{ self.title }}" class="gallery-attachment attachment">
     <div class="gallery-cover">
-        {% image self.gallery_images.all.0.image fill-800x600 as cover_image %}
+        {% lazy_image self.gallery_images.all.0.image fill-800x600 as cover_image class="lazy" %}
         <img class="gallery-thumb" data-id="{{ self.gallery_images.all.0.id }}" src="{{ cover_image.url }}" alt="Our gallery"/>
         <div class="meta row">
             <div class="eight columns">
@@ -19,7 +20,7 @@
                 {% comment %} do nothing, this is only for every image except the "cover" (first) image {% endcomment %}
             {% else %}
                 <li>
-                    {% image orderable.image fill-250x250 as thumb_image %}
+                    {% lazy_image orderable.image fill-250x250 as thumb_image class="lazy" %}
                     <div class="gallery-thumb" data-id="{{ orderable.pk }}" style="background-image: url('{{ thumb_image.url }}');" /></div>
                 </li>
             {% endif %}
@@ -27,7 +28,7 @@
     </ul>
     <div class="images">
         {% for orderable in self.gallery_images.all %}
-            {% image orderable.image fill-800x600 as image %}
+            {% lazy_image orderable.image fill-800x600 as image class="lazy" %}
             <div class="gallery-image" data-id="{{ orderable.pk }}" data-url="{{ image.url }}" {% if orderable.caption %}data-caption="{{ orderable.caption|safe }}"{% endif %}></div>
         {% endfor %}
     </div>

@@ -3,6 +3,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load video_filters %}
+{% load lazyimages_tags %}
 {% if article %}
   <article class="o-article o-article--column{% if padded %} o-article--padded{% endif %}">
     <div class="o-article__meta">
@@ -10,7 +11,7 @@
         {% if article.featured_media.first %}
           {% if article.featured_media.first.image %}
             <a class="o-article__image" href="{% pageurl article %}">
-              {% image article.featured_media.first.image fill-250x250-c100 %}
+              {% lazy_image article.featured_media.first.image fill-250x250-c100 class="lazy" %}
             </a>
           {% elif article.featured_media.first.video %}
             <a class="o-article__image" href="{% pageurl article %}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>

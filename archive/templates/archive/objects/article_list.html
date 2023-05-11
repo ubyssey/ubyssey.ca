@@ -2,14 +2,14 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load video_filters %}
-
+{% load lazyimages_tags %}
 
 <article class="o-article o-article--list">
 	{% if article.featured_media.first %}
 	<div class="o-article__left">
 		<a class="o-article__image" href="{% pageurl article %}">
 			{% if article.featured_media.first.image %}
-				{% image article.featured_media.first.image fill-340x238-c100 %}
+				{% lazy_image article.featured_media.first.image fill-340x238-c100 class="lazy"%}
 			{% elif article.featured_media.first.video %}
 			<img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg"
 				alt="Thumbnail" />
