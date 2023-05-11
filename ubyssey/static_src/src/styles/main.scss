@@ -94,6 +94,10 @@ body, html, #page-wrapper {
   -webkit-overflow-scrolling: touch;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 span.upper-right-decorator {
   color: $color-ub-blue-light;
   font-size: .8em;

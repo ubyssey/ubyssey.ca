@@ -1,8 +1,8 @@
 {% load static %}
 <header class="mobile">
-    <a class="menu left" href="#"><i class="fa fa-bars"></i></a>
-    <a class="logo" href="{% url 'home' %}"><img src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt=""></a>
-    <a class="search right" href="{% url 'search' %}"><i class="fa fa-search"></i></a>
+    <a aria-label="Go to menu" class="menu left" href="#"><i class="fa fa-bars"></i></a>
+    <a aria-label="Go to homepage" class="logo" href="{% url 'home' %}"><img src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt="Ubyssey logo"></a>
+    <a aria-label="Go to search" class="search right" href="{% url 'search' %}"><i class="fa fa-search"></i></a>
 </header>
 <div id='header-mobile-spacer{% if class %}--{{ class }}{% endif %}'></div>
 <nav class="mobile">

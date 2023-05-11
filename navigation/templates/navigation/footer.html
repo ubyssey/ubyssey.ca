@@ -4,12 +4,10 @@
 <footer>
     <div class="u-container{% if homepage %} u-container--large{% endif %}">
 
-        <a class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small-grey.svg' %}" alt=""/></a>
+        <a aria-label="Go to homepage" class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small-grey.svg' %}" alt="Ubyssey logo"/></a>
         <nav>
             <div class="top-row">
-                <ul class="sections">
-                    {% main_menu show_multiple_levels=False apply_active_classes=False %}
-                </ul>
+                {% main_menu show_multiple_levels=False apply_active_classes=False %}
             </div>
             <div class="bottom-row">
                 <ul class="pages">

@@ -7,7 +7,7 @@
 
 <header class="topbar header-site">
     <div class="u-container u-container-topbar">
-        <a class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt=""/></a>
+        <a aria-label="Go to homepage" class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt="Ubyssey logo"/></a>
         <nav>
             {% main_menu show_multiple_levels=False apply_active_classes=True %}
         </nav>

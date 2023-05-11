@@ -179,6 +179,7 @@ function ubysseyHeaderMobilePopUp() {
     if ($('nav.mobile').is(':visible')) {
       $('nav.mobile').hide();
       $(this).removeClass('active');
+      $("#content-wrapper").removeClass('invisible');
     } else {
       if ($('#search-form').is(':visible')) {
         $('#search-form').hide();
@@ -186,6 +187,7 @@ function ubysseyHeaderMobilePopUp() {
       }
       $('nav.mobile').show();
       $(this).addClass('active');
+      $("#content-wrapper").addClass('invisible')
     }
   });
 }
