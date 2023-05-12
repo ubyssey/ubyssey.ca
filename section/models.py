@@ -154,6 +154,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         all_articles = self.get_section_articles(order=article_order)
         if 'category_slug' in kwargs:            
             category_articles = all_articles.filter(category__slug=kwargs['category_slug'])
+            context["current_category"] = kwargs['category_slug']
             context["category_articles"] = category_articles
         else:
             category_articles = None
@@ -181,7 +182,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             paginated_articles = paginator.page(paginator.num_pages)
 
         context["paginated_articles"] = paginated_articles #this object is often called page_obj in Django docs, but Page means something else in Wagtail
-    
+        
         return context
     
     def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
