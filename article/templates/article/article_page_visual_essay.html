@@ -154,23 +154,73 @@
                                             imagescontainer.children[a].style.opacity = "0";
                                         }
                                     }
-                                }, 1000);
+                                }, 10);
                             </script>
-                            <div style="display: flex; flex-direction: row;">
+                            <style>
+                                #content-container {
+                                    display: flex; 
+                                    flex-direction: row;
+                                }
+                                #images-container {
+                                    width:500px;
+                                    position: sticky;
+                                    top: 20vh;
+                                    height: fit-content;
+                                }
+                                .image-div {
+                                    position: absolute;
+                                    width:500px; 
+                                    transition-duration: 1s;
+                                }
+                                #text-container {
+                                    width:300px;
+                                    margin: auto;
+                                }
+                                .text-div {
+                                    margin-bottom: 200px;
+                                }
+                                @media (max-width: 600px) {
+                                    #content-container {
+                                        flex-direction: column;
+                                    }
+                                    #text-container {
+                                        width:100%;
+                                    }
+                                    .text-div {
+                                        padding: 2%;
+                                    }
+                                    #images-container {
+                                        width: 100%;
+                                        height: 40vh;
+                                        position: sticky;
+                                        top: 35px;
+                                        background-color: white;
+                                        border-bottom-style: solid;
+                                        border-bottom-color: grey;
+                                    }
+                                    .image-div {
+                                        position: absolute;
+                                        height: 100%;
+                                        width: auto;
+                                        transition-duration: 1s;
+                                    }
+                                }
+                            </style>
+                            <div id="content-container">
                                 <!-- Article text -->
-                                <div id="images-container" style="width:67%;">
+                                <div id="images-container">
                                     {% for block in self.content %}
                                         {% if block.block_type == 'image' %}
-                                        <div style="position: fixed; width:60%; transition-duration: 0.5s;">
+                                        <div class="image-div">
                                             {% include_block block %}
                                         </div>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
-                                <div id="text-container" style="width:33%">
+                                <div id="text-container">
                                     {% for block in self.content %}
                                         {% if block.block_type != 'image' %}
-                                            <div style="margin-bottom: 200px;">
+                                            <div class="text-div">
                                                 {% include_block block %}
                                             </div>
                                         {% else %}
