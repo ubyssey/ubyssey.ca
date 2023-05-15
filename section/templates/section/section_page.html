@@ -69,12 +69,57 @@
         The below will be turned into _blocks_,
         allowing editors to have user to have some level of control
       {% endcomment %}
-    
+      <div id="feed"></div>
+      <div id="loader"></div>
+      <script>
+      function getArticles() {
+        $.ajax({
+          type:"GET",
+          url: "/infinitefeed",
+          data:{
+            section: "{{self.slug}}",
+            start: loader.getAttribute("start"),
+            number: loader.getAttribute("number")
+          },
+          success: function(data) 
+          {
+            var loader = document.getElementById("loader");
+            var feed = document.getElementById("feed");
+            if(data == "End of feed") {
+              loader.remove();
+              clearInterval(loadFeed);
+            } else {
+              result = data['result'];
+              console.log(result);
+              for(let i=0; i<result.length; i++) {
+                var para = document.createElement("p");
+                para.innerText = result[i].name;
+                feed.appendChild(para);
+              }  
+            }
+          }
+        })
+      }
 
+      var loader = document.getElementById("loader");
+      loader.setAttribute("start", "0");
+      loader.setAttribute("number", "15");
+      loadFeed = setInterval(function () 
+      {
+        var feed = document.getElementById("feed");
+        if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
+          console.log("sending!");
+          getArticles();
+          loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
+
+        }
+      }, 1000);
+      </script>
+
+      {% comment %}
       <h3 class="c-page__section">Archive</h3>
       {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}
-  
-
+      {% endcomment %}
     </div>
   </main>
 {% endblock %}
