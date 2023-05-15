@@ -1,0 +1,6 @@
+{% for article in articles %}
+    {% include 'article/objects/default.html' with article=article %}    
+    {% comment %}
+    p>{{article.title}}</p>
+    {% endcomment %}
+{% endfor %}
