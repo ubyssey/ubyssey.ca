@@ -5,6 +5,7 @@
 {% load video_filters %}
 {% load ubyssey_ad_filters %}
 {% load ubyssey_ad_tags %}
+{% load visual_essay %}
 
 {% block head_scripts %}
     <!-- Register ads for article page -->
@@ -213,9 +214,11 @@
                                     }
                                 }
                             </style>
-                            {% if self.content.0.block_type != 'image' %}
-                                {% include_block self.content.0 %}
-                            {% endif %}
+                            {% for block in self.content %}
+                                {% if forloop.counter0 < self.content|get_first_image %}
+                                    {% include_block block %}
+                                {% endif %}
+                            {% endfor %}                            
 
                             <div id="content-container">
                                 <!-- Article text -->
