@@ -1,3 +1,3 @@
 {% load wagtailimages_tags %}
-{% image self.image fill-1200x1000 as cover_photo %}
+{% image self.image fill-1200x1000 format-webp as cover_photo %}
 <img src="{{ cover_photo.url }}" alt="{{ cover_photo.alt }}" style="object-fit:cover;"/>

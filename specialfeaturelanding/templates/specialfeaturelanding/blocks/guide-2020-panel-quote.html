@@ -5,7 +5,7 @@
     <div class="{{ self.class_name }}-container">
         <div class="{{ self.class_name }}-container-text">
             <div class="{{ self.class_name }}-container-image">
-                {% image self.image original as image %}
+                {% image self.image original format-webp as image %}
                 <img src="{{ image.url }}" alt="cover">
             </div>
             <div class="{{ self.class_name }}-text">

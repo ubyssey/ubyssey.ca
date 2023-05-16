@@ -1,4 +1,4 @@
 {% load wagtailimages_tags %}
-{% image self.image original as banner_image %}
+{% image self.image original format-webp as banner_image %}
 
 <img src="{{ banner_image.url }}" class= "{{ self.class_selector}}">

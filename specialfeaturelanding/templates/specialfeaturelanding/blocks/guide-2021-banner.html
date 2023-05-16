@@ -1,7 +1,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-{% image self.image original as banner_image %}
+{% image self.image original format-webp as banner_image %}
 
 <div class="c-banner c-banner--welcome" style="background-image: url({{banner_image.url}})">
     <div class="c-banner__container">

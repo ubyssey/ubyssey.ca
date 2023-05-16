@@ -17,7 +17,7 @@
             //DOES THIS NEED TO BE MODIFIED???
             //start {% endcomment %}
             <div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
-                {% image self.image original as image %}
+                {% image self.image original format-webp as image %}
                 {% comment %} //img src and alt modified to be the image now added in the images folder
                 //what else needs to be changed {% endcomment %}
                 <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{% static 'images/404graphic.png' %}" alt="404 image" />

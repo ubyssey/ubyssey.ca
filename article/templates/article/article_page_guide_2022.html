@@ -51,7 +51,7 @@
     {% endblock %}
 
     {% with self.featured_media.first as featured_image_object %}
-        {% image featured_image_object.image original as featured_image %}
+        {% image featured_image_object.image original format-webp as featured_image %}
         <div class="c-banner c-banner--welcome" style="background-image: url('{{ featured_image.url }}');">
             <div class="c-banner__container">
                 {% comment %} <div class="c-banner--welcome__inner">
@@ -82,9 +82,9 @@
                 </div>
             </div>
             <div class="article-boxes">
-                {% image prev.featured_media.first.image original as prev_image %}
+                {% image prev.featured_media.first.image original format-webp as prev_image %}
                 {% include 'article/objects/guide/article-box2022.html' with style='article' title=prev.title page=prev image=prev_image.url prevornext='prev' %}
-                {% image next.featured_media.first.image original as next_image %}
+                {% image next.featured_media.first.image original format-webp as next_image %}
                 {% include 'article/objects/guide/article-box2022.html' with style='article' title=next.title page=next image=next_image.url prevornext='next' %}
             </div>
         </main>
