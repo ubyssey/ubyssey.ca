@@ -51,6 +51,20 @@ class HomepageFeaturedSectionBlock(blocks.StructBlock):
     class Meta:
         template = "home/stream_blocks/section_block.html"
 
+class BreakingNewsArticle(blocks.StructBlock):
+
+    def get_context(self, value, parent_context=None):
+        
+        context = super().get_context(value, parent_context=parent_context)
+        qs = ArticlePage.objects.live().public().filter(current_section=True).order_by('-explicit_published_at')
+        context['articles'] = qs[:6]
+        # context['sidebar_placement_orderable'] = value['sidebar_placement_orderable']
+        return context
+
+    class Meta:
+        template = "home/stream_blocks/above_cut_block.html"
+ 
+
 class AboveCutBlock(blocks.StructBlock):
     # Ideally this will be used to grant the user more control of what happens "above the cut"
     # As of 2022/05/18, all it does is expose to the user what was previously just implemented with a hardcoded "include"
@@ -65,6 +79,7 @@ class AboveCutBlock(blocks.StructBlock):
     # )
     
     def get_context(self, value, parent_context=None):
+        
         context = super().get_context(value, parent_context=parent_context)
         qs = ArticlePage.objects.live().public().filter(~(Q(current_section='guide'))).order_by('-explicit_published_at')
         context['articles'] = qs[:6]

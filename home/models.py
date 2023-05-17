@@ -103,3 +103,14 @@ class HomePage(Page):
             allsection_slug.append(section.slug)
 
         return allsection_slug
+    
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        search_query = request.GET.get("q")
+        page = request.GET.get("page")
+
+
+        all_articles = Article.get_section_articles()
+        all_articles = all_articles.filter(is_pinned=True)
+
+        context["breaking_news"] = self.get_breaking_news()

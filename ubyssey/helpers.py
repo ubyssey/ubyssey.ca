@@ -245,6 +245,7 @@ class ArticleHelper(object):
     @staticmethod
     def get_breaking_news():
         """Returns breaking news stories"""
+        print("Hello")
         return Article.objects.filter(is_published=True, is_breaking=True, breaking_timeout__gte=timezone.now())
 
     @staticmethod

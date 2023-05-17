@@ -99,6 +99,7 @@ class HomePageView(ArticleMixin, TemplateView):
         # context['popular'] = self.get_popular()[:5]
         context['blog'] = list(self.get_frontpage_qs(sections=['blog'], limit=5))
         context['day_of_week'] = datetime.now().weekday()
+        
         return context
 
 class ArticleView(DispatchPublishableViewMixin, ArticleMixin, DetailView):

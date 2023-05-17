@@ -28,9 +28,12 @@
 	{% comment %}
 	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
 	{% endcomment %}
-	{% for article in breaking_news_article %}
-	<a class="o-breaking-news" href={% pageurl article %}>
-		<h3>BREAKING: {{ article.title|safe }}</h3>
+	
+	<h1> BREAKING </h1>
+	{% for block in self.breaking_news_article_stream %}
+		{% include_block block %}
+	<a class="o-breaking-news" href={% pageurl block %}>
+		<h3>BREAKING: {{ block.title|safe }}</h3>
 	</a>
 	{% endfor %}
 	{% comment %}
