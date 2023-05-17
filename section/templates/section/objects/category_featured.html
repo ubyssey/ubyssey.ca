@@ -7,22 +7,23 @@ Used in both section pages and homepage
 
 {% if featured_articles|length != 0 %}
   {% include 'article/objects/featured.html' with article=featured_articles|first %}
+  {% if featured_articles|length != 1 %}
     <div class="c-section__featured__articles u-flex--tablet">
-  {% for article in featured_articles|indexing_from:1 %}
-      {% include 'article/objects/column.html' with article=article %}
-      {% if not forloop.last %}
-        {% if forloop.counter|divisibleby:3 %}
-          </div>
-          <div class="c-section__featured__articles u-flex--tablet">
-        {% endif %}
-        
-      {% else %}
+    {% for article in featured_articles|indexing_from:1 %}
+        {% include 'article/objects/column.html' with article=article %}
+        {% if not forloop.last %}
+          {% if forloop.counter|divisibleby:3 %}
+            </div>
+            <div class="c-section__featured__articles u-flex--tablet">
+          {% endif %}
           
-        </div>
-      {% endif %}
+        {% else %}
+            
+          </div>
+        {% endif %}
 
-  {% endfor %}
-
+    {% endfor %}
+  {% endif %}
 {% else %}
   <div class="o-archive__no-results">No content found 😔</div>
 {% endif %}
