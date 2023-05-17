@@ -2,6 +2,7 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load authors_tags %}
 
 {% block content %}
 
@@ -21,14 +22,12 @@
 			</div>
 			{% endif %}
 			<div class="c-page__header__meta">
-				<h1 class="c-page__heading">{{ self.title }}
-					{% if self.facebook_url %}<a class="social_media_links" href={{self.facebook_url}}><i
-							class="fa fa-facebook fa-fw" style="font-size:1em;"></i>&nbsp;{{self.full_name}}</a>
-					{% endif %}
-					{% if self.twitter_url %}<a class="social_media_links" href="{{self.twitter_url}}"><i
-							class="fa fa-twitter fa-fw" style="font-size:1em;"></i>{{self.twitter_url}}</a> {% endif %}
-				</h1>
-				{% if self.title %}<h3 class="c-page__sub-heading">{{ self.title }}</h3>{% endif %}
+				<h1 class="c-page__heading">{{ self.title }}</h1>
+				<p>
+					{% for link in self.links %}
+						{{link.value|get_link_icon}}
+					{% endfor %}
+				</p>
 				{% if self.description %}<p class="c-page__description">{{ self.description|safe }}</p>{% endif %}
 			</div>
 		</div>
