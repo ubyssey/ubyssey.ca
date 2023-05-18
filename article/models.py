@@ -538,6 +538,18 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         default=False,
         verbose_name="Pin the article?",
     )
+    pinned_start = models.DateTimeField(
+        # Note: This sets the start of the time range
+        null=False,
+        blank=False,
+        default=timezone.now,
+    )
+    pinned_end = models.DateTimeField(
+        # Note: This sets the end of the time range
+        null=False,
+        blank=False,
+        default=timezone.now,
+    )
     seo_keyword = models.CharField(
         max_length=100, 
         null=False, 
@@ -751,8 +763,10 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         ),
         MultiFieldPanel(
             [
-                HelpPanel(content="\"Pinned Timeout\" is used if important articles are wanted to be pinned to the top of the homepage."),
+                HelpPanel(content="\"Pinned Timeout\" is the time and date to place the pinned article. Note: the pinned article will remain pinned until 7 days after the start date"),
                 FieldPanel("is_pinned"),
+                FieldPanel("pinned_start"),
+                FieldPanel("pinned_end"),
             ],
             heading="Pinned",
         ),
