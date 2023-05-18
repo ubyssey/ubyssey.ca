@@ -220,8 +220,6 @@ class ArticleMixin(object):
         """Returns breaking news stories"""
         return Article.objects.filter(is_published=True, is_breaking=True)
 
-    def get_pinned_articles(self):
-        return Article.objects.filter(is_published=True, is_pinned=True)
 
     def get_trending(self):
         """Returns the most trending articles in the time period."""
