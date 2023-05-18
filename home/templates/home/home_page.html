@@ -37,6 +37,7 @@
 	{% endfor %}
 	
 	{% if pinned_articles|length != 0 %}
+		<div class="homepage-section row">
 		<h1>Pinned</h1>
 		<div class="c-section__featured__articles u-flex--tablet">
 		{% for article in pinned_articles %}
@@ -54,6 +55,7 @@
 
 
 		{% endfor %}
+		</div>
 	{% endif %}
 	
 	{% comment %}
