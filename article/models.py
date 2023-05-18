@@ -538,12 +538,6 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         default=False,
         verbose_name="Pin the article?",
     )
-    pinned_timeout = models.DateTimeField(
-        # Note: should appear on interface contingent on "is pinned" being checked. Defaults are to ensure functionality prior to implementing this
-        null=False,
-        blank=False,
-        default=timezone.now,
-    )
     seo_keyword = models.CharField(
         max_length=100, 
         null=False, 
@@ -759,7 +753,6 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             [
                 HelpPanel(content="\"Pinned Timeout\" is used if important articles are wanted to be pinned to the top of the homepage."),
                 FieldPanel("is_pinned"),
-                FieldPanel("pinned_timeout"),
             ],
             heading="Pinned",
         ),

@@ -11,6 +11,7 @@ from wagtail.core.models import Page
 from wagtail.core.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
+from datetime import date, timedelta
 
 # Create your models here.
 
@@ -120,5 +121,9 @@ class HomePage(Page):
         return ArticlePage.objects.live().filter(is_breaking=True, breaking_timeout__gte=timezone.now())
 
     def get_pinned_articles(self):
-        """ Returns pinned stories """
-        return ArticlePage.objects.live().filter(is_pinned=True)
+        """ Returns 6 pinned stories from the past 7 days """
+    
+        enddate = date.today()
+        startdate = startdate - timedelta(days=7)
+
+        return ArticlePage.objects.live().filter(is_pinned=True, date__range=[startdate, enddate]).order_by('start')[:6]
