@@ -37,11 +37,22 @@
 	{% endfor %}
 	
 	{% if pinned_articles|length != 0 %}
-		<h1>Pinned Articles</h1>
+		<h1>Pinned</h1>
+		<div class="c-section__featured__articles u-flex--tablet">
 		{% for article in pinned_articles %}
-			<div class="c-section__featured__articles u-flex--tablet">
-				{% include 'article/objects/column.html' with article=article%}
-			</div>
+			{% include 'article/objects/column.html' with article=article %}
+			{% if not forloop.last %}
+				{% if forloop.counter|divisibleby:3 %}
+					</div>
+					<div class="c-section__featured__articles u-flex--tablet">
+				{% endif %}
+				
+			{% else %}
+					
+				</div>
+			{% endif %}
+
+
 		{% endfor %}
 	{% endif %}
 	

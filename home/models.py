@@ -117,9 +117,8 @@ class HomePage(Page):
 
     def get_breaking_news(self):
         """ Returns breaking news stories """
-        print("Breaking ", ArticlePage.objects.live().filter(is_breaking=True, breaking_timeout__gte=timezone.now()))
         return ArticlePage.objects.live().filter(is_breaking=True, breaking_timeout__gte=timezone.now())
 
     def get_pinned_articles(self):
-        print("Pinned ", ArticlePage.objects.live().filter( is_pinned=True))
-        return ArticlePage.objects.live().filter( is_pinned=True)
+        """ Returns pinned stories """
+        return ArticlePage.objects.live().filter(is_pinned=True)
