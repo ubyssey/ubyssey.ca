@@ -186,7 +186,8 @@
 	margin: 0;
 	height: 2rem;
 	padding-top: 1rem;
-	padding-bottom: 1rem;
+	// There is an intercept between the title and the dropdown menu for the Galazy Fold
+	padding-bottom: 2rem; 
 	padding-left: 1rem;
 	padding-right: 1rem;
 
@@ -251,6 +252,7 @@
 		padding: 0;
 		width: 100%;
 
+		// To make the dropdown scrollable is the dropdown menu height is larger than the screen
 		height: 100%;
 		max-height: 200px;
 		overflow-y: scroll;
