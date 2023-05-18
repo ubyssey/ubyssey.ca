@@ -29,13 +29,22 @@
 	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
 	{% endcomment %}
 	
-	<h1> BREAKING </h1>
-	{% for block in self.breaking_news_article_stream %}
-		{% include_block block %}
-	<a class="o-breaking-news" href={% pageurl block %}>
-		<h3>BREAKING: {{ block.title|safe }}</h3>
+	
+	{% for article in breaking_news %}
+	<a class="o-breaking-news" href={% pageurl article %}>
+		<h3>BREAKING: {{ article.title|safe }}</h3>
 	</a>
 	{% endfor %}
+	
+	{% if pinned_articles|length != 0 %}
+		<h1>Pinned Articles</h1>
+		{% for article in pinned_articles %}
+			<div class="c-section__featured__articles u-flex--tablet">
+				{% include 'article/objects/column.html' with article=article%}
+			</div>
+		{% endfor %}
+	{% endif %}
+	
 	{% comment %}
 	Additional fields/blocks will go here to alert students to some special events
 	{% endcomment %}

@@ -11,6 +11,7 @@ from wagtail.core.models import Page
 from wagtail.core.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
+
 # Create your models here.
 
 class HomePage(Page):
@@ -104,13 +105,21 @@ class HomePage(Page):
 
         return allsection_slug
     
+
+    
     def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        search_query = request.GET.get("q")
-        page = request.GET.get("page")
+        context = super(HomePage, self).get_context(request)
 
+        context['breaking_news'] = self.get_breaking_news()
+        context['pinned_articles'] = self.get_pinned_articles()
 
-        all_articles = Article.get_section_articles()
-        all_articles = all_articles.filter(is_pinned=True)
+        return context
 
-        context["breaking_news"] = self.get_breaking_news()
+    def get_breaking_news(self):
+        """ Returns breaking news stories """
+        print("Breaking ", ArticlePage.objects.live().filter(is_breaking=True, breaking_timeout__gte=timezone.now()))
+        return ArticlePage.objects.live().filter(is_breaking=True, breaking_timeout__gte=timezone.now())
+
+    def get_pinned_articles(self):
+        print("Pinned ", ArticlePage.objects.live().filter( is_pinned=True))
+        return ArticlePage.objects.live().filter( is_pinned=True)
