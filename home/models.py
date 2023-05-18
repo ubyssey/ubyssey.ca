@@ -121,7 +121,7 @@ class HomePage(Page):
         return ArticlePage.objects.live().filter(is_breaking=True, breaking_timeout__gte=timezone.now())
 
     def get_pinned_articles(self):
-        """ Returns 6 pinned stories from the past 7 days """
+        """ Returns a maximum of 6 pinned stories from the past 7 days """
     
         enddate = date.today()
         startdate = startdate - timedelta(days=7)
