@@ -27,7 +27,7 @@
     {% endfor %}
     <div class="u-container u-container--padded">
       <div class="c-page__header">
-        <h1 class="c-page__heading"><a href="{% pageurl self %}">{{ self.title }} | {{ current_category|capfirst }}</a></h1>
+        <h1 class="c-page__heading">{{ self.title }} | {{ current_category|capfirst }}</h1>
       </div>
       {% comment %} CATEGORY MENU {% endcomment %}
       {% if self.category_menu.count %}

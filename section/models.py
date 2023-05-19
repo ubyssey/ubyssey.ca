@@ -154,7 +154,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         all_articles = self.get_section_articles(order=article_order)
         if 'category_slug' in kwargs:            
             category_articles = all_articles.filter(category__slug=kwargs['category_slug'])
-            context["current_category"] = kwargs['category_slug']
+            context["current_category"] = kwargs['category_slug'].replace("-", " ")
             context["category_articles"] = category_articles
         else:
             category_articles = None
