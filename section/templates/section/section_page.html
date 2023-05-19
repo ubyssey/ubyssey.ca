@@ -48,7 +48,8 @@
         featured_articles is added to context by SectionPage
         by default it containes the most recent 4 articles
       {% endcomment %}
-    <div class="c-section__featured">
+      {% comment%}
+      <div class="c-section__featured">
         {% include 'article/objects/featured.html' with article=featured_articles.first %}
         <div class="c-section__featured__articles u-flex--tablet">
           {% for article in featured_articles %}
@@ -57,74 +58,18 @@
             {% endif %}
           {% endfor %}
         </div>
-        {% comment %}
 
         #TODO furthur discussion about featured subsection
 
-        {% endcomment %}
       </div>
-
+        {% endcomment %}
       {% comment %}
         DESIGN NOTE:
         The below will be turned into _blocks_,
         allowing editors to have user to have some level of control
       {% endcomment %}
-      <style>
-        #feed {
-          max-width: 600px;
-        }
-      </style>
-      <div id="feed"></div>
-      <div id="loader"></div>
-      <script>
-      function getArticles() {
-        clearInterval(loadFeed);
-        $.ajax({
-          type:"GET",
-          url: "/infinitefeed",
-          data:{
-            section: "{{self.slug}}",
-            start: loader.getAttribute("start"),
-            number: loader.getAttribute("number")
-          },
-          success: function(data) 
-          {
-            console.log("success!");
-            console.log(data);
-            var loader = document.getElementById("loader");
-            var feed = document.getElementById("feed");
-            if(data == "End of feed") {
-              loader.remove();
-              clearInterval(loadFeed);
-            } else {
-              feed.insertAdjacentHTML("beforeend", data);
 
-              loadFeed = setInterval(function () 
-              {
-                if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
-                  console.log("sending!");
-                  getArticles();
-                  loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
-                }
-              }, 100);
-            }  
-          }
-        })
-      }
-
-      var loader = document.getElementById("loader");
-      var feed = document.getElementById("feed");
-      loader.setAttribute("start", "0");
-      loader.setAttribute("number", "15");
-      loadFeed = setInterval(function () 
-      {
-        if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
-          console.log("sending!");
-          getArticles();
-          loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
-        }
-      }, 100);
-      </script>
+      {% include 'archive/objects/infinitefeed.html' with section=self.slug mode="light" %}
 
       {% comment %}
       <h3 class="c-page__section">Archive</h3>

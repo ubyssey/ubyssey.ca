@@ -6,12 +6,33 @@ from django.db import models
 from django.utils import timezone
 
 from ads.models import AdSlot
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
-from wagtail.core.models import Page
+from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, PageChooserPanel, MultiFieldPanel, InlinePanel
+from wagtail.core.models import Page, Orderable
 from wagtail.core.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
+from modelcluster.fields import ParentalKey
 
 # Create your models here.
+
+class TopArticlesOrderable(Orderable):
+    home_page = ParentalKey(
+        "home.HomePage",
+        related_name="top_articles",
+    )
+    article = models.ForeignKey(
+        'article.ArticlePage',
+        on_delete=models.CASCADE,
+        related_name="top_articles",
+    )
+
+    panels = [
+        MultiFieldPanel(
+            [
+                PageChooserPanel('article'),
+            ],
+            heading="Article"
+        ),
+    ]
 
 class HomePage(Page):
     show_in_menus_default = True
@@ -28,18 +49,9 @@ class HomePage(Page):
         'archive.ArchivePage',
     ]
 
-    above_cut_stream = StreamField(
-        [
-            ("above_cut_block", homeblocks.AboveCutBlock())
-        ],
-        null=True,
-        blank=True,
-    )
-
-    sections_stream = StreamField(
-        [
-            ("home_page_section_block", homeblocks.HomepageFeaturedSectionBlock())
-        ],
+    cover_story = ParentalKey(
+        "article.ArticlePage",
+        related_name = "cover_story",
         null=True,
         blank=True,
     )
@@ -85,15 +97,18 @@ class HomePage(Page):
     # )
 
     content_panels = Page.content_panels + [
-        StreamFieldPanel("above_cut_stream", heading="\"Above the Cut\" Content"),
-        StreamFieldPanel("sections_stream", heading="Sections"),
+        PageChooserPanel("cover_story"),
+        InlinePanel("top_articles"),
         StreamFieldPanel("sidebar_stream", heading="Sidebar"),
         # ModelChooserPanel('home_leaderboard_ad_slot'),
         # ModelChooserPanel('home_mobile_leaderboard_ad_slot'),
         # ModelChooserPanel('home_sidebar_ad_slot1'),
         # ModelChooserPanel('home_sidebar_ad_slot2'),
     ]
-                 
+    def getTopArticles(self):
+        return self.top_articles.all() 
+    top_articles_list = property(fget=getTopArticles)
+     
     def get_all_section_slug(self):
         
         allsection_slug = []

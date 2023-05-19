@@ -1,2 +1,9 @@
 {% load wagtailimages_tags %}
-<h5 class="headline"{% if self.show_image and self.image %} id='issue-photo'{% endif %}><a class='issue' id ="issue{{ iteration }}" href={{ self.link }}>{{ self.date }}{% if self.show_image and self.image %}{% image self.image width-320 %}{% endif %}</a></h5>
+<li class="issue {% if self.show_image and self.image %}issuePhoto{%endif%}">
+    <a href={{ self.link }}>
+        <h4 class="issueText">{{ self.date }}</h4>
+        {% if self.show_image and self.image %}
+            {% image self.image width-320 %}
+        {% endif %}
+    </a>
+</li>

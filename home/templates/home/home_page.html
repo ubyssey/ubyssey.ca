@@ -37,29 +37,72 @@
 	Additional fields/blocks will go here to alert students to some special events
 	{% endcomment %}
 
-	<!-- Above the cut content. Likely the first things the user sees when going to the site, before scrolling down -->
-	{% for block in self.above_cut_stream %}
-	{% include_block block %}
+	{% include "article/objects/featured.html" with article=self.cover_story%}
+
+	{% for article in self.top_articles_list %}
+		{% include "article/objects/column.html" with article=article.article %}
 	{% endfor %}
-
-	<!-- Below cut content. The content below this point is likely to require scrolling etc. for a user to read in a browser. -->
-	<div class="homepage-section row">
-		<div class="sections">
-			{% for block in self.sections_stream %}
-			{% include_block block %}
-			{% endfor %}
-		</div>
-
-		<aside class="sidebar-home">
-			{% for block in self.sidebar_stream %}
-			{% include_block block %}
-			{% endfor %}
-		</aside>
-	</div>
-	<div class="loader-container">
-		<div class="loader"></div>
-	</div>
 </main>
+<style>
+	.inactive {
+		top: -100%;
+		position:absolute;
+		opacity: 0;
+	}
+	.active {
+		top:0;
+		position:absolute;
+		opacity: 1;
+		z-index: 200;
+	}
+	.sidebar-item {
+		transition-duration: 0.2s;
+		transition-property: top;
+		width: 70%;
+	}
+	#sidebar {
+		position:sticky;
+		top: 50px;
+		height:100px;
+		width:100%;
+	}
+	@media only screen and (max-width: 600px) {
+		#sidebar {
+		  display:none;
+		}
+	}
+</style>
+<script>
+	var feed = document.getElementById('feed');
+	switchSidebar = setInterval(function () 
+	{
+		var x = Math.floor((document.documentElement.scrollTop- feed.offsetTop) / (1.5*document.body.offsetHeight))% document.getElementById("sidebar").children.length;
+		if (x < 0) {
+			x = 0;
+		}
+		if(x != Array.prototype.indexOf.call(document.getElementById("sidebar").children,document.getElementsByClassName("active")[0])){
+			if (document.getElementsByClassName("active").length > 0) {
+				document.getElementsByClassName("active")[0].classList.add("inactive");
+				document.getElementsByClassName("active")[0].classList.remove("active");
+	
+			}
+			document.getElementById("sidebar").children[x].classList.remove("inactive");
+			document.getElementById("sidebar").children[x].classList.add("active");
+		}
+	}, 100);
+</script>
+<div style="background-color: #031621; padding-top: 20px;display:flex;">
+	<div class="u-container" style="max-width: 700px;margin-left:0;">
+		{% include 'archive/objects/infinitefeed.html' with section="home" mode="dark" %}
+	</div>
+	<div id="sidebar">
+		{% for block in self.sidebar_stream %}
+		<div class="inactive sidebar-item darkmode">
+		{% include_block block %}
+		</div>
+		{% endfor %}
+	</div>
+</div>
 {% endfilter %}
 {% endblock %}
 

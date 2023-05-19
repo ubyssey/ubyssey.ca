@@ -1,4 +1,6 @@
 from django import template
+from archive.views import getArticles
+from django.template.defaultfilters import stringfilter
 
 register = template.Library()
 
@@ -22,3 +24,8 @@ def remove_field_from_query_string(context, field):
     dict_ = context['request'].GET.copy()      
     dict_.pop(field, None) #Deletes the field if it exists, does nothing if it doesn't. Prevents KeyError
     return dict_.urlencode()
+
+@register.filter(name='preload_first_articles')
+@stringfilter
+def preload_first_articles(value, number):
+    return getArticles(value,0,int(number))

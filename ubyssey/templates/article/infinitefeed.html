@@ -1,6 +1,3 @@
 {% for article in articles %}
-    {% include 'article/objects/default.html' with article=article %}    
-    {% comment %}
-    p>{{article.title}}</p>
-    {% endcomment %}
+    {% include 'article/objects/featured_darkmode.html' with article=article mode=mode%}
 {% endfor %}

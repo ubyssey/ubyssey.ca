@@ -1,0 +1,124 @@
+{% load archive_tags %}
+
+<style>
+  .boxLabel {
+    z-index: 200;
+    display:flex;
+    width: 90%;
+    margin: auto;
+    position: sticky;
+    top: 20px;
+    box-shadow: 0 5px 20px 6px #041620;
+    margin-bottom: 20px;
+  }
+  .boxLabel-left {
+    padding-left: 2%;
+    width: 40%;
+    background-color: #C0E3F1;
+    border-width: 0.2em;
+    border-style: solid;
+    border-color: #C0E3F1;
+  }
+  .boxLabel-right {
+    width: 60%;
+    border:solid #C0E3F1;
+    text-align: right;
+    padding-right: 2%;
+    border-width: 0.2em;
+    background-color: #041620;
+  }
+  .boxText-left {
+    color:#031621;
+    margin: 0;
+    font-size: 1.2em;
+  }
+  #timeBox {
+    color: #C0E3F1;
+    margin: 0;
+    font-size: 1.2em;
+  }
+  @media only screen and (max-width: 600px) {
+		.boxLabel {
+		  top: 75px;
+		}
+	}
+</style>
+
+<div id="feed">
+    {% if section == "home" %}
+    <div class="boxLabel">
+        <div class="boxLabel-left">
+            <h1 class="boxText-left">Infinite feed</h1>
+        </div>
+        <div class="boxLabel-right">
+            <h1 id="timeBox">The Date</h1>
+        </div>
+    </div>
+    {% endif %}
+    {% include "article/infinitefeed.html" with articles=section|preload_first_articles:"15"%}
+      
+</div>
+<div id="loader"></div>
+
+<script>
+function getArticles() {
+  clearInterval(loadFeed);
+  $.ajax({
+    type:"GET",
+    url: "/infinitefeed",
+    data:{
+      section: "{{section}}",
+      start: loader.getAttribute("start"),
+      number: loader.getAttribute("number"),
+      mode: "{{mode}}"
+    },
+    success: function(data) 
+    {
+      var loader = document.getElementById("loader");
+      var feed = document.getElementById("feed");
+      if(data == "End of feed") {
+        console.log("end of feed");
+        loader.remove();
+        clearInterval(loadFeed);
+      } else {
+        feed.insertAdjacentHTML("beforeend", data);
+
+        loadFeed = setInterval(function () 
+        {
+          if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
+            getArticles();
+            loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
+          }
+        }, 100);
+      }  
+    }
+  })
+}
+
+var loader = document.getElementById("loader");
+var feed = document.getElementById("feed");
+loader.setAttribute("start", "15");
+loader.setAttribute("number", "15");
+loadFeed = setInterval(function () 
+{
+    getArticles();
+    loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
+}, 100);
+
+{% if section == "home" %}
+updateTimeBox = setInterval(function() 
+{
+  if(document.documentElement.scrollTop > feed.offsetTop) {
+    for(let i in feed.children){
+      var article = feed.children[i];
+      if(article.classList.contains("article--infinitefeed")){
+        if(article.offsetTop > document.documentElement.scrollTop &&  article.offsetTop < document.documentElement.scrollTop + (document.body.offsetHeight/3)) {
+          document.getElementById("timeBox").innerHTML = article.getAttribute("time");
+          break;
+        }
+      }
+    }
+  }
+}, 100);
+{% endif %}
+</script>
