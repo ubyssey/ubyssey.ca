@@ -24,13 +24,27 @@
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
-    <div class="u-container u-container--padded">
-      <div class="c-page__header">
+    
+    <div class="main-content">
+
+    {% if self.banner %}
+      {% image self.banner width-700 as banner %}
+      <div style="background-image: url('{{banner.full_url}}');aspect-ratio:3;position:relative;margin-bottom:40px;background-size:cover;">
         <h1 class="c-page__heading">{{ self.title }}</h1>
       </div>
-      {% comment %} CATEGORY MENU {% endcomment %}
+    {% endif %}
+
+    <div style="width:90%; margin:auto;">
+    
+    <p class="description">{{self.description}} &ensp;<a href="/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a></p>
+    <p class="button-label"><i class="fa fa-search"></i> Search</p>
+    <p class="button-label" onclick="document.getElementById('category_modal').style.display = 'block'"><i class="fa fa-tag"></i> Series</p>
+    </div>
+    {% comment %} CATEGORY MENU {% endcomment %}
+    <div id="category_modal" class="modal">
+      <div class="category_menu">
+      <i class="fa fa-ban" onclick="document.getElementById('category_modal').style.display = 'none'" style="position:absolute; right:50px; top:50px;"></i>
       {% if self.category_menu.count %}
-        <div class="c-page__header__subsections">
           <ul>
             {% for category_menu_item in self.category_menu.all %}
               {% if category_menu_item.category %}
@@ -41,8 +55,9 @@
               {% endif %}
             {% endfor %}
           </ul>
-        </div>
       {% endif %}
+      </div>
+    </div>
 
       {% comment %}
         featured_articles is added to context by SectionPage
@@ -68,9 +83,9 @@
         The below will be turned into _blocks_,
         allowing editors to have user to have some level of control
       {% endcomment %}
-
-      {% include 'archive/objects/infinitefeed.html' with section=self.slug mode="light" %}
-
+      <div style="width:95%; margin:auto;">
+        {% include 'archive/objects/infinitefeed.html' with section=self.slug mode="light" %}
+      </div>
       {% comment %}
       <h3 class="c-page__section">Archive</h3>
       {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}

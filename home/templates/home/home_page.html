@@ -37,11 +37,22 @@
 	Additional fields/blocks will go here to alert students to some special events
 	{% endcomment %}
 
-	{% include "article/objects/featured.html" with article=self.cover_story%}
-
-	{% for article in self.top_articles_list %}
-		{% include "article/objects/column.html" with article=article.article %}
-	{% endfor %}
+	<div class="home-featured">
+	{% include "article/objects/cover_story.html" with article=self.cover_story%}
+	<div class="home-top-article-list">
+		<div class="boxLabel lightmode">
+			<div class="boxLabel-left">
+				<h1 class="boxText-left">Today's best!</h1>
+			</div>
+			<div class="boxLabel-right">
+				<h1 class="boxText-right" id="timeBox">The Date</h1>
+			</div>
+		</div>
+		{% for article in self.top_articles_list %}
+			{% include "article/objects/top_article.html" with article=article.article %}
+		{% endfor %}
+	</div>
+	</div>
 </main>
 <style>
 	.inactive {

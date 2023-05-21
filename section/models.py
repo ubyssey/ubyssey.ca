@@ -13,7 +13,7 @@ from django.shortcuts import render
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
-
+from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
 from wagtail.core import models as wagtail_core_models
 from wagtail.core.models import Page
@@ -130,7 +130,34 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     show_in_menus_default = True
 
+    banner = models.ForeignKey(
+        "images.UbysseyImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='banner',
+    )
+
+    description = models.TextField(
+        # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
+        null=False,
+        blank=True,
+        default='',
+    )
+
     content_panels = wagtail_core_models.Page.content_panels + [
+        MultiFieldPanel(
+            [
+                ImageChooserPanel("banner"),
+            ],
+            heading="Banner",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("description"),
+            ],
+            heading="Description",
+        ),
         MultiFieldPanel(
             [
                 InlinePanel("category_menu"),

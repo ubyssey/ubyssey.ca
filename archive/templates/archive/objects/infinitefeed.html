@@ -1,57 +1,13 @@
 {% load archive_tags %}
 
-<style>
-  .boxLabel {
-    z-index: 200;
-    display:flex;
-    width: 90%;
-    margin: auto;
-    position: sticky;
-    top: 20px;
-    box-shadow: 0 5px 20px 6px #041620;
-    margin-bottom: 20px;
-  }
-  .boxLabel-left {
-    padding-left: 2%;
-    width: 40%;
-    background-color: #C0E3F1;
-    border-width: 0.2em;
-    border-style: solid;
-    border-color: #C0E3F1;
-  }
-  .boxLabel-right {
-    width: 60%;
-    border:solid #C0E3F1;
-    text-align: right;
-    padding-right: 2%;
-    border-width: 0.2em;
-    background-color: #041620;
-  }
-  .boxText-left {
-    color:#031621;
-    margin: 0;
-    font-size: 1.2em;
-  }
-  #timeBox {
-    color: #C0E3F1;
-    margin: 0;
-    font-size: 1.2em;
-  }
-  @media only screen and (max-width: 600px) {
-		.boxLabel {
-		  top: 75px;
-		}
-	}
-</style>
-
 <div id="feed">
     {% if section == "home" %}
-    <div class="boxLabel">
+    <div class="boxLabel darkmode sticky">
         <div class="boxLabel-left">
             <h1 class="boxText-left">Infinite feed</h1>
         </div>
         <div class="boxLabel-right">
-            <h1 id="timeBox">The Date</h1>
+            <h1 class="boxText-right" id="timeBox">The Date</h1>
         </div>
     </div>
     {% endif %}

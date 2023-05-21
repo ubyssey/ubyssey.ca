@@ -121,6 +121,43 @@
   }
 }
 
+.o-article--coverstory {
+  display: block;
+  @media($bp-larger-than-phablet) {
+    // Structure
+    width:60%;
+  }
+
+  @media($bp-smaller-than-phablet) {
+    // Structure
+    width: 100%;
+  }
+
+  .o-article__right {
+    top: -50px;
+    position:relative;
+    width: 95%
+  }
+
+  .o-article__meta {
+    margin-left: 10px;
+  }
+
+  .o-article__headline {
+    background-color:#0071c9;
+    font-size: 2rem;
+    position: relative;
+    left: 20px;
+  }
+
+  .o-article__snippet {
+    margin-top: 20px;
+    line-height: 1.5em;
+    color: black;
+    font-size: 1.2em;
+  }
+}
+
 // Featured Article
 // Article List Item
 
@@ -319,6 +356,44 @@
     // Text
     font-size: font-size(13);
   }
+}
+
+// Article column
+
+.o-article--top_article {
+  .o-article__image {
+    // Structure
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-right: 0.65rem;
+
+    // Background
+    background-position: center;
+    background-size: cover;
+  }
+
+  .o-article__headline {
+    // Structure
+    flex: 1;
+    color: #000000;
+    margin: auto;
+    // Text
+    font-size: font-size(22);
+  }
+
+  .o-article__meta__image {
+    // Structure
+    display: flex;
+    margin-bottom: 0.65rem;
+  }
+
+  .o-article__meta__image .o-article__headline {
+
+    // Text
+    font-size: font-size(18);
+    line-height: 1.2em;
+  }
+
 }
 
 // Article column
