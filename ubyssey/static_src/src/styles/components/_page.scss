@@ -5,6 +5,10 @@
   }
 }
 
+.c-page__section__heading, .c-page__category__heading  {
+  font-size: 1em;
+}
+
 .c-page__header {
   // Structure
   margin: 1.5rem 0;
@@ -91,7 +95,7 @@
   margin: 0;
 
   // Text
-  font-size: font-size(32);
+  font-size: font-size(2);
   color: $color-text-black;
 }
 
