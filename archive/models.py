@@ -1,12 +1,14 @@
 from django.db import models
 from django_user_agents.utils import get_user_agent
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.shortcuts import render
 
 from article.models import ArticlePage
 from section.models import SectionPage
 from wagtail.core.models import Page
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
 
-class ArchivePage(Page):
+class ArchivePage(RoutablePageMixin, Page):
     template = "archive/archive_page.html"
 
     parent_page_types = [
@@ -94,3 +96,9 @@ class ArchivePage(Page):
         context['meta'] = { 'title': 'Archive' }
 
         return context
+    
+    @route(r'^category/(?P<sections_slug>[-\w]+)/$', name='section_view')
+    def get_section_articles(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
+        context["test"] = "Hello World 232131312"
+        return render(request, "archive/archive_section.html", context)
