@@ -37,6 +37,176 @@
                         </a>        
                     {% endif %} {% endcomment %}
                 </div>
+                <script>
+                    /* Restoring browsering effects */
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+  
+body{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+}
+  
+.main_box{
+    width: 4em;
+    height: 4em;
+    position: relative;
+}
+  
+#share_button{
+    display: none;
+}
+  
+span,a{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+  
+span{
+    width: 4em;
+    height: 4em;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: #eee;
+    color: #333;
+    font-size: 2em;
+    z-index: 1;
+    cursor: pointer;
+    /* border-radius: 30%; */
+}
+  
+.sm_list{
+    width: 4em;
+    height: 4em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+  
+.sm_list a{
+    width: 4em;
+    height: 4em;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #fff;
+    transition: all .3s;
+    font-size: 1.5em;
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(1){
+    background-color: #3B5998;
+    transition-delay: 0.2s;
+    transform: translateX(-6em);
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(2){
+    background-color: #dd2553;
+    transition-delay: 0.2s;
+    transform: translateX(6em);
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(3){
+    background-color: #000f94;
+    transition-delay: 0.3s;
+    transform: translateX(12em);
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(4){
+    background-color: #1077ec;
+    transition-delay: 0.3s;
+    transform: translateX(-12em);
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(5){
+    background-color: rgb(10, 63, 0);
+    transition-delay: 0.4s;
+    transform: translateX(18em);
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(6){
+    background: linear-gradient(70deg,blue,green,red,yellow);
+    transition-delay: 0.4s;
+    transform: translateX(-18em);
+}
+  
+/* Hovering Effects */
+#share_button:checked ~ .sm_list a:nth-child(1):hover{
+    background-color: #ffffff;
+    color: #3B5998;
+    /* transition-delay: 0.2s;
+    transform: translateX(-6em); */
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(2):hover{
+    color: #dd2553;
+    background-color: #fff;
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(3):hover{
+    color: #000f94;
+    background-color: #fff;
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(4):hover{
+    color: #1077ec;
+    background-color: #fff;
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(5):hover{
+    color: rgb(10, 63, 0);
+    background-color: #fff;
+}
+  
+#share_button:checked ~ .sm_list a:nth-child(6):hover{
+    color: black;
+    background-image: linear-gradient(90deg,white,grey);
+}
+  
+span:visited{
+    background-color: #000f94;
+}
+                </script>
+                <script src="{% static 'ubyssey/js/sharebuttons.js' %}" type="text/javascript"></script>
+                <div class="main_box">
+                    <input type="checkbox" id="share_button">
+                    <label for="share_button">
+                        <span class="sharebtn" >
+                          <i class="far fa-share-square"></i>
+                        </span>
+                    </label>
+              
+                    <div class="sm_list">
+                        <a href="#" class="facebook">
+                          <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="instagram">
+                          <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="linkedin">
+                          <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="discord">
+                          <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="whatsapp">
+                          <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="slack">
+                          <i class="fab fa-slack"></i>
+                        </a>
+                    </div>
+                </div>
                 <div class="u-container u-container--content u-container--padded">
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
                     <div class="c-article__info">
