@@ -84,6 +84,8 @@ class VideosPage(SectionablePage):
         context["paginated_videos"] = paginated_videos
         
         return context
+    
+    # @route('^archive/videos$')
 
 
 #-----Snippet models-----

@@ -41,6 +41,23 @@ class ArchivePage(RoutablePageMixin, Page):
         except (TypeError, ValueError):
             return None
 
+    """
+    @route(r'^section/?$') (In the articles page)
+        @route(r'^video$') (In the videos page)
+        We need to look into how to find magazine articles easily
+                pubdate
+                title
+                description
+                cover_image
+                social_cover_image
+
+                section_name
+                issue
+                section_image
+                
+    @route(r'^year/?$')
+    ..... (includes the section and year route)/search=q or /search=".........."
+    """
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
@@ -97,8 +114,13 @@ class ArchivePage(RoutablePageMixin, Page):
 
         return context
     
-    @route(r'^category/(?P<sections_slug>[-\w]+)/$', name='section_view')
+    @route(r'^archive/(?P<sections_slug>[-\w]+)/$', name='section_view')
     def get_section_articles(self, request, *args, **kwargs):
         context = self.get_context(request, *args, **kwargs)
         context["test"] = "Hello World 232131312"
         return render(request, "archive/archive_section.html", context)
+    
+    @route(r'^archive/news$')
+    def archive_section_view(self, request, current_section):
+        context = self.get_context(request, current_section=current_section)
+        return render(request, 'archive/archive_page.html', context)
