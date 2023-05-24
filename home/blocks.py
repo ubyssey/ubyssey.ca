@@ -153,3 +153,14 @@ class SidebarFlexStreamBlock(blocks.StructBlock):
         template = "home/stream_blocks/sidebar_flex_stream_block.html"
         verbose_name = "Sidebar Stream Flex Block"
         verbose_name_plural = "Sidebar Stream Flex Blocks"
+
+class LinkStreamBlock(blocks.StructBlock):
+    title = blocks.CharBlock(
+        required=True,
+        max_length=255,
+    )
+    url = blocks.URLBlock(required=False)
+    description = blocks.TextBlock(required=False)
+
+    class Meta:
+        template = "home/stream_blocks/link.html"

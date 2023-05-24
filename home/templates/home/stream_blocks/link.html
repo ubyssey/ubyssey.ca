@@ -1,0 +1,11 @@
+<p>
+    {% if self.url %}
+        <a href="{{self.url}}" ><span class="linkTitle">{{self.title}}</span></a>
+    {% else %}
+        <span class="linkTitle">{{self.title}}</span>
+    {% endif %}
+
+    {% if self.description %}
+        &nbsp;{{self.description}}
+    {% endif %}
+</p>

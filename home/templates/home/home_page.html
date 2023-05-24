@@ -38,21 +38,31 @@
 	{% endcomment %}
 
 	<div class="home-featured">
-	{% include "article/objects/cover_story.html" with article=self.cover_story%}
-	<div class="home-top-article-list">
-		<div class="boxLabel lightmode">
-			<div class="boxLabel-left">
-				<h1 class="boxText-left">Today's best!</h1>
+		{% if self.cover_story %}
+			{% include "article/objects/cover_story.html" with article=self.cover_story%}
+		{% endif %}
+		<div class="home-top-article-list">
+			<div class="boxLabel lightmode">
+				<div class="boxLabel-left">
+					<h1 class="boxText-left">Today's best!</h1>
+				</div>
+				<div class="boxLabel-right">
+					<h1 class="boxText-right" id="timeBox">The Date</h1>
+				</div>
 			</div>
-			<div class="boxLabel-right">
-				<h1 class="boxText-right" id="timeBox">The Date</h1>
-			</div>
+			{% for article in self.top_articles_list %}
+				{% include "article/objects/top_article.html" with article=article.article %}
+			{% endfor %}
 		</div>
-		{% for article in self.top_articles_list %}
-			{% include "article/objects/top_article.html" with article=article.article %}
-		{% endfor %}
 	</div>
+
+	<div style="padding-bottom: 20px;">
+		<h2>Click!!!</h2>
+		{%for link in self.links%}
+			{% include_block link%}
+		{%endfor%}
 	</div>
+
 </main>
 <style>
 	.inactive {
@@ -102,16 +112,18 @@
 		}
 	}, 100);
 </script>
-<div style="background-color: #031621; padding-top: 20px;display:flex;">
-	<div class="u-container" style="max-width: 700px;margin-left:0;">
-		{% include 'archive/objects/infinitefeed.html' with section="home" mode="dark" %}
-	</div>
-	<div id="sidebar">
-		{% for block in self.sidebar_stream %}
-		<div class="inactive sidebar-item darkmode">
-		{% include_block block %}
+<div style="background-color: #031621; padding-top: 20px;">
+	<div class="u-container u-container--large" style="display:flex;">
+		<div class="u-container" style="max-width: 700px;margin-left:0;">
+			{% include 'archive/objects/infinitefeed.html' with section="home" mode="dark" %}
 		</div>
-		{% endfor %}
+		<div id="sidebar">
+			{% for block in self.sidebar_stream %}
+			<div class="inactive sidebar-item darkmode">
+			{% include_block block %}
+			</div>
+			{% endfor %}
+		</div>
 	</div>
 </div>
 {% endfilter %}

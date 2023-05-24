@@ -19,46 +19,63 @@
 {% endblock %}
 
 {% block content %}
+<div id="category_modal" class="modal">
+  <div class="category_menu u-container u-container--padded">
+  <i class="fa fa-ban" onclick="document.getElementById('category_modal').style.display = 'none'" style="position:absolute; right:50px; top:50px;"></i>
+  <h1><i class="fa fa-tag"></i> Series</h1>
+  {% if self.category_menu.count %}
+      <ul>
+        {% for category_menu_item in self.category_menu.all %}
+          {% if category_menu_item.category %}
+            <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a> — {{ category_menu_item.category.description }}</li>
+          {% else %}
+            {% comment %} Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! {% endcomment %}
+            <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+  {% endif %}
+  </div>
+</div>
+
+
   <main class="section">
     <!-- Place header ads for section page -->
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
     
-    <div class="main-content">
+    <div class="main-content u-container u-container--large  u-container--padded">
 
     {% if self.banner %}
       {% image self.banner width-700 as banner %}
-      <div style="background-image: url('{{banner.full_url}}');aspect-ratio:3;position:relative;margin-bottom:40px;background-size:cover;">
-        <h1 class="c-page__heading">{{ self.title }}</h1>
+      <div class="banner" style="background-image: url('{{banner.full_url}}');aspect-ratio:3;position:relative;margin-bottom:40px;background-size:cover;">
+        <h1 class="c-page__heading">
+          {% if category %}
+            {{category}}
+          {%else%}  
+            {{ self.title }}
+          {%endif%}
+        </h1>
       </div>
+    {%else%}
+      <h1 class="c-page__heading">
+        {% if category %}
+          {{category}}
+        {%else%}  
+          {{ self.title }}
+        {%endif%}
+      </h1>
     {% endif %}
 
     <div style="width:90%; margin:auto;">
     
+      
     <p class="description">{{self.description}} &ensp;<a href="/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a></p>
     <p class="button-label"><i class="fa fa-search"></i> Search</p>
     <p class="button-label" onclick="document.getElementById('category_modal').style.display = 'block'"><i class="fa fa-tag"></i> Series</p>
     </div>
     {% comment %} CATEGORY MENU {% endcomment %}
-    <div id="category_modal" class="modal">
-      <div class="category_menu">
-      <i class="fa fa-ban" onclick="document.getElementById('category_modal').style.display = 'none'" style="position:absolute; right:50px; top:50px;"></i>
-      {% if self.category_menu.count %}
-          <ul>
-            {% for category_menu_item in self.category_menu.all %}
-              {% if category_menu_item.category %}
-                <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
-              {% else %}
-                {% comment %} Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! {% endcomment %}
-                <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-      {% endif %}
-      </div>
-    </div>
-
       {% comment %}
         featured_articles is added to context by SectionPage
         by default it containes the most recent 4 articles
@@ -84,7 +101,11 @@
         allowing editors to have user to have some level of control
       {% endcomment %}
       <div style="width:95%; margin:auto;">
-        {% include 'archive/objects/infinitefeed.html' with section=self.slug mode="light" %}
+        {% if category %}
+          {% include 'archive/objects/infinitefeed.html' with section=self.slug category=category mode="light" %}
+        {% else %}
+          {% include 'archive/objects/infinitefeed.html' with section=self.slug mode="light" %}
+        {% endif %}
       </div>
       {% comment %}
       <h3 class="c-page__section">Archive</h3>

@@ -3,15 +3,24 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load video_filters %}
+{% load articletags %}
 
 {% if article %}
-<article class="o-article article--infinitefeed article--{{mode}}mode {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.first_published_at|naturaltime}}">
+<article class="o-article article--infinitefeed article--{{mode}}mode {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.first_published_at|naturaltime}}" style="border-color:{{article.colour}}">
 	{% if article.featured_media.first %}
 	{% if article.featured_media.first.image %}
 	<div class="o-article__left">
-		<a class="o-article__image" href="{% pageurl article %}">
-			{% image article.featured_media.first.image fill-340x238-c100 %}
-		</a>
+		<div style="position:relative">
+			<a href="{% pageurl article %}" class="o-article__image" style="border-color:{{article.colour}}">
+				{% image article.featured_media.first.image fill-340x238-c100 %}
+			</a>
+			{% if article.current_section|get_label %}
+				<a href="/{{article.current_section}}">
+					<img class="o-article__section_label" src="{{article.current_section|get_label}}">
+					<h3 class="o-article__section_label_text" style="color:{{article.colour}}">{{article.current_section}}</h3>
+				</a>
+			{% endif %}
+		</div>
 	</div>
 	{% elif article.featured_media.first.video %}
 	<div class="o-article__left">

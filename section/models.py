@@ -22,6 +22,11 @@ from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
+from wagtail_color_panel.fields import ColorField
+from wagtail_color_panel.edit_handlers import NativeColorPanel
+
+from wagtail.documents.models import Document
+from wagtail.documents.edit_handlers import DocumentChooserPanel
 
 #-----Snippet models-----
 @register_snippet
@@ -145,6 +150,14 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         default='',
     )
 
+    label_svg = models.ForeignKey(
+        'wagtaildocs.Document',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
     content_panels = wagtail_core_models.Page.content_panels + [
         MultiFieldPanel(
             [
@@ -157,6 +170,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 FieldPanel("description"),
             ],
             heading="Description",
+        ),
+        MultiFieldPanel(
+            [
+                DocumentChooserPanel('label_svg'),
+            ],
+            heading="Label svg"
         ),
         MultiFieldPanel(
             [
@@ -181,6 +200,9 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         all_articles = self.get_section_articles(order=article_order)
         if 'category_slug' in kwargs:            
             all_articles = all_articles.filter(category__slug=kwargs['category_slug'])
+            context["category"] = kwargs['category_slug']
+        else:
+            context["category"] = False
 
         context["featured_articles"] = self.get_featured_articles()
 

@@ -6,8 +6,10 @@ from django.core import serializers
 import json
 from django.template import loader
 
-def getArticles(section, start, number):
-    if section != "home":
+def getArticles(section, start, number, category=None):
+    if category != None:
+        return ArticlePage.objects.live().public().filter(category__slug=category).order_by('-explicit_published_at')[int(start):int(start)+int(number)]
+    elif section != "home":
         return ArticlePage.objects.live().public().filter(current_section=section).order_by('-explicit_published_at')[int(start):int(start)+int(number)]
     else:
         return ArticlePage.objects.live().public().order_by('-explicit_published_at')[int(start):int(start)+int(number)]
@@ -18,8 +20,11 @@ def infinitefeed(request):
         start = request.GET['start']
         number = request.GET['number']
         mode = request.GET['mode']
-        articles = getArticles(section, start, number)
-             
+        if "category" in request.GET:
+            articles = getArticles(section, start, number, category=request.GET['category'])
+        else:
+            articles = getArticles(section, start, number)
+        
         if len(articles) == 0:
             return HttpResponse("End of feed")
         else:
@@ -27,4 +32,4 @@ def infinitefeed(request):
             data = {'articles': articles, 'mode': mode}
             return HttpResponse(loader.render_to_string("article/infinitefeed.html", data))
     else:
-            return HttpResponse("Request method is not a GET")
+        return HttpResponse("Request method is not a GET")

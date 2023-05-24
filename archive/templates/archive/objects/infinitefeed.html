@@ -1,5 +1,4 @@
 {% load archive_tags %}
-
 <div id="feed">
     {% if section == "home" %}
     <div class="boxLabel darkmode sticky">
@@ -11,7 +10,11 @@
         </div>
     </div>
     {% endif %}
-    {% include "article/infinitefeed.html" with articles=section|preload_first_articles:"15"%}
+    {% if category %}
+      {% include "article/infinitefeed.html" with articles=category|preload_category:"15"%}
+    {% else %}
+      {% include "article/infinitefeed.html" with articles=section|preload_section:"15"%}
+    {% endif %}
       
 </div>
 <div id="loader"></div>
@@ -19,36 +22,58 @@
 <script>
 function getArticles() {
   clearInterval(loadFeed);
-  $.ajax({
-    type:"GET",
-    url: "/infinitefeed",
-    data:{
-      section: "{{section}}",
-      start: loader.getAttribute("start"),
-      number: loader.getAttribute("number"),
-      mode: "{{mode}}"
-    },
-    success: function(data) 
-    {
-      var loader = document.getElementById("loader");
-      var feed = document.getElementById("feed");
-      if(data == "End of feed") {
-        console.log("end of feed");
-        loader.remove();
-        clearInterval(loadFeed);
-      } else {
-        feed.insertAdjacentHTML("beforeend", data);
+  {% if category %}
+    $.ajax({
+      type:"GET",
+      url: "/infinitefeed",
+      data:{
+        category: "{{category}}",
+        section: "{{section}}",
+        start: loader.getAttribute("start"),
+        number: loader.getAttribute("number"),
+        mode: "{{mode}}"
+      },
+      success: function(data) 
+      {
+        recievedata(data);
+      }
+    })
+  {% else %}
+    $.ajax({
+      type:"GET",
+      url: "/infinitefeed",
+      data:{
+        section: "{{section}}",
+        start: loader.getAttribute("start"),
+        number: loader.getAttribute("number"),
+        mode: "{{mode}}"
+      },
+      success: function(data) 
+      {
+        recievedata(data);
+      }
+    })
+  {% endif %}
+}
 
-        loadFeed = setInterval(function () 
-        {
-          if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
-            getArticles();
-            loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
-          }
-        }, 100);
-      }  
-    }
-  })
+function recievedata(data) {
+  var loader = document.getElementById("loader");
+  var feed = document.getElementById("feed");
+  if(data == "End of feed") {
+    console.log("end of feed");
+    loader.remove();
+    clearInterval(loadFeed);
+  } else {
+    feed.insertAdjacentHTML("beforeend", data);
+
+    loadFeed = setInterval(function () 
+    {
+      if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
+        getArticles();
+        loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
+      }
+    }, 100);
+  }  
 }
 
 var loader = document.getElementById("loader");

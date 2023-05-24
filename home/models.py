@@ -56,6 +56,14 @@ class HomePage(Page):
         blank=True,
     )
 
+    links = StreamField(
+        [
+            ("link", homeblocks.LinkStreamBlock()),
+        ],
+        null=True,
+        blank=True,
+    )
+
     sidebar_stream = StreamField(
         [
             ("sidebar_advertisement_block", homeblocks.SidebarAdvertisementBlock()),
@@ -99,6 +107,7 @@ class HomePage(Page):
     content_panels = Page.content_panels + [
         PageChooserPanel("cover_story"),
         InlinePanel("top_articles"),
+        StreamFieldPanel("links", heading="Links"),
         StreamFieldPanel("sidebar_stream", heading="Sidebar"),
         # ModelChooserPanel('home_leaderboard_ad_slot'),
         # ModelChooserPanel('home_mobile_leaderboard_ad_slot'),

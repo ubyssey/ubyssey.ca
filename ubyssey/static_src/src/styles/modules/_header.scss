@@ -95,8 +95,6 @@ header.main{
 
   nav.main {
     grid-template-rows: 51px;
-    border: $header-border;
-    @include box-shadow($header-box-shadow);
     border-radius: 2px;
     padding: 0 10px;
   
@@ -119,6 +117,7 @@ header.main{
           font-weight: $font-weight-semi-bold;
           color: #2B2B2B;
           margin: 0 6px;
+          text-transform: uppercase;
   
           &.elections a {
             color: $color-red;

@@ -25,7 +25,12 @@ def remove_field_from_query_string(context, field):
     dict_.pop(field, None) #Deletes the field if it exists, does nothing if it doesn't. Prevents KeyError
     return dict_.urlencode()
 
-@register.filter(name='preload_first_articles')
+@register.filter(name='preload_section')
 @stringfilter
-def preload_first_articles(value, number):
+def preload_section(value, number):
     return getArticles(value,0,int(number))
+
+@register.filter(name='preload_category')
+@stringfilter
+def preload_category(value, number):
+    return getArticles("",0,int(number), category=value)
