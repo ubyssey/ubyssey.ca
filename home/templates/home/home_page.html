@@ -24,16 +24,11 @@
 {% gpt_placement_tag orderable.ad_slot %}
 {% endfor %}
 
-<script src="{% static 'ubyssey/js/darkmode.js' %}" type="text/javascript"></script>
+
 
 <main class="u-container u-container--large homepage ">
-	<style>
-		.dark-mode {
-			background-color: black;
-			color: white;
-	</style>
-	
-    <button class="dark-mode-switcher" type="button" value="Toggle dark mode" onclick="DarkModeToggle()">Toggle dark mode </button>
+
+
 	{% comment %}
 	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
 	{% endcomment %}
