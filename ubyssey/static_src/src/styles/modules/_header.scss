@@ -117,7 +117,6 @@ header.main{
           font-family: $font-default;
           font-size: font-size(14);
           font-weight: $font-weight-semi-bold;
-          color: #2B2B2B;
           margin: 0 6px;
   
           &.elections a {
@@ -140,7 +139,6 @@ header.main{
         li {
           font-family: $font-default;
           font-size: 13px;
-          color: #33331E;
           margin: 0 6px;
   
           &.store {
@@ -205,7 +203,6 @@ header.topbar {
     font-family: $font-default;
     font-weight: $font-weight-semi-bold;
     font-size: font-size(13);
-    color: #373737;
     margin-left: 20px;
     ul {
       line-height: 48px;
