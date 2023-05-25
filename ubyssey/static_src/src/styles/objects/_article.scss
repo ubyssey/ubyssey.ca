@@ -407,9 +407,20 @@
 
 // Article column
 
+.darkmode {
+  .o-article--column {
+    box-shadow: #000000 1px 5px 15px;
+  }
+}
+
+.lightmode {
+  .o-article--column {
+    box-shadow: -10px 10px 7px 0px #0000003b;
+  }
+}
+
 .o-article--column {
   margin-bottom: 1rem;
-  box-shadow: #000000 1px 5px 15px;
   background-color: #1771c5;
   position: relative;
   left:0;

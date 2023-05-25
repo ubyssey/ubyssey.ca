@@ -28,9 +28,15 @@ def remove_field_from_query_string(context, field):
 @register.filter(name='preload_section')
 @stringfilter
 def preload_section(value, number):
-    return getArticles(value,0,int(number))
+    data = {"section": value}
+    return getArticles(data,0,int(number))
 
 @register.filter(name='preload_category')
 @stringfilter
 def preload_category(value, number):
-    return getArticles("",0,int(number), category=value)
+    data = {"category": value}
+    return getArticles(data,0,int(number))
+
+@register.filter(name='preload_articles')
+def preload_articles(value, number):
+    return getArticles(value,0,int(number))

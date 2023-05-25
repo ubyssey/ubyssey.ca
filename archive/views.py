@@ -6,24 +6,39 @@ from django.core import serializers
 import json
 from django.template import loader
 
-def getArticles(section, start, number, category=None):
-    if category != None:
-        return ArticlePage.objects.live().public().filter(category__slug=category).order_by('-explicit_published_at')[int(start):int(start)+int(number)]
-    elif section != "home":
-        return ArticlePage.objects.live().public().filter(current_section=section).order_by('-explicit_published_at')[int(start):int(start)+int(number)]
+def getArticles(filters, start, number):
+    articles = ArticlePage.objects.live().public()
+
+    if "section" in filters:
+        if filters["section"] == "home":
+            return ArticlePage.objects.live().public().order_by('-explicit_published_at')[int(start):int(start)+int(number)]
+        else:
+            articles = articles.filter(current_section=filters["section"])
+
+    if "category" in filters:
+        articles = articles.filter(category__slug=filters["category"])
+
+    if "search_query" in filters:
+        return articles.search(filters["search_query"])[int(start):int(start)+int(number)]
     else:
-        return ArticlePage.objects.live().public().order_by('-explicit_published_at')[int(start):int(start)+int(number)]
+        return articles.order_by('-explicit_published_at')[int(start):int(start)+int(number)]
 
 def infinitefeed(request):
     if request.method == 'GET':
-        section = request.GET['section']
         start = request.GET['start']
         number = request.GET['number']
         mode = request.GET['mode']
+
+        filters = {}
+
+        if "section" in request.GET:
+            filters["section"] = request.GET['section']
         if "category" in request.GET:
-            articles = getArticles(section, start, number, category=request.GET['category'])
-        else:
-            articles = getArticles(section, start, number)
+            filters["category"] = request.GET['category']
+        if "search_query" in request.GET:
+            filters["search_query"] = request.GET['search_query']
+
+        articles = getArticles(filters, start, number)
         
         if len(articles) == 0:
             return HttpResponse("End of feed")

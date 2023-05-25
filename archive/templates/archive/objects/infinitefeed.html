@@ -1,59 +1,39 @@
 {% load archive_tags %}
 <div id="feed">
-    {% if section == "home" %}
-    <div class="boxLabel darkmode sticky">
-        <div class="boxLabel-left">
-            <h1 class="boxText-left">Infinite feed</h1>
-        </div>
-        <div class="boxLabel-right">
-            <h1 class="boxText-right" id="timeBox">The Date</h1>
-        </div>
-    </div>
-    {% endif %}
-    {% if category %}
-      {% include "article/infinitefeed.html" with articles=category|preload_category:"15"%}
-    {% else %}
-      {% include "article/infinitefeed.html" with articles=section|preload_section:"15"%}
-    {% endif %}
-      
+    {% include "article/infinitefeed.html" with articles=filters|preload_articles:"15"%}
 </div>
 <div id="loader"></div>
 
 <script>
 function getArticles() {
   clearInterval(loadFeed);
-  {% if category %}
-    $.ajax({
-      type:"GET",
-      url: "/infinitefeed",
-      data:{
-        category: "{{category}}",
-        section: "{{section}}",
-        start: loader.getAttribute("start"),
-        number: loader.getAttribute("number"),
-        mode: "{{mode}}"
-      },
-      success: function(data) 
-      {
-        recievedata(data);
-      }
-    })
-  {% else %}
-    $.ajax({
-      type:"GET",
-      url: "/infinitefeed",
-      data:{
-        section: "{{section}}",
-        start: loader.getAttribute("start"),
-        number: loader.getAttribute("number"),
-        mode: "{{mode}}"
-      },
-      success: function(data) 
-      {
-        recievedata(data);
-      }
-    })
+  data = {
+    start: loader.getAttribute("start"),
+    number: loader.getAttribute("number"),
+    mode: "{{mode}}"
+  }
+
+  {% if "section" in filters %}
+    data["section"] = "{{filters.section}}"
   {% endif %}
+
+  {% if "category" in filters %}
+    data["category"] = "{{filters.category}}"
+  {% endif %}
+
+  {% if "search_query" in filters %}
+    data["search_query"] = "{{filters.search_query}}"
+  {% endif %}
+
+  $.ajax({
+    type:"GET",
+    url: "/infinitefeed",
+    data:data,
+    success: function(data) 
+    {
+      recievedata(data);
+    }
+  })
 }
 
 function recievedata(data) {
@@ -85,21 +65,4 @@ loadFeed = setInterval(function ()
     getArticles();
     loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
 }, 100);
-
-{% if section == "home" %}
-updateTimeBox = setInterval(function() 
-{
-  if(document.documentElement.scrollTop > feed.offsetTop) {
-    for(let i in feed.children){
-      var article = feed.children[i];
-      if(article.classList.contains("article--infinitefeed")){
-        if(article.offsetTop > document.documentElement.scrollTop &&  article.offsetTop < document.documentElement.scrollTop + (document.body.offsetHeight/3)) {
-          document.getElementById("timeBox").innerHTML = article.getAttribute("time");
-          break;
-        }
-      }
-    }
-  }
-}, 100);
-{% endif %}
 </script>

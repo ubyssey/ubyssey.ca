@@ -383,8 +383,6 @@ h1.section, h2.title, h2.block-title {
   margin-top: 0;
   margin-bottom: 0;
   padding: 15px 0;
-  text-shadow: #000000 1px 1px 15px;
-
 }
 
 html.hairlines {
@@ -672,7 +670,7 @@ ol.article-list {
   left:0;
   margin-bottom: 10px;
   list-style-type: none;
-  box-shadow: #000000 1px 5px 15px;
+  background-color:#0071c9;
   &:hover{
     left: -10px;
   }
@@ -686,17 +684,29 @@ ol.article-list {
 }
 
 .darkmode {
+  h2.block-title {
+    text-shadow: #000000 1px 1px 15px;
+  }
   div.sidebar-block {  
     h2.block-title {
       color: #0071c9;
     }
     .issue {
       color:white;
-      background-color:#0071c9;
+      box-shadow: #000000 1px 5px 15px;
       .issueText{
         color: white;
       }
     }
+  }
+}
+
+.lightmode {
+  h2.block-title {
+    text-shadow: #0000003b -1px 1px 15px;
+  }
+  .issue {
+    box-shadow: -10px 10px 7px 0px #0000003b;
   }
 }
 
@@ -707,12 +717,12 @@ ol.article-list {
 }
 
 .boxLabel {
-  z-index: 200;
+  z-index: 100;
   display:flex;
   width: 90%;
   margin: auto;
   margin-bottom: 20px;
-  @media only screen and (max-width: 600px) {
+  @media (max-width: 1200px) {
     top: 75px;
   }
 }

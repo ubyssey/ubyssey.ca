@@ -114,6 +114,12 @@ class HomePage(Page):
         # ModelChooserPanel('home_sidebar_ad_slot1'),
         # ModelChooserPanel('home_sidebar_ad_slot2'),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["filters"] = {}
+        return context
+
     def getTopArticles(self):
         return self.top_articles.all() 
     top_articles_list = property(fget=getTopArticles)

@@ -23,6 +23,7 @@
   <div class="category_menu u-container u-container--padded">
   <i class="fa fa-ban" onclick="document.getElementById('category_modal').style.display = 'none'" style="position:absolute; right:50px; top:50px;"></i>
   <h1><i class="fa fa-tag"></i> Series</h1>
+  <p><a href="{% pageurl self %}">{{self.title}}</a> - {{self.description}}</p>
   {% if self.category_menu.count %}
       <ul>
         {% for category_menu_item in self.category_menu.all %}
@@ -45,36 +46,41 @@
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
     
-    <div class="main-content u-container u-container--large  u-container--padded">
+    <div class="u-container u-container--large">
 
-    {% if self.banner %}
-      {% image self.banner width-700 as banner %}
-      <div class="banner" style="background-image: url('{{banner.full_url}}');aspect-ratio:3;position:relative;margin-bottom:40px;background-size:cover;">
+    {% if banner %}
+      {% image banner width-700 as banner_image %}
+      <div class="banner" style=" 
+          background-image: url('{{banner_image.full_url}}');
+      ">
         <h1 class="c-page__heading">
-          {% if category %}
-            {{category}}
-          {%else%}  
-            {{ self.title }}
-          {%endif%}
+          {{title}}
         </h1>
       </div>
     {%else%}
       <h1 class="c-page__heading">
-        {% if category %}
-          {{category}}
-        {%else%}  
-          {{ self.title }}
-        {%endif%}
+        {{title}}
       </h1>
     {% endif %}
 
     <div style="width:90%; margin:auto;">
     
       
-    <p class="description">{{self.description}} &ensp;<a href="/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a></p>
-    <p class="button-label"><i class="fa fa-search"></i> Search</p>
-    <p class="button-label" onclick="document.getElementById('category_modal').style.display = 'block'"><i class="fa fa-tag"></i> Series</p>
+    <p class="description">{{description}} &ensp;{% if not category %}<a href="/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
+    <div class="buttons">
+      <div class="o-archive__search button-label">
+        <form method="get">
+          <label class="o-archive__search__label" for="c-articles-list__searchbar"><i
+              class="fa fa-search"></i></label>
+          <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
+            {% if search_query %}value="{{ search_query }}" {% endif %} placeholder="Search" />
+        </form>
+      </div>
+  
+      <p class="button-label" onclick="document.getElementById('category_modal').style.display = 'block'"><i class="fa fa-tag"></i> Series</p>
     </div>
+    </div>
+
     {% comment %} CATEGORY MENU {% endcomment %}
       {% comment %}
         featured_articles is added to context by SectionPage
@@ -100,12 +106,66 @@
         The below will be turned into _blocks_,
         allowing editors to have user to have some level of control
       {% endcomment %}
-      <div style="width:95%; margin:auto;">
-        {% if category %}
-          {% include 'archive/objects/infinitefeed.html' with section=self.slug category=category mode="light" %}
-        {% else %}
-          {% include 'archive/objects/infinitefeed.html' with section=self.slug mode="light" %}
-        {% endif %}
+      <div style="width:95%; margin:auto;display:flex;">
+        <div class="u-container">
+          {% include 'archive/objects/infinitefeed.html' with filters=filters mode="light" %}
+        </div>
+        <div id="sidebar">
+          {% for block in self.sidebar_stream %}
+          <div class="inactive sidebar-item lightmode">
+          {% include_block block %}
+          </div>
+          {% endfor %}
+        </div>
+        <style>
+          .inactive {
+            top: -100%;
+            position:absolute;
+            opacity: 0;
+            z-index: -1;
+            visibility: hidden;
+          }
+          .active {
+            top:0;
+            position:absolute;
+            opacity: 1;
+            z-index: 200;
+          }
+          .sidebar-item {
+            transition-duration: 0.2s;
+            transition-property: top;
+          }
+          #sidebar {
+            position:sticky;
+            top: 50px;
+            height:100px;
+            width:30%;
+          }
+          @media only screen and (max-width: 600px) {
+            #sidebar {
+              display:none;
+            }
+          }
+        </style>
+        <script>
+          var feed = document.getElementById('feed');
+          switchSidebar = setInterval(function () 
+          {
+            var x = Math.floor((document.documentElement.scrollTop- feed.offsetTop) / (1.5*document.body.offsetHeight))% document.getElementById("sidebar").children.length;
+            if (x < 0) {
+              x = 0;
+            }
+            if(x != Array.prototype.indexOf.call(document.getElementById("sidebar").children,document.getElementsByClassName("active")[0])){
+              if (document.getElementsByClassName("active").length > 0) {
+                document.getElementsByClassName("active")[0].classList.add("inactive");
+                document.getElementsByClassName("active")[0].classList.remove("active");
+          
+              }
+              document.getElementById("sidebar").children[x].classList.remove("inactive");
+              document.getElementById("sidebar").children[x].classList.add("active");
+            }
+          }, 100);
+        </script>
       </div>
       {% comment %}
       <h3 class="c-page__section">Archive</h3>
