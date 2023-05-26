@@ -70,7 +70,13 @@
 @import 'modules/widgets/weekly-events';
 @import 'modules/widgets/twitter';
 
-
+:root {
+  --background: rgba(255, 255, 255, 0.99);
+  --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
+  --nav-h3-color: #5D5D5D;
+  --nav-span-color: #33331E;
+  --nav-headline-h1: #373737;
+}
 
 body, html, #page-wrapper {
   max-height: 100%;
