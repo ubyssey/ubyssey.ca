@@ -46,10 +46,7 @@
                             </div>
                             <div class="c-article__byline__meta">
                                 <span class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</span>
-                                <meta name="color-scheme" content="light">
-                                <button onclick="DarkModeToggle()" class="dark-mode-switcher">
-                                    <svg width="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 496"><path fill="currentColor" d="M8,256C8,393,119,504,256,504S504,393,504,256,393,8,256,8,8,119,8,256ZM256,440V72a184,184,0,0,1,0,368Z" transform="translate(-8 -8)"/></svg>
-                                </button>
+
                                 {% comment %}                                     
                                     {% if reading_time %}
                                         <span> &nbsp;&middot;&nbsp; </span>
@@ -64,6 +61,59 @@
                                         </a>
                                     {% endif %}
                                 {% endcomment %}
+                            </div>
+                            <script>
+                                function darkState() {
+                                  storedMode = localStorage.getItem("darkMode");
+                                
+                                  if (storedMode == null) {
+                                      localStorage.setItem("darkMode", getDarkMode());
+                                
+                                  } else {
+                                      document.querySelector('meta[name="color-scheme"]').setAttribute("content", storedMode);
+                                  }
+                                
+                                
+                              }
+                                
+                                
+                                
+                              function getDarkMode() {
+                                  return document.querySelector('meta[name="color-scheme"]').content;
+                              }
+                                
+                              function DarkModeToggle() {
+                                  mode = getDarkMode();
+                                
+                                  if (mode == "dark") {
+                                      document.querySelector('meta[name="color-scheme"]').setAttribute("content", "light");
+                                      mode = "light"
+                                      // nav bar
+                                      var r = document.querySelector(':root');
+                                      r.style.setProperty('--background', 'rgba(255, 255, 255, 0.99)');
+                                      r.style.setProperty('--nav-mobile-background-barely-transparent', 'rgba(249, 249, 249, 0.99)');
+                                      r.style.setProperty('--nav-h3-color', '#5D5D5D');
+                                      r.style.setProperty('--nav-span-color', '#33331E');
+                                      r.style.setProperty('--nav-headline-h1', '#373737');
+                                  } else if (mode == "light") {
+                                      document.querySelector('meta[name="color-scheme"]').setAttribute("content", "dark");
+                                      mode = "dark"
+                                      // nav bar
+                                      var r = document.querySelector(':root');
+                                      r.style.setProperty('--background', 'rgb(208, 169, 44, 0.99)');
+                                      r.style.setProperty('--nav-mobile-background-barely-transparent', 'rgb(207, 168, 43, 0.99)');
+                                      r.style.setProperty('--nav-h3-color', 'rgb(208, 169, 44, 0.99)');
+                                      r.style.setProperty('--nav-span-color', 'rgb(208, 169, 44, 0.99)');
+                                      r.style.setProperty('--nav-headline-h1', 'rgb(208, 169, 44, 0.99)');
+                                  }
+                                
+                              }
+                              </script>
+                            <div class="c-article__byline__meta">
+                                <meta name="color-scheme" content="light">
+                                <button onclick="DarkModeToggle()" class="dark-mode-switcher">
+                                    <svg width="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 496"><path fill="currentColor" d="M8,256C8,393,119,504,256,504S504,393,504,256,393,8,256,8,8,119,8,256ZM256,440V72a184,184,0,0,1,0,368Z" transform="translate(-8 -8)"/></svg>
+                                </button>
                             </div>
                         </div>
                         {% comment %}

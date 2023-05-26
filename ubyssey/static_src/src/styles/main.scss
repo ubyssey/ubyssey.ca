@@ -31,6 +31,7 @@
 @import 'objects/archive';
 @import 'objects/bottom_banner';
 
+
 @import 'components/adblock-splash';
 @import 'components/button';
 @import 'components/cookie-disclaimer';
@@ -93,6 +94,17 @@ body, html, #page-wrapper {
     flex-direction: column;
 
   }
+}
+
+.dark-mode-switcher {
+  z-index: 100;
+  border: 2px solid currentColor;
+  padding: 4px;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
 }
 
 #content-wrapper {
