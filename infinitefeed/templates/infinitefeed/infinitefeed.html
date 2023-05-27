@@ -18,19 +18,19 @@ function getArticles() {
   }
 
   {% if "section" in filters %}
-    data["section"] = "{{filters.section}}"
+    data["section"] = "{{filters.section}}";
   {% endif %}
 
   {% if "category" in filters %}
-    data["category"] = "{{filters.category}}"
+    data["category"] = "{{filters.category}}";
   {% endif %}
 
   {% if "search_query" in filters %}
-    data["search_query"] = "{{filters.search_query}}"
+    data["search_query"] = "{{filters.search_query}}";
   {% endif %}
 
   {% if label %}
-    data["label"] = True
+    data["label"] = true;
   {% endif %}
 
   $.ajax({

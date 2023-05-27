@@ -146,9 +146,15 @@
   }
 
   .o-article__right {
-    top: -50px;
     position:relative;
-    width: 95%
+    width: 95%;
+    @media($bp-larger-than-phablet) {
+      transform: translate(0, -30%);
+    }
+  
+    @media($bp-smaller-than-phablet) {
+      top:-50px;
+    }
   }
 
   .o-article__meta {
