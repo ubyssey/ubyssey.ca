@@ -27,7 +27,6 @@ def infinitefeed(request):
     if request.method == 'GET':
         start = request.GET['start']
         number = request.GET['number']
-        mode = request.GET['mode']
 
         filters = {}
 
@@ -43,8 +42,9 @@ def infinitefeed(request):
         if len(articles) == 0:
             return HttpResponse("End of feed")
         else:
-            template = loader.select_template(["article/infinitefeed.html"])
-            data = {'articles': articles, 'mode': mode}
-            return HttpResponse(loader.render_to_string("article/infinitefeed.html", data))
+            data = {'articles': articles}
+            if "label" in request.GET:
+                data["label"] = True
+            return HttpResponse(loader.render_to_string("infinitefeed/infinitefeed-batch.html", data))
     else:
         return HttpResponse("Request method is not a GET")

@@ -13,7 +13,7 @@ from ubyssey.views.guide import guide2016, GuideArticleView, GuideLandingView
 
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.magazine import magazine, MagazineLandingView, MagazineArticleView
-from archive.views import infinitefeed
+from infinitefeed.views import infinitefeed
 
 from ubyssey.zones import *
 from ubyssey.widgets import *

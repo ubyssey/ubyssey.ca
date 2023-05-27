@@ -6,19 +6,21 @@
 {% load articletags %}
 
 {% if article %}
-<article class="o-article article--infinitefeed article--{{mode}}mode {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.first_published_at|naturaltime}}" style="border-color:{{article.colour}}">
+<article class="o-article article--infinitefeed {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.first_published_at|naturaltime}}" style="border-color:{{article|get_colour}}">
 	{% if article.featured_media.first %}
 	{% if article.featured_media.first.image %}
 	<div class="o-article__left">
 		<div style="position:relative">
-			<a href="{% pageurl article %}" class="o-article__image" style="border-color:{{article.colour}}">
+			<a href="{% pageurl article %}" class="o-article__image" style="border-color:{{article|get_colour}}">
 				{% image article.featured_media.first.image fill-340x238-c100 %}
 			</a>
-			{% if article.current_section|get_label %}
-				<a href="/{{article.current_section}}">
-					<img class="o-article__section_label" src="{{article.current_section|get_label}}">
-					<h3 class="o-article__section_label_text" style="color:{{article.colour}}">{{article.current_section}}</h3>
-				</a>
+			{% if label %}
+				{% if article.current_section|get_label %}
+					<a href="/{{article.current_section}}">
+						<img class="o-article__section_label" src="{{article.current_section|get_label}}">
+						<h3 class="o-article__section_label_text" style="color:{{article|get_colour}}">{{article.current_section}}</h3>
+					</a>
+				{% endif %}
 			{% endif %}
 		</div>
 	</div>

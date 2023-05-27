@@ -1,7 +1,12 @@
-{% load archive_tags %}
+{% load infinitefeed_tags %}
 <div id="feed">
-    {% include "article/infinitefeed.html" with articles=filters|preload_articles:"15"%}
+    {% if label %}
+      {% include "infinitefeed/infinitefeed-batch.html" with label=label articles=filters|preload_articles:"15"%}
+    {% else %}
+      {% include "infinitefeed/infinitefeed-batch.html" with articles=filters|preload_articles:"15"%}
+    {% endif %}
 </div>
+
 <div id="loader"></div>
 
 <script>
@@ -10,7 +15,6 @@ function getArticles() {
   data = {
     start: loader.getAttribute("start"),
     number: loader.getAttribute("number"),
-    mode: "{{mode}}"
   }
 
   {% if "section" in filters %}
@@ -23,6 +27,10 @@ function getArticles() {
 
   {% if "search_query" in filters %}
     data["search_query"] = "{{filters.search_query}}"
+  {% endif %}
+
+  {% if label %}
+    data["label"] = True
   {% endif %}
 
   $.ajax({

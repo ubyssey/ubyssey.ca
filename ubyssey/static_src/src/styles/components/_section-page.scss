@@ -125,7 +125,7 @@
   background-color: white;
 }
 
-.buttons {
+.c-section__buttons {
   display: inline-block;
   text-align: right;
   width:59%;
@@ -135,7 +135,7 @@
   }
 }
 
-.button-label {
+.c-section__button-label {
   text-align: right;
   margin-left: 10%;
   display: inline-block;
@@ -155,10 +155,21 @@
   }
 }
 
-.description {
+.c-section__description {
   width: 40%;
   display: inline-block;
   @media($bp-smaller-than-phablet) {
     width:100%
   }
+}
+
+.c-section__info {
+  width:90%;
+  margin:auto;
+}
+
+.c-section__modal_close {
+  position:absolute;
+  right:50px;
+  top:50px;
 }

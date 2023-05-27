@@ -654,6 +654,7 @@ ol.article-list {
     margin-left: -24px;
     margin-top: 20px;
     box-shadow: -10px 10px 7px 0px #0000003b;
+    width: 40%;
   }
 }
 
@@ -784,4 +785,44 @@ ol.article-list {
 .linkTitle {
   font-size: 1.2rem;
   font-weight: 600;
+}
+
+.home_infinitefeed {
+  background-color: #031621;
+  padding-top: 20px;
+  position: relative;
+}
+
+.home_infinitefeed_cutoff {
+  height: 1000px;
+  overflow: hidden;
+}
+
+.home_infinitefeed_cutoff_shadow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 60%;
+  bottom: 0;
+  background-image: linear-gradient(0deg, black, transparent);
+}
+
+.home_infinitefeed_cutoff_seemore {
+  border-radius: 10px;
+  background-color: #C0E3F1;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.home_links {
+  padding-bottom: 20px;
 }

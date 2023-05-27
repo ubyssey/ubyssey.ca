@@ -152,6 +152,7 @@ INSTALLED_APPS = [
     'specialfeaturelanding',
     'navigation',
     'dashboard',
+    'infinitefeed',
 
     'dispatch.apps.DispatchConfig',
     'dispatchusers.apps.DispatchusersConfig',

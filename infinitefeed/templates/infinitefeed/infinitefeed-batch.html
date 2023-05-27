@@ -1,0 +1,9 @@
+{% if label %}
+    {% for article in articles %}
+        {% include 'article/objects/infinitefeed_item.html' with label=label article=article %}
+    {% endfor %}
+{% else %}
+    {% for article in articles %}
+        {% include 'article/objects/infinitefeed_item.html' with article=article %}
+    {% endfor %}
+{% endif %}

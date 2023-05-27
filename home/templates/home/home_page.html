@@ -42,21 +42,16 @@
 			{% include "article/objects/cover_story.html" with article=self.cover_story%}
 		{% endif %}
 		<div class="home-top-article-list">
-			<div class="boxLabel lightmode">
-				<div class="boxLabel-left">
-					<h1 class="boxText-left">Today's best!</h1>
-				</div>
-				<div class="boxLabel-right">
-					<h1 class="boxText-right">The Date</h1>
-				</div>
-			</div>
+			{% now "l - d, N, Y" as date %}
+			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Today's best!" text=date %}
+			
 			{% for article in self.top_articles_list %}
 				{% include "article/objects/top_article.html" with article=article.article %}
 			{% endfor %}
 		</div>
 	</div>
 
-	<div style="padding-bottom: 20px;">
+	<div class="home_links">
 		<h2>Click!!!</h2>
 		{%for link in self.links%}
 			{% include_block link%}
@@ -64,97 +59,72 @@
 	</div>
 
 </main>
-<style>
-	.inactive {
-		top: -100%;
-		position:absolute;
-		opacity: 0;
-		visibility: hidden;
-	}
-	.active {
-		top:0;
-		position:absolute;
-		opacity: 1;
-		z-index: 200;
-	}
-	.sidebar-item {
-		transition-duration: 0.2s;
-		transition-property: top;
-		width: 70%;
-	}
-	#sidebar {
-		position:sticky;
-		top: 50px;
-		height:100px;
-		width:100%;
-	}
-	@media only screen and (max-width: 600px) {
-		#sidebar {
-		  display:none;
-		}
-	}
-</style>
-<script>
-	var feed = document.getElementById('feed');
-	switchSidebar = setInterval(function () 
-	{
-		var x = Math.floor((document.documentElement.scrollTop- feed.offsetTop) / (1.5*document.body.offsetHeight))% document.getElementById("sidebar").children.length;
-		if (x < 0) {
-			x = 0;
-		}
-		if(x != Array.prototype.indexOf.call(document.getElementById("sidebar").children,document.getElementsByClassName("active")[0])){
-			if (document.getElementsByClassName("active").length > 0) {
-				document.getElementsByClassName("active")[0].classList.add("inactive");
-				document.getElementsByClassName("active")[0].classList.remove("active");
-	
-			}
-			document.getElementById("sidebar").children[x].classList.remove("inactive");
-			document.getElementById("sidebar").children[x].classList.add("active");
-		}
-	}, 100);
-</script>
-<div style="background-color: #031621; padding-top: 20px;">
-	<div class="u-container u-container--large" style="display:flex;">
-		<div class="u-container" style="max-width: 700px;margin-left:0;">
-			<div>
-				<div class="boxLabel darkmode sticky">
-					<div class="boxLabel-left">
-						<h1 class="boxText-left">Infinite feed</h1>
-					</div>
-					<div class="boxLabel-right">
-						<h1 class="boxText-right" id="timeBox">Today</h1>
-					</div>
-					<script>					
-						updateTimeBox = setInterval(function() 
-						{
-							var feed = document.getElementById("feed");
-							if(document.documentElement.scrollTop > feed.offsetTop) {
-							for(let i=0; i<feed.children.length; i++){
-								var article = feed.children[i];
-								if(article.classList.contains("article--infinitefeed")){
-									if(article.offsetTop > document.documentElement.scrollTop &&  article.offsetTop < document.documentElement.scrollTop + 500) {
-										document.getElementById("timeBox").innerHTML = article.getAttribute("time");
-										break;
-									}
+
+<div id="feed-section" class="home_infinitefeed home_infinitefeed_cutoff">
+	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
+		<div class="u-container">
+			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode' title='Infinite feed' text='Today' textId='timeBox' %}
+
+			<script>					
+				updateTimeBox = setInterval(function() 
+				{
+					var feed = document.getElementById("feed");
+					if(document.documentElement.scrollTop > document.getElementById("feed-section").offsetTop) {
+						var scroll = document.documentElement.scrollTop - document.getElementById("feed-section").offsetTop;
+						for(let i=0; i<feed.children.length; i++){
+							var article = feed.children[i];
+							if(article.classList.contains("article--infinitefeed")){
+								if(article.offsetTop > scroll &&  article.offsetTop < scroll + 500) {
+									document.getElementById("timeBox").innerHTML = article.getAttribute("time");
+									break;
 								}
 							}
-							} else {
-								document.getElementById("timeBox").innerHTML = "Today";
+						}
+					} else {
+						document.getElementById("timeBox").innerHTML = "Today";
+						if(document.documentElement.scrollTop < 100) {
+							if (document.getElementById("feed-section").classList.contains("home_infinitefeed_cutoff") == false) {
+								closeFeed();
 							}
-						}, 100);
-					</script>
-				</div>
-				{% include 'archive/objects/infinitefeed.html' with filters=filters mode="dark" %}
-			</div>
+						}
+					}
+				}, 100);
+			</script>
+
+			{% include 'infinitefeed/infinitefeed.html' with filters=filters label="True" %}
 		</div>
-		<div id="sidebar">
-			{% for block in self.sidebar_stream %}
-			<div class="inactive sidebar-item darkmode">
-			{% include_block block %}
-			</div>
-			{% endfor %}
-		</div>
+
+        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
+
 	</div>
+	<div id="feed-shadow" class="home_infinitefeed_cutoff_shadow"></div>
+	<div id="seemore" class="home_infinitefeed_cutoff_seemore" onclick="openFeed()">See more</div>
+	<script>
+		function openFeed() {
+			document.getElementById("feed-section").classList.remove("home_infinitefeed_cutoff");
+			document.getElementById("feed-shadow").remove();
+			document.getElementById("seemore").remove();
+			document.getElementById("feed-box-label").classList.add("sticky");
+		}
+		function closeFeed() {
+			var shadow = document.createElement("div");
+			shadow.id = "feed-shadow";
+			shadow.classList.add("home_infinitefeed_cutoff_shadow");
+
+			var seemore = document.createElement("div");
+			seemore.id = "seemore";
+			seemore.classList.add("home_infinitefeed_cutoff_seemore");
+			seemore.setAttribute("onclick", "openFeed()");
+			seemore.innerHTML = "See more";
+
+			document.getElementById("feed-section").appendChild(shadow);
+			document.getElementById("feed-section").appendChild(seemore);
+
+
+			document.getElementById("feed-section").classList.add("home_infinitefeed_cutoff");
+			document.getElementById("feed-box-label").classList.remove("sticky");
+		}
+	</script>
 </div>
 {% endfilter %}
 {% endblock %}

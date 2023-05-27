@@ -1,0 +1,8 @@
+<div {%if id %} id="{{id}}" {% endif %} class="boxLabel {{styling}}">
+    <div class="boxLabel-left">
+        <h1 class="boxText-left">{{title}}</h1>
+    </div>
+    <div class="boxLabel-right">
+        <h1 class="boxText-right" {%if textId %}id="{{textId}}"{% endif %}>{{text}}</h1>
+    </div>
+</div>

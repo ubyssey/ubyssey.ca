@@ -1,0 +1,33 @@
+{% load humanize %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load wagtailuserbar %}
+
+<div class="c-sidebar {% if styling %} {{styling}} {% endif %}" id="{{id}}">
+    {% for block in sidebar_stream %}
+    <div class="c-sidebar_inactive c-sidebar_item">
+      {% include_block block %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    var feed = document.getElementById('feed');
+    switchSidebar = setInterval(function () 
+    {
+      var x = Math.floor((document.documentElement.scrollTop- feed.offsetTop) / (1.5*document.body.offsetHeight))% document.getElementById("{{id}}").children.length;
+      if (x < 0) {
+        x = 0;
+      }
+      if(x != Array.prototype.indexOf.call(document.getElementById("{{id}}").children,document.getElementsByClassName("c-sidebar_active")[0])){
+        if (document.getElementsByClassName("c-sidebar_active").length > 0) {
+          document.getElementsByClassName("c-sidebar_active")[0].classList.add("c-sidebar_inactive");
+          document.getElementsByClassName("c-sidebar_active")[0].classList.remove("c-sidebar_active");
+    
+        }
+        document.getElementById("{{id}}").children[x].classList.remove("c-sidebar_inactive");
+        document.getElementById("{{id}}").children[x].classList.add("c-sidebar_active");
+      }
+    }, 100);
+  </script>

@@ -1,0 +1,39 @@
+.c-sidebar_inactive {
+    top: -100%;
+    position:absolute;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.c-sidebar_active {
+    top:0;
+    position:absolute;
+    opacity: 1;
+    z-index: 200;
+}
+
+.c-sidebar_item {
+    transition-duration: 0.2s;
+    transition-property: top;
+}
+
+.c-sidebar {
+    position:sticky;
+    top: 50px;
+    height:100px;
+    width:100%;
+
+    @media ($bp-smaller-than-phablet) {
+        display:none;
+    }
+}
+
+.c-section__sidebar {
+    width: 30%;
+  }
+
+  .c-infinitefeed__feed {
+    width:95%;
+    margin:auto;
+    display:flex;
+  }

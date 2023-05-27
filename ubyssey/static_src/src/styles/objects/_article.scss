@@ -122,12 +122,16 @@
 }
 
 .o-article--coverstory {
+  // Structure
   display: block;
+
   @media($bp-larger-than-phablet) {
     // Structure
     width:60%;
+
     .o-article__headline {
-      font-size: 4rem;
+      // Text
+      font-size: 3rem;
     }
   }
 
@@ -136,9 +140,9 @@
     width: 100%;
 
     .o-article__headline {
+      // Text
       font-size: 2rem;
     }
-
   }
 
   .o-article__right {
@@ -609,7 +613,7 @@
   }
 }
 
-.article--darkmode {
+.darkmode {
 
   .o-article__headline {
     color: white;
@@ -628,7 +632,7 @@
   }
 }
 
-.article--lightmode {
+.lightmode {
 
   .o-article__headline {
     color: black;

@@ -1,5 +1,5 @@
 from django import template
-from archive.views import getArticles
+from infinitefeed.views import getArticles
 from django.template.defaultfilters import stringfilter
 
 register = template.Library()
@@ -24,19 +24,3 @@ def remove_field_from_query_string(context, field):
     dict_ = context['request'].GET.copy()      
     dict_.pop(field, None) #Deletes the field if it exists, does nothing if it doesn't. Prevents KeyError
     return dict_.urlencode()
-
-@register.filter(name='preload_section')
-@stringfilter
-def preload_section(value, number):
-    data = {"section": value}
-    return getArticles(data,0,int(number))
-
-@register.filter(name='preload_category')
-@stringfilter
-def preload_category(value, number):
-    data = {"category": value}
-    return getArticles(data,0,int(number))
-
-@register.filter(name='preload_articles')
-def preload_articles(value, number):
-    return getArticles(value,0,int(number))
