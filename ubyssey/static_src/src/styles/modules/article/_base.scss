@@ -143,6 +143,35 @@ div.indicator {
   }
 }
 
+.c-article__share {
+  margin-bottom: 0.75rem;
+
+  @media($bp-larger-than-tablet) {
+    display: inline-block;
+    margin-right: 0.75em;
+    margin-bottom: 0;
+  }
+}
+
+.c-article__share {
+  padding-right: 1em;
+}
+
+#custom-tooltip {
+  display: none;
+  margin-left: 40px;
+  padding: 5px 8px;
+  background-color: #3490d6;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.visuallyhidden{position:absolute;clip:rect(1px,1px,1px,1px)}
+
+.c-share_space {
+  padding-right: 1em;
+}
+
 .c-article__featured-media {
   // Structure
   max-width: 585px;

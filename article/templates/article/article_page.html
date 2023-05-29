@@ -67,27 +67,25 @@
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
                         {% endcomment %}
                     </div>
+                    <div class="c-article__info">
+                        <div class="c-article__byline">
+                            <div class="c-article__share">Share </div>
+                            <div class="c-article__byline__meta">
+                                <span class="c-share-buttons" style="">
+                                    <a href="#" class="share-facebook c-share_space"><i class="fa fa-facebook fa--xx" aria-hidden="true"></i></a>
+                                    <a href="#" class="share-twitter c-share_space"><i class="fa fa-twitter fa-x" aria-hidden="true"></i></a>
+                                    <a href="#" class="share-linkedin c-share_space"><i class="fa fa-linkedin fa-x" aria-hidden="true"></i></a>
+                                    <a href="#" class="share-link c-share_space"><i class="fa fa-link fa-x" aria-hidden="true"><span id="custom-tooltip">copied!</span></i></a> 
+                                    <textarea class="visuallyhidden" id="box"></textarea>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+        
                 </div>
             {% endblock %}
-            <div class="share_access_tray" style="display: inline-block; width: 50%;">
-                <input type="checkbox" id="share_button">
-                <label for="share_button">
-                    <span class="sharebtn" >
-                      <i class="far fa-share"></i>
-                    </span>
-                </label>
-          
-                <ul id="floating-share-buttons" style="list-style-type: none;">
-                    <li><a href="#" class="share-facebook"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></a>
-                    <li><a href="#" class="share-pinterest"><i class="fa fa-pinterest fa-2x" aria-hidden="true"></i></a></a>
-                    <li><a href="#" class="share-twitter"><i class="fa fa-twitter fa-2x" aria-hidden="true"></i></a></a>
-                    <li><a href="#" class="share-linkedin"><i class="fa fa-linkedin fa-2x" aria-hidden="true"></i></a></a>
-                    <li><a href="#" class="share-mail"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></a></a>
-                    <li><a href="#" class="share-link"><i class="fa fa-link fa-2x" aria-hidden="true"></i></a></a>
-                  </ul>
-            </div>
             <!-- Below is the container for Article content -->
-            <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}" style="display: inline-block;">
+            <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
                 <!-- Below is the container for the left column article content  -->
                 <div class="cell left article-content">
                     {% block pre-content %}
