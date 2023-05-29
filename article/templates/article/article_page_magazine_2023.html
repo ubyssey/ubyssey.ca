@@ -57,6 +57,7 @@
                             </div>
                         </div>
                     </div>
+                    {% include 'article/objects/share_bar.html' %}
                     {% if self.featured_media.first.image %}
                         {% with self.featured_media.first as featured_image_object %}
                             <div class="featured-media">
