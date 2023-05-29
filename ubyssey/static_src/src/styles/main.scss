@@ -178,3 +178,19 @@ a.image {
   }
 }
 
+/* Restoring browsering effects */
+
+.featured_media_sharebuttons {
+    width: 500px;
+    border: 1px solid black;
+    overflow: hidden; /* will contain if #first is longer than #second */
+}
+
+.share_access_tray{
+    background: transparent;
+    float:left; /* add this */
+}
+
+.featured-media {
+    overflow: hidden;
+}
