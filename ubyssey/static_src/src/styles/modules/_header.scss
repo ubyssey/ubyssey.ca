@@ -209,6 +209,7 @@ header.topbar {
     font-weight: $font-weight-semi-bold;
     font-size: font-size(13);
     margin-left: 20px;
+    
     ul {
       line-height: 48px;
       list-style-type: none;
@@ -357,7 +358,7 @@ nav.mobile {
   background: $nav-mobile-background-barely-transparent; // Barely transparent
   border-bottom: 1px solid rgb(178,178,178);
   overflow: auto;
-  
+  color: $nav-span-color;
   z-index: 200;
 
   ul {
