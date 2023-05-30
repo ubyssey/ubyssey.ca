@@ -6,7 +6,7 @@
 {% load articletags %}
 
 {% if article %}
-<article class="o-article article--infinitefeed {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.first_published_at|naturaltime}}" style="border-color:{{article|get_colour}}">
+<article class="o-article article--infinitefeed {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.first_published_at|naturalday}}" style="border-color:{{article|get_colour}}">
 	{% if article.featured_media.first %}
 	{% if article.featured_media.first.image %}
 	<div class="o-article__left">

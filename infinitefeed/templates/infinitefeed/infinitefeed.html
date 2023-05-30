@@ -1,5 +1,23 @@
 {% load infinitefeed_tags %}
-<div id="feed">
+{% load static %}
+
+<div id="feed"
+{% if "section" in filters %}
+section = "{{filters.section}}"
+{% endif %}
+
+{% if "category" in filters %}
+  category = "{{filters.category}}"
+{% endif %}
+
+{% if "search_query" in filters %}
+  search_query = "{{filters.search_query}}"
+{% endif %}
+
+{% if label %}
+  label = "true"
+{% endif %}
+>
     {% if label %}
       {% include "infinitefeed/infinitefeed-batch.html" with label=label articles=filters|preload_articles:"15"%}
     {% else %}
@@ -9,68 +27,4 @@
 
 <div id="loader"></div>
 
-<script>
-function getArticles() {
-  clearInterval(loadFeed);
-  data = {
-    start: loader.getAttribute("start"),
-    number: loader.getAttribute("number"),
-  }
-
-  {% if "section" in filters %}
-    data["section"] = "{{filters.section}}";
-  {% endif %}
-
-  {% if "category" in filters %}
-    data["category"] = "{{filters.category}}";
-  {% endif %}
-
-  {% if "search_query" in filters %}
-    data["search_query"] = "{{filters.search_query}}";
-  {% endif %}
-
-  {% if label %}
-    data["label"] = true;
-  {% endif %}
-
-  $.ajax({
-    type:"GET",
-    url: "/infinitefeed",
-    data:data,
-    success: function(data) 
-    {
-      recievedata(data);
-    }
-  })
-}
-
-function recievedata(data) {
-  var loader = document.getElementById("loader");
-  var feed = document.getElementById("feed");
-  if(data == "End of feed") {
-    console.log("end of feed");
-    loader.remove();
-    clearInterval(loadFeed);
-  } else {
-    feed.insertAdjacentHTML("beforeend", data);
-
-    loadFeed = setInterval(function () 
-    {
-      if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
-        getArticles();
-        loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
-      }
-    }, 100);
-  }  
-}
-
-var loader = document.getElementById("loader");
-var feed = document.getElementById("feed");
-loader.setAttribute("start", "15");
-loader.setAttribute("number", "15");
-loadFeed = setInterval(function () 
-{
-    getArticles();
-    loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
-}, 100);
-</script>
+<script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>

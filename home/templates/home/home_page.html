@@ -42,8 +42,9 @@
 			{% include "article/objects/cover_story.html" with article=self.cover_story%}
 		{% endif %}
 		<div class="home-top-article-list">
-			{% now "l - d, N, Y" as date %}
-			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Today's best!" text=date %}
+			{% now "d N, Y" as date %}
+			{% now "l" as dayOfWeek %}
+			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Today's best!" text=date textBold=dayOfWeek %}
 			
 			{% for article in self.top_articles_list %}
 				{% include "article/objects/top_article.html" with article=article.article %}
@@ -63,34 +64,7 @@
 <div id="feed-section" class="home_infinitefeed home_infinitefeed_cutoff">
 	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
 		<div class="u-container">
-			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode' title='Infinite feed' text='Today' textId='timeBox' %}
-
-			<script>					
-				updateTimeBox = setInterval(function() 
-				{
-					var feed = document.getElementById("feed");
-					if(document.documentElement.scrollTop > document.getElementById("feed-section").offsetTop) {
-						var scroll = document.documentElement.scrollTop - document.getElementById("feed-section").offsetTop;
-						for(let i=0; i<feed.children.length; i++){
-							var article = feed.children[i];
-							if(article.classList.contains("article--infinitefeed")){
-								if(article.offsetTop > scroll &&  article.offsetTop < scroll + 500) {
-									document.getElementById("timeBox").innerHTML = article.getAttribute("time");
-									break;
-								}
-							}
-						}
-					} else {
-						document.getElementById("timeBox").innerHTML = "Today";
-						if(document.documentElement.scrollTop < 100) {
-							if (document.getElementById("feed-section").classList.contains("home_infinitefeed_cutoff") == false) {
-								closeFeed();
-							}
-						}
-					}
-				}, 100);
-			</script>
-
+			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode' title='Infinite feed' textBold='Today' textId='timeBox' %}
 			{% include 'infinitefeed/infinitefeed.html' with filters=filters label="True" %}
 		</div>
 
@@ -98,35 +72,10 @@
 
 	</div>
 	<div id="feed-shadow" class="home_infinitefeed_cutoff_shadow"></div>
-	<div id="seemore" class="home_infinitefeed_cutoff_seemore" onclick="openFeed()">See more</div>
-	<script>
-		function openFeed() {
-			document.getElementById("feed-section").classList.remove("home_infinitefeed_cutoff");
-			document.getElementById("feed-shadow").remove();
-			document.getElementById("seemore").remove();
-			document.getElementById("feed-box-label").classList.add("sticky");
-		}
-		function closeFeed() {
-			var shadow = document.createElement("div");
-			shadow.id = "feed-shadow";
-			shadow.classList.add("home_infinitefeed_cutoff_shadow");
-
-			var seemore = document.createElement("div");
-			seemore.id = "seemore";
-			seemore.classList.add("home_infinitefeed_cutoff_seemore");
-			seemore.setAttribute("onclick", "openFeed()");
-			seemore.innerHTML = "See more";
-
-			document.getElementById("feed-section").appendChild(shadow);
-			document.getElementById("feed-section").appendChild(seemore);
-
-
-			document.getElementById("feed-section").classList.add("home_infinitefeed_cutoff");
-			document.getElementById("feed-box-label").classList.remove("sticky");
-		}
-	</script>
+	<div id="seemore" class="home_infinitefeed_cutoff_seemore">See more</div>
 </div>
 {% endfilter %}
+<script src="{% static 'ubyssey/js/home.js' %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block footer %}

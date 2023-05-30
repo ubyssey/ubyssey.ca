@@ -5,6 +5,8 @@ module.exports = {
   entry: {
     main: './src/js/main.js',
     dfp: './src/js/dfp.js',
+    home: './src/js/home.js',
+    infinitefeed: './src/js/infinitefeed.js',
     article: './src/js/article.jsx',
     vendors: './src/js/vendors.js',
     a: './src/js/advertise.js',
