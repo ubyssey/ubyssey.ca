@@ -260,7 +260,7 @@ function initializeSocialMediaActions() {
   $(document).on('click', '.share-linkedin', function (e) {
     e.preventDefault();
     
-    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + window.location.href + '&title=' + title + '&', 'redditwindow',
+    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + window.location.href + '&title=' + title + '&', 'linkedinwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
