@@ -1,24 +1,19 @@
 (function () {
 
-    darkState();
     DarkModeToggle();
   
-  })();
 
-function darkState() {
-    window.onload = (event) => {
-        storedMode = localStorage.getItem("darkMode");
+    storedMode = localStorage.getItem("darkMode");
         
-        if (storedMode == null) {
-            localStorage.setItem("darkMode", getDarkMode());
-    
-        } else {
-            document.querySelector('meta[name="color-scheme"]').setAttribute("content", storedMode);
-            setDarkMode(storedMode);
-        }
-      };
-  
-}
+    if (storedMode == null) {
+        localStorage.setItem("darkMode", getDarkMode());
+
+    } else {
+        document.querySelector('meta[name="color-scheme"]').setAttribute("content", storedMode);
+        setDarkMode(storedMode);
+    }
+
+  })();
   
   
   
