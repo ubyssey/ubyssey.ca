@@ -9,6 +9,7 @@ $nav-mobile-background-barely-transparent: var(--nav-mobile-background-barely-tr
 $nav-h3-color: var(--nav-h3-color);
 $nav-span-color: var(--nav-span-color);
 $nav-headline-h1: var(--nav-headline-h1);
+$three-bar-logo-color: var(--three-bar-logo-color);
 
 @mixin sectionsMore {
   display:none;
@@ -302,7 +303,7 @@ header.mobile {
 
     box-sizing: border-box;
     font-size: 20px;
-    color: #303030;
+    color: $three-bar-logo-color;
 
     padding: 0 25px;
 
@@ -388,7 +389,7 @@ nav.mobile {
     font-size: 14px;
     text-transform: uppercase;
     font-weight: 500;
-    color: #5D5D5D $nav-h3-color;
+    color: $nav-h3-color;
   }
 }
 

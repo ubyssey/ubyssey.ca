@@ -40,6 +40,7 @@ function DarkModeToggle() {
             r.style.setProperty('--nav-h3-color', '#5D5D5D');
             r.style.setProperty('--nav-span-color', '#33331E');
             r.style.setProperty('--nav-headline-h1', '#373737');
+            r.style.setProperty('--three-bar-logo-color', '#303030');
         } else if (mode == "light") {
             document.querySelector('meta[name="color-scheme"]').setAttribute("content", "dark");
             mode = "dark"
@@ -50,6 +51,7 @@ function DarkModeToggle() {
             r.style.setProperty('--nav-h3-color', '#5D5D5D');
             r.style.setProperty('--nav-span-color', '#FFFFF');
             r.style.setProperty('--nav-headline-h1', '#5D5D5D');
+            r.style.setProperty('--three-bar-logo-color', '#EFEFEF');
         }
     });
 }
