@@ -17,9 +17,7 @@
   
   
   
-function getDarkMode() {
-    return document.querySelector('meta[name="color-scheme"]').content;
-}
+
   
 
 function setDarkMode(mode) {
