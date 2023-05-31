@@ -1,7 +1,9 @@
 (function () {
 
     DarkModeToggle();
-  
+    darkState();
+
+})();
 
 function darkState() {
     $(document).on('onload', function (e) {
@@ -11,13 +13,17 @@ function darkState() {
             localStorage.setItem("darkMode", getDarkMode());
     
         } else {
-            document.querySelector('meta[name="color-scheme"]').setAttribute("content", storedMode);
+            document.getElementsByTagName('meta')["color-scheme"].content = storedMode;
+            // document.querySelector('meta[name="color-scheme"]').setAttribute("content", storedMode);
         }
     });
   
   
-  
+}
 
+function getDarkMode() {
+    return document.querySelector('meta[name="color-scheme"]').content;
+}
   
 function DarkModeToggle() {
 
@@ -25,7 +31,8 @@ function DarkModeToggle() {
         mode = getDarkMode();
     
         if (mode == "dark") {
-            document.querySelector('meta[name="color-scheme"]').setAttribute("content", "light");
+            document.getElementsByTagName('meta')["color-scheme"].content = "light";
+            // document.querySelector('meta[name="color-scheme"]').setAttribute("content", "light");
             mode = "light"
             // nav bar
             var r = document.querySelector(':root');
@@ -36,7 +43,8 @@ function DarkModeToggle() {
             r.style.setProperty('--nav-headline-h1', '#373737');
             r.style.setProperty('--three-bar-logo-color', '#303030');
         } else if (mode == "light") {
-            document.querySelector('meta[name="color-scheme"]').setAttribute("content", "dark");
+            document.getElementsByTagName('meta')["color-scheme"].content = "dark";
+            // document.querySelector('meta[name="color-scheme"]').setAttribute("content", "dark");
             mode = "dark"
             // nav bar
             var r = document.querySelector(':root');
