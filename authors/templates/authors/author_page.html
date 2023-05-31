@@ -11,24 +11,68 @@
 {% include 'navigation/headers/mobile.html' %}
 {% endblock %}
 
+<style>
+	.author-header {
+		position: relative;
+		width: 90%;
+		margin: auto;
+		margin-top: 5%;
+		margin-bottom: 20px;
+	}
+	.author-img {
+		width: 400px;
+	    height: 400px;
+    	border-radius: 100%;
+		background-size: cover;
+	}
+	.author-info {
+		background-color: #C0E3F1;
+		border-radius: 25px;
+		padding: 2%;
+		box-shadow: #0000003b -25px 25px 2px;
+		position: absolute;
+		left: 350px;
+		height: fit-content;
+		transform: translate(0, -60%);
+		top: 50%;
+	}
+	.author-name {
+		text-decoration: underline;
+		font-size: 3rem;
+		line-height: 1rem;
+	}
+	.author-role {
+		font-size: 1.2rem;
+		line-height: 2rem;
+	}
+	.author-desc {
+		color: #031621;
+	    line-height: 1.45em;
+	}
+	.author-links {
+		margin-bottom: 0;
+	}
+</style>
+
 <main class="c-page c-page--author">
 	<div class="u-container u-container--padded">
 
-		<div class="c-page__header">
+		<div class="author-header">
 			{% if self.image %}
-			<div class="c-page__header__thumbnail">
-				{% image self.image fill-150x200   %}
-
+			<div>
+				{% image self.image width-300 as pfp %}
+				<div class="author-img" style="background-image: url('{{pfp.full_url}}')"></div>
 			</div>
 			{% endif %}
-			<div class="c-page__header__meta">
-				<h1 class="c-page__heading">{{ self.title }}</h1>
-				<p>
-					{% for link in self.links %}
-						{{link.value|get_link_icon}}
+			<div class="author-info">
+				<h1 class="author-name">{{ self.title }}</h1>
+				<h2 class="author-role"> {{self.ubyssey_role}} </h2>
+				{% if self.description %}<p class="author-desc">{{ self.description|safe }}</p>{% endif %}
+				<p class="author-links">
+					{% for icon in self.linkIcons %}
+						{{icon}}
 					{% endfor %}
 				</p>
-				{% if self.description %}<p class="c-page__description">{{ self.description|safe }}</p>{% endif %}
 			</div>
 		</div>
 
