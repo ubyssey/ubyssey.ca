@@ -9,7 +9,7 @@
 
 {% if sections or years %}
 <div class="o-archive__sidebar show-desktop">
-
+    
     <div class="o-archive__sidebar__filters">
         <h2>Year</h2>
         <ul>
@@ -36,7 +36,7 @@
             {% for section in sections %}
             <li
                 class="o-archive__sidebar__filter{% if section.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="{% pageurl self %}section/{{ section.slug }}">{{ section }}</a>
+                <a href="{% pageurl self %}section/{{ section.slug }}/?{{ request|query_string }}">{{ section }}</a>
             </li>
             {% endfor %}
         </ul>
@@ -110,7 +110,7 @@
                             {% for section in sections %}
                             <li
                                 class="o-mobile-dropdown__item {% if section.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="{% pageurl self %}/section/{{ section.slug }}">{{ section }}</a>
+                                <a href="{% pageurl self %}section/{{ section.slug }}/?{{ request|query_string }}">{{ section }}</a>
                             </li>
                             {% endfor %}
                         </ul>
@@ -140,11 +140,11 @@
                         <ul>
                             <li
                                 class="o-mobile-dropdown__item{% if order == 'newest' %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="">Newest</a>
+                                <a href="?{% modify_query_string 'order' 'newest' %}">Newest</a>
                             </li>
                             <li
                                 class="o-mobile-dropdown__item{% if order == 'oldest' %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="">Oldest</a>
+                                <a href="?{% modify_query_string 'order' 'oldest' %}">Oldest</a>
                             </li>
                         </ul>
                     </div>

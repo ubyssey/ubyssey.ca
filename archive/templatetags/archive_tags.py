@@ -17,6 +17,15 @@ def modify_query_string(context, field, value):
     dict_[field] = value
     return dict_.urlencode()
 
+@register.filter
+def query_string(request):
+    fullurl = request.get_full_path()
+
+    fullurllst = fullurl.split("?")
+    print(fullurllst)
+    parameters = fullurllst[1]
+    return parameters      
+
 @register.simple_tag(takes_context = True)
 def remove_field_from_query_string(context, field):
     dict_ = context['request'].GET.copy()      
