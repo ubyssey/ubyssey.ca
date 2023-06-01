@@ -22,7 +22,6 @@ def query_string(request):
     fullurl = request.get_full_path()
 
     fullurllst = fullurl.split("?")
-    print(fullurllst)
     parameters = fullurllst[1]
     return parameters      
 
