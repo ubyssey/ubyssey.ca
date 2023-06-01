@@ -1,5 +1,11 @@
 {% load wagtailroutablepage_tags %}
 {% load archive_tags %}
+{% load humanize %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load wagtailuserbar %}
+{% load ubyssey_ad_tags %}
 
 {% if sections or years %}
 <div class="o-archive__sidebar show-desktop">
@@ -25,12 +31,12 @@
         <ul>
             <li
                 class="o-archive__sidebar__filter{% if not section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="?{% remove_field_from_query_string 'section' %}">All sections</a>
+                <a href="{% pageurl self %}">All sections</a>
             </li>
             {% for section in sections %}
             <li
                 class="o-archive__sidebar__filter{% if section.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="?{% modify_query_string 'section' section.slug %}">{{ section }}</a>
+                <a href="{% pageurl self %}section/{{ section.slug }}">{{ section }}</a>
             </li>
             {% endfor %}
         </ul>
@@ -99,12 +105,12 @@
                         <ul>
                             <li
                                 class="o-mobile-dropdown__item {% if not section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="?{% remove_field_from_query_string 'section' %}">All</a>
+                                <a href="">All</a>
                             </li>
                             {% for section in sections %}
                             <li
                                 class="o-mobile-dropdown__item {% if section.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="{% routablepageurl page "archive_section_view" %}">{{ section }}</a>
+                                <a href="{% pageurl self %}/section/{{ section.slug }}">{{ section }}</a>
                             </li>
                             {% endfor %}
                         </ul>
@@ -134,11 +140,11 @@
                         <ul>
                             <li
                                 class="o-mobile-dropdown__item{% if order == 'newest' %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="?{% modify_query_string 'order' 'newest' %}">Newest</a>
+                                <a href="">Newest</a>
                             </li>
                             <li
                                 class="o-mobile-dropdown__item{% if order == 'oldest' %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="?{% modify_query_string 'order' 'oldest' %}">Oldest</a>
+                                <a href="">Oldest</a>
                             </li>
                         </ul>
                     </div>

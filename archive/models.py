@@ -60,7 +60,34 @@ class ArchivePage(RoutablePageMixin, Page):
     """
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        
+        search_query = request.GET.get("q")
+        order = request.GET.get("order")
+        section_slug = kwargs["sections_slug"]
+        self.year = self.__parse_int_or_none(request.GET.get('year'))
+        
 
+        # Set context
+        context['sections'] = SectionPage.objects.live()
+        context['section_slug'] = section_slug
+        context['order'] = order
+        context['year'] = self.year
+        context['years'] = self.__get_years()
+        context['q'] = search_query
+        context['meta'] = { 'title': 'Archive' }
+
+        return context
+    
+    """
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        # Getting information from the HTTPS URL
+        print(self.get_full_url(request).split("/"))
+        page = request.GET.get("page")
+        order = request.GET.get("order")
+        section_slug = request.GET.get('section')
+        self.year = self.__parse_int_or_none(request.GET.get('year'))
         # Getting information from the HTTP request
         search_query = request.GET.get("q")
         page = request.GET.get("page")
@@ -113,14 +140,38 @@ class ArchivePage(RoutablePageMixin, Page):
         context['meta'] = { 'title': 'Archive' }
 
         return context
+    """
+    def get_paginated_articles(self, context, articles, request):
+        page = request.GET.get("page")
+        # Paginate all posts by 15 per page
+        paginator = Paginator(articles, per_page=15)
+        try:
+            # If the page exists and the ?page=x is an int
+            paginated_articles = paginator.page(page)
+            context["current_page"] = page
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            paginated_articles = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            paginated_articles = paginator.page(paginator.num_pages)
+
+        context["page_obj"] = paginated_articles #this object is often called page_obj in Django docs. Careful, because but Page means something else in Wagtail
+        
+        return context
     
-    @route(r'^archive/(?P<sections_slug>[-\w]+)/$', name='section_view')
+    @route(r'^section/(?P<sections_slug>[-\w]+)/$', name='section_view')
     def get_section_articles(self, request, *args, **kwargs):
         context = self.get_context(request, *args, **kwargs)
-        context["test"] = "Hello World 232131312"
-        return render(request, "archive/archive_section.html", context)
+        section_slug = kwargs["sections_slug"]
+        articles = ArticlePage.objects.from_section(section_slug=section_slug).live().public()
+        context = self.get_paginated_articles(context, articles, request)
+        
+        return render(request, "archive/archive_page.html", context)
     
-    @route(r'^archive/news$')
-    def archive_section_view(self, request, current_section):
-        context = self.get_context(request, current_section=current_section)
+    @route(r'^order/(?P<order>[-\w]+)/$', name='order_view')
+    def get_order_view(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
+        print(kwargs)
         return render(request, 'archive/archive_page.html', context)
