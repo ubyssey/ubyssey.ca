@@ -4,12 +4,16 @@ from django.utils.text import slugify
 from django_extensions.db.fields import AutoSlugField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from article.models import ArticlePage
-from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, StreamFieldPanel
-from wagtail.core.models import Page
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, StreamFieldPanel, PageChooserPanel, InlinePanel
+from wagtail.core.models import Page, Orderable
 from wagtail.search import index
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.core import blocks
 from wagtail.core.fields import StreamField
+from modelcluster.fields import ParentalKey
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from django.shortcuts import render
+from images.models import UbysseyImage
 
 class AllAuthorsPage(Page):
     subpage_types = [
@@ -23,7 +27,27 @@ class AllAuthorsPage(Page):
         verbose_name = "Author Management"
         verbose_name_plural = "Author Management Pages"
 
-class AuthorPage(Page):
+class PinnedArticlesOrderable(Orderable):
+    author_page = ParentalKey(
+        "authors.AuthorPage",
+        related_name="pinned_articles",
+    )
+    article = models.ForeignKey(
+        'article.ArticlePage',
+        on_delete=models.CASCADE,
+        related_name="pinned_articles",
+    )
+
+    panels = [
+        MultiFieldPanel(
+            [
+                PageChooserPanel('article'),
+            ],
+            heading="Article"
+        ),
+    ]
+
+class AuthorPage(RoutablePageMixin, Page):
 
     template = "authors/author_page.html"
 
@@ -84,7 +108,8 @@ class AuthorPage(Page):
                 ImageChooserPanel("image"),
                 FieldPanel("ubyssey_role"),
                 FieldPanel("description"),
-                StreamFieldPanel("links")
+                StreamFieldPanel("links"),
+                InlinePanel("pinned_articles", label="Pinned articles")
             ],
             heading="Optional Stuff",
         ),
@@ -190,9 +215,90 @@ class AuthorPage(Page):
         self.title = self.full_name
         # self.slug = slugify(self.full_name)  # slug MUST be unique & slug-formatted
 
+
     def __str__(self):
         return self.full_name
     
     class Meta:
         verbose_name = "Author"
         verbose_name_plural = "Authors"
+
+    @route(r'^stories/$')
+    def stories_page(self, request, *args, **kwargs):
+        """
+        View function for author's stories
+        """
+
+        context = self.get_context(request, *args, **kwargs)
+
+        search_query = request.GET.get("q")
+        page = request.GET.get("page")
+        order = request.GET.get("order")
+
+        if order == 'oldest':
+            article_order = "explicit_published_at"
+        else:            
+            article_order = "-explicit_published_at"
+
+        authors_articles = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
+
+        if search_query:
+            authors_articles = authors_articles.search(search_query)
+
+        # Paginate all posts by 15 per page
+        paginator = Paginator(authors_articles, per_page=15)
+        try:
+            # If the page exists and the ?page=x is an int
+            paginated_articles = paginator.page(page)
+            context["current_page"] = page
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            paginated_articles = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            paginated_articles = paginator.page(paginator.num_pages)
+
+        context["paginated_articles"] = paginated_articles
+
+        return render(request, self.template, context)
+    
+    @route(r'^photos/$')
+    def photos_page(self, request, *args, **kwargs):
+        """
+        View function for author's photos
+        """
+
+        context = self.get_context(request, *args, **kwargs)
+
+        search_query = request.GET.get("q")
+        page = request.GET.get("page")
+        order = request.GET.get("order")
+
+        if order == 'oldest':
+            article_order = "updated_at"
+        else:            
+            article_order = "-updated_at"
+
+        authors_articles = UbysseyImage.objects.filter(author=self).order_by(article_order)
+        
+        if search_query:
+            authors_articles = authors_articles.search(search_query)
+
+        # Paginate all posts by 15 per page
+        paginator = Paginator(authors_articles, per_page=15)
+        try:
+            # If the page exists and the ?page=x is an int
+            paginated_articles = paginator.page(page)
+            context["current_page"] = page
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            paginated_articles = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            paginated_articles = paginator.page(paginator.num_pages)
+
+        context["paginated_articles"] = paginated_articles
+
+        return render(request, self.template, context)

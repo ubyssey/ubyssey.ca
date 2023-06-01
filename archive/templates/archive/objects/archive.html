@@ -1,4 +1,5 @@
 {% load archive_tags %}
+{% load wagtailimages_tags %}
 
 <div class="o-archive">
 
@@ -184,7 +185,11 @@
 			{% if page_obj|length > 0 %}
 			<div class="o-archive__main__list">
 				{% for object in page_obj %}
-				{% include 'archive/objects/article_list.html' with article=object %}
+					{% if object.lede %}
+						{% include 'archive/objects/article_list.html' with article=object %}
+					{% else %}
+						{% image object width-200%}
+					{% endif %}
 				{% endfor %}
 			</div>
 

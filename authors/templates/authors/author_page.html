@@ -14,14 +14,12 @@
 <style>
 	.author-header {
 		position: relative;
-		width: 90%;
 		margin: auto;
-		margin-top: 5%;
-		margin-bottom: 20px;
+		margin-bottom: 70px;
 	}
 	.author-img {
-		width: 400px;
-	    height: 400px;
+		width: 350px;
+	    height: 350px;
     	border-radius: 100%;
 		background-size: cover;
 	}
@@ -31,7 +29,7 @@
 		padding: 2%;
 		box-shadow: #0000003b -25px 25px 2px;
 		position: absolute;
-		left: 350px;
+		left: 300px;
 		height: fit-content;
 		transform: translate(0, -60%);
 		top: 50%;
@@ -52,15 +50,32 @@
 	.author-links {
 		margin-bottom: 0;
 	}
+	.author-pinned_list {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 40px;
+		margin-top: 25px;
+	}
+	.author-pinned_article {
+		width: 31%;
+	}
+	.author-heading {
+		font-size: 1.2rem;
+	}
+	.options {
+		display: flex;
+		justify-content: space-between;
+		width: 225px;
+	}
 </style>
 
 <main class="c-page c-page--author">
-	<div class="u-container u-container--padded">
+	<div class="u-container">
 
 		<div class="author-header">
 			{% if self.image %}
 			<div>
-				{% image self.image width-300 as pfp %}
+				{% image self.image width-350 as pfp %}
 				<div class="author-img" style="background-image: url('{{pfp.full_url}}')"></div>
 			</div>
 			{% endif %}
@@ -75,6 +90,25 @@
 				</p>
 			</div>
 		</div>
+
+		{% if self.pinned_articles.count > 0 %}
+			<h2 class="author-heading">Pinned by {{self.title}}</h2>
+			<div class="author-pinned_list">
+				{% for article in self.pinned_articles.all %}
+					<div class="author-pinned_article">	
+						{% include 'article/objects/author_pinned.html' with article=article.article %}
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		<div class="options">
+			<h2 class="author-heading">Stories</h2>
+			<h2 class="author-heading">Photos</h2>
+			<h2 class="author-heading">Videos</h2>
+		</div>
+
+		<h2 class="author-heading">Latest stories from {{self.title}}</h2>
 
 		{% include 'archive/objects/archive.html' with page_obj=paginated_articles %}
 
