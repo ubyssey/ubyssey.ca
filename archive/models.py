@@ -134,7 +134,7 @@ class ArchivePage(RoutablePageMixin, Page):
     @route(r'^$', name='general_view')
     def get_archive_general_articles(self, request, *args, **kwargs):
         context = self.get_context(request, False)
-        section_slug = context["sections_slug"] = None
+        context["sections_slug"] = None
         search_query = context["q"]
 
         articles = ArticlePage.objects.live().public()
