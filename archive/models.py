@@ -7,6 +7,7 @@ from article.models import ArticlePage
 from section.models import SectionPage
 from wagtail.core.models import Page
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
+from videos.models import VideosPage, VideoSnippet
 
 class ArchivePage(RoutablePageMixin, Page):
     template = "archive/archive_page.html"
@@ -58,15 +59,16 @@ class ArchivePage(RoutablePageMixin, Page):
     @route(r'^year/?$')
     ..... (includes the section and year route)/search=q or /search=".........."
     """
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
+    def get_context(self, request, video_section):
+        context = super().get_context(request)
         search_query = request.GET.get("q")
         order = request.GET.get("order")
         self.year = self.__parse_int_or_none(request.GET.get('year'))
         
-    
+
 
         # Set context
+        context['video_section'] = video_section
         context['sections'] = SectionPage.objects.live()
         context['order'] = order
         context['year'] = self.year
@@ -97,66 +99,109 @@ class ArchivePage(RoutablePageMixin, Page):
 
         return context
 
-    def get_order_articles(self, order, articles):
-        if order == 'oldest':
-            article_order = "explicit_published_at"
-        else:            
-            article_order = "-explicit_published_at"
+    def get_order_objects(self, order, objects, videos_section):
+        if videos_section == False:
+            if order == 'oldest':
+                article_order = "explicit_published_at"
+            else:            
+                article_order = "-explicit_published_at"
+            
+            return objects.order_by(article_order)
+        else:
+            if order == 'oldest':
+                videos_order = "created_at"
+            else:
+                videos_order = "-created_at"
+            
+            return objects.order_by(videos_order)
         
-        return articles.order_by(article_order)
 
-    def get_year_articles(self, articles):
+    def get_year_objects(self, objects, videos_section):
+        if videos_section == False:
+            return objects.filter(explicit_published_at__year=str(self.year))
+        else:
+            return objects.filter(created_at__gte=str(self.year) + "-01-01", created_at__lte = str(self.year + 1) + "-12-31")
         
-        return articles.filter(explicit_published_at__year=str(self.year))
-    
-    def get_search_articles(self, search_query, articles):
+    def get_search_objects(self, search_query, objects, video_section):
         
         # If there's a search query, then we run the search on the articles LAST.
         # Once we hit thes earch then we can't run .filter(...) on the results as if it were a queryset
-                
-        return articles.search(search_query)
+        if video_section == False:
+            return objects.search(search_query)
+        else:
+            return objects.filter(title=search_query)
 
     @route(r'^$', name='general_view')
     def get_archive_general_articles(self, request, *args, **kwargs):
-        context = self.get_context(request, *args, **kwargs)
+        context = self.get_context(request, False)
         section_slug = context["sections_slug"] = None
         search_query = context["q"]
 
         articles = ArticlePage.objects.live().public()
  
         if context["order"]:
-            articles = self.get_order_articles(context["order"], articles)     
+            articles = self.get_order_objects(context["order"], articles, False)     
 
         if self.year:
-            articles = self.get_year_articles(articles)
-
+            articles = self.get_year_objects(articles, False)
+      
+      # The larger issue is that the search query in general search will always prioritize articles over videos. If users what to find videos then they have to select the videos section then search
         if search_query:
-            articles = self.get_search_articles(search_query, articles)
+            videos = VideoSnippet.objects.all()
+            articles = self.get_search_objects(search_query, articles, False)
+            videos = self.get_search_objects(search_query, videos, True)
 
-        context = self.get_paginated_articles(context, articles, request)
+            if len(articles) < 1:
+                context = self.get_paginated_articles(context, videos, request)
+                context["video_section"] = True
+            else:
+                context = self.get_paginated_articles(context, articles, request)
+        else:
+            context = self.get_paginated_articles(context, articles, request)
+
         
         return render(request, "archive/archive_page.html", context)
     
     @route(r'^section/(?P<sections_slug>[-\w]+)/$', name='section_view')
-    def get_section_articles(self, request, *args, **kwargs):
-        context = self.get_context(request, *args, **kwargs)
-        section_slug = context['section_slug'] = kwargs["sections_slug"]
+    def get_section_articles(self, request, sections_slug):
+        context = self.get_context(request, False)
+        section_slug = context['section_slug'] = sections_slug
 
         search_query = context["q"]
         
         articles = ArticlePage.objects.from_section(section_slug=section_slug).live().public()
  
         if context["order"]:
-            articles = self.get_order_articles(context["order"], articles)           
+            articles = self.get_order_objects(context["order"], articles, False)           
         
         if self.year:
-            articles = self.get_year_articles(articles)
+            articles = self.get_year_objects(articles, False)
         
         if search_query:
-            articles = self.get_search_articles(search_query, articles)
-        
+            articles = self.get_search_objects(search_query, articles, False)
 
-        context = self.get_paginated_articles(context, articles, request)
-        
         return render(request, "archive/archive_page.html", context)
     
+    @route(r'^videos/$', name="videos_view")
+    def get_videos(self, request, *args, **kwargs):
+
+        context = self.get_context(request, True)
+
+
+        search_query = context["q"]
+        
+        videos = VideoSnippet.objects.all()
+ 
+        if context["order"]:
+            videos = self.get_order_objects(context["order"], videos, True)           
+        
+        if self.year:
+            videos = self.get_year_objects(videos, True)
+        
+        if search_query:
+            videos = self.get_search_objects(search_query, videos, True)
+        
+
+        context = self.get_paginated_articles(context, videos, request)
+        
+        return render(request, "archive/archive_page.html", context)

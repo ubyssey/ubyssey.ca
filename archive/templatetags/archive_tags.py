@@ -22,7 +22,11 @@ def query_string(request):
     fullurl = request.get_full_path()
 
     fullurllst = fullurl.split("?")
-    parameters = fullurllst[1]
+    if "?" in fullurl:
+        parameters = "?" + fullurllst[1]
+    else:
+        parameters = ""
+
     return parameters      
 
 @register.simple_tag(takes_context = True)

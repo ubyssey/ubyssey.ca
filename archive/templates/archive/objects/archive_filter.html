@@ -36,9 +36,13 @@
             {% for section in sections %}
             <li
                 class="o-archive__sidebar__filter{% if section.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="{% pageurl self %}section/{{ section.slug }}/?{{ request|query_string }}">{{ section }}</a>
+                <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
             </li>
             {% endfor %}
+            <li
+                class="o-archive__sidebar__filter {% if video_section == True %} o-archive__sidebar__filter--is-active{% endif %}">
+                <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
+            </li>
         </ul>
     </div>
 
@@ -110,9 +114,13 @@
                             {% for section in sections %}
                             <li
                                 class="o-mobile-dropdown__item {% if section.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="{% pageurl self %}section/{{ section.slug }}/?{{ request|query_string }}">{{ section }}</a>
+                                <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
                             </li>
                             {% endfor %}
+                            <li
+                                class="o-mobile-dropdown__item {% if video_section == True %} o-mobile-dropdown__item--is-active{% endif %}">
+                                <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
