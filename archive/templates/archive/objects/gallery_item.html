@@ -1,0 +1,10 @@
+{% load wagtailimages_tags %}
+
+{% image image height-300 as img%}
+{% image image height-600 as big%}
+<div class="gallery-item" image="{{big.full_url}}" title="{{image.title}}">
+    <div class="gallery-image" style="background-image: url('{{img.full_url}}')"></div>
+    <div class="gallery-wrapper">
+        <h3 class="gallery-item-title">{{image.title}}</h3>
+    </div>
+</div>

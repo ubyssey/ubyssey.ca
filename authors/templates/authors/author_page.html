@@ -67,6 +67,9 @@
 		justify-content: space-between;
 		width: 225px;
 	}
+	.selected {
+		text-decoration: underline;
+	}
 </style>
 
 <main class="c-page c-page--author">
@@ -91,7 +94,7 @@
 			</div>
 		</div>
 
-		{% if self.pinned_articles.count > 0 %}
+		{% if self.pinned_articles.count > 0 and current_page == 1 %}
 			<h2 class="author-heading">Pinned by {{self.title}}</h2>
 			<div class="author-pinned_list">
 				{% for article in self.pinned_articles.all %}
@@ -101,17 +104,22 @@
 				{% endfor %}
 			</div>
 		{% endif %}
-
+		
 		<div class="options">
-			<h2 class="author-heading">Stories</h2>
-			<h2 class="author-heading">Photos</h2>
-			<h2 class="author-heading">Videos</h2>
+			<h2 class="author-heading {% if media_type == "stories" %}selected{% endif %}"><a href="/authors/{{self.slug}}/stories">Stories</a></h2>
+			<h2 class="author-heading {% if media_type == "photos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/photos">Photos</a></h2>
+			<h2 class="author-heading {% if media_type == "videos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/videos">Videos</a></h2>
 		</div>
 
-		<h2 class="author-heading">Latest stories from {{self.title}}</h2>
-
-		{% include 'archive/objects/archive.html' with page_obj=paginated_articles %}
-
+		<h2 class="author-heading">Latest {{media_type}} from {{self.title}}</h2>
+		
+		{% if media_type == "stories" %}
+			{% include 'archive/objects/archive.html' with page_obj=paginated_articles %}
+		{% elif media_type == "photos" %}
+			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
+		{% elif media_type == "videos" %}
+			{% include 'archive/objects/video_archive.html' with paginated_videos=paginated_articles %}
+		{% endif %}
 	</div>
 </main>
 {% endblock %}

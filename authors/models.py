@@ -14,6 +14,8 @@ from modelcluster.fields import ParentalKey
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
 from images.models import UbysseyImage
+from django import forms
+from videos.models import VideoSnippet
 
 class AllAuthorsPage(Page):
     subpage_types = [
@@ -96,6 +98,14 @@ class AuthorPage(RoutablePageMixin, Page):
         default='',
     )
 
+    CHOICES = [("stories", "Stories"), ("photos", "Photos"), ("videos", "Videos")]
+    main_media_type = models.CharField(
+        choices=CHOICES,
+        default='stories',
+        max_length=20,
+        blank=False,
+        null=False,)
+
     linkIcons = StreamField([('raw_html', blocks.RawHTMLBlock()),], blank=True)
     links = StreamField([('url', blocks.URLBlock(label="Url")),], blank=True)
 
@@ -108,6 +118,7 @@ class AuthorPage(RoutablePageMixin, Page):
                 ImageChooserPanel("image"),
                 FieldPanel("ubyssey_role"),
                 FieldPanel("description"),
+                FieldPanel("main_media_type"),
                 StreamFieldPanel("links"),
                 InlinePanel("pinned_articles", label="Pinned articles")
             ],
@@ -121,27 +132,35 @@ class AuthorPage(RoutablePageMixin, Page):
         index.SearchField('description'),
     ]
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-
+    def organize_media(self, media_type, request, context):
         search_query = request.GET.get("q")
         page = request.GET.get("page")
         order = request.GET.get("order")
 
-        if order == 'oldest':
-            article_order = "explicit_published_at"
-        else:            
-            article_order = "-explicit_published_at"
-        context["order"] = order
+        if media_type == "stories":
+            if order == 'oldest':
+                article_order = "explicit_published_at"
+            else:            
+                article_order = "-explicit_published_at"
+            authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
+        elif media_type == "photos":
+            if order == 'oldest':
+                article_order = "updated_at"
+            else:            
+                article_order = "-updated_at"
+            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order)
+        elif media_type == "videos":
+            if order == 'oldest':
+                article_order = "updated_at"
+            else:            
+                article_order = "-updated_at"
+            authors_media =  VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order)
 
-        # Hit the db
-        authors_articles = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
         if search_query:
-            context["search_query"] = search_query
-            authors_articles = authors_articles.search(search_query)
+            authors_media = authors_media.search(search_query)
 
         # Paginate all posts by 15 per page
-        paginator = Paginator(authors_articles, per_page=15)
+        paginator = Paginator(authors_media, per_page=15)
         try:
             # If the page exists and the ?page=x is an int
             paginated_articles = paginator.page(page)
@@ -149,12 +168,23 @@ class AuthorPage(RoutablePageMixin, Page):
         except PageNotAnInteger:
             # If the ?page=x is not an int; show the first page
             paginated_articles = paginator.page(1)
+            context["current_page"] = 1
         except EmptyPage:
             # If the ?page=x is out of range (too high most likely)
             # Then return the last page
             paginated_articles = paginator.page(paginator.num_pages)
+            context["current_page"] = paginator.num_pages
 
-        context["paginated_articles"] = paginated_articles #this object is often called page_obj in Django docs, but Page means something else in Wagtail
+        context["paginated_articles"] = paginated_articles
+
+        return context
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        
+        context["media_type"] = self.main_media_type
+
+        context = self.organize_media(self.main_media_type, request, context)
 
         return context
     
@@ -231,35 +261,9 @@ class AuthorPage(RoutablePageMixin, Page):
 
         context = self.get_context(request, *args, **kwargs)
 
-        search_query = request.GET.get("q")
-        page = request.GET.get("page")
-        order = request.GET.get("order")
+        context["media_type"] = "stories"
 
-        if order == 'oldest':
-            article_order = "explicit_published_at"
-        else:            
-            article_order = "-explicit_published_at"
-
-        authors_articles = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
-
-        if search_query:
-            authors_articles = authors_articles.search(search_query)
-
-        # Paginate all posts by 15 per page
-        paginator = Paginator(authors_articles, per_page=15)
-        try:
-            # If the page exists and the ?page=x is an int
-            paginated_articles = paginator.page(page)
-            context["current_page"] = page
-        except PageNotAnInteger:
-            # If the ?page=x is not an int; show the first page
-            paginated_articles = paginator.page(1)
-        except EmptyPage:
-            # If the ?page=x is out of range (too high most likely)
-            # Then return the last page
-            paginated_articles = paginator.page(paginator.num_pages)
-
-        context["paginated_articles"] = paginated_articles
+        context = self.organize_media("stories", request, context)
 
         return render(request, self.template, context)
     
@@ -271,34 +275,22 @@ class AuthorPage(RoutablePageMixin, Page):
 
         context = self.get_context(request, *args, **kwargs)
 
-        search_query = request.GET.get("q")
-        page = request.GET.get("page")
-        order = request.GET.get("order")
-
-        if order == 'oldest':
-            article_order = "updated_at"
-        else:            
-            article_order = "-updated_at"
-
-        authors_articles = UbysseyImage.objects.filter(author=self).order_by(article_order)
+        context["media_type"] = "photos"
         
-        if search_query:
-            authors_articles = authors_articles.search(search_query)
+        context = self.organize_media("photos", request, context)
 
-        # Paginate all posts by 15 per page
-        paginator = Paginator(authors_articles, per_page=15)
-        try:
-            # If the page exists and the ?page=x is an int
-            paginated_articles = paginator.page(page)
-            context["current_page"] = page
-        except PageNotAnInteger:
-            # If the ?page=x is not an int; show the first page
-            paginated_articles = paginator.page(1)
-        except EmptyPage:
-            # If the ?page=x is out of range (too high most likely)
-            # Then return the last page
-            paginated_articles = paginator.page(paginator.num_pages)
+        return render(request, self.template, context)
+    
+    @route(r'^videos/$')
+    def videos_page(self, request, *args, **kwargs):
+        """
+        View function for author's videos
+        """
 
-        context["paginated_articles"] = paginated_articles
+        context = self.get_context(request, *args, **kwargs)
+
+        context["media_type"] = "videos"
+        
+        context = self.organize_media("videos", request, context)
 
         return render(request, self.template, context)

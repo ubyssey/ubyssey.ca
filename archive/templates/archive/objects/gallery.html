@@ -1,6 +1,20 @@
 {% load archive_tags %}
 {% load wagtailimages_tags %}
 
+<div id="modal" class="image-modal hide">
+    <div class="image-modal-block">
+        <div class="u-container u-container--large" style="position: relative; height: 100%">
+            <div class="modal-content">
+                <img id="modal-image" src="" class="image-modal-image">
+                <h1 id="modal-title"></h1>
+            </div>
+            <div class="next-button left-button" tabindex="1"><i class="fa fa-chevron-left"></i></div>
+            <div class="next-button right-button" tabindex="2"><i class="fa fa-chevron-right"></i></div>
+            <div class="close-button" tabindex="3" onclick="document.getElementById('modal').classList.remove('show');document.getElementById('modal').classList.add('hide');"><i class="fa fa-window-close"></i></div>            
+        </div>
+    </div>
+</div>
+
 <div class="o-archive">
 
 	<div class="o-archive__search">
@@ -183,9 +197,9 @@
 			</div>
 			
 			{% if page_obj|length > 0 %}
-			<div class="o-archive__main__list">
+			<div class="o-archive__main__list gallery">
 				{% for object in page_obj %}
-					{% include 'archive/objects/article_list.html' with article=object %}
+					{% include 'archive/objects/gallery_item.html' with image=object %}
 				{% endfor %}
 			</div>
 
@@ -220,3 +234,64 @@
 	</div>
 
 </div>
+
+<script>
+    var images = document.getElementsByClassName("gallery-item");
+    console.log(images.length);
+    for (let i=0; i<images.length; i++) {
+        images[i].addEventListener("click", function() {
+            document.getElementById("modal").setAttribute("number", i);
+            document.getElementById("modal").classList.add("show");
+            document.getElementById("modal").classList.remove("hide");
+
+            updateModal();
+        })
+    }
+
+    function nextImage() {
+        var num = parseInt(document.getElementById("modal").getAttribute("number"));
+        var images = document.getElementsByClassName("gallery-item");
+        if(num + 1 >= images.length) {
+            num = 0;
+        } else {
+            num = num + 1;
+        }
+
+        document.getElementById("modal").setAttribute("number", num);
+        
+        updateModal();
+    }
+
+    function prevImage() {
+        var num = parseInt(document.getElementById("modal").getAttribute("number"));
+        var images = document.getElementsByClassName("gallery-item");
+        if(num - 1 < 0) {
+            num = images.length - 1;
+        } else {
+            num = num - 1;
+        }
+
+        document.getElementById("modal").setAttribute("number", num);
+        
+        updateModal();
+    }
+
+    function updateModal(){
+        var num = parseInt(document.getElementById("modal").getAttribute("number"));
+        var images = document.getElementsByClassName("gallery-item");
+        document.getElementById("modal-image").setAttribute("src", images[num].getAttribute("image"));
+        document.getElementById("modal-title").innerHTML = images[num].getAttribute("title");
+    }
+
+    var next = document.getElementsByClassName("right-button");
+    console.log(next.length);
+    for (let i=0; i<next.length; i++) {
+        next[i].addEventListener("click", nextImage);
+    }
+
+    var prev = document.getElementsByClassName("left-button");
+    console.log(prev.length);
+    for (let i=0; i<prev.length; i++) {
+        prev[i].addEventListener("click", prevImage);
+    }
+</script>
