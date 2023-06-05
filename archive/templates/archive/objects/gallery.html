@@ -2,17 +2,15 @@
 {% load wagtailimages_tags %}
 
 <div id="modal" class="image-modal hide">
-    <div class="image-modal-block">
-        <div class="u-container u-container--large" style="position: relative; height: 100%">
-            <div class="modal-content">
-                <img id="modal-image" src="" class="image-modal-image">
-                <h1 id="modal-title"></h1>
-            </div>
-            <div class="next-button left-button" tabindex="1"><i class="fa fa-chevron-left"></i></div>
-            <div class="next-button right-button" tabindex="2"><i class="fa fa-chevron-right"></i></div>
-            <div class="close-button" tabindex="3" onclick="document.getElementById('modal').classList.remove('show');document.getElementById('modal').classList.add('hide');"><i class="fa fa-window-close"></i></div>            
-        </div>
-    </div>
+	<div class="u-container u-container--large" style="position: relative; height: 100%">
+		<div class="modal-content">
+			<img id="modal-image" src="" class="image-modal-image">
+			<h1 id="modal-title"></h1>
+		</div>
+		<a class="next-button left-button" tabindex="1"><i class="fa fa-chevron-left"></i></a>
+		<a class="next-button right-button" tabindex="2"><i class="fa fa-chevron-right"></i></a>
+		<a class="close-button" tabindex="3" href="javascript:document.getElementById('modal').classList.remove('show');document.getElementById('modal').classList.add('hide');"><i class="fa fa-window-close"></i></a>            
+	</div>
 </div>
 
 <div class="o-archive">
@@ -286,12 +284,14 @@
     var next = document.getElementsByClassName("right-button");
     console.log(next.length);
     for (let i=0; i<next.length; i++) {
-        next[i].addEventListener("click", nextImage);
+        //next[i].addEventListener("click", nextImage);
+		next[i].setAttribute("href", "javascript:nextImage()")
     }
 
     var prev = document.getElementsByClassName("left-button");
     console.log(prev.length);
     for (let i=0; i<prev.length; i++) {
-        prev[i].addEventListener("click", prevImage);
+        //prev[i].addEventListener("click", prevImage);
+		prev[i].setAttribute("href", "javascript:prevImage()")
     }
 </script>

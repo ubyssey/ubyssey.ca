@@ -11,76 +11,13 @@
 {% include 'navigation/headers/mobile.html' %}
 {% endblock %}
 
-<style>
-	.author-header {
-		position: relative;
-		margin: auto;
-		margin-bottom: 70px;
-	}
-	.author-img {
-		width: 350px;
-	    height: 350px;
-    	border-radius: 100%;
-		background-size: cover;
-	}
-	.author-info {
-		background-color: #C0E3F1;
-		border-radius: 25px;
-		padding: 2%;
-		box-shadow: #0000003b -25px 25px 2px;
-		position: absolute;
-		left: 300px;
-		height: fit-content;
-		transform: translate(0, -60%);
-		top: 50%;
-	}
-	.author-name {
-		text-decoration: underline;
-		font-size: 3rem;
-		line-height: 1rem;
-	}
-	.author-role {
-		font-size: 1.2rem;
-		line-height: 2rem;
-	}
-	.author-desc {
-		color: #031621;
-	    line-height: 1.45em;
-	}
-	.author-links {
-		margin-bottom: 0;
-	}
-	.author-pinned_list {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 40px;
-		margin-top: 25px;
-	}
-	.author-pinned_article {
-		width: 31%;
-	}
-	.author-heading {
-		font-size: 1.2rem;
-	}
-	.options {
-		display: flex;
-		justify-content: space-between;
-		width: 225px;
-	}
-	.selected {
-		text-decoration: underline;
-	}
-</style>
-
 <main class="c-page c-page--author">
-	<div class="u-container">
+	<div class="u-container u-container--padded">
 
 		<div class="author-header">
 			{% if self.image %}
-			<div>
 				{% image self.image width-350 as pfp %}
 				<div class="author-img" style="background-image: url('{{pfp.full_url}}')"></div>
-			</div>
 			{% endif %}
 			<div class="author-info">
 				<h1 class="author-name">{{ self.title }}</h1>
@@ -106,9 +43,15 @@
 		{% endif %}
 		
 		<div class="options">
-			<h2 class="author-heading {% if media_type == "stories" %}selected{% endif %}"><a href="/authors/{{self.slug}}/stories">Stories</a></h2>
-			<h2 class="author-heading {% if media_type == "photos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/photos">Photos</a></h2>
-			<h2 class="author-heading {% if media_type == "videos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/videos">Videos</a></h2>
+			{% if "stories" in media_types %}
+				<h2 class="author-heading {% if media_type == "stories" %}selected{% endif %}"><a href="/authors/{{self.slug}}/stories">Stories</a></h2>
+			{% endif %}
+			{% if "photos" in media_types %}
+				<h2 class="author-heading {% if media_type == "photos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/photos">Photos</a></h2>
+			{% endif %}
+			{% if "videos" in media_types %}
+				<h2 class="author-heading {% if media_type == "videos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/videos">Videos</a></h2>
+			{% endif %}
 		</div>
 
 		<h2 class="author-heading">Latest {{media_type}} from {{self.title}}</h2>

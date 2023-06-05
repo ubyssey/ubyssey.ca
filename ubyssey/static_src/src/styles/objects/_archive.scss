@@ -341,11 +341,11 @@ $search-bar-height: 46px;
 .gallery-item {
 	position: relative;
 	height: 300px;
-	margin:1%;
+	width: 300px;
+	flex-grow: 1;
 }
 
 .gallery-image {
-	width: 300px;
 	height: 300px;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -397,6 +397,11 @@ $search-bar-height: 46px;
 	margin: auto;
 	height: 80%;
 	display: block;
+	@media($bp-smaller-than-phablet) {
+		max-width: 100%;
+		height: auto;
+		max-height: 70%;
+    }
 }
 
 .hide {
@@ -419,6 +424,7 @@ $search-bar-height: 46px;
 	background-color: #00000084;
 	cursor: pointer;
 	color: white;
+	display:block;
 }
 
 .next-button i {
@@ -441,7 +447,6 @@ $search-bar-height: 46px;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-	height: 80%;
 }
 
 #modal-title {
@@ -452,4 +457,5 @@ $search-bar-height: 46px;
 	position: absolute;
 	top: 5%;
 	right: 5%;
+	display:block;
 }

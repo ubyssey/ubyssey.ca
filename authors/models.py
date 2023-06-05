@@ -182,6 +182,15 @@ class AuthorPage(RoutablePageMixin, Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         
+        media_types = []
+        if VideoSnippet.objects.all().count() > 0:
+            media_types.append("videos")
+        if UbysseyImage.objects.all().count() > 0:
+            media_types.append("photos")
+        if ArticlePage.objects.live().public().all().count() > 0:
+            media_types.append("stories")
+
+        context["media_types"] = media_types
         context["media_type"] = self.main_media_type
 
         context = self.organize_media(self.main_media_type, request, context)
