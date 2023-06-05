@@ -30,8 +30,8 @@
         <h2>Section</h2>
         <ul>
             <li
-                class="o-archive__sidebar__filter{% if not section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="{% pageurl self %}">All sections</a>
+                class="o-archive__sidebar__filter{% if not section_slug and video_section == False %} o-archive__sidebar__filter--is-active{% endif %}">
+                <a href="{% pageurl self %}{{ request|query_string }}">All sections</a>
             </li>
             {% for section in sections %}
             <li
@@ -108,8 +108,8 @@
                         </div>
                         <ul>
                             <li
-                                class="o-mobile-dropdown__item {% if not section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="">All</a>
+                                class="o-mobile-dropdown__item {% if not section_slug and video_section == False %} o-mobile-dropdown__item--is-active{% endif %}">
+                                <a href="{% pageurl self %}{{ request|query_string }}">All</a>
                             </li>
                             {% for section in sections %}
                             <li

@@ -60,12 +60,11 @@ class ArchivePage(RoutablePageMixin, Page):
     ..... (includes the section and year route)/search=q or /search=".........."
     """
     def get_context(self, request, video_section):
+        # Get queries and context
         context = super().get_context(request)
         search_query = request.GET.get("q")
         order = request.GET.get("order")
         self.year = self.__parse_int_or_none(request.GET.get('year'))
-        
-
 
         # Set context
         context['video_section'] = video_section
@@ -78,10 +77,15 @@ class ArchivePage(RoutablePageMixin, Page):
 
         return context
     
-    def get_paginated_articles(self, context, articles, request):
+    def get_paginated_articles(self, context, objects, video_section, request):
         page = request.GET.get("page")
-        # Paginate all posts by 15 per page
-        paginator = Paginator(articles, per_page=15)
+
+        if video_section == False:
+            # Paginate all posts by 15 per page
+            paginator = Paginator(objects, per_page=15)
+        else:
+            # Paginate all posts by 15 per page
+            paginator = Paginator(objects, per_page=5)
         try:
             # If the page exists and the ?page=x is an int
             paginated_articles = paginator.page(page)
@@ -95,7 +99,7 @@ class ArchivePage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(paginator.num_pages)
 
         context["page_obj"] = paginated_articles #this object is often called page_obj in Django docs. Careful, because but Page means something else in Wagtail
-        context["articles"] = articles
+        
 
         return context
 
@@ -133,22 +137,23 @@ class ArchivePage(RoutablePageMixin, Page):
 
     @route(r'^$', name='general_view')
     def get_archive_general_articles(self, request, *args, **kwargs):
-        context = self.get_context(request, False)
+        video_section = False
+        context = self.get_context(request, video_section)
         context["sections_slug"] = None
         search_query = context["q"]
 
         articles = ArticlePage.objects.live().public()
  
         if context["order"]:
-            articles = self.get_order_objects(context["order"], articles, False)     
+            articles = self.get_order_objects(context["order"], articles, video_section)     
 
         if self.year:
-            articles = self.get_year_objects(articles, False)
+            articles = self.get_year_objects(articles, video_section)
       
       # The larger issue is that the search query in general search will always prioritize articles over videos. If users what to find videos then they have to select the videos section then search
         if search_query:
             videos = VideoSnippet.objects.all()
-            articles = self.get_search_objects(search_query, articles, False)
+            articles = self.get_search_objects(search_query, articles, video_section)
             videos = self.get_search_objects(search_query, videos, True)
 
             if len(articles) < 1:
@@ -157,35 +162,38 @@ class ArchivePage(RoutablePageMixin, Page):
             else:
                 context = self.get_paginated_articles(context, articles, request)
         else:
-            context = self.get_paginated_articles(context, articles, request)
+            context = self.get_paginated_articles(context, articles, video_section, request)
 
         
         return render(request, "archive/archive_page.html", context)
     
     @route(r'^section/(?P<sections_slug>[-\w]+)/$', name='section_view')
     def get_section_articles(self, request, sections_slug):
-        context = self.get_context(request, False)
+        video_section = False
+        context = self.get_context(request, video_section)
         section_slug = context['section_slug'] = sections_slug
 
         search_query = context["q"]
         
         articles = ArticlePage.objects.from_section(section_slug=section_slug).live().public()
- 
+        
         if context["order"]:
-            articles = self.get_order_objects(context["order"], articles, False)           
+            articles = self.get_order_objects(context["order"], articles, video_section)           
         
         if self.year:
-            articles = self.get_year_objects(articles, False)
+            articles = self.get_year_objects(articles, video_section)
         
         if search_query:
-            articles = self.get_search_objects(search_query, articles, False)
+            articles = self.get_search_objects(search_query, articles, video_section)
+
+        context = self.get_paginated_articles(context, articles, video_section, request)
 
         return render(request, "archive/archive_page.html", context)
     
     @route(r'^videos/$', name="videos_view")
     def get_videos(self, request, *args, **kwargs):
-
-        context = self.get_context(request, True)
+        video_section = True
+        context = self.get_context(request, video_section)
 
 
         search_query = context["q"]
@@ -193,15 +201,15 @@ class ArchivePage(RoutablePageMixin, Page):
         videos = VideoSnippet.objects.all()
  
         if context["order"]:
-            videos = self.get_order_objects(context["order"], videos, True)           
+            videos = self.get_order_objects(context["order"], videos, video_section)           
         
         if self.year:
-            videos = self.get_year_objects(videos, True)
+            videos = self.get_year_objects(videos, video_section)
         
         if search_query:
-            videos = self.get_search_objects(search_query, videos, True)
+            videos = self.get_search_objects(search_query, videos, video_section)
         
 
-        context = self.get_paginated_articles(context, videos, request)
+        context = self.get_paginated_articles(context, videos, video_section, request)
         
         return render(request, "archive/archive_page.html", context)
