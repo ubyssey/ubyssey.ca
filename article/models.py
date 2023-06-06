@@ -61,7 +61,7 @@ from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
 
 UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17)
- 
+
 #-----Mixins-----
 class UbysseyMenuMixin(models.Model):
 
@@ -545,6 +545,13 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         default='',
         verbose_name="SEO Description",
     ) # AKA "Meta Description" in the old Dispatch frontend
+    noindex = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        verbose_name="Add 'noindex' tag?",
+        help_text="Warning: Only to be used when an article is requested to be unpublished, as per unpublishing policy. Should be FALSE in all but exceptional circumstances!",
+    )
     #-----Setting panel stuff-----
     is_explicit = models.BooleanField(
         default=False,
@@ -670,6 +677,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             return "article/article_page_guide_2020.html"
         elif self.layout == 'guide-2022':
             return "article/article_page_guide_2022.html"
+        elif self.layout == 'magazine-2023':
+            return "article/article_page_magazine_2023.html"
                         
         return "article/article_page.html"
 
@@ -739,8 +748,14 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 FieldPanel("seo_keyword"),
                 FieldPanel("seo_description"),
             ],
-            heading="Old SEO stuff",
+            heading="Old Search Engine/SEO stuff",
             help_text="In Dispatch, \"SEO Keyword\" was referred to as \"Focus Keywords\", and  \"SEO Description\" was referred to as \"Meta Description\""
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("noindex"),
+            ],
+            heading="Special search engine-related meta tagging",
         )
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
@@ -777,6 +792,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                             ('fw-story', 'Full-Width Story'),
                             ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
                             ('guide-2022', 'Guide (2022 style)'),
+                            ('magazine-2023', 'Magazine (2023 style)'),
                         ],
                     ),
                 ),

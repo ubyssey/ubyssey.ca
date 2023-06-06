@@ -22,6 +22,7 @@ from ubyssey.events.api.urls import urlpatterns as event_api_urls
 from ubyssey.events.urls import urlpatterns as events_urls
 
 from django.views.generic import TemplateView
+from django.views import defaults as default_views
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
@@ -34,6 +35,12 @@ if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
+        # tricks for testing error page, which is otherwise not viewable with DEBUG on. inspired by https://spapas.github.io/2015/04/29/django-show-404-page/ (which is outdated)
+        # and https://stackoverflow.com/questions/42882243/how-do-you-pass-exception-argument-to-403-view for the need for kwargs
+        re_path(r'^400/$', default_views.bad_request, kwargs={'exception': Exception('Bad Request!')}),
+        re_path(r'^403/$', default_views.permission_denied, kwargs={'exception': Exception('Permission Denied')}),
+        re_path(r'^404/$', default_views.page_not_found, kwargs={'exception': Exception('Page not Found')}),
+        re_path(r'^500/$', default_views.server_error),
     ]
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -69,7 +76,7 @@ urlpatterns += [
     # re_path(r'^$', HomePageView.as_view(), name='home'),
     re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
     # re_path(r'^archive/$', ArchiveView.as_view(), name='archive'),
-    
+    # re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
 
     # # Page views that have been grandfathered in to having special URLs as permalink
     # re_path(r'^(?P<slug>about)/$', PageView.as_view(), name='about'),

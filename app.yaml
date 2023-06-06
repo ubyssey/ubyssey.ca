@@ -1,11 +1,11 @@
 runtime: python37
 entrypoint: gunicorn -b :$PORT --chdir ubyssey/ wsgi:application
-instance_class: F4
+instance_class: F4_1G
 
 default_expiration: "365d"
 
 automatic_scaling:
-  max_idle_instances: 4
+  max_idle_instances: 6
   target_cpu_utilization: .9
 
 handlers:

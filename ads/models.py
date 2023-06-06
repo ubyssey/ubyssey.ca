@@ -47,7 +47,7 @@ class AdSlot(models.Model):
             ('mobile-leaderboard',"Mobile Leaderboard"),
         ],
     )
-    dfp = models.CharField(null=False, blank=True, default='', max_length=255, verbose_name="Ad Unit Name")
+    dfp = models.CharField(null=False, blank=True, default='', max_length=255, verbose_name="Ad Unit Name (AKA \"DFP\")")
     div_class = models.CharField(null=False, blank=True, default='box', max_length=255,
         choices=[
             ('','Default'),
@@ -146,6 +146,12 @@ class AdTagSettings(ClusterableModel, BaseSetting):
             ],
             heading="Sidebar Placement Tags"
         ),
+        MultiFieldPanel(
+            [
+                InlinePanel("article_inline_placements", label="Article inline placement tags"),
+            ],
+            heading="Inline Placement Tags"
+        ),
     ]
 
     edit_handler = TabbedInterface([
@@ -209,3 +215,6 @@ class ArticleHeaderPlacementOrderable(AdPlacementOrderable):
 
 class ArticleSidebarPlacementOrderable(AdPlacementOrderable):
     settings = ParentalKey(AdTagSettings,related_name='article_sidebar_placements')
+
+class ArticleInlinePlacementOrderable(AdPlacementOrderable):
+    settings = ParentalKey(AdTagSettings,related_name='article_inline_placements')
