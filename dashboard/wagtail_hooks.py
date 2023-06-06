@@ -1,16 +1,14 @@
 from django.utils.html import format_html
 from django.templatetags.static import static
 
-
 from wagtail.core import hooks
+
+import wagtail.admin.rich_text.editors.draftail.features as draftail_features
+from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler
 
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
     return format_html('<link rel="stylesheet" href="{}">', static('css/custom.css'))
-
-
-import wagtail.admin.rich_text.editors.draftail.features as draftail_features
-from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler
 
 # 1. Use the register_rich_text_features hook.
 @hooks.register('register_rich_text_features')
@@ -50,7 +48,6 @@ def register_strikethrough_feature(features):
     # on rich text fields that do not specify an explicit 'features' list
     features.default_features.append('strikethrough')
 
-from wagtail.admin.rich_text.converters.html_to_contentstate import BlockElementHandler
 @hooks.register("register_rich_text_features")
 def register_centertext_feature(features):
     """Creates centered text in our richtext editor and page."""
