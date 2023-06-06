@@ -501,6 +501,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 label = "Page Links",)),
             ],
             template = 'article/stream_blocks/pageLink.html',
+            icon = "table",
             )),
             ('header_link',
              blocks.StructBlock(
@@ -510,6 +511,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             ],
             template = 'article/stream_blocks/header.html',
             label = "Header",
+            icon = "title",
              ))
         ],
         null=True,
