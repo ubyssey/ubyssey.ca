@@ -9,6 +9,7 @@ module.exports = {
     vendors: './src/js/vendors.js',
     a: './src/js/advertise.js',
     a_new: './src/js/advertise_new.js',
+    'scrollTop': './src/js/scrollTop.js',
     'one-year-later': './src/js/one-year-later.js',
     'sport-series': './src/js/sport-series.js',
     'food-insecurity': './src/js/food-insecurity.jsx',
