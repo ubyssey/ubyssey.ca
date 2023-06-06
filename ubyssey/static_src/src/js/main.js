@@ -243,11 +243,11 @@ function initializeSearchFormActions() {
 }
 
 function initializeSocialMediaActions() {
-  const titleElement = document.getElementsByTagName("title");
+  const titleElement = document.getElementsByTagName("title")[0];
   const title = titleElement.innerText;
   $(document).on('click', '.share-facebook', function (e) {
     e.preventDefault();
-    window.open('http://facebook.com/sharer.php?=' + window.location.href + '&text=' + title + '&', 'twitterwindow',
+    window.open('http://facebook.com/sharer.php?u=' + window.location.href + '&text=' + title + '&', 'facebookwindow',
     'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
@@ -257,10 +257,9 @@ function initializeSocialMediaActions() {
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
-  $(document).on('click', '.share-linkedin', function (e) {
+  $(document).on('click', '.share-reddit', function (e) {
     e.preventDefault();
-    
-    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + window.location.href + '&title=' + title + '&', 'linkedinwindow',
+    window.open('http://www.reddit.com/submit?url=' + window.location.href + '&title=' + title + '&', 'redditwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
