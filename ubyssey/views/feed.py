@@ -117,7 +117,7 @@ class AuthorFeed(UbysseyArticleFeed):
         return AuthorPage.objects.get(slug=slug)
 
     def title(self, author):
-        return 'Stories from %s' % author.full_name
+        return 'Stories from %s at The Ubyssey' % author.full_name
 
     def description(self, author):
         return author.description
