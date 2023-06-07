@@ -44,6 +44,16 @@
                 <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
             </li>
         </ul>
+
+        <h2>Magazine Section</h2>
+        <ul>
+            {% for magazine in self.magazines %}
+            <li
+                class="o-archive__sidebar__filter{% if magazine == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                <a href="{% pageurl self %} magazine/{{ magazine }}/{{ request|query_string }}">{{ magazine.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 
 </div>

@@ -1,4 +1,5 @@
 from django import template
+from article.models import MagazineTagSnippet
 
 register = template.Library()
 
@@ -34,3 +35,11 @@ def remove_field_from_query_string(context, field):
     dict_ = context['request'].GET.copy()      
     dict_.pop(field, None) #Deletes the field if it exists, does nothing if it doesn't. Prevents KeyError
     return dict_.urlencode()
+
+
+@register.simple_tag(takes_context=True)
+def Magazines(context):
+    context["Magazines"] = MagazineTagSnippet.objects.all()
+
+    return context
+    

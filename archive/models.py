@@ -11,6 +11,10 @@ from wagtail.core.models import Page, Orderable
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.admin.edit_handlers import MultiFieldPanel, InlinePanel, HelpPanel
 
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
+from videos.models import VideosPage, VideoSnippet
+
+
 class MagazineTagOrderable(Orderable):
     page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="magazine_tags")
     magazine_tag = models.ForeignKey(
@@ -30,8 +34,7 @@ class MagazineTagOrderable(Orderable):
             heading="Magazine Tags"
         ),
     ]
-from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
-from videos.models import VideosPage, VideoSnippet
+
 
 class ArchivePage(RoutablePageMixin, Page):
     template = "archive/archive_page.html"
@@ -169,6 +172,12 @@ class ArchivePage(RoutablePageMixin, Page):
             return objects.search(search_query)
         else:
             return objects.filter(title=search_query)
+
+    def get_magazine_tags(self):
+        magazine_tags = self.magazine_tags.all()
+
+        return magazine_tags
+    magazines = property(fget=get_magazine_tags)
 
     @route(r'^$', name='general_view')
     def get_archive_general_articles(self, request, *args, **kwargs):
