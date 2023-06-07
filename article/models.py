@@ -48,6 +48,7 @@ from wagtail.core import blocks
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
+from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.documents.edit_handlers import DocumentChooserPanel
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
@@ -478,6 +479,15 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 ],
                 label = "Pull Quote",
                 template = 'article/stream_blocks/quote.html',
+            )),
+            ('audio_quote', blocks.StructBlock(
+                [
+                    ('content',blocks.CharBlock(required=False)),
+                    ('source',blocks.CharBlock(required=False)),
+                    ('audio',DocumentChooserBlock(required=True)),
+                ],
+                label = "Audio Quote",
+                template = 'article/stream_blocks/audio_quote.html',
             )),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
