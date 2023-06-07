@@ -28,18 +28,66 @@
             {% endfor %}
         {% endblock %}
 
-        <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
+        <article class="c-article{% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %} {% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                <div class="u-container">
-                    {% comment %} {% if breaking %}
-                        <a class="o-breaking-news" href="{{ breaking.get_absolute_url }}">
-                            <h3>BREAKING: {{ breaking.headline|safe }}</h3>
-                        </a>        
-                    {% endif %} {% endcomment %}
-                </div>
-                <div class="u-container u-container--content u-container--padded">
+                <div class="u-container u-container--content u-container--padded o-article--visual-essay">
+                    {% if self.featured_media.first.image %}
+                    {% with self.featured_media.first as featured_image_object %}
+                        <div class="featured-media">
+                            {% image featured_image_object.image original as original_image %}
+                            {% image featured_image_object.image width-500 as featured_image %}
+                            <img class="article-attachment" 
+                                data-id="{{ featured_image_object.id }}"
+                                data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
+                                data-credit="{% if featured_image_object.credit %}{{ featured_image_object.credit }}{% endif %}"
+                                {% comment %}
+                                    Differences between line data-url and arc attributes represent the difference between
+                                    the obselete Dispatch equivalent of the URL for the "original image" ("data-url" attribute)
+                                    the "rendition" ("src" attribute). "data-url" is included for backward compatibility,
+                                    but "src" secures the primary functionality of this img element.
+                                {% endcomment %}
+                                data-url="{{ original_image.url }}"
+                                src="{{ featured_image.url }}"
+                                alt=""
+                            />
+                            {% if featured_image_object.caption or featured_image_object.credit %}
+                                <div class="caption">
+                                    {% if featured_image_object.caption %}
+                                        {{ featured_image_object.caption }}
+                                    {% endif %}
+                                    {% if featured_image_object.credit %}
+                                        <span class="credit">
+                                            {{ featured_image_object.credit }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+                {% elif self.featured_media.first.video %}
+                    {% with self.featured_media.first as featured_video_object %}
+                        <div class="featured-media">
+                            <iframe 
+                                width="500px" 
+                                height="281px" 
+                                allowfullscreen="allowfullscreen"
+                                mozallowfullscreen="mozallowfullscreen" 
+                                msallowfullscreen="msallowfullscreen" 
+                                oallowfullscreen="oallowfullscreen" 
+                                webkitallowfullscreen="webkitallowfullscreen"
+                                src="{{ featured_video_object.video.url|youtube_embed_url|safe }}">
+                            </iframe>
+                            {% if featured_video_object.caption or featured_video_object.credit %}
+                                <div class="caption">
+                                    {% if featured_video_object.caption %}{{ featured_video_object.caption }}{% endif %} {% if featured_video_object.credit %}<span class="credit">{{ featured_video_object.credit }}</span>{% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+                {% endif %}
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
+                    <h2 class="o-subtitle">{{ self.lede|safe }}</h2>
                     <div class="c-article__info">
                         <div class="c-article__byline">
                             <div class="c-article__author">
@@ -67,175 +115,42 @@
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
                         {% endcomment %}
                     </div>
+                    <div class="o-visual-essay__introduction">
+                    {% for block in self.content %}
+                        {% if forloop.counter0 < self.content|get_first_image %}
+                            {% include_block block %}
+                        {% endif %}
+                    {% endfor %}
+                    </div>
                 </div>
             {% endblock %}
             <!-- Below is the container for Article content -->
-            <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
+            <div class="u-container clearfix u-container--padded u-container--large{% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
                 <!-- Below is the container for the left column article content  -->
                     {% block pre-content %}
                     {% endblock %}
+
                     {% if not self.is_explicit %}
                         {% filter inject_ads:is_mobile %}
                             <!-- Content unique to the article starts here -->
                             <!-- Article featured media -->
-                            {% if self.layout == 'visual-essay' %}
-                                {% if self.featured_media.first.image %}
-                                    {% with self.featured_media.first as featured_image_object %}
-                                        <div class="featured-media">
-                                            {% image featured_image_object.image original as original_image %}
-                                            {% image featured_image_object.image width-500 as featured_image %}
-                                            <img class="article-attachment" 
-                                                data-id="{{ featured_image_object.id }}"
-                                                data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
-                                                data-credit="{% if featured_image_object.credit %}{{ featured_image_object.credit }}{% endif %}"
-                                                {% comment %}
-                                                    Differences between line data-url and arc attributes represent the difference between
-                                                    the obselete Dispatch equivalent of the URL for the "original image" ("data-url" attribute)
-                                                    the "rendition" ("src" attribute). "data-url" is included for backward compatibility,
-                                                    but "src" secures the primary functionality of this img element.
-                                                {% endcomment %}
-                                                data-url="{{ original_image.url }}"
-                                                src="{{ featured_image.url }}"
-                                                alt=""
-                                            />
-                                            {% if featured_image_object.caption or featured_image_object.credit %}
-                                                <div class="caption">
-                                                    {% if featured_image_object.caption %}
-                                                        {{ featured_image_object.caption }}
-                                                    {% endif %}
-                                                    {% if featured_image_object.credit %}
-                                                        <span class="credit">
-                                                            {{ featured_image_object.credit }}
-                                                        </span>
-                                                    {% endif %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    {% endwith %}
-                                {% elif self.featured_media.first.video %}
-                                    {% with self.featured_media.first as featured_video_object %}
-                                        <div class="featured-media">
-                                            <iframe 
-                                                width="500px" 
-                                                height="281px" 
-                                                allowfullscreen="allowfullscreen"
-                                                mozallowfullscreen="mozallowfullscreen" 
-                                                msallowfullscreen="msallowfullscreen" 
-                                                oallowfullscreen="oallowfullscreen" 
-                                                webkitallowfullscreen="webkitallowfullscreen"
-                                                src="{{ featured_video_object.video.url|youtube_embed_url|safe }}">
-                                            </iframe>
-                                            {% if featured_video_object.caption or featured_video_object.credit %}
-                                                <div class="caption">
-                                                    {% if featured_video_object.caption %}{{ featured_video_object.caption }}{% endif %} {% if featured_video_object.credit %}<span class="credit">{{ featured_video_object.credit }}</span>{% endif %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    {% endwith %}
-                                {% endif %}
-                            {% endif %}
-                            <script>
-                                setInterval(function () {
-                                    var text = document.getElementById("text-container");
-                                    var imagescontainer = document.getElementById("images-container");
-                                    var count = 0;
-                                    for(let i=0; i<text.children.length; i++) {
-                                        //console.log("marks:" + text.children[i].offsetTop);
-                                        //console.log("scroll:" + document.documentElement.scrollTop);
-                                        if(text.children[i].classList.contains("mark")){
-                                            if(text.children[i].offsetTop < document.documentElement.scrollTop + document.body.offsetHeight/2) {
-                                            count = count + 1;
-                                            }
-                                        }
-                                    }
-                                    
-                                    if(count == 0) {
-                                        count = 1;
-                                    }
 
-                                    for(let a=0; a<imagescontainer.children.length; a++) {
-                                        //console.log("count: " + count);
-                                        if(a==count-1){
-                                            console.log("a:" + a)
-                                            imagescontainer.children[a].style.opacity = "1";
-                                        } else {
-                                            imagescontainer.children[a].style.opacity = "0";
-                                        }
-                                    }
-                                }, 10);
-                            </script>
-                            <style>
-                                #content-container {
-                                    display: flex; 
-                                    flex-direction: row;
-                                }
-                                #images-container {
-                                    width:500px;
-                                    position: sticky;
-                                    top: 20vh;
-                                    height: 50vh;
-                                }
-                                .image-div {
-                                    position: absolute;
-                                    width:500px; 
-                                    transition-duration: 1s;
-                                }
-                                #text-container {
-                                    width:300px;
-                                    margin: auto;
-                                }
-                                .text-div {
-                                    margin-bottom: 200px;
-                                }
-                                @media (max-width: 600px) {
-                                    #content-container {
-                                        flex-direction: column;
-                                    }
-                                    #text-container {
-                                        width:100%;
-                                    }
-                                    .text-div {
-                                        padding: 2%;
-                                    }
-                                    #images-container {
-                                        width: 100%;
-                                        height: 40vh;
-                                        position: sticky;
-                                        top: 35px;
-                                        background-color: white;
-                                        border-bottom-style: solid;
-                                        border-bottom-color: grey;
-                                    }
-                                    .image-div {
-                                        position: absolute;
-                                        height: 100%;
-                                        width: auto;
-                                        transition-duration: 1s;
-                                    }
-                                }
-                            </style>
-                            {% for block in self.content %}
-                                {% if forloop.counter0 < self.content|get_first_image %}
-                                    {% include_block block %}
-                                {% endif %}
-                            {% endfor %}                            
-
-                            <div id="content-container">
+                            <div id="o-content-container">
                                 <!-- Article text -->
-                                <div id="images-container">
+                                <div id="o-visual-essay__images-container">
                                     {% for block in self.content %}
-                                        {% if block.block_type == 'image' %}
-                                        <div class="image-div">
+                                        {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
+                                        <div class="o-visual-essay__image-div">
                                             {% include_block block %}
                                         </div>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
-                                <div id="text-container">
+                                <div id="o-visual-essay__text-container">
                                     {% for block in self.content %}
-                                        {% if block.block_type != 'image' %}
+                                        {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
                                             {% if not forloop.first %}
-                                            <div class="text-div">
+                                            <div class="o-visual-essay__text-div">
                                                 {% include_block block %}
                                             </div>
                                             {% endif %}
@@ -249,9 +164,31 @@
                         {% endfilter %}
                     {% else %}
                         <!-- Content unique to the article starts here -->
-                        {% for block in self.content %}
-                            {% include_block block %}
-                        {% endfor %}
+                        <div id="o-visual-essay__content-container">
+                            <!-- Article text -->
+                            <div id="o-visual-essay__images-container">
+                                {% for block in self.content %}
+                                    {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
+                                    <div class="o-visual-essay__image-div">
+                                        {% include_block block %}
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div id="o-visual-essay__text-container">
+                                {% for block in self.content %}
+                                    {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
+                                        {% if not forloop.first %}
+                                        <div class="o-visual-essay__text-div">
+                                            {% include_block block %}
+                                        </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="mark"></div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
                         <!-- Content unique to the article ends here -->
                     {% endif %}
                     {% block post-content %}
@@ -277,4 +214,5 @@
     {% for script_obj in self.scripts.all %}
         <script src="{{ script_obj.script.file.url }}" type="text/javascript"></script>
     {% endfor %}
+    <script src="{% static 'ubyssey/js/visual-essay.js' %}" type="text/javascript"></script>
 {% endblock %}
