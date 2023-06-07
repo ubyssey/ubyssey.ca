@@ -143,6 +143,35 @@ class ArticleSeriesSnippet(ClusterableModel):
          verbose_name = "Series of Articles"
          verbose_name_plural = "Series of Articles"
 
+@register_snippet
+class MagazineTagSnippet(ClusterableModel):
+    title = fields.CharField(
+        blank=False,
+        null=False,
+        max_length=200
+    )
+    slug = fields.SlugField(
+        unique=True,
+        blank=False,
+        null=False,
+        max_length=200
+    )
+    panels = [
+        MultiFieldPanel(
+            [
+                FieldPanel('title'),
+                FieldPanel('slug'),
+            ],
+            heading="Essentials"
+        ),
+    ]
+
+    def __str__(self):
+        return self.title
+    class Meta:
+         verbose_name = "Magazine Tag"
+         verbose_name_plural = "Magazine Tags"
+
 #-----Orderable models-----
 class ArticleAuthorsOrderable(Orderable):
     """
@@ -228,6 +257,7 @@ class ConnectedArticleOrderable(Orderable):
         ),
         FieldPanel('article_description')
     ]
+
 
 class SeriesOrderable(Orderable):
     """
@@ -567,6 +597,14 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         on_delete=models.SET_NULL,
     )
 
+    magazine_tag = models.ForeignKey(
+        "article.MagazineTagSnippet",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
     #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
 
     legacy_template = models.CharField(
@@ -845,6 +883,14 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 InlinePanel("connected_articles"),
             ],
             heading="Connected or Related Article Links (Non-Series)",
+            classname="collapsible collapsed",
+        ), # Connected or Related Article Links (Non-Series)
+        MultiFieldPanel(
+            [
+                HelpPanel(content="If the article is part of a magazine then please add the according magazine tag to this article"),
+                SnippetChooserPanel("magazine_tag"),
+            ],
+            heading="Magazine Tags",
             classname="collapsible collapsed",
         ), # Connected or Related Article Links (Non-Series)
     ] # fw_article_panels

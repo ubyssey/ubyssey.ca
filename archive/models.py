@@ -2,9 +2,33 @@ from django.db import models
 from django_user_agents.utils import get_user_agent
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
-from article.models import ArticlePage
+from article.models import ArticlePage, MagazineTagSnippet
+from modelcluster.fields import ParentalKey
+
 from section.models import SectionPage
-from wagtail.core.models import Page
+from wagtail.core.models import Page, Orderable
+from wagtail.snippets.edit_handlers import SnippetChooserPanel
+from wagtail.admin.edit_handlers import MultiFieldPanel, InlinePanel, HelpPanel
+
+class MagazineTagOrderable(Orderable):
+    page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="magazine_tags")
+    magazine_tag = models.ForeignKey(
+        "article.MagazineTagSnippet",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+
+    panels = [
+        MultiFieldPanel(
+            [
+                SnippetChooserPanel('magazine_tag'),
+            ],
+            heading="Magazine Tags"
+        ),
+    ]
 
 class ArchivePage(Page):
     template = "archive/archive_page.html"
@@ -13,6 +37,17 @@ class ArchivePage(Page):
         'home.HomePage',
     ]
     max_count_per_parent = 1
+
+    content_panels = [
+        MultiFieldPanel(
+            [
+                HelpPanel(content="You can add all the magazines that you want the users can filter for."),
+                InlinePanel("magazine_tags"),
+            ],
+            heading="Magazine Tags",
+            classname="collapsible",
+        ), # Connected or Related Article Links (Non-Series)
+    ]
 
     def __get_years(self):
         """
