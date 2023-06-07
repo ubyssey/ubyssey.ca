@@ -27,7 +27,7 @@ from django.views import defaults as default_views
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
-from ubyssey.views.feed import FrontpageFeed, SectionFeed
+from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
 
 advertise = AdvertiseTheme()
 
@@ -71,7 +71,8 @@ urlpatterns += [
     re_path(r'^admin/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
     re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
-    re_path(r'^(?P<slug>[-\w]+)/rss/$', SectionFeed(), name='section-feed'),
+    re_path(r'^rss/(?P<slug>[-\w]+)/$', SectionFeed(), name='section-feed'),
+    re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
     path('', include(wagtail_urls)),
 
     # # standard Ubyssey site

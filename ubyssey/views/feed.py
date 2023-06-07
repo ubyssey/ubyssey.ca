@@ -1,10 +1,12 @@
 from django.contrib.syndication.views import Feed
 from django.urls import reverse
+from django.utils import feedgenerator
+
+from django.utils.encoding import iri_to_uri
 
 from article.models import ArticlePage
 from section.models import SectionPage
-from django.utils import feedgenerator
-from django.utils.encoding import iri_to_uri
+from authors.models import AuthorPage
 
 class RssFeedWithImage(feedgenerator.Rss201rev2Feed):
     def add_root_elements(self, handler):
@@ -31,9 +33,7 @@ class RssFeedWithImage(feedgenerator.Rss201rev2Feed):
                 handler.addQuickElement("link", self.feed['image_link'])
             handler.endElement("image")
 
-
-class FrontpageFeed(Feed):
-
+class UbysseyArticleFeed(Feed):
     title = 'The Ubyssey'
     link = 'https://ubyssey.ca'
     description = "From your friends at The Ubyssey"
@@ -71,23 +71,24 @@ class FrontpageFeed(Feed):
 
     def item_link(self, item):
         return item.url
+    
+class FrontpageFeed(UbysseyArticleFeed):
 
-class SectionFeed(Feed):
+    title = 'The Ubyssey'
+    link = 'https://ubyssey.ca'
+    description = "From your friends at The Ubyssey"
     feed_url = 'https://ubyssey.ca/rss'
 
     feed_type = RssFeedWithImage
 
+    def items(self, section):
+        return ArticlePage.objects.live().public().order_by('explicit_published_at')[:self.max_items]
+        # .get_frontpage(limit=self.max_items)
+
+class SectionFeed(UbysseyArticleFeed):
+
     def __init__(self, max_items=10):
         self.max_items = max_items
-
-    def feed_extra_kwargs(self, obj):
-        '''
-        Adding details for the feed logo
-        '''
-        return {
-            "image_url": 'https://www.ubyssey.ca/static/ubyssey/images/ubyssey-logo-square.7fdeb5ac7f29.png',
-            "image_title": 'Ubyssey Logo',
-            "image_link": 'https://ubyssey.ca'}
 
     def get_object(self, request, slug):
         return SectionPage.objects.get(slug=slug)
@@ -100,21 +101,32 @@ class SectionFeed(Feed):
 
     def link(self, section):
         return 'https://ubyssey.ca/%s/' % section.slug
+    
+    def feed_url(self, section):
+        return 'https://ubyssey.ca/rss/%s' % section.slug
 
     def items(self, section):
         return ArticlePage.objects.live().public().filter(current_section=section.slug).order_by('explicit_published_at')[:self.max_items]
+    
+class AuthorFeed(UbysseyArticleFeed):
 
-    def item_title(self, item):
-        return item.title
+    def __init__(self, max_items=10):
+        self.max_items = max_items
 
-    def item_pubdate(self, item):
-        return item.explicit_published_at
+    def get_object(self, request, slug):
+        return AuthorPage.objects.get(slug=slug)
 
-    def item_description(self, item):
-        return item.search_description
+    def title(self, author):
+        return 'Stories from %s' % author.full_name
 
-    def item_author_name(self, item):
-        return item.get_authors_string()
+    def description(self, author):
+        return author.description
+    
+    def link(self, author):
+        return 'https://ubyssey.ca/authors/%s/' % author.slug
+    
+    def feed_url(self, author):
+        return 'https://ubyssey.ca/authors/%s/rss/' % author.slug
 
-    def item_link(self, item):
-        return item.url
+    def items(self, author):
+        return ArticlePage.objects.live().public().filter(article_authors__author=author).order_by('explicit_published_at')[:self.max_items]
