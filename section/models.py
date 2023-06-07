@@ -203,6 +203,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         context = self.get_context(request, category_slug=category_slug)
         return render(request, 'section/section_page.html', context)
 
+    # @route(r'section_var/')
+    """@route(r'^archive/news$')
+    def archive_section_view(self, request, current_section):
+        context = self.get_context(request, current_section=current_section)
+        return render(request, 'archive/archive_page.html', context)
+"""
     def save(self, *args, **kwargs):
         self.current_section = self.slug
         return Page.save(self,*args, **kwargs)
