@@ -484,7 +484,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 [
                     ('content',blocks.CharBlock(required=False)),
                     ('source',blocks.CharBlock(required=False)),
-                    ('audio',DocumentChooserBlock(required=True)),
+                    ('audio',DocumentChooserBlock(required=True, help_text="mp3 format")),
                 ],
                 label = "Audio Quote",
                 template = 'article/stream_blocks/audio_quote.html',
