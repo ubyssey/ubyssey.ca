@@ -781,6 +781,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         ),
         MultiFieldPanel(
             [
+                HelpPanel(content="If the article is part of a magazine then please add the according magazine tag to this article."),
+                SnippetChooserPanel("magazine_tag"),
+            ],
+            heading="Magazine Tags",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
                 InlinePanel("featured_media", label="Featured Image or Video"),
             ],
             heading="Featured Media",
@@ -900,15 +908,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ],
             heading="Connected or Related Article Links (Non-Series)",
             classname="collapsible collapsed",
-        ), # Connected or Related Article Links (Non-Series)
-        MultiFieldPanel(
-            [
-                HelpPanel(content="If the article is part of a magazine then please add the according magazine tag to this article"),
-                SnippetChooserPanel("magazine_tag"),
-            ],
-            heading="Magazine Tags",
-            classname="collapsible collapsed",
-        ), # Connected or Related Article Links (Non-Series)
+        ), # Connected or Related Article Links (Non-Series) 
     ] # fw_article_panels
     customization_panels = [
         HelpPanel(
