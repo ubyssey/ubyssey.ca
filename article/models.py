@@ -162,6 +162,7 @@ class MagazineTagSnippet(ClusterableModel):
         MultiFieldPanel(
             [
                 FieldPanel('title'),
+                HelpPanel('Change the slug if it includes special characters as that will interefere with the archive page'),
                 FieldPanel('slug'),
             ],
             heading="Essentials"
@@ -454,6 +455,19 @@ class ArticlePageManager(PageManager):
         if section_slug:
             try:
                 new_section_root = SectionPage.objects.get(slug=section_slug)
+            except Page.DoesNotExist:
+                new_section_root = None
+            if new_section_root:
+                section_root = new_section_root
+            
+        return self.live().public().descendant_of(section_root).exact_type(ArticlePage) #.order_by('-last_modified_at')
+    
+    def from_magazine_tag(self, magazine_slug='', section_root=None) -> QuerySet:
+        from .models import ArticlePage
+        from section.models import SectionPage
+        if magazine_slug:
+            try:
+                new_section_root = MagazineTagSnippet.objects.get(slug=magazine_slug)
             except Page.DoesNotExist:
                 new_section_root = None
             if new_section_root:

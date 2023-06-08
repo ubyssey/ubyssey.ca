@@ -45,12 +45,12 @@
             </li>
         </ul>
 
-        <h2>Magazine Section</h2>
+        <h2>Magazines</h2>
         <ul>
-            {% for magazine in self.magazines %}
+            {% for iter in self.magazine_tags.all %}
             <li
-                class="o-archive__sidebar__filter{% if magazine == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="{% pageurl self %} magazine/{{ magazine }}/{{ request|query_string }}">{{ magazine.name }}</a>
+                class="o-archive__sidebar__filter{% if iter.magazine_tag.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                <a href="{% pageurl self %}magazines/{{ iter.magazine_tag.slug }}/{{ request|query_string }}">{{ iter.magazine_tag.title }}</a>
             </li>
             {% endfor %}
         </ul>
@@ -111,7 +111,7 @@
                 <div class="o-mobile-dropdown__list__container js-dropdown-container">
                     <div>
                         <div class="o-mobile-dropdown__header">
-                            <h2 class="o-mobile-dropdown__title">Filter by section:</h3>
+                            <h2 class="o-mobile-dropdown__title o-mobile-dropdown__title_overlap">Filter by section and Magazine:</h3>
                                 <div class="o-mobile-dropdown__close">
                                     <i class="fa fa-close"></i>
                                 </div>
@@ -131,11 +131,16 @@
                                 class="o-mobile-dropdown__item {% if video_section == True %} o-mobile-dropdown__item--is-active{% endif %}">
                                 <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
                             </li>
+                            {% for iter in self.magazine_tags.all %}
+                            <li
+                                class="o-mobile-dropdown__item {% if iter.magazine_tag.slug == magazine_slug %} o-mobile-dropdown__item--is-active {% endif %}">
+                                <a href="{% pageurl self %}magazines/{{ iter.magazine_tag.slug }}/{{ request|query_string }}">Magazine: {{ iter.magazine_tag.title }}</a>
+                            </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
             </div>
-
         </div>
         {% endif %}
 

@@ -215,11 +215,11 @@ class ArchivePage(RoutablePageMixin, Page):
     def get_section_articles(self, request, sections_slug):
         video_section = False
         context = self.get_context(request, video_section)
-        section_slug = context['section_slug'] = sections_slug
+        context['section_slug'] = sections_slug
 
         search_query = context["q"]
         
-        articles = ArticlePage.objects.from_section(section_slug=section_slug).live().public()
+        articles = ArticlePage.objects.from_section(section_slug=sections_slug).live().public()
         
         if context["order"]:
             articles = self.get_order_objects(context["order"], articles, video_section)           
@@ -255,5 +255,30 @@ class ArchivePage(RoutablePageMixin, Page):
         
 
         context = self.get_paginated_articles(context, videos, video_section, request)
+        
+        return render(request, "archive/archive_page.html", context)
+    
+
+    @route(r'^magazines/(?P<magazine_slug>[-\w]+)/$', name="magazines_view")
+    def get_magazine_articles(self, request, magazine_slug):
+        video_section = False
+        context = self.get_context(request, video_section)
+        context['magazine_slug'] = magazine_slug
+
+        search_query = context["q"]
+        
+        articles = ArticlePage.objects.live().public().filter(magazine_tag__slug=magazine_slug)
+
+        
+        if context["order"]:
+            articles = self.get_order_objects(context["order"], articles, video_section)           
+        
+        if self.year:
+            articles = self.get_year_objects(articles, video_section)
+        
+        if search_query:
+            articles = self.get_search_objects(search_query, articles, video_section)
+
+        context = self.get_paginated_articles(context, articles, video_section, request)
         
         return render(request, "archive/archive_page.html", context)
