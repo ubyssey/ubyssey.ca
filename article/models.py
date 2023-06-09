@@ -483,6 +483,55 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
+            ('visual_essay', blocks.StructBlock(
+                [
+                    ('content', blocks.StreamBlock([
+                        ('rich_text', blocks.StructBlock(
+                            [
+                                ('block', blocks.RichTextBlock(                                
+                                    label="Rich Text Block",
+                                    help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+                                )),
+                                ('side',blocks.ChoiceBlock(
+                                    choices=[('left', 'Left'),('right', 'Right'),]
+                                )),
+                            ]
+                        )),
+                        ('image', blocks.StructBlock(
+                            [
+                                ('block', image_blocks.ImageBlock()),
+                                ('side',blocks.ChoiceBlock(
+                                    choices=[('left', 'Left'),('right', 'Right'),]
+                                )),
+                            ]
+                        )),
+                        ('video', blocks.StructBlock(
+                            [
+                                ('block', video_blocks.OneOffVideoBlock(
+                                    label = "Credited/Captioned One-Off Video",
+                                    help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
+                                )),
+                                ('side',blocks.ChoiceBlock(
+                                    choices=[('left', 'Left'),('right', 'Right'),]
+                                )),
+                            ]
+                        )),
+                        ('raw_html', blocks.StructBlock(
+                            [
+                                ('block', blocks.RawHTMLBlock(
+                                    label = "Raw HTML Block",
+                                    help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
+                                )),
+                                ('side',blocks.ChoiceBlock(
+                                    choices=[('left', 'Left'),('right', 'Right'),]
+                                )),
+                            ]
+                        )),
+                    ]))
+                ],
+                label = "Visual essay",
+                template = 'article/stream_blocks/visual-essay.html',
+            )),
         ],
         null=True,
         blank=True,

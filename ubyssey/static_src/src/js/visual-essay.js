@@ -22,9 +22,11 @@ document.body.onscroll = function () {
         for(let a=0; a<left.children.length; a++) {
             //console.log("count: " + count);
             if(a==count-1){
-                left.children[a].style.opacity = "1";
+                left.children[a].classList.add("o-visual-essay__left-show");
+                left.children[a].classList.remove("o-visual-essay__left-hide");
             } else {
-                left.children[a].style.opacity = "0";
+                left.children[a].classList.add("o-visual-essay__left-hide");
+                left.children[a].classList.remove("o-visual-essay__left-show");
             }
         }
     }

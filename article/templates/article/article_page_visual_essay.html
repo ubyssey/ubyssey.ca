@@ -15,8 +15,17 @@
 {% endblock %}
 
 {% block header %}
-    {% include 'navigation/headers/topbar.html' %}
-    {% include 'navigation/headers/mobile.html' %}
+    <!-- {% include 'navigation/headers/topbar.html' %} -->
+    <!-- {% include 'navigation/headers/mobile.html' %} -->
+    <a class="logo" href="{% url 'wagtail_serve' '' %}" style="
+    width: 100%;
+    display: block;
+    margin-top: 10px;">
+        <img src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt="" style="
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);">
+    </a>
 {% endblock %}
 
 {% block content %}
@@ -31,7 +40,7 @@
         <article class="c-article{% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %} {% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                <div class="u-container u-container--content u-container--padded o-article--visual-essay">
+                <div class="u-container u-container--content u-container--padded u-container--large o-article--visual-essay">
                     {% if self.featured_media.first.image %}
                     {% with self.featured_media.first as featured_image_object %}
                         <div class="featured-media">
@@ -115,13 +124,6 @@
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
                         {% endcomment %}
                     </div>
-                    <div class="o-visual-essay__introduction">
-                    {% for block in self.content %}
-                        {% if forloop.counter0 < self.content|get_first_image %}
-                            {% include_block block with id=block.id %}
-                        {% endif %}
-                    {% endfor %}
-                    </div>
                 </div>
             {% endblock %}
             <!-- Below is the container for Article content -->
@@ -136,78 +138,17 @@
                             <!-- Article featured media -->
 
                         <!-- Content unique to the article starts here -->
-                        <div class="o-visual-essay__content-container">
-                            <!-- Article text -->
-                            <div class="o-visual-essay__left-container">
-                                {% for block in self.content %}
-                                    {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
-                                    <div class="o-visual-essay__left-div">
-                                        {% if block.block_type == 'image' %}
-                                            {% image block.value.image original as bg %}
-                                            <div class="o-visual-essay__left-image" style="background-image: url('{{bg.url}}')"></div>
-                                            {% if block.value.caption or block.value.credit %}
-                                            <div class="caption">
-                                                {% if block.value.caption %}{{ block.value.caption|safe }}{% endif %} 
-                                                <span class="credit">{% if block.value.credit %}{{ block.value.credit }}{% endif %}</span>
-                                            </div>
-                                            {% endif %}
-                                        {% else %}
-                                            {% include_block block with id=block.id %}
-                                        {% endif %}
-                                    </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            <div class="o-visual-essay__right-container">
-                                {% for block in self.content %}
-                                    {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
-                                        {% if not forloop.first %}
-                                        <div class="o-visual-essay__right-div">
-                                            {% include_block block with id=block.id %}
-                                        </div>
-                                        {% endif %}
-                                    {% else %}
-                                        <div class="mark"></div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                            <!-- Content unique to the article ends here -->
+                        {% for block in self.content %}
+                            {% include_block block with id=block.id %}
+                        {% endfor %}
+                        <!-- Content unique to the article ends here -->
                         {% endfilter %}
                     {% else %}
-                        <!-- Content unique to the article starts here -->
-                        <div class="o-visual-essay__content-container">
-                            <!-- Article text -->
-                            <div class="o-visual-essay__left-container">
-                                {% for block in self.content %}
-                                    {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
-                                    <div class="o-visual-essay__left-div">
-                                        {% if block.block_type == 'image' %}
-                                            {% image block.image original as bg %}
-                                            <p>{{bg.url}}</p>
-                                            <div class="o-visual-essay__left-image" style="background-image: url('{{bg.url}}')"></div>
-                                        {% else %}
-                                            {% include_block block with id=block.id %}
-                                        {% endif %}
-                                    </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            <div class="o-visual-essay__right-container">
-                                {% for block in self.content %}
-                                    {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
-                                        {% if not forloop.first %}
-                                        <div class="o-visual-essay__right-div">
-                                            {% include_block block with id=block.id %}
-                                        </div>
-                                        {% endif %}
-                                    {% else %}
-                                        <div class="mark"></div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <!-- Content unique to the article ends here -->
+                    <!-- Content unique to the article starts here -->
+                        {% for block in self.content %}
+                            {% include_block block with id=block.id %}
+                        {% endfor %}
+                    <!-- Content unique to the article ends here -->
                     {% endif %}
                     {% block post-content %}
                     {% endblock %}
