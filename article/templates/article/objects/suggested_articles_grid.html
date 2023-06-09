@@ -1,0 +1,29 @@
+{% comment %} 
+Arguments: suggested_articles a list of article pages
+Used in both section pages and homepage
+{% endcomment %}
+
+{% load my_tags %}
+
+{% if suggested_articles|length != 0 %}
+  {% include 'article/objects/featured.html' with article=suggested_articles|first %}
+  {% if suggested_articles|length != 1 %}
+    <div class="c-section__featured__articles u-flex--tablet">
+    {% for article in suggested_articles|indexing_from:1 %}
+        {% include 'article/objects/column.html' with article=article %}
+        {% if not forloop.last %}
+          {% if forloop.counter|divisibleby:3 %}
+            </div>
+            <div class="c-section__featured__articles u-flex--tablet">
+          {% endif %}
+          
+        {% else %}
+            
+          </div>
+        {% endif %}
+
+    {% endfor %}
+  {% endif %}
+{% else %}
+  <div class="o-archive__no-results">No content found 😔</div>
+{% endif %}
