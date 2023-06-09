@@ -92,6 +92,22 @@
             {% else %}
                 {% include 'objects/replacement.html' with size='box' %}
             {% endif %}
+
+            <div class="article-list blog sidebar-block suggested-articles">
+                        
+                {% if self.category == None or self.category_articles|length == 1 %}
+                    <h2 class="block-title">FROM THE {{ self.current_section }}</h2>
+                {% else %}
+                    <h2 class="block-title">FROM THE {{ self.category }}</h2>
+                {% endif %}
+                    <br>
+                {% for article in suggested_articles %}
+                    {% if article.slug != self.slug %} 
+                        {% include 'article/objects/suggested_articles_column.html' with article=article padded=True   %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
         </div>
     </div>
 {% endblock %}
