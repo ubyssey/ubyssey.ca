@@ -44,7 +44,7 @@ function setDarkMode(mode) {
         r.style.setProperty('--nav-span-color', '#FFFFF');
         r.style.setProperty('--nav-headline-h1', '#5D5D5D');
         r.style.setProperty('--three-bar-logo-color', '#EFEFEF');
-        $('.ubyssey_small_logo').attr("src","/static/ubyssey/images/ubyssey-logo-small-white.svg");
+        $('.ubyssey_small_logo').attr("src","/static/ubyssey/images/ubyssey_logo_dark_mode.png");
 
     
     }
