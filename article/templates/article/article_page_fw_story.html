@@ -92,29 +92,21 @@
             {% else %}
                 {% include 'objects/replacement.html' with size='box' %}
             {% endif %}
-
-                        
-                {% if self.category == None or self.category_articles|length == 1 %}
-                    <h2 class="block-title">FROM THE {{ self.current_section }}</h2>
-                {% else %}
-                    <h2 class="block-title">FROM THE {{ self.category }}</h2>
-                {% endif %}
-                    <br>
-                    {% include 'objects/suggested_articles_grid.html' with suggested_articles=suggested_articles %}
-                <!--
-                {% for article in suggested_articles %}
-                    {% if article.slug != self.slug %} 
-                        {% include 'article/objects/suggested_articles_column.html' with article=article padded=True   %}
-                    {% endif %}
-                {% endfor %}
-                -->
-            
         </div>
     </div>
 {% endblock %}
 
-
-
+<aside class="cell right sidebar">
+    {% block sidebar %}
+    {% if self.category == None or self.category_articles|length == 1 %}
+    <h2 class="block-title">FROM THE {{ self.current_section }}</h2>
+    {% else %}
+    <h2 class="block-title">FROM THE {{ self.category }}</h2>
+    {% endif %}
+    <br>
+    {% include 'article/objects/suggested_articles_grid.html' with suggested_articles=suggested_articles %}
+    {% endblock %}
+</aside>
 {% block scripts %} 
     {% if self.show_timeline%}
          <script src="{% static 'ubyssey/js/timeline.js' %}" type="text/javascript"></script>
