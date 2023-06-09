@@ -34,19 +34,26 @@
                 <a href="{% pageurl self %}{{ request|query_string }}">All sections</a>
             </li>
             {% for section in sections %}
-            <li
-                class="o-archive__sidebar__filter{% if section.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
-            </li>
+                {% if section.title != "Magazines" and section.title != "The Ubyssey Student Marketplace" %}
+                <li
+                    class="o-archive__sidebar__filter{% if section.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                    <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
+                </li>
+                {% endif %}
             {% endfor %}
             <li
                 class="o-archive__sidebar__filter {% if video_section == True %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
             </li>
+        
         </ul>
 
         <h2>Magazines</h2>
         <ul>
+            <li
+                class="o-archive__sidebar__filter{% if not section_slug and video_section == False %} o-archive__sidebar__filter--is-active{% endif %}">
+                <a href="{% pageurl self %}magazines/{{ request|query_string }}">All magazines</a>
+            </li>
             {% for iter in self.magazine_tags.all %}
             <li
                 class="o-archive__sidebar__filter{% if iter.magazine_tag.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
@@ -111,7 +118,7 @@
                 <div class="o-mobile-dropdown__list__container js-dropdown-container">
                     <div>
                         <div class="o-mobile-dropdown__header">
-                            <h2 class="o-mobile-dropdown__title o-mobile-dropdown__title_overlap">Filter by section and Magazine:</h3>
+                            <h2 class="o-mobile-dropdown__title o-mobile-dropdown__title_overlap">Filter by Section and Magazine:</h3>
                                 <div class="o-mobile-dropdown__close">
                                     <i class="fa fa-close"></i>
                                 </div>
@@ -122,10 +129,12 @@
                                 <a href="{% pageurl self %}{{ request|query_string }}">All</a>
                             </li>
                             {% for section in sections %}
-                            <li
-                                class="o-mobile-dropdown__item {% if section.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
-                            </li>
+                                {% if section.title != "The Ubyssey Student Marketplace" %}
+                                    <li
+                                        class="o-mobile-dropdown__item {% if section.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
+                                        <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
+                                    </li>
+                                {% endif %}
                             {% endfor %}
                             <li
                                 class="o-mobile-dropdown__item {% if video_section == True %} o-mobile-dropdown__item--is-active{% endif %}">

@@ -196,7 +196,8 @@ class ArchivePage(RoutablePageMixin, Page):
         return render(request, "archive/archive_page.html", context)
     
     @route(r'^section/(?P<sections_slug>[-\w]+)/$', name='section_view')
-    def get_section_articles(self, request, sections_slug):
+    @route(r'^magazines/$', name='magazines_general_view')
+    def get_section_articles(self, request, sections_slug="magazines"):
         video_section = False
         context = self.get_context(request, video_section)
         context['section_slug'] = sections_slug
