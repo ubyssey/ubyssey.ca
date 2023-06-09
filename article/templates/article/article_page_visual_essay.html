@@ -118,7 +118,7 @@
                     <div class="o-visual-essay__introduction">
                     {% for block in self.content %}
                         {% if forloop.counter0 < self.content|get_first_image %}
-                            {% include_block block %}
+                            {% include_block block with id=block.id %}
                         {% endif %}
                     {% endfor %}
                     </div>
@@ -135,52 +135,70 @@
                             <!-- Content unique to the article starts here -->
                             <!-- Article featured media -->
 
-                            <div id="o-visual-essay__content-container">
-                                <!-- Article text -->
-                                <div id="o-visual-essay__images-container">
-                                    {% for block in self.content %}
-                                        {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
-                                        <div class="o-visual-essay__image-div">
-                                            {% include_block block %}
-                                        </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                                <div id="o-visual-essay__text-container">
-                                    {% for block in self.content %}
-                                        {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
-                                            {% if not forloop.first %}
-                                            <div class="o-visual-essay__text-div">
-                                                {% include_block block %}
+                        <!-- Content unique to the article starts here -->
+                        <div class="o-visual-essay__content-container">
+                            <!-- Article text -->
+                            <div class="o-visual-essay__left-container">
+                                {% for block in self.content %}
+                                    {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
+                                    <div class="o-visual-essay__left-div">
+                                        {% if block.block_type == 'image' %}
+                                            {% image block.value.image original as bg %}
+                                            <div class="o-visual-essay__left-image" style="background-image: url('{{bg.url}}')"></div>
+                                            {% if block.value.caption or block.value.credit %}
+                                            <div class="caption">
+                                                {% if block.value.caption %}{{ block.value.caption|safe }}{% endif %} 
+                                                <span class="credit">{% if block.value.credit %}{{ block.value.credit }}{% endif %}</span>
                                             </div>
                                             {% endif %}
                                         {% else %}
-                                            <div class="mark"></div>
+                                            {% include_block block with id=block.id %}
                                         {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <!-- Content unique to the article ends here -->
-                        {% endfilter %}
-                    {% else %}
-                        <!-- Content unique to the article starts here -->
-                        <div id="o-visual-essay__content-container">
-                            <!-- Article text -->
-                            <div id="o-visual-essay__images-container">
-                                {% for block in self.content %}
-                                    {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
-                                    <div class="o-visual-essay__image-div">
-                                        {% include_block block %}
                                     </div>
                                     {% endif %}
                                 {% endfor %}
                             </div>
-                            <div id="o-visual-essay__text-container">
+                            <div class="o-visual-essay__right-container">
                                 {% for block in self.content %}
                                     {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
                                         {% if not forloop.first %}
-                                        <div class="o-visual-essay__text-div">
-                                            {% include_block block %}
+                                        <div class="o-visual-essay__right-div">
+                                            {% include_block block with id=block.id %}
+                                        </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="mark"></div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                            <!-- Content unique to the article ends here -->
+                        {% endfilter %}
+                    {% else %}
+                        <!-- Content unique to the article starts here -->
+                        <div class="o-visual-essay__content-container">
+                            <!-- Article text -->
+                            <div class="o-visual-essay__left-container">
+                                {% for block in self.content %}
+                                    {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
+                                    <div class="o-visual-essay__left-div">
+                                        {% if block.block_type == 'image' %}
+                                            {% image block.image original as bg %}
+                                            <p>{{bg.url}}</p>
+                                            <div class="o-visual-essay__left-image" style="background-image: url('{{bg.url}}')"></div>
+                                        {% else %}
+                                            {% include_block block with id=block.id %}
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="o-visual-essay__right-container">
+                                {% for block in self.content %}
+                                    {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
+                                        {% if not forloop.first %}
+                                        <div class="o-visual-essay__right-div">
+                                            {% include_block block with id=block.id %}
                                         </div>
                                         {% endif %}
                                     {% else %}

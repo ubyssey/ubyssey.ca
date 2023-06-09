@@ -1,0 +1,23 @@
+<div class="o-visual-essay__content-container">
+    <!-- Article text -->
+    <div class="o-visual-essay__left-container">
+        {% for block in content %}
+            {% if block.side == "left" %}
+            <div class="o-visual-essay__left-div">
+                {% include_block block with id=block.id %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="o-visual-essay__right-container">
+        {% for block in content %}
+            {% if block.side == "right" %}
+                <div class="o-visual-essay__right-div">
+                    {% include_block block with id=block.id %}
+                </div>
+            {% else %}
+                <div class="mark"></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
