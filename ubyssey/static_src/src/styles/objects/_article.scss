@@ -590,6 +590,8 @@
   margin-top: 200px;
   max-width: 300px;
   line-height: 2em;
+  font-family: "noto-serif","Georgia",serif;
+  color: #333333;
 
   @media ($bp-smaller-than-phablet) {
     padding: 2%;

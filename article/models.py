@@ -30,6 +30,7 @@ from section.sectionable.models import SectionablePage
 from taggit.models import TaggedItemBase
 
 from videos import blocks as video_blocks
+from article import blocks as article_blocks
 
 from wagtail.admin.edit_handlers import (
     # Panels
@@ -452,7 +453,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 label="Rich Text Block",
                 help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
             )),
-            ('plaintext',blocks.TextBlock(
+            ('plaintext', blocks.TextBlock(
                 label="Plain Text Block",
                 help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
             )),
@@ -471,67 +472,12 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', blocks.StructBlock(
-                [
-                    ('content',blocks.CharBlock(required=False)),
-                    ('source',blocks.CharBlock(required=False)),
-                ],
-                label = "Pull Quote",
-                template = 'article/stream_blocks/quote.html',
-            )),
+            ('quote', article_blocks.PullQuoteBlock()),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
-            ('visual_essay', blocks.StructBlock(
-                [
-                    ('content', blocks.StreamBlock([
-                        ('rich_text', blocks.StructBlock(
-                            [
-                                ('block', blocks.RichTextBlock(                                
-                                    label="Rich Text Block",
-                                    help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
-                                )),
-                                ('side',blocks.ChoiceBlock(
-                                    choices=[('left', 'Left'),('right', 'Right'),]
-                                )),
-                            ]
-                        )),
-                        ('image', blocks.StructBlock(
-                            [
-                                ('block', image_blocks.ImageBlock()),
-                                ('side',blocks.ChoiceBlock(
-                                    choices=[('left', 'Left'),('right', 'Right'),]
-                                )),
-                            ]
-                        )),
-                        ('video', blocks.StructBlock(
-                            [
-                                ('block', video_blocks.OneOffVideoBlock(
-                                    label = "Credited/Captioned One-Off Video",
-                                    help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
-                                )),
-                                ('side',blocks.ChoiceBlock(
-                                    choices=[('left', 'Left'),('right', 'Right'),]
-                                )),
-                            ]
-                        )),
-                        ('raw_html', blocks.StructBlock(
-                            [
-                                ('block', blocks.RawHTMLBlock(
-                                    label = "Raw HTML Block",
-                                    help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
-                                )),
-                                ('side',blocks.ChoiceBlock(
-                                    choices=[('left', 'Left'),('right', 'Right'),]
-                                )),
-                            ]
-                        )),
-                    ]))
-                ],
-                label = "Visual essay",
-                template = 'article/stream_blocks/visual-essay.html',
-            )),
+            ('visual_essay', article_blocks.VisualEssayBlock()),
         ],
         null=True,
         blank=True,
