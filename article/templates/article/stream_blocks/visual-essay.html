@@ -2,12 +2,12 @@
 {% load wagtailimages_tags %}
 {% load static %}
 
-<div class="o-visual-essay__content-container">
+<div class="o-visual-essay__content-container o-visual-essay__content-container-hide">
     <!-- Article text -->
     <div class="o-visual-essay__left-container">
         {% for block in self.content %}
             {% if block.value.side == "left" %}
-            <div class="o-visual-essay__left-div o-visual-essay__left-hide">
+            <div class="o-visual-essay__left-div o-visual-essay__left-next">
                 {% if block.block_type == 'image' %}
                     {% if block.value.block.caption or block.value.block.credit %}
                     <div class="caption">
