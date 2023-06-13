@@ -34,7 +34,7 @@
                 <a href="{% pageurl self %}{{ request|query_string }}">All sections</a>
             </li>
             {% for section in sections %}
-                {% if section.title != "Magazines" and section.title != "The Ubyssey Student Marketplace" %}
+                {% if section.title != "The Ubyssey Student Marketplace" and "20" not in section.title and  section.title != "Pages" %}
                 <li
                     class="o-archive__sidebar__filter{% if section.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
                     <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
@@ -129,7 +129,7 @@
                                 <a href="{% pageurl self %}{{ request|query_string }}">All</a>
                             </li>
                             {% for section in sections %}
-                                {% if section.title != "The Ubyssey Student Marketplace" %}
+                                {% if section.title != "The Ubyssey Student Marketplace" and "20" not in section.title %}
                                     <li
                                         class="o-mobile-dropdown__item {% if section.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
                                         <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
