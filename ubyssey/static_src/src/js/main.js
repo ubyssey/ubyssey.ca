@@ -181,12 +181,6 @@ function initializeModals() {
   let DROPDOWN_FADE_TIME = 100;
   var modal = document.getElementById("modal");
 
-  $('.js-dropdown-container').click(function (e) {
-    e.preventDefault();
-    closeModal();
-    return false;
-  });
-
   $('.open-modal > a').click(function (e) {
     e.preventDefault();
     var modalLink = $(this).parent().find('.openModal')[0];
@@ -300,6 +294,8 @@ function closeModal() {
   for (let i=0; i < modal.children.length; i++) {
     modal.children[i].style.display = "none";
   }
+
+  $('body').removeClass('u-no-scroll');
 }
 
 function openModal() {
@@ -328,6 +324,4 @@ function moveModals() {
     modalBlocks[i].insertAdjacentElement("beforebegin", div);
     modal.appendChild(modalBlocks[i]);
   } 
-
-    $('body').removeClass('u-no-scroll');
 }
