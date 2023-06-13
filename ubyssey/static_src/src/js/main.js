@@ -178,6 +178,7 @@ function ubysseyHeaderMobilePopUp() {
     e.preventDefault();
     if ($('nav.mobile').is(':visible')) {
       $('nav.mobile').hide();
+      closeModal();
       $(this).removeClass('active');
     } else {
       if ($('#search-form').is(':visible')) {
@@ -186,6 +187,7 @@ function ubysseyHeaderMobilePopUp() {
       }
       $('nav.mobile').show();
       $(this).addClass('active');
+      openModal();
     }
   });
 }
@@ -265,4 +267,26 @@ function initializeSocialMediaActions() {
     window.open('http://www.reddit.com/submit?url=' + $(this).data('url') + '&title=' + $(this).data('title') + '&', 'redditwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
+}
+
+function closeModal() {
+  var modal = document.getElementById("modal");
+  modal.style.display = 'none';
+  
+  var content = document.getElementById("content-wrapper");
+  content.removeAttribute("tabindex");
+  content.removeAttribute("readonly");
+  content.removeAttribute("aria-hidden");
+  content.removeAttribute("inert");
+}
+
+function openModal() {
+  var modal = document.getElementById("modal");
+  modal.style.display = 'block';
+  
+  var content = document.getElementById("content-wrapper");
+  content.setAttribute("tabindex", "-1");
+  content.setAttribute("readonly", "");
+  content.setAttribute("aria-hidden", "true");
+  content.setAttribute("inert", "");
 }

@@ -8,22 +8,4 @@
     {% comment %} <a class="search right" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
 </header>
 <div id="header-mobile-spacer{% if class %}--{{ class }}{% endif %}"></div>
-<nav class="mobile">
-    <div class="left">
-        <h2>Sections</h2>
-        <ul class="sections">
-            {% main_menu %}
-            {% comment %} {% for menu_item in settings.navigation.SitewideMenus.main_header_menu.all %}
-=                <li><a href="{{ menu_item.link }}">{{ menu_item.text }}</a></li>
-            {% endfor %} {% endcomment %}
-        </ul>
-    </div>
-    <div class="right">
-        <h2>Links</h2>
-        <ul class="links">
-            {% flat_menu 'mobile_links_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-        </ul>
-    </div>
-</nav>
-
 

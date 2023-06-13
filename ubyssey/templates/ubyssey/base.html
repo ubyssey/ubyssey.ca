@@ -143,6 +143,11 @@
 		</div>
 		{% block header %}
 		{% endblock %}
+		<div id="modal" aria-modal="true">
+			{% include 'navigation/headers/mobile-modal.html' %}
+			{% block modal %}{% endblock %}
+		</div>
+
 		<div id="search-form">
 		</div>
 		<div id="content-wrapper">
