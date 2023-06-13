@@ -164,6 +164,7 @@
                         {% comment %} Suggested articles in same Section up to 6 articles that are not itself {% endcomment %}
                         
                         <div class="article-list blog sidebar-block suggested-articles show-desktop">
+                            {% block fw_suggested_articles %}
                             {% if suggested_articles|length != 1 %}
                                 {% if self.category_articles|length != 0 %}
                                     {% if self.category == None or self.category_articles|length == 1 %}
@@ -174,11 +175,14 @@
                                         <br>
                                     {% for article in suggested_articles %}
                                         {% if article.slug != self.slug %} 
-                                            {% include 'article/objects/suggested_articles_column.html' with article=article padded=True   %}
+                                            
+                                                {% include 'article/objects/suggested_articles_column.html' with article=article padded=True   %}
+                                            
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
                             {% endif %}
+                            {% endblock %}
                         </div>
 
                     {% endblock %}

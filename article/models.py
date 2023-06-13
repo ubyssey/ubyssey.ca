@@ -1013,7 +1013,6 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
     authors_with_roles = property(fget=get_authors_with_roles)
  
     def get_category_articles(self, order='-explicit_published_at') -> QuerySet:
-        print(self.category)
         category_articles = ArticlePage.objects.live().public().filter(category=self.category).order_by(order)
 
         return category_articles
