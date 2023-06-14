@@ -3,13 +3,15 @@ import upcomingEvents from './widgets/upcoming-events';
 
 (function () {
 
+  moveModals();
+  initializeModals();
+
+  archiveMobileDropDown();
   initializeSearchFormActions();
   initializeSocialMediaActions();
 
-  ubysseyHeaderMobilePopUp();
   ubysseyHeaderMagazineDropDown();
   ubysseyHeaderCultureDropDown();
-  archiveMobileDropDown();
 
   if ($('.js-article').length) {
     mp.pageView('article', $('.js-article'), 1)
@@ -147,6 +149,7 @@ function archiveMobileDropDown() {
 
   $('.js-dropdown-container').click(function (e) {
     e.preventDefault();
+    closeModal();
     var dropdown = $(this).parent();
     dropdown.fadeOut(DROPDOWN_FADE_TIME);
     enableScroll();
@@ -173,20 +176,31 @@ function archiveMobileDropDown() {
   });
 }
 
-function ubysseyHeaderMobilePopUp() {
-  $('a.menu').click(function (e) {
+
+function initializeModals() {
+  let DROPDOWN_FADE_TIME = 100;
+  var modal = document.getElementById("modal");
+
+  $('.open-modal > a').click(function (e) {
     e.preventDefault();
-    if ($('nav.mobile').is(':visible')) {
-      $('nav.mobile').hide();
+    var modalLink = $(this).parent().find('.openModal')[0];
+    console.log(modalLink);
+    var modalIndex = parseInt(modalLink.getAttribute("modal"));
+    if (modal.style.display == "block") {
+      closeModal();
+      modal.children[modalIndex].style.display = "none";
       $(this).removeClass('active');
     } else {
-      if ($('#search-form').is(':visible')) {
-        $('#search-form').hide();
-        $('a.search').removeClass('active');
-      }
-      $('nav.mobile').show();
+      modal.children[modalIndex].style.display = "block";
+      openModal();
       $(this).addClass('active');
     }
+    return false;
+  });
+
+  $('a.close-modal').click(function (e) {
+    e.preventDefault();
+    closeModal();
   });
 }
 
@@ -265,4 +279,49 @@ function initializeSocialMediaActions() {
     window.open('http://www.reddit.com/submit?url=' + $(this).data('url') + '&title=' + $(this).data('title') + '&', 'redditwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
+}
+
+function closeModal() {
+  var modal = document.getElementById("modal");
+  modal.style.display = 'none';
+  
+  var content = document.getElementById("content-wrapper");
+  content.removeAttribute("tabindex");
+  content.removeAttribute("readonly");
+  content.removeAttribute("aria-hidden");
+  content.removeAttribute("inert");
+
+  for (let i=0; i < modal.children.length; i++) {
+    modal.children[i].style.display = "none";
+  }
+
+  $('body').removeClass('u-no-scroll');
+}
+
+function openModal() {
+  var modal = document.getElementById("modal");
+  modal.style.display = 'block';
+  
+  var content = document.getElementById("content-wrapper");
+  content.setAttribute("tabindex", "-1");
+  content.setAttribute("readonly", "");
+  content.setAttribute("aria-hidden", "true");
+  content.setAttribute("inert", "");
+
+  $('body').addClass('u-no-scroll');
+}
+
+function moveModals() {
+  var modalBlocks = document.getElementsByClassName("add-to-modal");
+  var modal = document.getElementById("modal");
+
+  for (let i=0; i < modalBlocks.length; i++) {
+    //modalBlocks[i].remove();
+    var div = document.createElement("div");
+    div.classList.add("openModal");
+    div.setAttribute("modal", i);
+
+    modalBlocks[i].insertAdjacentElement("beforebegin", div);
+    modal.appendChild(modalBlocks[i]);
+  } 
 }
