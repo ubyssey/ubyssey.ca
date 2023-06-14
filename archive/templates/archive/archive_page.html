@@ -3,6 +3,7 @@
 {% block header %}
 {% include 'navigation/headers/topbar.html' %}
 {% include 'navigation/headers/mobile.html' %}
+{% load archive_tags %}
 {% endblock %}
 
 {% block content %}
@@ -12,9 +13,15 @@
         <div class="c-page__header">
             <h1 class="c-page__heading">Search the archive</h1>
         </div>
+        <div class="c-page__header">
+            <a href="https://issuu.com/ubyssey"> For all Ubyssey's print issues </a>
+        </div>
+        
 
         {% include 'archive/objects/archive.html' %}
 
     </div>
 </main>
 {% endblock %}
+
+
