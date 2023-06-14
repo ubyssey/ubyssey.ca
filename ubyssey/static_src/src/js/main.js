@@ -12,6 +12,7 @@ import upcomingEvents from './widgets/upcoming-events';
 
   ubysseyHeaderMagazineDropDown();
   ubysseyHeaderCultureDropDown();
+  //initializeGallery()
 
   if ($('.js-article').length) {
     mp.pageView('article', $('.js-article'), 1)
@@ -188,10 +189,12 @@ function initializeModals() {
     var modalIndex = parseInt(modalLink.getAttribute("modal"));
     if (modal.style.display == "block") {
       closeModal();
-      modal.children[modalIndex].style.display = "none";
+      modal.children[modalIndex].classList.add("hide");
+      modal.children[modalIndex].classList.remove("show");
       $(this).removeClass('active');
     } else {
-      modal.children[modalIndex].style.display = "block";
+      modal.children[modalIndex].classList.remove("hide");
+      modal.children[modalIndex].classList.add("show");
       openModal();
       $(this).addClass('active');
     }
@@ -292,7 +295,8 @@ function closeModal() {
   content.removeAttribute("inert");
 
   for (let i=0; i < modal.children.length; i++) {
-    modal.children[i].style.display = "none";
+    modal.children[i].classList.remove("show");
+    modal.children[i].classList.add("hide");
   }
 
   $('body').removeClass('u-no-scroll');
@@ -324,4 +328,18 @@ function moveModals() {
     modalBlocks[i].insertAdjacentElement("beforebegin", div);
     modal.appendChild(modalBlocks[i]);
   } 
+}
+
+function initializeGallery() {
+  var gallery = document.getElementById("gallery")
+
+  $('a.gallery-item').click(function (e) {
+    e.preventDefault();
+    
+    document.getElementById("modal-image").style.backgroundImage = "url('" + this.getAttribute("image") + "')";
+
+    gallery.classList.add("show");
+    gallery.classList.remove("hide");
+    openModal();
+  });
 }

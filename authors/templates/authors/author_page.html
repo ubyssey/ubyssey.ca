@@ -61,7 +61,7 @@
 		{% elif media_type == "photos" %}
 			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
 		{% elif media_type == "videos" %}
-			{% include 'archive/objects/video_archive.html' with paginated_videos=paginated_articles %}
+			{% include 'archive/objects/archive.html' with page_obj=paginated_articles video_section=true%}
 		{% endif %}
 	</div>
 </main>

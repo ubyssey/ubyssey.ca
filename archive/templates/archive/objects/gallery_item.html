@@ -2,9 +2,17 @@
 
 {% image image height-300 as img%}
 {% image image height-600 as big%}
-<div class="gallery-item" image="{{big.full_url}}" title="{{image.title}}">
-    <div class="gallery-image" style="background-image: url('{{img.full_url}}')"></div>
-    <div class="gallery-wrapper">
-        <h3 class="gallery-item-title">{{image.title}}</h3>
+
+<div class="open-modal gallery-item">
+    <a href="#">
+        <div class="gallery-image" style="background-image: url('{{img.full_url}}')"></div>
+    </a>
+
+    <div class="add-to-modal image-modal hide js-dropdown-container">
+        <div class="u-container u-container--large modal-content">
+            <div class="image-modal-image" style="background-image: url('{{big.full_url}}')"></div>
+            <a class="close-modal close-gallery" href="#"><i class="fa fa-close"></i></a>
+        </div>
     </div>
+
 </div>

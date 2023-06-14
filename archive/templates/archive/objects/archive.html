@@ -150,7 +150,7 @@
 			{% if page_obj|length > 0 %}
 			<div class="o-archive__main__list">
 				{% for object in page_obj %}
-						{% if video_section == False or video_section == None %}
+					{% if video_section == False or video_section == None %}
 						{% include 'archive/objects/article_list.html' with article=object %}
 					{% else %}
 						{% include 'videos/stream_blocks/video.html' with video=object %}

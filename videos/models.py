@@ -93,7 +93,7 @@ class VideosPage(SectionablePage):
 #-----Snippet models-----
 
 @register_snippet
-class VideoSnippet(ClusterableModel):
+class VideoSnippet(index.Indexed, ClusterableModel):
 
     title = models.CharField(
         max_length=255,
@@ -186,7 +186,7 @@ class VideoSnippet(ClusterableModel):
     ]
         #-----Search fields etc-----
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
-    search_fields = Page.search_fields + [
+    search_fields = [
         index.SearchField('title'),
         index.SearchField('slug'),
         
@@ -194,10 +194,6 @@ class VideoSnippet(ClusterableModel):
         index.FilterField('tags'),
         index.FilterField('slug'),
         index.FilterField('created_at'),
-
-        index.RelatedFields('category', [
-            index.FilterField('slug'),
-        ]),
     ]
     class Meta:
         verbose_name = "Video"

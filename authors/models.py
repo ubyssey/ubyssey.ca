@@ -154,10 +154,16 @@ class AuthorPage(RoutablePageMixin, Page):
                 article_order = "updated_at"
             else:            
                 article_order = "-updated_at"
-            authors_media =  VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order)
+            authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order)
 
         if search_query:
-            authors_media = authors_media.search(search_query)
+            if media_type == "videos":
+                #from wagtail.search.backends import get_search_backend
+                #s = get_search_backend()
+                #authors_media = s.search(search_query, authors_media)
+                authors_media = authors_media.filter(title=search_query)
+            else:
+                authors_media = authors_media.search(search_query)
 
         # Paginate all posts by 15 per page
         paginator = Paginator(authors_media, per_page=15)
