@@ -24,6 +24,7 @@
 				<h2 class="author-role"> {{self.ubyssey_role}} </h2>
 				{% if self.description %}<p class="author-desc">{{ self.description|safe }}</p>{% endif %}
 				<p class="author-links">
+					<a class="social_media_links" href="/{{self.slug}}/rss"><i class="fa fa-rss fa-fw" style="font-size:1em;"></i>&nbsp;rss</a>
 					{% for icon in self.linkIcons %}
 						{{icon}}
 					{% endfor %}
