@@ -1,5 +1,6 @@
 {% load static %}
 {% load dispatch_tags %}
+{% load i18n wagtailcore_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,6 +114,15 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 {% block header %}{% endblock %}
 <div id="search-form"></div>
 <div id="content-wrapper">
+  {% for language_code, language_name in LANGUAGES %}
+    {% get_language_info for language_code as lang %}
+
+    {% language language_code %}
+        <a href="{% pageurl page.localized %}" rel="alternate" hreflang="{{ language_code }}">
+            {{ lang.name_local }}
+        </a>
+    {% endlanguage %}
+{% endfor %}
 {% block content %}{% endblock %}
 {% block footer %}{% include 'footer.html' %}{% endblock %}
 </div>

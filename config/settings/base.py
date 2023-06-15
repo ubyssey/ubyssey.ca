@@ -169,6 +169,7 @@ INSTALLED_APPS = [
     'wagtail.documents',
     'wagtail.images',
     'wagtail.search',
+    'wagtail.locales',
     'wagtail.admin',
     'wagtail.core',
     'wagtail.contrib.routable_page',
@@ -236,6 +237,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'wagtail.contrib.settings.context_processors.settings',
                 'wagtailmenus.context_processors.wagtailmenus',
+                'django.template.context_processors.i18n',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -294,11 +296,30 @@ MIDDLEWARE += [
     'django.middleware.security.SecurityMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'wagtailcache.cache.UpdateCacheMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 GS_LOCATION = None
 GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
 GS_USE_SIGNED_URLS = False
+
+USE_I18N = True
+WAGTAIL_I18N_ENABLED = True
+
+USE_L10N = True
+
+LANGUAGES = [
+    ('en-GB', "English (Great Britain)"),
+    ('en-US', "English (United States)"),
+    ('en-CA', "English (Canada)"),
+    ('fr-FR', "French (France)"),
+    ('fr-CA', "French (Canada)"),
+]
+
+WAGTAIL_CONTENT_LANGUAGES = [
+    ('en-GB', "English"),
+    ('fr-FR', "French"),
+]
 
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'CA'

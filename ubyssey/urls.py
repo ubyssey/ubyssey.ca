@@ -127,3 +127,16 @@ urlpatterns += [
     # re_path(r'^(?P<slug>[-\w]+)/$', SectionView.as_view(), name='section'),
     # re_path(r'^api/articles/(?P<pk>[0-9]+)/rendered/$', ArticleAjaxView.as_view(), name='article-ajax'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+from django.conf.urls.i18n import i18n_patterns
+
+# Non-translatable URLs
+# Note: if you are using the Wagtail API or sitemaps,
+# these should not be added to `i18n_patterns` either
+urlpatterns += [
+    path('django-admin/', admin.site.urls),
+
+    path('admin/', include(wagtailadmin_urls)),
+    path('documents/', include(wagtaildocs_urls)),
+]
