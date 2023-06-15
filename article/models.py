@@ -439,6 +439,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
     parent_page_types = [
         'specialfeaturelanding.SpecialLandingPage',
         'section.SectionPage',
+        'subsection.SubSectionPage',
     ]
 
     subpage_types = [] #Prevents article pages from having child pages

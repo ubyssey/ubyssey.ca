@@ -1,5 +1,5 @@
 from django.db.models.query import QuerySet
-from .sectionable.models import SectionablePage
+from section.sectionable.models import SectionablePage
 
 from article.models import ArticlePage
 
@@ -23,122 +23,21 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
 
-#-----Snippet models-----
-@register_snippet
-class CategorySnippet(index.Indexed, ClusterableModel):
-    """
-    Formerly known as a 'Subsection'
-    """
-    title = CharField(
-        blank=False,
-        null=False,
-        max_length=100
-    )
-    slug = SlugField(
-        unique=True,
-        blank=False,
-        null=False,
-        max_length=100
-    )
-    description = TextField(
-        null=False,
-        blank=True,
-        default='',
-    )
-    # authors = ManyToManyField('Author', related_name='subsection_authors')
-    is_active = BooleanField( # legacy field
-        default=False
-    )
-    section_page = ParentalKey(
-        "section.SectionPage",
-        related_name="categories",
-    )
-    search_fields = [
-        index.SearchField('title', partial_match=True),
-    ]
+class SubSectionPage(RoutablePageMixin, SectionablePage):
 
-    panels = [
-        MultiFieldPanel(
-            [
-                FieldPanel("title"),
-                FieldPanel("slug"),
-                PageChooserPanel("section_page"),
-                FieldPanel("description"),
-            ],
-            heading="Essentials"
-        ),
-        MultiFieldPanel(
-            [
-                InlinePanel("category_authors"),
-            ],
-            heading="Category Author(s)"
-        ),
-    ]
-    def __str__(self):
-        return "%s - %s" % (self.section_page, self.title)
-    
-    class Meta:
-        verbose_name = "Category"
-        verbose_name_plural = "Categories"
 
-#-----Orderable models-----
-class CategoryAuthor(wagtail_core_models.Orderable):
-    author = ForeignKey(
-        "authors.AuthorPage",
-        blank=False,
-        null=False,
-        on_delete=models.CASCADE,
-    )
-    category = ParentalKey(
-        CategorySnippet,
-        blank=True,
-        null=True,
-        related_name="category_authors",
-    )
-    panels = [
-        PageChooserPanel("author"),
-    ]
 
-class CategoryMenuItem(wagtail_core_models.Orderable):
-    category = ForeignKey(
-        "section.CategorySnippet",
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-    )
-    section = ParentalKey(
-        "section.SectionPage",
-        blank=True,
-        null=True,
-        related_name="category_menu",
-    )
-    panels = [
-        SnippetChooserPanel("category"),
+    parent_page_types = [
+        'home.HomePage',
+        'section.SectionPage',
     ]
-
-class SectionPage(RoutablePageMixin, SectionablePage):
-    template = 'section/section_page.html'
 
     subpage_types = [
         'article.ArticlePage',
-        'article.SpecialArticleLikePage',
-        'specialfeaturelanding.SpecialLandingPage',
-        'subsection.SubSectionPage',
-    ]
-    parent_page_types = [
-        'home.HomePage',
     ]
 
     show_in_menus_default = True
 
-    content_panels = wagtail_core_models.Page.content_panels + [
-        MultiFieldPanel(
-            [
-                InlinePanel("category_menu"),
-            ],
-            heading="Category Menu",
-        ),
-    ]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -199,15 +98,11 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         return queryset[:number_featured]    
     featured_articles = property(fget=get_featured_articles)
 
-    @route(r'^category/(?P<category_slug>[-\w]+)/$', name='category_view')
-    def category_view(self, request, category_slug):
-        context = self.get_context(request, category_slug=category_slug)
-        return render(request, 'section/section_page.html', context)
-
     def save(self, *args, **kwargs):
         self.current_section = self.slug
         return Page.save(self,*args, **kwargs)
 
     class Meta:
-        verbose_name = "Section"
-        verbose_name_plural = "Sections"
+        verbose_name = "Sub-section"
+        verbose_name_plural = "Sub-sections"
+

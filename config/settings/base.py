@@ -152,7 +152,7 @@ INSTALLED_APPS = [
     'specialfeaturelanding',
     'navigation',
     'dashboard',
-
+    'subsection',
     'dispatch.apps.DispatchConfig',
     'dispatchusers.apps.DispatchusersConfig',
     'newsletter.apps.NewsletterConfig',
