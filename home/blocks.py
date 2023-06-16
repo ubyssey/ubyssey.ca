@@ -3,6 +3,7 @@ Blocks used on the home page of the site
 """
 from ads.models import HomeSidebarPlacementOrderable
 from article.models import ArticlePage
+from section.models import CategorySnippet
 
 from django import forms
 from django.db.models import Q
@@ -10,6 +11,7 @@ from dispatch.models import Section
 
 from wagtail.core import blocks
 from wagtail.core.blocks import field_block
+from wagtail.snippets.blocks import SnippetChooserBlock
 
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmodelchooser.blocks import ModelChooserBlock
@@ -125,6 +127,23 @@ class SidebarSectionBlock(blocks.StructBlock):
         return context
     class Meta:
         template = "home/stream_blocks/sidebar_section_block.html"
+
+class SidebarCategoryBlock(blocks.StructBlock):
+    title = blocks.CharBlock(
+        required=True,
+        max_length=255,
+    )
+    category = SnippetChooserBlock(CategorySnippet)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['title']
+        context['category'] = value['title']
+        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')
+        return context
+    class Meta:
+        template = "home/stream_blocks/sidebar_category_block.html"
+
 
 class SidebarImageLinkBlock(blocks.StructBlock):
     image = ImageChooserBlock(required=True)
