@@ -127,7 +127,7 @@
 
   @media($bp-larger-than-phablet) {
     // Structure
-    width:60%;
+    width:55%;
 
     .o-article__headline {
       // Text
@@ -429,6 +429,10 @@
     // Text
     font-size: font-size(18);
     line-height: 1.2em;
+  }
+
+  .o-article__meta{
+    margin: 0.6rem;
   }
 
 }

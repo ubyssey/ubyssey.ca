@@ -105,11 +105,10 @@
   position:relative;
   margin-bottom:40px;
   background-size:cover;
-  .c-page__heading {
+  svg.c-section__heading {
     position: absolute;
-    bottom: -35px;
+    bottom: -55px;
     left: 50px;
-    text-shadow: -2px 2px 10px black;
     @media($bp-smaller-than-phablet) {
       bottom: -25px;
     }
@@ -172,4 +171,16 @@
   position:absolute;
   right:50px;
   top:50px;
+}
+
+.c-section__heading {
+  fill: white;
+  stroke: black;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  font-size: 2rem;
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-family: $font-banner;
 }

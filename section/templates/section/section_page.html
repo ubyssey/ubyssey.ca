@@ -50,7 +50,9 @@
       {% if banner %}
         {% image banner width-700 as banner_image %}
         <div class="banner" style="background-image: url('{{banner_image.full_url}}');">
-          <h1 class="c-page__heading">{{title}}</h1>
+          <svg class="c-section__heading" viewBox="0 0 450 70">
+            <text class="c-section__heading" x="10" y="50" style="stroke: {{self.colour}}">{{title}}</text>
+          </svg>
         </div>
       {%else%}
         <h1 class="c-page__heading">{{title}}</h1>
@@ -73,13 +75,9 @@
       </div>
 
       <div class="lightmode c-infinitefeed__feed">
-        <div class="u-container">
-          {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
-        </div>
-
+        {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
 
         {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with styling="c-section__sidebar" id="sidebar" sidebar_stream=self.sidebar_stream %}
-
       </div>
     </div>
   </main>

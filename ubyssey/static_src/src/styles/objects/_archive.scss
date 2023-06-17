@@ -28,7 +28,8 @@ $search-bar-height: 46px;
 
   // Border
   border: none;
-  border-bottom: white solid;
+  border-bottom: 1px solid;
+  border-color: white;
 
   // Background
   background: #fff;
@@ -41,7 +42,7 @@ $search-bar-height: 46px;
   transition-duration: 0.2s;
 
   &:focus {
-	border-bottom: black solid;
+	border-color: black;
     outline: 0;
 	width:100%;
 	opacity: 1;

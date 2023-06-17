@@ -63,8 +63,8 @@
 
 <div id="feed-section" class="home_infinitefeed home_infinitefeed_cutoff">
 	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
-		<div class="u-container">
-			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode' title='Infinite feed' textBold='Today' textId='timeBox' %}
+		<div class="c-home-infinitefeed">
+			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode c-home-bannerbox' title='Infinite feed' textBold='Today' textId='timeBox' %}
 			{% include 'infinitefeed/infinitefeed.html' with filters=filters label="True" %}
 		</div>
 

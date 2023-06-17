@@ -15,13 +15,14 @@
 .c-sidebar_item {
     transition-duration: 0.2s;
     transition-property: top;
+    width:100%;
 }
 
 .c-sidebar {
     position:sticky;
     top: 50px;
     height:100px;
-    width:100%;
+    width:40%;
 
     @media ($bp-smaller-than-phablet) {
         display:none;
@@ -29,11 +30,21 @@
 }
 
 .c-section__sidebar {
-    width: 30%;
-  }
+    margin-left: 20px;
+}
 
-  .c-infinitefeed__feed {
-    width:95%;
+.c-infinitefeed__feed {
     margin:auto;
     display:flex;
   }
+
+.c-home-infinitefeed {
+    width: 50%;
+    margin-right: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.c-home-bannerbox {
+    width: 90%;
+}
