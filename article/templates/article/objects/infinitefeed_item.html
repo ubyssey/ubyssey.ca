@@ -18,7 +18,6 @@
 				{% if article.current_section|get_label %}
 					<a href="/{{article.current_section}}">
 						<img class="o-article__section_label" src="{{article.current_section|get_label}}">
-						<h3 class="o-article__section_label_text" style="color:{{article|get_colour}}">{{article.current_section}}</h3>
 					</a>
 				{% endif %}
 			{% endif %}
@@ -39,8 +38,10 @@
 			</h3>
 			<p class="o-article__snippet">{{ article.lede|safe }}</p>
 			<p class="o-article__byline">
-				<span class="o-article__author">By {{ article.get_authors_with_urls|safe }}</span>
-				<span> &nbsp;·&nbsp; </span>
+				<span class="o-article__author">{{ article.get_authors_with_urls|safe }}</span>
+				<span> &nbsp;&nbsp; </span>
+				<a href="/{{article.current_section}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article.current_section}}</a>
+				<span> &nbsp;&nbsp; </span>
 				<span class="o-article__published">{{ article.first_published_at|naturaltime }}</span>
 			</p>
 		</div>

@@ -738,6 +738,7 @@ ol.article-list {
   text-align: right;
   padding-right: 2%;
   border-width: 0.1em;
+  border-style: solid;
 }
 .boxText-left {
   margin: 0;
@@ -754,8 +755,8 @@ ol.article-list {
     border-color: #C0E3F1;
   }
   .boxLabel-right {
-    border:solid #C0E3F1;
     background-color: #041620;
+    border-color: #C0E3F1;
   }
   .boxText-left {
     color:#031621;
@@ -771,8 +772,8 @@ ol.article-list {
     border-color: #041620;
   }
   .boxLabel-right {
-    border:solid #041620;
     background-color: #C0E3F1;
+    border-color: #041620;
   }
   .boxText-left {
     color:#ffffff;
