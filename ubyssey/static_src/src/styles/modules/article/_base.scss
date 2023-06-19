@@ -246,6 +246,11 @@ div.article-content {
       color: $color-accent-blue;
       text-decoration: underline;
     }
+    
+    a:hover {
+      color: #71B2D4;
+      text-decoration: none;
+    }
 
     &:first-child {
         margin-top: 5px;
