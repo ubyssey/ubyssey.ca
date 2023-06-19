@@ -62,10 +62,20 @@
                                 {% endcomment %}
                             </div>
                         </div>
+
                         {% comment %}
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
                         {% endcomment %}
                     </div>
+                    <hr>
+                    <p>{{ self.authors_with_bio_desc|safe }}</p>
+                    {% if self.authors_img_string|length > 1 %}
+                        {% for author_image in self.authors_img_string %}
+                            <p> {{ author_image.url }}</p>
+                        {% endfor %}
+                    {% else %}
+                        <p> {{ self.authors_img_string.url }} </p>
+                    {% endif %}
                 </div>
             {% endblock %}
             <!-- Below is the container for Article content -->

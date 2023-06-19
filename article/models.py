@@ -941,6 +941,37 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
         return context
 
+    def get_authors_img_string(self):
+        """
+        Returns html-friendly list of the ArticlePage's authors as a comma-separated string (with 'and' before last author).
+        Keeps large amounts of logic out of templates.
+
+          links: Whether the author names link to their respective pages.
+        """
+        def format_author(article_author):
+            # Possible to add links to images
+            return article_author.author.image
+
+        authors_main = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
+        authors_list = authors_main["author"]
+
+        if not authors_list:
+            authors = [format_author(article_author) for article_author in self.article_authors.all()]
+        else:
+            authors = [format_author(article_author) for article_author in authors_list]
+           
+        print(authors)
+
+        if not authors:
+            return ""
+        elif len(authors) == 1:
+            # If this is the only author, just return author name
+            return authors[0]
+
+        return authors        
+    authors_img_string = property(fget=get_authors_img_string)
+
+
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
         Returns html-friendly list of the ArticlePage's authors as a comma-separated string (with 'and' before last author).
@@ -957,6 +988,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             authors = list(map(format_author, self.article_authors.all()))
         else:
             authors = list(map(format_author, authors_list))
+           
 
         if not authors:
             return ""
@@ -974,6 +1006,22 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         return self.get_authors_string(links=True)
     authors_with_urls = property(fget=get_authors_with_urls)
 
+    # Master Writer Function
+
+    # Gets small biography description
+    def get_authors_small_bio(self) -> str:
+        """
+        Returns a text with all the authors combined together.
+        """
+        authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
+        
+        written_bio = ""
+        for article_author in authors["author"]:
+            written_bio += article_author.author.short_bio_description
+                
+        return written_bio
+    authors_with_bio_desc = property(fget=get_authors_small_bio)
+
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
@@ -986,8 +1034,6 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         for author in authors:
-            if author == 'author':
-                string_written += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
             if author == 'photographer':
                 string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
             if author == 'illustrator':

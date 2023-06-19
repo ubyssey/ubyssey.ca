@@ -64,11 +64,18 @@ class AuthorPage(Page):
         default='',
     )
 
-    description = models.TextField(
+    short_bio_description = models.TextField(
         null=False,
         blank=True,
         default='',
     )
+
+    bio_description = models.TextField(
+        null=False,
+        blank=True,
+        default='',
+    )
+
     # For editting in wagtail:
     content_panels = [
         # title not present, title should NOT be directly editable
@@ -77,7 +84,8 @@ class AuthorPage(Page):
             [
                 ImageChooserPanel("image"),
                 FieldPanel("ubyssey_role"),
-                FieldPanel("description"),
+                FieldPanel("bio_description"),
+                FieldPanel("short_bio_description"),
                 FieldPanel("facebook_url"),
                 FieldPanel("twitter_url"),
             ],
