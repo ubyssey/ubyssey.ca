@@ -47,7 +47,7 @@
 			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Today's best!" text=date textBold=dayOfWeek %}
 			
 			{% for article in self.top_articles_list %}
-				{% include "article/objects/top_article.html" with article=article.article %}
+				{% include "article/objects/top_article.html" with article=article.article count=forloop.counter %}
 			{% endfor %}
 		</div>
 	</div>

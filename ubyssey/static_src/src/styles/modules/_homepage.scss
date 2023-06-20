@@ -673,6 +673,7 @@ ol.article-list {
   margin-bottom: 10px;
   list-style-type: none;
   background-color:#0071c9;
+  border: 2px solid black;
   &:hover{
     left: -10px;
   }
@@ -683,9 +684,6 @@ ol.article-list {
 
 .issuePhoto{
   text-align: center;
-  img {
-    width: 100%;
-  }
 }
 
 .darkmode {

@@ -15,7 +15,6 @@
 .c-sidebar_item {
     transition-duration: 0.2s;
     transition-property: top;
-    width:100%;
 }
 
 .c-sidebar {
@@ -31,11 +30,19 @@
 
 .c-section__sidebar {
     margin-left: 20px;
+    width: 37%;
+    top:100px;
+
+    .c-sidebar_item {
+        right:0;
+        width: 100%;
+    }
 }
 
 .c-infinitefeed__feed {
     margin:auto;
     display:flex;
+    min-height: 50vh;
   }
 
 .c-home-infinitefeed {
@@ -49,4 +56,20 @@
 
 .c-home-bannerbox {
     width: 90%;
+}
+
+.sectionfeed {
+    #feed {
+        @media ($bp-larger-than-phablet) {
+            width: 65%;
+            padding-right: 20px;
+            border-right: 2px grey solid;
+        }
+        .article--infinitefeed {
+            border-color: grey !important;
+            .o-article__image {
+                border-color: grey !important;
+            }
+        }
+    }
 }

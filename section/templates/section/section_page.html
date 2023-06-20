@@ -45,7 +45,7 @@
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
     
-    <div class="u-container u-container--large">
+    <div class="u-container u-container--mid">
 
       {% if banner %}
         {% image banner width-700 as banner_image %}
@@ -74,7 +74,7 @@
         </div>
       </div>
 
-      <div class="lightmode c-infinitefeed__feed">
+      <div class="lightmode c-infinitefeed__feed sectionfeed">
         {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
 
         {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with styling="c-section__sidebar" id="sidebar" sidebar_stream=self.sidebar_stream %}

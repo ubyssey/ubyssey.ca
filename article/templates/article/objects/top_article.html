@@ -16,6 +16,14 @@
             <a class="o-article__image" href="{% pageurl article %}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
           {% endif %}
         {% endif %}
+
+        <div class="o-article__label">
+          <div class="o-article__label_num">
+            {{count}}
+          </div>
+        </div>
+
+
       </div>
     </div>
     <div class="o-article__right">
