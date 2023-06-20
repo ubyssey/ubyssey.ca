@@ -414,15 +414,24 @@
     text-align: center;
   }
   p.source {
+    text-align: right;
+    position: relative;
+    float: right;
+
     margin-top: 10px;
     margin-bottom: 0;
 
     text-transform: uppercase;
-    text-align: right;
     color: #000000;
     font-weight: 100;
     font-style: italic;
     font-size: 0.77em;
+
+    .volume {
+      position: absolute;
+      left: -1.5rem;
+      top: 0.15rem;
+    }
   }
 }
 
