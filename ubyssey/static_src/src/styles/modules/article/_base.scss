@@ -108,6 +108,52 @@ div.indicator {
   }
 }
 
+.c-authors_bio_desc {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-family: $font-default;
+  font-size: $font-size-15px;
+  font-weight: $font-weight-semi-bold;
+
+
+  @media($bp-larger-than-tablet) {
+    display: flex;
+    flex: 1 0;
+    line-height: 2rem;
+    margin-bottom: 0;
+  }
+}
+.c-authors_bio {
+  margin-bottom: 0.2rem;
+  font-family: $font-default;
+  font-size: $font-size-15px;
+  // font-weight: $font-weight-semi-bold;
+  font-weight: $font-weight-bold;
+
+
+  @media($bp-larger-than-tablet) {
+    display: flex;
+    flex: 1 0;
+    line-height: 2rem;
+    margin-bottom: 0;
+  }
+}
+
+.author_image {
+  display: flex;
+  padding: 1em;
+  border-radius: 50%;
+}
+
+.c-author__byline {
+  padding-left: 1em;
+  margin-bottom: 0.2rem;
+  
+  font-family: $font-default;
+  font-size: $font-size-15px;
+  font-weight: $font-weight-semi-bold;
+}
+
 .c-article__byline-center{
   display: flex;
   justify-content: center;

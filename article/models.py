@@ -1014,10 +1014,10 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         Returns a text with all the authors combined together.
         """
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
-        
-        written_bio = ""
-        for article_author in authors["author"]:
-            written_bio += article_author.author.short_bio_description
+        authors_list = authors["author"]
+        written_bio = authors_list[0].author.short_bio_description
+        for article_author in authors_list[1:]:
+            written_bio += " " + article_author.author.short_bio_description
                 
         return written_bio
     authors_with_bio_desc = property(fget=get_authors_small_bio)
@@ -1034,6 +1034,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         for author in authors:
+            if author == 'author':
+                authors_with_roles += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
             if author == 'photographer':
                 string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
             if author == 'illustrator':
