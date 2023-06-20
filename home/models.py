@@ -49,6 +49,11 @@ class HomePage(Page):
         'archive.ArchivePage',
     ]
 
+    tagline = models.CharField(
+        blank=True,
+        null=True,
+        max_length=50)
+
     cover_story = ParentalKey(
         "article.ArticlePage",
         related_name = "cover_story",
@@ -105,6 +110,7 @@ class HomePage(Page):
     # )
 
     content_panels = Page.content_panels + [
+        FieldPanel("tagline"),
         PageChooserPanel("cover_story"),
         InlinePanel("top_articles"),
         StreamFieldPanel("links", heading="Links"),

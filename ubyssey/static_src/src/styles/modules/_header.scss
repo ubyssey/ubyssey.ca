@@ -56,9 +56,6 @@ header.main{
       line-height: 50px;
     }
   
-    .left, .right {
-      padding: 0 20px;
-    }
     .middle {
       text-align: center;
     }
@@ -77,8 +74,7 @@ header.main{
     }
   
     span.since-line {
-      font-size: 13px;
-      color: #7D7D7D;
+      font-size: 1em;
     }
   
     h1.section-title {
@@ -105,7 +101,12 @@ header.main{
     ul {
       list-style-type: none;
       padding: 0;
-      margin: 0;
+      display: flex;
+      justify-content: space-between;
+      width: fit-content;
+      margin: auto;
+      gap: 2px;
+      background-color: black;
       li {
         display: inline-block;
       }
@@ -115,13 +116,16 @@ header.main{
           font-family: $font-default;
           font-size: font-size(14);
           font-weight: $font-weight-semi-bold;
-          color: #2B2B2B;
-          margin: 0 6px;
+          color: #000000;
           text-transform: uppercase;
-  
+          background-color: white;
+          padding-left: 10px;
+          padding-right: 10px;
+          line-height: 2em;
+          
           &.elections a {
             color: $color-red;
-          }
+          } 
         }
       }
   

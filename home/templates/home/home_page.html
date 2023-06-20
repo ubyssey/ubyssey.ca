@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block header %}
-{% include 'navigation/headers/main.html' %}
+{% include 'navigation/headers/main.html' with tagline=self.tagline %}
 {% include 'navigation/headers/mobile.html' with class='homepage' %}
 {% endblock %}
 
@@ -24,7 +24,7 @@
 {% gpt_placement_tag orderable.ad_slot %}
 {% endfor %}
 
-<main class="u-container u-container--large homepage">
+<main class="u-container u-container--mid homepage">
 	{% comment %}
 	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
 	{% endcomment %}
