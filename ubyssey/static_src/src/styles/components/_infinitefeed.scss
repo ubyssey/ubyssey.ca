@@ -15,6 +15,7 @@
 .c-sidebar_item {
     transition-duration: 0.2s;
     transition-property: top;
+    width: 100%;
 }
 
 .c-sidebar {
@@ -32,11 +33,6 @@
     margin-left: 20px;
     width: 37%;
     top:100px;
-
-    .c-sidebar_item {
-        right:0;
-        width: 100%;
-    }
 }
 
 .c-infinitefeed__feed {
@@ -71,5 +67,73 @@
                 border-color: grey !important;
             }
         }
+    }
+}
+
+.sidebar-issue{
+    color:white;
+    padding:0;
+    display: flex;
+    flex-wrap: wrap;
+    @media($bp-smaller-than-phablet){
+      text-align: center;
+    }
+}
+.issue{
+    transition-duration: 0.2s;
+    position: relative;
+    left:0;
+    margin: 5px;
+    margin-bottom: 10px;
+    list-style-type: none;
+    background-color:#0071c9;
+    border: 2px solid black;
+    width: 100px;
+    flex-grow: 1;
+    text-align: center;
+    height: fit-content;
+    &:hover{
+        top: -7px;
+    }
+
+    a {
+        &:hover{
+        text-decoration: underline;
+        color: white;
+        }
+    }
+}
+.issueText{
+    margin: 2px;
+}
+
+.issue_img {
+    width: 100%;
+}
+
+.darkmode {
+    h2.block-title {
+        text-shadow: #000000 1px 1px 15px;
+    }
+    div.sidebar-block {  
+        h2.block-title {
+        color: white;
+        }
+        .issue {
+        color:white;
+        box-shadow: #000000 1px 5px 15px;
+        .issueText{
+            color: white;
+        }
+        }
+    }
+}
+
+.lightmode {
+    h2.block-title {
+        text-shadow: #0000003b -1px 1px 15px;
+    }
+    .issue {
+        box-shadow: -10px 10px 7px 0px #0000003b;
     }
 }

@@ -203,14 +203,13 @@
     border: 1px #041620 solid;
     transition-duration: 0.1s;
     &:hover {
-      color: #c3e2f0;
-      background-color:#041620;
+      border-color: white;
     }
 
     a{
       white-space: break-spaces;
       &:hover {
-        color: #c3e2f0;
+        color: white;
       }
     }
   }
@@ -491,7 +490,7 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 30%;
+    width: 50%;
     aspect-ratio: 1;
     background-color: #041620;
     transform: translate(-50%, 50%);
@@ -508,7 +507,8 @@
     font-weight: 600;
     -webkit-text-stroke: #041620;
     -webkit-text-stroke-width: 1px;
-    margin-bottom: 0;
+    font-size: 1.2rem;
+    margin-bottom: 0.1rem;
     line-height: 1em;
   }
 }

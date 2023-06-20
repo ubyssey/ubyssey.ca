@@ -659,60 +659,6 @@ ol.article-list {
   }
 }
 
-.sidebar-issue{
-  color:white;
-  padding:0;
-  @media($bp-smaller-than-phablet){
-    text-align: center;
-  }
-}
-.issue{
-  transition-duration: 0.2s;
-  position: relative;
-  left:0;
-  margin-bottom: 10px;
-  list-style-type: none;
-  background-color:#0071c9;
-  border: 2px solid black;
-  &:hover{
-    left: -10px;
-  }
-}
-.issueText{
-  margin: 2px;
-}
-
-.issuePhoto{
-  text-align: center;
-}
-
-.darkmode {
-  h2.block-title {
-    text-shadow: #000000 1px 1px 15px;
-  }
-  div.sidebar-block {  
-    h2.block-title {
-      color: #0071c9;
-    }
-    .issue {
-      color:white;
-      box-shadow: #000000 1px 5px 15px;
-      .issueText{
-        color: white;
-      }
-    }
-  }
-}
-
-.lightmode {
-  h2.block-title {
-    text-shadow: #0000003b -1px 1px 15px;
-  }
-  .issue {
-    box-shadow: -10px 10px 7px 0px #0000003b;
-  }
-}
-
 .sticky {
   position: sticky;
   top: 20px;
