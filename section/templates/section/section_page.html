@@ -19,26 +19,6 @@
 {% endblock %}
 
 {% block content %}
-<div id="category_modal" class="modal">
-  <div class="category_menu u-container u-container--padded">
-  <i class="fa fa-ban c-section__modal_close" onclick="document.getElementById('category_modal').style.display = 'none'"></i>
-  <h1><i class="fa fa-tag"></i> Series</h1>
-  <p><a href="{% pageurl self %}">{{self.title}}</a> - {{self.description}}</p>
-  {% if self.category_menu.count %}
-      <ul>
-        {% for category_menu_item in self.category_menu.all %}
-          {% if category_menu_item.category %}
-            <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a> — {{ category_menu_item.category.description }}</li>
-          {% else %}
-            {% comment %} Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! {% endcomment %}
-            <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-  {% endif %}
-  </div>
-</div>
-
   <main class="section">
     <!-- Place header ads for section page -->
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
@@ -51,7 +31,7 @@
         {% image banner width-700 as banner_image %}
         <div class="banner" style="background-image: url('{{banner_image.full_url}}');">
           <svg class="c-section__heading" viewBox="0 0 450 70">
-            <text class="c-section__heading" x="10" y="50" style="stroke: {{self.colour}}">{{title}}</text>
+            <text class="c-section__heading" x="10" y="50" {% if not category %}style="stroke: {{self.colour}}"{% endif %}>{{title}}</text>
           </svg>
         </div>
       {%else%}
@@ -59,7 +39,7 @@
       {% endif %}
 
       <div class="c-section__info">    
-        <p class="c-section__description">{{description}} &ensp;{% if not category %}<a href="/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
+        <p class="c-section__description">{{description}} &ensp;{% if not category %}<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
         <div class="c-section__buttons">
           <div class="o-archive__search c-section__button-label">
             <form method="get">
@@ -70,7 +50,34 @@
             </form>
           </div>
       
-          <p class="c-section__button-label" onclick="document.getElementById('category_modal').style.display = 'block'"><i class="fa fa-tag"></i> Series</p>
+          <div class="open-modal c-section__button-label">
+            <a href="#"> 
+              <p><i class="fa fa-tag"></i> Series</p>
+            </a>
+
+            <div class="modal add-to-modal">
+              <div class="category_menu u-container u-container--padded">
+              <a href="#" class="close-modal">
+                <i class="fa fa-close c-section__modal_close"></i>
+              </a>
+              <h1><i class="fa fa-tag"></i> Series</h1>
+              <p><a href="{% pageurl self %}">{{self.title}}</a> - {{self.description}}</p>
+              {% if self.category_menu.count %}
+                  <ul>
+                    {% for category_menu_item in self.category_menu.all %}
+                      {% if category_menu_item.category %}
+                        <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a> — {{ category_menu_item.category.description }}</li>
+                      {% else %}
+                        {% comment %} Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! {% endcomment %}
+                        <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+              {% endif %}
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
 

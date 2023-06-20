@@ -54,6 +54,11 @@ class HomePage(Page):
         blank=True,
         null=True,
         max_length=50)
+    
+    tagline_url = models.URLField(
+        blank=True,
+        null=True
+    )
 
     cover_story = ParentalKey(
         "article.ArticlePage",
@@ -102,7 +107,13 @@ class HomePage(Page):
     # )
 
     content_panels = Page.content_panels + [
-        FieldPanel("tagline"),
+        MultiFieldPanel(
+            [
+                FieldPanel("tagline"),
+                FieldPanel("tagline_url"),
+            ],
+            heading="Tagline"
+        ),
         PageChooserPanel("cover_story"),
         InlinePanel("top_articles"),
         StreamFieldPanel("links", heading="Links"),

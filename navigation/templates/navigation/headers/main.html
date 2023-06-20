@@ -5,7 +5,11 @@
   <div class="u-container u-container--mid">
     <div class="branding row">
       <div class="left"><span class="since-line">
-        {% if tagline %}{{tagline}}{% endif %}
+        {% if tagline_url %}
+          <a href="{{tagline_url}}">{% if tagline %}{{tagline}}{% else %}!{% endif %}</a>
+        {% else %}
+          {% if tagline %}{{tagline}}{% endif %}
+        {% endif %}
       </span></div>
       <div class="middle">
         <img class="top-logo" src="{% static 'ubyssey/images/ubyssey-logo.svg' %}" alt=""/>

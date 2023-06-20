@@ -109,6 +109,16 @@
     position: absolute;
     bottom: -50px;
     left: 50px;
+    stroke: black;
+    @media($bp-smaller-than-phablet) {
+      bottom: -25px;
+    }
+  }
+
+  .c-page__heading {
+    position: absolute;
+    bottom: -50px;
+    left: 50px;
     @media($bp-smaller-than-phablet) {
       bottom: -25px;
     }

@@ -208,8 +208,9 @@ header.topbar {
     font-family: $font-default;
     font-weight: $font-weight-semi-bold;
     font-size: font-size(13);
-    color: #373737;
+    color: black;
     margin-left: 20px;
+    text-transform: uppercase;
     ul {
       line-height: 48px;
       list-style-type: none;
@@ -224,6 +225,7 @@ header.topbar {
         }
         &.current, &:hover {
           border-bottom: 3px solid rgba(52, 144, 214, 1);
+          color: #0071C9;
         }
 
         &.elections {
