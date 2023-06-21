@@ -4,10 +4,28 @@ from django.utils.text import slugify
 from django_extensions.db.fields import AutoSlugField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from article.models import ArticlePage
-from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
+from wagtail.admin.edit_handlers import (
+    # Panels
+    FieldPanel,
+    FieldRowPanel,
+    HelpPanel,
+    InlinePanel,
+    MultiFieldPanel,
+    PageChooserPanel, 
+    StreamFieldPanel,
+    # Custom admin tabs
+    ObjectList,
+    TabbedInterface,
+)
+
+
+from wagtail.core import blocks
+from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
 from wagtail.search import index
 from wagtail.images.edit_handlers import ImageChooserPanel
+
+
 
 class AllAuthorsPage(Page):
     subpage_types = [
@@ -64,18 +82,31 @@ class AuthorPage(Page):
         default='',
     )
 
-    short_bio_description = models.TextField(
+    bio_description =  StreamField(
+        [
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Customise your bio here with links, bolds and italics!"
+            )),
+        ],
         null=False,
         blank=True,
         default='',
     )
 
-    bio_description = models.TextField(
+    short_bio_description = StreamField(
+        [
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Customise your short bio here with links, bolds and italics!"
+            )),
+        ],
         null=False,
         blank=True,
         default='',
     )
 
+   
     # For editting in wagtail:
     content_panels = [
         # title not present, title should NOT be directly editable
@@ -84,8 +115,8 @@ class AuthorPage(Page):
             [
                 ImageChooserPanel("image"),
                 FieldPanel("ubyssey_role"),
-                FieldPanel("bio_description"),
-                FieldPanel("short_bio_description"),
+                StreamFieldPanel("bio_description"),
+                StreamFieldPanel("short_bio_description"),
                 FieldPanel("facebook_url"),
                 FieldPanel("twitter_url"),
             ],

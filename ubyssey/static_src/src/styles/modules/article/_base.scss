@@ -114,7 +114,7 @@ div.indicator {
   display: block;
 }
 
-.c-authors_bio_desc {
+.c-authors_bio_desc_container {
   margin-bottom: 0.2rem;
   
   font-family: $font-default;
@@ -130,6 +130,7 @@ div.indicator {
     margin-bottom: 0;
   }
 }
+
 .c-authors_bio_meta {
   margin-bottom: 0.2rem;
   font-family: $font-default;

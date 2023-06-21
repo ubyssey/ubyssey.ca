@@ -1,3 +1,4 @@
+{% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
 <div class="c-article__info">
@@ -41,8 +42,8 @@
             </div>
         </div>
             
-        <div class="c-authors_bio_desc">
-            {{ self.authors_with_bio_desc|safe }}
+        <div class="c-authors_bio_desc_container">
+            <p>{% autoescape off %} {{ self.authors_with_bio_desc }} {% endautoescape %}</p>
         </div>
     </div>
     

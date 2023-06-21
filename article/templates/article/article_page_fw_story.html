@@ -37,14 +37,9 @@
                     {% image featured_image_object.image original as featured_image %}
                     <div class="backdrop" style="background-image: url('{{ featured_image.url }}');"></div>
                     <div class="headline-container">
+                        
                         <div class="u-container u-container--padded">
-                            <h1 class="headline">{{ self.title|safe }}</h1>
-                            {% if self.fw_above_cut_lede %}
-                                <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
-                            {% endif %}
-                            <div class="article-byline c-article__byline-center">
-                                <span class="author">By {{ self.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at }}</span>
-                            </div>
+                            {% include "article/objects/fw_author_small_bio.html" %}
                         </div>
                         {% if featured_image_object.caption or featured_image_object.credit %}
                             <div class="caption">

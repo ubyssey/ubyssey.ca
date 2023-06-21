@@ -44,6 +44,8 @@ from wagtail.admin.edit_handlers import (
     ObjectList,
     TabbedInterface,
 )
+
+from bs4 import BeautifulSoup
 from wagtail.core import blocks
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, PageManager, Orderable
@@ -54,6 +56,7 @@ from wagtail.search import index
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
+
 
 from wagtailmenus.models import FlatMenu
 
@@ -960,7 +963,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         else:
             authors = [format_author(article_author) for article_author in authors_list]
            
-        print(authors)
+        
 
         if not authors:
             return ""
@@ -1015,11 +1018,23 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         """
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         authors_list = authors["author"]
-        written_bio = authors_list[0].author.short_bio_description
-        for article_author in authors_list[1:]:
-            written_bio += " " + article_author.author.short_bio_description
+        written_bio = ""
+        
+        for article_author in authors_list:
+            try:
+                inner_html_dict = article_author.author.short_bio_description.raw_data[0]
+                soup = BeautifulSoup(inner_html_dict["value"], "html.parser")
                 
+                for text in soup.find_all("p"):
+                    written_bio += " " + str(text.decode_contents())
+
+            except IndexError:
+                written_bio += ""
+
+            
+
         return written_bio
+    
     authors_with_bio_desc = property(fget=get_authors_small_bio)
 
     def get_authors_with_roles(self) -> str:
