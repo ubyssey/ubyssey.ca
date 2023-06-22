@@ -30,6 +30,7 @@ from section.sectionable.models import SectionablePage
 from taggit.models import TaggedItemBase
 
 from videos import blocks as video_blocks
+from article import blocks as article_blocks
 
 from wagtail.admin.edit_handlers import (
     # Panels
@@ -452,7 +453,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 label="Rich Text Block",
                 help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
             )),
-            ('plaintext',blocks.TextBlock(
+            ('plaintext', blocks.TextBlock(
                 label="Plain Text Block",
                 help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
             )),
@@ -471,18 +472,12 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', blocks.StructBlock(
-                [
-                    ('content',blocks.CharBlock(required=False)),
-                    ('source',blocks.CharBlock(required=False)),
-                ],
-                label = "Pull Quote",
-                template = 'article/stream_blocks/quote.html',
-            )),
+            ('quote', article_blocks.PullQuoteBlock()),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
+            ('visual_essay', article_blocks.VisualEssayBlock()),
         ],
         null=True,
         blank=True,

@@ -1,218 +1,110 @@
-{% extends 'ubyssey/base.html' %}
+{% extends 'article/article_page.html' %}
 {% load static %}
-{% load wagtailcore_tags %}
+{% load dispatch_tags %}
 {% load wagtailimages_tags %}
-{% load video_filters %}
-{% load ubyssey_ad_filters %}
-{% load ubyssey_ad_tags %}
-{% load visual_essay %}
-
-{% block head_scripts %}
-    <!-- Register ads for article page -->
-    {% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
-        {% gpt_define_tag orderable.ad_slot %}
-    {% endfor %}
-{% endblock %}
 
 {% block header %}
-    {% include 'navigation/headers/topbar.html' %}
-    {% include 'navigation/headers/mobile.html' %}
+    {% include 'navigation/headers/visual-essay-header.html' %}
 {% endblock %}
 
-{% block content %}
-    <main id="article-{{ self.slug }}" class="article">
-        {% block banner_ad %}
-        <!-- Article Page header ads go here -->
-            {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
-                {% gpt_placement_tag orderable.ad_slot %}
-            {% endfor %}
-        {% endblock %}
 
-        <article class="c-article{% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %} {% endblock %}"> <!--article-->
-            <!-- Below is the Article heading, including Article headline and bylines -->
-            {% block banner %}
-                <div class="u-container u-container--content u-container--padded o-article--visual-essay">
-                    {% if self.featured_media.first.image %}
-                    {% with self.featured_media.first as featured_image_object %}
-                        <div class="featured-media">
-                            {% image featured_image_object.image original as original_image %}
-                            {% image featured_image_object.image width-500 as featured_image %}
-                            <img class="article-attachment" 
-                                data-id="{{ featured_image_object.id }}"
-                                data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
-                                data-credit="{% if featured_image_object.credit %}{{ featured_image_object.credit }}{% endif %}"
-                                {% comment %}
-                                    Differences between line data-url and arc attributes represent the difference between
-                                    the obselete Dispatch equivalent of the URL for the "original image" ("data-url" attribute)
-                                    the "rendition" ("src" attribute). "data-url" is included for backward compatibility,
-                                    but "src" secures the primary functionality of this img element.
-                                {% endcomment %}
-                                data-url="{{ original_image.url }}"
-                                src="{{ featured_image.url }}"
-                                alt=""
-                            />
-                            {% if featured_image_object.caption or featured_image_object.credit %}
-                                <div class="caption">
-                                    {% if featured_image_object.caption %}
-                                        {{ featured_image_object.caption }}
-                                    {% endif %}
-                                    {% if featured_image_object.credit %}
-                                        <span class="credit">
-                                            {{ featured_image_object.credit }}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endwith %}
-                {% elif self.featured_media.first.video %}
-                    {% with self.featured_media.first as featured_video_object %}
-                        <div class="featured-media">
-                            <iframe 
-                                width="500px" 
-                                height="281px" 
-                                allowfullscreen="allowfullscreen"
-                                mozallowfullscreen="mozallowfullscreen" 
-                                msallowfullscreen="msallowfullscreen" 
-                                oallowfullscreen="oallowfullscreen" 
-                                webkitallowfullscreen="webkitallowfullscreen"
-                                src="{{ featured_video_object.video.url|youtube_embed_url|safe }}">
-                            </iframe>
-                            {% if featured_video_object.caption or featured_video_object.credit %}
-                                <div class="caption">
-                                    {% if featured_video_object.caption %}{{ featured_video_object.caption }}{% endif %} {% if featured_video_object.credit %}<span class="credit">{{ featured_video_object.credit }}</span>{% endif %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endwith %}
-                {% endif %}
-                    <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
-                    <h2 class="o-subtitle">{{ self.lede|safe }}</h2>
-                    <div class="c-article__info">
-                        <div class="c-article__byline">
-                            <div class="c-article__author">
-                                {{ self.authors_with_roles|safe }}
-                            </div>
-                            <div class="c-article__byline__meta">
-                                <span class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</span>
-                                {% comment %}                                     
-                                    {% if reading_time %}
-                                        <span> &nbsp;&middot;&nbsp; </span>
-                                        <span class="c-article__reading-time">{{ reading_time }} min read</span>
-                                    {% endif %}
-                                {% endcomment %}
-                                {% comment %}
-                                    {% if article.subsection  %}
-                                        <span> &nbsp;&middot;&nbsp; </span>
-                                        <a href="{{ article.subsection.get_absolute_url }}">
-                                            <span class="c-article__reading-time">{{ article.subsection.name }}</span>
-                                        </a>
-                                    {% endif %}
-                                {% endcomment %}
-                            </div>
-                        </div>
-                        {% comment %}
-                            {% include 'objects/social-icons.html' with article=article layout='top' %}
-                        {% endcomment %}
-                    </div>
-                    <div class="o-visual-essay__introduction">
-                    {% for block in self.content %}
-                        {% if forloop.counter0 < self.content|get_first_image %}
-                            {% include_block block %}
-                        {% endif %}
-                    {% endfor %}
+{% block specific_article_class %}
+    c-article--fw-story
+{% endblock %}
+{% block banner %}
+    <div class="fw-banner {% if self.show_timeline%} timeline-banner {% endif %} {{ self.header_layout }}">
+        {% if self.show_timeline%}
+            <div class='c-timeline' data-current-article-id={{self.id}} data-timeline-title="{{self.timeline}}" data-nodes="{{self.timeline.data}}"></div>
+        {% endif %}
+        {% if self.header_layout == 'right-image' %}
+            <div class="header-container">
+                <div class="headline-container left">
+                    {% include 'article/objects/fw_article_headline_container.html' %}
+                </div>
+                <div class="right">
+                    <div class="full-width featured-media">
+                        {% include 'article/objects/fw_article_featured_media.html' %}
                     </div>
                 </div>
-            {% endblock %}
-            <!-- Below is the container for Article content -->
-            <div class="u-container clearfix u-container--padded u-container--large{% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
-                <!-- Below is the container for the left column article content  -->
-                    {% block pre-content %}
-                    {% endblock %}
-
-                    {% if not self.is_explicit %}
-                        {% filter inject_ads:is_mobile %}
-                            <!-- Content unique to the article starts here -->
-                            <!-- Article featured media -->
-
-                            <div id="o-content-container">
-                                <!-- Article text -->
-                                <div id="o-visual-essay__images-container">
-                                    {% for block in self.content %}
-                                        {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
-                                        <div class="o-visual-essay__image-div">
-                                            {% include_block block %}
-                                        </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                                <div id="o-visual-essay__text-container">
-                                    {% for block in self.content %}
-                                        {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
-                                            {% if not forloop.first %}
-                                            <div class="o-visual-essay__text-div">
-                                                {% include_block block %}
-                                            </div>
-                                            {% endif %}
-                                        {% else %}
-                                            <div class="mark"></div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <!-- Content unique to the article ends here -->
-                        {% endfilter %}
-                    {% else %}
-                        <!-- Content unique to the article starts here -->
-                        <div id="o-visual-essay__content-container">
-                            <!-- Article text -->
-                            <div id="o-visual-essay__images-container">
-                                {% for block in self.content %}
-                                    {% if block.block_type == 'image' or block.block_type == 'raw_html' %}
-                                    <div class="o-visual-essay__image-div">
-                                        {% include_block block %}
-                                    </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            <div id="o-visual-essay__text-container">
-                                {% for block in self.content %}
-                                    {% if block.block_type != 'image' and block.block_type != 'raw_html'%}
-                                        {% if not forloop.first %}
-                                        <div class="o-visual-essay__text-div">
-                                            {% include_block block %}
-                                        </div>
-                                        {% endif %}
-                                    {% else %}
-                                        <div class="mark"></div>
-                                    {% endif %}
-                                {% endfor %}
+            </div>
+        {% elif self.header_layout == 'top-image' %}
+            <div class="header-container">
+                <div class="featured-media">
+                    {% include 'article/objects/fw_article_featured_media.html' %}
+                </div>
+                <div class="headline-container">
+                    {% include 'article/objects/fw_article_headline_container.html' %}
+                </div>
+            </div>
+        {% elif self.header_layout == 'banner-image' %}
+            {% with self.featured_media.first as featured_image_object %}
+                <div class="banner-image">
+                    {% image featured_image_object.image original as featured_image %}
+                    <div class="backdrop" style="background-image: url('{{ featured_image.url }}');"></div>
+                    <div class="headline-container">
+                        <div class="u-container u-container--padded">
+                            <h1 class="headline">{{ self.title|safe }}</h1>
+                            {% if self.fw_above_cut_lede %}
+                                <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
+                            {% endif %}
+                            <div class="article-byline c-article__byline-center">
+                                <span class="author">By {{ self.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at }}</span>
                             </div>
                         </div>
-                        <!-- Content unique to the article ends here -->
-                    {% endif %}
-                    {% block post-content %}
-                    {% endblock %}
-               
-
-
-            {% comment %} {% include 'objects/social-icons-bottom.html' with article=article %} {% endcomment %}
-        </article>
-    </main>
-
-
-    {% comment %} Former location of suggested/trending articles. Do not re-implement until a design contract exists {% endcomment %}
-    {% comment %} <div class='bottom-banner-wrapper'>
-    <div class='bottom-banner-container'>
+                        {% if featured_image_object.caption or featured_image_object.credit %}
+                            <div class="caption">
+                                {% if featured_image_object.caption %}
+                                    {{ featured_image_object.caption }}
+                                {% endif %}
+                                {% if featured_image_object.credit %}
+                                    <span class="credit">{{ featured_image_object.credit }}</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>                    
+                </div>
+                <!-- {% if article.featured_image.caption or article.featured_image.credit %}
+                    <div class="caption">
+                        {{ article.featured_image.caption }} <span class="credit">{{ article.featured_image.credit }}</span>
+                    </div>
+                {% endif %} -->
+            {% endwith %}
+        {% endif %}
     </div>
-    </div> {% endcomment %}
-
+{% endblock %}
+{% block right_column_class %}
+    fw-story u-container--large
 {% endblock %}
 
-<!-- Article-specific scripts -->
-{% block scripts %}
-    {% for script_obj in self.scripts.all %}
-        <script src="{{ script_obj.script.file.url }}" type="text/javascript"></script>
-    {% endfor %}
-    <script src="{% static 'ubyssey/js/visual-essay.js' %}" type="text/javascript"></script>
+{% if self.header_layout == 'banner-image' %}
+    {% block banner_ad %}{% endblock %}
+{% endif %}
+
+{% block pre-content %}
 {% endblock %}
+
+{% block right-column %}
+    <div class="right-column">
+        <div class="sidebar">
+            {% zone 'article-sidebar' %}
+            {% if explicit is not True %}
+                {% if self.minutes_to_read >= 3 %}
+                    {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}
+                    {% include 'objects/advertisement.html' with size='box' name='Box_B' id=4 article=article.id %}
+                {% else %}
+                    {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
+                {% endif %}
+            {% else %}
+                {% include 'objects/replacement.html' with size='box' %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{% block scripts %} 
+    {% if self.show_timeline%}
+         <script src="{% static 'ubyssey/js/timeline.js' %}" type="text/javascript"></script>
+    {% endif %}
+ {% endblock %}
