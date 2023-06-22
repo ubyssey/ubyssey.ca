@@ -89,7 +89,7 @@ div.indicator {
 
   @media($bp-larger-than-tablet) {
     margin-top: 1em;
-
+    border-bottom: 1px solid #D2D2D2;
     display: flex;
   }
 }
