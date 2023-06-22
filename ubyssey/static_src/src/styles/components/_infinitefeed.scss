@@ -54,21 +54,6 @@
     width: 90%;
 }
 
-.sectionfeed {
-    #feed {
-        @media ($bp-larger-than-phablet) {
-            width: 65%;
-            padding-right: 20px;
-        }
-        .article--infinitefeed {
-            border-color: #646464 !important;
-            .o-article__image {
-                border-color: #646464 !important;
-            }
-        }
-    }
-}
-
 .sidebar-issue{
     color:white;
     padding:0;
@@ -146,4 +131,5 @@
 #loader {
     text-align: center;
     font-size: 1.5em;
+    margin-bottom: 20px;
 }

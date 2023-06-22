@@ -195,3 +195,19 @@
   text-transform: uppercase;
   font-family: $font-banner;
 }
+
+.section_infinitefeed {
+  width: 65%;
+
+  #feed {
+      @media ($bp-larger-than-phablet) {
+          padding-right: 20px;
+      }
+      .article--infinitefeed {
+          border-color: #646464 !important;
+          .o-article__image {
+              border-color: #646464 !important;
+          }
+      }
+  }
+}
