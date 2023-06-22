@@ -16,7 +16,7 @@ getData("search_query");
 getData("label");
 
 function getArticles() {
-  clearInterval(loadFeed);
+  loader.setAttribute("inactive", "True");
   
   data["start"] = loader.getAttribute("start");
   data["number"] = loader.getAttribute("number");
@@ -41,21 +41,20 @@ function recievedata(data) {
     clearInterval(loadFeed);
   } else {
     feed.insertAdjacentHTML("beforeend", data);
-
-    loadFeed = setInterval(function () 
-    {
-      if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
-        getArticles();
-        loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
-      }
-    }, 100);
+    loader.removeAttribute("inactive");
   }  
 }
 
 loader.setAttribute("start", "15");
 loader.setAttribute("number", "15");
-loadFeed = setInterval(function () 
+
+
+window.onscroll = function () 
 {
-    getArticles();
-    loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
-}, 100);
+  if(loader.hasAttribute("inactive") == false) {
+    if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
+      getArticles();
+      loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
+    }
+  }
+};

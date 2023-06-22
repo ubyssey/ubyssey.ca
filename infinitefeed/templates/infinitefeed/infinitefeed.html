@@ -25,6 +25,9 @@ section = "{{filters.section}}"
     {% endif %}
 </div>
 
-<div id="loader"></div>
+
+  <div id="loader" {% if inactive %}inactive="True"{%endif%}>
+    <i class="fa-solid fa-spinner fa-spin-pulse"></i>
+  </div>
 
 <script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>

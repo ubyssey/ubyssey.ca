@@ -740,17 +740,8 @@ ol.article-list {
   position: relative;
 }
 
-.home_infinitefeed_cutoff {
-  height: 1000px;
-  overflow: hidden;
-}
-
 .home_infinitefeed_cutoff_shadow {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 60%;
-  bottom: 0;
+  height: 100px;
   background-image: linear-gradient(0deg, black, transparent);
 }
 
@@ -760,10 +751,10 @@ ol.article-list {
   cursor: pointer;
   text-align: center;
   padding: 5px;
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: auto;
+  width: fit-content;
+  position: relative;
+  top: 50%;
 
   &:hover {
     opacity: 0.8;

@@ -3,8 +3,8 @@ document.getElementById("seemore").addEventListener("click", openFeed);
 function openFeed() {
     document.getElementById("feed-section").classList.remove("home_infinitefeed_cutoff");
     document.getElementById("feed-shadow").remove();
-    document.getElementById("seemore").remove();
-    document.getElementById("feed-box-label").classList.add("sticky");
+
+    document.getElementById("loader").removeAttribute("inactive");
 }
 function closeFeed() {
     var shadow = document.createElement("div");
@@ -17,12 +17,11 @@ function closeFeed() {
     seemore.addEventListener("click", openFeed);
     seemore.innerHTML = "See more";
 
+    shadow.appendChild(seemore);
     document.getElementById("feed-section").appendChild(shadow);
-    document.getElementById("feed-section").appendChild(seemore);
-
 
     document.getElementById("feed-section").classList.add("home_infinitefeed_cutoff");
-    document.getElementById("feed-box-label").classList.remove("sticky");
+    document.getElementById("loader").setAttribute("inactive", "True");
 }
 
 updateTimeBox = setInterval(

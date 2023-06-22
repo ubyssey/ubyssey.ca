@@ -21,7 +21,7 @@
 .c-sidebar {
     position:sticky;
     top: 50px;
-    height:100px;
+    height:500px;
     width:40%;
 
     @media ($bp-smaller-than-phablet) {
@@ -59,12 +59,11 @@
         @media ($bp-larger-than-phablet) {
             width: 65%;
             padding-right: 20px;
-            border-right: 2px grey solid;
         }
         .article--infinitefeed {
-            border-color: grey !important;
+            border-color: #646464 !important;
             .o-article__image {
-                border-color: grey !important;
+                border-color: #646464 !important;
             }
         }
     }
@@ -127,6 +126,9 @@
         }
         }
     }
+    #loader {
+        color: white;
+    }
 }
 
 .lightmode {
@@ -136,4 +138,12 @@
     .issue {
         box-shadow: -10px 10px 7px 0px #0000003b;
     }
+    #loader {
+        color: black;
+    }
+}
+
+#loader {
+    text-align: center;
+    font-size: 1.5em;
 }
