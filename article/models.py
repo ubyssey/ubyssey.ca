@@ -932,6 +932,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         
         if self.current_section != 'guide':
             context["suggested_articles"] = self.get_suggested_articles()
+            
         
         if self.current_section == 'guide':
             # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
@@ -1042,6 +1043,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         if queryset == None:
             # queryset = ArticlePage.objects.from_section(section_root=self)
             queryset = self.get_articles()
+            queryset = queryset.exclude(slug=self.slug)
+            
         return queryset[:number_suggested]    
     suggested_articles = property(fget=get_suggested_articles)
 
