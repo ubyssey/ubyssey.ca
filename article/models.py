@@ -960,7 +960,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         else:
             authors = [format_author(article_author) for article_author in authors_list]
            
-        print(authors)
+        
 
         if not authors:
             return ""
