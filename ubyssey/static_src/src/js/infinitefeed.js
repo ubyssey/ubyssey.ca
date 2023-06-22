@@ -83,13 +83,11 @@ function switchSidebar()
 }
 
 if (document.getElementsByClassName("c-sidebar").length > 0) {
-  console.log("gamer");
   window.onscroll = function() {
     loadArticles();
     switchSidebar();
   }
 } else {
-  console.log("not gamer");
   window.onscroll = function() {
     loadArticles();
   }
