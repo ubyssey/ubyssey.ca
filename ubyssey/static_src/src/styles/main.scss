@@ -32,6 +32,7 @@
 @import 'objects/bottom_banner';
 
 @import 'components/adblock-splash';
+@import 'components/author-page';
 @import 'components/button';
 @import 'components/cookie-disclaimer';
 @import 'components/elections-sidebar';
@@ -188,3 +189,10 @@ a.image {
   }
 }
 
+.hide {
+	display: none;
+}
+
+.show {
+	display: block;
+}

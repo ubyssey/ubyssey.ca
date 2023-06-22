@@ -2,6 +2,7 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load authors_tags %}
 
 {% block content %}
 
@@ -13,28 +14,56 @@
 <main class="c-page c-page--author">
 	<div class="u-container u-container--padded">
 
-		<div class="c-page__header">
+		<div class="author-header">
 			{% if self.image %}
-			<div class="c-page__header__thumbnail">
-				{% image self.image fill-150x200   %}
-
-			</div>
+				{% image self.image width-350 as pfp %}
+				<div class="author-img" style="background-image: url('{{pfp.full_url}}')"></div>
 			{% endif %}
-			<div class="c-page__header__meta">
-				<h1 class="c-page__heading">{{ self.title }}
-					{% if self.facebook_url %}<a class="social_media_links" href={{self.facebook_url}}><i
-							class="fa fa-facebook fa-fw" style="font-size:1em;"></i>&nbsp;{{self.full_name}}</a>
-					{% endif %}
-					{% if self.twitter_url %}<a class="social_media_links" href="{{self.twitter_url}}"><i
-							class="fa fa-twitter fa-fw" style="font-size:1em;"></i>{{self.twitter_url}}</a> {% endif %}
-				</h1>
-				{% if self.title %}<h3 class="c-page__sub-heading">{{ self.title }}</h3>{% endif %}
-				{% if self.description %}<p class="c-page__description">{{ self.description|safe }}</p>{% endif %}
+			<div class="author-info">
+				<h1 class="author-name">{{ self.title }}</h1>
+				<h2 class="author-role"> {{self.ubyssey_role}} </h2>
+				{% if self.description %}<p class="author-desc">{{ self.description|safe }}</p>{% endif %}
+				<p class="author-links">
+					<a class="social_media_links" href="/{{self.slug}}/rss"><i class="fa fa-rss fa-fw" style="font-size:1em;"></i>&nbsp;rss</a>
+					{% for icon in self.linkIcons %}
+						{{icon}}
+					{% endfor %}
+				</p>
 			</div>
 		</div>
 
-		{% include 'archive/objects/archive.html' with page_obj=paginated_articles %}
+		{% if self.pinned_articles.count > 0 and current_page == 1 %}
+			<h2 class="author-heading">Pinned by {{self.title}}</h2>
+			<div class="author-pinned_list">
+				{% for article in self.pinned_articles.all %}
+					<div class="author-pinned_article">	
+						{% include 'article/objects/author_pinned.html' with article=article.article %}
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+		
+		<div class="options">
+			{% if "stories" in media_types %}
+				<h2 class="author-heading {% if media_type == "stories" %}selected{% endif %}"><a href="/authors/{{self.slug}}/stories">Stories</a></h2>
+			{% endif %}
+			{% if "photos" in media_types %}
+				<h2 class="author-heading {% if media_type == "photos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/photos">Photos</a></h2>
+			{% endif %}
+			{% if "videos" in media_types %}
+				<h2 class="author-heading {% if media_type == "videos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/videos">Videos</a></h2>
+			{% endif %}
+		</div>
 
+		<h2 class="author-heading">Latest {{media_type}} from {{self.title}}</h2>
+		
+		{% if media_type == "stories" %}
+			{% include 'archive/objects/archive.html' with page_obj=paginated_articles %}
+		{% elif media_type == "photos" %}
+			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
+		{% elif media_type == "videos" %}
+			{% include 'archive/objects/archive.html' with page_obj=paginated_articles video_section=true%}
+		{% endif %}
 	</div>
 </main>
 {% endblock %}

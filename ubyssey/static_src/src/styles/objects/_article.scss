@@ -776,5 +776,23 @@
     width:100%;
     height:100%;
     position:absolute;
+.o-article--author_pinned {
+
+  .o-article__headline {
+    font-size: 1.2rem;
+    text-decoration: underline;
+    text-decoration-color: #0071C9;
+  }
+  
+  .o-article__published {
+    color: black;
+  }
+
+  .o-article__snippet {
+    margin-top: 1rem;
+  }
+  .o-article__byline {
+    margin-top: 0.5rem;
+    font-weight: 600;
   }
 }

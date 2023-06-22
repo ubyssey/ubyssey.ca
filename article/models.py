@@ -12,6 +12,7 @@ from dispatch.models import Article
 from django.db import models
 from django.db.models import fields
 from django.db.models.fields import CharField
+from django.shortcuts import render
 from django.db.models.query import QuerySet
 from django.forms.widgets import Select, Widget
 from django.utils import timezone
@@ -30,6 +31,7 @@ from section.sectionable.models import SectionablePage
 from taggit.models import TaggedItemBase
 
 from videos import blocks as video_blocks
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from wagtail.admin.edit_handlers import (
     # Panels
@@ -432,7 +434,7 @@ class ArticlePageManager(PageManager):
 
 #-----Page models-----
 
-class ArticlePage(SectionablePage, UbysseyMenuMixin):
+class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     #-----Django/Wagtail settings etc-----
     objects = ArticlePageManager()
@@ -1047,6 +1049,12 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             models.Index(fields=['last_modified_at']),
             models.Index(fields=['category',]),
         ]
+    
+    @route(r'^sections/$')
+    def get_section_articles(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
+        context["test"] = "Hello World 232131312"
+        return render(request, "archive/archive_section.html", context)
 
 class SpecialArticleLikePage(ArticlePage):
 

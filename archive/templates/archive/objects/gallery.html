@@ -1,40 +1,76 @@
-{% load wagtailroutablepage_tags %}
 {% load archive_tags %}
 {% load wagtailimages_tags %}
 
-<div class="o-archive__search">
-	<form method="get">
-		<label class="o-archive__search__label" for="c-articles-list__searchbar"><i
-				class="fa fa-search"></i></label>
-		<input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
-			{% if q %}value="{{ q }}" {% endif %} placeholder="Search" />
-	</form>
-</div>
-
 <div class="o-archive">
+
+	<div class="o-archive__search">
+		<form method="get">
+			<label class="o-archive__search__label" for="c-articles-list__searchbar"><i
+					class="fa fa-search"></i></label>
+			<input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
+				{% if q %}value="{{ q }}" {% endif %} placeholder="Search" />
+		</form>
+	</div>
 
 	<div class="o-archive__container">
 
+		{% if sections or years %}
+		<div class="o-archive__sidebar show-desktop">
+
+			<div class="o-archive__sidebar__filters">
+				<h2>Year</h2>
+				<ul>
+					<li
+						class="o-archive__sidebar__filter{% if not year %} o-archive__sidebar__filter--is-active{% endif %}">
+						<a href="?{% remove_field_from_query_string 'year' %}">All years</a>
+					</li>
+					{% for y in years %}
+					<li
+						class="o-archive__sidebar__filter{% if y == year %} o-archive__sidebar__filter--is-active{% endif %}">
+						<a href="?{% modify_query_string 'year' y %}">{{ y }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			<div class="o-archive__sidebar__filters">
+				<h2>Section</h2>
+				<ul>
+					<li
+						class="o-archive__sidebar__filter{% if not section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+						<a href="?{% remove_field_from_query_string 'section' %}">All sections</a>
+					</li>
+					{% for section in sections %}
+					<li
+						class="o-archive__sidebar__filter{% if section.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+						<a href="?{% modify_query_string 'section' section.slug %}">{{ section }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+		</div>
+		{% endif %}
 
 		<div class="o-archive__main">
 			<div class="o-archive__dropdown-filters">
 
 				{% if years %}
-				<div class="o-mobile-dropdown open-modal">
+				<div class="o-mobile-dropdown js-dropdown">
 
-					<a class="o-mobile-dropdown__button" href="#">
+					<a class="o-mobile-dropdown__button js-disable-scroll" href="#">
 						<span>{% if year %}{{ year }}{% else %}All years{% endif %}</span>
 						<i class="fa fa-sort-desc"></i>
 					</a>
 
-					<div class="add-to-modal o-mobile-dropdown__list">
+					<div class="o-mobile-dropdown__list js-dropdown-list">
 						<div class="o-mobile-dropdown__list__container js-dropdown-container">
 							<div>
 								<div class="o-mobile-dropdown__header">
 									<h2 class="o-mobile-dropdown__title">Filter by year:</h3>
-										<a class="close-modal o-mobile-dropdown__close" href="#">
+										<div class="o-mobile-dropdown__close">
 											<i class="fa fa-close"></i>
-										</a>
+										</div>
 								</div>
 								<ul>
 									<li
@@ -56,22 +92,22 @@
 				{% endif %}
 
 				{% if sections %}
-				<div class="o-mobile-dropdown open-modal">
+				<div class="o-mobile-dropdown js-dropdown">
 
-					<a class="o-mobile-dropdown__button" href="#">
+					<a class="o-mobile-dropdown__button js-disable-scroll" href="#">
 						{% comment %} NTS ugly placeholder {% endcomment %}
 						<span>{% if section_slug %}{{ section_slug }}{% else %}All sections{% endif %}</span>
 						<i class="fa fa-sort-desc"></i>
 					</a>
 
-					<div class="add-to-modal o-mobile-dropdown__list">
+					<div class="o-mobile-dropdown__list js-dropdown-list">
 						<div class="o-mobile-dropdown__list__container js-dropdown-container">
 							<div>
 								<div class="o-mobile-dropdown__header">
 									<h2 class="o-mobile-dropdown__title">Filter by section:</h3>
-										<a class="close-modal o-mobile-dropdown__close" href="#">
+										<div class="o-mobile-dropdown__close">
 											<i class="fa fa-close"></i>
-										</a>
+										</div>
 								</div>
 								<ul>
 									<li
@@ -91,48 +127,15 @@
 
 				</div>
 				{% endif %}
-
-				<div class="o-mobile-dropdown open-modal">
-
-					<a class="o-mobile-dropdown__button" href="#">
-						<span>{{ order|title }}</span>
-						<i class="fa fa-sort-desc"></i>
-					</a>
-
-					<div class="add-to-modal o-mobile-dropdown__list">
-						<div class="o-mobile-dropdown__list__container js-dropdown-container">
-							<div>
-								<div class="o-mobile-dropdown__header">
-									<h2 class="o-mobile-dropdown__title">Order by:</h3>
-										<a class="close-modal o-mobile-dropdown__close" href="#">
-											<i class="fa fa-close"></i>
-										</a>
-								</div>
-								<ul>
-									<li
-										class="o-mobile-dropdown__item{% if order == 'newest' %} o-mobile-dropdown__item--is-active{% endif %}">
-										<a href="?{% modify_query_string 'order' 'newest' %}">Newest</a>
-									</li>
-									<li
-										class="o-mobile-dropdown__item{% if order == 'oldest' %} o-mobile-dropdown__item--is-active{% endif %}">
-										<a href="?{% modify_query_string 'order' 'oldest' %}">Oldest</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-				</div>
 			</div>
 
-			<!-- The article condition checker -->
 			<div class="o-archive__header">
 				<h3 class="o-archive__header__title">
 					{% if page_obj %} {{ page_obj.paginator.count }} RESULTS {% else %}NO RESULTS{% endif %}
 					{% if q %} FOR "{{ q }}"{% endif %}
 				</h3>
 				<div class="o-archive__header__sort o-dropdown js-dropdown">
-					<a class="o-button o-dropdown__button" href="#">
+					<a class="o-button o-dropdown__button">
 						<span>{{ order|title }}</span>
 						<i class="fa fa-sort-desc"></i>
 					</a>
@@ -148,13 +151,9 @@
 			</div>
 			
 			{% if page_obj|length > 0 %}
-			<div class="o-archive__main__list">
+			<div class="o-archive__main__list gallery">
 				{% for object in page_obj %}
-					{% if video_section == False or video_section == None %}
-						{% include 'archive/objects/article_list.html' with article=object %}
-					{% else %}
-						{% include 'videos/stream_blocks/video.html' with video=object %}
-					{% endif %}
+					{% include 'archive/objects/gallery_item.html' with image=object %}
 				{% endfor %}
 			</div>
 
