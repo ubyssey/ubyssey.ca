@@ -1,0 +1,20 @@
+{% if suggested_articles|length != 1 %}
+    {% if self.category_articles|length != 0 %}
+        {% if self.category == None or self.category_articles|length == 1 %}
+            <h2 class="block-title">FROM THE {{ self.current_section }}</h2>
+        {% else %}
+            <h2 class="block-title">FROM THE {{ self.category }}</h2>
+        {% endif %}
+            <br>
+        {% for article in suggested_articles %}
+            {% if article.slug != self.slug %} 
+                {% if article_type == "base" %}
+                    {% include 'article/objects/suggested_articles_column.html' with article=article padded=True   %}
+                {% elif article_type == "fw" %}
+                    {% include 'article/objects/suggested_articles_grid.html' with suggested_articles=suggested_articles %}
+                {% endif %}
+                
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endif %}

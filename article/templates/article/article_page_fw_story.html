@@ -99,7 +99,7 @@
 {% endblock %}
 
 {% block fw_suggested_articles %}
-{% include 'article/objects/suggested_articles_grid.html' with suggested_articles=suggested_articles %}
+    {% include 'article/objects/suggested_articles.html' with suggested_articles=suggested_articles article_type="fw" %}
 {% endblock %}
 
 {% block scripts %} 
