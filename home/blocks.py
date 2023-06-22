@@ -142,7 +142,7 @@ class SidebarCategoryBlock(blocks.StructBlock):
         context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')
         return context
     class Meta:
-        template = "home/stream_blocks/sidebar_category_block.html"
+        template = "home/stream_blocks/sidebar_section_block.html"
 
 
 class SidebarImageLinkBlock(blocks.StructBlock):
