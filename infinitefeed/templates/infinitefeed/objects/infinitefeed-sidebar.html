@@ -6,7 +6,7 @@
 
 <div class="c-sidebar {% if styling %} {{styling}} {% endif %}">
     {% for block in sidebar_stream %}
-    <div class="c-sidebar_inactive c-sidebar_item">
+    <div class="{% if forloop.counter0 == 0 %}c-sidebar_active{% else %}c-sidebar_inactive{% endif %} c-sidebar_item">
       {% include_block block %}
     </div>
     {% endfor %}
