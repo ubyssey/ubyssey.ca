@@ -47,7 +47,7 @@ class ArchivePage(RoutablePageMixin, Page):
     content_panels = Page.content_panels + [
         MultiFieldPanel(
             [
-                HelpPanel(content="You can add all the magazines that you want the users can filter for."),
+                HelpPanel(content="You can add all the magazines that you want the users to filter for."),
                 InlinePanel("magazine_tags"),
             ],
             heading="Magazine Tags",
