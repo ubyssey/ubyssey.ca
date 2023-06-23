@@ -15,7 +15,7 @@ Used in both section pages and homepage
         <br>
   {% endif %}
   
-  {% if suggested_articles|length != 1 %}
+  {% if suggested_articles|length != 0 %}
     <div class="c-section__featured__articles u-flex--tablet">
     {% for article in suggested_articles %}
         {% include 'article/objects/column.html' with article=article %}

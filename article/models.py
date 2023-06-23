@@ -1037,6 +1037,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         if queryset == None:
             # queryset = ArticlePage.objects.from_section(section_root=self)
             queryset = self.get_articles()
+            queryset = queryset.exclude(slug=self.slug)
+            
         return queryset[:number_suggested]    
     suggested_articles = property(fget=get_suggested_articles)
 
