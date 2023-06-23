@@ -97,7 +97,26 @@ header.main{
     .left, .middle, .right {
       padding: 0;
     }
+
+    .left {
+      .meta {
+        margin-right: 15px;
+      }
+    }
   
+    .right {
+      .meta {
+        margin-left: 15px;
+      }
+    }
+
+    .middle {
+      ul {
+        gap: 2px;
+        background-color: black;
+      }
+    }
+
     ul {
       list-style-type: none;
       padding: 0;
@@ -105,8 +124,6 @@ header.main{
       justify-content: space-between;
       width: fit-content;
       margin: auto;
-      gap: 2px;
-      background-color: black;
       li {
         display: inline-block;
       }
@@ -142,9 +159,12 @@ header.main{
       &.meta {
         li {
           font-family: $font-default;
-          font-size: 13px;
+          font-size: font-size(10);
           color: #33331E;
           margin: 0 6px;
+          line-height: 2em;
+          font-weight: 600;
+          text-transform: uppercase;
   
           &.store {
             margin: 0 3px;
@@ -351,7 +371,6 @@ header.mobile {
 }
 
 nav.mobile {
-  display: none; // Initially
   position: fixed;
   top: 55px;
   padding: 10px 20px;

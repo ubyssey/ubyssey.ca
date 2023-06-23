@@ -6,7 +6,7 @@
 {% load articletags %}
 
 {% if article %}
-<article class="o-article article--infinitefeed {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.first_published_at|naturalday}}" style="border-color:{{article|get_colour}}">
+<article class="o-article article--infinitefeed {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.explicit_published_at|naturalday}}" style="border-color:{{article|get_colour}}">
 	{% if article.featured_media.first %}
 	{% if article.featured_media.first.image %}
 	<div class="o-article__left">
@@ -42,7 +42,7 @@
 				<span> &nbsp;&nbsp; </span>
 				<a href="/{{article.current_section}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article.current_section}}</a>
 				<span> &nbsp;&nbsp; </span>
-				<span class="o-article__published">{{ article.first_published_at|naturaltime }}</span>
+				<span class="o-article__published">{{ article.explicit_published_at|naturaltime }}</span>
 			</p>
 		</div>
 	</div>
