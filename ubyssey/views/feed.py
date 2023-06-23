@@ -71,7 +71,7 @@ class UbysseyArticleFeed(Feed):
         return item.explicit_published_at
 
     def item_description(self, item):
-        return item.search_description
+        return item.lede
 
     def item_author_name(self, item):
         return item.get_authors_string()
