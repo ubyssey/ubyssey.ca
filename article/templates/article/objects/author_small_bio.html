@@ -1,7 +1,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<div class="c-article__info">
+<div class="{% if article_type == "base" %}c-article__info{% elif article_type == "fw" %}c-fw_article__info{% endif %}">
 
     {% comment %}
         {% include 'objects/social-icons.html' with article=article layout='top' %}
@@ -42,9 +42,25 @@
             </div>
         </div>
             
+        {% if self.authors_with_bio_desc != None %}
         <div class="c-authors_bio_desc_container">
+            
             <p>{% autoescape off %} {{ self.authors_with_bio_desc }} {% endautoescape %}</p>
+            
         </div>
+        {% else %}
+            <style>
+                .author_image {
+                    display: inline-block;
+                    padding: 0em 1em 1em 1em;
+                    border-radius: 100%;
+                }
+
+            </style>
+
+
+        {% endif %}
+        
     </div>
     
 </div>
