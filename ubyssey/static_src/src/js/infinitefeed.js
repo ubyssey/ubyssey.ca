@@ -67,7 +67,7 @@ var sidebar = document.getElementsByClassName("c-sidebar")[0];
 
 function switchSidebar() 
 {
-  var x = Math.floor((document.documentElement.scrollTop- feed.offsetTop) / (1.5*document.body.offsetHeight))% sidebar.children.length;
+  var x = Math.floor((document.documentElement.scrollTop- feed.offsetTop) / (2*document.body.offsetHeight))% sidebar.children.length;
   if (x < 0) {
     x = 0;
   }
