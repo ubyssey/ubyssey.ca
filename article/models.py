@@ -1029,7 +1029,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                     written_bio += " " + str(text.decode_contents())
 
             except IndexError:
-                written_bio += ""
+                written_bio = None
 
             
 

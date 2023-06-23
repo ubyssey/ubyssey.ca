@@ -94,6 +94,16 @@ div.indicator {
   }
 }
 
+.c-fw_article__info {
+  margin-bottom: 1rem;
+  display: block;
+
+  @media($bp-larger-than-tablet) {
+    margin-top: 1em;
+    display: flex;
+  }
+}
+
 .c-article__byline {
   margin-bottom: 0.2rem;
   font-family: $font-default;
@@ -152,10 +162,12 @@ div.indicator {
 
 .author_image {
   display: inline-block;
-  padding: 1em;
-  border-radius: 50%;
-}
+  padding: 1em 1em 1em 1em;
 
+  img {
+    border-radius: 100%;
+  }
+}
 .c-author__byline {
   padding-left: 1em;
   margin-bottom: 0.2rem;

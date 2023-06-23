@@ -1,26 +1,66 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-{% if self.fw_above_cut_lede %}
-    <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
-{% endif %}
+<div class="c-fw_article__info">
 
-<div class="c-article__info">
+    {% comment %}
+        {% include 'objects/social-icons.html' with article=article layout='top' %}
+    {% endcomment %}
     
     {% if self.authors_img_string|length > 1 %}
         {% for author_image in self.authors_img_string %}
             {% if author_image != None %}
-                {% image author_image width-75 class="author_image" %}
+                {% image author_image width-65 class="author_image" %}
             {% endif %}
         {% endfor %}
     {% else %}
-        {% image self.authors_img_string width-50 class="author_image" %}
+        {% image self.authors_img_string width-65 class="author_image" %}
     {% endif %}
     
     <div class="c-authors_bio">
-        <div class="article-byline c-article__byline-center">
-            <span class="author">By {{ self.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at }}</span>
+        <div class="c-authors_bio_meta">
+            <div class="c-article__byline">
+                <div class="c-article__author">
+                    {{ self.authors_with_roles|safe }}
+                </div>
+                <div class="c-article__byline__meta">
+                    <span class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</span>
+                                        
+                    {% if reading_time %}
+                        <span> &nbsp;&middot;&nbsp; </span>
+                        <span class="c-article__reading-time">{{ reading_time }} min read</span>
+                    {% endif %}
+
+                    {% if article.subsection  %}
+                        <span> &nbsp;&middot;&nbsp; </span>
+                        <a href="{{ article.subsection.get_absolute_url }}">
+                            <span class="c-article__reading-time">{{ article.subsection.name }}</span>
+                        </a>
+                    {% endif %}
+                    
+                </div>
+            </div>
         </div>
+            
+        {% if self.authors_with_bio_desc != None %}
+        <div class="c-authors_bio_desc_container">
+            
+            <p>{% autoescape off %} {{ self.authors_with_bio_desc }} {% endautoescape %}</p>
+            
+        </div>
+        {% else %}
+            <style>
+                .author_image {
+                    display: inline-block;
+                    padding: 0em 1em 1em 1em;
+                    border-radius: 100%;
+                }
+
+            </style>
+
+
+        {% endif %}
+        
     </div>
     
 </div>

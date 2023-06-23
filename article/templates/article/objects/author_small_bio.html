@@ -10,7 +10,7 @@
     {% if self.authors_img_string|length > 1 %}
         {% for author_image in self.authors_img_string %}
             {% if author_image != None %}
-                {% image author_image width-75 class="author_image" %}
+                {% image author_image width-50 class="author_image" %}
             {% endif %}
         {% endfor %}
     {% else %}
