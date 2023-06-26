@@ -180,8 +180,7 @@ header.main{
 header.topbar, header.mobile {
   width: 100%;
   z-index: $z-scale-2;
-  position: relative;
-  position: fixed;
+  position: sticky;
   transform: translate3d(0,0,0);
   top: 0;
 }

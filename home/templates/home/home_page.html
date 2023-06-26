@@ -12,17 +12,20 @@
 {% endfor %}
 {% endblock %}
 
+{% block ad-banner %}
+<!-- Place header ads for home page -->
+{% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
+{% gpt_placement_tag orderable.ad_slot %}
+{% endfor %}
+{% endblock %}
+
 {% block header %}
 {% include 'navigation/headers/main.html' with tagline=self.tagline tagline_url=self.tagline_url %}
 {% include 'navigation/headers/mobile.html' with class='homepage' %}
 {% endblock %}
 
 {% block content %}
-{% filter specify_homepage_sidebar_ads:request %}
-<!-- Place header ads for home page -->
-{% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
-{% gpt_placement_tag orderable.ad_slot %}
-{% endfor %}
+{% filter specify_sidebar_ads:request %}
 
 <main class="u-container u-container--mid homepage">
 	{% comment %}
@@ -53,12 +56,17 @@
 	</div>
 
 	<div class="home_links">
-		<h2>Click!!!</h2>
-		<ul>
-		{%for link in self.links%}
-			{% include_block link%}
-		{%endfor%}
-		</ul>
+		<div class="home_link_content">
+			<h2>Click!!!</h2>
+			<ul>
+			{%for link in self.links%}
+				{% include_block link%}
+			{%endfor%}
+			</ul>
+		</div>
+		<div class="home_link_ad">
+			<div class="sidebar-block sidebar-block--advertisement"></div>
+		</div>
 	</div>
 
 </main>

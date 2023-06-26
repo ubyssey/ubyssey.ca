@@ -8,6 +8,7 @@
     {% for block in sidebar_stream %}
     <div class="{% if forloop.counter0 == 0 %}c-sidebar_active{% else %}c-sidebar_inactive{% endif %} c-sidebar_item">
       {% include_block block %}
+      <div class="sidebar-block sidebar-block--advertisement"></div>
     </div>
     {% endfor %}
   </div>

@@ -486,6 +486,10 @@
 
   .o-article__section-tag {
     color: #041620;
+
+    &:hover {
+      color:#0071C9;
+    } 
   }
 
   .o-article__label {

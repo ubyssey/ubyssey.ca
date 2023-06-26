@@ -91,12 +91,9 @@
 
   // Text
   font-size: 6em;
-  -webkit-text-fill-color: white;
-  -webkit-text-stroke: 5px;
   color: black;
   @media($bp-smaller-than-phablet) {
     font-size: 4em;
-    -webkit-text-stroke: 3px;
   }
 }
 
@@ -166,7 +163,7 @@
 }
 
 .c-section__description {
-  width: 40%;
+  width: 45%;
   display: inline-block;
   @media($bp-smaller-than-phablet) {
     width:100%

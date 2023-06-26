@@ -13,6 +13,15 @@
     {% endfor %}
 {% endblock %}
 
+{% block ad-banner %}
+    {% block banner_ad %}
+    <!-- Article Page header ads go here -->
+        {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
+            {% gpt_placement_tag orderable.ad_slot %}
+        {% endfor %}
+    {% endblock %}
+{% endblock %}
+
 {% block header %}
     {% include 'navigation/headers/topbar.html' %}
     {% include 'navigation/headers/mobile.html' %}
@@ -20,12 +29,6 @@
 
 {% block content %}
     <main id="article-{{ self.slug }}" class="article">
-        {% block banner_ad %}
-        <!-- Article Page header ads go here -->
-            {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
-                {% gpt_placement_tag orderable.ad_slot %}
-            {% endfor %}
-        {% endblock %}
 
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->

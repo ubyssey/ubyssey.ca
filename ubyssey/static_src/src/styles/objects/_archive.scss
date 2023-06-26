@@ -396,7 +396,8 @@ $search-bar-height: 46px;
 
 .modal-content {
 	position: relative;
-    top: 25%;
+    top: 50%;
+    transform: translate(0, -50%);
 }
 
 .close-gallery {

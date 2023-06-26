@@ -7,7 +7,7 @@ class SidebarAdvertisementBlock(blocks.StructBlock):
     # Inserts of the recurring ad pattern for home page side bar
     # Use in conjunction with specify_homepage_sidebar_ads to cause a specific ad to be placed in the divs provided by this block
     class Meta:
-        template = "home/stream_blocks/sidebar_advertisement_block.html"
+        template = "infinitefeed/sidebar/sidebar_advertisement_block.html"
 
 class SinglePrintIssueBlock(blocks.StructBlock):
     date = blocks.DateBlock(required=True)
@@ -15,7 +15,7 @@ class SinglePrintIssueBlock(blocks.StructBlock):
     show_image = blocks.BooleanBlock(required=False)
     link = blocks.URLBlock(required=True)
     class Meta:
-        template = "home/stream_blocks/sidebar_single_issue_block.html"
+        template = "infinitefeed/sidebar/sidebar_single_issue_block.html"
         verbose_name = "Print Issue"
         verbose_name_plural = "Print Issues"
 
@@ -34,7 +34,7 @@ class SidebarIssuesBlock(blocks.StructBlock):
     title = blocks.CharBlock(required=True, max_length=255)
     issues = SidebarIssuesStream()
     class Meta:
-        template = "home/stream_blocks/sidebar_issues_block.html"
+        template = "infinitefeed/sidebar/sidebar_issues_block.html"
         verbose_name = "Sidebar Print Issues Block"
         verbose_name_plural = "Sidebar Print Issues Blocks"
 
@@ -53,13 +53,13 @@ class SidebarSectionBlock(blocks.StructBlock):
         context['articles'] = context['section'].get_featured_articles()          
         return context
     class Meta:
-        template = "home/stream_blocks/sidebar_section_block.html"
+        template = "infinitefeed/sidebar/sidebar_section_block.html"
 
 class SidebarImageLinkBlock(blocks.StructBlock):
     image = ImageChooserBlock(required=True)
     link = blocks.URLBlock(required=False)
     class Meta:
-        template = "home/stream_blocks/sidebar_image_link_block.html"
+        template = "infinitefeed/sidebar/sidebar_image_link_block.html"
         verbose_name = "Sidebar Image with Optional Link"
         verbose_name_plural = "Sidebar Images with Optional Link"
 
@@ -79,7 +79,7 @@ class SidebarFlexStreamBlock(blocks.StructBlock):
     stream = SidebarFlexStream()
 
     class Meta:
-        template = "home/stream_blocks/sidebar_flex_stream_block.html"
+        template = "infinitefeed/sidebar/sidebar_flex_stream_block.html"
         verbose_name = "Sidebar Stream Flex Block"
         verbose_name_plural = "Sidebar Stream Flex Blocks"
 

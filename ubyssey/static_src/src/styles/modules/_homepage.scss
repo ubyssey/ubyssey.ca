@@ -763,4 +763,20 @@ ol.article-list {
 
 .home_links {
   padding-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.home_link_content {
+  width: 60%;
+  @media($bp-smaller-than-phablet){
+    width: 100%;
+  }
+}
+
+.home_link_ad {
+  width: 40%;
+  @media($bp-smaller-than-phablet){
+    width: 100%;
+  }
 }

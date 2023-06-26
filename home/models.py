@@ -65,6 +65,7 @@ class HomePage(Page):
         related_name = "cover_story",
         null=True,
         blank=True,
+        on_delete=models.SET_NULL
     )
 
     links = StreamField(

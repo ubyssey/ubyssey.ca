@@ -239,7 +239,7 @@ class AuthorPage(RoutablePageMixin, Page):
                     json = requests.get(urlparse(url).scheme + "://" + domain + "/api/v2/instance").json()
                     if 'source_url' in json:
                         if json['source_url']=='https://github.com/mastodon/mastodon':
-                            icon = "fa-mastodon"    
+                            icon = "fa-brands fa-mastodon"    
                             extra = "rel='me'"
                             username = url.split("/")[-1]
                             username = username.replace("@","")
