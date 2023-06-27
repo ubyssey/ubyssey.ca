@@ -1,4 +1,11 @@
-document.getElementById("seemore").addEventListener("click", openFeed);
+function initializeSeemore() {
+    $('#seemore').click(function (e) {
+        e.preventDefault();
+        openFeed();
+    });
+}
+
+initializeSeemore();
 
 function openFeed() {
     document.getElementById("feed-section").classList.remove("home_infinitefeed_cutoff");
@@ -11,14 +18,16 @@ function closeFeed() {
     shadow.id = "feed-shadow";
     shadow.classList.add("home_infinitefeed_cutoff_shadow");
 
-    var seemore = document.createElement("div");
+    var seemore = document.createElement("a");
     seemore.id = "seemore";
+    seemore.href = "#";
     seemore.classList.add("home_infinitefeed_cutoff_seemore");
-    seemore.addEventListener("click", openFeed);
     seemore.innerHTML = "See more";
 
     shadow.appendChild(seemore);
     document.getElementById("feed-section").appendChild(shadow);
+
+    initializeSeemore();
 
     document.getElementById("feed-section").classList.add("home_infinitefeed_cutoff");
     document.getElementById("loader").setAttribute("inactive", "True");
