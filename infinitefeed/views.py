@@ -5,15 +5,18 @@ from django.http import HttpResponse
 from django.core import serializers
 import json
 from django.template import loader
+from section.models import SectionPage
 
 def getArticles(filters, start, number):
-    articles = ArticlePage.objects.live().public()
 
     if "section" in filters:
         if filters["section"] == "home":
             return ArticlePage.objects.live().public().order_by('-explicit_published_at')[int(start):int(start)+int(number)]
         else:
-            articles = articles.filter(current_section=filters["section"])
+            section = SectionPage.objects.get(slug=filters["section"])
+            articles = ArticlePage.objects.live().public().descendant_of(section).order_by('-explicit_published_at')
+    else:
+        articles = ArticlePage.objects.live().public().order_by('-explicit_published_at')
 
     if "category" in filters:
         articles = articles.filter(category__slug=filters["category"])
