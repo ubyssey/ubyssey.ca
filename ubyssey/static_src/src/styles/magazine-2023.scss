@@ -84,19 +84,10 @@ body {
   
   
 
-  .c-article__share {
-  margin-bottom: 0.75rem;
 
-  @media($bp-larger-than-tablet) {
-    display: inline-block;
-    margin-right: 0.75em;
-    margin-bottom: 0;
-  }
 }
 
-.c-article__share {
-  padding-right: 1em;
-}
+
 
 #custom-tooltip {
   display: none;
