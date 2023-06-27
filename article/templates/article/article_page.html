@@ -13,18 +13,15 @@
     {% endfor %}
 {% endblock %}
 
-{% block ad-banner %}
-    {% block banner_ad %}
+{% block header %}
+    {% include 'navigation/headers/mobile.html' %}
+        {% block banner_ad %}
     <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
             {% gpt_placement_tag orderable.ad_slot %}
         {% endfor %}
     {% endblock %}
-{% endblock %}
-
-{% block header %}
     {% include 'navigation/headers/topbar.html' %}
-    {% include 'navigation/headers/mobile.html' %}
 {% endblock %}
 
 {% block content %}

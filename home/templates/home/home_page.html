@@ -12,16 +12,15 @@
 {% endfor %}
 {% endblock %}
 
-{% block ad-banner %}
+{% block header %}
+{% include 'navigation/headers/mobile.html' with class='homepage' %}
+
 <!-- Place header ads for home page -->
 {% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
 {% gpt_placement_tag orderable.ad_slot %}
 {% endfor %}
-{% endblock %}
 
-{% block header %}
 {% include 'navigation/headers/main.html' with tagline=self.tagline tagline_url=self.tagline_url %}
-{% include 'navigation/headers/mobile.html' with class='homepage' %}
 {% endblock %}
 
 {% block content %}

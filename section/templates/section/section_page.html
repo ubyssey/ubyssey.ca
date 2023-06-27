@@ -14,16 +14,13 @@
   {% endfor %}
 {% endblock %}
 
-{% block ad-banner %}
-    <!-- Place header ads for section page -->
+{% block header %}
+  {% include 'navigation/headers/mobile.html' %}
+      <!-- Place header ads for section page -->
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
-{% endblock %}
-
-{% block header %}
   {% include 'navigation/headers/topbar.html' %}
-  {% include 'navigation/headers/mobile.html' %}
 {% endblock %}
 
 {% block content %}
