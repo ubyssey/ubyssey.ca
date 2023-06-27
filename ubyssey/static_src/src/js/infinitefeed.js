@@ -36,7 +36,6 @@ function recievedata(data) {
   var loader = document.getElementById("loader");
   var feed = document.getElementById("feed");
   if(data == "End of feed") {
-    console.log("end of feed");
     loader.setAttribute("inactive", "True");
     var congratz = document.createElement("p");
     congratz.innerHTML = "You reached the end! 🥳";

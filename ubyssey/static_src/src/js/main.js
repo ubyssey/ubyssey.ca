@@ -188,7 +188,6 @@ function initializeModals() {
   $('.open-modal > a').click(function (e) {
     e.preventDefault();
     var modalLink = $(this).parent().find('.openModal')[0];
-    console.log(modalLink);
     var modalIndex = parseInt(modalLink.getAttribute("modal"));
     if (modal.style.display == "block") {
       closeModal();
