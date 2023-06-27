@@ -21,7 +21,7 @@
 .c-sidebar {
     position:sticky;
     top: 50px;
-    height:500px;
+    height:100vh;
     width:40%;
 
     @media ($bp-smaller-than-phablet) {

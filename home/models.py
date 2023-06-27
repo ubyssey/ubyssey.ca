@@ -116,7 +116,12 @@ class HomePage(Page):
             heading="Tagline"
         ),
         PageChooserPanel("cover_story"),
-        InlinePanel("top_articles"),
+        MultiFieldPanel(
+            [
+                InlinePanel("top_articles"),
+            ],
+            heading="Top articles"
+        ),
         StreamFieldPanel("links", heading="Links"),
         StreamFieldPanel("sidebar_stream", heading="Sidebar"),
         # ModelChooserPanel('home_leaderboard_ad_slot'),
