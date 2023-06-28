@@ -40,50 +40,58 @@
         <h1 class="c-page__heading">{{title}}</h1>
       {% endif %}
 
-      <div class="c-section__info">    
-        <p class="c-section__description">{{description}} &ensp;{% if not category %}<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
-        <div class="c-section__buttons">
-          <div class="o-archive__search c-section__button-label">
-            <form method="get">
-              <label class="o-archive__search__label" for="c-articles-list__searchbar"><i
-                  class="fa fa-search"></i></label>
-              <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
-                {% if search_query %}value="{{ search_query }}" {% endif %} placeholder="Search" />
-            </form>
-          </div>
-      
-          <div class="open-modal c-section__button-label">
-            <a href="#"> 
-              <p><i class="fa fa-tag"></i> Series</p>
-            </a>
-
-            <div class="modal add-to-modal">
-              <div class="category_menu u-container u-container--padded">
-              <a href="#" class="close-modal">
-                <i class="fa fa-close c-section__modal_close"></i>
-              </a>
-              <h1><i class="fa fa-tag"></i> Series</h1>
-              <p><a href="{% pageurl self %}">{{self.title}}</a> - {{self.description}}</p>
-              {% if self.category_menu.count %}
-                  <ul>
-                    {% for category_menu_item in self.category_menu.all %}
-                      {% if category_menu_item.category %}
-                        <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a> — {{ category_menu_item.category.description }}</li>
-                      {% else %}
-                        {% comment %} Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! {% endcomment %}
-                        <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
-                      {% endif %}
-                    {% endfor %}
-                  </ul>
-              {% endif %}
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
       <div class="c-infinitefeed__feed">
         <div class="lightmode section_infinitefeed">
+        <div class="c-section__info">    
+          <p class="c-section__description">{{description}} &ensp;{% if not category %}<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
+          
+          {% if self.category_menu.count %}
+          <p>Featured Categories</p>
+          <ul class="feaured_categories">
+            {% for category_menu_item in self.category_menu.all %}
+              {% if category_menu_item.category %}
+                <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
+              {% else %}
+                comment Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! endcomment
+                <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          {% endif %}
+          
+          <div class="c-section__buttons">
+            <div class="o-archive__search c-section__button-label">
+              <form method="get">
+                <label class="o-archive__search__label" for="c-articles-list__searchbar"><i
+                    class="fa fa-search"></i></label>
+                <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
+                  {% if search_query %}value="{{ search_query }}" {% endif %} placeholder="Search" />
+              </form>
+            </div>
+        
+            <div class="open-modal c-section__button-label">
+              <a href="#"> 
+                <p><i class="fa fa-tag"></i> Categories</p>
+              </a>
+
+              <div class="modal add-to-modal">
+                <div class="category_menu u-container u-container--padded">
+                <a href="#" class="close-modal">
+                  <i class="fa fa-close c-section__modal_close"></i>
+                </a>
+                <h1><i class="fa fa-tag"></i> Series</h1>
+                <p><a href="{% pageurl self %}">{{self.title}}</a> - {{self.description}}</p>
+                <ul>
+                {% for category in all_categories %}
+                  <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a> — {{ category.description }}</li>
+                {% endfor %}
+                </ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
           {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
         </div>
         {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with styling="c-section__sidebar" id="sidebar" sidebar_stream=self.sidebar_stream %}

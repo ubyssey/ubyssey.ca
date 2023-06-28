@@ -224,6 +224,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             article_order = "-explicit_published_at"
         context["order"] = order
 
+        context["all_categories"] = CategorySnippet.objects.all().filter(section_page=self)
+
         all_articles = self.get_section_articles(order=article_order)
         context["filters"] = {"section": self.current_section}
         if 'category_slug' in kwargs:            

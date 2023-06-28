@@ -5,6 +5,7 @@ import upcomingEvents from './widgets/upcoming-events';
 
   moveModals();
   initializeModals();
+  closeModal();
 
   archiveMobileDropDown();
   initializeSearchFormActions();
