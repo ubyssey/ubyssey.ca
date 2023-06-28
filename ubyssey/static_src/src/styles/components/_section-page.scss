@@ -207,7 +207,9 @@ ul.feaured_categories {
 }
 
 .section_infinitefeed {
-  width: 65%;
+  @media ($bp-larger-than-phablet) {
+    width: 65%;
+  }
 
   #feed {
       @media ($bp-larger-than-phablet) {
