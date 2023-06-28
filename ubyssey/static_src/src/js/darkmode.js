@@ -5,11 +5,19 @@
     // Investigate how to implement the dark mode to the system prefers-color-scheme instead of using darkMode variable
     $( document ).ready(function() {
         storedMode = localStorage.getItem("darkMode");
+        
         if (storedMode == null) {
-            localStorage.setItem("darkMode", getDarkMode());
+            console.log("Hello ", storedMode);
+            localStorage.setItem("darkMode", window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light');
+            document.getElementsByTagName('meta')["color-scheme"].content = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
     
         } else {
             document.getElementsByTagName('meta')["color-scheme"].content = storedMode;
+
             setDarkMode(storedMode);
   
         }
@@ -20,13 +28,17 @@
 
 
 function getDarkMode() {
-    return document.querySelector('meta[name="color-scheme"]').content;
+
+    return   document.getElementsByTagName('meta')["color-scheme"].content
+   
+
 }
 
 function setDarkMode(mode) {
     if (mode == "light") {
         // nav bar
         var r = document.querySelector(':root');
+        document.firstElementChild.setAttribute("color-css-theme", "light");
         r.style.setProperty('--background', 'rgba(255, 255, 255, 0.99)');
         r.style.setProperty('--nav-mobile-background-barely-transparent', 'rgba(249, 249, 249, 0.99)');
         r.style.setProperty('--nav-h3-color', '#5D5D5D');
@@ -40,6 +52,7 @@ function setDarkMode(mode) {
     } else if (mode == "dark") {
         // nav ba
         var r = document.querySelector(':root');
+        document.firstElementChild.setAttribute("color-css-theme", "dark");
         r.style.setProperty('--background', '#031621');
         r.style.setProperty('--nav-mobile-background-barely-transparent', '#020510');
         r.style.setProperty('--nav-h3-color', '#5D5D5D');
@@ -60,6 +73,7 @@ function DarkModeToggle() {
     
         if (mode == "dark") {
             document.getElementsByTagName('meta')["color-scheme"].content = "light";
+            
             // document.querySelector('meta[name="color-scheme"]').setAttribute("content", "light");
             mode = "light"
 
@@ -69,6 +83,7 @@ function DarkModeToggle() {
 
         } else if (mode == "light") {
             document.getElementsByTagName('meta')["color-scheme"].content = "dark";
+            
             // document.querySelector('meta[name="color-scheme"]').setAttribute("content", "dark");
             mode = "dark"
 
