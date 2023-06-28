@@ -171,6 +171,7 @@ header.topbar {
   height: 48px;
   line-height: 48px;
   background: $header-mobile-background;
+  transition: background 0.5s ease, color 0.5s ease;
 
   border-bottom: $header-border;
   @include box-shadow($header-box-shadow);
@@ -294,6 +295,7 @@ header.mobile {
     position: absolute;
     vertical-align: middle;
     background: $header-mobile-background;
+    transition: background 0.5s ease, color 0.5s ease;
   }
 
   a.left, a.right {
@@ -309,6 +311,7 @@ header.mobile {
 
     &.active {
       background: $header-mobile-background;
+      transition: background 0.5s ease, color 0.5s ease;
       bottom: -1px;
     }
 
