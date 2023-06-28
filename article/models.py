@@ -1012,30 +1012,34 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
     # Master Writer Function
 
     # Gets small biography description
-    def get_authors_small_bio(self) -> str:
+    def get_authors_info(self) -> str:
         """
-        Returns a text with all the authors combined together.
+        Returns a list of all the with all the authors short bio.
+        2D list:
+            [
+                ["name1", "image1", "role1", "bio1"],
+                ["name2", "image2", "role2", "bio2"]
+            ]
         """
-        authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
-        authors_list = authors["author"]
-        written_bio = ""
+
+        authors_info = []
+
+        def get_info(authors_list):
+            for article_author in authors_list:
+                data = ['<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name), article_author.author.image, article_author.author.ubyssey_role, article_author.author.short_bio_description]
+                return data
         
-        for article_author in authors_list:
-            try:
-                inner_html_dict = article_author.author.short_bio_description.raw_data[0]
-                soup = BeautifulSoup(inner_html_dict["value"], "html.parser")
-                
-                for text in soup.find_all("p"):
-                    written_bio += " " + str(text.decode_contents())
 
-            except IndexError:
-                written_bio = None
+        authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
+        unique_authors = list(set(authors))
 
-            
+        for author in unique_authors:
+           authors_info.append(get_info(authors_list=authors[author]))
+           
+        
 
-        return written_bio
-    
-    authors_with_bio_desc = property(fget=get_authors_small_bio)
+        return authors_info
+    authors_info = property(fget=get_authors_info)
 
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string

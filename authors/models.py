@@ -82,28 +82,17 @@ class AuthorPage(Page):
         default='',
     )
 
-    bio_description =  StreamField(
-        [
-            ('richtext', blocks.RichTextBlock(                                
-                label="Rich Text Block",
-                help_text = "Customise your bio here with links, bolds and italics!"
-            )),
-        ],
+    bio_description =  models.TextField(
         null=False,
         blank=True,
         default='',
     )
 
-    short_bio_description = StreamField(
-        [
-            ('richtext', blocks.RichTextBlock(                                
-                label="Rich Text Block",
-                help_text = "Customise your short bio here with links, bolds and italics!"
-            )),
-        ],
+    short_bio_description = models.TextField(
         null=False,
         blank=True,
         default='',
+        help_text="Please provide your title, year and program"
     )
 
    
