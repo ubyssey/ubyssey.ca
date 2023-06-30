@@ -98,8 +98,10 @@
     </div>
 {% endblock %}
 
-{% block fw_suggested_articles %}
-{% include 'article/objects/suggested_articles_grid.html' with suggested_articles=suggested_articles %}
+{% block suggested_articles %}
+{% if suggested %}
+    {% include 'article/objects/suggested_articles_grid.html' with title=suggested.title articles=suggested.articles %}
+{% endif %}
 {% endblock %}
 
 {% block scripts %} 
