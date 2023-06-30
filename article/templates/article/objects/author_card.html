@@ -6,6 +6,10 @@
             <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} ">
                 {% image author_info.1 width-200 class="author_image" %}
             </div>
+        {% elif article_type == "fw" %}
+            <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} " style="padding-left: 82px;">
+                {% image author_info.1 width-200 class="author_image" %}
+            </div>
         {% endif %}
 
         
