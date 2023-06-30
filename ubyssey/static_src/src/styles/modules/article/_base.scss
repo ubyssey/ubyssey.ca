@@ -224,7 +224,7 @@ div.indicator {
 
 .author_title {
   padding: 0.5em;
-  font-size: large;
+  font-size: medium;
   font-style: bold;
   color: $color-text-black;
   text-align: left;
@@ -245,7 +245,7 @@ div.indicator {
 }
 
 .author_role {
-  font-size: medium;
+  font-size: small;
   font-style: bold;
   display: inline-block;
   padding: 0.5em;
@@ -255,7 +255,7 @@ div.indicator {
 .author_bio {
   display: inline-block;
   padding: 0.5em;
-  font-size: small;
+  font-size: smaller;
   text-align: left;
   color: $color-text-black;
 

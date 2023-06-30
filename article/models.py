@@ -1025,8 +1025,20 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         authors_info = []
 
         def get_info(authors_list):
+            """
+            no_image = False
             for article_author in authors_list:
-                data = ['<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name), article_author.author.image, article_author.author.ubyssey_role, article_author.author.short_bio_description]
+                if article_author.author.image == None:
+                    no_image = True
+            """
+
+            for article_author in authors_list:
+               # if no_image:
+                #    data = ['<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name), None, article_author.author.ubyssey_role, article_author.author.short_bio_description]
+                # else:
+                
+                data = ['<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name), article_author.author.image, article_author.author.ubyssey_role, article_author.author.short_bio_description]                    
+                
                 return data
         
 
@@ -1035,7 +1047,16 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
         for author in unique_authors:
            authors_info.append(get_info(authors_list=authors[author]))
-           
+        
+        for i in range(0, len(authors_info)):
+            if authors_info[i][1] == None:
+                temp = authors_info[i]
+                authors_info.remove(authors_info[i])
+                authors_info.append(temp)
+                
+
+
+        
         
 
         return authors_info
