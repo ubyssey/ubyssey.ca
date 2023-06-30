@@ -4,7 +4,7 @@
 
 $header-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
 $header-border: 1px solid #D3D3D3;
-$header-mobile-background: var(--background);
+$header-mobile-background: var(--background-nav);
 $nav-mobile-background-barely-transparent: var(--nav-mobile-background-barely-transparent);
 $nav-h3-color: var(--nav-h3-color);
 $nav-span-color: var(--nav-span-color);
@@ -413,7 +413,7 @@ a.store-link {
   background: rgba(0, 113, 201, 0.1);
   font-weight: $font-weight-semi-bold;
 
-  transition: background 0.2s;
+  transition: background 0.5s ease, color 0.5s ease;
 
   i {
     font-size: 12px;
