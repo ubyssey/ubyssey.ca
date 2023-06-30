@@ -6,10 +6,9 @@
         {% include 'objects/social-icons.html' with article=article layout='top' %}
     {% endcomment %}
 
-    
 
     {% if self.authors_info|length > 1 %}
-        <div class="c-authors_info">
+        <div class="{% if article_type == "fw" %}c-fw_authors_info{% else %}c-authors_info{% endif %}">
             {% for author_info in self.authors_info %}
                 {% if not forloop.last %}
                     {% if author_info.1 != None %}

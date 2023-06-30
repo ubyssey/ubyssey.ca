@@ -207,6 +207,11 @@ div.indicator {
   }
 }
 
+.c-fw_authors_info {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
 .c-one_authors_info {
   padding: 1em;
   display: inline-block;
