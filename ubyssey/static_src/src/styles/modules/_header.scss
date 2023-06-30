@@ -244,7 +244,7 @@ header.topbar {
         }
         &.current, &:hover {
           border-bottom: 3px solid rgba(52, 144, 214, 1);
-          color: #0071C9;
+          color: $color-accent-blue;
         }
 
         &.elections {

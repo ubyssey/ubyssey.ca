@@ -29,7 +29,7 @@
         top: 50%;
         left: 300px;
         box-shadow: #0000003b -25px 25px 2px;
-        background-color: #C0E3F1;
+        background-color: $color-ubyssey-blue-light;
     }
 }
 .author-name {
@@ -46,7 +46,7 @@
     line-height: 2rem;
 }
 .author-desc {
-    color: #031621;
+    color: $color-ubyssey-blue-dark-2;
     line-height: 1.45em;
 }
 .author-links {

@@ -662,7 +662,7 @@ ol.article-list {
 .sticky {
   position: sticky;
   top: 20px;
-  box-shadow: 0 5px 20px 6px #041620;
+  box-shadow: 0 5px 20px 6px $color-ubyssey-blue-dark;
 }
 
 .boxLabel {
@@ -697,35 +697,35 @@ ol.article-list {
 
 .darkmode {
   .boxLabel-left {
-    background-color: #C0E3F1;
-    border-color: #C0E3F1;
+    background-color: $color-ubyssey-blue-light;
+    border-color: $color-ubyssey-blue-light;
   }
   .boxLabel-right {
-    background-color: #041620;
-    border-color: #C0E3F1;
+    background-color: $color-ubyssey-blue-dark;
+    border-color: $color-ubyssey-blue-light;
   }
   .boxText-left {
-    color:#031621;
+    color:$color-ubyssey-blue-dark-2;
   }
   .boxText-right {
-    color: #C0E3F1;
+    color: $color-ubyssey-blue-light;
   }  
 }
 
 .lightmode {
   .boxLabel-left {
-    background-color: #041620;
-    border-color: #041620;
+    background-color: $color-ubyssey-blue-dark;
+    border-color: $color-ubyssey-blue-dark;
   }
   .boxLabel-right {
-    background-color: #C0E3F1;
-    border-color: #041620;
+    background-color: $color-ubyssey-blue-light;
+    border-color: $color-ubyssey-blue-dark;
   }
   .boxText-left {
-    color:#ffffff;
+    color:white;
   }
   .boxText-right {
-    color: #041620;
+    color: $color-ubyssey-blue-dark;
   }   
 }
 
@@ -735,7 +735,7 @@ ol.article-list {
 }
 
 .home_infinitefeed {
-  background-color: #031621;
+  background-color: $color-ubyssey-blue-dark-2;
   padding-top: 20px;
   position: relative;
 }
@@ -748,7 +748,7 @@ ol.article-list {
 .home_infinitefeed_cutoff_seemore {
   display: block;
   border-radius: 10px;
-  background-color: #C0E3F1;
+  background-color: $color-ubyssey-blue-light;
   cursor: pointer;
   text-align: center;
   padding: 5px;
