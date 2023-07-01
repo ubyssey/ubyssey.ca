@@ -2,77 +2,14 @@
 {% load wagtailimages_tags %}
 
 <div class="c-article__info">
-    {% comment %}
-        {% include 'objects/social-icons.html' with article=article layout='top' %}
-    {% endcomment %}
-
-
-    {% if self.authors_info|length > 1 %}
-        <div class="{% if article_type == "fw" %}c-fw_authors_info{% else %}c-authors_info{% endif %}">
-            {% for author_info in self.authors_info %}
-                {% if not forloop.last %}
-                    {% if author_info.1 != None %}
-                        {% include "article/objects/author_card.html" with author_info=author_info %}
-                    {% else %}
-                        {% include "article/objects/author_card.html" with card_type="no_image" author_info=author_info %}            
-                    {% endif %}
-                {% elif self.authors_info|length|divisibleby:2 and forloop.last %}
-                    {% if author_info.1 != None %}
-                        {% include "article/objects/author_card.html" with author_info=author_info %}
-                    {% else %}
-                        {% include "article/objects/author_card.html" with card_type="no_image" author_info=author_info %}
-                    {% endif %}
-                {% elif article_type == "fw" %}
-                    {% if author_info.1 != None %}
-                        {% include "article/objects/author_card.html" with author_info=author_info %}
-                    {% else %}
-                        {% include "article/objects/author_card.html" with card_type="no_image" author_info=author_info %}
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-        </div>
-
-    {% else %}
-            <div class="c-one_authors_info">
-                {% for author_info in self.authors_info %}
-                    {% include "article/objects/author_card.html" with card_type="one_author_card" author_info=author_info %}
-                {% endfor %}
-            </div>
+{% for author in authors %}
+    {% if author.author.image %}
+        {% include "article/objects/author_card.html" with author=author.author role=author.author_role %}
     {% endif %}
-
-
+{% endfor %}
+{% for author in authors %}
+    {% if not author.author.image %}
+        {% include "article/objects/author_card.html" with author=author.author role=author.author_role %}
+    {% endif %}
+{% endfor %}
 </div>
-
-    {% if article_type != "fw" %}
-        {% if not self.authors_info|length|divisibleby:2 and not self.authors_info|length_is:1 %}
-            <div class="c-authors_odd_info">
-                {% with author_info=self.authors_info|last %}
-                    {% include "article/objects/author_card.html" with card_type="odd_card" author_info=author_info %}
-                {% endwith %}
-            </div>
-        {% endif %}
-    {% endif %}
-    
-{% if article_type != "magazine" %}
-    <div class="c-authors_bio_meta">
-        <div class="c-article__byline">
-
-            <div class="c-article__byline__meta">
-                <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
-                                    
-                {% if reading_time %}
-                    <span> &nbsp;&middot;&nbsp; </span>
-                    <span class="c-article__reading-time">{{ reading_time }} min read</span>
-                {% endif %}
-
-                {% if article.subsection  %}
-                    <span> &nbsp;&middot;&nbsp; </span>
-                    <a href="{{ article.subsection.get_absolute_url }}">
-                        <span class="c-article__reading-time">{{ article.subsection.name }}</span>
-                    </a>
-                {% endif %}
-                
-            </div>
-        </div>
-    </div>
-{% endif %}
