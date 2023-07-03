@@ -45,7 +45,6 @@ from wagtail.admin.edit_handlers import (
     TabbedInterface,
 )
 
-from bs4 import BeautifulSoup
 from wagtail.core import blocks
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, PageManager, Orderable
@@ -944,36 +943,6 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
         return context
 
-    def get_authors_img_string(self):
-        """
-        Returns html-friendly list of the ArticlePage's authors as a comma-separated string (with 'and' before last author).
-        Keeps large amounts of logic out of templates.
-
-          links: Whether the author names link to their respective pages.
-        """
-        def format_author(article_author):
-            # Possible to add links to images
-            return article_author.author.image
-
-        authors_main = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
-        authors_list = authors_main["author"]
-
-        if not authors_list:
-            authors = [format_author(article_author) for article_author in self.article_authors.all()]
-        else:
-            authors = [format_author(article_author) for article_author in authors_list]
-           
-        
-
-        if not authors:
-            return ""
-        elif len(authors) == 1:
-            # If this is the only author, just return author name
-            return authors[0]
-
-        return authors        
-    authors_img_string = property(fget=get_authors_img_string)
-
 
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
@@ -1014,53 +983,25 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
     # Gets small biography description
     def get_authors_info(self) -> str:
         """
-        Returns a list of all the with all the authors short bio.
-        2D list:
-            [
-                ["name1", "image1", "role1", "bio1"],
-                ["name2", "image2", "role2", "bio2"]
-            ]
+        Returns a list of all the with all the authors short bio where if the authors without an image is placed last
         """
 
         authors_info = []
-
-        def get_info(authors_list):
-            """
-            no_image = False
-            for article_author in authors_list:
-                if article_author.author.image == None:
-                    no_image = True
-            """
-
-            for article_author in authors_list:
-               # if no_image:
-                #    data = ['<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name), None, article_author.author.ubyssey_role, article_author.author.short_bio_description]
-                # else:
-                
-                data = ['<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name), article_author.author.image, article_author.author.ubyssey_role, article_author.author.short_bio_description]                    
-                
-                return data
         
+        authors = list(self.article_authors.all())
 
-        authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
-        unique_authors = list(set(authors))
-
-        for author in unique_authors:
-           authors_info.append(get_info(authors_list=authors[author]))
+        no_images_authors = []
         
-        for i in range(0, len(authors_info)):
-            if authors_info[i][1] == None:
-                temp = authors_info[i]
-                authors_info.remove(authors_info[i])
-                authors_info.append(temp)
-                
-
-
+        for author in authors:
+            if author.author.image == None:
+                no_images_authors.append(author)
+            else:
+                authors_info.append(author)
         
-        
+        authors_info.extend(no_images_authors)
 
         return authors_info
-    authors_info = property(fget=get_authors_info)
+    authors = property(fget=get_authors_info)
 
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string

@@ -1,30 +1,29 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-
-    <div class=" {% if card_type == "odd_card" %} odd_author_card {% elif card_type == "one_author_card" %} one_author_card {% else %} author_card {% endif %} ">
+    
+    <div class="author_card">
         {% if card_type != "no_image" %}
             <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} ">
-                {% image author_info.1 width-200 class="author_image" %}
+                {% image author.author.image width-200 class="author_image" %}
             </div>
-        {% elif article_type == "fw" %}
-            <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} " style="padding-left: 82px;">
-                {% image author_info.1 width-200 class="author_image" %}
+        {% elif card_type == "no_image" %}
+            <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} " style="padding-left: 102px;">
             </div>
         {% endif %}
 
         
         <div class="authors_info_inner">
-            <div class="author_title">
-                {{ author_info.0|safe }}
+            <div class="author_info">
+                <div class="author_title"><a href="author.author.author.full_url">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author.ubyssey_role}}</div> 
             </div>
 
-            {% if author_info.3 != "" %}
+            {% if author.author.short_bio_description != "" %}
                 <div class="author_info">
-                    <div class="author_role">{{author_info.2}}</div>  <div class="author_bio">{{ author_info.3 }}</div>
+                    <div class="author_bio">{{ author.author.short_bio_description }}</div>
                 </div>
             {% else %}
                 <div class="author_info">
-                    <div class="author_role">{{author_info.2}}</div>
+                    <div class="author_space"></div> 
                 </div>
             {% endif %}
             </div>
