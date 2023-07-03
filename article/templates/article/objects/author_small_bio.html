@@ -20,7 +20,13 @@
                     {% if author_info.1 != None %}
                         {% include "article/objects/author_card.html" with author_info=author_info %}
                     {% else %}
-                        {% include "article/objects/author_card.html" with card_type="no_image" author_info=author_info %}            
+                        {% include "article/objects/author_card.html" with card_type="no_image" author_info=author_info %}
+                    {% endif %}
+                {% elif article_type == "fw" %}
+                    {% if author_info.1 != None %}
+                        {% include "article/objects/author_card.html" with author_info=author_info %}
+                    {% else %}
+                        {% include "article/objects/author_card.html" with card_type="no_image" author_info=author_info %}
                     {% endif %}
                 {% endif %}
             {% endfor %}
@@ -33,7 +39,8 @@
                 {% endfor %}
             </div>
     {% endif %}
-{% endfor %}
+
+
 </div>
 
     {% if article_type != "fw" %}
