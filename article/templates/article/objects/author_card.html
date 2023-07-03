@@ -1,18 +1,18 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<div class="author_card">
-    {% if author.image %}
-        <div class="author_image_container">
-            {% image author.image width-200 class="author_image" %}
-        </div>
-    {% endif %}
-    
-    <div class="authors_info">
-        <div>
-            <span class="author_title"><a href="{{author.full_url}}">{{ author.full_name}}</a></span>
-            <span class="author_role">{{role}}</span>
-        </div>
+    <div class=" {% if card_type == "odd_card" %} odd_author_card {% elif card_type == "one_author_card" %} one_author_card {% else %} author_card {% endif %} ">
+        {% if card_type != "no_image" %}
+            <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} ">
+                {% image author_info.1 width-200 class="author_image" %}
+            </div>
+        {% endif %}
+
+        
+        <div class="authors_info_inner">
+            <div class="author_title">
+                {{ author_info.0|safe }}
+            </div>
 
         {% if author.short_bio_description != "" %}
         <div class="author_bio">{{author.short_bio_description}}</div>
