@@ -990,6 +990,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         
         authors = list(self.article_authors.all())
 
+        print(authors)
+
         no_images_authors = []
         
         for author in authors:

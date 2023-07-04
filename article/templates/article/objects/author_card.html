@@ -2,11 +2,11 @@
 {% load wagtailimages_tags %}
     
     <div class="author_card">
-        {% if card_type != "no_image" %}
+        {% if author.author.image %}
             <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} ">
                 {% image author.author.image width-200 class="author_image" %}
             </div>
-        {% elif card_type == "no_image" %}
+        {% else %}
             <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} " style="padding-left: 102px;">
             </div>
         {% endif %}
@@ -14,7 +14,7 @@
         
         <div class="authors_info_inner">
             <div class="author_info">
-                <div class="author_title"><a href="author.author.author.full_url">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author.ubyssey_role}}</div> 
+                <div class="author_title"><a href="author.author.author.full_url">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author_role}}</div> 
             </div>
 
             {% if author.author.short_bio_description != "" %}

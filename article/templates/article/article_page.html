@@ -40,6 +40,27 @@
                 <div class="u-container u-container--content u-container--padded">
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
                     {% include "article/objects/author_bio.html" with article_type="base" %}
+                    <div class="c-authors_bio_meta">
+                        <div class="c-article__byline">
+                
+                            <div class="c-article__byline__meta">
+                                <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
+                                                    
+                                {% if reading_time %}
+                                    <span> &nbsp;&middot;&nbsp; </span>
+                                    <span class="c-article__reading-time">{{ reading_time }} min read</span>
+                                {% endif %}
+                
+                                {% if article.subsection  %}
+                                    <span> &nbsp;&middot;&nbsp; </span>
+                                    <a href="{{ article.subsection.get_absolute_url }}">
+                                        <span class="c-article__reading-time">{{ article.subsection.name }}</span>
+                                    </a>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                    </div>
                 </div>
             {% endblock %}
             <!-- Below is the container for Article content -->
