@@ -978,33 +978,6 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         return self.get_authors_string(links=True)
     authors_with_urls = property(fget=get_authors_with_urls)
 
-    # Master Writer Function
-
-    # Gets small biography description
-    def get_authors_info(self) -> str:
-        """
-        Returns a list of all the with all the authors short bio where if the authors without an image is placed last
-        """
-
-        authors_info = []
-        
-        authors = list(self.article_authors.all())
-
-        print(authors)
-
-        no_images_authors = []
-        
-        for author in authors:
-            if author.author.image == None:
-                no_images_authors.append(author)
-            else:
-                authors_info.append(author)
-        
-        authors_info.extend(no_images_authors)
-
-        return authors_info
-    authors = property(fget=get_authors_info)
-
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""

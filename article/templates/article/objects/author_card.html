@@ -1,29 +1,29 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
     
-    <div class="author_card">
-        {% if author.author.image and author.author.display_image %}
-            <div class="author_image_container">
-                {% image author.author.image width-200 class="author_image" %}
+<div class="author_card">
+    {% if author.author.image and author.author.display_image %}
+        <div class="author_image_container">
+            {% image author.author.image width-200 class="author_image" %}
+        </div>
+    {% else %}
+        <div class="author_image_container no_image"></div>
+    {% endif %}
+
+    
+    <div class="authors_info_inner">
+        <div class="author_info">
+            <div class="author_title"><a href="{{ author.author.author.full_url }}">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author_role}}</div> 
+        </div>
+
+        {% if author.author.short_bio_description != "" %}
+            <div class="author_info">
+                <div class="author_bio">{{ author.author.short_bio_description }}</div>
             </div>
         {% else %}
-            <div class="author_image_container no_image"></div>
-        {% endif %}
-
-        
-        <div class="authors_info_inner">
             <div class="author_info">
-                <div class="author_title"><a href="{{ author.author.author.full_url }}">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author_role}}</div> 
+                <div class="author_space"></div> 
             </div>
-
-            {% if author.author.short_bio_description != "" %}
-                <div class="author_info">
-                    <div class="author_bio">{{ author.author.short_bio_description }}</div>
-                </div>
-            {% else %}
-                <div class="author_info">
-                    <div class="author_space"></div> 
-                </div>
-            {% endif %}
-            </div>
-    </div>
+        {% endif %}
+        </div>
+</div>
