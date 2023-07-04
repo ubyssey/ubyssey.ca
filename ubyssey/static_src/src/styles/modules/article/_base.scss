@@ -93,15 +93,11 @@ div.indicator {
   }
 }
 
-
-
 .c-authors_info {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-around;
-  
+  justify-content: space-around; 
 }
-
 
 .c-article__byline {
   margin-bottom: 0.2rem;
@@ -124,7 +120,6 @@ div.indicator {
   position: absolute;
   display: block;
 }
-
 
 .c-authors_bio_meta {
   margin-top: 0.5rem;
@@ -206,7 +201,6 @@ div.indicator {
   display: flex;
 }
 
-
 .author_role {
   padding: 0.5em;
   font-size: medium;
@@ -226,16 +220,7 @@ div.indicator {
 
 }
 
-.c-author__byline {
-  padding-left: 1em;
-  margin-bottom: 0.2rem;
-  
-  font-family: $font-default;
-  font-size: $font-size-15px;
-  font-weight: $font-weight-semi-bold;
-}
-
-.c-article__byline-center{
+.c-article__byline-center {
   display: flex;
   justify-content: center;
 }
