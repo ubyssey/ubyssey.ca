@@ -93,20 +93,13 @@ div.indicator {
   }
 }
 
-.c-fw_article__info {
-  margin-bottom: 1rem;
-  display: block;
 
-  @media($bp-larger-than-tablet) {
-    margin-top: 1em;
-    display: flex;
-  }
-}
 
 .c-authors_info {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: 50% 50%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  
 }
 
 
@@ -126,6 +119,7 @@ div.indicator {
     margin-bottom: 0;
   }
 }
+
 .c-authors_bio {
   position: absolute;
   display: block;
@@ -156,6 +150,9 @@ div.indicator {
 .author_image_container {
   position: relative;
   display: flex;
+}
+
+.no_image {
   padding-left: 102px;
 }
 
@@ -183,22 +180,6 @@ div.indicator {
   }
 }
 
-.c-fw_authors_info {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-.c-one_authors_info {
-  padding: 1em;
-  display: inline-block;
-}
-
-.one_author_image_container {
-  position: relative;
-  display: inline-flex;
-  padding-left: 102px;
-}
-
 .author_card {
   padding: 1em;
   display: flex;
@@ -211,6 +192,7 @@ div.indicator {
   font-style: bold;
   color: $color-text-black;
   text-align: left;
+  text-transform: capitalize;
 
 
   &:hover {
@@ -231,6 +213,7 @@ div.indicator {
   font-style: bold;
   display: inline-block;
   color: $color-text-gray-light;
+  text-transform: capitalize;
 }
 
 .author_bio {

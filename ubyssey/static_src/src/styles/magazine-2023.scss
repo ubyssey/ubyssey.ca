@@ -93,8 +93,9 @@ body {
 }
 
 .c-authors_info {
-  display: grid;
-  grid-template-columns: 50% 50%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
 }
 
 .c-article__byline {
@@ -144,7 +145,6 @@ body {
 .author_image_container {
   position: relative;
   display: flex;
-  padding-left: 70px;
 }
 
 .authors_info_inner {
@@ -169,15 +169,6 @@ body {
   }
 }
 
-.c-one_authors_info {
-  padding: 1em;
-  display: inline-block;
-}
-
-.one_author_image_container {
-  position: relative;
-  display: inline-flex;
-}
 .author_card {
   padding: 1em;
   display: flex;
@@ -213,11 +204,13 @@ body {
   display: inline-block;
   padding: 0.5em;
   color: $color-text-gray;
+  text-transform: capitalize;
 }
 
 .author_bio {
   display: inline-block;
   padding: 0.5em;
+  margin-right: 0.5em;
   font-size: smaller;
   text-align: left;
   font-family: "Montserrat",sans-serif;

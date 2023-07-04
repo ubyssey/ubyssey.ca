@@ -3,18 +3,17 @@
     
     <div class="author_card">
         {% if author.author.image %}
-            <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} ">
+            <div class=" author_image_container ">
                 {% image author.author.image width-200 class="author_image" %}
             </div>
         {% else %}
-            <div class=" {% if card_type == "one_author_card" %} one_author_image_container {% else %} author_image_container {% endif %} " style="padding-left: 102px;">
-            </div>
+            <div class=" author_image_container no_image "></div>
         {% endif %}
 
         
         <div class="authors_info_inner">
             <div class="author_info">
-                <div class="author_title"><a href="author.author.author.full_url">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author_role}}</div> 
+                <div class="author_title"><a href="{{ author.author.author.full_url }}">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author_role}}</div> 
             </div>
 
             {% if author.author.short_bio_description != "" %}

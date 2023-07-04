@@ -51,7 +51,14 @@
             
                 <div class="u-container u-container--content u-container--padded">
                     <p class="c-article__title">{{ self.title }}</p>
-                    {% include "article/objects/author_bio.html" %}
+                    <div class="c-article__info">
+                        {% comment %}
+                            {% include 'objects/social-icons.html' with article=article layout='top' %}
+                        {% endcomment %}
+                        <div class="c-authors_info">
+                            {% include "article/objects/author_bio.html" %}
+                        </div>
+                    </div>
                     {% if self.featured_media.first.image %}
                         {% with self.featured_media.first as featured_image_object %}
                             <div class="featured-media">

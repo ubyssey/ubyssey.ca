@@ -18,6 +18,37 @@
 		<p class="fw-description">{{ self.fw_above_cut_lede }}</p>
 	{% endif %}
 
-    {% include "article/objects/fw_author_bio.html" %}
-	
+    <div class="c-article__info">
+        {% comment %}
+            {% include 'objects/social-icons.html' with article=article layout='top' %}
+        {% endcomment %}
+            
+        <div class="c-fw_authors_info">
+            {% include "article/objects/author_bio.html" %}
+        </div>
+        
+    </div>
+
+    <div class="c-authors_bio_meta">
+        <div class="c-article__byline">
+
+            <div class="c-article__byline__meta">
+                <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
+                                    
+                {% if reading_time %}
+                    <span> &nbsp;&middot;&nbsp; </span>
+                    <span class="c-article__reading-time">{{ reading_time }} min read</span>
+                {% endif %}
+
+                {% if article.subsection  %}
+                    <span> &nbsp;&middot;&nbsp; </span>
+                    <a href="{{ article.subsection.get_absolute_url }}">
+                        <span class="c-article__reading-time">{{ article.subsection.name }}</span>
+                    </a>
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+
 </div>

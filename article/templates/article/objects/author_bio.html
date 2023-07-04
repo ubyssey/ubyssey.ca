@@ -1,19 +1,10 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<div class="c-article__info">
-    {% comment %}
-        {% include 'objects/social-icons.html' with article=article layout='top' %}
-    {% endcomment %}
-        
-            <div class="{% if self.authors|length > 1%}c-authors_info{% else %}c-one_authors_info{% endif %}">
-                {% for author in self.authors %}
-                        {% if author.author.image != None %}
-                            {% include "article/objects/author_card.html" with author=author %}
-                        {% else %}
-                            {% include "article/objects/author_card.html" with card_type="no_image" author=author %}            
-                        {% endif %}
-                {% endfor %}
-            </div>
-        
-</div>
+{% for author in self.authors %}
+        {% if author.author.image != None %}
+            {% include "article/objects/author_card.html" with author=author %}
+        {% else %}
+            {% include "article/objects/author_card.html" with author=author %}            
+        {% endif %}
+{% endfor %}

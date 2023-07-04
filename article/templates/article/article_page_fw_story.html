@@ -37,33 +37,6 @@
                     {% image featured_image_object.image original as featured_image %}
                     <div class="backdrop" style="background-image: url('{{ featured_image.url }}');"></div>
                     <div class="headline-container">
-                        
-                        <div class="u-container u-container--padded">
-                            {% include "article/objects/fw_author_bio.html" %}
-
-                            <div class="c-authors_bio_meta">
-                                <div class="c-article__byline">
-                        
-                                    <div class="c-article__byline__meta">
-                                        <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
-                                                            
-                                        {% if reading_time %}
-                                            <span> &nbsp;&middot;&nbsp; </span>
-                                            <span class="c-article__reading-time">{{ reading_time }} min read</span>
-                                        {% endif %}
-                        
-                                        {% if article.subsection  %}
-                                            <span> &nbsp;&middot;&nbsp; </span>
-                                            <a href="{{ article.subsection.get_absolute_url }}">
-                                                <span class="c-article__reading-time">{{ article.subsection.name }}</span>
-                                            </a>
-                                        {% endif %}
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
                         {% if featured_image_object.caption or featured_image_object.credit %}
                             <div class="caption">
                                 {% if featured_image_object.caption %}
