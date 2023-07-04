@@ -579,6 +579,7 @@
   margin: auto;
   border-left-style: solid;
   border-image: linear-gradient(#ffffff00, #031621, #ffffff00) 30 stretch;
+  margin-top: 0;
 
   @media ($bp-smaller-than-phablet) {
     width: 100%;
@@ -587,7 +588,7 @@
 }
 .o-visual-essay__right-div {
   margin: auto;
-  margin-top: 200px;
+  margin-bottom: 200px;
   max-width: 300px;
   line-height: 2em;
   font-family: "noto-serif","Georgia",serif;
@@ -622,5 +623,15 @@
   }
   @media ($bp-larger-than-phablet) {
     top: 50vh;
+  }
+}
+.o-visual-essay__left-first {
+  opacity: 0;
+  visibility: hidden;
+  @media ($bp-smaller-than-phablet) {
+    opacity: 1;
+    z-index: 100;
+    visibility: visible;
+    left:0;
   }
 }

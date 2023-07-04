@@ -2,12 +2,12 @@
 {% load wagtailimages_tags %}
 {% load static %}
 
-<div class="o-visual-essay__content-container o-visual-essay__content-container-hide">
+<div class="o-visual-essay__content-container o-visual-essay__content-container-show">
     <!-- Article text -->
     <div class="o-visual-essay__left-container">
         {% for block in self.content %}
             {% if block.value.side == "left" %}
-            <div class="o-visual-essay__left-div o-visual-essay__left-next">
+            <div class="o-visual-essay__left-div {% if forloop.first%}o-visual-essay__left-first{% else %}o-visual-essay__left-next{% endif %}">
                 {% if block.block_type == 'image' %}
                     {% if block.value.block.caption or block.value.block.credit %}
                     <div class="caption">
@@ -26,7 +26,9 @@
     </div>
     <div class="o-visual-essay__right-container">
         {% for block in self.content %}
-            {% if block.value.side == "right" %}
+            {% if block.block_type == 'script_block' %}
+                {% include_block block with id=block.id %}
+            {% elif block.value.side == "right" %}
                 <div class="o-visual-essay__right-div">
                     {% include_block block.value.block with id=block.id %}
                 </div>
