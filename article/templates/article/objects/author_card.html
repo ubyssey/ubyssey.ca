@@ -2,12 +2,12 @@
 {% load wagtailimages_tags %}
     
     <div class="author_card">
-        {% if author.author.image %}
-            <div class=" author_image_container ">
+        {% if author.author.image and author.author.display_image %}
+            <div class="author_image_container">
                 {% image author.author.image width-200 class="author_image" %}
             </div>
         {% else %}
-            <div class=" author_image_container no_image "></div>
+            <div class="author_image_container no_image"></div>
         {% endif %}
 
         

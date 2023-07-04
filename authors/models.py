@@ -58,6 +58,13 @@ class AuthorPage(Page):
         blank=True,
         related_name="+",
     )
+
+    display_image = models.BooleanField(
+        default=False,
+        verbose_name="Present Author's Image",
+        help_text = "Do you want to display the author's image on the short bio in the article page?"
+    )
+
     ubyssey_role = models.CharField(
         max_length=255,
         null=False,
@@ -103,6 +110,12 @@ class AuthorPage(Page):
         MultiFieldPanel(
             [
                 ImageChooserPanel("image"),
+                FieldPanel("display_image"),
+            ],
+            heading="Image"
+        ),
+        MultiFieldPanel(
+            [
                 FieldPanel("ubyssey_role"),
                 StreamFieldPanel("bio_description"),
                 StreamFieldPanel("short_bio_description"),
