@@ -100,7 +100,7 @@ div.indicator {
 }
 
 .c-article__byline {
-  margin-bottom: 0.2rem;
+  margin: 0.5rem 0em 0.5em 0em;
   font-family: $font-default;
   font-size: $font-size-15px;
   // font-weight: $font-weight-semi-bold;
@@ -112,8 +112,12 @@ div.indicator {
     display: flex;
     flex: 1 0;
     line-height: 2rem;
-    margin-bottom: 0;
+    margin-bottom: 0.5em;
   }
+}
+
+.c-banner_share_button {
+  justify-content: center;
 }
 
 .c-authors_bio {
@@ -133,7 +137,7 @@ div.indicator {
   position: relative;
 
   @media($bp-larger-than-tablet) {
-    border-top: 1px solid #D2D2D2;
+    border-bottom: 1px solid #D2D2D2;
     display: flex;
     flex: 1 0;
     line-height: 2rem;
