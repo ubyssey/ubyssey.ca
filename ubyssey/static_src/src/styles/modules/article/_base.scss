@@ -1,6 +1,8 @@
 
 @import 'modules/variables';
 
+$text-color: var(--text_color);
+
 .featured-media {
   img {
     width: 100%;
@@ -328,6 +330,7 @@ div.article-content {
   > h1,
   > h2 {
     margin-top: 1.8em;
+    color: $text-color;
     margin-bottom: 0;
   }
   > h3,
@@ -382,7 +385,6 @@ div.article-content {
     font-family: $font-body !important;
     font-weight: $font-weight-normal !important;
     font-size: font-size(16) !important;
-    color: #333333 !important;
     line-height: 1.625rem !important;
     margin-top: 1.4rem;
 
