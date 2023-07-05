@@ -978,6 +978,22 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         return self.get_authors_string(links=True)
     authors_with_urls = property(fget=get_authors_with_urls)
 
+    def get_authors_in_order(self):
+        AUTHOR_TYPES = ["author", "photographer", "illustrator", "videographer"]
+        authors = self.article_authors.all()
+
+        authors_list = []
+
+        for author_type in AUTHOR_TYPES:
+            for author in authors:
+                if author.author_role == author_type:
+                    authors_list.append(author)
+
+
+        return authors_list
+    authors_in_order = property(fget=get_authors_in_order)
+    
+
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
@@ -999,7 +1015,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             if author == 'videographer':
                 string_videos += 'Videos by ' + self.get_authors_string(links=True, authors_list=authors['videographer'])
         if string_written != '':
-            authors_with_roles += string_written
+            authors_with_roles += string_written # Unneccessary if statement
         if string_photos != '':
             authors_with_roles += ', ' + string_photos
         if string_author != '':
