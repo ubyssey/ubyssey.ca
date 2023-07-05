@@ -37,6 +37,7 @@
                         </a>        
                     {% endif %} {% endcomment %}
                 </div>
+
                 <div class="u-container u-container--content u-container--padded">
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
                     <div class="c-article__info">
@@ -70,6 +71,9 @@
                                 
                             </div>
                         </div>
+                    </div>
+                    <div class="c-article__info">
+                        {% include 'article/objects/share_bar.html' %}
                     </div>
                 </div>
             {% endblock %}
@@ -139,6 +143,7 @@
                                     {% endwith %}
                                 {% endif %}
                             {% endif %}
+                            
                             <!-- Article text -->
                             {% for block in self.content %}
                                 {% include_block block %}

@@ -59,6 +59,9 @@
                             {% include "article/objects/author_bio.html" %}
                         </div>
                     </div>
+                    <div class="c-article__info">
+                        {% include 'article/objects/share_bar.html' %}
+                    </div>
                     {% if self.featured_media.first.image %}
                         {% with self.featured_media.first as featured_image_object %}
                             <div class="featured-media">

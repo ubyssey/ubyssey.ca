@@ -264,6 +264,25 @@ div.indicator {
   }
 }
 
+
+
+
+
+#custom-tooltip {
+  display: none;
+  margin-left: 40px;
+  padding: 5px 8px;
+  background-color: #3490d6;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.visuallyhidden{position:absolute;clip:rect(1px,1px,1px,1px)}
+
+.c-share_space {
+  padding-right: 1em;
+}
+
 .c-article__featured-media {
   // Structure
   max-width: 585px;
