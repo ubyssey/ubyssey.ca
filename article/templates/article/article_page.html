@@ -70,15 +70,15 @@
                                 {% endif %}
                                 
                             </div>
-                            <div class="c-article__byline__meta">
-                                {% include 'article/objects/darkmode_button.html'%}
-                            </div>
+
                         </div>
                     </div>
                     <div class="c-article__byline">
                         {% include 'article/objects/share_bar.html' %}
+                        <span class="c-article_dark_mode">
+                            {% include 'article/objects/darkmode_button.html'%}
+                        </span>
                     </div>
-                </div>
             {% endblock %}
             <!-- Below is the container for Article content -->
             <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">

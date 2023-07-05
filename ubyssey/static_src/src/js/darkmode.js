@@ -45,6 +45,7 @@ function setDarkMode(mode) {
         r.style.setProperty('--nav-h3-color', '#5D5D5D');
         r.style.setProperty('--nav-span-color', '#33331E');
         r.style.setProperty('--nav-headline-h1', '#373737');
+        r.style.setProperty('--authors-title-bio', '#1B1B1B');
         r.style.setProperty('--three-bar-logo-color', '#303030');
         r.style.setProperty('--text_color', '#000000');
         $('.ubyssey_small_logo').attr("src","/static/ubyssey/images/ubyssey-logo-small.svg");
@@ -60,6 +61,7 @@ function setDarkMode(mode) {
         r.style.setProperty('--nav-h3-color', '#EFEFEF');
         r.style.setProperty('--nav-span-color', '#EFEFEF');
         r.style.setProperty('--nav-headline-h1', '#5D5D5D');
+        r.style.setProperty('--authors-title-bio', '#D8D8D8');
         r.style.setProperty('--three-bar-logo-color', '#EFEFEF');
         r.style.setProperty('--text_color', '#D9D9D9');
         $('.ubyssey_small_logo').attr("src","/static/ubyssey/images/ubyssey-logo 1.svg");

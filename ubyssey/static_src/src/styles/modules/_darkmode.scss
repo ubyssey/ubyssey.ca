@@ -1,6 +1,8 @@
 @import 'variables';
 
-
+.c-article_dark_mode {
+  float: right;
+}
 
 .dark-mode-switcher {
     border: transparent;
@@ -14,7 +16,7 @@
 }
 
 .sun-and-moon > :is(.moon, .sun) {
-    fill: $DM-button;
+    fill: $DM-SH-button;
 }
 
 .theme-toggle:is(:hover, :focus-visible) > .sun-and-moon > :is(.moon, .sun) {
@@ -23,7 +25,7 @@
 
 
 .sun-and-moon > .sun-beams {
-    stroke: $DM-button;
+    stroke: $DM-SH-button;
     stroke-width: 2px;
 }
 

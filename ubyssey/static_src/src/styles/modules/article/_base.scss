@@ -1,6 +1,11 @@
 
 @import 'modules/variables';
 
+:root {
+  --authors-title-bio: #1B1B1B;
+}
+
+
 $text-color: var(--text_color);
 
 .featured-media {
@@ -102,24 +107,24 @@ div.indicator {
 }
 
 .c-article__byline {
+  display: inline-flex;
+  width: 65%;
   margin: 0.5rem 0em 0.5em 0em;
   font-family: $font-default;
   font-size: $font-size-15px;
   // font-weight: $font-weight-semi-bold;
   font-weight: $font-weight-bold;
 
-  display: inline-flex;
-
   @media($bp-larger-than-tablet) {
-    display: flex;
+    display: inline-block;
     flex: 1 0;
     line-height: 2rem;
     margin-bottom: 0.5em;
   }
 }
 
-.c-banner_share_button {
-  justify-content: center;
+.c-article_byline_fw {
+  width: 100%;
 }
 
 .c-authors_bio {
@@ -191,7 +196,7 @@ div.indicator {
   padding: 0.5em;
   font-size: medium;
   font-style: bold;
-  color: $color-text-black;
+  color: var(--authors-title-bio);
   text-align: left;
   text-transform: capitalize;
 
@@ -222,7 +227,7 @@ div.indicator {
   margin-right: 0.5em;
   font-size: smaller;
   text-align: left;
-  color: $color-text-black;
+  color: var(--authors-title-bio);
 
 }
 
@@ -270,10 +275,6 @@ div.indicator {
   }
 }
 
-
-
-
-
 #custom-tooltip {
   display: none;
   margin-left: 40px;
@@ -284,6 +285,25 @@ div.indicator {
 }
 
 .visuallyhidden{position:absolute;clip:rect(1px,1px,1px,1px)}
+
+.c-banner_share_dark_buttons {
+  padding-left: 1em;
+  margin-bottom: 0.2rem;
+
+  font-family: $font-default;
+  font-size: $font-size-15px;
+  font-weight: $font-weight-semi-bold;
+  
+  color: #FFF;
+
+  width: 100%;
+  justify-content: center;
+}
+
+.c-share-buttons {
+  float: left;
+  color: $DM-SH-button;
+}
 
 .c-share_space {
   padding-right: 1em;
