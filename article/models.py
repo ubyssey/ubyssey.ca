@@ -472,7 +472,15 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', article_blocks.PullQuoteBlock()),
+            ('quote', blocks.StructBlock(
+                [
+                    ('content',blocks.CharBlock(required=False)),
+                    ('source',blocks.CharBlock(required=False)),
+                ],
+                label = "Pull Quote",
+                template = 'article/stream_blocks/quote.html',
+                icon = "openquote",
+            )),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
