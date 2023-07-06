@@ -478,6 +478,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 ],
                 label = "Pull Quote",
                 template = 'article/stream_blocks/quote.html',
+                icon = "openquote",
             )),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
