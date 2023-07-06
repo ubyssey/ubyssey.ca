@@ -4,12 +4,6 @@
 
 $header-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
 $header-border: 1px solid #D3D3D3;
-$header-mobile-background: var(--background-nav);
-$nav-mobile-background-barely-transparent: var(--nav-mobile-background-barely-transparent);
-$nav-h3-color: var(--nav-h3-color);
-$nav-span-color: var(--nav-span-color);
-$nav-headline-h1: var(--nav-headline-h1);
-$three-bar-logo-color: var(--three-bar-logo-color);
 
 @mixin sectionsMore {
   display:none;
@@ -123,6 +117,7 @@ header.main{
           font-family: $font-default;
           font-size: font-size(14);
           font-weight: $font-weight-semi-bold;
+          color: #2B2B2B;
           margin: 0 6px;
   
           &.elections a {
@@ -145,6 +140,7 @@ header.main{
         li {
           font-family: $font-default;
           font-size: 13px;
+          color: #33331E;
           margin: 0 6px;
   
           &.store {
@@ -170,8 +166,7 @@ header.topbar, header.mobile {
 header.topbar {
   height: 48px;
   line-height: 48px;
-  background: $header-mobile-background;
-  transition: background 0.5s ease, color 0.5s ease;
+  background: rgba(255, 255, 255, 0.99);
 
   border-bottom: $header-border;
   @include box-shadow($header-box-shadow);
@@ -185,7 +180,7 @@ header.topbar {
         font-weight: $font-weight-semi-bold;
         font-size: font-size(12.5);
         text-transform: uppercase;
-        color: $nav-span-color;
+        color: #33331E;
       }
   }
 
@@ -210,8 +205,8 @@ header.topbar {
     font-family: $font-default;
     font-weight: $font-weight-semi-bold;
     font-size: font-size(13);
+    color: #373737;
     margin-left: 20px;
-    
     ul {
       line-height: 48px;
       list-style-type: none;
@@ -252,7 +247,7 @@ header.topbar {
     font-family: $font-default;
     font-size: font-size(13);
     font-weight: $font-weight-semi-bold;
-    color: #373737 $nav-headline-h1;
+    color: #373737;
     line-height: 19px;
     margin-top: 0;
     margin-bottom: 0;
@@ -294,8 +289,7 @@ header.mobile {
   a.left, a.right, a.logo {
     position: absolute;
     vertical-align: middle;
-    background: $header-mobile-background;
-    transition: background 0.5s ease, color 0.5s ease;
+    background: rgba(255, 255, 255, 0.99);
   }
 
   a.left, a.right {
@@ -305,13 +299,12 @@ header.mobile {
 
     box-sizing: border-box;
     font-size: 20px;
-    color: $three-bar-logo-color;
+    color: #303030;
 
     padding: 0 25px;
 
     &.active {
-      background: $header-mobile-background;
-      transition: background 0.5s ease, color 0.5s ease;
+      background: rgba(249, 249, 249, 0.99);
       bottom: -1px;
     }
 
@@ -359,10 +352,10 @@ nav.mobile {
   padding: 10px 20px;
   height: calc(100% - 76px);
   width: 100%;
-  background: $nav-mobile-background-barely-transparent; // Barely transparent
+  background: rgba(249, 249, 249, 0.99); // Barely transparent
   border-bottom: 1px solid rgb(178,178,178);
   overflow: auto;
-  color: $nav-span-color;
+  
   z-index: 200;
 
   ul {
@@ -392,7 +385,7 @@ nav.mobile {
     font-size: 14px;
     text-transform: uppercase;
     font-weight: 500;
-    color: $nav-h3-color;
+    color: #5D5D5D;
   }
 }
 
@@ -413,7 +406,7 @@ a.store-link {
   background: rgba(0, 113, 201, 0.1);
   font-weight: $font-weight-semi-bold;
 
-  transition: background 0.5s ease, color 0.5s ease;
+  transition: background 0.2s;
 
   i {
     font-size: 12px;
