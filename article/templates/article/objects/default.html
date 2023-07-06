@@ -1,6 +1,6 @@
-{% load dispatch_filters %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load video_filters %}
 
 <article class="o-article o-article--default{% if padded %} o-article--padded{% endif %}">
   {% if not hide_image and article.featured_media.first.image or article.featured_video %}
