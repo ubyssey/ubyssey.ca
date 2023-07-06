@@ -152,7 +152,16 @@
                 </div>
                 <!-- Below is the container for the right column article content, not entirely unique to the article -->
                 <aside class="cell right sidebar">
+                    {% comment %} Suggested articles in same Section up to 6 articles that are not itself {% endcomment %}
                     {% block sidebar %}
+                        <div class="suggested-articles">
+                            <h2 class='block-title'>Suggested Articles</h2>
+                            {% for article in suggested_articles %}
+                                {% if article.slug != self.slug %} 
+                                    {% include 'article/objects/suggested_articles.html' with article=article padded=True   %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                         <!-- Article Page sidebar ads go here -->
                         {% if self.is_explicit is not True %}
                             {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
@@ -161,14 +170,6 @@
                         {% else %}
                             {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
                         {% endif %}
-                        {% comment %} Suggested articles in same Section up to 6 articles that are not itself {% endcomment %}
-                        <div class="suggested-articles">
-                            {% for article in suggested_articles %}
-                                {% if article.slug != self.slug %} 
-                                    {% include 'article/objects/suggested_articles_column.html' with article=article padded=True   %}
-                                {% endif %}
-                            {% endfor %}
-                        </div>
                     {% endblock %}
                 </aside>                        
 

@@ -161,11 +161,14 @@ div.indicator {
 
 
 // Article content
+
 div.article-content {
 
   float: left;
   border-right: none;
+  margin-bottom: 2rem; // default for all Article pages, adds space between Article content and whatever follow, e.g. footer, Sidebar
 
+  // > medium; screensize just greater than the min width of article content + sidebar
   @media($bp-larger-than-tablet) {
     border-right: 1px solid #e6e6e6;
     display: table-cell;
@@ -174,9 +177,40 @@ div.article-content {
     vertical-align: top;
     box-sizing: border-box;
     width: 65%;
-    :last-child {
-      margin-bottom: 1.4rem;
+  }
+
+  // < medium
+  @media($bp-smaller-than-tablet) {
+  }
+
+  // < small
+  @media($bp-smaller-than-mobile) {
+  }
+
+  > p, > ul {
+    font-family: $font-body !important;
+    font-weight: $font-weight-normal !important;
+    font-size: font-size(16) !important;
+    color: #333333 !important;
+    line-height: 1.625rem !important;
+    margin-top: 1.4rem;
+
+    a {
+      color: $color-accent-blue;
+      text-decoration: underline;
     }
+
+    &:first-child {
+        margin-top: 5px;
+        margin-right: auto;
+    }
+  }
+
+  > h1 {
+    font-family: $font-default;
+    font-weight: normal;
+    font-size: 28px;
+    margin: 30px 0 0 0;
   }
 
   > p,
@@ -186,6 +220,7 @@ div.article-content {
     margin-top: 1.8em;
     margin-bottom: 0;
   }
+
   > h3,
   > ul,
   > .attachment.pull-quote {
@@ -232,38 +267,6 @@ div.caption {
   }
 }
 
-div.article-content {
-
-  > p, > ul {
-    font-family: $font-body !important;
-    font-weight: $font-weight-normal !important;
-    font-size: font-size(16) !important;
-    color: #333333 !important;
-    line-height: 1.625rem !important;
-    margin-top: 1.4rem;
-
-    a {
-      color: $color-accent-blue;
-      text-decoration: underline;
-    }
-
-    &:first-child {
-        margin-top: 5px;
-        margin-right: auto;
-    }
-  }
-
-  > h1 {
-    font-family: $font-default;
-    font-weight: normal;
-    font-size: 28px;
-    margin: 30px 0 0 0;
-  }
-
-  // @media($bp-smaller-than-mobile) {
-  //   padding: 0 3%;
-  // }
-}
 @media($bp-larger-than-mobile) {
   div.headline-container {
     padding: 0;
@@ -279,7 +282,6 @@ div.article-content {
   }
   div.article-content {
     width: 100%;
-
     border-right: none;
     display: block;
     padding-right: 0;

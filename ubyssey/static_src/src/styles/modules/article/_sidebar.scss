@@ -9,20 +9,50 @@ aside.sidebar {
   box-sizing: border-box;
   display: table-cell;
 
-  // < medium
-    @media($bp-smaller-than-tablet) {
+  .o-article__headline {
+    font-family: $font-default;
+    font-weight: $font-weight-bold;
+    font-size: 1.1em;
   }
 
-  // if even smaller, < small
-  @media($bp-smaller-than-mobile) {
-    padding: 0 3%;
+  .o-article__author {
+    font-weight: 400;
+  }
+
+  .o-article--padded {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    border-bottom: 1px dotted #C8C8C8;
+  }
+
+  .o-article--padded:last-child {
+    border-bottom: none;
   }
 
   // > medium; screensize just greater than the min width of article content + sidebar
   @media($bp-larger-than-tablet) {
 
     padding: 0 0 40px 15px;
-    // max-width: 300px;
+
+    div.suggested-articles {
+      display: block;
+      position: absolute;
+      max-width: 300px;
+      min-width: 300px;
+    }
+
+    // don't display sidebar article image and publication date if displayed on the side
+    .o-article__meta__image, .o-article__interpunct-dot, .o-article__published {
+      display: none;
+    }
+
+  }
+
+  // < medium
+  @media($bp-smaller-than-tablet) {
+    .o-article__meta {
+      display: flex;
+    }
   }
 
   // Smaller than tablet size, have sidebar on the bottom
@@ -30,13 +60,29 @@ aside.sidebar {
     float: left;
     padding: 15px 0;
     width: 100%;
+    div.suggested-articles {
+      width: 100%;
+    }
     max-width: 585px;
+      
   }
+
+  // < small
+  @media($bp-smaller-than-mobile) {
+    padding: 0 3%;
+    .o-article__meta {
+      display: block;
+    }
+    .o-article__meta__image {
+      display: block;
+    }
+  }
+
 }
 
 .fw-story, .timeline {
-  div.sidebar {
+  aside.sidebar {
     display: none;
-    right: -150px;
+    // right: -150px;
   }
 }
