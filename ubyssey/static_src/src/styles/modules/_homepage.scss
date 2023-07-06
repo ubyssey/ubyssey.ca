@@ -690,6 +690,7 @@ ol.article-list {
 .boxText {
   margin: 0;
   font-size: 1em;
+  text-transform: capitalize;
   position: relative;
   top: 50%;
   transform: translate(0,-50%);
