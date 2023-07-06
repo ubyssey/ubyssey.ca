@@ -15,7 +15,6 @@ class Migration(migrations.Migration):
         ('section', '0001_initial'),
         ('images', '0001_initial'),
         ('taggit', '0003_taggeditem_add_unique_index'),
-        ('dispatch', '0108_auto_20210511_1359'),
     ]
 
     operations = [
@@ -23,11 +22,6 @@ class Migration(migrations.Migration):
             model_name='articlepage',
             name='category',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='section.categorysnippet'),
-        ),
-        migrations.AddField(
-            model_name='articlepage',
-            name='dispatch_version',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='dispatch.article'),
         ),
         migrations.AddField(
             model_name='articlepage',
