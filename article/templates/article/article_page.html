@@ -46,6 +46,7 @@
                             </div>
                             <div class="c-article__byline__meta">
                                 <span class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</span>
+
                                 {% comment %}                                     
                                     {% if reading_time %}
                                         <span> &nbsp;&middot;&nbsp; </span>
@@ -60,6 +61,9 @@
                                         </a>
                                     {% endif %}
                                 {% endcomment %}
+                            </div>
+                            <div class="c-article__byline__meta">
+                                {% include 'article/objects/darkmode_button.html'%}
                             </div>
                         </div>
                         {% comment %}
