@@ -7,8 +7,6 @@ from images.models import GallerySnippet
 
 from dbtemplates.models import Template as DBTemplate
 
-from dispatch.models import Article
-
 from django.db import models
 from django.db.models import fields
 from django.db.models.fields import CharField
@@ -99,15 +97,6 @@ class UbysseyMenuMixin(models.Model):
         abstract = True
 
 #-----Snippet Models-----
-
-@register_snippet
-class DispatchCounterpartSnippet(models.Model):
-    dispatch_version = models.ForeignKey(
-        Article,
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-    )
 
 @register_snippet
 class ArticleSeriesSnippet(ClusterableModel):
@@ -557,14 +546,6 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         default=False,
         verbose_name="Is Explicit?",
         help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article."
-    )
-    #-----Migration stuff------
-    dispatch_version = models.ForeignKey(
-        # Used to map the article to a previous version that exists in Dispatch
-        "dispatch.Article",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
     )
 
     #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
