@@ -157,10 +157,12 @@ class ArchivePage(RoutablePageMixin, Page):
             videos = self.get_search_objects(search_query, videos, True)
 
             if len(articles) < 1:
-                context = self.get_paginated_articles(context, videos, request)
+                video_section = True
+                context = self.get_paginated_articles(context, videos, video_section, request)
                 context["video_section"] = True
             else:
-                context = self.get_paginated_articles(context, articles, request)
+                video_section = False
+                context = self.get_paginated_articles(context, articles, video_section,  request)
         else:
             context = self.get_paginated_articles(context, articles, video_section, request)
 
