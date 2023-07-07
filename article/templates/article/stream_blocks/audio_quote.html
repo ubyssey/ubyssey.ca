@@ -3,13 +3,14 @@
 </audio>
 
 <div class="pull-quote attachment">
-        <p class="quote">{{ self.content }}</p>
+    <p class="quote">{{ self.content }}</p>
 
-        {% if self.source %}
-        <p class="source">
-            <a href="#" audio="{{id}}" class="playAudioQuote">
-                <i id="icon-{{id}}" class="fa-solid fa-volume-off volume"></i> Listen to {{ self.source }}
-            </a>
-        </p>
-        {% endif %}
+    {% if self.source %}
+    <p class="meta">
+        <a href="#" audio="{{id}}" class="playAudioQuote">
+            <i id="icon-{{id}}" class="fa-solid fa-volume-off volume"></i>
+            <span class="source">Listen to {{ self.source }}</span>
+        </a>
+    </p>
+    {% endif %}
 </div>

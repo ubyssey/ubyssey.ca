@@ -413,10 +413,8 @@
     font: bold 1.625em/1.5em 'Minion Pro';
     text-align: center;
   }
-  p.source {
-    text-align: right;
+  p.meta {
     position: relative;
-    float: right;
 
     margin-top: 10px;
     margin-bottom: 0;
@@ -426,11 +424,24 @@
     font-weight: 100;
     font-style: italic;
     font-size: 0.77em;
+    
+    .playAudioQuote {
+      display: block;
+    }
+
+    .source {
+      display: inline-block;
+      position: relative;
+      left: 75%;
+      width: 22%;
+    }
 
     .volume {
-      position: absolute;
-      left: -1.5rem;
-      top: 0.15rem;
+      position: relative;
+      left: 72%;
+      top: 0.05rem;
+      display: inline-block;
+      width: 3%;
     }
   }
 }
