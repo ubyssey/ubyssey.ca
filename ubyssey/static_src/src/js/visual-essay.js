@@ -25,7 +25,7 @@ document.body.onscroll = function () {
     
             for(let i=0; i<right.children.length; i++) {
                 var block = right.children[i];
-                
+
                 if(block.classList.contains("script_block")){
                     if (block.getAttribute("activated") == "false") {
                         if(block.offsetTop < scrolled) {
@@ -60,7 +60,7 @@ document.body.onscroll = function () {
             if (pastViewCount != viewCount) {
                 pastViewCount = viewCount;
                 removeClasses(containers[i], views);
-                containers[i].classList.add(document.getElementsByClassName("switch_view")[viewCount-1].getAttribute("view"));
+                containers[i].classList.add(containers[i].getElementsByClassName("switch_view")[viewCount-1].getAttribute("view"));
             }
             
             if (pastCount != count) {
