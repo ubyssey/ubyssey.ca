@@ -497,6 +497,7 @@
   margin-top: 50px;
   margin-bottom: 100px;
   transition-duration: 1s;
+  width: 100%;
   @media ($bp-smaller-than-phablet) {
     flex-direction: column;
   }
@@ -537,6 +538,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 
   .caption {
     margin: 20px;
