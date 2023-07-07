@@ -15,6 +15,17 @@ class ChooseSideBlock(blocks.ChoiceBlock):
     choices=[('left', 'Left'),('right', 'Right'),]
     required=True
 
+class ChooseViewBlock(blocks.StructBlock):
+    view = blocks.ChoiceBlock(
+        choices=[('vs-side-by-side', 'Side By Side'),('vs-over-image', 'Text Over Image'),],
+        default=('vs-side-by-side', 'Side By Side'),
+        required=True
+    )
+
+    class Meta:
+        template = "article/stream_blocks/ve_switch_view.html",
+        icon = "view"
+
 class VEScriptBlock(blocks.StructBlock):
     script =  blocks.RawHTMLBlock(
         label = "Raw HTML Block",
@@ -31,6 +42,7 @@ class VEScriptBlock(blocks.StructBlock):
         icon = "cogs"
 
 class VisualEssayBlock(blocks.StructBlock):
+    view = ChooseViewBlock()
     content = blocks.StreamBlock([
         ('rich_text', blocks.StructBlock(
             [
@@ -72,6 +84,7 @@ class VisualEssayBlock(blocks.StructBlock):
             ], icon = "openquote"
         )),
         ('script_block', VEScriptBlock()),
+        ('switch_view', ChooseViewBlock()),
     ])
 
     class Meta:

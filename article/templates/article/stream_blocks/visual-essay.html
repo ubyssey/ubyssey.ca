@@ -2,7 +2,7 @@
 {% load wagtailimages_tags %}
 {% load static %}
 
-<div class="o-visual-essay__content-container o-visual-essay__content-container-show">
+<div class="o-visual-essay__content-container o-visual-essay__content-container-show {{self.view.view}}">
     <!-- Article text -->
     <div class="o-visual-essay__left-container">
         {% for block in self.content %}
@@ -25,8 +25,9 @@
         {% endfor %}
     </div>
     <div class="o-visual-essay__right-container">
+        {% include_block self.view with id=block.id %}
         {% for block in self.content %}
-            {% if block.block_type == 'script_block' %}
+            {% if block.block_type == 'script_block' or block.block_type == 'switch_view' %}
                 {% include_block block with id=block.id %}
             {% elif block.value.side == "right" %}
                 <div class="o-visual-essay__right-div">
