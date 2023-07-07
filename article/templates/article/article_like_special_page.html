@@ -21,13 +21,13 @@
             <div class="row">
                 <div class="seven columns article-content">
                         {% for block in self.content %}
-                            {% include_block block %}
+                            {% include_block block with id=block.id %}
                         {% endfor %}                        
                 </div>
                 <aside class="five columns">
                     {% comment %}ad goes here{% endcomment %}
                     {% for right_column_block in self.right_column_content %}
-                        {% include_block right_column_block %}
+                        {% include_block right_column_block with id=block.id %}
                     {% endfor %}
                 </aside>
             </div>

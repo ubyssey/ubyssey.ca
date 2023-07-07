@@ -136,14 +136,14 @@
                             {% endif %}
                             <!-- Article text -->
                             {% for block in self.content %}
-                                {% include_block block %}
+                                {% include_block block with id=block.id %}
                             {% endfor %}
                             <!-- Content unique to the article ends here -->
                         {% endfilter %}
                     {% else %}
                         <!-- Content unique to the article starts here -->
                         {% for block in self.content %}
-                            {% include_block block %}
+                            {% include_block block with id=block.id %}
                         {% endfor %}
                         <!-- Content unique to the article ends here -->
                     {% endif %}

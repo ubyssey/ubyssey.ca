@@ -6,6 +6,8 @@ import upcomingEvents from './widgets/upcoming-events';
   initializeSearchFormActions();
   initializeSocialMediaActions();
 
+  initializeAudioQuote()
+
   ubysseyHeaderMobilePopUp();
   ubysseyHeaderMagazineDropDown();
   ubysseyHeaderCultureDropDown();
@@ -264,5 +266,48 @@ function initializeSocialMediaActions() {
     e.preventDefault();
     window.open('http://www.reddit.com/submit?url=' + $(this).data('url') + '&title=' + $(this).data('title') + '&', 'redditwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+  });
+}
+
+function initializeAudioQuote() {
+  $(document).on('click', 'a.playAudioQuote', function (e) {
+    e.preventDefault();
+  
+    var id = this.getAttribute("audio");
+  
+    var sound = document.getElementById(id);
+    if (sound.paused) {   
+      sound.play();
+    
+      var icon = document.getElementById("icon-" + id);
+      var frames = ["fa-volume-off", "fa-volume-low", "fa-volume-high"];
+    
+      var animateIcon = setInterval(function () {
+    
+          for (let i=0; i < frames.length; i++) {
+              if (icon.classList.contains(frames[i])) {
+                  icon.classList.toggle(frames[i]);
+                  if (i == frames.length - 1 ) {
+                      icon.classList.toggle(frames[0]);
+                  } else {
+                      icon.classList.toggle(frames[i+1]);
+                  }
+                  break;
+              }
+          }
+    
+          if (sound.paused) {
+              icon.classList.remove("fa-volume-low");
+              icon.classList.remove("fa-volume-high");
+              icon.classList.add("fa-volume-off");
+              clearInterval(animateIcon);
+          }
+    
+      }, 200);
+    } else {
+      sound.pause();
+      sound.currentTime = 0;
+    }
+  
   });
 }
