@@ -6,6 +6,7 @@ from django.core import serializers
 import json
 from django.template import loader
 from section.models import SectionPage
+from django.http import JsonResponse
 
 def getArticles(filters, start, number):
 
@@ -41,13 +42,18 @@ def infinitefeed(request):
             filters["search_query"] = request.GET['search_query']
 
         articles = getArticles(filters, start, number)
-        
+
         if len(articles) == 0:
             return HttpResponse("End of feed")
         else:
-            data = {'articles': articles}
-            if "label" in request.GET:
-                data["label"] = True
-            return HttpResponse(loader.render_to_string("infinitefeed/infinitefeed-batch.html", data))
+            articleHtml = []
+            for article in articles:
+                data = {'article': article}
+                if "label" in request.GET:
+                    data["label"] = True
+                articleHtml.append(loader.render_to_string("article/objects/infinitefeed_item.html", data))
+                   
+            articleHtml_json = json.dumps(articleHtml)
+            return HttpResponse(articleHtml_json, content_type ="application/json")
     else:
         return HttpResponse("Request method is not a GET")

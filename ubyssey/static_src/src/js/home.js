@@ -52,8 +52,10 @@ updateTimeBox = setInterval(
                 document.getElementById("timeBox").innerHTML = "<strong>Today</strong>";
             } 
             if(document.documentElement.scrollTop < 100) {
-                if (document.getElementById("feed-section").classList.contains("home_infinitefeed_cutoff") == false) {
-                    closeFeed();
+                if (loader.hasAttribute("end") == false) {
+                    if (document.getElementById("feed-section").classList.contains("home_infinitefeed_cutoff") == false) {
+                        closeFeed();
+                    }                    
                 }
             }
         }

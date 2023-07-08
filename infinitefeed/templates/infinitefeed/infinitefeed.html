@@ -18,11 +18,15 @@ section = "{{filters.section}}"
   label = "true"
 {% endif %}
 >
-    {% if label %}
-      {% include "infinitefeed/infinitefeed-batch.html" with label=label articles=filters|preload_articles:"15"%}
-    {% else %}
-      {% include "infinitefeed/infinitefeed-batch.html" with articles=filters|preload_articles:"15"%}
-    {% endif %}
+  {% if label %}
+      {% for article in filters|preload_articles:"15" %}
+          {% include 'article/objects/infinitefeed_item.html' with label=label article=article %}
+      {% endfor %}
+  {% else %}
+      {% for article in filters|preload_articles:"15" %}
+          {% include 'article/objects/infinitefeed_item.html' with article=article %}
+      {% endfor %}
+  {% endif %}
 </div>
 
 

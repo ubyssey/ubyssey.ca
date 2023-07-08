@@ -16,8 +16,8 @@ getData("search_query");
 getData("label");
 
 function getArticles() {
+  loader.setAttribute("inactive", "True");
   loader.classList.remove("hide");
-  
   data["start"] = loader.getAttribute("start");
   data["number"] = loader.getAttribute("number");
 
@@ -37,12 +37,17 @@ function recievedata(data) {
   var feed = document.getElementById("feed");
   if(data == "End of feed") {
     loader.setAttribute("inactive", "True");
+    loader.setAttribute("end", "True");
     var congratz = document.createElement("p");
     congratz.innerHTML = "You reached the end! 🥳";
     loader.replaceChildren(congratz);
   } else {
-    loader.setAttribute("inactive", "True");
-    feed.insertAdjacentHTML("beforeend", data);
+    console.log("epic");
+    for (let i=0; i<data.length; i++) {
+      feed.insertAdjacentHTML("beforeend", data[i]);
+      console.log("placed");
+    }
+    console.log("done");
     loader.classList.add("hide");
     loader.removeAttribute("inactive");
   }  

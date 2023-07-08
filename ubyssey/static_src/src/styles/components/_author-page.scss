@@ -3,19 +3,23 @@
     margin: auto;
     margin-bottom: 70px;
     margin-top: 50px;
+    min-height: 400px;
 }
 .author-img {
     border-radius: 100%;
     background-size: cover;
+
     @media($bp-smaller-than-phablet) {
         margin:auto;
         width: 60%;
         aspect-ratio: 1;
         margin-bottom: 25px;
+        position: static;
     }
     @media($bp-larger-than-phablet) {
         width: 350px;
         height: 350px;
+        position: absolute;
     }
 }
 .author-info {
@@ -24,12 +28,13 @@
 
     @media($bp-larger-than-phablet) {
         border-radius: 25px;
-        position: absolute;
-        transform: translate(0, -60%);
-        top: 50%;
-        left: 300px;
+        position: relative;
+        transform: translate(0, -10%);
+        max-width: fit-content;
+        width: 65%;
         box-shadow: #0000003b -25px 25px 2px;
-        background-color: $color-ubyssey-blue-light;
+        background-color: #C0E3F1;
+        float: right;
     }
 }
 .author-name {

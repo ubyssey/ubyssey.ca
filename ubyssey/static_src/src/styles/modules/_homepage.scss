@@ -756,7 +756,7 @@ ol.article-list {
   margin: auto;
   width: fit-content;
   position: relative;
-  top: 50%;
+  top: 20%;
 
   &:hover {
     opacity: 0.8;
@@ -767,6 +767,9 @@ ol.article-list {
   padding-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
+  @media($bp-smaller-than-phablet){
+    padding: 20px;
+  }
 }
 
 .home_link_content {
