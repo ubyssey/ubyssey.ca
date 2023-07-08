@@ -15,6 +15,8 @@
 @import 'modules/headlines';
 @import 'modules/buttons';
 
+@import 'modules/darkmode';  
+
 @import 'modules/homepage';
 
 @import 'modules/article/base';
@@ -30,6 +32,7 @@
 @import 'objects/inputs';
 @import 'objects/archive';
 @import 'objects/bottom_banner';
+
 
 @import 'components/adblock-splash';
 @import 'components/author-page';
@@ -72,7 +75,16 @@
 @import 'modules/widgets/weekly-events';
 @import 'modules/widgets/twitter';
 
-
+:root {
+  --background-nav: rgba(255, 255, 255, 0.99);
+  --background: rgba(255, 255, 255, 0.99);
+  --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
+  --nav-h3-color: #5D5D5D;
+  --nav-span-color: #33331E;
+  --nav-headline-h1: #373737;
+  --three-bar-logo-color: #303030;
+  --text_color: #1b1b1b;
+}
 
 body, html, #page-wrapper {
   max-height: 100%;
@@ -101,7 +113,8 @@ body, html, #page-wrapper {
 }
 
 #content-wrapper {
-  
+  background-color: var(--background);
+  transition: background 0.5s ease, color 0.5s ease;
   -webkit-overflow-scrolling: touch;
 }
 

@@ -86,6 +86,14 @@
   flex: 1;
 }
 
+.c-page__heading {
+  // Structure
+  margin: 0;
+
+  // Text
+  font-size: font-size(32);
+}
+
 .c-page__sub-heading {
   // Structure
   margin: 1rem 0 0 0;
