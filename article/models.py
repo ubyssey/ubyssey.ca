@@ -481,6 +481,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 ],
                 label = "Pull Quote",
                 template = 'article/stream_blocks/quote.html',
+                icon = "openquote",
             )),
             ('audio_quote', blocks.StructBlock(
                 [
