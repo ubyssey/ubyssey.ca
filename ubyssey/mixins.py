@@ -2,14 +2,12 @@ import re
 
 from random import randint, choice
 
-from django.http import HttpResponseServerError
 from django.db.models import F, OuterRef, Q, Subquery
 from django.db.models.aggregates import Count
 from django.utils import timezone
 from django_user_agents.utils import get_user_agent
 
 from dispatch.models import Article, Section, Subsection
-from ubyssey.events.models import Event
 
 class ArticleMixin(object):
     """
@@ -373,57 +371,6 @@ class SubsectionMixin(object):
     def get_featured_subsection_articles(self, subsection, featured_articles):
         featured_articles_ids = list(featured_articles.values_list('id', flat=True)[0:4])
         return subsection.get_published_articles().exclude(id__in=featured_articles_ids)[0:3] if subsection.get_published_articles().exclude(id__in=featured_articles_ids).exists() else subsection.get_published_articles()[0:3]
-
-class SectionMixin(SubsectionMixin, object):
-    """
-    Abstracts common functionality for the View of a Section or Subsection object
-    """
-    model = Article # Object corresponds to the _list_ in "List" View, not the _template_ the view renders, which is where we get "Section" View from
-    paginate_by = 15 # automatically adds a paginator and page_obj to the context, see https://docs.djangoproject.com/en/3.0/topics/pagination/#using-paginator-in-view
-
-    def setup(self, request, *args, **kwargs):
-        self.order = request.GET.get('order', 'newest')
-        self.query = request.GET.get('q', False)
-        try:
-            filter_id = self.section.id
-            self.featured_articles = Article.objects.filter(is_published=True).filter(Q(subsection_id=filter_id)|Q(section_id=filter_id)).order_by('-published_at')
-        except AttributeError:
-            return HttpResponseServerError("Check SectionMixin useage!")
-        return super().setup(request, *args, **kwargs)
-
-    def get_template_names(self):
-        template_names = []        
-        try:
-            template_names += ['%s/%s' % (self.section.slug, self.default_template), self.default_template]
-        except AttributeError:
-            template_names += ['subsection.html'] # more minimal html file
-        template_names += super().get_template_names()
-        return template_names
-
-    def get_queryset(self):
-        if self.order == 'newest':
-            order_by = '-published_at'
-        else:
-            order_by = 'published_at'
-        article_list = super().get_queryset().filter(is_published=True).order_by(order_by)
-        if self.query:
-            article_list = article_list.filter(headline__icontains=self.query)
-        return article_list
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['meta'] = {
-            'title': self.section.name,
-        }
-        context['featured_articles'] = {
-            'first': self.featured_articles[0],
-            'rest': self.featured_articles[1:4]
-        }
-        context['order'] = self.order
-        context['query'] = self.query
-
-        return context
 
 class ArchiveListViewMixin(object):
     """

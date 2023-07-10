@@ -1,6 +1,5 @@
 {% extends 'article/default.html' %}
 {% load static %}
-{% load dispatch_tags %}
 
 {% block banner %}
     {% with article.template_fields.header_layout as header_layout %}
@@ -102,7 +101,6 @@
 {% block right-column %}
     <div class="right-column">
         <div class="sidebar">
-            {% zone 'article-sidebar' %}
             {% if explicit is not True %}
             {% if reading_time >= 3 %}
                 {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}
