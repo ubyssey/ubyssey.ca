@@ -140,6 +140,7 @@ NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 INSTALLED_APPS = [
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
+    'users',
     'home',
     'archive',
     'authors',
@@ -203,7 +204,7 @@ if DEBUG:
 	]
 
 # Replace default user model
-AUTH_USER_MODEL = 'dispatch.User'
+AUTH_USER_MODEL = 'users.User'
 
 API_URL = '/api/'
 
