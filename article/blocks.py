@@ -45,7 +45,7 @@ class VEScriptBlock(blocks.StructBlock):
         label = "Raw HTML Block",
         help_text = "Only Use single quotes. WARNING: DO NOT use this unless you really know what you're doing!"
     )
-    height = blocks.IntegerBlock(required=True, default=0, min_value=0, max_value=100)
+    height = blocks.IntegerBlock(required=True, default=0, min_value=0)
 
     class Meta:
         template = 'article/stream_blocks/ve_script_block.html',
