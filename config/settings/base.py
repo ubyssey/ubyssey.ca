@@ -154,7 +154,6 @@ INSTALLED_APPS = [
     'dashboard',
 
     'dispatch.apps.DispatchConfig',
-    'dispatchusers.apps.DispatchusersConfig',
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
 
@@ -243,14 +242,7 @@ TEMPLATES = [
                 'dbtemplates.loader.Loader',
             ],
         },
-    },
-    {
-        'NAME': 'dispatch',
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-			DISPATCH_APP_DIR('templates')
-        ],
-    },
+    }
 ]
 
 # REST framework settings
@@ -311,9 +303,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 WAGTAIL_SITE_NAME = 'The Ubyssey'
-WAGTAIL_USER_EDIT_FORM = 'dispatchusers.forms.DispatchUserEditForm'
-WAGTAIL_USER_CREATION_FORM = 'dispatchusers.forms.DispatchUserCreationForm'
-WAGTAIL_USER_CUSTOM_FIELDS = ['person', 'is_active']
 
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
 
