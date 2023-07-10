@@ -17,10 +17,8 @@ import os
 import sys
 import environ
 import google_crc32c
-from dispatch.apps import DispatchConfig
 
 BASE_DIR = environ.Path(__file__) - 3
-DISPATCH_APP_DIR = DispatchConfig.path
 
 env = environ.Env() # will reinitialize later once "earliest" configs have been set
 
@@ -165,7 +163,6 @@ INSTALLED_APPS = [
     'dashboard',
     'infinitefeed',
 
-    'dispatch.apps.DispatchConfig',
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
 
