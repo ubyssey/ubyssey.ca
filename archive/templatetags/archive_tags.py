@@ -1,5 +1,5 @@
 from django import template
-from article.models import MagazineTagSnippet
+
 
 register = template.Library()
 
@@ -37,9 +37,4 @@ def remove_field_from_query_string(context, field):
     return dict_.urlencode()
 
 
-@register.simple_tag(takes_context=True)
-def Magazines(context):
-    context["Magazines"] = MagazineTagSnippet.objects.all()
-
-    return context
     

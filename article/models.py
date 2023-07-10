@@ -145,35 +145,6 @@ class ArticleSeriesSnippet(ClusterableModel):
          verbose_name = "Series of Articles"
          verbose_name_plural = "Series of Articles"
 
-@register_snippet
-class MagazineTagSnippet(ClusterableModel):
-    title = fields.CharField(
-        blank=False,
-        null=False,
-        max_length=200
-    )
-    slug = fields.SlugField(
-        unique=True,
-        blank=False,
-        null=False,
-        max_length=200
-    )
-    panels = [
-        MultiFieldPanel(
-            [
-                FieldPanel('title'),
-                HelpPanel('Change the slug if it includes special characters as that will interefere with the archive page'),
-                FieldPanel('slug'),
-            ],
-            heading="Essentials"
-        ),
-    ]
-
-    def __str__(self):
-        return self.title
-    class Meta:
-         verbose_name = "Magazine Tag"
-         verbose_name_plural = "Magazine Tags"
 
 #-----Orderable models-----
 class ArticleAuthorsOrderable(Orderable):
@@ -461,20 +432,7 @@ class ArticlePageManager(PageManager):
                 section_root = new_section_root
             
         return self.live().public().descendant_of(section_root).exact_type(ArticlePage) #.order_by('-last_modified_at')
-    
-    def from_magazine_tag(self, magazine_slug='', section_root=None) -> QuerySet:
-        from .models import ArticlePage
-        from section.models import SectionPage
-        if magazine_slug:
-            try:
-                new_section_root = MagazineTagSnippet.objects.get(slug=magazine_slug)
-            except Page.DoesNotExist:
-                new_section_root = None
-            if new_section_root:
-                section_root = new_section_root
-            
-        return self.live().public().descendant_of(section_root).exact_type(ArticlePage) #.order_by('-last_modified_at')
-
+  
 #-----Page models-----
 
 class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
@@ -613,13 +571,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         on_delete=models.SET_NULL,
     )
 
-    magazine_tag = models.ForeignKey(
-        "article.MagazineTagSnippet",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="+",
-    )
 
     #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
 
@@ -777,14 +728,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 FieldPanel("tags"),
             ],
             heading="Categories and Tags",
-            classname="collapsible",
-        ),
-        MultiFieldPanel(
-            [
-                HelpPanel(content="If the article is part of a magazine then please add the according magazine tag to this article."),
-                SnippetChooserPanel("magazine_tag"),
-            ],
-            heading="Magazine Tags",
             classname="collapsible",
         ),
         MultiFieldPanel(
