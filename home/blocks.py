@@ -6,7 +6,6 @@ from article.models import ArticlePage
 
 from django import forms
 from django.db.models import Q
-from dispatch.models import Section
 
 from wagtail.core import blocks
 from wagtail.core.blocks import field_block
@@ -14,12 +13,13 @@ from wagtail.core.blocks import field_block
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmodelchooser.blocks import ModelChooserBlock
 
-class SectionChooserBlock(blocks.ChooserBlock):
-    # based off code from:
-    # https://groups.google.com/g/wagtail/c/S26h5GP9_Fk?pli=1
-    # maybe move to a different namespace
-    target_model = Section
-    widget = forms.Select
+# from dispatch.models import Section
+# class SectionChooserBlock(blocks.ChooserBlock):
+#     # based off code from:
+#     # https://groups.google.com/g/wagtail/c/S26h5GP9_Fk?pli=1
+#     # maybe move to a different namespace
+#     target_model = Section
+#     widget = forms.Select
 
 class HomepageFeaturedSectionBlock(blocks.StructBlock):
 
