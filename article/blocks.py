@@ -5,20 +5,12 @@ from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 
 class PullQuoteBlock(blocks.StructBlock):
-    content = blocks.CharBlock(required=False)
+    content = blocks.CharBlock(required=True)
     source =  blocks.CharBlock(required=False)
+    audio = DocumentChooserBlock(required=False, help_text="optional, must be mp3 format")
 
     class Meta:
         template = 'article/stream_blocks/quote.html',
-        icon = "openquote"
-
-class AudioQuoteBlock(blocks.StructBlock):
-    content = blocks.CharBlock(required=False)
-    source = blocks.CharBlock(required=False)
-    audio = DocumentChooserBlock(required=True, help_text="mp3 format")
-
-    class Meta:
-        template = 'article/stream_blocks/audio_quote.html',
         icon = "openquote"
 
 class ChooseSideBlock(blocks.ChoiceBlock):
@@ -93,15 +85,10 @@ class VisualEssayBlock(blocks.StructBlock):
                 ('side',ChooseSideBlock(default=("left", "Left"))),
             ], icon = "openquote"
         )),
-        ('audio_quote', blocks.StructBlock(
-            [
-                ('block', AudioQuoteBlock()),
-                ('side',ChooseSideBlock(default=("left", "Left"))),
-            ], icon = "openquote"
-        )),
         ('script_block', VEScriptBlock()),
         ('switch_view', ChooseViewBlock()),
     ])
 
     class Meta:
-        template = 'article/stream_blocks/visual-essay.html'
+        template = 'article/stream_blocks/visual-essay.html',
+        icon = "form"

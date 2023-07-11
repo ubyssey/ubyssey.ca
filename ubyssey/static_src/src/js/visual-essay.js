@@ -10,7 +10,7 @@ document.body.onscroll = function () {
     var containers = document.getElementsByClassName("o-visual-essay__content-container");
 
     for(let i=0; i < containers.length; i++) {
-        var scrolled = document.documentElement.scrollTop + document.body.offsetHeight/2;
+        var scrolled = document.documentElement.scrollTop + document.body.offsetHeight*(0.5);
         if (containers[i].offsetTop + containers[i].offsetHeight < scrolled) {
             containers[i].classList.remove("o-visual-essay__content-container-show");
             containers[i].classList.add("o-visual-essay__content-container-hide");

@@ -1,4 +1,19 @@
+{% if self.audio %}
+<audio id="{{id}}">
+    <source src="{{self.audio.url}}" type="audio/mpeg">
+</audio>
+{% endif %}
+
 <div class="pull-quote attachment">
     <p class="quote">{{ self.content }}</p>
-    {% if self.source %}<p class="source">&mdash; {{ self.source }}</p>{% endif %}
+    <p class="meta">
+    {% if self.audio %}
+        <a href="#" audio="{{id}}" class="playAudioQuote">
+            <i id="icon-{{id}}" class="fa-solid fa-volume-off volume"></i>
+            {% if self.source %}<span class="source">Listen to {{ self.source }}</span>{% endif %}
+        </a>
+    {% elif self.source %}
+        <span class="source">Listen to {{ self.source }}</span>
+    {% endif %}
+    </p>
 </div>

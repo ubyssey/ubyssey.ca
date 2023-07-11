@@ -474,7 +474,6 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
             ('quote', article_blocks.PullQuoteBlock()),
-            ('audio_quote', article_blocks.AudioQuoteBlock()),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',

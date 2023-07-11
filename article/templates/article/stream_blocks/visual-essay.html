@@ -30,9 +30,13 @@
             {% if block.block_type == 'script_block' or block.block_type == 'switch_view' %}
                 {% include_block block with id=block.id %}
             {% elif block.value.side == "right" %}
-                <div class="o-visual-essay__right-div">
+                {% if block.block_type == 'raw_html' %}
                     {% include_block block.value.block with id=block.id %}
-                </div>
+                {% else %}
+                    <div class="o-visual-essay__right-div">
+                        {% include_block block.value.block with id=block.id %}
+                    </div>
+                {% endif %}
             {% else %}
                 <div class="mark"></div>
             {% endif %}
