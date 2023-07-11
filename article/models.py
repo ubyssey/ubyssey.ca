@@ -178,6 +178,18 @@ class ArticleAuthorsOrderable(Orderable):
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
                             ('videographer','Videographer'),
+                            ("coordinating editor", "Coordinating Editor"),
+                            ("news editor", "News Editor"),
+                            ("news producer", "News Producer"),
+                            ("features editor", "Features Editor"),
+                            ("humour editor", "Humour Editor"),
+                            ("culture editor", "Culture Editor"),
+                            ("opinion editor", "Opinion Editor"),
+                            ("video editor", "Video Editor"),
+                            ("photo editor", "Photo Editor"),
+                            ("visuals editor", "Visuals Editor"),
+                            ("sports editor", "Sports Editor"),
+                            ("science editor", "Science Editor"),
                         ],
                     ),
                 ),
@@ -979,7 +991,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
     authors_with_urls = property(fget=get_authors_with_urls)
 
     def get_authors_in_order(self):
-        AUTHOR_TYPES = ["author", "photographer", "illustrator", "videographer"]
+        AUTHOR_TYPES = ["author", "photographer", "illustrator", "videographer", "coordinating editor", "news editor", "news producer", "features editor", "humour editor", "culture editor", "opinion editor", "video editor", "photo editor", "visuals editor", "sports editor", "science editor"]
         authors = self.article_authors.all()
 
         authors_list = []
