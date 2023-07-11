@@ -564,11 +564,11 @@
   }
 }
 .o-visual-essay__right-container {
-  margin: auto;;
-  margin-top: 0;
+  margin: auto;
   width:40%;
   max-width: 400px;
   margin-bottom: 300px !important;
+  margin-top: 300px;
 
   @media ($bp-smaller-than-phablet) {
     width: 100%;
