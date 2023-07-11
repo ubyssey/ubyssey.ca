@@ -30,7 +30,7 @@
         <h2>Section</h2>
         <ul>
             <li
-                class="o-archive__sidebar__filter{% if section_slug == None %} o-archive__sidebar__filter--is-active{% endif %}">
+                class="o-archive__sidebar__filter{% if section_slug == "All" %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}{{ request|query_string }}">All sections</a>
             </li>
             {% for iter in self.sections_filters.all %}
@@ -71,7 +71,7 @@
             {% for category in self.categories %}
                 {% if "Spoof" in category|stringformat:"s"|capfirst or "Spoofs" in category|stringformat:"s"|capfirst %}
                     <li
-                        class="o-archive__sidebar__filter{% if category.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                        class="o-archive__sidebar__filter{% if category.slug == spoof_slug %} o-archive__sidebar__filter--is-active{% endif %}">
                         <a href="{% pageurl self %}spoofs/{{ category.slug }}/{{ request|query_string }}">{{ category.title }}</a>
                     </li>
                 {% endif %}
@@ -141,7 +141,7 @@
                         </div>
                         <ul>
                             <li
-                                class="o-mobile-dropdown__item {% if not section_slug and video_section == False %} o-mobile-dropdown__item--is-active{% endif %}">
+                                class="o-mobile-dropdown__item {% if section_slug == "All" %} o-mobile-dropdown__item--is-active{% endif %}">
                                 <a href="{% pageurl self %}{{ request|query_string }}">All</a>
                             </li>
                             {% for iter in self.sections_filters.all %}

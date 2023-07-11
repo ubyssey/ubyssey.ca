@@ -111,7 +111,8 @@ $search-bar-height: 46px;
 	a {
 		// Structure
 		display: block;
-		height: 32px;
+		min-height: 32px;
+		max-height: fit-content;
 		padding-left: 8px;
 		padding-right: 8px;
 		margin-top: 2px;

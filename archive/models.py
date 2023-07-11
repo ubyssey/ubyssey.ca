@@ -168,7 +168,7 @@ class ArchivePage(RoutablePageMixin, Page):
     def get_archive_general_articles(self, request):
         video_section = False
         context = self.get_context(request, video_section)
-        context["sections_slug"] = None
+        context["section_slug"] = "All"
         search_query = context["q"]
 
         articles = ArticlePage.objects.live().public()
