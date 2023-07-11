@@ -30,16 +30,14 @@
         <h2>Section</h2>
         <ul>
             <li
-                class="o-archive__sidebar__filter{% if not section_slug and video_section == False %} o-archive__sidebar__filter--is-active{% endif %}">
+                class="o-archive__sidebar__filter{% if section_slug == None %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}{{ request|query_string }}">All sections</a>
             </li>
-            {% for section in sections %}
-                {% if section.title != "The Ubyssey Student Marketplace" and "20" not in section.title and  section.title != "Pages" %}
+            {% for iter in self.sections_filters.all %}
                 <li
-                    class="o-archive__sidebar__filter{% if section.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                    <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
+                    class="o-archive__sidebar__filter{% if iter.section_filter.slug == section_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                    <a href="{% pageurl self %}section/{{ iter.section_filter.slug }}/{{ request|query_string }}">{{ iter.section_filter.title }}</a>
                 </li>
-                {% endif %}
             {% endfor %}
             <li
                 class="o-archive__sidebar__filter {% if video_section == True %} o-archive__sidebar__filter--is-active{% endif %}">
@@ -51,14 +49,32 @@
         <h2>Magazines</h2>
         <ul>
             <li
-                class="o-archive__sidebar__filter{% if not section_slug and video_section == False %} o-archive__sidebar__filter--is-active{% endif %}">
+                class="o-archive__sidebar__filter{% if section_slug == "magazine" %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}magazines/{{ request|query_string }}">All magazines</a>
             </li>
-            {% for iter in self.magazine_tags.all %}
+            {% for category in self.categories %}
+                {% if "Magazine" in category|stringformat:"s"|capfirst or "Magazines" in category|stringformat:"s"|capfirst %}
+                    <li
+                        class="o-archive__sidebar__filter{% if category.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                        <a href="{% pageurl self %}magazines/{{ category.slug }}/{{ request|query_string }}">{{ category.title }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <h2>Spoofs</h2>
+        <ul>
             <li
-                class="o-archive__sidebar__filter{% if iter.magazine_tag.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="{% pageurl self %}magazines/{{ iter.magazine_tag.slug }}/{{ request|query_string }}">{{ iter.magazine_tag.title }}</a>
+                class="o-archive__sidebar__filter{% if spoof_slug == "All Spoofs" %} o-archive__sidebar__filter--is-active{% endif %}">
+                <a href="{% pageurl self %}spoofs/{{ request|query_string }}">All Spoofs</a>
             </li>
+            {% for category in self.categories %}
+                {% if "Spoof" in category|stringformat:"s"|capfirst or "Spoofs" in category|stringformat:"s"|capfirst %}
+                    <li
+                        class="o-archive__sidebar__filter{% if category.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                        <a href="{% pageurl self %}spoofs/{{ category.slug }}/{{ request|query_string }}">{{ category.title }}</a>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>
@@ -128,24 +144,33 @@
                                 class="o-mobile-dropdown__item {% if not section_slug and video_section == False %} o-mobile-dropdown__item--is-active{% endif %}">
                                 <a href="{% pageurl self %}{{ request|query_string }}">All</a>
                             </li>
-                            {% for section in sections %}
-                                {% if section.title != "The Ubyssey Student Marketplace" and "20" not in section.title %}
+                            {% for iter in self.sections_filters.all %}
                                     <li
-                                        class="o-mobile-dropdown__item {% if section.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
-                                        <a href="{% pageurl self %}section/{{ section.slug }}/{{ request|query_string }}">{{ section }}</a>
+                                        class="o-mobile-dropdown__item {% if iter.section_filter.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
+                                        <a href="{% pageurl self %}section/{{ iter.section_filter.slug }}/{{ request|query_string }}">{{ iter.section_filter.title }}</a>
                                     </li>
-                                {% endif %}
                             {% endfor %}
                             <li
                                 class="o-mobile-dropdown__item {% if video_section == True %} o-mobile-dropdown__item--is-active{% endif %}">
                                 <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
                             </li>
-                            {% for iter in self.magazine_tags.all %}
-                            <li
-                                class="o-mobile-dropdown__item {% if iter.magazine_tag.slug == magazine_slug %} o-mobile-dropdown__item--is-active {% endif %}">
-                                <a href="{% pageurl self %}magazines/{{ iter.magazine_tag.slug }}/{{ request|query_string }}">Magazine: {{ iter.magazine_tag.title }}</a>
-                            </li>
+                            {% for category in self.categories %}
+                                {% if "Magazine" in category|stringformat:"s"|capfirst or "Magazines" in category|stringformat:"s"|capfirst %}
+                                    <li
+                                        class="o-mobile-dropdown__item {% if category.slug == magazine_slug %} o-mobile-dropdown__item--is-active {% endif %}">
+                                        <a href="{% pageurl self %}magazines/{{ category.slug }}/{{ request|query_string }}">Magazine: {{ category.title }}</a>
+                                    </li>
+                                {% endif %}
                             {% endfor %}
+                            
+                            {% for category in self.categories %}
+                            {% if "Spoof" in category|stringformat:"s"|capfirst or "Spoofs" in category|stringformat:"s"|capfirst %}
+                                <li
+                                    class="o-mobile-dropdown__item {% if category.slug == spoof_slug %} o-mobile-dropdown__item--is-active {% endif %}">
+                                    <a href="{% pageurl self %}spoofs/{{ category.slug }}/{{ request|query_string }}">Spoof: {{ category.title }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
                         </ul>
                     </div>
                 </div>

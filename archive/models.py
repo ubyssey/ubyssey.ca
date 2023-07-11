@@ -3,17 +3,39 @@ from django_user_agents.utils import get_user_agent
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
 
+from specialfeaturelanding.models import SpecialLandingPage
+from section.models import SectionablePage, CategorySnippet
 from article.models import ArticlePage
 from modelcluster.fields import ParentalKey
 
 from section.models import SectionPage
 from wagtail.core.models import Page, Orderable
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
-from wagtail.admin.edit_handlers import MultiFieldPanel, InlinePanel, HelpPanel
+from wagtail.admin.edit_handlers import MultiFieldPanel, InlinePanel, HelpPanel, PageChooserPanel
 
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
 from videos.models import VideosPage, VideoSnippet
 
+class SectionPageOrderables(Orderable):
+    page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="sections_filters")
+    
+    section_filter = models.ForeignKey(
+        'wagtailcore.Page',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name="Page Link"
+    )
+    
+    panels = [
+        MultiFieldPanel(
+          [
+            PageChooserPanel('section_filter', 'section.SectionPage'),
+          ],
+        heading="Section Pages",
+        ),
+    ]
 
 
 class ArchivePage(RoutablePageMixin, Page):
@@ -23,7 +45,19 @@ class ArchivePage(RoutablePageMixin, Page):
         'home.HomePage',
     ]
     max_count_per_parent = 1
-
+    
+    
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+          [
+            HelpPanel("List all the pages which you do you want to have in the section filter"),
+            InlinePanel('sections_filters', min_num=1, label="Section"),
+          ],
+        heading="Section Filters",
+        classname="collapsible",
+        ),
+    ]
+    
     def __get_years(self):
         """
         Returns:
@@ -56,10 +90,10 @@ class ArchivePage(RoutablePageMixin, Page):
         search_query = request.GET.get("q")
         order = request.GET.get("order")
         self.year = self.__parse_int_or_none(request.GET.get('year'))
-
+        
         # Set context
         context['video_section'] = video_section
-        context['sections'] = SectionPage.objects.live()
+        context['sections'] = self.sections_filters.all()
         context['order'] = order
         context['year'] = self.year
         context['years'] = self.__get_years()
@@ -126,11 +160,9 @@ class ArchivePage(RoutablePageMixin, Page):
         else:
             return objects.filter(title=search_query)
 
-    def get_magazine_tags(self):
-        magazine_tags = self.magazine_tags.all()
-
-        return magazine_tags
-    magazines = property(fget=get_magazine_tags)
+    def get_category(self):
+        return CategorySnippet.objects.all()
+    categories = property(fget=get_category)
 
     @route(r'^$', name='general_view')
     def get_archive_general_articles(self, request):
@@ -166,7 +198,7 @@ class ArchivePage(RoutablePageMixin, Page):
     
     @route(r'^section/(?P<sections_slug>[-\w]+)/$', name='section_view')
     @route(r'^magazines/$', name='magazines_general_view')
-    def get_section_articles(self, request, sections_slug="magazines"):
+    def get_section_articles(self, request, sections_slug="magazine"):
         video_section = False
         context = self.get_context(request, video_section)
         context['section_slug'] = sections_slug
@@ -220,8 +252,11 @@ class ArchivePage(RoutablePageMixin, Page):
 
         search_query = context["q"]
         
-        articles = ArticlePage.objects.live().public().filter(magazine_tag__slug=magazine_slug)
-
+        
+        if len(SpecialLandingPage.objects.filter(category__slug=magazine_slug)) > 0:
+            articles = ArticlePage.objects.from_magazine_special_section(section_slug=magazine_slug)
+        else:
+            articles = ArticlePage.objects.live().public().filter(category__slug=magazine_slug)
         
         if context["order"]:
             articles = self.get_order_objects(context["order"], articles, video_section)           
@@ -231,6 +266,40 @@ class ArchivePage(RoutablePageMixin, Page):
         
         if search_query:
             articles = self.get_search_objects(search_query, articles, video_section)
+
+        context = self.get_paginated_articles(context, articles, video_section, request)
+        
+        return render(request, "archive/archive_page.html", context)
+    
+    @route(r'^spoofs/(?P<spoof_slug>[-\w]+)/$', name="spoofs_view")
+    @route(r'^spoofs/$', name="spoofs_general_view")
+    def get_spoof_articles(self, request, spoof_slug="All Spoofs"):
+        video_section = False
+        context = self.get_context(request, video_section)
+        context['spoof_slug'] = spoof_slug
+
+        search_query = context["q"]
+        
+        if spoof_slug == "All Spoofs":
+            articles = ArticlePage.objects.none()
+
+            for category in self.get_category():
+                if "spoof" in str(category).capitalize() or "spoofs" in str(category).capitalize():
+                    sections = SectionPage.objects.filter(categories__slug=category.slug).live().public()
+                    articles = articles | ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
+        else:
+            sections = SectionPage.objects.filter(categories__slug=spoof_slug).live().public()
+            articles = ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
+        
+        if context["order"]:
+            articles = self.get_order_objects(context["order"], articles, video_section)           
+        
+        if self.year:
+            articles = self.get_year_objects(articles, video_section)
+        
+        if search_query:
+            articles = self.get_search_objects(search_query, articles, video_section)
+        
 
         context = self.get_paginated_articles(context, articles, video_section, request)
         

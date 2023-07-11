@@ -432,6 +432,19 @@ class ArticlePageManager(PageManager):
                 section_root = new_section_root
             
         return self.live().public().descendant_of(section_root).exact_type(ArticlePage) #.order_by('-last_modified_at')
+    
+    def from_magazine_special_section(self, section_slug='', section_root=None) -> QuerySet:
+        from .models import ArticlePage
+        from specialfeaturelanding.models import SpecialLandingPage
+        if section_slug:
+            try:
+                new_section_root = SpecialLandingPage.objects.get(slug=section_slug)
+            except Page.DoesNotExist:
+                new_section_root = None
+            if new_section_root:
+                section_root = new_section_root
+            
+        return self.live().public().descendant_of(section_root).exact_type(ArticlePage) #.order_by('-last_modified_at')
   
 #-----Page models-----
 
