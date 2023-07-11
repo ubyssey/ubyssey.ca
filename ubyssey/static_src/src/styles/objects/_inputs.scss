@@ -184,7 +184,6 @@
 	// Structure
 	flex: 1;
 	margin: 0;
-	height: 2rem;
 	padding-top: 1rem;
 	padding-bottom: 1rem;
 	padding-left: 1rem;
@@ -195,16 +194,10 @@
 	color: #313131;
 }
 
-.o-mobile-dropdown__title_overlap {
-	padding-bottom: 2.5rem;
-}
-
 .o-mobile-dropdown__close {
 	// Structure
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-	padding-left: 1rem;
-	padding-right: 1rem;
+	padding: 1rem;
+	align-self: center;
 
 	// Extras
 	cursor: pointer;
@@ -253,12 +246,15 @@
 		margin: 0;
 		padding: 0;
 		width: 100%;
+		height: 100%;
+		max-height: 200px;
+		overflow-y: scroll;
 
 		// Background
 		background: #fff;
 
 		// Border
-    border-top: 1px solid #e8e8e8;
+    	border-top: 1px solid #e8e8e8;
 		border-bottom: 1px solid #e8e8e8;
 
 		// Extras
