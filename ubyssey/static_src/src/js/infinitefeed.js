@@ -67,32 +67,6 @@ function loadArticles()
   }
 }
 
-var sidebar = document.getElementsByClassName("c-sidebar")[0];
-
-function switchSidebar() 
-{
-  var x = Math.floor((document.documentElement.scrollTop- feed.offsetTop) / (2*document.body.offsetHeight))% sidebar.children.length;
-  if (x < 0) {
-    x = 0;
-  }
-  if(x != Array.prototype.indexOf.call(sidebar.children,document.getElementsByClassName("c-sidebar_active")[0])){
-    if (document.getElementsByClassName("c-sidebar_active").length > 0) {
-      document.getElementsByClassName("c-sidebar_active")[0].classList.add("c-sidebar_inactive");
-      document.getElementsByClassName("c-sidebar_active")[0].classList.remove("c-sidebar_active");
-
-    }
-    sidebar.children[x].classList.remove("c-sidebar_inactive");
-    sidebar.children[x].classList.add("c-sidebar_active");
-  }
-}
-
-if (document.getElementsByClassName("c-sidebar").length > 0) {
-  window.onscroll = function() {
-    loadArticles();
-    switchSidebar();
-  }
-} else {
-  window.onscroll = function() {
-    loadArticles();
-  }
+window.onscroll = function() {
+  loadArticles();
 }

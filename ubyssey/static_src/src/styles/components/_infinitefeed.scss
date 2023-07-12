@@ -13,15 +13,18 @@
 }
 
 .c-sidebar_item {
-    transition-duration: 0.2s;
-    transition-property: top;
     width: 100%;
+    position:sticky;
+    top: 50px;
+}
+
+.c-sidebar_container {
+    height: 150vh;
+    min-height: fit-content;
 }
 
 .c-sidebar {
-    position:sticky;
-    top: 50px;
-    height:100vh;
+    height: 100%;
     width:40%;
 
     @media ($bp-smaller-than-phablet) {
