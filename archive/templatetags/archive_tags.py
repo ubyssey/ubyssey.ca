@@ -30,11 +30,13 @@ def query_string(request):
 
     return parameters      
 
+@register.filter
+def replace(slug):
+    return str(slug).replace("-", " ")
+
 @register.simple_tag(takes_context = True)
 def remove_field_from_query_string(context, field):
     dict_ = context['request'].GET.copy()      
     dict_.pop(field, None) #Deletes the field if it exists, does nothing if it doesn't. Prevents KeyError
     return dict_.urlencode()
 
-
-    
