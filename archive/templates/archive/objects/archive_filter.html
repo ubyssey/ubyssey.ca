@@ -52,13 +52,11 @@
                 class="o-archive__sidebar__filter{% if section_slug == "magazine" %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}magazines/{{ request|query_string }}">All magazines</a>
             </li>
-            {% for category in self.categories %}
-                {% if "Magazine" in category|stringformat:"s"|capfirst or "Magazines" in category|stringformat:"s"|capfirst %}
-                    <li
-                        class="o-archive__sidebar__filter{% if category.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                        <a href="{% pageurl self %}magazines/{{ category.slug }}/{{ request|query_string }}">{{ category.title }}</a>
-                    </li>
-                {% endif %}
+            {% for iter in self.magazines_filters.all %}
+                <li
+                    class="o-archive__sidebar__filter{% if iter.magazine_filter.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                    <a href="{% pageurl self %}magazines/{{ iter.magazine_filter.slug }}/{{ request|query_string }}">{{ iter.magazine_filter.title }}</a>
+                </li>
             {% endfor %}
         </ul>
 
@@ -68,13 +66,11 @@
                 class="o-archive__sidebar__filter{% if spoof_slug == "All Spoofs" %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}spoofs/{{ request|query_string }}">All Spoofs</a>
             </li>
-            {% for category in self.categories %}
-                {% if "Spoof" in category|stringformat:"s"|capfirst or "Spoofs" in category|stringformat:"s"|capfirst %}
-                    <li
-                        class="o-archive__sidebar__filter{% if category.slug == spoof_slug %} o-archive__sidebar__filter--is-active{% endif %}">
-                        <a href="{% pageurl self %}spoofs/{{ category.slug }}/{{ request|query_string }}">{{ category.title }}</a>
-                    </li>
-                {% endif %}
+            {% for iter in self.spoofs_filters.all %}
+                <li
+                    class="o-archive__sidebar__filter{% if category.slug == spoof_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                    <a href="{% pageurl self %}spoofs/{{ iter.spoof_filter.slug }}/{{ request|query_string }}">{{ iter.spoof_filter.title }}</a>
+                </li>
             {% endfor %}
         </ul>
     </div>
@@ -154,22 +150,18 @@
                                 class="o-mobile-dropdown__item {% if video_section == True %} o-mobile-dropdown__item--is-active{% endif %}">
                                 <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
                             </li>
-                            {% for category in self.categories %}
-                                {% if "Magazine" in category|stringformat:"s"|capfirst or "Magazines" in category|stringformat:"s"|capfirst %}
+                            {% for iter in self.magazines_filters.all %}
                                     <li
-                                        class="o-mobile-dropdown__item {% if category.slug == magazine_slug %} o-mobile-dropdown__item--is-active {% endif %}">
-                                        <a href="{% pageurl self %}magazines/{{ category.slug }}/{{ request|query_string }}">Magazine: {{ category.title }}</a>
+                                        class="o-mobile-dropdown__item {% if iter.magazine_filter.slug == magazine_slug %} o-mobile-dropdown__item--is-active {% endif %}">
+                                        <a href="{% pageurl self %}magazines/{{ iter.magazine_filter.slug }}/{{ request|query_string }}">Magazine: {{ iter.magazine_filter.title }}</a>
                                     </li>
-                                {% endif %}
                             {% endfor %}
                             
-                            {% for category in self.categories %}
-                            {% if "Spoof" in category|stringformat:"s"|capfirst or "Spoofs" in category|stringformat:"s"|capfirst %}
+                            {% for iter in self.spoofs_filters.all %}
                                 <li
-                                    class="o-mobile-dropdown__item {% if category.slug == spoof_slug %} o-mobile-dropdown__item--is-active {% endif %}">
-                                    <a href="{% pageurl self %}spoofs/{{ category.slug }}/{{ request|query_string }}">Spoof: {{ category.title }}</a>
+                                    class="o-mobile-dropdown__item {% if iter.spoof_filter.slug == spoof_slug %} o-mobile-dropdown__item--is-active {% endif %}">
+                                    <a href="{% pageurl self %}spoofs/{{ iter.spoof_filter.slug }}/{{ request|query_string }}">Spoof: {{ iter.spoof_filter.title }}</a>
                                 </li>
-                            {% endif %}
                         {% endfor %}
                         </ul>
                     </div>

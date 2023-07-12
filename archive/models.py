@@ -25,7 +25,7 @@ class SectionPageOrderables(Orderable):
         blank=True,
         on_delete=models.SET_NULL,
         related_name='+',
-        verbose_name="Page Link"
+        verbose_name="Section Page"
     )
     
     panels = [
@@ -34,6 +34,49 @@ class SectionPageOrderables(Orderable):
             PageChooserPanel('section_filter', 'section.SectionPage'),
           ],
         heading="Section Pages",
+        ),
+    ]
+
+
+class MagazineOrderables(Orderable):
+    page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="magazines_filters")
+    
+    magazine_filter = models.ForeignKey(
+        'section.CategorySnippet',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name="Magazine"
+    )
+    
+    panels = [
+        MultiFieldPanel(
+          [
+            SnippetChooserPanel('magazine_filter'),
+          ],
+        heading="Magazine",
+        ),
+    ]
+
+class SpoofOrderables(Orderable):
+    page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="spoofs_filters")
+    
+    spoof_filter = models.ForeignKey(
+        'section.CategorySnippet',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name="Spoof"
+    )
+    
+    panels = [
+        MultiFieldPanel(
+          [
+            SnippetChooserPanel('spoof_filter'),
+          ],
+        heading="Spoof",
         ),
     ]
 
@@ -50,10 +93,26 @@ class ArchivePage(RoutablePageMixin, Page):
     content_panels = Page.content_panels + [
         MultiFieldPanel(
           [
-            HelpPanel("List all the pages which you do you want to have in the section filter"),
+            HelpPanel("List all the pages you want to have in the section filter"),
             InlinePanel('sections_filters', min_num=1, label="Section"),
           ],
         heading="Section Filters",
+        classname="collapsible",
+        ),
+        MultiFieldPanel(
+          [
+            HelpPanel("List all the category snippets you want to have in the magazine filter"),
+            InlinePanel('magazines_filters', min_num=1, label="Magazines"),
+          ],
+        heading="Magazine Filters",
+        classname="collapsible",
+        ),
+        MultiFieldPanel(
+          [
+            HelpPanel("List all the category snippets you want to have in the spoof filter"),
+            InlinePanel('spoofs_filters', min_num=1, label="Spoofs"),
+          ],
+        heading="Spoof Filters",
         classname="collapsible",
         ),
     ]
@@ -283,10 +342,9 @@ class ArchivePage(RoutablePageMixin, Page):
         if spoof_slug == "All Spoofs":
             articles = ArticlePage.objects.none()
 
-            for category in self.get_category():
-                if "spoof" in str(category).capitalize() or "spoofs" in str(category).capitalize():
-                    sections = SectionPage.objects.filter(categories__slug=category.slug).live().public()
-                    articles = articles | ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
+            for iter in self.spoofs_filters.all():
+                sections = SectionPage.objects.filter(categories__slug=iter.spoof_filter.slug).live().public()
+                articles = articles | ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
         else:
             sections = SectionPage.objects.filter(categories__slug=spoof_slug).live().public()
             articles = ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
