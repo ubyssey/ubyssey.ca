@@ -5,12 +5,13 @@
 {% load cache %}
 {% load menu_tags %}
 
-<header class="topbar header-site">
+<header class="topbar header-site dark-mode">
     <div class="u-container u-container-topbar">
-        <a class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt=""/></a>
+        <a class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo ubyssey_small_logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt=""/></a>
         <nav>
             {% main_menu show_multiple_levels=False apply_active_classes=True %}
         </nav>
         {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
     </div>
+
 </header>
