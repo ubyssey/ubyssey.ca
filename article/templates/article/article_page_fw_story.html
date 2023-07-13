@@ -46,6 +46,12 @@
                                 <span class="author">By {{ self.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at }}</span>
                             </div>
                         </div>
+                        <div class="c-article__byline c-banner_share_dark_buttons c-article__byline-center">
+                            {% include 'article/objects/share_bar.html' %}
+                            <span class="c-article_dark_mode">
+                                {% include 'article/objects/darkmode_button.html'%}
+                            </span>
+                        </div>
                         {% if featured_image_object.caption or featured_image_object.credit %}
                             <div class="caption">
                                 {% if featured_image_object.caption %}

@@ -1,4 +1,12 @@
+
 @import 'modules/variables';
+
+:root {
+  --authors-title-bio: #1B1B1B;
+}
+
+
+$text-color: var(--text_color);
 
 .featured-media {
   img {
@@ -84,23 +92,59 @@ div.indicator {
 }
 
 .c-article__info {
-  margin-bottom: 1rem;
+  display: block;
 
   @media($bp-larger-than-tablet) {
-    margin-top: 1em;
-
     display: flex;
+    flex-wrap: wrap;
   }
 }
 
+.c-authors_info {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around; 
+}
+
 .c-article__byline {
-  margin-bottom: 0.2rem;
+  display: inline-flex;
+  width: 65%;
+  margin: 0.5rem 0em 0.5em 0em;
   font-family: $font-default;
   font-size: $font-size-15px;
   // font-weight: $font-weight-semi-bold;
   font-weight: $font-weight-bold;
 
   @media($bp-larger-than-tablet) {
+    display: inline-block;
+    flex: 1 0;
+    line-height: 2rem;
+    margin-bottom: 0.5em;
+  }
+}
+
+.c-article_byline_fw {
+  width: 100%;
+}
+
+.c-authors_bio {
+  position: absolute;
+  display: block;
+}
+
+.c-authors_bio_meta {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-family: $font-default;
+  font-size: $font-size-15px;
+  // font-weight: $font-weight-semi-bold;
+  font-weight: $font-weight-bold;
+
+  display: block;
+  position: relative;
+
+  @media($bp-larger-than-tablet) {
+    border-bottom: 1px solid #D2D2D2;
     display: flex;
     flex: 1 0;
     line-height: 2rem;
@@ -108,7 +152,95 @@ div.indicator {
   }
 }
 
-.c-article__byline-center{
+
+.author_image_container {
+  position: relative;
+  display: flex;
+}
+
+.no_image {
+  margin-left: 102px;
+}
+
+.authors_info_inner {
+  display: inline-block;
+  padding: 0.5em;
+}
+
+.author_image {
+  height: 70px;
+  width: 70px;
+  object-fit: cover;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+
+  padding: 1em;
+
+  img {
+    display: inline;
+    margin: 0 auto;
+    margin-left: -25%;
+    height: 100%;
+    width: auto;
+  }
+}
+
+.author_card {
+  padding: 1em;
+  display: flex;
+  text-align: center;
+}
+
+.author_title {
+  padding: 0.5em;
+  font-size: medium;
+  font-style: bold;
+  color: var(--authors-title-bio);
+  text-align: left;
+  text-transform: capitalize;
+
+
+  &:hover {
+    color: $color-accent-blue;
+    cursor: pointer;
+  }
+
+}
+
+.author_info {
+  display: flex;
+}
+
+.author_role {
+  padding: 0.5em;
+  font-size: medium;
+  font-style: bold;
+  display: inline-block;
+  color: $color-text-gray-light;
+  text-transform: capitalize;
+}
+
+.author_bio {
+  display: inline-block;
+  padding: 0.5em;
+  margin-right: 0.5em;
+  font-size: smaller;
+  text-align: left;
+  color: var(--authors-title-bio);
+
+}
+
+.c-author__byline {
+  padding-left: 1em;
+  margin-bottom: 0.2rem;
+
+  font-family: $font-default;
+  font-size: $font-size-15px;
+  font-weight: $font-weight-semi-bold;
+}
+
+.c-article__byline-center {
   display: flex;
   justify-content: center;
 }
@@ -123,7 +255,7 @@ div.indicator {
 
 .c-article__byline__meta {
   margin-bottom: 0.75rem;
-
+  float: left;
   color: #777;
   font-weight: $font-weight-normal;
   @media($bp-larger-than-tablet) {
@@ -141,6 +273,42 @@ div.indicator {
     margin-right: 0.75em;
     margin-bottom: 0;
   }
+}
+
+#custom-tooltip {
+  display: none;
+  margin-left: 40px;
+  padding: 5px 8px;
+  font-size: 5px;
+  font-family: $font-default;
+  background-color: #3490d6;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.visuallyhidden{position:absolute;clip:rect(1px,1px,1px,1px)}
+
+.c-banner_share_dark_buttons {
+  padding-left: 1em;
+  margin-bottom: 0.2rem;
+
+  font-family: $font-default;
+  font-size: $font-size-15px;
+  font-weight: $font-weight-semi-bold;
+  
+  color: #FFF;
+
+  width: 100%;
+  justify-content: center;
+}
+
+.c-share-buttons {
+  float: left;
+  color: $DM-SH-button;
+}
+
+.c-share_space {
+  padding-right: 1em;
 }
 
 .c-article__featured-media {
@@ -184,6 +352,7 @@ div.article-content {
   > h1,
   > h2 {
     margin-top: 1.8em;
+    color: $text-color;
     margin-bottom: 0;
   }
   > h3,
@@ -238,7 +407,6 @@ div.article-content {
     font-family: $font-body !important;
     font-weight: $font-weight-normal !important;
     font-size: font-size(16) !important;
-    color: #333333 !important;
     line-height: 1.625rem !important;
     margin-top: 1.4rem;
 

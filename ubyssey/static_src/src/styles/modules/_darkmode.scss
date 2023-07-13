@@ -1,0 +1,90 @@
+@import 'variables';
+
+.c-article_dark_mode {
+  float: right;
+}
+
+.dark-mode-switcher {
+    border: transparent;
+    padding: 4px;
+    background: transparent;
+    cursor: pointer;
+  }
+  
+.sun-and-moon > :is(.moon, .sun, .sun-beams) {
+    transform-origin: center;
+}
+
+.sun-and-moon > :is(.moon, .sun) {
+    fill: $DM-SH-button;
+}
+
+.theme-toggle:is(:hover, :focus-visible) > .sun-and-moon > :is(.moon, .sun) {
+    fill: $DM-button-hover;
+}
+
+
+.sun-and-moon > .sun-beams {
+    stroke: $DM-SH-button;
+    stroke-width: 2px;
+}
+
+.theme-toggle:is(:hover, :focus-visible) .sun-and-moon > .sun-beams {
+    stroke: $DM-button-hover;
+}
+
+[color-css-theme="dark"] .sun-and-moon > .sun {
+    transform: scale(1.75);
+}
+
+[color-css-theme="dark"] .sun-and-moon > .sun-beams {
+    opacity: 0;
+}
+
+[color-css-theme="dark"] .sun-and-moon > .moon > circle {
+    transform: translateX(-7px);
+}
+
+@supports (cx: 1) {
+    [color-css-theme="dark"] .sun-and-moon > .moon > circle {
+        cx: 17;
+        transform: translateX(0);
+    }
+}
+  
+@media (prefers-reduced-motion: no-preference) {
+    .sun-and-moon > .sun {
+      transition: transform .5s cubic-bezier(.5,1.25,.75,1.25);
+    }
+  
+    .sun-and-moon > .sun-beams {
+      transition: transform .5s cubic-bezier(.5,1.5,.75,1.25), opacity .5s cubic-bezier(.25,0,.3,1);
+    }
+  
+    .sun-and-moon .moon > circle {
+      transition: transform .25s cubic-bezier(0,0,0,1);
+    }
+  
+    @supports (cx: 1) {
+      .sun-and-moon .moon > circle {
+        transition: cx .25s cubic-bezier(0,0,0,1);
+      }
+    }
+  
+    [color-css-theme="dark"] .sun-and-moon > .sun {
+      transition-timing-function: cubic-bezier(.25,0,.3,1);
+      transition-duration: .25s;
+      transform: scale(1.75);
+    }
+  
+    [color-css-theme="dark"] .sun-and-moon > .sun-beams {
+      transition-duration: .15s;
+      transform: rotateZ(-25deg);
+    }
+  
+    [color-css-theme="dark"] .sun-and-moon > .moon > circle {
+      transition-duration: .5s;
+      transition-delay: .25s;
+    }
+}
+  
