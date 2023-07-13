@@ -121,6 +121,12 @@ div.indicator {
     line-height: 2rem;
     margin-bottom: 0.5em;
   }
+
+  @media($bp-smaller-than-tablet) {
+    display: inline-block;
+    width: 100%;
+  }
+
 }
 
 .c-article_byline_fw {
@@ -135,21 +141,17 @@ div.indicator {
 .c-authors_bio_meta {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  border-bottom: 1px solid #D2D2D2;
   font-family: $font-default;
   font-size: $font-size-15px;
   // font-weight: $font-weight-semi-bold;
   font-weight: $font-weight-bold;
 
-  display: block;
+  display: flex;
   position: relative;
-
-  @media($bp-larger-than-tablet) {
-    border-bottom: 1px solid #D2D2D2;
-    display: flex;
-    flex: 1 0;
-    line-height: 2rem;
-    margin-bottom: 0;
-  }
+  flex: 1 0;
+  line-height: 2rem;
+  margin-bottom: 0;
 }
 
 
@@ -187,9 +189,13 @@ div.indicator {
 }
 
 .author_card {
-  padding: 1em;
   display: flex;
   text-align: center;
+
+  @media($bp-larger-than-tablet) {
+    padding: 1rem;
+  }
+
 }
 
 .author_title {
@@ -304,6 +310,7 @@ div.indicator {
 
 .c-share-buttons {
   float: left;
+  padding: 0px 4px 0px 4px;
   color: $DM-SH-button;
 }
 
