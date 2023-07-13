@@ -5,11 +5,11 @@
 }
 
 .dark-mode-switcher {
-    border: transparent;
-    padding: 4px;
-    background: transparent;
-    cursor: pointer;
-  }
+  border: transparent;
+  padding: 4px;
+  background: transparent;
+  cursor: pointer;
+}
   
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
     transform-origin: center;
@@ -34,7 +34,7 @@
 }
 
 [color-css-theme="dark"] .sun-and-moon > .sun {
-    transform: scale(1.75);
+    transform: scale(1.5);
 }
 
 [color-css-theme="dark"] .sun-and-moon > .sun-beams {
