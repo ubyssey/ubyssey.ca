@@ -48,19 +48,14 @@
     <main class="c-article">
         <div class="o-container">
             {% block banner %}
-            
                 <div class="u-container u-container--content u-container--padded">
                     <p class="c-article__title">{{ self.title }}</p>
                     <div class="c-article__info">
-                        {% comment %}
-                            {% include 'objects/social-icons.html' with article=article layout='top' %}
-                        {% endcomment %}
-                        <div class="c-authors_info">
-                            {% include "article/objects/author_bio.html" %}
+                        <div class="c-article__byline">
+                            <div class="c-article__author">
+                                {{ self.authors_with_roles|safe }}
+                            </div>
                         </div>
-                    </div>
-                    <div class="c-article__info">
-                        {% include 'article/objects/share_bar.html' %}
                     </div>
                     {% if self.featured_media.first.image %}
                         {% with self.featured_media.first as featured_image_object %}

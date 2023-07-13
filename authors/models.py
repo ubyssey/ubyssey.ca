@@ -4,28 +4,10 @@ from django.utils.text import slugify
 from django_extensions.db.fields import AutoSlugField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from article.models import ArticlePage
-from wagtail.admin.edit_handlers import (
-    # Panels
-    FieldPanel,
-    FieldRowPanel,
-    HelpPanel,
-    InlinePanel,
-    MultiFieldPanel,
-    PageChooserPanel, 
-    StreamFieldPanel,
-    # Custom admin tabs
-    ObjectList,
-    TabbedInterface,
-)
-
-
-from wagtail.core import blocks
-from wagtail.core.fields import StreamField
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.core.models import Page
 from wagtail.search import index
 from wagtail.images.edit_handlers import ImageChooserPanel
-
-
 
 class AllAuthorsPage(Page):
     subpage_types = [
@@ -58,13 +40,6 @@ class AuthorPage(Page):
         blank=True,
         related_name="+",
     )
-
-    display_image = models.BooleanField(
-        default=False,
-        verbose_name="Present Author's Image",
-        help_text = "Do you want to display the author's image on the short bio in the article page?"
-    )
-
     ubyssey_role = models.CharField(
         max_length=255,
         null=False,
@@ -89,20 +64,11 @@ class AuthorPage(Page):
         default='',
     )
 
-    bio_description =  models.TextField(
+    description = models.TextField(
         null=False,
         blank=True,
         default='',
     )
-
-    short_bio_description = models.TextField(
-        null=False,
-        blank=True,
-        default='',
-        help_text="Please provide your title, year and program"
-    )
-
-   
     # For editting in wagtail:
     content_panels = [
         # title not present, title should NOT be directly editable
@@ -110,15 +76,8 @@ class AuthorPage(Page):
         MultiFieldPanel(
             [
                 ImageChooserPanel("image"),
-                FieldPanel("display_image"),
-            ],
-            heading="Image"
-        ),
-        MultiFieldPanel(
-            [
                 FieldPanel("ubyssey_role"),
-                StreamFieldPanel("bio_description"),
-                StreamFieldPanel("short_bio_description"),
+                FieldPanel("description"),
                 FieldPanel("facebook_url"),
                 FieldPanel("twitter_url"),
             ],
