@@ -116,9 +116,7 @@ div.indicator {
   font-weight: $font-weight-bold;
 
   @media($bp-larger-than-tablet) {
-    display: inline-block;
     flex: 1 0;
-    line-height: 2rem;
     margin-bottom: 0.5em;
   }
 }

@@ -1,16 +1,18 @@
 @import 'variables';
 
-.c-article_dark_mode {
-  float: right;
-}
-
 .dark-mode-switcher {
     border: transparent;
     padding: 4px;
     background: transparent;
     cursor: pointer;
   }
-  
+
+.sun-and-moon{
+  height: 1.5em;
+  position: relative;
+  top: -5px;
+}  
+
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
     transform-origin: center;
 }
