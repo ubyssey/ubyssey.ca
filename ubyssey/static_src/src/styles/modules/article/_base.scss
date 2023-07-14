@@ -366,7 +366,6 @@ div.article-content {
   > h3,
   > div.c-widget-event,
   > .attachment.pull-quote {
-    padding: 0 $article-content-div-child-padding;
     @media($bp-larger-than-phablet){
       padding: 0;
       max-width: 585px;
