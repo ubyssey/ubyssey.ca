@@ -22,7 +22,8 @@ module.exports = {
     'soccer_nationals': './src/js/soccer_nationals.js',
     'timeline': './src/js/timeline.js',
     'episode': './src/js/episode.js',
-    blockadblock: './src/js/blockadblock.js'
+    blockadblock: './src/js/blockadblock.js',
+    darkmode: './src/js/darkmode.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
