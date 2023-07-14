@@ -7,10 +7,6 @@
         <div class="author_image_container">
             {% image author.author.image width-200 class="author_image" %}
         </div>
-    {% elif self.article_authors.all|all_no_images == True %}
-    <div class="author_image_container"></div>
-    {% else %}
-        <div class="author_image_container no_image"></div>
     {% endif %}
 
     
