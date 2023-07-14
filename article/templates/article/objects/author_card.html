@@ -9,8 +9,8 @@
         </div>
     {% endif %}
 
-    
-    <div class="authors_info_inner">
+    <!-- if forloop.first and no image then 0 padding for the authors_info left, author_info and author title-->
+    <div class="authors_info_inner {% if author.author.display_image == False %} no_image {% endif %}">
         <div class="author_info">
             <div class="author_title"><a href="{{ author.author.full_url }}">{{ author.author.full_name|safe }}</a></div>   
             <div class="author_role">

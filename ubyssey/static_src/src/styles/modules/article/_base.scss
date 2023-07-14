@@ -155,24 +155,26 @@ div.indicator {
   display: flex;
 }
 
-.no_image {
-  margin-left: 102px;
-}
-
 .authors_info_inner {
   display: inline-block;
-  padding: 0.5em;
+  padding: 0.5em 0em 0em 0.5em;
+
+}
+
+.no_image {
+  padding-top: 0em;
+  padding-left: 0em;
 }
 
 .author_image {
-  height: 70px;
-  width: 70px;
+  height: 65px;
+  width: 65px;
   object-fit: cover;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
 
-  padding: 1em;
+  padding: 0.5em;
 
   img {
     display: inline;
@@ -184,14 +186,13 @@ div.indicator {
 }
 
 .author_card {
-  padding: 1em;
-  padding-left: 0;
+  padding: 0.5em 2em 0.5em 0em;
   display: flex;
   text-align: center;
 }
 
 .author_title {
-  padding: 0.5em;
+  padding: 0.5em 0.5em 0.5em 0em;
   font-size: medium;
   font-style: bold;
   color: var(--authors-title-bio);
@@ -211,7 +212,7 @@ div.indicator {
 }
 
 .author_role {
-  padding: 0.5em;
+  padding: 0.5em 0em 0.5em 0.5em;
   font-size: medium;
   font-style: bold;
   display: inline-block;
@@ -221,7 +222,7 @@ div.indicator {
 
 .author_bio {
   display: inline-block;
-  padding: 0.5em;
+  padding: 0em 0.5em 0em 0em;
   margin-right: 0.5em;
   font-size: smaller;
   text-align: left;
@@ -350,7 +351,7 @@ div.article-content {
   > h1,
   > h2 {
     margin-top: 1.8em;
-    //color: $text-color;
+    color: $text-color;
     margin-bottom: 0;
   }
   > h3,
