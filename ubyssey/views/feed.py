@@ -66,7 +66,7 @@ class UbysseyArticleFeed(Feed):
             "image_link": 'https://ubyssey.ca'}
 
     def items(self, section):
-        return ArticlePage.objects.live().public().order_by('explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().order_by('-explicit_published_at')[:self.max_items]
         # .get_frontpage(limit=self.max_items)
 
     def item_title(self, item):
@@ -100,7 +100,7 @@ class FrontpageFeed(UbysseyArticleFeed):
     feed_type = RssFeedWithImage
 
     def items(self, section):
-        return ArticlePage.objects.live().public().order_by('explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().order_by('-explicit_published_at')[:self.max_items]
         # .get_frontpage(limit=self.max_items)
 
 class SectionFeed(UbysseyArticleFeed):
@@ -124,7 +124,7 @@ class SectionFeed(UbysseyArticleFeed):
         return 'https://ubyssey.ca/rss/%s' % section.slug
 
     def items(self, section):
-        return ArticlePage.objects.live().public().descendant_of(section).order_by('explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().descendant_of(section).order_by('-explicit_published_at')[:self.max_items]
     
 class AuthorFeed(UbysseyArticleFeed):
 
@@ -147,4 +147,4 @@ class AuthorFeed(UbysseyArticleFeed):
         return 'https://ubyssey.ca/authors/%s/rss/' % author.slug
 
     def items(self, author):
-        return ArticlePage.objects.live().public().filter(article_authors__author=author).order_by('explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().filter(article_authors__author=author).order_by('-explicit_published_at')[:self.max_items]
