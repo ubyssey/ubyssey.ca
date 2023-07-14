@@ -34,3 +34,4 @@ class ImageBlock(blocks.StructBlock):
 
     class Meta:
         template = 'images/stream_blocks/image_block.html'
+        icon = 'image'

@@ -186,7 +186,8 @@
 	margin: 0;
 	height: 2rem;
 	padding-top: 1rem;
-	padding-bottom: 1rem;
+	// There is an intercept between the title and the dropdown menu for the Galazy Fold
+	padding-bottom: 2rem; 
 	padding-left: 1rem;
 	padding-right: 1rem;
 
@@ -231,7 +232,6 @@
 
 .o-mobile-dropdown__list {
 	// Structure
-	display: none;
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -244,18 +244,26 @@
 	// Extras
 	z-index: 300;
 
+
+
 	ul {
 		// Structure
 		margin: 0;
 		padding: 0;
 		width: 100%;
 
+		// To make the dropdown scrollable is the dropdown menu height is larger than the screen
+		height: 100%;
+		max-height: 200px;
+		overflow-y: scroll;
+	
 		// Background
 		background: #fff;
 
 		// Border
     border-top: 1px solid #e8e8e8;
 		border-bottom: 1px solid #e8e8e8;
+
 
 		// Extras
 		list-style-type: none;

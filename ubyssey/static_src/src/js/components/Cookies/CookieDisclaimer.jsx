@@ -49,7 +49,7 @@ class CookieDisclaimer extends React.Component {
                 <p>
                   This website uses cookies to give you the best experience possible.
                   Using this website means you accept our use of cookies. You can disable cookies in your browser settings.
-                  We respect your privacy and you can read more about our cookie policy <em><a href={'https://www.ubyssey.ca/page/cookie-policy-2020/'}>here</a></em>.
+                  We respect your privacy and you can read more about our cookie policy <em><a href={'https://www.ubyssey.ca/pages/cookie-policy-2020/'}>here</a></em>.
                 </p>
                 <button
                   className='c-button c-button--small'

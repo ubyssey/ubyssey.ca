@@ -7,16 +7,19 @@
         <div class="author_image_container">
             {% image author.author.image width-200 class="author_image" %}
         </div>
-    {% elif self.article_authors.all|all_no_images == True %}
-    <div class="author_image_container"></div>
-    {% else %}
-        <div class="author_image_container no_image"></div>
     {% endif %}
 
-    
-    <div class="authors_info_inner">
+    <!-- if forloop.first and no image then 0 padding for the authors_info left, author_info and author title-->
+    <div class="authors_info_inner {% if author.author.display_image == False %} no_image {% endif %}">
         <div class="author_info">
-            <div class="author_title"><a href="{{ author.author.author.full_url }}">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author_role}}</div> 
+            <div class="author_title"><a href="{{ author.author.full_url }}">{{ author.author.full_name|safe }}</a></div>   
+            <div class="author_role">
+                {% if author.author_role == "org_role" %}
+                {{author.author.ubyssey_role}}
+                {% else %}
+                {{author.author_role}}
+                {% endif %}
+            </div> 
         </div>
 
         {% if author.author.short_bio_description != "" %}
