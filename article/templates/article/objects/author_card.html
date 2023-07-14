@@ -16,7 +16,14 @@
     
     <div class="authors_info_inner">
         <div class="author_info">
-            <div class="author_title"><a href="{{ author.author.full_url }}">{{ author.author.full_name|safe }}</a></div>   <div class="author_role">{{author.author_role}}</div> 
+            <div class="author_title"><a href="{{ author.author.full_url }}">{{ author.author.full_name|safe }}</a></div>   
+            <div class="author_role">
+                {% if author.author_role == "org_role" %}
+                {{author.author.ubyssey_role}}
+                {% else %}
+                {{author.author_role}}
+                {% endif %}
+            </div> 
         </div>
 
         {% if author.author.short_bio_description != "" %}

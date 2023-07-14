@@ -178,6 +178,7 @@ class ArticleAuthorsOrderable(Orderable):
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
                             ('videographer','Videographer'),
+                            ('org_role', 'Show organization role'),
                         ],
                     ),
                 ),
@@ -980,7 +981,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
     authors_with_urls = property(fget=get_authors_with_urls)
 
     def get_authors_in_order(self):
-        AUTHOR_TYPES = ["author", "photographer", "illustrator", "videographer"]
+        AUTHOR_TYPES = ["org_role", "author", "photographer", "illustrator", "videographer"]
         authors = self.article_authors.all()
 
         authors_list = []
