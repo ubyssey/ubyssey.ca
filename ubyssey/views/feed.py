@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from django.contrib.syndication.views import Feed
 from django.urls import reverse
 from django.utils import feedgenerator
@@ -8,7 +9,11 @@ from article.models import ArticlePage
 from section.models import SectionPage
 from authors.models import AuthorPage
 
+from django.utils.safestring import mark_safe
+
 class RssFeedWithImage(feedgenerator.Rss201rev2Feed):
+    content_type = "text/xml"
+
     def add_root_elements(self, handler):
         handler.addQuickElement("title", self.feed['title'])
         handler.addQuickElement("link", self.feed['link'])
@@ -61,7 +66,7 @@ class UbysseyArticleFeed(Feed):
             "image_link": 'https://ubyssey.ca'}
 
     def items(self, section):
-        return ArticlePage.objects.live().public().order_by('explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().order_by('-explicit_published_at')[:self.max_items]
         # .get_frontpage(limit=self.max_items)
 
     def item_title(self, item):
@@ -70,14 +75,20 @@ class UbysseyArticleFeed(Feed):
     def item_pubdate(self, item):
         return item.explicit_published_at
 
-    def item_description(self, item):
-        return item.lede
+    description_template = "rssdescription.html"
+
+    def get_context_data(self, item=None, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+
+        context["item"] = item
+
+        return context
 
     def item_author_name(self, item):
         return item.get_authors_string()
 
     def item_link(self, item):
-        return item.url
+        return item.get_full_url()
     
 class FrontpageFeed(UbysseyArticleFeed):
 
@@ -89,7 +100,7 @@ class FrontpageFeed(UbysseyArticleFeed):
     feed_type = RssFeedWithImage
 
     def items(self, section):
-        return ArticlePage.objects.live().public().order_by('explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().order_by('-explicit_published_at')[:self.max_items]
         # .get_frontpage(limit=self.max_items)
 
 class SectionFeed(UbysseyArticleFeed):
@@ -107,13 +118,13 @@ class SectionFeed(UbysseyArticleFeed):
         return 'From your friends at The Ubyssey %s' % section.title
 
     def link(self, section):
-        return 'https://ubyssey.ca/%s/' % section.slug
+        return section.get_full_url()
     
     def feed_url(self, section):
         return 'https://ubyssey.ca/rss/%s' % section.slug
 
     def items(self, section):
-        return ArticlePage.objects.live().public().filter(current_section=section.slug).order_by('explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().descendant_of(section).order_by('-explicit_published_at')[:self.max_items]
     
 class AuthorFeed(UbysseyArticleFeed):
 
@@ -130,10 +141,10 @@ class AuthorFeed(UbysseyArticleFeed):
         return author.description
     
     def link(self, author):
-        return 'https://ubyssey.ca/authors/%s/' % author.slug
+        return author.get_full_url()
     
     def feed_url(self, author):
         return 'https://ubyssey.ca/authors/%s/rss/' % author.slug
 
     def items(self, author):
-        return ArticlePage.objects.live().public().filter(article_authors__author=author).order_by('explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().filter(article_authors__author=author).order_by('-explicit_published_at')[:self.max_items]
