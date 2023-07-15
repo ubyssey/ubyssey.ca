@@ -2,9 +2,10 @@
 
 .dark-mode-switcher {
   border: transparent;
-  padding: 4px;
+  padding: 0px 4px 4px 4px;
   background: transparent;
   cursor: pointer;
+  float: right;
 }
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
     transform-origin: center;
