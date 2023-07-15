@@ -183,6 +183,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     
     def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
         # return ArticlePage.objects.from_section(section_root=self)
+        # section_articles = ArticlePage.objects.live().public().filter(current_section=self.slug).order_by(order)
         section_articles = ArticlePage.objects.live().public().descendant_of(self).order_by(order)
         return section_articles
 

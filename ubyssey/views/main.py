@@ -26,6 +26,9 @@ def parse_int_or_none(maybe_int):
 def ads_txt(request):
     return redirect(settings.ADS_TXT_URL)
 
+def redirect_blog_to_humour(request):
+    path = request.get_full_path().replace("/blog/","/humour/")
+    return redirect(path)
 
 class HomePageAJAX(TemplateView):
     """
