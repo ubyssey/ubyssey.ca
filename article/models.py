@@ -42,6 +42,7 @@ from wagtail.admin.edit_handlers import (
     ObjectList,
     TabbedInterface,
 )
+
 from wagtail.core import blocks
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, PageManager, Orderable
@@ -52,6 +53,7 @@ from wagtail.search import index
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
+
 
 from wagtailmenus.models import FlatMenu
 
@@ -165,6 +167,7 @@ class ArticleAuthorsOrderable(Orderable):
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
                             ('videographer','Videographer'),
+                            ('org_role', 'Show organization role'),
                         ],
                     ),
                 ),
@@ -467,6 +470,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
                 ],
                 label = "Pull Quote",
                 template = 'article/stream_blocks/quote.html',
+                icon = "openquote",
             )),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
@@ -922,6 +926,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
         return context
 
+
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
         Returns html-friendly list of the ArticlePage's authors as a comma-separated string (with 'and' before last author).
@@ -938,6 +943,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             authors = list(map(format_author, self.article_authors.all()))
         else:
             authors = list(map(format_author, authors_list))
+           
 
         if not authors:
             return ""
@@ -955,6 +961,22 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         return self.get_authors_string(links=True)
     authors_with_urls = property(fget=get_authors_with_urls)
 
+    def get_authors_in_order(self):
+        AUTHOR_TYPES = ["org_role", "author", "photographer", "illustrator", "videographer"]
+        authors = self.article_authors.all()
+
+        authors_list = []
+
+        for author_type in AUTHOR_TYPES:
+            for author in authors:
+                if author.author_role == author_type:
+                    authors_list.append(author)
+
+
+        return authors_list
+    authors_in_order = property(fget=get_authors_in_order)
+    
+
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
@@ -968,7 +990,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         for author in authors:
             if author == 'author':
-                string_written += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
+                authors_with_roles += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
             if author == 'photographer':
                 string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
             if author == 'illustrator':
@@ -976,7 +998,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
             if author == 'videographer':
                 string_videos += 'Videos by ' + self.get_authors_string(links=True, authors_list=authors['videographer'])
         if string_written != '':
-            authors_with_roles += string_written
+            authors_with_roles += string_written # Unneccessary if statement
         if string_photos != '':
             authors_with_roles += ', ' + string_photos
         if string_author != '':

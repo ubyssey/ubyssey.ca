@@ -243,26 +243,39 @@ function initializeSearchFormActions() {
 }
 
 function initializeSocialMediaActions() {
-  $(document).on('click', 'a.facebook', function (e) {
+  const titleElement = document.getElementsByTagName("title")[0];
+  const title = titleElement.innerText;
+  $(document).on('click', '.share-facebook', function (e) {
     e.preventDefault();
-    FB.ui({
-      method: 'share_open_graph',
-      action_type: 'og.likes',
-      action_properties: JSON.stringify({
-        object: $(this).data('url'),
-      })
-    }, function (response) { });
+    window.open('http://facebook.com/sharer.php?u=' + window.location.href + '&text=' + title + '&', 'facebookwindow',
+    'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
-  $(document).on('click', 'a.twitter', function (e) {
+  $(document).on('click', '.share-twitter', function (e) {
     e.preventDefault();
-    window.open('http://twitter.com/share?url=' + $(this).data('url') + '&text=' + $(this).data('title') + '&', 'twitterwindow',
+    window.open('http://twitter.com/share?url=' + window.location.href + '&text=' + title + '&', 'twitterwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
-  $(document).on('click', 'a.reddit', function (e) {
+  $(document).on('click', '.share-reddit', function (e) {
     e.preventDefault();
-    window.open('http://www.reddit.com/submit?url=' + $(this).data('url') + '&title=' + $(this).data('title') + '&', 'redditwindow',
+    window.open('http://www.reddit.com/submit?url=' + window.location.href + '&title=' + title + '&', 'redditwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
+
+  $(document).on('click', '.share-link', function (e) {
+    e.preventDefault();
+   
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      /* Resolved - text copied to clipboard successfully */
+      document.getElementById("custom-tooltip").style.display = "inline";
+      setTimeout( function() {
+        document.getElementById("custom-tooltip").style.display = "none";
+    }, 1000);
+      
+    });
+   
+  });
+
+  
 }
