@@ -61,7 +61,7 @@
   "dependencies": {
     "global": "^4.3.2",
     "js-cookie": "^2.2.0",
-    "node-sass": "^9.0.0",
+    "sass": "^1.63.6",
     "tough-cookie": "^2.3.4"
   }
 }
