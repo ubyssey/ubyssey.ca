@@ -1,0 +1,23 @@
+{% load wagtailimages_tags %}
+{% load video_filters %}
+
+{% if item.featured_media.first.image %}
+    {% image item.featured_media.first.image original as original_image %}
+    <img alt="{{item.featured_media.first.caption}}" src="{{original_image.full_url}}">
+    <p>{{item.featured_media.first.credit}}</p>
+    <br><br>
+{% elif item.featured_media.first.video %}
+    <iframe 
+        width="500px" 
+        height="281px" 
+        allowfullscreen="allowfullscreen"
+        mozallowfullscreen="mozallowfullscreen" 
+        msallowfullscreen="msallowfullscreen" 
+        oallowfullscreen="oallowfullscreen" 
+        webkitallowfullscreen="webkitallowfullscreen"
+        src="{{ item.featured_media.first.video.url|youtube_embed_url|safe }}">
+    </iframe>
+    <p>{{item.featured_media.first.credit}}</p>
+    <br><br>
+{% endif %}
+<p>{{item.lede}}</p>
