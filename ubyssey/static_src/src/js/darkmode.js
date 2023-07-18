@@ -43,21 +43,11 @@ function setDarkMode(mode) {
         var r = document.querySelector(':root');
         document.firstElementChild.setAttribute("color-css-theme", "light");
         r.classList.replace('darkmode', 'lightmode');
-
-        $('.light-logo').show();
-        $('.dark-logo').hide();
-        
-
     } else if (mode == "dark") {
         // nav ba
         var r = document.querySelector(':root');
         document.firstElementChild.setAttribute("color-css-theme", "dark");
         r.classList.replace('lightmode', 'darkmode');
-        
-        $('.light-logo').hide();
-        $('.dark-logo').show();
-        
-    
     }
 }
   
