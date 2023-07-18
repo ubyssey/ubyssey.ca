@@ -40,7 +40,7 @@
     {% block banner_ad %}
     <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
-            {% gpt_placement_tag orderable.ad_slot %}
+            {% gpt_define_tag orderable.ad_slot is_mobile %}
         {% endfor %}
     {% endblock %}
 
