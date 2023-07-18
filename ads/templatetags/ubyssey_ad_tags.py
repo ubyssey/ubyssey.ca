@@ -22,7 +22,7 @@ def gpt_placement_tag (slug) -> dict:
         }
 
 @register.inclusion_tag('ads/gpt_define_tag.html')
-def gpt_define_tag(slug) -> dict:
+def gpt_define_tag(slug, is_mobile=False) -> dict:
     try:
         ad_slot = AdSlot.objects.get(slug=slug)
         SIZES = {
@@ -32,11 +32,18 @@ def gpt_define_tag(slug) -> dict:
             'leaderboard': '[[728, 90], [970, 90]]',
             'mobile-leaderboard': '[300, 50]'
         }
-        return {
-            'div_id' : ad_slot.div_id,
-            'dfp' : ad_slot.dfp,
-            'size' : SIZES[ad_slot.size],
-        }
+        if is_mobile and "Intra_Article" in ad_slot.dfp:
+            return {
+                'div_id' : ad_slot.div_id,
+                'dfs' : ad_slot.dfs,
+                'size' : SIZES['mobile-leaderboard'],
+            }
+        else:
+            return {
+                'div_id' : ad_slot.div_id,
+                'dfp' : ad_slot.dfp,
+                'size' : SIZES[ad_slot.size],
+            }
     except:
         return {
             'div_id' : 'ad-tag-error',
