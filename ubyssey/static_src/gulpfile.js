@@ -11,7 +11,7 @@ const webpack = require('webpack');
 const webpackProdConfig = require('./webpack.prod.js');
 const webpackDevConfig = require('./webpack.dev.js');
 
-const sass = require('gulp-sass')(require('node-sass'));
+const sass = require('gulp-sass')(require('sass'));
 const sourcemaps = require('gulp-sourcemaps');
 
 const fs = require('fs');
