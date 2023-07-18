@@ -45,7 +45,6 @@
 @import 'components/form';
 @import 'components/header-banner';
 @import 'components/heading';
-@import 'components/homepage';
 @import 'components/info-box';
 @import 'components/input-group';
 @import 'components/page';
@@ -105,6 +104,10 @@ html.darkmode {
   --text_color: #D9D9D9;
   --authors-title-bio: #D8D8D8;
   background-color: #121212;
+
+  h1, h2, h3 {
+    color: #EFEFEF;
+  }
 
   .dark-logo {
     display: inherit;

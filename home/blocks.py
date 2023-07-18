@@ -29,10 +29,10 @@ class HomepageFeaturedSectionBlock(blocks.StructBlock):
 
     layout = blocks.ChoiceBlock(
         choices=[
-            ('news', '\"News Section" Style'),
+            ('bulleted', '\"Bulleted Section" Style'),
             ('featured', '\"Featured Section\" Style'),
         ],
-        default='news',
+        default='bulleted',
         required=True,
     )
 

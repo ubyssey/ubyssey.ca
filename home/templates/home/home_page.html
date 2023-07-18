@@ -70,7 +70,24 @@
 
 </main>
 
-<div id="feed-section" class="home_infinitefeed home_infinitefeed_cutoff">
+<div id="feed-section" class="home_infinitefeed">
+	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
+		<div class="c-home-infinitefeed">
+			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode c-home-bannerbox sticky' title='Sections' text='Most Recent' textId='timeBox' %}
+			
+			<div class="c-homepage__sections">
+			{% for block in self.sections_stream %}
+			{% include_block block %}
+			{% endfor %}
+			</div>
+		</div>
+
+        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
+
+	</div>
+
+
+	{% comment %}
 	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
 		<div class="c-home-infinitefeed">
 			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode c-home-bannerbox sticky' title='Infinite feed' textBold='Today' textId='timeBox' %}
@@ -80,13 +97,11 @@
         {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
 
 	</div>
-	<div id="feed-shadow" class="home_infinitefeed_cutoff_shadow">
-		<a href="#" id="seemore" class="home_infinitefeed_cutoff_seemore">See more</a>
-	</div>
+	<script src="{% static 'ubyssey/js/home.js' %}" type="text/javascript"></script>
+	<script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
+	{% endcomment %}
 </div>
 {% endfilter %}
-<script src="{% static 'ubyssey/js/home.js' %}" type="text/javascript"></script>
-<script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block footer %}

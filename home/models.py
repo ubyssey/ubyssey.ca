@@ -76,6 +76,14 @@ class HomePage(Page):
         blank=True,
     )
 
+    sections_stream = StreamField(
+        [
+            ("home_page_section_block", homeblocks.HomepageFeaturedSectionBlock())
+        ],
+        null=True,
+        blank=True,
+    )
+
     sidebar_stream = infinitefeed.sidebar_stream
 
     # home_leaderboard_ad_slot = models.ForeignKey(
@@ -124,6 +132,7 @@ class HomePage(Page):
         ),
         StreamFieldPanel("links", heading="Links"),
         StreamFieldPanel("sidebar_stream", heading="Sidebar"),
+        StreamFieldPanel("sections_stream", heading="Sections"),
         # ModelChooserPanel('home_leaderboard_ad_slot'),
         # ModelChooserPanel('home_mobile_leaderboard_ad_slot'),
         # ModelChooserPanel('home_sidebar_ad_slot1'),

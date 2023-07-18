@@ -786,3 +786,21 @@ ol.article-list {
     width: 100%;
   }
 }
+
+.c-homepage__sections {
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.c-homepage__section {
+  // Structure
+  padding-bottom: 1.5rem;
+
+  @media($bp-larger-than-phablet) {
+    // Structure
+    margin-top: 2rem;
+    margin-bottom: 5rem;
+  }
+}

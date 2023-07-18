@@ -720,6 +720,10 @@
       color: #646464;
     }
   }
+
+  .o-article--bullet {
+    color: black;
+  }
 }
 
 .darkmode {
@@ -739,6 +743,10 @@
     .o-article__snippet {
       color: #D9D9D9;
     }
+  }
+
+  .o-article--bullet {
+    color: #a3a3a3;
   }
 }
 
