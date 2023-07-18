@@ -4,12 +4,21 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from users.managers import UserManager
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """
+    The Ubyssey uses a custom user model to implement email-based logins.
+
+    This is different than the default Django user model,
+    which uses a separate username field.
+    """
+
     email = CharField(max_length=255, unique=True)
     first_name = CharField(max_length=150, blank=True)
     last_name = CharField(max_length=150, blank=True)
 
     is_active = BooleanField(default=True)
 
+    # Use the email as the username. Users log in with email + password
+    # instead of username + password.
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
