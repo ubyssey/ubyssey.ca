@@ -35,7 +35,7 @@ def inject_ads(value, is_mobile):
                 dfp = 'Intra_Article_' + str((n // PARAGRAPHS_PER_AD))
                 div_id = dfp
                 if is_mobile:
-                    size = 'box'
+                    size = 'mobile-leaderboard'
                 else:
                     size = 'banner'
                 ad_context = {

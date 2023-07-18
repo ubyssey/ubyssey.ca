@@ -28,11 +28,6 @@ body {
   padding-left: 0;
   padding-right: 0;
   box-sizing: border-box;
-
-  @media($bp-larger-than-phablet) {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
 }
 
 .u-container--mid {
