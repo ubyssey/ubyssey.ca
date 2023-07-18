@@ -14,7 +14,6 @@ $search-bar-height: 46px;
 
   // Text
   font-size: font-size(20);
-  color: black;
   text-align: center;
   line-height: $search-bar-height;
 }
@@ -29,36 +28,37 @@ $search-bar-height: 46px;
   // Border
   border: none;
   border-bottom: 1px solid;
-  border-color: white;
+  border-color: #ffffff00;
 
   // Background
-  background: #fff;
+  background: none;
 
   // Text
   line-height: $search-bar-height;
   font-size: font-size(16);
+  color: $text-color;
 
   // Transition
   transition-duration: 0.2s;
 
   &:focus {
-	border-color: black;
+	border-color: $text-color;
     outline: 0;
 	width:100%;
 	opacity: 1;
   }
 
   &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-	color: rgb(0, 0, 0);
+	color: $text-color;
 	opacity: 1; /* Firefox */
   }
   
   &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-	color: rgb(0, 0, 0);
+	color: $text-color;
   }
   
   &::-ms-input-placeholder { /* Microsoft Edge */
-	color: rgb(0, 0, 0);
+	color: $text-color;
   }
 }
 

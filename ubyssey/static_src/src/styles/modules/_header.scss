@@ -210,7 +210,6 @@ header.topbar {
         font-weight: $font-weight-semi-bold;
         font-size: font-size(12.5);
         text-transform: uppercase;
-        color: $nav-span-color;
       }
   }
 
@@ -247,6 +246,7 @@ header.topbar {
         display: inline-block;
         padding: 0 10px;
         height: 45px;
+        color: $nav-span-color;
         a {
           display: inline-block;
         }

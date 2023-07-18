@@ -696,22 +696,6 @@ ol.article-list {
   transform: translate(0,-50%);
 }
 
-.darkmode {
-  .boxLabel-left {
-    background-color: $color-ubyssey-blue-light;
-    border-color: $color-ubyssey-blue-light;
-  }
-  .boxLabel-right {
-    background-color: $color-ubyssey-blue-dark;
-    border-color: $color-ubyssey-blue-light;
-  }
-  .boxText-left {
-    color:$color-ubyssey-blue-dark-2;
-  }
-  .boxText-right {
-    color: $color-ubyssey-blue-light;
-  }  
-}
 
 .lightmode {
   .boxLabel-left {
@@ -728,6 +712,23 @@ ol.article-list {
   .boxText-right {
     color: $color-ubyssey-blue-dark;
   }   
+}
+
+.darkmode {
+  .boxLabel-left {
+    background-color: $color-ubyssey-blue-light;
+    border-color: $color-ubyssey-blue-light;
+  }
+  .boxLabel-right {
+    background-color: $color-ubyssey-blue-dark;
+    border-color: $color-ubyssey-blue-light;
+  }
+  .boxText-left {
+    color:$color-ubyssey-blue-dark-2;
+  }
+  .boxText-right {
+    color: $color-ubyssey-blue-light;
+  }  
 }
 
 .linkTitle {

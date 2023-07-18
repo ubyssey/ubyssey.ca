@@ -100,6 +100,18 @@
     width: 100%;
 }
 
+.lightmode {
+    h2.block-title {
+        text-shadow: #0000003b -1px 1px 15px;
+    }
+    .issue {
+        box-shadow: -10px 10px 7px 0px #0000003b;
+    }
+    #loader {
+        color: black;
+    }
+}
+
 .darkmode {
     h2.block-title {
         text-shadow: #000000 1px 1px 15px;
@@ -118,18 +130,6 @@
     }
     #loader {
         color: white;
-    }
-}
-
-.lightmode {
-    h2.block-title {
-        text-shadow: #0000003b -1px 1px 15px;
-    }
-    .issue {
-        box-shadow: -10px 10px 7px 0px #0000003b;
-    }
-    #loader {
-        color: black;
     }
 }
 

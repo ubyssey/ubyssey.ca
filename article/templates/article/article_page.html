@@ -6,6 +6,10 @@
 {% load ubyssey_ad_filters %}
 {% load ubyssey_ad_tags %}
 
+{% block root %}
+{{mode}}
+{% endblock %}
+
 {% block head_scripts %}
     <!-- Register ads for article page -->
     {% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
@@ -25,6 +29,7 @@
 {% endblock %}
 
 {% block content %}
+<p>{{ request.COOKIES.mode}}</p>
     <main id="article-{{ self.slug }}" class="article">
 
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->

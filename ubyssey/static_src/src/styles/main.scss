@@ -75,7 +75,7 @@
 @import 'modules/widgets/weekly-events';
 @import 'modules/widgets/twitter';
 
-:root {
+html.lightmode {
   --background-nav: rgba(255, 255, 255, 0.99);
   --background: rgba(255, 255, 255, 0.99);
   --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
@@ -83,7 +83,19 @@
   --nav-span-color: #33331E;
   --nav-headline-h1: #373737;
   --three-bar-logo-color: #303030;
-  --text_color: #1b1b1b;
+  --text_color: #1b1b1b;  
+}
+
+html.darkmode {
+  --background-nav: #031723;
+  --background: #031621;
+  --nav-mobile-background-barely-transparent: #031723;
+  --nav-h3-color: #EFEFEF;
+  --nav-span-color: #EFEFEF;
+  --nav-headline-h1: #5D5D5D;
+  --three-bar-logo-color: #EFEFEF;
+  --text_color: #D9D9D9;
+  background-color: #121212;
 }
 
 body, html, #page-wrapper {
@@ -114,7 +126,7 @@ body, html, #page-wrapper {
 
 #content-wrapper {
   background-color: var(--background);
-  transition: background 0.5s ease, color 0.5s ease;
+  //transition: background 0.5s ease, color 0.5s ease;
   -webkit-overflow-scrolling: touch;
 }
 
