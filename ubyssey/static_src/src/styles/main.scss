@@ -89,7 +89,7 @@ html.lightmode {
     display: none;
   }
   .light-logo {
-    display: inherit;
+    display: inline;
   }
 }
 
@@ -105,12 +105,8 @@ html.darkmode {
   --authors-title-bio: #D8D8D8;
   background-color: #121212;
 
-  h1, h2, h3 {
-    color: #EFEFEF;
-  }
-
   .dark-logo {
-    display: inherit;
+    display: inline;
   }
   .light-logo {
     display: none;
@@ -145,7 +141,7 @@ body, html, #page-wrapper {
 
 #content-wrapper {
   background-color: var(--background);
-  //transition: background 0.5s ease, color 0.5s ease;
+  transition: background 0.5s ease, color 0.5s ease;
   -webkit-overflow-scrolling: touch;
 }
 

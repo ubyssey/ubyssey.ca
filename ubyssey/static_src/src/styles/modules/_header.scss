@@ -223,6 +223,11 @@ header.topbar {
       vertical-align: middle;
       height: 20px;
   }
+  
+  .right {
+    margin-left: 2em;
+    display: inline;
+  }
 
   nav {
     display: none;
@@ -237,7 +242,7 @@ header.topbar {
     font-size: font-size(13);
     margin-left: 20px;
     text-transform: uppercase;
-    
+
     ul {
       line-height: 48px;
       list-style-type: none;
@@ -465,10 +470,6 @@ a.store-link {
     background: rgba(0, 113, 201, 0.2)
   }
 
-}
-
-.dark-logo {
-  display: none;
 }
 
 

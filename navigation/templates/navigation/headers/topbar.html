@@ -14,6 +14,9 @@
         <nav>
             {% main_menu show_multiple_levels=False apply_active_classes=True %}
         </nav>
+        <div class="right">
+            {% include 'article/objects/darkmode_button.html'%}
+        </div>
         {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
     </div>
 

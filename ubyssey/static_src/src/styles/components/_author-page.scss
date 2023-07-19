@@ -34,6 +34,7 @@
         width: 65%;
         box-shadow: #0000003b -25px 25px 2px;
         background-color: #C0E3F1;
+        color: black;
         float: right;
     }
 }
@@ -42,6 +43,7 @@
     font-size: 3rem;
     margin-bottom: 0;
     margin-top: 0;
+    color: black;
     @media($bp-smaller-than-phablet) {
         font-size: 2rem;
     }
@@ -49,6 +51,7 @@
 .author-role {
     font-size: 1.2rem;
     line-height: 2rem;
+    color: black;
 }
 .author-desc {
     color: $color-ubyssey-blue-dark-2;

@@ -84,3 +84,15 @@
     }
 }
   
+
+.right {
+  .dark-mode-switcher{
+    padding: 12px 4px 4px 4px;
+  }
+}
+
+.c-article_dark_mode {
+  @media($bp-larger-than-phablet) {
+    display: none;
+  }
+}

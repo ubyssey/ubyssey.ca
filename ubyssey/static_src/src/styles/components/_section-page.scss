@@ -46,9 +46,20 @@
 
   // Text
   font-size: 6em;
-  color: black;
   @media($bp-smaller-than-phablet) {
     font-size: 4em;
+  }
+}
+
+.lightmode {
+  .c-page__heading {
+    color: black;
+  }
+}
+
+.darkmode {
+  .c-page__heading {
+    color: white;
   }
 }
 
