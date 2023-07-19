@@ -141,7 +141,7 @@ header.main{
           font-weight: $font-weight-semi-bold;
           color: #000000;
           text-transform: uppercase;
-          background-color: white;
+          background-color: var(--background);
           padding-left: 10px;
           padding-right: 10px;
           line-height: 2em;
