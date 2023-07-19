@@ -132,6 +132,13 @@ DATABASES = {
     },
 }
 
+# TODO: Remove this line after Dispatch is removed as a dependency.
+# This silences a reverse accessor clash error between the
+# dispatch.User and users.User models.
+SILENCED_SYSTEM_CHECKS = [
+    'fields.E304' # Reverse accessor clash error
+]
+
 # Set secret keys
 SECRET_KEY = env('SECRET_KEY')
 NOTIFICATION_KEY = env('NOTIFICATION_KEY')
