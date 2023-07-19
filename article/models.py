@@ -32,6 +32,7 @@ from taggit.models import TaggedItemBase
 
 from videos import blocks as video_blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from article import blocks as article_blocks
 
 from wagtail.admin.edit_handlers import (
     # Panels
@@ -458,7 +459,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 label="Rich Text Block",
                 help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
             )),
-            ('plaintext',blocks.TextBlock(
+            ('plaintext', blocks.TextBlock(
                 label="Plain Text Block",
                 help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
             )),
@@ -477,28 +478,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', blocks.StructBlock(
-                [
-                    ('content',blocks.CharBlock(required=False)),
-                    ('source',blocks.CharBlock(required=False)),
-                ],
-                label = "Pull Quote",
-                template = 'article/stream_blocks/quote.html',
-                icon = "openquote",
-            )),
-            ('audio_quote', blocks.StructBlock(
-                [
-                    ('content',blocks.CharBlock(required=False)),
-                    ('source',blocks.CharBlock(required=False)),
-                    ('audio',DocumentChooserBlock(required=True, help_text="mp3 format")),
-                ],
-                label = "Audio Quote",
-                template = 'article/stream_blocks/audio_quote.html',
-            )),
+            ('quote', article_blocks.PullQuoteBlock()),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
+            ('visual_essay', article_blocks.VisualEssayBlock()),
         ],
         null=True,
         blank=True,
@@ -695,6 +680,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return "article/article_page_guide_2022.html"
         elif self.layout == 'magazine-2023':
             return "article/article_page_magazine_2023.html"
+        elif self.layout == 'visual-essay':
+            return "article/article_page_visual_essay.html"
                         
         return "article/article_page.html"
 
@@ -809,6 +796,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                             ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
                             ('guide-2022', 'Guide (2022 style)'),
                             ('magazine-2023', 'Magazine (2023 style)'),
+                            ('visual-essay', 'Visual Essay'),
                         ],
                     ),
                 ),

@@ -182,6 +182,58 @@ header.main{
   }
 }
 
+header.visual-essay{
+
+  margin-bottom: 20px;
+
+  .logo-area {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 50px;
+    overflow: hidden;
+
+    img.top-logo {
+      width: 285px;
+      margin: auto;
+      display: block;
+    }  
+  }
+
+  nav.visual-essay {
+  
+    ul {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      justify-content: space-between;
+      width: fit-content;
+      margin: auto;
+      gap: 2px;
+      background-color: black;
+      li {
+        display: inline-block;
+      }
+  
+      &.sections {
+        li {
+          font-family: "noto-sans","Helvetica Neue","Helvetica","Arial",sans-serif;
+          font-weight: 600;
+          color: #000000;
+          text-transform: uppercase;
+          background-color: white;
+          padding-left: 10px;
+          padding-right: 10px;
+          
+          &.current {
+            color: #0071C9;
+          }
+        
+        }
+      }
+    }
+  }
+}
+
 // Mobile & topbar header
 
 header.topbar, header.mobile {
