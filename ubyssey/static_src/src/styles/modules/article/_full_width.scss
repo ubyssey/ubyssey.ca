@@ -30,14 +30,23 @@
     .left, .right {
       display: table-cell;
       box-sizing: border-box;
+      @media($bp-smaller-than-tablet) {
+        display: inline-block;
+      }
     }
     .left {
       width: 50%;
       padding: 25px 10%;
       vertical-align: middle;
+      @media($bp-smaller-than-tablet) {
+        width: 100%;
+      }
     }
     .right {
       width: 50%;
+      @media($bp-smaller-than-tablet) {
+        width: 100%;
+      }
     }
 
     // sidebar

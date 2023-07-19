@@ -9,7 +9,7 @@
 {% block head_scripts %}
     <!-- Register ads for article page -->
     {% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
-        {% gpt_define_tag orderable.ad_slot %}
+        {% gpt_define_tag orderable.ad_slot is_mobile %}
     {% endfor %}
 {% endblock %}
 
