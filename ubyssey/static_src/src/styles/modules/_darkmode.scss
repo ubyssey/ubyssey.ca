@@ -1,18 +1,12 @@
 @import 'variables';
 
 .dark-mode-switcher {
-    border: transparent;
-    padding: 4px;
-    background: transparent;
-    cursor: pointer;
-  }
-
-.sun-and-moon{
-  height: 1.5em;
-  position: relative;
-  top: -5px;
-}  
-
+  border: transparent;
+  padding: 0px 4px 4px 4px;
+  background: transparent;
+  cursor: pointer;
+  float: right;
+}
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
     transform-origin: center;
 }
@@ -36,7 +30,7 @@
 }
 
 [color-css-theme="dark"] .sun-and-moon > .sun {
-    transform: scale(1.75);
+    transform: scale(1.5);
 }
 
 [color-css-theme="dark"] .sun-and-moon > .sun-beams {
