@@ -247,7 +247,14 @@ TEMPLATES = [
                 'dbtemplates.loader.Loader',
             ],
         },
-    }
+    },
+    {
+        'NAME': 'dispatch',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+			DISPATCH_APP_DIR('templates')
+        ],
+    },
 ]
 
 # REST framework settings
