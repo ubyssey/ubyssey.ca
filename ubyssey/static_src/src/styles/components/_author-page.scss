@@ -57,6 +57,19 @@
     color: $color-ubyssey-blue-dark-2;
     line-height: 1.45em;
 }
+.darkmode {
+    @media($bp-smaller-than-phablet) {
+        .author-name {
+            color: white;
+        }
+        .author-role {
+            color: white;
+        }
+        .author-desc {
+            color: var(--text_color);
+        }
+    }
+}
 .author-links {
     margin-bottom: 0;
 }
