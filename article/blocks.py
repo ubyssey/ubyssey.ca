@@ -28,20 +28,13 @@ class ChooseViewBlock(blocks.StructBlock):
         template = "article/stream_blocks/ve_switch_view.html",
         icon = "view"
 
-class VEScriptBlock(blocks.StructBlock):
-    script =  blocks.RawHTMLBlock(
-        label = "Raw HTML Block",
-        help_text = "Only Use single quotes. WARNING: DO NOT use this unless you really know what you're doing!"
-    )
-    reverse_script =  blocks.RawHTMLBlock(
-        label = "Raw HTML Block",
-        help_text = "Only Use single quotes. WARNING: DO NOT use this unless you really know what you're doing!"
-    )
+class GapBlock(blocks.StructBlock):
+    id = blocks.CharBlock(required=False)
     height = blocks.IntegerBlock(required=True, default=0, min_value=0)
 
     class Meta:
-        template = 'article/stream_blocks/ve_script_block.html',
-        icon = "cogs"
+        template = 'article/stream_blocks/ve_gap.html',
+        icon = "arrows-up-down"
 
 class VisualEssayBlock(blocks.StructBlock):
     view = ChooseViewBlock()
@@ -85,7 +78,7 @@ class VisualEssayBlock(blocks.StructBlock):
                 ('side',ChooseSideBlock(default=("left", "Left"))),
             ], icon = "openquote"
         )),
-        ('script_block', VEScriptBlock()),
+        ('gap', GapBlock()),
         ('switch_view', ChooseViewBlock()),
     ])
 

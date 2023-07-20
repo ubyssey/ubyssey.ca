@@ -27,7 +27,7 @@
     <div class="o-visual-essay__right-container">
         {% include_block self.view with id=block.id %}
         {% for block in self.content %}
-            {% if block.block_type == 'script_block' or block.block_type == 'switch_view' %}
+            {% if block.block_type == 'gap' or block.block_type == 'switch_view' %}
                 {% include_block block with id=block.id %}
             {% elif block.value.side == "right" %}
                 {% if block.block_type == 'raw_html' %}
