@@ -722,7 +722,9 @@
   }
 
   .o-article--bullet {
-    color: black;
+    .o-article__headline {
+      color: black;
+    }
   }
 }
 
@@ -746,7 +748,9 @@
   }
 
   .o-article--bullet {
-    color: #a3a3a3;
+    .o-article__headline {
+      color: #a3a3a3;
+    }
   }
 }
 

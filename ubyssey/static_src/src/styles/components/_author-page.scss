@@ -72,6 +72,10 @@
 }
 .author-links {
     margin-bottom: 0;
+    color: var(--header_color);
+    @media($bp-larger-than-phablet) {
+        color: black;
+    }
 }
 .author-pinned_list {
     display: flex;

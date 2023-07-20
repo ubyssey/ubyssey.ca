@@ -128,37 +128,6 @@
 
 				</div>
 				{% endif %}
-
-				<div class="o-mobile-dropdown open-modal">
-
-					<a class="o-mobile-dropdown__button" href="#">
-						<span>{{ order|title }}</span>
-						<i class="fa fa-sort-desc"></i>
-					</a>
-
-					<div class="add-to-modal o-mobile-dropdown__list">
-						<div class="js-dropdown-container"></div>
-						<div class="o-mobile-dropdown__list__container">
-							<div class="o-mobile-dropdown__header">
-								<h2 class="o-mobile-dropdown__title">Order by:</h3>
-									<a class="close-modal o-mobile-dropdown__close" href="#">
-										<i class="fa fa-close"></i>
-									</a>
-							</div>
-							<ul>
-								<li
-									class="o-mobile-dropdown__item{% if order == 'newest' %} o-mobile-dropdown__item--is-active{% endif %}">
-									<a href="?{% modify_query_string 'order' 'newest' %}">Newest</a>
-								</li>
-								<li
-									class="o-mobile-dropdown__item{% if order == 'oldest' %} o-mobile-dropdown__item--is-active{% endif %}">
-									<a href="?{% modify_query_string 'order' 'oldest' %}">Oldest</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-				</div>
 			</div>
 
 			<!-- The article condition checker -->
