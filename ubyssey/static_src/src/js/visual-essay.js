@@ -26,20 +26,6 @@ document.body.onscroll = function () {
             for(let i=0; i<right.children.length; i++) {
                 var block = right.children[i];
 
-                if(block.classList.contains("script_block")){
-                    if (block.getAttribute("activated") == "false") {
-                        if(block.offsetTop < scrolled) {
-                            eval(block.getAttribute("script"));
-                            block.setAttribute("activated", "true");
-                        }
-                    } else {
-                        if(block.offsetTop > scrolled) {
-                            eval(block.getAttribute("reversescript"));
-                            block.setAttribute("activated", "false");
-                        }
-                    }
-                }
-
                 if(block.classList.contains("mark")){
                     if(block.offsetTop <scrolled) {
                         count = count + 1;
