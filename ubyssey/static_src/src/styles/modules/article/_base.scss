@@ -331,6 +331,7 @@ div.article-content {
 
   float: left;
   border-right: none;
+  margin-bottom: 50px;
 
   @media($bp-larger-than-tablet) {
     border-right: 1px solid #e6e6e6;
@@ -340,9 +341,6 @@ div.article-content {
     vertical-align: top;
     box-sizing: border-box;
     width: 65%;
-    :last-child {
-      margin-bottom: 1.4rem;
-    }
   }
 
   > p,
@@ -351,6 +349,8 @@ div.article-content {
   > h2 {
     margin-top: 1.8em;
     margin-bottom: 0;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   > h3,
   > ul,
@@ -368,6 +368,7 @@ div.article-content {
     @media($bp-larger-than-phablet){
       padding: 0;
       max-width: 585px;
+      margin: auto;
     }
   }
 
