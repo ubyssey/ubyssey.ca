@@ -14,7 +14,7 @@
 <main class="section">
   {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 %}
   {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=5 %}
-  <div class="u-container u-container--padded u-podcast-container">
+  <div class="u-container u-container--padded u-video-container">
     <div class="c-page__header">
       <h1 class="c-page__heading">Videos</h1>
     </div>
@@ -34,7 +34,7 @@
       {% endif %}
     </div>
 
-    <div class='c-podcast-episode-list'>
+    <div class='c-video-episode-list'>
       {% for video in paginated_videos %}
         {% load dispatch_filters %}
           <div class="c-videos__video">

@@ -7,7 +7,6 @@ import Search from './components/Search.jsx';
 import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import { Galleries } from './components/Gallery'
 import Timeline from './components/Timeline.jsx'
-import Episode from './components/Podcast/Episode.jsx'
 
 
 window.articleHeader = false;
@@ -39,19 +38,6 @@ $(function () {
         )
     })
 
-    $('.c-podcast-episode').each(function () {
-        ReactDOM.render(
-            <Episode author={$(this).data('author')}
-                description={$(this).data('description')}
-                file={$(this).data('file')}
-                image={$(this).data('image')}
-                publishedAt={$(this).data('published_at')}
-                id={$(this).data('id')}
-                title={$(this).data('title')}
-            />,
-            $(this).get(0)
-        )
-    })
 });
 
 if ($('main.article').length) {
