@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './modules/Youtube'
-import { ArticlesSuggested } from './components/Article'
 import Search from './components/Search.jsx';
 import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import { Galleries } from './components/Gallery'
@@ -153,18 +152,6 @@ if ($('main.article').length) {
     }
 
     articleAds()
-
-    if (document.getElementById('article-list') !== null) {
-        const articleList = ReactDOM.render(
-            <ArticlesSuggested
-                breakpoint={960}
-                name={listName}
-                currentArticle={firstArticle}
-                articles={articleIds}
-                userId={userId} />,
-            document.getElementById('article-list')
-        );
-    }
 
 
     const gatherImages = (gallery) => {
