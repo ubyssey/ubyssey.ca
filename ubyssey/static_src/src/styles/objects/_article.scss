@@ -441,7 +441,12 @@
     width: 4.5rem;
     height: 4.5rem;
     margin-right: 0.65rem;
-
+    
+    @media ($bp-smaller-than-tablet){ 
+      min-width: 100%;
+      height: auto;
+      
+    }
     // Background
     background-position: center;
     background-size: cover;
@@ -571,6 +576,8 @@
   }
 
 }
+
+
 
 
 // Article bullet point

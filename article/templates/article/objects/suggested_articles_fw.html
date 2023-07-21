@@ -1,0 +1,17 @@
+{% comment %} 
+Arguments: suggested_articles a list of article pages
+Used in both section pages and homepage
+{% endcomment %}
+
+{% load article_display %}
+
+<h2 class="block-title">{{ title }}</h2>
+<br>
+
+{% for group in articles|split:3 %}
+  <div class="c-section__featured__articles u-flex--tablet">
+  {% for article in group %}
+      {% include 'article/objects/column.html' with article=article %}
+  {% endfor %}
+  </div>
+{% endfor %}

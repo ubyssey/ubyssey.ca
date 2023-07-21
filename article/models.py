@@ -930,7 +930,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         context['prev'] = self.get_prev_sibling()
         context['next'] = self.get_next_sibling()
-
+        
         if self.current_section == 'guide':
             # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
             if not context['prev']:
@@ -942,6 +942,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             context['prev'] = context['prev'].specific
         if context['next']:
             context['next'] = context['next'].specific
+
+        context["suggested"] = self.get_suggested()
 
         return context
 
@@ -1027,6 +1029,44 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         return authors_with_roles
     authors_with_roles = property(fget=get_authors_with_roles)
  
+    def get_category_articles(self, order='-explicit_published_at') -> QuerySet:
+        """
+        Returns a list of articles within the Article's category
+        """
+        category_articles = ArticlePage.objects.live().public().filter(category=self.category).not_page(self).order_by(order)
+
+        return category_articles
+    
+    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+        """
+        Returns a list of articles within the Article's section
+        """
+
+        section_articles = ArticlePage.objects.live().public().descendant_of(self.get_parent()).not_page(self).order_by(order)
+        
+        return section_articles
+
+    def get_suggested(self, number_suggested=6):
+        """
+        Defines the title and articles in the suggested box
+        """
+        
+        category_articles = self.get_category_articles()
+        section_articles = self.get_section_articles()
+
+        if self.category == None or len(category_articles) == 0:
+            suggested = {}
+            suggested['title'] = "From " + self.get_parent().title
+            suggested['articles'] = section_articles[:number_suggested]
+        elif len(section_articles) > 0:
+            suggested = {}
+            suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
+            suggested['articles'] = category_articles[:number_suggested]
+        else:
+            suggested = False
+
+        return suggested
+
     @property
     def published_at(self):
         if self.explicit_published_at:
