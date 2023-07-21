@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './modules/Youtube'
 import { ArticlesSuggested } from './components/Article'
-import { Poll } from './components/Poll'
 import Search from './components/Search.jsx';
 import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import { Galleries } from './components/Gallery'
@@ -15,12 +14,7 @@ const BOX_HEIGHT = 274
 const SKYSCRAPER_HEIGHT = 624
 
 $(function () {
-    $('.c-widget-poll').each(function () {
-        ReactDOM.render(
-            <Poll id={$(this).data('id')} loaderHTML={$(this).html()} />,
-            $(this).get(0)
-        )
-    })
+
     ReactDOM.render(
         <AdblockSplash />,
         document.getElementById('adblock-splash')
