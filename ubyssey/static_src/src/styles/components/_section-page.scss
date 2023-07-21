@@ -26,8 +26,14 @@
 }
 
 .c-section__featured__articles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px;
 
-  width: 75%;
+  article {
+    width: 25%;
+  }
 }
 
 .modal {

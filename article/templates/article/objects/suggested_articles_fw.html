@@ -8,10 +8,8 @@ Used in both section pages and homepage
 <h2 class="block-title">{{ title }}</h2>
 <br>
 
-{% for group in articles|split:3 %}
   <div class="c-section__featured__articles u-flex--tablet">
-  {% for article in group %}
-      {% include 'article/objects/column.html' with article=article %}
+  {% for article in articles %}
+      {% include 'article/objects/author_pinned.html' with article=article %}
   {% endfor %}
   </div>
-{% endfor %}

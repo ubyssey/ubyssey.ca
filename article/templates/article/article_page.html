@@ -139,7 +139,7 @@
                             {% block suggested_articles %}
 
                             {% if suggested %}
-                                {% include "home/stream_blocks/sidebar_section_block.html" with title=suggested.title articles=suggested.articles %}
+                                {% include "infinitefeed/sidebar/sidebar_section_block.html" with title=suggested.title articles=suggested.articles %}
                             {% endif %}
 
                             {% endblock %}
