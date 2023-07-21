@@ -6,7 +6,7 @@ import { Poll } from './components/Poll'
 import Search from './components/Search.jsx';
 import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import { Galleries } from './components/Gallery'
-import Timeline from './components/Timeline.jsx'
+
 
 
 window.articleHeader = false;
@@ -29,14 +29,7 @@ $(function () {
         <CookieDisclaimer />,
         document.getElementById('cookie-disclaimer')
     )
-    $('.c-timeline').each(function () {
-        ReactDOM.render(
-            <Timeline id={$(this).data('currentArticleId')}
-                title={$(this).data('timelineTitle')}
-                nodes={$(this).data('nodes')} />,
-            $(this).get(0)
-        )
-    })
+
 
 });
 
