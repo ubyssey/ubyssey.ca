@@ -1099,12 +1099,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             models.Index(fields=['last_modified_at']),
             models.Index(fields=['category',]),
         ]
-    
-    @route(r'^sections/$')
-    def get_section_articles(self, request, *args, **kwargs):
-        context = self.get_context(request, *args, **kwargs)
-        context["test"] = "Hello World 232131312"
-        return render(request, "archive/archive_section.html", context)
 
 class SpecialArticleLikePage(ArticlePage):
 
