@@ -87,6 +87,9 @@
   padding-right: 5px;
   color: white;
   font-weight: 600;
+  &:hover {
+    color: black;
+  }
 }
 
 .o-article__label {
@@ -558,8 +561,13 @@
     flex: 1;
     color: #ffffff;
     margin: auto;
+    margin-right: 0.5em;
     // Text
     font-size: font-size(22);
+
+    a:hover {
+      color: black;
+    }
   }
 
   .o-article__meta__image {
@@ -671,6 +679,25 @@
 
     // Text
     font-size: font-size(20);
+  }
+}
+
+.suggested-sidebar {
+  article {
+    font-size: 0.8em;
+  }
+}
+
+.suggested-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px;
+  margin-left: 50px;
+  margin-right: 50px;
+
+  article {
+    width: 300px;
   }
 }
 
@@ -958,7 +985,7 @@
     left:100vw;
   }
   @media ($bp-larger-than-phablet) {
-    top: -50vh;
+    top: -100vh;
   }
 }
 .o-visual-essay__left-next {
@@ -968,7 +995,7 @@
     left:-100vw;
   }
   @media ($bp-larger-than-phablet) {
-    top: 50vh;
+    top: 100vh;
   }
 }
 .o-visual-essay__left-first {
@@ -1010,6 +1037,36 @@
       //width: 80vw;
       //transform: translate(-50%,0);
     }
+
+    p, h2, h3, h4 {
+      color: #333333;
+    }
+  }
+}
+
+.lightmode {
+  .vs-side-by-side {
+    .o-visual-essay__left-container {
+      @media ($bp-smaller-than-phablet) {
+        border-image: linear-gradient(to right, #ffffff00, $color-ubyssey-blue-dark, #ffffff00) 30 stretch;
+      }
+    }
+    .o-visual-essay__right-container {
+      border-image: linear-gradient(#ffffff00, $color-ubyssey-blue-dark, #ffffff00) 30 stretch;  
+    }
+  }
+}
+
+.darkmode {
+  .vs-side-by-side {
+    .o-visual-essay__left-container {
+      @media ($bp-smaller-than-phablet) {
+        border-image: linear-gradient(to right, #ffffff00, $color-ubyssey-blue-light, #ffffff00) 30 stretch;
+      }
+    }
+    .o-visual-essay__right-container {
+      border-image: linear-gradient(#ffffff00, $color-ubyssey-blue-light, #ffffff00) 30 stretch;  
+    }
   }
 }
 
@@ -1020,9 +1077,8 @@
   
     @media ($bp-smaller-than-phablet) {
       width: 100%;
-      background-color: white;
+      background-color: var(--background);
       border-bottom-style: solid;
-      border-image: linear-gradient(to right, #ffffff00, #031621, #ffffff00) 30 stretch;
     }
   }
   .o-visual-essay__right-container {
@@ -1030,7 +1086,6 @@
     //max-width: 400px;
     //margin: auto;
     border-left-style: solid;
-    border-image: linear-gradient(#ffffff00, #031621, #ffffff00) 30 stretch;
     @media ($bp-smaller-than-phablet) {
       border-left-style: none;
     }

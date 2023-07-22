@@ -12,8 +12,8 @@ document.body.onscroll = function () {
     for(let i=0; i < containers.length; i++) {
         var scrolled = document.documentElement.scrollTop + document.body.offsetHeight*(0.5);
         if (containers[i].offsetTop + containers[i].offsetHeight < scrolled) {
-            containers[i].classList.remove("o-visual-essay__content-container-show");
-            containers[i].classList.add("o-visual-essay__content-container-hide");
+            //containers[i].classList.remove("o-visual-essay__content-container-show");
+            //containers[i].classList.add("o-visual-essay__content-container-hide");
             var left = containers[i].getElementsByClassName("o-visual-essay__left-container")[0];
 
         } else {

@@ -36,16 +36,17 @@ $search-bar-height: 46px;
   // Text
   line-height: $search-bar-height;
   font-size: font-size(16);
-  color: $text-color;
+  color: var(--header_color);
 
   // Transition
   transition-duration: 0.2s;
 
   &:focus {
-	border-color: $text-color;
+	border-color: var(--header_color);
     outline: 0;
 	width:100%;
 	opacity: 1;
+	color: $color-accent-blue
   }
 
   &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

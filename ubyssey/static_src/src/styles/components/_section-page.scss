@@ -26,14 +26,7 @@
 }
 
 .c-section__featured__articles {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 10px;
-
-  article {
-    width: 25%;
-  }
+  width: 75%;
 }
 
 .modal {
@@ -150,7 +143,15 @@
   position: relative;
   cursor: pointer;
   &:hover {
-    color: #1871C4;
+    color: $color-accent-blue;
+  }
+
+  a > p {
+    color: var(--header_color);
+
+    &:hover{
+      color: $color-accent-blue;
+    }
   }
 }
 

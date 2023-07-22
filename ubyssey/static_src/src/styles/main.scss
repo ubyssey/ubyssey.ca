@@ -74,6 +74,10 @@
 @import 'modules/widgets/weekly-events';
 @import 'modules/widgets/twitter';
 
+html {
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
 html.lightmode {
   --background-nav: rgba(255, 255, 255, 0.99);
   --background: white;
