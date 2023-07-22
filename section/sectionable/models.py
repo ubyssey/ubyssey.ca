@@ -51,11 +51,6 @@ class SectionablePage(models.Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["current_section"] = self.current_section
-        mode = request.COOKIES.get('lightMode')
-        if mode == "dark":
-            context["mode"] = "darkmode"
-        else: 
-            context["mode"] = "lightmode"
         return context
 
     def clean(self):

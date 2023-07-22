@@ -6,10 +6,6 @@
 {% load ubyssey_ad_filters %}
 {% load ubyssey_ad_tags %}
 
-{% block root %}
-{{mode}}
-{% endblock %}
-
 {% block head_scripts %}
     <!-- Register ads for article page -->
     {% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
