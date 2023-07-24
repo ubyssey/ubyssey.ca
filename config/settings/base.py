@@ -145,6 +145,10 @@ NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 
 # Application definition
 INSTALLED_APPS = [
+    # NOTE: Until Dispatch is removed, this app must be loaded first so that
+    # the dispatch.User model can be overridden by the `users` app below.
+    'dispatch.apps.DispatchConfig',
+
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
     'users',
@@ -161,7 +165,6 @@ INSTALLED_APPS = [
     'navigation',
     'dashboard',
 
-    'dispatch.apps.DispatchConfig',
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
 
