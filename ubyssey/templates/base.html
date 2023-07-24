@@ -30,6 +30,7 @@
   <meta name="theme-color" content="#ffffff">
   <meta property="fb:pages" content="99164676792" />
   <link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css"/>
+  <script src="{% static 'ubyssey/js/ubysseydetector.js' %}" type="text/javascript"></script>
   {% block stylesheet %}{% endblock %}
 
   <script>
@@ -53,6 +54,7 @@
 
 
 <script>
+  console.log("YESSSS");
 if (window.devicePixelRatio && devicePixelRatio >= 2) {
   var testElem = document.createElement('div');
   testElem.style.border = '.5px solid transparent';
@@ -117,6 +119,14 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 <div id="search-form"></div>
 <div id="content-wrapper">
 
+<script>
+  if( window.UbyssyNeedsAds === true ){
+    // adblocker detected, show fallback
+    console.log("YESSSS");
+  }
+  console.log("YESSSS");
+</script>
+
 {% block content %}{% endblock %}
 {% block footer %}{% include 'footer.html' %}{% endblock %}
 </div>
@@ -149,38 +159,10 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 <script src="{% static 'ubyssey/js/timeline.js' %}" type="text/javascript"></script>
 <script src="{% static 'ubyssey/js/episode.js' %}" type="text/javascript"></script>
 
+
 {% block scripts %}{% endblock %}
-<script>var blockAdBlock = false;</script>
-<script src="{% static 'ubyssey/js/blockadblock.js' %}"></script>
-<script>
-  blockAdBlock = new BlockAdBlock({
-  	checkOnLoad: true,
-  	resetOnEnd: true
-  });
 
-  function adBlockNotDetected() {
-    document.getElementById('adblock-splash').style.display = 'none'
-  }
-  function adBlockDetected() {
-    document.getElementById('adblock-splash').style.display = 'inline'
-    var replacements = document.getElementsByClassName('o-replacement')
-    for ( var i = 0; i < replacements.length; i++) {
-      replacements[i].classList.remove("o-hidden")
-    }
-  }
 
-  if (typeof blockAdBlock === 'undefined') {
-  	adBlockDetected();
-  } else {
-  	blockAdBlock.onDetected(adBlockDetected);
-  	blockAdBlock.onNotDetected(adBlockNotDetected);
-  	// and|or
-  	blockAdBlock.on(true, adBlockDetected);
-  	blockAdBlock.on(false, adBlockNotDetected);
-  	// and|or
-  	blockAdBlock.on(true, adBlockDetected).onNotDetected(adBlockNotDetected);
-  }
-</script>
 
 </body>
 </html>

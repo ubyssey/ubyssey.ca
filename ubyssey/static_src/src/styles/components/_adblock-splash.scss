@@ -5,30 +5,62 @@
 
 .adblock-container {
   // Structure
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
+  width: 300px;
+  height: auto;
+  justify-self: center;
   align-items: center;
-  
-  // Extra
-  z-index: 1000000000;
+  border: 1px solid #FFF;
+  background: #FFF;
 }
-.adblock-fullscreen {
-  // Structure
-  position: absolute;
-  height: 100vh;
-  width: 100vw;
-  top: 0;
-  right: 0;
-  
-  // Background
-  background-color: white;
-  
-  // Extra
-  opacity: .5;
-  z-index: 10;
+
+.alert-symbols-buttons {
+  padding: .8em;
+  text-align: center;
+}
+
+.adblock-title {
+  color: #000;
+  font-family: 'playfair-display', 'Georgia', serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+
+  text-align: center;
+}
+
+.adblock-info {
+  width: 258px;
+  color: #000;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+}
+
+.adblock-info-the_ubyssey {
+  color: #0071C9;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.adblock-info-bold {
+  color: #000;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.adblock-info-blue-bold {
+  color: #0071C9;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
 }
 
 .adblock-content {
@@ -37,7 +69,8 @@
   height: auto;
   max-width: 500px;
   padding: 25px;
-  
+  justify-self: center;
+
   // Background
   background-color: $color-ub-blue;
   
@@ -60,18 +93,24 @@
 
 .adblock-button {
   // Structure
-  position: absolute;
-  width: 120px;
-  right: 25px;
-  bottom: 25px;
-  margin-right: 0;
+  position: relative;
+  width: auto;
+  height: 36px;
+  border-radius: 3px;
+  background: #111;
+  justify-content: center;
 
   // Background
-  background-color: white;
   background-image: none;
   
   // Font
-  color: $color-ub-blue;
+  color:  #FFF;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+  text-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   
   // Borders
   border: none;
