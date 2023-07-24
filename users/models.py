@@ -1,4 +1,4 @@
-from django.db.models import CharField, BooleanField
+from django.db.models import EmailField, CharField, BooleanField
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from users.managers import UserManager
@@ -11,7 +11,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     which uses a separate username field.
     """
 
-    email = CharField(max_length=255, unique=True)
+    email = EmailField(max_length=255, unique=True)
     first_name = CharField(max_length=150, blank=True)
     last_name = CharField(max_length=150, blank=True)
 
