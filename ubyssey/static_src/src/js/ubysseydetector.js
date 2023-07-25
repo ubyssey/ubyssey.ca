@@ -1,1 +1,0 @@
-var UbyssyNeedsAds = true;

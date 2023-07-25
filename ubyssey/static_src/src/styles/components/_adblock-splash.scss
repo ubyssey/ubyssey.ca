@@ -1,6 +1,26 @@
-#adblock-splash {
+.inactive {
   // Structure
   display: none;
+  opacity: 0;
+  cursor: auto;
+}
+.active {
+  display: block;
+  opacity: 1;
+  cursor: pointer;
+  position: fixed;
+  z-index: 100000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+.adblock-background {
+  z-index: 9995;
+  opacity: 0.46;
+  background-color: #000;
+  background: #000;
 }
 
 .adblock-container {

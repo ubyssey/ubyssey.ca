@@ -79,6 +79,11 @@ function sassBuildTask() {
       .pipe(dest('../static/ubyssey/css/'));
 }
 
+function adBlockBuildTask() {
+  return src('./src/js/ads.js')
+      .pipe(dest('../static/ubyssey/js/'));
+}
+
 function sassBuildDevTask(){
   return src('./src/styles/**/*.scss')
     .pipe(sourcemaps.init())
@@ -120,11 +125,11 @@ exports.copyVideos = series(cleanVideosTask, copyVideosTask)
 exports.copyFonts = series(cleanFontsTask, copyFontsTask)
 exports.build = series(
   parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask),
-  parallel(webpackBuildTask, sassBuildTask, copyImagesTask, copyVideosTask, copyFontsTask))
+  parallel(webpackBuildTask, sassBuildTask, adBlockBuildTask, copyImagesTask, copyVideosTask, copyFontsTask))
 exports.buildDev = series(
   parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask),
-  parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask))
+  parallel(webpackBuildDevTask, sassBuildDevTask, adBlockBuildTask, copyImagesTask, copyVideosTask, copyFontsTask))
 exports.default = series(
   parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask), 
-  parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask), 
+  parallel(webpackBuildDevTask, sassBuildDevTask, adBlockBuildTask, copyImagesTask, copyVideosTask, copyFontsTask), 
   watchTask)

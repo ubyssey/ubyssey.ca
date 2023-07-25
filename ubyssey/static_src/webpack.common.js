@@ -23,7 +23,6 @@ module.exports = {
     'episode': './src/js/episode.js',
     blockadblock: './src/js/blockadblock.js',
     darkmode: './src/js/darkmode.js',
-    ubysseydetector: './src/js/ubysseydetector.js'
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
