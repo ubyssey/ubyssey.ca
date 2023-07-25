@@ -4,19 +4,16 @@
     
     // Investigate how to implement the dark mode to the system prefers-color-scheme instead of using darkMode variable
     $( document ).ready(function() {
-        storedMode = localStorage.getItem("darkMode");
-        
+        storedMode = getCookie("lightMode");
+
         if (storedMode == null) {
+            var colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
             console.log("Hello ", storedMode);
-            localStorage.setItem("darkMode", window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light');
-            document.cookie = "lightMode=" + window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
-            document.getElementsByTagName('meta')["color-scheme"].content = window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
+
+            document.cookie = "lightMode=" + colorScheme + "; path=/;";
+            document.getElementsByTagName('meta')["color-scheme"].content = colorScheme;
     
         } else {
             document.getElementsByTagName('meta')["color-scheme"].content = storedMode;
@@ -64,8 +61,7 @@ function DarkModeToggle() {
 
             setDarkMode(mode)
 
-            localStorage.setItem("darkMode", mode);
-            document.cookie = "lightMode="+mode;
+            document.cookie = "lightMode="+mode+ "; path=/;";
 
         } else if (mode == "light") {
             document.getElementsByTagName('meta')["color-scheme"].content = "dark";
@@ -74,8 +70,23 @@ function DarkModeToggle() {
             mode = "dark"
 
             setDarkMode(mode)
-            localStorage.setItem("darkMode", mode);
-            document.cookie = "lightMode="+mode;
+            document.cookie = "lightMode="+mode+ "; path=/;";
         }
     });
 }
+
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }

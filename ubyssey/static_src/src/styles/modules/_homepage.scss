@@ -655,7 +655,7 @@ ol.article-list {
     margin-top: -30px;
     filter: drop-shadow(-10px 10px 4px #00000040);
     width: 45%;
-    border: 2px black solid;
+    border: 2px var(--header_color) solid;
   }
 }
 
@@ -698,37 +698,39 @@ ol.article-list {
 
 
 .lightmode {
-  .boxLabel-left {
+  > .boxLabel-left {
     background-color: $color-ubyssey-blue-dark;
     border-color: $color-ubyssey-blue-dark;
+    .boxText-left {
+      color:white;
+    }
   }
-  .boxLabel-right {
+  > .boxLabel-right {
     background-color: $color-ubyssey-blue-light;
     border-color: $color-ubyssey-blue-dark;
-  }
-  .boxText-left {
-    color:white;
-  }
-  .boxText-right {
-    color: $color-ubyssey-blue-dark;
-  }   
+    .boxText-right {
+      color: $color-ubyssey-blue-dark;
+    } 
+  }  
 }
 
 .darkmode {
-  .boxLabel-left {
+  > .boxLabel-left {
     background-color: $color-ubyssey-blue-light;
     border-color: $color-ubyssey-blue-light;
+    
+    .boxText-left {
+      color:$color-ubyssey-blue-dark-2;
+    }
   }
-  .boxLabel-right {
+  > .boxLabel-right {
     background-color: $color-ubyssey-blue-dark;
     border-color: $color-ubyssey-blue-light;
+    
+    .boxText-right {
+      color: $color-ubyssey-blue-light;
+    }
   }
-  .boxText-left {
-    color:$color-ubyssey-blue-dark-2;
-  }
-  .boxText-right {
-    color: $color-ubyssey-blue-light;
-  }  
 }
 
 .linkTitle {
@@ -777,6 +779,10 @@ ol.article-list {
   width: 60%;
   @media($bp-smaller-than-phablet){
     width: 100%;
+  }
+
+  li {
+    color: var(--text_color);
   }
 }
 

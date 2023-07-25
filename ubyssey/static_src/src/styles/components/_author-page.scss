@@ -2,7 +2,7 @@
     position: relative;
     margin: auto;
     margin-bottom: 70px;
-    margin-top: 50px;
+    margin-top: 30px;
     min-height: 400px;
 }
 .author-img {
@@ -17,6 +17,7 @@
         position: static;
     }
     @media($bp-larger-than-phablet) {
+        margin-top: 5%;
         width: 350px;
         height: 350px;
         position: absolute;
@@ -29,7 +30,6 @@
     @media($bp-larger-than-phablet) {
         border-radius: 25px;
         position: relative;
-        transform: translate(0, -10%);
         max-width: fit-content;
         width: 65%;
         box-shadow: #0000003b -25px 25px 2px;

@@ -26,7 +26,9 @@
 }
 
 .c-section__featured__articles {
-  width: 75%;
+  @media($bp-larger-than-phablet) {
+    width: 75%;
+  }
 }
 
 .modal {
@@ -142,6 +144,7 @@
   z-index:10;
   position: relative;
   cursor: pointer;
+  color: var(--header_color);
   &:hover {
     color: $color-accent-blue;
   }

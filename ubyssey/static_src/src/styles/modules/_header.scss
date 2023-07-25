@@ -60,6 +60,7 @@ header.main{
       display: inline-block;
       height: 100%;
       line-height: 50px;
+      color: var(--header_color);
     }
   
     .middle {
@@ -119,7 +120,7 @@ header.main{
     .middle {
       ul {
         gap: 2px;
-        background-color: black;
+        background-color: var(--header_color);
       }
     }
 
@@ -139,7 +140,7 @@ header.main{
           font-family: $font-default;
           font-size: font-size(14);
           font-weight: $font-weight-semi-bold;
-          color: #000000;
+          color: var(--header_color);
           text-transform: uppercase;
           background-color: var(--background);
           padding-left: 10px;
@@ -167,7 +168,7 @@ header.main{
         li {
           font-family: $font-default;
           font-size: font-size(10);
-          color: #33331E;
+          color: var(--text_color);
           margin: 0 6px;
           line-height: 3.5em;
           font-weight: 600;
