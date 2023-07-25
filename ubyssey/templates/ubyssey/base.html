@@ -189,32 +189,35 @@
 		</div>
 	</div>
 
-
 	<script src="{% static 'ubyssey/js/ads.js' %}" type="text/javascript" ></script>
+	
 	<script type="text/javascript">
 		(function () {
+			function adBlockDetected(pageWrapper) {
+				pageWrapper.classList.add("adblock-background");
+				adBlock.classList.remove("inactive"); 
+				adBlock.classList.add("active");
+			}
+
 			var adBlock = document.querySelectorAll(".adblock-splash")[0];
 			var pageWrapper = document.querySelectorAll("#content-wrapper")[0];
 
-			if(window.adsAreWithUs === undefined ){
-			  // adblocker detected, show fallback
-			  pageWrapper.classList.add("adblock-background");
-			  adBlock.classList.remove("inactive"); 
-			  adBlock.classList.add("active");
+			if(window.adsAreWithUs === undefined){
+				// adblocker detected, show fallback
+				adBlockDetected(pageWrapper);
 			}
-		  
+			
 			var closeAdBlock = document.querySelectorAll(".adblock-button")[0];
 			closeAdBlock.addEventListener("click", function () {
 				if (document.querySelector(".active") != undefined) {
 					adBlock.classList.remove("active");
 				}
-				
+
 				pageWrapper.classList.remove("adblock-background");
 				adBlock.classList.add("inactive");
 				
-			}
-			);
-		  })(document, 'script', 'adBlockerDetector');
+			});
+			})(document, 'script', 'adBlockerDetector');
 	</script>
 	{% comment %}
 	Warning: The below script is undocumented, but errors are thrown when using a Full-Width style article if it is
