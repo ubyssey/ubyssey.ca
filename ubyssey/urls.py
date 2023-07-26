@@ -58,7 +58,7 @@ urlpatterns += [
     # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
 
     re_path(r'^djadmin/', admin.site.urls),
-
+    path('silk/', include('silk.urls', namespace='silk')),
     # re_path(r'^admin', include(admin_urls)),
     # re_path(r'^api/', include(api_urls)),
     # re_path(r'^podcasts/', include(podcasts_urls)),

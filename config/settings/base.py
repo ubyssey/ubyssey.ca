@@ -190,6 +190,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django_extensions',
     
+    'silk',
+    
     'django.contrib.sites',
     'dbtemplates',
     'wagtailmodelchooser',
@@ -277,6 +279,7 @@ MIDDLEWARE = [
     'wagtailcache.cache.UpdateCacheMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.gzip.GZipMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 if DEBUG:
