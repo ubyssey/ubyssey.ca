@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './modules/Youtube'
 import { ArticlesSuggested } from './components/Article'
 import { Poll } from './components/Poll'
 import Search from './components/Search.jsx';
@@ -38,7 +37,7 @@ $(function () {
             $(this).get(0)
         )
     })
-
+    console.log("Article")
     $('.c-podcast-episode').each(function () {
         ReactDOM.render(
             <Episode author={$(this).data('author')}
