@@ -176,6 +176,14 @@ $search-bar-height: 46px;
 	}
 }
 
+.hide_filter {
+	.o-archive__sidebar__filter {
+		display: none;
+	}
+	.o-archive__sidebar__filter--is-active {
+		display: block;
+	}
+}
 
 .o-archive__maina__filters {
 	// Structure

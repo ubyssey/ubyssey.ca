@@ -11,17 +11,27 @@
 <div class="o-archive__sidebar show-desktop">
     
     <div class="o-archive__sidebar__filters">
-        <h2>Year</h2>
-        <ul>
+        <h2>Year <a href="#" class="filterDropdown"><i class="fa-solid fa-caret-down"></i></a></h2>
+        <ul class="hide_filter">
+            {% for y in years %}
+                {% if y == year %}
+                <li
+                    class="o-archive__sidebar__filter o-archive__sidebar__filter--is-active">
+                    <a href="?{% modify_query_string 'year' y %}">{{ y }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}            
             <li
                 class="o-archive__sidebar__filter{% if not year %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="?{% remove_field_from_query_string 'year' %}">All years</a>
             </li>
             {% for y in years %}
-            <li
-                class="o-archive__sidebar__filter{% if y == year %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="?{% modify_query_string 'year' y %}">{{ y }}</a>
-            </li>
+                {% if y != year %}
+                <li
+                    class="o-archive__sidebar__filter">
+                    <a href="?{% modify_query_string 'year' y %}">{{ y }}</a>
+                </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>
@@ -46,31 +56,51 @@
         
         </ul>
 
-        <h2>Magazines</h2>
-        <ul>
+        <h2>Magazines <a href="#" class="filterDropdown"><i class="fa-solid fa-caret-down"></i></a></h2>
+        <ul class="hide_filter">
+            {% for iter in self.magazines_filters.all %}
+                {% if iter.magazine_filter.slug == magazine_slug %}
+                <li
+                    class="o-archive__sidebar__filter o-archive__sidebar__filter--is-active">
+                    <a href="{% pageurl self %}magazines/{{ iter.magazine_filter.slug }}/{{ request|query_string }}">{{ iter.magazine_filter.title }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
             <li
                 class="o-archive__sidebar__filter{% if section_slug == "magazine" %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}magazines/{{ request|query_string }}">All magazines</a>
             </li>
             {% for iter in self.magazines_filters.all %}
+                {% if iter.magazine_filter.slug != magazine_slug %}
                 <li
-                    class="o-archive__sidebar__filter{% if iter.magazine_filter.slug == magazine_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                    class="o-archive__sidebar__filter">
                     <a href="{% pageurl self %}magazines/{{ iter.magazine_filter.slug }}/{{ request|query_string }}">{{ iter.magazine_filter.title }}</a>
                 </li>
+                {% endif %}
             {% endfor %}
         </ul>
 
-        <h2>Spoofs</h2>
-        <ul>
-            <li
-                class="o-archive__sidebar__filter{% if spoof_slug == "All Spoofs" %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="{% pageurl self %}spoofs/{{ request|query_string }}">All Spoofs</a>
-            </li>
+        <h2>Spoofs <a href="#" class="filterDropdown"><i class="fa-solid fa-caret-down"></i></a></h2>
+        <ul class="hide_filter">
             {% for iter in self.spoofs_filters.all %}
+                {% if iter.spoof_filter.slug == spoof_slug %}
                 <li
-                    class="o-archive__sidebar__filter{% if iter.spoof_filter.slug == spoof_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                    class="o-archive__sidebar__filter o-archive__sidebar__filter--is-active">
                     <a href="{% pageurl self %}spoofs/{{ iter.spoof_filter.slug }}/{{ request|query_string }}">{{ iter.spoof_filter.title }}</a>
                 </li>
+                {% endif %}
+            {% endfor %}
+            <li
+                class="o-archive__sidebar__filter{% if spoof_slug == "All Spoofs" %} o-archive__sidebar__filter--is-active{% endif %}">
+                <span><a href="{% pageurl self %}spoofs/{{ request|query_string }}">All Spoofs</a></span>
+            </li>
+            {% for iter in self.spoofs_filters.all %}
+                {% if iter.spoof_filter.slug != spoof_slug %}
+                <li
+                    class="o-archive__sidebar__filter">
+                    <a href="{% pageurl self %}spoofs/{{ iter.spoof_filter.slug }}/{{ request|query_string }}">{{ iter.spoof_filter.title }}</a>
+                </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>
@@ -82,35 +112,34 @@
     <div class="o-archive__dropdown-filters">
 
         {% if years %}
-        <div class="o-mobile-dropdown js-dropdown">
+        <div class="o-mobile-dropdown open-modal">
 
-            <a class="o-mobile-dropdown__button js-disable-scroll" href="#">
+            <a class="o-mobile-dropdown__button" href="#">
                 <span>{% if year %}{{ year }}{% else %}All years{% endif %}</span>
                 <i class="fa fa-sort-desc"></i>
             </a>
 
-            <div class="o-mobile-dropdown__list js-dropdown-list">
-                <div class="o-mobile-dropdown__list__container js-dropdown-container">
-                    <div>
-                        <div class="o-mobile-dropdown__header">
-                            <h2 class="o-mobile-dropdown__title">Filter by year:</h3>
-                                <div class="o-mobile-dropdown__close">
-                                    <i class="fa fa-close"></i>
-                                </div>
-                        </div>
-                        <ul>
-                            <li
-                                class="o-mobile-dropdown__item {% if not year %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="?{% remove_field_from_query_string 'year' %}">All</a>
-                            </li>
-                            {% for y in years %}
-                            <li
-                                class="o-mobile-dropdown__item {% if year == y %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="?{% modify_query_string 'year' y %}">{{ y }}</a>
-                            </li>
-                            {% endfor %}
-                        </ul>
+            <div class="add-to-modal o-mobile-dropdown__list">
+                <div class="js-dropdown-container"></div>
+                <div class="o-mobile-dropdown__list__container">
+                    <div class="o-mobile-dropdown__header">
+                        <h2 class="o-mobile-dropdown__title">Filter by year:</h3>
+                            <a class="close-modal o-mobile-dropdown__close" href="#">
+                                <i class="fa fa-close"></i>
+                            </a>
                     </div>
+                    <ul>
+                        <li
+                            class="o-mobile-dropdown__item {% if not year %} o-mobile-dropdown__item--is-active{% endif %}">
+                            <a href="?{% remove_field_from_query_string 'year' %}">All</a>
+                        </li>
+                        {% for y in years %}
+                        <li
+                            class="o-mobile-dropdown__item {% if year == y %} o-mobile-dropdown__item--is-active{% endif %}">
+                            <a href="?{% modify_query_string 'year' y %}">{{ y }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
 
@@ -118,94 +147,60 @@
         {% endif %}
 
         {% if sections %}
-        <div class="o-mobile-dropdown js-dropdown">
+        <div class="o-mobile-dropdown open-modal">
 
-            <a class="o-mobile-dropdown__button js-disable-scroll" href="#">
-                {% comment %} NTS ugly placeholder {% endcomment %}
-                <span>{% if section_slug %}{{ section_slug|replace|capfirst }}{% elif video_section %}Videos{% elif magazine_slug %}{{magazine_slug|replace|capfirst}}{% elif spoof_slug %}{{spoof_slug|replace|capfirst}}{% else %}All sections{% endif %}</span>
+            <a class="o-mobile-dropdown__button" href="#">
+                <span>{% if section_slug %}{{ section_slug }}{% else %}All sections{% endif %}</span>
                 <i class="fa fa-sort-desc"></i>
             </a>
 
-            <div class="o-mobile-dropdown__list js-dropdown-list">
-                <div class="o-mobile-dropdown__list__container js-dropdown-container">
-                    <div>
-                        <div class="o-mobile-dropdown__header">
-                            <h2 class="o-mobile-dropdown__title">Filter by Section, Magazine and Spoof:</h3>
-                                <div class="o-mobile-dropdown__close">
-                                    <i class="fa fa-close"></i>
-                                </div>
-                        </div>
-                        <ul>
-                            <li
-                                class="o-mobile-dropdown__item {% if section_slug == "All" %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="{% pageurl self %}{{ request|query_string }}">All</a>
-                            </li>
-                            {% for iter in self.sections_filters.all %}
-                                    <li
-                                        class="o-mobile-dropdown__item {% if iter.section_filter.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
-                                        <a href="{% pageurl self %}section/{{ iter.section_filter.slug }}/{{ request|query_string }}">{{ iter.section_filter.title }}</a>
-                                    </li>
-                            {% endfor %}
-                            <li
-                                class="o-mobile-dropdown__item {% if video_section == True %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
-                            </li>
-                            <li
-                                class="o-mobile-dropdown__item {% if section_slug == "magazine" %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="{% pageurl self %}magazines/{{ request|query_string }}">All magazines</a>
-                            </li>
-                            {% for iter in self.magazines_filters.all %}
-                                    <li
-                                        class="o-mobile-dropdown__item {% if iter.magazine_filter.slug == magazine_slug %} o-mobile-dropdown__item--is-active {% endif %}">
-                                        <a href="{% pageurl self %}magazines/{{ iter.magazine_filter.slug }}/{{ request|query_string }}">Magazine: {{ iter.magazine_filter.title }}</a>
-                                    </li>
-                            {% endfor %}
-                            <li
-                                class="o-mobile-dropdown__item {% if spoof_slug == "All Spoofs" %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="{% pageurl self %}spoofs/{{ request|query_string }}">All Spoofs</a>
-                            </li>  
-                            {% for iter in self.spoofs_filters.all %}
+            <div class="add-to-modal o-mobile-dropdown__list">
+                <div class="js-dropdown-container"></div>
+                <div class="o-mobile-dropdown__list__container">
+                    <div class="o-mobile-dropdown__header">
+                        <h2 class="o-mobile-dropdown__title">Filter by section:</h3>
+                        <a class="close-modal o-mobile-dropdown__close" href="#">
+                            <i class="fa fa-close"></i>
+                        </a>
+                    </div>
+                    <ul>
+                        <li
+                            class="o-mobile-dropdown__item {% if section_slug == "All" %} o-mobile-dropdown__item--is-active{% endif %}">
+                            <a href="{% pageurl self %}{{ request|query_string }}">All</a>
+                        </li>
+                        {% for iter in self.sections_filters.all %}
                                 <li
-                                    class="o-mobile-dropdown__item {% if iter.spoof_filter.slug == spoof_slug %} o-mobile-dropdown__item--is-active {% endif %}">
-                                    <a href="{% pageurl self %}spoofs/{{ iter.spoof_filter.slug }}/{{ request|query_string }}">Spoof: {{ iter.spoof_filter.title }}</a>
+                                    class="o-mobile-dropdown__item {% if iter.section_filter.slug == section_slug %} o-mobile-dropdown__item--is-active{% endif %}">
+                                    <a href="{% pageurl self %}section/{{ iter.section_filter.slug }}/{{ request|query_string }}">{{ iter.section_filter.title }}</a>
                                 </li>
                         {% endfor %}
-                        </ul>
-                    </div>
+                        <li
+                            class="o-mobile-dropdown__item {% if video_section == True %} o-mobile-dropdown__item--is-active{% endif %}">
+                            <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
+                        </li>
+                        <li
+                            class="o-mobile-dropdown__item {% if section_slug == "magazine" %} o-mobile-dropdown__item--is-active{% endif %}">
+                            <a href="{% pageurl self %}magazines/{{ request|query_string }}">All magazines</a>
+                        </li>
+                        {% for iter in self.magazines_filters.all %}
+                                <li
+                                    class="o-mobile-dropdown__item {% if iter.magazine_filter.slug == magazine_slug %} o-mobile-dropdown__item--is-active {% endif %}">
+                                    <a href="{% pageurl self %}magazines/{{ iter.magazine_filter.slug }}/{{ request|query_string }}">Magazine: {{ iter.magazine_filter.title }}</a>
+                                </li>
+                        {% endfor %}
+                        <li
+                            class="o-mobile-dropdown__item {% if spoof_slug == "All Spoofs" %} o-mobile-dropdown__item--is-active{% endif %}">
+                            <a href="{% pageurl self %}spoofs/{{ request|query_string }}">All Spoofs</a>
+                        </li>  
+                        {% for iter in self.spoofs_filters.all %}
+                            <li
+                                class="o-mobile-dropdown__item {% if iter.spoof_filter.slug == spoof_slug %} o-mobile-dropdown__item--is-active {% endif %}">
+                                <a href="{% pageurl self %}spoofs/{{ iter.spoof_filter.slug }}/{{ request|query_string }}">Spoof: {{ iter.spoof_filter.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
         {% endif %}
-
-        <div class="o-mobile-dropdown js-dropdown">
-
-            <a class="o-mobile-dropdown__button js-disable-scroll" href="#">
-                <span>{{ order|title }}</span>
-                <i class="fa fa-sort-desc"></i>
-            </a>
-
-            <div class="o-mobile-dropdown__list js-dropdown-list">
-                <div class="o-mobile-dropdown__list__container js-dropdown-container">
-                    <div>
-                        <div class="o-mobile-dropdown__header">
-                            <h2 class="o-mobile-dropdown__title">Order by:</h3>
-                                <div class="o-mobile-dropdown__close">
-                                    <i class="fa fa-close"></i>
-                                </div>
-                        </div>
-                        <ul>
-                            <li
-                                class="o-mobile-dropdown__item{% if order == 'newest' %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="?{% modify_query_string 'order' 'newest' %}">Newest</a>
-                            </li>
-                            <li
-                                class="o-mobile-dropdown__item{% if order == 'oldest' %} o-mobile-dropdown__item--is-active{% endif %}">
-                                <a href="?{% modify_query_string 'order' 'oldest' %}">Oldest</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-        </div>
     </div>

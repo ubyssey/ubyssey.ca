@@ -13,6 +13,8 @@ import upcomingEvents from './widgets/upcoming-events';
 
   initializeAudioQuote()
 
+  initializeFilterDropdown();
+
   ubysseyHeaderMobilePopUp();
   ubysseyHeaderMagazineDropDown();
   ubysseyHeaderCultureDropDown();
@@ -386,4 +388,13 @@ function moveModals() {
     modalBlocks[i].insertAdjacentElement("beforebegin", div);
     modal.appendChild(modalBlocks[i]);
   } 
+}
+
+function initializeFilterDropdown() {
+  $(document).on('click', 'a.filterDropdown', function (e) {
+    e.preventDefault();
+    this.parentElement.nextElementSibling.classList.toggle('hide_filter');
+    this.children[0].classList.toggle("fa-caret-down");
+    this.children[0].classList.toggle("fa-caret-up");
+  });
 }
