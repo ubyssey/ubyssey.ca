@@ -3,6 +3,6 @@ import requests
 def get_light_mode(request):
     mode = request.COOKIES.get('lightMode')
     if mode == "dark":
-        return {"mode": "darkmode"}
+        return {"mode": "dark"}
     else: 
-        return {"mode": "lightmode"}
+        return {"mode": "light"}

@@ -51,7 +51,7 @@
                         <div class="c-article__byline c-banner_share_dark_buttons c-article__byline-center">
                             {% include 'article/objects/share_bar.html' %}
                             <span class="c-article_dark_mode">
-                                {% include 'article/objects/darkmode_button.html'%}
+                                {% include 'article/objects/darkmode_button.html' with id="fw"%}
                             </span>
                         </div>
                         {% if featured_image_object.caption or featured_image_object.credit %}
