@@ -149,6 +149,7 @@ class ArticleSeriesSnippet(ClusterableModel):
          verbose_name = "Series of Articles"
          verbose_name_plural = "Series of Articles"
 
+
 #-----Orderable models-----
 class ArticleAuthorsOrderable(Orderable):
     """
@@ -235,6 +236,7 @@ class ConnectedArticleOrderable(Orderable):
         ),
         FieldPanel('article_description')
     ]
+
 
 class SeriesOrderable(Orderable):
     """
@@ -435,7 +437,20 @@ class ArticlePageManager(PageManager):
                 section_root = new_section_root
             
         return self.live().public().descendant_of(section_root).exact_type(ArticlePage) #.order_by('-last_modified_at')
-
+    
+    def from_magazine_special_section(self, section_slug='', section_root=None) -> QuerySet:
+        from .models import ArticlePage
+        from specialfeaturelanding.models import SpecialLandingPage
+        if section_slug:
+            try:
+                new_section_root = SpecialLandingPage.objects.get(slug=section_slug)
+            except Page.DoesNotExist:
+                new_section_root = None
+            if new_section_root:
+                section_root = new_section_root
+            
+        return self.live().public().descendant_of(section_root).exact_type(ArticlePage) #.order_by('-last_modified_at')
+  
 #-----Page models-----
 
 class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
@@ -567,6 +582,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         blank=True,
         on_delete=models.SET_NULL,
     )
+
 
     #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
 
@@ -850,7 +866,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ],
             heading="Connected or Related Article Links (Non-Series)",
             classname="collapsible collapsed",
-        ), # Connected or Related Article Links (Non-Series)
+        ), # Connected or Related Article Links (Non-Series) 
     ] # fw_article_panels
     customization_panels = [
         HelpPanel(
