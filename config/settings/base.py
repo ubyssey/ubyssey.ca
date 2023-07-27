@@ -320,6 +320,13 @@ WAGTAIL_USER_CUSTOM_FIELDS = ['person', 'is_active']
 
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
 
+WAGTAILIMAGES_FORMAT_CONVERSIONS = {
+    'png': 'webp',
+    'jpeg': 'webp',
+    'bmp': 'webp',
+    'webp': 'webp',
+}
+
 # wagtailmenus settings
 WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html
 WAGTAILMENUS_ACTIVE_ANCESTOR_CLASS = 'current'

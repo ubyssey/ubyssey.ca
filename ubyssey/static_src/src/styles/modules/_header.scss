@@ -147,6 +147,7 @@ header.main{
           padding-right: 10px;
           line-height: 2em;
           margin: 0;
+          transition: background 0.5s ease, color 0.5s ease;
           
           &.elections a {
             color: $color-red;
