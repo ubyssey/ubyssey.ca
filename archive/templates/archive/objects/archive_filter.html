@@ -68,7 +68,7 @@
             </li>
             {% for iter in self.spoofs_filters.all %}
                 <li
-                    class="o-archive__sidebar__filter{% if category.slug == spoof_slug %} o-archive__sidebar__filter--is-active{% endif %}">
+                    class="o-archive__sidebar__filter{% if iter.spoof_filter.slug == spoof_slug %} o-archive__sidebar__filter--is-active{% endif %}">
                     <a href="{% pageurl self %}spoofs/{{ iter.spoof_filter.slug }}/{{ request|query_string }}">{{ iter.spoof_filter.title }}</a>
                 </li>
             {% endfor %}
