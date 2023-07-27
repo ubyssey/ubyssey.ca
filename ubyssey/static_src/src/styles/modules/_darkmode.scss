@@ -12,7 +12,7 @@
 }
 
 .sun-and-moon > :is(.moon, .sun) {
-    //fill: $DM-SH-button;
+    // fill: $DM-SH-button;
 }
 
 .theme-toggle:is(:hover, :focus-visible) > .sun-and-moon > :is(.moon, .sun) {
@@ -100,6 +100,22 @@
     color: var(--header_color);
   }
 }
+
+.mobile {
+  .modal-block {
+    padding: 1em 1em 1em 1em;
+    justify-content: center;
+    display: inline-block;
+    width: 100%;
+    .dark-mode-switcher{
+      float: left;
+      display: block;
+      margin-left: 1em;
+      color: var(--header_color);
+    }
+  }
+}
+
 
 .c-article_dark_mode {
   @media($bp-larger-than-phablet) {

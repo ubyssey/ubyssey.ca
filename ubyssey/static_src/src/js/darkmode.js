@@ -10,7 +10,6 @@
             var colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches
             ? 'dark'
             : 'light';
-            console.log("Hello ", storedMode);
 
             document.cookie = "lightMode=" + colorScheme + "; path=/;";
             document.getElementsByTagName('meta')["color-scheme"].content = colorScheme;
