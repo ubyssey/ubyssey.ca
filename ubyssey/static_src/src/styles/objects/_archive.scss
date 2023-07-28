@@ -1,57 +1,66 @@
 $search-bar-height: 46px;
 
 .o-archive__search {
-  // Structure
-  position: relative;
-  margin-bottom: 1rem;
+	// Structure
+	position: relative;
+	margin-bottom: 1rem;
+	width:fit-content;
 }
 
 .o-archive__search__label {
-  // Structure
-  position: absolute;
-  width: $search-bar-height;
+	// Structure
+	position: absolute;
+	width: $search-bar-height;
 
-  // Text
-  font-size: font-size(20);
-  color: #807E7E;
-  text-align: center;
-  line-height: $search-bar-height;
+	// Text
+	font-size: font-size(20);
+	text-align: center;
+	line-height: $search-bar-height;
 }
 
 .o-archive__search__input {
-  // Structure
-  width: 100%;
-  padding-left: $search-bar-height;
-  padding-right: 1rem;
-  box-sizing: border-box;
+	// Structure
+	width: 115px;
+	padding-left: $search-bar-height;
+	padding-right: 1rem;
+	box-sizing: border-box;
 
-  // Border
-  border-radius: 4px;
-  border: thin solid #DADADA;
+	// Border
+	border: none;
+	border-bottom: 1px solid;
+	border-color: #ffffff00;
 
-  // Background
-  background: #fff;
+	// Background
+	background: none;
 
-  // Text
-  line-height: $search-bar-height;
-  font-size: font-size(16);
+	// Text
+	line-height: $search-bar-height;
+	font-size: font-size(16);
+	color: var(--header_color);
 
-  &:focus {
-    border-color: #66afe9;
-    outline: 0;
-  }
+	// Transition
+	transition-duration: 0.2s;
 
-  @media($bp-larger-than-mobile) {
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
-    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	&:focus {
+		border-color: var(--header_color);
+		outline: 0;
+		width:100%;
+		opacity: 1;
+		color: $color-accent-blue;
+	}
 
-    &:focus {
-      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
-      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
-    }
-  }
+	&::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+		color: $text-color;
+		opacity: 1; /* Firefox */
+	}
+
+	&:-ms-input-placeholder { /* Internet Explorer 10-11 */
+		color: $text-color;
+	}
+
+	&::-ms-input-placeholder { /* Microsoft Edge */
+		color: $text-color;
+	}
 }
 
 .o-archive__container {
@@ -142,7 +151,7 @@ $search-bar-height: 46px;
 	}
 }
 
-.o-archive__maina__filters {
+.o-archive__main__filters {
 	// Structure
 	padding: 0;
 	margin-top: 0;
