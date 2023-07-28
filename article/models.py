@@ -982,8 +982,8 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
     def get_authors_in_order(self):
         AUTHOR_TYPES = ["org_role", "author", "photographer", "illustrator", "videographer"]
-        authors = self.article_authors.all()
-
+        authors = self.article_authors.select_related('author').all()
+        
         authors_list = []
 
         for author_type in AUTHOR_TYPES:
@@ -1054,10 +1054,11 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         # Author then article
         verbose_name = "Article"
         verbose_name_plural = "Articles"
+        
         indexes = [
             models.Index(fields=['current_section','last_modified_at']),
             models.Index(fields=['last_modified_at']),
-            models.Index(fields=['category',]),
+            models.Index(fields=['category']),
         ]
 
 class SpecialArticleLikePage(ArticlePage):

@@ -185,3 +185,8 @@ class AuthorPage(Page):
     class Meta:
         verbose_name = "Author"
         verbose_name_plural = "Authors"
+
+        indexes = [
+            models.Index(fields=['full_name', 'short_bio_description', 'image']),
+            models.Index(fields=['full_name'], name='full_name_idx'),
+        ]
