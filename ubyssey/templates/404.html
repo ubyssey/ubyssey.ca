@@ -33,12 +33,14 @@
             //Was this was what was referred to in the search functionality 
             //what needs to be changed
             //start {% endcomment %}
-            <div class="article-search">
-                <form method="get" action="{% url 'search' %}">
-                <label for="author-search"><i class="fa fa-search"></i></label>
-                <input name="q" type="text" {% if q %}value="{{ q }}"{% endif %} placeholder="Search ubyssey.ca" />
+            <div class="o-archive__search">
+                <form method="get" action="http://{{ request.get_host }}/archive/{% if q %}{{ q }}{% endif %}">
+                    <label class="o-archive__search__label" for="c-articles-list__searchbar"><i
+                            class="fa fa-search"></i></label>
+                    <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" placeholder="Search" />
                 </form>
             </div>
+
             {% comment %} //end
 
             //Should this block of code be instead {% endcomment %}
