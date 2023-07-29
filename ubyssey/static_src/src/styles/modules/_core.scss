@@ -58,6 +58,10 @@ body {
   padding-right: 25px;
 }
 
+.u-container-max {
+  max-width: none;
+}
+
 
 @media($bp-larger-than-phablet){
   div.table-row {

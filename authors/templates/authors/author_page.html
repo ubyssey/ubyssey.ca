@@ -32,7 +32,7 @@
 		</div>
 
 		{% if self.pinned_articles.count > 0 and current_page == 1 %}
-			<h2 class="author-heading">Pinned by {{self.title}}</h2>
+			<h2 class="author-heading">Pinned</h2>
 			<div class="author-pinned_list">
 				{% for article in self.pinned_articles.all %}
 					<div class="author-pinned_article">	
@@ -43,8 +43,8 @@
 		{% endif %}
 		
 		<div class="options">
-			{% if "stories" in media_types %}
-				<h2 class="author-heading {% if media_type == "stories" %}selected{% endif %}"><a href="/authors/{{self.slug}}/stories">Stories</a></h2>
+			{% if "articles" in media_types %}
+				<h2 class="author-heading {% if media_type == "stories" %}selected{% endif %}"><a href="/authors/{{self.slug}}/articles">Articles</a></h2>
 			{% endif %}
 			{% if "photos" in media_types %}
 				<h2 class="author-heading {% if media_type == "photos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/photos">Photos</a></h2>
@@ -56,7 +56,7 @@
 
 		<h2 class="author-heading">Latest {{media_type}} from {{self.title}}</h2>
 		
-		{% if media_type == "stories" %}
+		{% if media_type == "articles" %}
 			{% include 'archive/objects/archive.html' with page_obj=paginated_articles %}
 		{% elif media_type == "photos" %}
 			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}

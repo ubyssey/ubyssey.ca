@@ -6,7 +6,7 @@
     $( document ).ready(function() {
         storedMode = getCookie("lightMode");
 
-        if (storedMode == null) {
+        if (storedMode == "") {
             var colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches
             ? 'dark'
             : 'light';
@@ -28,7 +28,7 @@
 
 function getDarkMode() {
 
-    return   document.getElementsByTagName('meta')["color-scheme"].content
+    return getCookie("lightMode");
    
 
 }
@@ -45,6 +45,7 @@ function setDarkMode(mode) {
         document.firstElementChild.setAttribute("color-css-theme", "dark");
         r.classList.replace('lightmode', 'darkmode');
     }
+    document.cookie = "lightMode="+mode+ "; path=/;";
 }
   
 function DarkModeToggle() {
@@ -60,8 +61,6 @@ function DarkModeToggle() {
 
             setDarkMode(mode)
 
-            document.cookie = "lightMode="+mode+ "; path=/;";
-
         } else if (mode == "light") {
             document.getElementsByTagName('meta')["color-scheme"].content = "dark";
             
@@ -69,7 +68,6 @@ function DarkModeToggle() {
             mode = "dark"
 
             setDarkMode(mode)
-            document.cookie = "lightMode="+mode+ "; path=/;";
         }
     });
 }

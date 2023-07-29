@@ -128,7 +128,7 @@ class AuthorPage(RoutablePageMixin, Page):
 
    
 
-    CHOICES = [("stories", "Stories"), ("photos", "Photos"), ("videos", "Videos")]
+    CHOICES = [("articles", "Articles"), ("photos", "Photos"), ("videos", "Videos")]
     main_media_type = models.CharField(
         choices=CHOICES,
         default='stories',
@@ -174,7 +174,7 @@ class AuthorPage(RoutablePageMixin, Page):
         page = request.GET.get("page")
         order = request.GET.get("order")
 
-        if media_type == "stories":
+        if media_type == "articles":
             if order == 'oldest':
                 article_order = "explicit_published_at"
             else:            
@@ -231,7 +231,7 @@ class AuthorPage(RoutablePageMixin, Page):
         if UbysseyImage.objects.all().count() > 0:
             media_types.append("photos")
         if ArticlePage.objects.live().public().all().count() > 0:
-            media_types.append("stories")
+            media_types.append("articles")
 
         context["media_types"] = media_types
         context["media_type"] = self.main_media_type
@@ -305,7 +305,7 @@ class AuthorPage(RoutablePageMixin, Page):
         verbose_name = "Author"
         verbose_name_plural = "Authors"
 
-    @route(r'^stories/$')
+    @route(r'^articles/$')
     def stories_page(self, request, *args, **kwargs):
         """
         View function for author's stories
@@ -313,9 +313,9 @@ class AuthorPage(RoutablePageMixin, Page):
 
         context = self.get_context(request, *args, **kwargs)
 
-        context["media_type"] = "stories"
+        context["media_type"] = "articles"
 
-        context = self.organize_media("stories", request, context)
+        context = self.organize_media("articles", request, context)
 
         return render(request, self.template, context)
     
