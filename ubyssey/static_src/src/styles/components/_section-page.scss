@@ -206,7 +206,8 @@
           padding-right: 20px;
       }
       .article--infinitefeed {
-          border-color: #646464 !important;
+          //border-color: #646464 !important;
+          border: none;
           .o-article__image {
               border-color: #646464 !important;
           }

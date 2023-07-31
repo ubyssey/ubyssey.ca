@@ -55,8 +55,8 @@
 	</div>
 
 	<div class="home_links">
+	{% if self.links %}
 		<div class="home_link_content">
-			<h2>Click!!!</h2>
 			<ul>
 			{%for link in self.links%}
 				{% include_block link%}
@@ -66,14 +66,17 @@
 		<div class="home_link_ad">
 			<div class="sidebar-block sidebar-block--advertisement"></div>
 		</div>
+	{% else %}
+		<div class="sidebar-block sidebar-block--advertisement o-advertisement--leaderboard"></div>
+	{% endif %}
 	</div>
 
 </main>
 
-<div id="feed-section" class="home_infinitefeed">
-	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
+<div id="feed-section" class="home_infinitefeed darkmode">
+	<div class="u-container u-container--large c-infinitefeed__feed">
 		<div class="c-home-infinitefeed">
-			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode c-home-bannerbox sticky' title='Sections' text='Most Recent' textId='timeBox' %}
+			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox sticky' title='Sections' text='Most Recent' textId='timeBox' %}
 			
 			<div class="c-homepage__sections">
 			{% for block in self.sections_stream %}
