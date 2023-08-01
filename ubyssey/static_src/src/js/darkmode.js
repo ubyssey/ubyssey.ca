@@ -5,18 +5,14 @@
     // Investigate how to implement the dark mode to the system prefers-color-scheme instead of using darkMode variable
     $( document ).ready(function() {
         storedMode = getCookie("lightMode");
-
         if (storedMode == "") {
             var colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches
             ? 'dark'
             : 'light';
 
-            document.cookie = "lightMode=" + colorScheme + "; path=/;";
-            document.getElementsByTagName('meta')["color-scheme"].content = colorScheme;
-    
-        } else {
-            document.getElementsByTagName('meta')["color-scheme"].content = storedMode;
+            setDarkMode(colorScheme);
 
+        } else {
             setDarkMode(storedMode);
   
         }
@@ -34,6 +30,7 @@ function getDarkMode() {
 }
 
 function setDarkMode(mode) {
+    document.getElementsByTagName('meta')["color-scheme"].content = mode;
     if (mode == "light") {
         // nav bar
         var r = document.querySelector(':root');
