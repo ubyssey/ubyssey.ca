@@ -496,14 +496,15 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         blank=True,
         verbose_name="Publication Date/Time",
         help_text = "Techically optional (computer will fill it in for you if you do not). Publication date which is explicitly shown to the reader. Articles are seperately date/timestamped for database use; if this field is left blank, it will by default be set to the \"first published date\" on publication.",
+        db_index=True,
     )
     last_modified_at = models.DateTimeField(
         # updates to current date/time every time the model's .save() method is hit
         auto_now=True,
     )
     show_last_modified = models.BooleanField(
-        default = False,
-        help_text = "Check this to alert readers the article has been revised since its publication.",
+    default = False,
+    help_text = "Check this to alert readers the article has been revised since its publication.",
     )
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
@@ -982,7 +983,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
 
     def get_authors_in_order(self):
         AUTHOR_TYPES = ["org_role", "author", "photographer", "illustrator", "videographer"]
-        authors = self.article_authors.select_related('author').all()
+        authors = self.article_authors.select_related('author').all().iterator()
         
         authors_list = []
 
@@ -1006,7 +1007,7 @@ class ArticlePage(SectionablePage, UbysseyMenuMixin):
         string_author = ''
         string_videos = ''
 
-        authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
+        authors = dict((k, list(v)) for k, v in groupby(self.article_authors.select_related('author').all(), lambda a: a.author_role))
         for author in authors:
             if author == 'author':
                 authors_with_roles += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])

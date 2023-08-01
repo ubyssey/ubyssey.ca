@@ -105,7 +105,7 @@ environ.Env.read_env(env_file)
 
 # Set Django's configs to the values taken from the .env file (or else to their defaults listed above)
 ORGANIZATION_NAME = env('ORGANIZATION_NAME') # Used for registration/invitation
-DEBUG = env('DEBUG')
+DEBUG = False
 
 SPECIAL_MESSAGE_AVAILABLE = env('SPECIAL_MESSAGE_AVAILABLE')
 
@@ -200,10 +200,13 @@ INSTALLED_APPS = [
     'wagtail_color_panel',
 ]
 
+SILKY_PYTHON_PROFILER = True
+
 if DEBUG:
 	INSTALLED_APPS += [
 		'debug_toolbar'
 	]
+
 
 # Replace default user model
 AUTH_USER_MODEL = 'dispatch.User'
