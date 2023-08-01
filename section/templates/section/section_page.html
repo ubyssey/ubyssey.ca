@@ -24,7 +24,6 @@
 {% endblock %}
 
 {% block content %}
-{% filter specify_sidebar_ads:request %}
   <main class="section">
     
     <div class="u-container u-container--mid">
@@ -103,6 +102,5 @@
         <script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
       </div>
     </div>
-  {% endfilter %}
   </main>
 {% endblock %}

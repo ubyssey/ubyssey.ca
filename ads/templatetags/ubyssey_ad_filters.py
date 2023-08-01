@@ -49,9 +49,9 @@ def inject_ads(value, is_mobile):
 
     return soup.prettify()
 
-@register.filter(name='specify_sidebar_ads')
+@register.filter(name='specify_homepage_sidebar_ads')
 @stringfilter
-def specify_sidebar_ads(value, request):
+def specify_homepage_sidebar_ads(value, request):
     """
         Searches the homepage for ads with class 'sidebar-block--advertisement' and inserts necessary code for google ad manager to place an ad there
 
