@@ -148,7 +148,6 @@ INSTALLED_APPS = [
     'images',
     'videos',
     'ads',
-    'sporttourney',
     'specialfeaturelanding',
     'navigation',
     'dashboard',
