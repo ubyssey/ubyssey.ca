@@ -105,7 +105,7 @@
 {% endblock %}
 
 {% block suggested_articles %}
-{% if suggested %}
+{% if suggested and suggested.articles|length > 0 %}
     {% include 'article/objects/suggested_articles_fw.html' with title=suggested.title articles=suggested.articles %}
 {% endif %}
 {% endblock %}

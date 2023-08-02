@@ -253,7 +253,7 @@ div.indicator {
 .c-article__byline__meta {
   margin-bottom: 0.75rem;
   float: left;
-  color: #777;
+  color: var(--article_info);
   font-weight: $font-weight-normal;
   @media($bp-larger-than-tablet) {
     display: inline-block;
@@ -301,8 +301,8 @@ div.indicator {
 
 .c-share-buttons {
   float: left;
-  padding: 0px 4px 0px 4px;
-  color: $DM-SH-button;
+  padding: 0px 4px 10px 4px;
+  color: var(--article_info);
 }
 
 .c-share_space {
@@ -387,7 +387,7 @@ div.caption {
   margin-top: 6px;
   font-family: $font-default;
   font-size: 15px;
-  color: #5A5A5A;
+  color: var(--article_caption);
   line-height: 19px;
 
   padding-left: 15px;

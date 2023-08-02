@@ -268,7 +268,7 @@ $search-bar-height: 46px;
 
 	// Text
 	font-size: font-size(14);
-	color: $color-text-gray;
+	color: var(--archive-text);
 	letter-spacing: 0.05em;
 	font-weight: 600;
 	line-height: 34px;
@@ -347,7 +347,7 @@ $search-bar-height: 46px;
 
   // Text
   text-align: center;
-  color: $color-text-gray;
+  color: var(--archive-text);
 }
 .o-archive__divider {
 	// Structure

@@ -243,8 +243,8 @@ class ArchivePage(RoutablePageMixin, Page):
             videos = VideoSnippet.objects.all()
             articles = self.get_search_objects(search_query, articles, video_section)
             videos = self.get_search_objects(search_query, videos, True)
-
-            if len(articles) < 1:
+ 
+            if len(articles) < 1 and len(videos) > 0:
                 video_section = True
                 context = self.get_paginated_articles(context, videos, video_section, request)
                 context["video_section"] = True
@@ -252,8 +252,8 @@ class ArchivePage(RoutablePageMixin, Page):
                 context = self.get_paginated_articles(context, articles, video_section, request)
         else:
             context = self.get_paginated_articles(context, articles, video_section, request)
-
-        
+    
+     
         return render(request, "archive/archive_page.html", context)
     
     @route(r'^section/(?P<sections_slug>[-\w]+)/$', name='section_view')
