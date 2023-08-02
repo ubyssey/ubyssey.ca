@@ -9,7 +9,7 @@ $font-body: 'noto-serif', 'Georgia', serif;
 $font-size-base: 16;
 
 @function font-size($size) {
-  $scaled-size: ($size / $font-size-base) + em;
+  $scaled-size: calc($size / $font-size-base) + em;
   @return $scaled-size;
 }
 

@@ -25,7 +25,7 @@ $bp-larger-than-mobile: "min-width: 1000px";
 // Functions
 
 @function font-size($size) {
-  @return ($size / $font-size-base) + rem;
+  @return calc(($size / $font-size-base) + rem);
 }
 
 // Base
