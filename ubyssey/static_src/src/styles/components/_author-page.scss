@@ -1,9 +1,13 @@
 .author-header {
     position: relative;
     margin: auto;
-    margin-bottom: 70px;
+    margin-bottom: 40px;
     margin-top: 30px;
     min-height: 400px;
+
+    @media ($bp-larger-than-mobile) {
+        margin-bottom: 70px;
+    }
 }
 .author-img {
     border-radius: 100%;
