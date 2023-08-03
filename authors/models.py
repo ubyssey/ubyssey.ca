@@ -131,7 +131,7 @@ class AuthorPage(RoutablePageMixin, Page):
     CHOICES = [("articles", "Articles"), ("photos", "Photos"), ("videos", "Videos")]
     main_media_type = models.CharField(
         choices=CHOICES,
-        default='stories',
+        default='articles',
         max_length=20,
         blank=False,
         null=False,)

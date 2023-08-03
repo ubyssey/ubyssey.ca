@@ -54,10 +54,18 @@
   font-family: "Georgia", serif
 }
 
+.home-featured {
+  .o-article__published {
+    // Text
+    color: #2B2B2B;
+  }
+}
+
 .o-article__published {
   // Text
-  color: #2B2B2B;
+  color: var(--article-publish);
 }
+
 
 .o-article__snippet {
   // Structure
@@ -66,7 +74,7 @@
 
   // Text
   line-height: 1.5em;
-  color: $color-text-gray;
+  color: var(--archive-text);
   font-size: font-size(14);
 }
 
