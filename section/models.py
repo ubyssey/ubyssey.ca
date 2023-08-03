@@ -30,7 +30,7 @@ from wagtail.documents.models import Document
 from wagtail.documents.edit_handlers import DocumentChooserPanel
 
 from home import blocks as homeblocks
-from infinitefeed import models as infinitefeed
+from infinitefeed import blocks as infinitefeedblocks
 
 #-----Snippet models-----
 @register_snippet
@@ -177,7 +177,16 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         related_name='+'
     )
 
-    sidebar_stream = infinitefeed.sidebar_stream
+    sidebar_stream = StreamField(
+    [
+        ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
+        ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
+        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
+        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),         
+    ],
+    null=True,
+    blank=True,
+    )
 
     content_panels = wagtail_core_models.Page.content_panels + [
         MultiFieldPanel(
