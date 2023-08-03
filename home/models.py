@@ -11,7 +11,7 @@ from wagtail.core.models import Page, Orderable
 from wagtail.core.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 from modelcluster.fields import ParentalKey
-from infinitefeed import models as infinitefeed
+from infinitefeed import blocks as infinitefeedblocks
 
 # Create your models here.
 
@@ -84,7 +84,17 @@ class HomePage(Page):
         blank=True,
     )
 
-    sidebar_stream = infinitefeed.sidebar_stream
+    sidebar_stream = StreamField(
+    [
+        ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
+        ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
+        ("sidebar_category_block", homeblocks.SidebarCategoryBlock()),
+        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
+        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),         
+    ],
+    null=True,
+    blank=True,
+    )
 
     # home_leaderboard_ad_slot = models.ForeignKey(
     #     AdSlot,

@@ -92,6 +92,8 @@ html.lightmode {
   --article_caption: #5A5A5A;
   --authors-title-bio: #1B1B1B;
   --archive-text: #4e4e4e;
+  --article-publish: #2B2B2B;
+  --pagination: #353535;
 }
 
 html.darkmode {
@@ -109,6 +111,8 @@ html.darkmode {
   --authors-title-bio: #D8D8D8;
   background-color: #031621;
   --archive-text: #BFBFBF;
+  --article-publish: #BFBFBF;
+  --pagination: #BFBFBF;
 }
 
 body, html, #page-wrapper {

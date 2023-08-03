@@ -325,7 +325,7 @@ $search-bar-height: 46px;
 	// Text
 	font-size: font-size(13);
 	font-weight: 600;
-	color: #353535;
+	color: var(--pagination);
 	line-height: 2rem;
 }
 
