@@ -352,6 +352,20 @@ div.article-content {
     }
   }
 
+  .redacted {
+    background-color: currentcolor;
+  }
+
+  .text-center {
+    display: block;
+    text-align: center;
+  }
+
+  .text-right {
+    display: block;
+    text-align: right;
+  }
+
   >p {
     color: $text-color;
   }
