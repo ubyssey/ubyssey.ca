@@ -347,9 +347,7 @@ div.article-content {
     vertical-align: top;
     box-sizing: border-box;
     width: 65%;
-    :last-child {
-      margin-bottom: 1.4rem;
-    }
+    padding-bottom: 1.4rem;
   }
 
   >p {
