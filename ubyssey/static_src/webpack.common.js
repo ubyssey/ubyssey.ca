@@ -11,6 +11,7 @@ module.exports = {
     vendors: './src/js/vendors.js',
     a_new: './src/js/advertise_new.js',
     'visual-essay': './src/js/visual-essay.js',
+    'scrollTop': './src/js/scrollTop.js',
     'one-year-later': './src/js/one-year-later.js',
     'sport-series': './src/js/sport-series.js',
     'food-insecurity': './src/js/food-insecurity.jsx',
