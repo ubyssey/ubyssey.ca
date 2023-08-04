@@ -1060,7 +1060,7 @@
       //transform: translate(-50%,0);
     }
 
-    p, h2, h3, h4 {
+    > p, > h2, > h3, > h4 {
       color: #333333;
     }
   }
@@ -1167,10 +1167,12 @@
 
 .header {
   padding: 0.75rem !important;
-  color: white;
   font-weight: 600;
   background-color: #0071c9;
-  scroll-margin-top: 60px;
+  > h2 {
+    color: white;
+    scroll-margin-top: 100px;
+  }
 }
 
 #myBtn {

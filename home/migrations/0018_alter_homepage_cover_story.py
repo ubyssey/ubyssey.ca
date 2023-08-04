@@ -8,7 +8,7 @@ import modelcluster.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('article', '0020_alter_articlepage_content'),
+        ('article', '0019_alter_articlepage_content'),
         ('home', '0017_homepage_tagline_url'),
     ]
 

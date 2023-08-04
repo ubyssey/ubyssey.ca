@@ -13,6 +13,31 @@ class PullQuoteBlock(blocks.StructBlock):
         template = 'article/stream_blocks/quote.html',
         icon = "openquote"
 
+class HeaderMenuBlock(blocks.StructBlock):
+
+    list = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ('title', blocks.CharBlock()),
+                ('id',blocks.CharBlock(help_text="Intended to be shared with a header so that this button will send the user to the section of the page with said header")),
+                ('colour',blocks.CharBlock(default='0071c9')),
+            ],
+            label = "Page Link",
+        )
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/pageLink.html',
+        icon = "table"
+
+class HeaderLinkBlock(blocks.StructBlock):
+    title = blocks.CharBlock()
+    id = blocks.CharBlock(help_text="Intended to be shared with a page link button so that clicking the button will scroll the user to this header")
+
+    class Meta:
+        template = 'article/stream_blocks/header.html',
+        icon = "title"
+
 class ChooseSideBlock(blocks.ChoiceBlock):
     choices=[('left', 'Left'),('right', 'Right'),]
     required=True
@@ -77,6 +102,12 @@ class VisualEssayBlock(blocks.StructBlock):
                 ('block', PullQuoteBlock()),
                 ('side',ChooseSideBlock(default=("left", "Left"))),
             ], icon = "openquote"
+        )),
+        ('header_link', blocks.StructBlock(
+            [
+                ('block', HeaderLinkBlock()),
+                ('side',ChooseSideBlock(default=("right", "Right"))),
+            ], icon = "title"
         )),
         ('gap', GapBlock()),
         ('switch_view', ChooseViewBlock()),
