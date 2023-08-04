@@ -212,22 +212,6 @@ function initializeModals() {
   });
 }
 
-//Pending deletion
-function initializeSearch() {
-  $('.dropdown > a').click(function (e) {
-    e.preventDefault();
-    var dropdown = $(this).parent().find('.list');
-    if (dropdown.is(':visible')) {
-      dropdown.hide();
-    } else {
-      dropdown.show();
-    }
-    return false;
-  });
-
-
-
-}
 
 function initializeSearchFormActions() {
   $(document).on('click', 'a.search', function (e) {
