@@ -342,6 +342,20 @@ div.article-content {
     width: 65%;
   }
 
+  .redacted {
+    background-color: currentcolor;
+  }
+
+  .text-center {
+    display: block;
+    text-align: center;
+  }
+
+  .text-right {
+    display: block;
+    text-align: right;
+  }
+
   > p,
   div.caption,
   > h1,

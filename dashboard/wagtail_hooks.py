@@ -55,7 +55,7 @@ def register_centertext_feature(features):
     # Step 1
     feature_name = "center"
     type_ = "CENTERTEXT"
-    tag = "div style='display: block; text-align: center;'"
+    tag = "div"
 
     # Step 2
     control = {
@@ -101,7 +101,7 @@ def register_righttext_feature(features):
     # Step 1
     feature_name = "right"
     type_ = "RIGHTTEXT"
-    tag = "div style='display: block; text-align: right;'"
+    tag = "div"
 
     # Step 2
     control = {
@@ -149,7 +149,7 @@ def register_redacted_feature(features):
     """
     feature_name = 'redacted'
     type_ = 'REDACTED'
-    tag = "span style='background-color: currentcolor'" # This tag is currently 
+    tag = "span" # This tag is currently 
 
     # 2. Configure how Draftail handles the feature in its toolbar.
     control = {
