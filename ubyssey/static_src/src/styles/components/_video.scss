@@ -1,0 +1,26 @@
+$show-more-height: 60px;
+
+.u-video-container {
+  // Structure
+  width: 100%;
+  max-width: 600px;
+  .c-page__header {
+    // Structure
+    display:flex;
+    flex-direction: column;
+    h1 {
+      // Structure
+      margin: 1rem 0;
+    }
+    .c-podcast-description {
+      // Structure
+      margin-top: 0;
+      // Text
+      font: 1.2rem "ub-minion-pro", "Minion Pro", "Georgia", serif
+    }
+  }
+}
+.c-video-episode-list {
+  // Structure
+  margin-bottom: 3rem;
+}

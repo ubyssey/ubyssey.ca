@@ -14,18 +14,18 @@
 {% endblock %}
 
 {% block header %}
-    {% include 'navigation/headers/topbar.html' %}
     {% include 'navigation/headers/mobile.html' %}
+        {% block banner_ad %}
+    <!-- Article Page header ads go here -->
+        {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
+            {% gpt_placement_tag orderable.ad_slot %}
+        {% endfor %}
+    {% endblock %}
+    {% include 'navigation/headers/topbar.html' %}
 {% endblock %}
 
 {% block content %}
     <main id="article-{{ self.slug }}" class="article">
-        {% block banner_ad %}
-        <!-- Article Page header ads go here -->
-            {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
-                {% gpt_placement_tag orderable.ad_slot %}
-            {% endfor %}
-        {% endblock %}
 
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
@@ -76,93 +76,47 @@
                     <div class="c-article__byline">
                         {% include 'article/objects/share_bar.html' %}
                         <span class="c-article_dark_mode">
-                            {% include 'article/objects/darkmode_button.html'%}
+                            {% include 'article/objects/darkmode_button.html' with id="article_page"%}
                         </span>
                     </div>
             {% endblock %}
             <!-- Below is the container for Article content -->
             <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
                 <!-- Below is the container for the left column article content  -->
-                <div class="cell left article-content">
-                    {% block pre-content %}
-                    {% endblock %}
-                    {% if not self.is_explicit %}
-                        {% filter inject_ads:is_mobile %}
+                {% if not self.is_explicit %}
+                    {% filter inject_ads:is_mobile %}
+                    <div class="cell left article-content">
+                        {% block pre-content %}
+                        {% endblock %}
                             <!-- Content unique to the article starts here -->
                             <!-- Article featured media -->
                             {% if self.layout == 'default' %}
-                                {% if self.featured_media.first.image %}
-                                    {% with self.featured_media.first as featured_image_object %}
-                                        <div class="featured-media">
-                                            {% image featured_image_object.image original as original_image %}
-                                            {% image featured_image_object.image width-500 as featured_image %}
-                                            <img class="article-attachment" 
-                                                data-id="{{ featured_image_object.id }}"
-                                                data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
-                                                data-credit="{% if featured_image_object.credit %}{{ featured_image_object.credit }}{% endif %}"
-                                                {% comment %}
-                                                    Differences between line data-url and arc attributes represent the difference between
-                                                    the obselete Dispatch equivalent of the URL for the "original image" ("data-url" attribute)
-                                                    the "rendition" ("src" attribute). "data-url" is included for backward compatibility,
-                                                    but "src" secures the primary functionality of this img element.
-                                                {% endcomment %}
-                                                data-url="{{ original_image.url }}"
-                                                src="{{ featured_image.url }}"
-                                                alt=""
-                                            />
-                                            {% if featured_image_object.caption or featured_image_object.credit %}
-                                                <div class="caption">
-                                                    {% if featured_image_object.caption %}
-                                                        {{ featured_image_object.caption }}
-                                                    {% endif %}
-                                                    {% if featured_image_object.credit %}
-                                                        <span class="credit">
-                                                            {{ featured_image_object.credit }}
-                                                        </span>
-                                                    {% endif %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    {% endwith %}
-                                {% elif self.featured_media.first.video %}
-                                    {% with self.featured_media.first as featured_video_object %}
-                                        <div class="featured-media">
-                                            <iframe 
-                                                width="500px" 
-                                                height="281px" 
-                                                allowfullscreen="allowfullscreen"
-                                                mozallowfullscreen="mozallowfullscreen" 
-                                                msallowfullscreen="msallowfullscreen" 
-                                                oallowfullscreen="oallowfullscreen" 
-                                                webkitallowfullscreen="webkitallowfullscreen"
-                                                src="{{ featured_video_object.video.url|youtube_embed_url|safe }}">
-                                            </iframe>
-                                            {% if featured_video_object.caption or featured_video_object.credit %}
-                                                <div class="caption">
-                                                    {% if featured_video_object.caption %}{{ featured_video_object.caption }}{% endif %} {% if featured_video_object.credit %}<span class="credit">{{ featured_video_object.credit }}</span>{% endif %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    {% endwith %}
-                                {% endif %}
+                                {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
                             {% endif %}
                             
                             <!-- Article text -->
                             {% for block in self.content %}
-                                {% include_block block %}
+                                {% include_block block with id=block.id %}
                             {% endfor %}
                             <!-- Content unique to the article ends here -->
-                        {% endfilter %}
-                    {% else %}
-                        <!-- Content unique to the article starts here -->
-                        {% for block in self.content %}
-                            {% include_block block %}
-                        {% endfor %}
-                        <!-- Content unique to the article ends here -->
+
+                        {% block post-content %}
+                        {% endblock %}
+                    </div>
+                    {% endfilter %}
+                {% else %}
+                    <div class="cell left article-content">
+                    <!-- Article featured media -->
+                    {% if self.layout == 'default' %}
+                        {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
                     {% endif %}
-                    {% block post-content %}
-                    {% endblock %}
-                </div>
+                    <!-- Content unique to the article starts here -->
+                    {% for block in self.content %}
+                        {% include_block block with id=block.id %}
+                    {% endfor %}
+                    <!-- Content unique to the article ends here -->
+                    </div>
+                {% endif %}
                 <!-- Below is the container for the right column article content, not entirely unique to the article -->
                 <aside class="cell right sidebar">
                     {% block sidebar %}
@@ -174,15 +128,20 @@
                         {% else %}
                             {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
                         {% endif %}
-                        {% comment %} Suggested articles in same Section up to 6 articles that are not itself {% endcomment %}
-                        <div class="suggested-articles">
-                            {% for article in suggested_articles %}
-                                {% if article.slug != self.slug %} 
-                                    {% include 'article/objects/suggested_articles_column.html' with article=article padded=True   %}
-                                {% endif %}
-                            {% endfor %}
+                        {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
+                        
+                        <div class="suggested-sidebar">
+                            {% block suggested_articles %}
+
+                            {% if suggested %}
+                                {% include "infinitefeed/sidebar/sidebar_section_block.html" with title=suggested.title articles=suggested.articles %}
+                            {% endif %}
+
+                            {% endblock %}
                         </div>
+
                     {% endblock %}
+
                 </aside>                        
 
 
