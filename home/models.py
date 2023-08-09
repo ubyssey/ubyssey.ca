@@ -6,34 +6,12 @@ from django.db import models
 from django.utils import timezone
 
 from ads.models import AdSlot
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, PageChooserPanel, MultiFieldPanel, InlinePanel
-from wagtail.core.models import Page, Orderable
+from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.core.models import Page
 from wagtail.core.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
-from modelcluster.fields import ParentalKey
-from infinitefeed import blocks as infinitefeedblocks
 
 # Create your models here.
-
-class TopArticlesOrderable(Orderable):
-    home_page = ParentalKey(
-        "home.HomePage",
-        related_name="top_articles",
-    )
-    article = models.ForeignKey(
-        'article.ArticlePage',
-        on_delete=models.CASCADE,
-        related_name="top_articles",
-    )
-
-    panels = [
-        MultiFieldPanel(
-            [
-                PageChooserPanel('article'),
-            ],
-            heading="Article"
-        ),
-    ]
 
 class HomePage(Page):
     show_in_menus_default = True
@@ -50,27 +28,9 @@ class HomePage(Page):
         'archive.ArchivePage',
     ]
 
-    tagline = models.CharField(
-        blank=True,
-        null=True,
-        max_length=50)
-    
-    tagline_url = models.URLField(
-        blank=True,
-        null=True
-    )
-
-    cover_story = ParentalKey(
-        "article.ArticlePage",
-        related_name = "cover_story",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL
-    )
-
-    links = StreamField(
+    above_cut_stream = StreamField(
         [
-            ("link", homeblocks.LinkStreamBlock()),
+            ("above_cut_block", homeblocks.AboveCutBlock())
         ],
         null=True,
         blank=True,
@@ -85,15 +45,14 @@ class HomePage(Page):
     )
 
     sidebar_stream = StreamField(
-    [
-        ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
-        ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", homeblocks.SidebarCategoryBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
-        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),         
-    ],
-    null=True,
-    blank=True,
+        [
+            ("sidebar_advertisement_block", homeblocks.SidebarAdvertisementBlock()),
+            ("sidebar_issues_block", homeblocks.SidebarIssuesBlock()),
+            ("sidebar_section_block", homeblocks.SidebarSectionBlock()),         
+            ("sidebar_flex_stream_block", homeblocks.SidebarFlexStreamBlock()),         
+        ],
+        null=True,
+        blank=True,
     )
 
     # home_leaderboard_ad_slot = models.ForeignKey(
@@ -126,38 +85,15 @@ class HomePage(Page):
     # )
 
     content_panels = Page.content_panels + [
-        MultiFieldPanel(
-            [
-                FieldPanel("tagline"),
-                FieldPanel("tagline_url"),
-            ],
-            heading="Tagline"
-        ),
-        PageChooserPanel("cover_story"),
-        MultiFieldPanel(
-            [
-                InlinePanel("top_articles"),
-            ],
-            heading="Top articles"
-        ),
-        StreamFieldPanel("links", heading="Links"),
-        StreamFieldPanel("sidebar_stream", heading="Sidebar"),
+        StreamFieldPanel("above_cut_stream", heading="\"Above the Cut\" Content"),
         StreamFieldPanel("sections_stream", heading="Sections"),
+        StreamFieldPanel("sidebar_stream", heading="Sidebar"),
         # ModelChooserPanel('home_leaderboard_ad_slot'),
         # ModelChooserPanel('home_mobile_leaderboard_ad_slot'),
         # ModelChooserPanel('home_sidebar_ad_slot1'),
         # ModelChooserPanel('home_sidebar_ad_slot2'),
     ]
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context["filters"] = {}
-        return context
-
-    def getTopArticles(self):
-        return self.top_articles.all() 
-    top_articles_list = property(fget=getTopArticles)
-     
+                 
     def get_all_section_slug(self):
         
         allsection_slug = []

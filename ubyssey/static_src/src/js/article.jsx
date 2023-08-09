@@ -1,9 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import './modules/Youtube'
+import { ArticlesSuggested } from './components/Article'
+import { Poll } from './components/Poll'
 import Search from './components/Search.jsx';
 import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import { Galleries } from './components/Gallery'
-
+import Timeline from './components/Timeline.jsx'
+import Episode from './components/Podcast/Episode.jsx'
 
 
 window.articleHeader = false;
@@ -12,7 +16,12 @@ const BOX_HEIGHT = 274
 const SKYSCRAPER_HEIGHT = 624
 
 $(function () {
-
+    $('.c-widget-poll').each(function () {
+        ReactDOM.render(
+            <Poll id={$(this).data('id')} loaderHTML={$(this).html()} />,
+            $(this).get(0)
+        )
+    })
     ReactDOM.render(
         <AdblockSplash />,
         document.getElementById('adblock-splash')
@@ -21,8 +30,28 @@ $(function () {
         <CookieDisclaimer />,
         document.getElementById('cookie-disclaimer')
     )
+    $('.c-timeline').each(function () {
+        ReactDOM.render(
+            <Timeline id={$(this).data('currentArticleId')}
+                title={$(this).data('timelineTitle')}
+                nodes={$(this).data('nodes')} />,
+            $(this).get(0)
+        )
+    })
 
-
+    $('.c-podcast-episode').each(function () {
+        ReactDOM.render(
+            <Episode author={$(this).data('author')}
+                description={$(this).data('description')}
+                file={$(this).data('file')}
+                image={$(this).data('image')}
+                publishedAt={$(this).data('published_at')}
+                id={$(this).data('id')}
+                title={$(this).data('title')}
+            />,
+            $(this).get(0)
+        )
+    })
 });
 
 if ($('main.article').length) {
@@ -151,6 +180,18 @@ if ($('main.article').length) {
     }
 
     articleAds()
+
+    if (document.getElementById('article-list') !== null) {
+        const articleList = ReactDOM.render(
+            <ArticlesSuggested
+                breakpoint={960}
+                name={listName}
+                currentArticle={firstArticle}
+                articles={articleIds}
+                userId={userId} />,
+            document.getElementById('article-list')
+        );
+    }
 
 
     const gatherImages = (gallery) => {

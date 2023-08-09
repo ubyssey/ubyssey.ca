@@ -1,5 +1,5 @@
 // Scripts for the /advertise/ page
-// Bundled as 'a_new.js' to prevent AdBlocker blocking.
+// Bundled as 'a.js' to prevent AdBlocker blocking.
 
 $(function() {
   // Navigation links smooth scrolling

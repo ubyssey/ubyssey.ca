@@ -409,41 +409,19 @@
 }
 
 .pull-quote {
-  min-width: 300px;
-  
   p.quote {
     font: bold 1.625em/1.5em 'Minion Pro';
     text-align: center;
   }
-  p.meta {
-    position: relative;
-
+  p.source {
     margin-top: 10px;
     margin-bottom: 0;
 
     text-transform: uppercase;
+    text-align: right;
     font-weight: 100;
     font-style: italic;
     font-size: 0.77em;
-    
-    .playAudioQuote {
-      display: block;
-    }
-
-    .source {
-      display: inline-block;
-      position: relative;
-      left: 25%;
-      width: 22%;
-    }
-
-    .volume {
-      position: relative;
-      left: 25%;
-      top: 0.05rem;
-      display: inline-block;
-      width: 3%;
-    }
   }
 }
 

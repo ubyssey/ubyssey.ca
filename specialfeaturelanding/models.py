@@ -24,7 +24,6 @@ from wagtail.core import blocks
 from wagtail.core.models import Page, Orderable
 from wagtail.core.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 from wagtailmenus.models import FlatMenu
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
@@ -40,14 +39,6 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     # template = "specialfeaturelanding/landing_page_guide_2022_style.html"
 
     use_default_template = models.BooleanField(default=True)
-
-    category = models.ForeignKey(
-        "section.CategorySnippet",
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-    )
-    
     layout = models.CharField(
         null=False,
         blank=False,
@@ -172,13 +163,6 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
                 )
             ],
             heading="Feature Credits",
-            classname="collapsible",
-        ),
-         MultiFieldPanel(
-            [
-                SnippetChooserPanel("category"),
-            ],
-            heading="Categories",
             classname="collapsible",
         ),
         MultiFieldPanel(

@@ -90,7 +90,7 @@ class AdTagSettings(ClusterableModel, BaseSetting):
         ),
         MultiFieldPanel(
             [
-                InlinePanel("home_sidebar_placements", label="Sidebar placement tags"),
+                InlinePanel("home_sidebar_placements", label="Home sidebar placement tags"),
             ],
             heading="Sidebar Placement Tags"
         ),

@@ -18,8 +18,6 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
 from wagtail.core.models import Orderable, Page
 from wagtail.snippets.models import register_snippet
-from wagtail.search import index
-
 
 #-----Taggit stuff-----
 
@@ -86,14 +84,12 @@ class VideosPage(SectionablePage):
         context["paginated_videos"] = paginated_videos
         
         return context
-    
-    # @route('^archive/videos$')
 
 
 #-----Snippet models-----
 
 @register_snippet
-class VideoSnippet(index.Indexed, ClusterableModel):
+class VideoSnippet(ClusterableModel):
 
     title = models.CharField(
         max_length=255,
@@ -184,17 +180,7 @@ class VideoSnippet(index.Indexed, ClusterableModel):
             heading="Tags"
         ),
     ]
-        #-----Search fields etc-----
-    #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
-    search_fields = [
-        index.SearchField('title'),
-        index.SearchField('slug'),
-        
-        index.FilterField('video_authors'),
-        index.FilterField('tags'),
-        index.FilterField('slug'),
-        index.FilterField('created_at'),
-    ]
+    
     class Meta:
         verbose_name = "Video"
         verbose_name_plural = "Videos"

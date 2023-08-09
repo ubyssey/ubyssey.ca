@@ -138,7 +138,7 @@ class AuthorFeed(UbysseyArticleFeed):
         return 'Stories from %s at The Ubyssey' % author.full_name
 
     def description(self, author):
-        return author.bio_description
+        return author.description
     
     def link(self, author):
         return author.get_full_url()

@@ -13,9 +13,8 @@ from django.shortcuts import render
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
-from wagtail.images.edit_handlers import ImageChooserPanel
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel
-from wagtail.core.fields import StreamField
+
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
 from wagtail.core import models as wagtail_core_models
 from wagtail.core.models import Page
 from wagtail.contrib.routable_page.models import route, RoutablePageMixin
@@ -23,14 +22,6 @@ from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
-from wagtail_color_panel.fields import ColorField
-from wagtail_color_panel.edit_handlers import NativeColorPanel
-
-from wagtail.documents.models import Document
-from wagtail.documents.edit_handlers import DocumentChooserPanel
-
-from home import blocks as homeblocks
-from infinitefeed import blocks as infinitefeedblocks
 
 #-----Snippet models-----
 @register_snippet
@@ -54,15 +45,6 @@ class CategorySnippet(index.Indexed, ClusterableModel):
         blank=True,
         default='',
     )
-
-    banner = models.ForeignKey(
-        "images.UbysseyImage",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='categoryBanner',
-    )
-
     # authors = ManyToManyField('Author', related_name='subsection_authors')
     is_active = BooleanField( # legacy field
         default=False
@@ -84,12 +66,6 @@ class CategorySnippet(index.Indexed, ClusterableModel):
                 FieldPanel("description"),
             ],
             heading="Essentials"
-        ),
-        MultiFieldPanel(
-            [
-                ImageChooserPanel("banner"),
-            ],
-            heading="Banner",
         ),
         MultiFieldPanel(
             [
@@ -154,71 +130,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     show_in_menus_default = True
 
-    banner = models.ForeignKey(
-        "images.UbysseyImage",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='banner',
-    )
-
-    description = models.TextField(
-        # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
-        null=False,
-        blank=True,
-        default='',
-    )
-
-    label_svg = models.ForeignKey(
-        'wagtaildocs.Document',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
-
-    sidebar_stream = StreamField(
-    [
-        ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
-        ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
-        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),         
-    ],
-    null=True,
-    blank=True,
-    )
-
     content_panels = wagtail_core_models.Page.content_panels + [
-        MultiFieldPanel(
-            [
-                ImageChooserPanel("banner"),
-            ],
-            heading="Banner",
-        ),
-        MultiFieldPanel(
-            [
-                FieldPanel("description"),
-            ],
-            heading="Description",
-        ),
-        MultiFieldPanel(
-            [
-                DocumentChooserPanel('label_svg'),
-            ],
-            heading="Label svg"
-        ),
         MultiFieldPanel(
             [
                 InlinePanel("category_menu"),
             ],
             heading="Category Menu",
         ),
-        MultiFieldPanel(
-            [
-                StreamFieldPanel("sidebar_stream"),
-            ],
-            heading="Sidebar"
-        )
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -233,31 +151,15 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             article_order = "-explicit_published_at"
         context["order"] = order
 
-        context["all_categories"] = CategorySnippet.objects.all().filter(section_page=self)
-
         all_articles = self.get_section_articles(order=article_order)
-        context["filters"] = {"section": self.current_section}
         if 'category_slug' in kwargs:            
             all_articles = all_articles.filter(category__slug=kwargs['category_slug'])
-            context["category"] = kwargs['category_slug']
-            context["filters"]["category"] = kwargs['category_slug']
-            category  = CategorySnippet.objects.get(slug=kwargs['category_slug'])
-            context["title"] = category.title
-            context["description"] = category.description
-            if category.banner:
-                context["banner"] = category.banner
-        else:
-            context["title"] = self.title
-            context["description"] = self.description
-            if self.banner:
-                context["banner"] = self.banner
 
         context["featured_articles"] = self.get_featured_articles()
 
         if search_query:
             context["search_query"] = search_query
             all_articles = all_articles.search(search_query)
-            context["filters"]["search_query"] = search_query
 
         # Paginate all posts by 15 per page
         paginator = Paginator(all_articles, per_page=15)       

@@ -1,18 +1,9 @@
-@import 'modules/variables';
-
-$text-color: var(--text_color);
-
 footer {
 
   padding: 15px 0;
   line-height: 40px;
-  border-top: 2px solid #646464;
+  border-top: 1px solid #DADADA;
   text-align: center;
-  position: relative;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  color: $text-color;
 
   a.home-link {
     img {

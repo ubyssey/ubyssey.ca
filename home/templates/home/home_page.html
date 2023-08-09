@@ -13,20 +13,22 @@
 {% endblock %}
 
 {% block header %}
+{% include 'navigation/headers/main.html' %}
 {% include 'navigation/headers/mobile.html' with class='homepage' %}
+{% endblock %}
 
+{% block content %}
+{% filter specify_homepage_sidebar_ads:request %}
 <!-- Place header ads for home page -->
 {% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
 {% gpt_placement_tag orderable.ad_slot %}
 {% endfor %}
 
-{% include 'navigation/headers/main.html' with tagline=self.tagline tagline_url=self.tagline_url %}
-{% endblock %}
 
-{% block content %}
-{% filter specify_homepage_sidebar_ads:request %}
 
-<main class="u-container u-container--mid homepage">
+<main class="u-container u-container--large homepage ">
+
+
 	{% comment %}
 	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
 	{% endcomment %}
@@ -39,71 +41,29 @@
 	Additional fields/blocks will go here to alert students to some special events
 	{% endcomment %}
 
-	<div class="home-featured">
-		{% if self.cover_story %}
-			{% include "article/objects/cover_story.html" with article=self.cover_story%}
-		{% endif %}
-		<div class="home-top-article-list">
-			{% now "d N, Y" as date %}
-			{% now "l" as dayOfWeek %}
-			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text=date textBold=dayOfWeek %}
-			
-			{% for article in self.top_articles_list %}
-				{% include "article/objects/top_article.html" with article=article.article count=forloop.counter %}
-			{% endfor %}
-		</div>
-	</div>
+	<!-- Above the cut content. Likely the first things the user sees when going to the site, before scrolling down -->
+	{% for block in self.above_cut_stream %}
+	{% include_block block %}
+	{% endfor %}
 
-	<div class="home_links">
-	{% if self.links %}
-		<div class="home_link_content">
-			<ul>
-			{%for link in self.links%}
-				{% include_block link%}
-			{%endfor%}
-			</ul>
-		</div>
-		<div class="home_link_ad">
-			<div class="sidebar-block sidebar-block--advertisement"></div>
-		</div>
-	{% else %}
-		<div class="sidebar-block sidebar-block--advertisement o-advertisement--leaderboard"></div>
-	{% endif %}
-	</div>
-
-</main>
-
-<div id="feed-section" class="home_infinitefeed darkmode">
-	<div class="u-container u-container--large c-infinitefeed__feed">
-		<div class="c-home-infinitefeed">
-			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox sticky' title='Sections' text='Most Recent' textId='timeBox' %}
-			
-			<div class="c-homepage__sections">
+	<!-- Below cut content. The content below this point is likely to require scrolling etc. for a user to read in a browser. -->
+	<div class="homepage-section row">
+		<div class="sections">
 			{% for block in self.sections_stream %}
 			{% include_block block %}
 			{% endfor %}
-			</div>
 		</div>
 
-        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
-
+		<aside class="sidebar-home">
+			{% for block in self.sidebar_stream %}
+			{% include_block block %}
+			{% endfor %}
+		</aside>
 	</div>
-
-
-	{% comment %}
-	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
-		<div class="c-home-infinitefeed">
-			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode c-home-bannerbox sticky' title='Infinite feed' textBold='Today' textId='timeBox' %}
-			{% include 'infinitefeed/infinitefeed.html' with filters=filters label="True" inactive="True" %}
-		</div>
-
-        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
-
+	<div class="loader-container">
+		<div class="loader"></div>
 	</div>
-	<script src="{% static 'ubyssey/js/home.js' %}" type="text/javascript"></script>
-	<script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
-	{% endcomment %}
-</div>
+</main>
 {% endfilter %}
 {% endblock %}
 

@@ -13,14 +13,41 @@
 
   <div class="o-archive__container">
     <div class="o-archive__main">
-      
+      <div class="o-archive__dropdown-filters">
+        <div class="o-mobile-dropdown js-dropdown">
+          <a class="o-mobile-dropdown__button js-disable-scroll" href="#">
+            <span>{{ order|title }}</span>
+            <i class="fa fa-sort-desc"></i>
+          </a>
+          <div class="o-mobile-dropdown__list js-dropdown-list">
+            <div class="o-mobile-dropdown__list__container js-dropdown-container">
+              <div>
+                <div class="o-mobile-dropdown__header">
+                  <h3 class="o-mobile-dropdown__title">Order by:</h3>
+                  <div class="o-mobile-dropdown__close">
+                    <i class="fa fa-close"></i>
+                  </div>
+                </div>
+                <ul>
+                  <li class="o-mobile-dropdown__item{% if order == 'newest' %} o-mobile-dropdown__item--is-active{% endif %}">
+                    <a href ="?order=newest{% for key, value in request.GET.items %}{% if key != 'order' and key != "page" %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Newest</a>
+                  </li>
+                  <li class="o-mobile-dropdown__item{% if order == 'oldest' %} o-mobile-dropdown__item--is-active{% endif %}">
+                    <a href ="?order=oldest{% for key, value in request.GET.items %}{% if key != 'order' and key != "page" %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Oldest</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="o-archive__header">
         <h3 class="o-archive__header__title">
           {% if paginated_articles %} {{ paginated_articles.paginator.count }} RESULTS {% else %}NO RESULTS{% endif %}
           {% if search_query %} FOR "{{ search_query }}"{% endif %}
         </h3>
         <div class="o-archive__header__sort o-dropdown js-dropdown">
-          <a class="o-button o-dropdown__button" href="#">
+          <a class="o-button o-dropdown__button">
             <span>{{ order|title }}</span>
             <i class="fa fa-sort-desc"></i>
           </a>
