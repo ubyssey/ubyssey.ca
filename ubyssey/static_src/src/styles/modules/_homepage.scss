@@ -804,9 +804,9 @@ ol.article-list {
 .home_infinitefeed {
   padding-top: 40px;
   position: relative;
-  //&.darkmode {
-  //  background-color: $color-ubyssey-blue-dark-2;
-  //}
+  &.darkmode {
+    background-color: $color-ubyssey-blue-dark-2;
+  }
   &.lightmode {
     background-color: $color-ubyssey-blue-light;
   }
