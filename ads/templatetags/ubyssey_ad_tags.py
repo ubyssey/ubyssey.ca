@@ -30,12 +30,12 @@ def gpt_define_tag(slug, is_mobile=False) -> dict:
             'skyscraper' : '[[300, 250], [300, 600]]',
             'banner': '[468, 60]',
             'leaderboard': '[[728, 90], [970, 90]]',
-            'mobile-leaderboard': '[300, 50]'
+            'mobile-leaderboard': '[320, 50]'
         }
         if is_mobile and "Intra_Article" in ad_slot.dfp:
             return {
                 'div_id' : ad_slot.div_id,
-                'dfs' : ad_slot.dfs,
+                'dfp' : ad_slot.dfp,
                 'size' : SIZES['mobile-leaderboard'],
             }
         else:

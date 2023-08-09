@@ -5,6 +5,7 @@
 {% load wagtailimages_tags %}
 {% load wagtailuserbar %}
 {% load ubyssey_ad_tags %}
+{% load ubyssey_ad_filters %}
 
 {% block head_scripts %}
   <!-- Register ads for section page -->
@@ -14,67 +15,92 @@
 {% endblock %}
 
 {% block header %}
-  {% include 'navigation/headers/topbar.html' %}
   {% include 'navigation/headers/mobile.html' %}
+      <!-- Place header ads for section page -->
+    {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
+      {% gpt_placement_tag orderable.ad_slot %}
+    {% endfor %}
+  {% include 'navigation/headers/topbar.html' %}
 {% endblock %}
 
 {% block content %}
   <main class="section">
-    <!-- Place header ads for section page -->
-    {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
-      {% gpt_placement_tag orderable.ad_slot %}
-    {% endfor %}
-    <div class="u-container u-container--padded">
-      <div class="c-page__header">
-        <h1 class="c-page__heading">{{ self.title }}</h1>
-      </div>
-      {% comment %} CATEGORY MENU {% endcomment %}
-      {% if self.category_menu.count %}
-        <div class="c-page__header__subsections">
-          <ul>
-            {% for category_menu_item in self.category_menu.all %}
-              {% if category_menu_item.category %}
-                <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
-              {% else %}
-                {% comment %} Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! {% endcomment %}
-                <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
-              {% endif %}
-            {% endfor %}
-          </ul>
+    
+    <div class="u-container u-container--mid">
+
+      {% if banner %}
+        {% image banner width-700 as banner_image %}
+        <div class="banner" style="background-image: url('{{banner_image.full_url}}');">
+          <svg class="c-section__heading" viewBox="0 0 450 70">
+            <text class="c-section__heading" x="10" y="50" {% if not category %}style="stroke: {{self.colour}}"{% endif %}>{{title}}</text>
+          </svg>
+        </div>
+      {%else%}
+        <div class="c-page__header">
+          <h1 class="c-page__heading">{{title}}</h1>
         </div>
       {% endif %}
 
-      {% comment %}
-        featured_articles is added to context by SectionPage
-        by default it containes the most recent 4 articles
-      {% endcomment %}
-    <div class="c-section__featured">
-        {% include 'article/objects/featured.html' with article=featured_articles.first %}
-        <div class="c-section__featured__articles u-flex--tablet">
-          {% for article in featured_articles %}
-            {% if forloop.counter0 != 0 %}
-              {% include 'article/objects/column.html' with article=article %}
-            {% endif %}
-          {% endfor %}
+      <div class="c-infinitefeed__feed">
+        <div class="lightmode section_infinitefeed">
+        <div class="c-section__info">    
+          <p class="c-section__description">{{description}} &ensp;{% if not category %}<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
+          
+          {% if self.category_menu.count %}
+          <div class="featured_categories">
+            <p>Featured Categories:&nbsp; </p>
+            <ul>
+              {% for category_menu_item in self.category_menu.all %}
+                {% if category_menu_item.category %}
+                  <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
+                {% else %}
+                  comment Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! endcomment
+                  <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+          
+          <div class="c-section__buttons">
+            <div class="o-archive__search c-section__button-label">
+              <form method="get">
+                <label class="o-archive__search__label" for="c-articles-list__searchbar"><i
+                    class="fa fa-search"></i></label>
+                <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
+                  {% if search_query %}value="{{ search_query }}" {% endif %} placeholder="Search" />
+              </form>
+            </div>
+        
+            <div class="open-modal c-section__button-label">
+              <a href="#"> 
+                <p><i class="fa fa-tag"></i> Categories</p>
+              </a>
+
+              <div class="modal add-to-modal">
+                <div class="js-dropdown-container"></div>
+                <div class="category_menu u-container u-container--padded">
+                <a href="#" class="close-modal">
+                  <i class="fa fa-close c-section__modal_close"></i>
+                </a>
+                <h1><i class="fa fa-tag"></i> Series</h1> <!-- Why Series? Why not Categories? -->
+                <p><a href="{% pageurl self %}">{{self.title}}</a>{% if self.description %} - {{self.description}}{% endif %}</p>
+                <ul>
+                {% for category in all_categories %}
+                  <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a>{% if category.description %} — {{ category.description }}{% endif %}</li>
+                {% endfor %}
+                </ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
-        {% comment %}
-
-        #TODO furthur discussion about featured subsection
-
-        {% endcomment %}
+          {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
+        </div>
+        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with styling="c-section__sidebar" id="sidebar" sidebar_stream=self.sidebar_stream %}
+        <script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
       </div>
-
-      {% comment %}
-        DESIGN NOTE:
-        The below will be turned into _blocks_,
-        allowing editors to have user to have some level of control
-      {% endcomment %}
-    
-
-      <h3 class="c-page__section">Archive</h3>
-      {% include 'ubyssey/archive.html' with paginated_articles=paginated_articles%}
-  
-
     </div>
   </main>
 {% endblock %}

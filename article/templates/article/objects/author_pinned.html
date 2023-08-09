@@ -1,0 +1,31 @@
+{% load dispatch_filters %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load humanize %}
+
+<article class="o-article o-article--author_pinned{% if padded %} o-article--padded{% endif %}">
+  {% if not hide_image and article.featured_media.first.image or article.featured_video %}
+  <div class="o-article__left">
+    <a class="o-article__image" href={% pageurl article %}>
+      {% if article.featured_media.first.image %}
+       {% image article.featured_media.first.image fill-340x238-c100 %}
+      {% else %}
+        <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
+      {% endif %}
+    </a>
+  </div>
+  {% endif %}
+  <div class="o-article__right">
+    <div class="o-article__meta">
+      <h3 class="o-article__headline">
+        <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+      </h3>
+      <p class="o-article__snippet">{{ article.lede|safe }}</p>
+      <div class="o-article__byline">
+        <span class="o-article__author">{{ article.get_authors_with_urls|safe }}</span>
+        <span> &nbsp;&nbsp; </span>
+        <span class="o-article__published">{{ article.explicit_published_at|naturalday }}</span>
+      </div>
+    </div>
+  </div>
+</article>
