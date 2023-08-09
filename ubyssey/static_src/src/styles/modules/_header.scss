@@ -226,11 +226,19 @@ header.visual-essay{
           padding-left: 10px;
           padding-right: 10px;
           font-size: .875em;
-          
+
           &.current {
             color: #0071C9;
           }
-        
+
+          @media($bp-smaller-than-phablet){
+            &:not(.current) {
+              display: none;
+            }
+            &.current {
+              color: white;
+            }
+          }        
         }
       }
     }
