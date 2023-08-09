@@ -5,13 +5,10 @@ module.exports = {
   entry: {
     main: './src/js/main.js',
     dfp: './src/js/dfp.js',
-    home: './src/js/home.js',
-    infinitefeed: './src/js/infinitefeed.js',
     article: './src/js/article.jsx',
     vendors: './src/js/vendors.js',
+    a: './src/js/advertise.js',
     a_new: './src/js/advertise_new.js',
-    'visual-essay': './src/js/visual-essay.js',
-    'scrollTop': './src/js/scrollTop.js',
     'one-year-later': './src/js/one-year-later.js',
     'sport-series': './src/js/sport-series.js',
     'food-insecurity': './src/js/food-insecurity.jsx',
@@ -23,9 +20,9 @@ module.exports = {
     'infinite': './src/js/infinite.js',
     'soccer_nationals': './src/js/soccer_nationals.js',
     'timeline': './src/js/timeline.js',
+    'episode': './src/js/episode.js',
     blockadblock: './src/js/blockadblock.js',
     darkmode: './src/js/darkmode.js',
-    youtube: './src/js/modules/Youtube.js'
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),

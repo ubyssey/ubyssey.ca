@@ -72,15 +72,12 @@
                         {{ featured_image_object.credit }}
                     {% endif %}
                 </div> {% endcomment %}
-                <div class="c-article__byline__meta">
-                    {% include 'article/objects/darkmode_button.html' with id="guide-2022"%}
-                </div>
                 <div class="c-article__content">
                     {% comment %} <div class="advertisement box sidebar">
                         {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
                     </div> {% endcomment %}
                     {% for block in self.content %}
-                        {% include_block block with id=block.id %}
+                        {% include_block block %}
                     {% endfor %}
                 </div>
             </div>

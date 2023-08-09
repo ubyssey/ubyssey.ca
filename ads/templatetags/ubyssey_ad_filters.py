@@ -23,8 +23,7 @@ def inject_ads(value, is_mobile):
         is_mobile = True
 
     # Break down content into paragraphs
-    soup = BeautifulSoup(value, 'html.parser')
-    paragraphs = soup.select(".article-content > p")
+    paragraphs = value.split("</p>")
 
     if PARAGRAPHS_PER_AD < len(paragraphs): # If the article is somehow too short for even one ad, it doesn't get any
         x = range(0, len(paragraphs), PARAGRAPHS_PER_AD)
@@ -45,9 +44,11 @@ def inject_ads(value, is_mobile):
                     'size' : size,
                 }
                 ad_string = render_to_string('ads/advertisement_inline.html', context=ad_context)
-                paragraphs[n].insert_after(BeautifulSoup(ad_string, 'html.parser'))
+                paragraphs[n] = ad_string + paragraphs[n]
 
-    return soup.prettify()
+        # Assemble our text back with injected HTML
+        value = "</p>".join(paragraphs)
+    return value
 
 @register.filter(name='specify_homepage_sidebar_ads')
 @stringfilter

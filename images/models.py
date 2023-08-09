@@ -15,7 +15,7 @@ from wagtail.core.utils import string_to_ascii
 from wagtail.images.models import Image, AbstractImage, AbstractRendition
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.snippets.models import register_snippet
-from wagtail.search import index
+
 
 #-----Custom Image Model-----
 
@@ -68,10 +68,6 @@ class UbysseyImage(AbstractImage):
         'legacy_filename',
         'legacy_authors',
     )
-
-    search_fields = AbstractImage.search_fields + [
-        index.FilterField('author_id'),
-    ]
 
     def get_upload_to(self, filename):
         """

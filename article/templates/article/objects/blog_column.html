@@ -1,5 +1,3 @@
-{% load articletags %}
-
 {% comment %}
 This template is for the columns for the blog section on the home page under the digital prints section
 {% endcomment %}
@@ -10,7 +8,7 @@ This template is for the columns for the blog section on the home page under the
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load video_filters %}
-<article class="o-article o-article--column{% if padded %} o-article--padded{% endif %}" style="background-color: {{article|get_colour}}">
+<article class="o-article o-article--column{% if padded %} o-article--padded{% endif %}">
   <div class="o-article__meta">
     <div class="o-article__meta__image">
       {% if article.featured_media.first %}

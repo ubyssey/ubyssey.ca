@@ -1,6 +1,11 @@
 
 @import 'modules/variables';
 
+:root {
+  --authors-title-bio: #1B1B1B;
+}
+
+
 $text-color: var(--text_color);
 
 .featured-media {
@@ -60,6 +65,8 @@ div.indicator {
       padding-top: 25px;
       padding-bottom: 25px;
       margin: 0;
+      border-top: 2px solid #3E3E3E;
+      border-bottom: 1px solid #D2D2D2;
     }
   }
 }
@@ -253,7 +260,7 @@ div.indicator {
 .c-article__byline__meta {
   margin-bottom: 0.75rem;
   float: left;
-  color: var(--article_info);
+  color: #777;
   font-weight: $font-weight-normal;
   @media($bp-larger-than-tablet) {
     display: inline-block;
@@ -301,8 +308,8 @@ div.indicator {
 
 .c-share-buttons {
   float: left;
-  padding: 0px 4px 10px 4px;
-  color: var(--article_info);
+  padding: 0px 4px 0px 4px;
+  color: $DM-SH-button;
 }
 
 .c-share_space {
@@ -331,30 +338,22 @@ div.article-content {
 
   float: left;
   border-right: none;
-  margin-bottom: 50px;
 
   @media($bp-larger-than-tablet) {
+    border-right: 1px solid #e6e6e6;
     display: table-cell;
     padding-right: 15px;
     padding-left: 0;
     vertical-align: top;
     box-sizing: border-box;
     width: 65%;
-    padding-bottom: 1.4rem;
+    :last-child {
+      margin-bottom: 1.4rem;
+    }
   }
 
-  .redacted {
-    background-color: currentcolor;
-  }
-
-  .text-center {
-    display: block;
-    text-align: center;
-  }
-
-  .text-right {
-    display: block;
-    text-align: right;
+  >p {
+    color: $text-color;
   }
 
   > p,
@@ -363,8 +362,6 @@ div.article-content {
   > h2 {
     margin-top: 1.8em;
     margin-bottom: 0;
-    padding-left: 10px;
-    padding-right: 10px;
   }
   > h3,
   > ul,
@@ -382,7 +379,6 @@ div.article-content {
     @media($bp-larger-than-phablet){
       padding: 0;
       max-width: 585px;
-      margin: auto;
     }
   }
 
@@ -402,7 +398,7 @@ div.caption {
   margin-top: 6px;
   font-family: $font-default;
   font-size: 15px;
-  color: var(--article_caption);
+  color: #5A5A5A;
   line-height: 19px;
 
   padding-left: 15px;

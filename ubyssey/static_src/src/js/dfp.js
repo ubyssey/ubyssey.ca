@@ -3,7 +3,7 @@ const SIZES = {
     'skyscraper' : [[300, 250], [300, 600]],
     'banner': [468, 60],
     'leaderboard': [[728, 90], [970, 90]],
-    'mobile-leaderboard': [320, 50]
+    'mobile-leaderboard': [300, 50]
 };
 
 // Get reference to googletag from window object

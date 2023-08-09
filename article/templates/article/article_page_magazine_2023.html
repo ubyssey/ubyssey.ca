@@ -104,7 +104,7 @@
                     {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
                 </div> {% endcomment %}
                 {% for block in self.content %}
-                    {% include_block block with id=block.id %}
+                    {% include_block block %}
                 {% endfor %}
             </div>
         </div>
