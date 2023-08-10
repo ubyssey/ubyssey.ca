@@ -2,23 +2,29 @@ from django.conf import settings
 from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
-
-from newsletter.urls import urlpatterns as newsletter_urls
+from django.views import defaults as default_views
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour
-from ubyssey.views.feed import FrontpageFeed, SectionFeed
+from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
 from ubyssey.views.advertise import AdvertiseTheme
 
-from django.views import defaults as default_views
+from infinitefeed.views import infinitefeed
+
+from newsletter.urls import urlpatterns as newsletter_urls
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
-from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
 
 advertise = AdvertiseTheme()
 
 urlpatterns = []
+
+settings.WAGTAILIMAGES_FORMAT_CONVERSIONS = {
+    'jpeg': 'webp', 
+    'png': 'webp',
+    'webp': 'webp',
+}
 
 if settings.DEBUG:
     import debug_toolbar
@@ -57,6 +63,7 @@ urlpatterns += [
     # Wagtail
     re_path(r'^admin/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
+    re_path(r'^infinitefeed/$', infinitefeed, name='infinitefeed'), 
     re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
     re_path(r'^rss/(?P<slug>[-\w]+)/$', SectionFeed(), name='section-feed'),
     re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),

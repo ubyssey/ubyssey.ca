@@ -143,6 +143,10 @@ NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 
 # Application definition
 INSTALLED_APPS = [
+    # NOTE: Until Dispatch is removed, this app must be loaded first so that
+    # the dispatch.User model can be overridden by the `users` app below.
+    'dispatch.apps.DispatchConfig',
+
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
     'users',
@@ -154,10 +158,10 @@ INSTALLED_APPS = [
     'images',
     'videos',
     'ads',
-    'sporttourney',
     'specialfeaturelanding',
     'navigation',
     'dashboard',
+    'infinitefeed',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
@@ -257,6 +261,8 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATES[0]['OPTIONS']['context_processors'].append("config.context_processors.get_light_mode")
+
 # REST framework settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -317,6 +323,13 @@ WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 WAGTAIL_SITE_NAME = 'The Ubyssey'
 
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
+
+WAGTAILIMAGES_FORMAT_CONVERSIONS = {
+    'png': 'webp',
+    'jpeg': 'webp',
+    'bmp': 'webp',
+    'webp': 'webp',
+}
 
 # wagtailmenus settings
 WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html

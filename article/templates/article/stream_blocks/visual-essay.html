@@ -1,0 +1,46 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load static %}
+
+<div class="o-visual-essay__content-container o-visual-essay__content-container-show {{self.view.view}}">
+    <!-- Article text -->
+    <div class="o-visual-essay__left-container">
+        {% for block in self.content %}
+            {% if block.value.side == "left" %}
+            <div class="o-visual-essay__left-div {% if forloop.first%}o-visual-essay__left-first{% else %}o-visual-essay__left-next{% endif %}">
+                {% if block.block_type == 'image' %}
+                    {% if block.value.block.caption or block.value.block.credit %}
+                    <div class="caption">
+                        {% if block.value.block.caption %}{{ block.value.block.caption|safe }}{% endif %} 
+                        <span class="credit">{% if block.value.block.credit %}{{ block.value.block.credit }}{% endif %}</span>
+                    </div>
+                    {% endif %}
+                    {% image block.value.block.image original as bg %}
+                    <div class="o-visual-essay__left-image" style="background-image: url('{{bg.url}}')"></div>
+                {% else %}
+                    {% include_block block.value.block with id=block.id %}
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="o-visual-essay__right-container">
+        {% for block in self.content %}
+            {% if block.block_type == 'gap' or block.block_type == 'switch_view' %}
+                {% include_block block with id=block.id %}
+            {% elif block.value.side == "right" %}
+                {% if block.block_type == 'raw_html' %}
+                    {% include_block block.value.block with id=block.id %}
+                {% else %}
+                    <div class="o-visual-essay__right-div">
+                        {% include_block block.value.block with id=block.id %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="mark"></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<script src="{% static 'ubyssey/js/visual-essay.js' %}" type="text/javascript"></script>
