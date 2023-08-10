@@ -3,19 +3,19 @@ from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib.staticfiles.views import serve as serve_static
 from django.contrib import admin
-from django.shortcuts import redirect
-
-from newsletter.urls import urlpatterns as newsletter_urls
-
-from ubyssey.views.main import ads_txt
-from ubyssey.views.advertise import AdvertiseTheme
-
 from django.views import defaults as default_views
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+
+from ubyssey.views.main import ads_txt, redirect_blog_to_humour
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
+from ubyssey.views.advertise import AdvertiseTheme
+
+from infinitefeed.views import infinitefeed
+
+from newsletter.urls import urlpatterns as newsletter_urls
 
 advertise = AdvertiseTheme()
 
