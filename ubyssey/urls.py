@@ -4,6 +4,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views import defaults as default_views
 
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
+
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
 from ubyssey.views.advertise import AdvertiseTheme
@@ -11,10 +15,6 @@ from ubyssey.views.advertise import AdvertiseTheme
 from infinitefeed.views import infinitefeed
 
 from newsletter.urls import urlpatterns as newsletter_urls
-
-from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.core import urls as wagtail_urls
-from wagtail.documents import urls as wagtaildocs_urls
 
 advertise = AdvertiseTheme()
 

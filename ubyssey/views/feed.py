@@ -1,15 +1,10 @@
 from typing import Any, Dict
 from django.contrib.syndication.views import Feed
-from django.urls import reverse
 from django.utils import feedgenerator
-
-from django.utils.encoding import iri_to_uri
 
 from article.models import ArticlePage
 from section.models import SectionPage
 from authors.models import AuthorPage
-
-from django.utils.safestring import mark_safe
 
 class RssFeedWithImage(feedgenerator.Rss201rev2Feed):
     content_type = "text/xml"
