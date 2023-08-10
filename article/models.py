@@ -923,7 +923,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.SearchField('content'),
         
         index.FilterField('current_section'),
-        index.FilterField('author_id'),
         index.FilterField('slug'),
         index.FilterField('explicit_published_at'),
 
