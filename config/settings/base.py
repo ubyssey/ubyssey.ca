@@ -132,14 +132,26 @@ DATABASES = {
     },
 }
 
+# TODO: Remove this line after Dispatch is removed as a dependency.
+# This silences a reverse accessor clash error between the
+# dispatch.User and users.User models.
+SILENCED_SYSTEM_CHECKS = [
+    'fields.E304' # Reverse accessor clash error
+]
+
 # Set secret keys
 SECRET_KEY = env('SECRET_KEY')
 NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 
 # Application definition
 INSTALLED_APPS = [
+    # NOTE: Until Dispatch is removed, this app must be loaded first so that
+    # the dispatch.User model can be overridden by the `users` app below.
+    'dispatch.apps.DispatchConfig',
+
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
+    'users',
     'home',
     'archive',
     'authors',
@@ -148,13 +160,11 @@ INSTALLED_APPS = [
     'images',
     'videos',
     'ads',
-    'sporttourney',
     'specialfeaturelanding',
     'navigation',
     'dashboard',
+    'infinitefeed',
 
-    'dispatch.apps.DispatchConfig',
-    'dispatchusers.apps.DispatchusersConfig',
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
 
@@ -204,7 +214,7 @@ if DEBUG:
 	]
 
 # Replace default user model
-AUTH_USER_MODEL = 'dispatch.User'
+AUTH_USER_MODEL = 'users.User'
 
 API_URL = '/api/'
 
@@ -252,6 +262,8 @@ TEMPLATES = [
         ],
     },
 ]
+
+TEMPLATES[0]['OPTIONS']['context_processors'].append("config.context_processors.get_light_mode")
 
 # REST framework settings
 REST_FRAMEWORK = {
@@ -311,11 +323,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 WAGTAIL_SITE_NAME = 'The Ubyssey'
-WAGTAIL_USER_EDIT_FORM = 'dispatchusers.forms.DispatchUserEditForm'
-WAGTAIL_USER_CREATION_FORM = 'dispatchusers.forms.DispatchUserCreationForm'
-WAGTAIL_USER_CUSTOM_FIELDS = ['person', 'is_active']
 
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
+
+WAGTAILIMAGES_FORMAT_CONVERSIONS = {
+    'png': 'webp',
+    'jpeg': 'webp',
+    'bmp': 'webp',
+    'webp': 'webp',
+}
 
 # wagtailmenus settings
 WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html

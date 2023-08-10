@@ -9,6 +9,9 @@ caption
 credit
 {% endcomment%}
 {% load video_filters %}
+{% load static %}
+
+<script src="{% static 'ubyssey/js/youtube.js' %}" type="text/javascript"></script>
 
 <div class="o-article-embed o-article-embed--video js-video-youtube" data-id="{{ value.video_embed.url|youtube_embed_id }}">
     <div class="o-article-embed--video__wrapper js-video-launch">

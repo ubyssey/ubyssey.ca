@@ -40,7 +40,7 @@
     {% block banner_ad %}
     <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
-            {% gpt_placement_tag orderable.ad_slot %}
+            {% gpt_define_tag orderable.ad_slot is_mobile %}
         {% endfor %}
     {% endblock %}
 
@@ -104,7 +104,7 @@
                     {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
                 </div> {% endcomment %}
                 {% for block in self.content %}
-                    {% include_block block %}
+                    {% include_block block with id=block.id %}
                 {% endfor %}
             </div>
         </div>

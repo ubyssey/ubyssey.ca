@@ -30,6 +30,10 @@ body {
   box-sizing: border-box;
 }
 
+.u-container--mid {
+  max-width: 1100px;
+}
+
 .u-container--large {
   max-width: 1260px;
 }
@@ -50,6 +54,12 @@ body {
 
 .u-container-topbar {
   max-width: 1200px;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.u-container-max {
+  max-width: none;
 }
 
 
@@ -180,6 +190,17 @@ main {
 
   background-size: cover;
   background-position: center;
+}
+
+
+// Defualt text colours
+
+h1, h2, h3 {
+  color: var(--header_color)
+}
+
+p{
+  color: var(--text_color);
 }
 
 // ANCHORS

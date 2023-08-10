@@ -1,4 +1,4 @@
-export function YoutubePlayer(element) {
+function YoutubePlayer(element) {
     const node = $(element);
     let playerReady = false;
     let userReady = false;
@@ -23,16 +23,18 @@ export function YoutubePlayer(element) {
             playerReady = true;
         }
     }
-
+    console.log("Youtube");
     $(element).find('.js-video-launch').click(function(){
         $(this).hide();
         $(`#video-${node.data('id')}`).show();
+        console.log(playerReady);
         if (playerReady){
             player.playVideo();
         } else {
             userReady = true;
         }
     });
+
 }
 
 // 2. This code loads the IFrame Player API code asynchronously.
@@ -42,6 +44,7 @@ tag.src = 'https://www.youtube.com/iframe_api';
 let firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+console.log(firstScriptTag);
 // 3. This function creates an <iframe> (and YouTube player)
 //    after the API code downloads.
 window.onYouTubeIframeAPIReady = function() {

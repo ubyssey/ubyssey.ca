@@ -14,6 +14,7 @@ from ubyssey.views.guide import guide2016, GuideArticleView, GuideLandingView
 
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.magazine import magazine, MagazineLandingView, MagazineArticleView
+from infinitefeed.views import infinitefeed
 
 from ubyssey.zones import *
 from ubyssey.widgets import *
@@ -33,6 +34,12 @@ from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
 advertise = AdvertiseTheme()
 
 urlpatterns = []
+
+settings.WAGTAILIMAGES_FORMAT_CONVERSIONS = {
+    'jpeg': 'webp', 
+    'png': 'webp',
+    'webp': 'webp',
+}
 
 if settings.DEBUG:
     import debug_toolbar
@@ -71,6 +78,7 @@ urlpatterns += [
     # Wagtail
     re_path(r'^admin/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
+    re_path(r'^infinitefeed/$', infinitefeed, name='infinitefeed'), 
     re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
     re_path(r'^rss/(?P<slug>[-\w]+)/$', SectionFeed(), name='section-feed'),
     re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
