@@ -348,7 +348,11 @@ class ArchivePage(RoutablePageMixin, Page):
                 articles = articles | ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
         else:
             sections = SectionPage.objects.filter(categories__slug=spoof_slug).live().public()
-            articles = ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
+            if sections[0].title.capitalize() != "Humor" :
+                articles = ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
+            else:
+                articles = ArticlePage.objects.live().public().filter(category__slug=spoof_slug)   
+
         
         if context["order"]:
             articles = self.get_order_objects(context["order"], articles, video_section)           
