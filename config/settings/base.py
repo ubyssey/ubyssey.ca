@@ -132,23 +132,12 @@ DATABASES = {
     },
 }
 
-# TODO: Remove this line after Dispatch is removed as a dependency.
-# This silences a reverse accessor clash error between the
-# dispatch.User and users.User models.
-SILENCED_SYSTEM_CHECKS = [
-    'fields.E304' # Reverse accessor clash error
-]
-
 # Set secret keys
 SECRET_KEY = env('SECRET_KEY')
 NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 
 # Application definition
 INSTALLED_APPS = [
-    # NOTE: Until Dispatch is removed, this app must be loaded first so that
-    # the dispatch.User model can be overridden by the `users` app below.
-    'dispatch.apps.DispatchConfig',
-
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
     'users',
