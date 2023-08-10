@@ -240,14 +240,7 @@ TEMPLATES = [
                 'dbtemplates.loader.Loader',
             ],
         },
-    },
-    {
-        'NAME': 'dispatch',
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-			DISPATCH_APP_DIR('templates')
-        ],
-    },
+    }
 ]
 
 TEMPLATES[0]['OPTIONS']['context_processors'].append("config.context_processors.get_light_mode")
