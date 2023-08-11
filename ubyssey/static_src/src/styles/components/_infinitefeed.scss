@@ -18,9 +18,15 @@
     top: 50px;
 }
 
+.flex-stream {
+    display: flex;
+    justify-content: center;
+}
+
 .c-sidebar_container {
     height: 1500px;
     min-height: fit-content;
+    margin-top: 65px;
 }
 
 .c-sidebar {
@@ -62,7 +68,7 @@
 }
 
 .c-home-bannerbox {
-    width: 90%;
+    width: 100%;
 }
 
 .sidebar-issue{

@@ -638,10 +638,11 @@ ol.article-list {
 .home-featured {
   @media($bp-smaller-than-phablet){
     display:block;
+    margin-top: 20px;
   }
   @media($bp-larger-than-phablet){
     display: flex;
-    margin-top: 40px;
+    margin-top: 60px;
   }
 }
 
