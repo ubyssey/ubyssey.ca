@@ -194,10 +194,14 @@ header.visual-essay{
     height: 50px;
     overflow: hidden;
 
-    img.top-logo {
+    div.top-logo {
       width: 285px;
+      height: 25px;
       margin: auto;
       display: block;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
     }  
   }
 
@@ -282,10 +286,13 @@ header.topbar {
       position: absolute;
   }
 
-  img.logo {
-      vertical-align: middle;
-      height: 20px;
-      display: inline;
+  div.logo {
+    height: 20px;
+    width: 130px;
+    background-position: center;
+    background-size: contain;
+    vertical-align: middle;
+    display: inline-block;
   }
   
   .right {
