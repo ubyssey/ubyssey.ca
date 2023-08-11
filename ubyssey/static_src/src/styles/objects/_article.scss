@@ -480,6 +480,7 @@
 
   .o-article__byline {
     font-size: 0.8rem;
+    padding-top: 5px;
     color: black;
   }
 
@@ -505,10 +506,10 @@
   }
 
   .o-article__section-tag {
-    color: $color-ubyssey-blue-dark;
+    color: white;
 
     &:hover {
-      color:$color-accent-blue;
+      color: black;
     } 
   }
 
