@@ -26,9 +26,9 @@
 }
 
 .c-section__featured__articles {
-  @media($bp-larger-than-phablet) {
-    width: 85%;
-  }
+  //@media($bp-larger-than-phablet) {
+  //  width: 85%;
+  //}
 }
 
 .modal {
@@ -120,10 +120,14 @@
 
 .category_menu {
   position: fixed;
+  height: 75%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;
+  @media($bp-larger-than-phablet) {
+    width: 50%;
+  }
+  overflow-y: auto;
   background-color: var(--background);
 }
 
