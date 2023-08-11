@@ -32,6 +32,7 @@
 .c-sidebar {
     height: 100%;
     width:40%;
+    padding-left: 1em;
 
     @media ($bp-smaller-than-phablet) {
         display:none;
@@ -123,6 +124,10 @@
     }
     #loader {
         color: black;
+    }
+    .c-sidebar {
+        border-left: solid;
+        border-width: 1px;
     }
 }
 
