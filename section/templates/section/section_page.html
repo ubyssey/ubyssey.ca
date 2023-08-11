@@ -83,11 +83,11 @@
                 <a href="#" class="close-modal">
                   <i class="fa fa-close c-section__modal_close"></i>
                 </a>
-                <h1><i class="fa fa-tag"></i> Series</h1> <!-- Why Series? Why not Categories? -->
+                <h1><i class="fa fa-tag"></i> All Categories</h1> <!-- Why Series? Why not Categories? -->
                 <p><a href="{% pageurl self %}">{{self.title}}</a>{% if self.description %} - {{self.description}}{% endif %}</p>
                 <ul>
                 {% for category in all_categories %}
-                  <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a>{% if category.description %} — {{ category.description }}{% endif %}</li>
+                  <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a></li>
                 {% endfor %}
                 </ul>
                 </div>
