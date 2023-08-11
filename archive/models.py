@@ -148,6 +148,8 @@ class ArchivePage(RoutablePageMixin, Page):
         context = super().get_context(request)
         search_query = request.GET.get("q")
         order = request.GET.get("order")
+        if order == None:
+            order = "newest"
         self.year = self.__parse_int_or_none(request.GET.get('year'))
         
         # Set context
