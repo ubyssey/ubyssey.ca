@@ -46,7 +46,7 @@
     "js-cookie": "^2.2.0",
     "keymaster": "^1.6.2",
     "lru-cache": "^2.7.0",
-    "plugin-error": "^1.0.1",
+    "plugin-error": "^2.0.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-textarea-autosize": "^2.5.1",
