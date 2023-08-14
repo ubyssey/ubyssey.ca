@@ -9,7 +9,7 @@ mysqlclient==2.0.1
 django-phonenumber-field==2.0.0
 phonenumbers==8.12.9
 beautifulsoup4==4.8.2
-feedparser==6.0.1
+feedparser==6.0.10
 pyyaml==5.4
 ua-parser==0.10.0
 user-agents==2.2.0
