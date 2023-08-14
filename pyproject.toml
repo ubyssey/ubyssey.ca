@@ -1,0 +1,12 @@
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+# 'extend-exclude' excludes files or directories in addition to the defaults
+force-exclude = '''
+/(
+    .*migrations.*
+    |.*config.*
+    |.*__pycache__
+)/
+'''
