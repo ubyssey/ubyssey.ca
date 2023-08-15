@@ -37,8 +37,8 @@
     </div>
 
     <div class="o-archive__sidebar__filters">
-        <h2>Section</h2>
-        <ul>
+        <h2>Section <a href="#" class="filterDropdown"><i class="fa-solid fa-caret-down"></i></a></h2>
+        <ul class="hide_filter">
             <li
                 class="o-archive__sidebar__filter{% if section_slug == "All" %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}{{ request|query_string }}">All sections</a>
