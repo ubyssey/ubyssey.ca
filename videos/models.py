@@ -33,6 +33,7 @@ class VideoTag(TaggedItemBase):
 
 
 class VideoAuthorsOrderable(Orderable):
+    print("Fire!!!!!!!!!!!!!!!!!!!!!!!!!")
     """
     This closely corresponds to the Dispatch model that is (mis-)named "Author"
     """
@@ -45,6 +46,7 @@ class VideoAuthorsOrderable(Orderable):
         "authors.AuthorPage",
         on_delete=models.CASCADE,
     )
+
     panels = [
         MultiFieldPanel(
             [
@@ -97,6 +99,19 @@ class VideosPage(SectionablePage):
     # @route('^archive/videos$')
 
 
+TaggedItemBase
+
+
+iochjsoi
+
+
+cjsoich
+
+
+hcdchsdo
+
+
+chisdochs
 # -----Snippet models-----
 
 
