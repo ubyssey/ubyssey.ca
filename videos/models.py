@@ -33,7 +33,6 @@ class VideoTag(TaggedItemBase):
 
 
 class VideoAuthorsOrderable(Orderable):
-    print("Fire!!!!!!!!!!!!!!!!!!!!!!!!!")
     """
     This closely corresponds to the Dispatch model that is (mis-)named "Author"
     """
@@ -58,7 +57,6 @@ class VideoAuthorsOrderable(Orderable):
 
 
 class VideosPage(SectionablePage):
-    print("Hello")
     template = "videos/videos_page.html"
 
     parent_page_types = [
@@ -99,19 +97,6 @@ class VideosPage(SectionablePage):
     # @route('^archive/videos$')
 
 
-TaggedItemBase
-
-
-iochjsoi
-
-
-cjsoich
-
-
-hcdchsdo
-
-
-chisdochs
 # -----Snippet models-----
 
 
