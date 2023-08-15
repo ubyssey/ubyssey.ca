@@ -178,9 +178,11 @@
 
     .o-article__headline {
       // Text
-      font-size: 2rem;
-      line-height: 3.2rem;
-      left: 20px;
+      font-size: 1.5rem;
+      line-height: 2.5rem;
+      @media($bp-larger-than-phablet) {
+        left: 20px;
+      }
     }
   }
 
@@ -193,12 +195,16 @@
   
     @media($bp-smaller-than-phablet) {
       top:-50px;
+      margin-left: 20px;
+      margin-right: 20px;
     }
   }
 
   .o-article__meta {
-    margin-left: 20px;
-    margin-right: 10px;
+    @media($bp-larger-than-phablet) {
+      margin-left: 20px;
+      margin-right: 10px;
+    }
   }
 
   .o-article__headline {
