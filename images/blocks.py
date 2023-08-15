@@ -1,27 +1,27 @@
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
-class ImageBlock(blocks.StructBlock):
 
+class ImageBlock(blocks.StructBlock):
     image = ImageChooserBlock(
         required=True,
     )
     style = blocks.ChoiceBlock(
         choices=[
-            ('default', 'Default'),
-            ('left', 'Left'),
-            ('right', 'Right'),   
+            ("default", "Default"),
+            ("left", "Left"),
+            ("right", "Right"),
         ],
-        default='default',
+        default="default",
     )
     width = blocks.ChoiceBlock(
         choices=[
-            ('full', 'Full'),
-            ('small', 'Small'),
-            ('medium', 'Medium'),
-            ('large', 'Large'),
+            ("full", "Full"),
+            ("small", "Small"),
+            ("medium", "Medium"),
+            ("large", "Large"),
         ],
-        default='full',
+        default="full",
     )
     caption = blocks.CharBlock(
         max_length=255,
@@ -33,5 +33,5 @@ class ImageBlock(blocks.StructBlock):
     )
 
     class Meta:
-        template = 'images/stream_blocks/image_block.html'
-        icon = 'image'
+        template = "images/stream_blocks/image_block.html"
+        icon = "image"

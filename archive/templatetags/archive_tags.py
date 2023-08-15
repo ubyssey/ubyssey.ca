@@ -1,11 +1,12 @@
 from django import template
-from infinitefeed.views import getArticles
 from django.template.defaultfilters import stringfilter
 
+from infinitefeed.views import getArticles
 
 register = template.Library()
 
-@register.simple_tag(takes_context = True)
+
+@register.simple_tag(takes_context=True)
 def modify_query_string(context, field, value):
     """
     See https://stackoverflow.com/questions/5755150/altering-one-query-parameter-in-a-url-django (accessed 2022/07/22)
@@ -16,9 +17,10 @@ def modify_query_string(context, field, value):
     return:
         modified URL of current page such that query string field value changes
     """
-    dict_ = context['request'].GET.copy()      
+    dict_ = context["request"].GET.copy()
     dict_[field] = value
     return dict_.urlencode()
+
 
 @register.filter
 def query_string(request):
@@ -30,15 +32,18 @@ def query_string(request):
     else:
         parameters = ""
 
-    return parameters      
+    return parameters
+
 
 @register.filter
 def replace(slug):
     return str(slug).replace("-", " ")
 
-@register.simple_tag(takes_context = True)
-def remove_field_from_query_string(context, field):
-    dict_ = context['request'].GET.copy()      
-    dict_.pop(field, None) #Deletes the field if it exists, does nothing if it doesn't. Prevents KeyError
-    return dict_.urlencode()
 
+@register.simple_tag(takes_context=True)
+def remove_field_from_query_string(context, field):
+    dict_ = context["request"].GET.copy()
+    dict_.pop(
+        field, None
+    )  # Deletes the field if it exists, does nothing if it doesn't. Prevents KeyError
+    return dict_.urlencode()

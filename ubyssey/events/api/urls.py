@@ -5,6 +5,6 @@ from ubyssey.events.api import views
 
 router = routers.DefaultRouter()
 
-router.register(r'', views.EventViewSet, basename='api-event')
+router.register(r"", views.EventViewSet, basename="api-event")
 
 urlpatterns = router.urls

@@ -1,6 +1,7 @@
-from django.apps import AppConfig
 import environ
+from django.apps import AppConfig
+
 
 class UbysseyConfig(AppConfig):
-    name = 'ubyssey'
+    name = "ubyssey"
     path = environ.Path(__file__) - 1

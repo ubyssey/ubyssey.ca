@@ -1,19 +1,26 @@
-from . import blocks as homeblocks
-
-from article.models import ArticlePage
-from section.models import SectionPage , CategorySnippet
 from django.db import models
 from django.utils import timezone
+from modelcluster.fields import ParentalKey
+from wagtail.admin.edit_handlers import (
+    FieldPanel,
+    InlinePanel,
+    MultiFieldPanel,
+    PageChooserPanel,
+    StreamFieldPanel,
+)
+from wagtail.core.fields import StreamField
+from wagtail.core.models import Orderable, Page
+from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
 from ads.models import AdSlot
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, PageChooserPanel, MultiFieldPanel, InlinePanel
-from wagtail.core.models import Page, Orderable
-from wagtail.core.fields import StreamField
-from wagtailmodelchooser.edit_handlers import ModelChooserPanel
-from modelcluster.fields import ParentalKey
+from article.models import ArticlePage
 from infinitefeed import blocks as infinitefeedblocks
+from section.models import CategorySnippet, SectionPage
+
+from . import blocks as homeblocks
 
 # Create your models here.
+
 
 class TopArticlesOrderable(Orderable):
     home_page = ParentalKey(
@@ -21,7 +28,7 @@ class TopArticlesOrderable(Orderable):
         related_name="top_articles",
     )
     article = models.ForeignKey(
-        'article.ArticlePage',
+        "article.ArticlePage",
         on_delete=models.CASCADE,
         related_name="top_articles",
     )
@@ -29,43 +36,38 @@ class TopArticlesOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel('article'),
+                PageChooserPanel("article"),
             ],
-            heading="Article"
+            heading="Article",
         ),
     ]
+
 
 class HomePage(Page):
     show_in_menus_default = True
     template = "home/home_page.html"
-    
+
     parent_page_types = [
-        'wagtailcore.Page',
+        "wagtailcore.Page",
     ]
 
     subpage_types = [
-        'section.SectionPage',
-        'authors.AllAuthorsPage',
-        'videos.VideosPage',
-        'archive.ArchivePage',
+        "section.SectionPage",
+        "authors.AllAuthorsPage",
+        "videos.VideosPage",
+        "archive.ArchivePage",
     ]
 
-    tagline = models.CharField(
-        blank=True,
-        null=True,
-        max_length=50)
-    
-    tagline_url = models.URLField(
-        blank=True,
-        null=True
-    )
+    tagline = models.CharField(blank=True, null=True, max_length=50)
+
+    tagline_url = models.URLField(blank=True, null=True)
 
     cover_story = ParentalKey(
         "article.ArticlePage",
-        related_name = "cover_story",
+        related_name="cover_story",
         null=True,
         blank=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
     )
 
     links = StreamField(
@@ -77,23 +79,24 @@ class HomePage(Page):
     )
 
     sections_stream = StreamField(
-        [
-            ("home_page_section_block", homeblocks.HomepageFeaturedSectionBlock())
-        ],
+        [("home_page_section_block", homeblocks.HomepageFeaturedSectionBlock())],
         null=True,
         blank=True,
     )
 
     sidebar_stream = StreamField(
-    [
-        ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
-        ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", homeblocks.SidebarCategoryBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
-        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),         
-    ],
-    null=True,
-    blank=True,
+        [
+            (
+                "sidebar_advertisement_block",
+                infinitefeedblocks.SidebarAdvertisementBlock(),
+            ),
+            ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
+            ("sidebar_category_block", homeblocks.SidebarCategoryBlock()),
+            ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),
+            ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
+        ],
+        null=True,
+        blank=True,
     )
 
     # home_leaderboard_ad_slot = models.ForeignKey(
@@ -131,14 +134,14 @@ class HomePage(Page):
                 FieldPanel("tagline"),
                 FieldPanel("tagline_url"),
             ],
-            heading="Tagline"
+            heading="Tagline",
         ),
         PageChooserPanel("cover_story"),
         MultiFieldPanel(
             [
                 InlinePanel("top_articles"),
             ],
-            heading="Top articles"
+            heading="Top articles",
         ),
         StreamFieldPanel("links", heading="Links"),
         StreamFieldPanel("sidebar_stream", heading="Sidebar"),
@@ -155,11 +158,11 @@ class HomePage(Page):
         return context
 
     def getTopArticles(self):
-        return self.top_articles.all() 
+        return self.top_articles.all()
+
     top_articles_list = property(fget=getTopArticles)
-     
+
     def get_all_section_slug(self):
-        
         allsection_slug = []
         allsectionPages = SectionPage.objects.all()
 

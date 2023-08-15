@@ -1,6 +1,7 @@
 from wagtail.core import blocks
 from wagtail.embeds import blocks as embed_blocks
 
+
 class OneOffVideoBlock(blocks.StructBlock):
     video_embed = embed_blocks.EmbedBlock(
         null=False,
@@ -20,5 +21,5 @@ class OneOffVideoBlock(blocks.StructBlock):
     )
 
     class Meta:
-        template = 'videos/stream_blocks/one_off_video.html'
-        icon = 'media'
+        template = "videos/stream_blocks/one_off_video.html"
+        icon = "media"

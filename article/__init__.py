@@ -1,1 +1,1 @@
-default_app_config = 'article.apps.ArticleConfig'
+default_app_config = "article.apps.ArticleConfig"

@@ -1,16 +1,15 @@
-import re
 import datetime
+import re
 
 import feedparser
-
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 from django.http import HttpResponse
+from django.utils import timezone
 
 from ubyssey.events.models import Event, ScrapedEvent
 
-class UBCEventsRSSFeed(object):
 
+class UBCEventsRSSFeed(object):
     def __init__(self, url):
         self.url = url
         self.feed = feedparser.parse(self.url)
@@ -23,9 +22,8 @@ class UBCEventsRSSFeed(object):
         num_events = 0
 
         for event in new_events:
-
             # Add events to ScrapedEvent model
-            guid = event['guid']
+            guid = event["guid"]
 
             scraped_event = ScrapedEvent(guid=guid, scrape_time=self.scrape_time)
             scraped_event.save()
@@ -33,15 +31,15 @@ class UBCEventsRSSFeed(object):
             # Add events to Event model, ready to be approved and published by staff
             # TODO: Add missing fields from events when RSS Stream is updated
             event_for_approval = Event(
-                title=event['title'],
-                description=event['description'],
-                host='CHANGE FIELD',
+                title=event["title"],
+                description=event["description"],
+                host="CHANGE FIELD",
                 start_time=self.scrape_time,
                 end_time=self.scrape_time + datetime.timedelta(days=7),
-                location='CHANGE FIELD',
-                category='other',
-                submitter_email='noreply@ubyssey.ca'
-                )
+                location="CHANGE FIELD",
+                category="other",
+                submitter_email="noreply@ubyssey.ca",
+            )
             event_for_approval.save()
 
             num_events += 1
@@ -55,9 +53,8 @@ class UBCEventsRSSFeed(object):
         num_events = 0
 
         raw_events = self.get_event_data()
-        raw_event_guids = [event.get('guid') for event in raw_events]
+        raw_event_guids = [event.get("guid") for event in raw_events]
         for event in scraped_events:
-
             if event.guid not in raw_event_guids:
                 event.delete()
                 num_events += 1
@@ -76,7 +73,7 @@ class UBCEventsRSSFeed(object):
 
         # Get events from the RSS Stream
         for event in self.get_event_data():
-            if event['guid'] not in previous_event_guids:
+            if event["guid"] not in previous_event_guids:
                 new_events.append(event)
 
         return new_events
@@ -84,24 +81,24 @@ class UBCEventsRSSFeed(object):
     def get_guid(self, url):
         """Returns guid from url"""
 
-        guid_regex = re.search('.*(?:guid=)(.{44}).*', url)
+        guid_regex = re.search(".*(?:guid=)(.{44}).*", url)
 
         if guid_regex:
             return guid_regex.group(1)
         else:
-            raise FeedError('Error parsing guid from event link')
+            raise FeedError("Error parsing guid from event link")
 
     def get_event_data(self):
         """Gets all events from feed"""
         events = []
 
         for event in self.feed.entries:
-            guid = self.get_guid(event.links[0]['href'])
+            guid = self.get_guid(event.links[0]["href"])
 
             event_data = {
-                'title': event['title'],
-                'description': event['summary'],
-                'guid': guid
+                "title": event["title"],
+                "description": event["summary"],
+                "guid": guid,
             }
 
             events.append(event_data)
@@ -117,19 +114,22 @@ class UBCEventsRSSFeed(object):
         http_status = self.feed.status
 
         return {
-            'status': str(http_status),
-            'added': num_created,
-            'removed': num_removed
+            "status": str(http_status),
+            "added": num_created,
+            "removed": num_removed,
         }
+
 
 class FeedError(Exception):
     pass
 
+
 class Command(BaseCommand):
     def handle(self, **options):
-
-        feedObj = UBCEventsRSSFeed('http://services.calendar.events.ubc.ca/cgi-bin/rssCache.pl?days=2&mode=rss')
+        feedObj = UBCEventsRSSFeed(
+            "http://services.calendar.events.ubc.ca/cgi-bin/rssCache.pl?days=2&mode=rss"
+        )
 
         feedObjData = feedObj.update()
 
-        return feedObjData['status']
+        return feedObjData["status"]

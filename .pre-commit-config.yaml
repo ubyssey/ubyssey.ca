@@ -3,10 +3,19 @@ repos:
     rev: 23.7.0
     hooks:
     - id: black
-  # - repo: https://github.com/PyCQA/isort
-  #   rev: 5.12.0
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v4.4.0  
   #   hooks:
-  #     - id: isort
+  #   -   id: debug-statements
+  # - repo: https://github.com/dhruvmanila/remove-print-statements
+  #   rev: v0.5.2  
+  #   hooks:
+  #   - id: remove-print-statements
   # - repo: https://github.com/PyCQA/flake8
   #   rev: 6.1.0
   #   hooks:

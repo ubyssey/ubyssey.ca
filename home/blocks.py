@@ -1,20 +1,19 @@
 """
 Blocks used on the home page of the site
 """
+from dispatch.models import Section
+from django import forms
+from django.db.models import Q
+from wagtail.core import blocks
+from wagtail.core.blocks import field_block
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtailmodelchooser.blocks import ModelChooserBlock
+
 from ads.models import HomeSidebarPlacementOrderable
 from article.models import ArticlePage
 from section.models import CategorySnippet
 
-from django import forms
-from django.db.models import Q
-from dispatch.models import Section
-
-from wagtail.core import blocks
-from wagtail.core.blocks import field_block
-
-from wagtail.snippets.blocks import SnippetChooserBlock
-from wagtail.images.blocks import ImageChooserBlock
-from wagtailmodelchooser.blocks import ModelChooserBlock
 
 class SectionChooserBlock(blocks.ChooserBlock):
     # based off code from:
@@ -23,18 +22,16 @@ class SectionChooserBlock(blocks.ChooserBlock):
     target_model = Section
     widget = forms.Select
 
-class HomepageFeaturedSectionBlock(blocks.StructBlock):
 
-    section = field_block.PageChooserBlock(
-        page_type='section.SectionPage'
-    )
+class HomepageFeaturedSectionBlock(blocks.StructBlock):
+    section = field_block.PageChooserBlock(page_type="section.SectionPage")
 
     layout = blocks.ChoiceBlock(
         choices=[
-            ('bulleted', '\"Bulleted Section" Style'),
-            ('featured', '\"Featured Section\" Style'),
+            ("bulleted", '"Bulleted Section" Style'),
+            ("featured", '"Featured Section" Style'),
         ],
-        default='bulleted',
+        default="bulleted",
         required=True,
     )
 
@@ -45,13 +42,14 @@ class HomepageFeaturedSectionBlock(blocks.StructBlock):
         # Therefore for ease of use, we make sure the values we want to use in templates are visible in context here.
 
         context = super().get_context(value, parent_context=parent_context)
-        context['section'] = value['section']
-        context['layout'] = value['layout']
-        context['articles'] = context['section'].get_featured_articles()          
+        context["section"] = value["section"]
+        context["layout"] = value["layout"]
+        context["articles"] = context["section"].get_featured_articles()
         return context
 
     class Meta:
         template = "home/stream_blocks/section_block.html"
+
 
 class AboveCutBlock(blocks.StructBlock):
     # Ideally this will be used to grant the user more control of what happens "above the cut"
@@ -59,22 +57,27 @@ class AboveCutBlock(blocks.StructBlock):
     # As of 2022/05/25, adding ad block selection
     # As of 2022/06/23, selecting from settings orderable instead
 
-
     # NOTE 7/05 - DO NOT WORK AS I HOPED
     # sidebar_placement_orderable = ModelChooserBlock(
     #     target_model=HomeSidebarPlacementOrderable,
     #     required=False,
     # )
-    
+
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        qs = ArticlePage.objects.live().public().filter(~(Q(current_section='guide'))).order_by('-explicit_published_at')
-        context['articles'] = qs[:6]
+        qs = (
+            ArticlePage.objects.live()
+            .public()
+            .filter(~(Q(current_section="guide")))
+            .order_by("-explicit_published_at")
+        )
+        context["articles"] = qs[:6]
         # context['sidebar_placement_orderable'] = value['sidebar_placement_orderable']
         return context
 
     class Meta:
         template = "home/stream_blocks/above_cut_block.html"
+
 
 class SidebarAdvertisementBlock(blocks.StructBlock):
     # Inserts of the recurring ad pattern for home page side bar
@@ -82,21 +85,26 @@ class SidebarAdvertisementBlock(blocks.StructBlock):
     class Meta:
         template = "home/stream_blocks/sidebar_advertisement_block.html"
 
+
 class SinglePrintIssueBlock(blocks.StructBlock):
     date = blocks.DateBlock(required=True)
     image = ImageChooserBlock(required=False)
     show_image = blocks.BooleanBlock(required=False)
     link = blocks.URLBlock(required=True)
+
     class Meta:
         template = "home/stream_blocks/sidebar_single_issue_block.html"
         verbose_name = "Print Issue"
         verbose_name_plural = "Print Issues"
 
+
 class SidebarIssuesStream(blocks.StreamBlock):
     """
     Stream to be used by the SidebarIssueBlock. Each entity in the stream represents a single print issue.
     """
+
     issue = SinglePrintIssueBlock()
+
 
 class SidebarIssuesBlock(blocks.StructBlock):
     """
@@ -104,12 +112,15 @@ class SidebarIssuesBlock(blocks.StructBlock):
 
     Consists of a title block (self explanatory) and a stream block (which contains the issues to be displayed)
     """
+
     title = blocks.CharBlock(required=True, max_length=255)
     issues = SidebarIssuesStream()
+
     class Meta:
         template = "home/stream_blocks/sidebar_issues_block.html"
         verbose_name = "Sidebar Print Issues Block"
         verbose_name_plural = "Sidebar Print Issues Blocks"
+
 
 class SidebarCategoryBlock(blocks.StructBlock):
     title = blocks.CharBlock(
@@ -120,46 +131,57 @@ class SidebarCategoryBlock(blocks.StructBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        context['title'] = value['title']
-        context['category'] = value['title']
-        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')
+        context["title"] = value["title"]
+        context["category"] = value["title"]
+        context["articles"] = (
+            ArticlePage.objects.live()
+            .public()
+            .filter(category=value["category"])
+            .order_by("-explicit_published_at")
+        )
         return context
+
     class Meta:
         template = "infinitefeed/sidebar/sidebar_section_block.html"
+
 
 class SidebarSectionBlock(blocks.StructBlock):
     title = blocks.CharBlock(
         required=True,
         max_length=255,
     )
-    section = field_block.PageChooserBlock(
-        page_type='section.SectionPage'
-    )
+    section = field_block.PageChooserBlock(page_type="section.SectionPage")
+
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        context['title'] = value['title']
-        context['section'] = value['section']
-        context['articles'] = context['section'].get_featured_articles()          
+        context["title"] = value["title"]
+        context["section"] = value["section"]
+        context["articles"] = context["section"].get_featured_articles()
         return context
+
     class Meta:
         template = "home/stream_blocks/sidebar_section_block.html"
+
 
 class SidebarImageLinkBlock(blocks.StructBlock):
     image = ImageChooserBlock(required=True)
     link = blocks.URLBlock(required=False)
+
     class Meta:
         template = "home/stream_blocks/sidebar_image_link_block.html"
         verbose_name = "Sidebar Image with Optional Link"
         verbose_name_plural = "Sidebar Images with Optional Link"
 
+
 class SidebarFlexStream(blocks.StreamBlock):
     """
     Stream to be used by various things, similar to SidebarIssuesBlock except more "miscellaneous"
     """
+
     image_link = SidebarImageLinkBlock()
 
-class SidebarFlexStreamBlock(blocks.StructBlock):
 
+class SidebarFlexStreamBlock(blocks.StructBlock):
     title = blocks.CharBlock(
         required=True,
         max_length=255,
@@ -171,6 +193,7 @@ class SidebarFlexStreamBlock(blocks.StructBlock):
         template = "home/stream_blocks/sidebar_flex_stream_block.html"
         verbose_name = "Sidebar Stream Flex Block"
         verbose_name_plural = "Sidebar Stream Flex Blocks"
+
 
 class LinkStreamBlock(blocks.StructBlock):
     title = blocks.CharBlock(

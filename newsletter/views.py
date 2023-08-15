@@ -1,14 +1,19 @@
 import json
+
 # from .models import Subscriber
 from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import redirect
 from django.views.generic import View
 
+
 def mailchimp_landing_redirect(self):
-    response = redirect('https://embeds.beehiiv.com/8cc31358-f28d-486d-b3ad-99cdf843ce88')
+    response = redirect(
+        "https://embeds.beehiiv.com/8cc31358-f28d-486d-b3ad-99cdf843ce88"
+    )
     return response
 
-# class WebhookResponseHandlerView(View):    
+
+# class WebhookResponseHandlerView(View):
 #     """
 #     Responds to webhook requests sent by Mailchimp; keeps our databases in sync
 
@@ -29,13 +34,13 @@ def mailchimp_landing_redirect(self):
 #                 response_data['result'] = 'Subscriber deleted!'
 
 #             elif request_type == 'subscribe':
-#                 subscriber.full_clean() #integrity check                
+#                 subscriber.full_clean() #integrity check
 #                 subscriber.save()
 #                 response_data['result'] = 'Subscriber added!'
 #             return HttpResponse(
 #                 json.dumps(response_data),
 #                 content_type="application/json"
-#             )            
+#             )
 #         except KeyError:
 #             response_data['result'] = 'Malformed data!'
 #             return HttpResponseServerError(
@@ -48,4 +53,3 @@ def mailchimp_landing_redirect(self):
 #                 json.dumps(response_data),
 #                 content_type="application/json"
 #             )
-

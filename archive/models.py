@@ -1,82 +1,94 @@
-from django.db import models
-from django_user_agents.utils import get_user_agent
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db import models
 from django.shortcuts import render
-
-from specialfeaturelanding.models import SpecialLandingPage
-from section.models import SectionablePage, CategorySnippet
-from article.models import ArticlePage
+from django_user_agents.utils import get_user_agent
 from modelcluster.fields import ParentalKey
-
-from section.models import SectionPage
-from wagtail.core.models import Page, Orderable
+from wagtail.admin.edit_handlers import (
+    HelpPanel,
+    InlinePanel,
+    MultiFieldPanel,
+    PageChooserPanel,
+)
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from wagtail.core.models import Orderable, Page
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
-from wagtail.admin.edit_handlers import MultiFieldPanel, InlinePanel, HelpPanel, PageChooserPanel
 
-from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
-from videos.models import VideosPage, VideoSnippet
+from article.models import ArticlePage
+from section.models import CategorySnippet, SectionablePage, SectionPage
+from specialfeaturelanding.models import SpecialLandingPage
+from videos.models import VideoSnippet, VideosPage
+
 
 class SectionPageOrderables(Orderable):
-    page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="sections_filters")
-    
+    page = ParentalKey(
+        "archive.ArchivePage", on_delete=models.CASCADE, related_name="sections_filters"
+    )
+
     section_filter = models.ForeignKey(
-        'wagtailcore.Page',
+        "wagtailcore.Page",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
-        verbose_name="Section Page"
+        related_name="+",
+        verbose_name="Section Page",
     )
-    
+
     panels = [
         MultiFieldPanel(
-          [
-            PageChooserPanel('section_filter', 'section.SectionPage'),
-          ],
-        heading="Section Pages",
+            [
+                PageChooserPanel("section_filter", "section.SectionPage"),
+            ],
+            heading="Section Pages",
         ),
     ]
 
 
 class MagazineOrderables(Orderable):
-    page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="magazines_filters")
-    
+    page = ParentalKey(
+        "archive.ArchivePage",
+        on_delete=models.CASCADE,
+        related_name="magazines_filters",
+    )
+
     magazine_filter = models.ForeignKey(
-        'section.CategorySnippet',
+        "section.CategorySnippet",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
-        verbose_name="Magazine"
+        related_name="+",
+        verbose_name="Magazine",
     )
-    
+
     panels = [
         MultiFieldPanel(
-          [
-            SnippetChooserPanel('magazine_filter'),
-          ],
-        heading="Magazine",
+            [
+                SnippetChooserPanel("magazine_filter"),
+            ],
+            heading="Magazine",
         ),
     ]
 
+
 class SpoofOrderables(Orderable):
-    page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="spoofs_filters")
-    
+    page = ParentalKey(
+        "archive.ArchivePage", on_delete=models.CASCADE, related_name="spoofs_filters"
+    )
+
     spoof_filter = models.ForeignKey(
-        'section.CategorySnippet',
+        "section.CategorySnippet",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
-        verbose_name="Spoof"
+        related_name="+",
+        verbose_name="Spoof",
     )
-    
+
     panels = [
         MultiFieldPanel(
-          [
-            SnippetChooserPanel('spoof_filter'),
-          ],
-        heading="Spoof",
+            [
+                SnippetChooserPanel("spoof_filter"),
+            ],
+            heading="Spoof",
         ),
     ]
 
@@ -85,44 +97,51 @@ class ArchivePage(RoutablePageMixin, Page):
     template = "archive/archive_page.html"
 
     parent_page_types = [
-        'home.HomePage',
+        "home.HomePage",
     ]
     max_count_per_parent = 1
-    
-    
+
     content_panels = Page.content_panels + [
         MultiFieldPanel(
-          [
-            HelpPanel("List all the pages you want to have in the section filter"),
-            InlinePanel('sections_filters', min_num=1, label="Section"),
-          ],
-        heading="Section Filters",
-        classname="collapsible",
+            [
+                HelpPanel("List all the pages you want to have in the section filter"),
+                InlinePanel("sections_filters", min_num=1, label="Section"),
+            ],
+            heading="Section Filters",
+            classname="collapsible",
         ),
         MultiFieldPanel(
-          [
-            HelpPanel("List all the category snippets you want to have in the magazine filter"),
-            InlinePanel('magazines_filters', min_num=1, label="Magazines"),
-          ],
-        heading="Magazine Filters",
-        classname="collapsible",
+            [
+                HelpPanel(
+                    "List all the category snippets you want to have in the magazine"
+                    " filter"
+                ),
+                InlinePanel("magazines_filters", min_num=1, label="Magazines"),
+            ],
+            heading="Magazine Filters",
+            classname="collapsible",
         ),
         MultiFieldPanel(
-          [
-            HelpPanel("List all the category snippets you want to have in the spoof filter"),
-            InlinePanel('spoofs_filters', min_num=1, label="Spoofs"),
-          ],
-        heading="Spoof Filters",
-        classname="collapsible",
+            [
+                HelpPanel(
+                    "List all the category snippets you want to have in the spoof"
+                    " filter"
+                ),
+                InlinePanel("spoofs_filters", min_num=1, label="Spoofs"),
+            ],
+            heading="Spoof Filters",
+            classname="collapsible",
         ),
     ]
-    
+
     def __get_years(self):
         """
         Returns:
             Hits DB to find list of years such that there is an article published at that year
         """
-        publish_dates = ArticlePage.objects.live().dates('explicit_published_at','year',order='DESC')
+        publish_dates = ArticlePage.objects.live().dates(
+            "explicit_published_at", "year", order="DESC"
+        )
         years = []
 
         for publish_date in publish_dates:
@@ -133,34 +152,33 @@ class ArchivePage(RoutablePageMixin, Page):
     def __parse_int_or_none(self, maybe_int):
         """
         Private helper that enforces stricter discipline on section id and year values in request headers.
-        
+
         Returns:
-            maybe_int cast to an integer or None if the cast fails. 
+            maybe_int cast to an integer or None if the cast fails.
         """
         try:
             return int(maybe_int)
         except (TypeError, ValueError):
             return None
 
-
     def get_context(self, request, video_section):
         # Get queries and context
         context = super().get_context(request)
         search_query = request.GET.get("q")
         order = request.GET.get("order")
-        self.year = self.__parse_int_or_none(request.GET.get('year'))
-        
+        self.year = self.__parse_int_or_none(request.GET.get("year"))
+
         # Set context
-        context['video_section'] = video_section
-        context['sections'] = self.sections_filters.all()
-        context['order'] = order
-        context['year'] = self.year
-        context['years'] = self.__get_years()
-        context['q'] = search_query
-        context['meta'] = { 'title': 'Archive' }
+        context["video_section"] = video_section
+        context["sections"] = self.sections_filters.all()
+        context["order"] = order
+        context["year"] = self.year
+        context["years"] = self.__get_years()
+        context["q"] = search_query
+        context["meta"] = {"title": "Archive"}
 
         return context
-    
+
     def get_paginated_articles(self, context, objects, video_section, request):
         page = request.GET.get("page")
 
@@ -182,36 +200,38 @@ class ArchivePage(RoutablePageMixin, Page):
             # Then return the last page
             paginated_articles = paginator.page(paginator.num_pages)
 
-        context["page_obj"] = paginated_articles #this object is often called page_obj in Django docs. Careful, because but Page means something else in Wagtail
-        
+        context[
+            "page_obj"
+        ] = paginated_articles  # this object is often called page_obj in Django docs. Careful, because but Page means something else in Wagtail
 
         return context
 
     def get_order_objects(self, order, objects, videos_section):
         if videos_section == False:
-            if order == 'oldest':
+            if order == "oldest":
                 article_order = "explicit_published_at"
-            else:            
+            else:
                 article_order = "-explicit_published_at"
-            
+
             return objects.order_by(article_order)
         else:
-            if order == 'oldest':
+            if order == "oldest":
                 videos_order = "created_at"
             else:
                 videos_order = "-created_at"
-            
+
             return objects.order_by(videos_order)
-        
 
     def get_year_objects(self, objects, videos_section):
         if videos_section == False:
             return objects.filter(explicit_published_at__year=str(self.year))
         else:
-            return objects.filter(created_at__gte=str(self.year) + "-01-01", created_at__lte = str(self.year + 1) + "-12-31")
-        
+            return objects.filter(
+                created_at__gte=str(self.year) + "-01-01",
+                created_at__lte=str(self.year + 1) + "-12-31",
+            )
+
     def get_search_objects(self, search_query, objects, video_section):
-        
         # If there's a search query, then we run the search on the articles LAST.
         # Once we hit thes earch then we can't run .filter(...) on the results as if it were a queryset
         if video_section == False:
@@ -221,9 +241,10 @@ class ArchivePage(RoutablePageMixin, Page):
 
     def get_category(self):
         return CategorySnippet.objects.all()
+
     categories = property(fget=get_category)
 
-    @route(r'^$', name='general_view')
+    @route(r"^$", name="general_view")
     def get_archive_general_articles(self, request):
         video_section = False
         context = self.get_context(request, video_section)
@@ -231,135 +252,157 @@ class ArchivePage(RoutablePageMixin, Page):
         search_query = context["q"]
 
         articles = ArticlePage.objects.live().public()
- 
+
         if context["order"]:
-            articles = self.get_order_objects(context["order"], articles, video_section)     
+            articles = self.get_order_objects(context["order"], articles, video_section)
 
         if self.year:
             articles = self.get_year_objects(articles, video_section)
-      
-      # The larger issue is that the search query in general search will always prioritize articles over videos. If users what to find videos then they have to select the videos section then search
+
+        # The larger issue is that the search query in general search will always prioritize articles over videos. If users what to find videos then they have to select the videos section then search
         if search_query:
             videos = VideoSnippet.objects.all()
             articles = self.get_search_objects(search_query, articles, video_section)
             videos = self.get_search_objects(search_query, videos, True)
- 
+
             if len(articles) < 1 and len(videos) > 0:
                 video_section = True
-                context = self.get_paginated_articles(context, videos, video_section, request)
+                context = self.get_paginated_articles(
+                    context, videos, video_section, request
+                )
                 context["video_section"] = True
             else:
-                context = self.get_paginated_articles(context, articles, video_section, request)
+                context = self.get_paginated_articles(
+                    context, articles, video_section, request
+                )
         else:
-            context = self.get_paginated_articles(context, articles, video_section, request)
-    
-     
+            context = self.get_paginated_articles(
+                context, articles, video_section, request
+            )
+
         return render(request, "archive/archive_page.html", context)
-    
-    @route(r'^section/(?P<sections_slug>[-\w]+)/$', name='section_view')
-    @route(r'^magazines/$', name='magazines_general_view')
+
+    @route(r"^section/(?P<sections_slug>[-\w]+)/$", name="section_view")
+    @route(r"^magazines/$", name="magazines_general_view")
     def get_section_articles(self, request, sections_slug="magazine"):
         video_section = False
         context = self.get_context(request, video_section)
-        context['section_slug'] = sections_slug
+        context["section_slug"] = sections_slug
 
         search_query = context["q"]
-        
-        articles = ArticlePage.objects.from_section(section_slug=sections_slug).live().public()
-        
+
+        articles = (
+            ArticlePage.objects.from_section(section_slug=sections_slug).live().public()
+        )
+
         if context["order"]:
-            articles = self.get_order_objects(context["order"], articles, video_section)           
-        
+            articles = self.get_order_objects(context["order"], articles, video_section)
+
         if self.year:
             articles = self.get_year_objects(articles, video_section)
-        
+
         if search_query:
             articles = self.get_search_objects(search_query, articles, video_section)
 
         context = self.get_paginated_articles(context, articles, video_section, request)
 
         return render(request, "archive/archive_page.html", context)
-    
-    @route(r'^videos/$', name="videos_view")
+
+    @route(r"^videos/$", name="videos_view")
     def get_videos(self, request, *args, **kwargs):
         video_section = True
         context = self.get_context(request, video_section)
 
         search_query = context["q"]
-        
+
         videos = VideoSnippet.objects.all()
- 
+
         if context["order"]:
-            videos = self.get_order_objects(context["order"], videos, video_section)           
-        
+            videos = self.get_order_objects(context["order"], videos, video_section)
+
         if self.year:
             videos = self.get_year_objects(videos, video_section)
-        
+
         if search_query:
             videos = self.get_search_objects(search_query, videos, video_section)
-        
 
         context = self.get_paginated_articles(context, videos, video_section, request)
-        
-        return render(request, "archive/archive_page.html", context)
-    
 
-    @route(r'^magazines/(?P<magazine_slug>[-\w]+)/$', name="magazines_view")
+        return render(request, "archive/archive_page.html", context)
+
+    @route(r"^magazines/(?P<magazine_slug>[-\w]+)/$", name="magazines_view")
     def get_magazine_articles(self, request, magazine_slug):
         video_section = False
         context = self.get_context(request, video_section)
-        context['magazine_slug'] = magazine_slug
+        context["magazine_slug"] = magazine_slug
 
         search_query = context["q"]
-        
-        
+
         if len(SpecialLandingPage.objects.filter(category__slug=magazine_slug)) > 0:
-            articles = ArticlePage.objects.from_magazine_special_section(section_slug=magazine_slug)
+            articles = ArticlePage.objects.from_magazine_special_section(
+                section_slug=magazine_slug
+            )
         else:
-            articles = ArticlePage.objects.live().public().filter(category__slug=magazine_slug)
-        
+            articles = (
+                ArticlePage.objects.live().public().filter(category__slug=magazine_slug)
+            )
+
         if context["order"]:
-            articles = self.get_order_objects(context["order"], articles, video_section)           
-        
+            articles = self.get_order_objects(context["order"], articles, video_section)
+
         if self.year:
             articles = self.get_year_objects(articles, video_section)
-        
+
         if search_query:
             articles = self.get_search_objects(search_query, articles, video_section)
 
         context = self.get_paginated_articles(context, articles, video_section, request)
-        
+
         return render(request, "archive/archive_page.html", context)
-    
-    @route(r'^spoofs/(?P<spoof_slug>[-\w]+)/$', name="spoofs_view")
-    @route(r'^spoofs/$', name="spoofs_general_view")
+
+    @route(r"^spoofs/(?P<spoof_slug>[-\w]+)/$", name="spoofs_view")
+    @route(r"^spoofs/$", name="spoofs_general_view")
     def get_spoof_articles(self, request, spoof_slug="All Spoofs"):
         video_section = False
         context = self.get_context(request, video_section)
-        context['spoof_slug'] = spoof_slug
+        context["spoof_slug"] = spoof_slug
 
         search_query = context["q"]
-        
+
         if spoof_slug == "All Spoofs":
             articles = ArticlePage.objects.none()
 
             for iter in self.spoofs_filters.all():
-                sections = SectionPage.objects.filter(categories__slug=iter.spoof_filter.slug).live().public()
-                articles = articles | ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
+                sections = (
+                    SectionPage.objects.filter(categories__slug=iter.spoof_filter.slug)
+                    .live()
+                    .public()
+                )
+                articles = (
+                    articles
+                    | ArticlePage.objects.from_section(section_slug=sections[0].slug)
+                    .live()
+                    .public()
+                )
         else:
-            sections = SectionPage.objects.filter(categories__slug=spoof_slug).live().public()
-            articles = ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
-        
+            sections = (
+                SectionPage.objects.filter(categories__slug=spoof_slug).live().public()
+            )
+            articles = (
+                ArticlePage.objects.from_section(section_slug=sections[0].slug)
+                .live()
+                .public()
+            )
+
         if context["order"]:
-            articles = self.get_order_objects(context["order"], articles, video_section)           
-        
+            articles = self.get_order_objects(context["order"], articles, video_section)
+
         if self.year:
             articles = self.get_year_objects(articles, video_section)
-        
+
         if search_query:
             articles = self.get_search_objects(search_query, articles, video_section)
-        
 
         context = self.get_paginated_articles(context, articles, video_section, request)
-        
+
         return render(request, "archive/archive_page.html", context)
