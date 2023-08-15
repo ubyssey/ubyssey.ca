@@ -148,6 +148,8 @@ class ArchivePage(RoutablePageMixin, Page):
         context = super().get_context(request)
         search_query = request.GET.get("q")
         order = request.GET.get("order")
+        if order == None:
+            order = "newest"
         self.year = self.__parse_int_or_none(request.GET.get('year'))
         
         # Set context
@@ -351,9 +353,10 @@ class ArchivePage(RoutablePageMixin, Page):
             if sections[0].title.capitalize() != "Humor" :
                 articles = ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
             else:
+
                 articles = ArticlePage.objects.live().public().filter(category__slug=spoof_slug)   
 
-        
+            
         if context["order"]:
             articles = self.get_order_objects(context["order"], articles, video_section)           
         

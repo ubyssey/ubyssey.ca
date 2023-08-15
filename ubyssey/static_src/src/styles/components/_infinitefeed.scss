@@ -18,17 +18,31 @@
     top: 50px;
 }
 
+.flex-stream {
+    display: flex;
+    justify-content: center;
+}
+
 .c-sidebar_container {
     height: 1500px;
     min-height: fit-content;
+    margin-top: 65px;
 }
 
 .c-sidebar {
     height: 100%;
     width:40%;
+    padding-left: 1em;
 
     @media ($bp-smaller-than-phablet) {
         display:none;
+    }
+}
+
+.flex-stream {
+    img {
+        margin: auto;
+        display: block;
     }
 }
 
@@ -42,12 +56,13 @@
     margin:auto;
     display:flex;
     min-height: 66vh;
-    justify-content: center;
+    justify-content: space-between;
   }
 
 .c-home-infinitefeed {
     padding-left: 20px;
     padding-right: 20px;
+    width: 100%;
     @media ($bp-larger-than-phablet) {
         margin-right: 20px;
         width: 50%;
@@ -55,7 +70,7 @@
 }
 
 .c-home-bannerbox {
-    width: 90%;
+    width: 100%;
 }
 
 .sidebar-issue{
@@ -110,6 +125,10 @@
     }
     #loader {
         color: black;
+    }
+    .c-sidebar {
+        border-left: solid;
+        border-width: 1px;
     }
 }
 

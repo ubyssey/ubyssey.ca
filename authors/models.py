@@ -166,7 +166,7 @@ class AuthorPage(RoutablePageMixin, Page):
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [
         index.SearchField('full_name'),
-        index.SearchField('description'),
+        index.SearchField('bio_description'),
     ]
 
     def organize_media(self, media_type, request, context):
