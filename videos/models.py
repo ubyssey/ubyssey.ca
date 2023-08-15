@@ -56,6 +56,7 @@ class VideoAuthorsOrderable(Orderable):
 
 
 class VideosPage(SectionablePage):
+    print("Hello")
     template = "videos/videos_page.html"
 
     parent_page_types = [
