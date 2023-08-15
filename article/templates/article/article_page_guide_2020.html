@@ -48,9 +48,6 @@
                                 {{ article.template_fields.subheading }}
                             </p>
                         {% endif %}
-                        <div class="c-article__byline__meta">
-                            {% include 'article/objects/darkmode_button.html' with id="guide-2020"%}
-                        </div>
                         {% if article.template_fields.intro and article.template_fields.intro != ' ' %}
                             <p class="c-article__intro__text">
                                 {{ article.template_fields.intro }}
