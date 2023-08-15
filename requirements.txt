@@ -20,7 +20,7 @@ google-cloud-datastore==1.15.0
 google-cloud-storage==1.31.0
 google-cloud-secret-manager==2.11.0
 django-environ==0.4.5
-requests==2.24.0
+requests==2.31.0
 whitenoise==5.1.0
 brotli==1.0.9
 django-extensions==3.1.3
