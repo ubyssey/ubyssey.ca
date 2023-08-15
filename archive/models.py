@@ -350,7 +350,7 @@ class ArchivePage(RoutablePageMixin, Page):
                 articles = articles | ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
         else:
             sections = SectionPage.objects.filter(categories__slug=spoof_slug).live().public()
-            if sections[0].title.capitalize() != "Humor" :
+            if sections[0].title.capitalize() != "Humour" :
                 articles = ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
             else:
 
