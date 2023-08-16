@@ -108,9 +108,10 @@
 
     li {
       list-style: none;
-      //background-color: var(--background);
-      padding-right: 0.5em;
-      padding-left: 0.5em;
+      background-color: var(--background);
+      padding-right: 5px;
+      padding-left: 5px;
+      margin-bottom: -2.5px;
       display: inline;
       //flex-grow: 1;
       //text-align: center;
