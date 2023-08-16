@@ -38,7 +38,7 @@ class NavigationMenuOrderable(Orderable):
 
     panels = [
         MultiFieldPanel([
-            PageChooserPanel("internal_link"),
+            FieldPanel("internal_link"),
             FieldPanel("external_link"),
             FieldPanel("link_text"),
             ], heading="Link",

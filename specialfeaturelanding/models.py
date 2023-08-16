@@ -111,6 +111,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     content = StreamField(
@@ -124,6 +125,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     graphical_menu = StreamField(
@@ -137,6 +139,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     content_panels = Page.content_panels + UbysseyMenuMixin.menu_content_panels + [
@@ -152,14 +155,14 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         #         HelpPanel(
         #             content='<h1>TODO</h1><p>Write something here</p>'
         #         ),
-        #         StreamFieldPanel("content"),
+        #         FieldPanel("content"),
         #     ],
         #     heading="Article Content",
         #     classname="collapsible",
         # ),
         MultiFieldPanel(
             [
-                StreamFieldPanel("editorial_stream"),
+                FieldPanel("editorial_stream"),
             ],
             heading="Editorial Content"
         ),
@@ -176,7 +179,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ),
          MultiFieldPanel(
             [
-                SnippetChooserPanel("category"),
+                FieldPanel("category"),
             ],
             heading="Categories",
             classname="collapsible",

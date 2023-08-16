@@ -8,7 +8,7 @@ import environ
 
 env = environ.Env() #Scope issues without this line?
 
-BASE_URL = 'https://www.ubyssey.ca/'
+WAGTAILADMIN_BASE_URL = 'https://www.ubyssey.ca/'
 
 ALLOWED_HOSTS = ['localhost', '*']
 

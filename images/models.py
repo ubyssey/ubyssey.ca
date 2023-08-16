@@ -215,7 +215,7 @@ class GalleryOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                ImageChooserPanel("image"),
+                FieldPanel("image"),
             ],
             heading="Image Chooser",
         ),

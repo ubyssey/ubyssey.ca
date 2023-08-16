@@ -80,14 +80,14 @@ class CategorySnippet(index.Indexed, ClusterableModel):
             [
                 FieldPanel("title"),
                 FieldPanel("slug"),
-                PageChooserPanel("section_page"),
+                FieldPanel("section_page"),
                 FieldPanel("description"),
             ],
             heading="Essentials"
         ),
         MultiFieldPanel(
             [
-                ImageChooserPanel("banner"),
+                FieldPanel("banner"),
             ],
             heading="Banner",
         ),
@@ -120,7 +120,7 @@ class CategoryAuthor(wagtail_core_models.Orderable):
         related_name="category_authors",
     )
     panels = [
-        PageChooserPanel("author"),
+        FieldPanel("author"),
     ]
 
 class CategoryMenuItem(wagtail_core_models.Orderable):
@@ -137,7 +137,7 @@ class CategoryMenuItem(wagtail_core_models.Orderable):
         related_name="category_menu",
     )
     panels = [
-        SnippetChooserPanel("category"),
+        FieldPanel("category"),
     ]
 
 class SectionPage(RoutablePageMixin, SectionablePage):
@@ -186,12 +186,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     ],
     null=True,
     blank=True,
+    use_json_field=True,
     )
 
     content_panels = wagtail_core_models.Page.content_panels + [
         MultiFieldPanel(
             [
-                ImageChooserPanel("banner"),
+                FieldPanel("banner"),
             ],
             heading="Banner",
         ),
@@ -203,7 +204,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         ),
         MultiFieldPanel(
             [
-                DocumentChooserPanel('label_svg'),
+                FieldPanel('label_svg'),
             ],
             heading="Label svg"
         ),
@@ -215,7 +216,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         ),
         MultiFieldPanel(
             [
-                StreamFieldPanel("sidebar_stream"),
+                FieldPanel("sidebar_stream"),
             ],
             heading="Sidebar"
         )

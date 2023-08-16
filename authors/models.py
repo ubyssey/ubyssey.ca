@@ -57,7 +57,7 @@ class PinnedArticlesOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel('article'),
+                FieldPanel('article'),
             ],
             heading="Article"
         ),
@@ -136,8 +136,8 @@ class AuthorPage(RoutablePageMixin, Page):
         blank=False,
         null=False,)
 
-    linkIcons = StreamField([('raw_html', blocks.RawHTMLBlock()),], blank=True)
-    links = StreamField([('url', blocks.URLBlock(label="Url")),], blank=True)
+    linkIcons = StreamField([('raw_html', blocks.RawHTMLBlock()),], blank=True, use_json_field=True)
+    links = StreamField([('url', blocks.URLBlock(label="Url")),], blank=True, use_json_field=True)
 
     # For editting in wagtail:
     content_panels = [
@@ -145,7 +145,7 @@ class AuthorPage(RoutablePageMixin, Page):
         FieldPanel("full_name"),
         MultiFieldPanel(
             [
-                ImageChooserPanel("image"),
+                FieldPanel("image"),
                 FieldPanel("display_image"),
             ],
             heading="Image"
@@ -153,10 +153,10 @@ class AuthorPage(RoutablePageMixin, Page):
         MultiFieldPanel(
             [
                 FieldPanel("ubyssey_role"),
-                StreamFieldPanel("bio_description"),
-                StreamFieldPanel("short_bio_description"),
+                FieldPanel("bio_description"),
+                FieldPanel("short_bio_description"),
                 FieldPanel("main_media_type"),
-                StreamFieldPanel("links"),
+                FieldPanel("links"),
                 InlinePanel("pinned_articles", label="Pinned articles")
             ],
             heading="Optional Stuff",

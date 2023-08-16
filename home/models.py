@@ -29,7 +29,7 @@ class TopArticlesOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel('article'),
+                FieldPanel('article'),
             ],
             heading="Article"
         ),
@@ -74,6 +74,7 @@ class HomePage(Page):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     sections_stream = StreamField(
@@ -82,6 +83,7 @@ class HomePage(Page):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     sidebar_stream = StreamField(
@@ -94,6 +96,7 @@ class HomePage(Page):
     ],
     null=True,
     blank=True,
+    use_json_field=True,
     )
 
     # home_leaderboard_ad_slot = models.ForeignKey(
@@ -133,16 +136,16 @@ class HomePage(Page):
             ],
             heading="Tagline"
         ),
-        PageChooserPanel("cover_story"),
+        FieldPanel("cover_story"),
         MultiFieldPanel(
             [
                 InlinePanel("top_articles"),
             ],
             heading="Top articles"
         ),
-        StreamFieldPanel("links", heading="Links"),
-        StreamFieldPanel("sidebar_stream", heading="Sidebar"),
-        StreamFieldPanel("sections_stream", heading="Sections"),
+        FieldPanel("links", heading="Links"),
+        FieldPanel("sidebar_stream", heading="Sidebar"),
+        FieldPanel("sections_stream", heading="Sections"),
         # ModelChooserPanel('home_leaderboard_ad_slot'),
         # ModelChooserPanel('home_mobile_leaderboard_ad_slot'),
         # ModelChooserPanel('home_sidebar_ad_slot1'),

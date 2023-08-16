@@ -43,7 +43,7 @@ class VideoAuthorsOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel("author"),
+                FieldPanel("author"),
             ],
             heading="Author",
         ),
