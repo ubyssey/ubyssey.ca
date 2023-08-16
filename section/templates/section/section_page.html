@@ -8,6 +8,7 @@
 {% load ubyssey_ad_filters %}
 
 {% block head_scripts %}
+<link rel="alternate" type="application/atom+xml" title="Ubyssey {{title}} feed" href="/rss/{{self.slug}}">
   <!-- Register ads for section page -->
   {% for orderable in settings.ads.AdTagSettings.section_head_tags.all %}
     {% gpt_define_tag orderable.ad_slot %}
