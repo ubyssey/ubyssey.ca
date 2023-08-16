@@ -120,16 +120,6 @@
                 <!-- Below is the container for the right column article content, not entirely unique to the article -->
                 <aside class="cell right sidebar">
                     {% block sidebar %}
-                        <!-- Article Page sidebar ads go here -->
-                        {% if self.is_explicit is not True %}
-                            {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
-                                {% gpt_placement_tag orderable.ad_slot %}
-                            {% endfor %}            
-                        {% else %}
-                            {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
-                        {% endif %}
-                        {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
-                        
                         <div class="suggested-sidebar">
                             {% block suggested_articles %}
 
@@ -139,7 +129,15 @@
 
                             {% endblock %}
                         </div>
-
+                        <!-- Article Page sidebar ads go here -->
+                        {% if self.is_explicit is not True %}
+                            {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
+                                {% gpt_placement_tag orderable.ad_slot %}
+                            {% endfor %}            
+                        {% else %}
+                            {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
+                        {% endif %}
+                        {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
                     {% endblock %}
 
                 </aside>                        

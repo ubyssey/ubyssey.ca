@@ -44,7 +44,7 @@
 		
 		<div class="options">
 			{% if "articles" in media_types %}
-				<h2 class="author-heading {% if media_type == "stories" %}selected{% endif %}"><a href="/authors/{{self.slug}}/articles">Articles</a></h2>
+				<h2 class="author-heading {% if media_type == "articles" %}selected{% endif %}"><a href="/authors/{{self.slug}}/articles">Articles</a></h2>
 			{% endif %}
 			{% if "photos" in media_types %}
 				<h2 class="author-heading {% if media_type == "photos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/photos">Photos</a></h2>

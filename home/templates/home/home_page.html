@@ -15,10 +15,12 @@
 {% block header %}
 {% include 'navigation/headers/mobile.html' with class='homepage' %}
 
+<div class="o-advertisement--header-bar">
 <!-- Place header ads for home page -->
 {% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
 {% gpt_placement_tag orderable.ad_slot %}
 {% endfor %}
+</div>
 
 {% include 'navigation/headers/main.html' with tagline=self.tagline tagline_url=self.tagline_url %}
 {% endblock %}
@@ -73,7 +75,7 @@
 
 </main>
 
-<div id="feed-section" class="home_infinitefeed darkmode">
+<div id="feed-section" class="home_infinitefeed">
 	<div class="u-container u-container--large c-infinitefeed__feed">
 		<div class="c-home-infinitefeed">
 			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox sticky' title='Sections' text='Most Recent' textId='timeBox' %}
