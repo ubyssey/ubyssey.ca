@@ -32,7 +32,7 @@ from videos import blocks as video_blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from article import blocks as article_blocks
 
-from wagtail.admin.edit_handlers import (
+from wagtail.admin.panels import (
     # Panels
     FieldPanel,
     FieldRowPanel,
@@ -46,9 +46,9 @@ from wagtail.admin.edit_handlers import (
     TabbedInterface,
 )
 
-from wagtail.core import blocks
-from wagtail.core.fields import StreamField
-from wagtail.core.models import Page, PageManager, Orderable
+from wagtail import blocks
+from wagtail.fields import StreamField
+from wagtail.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.documents.edit_handlers import DocumentChooserPanel

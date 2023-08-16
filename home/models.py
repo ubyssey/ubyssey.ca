@@ -6,9 +6,9 @@ from django.db import models
 from django.utils import timezone
 
 from ads.models import AdSlot
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, PageChooserPanel, MultiFieldPanel, InlinePanel
-from wagtail.core.models import Page, Orderable
-from wagtail.core.fields import StreamField
+from wagtail.admin.panels import FieldPanel, StreamFieldPanel, PageChooserPanel, MultiFieldPanel, InlinePanel
+from wagtail.models import Page, Orderable
+from wagtail.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks

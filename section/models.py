@@ -14,10 +14,10 @@ from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
 from wagtail.images.edit_handlers import ImageChooserPanel
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel
-from wagtail.core.fields import StreamField
-from wagtail.core import models as wagtail_core_models
-from wagtail.core.models import Page
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel
+from wagtail.fields import StreamField
+from wagtail import models as wagtail_core_models
+from wagtail.models import Page
 from wagtail.contrib.routable_page.models import route, RoutablePageMixin
 from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel

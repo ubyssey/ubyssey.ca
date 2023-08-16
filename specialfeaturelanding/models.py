@@ -10,7 +10,7 @@ from django.forms.widgets import Select
 
 from section.sectionable.models import SectionablePage
 
-from wagtail.admin.edit_handlers import (
+from wagtail.admin.panels import (
     FieldPanel,
     MultiFieldPanel,
     InlinePanel,
@@ -20,9 +20,9 @@ from wagtail.admin.edit_handlers import (
 
 from modelcluster.fields import ParentalKey
 
-from wagtail.core import blocks
-from wagtail.core.models import Page, Orderable
-from wagtail.core.fields import StreamField
+from wagtail import blocks
+from wagtail.models import Page, Orderable
+from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 

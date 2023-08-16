@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from django_extensions.db.fields import AutoSlugField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from article.models import ArticlePage
-from wagtail.admin.edit_handlers import (
+from wagtail.admin.panels import (
     # Panels
     FieldPanel,
     FieldRowPanel,
@@ -19,9 +19,9 @@ from wagtail.admin.edit_handlers import (
 )
 
 
-from wagtail.core import blocks
-from wagtail.core.fields import StreamField
-from wagtail.core.models import Page, Orderable
+from wagtail import blocks
+from wagtail.fields import StreamField
+from wagtail.models import Page, Orderable
 from wagtail.search import index
 from wagtail.images.edit_handlers import ImageChooserPanel
 from modelcluster.fields import ParentalKey

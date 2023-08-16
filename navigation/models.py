@@ -6,9 +6,9 @@ from django.db.models.fields.related import ForeignKey
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from section.models import SectionPage
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, HelpPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, HelpPanel
 from wagtail.contrib.settings.models import BaseSetting, register_setting
-from wagtail.core.models import Orderable
+from wagtail.models import Orderable
 
 
 class NavigationMenuOrderable(Orderable):
