@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
-{% load dispatch_tags %}
 {% block header %}
 {% include 'headers/main.html' %}
 {% include 'headers/mobile.html' with class='homepage' %}
@@ -22,7 +21,6 @@
 	    {% comment %} If there are any "Banners" needed {% endcomment %}
     {% endif %}
 
-    {% zone 'frontpage' articles=articles %}
     <div class="homepage-section row">
         <div class="sections">  
             {% include 'homepage/blocks/section_1.html' with section="news" articles=sections.news %}
@@ -81,9 +79,6 @@
                     </li>
                     {% endfor %}
                 </ul>
-            </div>
-            <div class="multi-zone cell right">
-              {% zone 'homepage-sidebar-bottom' %}
             </div>
         </div>
     </div>
