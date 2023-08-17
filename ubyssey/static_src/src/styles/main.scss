@@ -226,6 +226,31 @@ a.image {
   }
 }
 
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+}
+
+.dropdown-show {
+  display: none;
+}
+
+.dropdown:focus-within, .dropdown:hover {
+  .dropdown-content {
+    display: block; 
+  }
+  .dropdown-show {
+    display: inherit; 
+  }
+  .dropdown-hidden {
+    display: none;
+  }
+}
+
 .hide {
 	display: none;
 }
