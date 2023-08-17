@@ -11,7 +11,9 @@ import upcomingEvents from './widgets/upcoming-events';
   initializeSearchFormActions();
   initializeSocialMediaActions();
 
-  initializeAudioQuote()
+  initializePreventDefault();
+
+  initializeAudioQuote();
 
   initializeFilterDropdown();
 
@@ -284,6 +286,12 @@ function initializeSocialMediaActions() {
   });
 
   
+}
+
+function initializePreventDefault() {
+  $('.preventDefault').click(function (e) {
+      e.preventDefault();
+  });
 }
 
 function initializeAudioQuote() {
