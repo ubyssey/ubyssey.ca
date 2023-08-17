@@ -18,13 +18,13 @@
             <h1>{{ page.title }}</h1>
         </div>
         <div class="u-container">
-            <div class="row">
-                <div class="seven columns article-content">
+            <div class="flex">
+                <div class="seven article-content">
                         {% for block in self.content %}
                             {% include_block block with id=block.id %}
                         {% endfor %}                        
                 </div>
-                <aside class="five columns">
+                <aside class="five">
                     {% comment %}ad goes here{% endcomment %}
                     {% for right_column_block in self.right_column_content %}
                         {% include_block right_column_block with id=block.id %}
