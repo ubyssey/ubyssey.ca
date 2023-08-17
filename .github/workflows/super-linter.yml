@@ -27,3 +27,15 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "develop"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          VALIDATE_CSS: false
+          VALIDATE_HTML: false
+          VALIDATE_PYTHON: true
+          VALIDATE_PYTHON_BLACK: true
+          VALIDATE_PYTHON_FLAKE8: true
+          VALIDATE_PYTHON_ISORT: true
+          
+          PYTHON_BLACK_CONFIG_FILE: pyproject.toml
+          PYTHON_ISORT_CONFIG_FILE: pyproject.toml
+          PYTHON_FLAKE8_CONFIG_FILE: .flake8
+          
