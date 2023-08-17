@@ -20,7 +20,7 @@
 
 <br>
 
-The Ubyssey Website is made with :heart: by [_The Ubyssey_](https://www.ubyssey.ca/), the University of British Columbia's student newspaper since 1918.
+The Ubyssey site is made with :heart: by [_The Ubyssey_](https://www.ubyssey.ca/), the University of British Columbia's student newspaper since 1918.
 
 <br>
 
