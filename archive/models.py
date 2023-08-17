@@ -9,9 +9,9 @@ from article.models import ArticlePage
 from modelcluster.fields import ParentalKey
 
 from section.models import SectionPage
-from wagtail.core.models import Page, Orderable
+from wagtail.models import Page, Orderable
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
-from wagtail.admin.edit_handlers import MultiFieldPanel, InlinePanel, HelpPanel, PageChooserPanel
+from wagtail.admin.panels import MultiFieldPanel, InlinePanel, HelpPanel, PageChooserPanel, FieldPanel
 
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
 from videos.models import VideosPage, VideoSnippet
@@ -53,7 +53,7 @@ class MagazineOrderables(Orderable):
     panels = [
         MultiFieldPanel(
           [
-            SnippetChooserPanel('magazine_filter'),
+            FieldPanel('magazine_filter'),
           ],
         heading="Magazine",
         ),
@@ -74,7 +74,7 @@ class SpoofOrderables(Orderable):
     panels = [
         MultiFieldPanel(
           [
-            SnippetChooserPanel('spoof_filter'),
+            FieldPanel('spoof_filter'),
           ],
         heading="Spoof",
         ),

@@ -6,9 +6,9 @@ from django.db import models
 from django.utils import timezone
 
 from ads.models import AdSlot
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, PageChooserPanel, MultiFieldPanel, InlinePanel
-from wagtail.core.models import Page, Orderable
-from wagtail.core.fields import StreamField
+from wagtail.admin.panels import FieldPanel, StreamFieldPanel, PageChooserPanel, MultiFieldPanel, InlinePanel
+from wagtail.models import Page, Orderable
+from wagtail.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
@@ -29,7 +29,7 @@ class TopArticlesOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel('article'),
+                FieldPanel('article'),
             ],
             heading="Article"
         ),
@@ -74,6 +74,7 @@ class HomePage(Page):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     sections_stream = StreamField(
@@ -82,6 +83,7 @@ class HomePage(Page):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     sidebar_stream = StreamField(
@@ -94,6 +96,7 @@ class HomePage(Page):
     ],
     null=True,
     blank=True,
+    use_json_field=True,
     )
 
     # home_leaderboard_ad_slot = models.ForeignKey(
@@ -133,16 +136,16 @@ class HomePage(Page):
             ],
             heading="Tagline"
         ),
-        PageChooserPanel("cover_story"),
+        FieldPanel("cover_story"),
         MultiFieldPanel(
             [
                 InlinePanel("top_articles"),
             ],
             heading="Top articles"
         ),
-        StreamFieldPanel("links", heading="Links"),
-        StreamFieldPanel("sidebar_stream", heading="Sidebar"),
-        StreamFieldPanel("sections_stream", heading="Sections"),
+        FieldPanel("links", heading="Links"),
+        FieldPanel("sidebar_stream", heading="Sidebar"),
+        FieldPanel("sections_stream", heading="Sections"),
         # ModelChooserPanel('home_leaderboard_ad_slot'),
         # ModelChooserPanel('home_mobile_leaderboard_ad_slot'),
         # ModelChooserPanel('home_sidebar_ad_slot1'),

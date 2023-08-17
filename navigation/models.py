@@ -6,9 +6,9 @@ from django.db.models.fields.related import ForeignKey
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from section.models import SectionPage
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, HelpPanel
-from wagtail.contrib.settings.models import BaseSetting, register_setting
-from wagtail.core.models import Orderable
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, HelpPanel
+from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
+from wagtail.models import Orderable
 
 
 class NavigationMenuOrderable(Orderable):
@@ -38,7 +38,7 @@ class NavigationMenuOrderable(Orderable):
 
     panels = [
         MultiFieldPanel([
-            PageChooserPanel("internal_link"),
+            FieldPanel("internal_link"),
             FieldPanel("external_link"),
             FieldPanel("link_text"),
             ], heading="Link",
@@ -147,7 +147,7 @@ class MobileLinksNavigationItem(NavigationMenuOrderable):
     )
 
 #-----Settings models-----
-class SitewideMenus(ClusterableModel, BaseSetting):
+class SitewideMenus(ClusterableModel, BaseSiteSetting):
     """    
     Collection of the NavigationMenus that are going to be used on many pages.
     Singleton class, and source of truth for the entire site.

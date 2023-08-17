@@ -1,7 +1,7 @@
 from xmlrpc.client import Boolean
 from django.db.models import fields
-from wagtail.core import models
-from wagtail.admin.edit_handlers import (
+from wagtail import models
+from wagtail.admin.panels import (
     # Panels
     FieldPanel,
     HelpPanel,
