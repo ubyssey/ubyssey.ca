@@ -23,7 +23,6 @@ The Ubyssey Website is made with :heart: by [_The Ubyssey_](https://www.ubyssey.
 
 ![image](https://github.com/ubyssey/ubyssey.ca/assets/63443017/7a4b7a27-e120-44ce-a813-ac15de00b4d0)
 
-
 <br>
 
 ## Installation
@@ -36,13 +35,19 @@ The Ubyssey Website is made with :heart: by [_The Ubyssey_](https://www.ubyssey.
 
 For overall documentation, head over to [code.ubyssey.ca](https://code.ubyssey.ca)
 
+<br>
+
 ## Development
 
 Once you have your local environment configured, follow [the steps here](https://code.ubyssey.ca/installation/running-the-server) to start the server for development
 
+<br>
+
 ## Contributing
 
 You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository. We welcome volunteers to help make student journalism better! Head over to the [Getting Started Guide](https://code.ubyssey.ca/getting-started) to get stared. 
+
+<br>
 
 ## License
 
