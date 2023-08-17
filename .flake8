@@ -1,0 +1,8 @@
+[flake8]
+exclude = config,
+         */migrations*/,
+          */__pycache__*/,
+          ubyssey/management/
+
+extend-ignore = E203
+max-line-length = 88
