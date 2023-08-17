@@ -6,6 +6,7 @@
 {% load ubyssey_ad_filters %}
 
 {% block head_scripts %}
+<link rel="alternate" type="application/atom+xml" title="Ubyssey Rss Feed" href="/rss">
 <!-- Register ads for home page -->
 {% for orderable in settings.ads.AdTagSettings.home_head_tags.all %}
 {% gpt_define_tag orderable.ad_slot %}

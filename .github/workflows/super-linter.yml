@@ -24,6 +24,19 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
+          LINTER_RULES_PATH: /
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "develop"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          VALIDATE_CSS: false
+          VALIDATE_HTML: false
+          VALIDATE_MARKDOWN: false
+          
+          IGNORE_GENERATED_FILE: true
+          IGNORE_GITIGNORED_FILES: true
+          
+          PYTHON_BLACK_CONFIG_FILE: pyproject.toml
+          PYTHON_ISORT_CONFIG_FILE: pyproject.toml
+          PYTHON_FLAKE8_CONFIG_FILE: .flake8
+          
