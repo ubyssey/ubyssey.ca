@@ -1,6 +1,6 @@
-from wagtail.core import blocks
-from wagtail.core.blocks import field_block
-from wagtail.core.fields import StreamField
+from wagtail import blocks
+from wagtail.blocks import field_block
+from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
 
 class SidebarAdvertisementBlock(blocks.StructBlock):

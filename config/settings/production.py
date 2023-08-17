@@ -8,7 +8,7 @@ import environ
 
 env = environ.Env() #Scope issues without this line?
 
-BASE_URL = 'https://www.ubyssey.ca/'
+WAGTAILADMIN_BASE_URL = 'https://www.ubyssey.ca/'
 
 ALLOWED_HOSTS = ['localhost', '*']
 
@@ -29,6 +29,8 @@ CACHES = {
         # 'LOCATION': '10.18.240.4:11211',
     }
 }
+# WAGTAIL_CACHE_IGNORE_COOKIES = False
+# WAGTAIL_CACHE_IGNORE_QS = None
 
 MIDDLEWARE += [
     'canonical_domain.middleware.CanonicalDomainMiddleware',

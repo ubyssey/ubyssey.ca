@@ -3,7 +3,7 @@ import dispatch.models as dispatchmodels
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 
-from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 
 @register_snippet
