@@ -1,35 +1,20 @@
 from django.conf import settings
 from django.urls import include, path, re_path
 from django.conf.urls.static import static
-from django.contrib.staticfiles.views import serve as serve_static
 from django.contrib import admin
-from django.shortcuts import redirect
-
-from dispatch.urls import admin_urls, api_urls, podcasts_urls
-from newsletter.urls import urlpatterns as newsletter_urls
-
-from ubyssey.views.feed import FrontpageFeed, SectionFeed
-from ubyssey.views.main import ads_txt,redirect_blog_to_humour, UbysseyTheme, HomePageView, ArticleView, SectionView, SubsectionView, VideoView, PageView, PodcastView, ArticleAjaxView, AuthorView, ArchiveView, IsolationView
-from ubyssey.views.guide import guide2016, GuideArticleView, GuideLandingView
-
-from ubyssey.views.advertise import AdvertiseTheme
-from ubyssey.views.magazine import magazine, MagazineLandingView, MagazineArticleView
-from infinitefeed.views import infinitefeed
-
-from ubyssey.zones import *
-from ubyssey.widgets import *
-from ubyssey.templates import *
-
-from ubyssey.events.api.urls import urlpatterns as event_api_urls
-from ubyssey.events.urls import urlpatterns as events_urls
-
-from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+
+from ubyssey.views.main import ads_txt, redirect_blog_to_humour
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
+from ubyssey.views.advertise import AdvertiseTheme
+
+from infinitefeed.views import infinitefeed
+
+from newsletter.urls import urlpatterns as newsletter_urls
 
 advertise = AdvertiseTheme()
 
@@ -59,8 +44,8 @@ urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
-    re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
-    re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
+    # re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
+    # re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
     # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
     # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
 
@@ -87,7 +72,7 @@ urlpatterns += [
 
     # # standard Ubyssey site
     # re_path(r'^$', HomePageView.as_view(), name='home'),
-    re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
+    # re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
     # re_path(r'^archive/$', ArchiveView.as_view(), name='archive'),
     # re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
 

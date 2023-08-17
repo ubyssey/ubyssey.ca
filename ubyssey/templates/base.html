@@ -1,5 +1,4 @@
 {% load static %}
-{% load dispatch_tags %}(
 <!DOCTYPE html>
 <html lang="en">
 <head onload="darkState()">
@@ -112,7 +111,6 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
 <div id="page-wrapper">
 <div id="cookie-disclaimer"></div>
 <div id="adblock-splash"></div>
-{% zone 'site-banner' %}
 {% block header %}{% endblock %}
 <div id="search-form"></div>
 <div id="content-wrapper">

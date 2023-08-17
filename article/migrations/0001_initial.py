@@ -17,7 +17,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('dispatch', '0108_auto_20210511_1359'),
         ('wagtailcore', '0062_comment_models_and_pagesubscription'),
         ('taggit', '0003_taggeditem_add_unique_index'),
     ]
@@ -72,13 +71,6 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Articles',
             },
             bases=('wagtailcore.page',),
-        ),
-        migrations.CreateModel(
-            name='DispatchCounterpartSnippet',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('dispatch_version', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dispatch.article')),
-            ],
         ),
         migrations.CreateModel(
             name='ArticlePageTag',

@@ -1,6 +1,5 @@
 {% extends 'article/article_page.html' %}
 {% load static %}
-{% load dispatch_tags %}
 {% load wagtailimages_tags %}
 
 
@@ -89,7 +88,6 @@
 {% block right-column %}
     <div class="right-column">
         <div class="sidebar">
-            {% zone 'article-sidebar' %}
             {% if explicit is not True %}
                 {% if self.minutes_to_read >= 3 %}
                     {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}
