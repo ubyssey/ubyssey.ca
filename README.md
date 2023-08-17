@@ -1,10 +1,30 @@
-# The Ubyssey website
+<h1 align="center">
+    <img width="343" src=".github/Ubyssey Logo Readme.svg#gh-light-mode-only" alt="Wagtail">
+    <img width="343" src=".github/Ubyssey Logo Readme Inverse.svg#gh-dark-mode-only" alt="Wagtail">
+</h1>
+<p align="center">
+    <br>
+    <a href="https://github.com/ubyssey/ubyssey.ca/actions">
+        <img src="https://img.shields.io/github/actions/workflow/status/ubyssey/ubyssey.ca/.github%2Fworkflows%2Frelease.yml" alt="Build Status" />
+    </a>
+    <a href=https://github.com/ubyssey/ubyssey.ca/releases">
+        <img src="https://img.shields.io/github/v/release/ubyssey/ubyssey.ca" alt="Version" />
+    </a>
+    <a href="https://opensource.org/license/gpl-2-0/">
+        <img src="https://img.shields.io/github/license/ubyssey/ubyssey.ca" alt="License" />
+    </a>
+</p>
 
-![ubyssey_top](https://user-images.githubusercontent.com/9669739/46310069-2e177400-c573-11e8-8b94-bf567daf5f45.png)
+<br>
 
-Made with :heart: by [_The Ubyssey_](https://www.ubyssey.ca/), the University of British Columbia's student newspaper since 1918.
+The Ubyssey Website is made with :heart: by [_The Ubyssey_](https://www.ubyssey.ca/), the University of British Columbia's student newspaper since 1918.
 
-For overall documentation, head over to [code.ubyssey.ca](https://code.ubyssey.ca)
+<br>
+
+![image](https://github.com/ubyssey/ubyssey.ca/assets/63443017/7a4b7a27-e120-44ce-a813-ac15de00b4d0)
+
+
+<br>
 
 ## Installation
 
@@ -13,6 +33,8 @@ For overall documentation, head over to [code.ubyssey.ca](https://code.ubyssey.c
 [Mac Instructions](https://code.ubyssey.ca/installation/mac.html)
 
 [Windows Instructions](https://code.ubyssey.ca/installation/windows.html)
+
+For overall documentation, head over to [code.ubyssey.ca](https://code.ubyssey.ca)
 
 ## Development
 
