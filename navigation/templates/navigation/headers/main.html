@@ -40,7 +40,7 @@
         <ul class="sections">
           {% main_menu %}
           <li class="dropdown">
-            <a class="more-dropdown" href="#">MORE <i class="dropdown-hidden fa-solid fa-caret-down"></i><i class="dropdown-show fa-solid fa-caret-up"></i></a>
+            <a class="more-dropdown preventDefault" href="#">MORE <i class="dropdown-hidden fa-solid fa-caret-down"></i><i class="dropdown-show fa-solid fa-caret-up"></i></a>
             <div class="more-list dropdown-content">
               <ul>
                 {% flat_menu 'dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
