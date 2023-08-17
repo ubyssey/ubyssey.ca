@@ -7,6 +7,9 @@
     <a href="https://github.com/ubyssey/ubyssey.ca/actions">
         <img src="https://img.shields.io/github/actions/workflow/status/ubyssey/ubyssey.ca/.github%2Fworkflows%2Frelease.yml" alt="Build Status" />
     </a>
+    <a href="https://opensource.org/license/gpl-2-0/">
+        <img src="https://github.com/ubyssey/ubyssey.ca/actions/workflows/super-linter.yml/badge.svg" alt="License" />
+    </a>
     <a href=https://github.com/ubyssey/ubyssey.ca/releases">
         <img src="https://img.shields.io/github/v/release/ubyssey/ubyssey.ca" alt="Version" />
     </a>
