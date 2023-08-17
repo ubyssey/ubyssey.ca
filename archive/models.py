@@ -10,7 +10,6 @@ from modelcluster.fields import ParentalKey
 
 from section.models import SectionPage
 from wagtail.models import Page, Orderable
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.admin.panels import MultiFieldPanel, InlinePanel, HelpPanel, PageChooserPanel, FieldPanel
 
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route 

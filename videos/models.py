@@ -14,8 +14,8 @@ from taggit.managers import TaggableManager
 
 from ubyssey.validators import validate_youtube_url
 
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
+
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.models import Orderable, Page
 from wagtail.snippets.models import register_snippet
 from wagtail.search import index

@@ -2,7 +2,6 @@ import datetime
 import json
 from tabnanny import verbose
 
-from wagtail.admin import edit_handlers
 from images.models import GallerySnippet
 
 from dbtemplates.models import Template as DBTemplate
@@ -39,8 +38,6 @@ from wagtail.admin.panels import (
     HelpPanel,
     InlinePanel,
     MultiFieldPanel,
-    PageChooserPanel, 
-    StreamFieldPanel,
     # Custom admin tabs
     ObjectList,
     TabbedInterface,
@@ -51,17 +48,13 @@ from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
-from wagtail.documents.edit_handlers import DocumentChooserPanel
-from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 from wagtail.snippets.blocks import SnippetChooserBlock
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
 
 from wagtailmenus.models import FlatMenu
 
-from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
 from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
@@ -94,7 +87,7 @@ class UbysseyMenuMixin(models.Model):
         MultiFieldPanel(
             [
                 HelpPanel('<p>If the article has a special menu, as when it belongs to a special series of articles, select the relevant menu here</p><p>Alternatively, tick the box and select a page to create a menu from</p>'),
-                ModelChooserPanel('menu'),
+                FieldPanel('menu'),
                 FieldPanel('create_menu_from_parent'),
                 FieldPanel('parent_page_for_menu_generation'),
             ],
@@ -864,7 +857,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     content="<p>Making a template requires some understanding of how the Django backend works, so that you might know variable names etc. for the data that the template is supposed to render.</p> <p>Because of the potential complexity of a template, it is desirable to be able to quickly switch the article back to a default template. Turn on \"Use default template\" to use the stock template and turn it off to be able to override the default with a custom template. Defaults to \"on\".</p>",
                 ),
                 FieldPanel("use_default_template"),
-                ModelChooserPanel("db_template"),
+                FieldPanel("db_template"),
             ],
             heading="Custom HTML",
             classname="collapsible collapsed",

@@ -11,8 +11,6 @@ from wagtail.admin.panels import (
     HelpPanel,
     InlinePanel,
     MultiFieldPanel,
-    PageChooserPanel, 
-    StreamFieldPanel,
     # Custom admin tabs
     ObjectList,
     TabbedInterface,
@@ -23,7 +21,6 @@ from wagtail import blocks
 from wagtail.fields import StreamField
 from wagtail.models import Page, Orderable
 from wagtail.search import index
-from wagtail.images.edit_handlers import ImageChooserPanel
 from modelcluster.fields import ParentalKey
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.shortcuts import render
