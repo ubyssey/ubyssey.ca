@@ -2,7 +2,6 @@ import datetime
 import json
 from tabnanny import verbose
 
-from wagtail.admin import edit_handlers
 from images.models import GallerySnippet
 
 from dbtemplates.models import Template as DBTemplate
@@ -32,36 +31,30 @@ from videos import blocks as video_blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from article import blocks as article_blocks
 
-from wagtail.admin.edit_handlers import (
+from wagtail.admin.panels import (
     # Panels
     FieldPanel,
     FieldRowPanel,
     HelpPanel,
     InlinePanel,
     MultiFieldPanel,
-    PageChooserPanel, 
-    StreamFieldPanel,
     # Custom admin tabs
     ObjectList,
     TabbedInterface,
 )
 
-from wagtail.core import blocks
-from wagtail.core.fields import StreamField
-from wagtail.core.models import Page, PageManager, Orderable
+from wagtail import blocks
+from wagtail.fields import StreamField
+from wagtail.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
-from wagtail.documents.edit_handlers import DocumentChooserPanel
-from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 from wagtail.snippets.blocks import SnippetChooserBlock
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
 
 from wagtailmenus.models import FlatMenu
 
-from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
 from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
@@ -94,9 +87,9 @@ class UbysseyMenuMixin(models.Model):
         MultiFieldPanel(
             [
                 HelpPanel('<p>If the article has a special menu, as when it belongs to a special series of articles, select the relevant menu here</p><p>Alternatively, tick the box and select a page to create a menu from</p>'),
-                ModelChooserPanel('menu'),
+                FieldPanel('menu'),
                 FieldPanel('create_menu_from_parent'),
-                PageChooserPanel('parent_page_for_menu_generation'),
+                FieldPanel('parent_page_for_menu_generation'),
             ],
             heading="Special Menus",
             classname="collapsible",
@@ -166,7 +159,7 @@ class ArticleAuthorsOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel("author"),
+                FieldPanel("author"),
                 FieldPanel(
                     "author_role",
                     widget=Select(
@@ -222,7 +215,7 @@ class ConnectedArticleOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel('connected_article'),
+                FieldPanel('connected_article'),
             ],
             heading="Article"
         ),
@@ -249,7 +242,7 @@ class SeriesOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel('article'),
+                FieldPanel('article'),
             ],
             heading="Article"
         ),
@@ -293,8 +286,8 @@ class ArticleFeaturedMediaOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                ImageChooserPanel("image"),
-                SnippetChooserPanel("video"),
+                FieldPanel("image"),
+                FieldPanel("video"),
             ],
             heading="Media Choosers",
         ),
@@ -322,7 +315,7 @@ class ArticleStyleOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                DocumentChooserPanel('css'),
+                FieldPanel('css'),
             ],
             heading="CSS Document"
         ),
@@ -343,7 +336,7 @@ class ArticleScriptOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                DocumentChooserPanel('script'),
+                FieldPanel('script'),
             ],
             heading="Script"
         ),
@@ -495,6 +488,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
     explicit_published_at = models.DateTimeField(
         null=True,
@@ -700,7 +694,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 HelpPanel(
                     content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
                 ),
-                StreamFieldPanel("content"),
+                FieldPanel("content"),
             ],
             heading="Article Content",
             classname="collapsible",
@@ -723,7 +717,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 # FieldPanel("section"),
-                SnippetChooserPanel("category"),
+                FieldPanel("category"),
                 FieldPanel("tags"),
             ],
             heading="Categories and Tags",
@@ -831,7 +825,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 HelpPanel(content='<h1>Warning</h1><p>If a timeline is included in your article, <u>additional processing will be required when the article is saved</u>.</p><p>It is recommended you add a Timeline snippet LAST, <i>after</i> your article is otherwise written.</p><p><u>Developers</u> should note: the Timeline/Article sync is accomplished with Django signals, to prevent tight coupling of the two classes. Do not allow use of signals to turn into noodle logic.</p>'),
                 FieldPanel('show_timeline'),
                 FieldPanel('timeline_date'),
-                SnippetChooserPanel('timeline'),
+                FieldPanel('timeline'),
             ],
             heading = "Timeline",
             classname="collapsible collapsed",
@@ -863,7 +857,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     content="<p>Making a template requires some understanding of how the Django backend works, so that you might know variable names etc. for the data that the template is supposed to render.</p> <p>Because of the potential complexity of a template, it is desirable to be able to quickly switch the article back to a default template. Turn on \"Use default template\" to use the stock template and turn it off to be able to override the default with a custom template. Defaults to \"on\".</p>",
                 ),
                 FieldPanel("use_default_template"),
-                ModelChooserPanel("db_template"),
+                FieldPanel("db_template"),
             ],
             heading="Custom HTML",
             classname="collapsible collapsed",
@@ -1125,6 +1119,7 @@ class SpecialArticleLikePage(ArticlePage):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     content_panels = ArticlePage.content_panels + [
@@ -1133,7 +1128,7 @@ class SpecialArticleLikePage(ArticlePage):
                 HelpPanel(
                     content=''
                 ),
-                StreamFieldPanel("right_column_content")
+                FieldPanel("right_column_content")
             ],
             heading="Article Right Column Content",
             classname="collapsible",

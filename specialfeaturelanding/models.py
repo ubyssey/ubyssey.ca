@@ -10,24 +10,22 @@ from django.forms.widgets import Select
 
 from section.sectionable.models import SectionablePage
 
-from wagtail.admin.edit_handlers import (
+from wagtail.admin.panels import (
     FieldPanel,
     MultiFieldPanel,
     InlinePanel,
-    StreamFieldPanel,
     HelpPanel,
 )
 
 from modelcluster.fields import ParentalKey
 
-from wagtail.core import blocks
-from wagtail.core.models import Page, Orderable
-from wagtail.core.fields import StreamField
+from wagtail import blocks
+from wagtail.models import Page, Orderable
+from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
+
 
 from wagtailmenus.models import FlatMenu
-from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
 class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     """
@@ -111,6 +109,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     content = StreamField(
@@ -124,6 +123,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     graphical_menu = StreamField(
@@ -137,6 +137,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ],
         null=True,
         blank=True,
+        use_json_field=True,
     )
 
     content_panels = Page.content_panels + UbysseyMenuMixin.menu_content_panels + [
@@ -152,14 +153,14 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         #         HelpPanel(
         #             content='<h1>TODO</h1><p>Write something here</p>'
         #         ),
-        #         StreamFieldPanel("content"),
+        #         FieldPanel("content"),
         #     ],
         #     heading="Article Content",
         #     classname="collapsible",
         # ),
         MultiFieldPanel(
             [
-                StreamFieldPanel("editorial_stream"),
+                FieldPanel("editorial_stream"),
             ],
             heading="Editorial Content"
         ),
@@ -176,7 +177,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ),
          MultiFieldPanel(
             [
-                SnippetChooserPanel("category"),
+                FieldPanel("category"),
             ],
             heading="Categories",
             classname="collapsible",

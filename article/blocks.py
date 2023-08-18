@@ -1,5 +1,5 @@
-from wagtail.core import blocks
-from wagtail.core.blocks import field_block
+from wagtail import blocks
+from wagtail.blocks import field_block
 from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock

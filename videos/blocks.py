@@ -1,4 +1,4 @@
-from wagtail.core import blocks
+from wagtail import blocks
 from wagtail.embeds import blocks as embed_blocks
 
 class OneOffVideoBlock(blocks.StructBlock):

@@ -3,8 +3,8 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import modelcluster.fields
-import wagtail.core.blocks
-import wagtail.core.fields
+import wagtail.blocks
+import wagtail.fields
 import wagtail.images.blocks
 
 
@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='speciallandingpage',
             name='editorial_stream',
-            field=wagtail.core.fields.StreamField([('credits', wagtail.core.blocks.StreamBlock([('title', wagtail.core.blocks.CharBlock()), ('rich_text', wagtail.core.blocks.RichTextBlock()), ('editor_credit', wagtail.core.blocks.StructBlock([('role', wagtail.core.blocks.CharBlock()), ('name', wagtail.core.blocks.CharBlock())]))])), ('image', wagtail.images.blocks.ImageChooserBlock())], blank=True, null=True),
+            field=wagtail.fields.StreamField([('credits', wagtail.blocks.StreamBlock([('title', wagtail.blocks.CharBlock()), ('rich_text', wagtail.blocks.RichTextBlock()), ('editor_credit', wagtail.blocks.StructBlock([('role', wagtail.blocks.CharBlock()), ('name', wagtail.blocks.CharBlock())]))])), ('image', wagtail.images.blocks.ImageChooserBlock())], blank=True, null=True),
         ),
         migrations.CreateModel(
             name='CreditsOrderable',
