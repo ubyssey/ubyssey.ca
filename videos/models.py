@@ -15,7 +15,7 @@ from taggit.managers import TaggableManager
 from ubyssey.validators import validate_youtube_url
 
 
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.admin.panels import TitleFieldPanel, FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.models import Orderable, Page
 from wagtail.snippets.models import register_snippet
 from wagtail.search import index
@@ -165,7 +165,7 @@ class VideoSnippet(index.Indexed, ClusterableModel):
     panels = [
         MultiFieldPanel(
             [
-                FieldPanel("title"), 
+                TitleFieldPanel("title"), 
                 FieldPanel("slug"),
                 FieldPanel("url"),
             ],

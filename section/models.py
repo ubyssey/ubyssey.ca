@@ -14,7 +14,7 @@ from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
 
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.admin.panels import TitleFieldPanel, FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import StreamField
 from wagtail import models as wagtail_core_models
 from wagtail.models import Page
@@ -72,13 +72,13 @@ class CategorySnippet(index.Indexed, ClusterableModel):
         related_name="categories",
     )
     search_fields = [
-        index.SearchField('title', partial_match=True),
+        index.AutocompleteField('title'),
     ]
 
     panels = [
         MultiFieldPanel(
             [
-                FieldPanel("title"),
+                TitleFieldPanel("title"),
                 FieldPanel("slug"),
                 FieldPanel("section_page"),
                 FieldPanel("description"),
