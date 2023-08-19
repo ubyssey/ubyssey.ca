@@ -1,27 +1,16 @@
 """
 Blocks used on the home page of the site
 """
-from ads.models import HomeSidebarPlacementOrderable
 from article.models import ArticlePage
 from section.models import CategorySnippet
 
-from django import forms
 from django.db.models import Q
-from dispatch.models import Section
 
 from wagtail.core import blocks
 from wagtail.core.blocks import field_block
 
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
-from wagtailmodelchooser.blocks import ModelChooserBlock
-
-class SectionChooserBlock(blocks.ChooserBlock):
-    # based off code from:
-    # https://groups.google.com/g/wagtail/c/S26h5GP9_Fk?pli=1
-    # maybe move to a different namespace
-    target_model = Section
-    widget = forms.Select
 
 class HomepageFeaturedSectionBlock(blocks.StructBlock):
 

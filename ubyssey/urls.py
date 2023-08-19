@@ -43,8 +43,8 @@ urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
-    re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
-    re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
+    # re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
+    # re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
     # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
     # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
 
@@ -71,7 +71,7 @@ urlpatterns += [
 
     # # standard Ubyssey site
     # re_path(r'^$', HomePageView.as_view(), name='home'),
-    re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
+    # re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
     # re_path(r'^archive/$', ArchiveView.as_view(), name='archive'),
     # re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
 
