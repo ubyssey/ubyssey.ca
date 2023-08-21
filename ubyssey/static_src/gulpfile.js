@@ -5,6 +5,7 @@ const log = require('fancy-log');
 const PluginError = require('plugin-error');
 const jasmine = require('gulp-jasmine');
 const clean = require('gulp-clean');
+const { merge } = require('webpack-merge');
 const rename = require('gulp-rename');
 
 const webpack = require('webpack');
