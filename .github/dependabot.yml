@@ -9,16 +9,16 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 50
 
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/ubyssey/static_src" # Location of package manifests
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 50
   
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/ubyssey/static_src" # Location of package manifests
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 50
