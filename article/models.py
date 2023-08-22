@@ -913,6 +913,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.RelatedFields('article_authors', [
             index.SearchField('full_name'),
         ]),
+        
+        index.FilterField('author_id')
     ]
 
     #-----Properties, getters, setters, etc.-----
