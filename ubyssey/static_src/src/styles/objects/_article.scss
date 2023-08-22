@@ -453,6 +453,17 @@
   display: flex;
   width: 95%;
   margin: auto;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid;
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  &:last-of-type {
+    border: none;
+  }
 
   .o-article__left {
     margin-right: 0.8em;
@@ -485,9 +496,9 @@
   }
 
   .o-article__byline {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     padding-top: 5px;
-    color: black;
+    color: $color-ubyssey-blue-dark;
   }
 
   .o-article__meta__image {
@@ -512,10 +523,12 @@
   }
 
   .o-article__section-tag {
-    color: white;
+    color: inherit;
+    border-left: 2px solid;
+    border-right: 2px solid;
 
     &:hover {
-      color: black;
+      color: $color-accent-blue;
     } 
   }
 
