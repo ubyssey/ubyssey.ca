@@ -1,0 +1,16 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% image self.image original as banner_image %}
+
+<div class="c-banner c-banner--welcome" style="background-image: url({{banner_image.url}})">
+    <div class="c-banner__container">
+        <div class="c-banner--welcome__inner">
+            <h2 class="c-banner--welcome__intro">{{ self.title1 }}</h2>
+            <p class="c-banner--welcome__snippet">{{ self.title2 }}</p>
+        </div>
+        <div class="c-banner-credits">
+            {{ self.credit }}
+        </div>
+    </div>
+</div>

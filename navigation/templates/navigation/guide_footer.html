@@ -1,0 +1,14 @@
+{% load menu_tags %}
+<nav class="c-nav-footer">
+    {% for item in menu_items %}
+        {% comment %} We skip the first item, because that's the "home page" for navigation purposes. Footer doesn't need it {% endcomment %}
+        {% if forloop.counter0 > 0 %}
+        <div class="c-nav-footer__column" id="footer-academics">
+            <h2><a style="color:white"{%comment%} href="{{item.href}}"{%endcomment%}>{{item.text}}</a></h2>
+            {% if item.has_children_in_menu %} 
+            {% sub_menu item template="navigation/guide_footer_submenu.html"%}
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endfor %}
+</nav>

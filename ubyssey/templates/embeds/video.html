@@ -1,3 +1,7 @@
+{% load static %}
+
+<script src="{% static 'ubyssey/js/youtube.js' %}" type="text/javascript"></script>
+
 <div class="o-article-embed o-article-embed--video js-video-youtube" data-id="{{ id }}">
     <div class="o-article-embed--video__wrapper js-video-launch">
         <div class="o-article-embed--video__inner" style="background-image: url('https://img.youtube.com/vi/{{ id }}/0.jpg');">

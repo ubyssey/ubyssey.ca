@@ -1,0 +1,27 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% block header %}
+{% include 'navigation/headers/topbar.html' %}
+{% include 'navigation/headers/mobile.html' %}
+{% load archive_tags %}
+{% endblock %}
+
+{% block content %}
+<main class="c-page c-page--archive">
+    <div class="u-container u-container--padded">
+
+        <div class="c-page__header">
+            <h1 class="c-page__heading">Search the Archive</h1>
+        </div>
+        <div class="c-page__header">
+            <a href="https://issuu.com/ubyssey"> For all Ubyssey's print issues </a>
+        </div>
+        
+
+        {% include 'archive/objects/archive.html' %}
+
+    </div>
+</main>
+{% endblock %}
+
+

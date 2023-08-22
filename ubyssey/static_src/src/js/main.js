@@ -4,13 +4,23 @@ import upcomingEvents from './widgets/upcoming-events';
 // self-executing js anonymous function
 (function () {
 
+  moveModals();
+  initializeModals();
+  closeModal();
+
+  archiveMobileDropDown();          // listeners for dropdown menu for elements js-dropdown-container/js-dropdown-list/js-dropdown
   initializeSearchFormActions();    // Listeners for showing/hiding search form
   initializeSocialMediaActions();   // Listeners for Facebook, Twitter and Reddit sharing
 
-  ubysseyHeaderMobilePopUp();       // listeners for showing and hiding mobile navigation bar vs search form
+  initializePreventDefault();
+
+  initializeAudioQuote();
+
+  initializeFilterDropdown();
+
   ubysseyHeaderMagazineDropDown();  // appears to be custom js for Magazine menu dropdown Keegan has talked about
   ubysseyHeaderCultureDropDown();   // appears to be custom js for Culture menu dropdown
-  archiveMobileDropDown();          // listeners for dropdown menu for elements js-dropdown-container/js-dropdown-list/js-dropdown
+  //initializeGallery()
 
   // Track page views through Mixpanel (for articles & for non-article pages)
   if ($('.js-article').length) {
@@ -159,6 +169,7 @@ function archiveMobileDropDown() {
   // on click, element parent fades (visible to hidden), scroll using touch enabled for touchscreens
   $('.js-dropdown-container').click(function (e) {
     e.preventDefault();
+    closeModal();
     var dropdown = $(this).parent();
     dropdown.fadeOut(DROPDOWN_FADE_TIME);
     enableScroll();
@@ -190,39 +201,32 @@ function archiveMobileDropDown() {
   });
 }
 
-// Listener for showing and hiding mobile navigation bar vs search form
-function ubysseyHeaderMobilePopUp() {
-  // on clicking on the a element w/ class=='menu'
-  $('a.menu').click(function (e) {
+function initializeModals() {
+  let DROPDOWN_FADE_TIME = 100;
+  var modal = document.getElementById("modal");
+
+  $('.open-modal > a').click(function (e) {
     e.preventDefault();
-    // if navigation bar is visible, hide it
-    if ($('nav.mobile').is(':visible')) {
-      $('nav.mobile').hide();
+    var modalLink = $(this).parent().find('.openModal')[0];
+    var modalIndex = parseInt(modalLink.getAttribute("modal"));
+    if (modal.style.display == "block") {
+      closeModal();
+      modal.children[modalIndex].classList.add("hide");
+      modal.children[modalIndex].classList.remove("show");
       $(this).removeClass('active');
     } else {
-      // if search-form is visible, hide it
-      // and show navigation bar instead
-      if ($('#search-form').is(':visible')) {
-        $('#search-form').hide();
-        $('a.search').removeClass('active');
-      }
-      $('nav.mobile').show();
+      modal.children[modalIndex].classList.remove("hide");
+      modal.children[modalIndex].classList.add("show");
+      openModal();
+
       $(this).addClass('active');
     }
-  });
-}
-
-//Pending deletion
-function initializeSearch() {
-  $('.dropdown > a').click(function (e) {
-    e.preventDefault();
-    var dropdown = $(this).parent().find('.list');
-    if (dropdown.is(':visible')) {
-      dropdown.hide();
-    } else {
-      dropdown.show();
-    }
     return false;
+  });
+
+  $('a.close-modal').click(function (e) {
+    e.preventDefault();
+    closeModal();
   });
 }
 
@@ -275,32 +279,147 @@ function initializeSearchFormActions() {
 
 // Listeners for Facebook, Twitter and Reddit sharing
 function initializeSocialMediaActions() {
-
+  const titleElement = document.getElementsByTagName("title")[0];
+  const title = titleElement.innerText;
   // on clicking on the a element w/ class=='facebook'
-  // likes the page
-  // source: https://washamdev.com/facebook-sdk-javascript-tutorial-graph-api-facebook-login/
-  $(document).on('click', 'a.facebook', function (e) {
+  // shares the page
+  $(document).on('click', '.share-facebook', function (e) {
     e.preventDefault();
-    FB.ui({
-      method: 'share_open_graph',
-      action_type: 'og.likes',
-      action_properties: JSON.stringify({
-        object: $(this).data('url'),
-      })
-    }, function (response) { });
+    window.open('http://facebook.com/sharer.php?u=' + window.location.href + '&text=' + title + '&', 'facebookwindow',
+    'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
+
   // on clicking on the a element w/ class=='twitter', share on twitter
-  $(document).on('click', 'a.twitter', function (e) {
+  $(document).on('click', '.share-twitter', function (e) {
     e.preventDefault();
-    window.open('http://twitter.com/share?url=' + $(this).data('url') + '&text=' + $(this).data('title') + '&', 'twitterwindow',
+    window.open('http://twitter.com/share?url=' + window.location.href + '&text=' + title + '&', 'twitterwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
   // on clicking on the a element w/ class=='reddit', share on reddit
-  $(document).on('click', 'a.reddit', function (e) {
+  $(document).on('click', '.share-reddit', function (e) {
     e.preventDefault();
-    window.open('http://www.reddit.com/submit?url=' + $(this).data('url') + '&title=' + $(this).data('title') + '&', 'redditwindow',
+    window.open('http://www.reddit.com/submit?url=' + window.location.href + '&title=' + title + '&', 'redditwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+  });
+
+  $(document).on('click', '.share-link', function (e) {
+    e.preventDefault();
+   
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      /* Resolved - text copied to clipboard successfully */
+      document.getElementById("custom-tooltip").style.display = "inline";
+      setTimeout( function() {
+        document.getElementById("custom-tooltip").style.display = "none";
+    }, 1000);
+      
+    });
+   
+  });
+
+  
+}
+
+function initializePreventDefault() {
+  $('.preventDefault').click(function (e) {
+      e.preventDefault();
+  });
+}
+
+function initializeAudioQuote() {
+  $(document).on('click', 'a.playAudioQuote', function (e) {
+    e.preventDefault();
+  
+    var id = this.getAttribute("audio");
+  
+    var sound = document.getElementById(id);
+    if (sound.paused) {   
+      sound.play();
+    
+      var icon = document.getElementById("icon-" + id);
+      var frames = ["fa-volume-off", "fa-volume-low", "fa-volume-high"];
+    
+      var animateIcon = setInterval(function () {
+    
+          for (let i=0; i < frames.length; i++) {
+              if (icon.classList.contains(frames[i])) {
+                  icon.classList.toggle(frames[i]);
+                  if (i == frames.length - 1 ) {
+                      icon.classList.toggle(frames[0]);
+                  } else {
+                      icon.classList.toggle(frames[i+1]);
+                  }
+                  break;
+              }
+          }
+    
+          if (sound.paused) {
+              icon.classList.remove("fa-volume-low");
+              icon.classList.remove("fa-volume-high");
+              icon.classList.add("fa-volume-off");
+              clearInterval(animateIcon);
+          }
+    
+      }, 200);
+    } else {
+      sound.pause();
+      sound.currentTime = 0;
+    }
+  
+  });
+}
+function closeModal() {
+  var modal = document.getElementById("modal");
+  modal.style.display = 'none';
+  
+  var content = document.getElementById("content-wrapper");
+  content.removeAttribute("tabindex");
+  content.removeAttribute("readonly");
+  content.removeAttribute("aria-hidden");
+  content.removeAttribute("inert");
+
+  for (let i=0; i < modal.children.length; i++) {
+    modal.children[i].classList.remove("show");
+    modal.children[i].classList.add("hide");
+  }
+
+  $('body').removeClass('u-no-scroll');
+}
+
+function openModal() {
+  var modal = document.getElementById("modal");
+  modal.style.display = 'block';
+  
+  var content = document.getElementById("content-wrapper");
+  content.setAttribute("tabindex", "-1");
+  content.setAttribute("readonly", "");
+  content.setAttribute("aria-hidden", "true");
+  content.setAttribute("inert", "");
+
+  $('body').addClass('u-no-scroll');
+}
+
+function moveModals() {
+  var modalBlocks = document.getElementsByClassName("add-to-modal");
+  var modal = document.getElementById("modal");
+
+  for (let i=0; i < modalBlocks.length; i++) {
+    //modalBlocks[i].remove();
+    var div = document.createElement("div");
+    div.classList.add("openModal");
+    div.setAttribute("modal", i);
+
+    modalBlocks[i].insertAdjacentElement("beforebegin", div);
+    modal.appendChild(modalBlocks[i]);
+  } 
+}
+
+function initializeFilterDropdown() {
+  $(document).on('click', 'a.filterDropdown', function (e) {
+    e.preventDefault();
+    this.parentElement.nextElementSibling.classList.toggle('hide_filter');
+    this.children[0].classList.toggle("fa-caret-down");
+    this.children[0].classList.toggle("fa-caret-up");
   });
 }

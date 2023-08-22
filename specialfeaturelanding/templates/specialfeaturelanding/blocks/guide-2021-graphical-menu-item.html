@@ -1,0 +1,16 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% comment %} {% image self.image original as cover_image %} {% endcomment %}
+
+<div class="{{ self.div_class_name }}">
+        <a href="{{ self.link }}">
+                {% comment %} <img class="{{ self.img_class_name }}" src="{{ cover_image.url }}"
+                        width={% if self.width %}"{{ self.width }}"{% else %}"{{ cover_image.width }}"{% endif %}
+                        height={% if self.height %}"{{ self.height }}"{% else %}"{{ cover_image.height }}"{% endif %}
+                        alt="{{ cover_image.alt }}"> {% endcomment %}
+                {% comment %} {% image self.image fill-298x477 %} {% endcomment %}
+                {% image self.image fill-600x960 %}
+
+        </a>
+</div>

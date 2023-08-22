@@ -1,0 +1,83 @@
+{% load wagtailroutablepage_tags %}
+{% load archive_tags %}
+{% load wagtailimages_tags %}
+
+<div class="o-archive__search">
+	<form method="get">
+		<label class="o-archive__search__label" for="c-articles-list__searchbar"><i
+				class="fa fa-search"></i></label>
+		<input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
+			{% if q %}value="{{ q }}" {% endif %} placeholder="Search" />
+	</form>
+</div>
+
+<div class="o-archive">
+
+	<div class="o-archive__container">
+
+		{% include 'archive/objects/archive_filter.html' %}
+
+			<!-- The article condition checker -->
+			<div class="o-archive__header">
+				<h3 class="o-archive__header__title">
+					{% if page_obj %} {{ page_obj.paginator.count }} RESULTS {% else %}NO RESULTS{% endif %}
+					{% if q %} FOR "{{ q }}"{% endif %}
+				</h3>
+				<div class="o-archive__header__sort o-dropdown js-dropdown">
+					<a class="o-button o-dropdown__button" href="#">
+						<span>{{ order|title }}</span>
+						<i class="fa fa-sort-desc"></i>
+					</a>
+					<ul class="o-dropdown__list js-dropdown-list">
+						<li class="o-dropdown__item{% if order == 'newest' %} o-dropdown__item--is-active{% endif %}">
+							<a href="?{% modify_query_string 'order' 'newest' %}">Newest</a>
+						</li>
+						<li class="o-dropdown__item{% if order == 'oldest' %} o-dropdown__item--is-active{% endif %}">
+							<a href="?{% modify_query_string 'order' 'oldest' %}">Oldest</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			{% if page_obj|length > 0 %}
+			<div class="o-archive__main__list">
+				{% for object in page_obj %}
+					{% if video_section == False or video_section == None %}
+						{% include 'archive/objects/article_list.html' with article=object %}
+					{% else %}
+						{% include 'videos/stream_blocks/video.html' with video=object %}
+					{% endif %}
+				{% endfor %}
+			</div>
+
+			<div class="o-archive__pagination">
+				{% if page_obj.has_previous %}
+				<a class="o-button o-archive__pagination__prev"
+					href="?{% modify_query_string 'page' page_obj.previous_page_number %}">
+					<i class="fa fa-caret-left" aria-hidden="true"></i>
+					Previous
+				</a>
+				{% endif %}
+
+				<span class="o-archive__pagination__current">
+					Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+				</span>
+
+				{% if page_obj.has_next %}
+				<a class="o-button o-archive__pagination__next"
+					href="?{% modify_query_string 'page' page_obj.next_page_number %}">
+					Next
+					<i class="fa fa-caret-right" aria-hidden="true"></i>
+				</a>
+				{% endif %}
+			</div>
+
+			{% else %}
+			<div class="o-archive__no-results">No content found 😔</div>
+			{% endif %}
+
+		</div>
+
+	</div>
+
+</div>

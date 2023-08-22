@@ -1,0 +1,111 @@
+.author-header {
+    position: relative;
+    margin: auto;
+    margin-bottom: 40px;
+    margin-top: 30px;
+    min-height: 400px;
+
+    @media ($bp-larger-than-mobile) {
+        margin-bottom: 70px;
+    }
+}
+.author-img {
+    border-radius: 100%;
+    background-size: cover;
+
+    @media($bp-smaller-than-phablet) {
+        margin:auto;
+        width: 60%;
+        aspect-ratio: 1;
+        margin-bottom: 25px;
+        position: static;
+    }
+    @media($bp-larger-than-phablet) {
+        margin-top: 5%;
+        width: 350px;
+        height: 350px;
+        position: absolute;
+    }
+}
+.author-info {
+    padding: 2%;
+    height: fit-content;
+
+    @media($bp-larger-than-phablet) {
+        border-radius: 25px;
+        position: relative;
+        left: 35%;
+        max-width: fit-content;
+        width: 65%;
+        box-shadow: #0000003b -25px 25px 2px;
+        background-color: #C0E3F1;
+        color: black;
+    }
+}
+.author-name {
+    text-decoration: underline;
+    font-size: 3rem;
+    margin-bottom: 0;
+    margin-top: 0;
+    color: black;
+    @media($bp-smaller-than-phablet) {
+        font-size: 2rem;
+    }
+}
+.author-role {
+    font-size: 1.2rem;
+    line-height: 2rem;
+    color: black;
+}
+.author-desc {
+    color: $color-ubyssey-blue-dark-2;
+    line-height: 1.45em;
+}
+.darkmode {
+    @media($bp-smaller-than-phablet) {
+        .author-name {
+            color: white;
+        }
+        .author-role {
+            color: white;
+        }
+        .author-desc {
+            color: var(--text_color);
+        }
+    }
+}
+.author-links {
+    margin-bottom: 0;
+    color: var(--header_color);
+    @media($bp-larger-than-phablet) {
+        color: black;
+    }
+}
+.author-pinned_list {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+    justify-content: left;	
+}
+.author-pinned_article {
+    width: 32%;
+    margin-right: 1%;
+
+    @media($bp-smaller-than-phablet) {
+        width: 100%;
+        margin: 1%;
+    }
+}
+.author-heading {
+    font-size: 1.2rem;
+}
+.options {
+    display: flex;
+    gap: 15px;
+    width: 225px;
+}
+.selected {
+    text-decoration: underline;
+}

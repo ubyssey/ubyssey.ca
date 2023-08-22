@@ -5,13 +5,14 @@ $adslots: (
   banner: (468px, 60px),
   large-skyscraper: (300px, 600px),
   box: (300px, 250px),
-  mobile-leaderboard: (300px, 50px)
+  mobile-leaderboard: (320px, 50px)
 );
 
 .adslot {
   display: block !important;
   background-color: transparent;
   background-clip: content-box !important;
+  max-width: 100%;
 }
 
 // Desktop leaderboard ad
@@ -197,5 +198,24 @@ main.article .o-advertisement--leaderboard {
 .o-advertisement {
   @media print {
     display: none;
+  }
+}
+
+.o-advertisement--header-bar{
+  width: 100%;
+  padding-bottom: 1.5em;
+}
+
+.lightmode{
+  .o-advertisement--header-bar {
+    background-color: #dddddd;
+    border-bottom: 1px solid black;
+  }
+}
+
+.darkmode {
+  .o-advertisement--header-bar {
+    background-color: #424242;
+    border-bottom: 1px solid #535353;
   }
 }

@@ -1,6 +1,0 @@
-{% load humanize %}
-{% load wagtailcore_tags %}
-<h1 class="section"><a href=''>{{ section|title }}</a></h1>
-<section class="c-homepage__section c-homepage__section--2">
-  {% include 'section/objects/section_featured.html' with featured_articles=articles %}
-</section>

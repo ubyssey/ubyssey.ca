@@ -15,6 +15,8 @@
 @import 'modules/headlines';
 @import 'modules/buttons';
 
+@import 'modules/darkmode';  
+
 @import 'modules/homepage';
 
 @import 'modules/article/base';
@@ -22,6 +24,7 @@
 @import 'modules/article/comments_bar';
 @import 'modules/article/gallery';
 @import 'modules/article/full_width';
+@import 'modules/article/sidebar';
 @import 'modules/social';
 @import 'modules/search';
 
@@ -30,7 +33,9 @@
 @import 'objects/archive';
 @import 'objects/bottom_banner';
 
+
 @import 'components/adblock-splash';
+@import 'components/author-page';
 @import 'components/button';
 @import 'components/cookie-disclaimer';
 @import 'components/elections-sidebar';
@@ -40,15 +45,14 @@
 @import 'components/form';
 @import 'components/header-banner';
 @import 'components/heading';
-@import 'components/homepage';
 @import 'components/info-box';
 @import 'components/input-group';
 @import 'components/page';
 @import 'components/paragraph';
-@import 'components/poll';
 @import 'components/text-input';
-@import 'components/podcast';
+@import 'components/video';
 @import 'components/loading';
+@import 'components/infinitefeed';
 
 @import 'components/events/calendar';
 @import 'components/events/event-submit-form';
@@ -69,15 +73,50 @@
 @import 'modules/widgets/weekly-events';
 @import 'modules/widgets/twitter';
 
+html {
+  transition: background 0.5s ease, color 0.5s ease;
+}
 
+html.lightmode {
+  --background-nav: rgba(255, 255, 255, 0.99);
+  --background: white;
+  --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
+  --nav-h3-color: #5D5D5D;
+  --nav-span-color: #33331E;
+  --nav-headline-h1: #373737;
+  --three-bar-logo-color: #303030;
+  --text_color: #1b1b1b;
+  --header_color: black;
+  --article_info: #777777;
+  --article_caption: #5A5A5A;
+  --authors-title-bio: #1B1B1B;
+  --archive-text: #4e4e4e;
+  --article-publish: #2B2B2B;
+  --pagination: #353535;
+}
+
+html.darkmode {
+  --background-nav: #031723;
+  --background: #031621;
+  --nav-mobile-background-barely-transparent: #031723;
+  --nav-h3-color: #EFEFEF;
+  --nav-span-color: #EFEFEF;
+  --nav-headline-h1: #5D5D5D;
+  --three-bar-logo-color: #EFEFEF;
+  --text_color: #D9D9D9;
+  --header_color: white;
+  --article_info: #BFBBBB;
+  --article_caption: #BFBBBB;
+  --authors-title-bio: #D8D8D8;
+  background-color: #031621;
+  --archive-text: #BFBFBF;
+  --article-publish: #BFBFBF;
+  --pagination: #BFBFBF;
+}
 
 body, html, #page-wrapper {
-  max-height: 100%;
-  height: 100%;
-
-  @media screen {
-  
-  }
+  //max-height: 100%;
+  //height: 100%;
 }
 
 #page-wrapper {
@@ -88,8 +127,18 @@ body, html, #page-wrapper {
   }
 }
 
+#modal {
+  position: absolute;
+  display: none;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+
 #content-wrapper {
-  
+  background-color: var(--background);
+  transition: background 0.5s ease, color 0.5s ease;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -175,5 +224,47 @@ a.image {
   @media($bp-larger-than-phablet){
     margin-bottom: 0;
   }
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+}
+
+.dropdown-show {
+  display: none;
+}
+
+.dropdown:focus-within, .dropdown:hover {
+  .dropdown-content {
+    display: block; 
+  }
+  .dropdown-show {
+    display: inherit; 
+  }
+  .dropdown-hidden {
+    display: none;
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.hide {
+	display: none;
+}
+
+.show {
+	display: block;
+}
+/* Restoring browsering effects */
+
+.floating-share-buttons {
+  size: 4px;
 }
 

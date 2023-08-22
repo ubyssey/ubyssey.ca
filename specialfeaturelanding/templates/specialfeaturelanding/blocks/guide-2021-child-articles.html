@@ -1,0 +1,10 @@
+<div class="section-articles">
+    <h2 class="{{page.slug}}">{{page.title}}</h2>
+    <ul class="section-articles-list">
+        {% for article in page.get_children.specific %}
+        <li>
+            <a href="{{article.url}}">{{article.title}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

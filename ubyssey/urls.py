@@ -1,39 +1,41 @@
 from django.conf import settings
 from django.urls import include, path, re_path
 from django.conf.urls.static import static
-from django.contrib.staticfiles.views import serve as serve_static
 from django.contrib import admin
-
-from dispatch.urls import admin_urls, api_urls, podcasts_urls
-from newsletter.urls import urlpatterns as newsletter_urls
-
-from ubyssey.views.feed import FrontpageFeed, SectionFeed
-from ubyssey.views.main import ads_txt, UbysseyTheme, HomePageView, ArticleView, SectionView, SubsectionView, VideoView, PageView, PodcastView, ArticleAjaxView, AuthorView, ArchiveView, IsolationView
-from ubyssey.views.guide import guide2016, GuideArticleView, GuideLandingView
-
-from ubyssey.views.advertise import AdvertiseTheme
-from ubyssey.views.magazine import magazine, MagazineLandingView, MagazineArticleView
-
-from ubyssey.zones import *
-from ubyssey.widgets import *
-from ubyssey.templates import *
-
-from ubyssey.events.api.urls import urlpatterns as event_api_urls
-from ubyssey.events.urls import urlpatterns as events_urls
-
-from django.views.generic import TemplateView
+from django.views import defaults as default_views
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+
+from ubyssey.views.main import ads_txt, redirect_blog_to_humour
+from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
+from ubyssey.views.advertise import AdvertiseTheme
+
+from infinitefeed.views import infinitefeed
+
+from newsletter.urls import urlpatterns as newsletter_urls
+
 advertise = AdvertiseTheme()
 
 urlpatterns = []
+
+settings.WAGTAILIMAGES_FORMAT_CONVERSIONS = {
+    'jpeg': 'webp', 
+    'png': 'webp',
+    'webp': 'webp',
+}
 
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
+        # tricks for testing error page, which is otherwise not viewable with DEBUG on. inspired by https://spapas.github.io/2015/04/29/django-show-404-page/ (which is outdated)
+        # and https://stackoverflow.com/questions/42882243/how-do-you-pass-exception-argument-to-403-view for the need for kwargs
+        re_path(r'^400/$', default_views.bad_request, kwargs={'exception': Exception('Bad Request!')}),
+        re_path(r'^403/$', default_views.permission_denied, kwargs={'exception': Exception('Permission Denied')}),
+        re_path(r'^404/$', default_views.page_not_found, kwargs={'exception': Exception('Page not Found')}),
+        re_path(r'^500/$', default_views.server_error),
     ]
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -42,10 +44,10 @@ urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
-    re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
-    re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
-    re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
-    re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
+    # re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
+    # re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
+    # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
+    # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
 
     re_path(r'^djadmin/', admin.site.urls),
 
@@ -61,11 +63,16 @@ urlpatterns += [
     # Wagtail
     re_path(r'^admin/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
+    re_path(r'^infinitefeed/$', infinitefeed, name='infinitefeed'), 
+    re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
+    re_path(r'^rss/(?P<slug>[-\w]+)/$', SectionFeed(), name='section-feed'),
+    re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
+    re_path(r'^blog/', redirect_blog_to_humour),
     path('', include(wagtail_urls)),
 
     # # standard Ubyssey site
     # re_path(r'^$', HomePageView.as_view(), name='home'),
-    re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
+    # re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
     # re_path(r'^archive/$', ArchiveView.as_view(), name='archive'),
     # re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
 

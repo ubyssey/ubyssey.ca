@@ -1,0 +1,16 @@
+{% load humanize %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load wagtailuserbar %}
+
+<div class="c-sidebar {% if styling %} {{styling}} {% endif %}">
+  {% for block in sidebar_stream %}
+    <div class="c-sidebar_container">
+      <div class="c-sidebar_item">
+        {% include_block block %}
+      </div>
+    </div>
+    <div class="sidebar-block sidebar-block--advertisement"></div>
+  {% endfor %}
+</div>

@@ -7,11 +7,10 @@ from images.models import GallerySnippet
 
 from dbtemplates.models import Template as DBTemplate
 
-from dispatch.models import Article
-
 from django.db import models
 from django.db.models import fields
 from django.db.models.fields import CharField
+from django.shortcuts import render
 from django.db.models.query import QuerySet
 from django.forms.widgets import Select, Widget
 from django.utils import timezone
@@ -30,6 +29,8 @@ from section.sectionable.models import SectionablePage
 from taggit.models import TaggedItemBase
 
 from videos import blocks as video_blocks
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from article import blocks as article_blocks
 
 from wagtail.admin.edit_handlers import (
     # Panels
@@ -44,10 +45,12 @@ from wagtail.admin.edit_handlers import (
     ObjectList,
     TabbedInterface,
 )
+
 from wagtail.core import blocks
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
+from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.documents.edit_handlers import DocumentChooserPanel
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
@@ -55,21 +58,54 @@ from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
+
+from wagtailmenus.models import FlatMenu
+
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
+
+from wagtail_color_panel.fields import ColorField
+from wagtail_color_panel.edit_handlers import NativeColorPanel
 
 
 UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17)
 
-#-----Snippet Models-----
+#-----Mixins-----
+class UbysseyMenuMixin(models.Model):
 
-@register_snippet
-class DispatchCounterpartSnippet(models.Model):
-    dispatch_version = models.ForeignKey(
-        Article,
+    menu = models.ForeignKey(
+        FlatMenu,
         null=True,
-        blank=False,
+        blank=True,
         on_delete=models.SET_NULL,
+        related_name='+',
     )
+    create_menu_from_parent = models.BooleanField(
+        default = False,
+    )
+    parent_page_for_menu_generation = models.ForeignKey(
+        'specialfeaturelanding.SpecialLandingPage',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',        
+    )
+
+    menu_content_panels = [
+        MultiFieldPanel(
+            [
+                HelpPanel('<p>If the article has a special menu, as when it belongs to a special series of articles, select the relevant menu here</p><p>Alternatively, tick the box and select a page to create a menu from</p>'),
+                ModelChooserPanel('menu'),
+                FieldPanel('create_menu_from_parent'),
+                PageChooserPanel('parent_page_for_menu_generation'),
+            ],
+            heading="Special Menus",
+            classname="collapsible",
+        ),
+    ]
+    class Meta:
+        abstract = True
+
+#-----Snippet Models-----
 
 @register_snippet
 class ArticleSeriesSnippet(ClusterableModel):
@@ -105,6 +141,7 @@ class ArticleSeriesSnippet(ClusterableModel):
          verbose_name = "Series of Articles"
          verbose_name_plural = "Series of Articles"
 
+
 #-----Orderable models-----
 class ArticleAuthorsOrderable(Orderable):
     """
@@ -138,6 +175,7 @@ class ArticleAuthorsOrderable(Orderable):
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
                             ('videographer','Videographer'),
+                            ('org_role', 'Show organization role'),
                         ],
                     ),
                 ),
@@ -190,6 +228,7 @@ class ConnectedArticleOrderable(Orderable):
         ),
         FieldPanel('article_description')
     ]
+
 
 class SeriesOrderable(Orderable):
     """
@@ -380,19 +419,32 @@ class ArticlePageManager(PageManager):
     
     def from_section(self, section_slug='', section_root=None) -> QuerySet:
         from .models import ArticlePage
+        from section.models import SectionPage
+        
         if section_slug:
             try:
-                new_section_root = Page.objects.get(slug=section_slug)
-            except Page.DoesNotExist:
-                new_section_root = None
-            if new_section_root:
-                section_root = new_section_root
+                section_root = SectionPage.objects.get(slug=section_slug)
+                articles = self.live().public().descendant_of(section_root).exact_type(ArticlePage)
+            except SectionPage.DoesNotExist:
+                articles = SectionPage.objects.none()
             
-        return self.live().public().descendant_of(section_root).exact_type(ArticlePage) #.order_by('-last_modified_at')
+        return articles
+    
+    def from_magazine_special_section(self, section_slug='', section_root=None) -> QuerySet:
+        from .models import ArticlePage
+        from specialfeaturelanding.models import SpecialLandingPage
+        if section_slug:
+            try:
+                section_root = SpecialLandingPage.objects.get(category__slug=section_slug)
+                articles = self.live().public().descendant_of(section_root).exact_type(ArticlePage) 
+            except SpecialLandingPage.DoesNotExist:
+                articles = SpecialLandingPage.objects.none()
 
+        return articles
+  
 #-----Page models-----
 
-class ArticlePage(SectionablePage):
+class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     #-----Django/Wagtail settings etc-----
     objects = ArticlePageManager()
@@ -413,7 +465,7 @@ class ArticlePage(SectionablePage):
                 label="Rich Text Block",
                 help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
             )),
-            ('plaintext',blocks.TextBlock(
+            ('plaintext', blocks.TextBlock(
                 label="Plain Text Block",
                 help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
             )),
@@ -432,18 +484,14 @@ class ArticlePage(SectionablePage):
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', blocks.StructBlock(
-                [
-                    ('content',blocks.CharBlock(required=False)),
-                    ('source',blocks.CharBlock(required=False)),
-                ],
-                label = "Pull Quote",
-                template = 'article/stream_blocks/quote.html',
-            )),
+            ('quote', article_blocks.PullQuoteBlock()),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
+            ('header_link', article_blocks.HeaderLinkBlock()),
+            ('header_menu', article_blocks.HeaderMenuBlock()),
+            ('visual_essay', article_blocks.VisualEssayBlock()),
         ],
         null=True,
         blank=True,
@@ -506,20 +554,20 @@ class ArticlePage(SectionablePage):
         default='',
         verbose_name="SEO Description",
     ) # AKA "Meta Description" in the old Dispatch frontend
+    noindex = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        verbose_name="Add 'noindex' tag?",
+        help_text="Warning: Only to be used when an article is requested to be unpublished, as per unpublishing policy. Should be FALSE in all but exceptional circumstances!",
+    )
     #-----Setting panel stuff-----
     is_explicit = models.BooleanField(
         default=False,
         verbose_name="Is Explicit?",
         help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article."
     )
-    #-----Migration stuff------
-    dispatch_version = models.ForeignKey(
-        # Used to map the article to a previous version that exists in Dispatch
-        "dispatch.Article",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-    )
+
 
     #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
 
@@ -629,6 +677,12 @@ class ArticlePage(SectionablePage):
             return "article/article_page_fw_story.html"
         elif self.layout == 'guide-2020':
             return "article/article_page_guide_2020.html"
+        elif self.layout == 'guide-2022':
+            return "article/article_page_guide_2022.html"
+        elif self.layout == 'magazine-2023':
+            return "article/article_page_magazine_2023.html"
+        elif self.layout == 'visual-essay':
+            return "article/article_page_visual_essay.html"
                         
         return "article/article_page.html"
 
@@ -682,7 +736,8 @@ class ArticlePage(SectionablePage):
             heading="Featured Media",
             classname="collapsible",
         ),
-    ] # content_panels
+    ] + UbysseyMenuMixin.menu_content_panels # content_panels
+
     promote_panels = Page.promote_panels + [
         MultiFieldPanel(
             [
@@ -697,11 +752,17 @@ class ArticlePage(SectionablePage):
                 FieldPanel("seo_keyword"),
                 FieldPanel("seo_description"),
             ],
-            heading="Old SEO stuff",
+            heading="Old Search Engine/SEO stuff",
             help_text="In Dispatch, \"SEO Keyword\" was referred to as \"Focus Keywords\", and  \"SEO Description\" was referred to as \"Meta Description\""
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("noindex"),
+            ],
+            heading="Special search engine-related meta tagging",
         )
     ] # promote_panels
-    settings_panels = Page.settings_panels + [
+    settings_panels = SectionablePage.settings_panels + [
         MultiFieldPanel(
             [
                 FieldPanel(
@@ -733,7 +794,10 @@ class ArticlePage(SectionablePage):
                         choices=[
                             ('default', 'Default'), 
                             ('fw-story', 'Full-Width Story'),
-                            ('guide-2020', 'Guide (2020 style)'),
+                            ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
+                            ('guide-2022', 'Guide (2022 style)'),
+                            ('magazine-2023', 'Magazine (2023 style)'),
+                            ('visual-essay', 'Visual Essay'),
                         ],
                     ),
                 ),
@@ -787,7 +851,7 @@ class ArticlePage(SectionablePage):
             ],
             heading="Connected or Related Article Links (Non-Series)",
             classname="collapsible collapsed",
-        ), # Connected or Related Article Links (Non-Series)
+        ), # Connected or Related Article Links (Non-Series) 
     ] # fw_article_panels
     customization_panels = [
         HelpPanel(
@@ -840,8 +904,8 @@ class ArticlePage(SectionablePage):
         index.SearchField('content'),
         
         index.FilterField('current_section'),
-        index.FilterField('author_id'),
         index.FilterField('slug'),
+        index.FilterField('explicit_published_at'),
 
         index.RelatedFields('category', [
             index.FilterField('slug'),
@@ -864,10 +928,9 @@ class ArticlePage(SectionablePage):
         user_agent = get_user_agent(request)
         context['is_mobile'] = user_agent.is_mobile
 
-
         context['prev'] = self.get_prev_sibling()
         context['next'] = self.get_next_sibling()
-
+        
         if self.current_section == 'guide':
             # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
             if not context['prev']:
@@ -880,7 +943,10 @@ class ArticlePage(SectionablePage):
         if context['next']:
             context['next'] = context['next'].specific
 
+        context["suggested"] = self.get_suggested()
+
         return context
+
 
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
@@ -898,6 +964,7 @@ class ArticlePage(SectionablePage):
             authors = list(map(format_author, self.article_authors.all()))
         else:
             authors = list(map(format_author, authors_list))
+           
 
         if not authors:
             return ""
@@ -915,6 +982,22 @@ class ArticlePage(SectionablePage):
         return self.get_authors_string(links=True)
     authors_with_urls = property(fget=get_authors_with_urls)
 
+    def get_authors_in_order(self):
+        AUTHOR_TYPES = ["org_role", "author", "photographer", "illustrator", "videographer"]
+        authors = self.article_authors.all()
+
+        authors_list = []
+
+        for author_type in AUTHOR_TYPES:
+            for author in authors:
+                if author.author_role == author_type:
+                    authors_list.append(author)
+
+
+        return authors_list
+    authors_in_order = property(fget=get_authors_in_order)
+    
+
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
@@ -928,7 +1011,7 @@ class ArticlePage(SectionablePage):
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         for author in authors:
             if author == 'author':
-                string_written += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
+                authors_with_roles += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
             if author == 'photographer':
                 string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
             if author == 'illustrator':
@@ -936,7 +1019,7 @@ class ArticlePage(SectionablePage):
             if author == 'videographer':
                 string_videos += 'Videos by ' + self.get_authors_string(links=True, authors_list=authors['videographer'])
         if string_written != '':
-            authors_with_roles += string_written
+            authors_with_roles += string_written # Unneccessary if statement
         if string_photos != '':
             authors_with_roles += ', ' + string_photos
         if string_author != '':
@@ -946,6 +1029,44 @@ class ArticlePage(SectionablePage):
         return authors_with_roles
     authors_with_roles = property(fget=get_authors_with_roles)
  
+    def get_category_articles(self, order='-explicit_published_at') -> QuerySet:
+        """
+        Returns a list of articles within the Article's category
+        """
+        category_articles = ArticlePage.objects.live().public().filter(category=self.category).not_page(self).order_by(order)
+
+        return category_articles
+    
+    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+        """
+        Returns a list of articles within the Article's section
+        """
+
+        section_articles = ArticlePage.objects.live().public().descendant_of(self.get_parent()).not_page(self).order_by(order)
+        
+        return section_articles
+
+    def get_suggested(self, number_suggested=6):
+        """
+        Defines the title and articles in the suggested box
+        """
+        
+        category_articles = self.get_category_articles()
+        section_articles = self.get_section_articles()
+
+        if self.category == None or len(category_articles) == 0:
+            suggested = {}
+            suggested['title'] = "From " + self.get_parent().title
+            suggested['articles'] = section_articles[:number_suggested]
+        elif len(section_articles) > 0:
+            suggested = {}
+            suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
+            suggested['articles'] = category_articles[:number_suggested]
+        else:
+            suggested = False
+
+        return suggested
+
     @property
     def published_at(self):
         if self.explicit_published_at:
@@ -990,6 +1111,46 @@ class SpecialArticleLikePage(ArticlePage):
 
     subpage_types = [] #Prevents article pages from having child pages
 
+    right_column_content = StreamField(
+        # intended for use only for the About/Contant Us page as of Jun 9, 2022
+        [
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+            )),
+            ('plaintext',blocks.TextBlock(
+                label="Plain Text Block",
+                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
+        ],
+        null=True,
+        blank=True,
+    )
+
+    content_panels = ArticlePage.content_panels + [
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content=''
+                ),
+                StreamFieldPanel("right_column_content")
+            ],
+            heading="Article Right Column Content",
+            classname="collapsible",
+        ),
+    ]
+
+    # This overrides the default Wagtail edit handler, in order to add custom tabs to the article editing interface
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(ArticlePage.promote_panels, heading='Promote'),
+            ObjectList(ArticlePage.settings_panels, heading='Settings'),
+            ObjectList(ArticlePage.fw_article_panels, heading='Layout (Stock Templates)'),
+            ObjectList(ArticlePage.customization_panels, heading='Custom Frontend (Advanced!)'),
+        ],
+    ) # edit_handler
+    
     def get_template(self, request):
         if not self.use_default_template:
             if self.db_template:

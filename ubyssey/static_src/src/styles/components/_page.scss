@@ -8,6 +8,7 @@
 .c-page__header {
   // Structure
   margin: 1.5rem 0;
+  margin-left: 1em;
 
   @media($bp-larger-than-phablet) {
     // Structure
@@ -92,7 +93,6 @@
 
   // Text
   font-size: font-size(32);
-  color: $color-text-black;
 }
 
 .c-page__sub-heading {
@@ -198,4 +198,8 @@
     top: 0;
     left: 0;
   }
+}
+
+.social_media_links {
+  display: inline-block;
 }

@@ -1,0 +1,160 @@
+.c-sidebar_inactive {
+    top: -100%;
+    position:absolute;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.c-sidebar_active {
+    top:0;
+    position:absolute;
+    opacity: 1;
+    z-index: 200;
+}
+
+.c-sidebar_item {
+    width: 100%;
+    position:sticky;
+    top: 50px;
+}
+
+.flex-stream {
+    display: flex;
+    justify-content: center;
+}
+
+.c-sidebar_container {
+    height: 1500px;
+    min-height: fit-content;
+    margin-top: 65px;
+}
+
+.c-sidebar {
+    height: 100%;
+    width:40%;
+    padding-left: 1em;
+
+    @media ($bp-smaller-than-phablet) {
+        display:none;
+    }
+}
+
+.flex-stream {
+    img {
+        margin: auto;
+        display: block;
+    }
+}
+
+.c-section__sidebar {
+    margin-left: 20px;
+    width: 37%;
+    top:100px;
+}
+
+.c-infinitefeed__feed {
+    margin:auto;
+    display:flex;
+    min-height: 66vh;
+    justify-content: space-between;
+  }
+
+.c-home-infinitefeed {
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+    @media ($bp-larger-than-phablet) {
+        margin-right: 20px;
+        width: 50%;
+    }
+}
+
+.c-home-bannerbox {
+    width: 100%;
+}
+
+.sidebar-issue{
+    color:white;
+    padding:0;
+    display: flex;
+    flex-wrap: wrap;
+    @media($bp-smaller-than-phablet){
+      text-align: center;
+    }
+}
+.issue{
+    transition-duration: 0.2s;
+    position: relative;
+    left:0;
+    margin: 5px;
+    margin-bottom: 10px;
+    list-style-type: none;
+    background-color:$color-ubyssey-blue;
+    border: 2px solid black;
+    width: 100px;
+    flex-grow: 1;
+    text-align: center;
+    height: fit-content;
+    &:hover{
+        top: -7px;
+    }
+
+    a {
+        &:hover{
+        text-decoration: underline;
+        color: white;
+        }
+    }
+}
+.issueText{
+    margin: 2px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.issue_img {
+    width: 100%;
+}
+
+.lightmode {
+    h2.block-title {
+        text-shadow: #0000003b -1px 1px 15px;
+    }
+    .issue {
+        box-shadow: -5px 10px 7px 0px #0000003b;
+    }
+    #loader {
+        color: black;
+    }
+    .c-sidebar {
+        border-left: solid;
+        border-width: 1px;
+    }
+}
+
+.darkmode {
+    h2.block-title {
+        text-shadow: #000000 1px 1px 15px;
+    }
+    div.sidebar-block {  
+        h2.block-title {
+        color: white;
+        }
+        .issue {
+        color:white;
+        box-shadow: #000000 1px 5px 15px;
+        .issueText{
+            color: white;
+        }
+        }
+    }
+    #loader {
+        color: white;
+    }
+}
+
+#loader {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}

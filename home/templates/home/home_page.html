@@ -3,87 +3,113 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load ubyssey_ad_tags %}
+{% load ubyssey_ad_filters %}
+
+{% block head_scripts %}
+<link rel="alternate" type="application/atom+xml" title="Ubyssey Rss Feed" href="/rss">
+<!-- Register ads for home page -->
+{% for orderable in settings.ads.AdTagSettings.home_head_tags.all %}
+{% gpt_define_tag orderable.ad_slot %}
+{% endfor %}
+{% endblock %}
 
 {% block header %}
-  {% include 'navigation/headers/main.html' %}
-  {% include 'navigation/headers/mobile.html' with class='homepage' %}
+{% include 'navigation/headers/mobile.html' with class='homepage' %}
+
+<div class="o-advertisement--header-bar">
+<!-- Place header ads for home page -->
+{% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
+{% gpt_placement_tag orderable.ad_slot %}
+{% endfor %}
+</div>
+
+{% include 'navigation/headers/main.html' with tagline=self.tagline tagline_url=self.tagline_url %}
 {% endblock %}
 
 {% block content %}
-  {% adslot self.home_leaderboard_ad_slot.slug %}
-  {% adslot self.home_mobile_leaderboard_ad_slot.slug %}
-  <main class="u-container u-container--large homepage">
-    {% comment %}
-      breaking_news_article is passed through from context and it contains all of the breaking articles from each section
-    {% endcomment %}
-    {% for article in breaking_news_article%}      
-      <a class="o-breaking-news" href={% pageurl article %}>
-        <h3>BREAKING: {{ article.title|safe }}</h3>
-      </a>
-    {% endfor %}
-    {% comment %}
-      Additional fields/blocks will go here to alert students to some special events
-    {% endcomment %}
-    {% include 'home/objects/above_cut.html' with articles=above_cut_articles %}
+{% filter specify_homepage_sidebar_ads:request %}
 
-    <div class="homepage-section row">
-      <div class="sections" >  
-        {% include 'home/stream_blocks/section_news.html' with section="News" articles=News %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Culture" articles=Culture %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Sports" articles=Sports %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Opinion" articles=Opinion %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Features" articles=Features %}
-        {% include 'home/stream_blocks/section_non_news.html' with section="Science" articles=Science %}
-      </div>
+<main class="u-container u-container--mid homepage">
+	{% comment %}
+	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
+	{% endcomment %}
+	{% for article in breaking_news_article %}
+	<a class="o-breaking-news" href={% pageurl article %}>
+		<h3>BREAKING: {{ article.title|safe }}</h3>
+	</a>
+	{% endfor %}
+	{% comment %}
+	Additional fields/blocks will go here to alert students to some special events
+	{% endcomment %}
 
-      <div class="sidebar-home">
-        <div class="sidebar-block sidebar-block--advertisement">
-          {% adslot self.home_sidebar_ad_slot1.slug %}
-        </div>
-        <div class=" sidebar-block">
-          <h2 class="block-title">Check Out Our Digital Print Issue</h2>
-          <div class='sidebar-issue'>
+	<div class="home-featured">
+		{% if self.cover_story %}
+			{% include "article/objects/cover_story.html" with article=self.cover_story%}
+		{% endif %}
+		<div class="home-top-article-list">
+			{% now "d N, Y" as date %}
+			{% now "l" as dayOfWeek %}
+			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text=date textBold=dayOfWeek %}
+			
+			{% for article in self.top_articles_list %}
+				{% include "article/objects/top_article.html" with article=article.article count=forloop.counter %}
+			{% endfor %}
+		</div>
+	</div>
 
-                  <h5 class="headline" id='issue-photo'><a class='issue' id ='issue1' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_march_7_2022">March 7, 2022<img src="https://image.isu.pub/220307204607-206e6a72ebc184e20b60889eab4ec250/jpg/page_1_thumb_large.jpg"></a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue2' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_february_15_2022">February 15, 2022 </a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue3' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_february_1_2022">February 1, 2022 </a></h5>
-                  <h5 class="headline"><a class='issue' id ='issue4' href="https://issuu.com/ubyssey/docs/the_ubyssey_-_january_18_2022">January 18, 2022 </a></h5>
-          </div>
-        </div>
-        <div class="sidebar-block sidebar-block--advertisement">
-          {% adslot self.home_sidebar_ad_slot2.slug %}
-        </div>
-        <div class="article-list blog sidebar-block">
-          <h2 class="block-title">From the blog</h2>
-          <ul class="article-list">
-            {% comment %}
-              blog is passed through from context
-            {% endcomment %}
-            {% for article in Blog %}
-              <li>
-                {% include 'article/objects/blog_column.html' with article=article padded=True   %}
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-        <div class="multi-zone cell right">
-          {% comment %} 
-            This should probably be renamed, because "zones"
-            were a mis-designed feature.
+	<div class="home_links">
+	{% if self.links %}
+		<div class="home_link_content">
+			<ul>
+			{%for link in self.links%}
+				{% include_block link%}
+			{%endfor%}
+			</ul>
+		</div>
+		<div class="home_link_ad">
+			<div class="sidebar-block sidebar-block--advertisement"></div>
+		</div>
+	{% else %}
+		<div class="sidebar-block sidebar-block--advertisement o-advertisement--leaderboard"></div>
+	{% endif %}
+	</div>
 
-            In all likelihood, it will contain another set of blocks
-          {% endcomment %}
-        </div>
-      </div>
-    </div>
-    <div class="loader-container">
-      <div class="loader"></div>
-    </div>
-  </main>
+</main>
+
+<div id="feed-section" class="home_infinitefeed">
+	<div class="u-container u-container--large c-infinitefeed__feed">
+		<div class="c-home-infinitefeed">
+			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox sticky' title='Sections' text='Most Recent' textId='timeBox' %}
+			
+			<div class="c-homepage__sections">
+			{% for block in self.sections_stream %}
+			{% include_block block %}
+			{% endfor %}
+			</div>
+		</div>
+
+        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
+
+	</div>
+
+
+	{% comment %}
+	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
+		<div class="c-home-infinitefeed">
+			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode c-home-bannerbox sticky' title='Infinite feed' textBold='Today' textId='timeBox' %}
+			{% include 'infinitefeed/infinitefeed.html' with filters=filters label="True" inactive="True" %}
+		</div>
+
+        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
+
+	</div>
+	<script src="{% static 'ubyssey/js/home.js' %}" type="text/javascript"></script>
+	<script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
+	{% endcomment %}
+</div>
+{% endfilter %}
 {% endblock %}
 
 {% block footer %}
-  {% include 'navigation/footer.html' with homepage=True %}
+{% include 'navigation/footer.html' with homepage=True %}
 {% endblock %}
-
- 

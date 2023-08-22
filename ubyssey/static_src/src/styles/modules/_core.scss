@@ -28,11 +28,10 @@ body {
   padding-left: 0;
   padding-right: 0;
   box-sizing: border-box;
+}
 
-  @media($bp-larger-than-phablet) {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+.u-container--mid {
+  max-width: 1100px;
 }
 
 .u-container--large {
@@ -51,6 +50,16 @@ body {
     padding-left: 20px;
     padding-right: 20px;
   }
+}
+
+.u-container-topbar {
+  max-width: 1200px;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.u-container-max {
+  max-width: none;
 }
 
 
@@ -75,7 +84,7 @@ main {
 // ROWS AND COLUMNS
 
 .row {
-  overflow: auto;
+  //overflow: auto;
   > .left {
     float: left;
   }
@@ -181,6 +190,17 @@ main {
 
   background-size: cover;
   background-position: center;
+}
+
+
+// Defualt text colours
+
+h1, h2, h3 {
+  color: var(--header_color)
+}
+
+p{
+  color: var(--text_color);
 }
 
 // ANCHORS

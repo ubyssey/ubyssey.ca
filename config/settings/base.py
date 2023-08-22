@@ -16,10 +16,9 @@ https://codelabs.developers.google.com/codelabs/cloud-run-django/index.html?inde
 import os
 import sys
 import environ
-from dispatch.apps import DispatchConfig
+import google_crc32c
 
 BASE_DIR = environ.Path(__file__) - 3
-DISPATCH_APP_DIR = DispatchConfig.path
 
 env = environ.Env() # will reinitialize later once "earliest" configs have been set
 
@@ -41,9 +40,18 @@ if os.environ['DJANGO_SETTINGS_MODULE'] == 'config.settings.production' and not 
         _, project = google.auth.default()
 
         if project:
+            # See documentation https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets
+            # (Accessed 2022/05/25)
             client = sm.SecretManagerServiceClient()
-            path = client.secret_version_path(project, "ubyssey_env_configs", "latest")
-            payload = client.access_secret_version(path).payload.data.decode("UTF-8")
+            # path = client.secret_version_path(project, "ubyssey_env_configs", "latest")
+            name = f"projects/{project}/secrets/ubyssey_env_configs/versions/latest"
+            response = client.access_secret_version(request={"name": name})
+            crc32c = google_crc32c.Checksum()
+            crc32c.update(response.payload.data)
+            if response.payload.data_crc32c != int(crc32c.hexdigest(), 16):                
+                raise Exception("Data corruption detected when accessing secret from secret manager!")      
+            payload = response.payload.data.decode("UTF-8")
+
             with open(env_file, "w") as f:
                 f.write(payload)
         else:
@@ -128,22 +136,23 @@ NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 
 # Application definition
 INSTALLED_APPS = [
+
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
+    'users',
     'home',
+    'archive',
     'authors',
     'article',
     'section',
     'images',
     'videos',
     'ads',
-    'sporttourney',
     'specialfeaturelanding',
     'navigation',
     'dashboard',
+    'infinitefeed',
 
-    'dispatch.apps.DispatchConfig',
-    'dispatchusers.apps.DispatchusersConfig',
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
 
@@ -172,18 +181,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
+
     'rest_framework',
     'rest_framework.authtoken',
-    'ubyssey.events',
     'django_user_agents',
     'django.contrib.admin',
     'django_extensions',
     
-    'django.contrib.sites',
     'dbtemplates',
     'wagtailmodelchooser',
     'wagtailmenus',
     'wagtailcache',
+    'wagtail_color_panel',
 ]
 
 if DEBUG:
@@ -192,7 +202,7 @@ if DEBUG:
 	]
 
 # Replace default user model
-AUTH_USER_MODEL = 'dispatch.User'
+AUTH_USER_MODEL = 'users.User'
 
 API_URL = '/api/'
 
@@ -231,15 +241,10 @@ TEMPLATES = [
                 'dbtemplates.loader.Loader',
             ],
         },
-    },
-    {
-        'NAME': 'dispatch',
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-			DISPATCH_APP_DIR('templates')
-        ],
-    },
+    }
 ]
+
+TEMPLATES[0]['OPTIONS']['context_processors'].append("config.context_processors.get_light_mode")
 
 # REST framework settings
 REST_FRAMEWORK = {
@@ -299,11 +304,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 WAGTAIL_SITE_NAME = 'The Ubyssey'
-WAGTAIL_USER_EDIT_FORM = 'dispatchusers.forms.DispatchUserEditForm'
-WAGTAIL_USER_CREATION_FORM = 'dispatchusers.forms.DispatchUserCreationForm'
-WAGTAIL_USER_CUSTOM_FIELDS = ['person', 'is_active']
 
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
+
+WAGTAILIMAGES_FORMAT_CONVERSIONS = {
+    'png': 'webp',
+    'jpeg': 'webp',
+    'bmp': 'webp',
+    'webp': 'webp',
+}
 
 # wagtailmenus settings
 WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html

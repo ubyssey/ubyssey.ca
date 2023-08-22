@@ -62,6 +62,7 @@
   right: 0;
   width: 150%;
   min-width: 160px;
+  z-index: 200;
 
   // Background
   background: #fff;
@@ -141,9 +142,6 @@
 	padding-right: 0.5rem;
 	height: 40px;
 
-	// Background
-	background: #313131;
-
 	// Border
 	border-radius: 3px;
 
@@ -152,10 +150,6 @@
 	text-align: center;
 	line-height: 40px;
 	font-weight: 600;
-	color: #fff;
-
-	// Extras
-	box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
 
 	.fa {
 		margin-top: -0.4em;
@@ -166,13 +160,6 @@
 	.fa, span {
 		vertical-align: middle;
 	}
-
-	&:hover,
-	&:focus {
-		background: #484848;
-    color: #fff;
-	}
-
 }
 
 .o-mobile-dropdown__header {
@@ -184,9 +171,9 @@
 	// Structure
 	flex: 1;
 	margin: 0;
-	height: 2rem;
 	padding-top: 1rem;
-	padding-bottom: 1rem;
+	// There is an intercept between the title and the dropdown menu for the Galazy Fold
+	padding-bottom: 2rem; 
 	padding-left: 1rem;
 	padding-right: 1rem;
 
@@ -197,10 +184,8 @@
 
 .o-mobile-dropdown__close {
 	// Structure
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-	padding-left: 1rem;
-	padding-right: 1rem;
+	padding: 1rem;
+	align-self: center;
 
 	// Extras
 	cursor: pointer;
@@ -231,7 +216,6 @@
 
 .o-mobile-dropdown__list {
 	// Structure
-	display: none;
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -244,18 +228,29 @@
 	// Extras
 	z-index: 300;
 
+
+
 	ul {
 		// Structure
 		margin: 0;
 		padding: 0;
 		width: 100%;
+		height: 100%;
+		max-height: 200px;
+		overflow-y: scroll;
 
+		// To make the dropdown scrollable is the dropdown menu height is larger than the screen
+		height: 100%;
+		max-height: 200px;
+		overflow-y: scroll;
+	
 		// Background
 		background: #fff;
 
 		// Border
-    border-top: 1px solid #e8e8e8;
+    	border-top: 1px solid #e8e8e8;
 		border-bottom: 1px solid #e8e8e8;
+
 
 		// Extras
 		list-style-type: none;
@@ -309,14 +304,96 @@
 		border-bottom: 1px solid #313131;
 	}
 }
+.js-dropdown-container{
+	width: 100%;
+	height: 100%;
+}
 
 .o-mobile-dropdown__list__container {
-	// Structure
-	display: flex;
-	align-items: center;
-	height: 100%;
+	position: absolute;
+    top: 50%;
+    transform: translate(0,-50%);
+    width: 100%;
+}
 
-	> div {
-		width: 100%;
+.lightmode {
+	.o-mobile-dropdown__button {
+		background: $color-ubyssey-blue-dark;
+		color: #fff;
+		box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+
+		&:hover,
+		&:focus {
+			background: #484848;
+		color: #fff;
+		}
+	}
+	
+	.o-mobile-dropdown__item {
+		a:hover,
+		a:focus {
+			background: #eaeaea;
+			color: black;
+		}
+
+		&--is-active,
+		&--is-active a:hover,
+		&--is-active a:focus {
+			background: $color-ubyssey-blue-dark;
+			color: #fff;
+		}
+	}
+
+	.o-mobile-dropdown__list {
+		background: rgba(255, 255, 255, 0.97);
+
+		ul {
+			background: #fff;
+			border-top-color: #e8e8e8;
+			border-bottom-color: #e8e8e8;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+		}
+	}
+}
+
+.darkmode {
+	.o-mobile-dropdown__button {
+		background: $color-ubyssey-blue-light;
+		color: $color-ubyssey-blue-dark;
+		box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+
+		&:hover,
+		&:focus {
+			background: #484848;
+		color: #fff;
+		}
+	}
+
+	.o-mobile-dropdown__item {
+		color: black;
+
+		a:hover,
+		a:focus {
+			background: #eaeaea;
+			color: black;
+		}
+
+		&--is-active,
+		&--is-active a:hover,
+		&--is-active a:focus {
+			background: $color-ubyssey-blue-dark;
+			color: #fff;
+		}
+	}
+
+	.o-mobile-dropdown__list {
+		background: rgba(255, 255, 255, 0.97);
+
+		ul {
+			background: $color-ubyssey-blue-light;
+			border-top-color: #e8e8e8;
+			border-bottom-color: #e8e8e8;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+		}
 	}
 }

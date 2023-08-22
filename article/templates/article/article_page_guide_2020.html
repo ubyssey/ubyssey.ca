@@ -19,6 +19,7 @@
                             {{ featured_image_object.credit }}
                         {% endif %}
                     </div>
+                    {% include 'article/objects/share_bar.html' %}
                     {% comment %} TODO: address weird field {% endcomment %}
                     {% if article.template_fields.banner_quote and article.template_fields.banner_quote != ' ' %}
                         {% comment %} TODO address "subsection" context variable use {% endcomment %}
@@ -57,7 +58,7 @@
                                 {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
                             </div>
                             {% for block in self.content %}
-                                {% include_block block %}
+                                {% include_block block with id=block.id %}
                             {% endfor %}
                         </div>
                     </div>
@@ -83,9 +84,9 @@
                 </div>
                 <div class="article-boxes">
                     {% image prev.featured_media.first.image original as prev_image %}
-                    {% include 'article/objects/guide/article-box2020.html' with style='article' title=prev.title page=prev image=prev_image.url %}
+                    {% include 'article/objects/guide/article-box2022.html' with style='article' title=prev.title page=prev image=prev_image.url %}
                     {% image next.featured_media.first.image original as next_image %}
-                    {% include 'article/objects/guide/article-box2020.html' with style='article' title=next.title page=next image=next_image.url %}
+                    {% include 'article/objects/guide/article-box2022.html' with style='article' title=next.title page=next image=next_image.url %}
                 </div>
             </main>
         {% endwith %}        

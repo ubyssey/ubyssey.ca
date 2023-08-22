@@ -1,0 +1,18 @@
+{% load static %}
+{% load menu_tags %}
+
+<header class="visual-essay">
+  <div class="u-container">
+    <div class="logo-area">
+      <a class="home-link" href="{% url 'wagtail_serve' '' %}">
+        <div class="top-logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/ubyssey-logo-small.svg' %}')" alt=""></div>
+        <div class="top-logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/ubyssey-logo 1.svg' %}')" alt=""></div>
+    </a>
+    </div>
+    <nav class="visual-essay row">
+      <ul class="sections">
+        {% main_menu %}
+      </ul>
+    </nav>
+</div>
+</header>

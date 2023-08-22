@@ -1,0 +1,42 @@
+@import 'modules/fonts';
+@import 'modules/variables';
+
+// Right column
+aside.sidebar {
+
+  width: 37%;
+  vertical-align: top;
+  box-sizing: border-box;
+  display: table-cell;
+
+  // < medium
+    @media($bp-smaller-than-tablet) {
+  }
+
+  // if even smaller, < small
+  @media($bp-smaller-than-mobile) {
+    padding: 0 3%;
+  }
+
+  // > medium; screensize just greater than the min width of article content + sidebar
+  @media($bp-larger-than-tablet) {
+
+    padding: 0 0 40px 15px;
+    // max-width: 300px;
+  }
+
+  // Smaller than tablet size, have sidebar on the bottom
+  @media only screen and ($bp-smaller-than-tablet) {
+    float: left;
+    padding: 15px 0;
+    width: 100%;
+    max-width: 585px;
+  }
+}
+
+.fw-story, .timeline {
+  div.sidebar {
+    display: none;
+    right: -150px;
+  }
+}

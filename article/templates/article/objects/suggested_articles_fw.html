@@ -1,0 +1,15 @@
+{% comment %} 
+Arguments: suggested_articles a list of article pages
+Used in both section pages and homepage
+{% endcomment %}
+
+{% load article_display %}
+
+<h2 class="block-title">{{ title }}</h2>
+<br>
+
+<div class="suggested-bottom">
+{% for article in articles %}
+    {% include 'article/objects/author_pinned.html' with article=article %}
+{% endfor %}
+</div>

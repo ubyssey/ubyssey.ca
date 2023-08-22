@@ -16,6 +16,7 @@ __pycache__/
 /localdev/
 /tmp/
 /cache/
+/bin/
 
 # swap files
 *.swp
@@ -26,15 +27,18 @@ __pycache__/
 node_modules/
 yarn.lock
 
-# Ignore Mac specific empty file
+# Ignore macOS-specific empty file
 .DS_Store
 
-# Ignore settings for vscode except extensions.json
+# Ignore settings for VS Code except extensions.json
 .vscode
-
-ubyssey/settings*.py
 
 # Client secret for Travis
 client-secret.json
-# Keyfile for accessing gcs bucket
+
+# Keyfile for accessing GCS bucket
 gcs-local.json
+
+pyvenv.cfg
+
+ubyssey/settings*.py

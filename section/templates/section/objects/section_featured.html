@@ -2,16 +2,22 @@
 Arguments: featured_articles a list of article pages
 Used in both section pages and homepage
 {% endcomment %}
-{% for article in featured_articles %}
-  {% if forloop.counter == 1 %}
-    {% include 'article/objects/featured.html' with article=article %}
-  {% else %}
-    {% if forloop.counter == 2 %}
-      <div class="c-section__featured__articles u-flex--tablet">
+{% load wagtailcore_tags %}
+
+{% include 'article/objects/infinitefeed_item.html' with article=featured_articles.first %}
+
+<div class="c-section__featured__articles">
+  {% for article in featured_articles %}
+    {% if forloop.counter != 1 %}
+      {% include 'article/objects/blog_column.html' with article=article%}
     {% endif %}
-    {% include 'article/objects/column.html' with article=article%}
-    {% if forloop.last %}
-      </div>
-    {% endif %}
-  {% endif %}
-{% endfor %}
+  {% endfor %}
+
+  <div class="o-article o-article--column" style="background-color: {{section.colour}};width: fit-content;">
+    <div class="o-article__meta__image">
+      <h3 class="o-article__headline" style="padding: 0.3em;">
+      <a href="{% pageurl section %}" style="margin: 0.5em;">See More</a>
+    </h3>
+    </div>
+  </div>
+</div>

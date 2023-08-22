@@ -1,0 +1,35 @@
+{% load humanize %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+
+
+<article class="o-article o-article--list">
+	{% if article.featured_media.first %}
+	<div class="o-article__left">
+		<a class="o-article__image" href="{% pageurl article %}">
+			{% if article.featured_media.first.image %}
+				{% image article.featured_media.first.image fill-340x238-c100 %}
+			{% elif article.featured_media.first.video %}
+			<img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg"
+				alt="Thumbnail" />
+			{% endif %}
+		</a>
+	</div>
+	{% endif %}
+	<div class="o-article__right">
+		<div class="o-article__meta">
+			<h3 class="o-article__headline">
+				<a href="{% pageurl article %}">{{ article.title|safe }}</a>
+			</h3>
+			<div class="o-article__byline">
+				<span class="o-article__author">By {{ article.get_authors_with_urls|safe }}</span>
+				<span> &nbsp;·&nbsp; </span>
+				<span class="o-article__published">{{ article.first_published_at|naturaltime }}</span>
+			</div>
+		</div>
+		{% if not hide_snippet %}
+		<p class="o-article__snippet">{{ article.lede|safe }}</p>
+		{% endif %}
+	</div>
+</article>

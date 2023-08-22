@@ -1,14 +1,14 @@
 {% load humanize %}
 {% if video.videos.first %}
-  <h1 class="section"><a href="{{video.url}}">Video</a></h1>
-  <section class="c-homepage__section c-homepage__section--2">
-    {% with video.videos.first as video_tuple %}
-      {% include 'objects/videos/featured.html' with video=video_tuple.0 video_url=video_tuple.1 padded=True %}
-    {% endwith %}
-    <div class="u-flex--tablet">
-      {% for video_tuple in video.videos.rest %}
-        {% include 'objects/videos/column.html' with video=video_tuple.0 video_url=video_tuple.1 padded=True %}
-      {% endfor %}
-    </div>
-  </section>
+<h1 class="section"><a href="{{video.url}}">Video</a></h1>
+<section class="c-homepage__section c-homepage__section--2">
+	{% with video.videos.first as video_tuple %}
+	{% include 'objects/videos/featured.html' with video=video_tuple.0 video_url=video_tuple.1 padded=True %}
+	{% endwith %}
+	<div class="u-flex--tablet">
+		{% for video_tuple in video.videos.rest %}
+		{% include 'objects/videos/column.html' with video=video_tuple.0 video_url=video_tuple.1 padded=True %}
+		{% endfor %}
+	</div>
+</section>
 {% endif %}
