@@ -163,6 +163,8 @@
   @media($bp-larger-than-phablet) {
     // Structure
     flex-grow: 1;
+    width: 400px;
+    max-width: 685px;
 
     .o-article__headline {
       // Text
