@@ -657,6 +657,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         help_text="Based on from Dispatch's obselete \"Templates\" feature",
     )
 
+    # Keeps track of whether this article has already been automatically shared to https://mstdn.ca/@ubyssey
+    posted_to_mastodon = models.BooleanField(
+        default = False,
+    )
+
     #-----Advanted, custom layout etc-----
     use_default_template = models.BooleanField(default=True)
 
@@ -1066,6 +1071,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             suggested = False
 
         return suggested
+
+    def post_to_mastodon(self):
+        import requests
+        content = self.lede + "\n\n" + self.full_url
+        data = { "status": content}
+
+        url = "%s/api/v1/statuses" % "https://mstdn.ca"
+        r = requests.post(url,
+                data=data,
+                headers={'Authorization': 'Bearer %s' % env.mastodon_access_token})
+
 
     @property
     def published_at(self):
