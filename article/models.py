@@ -1074,19 +1074,16 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     def post_to_mastodon(self):
         import requests
-        import environ
+        import os
 
-        env = environ.Env(
-            # Mastodon access token
-            MASTODON_ACCESS_TOKEN= (str, 'XXX'),
-        )
-        content = self.lede + "\n\n" + self.full_url
-        data = { "status": content}
+        if "MASTODON_ACCESS_TOKEN" in os.environ:
+            content = self.lede + "\n\n" + self.full_url
+            data = { "status": content}
 
-        url = "%s/api/v1/statuses" % "https://mstdn.ca"
-        r = requests.post(url,
-                data=data,
-                headers={'Authorization': 'Bearer %s' % env("MASTODON_ACCESS_TOKEN")})
+            url = "%s/api/v1/statuses" % "https://mstdn.ca"
+            r = requests.post(url,
+                    data=data,
+                    headers={'Authorization': 'Bearer %s' % os.environ["MASTODON_ACCESS_TOKEN"]})
 
 
     @property
