@@ -179,14 +179,19 @@
 .c-section__description {
   display: inline-block;
   @media($bp-smaller-than-phablet) {
-    width:100%
+    width:100%;
   }
 }
 
 .c-section__info {
-  width:80%;
-  margin-left: 30px;
   color: $text-color;
+  @media($bp-larger-than-phablet) {
+    width:85%;
+  }
+  @media($bp-smaller-than-phablet) {
+    margin: 1em;
+    margin-top: 0;
+  }
 }
 
 .c-section__modal_close {
