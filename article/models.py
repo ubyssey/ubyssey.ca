@@ -1077,7 +1077,18 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         import os
 
         if "MASTODON_ACCESS_TOKEN" in os.environ:
-            content = self.lede + "\n\n" + self.full_url
+            if self.seo_keyword != "":
+                hashtags = self.seo_keyword.replace(" ", "")
+                hashtags = hashtags.split(",")
+                hashtags = " #".join(hashtags)
+                hashtags = "#" + hashtags
+
+            elif self.tags.count() > 0:
+                hashtags = ""
+                for tag in self.tags.all():
+                    hashtags = hashtags + " #" + tag.name.replace(" ", "") + " "
+
+            content = self.lede + "\n\n" + self.full_url + "\n" + hashtags
             data = { "status": content}
 
             url = "%s/api/v1/statuses" % "https://mstdn.ca"
