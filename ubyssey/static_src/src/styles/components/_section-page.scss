@@ -72,7 +72,7 @@
   svg.c-section__heading {
     position: absolute;
     bottom: -46px;
-    left: 50px;
+    left: 20px;
     stroke: black;
     @media($bp-smaller-than-phablet) {
       bottom: -20px;
@@ -186,7 +186,8 @@
 .c-section__info {
   color: $text-color;
   @media($bp-larger-than-phablet) {
-    width:85%;
+    padding-left: 1em;
+    width: 83%;
   }
   @media($bp-smaller-than-phablet) {
     margin: 1em;
