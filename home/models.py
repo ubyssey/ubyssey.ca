@@ -61,8 +61,8 @@ class HomePage(Page):
     )
 
     cover_story = ParentalKey(
-        "article.ArticlePage",
-        related_name = "cover_story",
+        "wagtailcore.Page",
+        related_name = "hcover_story",
         null=True,
         blank=True,
         on_delete=models.SET_NULL
