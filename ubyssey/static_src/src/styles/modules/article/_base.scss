@@ -185,6 +185,8 @@ div.indicator {
 
   @media($bp-larger-than-tablet) {
     padding: 1rem;
+    padding-left: 0;
+    margin-right: 1em;
   }
 
 }
