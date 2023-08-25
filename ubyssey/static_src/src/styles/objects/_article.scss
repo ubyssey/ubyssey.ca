@@ -801,6 +801,10 @@
       color: black;
     }
   }
+
+  .o-article--top_article {
+    border-color: #00000045;
+  }
 }
 
 .darkmode {
@@ -826,6 +830,9 @@
     .o-article__headline {
       color: #B3B3B3;
     }
+  }
+  .o-article--top_article {
+    border-color: white;
   }
 }
 
