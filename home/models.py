@@ -12,6 +12,7 @@ from wagtail.core.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
+from section.models import SidebarCategoryBlock
 
 # Create your models here.
 
@@ -88,9 +89,11 @@ class HomePage(Page):
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", homeblocks.SidebarCategoryBlock()),
+        ("sidebar_category_block", SidebarCategoryBlock()),
         ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
-        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),         
+        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
+        ("sidebar_latest", infinitefeedblocks.SidebarLatestBlock()),
+        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles())        
     ],
     null=True,
     blank=True,
