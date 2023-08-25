@@ -25,6 +25,7 @@ from wagtail.core.models import Page, Orderable
 from wagtail.core.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
 
 from wagtailmenus.models import FlatMenu
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
@@ -139,6 +140,15 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         blank=True,
     )
 
+    featured_media = models.ForeignKey(
+        "images.UbysseyImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='featured_image',
+        verbose_name="featured image",
+    )
+
     content_panels = Page.content_panels + UbysseyMenuMixin.menu_content_panels + [
         MultiFieldPanel(
             [
@@ -198,6 +208,13 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
             classname="collapsible collapsed",
         ), # Select Stock Layout
 
+
+        MultiFieldPanel(
+            [
+                ImageChooserPanel("featured_media"),
+            ],
+            heading="Meta Image",
+        ),
     ]
 
 
