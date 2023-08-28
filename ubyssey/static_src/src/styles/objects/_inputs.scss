@@ -77,6 +77,14 @@
 
 }
 
+.o-dropdown {
+	&:focus-within {
+		.o-dropdown__list {
+			display: block;
+		}
+	}
+}
+
 .o-dropdown__item {
 
   a {
