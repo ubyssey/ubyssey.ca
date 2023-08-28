@@ -525,16 +525,6 @@
     margin: 0.6rem;
   }
 
-  .o-article__section-tag {
-    color: inherit;
-    border-left: 2px solid;
-    border-right: 2px solid;
-
-    &:hover {
-      color: $color-accent-blue;
-    } 
-  }
-
   .o-article__label {
     position: absolute;
     left: 0;
