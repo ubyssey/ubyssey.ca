@@ -1,0 +1,63 @@
+@font-face {
+	font-family:'lora';
+	src: 
+		url('../fonts/Lora-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'lora';
+	src: 
+		url('../fonts/Lora-Italic.ttf') format('truetype');
+	font-weight: 400;
+	font-style: italic;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'lora';
+	src: 
+		url('../fonts/Lora-Bold.ttf') format('truetype');
+	font-weight: 700;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'lora';
+	src: 
+		url('../fonts/Lora-BoldItalic.ttf') format('truetype');
+	font-weight: 700;
+	font-style: italic;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+$font-default: 'Oswald', sans-serif;
+$font-secondary: 'Noto Sans', sans-serif;
+
+$header-font: 'Oswald', sans-serif;
+$header-weight-regular: 400;
+$header-weight: 500;
+$header-size: 3.1rem;
+
+$text-font: 'lora', sans-serif;
+$text-weight: 400;
+$text-weight-bold: 500;
+$text-size: 1rem;
+
+$quote-font: 'Oswald', sans-serif;
+$quote-size: 1.3rem;
+$quote-weight: 400;
+
+$credit-font: 'lora', sans-serif;
+$credit-style: italic;
+$credit-size: 1rem;
+
+$accent-font: 'Oswald', sans-serif;
+$accent-size: 1.3rem;
