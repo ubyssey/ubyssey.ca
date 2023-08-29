@@ -38,10 +38,30 @@
 	unicode-range: U+0020-25CA;
 }
 
-$font-default: 'Oswald', sans-serif;
-$font-secondary: 'Noto Sans', sans-serif;
+@font-face {
+	font-family:'spartan';
+	src: 
+		url('../fonts/LeagueSpartan-Medium.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
 
-$header-font: 'Oswald', sans-serif;
+@font-face {
+	font-family:'spartan';
+	src: 
+		url('../fonts/LeagueSpartan-Bold.ttf') format('truetype');
+	font-weight: 700;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+$font-default: 'spartan', sans-serif;
+$font-secondary: 'lora', sans-serif;
+
+$header-font: 'spartan', sans-serif;
 $header-weight-regular: 400;
 $header-weight: 500;
 $header-size: 3.1rem;
@@ -51,7 +71,7 @@ $text-weight: 400;
 $text-weight-bold: 500;
 $text-size: 1rem;
 
-$quote-font: 'Oswald', sans-serif;
+$quote-font: 'spartan', sans-serif;
 $quote-size: 1.3rem;
 $quote-weight: 400;
 
@@ -59,5 +79,5 @@ $credit-font: 'lora', sans-serif;
 $credit-style: italic;
 $credit-size: 1rem;
 
-$accent-font: 'Oswald', sans-serif;
+$accent-font: 'spartan', sans-serif;
 $accent-size: 1.3rem;
