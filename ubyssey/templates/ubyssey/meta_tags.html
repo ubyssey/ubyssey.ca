@@ -25,6 +25,11 @@
             {% image featured_image_object.image fill-800x600 as the_image %}
             <meta property="og:image" content="{{ the_image.full_url }}" />
         {%endwith%}
+    {% elif self.featured_media.file %}
+        {% with self.featured_media as featured_image_object %}
+            {% image featured_image_object fill-800x600 as the_image %}
+            <meta property="og:image" content="{{ the_image.full_url }}" />
+        {%endwith%}
     {% else %}
         <meta property="og:image" content="{% static 'ubyssey/images/ubyssey-logo-square.png' %}" />
     {% endif %}

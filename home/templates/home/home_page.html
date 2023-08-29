@@ -44,7 +44,7 @@
 
 	<div class="home-featured">
 		{% if self.cover_story %}
-			{% include "article/objects/cover_story.html" with article=self.cover_story%}
+			{% include "article/objects/cover_story.html" with article=coverstory%}
 		{% endif %}
 		<div class="home-top-article-list">
 			{% now "d N, Y" as date %}

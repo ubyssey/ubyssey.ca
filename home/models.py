@@ -62,8 +62,8 @@ class HomePage(Page):
     )
 
     cover_story = ParentalKey(
-        "article.ArticlePage",
-        related_name = "cover_story",
+        "wagtailcore.Page",
+        related_name = "home_cover_story",
         null=True,
         blank=True,
         on_delete=models.SET_NULL
@@ -155,6 +155,9 @@ class HomePage(Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["filters"] = {}
+
+        context["coverstory"] = self.cover_story.specific
+        
         return context
 
     def getTopArticles(self):
