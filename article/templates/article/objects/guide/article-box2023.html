@@ -1,0 +1,13 @@
+{% load wagtailcore_tags %}
+
+<nav class="article-box--article-container">
+    <a class="article-box--nav" href="{% pageurl page %}">
+        {% if prevornext == 'prev' %}
+            <p class="article-box--article_prev">previous article</p>
+            <p class="article-box--article_prev">{{title}}</p>
+        {% elif prevornext == 'next' %}
+            <p class="article-box--article_next">next article</p>
+            <p class="article-box--article_next">{{title}}</p>
+        {% endif %}
+    </a> 
+</nav>
