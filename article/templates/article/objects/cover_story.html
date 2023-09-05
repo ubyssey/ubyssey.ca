@@ -9,11 +9,11 @@
   <div class="o-article__left">
     <a class="o-article__image" href={% pageurl article %}>
       {% if article.featured_media.first.image %}
-       {% image article.featured_media.first.image fill-340x238-c100 %}
+       {% image article.featured_media.first.image fill-661x462-c100 %}
       {% elif article.featured_media.first.video %}
         <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
       {% else %}
-        {% image article.featured_media fill-340x238-c100 %}
+        {% image article.featured_media fill-661x462-c100 %}
       {% endif %}
     </a>
   </div>
