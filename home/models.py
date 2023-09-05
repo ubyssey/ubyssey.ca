@@ -156,7 +156,8 @@ class HomePage(Page):
         context = super().get_context(request, *args, **kwargs)
         context["filters"] = {}
 
-        context["coverstory"] = self.cover_story.specific
+        if self.cover_story != None:
+            context["coverstory"] = self.cover_story.specific
         
         return context
 

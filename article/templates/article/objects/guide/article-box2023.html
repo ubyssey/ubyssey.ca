@@ -1,13 +1,23 @@
 {% load wagtailcore_tags %}
 
+{% if prevornext == 'prev' %}
 <nav class="article-box--article-container">
     <a class="article-box--nav" href="{% pageurl page %}">
-        {% if prevornext == 'prev' %}
-            <p class="article-box--article_prev">previous article</p>
-            <p class="article-box--article_prev">{{title}}</p>
-        {% elif prevornext == 'next' %}
-            <p class="article-box--article_next">next article</p>
-            <p class="article-box--article_next">{{title}}</p>
-        {% endif %}
-    </a> 
+        <p class="article-box--article_prev">previous article</p>
+        <p class="article-box--article_prev">{{title}}</p>
+    </a>
+    <a href="{% pageurl page %}">
+    <i class="fa-solid fa-circle-arrow-left arrow"></i>
+    </a>
+</nav>            
+{% elif prevornext == 'next' %}
+<nav class="article-box--article-container">
+    <a class="article-box--nav" href="{% pageurl page %}">
+        <p class="article-box--article_next">next article</p>
+        <p class="article-box--article_next">{{title}}</p>
+    </a>
+    <a href="{% pageurl page %}">
+    <i class="fa-solid fa-circle-arrow-right arrow"></i>
+    </a>
 </nav>
+{% endif %}
