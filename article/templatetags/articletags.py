@@ -34,9 +34,10 @@ def get_section_title(value):
 
 @register.filter(name='display_pubdate')
 def display_pubdate(value):
+    timedif = datetime.timedelta(hours=-7)
 
-    pubdate = value
-    today = datetime.datetime.now().replace(tzinfo=datetime.timezone(datetime.timedelta(hours=-7)))
+    pubdate = value + timedif
+    today = datetime.datetime.now().replace(tzinfo=datetime.timezone(timedif))
     delta = today - pubdate
 
     if delta.total_seconds() > datetime.timedelta(days=365).total_seconds():
