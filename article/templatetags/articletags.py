@@ -41,7 +41,7 @@ def display_pubdate(value):
     delta = today - pubdate
 
     if delta.total_seconds() > datetime.timedelta(days=365).total_seconds():
-        return pubdate.strftime("%B xx%d %y").replace("xx0","").replace("xx","")
+        return pubdate.strftime("%B xx%d, %Y").replace("xx0","").replace("xx","")
     elif delta.total_seconds() > datetime.timedelta(days=1).total_seconds():
         return pubdate.strftime("%B xx%d").replace("xx0","").replace("xx","")
     elif delta.total_seconds() > datetime.timedelta(hours=5).total_seconds():
