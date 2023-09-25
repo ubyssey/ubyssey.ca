@@ -30,6 +30,6 @@ wagtail-cache==1.0.2
 google-crc32c==1.3.0
 wagtail-color-panel==1.4.0
 django-debug-toolbar==3.2.1
-pylint==2.8.3
+pylint==2.17.6
 pylint-django==2.4.4
 ipython
