@@ -47,7 +47,7 @@
 			{% include "article/objects/cover_story.html" with article=coverstory%}
 		{% endif %}
 		<div class="home-top-article-list">
-			{% now "d N, Y" as date %}
+			{% now "d N Y" as date %}
 			{% now "l" as dayOfWeek %}
 			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text=date textBold=dayOfWeek %}
 			
