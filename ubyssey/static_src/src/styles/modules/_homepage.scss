@@ -723,6 +723,10 @@ ol.article-list {
       filter: drop-shadow(0 5px 6px #00000040);
     }
   }
+
+  .boxLabel-highlight .boxLabel-right {
+    background-color: $color-ubyssey-blue-light;
+  }
 }
 
 .darkmode {

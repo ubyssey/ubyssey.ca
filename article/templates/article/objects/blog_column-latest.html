@@ -10,7 +10,7 @@ This template is for the columns for the blog section on the home page under the
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load video_filters %}
-<article class="o-article o-article--column{% if padded %} o-article--padded{% endif %}" style="background-color: {{article|get_colour}}">
+<article class="o-article o-article--column o-article--column-latest{% if padded %} o-article--padded{% endif %}">
   <div class="o-article__meta__image">
     {% if article.featured_media.first %}
       {% if article.featured_media.first.image %}
@@ -23,6 +23,9 @@ This template is for the columns for the blog section on the home page under the
     {% endif %}
   </div>
   <div class="o-article__meta">
+    <h4 class="o-article__section">
+      <a href="{{article.get_parent.url}}">{{article.get_parent.title}}</a>
+    </h4>
     <h3 class="o-article__headline">
       <a href="{% pageurl article %}">{{ article.title|safe }}</a>
     </h3>
