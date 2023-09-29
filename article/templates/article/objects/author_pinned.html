@@ -1,6 +1,8 @@
 {% load video_filters %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load articletags %}
+
 {% load humanize %}
 
 <article class="o-article o-article--author_pinned{% if padded %} o-article--padded{% endif %}">
@@ -23,8 +25,8 @@
       <p class="o-article__snippet">{{ article.lede|safe }}</p>
       <div class="o-article__byline">
         <span class="o-article__author">{{ article.get_authors_with_urls|safe }}</span>
-        <span> &nbsp;&nbsp; </span>
-        <span class="o-article__published">{{ article.explicit_published_at|naturalday }}</span>
+        <span> &nbsp;&bullet;&nbsp; </span>
+        <span class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</span>
       </div>
     </div>
   </div>
