@@ -1,4 +1,4 @@
-Django==3.2.11
+Django==4.2.5
 wagtail==2.15.3
 django-storages[google]==1.12
 django-canonical-domain==0.3.0
