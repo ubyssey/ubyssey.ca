@@ -624,18 +624,24 @@
   }
 }
 
-.o-article--column-latest .o-article__meta {
-  display: flex;
-  flex-direction: column;
-  
-  .o-article__headline {
-    margin-top: 0;
-    font-size: 1em;
-    line-height: 1.3em;
-    color: black;
+.o-article--column-latest {
 
-    a:hover {
-      color: #555555;
+  .o-article__meta__image .o-article__image {
+    width: 5em;
+  }
+
+  .o-article__meta {
+    display: flex;
+    flex-direction: column;
+    
+    .o-article__headline {
+      margin-top: 0;
+      line-height: 1.3em;
+      color: black;
+
+      a:hover {
+        color: #555555;
+      }
     }
   }
 }
