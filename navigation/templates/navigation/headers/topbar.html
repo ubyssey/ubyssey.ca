@@ -8,8 +8,8 @@
 <header class="topbar header-site dark-mode">
     <div class="u-container u-container-topbar">
         <a class="home-link" href="{% url 'wagtail_serve' '' %}">
-            <img class="logo ubyssey_small_logo light-logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt=""/>
-            <img class="logo ubyssey_small_logo dark-logo" src="{% static 'ubyssey/images/ubyssey-logo 1.svg' %}" alt=""/>
+            <div class="logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/ubyssey-logo-small.svg' %}')" alt=""></div>
+            <div class="logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/ubyssey-logo 1.svg' %}')" alt=""></div>
         </a>
         <nav>
             {% main_menu show_multiple_levels=False apply_active_classes=True %}

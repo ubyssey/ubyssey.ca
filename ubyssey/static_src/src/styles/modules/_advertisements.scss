@@ -200,3 +200,22 @@ main.article .o-advertisement--leaderboard {
     display: none;
   }
 }
+
+.o-advertisement--header-bar{
+  width: 100%;
+  padding-bottom: 1.5em;
+}
+
+.lightmode{
+  .o-advertisement--header-bar {
+    background-color: #dddddd;
+    border-bottom: 1px solid black;
+  }
+}
+
+.darkmode {
+  .o-advertisement--header-bar {
+    background-color: #424242;
+    border-bottom: 1px solid #535353;
+  }
+}

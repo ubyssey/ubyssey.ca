@@ -7,8 +7,6 @@ from images.models import GallerySnippet
 
 from dbtemplates.models import Template as DBTemplate
 
-from dispatch.models import Article
-
 from django.db import models
 from django.db.models import fields
 from django.db.models.fields import CharField
@@ -108,15 +106,6 @@ class UbysseyMenuMixin(models.Model):
         abstract = True
 
 #-----Snippet Models-----
-
-@register_snippet
-class DispatchCounterpartSnippet(models.Model):
-    dispatch_version = models.ForeignKey(
-        Article,
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-    )
 
 @register_snippet
 class ArticleSeriesSnippet(ClusterableModel):
@@ -578,14 +567,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         verbose_name="Is Explicit?",
         help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article."
     )
-    #-----Migration stuff------
-    dispatch_version = models.ForeignKey(
-        # Used to map the article to a previous version that exists in Dispatch
-        "dispatch.Article",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-    )
 
 
     #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
@@ -694,14 +675,16 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if self.layout == 'fw-story':
             return "article/article_page_fw_story.html"
+        elif self.layout == 'visual-essay':
+            return "article/article_page_visual_essay.html"
         elif self.layout == 'guide-2020':
             return "article/article_page_guide_2020.html"
         elif self.layout == 'guide-2022':
             return "article/article_page_guide_2022.html"
         elif self.layout == 'magazine-2023':
             return "article/article_page_magazine_2023.html"
-        elif self.layout == 'visual-essay':
-            return "article/article_page_visual_essay.html"
+        elif self.layout == 'guide-2023':
+            return "article/article_page_guide_2023.html"        
                         
         return "article/article_page.html"
 
@@ -813,10 +796,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                         choices=[
                             ('default', 'Default'), 
                             ('fw-story', 'Full-Width Story'),
+                            ('visual-essay', 'Visual Essay'),
                             ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
                             ('guide-2022', 'Guide (2022 style)'),
                             ('magazine-2023', 'Magazine (2023 style)'),
-                            ('visual-essay', 'Visual Essay'),
+                            ('guide-2023', 'Guide (2023 style)'),
                         ],
                     ),
                 ),
@@ -923,7 +907,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.SearchField('content'),
         
         index.FilterField('current_section'),
-        index.FilterField('author_id'),
         index.FilterField('slug'),
         index.FilterField('explicit_published_at'),
 
@@ -933,6 +916,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.RelatedFields('article_authors', [
             index.SearchField('full_name'),
         ]),
+        
+        index.FilterField('author_id')
     ]
 
     #-----Properties, getters, setters, etc.-----

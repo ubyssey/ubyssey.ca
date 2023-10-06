@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% load static %}
-{% load dispatch_tags %}
 {% block header %}
 {% include 'headers/topbar.html' with section=section.slug %}
 {% include 'headers/mobile.html' %}
@@ -17,9 +16,6 @@
     <p class="c-subsection__description">{{ subsection.description|safe }}</p>
     {% endif %}
 
-    {% if subsection.slug == 'places-to-go' %}
-      {% zone 'places-to-go-banner' %}
-    {% endif %}
     <div class="c-section__featured">
       {% include 'objects/articles/featured.html' with article=featured_articles.first %}
       <div class="c-section__featured__articles u-flex--tablet">

@@ -8,6 +8,7 @@
 {% load ubyssey_ad_filters %}
 
 {% block head_scripts %}
+<link rel="alternate" type="application/atom+xml" title="Ubyssey {{title}} feed" href="/rss/{{self.slug}}">
   <!-- Register ads for section page -->
   {% for orderable in settings.ads.AdTagSettings.section_head_tags.all %}
     {% gpt_define_tag orderable.ad_slot %}
@@ -43,10 +44,11 @@
 
       <div class="c-infinitefeed__feed">
         <div class="lightmode section_infinitefeed">
-        <div class="c-section__info">    
-          <p class="c-section__description">{{description}} &ensp;{% if not category %}<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
-          
-          {% if self.category_menu.count %}
+        <div class="c-section__info">
+          {% if description or not category %}
+          <p class="c-section__description">{{description}}{% if not category %} &ensp;<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
+          {% endif %}
+          {% if self.category_menu.count and not category %}
           <div class="featured_categories">
             <p>Featured Categories:&nbsp; </p>
             <ul>
@@ -83,11 +85,11 @@
                 <a href="#" class="close-modal">
                   <i class="fa fa-close c-section__modal_close"></i>
                 </a>
-                <h1><i class="fa fa-tag"></i> Series</h1> <!-- Why Series? Why not Categories? -->
+                <h1><i class="fa fa-tag"></i> All Categories</h1> <!-- Why Series? Why not Categories? -->
                 <p><a href="{% pageurl self %}">{{self.title}}</a>{% if self.description %} - {{self.description}}{% endif %}</p>
                 <ul>
                 {% for category in all_categories %}
-                  <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a>{% if category.description %} — {{ category.description }}{% endif %}</li>
+                  <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a></li>
                 {% endfor %}
                 </ul>
                 </div>

@@ -8,17 +8,17 @@ updates:
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 20
 
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/ubyssey/static_src" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 20
   
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/ubyssey/static_src" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 20

@@ -12,6 +12,7 @@ from wagtail.core.fields import StreamField
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
+from section.models import SidebarCategoryBlock
 
 # Create your models here.
 
@@ -61,8 +62,8 @@ class HomePage(Page):
     )
 
     cover_story = ParentalKey(
-        "article.ArticlePage",
-        related_name = "cover_story",
+        "wagtailcore.Page",
+        related_name = "home_cover_story",
         null=True,
         blank=True,
         on_delete=models.SET_NULL
@@ -88,9 +89,11 @@ class HomePage(Page):
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", homeblocks.SidebarCategoryBlock()),
+        ("sidebar_category_block", SidebarCategoryBlock()),
         ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
-        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),         
+        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
+        ("sidebar_latest", infinitefeedblocks.SidebarLatestBlock()),
+        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles())        
     ],
     null=True,
     blank=True,
@@ -152,6 +155,10 @@ class HomePage(Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["filters"] = {}
+
+        if self.cover_story != None:
+            context["coverstory"] = self.cover_story.specific
+        
         return context
 
     def getTopArticles(self):

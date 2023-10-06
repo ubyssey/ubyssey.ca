@@ -1,7 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static %}
-{% load dispatch_tags %}
-{% load dispatch_filters %}
+{% load video_filters %}
 {% block header %}
     {% include 'navigation/headers/topbar.html' %}
     {% include 'navigation/headers/mobile.html' %}
@@ -86,7 +85,6 @@
         {% else %}
         <div class="sidebar">
         {% endif %}
-          {% zone 'article-sidebar' %}
           {% if explicit is not True %}
             {% if reading_time >= 3 %}
               {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}

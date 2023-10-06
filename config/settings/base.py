@@ -17,10 +17,8 @@ import os
 import sys
 import environ
 import google_crc32c
-from dispatch.apps import DispatchConfig
 
 BASE_DIR = environ.Path(__file__) - 3
-DISPATCH_APP_DIR = DispatchConfig.path
 
 env = environ.Env() # will reinitialize later once "earliest" configs have been set
 
@@ -132,22 +130,12 @@ DATABASES = {
     },
 }
 
-# TODO: Remove this line after Dispatch is removed as a dependency.
-# This silences a reverse accessor clash error between the
-# dispatch.User and users.User models.
-SILENCED_SYSTEM_CHECKS = [
-    'fields.E304' # Reverse accessor clash error
-]
-
 # Set secret keys
 SECRET_KEY = env('SECRET_KEY')
 NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 
 # Application definition
 INSTALLED_APPS = [
-    # NOTE: Until Dispatch is removed, this app must be loaded first so that
-    # the dispatch.User model can be overridden by the `users` app below.
-    'dispatch.apps.DispatchConfig',
 
     # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
     'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
@@ -193,14 +181,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
+
     'rest_framework',
     'rest_framework.authtoken',
-    'ubyssey.events',
     'django_user_agents',
     'django.contrib.admin',
     'django_extensions',
     
-    'django.contrib.sites',
     'dbtemplates',
     'wagtailmodelchooser',
     'wagtailmenus',
@@ -253,14 +241,7 @@ TEMPLATES = [
                 'dbtemplates.loader.Loader',
             ],
         },
-    },
-    {
-        'NAME': 'dispatch',
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-			DISPATCH_APP_DIR('templates')
-        ],
-    },
+    }
 ]
 
 TEMPLATES[0]['OPTIONS']['context_processors'].append("config.context_processors.get_light_mode")
@@ -310,7 +291,6 @@ MIDDLEWARE += [
 
 GS_LOCATION = None
 GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
-GS_USE_SIGNED_URLS = False
 
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'CA'
