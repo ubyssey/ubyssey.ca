@@ -291,7 +291,6 @@ MIDDLEWARE += [
 
 GS_LOCATION = None
 GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
-GS_USE_SIGNED_URLS = False
 
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'CA'
