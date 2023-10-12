@@ -695,7 +695,6 @@ ol.article-list {
 .boxText {
   margin: 0;
   font-size: 1em;
-  text-transform: capitalize;
   position: relative;
   top: 50%;
   transform: translate(0,-50%);
@@ -722,6 +721,10 @@ ol.article-list {
     &.sticky {
       filter: drop-shadow(0 5px 6px #00000040);
     }
+  }
+
+  .boxLabel-highlight .boxLabel-right {
+    background-color: $color-ubyssey-blue-light;
   }
 }
 
@@ -815,6 +818,9 @@ ol.article-list {
   &.lightmode {
     background-color: $color-ubyssey-blue-light;
   }
+
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .home_infinitefeed_cutoff_shadow {
