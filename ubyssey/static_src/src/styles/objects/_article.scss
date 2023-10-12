@@ -96,7 +96,8 @@
   color: white;
   font-weight: 600;
   &:hover {
-    color: black;
+    color: white;
+    background-color: $color-ubyssey-blue-dark !important;
   }
 }
 
@@ -596,18 +597,6 @@
     display: flex;
     margin-bottom: 0;
 
-    .o-article__section {
-      margin-top: 0.5em;
-      margin-bottom: 0.25em;
-      font-size: 0.65em;
-      text-transform: uppercase;
-      color: black;
-
-      a:hover {
-        color: #555555;
-      }
-    }
-
     .o-article__headline {
       // Structure
       font-size: font-size(18);
@@ -634,12 +623,25 @@
     display: flex;
     flex-direction: column;
     
+
     .o-article__section {
+      margin-top: 0.5em;
+      margin-bottom: 0.25em;
+      font-size: 0.65em;
+      text-transform: uppercase;
       width: fit-content;
       padding-left: 0.2em;
       padding-right: 0.2em;
       background-color: $color-ubyssey-blue;
       color: white;
+
+      &:hover {
+        background-color: $color-ubyssey-blue-dark !important;
+      }
+
+      a:hover {
+        color: white;
+      }
     }
 
     .o-article__headline {
