@@ -23,7 +23,7 @@ This template is for the columns for the blog section on the home page under the
     {% endif %}
   </div>
   <div class="o-article__meta">
-    <h4 class="o-article__section">
+    <h4 class="o-article__section" style="background-color: {{article|get_colour}}">
       <a href="{{article.get_parent.url}}">{{article.get_parent.title}}</a>
     </h4>
     <h3 class="o-article__headline">
