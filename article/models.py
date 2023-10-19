@@ -416,7 +416,12 @@ class ArticlePageTag(TaggedItemBase):
 
 #-----Manager models-----
 class ArticlePageManager(PageManager):
-    
+
+    def get_queryset(self):
+        return super() \
+            .get_queryset() \
+            .prefetch_related('featured_media__image')
+
     def from_section(self, section_slug='', section_root=None) -> QuerySet:
         from .models import ArticlePage
         from section.models import SectionPage
