@@ -1,4 +1,4 @@
-import * as mp from './modules/Mixpanel';
+// import * as mp from './modules/Mixpanel';    //commented out because creepy af
 import upcomingEvents from './widgets/upcoming-events';
 
 // self-executing js anonymous function
@@ -23,11 +23,11 @@ import upcomingEvents from './widgets/upcoming-events';
   //initializeGallery()
 
   // Track page views through Mixpanel (for articles & for non-article pages)
-  if ($('.js-article').length) {
-    mp.pageView('article', $('.js-article'), 1) // article pages
-  } else {
-    mp.pageView();                              // non-article pages
-  }
+  //if ($('.js-article').length) {
+  //  mp.pageView('article', $('.js-article'), 1) // article pages
+  //} else {
+  //  mp.pageView();                              // non-article pages
+  //}
 
   //listeners for magazine & culture dropdowns in mobile header pop up
   $('#magazine-mobile').click(function () {
