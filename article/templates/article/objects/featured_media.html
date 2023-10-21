@@ -6,7 +6,7 @@
     {% with featured_media.first as featured_image_object %}
         <div class="featured-media">
             {% image featured_image_object.image original as original_image %}
-            {% image featured_image_object.image width-500 as featured_image %}
+            {% image featured_image_object.image width-500 format-webp as featured_image %}
             <img class="article-attachment" 
                 data-id="{{ featured_image_object.id }}"
                 data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
