@@ -267,7 +267,10 @@ STATICFILES_DIRS = []
 
 # Set the middleware
 MIDDLEWARE = [
+    # UpdateCacheMiddleware must come first.
+    # Ref: https://github.com/coderedcorp/wagtail-cache/blob/main/docs/getting_started/install.rst#1-install
     'wagtailcache.cache.UpdateCacheMiddleware',
+
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.gzip.GZipMiddleware',
 ]
@@ -286,7 +289,10 @@ MIDDLEWARE += [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-    'wagtailcache.cache.UpdateCacheMiddleware',
+
+    # FetchFromCacheMiddleware must come last.
+    # Ref: https://github.com/coderedcorp/wagtail-cache/blob/main/docs/getting_started/install.rst#1-install
+    'wagtailcache.cache.FetchFromCacheMiddleware',
 ]
 
 GS_LOCATION = None
