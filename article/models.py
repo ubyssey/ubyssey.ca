@@ -418,6 +418,12 @@ class ArticlePageTag(TaggedItemBase):
 class ArticlePageManager(PageManager):
 
     def get_queryset(self):
+        """
+        Extend the default queryset to prefetch featured images for all articles.
+
+        This significantly reduces the number of database queries on pages that list
+        a large number of articles.
+        """
         return super() \
             .get_queryset() \
             .prefetch_related('featured_media__image')
