@@ -234,17 +234,21 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'wagtail.contrib.settings.context_processors.settings',
                 'wagtailmenus.context_processors.wagtailmenus',
+                'config.context_processors.get_light_mode',
             ],
             'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-                'dbtemplates.loader.Loader',
+                (
+                    'django.template.loaders.cached.Loader',
+                    [
+                        'django.template.loaders.filesystem.Loader',
+                        'django.template.loaders.app_directories.Loader',
+                        'dbtemplates.loader.Loader',
+                    ],
+                ),
             ],
         },
     }
 ]
-
-TEMPLATES[0]['OPTIONS']['context_processors'].append("config.context_processors.get_light_mode")
 
 # REST framework settings
 REST_FRAMEWORK = {

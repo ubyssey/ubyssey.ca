@@ -20,13 +20,11 @@ INSTALLED_APPS += [
 # Sessions are used to anonymously keep track of individual site visitors
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-# Caches are used to store the results of SQL queries so it can be quickly retrieved and needs to do less work
-# The cache requires a Memcached instance be set up in Google Cloud Platform (GCP) and access connectors to be set both on GCP and in app.yaml
+# TODO: replace this cache backend with a distributed solution like Memcached or Redis.
+# For now, use the default local memory cache.
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        # 'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        # 'LOCATION': '10.18.240.4:11211',
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     }
 }
 
