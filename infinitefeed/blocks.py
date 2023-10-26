@@ -70,7 +70,7 @@ class SidebarLatestBlock(blocks.StructBlock):
         context['articles'] = ArticlePage.objects.live().public().filter(~(Q(current_section='guide'))).order_by('-explicit_published_at')[:5]         
         return context
     class Meta:
-        template = "infinitefeed/sidebar/sidebar_section_block.html"
+        template = "infinitefeed/sidebar/sidebar_latest_block.html"
 
 class SidebarManualArticles(blocks.StructBlock):
     title = blocks.CharBlock(

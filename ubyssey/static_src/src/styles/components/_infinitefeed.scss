@@ -29,9 +29,13 @@
     margin-bottom: 65px;
 }
 
+.sidebar-block > .boxLabel {
+    font-size: 1.1em;
+}
+
 .c-sidebar {
     height: 100%;
-    width:40%;
+    width:38%;
     padding-left: 1em;
 
     @media ($bp-smaller-than-phablet) {
@@ -60,12 +64,11 @@
   }
 
 .c-home-infinitefeed {
-    padding-left: 20px;
-    padding-right: 20px;
     width: 100%;
     @media ($bp-larger-than-phablet) {
         margin-right: 20px;
         width: 50%;
+        padding-right: 20px;
     }
 }
 
