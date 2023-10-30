@@ -20,10 +20,15 @@ INSTALLED_APPS += [
 # Sessions are used to anonymously keep track of individual site visitors
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-# TODO: replace this cache backend with a distributed solution like Memcached or Redis.
+# TODO: replace these cache backends with a persistent solution like Memcached or Redis.
 # For now, use the default local memory cache.
 CACHES = {
     "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    },
+    # The "renditions" cache is for Wagtail image renditions.
+    # Ref: https://docs.wagtail.org/en/v2.10.2/advanced_topics/performance.html#caching-image-renditions
+    "renditions": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     }
 }
