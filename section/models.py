@@ -305,13 +305,10 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         return context
     
     def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
-        # Optimization: limit queryset to articles published in the last 60 days to shorten query time
-        recent_articles_delta = datetime.datetime.now()-datetime.timedelta(days=60)
 
         section_articles = ArticlePage.objects \
             .live() \
             .child_of(self) \
-            .filter(explicit_published_at__gt=recent_articles_delta) \
             .order_by(order)
         
         return section_articles
