@@ -35,6 +35,8 @@ from infinitefeed import blocks as infinitefeedblocks
 from wagtail.core import blocks
 from wagtail.snippets.blocks import SnippetChooserBlock
 
+import datetime
+
 
 #-----Snippet models-----
 @register_snippet
@@ -303,14 +305,10 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         return context
     
     def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
-        import datetime
-        # return ArticlePage.objects.from_section(section_root=self)
-        # section_articles = ArticlePage.objects.live().public().filter(current_section=self.slug).order_by(order)
-        #section_articles = ArticlePage.objects.live().public().descendant_of(self).order_by(order)
         # Optimization: limit queryset to articles published in the last 60 days to shorten query time
         recent_articles_delta = datetime.datetime.now()-datetime.timedelta(days=60)
 
-        section_articles = ArticlePage.objects
+        section_articles = ArticlePage.objects \
             .live() \
             .child_of(self) \
             .filter(explicit_published_at__gt=recent_articles_delta) \
