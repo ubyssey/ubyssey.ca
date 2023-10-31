@@ -19,6 +19,12 @@ INSTALLED_APPS += []
 # Sessions are used to anonymously keep track of individual site visitors
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
+# We use Redis as a cache backend, as recommended by Wagtail here:
+# https://docs.wagtail.org/en/v2.10.2/advanced_topics/performance.html#cache
+#
+# We previously used the Memcache service bundled with Google App Engine,
+# but it is now considered a legacy service and does not work seamlessly with Django.
+#
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
