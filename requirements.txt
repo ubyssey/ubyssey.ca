@@ -31,3 +31,6 @@ django-debug-toolbar==3.2.1
 pylint==2.8.3
 pylint-django==2.4.4
 ipython
+django-redis==5.4.0
+redis==5.0.1
+hiredis==2.2.3
