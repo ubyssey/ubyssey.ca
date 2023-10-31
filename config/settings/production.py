@@ -25,6 +25,9 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 # We previously used the Memcache service bundled with Google App Engine,
 # but it is now considered a legacy service and does not work seamlessly with Django.
 #
+# TODO: switch to built-in Redis backend after upgrading Django.
+# Ref: https://github.com/ubyssey/ubyssey.ca/issues/1340
+#
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
