@@ -34,6 +34,10 @@ def get_section_title(value):
 
 @register.filter(name='display_pubdate')
 def display_pubdate(value):
+
+    if value == None:
+        return "Unknown"
+
     timedif = datetime.timedelta(hours=-7)
 
     pubdate = value + timedif

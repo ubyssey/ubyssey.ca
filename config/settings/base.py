@@ -84,11 +84,15 @@ env = environ.Env(
     USE_TZ=(bool,True),
     TIME_ZONE=(str,'Canada/Pacific'),
 
-    # Database defaults:
+    # SQL defaults
     SQL_HOST = (str, 'db'),
-    SQL_DATABASE= (str, 'ubyssey'),
+    SQL_DATABASE = (str, 'ubyssey'),
     SQL_USER = (str, 'root'),
     SQL_PASSWORD = (str, 'ubyssey'),
+
+    # Redis defaults
+    REDIS_HOST = (str, '127.0.0.1'),
+    REDIS_PORT = (str, '6379'),
 
     # Keys
     SECRET_KEY = (str, 'thisisakey'),
@@ -114,6 +118,9 @@ STATIC_URL = env('STATIC_URL')
 MEDIA_URL = env('MEDIA_URL')
 ADS_TXT_URL = env('ADS_TXT_URL')
 ROOT_URLCONF = env('ROOT_URLCONF')
+
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env('REDIS_PORT')
 
 # Initialize the databases.
 # Note it should be possible to parse all this information in a single line:
@@ -234,17 +241,21 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'wagtail.contrib.settings.context_processors.settings',
                 'wagtailmenus.context_processors.wagtailmenus',
+                'config.context_processors.get_light_mode',
             ],
             'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-                'dbtemplates.loader.Loader',
+                (
+                    'django.template.loaders.cached.Loader',
+                    [
+                        'django.template.loaders.filesystem.Loader',
+                        'django.template.loaders.app_directories.Loader',
+                        'dbtemplates.loader.Loader',
+                    ],
+                ),
             ],
         },
     }
 ]
-
-TEMPLATES[0]['OPTIONS']['context_processors'].append("config.context_processors.get_light_mode")
 
 # REST framework settings
 REST_FRAMEWORK = {

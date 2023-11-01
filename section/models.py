@@ -35,6 +35,8 @@ from infinitefeed import blocks as infinitefeedblocks
 from wagtail.core import blocks
 from wagtail.snippets.blocks import SnippetChooserBlock
 
+import datetime
+
 
 #-----Snippet models-----
 @register_snippet
@@ -303,9 +305,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         return context
     
     def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
-        # return ArticlePage.objects.from_section(section_root=self)
-        # section_articles = ArticlePage.objects.live().public().filter(current_section=self.slug).order_by(order)
-        section_articles = ArticlePage.objects.live().public().descendant_of(self).order_by(order)
+
+        section_articles = ArticlePage.objects \
+            .live() \
+            .child_of(self) \
+            .order_by(order)
+        
         return section_articles
 
     def get_featured_articles(self, queryset=None, number_featured=4) -> QuerySet:
