@@ -30,55 +30,7 @@
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                <div class="u-container">
-                    {% comment %} {% if breaking %}
-                        <a class="o-breaking-news" href="{{ breaking.get_absolute_url }}">
-                            <h3>BREAKING: {{ breaking.headline|safe }}</h3>
-                        </a>        
-                    {% endif %} {% endcomment %}
-                </div>
-
-                <div class="u-container u-container--content u-container--padded">
-                    <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
-                    <div class="c-article__info">
-                        {% comment %}
-                            {% include 'objects/social-icons.html' with article=article layout='top' %}
-                        {% endcomment %}
-                            
-                        <div class="c-authors_info">
-                            {% include "article/objects/author_bio.html" %}
-                        </div>
-
-                    </div>
-
-                    <div class="c-authors_bio_meta">
-                        <div class="c-article__byline">
-                
-                            <div class="c-article__byline__meta">
-                                <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
-                                                    
-                                {% if reading_time %}
-                                    <span> &nbsp;&middot;&nbsp; </span>
-                                    <span class="c-article__reading-time">{{ reading_time }} min read</span>
-                                {% endif %}
-                
-                                {% if article.subsection  %}
-                                    <span> &nbsp;&middot;&nbsp; </span>
-                                    <a href="{{ article.subsection.get_absolute_url }}">
-                                        <span class="c-article__reading-time">{{ article.subsection.name }}</span>
-                                    </a>
-                                {% endif %}
-                                
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="c-article__byline">
-                        {% include 'article/objects/share_bar.html' %}
-                        <span class="c-article_dark_mode">
-                            {% include 'article/objects/darkmode_button.html' with id="article_page"%}
-                        </span>
-                    </div>
+                {% include 'article/objects/banners.html' %}
             {% endblock %}
             <!-- Below is the container for Article content -->
             <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">

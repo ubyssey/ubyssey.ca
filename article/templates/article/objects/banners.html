@@ -1,0 +1,115 @@
+<div class="fw-banner {% if self.show_timeline%} timeline-banner {% endif %} {{ self.header_layout }}">
+    {% if self.show_timeline%}
+        <div class='c-timeline' data-current-article-id={{self.id}} data-timeline-title="{{self.timeline}}" data-nodes="{{self.timeline.data}}"></div>
+    {% endif %}
+    {% if self.header_layout == 'right-image' %}
+        <div class="header-container">
+            <div class="headline-container left">
+                {% include 'article/objects/fw_article_headline_container.html' %}
+            </div>
+            <div class="right">
+                <div class="full-width featured-media">
+                    {% include 'article/objects/fw_article_featured_media.html' %}
+                </div>
+            </div>
+        </div>
+    {% elif self.header_layout == 'top-image' %}
+        <div class="header-container">
+            <div class="featured-media">
+                {% include 'article/objects/fw_article_featured_media.html' %}
+            </div>
+            <div class="headline-container">
+                {% include 'article/objects/fw_article_headline_container.html' %}
+            </div>
+        </div>
+    {% elif self.header_layout == 'banner-image' %}
+        {% with self.featured_media.first as featured_image_object %}
+            <div class="banner-image">
+                {% image featured_image_object.image original as featured_image %}
+                <div class="backdrop" style="background-image: url('{{ featured_image.url }}');"></div>
+                <div class="headline-container">
+                    <div class="u-container u-container--padded">
+                        <h1 class="headline">{{ self.title|safe }}</h1>
+                        {% if self.fw_above_cut_lede %}
+                            <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
+                        {% endif %}
+                        <div class="article-byline c-article__byline-center">
+                            <span class="author">By {{ self.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at }}</span>
+                        </div>
+                    </div>
+                    <div class="c-article__byline c-banner_share_dark_buttons c-article__byline-center">
+                        {% include 'article/objects/share_bar.html' %}
+                        <span class="c-article_dark_mode">
+                            {% include 'article/objects/darkmode_button.html' with id="fw"%}
+                        </span>
+                    </div>
+                    {% if featured_image_object.caption or featured_image_object.credit %}
+                        <div class="caption">
+                            {% if featured_image_object.caption %}
+                                {{ featured_image_object.caption }}
+                            {% endif %}
+                            {% if featured_image_object.credit %}
+                                <span class="credit">{{ featured_image_object.credit }}</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>                    
+            </div>
+            <!-- {% if article.featured_image.caption or article.featured_image.credit %}
+                <div class="caption">
+                    {{ article.featured_image.caption }} <span class="credit">{{ article.featured_image.credit }}</span>
+                </div>
+            {% endif %} -->
+        {% endwith %}
+    {% else %}
+    <div class="u-container">
+        {% comment %} {% if breaking %}
+            <a class="o-breaking-news" href="{{ breaking.get_absolute_url }}">
+                <h3>BREAKING: {{ breaking.headline|safe }}</h3>
+            </a>        
+        {% endif %} {% endcomment %}
+    </div>
+
+    <div class="u-container u-container--content u-container--padded">
+        <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
+        <div class="c-article__info">
+            {% comment %}
+                {% include 'objects/social-icons.html' with article=article layout='top' %}
+            {% endcomment %}
+                
+            <div class="c-authors_info">
+                {% include "article/objects/author_bio.html" %}
+            </div>
+
+        </div>
+
+        <div class="c-authors_bio_meta">
+            <div class="c-article__byline">
+    
+                <div class="c-article__byline__meta">
+                    <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
+                                        
+                    {% if reading_time %}
+                        <span> &nbsp;&middot;&nbsp; </span>
+                        <span class="c-article__reading-time">{{ reading_time }} min read</span>
+                    {% endif %}
+    
+                    {% if article.subsection  %}
+                        <span> &nbsp;&middot;&nbsp; </span>
+                        <a href="{{ article.subsection.get_absolute_url }}">
+                            <span class="c-article__reading-time">{{ article.subsection.name }}</span>
+                        </a>
+                    {% endif %}
+                    
+                </div>
+
+            </div>
+        </div>
+        <div class="c-article__byline">
+            {% include 'article/objects/share_bar.html' %}
+            <span class="c-article_dark_mode">
+                {% include 'article/objects/darkmode_button.html' with id="article_page"%}
+            </span>
+        </div>
+    {% endif %}
+</div>
