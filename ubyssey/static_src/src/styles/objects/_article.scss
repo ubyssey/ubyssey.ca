@@ -189,6 +189,20 @@
     }
   }
 
+  .o-article__image {
+    width: 100%;
+    display: flex;
+    min-height: 400px;
+    max-height: 600px;
+    background-color: black;
+    clip-path: inset(0% 0% 0% 0%);
+
+    img {
+      margin: auto;
+      max-height: 100%;
+    }
+  }
+
   .o-article__right {
     position:relative;
     @media($bp-larger-than-phablet) {
