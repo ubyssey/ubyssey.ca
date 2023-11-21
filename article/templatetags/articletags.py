@@ -65,8 +65,10 @@ def display_pubdate(value):
             return "1 minute ago"
         else:
             return str(minutes) + " minutes ago"
-    
-    seconds = round(delta.total_seconds())
-    if seconds == 1:
-        return "1 second ago"
-    return str(seconds) + " seconds ago"
+    elif delta.total_seconds() > 0:    
+        seconds = round(delta.total_seconds())
+        if seconds == 1:
+            return "1 second ago"
+        return str(seconds) + " seconds ago"
+    else:
+        return "Now"
