@@ -173,6 +173,10 @@
       line-height: 3rem;
       left: 0.5em;
     }
+    .o-article__image {
+      min-height: 400px;
+      max-height: 600px;
+    }
   }
 
   @media($bp-smaller-than-phablet) {
@@ -187,13 +191,15 @@
         left: 20px;
       }
     }
+    .o-article__image {
+      min-height: 200px;
+      max-height: 300px;
+    }
   }
 
   .o-article__image {
     width: 100%;
     display: flex;
-    min-height: 400px;
-    max-height: 600px;
     background-color: black;
     clip-path: inset(0% 0% 0% 0%);
 
