@@ -23,7 +23,7 @@ modeladmin_register(DBTemplateAdmin)
 
 def match_exact_url(url):
     """Return a regular expression that exactly matches the provided URL."""
-    return '^%s$' % url
+    return '%s$' % url
 
 def get_clear_on_publish():
     """Return the list of URLs to be cleared each time a page is published."""
@@ -56,9 +56,13 @@ def clear_wagtailcache(request, page):
         page_url = page.full_url
         parent_url = page.get_parent().full_url
 
-        urls = [
-            match_exact_url(page_url),
-            match_exact_url(parent_url)
-        ] + ALWAYS_CLEAR_ON_PUBLISH
+        # Use a set to avoid passing duplicate URLs to the
+        # clear_cache method.
+        urls = set(ALWAYS_CLEAR_ON_PUBLISH)
 
-        clear_cache(urls)
+        urls.add(match_exact_url(page_url))
+
+        if parent_url:
+            urls.add(match_exact_url(parent_url))
+            
+        clear_cache(list(urls))
