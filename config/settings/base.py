@@ -28,7 +28,7 @@ if not "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
 
 # Look for the environment variables file in the root directory
 # Absolute rather than relative path here, to play nice with Google App Engine
-env_file = os.path.join(BASE_DIR, 'tmp/.env')
+env_file = os.path.join(BASE_DIR, '.env')
 
 # In production we can get .envfrom Google Cloud if we don't have it. This requires authentication.
 if os.environ['DJANGO_SETTINGS_MODULE'] == 'config.settings.production' and not os.path.isfile(env_file):
@@ -304,6 +304,16 @@ MIDDLEWARE += [
     # FetchFromCacheMiddleware must come last.
     # Ref: https://github.com/coderedcorp/wagtail-cache/blob/main/docs/getting_started/install.rst#1-install
     'wagtailcache.cache.FetchFromCacheMiddleware',
+]
+
+# Clear these URLs from the cache each time an article or page is published.
+#
+# Note: this is a custom setting used in ubyssey/wagtail_hooks.py.
+#
+CACHE_CLEAR_ON_PUBLISH = [
+    '/$',           # Home page
+    '/archive/$',   # Archive page
+    '/infinitefeed' # Endpoint used to populate infinite scrolling on section pages
 ]
 
 GS_LOCATION = None
