@@ -43,10 +43,6 @@ CACHES = {
     }
 }
 
-MIDDLEWARE += [
-    'canonical_domain.middleware.CanonicalDomainMiddleware',
-]
-
 ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 
 # GCS File Storage - Production Only

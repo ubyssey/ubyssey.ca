@@ -282,6 +282,7 @@ MIDDLEWARE = [
     # Ref: https://github.com/coderedcorp/wagtail-cache/blob/main/docs/getting_started/install.rst#1-install
     'wagtailcache.cache.UpdateCacheMiddleware',
 
+    'canonical_domain.middleware.CanonicalDomainMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.gzip.GZipMiddleware',
 ]
