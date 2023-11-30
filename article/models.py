@@ -416,7 +416,18 @@ class ArticlePageTag(TaggedItemBase):
 
 #-----Manager models-----
 class ArticlePageManager(PageManager):
-    
+
+    def get_queryset(self):
+        """
+        Extend the default queryset to prefetch featured images for all articles.
+
+        This significantly reduces the number of database queries on pages that list
+        a large number of articles.
+        """
+        return super() \
+            .get_queryset() \
+            .prefetch_related('featured_media__image')
+
     def from_section(self, section_slug='', section_root=None) -> QuerySet:
         from .models import ArticlePage
         from section.models import SectionPage
@@ -676,14 +687,16 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if self.layout == 'fw-story':
             return "article/article_page_fw_story.html"
+        elif self.layout == 'visual-essay':
+            return "article/article_page_visual_essay.html"
         elif self.layout == 'guide-2020':
             return "article/article_page_guide_2020.html"
         elif self.layout == 'guide-2022':
             return "article/article_page_guide_2022.html"
         elif self.layout == 'magazine-2023':
             return "article/article_page_magazine_2023.html"
-        elif self.layout == 'visual-essay':
-            return "article/article_page_visual_essay.html"
+        elif self.layout == 'guide-2023':
+            return "article/article_page_guide_2023.html"        
                         
         return "article/article_page.html"
 
@@ -795,10 +808,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                         choices=[
                             ('default', 'Default'), 
                             ('fw-story', 'Full-Width Story'),
+                            ('visual-essay', 'Visual Essay'),
                             ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
                             ('guide-2022', 'Guide (2022 style)'),
                             ('magazine-2023', 'Magazine (2023 style)'),
-                            ('visual-essay', 'Visual Essay'),
+                            ('guide-2023', 'Guide (2023 style)'),
                         ],
                     ),
                 ),
@@ -914,6 +928,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.RelatedFields('article_authors', [
             index.SearchField('full_name'),
         ]),
+        
+        index.FilterField('author_id')
     ]
 
     #-----Properties, getters, setters, etc.-----

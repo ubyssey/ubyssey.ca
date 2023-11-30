@@ -47,7 +47,7 @@ def inject_ads(value, is_mobile):
                 ad_string = render_to_string('ads/advertisement_inline.html', context=ad_context)
                 paragraphs[n].insert_after(BeautifulSoup(ad_string, 'html.parser'))
 
-    return soup.prettify()
+    return soup
 
 @register.filter(name='specify_homepage_sidebar_ads')
 @stringfilter

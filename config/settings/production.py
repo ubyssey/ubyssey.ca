@@ -6,7 +6,7 @@ from google.oauth2 import service_account
 
 import environ
 
-env = environ.Env() #Scope issues without this line?
+env = environ.Env() # Scope issues without this line?
 
 WAGTAILADMIN_BASE_URL = 'https://www.ubyssey.ca/'
 
@@ -14,19 +14,30 @@ ALLOWED_HOSTS = ['localhost', '*']
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 
-INSTALLED_APPS += [
-]
+INSTALLED_APPS += []
 
 # Sessions are used to anonymously keep track of individual site visitors
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-# Caches are used to store the results of SQL queries so it can be quickly retrieved and needs to do less work
-# The cache requires a Memcached instance be set up in Google Cloud Platform (GCP) and access connectors to be set both on GCP and in app.yaml
+# We use Redis as a cache backend, as recommended by Wagtail here:
+# https://docs.wagtail.org/en/v2.10.2/advanced_topics/performance.html#cache
+#
+# We previously used the Memcache service bundled with Google App Engine,
+# but it is now considered a legacy service and does not work seamlessly with Django.
+#
+# TODO: switch to built-in Redis backend after upgrading Django.
+# Ref: https://github.com/ubyssey/ubyssey.ca/issues/1340
+#
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        # 'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        # 'LOCATION': '10.18.240.4:11211',
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://%s:%s" % (REDIS_HOST, REDIS_PORT), 
+    },
+    # The "renditions" cache is for Wagtail image renditions.
+    # Ref: https://docs.wagtail.org/en/v2.10.2/advanced_topics/performance.html#caching-image-renditions
+    "renditions": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://%s:%s" % (REDIS_HOST, REDIS_PORT),
     }
 }
 # WAGTAIL_CACHE_IGNORE_COOKIES = False
@@ -46,10 +57,8 @@ GS_ACCESS_KEY_ID = env('GS_ACCESS_KEY_ID')
 GS_SECRET_ACCESS_KEY = env('GS_SECRET_ACCESS_KEY')
 # GS_CREDENTIALS = service_account.Credentials.from_service_account_file('ubyssey-prd-ee6290e6327f.json')
 # GS_CREDENTIALS = env('GOOGLE_APPLICATION_CREDENTIALS')
-GS_STORAGE_BUCKET_NAME = 'ubyssey' # See documentation https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
-GS_BUCKET_NAME = GS_STORAGE_BUCKET_NAME # https://github.com/mirumee/saleor/issues/5222 see suggestion both these variables are needed
+GS_BUCKET_NAME = 'ubyssey'
 GS_LOCATION = 'media'
-GS_USE_SIGNED_URLS = True
 GS_QUERYSTRING_AUTH = False
 GS_FILE_OVERWRITE = False
 

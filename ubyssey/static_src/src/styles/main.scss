@@ -25,6 +25,7 @@
 @import 'modules/article/gallery';
 @import 'modules/article/full_width';
 @import 'modules/article/sidebar';
+@import 'modules/article/special_page.scss';
 @import 'modules/social';
 @import 'modules/search';
 
@@ -223,6 +224,31 @@ a.image {
   }
   @media($bp-larger-than-phablet){
     margin-bottom: 0;
+  }
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+}
+
+.dropdown-show {
+  display: none;
+}
+
+.dropdown:focus-within, .dropdown:hover {
+  .dropdown-content {
+    display: block; 
+  }
+  .dropdown-show {
+    display: inherit; 
+  }
+  .dropdown-hidden {
+    display: none;
   }
 }
 

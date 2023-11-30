@@ -5,6 +5,8 @@ django-storages[google]==1.13.2
 django-canonical-domain==0.3.0
 pymemcache==4.0.0
 mysqlclient==2.0.1
+django-phonenumber-field==2.0.0
+phonenumbers==8.12.9
 beautifulsoup4==4.9.0
 feedparser==6.0.10
 pyyaml==6.0.1
@@ -31,3 +33,6 @@ django-debug-toolbar==4.2.0
 pylint==2.17.5
 pylint-django==2.5.3
 ipython
+django-redis==5.4.0
+redis==5.0.1
+hiredis==2.2.3

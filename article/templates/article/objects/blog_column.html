@@ -11,20 +11,20 @@ This template is for the columns for the blog section on the home page under the
 {% load wagtailimages_tags %}
 {% load video_filters %}
 <article class="o-article o-article--column{% if padded %} o-article--padded{% endif %}" style="background-color: {{article|get_colour}}">
-  <div class="o-article__meta">
-    <div class="o-article__meta__image">
-      {% if article.featured_media.first %}
-        {% if article.featured_media.first.image %}
-          <a class="o-article__image" href="{% pageurl article %}">
-            {% image article.featured_media.first.image fill-250x250-c100 %}
-          </a>
-        {% elif article.featured_media.first.video %}
-          <a class="o-article__image" href="{% pageurl article %}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
-        {% endif %}
+  <div class="o-article__meta__image">
+    {% if article.featured_media.first %}
+      {% if article.featured_media.first.image %}
+        <a class="o-article__image" href="{% pageurl article %}">
+          {% image article.featured_media.first.image fill-250x250-c100 format-webp %}
+        </a>
+      {% elif article.featured_media.first.video %}
+        <a class="o-article__image" href="{% pageurl article %}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
       {% endif %}
-      <h3 class="o-article__headline">
-        <a href="{% pageurl article %}">{{ article.title|safe }}</a>
-      </h3>
-    </div>
+    {% endif %}
+  </div>
+  <div class="o-article__meta">
+    <h3 class="o-article__headline">
+      <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+    </h3>
   </div>
 </article>

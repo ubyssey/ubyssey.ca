@@ -1,5 +1,11 @@
 <div class="article-list blog sidebar-block">
-	<h2 class="block-title" style="color: {{section.colour}}">{{ title }}</h2>
+	<h2 class="block-title" style="color: {{section.colour}}">
+		{% if link %}
+		<a href="{{link}}">{{ title }}</a>
+		{% else %}
+		{{ title }}
+		{% endif %}
+	</h2>
 	<ul class="article-list">
 		{% for article in articles %}
 		<li>

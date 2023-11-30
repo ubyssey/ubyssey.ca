@@ -17,7 +17,7 @@
     {% if self.authors_with_roles %}<meta name="author" content="{{ self.get_authors_string }}" />{% endif %}
 
     <!-- Open Graph data -->
-    <meta property="og:title" content="{{ self.title|striptags|safe }}" />
+    <meta property="og:title" content="{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title|striptags|safe }}{% endif %}" />
     <meta property="og:type" content="{% if self.content_type.model == 'articlepage' %}article{% else %}website{% endif %}" />
     <meta property="og:url" content="https://ubyssey.ca{% pageurl self %}" />
     {% if self.featured_media.first.image %}
@@ -25,10 +25,16 @@
             {% image featured_image_object.image fill-800x600 as the_image %}
             <meta property="og:image" content="{{ the_image.full_url }}" />
         {%endwith%}
+    {% elif self.featured_media.file %}
+        {% with self.featured_media as featured_image_object %}
+            {% image featured_image_object fill-800x600 as the_image %}
+            <meta property="og:image" content="{{ the_image.full_url }}" />
+        {%endwith%}
     {% else %}
         <meta property="og:image" content="{% static 'ubyssey/images/ubyssey-logo-square.png' %}" />
     {% endif %}
-    <meta property="og:description" content="{% if self.seo_description %}{{ self.seo_description }}{% elif self.lede %}{{ self.lede }}{% endif %}" />
+    <meta property="og:description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.seo_description %}{{ self.seo_description }}{% elif self.lede %}{{ self.lede }}{% endif %}" />
+    <meta property="og:keywords" content="{% if self.seo_keyword %}{{ self.seo_keyword }}{% elif self.tags.count %}{% for tag in self.tags.all %}{{ tag }}, {% endfor %}{% endif %}" />
     <meta property="og:site_name" content="The Ubyssey" />
 
     <!-- Twitter Card data -->
