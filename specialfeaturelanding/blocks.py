@@ -1,6 +1,6 @@
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
-from wagtail.core import blocks
+from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
 TEMPLATE_DIRECTORY = "specialfeaturelanding/blocks/"
