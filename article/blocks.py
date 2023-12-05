@@ -4,7 +4,7 @@ from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 
-class AudioBlock(blocks.StructBlock)
+class AudioBlock(blocks.StructBlock):
     caption =  blocks.CharBlock(required=False)
     audio = DocumentChooserBlock(required=True, help_text="Must be mp3 format")
 
