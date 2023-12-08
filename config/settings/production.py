@@ -8,7 +8,7 @@ import environ
 
 env = environ.Env() # Scope issues without this line?
 
-BASE_URL = 'https://www.ubyssey.ca/'
+WAGTAILADMIN_BASE_URL = 'https://www.ubyssey.ca/'
 
 ALLOWED_HOSTS = ['localhost', '*']
 
@@ -42,6 +42,8 @@ CACHES = {
         "TIMEOUT": 3600, # 1 hour
     }
 }
+# WAGTAIL_CACHE_IGNORE_COOKIES = False
+# WAGTAIL_CACHE_IGNORE_QS = None
 
 ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 
