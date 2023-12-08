@@ -25,18 +25,6 @@ def match_exact_url(url):
     """Return a regular expression that exactly matches the provided URL."""
     return '%s$' % url
 
-def get_clear_on_publish():
-    """Return the list of URLs to be cleared each time a page is published."""
-
-    if hasattr(settings, 'CACHE_CLEAR_ON_PUBLISH'):
-        return [
-            urljoin(settings.BASE_URL, url) for url in settings.CACHE_CLEAR_ON_PUBLISH
-        ]
-
-    return []
-
-ALWAYS_CLEAR_ON_PUBLISH = get_clear_on_publish()
-
 @hooks.register('after_create_page')
 @hooks.register('after_edit_page')
 def clear_wagtailcache(request, page):
@@ -58,11 +46,19 @@ def clear_wagtailcache(request, page):
 
         # Use a set to avoid passing duplicate URLs to the
         # clear_cache method.
-        urls = set(ALWAYS_CLEAR_ON_PUBLISH)
+        urls = set()
 
         urls.add(match_exact_url(page_url))
 
         if parent_url:
             urls.add(match_exact_url(parent_url))
-            
+
+        for url in settings.CACHE_CLEAR_ON_PUBLISH:
+            # The clear_cache method expects absolute URLs,
+            # so convert all relative URLs to absolute based
+            # on the current request URL
+            abs_url = request.build_absolute_uri(url)
+
+            urls.add(abs_url)
+
         clear_cache(list(urls))
