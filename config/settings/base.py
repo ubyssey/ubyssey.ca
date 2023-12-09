@@ -322,6 +322,13 @@ WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
 WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html
 WAGTAILMENUS_ACTIVE_ANCESTOR_CLASS = 'current'
 
+# wagtail search settings
+WAGTAILSEARCH_BACKENDS = {
+    'default': {
+        'BACKEND': 'wagtail.search.backends.database',
+    }
+}
+
 # Model defaults
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
