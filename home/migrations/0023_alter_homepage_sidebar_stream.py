@@ -11,7 +11,7 @@ import wagtail.snippets.blocks
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0022_alter_homepage_sidebar_stream'),
+        ('home', '0023_alter_homepage_cover_story'),
     ]
 
     operations = [

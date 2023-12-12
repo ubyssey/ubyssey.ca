@@ -5,7 +5,7 @@
 # Therefore the below "import *" is correct
 from .base import *
 
-BASE_URL = 'http://localhost:8000/'
+WAGTAILADMIN_BASE_URL = 'http://localhost:8000/'
 
 ALLOWED_HOSTS = ['localhost', '*']
 
