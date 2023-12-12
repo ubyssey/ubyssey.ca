@@ -15,14 +15,12 @@ INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 # so that the website always updates after code changes.
 CACHES = {
     "default": {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    "renditions": {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
-
-MIDDLEWARE += [
-    # other middlewares...
-    'django_user_agents.middleware.UserAgentMiddleware',
-]
 
 TEMPLATES += [
 {
