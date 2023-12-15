@@ -13,6 +13,16 @@
     {% endfor %}
 {% endblock %}
 
+{% block stylesheet %}
+    {% if self.styles.all|length == 0 %}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css" />
+    {% else %}
+        {% for style_obj in self.styles.all %}
+        <link rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
 {% block header %}
     {% include 'navigation/headers/mobile.html' %}
         {% block banner_ad %}
