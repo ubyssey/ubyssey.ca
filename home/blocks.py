@@ -5,8 +5,8 @@ from article.models import ArticlePage
 
 from django.db.models import Q
 
-from wagtail.core import blocks
-from wagtail.core.blocks import field_block
+from wagtail import blocks
+from wagtail.blocks import field_block
 
 class HomepageFeaturedSectionBlock(blocks.StructBlock):
 

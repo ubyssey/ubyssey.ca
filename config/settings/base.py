@@ -175,7 +175,7 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
-    'wagtail.core',
+    'wagtail',
     'wagtail.contrib.routable_page',
     'wagtail.contrib.styleguide',
 
@@ -278,7 +278,11 @@ STATICFILES_DIRS = []
 
 # Set the middleware
 MIDDLEWARE = [
+    # UpdateCacheMiddleware must come first.
+    # Ref: https://github.com/coderedcorp/wagtail-cache/blob/main/docs/getting_started/install.rst#1-install
     'wagtailcache.cache.UpdateCacheMiddleware',
+
+    'canonical_domain.middleware.CanonicalDomainMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.gzip.GZipMiddleware',
 ]
@@ -297,7 +301,20 @@ MIDDLEWARE += [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-    'wagtailcache.cache.UpdateCacheMiddleware',
+
+    # FetchFromCacheMiddleware must come last.
+    # Ref: https://github.com/coderedcorp/wagtail-cache/blob/main/docs/getting_started/install.rst#1-install
+    'wagtailcache.cache.FetchFromCacheMiddleware',
+]
+
+# Clear these URLs from the cache each time an article or page is published.
+#
+# Note: this is a custom setting used in ubyssey/wagtail_hooks.py.
+#
+CACHE_CLEAR_ON_PUBLISH = [
+    '/$',           # Home page
+    '/archive/$',   # Archive page
+    '/infinitefeed' # Endpoint used to populate infinite scrolling on section pages
 ]
 
 GS_LOCATION = None
@@ -321,6 +338,13 @@ WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
 # wagtailmenus settings
 WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html
 WAGTAILMENUS_ACTIVE_ANCESTOR_CLASS = 'current'
+
+# wagtail search settings
+WAGTAILSEARCH_BACKENDS = {
+    'default': {
+        'BACKEND': 'wagtail.search.backends.database',
+    }
+}
 
 # Model defaults
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'

@@ -1,6 +1,6 @@
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
-from wagtail.core.signals import page_published
+from wagtail.signals import page_published
 from .models import ArticlePage
 
 @receiver(page_published, sender=ArticlePage)

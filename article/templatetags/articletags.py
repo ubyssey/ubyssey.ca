@@ -1,4 +1,5 @@
 from django import template
+from django.utils import timezone
 from django.template.defaultfilters import stringfilter
 from django.template.loader import render_to_string
 from section.models import SectionPage
@@ -38,10 +39,8 @@ def display_pubdate(value):
     if value == None:
         return "Unknown"
 
-    timedif = datetime.timedelta(hours=-7)
-
-    pubdate = value + timedif
-    today = datetime.datetime.now().replace(tzinfo=datetime.timezone(timedif)) + timedif
+    pubdate = value
+    today = timezone.now()
     delta = today - pubdate
 
     if delta.total_seconds() > datetime.timedelta(days=365).total_seconds():

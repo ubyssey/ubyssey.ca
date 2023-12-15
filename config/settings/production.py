@@ -8,7 +8,7 @@ import environ
 
 env = environ.Env() # Scope issues without this line?
 
-BASE_URL = 'https://www.ubyssey.ca/'
+WAGTAILADMIN_BASE_URL = 'https://www.ubyssey.ca/'
 
 ALLOWED_HOSTS = ['localhost', '*']
 
@@ -31,19 +31,19 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://%s:%s" % (REDIS_HOST, REDIS_PORT), 
+        "LOCATION": "redis://%s:%s" % (REDIS_HOST, REDIS_PORT),
+        "TIMEOUT": 3600, # 1 hour
     },
     # The "renditions" cache is for Wagtail image renditions.
     # Ref: https://docs.wagtail.org/en/v2.10.2/advanced_topics/performance.html#caching-image-renditions
     "renditions": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://%s:%s" % (REDIS_HOST, REDIS_PORT),
+        "TIMEOUT": 3600, # 1 hour
     }
 }
-
-MIDDLEWARE += [
-    'canonical_domain.middleware.CanonicalDomainMiddleware',
-]
+# WAGTAIL_CACHE_IGNORE_COOKIES = False
+# WAGTAIL_CACHE_IGNORE_QS = None
 
 ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 
