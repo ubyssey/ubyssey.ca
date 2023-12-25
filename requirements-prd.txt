@@ -5,7 +5,7 @@ django-canonical-domain==0.3.0
 pymemcache==4.0.0
 mysqlclient==2.0.1
 django-phonenumber-field==2.0.0
-phonenumbers==8.12.9
+phonenumbers==8.13.27
 beautifulsoup4==4.9.0
 feedparser==6.0.1
 pyyaml==6.0.1
