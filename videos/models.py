@@ -15,11 +15,9 @@ from taggit.managers import TaggableManager
 from ubyssey.validators import validate_youtube_url
 
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
-from wagtail.core.models import Orderable, Page
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
+from wagtail.models import Orderable, Page
 from wagtail.snippets.models import register_snippet
-from wagtail.search import index
-
 
 #-----Taggit stuff-----
 
@@ -43,7 +41,7 @@ class VideoAuthorsOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                PageChooserPanel("author"),
+                FieldPanel("author"),
             ],
             heading="Author",
         ),
@@ -93,7 +91,7 @@ class VideosPage(SectionablePage):
 #-----Snippet models-----
 
 @register_snippet
-class VideoSnippet(index.Indexed, ClusterableModel):
+class VideoSnippet(ClusterableModel):
 
     title = models.CharField(
         max_length=255,
@@ -184,17 +182,23 @@ class VideoSnippet(index.Indexed, ClusterableModel):
             heading="Tags"
         ),
     ]
-        #-----Search fields etc-----
-    #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
-    search_fields = [
-        index.SearchField('title'),
-        index.SearchField('slug'),
+
+    # TODO: Fix video model to be compatible with Wagtail search
+    # The `slug` primary key of this model overflows the Wagtail
+    # search index `object_id` field.
+    #
+    #-----Search fields etc-----
+    # See https://docs.wagtail.org/en/stable/topics/search/indexing.html
+    # search_fields = [
+    #     index.SearchField('title'),
+    #     index.SearchField('slug'),
         
-        index.FilterField('video_authors'),
-        index.FilterField('tags'),
-        index.FilterField('slug'),
-        index.FilterField('created_at'),
-    ]
+    #     index.FilterField('video_authors'),
+    #     index.FilterField('tags'),
+    #     index.FilterField('slug'),
+    #     index.FilterField('created_at'),
+    # ]
+
     class Meta:
         verbose_name = "Video"
         verbose_name_plural = "Videos"
