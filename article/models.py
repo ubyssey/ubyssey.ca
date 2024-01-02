@@ -1080,7 +1080,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             suggested = {}
             suggested['title'] = self.category.title
             suggested['articles'] = category_articles[:number_suggested]
-            suggested['link'] = self.category.get_link()
+            suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
         else:
             suggested = False
 

@@ -122,7 +122,7 @@ class SidebarCategoryBlock(blocks.StructBlock):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['title']
         context['category'] = value['title']
-        context['link'] = value['category'].get_link()
+        context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
         context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')
         return context
     class Meta:
@@ -334,10 +334,6 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     def save(self, *args, **kwargs):
         self.current_section = self.slug
         return Page.save(self,*args, **kwargs)
-
-    @property
-    def get_link(self):
-        return self.section_page.url + "category/" + self.slug
     
     class Meta:
         verbose_name = "Section"
