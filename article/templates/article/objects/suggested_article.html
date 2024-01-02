@@ -5,7 +5,7 @@
 
 {% load humanize %}
 
-<article class="o-article o-article--author_pinned{% if padded %} o-article--padded{% endif %}">
+<article class="o-article o-article--suggested_article{% if padded %} o-article--padded{% endif %}">
   {% if not hide_image and article.featured_media.first.image or article.featured_video %}
   <div class="o-article__left">
     <a class="o-article__image" href={% pageurl article %}>
@@ -22,12 +22,6 @@
       <h3 class="o-article__headline">
         <a href="{% pageurl article %}">{{ article.title|safe }}</a>
       </h3>
-      <p class="o-article__snippet">{{ article.lede|safe }}</p>
-      <div class="o-article__byline">
-        <span class="o-article__author">{{ article.get_authors_with_urls|safe }}</span>
-        <span> &nbsp;&bullet;&nbsp; </span>
-        <span class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</span>
-      </div>
     </div>
   </div>
 </article>

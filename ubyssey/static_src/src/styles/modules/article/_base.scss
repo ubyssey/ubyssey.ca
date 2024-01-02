@@ -4,6 +4,7 @@
 $text-color: var(--text_color);
 
 .featured-media {
+  margin-bottom: 1em;
   img {
     width: 100%;
   }
@@ -131,7 +132,6 @@ div.indicator {
 .c-authors_bio_meta {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-  border-bottom: 1px solid #D2D2D2;
   font-family: $font-default;
   font-size: $font-size-15px;
   // font-weight: $font-weight-semi-bold;
@@ -299,12 +299,6 @@ div.indicator {
   justify-content: center;
 }
 
-.c-share-buttons {
-  float: left;
-  padding: 0px 4px 10px 4px;
-  color: var(--article_info);
-}
-
 .c-share_space {
   padding-right: 1em;
 }
@@ -340,7 +334,6 @@ div.article-content {
     vertical-align: top;
     box-sizing: border-box;
     width: 65%;
-    padding-bottom: 1.4rem;
   }
 
   .redacted {
@@ -414,10 +407,10 @@ div.caption {
 div.article-content {
 
   > p, > ul {
-    font-family: $font-body !important;
-    font-weight: $font-weight-normal !important;
-    font-size: font-size(16) !important;
-    line-height: 1.625rem !important;
+    font-family: $font-body;
+    font-weight: $font-weight-normal;
+    font-size: font-size(18);
+    line-height: 2rem;
     margin-top: 1.4rem;
 
     a {
@@ -428,6 +421,8 @@ div.article-content {
     &:first-child {
         margin-top: 5px;
         margin-right: auto;
+        /*font-weight: bold;
+        font-size: font-size(19);*/
     }
   }
 
@@ -472,4 +467,32 @@ div.article-content {
   @media print {
     display: none;
   }
+}
+
+.article-content p.drop-cap {
+  font-weight: bold;
+  font-size: font-size(19);
+}
+
+p.author-string > a {
+  font-weight: 600;
+  color: $color-ubyssey-blue;  
+}
+
+p.c-article__published-at {
+  margin-bottom: 0;
+}
+
+.article-content p.c-share {
+  font-family: $font-default;
+  font-weight: 600;
+
+  span.c-share-buttons > a{
+    padding: 0px 4px 10px 4px;
+    color: var(--text_color);
+  }
+}
+
+.suggested-sidebar {
+  margin-bottom: 2em;
 }

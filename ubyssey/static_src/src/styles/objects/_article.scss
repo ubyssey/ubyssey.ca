@@ -779,6 +779,17 @@
   }
 }
 
+.suggested-title {
+  font-size: 24px;
+  font-weight: 400;
+
+  a {
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+}
+
 .suggested-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -786,6 +797,7 @@
   gap: 10px;
   max-width: 1200px;
   margin: auto;
+  margin-top: 2em;
 
   article {
     width: 300px;
@@ -931,10 +943,11 @@
     position:absolute;
   }
 }
-.o-article--author_pinned {
+.o-article--suggested_article {
 
   .o-article__headline {
-    font-size: 1.2rem;
+    font-size: 16px;
+    margin: 1em;
   }
   
   .o-article__published {

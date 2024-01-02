@@ -30,105 +30,67 @@
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                <div class="u-container">
-                    {% comment %} {% if breaking %}
+                {% comment %}<div class="u-container">
+                     {% if breaking %}
                         <a class="o-breaking-news" href="{{ breaking.get_absolute_url }}">
                             <h3>BREAKING: {{ breaking.headline|safe }}</h3>
                         </a>        
-                    {% endif %} {% endcomment %}
-                </div>
+                    {% endif %}
+                </div>{% endcomment %}
 
                 <div class="u-container u-container--content u-container--padded">
+                    <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
                     <div class="c-article__info">
+                        <p class="author-string">{{self.authors_with_roles |safe }}</p>
                         {% comment %}
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
-                        {% endcomment %}
                             
                         <div class="c-authors_info">
                             {% include "article/objects/author_bio.html" %}
                         </div>
-
+                        {% endcomment %}
                     </div>
 
-                    <div class="c-authors_bio_meta">
-                        <div class="c-article__byline">
-                
-                            <div class="c-article__byline__meta">
-                                <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
-                                                    
-                                {% if reading_time %}
-                                    <span> &nbsp;&middot;&nbsp; </span>
-                                    <span class="c-article__reading-time">{{ reading_time }} min read</span>
-                                {% endif %}
-                
-                                {% if article.subsection  %}
-                                    <span> &nbsp;&middot;&nbsp; </span>
-                                    <a href="{{ article.subsection.get_absolute_url }}">
-                                        <span class="c-article__reading-time">{{ article.subsection.name }}</span>
-                                    </a>
-                                {% endif %}
-                                
-                            </div>
-
-                        </div>
-                    </div>
                     <div class="c-article__byline">
-                        {% include 'article/objects/share_bar.html' %}
                         <span class="c-article_dark_mode">
                             {% include 'article/objects/darkmode_button.html' with id="article_page"%}
                         </span>
                     </div>
+                    {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
             {% endblock %}
             <!-- Below is the container for Article content -->
             <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
                 <!-- Below is the container for the left column article content  -->
-                {% if not self.is_explicit %}
-                    {% filter inject_ads:is_mobile %}
                     <div class="cell left article-content">
                         {% block pre-content %}
                         {% endblock %}
-                            <!-- Content unique to the article starts here -->
-                            <!-- Article featured media -->
-                            {% if self.layout == 'default' %}
-                                {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
-                            {% endif %}
-                            
+
+                        <!-- Content unique to the article starts here -->
+
+                        {% if not self.is_explicit %}
+                            {% filter inject_ads:is_mobile %}                            
                             <!-- Article text -->
                             {% for block in self.content %}
                                 {% include_block block with id=block.id %}
                             {% endfor %}
-                            <!-- Content unique to the article ends here -->
+                            {% endfilter %}
+                        {% else %}
+                            <!-- Article text -->
+                            {% for block in self.content %}
+                                {% include_block block with id=block.id %}
+                            {% endfor %}
+                        {% endif %}
+                        <!-- Content unique to the article ends here -->
 
                         {% block post-content %}
+                        {% include 'article/objects/share_bar.html' %}
                         {% endblock %}
                     </div>
-                    {% endfilter %}
-                {% else %}
-                    <div class="cell left article-content">
-                    <!-- Article featured media -->
-                    {% if self.layout == 'default' %}
-                        {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
-                    {% endif %}
-                    <!-- Content unique to the article starts here -->
-                    {% for block in self.content %}
-                        {% include_block block with id=block.id %}
-                    {% endfor %}
-                    <!-- Content unique to the article ends here -->
-                    </div>
-                {% endif %}
+
                 <!-- Below is the container for the right column article content, not entirely unique to the article -->
                 <aside class="cell right sidebar">
                     {% block sidebar %}
-                        <div class="suggested-sidebar">
-                            {% block suggested_articles %}
-
-                            {% if suggested %}
-                                {% include "infinitefeed/sidebar/sidebar_section_block.html" with title=suggested.title articles=suggested.articles %}
-                            {% endif %}
-
-                            {% endblock %}
-                        </div>
                         <!-- Article Page sidebar ads go here -->
                         {% if self.is_explicit is not True %}
                             {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
@@ -139,9 +101,17 @@
                         {% endif %}
                         {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
                     {% endblock %}
-
                 </aside>                        
+            </div>
+            <div class="suggested-sidebar">
+                {% block suggested_articles %}
 
+                {% if suggested and suggested.articles|length > 0 %}
+                {% include 'article/objects/suggested_articles.html' %}
+                {% endif %}
+
+                {% endblock %}
+            </div>
 
             {% comment %} {% include 'objects/social-icons-bottom.html' with article=article %} {% endcomment %}
         </article>
