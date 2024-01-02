@@ -1,3 +1,7 @@
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
 <div class="fw-banner {% if self.show_timeline%} timeline-banner {% endif %} {{ self.header_layout }}">
     {% if self.show_timeline%}
         <div class='c-timeline' data-current-article-id={{self.id}} data-timeline-title="{{self.timeline}}" data-nodes="{{self.timeline.data}}"></div>
