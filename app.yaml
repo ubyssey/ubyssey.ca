@@ -5,7 +5,7 @@ instance_class: F4
 default_expiration: "365d"
 
 automatic_scaling:
-  max_instances: 4
+  max_instances: 6
 
 handlers:
 - url: /robots.txt
