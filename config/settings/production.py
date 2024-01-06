@@ -19,31 +19,16 @@ INSTALLED_APPS += []
 # Sessions are used to anonymously keep track of individual site visitors
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-# We use Redis as a cache backend, as recommended by Wagtail here:
-# https://docs.wagtail.org/en/v2.10.2/advanced_topics/performance.html#cache
-#
-# We previously used the Memcache service bundled with Google App Engine,
-# but it is now considered a legacy service and does not work seamlessly with Django.
-#
-# TODO: switch to built-in Redis backend after upgrading Django.
-# Ref: https://github.com/ubyssey/ubyssey.ca/issues/1340
-#
 CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://%s:%s" % (REDIS_HOST, REDIS_PORT),
-        "TIMEOUT": 3600, # 1 hour
+    'default': {
+        'BACKEND': 'ubyssey.cache.AppEngineMemcacheCache',
+        'TIMEOUT': 3600, # 1 hour
     },
-    # The "renditions" cache is for Wagtail image renditions.
-    # Ref: https://docs.wagtail.org/en/v2.10.2/advanced_topics/performance.html#caching-image-renditions
     "renditions": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://%s:%s" % (REDIS_HOST, REDIS_PORT),
-        "TIMEOUT": 3600, # 1 hour
+        'BACKEND': 'ubyssey.cache.AppEngineMemcacheCache',
+        'TIMEOUT': 3600, # 1 hour
     }
 }
-# WAGTAIL_CACHE_IGNORE_COOKIES = False
-# WAGTAIL_CACHE_IGNORE_QS = None
 
 ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 
