@@ -36,3 +36,4 @@ ipython
 django-redis==5.4.0
 redis==5.0.1
 hiredis==2.2.3
+appengine-python-standard>=1.0.0
