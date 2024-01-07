@@ -1,6 +1,3 @@
-"""
-Django Cache Backend for the Google App Engine Memcache API.
-"""
 import time
 import logging
 
@@ -9,6 +6,16 @@ from django.core.cache.backends.base import BaseCache
 from google.appengine.api import memcache
 
 class AppEngineMemcacheCache(BaseCache):
+    """
+    Django Cache Backend for the Google App Engine Memcache API.
+
+    This class wraps the Google App Engine Memcache API library,
+    which is required to make calls to App Engine Memcache from the Python
+    standard environment.
+
+    This code was adapted from the `django-gae-backends` package:
+    https://pypi.org/project/django-gae-backends/
+    """
 
     def __init__(self, location, params):
         super(AppEngineMemcacheCache, self).__init__(params)
@@ -72,11 +79,11 @@ class AppEngineMemcacheCache(BaseCache):
         key = self.make_key(key, version=version)
         self.validate_key(key)
 
-        # there might be an exception if the pickled data is bigger than 1mb
+        # There may be an exception if the pickled data is larger than 1MB
         try:
             memcache.set(key, value, self._get_memcache_timeout(timeout))
         except:
-            logging.warning('Could not save response in memcache - too large')
+            logging.warning("Could not save response in memcache - too large")
 
     def delete(self, key, version=None):
         key = self.make_key(key, version=version)
