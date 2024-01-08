@@ -5,10 +5,12 @@ Used in both section pages and homepage
 
 {% load article_display %}
 
+<div class="u-container">
 <h2 class="suggested-title">More from <a href="{{suggested.link}}">{{ suggested.title }}</a></h2>
 
 <div class="suggested-bottom">
 {% for article in suggested.articles %}
     {% include 'article/objects/suggested_article.html' with article=article %}
 {% endfor %}
+</div>
 </div>
