@@ -12,8 +12,11 @@ footer {
   bottom: 0;
   left: 0;
   right: 0;
+  margin-bottom: 1em;
   .about {
     line-height: 2em;
+    width: 90%;
+    margin: auto;
     margin-top: 2em;
     margin-bottom: 2em;
     display: flex;
@@ -32,11 +35,20 @@ footer {
     }
   }
 
-  a.home-link {
+  div.footer-branding {
     margin-right: 2em;
-    img {
-      height: 350px;
-      width: auto;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    .logo {
+      height: auto;
+      width: 100%;
+    }
+    .funding {
+      margin-top: 30px;
+      align-self: end;
+      width: 55%;
+      margin-right: 1em;
     }
   }
 
@@ -69,8 +81,12 @@ footer {
         margin-top: 0.5em;
       }
     }
+    div.about-text {
+      flex-grow: 1;
+      width: 0;
+    }
     nav .top-row {
-      font-size: 19px;
+      font-size: 21px;
       font-weight: 600;
       li {
         margin: 0 10px;
@@ -82,12 +98,19 @@ footer {
     .about {
       flex-direction: column;
       margin: 1em;
+      width: auto;
       h2 {
         text-align: center;
       }
     }
+    .about-text {
+      width: auto;
+    }
     nav{
       display: flex;
+    }
+    div.footer-branding {
+      margin: auto;
     }
     .top-row, .bottom-row{
       width: 50%;
