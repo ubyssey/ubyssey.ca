@@ -5,7 +5,9 @@ instance_class: F4
 default_expiration: "365d"
 
 automatic_scaling:
-  max_instances: 4
+  max_instances: 6
+
+app_engine_apis: true
 
 handlers:
 - url: /robots.txt
@@ -14,6 +16,3 @@ handlers:
 - url: .*
   script: auto
   secure: always
-
-vpc_access_connector:
-  name: projects/ubyssey-prd/locations/us-central1/connectors/ubyssey-connector
