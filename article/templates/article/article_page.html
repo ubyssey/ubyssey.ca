@@ -43,13 +43,6 @@
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
                     <div class="c-article__info">
                         <p class="author-string">{{self.authors_with_roles |safe }}</p>
-                        {% comment %}
-                            {% include 'objects/social-icons.html' with article=article layout='top' %}
-                            
-                        <div class="c-authors_info">
-                            {% include "article/objects/author_bio.html" %}
-                        </div>
-                        {% endcomment %}
                     </div>
 
                     <div class="c-article__byline">
