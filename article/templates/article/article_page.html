@@ -78,6 +78,12 @@
 
                         {% block post-content %}
                         {% include 'article/objects/share_bar.html' %}
+
+
+                        {% for author in self.authors_in_order %}
+                            {% include "article/objects/author_card.html" with author=author %}
+                        {% endfor %}
+
                         {% endblock %}
                     </div>
 

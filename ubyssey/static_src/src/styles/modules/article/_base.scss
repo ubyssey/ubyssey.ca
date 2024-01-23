@@ -145,87 +145,75 @@ div.indicator {
 }
 
 
-.author_image_container {
-  position: relative;
+
+.author_card {
+  padding: 1.5em;
   display: flex;
-}
+  background-color: $color-ubyssey-blue-light;
+  border-radius: 20px;
+  margin:auto;
+  margin-top: 2em;
+  flex-direction: column;
+  max-width: 585px;
 
-.authors_info_inner {
-  display: inline-block;
-  padding: 0em 0em 0em 0.5em;
-
-}
-
-.no_image {
-  padding-top: 0em;
-  padding-left: 0em;
+  @media($bp-smaller-than-mobile) {
+    width: auto;
+    border-radius: 0;
+  }
 }
 
 .author_image {
-  height: 65px;
-  width: 65px;
+  height: 100px;
+  width: 100px;
   object-fit: cover;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
+  margin-right: 1em;
+}
 
-  img {
-    display: inline;
-    margin: 0 auto;
-    margin-left: -25%;
-    height: 100%;
-    width: auto;
+.author_title>p {
+  margin-bottom: 0.5em;
+}
+
+.with_image {
+  p {
+    margin-top: auto;
+    margin-bottom: auto;
   }
 }
 
-.author_card {
-  padding: 0.5em 2em 0.5em 0em;
-  display: flex;
-  text-align: center;
-
-  @media($bp-larger-than-tablet) {
-    padding: 1rem;
-    padding-left: 0;
-    margin-right: 1em;
-  }
-
-}
-
-.author_title {
-  padding: 0.5em 0.5em 0.5em 0em;
-  font-size: medium;
-  font-style: bold;
-  color: var(--authors-title-bio);
-  text-align: left;
-
-  &:hover {
-    color: $color-accent-blue;
-    cursor: pointer;
-  }
-
-}
-
-.author_info {
-  display: flex;
+.author_name {
+  margin-right: 0.2em;
+  font-weight: bold;
 }
 
 .author_role {
-  padding: 0.5em 0em 0.5em 0.5em;
-  font-size: medium;
-  font-style: bold;
-  display: inline-block;
-  color: $color-text-gray-light;
   text-transform: capitalize;
 }
 
-.author_bio {
-  display: inline-block;
-  padding: 0em 0.5em 0em 0em;
-  margin-right: 0.5em;
-  font-size: smaller;
-  text-align: left;
-  color: var(--authors-title-bio);
+.author_info {
+  margin-top: 0.5em;
+  p {
+    margin-top:0.5em;
+  }
+  li {
+    margin-left: 1em;
+  }
+  a {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+}
 
+.author_title {
+  display: flex;
+  flex-direction: row;
+}
+
+.author_role {
+  font-style: bold;
+  text-transform: capitalize;
 }
 
 .c-author__byline {

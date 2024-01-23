@@ -123,7 +123,7 @@ class AuthorPage(RoutablePageMixin, Page):
         null=False,
         blank=True,
         default='',
-        help_text="Please provide your title, year and program"
+        help_text="Please give a short bio in third person"
     )
 
    

@@ -780,9 +780,19 @@
   }
 }
 
+@media($bp-smaller-than-phablet) {
+  .c-article--fw-story .suggested-title {
+    margin-left: 1em;
+  }
+}
+
 .suggested-title {
   font-size: 24px;
   font-weight: 400;
+
+  @media($bp-smaller-than-phablet) {
+    margin-left: 1em;
+  }
 
   a {
     font-weight: 600;

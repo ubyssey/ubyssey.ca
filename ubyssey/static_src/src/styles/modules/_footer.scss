@@ -12,10 +12,9 @@ footer {
   bottom: 0;
   left: 0;
   right: 0;
-  margin-bottom: 1em;
   .about {
     line-height: 2em;
-    width: 90%;
+    max-width: 1000px;
     margin: auto;
     margin-top: 2em;
     margin-bottom: 2em;
@@ -68,6 +67,7 @@ footer {
   }
 
   .copyright {
+    margin: 0.5em;
     text-align: center;
   }
 
@@ -97,8 +97,8 @@ footer {
   @media($bp-smaller-than-tablet){
     .about {
       flex-direction: column;
-      margin: 1em;
-      width: auto;
+      max-width: 600px;
+      padding: 1em;
       h2 {
         text-align: center;
       }
