@@ -688,6 +688,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if self.layout == 'fw-story':
             return "article/article_page_fw_story.html"
+        elif self.layout == 'empty':
+            return "article/article_page_empty.html"
         elif self.layout == 'visual-essay':
             return "article/article_page_visual_essay.html"
         elif self.layout == 'guide-2020':
@@ -809,6 +811,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                         choices=[
                             ('default', 'Default'), 
                             ('fw-story', 'Full-Width Story'),
+                            ('empty', 'Empty template'),
                             ('visual-essay', 'Visual Essay'),
                             ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
                             ('guide-2022', 'Guide (2022 style)'),
