@@ -36,19 +36,19 @@ The Ubyssey site is made with :heart: by [_The Ubyssey_](https://www.ubyssey.ca/
 
 [Windows Instructions](https://code.ubyssey.ca/installation/windows.html)
 
-For overall documentation, head over to [code.ubyssey.ca](https://code.ubyssey.ca)
+For overall documentation, head over to [code.ubyssey.ca](https://code.ubyssey.ca).
 
 <br>
 
 ## Development
 
-Once you have your local environment configured, follow [the steps here](https://code.ubyssey.ca/installation/running-the-server) to start the server for development
+Once you have your local environment configured, follow [the steps here](https://code.ubyssey.ca/installation/running-the-server) to start the server for development.
 
 <br>
 
 ## Contributing
 
-You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository. We welcome volunteers to help make student journalism better! Head over to the [Getting Started Guide](https://code.ubyssey.ca/getting-started) to get stared. 
+You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository. We welcome volunteers to help make student journalism better! Head over to the [Getting Started Guide](https://code.ubyssey.ca/getting-started) to get started. 
 
 <br>
 
