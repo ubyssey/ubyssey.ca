@@ -39,7 +39,7 @@ def inject_ads(value, is_mobile):
                     size = 'mobile-leaderboard'
                 else:
                     size = 'banner'
-                size = 'box' # I think cacheing stops this from working rn and banner kills article pages
+                size = 'mobile-leaderboard' # I think cacheing stops this from working rn and banner kills article pages
                 ad_context = {
                     'div_id' : div_id,
                     'dfp' : dfp,
