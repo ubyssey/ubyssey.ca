@@ -254,7 +254,7 @@ $colorSecondary: black;
               .t-node-info {
                 background: transparent;
                 width: 60px;
-                height: $infoBoxHeight + $bannerHeight/2 + 10;
+                height: $infoBoxHeight + calc($bannerHeight/2) + 10;
                 position: relative;
                 opacity: 1;
                 font-size: 12px;

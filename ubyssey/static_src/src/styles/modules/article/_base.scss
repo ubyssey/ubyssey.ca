@@ -242,14 +242,6 @@ div.indicator {
   justify-content: center;
 }
 
-.960px {
-  margin-bottom: 0.9rem;
-  display: inline-block;
-  @media($bp-larger-than-tablet) {
-    margin-bottom: 0;
-  }
-}
-
 .c-article__byline__meta {
   margin-bottom: 0.75rem;
   float: left;

@@ -5,13 +5,13 @@
 
 //Grid Variables
 $total-columns: 12 !default;
-$column-width: 100 / $total-columns !default; // calculates individual column width based off of # of columns
+$column-width: calc(100 / $total-columns) !default; // calculates individual column width based off of # of columns
 $column-margin: 4% !default; // space between columns
 
 
 // Functions
 @function grid-column-width($n) {
-  @return $column-width * $n - ($column-margin*($total-columns - $n)/$total-columns);
+  @return $column-width * $n - ($column-margin*calc(($total-columns - $n)/$total-columns));
 }
 
 @function grid-offset-length($n) {
