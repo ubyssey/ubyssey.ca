@@ -15,14 +15,14 @@
         </div>
 
         <div class="o-advertisement o-advertisement--mobile-leaderboard o-advertisement--center">
-            <div class="adslot" id="{{ div_id }}" data-size="mobile-leaderboard" data-dfp="{{ dfp }}">
+            <div class="adslot" id="mobile-ad--{{ div_id }}" data-size="mobile-leaderboard" data-dfp="{{ dfp }}">
                 {% comment %}
                     See: 
                     https://developers.google.com/publisher-tag/guides/get-started
                 {% endcomment %}
                 <script>
                     googletag.cmd.push(function() {
-                    googletag.display('{{ div_id }}');
+                    googletag.display('mobile-ad--{{ div_id }}');
                     });
                 </script>          
             </div>
