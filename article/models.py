@@ -699,8 +699,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         elif self.layout == 'magazine-2023':
             return "article/article_page_magazine_2023.html"
         elif self.layout == 'guide-2023':
-            return "article/article_page_guide_2023.html"        
-                        
+            return "article/article_page_guide_2023.html"
+        elif self.layout == 'magazine-2024':
+            return "article/article_page_magazine_2024.html"
         return "article/article_page.html"
 
     #-----For Wagtail's user interface-----
