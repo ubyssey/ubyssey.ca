@@ -1,0 +1,19 @@
+.section-grid-container {
+    background-color: #F6F2E8;
+    .section-grid {
+        max-width: 1000px;
+        margin:auto;
+        .article-box {
+            display: flex;
+            padding:1em;
+            .article-box-title {
+                display:flex;
+                h2 {
+                    margin-top: auto;
+                    margin-bottom: auto;
+                    padding: 0.5em;
+                }
+            }
+        }
+    }
+}

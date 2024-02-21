@@ -46,6 +46,20 @@
 		{% endfor %}
 	</div>
 	{% endif %}
+
+	<!-- I'll move this into a block -->
+	<div class="section-grid-container">
+		<div class="section-grid">
+		{% for page in self.get_children.specific %}
+			<div class="article-box">
+			{% image page.featured_media.first.image width-300 %}
+			<div class="article-box-title">
+				<h2>{{ page.title }}</h2>
+			</div>
+		</div>
+		{% endfor %}
+		</div>
+	</div>
 </main>
 
 {% endblock %}
