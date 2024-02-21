@@ -1,5 +1,13 @@
-lib/PIL*
-lib/django/
+lib
 .git
 ^(.*/)?.*\.pyc
-ubyssey/static/
+
+ubyssey/static
+ubyssey/static_src
+
+bin
+cache
+.env
+
+static
+!static/staticfiles.json

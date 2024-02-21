@@ -37,13 +37,12 @@ TEMPLATES += [
     }
 ]
 
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+DEFAULT_FILE_STORAGE = 'ubyssey.storage.GCSMediaStorage'
+STATICFILES_STORAGE = 'ubyssey.storage.GCSStaticFilesStorage'
 
-GCS_CREDENTIALS_FILE = '../gcs-local.json'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+GS_BUCKET_NAME = 'ubyssey'
+GS_QUERYSTRING_AUTH = False
+GS_FILE_OVERWRITE = False
 
 GCS_CREDENTIALS_FILE = '../gcs-local.json'
 
