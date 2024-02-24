@@ -310,7 +310,7 @@ class ChildArticlesBlock(TemplateSelectStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('guide-2021-child-articles.html', 'Guide 2021 Style'),
-            ('child-articles-with-image.html', 'Magazine 2024 Style'),
+            ('magazine-2024-child-articles.html', 'Magazine 2024 Style'),
         ],
         required=True,
     )

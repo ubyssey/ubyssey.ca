@@ -1,7 +1,18 @@
-<div class="c-banner" style="background-color:{{page.colour}}">
-
-    <svg style="transform-origin: center;transform: rotateZ(-90deg);width: 625px;height: 200px;position: absolute;left: -175px;top: 115px;fill: #FEFFE3;" viewBox="0 0 110 10">
-        <text lengthAdjust="spacingAndGlyphs" textLength="100%" x="0" style="text-align: center;font-weight: 700;line-break: auto;" y="0">{{ self.title1 }}</text>
-        <text x="0" style="text-align: center;font-weight: 700;line-break: auto;" y="15">{{ self.title2 }}</text>
-      </svg>
+<div id="banner" class="c-banner {% if self.title2 %}two_words{% endif %}" style="background-color:{{page.colour}}">
+  <div id="banner_image" class="c-banner__image" style="background-image: url({{banner_image.url}})"></div>
+  <svg viewBox="0 0 110 10">
+    <text lengthAdjust="spacingAndGlyphs" textLength="100%" x="0" style="text-align: center;font-weight: 700;line-break: auto;" y="0">{{ self.title1 }}</text>
+    {%if self.title2 %}<text x="0" style="text-align: center;font-weight: 700;line-break: auto;" y="15">{{ self.title2 }}</text>{% endif %}
+  </svg>
 </div>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var banner = document.getElementById('banner');
+    if(window.scrollY > 0) {
+      banner.classList.add("minimized");
+    } else {
+      banner.classList.remove("minimized");
+    }
+  });
+</script>

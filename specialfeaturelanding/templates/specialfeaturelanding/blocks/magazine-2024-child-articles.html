@@ -1,0 +1,22 @@
+{% load wagtailimages_tags %}
+{% load wagtailcore_tags %}
+
+<div class="section-grid-container">
+    <div class="section-grid">
+    {% for page in page.get_children.specific %}
+    {% image page.featured_media.first.image original as thumb %}
+    <a href="{% pageurl page %}" class="article-box" thumb="{{thumb.url}}">
+        {% image page.featured_media.first.image width-200 %}
+        <div class="article-box-title">
+            <h2>{{ page.title }}</h2>
+        </div>
+    </a>
+    {% endfor %}
+    </div>
+</div>
+
+<script>
+    $('.article-box').hover(function () {
+        document.getElementById("banner_image").style.backgroundImage = "url('" + this.getAttribute("thumb") + "')";
+    });
+</script>
