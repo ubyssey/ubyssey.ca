@@ -1,6 +1,12 @@
 .c-article{
   padding: 3em 0;
   background-color: #FEFFE3;
+
+  color: black;
+
+  a{
+    color: black;
+  }
 }
 
 .c-article__title, .o-article__snippet {
@@ -26,12 +32,26 @@
   font-size: 2rem;
 }
 
+
+.c-authors_info {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
 .c-article__info {
   text-align: center;
   font-family: $text-font;
   * {
     color: #3C3C3C;
     text-decoration: none;
+  }
+
+  display: block;
+  justify-content: center;
+  @media($bp-larger-than-tablet) {
+    display: flex;
+    flex-wrap: wrap;
   }
 }
 
