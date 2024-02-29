@@ -92,8 +92,9 @@
         padding-bottom: 10%;
         width: 100%;
         .home-content {
-            h2 {
+            h2>a {
                 color: #FEFFE3;
+                text-decoration: none;
             }
             ul {
                 padding: 0;
@@ -119,6 +120,12 @@
                         text-decoration: none;
                         color: #FFDF95;
                         font-family: $font-secondary;
+
+                        transition-duration: 0.5;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
                     }
                 }
             }
