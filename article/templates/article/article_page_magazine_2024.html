@@ -63,12 +63,19 @@
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
                         {% endcomment %}
                         <div class="c-authors_info">
-                            {% include "article/objects/author_bio.html" %}
+                            {% for author in self.authors_in_order %}
+                                <div>
+                                    <p>{%if author.author_role == 'author'%}Words{% elif author.author_role == 'illustrator'%}Illustration{% elif author.author_role == 'photographer' %}Photo{% elif author.author_role == 'videographer' %}Video{% else %}{{author.author_role}}{% endif %}
+                                        <b><a href="{{author.author.full_url}}">{{author.author.full_name}}</a></b></p>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
+                    {% comment %}
                     <div class="c-article__info">
                         {% include 'article/objects/share_bar.html' %}
                     </div>
+                    {% endcomment %}
                     {% if self.featured_media.first.image %}
                         {% with self.featured_media.first as featured_image_object %}
                             <div class="featured-media">
