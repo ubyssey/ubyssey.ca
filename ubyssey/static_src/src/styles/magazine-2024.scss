@@ -74,6 +74,19 @@ body {
 .editor_note p{
   margin-left: 0rem;
 }
+
+.editorial__credits-container {
+  background-color: #FEFFE3;
+  width:auto;
+  font-family: minion-pro, serif;
+  color: black;
+ }
+  .editorial__credits-container h2 {
+    font-weight: 300; }
+  @media (max-width: 959px) {
+    .editorial__credits-container {
+      width: 100%; } }
+
 .table_of_contents_title{
   color: #FEFFE3;
   background-color: #41475F;
@@ -87,7 +100,7 @@ body {
     font-size: 2rem;
     line-height: 2rem;
     text-align: left;
-    padding: 5%;; } }
+    padding: 5%; } }
 
 .table_of_contents{
   color: #e8b131;
@@ -97,6 +110,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 3%;
 }
 @media (max-width: 959px) {
   .table_of_contents {
