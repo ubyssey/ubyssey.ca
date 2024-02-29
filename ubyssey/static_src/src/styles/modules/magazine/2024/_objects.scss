@@ -18,6 +18,14 @@
 nav {
   background-color: black !important;
 
+  .navbar-nav {
+    flex-wrap:wrap;
+  }
+
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
   li.nav-item {
     &::before {
       content: '';

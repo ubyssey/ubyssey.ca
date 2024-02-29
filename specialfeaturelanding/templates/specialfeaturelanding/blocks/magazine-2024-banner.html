@@ -1,3 +1,8 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% image self.image original as banner_image %}
+
 <div id="banner" class="c-banner {% if self.title2 %}two_words{% endif %}" style="background-color:{{page.colour}}">
   <div id="banner_image" class="c-banner__image" style="background-image: url({{banner_image.url}})"></div>
   <svg viewBox="0 0 110 10">
