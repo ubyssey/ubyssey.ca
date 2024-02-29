@@ -1,0 +1,12 @@
+<div class="table-of-contents">
+    <div class="home-content">
+        <h2 id="toc">table of contents</h2>
+        <ul>
+            {% for section in page.get_children.specific %}
+            <li>
+                <a href="{{section.url}}">{{section.title}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

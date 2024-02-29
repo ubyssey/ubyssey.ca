@@ -201,7 +201,8 @@ class EditorCreditBlock(TemplateSelectStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
-            ('guide-2021-editor-credit.html', 'guide-2021-editor-credit.html'),
+            ('guide-2021-editor-credit.html', 'Guide 2021 Style'),
+            ('magazine-2024-editor-credit.html', 'Magazine 2024 Style'),
         ],
         required=False,
     )
@@ -219,7 +220,8 @@ class EditorialBlock(TemplateSelectStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
-            ('guide-2021-editorial-stream.html', 'guide-2021-editorial-stream.html'),
+            ('guide-2021-editorial-stream.html', 'Guide 2021 Style'),
+            ('magazine-2024-editorial-stream.html', 'Magazine 2024 Style'),
         ],
         required=False,
     )
@@ -311,6 +313,7 @@ class ChildArticlesBlock(TemplateSelectStructBlock):
         choices=[
             ('guide-2021-child-articles.html', 'Guide 2021 Style'),
             ('magazine-2024-child-articles.html', 'Magazine 2024 Style'),
+            ('magazine-2024-table-of-contents.html', 'Magazine 2024 Table of Contents Style'),
         ],
         required=True,
     )

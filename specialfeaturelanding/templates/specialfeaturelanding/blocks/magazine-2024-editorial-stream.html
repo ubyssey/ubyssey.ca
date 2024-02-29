@@ -1,0 +1,12 @@
+{% load wagtailcore_tags %}
+
+<div class="editorial__credits-container">
+    <div class="home-content">
+        <h2>editorial</h2>
+        <div class="editorial__credits-flex">
+        {% for block in self.stream %}
+            {% include_block block %}
+        {% endfor %}
+        </div>
+    </div>
+</div>
