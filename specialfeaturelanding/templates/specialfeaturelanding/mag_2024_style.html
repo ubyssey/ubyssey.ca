@@ -42,7 +42,11 @@
 {% endblock %}
 
 {% block content %}
-<main class="{{ self.main_class_name }} o-site-wrapper">
+<main class="{{ unlimited.main_class_name }} o-site-wrapper">
+	   <div class="u-container u-container-topbar">
+        <a class="ubyssey-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small-white.svg' %}" alt="" viewBox="0 0 100 100"/></a>
+		<a class="unlimited-link" href="/magazine/unlimited">&#40;un&#41;limited</a>
+	</div>
 	{% if page.editorial_stream %}
 	<div class="editorial-container">
 		{% for block in page.editorial_stream %}
