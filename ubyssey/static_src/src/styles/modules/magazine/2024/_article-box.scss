@@ -1,0 +1,46 @@
+.section-grid-container {
+    padding-top:2em;
+    @media($bp-larger-than-tablet) {
+        padding: 4em;
+    }   
+    width: 100%;
+
+    background-color: #FEFFE3;
+    .section-grid {
+        margin:auto;
+        max-width: 1000px;
+        .article-box {
+            display: flex;
+            padding:1em;
+            color: black;
+            text-decoration: none;
+
+            &:hover{
+                color: #626262;
+            }
+
+            @media($bp-smaller-than-tablet) {
+                flex-direction: column;
+            }
+            img {
+                @media($bp-smaller-than-tablet) {
+                    margin: auto;
+                }   
+            }
+            .article-box-title {
+                display:flex;
+                h2 {
+                    margin-top: auto;
+                    margin-bottom: auto;
+                    padding: 0.5em;
+
+                    font-family: $font-default;
+                    @media($bp-smaller-than-tablet) {
+                        text-align: center;
+                        width: 100%;
+                    }   
+                }
+            }
+        }
+    }
+}

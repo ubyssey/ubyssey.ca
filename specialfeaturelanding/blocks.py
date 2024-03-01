@@ -201,7 +201,8 @@ class EditorCreditBlock(TemplateSelectStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
-            ('guide-2021-editor-credit.html', 'guide-2021-editor-credit.html'),
+            ('guide-2021-editor-credit.html', 'Guide 2021 Style'),
+            ('magazine-2024-editor-credit.html', 'Magazine 2024 Style'),
         ],
         required=False,
     )
@@ -219,7 +220,8 @@ class EditorialBlock(TemplateSelectStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
-            ('guide-2021-editorial-stream.html', 'guide-2021-editorial-stream.html'),
+            ('guide-2021-editorial-stream.html', 'Guide 2021 Style'),
+            ('magazine-2024-editorial-stream.html', 'Magazine 2024 Style'),
         ],
         required=False,
     )
@@ -229,7 +231,7 @@ class BannerBlock(TemplateSelectStructBlock):
         required=False,
     )
     image = ImageChooserBlock(
-        required=True,
+        required=False,
     )
     title1 = blocks.CharBlock(
         required=False,
@@ -246,6 +248,7 @@ class BannerBlock(TemplateSelectStructBlock):
             ('', 'Wagtail default'),
             ('guide-2021-banner.html', 'guide-2021-banner.html'),
             ('textless_banner_block.html','textless_banner_block.html'),
+            ('magazine-2024-banner.html','magazine-2024-banner.html'),
         ],
         required=False,
     )
@@ -305,10 +308,15 @@ class GraphicalMenuBlock(TemplateSelectStructBlock):
         required=False,
     )
 
-class ChildArticlesBlock(blocks.StructBlock):
-
-    class Meta:
-        template = TEMPLATE_DIRECTORY + 'guide-2021-child-articles.html'
+class ChildArticlesBlock(TemplateSelectStructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('guide-2021-child-articles.html', 'Guide 2021 Style'),
+            ('magazine-2024-child-articles.html', 'Magazine 2024 Style'),
+            ('magazine-2024-table-of-contents.html', 'Magazine 2024 Table of Contents Style'),
+        ],
+        required=True,
+    )
 
 class RenditionBlock(TemplateSelectStructBlock):
     image = ImageChooserBlock()
