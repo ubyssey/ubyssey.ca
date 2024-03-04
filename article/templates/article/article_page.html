@@ -50,6 +50,9 @@
 
                 <div class="u-container u-container--content u-container--padded">
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
+                    {% if self.fw_above_cut_lede %}
+                        <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
+                    {% endif %}
                     <div class="c-article__info">
                         {% comment %}
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
