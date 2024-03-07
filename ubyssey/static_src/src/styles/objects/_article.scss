@@ -170,7 +170,7 @@
     .o-article__headline {
       // Text
       font-size: 2rem;
-      line-height: 3rem;
+      line-height: 3.2rem;
       left: 0.5em;
     }
     .o-article__image {
@@ -235,10 +235,10 @@
     color: #ffffff;
     background-color: $color-ubyssey-blue;
     filter: drop-shadow(-5px 10px 4px #00000040);
-    border: 2px var(--header_color) solid;
+    border-bottom: 3px $color-ubyssey-blue-light solid;
     transition-duration: 0.1s;
     &:hover {
-      border-color: var(--background);
+      border-color: white;
     }
 
     a{
@@ -1251,6 +1251,8 @@
   font-weight: 600;
   background-color: #0071c9;
   > h2 {
+    margin: 0;
+    
     color: white;
     scroll-margin-top: 100px;
   }

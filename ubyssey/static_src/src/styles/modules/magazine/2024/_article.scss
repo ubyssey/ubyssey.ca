@@ -6,6 +6,10 @@
 
   a{
     color: black;
+
+    &:hover {
+      color: #803734;
+    }
   }
 }
 
@@ -99,7 +103,7 @@
     font-size: $text-size;
     font-weight: normal;
     letter-spacing: 0.2px;
-    line-height: 1.3rem;
+    line-height: 1.7rem;
     width: 100%;
     max-width: 600px;
     margin: 0 0 1.5rem 0;
@@ -122,7 +126,62 @@
       float: right;
       padding-left: 35px;
     }
+  }
 
+  .image-attachment {
+    margin: auto;
+
+    img {
+      width: 100%;
+    }
+
+    .caption {
+      text-align: center;
+      
+      .credit {
+        margin-left: 1em;
+        
+        color: #57574D;
+        font-style: italic;
+        
+        white-space: pre;
+      }
+    }
+  
+    @media ($bp-larger-than-tablet) {
+      &.right,
+      &.left {
+        height: auto;
+        margin: 0;
+        margin-top: 15px !important;
+      }
+      &.right {
+        margin-left: 15px !important;
+        float: right;
+        clear: right;
+      }
+      &.left {
+        margin-right: 15px !important;
+        float: left;
+        clear: left;
+      }
+  
+      &.small {
+        width: 100px;
+      }
+  
+      &.medium {
+        width: 200px;
+      }
+  
+      &.large {
+        width: 300px;
+      }
+
+      &.full {
+        width: 600px;
+      }
+    }
   }
 }
 

@@ -31,10 +31,10 @@
 .o-article-embed__advertisement {
   // padding: 10px;
   display: inline-block;
-  border: 1px solid #9e9e9e;
+  background: #9e9e9e1c;
 
   .o-advertisement {
-    margin-top: 10px;
+    margin-bottom: 10px;
     clip-path: inset(0);
   }
 
@@ -43,6 +43,7 @@
     font-size: font-size(11);
     color: #9e9e9e;
     text-transform: uppercase;
+    text-decoration: underline;
     letter-spacing: 0.075em;
   }
 
@@ -464,8 +465,7 @@ hr.page-break{
 .drop-cap:first-letter {
   font-size: 5.5em;
   line-height: 2rem;
-  margin-top: 0.24em;
+  margin-top: 0.1em;
   margin-right: 0.08em;
-  margin-bottom: 0.08em;
   float: left;
 }
