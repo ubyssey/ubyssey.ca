@@ -200,7 +200,6 @@
   .o-article__image {
     width: 100%;
     display: flex;
-    background-color: black;
     clip-path: inset(0% 0% 0% 0%);
 
     img {
@@ -666,6 +665,7 @@
 
     .o-article__headline {
       margin-top: 0;
+      margin-bottom: 0.5em;
       line-height: 1.3em;
       color: black;
 
