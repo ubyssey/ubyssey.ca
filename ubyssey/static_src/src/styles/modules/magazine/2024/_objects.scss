@@ -20,6 +20,7 @@ nav {
 
   .navbar-nav {
     flex-wrap:wrap;
+    width: 100%;
   }
 
   .dropdown:hover .dropdown-menu {
@@ -27,6 +28,8 @@ nav {
   }
 
   li.nav-item {
+    flex-grow:1;
+    text-align: center;
     &::before {
       content: '';
       display: inline-block;
