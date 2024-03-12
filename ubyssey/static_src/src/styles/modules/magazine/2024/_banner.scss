@@ -7,6 +7,7 @@
 
     transition-duration: 0.5s;
     clip-path: inset(0 0 0 0);
+    overflow: clip;
 
     .c-banner__image {
         position: absolute;
@@ -26,20 +27,23 @@
     }
     .banner-text {
         position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
+        width: 220px;
+        left: 15px;
+        bottom: 50px;
+
         >h1 {
-            position: relative;
+            position: absolute;
         
-            left: 15px;
+            left: 0;
             
             font-size: 6em;
             font-weight: 700;
             line-height: 0.8em;
+            white-space: nowrap;
             color: #FEFFE3;
             opacity: 0;
     
-            transform-origin: center;
+            transform-origin: left top;
             transform: rotateZ(-90deg);
             font-family: $header-font; 
     
@@ -53,7 +57,10 @@
 .c-banner.minimized {
     height: 100px;
 
-    .banner-text>h1 {
+    .banner-text {
+        bottom: 15px;
+    
+        >h1 {
         position: relative;
         margin: 0;
         top: 0;
@@ -62,6 +69,7 @@
         max-width: 95%;
 
         transform: none !important;
+        }
     }
 }
 
