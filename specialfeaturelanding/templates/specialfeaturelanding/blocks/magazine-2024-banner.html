@@ -5,13 +5,12 @@
 
 <div id="banner" class="c-banner {% if self.title2 %}two_words{% endif %}" style="background-color:{{page.colour}}">
   <div id="banner_image" class="c-banner__image" style="background-image: url({{banner_image.url}})"></div>
-  <svg viewBox="0 0 110 10">
-    <text lengthAdjust="spacingAndGlyphs" textLength="100%" x="0" style="text-align: center;font-weight: 700;line-break: auto;" y="0">{{ self.title1 }}</text>
-    {%if self.title2 %}<text x="0" style="text-align: center;font-weight: 700;line-break: auto;" y="15">{{ self.title2 }}</text>{% endif %}
-  </svg>
+  <div class="banner-text"><h1 id="banner-text">{{self.title1}}<br>{{self.title2}}</h1></div>
 </div>
 
 <script>
+  var text = document.getElementById("banner-text");
+
   window.addEventListener('scroll', function() {
     var banner = document.getElementById('banner');
     if(window.scrollY > 0) {
@@ -20,4 +19,8 @@
       banner.classList.remove("minimized");
     }
   });
+  document.body.onload = function() {
+    text.style.transform = 'rotateZ(-90deg) translateY(-50%) scaleX(' + String(460/text.offsetWidth) + ')';
+    text.classList.add("postSized");
+  } 
 </script>

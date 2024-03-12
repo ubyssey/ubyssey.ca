@@ -24,36 +24,44 @@
         transition-duration: 0.5s;
         transform: translateX(-50%);
     }
-
-    svg {
+    .banner-text {
         position: absolute;
-        left: -210px;
-        top: 80px;
+        top: 50%;
+        transform: translateY(-50%);
+        >h1 {
+            position: relative;
         
-        width: 650px;
-        height: 200px;
-
-        fill: #FEFFE3;
-
-        transform-origin: center;
-        transform: rotateZ(-90deg);
-        transition-duration: 0.5s;
-        font-family: $header-font; 
+            left: 15px;
+            
+            font-size: 6em;
+            font-weight: 700;
+            line-height: 0.8em;
+            color: #FEFFE3;
+            opacity: 0;
+    
+            transform-origin: center;
+            transform: rotateZ(-90deg);
+            font-family: $header-font; 
+    
+            &.postSized {
+                opacity: 1;
+            }
+        }
     }
 }
 
 .c-banner.minimized {
     height: 100px;
 
-    svg {
+    .banner-text>h1 {
         position: relative;
+        margin: 0;
         top: 0;
         left: 20px;
-
         width: 500px;
         max-width: 95%;
-        
-        transform: none;
+
+        transform: none !important;
     }
 }
 
