@@ -23,7 +23,7 @@
       <a href="{% pageurl article %}">{{ article.title|safe }}</a>
     </mark>
     <div class="o-article__meta">
-      <p class="o-article__snippet">{% if article.lede %}{{article.lede|safe}}{% else %}{{article.search_description}}{% endif %}</p>
+      <p class="o-article__snippet">{% if article.lede %}{{article.lede|safe}}{% else %}{{article.search_description|safe}}{% endif %}</p>
       <div class="o-article__byline">
         <span class="o-article__author">{% if article.get_authors_with_urls %}{{article.get_authors_with_urls|safe }}{% else %}Ubyssey Staff{% endif %}</span>
         <span> &nbsp;&nbsp; </span>
