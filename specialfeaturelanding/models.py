@@ -81,6 +81,8 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
             return "specialfeaturelanding/landing_page_guide_2023_style.html"
         elif self.layout == 'mag-2024':
             return "specialfeaturelanding/mag_2024_style.html"
+        elif self.layout == 'spoof-2024':
+            return "specialfeaturelanding/spoof_2024_style.html"
         return "specialfeaturelanding/base.html"
 
     parent_page_types = [
@@ -208,6 +210,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
                             ('mag-2023', 'Magazine (2023 style)'),
                             ('guide-2023', 'Guide (2023 style)'),
                             ('mag-2024', 'Magazine (2024 style)'),
+                            ('spoof-2024', 'Spoof (2024 style)'),
                         ],
                     ),
                 ),
