@@ -36,6 +36,7 @@
   .o-advertisement {
     margin-bottom: 10px;
     clip-path: inset(0);
+    overflow: clip;
   }
 
   &:before {

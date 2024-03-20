@@ -1192,8 +1192,10 @@
     }
 
     .o-visual-essay__left-image {
+      @media ($bp-lar-than-phablet) {
+        background-position: top;
+      }
       height: 75%;
-      background-position: top;
     }
   }
   .o-visual-essay__right-container {
@@ -1218,6 +1220,7 @@
     @media ($bp-smaller-than-phablet) {
       margin-bottom: 0;
       width: 100%;
+      overflow: clip;
     }
   }
 }
