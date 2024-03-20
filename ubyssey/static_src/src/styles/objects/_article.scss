@@ -1034,8 +1034,7 @@
   text-align: center;
 
   .caption {
-    margin: 20px;
-    margin-top: 5px;
+    margin-bottom: 1em !important;
     @media ($bp-larger-than-phablet) {
       text-align: center;  
     }
@@ -1048,7 +1047,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  flex-grow: 1;
+
   @media ($bp-smaller-than-phablet) {
     margin-bottom: 10px;
     margin-top: 0;
@@ -1110,6 +1109,12 @@
 }
 
 .vs-over-image {
+
+  .o-visual-essay__left-image {
+    height: 100%;
+    flex-grow: 1;
+    background-position: center;
+  }
 
   .o-visual-essay__left-div {
     width: 100%;
@@ -1184,6 +1189,11 @@
       width: 100%;
       background-color: var(--background);
       border-bottom-style: solid;
+    }
+
+    .o-visual-essay__left-image {
+      height: 75%;
+      background-position: top;
     }
   }
   .o-visual-essay__right-container {
