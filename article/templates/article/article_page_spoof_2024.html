@@ -65,9 +65,7 @@
                                     {% comment %}
                                         {% include 'objects/social-icons.html' with article=article layout='top' %}
                                     {% endcomment %}
-                                        {% for author in self.authors_in_order %}
-                                            <p class="byline">By <a href="{{author.author.full_url}}">{{author.author.full_name}}</a></p>
-                                        {% endfor %}
+                                    <p class="byline">By {{self.get_authors_with_urls|safe}}</p>
                                     <p class="pubdate">{{ self.published_at }}</p>
                                 </div>
                             </div>
