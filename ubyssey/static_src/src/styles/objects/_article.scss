@@ -1192,10 +1192,10 @@
     }
 
     .o-visual-essay__left-image {
-      @media ($bp-lar-than-phablet) {
+      @media ($bp-larger-than-phablet) {
         background-position: top;
+        height: 50%;
       }
-      height: 75%;
     }
   }
   .o-visual-essay__right-container {
