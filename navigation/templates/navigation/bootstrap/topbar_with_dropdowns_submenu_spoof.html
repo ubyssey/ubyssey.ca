@@ -1,0 +1,24 @@
+{% load menu_tags %}
+{% load cache %}
+{% load humanize %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+
+<ul class="dropdown-menu">
+    {% for item in menu_items %}
+    <li><a class="dropdown-item" href="{{ item.href }}">
+        <div class="o-article__meta__image">
+            {% if item.featured_media.first %}
+              {% if item.featured_media.first.image %}
+                <a class="o-article__image" href="{% pageurl item %}">
+                  {% image item.featured_media.first.image fill-250x250-c100 format-webp %}
+                </a>
+              {% elif item.featured_media.first.video %}
+                <a class="o-article__image" href="{% pageurl item %}" style="background-image: url('http://img.youtube.com/vi/{{ item.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
+              {% endif %}
+            {% endif %}
+          </div>
+          {{ item.text }}</a></li>
+    {% endfor %}
+</ul>
