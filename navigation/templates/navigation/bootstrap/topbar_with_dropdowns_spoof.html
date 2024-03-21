@@ -27,7 +27,7 @@ background_color - hex color
                     {% if forloop.counter0 > 0 %}
                         {% if item.has_children_in_menu %} 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {% if item.text == page.get_parent.title %}current{% endif %}" style="color:white" href="{{ item.href }}" role="button" data-bs-toggle="dropdown">{{ item.text }}</a>
+                            <a class="nav-link dropdown-toggle {% if item.text == page.get_parent.title %}current{% endif %}" href="{{ item.href }}" role="button" data-bs-toggle="dropdown">{{ item.text }}</a>
                             {% sub_menu item template="navigation/bootstrap/topbar_with_dropdowns_submenu_spoof.html"%}
                         </li>
                         {% else %}
