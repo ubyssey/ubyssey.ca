@@ -13,7 +13,7 @@
 @import 'modules/magazine/2023/article-box';
 
 @import 'modules/magazine/2023/homepage';
-@import 'modules/magazine/2023/article';
+@import 'modules/spoof/2024/article';
   
 body {
   color: black;
@@ -28,37 +28,6 @@ body {
 
 }
 
-.editor_note p{
-  margin-left: 0rem;
-
-}
-
-.footer {
-  font-family: $credit-font;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  height: 150px;
-}
-
-.footer a {
-  margin-top: 3%;
-}
-
-.menu_button{
-    background: transparent;
-    color:white;
-    padding:5px;
-    border: 1px solid white;
-}
-
-
-
-.c-article {
-  color: black;
-}
-
 .c-header a{
   color: black;
 
@@ -66,10 +35,6 @@ body {
 
 .u-container--small{
   max-width: 890px;
-}
-
-.c-article__byline{
-  color: black;
 }
 
 .next_article{
@@ -82,158 +47,6 @@ body {
   justify-content: flex-end;
   align-items: right;
 }
-
-.c-article__info {
-  display: block;
-  justify-content: center;
-  @media($bp-larger-than-tablet) {
-    display: flex;
-    flex-wrap: wrap;
-  }
-}
-
-.c-authors_info {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
-}
-
-.c-article__byline {
-  margin: 0.5rem 0em 0.5em 0em;
-  font-family: $font-default;
-  font-size: $font-size-15px;
-  // font-weight: $font-weight-semi-bold;
-  font-weight: $font-weight-bold;
-
-  display: inline-flex;
-
-  @media($bp-larger-than-tablet) {
-    display: flex;
-    flex: 1 0;
-    line-height: 2rem;
-    margin-bottom: 0;
-    justify-content: center;
-  }
-}
-
-.c-authors_bio {
-  position: absolute;
-  display: block;
-}
-
-
-.c-authors_bio_meta {
-  margin-top: 0.2rem;
-  margin-bottom: 0.2rem;
-  font-family: $font-default;
-  font-size: $font-size-15px;
-  // font-weight: $font-weight-semi-bold;
-  font-weight: $font-weight-bold;
-
-  display: block;
-  position: relative;
-
-  @media($bp-larger-than-tablet) {
-    border-bottom: 1px solid #D2D2D2;
-    display: flex;
-    flex: 1 0;
-    line-height: 2rem;
-    margin-bottom: 0;
-  }
-}
-
-
-.author_image_container {
-  position: relative;
-  display: flex;
-}
-
-.authors_info_inner {
-  display: inline-block;
-  padding: 0.5em;
-}
-
-.author_image {
-  height: 70px;
-  width: 70px;
-  object-fit: cover;
-  border-radius: 50%;
-  position: relative;
-  overflow: hidden;
-
-  img {
-    display: inline;
-    margin: 0 auto;
-    margin-left: -25%;
-    height: 100%;
-    width: auto;
-  }
-}
-
-.author_card {
-  padding: 1em;
-  display: flex;
-  text-align: center;
-}
-
-.author_title {
-  padding: 0.5em;
-  font-size: medium;
-  font-style: bold;
-  color: $color-text-black;
-  text-align: left;
-
-  a {
-    color: $color-text-black;
-    text-decoration: none;
-  }
-
-  &:hover {
-    color: $color-accent-blue;
-    cursor: pointer;
-  }
-
-}
-
-.author_info {
-  display: flex;
-}
-
-.author_role {
-  font-size: medium;
-  font-style: bold;
-  display: inline-block;
-  padding: 0.5em;
-  color: $color-text-gray;
-  text-transform: capitalize;
-}
-
-.author_bio {
-  display: inline-block;
-  padding: 0.5em;
-  margin-right: 0.5em;
-  font-size: smaller;
-  text-align: left;
-  font-family: "Montserrat",sans-serif;
-  color: $color-text-black;
-
-}
-
-.c-author__byline {
-  padding-left: 1em;
-  margin-bottom: 0.2rem;
-
-  font-family: $font-default;
-  font-size: $font-size-15px;
-  font-weight: $font-weight-semi-bold;
-}
-
-.c-article__byline-center{
-  display: flex;
-  justify-content: center;
-}
-
-
 
 #custom-tooltip {
   display: none;

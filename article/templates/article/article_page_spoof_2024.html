@@ -53,65 +53,86 @@
 
 
     <main class="c-article">
-        <div class="o-container">
-            {% block banner %}
-            
-                <div class="u-container u-container--content u-container--padded">
-                    <p class="c-article__title">{{ self.title }}</p>
+        {% block banner %}
+            <div class="u-container u-container--content u-container--padded">
+                {% if self.header_layout == 'right-image' %}
+                    <div class="header-container">
+                        <div class="left">
+                            <div class="left-container">
+                                <div class="section-tag black">{{self.get_parent.title}}</div>
+                                <h1 class="c-article__title">{{ self.title|safe }}</h1>
+                                {% if self.fw_above_cut_lede %}
+                                    <p class="above_cut_lede">{{ self.fw_above_cut_lede }}</p>
+                                {% endif %}
+                                <div class="c-article__info">
+                                    {% comment %}
+                                        {% include 'objects/social-icons.html' with article=article layout='top' %}
+                                    {% endcomment %}
+                                    <p class="byline">By {{self.get_authors_with_urls|safe}}</p>
+                                    <p class="pubdate">{{ self.published_at }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="full-width featured-media">
+                                {% if self.featured_media.first.image %}
+                                    {% with self.featured_media.first as featured_image_object %}
+                                        {% image featured_image_object.image original as featured_image %}
+                                        <img
+                                            class="article-attachment"
+                                            data-id="{{ featured_image_object.image.id }}"
+                                            data-caption="{{ featured_image_object.caption }}"
+                                            data-url="{{ featured_image.url }}"
+                                            data-credit="{{ featured_image_object.credits }}"
+                                            src="{{ featured_image.url }}"
+                                            alt=""
+                                        />
+                                    {% endwith %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% if self.featured_media.first.image %}
+                    {% with self.featured_media.first as featured_image_object %}
+                    {% if featured_image_object.caption or featured_image_object.credit %}
+                    <div class="caption">
+                        {% if featured_image_object.caption %}
+                            {{ featured_image_object.caption }}, 
+                        {% endif %}
+                        {% if featured_image_object.credit %}
+                            <span class="credit">
+                                {{ featured_image_object.credit }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    {% endif %}
+                {% elif self.header_layout == 'top-image' %}
+                    <div class="section-tag black">{{self.get_parent.title}}</div>
+                    <h1 class="c-article__title">{{ self.title|safe }}</h1>
+                    {% if self.fw_above_cut_lede %}
+                        <p class="above_cut_lede">{{ self.fw_above_cut_lede }}</p>
+                    {% endif %}
                     <div class="c-article__info">
                         {% comment %}
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
                         {% endcomment %}
-                        <div class="c-authors_info">
-                            {% for author in self.authors_in_order %}
-                                <div>
-                                    <p>{%if author.author_role == 'author'%}Words{% elif author.author_role == 'illustrator'%}Illustration{% elif author.author_role == 'photographer' %}Photo{% elif author.author_role == 'videographer' %}Video{% else %}{{author.author_role}}{% endif %}
-                                        <b><a href="{{author.author.full_url}}">{{author.author.full_name}}</a></b></p>
-                                </div>
-                            {% endfor %}
-                        </div>
+                        <p class="byline">By {{self.get_authors_with_urls|safe}}</p>
+                        <p class="pubdate">{{ self.published_at }}</p>
                     </div>
                     {% comment %}
                     <div class="c-article__info">
                         {% include 'article/objects/share_bar.html' %}
                     </div>
                     {% endcomment %}
-                    {% if self.featured_media.first.image %}
-                        {% with self.featured_media.first as featured_image_object %}
-                            <div class="featured-media">
-                                {% image featured_image_object.image original as original_image %}
-                                {% image featured_image_object.image width-1000 as featured_image %}
-                                <img class="article-attachment" 
-                                    data-id="{{ featured_image_object.id }}"
-                                    data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
-                                    data-credit="{% if featured_image_object.credit %}{{ featured_image_object.credit }}{% endif %}"
-                                    {% comment %}
-                                        Differences between line data-url and arc attributes represent the difference between
-                                        the obselete Dispatch equivalent of the URL for the "original image" ("data-url" attribute)
-                                        the "rendition" ("src" attribute). "data-url" is included for backward compatibility,
-                                        but "src" secures the primary functionality of this img element.
-                                    {% endcomment %}
-                                    data-url="{{ original_image.url }}"
-                                    src="{{ featured_image.url }}"
-                                    alt=""
-                                />
-                                {% if featured_image_object.caption or featured_image_object.credit %}
-                                    <div class="caption">
-                                        {% if featured_image_object.caption %}
-                                            {{ featured_image_object.caption }}
-                                        {% endif %}
-                                        {% if featured_image_object.credit %}
-                                            <span class="credit">
-                                                {{ featured_image_object.credit }}
-                                            </span>
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endwith %}
-                    {% endif %}
+                    <div class="full-width featured-media">
+                    {% include 'article/objects/fw_article_featured_media.html' %}
+                    </div>
                 </div>
-            {% endblock %}
+            {% endif %}
+        {% endblock %}
+        <div class="article-container">
 
             <div class="c-article__content">
                 {% comment %} <div class="advertisement box sidebar">
@@ -120,6 +141,28 @@
                 {% for block in self.content %}
                     {% include_block block with id=block.id %}
                 {% endfor %}
+            </div>
+        </div>
+        <div class="suggested">
+            <h1>More From MA</h1>
+            <div class="suggested-articles">
+            {% for article in suggested.articles %}
+                {% if forloop.counter|divisibleby:2 or not forloop.last %}
+                {% image article.featured_media.first.image width-1000 as featured_image %}
+                <article style="background-image:url('{{featured_image.url}}')">
+                    <a href="{% pageurl article%}">
+                    <div class="overlay"></div>
+                    <div class="o-article__meta">
+                    <div class="section-tag white">{{article.get_parent.title}}</div>
+                    <h3 class="o-article__headline">
+                        {{ article.title|safe }}
+                    </h3>
+                    <p class="byline">By {{article.get_authors_string}}</p>
+                    </div>
+                    </a>
+                </article>
+                {% endif %}
+            {% endfor %}
             </div>
         </div>
     </main>
