@@ -60,7 +60,10 @@
                         <div class="left">
                             <div class="left-container">
                                 <div class="section-tag black">{{self.get_parent.title}}</div>
-                                <h1 class="c-article__title">{{ self.title }}</h1>
+                                <h1 class="c-article__title">{{ self.title|safe }}</h1>
+                                {% if self.fw_above_cut_lede %}
+                                    <p class="above_cut_lede">{{ self.fw_above_cut_lede }}</p>
+                                {% endif %}
                                 <div class="c-article__info">
                                     {% comment %}
                                         {% include 'objects/social-icons.html' with article=article layout='top' %}
@@ -106,26 +109,26 @@
                     {% endwith %}
                     {% endif %}
                 {% elif self.header_layout == 'top-image' %}
-                    <p class="c-article__title">{{ self.title }}</p>
+                    <div class="section-tag black">{{self.get_parent.title}}</div>
+                    <h1 class="c-article__title">{{ self.title|safe }}</h1>
+                    {% if self.fw_above_cut_lede %}
+                        <p class="above_cut_lede">{{ self.fw_above_cut_lede }}</p>
+                    {% endif %}
                     <div class="c-article__info">
                         {% comment %}
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
                         {% endcomment %}
-                        <div class="c-authors_info">
-                            {% for author in self.authors_in_order %}
-                                <div>
-                                    <p>{%if author.author_role == 'author'%}Words{% elif author.author_role == 'illustrator'%}Illustration{% elif author.author_role == 'photographer' %}Photo{% elif author.author_role == 'videographer' %}Video{% else %}{{author.author_role}}{% endif %}
-                                        <b><a href="{{author.author.full_url}}">{{author.author.full_name}}</a></b></p>
-                                </div>
-                            {% endfor %}
-                        </div>
+                        <p class="byline">By {{self.get_authors_with_urls|safe}}</p>
+                        <p class="pubdate">{{ self.published_at }}</p>
                     </div>
                     {% comment %}
                     <div class="c-article__info">
                         {% include 'article/objects/share_bar.html' %}
                     </div>
                     {% endcomment %}
+                    <div class="full-width featured-media">
                     {% include 'article/objects/fw_article_featured_media.html' %}
+                    </div>
                 </div>
             {% endif %}
         {% endblock %}

@@ -53,7 +53,7 @@
 
 .c-article__title, .o-article__snippet {
   padding: 1rem 0px;
-  margin:0;
+  margin:auto;
   max-width: 500px;
   
   color: black;
@@ -133,9 +133,10 @@
 
 .featured-media {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1600px;
   height: auto; 
-  margin-top: 4%;
+  margin: auto;
+  margin-top: 2em;
   img {
     width: 100%;
     height: auto;
@@ -144,9 +145,23 @@
     }
   }
   .caption {
-    text-align: right;
-    color:#3C3C3C;
+    text-align: left;
+    margin-left: 6em;
+    @media($bp-smaller-than-phablet) {
+      margin: auto;
+      padding: 0.5em 2em 3em 2em;
+    }
+    color:black;
+    font-family: $font-default;
   }
+}
+
+.above_cut_lede {
+  margin: 1em 1em 3em 1em;
+  font-size: 15px;
+  font-weight: 600;
+  font-style: $font-default;
+  text-align: center;
 }
 
 .c-article__content {  
