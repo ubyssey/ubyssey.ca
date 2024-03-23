@@ -1,0 +1,65 @@
+@import 'modules/_variables.scss';
+@import 'modules/_fonts.scss';
+
+@import 'modules/spoof/2024/fonts';
+
+@import 'modules/magazine/2024/objects';
+@import 'modules/magazine/2023/card';
+
+@import 'modules/magazine/2023/banner';
+
+@import 'modules/magazine/2023/footer';
+@import 'modules/magazine/2023/header';
+@import 'modules/magazine/2023/article-box';
+
+@import 'modules/magazine/2023/homepage';
+@import 'modules/spoof/2024/article';
+  
+body {
+  color: black;
+}
+
+ h2 , h3 , h4, p {
+    margin: 1rem;
+}
+
+.c-header a{
+  font-family: $header-font;
+
+}
+
+.c-header a{
+  color: black;
+
+}
+
+.u-container--small{
+  max-width: 890px;
+}
+
+.next_article{
+  color: black;
+
+}
+
+.next_article_container{
+  display: flex;
+  justify-content: flex-end;
+  align-items: right;
+}
+
+#custom-tooltip {
+  display: none;
+  margin-left: 40px;
+  padding: 5px 8px;
+  background-color: #3490d6;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.visuallyhidden{position:absolute;clip:rect(1px,1px,1px,1px)}
+
+.c-share_space {
+  padding-right: 1em;
+}
+

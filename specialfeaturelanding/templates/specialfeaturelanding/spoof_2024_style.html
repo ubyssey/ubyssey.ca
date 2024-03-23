@@ -1,0 +1,93 @@
+{% extends 'ubyssey/base.html' %}
+
+{% comment %} {% extends 'specialfeaturelanding/guide/base.html' %} {% endcomment %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailuserbar %}
+{% load menu_tags %}
+
+{% block stylesheet %}
+<!-- Adobe fonts from sports email account -->
+<link rel="stylesheet" href="https://use.typekit.net/jcl5sme.css">
+
+<link rel="stylesheet" href="{% static 'ubyssey/css/spoof-2024.css' %}" type="text/css" />
+{% endblock %}
+
+{% block head_scripts %}
+<!-- Needed for Bootstrap-->
+<meta charset="utf-8">
+
+<!-- Bootstrap 5 for Guide stuff -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block header %}
+	{% comment %} {% flat_menu 'guide2021' template="navigation/headers/guide/2021/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True %} {% endcomment %}
+	{% if page.menu %}
+		<!-- Manually selected menu: {{ page.menu.handle }} -->
+		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns_hover.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% elif create_menu_from_parent %}
+		<!-- Menu created from parent page -->	 
+		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns_hover.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% endif %}
+{% endblock %}
+
+{% block pre_main_content %}
+{% if page.pre_main_stream %}
+	{% for block in page.pre_main_stream %}
+		{% include_block block %}
+	{% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<main class="{{ self.main_class_name }} o-site-wrapper">
+	{% if page.editorial_stream %}
+	<div class="editorial-container">
+		{% for block in page.editorial_stream %}
+			{% include_block block %}
+		{% endfor %}
+	</div>
+	{% endif %}
+</main>
+
+{% endblock %}
+
+{% block post_main_content %}
+
+
+{% for block in self.content %}
+{% include_block block %}
+{% endfor %}
+
+{% wagtailuserbar %}
+{% endblock %}
+
+
+{% block footer %}
+<footer class="c-nav-footer{% if subsection %} __{{ subsection }}{% else %} __home{% endif %} {{section}}">
+	<div class="o-container">
+		<div class="o-wrapper">
+			<a class="c-footer__unlimited-link" href="/magazine/{{unlimited.slug}}"><img src="{% static "ubyssey/images/magazine/2024/unlimited-logo-footer.svg" %}"></a>
+			<h2 class="c-footer__magazine">The Ubyssey’s Magazine 2024</h2>
+			<div class="c-footer__land-ack">
+				<h3 class="c-footer__land-ack__title">LAND ACKNOWLEDGEMENT</h3>
+				<p class="c-footer__land-ack__content">The Ubyssey would like to acknowledge that our office resides and our production takes place on the ancestral, unceded territories of the xʷməθkʷəy̓əm (Musqueam), sḵwx̱wú7mesh (Squamish) and sel̓íl̓witulh (Tsleil-Waututh) nations. We make this acknowledgement to pay respect to the keepers of the land, and to help fulfill our responsibility to view our own colonial history and their present-day implications through a critical lens.</p>
+			</div>
+			<div class="c-footer__legal">
+				<h3 class="c-footer__legal__title">LEGAL</h3>
+				<p class="c-footer__legal__content">The Ubyssey is the official student newspaper of the University of British Columbia (UBC). It is published every second Tuesday by the Ubyssey Publications Society (UPS). We are an autonomous, democratically-run student organization and all students are encouraged to participate. Editorials are written by The Ubyssey’s editorial board and they do not necessarily reflect the views of the UPS or UBC. All editorial content appearing in The Ubyssey is the property of the UPS. Stories, opinions, photographs and artwork contained herein cannot be reproduced without the expressed, written permission of the Ubyssey Publications Society. The Ubyssey is a founding member of Canadian University Press (CUP) and adheres to CUP’s guiding principles. The Ubyssey accepts opinion articles on any topic related to UBC and/or topics relevant to students attending UBC. Submissions must be written by UBC students, professors, alumni or those in a suitable position (as determined by the opinion editor) to speak on UBC-related matters. Submissions must not contain racism, sexism, homophobia, transphobia, harassment or discrimination. Authors and/or submissions will not be precluded from publication based solely on association with particular ideologies or subject matter that some may find objectionable. Approval for publication is, however, dependent on the quality of the argument and The Ubyssey editorial board’s judgment of appropriate content. Submissions may be sent by email to opinion@ubyssey.ca. Please include your student number or other proof of identification. Anonymous submissions will be accepted on extremely rare occasions. Requests for anonymity will be granted upon agreement from four-fifths of the editorial board. Full opinions policy may be found at ubyssey.ca/pages/submit-an-opinion. It is agreed by all persons placing display or classified advertising that if the UPS fails to publish an advertisement or if an error in the ad occurs the liability of the UPS will not be greater than the price paid for the ad. The UPS shall not be responsible for slight changes or typographical errors that do not lessen the value or the impact of the ads.</p>
+			</div>
+			<a class="c-footer__ubyssey-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/magazine/2024/ubyssey-logo-mag2024.svg' %}" alt="" viewBox="0 0 100 100"/></a>
+			<p class="c-footer__address">2208-6133 University Boulevard</p>
+			<p class="c-footer__email">magazine@ubyssey.ca</p>
+			<div class="c-footer__copyright">&copy; {% now "Y" %} The Ubyssey</div>
+		</div>
+	</div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ubyssey/js/guide-2021.js' %}" type="text/javascript"></script>
+{% endblock %}
