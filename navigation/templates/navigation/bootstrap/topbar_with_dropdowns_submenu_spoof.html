@@ -5,9 +5,14 @@
 {% load wagtailimages_tags %}
 {% load video_filters %}
 
-<ul class="dropdown-menu">
+<div class="js-dropdown-container"></div>
+<div class="menu">
+
+  <a href="#" class="close-modal">
+    <i class="fa fa-close"></i>
+  </a>
   <p>{{item.text}}</p>
-  <div class="article-list">
+  <ul class="article-list">
     {% for item in menu_items %}
     <li><a class="dropdown-item" href="{{ item.href }}">
       <div class="o-article__meta__image">
@@ -24,5 +29,5 @@
       <p>{{ item.text }}</p>
     </a></li>
     {% endfor %}
-  </div>
-</ul>
+  </ul>
+</div>

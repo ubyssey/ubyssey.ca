@@ -209,12 +209,14 @@ function initializeModals() {
     e.preventDefault();
     var modalLink = $(this).parent().find('.openModal')[0];
     var modalIndex = parseInt(modalLink.getAttribute("modal"));
-    if (modal.style.display == "block") {
+    console.log(modal.children[modalIndex]);
+    if (modal.children[modalIndex].classList.contains("show")) {
       closeModal();
       modal.children[modalIndex].classList.add("hide");
       modal.children[modalIndex].classList.remove("show");
       $(this).removeClass('active');
     } else {
+      closeModal();
       modal.children[modalIndex].classList.remove("hide");
       modal.children[modalIndex].classList.add("show");
       openModal();
@@ -403,15 +405,21 @@ function openModal() {
 function moveModals() {
   var modalBlocks = document.getElementsByClassName("add-to-modal");
   var modal = document.getElementById("modal");
-
-  for (let i=0; i < modalBlocks.length; i++) {
-    //modalBlocks[i].remove();
+  var index = 0;
+  console.log(modalBlocks);
+  while (modalBlocks.length > 0) {
+    //modalBlocks[i].remove();  
     var div = document.createElement("div");
     div.classList.add("openModal");
-    div.setAttribute("modal", i);
+    div.setAttribute("modal", index);
 
-    modalBlocks[i].insertAdjacentElement("beforebegin", div);
-    modal.appendChild(modalBlocks[i]);
+    var mod = modalBlocks[0];
+    mod.insertAdjacentElement("beforebegin", div);
+    mod.classList.remove("add-to-modal");
+    modal.appendChild(mod);
+
+    modalBlocks = document.getElementsByClassName("add-to-modal");
+    index = index + 1;
   } 
 }
 
