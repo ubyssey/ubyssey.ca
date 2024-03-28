@@ -386,6 +386,14 @@ function closeModal() {
     modal.children[i].classList.add("hide");
   }
 
+  var modalLink = document.getElementsByClassName("open-modal");
+  for (let i=0; i < modalLink.length; i++) {
+    var anchor = modalLink[i].getElementsByTagName("a");
+    if(anchor.length > 0) {
+      anchor[0].classList.remove("active");
+    }
+  }
+
   $('body').removeClass('u-no-scroll');
 }
 
@@ -406,7 +414,6 @@ function moveModals() {
   var modalBlocks = document.getElementsByClassName("add-to-modal");
   var modal = document.getElementById("modal");
   var index = 0;
-  console.log(modalBlocks);
   while (modalBlocks.length > 0) {
     //modalBlocks[i].remove();  
     var div = document.createElement("div");

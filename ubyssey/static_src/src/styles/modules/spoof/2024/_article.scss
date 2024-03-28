@@ -161,10 +161,13 @@
 }
 
 .above_cut_lede {
-  margin: 1em 1em 3em 1em;
+  margin: auto;
+  padding: 1em 1em 3em 1em;
+  max-width: 600px;
+  
   font-size: 15px;
   font-weight: 600;
-  font-family: $font-default;
+  font-family: futura-pt,sans-serif;
   text-align: center;
 }
 
