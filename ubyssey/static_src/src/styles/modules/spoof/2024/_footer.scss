@@ -18,13 +18,20 @@
   }
   .container {
     padding: 0em;
+    @media (max-width: 576px) {
+      padding: 0 1.5em;
+      text-align: center;
+    }
   }
 
   .c-footer__self-link {
     width: 10em;
     display: block;
     margin-bottom: 2em;
-
+    @media (max-width: 576px) {
+      margin-left: auto;
+      margin-right: auto;
+    }
     img {
       width: 100%;
     }
@@ -34,15 +41,20 @@
     margin-left: 0;
     font-size: 1.2em;
     font-weight: $text-weight;
-    text-align: left;
   }
 
   .footer_social-media {
     margin: 2em 0;
     display: flex;
+    gap: 2em;
+    @media (max-width: 576px) {
+      justify-content: center;
+    }
     >a {
-      margin-right: 2em;
       font-size: 1.5em;
+      &:hover i{
+        color:rgb(255, 218, 8);
+      }
     }
   }
 
@@ -53,6 +65,7 @@
   .c-footer__copyright {
     border-top: 2px solid white;
     padding: 2rem 0;
+    margin-bottom: 0;
 
     font-size: 12px;
     font-family: futuraPT;
