@@ -177,23 +177,20 @@
 
 {% block footer %}
 <footer class="c-nav-footer{% if subsection %} __{{ subsection }}{% else %} __home{% endif %} {{section}}">
-	<div class="o-container">
-		<div class="o-wrapper">
-			<a class="c-footer__self-link" href="/magazine/unlimited"><img src="{% static "ubyssey/images/magazine/2024/unlimited-logo-footer.svg" %}"></a>
-			<h2 class="c-footer__magazine">The Ubyssey’s Magazine 2024</h2>
-			<div class="c-footer__land-ack">
-				<h3 class="c-footer__land-ack__title">LAND ACKNOWLEDGEMENT</h3>
-				<p class="c-footer__land-ack__content">The Ubyssey would like to acknowledge that our office resides and our production takes place on the ancestral, unceded territories of the xʷməθkʷəy̓əm (Musqueam), sḵwx̱wú7mesh (Squamish) and sel̓íl̓witulh (Tsleil-Waututh) nations. We make this acknowledgement to pay respect to the keepers of the land, and to help fulfill our responsibility to view our own colonial history and their present-day implications through a critical lens.</p>
-			</div>
-			<div class="c-footer__legal">
-				<h3 class="c-footer__legal__title">LEGAL</h3>
-				<p class="c-footer__legal__content">The Ubyssey is the official student newspaper of the University of British Columbia (UBC). It is published every second Tuesday by the Ubyssey Publications Society (UPS). We are an autonomous, democratically-run student organization and all students are encouraged to participate. Editorials are written by The Ubyssey’s editorial board and they do not necessarily reflect the views of the UPS or UBC. All editorial content appearing in The Ubyssey is the property of the UPS. Stories, opinions, photographs and artwork contained herein cannot be reproduced without the expressed, written permission of the Ubyssey Publications Society. The Ubyssey is a founding member of Canadian University Press (CUP) and adheres to CUP’s guiding principles. The Ubyssey accepts opinion articles on any topic related to UBC and/or topics relevant to students attending UBC. Submissions must be written by UBC students, professors, alumni or those in a suitable position (as determined by the opinion editor) to speak on UBC-related matters. Submissions must not contain racism, sexism, homophobia, transphobia, harassment or discrimination. Authors and/or submissions will not be precluded from publication based solely on association with particular ideologies or subject matter that some may find objectionable. Approval for publication is, however, dependent on the quality of the argument and The Ubyssey editorial board’s judgment of appropriate content. Submissions may be sent by email to opinion@ubyssey.ca. Please include your student number or other proof of identification. Anonymous submissions will be accepted on extremely rare occasions. Requests for anonymity will be granted upon agreement from four-fifths of the editorial board. Full opinions policy may be found at ubyssey.ca/pages/submit-an-opinion. It is agreed by all persons placing display or classified advertising that if the UPS fails to publish an advertisement or if an error in the ad occurs the liability of the UPS will not be greater than the price paid for the ad. The UPS shall not be responsible for slight changes or typographical errors that do not lessen the value or the impact of the ads.</p>
-			</div>
-			<a class="c-footer__ubyssey-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/magazine/2024/ubyssey-logo-mag2024.svg' %}" alt="" viewBox="0 0 100 100"/></a>
-			<p class="c-footer__address">2208-6133 University Boulevard</p>
-			<p class="c-footer__email">magazine@ubyssey.ca</p>
-			<div class="c-footer__copyright">&copy; {% now "Y" %} The Ubyssey</div>
+	<div class="container">
+		<div class="wrapper">
+            <p class="c-footer__ubyssey-link"><a href="/">Go back to The Ubyssey</a></p>
+			<a class="c-footer__self-link" href="/humour/midappetit"><img src="{% static "ubyssey/images/spoof/2024/ma-logo.svg" %}" alt="Mid Appétit logo"></a>
+			<p class="c-footer__tagline">Recipes that are fine. Cooking advice that is okay.<br>Restaurant recommendations you should be indifferent to.</p>
+            <div class="footer_social-media">
+                <a class = "rss-icon" href="/rss/humour" rel="nofollow" target="_blank"><i class="fa fa-rss"></i></a>
+                <a class = "instagram-icon" href="https://www.instagram.com/ubyssey/" rel="nofollow" target="_blank"><i class="fa fa-instagram"></i></a>
+                <a class = "tiktok-icon" href="https://www.tiktok.com/@ubyssey" rel="nofollow" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                <a class = "twitter-icon" href="https://twitter.com/UbysseyHumour" rel="nofollow" target="_blank"><i class="fa fa-twitter"></i></a>
+                <a class = "facebook-icon" href="https://www.facebook.com/ubyssey" rel="nofollow" target="_blank"><i class="fa fa-facebook-square"></i></a>
+            </div>
 		</div>
+        <p class="c-footer__copyright">&copy; {% now "Y" %} The Ubyssey</p>
 	</div>
 </footer>
 {% endblock %}
