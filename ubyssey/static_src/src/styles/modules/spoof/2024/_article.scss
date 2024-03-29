@@ -1,3 +1,7 @@
+#content-wrapper {
+  margin-top: 4em;
+}
+
 .c-article{
   padding: 3em 0;
   background-color: white;
@@ -157,10 +161,13 @@
 }
 
 .above_cut_lede {
-  margin: 1em 1em 3em 1em;
+  margin: auto;
+  padding: 1em 1em 3em 1em;
+  max-width: 600px;
+  
   font-size: 15px;
   font-weight: 600;
-  font-style: $font-default;
+  font-family: futura-pt,sans-serif;
   text-align: center;
 }
 
