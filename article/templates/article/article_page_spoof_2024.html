@@ -179,9 +179,8 @@
 <footer class="c-nav-footer{% if subsection %} __{{ subsection }}{% else %} __home{% endif %} {{section}}">
 	<div class="container">
 		<div class="wrapper">
-            <p class="c-footer__ubyssey-link"><a href="/">Go back to The Ubyssey</a></p>
-			<a class="c-footer__self-link" href="/humour/midappetit"><img src="{% static "ubyssey/images/spoof/2024/ma-logo.svg" %}" alt="Mid Appétit logo"></a>
-			<p class="c-footer__tagline">Recipes that are fine. Cooking advice that is okay.<br>Restaurant recommendations you should refuse.</p>
+			<a class="c-footer__self-link" href="/humour/midappetit"><img src="{% static "ubyssey/images/spoof/2024/ma-logo-spaced.svg" %}" alt="Mid Appétit"></a>
+			<p class="c-footer__tagline">Recipes you won't make. Cooking advice that fails.<br>Restaurant recommendations you shouldn't trust.</p>
             <div class="footer_social-media">
                 <a class = "rss-icon" href="/rss/humour" rel="nofollow" target="_blank"><i class="fa fa-rss"></i></a>
                 <a class = "instagram-icon" href="https://www.instagram.com/ubyssey/" rel="nofollow" target="_blank"><i class="fa fa-instagram"></i></a>
@@ -189,6 +188,7 @@
                 <a class = "twitter-icon" href="https://twitter.com/UbysseyHumour" rel="nofollow" target="_blank"><i class="fa fa-twitter"></i></a>
                 <a class = "facebook-icon" href="https://www.facebook.com/ubyssey" rel="nofollow" target="_blank"><i class="fa fa-facebook-square"></i></a>
             </div>
+            <p class="c-footer__ubyssey-link"><a href="/"><i class="fa-solid fa-arrow-left"></i> Back to The Ubyssey</a></p>
 		</div>
         <p class="c-footer__copyright">&copy; {% now "Y" %} The Ubyssey</p>
 	</div>
