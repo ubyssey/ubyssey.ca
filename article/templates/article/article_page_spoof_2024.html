@@ -166,6 +166,37 @@
             </div>
         </div>
     </main>
+    <div id="popup" aria-modal="true" class="popUpHide">
+        <a id="closePopup" href="#" tabindex="1"><i class="fa-solid fa-chevron-down"></i></a>
+        <div class="container">
+            <h1 id="toptext"></h1>
+            <p id="bottomtext"></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById("closePopup").addEventListener("click", function(e) {
+            e.preventDefault();
+            document.getElementById("popup").classList.add("popUpHide");
+            document.getElementById("popup").classList.remove("popUpShow");
+            setTimeout(function () {
+                document.getElementById("popup").remove();
+            }, 2000);
+        });
+        setTimeout(function () {
+            document.getElementById("popup").classList.add("popUpShow");
+            document.getElementById("popup").classList.remove("popUpHide");
+        }, 2000);
+
+        var popupJokes = [
+        ["Wait... are you reading a website?", "I thought we ended those circa 2015"],
+        ["Popup Ads", "Am I right?"],
+        ];
+
+        var joke = popupJokes[Math.floor(Math.random() * popupJokes.length)];
+        document.getElementById("toptext").innerHTML = joke[0];
+        document.getElementById("bottomtext").innerHTML = joke[1];
+
+    </script>
 </main>
 
 {% endblock %}
@@ -180,7 +211,7 @@
 	<div class="container">
 		<div class="wrapper">
 			<a class="c-footer__self-link" href="/humour/midappetit"><img src="{% static "ubyssey/images/spoof/2024/ma-logo-spaced.svg" %}" alt="Mid Appétit"></a>
-			<p class="c-footer__tagline">Recipes you won't make. Cooking advice that fails.<br>Restaurant recommendations you shouldn't trust.</p>
+			<p class="c-footer__tagline">Recipes you won't make. Cooking advice that sucks.<br>Restaurant recommendations you shouldn't trust.</p>
             <div class="footer_social-media">
                 <a class = "rss-icon" href="/rss/humour" rel="nofollow" target="_blank"><i class="fa fa-rss"></i></a>
                 <a class = "instagram-icon" href="https://www.instagram.com/ubyssey/" rel="nofollow" target="_blank"><i class="fa fa-instagram"></i></a>
