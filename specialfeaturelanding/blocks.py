@@ -403,7 +403,17 @@ class StreamTitle(TemplateSelectStructBlock):
     )
     template = blocks.ChoiceBlock(
         choices=[('spoof_2024_title.html', 'spoof_2024_title.html')])
-
+class CardStream(blocks.StreamBlock):
+    card_spoof = CardBlock2024()
+class CardStreamBlock(TemplateSelectStructBlock):
+    class_selector = blocks.CharBlock()    
+    stream = CardStream()
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),('card_stream_block.html', 'card stream block')
+        ],
+        required=False,
+    )
 class FlexStream(blocks.StreamBlock):
     raw_html = blocks.RawHTMLBlock()
     rich_text = blocks.RichTextBlock()
@@ -411,6 +421,7 @@ class FlexStream(blocks.StreamBlock):
     rendition = RenditionBlock()
     card = CardBlock()
     card_spoof = CardBlock2024()
+    card_stream_block = CardStreamBlock()
     stream_title = StreamTitle()
 
 class DivStreamBlock(TemplateSelectStructBlock):

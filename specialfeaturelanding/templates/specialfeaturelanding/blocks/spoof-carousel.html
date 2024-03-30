@@ -4,11 +4,10 @@
 
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
-        {% for block in self.stream %}
-            <div class="carouselcarousel-item{% if forloop.counter == 1 %}active{% endif %}">
-                    {% include_block block %}
-
-            </div>
+        {% for block in self.stream%}
+        <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
+        {% include_block block %}
+        </div>
         {% endfor %}    
     </div>
     <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
