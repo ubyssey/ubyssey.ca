@@ -1,6 +1,9 @@
 .carousel {
   padding-left: 48px;
   padding-right: 48px;
+  padding-bottom:3rem;
+  padding-top:1rem;
+
 }
 
 .carousel_title,
@@ -39,8 +42,10 @@
   align-items: stretch;
   justify-content: center;
 
+
   :first-child {
     margin-left: 0;
+    height: fit-content;
   }
 
   :last-child {
@@ -51,14 +56,20 @@
 .card img {
   max-width: 100%;
   max-height: 100%;
+  border-radius: 30px;
 }
-
+.card-body{
+  padding:1rem !important ;
+  
+  h3.card-title{
+    font-size: 24px !important;
+  }
+}
 .card {
 
   flex-grow: 1;
   align-self: stretch;
   margin: 0 1.15rem;
-  box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
   border: none;
   border-radius: 0;
 
@@ -82,7 +93,7 @@
     width: 40px;
     height: 40px;
     background-color: white;
-    top: 50%;
+    top: 35%;
     transform: translateY(-50%);
     display: inline-block;
     border: 0px;
