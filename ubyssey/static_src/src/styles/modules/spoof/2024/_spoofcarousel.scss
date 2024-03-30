@@ -31,39 +31,35 @@
         --grid-margin: 4rem;
     }
 }
-.carousel_title_img{
-    transform: scale(0.4);
-}
-.carousel-inner {
-    display: flex;
-    margin: 0rem 0px 0px;
-    padding: 0px;
-    list-style: none;
-    overflow: auto hidden;
-    scroll-snap-type: x mandatory;
-}
 
-.carouselcarousel-item,.carouselcarousel-itemactive  {
-    .card-img-top {
-        border-radius: 30px !important;
-      }
-    flex-shrink: 0;
-    align-self: stretch;
-    scroll-snap-align: start;
-    @media (min-width:1024px){
-        width:calc(24% - 0.75rem);
-        margin: 0px 1rem;
-    }
-    @media(min-width: 768px){
-        width:24%;
-    }
-    .card-body{
-        padding: 1rem 1rem !important;
-    }
-    .card-footer{
-        padding: .5rem 1rem !important;
-    }
+.cards-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  .card img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .card {
+    margin: 0 0.5em;
+    box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
+    border: none;
+    border-radius: 0;
+  }
+.carousel-inner {
+    padding: 1em;
 }
-.carouselcarousel-itemactive {
-    margin-left: 0px;
+.carousel-control-prev,
+.carousel-control-next {
+  background-color: #e1e1e1;
+  width: 5vh;
+  height: 5vh;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+@media (min-width: 768px) {
+  .card img {
+    height: 11em;
+  }
 }
