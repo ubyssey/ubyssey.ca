@@ -7,7 +7,6 @@
     row-gap: var(--grid-gap);
     margin: 0px auto;
     width: 100%;
-    max-width: 1600px;
     padding-right: calc(1 * var(--grid-margin));
     padding-left: calc(1 * var(--grid-margin));
     padding-top: 2rem;
@@ -28,6 +27,10 @@
         --grid-margin: 4rem;
     }
 
+    @media(min-width:1600px) {
+        padding-right: calc((100% - 1472px) / 2);
+        padding-left: calc((100% - 1472px) / 2);;
+    }
 }
 
 .stream_title {

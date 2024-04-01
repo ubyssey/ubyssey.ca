@@ -16,13 +16,6 @@
   a:hover {
     color:rgb(255, 218, 8);
   }
-  .container {
-    padding: 0em;
-    @media (max-width: 576px) {
-      padding: 0 1.5em;
-      text-align: center;
-    }
-  }
 
   .c-footer__self-link {
     width: 10em;

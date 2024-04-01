@@ -166,6 +166,17 @@ a.scroll-arrow{
   margin: 50px auto 0 auto;
 }
 
+.m-container {
+  margin: auto;
+  max-width: 1470px;
+  width: 100%;
+  padding: 0em;
+  @media (max-width: 576px) {
+    padding: 0 1.5em;
+    text-align: center;
+  }
+}
+
 .o-container {
   width: 100%;
   max-width: 1000px;
