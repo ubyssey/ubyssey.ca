@@ -148,3 +148,28 @@
         padding-left: 1rem;
     }
 }
+
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    
+    .stream_title{
+        width: 100%;
+    }
+    .card {
+        margin: 0.5em;
+        width: 340px;
+        @media(max-width:768px) {
+            width: 100%;
+        }
+
+        .card__title {
+            font-weight: 600;
+            color: black;
+            line-height: 1.2em;
+        }
+    }
+}
