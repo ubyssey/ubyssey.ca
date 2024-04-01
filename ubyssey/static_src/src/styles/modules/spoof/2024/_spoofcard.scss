@@ -3,13 +3,19 @@
     border: none !important;
 }
 
+.card-img-top {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .card-body {
     padding: 0 !important;
 
     .section-button {
         display: inline-block;
         text-transform: uppercase;
-        font-family: FuturaPT, helvetica, sans-serif;
+        font-family: $font-default;
         font-feature-settings: normal;
         font-style: normal;
         letter-spacing: 0.125em;
@@ -32,7 +38,7 @@
 
     h3.card-title {
         text-transform: none;
-        font-family: FuturaPT, helvetica, sans-serif;
+        font-family: $font-default;
         font-feature-settings: normal;
         font-style: normal;
         letter-spacing: 0.02em;
@@ -52,6 +58,7 @@
     p.card-text {
         margin: 0 !important;
         color: rgb(102, 102, 102);
+        font-family: $font-default;
     }
 
 }
@@ -62,7 +69,7 @@
     background-color: transparent !important;
     border: none !important;
     text-transform: none;
-    font-family: FuturaPT, helvetica, sans-serif;
+    font-family: $font-default;
     font-feature-settings: normal;
     font-style: normal;
     letter-spacing: normal;

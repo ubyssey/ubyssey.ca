@@ -97,19 +97,6 @@ nav.navbar {
     font-weight: 600;
   }
 
-  .article-list {
-    display: flex;
-    overflow-x: scroll;
-    list-style: none;
-    scroll-behavior: smooth;
-    .dropdown-item {
-      padding: 0;
-      &:hover, &:focus{
-        color: inherit;
-        background-color: transparent;
-      }
-    }
-  }
   li {
     margin: 2em;
     margin-bottom: 0;
@@ -117,6 +104,21 @@ nav.navbar {
       margin: 1em;
       color: white;
       font-family: $font-default;
+    }
+  }
+}
+
+.article-carousel {
+  display: flex;
+  overflow-x: scroll;
+  list-style: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  .dropdown-item {
+    padding: 0;
+    &:hover, &:focus{
+      color: inherit;
+      background-color: transparent;
     }
   }
 }

@@ -35,6 +35,10 @@
   @media(min-width:1280px) {
     --grid-margin: 4rem;
   }
+
+  .stream_title>p{
+    color: black;
+  }
 }
 
 .cards-wrapper {
@@ -63,18 +67,6 @@
   
   h3.card-title{
     font-size: 24px !important;
-  }
-}
-.card {
-
-  flex-grow: 1;
-  align-self: stretch;
-  margin: 0 1.15rem;
-  border: none;
-  border-radius: 0;
-
-  @media (min-width: 1280px) {
-    width: 27%;
   }
 }
 
@@ -117,5 +109,57 @@
 @media (min-width: 768px) {
   .card img {
     height: 11em;
+  }
+}
+
+.recipe-carousel {
+  width: 100%;
+  margin: auto;
+  position: relative;
+  max-width: 1472px;
+  @media (max-width: 1500px) {
+    max-width: calc(100% - 2em);
+  }
+  .article-carousel {
+    padding: 0;
+    li:first-child {
+      margin-left: 0;
+    }
+    li:last-child {
+      margin-right: 0;
+    }
+    li {
+      margin: 1em;
+      margin-bottom: 0;
+      width: 300px;
+      flex-shrink: 0;
+
+      .card-img-top {
+        height: 400px;
+        border-radius: 16px;
+      }
+      .card-title {
+        margin: 1em 0.5em;
+      }
+    }
+  }
+  .scroll-arrow {
+    background-color: white;
+    color: black;
+    position: absolute;
+    padding: 0 0.5em;
+    margin: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+    &:hover{
+      color: inherit;
+    }
+  }
+  .left {
+    left: 0;
+  }
+  .right {
+    right: 0;
   }
 }

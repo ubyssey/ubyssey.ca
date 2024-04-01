@@ -6,7 +6,11 @@
 <div class="{{ self.class_name}}">
 
     <a href = "{{self.card_page.url}}">
-        <img src="{{ banner_image.url }}" class= "card-img-top">
+        {% if self.class_name == "card_wrapper_5" %}
+            <img src="{{banner_image.url}}">
+        {% else %}
+            <div class="card-img-top" style="background-image: url('{{banner_image.url}}')"></div> 
+        {% endif %}
     </a>
         <div class="card-body"> 
             {%if value.card_button%}
