@@ -160,8 +160,10 @@
         width: 100%;
     }
     .card {
-        margin: 0.5em;
-        width: 340px;
+        .card-img-top {
+            aspect-ratio: 4/3;
+            margin-bottom: 1em;
+        }
         @media(max-width:768px) {
             width: 100%;
         }
