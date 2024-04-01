@@ -32,32 +32,32 @@
 {% endcomment %}
 
 <div class="recipe-carousel">
-  <ul id="article-list-{{item.text}}" class="article-carousel">
+  <ul id="article-list-carousel" class="article-carousel">
     {% for block in self.stream%}
     <li>
     {% include_block block %}
     </li>
     {% endfor %}  
   </ul>
-  <a href="#" id="left-{{item.text}}" class="scroll-arrow left">
+  <a href="#" id="left-carousel" class="scroll-arrow left">
     <i class="fa-solid fa-chevron-left"></i>
   </a>
-  <a href="#" id="right-{{item.text}}" class="scroll-arrow right">
+  <a href="#" id="right-carousel" class="scroll-arrow right">
     <i class="fa-solid fa-chevron-right"></i>
   </a>
 </div>
 
 <script>
 
-  document.getElementById("left-{{item.text}}").addEventListener("click", function(e) {
+  document.getElementById("left-carousel").addEventListener("click", function(e) {
     e.preventDefault();
-    var list = document.getElementById("article-list-{{item.text}}");
+    var list = document.getElementById("article-list-carousel");
     list.scrollLeft = list.scrollLeft - list.offsetWidth;
   });
 
-  document.getElementById("right-{{item.text}}").addEventListener("click", function(e) {
+  document.getElementById("right-carousel").addEventListener("click", function(e) {
     e.preventDefault();
-    var list = document.getElementById("article-list-{{item.text}}");
+    var list = document.getElementById("article-list-carousel");
     list.scrollLeft = list.scrollLeft + list.offsetWidth;
   });
 </script>
