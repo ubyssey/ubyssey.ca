@@ -114,6 +114,12 @@ nav.navbar {
   list-style: none;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
+  li{
+    scroll-snap-align: start;
+    @media (max-width: 576px) {
+      width: 100% !important;
+    }
+  }
   .dropdown-item {
     padding: 0;
     &:hover, &:focus{
