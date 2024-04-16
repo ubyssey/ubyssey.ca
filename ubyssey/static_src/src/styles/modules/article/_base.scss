@@ -185,6 +185,8 @@ div.indicator {
 
   @media($bp-larger-than-tablet) {
     padding: 1rem;
+    padding-left: 0;
+    margin-right: 1em;
   }
 
 }
@@ -195,8 +197,6 @@ div.indicator {
   font-style: bold;
   color: var(--authors-title-bio);
   text-align: left;
-  text-transform: capitalize;
-
 
   &:hover {
     color: $color-accent-blue;
@@ -309,6 +309,11 @@ div.indicator {
   padding-right: 1em;
 }
 
+p.fw-description {
+  font-family: $font-body;
+  font-size: 18px;
+}
+
 .c-article__featured-media {
   // Structure
   max-width: 585px;
@@ -382,7 +387,6 @@ div.article-content {
     @media($bp-larger-than-phablet){
       padding: 0;
       max-width: 585px;
-      margin: auto;
     }
   }
 

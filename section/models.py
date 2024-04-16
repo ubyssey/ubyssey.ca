@@ -32,6 +32,12 @@ from wagtail.documents.edit_handlers import DocumentChooserPanel
 from home import blocks as homeblocks
 from infinitefeed import blocks as infinitefeedblocks
 
+from wagtail.core import blocks
+from wagtail.snippets.blocks import SnippetChooserBlock
+
+import datetime
+
+
 #-----Snippet models-----
 @register_snippet
 class CategorySnippet(index.Indexed, ClusterableModel):
@@ -104,6 +110,23 @@ class CategorySnippet(index.Indexed, ClusterableModel):
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
+
+class SidebarCategoryBlock(blocks.StructBlock):
+    title = blocks.CharBlock(
+        required=True,
+        max_length=255,
+    )
+    category = SnippetChooserBlock(CategorySnippet)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['title']
+        context['category'] = value['title']
+        context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
+        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')[:6]
+        return context
+    class Meta:
+        template = "infinitefeed/sidebar/sidebar_section_block.html"
 
 #-----Orderable models-----
 class CategoryAuthor(wagtail_core_models.Orderable):
@@ -182,7 +205,9 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
         ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
-        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),         
+        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
+        ("sidebar_category_block", SidebarCategoryBlock()),
+        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),        
     ],
     null=True,
     blank=True,
@@ -281,9 +306,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         return context
     
     def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
-        # return ArticlePage.objects.from_section(section_root=self)
-        # section_articles = ArticlePage.objects.live().public().filter(current_section=self.slug).order_by(order)
-        section_articles = ArticlePage.objects.live().public().descendant_of(self).order_by(order)
+
+        section_articles = ArticlePage.objects \
+            .live() \
+            .child_of(self) \
+            .order_by(order)
+        
         return section_articles
 
     def get_featured_articles(self, queryset=None, number_featured=4) -> QuerySet:

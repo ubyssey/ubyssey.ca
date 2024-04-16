@@ -6,6 +6,7 @@
 {% load ubyssey_ad_filters %}
 
 {% block head_scripts %}
+<link rel="alternate" type="application/atom+xml" title="Ubyssey Rss Feed" href="/rss">
 <!-- Register ads for home page -->
 {% for orderable in settings.ads.AdTagSettings.home_head_tags.all %}
 {% gpt_define_tag orderable.ad_slot %}
@@ -43,10 +44,10 @@
 
 	<div class="home-featured">
 		{% if self.cover_story %}
-			{% include "article/objects/cover_story.html" with article=self.cover_story%}
+			{% include "article/objects/cover_story.html" with article=coverstory%}
 		{% endif %}
 		<div class="home-top-article-list">
-			{% now "d N, Y" as date %}
+			{% now "d N Y" as date %}
 			{% now "l" as dayOfWeek %}
 			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text=date textBold=dayOfWeek %}
 			

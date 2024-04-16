@@ -1,0 +1,26 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% image self.image original as banner_image %}
+
+<div id="banner" class="c-banner {% if self.title2 %}two_words{% endif %}" style="background-color:{{page.colour}}">
+  <div id="banner_image" class="c-banner__image" style="background-image: url({{banner_image.url}})"></div>
+  <div class="banner-text"><h1 id="banner-text">{{self.title1}}<br>{{self.title2}}</h1></div>
+</div>
+
+<script>
+  var text = document.getElementById("banner-text");
+
+  window.addEventListener('scroll', function() {
+    var banner = document.getElementById('banner');
+    if(window.scrollY > 0) {
+      banner.classList.add("minimized");
+    } else {
+      banner.classList.remove("minimized");
+    }
+  });
+  document.body.onload = function() {
+    text.style.transform = 'rotateZ(-90deg) scaleX(' + String(460/text.offsetWidth) + ')';
+    text.classList.add("postSized");
+  } 
+</script>

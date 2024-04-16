@@ -1,6 +1,7 @@
 from typing import Any, Dict
 from django.contrib.syndication.views import Feed
 from django.utils import feedgenerator
+from bs4 import BeautifulSoup
 
 from article.models import ArticlePage
 from section.models import SectionPage
@@ -65,7 +66,7 @@ class UbysseyArticleFeed(Feed):
         # .get_frontpage(limit=self.max_items)
 
     def item_title(self, item):
-        return item.title
+        return BeautifulSoup(item.title, "html.parser").get_text()
 
     def item_pubdate(self, item):
         return item.explicit_published_at

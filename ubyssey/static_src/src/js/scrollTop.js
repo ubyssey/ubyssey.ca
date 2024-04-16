@@ -10,9 +10,7 @@ $(document).on('click', '#myBtn', function (e) {
 window.onscroll = function() {scrollFunction()};
 
 function scrollFunction() {
-    if (document.documentElement.scrollTop + document.body.offsetHeight > document.getElementsByTagName("footer")[0].offsetTop) {
-        mybutton.style.opacity = "0";
-    } else if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
         mybutton.style.opacity = "0.9";
     } else {
         mybutton.style.opacity = "0";

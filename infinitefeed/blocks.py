@@ -2,6 +2,8 @@ from wagtail import blocks
 from wagtail.blocks import field_block
 from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
+from article.models import ArticlePage
+from django.db.models import Q
 
 class SidebarAdvertisementBlock(blocks.StructBlock):
     # Inserts of the recurring ad pattern for home page side bar
@@ -50,7 +52,38 @@ class SidebarSectionBlock(blocks.StructBlock):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['title']
         context['section'] = value['section']
+        context['link'] = context['section'].url
         context['articles'] = context['section'].get_featured_articles()          
+        return context
+    class Meta:
+        template = "infinitefeed/sidebar/sidebar_section_block.html"
+
+class SidebarLatestBlock(blocks.StructBlock):
+    title = blocks.CharBlock(
+        required=True,
+        max_length=255,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value["title"]
+        context['articles'] = ArticlePage.objects.live().public().filter(~(Q(current_section='guide'))).order_by('-explicit_published_at')[:5]         
+        return context
+    class Meta:
+        template = "infinitefeed/sidebar/sidebar_latest_block.html"
+
+class SidebarManualArticles(blocks.StructBlock):
+    title = blocks.CharBlock(
+        required=True,
+        max_length=255,
+    )
+
+    articles = blocks.ListBlock(blocks.PageChooserBlock(target_model=ArticlePage))
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value["title"]
+        context['articles'] = value["articles"]
         return context
     class Meta:
         template = "infinitefeed/sidebar/sidebar_section_block.html"

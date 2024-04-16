@@ -20,11 +20,6 @@ advertise = AdvertiseTheme()
 
 urlpatterns = []
 
-settings.WAGTAILIMAGES_FORMAT_CONVERSIONS = {
-    'jpeg': 'webp', 
-    'png': 'webp',
-    'webp': 'webp',
-}
 
 if settings.DEBUG:
     import debug_toolbar

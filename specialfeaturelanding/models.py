@@ -25,6 +25,7 @@ from wagtail.models import Page, Orderable
 from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
 
 from wagtailmenus.models import FlatMenu
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
@@ -76,7 +77,12 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
             return "specialfeaturelanding/landing_page_guide_2022_style.html"
         elif self.layout == 'mag-2023':
             return "specialfeaturelanding/mag_2023_style.html"
-          
+        elif self.layout == 'guide-2023':
+            return "specialfeaturelanding/landing_page_guide_2023_style.html"
+        elif self.layout == 'mag-2024':
+            return "specialfeaturelanding/mag_2024_style.html"
+        elif self.layout == 'spoof-2024':
+            return "specialfeaturelanding/spoof_2024_style.html"
         return "specialfeaturelanding/base.html"
 
     parent_page_types = [
@@ -142,6 +148,15 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         use_json_field=True,
     )
 
+    featured_media = models.ForeignKey(
+        "images.UbysseyImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='featured_image',
+        verbose_name="featured image",
+    )
+
     content_panels = Page.content_panels + UbysseyMenuMixin.menu_content_panels + [
         MultiFieldPanel(
             [
@@ -193,6 +208,9 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
                             ('default', 'Default'), 
                             ('guide-2022', 'Guide (2022 style)'),
                             ('mag-2023', 'Magazine (2023 style)'),
+                            ('guide-2023', 'Guide (2023 style)'),
+                            ('mag-2024', 'Magazine (2024 style)'),
+                            ('spoof-2024', 'Spoof (2024 style)'),
                         ],
                     ),
                 ),
@@ -201,6 +219,13 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
             classname="collapsible collapsed",
         ), # Select Stock Layout
 
+
+        MultiFieldPanel(
+            [
+                ImageChooserPanel("featured_media"),
+            ],
+            heading="Meta Image",
+        ),
     ]
 
 

@@ -1,31 +1,40 @@
 // Special article-like page
 @import 'modules/variables';
 
-.page > .u-container > .row {
+.article-like-special-page {
+
+  display: flex;
+  flex-direction: column;
+  @media($bp-larger-than-phablet){
+    flex-direction: row;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 
   // Left column (content)
-  .seven.columns {
-    display: table-cell;
-    vertical-align: top;
-    box-sizing: border-box;
-    height: auto;
+  .article-content {
     padding: 0 20px 0 0;
   }
 
   // Right column (sidebar)
-  aside.five {
-    display: table-cell;
-    vertical-align: top;
-    box-sizing: border-box;
+  aside {
     margin-left: 0px;
-    padding-left: 20px;
 
-    border-left: 1px solid $color-border-gray-light;
-
-    :first-child {
-      margin-top: 5px;
+    @media($bp-smaller-than-phablet){
+      padding-left: 10px;
+      border: none;
     }
 
+    @media($bp-larger-than-phablet){
+      padding-left: 20px;
+      width: 40%;
+  
+      border-left: 1px solid $color-border-gray-light;
+  
+      :first-child {
+        margin-top: 5px;
+      }  
+    }
   }
 }
 

@@ -12,8 +12,8 @@
         {% endif %}
       </span></div>
       <div class="middle">
-        <img class="top-logo light-logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt=""/>
-        <img class="top-logo dark-logo" src="{% static 'ubyssey/images/ubyssey-logo 1.svg' %}" alt=""/>
+        <img class="top-logo light-logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt="The Ubyssey logo"/>
+        <img class="top-logo dark-logo" src="{% static 'ubyssey/images/ubyssey-logo 1.svg' %}" alt="The Ubyssey logo"/>
       </div>
       <div class="right">
         <!-- <a class="store-link" href="https://store.ubyssey.ca/">
@@ -39,6 +39,14 @@
       <div class="middle">
         <ul class="sections">
           {% main_menu %}
+          <li class="dropdown">
+            <a class="more-dropdown preventDefault" href="#">MORE <i class="dropdown-hidden fa-solid fa-caret-down"></i><i class="dropdown-show fa-solid fa-caret-up"></i></a>
+            <div class="more-list dropdown-content">
+              <ul>
+                {% flat_menu 'dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+              </ul>
+            </div>
+          </li>
         </ul>
       </div>
       <div class="right">

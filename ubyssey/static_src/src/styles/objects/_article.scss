@@ -96,7 +96,8 @@
   color: white;
   font-weight: 600;
   &:hover {
-    color: black;
+    color: white;
+    background-color: $color-ubyssey-blue-dark !important;
   }
 }
 
@@ -162,13 +163,19 @@
 
   @media($bp-larger-than-phablet) {
     // Structure
-    width:60%;
+    flex-grow: 1;
+    width: 400px;
+    max-width: 685px;
 
     .o-article__headline {
       // Text
       font-size: 2rem;
-      line-height: 3rem;
+      line-height: 3.2rem;
       left: 0.5em;
+    }
+    .o-article__image {
+      min-height: 400px;
+      max-height: 600px;
     }
   }
 
@@ -180,7 +187,24 @@
       // Text
       font-size: 1.5rem;
       line-height: 2.5rem;
-      left: 20px;
+      @media($bp-larger-than-phablet) {
+        left: 20px;
+      }
+    }
+    .o-article__image {
+      min-height: 200px;
+      max-height: 300px;
+    }
+  }
+
+  .o-article__image {
+    width: 100%;
+    display: flex;
+    clip-path: inset(0% 0% 0% 0%);
+
+    img {
+      margin: auto;
+      max-height: 100%;
     }
   }
 
@@ -193,12 +217,16 @@
   
     @media($bp-smaller-than-phablet) {
       top:-50px;
+      margin-left: 20px;
+      margin-right: 20px;
     }
   }
 
   .o-article__meta {
-    margin-left: 20px;
-    margin-right: 10px;
+    @media($bp-larger-than-phablet) {
+      margin-left: 20px;
+      margin-right: 10px;
+    }
   }
 
   .o-article__headline {
@@ -206,10 +234,10 @@
     color: #ffffff;
     background-color: $color-ubyssey-blue;
     filter: drop-shadow(-5px 10px 4px #00000040);
-    border: 1px var(--header_color) solid;
+    border-bottom: 3px $color-ubyssey-blue-light solid;
     transition-duration: 0.1s;
     &:hover {
-      border-color: var(--background);
+      border-color: white;
     }
 
     a{
@@ -447,6 +475,17 @@
   display: flex;
   width: 95%;
   margin: auto;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid;
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  &:last-of-type {
+    border: none;
+  }
 
   .o-article__left {
     margin-right: 0.8em;
@@ -476,12 +515,13 @@
     margin: auto;
     // Text
     font-size: font-size(17);
+    line-height: inherit;
   }
 
   .o-article__byline {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     padding-top: 5px;
-    color: black;
+    color: $color-ubyssey-blue-dark;
   }
 
   .o-article__meta__image {
@@ -503,14 +543,6 @@
 
   .o-article__meta{
     margin: 0.6rem;
-  }
-
-  .o-article__section-tag {
-    color: white;
-
-    &:hover {
-      color: black;
-    } 
   }
 
   .o-article__label {
@@ -551,51 +583,97 @@
 
 .o-article--column {
   margin-bottom: 1rem;
-  background-color: #1771c5;
+  background-color: $color-ubyssey-blue-light;
   position: relative;
   left:0;
   transition-duration: 0.2s;
+  display: flex;
   &:hover {
     left: -10px;
   }
-  .o-article__image {
-    // Structure
-    width: 4.5rem;
-    height: 4.5rem;
+
+  .o-article__meta__image {
+    background-color: black;
     margin-right: 0.65rem;
 
-    // Background
-    background-position: center;
-    background-size: cover;
-  }
+    .o-article__image {
+      // Structure
+      display: flex;
+      width: 4.5rem;
+      height: 100%;
+      
+      // Background
+      background-position: center;
+      background-size: cover;
 
-  .o-article__headline {
-    // Structure
-    flex: 1;
-    color: #ffffff;
-    margin: auto;
-    margin-right: 0.5em;
-    // Text
-    font-size: font-size(22);
-
-    a:hover {
-      color: #eeeeee;
+      img {
+        margin: auto;
+      }
     }
   }
 
-  .o-article__meta__image {
-    // Structure
+  .o-article__meta {
     display: flex;
-    margin-bottom: 0.65rem;
+    margin-bottom: 0;
+
+    .o-article__headline {
+      // Structure
+      font-size: font-size(18);
+      line-height: 1.2em;
+      flex: 1;
+      color: #ffffff;
+      margin: auto;
+      margin-right: 0.5em;
+  
+      a:hover {
+        color: #eeeeee;
+      }
+    }
+  }
+}
+
+.o-article--column-latest {
+
+  .o-article__meta__image .o-article__image {
+    width: 5em;
   }
 
-  .o-article__meta__image .o-article__headline {
+  .o-article__meta {
+    display: flex;
+    flex-direction: column;
+    
 
-    // Text
-    font-size: font-size(18);
-    line-height: 1.2em;
+    .o-article__section {
+      margin-top: 0.5em;
+      margin-bottom: 0.25em;
+      font-size: 0.65em;
+      text-transform: uppercase;
+      width: fit-content;
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      background-color: $color-ubyssey-blue;
+      color: white;
+
+      &:hover {
+        background-color: $color-ubyssey-blue-dark !important;
+      }
+
+      a:hover {
+        color: white;
+      }
+    }
+
+    .o-article__headline {
+      margin-top: 0;
+      margin-bottom: 0.5em;
+      line-height: 1.3em;
+      color: black;
+
+      a:hover {
+        color: #555555;
+      }
+    }
   }
-
 }
 
 
@@ -781,6 +859,10 @@
       color: black;
     }
   }
+
+  .o-article--top_article {
+    border-color: #00000045;
+  }
 }
 
 .darkmode {
@@ -806,6 +888,9 @@
     .o-article__headline {
       color: #B3B3B3;
     }
+  }
+  .o-article--top_article {
+    border-color: white;
   }
 }
 
@@ -949,8 +1034,7 @@
   text-align: center;
 
   .caption {
-    margin: 20px;
-    margin-top: 5px;
+    margin-bottom: 1em !important;
     @media ($bp-larger-than-phablet) {
       text-align: center;  
     }
@@ -963,7 +1047,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  flex-grow: 1;
+
   @media ($bp-smaller-than-phablet) {
     margin-bottom: 10px;
     margin-top: 0;
@@ -1025,6 +1109,12 @@
 }
 
 .vs-over-image {
+
+  .o-visual-essay__left-image {
+    height: 100%;
+    flex-grow: 1;
+    background-position: center;
+  }
 
   .o-visual-essay__left-div {
     width: 100%;
@@ -1100,6 +1190,13 @@
       background-color: var(--background);
       border-bottom-style: solid;
     }
+
+    .o-visual-essay__left-image {
+      @media ($bp-larger-than-phablet) {
+        background-position: top;
+        height: 50%;
+      }
+    }
   }
   .o-visual-essay__right-container {
     //width:40%;
@@ -1123,6 +1220,7 @@
     @media ($bp-smaller-than-phablet) {
       margin-bottom: 0;
       width: 100%;
+      overflow: clip;
     }
   }
 }
@@ -1166,6 +1264,8 @@
   font-weight: 600;
   background-color: #0071c9;
   > h2 {
+    margin: 0;
+    
     color: white;
     scroll-margin-top: 100px;
   }
