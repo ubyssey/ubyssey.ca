@@ -90,4 +90,4 @@ def specify_homepage_sidebar_ads(value, request):
             new_tag_soup = BeautifulSoup(render_to_string('ads/gpt_placement_tag.html',context=ad_context), 'html5lib')
             div.clear()
             div.append(new_tag_soup.div)
-    return soup
+    return str(soup)
