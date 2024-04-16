@@ -3,7 +3,7 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import TabbedInterface, ObjectList, MultiFieldPanel, HelpPanel, InlinePanel
 from wagtail.models import Orderable
-from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
+from wagtail.contrib.settings.models import BaseSetting, register_setting
 from wagtailmodelchooser import register_model_chooser
 from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
@@ -66,7 +66,7 @@ class AdSlot(models.Model):
         ]
 
 @register_setting(icon='cogs')
-class AdTagSettings(ClusterableModel, BaseSiteSetting):
+class AdTagSettings(ClusterableModel, BaseSetting):
     # There should be one of these per (major) page type:
     # Home Page, Section Page, Article Page
     home_ad_panels = [
