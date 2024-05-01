@@ -22,6 +22,16 @@ footer {
     }
   }
 
+  .funding {
+    display: inline;
+    margin-left: 0.5em;
+    img {
+      vertical-align: -8%;
+      height: 20px;
+      width: auto;
+    }
+  }
+
   ul {
     list-style-type: none;
     margin: 0;

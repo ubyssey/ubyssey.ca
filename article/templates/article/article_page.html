@@ -13,6 +13,16 @@
     {% endfor %}
 {% endblock %}
 
+{% block stylesheet %}
+    {% if self.styles.all|length == 0 %}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css" />
+    {% else %}
+        {% for style_obj in self.styles.all %}
+        <link rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
 {% block header %}
     {% include 'navigation/headers/mobile.html' %}
         {% block banner_ad %}
@@ -40,6 +50,9 @@
 
                 <div class="u-container u-container--content u-container--padded">
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
+                    {% if self.fw_above_cut_lede %}
+                        <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
+                    {% endif %}
                     <div class="c-article__info">
                         {% comment %}
                             {% include 'objects/social-icons.html' with article=article layout='top' %}

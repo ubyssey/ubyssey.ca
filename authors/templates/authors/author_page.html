@@ -4,6 +4,10 @@
 {% load wagtailimages_tags %}
 {% load authors_tags %}
 
+{% block head_scripts%}
+<link rel="alternate" type="application/atom+xml" title="{{self.title}} - Ubyssey feed" href="/authors/{{self.slug}}/rss">
+{% endblock %}
+
 {% block header %}
 {% include 'navigation/headers/topbar.html' %}
 {% include 'navigation/headers/mobile.html' %}
@@ -15,7 +19,7 @@
 
 		<div class="author-header">
 			{% if self.image %}
-				{% image self.image width-350 as pfp %}
+				{% image self.image width-350 format-webp as pfp %}
 				<div class="author-img" style="background-image: url('{{pfp.full_url}}')"></div>
 			{% endif %}
 			<div class="author-info">

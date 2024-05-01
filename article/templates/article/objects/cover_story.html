@@ -5,13 +5,15 @@
 {% load articletags %}
 
 <article class="o-article o-article--coverstory{% if padded %} o-article--padded{% endif %}">
-  {% if not hide_image and article.featured_media.first.image or article.featured_video %}
+  {% if not hide_image and article.featured_media.first.image or article.featured_media.first.video or article.featured_media.file %}
   <div class="o-article__left">
     <a class="o-article__image" href={% pageurl article %}>
       {% if article.featured_media.first.image %}
-       {% image article.featured_media.first.image fill-340x238-c100 %}
+       {% image article.featured_media.first.image width-1320 format-webp %}
+      {% elif article.featured_media.first.video %}
+        <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
       {% else %}
-        <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
+        {% image article.featured_media width-1320 format-webp %}
       {% endif %}
     </a>
   </div>
@@ -21,13 +23,13 @@
       <a href="{% pageurl article %}">{{ article.title|safe }}</a>
     </mark>
     <div class="o-article__meta">
-      <p class="o-article__snippet">{{ article.lede|safe }}</p>
+      <p class="o-article__snippet">{% if article.lede %}{{article.lede|safe}}{% else %}{{article.search_description|safe}}{% endif %}</p>
       <div class="o-article__byline">
-        <span class="o-article__author">{{ article.get_authors_with_urls|safe }}</span>
+        <span class="o-article__author">{% if article.get_authors_with_urls %}{{article.get_authors_with_urls|safe }}{% else %}Ubyssey Staff{% endif %}</span>
         <span> &nbsp;&nbsp; </span>
         <a href="{{article|get_section_link}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article|get_section_title}}</a>
         <span> &nbsp;&nbsp; </span>
-        <span class="o-article__published">{{ article.explicit_published_at|naturaltime }}</span>
+        <span class="o-article__published">{% if article.explicit_published_at %}{{article.explicit_published_at|display_pubdate }}{% else %}{{article.first_published_at|display_pubdate}}{% endif %}</span>
       </div>
     </div>
   </div>

@@ -26,12 +26,16 @@
 .c-sidebar_container {
     height: 1500px;
     min-height: fit-content;
-    margin-top: 65px;
+    margin-bottom: 65px;
+}
+
+.sidebar-block > .boxLabel {
+    font-size: 1.1em;
 }
 
 .c-sidebar {
     height: 100%;
-    width:40%;
+    width:38%;
     padding-left: 1em;
 
     @media ($bp-smaller-than-phablet) {
@@ -56,16 +60,15 @@
     margin:auto;
     display:flex;
     min-height: 66vh;
-    justify-content: space-between;
+    justify-content: space-evenly;
   }
 
 .c-home-infinitefeed {
-    padding-left: 20px;
-    padding-right: 20px;
     width: 100%;
     @media ($bp-larger-than-phablet) {
         margin-right: 20px;
         width: 50%;
+        padding-right: 20px;
     }
 }
 
@@ -121,7 +124,7 @@
         text-shadow: #0000003b -1px 1px 15px;
     }
     .issue {
-        box-shadow: -10px 10px 7px 0px #0000003b;
+        box-shadow: -5px 10px 7px 0px #0000003b;
     }
     #loader {
         color: black;

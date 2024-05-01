@@ -11,19 +11,16 @@ ALLOWED_HOSTS = ['localhost', '*']
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 
-# Easily manipulable file cache for proof of concept for front page etc.
+# The dummy cache does not cache any values. We use this in development
+# so that the website always updates after code changes.
 CACHES = {
     "default": {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        # "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
-        # "LOCATION": "/workspaces/ubyssey.ca/cache/",
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    "renditions": {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
-
-MIDDLEWARE += [
-    # other middlewares...
-    'django_user_agents.middleware.UserAgentMiddleware',
-]
 
 TEMPLATES += [
 {

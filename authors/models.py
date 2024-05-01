@@ -233,6 +233,12 @@ class AuthorPage(RoutablePageMixin, Page):
         context["media_types"] = media_types
         context["media_type"] = self.main_media_type
 
+        order = request.GET.get("order")
+        if order == 'oldest':
+            context["order"] = "Oldest"
+        else:            
+            context['order'] = 'Newest'
+
         context = self.organize_media(self.main_media_type, request, context)
 
         return context

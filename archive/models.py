@@ -160,6 +160,9 @@ class ArchivePage(RoutablePageMixin, Page):
         context['q'] = search_query
         context['meta'] = { 'title': 'Archive' }
 
+        if search_query!=None or self.year!=None:
+            context['self'].noindex = True
+
         return context
     
     def get_paginated_articles(self, context, objects, video_section, request):

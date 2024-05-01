@@ -143,6 +143,10 @@ main.article .o-advertisement--leaderboard {
     width: $width;
     height: $height;
   }
+
+  @media($bp-smaller-than-phablet) {
+    display: none;
+  }
 }
 
 .o-advertisement--box {

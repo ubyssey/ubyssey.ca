@@ -9,7 +9,7 @@ import wagtail.images.blocks
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specialfeaturelanding', '0020_speciallandingpage_category'),
+        ('specialfeaturelanding', '0022_alter_speciallandingpage_featured_media'),
     ]
 
     operations = [

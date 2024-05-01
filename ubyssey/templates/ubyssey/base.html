@@ -12,8 +12,10 @@
 	<meta charset="utf-8" />
 	<meta name="viewport"
 		content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	{% block darkmode %}
 	<script src="{% static 'ubyssey/js/darkmode.js' %}" type="text/javascript"></script>
 	<meta name="color-scheme" content="{{mode}}">
+	{% endblock %}
 	{% include 'ubyssey/meta_tags.html' %}
 
 	{% block stylesheet %}
@@ -155,7 +157,7 @@
 	Warning: The below script is undocumented, but errors are thrown when using a Full-Width style article if it is
 	deleted.
 	TODO: figure out what it is, and document it
-	{% endcomment %}
+
 	<script type="text/javascript">
 		(function (e, a) {
 			if (!a.__SV) {
@@ -213,7 +215,8 @@
 		})(document, window.mixpanel || []);
 		mixpanel.init("4941b226d03a988d5f2bc8fea8e0e70d");
 	</script>
-
+	{% endcomment %}
+	
 	{% comment %} <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> {% endcomment %}
 	<link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.1.5/jquery.mCustomScrollbar.min.css" />
 	<script src="//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.1.5/jquery.mCustomScrollbar.concat.min.js"
