@@ -32,7 +32,7 @@ from wagtail.documents.models import Document
 from home import blocks as homeblocks
 from infinitefeed import blocks as infinitefeedblocks
 
-from wagtail.core import blocks
+from wagtail import blocks
 from wagtail.snippets.blocks import SnippetChooserBlock
 
 import datetime
