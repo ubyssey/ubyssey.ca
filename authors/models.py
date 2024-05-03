@@ -163,7 +163,13 @@ class AuthorPage(RoutablePageMixin, Page):
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [
         index.SearchField('full_name'),
+        index.AutocompleteField("full_name", partial_match=True),
+        index.AutocompleteField("slug", partial_match=True),
+        index.AutocompleteField("ubyssey_role", partial_match=True),
+        index.AutocompleteField('bio_description'),
+        index.SearchField("slug"),
         index.SearchField('bio_description'),
+        index.SearchField("ubyssey_role"),
     ]
 
     def organize_media(self, media_type, request, context):

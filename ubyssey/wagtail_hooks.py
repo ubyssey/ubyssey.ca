@@ -3,8 +3,8 @@ from urllib.parse import urljoin
 from django.conf import settings
 
 from wagtail import hooks
-from wagtail.contrib.modeladmin.options import (
-    ModelAdmin, modeladmin_register)
+from wagtail.snippets.models import register_snippet
+from wagtail.snippets.views.snippets import SnippetViewSet
 
 from dbtemplates.models import Template as DBTemplate
 from wagtailmodelchooser import register_model_chooser
@@ -12,14 +12,14 @@ from wagtailcache.cache import clear_cache
 
 register_model_chooser(DBTemplate)
 
-class DBTemplateAdmin(ModelAdmin):
+class DBTemplateAdmin(SnippetViewSet):
     model = DBTemplate
     menu_label = 'Custom HTML'
-    menu_icon = 'code'
+    icon = 'code'
     menu_order = 800
     list_display = ('name','id','creation_date','last_changed')
 
-modeladmin_register(DBTemplateAdmin)
+register_snippet(DBTemplateAdmin)
 
 def match_exact_url(url):
     """Return a regular expression that exactly matches the provided URL."""

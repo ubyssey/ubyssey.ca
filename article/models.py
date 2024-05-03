@@ -919,17 +919,23 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [
         index.SearchField('lede'),
+        index.AutocompleteField('lede'),
         index.SearchField('content'),
+        index.AutocompleteField('content'),
         
         index.FilterField('current_section'),
         index.FilterField('slug'),
+        index.AutocompleteField('slug'),
         index.FilterField('explicit_published_at'),
 
         index.RelatedFields('category', [
             index.FilterField('slug'),
+            index.SearchField('title'),
+            index.AutocompleteField('title'),
         ]),
         index.RelatedFields('article_authors', [
             index.SearchField('full_name'),
+            index.AutocompleteField('full_name'),
         ]),
         
         index.FilterField('author_id')
