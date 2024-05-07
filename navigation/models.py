@@ -6,7 +6,7 @@ from django.db.models.fields.related import ForeignKey
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from section.models import SectionPage
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, HelpPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, HelpPanel
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.models import Orderable
 
