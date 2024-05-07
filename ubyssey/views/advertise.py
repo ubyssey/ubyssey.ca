@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.conf import settings
+import os
 
 class AdvertiseTheme(object):
     """Theme for the advertising microsite."""
@@ -41,7 +42,7 @@ class AdvertiseTheme(object):
                     'Advertising inquiry from %s' % name,
                     template % (name, email, message),
                     email,
-                    [settings.UBYSSEY_ADVERTISING_EMAIL],
+                    [os.environ['UBYSSEY_ADVERTISING_EMAIL']],
                     fail_silently=True,
                 )
 
