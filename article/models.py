@@ -921,7 +921,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.SearchField('lede'),
         index.AutocompleteField('lede'),
         index.SearchField('content'),
-        index.AutocompleteField('content'),
         
         index.FilterField('current_section'),
         index.FilterField('slug'),
