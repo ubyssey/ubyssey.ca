@@ -55,6 +55,9 @@ urlpatterns += [
     # re_path(r'^events/', include(events_urls)),
     # re_path(r'^api/events/', include(event_api_urls)),
 
+    # # Advertising
+    re_path(r'^advertise/$', advertise.new, name='advertise-new'),
+
     # Wagtail
     re_path(r'^admin/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
@@ -99,9 +102,6 @@ urlpatterns += [
     # # re_path(r'^mag/(?P<year>[0-9]{4})/$', MagazineLandingView.as_view(), name='mag-landing'),
     # # re_path(r'^mag/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/$', MagazineLandingView.as_view(), name='mag-landing-sub'),
     # # re_path(r'^mag/(?P<year>[0-9]{4})/(?P<subsection>[-\w]+)/(?P<slug>[-\w]+)/$', MagazineArticleView.as_view(), name='mag-article'),
-
-    # # Advertising
-    # re_path(r'^advertise/$', advertise.new, name='advertise-new'),
 
     # # Centennial
     # re_path(r'^100/$', UbysseyTheme.centennial, name='centennial-landing'), #was for special 2018 event. Consider removing.
