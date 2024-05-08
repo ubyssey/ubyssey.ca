@@ -1,0 +1,169 @@
+.o-site-wrapper {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.c-banner {
+    margin-top: 0;
+}
+
+.mag-hp-spread {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 5%;
+}
+
+.mag-hp-spread:first-of-type {
+    margin-bottom: 0;
+}
+
+.editorial__credits-content h1{
+    font-weight: bold;
+    font-size: 0.75em;
+}
+
+.home-content-container .editorial__credits-content h2{
+    margin-bottom: 25px;
+    font-size: 0.75em;
+}
+
+.home-content-container .editorial__.home-content .content-wrapper{
+    padding: 5%
+}
+
+.home-content-container .home-content .content-wrapper {
+    line-height: 2em;
+    font-family: $text-font;
+    font-size: 1rem;
+}
+
+.home-content-container .home-content .title {
+    text-align: left;
+    padding-top: 5%;
+    @media($bp-larger-than-mobile) {
+        padding-left: 5%;
+    }
+}
+
+.editorial-container{
+    display: flex;
+    flex-wrap: wrap;
+
+    .home-content {
+        margin:auto;
+        max-width: 1000px;
+
+        >h2 {
+            margin-bottom: 0.7em;
+
+            font-size: 5em;
+            text-align: center;
+            font-family: $header-font;
+        }
+    }
+
+    .editorial__note-container {
+        background-image: linear-gradient(#101625, #2F3549);
+        color: #E8B131;
+        padding: 5%;
+        width: 100%;
+
+        .editorial__.home-content {
+            .title {
+                font-size: 5em;
+                text-align: center;
+                font-family: $header-font;
+            }
+            .content-wrapper {
+                text-align: center;
+                font-size: 1.1em;
+            }
+        }
+    }
+
+    .table-of-contents {
+        background-image: linear-gradient(#2F3549, #41475F);
+        color: #E8B131;
+        padding: 5%;
+        padding-bottom: 10%;
+        width: 100%;
+        .home-content {
+            h2>a {
+                color: #FEFFE3;
+                text-decoration: none;
+            }
+            ul {
+                padding: 0;
+                list-style: none;
+                li {
+                    &::before {
+                      content: '';
+                      display: inline-block;
+                      height: 1.5em;
+                      width: 1em;
+                
+                      background-image: url("../images/magazine/2024/mag2024-star.png");
+                      background-size: cover;
+                      background-position: center;
+                      
+                      vertical-align: text-top;
+                    }
+                    text-align: center;
+                    font-size: 2em;
+                    line-height: 2.5em;
+
+                    a {
+                        text-decoration: none;
+                        color: #FFDF95;
+                        font-family: $font-secondary;
+
+                        transition-duration: 0.5;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .editorial__credits-container {
+        background-color: #FEFFE3;
+        color: #41475F;
+        padding: 5%;
+        width: 100%;
+
+        .home-content {
+            h2 {
+                color: #41475F;
+            }
+
+            .editorial__credits-flex {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+
+                @media($bp-smaller-than-phablet) {
+                    flex-direction: column;
+                }
+
+                .editorial__credits-item {
+                    padding: 2em;
+                    
+                    @media($bp-larger-than-phablet) {
+                        width: 30%;
+                    }
+
+                    font-family: $text-font;
+                    text-align: center;
+                }
+            }
+        }
+    }
+
+}

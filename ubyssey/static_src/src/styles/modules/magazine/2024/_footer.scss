@@ -1,0 +1,86 @@
+.c-nav-footer {
+  padding-top: 4rem;
+  display: flex;
+  @media ($bp-smaller-than-mobile) {
+    display: block;
+  }
+  flex-wrap: wrap;
+  align-items: stretch;
+  background-color:#41475F;
+  font-family: $text-font;
+  * {
+    color:#E8B131;
+    text-decoration: none;
+  }
+  
+  .o-container {
+    padding-bottom: 2em;
+  }
+
+  .c-footer__self-link {
+    font-family: $header-font;
+    h1 {
+      font-size: 6rem;
+    }
+
+  }
+
+  .c-footer__self-link:hover {
+    color: #D9D9D9;
+  }
+
+  .c-footer__magazine {
+    font-size: 2rem;
+    margin-bottom: 4rem;
+    color: #FEFFE3;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: $text-weight-bold;
+  
+    @media ($bp-larger-than-phablet) {
+      font-size: 1.5rem;
+    }
+  }
+
+  p {
+    font-size: 0.625em;
+    font-weight: $text-weight;
+    text-align: center;
+  }
+
+  .c-footer__land-ack {
+    margin-bottom: 2rem;
+  }
+
+  .c-footer__legal {
+    margin-bottom: 1rem;
+  }
+
+  .c-footer__ubyssey-link:hover {
+    color:#D9D9D9;
+  }
+
+  img {
+    margin-top: 2em;
+    margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    
+    max-width: 100%;
+  }
+
+  .c-footer__address {
+    margin-bottom: 0;
+  }
+
+  .c-footer__address,.c-footer__email {
+    font-size: 1em;
+  }
+  .c-footer__copyright {
+    margin: 2rem;
+    font-size: 1.5em;
+  }
+
+}

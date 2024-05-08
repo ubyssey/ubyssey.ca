@@ -296,6 +296,11 @@ div.indicator {
   padding-right: 1em;
 }
 
+p.fw-description {
+  font-family: $font-body;
+  font-size: 18px;
+}
+
 .c-article__featured-media {
   // Structure
   max-width: 585px;

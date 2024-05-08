@@ -1,0 +1,63 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% image self.card_image original as banner_image %}
+
+{% comment %}
+<div id="carouselExampleControls" class="carousel slide" >
+  <div class = "control-wrapper">
+    <div class="carousel-inner">
+        {% for block in self.stream%}
+        <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
+        {% include_block block %}
+        </div>
+        {% endfor %}    
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleControls" data-bs-target="#carouselExampleControls" role="button" data-bs-slide="prev">
+        
+        <svg class="button-icon" focusable="false" viewBox="0 0 32 32" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+          <title>Chevron</title>
+          <path d="M19.071 16L12 8.929l1.414-1.414L21.9 16l-8.485 8.485L12 23.071z" fill-rule="nonzero"></path>
+        </svg>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleControls" data-bs-target="#carouselExampleControls" role="button" data-bs-slide="next">
+        <svg class="button-icon" focusable="false" viewBox="0 0 32 32" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+          <title>Chevron</title>
+          <path d="M19.071 16L12 8.929l1.414-1.414L21.9 16l-8.485 8.485L12 23.071z" fill-rule="nonzero"></path>
+        </svg>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+</div>
+{% endcomment %}
+
+<div class="recipe-carousel">
+  <ul id="article-list-carousel" class="article-carousel">
+    {% for block in self.stream%}
+    <li>
+    {% include_block block %}
+    </li>
+    {% endfor %}  
+  </ul>
+  <a href="#" id="left-carousel" class="scroll-arrow left">
+    <i class="fa-solid fa-chevron-left"></i>
+  </a>
+  <a href="#" id="right-carousel" class="scroll-arrow right">
+    <i class="fa-solid fa-chevron-right"></i>
+  </a>
+</div>
+
+<script>
+
+  document.getElementById("left-carousel").addEventListener("click", function(e) {
+    e.preventDefault();
+    var list = document.getElementById("article-list-carousel");
+    list.scrollLeft = list.scrollLeft - list.offsetWidth;
+  });
+
+  document.getElementById("right-carousel").addEventListener("click", function(e) {
+    e.preventDefault();
+    var list = document.getElementById("article-list-carousel");
+    list.scrollLeft = list.scrollLeft + list.offsetWidth;
+  });
+</script>

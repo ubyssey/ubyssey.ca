@@ -208,7 +208,7 @@ header.visual-essay{
   .logo-area {
     margin-top: 20px;
     margin-bottom: 20px;
-    height: 50px;
+    height: 35px;
     overflow: hidden;
 
     div.top-logo {
@@ -222,47 +222,22 @@ header.visual-essay{
     }  
   }
 
-  nav.visual-essay {
-  
-    ul {
-      list-style-type: none;
-      padding: 0;
-      display: flex;
-      justify-content: space-between;
-      width: fit-content;
-      margin: auto;
-      gap: 2px;
-      background-color: var(--header_color);
-      li {
-        display: inline-block;
-      }
-  
-      &.sections {
-        li {
-          font-family: "noto-sans","Helvetica Neue","Helvetica","Arial",sans-serif;
-          font-weight: 600;
-          color: var(--header_color);
-          text-transform: uppercase;
-          background-color: var(--background);
-          padding-left: 10px;
-          padding-right: 10px;
-          font-size: .875em;
-
-          &.current {
-            color: #0071C9;
-          }
-
-          @media($bp-smaller-than-phablet){
-            &:not(.current) {
-              display: none;
-            }
-            &.current {
-              color: white;
-            }
-          }        
-        }
-      }
+  .section {
+    margin-top: 0;
+    text-align: center;
+    font-family: nota-serif;
+    a {
+      margin-left: 0.2em;
+      font-family: nota-serif;
+      font-size: 2em;
+      vertical-align: sub;
+      text-decoration: underline;
     }
+  }
+  .darkmode-toggle {
+    position: absolute;
+    right: 1em;
+    top: 1em;
   }
 }
 

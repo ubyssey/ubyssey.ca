@@ -39,6 +39,7 @@ def inject_ads(value, is_mobile):
                     size = 'mobile-leaderboard'
                 else:
                     size = 'banner'
+
                 ad_context = {
                     'div_id' : div_id,
                     'dfp' : dfp,
@@ -47,7 +48,7 @@ def inject_ads(value, is_mobile):
                 ad_string = render_to_string('ads/advertisement_inline.html', context=ad_context)
                 paragraphs[n].insert_after(BeautifulSoup(ad_string, 'html.parser'))
 
-    return soup
+    return str(soup)
 
 @register.filter(name='specify_homepage_sidebar_ads')
 @stringfilter
@@ -89,4 +90,4 @@ def specify_homepage_sidebar_ads(value, request):
             new_tag_soup = BeautifulSoup(render_to_string('ads/gpt_placement_tag.html',context=ad_context), 'html5lib')
             div.clear()
             div.append(new_tag_soup.div)
-    return soup
+    return str(soup)

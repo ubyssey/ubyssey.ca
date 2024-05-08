@@ -123,7 +123,7 @@ class SidebarCategoryBlock(blocks.StructBlock):
         context['title'] = value['title']
         context['category'] = value['title']
         context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
-        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')
+        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')[:6]
         return context
     class Meta:
         template = "infinitefeed/sidebar/sidebar_section_block.html"

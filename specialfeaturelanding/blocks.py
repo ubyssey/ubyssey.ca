@@ -201,7 +201,8 @@ class EditorCreditBlock(TemplateSelectStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
-            ('guide-2021-editor-credit.html', 'guide-2021-editor-credit.html'),
+            ('guide-2021-editor-credit.html', 'Guide 2021 Style'),
+            ('magazine-2024-editor-credit.html', 'Magazine 2024 Style'),
         ],
         required=False,
     )
@@ -219,7 +220,8 @@ class EditorialBlock(TemplateSelectStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
-            ('guide-2021-editorial-stream.html', 'guide-2021-editorial-stream.html'),
+            ('guide-2021-editorial-stream.html', 'Guide 2021 Style'),
+            ('magazine-2024-editorial-stream.html', 'Magazine 2024 Style'),
         ],
         required=False,
     )
@@ -229,7 +231,7 @@ class BannerBlock(TemplateSelectStructBlock):
         required=False,
     )
     image = ImageChooserBlock(
-        required=True,
+        required=False,
     )
     title1 = blocks.CharBlock(
         required=False,
@@ -246,6 +248,7 @@ class BannerBlock(TemplateSelectStructBlock):
             ('', 'Wagtail default'),
             ('guide-2021-banner.html', 'guide-2021-banner.html'),
             ('textless_banner_block.html','textless_banner_block.html'),
+            ('magazine-2024-banner.html','magazine-2024-banner.html'),
         ],
         required=False,
     )
@@ -305,10 +308,15 @@ class GraphicalMenuBlock(TemplateSelectStructBlock):
         required=False,
     )
 
-class ChildArticlesBlock(blocks.StructBlock):
-
-    class Meta:
-        template = TEMPLATE_DIRECTORY + 'guide-2021-child-articles.html'
+class ChildArticlesBlock(TemplateSelectStructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('guide-2021-child-articles.html', 'Guide 2021 Style'),
+            ('magazine-2024-child-articles.html', 'Magazine 2024 Style'),
+            ('magazine-2024-table-of-contents.html', 'Magazine 2024 Table of Contents Style'),
+        ],
+        required=True,
+    )
 
 class RenditionBlock(TemplateSelectStructBlock):
     image = ImageChooserBlock()
@@ -350,13 +358,71 @@ class CardBlock(TemplateSelectStructBlock):
         ],
         required=False,
     )
+class CardBlock2024(TemplateSelectStructBlock):
+    """Card Block for spoof 2024: Title,Text, Image, URL Link"""
+    
+    class_name = blocks.CharBlock(
+        required = True,
+    )
 
+    card_title = blocks.CharBlock(
+        required=True, 
+        help_text='Add your title'
+    )
+    card_text = blocks.CharBlock(
+        required=False, 
+        help_text='Credit Author'
+    )
+    card_image = ImageChooserBlock(
+        required=True,
+    )
+    card_button = blocks.PageChooserBlock(
+        required=False
+    )
+    card_review = blocks.CharBlock(
+        required=False,
+        help_text='Add your rating'
+    )
+    card_page = blocks.PageChooserBlock(
+        required = True,
+    )
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),
+            ('spoof_2024_card.html','spoof_2024_card.html'), 
+        ],
+        required=False,
+    )
+class StreamTitle(TemplateSelectStructBlock):
+    header = blocks.CharBlock(
+        required = True
+    )
+    subheader =blocks.CharBlock(
+        required = False
+    )
+    template = blocks.ChoiceBlock(
+        choices=[('spoof_2024_title.html', 'spoof_2024_title.html')])
+class CardStream(blocks.StreamBlock):
+    card_spoof = CardBlock2024()
+class CardStreamBlock(TemplateSelectStructBlock):
+    class_selector = blocks.CharBlock()    
+    stream = CardStream()
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('', 'Wagtail default'),('card_stream_block.html', 'card stream block')
+        ],
+        required=False,
+    )
 class FlexStream(blocks.StreamBlock):
     raw_html = blocks.RawHTMLBlock()
     rich_text = blocks.RichTextBlock()
     image = ImageChooserBlock()
     rendition = RenditionBlock()
     card = CardBlock()
+    card_spoof = CardBlock2024()
+    card_stream_block = CardStreamBlock()
+    stream_title = StreamTitle()
 
 class DivStreamBlock(TemplateSelectStructBlock):
     class_selector = blocks.CharBlock()    
@@ -365,7 +431,7 @@ class DivStreamBlock(TemplateSelectStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
-            ('2022-div-stream-block.html', '2022-div-stream-block.html'),
+            ('2022-div-stream-block.html', '2022-div-stream-block.html'),('spoof-carousel.html','spoof-carousel.html')
         ],
         required=False,
     )

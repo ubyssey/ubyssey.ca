@@ -170,7 +170,7 @@
     .o-article__headline {
       // Text
       font-size: 2rem;
-      line-height: 3rem;
+      line-height: 3.2rem;
       left: 0.5em;
     }
     .o-article__image {
@@ -200,7 +200,6 @@
   .o-article__image {
     width: 100%;
     display: flex;
-    background-color: black;
     clip-path: inset(0% 0% 0% 0%);
 
     img {
@@ -235,10 +234,10 @@
     color: #ffffff;
     background-color: $color-ubyssey-blue;
     filter: drop-shadow(-5px 10px 4px #00000040);
-    border: 2px var(--header_color) solid;
+    border-bottom: 3px $color-ubyssey-blue-light solid;
     transition-duration: 0.1s;
     &:hover {
-      border-color: var(--background);
+      border-color: white;
     }
 
     a{
@@ -667,6 +666,7 @@
 
     .o-article__headline {
       margin-top: 0;
+      margin-bottom: 0.5em;
       line-height: 1.3em;
       color: black;
 
@@ -1058,8 +1058,7 @@
   text-align: center;
 
   .caption {
-    margin: 20px;
-    margin-top: 5px;
+    margin-bottom: 1em !important;
     @media ($bp-larger-than-phablet) {
       text-align: center;  
     }
@@ -1072,7 +1071,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  flex-grow: 1;
+
   @media ($bp-smaller-than-phablet) {
     margin-bottom: 10px;
     margin-top: 0;
@@ -1134,6 +1133,12 @@
 }
 
 .vs-over-image {
+
+  .o-visual-essay__left-image {
+    height: 100%;
+    flex-grow: 1;
+    background-position: center;
+  }
 
   .o-visual-essay__left-div {
     width: 100%;
@@ -1209,6 +1214,13 @@
       background-color: var(--background);
       border-bottom-style: solid;
     }
+
+    .o-visual-essay__left-image {
+      @media ($bp-larger-than-phablet) {
+        background-position: top;
+        height: 50%;
+      }
+    }
   }
   .o-visual-essay__right-container {
     //width:40%;
@@ -1232,6 +1244,7 @@
     @media ($bp-smaller-than-phablet) {
       margin-bottom: 0;
       width: 100%;
+      overflow: clip;
     }
   }
 }
@@ -1275,6 +1288,8 @@
   font-weight: 600;
   background-color: #0071c9;
   > h2 {
+    margin: 0;
+    
     color: white;
     scroll-margin-top: 100px;
   }

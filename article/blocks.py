@@ -4,6 +4,14 @@ from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 
+class AudioBlock(blocks.StructBlock):
+    caption =  blocks.CharBlock(required=False)
+    audio = DocumentChooserBlock(required=True, help_text="Must be mp3 format")
+
+    class Meta:
+        template = 'article/stream_blocks/audio.html',
+        icon = "media"
+
 class PullQuoteBlock(blocks.StructBlock):
     content = blocks.CharBlock(required=True)
     source =  blocks.CharBlock(required=False)
@@ -85,6 +93,12 @@ class VisualEssayBlock(blocks.StructBlock):
                     label = "Credited/Captioned One-Off Video",
                     help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
                 )),
+                ('side',ChooseSideBlock(default=("left", "Left"))),
+            ], icon = "media"
+        )),
+        ('audio', blocks.StructBlock(
+            [
+                ('block', AudioBlock()),
                 ('side',ChooseSideBlock(default=("left", "Left"))),
             ], icon = "media"
         )),

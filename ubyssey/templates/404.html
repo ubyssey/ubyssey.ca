@@ -16,6 +16,7 @@
             {% comment %} //Load in image template from images section
             //DOES THIS NEED TO BE MODIFIED???
             //start {% endcomment %}
+            <h1>This page does not exist :/</h1>
             <div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
                 {% image self.image original as image %}
                 {% comment %} //img src and alt modified to be the image now added in the images folder
@@ -33,12 +34,6 @@
             //Was this was what was referred to in the search functionality 
             //what needs to be changed
             //start {% endcomment %}
-            <div class="article-search">
-                <form method="get" action="{% url 'search' %}">
-                <label for="author-search"><i class="fa fa-search"></i></label>
-                <input name="q" type="text" {% if q %}value="{{ q }}"{% endif %} placeholder="Search ubyssey.ca" />
-                </form>
-            </div>
             {% comment %} //end
 
             //Should this block of code be instead {% endcomment %}

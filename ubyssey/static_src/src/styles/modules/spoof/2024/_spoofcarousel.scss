@@ -1,0 +1,160 @@
+.carousel {
+  padding-left: 48px;
+  padding-right: 48px;
+  padding-bottom:3rem;
+  padding-top:1rem;
+
+}
+
+.carousel_title,
+.carousel_title_img {
+  --grid-gap: 1rem;
+  --grid-margin: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: var(--grid-gap);
+  row-gap: var(--grid-gap);
+  margin: 0px auto;
+  width: 100%;
+  max-width: 1600px;
+  padding-right: calc(1 * var(--grid-margin));
+  padding-left: calc(1 * var(--grid-margin));
+  padding-top: 2rem;
+  background: white;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(12, 1fr);
+    --grid-gap: 1.5rem;
+    --grid-margin: 3rem;
+  }
+
+  @media(min-width:1024px) {
+    --grid-gap: 2rem;
+  }
+
+  @media(min-width:1280px) {
+    --grid-margin: 4rem;
+  }
+
+  .stream_title>p{
+    color: black;
+  }
+}
+
+.cards-wrapper {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+
+
+  :first-child {
+    margin-left: 0;
+    height: fit-content;
+  }
+
+  :last-child {
+    margin-right: 0;
+  }
+}
+
+.card img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.card-body{
+  padding:0 !important ;
+  
+  h3.card-title{
+    font-size: 24px !important;
+  }
+}
+
+#carouselExampleControls {
+  margin: 0px auto;
+  max-width: 1600px;
+  width: 100%;
+
+  .control-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    top: 35%;
+    transform: translateY(-50%);
+    display: inline-block;
+    border: 0px;
+    opacity: 1;
+    min-width: auto;
+
+    svg {
+      width: 40px;
+      height: 40px;
+      fill: rgb(0, 0, 0);
+    }
+  }
+
+  .carousel-control-prev {
+    svg {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.recipe-carousel {
+  width: 100%;
+  margin: auto;
+  position: relative;
+  max-width: 1472px;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  @media (max-width: 1500px) {
+    max-width: calc(100% - 2em);
+  }
+  .article-carousel {
+    padding: 0;
+    li:first-child {
+      margin-left: 0;
+    }
+    li:last-child {
+      margin-right: 0;
+    }
+    li {
+      margin: 1em;
+      margin-bottom: 0;
+      width: 300px;
+      flex-shrink: 0;
+
+      .card-img-top {
+        height: 400px;
+        border-radius: 16px;
+      }
+      .card-title {
+        margin: 1em 0.5em;
+      }
+    }
+  }
+  .scroll-arrow {
+    background-color: white;
+    color: black;
+    position: absolute;
+    padding: 0 0.5em;
+    margin: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+    &:hover{
+      color: inherit;
+    }
+  }
+  .left {
+    left: 0;
+  }
+  .right {
+    right: 0;
+  }
+}

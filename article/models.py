@@ -489,6 +489,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 label = "Credited/Captioned One-Off Video",
                 help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
             )),
+            ('audio', article_blocks.AudioBlock()),
             ('image', image_blocks.ImageBlock(
             )),
             ('raw_html', blocks.RawHTMLBlock(
@@ -687,6 +688,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if self.layout == 'fw-story':
             return "article/article_page_fw_story.html"
+        elif self.layout == 'empty':
+            return "article/article_page_empty.html"
         elif self.layout == 'visual-essay':
             return "article/article_page_visual_essay.html"
         elif self.layout == 'guide-2020':
@@ -696,8 +699,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         elif self.layout == 'magazine-2023':
             return "article/article_page_magazine_2023.html"
         elif self.layout == 'guide-2023':
-            return "article/article_page_guide_2023.html"        
-                        
+            return "article/article_page_guide_2023.html"
+        elif self.layout == 'magazine-2024':
+            return "article/article_page_magazine_2024.html"
+        elif self.layout == 'spoof-2024':
+            return "article/article_page_spoof_2024.html"
+
         return "article/article_page.html"
 
     #-----For Wagtail's user interface-----
@@ -808,11 +815,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                         choices=[
                             ('default', 'Default'), 
                             ('fw-story', 'Full-Width Story'),
+                            ('empty', 'Empty template'),
                             ('visual-essay', 'Visual Essay'),
                             ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
                             ('guide-2022', 'Guide (2022 style)'),
                             ('magazine-2023', 'Magazine (2023 style)'),
                             ('guide-2023', 'Guide (2023 style)'),
+                            ('magazine-2024', 'Magazine (2024 style)'),
+                            ('spoof-2024', 'Spoof (2024 style)'),
                         ],
                     ),
                 ),
