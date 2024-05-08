@@ -3,6 +3,7 @@ from wagtail.blocks import field_block
 from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.images.blocks import ImageChooserBlock
 
 class AudioBlock(blocks.StructBlock):
     caption =  blocks.CharBlock(required=False)
@@ -130,3 +131,19 @@ class VisualEssayBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/visual-essay.html',
         icon = "form"
+
+class GalleryBlock(blocks.StructBlock):
+    images = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ('image', ImageChooserBlock(required = False)),
+                ('caption', blocks.CharBlock(required=False)),
+                ('credits', blocks.CharBlock(required=False)),
+            ],
+            label="Image",
+        )
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/gallery_block.html'
+        icon = "image"
