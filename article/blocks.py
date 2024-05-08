@@ -137,8 +137,8 @@ class GalleryBlock(blocks.StructBlock):
         blocks.StructBlock(
             [
                 ('image', ImageChooserBlock(required = False)),
-                ('caption', blocks.CharBlock(required=False)),
-                ('credits', blocks.CharBlock(required=False)),
+                ('caption', blocks.TextBlock(required=False)),
+                ('credits', blocks.TextBlock(required=False)),
             ],
             label="Image",
         )
