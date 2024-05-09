@@ -508,6 +508,12 @@
     }
   }
 
+  .top_article-subtitle {
+    color: black;
+    font-size: 0.7em;
+    font-weight: 600;
+  }
+
   .o-article__headline {
     // Structure
     flex: 1;
@@ -886,6 +892,10 @@
   .o-article--top_article {
     border-color: #00000045;
   }
+
+  .subtitle {
+    color: #484848;
+  }
 }
 
 .darkmode {
@@ -914,6 +924,14 @@
   }
   .o-article--top_article {
     border-color: white;
+  }
+
+  .subtitle {
+    color: #dfdfdf;
+  }
+
+  .disclaimer {
+    color: #3490d6;
   }
 }
 

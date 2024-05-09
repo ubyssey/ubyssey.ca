@@ -29,6 +29,13 @@
       </div>
     </div>
     <div class="o-article__right">
+      
+      {% if article.fw_optional_subtitle %}
+        <div class="top_article-subtitle">{{article.fw_optional_subtitle}}//</div>
+      {% elif article.category %}
+        <div class="top_article-subtitle">{{article.category.title}}//</div>
+      {% endif %}
+
       <h3 class="o-article__headline">
         <a href="{% pageurl article %}">{{ article.title|safe }}</a>
       </h3>

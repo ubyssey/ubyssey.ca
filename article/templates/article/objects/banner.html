@@ -32,6 +32,13 @@
                 <div class="backdrop" style="background-image: url('{{ featured_image.url }}');"></div>
                 <div class="headline-container">
                     <div class="u-container u-container--padded">
+                        
+                        {% if self.fw_optional_subtitle %}
+                            <h2 class="subtitle">{{self.fw_optional_subtitle}}//</h2>
+                        {% elif self.category %}
+                            <h2 class="subtitle">{{self.category.title}}//</h2>
+                        {% endif %}
+                        
                         <h1 class="headline">{{ self.title|safe }}</h1>
                         {% if self.fw_above_cut_lede %}
                             <p class="fw-description">{{ self.fw_above_cut_lede }}</p>

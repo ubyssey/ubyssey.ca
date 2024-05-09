@@ -6,10 +6,22 @@
     {% if self.header_layout == 'right-image' %}
         {% comment %} Odd choice of class names in this div. Should check the corresponding CSS {% endcomment %}
         <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
+        
+        {% if self.fw_optional_subtitle %}
+            <h2 class="subtitle">{{self.fw_optional_subtitle}}//</h2>
+        {% elif self.category %}
+            <h2 class="subtitle">{{self.category.title}}//</h2>
+        {% endif %}
         <h1 class="headline">
             {{ self.title |safe }}
         </h1>
 	{% elif self.header_layout == 'top-image' %}
+        {% if self.fw_optional_subtitle %}
+            <h2 class="subtitle">{{self.fw_optional_subtitle}}//</h2>    
+        {% elif self.category %}
+            <h2 class="subtitle">{{self.category.title}}//</h2> 
+        {% endif %}
+        
         <h1 class="o-headline o-headline--article">
             {{ self.title|safe }}
         </h1>
