@@ -1,11 +1,16 @@
 {% extends 'article/article_page.html' %}
 {% load static %}
 {% load wagtailimages_tags %}
+{% load ubyssey_ad_tags %}
 
 {% block head_scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+
+{% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
+    {% gpt_define_tag orderable.ad_slot is_mobile %}
+{% endfor %}
 {% endblock %}
 
 {% block header %}

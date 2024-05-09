@@ -1,0 +1,43 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% image self.card_image original as banner_image %}
+{% load static %}
+
+<div class="{{ self.class_name}}">
+
+    <a href = "{{self.card_page.url}}">
+        {% if self.class_name == "card_wrapper_5" %}
+            <img src="{{banner_image.url}}">
+        {% else %}
+            <div class="card-img-top" style="background-image: url('{{banner_image.url}}')"></div> 
+        {% endif %}
+    </a>
+        <div class="card-body"> 
+            {%if value.card_button%}
+            <div class = "section-button">{{self.card_button.title}}</div>
+            {%endif%}
+            <a href = "{{self.card_page.url}}" class= "card-body-link">
+            <h3 class = "card-title">
+                {{ self.card_title }}
+            </h3>
+            <p class = "card-text">
+                {{ self.card_text }}
+            </p>
+
+        </a>
+    </div>
+        <div class = "card-footer">
+           {% if value.card_review %}
+                <svg class = "review-star" focusable="false" width="12" hieght = "12" viewBox="0 0 12 12"
+                fill="none" xmlns="http://www.w3.or/2000/svg">    
+                    <path d="M6 9.09287L2.29173 11L3.02782 7.01113L0 4.20131L4.16334 3.64444L6 0L7.83666 3.64375L12 4.20131L8.97218 7.01113L9.70827 11L6 9.09287Z"
+                        fill-rule = "evenodd" clip-rule="evenodd"
+                        fill ="black">
+                    </path>
+                </svg>  
+            {{ self.card_review }}
+            {% endif %}
+   
+        </div>
+   
+</div>

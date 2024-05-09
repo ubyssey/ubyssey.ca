@@ -7,7 +7,7 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from section.models import SectionPage
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, HelpPanel
-from wagtail.contrib.settings.models import BaseSetting, register_setting
+from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.models import Orderable
 
 
@@ -147,7 +147,7 @@ class MobileLinksNavigationItem(NavigationMenuOrderable):
     )
 
 #-----Settings models-----
-class SitewideMenus(ClusterableModel, BaseSetting):
+class SitewideMenus(ClusterableModel, BaseSiteSetting):
     """    
     Collection of the NavigationMenus that are going to be used on many pages.
     Singleton class, and source of truth for the entire site.

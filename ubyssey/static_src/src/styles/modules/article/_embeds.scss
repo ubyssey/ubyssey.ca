@@ -36,6 +36,7 @@
   .o-advertisement {
     margin-bottom: 10px;
     clip-path: inset(0);
+    overflow: clip;
   }
 
   &:before {
@@ -468,4 +469,12 @@ hr.page-break{
   margin-top: 0.1em;
   margin-right: 0.08em;
   float: left;
+}
+
+div.article-content > p.drop-cap {
+  margin-top: 4em;
+}
+
+div.article-content > p.drop-cap:first-child {
+  margin-top: 1em;
 }

@@ -8,15 +8,20 @@
 
 @import 'modules/magazine/2023/banner';
 
-@import 'modules/magazine/2023/footer';
+@import 'modules/spoof/2024/footer';
 @import 'modules/magazine/2023/header';
 @import 'modules/magazine/2023/article-box';
 
 @import 'modules/magazine/2023/homepage';
 @import 'modules/spoof/2024/article';
-  
+
+@import 'modules/spoof/2024/spoofcard';
+@import 'modules/spoof/2024/spoofcarousel';
+@import 'modules/spoof/2024/spoofstreams';
+
 body {
   color: black;
+  font-family: $font-default;
 }
 
  h2 , h3 , h4, p {
@@ -62,4 +67,3 @@ body {
 .c-share_space {
   padding-right: 1em;
 }
-
