@@ -134,14 +134,7 @@ class VisualEssayBlock(blocks.StructBlock):
 
 class GalleryBlock(blocks.StructBlock):
     images = blocks.ListBlock(
-        blocks.StructBlock(
-            [
-                ('image', ImageChooserBlock(required = False)),
-                ('caption', blocks.TextBlock(required=False)),
-                ('credits', blocks.TextBlock(required=False)),
-            ],
-            label="Image",
-        )
+        image_blocks.ImageBlock()
     )
 
     class Meta:

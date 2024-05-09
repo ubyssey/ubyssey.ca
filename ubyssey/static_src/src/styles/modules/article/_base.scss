@@ -400,6 +400,17 @@ div.article-content {
     }
   }
 
+  .carousel-control-next, .carousel-control-prev {
+    opacity: 1;
+    i {
+      background: $color-ubyssey-blue;
+      aspect-ratio: 1;
+      width: 20px;
+      padding: 4px;
+      border-radius: 100%;
+    }
+  }
+
 }
 
 div.caption {

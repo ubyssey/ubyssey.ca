@@ -32,10 +32,15 @@ footer {
     }
   }
 
+  .navbar-nav {
+    flex-direction: row;
+  }
+
   ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+    flex-direction: row;
 
     li {
       margin: 0 8px;
