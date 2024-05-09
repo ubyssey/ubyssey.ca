@@ -133,6 +133,7 @@ class VisualEssayBlock(blocks.StructBlock):
         icon = "form"
 
 class GalleryBlock(blocks.StructBlock):
+    id = blocks.CharBlock(help_text="No numbers or spaces. Must be different from other ids defined in this article.", required=True)
     images = blocks.ListBlock(
         image_blocks.ImageBlock()
     )
