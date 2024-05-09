@@ -497,6 +497,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
             ('quote', article_blocks.PullQuoteBlock()),
+            ('gallery_snippet', SnippetChooserBlock(
+                target_model = GallerySnippet,
+                template = 'article/stream_blocks/gallery.html',
+            )),
             ('gallery', article_blocks.GalleryBlock()),
             ('header_link', article_blocks.HeaderLinkBlock()),
             ('header_menu', article_blocks.HeaderMenuBlock()),
