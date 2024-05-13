@@ -36,8 +36,8 @@ ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 MEDIA_URL = 'https://ubyssey.storage.googleapis.com/media/'
 MEDIA_ROOT = ''
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_ACCESS_KEY_ID = env('GS_ACCESS_KEY_ID')
-GS_SECRET_ACCESS_KEY = env('GS_SECRET_ACCESS_KEY')
+#GS_ACCESS_KEY_ID = env('GS_ACCESS_KEY_ID')
+#GS_SECRET_ACCESS_KEY = env('GS_SECRET_ACCESS_KEY')
 # GS_CREDENTIALS = service_account.Credentials.from_service_account_file('ubyssey-prd-ee6290e6327f.json')
 # GS_CREDENTIALS = env('GOOGLE_APPLICATION_CREDENTIALS')
 GS_BUCKET_NAME = 'ubyssey-staging'
@@ -46,16 +46,16 @@ GS_QUERYSTRING_AUTH = False
 GS_FILE_OVERWRITE = False
 
 # Facebook - Production Only
-FACEBOOK_CLIENT_ID = env('FACEBOOK_CLIENT_ID')
-FACEBOOK_CLIENT_SECRET = env('FACEBOOK_CLIENT_SECRET')
+#FACEBOOK_CLIENT_ID = env('FACEBOOK_CLIENT_ID')
+#FACEBOOK_CLIENT_SECRET = env('FACEBOOK_CLIENT_SECRET')
 
 # Emails - Production Only
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = 465
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_USE_SSL = True
-UBYSSEY_ADVERTISING_EMAIL = env('UBYSSEY_ADVERTISING_EMAIL')
+#EMAIL_HOST = env('EMAIL_HOST')
+#EMAIL_PORT = 465
+#EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+#EMAIL_USE_SSL = True
+#UBYSSEY_ADVERTISING_EMAIL = env('UBYSSEY_ADVERTISING_EMAIL')
 
 # Use in-memory file handler on Google App Engine
 FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.MemoryFileUploadHandler',]
