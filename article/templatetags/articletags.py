@@ -69,3 +69,13 @@ def display_pubdate(value):
     if seconds == 1:
         return "1 second ago"
     return str(seconds) + " seconds ago"
+
+@register.filter(name="get_id")
+def get_id(value):
+    from wagtail.models import Page, PageManager, SiteRootPath
+    requested_path = '/ubyssey' + value
+    requested =  Page.objects.filter(url_path=requested_path)
+    if len(requested) == 1:
+        return requested[0].id
+    else:
+        return False
