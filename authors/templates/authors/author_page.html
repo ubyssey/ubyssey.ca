@@ -20,7 +20,7 @@
 		<div class="author-header">
 			{% if self.image %}
 				{% image self.image width-350 format-webp as pfp %}
-				<div class="author-img" style="background-image: url('{{pfp.full_url}}')"></div>
+				<div class="author-img" style="background-image: url('{{pfp.full_url}}')" aria-label="{{ self.title }}"></div>
 			{% endif %}
 			<div class="author-info">
 				<h1 class="author-name">{{ self.title }}</h1>

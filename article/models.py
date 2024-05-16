@@ -266,6 +266,8 @@ class ArticleFeaturedMediaOrderable(Orderable):
 
     caption = models.TextField(blank=True, null=False, default='')
     credit = models.TextField(blank=True, null=False, default='')
+    alt_text = models.TextField(blank=True, null=False, default='',
+        help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
     # style = models.CharField(max_length=255, blank=True, null=False, default='')
     # width = models.CharField(max_length=255, blank=True, null=False, default='')
     image = models.ForeignKey(
@@ -295,6 +297,7 @@ class ArticleFeaturedMediaOrderable(Orderable):
             [
                 FieldPanel("caption"),
                 FieldPanel("credit"),
+                FieldPanel("alt_text"),
             ],
             heading="Caption/Credits",
         ),
