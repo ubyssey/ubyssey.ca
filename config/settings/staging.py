@@ -25,7 +25,7 @@ CACHES = {
         'TIMEOUT': 3600, # 1 hour
     },
     "renditions": {
-        'BACKEND': 'ubyssey.cache.AppEngineMemcacheCache',
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
         'TIMEOUT': 3600, # 1 hour
     }
 }
