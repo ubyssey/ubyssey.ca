@@ -2,11 +2,28 @@
 {% load cache %}
 {% load menu_tags %}
 <footer>
-    <div class="u-container{% if homepage %} u-container--large{% endif %}">
+    <div class="u-container u-container--large">
 
-        <a class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small-grey.svg' %}" alt=""/></a>
-        <div class="funding light-logo"><img class="logo" src="{% static 'ubyssey/images/canada-funding-light.png' %}" alt=""/></div>
-        <div class="funding dark-logo"><img class="logo" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" alt=""/></div>
+        <div class="about">
+            <div class="footer-branding">
+                <img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-blue.svg' %}" alt=""/>
+                <img class="funding" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" alt=""/>
+            </div>
+            
+            <div class="about-text">
+                <h2><span>THE UBYSSEY</span> is the UBC’s student paper</h2>
+                <p>Known as The Anon, The Ubicee, The vilest rag west of Blanca, and “how do you pronounce that?”, the Ubyssey has been your student paper since 1918. something something not real just example text something
+                </p>
+                <p>Be notified!</p>
+                <ul>
+                    <li><a href="/rss">Rss</a>, <a href="/newsletter">Newsletter</a></li>
+                </ul>
+                <p>Get involved!</p>
+                <ul>
+                    <li><a href="/pages/volunteer">Volunteer</a>, Join the Discord</li>
+                </ul>
+            </div>
+        </div>
         <nav>
             <div class="top-row">
                 <ul class="sections">

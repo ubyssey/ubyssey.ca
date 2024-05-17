@@ -5,11 +5,23 @@
 <div class="headline-container">
     {% if self.header_layout == 'right-image' %}
         {% comment %} Odd choice of class names in this div. Should check the corresponding CSS {% endcomment %}
+        <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
+        
+        {% if self.fw_optional_subtitle %}
+            <h2 class="subtitle">{{self.fw_optional_subtitle}}//</h2>
+        {% elif self.category %}
+            <h2 class="subtitle">{{self.category.title}}//</h2>
+        {% endif %}
         <h1 class="headline">
             {{ self.title |safe }}
-            
         </h1>
 	{% elif self.header_layout == 'top-image' %}
+        {% if self.fw_optional_subtitle %}
+            <h2 class="subtitle">{{self.fw_optional_subtitle}}//</h2>    
+        {% elif self.category %}
+            <h2 class="subtitle">{{self.category.title}}//</h2> 
+        {% endif %}
+        
         <h1 class="o-headline o-headline--article">
             {{ self.title|safe }}
         </h1>
@@ -19,22 +31,14 @@
 	{% endif %}
 
     <div class="c-article__info">
-        {% comment %}
-            {% include 'objects/social-icons.html' with article=article layout='top' %}
-        {% endcomment %}
-            
-        <div class="c-fw_authors_info">
-            {% include "article/objects/author_bio.html" %}
-        </div>
-        
+        <p class="author-string">{{self.authors_with_roles |safe }}</p>
     </div>
+
 
     <div class="c-authors_bio_meta">
         <div class="c-article__byline">
 
             <div class="c-article__byline__meta">
-                <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
-                                    
                 {% if reading_time %}
                     <span> &nbsp;&middot;&nbsp; </span>
                     <span class="c-article__reading-time">{{ reading_time }} min read</span>
@@ -51,11 +55,4 @@
         </div>
 
 	</div>
-    <div class="c-article__byline c-article_byline_fw">
-        {% include 'article/objects/share_bar.html' %}
-        <span class="c-article_dark_mode">
-            {% include 'article/objects/darkmode_button.html' with id="fw_article"%}
-        </span>
-    </div>
-
 </div>

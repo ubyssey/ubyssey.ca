@@ -334,7 +334,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     def save(self, *args, **kwargs):
         self.current_section = self.slug
         return Page.save(self,*args, **kwargs)
-
+    
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"

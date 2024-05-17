@@ -532,6 +532,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
     tags = ClusterTaggableManager(through='article.ArticlePageTag', blank=True)
 
+    disclaimer = models.TextField(
+        null=False,
+        blank=True,
+        default='',
+        help_text = "Use this format: <strong>This is an opinion letter.</strong> It does not reflect the opinions of The Ubyssey as a whole. You can submit an opinion at <a href='ubyssey.ca/pages/submit-an-opinion'>ubyssey.ca/pages/submit-an-opinion</a>."
+    )
+
     # template #TODO
 
     #-----Promote panel stuff------
@@ -748,6 +755,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 InlinePanel("featured_media", label="Featured Image or Video"),
             ],
             heading="Featured Media",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("disclaimer")
+            ],
+            heading="Disclaimer",
             classname="collapsible",
         ),
     ] + UbysseyMenuMixin.menu_content_panels # content_panels
@@ -1071,7 +1085,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         
         return section_articles
 
-    def get_suggested(self, number_suggested=6):
+    def get_suggested(self, number_suggested=3):
         """
         Defines the title and articles in the suggested box
         """
@@ -1081,12 +1095,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if self.category == None or len(category_articles) == 0:
             suggested = {}
-            suggested['title'] = "From " + self.get_parent().title
+            suggested['title'] = self.get_parent().title
             suggested['articles'] = section_articles[:number_suggested]
+            suggested['link'] = self.get_parent().url
         elif len(section_articles) > 0:
             suggested = {}
-            suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
+            suggested['title'] = self.category.title
             suggested['articles'] = category_articles[:number_suggested]
+            suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
         else:
             suggested = False
 

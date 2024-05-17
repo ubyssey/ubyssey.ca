@@ -5,47 +5,112 @@ $text-color: var(--text_color);
 footer {
 
   padding: 15px 0;
-  line-height: 40px;
-  border-top: 2px solid #646464;
-  text-align: center;
+  border-top: 0.5em solid $color-ubyssey-blue;
+  background-color: $color-ubyssey-blue-dark;
+  color: white;
   position: relative;
   bottom: 0;
   left: 0;
   right: 0;
-  color: $text-color;
-
-  a.home-link {
-    img {
-      vertical-align: -8%;
-      height: 20px;
-      width: auto;
+  .about {
+    line-height: 2em;
+    max-width: 1000px;
+    margin: auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    display: flex;
+    h2 {
+      font-size: 2em;
+      font-weight: 200;
+      span {
+        font-weight: 600;
+      }
+    }
+    h2, p, li {
+      color: $color-ubyssey-blue-light;
+    }
+    a {
+      text-decoration: underline;
     }
   }
 
-  .funding {
-    display: inline;
-    margin-left: 0.5em;
-    img {
-      vertical-align: -8%;
-      height: 20px;
-      width: auto;
+  div.footer-branding {
+    margin-right: 2em;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    .logo {
+      height: auto;
+      width: 100%;
+    }
+    .funding {
+      margin-top: 30px;
+      align-self: end;
+      width: 55%;
+      margin-right: 1em;
     }
   }
 
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+  nav {
+    text-align: center;
+    line-height: 40px;
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
 
-    li {
-      margin: 0 8px;
-      display: inline-block;
+      li {
+        margin: 0 8px;
+        display: inline-block;
+      }
+    }
+  }
+
+  .copyright {
+    margin: 0.5em;
+    text-align: center;
+  }
+
+  @media($bp-larger-than-tablet){
+    .about {
+      h2 {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      p {
+        margin-top: 0.5em;
+      }
+    }
+    div.about-text {
+      flex-grow: 1;
+      width: 0;
+    }
+    nav .top-row {
+      font-size: 21px;
+      font-weight: 600;
+      li {
+        margin: 0 10px;
+      }
     }
   }
 
   @media($bp-smaller-than-tablet){
+    .about {
+      flex-direction: column;
+      max-width: 600px;
+      padding: 1em;
+      h2 {
+        text-align: center;
+      }
+    }
+    .about-text {
+      width: auto;
+    }
     nav{
       display: flex;
+    }
+    div.footer-branding {
+      margin: auto;
     }
     .top-row, .bottom-row{
       width: 50%;

@@ -40,7 +40,7 @@
 			<div class="author-pinned_list">
 				{% for article in self.pinned_articles.all %}
 					<div class="author-pinned_article">	
-						{% include 'article/objects/author_pinned.html' with article=article.article %}
+						{% include 'article/objects/suggested_article.html' with article=article.article %}
 					</div>
 				{% endfor %}
 			</div>
