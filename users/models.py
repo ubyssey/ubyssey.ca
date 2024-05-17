@@ -16,6 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = CharField(max_length=150, blank=True)
 
     is_active = BooleanField(default=True)
+    is_staff = BooleanField(default=False)
 
     # Use the email as the username. Users log in with email + password
     # instead of username + password.
