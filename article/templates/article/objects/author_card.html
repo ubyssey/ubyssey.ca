@@ -5,7 +5,7 @@
 <div class="author_card">
     <div class="author_title {% if author.author.image and author.author.display_image %}with_image{%endif%}">
     {% if author.author.image and author.author.display_image %}     
-        {% image author.author.image width-200 format-webp class="author_image" %}
+        {% image author.author.image width-200 format-webp class="author_image" alt=author.author.full_name %}
     {% endif %}
         <p>
         <span class="author_name">
