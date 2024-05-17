@@ -5,7 +5,7 @@ from wagtail.admin.panels import TabbedInterface, ObjectList, MultiFieldPanel, H
 from wagtail.models import Orderable
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtailmodelchooser import register_model_chooser
-from wagtailmodelchooser.edit_handlers import ModelChooserPanel
+from wagtail.admin.panels import FieldPanel
 
 @register_model_chooser
 class AdSlot(models.Model):
@@ -175,7 +175,7 @@ class AdHeadOrderable(Orderable):
     )
 
     panels = [
-        ModelChooserPanel('ad_slot'),
+        FieldPanel('ad_slot'),
     ]
 
 class AdPlacementOrderable(Orderable):
@@ -189,7 +189,7 @@ class AdPlacementOrderable(Orderable):
     )
 
     panels = [
-        ModelChooserPanel('ad_slot'),
+        FieldPanel('ad_slot'),
     ]
 
 class HomeAdHeadOrderable(AdPlacementOrderable):

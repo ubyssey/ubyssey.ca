@@ -13,26 +13,26 @@ from django.shortcuts import render
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
-from wagtail.images.edit_handlers import ImageChooserPanel
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel
+
+from wagtail.admin.panels import TitleFieldPanel, FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import StreamField
 from wagtail import models as wagtail_core_models
 from wagtail.models import Page
 from wagtail.contrib.routable_page.models import route, RoutablePageMixin
 from wagtail.search import index
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
+
 from wagtail.snippets.models import register_snippet
 
 from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
 
 from wagtail.documents.models import Document
-from wagtail.documents.edit_handlers import DocumentChooserPanel
+
 
 from home import blocks as homeblocks
 from infinitefeed import blocks as infinitefeedblocks
 
-from wagtail.core import blocks
+from wagtail import blocks
 from wagtail.snippets.blocks import SnippetChooserBlock
 
 import datetime
@@ -78,13 +78,13 @@ class CategorySnippet(index.Indexed, ClusterableModel):
         related_name="categories",
     )
     search_fields = [
-        index.SearchField('title', partial_match=True),
+        index.AutocompleteField('title'),
     ]
 
     panels = [
         MultiFieldPanel(
             [
-                FieldPanel("title"),
+                TitleFieldPanel("title"),
                 FieldPanel("slug"),
                 FieldPanel("section_page"),
                 FieldPanel("description"),
