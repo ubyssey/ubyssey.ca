@@ -44,7 +44,7 @@ from wagtail.admin.panels import (
 )
 
 from wagtail import blocks
-from wagtail.fields import StreamField
+from wagtail.fields import StreamField, RichTextField
 from wagtail.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
@@ -266,6 +266,8 @@ class ArticleFeaturedMediaOrderable(Orderable):
 
     caption = models.TextField(blank=True, null=False, default='')
     credit = models.TextField(blank=True, null=False, default='')
+    alt_text = models.TextField(blank=True, null=False, default='',
+        help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
     # style = models.CharField(max_length=255, blank=True, null=False, default='')
     # width = models.CharField(max_length=255, blank=True, null=False, default='')
     image = models.ForeignKey(
@@ -295,6 +297,7 @@ class ArticleFeaturedMediaOrderable(Orderable):
             [
                 FieldPanel("caption"),
                 FieldPanel("credit"),
+                FieldPanel("alt_text"),
             ],
             heading="Caption/Credits",
         ),
@@ -532,11 +535,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
     tags = ClusterTaggableManager(through='article.ArticlePageTag', blank=True)
 
-    disclaimer = models.TextField(
+    disclaimer = RichTextField(
         null=False,
         blank=True,
         default='',
-        help_text = "Use this format: <strong>This is an opinion letter.</strong> It does not reflect the opinions of The Ubyssey as a whole. You can submit an opinion at <a href='ubyssey.ca/pages/submit-an-opinion'>ubyssey.ca/pages/submit-an-opinion</a>."
+        help_text = "Used for Opinion articles or when corrections are made"
     )
 
     # template #TODO
@@ -618,12 +621,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         max_length=255,
     )
 
-    fw_optional_subtitle = models.CharField(
+    title_tag = models.CharField(
         null=False,
         blank=True,
         default='',
-        verbose_name='Subtitle (Optional)',
-        help_text="When there is a \"special feature\" or full-width style article, sometime we want to add a subtitle alongside the title",
+        verbose_name='Title Tag (Optional)',
+        help_text="This appears above the title. It mimics the title tags in the print issue.",
         max_length=255,
     )
     
@@ -852,7 +855,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     help_text='This field is used to set variations on the \"Full-Width Story\" and similar layouts.',
                 ),
                 FieldPanel('fw_alternate_title'),
-                FieldPanel('fw_optional_subtitle'),
+                FieldPanel('title_tag'),
                 FieldPanel('fw_above_cut_lede'),
             ],
             heading = "Optional Header/Banner Fields",

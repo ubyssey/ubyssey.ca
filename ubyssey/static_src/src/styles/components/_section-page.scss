@@ -139,8 +139,9 @@
 }
 
 .c-section__buttons {
-  display: inline-block;
+  display: flex;
   text-align: right;
+  justify-content: right;
   width: 100%;
   @media($bp-smaller-than-phablet) {
     display: block;
@@ -149,9 +150,7 @@
 
 .c-section__button-label {
   text-align: right;
-  margin-left: 10%;
   display: inline-block;
-  max-width: 50%;
   z-index:10;
   position: relative;
   cursor: pointer;

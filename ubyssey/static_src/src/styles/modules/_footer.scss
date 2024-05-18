@@ -48,6 +48,10 @@ footer {
       align-self: end;
       width: 55%;
       margin-right: 1em;
+      @media($bp-smaller-than-tablet){
+        align-self: center;
+        margin-right: 0;
+      }
     }
   }
 
