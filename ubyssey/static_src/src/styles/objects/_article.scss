@@ -508,10 +508,11 @@
     }
   }
 
-  .top_article-subtitle {
+  .top_article-title-tag {
     color: black;
     font-size: 0.7em;
     font-weight: 600;
+    text-transform: uppercase;
   }
 
   .o-article__headline {
@@ -893,7 +894,7 @@
     border-color: #00000045;
   }
 
-  .subtitle {
+  .title-tag {
     color: #484848;
   }
 }
@@ -926,12 +927,15 @@
     border-color: white;
   }
 
-  .subtitle {
+  .title-tag {
     color: #dfdfdf;
   }
 
   .disclaimer {
     color: #3490d6;
+    p {
+      color: #3490d6;
+    }
   }
 }
 
@@ -1034,6 +1038,19 @@
   margin: auto;
   margin-top: 50px;
   margin-bottom: 100px;
+  
+  a {
+    padding: 0px 3px;
+    border-bottom: 1px solid;
+
+    color: inherit;
+    font-weight: 600;
+    transition-duration: 0.5s;
+    &:hover{
+      color: $color-ubyssey-blue;
+    }
+  }
+  
   @media ($bp-smaller-than-phablet) {
     flex-direction: column;
   }

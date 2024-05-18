@@ -30,10 +30,10 @@
     </div>
     <div class="o-article__right">
       
-      {% if article.fw_optional_subtitle %}
-        <div class="top_article-subtitle">{{article.fw_optional_subtitle}}//</div>
+      {% if article.title_tag %}
+        <div class="top_article-title-tag">{{article.title_tag}}//</div>
       {% elif article.category %}
-        <div class="top_article-subtitle">{{article.category.title}}//</div>
+        <div class="top_article-title-tag">{{article.category.title}}//</div>
       {% endif %}
 
       <h2 class="o-article__headline">

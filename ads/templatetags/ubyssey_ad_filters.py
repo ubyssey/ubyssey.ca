@@ -24,7 +24,7 @@ def inject_ads(value, is_mobile):
 
     # Break down content into paragraphs
     soup = BeautifulSoup(value, 'html.parser')
-    paragraphs = soup.select(".article-content > p")
+    paragraphs = soup.select("p:not(div > p)")
 
     if PARAGRAPHS_PER_AD < len(paragraphs): # If the article is somehow too short for even one ad, it doesn't get any
         x = range(0, len(paragraphs), PARAGRAPHS_PER_AD)

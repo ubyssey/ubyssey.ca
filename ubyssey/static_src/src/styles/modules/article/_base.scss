@@ -54,7 +54,7 @@ div.indicator {
 
 
 // Article
-.subtitle {
+.title-tag {
   margin-bottom: 0;
   color: #808080;
   font-size: 1em;
@@ -68,7 +68,11 @@ div.indicator {
   padding-top: 0.75em;
   max-width: 585px;
   color: $color-ubyssey-blue;
-  line-height: 2em;
+  p {
+    margin-top: 0;
+    color: $color-ubyssey-blue;
+    line-height: 2em;
+  }
 
   a {
     text-decoration: underline;
@@ -179,6 +183,7 @@ div.indicator {
 
   @media($bp-smaller-than-mobile) {
     width: auto;
+    padding-bottom: 3em;
     border-radius: 0;
   }
 
@@ -441,6 +446,7 @@ div.article-content {
       padding: 0px 3px;
       border-bottom: 1px solid;
 
+      font-weight: 600;
       color: inherit;
       transition-duration: 0.5s;
       &:hover{
