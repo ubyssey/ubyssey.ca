@@ -692,6 +692,11 @@ ol.article-list {
   border-width: 0.1em;
   border-style: solid;
 }
+
+.boxLabel-right > strong {
+  white-space: nowrap;
+}
+
 .boxText {
   margin: 0;
   font-size: 1em;
