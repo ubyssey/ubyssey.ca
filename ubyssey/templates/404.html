@@ -5,13 +5,12 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-{% block content %}
-{% comment %} //header for website {% endcomment %}
+{% block header %}
 {% include 'navigation/headers/topbar.html' %}
-{% comment %} //header for mobile app {% endcomment %}
 {% include 'navigation/headers/mobile.html' %}
-{% comment %} //new 404 class {% endcomment %}
+{% endblock %}
 
+{% block content %}
 <main class="404">
     <div class="u-container u-container--padded">
         <style>
