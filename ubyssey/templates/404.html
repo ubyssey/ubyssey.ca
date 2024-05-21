@@ -26,59 +26,53 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                font-family: Arial, sans-serif;
+                font-family: 'Noto Sans', 'Helvetica Neue', sans-serif;
                 background-color: #f9f9f9;
                 color: #333;
             }
 
             .container {
                 text-align: center;
-                padding: 20px;
-                max-width: 90%;
-                /* box-sizing: border-box; */
-                margin-top: -160px;
+                transform: scale(0.25);
+                margin-top: -170px;
 
             }
 
             h1 {
-                font-size: 10vw;
-                /* Dynamically scale based on viewport width */
+                font-size: 30vw;
                 margin: 0;
             }
 
             h2 {
                 font-size: 5vw;
-                /* Dynamically scale based on viewport width */
                 margin: 0.5em 0;
             }
 
-            p {
+            p.error-message {
                 font-size: 2vw;
-                /* Dynamically scale based on viewport width */
                 margin: 0.5em 0;
             }
 
             a {
                 color: blue;
-                /* Make hyperlink blue */
                 text-decoration: none;
             }
 
             a:hover {
                 text-decoration: underline;
             }
+            p.load-articles{
+                font-size: 5vw; 
+                margin-top: 100px; 
 
-            .container {
-
-                transform: scale(0.25);
             }
         </style>
         <div class="container">
             <h1>404</h1>
             <h2>Page Not Found</h2>
-            <p>The page you have searched is not available.</p>
-            <p>Questions? Contact EMAIL: <a href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
-            <p>Is this what you were looking for?</p>
+            <p class="error-message">The page you have searched is not available.</p>
+            <p class="error-message">Questions? Contact EMAIL: <a href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
+            <p class="load-articles">Is this what you were looking for?</p>
         </div>
     </div>
 </main>
