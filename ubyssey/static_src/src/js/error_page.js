@@ -25,7 +25,9 @@ function getArticles() {
 
 function recievedata(data) {
   var feed = document.getElementById("feed");
-    for (let i=0; i<3; i++) {
+  console.log("epic");
+    for (let i=0; i<3 && i<data.length; i++) {
       feed.insertAdjacentHTML("beforeend", data[i]);
+      console.log("placed");
     }
 }
