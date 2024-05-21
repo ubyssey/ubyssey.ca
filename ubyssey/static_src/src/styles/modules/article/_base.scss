@@ -62,12 +62,13 @@ div.indicator {
 }
 
 .disclaimer {
-  margin: 0 auto;
-  margin-top: 2em;
+  margin: 2em auto;
   border-top: 2px solid;
   padding-top: 0.75em;
   max-width: 585px;
+
   color: $color-ubyssey-blue;
+  font-family: $font-default;
   p {
     margin-top: 0;
     color: $color-ubyssey-blue;
