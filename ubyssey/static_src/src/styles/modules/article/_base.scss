@@ -448,8 +448,8 @@ div.article-content {
       border-bottom: 1px solid;
 
       font-weight: 600;
-      color: inherit;
       transition-duration: 0.5s;
+      color: $color-ubyssey-blue;
       &:hover{
         color: $color-ubyssey-blue;
       }
