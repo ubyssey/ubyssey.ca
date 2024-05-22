@@ -6,3 +6,7 @@ User-agent: ClaudeBot
 User-agent: Meltwater
 User-agent: Bytespider
 Disallow: /
+
+User-agent: *
+Disallow: /api/
+Disallow: /admin/
