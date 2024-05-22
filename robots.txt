@@ -1,3 +1,8 @@
-User-agent: *
-Disallow: /api/
-Disallow: /admin/
+User-agent: Amazonbot
+User-agent: anthropic-ai
+User-agent: AwarioSmartBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Meltwater
+User-agent: Bytespider
+Disallow: /
