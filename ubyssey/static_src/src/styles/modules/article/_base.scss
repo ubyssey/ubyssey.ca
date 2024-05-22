@@ -444,6 +444,7 @@ div.article-content {
     }
 
     .carousel-indicators {
+      z-index: 0;
       button {
         opacity: 1;
         background-color: #A9A9A9;
