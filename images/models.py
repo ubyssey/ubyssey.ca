@@ -9,11 +9,10 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.admin.panels import TitleFieldPanel, FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.models import Orderable
 from wagtail.coreutils import string_to_ascii
 from wagtail.images.models import Image, AbstractImage, AbstractRendition
-from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.snippets.models import register_snippet
 from wagtail.search import index
 
@@ -170,7 +169,7 @@ class GallerySnippet(ClusterableModel):
     panels = [
         MultiFieldPanel(
             [
-                FieldPanel("title"),
+                TitleFieldPanel("title"),
                 FieldPanel("slug"),
             ],
             heading="Essentials",

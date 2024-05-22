@@ -14,7 +14,6 @@ from wagtail.admin.panels import (
     FieldPanel,
     MultiFieldPanel,
     InlinePanel,
-    StreamFieldPanel,
     HelpPanel,
 )
 
@@ -24,11 +23,8 @@ from wagtail import blocks
 from wagtail.models import Page, Orderable
 from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
-from wagtail.images.edit_handlers import ImageChooserPanel
 
 from wagtailmenus.models import FlatMenu
-from wagtailmodelchooser.edit_handlers import ModelChooserPanel
 
 class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     """
@@ -222,7 +218,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
         MultiFieldPanel(
             [
-                ImageChooserPanel("featured_media"),
+                FieldPanel("featured_media"),
             ],
             heading="Meta Image",
         ),
