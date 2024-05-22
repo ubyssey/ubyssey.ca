@@ -1,32 +1,22 @@
-
-var feed = document.getElementById("feed");
-
 var data = {};
 
-function getData(attribute) {
-  if (feed.getAttribute(attribute) != null) {
-    data[attribute] = feed.getAttribute(attribute);
-  }  
-}
+data["start"] = 0;
+data["number"] = 3;
+data["search_query"] = window.location.href.split("/")[-1];
 
-getData("search_query");
-
-function getArticles() {
-  $.ajax({
-    type:"GET",
-    url: "/infinitefeed",
-    data:data,
-    success: function(data) 
-    {
-      recievedata(data);
-    }
-  })
-}
+$.ajax({
+  type:"GET",
+  url: "/infinitefeed",
+  data:data,
+  success: function(data) 
+  {
+    recievedata(data);
+  }
+})
 
 function recievedata(data) {
   var feed = document.getElementById("feed");
-  console.log("epic");
-    for (let i=0; i<3 && i<data.length; i++) {
+    for (let i=0; i<data.length; i++) {
       feed.insertAdjacentHTML("beforeend", data[i]);
       console.log("placed");
     }
