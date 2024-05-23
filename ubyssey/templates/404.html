@@ -23,8 +23,12 @@
             }
 
             body {
+                position: absolute;
+                top: 0;
+                transform: scale(0.4);
+                transform-origin: top;
                 display: flex;
-                justify-content: center;
+                flex-direction: column;
                 align-items: center;
                 font-family: 'Noto Sans', 'Helvetica Neue', sans-serif;
                 background-color: #f9f9f9;
@@ -33,13 +37,11 @@
 
             .container {
                 text-align: center;
-                transform: scale(0.25);
-                margin-top: -170px;
-
+                margin-top: 0;
             }
 
             h1 {
-                font-size: 30vw;
+                font-size: 15vw;
                 margin: 0;
             }
 
@@ -61,17 +63,48 @@
             a:hover {
                 text-decoration: underline;
             }
-            p.load-articles{
-                font-size: 5vw; 
-                margin-top: 100px; 
 
+            p.load-articles {
+                font-size: 3vw;
+                margin-top: 50px;
+            }
+
+            #feed {
+                margin-top: 20px;
+                width: 90%;
+                max-width: 1200px;
+            }
+
+            .article {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 10px;
+            }
+
+            .article img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .article h3 {
+                font-size: 2vw;
+                margin: 10px 0;
+            }
+
+            .article p {
+                font-size: 1.5vw;
+                margin: 5px 0;
             }
         </style>
         <div class="container">
             <h1>404</h1>
             <h2>Page Not Found</h2>
             <p class="error-message">The page you have searched is not available.</p>
-            <p class="error-message">Questions? Contact EMAIL: <a href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
+            <p class="error-message">Questions? Contact EMAIL: <a
+                    href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
             <p class="load-articles">Is this what you were looking for?</p>
         </div>
         <div id="feed"></div>
