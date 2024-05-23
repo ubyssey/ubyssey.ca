@@ -13,7 +13,10 @@
 	<meta name="viewport"
 		content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 	{% block darkmode %}
-	<meta name="color-scheme" content="">
+	<meta name="color-scheme" content="unset">
+	<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#041620" />
+
 	<script src="{% static 'ubyssey/js/initializeDarkmode.js' %}" type="text/javascript"></script>
 	{% endblock %}
 	{% include 'ubyssey/meta_tags.html' %}
