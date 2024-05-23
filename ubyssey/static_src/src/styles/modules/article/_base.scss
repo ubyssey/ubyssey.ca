@@ -362,6 +362,10 @@ div.article-content {
     text-align: right;
   }
 
+  > h2, > h3 {
+    font-weight: 600;
+  }
+
   > p,
   div.caption,
   > h1,
