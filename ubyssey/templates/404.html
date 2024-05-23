@@ -14,30 +14,21 @@
 <main class="404">
     <div class="u-container u-container--padded">
         <style>
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                width: 100%;
+            * {
+                box-sizing: border-box;
             }
 
+            html,
             body {
-                position: absolute;
-                top: 0;
-                transform: scale(0.4);
-                transform-origin: top;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                font-family: 'Noto Sans', 'Helvetica Neue', sans-serif;
-                background-color: #f9f9f9;
-                color: #333;
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
             }
 
             .container {
                 text-align: center;
-                margin-top: 0;
+                margin-top: 20px;
             }
 
             h1 {
@@ -69,46 +60,33 @@
                 margin-top: 50px;
             }
 
-            #feed {
-                margin-top: 20px;
-                width: 90%;
-                max-width: 1200px;
+            main {
+                min-height: 100%;
             }
 
-            .article {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                margin-bottom: 20px;
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 10px;
-            }
-
-            .article img {
-                max-width: 100%;
+            #content {
+                transform: scale(0.6);
+                /* adjust this value to scale the element up or down */
+                transform-origin: top center;
+                /* this ensures the element scales from the top center */
+                overflow: auto;
+                /* change this from 'hidden' to 'auto' */
                 height: auto;
-            }
-
-            .article h3 {
-                font-size: 2vw;
-                margin: 10px 0;
-            }
-
-            .article p {
-                font-size: 1.5vw;
-                margin: 5px 0;
+                /* add this line */
             }
         </style>
-        <div class="container">
-            <h1>404</h1>
-            <h2>Page Not Found</h2>
-            <p class="error-message">The page you have searched is not available.</p>
-            <p class="error-message">Questions? Contact EMAIL: <a
-                    href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
-            <p class="load-articles">Is this what you were looking for?</p>
+        <div id="content">
+            <div class="container">
+                <h1>404</h1>
+                <h2>Page Not Found</h2>
+                <p class="error-message">The page you have searched is not available.</p>
+                <p class="error-message">Questions? Contact EMAIL: <a
+                        href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
+                <p class="load-articles">Is this what you were looking for?</p>
+            </div>
+            <div id="feed"></div>
+            <script src="{% static 'ubyssey/js/error_page.js' %}" type="text/javascript"></script>
         </div>
-        <div id="feed"></div>
-        <script src="{% static 'ubyssey/js/error_page.js' %}" type="text/javascript"></script>
     </div>
 </main>
 {% endblock %}
