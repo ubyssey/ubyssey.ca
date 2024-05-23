@@ -1,19 +1,94 @@
+{% extends 'ubyssey/base.html' %}
+{% comment %} //load in static {% endcomment %}
+{% load static %}
+{% comment %} // block of content for actual page {% endcomment %}
 {% load wagtailcore_tags %}
-{% load articletags %}
+{% load wagtailimages_tags %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500 - Server Error</title>
-</head>
-<body>
-    <h1>500 - Server Error</h1>
-    <p>Something went wrong on our server. Please try again later.</p>
-    <p>If the problem persists, please contact the webmaster at <a href="mailto:webmaster@ubyssey.ca">webmaster@ubyssey.ca</a>.</p>
-    {% if request.path|get_id %}
-    <a href="/admin/pages/{{ request.path|get_id }}/edit">Edit this page in admin</a>
-    {% endif %}
-</body>
-</html>
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<main class="500">
+    <div class="u-container u-container--padded">
+
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                width: 100%;
+            }
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Noto Sans', 'Helvetica Neue', sans-serif;
+                background-color: #f9f9f9;
+                color: #333;
+            }
+
+            h1 {
+                font-size: 30vw;
+                margin: 0;
+            }
+
+            h2 {
+                font-size: 5vw;
+                margin: 0.5em 0;
+            }
+
+            p.error-message {
+                font-size: 2vw;
+                margin: 0.5em 0;
+            }
+
+            a {
+                color: blue;
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            p.load-articles {
+                font-size: 5vw;
+                margin-top: 100px;
+
+            }
+
+            .center-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                transform: scale(0.25);
+                margin-top: -170px;
+
+            }
+        </style>
+        <div class="center-container">
+            <div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
+                {% image self.image original as image %}
+                <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{% static 'images/404graphic.png' %}" alt="Ubyssey Logo" />
+                {% if self.caption or self.credit %}
+                    <div class="caption">
+                        {% if self.caption %}{{ self.caption|safe }}{% endif %} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
+                    </div>
+                {% endif %}
+            </div>
+            <h1>500</h1>
+            <h2>SERVER ERROR</h2>
+            <p class="error-message">We are facing an internal server problem. Kindly come back again later</p>
+            <p class="error-message">Questions? Contact EMAIL: <a href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
