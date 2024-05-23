@@ -46,7 +46,7 @@
                 margin: 0.5em 0;
             }
 
-            a {
+            .email-link {
                 color: blue;
                 text-decoration: none;
             }
@@ -66,13 +66,9 @@
 
             #content {
                 transform: scale(0.6);
-                /* adjust this value to scale the element up or down */
                 transform-origin: top center;
-                /* this ensures the element scales from the top center */
                 overflow: auto;
-                /* change this from 'hidden' to 'auto' */
                 height: auto;
-                /* add this line */
             }
         </style>
         <div id="content">
@@ -80,7 +76,7 @@
                 <h1>404</h1>
                 <h2>Page Not Found</h2>
                 <p class="error-message">The page you have searched is not available.</p>
-                <p class="error-message">Questions? Contact EMAIL: <a
+                <p class="error-message">Questions? Contact EMAIL: <a class="email-link"
                         href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
                 <p class="load-articles">Is this what you were looking for?</p>
             </div>

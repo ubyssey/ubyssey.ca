@@ -40,9 +40,13 @@
                 margin: 0.5em 0;
             }
 
-            p.error-message {
+            p {
                 font-size: 2vw;
                 margin: 0.5em 0;
+            }
+
+            .error-message {
+                font-size: 3vw;
             }
 
             a {
@@ -52,12 +56,6 @@
 
             a:hover {
                 text-decoration: underline;
-            }
-
-            p.load-articles {
-                font-size: 5vw;
-                margin-top: 100px;
-
             }
 
             .center-container {
@@ -70,21 +68,23 @@
                 margin-top: -170px;
 
             }
+
+            .top-logo {
+                position: fixed;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+            }
         </style>
+        <img class="top-logo light-logo"
+            src="https://www.ubyssey.ca/static/ubyssey/images/ubyssey-logo-small.e935f233a50c.svg" alt="Ubyssey Logo">
         <div class="center-container">
-            <div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
-                {% image self.image original as image %}
-                <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{% static 'images/404graphic.png' %}" alt="Ubyssey Logo" />
-                {% if self.caption or self.credit %}
-                    <div class="caption">
-                        {% if self.caption %}{{ self.caption|safe }}{% endif %} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
-                    </div>
-                {% endif %}
-            </div>
             <h1>500</h1>
             <h2>SERVER ERROR</h2>
             <p class="error-message">We are facing an internal server problem. Kindly come back again later</p>
-            <p class="error-message">Questions? Contact EMAIL: <a href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
+            <p class="error-message">Questions? Contact EMAIL: <a
+                    href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
         </div>
     </div>
 </main>
