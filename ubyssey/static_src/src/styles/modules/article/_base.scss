@@ -550,23 +550,6 @@ div.article-content {
 }
 
 
-
-.fw-story, .timeline {
-
-  div.media-column {
-    display: none;
-  }
-  div.article-content {
-    width: 100%;
-
-    border-right: none;
-    display: block;
-    padding-right: 0;
-    vertical-align: top;
-    box-sizing: border-box;
-  }
-}
-
 // Article-list
 #article-list {
   // Hide when printed

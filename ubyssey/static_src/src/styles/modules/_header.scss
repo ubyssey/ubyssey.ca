@@ -459,12 +459,12 @@ header.mobile {
 
 nav.mobile {
   position: fixed;
-  top: 55px;
+  top: 54px;
   padding: 10px 20px;
-  height: calc(100% - 74px);
+  height: calc(100% - 54px);
   width: 100%;
   background: $nav-mobile-background-barely-transparent; // Barely transparent
-  border-bottom: 1px solid rgb(178,178,178);
+  border-top: 1px solid rgb(178,178,178);
   overflow: auto;
   color: $nav-span-color;
   z-index: 200;

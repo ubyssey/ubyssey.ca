@@ -103,14 +103,14 @@
 
 .mobile {
   .modal-block {
-    padding: 1em 1em 1em 1em;
+    padding: 1em 0;
     justify-content: center;
     display: inline-block;
     width: 100%;
     .dark-mode-switcher{
       float: left;
       display: block;
-      margin-left: 1em;
+      margin-left: 0;
       color: var(--header_color);
     }
   }
