@@ -2,7 +2,11 @@ var data = {};
 
 data["start"] = 0;
 data["number"] = 3;
-data["search_query"] = window.location.href.split("/")[-1];
+let path = window.location.pathname;
+let pathParts = path.split('/');
+data["search_query"] = pathParts[pathParts.length - 3];
+console.log(pathParts[pathParts.length - 3]);
+console.log(data);
 
 $.ajax({
   type:"GET",
