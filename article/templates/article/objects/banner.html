@@ -16,6 +16,17 @@
                 </div>
             </div>
         </div>
+    {% elif self.header_layout == 'left-image' %}
+        <div class="header-container">
+            <div class="left">
+                <div class="full-width featured-media">
+                    {% include 'article/objects/fw_article_featured_media.html' %}
+                </div>
+            </div>
+            <div class="headline-container right">
+                {% include 'article/objects/fw_article_headline_container.html' %}
+            </div>
+        </div>
     {% elif self.header_layout == 'top-image' %}
         <div class="header-container">
             <div class="featured-media">

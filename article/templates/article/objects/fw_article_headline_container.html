@@ -3,7 +3,7 @@
     It was seperated out to try to make the code more readable
 {% endcomment %}
 <div class="headline-container">
-    {% if self.header_layout == 'right-image' %}
+    {% if self.header_layout == 'right-image' or self.header_layout == 'left-image' %}
         {% comment %} Odd choice of class names in this div. Should check the corresponding CSS {% endcomment %}
         <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
         

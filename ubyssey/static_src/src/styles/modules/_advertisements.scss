@@ -210,6 +210,11 @@ main.article .o-advertisement--leaderboard {
   padding-bottom: 1.5em;
 }
 
+.o-advertisement--fw-end {
+  display: flex;
+  justify-content: space-around;
+}
+
 .lightmode{
   .o-advertisement--header-bar {
     background-color: #dddddd;

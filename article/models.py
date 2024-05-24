@@ -849,6 +849,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     widget=Select(
                         choices=[
                             ('right-image', 'Right Image'),
+                            ('left-image', 'Left Image'),
                             ('top-image', 'Top Image'),
                             ('banner-image', 'Banner Image')
                         ],

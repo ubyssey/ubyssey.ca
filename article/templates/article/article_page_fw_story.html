@@ -22,22 +22,19 @@
 {% endblock %}
 
 {% block sidebar %}
-{% comment %}
-    <div class="right-column">
-        <div class="sidebar">
-            {% if explicit is not True %}
-                {% if self.minutes_to_read >= 3 %}
-                    {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}
-                    {% include 'objects/advertisement.html' with size='box' name='Box_B' id=4 article=article.id %}
-                {% else %}
-                    {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
-                {% endif %}
+
+    <div class="o-advertisement--fw-end">
+        {% if explicit is not True %}
+            {% if self.minutes_to_read >= 3 %}
+                {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}
+                {% include 'objects/advertisement.html' with size='box' name='Box_B' id=4 article=article.id %}
             {% else %}
-                {% include 'objects/replacement.html' with size='box' %}
+                {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
             {% endif %}
-        </div>
+        {% else %}
+            {% include 'objects/replacement.html' with size='box' %}
+        {% endif %}
     </div>
-{% endcomment %}
 {% endblock %}
 
 {% block suggested_articles %}
