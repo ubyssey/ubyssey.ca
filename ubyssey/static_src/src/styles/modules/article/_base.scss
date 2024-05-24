@@ -294,11 +294,11 @@ div.indicator {
 
 #custom-tooltip {
   display: none;
-  margin-left: 40px;
+  margin-left: 1em;
   padding: 5px 8px;
-  font-size: 5px;
+  font-size: 11px;
   font-family: $font-default;
-  background-color: #3490d6;
+  background-color: $color-ubyssey-blue;
   border-radius: 4px;
   color: #fff;
 }
@@ -373,10 +373,6 @@ div.article-content {
   .text-right {
     display: block;
     text-align: right;
-  }
-
-  > h2, > h3 {
-    font-weight: 600;
   }
 
   > p,

@@ -199,6 +199,10 @@ h1, h2, h3 {
   color: var(--header_color)
 }
 
+h2, h3 {
+  font-weight: 600;
+}
+
 p{
   color: var(--text_color);
 }

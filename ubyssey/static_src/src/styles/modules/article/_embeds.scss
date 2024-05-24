@@ -463,11 +463,13 @@ hr.page-break{
 }
 
 .drop-cap:first-letter {
+  height: 0.7em;
+  margin-top: 0.1em;
+  margin-right: 0.1em;
+  float: left;
+
   font-size: 5.5em;
   line-height: 2rem;
-  margin-top: 0.1em;
-  margin-right: 0.08em;
-  float: left;
 }
 
 div.article-content > p.drop-cap {

@@ -4,6 +4,10 @@
 .fw-banner.right-image > .header-container {
   width: 100%;
   border-bottom: 1px solid #E4E4E4;
+
+  .caption {
+    margin-right: 1em;
+  }
 }
 
 .c-article--fw-story, div.container.clearfix.fw-story, .c-article--timeline, .c-article--isolation , .c-article--isolation-first-article , .c-article--isolation-last-article  {
