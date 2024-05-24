@@ -3,6 +3,7 @@ from wagtail.blocks import field_block
 from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.images.blocks import ImageChooserBlock
 
 class AudioBlock(blocks.StructBlock):
     caption =  blocks.CharBlock(required=False)
@@ -130,3 +131,13 @@ class VisualEssayBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/visual-essay.html',
         icon = "form"
+
+class GalleryBlock(blocks.StructBlock):
+    id = blocks.CharBlock(help_text="No numbers or spaces. Must be different from other ids defined in this article.", required=True)
+    images = blocks.ListBlock(
+        image_blocks.ImageBlock()
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/gallery_block.html'
+        icon = "image"

@@ -25,6 +25,7 @@ module.exports = {
     'timeline': './src/js/timeline.js',
     blockadblock: './src/js/blockadblock.js',
     darkmode: './src/js/darkmode.js',
+    initializeDarkmode: './src/js/initializeDarkmode.js',
     youtube: './src/js/modules/Youtube.js'
   },
   output: {

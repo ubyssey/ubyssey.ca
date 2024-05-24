@@ -1,5 +1,6 @@
 // import * as mp from './modules/Mixpanel';    //commented out because creepy af
 import upcomingEvents from './widgets/upcoming-events';
+import { initializeDarkModeToggle } from './darkmode';
 
 // self-executing js anonymous function
 (function () {
@@ -7,6 +8,8 @@ import upcomingEvents from './widgets/upcoming-events';
   moveModals();
   initializeModals();
   closeModal();
+
+  initializeDarkModeToggle();
 
   archiveMobileDropDown();          // listeners for dropdown menu for elements js-dropdown-container/js-dropdown-list/js-dropdown
   initializeSearchFormActions();    // Listeners for showing/hiding search form

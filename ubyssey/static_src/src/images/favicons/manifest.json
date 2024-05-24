@@ -8,37 +8,37 @@
     "start_url": "/",
     "icons": [
         {
-            "src": "./android-chrome-36x36.png",
+            "src": "ubyssey.ca/static/ubyssey/images/favicons/android-chrome-36x36.73664fc5d27c.png",
             "sizes": "36x36",
             "type": "image/png"
         },
         {
-            "src": "./android-chrome-48x48.png",
+            "src": "ubyssey.ca/static/ubyssey/images/favicons/android-chrome-48x48.878ce1706eaa.png",
             "sizes": "48x48",
             "type": "image/png"
         },
         {
-            "src": "./android-chrome-72x72.png",
+            "src": "ubyssey.ca/static/ubyssey/images/favicons/android-chrome-72x72.47ead8222341.png",
             "sizes": "72x72",
             "type": "image/png"
         },
         {
-            "src": "./android-chrome-96x96.png",
+            "src": "ubyssey.ca/static/ubyssey/images/favicons/android-chrome-96x96.ed2ec5e9b207.png",
             "sizes": "96x96",
             "type": "image/png"
         },
         {
-            "src": "./android-chrome-144x144.png",
+            "src": "ubyssey.ca/static/ubyssey/images/favicons/android-chrome-144x144.1883b9e58a1b.png",
             "sizes": "144x144",
             "type": "image/png"
         },
         {
-            "src": "./android-chrome-192x192.png",
+            "src": "ubyssey.ca/static/ubyssey/images/favicons/android-chrome-192x192.51bd16f81ee0.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "./android-chrome-512x512.png",
+            "src": "ubyssey.ca/static/ubyssey/images/favicons/android-chrome-512x512.cc412e9eee4e.png",
             "sizes": "512x512",
             "type": "image/png"
         }

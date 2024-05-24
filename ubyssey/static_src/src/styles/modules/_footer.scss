@@ -74,6 +74,16 @@ footer {
     margin: 0.5em;
     text-align: center;
   }
+  .navbar-nav {
+    display: block;
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    flex-direction: row;
+  }
 
   @media($bp-larger-than-tablet){
     .about {
