@@ -136,6 +136,12 @@ class AuthorPage(RoutablePageMixin, Page):
     linkIcons = StreamField([('raw_html', blocks.RawHTMLBlock()),], blank=True, use_json_field=True)
     links = StreamField([('url', blocks.URLBlock(label="Url")),], blank=True, use_json_field=True)
 
+    # This is so we can list authors in the authors chooser by activity
+    last_activity = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
     # For editting in wagtail:
     content_panels = [
         # title not present, title should NOT be directly editable
@@ -295,6 +301,9 @@ class AuthorPage(RoutablePageMixin, Page):
 
             self.linkIcons.append(('raw_html', '<a ' + extra + 'class="social_media_links" href="'+url+'"><i class="fa ' + icon + ' fa-fw" style="font-size:1em;"></i>&nbsp;'+username+'</a>'))
             
+        if self.last_activity == None:
+            self.last_activity = self.first_published_at
+
         return super().save(*args, **kwargs)
 
     def clean(self):

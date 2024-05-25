@@ -6,6 +6,8 @@ from wagtail import hooks
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
 from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler
 
+from authors.views import author_chooser_viewset
+
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
     return format_html('<link rel="stylesheet" href="{}">', static('css/custom.css'))
@@ -187,3 +189,7 @@ def register_redacted_feature(features):
     # 6. (optional) Add the feature to the default features list to make it available
     # on rich text fields that do not specify an explicit 'features' list
     features.default_features.append('redacted')
+
+@hooks.register("register_admin_viewset")
+def register_viewset():
+    return author_chooser_viewset
