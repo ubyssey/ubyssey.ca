@@ -7,6 +7,9 @@ from .models import ArticlePage
 def update_default_explicit_published_at(instance, **kwargs):
     if not instance.explicit_published_at:
         instance.explicit_published_at = instance.first_published_at
+        for author in instance.article_authors.all():
+            author.author.last_activity = instance.first_published_at
+            author.author.save()
         instance.save()
 
 @receiver(pre_save, sender=ArticlePage)
