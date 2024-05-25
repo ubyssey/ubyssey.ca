@@ -28,7 +28,7 @@ class AuthorPageViewSet(ChooserViewSet):
         return AuthorPage.objects
 
     def get_object_list(self):
-        return AuthorPage.objects.order_by(F('last_activity').desc(nulls_last=True))
+        return AuthorPage.objects.order_by(F('last_activity').desc(nulls_last=True), F('first_published_at').desc(nulls_last=True))
     
 
 author_chooser_viewset = AuthorPageViewSet("author_chooser")
