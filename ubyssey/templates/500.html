@@ -9,97 +9,25 @@
 {% block header %}
 {% endblock %}
 
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css" />
+{% endblock %}
+
 {% block content %}
 <main class="500">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Noto Sans', 'Helvetica Neue', sans-serif;
-            /* Set background color to white here */
-            background-color: #fff;
-            color: #333;
-        }
-
-        h1 {
-            font-size: 30vw;
-            margin: 0;
-        }
-
-        h2 {
-            font-size: 5vw;
-            margin: 0.5em 0;
-        }
-
-        p {
-            font-size: 2vw;
-            margin: 0.5em 0;
-        }
-
-        .error-message {
-            font-size: 3vw;
-        }
-
-        a {
-            color: blue;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .center-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            transform: scale(0.25);
-            margin-top: -170px;
-        }
-
-        .top-logo {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-        }
-
-        .admin-edit-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 30px 40px;
-            /* Increase padding */
-            background-color: #0071C9;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 30px;
-            /* Increase font size */
-        }
-
-        .admin-edit-link:hover {
-            background-color: rgba(0, 123, 255, 0.329)
-        }
-    </style>
-    <img class="top-logo light-logo"
-        src="https://www.ubyssey.ca/static/ubyssey/images/ubyssey-logo-small.e935f233a50c.svg" alt="Ubyssey Logo">
-    <div class="center-container">
-        <h1>500</h1>
-        <h2>SERVER ERROR</h2>
-        <p class="error-message">We are facing an internal server problem. Kindly come back again later</p>
-        <p class="error-message">Questions? Contact EMAIL: <a
-                href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
-        {% if request.path|get_id %}
-        <a class="admin-edit-link" href="/admin/pages/{{ request.path|get_id }}/edit">Edit this page in admin</a>
-        {% endif %}
+    <div class="error-page">
+        <img class="top-logo light-logo"
+            src="https://www.ubyssey.ca/static/ubyssey/images/ubyssey-logo-small.e935f233a50c.svg" alt="Ubyssey Logo">
+        <div class="center-container">
+            <h1 class="h1-error">500</h1>
+            <h2 class="h2-error">SERVER ERROR</h2>
+            <p class="error-message">We are facing an internal server problem. Kindly come back again later</p>
+            <p class="error-message">Questions? Contact EMAIL: <a class="email-address"
+                    href="mailto:webmaster@laysvcva.ca">webmaster@laysvcva.ca</a></p>
+            {% if request.path|get_id %}
+            <a class="admin-edit-link" href="/admin/pages/{{ request.path|get_id }}/edit">Edit this page in admin</a>
+            {% endif %}
+        </div>
     </div>
 </main>
 {% endblock %}

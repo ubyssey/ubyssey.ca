@@ -1,0 +1,69 @@
+.error-page {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Noto Sans', 'Helvetica Neue', sans-serif;
+    background-color: #fff;
+    color: #333;
+}
+
+.h1-error {
+    font-size: 30vw;
+    margin: 0;
+}
+
+.h2-error {
+    font-size: 5vw;
+    margin: 0.5em 0;
+}
+
+.error-message {
+    font-size: 3vw;
+    margin: 0.5em 0;
+}
+
+.email-address {
+    color: blue;
+    text-decoration: none;
+}
+
+.email-address:hover {
+    text-decoration: underline;
+}
+
+.center-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transform: scale(0.25);
+    margin-top: -170px;
+}
+
+.top-logo {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.admin-edit-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 30px 40px;
+    background-color: #0071C9;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 30px;
+}
+
+.admin-edit-link:hover {
+    background-color: rgba(0, 123, 255, 0.329)
+}
