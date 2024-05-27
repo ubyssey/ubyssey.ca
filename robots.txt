@@ -5,6 +5,7 @@ User-agent: ChatGPT-User
 User-agent: ClaudeBot
 User-agent: Meltwater
 User-agent: Bytespider
+User-agent: GoogleOther
 Disallow: /
 
 User-agent: *
