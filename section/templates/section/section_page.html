@@ -98,10 +98,16 @@
             </div>
           </div>
         </div>
+        {% if error %}
+          <p class="section-error"><a href="{% pageurl self %}">{{error}}</a></p>
+        {% else %}
           {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
+        {% endif %}
         </div>
         {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with styling="c-section__sidebar" id="sidebar" sidebar_stream=self.sidebar_stream %}
+        {% if not error %}
         <script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
+        {% endif %}
       </div>
     </div>
   </main>

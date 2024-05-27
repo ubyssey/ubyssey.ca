@@ -261,47 +261,33 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
         context["all_categories"] = CategorySnippet.objects.all().filter(section_page=self)
 
-        all_articles = self.get_section_articles(order=article_order)
         context["filters"] = {"section": self.current_section}
-        if 'category_slug' in kwargs:            
-            all_articles = all_articles.filter(category__slug=kwargs['category_slug'])
-            context["category"] = kwargs['category_slug']
-            context["filters"]["category"] = kwargs['category_slug']
-            category  = CategorySnippet.objects.get(slug=kwargs['category_slug'])
-            context["title"] = category.title
-            context["description"] = category.description
-            if category.banner:
-                context["banner"] = category.banner
+        if 'category_slug' in kwargs:
+            if kwargs['category_slug'] != None:
+                context["category"] = kwargs['category_slug']
+                context["filters"]["category"] = kwargs['category_slug']
+                category  = CategorySnippet.objects.get(slug=kwargs['category_slug'])
+                context["title"] = category.title
+                context["description"] = category.description
+                if category.banner:
+                    context["banner"] = category.banner
+            else:
+                context["error"] = "The category requested does not exist"
+                context["title"] = self.title
+                context["description"] = self.description
+                if self.banner:
+                    context["banner"] = self.banner
         else:
             context["title"] = self.title
             context["description"] = self.description
             if self.banner:
                 context["banner"] = self.banner
 
-        context["featured_articles"] = self.get_featured_articles()
+        # context["featured_articles"] = self.get_featured_articles()
 
         if search_query:
             context["search_query"] = search_query
-            all_articles = all_articles.search(search_query)
             context["filters"]["search_query"] = search_query
-
-        # Paginate all posts by 15 per page
-        paginator = Paginator(all_articles, per_page=15)       
-        try:
-            # If the page exists and the ?page=x is an int
-            paginated_articles = paginator.page(page)
-            context["current_page"] = page
-
-        except PageNotAnInteger:
-            # If the ?page=x is not an int; show the first page
-            paginated_articles = paginator.page(1)
-           
-        except EmptyPage:
-            # If the ?page=x is out of range (too high most likely)
-            # Then return the last page
-            paginated_articles = paginator.page(paginator.num_pages)
-
-        context["paginated_articles"] = paginated_articles #this object is often called page_obj in Django docs, but Page means something else in Wagtail
     
         return context
     
@@ -328,8 +314,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     @route(r'^category/(?P<category_slug>[-\w]+)/$', name='category_view')
     def category_view(self, request, category_slug):
-        context = self.get_context(request, category_slug=category_slug)
-        return render(request, 'section/section_page.html', context)
+        if(len(CategorySnippet.objects.filter(slug=category_slug)) > 0):
+            context = self.get_context(request, category_slug=category_slug)
+            return render(request, 'section/section_page.html', context)
+        else:
+            context = self.get_context(request, category_slug=None)
+            return render(request, 'section/section_page.html', context, status=404)
 
     def save(self, *args, **kwargs):
         self.current_section = self.slug
