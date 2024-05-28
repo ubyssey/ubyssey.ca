@@ -147,9 +147,13 @@ class ArchivePage(RoutablePageMixin, Page):
         context = super().get_context(request)
         search_query = request.GET.get("q")
         order = request.GET.get("order")
+        self.year = self.__parse_int_or_none(request.GET.get('year'))
+
+        if search_query!=None or self.year!=None or order!=None:
+            context['self'].noindex = True
+
         if order == None:
             order = "newest"
-        self.year = self.__parse_int_or_none(request.GET.get('year'))
         
         # Set context
         context['video_section'] = video_section
@@ -159,9 +163,6 @@ class ArchivePage(RoutablePageMixin, Page):
         context['years'] = self.__get_years()
         context['q'] = search_query
         context['meta'] = { 'title': 'Archive' }
-
-        if search_query!=None or self.year!=None:
-            context['self'].noindex = True
 
         return context
     
@@ -265,6 +266,8 @@ class ArchivePage(RoutablePageMixin, Page):
     def get_section_articles(self, request, sections_slug="magazine"):
         video_section = False
         context = self.get_context(request, video_section)
+
+        context['self'].noindex = True
         context['section_slug'] = sections_slug
 
         search_query = context["q"]
@@ -312,6 +315,7 @@ class ArchivePage(RoutablePageMixin, Page):
     def get_magazine_articles(self, request, magazine_slug):
         video_section = False
         context = self.get_context(request, video_section)
+        context['self'].noindex = True
         context['magazine_slug'] = magazine_slug
 
         search_query = context["q"]
@@ -340,6 +344,7 @@ class ArchivePage(RoutablePageMixin, Page):
     def get_spoof_articles(self, request, spoof_slug="All Spoofs"):
         video_section = False
         context = self.get_context(request, video_section)
+        context['self'].noindex = True
         context['spoof_slug'] = spoof_slug
 
         search_query = context["q"]

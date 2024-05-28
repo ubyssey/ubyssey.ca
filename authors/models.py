@@ -136,6 +136,12 @@ class AuthorPage(RoutablePageMixin, Page):
     linkIcons = StreamField([('raw_html', blocks.RawHTMLBlock()),], blank=True, use_json_field=True)
     links = StreamField([('url', blocks.URLBlock(label="Url")),], blank=True, use_json_field=True)
 
+    # This is so we can list authors in the authors chooser by activity
+    last_activity = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
     # For editting in wagtail:
     content_panels = [
         # title not present, title should NOT be directly editable
@@ -177,13 +183,7 @@ class AuthorPage(RoutablePageMixin, Page):
         page = request.GET.get("page")
         order = request.GET.get("order")
 
-        if media_type == "articles":
-            if order == 'oldest':
-                article_order = "explicit_published_at"
-            else:            
-                article_order = "-explicit_published_at"
-            authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
-        elif media_type == "photos":
+        if media_type == "photos":
             if order == 'oldest':
                 article_order = "updated_at"
             else:            
@@ -195,6 +195,12 @@ class AuthorPage(RoutablePageMixin, Page):
             else:            
                 article_order = "-updated_at"
             authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order)
+        else:
+            if order == 'oldest':
+                article_order = "explicit_published_at"
+            else:            
+                article_order = "-explicit_published_at"
+            authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
 
         if search_query:
             if media_type == "videos":
@@ -295,6 +301,9 @@ class AuthorPage(RoutablePageMixin, Page):
 
             self.linkIcons.append(('raw_html', '<a ' + extra + 'class="social_media_links" href="'+url+'"><i class="fa ' + icon + ' fa-fw" style="font-size:1em;"></i>&nbsp;'+username+'</a>'))
             
+        if self.last_activity == None:
+            self.last_activity = self.first_published_at
+
         return super().save(*args, **kwargs)
 
     def clean(self):
