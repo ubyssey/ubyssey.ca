@@ -1,11 +1,41 @@
 <div id="contact" class="c-section c-section--contact c-section--inset c-section--orange">
+
+  <div id="offer-table" class="offer-section u-container">
+    <h2 class="o-heading o-heading--white">All Offerings <span>(Click to add to email)</span></h2>
+    
+    <div class="offer-flex">
+    <div class="offer">
+      <h3>Print Advertising</h3>
+      <ul>
+        <li><a href="#" class="offer-link" offerId="print-full-page" offer="Print Full Page">Full Page <span>$1450</span></a></li>
+        <li><a href="#" class="offer-link" offerId="print-half-page" offer="Print 1/2 Page">1/2 Page <span>$950</span></a></li>
+        <li><a href="#" class="offer-link" offerId="print-quarter-page" offer="Print 1/4 Page">1/4 Page <span>$595</span></a></li>
+        <li><a href="#" class="offer-link" offerId="print-eigth-page" offer="Print 1/8 Page">1/8 Page <span>$295</span></a></li>
+        <li><a href="#" class="offer-link" offerId="print-full-spread" offer="Print Full Page Spread">Full Page Spread <span>$4500</span></a></li>
+        <li><a href="#" class="offer-link" offerId="print-full-back" offer="Print Full Page Back">Full Page Back <span>$1750</span></a></li>
+      </ul>
+    </div>
+    
+    <div class="offer">
+      <h3>Web Advertising</h3>
+      <ul>
+        <li><a href="#" class="offer-link" offer="full page">10 CPM <span>$300</span></a></li>
+      </ul>
+    </div>
+    </div>
+    
+    </div>
+
   <div class="u-container">
     <form class="c-form" method="post">
       {% csrf_token %}
-      <h2 class="o-heading o-heading--white">Contact us</h2>
+      <h2 class="o-heading o-heading--white">Submit order or inquiry</h2>
       <input id="name" name="name" type="text" placeholder="Name" />
 
       <input id="email" name="email" type="email" placeholder="Email address" />
+      
+      <h3>Cart</h3>
+      <div id="cart"></div>
 
       <textarea id="message" name="message" rows="5" placeholder="How can we help you?"></textarea>
 

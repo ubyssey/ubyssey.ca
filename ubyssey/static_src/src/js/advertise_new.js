@@ -1,9 +1,11 @@
 // Scripts for the /advertise/ page
 // Bundled as 'a_new.js' to prevent AdBlocker blocking.
 
+var cart = [];
+
 $(function() {
   // Navigation links smooth scrolling
-  $('a[href*=\\#]').on('click', function(e) {
+  $('.nav-link').on('click', function(e) {
     $('html,body').animate({ scrollTop: $(this.hash).offset().top }, 500);
   });
 
@@ -92,4 +94,24 @@ $(function() {
     $('.c-web-slider__tooltip__content').html(content);
     $('.c-web-slider__tooltip__cost').text(cost);
   }
+
+  $(document).on('click', '.offer-link', function (e) {
+    e.preventDefault();
+    this.parentElement.classList.toggle("selected");
+    if(this.getAttribute("selected")=="true") {
+      this.setAttribute("selected", "false");
+      document.getElementById(this.getAttribute("offerId"));
+      cart.indexOf(this.getAttribute("offerId"))
+    } else {
+      this.setAttribute("selected", "true");
+      
+      cart.push(this.getAttribute("offer"));
+      var cartItem = document.createElement("div");
+      cartItem.classList.add("cart-item");
+      cartItem.id = this.getAttribute("offerId");
+      cartItem.innerHTML = "<a href='#'><i class='fa fa-close'></i></a>" + this.getAttribute("offer");
+      document.getElementById("cart").appendChild(cartItem);
+    }
+  });
+
 });
