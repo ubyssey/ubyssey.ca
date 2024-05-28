@@ -1,7 +1,7 @@
 // Scripts for the /advertise/ page
 // Bundled as 'a_new.js' to prevent AdBlocker blocking.
 
-var cart = [];
+var cart = {};
 
 $(function() {
   // Navigation links smooth scrolling
@@ -100,18 +100,32 @@ $(function() {
     this.parentElement.classList.toggle("selected");
     if(this.getAttribute("selected")=="true") {
       this.setAttribute("selected", "false");
-      document.getElementById(this.getAttribute("offerId"));
-      cart.indexOf(this.getAttribute("offerId"))
+      document.getElementById(this.parentElement.getAttribute("offerId")).remove();
+      delete cart[this.parentElement.getAttribute("offerId")];
     } else {
       this.setAttribute("selected", "true");
-      
-      cart.push(this.getAttribute("offer"));
+      var text = String(this.parentElement.getElementsByClassName("offer-number")[0].value) + "x " + this.parentElement.getAttribute("offer");
+
+      cart[this.parentElement.getAttribute("offerId")] = text;
+      console.log(cart);
       var cartItem = document.createElement("div");
       cartItem.classList.add("cart-item");
-      cartItem.id = this.getAttribute("offerId");
-      cartItem.innerHTML = "<a href='#'><i class='fa fa-close'></i></a>" + this.getAttribute("offer");
-      document.getElementById("cart").appendChild(cartItem);
+      cartItem.id = this.parentElement.getAttribute("offerId");
+      cartItem.innerHTML = "<a href='#' class='delete-cart-item'><i class='fa fa-close'></i></a><span>" + text + "</span>";
+      document.getElementById("cart-container").appendChild(cartItem);
     }
+    updateCart();
   });
+
+  $(document).on('change', '.offer-number', function(e) {
+    var text = String(this.value) + "x " + this.parentElement.getAttribute("offer");
+    cart[this.parentElement.getAttribute("offerId")] = text;
+    document.getElementById(this.parentElement.getAttribute("offerId")).getElementsByTagName("span")[0].innerHTML = text;
+    updateCart();
+  });
+
+  function updateCart() {
+    document.getElementById("cart").value = Object.values(cart).join("\n");
+  }
 
 });

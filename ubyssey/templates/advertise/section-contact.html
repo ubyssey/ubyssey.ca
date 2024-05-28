@@ -7,19 +7,19 @@
     <div class="offer">
       <h3>Print Advertising</h3>
       <ul>
-        <li><a href="#" class="offer-link" offerId="print-full-page" offer="Print Full Page">Full Page <span>$1450</span></a></li>
-        <li><a href="#" class="offer-link" offerId="print-half-page" offer="Print 1/2 Page">1/2 Page <span>$950</span></a></li>
-        <li><a href="#" class="offer-link" offerId="print-quarter-page" offer="Print 1/4 Page">1/4 Page <span>$595</span></a></li>
-        <li><a href="#" class="offer-link" offerId="print-eigth-page" offer="Print 1/8 Page">1/8 Page <span>$295</span></a></li>
-        <li><a href="#" class="offer-link" offerId="print-full-spread" offer="Print Full Page Spread">Full Page Spread <span>$4500</span></a></li>
-        <li><a href="#" class="offer-link" offerId="print-full-back" offer="Print Full Page Back">Full Page Back <span>$1750</span></a></li>
+        {% include "advertise/offer-item.html" with offerId="print-full-page" offer="Print Full Page" offer_text="Full Page" default_num="1" price="$1450" %}
+        {% include "advertise/offer-item.html" with offerId="print-half-page" offer="Print 1/2 Page" offer_text="1/2 Page" default_num="1" price="$950" %}
+        {% include "advertise/offer-item.html" with offerId="print-quarter-page" offer="Print 1/4 Page" offer_text="1/4 Page" default_num="1" price="$595" %}
+        {% include "advertise/offer-item.html" with offerId="print-eighth-page" offer="Print 1/8 Page" offer_text="1/8 Page" default_num="1" price="$295" %}
+        {% include "advertise/offer-item.html" with offerId="print-full-spread" offer="Print Full Page Spread" offer_text="Full Page Spread" default_num="1" price="$4500" %}
+        {% include "advertise/offer-item.html" with offerId="print-full-back" offer="Print Full Page Back" offer_text="Full Page Back" default_num="1" price="$1750" %}
       </ul>
     </div>
     
     <div class="offer">
       <h3>Web Advertising</h3>
       <ul>
-        <li><a href="#" class="offer-link" offer="full page">10 CPM <span>$300</span></a></li>
+        {% include "advertise/offer-item.html" with offerId="web-cpm" offer="Web Ad CPM" offer_text="Web Ad CPM" default_num="30" price="$30/CPM" %}
       </ul>
     </div>
     </div>
@@ -35,7 +35,8 @@
       <input id="email" name="email" type="email" placeholder="Email address" />
       
       <h3>Cart</h3>
-      <div id="cart"></div>
+      <div id="cart-container"></div>
+      <input id="cart" name="cart" type="hidden">
 
       <textarea id="message" name="message" rows="5" placeholder="How can we help you?"></textarea>
 
