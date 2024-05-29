@@ -138,9 +138,12 @@ body, html, #page-wrapper {
   bottom:0;
 }
 
-#content-wrapper {
+body { 
   background-color: var(--background);
-  transition: background 0.5s ease, color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+#content-wrapper {
   -webkit-overflow-scrolling: touch;
 }
 

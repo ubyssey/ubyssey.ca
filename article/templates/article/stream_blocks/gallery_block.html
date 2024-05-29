@@ -1,0 +1,29 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load static %}
+
+  <div id="{{self.id}}" class="carousel carousel-dark slide {{self.images.0.style}} {{self.images.0.width}}" data-bs-ride="true" style="position: relative;">
+    <div class="carousel-indicators" style="position: absolute;">
+      {% for image in self.images %}
+        <button type="button" data-bs-target="#{{self.id}}" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+      {% endfor %}
+    </div>
+    <div class="carousel-inner">
+      {% for image_block in self.images %}
+        
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+
+          {% include_block image_block %}
+
+        </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#{{self.id}}" data-bs-slide="prev" style="position: absolute;">
+      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#{{self.id}}" data-bs-slide="next" style="position: absolute;">
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>

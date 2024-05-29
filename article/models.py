@@ -494,6 +494,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
+            ('gallery_block', article_blocks.GalleryBlock()),
             ('header_link', article_blocks.HeaderLinkBlock()),
             ('header_menu', article_blocks.HeaderMenuBlock()),
             ('visual_essay', article_blocks.VisualEssayBlock()),

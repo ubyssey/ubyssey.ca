@@ -26,7 +26,8 @@ module.exports = {
     blockadblock: './src/js/blockadblock.js',
     darkmode: './src/js/darkmode.js',
     youtube: './src/js/modules/Youtube.js',
-    error_page: './src/js/error_page.js'
+    error_page: './src/js/error_page.js',
+    initializeDarkmode: './src/js/initializeDarkmode.js'
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
