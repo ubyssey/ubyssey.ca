@@ -1061,6 +1061,10 @@
   @media ($bp-smaller-than-phablet) {
     width: 100%;
   }
+
+  .mark {
+    padding: 0;
+  }
 }
 .o-visual-essay__right-div {
   margin: auto;
