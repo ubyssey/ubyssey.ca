@@ -15,14 +15,15 @@
         margin: 0;
     }
     h2 {
-        font-size: 1.5em;
-        margin: 0.5em 0;
+        font-size: 2.5em;
+        margin: 0;
+        margin-bottom: 1em;
     }
     p {
         font-size: 1em;
         margin: 0.5em 0;
     }
-    a {
+    .email-link {
         color: $color-ubyssey-blue;
         text-decoration: none;
         &:hover {
@@ -30,8 +31,21 @@
         }
     }
 
+    .load-articles {
+        margin: 1.5em 0 1em 0;
+        font-weight: 500;
+        font-size: 1.5em;
+    }
+
+    #feed {
+        max-width: 600px;
+        margin: auto;
+        padding: 1em;
+        text-align: left;
+        font-size: 14px;
+    }
+
     .center-container {
-        margin-top: 15vh;
         padding: 0 1em;
         text-align: center;
     }
@@ -39,6 +53,7 @@
     .top-logo {
         width: 100%;
         margin: 1em;
+        margin-bottom: 5em;
         display: block;
         img {
             position: relative;
