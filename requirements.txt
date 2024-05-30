@@ -3,6 +3,7 @@ wagtail==5.2.5
 git+https://github.com/ubyssey/django-google-storage.git@v0.5.4#egg=django-google-storage-updated
 django-storages[google]==1.14.2
 django-canonical-domain==0.3.0
+django-taggit==4.0.0
 pymemcache==4.0.0
 mysqlclient==2.0.1
 beautifulsoup4==4.11.2
