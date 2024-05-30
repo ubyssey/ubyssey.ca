@@ -2,10 +2,9 @@ var data = {};
 
 data["start"] = 0;
 data["number"] = 3;
-let path = window.location.pathname;
-let pathParts = path.split('/');
-data["search_query"] = pathParts[pathParts.length - 3];
-console.log(pathParts[pathParts.length - 3]);
+
+data["search_query"] = window.location.pathname;
+
 console.log(data);
 
 $.ajax({
