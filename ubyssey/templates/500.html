@@ -1,0 +1,41 @@
+{% extends 'ubyssey/base.html' %}
+{% comment %} //load in static {% endcomment %}
+{% load static %}
+{% comment %} // block of content for actual page {% endcomment %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load articletags %}
+
+{% block darkmode %}
+<meta name="color-scheme" content="light">
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css" />
+{% endblock %}
+
+{% block content %}
+<main class="500">
+    <div class="error-page">
+        <a class="top-logo" href="{% url 'wagtail_serve' '' %}">
+            <img src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt="Ubyssey Logo">
+        </a>
+        <div class="center-container">
+            <h1>500</h1>
+            <h2>SERVER ERROR</h2>
+            <p>We are facing an internal server problem. Kindly come back again later</p>
+            <p>Questions? Contact EMAIL: <a class="email-link"
+                    href="mailto:webmaster@ubyssey.ca">webmaster@ubyssey.ca</a></p>
+            {% if request.path|get_id %}
+            <a class="admin-edit-link" href="/admin/pages/{{ request.path|get_id }}/edit">Edit this page in admin</a>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
