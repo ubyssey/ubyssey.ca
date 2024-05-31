@@ -291,12 +291,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     
         return context
     
-    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
-
+    def get_section_articles(self, order='-first_published_at') -> QuerySet:
+        # order should be explicit_published_at but that is in the ArticlePage table and accessing slows down the query
         section_articles = ArticlePage.objects \
-            .live() \
             .child_of(self) \
-            .order_by(order)
+            .order_by(order) \
+            .live()
         
         return section_articles
 
