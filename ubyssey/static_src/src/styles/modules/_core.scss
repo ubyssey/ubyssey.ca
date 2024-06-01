@@ -212,3 +212,199 @@ a {
     color: rgb(0, 113, 201);
   }
 }
+
+
+html {
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+html.lightmode {
+  --background-nav: rgba(255, 255, 255, 0.99);
+  --background: white;
+  --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
+  --nav-h3-color: #5D5D5D;
+  --nav-span-color: #33331E;
+  --nav-headline-h1: #373737;
+  --three-bar-logo-color: #303030;
+  --text_color: #1b1b1b;
+  --header_color: black;
+  --article_info: #777777;
+  --article_caption: #5A5A5A;
+  --authors-title-bio: #1B1B1B;
+  --archive-text: #4e4e4e;
+  --article-publish: #2B2B2B;
+  --pagination: #353535;
+}
+
+html.darkmode {
+  --background-nav: #031723;
+  --background: #031621;
+  --nav-mobile-background-barely-transparent: #031723;
+  --nav-h3-color: #EFEFEF;
+  --nav-span-color: #EFEFEF;
+  --nav-headline-h1: #5D5D5D;
+  --three-bar-logo-color: #EFEFEF;
+  --text_color: #D9D9D9;
+  --header_color: white;
+  --article_info: #BFBBBB;
+  --article_caption: #BFBBBB;
+  --authors-title-bio: #D8D8D8;
+  background-color: #031621;
+  --archive-text: #BFBFBF;
+  --article-publish: #BFBFBF;
+  --pagination: #BFBFBF;
+}
+
+body, html, #page-wrapper {
+  //max-height: 100%;
+  //height: 100%;
+}
+
+#page-wrapper {
+  @media screen {
+    display: flex;
+    flex-direction: column;
+
+  }
+}
+
+#modal {
+  position: absolute;
+  display: none;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+
+body { 
+  background-color: var(--background);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+#content-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
+span.upper-right-decorator {
+  color: $color-ub-blue-light;
+  font-size: .8em;
+  position: relative;
+  top: -.8em;
+  font-family: $font-default;
+  text-transform: capitalize;
+}
+div.image-container {
+    height: 100%;
+    display: table;
+    margin: 0 auto;
+    width: 100%;
+}
+
+div.image-inner {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+}
+
+p.slide-caption {
+    font-family: $font-default;
+    font-size: 13px;
+    color: #fff;
+    line-height: 19px;
+}
+
+p.slide-credit {
+		font-family: $font-default;
+		font-size: 13px;
+		color: #9c9c9c;
+		font-style: italic;
+}
+
+span.credit {
+  font-style: italic;
+  color: #969696;
+}
+
+img.article-attachment:hover {
+    cursor: pointer;
+}
+
+img.slide-image {
+    max-width: 100%;
+}
+
+div.navigation {
+    color: white;
+    font-family: $font-secondary;
+    font-size: 13px;
+    text-align: center;
+}
+
+div.navigation a {
+    display: inline-block;
+    padding: 6px 9px;
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 12px;
+}
+
+div.navigation a:hover {
+    color: black;
+    background: #fff;
+}
+
+.no-scroll {
+    overflow: hidden;
+}
+
+a.image {
+  display: block;
+  margin-bottom: 15px;
+  img {
+    display: block;
+  }
+  @media($bp-larger-than-phablet){
+    margin-bottom: 0;
+  }
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+}
+
+.dropdown-show {
+  display: none;
+}
+
+.dropdown:focus-within, .dropdown:hover {
+  .dropdown-content {
+    display: block; 
+  }
+  .dropdown-show {
+    display: inherit; 
+  }
+  .dropdown-hidden {
+    display: none;
+  }
+}
+
+.hide {
+	display: none;
+}
+
+.show {
+	display: block;
+}
+/* Restoring browsering effects */
+
+.floating-share-buttons {
+  size: 4px;
+}
+
