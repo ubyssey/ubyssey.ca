@@ -12,7 +12,7 @@ import { initializeDarkModeToggle } from './darkmode';
   initializeDarkModeToggle();
 
   archiveMobileDropDown();          // listeners for dropdown menu for elements js-dropdown-container/js-dropdown-list/js-dropdown
-  initializeSearchFormActions();    // Listeners for showing/hiding search form
+  //initializeSearchFormActions();    // Listeners for showing/hiding search form
   initializeSocialMediaActions();   // Listeners for Facebook, Twitter and Reddit sharing
 
   initializePreventDefault();
@@ -40,7 +40,7 @@ import { initializeDarkModeToggle } from './darkmode';
   $('#culture-mobile').click(function () {
     $('#culture-more').slideToggle(200);
   });
-
+/*
   let isUpcomingEventsCreated = false;
 
   // upon page load, set margins, set full width story banner height, register widgets, parse issues
@@ -69,7 +69,9 @@ import { initializeDarkModeToggle } from './darkmode';
       resizeFullWidthStoryBanner();
     }
   });
+*/
 })();
+
 
 // Triggered once for each movement, continue to be triggered until finger is released
 // Default touchmove behaviour prevented. Only for touchscreen.

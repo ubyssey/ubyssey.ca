@@ -15,6 +15,9 @@ from ubyssey.views.advertise import AdvertiseTheme
 from infinitefeed.views import infinitefeed
 
 from newsletter.urls import urlpatterns as newsletter_urls
+from django.conf.urls import handler500
+
+handler500 = 'ubyssey.views.main.custom_500'
 
 advertise = AdvertiseTheme()
 

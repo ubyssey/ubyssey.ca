@@ -5,6 +5,11 @@
 {% load ubyssey_ad_tags %}
 {% load ubyssey_ad_filters %}
 
+{% block stylesheet %}
+	<link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}" type="text/css" />
+{% endblock %}
+
+
 {% block head_scripts %}
 <link rel="alternate" type="application/atom+xml" title="Ubyssey Rss Feed" href="/rss">
 <!-- Register ads for home page -->

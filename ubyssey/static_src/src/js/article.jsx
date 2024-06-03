@@ -209,8 +209,9 @@ if ($('main.article').length) {
 
 }
 
-
+/*
 ReactDOM.render(
     <Search />,
     document.getElementById('search-form')
 );
+*/
