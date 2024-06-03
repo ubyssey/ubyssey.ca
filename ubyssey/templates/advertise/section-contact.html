@@ -1,11 +1,42 @@
 <div id="contact" class="c-section c-section--contact c-section--inset c-section--orange">
+
+  <div id="offer-table" class="offer-section u-container">
+    <h2 class="o-heading o-heading--white">All Offerings <span>(Click to add to email)</span></h2>
+    
+    <div class="offer-flex">
+    <div class="offer">
+      <h3>Print Advertising</h3>
+      <ul>
+        {% include "advertise/offer-item.html" with offerId="print-full-page" offer="Print Full Page" offer_text="Full Page" default_num="1" price="$1450" %}
+        {% include "advertise/offer-item.html" with offerId="print-half-page" offer="Print 1/2 Page" offer_text="1/2 Page" default_num="1" price="$950" %}
+        {% include "advertise/offer-item.html" with offerId="print-quarter-page" offer="Print 1/4 Page" offer_text="1/4 Page" default_num="1" price="$595" %}
+        {% include "advertise/offer-item.html" with offerId="print-eighth-page" offer="Print 1/8 Page" offer_text="1/8 Page" default_num="1" price="$295" %}
+        {% include "advertise/offer-item.html" with offerId="print-full-spread" offer="Print Full Page Spread" offer_text="Full Page Spread" default_num="1" price="$4500" %}
+        {% include "advertise/offer-item.html" with offerId="print-full-back" offer="Print Full Page Back" offer_text="Full Page Back" default_num="1" price="$1750" %}
+      </ul>
+    </div>
+    
+    <div class="offer">
+      <h3>Web Advertising</h3>
+      <ul>
+        {% include "advertise/offer-item.html" with offerId="web-cpm" offer="Web Ad CPM" offer_text="Web Ad CPM" default_num="30" price="$30/CPM" %}
+      </ul>
+    </div>
+    </div>
+    
+    </div>
+
   <div class="u-container">
     <form class="c-form" method="post">
       {% csrf_token %}
-      <h2 class="o-heading o-heading--white">Contact us</h2>
+      <h2 class="o-heading o-heading--white">Submit order or inquiry</h2>
       <input id="name" name="name" type="text" placeholder="Name" />
 
       <input id="email" name="email" type="email" placeholder="Email address" />
+      
+      <h3>Cart</h3>
+      <div id="cart-container"></div>
+      <input id="cart" name="cart" type="hidden">
 
       <textarea id="message" name="message" rows="5" placeholder="How can we help you?"></textarea>
 
