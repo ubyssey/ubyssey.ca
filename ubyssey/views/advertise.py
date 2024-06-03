@@ -46,7 +46,7 @@ class AdvertiseTheme(object):
                     'Advertising inquiry from %s' % name,
                     content,
                     os.environ['EMAIL_HOST_USER'],
-                    [email, os.environ['UBYSSEY_ADVERTISING_EMAIL']],
+                    [os.environ['UBYSSEY_ADVERTISING_EMAIL']],
                     fail_silently=False,
                 )
 
