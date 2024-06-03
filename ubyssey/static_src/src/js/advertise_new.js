@@ -95,15 +95,18 @@ $(function() {
     $('.c-web-slider__tooltip__cost').text(cost);
   }
 
+  $(document).on('click', '.delete-cart-item', function (e) {
+    e.preventDefault();
+    delete cart[this.parentElement.id];
+    document.getElementById(this.parentElement.id + "-selector").classList.remove("selected");
+    this.parentElement.remove();
+    updateCart();
+  });
+
   $(document).on('click', '.offer-link', function (e) {
     e.preventDefault();
     this.parentElement.classList.toggle("selected");
-    if(this.getAttribute("selected")=="true") {
-      this.setAttribute("selected", "false");
-      document.getElementById(this.parentElement.getAttribute("offerId")).remove();
-      delete cart[this.parentElement.getAttribute("offerId")];
-    } else {
-      this.setAttribute("selected", "true");
+    if(this.parentElement.classList.contains("selected")) {
       var text = String(this.parentElement.getElementsByClassName("offer-number")[0].value) + "x " + this.parentElement.getAttribute("offer");
 
       cart[this.parentElement.getAttribute("offerId")] = text;
@@ -113,6 +116,9 @@ $(function() {
       cartItem.id = this.parentElement.getAttribute("offerId");
       cartItem.innerHTML = "<a href='#' class='delete-cart-item'><i class='fa fa-close'></i></a><span>" + text + "</span>";
       document.getElementById("cart-container").appendChild(cartItem);
+    } else {
+      document.getElementById(this.parentElement.getAttribute("offerId")).remove();
+      delete cart[this.parentElement.getAttribute("offerId")];
     }
     updateCart();
   });
@@ -126,6 +132,11 @@ $(function() {
 
   function updateCart() {
     document.getElementById("cart").value = Object.values(cart).join("\n");
+    if(Object.keys(cart).length == 0) {
+      document.getElementById("cart-header-span").innerHTML = "(no items)";
+    } else {
+      document.getElementById("cart-header-span").innerHTML = "(" + String(Object.keys(cart).length) + " items)";
+    }
   }
 
 });

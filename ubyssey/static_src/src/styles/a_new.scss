@@ -1405,3 +1405,10 @@ html, body {
     color: white;
   }
 }
+
+h2, h3 {
+  > span {
+    font-size: 0.8em;
+    font-weight: 500;
+  }
+}
