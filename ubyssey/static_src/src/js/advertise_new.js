@@ -139,4 +139,16 @@ $(function() {
     }
   }
 
+  document.body.onscroll = function() {
+    var button = document.getElementById("to-bottom");
+    if(!button.classList.contains("hidden") && 
+      document.documentElement.scrollTop >= document.getElementById("contact").offsetTop - document.getElementById("contact").offsetHeight) {
+      button.classList.add("hidden");
+      console.log("hide");
+    } else if (button.classList.contains("hidden") && 
+    document.documentElement.scrollTop < document.getElementById("contact").offsetTop - document.getElementById("contact").offsetHeight) {
+      button.classList.remove("hidden");
+      console.log("show");
+    }
+  };
 });
