@@ -1036,7 +1036,8 @@ html, body {
   margin-top: 1.5rem;
   padding: 1.25rem;
   width: 400px;
-
+  max-width: calc(100% - 3em);
+  
   // Border
   border: 1px solid #d2d2d2;
   border-radius: 5px;
