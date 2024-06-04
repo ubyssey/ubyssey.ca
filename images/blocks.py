@@ -6,6 +6,10 @@ class ImageBlock(blocks.StructBlock):
     image = ImageChooserBlock(
         required=True,
     )
+    click_to_enlarge = blocks.BooleanBlock(
+        default=True,
+        help_text="Leaving this checked means readers will be able to click on the image to see it enlarged",
+    )
     style = blocks.ChoiceBlock(
         choices=[
             ('default', 'Default'),
