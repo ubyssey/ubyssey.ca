@@ -7,6 +7,7 @@ from django.views import defaults as default_views
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+from wagtail.contrib.sitemaps.views import sitemap
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
@@ -69,6 +70,7 @@ urlpatterns += [
     re_path(r'^rss/(?P<slug>[-\w]+)/$', SectionFeed(), name='section-feed'),
     re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
     re_path(r'^blog/', redirect_blog_to_humour),
+    re_path(r'^sitemap.xml$', sitemap),
     path('', include(wagtail_urls)),
 
     # # standard Ubyssey site
