@@ -231,3 +231,16 @@
   font-weight: 600;
   text-align: center;
 }
+
+main.tag {
+  margin-top: 2em;
+
+  .tag-page__title {
+    height: fit-content;
+    margin: 1.5em 1em;
+    position: sticky;
+    top: 6em;
+    border-bottom: 2px solid black;
+    padding-bottom: 5px;
+  }
+}

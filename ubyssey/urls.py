@@ -11,6 +11,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
 from ubyssey.views.advertise import AdvertiseTheme
+from ubyssey.views.tag import TagPage
 
 from infinitefeed.views import infinitefeed
 
@@ -20,6 +21,7 @@ from django.conf.urls import handler500
 handler500 = 'ubyssey.views.main.custom_500'
 
 advertise = AdvertiseTheme()
+tag = TagPage()
 
 urlpatterns = []
 
@@ -58,7 +60,10 @@ urlpatterns += [
     # re_path(r'^events/', include(events_urls)),
     # re_path(r'^api/events/', include(event_api_urls)),
 
-    # # Advertising
+    # Tag
+    re_path(r'^tag/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),    
+
+    # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
 
     # Wagtail
