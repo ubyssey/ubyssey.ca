@@ -1073,20 +1073,20 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         return authors_with_roles
     authors_with_roles = property(fget=get_authors_with_roles)
  
-    def get_category_articles(self, order='-explicit_published_at') -> QuerySet:
+    def get_category_articles(self, order='-first_published_at') -> QuerySet:
         """
         Returns a list of articles within the Article's category
         """
-        category_articles = ArticlePage.objects.live().public().filter(category=self.category).not_page(self).order_by(order)
+        category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)
 
         return category_articles
     
-    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+    def get_section_articles(self, order='-first_published_at') -> QuerySet:
         """
         Returns a list of articles within the Article's section
         """
 
-        section_articles = ArticlePage.objects.live().public().descendant_of(self.get_parent()).not_page(self).order_by(order)
+        section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)
         
         return section_articles
 
@@ -1094,21 +1094,24 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         Defines the title and articles in the suggested box
         """
-        
-        category_articles = self.get_category_articles()
-        section_articles = self.get_section_articles()
+        suggested = {}
+        if self.category != None:
+            category_articles = self.get_category_articles()
+            if len(category_articles) > 0:
+                suggested = {}
+                suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
+                suggested['articles'] = category_articles[:number_suggested]
+                suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
 
-        if self.category == None or len(category_articles) == 0:
-            suggested = {}
-            suggested['title'] = self.get_parent().title
-            suggested['articles'] = section_articles[:number_suggested]
-            suggested['link'] = self.get_parent().url
-        elif len(section_articles) > 0:
-            suggested = {}
-            suggested['title'] = self.category.title
-            suggested['articles'] = category_articles[:number_suggested]
-            suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
-        else:
+        if not suggested:
+            section_articles = self.get_section_articles()
+            if len(section_articles) > 0:
+                suggested = {}
+                suggested['title'] = "From " + self.get_parent().title
+                suggested['articles'] = section_articles[:number_suggested]
+                suggested['link'] = self.get_parent().url
+        
+        if not suggested:
             suggested = False
 
         return suggested

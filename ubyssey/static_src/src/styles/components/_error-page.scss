@@ -1,0 +1,88 @@
+.error-page {
+    margin: auto;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: $font-default;
+    color: #333;
+
+    h1, h2, p {
+        color: inherit;
+    }
+
+    h1 {
+        font-size: 10em;
+        margin: 0;
+    }
+    h2 {
+        font-size: 2.5em;
+        margin: 0;
+        margin-bottom: 1em;
+    }
+    p {
+        font-size: 1em;
+        margin: 0.5em 0;
+    }
+    .email-link {
+        color: $color-ubyssey-blue;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .load-articles {
+        margin: 1.5em 0 1em 0;
+        font-weight: 500;
+        font-size: 1.5em;
+    }
+
+    #feed {
+        max-width: 600px;
+        margin: auto;
+        padding: 1em;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    .center-container {
+        padding: 0 1em;
+        text-align: center;
+    }
+    
+    .top-logo {
+        width: 100%;
+        margin: 1em;
+        margin-bottom: 5em;
+        display: block;
+        img {
+            position: relative;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+    
+    .admin-edit-link {
+        display: block;
+        width: fit-content;
+        margin: 1em auto;
+        padding: 0.5em 1em;
+        border-radius: 5px;
+
+        background-color: #0071C9;
+        color: #fff;
+        text-decoration: none;
+    }
+    
+    .admin-edit-link:hover {
+        background-color: #1867A5
+    }
+    
+}
+
+.darkmode {
+    .error-page{
+        color: white;
+    }
+}

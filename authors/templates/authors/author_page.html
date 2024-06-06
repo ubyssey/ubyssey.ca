@@ -4,6 +4,10 @@
 {% load wagtailimages_tags %}
 {% load authors_tags %}
 
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/author.css' %}" type="text/css" />
+{% endblock %}
+
 {% block head_scripts%}
 <link rel="alternate" type="application/atom+xml" title="{{self.title}} - Ubyssey feed" href="/authors/{{self.slug}}/rss">
 {% endblock %}

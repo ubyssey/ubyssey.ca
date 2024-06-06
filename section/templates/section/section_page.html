@@ -7,6 +7,10 @@
 {% load ubyssey_ad_tags %}
 {% load ubyssey_ad_filters %}
 
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}" type="text/css" />
+{% endblock %}
+
 {% block head_scripts %}
 <link rel="alternate" type="application/atom+xml" title="Ubyssey {{title}} feed" href="/rss/{{self.slug}}">
   <!-- Register ads for section page -->
@@ -98,10 +102,16 @@
             </div>
           </div>
         </div>
+        {% if error %}
+          <p class="section-error"><a href="{% pageurl self %}">{{error}}</a></p>
+        {% else %}
           {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
+        {% endif %}
         </div>
         {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with styling="c-section__sidebar" id="sidebar" sidebar_stream=self.sidebar_stream %}
+        {% if not error %}
         <script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
+        {% endif %}
       </div>
     </div>
   </main>

@@ -5,40 +5,29 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-{% block content %}
-{% comment %} //header for website {% endcomment %}
+{% block header %}
 {% include 'navigation/headers/topbar.html' %}
-{% comment %} //header for mobile app {% endcomment %}
 {% include 'navigation/headers/mobile.html' %}
-{% comment %} //new 404 class {% endcomment %}
-    <main class="404">
-        <div class="u-container u-container--padded">
-            {% comment %} //Load in image template from images section
-            //DOES THIS NEED TO BE MODIFIED???
-            //start {% endcomment %}
-            <h1>This page does not exist :/</h1>
-            <div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
-                {% image self.image original as image %}
-                {% comment %} //img src and alt modified to be the image now added in the images folder
-                //what else needs to be changed {% endcomment %}
-                <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{% static 'images/404graphic.png' %}" alt="404 image" />
-                {% if self.caption or self.credit %}
-                {% comment %} //does this need to be modified {% endcomment %}
-                <div class="caption">
-                    {% if self.caption %}{{ self.caption|safe }}{% endif %} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
-                </div> 
-                {% endif %}
-            </div>
-            {% comment %} //end
-
-            //Was this was what was referred to in the search functionality 
-            //what needs to be changed
-            //start {% endcomment %}
-            {% comment %} //end
-
-            //Should this block of code be instead {% endcomment %}
-        {% comment %} {% include 'archive/objects/archive.html' %} {% endcomment %}
-        </div>
-    </main>
 {% endblock %}
-{% comment %} //end of block {% endcomment %}
+
+{% block content %}
+<main class="404">
+    <div class="u-container u-container--padded error-page">
+
+        <div class="center-container">
+            <h1>404</h1>
+            <h2>Page Not Found</h2>
+            <p>The page you have searched is not available.</p>
+            <p>Questions? Contact EMAIL: <a class="email-link"
+                    href="mailto:webmaster@ubyssey.ca">webmaster@ubyssey.ca</a></p>
+            <h2 class="load-articles"><i class="fa-solid fa-spinner fa-spin-pulse"></i></h2>
+
+            <div id="feed"></div>
+            <script src="{% static 'ubyssey/js/error_page.js' %}" type="text/javascript"></script>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
