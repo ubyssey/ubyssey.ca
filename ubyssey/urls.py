@@ -9,7 +9,7 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour
-from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed
+from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
 
@@ -61,7 +61,8 @@ urlpatterns += [
     # re_path(r'^api/events/', include(event_api_urls)),
 
     # Tag
-    re_path(r'^tag/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),    
+    re_path(r'^tag/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  
+    re_path(r'^tag/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),    
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),

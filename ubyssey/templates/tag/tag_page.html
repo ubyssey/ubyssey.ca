@@ -62,7 +62,7 @@
 	gtag('config', 'G-M3D8SDLCGE');
 	</script>
 
-    <link rel="alternate" type="application/atom+xml" title="Ubyssey {{title}} feed" href="/rss/{{self.slug}}">
+    <link rel="alternate" type="application/atom+xml" title="Ubyssey {{self.title}} feed" href="/tag/{{self.slug}}/rss">
 </head>
 
 <body>
@@ -84,6 +84,8 @@
 		</div>
 		<div id="adblock-splash">
 		</div>
+
+		<div id="modal" aria-modal="true"></div>
 		
         {% include 'navigation/headers/mobile.html' %}
         {% include 'navigation/headers/topbar.html' %}
@@ -98,19 +100,17 @@
                   <div class="c-infinitefeed__feed">
                     <div class="c-page__header tag-page__title">
                         <h1 class="c-page__heading u-text-center">{{self.title}}</h1>
+						<p>
+							<a href="/tag/{{self.slug}}/rss" aria-label="Go to section's rss feed">Be notified through Rss &ensp;<i class="fa fa-rss"></i></a>
+						</p>
                     </div>
                     <div class="lightmode section_infinitefeed">
-                    
-                    {% if error %}
-                      <p class="section-error"><a href="{% pageurl self %}">{{error}}</a></p>
-                    {% else %}
-                      {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
-                    {% endif %}
+
+					{% include 'infinitefeed/infinitefeed.html' with filters=filters %}
                     </div>
             
-                    {% if not error %}
                     <script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
-                    {% endif %}
+
                   </div>
                 </div>
               </main>

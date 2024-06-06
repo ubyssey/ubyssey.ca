@@ -8,7 +8,8 @@ class TagPage(object):
 
             context = {
                 "filters": {"tag": tag.slug},
-                "self": {"title": "Tag - " + tag.name},
+                "self": {"title": "Tag - " + tag.name,
+                         "slug": tag.slug},
             }
             return render(request, 'tag/tag_page.html', context)
         else:
