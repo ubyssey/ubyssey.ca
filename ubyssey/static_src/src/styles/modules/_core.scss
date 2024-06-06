@@ -301,14 +301,6 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-span.upper-right-decorator {
-  color: $color-ub-blue-light;
-  font-size: .8em;
-  position: relative;
-  top: -.8em;
-  font-family: $font-default;
-  text-transform: capitalize;
-}
 div.image-container {
     height: 100%;
     display: table;
@@ -322,20 +314,6 @@ div.image-inner {
     width: 100%;
 }
 
-p.slide-caption {
-    font-family: $font-default;
-    font-size: 13px;
-    color: #fff;
-    line-height: 19px;
-}
-
-p.slide-credit {
-		font-family: $font-default;
-		font-size: 13px;
-		color: #9c9c9c;
-		font-style: italic;
-}
-
 span.credit {
   font-style: italic;
   color: #969696;
@@ -345,33 +323,13 @@ img.article-attachment:hover {
     cursor: pointer;
 }
 
-img.slide-image {
-    max-width: 100%;
-}
-
-div.navigation {
-    color: white;
-    font-family: $font-secondary;
-    font-size: 13px;
-    text-align: center;
-}
-
-div.navigation a {
-    display: inline-block;
-    padding: 6px 9px;
-    color: white;
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 12px;
-}
-
-div.navigation a:hover {
-    color: black;
-    background: #fff;
-}
-
 .no-scroll {
     overflow: hidden;
+}
+
+.u-no-scroll {
+  // Func: Disable scrolling
+  overflow-y: hidden;
 }
 
 a.image {
@@ -416,10 +374,5 @@ a.image {
 
 .show {
 	display: block;
-}
-/* Restoring browsering effects */
-
-.floating-share-buttons {
-  size: 4px;
 }
 

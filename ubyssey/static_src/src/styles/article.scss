@@ -4,7 +4,6 @@
 @import 'modules/advertisements';
 @import 'modules/variables';
 @import 'modules/mixins';
-@import 'modules/utilities';
 
 // Ubyssey site-specific files
 @import 'modules/header';
@@ -12,23 +11,22 @@
 
 @import 'modules/headlines';
 @import 'modules/buttons';
-@import 'modules/darkmode'; 
-@import 'modules/homepage';
+@import 'modules/darkmode';
 
 @import 'modules/article/base';
+@import 'modules/article/author_card';
 @import 'modules/article/embeds';
 @import 'modules/article/full_width';
 @import 'modules/article/sidebar';
 @import 'modules/article/special_page.scss';
+@import 'modules/article/visual_essay';
 
 @import 'objects/article';
+@import 'objects/article_suggested';
 
 @import 'components/adblock-splash';
 @import 'components/cookie-disclaimer';
 @import 'components/replacement';
-@import 'components/suggested-articles';
-@import 'components/page';
 
 @import 'modules/widgets/facebook_video_big';
-@import 'modules/widgets/banner';
 @import 'modules/widgets/twitter';

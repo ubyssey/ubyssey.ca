@@ -1,0 +1,120 @@
+@import 'modules/variables';
+
+.o-article--coverstory {
+    // Structure
+    display: block;
+  
+    @media($bp-larger-than-phablet) {
+      // Structure
+      flex-grow: 1;
+      width: 400px;
+      max-width: 685px;
+  
+      .o-article__headline {
+        // Text
+        font-size: 2rem;
+        line-height: 3.2rem;
+        left: 0.5em;
+      }
+  
+      .o-article__image {
+        min-height: 400px;
+        max-height: 600px;
+      }
+    }
+  
+    @media($bp-smaller-than-phablet) {
+      // Structure
+      width: 100%;
+  
+      .o-article__headline {
+        // Text
+        font-size: 1.5rem;
+        line-height: 2.5rem;
+  
+        @media($bp-larger-than-phablet) {
+          left: 20px;
+        }
+      }
+  
+      .o-article__image {
+        min-height: 200px;
+        max-height: 300px;
+      }
+    }
+  
+    .o-article__image {
+      width: 100%;
+      display: flex;
+      clip-path: inset(0% 0% 0% 0%);
+  
+      img {
+        margin: auto;
+        max-height: 100%;
+      }
+    }
+  
+    .o-article__right {
+      position: relative;
+  
+      @media($bp-larger-than-phablet) {
+        transform: translate(0, -30%);
+        margin-right: 30px;
+      }
+  
+      @media($bp-smaller-than-phablet) {
+        top: -50px;
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+    }
+  
+    .o-article__meta {
+      @media($bp-larger-than-phablet) {
+        margin-left: 20px;
+        margin-right: 10px;
+      }
+    }
+  
+    .o-article__headline {
+      position: relative;
+      color: #ffffff;
+      background-color: $color-ubyssey-blue;
+      filter: drop-shadow(-5px 10px 4px #00000040);
+      border-bottom: 3px $color-ubyssey-blue-light solid;
+      transition-duration: 0.1s;
+  
+      &:hover {
+        border-color: white;
+      }
+  
+      a {
+        white-space: break-spaces;
+  
+        &:hover {
+          color: white;
+        }
+      }
+    }
+  
+    .o-article__author {
+      color: var(--text_color);
+    }
+  
+    .o-article__byline {
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+  
+    .o-article__published {
+      color: $color-accent-blue;
+    }
+  
+    .o-article__snippet {
+      margin-top: 20px;
+      line-height: 1.5em;
+      color: var(--header_color);
+      font-size: 1.2em;
+    }
+  }
+  

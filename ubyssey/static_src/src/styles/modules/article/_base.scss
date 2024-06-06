@@ -1,6 +1,3 @@
-
-@import 'modules/variables';
-
 $text-color: var(--text_color);
 
 .featured-media {
@@ -8,28 +5,6 @@ $text-color: var(--text_color);
   img {
     width: 100%;
   }
-}
-
-// Article Slide
-
-div.article-slide {
-  border-top: 1px solid #DADADA;
-  margin-top: 50px;
-
-  main.article {
-    padding-top: 0;
-  }
-
-  @media($bp-larger-than-tablet) {
-    margin-bottom: 50px;
-  }
-}
-
-div.indicator {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 2000;
 }
 
 .o-breaking-news-article {
@@ -91,26 +66,6 @@ div.indicator {
   }
 }
 
-.c-article__tag {
-  // Structure
-  display: inline-block;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-
-  // Border
-  border-radius: 4px;
-
-  // Background
-  background: $color-red;
-
-  // Text
-  color: $color-white;
-  font-weight: $font-weight-semi-bold;
-  letter-spacing: 0.5px;
-  font-size: font-size(15);
-  text-transform: uppercase;
-}
-
 .c-article__info {
   display: block;
 
@@ -118,11 +73,6 @@ div.indicator {
     display: flex;
     flex-wrap: wrap;
   }
-}
-
-.c-authors_info {
-  display: flex;
-  flex-flow: row wrap;
 }
 
 .c-article__byline {
@@ -146,15 +96,6 @@ div.indicator {
 
 }
 
-.c-article_byline_fw {
-  width: 100%;
-}
-
-.c-authors_bio {
-  position: absolute;
-  display: block;
-}
-
 .c-authors_bio_meta {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -170,104 +111,9 @@ div.indicator {
   margin-bottom: 0;
 }
 
-
-
-.author_card {
-  padding: 1.5em;
-  display: flex;
-  background-color: $color-ubyssey-blue-light;
-  border-radius: 20px;
-  margin:auto;
-  margin-top: 2em;
-  flex-direction: column;
-  max-width: 585px;
-
-  @media($bp-smaller-than-mobile) {
-    width: auto;
-    padding-bottom: 3em;
-    border-radius: 0;
-  }
-
-  p, div {
-    color: black;
-  }
-}
-
-.author_image {
-  height: 100px;
-  width: 100px;
-  object-fit: cover;
-  border-radius: 50%;
-  position: relative;
-  overflow: hidden;
-  margin-right: 1em;
-}
-
-.author_title>p {
-  margin-bottom: 0.5em;
-}
-
-.with_image {
-  p {
-    margin-top: auto;
-    margin-bottom: auto;
-  }
-}
-
-.author_name {
-  margin-right: 0.2em;
-  font-weight: bold;
-}
-
-.author_card p.author_role {
-  text-transform: capitalize;
-  color: #1b1b1b;
-}
-
-.author_info {
-  margin-top: 0.5em;
-  p {
-    margin-top:0.5em;
-  }
-  li {
-    margin-left: 1em;
-  }
-  a {
-    font-weight: bold;
-    text-decoration: underline;
-  }
-}
-
-.author_title {
-  display: flex;
-  flex-direction: row;
-}
-
-.author_role {
-  font-style: bold;
-  text-transform: capitalize;
-}
-
-.c-author__byline {
-  padding-left: 1em;
-  margin-bottom: 0.2rem;
-
-  font-family: $font-default;
-  font-size: $font-size-15px;
-  font-weight: $font-weight-semi-bold;
-}
-
 .c-article__byline-center {
   display: flex;
   justify-content: center;
-}
-
-.960px {
-  margin-bottom: 0.9rem;
-  display: inline-block;
-  @media($bp-larger-than-tablet) {
-    margin-bottom: 0;
-  }
 }
 
 .c-article__byline__meta {
@@ -275,16 +121,6 @@ div.indicator {
   float: left;
   color: var(--article_info);
   font-weight: $font-weight-normal;
-  @media($bp-larger-than-tablet) {
-    display: inline-block;
-    margin-right: 0.75em;
-    margin-bottom: 0;
-  }
-}
-
-.c-article__author {
-  margin-bottom: 0.75rem;
-
   @media($bp-larger-than-tablet) {
     display: inline-block;
     margin-right: 0.75em;
@@ -305,20 +141,6 @@ div.indicator {
 
 .visuallyhidden{position:absolute;clip:rect(1px,1px,1px,1px)}
 
-.c-banner_share_dark_buttons {
-  padding-left: 1em;
-  margin-bottom: 0.2rem;
-
-  font-family: $font-default;
-  font-size: $font-size-15px;
-  font-weight: $font-weight-semi-bold;
-  
-  color: #FFF;
-
-  width: 100%;
-  justify-content: center;
-}
-
 .c-share_space {
   padding-right: 1em;
 }
@@ -326,16 +148,6 @@ div.indicator {
 p.fw-description {
   font-family: $font-body;
   font-size: 18px;
-}
-
-.c-article__featured-media {
-  // Structure
-  max-width: 585px;
-  margin-bottom: 1.5rem;
-
-  .article-attachment {
-    width: 100%;
-  }
 }
 
 @media($bp-larger-than-mobile) {
@@ -581,8 +393,4 @@ p.c-article__published-at {
     color: var(--text_color);
     border: none;
   }
-}
-
-.suggested-sidebar {
-  margin-bottom: 3em;
 }

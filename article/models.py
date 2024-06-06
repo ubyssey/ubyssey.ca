@@ -1099,7 +1099,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             category_articles = self.get_category_articles()
             if len(category_articles) > 0:
                 suggested = {}
-                suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
+                suggested['title'] = self.category.title
                 suggested['articles'] = category_articles[:number_suggested]
                 suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
 
@@ -1107,7 +1107,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             section_articles = self.get_section_articles()
             if len(section_articles) > 0:
                 suggested = {}
-                suggested['title'] = "From " + self.get_parent().title
+                suggested['title'] = self.get_parent().title
                 suggested['articles'] = section_articles[:number_suggested]
                 suggested['link'] = self.get_parent().url
         
