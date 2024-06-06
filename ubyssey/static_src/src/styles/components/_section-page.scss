@@ -237,10 +237,14 @@ main.tag {
 
   .tag-page__title {
     height: fit-content;
+    max-width: 300px;
     margin: 1.5em 1em;
     position: sticky;
     top: 6em;
-    border-bottom: 2px solid black;
-    padding-bottom: 5px;
+    h1 {
+      border-bottom: 2px solid black;
+      padding-bottom: 5px;
+      text-transform: capitalize;
+    }
   }
 }
