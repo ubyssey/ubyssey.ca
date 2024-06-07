@@ -67,7 +67,7 @@ class SidebarLatestBlock(blocks.StructBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value["title"]
-        context['articles'] = ArticlePage.objects.live().public().filter(~(Q(current_section='guide'))).order_by('-explicit_published_at')[:5]         
+        context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at')[:5]         
         return context
     class Meta:
         template = "infinitefeed/sidebar/sidebar_latest_block.html"

@@ -1,9 +1,11 @@
 // Scripts for the /advertise/ page
 // Bundled as 'a_new.js' to prevent AdBlocker blocking.
 
+var cart = {};
+
 $(function() {
   // Navigation links smooth scrolling
-  $('a[href*=\\#]').on('click', function(e) {
+  $('.nav-link').on('click', function(e) {
     $('html,body').animate({ scrollTop: $(this.hash).offset().top }, 500);
   });
 
@@ -92,4 +94,61 @@ $(function() {
     $('.c-web-slider__tooltip__content').html(content);
     $('.c-web-slider__tooltip__cost').text(cost);
   }
+
+  $(document).on('click', '.delete-cart-item', function (e) {
+    e.preventDefault();
+    delete cart[this.parentElement.id];
+    document.getElementById(this.parentElement.id + "-selector").classList.remove("selected");
+    this.parentElement.remove();
+    updateCart();
+  });
+
+  $(document).on('click', '.offer-link', function (e) {
+    e.preventDefault();
+    this.parentElement.classList.toggle("selected");
+    if(this.parentElement.classList.contains("selected")) {
+      var text = String(this.parentElement.getElementsByClassName("offer-number")[0].value) + "x " + this.parentElement.getAttribute("offer");
+
+      cart[this.parentElement.getAttribute("offerId")] = text;
+      console.log(cart);
+      var cartItem = document.createElement("div");
+      cartItem.classList.add("cart-item");
+      cartItem.id = this.parentElement.getAttribute("offerId");
+      cartItem.innerHTML = "<a href='#' class='delete-cart-item'><i class='fa fa-close'></i></a><span>" + text + "</span>";
+      document.getElementById("cart-container").appendChild(cartItem);
+    } else {
+      document.getElementById(this.parentElement.getAttribute("offerId")).remove();
+      delete cart[this.parentElement.getAttribute("offerId")];
+    }
+    updateCart();
+  });
+
+  $(document).on('change', '.offer-number', function(e) {
+    var text = String(this.value) + "x " + this.parentElement.getAttribute("offer");
+    cart[this.parentElement.getAttribute("offerId")] = text;
+    document.getElementById(this.parentElement.getAttribute("offerId")).getElementsByTagName("span")[0].innerHTML = text;
+    updateCart();
+  });
+
+  function updateCart() {
+    document.getElementById("cart").value = Object.values(cart).join("\n");
+    if(Object.keys(cart).length == 0) {
+      document.getElementById("cart-header-span").innerHTML = "(no items)";
+    } else {
+      document.getElementById("cart-header-span").innerHTML = "(" + String(Object.keys(cart).length) + " items)";
+    }
+  }
+
+  document.body.onscroll = function() {
+    var button = document.getElementById("to-bottom");
+    if(!button.classList.contains("hidden") && 
+      document.documentElement.scrollTop >= document.getElementById("contact").offsetTop - document.getElementById("contact").offsetHeight) {
+      button.classList.add("hidden");
+      console.log("hide");
+    } else if (button.classList.contains("hidden") && 
+    document.documentElement.scrollTop < document.getElementById("contact").offsetTop - document.getElementById("contact").offsetHeight) {
+      button.classList.remove("hidden");
+      console.log("show");
+    }
+  };
 });
