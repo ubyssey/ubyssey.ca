@@ -536,13 +536,15 @@ a.store-link {
 
 }
 
-.lightmode {
+[color-css-theme="light"] {
+
   .dark-logo {
     display: none !important;
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
   .light-logo {
     display: none !important;
   }

@@ -217,7 +217,8 @@ main.article .o-advertisement--leaderboard {
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
   .o-advertisement--header-bar {
     background-color: #424242;
     border-bottom: 1px solid #535353;

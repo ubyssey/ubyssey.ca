@@ -575,7 +575,8 @@
 // Article column
 
 
-.darkmode {
+[color-css-theme="dark"] {
+
   .o-article--column {
     box-shadow: #000000 1px 5px 15px;
   }
@@ -835,7 +836,8 @@
   }
 }
 
-.lightmode {
+[color-css-theme="light"] {
+
   .article--infinitefeed {
     .o-article__headline {
       color: black;
@@ -865,7 +867,8 @@
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
   .article--infinitefeed {
     .o-article__headline {
       color: white;
@@ -1156,7 +1159,8 @@
   }
 }
 
-.lightmode {
+[color-css-theme="light"] {
+
   .vs-side-by-side {
     .o-visual-essay__left-container {
       @media ($bp-smaller-than-phablet) {
@@ -1169,7 +1173,8 @@
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
   .vs-side-by-side {
     .o-visual-essay__left-container {
       @media ($bp-smaller-than-phablet) {

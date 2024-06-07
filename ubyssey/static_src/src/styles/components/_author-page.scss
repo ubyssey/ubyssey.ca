@@ -61,7 +61,8 @@
     color: $color-ubyssey-blue-dark-2;
     line-height: 1.45em;
 }
-.darkmode {
+[color-css-theme="dark"] {
+
     @media($bp-smaller-than-phablet) {
         .author-name {
             color: white;

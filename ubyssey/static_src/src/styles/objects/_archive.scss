@@ -140,7 +140,8 @@ $search-bar-height: 46px;
 	}
 }
 
-.lightmode {	
+[color-css-theme="light"] {
+	
 	.o-archive__sidebar__filter {
 		a {
 			color: #353535;
@@ -158,7 +159,8 @@ $search-bar-height: 46px;
 	}
 }
 
-.darkmode {	
+[color-css-theme="dark"] {
+	
 	.o-archive__sidebar__filter {
 		a {
 			color: #c4c4c4;

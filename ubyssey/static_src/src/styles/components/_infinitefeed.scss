@@ -119,7 +119,8 @@
     width: 100%;
 }
 
-.lightmode {
+[color-css-theme="light"] {
+
     h2.block-title {
         text-shadow: #0000003b -1px 1px 15px;
     }
@@ -135,7 +136,8 @@
     }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
     h2.block-title {
         text-shadow: #000000 1px 1px 15px;
     }
