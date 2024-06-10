@@ -1,1 +1,1 @@
-<li id="{{offerId}}-selector" offerId="{{offerId}}" offer="{{offer}}"><input type="number" required value="{{default_num}}" min="1" class="offer-number">{{offer_text}} <span>{{price}}</span><a href="#" class="offer-link"></a></li>
+<li id="{{offerId}}-selector" offerId="{{offerId}}" offer="{{offer}}"><input type="number" required value="{{default_num}}" min="1" max="{% if max %}{{max}}{% else %}10{% endif %}" step="{% if step %}{{step}}{% else %}1{% endif %}" class="offer-number">{{offer_text}} <span>{{price}}</span><a href="#" class="offer-link"></a></li>
