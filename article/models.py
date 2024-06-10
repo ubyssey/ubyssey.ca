@@ -688,6 +688,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return "article/article_page_visual_essay.html"
         elif self.layout == 'guide-2020':
             return "article/article_page_guide_2020.html"
+        elif self.layout == 'guide-2020-section':
+            return "guide/2020/section.html"
         elif self.layout == 'guide-2022':
             return "article/article_page_guide_2022.html"
         elif self.layout == 'magazine-2023':
@@ -812,6 +814,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                             ('empty', 'Empty template'),
                             ('visual-essay', 'Visual Essay'),
                             ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
+                            ('guide-2020-section', 'Guide (2020 Section Landing Page)'),
                             ('guide-2022', 'Guide (2022 style)'),
                             ('magazine-2023', 'Magazine (2023 style)'),
                             ('guide-2023', 'Guide (2023 style)'),
