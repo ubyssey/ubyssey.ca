@@ -2,6 +2,7 @@ from typing import Any, Dict
 from django.contrib.syndication.views import Feed
 from django.utils import feedgenerator
 from bs4 import BeautifulSoup
+from taggit.models import Tag
 
 from article.models import ArticlePage
 from section.models import SectionPage
@@ -144,3 +145,26 @@ class AuthorFeed(UbysseyArticleFeed):
 
     def items(self, author):
         return ArticlePage.objects.live().public().filter(article_authors__author=author).order_by('-explicit_published_at')[:self.max_items]
+    
+class TagFeed(UbysseyArticleFeed):
+
+    def __init__(self, max_items=10):
+        self.max_items = max_items
+
+    def get_object(self, request, slug):
+        return Tag.objects.get(slug=slug)
+
+    def title(self, tag):
+        return 'Stories tagged "%s" from The Ubyssey' % tag.name
+
+    def description(self, tag):
+        return 'Stories tagged "%s" from The Ubyssey' % tag.name
+    
+    def link(self, tag):
+        return 'https://ubyssey.ca/tag/%s/' % tag.slug
+    
+    def feed_url(self, tag):
+        return 'https://ubyssey.ca/tag/%s/rss/' % tag.slug
+
+    def items(self, tag):
+        return ArticlePage.objects.live().public().filter(tags=tag).order_by('-explicit_published_at')[:self.max_items]
