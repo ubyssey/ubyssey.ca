@@ -61,7 +61,11 @@
     display:flex;
     min-height: 66vh;
     justify-content: space-evenly;
-  }
+    flex-direction: row;
+    @media ($bp-smaller-than-phablet) {
+        flex-direction: column;
+    }
+}
 
 .c-home-infinitefeed {
     width: 100%;

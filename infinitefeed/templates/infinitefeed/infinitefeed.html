@@ -6,6 +6,10 @@
 section = "{{filters.section}}"
 {% endif %}
 
+{% if "tag" in filters %}
+  tag = "{{filters.tag}}"
+{% endif %}
+
 {% if "category" in filters %}
   category = "{{filters.category}}"
 {% endif %}
