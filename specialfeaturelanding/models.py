@@ -69,6 +69,8 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
         if self.layout == 'default':
             return "specialfeaturelanding/base.html"
+        elif self.layout == 'guide-2020':
+            return "ubyssey/templates/guide/2020/index.html"
         elif self.layout == 'guide-2022':
             return "specialfeaturelanding/landing_page_guide_2022_style.html"
         elif self.layout == 'mag-2023':
@@ -202,6 +204,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
                     widget=Select(
                         choices=[
                             ('default', 'Default'), 
+                            ('guidee-2020', 'Guide (2020 style)'),
                             ('guide-2022', 'Guide (2022 style)'),
                             ('mag-2023', 'Magazine (2023 style)'),
                             ('guide-2023', 'Guide (2023 style)'),
