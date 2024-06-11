@@ -1383,18 +1383,19 @@ html, body {
 
 .offer {
   width: fit-content;
-  padding-right: 5em;
+  padding-right: 2em;
   color: white;
   h3 {
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    text-align: center;
   }
   ul {
     list-style: none;
     padding-left: 0.5em;
     li {
       position: relative;
-      margin: 0.5em 0;
+      margin: 0.5em 1em;
       padding: 0.5em;
       border-radius: 5px;
       border: 1px solid white;
