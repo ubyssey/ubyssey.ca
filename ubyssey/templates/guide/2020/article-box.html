@@ -1,7 +1,7 @@
-
+{% load wagtailcore_tags %}
 <div class="article-box{% if style %}--{{ style }}{% endif %}{% if type %} __type-{{ type }}{% endif %}" style="background-image: url('{{ image }}');">
     <nav class="article-box{% if style %}--{{ style }}{% endif %}-container">
-        <a class="article-box--nav" href="{% if slug %}{% url 'guide-article' 2020 subsection slug %}{% else %}#{%endif%}">
+        <a class="article-box--nav" href="{% pageurl page %}.slug">
             <p>{{ title }}</p>
             <div class="article-box-gradient"></div>
         </a> 
