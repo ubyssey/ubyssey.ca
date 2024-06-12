@@ -249,7 +249,7 @@ h4 {
       margin-right: 0.7rem;
       border-bottom: 1px solid transparent;
       border-color: #333333;
-      transition: border-color #{$time/2};
+      transition: border-color #{calc($time/2)};
       font-size: 1.5rem;
       @media (max-width: 640px) {
         overflow: hidden;
@@ -537,7 +537,7 @@ h4 {
         $gridSize: 320px;
 
         // Other
-        transition: opacity #{$time/2};
+        transition: opacity #{calc($time/2)};
 
         &:hover {
           opacity: 0.75;
@@ -551,8 +551,8 @@ h4 {
           flex-shrink: 0;
           .o-article-box {
             // Structure
-            margin-left: #{$spacing/2};
-            margin-right: #{$spacing/2};
+            margin-left: #{calc($spacing/2)};
+            margin-right: #{calc($spacing/2)};
           }
         }
 
