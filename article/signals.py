@@ -5,6 +5,12 @@ from .models import ArticlePage
 
 @receiver(page_published, sender=ArticlePage)
 def update_default_explicit_published_at(instance, **kwargs):
+    if instance.posted_to_mastodon == False:
+        instance.post_to_mastodon()
+        instance.posted_to_mastodon = True
+        new = instance.save_revision()
+        new.publish()
+
     if not instance.explicit_published_at:
         instance.explicit_published_at = instance.first_published_at
         for author in instance.article_authors.all():
