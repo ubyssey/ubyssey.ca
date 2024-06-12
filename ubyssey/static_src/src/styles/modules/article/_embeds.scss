@@ -380,6 +380,10 @@
     width: 100%;
   }
 
+  a {
+    display: block;
+  }
+
   @media($bp-larger-than-phablet){
     &.right, &.left {
       height: auto;

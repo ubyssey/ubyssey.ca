@@ -226,6 +226,10 @@ function initializeModals() {
       modal.children[modalIndex].classList.add("show");
       openModal();
 
+      if(modal.children[modalIndex].getElementsByClassName("focus-on").length > 0) {
+        modal.children[modalIndex].getElementsByClassName("focus-on")[0].focus();
+      }
+
       $(this).addClass('active');
     }
     return false;
