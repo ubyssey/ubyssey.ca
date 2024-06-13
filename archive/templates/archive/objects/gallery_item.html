@@ -1,18 +1,18 @@
 {% load wagtailimages_tags %}
 
 {% image image height-300 as img%}
-{% image image height-600 as big%}
+{% image image original as big%}
 
-<div class="open-modal gallery-item">
-    <a href="#">
+<div class="setup-modal gallery-item image-modal">
+    <a class="open-modal" href="#">
         <div class="gallery-image" style="background-image: url('{{img.full_url}}')"></div>
     </a>
 
-    <div class="add-to-modal image-modal hide js-dropdown-container">
-        <div class="u-container u-container--large modal-content">
+    <dialog class="modal close-modal hide js-dropdown-container">
+        <div class="u-container u-container--large modal-contents">
             <div class="image-modal-image" style="background-image: url('{{big.full_url}}')"></div>
-            <a class="close-modal close-gallery" href="#"><i class="fa fa-close"></i></a>
+            <a class="close-modal" href="#"><i class="fa fa-close"></i></a>
         </div>
-    </div>
+    </dialog>
 
 </div>

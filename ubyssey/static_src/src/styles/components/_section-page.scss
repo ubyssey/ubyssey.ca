@@ -126,6 +126,11 @@
   }
   overflow-y: auto;
   background-color: var(--background);
+  text-align: left;
+
+  li {
+    width: fit-content;
+  }
 }
 
 .c-section__buttons {
@@ -144,12 +149,13 @@
   max-width: 50%;
   z-index:10;
   position: relative;
-  cursor: pointer;
-  color: var(--header_color);
-  &:hover {
-    color: $color-accent-blue;
+  a, form, input {
+    cursor: pointer;
+    color: var(--header_color);
+    &:hover {
+      color: $color-accent-blue;
+    }
   }
-
   a > p {
     color: var(--header_color);
 
