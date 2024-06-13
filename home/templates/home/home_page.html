@@ -62,22 +62,7 @@
 		</div>
 	</div>
 
-	<div class="home_links">
-	{% if self.links %}
-		<div class="home_link_content">
-			<ul>
-			{%for link in self.links%}
-				{% include_block link%}
-			{%endfor%}
-			</ul>
-		</div>
-		<div class="home_link_ad">
-			<div class="sidebar-block sidebar-block--advertisement"></div>
-		</div>
-	{% else %}
-		<div class="sidebar-block sidebar-block--advertisement o-advertisement--leaderboard"></div>
-	{% endif %}
-	</div>
+
 
 </main>
 

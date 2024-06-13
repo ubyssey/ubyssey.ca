@@ -61,13 +61,20 @@ class AboveCutBlock(blocks.StructBlock):
     class Meta:
         template = "home/stream_blocks/above_cut_block.html"
 
-class LinkStreamBlock(blocks.StructBlock):
-    title = blocks.CharBlock(
-        required=True,
-        max_length=255,
+class LinksStreamBlock(blocks.StructBlock):
+
+    links = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ('title', blocks.CharBlock(
+                    required=True,
+                    max_length=255,
+                )),
+                ('url',blocks.URLBlock(required=False)),
+                ('description', blocks.TextBlock(required=False)),
+            ],
+        )
     )
-    url = blocks.URLBlock(required=False)
-    description = blocks.TextBlock(required=False)
 
     class Meta:
-        template = "home/stream_blocks/link.html"
+        template = "home/stream_blocks/links.html"
