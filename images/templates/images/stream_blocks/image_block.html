@@ -4,10 +4,9 @@
 {% if self.click_to_enlarge %}
 
 <div class="image-attachment attachment {{ self.style }} {{ self.width }} setup-modal" >
-    <a class="open-modal" href="#">
-        {% image self.image original as image %}
-        <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{{ self.caption }}" />
-    </a>
+    {% image self.image original as image %}
+    <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{{ self.caption }}" />
+    <a class="open-modal" href="#"></a>
 
     <dialog class="modal close-modal hide js-dropdown-container">
         <div class="u-container u-container--large modal-contents">
