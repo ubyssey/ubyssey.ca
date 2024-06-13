@@ -5,13 +5,13 @@ import { initializeDarkModeToggle } from './darkmode';
 // self-executing js anonymous function
 (function () {
 
-  moveModals();
+  //moveModals();
   initializeModals();
-  closeModal();
+  //closeModal();
 
   initializeDarkModeToggle();
 
-  archiveMobileDropDown();          // listeners for dropdown menu for elements js-dropdown-container/js-dropdown-list/js-dropdown
+  //archiveMobileDropDown();          // listeners for dropdown menu for elements js-dropdown-container/js-dropdown-list/js-dropdown
   //initializeSearchFormActions();    // Listeners for showing/hiding search form
   initializeSocialMediaActions();   // Listeners for Facebook, Twitter and Reddit sharing
 
@@ -174,7 +174,7 @@ function archiveMobileDropDown() {
   // on click, element parent fades (visible to hidden), scroll using touch enabled for touchscreens
   $('.js-dropdown-container').click(function (e) {
     e.preventDefault();
-    closeModal();
+    //closeModal();
     var dropdown = $(this).parent();
     dropdown.fadeOut(DROPDOWN_FADE_TIME);
     enableScroll();
@@ -208,36 +208,30 @@ function archiveMobileDropDown() {
 
 function initializeModals() {
   let DROPDOWN_FADE_TIME = 100;
-  var modal = document.getElementById("modal");
 
-  $('.open-modal > a').click(function (e) {
+  $(".open-modal").click(function (e) {
     e.preventDefault();
-    var modalLink = $(this).parent().find('.openModal')[0];
-    var modalIndex = parseInt(modalLink.getAttribute("modal"));
-    console.log(modal.children[modalIndex]);
-    if (modal.children[modalIndex].classList.contains("show")) {
-      closeModal();
-      modal.children[modalIndex].classList.add("hide");
-      modal.children[modalIndex].classList.remove("show");
-      $(this).removeClass('active');
+
+    var parent = $(this).closest('.setup-modal');
+    var modal = $(parent).find('.modal')[0];
+    console.log(parent);
+    console.log(modal);
+
+    if (modal.classList.contains("show")) {
+      closeModal(modal);
     } else {
-      closeModal();
-      modal.children[modalIndex].classList.remove("hide");
-      modal.children[modalIndex].classList.add("show");
-      openModal();
-
-      if(modal.children[modalIndex].getElementsByClassName("focus-on").length > 0) {
-        modal.children[modalIndex].getElementsByClassName("focus-on")[0].focus();
-      }
-
-      $(this).addClass('active');
+      openModal(modal);
     }
-    return false;
   });
 
-  $('a.close-modal').click(function (e) {
+  $('.close-modal').click(function (e) {
     e.preventDefault();
-    closeModal();
+    var parent = $(this).closest('.setup-modal');
+    var modal = $(parent).find('.modal')[0];
+    console.log(parent);
+    console.log(modal);
+
+    closeModal(modal);
   });
 }
 
@@ -380,43 +374,43 @@ function initializeAudioQuote() {
   
   });
 }
-function closeModal() {
-  var modal = document.getElementById("modal");
-  modal.style.display = 'none';
+function closeModal(modal) {
   
-  var content = document.getElementById("content-wrapper");
-  content.removeAttribute("tabindex");
-  content.removeAttribute("readonly");
-  content.removeAttribute("aria-hidden");
-  content.removeAttribute("inert");
+  modal.classList.add("hide");
+  modal.classList.remove("show");
 
-  for (let i=0; i < modal.children.length; i++) {
-    modal.children[i].classList.remove("show");
-    modal.children[i].classList.add("hide");
+  if(modal.tagName == "DIALOG"){
+    modal.close();
+  } else {
+    var content = document.getElementById("content-wrapper");
+    content.removeAttribute("tabindex");
+    content.removeAttribute("readonly");
+    content.removeAttribute("aria-hidden");
+    content.removeAttribute("inert");
   }
 
-  var modalLink = document.getElementsByClassName("open-modal");
-  for (let i=0; i < modalLink.length; i++) {
-    var anchor = modalLink[i].getElementsByTagName("a");
-    if(anchor.length > 0) {
-      anchor[0].classList.remove("active");
-    }
-  }
-
-  $('body').removeClass('u-no-scroll');
+  enableScroll();
 }
 
-function openModal() {
-  var modal = document.getElementById("modal");
-  modal.style.display = 'block';
-  
-  var content = document.getElementById("content-wrapper");
-  content.setAttribute("tabindex", "-1");
-  content.setAttribute("readonly", "");
-  content.setAttribute("aria-hidden", "true");
-  content.setAttribute("inert", "");
+function openModal(modal) {
+  modal.classList.remove("hide");
+  modal.classList.add("show");
 
-  $('body').addClass('u-no-scroll');
+  if(modal.tagName == "DIALOG"){
+    modal.showModal();
+  } else {
+    var content = document.getElementById("content-wrapper");
+    content.setAttribute("tabindex", "-1");
+    content.setAttribute("readonly", "");
+    content.setAttribute("aria-hidden", "true");
+    content.setAttribute("inert", "");
+  }
+
+  if(modal.getElementsByClassName("focus-on").length > 0) {
+    modal.getElementsByClassName("focus-on")[0].focus();
+  }
+
+  disableScroll();
 }
 
 function moveModals() {

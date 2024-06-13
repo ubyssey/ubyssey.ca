@@ -3,29 +3,24 @@
 {% load menu_tags %}
 
 <header class="mobile dark-mode">
-    <div class="open-modal">
-        <a class="menu left" href="#"><i class="fa fa-bars"></i></a>
-
-        <nav class="add-to-modal mobile dark-mode">
-            <div class="modal-block">
+    <div class="setup-modal">
+        <a class="open-modal menu left" href="#"><i class="fa fa-bars"></i></a>
+        <nav class="mobile dark-mode modal">
+            <div class="toggle-container">
                 {% include 'article/objects/darkmode_button.html' with id="mobile"%}
             </div>
 
             <div class="left">
                 
                 <h2>Sections</h2>
-                <ul class="sections">
                     {% main_menu %}
                     {% comment %} {% for menu_item in settings.navigation.SitewideMenus.main_header_menu.all %}
         =                <li><a href="{{ menu_item.link }}">{{ menu_item.text }}</a></li>
                     {% endfor %} {% endcomment %}
-                </ul>
             </div>
             <div class="right">
                 <h2>Links</h2>
-                <ul class="links">
-                    {% flat_menu 'mobile_links_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-                </ul>
+                {% flat_menu 'mobile_links_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
             </div>
         </nav>
     </div>

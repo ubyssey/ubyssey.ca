@@ -102,15 +102,12 @@
 }
 
 .mobile {
-  .modal-block {
-    padding: 1em 1em 1em 1em;
-    justify-content: center;
+  .toggle-container {
     display: inline-block;
     width: 100%;
     .dark-mode-switcher{
       float: left;
       display: block;
-      margin-left: 1em;
       color: var(--header_color);
     }
   }
