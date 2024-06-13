@@ -386,10 +386,28 @@ html, body {
   box-shadow: 0 2px 9px 0 rgba(0,0,0,0.50);
 }
 
+.c-section--web__vector--phone {
+  width: 300px;
+  aspect-ratio: 1/2;
+  border: 1em white solid;
+  border-top-width: 2em;
+  padding: 4px;
+  
+  object-fit: cover;
+  object-position: top;
+  background-color: #e4e4e4;
+}
+
 .c-section--web__vector--tablet {
   // Structure
   position: absolute;
   margin-left: 2rem;
+
+  width: 50%;
+  border: 2em white solid;
+  border-top-width: 4em;
+  padding: 4px;
+  background-color: #e4e4e4;
 }
 
 .c-section--web__vector--newspaper {
@@ -411,8 +429,21 @@ html, body {
   }
 }
 
+.o-placements--print .o-placements__demo {
+  aspect-ratio: 40/53;
+}
+
+.o-placements--guide .o-placements__demo {
+  aspect-ratio: 5/8;
+}
+
+.o-placements--magazine .o-placements__demo {
+  aspect-ratio: 16/21;
+}
+
 .o-placements--print,
-.o-placements--guide {
+.o-placements--guide,
+.o-placements--magazine {
   // Structure
 
   .o-placements__list {
@@ -546,7 +577,6 @@ html, body {
   .o-placements__demo__inner {
     // Structure
     height: 100%;
-    padding-bottom: 120%;
 
     // Background
     background-color: #E4E4E4;
@@ -578,6 +608,7 @@ html, body {
   display: flex;
   margin-bottom: 1rem;
   box-sizing: border-box;
+  justify-content: center;
 
   :hover, &--active {
     // Background
@@ -631,6 +662,14 @@ html, body {
   }
 }
 
+.o-placements--web .o-placements__list {
+  max-width: 300px;
+}
+
+.o-placements__right {
+  flex-grow: 1;
+}
+
 .o-placements__placement {
   // Structure
   display: block;
@@ -660,8 +699,7 @@ html, body {
     // Background
     background-color: $color-accent;
 
-    h4,
-    p {
+    h4, h3, p {
       // Text
       color: white;
     }
@@ -699,6 +737,10 @@ html, body {
 
 }
 
+.o-placements__demo--container {
+  flex: 1;
+}
+
 .o-placements__demo {
   // Structure
   flex: 3;
@@ -713,13 +755,29 @@ html, body {
   // Extras
   box-shadow: 0 2px 7px 0 rgba(0,0,0,0.09);
 }
+.o-placements--web .o-placements__demo{
+  aspect-ratio: 5/6;
+}
+.o-placements--web .o-placements__demo.o-placements__demo--mobile {
+  position: sticky;
+  max-width: 350px;
+  aspect-ratio: 1/2;
+  margin: 0 auto;
+  padding: 1.5rem;
+  
+  top: 3em;
+
+  .o-placements__demo__inner {
+    border-radius: 1em;
+  }
+}
 
 .o-placements__demo__inner {
   // Structure
   position: relative;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
-  padding-bottom: 120%;
   overflow: hidden;
 
   // Background
@@ -752,11 +810,6 @@ html, body {
 
   .o-placements__demo__inner__right img{
     left:100%;
-  }
-
-  .o-placements__demo__mobile{
-    width:50%;
-    margin-left:25%;
   }
 }
 
@@ -1330,18 +1383,19 @@ html, body {
 
 .offer {
   width: fit-content;
-  padding-right: 5em;
+  padding-right: 2em;
   color: white;
   h3 {
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    text-align: center;
   }
   ul {
     list-style: none;
     padding-left: 0.5em;
     li {
       position: relative;
-      margin: 0.5em 0;
+      margin: 0.5em 1em;
       padding: 0.5em;
       border-radius: 5px;
       border: 1px solid white;
