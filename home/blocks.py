@@ -9,6 +9,9 @@ from wagtail import blocks
 from wagtail.blocks import field_block
 from infinitefeed.blocks import AbstractArticleList
 
+from taggit.models import Tag
+from wagtail.snippets.blocks import SnippetChooserBlock
+
 class HomepageFeaturedSectionBlock(blocks.StructBlock):
 
     section = field_block.PageChooserBlock(
@@ -96,7 +99,31 @@ class SectionBlock(AbstractArticleList):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['section'].title
-        context['section'] = value['section']
-        context['link'] = context['section'].url
-        context['articles'] = context['section'].get_featured_articles(number_featured=8)          
+        context['link'] = value['section'].url
+        context['articles'] = value['section'].get_featured_articles(number_featured=8)          
+        return context
+    
+class TagBlock(AbstractArticleList):
+    tag_slug = field_block.CharBlock(help_text="Enter tag slug. For example for 'Christmas Movie' the slug would be 'christmas-movie'.")
+    template = MidStreamListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        if Tag.objects.filter(slug=value['tag_slug']).exists():
+            tag = Tag.objects.get(slug=value['tag_slug'])
+            context['title'] = tag.name
+            context['link'] = '/tag/' + value['tag_slug']
+            context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at').filter(tags__slug=value["tag_slug"])[:8]
+        return context
+    
+class CategoryBlock(AbstractArticleList):
+    category = SnippetChooserBlock('section.CategorySnippet')
+
+    template = MidStreamListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['category'].title
+        context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
+        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-first_published_at')[:8]
         return context

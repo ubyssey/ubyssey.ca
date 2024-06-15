@@ -107,17 +107,11 @@ class SidebarSectionBlock(AbstractArticleList):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['section'].title
-        context['section'] = value['section']
         context['link'] = context['section'].url
         context['articles'] = context['section'].get_featured_articles()          
         return context
 
 class SidebarCategoryBlock(AbstractArticleList):
-    title = blocks.CharBlock(
-        required=True,
-        max_length=255,
-    )
-    
     category = SnippetChooserBlock('section.CategorySnippet')
 
     template = SideBarListTemplates()
@@ -125,7 +119,6 @@ class SidebarCategoryBlock(AbstractArticleList):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['title']
-        context['category'] = value['title']
         context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
         context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')[:6]
         return context
