@@ -7,6 +7,7 @@ from django.db.models import Q
 
 from wagtail import blocks
 from wagtail.blocks import field_block
+from infinitefeed.blocks import AbstractArticleList
 
 class HomepageFeaturedSectionBlock(blocks.StructBlock):
 
@@ -78,3 +79,24 @@ class LinksStreamBlock(blocks.StructBlock):
 
     class Meta:
         template = "home/stream_blocks/links.html"
+
+class MidStreamListTemplates(blocks.ChoiceBlock):
+ 
+    choices=[
+        ('section/objects/section_bulleted.html', 'Default'),
+        ('section/objects/section_timeline.html', 'Timeline'),
+    ]
+
+class SectionBlock(AbstractArticleList):
+    section = field_block.PageChooserBlock(
+        page_type='section.SectionPage'
+    )
+    template = MidStreamListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['section'].title
+        context['section'] = value['section']
+        context['link'] = context['section'].url
+        context['articles'] = context['section'].get_featured_articles(number_featured=8)          
+        return context

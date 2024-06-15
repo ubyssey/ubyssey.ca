@@ -70,6 +70,7 @@ class HomePage(Page):
     middle_stream = StreamField(
         [
             ("links", homeblocks.LinksStreamBlock()),
+            ('section', homeblocks.SectionBlock())
         ],
         null=True,
         blank=True,

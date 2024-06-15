@@ -61,10 +61,13 @@
 			{% endfor %}
 		</div>
 	</div>
-
-
-
 </main>
+
+<div>
+	{% for block in self.middle_stream %}
+	{% include_block block %}
+	{% endfor %}
+</div>
 
 <div id="feed-section" class="home_infinitefeed">
 	<div class="u-container u-container--large c-infinitefeed__feed">

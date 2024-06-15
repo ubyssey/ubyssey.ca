@@ -4,14 +4,14 @@
 			<ul>
 			{%for link in self.links%}
             <li>
-                {% if self.url %}
-                    <a href="{{self.url}}" ><span class="linkTitle">{{self.title}}</span></a>
+                {% if link.url %}
+                    <a href="{{link.url}}" ><span class="linkTitle">{{link.title}}</span></a>
                 {% else %}
-                    <span class="linkTitle">{{self.title}}</span>
+                    <span class="linkTitle">{{link.title}}</span>
                 {% endif %}
             
-                {% if self.description %}
-                    {{self.description}}
+                {% if link.description %}
+                    {{link.description}}
                 {% endif %}
             </li>
 			{%endfor%}

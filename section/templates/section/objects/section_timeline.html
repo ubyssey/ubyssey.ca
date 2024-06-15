@@ -1,0 +1,75 @@
+{% load humanize %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="c-homepage__section__timeline u-container u-container--large u-container--padded">
+  <h2><a href="{{link}}">{{title}}</a></h2>
+<div class="c-homepage__section__timeline-flex">
+  {% if articles.0 %}
+    {% with article=articles.0 %}
+    <article class="o-article article--timeline {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.explicit_published_at|naturalday}}">
+      {% if article.featured_media.first %}
+      {% if article.featured_media.first.image %}
+      <div class="o-article__left">
+        <div style="position:relative">
+          <a href="{% pageurl article %}" class="o-article__image">
+            {% image article.featured_media.first.image fill-340x238-c100 format-webp %}
+          </a>
+          {% if label %}
+            {% if article|get_label %}
+              <a href="{{article|get_section_link}}">
+                <img class="o-article__label" src="{{article|get_label}}">
+              </a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+      {% elif article.featured_media.first.video %}
+      <div class="o-article__left">
+        <div class="o-article__video">
+          <iframe src="https://www.youtube.com/embed/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+      <div class="o-article__right">
+        <div class="o-article__meta">
+          <p class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</p>
+          <h3 class="o-article__headline">
+            <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+          </h3>
+        </div>
+      </div>
+    </article>
+    {% endwith %}
+  {% endif %}
+
+	<ul>
+    {% for article in articles %}
+		{% if forloop.counter != 1 %}
+			<li>
+        <div class="bullet"></div>
+        <article class="o-article o-article--bullet">
+          <p class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</p>
+          <h3 class="o-article__headline">
+            <a href={% pageurl article %}>{{ article.title|safe }}</a>
+          </h3>
+        </article>
+      </li>
+		{% endif %}
+		{% endfor %}
+		<li>
+      <div class="bullet"></div>
+			<div class="o-article--bullet">
+				<h3 class="o-article__seemore">
+					<a href="{% pageurl section %}">See more</a>
+				</h3>
+			</article>
+		</li>
+	</ul>
+</div>
+
+</div>
