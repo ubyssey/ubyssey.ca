@@ -17,7 +17,7 @@ handlers:
 
 # Archived pages
 
-- url: /features/one-year-later-next
+- url: /features/one-year-later-next/?$
   static_files: static_archive/features/one-year-later-next/index.html
   upload: static_archive/features/one-year-later-next/index.html
 
