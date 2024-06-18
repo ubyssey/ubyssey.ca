@@ -10,9 +10,17 @@ automatic_scaling:
 app_engine_apis: true
 
 handlers:
+
 - url: /robots.txt
   static_files: robots.txt
   upload: robots.txt
+
+# Archived pages
+
+- url: /features/one-year-later-next
+  static_files: static_archive/features/one-year-later-next/index.html
+  upload: static_archive/features/one-year-later-next/index.html
+
 - url: .*
   script: auto
   secure: always
