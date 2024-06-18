@@ -15,7 +15,11 @@
 .c-sidebar_item {
     width: 100%;
     position:sticky;
-    top: 50px;
+    top: 5em;
+}
+
+.home_infinitefeed .c-sidebar_item {
+    top: 3em;
 }
 
 .flex-stream {
