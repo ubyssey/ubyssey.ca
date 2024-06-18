@@ -397,6 +397,17 @@ class TimelineSnippet(models.Model):
 
 
 #-----Taggit models-----
+class PrimaryArticlePageTag(TaggedItemBase):
+    """
+    Reference: 
+    https://docs.wagtail.io/en/stable/reference/pages/model_recipes.html
+    """
+    content_object = ParentalKey('article.ArticlePage', on_delete=models.CASCADE, related_name='primary_tagged_items')
+    class Meta:
+        verbose_name = "primary article tag"
+        verbose_name_plural = "primary article tags"
+
+
 class ArticlePageTag(TaggedItemBase):
     """
     Reference: 
@@ -531,7 +542,20 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         null=True,
         on_delete=models.SET_NULL,
     )
-    tags = ClusterTaggableManager(through='article.ArticlePageTag', blank=True)
+    primary_tags = ClusterTaggableManager(
+        through='article.PrimaryArticlePageTag', 
+        blank=True, 
+        related_name='primary_tags', 
+        verbose_name="Primary Tags",
+        help_text="Only input the most important tag in this box. Remaining tags should be input in the Tags field."
+    )
+    tags = ClusterTaggableManager(through='article.ArticlePageTag', blank=True, related_name='tags', verbose_name="Tags")
+    tag_page_link = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="Check this box if you want to add a link to the tag page",
+    )
 
     # template #TODO
 
@@ -739,7 +763,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             [
                 # FieldPanel("section"),
                 FieldPanel("category"),
+                FieldPanel("primary_tags"),
                 FieldPanel("tags"),
+                FieldPanel("tag_page_link"),
             ],
             heading="Categories and Tags",
             classname="collapsible",

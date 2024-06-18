@@ -13,25 +13,24 @@
     {% endfor %}
 
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
-  
 {% endblock %}
 
 {% block stylesheet %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
     
     {% if self.styles.all|length == 0 %}
-    <link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
+        <link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
     {% else %}
         {% for style_obj in self.styles.all %}
-        <link rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+            <link rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
         {% endfor %}
     {% endif %}
 {% endblock %}
 
 {% block header %}
     {% include 'navigation/headers/mobile.html' %}
-        {% block banner_ad %}
-    <!-- Article Page header ads go here -->
+    {% block banner_ad %}
+        <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
             {% gpt_placement_tag orderable.ad_slot %}
         {% endfor %}
@@ -41,7 +40,6 @@
 
 {% block content %}
     <main id="article-{{ self.slug }}" class="article">
-
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
@@ -132,8 +130,14 @@
                     {% for block in self.content %}
                         {% include_block block with id=block.id %}
                     {% endfor %}
-                    <!-- Content unique to the article ends here -->
                     </div>
+                {% endif %}
+                {% if self.tag_page_link %}
+                    {% if self.primary_tags.all %}
+                            See all stories on <a href="{% url 'tag-page' slug=self.primary_tags.first.slug %}">{{ self.primary_tags.first }}</a>
+                    {% elif self.tags.all %}
+                             See all stories on <a href="{% url 'tag-page' slug=self.tags.first.slug %}">{{ self.tags.first }}</a>
+                    {% endif %}
                 {% endif %}
                 <!-- Below is the container for the right column article content, not entirely unique to the article -->
                 <aside class="cell right sidebar">
