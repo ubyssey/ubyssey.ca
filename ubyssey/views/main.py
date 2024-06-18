@@ -18,6 +18,11 @@ def redirect_blog_to_humour(request):
     path = request.get_full_path().replace("/blog/","/humour/")
     return redirect(path)
 
+def publish_scheduled(request):
+    from django.core.management import execute_from_command_line
+
+    execute_from_command_line("publish_scheduled")
+
 class UbysseyTheme:
     @staticmethod
     def centennial(request):
