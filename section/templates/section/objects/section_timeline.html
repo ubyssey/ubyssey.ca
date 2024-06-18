@@ -48,18 +48,20 @@
   {% endif %}
 
 	<ul>
-    {% for article in articles %}
-		{% if forloop.counter != 1 %}
-			<li>
+    {% for group in articles|slice:"1:"|group_by_date %}
+      {% for article in group %}
+			<li {% if forloop.counter == 1 %}class="first_of_date"{% endif %}>
+        {% if forloop.counter == 1 %}
         <div class="bullet"></div>
+        {% endif %}
         <article class="o-article o-article--bullet">
-          <p class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</p>
+          {% if forloop.counter == 1 %}<p class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</p>{% endif %}
           <h3 class="o-article__headline">
             <a href={% pageurl article %}>{{ article.title|safe }}</a>
           </h3>
         </article>
       </li>
-		{% endif %}
+      {% endfor %}
 		{% endfor %}
 		<li>
       <div class="bullet"></div>

@@ -80,3 +80,16 @@ def get_id(value):
             return requested[0].id
     
     return False
+
+@register.filter(name="group_by_date")
+def group_by_date(value):
+    groups = []
+    for article in value:
+        if len(groups) < 1:
+            groups.append([article])
+        else:
+            if display_pubdate(groups[-1][-1].explicit_published_at) == display_pubdate(article.explicit_published_at):
+                groups[-1].append(article)
+            else:
+                groups.append([article])
+    return groups

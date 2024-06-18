@@ -1140,11 +1140,17 @@ ol.article-list {
     li {
       margin-right: 3em;
       width: calc(50% - 2.5em);
-      min-width: 235px;
-      padding-bottom: 1em;
       border-left: 3px solid;
       position: relative;
       font-size: 15px;
+
+      &.first_of_date {
+        padding-top: 1em;
+      }
+
+      &:first-child {
+        padding-top: 0;
+      }
 
       .bullet {
         width: 0.8em;
