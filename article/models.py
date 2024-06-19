@@ -542,19 +542,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         null=True,
         on_delete=models.SET_NULL,
     )
-    primary_tags = ClusterTaggableManager(
-        through='article.PrimaryArticlePageTag', 
+    tags = ClusterTaggableManager(
+        through='article.ArticlePageTag', 
         blank=True, 
-        related_name='primary_tags', 
-        verbose_name="Primary Tags",
-        help_text="Only input the most important tag in this box. Remaining tags should be input in the Tags field."
-    )
-    tags = ClusterTaggableManager(through='article.ArticlePageTag', blank=True, related_name='tags', verbose_name="Tags")
+        related_name='tags', 
+        help_text="Input the most relevant tags for this article first.",
+        verbose_name="Tags")
     tag_page_link = models.BooleanField(
         null=False,
         blank=False,
         default=False,
-        help_text="Check this box if you want to add a link to the tag page",
+        help_text="Check this box if you want to add a link to the tag page.",
     )
 
     # template #TODO
@@ -763,7 +761,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             [
                 # FieldPanel("section"),
                 FieldPanel("category"),
-                FieldPanel("primary_tags"),
                 FieldPanel("tags"),
                 FieldPanel("tag_page_link"),
             ],

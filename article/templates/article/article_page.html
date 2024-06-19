@@ -132,37 +132,59 @@
                     {% endfor %}
                     </div>
                 {% endif %}
-                {% if self.tag_page_link %}
-                    {% if self.primary_tags.all %}
-                            See all stories on <a href="{% url 'tag-page' slug=self.primary_tags.first.slug %}">{{ self.primary_tags.first }}</a>
-                    {% elif self.tags.all %}
-                             See all stories on <a href="{% url 'tag-page' slug=self.tags.first.slug %}">{{ self.tags.first }}</a>
-                    {% endif %}
-                {% endif %}
-                <!-- Below is the container for the right column article content, not entirely unique to the article -->
-                <aside class="cell right sidebar">
+                <aside class="cell right sidebar with-spacing">
                     {% block sidebar %}
-                        <div class="suggested-sidebar">
-                            {% block suggested_articles %}
-
-                            {% if suggested %}
-                                {% include "infinitefeed/sidebar/sidebar_section_block.html" with title=suggested.title articles=suggested.articles %}
-                            {% endif %}
-
-                            {% endblock %}
-                        </div>
-                        <!-- Article Page sidebar ads go here -->
-                        {% if self.is_explicit is not True %}
-                            {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
-                                {% gpt_placement_tag orderable.ad_slot %}
-                            {% endfor %}            
-                        {% else %}
-                            {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
-                        {% endif %}
-                        {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
+                      <div class="suggested-sidebar">
+                        {% block suggested_articles %}
+                  
+                          {% if suggested %}
+                            {% include "infinitefeed/sidebar/sidebar_section_block.html" with title=suggested.title articles=suggested.articles %}
+                          {% endif %}
+                  
+                        {% endblock %}
+                      </div>
+                      {% if self.is_explicit is not True %}
+                        {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
+                          {% gpt_placement_tag orderable.ad_slot %}
+                        {% endfor %}
+                      {% else %}
+                        {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
+                      {% endif %}
+                      {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
                     {% endblock %}
-
-                </aside>                        
+                    {% if self.tag_page_link %}
+                      {% if self.tags.all %}
+                        <style>
+                          .see-all-stories-btn {
+                            position: relative;
+                            display: block;
+                            width: fit-content;
+                            color: #ffffff;
+                            padding: 10px 20px;
+                            background-color: #3490d6;
+                            text-align: center;
+                            text-decoration: none;
+                            margin: 0 auto;
+                            margin-top : 20px;
+                            left: 0;
+                            transition-duration: 0.2s;
+                            &:hover {
+                              left: -10px;
+                              color: #eeeeee;
+                            }
+                          }
+                  
+                          .with-spacing {
+                            display: flex;  /* Makes the sidebar a flex container */
+                            justify-content: space-between; /* Distributes space between button and right edge */
+                          }
+                        </style>
+                        <a href="{% url 'tag-page' slug=self.tags.first.slug %}" class="see-all-stories-btn">See all stories on {{ self.tags.first }}</a>
+                      {% endif %}
+                    {% endif %}
+                  </aside>
+                  
+                                         
 
 
             {% comment %} {% include 'objects/social-icons-bottom.html' with article=article %} {% endcomment %}
