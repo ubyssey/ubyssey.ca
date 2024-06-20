@@ -9,7 +9,7 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
-from ubyssey.views.main import ads_txt, redirect_blog_to_humour
+from ubyssey.views.main import ads_txt, redirect_blog_to_humour, update_events
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
@@ -67,6 +67,9 @@ urlpatterns += [
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
+
+    # cron
+    re_path(r'^cron/update_events/$', update_events, name='update_events'),
 
     # Wagtail
     re_path(r'^admin/', include(wagtailadmin_urls)),

@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.shortcuts import render
@@ -22,3 +23,21 @@ class UbysseyTheme:
     @staticmethod
     def centennial(request):
         return render(request, 'centennial.html', {})
+
+def update_events(request):
+    from urllib.request import urlopen
+    from icalendar import Calendar, Event
+    try:
+        cal = urlopen("https://events.ubc.ca/events/?ical=1")
+
+        cal = Calendar.from_ical(cal.read())
+        for component in cal.walk():
+            if component.name == "VEVENT":
+                print(component.get('summary'))
+                print(component.get('dtstart'))
+                print(component.get('dtend'))
+                print(component.get('dtstamp'))
+        
+        return HttpResponse("Success!")
+    except:
+        return HttpResponse("Failed :/", status=500)
