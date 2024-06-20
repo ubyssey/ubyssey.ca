@@ -554,6 +554,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         default=False,
         help_text="Check this box if you want to add a link to the tag page.",
     )
+    filter_by_tags = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="Check this box if you want to filter suggested articles by tag.",
+    )
 
     # template #TODO
 
@@ -763,6 +769,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 FieldPanel("category"),
                 FieldPanel("tags"),
                 FieldPanel("tag_page_link"),
+                FieldPanel("filter_by_tags"),
             ],
             heading="Categories and Tags",
             classname="collapsible",
@@ -1098,26 +1105,40 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)
         
         return section_articles
+    def get_articles_by_tag(self, order='-first_published_at') -> QuerySet:
+        """
+        Returns a list of articles with the same tags as the current article
+        """
+        articles_by_tag = ArticlePage.objects.live().filter(tags__in=self.tags.all()).not_page(self).order_by(order)
+        return articles_by_tag
 
     def get_suggested(self, number_suggested=6):
         """
         Defines the title and articles in the suggested box
         """
         suggested = {}
-        if self.category != None:
-            category_articles = self.get_category_articles()
-            if len(category_articles) > 0:
-                suggested = {}
-                suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
-                suggested['articles'] = category_articles[:number_suggested]
-
-        if not suggested:
-            section_articles = self.get_section_articles()
-            if len(section_articles) > 0:
+        if self.filter_by_tags:
+            articles_by_tag = self.get_articles_by_tag()
+            print(len(articles_by_tag))
+            if len(articles_by_tag) > 0:
                 suggested = {}
                 suggested['title'] = "From " + self.get_parent().title
-                suggested['articles'] = section_articles[:number_suggested]
-        
+                suggested['articles'] = articles_by_tag[:number_suggested]
+        else:
+            if self.category != None:
+                category_articles = self.get_category_articles()
+                if len(category_articles) > 0:
+                    suggested = {}
+                    suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
+                    suggested['articles'] = category_articles[:number_suggested]
+
+            if not suggested:
+                section_articles = self.get_section_articles()
+                if len(section_articles) > 0:
+                    suggested = {}
+                    suggested['title'] = "From " + self.get_parent().title
+                    suggested['articles'] = section_articles[:number_suggested]
+
         if not suggested:
             suggested = False
 
