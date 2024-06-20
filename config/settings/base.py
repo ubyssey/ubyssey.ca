@@ -159,6 +159,7 @@ INSTALLED_APPS = [
     'navigation',
     'dashboard',
     'infinitefeed',
+    'events',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
