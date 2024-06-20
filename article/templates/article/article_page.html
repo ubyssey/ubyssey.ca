@@ -112,12 +112,74 @@
                             
                             <!-- Article text -->
                             {% for block in self.content %}
-                                {% include_block block with id=block.id %}
-                            {% endfor %}
+                            {% include_block block with id=block.id %}
+                          {% endfor %}
+                          
+                          {% if self.tag_page_link and self.tags.all %}
+                            <style>
+                              .see-all-stories-container {
+                                text-align: {% if self.layout == 'default' %}left{% else %}center{% endif %};
+                                margin-top: 20px;
+                              }
+                          
+                              .see-all-stories-text {
+                                font-weight: bold;
+                                font-size: 16px;
+                                color: #1b1b1b;
+                              }
+                          
+                              .see-all-stories-text a {
+                                color: #0071c9;
+                                text-decoration: none;
+                              }
+                              
+                              .rss-feed-link {
+                                color: #1b1b1b;
+                                text-decoration: none;
+                                font-size: 16px;
+                              }
+                          
+                              .fa-rss {
+                                color: #1b1b1b;
+                                font-weight: bold;
+                              }
+                          
+                              .fa-rss:hover {
+                                color: #0071c9;
+                              }
+                          
+                              [color-css-theme="dark"] .rss-feed-link,
+                              [color-css-theme="dark"] .see-all-stories-text {
+                                color: #d9d9d9;
+                                font-weight: bold;
+                              }
+                          
+                              [color-css-theme="dark"] .rss-feed-link:hover,
+                              [color-css-theme="dark"] .fa-rss:hover,
+                              [color-css-theme="dark"] .see-all-stories-btn:hover {
+                                color: #0071c9;
+                              }
+                          
+                              [color-css-theme="dark"] .fa-rss {
+                                color: #d9d9d9;
+                                font-weight: bold;
+                              }
+                            </style>
+                          
+                            <div class="see-all-stories-container">
+                              <span class="see-all-stories-text">
+                                See all stories on "<a href="{% url 'tag-page' slug=self.tags.first.slug %}">{{ self.tags.first }}</a>" and be notified through 
+                                <a href="/tag/{{self.tags.first.slug}}/rss" class="rss-feed-link" aria-label="Go to section's rss feed">
+                                  <i class="fa fa-rss"></i>
+                                </a>
+                              </span>
+                            </div>
+                          {% endif %}
+                          
                             <!-- Content unique to the article ends here -->
-
                         {% block post-content %}
                         {% endblock %}
+                        
                     </div>
                     {% endfilter %}
                 {% else %}
@@ -133,6 +195,7 @@
                     </div>
                 {% endif %}
                 <aside class="cell right sidebar with-spacing">
+
                     {% block sidebar %}
                       <div class="suggested-sidebar">
                         {% block suggested_articles %}
@@ -152,62 +215,7 @@
                       {% endif %}
                       {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
                     {% endblock %}
-                    {% if self.tag_page_link %}
-                    {% if self.tags.all %}
-                      <style>
-                        :root {
-                            --djdt-font-family-primary: "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-                            --djdt-font-family-monospace: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-                          }                        
-                        .see-all-stories-btn {
-                          position: relative;
-                          display: block;
-                          width: fit-content;
-                          color: #ffffff;
-                          padding: 10px 20px;
-                          background-color: #3490d6;
-                          text-align: center;
-                          text-decoration: none;
-                          margin: 0 auto;
-                          margin-top: 20px;
-                          left: 0;
-                          transition-duration: 0.2s;
-                        }
-                        
-                        .see-all-stories-btn:hover {
-                          left: -10px;
-                          color: #eeeeee;
-                        }
-                  
-                        .rss-feed-link {
-                          display: block;
-                          margin: 10px auto;
-                          text-align: center;
-                          text-decoration: none;
-                          color: 1B1B1B;
-                          font-size: 14px;
-                        }
-                  
-                        .rss-feed-link:hover {
-                          color: #0071c9;
-                        }
-                        [color-css-theme="dark"] .rss-feed-link {
-                            color: #D9D9D9;
-                        }
-                        [color-css-theme="dark"] .rss-feed-link:hover {
-                            color: #0071c9;
-                        }                        
-                        
-                      </style>
-                      <a href="{% url 'tag-page' slug=self.tags.first.slug %}" class="see-all-stories-btn">See all stories on {{ self.tags.first }}</a>
-                      <a href="/tag/{{self.tags.first.slug}}/rss" class="rss-feed-link" aria-label="Go to section's rss feed">Be notified through Rss &ensp;<i class="fa fa-rss"></i></a>
-                    {% endif %}
-                  {% endif %}
                 </aside>
-                  
-                                         
-
-
             {% comment %} {% include 'objects/social-icons-bottom.html' with article=article %} {% endcomment %}
         </article>
     </main>
