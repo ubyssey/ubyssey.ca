@@ -25,19 +25,17 @@ class UbysseyTheme:
         return render(request, 'centennial.html', {})
 
 def update_events(request):
-    from urllib.request import urlopen
-    from icalendar import Calendar, Event
-    try:
-        cal = urlopen("https://events.ubc.ca/events/?ical=1")
+    from urllib.request import urlopen, Request
+    from icalendar import Calendar
+    from events.models import Event
+    #try:
+    req = Request("https://events.ubc.ca/events/?ical=1", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+    con = urlopen(req)
 
-        cal = Calendar.from_ical(cal.read())
-        for component in cal.walk():
-            if component.name == "VEVENT":
-                print(component.get('summary'))
-                print(component.get('dtstart'))
-                print(component.get('dtend'))
-                print(component.get('dtstamp'))
-        
-        return HttpResponse("Success!")
-    except:
-        return HttpResponse("Failed :/", status=500)
+    cal = Calendar.from_ical(con.read())
+    for component in cal.walk():
+        if component.name == "VEVENT":
+            Event.objects.create_event(component)
+    return HttpResponse("Success!")
+    #except:
+    #    return HttpResponse("Failed :/", status=500)
