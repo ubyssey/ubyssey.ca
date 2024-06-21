@@ -118,7 +118,7 @@
                           {% if self.tag_page_link %}
                               <p class="tag-link">
                                 <b>See all stories on <a href="{% url 'tag-page' slug=primary_tag.slug %}">"{{ primary_tag }}"</a> and be notified through Rss
-                                <a href="/tag/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to section's rss feed">
+                                <a href="/tag/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to {{ primary_tag }} tag's rss feed">
                                   <i class="fa fa-rss"></i>
                                 </a></b>
                             </p>
