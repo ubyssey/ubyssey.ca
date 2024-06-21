@@ -69,7 +69,7 @@ urlpatterns += [
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
 
     # Cron job
-    re_path(r'^cron/publish_scheduled$', publish_scheduled, name='publish_scheduled'),
+    re_path(r'^cron/publish_scheduled/$', publish_scheduled, name='publish_scheduled'),
 
     # Wagtail
     re_path(r'^admin/', include(wagtailadmin_urls)),
