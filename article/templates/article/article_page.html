@@ -115,22 +115,13 @@
                             {% include_block block with id=block.id %}
                           {% endfor %}
                           
-                          {% if self.tag_page_link and self.tags.all %}
-                            <style>
-                                .see-all-stories-container {
-                                    text-align: {% if self.layout == 'default' %}left{% else %}center{% endif %};
-                                    margin-top: 20px;
-                                  }
-                            </style>
-                          
-                            <div class="see-all-stories-container">
-                              <span class="see-all-stories-text">
-                                See all stories on "<a href="{% url 'tag-page' slug=self.tags.first.slug %}">{{ self.tags.first }}</a>" and be notified through 
-                                <a href="/tag/{{self.tags.first.slug}}/rss" class="rss-feed-link" aria-label="Go to section's rss feed">
+                          {% if self.tag_page_link %}
+                              <p class="tag-link">
+                                <b>See all stories on <a href="{% url 'tag-page' slug=primary_tag.slug %}">"{{ primary_tag }}"</a> and be notified through Rss
+                                <a href="/tag/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to section's rss feed">
                                   <i class="fa fa-rss"></i>
-                                </a>
-                              </span>
-                            </div>
+                                </a></b>
+                            </p>
                           {% endif %}
                           
                             <!-- Content unique to the article ends here -->

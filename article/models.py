@@ -397,17 +397,6 @@ class TimelineSnippet(models.Model):
 
 
 #-----Taggit models-----
-class PrimaryArticlePageTag(TaggedItemBase):
-    """
-    Reference: 
-    https://docs.wagtail.io/en/stable/reference/pages/model_recipes.html
-    """
-    content_object = ParentalKey('article.ArticlePage', on_delete=models.CASCADE, related_name='primary_tagged_items')
-    class Meta:
-        verbose_name = "primary article tag"
-        verbose_name_plural = "primary article tags"
-
-
 class ArticlePageTag(TaggedItemBase):
     """
     Reference: 
@@ -546,8 +535,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         through='article.ArticlePageTag', 
         blank=True, 
         related_name='tags', 
-        help_text="Input the most relevant tags for this article first.",
+        help_text="Input the most relevant tag for this article first.",
         verbose_name="Tags")
+    primary_tag_slug = models.CharField(
+        null=True,
+        blank=True,
+        default='',
+        max_length=255,
+        help_text="Enter the slug of the tag to be used for linking at the end of the article. For example, the slug of the tag 'blue chip' is 'blue-chip'.",
+    )
     tag_page_link = models.BooleanField(
         null=False,
         blank=False,
@@ -768,6 +764,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 # FieldPanel("section"),
                 FieldPanel("category"),
                 FieldPanel("tags"),
+                FieldPanel("primary_tag_slug"),
                 FieldPanel("tag_page_link"),
                 FieldPanel("filter_by_tags"),
             ],
@@ -983,6 +980,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         All the below code occurs after the user submits a request and before they receive it.
         Therefore, keep the length of this method to a minimum; otherwise users will be kept waiting
         """
+        from taggit.models import Tag
+
         context = super().get_context(request, *args, **kwargs)
 
         user_agent = get_user_agent(request)
@@ -1004,6 +1003,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             context['next'] = context['next'].specific
 
         context["suggested"] = self.get_suggested()
+
+        if self.tag_page_link:
+            context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
 
         return context
 
@@ -1109,22 +1111,23 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         Returns a list of articles with the same tags as the current article
         """
-        articles_by_tag = ArticlePage.objects.live().filter(tags__in=self.tags.all()).not_page(self).order_by(order)
+        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)
         return articles_by_tag
 
     def get_suggested(self, number_suggested=6):
         """
         Defines the title and articles in the suggested box
         """
+        from taggit.models import Tag
         suggested = {}
         if self.filter_by_tags:
             articles_by_tag = self.get_articles_by_tag()
-            print(len(articles_by_tag))
             if len(articles_by_tag) > 0:
+                tag = Tag.objects.get(slug=self.primary_tag_slug)
                 suggested = {}
-                suggested['title'] = "From " + self.get_parent().title
+                suggested['title'] = "More on '" + tag.name + "'"
                 suggested['articles'] = articles_by_tag[:number_suggested]
-        else:
+        if not suggested:
             if self.category != None:
                 category_articles = self.get_category_articles()
                 if len(category_articles) > 0:
@@ -1132,12 +1135,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
                     suggested['articles'] = category_articles[:number_suggested]
 
-            if not suggested:
-                section_articles = self.get_section_articles()
-                if len(section_articles) > 0:
-                    suggested = {}
-                    suggested['title'] = "From " + self.get_parent().title
-                    suggested['articles'] = section_articles[:number_suggested]
+        if not suggested:
+            section_articles = self.get_section_articles()
+            if len(section_articles) > 0:
+                suggested = {}
+                suggested['title'] = "From " + self.get_parent().title
+                suggested['articles'] = section_articles[:number_suggested]
 
         if not suggested:
             suggested = False
