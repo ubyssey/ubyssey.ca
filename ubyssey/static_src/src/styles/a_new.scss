@@ -434,7 +434,7 @@ html, body {
 }
 
 .o-placements--guide .o-placements__demo {
-  aspect-ratio: 5/8;
+  aspect-ratio: 9/15;
 }
 
 .o-placements--magazine .o-placements__demo {
@@ -532,21 +532,21 @@ html, body {
     }
 
     &[data-demo='guide-full-page'] .o-placements__demo__inner::after {
-      content: '5" x 8"';
+      content: '4.5" x 7.5"';
       top: 0;
       width: 100%;
       height: 100%;
     }
 
     &[data-demo='guide-half-page'] .o-placements__demo__inner::after {
-      content: '5" x 4"';
+      content: '4.5" x 3.5"';
       top: 50%;
       height: 50%;
       width: 100%;
     }
 
     &[data-demo='guide-quarter-page'] .o-placements__demo__inner::after {
-      content: '5" x 2"';
+      content: '4.5" x 1.75"';
       bottom: 0;
       height: 25%;
       width: 100%;
