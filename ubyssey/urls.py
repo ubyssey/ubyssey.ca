@@ -9,11 +9,7 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
-<<<<<<< HEAD
-from ubyssey.views.main import ads_txt, redirect_blog_to_humour, update_events
-=======
-from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled
->>>>>>> 6109a4d62c7accb2d0bd6b112d097e10d93d47a9
+from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled, update_events
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
