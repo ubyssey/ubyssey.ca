@@ -73,7 +73,7 @@ urlpatterns += [
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
 
     # Cron job
-    re_path(r'^cron/update_events/$', update_events, name='update_events'),
+    re_path(r'^cron/update-events/$', update_events, name='update_events'),
     re_path(r'^cron/publish-scheduled/$', publish_scheduled, name='publish_scheduled'),
 
     # Wagtail

@@ -2,3 +2,6 @@ cron:
 - description: "publish scheduled"
   url: /cron/publish-scheduled
   schedule: every 30 minutes
+- description: "update events"
+  url: /cron/update-events
+  schedule: every 24 hours
