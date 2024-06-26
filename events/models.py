@@ -17,10 +17,10 @@ class EventManager(models.Manager):
                 start_time=ical_component.decoded('dtstart'),
                 end_time=ical_component.decoded('dtend'),
                 location=ical_component.get('location'),
-                mail=ical_component.decoded('organizer', default=""),
+                email=ical_component.decoded('organizer', default=""),
                 event_url=ical_component.decoded('url')
             )
-            if not ical_component.get("organizer", False):
+            if ical_component.get("organizer", False):
                 event.host = ical_component.get("organizer").params['cn']
             event.save()
             return event

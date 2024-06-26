@@ -13,6 +13,7 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
+from events.views import EventsTheme
 
 from infinitefeed.views import infinitefeed
 
@@ -21,6 +22,7 @@ from django.conf.urls import handler500
 
 handler500 = 'ubyssey.views.main.custom_500'
 
+events = EventsTheme()
 advertise = AdvertiseTheme()
 tag = TagPage()
 
@@ -58,7 +60,7 @@ urlpatterns += [
     re_path(r'^newsletter/', include(newsletter_urls)),
 
     # Events
-    # re_path(r'^events/', include(events_urls)),
+    re_path(r'^events/$', events.landing, name='events-page'),
     # re_path(r'^api/events/', include(event_api_urls)),
 
     # Tag

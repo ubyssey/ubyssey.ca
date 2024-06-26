@@ -1,0 +1,113 @@
+@import 'modules/variables';
+
+main.events-page {
+    display: block;
+    max-width: 15000px;
+    padding: 0 2em;
+    margin: 0 auto;
+
+    font-family: noto-serif;
+    font-weight: 500;
+
+    h1, h2, h3, p {
+        font-family: noto-serif;
+        font-weight: 500;
+    }
+
+    h1.title {
+        margin: 0 auto;
+        padding-bottom: 1em;
+        text-align: center;
+        font-size: 2.5em;
+    }
+
+    .events-flex {
+        display: flex;
+
+        .events-calendar {
+            padding: 0 5em;
+            flex-grow: 1;
+
+            .events-calendar--categories {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 1em;
+                ul {
+                    margin-top: 0;
+                    list-style: none;
+                    li {
+                        display: inline-block;
+                        padding: 0.5em 1em;
+                        border-radius: 0.25em;
+                        margin: 0 0.25em;
+                        
+                        color: white;
+                        text-align: center;
+                        background-color: $color-ubyssey-blue-dark;
+                    }
+                }
+            }
+
+            .events-calendar--days-of-week {
+                display: flex;
+                justify-content: center;
+            }
+
+            .day {
+                display: inline-block;
+                flex: 1;
+                text-align: center;
+            }
+
+            .events-calendar--row {
+                display: flex;
+                height: 4em;
+                justify-content: center;
+                margin-bottom: 1em;
+                div.day{
+                    height: 100%;
+                    background-color: $color-ubyssey-blue-light;
+                }
+                div.day:first-child {
+                    border-radius: 0.5em 0 0 0.5em;
+                }
+                div.day:last-child {
+                    border-radius: 0 0.5em 0.5em 0;
+                }
+            }
+        }
+
+        .events-info {
+            width: 600px;
+            height: 500px;
+            border: 0.35em solid $color-ubyssey-blue-dark;
+            background-color: $color-ubyssey-blue-dark;
+            border-radius: 1em;
+            overflow: auto;
+
+            h2.event-info--time {
+                margin: 0.75em;
+                color: white;
+                text-align: center;
+                font-size: 1em;
+                line-height: 1em;
+            }
+
+            .events-info--content {
+                position: relative;
+                padding: 0.5em 2em;
+                width: calc(100% - 4em);
+                height: calc(100% - 3.5em);
+                background-color: white;
+                
+                h2, p {
+                    color: black;
+                }
+
+                h2 {
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
