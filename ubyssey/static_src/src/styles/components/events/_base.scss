@@ -22,7 +22,7 @@ main.events-page {
         .events-calendar {
             width: 500px;
             max-width: 1200px;
-            padding: 0px 3em;
+            padding: 0px 2.5%;
             flex-grow: 1;
 
             .events-calendar--categories {
@@ -59,13 +59,48 @@ main.events-page {
             }
 
             .events-calendar--row {
+                position: relative;
                 display: flex;
                 justify-content: center;
+
+                h2.events-calendar--month {
+                    position: absolute;
+                    left: -2.5em;
+                    margin-top: 1em;
+
+                    font-size: 1em;
+                    font-weight: 600;
+                }
+
                 div.day{
                     min-height: 4em;
                     padding: 1em 1em;
-                    background-color: $color-ubyssey-blue-light;
                     font-size: 12px;
+
+
+                    &.past {
+                        background-color: #EEE;
+                        color: black;
+                        li a:hover, li a:focus {
+                            color: $color-ubyssey-blue;
+                        }
+                    }
+                    &.today {
+                        background-color: $color-ubyssey-blue;
+                        color: white;
+                        li a:hover, li a:focus {
+                            color: white;
+                            text-decoration: underline;
+                        }
+                    }
+                    &.future {
+                        background-color: $color-ubyssey-blue-light;
+                        color: black;
+                        li a:hover, li a:focus {
+                            color: $color-ubyssey-blue;
+                        }
+                    }
+
                     ul {
                         margin: 0;
                         padding: 0;
@@ -79,13 +114,13 @@ main.events-page {
                     }
                 }
             }
-            .events-calendar--row:first-child div.day:first-child {
+            .events-calendar--row:first-child div.day:first-of-type {
                 border-radius: 0.5em 0 0 0;
             }
             .events-calendar--row:first-child div.day:last-child {
                 border-radius: 0 0.5em 0 0;
             }
-            .events-calendar--row:last-child div.day:first-child {
+            .events-calendar--row:last-child div.day:first-of-type {
                 border-radius: 0 0 0 0.5em;
             }
             .events-calendar--row:last-child div.day:last-child {
@@ -94,13 +129,17 @@ main.events-page {
         }
 
         .events-info {
+            position: sticky;
+            top: 2em;
+
             margin: auto 0;
             width: 30%;
             max-width: 500px;
-            max-height: 80vh;
+            max-height: 81vh;
             border: 0.35em solid $color-ubyssey-blue-dark;
-            background-color: $color-ubyssey-blue-dark;
             border-radius: 1em;
+
+            background-color: $color-ubyssey-blue-dark;
             overflow: auto;
 
             h2.event-info--time {
@@ -131,13 +170,16 @@ main.events-page {
                 h2 {
                     text-align: center;
                 }
+                a {
+                    border-bottom: 1px solid;
+                }
             }
         }
     }
 }
 
 .events-slanted-image {
-    position: absolute;
+    position: fixed;
     width: calc(50% - 2em);
     height: 100%;
     top: 0;

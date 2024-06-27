@@ -6,26 +6,116 @@ from wagtail.admin.panels import FieldPanel
 # Create your models here.
 
 class EventManager(models.Manager):
-    def create_event(self, ical_component):
+    def ubcevents_create_event(self, ical_component):
 
         print(ical_component.get('summary'))
 
         if not self.filter(event_url=ical_component.get('url')).exists():
+
+            # Split location and address
+            location = ical_component.get('location')
+            address = ""
+            if "," in location:
+                address = location[location.index(',')+1:]
+                location = location[:location.index(',')]
+
             event = self.create(
                 title=ical_component.get('summary'),
                 description=ical_component.get('description'),
                 start_time=ical_component.decoded('dtstart'),
                 end_time=ical_component.decoded('dtend'),
-                location=ical_component.get('location'),
+                address=address,
+                location=location,
                 email=ical_component.decoded('organizer', default=""),
-                event_url=ical_component.decoded('url')
+                event_url=ical_component.decoded('url'),
+                hidden=self.ubcevents_judge_hidden(ical_component)
             )
             if ical_component.get("organizer", False):
                 event.host = ical_component.get("organizer").params['cn']
+
+
             event.save()
             return event
         
         return None
+    
+    def ubcevents_judge_hidden(self, event):
+        '''
+        Returns True if event is online, isn't for undergraduates, or doesn't have enough information to categorize
+        '''
+        
+        title = event.get('summary')
+        location = event.get('location').lower()
+        description = event.get('description').lower()
+        categories = event.get('categories')
+        
+        # Hide events without categories becausee there isn't enough information
+        if not categories:
+            return False
+
+        categories = categories.to_ical().decode().lower()
+
+        # Hide online events (the online events are cringe)
+        if 'online' in location or 'virtual' in location:
+            if not 'hybrid' in location and not 'in-person' in location:
+                return True
+        if 'see description' in location:
+            if 'online' in description or 'virtual' in description or 'webinar' in description:
+                if not 'hybrid' in location and not 'in-person' in location and not 'in-person' in description and not 'hybrid' in description:
+                    return True            
+        
+        # Hide events that aren't for undergraduates or don't specify
+        if 'all students' not in 'categories' and 'community' not in categories or 'staff only' in title:
+            return True
+            
+        # Hide UBC Okanagan exclusive events
+        if 'okanagan' in categories and not 'vancouver' in categories:
+            return True
+        
+        # If it passes all these tests its probably good
+        return False
+
+    def gothunderbirds_create_event(self, ical_component):
+
+        print(ical_component.get('summary'))
+
+        if not self.filter(event_url=ical_component.get('url')).exists():
+
+            # Split location and address
+            address = ical_component.get('location')
+            location = address.replace('Vancouver, B.C., ', '')
+
+            event = self.create(
+                title=ical_component.get('summary'),
+                description=ical_component.get('description'),
+                start_time=ical_component.decoded('dtstart'),
+                end_time=ical_component.decoded('dtend'),
+                address=address,
+                location=location,
+                event_url=ical_component.decoded('url'),
+                hidden=self.gothunderbirds_judge_hidden(ical_component)
+            )
+
+            return event
+        
+        return None
+    
+    def gothunderbirds_judge_hidden(self, event):
+        '''
+        Returns True if event is online, isn't for undergraduates, or doesn't have enough information to categorize
+        '''
+        
+        location = event.get('location').lower()
+        
+        # Hide events that are not in Vancouver
+        if 'vancouver' not in location:
+            return True
+        
+        # Otherwise assume its good
+        return False
+
+        
+        
 
 @register_snippet
 class Event(models.Model):
@@ -75,6 +165,10 @@ class Event(models.Model):
         max_length=255,
         blank=False,
         null=False,
+    )
+    hidden = models.BinaryField(
+        default=False,
+        help_text="Events that are only online, aren't for undergraduates, or don't have enough information to categorize should be automatically hidden. This means they don't show on the calendar.",
     )
 
     objects = EventManager()

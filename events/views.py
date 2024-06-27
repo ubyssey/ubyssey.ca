@@ -10,26 +10,36 @@ class EventsTheme(object):
 
     def landing(self, request):
         """Events page landing page"""
-        events = Event.objects.all().order_by("start_time")
+        events = Event.objects.filter(hidden=False).order_by("start_time")
 
         calendar = []
         day = timezone.now() - timedelta(days=7 + timezone.now().weekday())
         day = day - timedelta(hours=day.hour, minutes=day.minute, seconds=day.second)
         
         events_index = 0
-        week = [[]]
+        week = {'month': day.strftime("%b"), 'days': [{'day': day.day, 'events': []}]}
 
         closest_event = None
 
         while(len(calendar) < 4):
 
+            if day.day == 1:
+                week["month"] = day.strftime("%b")
+
+            if day.date() == timezone.now().date():
+                week['days'][-1]['phase'] = 'today'
+            elif day < timezone.now() - timedelta(hours=day.hour, minutes=day.minute, seconds=day.second):
+                week['days'][-1]["phase"] = 'past'
+            else:
+                week['days'][-1]['phase'] = 'future'
+
             if events_index >= len(events):
                 day = day + timedelta(days=1)
                 if day.weekday()==0:
                     calendar.append(week)
-                    week = [[]]
+                    week = {'month': None, 'days': [{'day': day.day, 'events': []}]}
                 else:
-                    week.append([])
+                    week['days'].append({'day': day.day, 'events': []})
             else:
                 event_time = events[events_index].start_time.astimezone(timezone.get_current_timezone())
                 
@@ -39,16 +49,15 @@ class EventsTheme(object):
                     events_index = events_index + 1
                 else:
                     if day.date() == event_time.date():
-                        week[-1].append(events[events_index])
+                        week['days'][-1]['events'].append(events[events_index])
                         events_index = events_index + 1
                     else:
                         day = day + timedelta(days=1)
                         if day.weekday()==0:
                             calendar.append(week)
-                            week = [[]]
+                            week = {'month': None, 'days': [{'day': day.day, 'events': []}]}
                         else:
-
-                            week.append([])
+                            week['days'].append({'day': day.day, 'events': []})
         
         event = closest_event
         
@@ -56,6 +65,37 @@ class EventsTheme(object):
             if Event.objects.filter(id=request.GET.get("id")).exists():
                 event = Event.objects.get(id=request.GET.get("id"))
 
-        event.description = event.description.replace('\n', '<br>')
+        if event:
+            event.description = event.description.replace('\n', '<br>')
 
         return render(request, "events/event_page.html", {'calendar':calendar,'event': event})
+
+def update_events(request):
+    from urllib.request import urlopen, Request
+    from icalendar import Calendar
+    from django.http import HttpResponse
+    #try:
+    req = Request("https://events.ubc.ca/events/?ical=1", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+    con = urlopen(req)
+
+    cal = Calendar.from_ical(con.read())
+    for component in cal.walk():
+        if component.name == "VEVENT":
+            Event.objects.ubcevents_create_event(component)
+            
+    #except:
+    #    return HttpResponse("Failed requesting to UBCevents", status=500)
+
+    #try:
+    req = Request("https://gothunderbirds.ca/calendar.ashx/calendar.ics", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+    con = urlopen(req)
+
+    cal = Calendar.from_ical(con.read())
+    for component in cal.walk():
+        if component.name == "VEVENT":
+            Event.objects.gothunderbirds_create_event(component)
+            
+    #except:
+    #    return HttpResponse("Failed requesting to UBCevents", status=500)
+
+    return HttpResponse("Success!")

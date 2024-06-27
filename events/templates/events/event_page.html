@@ -49,11 +49,17 @@
             <div class="events-calendar--rows">
             {% for week in calendar %}
                 <div class="events-calendar--row">
-                    {% for day in week %}
-                        <div class="day">
+                    {% if week.month %}
+                        <h2 class="events-calendar--month">{{week.month}}</h2>
+                    {% endif %}
+                    {% for day in week.days %}
+                        <div class="day {{day.phase}}">
+                            <div class="events-calendar--number">
+                                {{day.day}}.
+                            </div>
                             <ul>
-                            {% for event in day %} 
-                                <li><a href="?id={{event.id}}"><b>{{event.start_time|time:"H:i"}}</b> {{event.title}}</a></li>
+                            {% for event in day.events %} 
+                                <li><a title="{{event.title}}" href="?id={{event.id}}"><b>{{event.start_time|time:"H:i"}}</b> {{event.title}}</a></li>
                             {% endfor %}
                             <ul>
                         </div>
@@ -66,6 +72,8 @@
                     <li><a href="?category=all">All</a></li>
                     <li><a href="?category=sports">Sports</a></li>
                     <li><a href="?category=entertainment">Entertainment</a></li>
+                    <li><a href="?category=community">Community</a></li>
+                    <li><a href="?category=seminar">Seminar</a></li>
                 </ul>
             </div>
         </div>
@@ -74,7 +82,7 @@
             <div class="events-info--content">
                 <h2>{{event.title}}</h2>
                 <p>{{event.location}}</p>
-                <p>{{event.description|safe}}</p>
+                <p>{% if event.host %}<b>{{event.host}}:</b>{% endif %} {{event.description|safe}}</p>
                 <p><a href="{{event.event_url}}" target="blank">- Found on events.ubc<a/></p>
             </div>
         </div>

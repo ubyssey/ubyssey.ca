@@ -9,11 +9,11 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
-from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled, update_events
+from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
-from events.views import EventsTheme
+from events.views import EventsTheme, update_events
 
 from infinitefeed.views import infinitefeed
 
