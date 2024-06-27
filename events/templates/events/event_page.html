@@ -3,6 +3,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load authors_tags %}
+{% load humanize %}
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'ubyssey/css/events.css' %}" type="text/css" />
@@ -12,35 +13,28 @@
 <link rel="alternate" type="application/atom+xml" title="{{self.title}} - Ubyssey feed" href="/authors/{{self.slug}}/rss">
 {% endblock %}
 
-{% block header %}
-<header class="centered">
-    <div class="u-container">
-      <div class="logo-area">
-        <a class="home-link" href="{% url 'wagtail_serve' '' %}">
-          <div class="top-logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/ubyssey-logo-small.svg' %}')" alt=""></div>
-          <div class="top-logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/ubyssey-logo 1.svg' %}')" alt=""></div>
-        </a>
-      </div>
-    </div>
-  <div class="darkmode-toggle">
-    {% include 'article/objects/darkmode_button.html' with id="topbar" %}
-  </div>
-  </header>
-  
+{% block header %}  
 {% endblock %}
 
 {% block content %}
+<div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://visit.ubc.ca/wp-content/uploads/2019/05/chan_2-1940x1216_2x-1024x642.jpg')"></div>
 <main class="c-page events-page">
-    <h1 class="title">Events Around Campus</h1>
     <div class="events-flex">
         <div class="events-calendar">
-            <div class="events-calendar--categories">
-                <ul>
-                    <li><a href="?category=all">All</a></li>
-                    <li><a href="?category=sports">Sports</a></li>
-                    <li><a href="?category=entertainment">Entertainment</a></li>
-                </ul>
-            </div>
+            <header class="events">
+                <div class="u-container">
+                    <div class="logo-area">
+                        <a class="home-link" href="{% url 'wagtail_serve' '' %}">
+                        <div class="top-logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/ubyssey-logo-small.svg' %}')" alt=""></div>
+                        <div class="top-logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/ubyssey-logo 1.svg' %}')" alt=""></div>
+                        </a>
+                    </div>
+                    </div>
+                <div class="darkmode-toggle">
+                    {% include 'article/objects/darkmode_button.html' with id="topbar" %}
+                </div>
+                <h1 class="title">Events Around Campus</h1>
+            </header>
 
             <div class="events-calendar--days-of-week">
                 <h2 class="day">Mon</h2>
@@ -52,53 +46,36 @@
                 <h2 class="day">Sun</h2>
             </div>
 
-            <div class="events-calendar--row">
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
+            <div class="events-calendar--rows">
+            {% for week in calendar %}
+                <div class="events-calendar--row">
+                    {% for day in week %}
+                        <div class="day">
+                            <ul>
+                            {% for event in day %} 
+                                <li><a href="?id={{event.id}}"><b>{{event.start_time|time:"H:i"}}</b> {{event.title}}</a></li>
+                            {% endfor %}
+                            <ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
             </div>
-
-            <div class="events-calendar--row">
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
+            <div class="events-calendar--categories">
+                <ul>
+                    <li><a href="?category=all">All</a></li>
+                    <li><a href="?category=sports">Sports</a></li>
+                    <li><a href="?category=entertainment">Entertainment</a></li>
+                </ul>
             </div>
-
-            <div class="events-calendar--row">
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-            </div>
-
-            <div class="events-calendar--row">
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-                <div class="day"></div>
-            </div>
-
-
         </div>
         <div class="events-info">
-            <h2 class="event-info--time">Title</h2>
+            <h2 class="event-info--time">{{event.start_time|date:"F j"}} {{event.start_time|time:"H:i"}} - {{event.end_time|time:"H:i"}}</h2>
             <div class="events-info--content">
-                <h2>Title</h2>
-                <p>desc</p>
+                <h2>{{event.title}}</h2>
+                <p>{{event.location}}</p>
+                <p>{{event.description|safe}}</p>
+                <p><a href="{{event.event_url}}" target="blank">- Found on events.ubc<a/></p>
             </div>
         </div>
     </div>

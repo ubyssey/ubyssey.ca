@@ -2,6 +2,7 @@
 
 main.events-page {
     display: block;
+    height: 100vh;
     max-width: 15000px;
     padding: 0 2em;
     margin: 0 auto;
@@ -14,26 +15,22 @@ main.events-page {
         font-weight: 500;
     }
 
-    h1.title {
-        margin: 0 auto;
-        padding-bottom: 1em;
-        text-align: center;
-        font-size: 2.5em;
-    }
-
     .events-flex {
         display: flex;
+        height: 100%;
 
         .events-calendar {
-            padding: 0 5em;
+            width: 500px;
+            max-width: 1200px;
+            padding: 0px 3em;
             flex-grow: 1;
 
             .events-calendar--categories {
                 display: flex;
-                justify-content: center;
-                margin-bottom: 1em;
+                margin: 2em 0;
+                justify-content: left;
                 ul {
-                    margin-top: 0;
+                    margin: 0;
                     list-style: none;
                     li {
                         display: inline-block;
@@ -51,35 +48,56 @@ main.events-page {
             .events-calendar--days-of-week {
                 display: flex;
                 justify-content: center;
+                h2 {
+                    margin-left: 1em;
+                }
             }
 
             .day {
-                display: inline-block;
-                flex: 1;
-                text-align: center;
+                width: calc(100% / 7);
+                box-sizing: border-box;
             }
 
             .events-calendar--row {
                 display: flex;
-                height: 4em;
                 justify-content: center;
-                margin-bottom: 1em;
                 div.day{
-                    height: 100%;
+                    min-height: 4em;
+                    padding: 1em 1em;
                     background-color: $color-ubyssey-blue-light;
+                    font-size: 12px;
+                    ul {
+                        margin: 0;
+                        padding: 0;
+                        list-style: none;
+                        overflow: clip;
+                        li {
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                        }
+                    }
                 }
-                div.day:first-child {
-                    border-radius: 0.5em 0 0 0.5em;
-                }
-                div.day:last-child {
-                    border-radius: 0 0.5em 0.5em 0;
-                }
+            }
+            .events-calendar--row:first-child div.day:first-child {
+                border-radius: 0.5em 0 0 0;
+            }
+            .events-calendar--row:first-child div.day:last-child {
+                border-radius: 0 0.5em 0 0;
+            }
+            .events-calendar--row:last-child div.day:first-child {
+                border-radius: 0 0 0 0.5em;
+            }
+            .events-calendar--row:last-child div.day:last-child {
+                border-radius: 0 0 0.5em 0;
             }
         }
 
         .events-info {
-            width: 600px;
-            height: 500px;
+            margin: auto 0;
+            width: 30%;
+            max-width: 500px;
+            max-height: 80vh;
             border: 0.35em solid $color-ubyssey-blue-dark;
             background-color: $color-ubyssey-blue-dark;
             border-radius: 1em;
@@ -95,13 +113,19 @@ main.events-page {
 
             .events-info--content {
                 position: relative;
-                padding: 0.5em 2em;
-                width: calc(100% - 4em);
-                height: calc(100% - 3.5em);
+                box-sizing: border-box;
+                padding: 0.5em 10% 2em 10%;
+                width: 100%;
+                height: 100%;
+                overflow-y: auto;
                 background-color: white;
                 
                 h2, p {
                     color: black;
+                }
+
+                p {
+                    line-height: 1.5em;
                 }
 
                 h2 {
@@ -111,3 +135,47 @@ main.events-page {
         }
     }
 }
+
+.events-slanted-image {
+    position: absolute;
+    width: calc(50% - 2em);
+    height: 100%;
+    top: 0;
+    right: 0;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: left;
+    background-position-x: right;
+    clip-path: polygon(33% 0px, 100% 0, 100% 100%, 0px 100%);
+    z-index: -1;
+}
+
+header.events{
+    width: fit-content;
+  
+    .logo-area {
+      margin-top: 20px;
+      margin-bottom: 20px;
+  
+      div.top-logo {
+        width: 200px;
+        height: 40px;
+        margin: auto;
+        display: block;
+        background-size: contain;
+        background-repeat: no-repeat;
+      }  
+    }
+  
+    h1.title {
+        margin: 0;
+        margin-bottom: 1em;
+        font-size: 2.5em;
+    }
+
+    .darkmode-toggle {
+      position: absolute;
+      right: 1em;
+      top: 1em;
+    }
+  }

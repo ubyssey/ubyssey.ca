@@ -508,33 +508,6 @@ nav.mobile {
   }
 }
 
-
-header.centered{
-
-  margin-bottom: 20px;
-
-  .logo-area {
-    margin-top: 20px;
-    margin-bottom: 20px;
-
-    div.top-logo {
-      width: 250px;
-      height: 45px;
-      margin: auto;
-      display: block;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }  
-  }
-
-  .darkmode-toggle {
-    position: absolute;
-    right: 1em;
-    top: 1em;
-  }
-}
-
-
 html.hairlines {
   header.mobile, nav.mobile {
     border-bottom: 0.5px solid rgb(178,178,178);
