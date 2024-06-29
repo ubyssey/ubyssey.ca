@@ -19,121 +19,15 @@ main.events-page {
         display: flex;
         height: 100%;
 
-        .events-calendar {
-            width: 500px;
-            max-width: 1200px;
-            padding: 0px 2.5%;
-            flex-grow: 1;
-
-            .events-calendar--categories {
-                display: flex;
-                margin: 2em 0;
-                justify-content: left;
-                ul {
-                    margin: 0;
-                    list-style: none;
-                    li {
-                        display: inline-block;
-                        padding: 0.5em 1em;
-                        border-radius: 0.25em;
-                        margin: 0 0.25em;
-                        
-                        color: white;
-                        text-align: center;
-                        background-color: $color-ubyssey-blue-dark;
-                    }
-                }
-            }
-
-            .events-calendar--days-of-week {
-                display: flex;
-                justify-content: center;
-                h2 {
-                    margin-left: 1em;
-                }
-            }
-
-            .day {
-                width: calc(100% / 7);
-                box-sizing: border-box;
-            }
-
-            .events-calendar--row {
-                position: relative;
-                display: flex;
-                justify-content: center;
-
-                h2.events-calendar--month {
-                    position: absolute;
-                    left: -2.5em;
-                    margin-top: 1em;
-
-                    font-size: 1em;
-                    font-weight: 600;
-                }
-
-                div.day{
-                    min-height: 4em;
-                    padding: 1em 1em;
-                    font-size: 12px;
-
-
-                    &.past {
-                        background-color: #EEE;
-                        color: black;
-                        li a:hover, li a:focus {
-                            color: $color-ubyssey-blue;
-                        }
-                    }
-                    &.today {
-                        background-color: $color-ubyssey-blue;
-                        color: white;
-                        li a:hover, li a:focus {
-                            color: white;
-                            text-decoration: underline;
-                        }
-                    }
-                    &.future {
-                        background-color: $color-ubyssey-blue-light;
-                        color: black;
-                        li a:hover, li a:focus {
-                            color: $color-ubyssey-blue;
-                        }
-                    }
-
-                    ul {
-                        margin: 0;
-                        padding: 0;
-                        list-style: none;
-                        overflow: clip;
-                        li {
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                        }
-                    }
-                }
-            }
-            .events-calendar--row:first-child div.day:first-of-type {
-                border-radius: 0.5em 0 0 0;
-            }
-            .events-calendar--row:first-child div.day:last-child {
-                border-radius: 0 0.5em 0 0;
-            }
-            .events-calendar--row:last-child div.day:first-of-type {
-                border-radius: 0 0 0 0.5em;
-            }
-            .events-calendar--row:last-child div.day:last-child {
-                border-radius: 0 0 0.5em 0;
-            }
-        }
-
-        .events-info {
+        .events-info-container {
             position: sticky;
             top: 2em;
+            width: 30%;
 
             margin: auto 0;
-            width: 30%;
+            min-height: 60vh;
+        }
+        .events-info {
             max-width: 500px;
             max-height: 81vh;
             border: 0.35em solid $color-ubyssey-blue-dark;
@@ -178,6 +72,139 @@ main.events-page {
     }
 }
 
+.events-calendar {
+    width: 500px;
+    max-width: 1200px;
+    padding: 0 2.5% 0 4%;;
+    flex-grow: 1;
+
+    .events-calendar--categories {
+        display: flex;
+        margin: 1em 0 2em 0;
+        justify-content: center;
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            li {
+                display: inline-block;
+                margin: 0 0.25em;
+                
+                text-align: center;
+            }
+        }
+    }
+
+    button.events-calendar--enlarge-toggle {
+        margin-left: 1em;
+        border: none;
+        background: none;
+        line-height: 1em;
+        color: var(--header_color);
+    }
+
+    .events-calendar--days-of-week {
+        display: flex;
+        justify-content: center;
+        h2 {
+            margin-left: 1em;
+            margin-top: 0.5em;
+        }
+    }
+
+    .day {
+        width: calc(100% / 7);
+        box-sizing: border-box;
+    }
+
+    .events-calendar--row {
+        position: relative;
+        display: flex;
+        justify-content: center;
+
+        h2.events-calendar--month {
+            position: absolute;
+            left: -2.5em;
+            margin-top: 1em;
+
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        div.day{
+            min-height: 4em;
+            padding: 1em 1em;
+            font-size: 12px;
+
+
+            &.past {
+                background-color: #EEE;
+                color: black;
+                li a:hover, li a:focus {
+                    color: $color-ubyssey-blue;
+                }
+            }
+            &.today {
+                background-color: $color-ubyssey-blue;
+                color: white;
+                li a:hover, li a:focus {
+                    color: white;
+                    text-decoration: underline;
+                }
+            }
+            &.future {
+                background-color: $color-ubyssey-blue-light;
+                color: black;
+                li a:hover, li a:focus {
+                    color: $color-ubyssey-blue;
+                }
+            }
+
+            ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                overflow: clip;
+                li {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+    .events-calendar--row:first-child div.day:first-of-type {
+        border-radius: 0.5em 0 0 0;
+    }
+    .events-calendar--row:first-child div.day:last-child {
+        border-radius: 0 0.5em 0 0;
+    }
+    .events-calendar--row:last-child div.day:first-of-type {
+        border-radius: 0 0 0 0.5em;
+    }
+    .events-calendar--row:last-child div.day:last-child {
+        border-radius: 0 0 0.5em 0;
+    }
+}
+
+.minimize-button {
+    display: none;
+}
+
+.enlarged {
+
+    .enlarge-button {
+        display: none;
+    }
+    .minimize-button {
+        display: inline;
+    }
+    div.day ul li {
+    white-space: initial !important;
+    overflow: unset !important;
+    }
+}
+
 .events-slanted-image {
     position: fixed;
     width: calc(50% - 2em);
@@ -210,9 +237,8 @@ header.events{
     }
   
     h1.title {
-        margin: 0;
-        margin-bottom: 1em;
-        font-size: 2.5em;
+        margin: 0 1em 0.5em 1em;
+        font-size: 3em;
     }
 
     .darkmode-toggle {

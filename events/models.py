@@ -2,6 +2,7 @@ from django.db import models
 from images.models import UbysseyImage
 from wagtail.snippets.models import register_snippet
 from wagtail.admin.panels import FieldPanel
+from django.forms.widgets import Select
 
 # Create your models here.
 
@@ -51,7 +52,7 @@ class EventManager(models.Manager):
         
         # Hide events without categories becausee there isn't enough information
         if not categories:
-            return False
+            return True
 
         categories = categories.to_ical().decode().lower()
 
@@ -93,6 +94,7 @@ class EventManager(models.Manager):
                 address=address,
                 location=location,
                 event_url=ical_component.decoded('url'),
+                category='sports',
                 hidden=self.gothunderbirds_judge_hidden(ical_component)
             )
 
@@ -115,8 +117,6 @@ class EventManager(models.Manager):
         return False
 
         
-        
-
 @register_snippet
 class Event(models.Model):
     title = models.CharField(
@@ -163,12 +163,19 @@ class Event(models.Model):
     )
     image = models.CharField(
         max_length=255,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
     )
-    hidden = models.BinaryField(
+    hidden = models.BooleanField(
         default=False,
+        editable=True,
         help_text="Events that are only online, aren't for undergraduates, or don't have enough information to categorize should be automatically hidden. This means they don't show on the calendar.",
+    )
+    category = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        default='',
     )
 
     objects = EventManager()
@@ -183,6 +190,19 @@ class Event(models.Model):
         FieldPanel("host"),
         FieldPanel("event_url"),
         FieldPanel("image"),
+        FieldPanel(
+            "category",
+            widget=Select(
+                choices=[
+                    ('', 'All'), 
+                    ('sports','Sports'),
+                    ('entertainment','Entertainment'),
+                    ('community','Community'),
+                    ('seminar', 'Seminar'),
+                ],
+            ),
+        ),
+        FieldPanel("hidden")
     ]
 
     def __str__(self) -> str:

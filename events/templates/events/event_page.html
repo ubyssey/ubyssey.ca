@@ -20,7 +20,7 @@
 <div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://visit.ubc.ca/wp-content/uploads/2019/05/chan_2-1940x1216_2x-1024x642.jpg')"></div>
 <main class="c-page events-page">
     <div class="events-flex">
-        <div class="events-calendar">
+        <div id="calendar" class="events-calendar">
             <header class="events">
                 <div class="u-container">
                     <div class="logo-area">
@@ -34,6 +34,17 @@
                     {% include 'article/objects/darkmode_button.html' with id="topbar" %}
                 </div>
                 <h1 class="title">Events Around Campus</h1>
+
+                <div class="events-calendar--categories">
+                    <ul>
+                        <li><a href="?">All</a></li>
+                        <li><a href="?category=sports">Sports</a></li>
+                        <li><a href="?category=entertainment">Entertainment</a></li>
+                        <li><a href="?category=community">Community</a></li>
+                        <li><a href="?category=seminar">Seminar</a></li>
+                    </ul>
+                </div>
+                <button class="events-calendar--enlarge-toggle" onclick="document.getElementById('calendar').classList.toggle('enlarged');"><span class="enlarge-button"><i class="fa-solid fa-up-down"></i></span><span class="minimize-button"><i class="fa-solid fa-down-left-and-up-right-to-center"></i></span></button>
             </header>
 
             <div class="events-calendar--days-of-week">
@@ -67,27 +78,22 @@
                 </div>
             {% endfor %}
             </div>
-            <div class="events-calendar--categories">
-                <ul>
-                    <li><a href="?category=all">All</a></li>
-                    <li><a href="?category=sports">Sports</a></li>
-                    <li><a href="?category=entertainment">Entertainment</a></li>
-                    <li><a href="?category=community">Community</a></li>
-                    <li><a href="?category=seminar">Seminar</a></li>
-                </ul>
-            </div>
         </div>
+        <div class="events-info-container">
         <div class="events-info">
             <h2 class="event-info--time">{{event.start_time|date:"F j"}} {{event.start_time|time:"H:i"}} - {{event.end_time|time:"H:i"}}</h2>
             <div class="events-info--content">
                 <h2>{{event.title}}</h2>
                 <p>{{event.location}}</p>
                 <p>{% if event.host %}<b>{{event.host}}:</b>{% endif %} {{event.description|safe}}</p>
-                <p><a href="{{event.event_url}}" target="blank">- Found on events.ubc<a/></p>
+                <p><a href="{{event.event_url}}" target="blank">- Found on events.ubc</a></p>
             </div>
+        </div>
         </div>
     </div>
 </main>
 {% endblock %}
+
+{% block scripts %}{% endblock %}
 
 {% block footer %}{% endblock %}

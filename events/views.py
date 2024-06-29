@@ -10,7 +10,10 @@ class EventsTheme(object):
 
     def landing(self, request):
         """Events page landing page"""
-        events = Event.objects.filter(hidden=False).order_by("start_time")
+        if request.GET.get("category"):
+            events = Event.objects.filter(category=request.GET.get("category"),hidden=False).order_by("start_time")
+        else:
+            events = Event.objects.filter(hidden=False).order_by("start_time")
 
         calendar = []
         day = timezone.now() - timedelta(days=7 + timezone.now().weekday())
@@ -64,6 +67,7 @@ class EventsTheme(object):
         if request.GET.get("id"):
             if Event.objects.filter(id=request.GET.get("id")).exists():
                 event = Event.objects.get(id=request.GET.get("id"))
+                
 
         if event:
             event.description = event.description.replace('\n', '<br>')
