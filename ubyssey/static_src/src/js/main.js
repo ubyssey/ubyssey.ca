@@ -89,6 +89,7 @@ function enableScroll() {
   $('body').removeClass('u-no-scroll');
 }
 
+/*
 // Set element image-attachment variables left and right's respective margins to that of 
 // the first child of parent element p (with direct parent element article-content)
 function embedMargins() {
@@ -111,6 +112,7 @@ function resizeFullWidthStoryBanner() {
   }
 }
 
+
 //Should be improved (temp)
 function issueParser() {
   var req = new XMLHttpRequest();
@@ -132,6 +134,7 @@ function issueParser() {
   };
   req.send();
 }
+*/
 
 // If hovering over sections-more-dropdown element,
 // element slides up or down.
