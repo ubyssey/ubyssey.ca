@@ -5,7 +5,7 @@ function updateHeader() {
   const
     elementHeight = element.height(),
     elementOffset = $(window).height() - elementHeight,
-    parentOffset = element.parent().offset().top,
+    // parentOffset = element.parent().offset().top,
     parentHeight = element.parent().height();
 
   if (parentHeight <= elementHeight) {
@@ -14,8 +14,8 @@ function updateHeader() {
 
   const
     hasClass = element.hasClass('js-sticky--fixed'),
-    shouldStick = scrollTop > elementOffset,
-    shouldFreeze = scrollTop + elementOffset + elementHeight >= parentOffset + parentHeight;
+    shouldStick = scrollTop > elementOffset;
+    // shouldFreeze = scrollTop + elementOffset + elementHeight >= parentOffset + parentHeight;
 
   if (shouldStick) {
     if (!hasClass) {
