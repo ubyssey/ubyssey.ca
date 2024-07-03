@@ -16,7 +16,7 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/academics/">Home</a>
                     </li>
-                    {% for parent in page.get_children.specific%}
+                    {% for parent in page.get_children %}
                             {% for child in parent.get_children %}
                                 {% if forloop.counter == 1 %}
                                 <li>
@@ -50,7 +50,7 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/adulting/">Home</a>
                     </li>
-                    {% for parent in page.get_children.specific%}
+                    {% for parent in page.get_children.specific %}
                             {% for child in parent.get_children %}
                                 {% if forloop.counter == 3 %}
                                 <li>
@@ -84,7 +84,7 @@
                         <li class='home'>
                             <a class="header-button" href="https://ubyssey.ca/guide/2020/vancouver/">Home</a>
                         </li>
-                        {% for parent in page.get_children.specific%}
+                        {% for parent in page.get_children.specific %}
                         {% for child in parent.get_children %}
                             {% if forloop.counter == 5 %}
                             <li>

@@ -1,5 +1,8 @@
 {% extends 'guide/2020/base.html' %}
 {% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailuserbar %}
+{% load menu_tags %}
 {% block content %}
 
 {% if self.slug == 'academics' %}
@@ -32,7 +35,7 @@
             {% elif forloop.counter == 5 %}
               {% include 'guide/2020/quote-box.html' with quote='"Don\'t be afraid to advocate for yourself. If you are struggling with material, reach out to your professors in office hours. If you need accommodations, reach out to academic advising. There are supports that exist to help you through, but only if you have the courage to reach out."' source='Julia Burnham' type=2 %}
             {% endif %}
-            {% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%} 
+          {% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%} 
       {% endfor %}
       {% elif self.slug == 'ubc' %}
           {% for page in page.get_children.specific %}
