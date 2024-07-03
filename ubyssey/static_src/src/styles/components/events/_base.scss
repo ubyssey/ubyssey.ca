@@ -25,7 +25,7 @@ main.events-page {
             width: 30%;
 
             margin: auto 0;
-            min-height: 60vh;
+            min-height: 66vh;
         }
         .events-info {
             max-width: 500px;
@@ -169,6 +169,9 @@ main.events-page {
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    b {
+                        text-transform: lowercase;
+                    }
                 }
             }
         }
@@ -189,6 +192,21 @@ main.events-page {
 
 .minimize-button {
     display: none;
+}
+
+button.events-calendar--number {
+    color: inherit;
+    background: none;
+    padding: 0;
+    border: none;
+    border-radius: 100%;
+    margin: 0;
+    line-height: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    &:hover, &:focus {
+        text-decoration: underline;
+    }
 }
 
 .enlarged {
@@ -216,6 +234,10 @@ main.events-page {
     background-position: left;
     background-position-x: right;
     clip-path: polygon(33% 0px, 100% 0, 100% 100%, 0px 100%);
+}
+
+.events-calendar--rows {
+    margin-bottom: 2em;
 }
 
 header.events{

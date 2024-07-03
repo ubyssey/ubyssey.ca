@@ -9,8 +9,6 @@ from django.forms.widgets import Select
 class EventManager(models.Manager):
     def ubcevents_create_event(self, ical_component):
 
-        print(ical_component.get('summary'))
-
         if not self.filter(event_url=ical_component.get('url')).exists():
             event = self.create(
                 title=ical_component.get('summary'),
@@ -42,6 +40,9 @@ class EventManager(models.Manager):
             event.host = ical_component.get("organizer").params['cn']
 
         event.save()
+
+        print(event.title + " - " + event.category)
+
         return event
         
     
@@ -71,7 +72,7 @@ class EventManager(models.Manager):
                     return True            
         
         # Hide events that aren't for undergraduates
-        if 'faculty' in categories:
+        if 'audience' in categories:
             if 'all students' not in categories and 'community' not in categories:
                 return True
         if 'staff only' in title:
@@ -117,11 +118,9 @@ class EventManager(models.Manager):
             if i in categories:
                 return 'sports'
 
-        return 'commuinity'
+        return 'community'
 
     def gothunderbirds_create_event(self, ical_component):
-
-        print(ical_component.get('summary'))
 
         if not self.filter(event_url=ical_component.get('url')).exists():
             event = self.create(

@@ -44,7 +44,6 @@
                         <li><a href="?category=seminar">Seminar</a></li>
                     </ul>
                 </div>
-                <button class="events-calendar--enlarge-toggle" onclick="document.getElementById('calendar').classList.toggle('enlarged');"><span class="enlarge-button"><i class="fa-solid fa-up-down"></i></span><span class="minimize-button"><i class="fa-solid fa-down-left-and-up-right-to-center"></i></span></button>
             </header>
 
             <div class="events-calendar--days-of-week">
@@ -65,12 +64,14 @@
                     {% endif %}
                     {% for day in week.days %}
                         <div class="day {{day.phase}}">
-                            <div class="events-calendar--number">
+                            <button onClick="this.parentElement.parentElement.classList.toggle('enlarged')" class="events-calendar--number">
                                 {{day.day}}.
-                            </div>
+                            </button>
                             <ul>
                             {% for event in day.events %} 
-                                <li><a title="{{event.title}}" href="?id={{event.id}}"><b>{{event.start_time|time:"H:i"}}</b> {{event.title}}</a></li>
+                                <li><a title="{{event.title}}" href="?event={{event.event_url}}">
+                                    {% if event.start_time|date:"F j" != event.end_time|date:"F j"%}<b>Ongoing</b>{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title}}
+                                </a></li>
                             {% endfor %}
                             <ul>
                         </div>
@@ -81,7 +82,13 @@
         </div>
         <div class="events-info-container">
         <div class="events-info">
-            <h2 class="event-info--time">{{event.start_time|date:"F j"}} {{event.start_time|time:"H:i"}} - {{event.end_time|time:"H:i"}}</h2>
+            <h2 class="event-info--time">
+                {% if event.start_time|date:"F j" == event.end_time|date:"F j"%}
+                    {{event.start_time|date:"F j"}} {{event.start_time|time:"fA"}} - {{event.end_time|time:"fA"}}
+                {% else %}
+                    {{event.start_time|date:"F j"}} {{event.start_time|time:"fA"}} - {{event.end_time|date:"F j"}} {{event.end_time|time:"fA"}}
+                {% endif %}
+            </h2>
             <div class="events-info--content">
                 <h2>{{event.title}}</h2>
                 <p>{{event.location}}</p>

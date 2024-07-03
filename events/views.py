@@ -24,6 +24,8 @@ class EventsTheme(object):
 
         closest_event = None
 
+        ongoing = []
+
         while(len(calendar) < 4):
 
             if day.day == 1:
@@ -43,6 +45,13 @@ class EventsTheme(object):
                     week = {'month': None, 'days': [{'day': day.day, 'events': []}]}
                 else:
                     week['days'].append({'day': day.day, 'events': []})
+                    i=0
+                    while i<len(ongoing):
+                        week['days'][-1]['events'].append(ongoing[i])
+                        if ongoing[i].end_time.astimezone(timezone.get_current_timezone()).date() == day.date():
+                            ongoing.pop(i)
+                        else:
+                            i = i + 1
             else:
                 event_time = events[events_index].start_time.astimezone(timezone.get_current_timezone())
                 
@@ -53,6 +62,8 @@ class EventsTheme(object):
                 else:
                     if day.date() == event_time.date():
                         week['days'][-1]['events'].append(events[events_index])
+                        if events[events_index].end_time.astimezone(timezone.get_current_timezone()).date() != day.date():
+                            ongoing.append(events[events_index])
                         events_index = events_index + 1
                     else:
                         day = day + timedelta(days=1)
@@ -61,13 +72,19 @@ class EventsTheme(object):
                             week = {'month': None, 'days': [{'day': day.day, 'events': []}]}
                         else:
                             week['days'].append({'day': day.day, 'events': []})
+                            i=0
+                            while i<len(ongoing):
+                                week['days'][-1]['events'].append(ongoing[i])
+                                if ongoing[i].end_time.astimezone(timezone.get_current_timezone()).date() == day.date():
+                                    ongoing.pop(i)
+                                else:
+                                    i = i + 1
         
         event = closest_event
         
-        if request.GET.get("id"):
-            if Event.objects.filter(id=request.GET.get("id")).exists():
-                event = Event.objects.get(id=request.GET.get("id"))
-                
+        if request.GET.get("event"):
+            if Event.objects.filter(event_url=request.GET.get("event")).exists():
+                event = Event.objects.get(event_url=request.GET.get("event"))
 
         if event:
             event.description = event.description.replace('\n', '<br>')
