@@ -83,9 +83,9 @@
             </div>
             <div class="article-boxes">
                 {% image prev.featured_media.first.image original as prev_image %}
-                {% include 'article/objects/guide/article-box2022.html' with style='article' title=prev.title page=prev image=prev_image.url prevornext='prev' %}
+                {% include 'article/objects/guide/article-box2022.html' with style='article' title=prev.title page=prev  prevornext='prev' %}
                 {% image next.featured_media.first.image original as next_image %}
-                {% include 'article/objects/guide/article-box2022.html' with style='article' title=next.title page=next image=next_image.url prevornext='next' %}
+                {% include 'article/objects/guide/article-box2022.html' with style='article' title=next.title page=next  prevornext='next' %}
             </div>
         </main>
     {% endwith %}        
