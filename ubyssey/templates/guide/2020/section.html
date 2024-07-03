@@ -2,40 +2,40 @@
 {% load static %}
 {% block content %}
 
-{% if subsection == 'academics' %}
+{% if self.slug == 'academics' %}
   <div class="c-banner c-banner--welcome" style="background-image: url({% static 'ubyssey/images/guide/guide-2020-cover-academics.jpg' %})">
-{% elif subsection == 'ubc' %}
+{% elif self.slug == 'ubc' %}
   <div class="c-banner c-banner--welcome" style="background-image: url({% static 'ubyssey/images/guide/guide-2020-cover-ubc.jpg' %})">
-{% elif subsection == 'adulting' %}
+{% elif self.slug == 'adulting' %}
   <div class="c-banner c-banner--welcome" style="background-image: url({% static 'ubyssey/images/guide/guide-2020-cover-adulting.jpg' %})">
-{% elif subsection == 'sdp' %}
+{% elif self.slug == 'sdp' %}
   <div class="c-banner c-banner--welcome" style="background-image: url({% static 'ubyssey/images/guide/guide-2020-cover-sdp.jpg' %})">
-{% elif subsection == 'vancouver' %}
+{% elif self.slug == 'vancouver' %}
   <div class="c-banner c-banner--welcome" style="background-image: url({% static 'ubyssey/images/guide/guide-2020-cover-vancouver.jpg' %})">
 {% endif %}
     <div class="c-banner__container">
       <div class="c-banner--welcome__inner">
         <h2 class="c-banner--welcome__intro">Welcome To</h2>
-        <p class="c-banner--welcome__snippet">{% if subsection == 'sdp' %}Sex, Drugs, Party{% else %}{{ subsection }}{% endif %}</p>
+        <p class="c-banner--welcome__snippet">{% if self.slug == 'sdp' %}Sex, Drugs, Party{% else %}{{ self.slug }}{% endif %}</p>
       </div>
     </div>
-    <div class="c-banner-credits">{% if subsection == 'vancouver' %}Theresa Wong{% else %}Zubair Hirji{% endif %}</div>
+    <div class="c-banner-credits">{% if self.slug == 'vancouver' %}Theresa Wong{% else %}Zubair Hirji{% endif %}</div>
   </div>
 
   <main class="section-grid-container">
     <div class="section-title"><p>What are you looking for ?</p></div>
    
-      {% if subsection == 'academics' %}
-      {% for article in articles.academics %}
+      {% if self.slug == 'academics' %}
+      {% for page in page.get_children.specific %}
             {% if forloop.counter == 2 %}
               {% include 'guide/2020/quote-box.html' with quote='"Talk to your professors. First it will help with understanding material in class as you can ask all the stupid questions you want. Secondly, It will help you create a repertoire with them that will undoubtedly lead to them giving you the benefit of the doubt when you eventually make a mistake. And finally, it will teach you some important social skills that you will need when you get a job and need to talk to higher ups."' source='Zubair Hirji' type=1 %}
             {% elif forloop.counter == 5 %}
               {% include 'guide/2020/quote-box.html' with quote='"Don\'t be afraid to advocate for yourself. If you are struggling with material, reach out to your professors in office hours. If you need accommodations, reach out to academic advising. There are supports that exist to help you through, but only if you have the courage to reach out."' source='Julia Burnham' type=2 %}
             {% endif %}
-            {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image.image.get_absolute_url%} 
+            {% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%} 
       {% endfor %}
-      {% elif subsection == 'ubc' %}
-          {% for article in articles.ubc %}
+      {% elif self.slug == 'ubc' %}
+          {% for page in page.get_children.specific %}
             {% if forloop.counter == 2 %}
               {% include 'guide/2020/quote-box.html' with quote='"Know what you don’t know, and be kind to yourself. Staying up the night before cramming will not help – try to space out your studying over a week (two, before finals); and make sure you take the time to relax AND sleep well the night before your exam. The more relaxed you are mentally, the better you sleep, and the clearer your mind is the next morning. Even though it might seem counter-intuitive, it definitely helps!"' source='Ioana David' type=1 %}
             {% elif forloop.counter == 5 %}
@@ -43,7 +43,7 @@
             {% elif forloop.counter == 7 %}
               {% include 'guide/2020/quote-box.html' with quote='"Engage your curiosity and broaden your horizons. Not every student has co-op or study abroad opportunities available but if you do, seize those opportunities. Join a club, volunteer for a cause -engage yourself with the world."' source='Santa Ono' type=3 %}
             {% elif forloop.counter == 10 %}
-            {% include 'guide/2020/quote-box.html' with quote='"Both Day of the Longboat and Storm the Wall are incredibly fun and exhilarating experiences that you should not graduate without having participated in! Longboat is all about teamwork, communication, and competition. Storm the wall is about planning, reliability, and jumping over a 12 foot wall. Both are by far the best traditions on campus. I recommend you wear a ridiculous costume to either event, I\'ve done them in a banana costume and in a hot dog costume."' source='Zubair Hirji' type=5 %}
+            {% include 'guide/2020/quote-box.html' with quote='"Both Day of the Longboat and Storm the Wall are incredibly fun and exhilarating experiences that you should not graduate without having participated in\! Longboat is all about teamwork, communication, and competition. Storm the wall is about planning, reliability, and jumping over a 12 foot wall. Both are by far the best traditions on campus. I recommend you wear a ridiculous costume to either event, I\'ve done them in a banana costume and in a hot dog costume."' source='Zubair Hirji' type=5 %}
             {% elif forloop.counter == 12 %}
               {% include 'guide/2020/quote-box.html' with quote='"My favourite tradition at UBC is not having enough time to get between classes."' source='Nathaniel Andre-Peirano' type=4 %}
             {% elif forloop.counter == 15 %}
@@ -51,10 +51,10 @@
             {% elif forloop.counter == 17 %}
               {% include 'guide/2020/quote-box.html' with quote='"Join at least one club. Could be a sports team, could be the musical theatre troupe, could even be the Ubyssey. Participate in club activity, they\'re the best way for you to find friends outside of class and they\'re also a great way for you to have experiences that you wouldn\'t normally get from your academic courses."' source='Zhi Wen Teh' type=7 %}
             {% endif %}
-            {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image.image.get_absolute_url%}
+            {% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%}
           {% endfor %}
-      {% elif subsection == 'adulting' %}
-          {% for article in articles.adulting %}
+      {% elif self.slug == 'adulting' %}
+          {% for page in page.get_children.specific%}
             {% if forloop.counter == 2 %}
               {% include 'guide/2020/quote-box.html' with quote='"Try to achieve balance. Study hard yes, but also take time to take care of yourself."' source='Santa Ono' type=1 %}
             {% elif forloop.counter == 5 %}
@@ -70,10 +70,9 @@
             {% elif forloop.counter == 17 %}
               {% include 'guide/2020/quote-box.html' with quote='"Be respectful of shared spaces, and listen to your roommates. Communication is really important, so make sure you establish a healthy relationship with them!"' source='Ioana David' type=7 %}
             {% endif %}
-            {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image.image.get_absolute_url%}
-          {% endfor %}
-      {% elif subsection == 'sdp' %}
-          {% for article in articles.sdp %}
+{% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%}          {% endfor %}
+      {% elif self.slug == 'sdp' %}
+          {% for page in page.get_children.specific %}
             {% if forloop.counter == 2 %}
               {% include 'guide/2020/quote-box.html' with quote='"An entire bottle of wine can fit in a large McDonalds cup, just FYI."' source='Julia Burnham' type=1 %}
             {% elif forloop.counter == 5 %}
@@ -81,14 +80,13 @@
             {% elif forloop.counter == 7 %}
               {% include 'guide/2020/quote-box.html' with quote='"Do what feels right, and listen to your gut. If the person you’re with can’t respect that, they’re not worth your time."' source='Ioana David' type=3 %}
             {% endif %}
-            {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image.image.get_absolute_url%}
-          {% endfor %}
-      {% elif subsection == 'vancouver' %}
-          {% for article in articles.vancouver %}
+{% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%}          {% endfor %}
+      {% elif self.slug == 'vancouver' %}
+          {% for page in page.get_children.specific%}
             {% if forloop.counter == 2 %}
               {% include 'guide/2020/quote-box.html' with quote='"Vancouver is one of the most transit accessible places in North America and you have one of the cheapest ways to use it, a Upass. Use that as often as you can to get from campus to almost any other part of the Metro Vancouver for dirt cheap."' source='Zubair Hirji' type=1 %}
             {% elif forloop.counter == 5 %}
-              {% include 'guide/2020/quote-box.html' with quote='"EAT. There is so much good food. So much bubble tea, ramen, sushi. Granville Island is great to start – they have a lot of variety, so you can literally eat as much as you want. And take advantage of the mountains – I’m not a big fan of hikes, but I’ve fallen in love with the views you get once you reach the top. I\'m definitely becoming a true Vancouverite."' source='Ioana David' type=2 %}
+              {% include 'guide/2020/quote-box.html' with quote='"EAT. There is so much good food. So much bubble tea, ramen, sushi. Granville Island is great to start –\' they have a lot of variety, so you can literally eat as much as you want. And take advantage of the mountains – I’m not a big fan of hikes, but I’ve fallen in love with the views you get once you reach the top. I\'m definitely becoming a true Vancouverite."' source='Ioana David' type=2 %}
             {% endif %}
             {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image.image.get_absolute_url%}
           {% endfor %}

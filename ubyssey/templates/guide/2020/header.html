@@ -1,4 +1,7 @@
 {% load static %}
+{% load wagtailimages_tags %}
+{% load wagtailcore_tags %}
+
 <header class = "c-header{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}">
     <ul class = "c-nav-bar">
         <li class="c-nav-left">
@@ -11,9 +14,9 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/academics/">Home</a>
                     </li>
-                    {% for article in articles.academics %}
+                    {% for page in page.get_children.specific%}
                         <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'academics' article.slug %}">{{ article.headline }}</a>
+                            <a class="header-button" href="{% pageurl page%}">{{ page.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -24,9 +27,9 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/ubc/">Home</a>
                     </li>
-                    {% for article in articles.ubc %}
+                    {% for page in page.get_children.specific %}
                         <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'ubc' article.slug %}">{{ article.headline }}</a>
+                            <a class="header-button" href="{% pageurl page %}">{{ page.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -37,9 +40,9 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/adulting/">Home</a>
                     </li>
-                    {% for article in articles.adulting %}
+                    {% for page in page.get_children.specific %}
                         <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'adulting' article.slug %}">{{ article.headline }}</a>
+                            <a class="header-button" href="{% pageurl page %}">{{ page.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -50,9 +53,9 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/sdp/">Home</a>
                     </li>
-                    {% for article in articles.sdp %}
+                    {% for page in page.get_children.specific %}
                         <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'sdp' article.slug %}">{{ article.headline }}</a>
+                            <a class="header-button" href="{% pageurl page %}">{{ page.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -63,9 +66,9 @@
                         <li class='home'>
                             <a class="header-button" href="https://ubyssey.ca/guide/2020/vancouver/">Home</a>
                         </li>
-                    {% for article in articles.vancouver %}
+                        {% for page in page.get_children.specific %}
                         <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'vancouver' article.slug %}">{{ article.headline }}</a>
+                            <a class="header-button" href="{% pageurl page %}">{{ page.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>
