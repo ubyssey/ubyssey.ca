@@ -12,33 +12,38 @@ class EventManager(models.Manager):
         print(ical_component.get('summary'))
 
         if not self.filter(event_url=ical_component.get('url')).exists():
-
-            # Split location and address
-            location = ical_component.get('location')
-            address = ""
-            if "," in location:
-                address = location[location.index(',')+1:]
-                location = location[:location.index(',')]
-
             event = self.create(
                 title=ical_component.get('summary'),
-                description=ical_component.get('description'),
-                start_time=ical_component.decoded('dtstart'),
-                end_time=ical_component.decoded('dtend'),
-                address=address,
-                location=location,
-                email=ical_component.decoded('organizer', default=""),
                 event_url=ical_component.decoded('url'),
-                hidden=self.ubcevents_judge_hidden(ical_component)
             )
-            if ical_component.get("organizer", False):
-                event.host = ical_component.get("organizer").params['cn']
+        else:
+            event = self.get(event_url=ical_component.get('url'))
 
+        # Split location and address
+        location = ical_component.get('location')
+        address = ""
+        if "," in location:
+            address = location[location.index(',')+1:]
+            location = location[:location.index(',')]
 
-            event.save()
-            return event
         
-        return None
+        event.title=ical_component.get('summary')
+        event.description=ical_component.get('description')
+        event.start_time=ical_component.decoded('dtstart')
+        event.end_time=ical_component.decoded('dtend')
+        event.address=address
+        event.location=location
+        event.email=ical_component.decoded('organizer', default="")
+        event.event_url=ical_component.decoded('url')
+        event.category = self.ubcevents_category(ical_component)
+        event.hidden=self.ubcevents_judge_hidden(ical_component)
+
+        if ical_component.get("organizer", False):
+            event.host = ical_component.get("organizer").params['cn']
+
+        event.save()
+        return event
+        
     
     def ubcevents_judge_hidden(self, event):
         '''
@@ -65,8 +70,11 @@ class EventManager(models.Manager):
                 if not 'hybrid' in location and not 'in-person' in location and not 'in-person' in description and not 'hybrid' in description:
                     return True            
         
-        # Hide events that aren't for undergraduates or don't specify
-        if 'all students' not in 'categories' and 'community' not in categories or 'staff only' in title:
+        # Hide events that aren't for undergraduates
+        if 'faculty' in categories:
+            if 'all students' not in categories and 'community' not in categories:
+                return True
+        if 'staff only' in title:
             return True
             
         # Hide UBC Okanagan exclusive events
@@ -76,31 +84,68 @@ class EventManager(models.Manager):
         # If it passes all these tests its probably good
         return False
 
+    def ubcevents_category(self, event):
+        '''
+        Return the category the event is judged to belong to
+        '''
+        categories = event.get('categories')
+        title = event.get('summary').lower()
+
+        # Set farmer's markets events to community even though UBCevents tags them as entertainment for some reason
+        for i in ['lunch', 'market']:
+            if i in title:
+                return 'community'
+
+        # Hide events without categories because there isn't enough information
+        if not categories:
+            return 'community'
+
+        categories = categories.to_ical().decode().lower()
+
+        # Check for seminar keywords  
+        for i in ['workshop', 'seminar', 'research', 'learning']:
+            if i in categories:
+                return 'seminar'
+            
+        # Check for entertainmnet keywords
+        for i in ['entertainment', 'concert', 'perform']:
+            if i in categories:
+                return 'entertainment'
+            
+        # Check for sports keywords
+        for i in ['thunderbird athletics']:
+            if i in categories:
+                return 'sports'
+
+        return 'commuinity'
+
     def gothunderbirds_create_event(self, ical_component):
 
         print(ical_component.get('summary'))
 
         if not self.filter(event_url=ical_component.get('url')).exists():
-
-            # Split location and address
-            address = ical_component.get('location')
-            location = address.replace('Vancouver, B.C., ', '')
-
             event = self.create(
                 title=ical_component.get('summary'),
-                description=ical_component.get('description'),
-                start_time=ical_component.decoded('dtstart'),
-                end_time=ical_component.decoded('dtend'),
-                address=address,
-                location=location,
                 event_url=ical_component.decoded('url'),
-                category='sports',
-                hidden=self.gothunderbirds_judge_hidden(ical_component)
             )
+        else:
+            event = self.get(event_url=ical_component.get('url'))
 
-            return event
-        
-        return None
+        # Split location and address
+        address = ical_component.get('location')
+        location = address.replace('Vancouver, B.C., ', '')
+
+        event.title=ical_component.get('summary'),
+        event.description=ical_component.get('description'),
+        event.start_time=ical_component.decoded('dtstart'),
+        event.end_time=ical_component.decoded('dtend'),
+        event.address=address,
+        event.location=location,
+        event.event_url=ical_component.decoded('url'),
+        event.category='sports',
+        event.hidden=self.gothunderbirds_judge_hidden(ical_component)
+
+        return event
     
     def gothunderbirds_judge_hidden(self, event):
         '''
