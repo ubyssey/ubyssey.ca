@@ -8,6 +8,12 @@ $adslots: (
   mobile-leaderboard: (320px, 50px)
 );
 
+.o-advertisement--ad-page-promo {
+  font-size: 0.7em;
+  text-decoration: underline;
+  text-align: center;
+}
+
 .adslot {
   display: block !important;
   background-color: transparent;

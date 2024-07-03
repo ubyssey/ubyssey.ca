@@ -429,8 +429,21 @@ html, body {
   }
 }
 
+.o-placements--print .o-placements__demo {
+  aspect-ratio: 40/53;
+}
+
+.o-placements--guide .o-placements__demo {
+  aspect-ratio: 9/15;
+}
+
+.o-placements--magazine .o-placements__demo {
+  aspect-ratio: 16/21;
+}
+
 .o-placements--print,
-.o-placements--guide {
+.o-placements--guide,
+.o-placements--magazine {
   // Structure
 
   .o-placements__list {
@@ -519,21 +532,21 @@ html, body {
     }
 
     &[data-demo='guide-full-page'] .o-placements__demo__inner::after {
-      content: '5" x 8"';
+      content: '4.5" x 7.5"';
       top: 0;
       width: 100%;
       height: 100%;
     }
 
     &[data-demo='guide-half-page'] .o-placements__demo__inner::after {
-      content: '5" x 4"';
+      content: '4.5" x 3.5"';
       top: 50%;
       height: 50%;
       width: 100%;
     }
 
     &[data-demo='guide-quarter-page'] .o-placements__demo__inner::after {
-      content: '5" x 2"';
+      content: '4.5" x 1.75"';
       bottom: 0;
       height: 25%;
       width: 100%;
@@ -564,7 +577,6 @@ html, body {
   .o-placements__demo__inner {
     // Structure
     height: 100%;
-    padding-bottom: 120%;
 
     // Background
     background-color: #E4E4E4;
@@ -725,6 +737,10 @@ html, body {
 
 }
 
+.o-placements__demo--container {
+  flex: 1;
+}
+
 .o-placements__demo {
   // Structure
   flex: 3;
@@ -739,8 +755,10 @@ html, body {
   // Extras
   box-shadow: 0 2px 7px 0 rgba(0,0,0,0.09);
 }
-
-.o-placements__demo--mobile {
+.o-placements--web .o-placements__demo{
+  aspect-ratio: 5/6;
+}
+.o-placements--web .o-placements__demo.o-placements__demo--mobile {
   position: sticky;
   max-width: 350px;
   aspect-ratio: 1/2;
@@ -750,7 +768,6 @@ html, body {
   top: 3em;
 
   .o-placements__demo__inner {
-    height: 100%;
     border-radius: 1em;
   }
 }
@@ -759,8 +776,8 @@ html, body {
   // Structure
   position: relative;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
-  padding-bottom: 120%;
   overflow: hidden;
 
   // Background
@@ -1366,18 +1383,19 @@ html, body {
 
 .offer {
   width: fit-content;
-  padding-right: 5em;
+  padding-right: 2em;
   color: white;
   h3 {
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    text-align: center;
   }
   ul {
     list-style: none;
     padding-left: 0.5em;
     li {
       position: relative;
-      margin: 0.5em 0;
+      margin: 0.5em 1em;
       padding: 0.5em;
       border-radius: 5px;
       border: 1px solid white;

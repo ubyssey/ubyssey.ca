@@ -11,7 +11,6 @@ from wagtail.models import Page, Orderable
 from wagtail.fields import StreamField
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
-from section.models import SidebarCategoryBlock
 
 # Create your models here.
 
@@ -68,9 +67,12 @@ class HomePage(Page):
         on_delete=models.SET_NULL
     )
 
-    links = StreamField(
+    middle_stream = StreamField(
         [
-            ("link", homeblocks.LinkStreamBlock()),
+            ("links", homeblocks.LinksStreamBlock()),
+            ('section', homeblocks.SectionBlock()),
+            ('category', homeblocks.CategoryBlock()),
+            ('tag', homeblocks.TagBlock()),
         ],
         null=True,
         blank=True,
@@ -90,7 +92,7 @@ class HomePage(Page):
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", SidebarCategoryBlock()),
+        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
         ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
         ("sidebar_latest", infinitefeedblocks.SidebarLatestBlock()),
@@ -145,7 +147,7 @@ class HomePage(Page):
             ],
             heading="Top articles"
         ),
-        FieldPanel("links", heading="Links"),
+        FieldPanel("middle_stream", heading="Middle Stream"),
         FieldPanel("sidebar_stream", heading="Sidebar"),
         FieldPanel("sections_stream", heading="Sections"),
         # FieldPanel('home_leaderboard_ad_slot'),

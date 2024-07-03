@@ -162,10 +162,15 @@ a.scroll-arrow{
 
 .js-dropdown-container{
 	width: 100%;
-	top: 100px;
+	top: 0;
   bottom: 0;
   position: fixed;
   background-color: rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+
+.nav-item .js-dropdown-container {
+  top: 100px;
 }
 
 .o-site-wrapper {
@@ -178,7 +183,7 @@ a.scroll-arrow{
   margin: auto;
   max-width: 1470px;
   width: 100%;
-  padding: 0em;
+  padding: 0em 2em;
   @media (max-width: 576px) {
     padding: 0 1.5em;
     text-align: center;

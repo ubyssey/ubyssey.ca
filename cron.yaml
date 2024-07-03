@@ -1,0 +1,4 @@
+cron:
+- description: "publish scheduled"
+  url: /cron/publish-scheduled
+  schedule: every 30 minutes

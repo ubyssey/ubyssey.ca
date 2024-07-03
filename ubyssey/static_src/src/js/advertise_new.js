@@ -27,16 +27,16 @@ $(function() {
     $('.o-placements--web .o-placements__platform--mode').removeClass('o-placements__platforms--active');
     $(this).addClass('o-placements__platforms--active');
     if ($(this).data('platform') == 'desktop') {
-      $('.o-placements__demo').removeClass('o-placements__demo--mobile');
-      $('.o-placements__demo__desktop').removeClass('o-hidden');
-      $('.o-placements__demo__mobile').addClass('o-hidden');
-      $('.o-placements__placement--demo--no_mobile').removeClass('o-unavailable');
+      $('.o-placements--web .o-placements__demo').removeClass('o-placements__demo--mobile');
+      $('.o-placements--web .o-placements__demo__desktop').removeClass('o-hidden');
+      $('.o-placements--web .o-placements__demo__mobile').addClass('o-hidden');
+      $('.o-placements--web .o-placements__placement--demo--no_mobile').removeClass('o-unavailable');
     }
     else {
-      $('.o-placements__demo').addClass('o-placements__demo--mobile');
-      $('.o-placements__demo__desktop').addClass('o-hidden')
-      $('.o-placements__demo__mobile').removeClass('o-hidden')
-      $('.o-placements__placement--demo--no_mobile').addClass('o-unavailable')
+      $('.o-placements--web .o-placements__demo').addClass('o-placements__demo--mobile');
+      $('.o-placements--web .o-placements__demo__desktop').addClass('o-hidden')
+      $('.o-placements--web .o-placements__demo__mobile').removeClass('o-hidden')
+      $('.o-placements--web .o-placements__placement--demo--no_mobile').addClass('o-unavailable')
     }
   });
 

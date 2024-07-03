@@ -176,6 +176,7 @@ INSTALLED_APPS = [
     'wagtail.admin',
     'wagtail',
     'wagtail.contrib.routable_page',
+    'wagtail.contrib.sitemaps',
     'wagtail.contrib.styleguide',
 
     'taggit',
@@ -188,6 +189,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
+    'django.contrib.sitemaps',
 
     'rest_framework',
     'rest_framework.authtoken',
