@@ -28,9 +28,6 @@ class EventsTheme(object):
 
         while(len(calendar) < 4):
 
-            if day.day == 1:
-                week["month"] = day.strftime("%b")
-
             if day.date() == timezone.now().date():
                 week['days'][-1]['phase'] = 'today'
             elif day < timezone.now() - timedelta(hours=day.hour, minutes=day.minute, seconds=day.second):
@@ -42,7 +39,7 @@ class EventsTheme(object):
                 day = day + timedelta(days=1)
                 if day.weekday()==0:
                     calendar.append(week)
-                    week = {'month': None, 'days': [{'day': day.day, 'events': []}]}
+                    week = {'month': day.strftime("%b"), 'days': [{'day': day.day, 'events': []}]}
                 else:
                     week['days'].append({'day': day.day, 'events': []})
                     i=0
@@ -69,7 +66,7 @@ class EventsTheme(object):
                         day = day + timedelta(days=1)
                         if day.weekday()==0:
                             calendar.append(week)
-                            week = {'month': None, 'days': [{'day': day.day, 'events': []}]}
+                            week = {'month': day.strftime("%b"), 'days': [{'day': day.day, 'events': []}]}
                         else:
                             week['days'].append({'day': day.day, 'events': []})
                             i=0
@@ -85,6 +82,7 @@ class EventsTheme(object):
         if request.GET.get("event"):
             if Event.objects.filter(event_url=request.GET.get("event")).exists():
                 event = Event.objects.get(event_url=request.GET.get("event"))
+                event.selected = True
 
         if event:
             event.description = event.description.replace('\n', '<br>')

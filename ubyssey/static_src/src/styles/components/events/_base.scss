@@ -28,6 +28,7 @@ main.events-page {
             min-height: 66vh;
         }
         .events-info {
+            margin-bottom: 2em;
             max-width: 500px;
             max-height: 81vh;
             border: 0.35em solid $color-ubyssey-blue-dark;
@@ -77,105 +78,108 @@ main.events-page {
     max-width: 1200px;
     padding: 0 2.5% 0 4%;;
     flex-grow: 1;
+}
 
-    .events-calendar--categories {
-        display: flex;
-        margin: 1em 0 2em 0;
-        justify-content: center;
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            li {
-                display: inline-block;
-                margin: 0 0.25em;
-                
-                text-align: center;
-            }
+.events-calendar--categories {
+    display: flex;
+    margin: 1em 0 2em 0;
+    justify-content: center;
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        li {
+            display: inline-block;
+            margin: 0 0.25em;
+            
+            text-align: center;
         }
     }
+}
 
-    button.events-calendar--enlarge-toggle {
+button.events-calendar--enlarge-toggle {
+    margin-left: 1em;
+    border: none;
+    background: none;
+    line-height: 1em;
+    color: var(--header_color);
+}
+
+.events-calendar--days-of-week {
+    display: flex;
+    justify-content: center;
+    h2 {
         margin-left: 1em;
-        border: none;
-        background: none;
-        line-height: 1em;
-        color: var(--header_color);
+        margin-top: 0.5em;
     }
+}
 
-    .events-calendar--days-of-week {
-        display: flex;
-        justify-content: center;
-        h2 {
-            margin-left: 1em;
-            margin-top: 0.5em;
+.day {
+    width: calc(100% / 7);
+    box-sizing: border-box;
+}
+
+.events-calendar--row {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+h2.events-calendar--month {
+    position: absolute;
+    left: -2.5em;
+    margin-top: 1em;
+
+    font-size: 1em;
+    font-weight: 600;
+}
+
+div.day{
+    min-height: 4em;
+    padding: 1em 1em;
+    font-size: 12px;
+
+
+    &.past {
+        background-color: #EEE;
+        color: black;
+        li a:hover, li a:focus {
+            color: $color-ubyssey-blue;
+        }
+    }
+    &.today {
+        background-color: $color-ubyssey-blue;
+        color: white;
+        li a:hover, li a:focus {
+            color: white;
+            text-decoration: underline;
+        }
+    }
+    &.future {
+        background-color: $color-ubyssey-blue-light;
+        color: black;
+        li a:hover, li a:focus {
+            color: $color-ubyssey-blue;
         }
     }
 
-    .day {
-        width: calc(100% / 7);
-        box-sizing: border-box;
-    }
-
-    .events-calendar--row {
-        position: relative;
-        display: flex;
-        justify-content: center;
-
-        h2.events-calendar--month {
-            position: absolute;
-            left: -2.5em;
-            margin-top: 1em;
-
-            font-size: 1em;
-            font-weight: 600;
-        }
-
-        div.day{
-            min-height: 4em;
-            padding: 1em 1em;
-            font-size: 12px;
-
-
-            &.past {
-                background-color: #EEE;
-                color: black;
-                li a:hover, li a:focus {
-                    color: $color-ubyssey-blue;
-                }
-            }
-            &.today {
-                background-color: $color-ubyssey-blue;
-                color: white;
-                li a:hover, li a:focus {
-                    color: white;
-                    text-decoration: underline;
-                }
-            }
-            &.future {
-                background-color: $color-ubyssey-blue-light;
-                color: black;
-                li a:hover, li a:focus {
-                    color: $color-ubyssey-blue;
-                }
-            }
-
-            ul {
-                margin: 0;
-                padding: 0;
-                list-style: none;
-                overflow: clip;
-                li {
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    b {
-                        text-transform: lowercase;
-                    }
-                }
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        overflow: clip;
+        li {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            b {
+                text-transform: lowercase;
             }
         }
     }
+}
+
+@media($bp-larger-than-phablet) {
     .events-calendar--row:first-child div.day:first-of-type {
         border-radius: 0.5em 0 0 0;
     }
@@ -267,4 +271,67 @@ header.events{
       right: 1em;
       top: 1em;
     }
-  }
+}
+
+@media($bp-smaller-than-phablet) {
+    main.events-page {
+        padding: 0;
+    }
+    .events-calendar {
+        padding: 0;
+        width: auto;
+    }
+    header.events h1.title {
+        margin: auto;
+        text-align: center;
+        font-size: 2.5em;
+    }
+    .events-slanted-image {
+        display: none;
+    }
+    .events-calendar--categories {
+        margin: 2em auto;
+        ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            li {
+                margin: 0 0.5em;
+            }
+        }
+    }   
+    h2.events-calendar--month {
+        position: relative;
+        left: 0;
+        text-align: center;
+        font-size: 1.5em;
+    }
+    .events-calendar--days-of-week {
+        display: none;
+    }
+    .events-flex, .events-calendar--row {
+        flex-direction: column;
+    } 
+    .events-calendar--row div.day {
+        min-height: 1em;
+    }
+    .events-calendar .day {
+        width: 100%;
+    }
+    .events-info-container {
+        display: none;
+    }
+    main.events-page .event-view {
+        .events-calendar--rows {
+            display: none;
+        }
+        .events-info-container {
+            display: block;
+            width: 100%;
+            .events-info {
+                margin: 0 1em 2em 1em;
+                max-height: none;
+            }
+        }
+    }
+}
