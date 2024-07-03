@@ -1,6 +1,8 @@
 {% load static %}
 {% load wagtailimages_tags %}
 {% load wagtailcore_tags %}
+{% load wagtailuserbar %}
+{% load menu_tags %}
 
 <header class = "c-header{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}">
     <ul class = "c-nav-bar">
@@ -14,10 +16,14 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/academics/">Home</a>
                     </li>
-                    {% for page in page.get_children.specific%}
-                        <li>
-                            <a class="header-button" href="{% pageurl page%}">{{ page.title }}</a>
-                        </li>
+                    {% for parent in page.get_children.specific%}
+                            {% for child in parent.get_children %}
+                                {% if forloop.counter == 1 %}
+                                <li>
+                                    <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
@@ -27,10 +33,14 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/ubc/">Home</a>
                     </li>
-                    {% for page in page.get_children.specific %}
-                        <li>
-                            <a class="header-button" href="{% pageurl page %}">{{ page.title }}</a>
-                        </li>
+                    {% for parent in page.get_children.specific%}
+                            {% for child in parent.get_children %}
+                                {% if forloop.counter == 2 %}
+                                <li>
+                                    <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
@@ -40,10 +50,14 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/adulting/">Home</a>
                     </li>
-                    {% for page in page.get_children.specific %}
-                        <li>
-                            <a class="header-button" href="{% pageurl page %}">{{ page.title }}</a>
-                        </li>
+                    {% for parent in page.get_children.specific%}
+                            {% for child in parent.get_children %}
+                                {% if forloop.counter == 3 %}
+                                <li>
+                                    <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
@@ -53,10 +67,14 @@
                     <li class='home'>
                         <a class="header-button" href="https://ubyssey.ca/guide/2020/sdp/">Home</a>
                     </li>
-                    {% for page in page.get_children.specific %}
-                        <li>
-                            <a class="header-button" href="{% pageurl page %}">{{ page.title }}</a>
-                        </li>
+                    {% for parent in page.get_children.specific%}
+                            {% for child in parent.get_children %}
+                                {% if forloop.counter == 4 %}
+                                <li>
+                                    <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
@@ -66,11 +84,15 @@
                         <li class='home'>
                             <a class="header-button" href="https://ubyssey.ca/guide/2020/vancouver/">Home</a>
                         </li>
-                        {% for page in page.get_children.specific %}
-                        <li>
-                            <a class="header-button" href="{% pageurl page %}">{{ page.title }}</a>
-                        </li>
-                    {% endfor %}
+                        {% for parent in page.get_children.specific%}
+                        {% for child in parent.get_children %}
+                            {% if forloop.counter == 5 %}
+                            <li>
+                                <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                {% endfor %}
                 </ul>
             </div>
 
@@ -80,102 +102,4 @@
     </ul>
 </header>
 
-<header class = "c-header-tablet{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}">
-    <ul class = "c-nav-bar">
-        <li id="c-nav-home-tablet">
-        <a class="o-logo--small"></a>
-        <ul class='c-home-more'>
-            <li>
-                <a class="header-button __home" href="https://ubyssey.ca/guide/2020/">Home</a>
-            </li>
-            <li>
-                <a class="header-button __academics" href="https://ubyssey.ca/guide/2020/academics/">Academics</a>
-            </li>
-            <li>
-                <a class="header-button __ubc" href="https://ubyssey.ca/guide/2020/ubc/">UBC</a>
-            </li>
-            <li>
-                <a class="header-button __adulting" href="https://ubyssey.ca/guide/2020/adulting/">Grown-Up Life</a>
-            </li>
-            <li>
-                <a class="header-button __sdp" href="https://ubyssey.ca/guide/2020/sdp/">S.D.P</a>
-            </li>
-            <li>
-                <a class="header-button __vancouver" href="https://ubyssey.ca/guide/2020/vancouver/">Vancouver</a>
-            </li>
-        </ul>
-        </li>
-        <li class='c-nav-ubyssey'>
-            <a href="https://www.ubyssey.ca"><img src="{% static 'ubyssey/images/ubyssey-dingbat-white.png' %}"/></a>
-        </li>
-        <li class='c-nav-current'>
-            {% if subsection %}{% if subsection == 'sdp' %}Sex, Drugs, Parties{% elif subsection == 'adulting' %}Grown-Up Life{% else %}{{ subsection }}{% endif %}{% endif %}
-            <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--current'>
-                {% if subsection %}
-                    <li>
-                        <a class="header-button" href="https://ubyssey.ca/guide/2020/academics/">Home</a>
-                    </li>
-                {% endif %}
-                {% if subsection == 'academics' %}
-                    {% for article in articles.academics %}
-                        <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'academics' article.slug %}">{{ article.headline }}</a>
-                        </li>
-                    {% endfor %}
-                {% elif subsection == 'ubc' %}
-                    {% for article in articles.ubc %}
-                        <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'ubc' article.slug %}">{{ article.headline }}</a>
-                        </li>
-                    {% endfor %}
-                {% elif subsection == 'adulting' %}
-                    {% for article in articles.adulting %}
-                        <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'adulting' article.slug %}">{{ article.headline }}</a>
-                        </li>
-                    {% endfor %}
-                {% elif subsection == 'sdp' %}
-                    {% for article in articles.sdp %}
-                        <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'sdp' article.slug %}">{{ article.headline }}</a>
-                        </li>
-                    {% endfor %}
-                {% elif subsection == 'vancouver' %}
-                    {% for article in articles.vancouver %}
-                        <li>
-                            <a class="header-button" href="{% url 'guide-article' 2020 'vancouver' article.slug %}">{{ article.headline }}</a>
-                        </li>
-                    {% endfor %}
-                {% endif %}
-            </ul>
-        </li>
-    </ul>
-</header>
 
-<header class = "c-header-mobile{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}">
-    <ul class = "c-nav-bar">
-        <li id="c-nav-home-mobile">
-        <a class="o-logo--small"></a>
-        <ul class='c-home-more'>
-            <li>
-                <a class="header-button __home" href="https://ubyssey.ca/guide/2020/">Home</a>
-            </li>
-            <li>
-                <a class="header-button __academics" href="https://ubyssey.ca/guide/2020/academics/">Academics</a>
-            </li>
-            <li>
-                <a class="header-button __ubc" href="https://ubyssey.ca/guide/2020/ubc/">UBC</a>
-            </li>
-            <li>
-                <a class="header-button __adulting" href="https://ubyssey.ca/guide/2020/adulting/">Grown-Up Life</a>
-            </li>
-            <li>
-                <a class="header-button __sdp" href="https://ubyssey.ca/guide/2020/sdp/">S.D.P</a>
-            </li>
-            <li>
-                <a class="header-button __vancouver" href="https://ubyssey.ca/guide/2020/vancouver/">Vancouver</a>
-            </li>
-        </ul>
-        </li>
-    </ul>
-</header>
