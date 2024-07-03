@@ -17,9 +17,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://visit.ubc.ca/wp-content/uploads/2019/05/chan_2-1940x1216_2x-1024x642.jpg')"></div>
+<div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://storage.googleapis.com/ubyssey/media/renditions/Guide_2022_AMS.original.jpg')"></div>
 <main class="c-page events-page">
-    <div class="events-flex {% if event.selected %}event-view{% endif %}">
+    <div class="events-flex {% if selectedEvent.selected %}event-view{% endif %}">
         <div id="calendar" class="events-calendar">
             <header class="events">
                 <div class="u-container">
@@ -72,7 +72,7 @@
                             </button>
                             <ul>
                             {% for event in day.events %} 
-                                <li><a title="{{event.title}}" href="?event={{event.event_url}}">
+                                <li {% if selectedEvent.selected and event.event_url == selectedEvent.event_url %}class="selected"{% endif %}><a title="{{event.title}}" href="?event={{event.event_url}}">
                                     {% if event.start_time|date:"F j" != event.end_time|date:"F j"%}<b>Ongoing</b>{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title}}
                                 </a></li>
                             {% endfor %}
@@ -86,17 +86,17 @@
         <div class="events-info-container">
         <div class="events-info">
             <h2 class="event-info--time">
-                {% if event.start_time|date:"F j" == event.end_time|date:"F j"%}
-                    {{event.start_time|date:"F j"}} {{event.start_time|time:"fA"}} - {{event.end_time|time:"fA"}}
+                {% if selectedEvent.start_time|date:"F j" == selectedEvent.end_time|date:"F j"%}
+                    {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|time:"fA"}}
                 {% else %}
-                    {{event.start_time|date:"F j"}} {{event.start_time|time:"fA"}} - {{event.end_time|date:"F j"}} {{event.end_time|time:"fA"}}
+                    {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|date:"F j"}} {{selectedEvent.end_time|time:"fA"}}
                 {% endif %}
             </h2>
             <div class="events-info--content">
-                <h2>{{event.title}}</h2>
-                <p>{{event.location}}</p>
-                <p>{% if event.host %}<b>{{event.host}}:</b>{% endif %} {{event.description|safe}}</p>
-                <p><a href="{{event.event_url}}" target="blank">- Found on events.ubc</a></p>
+                <h2>{{selectedEvent.title}}</h2>
+                <p>{{selectedEvent.location}}</p>
+                <p>{% if selectedEvent.host %}<b>{{selectedEvent.host}}:</b>{% endif %} {{selectedEvent.description|safe}}</p>
+                <p><a href="{{selectedEvent.event_url}}" target="blank">- Found on events.ubc</a></p>
             </div>
         </div>
         </div>

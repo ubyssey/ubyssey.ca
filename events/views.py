@@ -10,10 +10,16 @@ class EventsTheme(object):
 
     def landing(self, request):
         """Events page landing page"""
-        if request.GET.get("category"):
-            events = Event.objects.filter(category=request.GET.get("category"),hidden=False).order_by("start_time")
+        if request.GET.get("show_hidden"):
+            if request.GET.get("category"):
+                events = Event.objects.filter(category=request.GET.get("category")).order_by("start_time")
+            else:
+                events = Event.objects.all().order_by("start_time")
         else:
-            events = Event.objects.filter(hidden=False).order_by("start_time")
+            if request.GET.get("category"):
+                events = Event.objects.filter(category=request.GET.get("category"),hidden=False).order_by("start_time")
+            else:
+                events = Event.objects.filter(hidden=False).order_by("start_time")
 
         calendar = []
         day = timezone.now() - timedelta(days=7 + timezone.now().weekday())
@@ -87,7 +93,7 @@ class EventsTheme(object):
         if event:
             event.description = event.description.replace('\n', '<br>')
 
-        return render(request, "events/event_page.html", {'calendar':calendar,'event': event})
+        return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event})
 
 def update_events(request):
     from urllib.request import urlopen, Request

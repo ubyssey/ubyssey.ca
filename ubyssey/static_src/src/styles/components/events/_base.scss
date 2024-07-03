@@ -139,6 +139,10 @@ div.day{
     padding: 1em 1em;
     font-size: 12px;
 
+    li.selected {
+        color: $color-ubyssey-blue;
+        text-decoration: underline;
+    }
 
     &.past {
         background-color: #EEE;
@@ -151,6 +155,10 @@ div.day{
         background-color: $color-ubyssey-blue;
         color: white;
         li a:hover, li a:focus {
+            color: white;
+            text-decoration: underline;
+        }
+        li.selected {
             color: white;
             text-decoration: underline;
         }
@@ -229,11 +237,11 @@ button.events-calendar--number {
 
 .events-slanted-image {
     position: fixed;
-    width: calc(50% - 2em);
+    width: calc(50% - 4em);
     height: 100%;
     top: 0;
     right: 0;
-    background-size: cover;
+    background-size: auto 100%;
     background-attachment: fixed;
     background-position: left;
     background-position-x: right;
