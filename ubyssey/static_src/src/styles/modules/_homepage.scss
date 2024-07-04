@@ -50,8 +50,9 @@ html.hairlines {
   }
 }
 
-.lightmode {
-  h1.section>a {
+[color-css-theme="light"] {
+
+  h1.section > a {
     color: black;
   }
 }
@@ -209,7 +210,8 @@ html.hairlines {
   }
 }
 
-.lightmode {
+
+[color-css-theme="light"] {
   .c-homepage__section__timeline {
     border-color: $color-ubyssey-blue;
   }
@@ -247,7 +249,7 @@ html.hairlines {
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
   .c-homepage__section__timeline {
     border-color: $color-ubyssey-blue-light;
   }
@@ -418,7 +420,8 @@ html.hairlines {
   }
 }
 
-.lightmode {
+[color-css-theme="light"] {
+
   .home_link_content {
     li {
       color: $color-ubyssey-blue-light;
@@ -443,7 +446,8 @@ html.hairlines {
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
   .home_link_content {
     li {
       color: $color-ubyssey-blue-dark;
