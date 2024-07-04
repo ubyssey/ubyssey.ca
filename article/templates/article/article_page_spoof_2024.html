@@ -150,8 +150,8 @@
             <div class="suggested-articles">
             {% for article in suggested.articles %}
                 {% if forloop.counter|divisibleby:2 or not forloop.last %}
-                {% image article.featured_media.first.image width-1000 as featured_image alt="{{article.featured_media.first.alt_text}}" %}
-                <article style="background-image:url('{{featured_image.url}}')">
+                {% image article.featured_media.first.image width-1000 as featured_image %}
+                <article style="background-image:url('{{featured_image.url}}')" aria-label="{{article.featured_media.first.alt_text}}">
                     <a href="{% pageurl article%}">
                     <div class="overlay"></div>
                     <div class="o-article__meta">
