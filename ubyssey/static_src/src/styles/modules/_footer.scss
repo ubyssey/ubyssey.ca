@@ -24,6 +24,7 @@ footer {
       font-weight: 200;
       span {
         font-weight: 600;
+        font-style: italic;
       }
     }
     h2, p, li {
@@ -92,12 +93,25 @@ footer {
         margin-bottom: 0;
       }
       p {
-        margin-top: 0.5em;
+        margin: 0.5em 0 1.5em 0;
       }
     }
     div.about-text {
       flex-grow: 1;
       width: 0;
+      h3 {
+        margin-top: 1em;
+        color: $color-ubyssey-blue-light;
+        font-weight: 500;
+        font-size: 1em;
+      }
+      ul {
+        padding-left: 2em;
+        display: flex;
+        li {
+          margin-right: 0.5em;
+        }
+      }
     }
     nav .top-row {
       font-size: 21px;
