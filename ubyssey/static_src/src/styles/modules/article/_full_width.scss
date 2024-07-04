@@ -16,6 +16,10 @@
   }
 }
 
+.fw-banner .featured-media {
+  margin: 0;
+}
+
 .c-article--fw-story, div.container.clearfix.fw-story, .c-article--timeline, .c-article--isolation , .c-article--isolation-first-article , .c-article--isolation-last-article  {
   
   @media($bp-smaller-than-phablet) {

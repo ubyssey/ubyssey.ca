@@ -280,7 +280,7 @@
 
         @media ($bp-larger-than-phablet) {
             right: 1em;
-            left: 0;
+            left: 1em;
         }
 
         @media ($bp-smaller-than-phablet) {
