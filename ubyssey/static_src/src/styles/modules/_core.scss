@@ -203,7 +203,12 @@ h1, h2, h3 {
   line-height: 1.2;
 }
 
+h2, h3 {
+  font-weight: 600;
+}
+
 p{
+  margin: 1em 0;
   color: var(--text_color);
 }
 
@@ -302,14 +307,6 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-span.upper-right-decorator {
-  color: $color-ub-blue-light;
-  font-size: .8em;
-  position: relative;
-  top: -.8em;
-  font-family: $font-default;
-  text-transform: capitalize;
-}
 div.image-container {
     height: 100%;
     display: table;
@@ -321,20 +318,6 @@ div.image-inner {
     display: table-cell;
     vertical-align: middle;
     width: 100%;
-}
-
-p.slide-caption {
-    font-family: $font-default;
-    font-size: 13px;
-    color: #fff;
-    line-height: 19px;
-}
-
-p.slide-credit {
-		font-family: $font-default;
-		font-size: 13px;
-		color: #9c9c9c;
-		font-style: italic;
 }
 
 span.credit {
@@ -369,6 +352,11 @@ div.navigation a:hover {
 
 .no-scroll {
     overflow: hidden;
+}
+
+.u-no-scroll {
+  // Func: Disable scrolling
+  overflow-y: hidden;
 }
 
 a.image {
@@ -413,11 +401,6 @@ a.image {
 
 .show {
 	display: block;
-}
-/* Restoring browsering effects */
-
-.floating-share-buttons {
-  size: 4px;
 }
 
 .js-dropdown-container{

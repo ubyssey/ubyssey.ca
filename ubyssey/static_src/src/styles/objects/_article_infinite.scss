@@ -1,0 +1,85 @@
+.article--infinitefeed {
+    display: flex;
+    margin-bottom: 25px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: solid $color-ubyssey-blue;
+    border-bottom: solid $color-ubyssey-blue;
+    border-width: 2px;
+
+    @media($bp-smaller-than-mobile) {
+        flex-direction: column;
+    }
+
+    .o-article__headline {
+        font-size: 1.3rem;
+    }
+
+    .o-article__image {
+        border: solid;
+        border-width: 2px;
+        display: flex;
+        position: relative;
+    }
+
+    .o-article__author {
+        font-weight: inherit;
+    }
+
+    .o-article__right {
+        padding-left: 20px;
+        padding-right: 20px;
+
+        @media($bp-larger-than-mobile) {
+            width: 65%;
+        }
+    }
+
+    .o-article__left {
+        padding-bottom: 20px;
+
+        @media($bp-larger-than-mobile) {
+            width: 35%;
+        }
+    }
+}
+
+.lightmode {
+    .article--infinitefeed {
+        .o-article__headline {
+            color: black;
+        }
+
+        .o-article__author {
+            color: black;
+        }
+
+        .o-article__published {
+            color: #1871C4;
+        }
+
+        .o-article__snippet {
+            color: #646464;
+        }
+    }
+}
+
+.darkmode {
+    .article--infinitefeed {
+        .o-article__headline {
+            color: white;
+        }
+
+        .o-article__author {
+            color: white;
+        }
+
+        .o-article__published {
+            color: #1871C4;
+        }
+
+        .o-article__snippet {
+            color: #D9D9D9;
+        }
+    }
+}

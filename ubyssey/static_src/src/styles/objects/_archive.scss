@@ -5,6 +5,7 @@ $search-bar-height: 46px;
   position: relative;
   margin-bottom: 1rem;
   width:fit-content;
+  flex-grow: 1;
 }
 
 .o-archive__search__label {
