@@ -458,16 +458,22 @@ header.mobile {
 }
 
 nav.mobile {
-  position: fixed;
-  top: 54px;
+  position: absolute;
   padding: 10px 20px;
-  height: calc(100% - 54px);
-  width: 100%;
+  height: calc(100vh - 54px);
+  top: 54px;
+  left: 0;
+  right: 0;
+
   background: $nav-mobile-background-barely-transparent; // Barely transparent
   border-top: 1px solid rgb(178,178,178);
   overflow: auto;
   color: $nav-span-color;
   z-index: 200;
+
+  h2 {
+    font-size: 1.5em;
+  }
 
   ul {
     list-style: none;
@@ -483,9 +489,11 @@ nav.mobile {
     }
     li a {
       padding: 10px 0;
+      width: fit-content;
       display: block;
       font-weight: 500;
       font-size: 16px;
+      line-height: 1.5em;
     }
   }
   .left, .right {

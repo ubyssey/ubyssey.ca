@@ -164,6 +164,14 @@ div.article-content {
   border-right: none;
   margin-bottom: 50px;
 
+  * {
+    max-width: 100%;
+  }
+
+  iframe {
+    border: none;
+  }
+
   @media($bp-larger-than-tablet) {
     display: table-cell;
     padding-right: 15px;

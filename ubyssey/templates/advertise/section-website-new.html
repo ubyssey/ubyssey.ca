@@ -16,7 +16,7 @@
         </div>
         <div class="c-section--web__icon">
           <img src="{% static 'ubyssey/images/a/vector-computer.svg' %}" alt=""/>
-          <h2>115,000</h2>
+          <h2>120,000</h2>
           <p>unique web readers each month</p>
         </div>
         <div class="c-section--web__icon">
@@ -26,8 +26,8 @@
         </div>
       </div>
       <div class="c-section--web__vectors">
-        <img class="c-section--web__vector c-section--web__vector--phone" src="{% static 'ubyssey/images/a/vector-phone-demo.svg' %}" alt=""/>
-        <img class="c-section--web__vector c-section--web__vector--tablet" src="{% static 'ubyssey/images/a/vector-tablet-demo.svg' %}" alt=""/>
+        <img class="c-section--web__vector c-section--web__vector--phone" src="{% static 'ubyssey/images/a/demo-homepage-mobile.png' %}" alt=""/>
+        <img class="c-section--web__vector c-section--web__vector--tablet" src="{% static 'ubyssey/images/a/demo-homepage.png' %}" alt=""/>
       </div>
     </div>
   </div>
@@ -40,7 +40,7 @@
       <div class="o-placements__list">
         <h3 class="o-heading o-heading--small">Placements</h3>
         <ul>
-          <li class="o-placements__placement o-placements__placement--demo o-placements__placement--active" data-offset="0%" data-horizontaloffset="100%">
+          <li class="o-placements__placement o-placements__placement--demo o-placements__placement--active" data-offsetdesktop="0" data-offsetmobile="0" data-horizontaloffset="100%">
             <h4>Homepage</h4>
             <div>
               <h3>Leaderboard*</h3>
@@ -49,14 +49,14 @@
               <p>320 x 50 pixels (mobile)</p>
             </div>
           </li>
-          <li class="o-placements__placement o-placements__placement--demo" data-offset="-20%" data-horizontaloffset="100%">
+          <li class="o-placements__placement o-placements__placement--demo" data-offsetdesktop="-40%" data-offsetmobile="-150%" data-horizontaloffset="100%">
             <div>
               <h3>Box</h3>
               <p>300 x 250 pixels
               </br> (desktop + mobile)</p>
             </div>
           </li>
-          <li class="o-placements__placement o-placements__placement--demo" data-offset="0%" data-horizontaloffset="0%">
+          <li class="o-placements__placement o-placements__placement--demo" data-offsetdesktop="0" data-offsetmobile="0" data-horizontaloffset="0%">
             <h4>Articles</h4>
             <div>
               <h3>Leaderboard*</h3>
@@ -65,14 +65,14 @@
               <p>320 x 50 pixels (mobile)</p>
             </div>
           </li>
-          <li class="o-placements__placement o-placements__placement--demo o-placements__placement--demo--sidebar" data-offset="-40%" data-horizontaloffset="0%">
+          <li class="o-placements__placement o-placements__placement--demo" data-offsetdesktop="-40%" data-offsetmobile="-320%" data-horizontaloffset="0%">
             <div>
               <h3>Sidebar</h3>
               <p>300 x 250 pixels</p>
               <p>300 x 600 pixels</p>
             </div>
           </li>
-          <li class="o-placements__placement o-placements__placement--demo " data-offset="-50%" data-horizontaloffset="0%">
+          <li class="o-placements__placement o-placements__placement--demo " data-offsetdesktop="-60%" data-offsetmobile="-150%" data-horizontaloffset="0%">
             <div>
               <h3>Intra-Article</h3>
               <p>468 x 60 pixels (desktop)</p>
@@ -81,20 +81,22 @@
           </li>
         </ul>
       </div>
-      <div class="o-placements__demo">
+      <div class="o-placements__right">
         <div class="o-placements__platforms">
           <div class="o-placements__platform--mode  o-placements__platforms--active" data-platform="desktop"><h3>Desktop</h3></div>
           <div class="o-placements__platform--mode" data-platform="mobile"><h3>Mobile</h3></div>
         </div>
-        <div class="o-placements__demo__inner">
-            <div class="o-placements__demo__inner__left">
-              <img class="o-placements__demo__desktop" src="{% static 'ubyssey/images/a/demo-homepage-new.png' %}" alt=""/>
-              <img class="o-hidden o-placements__demo__mobile" src="{% static 'ubyssey/images/a/demo-homepage-mobile.png' %}" alt=""/>
-            </div>
-            <div class="o-placements__demo__inner__right">
-              <img class="o-placements__demo__desktop" src="{% static 'ubyssey/images/a/demo-article-new.png' %}" alt=""/>
-              <img class="o-hidden o-placements__demo__mobile" src="{% static 'ubyssey/images/a/demo-article-mobile.png' %}" alt=""/>
-            </div>
+        <div class="o-placements__demo">
+          <div class="o-placements__demo__inner">
+              <div class="o-placements__demo__inner__left">
+                <img class="o-placements__demo__desktop" src="{% static 'ubyssey/images/a/demo-homepage.png' %}" alt=""/>
+                <img class="o-hidden o-placements__demo__mobile" src="{% static 'ubyssey/images/a/demo-homepage-mobile.png' %}" alt=""/>
+              </div>
+              <div class="o-placements__demo__inner__right">
+                <img class="o-placements__demo__desktop" src="{% static 'ubyssey/images/a/demo-article.png' %}" alt=""/>
+                <img class="o-hidden o-placements__demo__mobile" src="{% static 'ubyssey/images/a/demo-article-mobile.png' %}" alt=""/>
+              </div>
+          </div>
         </div>
       </div>
     </div>

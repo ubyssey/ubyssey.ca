@@ -107,11 +107,10 @@
 
 .recipe-carousel {
   width: 100%;
-  margin: auto;
   position: relative;
   max-width: 1472px;
-  margin-top: 2em;
-  margin-bottom: 2em;
+  margin: 2em auto;
+  padding: 0 2em;
   @media (max-width: 1500px) {
     max-width: calc(100% - 2em);
   }

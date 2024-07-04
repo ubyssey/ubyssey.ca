@@ -125,6 +125,11 @@
   }
   overflow-y: auto;
   background-color: var(--background);
+  text-align: left;
+
+  li {
+    width: fit-content;
+  }
 }
 
 .c-section__buttons {
@@ -140,14 +145,16 @@
 .c-section__button-label {
   text-align: right;
   display: inline-block;
-  z-index:10;
+  max-width: 50%;
+  z-index:3;
   position: relative;
-  cursor: pointer;
-  color: var(--header_color);
-  &:hover {
-    color: $color-accent-blue;
+  a, form, input {
+    cursor: pointer;
+    color: var(--header_color);
+    &:hover {
+      color: $color-accent-blue;
+    }
   }
-
   a > p {
     color: var(--header_color);
 
@@ -228,4 +235,26 @@
   text-decoration: underline;
   font-weight: 600;
   text-align: center;
+}
+
+main.tag {
+  margin-top: 2em;
+
+  .tag-page__title {
+    height: fit-content;
+    max-width: 300px;
+    margin: 1.5em auto;
+    padding: 0 1em;
+    display: flex;
+    flex-direction: column;
+    h1 {
+      border-bottom: 2px solid;
+      padding-bottom: 5px;
+      text-transform: capitalize;
+    }
+    @media ($bp-larger-than-phablet) {
+      position: sticky;
+      top: 6em;
+    }
+  }
 }

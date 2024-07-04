@@ -196,7 +196,11 @@ main {
 // Defualt text colours
 
 h1, h2, h3 {
-  color: var(--header_color)
+  margin: 0.67em 0;
+
+  color: var(--header_color);
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 h2, h3 {
@@ -273,23 +277,25 @@ body, html, #page-wrapper {
   }
 }
 
-#modal {
-  position: absolute;
-  display: none;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-}
-
-.modal {
-  background-color: #00000085;
-  width: 100%;
-  height: 100%;
+dialog {
   display: none;
   position: fixed;
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  max-height: none;
+
   top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 200;
+
+  background: transparent;
+  border: none;
 }
 
 body { 
@@ -319,8 +325,29 @@ span.credit {
   color: #969696;
 }
 
-img.article-attachment:hover {
-    cursor: pointer;
+img.slide-image {
+    max-width: 100%;
+}
+
+div.navigation {
+    color: white;
+    font-family: $font-secondary;
+    font-size: 13px;
+    text-align: center;
+}
+
+div.navigation a {
+    display: inline-block;
+    padding: 6px 9px;
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 12px;
+}
+
+div.navigation a:hover {
+    color: black;
+    background: #fff;
 }
 
 .no-scroll {
@@ -374,5 +401,20 @@ a.image {
 
 .show {
 	display: block;
+}
+
+.js-dropdown-container{
+  position: fixed;
+  width: 100%;
+	height: 100%;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+
+  background-color: #00000085;
+  border: none;
+  cursor: pointer;
 }
 

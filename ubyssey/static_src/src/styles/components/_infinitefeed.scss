@@ -15,7 +15,11 @@
 .c-sidebar_item {
     width: 100%;
     position:sticky;
-    top: 50px;
+    top: 5em;
+}
+
+.home_infinitefeed .c-sidebar_item {
+    top: 3em;
 }
 
 .flex-stream {
@@ -61,10 +65,16 @@
     display:flex;
     min-height: 66vh;
     justify-content: space-evenly;
-  }
+    flex-direction: row;
+    @media ($bp-smaller-than-phablet) {
+        flex-direction: column;
+    }
+}
 
 .c-home-infinitefeed {
     width: 100%;
+    padding-bottom: 2em;
+
     @media ($bp-larger-than-phablet) {
         margin-right: 20px;
         width: 50%;
@@ -122,9 +132,6 @@
 }
 
 .lightmode {
-    h2.block-title {
-        text-shadow: #0000003b -1px 1px 15px;
-    }
     .issue {
         box-shadow: -5px 10px 7px 0px #0000003b;
     }

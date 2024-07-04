@@ -1,8 +1,20 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-<div class="image-attachment attachment {{ self.style }} {{ self.width }}" >
+
+<div class="image-attachment attachment {{ self.style }} {{ self.width }} {% if self.click_to_enlarge %}setup-modal image-modal{% endif %}" >
     {% image self.image original as image %}
     <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{self.caption}}{% endif %}" />
+    
+    {% if self.click_to_enlarge %}
+    <a class="open-modal" href="#enlarge"></a>
+    <dialog class="modal close-modal hide js-dropdown-container">
+        <div class="u-container u-container--large modal-contents">
+            <div class="image-modal-image" style="background-image: url('{{image.url}}')"></div>
+            <a class="close-modal focus-on" href="#close"><i class="fa fa-close"></i></a>
+        </div>
+    </dialog>
+    {% endif %}
+
     {% if self.caption or self.credit %}
         <div class="caption">
             {% if self.caption %}{{ self.caption|safe }}{% endif %} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
