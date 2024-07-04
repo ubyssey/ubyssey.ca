@@ -11,6 +11,7 @@ function getData(attribute) {
 }
 
 getData("section");
+getData("tag");
 getData("category");
 getData("search_query");
 getData("label");

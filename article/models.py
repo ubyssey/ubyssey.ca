@@ -44,7 +44,7 @@ from wagtail.admin.panels import (
 )
 
 from wagtail import blocks
-from wagtail.fields import StreamField
+from wagtail.fields import StreamField, RichTextField
 from wagtail.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
@@ -266,6 +266,8 @@ class ArticleFeaturedMediaOrderable(Orderable):
 
     caption = models.TextField(blank=True, null=False, default='')
     credit = models.TextField(blank=True, null=False, default='')
+    alt_text = models.TextField(blank=True, null=False, default='',
+        help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
     # style = models.CharField(max_length=255, blank=True, null=False, default='')
     # width = models.CharField(max_length=255, blank=True, null=False, default='')
     image = models.ForeignKey(
@@ -295,6 +297,7 @@ class ArticleFeaturedMediaOrderable(Orderable):
             [
                 FieldPanel("caption"),
                 FieldPanel("credit"),
+                FieldPanel("alt_text"),
             ],
             heading="Caption/Credits",
         ),
@@ -533,6 +536,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
     tags = ClusterTaggableManager(through='article.ArticlePageTag', blank=True)
 
+    disclaimer = RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        help_text = "Used for Opinion articles or when corrections are made"
+    )
+
     # template #TODO
 
     #-----Promote panel stuff------
@@ -612,12 +622,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         max_length=255,
     )
 
-    fw_optional_subtitle = models.CharField(
+    title_tag = models.CharField(
         null=False,
         blank=True,
         default='',
-        verbose_name='Subtitle (Optional)',
-        help_text="When there is a \"special feature\" or full-width style article, sometime we want to add a subtitle alongside the title",
+        verbose_name='Title Tag (Optional)',
+        help_text="This appears above the title. It mimics the title tags in the print issue.",
         max_length=255,
     )
     
@@ -751,6 +761,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             heading="Featured Media",
             classname="collapsible",
         ),
+        MultiFieldPanel(
+            [
+                FieldPanel("disclaimer")
+            ],
+            heading="Disclaimer",
+            classname="collapsible",
+        ),
     ] + UbysseyMenuMixin.menu_content_panels # content_panels
 
     promote_panels = Page.promote_panels + [
@@ -832,6 +849,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     widget=Select(
                         choices=[
                             ('right-image', 'Right Image'),
+                            ('left-image', 'Left Image'),
                             ('top-image', 'Top Image'),
                             ('banner-image', 'Banner Image')
                         ],
@@ -839,7 +857,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     help_text='This field is used to set variations on the \"Full-Width Story\" and similar layouts.',
                 ),
                 FieldPanel('fw_alternate_title'),
-                FieldPanel('fw_optional_subtitle'),
+                FieldPanel('title_tag'),
                 FieldPanel('fw_above_cut_lede'),
             ],
             heading = "Optional Header/Banner Fields",
@@ -922,6 +940,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.SearchField('lede'),
         index.AutocompleteField('lede'),
         index.SearchField('content'),
+        index.SearchField('seo_keyword', boost=1.5),
+        index.AutocompleteField('seo_keyword'),
+        index.SearchField('tags'),
+        index.AutocompleteField('tags'),
         
         index.FilterField('current_section'),
         index.FilterField('slug'),
@@ -1072,7 +1094,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         
         return section_articles
 
-    def get_suggested(self, number_suggested=6):
+    def get_suggested(self, number_suggested=3):
         """
         Defines the title and articles in the suggested box
         """
@@ -1081,15 +1103,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             category_articles = self.get_category_articles()
             if len(category_articles) > 0:
                 suggested = {}
-                suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
+                suggested['title'] = self.category.title
                 suggested['articles'] = category_articles[:number_suggested]
+                suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
 
         if not suggested:
             section_articles = self.get_section_articles()
             if len(section_articles) > 0:
                 suggested = {}
-                suggested['title'] = "From " + self.get_parent().title
+                suggested['title'] = self.get_parent().title
                 suggested['articles'] = section_articles[:number_suggested]
+                suggested['link'] = self.get_parent().url
         
         if not suggested:
             suggested = False

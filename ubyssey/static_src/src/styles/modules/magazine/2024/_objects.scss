@@ -23,7 +23,7 @@ nav {
     width: 100%;
   }
 
-  .dropdown:hover .dropdown-menu {
+  .dropdown:hover .dropdown-menu, .dropdown:focus-within .dropdown-menu {
     display: block;
   }
 

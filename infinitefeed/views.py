@@ -19,6 +19,9 @@ def getArticles(filters, start, number):
     else:
         articles = ArticlePage.objects.live().public().order_by('-explicit_published_at')
 
+    if "tag" in filters:
+        articles = articles.filter(tags__slug=filters["tag"])
+
     if "category" in filters:
         articles = articles.filter(category__slug=filters["category"])
 
@@ -36,6 +39,8 @@ def infinitefeed(request):
 
         if "section" in request.GET:
             filters["section"] = request.GET['section']
+        if "tag" in request.GET:
+            filters["tag"] = request.GET['tag']
         if "category" in request.GET:
             filters["category"] = request.GET['category']
         if "search_query" in request.GET:

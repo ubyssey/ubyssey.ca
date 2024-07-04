@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
   <title>Advertise with The Ubyssey - UBC's Official Student Newspaper</title>
-  <meta name="description" content="The Ubyssey, founded in 1918, is the definitive source of news on campus. Published every Tuesday during the school year, The Ubyssey is the largest student paper in Western Canada, employs more than 12 full- and half-time editorial staff throughout the year and is supported by an independent, full-time business office." />
+  <meta name="description" content="Who we are” the second sentence should read:  Published bi-weekly on Tuesdays with daily updates to our website during the school year, The Ubyssey is one of the country’s largest student publications. We employ a cadre of both Full-time and Part-time student editors, writers and software developers. The Ubyssey boasts such alumni as Pierre Berton, Prime Minister John Turner, Allan Fotheringham and Bruce Arthur in such publications as The Globe and Mail, The Toronto Star, and The Vancouver Sun, along with thousands of other contributing Alumni working for Media Companies around the Globe." />
 
   <link rel="apple-touch-icon" sizes="57x57" href="{% static 'ubyssey/images/favicons/apple-touch-icon-57x57.png' %}">
   <link rel="apple-touch-icon" sizes="60x60" href="{% static 'ubyssey/images/favicons/apple-touch-icon-60x60.png' %}">
@@ -27,8 +27,6 @@
   <meta name="msapplication-TileImage" content="/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   <meta property="fb:pages" content="99164676792" />
-
-  <meta name="robots" content="noindex">
 
   <link rel="stylesheet" href="{% static 'ubyssey/css/a_new.css' %}" type="text/css"/>
 
@@ -53,7 +51,7 @@
 {% include 'advertise/section-website-new.html' %}
 {% include 'advertise/section-newspaper.html' %}
 {% include 'advertise/section-guide.html' %}
-{% include 'advertise/section-magazine.html' %}
+{%comment%}{% include 'advertise/section-magazine.html' %}{%endcomment%}
 {% include 'advertise/section-contact.html' %}
 
 {% block content %}

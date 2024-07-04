@@ -35,7 +35,7 @@
 
       {% if banner %}
         {% image banner width-700 as banner_image %}
-        <div class="banner" style="background-image: url('{{banner_image.full_url}}');">
+        <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{title}} Banner" >
           <svg class="c-section__heading" viewBox="0 0 450 70">
             <text class="c-section__heading" x="10" y="50" {% if not category %}style="stroke: {{self.colour}}"{% endif %}>{{title}}</text>
           </svg>
@@ -78,16 +78,16 @@
               </form>
             </div>
         
-            <div class="open-modal c-section__button-label">
-              <a href="#"> 
+            <div class="setup-modal c-section__button-label">
+              <a class="open-modal" href="#"> 
                 <p><i class="fa fa-tag"></i> Categories</p>
               </a>
 
-              <div class="modal add-to-modal">
-                <div class="js-dropdown-container"></div>
+              <dialog class="modal" aria-modal="true">
+                <div class="js-dropdown-container close-modal"></div>
                 <div class="category_menu u-container u-container--padded">
-                <a href="#" class="close-modal">
-                  <i class="fa fa-close c-section__modal_close"></i>
+                <a href="#" class="c-section__modal_close close-modal">
+                  <i class="fa fa-close"></i>
                 </a>
                 <h1><i class="fa fa-tag"></i> All Categories</h1> <!-- Why Series? Why not Categories? -->
                 <p><a href="{% pageurl self %}">{{self.title}}</a>{% if self.description %} - {{self.description}}{% endif %}</p>
@@ -97,7 +97,7 @@
                 {% endfor %}
                 </ul>
                 </div>
-              </div>
+              </dialog>
 
             </div>
           </div>

@@ -3,36 +3,31 @@
 {% load menu_tags %}
 
 <header class="mobile dark-mode">
-    <div class="open-modal">
-        <a class="menu left" href="#"><i class="fa fa-bars"></i></a>
-
-        <nav class="add-to-modal mobile dark-mode">
-            <div class="modal-block">
+    <div class="setup-modal">
+        <a class="open-modal menu left" href="#"><i class="fa fa-bars"></i></a>
+        <nav class="mobile dark-mode modal hide">
+            <div class="toggle-container">
                 {% include 'article/objects/darkmode_button.html' with id="mobile"%}
             </div>
 
             <div class="left">
                 
                 <h2>Sections</h2>
-                <ul class="sections">
                     {% main_menu %}
                     {% comment %} {% for menu_item in settings.navigation.SitewideMenus.main_header_menu.all %}
         =                <li><a href="{{ menu_item.link }}">{{ menu_item.text }}</a></li>
                     {% endfor %} {% endcomment %}
-                </ul>
             </div>
             <div class="right">
                 <h2>Links</h2>
-                <ul class="links">
-                    {% flat_menu 'mobile_links_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-                </ul>
+                {% flat_menu 'mobile_links_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
             </div>
         </nav>
     </div>
     
-    <a class="logo" href="{% url 'wagtail_serve' '' %}">
-        <img class="ubyssey_small_logo light-logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt=""/>
-        <img class="ubyssey_small_logo dark-logo" src="{% static 'ubyssey/images/ubyssey-logo 1.svg' %}" alt=""/>
+    <a class="logo" href="{% url 'wagtail_serve' '' %}" alt="The Ubyssey homepage">
+        <img class="ubyssey_small_logo light-logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt="Ubyssey logo"/>
+        <img class="ubyssey_small_logo dark-logo" src="{% static 'ubyssey/images/ubyssey-logo 1.svg' %}" alt="Ubyssey logo"/>
     </a>
     {% comment %} <a class="search right" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
 </header>

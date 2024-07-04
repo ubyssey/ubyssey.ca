@@ -16,6 +16,9 @@
 <!-- Adobe fonts from sports email account -->
 <link rel="stylesheet" href="https://use.typekit.net/jcl5sme.css">
 
+<!-- Bootstrap styling -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="{% static 'ubyssey/css/spoof-2024.css' %}" type="text/css" />
 {% endblock %}
 
@@ -24,7 +27,6 @@
 <meta charset="utf-8">
 
 <!-- Bootstrap 5 for Guide stuff -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
 
@@ -85,7 +87,7 @@
                                             data-url="{{ featured_image.url }}"
                                             data-credit="{{ featured_image_object.credits }}"
                                             src="{{ featured_image.url }}"
-                                            alt=""
+                                            alt="{{featured_image_object.alt_text}}"
                                         />
                                     {% endwith %}
                                 {% endif %}
@@ -149,7 +151,7 @@
             {% for article in suggested.articles %}
                 {% if forloop.counter|divisibleby:2 or not forloop.last %}
                 {% image article.featured_media.first.image width-1000 as featured_image %}
-                <article style="background-image:url('{{featured_image.url}}')">
+                <article style="background-image:url('{{featured_image.url}}')" aria-label="{{article.featured_media.first.alt_text}}">
                     <a href="{% pageurl article%}">
                     <div class="overlay"></div>
                     <div class="o-article__meta">

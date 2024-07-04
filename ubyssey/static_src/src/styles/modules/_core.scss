@@ -196,10 +196,19 @@ main {
 // Defualt text colours
 
 h1, h2, h3 {
-  color: var(--header_color)
+  margin: 0.67em 0;
+
+  color: var(--header_color);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h2, h3 {
+  font-weight: 600;
 }
 
 p{
+  margin: 1em 0;
   color: var(--text_color);
 }
 
@@ -268,23 +277,25 @@ body, html, #page-wrapper {
   }
 }
 
-#modal {
-  position: absolute;
-  display: none;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-}
-
-.modal {
-  background-color: #00000085;
-  width: 100%;
-  height: 100%;
+dialog {
   display: none;
   position: fixed;
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  max-height: none;
+
   top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 200;
+
+  background: transparent;
+  border: none;
 }
 
 body { 
@@ -296,14 +307,6 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-span.upper-right-decorator {
-  color: $color-ub-blue-light;
-  font-size: .8em;
-  position: relative;
-  top: -.8em;
-  font-family: $font-default;
-  text-transform: capitalize;
-}
 div.image-container {
     height: 100%;
     display: table;
@@ -317,27 +320,9 @@ div.image-inner {
     width: 100%;
 }
 
-p.slide-caption {
-    font-family: $font-default;
-    font-size: 13px;
-    color: #fff;
-    line-height: 19px;
-}
-
-p.slide-credit {
-		font-family: $font-default;
-		font-size: 13px;
-		color: #9c9c9c;
-		font-style: italic;
-}
-
 span.credit {
   font-style: italic;
   color: #969696;
-}
-
-img.article-attachment:hover {
-    cursor: pointer;
 }
 
 img.slide-image {
@@ -367,6 +352,11 @@ div.navigation a:hover {
 
 .no-scroll {
     overflow: hidden;
+}
+
+.u-no-scroll {
+  // Func: Disable scrolling
+  overflow-y: hidden;
 }
 
 a.image {
@@ -412,9 +402,19 @@ a.image {
 .show {
 	display: block;
 }
-/* Restoring browsering effects */
 
-.floating-share-buttons {
-  size: 4px;
+.js-dropdown-container{
+  position: fixed;
+  width: 100%;
+	height: 100%;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+
+  background-color: #00000085;
+  border: none;
+  cursor: pointer;
 }
 

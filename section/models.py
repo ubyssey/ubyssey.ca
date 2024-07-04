@@ -32,8 +32,6 @@ from wagtail.documents.models import Document
 from home import blocks as homeblocks
 from infinitefeed import blocks as infinitefeedblocks
 
-from wagtail import blocks
-from wagtail.snippets.blocks import SnippetChooserBlock
 
 import datetime
 
@@ -110,23 +108,6 @@ class CategorySnippet(index.Indexed, ClusterableModel):
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
-
-class SidebarCategoryBlock(blocks.StructBlock):
-    title = blocks.CharBlock(
-        required=True,
-        max_length=255,
-    )
-    category = SnippetChooserBlock(CategorySnippet)
-
-    def get_context(self, value, parent_context=None):
-        context = super().get_context(value, parent_context=parent_context)
-        context['title'] = value['title']
-        context['category'] = value['title']
-        context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
-        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-explicit_published_at')[:6]
-        return context
-    class Meta:
-        template = "infinitefeed/sidebar/sidebar_section_block.html"
 
 #-----Orderable models-----
 class CategoryAuthor(wagtail_core_models.Orderable):
@@ -206,7 +187,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
         ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_category_block", SidebarCategoryBlock()),
+        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
         ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),        
     ],
     null=True,
@@ -324,7 +305,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     def save(self, *args, **kwargs):
         self.current_section = self.slug
         return Page.save(self,*args, **kwargs)
-
+    
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"

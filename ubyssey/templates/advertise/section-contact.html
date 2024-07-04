@@ -17,9 +17,36 @@
     </div>
     
     <div class="offer">
-      <h3>Web Advertising</h3>
+      <h3>Web Advertising<br>and Print Bundles</h3>
       <ul>
-        {% include "advertise/offer-item.html" with offerId="web-cpm" offer="Web Ad CPM" offer_text="Web Ad CPM" default_num="30" price="$30/CPM" %}
+        {% include "advertise/offer-item.html" with offerId="web-cpm" offer="Web Ad CPM" offer_text="Web Ad CPM" default_num="5" max="1000" step="10" price="$30/CPM" %}
+        {% include "advertise/offer-item.html" with offerId="print-premium-bundle" offer="Premium Bundle (Print Full Page + 30 Web Ad CPM)" offer_text="Full Page + 30 Web Ad CPM" default_num="1" price="$2000" %}
+        {% include "advertise/offer-item.html" with offerId="print-plus-bundle" offer="Plus Bundle (Print Half Page + 20 Web Ad CPM)" offer_text="Half Page + 20 Web Ad CPM" default_num="1" price="$1250" %}
+        {% include "advertise/offer-item.html" with offerId="print-extra-bundle" offer="Extra Bundle (Print Quarter Page + 10 Web Ad CPM)" offer_text="Quarter Page + 10 Web Ad CPM" default_num="1" price="$750" %}
+        {% include "advertise/offer-item.html" with offerId="print-mini-bundle" offer="Mini Bundle (Print Eighth Page + 5 Web Ad CPM)" offer_text="Eighth Page + 5 Web Ad CPM" default_num="1" price="$375" %}
+      </ul>
+    </div>
+
+    <div class="offer">
+      <h3>Guide Advertising</h3>
+      <ul>
+        {% include "advertise/offer-item.html" with offerId="guide-full-page" offer="Guide Full Page" offer_text="Full Page" default_num="1" price="$975" %}
+        {% include "advertise/offer-item.html" with offerId="guide-half-page" offer="Guide 1/2 Page" offer_text="1/2 Page" default_num="1" price="$545" %}
+        {% include "advertise/offer-item.html" with offerId="guide-quarter-page" offer="Guide 1/4 Page" offer_text="1/4 Page" default_num="1" price="$315" %}
+        {% include "advertise/offer-item.html" with offerId="guide-full-spread" offer="Guide Full Page Center Spread" offer_text="Full Page Center Spread" default_num="1" price="$2500" %}
+        {% include "advertise/offer-item.html" with offerId="guide-full-back" offer="Guide Full Page Back Cover" offer_text="Full Page Back Cover" default_num="1" price="$1500" %}
+        {% include "advertise/offer-item.html" with offerId="guide-inside-cover" offer="Guide Inside Front/Back Cover" offer_text="Inside Front/Back Cover" default_num="1" price="$1250" %}
+        {% include "advertise/offer-item.html" with offerId="guide-second-from-cover" offer="Guide Second From Cover" offer_text="Second From Cover" default_num="1" price="$1150" %}
+      </ul>
+    </div>
+
+    <div class="offer">
+      <h3>Guide Bundles</h3>
+      <ul>
+        {% include "advertise/offer-item.html" with offerId="guide-premium-bundle" offer="Guide Premium Bundle (Guide Full Page + 30 Web Ad CPM)" offer_text="Full Page + 30 Web Ad CPM" default_num="1" price="$1550" %}
+        {% include "advertise/offer-item.html" with offerId="guide-plus-bundle" offer="Guide Plus Bundle (Guide Half Page + 20 Web Ad CPM)" offer_text="Half Page + 20 Web Ad CPM" default_num="1" price="$900" %}
+        {% include "advertise/offer-item.html" with offerId="guide-extra-bundle-plus" offer="Guide Extra Bundle Plus (Guide Quarter Page + 10 Web Ad CPM)" offer_text="Quarter Page + 10 Web Ad CPM" default_num="1" price="$490" %}
+        {% include "advertise/offer-item.html" with offerId="guide-mini-bundle" offer="Guide Extra Bundle (Guide Quarter Page + 5 Web Ad CPM)" offer_text="Quarter Page + 5 Web Ad CPM" default_num="1" price="$370" %}
       </ul>
     </div>
     </div>

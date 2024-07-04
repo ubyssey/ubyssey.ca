@@ -24,6 +24,51 @@ body {
   font-family: $font-default;
 }
 
+
+dialog {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  max-height: none;
+
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 200;
+
+  background: transparent;
+  border: none;
+
+  a.close-modal {
+    position: absolute;
+    right: 5em;
+    top: 1em;
+    color: white;
+  }
+
+  .modal-contents {
+    height: 100%;
+    padding: 1em;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  .image-modal-image {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.show {
+  display: block;
+}
+
  h2 , h3 , h4, p {
     margin: 1rem;
 }
