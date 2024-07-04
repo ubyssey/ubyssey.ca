@@ -10,7 +10,7 @@
 
 .o-article--column {
     margin-bottom: 1rem;
-    background-color: $color-ubyssey-blue-light;
+    background-color: $color-ubyssey-blue;
     position: relative;
     left: 0;
     transition-duration: 0.2s;
@@ -52,6 +52,7 @@
             color: #ffffff;
             margin: auto;
             margin-right: 0.5em;
+            padding: 0.5em 0;
 
             a:hover {
                 color: #eeeeee;
@@ -63,6 +64,7 @@
 
 
 .o-article--column-latest {
+    background-color: $color-ubyssey-blue-light;
 
     .o-article__meta__image .o-article__image {
         width: 5em;
@@ -97,6 +99,7 @@
         .o-article__headline {
             margin-top: 0;
             margin-bottom: 0.5em;
+            padding: 0;
             line-height: 1.3em;
             color: black;
 
