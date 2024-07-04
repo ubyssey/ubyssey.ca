@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.shortcuts import render
+from django.conf import settings
+from django.shortcuts import render
+from images.models import UbysseyImage
 
 def custom_500(request):
     return render(request, '500.html', status=500)
@@ -26,7 +29,19 @@ def publish_scheduled(request):
         return HttpResponse("Success!")
     except:
         return HttpResponse("Failed :/", status=500)
-     
+
+def get_image_urls(request):
+    images = UbysseyImage.objects.all()  # Fetch all UbysseyImage instances
+    base_url = settings.MEDIA_URL  # Access the MEDIA_URL setting
+    image_urls = []
+
+    for image in images:
+        url = request.build_absolute_uri(base_url + image.file.name)
+        image_urls.append(url)
+        print(url)  # Print each URL to the console
+
+    # Pass image_urls to OpenAI API or render them in a template if needed
+    return render(request, 'centennial.html', {})
 
 class UbysseyTheme:
     @staticmethod
