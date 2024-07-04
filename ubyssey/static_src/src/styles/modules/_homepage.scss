@@ -211,7 +211,7 @@ html.hairlines {
 }
 
 
-.lightmode {
+[color-css-theme="light"] {
   .c-homepage__section__timeline {
     border-color: $color-ubyssey-blue;
   }
@@ -249,7 +249,7 @@ html.hairlines {
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
   .c-homepage__section__timeline {
     border-color: $color-ubyssey-blue-light;
   }

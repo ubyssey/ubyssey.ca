@@ -41,6 +41,7 @@
     height: 100%;
     width:38%;
     padding-left: 1em;
+    border-left: solid 1px transparent;
 
     @media ($bp-smaller-than-phablet) {
         display:none;
@@ -140,8 +141,6 @@
         color: black;
     }
     .c-sidebar {
-        border-left: solid;
-        border-width: 1px;
         border-color: #EEE;
     }
 }

@@ -110,13 +110,13 @@
 }
 
 
-.lightmode {
+[color-css-theme="light"] {
     .o-article--top_article {
         border-color: #00000045;
     }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
     .o-article--top_article {
         border-color: white;
     }

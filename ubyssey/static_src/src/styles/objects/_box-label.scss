@@ -38,7 +38,7 @@
     transform: translate(0,-50%);
 }
   
-.lightmode {
+[color-css-theme="light"] {
   
     .boxLabel-left {
         background-color: $color-ubyssey-blue-dark;
@@ -66,7 +66,7 @@
     }
 }
   
-.darkmode {
+[color-css-theme="dark"] {
   
     .boxLabel {
         &.sticky {

@@ -269,7 +269,7 @@ ul.article-list, ol.article-list {
   }
 }
 
-.lightmode {
+[color-css-theme="light"] {
   .o-article--bullet {
     .o-article__headline {
       color: black;
@@ -281,7 +281,7 @@ ul.article-list, ol.article-list {
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
   .o-article--bullet {
     .o-article__headline {
       color: #B3B3B3;

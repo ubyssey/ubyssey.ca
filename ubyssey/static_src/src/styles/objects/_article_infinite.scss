@@ -44,7 +44,7 @@
     }
 }
 
-.lightmode {
+[color-css-theme="light"], .lightmode {
     .article--infinitefeed {
         .o-article__headline {
             color: black;
@@ -64,7 +64,7 @@
     }
 }
 
-.darkmode {
+[color-css-theme="dark"], .darkmode {
     .article--infinitefeed {
         .o-article__headline {
             color: white;
