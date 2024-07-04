@@ -52,7 +52,7 @@
 
     {% with self.featured_media.first as featured_image_object %}
         {% image featured_image_object.image original as featured_image %}
-        <div class="c-banner c-banner--welcome" style="background-image: url('{{ featured_image.url }}');">
+        <div class="c-banner c-banner--welcome" style="background-image: url('{{ featured_image.url }}');" aria-label="{{featured_image_object.alt_text}}">
             <div class="c-banner__container">
                 {% comment %} <div class="c-banner--welcome__inner">
                     <p class="c-banner--welcome__snippet">{{ self.title }}</p>

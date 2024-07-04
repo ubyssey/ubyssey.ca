@@ -10,7 +10,7 @@ from random import randint
 register = template.Library()
 
 MAX_ADS = 5 # based on the max number of "Intra_Article_X" slots available in Google Ad Manager
-PARAGRAPHS_PER_AD = 6
+PARAGRAPHS_PER_AD = 5
 ACCEPTABLE_PARAGRAPH_LENGTH = 75
 
 @register.filter(name='inject_ads')
@@ -26,7 +26,7 @@ def inject_ads(value, is_mobile):
     # Break down content into paragraphs
     soup = BeautifulSoup(value, 'html.parser')
     removeShortParagraphs = lambda p : len(p.encode_contents()) >= ACCEPTABLE_PARAGRAPH_LENGTH
-    paragraphs = list(filter(removeShortParagraphs, soup.select(".article-content > p")))
+    paragraphs = list(filter(removeShortParagraphs, soup.select("p:not(div > p)")))
 
     if PARAGRAPHS_PER_AD < len(paragraphs): # If the article is somehow too short for even one ad, it doesn't get any
         x = range(0, len(paragraphs), PARAGRAPHS_PER_AD)

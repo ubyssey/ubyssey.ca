@@ -35,7 +35,7 @@
 
       {% if banner %}
         {% image banner width-700 as banner_image %}
-        <div class="banner" style="background-image: url('{{banner_image.full_url}}');">
+        <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{title}} Banner" >
           <svg class="c-section__heading" viewBox="0 0 450 70">
             <text class="c-section__heading" x="10" y="50" {% if not category %}style="stroke: {{self.colour}}"{% endif %}>{{title}}</text>
           </svg>
