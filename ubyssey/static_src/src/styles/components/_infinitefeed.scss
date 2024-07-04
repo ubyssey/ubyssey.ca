@@ -73,7 +73,7 @@
 
 .c-home-infinitefeed {
     width: 100%;
-    padding-bottom: 2em;
+    padding-bottom: 3em;
 
     @media ($bp-larger-than-phablet) {
         margin-right: 20px;
@@ -133,7 +133,7 @@
 
 .lightmode {
     .issue {
-        box-shadow: -5px 10px 7px 0px #0000003b;
+        box-shadow: -7px 10px 5px 0px #EEE;
     }
     #loader {
         color: black;
@@ -141,6 +141,7 @@
     .c-sidebar {
         border-left: solid;
         border-width: 1px;
+        border-color: #EEE;
     }
 }
 
