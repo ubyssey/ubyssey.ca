@@ -10,7 +10,7 @@ from random import randint
 register = template.Library()
 
 MAX_ADS = 5 # based on the max number of "Intra_Article_X" slots available in Google Ad Manager
-PARAGRAPHS_PER_AD = 4
+PARAGRAPHS_PER_AD = 5
 ACCEPTABLE_PARAGRAPH_LENGTH = 75
 
 @register.filter(name='inject_ads')
