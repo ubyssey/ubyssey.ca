@@ -10,7 +10,6 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled
-from ubyssey.views.automate_adding_tags import get_image_urls
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
@@ -39,7 +38,6 @@ if settings.DEBUG:
         re_path(r'^403/$', default_views.permission_denied, kwargs={'exception': Exception('Permission Denied')}),
         re_path(r'^404/$', default_views.page_not_found, kwargs={'exception': Exception('Page not Found')}),
         re_path(r'^500/$', default_views.server_error),
-        path('image-urls/', get_image_urls, name='get_image_urls'),
     ]
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

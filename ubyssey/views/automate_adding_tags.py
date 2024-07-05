@@ -13,6 +13,7 @@ def get_image_urls(request):
     for image in images:
         url = request.build_absolute_uri(base_url + image.file.name)
         image_urls.append(url)
+        print(url)
     # get_image_tags(image_urls)
         
     # Pass image_urls to OpenAI API or render them in a template if needed
@@ -51,11 +52,9 @@ def get_image_urls(request):
 #         max_tokens=300,
 #     )
 
-# def populate_tags(tags):
-#     # Extract tags from the OpenAI API response
-#     tags = []
-#     for message in response['choices'][0]['message']['content']:
-#         if message['role'] == 'system' and message['content']['type'] == 'text':
-#             tags.append(message['content']['text'])
-#     return tags   
-   
+def populate_tags(tags, descriptions):
+    images = UbysseyImage.objects.all()
+    for image, (tag, description) in zip(images, zip(tags, descriptions)):
+        image.tags.add(tag)
+        image.description = description
+        image.save()   
