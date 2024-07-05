@@ -61,9 +61,14 @@ class UbysseyImage(AbstractImage):
         blank=True,
         default='',
     )
-
+    description = models.TextField(
+        null=False,
+        blank=True,
+        default='',
+    )
     admin_form_fields = Image.admin_form_fields + (
         'author',
+        'description',
         'legacy_filename',
         'legacy_authors',
     )
