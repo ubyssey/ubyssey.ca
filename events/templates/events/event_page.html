@@ -72,7 +72,7 @@
                             </button>
                             <ul>
                             {% for event in day.events %} 
-                                <li {% if selectedEvent.selected and event.event_url == selectedEvent.event_url %}class="selected"{% endif %}><a title="{{event.title}}" href="?event={{event.event_url}}">
+                                <li {% if event.event_url == selectedEvent.event_url %}class="selected"{% endif %}><a title="{{event.title}}" href="?event={{event.event_url}}">
                                     {% if event.start_time|date:"F j" != event.end_time|date:"F j"%}<b>Ongoing</b>{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title}}
                                 </a></li>
                             {% endfor %}

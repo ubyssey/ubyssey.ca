@@ -3,6 +3,7 @@ from django.shortcuts import render
 from events.models import Event
 from datetime import datetime, timedelta
 from django.utils import timezone
+from rest_framework import routers, serializers, viewsets
 
 # Create your views here.
 class EventsTheme(object):
@@ -124,3 +125,16 @@ def update_events(request):
     #    return HttpResponse("Failed requesting to UBCevents", status=500)
 
     return HttpResponse("Success!")
+
+class EventsSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'category']
+
+class EventsViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.filter(hidden=False).order_by("start_time")
+    serializer_class = EventsSerializer
+
+api = routers.DefaultRouter()
+api.register(r'', EventsViewSet)
+
