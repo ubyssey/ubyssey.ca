@@ -127,7 +127,7 @@ button.events-calendar--enlarge-toggle {
 h2.events-calendar--month {
     position: absolute;
     left: -2.5em;
-    margin-top: 1em;
+    margin: 0.75em 0;
 
     font-size: 1em;
     font-weight: 600;
@@ -135,7 +135,7 @@ h2.events-calendar--month {
 
 div.day{
     min-height: 4em;
-    padding: 1em 1em;
+    padding: 1em;
     font-size: 12px;
 
     li.selected {
@@ -176,6 +176,7 @@ div.day{
         list-style: none;
         overflow: clip;
         li {
+            max-width: 400px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -283,24 +284,47 @@ header.events{
     }
 }
 
+@media($bp-larger-than-phablet) {
+    .events-calendar--number-dayOfWeek {
+        display: none;
+    }
+    h2.events-calendar--month span.full {
+        display: none;
+    }
+}
+
 @media($bp-smaller-than-phablet) {
     main.events-page {
         padding: 0;
+        h2.events-calendar--month {
+            position: relative;
+            left: 0;
+            text-align: center;
+            font-weight: 600;
+            span.short {
+                display: none;
+            }
+        }
     }
     .events-calendar {
         padding: 0;
         width: auto;
     }
-    header.events h1.title {
-        margin: auto;
-        text-align: center;
-        font-size: 2.5em;
+    header.events {
+        margin: 0 auto;
+        padding: 0 1.5em;
+        
+        h1.title {
+            margin: auto;
+            text-align: center;
+            font-size: 2.5em;
+        }
     }
     .events-slanted-image {
         display: none;
     }
     .events-calendar--categories {
-        margin: 2em auto;
+        margin: 2em auto 1em auto;
         ul {
             display: flex;
             flex-wrap: wrap;
@@ -310,26 +334,37 @@ header.events{
             }
         }
     }   
-    h2.events-calendar--month {
-        position: relative;
-        left: 0;
-        text-align: center;
-        font-size: 1.5em;
-    }
     .events-calendar--days-of-week {
         display: none;
     }
     .events-flex, .events-calendar--row {
         flex-direction: column;
-    } 
+        border-bottom: 1px solid #041620;
+    }
+    .events-calendar--row:first-child {
+        border: none;
+        div.day {
+            display: none;
+        }
+    }
     .events-calendar--row div.day {
         min-height: 1em;
+        border-bottom: 1px solid #0000000f;
     }
     .events-calendar .day {
         width: 100%;
     }
     .events-info-container {
         display: none;
+    }
+    button.events-calendar--number {
+        font-size: 14px;
+    }
+    div.day {
+        padding: 1.5em;
+        li {
+            margin-right: 2em;
+        }
     }
     main.events-page .event-view {
         .events-calendar--rows {
@@ -338,6 +373,8 @@ header.events{
         .events-info-container {
             display: block;
             width: 100%;
+            margin: 0;
+            height: 100%;
             .events-info {
                 margin: 0 1em 2em 1em;
                 max-height: none;

@@ -60,7 +60,10 @@
             {% for week in calendar %}
                 <div class="events-calendar--row">
                     {% if forloop.counter0 == 0%}
-                        <h2 class="events-calendar--month">{{week.month}}</h2>
+                        <h2 class="events-calendar--month">
+                            <span class="full">{{week.month}}</span>
+                            <span class="short">{{week.month_short}}</span>
+                        </h2>
                     {% endif %}
                     {% for day in week.days %}
                         {% if forloop.parentloop.counter0 != 0 and day.day == 1 %}
@@ -68,7 +71,7 @@
                         {% endif %}
                         <div class="day {{day.phase}}">
                             <button onClick="this.parentElement.parentElement.classList.toggle('enlarged')" class="events-calendar--number">
-                                {{day.day}}.
+                                <span class="events-calendar--number-dayOfWeek">{{day.day_of_week}} </span>{{day.day}}.
                             </button>
                             <ul>
                             {% for event in day.events %} 
@@ -76,7 +79,7 @@
                                     {% if event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title|safe}}
                                 </a></li>
                             {% endfor %}
-                            <ul>
+                            </ul>
                         </div>
                     {% endfor %}
                 </div>

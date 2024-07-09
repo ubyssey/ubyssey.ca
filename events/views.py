@@ -28,7 +28,7 @@ class EventsTheme(object):
         day = day - timedelta(hours=day.hour, minutes=day.minute, seconds=day.second)
         
         events_index = 0
-        week = {'month': day.strftime("%b"), 'days': [{'day': day.day, 'events': []}]}
+        week = {'month': day.strftime("%B"), 'month_short': day.strftime("%b"), 'days': [{'day': day.day, 'day_of_week': day.strftime("%a"), 'events': []}]}
 
         closest_event = None
 
@@ -44,15 +44,16 @@ class EventsTheme(object):
                 week['days'][-1]['phase'] = 'future'
 
             if day.day == 1:
-                week['month'] = day.strftime("%b")
+                week['month'] = day.strftime("%B")
+                week['month_short'] = day.strftime("%b")
 
             if events_index >= len(events):
                 day = day + timedelta(days=1)
                 if day.weekday()==0:
                     calendar.append(week)
-                    week = {'month': day.strftime("%b"), 'days': [{'day': day.day, 'events': []}]}
+                    week = {'month': day.strftime("%B"), 'month_short': day.strftime("%b"), 'days': [{'day': day.day, 'day_of_week': day.strftime("%a"), 'events': []}]}
                 else:
-                    week['days'].append({'day': day.day, 'events': []})
+                    week['days'].append({'day': day.day, 'day_of_week': day.strftime("%a"), 'events': []})
                     i=0
                     while i<len(ongoing):
                         week['days'][-1]['events'].append(ongoing[i])
@@ -78,9 +79,9 @@ class EventsTheme(object):
                         day = day + timedelta(days=1)
                         if day.weekday()==0:
                             calendar.append(week)
-                            week = {'month': day.strftime("%b"), 'days': [{'day': day.day, 'events': []}]}
+                            week = {'month': day.strftime("%B"), 'month_short': day.strftime("%b"), 'days': [{'day': day.day, 'day_of_week': day.strftime("%a"), 'events': []}]}
                         else:
-                            week['days'].append({'day': day.day, 'events': []})
+                            week['days'].append({'day': day.day, 'day_of_week': day.strftime("%a"), 'events': []})
 
                         i=0
                         while i<len(ongoing):
