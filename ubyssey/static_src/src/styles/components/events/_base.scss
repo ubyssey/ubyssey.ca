@@ -21,10 +21,10 @@ main.events-page {
 
         .events-info-container {
             position: sticky;
-            top: 10vh;
+            top: 0;
             width: 30%;
-            margin: 16vh 0;
-            height: 66vh;
+            padding: 12vh 0;
+            height: 76vh;
         }
         .events-info {
             margin-bottom: 2em;
@@ -252,7 +252,7 @@ button.events-calendar--number {
 }
 
 .events-calendar--rows {
-    margin-bottom: 2em;
+    margin-bottom: 5em;
 }
 
 header.events{
@@ -309,6 +309,7 @@ header.events{
     .events-calendar {
         padding: 0;
         width: auto;
+        flex-grow: 0;
     }
     header.events {
         margin: 0 auto;
@@ -372,11 +373,14 @@ header.events{
         }
         .events-info-container {
             display: block;
+            position: static;
             width: 100%;
-            margin: 0;
-            height: 100%;
+            margin: 0.5em 0 0 0;
+            padding: 0 1em;
+            height: auto;
+            box-sizing: border-box;
             .events-info {
-                margin: 0 1em 2em 1em;
+                margin: 0 auto 2em auto;
                 max-height: none;
             }
         }
