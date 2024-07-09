@@ -17,15 +17,14 @@ main.events-page {
 
     .events-flex {
         display: flex;
-        height: 100%;
+        min-height: 100%;
 
         .events-info-container {
             position: sticky;
-            top: 2em;
+            top: 10vh;
             width: 30%;
-
-            margin: auto 0;
-            min-height: 66vh;
+            margin: 16vh 0;
+            height: 66vh;
         }
         .events-info {
             margin-bottom: 2em;
@@ -180,6 +179,8 @@ div.day{
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            height: 1.5em;
+            line-height: 1.5em;
             b {
                 text-transform: lowercase;
             }
@@ -232,6 +233,7 @@ button.events-calendar--number {
     div.day ul li {
     white-space: initial !important;
     overflow: unset !important;
+    height: auto !important;
     }
 }
 

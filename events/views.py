@@ -43,6 +43,9 @@ class EventsTheme(object):
             else:
                 week['days'][-1]['phase'] = 'future'
 
+            if day.day == 1:
+                week['month'] = day.strftime("%b")
+
             if events_index >= len(events):
                 day = day + timedelta(days=1)
                 if day.weekday()==0:
@@ -58,16 +61,17 @@ class EventsTheme(object):
                         else:
                             i = i + 1
             else:
-                event_time = events[events_index].start_time.astimezone(timezone.get_current_timezone())
+                events[events_index].start_time = events[events_index].start_time.astimezone(timezone.get_current_timezone())
+                events[events_index].end_time = events[events_index].end_time.astimezone(timezone.get_current_timezone())
                 
-                if closest_event == None and timezone.now() <= event_time:
+                if closest_event == None and timezone.now() <= events[events_index].start_time:
                     closest_event = events[events_index]
-                if day > event_time:
+                if day > events[events_index].start_time:
                     events_index = events_index + 1
                 else:
-                    if day.date() == event_time.date():
+                    if day.date() == events[events_index].start_time.date():
                         week['days'][-1]['events'].append(events[events_index])
-                        if events[events_index].end_time.astimezone(timezone.get_current_timezone()).date() != day.date():
+                        if not events[events_index].end_time.date() < (day+timedelta(days=1)).date():
                             ongoing.append(events[events_index])
                         events_index = events_index + 1
                     else:
@@ -77,17 +81,19 @@ class EventsTheme(object):
                             week = {'month': day.strftime("%b"), 'days': [{'day': day.day, 'events': []}]}
                         else:
                             week['days'].append({'day': day.day, 'events': []})
-                            i=0
-                            while i<len(ongoing):
+
+                        i=0
+                        while i<len(ongoing):
+                            if ongoing[i].end_time.date() < day.date():
+                                ongoing.pop(i)
+                            else:
                                 week['days'][-1]['events'].append(ongoing[i])
-                                if ongoing[i].end_time.astimezone(timezone.get_current_timezone()).date() == day.date():
-                                    ongoing.pop(i)
-                                else:
-                                    i = i + 1
+                                i = i + 1
         
         event = closest_event
         
         if request.GET.get("event"):
+            print(request.GET.get("event"))
             if Event.objects.filter(event_url=request.GET.get("event")).exists():
                 event = Event.objects.get(event_url=request.GET.get("event"))
                 event.selected = True

@@ -3,6 +3,8 @@ from images.models import UbysseyImage
 from wagtail.snippets.models import register_snippet
 from wagtail.admin.panels import FieldPanel
 from django.forms.widgets import Select
+from django.utils import timezone
+from datetime import datetime, time
 
 # Create your models here.
 
@@ -27,8 +29,17 @@ class EventManager(models.Manager):
         
         event.title=ical_component.get('summary')
         event.description=ical_component.get('description')
-        event.start_time=ical_component.decoded('dtstart')
-        event.end_time=ical_component.decoded('dtend')
+
+        if isinstance(ical_component.decoded('dtstart'), datetime):
+            event.end_time=ical_component.decoded('dtstart')
+        else:
+            event.end_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+
+        if isinstance(ical_component.decoded('dtend'), datetime):
+            event.end_time=ical_component.decoded('dtend')
+        else:
+            event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+            
         event.address=address
         event.location=location
         event.email=ical_component.decoded('organizer', default="")
@@ -40,8 +51,6 @@ class EventManager(models.Manager):
             event.host = ical_component.get("organizer").params['cn']
 
         event.save()
-
-        print(event.title + " - " + event.category)
 
         return event
         
@@ -122,27 +131,46 @@ class EventManager(models.Manager):
 
     def gothunderbirds_create_event(self, ical_component):
 
-        if not self.filter(event_url=ical_component.get('url')).exists():
+        if not self.filter(event_url=ical_component.get('url').replace("&amp;", "__AND__")).exists():
             event = self.create(
                 title=ical_component.get('summary'),
-                event_url=ical_component.decoded('url'),
+                event_url=ical_component.decoded('url').replace("&amp;", "__AND__"),
             )
         else:
-            event = self.get(event_url=ical_component.get('url'))
+            event = self.get(event_url=ical_component.get('url').replace("&amp;", "__AND__"))
 
         # Split location and address
         address = ical_component.get('location')
         location = address.replace('Vancouver, B.C., ', '')
 
-        event.title=ical_component.get('summary'),
-        event.description=ical_component.get('description'),
-        event.start_time=ical_component.decoded('dtstart'),
-        event.end_time=ical_component.decoded('dtend'),
-        event.address=address,
-        event.location=location,
-        event.event_url=ical_component.decoded('url'),
-        event.category='sports',
+        g = ""
+        if "Men's" in ical_component.get('summary'):
+            g = "M. "
+        elif "Women's" in ical_component.get('summary'):
+            g = "W. "
+        event.title=g + ical_component.get('summary').replace("UBC ", "").replace("vs", "<br>UBC vs").replace("Men's ", "").replace("Women's ", "")
+
+        event.description=ical_component.get('description')
+
+        if isinstance(ical_component.decoded('dtstart'), datetime):
+            event.end_time=ical_component.decoded('dtstart')
+        else:
+            event.end_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+
+        if isinstance(ical_component.decoded('dtend'), datetime):
+            event.end_time=ical_component.decoded('dtend')
+        else:
+            if ical_component.decoded('dtend').day - ical_component.decoded('dtstart').day == 1:
+                event.end_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+            else:
+                event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+
+        event.address=address
+        event.location=location
+        event.event_url=ical_component.decoded('url').replace("&amp;", "__AND__")
+        event.category='sports'
         event.hidden=self.gothunderbirds_judge_hidden(ical_component)
+        event.save()
 
         return event
     

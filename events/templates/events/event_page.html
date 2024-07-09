@@ -33,7 +33,7 @@
                 <div class="darkmode-toggle">
                     {% include 'article/objects/darkmode_button.html' with id="topbar" %}
                 </div>
-                <h1 class="title">Events Around Campus</h1>
+                <h1 class="title">Events around campus</h1>
 
                 <div class="events-calendar--categories">
                     <ul>
@@ -73,7 +73,7 @@
                             <ul>
                             {% for event in day.events %} 
                                 <li {% if event.event_url == selectedEvent.event_url %}class="selected"{% endif %}><a title="{{event.title}}" href="?event={{event.event_url}}">
-                                    {% if event.start_time|date:"F j" != event.end_time|date:"F j"%}<b>Ongoing</b>{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title}}
+                                    {% if event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title|safe}}
                                 </a></li>
                             {% endfor %}
                             <ul>
@@ -87,16 +87,29 @@
         <div class="events-info">
             <h2 class="event-info--time">
                 {% if selectedEvent.start_time|date:"F j" == selectedEvent.end_time|date:"F j"%}
-                    {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|time:"fA"}}
+                    {% if selectedEvent.start_time|time == selectedEvent.end_time|time %}
+                        {{selectedEvent.start_time|date:"F j"}}
+                    {% else %}
+                        {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|time:"fA"}}
+                    {% endif %}    
                 {% else %}
-                    {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|date:"F j"}} {{selectedEvent.end_time|time:"fA"}}
+                    {% if selectedEvent.start_time|time == selectedEvent.end_time|time %}
+                        {{selectedEvent.start_time|date:"F j"}} - {{selectedEvent.end_time|date:"F j"}}
+                    {% else %}
+                        {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|date:"F j"}} {{selectedEvent.end_time|time:"fA"}}
+                    {% endif %}
                 {% endif %}
             </h2>
             <div class="events-info--content">
-                <h2>{{selectedEvent.title}}</h2>
-                <p>{{selectedEvent.location}}</p>
+                <h2>{{selectedEvent.title|safe}}</h2>
+                <p><b>Location:</b> {{selectedEvent.location}}</p>
                 <p>{% if selectedEvent.host %}<b>{{selectedEvent.host}}:</b>{% endif %} {{selectedEvent.description|safe}}</p>
-                <p><a href="{{selectedEvent.event_url}}" target="blank">- Found on events.ubc</a></p>
+                <p ><a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a></p>
+                <script>
+                    var s = document.getElementById('source_link');
+                    s.href = s.href.replace("__AND__", "&");
+                    s.innerHTML = s.host;
+                </script>
             </div>
         </div>
         </div>
