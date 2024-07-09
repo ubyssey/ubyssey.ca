@@ -15,7 +15,7 @@ This template is for the columns for the blog section on the home page under the
     {% if article.featured_media.first %}
       {% if article.featured_media.first.image %}
         <a class="o-article__image" href="{% pageurl article %}">
-          {% image article.featured_media.first.image fill-150x150-c100 format-webp loading='lazy' %}
+          {% image article.featured_media.first.image fill-150x150-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
         </a>
       {% elif article.featured_media.first.video %}
         <a class="o-article__image" href="{% pageurl article %}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
@@ -23,9 +23,9 @@ This template is for the columns for the blog section on the home page under the
     {% endif %}
   </div>
   <div class="o-article__meta">
-    <h4 class="o-article__section" style="background-color: {{article|get_colour}}">
+    <h2 class="o-article__section" style="background-color: {{article|get_colour}}">
       <a href="{{article.get_parent.url}}">{{article.get_parent.title}}</a>
-    </h4>
+    </h2>
     <h3 class="o-article__headline">
       <a href="{% pageurl article %}">{{ article.title|safe }}</a>
     </h3>

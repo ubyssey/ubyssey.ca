@@ -320,7 +320,8 @@
     width: 100%;
 }
 
-.lightmode {
+[color-css-theme="light"] {
+
 	.o-mobile-dropdown__button {
 		background: $color-ubyssey-blue-dark;
 		color: #fff;
@@ -360,7 +361,8 @@
 	}
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
 	.o-mobile-dropdown__button {
 		background: $color-ubyssey-blue-light;
 		color: $color-ubyssey-blue-dark;
