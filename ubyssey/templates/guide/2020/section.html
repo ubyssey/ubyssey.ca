@@ -1,6 +1,7 @@
 {% extends 'guide/2020/base.html' %}
 {% load static %}
 {% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 {% load wagtailuserbar %}
 {% load menu_tags %}
 {% block content %}
@@ -27,16 +28,16 @@
 
   <main class="section-grid-container">
     <div class="section-title"><p>What are you looking for ?</p></div>
-   
       {% if self.slug == 'academics' %}
       {% for page in page.get_children.specific %}
             {% if forloop.counter == 2 %}
-              {% include 'guide/2020/quote-box.html' with quote='"Talk to your professors. First it will help with understanding material in class as you can ask all the stupid questions you want. Secondly, It will help you create a repertoire with them that will undoubtedly lead to them giving you the benefit of the doubt when you eventually make a mistake. And finally, it will teach you some important social skills that you will need when you get a job and need to talk to higher ups."' source='Zubair Hirji' type=1 %}
+              {% include 'guide/2020/quote-box.html' with  quote='"Talk to your professors. First it will help with understanding material in class as you can ask all the stupid questions you want. Secondly, It will help you create a repertoire with them that will undoubtedly lead to them giving you the benefit of the doubt when you eventually make a mistake. And finally, it will teach you some important social skills that you will need when you get a job and need to talk to higher ups."' source='Zubair Hirji' type=1 %}
             {% elif forloop.counter == 5 %}
               {% include 'guide/2020/quote-box.html' with quote='"Don\'t be afraid to advocate for yourself. If you are struggling with material, reach out to your professors in office hours. If you need accommodations, reach out to academic advising. There are supports that exist to help you through, but only if you have the courage to reach out."' source='Julia Burnham' type=2 %}
-            {% endif %}
-          {% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%} 
-      {% endfor %}
+            {% endif %} 
+          {% image page.featured_media.first.image original as bg_image%}
+          {% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=page.slug  image=bg_image.url%}
+          {% endfor %}
       {% elif self.slug == 'ubc' %}
           {% for page in page.get_children.specific %}
             {% if forloop.counter == 2 %}
@@ -54,7 +55,8 @@
             {% elif forloop.counter == 17 %}
               {% include 'guide/2020/quote-box.html' with quote='"Join at least one club. Could be a sports team, could be the musical theatre troupe, could even be the Ubyssey. Participate in club activity, they\'re the best way for you to find friends outside of class and they\'re also a great way for you to have experiences that you wouldn\'t normally get from your academic courses."' source='Zhi Wen Teh' type=7 %}
             {% endif %}
-            {% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%}
+            {% image page.featured_media.first.image original as bg_image%}
+            {% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug   image=bg_image.url%}
           {% endfor %}
       {% elif self.slug == 'adulting' %}
           {% for page in page.get_children.specific%}
@@ -73,7 +75,7 @@
             {% elif forloop.counter == 17 %}
               {% include 'guide/2020/quote-box.html' with quote='"Be respectful of shared spaces, and listen to your roommates. Communication is really important, so make sure you establish a healthy relationship with them!"' source='Ioana David' type=7 %}
             {% endif %}
-{% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%}          {% endfor %}
+{% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug   image=bg_image.url%}          {% endfor %}
       {% elif self.slug == 'sdp' %}
           {% for page in page.get_children.specific %}
             {% if forloop.counter == 2 %}
@@ -83,7 +85,8 @@
             {% elif forloop.counter == 7 %}
               {% include 'guide/2020/quote-box.html' with quote='"Do what feels right, and listen to your gut. If the person you’re with can’t respect that, they’re not worth your time."' source='Ioana David' type=3 %}
             {% endif %}
-{% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug  image=self.featured_media.first.image%}          {% endfor %}
+            {% image page.featured_media.first.image original as bg_image%}
+{% include 'guide/2020/article-box.html' with type=forloop.counter title=self.title slug=self.slug   image=bg_image.url%}          {% endfor %}
       {% elif self.slug == 'vancouver' %}
           {% for page in page.get_children.specific%}
             {% if forloop.counter == 2 %}
@@ -91,7 +94,8 @@
             {% elif forloop.counter == 5 %}
               {% include 'guide/2020/quote-box.html' with quote='"EAT. There is so much good food. So much bubble tea, ramen, sushi. Granville Island is great to start –\' they have a lot of variety, so you can literally eat as much as you want. And take advantage of the mountains – I’m not a big fan of hikes, but I’ve fallen in love with the views you get once you reach the top. I\'m definitely becoming a true Vancouverite."' source='Ioana David' type=2 %}
             {% endif %}
-            {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug  image=article.featured_image.image.get_absolute_url%}
+            {% image page.featured_media.first.image original as bg_image%}
+            {% include 'guide/2020/article-box.html' with type=forloop.counter title=article.headline subsection=subsection slug=article.slug   image=bg_image.url%}
           {% endfor %}
       {% endif %}
 
