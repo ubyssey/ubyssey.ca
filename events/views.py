@@ -3,7 +3,8 @@ from django.shortcuts import render
 from events.models import Event
 from datetime import datetime, timedelta
 from django.utils import timezone
-from rest_framework import routers, serializers, viewsets
+from rest_framework import serializers, viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 class EventsTheme(object):
@@ -132,9 +133,8 @@ class EventsSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'category']
 
 class EventsViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.filter(hidden=False).order_by("start_time")
     serializer_class = EventsSerializer
-
-api = routers.DefaultRouter()
-api.register(r'', EventsViewSet)
-
+    queryset = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).order_by("start_time")
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_fields = ['category', 'location', 'host']
+    search_fields = ['title', 'description', 'host', 'location', '^event_url']

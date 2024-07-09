@@ -15,6 +15,7 @@ from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
 from events.views import update_events
 from events.urls import urlpatterns as events_urls
+from events.urls import api as events_api_urls
 
 from infinitefeed.views import infinitefeed
 
@@ -61,7 +62,7 @@ urlpatterns += [
 
     # Events
     re_path(r'^events/$', include(events_urls)),
-    # re_path(r'^api/events/', include(event_api_urls)),
+    re_path(r'^api/events_calendar/', include(events_api_urls.urls)),
 
     # Tag
     re_path(r'^tag/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  
