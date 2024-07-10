@@ -8,11 +8,11 @@ on:
 
 jobs:
   test_desktop_browsers:
-    runs-on: ${{ matrix.browser == 'safari' && 'macos-latest' || 'ubuntu-latest' }}
     strategy:
       matrix:
         browser: [chrome, firefox, edge, safari]
         python-version: [ 3.8 ]
+    runs-on: ${{ matrix.browser == 'safari' && 'macos-latest' || 'ubuntu-latest' }}
 
     steps:
       - uses: actions/checkout@v2      
