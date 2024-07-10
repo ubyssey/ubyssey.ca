@@ -19,8 +19,6 @@
                             {{ featured_image_object.credit }}
                         {% endif %}
                     </div>
-                    {% include 'article/objects/share_bar.html' %}
-                    {% comment %} TODO: address weird field {% endcomment %}
                     {% if article.template_fields.banner_quote and article.template_fields.banner_quote != ' ' %}
                         {% comment %} TODO address "subsection" context variable use {% endcomment %}
                         <div id='quote-top' class="c-welcome-article __{{ subsection }}"> 
@@ -91,4 +89,6 @@
             </main>
         {% endwith %}        
     </main>
+{% endblock %}
+{% block footernav%}
 {% endblock %}
