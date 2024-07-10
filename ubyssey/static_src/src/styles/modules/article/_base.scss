@@ -36,7 +36,7 @@ $text-color: var(--text_color);
   text-transform: uppercase;
 }
 
-.disclaimer {
+div.article-content .disclaimer {
   margin: 2em auto;
   border-top: 2px solid;
   padding-top: 0.75em;
@@ -62,6 +62,12 @@ $text-color: var(--text_color);
       line-height: 1.277em;
       padding-bottom: 25px;
       margin: 0;
+    }
+  }
+
+  @media($bp-smaller-than-mobile) {
+    .author_card {
+      margin-inline: -15px;
     }
   }
 }
