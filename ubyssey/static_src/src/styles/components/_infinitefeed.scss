@@ -28,9 +28,9 @@
 }
 
 .c-sidebar_container {
-    height: 1500px;
     min-height: fit-content;
     margin-bottom: 65px;
+    flex-grow: 1;
 }
 
 .sidebar-block > .boxLabel {
@@ -42,6 +42,13 @@
     width:38%;
     padding-left: 1em;
     border-left: solid 1px transparent;
+    display: flex;
+    flex-direction: column;
+
+    &.empty-sidebar {
+        height: 0;
+        padding: 0;
+    }
 
     @media ($bp-smaller-than-phablet) {
         display:none;
@@ -64,11 +71,10 @@
 .c-infinitefeed__feed {
     margin:auto;
     display:flex;
-    min-height: 66vh;
-    justify-content: space-evenly;
-    flex-direction: row;
-    @media ($bp-smaller-than-phablet) {
-        flex-direction: column;
+    flex-direction: column;
+    @media ($bp-larger-than-phablet) {
+        flex-direction: row;
+        justify-content: space-evenly;
     }
 }
 
