@@ -6,7 +6,6 @@
 {% load ubyssey_ad_tags %}
 {% load menu_tags %}
 
-	{% comment %} {% flat_menu 'guide2021' template="navigation/headers/guide/2021/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True %} {% endcomment %}
 	{% if page.menu %}
 		<!-- Manually selected menu: {{ page.menu.handle }} -->
 		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
