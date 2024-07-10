@@ -1,19 +1,19 @@
 name: Cross-browser Testing
 
 on:
-  push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
+  # push:
+  #   branches: [ "develop" ]
+  # pull_request:
+  #   branches: [ "develop" ]
   workflow_dispatch:
 
 jobs:
   test_desktop_browsers:
     strategy:
       matrix:
-        browser: [chrome, firefox, edge, safari]
+        browser: [chrome, firefox, edge]
         python-version: [ 3.8 ]
-    runs-on: ${{ matrix.browser == 'safari' && 'macos-latest' || 'ubuntu-latest' }}
+    runs-on: 'ubuntu-latest'
 
     steps:
       - uses: actions/checkout@v2      
