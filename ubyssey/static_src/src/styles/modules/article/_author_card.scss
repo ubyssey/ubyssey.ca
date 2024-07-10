@@ -11,6 +11,7 @@
 
     @media($bp-smaller-than-mobile) {
         width: auto;
+        margin-inline: -15px;
         padding-bottom: 3em;
         border-radius: 0;
     }

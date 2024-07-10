@@ -70,11 +70,6 @@
                         <p class="author-string">{{self.authors_with_roles |safe }}</p>
                     </div>
 
-                    <div class="c-article__byline">
-                        <span class="c-article_dark_mode">
-                            {% include 'article/objects/darkmode_button.html' with id="article_page"%}
-                        </span>
-                    </div>
                     {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
             {% endblock %}
             <!-- Below is the container for Article content -->

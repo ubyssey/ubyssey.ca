@@ -68,6 +68,7 @@ $text-color: var(--text_color);
 
 .c-article__info {
   display: block;
+  padding-bottom: 1em;
 
   @media($bp-larger-than-tablet) {
     display: flex;
@@ -392,7 +393,7 @@ p.author-string > a {
 }
 
 p.c-article__published-at {
-  margin-bottom: 1.5em;
+  margin: 0 0 1.5em 0.15em;
 }
 
 .article-content p.c-share {
