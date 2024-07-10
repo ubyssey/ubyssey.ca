@@ -1,105 +1,16 @@
 {% load static %}
-{% load wagtailimages_tags %}
 {% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 {% load wagtailuserbar %}
+{% load ubyssey_ad_filters %}
+{% load ubyssey_ad_tags %}
 {% load menu_tags %}
 
-<header class = "c-header{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}">
-    <ul class = "c-nav-bar">
-        <li class="c-nav-left">
-            <a class="o-logo--small" href="/guide/2020/"></a>
-        </li>
-        <li class="c-nav-right">
-            <div class="c-nav-section" id="c-nav-section--academic">
-                <a class='section-title-link' href="https://ubyssey.ca/guide/2020/academics/">Academics</a>
-                <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--academic'>
-                    <li class='home'>
-                        <a class="header-button" href="https://ubyssey.ca/guide/2020/academics/">Home</a>
-                    </li>
-                    {% for parent in page.get_children %}
-                            {% for child in parent.get_children %}
-                                {% if forloop.counter == 1 %}
-                                <li>
-                                    <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
-                                </li>
-                                {% endif %}
-                            {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="c-nav-section" id="c-nav-section--ubc">
-                <a class='section-title-link' href="https://ubyssey.ca/guide/2020/ubc/">UBC</a>
-                <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--ubc'>
-                    <li class='home'>
-                        <a class="header-button" href="https://ubyssey.ca/guide/2020/ubc/">Home</a>
-                    </li>
-                    {% for parent in page.get_children.specific%}
-                            {% for child in parent.get_children %}
-                                {% if forloop.counter == 2 %}
-                                <li>
-                                    <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
-                                </li>
-                                {% endif %}
-                            {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="c-nav-section" id="c-nav-section--adulting">
-                <a class='section-title-link' href="https://ubyssey.ca/guide/2020/adulting/">Grown-Up Life</a>
-                <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--adulting'>
-                    <li class='home'>
-                        <a class="header-button" href="https://ubyssey.ca/guide/2020/adulting/">Home</a>
-                    </li>
-                    {% for parent in page.get_children.specific %}
-                            {% for child in parent.get_children %}
-                                {% if forloop.counter == 3 %}
-                                <li>
-                                    <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
-                                </li>
-                                {% endif %}
-                            {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="c-nav-section" id="c-nav-section--sdp">
-                <a class='section-title-link' href="https://ubyssey.ca/guide/2020/sdp/">Sex, Drugs, Parties</a>
-                <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--sdp'>
-                    <li class='home'>
-                        <a class="header-button" href="https://ubyssey.ca/guide/2020/sdp/">Home</a>
-                    </li>
-                    {% for parent in page.get_children.specific%}
-                            {% for child in parent.get_children %}
-                                {% if forloop.counter == 4 %}
-                                <li>
-                                    <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
-                                </li>
-                                {% endif %}
-                            {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="c-nav-section" id="c-nav-section--vancouver">
-                <a class='section-title-link' href="https://ubyssey.ca/guide/2020/vancouver/">Vancouver</a>
-                <ul class="c-section-more{% if subsection %} __{{ subsection }}{% else %} __home{% endif %}" id='c-section-more--vancouver'>
-                        <li class='home'>
-                            <a class="header-button" href="https://ubyssey.ca/guide/2020/vancouver/">Home</a>
-                        </li>
-                        {% for parent in page.get_children.specific %}
-                        {% for child in parent.get_children %}
-                            {% if forloop.counter == 5 %}
-                            <li>
-                                <a class="header-button" href="{% pageurl child%}">{{ child.title }}</a>
-                            </li>
-                            {% endif %}
-                        {% endfor %}
-                {% endfor %}
-                </ul>
-            </div>
-
-        </li>
-        <li class="c-nav-current">
-        </li>
-    </ul>
-</header>
-
-
+	{% comment %} {% flat_menu 'guide2021' template="navigation/headers/guide/2021/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True %} {% endcomment %}
+	{% if page.menu %}
+		<!-- Manually selected menu: {{ page.menu.handle }} -->
+		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% elif create_menu_from_parent %}
+		<!-- Menu created from parent page -->	 
+		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% endif %}
