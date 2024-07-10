@@ -2,9 +2,9 @@ name: Cross-browser Testing
 
 on:
   push:
-    branches: [ "1502-add-end-to-end-test-auto" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "1502-add-end-to-end-test-auto" ]
+    branches: [ "develop" ]
 
 jobs:
   test_desktop_browsers:
