@@ -13,7 +13,7 @@ jobs:
         browser: [chrome, firefox, edge, safari]
         python-version: [ 3.8 ]
 
-    runs-on: ${{ matrix.browser != 'safari' ? 'ubuntu-latest' : 'macos-latest' }}
+    runs-on: ${{ matrix.browser == 'safari' && 'macos-latest' || 'ubuntu-latest' }}
 
     steps:
       - uses: actions/checkout@v2
