@@ -6,7 +6,7 @@ Used in both section pages and homepage
 {% load article_display %}
 
 <div class="u-container">
-<h2 class="suggested-title">More from <a href="{{suggested.link}}">{{ suggested.title }}</a></h2>
+<h2 class="suggested-title">{% if self.filter_by_tags %}More on{% else %}More from{% endif %} <a href="{{suggested.link}}">{{ suggested.title }}</a></h2>
 
 <div class="suggested-bottom">
 {% for article in suggested.articles %}

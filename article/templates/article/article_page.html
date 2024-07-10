@@ -99,16 +99,17 @@
                         {% endif %}
 
                         {% block post-content %}
-                        {% include 'article/objects/share_bar.html' %}
 
-                        {% if self.tag_page_link %}
+                        {% if self.tag_page_link and self.primary_tag_slug %}
                             <p class="tag-link">
-                                <b>See all stories on <a href="{% url 'tag-page' slug=primary_tag.slug %}">"{{ primary_tag }}"</a> and be notified through Rss
+                                <b>See all stories on <a href="/tag/{{primary_tag.slug}}">"{{ primary_tag }}"</a> and be notified through Rss
                                 <a href="/tag/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to {{ primary_tag }} tag's rss feed">
                                 <i class="fa fa-rss"></i>
                                 </a></b>
                             </p>
                         {% endif %}
+
+                        {% include 'article/objects/share_bar.html' %}
 
                         {% for author in self.authors_in_order %}
                             {% include "article/objects/author_card.html" with author=author %}

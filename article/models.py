@@ -538,7 +538,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         through='article.ArticlePageTag', 
         blank=True, 
         related_name='tags', 
-        help_text="Input the most relevant tag for this article first.",
+        help_text="Tags entered here will be listed in the tag page at '/tag/tag-name'",
         verbose_name="Tags")
     primary_tag_slug = models.CharField(
         null=True,
@@ -1022,7 +1022,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         context["suggested"] = self.get_suggested()
 
-        if self.tag_page_link:
+        if self.tag_page_link and self.primary_tag_slug:
             context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
 
         return context
@@ -1143,7 +1143,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if len(articles_by_tag) > 0:
                 tag = Tag.objects.get(slug=self.primary_tag_slug)
                 suggested = {}
-                suggested['title'] = "More on '" + tag.name + "'"
+                suggested['title'] = "'" + tag.name + "'"
                 suggested['articles'] = articles_by_tag[:number_suggested]
                 suggested['link'] = "/tag/" + tag.slug
         if not suggested:
