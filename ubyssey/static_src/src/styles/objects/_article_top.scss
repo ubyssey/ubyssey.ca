@@ -1,0 +1,123 @@
+@import 'modules/variables';
+
+.o-article--top_article {
+    display: flex;
+    width: 95%;
+    margin: auto;
+    padding-top: 1em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid;
+
+    &:first-of-type {
+        padding-top: 0;
+    }
+
+    &:last-of-type {
+        border: none;
+    }
+
+    .o-article__left {
+        margin-right: 0.8em;
+    }
+
+    .o-article__image {
+
+        @media ($bp-smaller-than-tablet) {
+            min-width: 100%;
+            height: auto;
+
+        }
+
+        display: block;
+
+        img {
+            position: absolute;
+            bottom: 0px;
+            height: 100%;
+            width: auto;
+        }
+    }
+
+    .top_article-title-tag {
+        color: black;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .o-article__headline {
+        // Structure
+        flex: 1;
+        color: #000000;
+        margin: auto;
+        // Text
+        font-size: font-size(17);
+        line-height: inherit;
+    }
+
+    .o-article__byline {
+        font-size: 0.7rem;
+        padding-top: 5px;
+        color: $color-ubyssey-blue-dark;
+    }
+
+    .o-article__meta__image {
+        // Structure
+        width: 4.5em;
+        aspect-ratio: 1;
+        margin-bottom: 0.65rem;
+        position: relative;
+        clip-path: inset(0 0 1% 0);
+        border: 2px solid;
+    }
+
+    .o-article__meta__image .o-article__headline {
+
+        // Text
+        font-size: font-size(18);
+        line-height: 1.2em;
+    }
+
+    .o-article__meta {
+        margin: 0.6rem;
+    }
+
+    .o-article__label {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50%;
+        aspect-ratio: 1;
+        background-color: $color-ubyssey-blue-dark;
+        transform: translate(-50%, 50%);
+        clip-path: inset(-20% -20% 0 50%);
+        border-radius: 100%;
+    }
+
+    .o-article__label_num {
+        position: absolute;
+        left: 60%;
+        bottom: 50%;
+        width: 100%;
+        color: white;
+        font-weight: 600;
+        -webkit-text-stroke: $color-ubyssey-blue-dark;
+        -webkit-text-stroke-width: 1px;
+        font-size: 1.2rem;
+        margin-bottom: 0.1rem;
+        line-height: 1em;
+    }
+}
+
+
+[color-css-theme="light"] {
+    .o-article--top_article {
+        border-color: #00000045;
+    }
+}
+
+[color-css-theme="dark"] {
+    .o-article--top_article {
+        border-color: white;
+    }
+}

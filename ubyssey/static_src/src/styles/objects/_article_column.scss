@@ -1,0 +1,111 @@
+@import 'modules/variables';
+
+// Article column
+
+.darkmode {
+    .o-article--column {
+        box-shadow: #000000 1px 5px 15px;
+    }
+}
+
+.o-article--column {
+    margin-bottom: 1rem;
+    background-color: $color-ubyssey-blue;
+    position: relative;
+    left: 0;
+    transition-duration: 0.2s;
+    display: flex;
+
+    &:hover {
+        left: -10px;
+    }
+
+    .o-article__meta__image {
+        background-color: black;
+        margin-right: 0.65rem;
+
+        .o-article__image {
+            // Structure
+            display: flex;
+            width: 4.5rem;
+            height: 100%;
+
+            // Background
+            background-position: center;
+            background-size: cover;
+
+            img {
+                margin: auto;
+            }
+        }
+    }
+
+    .o-article__meta {
+        display: flex;
+        margin-bottom: 0;
+
+        .o-article__headline {
+            // Structure
+            font-size: font-size(18);
+            line-height: 1.2em;
+            flex: 1;
+            color: #ffffff;
+            margin: auto;
+            margin-right: 0.5em;
+            padding: 0.5em 0;
+
+            a:hover {
+                color: #eeeeee;
+            }
+        }
+    }
+}
+
+
+
+.o-article--column-latest {
+    background-color: $color-ubyssey-blue-light;
+
+    .o-article__meta__image .o-article__image {
+        width: 5em;
+    }
+
+    .o-article__meta {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0.5em;
+
+
+        .o-article__section {
+            margin-top: 0.5em;
+            margin-bottom: 0.25em;
+            font-size: 0.65em;
+            text-transform: uppercase;
+            width: fit-content;
+            padding-left: 0.2em;
+            padding-right: 0.2em;
+            background-color: $color-ubyssey-blue;
+            color: white;
+
+            &:hover {
+                background-color: $color-ubyssey-blue-dark !important;
+            }
+
+            a:hover {
+                color: white;
+            }
+        }
+
+        .o-article__headline {
+            margin-top: 0;
+            margin-bottom: 0.5em;
+            padding: 0;
+            line-height: 1.3em;
+            color: black;
+
+            a:hover {
+                color: #555555;
+            }
+        }
+    }
+}

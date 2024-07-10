@@ -33,21 +33,23 @@ if ($('main.article').length) {
     var articleHeadline = $article.data('headline');
     var articleURL = $article.data('url');
 
-    var userId = $article.data('user-id');
+    // var userId = $article.data('user-id');
 
     var articleIds = $article.data('list');
-    var listName = $article.data('list-name');
+    // var listName = $article.data('list-name');
     if (articleIds === parseInt(articleIds, 10)) {
         articleIds = [articleIds];
     } else {
         articleIds = articleIds.split(',');
     }
-
+    
+    /*
     var firstArticle = {
         id: articleId,
         headline: articleHeadline,
         url: articleURL
     };
+    */
 
     function stickyAds(scrollTop, stickyElements) {
 
@@ -200,11 +202,12 @@ if ($('main.article').length) {
     ];
 
 
-
+    /*
     const gallery = ReactDOM.render(
         <Galleries galleries={galleries} />,
         document.getElementById('gallery')
     );
+    */
 
 
 }

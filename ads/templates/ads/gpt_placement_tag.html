@@ -13,10 +13,12 @@
             </script>          
         </div>
     </div>
+    {% comment %}
     {% if size == "box" %}
         <a href='http://ubyssey.ca/volunteer' target="_blank">
             <div class="o-hidden o-replacement o-replacement--{{ size }}{% if div_class %} o-replacement--{{ div_class }}{% endif %}" style="background-image:url({% static 'ubyssey/images/house/volunteer.jpg' %});">
             </div>
         </a>
     {% endif %}
+    {% endcomment %}
 </div>
