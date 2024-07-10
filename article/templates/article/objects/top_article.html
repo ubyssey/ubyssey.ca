@@ -7,6 +7,7 @@
 {% if article %}
   <article class="o-article o-article--top_article{% if padded %} o-article--padded{% endif %}">
     <div class="o-article__left">
+      <a href="{{article|get_section_link}}" class="o-article__section-tag">{{article|get_section_title}}</a>
       <div class="o-article__meta__image">
         {% if article.featured_media.first %}
             <a class="o-article__image" href="{% pageurl article %}">
@@ -41,8 +42,6 @@
       </h2>
       <div class="o-article__byline">
         <span class="o-article__author">{{ article.get_authors_with_urls|safe }}</span>
-        <span> &nbsp;&nbsp; </span>
-        <a href="{{article|get_section_link}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article|get_section_title}}</a>
         <span> &nbsp;&nbsp; </span>
         <span class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</span>
       </div>
