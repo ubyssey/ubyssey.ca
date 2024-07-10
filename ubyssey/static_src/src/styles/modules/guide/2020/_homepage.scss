@@ -19,16 +19,20 @@
       &content{
         padding: 15% 20%;
         letter-spacing: 1px;
+        color: black;
         h1{
           text-transform: uppercase;
           font-family: $header-font;
           text-align: right;
+          font-size: 18px;
+          margin-bottom: 0;
         }
         h2{
           font-weight: 300;
           text-align: right;
           font-family: $header-font;
           margin-bottom: 10px;
+          font-size: 18px;
         }
       }
     }
@@ -128,6 +132,7 @@
 }
 
 .panel-quote{
+  margin-top: 0.5em;
   &.__1-{
     &container{
       &-text{
