@@ -83,7 +83,28 @@
   {% block content %}
   {% endblock %}
   </div>
-  {% include 'guide/2020/footer.html' %}
+  <footer class="c-footer{% if subsection %} __{{ subsection }}{% else %} __home{% endif %} {{section}}">
+    <div class="o-container">
+      <div class="o-wrapper">
+        <a class='ubyssey-dingbat' href="https://www.ubyssey.ca"><img
+            src="{% static 'ubyssey/images/ubyssey-dingbat-white.png' %}" /></a>
+        {% block footernav %}
+        {% flat_menu page.menu.handle template="navigation/guide_footer.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+        {% endblock %}
+        <div class="c-footer__social">
+          <ul>
+            <li><a class="facebook-icon" href="https://www.facebook.com/ubyssey" target="_blank"><i
+                  class="fa fa-facebook-square"></i></a></li>
+            <li><a class="instagram-icon" href="https://www.instagram.com/ubyssey/" target="_blank"><i
+                  class="fa fa-instagram"></i></a></li>
+            <li><a class="twitter-icon" href="https://twitter.com/Ubyssey" target="_blank"><i
+                  class="fa fa-twitter"></i></a></li>
+          </ul>
+        </div>
+        <div class="c-footer__copyright">© The Ubyssey</div>
+      </div>
+    </div>
+  </footer>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
   <script src="{% static 'ubyssey/js/main.js' %}" type="text/javascript"></script>
   <script src="{% static 'ubyssey/js/dfp.js' %}" type="text/javascript"></script>
@@ -99,4 +120,5 @@
 
   </script>
 </body>
+
 </html>
