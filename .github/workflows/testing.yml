@@ -47,10 +47,7 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py collectstatic --noinput
           rm -rf .git/ ubyssey/static_src/
-      
-      - name: Print current working directory
-        run: pwd
-      
+            
       - name: Install Chrome
       run: |
         sudo apt-get update
