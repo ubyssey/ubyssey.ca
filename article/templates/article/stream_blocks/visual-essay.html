@@ -16,7 +16,7 @@
                     </div>
                     {% endif %}
                     {% image block.value.block.image original as bg %}
-                    <div class="o-visual-essay__left-image" style="background-image: url('{{bg.url}}')"></div>
+                    <div class="o-visual-essay__left-image" style="background-image: url('{{bg.url}}')" aria-label="{{block.value.block.alt_text}}" ></div>
                 {% else %}
                     {% include_block block.value.block with id=block.id %}
                 {% endif %}

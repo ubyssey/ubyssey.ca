@@ -89,6 +89,7 @@ function enableScroll() {
   $('body').removeClass('u-no-scroll');
 }
 
+/*
 // Set element image-attachment variables left and right's respective margins to that of 
 // the first child of parent element p (with direct parent element article-content)
 function embedMargins() {
@@ -132,6 +133,7 @@ function issueParser() {
   };
   req.send();
 }
+*/
 
 // If hovering over sections-more-dropdown element,
 // element slides up or down.
@@ -413,6 +415,7 @@ function openModal(modal) {
   disableScroll();
 }
 
+/*
 function moveModals() {
   var modalBlocks = document.getElementsByClassName("add-to-modal");
   var modal = document.getElementById("modal");
@@ -432,6 +435,7 @@ function moveModals() {
     index = index + 1;
   } 
 }
+*/
 
 function initializeFilterDropdown() {
   $(document).on('click', 'a.filterDropdown', function (e) {

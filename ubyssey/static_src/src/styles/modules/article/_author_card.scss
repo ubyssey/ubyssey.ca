@@ -1,0 +1,85 @@
+@import 'modules/variables';
+
+.author_card {
+    padding: 1.5em;
+    display: flex;
+    background-color: $color-ubyssey-blue-light;
+    border-radius: 20px;
+    margin: auto;
+    margin-top: 2em;
+    flex-direction: column;
+
+    @media($bp-smaller-than-mobile) {
+        width: auto;
+        margin-inline: -15px;
+        padding-bottom: 3em;
+        border-radius: 0;
+    }
+
+    p,
+    div {
+        color: black;
+    }
+}
+
+div.article-content .author_card {
+    max-width: 585px;
+}
+
+.author_image {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    margin-right: 1em;
+}
+
+.author_title>p {
+    margin-bottom: 0.5em;
+}
+
+.with_image {
+    p {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+
+.author_name {
+    margin-right: 0.2em;
+    font-weight: bold;
+}
+
+.author_card p.author_role {
+    text-transform: capitalize;
+    color: #1b1b1b;
+}
+
+.author_info {
+    margin-top: 0.5em;
+
+    p {
+        margin-top: 0.5em;
+    }
+
+    li {
+        margin-left: 1em;
+    }
+
+    a {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+}
+
+.author_title {
+    display: flex;
+    flex-direction: row;
+}
+
+.author_role {
+    font-style: bold;
+    text-transform: capitalize;
+}

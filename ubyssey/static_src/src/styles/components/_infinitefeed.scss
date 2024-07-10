@@ -41,6 +41,7 @@
     height: 100%;
     width:38%;
     padding-left: 1em;
+    border-left: solid 1px transparent;
 
     @media ($bp-smaller-than-phablet) {
         display:none;
@@ -73,6 +74,8 @@
 
 .c-home-infinitefeed {
     width: 100%;
+    padding-bottom: 3em;
+
     @media ($bp-larger-than-phablet) {
         margin-right: 20px;
         width: 50%;
@@ -121,26 +124,29 @@
     margin: 2px;
     margin-right: 10px;
     margin-left: 10px;
+    font-size: 1em;
+    color: white;
 }
 
 .issue_img {
     width: 100%;
 }
 
-.lightmode {
+[color-css-theme="light"] {
+
     .issue {
-        box-shadow: -5px 10px 7px 0px #0000003b;
+        box-shadow: -7px 10px 5px 0px #EEE;
     }
     #loader {
         color: black;
     }
     .c-sidebar {
-        border-left: solid;
-        border-width: 1px;
+        border-color: #EEE;
     }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
     h2.block-title {
         text-shadow: #000000 1px 1px 15px;
     }

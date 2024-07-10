@@ -43,89 +43,77 @@
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                <div class="u-container">
-                    {% comment %} {% if breaking %}
+                {% comment %}<div class="u-container">
+                     {% if breaking %}
                         <a class="o-breaking-news" href="{{ breaking.get_absolute_url }}">
                             <h3>BREAKING: {{ breaking.headline|safe }}</h3>
                         </a>        
-                    {% endif %} {% endcomment %}
-                </div>
+                    {% endif %}
+                </div>{% endcomment %}
 
                 <div class="u-container u-container--content u-container--padded">
+                    <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
+                    
+                    {% if self.title_tag %}
+                        <h2 class="title-tag">{{self.title_tag}}//</h2>
+                    {% elif self.category %}
+                        <h2 class="title-tag">{{self.category.title}}//</h2>
+                    {% endif %}
+
                     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
                     {% if self.fw_above_cut_lede %}
                         <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
                     {% endif %}
                     <div class="c-article__info">
-                        {% comment %}
-                            {% include 'objects/social-icons.html' with article=article layout='top' %}
-                        {% endcomment %}
-                            
-                        <div class="c-authors_info">
-                            {% include "article/objects/author_bio.html" %}
-                        </div>
-
+                        <p class="author-string">{{self.authors_with_roles |safe }}</p>
                     </div>
 
-                    <div class="c-authors_bio_meta">
-                        <div class="c-article__byline">
-                
-                            <div class="c-article__byline__meta">
-                                <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
-                                                    
-                                {% if reading_time %}
-                                    <span> &nbsp;&middot;&nbsp; </span>
-                                    <span class="c-article__reading-time">{{ reading_time }} min read</span>
-                                {% endif %}
-                
-                                {% if article.subsection  %}
-                                    <span> &nbsp;&middot;&nbsp; </span>
-                                    <a href="{{ article.subsection.get_absolute_url }}">
-                                        <span class="c-article__reading-time">{{ article.subsection.name }}</span>
-                                    </a>
-                                {% endif %}
-                                
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="c-article__byline">
-                        {% include 'article/objects/share_bar.html' %}
-                        <span class="c-article_dark_mode">
-                            {% include 'article/objects/darkmode_button.html' with id="article_page"%}
-                        </span>
-                    </div>
+                    {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
             {% endblock %}
             <!-- Below is the container for Article content -->
             <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
                 <!-- Below is the container for the left column article content  -->
-                {% if not self.is_explicit %}
-                    {% filter inject_ads:is_mobile %}
                     <div class="cell left article-content">
                         {% block pre-content %}
                         {% endblock %}
-                            <!-- Content unique to the article starts here -->
-                            <!-- Article featured media -->
-                            {% if self.layout == 'default' %}
-                                {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
-                            {% endif %}
-                            
+
+                        <!-- Content unique to the article starts here -->
+
+                        {% if not self.is_explicit %}
+                            {% filter inject_ads:is_mobile %}                            
+                            <!-- Article text -->
+                            {% for block in self.content %}
+                                {% include_block block with id=block.id %}
+                            {% endfor %}
+                            {% endfilter %}
+                        {% else %}
                             <!-- Article text -->
                             {% for block in self.content %}
                             {% include_block block with id=block.id %}
                           {% endfor %}
+                        {% endif %}
                           
-                          {% if self.tag_page_link %}
-                              <p class="tag-link">
-                                <b>See all stories on <a href="{% url 'tag-page' slug=primary_tag.slug %}">"{{ primary_tag }}"</a> and be notified through Rss
-                                <a href="/tag/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to {{ primary_tag }} tag's rss feed">
-                                  <i class="fa fa-rss"></i>
-                                </a></b>
-                            </p>
-                          {% endif %}
-                          
-                            <!-- Content unique to the article ends here -->
+                        <!-- Content unique to the article ends here -->
+                        {% if self.disclaimer %}
+                            <div class="disclaimer">{{self.disclaimer|safe}}</div>
+                        {% endif %}
+
+                        {% if self.tag_page_link %}
+                        <p class="tag-link">
+                          <b>See all stories on <a href="{% url 'tag-page' slug=primary_tag.slug %}">"{{ primary_tag }}"</a> and be notified through Rss
+                          <a href="/tag/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to {{ primary_tag }} tag's rss feed">
+                            <i class="fa fa-rss"></i>
+                          </a></b>
+                        </p>
+                        {% endif %}
+
                         {% block post-content %}
+                        {% include 'article/objects/share_bar.html' %}
+
+                        {% for author in self.authors_in_order %}
+                            {% include "article/objects/author_card.html" with author=author %}
+                        {% endfor %}
+
                         {% endblock %}
                         
                     </div>
@@ -140,30 +128,35 @@
                     {% for block in self.content %}
                         {% include_block block with id=block.id %}
                     {% endfor %}
+                    <!-- Content unique to the article ends here -->
                     </div>
                 {% endif %}
-                <aside class="cell right sidebar with-spacing">
-
+                <!-- Below is the container for the right column article content, not entirely unique to the article -->
+                <aside class="cell right sidebar">
                     {% block sidebar %}
-                      <div class="suggested-sidebar">
-                        {% block suggested_articles %}
-                  
-                          {% if suggested %}
-                            {% include "infinitefeed/sidebar/sidebar_section_block.html" with title=suggested.title articles=suggested.articles %}
-                          {% endif %}
-                  
-                        {% endblock %}
-                      </div>
-                      {% if self.is_explicit is not True %}
-                        {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
-                          {% gpt_placement_tag orderable.ad_slot %}
-                        {% endfor %}
-                      {% else %}
-                        {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
-                      {% endif %}
-                      {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
+                        <div class="suggested-sidebar">
+                            {% block suggested_articles %}
+
+                            {% if suggested %}
+                                {% include "infinitefeed/sidebar/sidebar_section_block.html" with title=suggested.title articles=suggested.articles %}
+                            {% endif %}
+
+                            {% endblock %}
+                        </div>
+                        <!-- Article Page sidebar ads go here -->
+                        {% if self.is_explicit is not True %}
+                            {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
+                                {% gpt_placement_tag orderable.ad_slot %}
+                            {% endfor %}            
+                        {% else %}
+                            {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
+                        {% endif %}
+                        {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
                     {% endblock %}
-                </aside>
+
+                </aside>                        
+
+
             {% comment %} {% include 'objects/social-icons-bottom.html' with article=article %} {% endcomment %}
         </article>
     </main>

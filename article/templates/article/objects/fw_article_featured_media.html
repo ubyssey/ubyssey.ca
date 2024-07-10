@@ -14,7 +14,7 @@
             data-url="{{ featured_image.url }}"
             data-credit="{{ featured_image_object.credits }}"
             src="{{ featured_image.url }}"
-            alt=""
+            alt="{{featured_image_object.alt_text}}"
         />
         {% if featured_image_object.caption or featured_image_object.credit %}
             <div class="caption">

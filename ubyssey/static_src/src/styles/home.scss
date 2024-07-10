@@ -4,22 +4,21 @@
 @import 'modules/advertisements';
 @import 'modules/variables';
 @import 'modules/mixins';
-@import 'modules/utilities';
 
 // Ubyssey site-specific files
-
 @import 'modules/header';
 @import 'modules/footer';
-
-@import 'modules/headlines';
 
 @import 'modules/darkmode';  
 
 @import 'modules/homepage';
-
-@import 'modules/article/base';
+@import 'objects/box-label';
 
 @import 'objects/article';
+@import 'objects/article_cover';
+@import 'objects/article_top';
+@import 'objects/article_column';
+@import 'objects/article_infinite';
 
 @import 'components/adblock-splash';
 @import 'components/cookie-disclaimer';

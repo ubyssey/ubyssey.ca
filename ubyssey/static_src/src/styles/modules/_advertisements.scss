@@ -8,6 +8,12 @@ $adslots: (
   mobile-leaderboard: (320px, 50px)
 );
 
+.o-advertisement--ad-page-promo {
+  font-size: 0.7em;
+  text-decoration: underline;
+  text-align: center;
+}
+
 .adslot {
   display: block !important;
   background-color: transparent;
@@ -210,16 +216,11 @@ main.article .o-advertisement--leaderboard {
   padding-bottom: 1.5em;
 }
 
-.lightmode{
-  .o-advertisement--header-bar {
-    background-color: #dddddd;
-    border-bottom: 1px solid black;
-  }
-}
+.o-advertisement--fw-end {
+  display: flex;
+  justify-content: space-around;
 
-.darkmode {
-  .o-advertisement--header-bar {
-    background-color: #424242;
-    border-bottom: 1px solid #535353;
+  @media($bp-smaller-than-phablet) {
+    flex-direction: column;
   }
 }
