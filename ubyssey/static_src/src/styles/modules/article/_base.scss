@@ -372,6 +372,19 @@ div.article-content {
   // @media($bp-smaller-than-mobile) {
   //   padding: 0 3%;
   // }
+
+  >p.tag-link {
+    margin-top: 2em;
+    a {
+      text-transform: capitalize;
+      color: #0071c9;
+      text-decoration: none;
+      border: none;
+    }
+    i.fa-rss {
+      margin-left: 0.53em;
+    }
+  }
 }
 @media($bp-larger-than-mobile) {
   div.headline-container {
