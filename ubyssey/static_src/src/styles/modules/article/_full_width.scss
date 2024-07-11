@@ -186,14 +186,14 @@
       .headline-container {
         position: absolute;
         bottom: 0;
-        padding: 70px 0 2rem 0;
+        padding: 70px 0 0.5em 0;
         background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 1%, rgba(0,0,0,0.84) 99%);
         h1.headline, h2.title-tag, p.fw-description, div.article-byline, span.author, span.published {
           color: #fff;
         }
         h1.headline {
           font-family: $font-default;
-          font-size: 36px;
+          font-size: 1em;
           font-weight: $font-weight-semi-bold;
         }
         div.article-byline {
@@ -203,16 +203,13 @@
           font-weight: 300;
         }
         .caption {
+          padding-inline: 1em;
+
           font-family: $font-headline;
           font-size: 12.5px;
           color: white;
           line-height: 19px;
-          padding-left: 15px;
-          padding-right: 15px;
           text-align: right;
-          position: absolute; 
-          bottom: 5px;
-          right: 0;
         }
       }
       @media($bp-larger-than-mobile) {
@@ -222,7 +219,12 @@
         .headline-container {
           padding: 160px 0 120px 0;
           h1.headline {
-            font-size: 42px;
+            font-size: 2em;
+          }
+          .caption {
+            position: absolute; 
+            bottom: 5px;
+            right: 0;
           }
         }
       }
