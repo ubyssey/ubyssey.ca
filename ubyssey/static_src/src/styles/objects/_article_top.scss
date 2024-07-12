@@ -20,6 +20,21 @@
         margin-right: 0.8em;
     }
 
+    .o-article__section-tag {
+        display: block;
+        width: fit-content;
+        padding-inline: 0.5em 0.8em;
+        padding-top: 0.2em;
+        border-radius: 0 0.8em 0 0;
+
+        background-color: #041620;
+
+        text-transform: uppercase;
+        color: white;
+        font-weight: 600;
+        font-size: 0.65em;
+    }
+
     .o-article__image {
 
         @media ($bp-smaller-than-tablet) {
@@ -67,8 +82,8 @@
         aspect-ratio: 1;
         margin-bottom: 0.65rem;
         position: relative;
-        clip-path: inset(0 0 1% 0);
-        border: 2px solid;
+        clip-path: inset(0 0 0 0);
+        border: 2px solid $color-ubyssey-blue-dark;
     }
 
     .o-article__meta__image .o-article__headline {

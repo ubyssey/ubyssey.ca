@@ -301,6 +301,7 @@ dialog {
 body { 
   background-color: var(--background);
   transition: background-color 0.5s ease, color 0.5s ease;
+  min-height: 100vh;
 }
 
 #content-wrapper {

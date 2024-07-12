@@ -36,7 +36,7 @@ $text-color: var(--text_color);
   text-transform: uppercase;
 }
 
-.disclaimer {
+div.article-content .disclaimer {
   margin: 2em auto;
   border-top: 2px solid;
   padding-top: 0.75em;
@@ -64,10 +64,17 @@ $text-color: var(--text_color);
       margin: 0;
     }
   }
+
+  @media($bp-smaller-than-mobile) {
+    .author_card {
+      margin-inline: -15px;
+    }
+  }
 }
 
 .c-article__info {
   display: block;
+  padding-bottom: 1em;
 
   @media($bp-larger-than-tablet) {
     display: flex;
@@ -365,6 +372,19 @@ div.article-content {
   // @media($bp-smaller-than-mobile) {
   //   padding: 0 3%;
   // }
+
+  >p.tag-link {
+    margin-top: 2em;
+    a {
+      text-transform: capitalize;
+      color: #0071c9;
+      text-decoration: none;
+      border: none;
+    }
+    i.fa-rss {
+      margin-left: 0.53em;
+    }
+  }
 }
 @media($bp-larger-than-mobile) {
   div.headline-container {
@@ -392,7 +412,7 @@ p.author-string > a {
 }
 
 p.c-article__published-at {
-  margin-bottom: 1.5em;
+  margin: 0 0 1.5em 0.15em;
 }
 
 .article-content p.c-share {

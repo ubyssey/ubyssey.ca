@@ -181,10 +181,15 @@ html.hairlines {
 }
 
 .c-homepage__sections {
-  height: 95%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 3em;
+
+  @media ($bp-larger-than-phablet) {
+      margin-right: 20px;
+      width: 50%;
+      padding-right: 20px;
+  }
+  
 
   .c-homepage__section__timeline ul {
     padding-left: 1em;
@@ -459,6 +464,7 @@ html.hairlines {
 // Styling for unused infinite feed on homepage 
 .home_infinitefeed {
   padding-top: 40px;
+  margin-bottom: 3em;
   position: relative;
   &.darkmode {
     background-color: $color-ubyssey-blue-dark-2;
@@ -469,6 +475,11 @@ html.hairlines {
 
   padding-left: 20px;
   padding-right: 20px;
+
+  .c-sidebar {
+    height: auto;
+    padding-bottom: 5em;
+  }
 }
 
 .home_infinitefeed_cutoff_shadow {

@@ -157,6 +157,16 @@ footer {
     }
     div.footer-branding {
       margin: auto;
+      width: 100%;
+      max-width: 200px;
+
+      .logo {
+        width: 50%;
+        margin: auto;
+      }
+      .funding {
+        width: 100%;
+      }
     }
     .top-row, .bottom-row{
       width: 50%;
