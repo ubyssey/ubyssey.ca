@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from rest_framework import serializers, viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
+import math
 
 # Create your views here.
 class EventsTheme(object):
@@ -12,16 +13,6 @@ class EventsTheme(object):
 
     def landing(self, request):
         """Events page landing page"""
-        if request.GET.get("show_hidden"):
-            if request.GET.get("category"):
-                events = Event.objects.filter(category=request.GET.get("category")).order_by("start_time")
-            else:
-                events = Event.objects.all().order_by("start_time")
-        else:
-            if request.GET.get("category"):
-                events = Event.objects.filter(category=request.GET.get("category"),hidden=False).order_by("start_time")
-            else:
-                events = Event.objects.filter(hidden=False).order_by("start_time")
 
         calendar = []
         day = timezone.now() - timedelta(days=7 + timezone.now().weekday())
@@ -30,9 +21,27 @@ class EventsTheme(object):
         events_index = 0
         week = {'month': day.strftime("%B"), 'month_short': day.strftime("%b"), 'days': [{'day': day.day, 'day_of_week': day.strftime("%a"), 'events': []}]}
 
+        if request.GET.get("show_hidden"):
+            if request.GET.get("category"):
+                events = Event.objects.filter(category=request.GET.get("category"), end_time__gte=day).order_by("start_time")
+            else:
+                events = Event.objects.filter(end_time__gte=day).order_by("start_time")
+        else:
+            if request.GET.get("category"):
+                events = Event.objects.filter(category=request.GET.get("category"), end_time__gte=day,hidden=False).order_by("start_time")
+            else:
+                events = Event.objects.filter(hidden=False, end_time__gte=day).order_by("start_time")
+
+
         closest_event = None
 
         ongoing = []
+
+        highlight = "category"
+        if request.GET.get("category"):
+            highlight = "host"
+
+        legend = []
 
         while(len(calendar) < 4):
 
@@ -64,13 +73,22 @@ class EventsTheme(object):
             else:
                 events[events_index].start_time = events[events_index].start_time.astimezone(timezone.get_current_timezone())
                 events[events_index].end_time = events[events_index].end_time.astimezone(timezone.get_current_timezone())
-                
+
                 if closest_event == None and timezone.now() <= events[events_index].start_time:
                     closest_event = events[events_index]
                 if day > events[events_index].start_time:
                     events_index = events_index + 1
                 else:
                     if day.date() == events[events_index].start_time.date():
+
+                        if highlight == "category":
+                            highlighted_feature = getattr(events[events_index], highlight).capitalize()
+                        else:
+                            highlighted_feature = getattr(events[events_index], highlight)
+
+                        if not highlighted_feature in legend and highlighted_feature != None:
+                            legend.append(highlighted_feature)
+
                         week['days'][-1]['events'].append(events[events_index])
                         if not events[events_index].end_time.date() < (day+timedelta(days=1)).date():
                             ongoing.append(events[events_index])
@@ -91,6 +109,13 @@ class EventsTheme(object):
                                 week['days'][-1]['events'].append(ongoing[i])
                                 i = i + 1
         
+        highlight_colours = {}
+        for i in range(len(legend)):
+            r = 200 + math.floor(50 * math.cos(i/len(legend) * 2 * math.pi))
+            g = 200 + math.floor(50 * math.sin(i/len(legend) * 2 * math.pi))
+            b = 200
+            highlight_colours[legend[i]] = "rgb(" + ",".join([str(r), str(g), str(b)]) + ")"
+
         event = closest_event
         
         if request.GET.get("event"):
@@ -102,7 +127,7 @@ class EventsTheme(object):
         if event:
             event.description = event.description.replace('\n', '<br>')
 
-        return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event})
+        return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours})
 
 def update_events(request):
     from urllib.request import urlopen, Request

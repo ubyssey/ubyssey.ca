@@ -7,10 +7,23 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'ubyssey/css/events.css' %}" type="text/css" />
+<style>
+{% for key, value in highlight_colours.items %}
+    .{{key|slugify}} {
+        --highlight: {{value}};
+    }
+    div.day li.{{key|slugify}} {
+        color: black;    
+    }
+{% endfor %}
+</style>
+
 {% endblock %}
 
 {% block head_scripts%}
-<link rel="alternate" type="application/atom+xml" title="{{self.title}} - Ubyssey feed" href="/authors/{{self.slug}}/rss">
+{% comment %} 
+ical, rss feed, and api should be linked here
+{% endcomment %}
 {% endblock %}
 
 {% block header %}  
@@ -18,7 +31,7 @@
 
 {% block content %}
 <div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://storage.googleapis.com/ubyssey/media/renditions/Guide_2022_AMS.original.jpg')"></div>
-<main class="c-page events-page">
+<main class="c-page events-page highlight-{{highlight}}">
     <div class="events-flex {% if selectedEvent.selected %}event-view{% endif %}">
         <div id="calendar" class="events-calendar">
             <header class="events">
@@ -67,7 +80,10 @@
                     {% endif %}
                     {% for day in week.days %}
                         {% if forloop.parentloop.counter0 != 0 and day.day == 1 %}
-                            <h2 class="events-calendar--month">{{week.month}}</h2>
+                        <h2 class="events-calendar--month">
+                            <span class="full">{{week.month}}</span>
+                            <span class="short">{{week.month_short}}</span>
+                        </h2>
                         {% endif %}
                         <div class="day {{day.phase}}">
                             <button onClick="this.parentElement.parentElement.classList.toggle('enlarged')" class="events-calendar--number">
@@ -75,7 +91,7 @@
                             </button>
                             <ul>
                             {% for event in day.events %} 
-                                <li {% if event.event_url == selectedEvent.event_url %}class="selected"{% endif %}><a title="{{event.title}}" href="?event={{event.event_url}}">
+                                <li class="{% if event.host %}{{event.host|slugify}} {% endif %}{% if event.category %}{{event.category}} {% endif %}{% if event.event_url == selectedEvent.event_url %}selected{% endif %}"><a title="{{event.title}}" class="calendar-item" href="?event={{event.event_url}}" event-url="{{event.event_url}}">
                                     {% if event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title|safe}}
                                 </a></li>
                             {% endfor %}
@@ -84,6 +100,15 @@
                     {% endfor %}
                 </div>
             {% endfor %}
+
+            <div class="legend">
+                <ul>
+                {% for key in legend %}
+                <li class="{{key|slugify}}">{{key}}</li>
+                {% endfor %}
+                </ul>
+            </div>
+
             </div>
         </div>
         <div class="events-info-container">
@@ -103,8 +128,8 @@
                     {% endif %}
                 {% endif %}
             </h2>
-            <div class="events-info--content">
-                <h2>{{selectedEvent.title|safe}}</h2>
+            <div class="events-info--content {{selectedEvent.category}}">
+                <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
                 <p><b>Location:</b> {{selectedEvent.location}}</p>
                 <p>{% if selectedEvent.host %}<b>{{selectedEvent.host}}:</b>{% endif %} {{selectedEvent.description|safe}}</p>
                 <p ><a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a></p>
@@ -112,6 +137,9 @@
                     var s = document.getElementById('source_link');
                     s.href = s.href.replace("__AND__", "&");
                     s.innerHTML = s.host;
+
+                    var s = document.getElementById('selected-title');
+                    s.href = s.href.replace("__AND__", "&");
                 </script>
             </div>
         </div>
@@ -120,6 +148,17 @@
 </main>
 {% endblock %}
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<script>
+    $('.calendar-item').click(function (e) {
+        e.preventDefault();
+        
+        var params = new URLSearchParams(location.search);
+        params.set('event', this.getAttribute('event-url'));
+        console.log(params);
+        window.location.search = params.toString();
+    })
+</script>
+{% endblock %}
 
 {% block footer %}{% endblock %}

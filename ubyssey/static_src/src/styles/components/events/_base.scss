@@ -52,7 +52,7 @@ main.events-page {
                 height: 100%;
                 overflow-y: auto;
                 background-color: white;
-                
+
                 h2, p {
                     color: black;
                 }
@@ -63,8 +63,9 @@ main.events-page {
 
                 h2 {
                     text-align: center;
+                    text-decoration: underline 3px var(--highlight);
                 }
-                a {
+                #source_link {
                     border-bottom: 1px solid;
                 }
             }
@@ -138,9 +139,14 @@ div.day{
     padding: 1em;
     font-size: 12px;
 
+    li {
+        border: 2px solid transparent;
+    }
+
     li.selected {
         color: $color-ubyssey-blue;
         text-decoration: underline;
+        border-color: black;
     }
 
     &.past {
@@ -154,11 +160,9 @@ div.day{
         background-color: $color-ubyssey-blue;
         color: white;
         li a:hover, li a:focus {
-            color: white;
             text-decoration: underline;
         }
         li.selected {
-            color: white;
             text-decoration: underline;
         }
     }
@@ -176,11 +180,16 @@ div.day{
         list-style: none;
         overflow: clip;
         li {
+            padding-inline: 0.25em;
+            border-radius: 0.5em;
+            height: 1.5em;
             max-width: 400px;
+            
+            background-color: var(--highlight);
+
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            height: 1.5em;
             line-height: 1.5em;
             b {
                 text-transform: lowercase;
@@ -281,6 +290,10 @@ header.events{
       position: absolute;
       right: 1em;
       top: 1em;
+      z-index: 500;
+      button.dark-mode-switcher {
+        color: white;
+      }
     }
 }
 
@@ -383,6 +396,24 @@ header.events{
                 margin: 0 auto 2em auto;
                 max-height: none;
             }
+        }
+    }
+}
+
+.legend {
+    width: 75%;
+    ul {
+        display: flex;
+        padding: 0;
+        margin: 0;
+        flex-wrap: wrap;
+    
+        li {
+            margin-left: 3em;
+        }
+        li::marker {
+            color: var(--highlight);
+            font-size: 1.5em;
         }
     }
 }

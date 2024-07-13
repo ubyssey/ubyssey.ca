@@ -31,9 +31,9 @@ class EventManager(models.Manager):
         event.description=ical_component.get('description')
 
         if isinstance(ical_component.decoded('dtstart'), datetime):
-            event.end_time=ical_component.decoded('dtstart')
+            event.start_time=ical_component.decoded('dtstart')
         else:
-            event.end_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
 
         if isinstance(ical_component.decoded('dtend'), datetime):
             event.end_time=ical_component.decoded('dtend')
@@ -152,10 +152,18 @@ class EventManager(models.Manager):
 
         event.description=ical_component.get('description')
 
+        splitDesc = ical_component.get('description').split(" ")
+        i = 0
+        while splitDesc[i][0].isupper():
+            i = i + 1
+        sport = " ".join(splitDesc[0:i])
+        sport = sport.replace("Men's ", "").replace("Women's ", "").replace("UBC ", "")
+        event.host = sport
+
         if isinstance(ical_component.decoded('dtstart'), datetime):
-            event.end_time=ical_component.decoded('dtstart')
+            event.start_time=ical_component.decoded('dtstart')
         else:
-            event.end_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
 
         if isinstance(ical_component.decoded('dtend'), datetime):
             event.end_time=ical_component.decoded('dtend')
