@@ -1,0 +1,164 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load authors_tags %}
+{% load humanize %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/events.css' %}" type="text/css" />
+<style>
+{% for key, value in highlight_colours.items %}
+    .{{key|slugify}} {
+        --highlight: {{value}};
+    }
+    div.day li.{{key|slugify}} {
+        color: black;    
+    }
+{% endfor %}
+</style>
+
+{% endblock %}
+
+{% block head_scripts%}
+{% comment %} 
+ical, rss feed, and api should be linked here
+{% endcomment %}
+{% endblock %}
+
+{% block header %}  
+{% endblock %}
+
+{% block content %}
+<div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://storage.googleapis.com/ubyssey/media/renditions/Guide_2022_AMS.original.jpg')"></div>
+<main class="c-page events-page highlight-{{highlight}}">
+    <div class="events-flex {% if selectedEvent.selected %}event-view{% endif %}">
+        <div id="calendar" class="events-calendar">
+            <header class="events">
+                <div class="u-container">
+                    <div class="logo-area">
+                        <a class="home-link" href="{% url 'wagtail_serve' '' %}">
+                        <div class="top-logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/ubyssey-logo-small.svg' %}')" alt=""></div>
+                        <div class="top-logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/ubyssey-logo 1.svg' %}')" alt=""></div>
+                        </a>
+                    </div>
+                    </div>
+                <div class="darkmode-toggle">
+                    {% include 'article/objects/darkmode_button.html' with id="topbar" %}
+                </div>
+                <h1 class="title">Events around campus</h1>
+
+                <div class="events-calendar--categories">
+                    <ul>
+                        <li><a href="?">All</a></li>
+                        <li><a href="?category=sports">Sports</a></li>
+                        <li><a href="?category=entertainment">Entertainment</a></li>
+                        <li><a href="?category=community">Community</a></li>
+                        <li><a href="?category=seminar">Seminar</a></li>
+                    </ul>
+                </div>
+            </header>
+
+            <div class="events-calendar--days-of-week">
+                <h2 class="day">Mon</h2>
+                <h2 class="day">Tue</h2>
+                <h2 class="day">Wed</h2>
+                <h2 class="day">Thu</h2>
+                <h2 class="day">Fri</h2>
+                <h2 class="day">Sat</h2>
+                <h2 class="day">Sun</h2>
+            </div>
+
+            <div class="events-calendar--rows">
+            {% for week in calendar %}
+                <div class="events-calendar--row">
+                    {% if forloop.counter0 == 0%}
+                        <h2 class="events-calendar--month">
+                            <span class="full">{{week.month}}</span>
+                            <span class="short">{{week.month_short}}</span>
+                        </h2>
+                    {% endif %}
+                    {% for day in week.days %}
+                        {% if forloop.parentloop.counter0 != 0 and day.day == 1 %}
+                        <h2 class="events-calendar--month">
+                            <span class="full">{{week.month}}</span>
+                            <span class="short">{{week.month_short}}</span>
+                        </h2>
+                        {% endif %}
+                        <div class="day {{day.phase}}">
+                            <button onClick="this.parentElement.parentElement.classList.toggle('enlarged')" class="events-calendar--number">
+                                <span class="events-calendar--number-dayOfWeek">{{day.day_of_week}} </span>{{day.day}}.
+                            </button>
+                            <ul>
+                            {% for event in day.events %} 
+                                <li class="{% if event.host %}{{event.host|slugify}} {% endif %}{% if event.category %}{{event.category}} {% endif %}{% if event.event_url == selectedEvent.event_url %}selected{% endif %}"><a title="{{event.title}}" class="calendar-item" href="?event={{event.event_url}}" event-url="{{event.event_url}}">
+                                    {% if event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title|safe}}
+                                </a></li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="legend">
+                <ul>
+                {% for key in legend %}
+                <li class="{{key|slugify}}">{{key}}</li>
+                {% endfor %}
+                </ul>
+            </div>
+
+            </div>
+        </div>
+        <div class="events-info-container">
+        <div class="events-info">
+            <h2 class="event-info--time">
+                {% if selectedEvent.start_time|date:"F j" == selectedEvent.end_time|date:"F j"%}
+                    {% if selectedEvent.start_time|time == selectedEvent.end_time|time %}
+                        {{selectedEvent.start_time|date:"F j"}}
+                    {% else %}
+                        {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|time:"fA"}}
+                    {% endif %}    
+                {% else %}
+                    {% if selectedEvent.start_time|time == selectedEvent.end_time|time %}
+                        {{selectedEvent.start_time|date:"F j"}} - {{selectedEvent.end_time|date:"F j"}}
+                    {% else %}
+                        {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|date:"F j"}} {{selectedEvent.end_time|time:"fA"}}
+                    {% endif %}
+                {% endif %}
+            </h2>
+            <div class="events-info--content {{selectedEvent.category}}">
+                <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
+                <p><b>Location:</b> {{selectedEvent.location}}</p>
+                <p>{% if selectedEvent.host %}<b>{{selectedEvent.host}}:</b>{% endif %} {{selectedEvent.description|safe}}</p>
+                <p ><a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a></p>
+                <script>
+                    var s = document.getElementById('source_link');
+                    s.href = s.href.replace("__AND__", "&");
+                    s.innerHTML = s.host;
+
+                    var s = document.getElementById('selected-title');
+                    s.href = s.href.replace("__AND__", "&");
+                </script>
+            </div>
+        </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('.calendar-item').click(function (e) {
+        e.preventDefault();
+        
+        var params = new URLSearchParams(location.search);
+        params.set('event', this.getAttribute('event-url'));
+        console.log(params);
+        window.location.search = params.toString();
+    })
+</script>
+{% endblock %}
+
+{% block footer %}{% endblock %}
