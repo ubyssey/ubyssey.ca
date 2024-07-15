@@ -143,10 +143,11 @@ jobs:
         pip install requests --upgrade
   
     - name: Set up Node.js environment
-      uses: actions/setup-node@v2.1.4
+      uses: actions/setup-node@v2.2.0
       with:
-        node-version: 14.x
+        node-version: '16.x'
   
+    
     - name: Run gulp to ready frontend static files for production
       run: |
         cd ubyssey/static_src
