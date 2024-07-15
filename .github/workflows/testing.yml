@@ -145,11 +145,11 @@ jobs:
         rm -rf node_modules
         cd ../../
       
-    - name: Collect static files
-      run: |
-        export DJANGO_SETTINGS_MODULE="config.settings.development"
-        python manage.py collectstatic --noinput
-        rm -rf .git/ ubyssey/static_src/
+    # - name: Collect static files
+    #   run: |
+    #     export DJANGO_SETTINGS_MODULE="config.settings.development"
+    #     python manage.py collectstatic --noinput
+    #     rm -rf .git/ ubyssey/static_src/
 
     - name: Test selenium
       run: |
