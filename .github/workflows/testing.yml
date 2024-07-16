@@ -186,5 +186,7 @@ jobs:
       run: |
         export DJANGO_SETTINGS_MODULE="config.settings.development"
         pip install selenium
-        pip install webdriver-manager   
+        pip install webdriver-manager
+        python manage.py makemigrations
+        python manage.py migrate   
         python manage.py test      
