@@ -157,12 +157,24 @@ class HomePage(Page):
     ]
 
     def get_context(self, request, *args, **kwargs):
+        import math
         context = super().get_context(request, *args, **kwargs)
         context["filters"] = {}
 
         if self.cover_story != None:
             context["coverstory"] = self.cover_story.specific
         
+        section_groups = []
+        for i in range(math.ceil(len(self.sections_stream)/2)):
+            group = {
+                'sections': self.sections_stream[i*2:i*2+2]
+            }
+            if i < len(self.sidebar_stream):
+                group['sidebar'] = [self.sidebar_stream[i]]
+            section_groups.append(group)
+
+        context['section_groups'] = section_groups
+
         return context
 
     def getTopArticles(self):

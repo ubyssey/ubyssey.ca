@@ -7,7 +7,7 @@ background_color - hex color
 {% load static %}
 {% load menu_tags %}
 
-<nav class="navbar navbar-expand-sm navbar-dark">
+<nav class="navbar navbar-expand-sm navbar-dark" {% if self.colour %}style="--pageColour:{{self.colour}}"{% endif %}>
     <div class="container-fluid">
         {% comment %} Link below is a funny combination of Bootstrap convention and some weird existing Ubyssey
         conventions. Takes first item in menu to serve as link.

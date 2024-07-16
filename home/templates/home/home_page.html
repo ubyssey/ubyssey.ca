@@ -70,18 +70,28 @@
 </div>
 
 <div id="feed-section" class="home_infinitefeed">
-	<div class="u-container u-container--large c-infinitefeed__feed">
-		<div class="c-home-infinitefeed">
-			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox' title='Sections' text='Most Recent' textId='timeBox' %}
-			
-			<div class="c-homepage__sections">
-			{% for block in self.sections_stream %}
-			{% include_block block %}
-			{% endfor %}
-			</div>
-		</div>
+	<div class="u-container u-container--large">
 
-        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
+			{% for group in section_groups %}
+			<div class="c-infinitefeed__feed">
+				<div class="c-homepage__sections">
+
+					{% if forloop.counter0 == 0 %}
+					{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox' title='Sections' text='Most Recent' textId='timeBox' %}
+					{% endif %}
+					
+					{% for section in group.sections %}
+					{% include_block section %}
+					{% endfor %}
+				</div>
+				
+				{% if group.sidebar %}
+					{% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=group.sidebar %}
+				{% else %}
+					<div class="c-sidebar empty-sidebar"></div>
+				{% endif %}
+			</div>
+			{% endfor %}
 
 	</div>
 
