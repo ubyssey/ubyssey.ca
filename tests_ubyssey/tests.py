@@ -164,7 +164,8 @@ class TestUbyssey(StaticLiveServerTestCase):
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--headless")  # Add headless mode if running in a non-GUI environment
-        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+        # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+        self.driver = webdriver.Chrome(options=chrome_options)
         # self.driver.get('https://ubyssey.ca/')
         self.driver.get('https://ubyssey.ca/')
         assert "The Ubyssey" in self.driver.title
