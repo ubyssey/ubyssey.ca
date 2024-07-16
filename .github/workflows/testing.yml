@@ -185,5 +185,7 @@ jobs:
     - name: Test selenium
       run: |
         export DJANGO_SETTINGS_MODULE="config.settings.development"
+        pip install selenium
+        python manage.py runserver
         python manage.py test
     
