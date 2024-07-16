@@ -187,6 +187,11 @@ jobs:
         export DJANGO_SETTINGS_MODULE="config.settings.development"
         pip install selenium
         pip install webdriver-manager
-        python manage.py makemigrations
+        docker build . -t ubyssey/ubyssey.ca:latest
+        docker volume create --name=ubyssey_db_volume
+        docker exec -t -i ubyssey_db bash
+        mysql -u root -p
+        create database ubyssey;
+        quit;
+        docker exec -t -i ubyssey_db bash
         python manage.py migrate   
-        python manage.py test      
