@@ -175,6 +175,12 @@ jobs:
         export DJANGO_SETTINGS_MODULE="config.settings.development"
         python manage.py collectstatic --noinput
         rm -rf .git/ ubyssey/static_src/
+    - id: 'auth'
+      name: Authenticate with Google App Engine
+      uses: google-github-actions/auth@v1
+      with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
     - name: Test selenium
       run: |
        python manage.py test
