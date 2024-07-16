@@ -169,6 +169,7 @@ jobs:
         
         echo "Changing directory back to project root"
         cd ../../
+        pwd
   
     - name: Collect static files
       run: |
