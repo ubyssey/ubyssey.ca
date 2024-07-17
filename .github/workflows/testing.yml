@@ -100,10 +100,10 @@
 name: Python application
 
 on:
-  push:
-    branches: [ "1502-add-end-to-end-test-automation" ]
-  pull_request:
-    branches: [ "1502-add-end-to-end-test-automation" ]
+  # push:
+  #   branches: [ "1502-add-end-to-end-test-automation" ]
+  # pull_request:
+  #   branches: [ "1502-add-end-to-end-test-automation" ]
   workflow_dispatch:
 
 jobs:
@@ -186,5 +186,12 @@ jobs:
       run: |
         export DJANGO_SETTINGS_MODULE="config.settings.development"
         pip install selenium
-        pip install webdriver-manager   
+        pip install webdriver-manager
+        docker build . -t ubyssey/ubyssey.ca:latest
+        docker volume create --name=ubyssey_db_volume
+        docker exec -t -i ubyssey_db bash
+        ubyssey | mysql -u root -p
+        create database ubyssey;
+        quit;
+   
         python manage.py test      

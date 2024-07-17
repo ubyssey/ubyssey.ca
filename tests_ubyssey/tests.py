@@ -188,10 +188,6 @@ class TestUbyssey(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(9) > a").click()
         self.driver.find_element(By.CSS_SELECTOR, ".home-link > .light-logo").click()
         self.driver.find_element(By.CSS_SELECTOR, ".o-article:nth-child(2) > .o-article__right > .o-article__headline > a").click()
-        html_content = self.driver.page_source
-        # output_file = "output.html"
-        # with open(output_file, "w", encoding="utf-8") as file:
-        #     file.write(html_content)
         self.driver.get('http://localhost:8000/')
         self.driver.execute_script("window.scrollTo(0,444.4444885253906)")
         self.driver.find_element(By.CSS_SELECTOR, ".o-article--coverstory .o-article__headline > a").click()        
@@ -238,21 +234,9 @@ class TestUbyssey(StaticLiveServerTestCase):
         news_story = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-article")))
         self.driver.execute_script("arguments[0].scrollIntoView(true);", news_story)
         news_story.click()
-        self.driver.get("http://localhost:8000/")
-        self.driver.set_window_size(1296, 688)
-        # Locate and scroll to the first news recommendation in the left sidebar then click it
-        news_first_recommendation = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) .o-article:nth-child(1) .o-article__headline")))
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", news_first_recommendation)
-        news_first_recommendation.click()
         # news_first_recommendation = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) .o-article:nth-child(1) > .o-article__meta a")))
         # self.driver.execute_script("arguments[0].scrollIntoView(true);", news_first_recommendation)
         # news_first_recommendation.click()
-        self.driver.get("http://localhost:8000/")
-
-        # Locate and scroll to the first  recommended article element in the right sidebar then click it
-        first_recommended_article = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "li:nth-child(1) .o-article__headline > a")))
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", first_recommended_article)
-        first_recommended_article.click()
         self.driver.get("http://localhost:8000/")
 
         # Locate and scroll to the author link on news article then click it
@@ -265,3 +249,28 @@ class TestUbyssey(StaticLiveServerTestCase):
         sun_icon.click()
 
         print("Success") 
+        self.driver.get("http://localhost:8000/")
+        self.driver.set_window_size(1296, 688)
+        # Locate and scroll to the first news recommendation in the left sidebar then click it
+        news_first_recommendation = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) .o-article:nth-child(1) .o-article__headline")))
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", news_first_recommendation)
+        news_first_recommendation.click()
+        #Search for UBCO in the search bar in news page
+        self.driver.get("http://localhost:8000/news/")
+        self.driver.set_window_size(1296, 688)
+        self.driver.find_element(By.CSS_SELECTOR, ".o-archive__search__label").click()
+        self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys("UBCO")
+        self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys(Keys.ENTER)
+        # self.driver.get("http://localhost:8000/")
+        # html_content = self.driver.page_source
+        # output_file = "output.html"
+        # with open(output_file, "w", encoding="utf-8") as file:
+        #     file.write(html_content)
+        # cache_panel = self.driver.find_element(By.CLASS_NAME, "djDebugPanelButton")
+        # self.driver.execute_script("arguments[0].style.visibility='hidden'", cache_panel)
+        # cache_panel = self.driver.find_element(By.CLASS_NAME, "CachePanel")
+        # self.driver.execute_script("arguments[0].style.visibility='hidden'", cache_panel)
+        # # Locate and scroll to the first  recommended article element in the right sidebar then click it
+        # first_recommended_article = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "li:nth-child(1) .o-article__headline > a")))
+        # first_recommended_article.click()
+
