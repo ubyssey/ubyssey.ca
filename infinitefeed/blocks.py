@@ -107,8 +107,8 @@ class SidebarSectionBlock(AbstractArticleList):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['section'].title
-        context['link'] = context['section'].url
-        context['articles'] = context['section'].get_featured_articles()          
+        context['link'] = value['section'].url
+        context['articles'] = value['section'].get_featured_articles()          
         return context
 
 class SidebarCategoryBlock(AbstractArticleList):

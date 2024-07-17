@@ -13,6 +13,9 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
+from events.views import update_events
+from events.urls import urlpatterns as events_urls
+from events.urls import api as events_api_urls
 
 from infinitefeed.views import infinitefeed
 
@@ -58,8 +61,8 @@ urlpatterns += [
     re_path(r'^newsletter/', include(newsletter_urls)),
 
     # Events
-    # re_path(r'^events/', include(events_urls)),
-    # re_path(r'^api/events/', include(event_api_urls)),
+    re_path(r'^events/$', include(events_urls)),
+    re_path(r'^api/events_calendar/', include(events_api_urls.urls)),
 
     # Tag
     re_path(r'^tag/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  
@@ -69,6 +72,7 @@ urlpatterns += [
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
 
     # Cron job
+    re_path(r'^cron/update-events/$', update_events, name='update_events'),
     re_path(r'^cron/publish-scheduled/$', publish_scheduled, name='publish_scheduled'),
 
     # Wagtail

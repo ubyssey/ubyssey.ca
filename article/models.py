@@ -534,7 +534,31 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         null=True,
         on_delete=models.SET_NULL,
     )
-    tags = ClusterTaggableManager(through='article.ArticlePageTag', blank=True)
+    tags = ClusterTaggableManager(
+        through='article.ArticlePageTag', 
+        blank=True, 
+        related_name='tags', 
+        help_text="Tags entered here will be listed in the tag page at '/tag/tag-name'",
+        verbose_name="Tags")
+    primary_tag_slug = models.CharField(
+        null=True,
+        blank=True,
+        default='',
+        max_length=255,
+        help_text="Enter the slug of the tag to be used for linking at the end of the article. For example, the slug of the tag 'blue chip' is 'blue-chip'.",
+    )
+    tag_page_link = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="Check this box if you want to add a link to the tag page.",
+    )
+    filter_by_tags = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="Check this box if you want to filter suggested articles by tag.",
+    )
 
     disclaimer = RichTextField(
         null=False,
@@ -750,6 +774,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 # FieldPanel("section"),
                 FieldPanel("category"),
                 FieldPanel("tags"),
+                FieldPanel("primary_tag_slug"),
+                FieldPanel("tag_page_link"),
+                FieldPanel("filter_by_tags"),
             ],
             heading="Categories and Tags",
             classname="collapsible",
@@ -971,6 +998,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         All the below code occurs after the user submits a request and before they receive it.
         Therefore, keep the length of this method to a minimum; otherwise users will be kept waiting
         """
+        from taggit.models import Tag
+
         context = super().get_context(request, *args, **kwargs)
 
         user_agent = get_user_agent(request)
@@ -992,6 +1021,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             context['next'] = context['next'].specific
 
         context["suggested"] = self.get_suggested()
+
+        if self.tag_page_link and self.primary_tag_slug:
+            context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
 
         return context
 
@@ -1093,19 +1125,35 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)
         
         return section_articles
+    def get_articles_by_tag(self, order='-first_published_at') -> QuerySet:
+        """
+        Returns a list of articles with the same tags as the current article
+        """
+        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)
+        return articles_by_tag
 
     def get_suggested(self, number_suggested=3):
         """
         Defines the title and articles in the suggested box
         """
+        from taggit.models import Tag
         suggested = {}
-        if self.category != None:
-            category_articles = self.get_category_articles()
-            if len(category_articles) > 0:
+        if self.filter_by_tags:
+            articles_by_tag = self.get_articles_by_tag()
+            if len(articles_by_tag) > 0:
+                tag = Tag.objects.get(slug=self.primary_tag_slug)
                 suggested = {}
-                suggested['title'] = self.category.title
-                suggested['articles'] = category_articles[:number_suggested]
-                suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
+                suggested['title'] = "'" + tag.name + "'"
+                suggested['articles'] = articles_by_tag[:number_suggested]
+                suggested['link'] = "/tag/" + tag.slug
+        if not suggested:
+            if self.category != None:
+                category_articles = self.get_category_articles()
+                if len(category_articles) > 0:
+                    suggested = {}
+                    suggested['title'] = self.category.title
+                    suggested['articles'] = category_articles[:number_suggested]
+                    suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
 
         if not suggested:
             section_articles = self.get_section_articles()
