@@ -187,11 +187,18 @@ jobs:
         export DJANGO_SETTINGS_MODULE="config.settings.development"
         pip install selenium
         pip install webdriver-manager
+
         docker build . -t ubyssey/ubyssey.ca:latest
         docker volume create --name=ubyssey_db_volume
         docker exec -t -i ubyssey_db bash
-        ubyssey | mysql -u root -p
+        mysql -uroot -pubyssey
         create database ubyssey;
         quit;
-   
-        python manage.py test      
+        # apt update
+        # apt upgrade
+        # apt --fix-broken install
+        # apt install wget
+        # wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        # dpkg -i google-chrome-stable_current_amd64.deb
+        # apt-get install -f
+        # python manage.py test      
