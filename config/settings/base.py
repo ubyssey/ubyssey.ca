@@ -134,6 +134,9 @@ DATABASES = {
         'USER': env('SQL_USER'),
         'PASSWORD': env('SQL_PASSWORD'),
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     },
 }
 
