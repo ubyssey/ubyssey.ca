@@ -100,10 +100,10 @@
 name: Python application
 
 on:
-  # push:
-  #   branches: [ "1502-add-end-to-end-test-automation" ]
-  # pull_request:
-  #   branches: [ "1502-add-end-to-end-test-automation" ]
+  push:
+    branches: [ "1502-add-end-to-end-test-automation" ]
+  pull_request:
+    branches: [ "1502-add-end-to-end-test-automation" ]
   workflow_dispatch:
 
 jobs:
@@ -116,27 +116,7 @@ jobs:
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
-  
-    - name: Get main Google Cloud service account credentials
-      run: |
-        echo $GCP_SA_KEY > client-secret.json
-      env:
-        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-  
-    - name: Get media Google Cloud service account credentials
-      run: |
-        echo $GCP_MEDIA_SERVICE_ACCOUNT_CREDENTIALS > ubyssey-prd-ee6290e6327f.json
-  
-    - name: Get .env file
-      run: |
-        mkdir tmp
-        cd tmp
-        echo $DEPLOYMENT_ENV_VARS > .env
-        cd ../
-      env:
-        DEPLOYMENT_ENV_VARS: ${{ secrets.DEPLOYMENT_ENV_VARS }}
-  
+        python-version: 3.8  
     - name: Install Python packages and dependencies
       run: |
         pip install -r requirements-prd.txt --use-pep517
@@ -176,12 +156,6 @@ jobs:
         export DJANGO_SETTINGS_MODULE="config.settings.development"
         python manage.py collectstatic --noinput
         rm -rf .git/ ubyssey/static_src/
-    - id: 'auth'
-      name: Authenticate with Google App Engine
-      uses: google-github-actions/auth@v1
-      with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
     - name: Test selenium
       run: |
         export DJANGO_SETTINGS_MODULE="config.settings.development"
