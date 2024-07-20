@@ -190,7 +190,7 @@ jobs:
         docker volume create --name=ubyssey_db_volume
         pwd
         echo "Changing directory to parent..."
-        docker exec -t -i b8c04ee2be12ce117e20d6595d07608649ba706f9c657c65d1ddf1278c153880 bash
+        docker exec -it b8c04ee2be12 /bin/bash -c 
         echo "Running container..."
         ls
       shell: bash
