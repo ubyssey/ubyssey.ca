@@ -189,7 +189,10 @@ jobs:
         echo "Creating Docker volume..."
         docker volume create --name=ubyssey_db_volume
         pwd
-        cd .devcontainer
+        echo "Changing directory to parent..."
+        docker exec -t -i b8c04ee2be12ce117e20d6595d07608649ba706f9c657c65d1ddf1278c153880 bash
+        echo "Running container..."
+        ls
       shell: bash
     
     # - name: Change directory to parent
