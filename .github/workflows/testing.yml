@@ -162,12 +162,15 @@ jobs:
         pip install selenium
         pip install webdriver-manager
 
-        docker build . -t ubyssey/ubyssey.ca:latest
-        docker volume create --name=ubyssey_db_volume
-        docker exec -t -i ubyssey_db bash
-        mysql -uroot -pubyssey
-        create database ubyssey;
-        quit;
+        # docker build . -t ubyssey/ubyssey.ca:latest
+        # docker volume create --name=ubyssey_db_volume
+        # cd ..
+        # docker-compose -f .devcontainer/docker-compose.yml up -d
+        # cd ubyssey.ca
+        # docker exec -t -i ubyssey_db bash
+        # mysql -uroot -pubyssey
+        # create database ubyssey;
+        # quit;
         # apt update
         # apt upgrade
         # apt --fix-broken install
@@ -176,3 +179,50 @@ jobs:
         # dpkg -i google-chrome-stable_current_amd64.deb
         # apt-get install -f
         # python manage.py test      
+    - name: Build Docker image
+      run: |
+        echo "Building Docker image..."
+        docker build . -t ubyssey/ubyssey.ca:latest
+      shell: bash
+
+    - name: Create Docker volume
+      run: |
+        echo "Creating Docker volume..."
+        docker volume create --name=ubyssey_db_volume
+      shell: bash
+
+    - name: Change directory to parent
+      run: |
+        echo "Changing directory to parent..."
+        cd ..
+      shell: bash
+
+    - name: Start services with Docker Compose
+      run: |
+        echo "Starting services with Docker Compose..."
+        docker-compose -f .devcontainer/docker-compose.yml up -d
+      shell: bash
+
+    - name: Change directory back to project
+      run: |
+        echo "Changing directory back to project..."
+        cd ubyssey.ca
+      shell: bash
+
+    - name: Run Docker container interactively
+      run: |
+        echo "Running Docker container interactively..."
+        docker exec -t -i ubyssey_db bash
+      shell: bash
+
+    - name: Create database inside Docker container
+      run: |
+        echo "Creating database inside Docker container..."
+        docker exec -i ubyssey_db bash -c "mysql -uroot -pubyssey -e 'CREATE DATABASE ubyssey;'"
+      shell: bash
+
+    - name: Debug database creation
+      run: |
+        echo "Verifying database creation..."
+        docker exec -i ubyssey_db bash -c "mysql -uroot -pubyssey -e 'SHOW DATABASES;'"
+      shell: bash
