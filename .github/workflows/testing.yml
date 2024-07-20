@@ -189,6 +189,7 @@ jobs:
         echo "Creating Docker volume..."
         docker volume create --name=ubyssey_db_volume
         pwd
+        cd .devcontainer
       shell: bash
     
     # - name: Change directory to parent
@@ -209,20 +210,20 @@ jobs:
     #     cd ubyssey.ca
     #   shell: bash
 
-    - name: Run Docker container interactively
-      run: |
-        echo "Running Docker container interactively..."
-        docker exec -t -i ubyssey_db bash
-      shell: bash
+    # - name: Run Docker container interactively
+    #   run: |
+    #     echo "Running Docker container interactively..."
+    #     docker exec -t -i ubyssey_db bash
+    #   shell: bash
 
-    - name: Create database inside Docker container
-      run: |
-        echo "Creating database inside Docker container..."
-        docker exec -i ubyssey_db bash -c "mysql -uroot -pubyssey -e 'CREATE DATABASE ubyssey;'"
-      shell: bash
+    # - name: Create database inside Docker container
+    #   run: |
+    #     echo "Creating database inside Docker container..."
+    #     docker exec -i ubyssey_db bash -c "mysql -uroot -pubyssey -e 'CREATE DATABASE ubyssey;'"
+    #   shell: bash
 
-    - name: Debug database creation
-      run: |
-        echo "Verifying database creation..."
-        docker exec -i ubyssey_db bash -c "mysql -uroot -pubyssey -e 'SHOW DATABASES;'"
-      shell: bash
+    # - name: Debug database creation
+    #   run: |
+    #     echo "Verifying database creation..."
+    #     docker exec -i ubyssey_db bash -c "mysql -uroot -pubyssey -e 'SHOW DATABASES;'"
+    #   shell: bash
