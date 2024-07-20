@@ -161,7 +161,6 @@ jobs:
         export DJANGO_SETTINGS_MODULE="config.settings.development"
         pip install selenium
         pip install webdriver-manager
-
         # docker build . -t ubyssey/ubyssey.ca:latest
         # docker volume create --name=ubyssey_db_volume
         # cd ..
@@ -179,11 +178,11 @@ jobs:
         # dpkg -i google-chrome-stable_current_amd64.deb
         # apt-get install -f
         # python manage.py test      
-    - name: Build Docker image
-      run: |
-        echo "Building Docker image..."
-        docker build . -t ubyssey/ubyssey.ca:latest
-      shell: bash
+    # - name: Build Docker image
+    #   run: |
+    #     echo "Building Docker image..."
+    #     docker build . -t ubyssey/ubyssey.ca:latest
+    #   shell: bash
 
     - name: Create Docker volume
       run: |
