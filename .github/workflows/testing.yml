@@ -191,23 +191,23 @@ jobs:
         pwd
       shell: bash
     
-    - name: Change directory to parent
-      run: |
-        echo "Changing directory to parent..."
-        cd ..
-      shell: bash
+    # - name: Change directory to parent
+    #   run: |
+    #     echo "Changing directory to parent..."
+    #     cd ..
+    #   shell: bash
 
-    - name: Start services with Docker Compose
-      run: |
-        echo "Starting services with Docker Compose..."
-        docker-compose up
-      shell: bash
+    # - name: Start services with Docker Compose
+    #   run: |
+    #     echo "Starting services with Docker Compose..."
+    #     docker-compose up
+    #   shell: bash
 
-    - name: Change directory back to project
-      run: |
-        echo "Changing directory back to project..."
-        cd ubyssey.ca
-      shell: bash
+    # - name: Change directory back to project
+    #   run: |
+    #     echo "Changing directory back to project..."
+    #     cd ubyssey.ca
+    #   shell: bash
 
     - name: Run Docker container interactively
       run: |
