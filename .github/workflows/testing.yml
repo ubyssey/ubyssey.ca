@@ -188,13 +188,14 @@ jobs:
       run: |
         echo "Creating Docker volume..."
         docker volume create --name=ubyssey_db_volume
+        pwd
       shell: bash
-
-    - name: Change directory to parent
-      run: |
-        echo "Changing directory to parent..."
-        cd ..
-      shell: bash
+    
+    # - name: Change directory to parent
+    #   run: |
+    #     echo "Changing directory to parent..."
+    #     cd ..
+    #   shell: bash
 
     - name: Start services with Docker Compose
       run: |
