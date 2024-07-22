@@ -47,7 +47,7 @@ main.events-page {
             .events-info--content {
                 position: relative;
                 box-sizing: border-box;
-                padding: 0.5em 10% 2em 10%;
+                padding: 0.5em 10% 1em 10%;
                 width: 100%;
                 height: 100%;
                 overflow-y: auto;
@@ -65,8 +65,12 @@ main.events-page {
                     text-align: center;
                     text-decoration: underline 3px var(--highlight);
                 }
-                #source_link {
+                p>a {
                     border-bottom: 1px solid;
+                }
+
+                #edit_link {
+                    float: right;
                 }
             }
         }
@@ -93,6 +97,10 @@ main.events-page {
             margin: 0 0.25em;
             
             text-align: center;
+
+            &.selected {
+                text-decoration: underline;
+            }
         }
     }
 }
@@ -357,9 +365,6 @@ header.events{
     }
     .events-calendar--row:first-child {
         border: none;
-        div.day {
-            display: none;
-        }
     }
     .events-calendar--row div.day {
         min-height: 1em;

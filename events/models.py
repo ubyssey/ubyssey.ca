@@ -18,6 +18,8 @@ class EventManager(models.Manager):
             )
         else:
             event = self.get(event_url=ical_component.get('url'))
+            if event.update_mode != 2:
+                return None
 
         # Split location and address
         location = ical_component.get('location')
@@ -54,11 +56,10 @@ class EventManager(models.Manager):
         event.save()
 
         return event
-        
     
     def ubcevents_judge_hidden(self, event):
         '''
-        Returns True if event is online, isn't for undergraduates, or doesn't have enough information to categorize
+        Returns True if event is online, not in UBC, or isn't for undergraduates
         '''
         
         title = event.get('summary')
@@ -66,12 +67,6 @@ class EventManager(models.Manager):
         description = event.get('description').lower()
         categories = event.get('categories')
         
-        # Hide events without categories becausee there isn't enough information
-        if not categories:
-            return True
-
-        categories = categories.to_ical().decode().lower()
-
         # Hide online events (the online events are cringe)
         if 'online' in location or 'virtual' in location:
             if not 'hybrid' in location and not 'in-person' in location:
@@ -81,6 +76,12 @@ class EventManager(models.Manager):
                 if not 'hybrid' in location and not 'in-person' in location and not 'in-person' in description and not 'hybrid' in description:
                     return True            
         
+        # Default to showing events when there are no categories listed
+        if not categories:
+            return False
+
+        categories = categories.to_ical().decode().lower()
+
         # Hide events that aren't for undergraduates
         if 'audience' in categories:
             if 'all students' not in categories and 'community' not in categories:
@@ -103,7 +104,7 @@ class EventManager(models.Manager):
         title = event.get('summary').lower()
 
         # Set farmer's markets events to community even though UBCevents tags them as entertainment for some reason
-        for i in ['lunch', 'market']:
+        for i in ['lunch', 'market', 'ubc farm']:
             if i in title:
                 return 'community'
 
@@ -139,6 +140,8 @@ class EventManager(models.Manager):
             )
         else:
             event = self.get(event_url=ical_component.get('url').replace("&amp;", "__AND__"))
+            if event.update_mode != 2:
+                return None
 
         # Split location and address
         address = ical_component.get('location')
@@ -262,7 +265,8 @@ class Event(models.Model):
     )
     # 0: manually inputted so don't delete on updates, 1: updated by cronjob, 2: currently updating by cronjob
     update_mode = models.IntegerField(
-        default=0
+        default=0,
+        help_text="Make sure you select 'Manual input', otherwise this event will be overwritten or deleted during the calendar's automatic daily update"
     )
 
     objects = EventManager()
@@ -289,7 +293,16 @@ class Event(models.Model):
                 ],
             ),
         ),
-        FieldPanel("hidden")
+        FieldPanel("hidden"),
+        FieldPanel(
+            "update_mode",
+            widget=Select(
+                choices=[
+                    (0, 'Manual input'), 
+                    (1,'Updated by cronjob'),
+                ],
+            ),
+        ),
     ]
 
     def __str__(self) -> str:
