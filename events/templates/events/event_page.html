@@ -37,7 +37,7 @@ ical, rss feed, and api should be linked here
             <header class="events">
                 <div class="u-container">
                     <div class="logo-area">
-                        <a class="home-link" href="{% url 'wagtail_serve' '' %}">
+                        <a class="home-link" href="{% url 'wagtail_serve' '' %}" title="Go to The Ubyssey Homepage">
                         <div class="top-logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/ubyssey-logo-small.svg' %}')" alt=""></div>
                         <div class="top-logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/ubyssey-logo 1.svg' %}')" alt=""></div>
                         </a>
@@ -114,19 +114,7 @@ ical, rss feed, and api should be linked here
         <div class="events-info-container">
         <div class="events-info">
             <h2 class="event-info--time">
-                {% if selectedEvent.start_time|date:"F j" == selectedEvent.end_time|date:"F j"%}
-                    {% if selectedEvent.start_time|time == selectedEvent.end_time|time %}
-                        {{selectedEvent.start_time|date:"F j"}}
-                    {% else %}
-                        {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|time:"fA"}}
-                    {% endif %}    
-                {% else %}
-                    {% if selectedEvent.start_time|time == selectedEvent.end_time|time %}
-                        {{selectedEvent.start_time|date:"F j"}} - {{selectedEvent.end_time|date:"F j"}}
-                    {% else %}
-                        {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|date:"F j"}} {{selectedEvent.end_time|time:"fA"}}
-                    {% endif %}
-                {% endif %}
+                {{selectedEvent.displayTime}}
             </h2>
             <div class="events-info--content {{selectedEvent.category}}">
                 <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>

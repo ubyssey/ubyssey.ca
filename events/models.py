@@ -50,6 +50,7 @@ class EventManager(models.Manager):
         if ical_component.get("organizer", False):
             event.host = ical_component.get("organizer").params['cn']
 
+        event.update_mode = 1
         event.save()
 
         return event
@@ -150,7 +151,7 @@ class EventManager(models.Manager):
             g = "W. "
         event.title=g + ical_component.get('summary').replace("UBC ", "").replace("vs", "<br>UBC vs").replace("Men's ", "").replace("Women's ", "")
 
-        event.description=ical_component.get('description')
+        event.description=" ".join(ical_component.get('description').split(" ")[0:-1])
 
         splitDesc = ical_component.get('description').split(" ")
         i = 0
@@ -178,6 +179,8 @@ class EventManager(models.Manager):
         event.event_url=ical_component.decoded('url').replace("&amp;", "__AND__")
         event.category='sports'
         event.hidden=self.gothunderbirds_judge_hidden(ical_component)
+
+        event.update_mode = 1
         event.save()
 
         return event
@@ -256,6 +259,10 @@ class Event(models.Model):
         null=True,
         blank=True,
         default='',
+    )
+    # 0: manually inputted so don't delete on updates, 1: updated by cronjob, 2: currently updating by cronjob
+    update_mode = models.IntegerField(
+        default=0
     )
 
     objects = EventManager()

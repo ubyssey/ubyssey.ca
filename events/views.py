@@ -31,7 +31,10 @@ class EventsTheme(object):
                 events = Event.objects.filter(category=request.GET.get("category"), end_time__gte=day,hidden=False).order_by("start_time")
             else:
                 events = Event.objects.filter(hidden=False, end_time__gte=day).order_by("start_time")
-
+        
+        weekNum = 4
+        if request.GET.get("weeks"):
+            weekNum = int(request.GET.get("weeks")) 
 
         closest_event = None
 
@@ -43,7 +46,7 @@ class EventsTheme(object):
 
         legend = []
 
-        while(len(calendar) < 4):
+        while(len(calendar) < weekNum):
 
             if day.date() == timezone.now().date():
                 week['days'][-1]['phase'] = 'today'
@@ -63,13 +66,13 @@ class EventsTheme(object):
                     week = {'month': day.strftime("%B"), 'month_short': day.strftime("%b"), 'days': [{'day': day.day, 'day_of_week': day.strftime("%a"), 'events': []}]}
                 else:
                     week['days'].append({'day': day.day, 'day_of_week': day.strftime("%a"), 'events': []})
-                    i=0
-                    while i<len(ongoing):
-                        week['days'][-1]['events'].append(ongoing[i])
-                        if ongoing[i].end_time.astimezone(timezone.get_current_timezone()).date() == day.date():
-                            ongoing.pop(i)
-                        else:
-                            i = i + 1
+                i=0
+                while i<len(ongoing):
+                    week['days'][-1]['events'].append(ongoing[i])
+                    if ongoing[i].end_time.astimezone(timezone.get_current_timezone()).date() == day.date():
+                        ongoing.pop(i)
+                    else:
+                        i = i + 1
             else:
                 events[events_index].start_time = events[events_index].start_time.astimezone(timezone.get_current_timezone())
                 events[events_index].end_time = events[events_index].end_time.astimezone(timezone.get_current_timezone())
@@ -127,12 +130,29 @@ class EventsTheme(object):
         if event:
             event.description = event.description.replace('\n', '<br>')
 
+            if event.start_time.month == event.end_time.month and event.start_time.day == event.end_time.day:
+                if event.start_time.time() == event.end_time.time():
+                    event.displayTime = event.start_time.strftime("%B %-d")
+                else:
+                    event.displayTime = event.start_time.strftime("%B %-d, %-I:%M%p") + " - " + event.end_time.strftime("%-I:%M%p")
+            else:
+                if event.start_time.time() == event.end_time.time():
+                    event.displayTime = event.start_time.strftime("%B %-d") + " - "  + event.end_time.strftime("%B %-d")
+                else:
+                    event.displayTime = event.start_time.strftime("%B %-d %-I:%M%p") + " - " + event.end_time.strftime("%B %-d %-I:%M%p")
+
         return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours})
 
 def update_events(request):
     from urllib.request import urlopen, Request
     from icalendar import Calendar
     from django.http import HttpResponse
+    from datetime import datetime
+
+    for event in Event.objects.filter(update_mode=1, end_time__gte=timezone.now()):
+        event.update_mode = 2
+        event.save()
+
     #try:
     req = Request("https://events.ubc.ca/events/?ical=1", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
     con = urlopen(req)
@@ -156,6 +176,9 @@ def update_events(request):
             
     #except:
     #    return HttpResponse("Failed requesting to UBCevents", status=500)
+
+    for event in Event.objects.filter(update_mode=2):
+        event.delete()
 
     return HttpResponse("Success!")
 
