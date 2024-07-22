@@ -16,6 +16,8 @@
             {{ self.title |safe }}
         </h1>
 	{% elif self.header_layout == 'top-image' %}
+        <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
+
         {% if self.title_tag %}
             <h2 class="title-tag">{{self.title_tag}}//</h2>    
         {% elif self.category %}
@@ -26,6 +28,7 @@
             {{ self.title|safe }}
         </h1>
     {% endif %}
+
 	{% if self.fw_above_cut_lede %}
 		<p class="fw-description">{{ self.fw_above_cut_lede }}</p>
 	{% endif %}
