@@ -37,7 +37,7 @@ ical, rss feed, and api should be linked here
             <header class="events">
                 <div class="u-container">
                     <div class="logo-area">
-                        <a class="home-link" href="{% url 'wagtail_serve' '' %}">
+                        <a class="home-link" href="{% url 'wagtail_serve' '' %}" title="Go to The Ubyssey Homepage">
                         <div class="top-logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/ubyssey-logo-small.svg' %}')" alt=""></div>
                         <div class="top-logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/ubyssey-logo 1.svg' %}')" alt=""></div>
                         </a>
@@ -50,11 +50,11 @@ ical, rss feed, and api should be linked here
 
                 <div class="events-calendar--categories">
                     <ul>
-                        <li><a href="?">All</a></li>
-                        <li><a href="?category=sports">Sports</a></li>
-                        <li><a href="?category=entertainment">Entertainment</a></li>
-                        <li><a href="?category=community">Community</a></li>
-                        <li><a href="?category=seminar">Seminar</a></li>
+                        <li {% if tab == 'all' %}class="selected"{% endif %}><a href="?">All</a></li>
+                        <li {% if tab == 'sports' %}class="selected"{% endif %}><a href="?category=sports">Sports</a></li>
+                        <li {% if tab == 'entertainment' %}class="selected"{% endif %}><a href="?category=entertainment">Entertainment</a></li>
+                        <li {% if tab == 'community' %}class="selected"{% endif %}><a href="?category=community">Community</a></li>
+                        <li {% if tab == 'seminar' %}class="selected"{% endif %}><a href="?category=seminar">Seminar</a></li>
                     </ul>
                 </div>
             </header>
@@ -112,27 +112,21 @@ ical, rss feed, and api should be linked here
             </div>
         </div>
         <div class="events-info-container">
+        {% if selectedEvent %}
         <div class="events-info">
             <h2 class="event-info--time">
-                {% if selectedEvent.start_time|date:"F j" == selectedEvent.end_time|date:"F j"%}
-                    {% if selectedEvent.start_time|time == selectedEvent.end_time|time %}
-                        {{selectedEvent.start_time|date:"F j"}}
-                    {% else %}
-                        {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|time:"fA"}}
-                    {% endif %}    
-                {% else %}
-                    {% if selectedEvent.start_time|time == selectedEvent.end_time|time %}
-                        {{selectedEvent.start_time|date:"F j"}} - {{selectedEvent.end_time|date:"F j"}}
-                    {% else %}
-                        {{selectedEvent.start_time|date:"F j"}} {{selectedEvent.start_time|time:"fA"}} - {{selectedEvent.end_time|date:"F j"}} {{selectedEvent.end_time|time:"fA"}}
-                    {% endif %}
-                {% endif %}
+                {{selectedEvent.displayTime}}
             </h2>
             <div class="events-info--content {{selectedEvent.category}}">
                 <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
                 <p><b>Location:</b> {{selectedEvent.location}}</p>
                 <p>{% if selectedEvent.host %}<b>{{selectedEvent.host}}:</b>{% endif %} {{selectedEvent.description|safe}}</p>
-                <p ><a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a></p>
+                <p>
+                    <a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a>
+                    {% if request.user.is_authenticated %}
+                    <a href="/admin/snippets/events/event/edit/{{selectedEvent.id}}" id="edit_link">Edit</a>
+                    {% endif %}
+                </p>
                 <script>
                     var s = document.getElementById('source_link');
                     s.href = s.href.replace("__AND__", "&");
@@ -143,6 +137,7 @@ ical, rss feed, and api should be linked here
                 </script>
             </div>
         </div>
+        {% endif %}
         </div>
     </div>
 </main>
