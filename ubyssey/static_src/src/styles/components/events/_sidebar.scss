@@ -1,0 +1,32 @@
+.events-sidebar {
+    margin-bottom: 2em;
+
+    h2, h3 {
+        font-family: noto-serif;
+    }
+    .featured_event {
+        &:hover * {
+            color: $color-ubyssey-blue;
+        } 
+        .featured_event__time {
+            margin-bottom: 0;
+            text-decoration: underline;
+        }
+        .featured_event__title {
+            margin-top: 0;
+        }
+    }
+    ul {
+        padding: 0;
+        list-style: none;
+        li {
+            white-space: nowrap;
+            overflow: clip;
+            text-overflow: ellipsis;
+        }
+    }
+    .see_more {
+        font-size: 0.8em;
+        text-decoration: underline;
+    }
+}
