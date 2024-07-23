@@ -63,7 +63,7 @@
   background-size:cover;
   svg.c-section__heading {
     position: absolute;
-    bottom: -46px;
+    bottom: -50px;
     left: 20px;
     stroke: black;
     @media($bp-smaller-than-phablet) {
@@ -257,6 +257,7 @@ main.tag {
     @media ($bp-larger-than-phablet) {
       position: sticky;
       top: 6em;
+      margin-bottom: 50vh;
     }
   }
 }

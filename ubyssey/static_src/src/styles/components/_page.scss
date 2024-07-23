@@ -13,6 +13,7 @@
   @media($bp-larger-than-phablet) {
     // Structure
     display: flex;
+    flex-direction: column;
     margin: 1.75rem 0;
   }
 }
