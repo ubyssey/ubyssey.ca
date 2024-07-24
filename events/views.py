@@ -138,16 +138,34 @@ class EventsTheme(object):
             event.start_time = event.start_time.astimezone(timezone.get_current_timezone())
             event.end_time = event.end_time.astimezone(timezone.get_current_timezone())
 
-            if event.start_time.month == event.end_time.month and event.start_time.day == event.end_time.day:
+            if event.start_time.date() == event.end_time.date():
                 if event.start_time.time() == event.end_time.time():
                     event.displayTime = event.start_time.strftime("%B %-d")
                 else:
-                    event.displayTime = event.start_time.strftime("%B %-d, %-I:%M%p") + " - " + event.end_time.strftime("%-I:%M%p")
+                    event.displayTime = event.start_time.strftime("%B %-d, %-I")
+                    if event.start_time.strftime("%M") != "00":
+                        event.displayTime = event.displayTime + event.start_time.strftime(":%M")
+                    event.displayTime = event.displayTime + event.start_time.strftime("%p") + " - "
+                    
+                    event.displayTime = event.displayTime + event.end_time.strftime("%-I")
+                    if event.end_time.strftime("%M") != "00":
+                        event.displayTime = event.displayTime + event.end_time.strftime(":%M")
+                    event.displayTime = event.displayTime + event.end_time.strftime("%p")
             else:
                 if event.start_time.time() == event.end_time.time():
                     event.displayTime = event.start_time.strftime("%B %-d") + " - "  + event.end_time.strftime("%B %-d")
                 else:
                     event.displayTime = event.start_time.strftime("%B %-d %-I:%M%p") + " - " + event.end_time.strftime("%B %-d %-I:%M%p")
+
+                    event.displayTime = event.start_time.strftime("%B %-d, %-I")
+                    if event.start_time.strftime("%M") != "00":
+                        event.displayTime = event.displayTime + event.start_time.strftime(":%M")
+                    event.displayTime = event.displayTime + event.start_time.strftime("%p") + " - "
+                    
+                    event.displayTime = event.displayTime + event.end_time.strftime("%B %-d, %-I")
+                    if event.end_time.strftime("%M") != "00":
+                        event.displayTime = event.displayTime + event.end_time.strftime(":%M")
+                    event.displayTime = event.displayTime + event.end_time.strftime("%p")
 
         return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours, 'tab': tab})
 

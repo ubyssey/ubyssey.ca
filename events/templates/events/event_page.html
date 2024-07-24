@@ -13,7 +13,7 @@
         --highlight: {{value}};
     }
     div.day li.{{key|slugify}} {
-        color: black;    
+        color: black !important;    
     }
 {% endfor %}
 </style>
@@ -71,7 +71,7 @@ ical, rss feed, and api should be linked here
 
             <div class="events-calendar--rows">
             {% for week in calendar %}
-                <div class="events-calendar--row">
+                <div class="events-calendar--row{% if forloop.counter0 == 1%} enlarged{% endif %}">
                     {% if forloop.counter0 == 0%}
                         <h2 class="events-calendar--month">
                             <span class="full">{{week.month}}</span>
@@ -100,6 +100,7 @@ ical, rss feed, and api should be linked here
                     {% endfor %}
                 </div>
             {% endfor %}
+            </div>
 
             <div class="legend">
                 <ul>
@@ -109,33 +110,34 @@ ical, rss feed, and api should be linked here
                 </ul>
             </div>
 
-            </div>
         </div>
         <div class="events-info-container">
         {% if selectedEvent %}
+        <div class="events-info-container--div">
         <div class="events-info">
             <h2 class="event-info--time">
                 {{selectedEvent.displayTime}}
             </h2>
-            <div class="events-info--content {{selectedEvent.category}}">
-                <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
-                <p><b>Location:</b> {{selectedEvent.location}}</p>
-                <p>{% if selectedEvent.host %}<b>{{selectedEvent.host}}:</b>{% endif %} {{selectedEvent.description|safe}}</p>
-                <p>
-                    <a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a>
-                    {% if request.user.is_authenticated %}
-                    <a href="/admin/snippets/events/event/edit/{{selectedEvent.id}}" id="edit_link">Edit</a>
-                    {% endif %}
-                </p>
-                <script>
-                    var s = document.getElementById('source_link');
-                    s.href = s.href.replace("__AND__", "&");
-                    s.innerHTML = s.host;
+            <div class="events-info--content {{selectedEvent.category}} {{selectedEvent.host|slugify}}">
+                    <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
+                    <p><b>Location:</b> {{selectedEvent.location}}</p>
+                    <p>{% if selectedEvent.host %}<b>{{selectedEvent.host}}:</b>{% endif %} {{selectedEvent.description|safe}}</p>
+                    <p>
+                        <a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a>
+                        {% if request.user.is_authenticated %}
+                        <a href="/admin/snippets/events/event/edit/{{selectedEvent.id}}" id="edit_link">edit</a>
+                        {% endif %}
+                    </p>
+                    <script>
+                        var s = document.getElementById('source_link');
+                        s.href = s.href.replace("__AND__", "&");
+                        s.innerHTML = s.host;
 
-                    var s = document.getElementById('selected-title');
-                    s.href = s.href.replace("__AND__", "&");
-                </script>
+                        var s = document.getElementById('selected-title');
+                        s.href = s.href.replace("__AND__", "&");
+                    </script>
             </div>
+        </div>
         </div>
         {% endif %}
         </div>
