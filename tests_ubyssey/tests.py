@@ -311,7 +311,7 @@ class BaseTestCase(StaticLiveServerTestCase):
             )
         elif hasattr(self, 'browser') and self.browser == 'firefox':
             firefox_options = webdriver.FirefoxOptions()
-            # firefox_options.add_argument('--headless')
+            firefox_options.add_argument('--headless')
             self.driver = webdriver.Remote(
                 command_executor='http://selenium-firefox:4444/wd/hub',
                 options=firefox_options
@@ -330,7 +330,7 @@ class BaseTestCase(StaticLiveServerTestCase):
         super().tearDown()
 
     def test_ubysseys(self):
-        self.driver.get('https://ubyssey.ca/')
+        self.driver.get('http://host.docker.internal:8000/')
         assert "The Ubyssey" in self.driver.title
         button = self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small")
 
@@ -342,7 +342,6 @@ class BaseTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(2) > a").click()
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(3) > a").click()
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(4) > a").click()
-        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(4) > a").click()  # Redundant line
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(5) > a").click()
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(6) > a").click()
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(7) > a").click()
@@ -350,16 +349,16 @@ class BaseTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(9) > a").click()
         self.driver.find_element(By.CSS_SELECTOR, ".home-link > .light-logo").click()
         self.driver.find_element(By.CSS_SELECTOR, ".o-article:nth-child(2) > .o-article__right > .o-article__headline > a").click()
-        self.driver.get('https://ubyssey.ca/')
+        self.driver.get('http://host.docker.internal:8000/')
         self.driver.execute_script("window.scrollTo(0,444.4444885253906)")
         self.driver.delete_all_cookies()
         self.driver.find_element(By.CSS_SELECTOR, ".o-article--coverstory .o-article__headline > a").click()
-        # self.driver.get('https://ubyssey.ca/')
+        # self.driver.get('http://host.docker.internal:8000/')
         # self.driver.set_window_size(1296, 688)
         # element = self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(4) > a")
         # actions = ActionChains(self.driver)
         # actions.move_to_element(element).perform()
-        self.driver.get('https://ubyssey.ca/')
+        self.driver.get('http://host.docker.internal:8000/')
         self.driver.set_window_size(1296, 688)
         wait = WebDriverWait(self.driver, 10)
         news_story = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) > .o-article .o-article__headline > a")))
@@ -368,19 +367,19 @@ class BaseTestCase(StaticLiveServerTestCase):
         news_story = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-article")))
         self.driver.execute_script("arguments[0].scrollIntoView(true);", news_story)
         news_story.click()
-        self.driver.get('https://ubyssey.ca/')
+        self.driver.get('http://host.docker.internal:8000/')
         author_link = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) .o-article__byline a:nth-child(1)")))
         self.driver.execute_script("arguments[0].scrollIntoView(true);", author_link)
         author_link.click()
         sun_icon = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".right .sun-and-moon")))
         self.driver.execute_script("arguments[0].scrollIntoView(true);", sun_icon)
         sun_icon.click()
-        self.driver.get('https://ubyssey.ca/')
+        self.driver.get('http://host.docker.internal:8000/')
         self.driver.set_window_size(1296, 688)
         news_first_recommendation = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) .o-article:nth-child(1) .o-article__headline")))
         self.driver.execute_script("arguments[0].scrollIntoView(true);", news_first_recommendation)
         news_first_recommendation.click()
-        self.driver.get("https://ubyssey.ca/news/")
+        self.driver.get("http://host.docker.internal:8000/news/")
         self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small").click()
         self.driver.set_window_size(1296, 688)
         self.driver.find_element(By.CSS_SELECTOR, ".o-archive__search__label").click()
