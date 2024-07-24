@@ -77,9 +77,13 @@ header.main{
     .right {
       text-align: right;
   
+      .rss-icon {
+        margin-right: 1.5em;
+      }
+
       a {
           position: relative;
-          margin-right: 20px;
+          margin-right: 0.5em;
           font-size: font-size(16);
           &:last-child {
               margin-right: 0;
@@ -107,7 +111,9 @@ header.main{
     .left, .middle, .right {
       padding: 0;
     }
-
+    .meta {
+      font-style: italic;
+    }
     .left {
       .meta {
         margin-right: 15px;
