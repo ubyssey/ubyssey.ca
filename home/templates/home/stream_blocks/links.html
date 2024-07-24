@@ -21,7 +21,7 @@
 
 			<div class="events-sidebar">
 				<h2>Events Around Campus</h2>
-				<a class="featured_event" href="/events/?event={{events.0.event_url}}">
+				<a class="featured_event" href="/events/?event={{events.0.event_url}}" title="{{events.0.title}}">
 					<p class="featured_event__time">{{events.0.display_time}} - {{events.0.location}}</p>
 					<p class="featured_event__title">{{events.0.title}}</p>
 				</a>
@@ -30,7 +30,7 @@
 				{% for event in events %}
 					{% if not forloop.counter0 == 0 %}
 						<li>
-							<a href="/events/?event={{event.event_url}}">
+							<a href="/events/?event={{event.event_url}}" title="{{event.title}}">
 							<b>{{event.display_time}}</b> {{event.title}}
 							</a>
 						</li>
@@ -39,9 +39,6 @@
 				</ul>
 				<p class="see_more"><a href="/events">See calendar for more</a></p>
 			</div>
-
-			<div class="sidebar-block sidebar-block--advertisement"></div>
-			<p class="o-advertisement--ad-page-promo"><a href="/advertise">Considering advertising with The Ubyssey? Learn More!</a></p>
 		</div>
 	{% else %}
 		<div class="sidebar-block sidebar-block--advertisement o-advertisement--leaderboard"></div>
