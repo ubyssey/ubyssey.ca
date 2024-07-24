@@ -274,14 +274,16 @@
 #         # first_recommended_article = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "li:nth-child(1) .o-article__headline > a")))
 #         # first_recommended_article.click()
 import socket
-
+from django.test import override_settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.test import override_settings, tag
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-
-@override_settings(ALLOWED_HOSTS=['*'])  # Disable ALLOW_HOSTS
+@override_settings(ALLOWED_HOSTS=['*'])  # Disable ALLOWED_HOSTS
 class BaseTestCase(StaticLiveServerTestCase):
     """
     Provides base test class which connects to the Docker
@@ -295,22 +297,101 @@ class BaseTestCase(StaticLiveServerTestCase):
         # Set host to externally accessible web server address
         cls.host = socket.gethostbyname(socket.gethostname())
 
-        # Instantiate the remote WebDriver
-        cls.selenium = webdriver.Remote(
-            #  Set to: htttp://{selenium-container-name}:port/wd/hub
-            #  In our example, the container is named `selenium`
-            #  and runs on port 4444
-            command_executor='http://selenium-edge:4444/wd/hub',
-            # Set to CHROME since we are using the Chrome container
-            options=webdriver.EdgeOptions()
+    def setUp(self):
+        super().setUp()
+        # Instantiate the remote WebDriver based on the browser type
+        if hasattr(self, 'browser') and self.browser == 'chrome':
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+            self.driver = webdriver.Remote(
+                command_executor='http://selenium-chrome:4444/wd/hub',
+                options=chrome_options
+            )
+        elif hasattr(self, 'browser') and self.browser == 'firefox':
+            firefox_options = webdriver.FirefoxOptions()
+            # firefox_options.add_argument('--headless')
+            self.driver = webdriver.Remote(
+                command_executor='http://selenium-firefox:4444/wd/hub',
+                options=firefox_options
+            )
+        else:  # default to Edge
+            edge_options = webdriver.EdgeOptions()
+            edge_options.add_argument('--headless')
+            self.driver = webdriver.Remote(
+                command_executor='http://selenium-edge:4444/wd/hub',
+                options=edge_options
+            )
+        self.driver.implicitly_wait(5)
 
-        )
-        cls.selenium.implicitly_wait(5)
+    def tearDown(self):
+        self.driver.quit()
+        super().tearDown()
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.selenium.quit()
-        super().tearDownClass()
-    
     def test_ubysseys(self):
-        self.selenium.get('http://example.com')
+        self.driver.get('https://ubyssey.ca/')
+        assert "The Ubyssey" in self.driver.title
+        button = self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small")
+
+        # Click the button
+        button.click()
+
+        self.driver.set_window_size(1296, 688)
+        self.driver.find_element(By.CSS_SELECTOR, ".middle .nav > li:nth-child(1) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(2) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(3) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(4) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(4) > a").click()  # Redundant line
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(5) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(6) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(7) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(8) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(9) > a").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".home-link > .light-logo").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".o-article:nth-child(2) > .o-article__right > .o-article__headline > a").click()
+        self.driver.get('https://ubyssey.ca/')
+        self.driver.execute_script("window.scrollTo(0,444.4444885253906)")
+        self.driver.delete_all_cookies()
+        self.driver.find_element(By.CSS_SELECTOR, ".o-article--coverstory .o-article__headline > a").click()
+        # self.driver.get('https://ubyssey.ca/')
+        # self.driver.set_window_size(1296, 688)
+        # element = self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(4) > a")
+        # actions = ActionChains(self.driver)
+        # actions.move_to_element(element).perform()
+        self.driver.get('https://ubyssey.ca/')
+        self.driver.set_window_size(1296, 688)
+        wait = WebDriverWait(self.driver, 10)
+        news_story = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) > .o-article .o-article__headline > a")))
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", news_story)
+        news_story.click()
+        news_story = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-article")))
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", news_story)
+        news_story.click()
+        self.driver.get('https://ubyssey.ca/')
+        author_link = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) .o-article__byline a:nth-child(1)")))
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", author_link)
+        author_link.click()
+        sun_icon = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".right .sun-and-moon")))
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", sun_icon)
+        sun_icon.click()
+        self.driver.get('https://ubyssey.ca/')
+        self.driver.set_window_size(1296, 688)
+        news_first_recommendation = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".c-homepage__section:nth-child(1) .o-article:nth-child(1) .o-article__headline")))
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", news_first_recommendation)
+        news_first_recommendation.click()
+        self.driver.get("https://ubyssey.ca/news/")
+        self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small").click()
+        self.driver.set_window_size(1296, 688)
+        self.driver.find_element(By.CSS_SELECTOR, ".o-archive__search__label").click()
+        self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys("UBCO")
+        self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys(Keys.ENTER)
+
+class EdgeTestCase(BaseTestCase):
+    browser = 'edge'
+
+class ChromeTestCase(BaseTestCase):
+    browser = 'chrome'
+
+class FirefoxTestCase(BaseTestCase):
+    browser = 'firefox'
