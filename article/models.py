@@ -1082,11 +1082,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
 
-        authors_with_roles = ''
+        authors_with_roles = []
         string_written = ''
         string_photos = ''
         string_author = ''
         string_videos = ''
+        string_org = ''
 
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         for author in authors:
@@ -1098,15 +1099,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 string_author += 'Illustrations by ' + self.get_authors_string(links=True, authors_list=authors['illustrator'])
             if author == 'videographer':
                 string_videos += 'Videos by ' + self.get_authors_string(links=True, authors_list=authors['videographer'])
-        if string_written != '':
-            authors_with_roles += string_written # Unneccessary if statement
-        if string_photos != '':
-            authors_with_roles += ', ' + string_photos
-        if string_author != '':
-            authors_with_roles += ', ' + string_author
-        if string_videos != '':
-            authors_with_roles += ', ' + string_videos
-        return authors_with_roles
+            if author == 'org_role':
+                string_org = ",".join( map(lambda a: ' ' + a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]) , authors['org_role'])) 
+                
+       
+        authors_with_roles = filter(lambda a: a != '', [string_written, string_photos, string_author, string_videos, string_org])
+        return ', '.join(authors_with_roles)
     authors_with_roles = property(fget=get_authors_with_roles)
  
     def get_category_articles(self, order='-first_published_at') -> QuerySet:
