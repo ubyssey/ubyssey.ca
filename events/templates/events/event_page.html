@@ -24,6 +24,7 @@
 {% comment %} 
 ical, rss feed, and api should be linked here
 {% endcomment %}
+<link rel="alternate" type="text/calendar" title="{{ical.title}}" href="{{ical.url}}" />
 {% endblock %}
 
 {% block header %}  
@@ -56,6 +57,7 @@ ical, rss feed, and api should be linked here
                         <li {% if tab == 'community' %}class="selected"{% endif %}><a href="?category=community">Community</a></li>
                         <li {% if tab == 'seminar' %}class="selected"{% endif %}><a href="?category=seminar">Seminar</a></li>
                     </ul>
+                    <a id="calendar-download" href="{{ical.url}}" title="Download calendar"><i class="fa-solid fa-calendar-days"></i></a>
                 </div>
             </header>
 
@@ -71,7 +73,7 @@ ical, rss feed, and api should be linked here
 
             <div class="events-calendar--rows">
             {% for week in calendar %}
-                <div class="events-calendar--row{% if forloop.counter0 == 1%} enlarged{% endif %}">
+                <div class="events-calendar--row">
                     {% if forloop.counter0 == 0%}
                         <h2 class="events-calendar--month">
                             <span class="full">{{week.month}}</span>
@@ -109,6 +111,8 @@ ical, rss feed, and api should be linked here
                 {% endfor %}
                 </ul>
             </div>
+
+            <p id="add-to-calendar"><a href="webcal:{{ical.url}}"><i class="fa-solid fa-calendar-days"></i> Add to Calendar</a></p>
 
         </div>
         <div class="events-info-container">

@@ -91,7 +91,7 @@ main.events-page {
 
 .events-calendar--categories {
     display: flex;
-    margin: 1em 0 2em 0;
+    margin: 1em 0 1.5em 0;
     justify-content: center;
     ul {
         margin: 0;
@@ -411,9 +411,28 @@ header.events{
     }
 }
 
+#calendar-download {
+    display: inline;
+    margin-left: 1em;
+    @media($bp-smaller-than-phablet) {
+        display: none;
+    }
+}
+
+#add-to-calendar {
+    margin-left: 1em;
+    margin-bottom: 2em;
+    @media($bp-larger-than-phablet) {
+        display: none;
+    }
+}
+
 .legend {
     margin-bottom: 5em;
     width: 75%;
+    @media($bp-smaller-than-phablet) {
+        margin-bottom: 2em;
+    }
     ul {
         display: flex;
         padding: 0;
