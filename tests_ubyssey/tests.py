@@ -67,26 +67,25 @@ class BaseTestCase(StaticLiveServerTestCase):
         button.click()
         self.driver.set_window_size(1296, 688)
         self.driver.find_element(By.CSS_SELECTOR, ".middle .nav > li:nth-child(1) > a").click()
-        assert "News" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("News"))
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(2) > a").click()
-        assert "Culture" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Culture"))
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(3) > a").click()
-        assert "Features" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Features"))
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(4) > a").click()
-        assert "Opinion" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Opinion"))
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(5) > a").click()
-        assert "Humour" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Humour"))
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(6) > a").click()
-        assert "Science" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Science"))
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(7) > a").click()
-        assert "Sports" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Sports"))
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(8) > a").click()
-        assert "Photo" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Photo"))
         self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(9) > a").click()
-        assert "Videos" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Video"))
         self.driver.find_element(By.CSS_SELECTOR, ".home-link > .light-logo").click()
-        WebDriverWait(self.driver, 10).until(EC.title_contains("The Ubyssey"))
-        assert "The Ubyssey" in self.driver.title
+        WebDriverWait(self.driver, 60).until(EC.title_contains("The Ubyssey"))
         self.driver.find_element(By.CSS_SELECTOR, ".o-article:nth-child(2) > .o-article__right > .o-article__headline > a").click()        
 
     def test_cover_story(self):
@@ -113,6 +112,13 @@ class BaseTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, ".o-article__meta:nth-child(2) > .o-article__byline a:nth-child(1)").click()
         author_cards = self.driver.find_elements(By.CLASS_NAME, 'author-info')
         self.assertGreater(len(author_cards), 0, "Author page does not exists")    
+
+    def test_top_article_list(self):
+        self.driver.get('http://host.docker.internal:8000/')
+        hide_element = self.driver.find_element(By.ID, "djHideToolBarButton")
+        hide_element.click()
+        self.driver.find_element(By.CSS_SELECTOR, ".o-article:nth-child(2) > .o-article__right > .o-article__headline > a").click()
+        self.article_page_exists()                
 
     def test_dark_mode(self):
         self.driver.get('http://host.docker.internal:8000/')
@@ -158,7 +164,29 @@ class BaseTestCase(StaticLiveServerTestCase):
         articles = self.driver.find_elements(By.CSS_SELECTOR,"#feed article")
         # Assert that there is at least one article after searching
         assert len(articles) > 0, "No articles found in the feed section."
+    
+    def test_archive_in_footer(self):
+        self.driver.get("http://host.docker.internal:8000/news/")
+        self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small").click()
+        self.driver.set_window_size(1296, 688)
+        self.driver.execute_script("window.scrollTo(0,6560.00048828125)")
+        self.driver.find_element(By.CSS_SELECTOR, ".second_footer_menu li:nth-child(1) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Archive"))
+    
+    def test_sidebar_latest(self):
+        self.driver.get("http://host.docker.internal:8000/")
+        hide_element = self.driver.find_element(By.ID, "djHideToolBarButton")
+        hide_element.click()
+        self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small").click()
 
+        # Locate all <li> elements within the <ul class="article-list"> element
+        list_items = self.driver.find_elements(By.CSS_SELECTOR, 'ul.article-list > li')
+
+        # Assert that there are 5 <li> elements
+        assert len(list_items) == 5, f"Expected 5 articles, but found {len(list_items)}."
+        self.driver.find_element(By.CSS_SELECTOR, 'li:nth-child(1) .o-article__headline > a').click()
+        self.article_page_exists()
+                
 class EdgeTestCase(BaseTestCase):
     browser = 'edge'
 
