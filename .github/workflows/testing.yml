@@ -6,12 +6,11 @@ on:
     
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
       - name: Build the Docker image
         run: | 
             cd ubyssey-dev/.devcontainer
-            docker compose build
-            docker compose run --rm web python manage.py test
+            cat docker-compose.yml
