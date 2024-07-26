@@ -23,9 +23,10 @@ jobs:
             run: |
               docker build . -t ubyssey/ubyssey.ca:latest
               echo "Docker image built successfully"
-              cd ubyssey-dev/.devcontainer
-              echo "Changed directory to .devcontainer"
-              docker-compose up 
+              cd ubyssey-dev
+              ls
+              # echo "Changed directory to .devcontainer"
+              # docker-compose up 
               # --rm web sh -c "python3 manage.py test"
               # ls
               # cd ubyssey-dev
