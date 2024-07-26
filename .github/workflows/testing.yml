@@ -22,7 +22,11 @@ jobs:
           - name: Test  # Step 3: Run the tests
             run: |
               docker build . -t ubyssey/ubyssey.ca:latest
-
+              echo "Docker image built successfully"
+              cd ubyssey-dev/.devcontainer
+              echo "Changed directory to .devcontainer"
+              docker-compose up 
+              # --rm web sh -c "python3 manage.py test"
               # ls
               # cd ubyssey-dev
               # pwd
