@@ -46,10 +46,10 @@ class EventsTheme(object):
             highlight = "host"
             tab = request.GET.get("category")
 
-            ical = {'url': '/events/ical/?category=' + request.GET.get("category"),
+            ical = {'url': 'https://ubyssey.ca/events/ical/?category=' + request.GET.get("category"),
                     'title': "Ubyssey's " + request.GET.get("category").capitalize()  + " Around Campus iCal Feed"}
         else:
-            ical = {'url': '/events/ical/',
+            ical = {'url': 'https://ubyssey.ca/events/ical/',
                     'title': "Ubyssey's Events Around Campus iCal Feed"}
         legend = []
 
