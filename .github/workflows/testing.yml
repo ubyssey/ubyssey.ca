@@ -1,0 +1,29 @@
+on:
+  push:
+    branches: [ "1502-add-end-to-end-test-automation" ]
+  pull_request:
+    branches: [ "1502-add-end-to-end-test-automation" ]
+    
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build the Docker image
+        run: | 
+            cd ubyssey-dev/.devcontainer
+            docker compose build
+            docker compose run --rm web python manage.py makemigrations     
+            docker compose run --rm web python manage.py migrate 
+            docker compose run --rm web python manage.py collectstatic --no-input
+
+  # test:
+  #   runs-on: self-hosted
+  #   needs:
+  #     - build
+  #   steps:
+  #     - name: Run tests
+  #       run: |
+  #         docker compose run --rm web python manage.py test
+
