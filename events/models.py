@@ -84,7 +84,7 @@ class EventManager(models.Manager):
 
         # Hide events that aren't for undergraduates
         if 'audience' in categories:
-            if 'all students' not in categories and 'community' not in categories:
+            if 'all students' not in categories and 'audience – community' not in categories:
                 return True
         if 'staff only' in title:
             return True

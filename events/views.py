@@ -46,6 +46,11 @@ class EventsTheme(object):
             highlight = "host"
             tab = request.GET.get("category")
 
+            ical = {'url': '/events/ical/?category=' + request.GET.get("category"),
+                    'title': "Ubyssey's " + request.GET.get("category").capitalize()  + " Around Campus iCal Feed"}
+        else:
+            ical = {'url': '/events/ical/',
+                    'title': "Ubyssey's Events Around Campus iCal Feed"}
         legend = []
 
         while(len(calendar) < weekNum):
@@ -121,7 +126,7 @@ class EventsTheme(object):
         for i in range(len(legend)):
             r = 200 + math.floor(50 * math.cos(i/len(legend) * 2 * math.pi))
             g = 200 + math.floor(50 * math.sin(i/len(legend) * 2 * math.pi))
-            b = 200
+            b = 200 + math.floor(50 * math.cos(i/len(legend) * 2 * math.pi + math.pi))
             highlight_colours[legend[i]] = "rgb(" + ",".join([str(r), str(g), str(b)]) + ")"
 
         event = closest_event
@@ -138,18 +143,36 @@ class EventsTheme(object):
             event.start_time = event.start_time.astimezone(timezone.get_current_timezone())
             event.end_time = event.end_time.astimezone(timezone.get_current_timezone())
 
-            if event.start_time.month == event.end_time.month and event.start_time.day == event.end_time.day:
+            if event.start_time.date() == event.end_time.date():
                 if event.start_time.time() == event.end_time.time():
                     event.displayTime = event.start_time.strftime("%B %-d")
                 else:
-                    event.displayTime = event.start_time.strftime("%B %-d, %-I:%M%p") + " - " + event.end_time.strftime("%-I:%M%p")
+                    event.displayTime = event.start_time.strftime("%B %-d, %-I")
+                    if event.start_time.strftime("%M") != "00":
+                        event.displayTime = event.displayTime + event.start_time.strftime(":%M")
+                    event.displayTime = event.displayTime + event.start_time.strftime("%p") + " - "
+                    
+                    event.displayTime = event.displayTime + event.end_time.strftime("%-I")
+                    if event.end_time.strftime("%M") != "00":
+                        event.displayTime = event.displayTime + event.end_time.strftime(":%M")
+                    event.displayTime = event.displayTime + event.end_time.strftime("%p")
             else:
                 if event.start_time.time() == event.end_time.time():
                     event.displayTime = event.start_time.strftime("%B %-d") + " - "  + event.end_time.strftime("%B %-d")
                 else:
                     event.displayTime = event.start_time.strftime("%B %-d %-I:%M%p") + " - " + event.end_time.strftime("%B %-d %-I:%M%p")
 
-        return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours, 'tab': tab})
+                    event.displayTime = event.start_time.strftime("%B %-d, %-I")
+                    if event.start_time.strftime("%M") != "00":
+                        event.displayTime = event.displayTime + event.start_time.strftime(":%M")
+                    event.displayTime = event.displayTime + event.start_time.strftime("%p") + " - "
+                    
+                    event.displayTime = event.displayTime + event.end_time.strftime("%B %-d, %-I")
+                    if event.end_time.strftime("%M") != "00":
+                        event.displayTime = event.displayTime + event.end_time.strftime(":%M")
+                    event.displayTime = event.displayTime + event.end_time.strftime("%p")
+
+        return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours, 'tab': tab, 'ical': ical})
 
 def update_events(request):
     from urllib.request import urlopen, Request
@@ -189,6 +212,49 @@ def update_events(request):
         event.delete()
 
     return HttpResponse("Success!", status=200)
+
+def create_ical(request):
+    from django.http import HttpResponse
+    import icalendar
+
+    cal = icalendar.Calendar()
+    if request.GET.get('category'):
+        cal['X-WR-CALNAME'] = request.GET.get('category').capitalize() + ' Around Campus from The Ubyssey'
+        cal['X-ORIGINAL-URL'] = 'https://ubyssey.ca/events/?category=' + request.GET.get('category')
+        cal['X-WR-CALDESC'] = request.GET.get('category').capitalize() + ' at UBC collected by The Ubyssey'
+        all_events = Event.objects.filter(hidden=False, category=request.GET.get("category"))
+    else:
+        cal['X-WR-CALNAME'] = 'Events Around Campus from The Ubyssey'
+        cal['X-ORIGINAL-URL'] = 'https://ubyssey.ca/events'
+        cal['X-WR-CALDESC'] = 'Events at UBC collected by The Ubyssey'
+        all_events = Event.objects.filter(hidden=False)
+
+    for event in all_events:
+        ical_event = icalendar.Event()
+        ical_event.add('summary', event.title.replace("<br>", ""))
+        ical_event.add('description', event.description)
+        ical_event.add('location', event.location + ", " + event.address)
+        ical_event.add('dtstart', event.start_time.astimezone(timezone.get_current_timezone()))
+        ical_event.add('dtend', event.end_time.astimezone(timezone.get_current_timezone()))
+        if request.GET.get('category'):
+            ical_event.add('url', "https://ubyssey.ca/events/?category=" + request.GET.get('category') + "&event=" + event.event_url)
+        else:
+            ical_event.add('url', "https://ubyssey.ca/events/?event=" + event.event_url)
+        ical_event.add('categories', event.category)
+        ical_event.add('uid', event.event_url)
+        if event.host:
+            if 'gothunderbirds.ca' in event.event_url:
+                ical_event.add('organizer', 'UBC ' + event.host)                
+            else:
+                ical_event.add('organizer', event.host)
+
+        cal.add_component(ical_event)
+
+    return HttpResponse(cal.to_ical(), 
+            headers={
+                "Content-Type": "text/calendar; charset=UTF-8",
+                "Content-Disposition": 'attachment; filename="ubysseyCalendar.ics"',
+            })
 
 class EventsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

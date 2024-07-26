@@ -18,8 +18,27 @@
 			</ul>
 		</div>
 		<div class="home_link_ad">
-			<div class="sidebar-block sidebar-block--advertisement"></div>
-			<p class="o-advertisement--ad-page-promo"><a href="/advertise">Considering advertising with The Ubyssey? Learn More!</a></p>
+
+			<div class="events-sidebar">
+				<h2><a href="/events">Events Around Campus</a></h2>
+				<a class="featured_event" href="/events/?event={{events.0.event_url}}" title="{{events.0.title}}">
+					<p class="featured_event__time">{{events.0.display_time}} - {{events.0.location}}</p>
+					<p class="featured_event__title">{{events.0.title}}</p>
+				</a>
+				<h3>Upcoming</h3>
+				<ul>
+				{% for event in events %}
+					{% if not forloop.counter0 == 0 %}
+						<li>
+							<a href="/events/?event={{event.event_url}}" title="{{event.title}}">
+							<b>{{event.display_time}}</b> {{event.title}}
+							</a>
+						</li>
+					{% endif %}
+				{% endfor %}
+				</ul>
+				<p class="see_more"><a href="/events">See calendar for more</a></p>
+			</div>
 		</div>
 	{% else %}
 		<div class="sidebar-block sidebar-block--advertisement o-advertisement--leaderboard"></div>

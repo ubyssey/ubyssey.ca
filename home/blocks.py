@@ -80,6 +80,46 @@ class LinksStreamBlock(blocks.StructBlock):
         )
     )
 
+    def get_context(self, value, parent_context=None):
+        from events.models import Event
+        from django.utils import timezone
+        from datetime import timedelta
+        context = super().get_context(value, parent_context)
+        context['events'] = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).order_by("start_time")[:5]
+
+        for i in range(len(context['events'])):
+            today = timezone.now()
+            if context['events'][i].start_time < today:
+                pubdate = context['events'][i].end_time.astimezone(timezone.get_current_timezone())
+                display = "Ends "
+            else:
+                pubdate = context['events'][i].start_time.astimezone(timezone.get_current_timezone())
+                display = ""
+                
+            delta = abs(today - pubdate)
+
+            day = ""
+
+            if pubdate.date() == today.date():
+                day = "Today"
+            elif (pubdate - timedelta(days=1)).date() == today.date():
+                day = "Tomorrow"
+            elif delta.total_seconds() < timedelta(days=6).total_seconds():
+                day = pubdate.strftime("%a")
+            else:
+                day = pubdate.strftime("%B %-d") + ","
+
+            time = pubdate.strftime("%-I")
+            if pubdate.strftime("%M") != "00":
+                time = time + pubdate.strftime(":%M")
+            time = time + pubdate.strftime("%P")
+
+            display = display + day + " " + time
+            
+            context['events'][i].display_time = display
+
+        return context
+
     class Meta:
         template = "home/stream_blocks/links.html"
 
