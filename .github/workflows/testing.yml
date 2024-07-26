@@ -21,9 +21,10 @@ jobs:
 
           - name: Test  # Step 3: Run the tests
             run: |
+              docker build . -t ubyssey/ubyssey.ca:latest
+
               # ls
-              cd ubyssey-dev
-              pwd
-              ls
-              docker-compose-prd up -d
+              # cd ubyssey-dev
+              # pwd
+              # ls
               # docker-compose run --rm web sh -c "python3 manage.py test"  # Use Docker Compose to run the Django unit tests
