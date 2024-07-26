@@ -1082,28 +1082,27 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
 
-        authors_with_roles = []
         string_written = ''
         string_photos = ''
-        string_author = ''
+        string_illustrations = ''
         string_videos = ''
         string_org = ''
 
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         for author in authors:
             if author == 'author':
-                authors_with_roles += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
+                string_written += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
             if author == 'photographer':
                 string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
             if author == 'illustrator':
-                string_author += 'Illustrations by ' + self.get_authors_string(links=True, authors_list=authors['illustrator'])
+                string_illustrations += 'Illustrations by ' + self.get_authors_string(links=True, authors_list=authors['illustrator'])
             if author == 'videographer':
                 string_videos += 'Videos by ' + self.get_authors_string(links=True, authors_list=authors['videographer'])
             if author == 'org_role':
                 string_org = ",".join( map(lambda a: ' ' + a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]) , authors['org_role'])) 
                 
        
-        authors_with_roles = filter(lambda a: a != '', [string_written, string_photos, string_author, string_videos, string_org])
+        authors_with_roles = filter(lambda a: a != '', [string_written, string_photos, string_illustrations, string_videos, string_org])
         return ', '.join(authors_with_roles)
     authors_with_roles = property(fget=get_authors_with_roles)
  
