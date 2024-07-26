@@ -6,15 +6,6 @@ on:
     
 jobs:
 
-  services:
-    mysql:
-      image: mysql:5.7
-      env:
-        MYSQL_ROOT_PASSWORD: ubyssey
-        MYSQL_DATABASE: mysql
-      ports: ['3306:3306']
-
-
   test:  # Define a job named 'test'
       name: Run unit tests  # A more descriptive name for the job
       runs-on: ubuntu-22.04  # Specify the runner environment (Ubuntu 22.04)
