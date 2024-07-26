@@ -5,6 +5,16 @@ on:
     branches: [ "add-a-CI/CD-pipeline" ]
     
 jobs:
+
+  services:
+    mysql:
+      image: mysql:5.7
+      env:
+        MYSQL_ROOT_PASSWORD: ubyssey
+        MYSQL_DATABASE: mysql
+      ports: ['3306:3306']
+
+
   test:  # Define a job named 'test'
       name: Run unit tests  # A more descriptive name for the job
       runs-on: ubuntu-22.04  # Specify the runner environment (Ubuntu 22.04)
@@ -25,6 +35,10 @@ jobs:
               echo "Docker image built successfully"
               git clone https://github.com/ubyssey/ubyssey-dev.git
               docker volume create --name=ubyssey_db_volume
+              docker exec -t -i ubyssey_db bash
+              mysql -u root -pubyssey
+              CREATE DATABASE ubyssey;
+              quit;
               # echo "Changed directory to .devcontainer"
               # docker-compose up 
               # --rm web sh -c "python3 manage.py test"
