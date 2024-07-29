@@ -99,19 +99,14 @@
     flex-wrap: wrap;
 
     li {
+      margin: 0.25em 1em;
       list-style: none;
-      padding-right: 5px;
-      padding-left: 5px;
-      margin-bottom: -2.5px;
       display: inline;
-      //flex-grow: 1;
-      //text-align: center;
-      border-right: solid;
-      border-color: var(--text_color);
-      border-width: 1px;
-      &:last-child {
-        border-right: none;
-      }
+      max-width: 250px;
+      white-space: nowrap;
+      overflow: clip;
+      text-overflow: ellipsis;
+      border-bottom: 1px solid;
     }
   }
 }

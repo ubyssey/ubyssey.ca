@@ -55,7 +55,6 @@
           {% endif %}
           {% if self.category_menu.count and not category %}
           <div class="featured_categories">
-            <p>Featured Categories:&nbsp; </p>
             <ul>
               {% for category_menu_item in self.category_menu.all %}
                 {% if category_menu_item.category %}
@@ -81,7 +80,7 @@
         
             <div class="setup-modal c-section__button-label">
               <a class="open-modal" href="#"> 
-                <p><i class="fa fa-tag"></i> Categories</p>
+                <p><i class="fa fa-tag"></i> {% if category %}Other {% endif %}Categories</p>
               </a>
 
               <dialog class="modal" aria-modal="true">

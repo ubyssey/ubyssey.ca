@@ -118,6 +118,8 @@ class LinksStreamBlock(blocks.StructBlock):
             
             context['events'][i].display_time = display
 
+            context['events'][i].title = context['events'][i].title.replace("<br>", "")
+
         return context
 
     class Meta:

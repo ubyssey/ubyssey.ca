@@ -303,6 +303,7 @@ nav.navbar {
                 padding: 0;
                 border: none;
                 height: 0;
+                max-height: 600px;
                 transition-duration: 0.5s;
                 background-color: var(--pageColour);
                 overflow-y: auto;
@@ -322,7 +323,7 @@ nav.navbar {
 .dropdown:hover .dropdown-menu, .dropdown:focus-within .dropdown-menu {
     display: block;
     padding: 0.5em 0 !important;
-    height: 200px !important;
+    height: unset !important;
 }
 
 #collapsibleNavbar {
