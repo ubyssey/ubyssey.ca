@@ -7,34 +7,24 @@ import os
 from dotenv import load_dotenv, find_dotenv
     
 def split_tags_and_description(input_string):
-    # Define the regex pattern to match tags and descriptions
-    # The pattern will capture multiple tags separated by ', ', and a description following them.
-    pattern = re.compile(r'(".*?")\s*(?:",\s*")*"(.*?)"')
+    images_data = input_string.strip().split("\n\n")
+    tags_list = []
+    descriptions_list = []
 
-    # Find all matches in the input string
-    matches = pattern.findall(input_string)
+    for image_data in images_data:
+        lines = image_data.strip().split("\n")
+        if len(lines) == 2:
+            tags = lines[0].split(", ")
+            description = lines[1]
+            tags_list.append(tags)
+            descriptions_list.append(description)
+    
+    # for tagss, description in zip(tags_list, descriptions_list):
+        # print("Tags:", tagss)
+        # print("Description:", description)
+        # print()  
 
-    tags = []
-    descriptions = []
-
-    for match in matches:
-        # Process tags
-        tags_part = match[0]
-        # Split tags based on '", "'
-        tag_list = tags_part.split('", "')
-        # Clean up each tag by removing surrounding quotes and any extra spaces
-        tag_list = [tag.strip('"') for tag in tag_list]
-        tags.append(tag_list)
-
-        # Process description
-        description = '"' + match[1] + '"'
-        descriptions.append(description)
-    for tags, description in zip(tags, descriptions):
-        print("Tags:", tags)
-        print("Description:", description)
-        print()  
-
-    return tags, descriptions
+    return tags_list, descriptions_list
 
 # openai.api_key = settings.OPENAI_API_KEY
 def get_image_urls(request):
@@ -56,22 +46,21 @@ def get_image_tags(image_urls):
     _ = load_dotenv(find_dotenv())
     client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'),)
     prompt = (
-        "Can you provide tags and a description for each image with no additional information? All images are from UBC and are intended for UBC students. The source is this open website: https://ubyssey.ca/\n\n"
+        "Can you provide tags and a description for each image with no additional information? All images are from UBC and are intended for UBC students.\n\n"
         "For each image:\n"
-        "1. **Tags:** Describe what happens in the image and the medium of photography. Each tag should be enclosed in double quotes.\n"
-        "2. **Description:** Describe the image to assist in indexing for faster search. The description should also be enclosed in double quotes.\n\n"
-        "**Format Example for Each Image:**\n"
-        "- **Tags:** \"tag1\", \"tag2\", \"tag3\"\n"
-        "- **Description:** \"This is a detailed description of the image.\"\n\n"
-        "**Separation Between Images:**\n"
+        "1. Tags: Describe what happens in the image and the medium of photography. Each tag should be concise. Provide 4 to 5 tags for each image. Also remember all images are taken UBC\n"
+        "2. Description: Describe the image to assist in indexing for faster search.\n\n"
+        "Format Example for Each Image:\n"
+        "tag1, tag2, tag3, tag4, tag5\n"
+        "This is a detailed description of the image.\n\n"
+        "Separation Between Images:\n"
         "- Separate the output for each image with a double newline (\\n\\n).\n\n"
-        "**Example:**\n"
-        "\n"
-        "\"tag1\", \"tag2\", \"tag3\", \"tag4\", \"tag5\"\n"
-        "\"This is the description for the first image.\"\n\n"
-        "\"tagA\", \"tagB\", \"tagC\"\n"
-        "\"This is the description for the second image.\"\n\n"
-        "**Note:** Ensure that each set of tags and descriptions is clearly separated by a double newline. Each set should be formatted as shown above with tags in double quotes and the description also in double quotes. This format will make it easier to use the `split_tags_and_description` function to separate the tags and descriptions where tags is a list of lists of strings."
+        "Example:\n\n"
+        "tag1, tag2, tag3, tag4, tag5\n"
+        "This is the description for the first image.\n\n"
+        "tagA, tagB, tagC, tagD, tagE\n"
+        "This is the description for the second image.\n\n"
+        "Note: Ensure that each set of tags and descriptions is clearly separated by a double newline. Each set should be formatted as shown above with tags separated by commas and the description in plain text. This format will make it easier to use the `split_tags_and_description` function to separate the tags and descriptions where tags is a list of lists of strings."
     )
 
     messages = [
@@ -98,16 +87,21 @@ def get_image_tags(image_urls):
     choices = response.choices
     chat_completion = choices[0]
     content = chat_completion.message.content # Correct (this works with the Chat Completions API)
-    # print(content+"                  ")
 
     print(response.choices[0].message.content)
     tags, descriptions = split_tags_and_description(response.choices[0].message.content)
-    # populate_tags(tags, descriptions)
+    
+    populate_tags(tags, descriptions)
 
 
 def populate_tags(tags, descriptions):
-    images = UbysseyImage.objects.all()
-    for image, (tag, description) in zip(images, zip(tags, descriptions)):
-        image.tags.add(tag)
-        image.description = description
+    # images = UbysseyImage.objects.all()
+    # for image, (tag, description) in zip(images, zip(tags, descriptions)):
+    legacy_filename = 'images/2015/09/Soccer_V._UBCO_20150926_Jeremy_Johnson-Silvers-4_gHJydIb.jpg'
+    filtered_images = UbysseyImage.objects.all().filter(legacy_filename=legacy_filename)
+    for image in filtered_images:
+        image.tags.clear()
+        for tag in tags[1]:
+            image.tags.add(tag)
+        image.description = descriptions[1]
         image.save()   
