@@ -41,7 +41,9 @@ def get_image_urls(request):
     for image in images:
         url = request.build_absolute_uri(base_url + image.file.name)
         image_urls.append(url)
-    get_image_tags([image_urls[0],image_urls[333]])
+    print(image_urls[9999])
+    print(image_urls[333])
+    get_image_tags([image_urls[9999],image_urls[333]])
         
     # Pass image_urls to OpenAI API or render them in a template if needed
     return render(request, 'centennial.html', {})
@@ -76,22 +78,6 @@ def get_image_tags(image_urls):
     content = chat_completion.message.content # Correct (this works with the Chat Completions API)
     print(content+"                  ")
 
-    # Assuming image_urls is a list of URLs to process similarly
-    for url in image_urls:
-        messages.append({
-            "role": "user",
-            "content": url
-        })
-
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=messages,
-        temperature=1,
-        max_tokens=200,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
     print(response.choices[0].message.content)
     split_tags_and_description(response.choices[0].message.content)
 
