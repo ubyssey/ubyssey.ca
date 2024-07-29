@@ -1,4 +1,7 @@
+import argparse
+import os
 import socket
+import sys
 from django.test import override_settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
@@ -6,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from django.core.management import execute_from_command_line
 
 @override_settings(ALLOWED_HOSTS=['*'])  # Disable ALLOWED_HOSTS
 class BaseTestCase(StaticLiveServerTestCase):
@@ -20,6 +24,7 @@ class BaseTestCase(StaticLiveServerTestCase):
         super().setUpClass()
         # Set host to externally accessible web server address
         cls.host = socket.gethostbyname(socket.gethostname())
+        cls.browser = os.getenv('browser', 'chrome')
 
     def setUp(self):
         super().setUp()
@@ -40,13 +45,15 @@ class BaseTestCase(StaticLiveServerTestCase):
                 command_executor='http://selenium-firefox:4444/wd/hub',
                 options=firefox_options
             )
-        else:
+        elif self.browser == 'edge':
             edge_options = webdriver.EdgeOptions()
             edge_options.add_argument('--headless')
             self.driver = webdriver.Remote(
                 command_executor='http://selenium-edge:4444/wd/hub',
                 options=edge_options
             )
+        else:
+            raise ValueError(f"Unsupported browser: {self.browser}")
         self.driver.implicitly_wait(5)
     
     def tearDown(self):
@@ -187,11 +194,17 @@ class BaseTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, 'li:nth-child(1) .o-article__headline > a').click()
         self.article_page_exists()
                 
-class EdgeTestCase(BaseTestCase):
-    browser = 'edge'
-
-class ChromeTestCase(BaseTestCase):
-    browser = 'chrome'
-
-class FirefoxTestCase(BaseTestCase):
-    browser = 'firefox'
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Django management command with browser argument.')
+    parser.add_argument(
+        '--browser', 
+        choices=['chrome', 'firefox', 'edge'], 
+        default='chrome', 
+        help='Specify the browser to use for tests.'
+    )
+    args = parser.parse_args()
+    
+    # Set the browser type as an environment variable
+    os.environ['browser'] = args.browser
+    
+    execute_from_command_line(sys.argv)
