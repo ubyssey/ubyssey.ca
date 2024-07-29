@@ -5,32 +5,36 @@ from openai import OpenAI
 from images.models import UbysseyImage
 import os
 from dotenv import load_dotenv, find_dotenv
+    
+def split_tags_and_description(input_string):
+    # Define the regex pattern to match tags and descriptions
+    # The pattern will capture multiple tags separated by ', ', and a description following them.
+    pattern = re.compile(r'(".*?")\s*(?:",\s*")*"(.*?)"')
 
-def split_tags_and_description(content):
+    # Find all matches in the input string
+    matches = pattern.findall(input_string)
 
-    # Corrected regular expression pattern to match tags and description with comma separator
-    pattern = r'((?:"[^"]+"\s*)+),\s*(.+)'
+    tags = []
+    descriptions = []
 
-    # Using re.findall to extract all matches
-    matches = re.findall(pattern, content)
+    for match in matches:
+        # Process tags
+        tags_part = match[0]
+        # Split tags based on '", "'
+        tag_list = tags_part.split('", "')
+        # Clean up each tag by removing surrounding quotes and any extra spaces
+        tag_list = [tag.strip('"') for tag in tag_list]
+        tags.append(tag_list)
 
-    # Initialize lists to store tags and descriptions
-    tags_list = []
-    description_list = []
-
-    # Iterate over matches
-    for tags, description in matches:
-        # Split tags by quotes and spaces, and remove empty strings from the result
-        tag_list = [tag.strip('" ') for tag in tags.split('" "') if tag.strip()]
-        tags_list.append(tag_list)
-        description_list.append(description.strip())  # Description without leading/trailing spaces
-
-    # Print each element of matches
-    for tags, description in zip(tags_list, description_list):
+        # Process description
+        description = '"' + match[1] + '"'
+        descriptions.append(description)
+    for tags, description in zip(tags, descriptions):
         print("Tags:", tags)
         print("Description:", description)
         print()  
-    
+
+    return tags, descriptions
 
 # openai.api_key = settings.OPENAI_API_KEY
 def get_image_urls(request):
@@ -51,11 +55,29 @@ def get_image_urls(request):
 def get_image_tags(image_urls):
     _ = load_dotenv(find_dotenv())
     client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'),)
+    prompt = (
+        "Can you provide tags and a description for each image with no additional information? All images are from UBC and are intended for UBC students. The source is this open website: https://ubyssey.ca/\n\n"
+        "For each image:\n"
+        "1. **Tags:** Describe what happens in the image and the medium of photography. Each tag should be enclosed in double quotes.\n"
+        "2. **Description:** Describe the image to assist in indexing for faster search. The description should also be enclosed in double quotes.\n\n"
+        "**Format Example for Each Image:**\n"
+        "- **Tags:** \"tag1\", \"tag2\", \"tag3\"\n"
+        "- **Description:** \"This is a detailed description of the image.\"\n\n"
+        "**Separation Between Images:**\n"
+        "- Separate the output for each image with a double newline (\\n\\n).\n\n"
+        "**Example:**\n"
+        "\n"
+        "\"tag1\", \"tag2\", \"tag3\", \"tag4\", \"tag5\"\n"
+        "\"This is the description for the first image.\"\n\n"
+        "\"tagA\", \"tagB\", \"tagC\"\n"
+        "\"This is the description for the second image.\"\n\n"
+        "**Note:** Ensure that each set of tags and descriptions is clearly separated by a double newline. Each set should be formatted as shown above with tags in double quotes and the description also in double quotes. This format will make it easier to use the `split_tags_and_description` function to separate the tags and descriptions where tags is a list of lists of strings."
+    )
 
     messages = [
         {
             "role": "user",
-            "content": "Can you write tags and description only with no timepass information. All the pictures are mostly set in UBC where the description is for UBC students. It is all from this open source website https://ubyssey.ca/ In tags describe what happens in the picture and the medium of photography, in the description describe the image that helps in indexing the picture to search faster. For example it can be like \"tag1\" \n\"tag2\",\"description\". Where there should be space between each field of tags and there should be a comma between tags and description to differentiate between them. Please no irrelevant information other than the actual tags and description. I want the description to also be in double quotes"
+            "content": prompt
         },
     ]
     for url in image_urls:
@@ -76,10 +98,11 @@ def get_image_tags(image_urls):
     choices = response.choices
     chat_completion = choices[0]
     content = chat_completion.message.content # Correct (this works with the Chat Completions API)
-    print(content+"                  ")
+    # print(content+"                  ")
 
     print(response.choices[0].message.content)
-    split_tags_and_description(response.choices[0].message.content)
+    tags, descriptions = split_tags_and_description(response.choices[0].message.content)
+    # populate_tags(tags, descriptions)
 
 
 def populate_tags(tags, descriptions):
