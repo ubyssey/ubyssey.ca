@@ -290,7 +290,7 @@ nav.navbar {
         li.nav-item {
         
             .nav-link {
-                font-size: 1.2em;
+                font-size: 1em;
                 color: white;
                 padding: 0.5em 1em;
             }
@@ -299,7 +299,7 @@ nav.navbar {
                 display: block;
                 left: 0;
                 right: 0;
-                min-width: unset;
+                min-width: 150px;
                 padding: 0;
                 border: none;
                 height: 0;
@@ -308,6 +308,7 @@ nav.navbar {
                 overflow-y: auto;
                 .dropdown-item {
                     color: white;
+                    white-space: unset;
                     &:hover, &:focus-within {
                         background-color: inherit;
                         text-decoration: underline;
