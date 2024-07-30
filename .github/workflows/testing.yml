@@ -58,6 +58,8 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: ubyssey
+          MYSQL_USER: root
+          MYSQL_PASSWORD: ubyssey
           MYSQL_DATABASE: ubyssey
         ports: ['3307:3306']
         options: >-
@@ -126,7 +128,7 @@ jobs:
           # echo "Selenium server started"
           # python manage.py test
         env: 
-          SQL_HOST: db
+          SQL_HOST: 127.0.0.1
           SQL_DATABASE: ubyssey
           SQL_USER: root
           SQL_PASSWORD: ubyssey
