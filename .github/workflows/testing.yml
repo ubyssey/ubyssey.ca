@@ -128,23 +128,34 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           docker volume create --name=ubyssey_db_volume
           docker-compose -f docker-compose-test.yml up -d
+          docker ps
+    - name: Get MySQL Container IP Address
+      id: get_mysql_ip
+      run: |
+        CONTAINER_ID=$(docker-compose -f docker-compose-test.yml ps -q db)
+        IP_ADDRESS=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_ID)
+        echo "MYSQL_IP=$IP_ADDRESS" >> $GITHUB_ENV
 
-      - name: Run Migrations
-        run: |
-          export DJANGO_SETTINGS_MODULE="config.settings.development"
-          pwd
+    - name: Use MySQL IP Address
+      run: |
+        echo "MySQL IP Address is ${{ env.MYSQL_IP }}"
+        echo $(docker-compose -f docker-compose-test.yml ps -q db)
+      # - name: Run Migrations
+      #   run: |
+      #     export DJANGO_SETTINGS_MODULE="config.settings.development"
+      #     pwd
 
-          python manage.py migrate
-          pip install selenium
-          echo "Testing started"
-          # docker pull selenium/standalone-chrome
-          # docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome
-          # export browser=chrome
-          # echo "Selenium server started"
-          # python manage.py test
-        env: 
-          SQL_HOST: db
-          # SQL_PORT: 3306
-          SQL_DATABASE: ubyssey
-          SQL_USER: root
-          SQL_PASSWORD: ubyssey
+      #     python manage.py migrate
+      #     pip install selenium
+      #     echo "Testing started"
+      #     # docker pull selenium/standalone-chrome
+      #     # docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome
+      #     # export browser=chrome
+      #     # echo "Selenium server started"
+      #     # python manage.py test
+      #   env: 
+      #     SQL_HOST: db
+      #     # SQL_PORT: 3306
+      #     SQL_DATABASE: ubyssey
+      #     SQL_USER: root
+      #     SQL_PASSWORD: ubyssey
