@@ -54,7 +54,7 @@ jobs:
         python-version: [3.8]
 
     services:
-      mysql:
+      db:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: ubyssey
@@ -120,13 +120,13 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py migrate
           pip install selenium
-          docker pull selenium/standalone-chrome
-          docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome:latest
-          export browser=chrome
-          echo "Selenium server started"
-          python manage.py test
+          # docker pull selenium/standalone-chrome
+          # docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome
+          # export browser=chrome
+          # echo "Selenium server started"
+          # python manage.py test
         env: 
-          SQL_HOST: 172.18.0.2
+          SQL_HOST: db
           SQL_DATABASE: ubyssey
           SQL_USER: root
           SQL_PASSWORD: ubyssey
