@@ -58,8 +58,6 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: ubyssey
-          MYSQL_USER: root
-          MYSQL_PASSWORD: ubyssey
           MYSQL_DATABASE: ubyssey
         ports: ['3307:3306']
         options: >-
