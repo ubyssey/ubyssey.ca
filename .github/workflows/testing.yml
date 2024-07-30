@@ -145,7 +145,7 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           # pwd
 
-          # python manage.py migrate
+          python manage.py migrate
           # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
           # mysql -uroot -pubyssey
           pip install selenium
