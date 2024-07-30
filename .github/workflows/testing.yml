@@ -112,7 +112,6 @@ jobs:
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py migrate
-          python manage.py runserver
           python manage.py test
         env: 
           SQL_HOST: 172.18.0.2
