@@ -61,8 +61,6 @@ jobs:
           MYSQL_DATABASE: ubyssey
         ports: ['3307:3306']
         options: >-
-          --character-set-server=utf8mb4
-          --collation-server=utf8mb4_unicode_ci
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
