@@ -1,40 +1,94 @@
-on:
+# on:
+#   push:
+#     branches: [ "add-a-CI/CD-pipeline" ]
+#   pull_request:
+#     branches: [ "add-a-CI/CD-pipeline" ]
+    
+# jobs:
+
+#   test:  # Define a job named 'test'
+#       name: Run unit tests  # A more descriptive name for the job
+#       runs-on: ubuntu-22.04  # Specify the runner environment (Ubuntu 22.04)
+
+#       steps:  # Steps to be run as part of this job
+#           - name: Login to Docker Hub  # Step 1: Log in to Docker Hub
+#             uses: docker/login-action@v1  # Use the docker/login-action to log in to Docker Hub
+#             with:
+#               username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use the stored Docker Hub username
+#               password: ${{ secrets.DOCKERHUB_TOKEN }}  # Use the stored Docker Hub token for authentication
+
+#           - name: Checkout  # Step 2: Checkout the repository code
+#             uses: actions/checkout@v2  # Use the checkout action to checkout the code
+
+#           - name: Test  # Step 3: Run the tests
+#             run: |
+#               docker build . -t ubyssey/ubyssey.ca:latest
+#               echo "Docker image built successfully"
+#               git clone https://github.com/ubyssey/ubyssey-dev.git
+#               docker volume create --name=ubyssey_db_volume
+#               docker exec -t -i ubyssey_db bash
+#               mysql -u root -pubyssey
+#               CREATE DATABASE ubyssey;
+#               quit;
+#               # echo "Changed directory to .devcontainer"
+#               # docker-compose up 
+#               # --rm web sh -c "python3 manage.py test"
+#               # ls
+#               # cd ubyssey-dev
+#               # pwd
+#               # ls
+#               # docker-compose run --rm web sh -c "python3 manage.py test"  # Use Docker Compose to run the Django unit tests
+name: Django CI
+
   push:
     branches: [ "add-a-CI/CD-pipeline" ]
   pull_request:
     branches: [ "add-a-CI/CD-pipeline" ]
-    
+
 jobs:
+  test:
 
-  test:  # Define a job named 'test'
-      name: Run unit tests  # A more descriptive name for the job
-      runs-on: ubuntu-22.04  # Specify the runner environment (Ubuntu 22.04)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
 
-      steps:  # Steps to be run as part of this job
-          - name: Login to Docker Hub  # Step 1: Log in to Docker Hub
-            uses: docker/login-action@v1  # Use the docker/login-action to log in to Docker Hub
-            with:
-              username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use the stored Docker Hub username
-              password: ${{ secrets.DOCKERHUB_TOKEN }}  # Use the stored Docker Hub token for authentication
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: ubyssey
+          MYSQL_DATABASE: ubyssey
+        ports: ['3307:3306']
+      
+      steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        - uses: actions/checkout@v2
+        - name: Set up Python ${{ matrix.python-version }}
+          uses: actions/setup-python@v2
+          with:
+            python-version: ${{ matrix.python-version }}
+              - name: Install Python packages and dependencies
+        run: |
+          pip install -r requirements-prd.txt --use-pep517 
+          pip install requests --upgrade
+        - name: Set up Node.js environment
+          uses: actions/setup-node@v2.1.4
+          with:
+            node-version: 14.x  
+        - name: Run gulp to ready frontend static files for production
+          run: |
+            cd ubyssey/static_src
+            npm install -g gulp
+            npm install
+            npm ddp
+            gulp build
+            rm -rf node_modules
+            cd ../../
+        - name: Collect static files
+          run: |
+            export DJANGO_SETTINGS_MODULE="config.settings.development"
+            python manage.py collectstatic --noinput
+            rm -rf .git/ ubyssey/static_src/
 
-          - name: Checkout  # Step 2: Checkout the repository code
-            uses: actions/checkout@v2  # Use the checkout action to checkout the code
 
-          - name: Test  # Step 3: Run the tests
-            run: |
-              docker build . -t ubyssey/ubyssey.ca:latest
-              echo "Docker image built successfully"
-              git clone https://github.com/ubyssey/ubyssey-dev.git
-              docker volume create --name=ubyssey_db_volume
-              docker exec -t -i ubyssey_db bash
-              mysql -u root -pubyssey
-              CREATE DATABASE ubyssey;
-              quit;
-              # echo "Changed directory to .devcontainer"
-              # docker-compose up 
-              # --rm web sh -c "python3 manage.py test"
-              # ls
-              # cd ubyssey-dev
-              # pwd
-              # ls
-              # docker-compose run --rm web sh -c "python3 manage.py test"  # Use Docker Compose to run the Django unit tests
