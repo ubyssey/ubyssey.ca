@@ -59,7 +59,9 @@ class BaseTestCase(StaticLiveServerTestCase):
         )
         author_cards = self.driver.find_elements(By.CLASS_NAME, 'author_card')
         self.assertGreater(len(author_cards), 0, "No author cards found on the page")
-
+    def test_navigation_menudd(self):
+        print("Pass")
+        pass
     def test_navigation_menu(self):
         self.driver.get('http://host.docker.internal:8000/')
         assert "The Ubyssey" in self.driver.title
