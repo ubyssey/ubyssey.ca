@@ -66,12 +66,12 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
-      selenium-chrome:
-        image: selenium/standalone-chrome:latest
-        ports:
-          - 4444:4444
-          - 7900:7900  # Optional: for VNC access to the browser
-        # shm_size: 2gb  # Increase shared memory for better performance
+      # selenium-chrome:
+      #   image: selenium/standalone-chrome:latest
+      #   ports:
+      #     - 4444:4444
+      #     - 7900:7900  # Optional: for VNC access to the browser
+      #   # shm_size: 2gb  # Increase shared memory for better performance
 
       
     steps:
