@@ -146,8 +146,8 @@ jobs:
           # pwd
 
           # python manage.py migrate
-          docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
-          mysql -uroot -pubyssey
+          # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
+          # mysql -uroot -pubyssey
           pip install selenium
           echo "Testing started"
           # docker pull selenium/standalone-chrome
@@ -155,9 +155,9 @@ jobs:
           # export browser=chrome
           # echo "Selenium server started"
           # python manage.py test
-        # env: 
-        #   SQL_HOST: ${{ env.MYSQL_IP }}
-        #   # SQL_PORT: 3306
-        #   SQL_DATABASE: ubyssey
-        #   SQL_USER: root
-        #   SQL_PASSWORD: ubyssey
+        env: 
+          SQL_HOST: $CONTAINER_ID
+          # SQL_PORT: 3306
+          SQL_DATABASE: ubyssey
+          SQL_USER: root
+          SQL_PASSWORD: ubyssey
