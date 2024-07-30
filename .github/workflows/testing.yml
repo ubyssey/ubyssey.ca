@@ -123,6 +123,7 @@ jobs:
           docker pull selenium/standalone-chrome
           docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome
           export browser=chrome
+          echo "Selenium server started"
           python manage.py test
         env: 
           SQL_HOST: 172.18.0.2
