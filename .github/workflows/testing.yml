@@ -126,7 +126,7 @@ jobs:
       - name: Run Django server
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
-          docker-compose -f docker-compose-test.yml run --rm web sh -c "python manage.py migrate"
+          docker-compose -f docker-compose-test.yml up -d
 
       # - name: Run Migrations
       #   run: |
