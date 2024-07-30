@@ -113,7 +113,7 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py migrate
         env: 
-          SQL_HOST: db
+          SQL_HOST: 172.18.0.2
           SQL_DATABASE: ubyssey
           SQL_USER: root
           SQL_PASSWORD: ubyssey
