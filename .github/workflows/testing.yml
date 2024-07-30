@@ -129,12 +129,12 @@ jobs:
           docker volume create --name=ubyssey_db_volume
           docker-compose -f docker-compose-test.yml up -d
           python manage.py migrate
-        env: 
-          SQL_HOST: db
-          # SQL_PORT: 3306
-          SQL_DATABASE: ubyssey
-          SQL_USER: root
-          SQL_PASSWORD: ubyssey
+        # env: 
+        #   SQL_HOST: db
+        #   # SQL_PORT: 3306
+        #   SQL_DATABASE: ubyssey
+        #   SQL_USER: root
+        #   SQL_PASSWORD: ubyssey
 
           # docker ps
       - name: Get MySQL Container IP Address
