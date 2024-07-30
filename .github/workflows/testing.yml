@@ -54,12 +54,22 @@ jobs:
         python-version: [3.8]
 
     services:
-      mysql:
+      db:
+        platform: linux/x86_64
         image: mysql:5.7
+        volumes:
+          - database:/var/lib/mysql
         env:
           MYSQL_ROOT_PASSWORD: ubyssey
           MYSQL_DATABASE: ubyssey
-        ports: ['3307:3306']
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
       
     steps:
       - uses: actions/checkout@v2
@@ -89,14 +99,26 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py collectstatic --noinput
           rm -rf .git/ ubyssey/static_src/
+      - name: Wait for MySQL
+        run: |
+          for i in {30..0}; do
+            if mysqladmin ping -h db --silent; then
+              break
+            fi
+            echo 'Waiting for MySQL...'
+            sleep 1
+          done
+          if [ "$i" = 0 ]; then
+            echo 'MySQL did not start within the expected time'
+            exit 1
+          fi
+
       - name: Run Migrations
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py migrate
         env: 
-          DBENGINE: django.db.backends.mysql
-          DBNAME: ubyssey
-          DBUSER: root
-          DBPASSWORD: ubyssey
-          DBHOST: 127.0.0.1
-          DBPORT: $
+          SQL_HOST: db
+          SQL_DATABASE: ubyssey
+          SQL_USER: root
+          SQL_PASSWORD: ubyssey
