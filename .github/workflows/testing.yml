@@ -66,6 +66,14 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
+    services:
+      selenium-chrome:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+          - 7900:7900  # Optional: for VNC access to the browser
+        shm_size: 2gb  # Increase shared memory for better performance
+
       
     steps:
       - uses: actions/checkout@v2
@@ -112,6 +120,8 @@ jobs:
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py migrate
+          pip install selenium
+          export browser=chrome
           python manage.py test
         env: 
           SQL_HOST: 172.18.0.2
