@@ -58,7 +58,7 @@
             <ul>
               {% for category_menu_item in self.category_menu.all %}
                 {% if category_menu_item.category %}
-                  <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
+                  <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}" title="{{ category_menu_item.category.title }}">{{ category_menu_item.category.title }}</a></li>
                 {% else %}
                   comment Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! endcomment
                   <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
