@@ -143,9 +143,11 @@ jobs:
       - name: Run Migrations
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
-          pwd
+          # pwd
 
-          python manage.py migrate
+          # python manage.py migrate
+          docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
+          mysql -uroot -pubyssey
           pip install selenium
           echo "Testing started"
           # docker pull selenium/standalone-chrome
@@ -153,9 +155,9 @@ jobs:
           # export browser=chrome
           # echo "Selenium server started"
           # python manage.py test
-        env: 
-          SQL_HOST: ${{ env.MYSQL_IP }}
-          # SQL_PORT: 3306
-          SQL_DATABASE: ubyssey
-          SQL_USER: root
-          SQL_PASSWORD: ubyssey
+        # env: 
+        #   SQL_HOST: ${{ env.MYSQL_IP }}
+        #   # SQL_PORT: 3306
+        #   SQL_DATABASE: ubyssey
+        #   SQL_USER: root
+        #   SQL_PASSWORD: ubyssey
