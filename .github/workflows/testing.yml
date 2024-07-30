@@ -60,6 +60,14 @@ jobs:
           MYSQL_ROOT_PASSWORD: ubyssey
           MYSQL_DATABASE: ubyssey
         ports: ['3307:3306']
+        options: >-
+          --character-set-server=utf8mb4
+          --collation-server=utf8mb4_unicode_ci
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
       
     steps:
       - uses: actions/checkout@v2
@@ -89,6 +97,19 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py collectstatic --noinput
           rm -rf .git/ ubyssey/static_src/
+    - name: Wait for MySQL
+      run: |
+        for i in {30..0}; do
+          if mysqladmin ping -h db --silent; then
+            break
+          fi
+          echo 'Waiting for MySQL...'
+          sleep 1
+        done
+        if [ "$i" = 0 ]; then
+          echo 'MySQL did not start within the expected time'
+          exit 1
+        fi
 
       - name: Run Migrations
         run: |
