@@ -89,17 +89,14 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py collectstatic --noinput
           rm -rf .git/ ubyssey/static_src/
-    - name: Run Migrations
-      run: |
+      - name: Run Migrations
+        run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py migrate
-      env: 
-        DBENGINE: django.db.backends.mysql
-        DBNAME: ubyssey
-        DBUSER: root
-        DBPASSWORD: ubyssey
-        DBHOST: 127.0.0.1
-        DBPORT: $
-      
-      
-
+        env: 
+          DBENGINE: django.db.backends.mysql
+          DBNAME: ubyssey
+          DBUSER: root
+          DBPASSWORD: ubyssey
+          DBHOST: 127.0.0.1
+          DBPORT: $
