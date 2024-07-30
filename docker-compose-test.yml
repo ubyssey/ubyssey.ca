@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+  selenium-chrome:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - 4444:4444
+      - 7900:7900 
+    shm_size: 2gb
+    
+  selenium-edge:
+    image: selenium/standalone-edge:latest
+    ports:
+      - 4445:4444 
+      - 7901:7900 
+    shm_size: 2gb
+
+  selenium-firefox:
+    image: selenium/standalone-firefox:latest
+    ports:
+      - 4446:4444 
+      - 7902:7900 
+    shm_size: 2gb
+
+## Starts up mySQL server for ubyssey.ca and Dispatch
+  db:
+    platform: linux/x86_64
+    image: mysql:5.7
+    volumes:
+      - database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ubyssey
+      MYSQL_DATABASE: ubyssey
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=ubyssey --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 20
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+    
+volumes:
+  database:
+    external:
+      name: ubyssey_db_volume

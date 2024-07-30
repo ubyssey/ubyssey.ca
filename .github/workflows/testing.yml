@@ -117,20 +117,33 @@ jobs:
       #       echo 'MySQL did not start within the expected time'
       #       exit 1
       #     fi
-      - name: Run Migrations
+      - name: Login to Docker Hub  # Step 1: Log in to Docker Hub
+        uses: docker/login-action@v1  # Use the docker/login-action to log in to Docker Hub
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use the stored Docker Hub username
+          password: ${{ secrets.DOCKERHUB_TOKEN }}  # Use the stored Docker Hub token for authentication
+
+      - name: Run Django server
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
-          python manage.py migrate
-          pip install selenium
-          echo "Testing started"
-          # docker pull selenium/standalone-chrome
-          # docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome
-          # export browser=chrome
-          # echo "Selenium server started"
-          # python manage.py test
-        env: 
-          # SQL_HOST: db
-          # SQL_PORT: 3306
-          SQL_DATABASE: ubyssey
-          SQL_USER: root
-          SQL_PASSWORD: ubyssey
+          docker-compose -f docker-compose-test.yml run --rm web sh -c "python manage.py migrate"
+
+      # - name: Run Migrations
+      #   run: |
+      #     export DJANGO_SETTINGS_MODULE="config.settings.development"
+      #     pwd
+
+      #     python manage.py migrate
+      #     pip install selenium
+      #     echo "Testing started"
+      #     # docker pull selenium/standalone-chrome
+      #     # docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome
+      #     # export browser=chrome
+      #     # echo "Selenium server started"
+      #     # python manage.py test
+      #   env: 
+      #     SQL_HOST: 4c65af138981
+      #     # SQL_PORT: 3306
+      #     SQL_DATABASE: ubyssey
+      #     SQL_USER: root
+      #     SQL_PASSWORD: ubyssey
