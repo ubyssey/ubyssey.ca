@@ -54,22 +54,12 @@ jobs:
         python-version: [3.8]
 
     services:
-      db:
-        platform: linux/x86_64
+      mysql:
         image: mysql:5.7
-        volumes:
-          - database:/var/lib/mysql
         env:
           MYSQL_ROOT_PASSWORD: ubyssey
           MYSQL_DATABASE: ubyssey
-        ports:
-          - 3307:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-        command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+        ports: ['3307:3306']
       
     steps:
       - uses: actions/checkout@v2
