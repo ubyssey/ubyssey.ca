@@ -64,11 +64,12 @@
   svg.c-section__heading {
     position: absolute;
     bottom: -50px;
-    left: 20px;
+    padding-inline: 20px;
     stroke: black;
+    box-sizing: border-box;
     @media($bp-smaller-than-phablet) {
       bottom: -20px;
-      left: 10px;
+      padding-inline: 10px;
     }
   }
 
@@ -140,6 +141,7 @@
 }
 
 .c-section__button-label {
+  margin-left: 0.5em;
   text-align: right;
   display: inline-block;
   max-width: 50%;
