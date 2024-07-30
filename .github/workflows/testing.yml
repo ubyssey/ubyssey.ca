@@ -38,70 +38,84 @@
 #               # pwd
 #               # ls
 #               # docker-compose run --rm web sh -c "python3 manage.py test"  # Use Docker Compose to run the Django unit tests
+name: Django CI
 
-  services:
-    mysql:
-      image: mysql:5.7
-      env:
-        MYSQL_ROOT_PASSWORD: ubyssey
-        MYSQL_DATABASE: ubyssey
-      ports: ['3307:3306']
-      options: >-
-        --character-set-server=utf8mb4
-        --collation-server=utf8mb4_unicode_ci
-        --health-cmd="mysqladmin ping --silent"
-        --health-interval=10s
-        --health-timeout=5s
-        --health-retries=3
+on:
+  push:
+    branches: [ "add-a-CI/CD-pipeline" ]
+  pull_request:
+    branches: [ "add-a-CI/CD-pipeline" ]
 
-  steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Python packages and dependencies
-      run: |
-        pip install -r requirements-prd.txt --use-pep517 
-        pip install requests --upgrade
-    - name: Set up Node.js environment
-      uses: actions/setup-node@v2.1.4
-      with:
-        node-version: 14.x  
-    - name: Run gulp to ready frontend static files for production
-      run: |
-        cd ubyssey/static_src
-        npm install -g gulp
-        npm install
-        npm ddp
-        gulp build
-        rm -rf node_modules
-        cd ../../
-    - name: Collect static files
-      run: |
-        export DJANGO_SETTINGS_MODULE="config.settings.development"
-        python manage.py collectstatic --noinput
-        rm -rf .git/ ubyssey/static_src/
-    - name: Wait for MySQL
-      run: |
-        for i in {30..0}; do
-          if mysqladmin ping -h db --silent; then
-            break
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: ubyssey
+          MYSQL_DATABASE: ubyssey
+        ports: ['3307:3306']
+        options: >-
+          --character-set-server=utf8mb4
+          --collation-server=utf8mb4_unicode_ci
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+      
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Python packages and dependencies
+        run: |
+          pip install -r requirements-prd.txt --use-pep517 
+          pip install requests --upgrade
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 14.x  
+      - name: Run gulp to ready frontend static files for production
+        run: |
+          cd ubyssey/static_src
+          npm install -g gulp
+          npm install
+          npm ddp
+          gulp build
+          rm -rf node_modules
+          cd ../../
+      - name: Collect static files
+        run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.development"
+          python manage.py collectstatic --noinput
+          rm -rf .git/ ubyssey/static_src/
+      - name: Wait for MySQL
+        run: |
+          for i in {30..0}; do
+            if mysqladmin ping -h db --silent; then
+              break
+            fi
+            echo 'Waiting for MySQL...'
+            sleep 1
+          done
+          if [ "$i" = 0 ]; then
+            echo 'MySQL did not start within the expected time'
+            exit 1
           fi
-          echo 'Waiting for MySQL...'
-          sleep 1
-        done
-        if [ "$i" = 0 ]; then
-          echo 'MySQL did not start within the expected time'
-          exit 1
-        fi
-
-    - name: Run Migrations
-      run: |
-        export DJANGO_SETTINGS_MODULE="config.settings.development"
-        python manage.py migrate
-      env: 
-        SQL_HOST: db
-        SQL_DATABASE: ubyssey
-        SQL_USER: root
-        SQL_PASSWORD: ubyssey
+      - name: Run Migrations
+        run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.development"
+          python manage.py migrate
+        env: 
+          SQL_HOST: db
+          SQL_DATABASE: ubyssey
+          SQL_USER: root
+          SQL_PASSWORD: ubyssey
