@@ -126,6 +126,7 @@ jobs:
       - name: Run Django server
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
+          docker volume create --name=ubyssey_db_volume
           docker-compose -f docker-compose-test.yml up -d
 
       # - name: Run Migrations
