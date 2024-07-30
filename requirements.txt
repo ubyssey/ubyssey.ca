@@ -37,3 +37,4 @@ redis==5.0.1
 hiredis==2.2.3
 appengine-python-standard>=1.0.0
 icalendar===5.0.12
+selenium===4.23.1
