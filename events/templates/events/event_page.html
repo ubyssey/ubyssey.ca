@@ -25,6 +25,7 @@
 ical, rss feed, and api should be linked here
 {% endcomment %}
 <link rel="alternate" type="text/calendar" title="{{ical.title}}" href="{{ical.url}}" />
+<link rel="alternate" type="application/atom+xml" title="{{rss.title}}" href="{{rss.url}}">
 {% endblock %}
 
 {% block header %}  
@@ -57,7 +58,8 @@ ical, rss feed, and api should be linked here
                         <li {% if tab == 'community' %}class="selected"{% endif %}><a href="?category=community">Community</a></li>
                         <li {% if tab == 'seminar' %}class="selected"{% endif %}><a href="?category=seminar">Seminar</a></li>
                     </ul>
-                    <a id="calendar-download" href="{{ical.url}}" title="Download calendar"><i class="fa-solid fa-calendar-days"></i></a>
+                    <a class="alt-icon" href="{{ical.url}}" title="{{ical.title}}"><i class="fa-solid fa-calendar-days"></i></a>
+                    <a class="alt-icon" href="{{rss.url}}" title="{{rss.title}}"><i class="fa fa-rss"></i></a>
                 </div>
             </header>
 
