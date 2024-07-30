@@ -69,10 +69,10 @@ jobs:
           uses: actions/setup-python@v2
           with:
             python-version: ${{ matrix.python-version }}
-              - name: Install Python packages and dependencies
-        run: |
-          pip install -r requirements-prd.txt --use-pep517 
-          pip install requests --upgrade
+        - name: Install Python packages and dependencies
+          run: |
+            pip install -r requirements-prd.txt --use-pep517 
+            pip install requests --upgrade
         - name: Set up Node.js environment
           uses: actions/setup-node@v2.1.4
           with:
