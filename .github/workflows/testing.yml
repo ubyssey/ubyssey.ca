@@ -129,8 +129,8 @@ jobs:
           # echo "Selenium server started"
           # python manage.py test
         env: 
-          SQL_HOST: db
-          SQL_PORT: 3306
+          # SQL_HOST: db
+          # SQL_PORT: 3306
           SQL_DATABASE: ubyssey
           SQL_USER: root
           SQL_PASSWORD: ubyssey
