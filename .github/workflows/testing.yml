@@ -53,18 +53,18 @@ jobs:
       matrix:
         python-version: [3.8]
 
-    services:
-      db:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: ubyssey
-          MYSQL_DATABASE: ubyssey
-        ports: ['3307:3306']
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+    # services:
+    #   db:
+    #     image: mysql:5.7
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: ubyssey
+    #       MYSQL_DATABASE: ubyssey
+    #     ports: ['3307:3306']
+    #     options: >-
+    #       --health-cmd="mysqladmin ping --silent"
+    #       --health-interval=10s
+    #       --health-timeout=5s
+    #       --health-retries=3
 
       # selenium-chrome:
       #   image: selenium/standalone-chrome:latest
@@ -126,7 +126,7 @@ jobs:
           # echo "Selenium server started"
           # python manage.py test
         env: 
-          SQL_HOST: 127.0.0.1
+          SQL_HOST: 172.18.0.2
           SQL_DATABASE: ubyssey
           SQL_USER: root
           SQL_PASSWORD: ubyssey
