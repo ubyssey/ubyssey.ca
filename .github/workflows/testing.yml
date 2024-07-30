@@ -66,7 +66,6 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
-    services:
       selenium-chrome:
         image: selenium/standalone-chrome:latest
         ports:
