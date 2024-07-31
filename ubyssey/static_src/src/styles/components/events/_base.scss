@@ -419,9 +419,12 @@ header.events{
     }
 }
 
-#add-to-calendar {
-    margin-left: 1em;
-    margin-bottom: 2em;
+.mobile-alt {
+    text-align: center;
+    a {
+        margin-right: 1em;
+    }
+
     @media($bp-larger-than-phablet) {
         display: none;
     }
