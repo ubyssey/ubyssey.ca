@@ -67,14 +67,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-
-      # selenium-chrome:
-      #   image: selenium/standalone-chrome:latest
-      #   ports:
-      #     - 4444:4444
-      #     - 7900:7900  # Optional: for VNC access to the browser
-      #   # shm_size: 2gb  # Increase shared memory for better performance
-
       
     steps:
       - uses: actions/checkout@v2
@@ -115,38 +107,12 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           docker volume create --name=ubyssey_db_volume
           docker-compose -f docker-compose-test.yml up -d
-          # docker-compose -f docker-compose-test.yml exec web python manage.py migrate
-        # env: 
-        #   SQL_HOST: 0.0.0.0
-        #   # SQL_PORT: 3306
-        #   SQL_DATABASE: ubyssey
-        #   SQL_USER: root
-        #   SQL_PASSWORD: ubyssey
-
-          # docker ps
       - name: Get MySQL Container IP Address
         id: get_mysql_ip
         run: |
           CONTAINER_ID=$(docker-compose -f docker-compose-test.yml ps -q db)
           IP_ADDRESS=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_ID)
           echo "MYSQL_IP=$IP_ADDRESS" >> $GITHUB_ENV
-
-      - name: Use MySQL IP Address
-        run: |
-          echo "MySQL IP Address is ${{ env.MYSQL_IP }}"
-          echo $(docker-compose -f docker-compose-test.yml ps -q db)
-      - name: Wait for MySQL
-        run: |
-          for i in {30..0}; do
-            if mysqladmin ping -h db --silent; then
-              break
-            fi
-            echo 'Waiting for MySQL...'
-            sleep 1
-          done
-          if [ "$i" = 0 ]; then
-            echo 'MySQL did not start within the expected time'
-          fi
 
       - name: Run Migrations
         run: |
@@ -159,11 +125,9 @@ jobs:
           # mysql -uroot -pubyssey
           pip install selenium
           echo "Testing started"
-          # docker pull selenium/standalone-chrome
-          # docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome
-          # export browser=chrome
-          # echo "Selenium server started"
-          # python manage.py test
+          export browser=chrome
+          echo "Selenium server started"
+          python manage.py test
         env: 
           SQL_HOST: ${{ env.MYSQL_IP }}
           # SQL_PORT: 3306
