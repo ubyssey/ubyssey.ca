@@ -129,7 +129,7 @@ jobs:
           echo "Selenium server started"
           python manage.py test
         env: 
-          SQL_HOST: {{ $env.MYSQL_IP }}
+          SQL_HOST: ${{ env.MYSQL_IP }}
           # SQL_PORT: 3306
           SQL_DATABASE: ubyssey
           SQL_USER: root
