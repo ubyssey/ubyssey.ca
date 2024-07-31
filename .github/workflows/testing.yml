@@ -115,7 +115,7 @@ jobs:
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           docker volume create --name=ubyssey_db_volume
-          docker-compose -f docker-compose-test.yml up -d db
+          docker-compose -f docker-compose-test.yml up -d
           # docker-compose -f docker-compose-test.yml exec web python manage.py migrate
         # env: 
         #   SQL_HOST: 0.0.0.0
@@ -153,6 +153,7 @@ jobs:
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           # pwd
+          docker-compose -f docker-compose-test.yml ps
 
           python manage.py migrate
           # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
@@ -165,7 +166,7 @@ jobs:
           # echo "Selenium server started"
           # python manage.py test
         env: 
-          SQL_HOST: db
+          SQL_HOST: ${{ env.MYSQL_IP }}
           # SQL_PORT: 3306
           SQL_DATABASE: ubyssey
           SQL_USER: root
