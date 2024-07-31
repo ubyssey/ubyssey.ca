@@ -197,3 +197,6 @@ class ChromeTestCase(BaseTestCase):
 
 class FirefoxTestCase(BaseTestCase):
     browser = 'firefox'
+    
+    def test_ttt(self):
+        pass
