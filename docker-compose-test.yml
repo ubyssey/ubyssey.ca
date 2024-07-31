@@ -38,7 +38,50 @@ services:
       timeout: 20s
       retries: 20
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+  
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
 
+## Starts up Django server for ubyssey.ca
+  django:
+    image: ubyssey/ubyssey.ca:latest
+    volumes:
+      - ..:/workspaces/mount
+      - .:/workspaces/ubyssey.ca/tmp
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+    #ports:
+      # # If you uncomment these, it will enable port TUNNELLING for the container
+      # # Allocation of port tunnel can conflict with port forwarding! If you have issues make sure you're only using one or the other!
+    #  - "8000:8000"
+    #  - "4444:4444"
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    
+# ## Static filewatcher
+  # filewatcher:
+    # image: ubyssey/ubyssey-watcher:latest
+    # volumes:
+      # - ../ubyssey.ca/ubyssey/static/src:/src
+    # depends_on:
+      # - django
+## 
+  cache:
+    platform: linux/x86_64
+    image: memcached:1.6.10
+    ports:
+      - "11211:11211"
+    depends_on:
+      - django
     
 volumes:
   database:
