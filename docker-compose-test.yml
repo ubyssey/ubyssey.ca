@@ -27,6 +27,7 @@ services:
     image: mysql:5.7
     volumes:
       - database:/var/lib/mysql
+      - ./my_custom.cnf:/etc/mysql/conf.d/my_custom.cnf
     environment:
       MYSQL_ROOT_PASSWORD: ubyssey
       MYSQL_DATABASE: ubyssey
