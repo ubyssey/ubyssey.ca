@@ -45,7 +45,6 @@ on:
     branches: [ "add-a-CI/CD-pipeline" ]
   pull_request:
     branches: [ "add-a-CI/CD-pipeline" ]
-  workflow_dispatch:
 
 jobs:
   test:
