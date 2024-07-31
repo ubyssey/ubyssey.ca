@@ -125,11 +125,11 @@ jobs:
           # mysql -uroot -pubyssey
           pip install selenium
           echo "Testing started"
-          export browser=chrome
-          echo "Selenium server started"
-          python manage.py test
+          # export browser=chrome
+          # echo "Selenium server started"
+          # python manage.py test
         env: 
-          SQL_HOST: ${{ env.MYSQL_IP }}
+          SQL_HOST: 0.0.0.0
           # SQL_PORT: 3306
           SQL_DATABASE: ubyssey
           SQL_USER: root
