@@ -248,7 +248,19 @@ def update_events(request):
                 Event.objects.cs_ubc_create_event(component)
                 
     except:
-        return HttpResponse("Failed requesting to UBCevents", status=500)
+        return HttpResponse("Failed requesting to UBC CS", status=500)
+    
+    try:
+        req = Request("https://www.stat.ubc.ca/events-calendar-feed/", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+        con = urlopen(req)
+
+        cal = Calendar.from_ical(con.read())
+        for component in cal.walk():
+            if component.name == "VEVENT":
+                Event.objects.stats_ubc_create_event(component)
+ 
+    except:
+        return HttpResponse("Failed requesting to UBC Stats", status=500)
 
     for event in Event.objects.filter(update_mode=2):
         event.delete()

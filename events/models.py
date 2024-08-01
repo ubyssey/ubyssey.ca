@@ -4,7 +4,7 @@ from wagtail.snippets.models import register_snippet
 from wagtail.admin.panels import FieldPanel
 from django.forms.widgets import Select
 from django.utils import timezone
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 # Create your models here.
 
@@ -269,7 +269,80 @@ class EventManager(models.Manager):
                 return 'seminar'
             
         return 'community'
+    
+    
+    def stats_ubc_create_event(self, ical_component):
+        if timedelta(days=30) > abs(timezone.now() - ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())):
+            if not self.filter(event_url=ical_component.get('url')).exists():
+                event = self.create(
+                    title=ical_component.get('summary'),
+                    event_url=ical_component.decoded('url'),
+                )
+            else:
+                event = self.get(event_url=ical_component.get('url'))
+                if event.update_mode != 2:
+                    return None
+        else:
+            return None
 
+        event.title=ical_component.get('summary')
+        
+        # Clean up event description because they are so messy and have unnecessary information
+        description = str(ical_component.decoded('description'), 'UTF-8')
+        safety = 10
+        while "Speaker" in description and "Description" in description:
+            description = description.replace(description[description.index("Speaker"):description.index("Description") + len("Description")], "")
+            safety = safety - 1
+            if safety < 1:
+                break
+        while "  " in description:
+            description = description.replace("  ", " ")
+        while "\n " in description:
+            description = description.replace("\n ", "\n")
+        while "\n\n\n" in description:
+            description = description.replace("\n\n\n", "\n\n")
+        event.description = description
+
+        if isinstance(ical_component.decoded('dtstart'), datetime):
+            event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+        else:
+            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+
+        if isinstance(ical_component.decoded('dtend'), datetime):
+            event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
+        else:
+            event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+            
+        event.location = ical_component.get('location')
+
+        event.event_url = ical_component.get("url")
+        event.email=""
+        event.category = "seminar"
+        event.hidden = self.stats_ubc_judge_hidden(ical_component)
+
+        event.host = "UBC Statistics"
+
+        event.update_mode = 1
+        event.save()
+
+        return event
+
+
+    def stats_ubc_judge_hidden(self, event):
+        '''
+        Filter out the categories 'Student Events' and 'STEM Education'
+        bececause they don't seem to apply to most undergraduate students.
+        This can be reevaluated in the future when there are more events in this category
+        https://www.stat.ubc.ca/event-type/student-event
+        https://www.stat.ubc.ca/event-type/stem-education
+        '''
+
+        for i in ['student events', 'stem education']:
+            if i in event.get('description').lower():
+                return True
+
+        # Otherwise assume its good
+        return False
 
 @register_snippet
 class Event(models.Model):
