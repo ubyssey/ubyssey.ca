@@ -237,6 +237,18 @@ def update_events(request):
                 
     except:
         return HttpResponse("Failed requesting to UBCevents", status=500)
+    
+    try:
+        req = Request("https://www.cs.ubc.ca/views/ical/related_events/calendar.ics", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+        con = urlopen(req)
+
+        cal = Calendar.from_ical(con.read())
+        for component in cal.walk():
+            if component.name == "VEVENT":
+                Event.objects.cs_ubc_create_event(component)
+                
+    except:
+        return HttpResponse("Failed requesting to UBCevents", status=500)
 
     for event in Event.objects.filter(update_mode=2):
         event.delete()
@@ -339,6 +351,7 @@ class EventsFeed(Feed):
             return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21))
 
     def item_title(self, item):
+        item.start_time = item.start_time.astimezone(timezone.get_current_timezone())
         return item.start_time.strftime("%-m/%-d %-I:%M%P") + " " + item.title.replace("<br>", "")
 
     def item_pubdate(self, item):
