@@ -96,7 +96,9 @@ ical, rss feed, and api should be linked here
                             </button>
                             <ul>
                             {% for event in day.events %} 
-                                <li class="{% if event.host %}{{event.host|slugify}} {% endif %}{% if event.category %}{{event.category}} {% endif %}{% if event.event_url == selectedEvent.event_url %}selected{% endif %}"><a title="{{event.title}}" class="calendar-item" href="?event={{event.event_url}}" event-url="{{event.event_url}}">
+                                <li class="{% if event.host %}{{event.host|slugify}} {% endif %}{% if event.category %}{{event.category}} {% endif %}{% if event.event_url == selectedEvent.event_url %}selected{% endif %}"
+                                {% if highlight == 'category' and event.category == 'seminar' %}style="display: none;"{% endif %}>
+                                <a title="{{event.title}}" class="calendar-item" href="?event={{event.event_url}}" event-url="{{event.event_url}}">
                                     {% if event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title|safe}}
                                 </a></li>
                             {% endfor %}
@@ -110,7 +112,9 @@ ical, rss feed, and api should be linked here
             <div class="legend">
                 <ul>
                 {% for key in legend %}
-                <li class="{{key|slugify}}">{{key}}</li>
+                <li class="{{key|slugify}}">
+                    <button id="{{key|slugify}}" class="legend-button {% if key == 'seminar' %}inactive{% endif %}" onClick="toggleCategory(this)">{{key}}</button>
+                </li>
                 {% endfor %}
                 </ul>
             </div>
@@ -159,7 +163,18 @@ ical, rss feed, and api should be linked here
         params.set('event', this.getAttribute('event-url'));
         console.log(params);
         window.location.search = params.toString();
-    })
+    });
+
+    function toggleCategory(that) {
+        console.log(that);
+        if (that.classList.contains("inactive"))
+        {
+            $('.day li.' + that.id).show();
+        } else {
+            $('.day li.' + that.id).hide();
+        }
+        that.classList.toggle('inactive');
+    }
 </script>
 {% endblock %}
 
