@@ -101,6 +101,12 @@ class EventsTheme(object):
             rss = {'url': 'https://ubyssey.ca/events/rss/?category=' + request.GET.get("category"),
                    'title': "Ubyssey's " + request.GET.get("category").capitalize()  + " Around Campus rss Feed"}
 
+            meta = {
+                'title': request.GET.get("category").capitalize()  + " Around Campus Calendar",
+                'description': request.GET.get("category").capitalize()  + " Around Campus collected by The Ubyssey",
+                'url': 'https://ubyssey.ca/events/?category=' + request.GET.get("category"),
+                }
+
         else:
             ical = {'url': 'https://ubyssey.ca/events/ical/',
                     'title': "Ubyssey's Events Around Campus iCal Feed"}
@@ -108,6 +114,12 @@ class EventsTheme(object):
             rss = {'url': 'https://ubyssey.ca/events/rss/',
                    'title': "Ubyssey's Events Around Campus rss Feed"}
         
+            meta = {
+                'title': "Events Around Campus Calendar",
+                'description': "Events Around Campus collected by The Ubyssey",
+                'url': 'https://ubyssey.ca/events/',
+                }
+
         legend = []
 
         while(len(calendar) < weekNum):
@@ -194,6 +206,13 @@ class EventsTheme(object):
                 event = Event.objects.get(event_url=request.GET.get("event"))
                 event.selected = True
 
+                meta = {
+                'title': event.title,
+                'description': event.description,
+                'url': "https://ubyssey.ca/events/?event=" + event.event_url,
+                'noindex': True,
+                }
+
         if event:
             event.description = event.description.replace('\n', '<br>')
 
@@ -202,7 +221,7 @@ class EventsTheme(object):
 
             event.displayTime = format_event_date(event.start_time, event.end_time)
 
-        return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours, 'tab': tab, 'ical': ical, 'rss': rss})
+        return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours, 'tab': tab, 'ical': ical, 'rss': rss, 'meta': meta})
 
 def update_events(request):
     from urllib.request import urlopen, Request
