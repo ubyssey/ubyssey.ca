@@ -391,6 +391,18 @@ header.events{
             margin-right: 2em;
         }
     }
+    .events-calendar--rows .events-calendar--row:first-child {
+        display: none;
+    }
+    
+    div.day.past {
+        display: none;
+    }
+
+    .events-calendar--rows:nth-child(2) .events-calendar--month {
+        display: block;
+    }
+
     main.events-page .event-view {
         .events-calendar--rows, .legend {
             display: none;
@@ -450,5 +462,20 @@ header.events{
             color: var(--highlight);
             font-size: 1.5em;
         }
+    }
+
+    .inactive {
+        text-decoration: line-through;
+    }
+
+    button {
+        padding: 0;
+        line-height: unset;
+        background: none;
+        border: none;
+        font-size: inherit;
+        color: inherit;
+        font-weight: 500;
+        margin: 0;
     }
 }

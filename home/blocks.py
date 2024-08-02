@@ -85,7 +85,7 @@ class LinksStreamBlock(blocks.StructBlock):
         from django.utils import timezone
         from datetime import timedelta
         context = super().get_context(value, parent_context)
-        context['events'] = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).order_by("start_time")[:5]
+        context['events'] = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).exclude(category='seminar').order_by("start_time")[:5]
 
         for i in range(len(context['events'])):
             today = timezone.now()
