@@ -1,0 +1,6845 @@
+[
+{
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$390000$7yuq1bv9vpiu5LwzYQo25W$MQBznhBaJTzK20vrXsTY4t9XnBMz+m8yr1J0Z2pJWDw=",
+        "last_login": "2024-08-02T05:59:55.714Z",
+        "is_superuser": true,
+        "email": "nishimsinghi@gmail.com",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "home.toparticlesorderable",
+    "pk": 1,
+    "fields": {
+        "sort_order": 0,
+        "home_page": 3,
+        "article": 7
+    }
+},
+{
+    "model": "home.homepage",
+    "pk": 3,
+    "fields": {
+        "tagline": "Brat summer since 1918",
+        "tagline_url": "https://ubyssey.ca/pages/about/",
+        "cover_story": 7,
+        "middle_stream": "[{\"id\": \"a9fe95e1-f45a-4226-95b1-fad31f82f2ed\", \"type\": \"links\", \"value\": {\"links\": [{\"id\": \"3d4340ed-3bd2-40b2-8891-313382fb7b9f\", \"type\": \"item\", \"value\": {\"url\": \"https://ubyssey.ca/guide/2023/\", \"title\": \"2023 Guide to UBC\", \"description\": \"\"}}]}}]",
+        "sections_stream": "[{\"id\": \"4df9c162-bc81-48e3-a137-a66d50b39939\", \"type\": \"home_page_section_block\", \"value\": {\"layout\": \"bulleted\", \"section\": 6}}]",
+        "sidebar_stream": "[]"
+    }
+},
+{
+    "model": "authors.allauthorspage",
+    "pk": 4,
+    "fields": {}
+},
+{
+    "model": "authors.authorpage",
+    "pk": 5,
+    "fields": {
+        "full_name": "Alexandra Smitton",
+        "image": null,
+        "display_image": true,
+        "ubyssey_role": "",
+        "facebook_url": null,
+        "twitter_url": null,
+        "legacy_facebook_url": "",
+        "legacy_twitter_url": "",
+        "legacy_slug": "",
+        "bio_description": "",
+        "short_bio_description": "",
+        "main_media_type": "articles",
+        "linkIcons": "[]",
+        "links": "[]",
+        "last_activity": "2024-08-02T06:02:31.784Z"
+    }
+},
+{
+    "model": "article.articleauthorsorderable",
+    "pk": 1,
+    "fields": {
+        "sort_order": 0,
+        "article_page": 7,
+        "author": 5,
+        "author_role": "author"
+    }
+},
+{
+    "model": "article.articlepage",
+    "pk": 7,
+    "fields": {
+        "current_section": "news",
+        "use_parent_colour": true,
+        "colour": "#3490d6",
+        "apply_colour_to_subtree_when_saved": false,
+        "lock_colour": false,
+        "menu": null,
+        "create_menu_from_parent": false,
+        "parent_page_for_menu_generation": null,
+        "content": "[{\"id\": \"3bf08282-cd5b-4d35-b12c-3a2facebd839\", \"type\": \"richtext\", \"value\": \"<p data-block-key=\\\"pubvt\\\">The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.</p><p data-block-key=\\\"1qh05\\\">Launched on July 18, the Landlord Use Web Portal is meant to address BC\\u2019s high no-fault eviction rate, which is when tenants are evicted when they have not violated their lease.</p><p data-block-key=\\\"35eq6\\\">Landlords are permitted to reclaim unites for personal reasons like for a close family member to move in. However, landlords may have other intentions like leasing the unit to other renters with an increased rent. The portal is specifically meant to prevent this situation by having landlords document their claims and to warn landlords of heavy penalties if they engage in bad faith evictions.</p><p data-block-key=\\\"1f94c\\\">In a 2023 study, <a href=\\\"https://housingresearch.ubc.ca/sites/default/files/2023-05/estimating_no-fault_evictions_in_canada_0.pdf\\\">UBC researchers</a> found over 85 per cent of evictions in BC in 2021 were no-fault evictions, the highest in the country and above the national average of 64.7 per cent. The online portal is one step taken by the province to address this by specifically targeting bad faith evictions. Now, notices of evictions are to be generated on the portal, and landlords are required to enter the details of those occupying the unit when the unit is vacated, allowing tenants to \\u201chave a better sense of the landlords\\u2019 intentions,\\u201d according to <a href=\\\"https://news.gov.bc.ca/releases/2024HOUS0115-001044\\\">the province</a>.</p><p data-block-key=\\\"5u3ie\\\">Such documentation of changes in occupancy can also be used by tenants in dispute hearings as proof of bad-faith by landlords. The government is also taking several other initiatives to better renter rights. Landlords are now required to provide four months\\u2019 notice, up from two months, when evicting for personal use, the new tenant must occupy the unit for 12 months and evicted tenants now have 30 days, previously 15 days, to dispute notices of eviction.</p><p data-block-key=\\\"7cgg\\\">\\u201cThe portal will also provide [the] government with a window to better understand when and how often these evictions occur so that we can continue to build on our work to improve services for renters and landlords,\\u201d said Minister of Housing Ravi Kahlon in a <a href=\\\"https://news.gov.bc.ca/releases/2024HOUS0115-001044\\\">press release</a>.</p><p data-block-key=\\\"fcb8t\\\">While these changes also benefit students living in units throughout the city, these changes do not apply to those living in UBC Residence as it does not fall within the jurisdiction of the <a href=\\\"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/00_02078_01\\\">Residential Tenancy Act.</a></p>\"}]",
+        "explicit_published_at": "2024-08-01T15:00:00Z",
+        "last_modified_at": "2024-08-02T07:26:12.494Z",
+        "show_last_modified": false,
+        "lede": "The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.",
+        "category": null,
+        "primary_tag_slug": null,
+        "tag_page_link": false,
+        "filter_by_tags": false,
+        "disclaimer": "",
+        "is_breaking": false,
+        "breaking_timeout": "2024-08-02T06:05:00Z",
+        "seo_keyword": "",
+        "seo_description": "",
+        "noindex": false,
+        "is_explicit": false,
+        "legacy_template": "",
+        "legacy_template_data": "",
+        "legacy_revision_number": 0,
+        "layout": "default",
+        "fw_alternate_title": "",
+        "title_tag": "",
+        "fw_above_cut_lede": "",
+        "fw_about_this_article": "",
+        "show_timeline": false,
+        "timeline": null,
+        "timeline_date": "2024-08-02T06:05:00Z",
+        "header_layout": "right-image",
+        "use_default_template": true,
+        "db_template": null
+    }
+},
+{
+    "model": "section.sectionpage",
+    "pk": 6,
+    "fields": {
+        "current_section": "news",
+        "use_parent_colour": true,
+        "colour": "#3490d6",
+        "apply_colour_to_subtree_when_saved": false,
+        "lock_colour": false,
+        "banner": null,
+        "description": "Find all things timely! Send any tips and pitches to news@ubyssey.ca.",
+        "label_svg": null,
+        "sidebar_stream": "[]"
+    }
+},
+{
+    "model": "ads.adtagsettings",
+    "pk": 1,
+    "fields": {
+        "site": 1
+    }
+},
+{
+    "model": "wagtailusers.userprofile",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "submitted_notifications": true,
+        "approved_notifications": true,
+        "rejected_notifications": true,
+        "updated_comments_notifications": true,
+        "preferred_language": "",
+        "current_time_zone": "",
+        "avatar": "",
+        "dismissibles": {},
+        "theme": "system"
+    }
+},
+{
+    "model": "wagtailsearch.indexentry",
+    "pk": 1,
+    "fields": {
+        "content_type": 28,
+        "object_id": "3",
+        "title_norm": 0.8181818181818182,
+        "autocomplete": "The Ubyssey",
+        "title": "The Ubyssey",
+        "body": ""
+    }
+},
+{
+    "model": "wagtailsearch.indexentry",
+    "pk": 2,
+    "fields": {
+        "content_type": 34,
+        "object_id": "4",
+        "title_norm": 1.2857142857142858,
+        "autocomplete": "Authors",
+        "title": "Authors",
+        "body": ""
+    }
+},
+{
+    "model": "wagtailsearch.indexentry",
+    "pk": 3,
+    "fields": {
+        "content_type": 35,
+        "object_id": "5",
+        "title_norm": 0.6862764705882354,
+        "autocomplete": "Alexandra Smitton Alexandra Smitton alexandra-smitton  ",
+        "title": "Alexandra Smitton",
+        "body": "Alexandra Smitton alexandra-smitton  "
+    }
+},
+{
+    "model": "wagtailsearch.indexentry",
+    "pk": 4,
+    "fields": {
+        "content_type": 49,
+        "object_id": "6",
+        "title_norm": 2.4375,
+        "autocomplete": "News",
+        "title": "News",
+        "body": ""
+    }
+},
+{
+    "model": "wagtailsearch.indexentry",
+    "pk": 5,
+    "fields": {
+        "content_type": 39,
+        "object_id": "7",
+        "title_norm": 0.3322033898305085,
+        "autocomplete": "BC's new landlord portal hopes to limit bad-faith evictions The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.   bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions None",
+        "title": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "body": "The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters. The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters. Launched on July 18, the Landlord Use Web Portal is meant to address BC’s high no-fault eviction rate, which is when tenants are evicted when they have not violated their lease. Landlords are permitted to reclaim unites for personal reasons like for a close family member to move in. However, landlords may have other intentions like leasing the unit to other renters with an increased rent. The portal is specifically meant to prevent this situation by having landlords document their claims and to warn landlords of heavy penalties if they engage in bad faith evictions. In a 2023 study, UBC researchers found over 85 per cent of evictions in BC in 2021 were no-fault evictions, the highest in the country and above the national average of 64.7 per cent. The online portal is one step taken by the province to address this by specifically targeting bad faith evictions. Now, notices of evictions are to be generated on the portal, and landlords are required to enter the details of those occupying the unit when the unit is vacated, allowing tenants to “have a better sense of the landlords’ intentions,” according to the province. Such documentation of changes in occupancy can also be used by tenants in dispute hearings as proof of bad-faith by landlords. The government is also taking several other initiatives to better renter rights. Landlords are now required to provide four months’ notice, up from two months, when evicting for personal use, the new tenant must occupy the unit for 12 months and evicted tenants now have 30 days, previously 15 days, to dispute notices of eviction. “The portal will also provide [the] government with a window to better understand when and how often these evictions occur so that we can continue to build on our work to improve services for renters and landlords,” said Minister of Housing Ravi Kahlon in a press release. While these changes also benefit students living in units throughout the city, these changes do not apply to those living in UBC Residence as it does not fall within the jurisdiction of the Residential Tenancy Act.   None"
+    }
+},
+{
+    "model": "wagtailcore.locale",
+    "pk": 1,
+    "fields": {
+        "language_code": "en"
+    }
+},
+{
+    "model": "wagtailcore.site",
+    "pk": 1,
+    "fields": {
+        "hostname": "localhost",
+        "port": 8000,
+        "site_name": "",
+        "root_page": 3,
+        "is_default_site": true
+    }
+},
+{
+    "model": "wagtailcore.modellogentry",
+    "pk": 1,
+    "fields": {
+        "content_type": 6,
+        "label": "localhost:8000 [default]",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T06:08:06.482Z",
+        "uuid": "be81aa08-e279-441e-9ff0-97e36d226f46",
+        "user": 1,
+        "revision": null,
+        "content_changed": true,
+        "deleted": false,
+        "object_id": "1"
+    }
+},
+{
+    "model": "wagtailcore.collection",
+    "pk": 1,
+    "fields": {
+        "path": "0001",
+        "depth": 1,
+        "numchild": 0,
+        "name": "Root"
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 1,
+    "fields": {
+        "group": 2,
+        "collection": 1,
+        "permission": 1
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 2,
+    "fields": {
+        "group": 1,
+        "collection": 1,
+        "permission": 1
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 3,
+    "fields": {
+        "group": 2,
+        "collection": 1,
+        "permission": 2
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 4,
+    "fields": {
+        "group": 1,
+        "collection": 1,
+        "permission": 2
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 5,
+    "fields": {
+        "group": 2,
+        "collection": 1,
+        "permission": 102
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 6,
+    "fields": {
+        "group": 1,
+        "collection": 1,
+        "permission": 102
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 7,
+    "fields": {
+        "group": 2,
+        "collection": 1,
+        "permission": 103
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 8,
+    "fields": {
+        "group": 1,
+        "collection": 1,
+        "permission": 103
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 9,
+    "fields": {
+        "group": 2,
+        "collection": 1,
+        "permission": 105
+    }
+},
+{
+    "model": "wagtailcore.groupcollectionpermission",
+    "pk": 10,
+    "fields": {
+        "group": 1,
+        "collection": 1,
+        "permission": 105
+    }
+},
+{
+    "model": "wagtailcore.referenceindex",
+    "pk": 3,
+    "fields": {
+        "content_type": 39,
+        "base_content_type": 1,
+        "object_id": "7",
+        "to_content_type": 1,
+        "to_object_id": "5",
+        "model_path": "article_authors.item.author",
+        "content_path": "article_authors.1.author",
+        "content_path_hash": "ce8ad6ea-9c5a-5aa8-97d5-bb123c0f9a28"
+    }
+},
+{
+    "model": "wagtailcore.referenceindex",
+    "pk": 6,
+    "fields": {
+        "content_type": 1,
+        "base_content_type": 1,
+        "object_id": "7",
+        "to_content_type": 1,
+        "to_object_id": "6",
+        "model_path": "home_cover_story.item.sections_stream.home_page_section_block.section",
+        "content_path": "home_cover_story.3.sections_stream.4df9c162-bc81-48e3-a137-a66d50b39939.section",
+        "content_path_hash": "3c61c4b2-dfff-5e61-953d-c52380806d23"
+    }
+},
+{
+    "model": "wagtailcore.referenceindex",
+    "pk": 7,
+    "fields": {
+        "content_type": 1,
+        "base_content_type": 1,
+        "object_id": "7",
+        "to_content_type": 1,
+        "to_object_id": "7",
+        "model_path": "home_cover_story.item.top_articles.item.article",
+        "content_path": "home_cover_story.3.top_articles.1.article",
+        "content_path_hash": "08474e6a-808d-57d5-b65f-29157f530f45"
+    }
+},
+{
+    "model": "wagtailcore.page",
+    "pk": 1,
+    "fields": {
+        "path": "0001",
+        "depth": 1,
+        "numchild": 2,
+        "translation_key": "d713aad7-1b0f-4de4-8506-bc0a17655713",
+        "locale": 1,
+        "latest_revision": null,
+        "live": true,
+        "has_unpublished_changes": false,
+        "first_published_at": null,
+        "last_published_at": null,
+        "live_revision": null,
+        "go_live_at": null,
+        "expire_at": null,
+        "expired": false,
+        "locked": false,
+        "locked_at": null,
+        "locked_by": null,
+        "title": "Root",
+        "draft_title": "Root",
+        "slug": "root",
+        "content_type": 1,
+        "url_path": "/",
+        "owner": null,
+        "seo_title": "",
+        "show_in_menus": false,
+        "search_description": "",
+        "latest_revision_created_at": null,
+        "alias_of": null
+    }
+},
+{
+    "model": "wagtailcore.page",
+    "pk": 2,
+    "fields": {
+        "path": "00010001",
+        "depth": 2,
+        "numchild": 0,
+        "translation_key": "f481e4d4-1a08-4825-b10a-408ccd98bc4e",
+        "locale": 1,
+        "latest_revision": null,
+        "live": true,
+        "has_unpublished_changes": false,
+        "first_published_at": null,
+        "last_published_at": null,
+        "live_revision": null,
+        "go_live_at": null,
+        "expire_at": null,
+        "expired": false,
+        "locked": false,
+        "locked_at": null,
+        "locked_by": null,
+        "title": "Welcome to your new Wagtail site!",
+        "draft_title": "Welcome to your new Wagtail site!",
+        "slug": "home",
+        "content_type": 1,
+        "url_path": "/home/",
+        "owner": null,
+        "seo_title": "",
+        "show_in_menus": false,
+        "search_description": "",
+        "latest_revision_created_at": null,
+        "alias_of": null
+    }
+},
+{
+    "model": "wagtailcore.page",
+    "pk": 3,
+    "fields": {
+        "path": "00010002",
+        "depth": 2,
+        "numchild": 2,
+        "translation_key": "dd31b84f-2126-4067-b208-b74acf45dd63",
+        "locale": 1,
+        "latest_revision": 8,
+        "live": true,
+        "has_unpublished_changes": false,
+        "first_published_at": "2024-08-02T06:00:50.416Z",
+        "last_published_at": "2024-08-02T07:25:25.052Z",
+        "live_revision": 8,
+        "go_live_at": null,
+        "expire_at": null,
+        "expired": false,
+        "locked": false,
+        "locked_at": null,
+        "locked_by": null,
+        "title": "The Ubyssey",
+        "draft_title": "The Ubyssey",
+        "slug": "the-ubyssey",
+        "content_type": 28,
+        "url_path": "/the-ubyssey/",
+        "owner": 1,
+        "seo_title": "",
+        "show_in_menus": false,
+        "search_description": "",
+        "latest_revision_created_at": "2024-08-02T07:25:24.844Z",
+        "alias_of": null
+    }
+},
+{
+    "model": "wagtailcore.page",
+    "pk": 4,
+    "fields": {
+        "path": "000100020001",
+        "depth": 3,
+        "numchild": 1,
+        "translation_key": "567c3861-d099-4bce-9ce4-95b549c23642",
+        "locale": 1,
+        "latest_revision": 2,
+        "live": true,
+        "has_unpublished_changes": false,
+        "first_published_at": "2024-08-02T06:01:37.440Z",
+        "last_published_at": "2024-08-02T06:01:37.440Z",
+        "live_revision": 2,
+        "go_live_at": null,
+        "expire_at": null,
+        "expired": false,
+        "locked": false,
+        "locked_at": null,
+        "locked_by": null,
+        "title": "Authors",
+        "draft_title": "Authors",
+        "slug": "authors",
+        "content_type": 34,
+        "url_path": "/the-ubyssey/authors/",
+        "owner": 1,
+        "seo_title": "",
+        "show_in_menus": false,
+        "search_description": "",
+        "latest_revision_created_at": "2024-08-02T06:01:37.379Z",
+        "alias_of": null
+    }
+},
+{
+    "model": "wagtailcore.page",
+    "pk": 5,
+    "fields": {
+        "path": "0001000200010001",
+        "depth": 4,
+        "numchild": 0,
+        "translation_key": "9123878e-c722-4480-ad80-6f481fcf5242",
+        "locale": 1,
+        "latest_revision": 3,
+        "live": true,
+        "has_unpublished_changes": false,
+        "first_published_at": "2024-08-02T06:02:31.784Z",
+        "last_published_at": "2024-08-02T06:02:31.784Z",
+        "live_revision": 3,
+        "go_live_at": null,
+        "expire_at": null,
+        "expired": false,
+        "locked": false,
+        "locked_at": null,
+        "locked_by": null,
+        "title": "Alexandra Smitton",
+        "draft_title": "Alexandra Smitton",
+        "slug": "alexandra-smitton",
+        "content_type": 35,
+        "url_path": "/the-ubyssey/authors/alexandra-smitton/",
+        "owner": 1,
+        "seo_title": "",
+        "show_in_menus": false,
+        "search_description": "",
+        "latest_revision_created_at": "2024-08-02T06:02:31.723Z",
+        "alias_of": null
+    }
+},
+{
+    "model": "wagtailcore.page",
+    "pk": 6,
+    "fields": {
+        "path": "000100020002",
+        "depth": 3,
+        "numchild": 1,
+        "translation_key": "0adb47cd-dd6c-40c2-bdd5-17f67d1e5f96",
+        "locale": 1,
+        "latest_revision": 4,
+        "live": true,
+        "has_unpublished_changes": false,
+        "first_published_at": "2024-08-02T06:03:41.464Z",
+        "last_published_at": "2024-08-02T06:03:41.464Z",
+        "live_revision": 4,
+        "go_live_at": null,
+        "expire_at": null,
+        "expired": false,
+        "locked": false,
+        "locked_at": null,
+        "locked_by": null,
+        "title": "News",
+        "draft_title": "News",
+        "slug": "news",
+        "content_type": 49,
+        "url_path": "/the-ubyssey/news/",
+        "owner": 1,
+        "seo_title": "",
+        "show_in_menus": true,
+        "search_description": "",
+        "latest_revision_created_at": "2024-08-02T06:03:41.394Z",
+        "alias_of": null
+    }
+},
+{
+    "model": "wagtailcore.page",
+    "pk": 7,
+    "fields": {
+        "path": "0001000200020001",
+        "depth": 4,
+        "numchild": 0,
+        "translation_key": "6b2da75e-d4be-4e38-b2e3-1eaec8c8e302",
+        "locale": 1,
+        "latest_revision": 9,
+        "live": true,
+        "has_unpublished_changes": false,
+        "first_published_at": "2024-08-02T06:06:45.297Z",
+        "last_published_at": "2024-08-02T07:26:12.450Z",
+        "live_revision": 9,
+        "go_live_at": null,
+        "expire_at": null,
+        "expired": false,
+        "locked": false,
+        "locked_at": null,
+        "locked_by": null,
+        "title": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "draft_title": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "slug": "bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions",
+        "content_type": 39,
+        "url_path": "/the-ubyssey/news/bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions/",
+        "owner": 1,
+        "seo_title": "",
+        "show_in_menus": false,
+        "search_description": "",
+        "latest_revision_created_at": "2024-08-02T07:26:12.219Z",
+        "alias_of": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 1,
+    "fields": {
+        "content_type": 28,
+        "base_content_type": 1,
+        "object_id": "3",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T06:00:50.346Z",
+        "user": 1,
+        "object_str": "The Ubyssey",
+        "content": {
+            "pk": 3,
+            "live": true,
+            "path": "00010002",
+            "slug": "the-ubyssey",
+            "depth": 2,
+            "owner": 1,
+            "title": "The Ubyssey",
+            "locale": 1,
+            "locked": false,
+            "expired": false,
+            "tagline": "Brat summer since 1918",
+            "alias_of": null,
+            "numchild": 0,
+            "url_path": "/the-ubyssey/",
+            "expire_at": null,
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "go_live_at": null,
+            "cover_story": 2,
+            "draft_title": "The Ubyssey",
+            "tagline_url": "https://ubyssey.ca/pages/about/",
+            "content_type": 28,
+            "top_articles": [],
+            "live_revision": null,
+            "middle_stream": "[]",
+            "show_in_menus": true,
+            "sidebar_stream": "[]",
+            "latest_revision": null,
+            "sections_stream": "[]",
+            "translation_key": "dd31b84f-2126-4067-b208-b74acf45dd63",
+            "home_cover_story": [],
+            "last_published_at": null,
+            "first_published_at": null,
+            "search_description": "",
+            "wagtail_admin_comments": [],
+            "has_unpublished_changes": false,
+            "latest_revision_created_at": null
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 2,
+    "fields": {
+        "content_type": 34,
+        "base_content_type": 1,
+        "object_id": "4",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T06:01:37.379Z",
+        "user": 1,
+        "object_str": "Authors",
+        "content": {
+            "pk": 4,
+            "live": true,
+            "path": "000100020001",
+            "slug": "authors",
+            "depth": 3,
+            "owner": 1,
+            "title": "Authors",
+            "locale": 1,
+            "locked": false,
+            "expired": false,
+            "alias_of": null,
+            "numchild": 0,
+            "url_path": "/the-ubyssey/authors/",
+            "expire_at": null,
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "go_live_at": null,
+            "draft_title": "Authors",
+            "content_type": 34,
+            "live_revision": null,
+            "show_in_menus": false,
+            "latest_revision": null,
+            "translation_key": "567c3861-d099-4bce-9ce4-95b549c23642",
+            "home_cover_story": [],
+            "last_published_at": null,
+            "first_published_at": null,
+            "search_description": "",
+            "wagtail_admin_comments": [],
+            "has_unpublished_changes": false,
+            "latest_revision_created_at": null
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 3,
+    "fields": {
+        "content_type": 35,
+        "base_content_type": 1,
+        "object_id": "5",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T06:02:31.723Z",
+        "user": 1,
+        "object_str": "Alexandra Smitton",
+        "content": {
+            "pk": 5,
+            "live": true,
+            "path": "0001000200010001",
+            "slug": "alexandra-smitton",
+            "depth": 4,
+            "image": null,
+            "links": "[]",
+            "owner": 1,
+            "title": "Alexandra Smitton",
+            "locale": 1,
+            "locked": false,
+            "expired": false,
+            "alias_of": null,
+            "numchild": 0,
+            "url_path": "/the-ubyssey/authors/alexandra-smitton/",
+            "expire_at": null,
+            "full_name": "Alexandra Smitton",
+            "linkIcons": "[]",
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "go_live_at": null,
+            "draft_title": "Alexandra Smitton",
+            "legacy_slug": "",
+            "twitter_url": null,
+            "content_type": 35,
+            "facebook_url": null,
+            "ubyssey_role": "",
+            "display_image": true,
+            "last_activity": null,
+            "live_revision": null,
+            "show_in_menus": false,
+            "bio_description": "",
+            "latest_revision": null,
+            "main_media_type": "articles",
+            "pinned_articles": [],
+            "translation_key": "9123878e-c722-4480-ad80-6f481fcf5242",
+            "home_cover_story": [],
+            "last_published_at": null,
+            "first_published_at": null,
+            "legacy_twitter_url": "",
+            "search_description": "",
+            "legacy_facebook_url": "",
+            "short_bio_description": "",
+            "wagtail_admin_comments": [],
+            "has_unpublished_changes": false,
+            "latest_revision_created_at": null
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 4,
+    "fields": {
+        "content_type": 49,
+        "base_content_type": 1,
+        "object_id": "6",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T06:03:41.394Z",
+        "user": 1,
+        "object_str": "News",
+        "content": {
+            "pk": 6,
+            "live": true,
+            "path": "000100020002",
+            "slug": "news",
+            "depth": 3,
+            "owner": 1,
+            "title": "News",
+            "banner": null,
+            "colour": "#3490d6",
+            "locale": 1,
+            "locked": false,
+            "expired": false,
+            "alias_of": null,
+            "numchild": 0,
+            "url_path": "/the-ubyssey/news/",
+            "expire_at": null,
+            "label_svg": null,
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "categories": [],
+            "go_live_at": null,
+            "description": "Find all things timely! Send any tips and pitches to news@ubyssey.ca.",
+            "draft_title": "News",
+            "lock_colour": false,
+            "content_type": 49,
+            "category_menu": [],
+            "live_revision": null,
+            "show_in_menus": true,
+            "sidebar_stream": "[]",
+            "current_section": "news",
+            "latest_revision": null,
+            "translation_key": "0adb47cd-dd6c-40c2-bdd5-17f67d1e5f96",
+            "home_cover_story": [],
+            "last_published_at": null,
+            "use_parent_colour": true,
+            "first_published_at": null,
+            "search_description": "",
+            "wagtail_admin_comments": [],
+            "has_unpublished_changes": false,
+            "latest_revision_created_at": null,
+            "apply_colour_to_subtree_when_saved": false
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 5,
+    "fields": {
+        "content_type": 39,
+        "base_content_type": 1,
+        "object_id": "7",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T06:06:03.141Z",
+        "user": 1,
+        "object_str": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "content": {
+            "pk": 7,
+            "lede": "The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.",
+            "live": false,
+            "menu": null,
+            "path": "0001000200020001",
+            "slug": "bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions",
+            "depth": 4,
+            "owner": 1,
+            "title": "BC's new landlord portal hopes to limit bad-faith evictions",
+            "colour": "#3490d6",
+            "layout": "default",
+            "locale": 1,
+            "locked": false,
+            "styles": [],
+            "content": "[{\"type\": \"richtext\", \"value\": \"<p data-block-key=\\\"pubvt\\\">The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.</p><p data-block-key=\\\"1qh05\\\">Launched on July 18, the Landlord Use Web Portal is meant to address BC\\u2019s high no-fault eviction rate, which is when tenants are evicted when they have not violated their lease.</p><p data-block-key=\\\"35eq6\\\">Landlords are permitted to reclaim unites for personal reasons like for a close family member to move in. However, landlords may have other intentions like leasing the unit to other renters with an increased rent. The portal is specifically meant to prevent this situation by having landlords document their claims and to warn landlords of heavy penalties if they engage in bad faith evictions.</p><p data-block-key=\\\"1f94c\\\">In a 2023 study, <a href=\\\"https://housingresearch.ubc.ca/sites/default/files/2023-05/estimating_no-fault_evictions_in_canada_0.pdf\\\">UBC researchers</a> found over 85 per cent of evictions in BC in 2021 were no-fault evictions, the highest in the country and above the national average of 64.7 per cent. The online portal is one step taken by the province to address this by specifically targeting bad faith evictions. Now, notices of evictions are to be generated on the portal, and landlords are required to enter the details of those occupying the unit when the unit is vacated, allowing tenants to \\u201chave a better sense of the landlords\\u2019 intentions,\\u201d according to <a href=\\\"https://news.gov.bc.ca/releases/2024HOUS0115-001044\\\">the province</a>.</p><p data-block-key=\\\"5u3ie\\\">Such documentation of changes in occupancy can also be used by tenants in dispute hearings as proof of bad-faith by landlords. The government is also taking several other initiatives to better renter rights. Landlords are now required to provide four months\\u2019 notice, up from two months, when evicting for personal use, the new tenant must occupy the unit for 12 months and evicted tenants now have 30 days, previously 15 days, to dispute notices of eviction.</p><p data-block-key=\\\"7cgg\\\">\\u201cThe portal will also provide [the] government with a window to better understand when and how often these evictions occur so that we can continue to build on our work to improve services for renters and landlords,\\u201d said Minister of Housing Ravi Kahlon in a <a href=\\\"https://news.gov.bc.ca/releases/2024HOUS0115-001044\\\">press release</a>.</p><p data-block-key=\\\"fcb8t\\\">While these changes also benefit students living in units throughout the city, these changes do not apply to those living in UBC Residence as it does not fall within the jurisdiction of the <a href=\\\"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/00_02078_01\\\">Residential Tenancy Act.</a></p>\", \"id\": \"3bf08282-cd5b-4d35-b12c-3a2facebd839\"}]",
+            "expired": false,
+            "noindex": false,
+            "scripts": [],
+            "alias_of": null,
+            "category": null,
+            "numchild": 0,
+            "timeline": null,
+            "url_path": "/the-ubyssey/news/bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions/",
+            "expire_at": null,
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "title_tag": "",
+            "disclaimer": "",
+            "go_live_at": null,
+            "db_template": null,
+            "draft_title": "BC's new landlord portal hopes to limit bad-faith evictions",
+            "is_breaking": false,
+            "is_explicit": false,
+            "lock_colour": false,
+            "seo_keyword": "",
+            "content_type": 39,
+            "tagged_items": [
+                {
+                    "pk": 1,
+                    "tag": 1,
+                    "content_object": 7
+                }
+            ],
+            "header_layout": "right-image",
+            "live_revision": null,
+            "show_in_menus": false,
+            "show_timeline": false,
+            "tag_page_link": false,
+            "timeline_date": "2024-08-02T06:05:00Z",
+            "featured_media": [],
+            "filter_by_tags": false,
+            "article_authors": [
+                {
+                    "pk": 1,
+                    "author": 5,
+                    "sort_order": 0,
+                    "author_role": "author",
+                    "article_page": 7
+                }
+            ],
+            "current_section": "news",
+            "latest_revision": null,
+            "legacy_template": "",
+            "seo_description": "",
+            "translation_key": "6b2da75e-d4be-4e38-b2e3-1eaec8c8e302",
+            "breaking_timeout": "2024-08-02T06:05:00Z",
+            "home_cover_story": [],
+            "last_modified_at": "2024-08-02T06:06:03.126Z",
+            "magazine_bylines": [],
+            "primary_tag_slug": "housing",
+            "fw_above_cut_lede": "",
+            "last_published_at": null,
+            "use_parent_colour": true,
+            "connected_articles": [],
+            "first_published_at": null,
+            "fw_alternate_title": "",
+            "search_description": "",
+            "show_last_modified": false,
+            "legacy_template_data": "",
+            "use_default_template": true,
+            "explicit_published_at": "2024-08-01T15:00:00Z",
+            "fw_about_this_article": "",
+            "legacy_revision_number": 0,
+            "wagtail_admin_comments": [],
+            "create_menu_from_parent": false,
+            "has_unpublished_changes": false,
+            "latest_revision_created_at": null,
+            "parent_page_for_menu_generation": null,
+            "apply_colour_to_subtree_when_saved": false
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 6,
+    "fields": {
+        "content_type": 39,
+        "base_content_type": 1,
+        "object_id": "7",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T06:06:45.143Z",
+        "user": 1,
+        "object_str": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "content": {
+            "pk": 7,
+            "lede": "The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.",
+            "live": false,
+            "menu": null,
+            "path": "0001000200020001",
+            "slug": "bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions",
+            "depth": 4,
+            "owner": 1,
+            "title": "BC's new landlord portal hopes to limit bad-faith evictions",
+            "colour": "#3490d6",
+            "layout": "default",
+            "locale": 1,
+            "locked": false,
+            "styles": [],
+            "content": "[{\"type\": \"richtext\", \"value\": \"<p data-block-key=\\\"pubvt\\\">The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.</p><p data-block-key=\\\"1qh05\\\">Launched on July 18, the Landlord Use Web Portal is meant to address BC\\u2019s high no-fault eviction rate, which is when tenants are evicted when they have not violated their lease.</p><p data-block-key=\\\"35eq6\\\">Landlords are permitted to reclaim unites for personal reasons like for a close family member to move in. However, landlords may have other intentions like leasing the unit to other renters with an increased rent. The portal is specifically meant to prevent this situation by having landlords document their claims and to warn landlords of heavy penalties if they engage in bad faith evictions.</p><p data-block-key=\\\"1f94c\\\">In a 2023 study, <a href=\\\"https://housingresearch.ubc.ca/sites/default/files/2023-05/estimating_no-fault_evictions_in_canada_0.pdf\\\">UBC researchers</a> found over 85 per cent of evictions in BC in 2021 were no-fault evictions, the highest in the country and above the national average of 64.7 per cent. The online portal is one step taken by the province to address this by specifically targeting bad faith evictions. Now, notices of evictions are to be generated on the portal, and landlords are required to enter the details of those occupying the unit when the unit is vacated, allowing tenants to \\u201chave a better sense of the landlords\\u2019 intentions,\\u201d according to <a href=\\\"https://news.gov.bc.ca/releases/2024HOUS0115-001044\\\">the province</a>.</p><p data-block-key=\\\"5u3ie\\\">Such documentation of changes in occupancy can also be used by tenants in dispute hearings as proof of bad-faith by landlords. The government is also taking several other initiatives to better renter rights. Landlords are now required to provide four months\\u2019 notice, up from two months, when evicting for personal use, the new tenant must occupy the unit for 12 months and evicted tenants now have 30 days, previously 15 days, to dispute notices of eviction.</p><p data-block-key=\\\"7cgg\\\">\\u201cThe portal will also provide [the] government with a window to better understand when and how often these evictions occur so that we can continue to build on our work to improve services for renters and landlords,\\u201d said Minister of Housing Ravi Kahlon in a <a href=\\\"https://news.gov.bc.ca/releases/2024HOUS0115-001044\\\">press release</a>.</p><p data-block-key=\\\"fcb8t\\\">While these changes also benefit students living in units throughout the city, these changes do not apply to those living in UBC Residence as it does not fall within the jurisdiction of the <a href=\\\"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/00_02078_01\\\">Residential Tenancy Act.</a></p>\", \"id\": \"3bf08282-cd5b-4d35-b12c-3a2facebd839\"}]",
+            "expired": false,
+            "noindex": false,
+            "scripts": [],
+            "alias_of": null,
+            "category": null,
+            "numchild": 0,
+            "timeline": null,
+            "url_path": "/the-ubyssey/news/bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions/",
+            "expire_at": null,
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "title_tag": "",
+            "disclaimer": "",
+            "go_live_at": null,
+            "db_template": null,
+            "draft_title": "BC's new landlord portal hopes to limit bad-faith evictions",
+            "is_breaking": false,
+            "is_explicit": false,
+            "lock_colour": false,
+            "seo_keyword": "",
+            "content_type": 39,
+            "tagged_items": [
+                {
+                    "pk": null,
+                    "tag": 1,
+                    "content_object": 7
+                }
+            ],
+            "header_layout": "right-image",
+            "live_revision": null,
+            "show_in_menus": false,
+            "show_timeline": false,
+            "tag_page_link": false,
+            "timeline_date": "2024-08-02T06:05:00Z",
+            "featured_media": [],
+            "filter_by_tags": false,
+            "article_authors": [
+                {
+                    "pk": 1,
+                    "author": 5,
+                    "sort_order": 0,
+                    "author_role": "author",
+                    "article_page": 7
+                }
+            ],
+            "current_section": "news",
+            "latest_revision": 5,
+            "legacy_template": "",
+            "seo_description": "",
+            "translation_key": "6b2da75e-d4be-4e38-b2e3-1eaec8c8e302",
+            "breaking_timeout": "2024-08-02T06:05:00Z",
+            "home_cover_story": [],
+            "last_modified_at": "2024-08-02T06:06:45.143Z",
+            "magazine_bylines": [],
+            "primary_tag_slug": "housing",
+            "fw_above_cut_lede": "",
+            "last_published_at": null,
+            "use_parent_colour": true,
+            "connected_articles": [],
+            "first_published_at": null,
+            "fw_alternate_title": "",
+            "search_description": "",
+            "show_last_modified": false,
+            "legacy_template_data": "",
+            "use_default_template": true,
+            "explicit_published_at": "2024-08-01T15:00:00Z",
+            "fw_about_this_article": "",
+            "legacy_revision_number": 0,
+            "wagtail_admin_comments": [],
+            "create_menu_from_parent": false,
+            "has_unpublished_changes": true,
+            "latest_revision_created_at": "2024-08-02T06:06:03.141Z",
+            "parent_page_for_menu_generation": null,
+            "apply_colour_to_subtree_when_saved": false
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 7,
+    "fields": {
+        "content_type": 28,
+        "base_content_type": 1,
+        "object_id": "3",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T06:07:04.045Z",
+        "user": 1,
+        "object_str": "The Ubyssey",
+        "content": {
+            "pk": 3,
+            "live": true,
+            "path": "00010002",
+            "slug": "the-ubyssey",
+            "depth": 2,
+            "owner": 1,
+            "title": "The Ubyssey",
+            "locale": 1,
+            "locked": false,
+            "expired": false,
+            "tagline": "Brat summer since 1918",
+            "alias_of": null,
+            "numchild": 2,
+            "url_path": "/the-ubyssey/",
+            "expire_at": null,
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "go_live_at": null,
+            "cover_story": 7,
+            "draft_title": "The Ubyssey",
+            "tagline_url": "https://ubyssey.ca/pages/about/",
+            "content_type": 28,
+            "top_articles": [],
+            "live_revision": 1,
+            "middle_stream": "[]",
+            "show_in_menus": true,
+            "sidebar_stream": "[]",
+            "latest_revision": 1,
+            "sections_stream": "[]",
+            "translation_key": "dd31b84f-2126-4067-b208-b74acf45dd63",
+            "home_cover_story": [],
+            "last_published_at": "2024-08-02T06:00:50.416Z",
+            "first_published_at": "2024-08-02T06:00:50.416Z",
+            "search_description": "",
+            "wagtail_admin_comments": [],
+            "has_unpublished_changes": false,
+            "latest_revision_created_at": "2024-08-02T06:00:50.346Z"
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 8,
+    "fields": {
+        "content_type": 28,
+        "base_content_type": 1,
+        "object_id": "3",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T07:25:24.844Z",
+        "user": 1,
+        "object_str": "The Ubyssey",
+        "content": {
+            "pk": 3,
+            "live": true,
+            "path": "00010002",
+            "slug": "the-ubyssey",
+            "depth": 2,
+            "owner": 1,
+            "title": "The Ubyssey",
+            "locale": 1,
+            "locked": false,
+            "expired": false,
+            "tagline": "Brat summer since 1918",
+            "alias_of": null,
+            "numchild": 2,
+            "url_path": "/the-ubyssey/",
+            "expire_at": null,
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "go_live_at": null,
+            "cover_story": 7,
+            "draft_title": "The Ubyssey",
+            "tagline_url": "https://ubyssey.ca/pages/about/",
+            "content_type": 28,
+            "top_articles": [
+                {
+                    "pk": null,
+                    "article": 7,
+                    "home_page": 3,
+                    "sort_order": 0
+                }
+            ],
+            "live_revision": 7,
+            "middle_stream": "[{\"type\": \"links\", \"value\": {\"links\": [{\"type\": \"item\", \"value\": {\"title\": \"2023 Guide to UBC\", \"url\": \"https://ubyssey.ca/guide/2023/\", \"description\": \"\"}, \"id\": \"3d4340ed-3bd2-40b2-8891-313382fb7b9f\"}]}, \"id\": \"a9fe95e1-f45a-4226-95b1-fad31f82f2ed\"}]",
+            "show_in_menus": false,
+            "sidebar_stream": "[]",
+            "latest_revision": 7,
+            "sections_stream": "[{\"type\": \"home_page_section_block\", \"value\": {\"section\": 6, \"layout\": \"bulleted\"}, \"id\": \"4df9c162-bc81-48e3-a137-a66d50b39939\"}]",
+            "translation_key": "dd31b84f-2126-4067-b208-b74acf45dd63",
+            "home_cover_story": [],
+            "last_published_at": "2024-08-02T06:07:04.121Z",
+            "first_published_at": "2024-08-02T06:00:50.416Z",
+            "search_description": "",
+            "wagtail_admin_comments": [],
+            "has_unpublished_changes": false,
+            "latest_revision_created_at": "2024-08-02T06:07:04.045Z"
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.revision",
+    "pk": 9,
+    "fields": {
+        "content_type": 39,
+        "base_content_type": 1,
+        "object_id": "7",
+        "submitted_for_moderation": false,
+        "created_at": "2024-08-02T07:26:12.219Z",
+        "user": 1,
+        "object_str": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "content": {
+            "pk": 7,
+            "lede": "The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.",
+            "live": true,
+            "menu": null,
+            "path": "0001000200020001",
+            "slug": "bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions",
+            "depth": 4,
+            "owner": 1,
+            "title": "BC's new landlord portal hopes to limit bad-faith evictions",
+            "colour": "#3490d6",
+            "layout": "default",
+            "locale": 1,
+            "locked": false,
+            "styles": [],
+            "content": "[{\"type\": \"richtext\", \"value\": \"<p data-block-key=\\\"pubvt\\\">The provincial government has launched a new online portal that requires landlords to be more transparent when issuing notices of evictions to renters.</p><p data-block-key=\\\"1qh05\\\">Launched on July 18, the Landlord Use Web Portal is meant to address BC\\u2019s high no-fault eviction rate, which is when tenants are evicted when they have not violated their lease.</p><p data-block-key=\\\"35eq6\\\">Landlords are permitted to reclaim unites for personal reasons like for a close family member to move in. However, landlords may have other intentions like leasing the unit to other renters with an increased rent. The portal is specifically meant to prevent this situation by having landlords document their claims and to warn landlords of heavy penalties if they engage in bad faith evictions.</p><p data-block-key=\\\"1f94c\\\">In a 2023 study, <a href=\\\"https://housingresearch.ubc.ca/sites/default/files/2023-05/estimating_no-fault_evictions_in_canada_0.pdf\\\">UBC researchers</a> found over 85 per cent of evictions in BC in 2021 were no-fault evictions, the highest in the country and above the national average of 64.7 per cent. The online portal is one step taken by the province to address this by specifically targeting bad faith evictions. Now, notices of evictions are to be generated on the portal, and landlords are required to enter the details of those occupying the unit when the unit is vacated, allowing tenants to \\u201chave a better sense of the landlords\\u2019 intentions,\\u201d according to <a href=\\\"https://news.gov.bc.ca/releases/2024HOUS0115-001044\\\">the province</a>.</p><p data-block-key=\\\"5u3ie\\\">Such documentation of changes in occupancy can also be used by tenants in dispute hearings as proof of bad-faith by landlords. The government is also taking several other initiatives to better renter rights. Landlords are now required to provide four months\\u2019 notice, up from two months, when evicting for personal use, the new tenant must occupy the unit for 12 months and evicted tenants now have 30 days, previously 15 days, to dispute notices of eviction.</p><p data-block-key=\\\"7cgg\\\">\\u201cThe portal will also provide [the] government with a window to better understand when and how often these evictions occur so that we can continue to build on our work to improve services for renters and landlords,\\u201d said Minister of Housing Ravi Kahlon in a <a href=\\\"https://news.gov.bc.ca/releases/2024HOUS0115-001044\\\">press release</a>.</p><p data-block-key=\\\"fcb8t\\\">While these changes also benefit students living in units throughout the city, these changes do not apply to those living in UBC Residence as it does not fall within the jurisdiction of the <a href=\\\"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/00_02078_01\\\">Residential Tenancy Act.</a></p>\", \"id\": \"3bf08282-cd5b-4d35-b12c-3a2facebd839\"}]",
+            "expired": false,
+            "noindex": false,
+            "scripts": [],
+            "alias_of": null,
+            "category": null,
+            "numchild": 0,
+            "timeline": null,
+            "url_path": "/the-ubyssey/news/bcs-new-landlord-portal-hopes-to-limit-bad-faith-evictions/",
+            "expire_at": null,
+            "locked_at": null,
+            "locked_by": null,
+            "seo_title": "",
+            "title_tag": "",
+            "disclaimer": "",
+            "go_live_at": null,
+            "db_template": null,
+            "draft_title": "BC's new landlord portal hopes to limit bad-faith evictions",
+            "is_breaking": false,
+            "is_explicit": false,
+            "lock_colour": false,
+            "seo_keyword": "",
+            "content_type": 39,
+            "tagged_items": [],
+            "header_layout": "right-image",
+            "live_revision": 6,
+            "show_in_menus": false,
+            "show_timeline": false,
+            "tag_page_link": false,
+            "timeline_date": "2024-08-02T06:05:00Z",
+            "featured_media": [],
+            "filter_by_tags": false,
+            "article_authors": [
+                {
+                    "pk": 1,
+                    "author": 5,
+                    "sort_order": 0,
+                    "author_role": "author",
+                    "article_page": 7
+                }
+            ],
+            "current_section": "news",
+            "latest_revision": 6,
+            "legacy_template": "",
+            "seo_description": "",
+            "translation_key": "6b2da75e-d4be-4e38-b2e3-1eaec8c8e302",
+            "breaking_timeout": "2024-08-02T06:05:00Z",
+            "home_cover_story": [
+                {
+                    "pk": 3,
+                    "live": true,
+                    "path": "00010002",
+                    "slug": "the-ubyssey",
+                    "depth": 2,
+                    "owner": 1,
+                    "title": "The Ubyssey",
+                    "locale": 1,
+                    "locked": false,
+                    "expired": false,
+                    "tagline": "Brat summer since 1918",
+                    "alias_of": null,
+                    "numchild": 2,
+                    "url_path": "/the-ubyssey/",
+                    "expire_at": null,
+                    "locked_at": null,
+                    "locked_by": null,
+                    "seo_title": "",
+                    "go_live_at": null,
+                    "cover_story": 7,
+                    "draft_title": "The Ubyssey",
+                    "tagline_url": "https://ubyssey.ca/pages/about/",
+                    "content_type": 28,
+                    "top_articles": [
+                        {
+                            "pk": 1,
+                            "article": 7,
+                            "home_page": 3,
+                            "sort_order": 0
+                        }
+                    ],
+                    "live_revision": 8,
+                    "middle_stream": "[{\"id\": \"a9fe95e1-f45a-4226-95b1-fad31f82f2ed\", \"type\": \"links\", \"value\": {\"links\": [{\"id\": \"3d4340ed-3bd2-40b2-8891-313382fb7b9f\", \"type\": \"item\", \"value\": {\"url\": \"https://ubyssey.ca/guide/2023/\", \"title\": \"2023 Guide to UBC\", \"description\": \"\"}}]}}]",
+                    "show_in_menus": false,
+                    "sidebar_stream": "[]",
+                    "latest_revision": 8,
+                    "sections_stream": "[{\"id\": \"4df9c162-bc81-48e3-a137-a66d50b39939\", \"type\": \"home_page_section_block\", \"value\": {\"layout\": \"bulleted\", \"section\": 6}}]",
+                    "translation_key": "dd31b84f-2126-4067-b208-b74acf45dd63",
+                    "home_cover_story": [],
+                    "last_published_at": "2024-08-02T07:25:25.052Z",
+                    "first_published_at": "2024-08-02T06:00:50.416Z",
+                    "search_description": "",
+                    "wagtail_admin_comments": [],
+                    "has_unpublished_changes": false,
+                    "latest_revision_created_at": "2024-08-02T07:25:24.844Z"
+                }
+            ],
+            "last_modified_at": "2024-08-02T07:26:12.201Z",
+            "magazine_bylines": [],
+            "primary_tag_slug": null,
+            "fw_above_cut_lede": "",
+            "last_published_at": "2024-08-02T06:06:45.297Z",
+            "use_parent_colour": true,
+            "connected_articles": [],
+            "first_published_at": "2024-08-02T06:06:45.297Z",
+            "fw_alternate_title": "",
+            "search_description": "",
+            "show_last_modified": false,
+            "legacy_template_data": "",
+            "use_default_template": true,
+            "explicit_published_at": "2024-08-01T15:00:00Z",
+            "fw_about_this_article": "",
+            "legacy_revision_number": 0,
+            "wagtail_admin_comments": [],
+            "create_menu_from_parent": false,
+            "has_unpublished_changes": false,
+            "latest_revision_created_at": "2024-08-02T06:06:45.143Z",
+            "parent_page_for_menu_generation": null,
+            "apply_colour_to_subtree_when_saved": false
+        },
+        "approved_go_live_at": null
+    }
+},
+{
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 1,
+    "fields": {
+        "group": 1,
+        "page": 1,
+        "permission": 34,
+        "permission_type": "add"
+    }
+},
+{
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 2,
+    "fields": {
+        "group": 1,
+        "page": 1,
+        "permission": 35,
+        "permission_type": "change"
+    }
+},
+{
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 3,
+    "fields": {
+        "group": 1,
+        "page": 1,
+        "permission": 40,
+        "permission_type": "publish"
+    }
+},
+{
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 4,
+    "fields": {
+        "group": 2,
+        "page": 1,
+        "permission": 34,
+        "permission_type": "add"
+    }
+},
+{
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 5,
+    "fields": {
+        "group": 2,
+        "page": 1,
+        "permission": 35,
+        "permission_type": "change"
+    }
+},
+{
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 6,
+    "fields": {
+        "group": 1,
+        "page": 1,
+        "permission": 39,
+        "permission_type": "lock"
+    }
+},
+{
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 7,
+    "fields": {
+        "group": 1,
+        "page": 1,
+        "permission": 41,
+        "permission_type": "unlock"
+    }
+},
+{
+    "model": "wagtailcore.workflowpage",
+    "pk": 1,
+    "fields": {
+        "workflow": 1
+    }
+},
+{
+    "model": "wagtailcore.workflowtask",
+    "pk": 1,
+    "fields": {
+        "sort_order": 0,
+        "workflow": 1,
+        "task": 1
+    }
+},
+{
+    "model": "wagtailcore.task",
+    "pk": 1,
+    "fields": {
+        "name": "Moderators approval",
+        "content_type": 2,
+        "active": true
+    }
+},
+{
+    "model": "wagtailcore.workflow",
+    "pk": 1,
+    "fields": {
+        "name": "Moderators approval",
+        "active": true
+    }
+},
+{
+    "model": "wagtailcore.groupapprovaltask",
+    "pk": 1,
+    "fields": {
+        "groups": [
+            1
+        ]
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 1,
+    "fields": {
+        "content_type": 28,
+        "label": "The Ubyssey",
+        "action": "wagtail.create",
+        "data": {},
+        "timestamp": "2024-08-02T06:00:50.308Z",
+        "uuid": "cba4daed-45c2-4ca2-b818-79fac8aacf0e",
+        "user": 1,
+        "revision": null,
+        "content_changed": true,
+        "deleted": false,
+        "page": 3
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 2,
+    "fields": {
+        "content_type": 28,
+        "label": "The Ubyssey",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T06:00:50.390Z",
+        "uuid": "cba4daed-45c2-4ca2-b818-79fac8aacf0e",
+        "user": 1,
+        "revision": 1,
+        "content_changed": true,
+        "deleted": false,
+        "page": 3
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 3,
+    "fields": {
+        "content_type": 28,
+        "label": "The Ubyssey",
+        "action": "wagtail.publish",
+        "data": {},
+        "timestamp": "2024-08-02T06:00:50.490Z",
+        "uuid": "cba4daed-45c2-4ca2-b818-79fac8aacf0e",
+        "user": 1,
+        "revision": 1,
+        "content_changed": true,
+        "deleted": false,
+        "page": 3
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 4,
+    "fields": {
+        "content_type": 34,
+        "label": "Authors",
+        "action": "wagtail.create",
+        "data": {},
+        "timestamp": "2024-08-02T06:01:37.354Z",
+        "uuid": "5862eabc-5ad4-4504-9711-9fc220100b73",
+        "user": 1,
+        "revision": null,
+        "content_changed": true,
+        "deleted": false,
+        "page": 4
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 5,
+    "fields": {
+        "content_type": 34,
+        "label": "Authors",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T06:01:37.412Z",
+        "uuid": "5862eabc-5ad4-4504-9711-9fc220100b73",
+        "user": 1,
+        "revision": 2,
+        "content_changed": true,
+        "deleted": false,
+        "page": 4
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 6,
+    "fields": {
+        "content_type": 34,
+        "label": "Authors",
+        "action": "wagtail.publish",
+        "data": {},
+        "timestamp": "2024-08-02T06:01:37.499Z",
+        "uuid": "5862eabc-5ad4-4504-9711-9fc220100b73",
+        "user": 1,
+        "revision": 2,
+        "content_changed": true,
+        "deleted": false,
+        "page": 4
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 7,
+    "fields": {
+        "content_type": 35,
+        "label": "Alexandra Smitton",
+        "action": "wagtail.create",
+        "data": {},
+        "timestamp": "2024-08-02T06:02:31.700Z",
+        "uuid": "38d89bd9-0668-45e4-9bcf-156da7179a46",
+        "user": 1,
+        "revision": null,
+        "content_changed": true,
+        "deleted": false,
+        "page": 5
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 8,
+    "fields": {
+        "content_type": 35,
+        "label": "Alexandra Smitton",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T06:02:31.753Z",
+        "uuid": "38d89bd9-0668-45e4-9bcf-156da7179a46",
+        "user": 1,
+        "revision": 3,
+        "content_changed": true,
+        "deleted": false,
+        "page": 5
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 9,
+    "fields": {
+        "content_type": 35,
+        "label": "Alexandra Smitton",
+        "action": "wagtail.publish",
+        "data": {},
+        "timestamp": "2024-08-02T06:02:31.846Z",
+        "uuid": "38d89bd9-0668-45e4-9bcf-156da7179a46",
+        "user": 1,
+        "revision": 3,
+        "content_changed": true,
+        "deleted": false,
+        "page": 5
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 10,
+    "fields": {
+        "content_type": 49,
+        "label": "News",
+        "action": "wagtail.create",
+        "data": {},
+        "timestamp": "2024-08-02T06:03:41.372Z",
+        "uuid": "4c021b7f-4eb4-4eb7-af8b-8380ef35d51e",
+        "user": 1,
+        "revision": null,
+        "content_changed": true,
+        "deleted": false,
+        "page": 6
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 11,
+    "fields": {
+        "content_type": 49,
+        "label": "News",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T06:03:41.430Z",
+        "uuid": "4c021b7f-4eb4-4eb7-af8b-8380ef35d51e",
+        "user": 1,
+        "revision": 4,
+        "content_changed": true,
+        "deleted": false,
+        "page": 6
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 12,
+    "fields": {
+        "content_type": 49,
+        "label": "News",
+        "action": "wagtail.publish",
+        "data": {},
+        "timestamp": "2024-08-02T06:03:41.536Z",
+        "uuid": "4c021b7f-4eb4-4eb7-af8b-8380ef35d51e",
+        "user": 1,
+        "revision": 4,
+        "content_changed": true,
+        "deleted": false,
+        "page": 6
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 13,
+    "fields": {
+        "content_type": 39,
+        "label": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "action": "wagtail.create",
+        "data": {},
+        "timestamp": "2024-08-02T06:06:03.101Z",
+        "uuid": "b973f1fd-1ac3-4ea1-8ba2-7ff71df8cf65",
+        "user": 1,
+        "revision": null,
+        "content_changed": true,
+        "deleted": false,
+        "page": 7
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 14,
+    "fields": {
+        "content_type": 39,
+        "label": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T06:06:03.216Z",
+        "uuid": "b973f1fd-1ac3-4ea1-8ba2-7ff71df8cf65",
+        "user": 1,
+        "revision": 5,
+        "content_changed": true,
+        "deleted": false,
+        "page": 7
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 15,
+    "fields": {
+        "content_type": 39,
+        "label": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T06:06:45.252Z",
+        "uuid": "0fd0c8b1-2252-44ba-b781-e4e58d825e1c",
+        "user": 1,
+        "revision": 6,
+        "content_changed": true,
+        "deleted": false,
+        "page": 7
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 16,
+    "fields": {
+        "content_type": 39,
+        "label": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "action": "wagtail.publish",
+        "data": {},
+        "timestamp": "2024-08-02T06:06:45.397Z",
+        "uuid": "0fd0c8b1-2252-44ba-b781-e4e58d825e1c",
+        "user": 1,
+        "revision": 6,
+        "content_changed": true,
+        "deleted": false,
+        "page": 7
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 17,
+    "fields": {
+        "content_type": 28,
+        "label": "The Ubyssey",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T06:07:04.083Z",
+        "uuid": "356bbda7-8b7d-43ed-97ea-fdbd28c7b924",
+        "user": 1,
+        "revision": 7,
+        "content_changed": true,
+        "deleted": false,
+        "page": 3
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 18,
+    "fields": {
+        "content_type": 28,
+        "label": "The Ubyssey",
+        "action": "wagtail.publish",
+        "data": {},
+        "timestamp": "2024-08-02T06:07:04.215Z",
+        "uuid": "356bbda7-8b7d-43ed-97ea-fdbd28c7b924",
+        "user": 1,
+        "revision": 7,
+        "content_changed": true,
+        "deleted": false,
+        "page": 3
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 19,
+    "fields": {
+        "content_type": 28,
+        "label": "The Ubyssey",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T07:25:24.975Z",
+        "uuid": "cad0d876-d1a2-460b-b994-c2a10031a179",
+        "user": 1,
+        "revision": 8,
+        "content_changed": true,
+        "deleted": false,
+        "page": 3
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 20,
+    "fields": {
+        "content_type": 28,
+        "label": "The Ubyssey",
+        "action": "wagtail.publish",
+        "data": {},
+        "timestamp": "2024-08-02T07:25:25.174Z",
+        "uuid": "cad0d876-d1a2-460b-b994-c2a10031a179",
+        "user": 1,
+        "revision": 8,
+        "content_changed": true,
+        "deleted": false,
+        "page": 3
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 21,
+    "fields": {
+        "content_type": 39,
+        "label": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "action": "wagtail.edit",
+        "data": {},
+        "timestamp": "2024-08-02T07:26:12.384Z",
+        "uuid": "7b8a6568-f571-470f-827a-9101c699cdc2",
+        "user": 1,
+        "revision": 9,
+        "content_changed": true,
+        "deleted": false,
+        "page": 7
+    }
+},
+{
+    "model": "wagtailcore.pagelogentry",
+    "pk": 22,
+    "fields": {
+        "content_type": 39,
+        "label": "BC's new landlord portal hopes to limit bad-faith evictions",
+        "action": "wagtail.publish",
+        "data": {},
+        "timestamp": "2024-08-02T07:26:12.655Z",
+        "uuid": "7b8a6568-f571-470f-827a-9101c699cdc2",
+        "user": 1,
+        "revision": 9,
+        "content_changed": true,
+        "deleted": false,
+        "page": 7
+    }
+},
+{
+    "model": "wagtailcore.pagesubscription",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "page": 3,
+        "comment_notifications": true
+    }
+},
+{
+    "model": "wagtailcore.pagesubscription",
+    "pk": 2,
+    "fields": {
+        "user": 1,
+        "page": 4,
+        "comment_notifications": true
+    }
+},
+{
+    "model": "wagtailcore.pagesubscription",
+    "pk": 3,
+    "fields": {
+        "user": 1,
+        "page": 5,
+        "comment_notifications": true
+    }
+},
+{
+    "model": "wagtailcore.pagesubscription",
+    "pk": 4,
+    "fields": {
+        "user": 1,
+        "page": 6,
+        "comment_notifications": true
+    }
+},
+{
+    "model": "wagtailcore.pagesubscription",
+    "pk": 5,
+    "fields": {
+        "user": 1,
+        "page": 7,
+        "comment_notifications": true
+    }
+},
+{
+    "model": "taggit.tag",
+    "pk": 1,
+    "fields": {
+        "name": "housing",
+        "slug": "housing"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 1,
+    "fields": {
+        "name": "Can add document",
+        "content_type": 3,
+        "codename": "add_document"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 2,
+    "fields": {
+        "name": "Can change document",
+        "content_type": 3,
+        "codename": "change_document"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 3,
+    "fields": {
+        "name": "Can delete document",
+        "content_type": 3,
+        "codename": "delete_document"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 4,
+    "fields": {
+        "name": "Can choose document",
+        "content_type": 3,
+        "codename": "choose_document"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 5,
+    "fields": {
+        "name": "Can access Wagtail admin",
+        "content_type": 4,
+        "codename": "access_admin"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 6,
+    "fields": {
+        "name": "Can add locale",
+        "content_type": 5,
+        "codename": "add_locale"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 7,
+    "fields": {
+        "name": "Can change locale",
+        "content_type": 5,
+        "codename": "change_locale"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 8,
+    "fields": {
+        "name": "Can delete locale",
+        "content_type": 5,
+        "codename": "delete_locale"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 9,
+    "fields": {
+        "name": "Can view locale",
+        "content_type": 5,
+        "codename": "view_locale"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 10,
+    "fields": {
+        "name": "Can add site",
+        "content_type": 6,
+        "codename": "add_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 11,
+    "fields": {
+        "name": "Can change site",
+        "content_type": 6,
+        "codename": "change_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 12,
+    "fields": {
+        "name": "Can delete site",
+        "content_type": 6,
+        "codename": "delete_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 13,
+    "fields": {
+        "name": "Can view site",
+        "content_type": 6,
+        "codename": "view_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 14,
+    "fields": {
+        "name": "Can add model log entry",
+        "content_type": 7,
+        "codename": "add_modellogentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 15,
+    "fields": {
+        "name": "Can change model log entry",
+        "content_type": 7,
+        "codename": "change_modellogentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 16,
+    "fields": {
+        "name": "Can delete model log entry",
+        "content_type": 7,
+        "codename": "delete_modellogentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 17,
+    "fields": {
+        "name": "Can view model log entry",
+        "content_type": 7,
+        "codename": "view_modellogentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 18,
+    "fields": {
+        "name": "Can add collection view restriction",
+        "content_type": 8,
+        "codename": "add_collectionviewrestriction"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 19,
+    "fields": {
+        "name": "Can change collection view restriction",
+        "content_type": 8,
+        "codename": "change_collectionviewrestriction"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 20,
+    "fields": {
+        "name": "Can delete collection view restriction",
+        "content_type": 8,
+        "codename": "delete_collectionviewrestriction"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 21,
+    "fields": {
+        "name": "Can view collection view restriction",
+        "content_type": 8,
+        "codename": "view_collectionviewrestriction"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 22,
+    "fields": {
+        "name": "Can add collection",
+        "content_type": 9,
+        "codename": "add_collection"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 23,
+    "fields": {
+        "name": "Can change collection",
+        "content_type": 9,
+        "codename": "change_collection"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 24,
+    "fields": {
+        "name": "Can delete collection",
+        "content_type": 9,
+        "codename": "delete_collection"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 25,
+    "fields": {
+        "name": "Can view collection",
+        "content_type": 9,
+        "codename": "view_collection"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 26,
+    "fields": {
+        "name": "Can add group collection permission",
+        "content_type": 10,
+        "codename": "add_groupcollectionpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 27,
+    "fields": {
+        "name": "Can change group collection permission",
+        "content_type": 10,
+        "codename": "change_groupcollectionpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 28,
+    "fields": {
+        "name": "Can delete group collection permission",
+        "content_type": 10,
+        "codename": "delete_groupcollectionpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 29,
+    "fields": {
+        "name": "Can view group collection permission",
+        "content_type": 10,
+        "codename": "view_groupcollectionpermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 30,
+    "fields": {
+        "name": "Can add reference index",
+        "content_type": 11,
+        "codename": "add_referenceindex"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 31,
+    "fields": {
+        "name": "Can change reference index",
+        "content_type": 11,
+        "codename": "change_referenceindex"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 32,
+    "fields": {
+        "name": "Can delete reference index",
+        "content_type": 11,
+        "codename": "delete_referenceindex"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 33,
+    "fields": {
+        "name": "Can view reference index",
+        "content_type": 11,
+        "codename": "view_referenceindex"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 34,
+    "fields": {
+        "name": "Can add page",
+        "content_type": 1,
+        "codename": "add_page"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 35,
+    "fields": {
+        "name": "Can change page",
+        "content_type": 1,
+        "codename": "change_page"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 36,
+    "fields": {
+        "name": "Can delete page",
+        "content_type": 1,
+        "codename": "delete_page"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 37,
+    "fields": {
+        "name": "Can view page",
+        "content_type": 1,
+        "codename": "view_page"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 38,
+    "fields": {
+        "name": "Delete pages with children",
+        "content_type": 1,
+        "codename": "bulk_delete_page"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 39,
+    "fields": {
+        "name": "Lock/unlock pages you've locked",
+        "content_type": 1,
+        "codename": "lock_page"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 40,
+    "fields": {
+        "name": "Publish any page",
+        "content_type": 1,
+        "codename": "publish_page"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 41,
+    "fields": {
+        "name": "Unlock any page",
+        "content_type": 1,
+        "codename": "unlock_page"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 42,
+    "fields": {
+        "name": "Can add revision",
+        "content_type": 12,
+        "codename": "add_revision"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 43,
+    "fields": {
+        "name": "Can change revision",
+        "content_type": 12,
+        "codename": "change_revision"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 44,
+    "fields": {
+        "name": "Can delete revision",
+        "content_type": 12,
+        "codename": "delete_revision"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 45,
+    "fields": {
+        "name": "Can view revision",
+        "content_type": 12,
+        "codename": "view_revision"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 46,
+    "fields": {
+        "name": "Can add group page permission",
+        "content_type": 13,
+        "codename": "add_grouppagepermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 47,
+    "fields": {
+        "name": "Can change group page permission",
+        "content_type": 13,
+        "codename": "change_grouppagepermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 48,
+    "fields": {
+        "name": "Can delete group page permission",
+        "content_type": 13,
+        "codename": "delete_grouppagepermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 49,
+    "fields": {
+        "name": "Can view group page permission",
+        "content_type": 13,
+        "codename": "view_grouppagepermission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 50,
+    "fields": {
+        "name": "Can add page view restriction",
+        "content_type": 14,
+        "codename": "add_pageviewrestriction"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 51,
+    "fields": {
+        "name": "Can change page view restriction",
+        "content_type": 14,
+        "codename": "change_pageviewrestriction"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 52,
+    "fields": {
+        "name": "Can delete page view restriction",
+        "content_type": 14,
+        "codename": "delete_pageviewrestriction"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 53,
+    "fields": {
+        "name": "Can view page view restriction",
+        "content_type": 14,
+        "codename": "view_pageviewrestriction"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 54,
+    "fields": {
+        "name": "Can add workflow page",
+        "content_type": 15,
+        "codename": "add_workflowpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 55,
+    "fields": {
+        "name": "Can change workflow page",
+        "content_type": 15,
+        "codename": "change_workflowpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 56,
+    "fields": {
+        "name": "Can delete workflow page",
+        "content_type": 15,
+        "codename": "delete_workflowpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 57,
+    "fields": {
+        "name": "Can view workflow page",
+        "content_type": 15,
+        "codename": "view_workflowpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 58,
+    "fields": {
+        "name": "Can add workflow content type",
+        "content_type": 16,
+        "codename": "add_workflowcontenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 59,
+    "fields": {
+        "name": "Can change workflow content type",
+        "content_type": 16,
+        "codename": "change_workflowcontenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 60,
+    "fields": {
+        "name": "Can delete workflow content type",
+        "content_type": 16,
+        "codename": "delete_workflowcontenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 61,
+    "fields": {
+        "name": "Can view workflow content type",
+        "content_type": 16,
+        "codename": "view_workflowcontenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 62,
+    "fields": {
+        "name": "Can add workflow task order",
+        "content_type": 17,
+        "codename": "add_workflowtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 63,
+    "fields": {
+        "name": "Can change workflow task order",
+        "content_type": 17,
+        "codename": "change_workflowtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 64,
+    "fields": {
+        "name": "Can delete workflow task order",
+        "content_type": 17,
+        "codename": "delete_workflowtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 65,
+    "fields": {
+        "name": "Can view workflow task order",
+        "content_type": 17,
+        "codename": "view_workflowtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 66,
+    "fields": {
+        "name": "Can add task",
+        "content_type": 18,
+        "codename": "add_task"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 67,
+    "fields": {
+        "name": "Can change task",
+        "content_type": 18,
+        "codename": "change_task"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 68,
+    "fields": {
+        "name": "Can delete task",
+        "content_type": 18,
+        "codename": "delete_task"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 69,
+    "fields": {
+        "name": "Can view task",
+        "content_type": 18,
+        "codename": "view_task"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 70,
+    "fields": {
+        "name": "Can add workflow",
+        "content_type": 19,
+        "codename": "add_workflow"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 71,
+    "fields": {
+        "name": "Can change workflow",
+        "content_type": 19,
+        "codename": "change_workflow"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 72,
+    "fields": {
+        "name": "Can delete workflow",
+        "content_type": 19,
+        "codename": "delete_workflow"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 73,
+    "fields": {
+        "name": "Can view workflow",
+        "content_type": 19,
+        "codename": "view_workflow"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 74,
+    "fields": {
+        "name": "Can add Group approval task",
+        "content_type": 2,
+        "codename": "add_groupapprovaltask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 75,
+    "fields": {
+        "name": "Can change Group approval task",
+        "content_type": 2,
+        "codename": "change_groupapprovaltask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 76,
+    "fields": {
+        "name": "Can delete Group approval task",
+        "content_type": 2,
+        "codename": "delete_groupapprovaltask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 77,
+    "fields": {
+        "name": "Can view Group approval task",
+        "content_type": 2,
+        "codename": "view_groupapprovaltask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 78,
+    "fields": {
+        "name": "Can add Workflow state",
+        "content_type": 20,
+        "codename": "add_workflowstate"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 79,
+    "fields": {
+        "name": "Can change Workflow state",
+        "content_type": 20,
+        "codename": "change_workflowstate"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 80,
+    "fields": {
+        "name": "Can delete Workflow state",
+        "content_type": 20,
+        "codename": "delete_workflowstate"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 81,
+    "fields": {
+        "name": "Can view Workflow state",
+        "content_type": 20,
+        "codename": "view_workflowstate"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 82,
+    "fields": {
+        "name": "Can add Task state",
+        "content_type": 21,
+        "codename": "add_taskstate"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 83,
+    "fields": {
+        "name": "Can change Task state",
+        "content_type": 21,
+        "codename": "change_taskstate"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 84,
+    "fields": {
+        "name": "Can delete Task state",
+        "content_type": 21,
+        "codename": "delete_taskstate"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 85,
+    "fields": {
+        "name": "Can view Task state",
+        "content_type": 21,
+        "codename": "view_taskstate"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 86,
+    "fields": {
+        "name": "Can add page log entry",
+        "content_type": 22,
+        "codename": "add_pagelogentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 87,
+    "fields": {
+        "name": "Can change page log entry",
+        "content_type": 22,
+        "codename": "change_pagelogentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 88,
+    "fields": {
+        "name": "Can delete page log entry",
+        "content_type": 22,
+        "codename": "delete_pagelogentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 89,
+    "fields": {
+        "name": "Can view page log entry",
+        "content_type": 22,
+        "codename": "view_pagelogentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 90,
+    "fields": {
+        "name": "Can add comment",
+        "content_type": 23,
+        "codename": "add_comment"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 91,
+    "fields": {
+        "name": "Can change comment",
+        "content_type": 23,
+        "codename": "change_comment"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 92,
+    "fields": {
+        "name": "Can delete comment",
+        "content_type": 23,
+        "codename": "delete_comment"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 93,
+    "fields": {
+        "name": "Can view comment",
+        "content_type": 23,
+        "codename": "view_comment"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 94,
+    "fields": {
+        "name": "Can add comment reply",
+        "content_type": 24,
+        "codename": "add_commentreply"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 95,
+    "fields": {
+        "name": "Can change comment reply",
+        "content_type": 24,
+        "codename": "change_commentreply"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 96,
+    "fields": {
+        "name": "Can delete comment reply",
+        "content_type": 24,
+        "codename": "delete_commentreply"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 97,
+    "fields": {
+        "name": "Can view comment reply",
+        "content_type": 24,
+        "codename": "view_commentreply"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 98,
+    "fields": {
+        "name": "Can add page subscription",
+        "content_type": 25,
+        "codename": "add_pagesubscription"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 99,
+    "fields": {
+        "name": "Can change page subscription",
+        "content_type": 25,
+        "codename": "change_pagesubscription"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 100,
+    "fields": {
+        "name": "Can delete page subscription",
+        "content_type": 25,
+        "codename": "delete_pagesubscription"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 101,
+    "fields": {
+        "name": "Can view page subscription",
+        "content_type": 25,
+        "codename": "view_pagesubscription"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 102,
+    "fields": {
+        "name": "Can add image",
+        "content_type": 26,
+        "codename": "add_image"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 103,
+    "fields": {
+        "name": "Can change image",
+        "content_type": 26,
+        "codename": "change_image"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 104,
+    "fields": {
+        "name": "Can delete image",
+        "content_type": 26,
+        "codename": "delete_image"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 105,
+    "fields": {
+        "name": "Can choose image",
+        "content_type": 26,
+        "codename": "choose_image"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 106,
+    "fields": {
+        "name": "Can add user",
+        "content_type": 27,
+        "codename": "add_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 107,
+    "fields": {
+        "name": "Can change user",
+        "content_type": 27,
+        "codename": "change_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 108,
+    "fields": {
+        "name": "Can delete user",
+        "content_type": 27,
+        "codename": "delete_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 109,
+    "fields": {
+        "name": "Can view user",
+        "content_type": 27,
+        "codename": "view_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 110,
+    "fields": {
+        "name": "Can add home page",
+        "content_type": 28,
+        "codename": "add_homepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 111,
+    "fields": {
+        "name": "Can change home page",
+        "content_type": 28,
+        "codename": "change_homepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 112,
+    "fields": {
+        "name": "Can delete home page",
+        "content_type": 28,
+        "codename": "delete_homepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 113,
+    "fields": {
+        "name": "Can view home page",
+        "content_type": 28,
+        "codename": "view_homepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 114,
+    "fields": {
+        "name": "Can add top articles orderable",
+        "content_type": 29,
+        "codename": "add_toparticlesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 115,
+    "fields": {
+        "name": "Can change top articles orderable",
+        "content_type": 29,
+        "codename": "change_toparticlesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 116,
+    "fields": {
+        "name": "Can delete top articles orderable",
+        "content_type": 29,
+        "codename": "delete_toparticlesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 117,
+    "fields": {
+        "name": "Can view top articles orderable",
+        "content_type": 29,
+        "codename": "view_toparticlesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 118,
+    "fields": {
+        "name": "Can add archive page",
+        "content_type": 30,
+        "codename": "add_archivepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 119,
+    "fields": {
+        "name": "Can change archive page",
+        "content_type": 30,
+        "codename": "change_archivepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 120,
+    "fields": {
+        "name": "Can delete archive page",
+        "content_type": 30,
+        "codename": "delete_archivepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 121,
+    "fields": {
+        "name": "Can view archive page",
+        "content_type": 30,
+        "codename": "view_archivepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 122,
+    "fields": {
+        "name": "Can add section page orderables",
+        "content_type": 31,
+        "codename": "add_sectionpageorderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 123,
+    "fields": {
+        "name": "Can change section page orderables",
+        "content_type": 31,
+        "codename": "change_sectionpageorderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 124,
+    "fields": {
+        "name": "Can delete section page orderables",
+        "content_type": 31,
+        "codename": "delete_sectionpageorderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 125,
+    "fields": {
+        "name": "Can view section page orderables",
+        "content_type": 31,
+        "codename": "view_sectionpageorderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 126,
+    "fields": {
+        "name": "Can add magazine orderables",
+        "content_type": 32,
+        "codename": "add_magazineorderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 127,
+    "fields": {
+        "name": "Can change magazine orderables",
+        "content_type": 32,
+        "codename": "change_magazineorderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 128,
+    "fields": {
+        "name": "Can delete magazine orderables",
+        "content_type": 32,
+        "codename": "delete_magazineorderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 129,
+    "fields": {
+        "name": "Can view magazine orderables",
+        "content_type": 32,
+        "codename": "view_magazineorderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 130,
+    "fields": {
+        "name": "Can add spoof orderables",
+        "content_type": 33,
+        "codename": "add_spooforderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 131,
+    "fields": {
+        "name": "Can change spoof orderables",
+        "content_type": 33,
+        "codename": "change_spooforderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 132,
+    "fields": {
+        "name": "Can delete spoof orderables",
+        "content_type": 33,
+        "codename": "delete_spooforderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 133,
+    "fields": {
+        "name": "Can view spoof orderables",
+        "content_type": 33,
+        "codename": "view_spooforderables"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 134,
+    "fields": {
+        "name": "Can add Author Management",
+        "content_type": 34,
+        "codename": "add_allauthorspage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 135,
+    "fields": {
+        "name": "Can change Author Management",
+        "content_type": 34,
+        "codename": "change_allauthorspage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 136,
+    "fields": {
+        "name": "Can delete Author Management",
+        "content_type": 34,
+        "codename": "delete_allauthorspage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 137,
+    "fields": {
+        "name": "Can view Author Management",
+        "content_type": 34,
+        "codename": "view_allauthorspage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 138,
+    "fields": {
+        "name": "Can add Author",
+        "content_type": 35,
+        "codename": "add_authorpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 139,
+    "fields": {
+        "name": "Can change Author",
+        "content_type": 35,
+        "codename": "change_authorpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 140,
+    "fields": {
+        "name": "Can delete Author",
+        "content_type": 35,
+        "codename": "delete_authorpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 141,
+    "fields": {
+        "name": "Can view Author",
+        "content_type": 35,
+        "codename": "view_authorpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 142,
+    "fields": {
+        "name": "Can add pinned articles orderable",
+        "content_type": 36,
+        "codename": "add_pinnedarticlesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 143,
+    "fields": {
+        "name": "Can change pinned articles orderable",
+        "content_type": 36,
+        "codename": "change_pinnedarticlesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 144,
+    "fields": {
+        "name": "Can delete pinned articles orderable",
+        "content_type": 36,
+        "codename": "delete_pinnedarticlesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 145,
+    "fields": {
+        "name": "Can view pinned articles orderable",
+        "content_type": 36,
+        "codename": "view_pinnedarticlesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 146,
+    "fields": {
+        "name": "Can add article authors orderable",
+        "content_type": 37,
+        "codename": "add_articleauthorsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 147,
+    "fields": {
+        "name": "Can change article authors orderable",
+        "content_type": 37,
+        "codename": "change_articleauthorsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 148,
+    "fields": {
+        "name": "Can delete article authors orderable",
+        "content_type": 37,
+        "codename": "delete_articleauthorsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 149,
+    "fields": {
+        "name": "Can view article authors orderable",
+        "content_type": 37,
+        "codename": "view_articleauthorsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 150,
+    "fields": {
+        "name": "Can add article featured media orderable",
+        "content_type": 38,
+        "codename": "add_articlefeaturedmediaorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 151,
+    "fields": {
+        "name": "Can change article featured media orderable",
+        "content_type": 38,
+        "codename": "change_articlefeaturedmediaorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 152,
+    "fields": {
+        "name": "Can delete article featured media orderable",
+        "content_type": 38,
+        "codename": "delete_articlefeaturedmediaorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 153,
+    "fields": {
+        "name": "Can view article featured media orderable",
+        "content_type": 38,
+        "codename": "view_articlefeaturedmediaorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 154,
+    "fields": {
+        "name": "Can add Article",
+        "content_type": 39,
+        "codename": "add_articlepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 155,
+    "fields": {
+        "name": "Can change Article",
+        "content_type": 39,
+        "codename": "change_articlepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 156,
+    "fields": {
+        "name": "Can delete Article",
+        "content_type": 39,
+        "codename": "delete_articlepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 157,
+    "fields": {
+        "name": "Can view Article",
+        "content_type": 39,
+        "codename": "view_articlepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 158,
+    "fields": {
+        "name": "Can add article tag",
+        "content_type": 40,
+        "codename": "add_articlepagetag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 159,
+    "fields": {
+        "name": "Can change article tag",
+        "content_type": 40,
+        "codename": "change_articlepagetag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 160,
+    "fields": {
+        "name": "Can delete article tag",
+        "content_type": 40,
+        "codename": "delete_articlepagetag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 161,
+    "fields": {
+        "name": "Can view article tag",
+        "content_type": 40,
+        "codename": "view_articlepagetag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 162,
+    "fields": {
+        "name": "Can add Series of Articles",
+        "content_type": 41,
+        "codename": "add_articleseriessnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 163,
+    "fields": {
+        "name": "Can change Series of Articles",
+        "content_type": 41,
+        "codename": "change_articleseriessnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 164,
+    "fields": {
+        "name": "Can delete Series of Articles",
+        "content_type": 41,
+        "codename": "delete_articleseriessnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 165,
+    "fields": {
+        "name": "Can view Series of Articles",
+        "content_type": 41,
+        "codename": "view_articleseriessnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 166,
+    "fields": {
+        "name": "Can add series orderable",
+        "content_type": 42,
+        "codename": "add_seriesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 167,
+    "fields": {
+        "name": "Can change series orderable",
+        "content_type": 42,
+        "codename": "change_seriesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 168,
+    "fields": {
+        "name": "Can delete series orderable",
+        "content_type": 42,
+        "codename": "delete_seriesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 169,
+    "fields": {
+        "name": "Can view series orderable",
+        "content_type": 42,
+        "codename": "view_seriesorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 170,
+    "fields": {
+        "name": "Can add magazine article byline orderable",
+        "content_type": 43,
+        "codename": "add_magazinearticlebylineorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 171,
+    "fields": {
+        "name": "Can change magazine article byline orderable",
+        "content_type": 43,
+        "codename": "change_magazinearticlebylineorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 172,
+    "fields": {
+        "name": "Can delete magazine article byline orderable",
+        "content_type": 43,
+        "codename": "delete_magazinearticlebylineorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 173,
+    "fields": {
+        "name": "Can view magazine article byline orderable",
+        "content_type": 43,
+        "codename": "view_magazinearticlebylineorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 174,
+    "fields": {
+        "name": "Can add connected article orderable",
+        "content_type": 44,
+        "codename": "add_connectedarticleorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 175,
+    "fields": {
+        "name": "Can change connected article orderable",
+        "content_type": 44,
+        "codename": "change_connectedarticleorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 176,
+    "fields": {
+        "name": "Can delete connected article orderable",
+        "content_type": 44,
+        "codename": "delete_connectedarticleorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 177,
+    "fields": {
+        "name": "Can view connected article orderable",
+        "content_type": 44,
+        "codename": "view_connectedarticleorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 178,
+    "fields": {
+        "name": "Can add article style orderable",
+        "content_type": 45,
+        "codename": "add_articlestyleorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 179,
+    "fields": {
+        "name": "Can change article style orderable",
+        "content_type": 45,
+        "codename": "change_articlestyleorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 180,
+    "fields": {
+        "name": "Can delete article style orderable",
+        "content_type": 45,
+        "codename": "delete_articlestyleorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 181,
+    "fields": {
+        "name": "Can view article style orderable",
+        "content_type": 45,
+        "codename": "view_articlestyleorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 182,
+    "fields": {
+        "name": "Can add article script orderable",
+        "content_type": 46,
+        "codename": "add_articlescriptorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 183,
+    "fields": {
+        "name": "Can change article script orderable",
+        "content_type": 46,
+        "codename": "change_articlescriptorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 184,
+    "fields": {
+        "name": "Can delete article script orderable",
+        "content_type": 46,
+        "codename": "delete_articlescriptorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 185,
+    "fields": {
+        "name": "Can view article script orderable",
+        "content_type": 46,
+        "codename": "view_articlescriptorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 186,
+    "fields": {
+        "name": "Can add timeline snippet",
+        "content_type": 47,
+        "codename": "add_timelinesnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 187,
+    "fields": {
+        "name": "Can change timeline snippet",
+        "content_type": 47,
+        "codename": "change_timelinesnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 188,
+    "fields": {
+        "name": "Can delete timeline snippet",
+        "content_type": 47,
+        "codename": "delete_timelinesnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 189,
+    "fields": {
+        "name": "Can view timeline snippet",
+        "content_type": 47,
+        "codename": "view_timelinesnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 190,
+    "fields": {
+        "name": "Can add Special Article-Like Page (for About Page, Contact, etc.)",
+        "content_type": 48,
+        "codename": "add_specialarticlelikepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 191,
+    "fields": {
+        "name": "Can change Special Article-Like Page (for About Page, Contact, etc.)",
+        "content_type": 48,
+        "codename": "change_specialarticlelikepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 192,
+    "fields": {
+        "name": "Can delete Special Article-Like Page (for About Page, Contact, etc.)",
+        "content_type": 48,
+        "codename": "delete_specialarticlelikepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 193,
+    "fields": {
+        "name": "Can view Special Article-Like Page (for About Page, Contact, etc.)",
+        "content_type": 48,
+        "codename": "view_specialarticlelikepage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 194,
+    "fields": {
+        "name": "Can add Section",
+        "content_type": 49,
+        "codename": "add_sectionpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 195,
+    "fields": {
+        "name": "Can change Section",
+        "content_type": 49,
+        "codename": "change_sectionpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 196,
+    "fields": {
+        "name": "Can delete Section",
+        "content_type": 49,
+        "codename": "delete_sectionpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 197,
+    "fields": {
+        "name": "Can view Section",
+        "content_type": 49,
+        "codename": "view_sectionpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 198,
+    "fields": {
+        "name": "Can add Category",
+        "content_type": 50,
+        "codename": "add_categorysnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 199,
+    "fields": {
+        "name": "Can change Category",
+        "content_type": 50,
+        "codename": "change_categorysnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 200,
+    "fields": {
+        "name": "Can delete Category",
+        "content_type": 50,
+        "codename": "delete_categorysnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 201,
+    "fields": {
+        "name": "Can view Category",
+        "content_type": 50,
+        "codename": "view_categorysnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 202,
+    "fields": {
+        "name": "Can add category menu item",
+        "content_type": 51,
+        "codename": "add_categorymenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 203,
+    "fields": {
+        "name": "Can change category menu item",
+        "content_type": 51,
+        "codename": "change_categorymenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 204,
+    "fields": {
+        "name": "Can delete category menu item",
+        "content_type": 51,
+        "codename": "delete_categorymenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 205,
+    "fields": {
+        "name": "Can view category menu item",
+        "content_type": 51,
+        "codename": "view_categorymenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 206,
+    "fields": {
+        "name": "Can add category author",
+        "content_type": 52,
+        "codename": "add_categoryauthor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 207,
+    "fields": {
+        "name": "Can change category author",
+        "content_type": 52,
+        "codename": "change_categoryauthor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 208,
+    "fields": {
+        "name": "Can delete category author",
+        "content_type": 52,
+        "codename": "delete_categoryauthor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 209,
+    "fields": {
+        "name": "Can view category author",
+        "content_type": 52,
+        "codename": "view_categoryauthor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 210,
+    "fields": {
+        "name": "Can add Gallery",
+        "content_type": 53,
+        "codename": "add_gallerysnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 211,
+    "fields": {
+        "name": "Can change Gallery",
+        "content_type": 53,
+        "codename": "change_gallerysnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 212,
+    "fields": {
+        "name": "Can delete Gallery",
+        "content_type": 53,
+        "codename": "delete_gallerysnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 213,
+    "fields": {
+        "name": "Can view Gallery",
+        "content_type": 53,
+        "codename": "view_gallerysnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 214,
+    "fields": {
+        "name": "Can add Ubyssey image",
+        "content_type": 54,
+        "codename": "add_ubysseyimage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 215,
+    "fields": {
+        "name": "Can change Ubyssey image",
+        "content_type": 54,
+        "codename": "change_ubysseyimage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 216,
+    "fields": {
+        "name": "Can delete Ubyssey image",
+        "content_type": 54,
+        "codename": "delete_ubysseyimage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 217,
+    "fields": {
+        "name": "Can view Ubyssey image",
+        "content_type": 54,
+        "codename": "view_ubysseyimage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 218,
+    "fields": {
+        "name": "Can choose image",
+        "content_type": 54,
+        "codename": "choose_image"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 219,
+    "fields": {
+        "name": "Can add gallery orderable",
+        "content_type": 55,
+        "codename": "add_galleryorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 220,
+    "fields": {
+        "name": "Can change gallery orderable",
+        "content_type": 55,
+        "codename": "change_galleryorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 221,
+    "fields": {
+        "name": "Can delete gallery orderable",
+        "content_type": 55,
+        "codename": "delete_galleryorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 222,
+    "fields": {
+        "name": "Can view gallery orderable",
+        "content_type": 55,
+        "codename": "view_galleryorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 223,
+    "fields": {
+        "name": "Can add ubyssey rendition",
+        "content_type": 56,
+        "codename": "add_ubysseyrendition"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 224,
+    "fields": {
+        "name": "Can change ubyssey rendition",
+        "content_type": 56,
+        "codename": "change_ubysseyrendition"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 225,
+    "fields": {
+        "name": "Can delete ubyssey rendition",
+        "content_type": 56,
+        "codename": "delete_ubysseyrendition"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 226,
+    "fields": {
+        "name": "Can view ubyssey rendition",
+        "content_type": 56,
+        "codename": "view_ubysseyrendition"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 227,
+    "fields": {
+        "name": "Can add Video",
+        "content_type": 57,
+        "codename": "add_videosnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 228,
+    "fields": {
+        "name": "Can change Video",
+        "content_type": 57,
+        "codename": "change_videosnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 229,
+    "fields": {
+        "name": "Can delete Video",
+        "content_type": 57,
+        "codename": "delete_videosnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 230,
+    "fields": {
+        "name": "Can view Video",
+        "content_type": 57,
+        "codename": "view_videosnippet"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 231,
+    "fields": {
+        "name": "Can add video tag",
+        "content_type": 58,
+        "codename": "add_videotag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 232,
+    "fields": {
+        "name": "Can change video tag",
+        "content_type": 58,
+        "codename": "change_videotag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 233,
+    "fields": {
+        "name": "Can delete video tag",
+        "content_type": 58,
+        "codename": "delete_videotag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 234,
+    "fields": {
+        "name": "Can view video tag",
+        "content_type": 58,
+        "codename": "view_videotag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 235,
+    "fields": {
+        "name": "Can add video authors orderable",
+        "content_type": 59,
+        "codename": "add_videoauthorsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 236,
+    "fields": {
+        "name": "Can change video authors orderable",
+        "content_type": 59,
+        "codename": "change_videoauthorsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 237,
+    "fields": {
+        "name": "Can delete video authors orderable",
+        "content_type": 59,
+        "codename": "delete_videoauthorsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 238,
+    "fields": {
+        "name": "Can view video authors orderable",
+        "content_type": 59,
+        "codename": "view_videoauthorsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 239,
+    "fields": {
+        "name": "Can add videos page",
+        "content_type": 60,
+        "codename": "add_videospage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 240,
+    "fields": {
+        "name": "Can change videos page",
+        "content_type": 60,
+        "codename": "change_videospage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 241,
+    "fields": {
+        "name": "Can delete videos page",
+        "content_type": 60,
+        "codename": "delete_videospage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 242,
+    "fields": {
+        "name": "Can view videos page",
+        "content_type": 60,
+        "codename": "view_videospage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 243,
+    "fields": {
+        "name": "Can add ad slot",
+        "content_type": 61,
+        "codename": "add_adslot"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 244,
+    "fields": {
+        "name": "Can change ad slot",
+        "content_type": 61,
+        "codename": "change_adslot"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 245,
+    "fields": {
+        "name": "Can delete ad slot",
+        "content_type": 61,
+        "codename": "delete_adslot"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 246,
+    "fields": {
+        "name": "Can view ad slot",
+        "content_type": 61,
+        "codename": "view_adslot"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 247,
+    "fields": {
+        "name": "Can add ad head orderable",
+        "content_type": 62,
+        "codename": "add_adheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 248,
+    "fields": {
+        "name": "Can change ad head orderable",
+        "content_type": 62,
+        "codename": "change_adheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 249,
+    "fields": {
+        "name": "Can delete ad head orderable",
+        "content_type": 62,
+        "codename": "delete_adheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 250,
+    "fields": {
+        "name": "Can view ad head orderable",
+        "content_type": 62,
+        "codename": "view_adheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 251,
+    "fields": {
+        "name": "Can add ad placement orderable",
+        "content_type": 63,
+        "codename": "add_adplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 252,
+    "fields": {
+        "name": "Can change ad placement orderable",
+        "content_type": 63,
+        "codename": "change_adplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 253,
+    "fields": {
+        "name": "Can delete ad placement orderable",
+        "content_type": 63,
+        "codename": "delete_adplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 254,
+    "fields": {
+        "name": "Can view ad placement orderable",
+        "content_type": 63,
+        "codename": "view_adplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 255,
+    "fields": {
+        "name": "Can add Ad Settings",
+        "content_type": 64,
+        "codename": "add_adtagsettings"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 256,
+    "fields": {
+        "name": "Can change Ad Settings",
+        "content_type": 64,
+        "codename": "change_adtagsettings"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 257,
+    "fields": {
+        "name": "Can delete Ad Settings",
+        "content_type": 64,
+        "codename": "delete_adtagsettings"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 258,
+    "fields": {
+        "name": "Can view Ad Settings",
+        "content_type": 64,
+        "codename": "view_adtagsettings"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 259,
+    "fields": {
+        "name": "Can add article ad head orderable",
+        "content_type": 65,
+        "codename": "add_articleadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 260,
+    "fields": {
+        "name": "Can change article ad head orderable",
+        "content_type": 65,
+        "codename": "change_articleadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 261,
+    "fields": {
+        "name": "Can delete article ad head orderable",
+        "content_type": 65,
+        "codename": "delete_articleadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 262,
+    "fields": {
+        "name": "Can view article ad head orderable",
+        "content_type": 65,
+        "codename": "view_articleadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 263,
+    "fields": {
+        "name": "Can add article header placement orderable",
+        "content_type": 66,
+        "codename": "add_articleheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 264,
+    "fields": {
+        "name": "Can change article header placement orderable",
+        "content_type": 66,
+        "codename": "change_articleheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 265,
+    "fields": {
+        "name": "Can delete article header placement orderable",
+        "content_type": 66,
+        "codename": "delete_articleheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 266,
+    "fields": {
+        "name": "Can view article header placement orderable",
+        "content_type": 66,
+        "codename": "view_articleheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 267,
+    "fields": {
+        "name": "Can add article sidebar placement orderable",
+        "content_type": 67,
+        "codename": "add_articlesidebarplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 268,
+    "fields": {
+        "name": "Can change article sidebar placement orderable",
+        "content_type": 67,
+        "codename": "change_articlesidebarplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 269,
+    "fields": {
+        "name": "Can delete article sidebar placement orderable",
+        "content_type": 67,
+        "codename": "delete_articlesidebarplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 270,
+    "fields": {
+        "name": "Can view article sidebar placement orderable",
+        "content_type": 67,
+        "codename": "view_articlesidebarplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 271,
+    "fields": {
+        "name": "Can add home ad head orderable",
+        "content_type": 68,
+        "codename": "add_homeadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 272,
+    "fields": {
+        "name": "Can change home ad head orderable",
+        "content_type": 68,
+        "codename": "change_homeadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 273,
+    "fields": {
+        "name": "Can delete home ad head orderable",
+        "content_type": 68,
+        "codename": "delete_homeadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 274,
+    "fields": {
+        "name": "Can view home ad head orderable",
+        "content_type": 68,
+        "codename": "view_homeadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 275,
+    "fields": {
+        "name": "Can add home header placement orderable",
+        "content_type": 69,
+        "codename": "add_homeheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 276,
+    "fields": {
+        "name": "Can change home header placement orderable",
+        "content_type": 69,
+        "codename": "change_homeheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 277,
+    "fields": {
+        "name": "Can delete home header placement orderable",
+        "content_type": 69,
+        "codename": "delete_homeheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 278,
+    "fields": {
+        "name": "Can view home header placement orderable",
+        "content_type": 69,
+        "codename": "view_homeheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 279,
+    "fields": {
+        "name": "Can add home sidebar placement orderable",
+        "content_type": 70,
+        "codename": "add_homesidebarplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 280,
+    "fields": {
+        "name": "Can change home sidebar placement orderable",
+        "content_type": 70,
+        "codename": "change_homesidebarplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 281,
+    "fields": {
+        "name": "Can delete home sidebar placement orderable",
+        "content_type": 70,
+        "codename": "delete_homesidebarplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 282,
+    "fields": {
+        "name": "Can view home sidebar placement orderable",
+        "content_type": 70,
+        "codename": "view_homesidebarplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 283,
+    "fields": {
+        "name": "Can add section ad head orderable",
+        "content_type": 71,
+        "codename": "add_sectionadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 284,
+    "fields": {
+        "name": "Can change section ad head orderable",
+        "content_type": 71,
+        "codename": "change_sectionadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 285,
+    "fields": {
+        "name": "Can delete section ad head orderable",
+        "content_type": 71,
+        "codename": "delete_sectionadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 286,
+    "fields": {
+        "name": "Can view section ad head orderable",
+        "content_type": 71,
+        "codename": "view_sectionadheadorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 287,
+    "fields": {
+        "name": "Can add section header placement orderable",
+        "content_type": 72,
+        "codename": "add_sectionheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 288,
+    "fields": {
+        "name": "Can change section header placement orderable",
+        "content_type": 72,
+        "codename": "change_sectionheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 289,
+    "fields": {
+        "name": "Can delete section header placement orderable",
+        "content_type": 72,
+        "codename": "delete_sectionheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 290,
+    "fields": {
+        "name": "Can view section header placement orderable",
+        "content_type": 72,
+        "codename": "view_sectionheaderplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 291,
+    "fields": {
+        "name": "Can add article inline placement orderable",
+        "content_type": 73,
+        "codename": "add_articleinlineplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 292,
+    "fields": {
+        "name": "Can change article inline placement orderable",
+        "content_type": 73,
+        "codename": "change_articleinlineplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 293,
+    "fields": {
+        "name": "Can delete article inline placement orderable",
+        "content_type": 73,
+        "codename": "delete_articleinlineplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 294,
+    "fields": {
+        "name": "Can view article inline placement orderable",
+        "content_type": 73,
+        "codename": "view_articleinlineplacementorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 295,
+    "fields": {
+        "name": "Can add special landing page",
+        "content_type": 74,
+        "codename": "add_speciallandingpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 296,
+    "fields": {
+        "name": "Can change special landing page",
+        "content_type": 74,
+        "codename": "change_speciallandingpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 297,
+    "fields": {
+        "name": "Can delete special landing page",
+        "content_type": 74,
+        "codename": "delete_speciallandingpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 298,
+    "fields": {
+        "name": "Can view special landing page",
+        "content_type": 74,
+        "codename": "view_speciallandingpage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 299,
+    "fields": {
+        "name": "Can add credits orderable",
+        "content_type": 75,
+        "codename": "add_creditsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 300,
+    "fields": {
+        "name": "Can change credits orderable",
+        "content_type": 75,
+        "codename": "change_creditsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 301,
+    "fields": {
+        "name": "Can delete credits orderable",
+        "content_type": 75,
+        "codename": "delete_creditsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 302,
+    "fields": {
+        "name": "Can view credits orderable",
+        "content_type": 75,
+        "codename": "view_creditsorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 303,
+    "fields": {
+        "name": "Can add navigation menu orderable",
+        "content_type": 76,
+        "codename": "add_navigationmenuorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 304,
+    "fields": {
+        "name": "Can change navigation menu orderable",
+        "content_type": 76,
+        "codename": "change_navigationmenuorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 305,
+    "fields": {
+        "name": "Can delete navigation menu orderable",
+        "content_type": 76,
+        "codename": "delete_navigationmenuorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 306,
+    "fields": {
+        "name": "Can view navigation menu orderable",
+        "content_type": 76,
+        "codename": "view_navigationmenuorderable"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 307,
+    "fields": {
+        "name": "Can add Site-Wide Menus",
+        "content_type": 77,
+        "codename": "add_sitewidemenus"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 308,
+    "fields": {
+        "name": "Can change Site-Wide Menus",
+        "content_type": 77,
+        "codename": "change_sitewidemenus"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 309,
+    "fields": {
+        "name": "Can delete Site-Wide Menus",
+        "content_type": 77,
+        "codename": "delete_sitewidemenus"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 310,
+    "fields": {
+        "name": "Can view Site-Wide Menus",
+        "content_type": 77,
+        "codename": "view_sitewidemenus"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 311,
+    "fields": {
+        "name": "Can add second footer navigation item",
+        "content_type": 78,
+        "codename": "add_secondfooternavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 312,
+    "fields": {
+        "name": "Can change second footer navigation item",
+        "content_type": 78,
+        "codename": "change_secondfooternavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 313,
+    "fields": {
+        "name": "Can delete second footer navigation item",
+        "content_type": 78,
+        "codename": "delete_secondfooternavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 314,
+    "fields": {
+        "name": "Can view second footer navigation item",
+        "content_type": 78,
+        "codename": "view_secondfooternavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 315,
+    "fields": {
+        "name": "Can add right header navigation item",
+        "content_type": 79,
+        "codename": "add_rightheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 316,
+    "fields": {
+        "name": "Can change right header navigation item",
+        "content_type": 79,
+        "codename": "change_rightheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 317,
+    "fields": {
+        "name": "Can delete right header navigation item",
+        "content_type": 79,
+        "codename": "delete_rightheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 318,
+    "fields": {
+        "name": "Can view right header navigation item",
+        "content_type": 79,
+        "codename": "view_rightheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 319,
+    "fields": {
+        "name": "Can add mobile links navigation item",
+        "content_type": 80,
+        "codename": "add_mobilelinksnavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 320,
+    "fields": {
+        "name": "Can change mobile links navigation item",
+        "content_type": 80,
+        "codename": "change_mobilelinksnavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 321,
+    "fields": {
+        "name": "Can delete mobile links navigation item",
+        "content_type": 80,
+        "codename": "delete_mobilelinksnavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 322,
+    "fields": {
+        "name": "Can view mobile links navigation item",
+        "content_type": 80,
+        "codename": "view_mobilelinksnavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 323,
+    "fields": {
+        "name": "Can add main header navigation item",
+        "content_type": 81,
+        "codename": "add_mainheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 324,
+    "fields": {
+        "name": "Can change main header navigation item",
+        "content_type": 81,
+        "codename": "change_mainheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 325,
+    "fields": {
+        "name": "Can delete main header navigation item",
+        "content_type": 81,
+        "codename": "delete_mainheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 326,
+    "fields": {
+        "name": "Can view main header navigation item",
+        "content_type": 81,
+        "codename": "view_mainheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 327,
+    "fields": {
+        "name": "Can add main footer navigation item",
+        "content_type": 82,
+        "codename": "add_mainfooternavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 328,
+    "fields": {
+        "name": "Can change main footer navigation item",
+        "content_type": 82,
+        "codename": "change_mainfooternavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 329,
+    "fields": {
+        "name": "Can delete main footer navigation item",
+        "content_type": 82,
+        "codename": "delete_mainfooternavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 330,
+    "fields": {
+        "name": "Can view main footer navigation item",
+        "content_type": 82,
+        "codename": "view_mainfooternavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 331,
+    "fields": {
+        "name": "Can add left header navigation item",
+        "content_type": 83,
+        "codename": "add_leftheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 332,
+    "fields": {
+        "name": "Can change left header navigation item",
+        "content_type": 83,
+        "codename": "change_leftheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 333,
+    "fields": {
+        "name": "Can delete left header navigation item",
+        "content_type": 83,
+        "codename": "delete_leftheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 334,
+    "fields": {
+        "name": "Can view left header navigation item",
+        "content_type": 83,
+        "codename": "view_leftheadernavigationitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 335,
+    "fields": {
+        "name": "Can add event",
+        "content_type": 84,
+        "codename": "add_event"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 336,
+    "fields": {
+        "name": "Can change event",
+        "content_type": 84,
+        "codename": "change_event"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 337,
+    "fields": {
+        "name": "Can delete event",
+        "content_type": 84,
+        "codename": "delete_event"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 338,
+    "fields": {
+        "name": "Can view event",
+        "content_type": 84,
+        "codename": "view_event"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 339,
+    "fields": {
+        "name": "Can add magazine issue",
+        "content_type": 85,
+        "codename": "add_magazineissue"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 340,
+    "fields": {
+        "name": "Can change magazine issue",
+        "content_type": 85,
+        "codename": "change_magazineissue"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 341,
+    "fields": {
+        "name": "Can delete magazine issue",
+        "content_type": 85,
+        "codename": "delete_magazineissue"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 342,
+    "fields": {
+        "name": "Can view magazine issue",
+        "content_type": 85,
+        "codename": "view_magazineissue"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 343,
+    "fields": {
+        "name": "Can add magazine section",
+        "content_type": 86,
+        "codename": "add_magazinesection"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 344,
+    "fields": {
+        "name": "Can change magazine section",
+        "content_type": 86,
+        "codename": "change_magazinesection"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 345,
+    "fields": {
+        "name": "Can delete magazine section",
+        "content_type": 86,
+        "codename": "delete_magazinesection"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 346,
+    "fields": {
+        "name": "Can view magazine section",
+        "content_type": 86,
+        "codename": "view_magazinesection"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 347,
+    "fields": {
+        "name": "Can add form submission",
+        "content_type": 87,
+        "codename": "add_formsubmission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 348,
+    "fields": {
+        "name": "Can change form submission",
+        "content_type": 87,
+        "codename": "change_formsubmission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 349,
+    "fields": {
+        "name": "Can delete form submission",
+        "content_type": 87,
+        "codename": "delete_formsubmission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 350,
+    "fields": {
+        "name": "Can view form submission",
+        "content_type": 87,
+        "codename": "view_formsubmission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 351,
+    "fields": {
+        "name": "Can add redirect",
+        "content_type": 88,
+        "codename": "add_redirect"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 352,
+    "fields": {
+        "name": "Can change redirect",
+        "content_type": 88,
+        "codename": "change_redirect"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 353,
+    "fields": {
+        "name": "Can delete redirect",
+        "content_type": 88,
+        "codename": "delete_redirect"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 354,
+    "fields": {
+        "name": "Can view redirect",
+        "content_type": 88,
+        "codename": "view_redirect"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 355,
+    "fields": {
+        "name": "Can add embed",
+        "content_type": 89,
+        "codename": "add_embed"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 356,
+    "fields": {
+        "name": "Can change embed",
+        "content_type": 89,
+        "codename": "change_embed"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 357,
+    "fields": {
+        "name": "Can delete embed",
+        "content_type": 89,
+        "codename": "delete_embed"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 358,
+    "fields": {
+        "name": "Can view embed",
+        "content_type": 89,
+        "codename": "view_embed"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 359,
+    "fields": {
+        "name": "Can add user profile",
+        "content_type": 90,
+        "codename": "add_userprofile"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 360,
+    "fields": {
+        "name": "Can change user profile",
+        "content_type": 90,
+        "codename": "change_userprofile"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 361,
+    "fields": {
+        "name": "Can delete user profile",
+        "content_type": 90,
+        "codename": "delete_userprofile"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 362,
+    "fields": {
+        "name": "Can view user profile",
+        "content_type": 90,
+        "codename": "view_userprofile"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 363,
+    "fields": {
+        "name": "Can view document",
+        "content_type": 3,
+        "codename": "view_document"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 364,
+    "fields": {
+        "name": "Can add uploaded document",
+        "content_type": 94,
+        "codename": "add_uploadeddocument"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 365,
+    "fields": {
+        "name": "Can change uploaded document",
+        "content_type": 94,
+        "codename": "change_uploadeddocument"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 366,
+    "fields": {
+        "name": "Can delete uploaded document",
+        "content_type": 94,
+        "codename": "delete_uploadeddocument"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 367,
+    "fields": {
+        "name": "Can view uploaded document",
+        "content_type": 94,
+        "codename": "view_uploadeddocument"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 368,
+    "fields": {
+        "name": "Can view image",
+        "content_type": 26,
+        "codename": "view_image"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 369,
+    "fields": {
+        "name": "Can add rendition",
+        "content_type": 95,
+        "codename": "add_rendition"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 370,
+    "fields": {
+        "name": "Can change rendition",
+        "content_type": 95,
+        "codename": "change_rendition"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 371,
+    "fields": {
+        "name": "Can delete rendition",
+        "content_type": 95,
+        "codename": "delete_rendition"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 372,
+    "fields": {
+        "name": "Can view rendition",
+        "content_type": 95,
+        "codename": "view_rendition"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 373,
+    "fields": {
+        "name": "Can add uploaded image",
+        "content_type": 96,
+        "codename": "add_uploadedimage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 374,
+    "fields": {
+        "name": "Can change uploaded image",
+        "content_type": 96,
+        "codename": "change_uploadedimage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 375,
+    "fields": {
+        "name": "Can delete uploaded image",
+        "content_type": 96,
+        "codename": "delete_uploadedimage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 376,
+    "fields": {
+        "name": "Can view uploaded image",
+        "content_type": 96,
+        "codename": "view_uploadedimage"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 377,
+    "fields": {
+        "name": "Can add query",
+        "content_type": 97,
+        "codename": "add_query"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 378,
+    "fields": {
+        "name": "Can change query",
+        "content_type": 97,
+        "codename": "change_query"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 379,
+    "fields": {
+        "name": "Can delete query",
+        "content_type": 97,
+        "codename": "delete_query"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 380,
+    "fields": {
+        "name": "Can view query",
+        "content_type": 97,
+        "codename": "view_query"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 381,
+    "fields": {
+        "name": "Can add Query Daily Hits",
+        "content_type": 98,
+        "codename": "add_querydailyhits"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 382,
+    "fields": {
+        "name": "Can change Query Daily Hits",
+        "content_type": 98,
+        "codename": "change_querydailyhits"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 383,
+    "fields": {
+        "name": "Can delete Query Daily Hits",
+        "content_type": 98,
+        "codename": "delete_querydailyhits"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 384,
+    "fields": {
+        "name": "Can view Query Daily Hits",
+        "content_type": 98,
+        "codename": "view_querydailyhits"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 385,
+    "fields": {
+        "name": "Can add index entry",
+        "content_type": 99,
+        "codename": "add_indexentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 386,
+    "fields": {
+        "name": "Can change index entry",
+        "content_type": 99,
+        "codename": "change_indexentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 387,
+    "fields": {
+        "name": "Can delete index entry",
+        "content_type": 99,
+        "codename": "delete_indexentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 388,
+    "fields": {
+        "name": "Can view index entry",
+        "content_type": 99,
+        "codename": "view_indexentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 389,
+    "fields": {
+        "name": "Can add tag",
+        "content_type": 100,
+        "codename": "add_tag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 390,
+    "fields": {
+        "name": "Can change tag",
+        "content_type": 100,
+        "codename": "change_tag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 391,
+    "fields": {
+        "name": "Can delete tag",
+        "content_type": 100,
+        "codename": "delete_tag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 392,
+    "fields": {
+        "name": "Can view tag",
+        "content_type": 100,
+        "codename": "view_tag"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 393,
+    "fields": {
+        "name": "Can add tagged item",
+        "content_type": 101,
+        "codename": "add_taggeditem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 394,
+    "fields": {
+        "name": "Can change tagged item",
+        "content_type": 101,
+        "codename": "change_taggeditem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 395,
+    "fields": {
+        "name": "Can delete tagged item",
+        "content_type": 101,
+        "codename": "delete_taggeditem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 396,
+    "fields": {
+        "name": "Can view tagged item",
+        "content_type": 101,
+        "codename": "view_taggeditem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 397,
+    "fields": {
+        "name": "Can add permission",
+        "content_type": 102,
+        "codename": "add_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 398,
+    "fields": {
+        "name": "Can change permission",
+        "content_type": 102,
+        "codename": "change_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 399,
+    "fields": {
+        "name": "Can delete permission",
+        "content_type": 102,
+        "codename": "delete_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 400,
+    "fields": {
+        "name": "Can view permission",
+        "content_type": 102,
+        "codename": "view_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 401,
+    "fields": {
+        "name": "Can add group",
+        "content_type": 103,
+        "codename": "add_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 402,
+    "fields": {
+        "name": "Can change group",
+        "content_type": 103,
+        "codename": "change_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 403,
+    "fields": {
+        "name": "Can delete group",
+        "content_type": 103,
+        "codename": "delete_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 404,
+    "fields": {
+        "name": "Can view group",
+        "content_type": 103,
+        "codename": "view_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 405,
+    "fields": {
+        "name": "Can add content type",
+        "content_type": 104,
+        "codename": "add_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 406,
+    "fields": {
+        "name": "Can change content type",
+        "content_type": 104,
+        "codename": "change_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 407,
+    "fields": {
+        "name": "Can delete content type",
+        "content_type": 104,
+        "codename": "delete_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 408,
+    "fields": {
+        "name": "Can view content type",
+        "content_type": 104,
+        "codename": "view_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 409,
+    "fields": {
+        "name": "Can add session",
+        "content_type": 105,
+        "codename": "add_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 410,
+    "fields": {
+        "name": "Can change session",
+        "content_type": 105,
+        "codename": "change_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 411,
+    "fields": {
+        "name": "Can delete session",
+        "content_type": 105,
+        "codename": "delete_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 412,
+    "fields": {
+        "name": "Can view session",
+        "content_type": 105,
+        "codename": "view_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 413,
+    "fields": {
+        "name": "Can add site",
+        "content_type": 106,
+        "codename": "add_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 414,
+    "fields": {
+        "name": "Can change site",
+        "content_type": 106,
+        "codename": "change_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 415,
+    "fields": {
+        "name": "Can delete site",
+        "content_type": 106,
+        "codename": "delete_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 416,
+    "fields": {
+        "name": "Can view site",
+        "content_type": 106,
+        "codename": "view_site"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 417,
+    "fields": {
+        "name": "Can add Token",
+        "content_type": 107,
+        "codename": "add_token"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 418,
+    "fields": {
+        "name": "Can change Token",
+        "content_type": 107,
+        "codename": "change_token"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 419,
+    "fields": {
+        "name": "Can delete Token",
+        "content_type": 107,
+        "codename": "delete_token"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 420,
+    "fields": {
+        "name": "Can view Token",
+        "content_type": 107,
+        "codename": "view_token"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 421,
+    "fields": {
+        "name": "Can add Token",
+        "content_type": 108,
+        "codename": "add_tokenproxy"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 422,
+    "fields": {
+        "name": "Can change Token",
+        "content_type": 108,
+        "codename": "change_tokenproxy"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 423,
+    "fields": {
+        "name": "Can delete Token",
+        "content_type": 108,
+        "codename": "delete_tokenproxy"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 424,
+    "fields": {
+        "name": "Can view Token",
+        "content_type": 108,
+        "codename": "view_tokenproxy"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 425,
+    "fields": {
+        "name": "Can add log entry",
+        "content_type": 109,
+        "codename": "add_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 426,
+    "fields": {
+        "name": "Can change log entry",
+        "content_type": 109,
+        "codename": "change_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 427,
+    "fields": {
+        "name": "Can delete log entry",
+        "content_type": 109,
+        "codename": "delete_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 428,
+    "fields": {
+        "name": "Can view log entry",
+        "content_type": 109,
+        "codename": "view_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 429,
+    "fields": {
+        "name": "Can add template",
+        "content_type": 93,
+        "codename": "add_template"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 430,
+    "fields": {
+        "name": "Can change template",
+        "content_type": 93,
+        "codename": "change_template"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 431,
+    "fields": {
+        "name": "Can delete template",
+        "content_type": 93,
+        "codename": "delete_template"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 432,
+    "fields": {
+        "name": "Can view template",
+        "content_type": 93,
+        "codename": "view_template"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 433,
+    "fields": {
+        "name": "Can add flat menu",
+        "content_type": 91,
+        "codename": "add_flatmenu"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 434,
+    "fields": {
+        "name": "Can change flat menu",
+        "content_type": 91,
+        "codename": "change_flatmenu"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 435,
+    "fields": {
+        "name": "Can delete flat menu",
+        "content_type": 91,
+        "codename": "delete_flatmenu"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 436,
+    "fields": {
+        "name": "Can view flat menu",
+        "content_type": 91,
+        "codename": "view_flatmenu"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 437,
+    "fields": {
+        "name": "Can add menu item",
+        "content_type": 110,
+        "codename": "add_flatmenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 438,
+    "fields": {
+        "name": "Can change menu item",
+        "content_type": 110,
+        "codename": "change_flatmenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 439,
+    "fields": {
+        "name": "Can delete menu item",
+        "content_type": 110,
+        "codename": "delete_flatmenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 440,
+    "fields": {
+        "name": "Can view menu item",
+        "content_type": 110,
+        "codename": "view_flatmenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 441,
+    "fields": {
+        "name": "Can add main menu",
+        "content_type": 92,
+        "codename": "add_mainmenu"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 442,
+    "fields": {
+        "name": "Can change main menu",
+        "content_type": 92,
+        "codename": "change_mainmenu"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 443,
+    "fields": {
+        "name": "Can delete main menu",
+        "content_type": 92,
+        "codename": "delete_mainmenu"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 444,
+    "fields": {
+        "name": "Can view main menu",
+        "content_type": 92,
+        "codename": "view_mainmenu"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 445,
+    "fields": {
+        "name": "Can add menu item",
+        "content_type": 111,
+        "codename": "add_mainmenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 446,
+    "fields": {
+        "name": "Can change menu item",
+        "content_type": 111,
+        "codename": "change_mainmenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 447,
+    "fields": {
+        "name": "Can delete menu item",
+        "content_type": 111,
+        "codename": "delete_mainmenuitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 448,
+    "fields": {
+        "name": "Can view menu item",
+        "content_type": 111,
+        "codename": "view_mainmenuitem"
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+        "name": "Moderators",
+        "permissions": [
+            5,
+            1,
+            2,
+            3,
+            102,
+            103,
+            105,
+            104
+        ]
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+        "name": "Editors",
+        "permissions": [
+            5,
+            1,
+            2,
+            3,
+            102,
+            103,
+            105,
+            104
+        ]
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 1,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "page"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 2,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "groupapprovaltask"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 3,
+    "fields": {
+        "app_label": "wagtaildocs",
+        "model": "document"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 4,
+    "fields": {
+        "app_label": "wagtailadmin",
+        "model": "admin"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 5,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "locale"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 6,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "site"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 7,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "modellogentry"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 8,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "collectionviewrestriction"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 9,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "collection"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 10,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "groupcollectionpermission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 11,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "referenceindex"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 12,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "revision"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 13,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "grouppagepermission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 14,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "pageviewrestriction"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 15,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "workflowpage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 16,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "workflowcontenttype"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 17,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "workflowtask"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 18,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "task"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 19,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "workflow"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 20,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "workflowstate"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 21,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "taskstate"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 22,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "pagelogentry"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 23,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "comment"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 24,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "commentreply"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 25,
+    "fields": {
+        "app_label": "wagtailcore",
+        "model": "pagesubscription"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 26,
+    "fields": {
+        "app_label": "wagtailimages",
+        "model": "image"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 27,
+    "fields": {
+        "app_label": "users",
+        "model": "user"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 28,
+    "fields": {
+        "app_label": "home",
+        "model": "homepage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 29,
+    "fields": {
+        "app_label": "home",
+        "model": "toparticlesorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 30,
+    "fields": {
+        "app_label": "archive",
+        "model": "archivepage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 31,
+    "fields": {
+        "app_label": "archive",
+        "model": "sectionpageorderables"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 32,
+    "fields": {
+        "app_label": "archive",
+        "model": "magazineorderables"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 33,
+    "fields": {
+        "app_label": "archive",
+        "model": "spooforderables"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 34,
+    "fields": {
+        "app_label": "authors",
+        "model": "allauthorspage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 35,
+    "fields": {
+        "app_label": "authors",
+        "model": "authorpage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 36,
+    "fields": {
+        "app_label": "authors",
+        "model": "pinnedarticlesorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 37,
+    "fields": {
+        "app_label": "article",
+        "model": "articleauthorsorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 38,
+    "fields": {
+        "app_label": "article",
+        "model": "articlefeaturedmediaorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 39,
+    "fields": {
+        "app_label": "article",
+        "model": "articlepage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 40,
+    "fields": {
+        "app_label": "article",
+        "model": "articlepagetag"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 41,
+    "fields": {
+        "app_label": "article",
+        "model": "articleseriessnippet"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 42,
+    "fields": {
+        "app_label": "article",
+        "model": "seriesorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 43,
+    "fields": {
+        "app_label": "article",
+        "model": "magazinearticlebylineorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 44,
+    "fields": {
+        "app_label": "article",
+        "model": "connectedarticleorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 45,
+    "fields": {
+        "app_label": "article",
+        "model": "articlestyleorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 46,
+    "fields": {
+        "app_label": "article",
+        "model": "articlescriptorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 47,
+    "fields": {
+        "app_label": "article",
+        "model": "timelinesnippet"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 48,
+    "fields": {
+        "app_label": "article",
+        "model": "specialarticlelikepage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 49,
+    "fields": {
+        "app_label": "section",
+        "model": "sectionpage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 50,
+    "fields": {
+        "app_label": "section",
+        "model": "categorysnippet"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 51,
+    "fields": {
+        "app_label": "section",
+        "model": "categorymenuitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 52,
+    "fields": {
+        "app_label": "section",
+        "model": "categoryauthor"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 53,
+    "fields": {
+        "app_label": "images",
+        "model": "gallerysnippet"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 54,
+    "fields": {
+        "app_label": "images",
+        "model": "ubysseyimage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 55,
+    "fields": {
+        "app_label": "images",
+        "model": "galleryorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 56,
+    "fields": {
+        "app_label": "images",
+        "model": "ubysseyrendition"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 57,
+    "fields": {
+        "app_label": "videos",
+        "model": "videosnippet"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 58,
+    "fields": {
+        "app_label": "videos",
+        "model": "videotag"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 59,
+    "fields": {
+        "app_label": "videos",
+        "model": "videoauthorsorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 60,
+    "fields": {
+        "app_label": "videos",
+        "model": "videospage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 61,
+    "fields": {
+        "app_label": "ads",
+        "model": "adslot"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 62,
+    "fields": {
+        "app_label": "ads",
+        "model": "adheadorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 63,
+    "fields": {
+        "app_label": "ads",
+        "model": "adplacementorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 64,
+    "fields": {
+        "app_label": "ads",
+        "model": "adtagsettings"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 65,
+    "fields": {
+        "app_label": "ads",
+        "model": "articleadheadorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 66,
+    "fields": {
+        "app_label": "ads",
+        "model": "articleheaderplacementorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 67,
+    "fields": {
+        "app_label": "ads",
+        "model": "articlesidebarplacementorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 68,
+    "fields": {
+        "app_label": "ads",
+        "model": "homeadheadorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 69,
+    "fields": {
+        "app_label": "ads",
+        "model": "homeheaderplacementorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 70,
+    "fields": {
+        "app_label": "ads",
+        "model": "homesidebarplacementorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 71,
+    "fields": {
+        "app_label": "ads",
+        "model": "sectionadheadorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 72,
+    "fields": {
+        "app_label": "ads",
+        "model": "sectionheaderplacementorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 73,
+    "fields": {
+        "app_label": "ads",
+        "model": "articleinlineplacementorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 74,
+    "fields": {
+        "app_label": "specialfeaturelanding",
+        "model": "speciallandingpage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 75,
+    "fields": {
+        "app_label": "specialfeaturelanding",
+        "model": "creditsorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 76,
+    "fields": {
+        "app_label": "navigation",
+        "model": "navigationmenuorderable"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 77,
+    "fields": {
+        "app_label": "navigation",
+        "model": "sitewidemenus"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 78,
+    "fields": {
+        "app_label": "navigation",
+        "model": "secondfooternavigationitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 79,
+    "fields": {
+        "app_label": "navigation",
+        "model": "rightheadernavigationitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 80,
+    "fields": {
+        "app_label": "navigation",
+        "model": "mobilelinksnavigationitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 81,
+    "fields": {
+        "app_label": "navigation",
+        "model": "mainheadernavigationitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 82,
+    "fields": {
+        "app_label": "navigation",
+        "model": "mainfooternavigationitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 83,
+    "fields": {
+        "app_label": "navigation",
+        "model": "leftheadernavigationitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 84,
+    "fields": {
+        "app_label": "events",
+        "model": "event"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 85,
+    "fields": {
+        "app_label": "magazine",
+        "model": "magazineissue"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 86,
+    "fields": {
+        "app_label": "magazine",
+        "model": "magazinesection"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 87,
+    "fields": {
+        "app_label": "wagtailforms",
+        "model": "formsubmission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 88,
+    "fields": {
+        "app_label": "wagtailredirects",
+        "model": "redirect"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 89,
+    "fields": {
+        "app_label": "wagtailembeds",
+        "model": "embed"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 90,
+    "fields": {
+        "app_label": "wagtailusers",
+        "model": "userprofile"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 91,
+    "fields": {
+        "app_label": "wagtailmenus",
+        "model": "flatmenu"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 92,
+    "fields": {
+        "app_label": "wagtailmenus",
+        "model": "mainmenu"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 93,
+    "fields": {
+        "app_label": "dbtemplates",
+        "model": "template"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 94,
+    "fields": {
+        "app_label": "wagtaildocs",
+        "model": "uploadeddocument"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 95,
+    "fields": {
+        "app_label": "wagtailimages",
+        "model": "rendition"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 96,
+    "fields": {
+        "app_label": "wagtailimages",
+        "model": "uploadedimage"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 97,
+    "fields": {
+        "app_label": "wagtailsearch",
+        "model": "query"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 98,
+    "fields": {
+        "app_label": "wagtailsearch",
+        "model": "querydailyhits"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 99,
+    "fields": {
+        "app_label": "wagtailsearch",
+        "model": "indexentry"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 100,
+    "fields": {
+        "app_label": "taggit",
+        "model": "tag"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 101,
+    "fields": {
+        "app_label": "taggit",
+        "model": "taggeditem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 102,
+    "fields": {
+        "app_label": "auth",
+        "model": "permission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 103,
+    "fields": {
+        "app_label": "auth",
+        "model": "group"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 104,
+    "fields": {
+        "app_label": "contenttypes",
+        "model": "contenttype"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 105,
+    "fields": {
+        "app_label": "sessions",
+        "model": "session"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 106,
+    "fields": {
+        "app_label": "sites",
+        "model": "site"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 107,
+    "fields": {
+        "app_label": "authtoken",
+        "model": "token"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 108,
+    "fields": {
+        "app_label": "authtoken",
+        "model": "tokenproxy"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 109,
+    "fields": {
+        "app_label": "admin",
+        "model": "logentry"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 110,
+    "fields": {
+        "app_label": "wagtailmenus",
+        "model": "flatmenuitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 111,
+    "fields": {
+        "app_label": "wagtailmenus",
+        "model": "mainmenuitem"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "zw9b48yigv834i09cy5zzi9o4wf9rvee",
+    "fields": {
+        "session_data": ".eJzVWVtv2zgW_i8B4heODF18kQbwQ9OkbWaSdDZNtp1ZDASKpCy2sqiKVFzPYv_7nkNJtiU56Mw-bKdAEEs8h-S5fOci8t9nMa1NFtdaVLHkZz-eeWc_HI8llH0SBRL4R1qs1ZSpwlQymSLLtKXq6a3iIr9oeXsLZFRnODtlnkeDwKUMHpaMMz-N2CyMgiULIpfyIJxxLxQ8DTmdeb4XUkoTHoVBFCaLuYuLaqG1VEUsvpSy2p396P5wtqVrQ2XulJV4kmLrBGc__uuMqc1GFCYulJGpZNTAJL1SxYTpKt1IznOxpZUwCqRdvaLF62L2y5N5zz_nX3avv_CHn_S731hUVB9ffxB8-8u7y-vwkd3crZPtQ51d-_cfbnYfPruPdy-_ZK__mBTii1lNjDS5WD1kgjwmO63FbmLoOpeFWF1U1BBdg0gV0bJggniRF3bkuK7yVWZMqc-DF-f-K_irmwWmjMJLSddCwy9NVG3gd8LUE1hVG1XtVsuJUWVMKyNZLrTz8PbhxU386u397buV1ydd310_XO-Jbp94e30X3z3ePkN88eGI6LnugO467eNQGteRfDUcent_eXU_FM51Lq9urh6uVpPGOaBdJejGYaouzMofjLoOQE0YwWGZIUVVXFSgwXDc7EqxAouPCCBikDJ36S08JxJ-5Mx8Oneo4NyJ3EUoGADTC5PRvCea18IxYlPm1IiVFgxBBv5RyUd4Ro-1Y7GRG4GenmZmkz-3EF3HOq_XQwt4e11HhNOqeo2qsN8nPSKBsjRKRTQXnpPO5hSU9RdONE_gFfVMQz_1BR_Na2S0a7Y-GVq-z-M-L3Wf7Tkd-lxWo6_woB_5LJi5gjtBwn1n5ia-E4aR5wReEIBiyTKJ0q-s0jrDhrLv-gF5XUsuiFHk8eLln5r7lWhe43rwi4tjMP-ZJbnQrJIlYmk10TA_oVU_QtxJizXdH_dG40eeGZM6b4wp1gOZ2ogY01HcITvJFft0gh2cMeOQ3b2F7yQs9JxZKAKHesHSoYsFn7tJEEVBdGJmo3E7vlo8y5HTHaTDVVLnVpuJjR2Tgf3b5KuFihs_wiOtWBb3zNhWiH7KdA_Dw3S5JwxT5YHQS5OTtYpz-SRiCqXBliv7ePaDt_T9eRjMvWjqBoso_H1cwpZ_vYS5F7-Kxz-Yoj_z6_VN-mHzUV96-i58TB_o9Qu6fbX45x-_Xj289u5-fXj55h9hkr1-_-az91t1wTzf3_ZK2MXLc3-pSSG2JKcFzwEVpFSVoTnJVCk0RkMuN9KQhHLIG9JkBARv_IS65pJJE5d1kkudCY56A9xnjhs6rkfcECLDRcMVBhTcI7V7P0LoYahD5mHEIrKSLDMg-tE45oEkdUM_9B3G54kz48HcSTyfOQH1U8pEwqGlOJphAbU6X16c-74FNORuH6N3ftEMfhK7dsT3Qasng28-WMnHvfckLP1lpZ6gwkuw1RrLdIE-JNABgSnrgoE1CLWWVQVWhM6uJoMOoRKfa4CJ3lvdWjoRZKMqSEEVLXQJHof1tpkoiNS6lsWaIEAYzFLpwQs4ETlFpacHYcFie2HrQptdLvieykVpsobsNiPSivgO2e6h8RNHZplfNiywhTS756icGtqOgh2Xl_gHhJFNvc-ZOz9t05vOaqogP9X5jnghcIG9BLnpsPmoBXkvEvJLY0upyUZQsBLYgHIOBtUEIH3ln4fueRRpksl1BlYD5Na52duMQJMmcO1tBqDCVayVASOwliZg-IYVZGkImdiBY58EOoA8SYVtAMdhWZFcUC2-A8sHc_F58ZzlOxCi6qWoIOCtgogsllO5IXUhDQAvVRXStSrA-pCkNQIwl5-EpVDCcgUeSulGgv82YpNAGwyrbCA-iCym5I3aCggVtP0B-RvaWleBRSvgw2CV-5XRwAh-BAKKgQs2nC3syRbTEoUwKRjKBJIjZUpslO6RokvBbHrNrWwtbDARY5yZDFmkqW32JYkVCbc9yMkVqzcNLzreGgZMVlhDQYIujnghQjNBn3ZgLTCVkWA7mTZAEsUa6ioIizmVDHLqdwAkL41m7DSQrgvAgO2ltKn5Dt0MvRR4oynL6KsUSgCEOICAhHPEEmFo0l5GA9PALPgPS3lkKyoxjmHd5QYMcaENsuOrLTHVzroFPqMAVThaWK8CDgBmFVof9lvMpsu9AA1Y-pkaAKHgTRtREkOh9iIqzCHzi-O0Y_ED9B7KDK3WwiCKTrma3KktanEyq2MkNiVhLQpR2YSjGhUb8XAmKpn3grctLBaSNjrsDC6w6bA7mAwjVDFWl7teVHWZrnkDZZ4ow13tPnmutpa7TZGwepdlX9rQpSCpwe20KLRoNhIH2fYp-Si6ET_t8CWhjAGf3UL1bPwNAsIiXqWpFi2yvWXDnkPodpt482ZsHxnucbwcz57PTk33B9M9nP5XQ3FeB1KcDsV3NVS2LmM1OQ2cwjKrKwaLhQAt2I4wSJ001xZsNWZPhHnraGDkUpe1EZjPKnAQ4Eyjd2A1-Du0hTBp7-4mmo66IoCT3QHCCH2ssQhAhHUJXxoJIj6JtguyQGqSO6kgvA0s2K9Rhdr2oG7RwrEK1RVUm8JkR5Br4gtxXJckrdSGmK3quGwXAMhvIg9k65U4MEeXZ7CTa6xCNjXkmyaEDhGD8zy_XdZGZtdDdLZEoW2wBC7hdGf3tt8BqtbY7sz3o6BRZ_UTyeE7qBFLtl6fxuU-bRwV563M8wYfnR9hTzAsbHsMoqbMw0_BwZIHpEBBAX8ZNLl1JT5kwKFS06Q0LY4SK_oN0pRqGvGtsPDHLwRZ1E3KrWVucy1iaauqTzgoNygaFANRPVl_oLu7_qOXhntpTVPJyS0AXKOg4MM34GtE2T00F-RnmuUK2xbQqrRVpBLfqp0cpS34cj2RtoJB2vL_l7SVsiR85sPqfSZz0fqsS1ZtbipECmGGjQV-g0NvaNszMB6GHxbgStXrTNWm6QNAxzZ0j5biyrbwtCyxOqu2Gh6Wwm7lXuC5C5Z3SHSwI1dC21kplEELwrbV-FhXUvP2k6KteO1kg1-FDxj3kF9fMPN3cKgXuWOH-rOBQ4OvObS_6y0tDwy-7x6_9FS9ub77ea_mpjY0kbl1UUu_fXx4cXFzdbBEb2swVZXveftnblkTUl2TOa0T1py_afxkgV8ubOsITymAS7cncg5-h76CzlFuKCb-uGsx432uiGURQ3agnMbutOQpCrBHNTTC30BZqEJ6Cjlx2inZZoxWq9mbt4_vXM-bO67rubPZQGL_u5M4-AYSb7dbEDanA7kZZIkvCKe2qYJHyXFcbUo8xELEQadVCah8r1w3dn13Gcaud9DI_k0g3pu7o7_hAdKkvaaxV3qqGt4yDan9k9MxvX-AeoLeO0f13RGD6zRPq_mzpLhSuVg1zyeYJD-x7-Fqakzpbqfw42eN9254eadXk7KCRFHt4sPtTSqoqaEBjTeCSzo4XR4Qh2fMA_LwpHlIHl_LQX9oDyBEtSrqPJ8AdmoQ0vq8ObiHDiXG0bj9gGyuFFDyhGkHcOV02HEaZDn2yNcxyrFHvs6-t3cOR75fOWpPKmE7fHsPhof2R4fBEMtQ1eZ2CSg30FnZiwn1fz6sh5Y-bs3EVA49nj1ob57O_SCYRS5fTCRvqQ7-HFNysaZsF2Pfbu-nixpPuWDD9pqirTYT-FyCtjRuR-1njAMIWotJuo1pDuFWAMI6Y9ofxNbKkvHgIma1iW2ymHS3ijHH-8cTNu0YutkwEw8kultXe7xeCPwaOX2B7J5iGJt6xDI2-phljF10QWumeH-rCl7gyeF1YjujoZTt4FCydngoTTc8lqAB3Gj1dnS0fDs-Wr8bH2_wtSuhRTD13YUXRYvf__NfWxQWdw:1sZmfr:DD_p7l86jYMn3mgnunz1I2oOqf1nXnWQCuybG9W3eKw",
+        "expire_date": "2024-08-16T07:26:03.206Z"
+    }
+},
+{
+    "model": "sites.site",
+    "pk": 1,
+    "fields": {
+        "domain": "example.com",
+        "name": "example.com"
+    }
+},
+{
+    "model": "wagtailmenus.mainmenu",
+    "pk": 1,
+    "fields": {
+        "site": 1,
+        "max_levels": 2
+    }
+}
+]
