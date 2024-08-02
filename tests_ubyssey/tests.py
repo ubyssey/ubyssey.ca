@@ -55,7 +55,7 @@ class BaseTestCase(StaticLiveServerTestCase):
         super().tearDown()
 
 class MySeleniumTests(BaseTestCase):
-    fixtures = ["/workspaces/ubyssey.ca/tests_ubyssey/test.json"]  # Correct path to the fixture file
+    fixtures = ["/workspaces/ubyssey.ca/tests_ubyssey/test_database.json"]  # Correct path to the fixture file
 
     def test_navigation_menu(self):
         print("Hello")
