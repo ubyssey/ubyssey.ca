@@ -343,6 +343,7 @@ class EventManager(models.Manager):
 
         # Otherwise assume its good
         return False
+    
     def process_and_store_event(self, event_component):
         
         # Extract start time
