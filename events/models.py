@@ -344,7 +344,7 @@ class EventManager(models.Manager):
         # Otherwise assume its good
         return False
     
-    def process_and_store_event(self, event_component):
+    def process_and_store_physics_and_astronomy_event(self, event_component):
         
         # Extract start time
         start_time_str = event_component.find('span', class_='start').get_text(strip=True)
