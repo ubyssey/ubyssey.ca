@@ -248,6 +248,7 @@ class EventManager(models.Manager):
                 title=title,
                 event_url=event_url,
             )
+            
         else:
             event = self.get(event_url=event_url)
             if event.update_mode != 2:
