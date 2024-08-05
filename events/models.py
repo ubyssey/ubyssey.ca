@@ -202,38 +202,38 @@ class EventManager(models.Manager):
         # Otherwise assume its good
         return False
     def process_and_store_event(self, event_component):
-        # Extract values
+        
+        # Extract start time
         start_time_str = event_component.find('span', class_='start').get_text(strip=True)
         parsed_start_time = datetime.fromisoformat(start_time_str)
         current_tz = timezone.get_current_timezone()
         start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
-        current_time = datetime.now(current_tz)
         
+        # Extract title
         title_span = event_component.find('span', class_='title')
         title = title_span.find('span', class_='field field--name-title field--type-string field--label-hidden')
         title = title.get_text(strip=True)
         a_tag = event_component.find('div', class_='event-title').find('a')
+        
+        # Extract event url
         href_value = a_tag['href']
         event_url = f"https://phas.ubc.ca{href_value}"
+        
+        # Extract location
         location_span = event_component.find('span', class_='location')
         location = location_span.get_text(strip=True).replace("Event Location:", "").strip()
         
+        # Extract description
         description_span = event_component.find('span', class_='description')
         description_text = description_span.get_text(strip=True)
         description = description_text if description_text != "Abstract:" else ""
 
+        # Extract end time
         end_time_str = event_component.find('span', class_='end').get_text(strip=True)
         parsed_end_time = datetime.fromisoformat(end_time_str)
         end_time = datetime.combine(parsed_end_time.date(), parsed_end_time.time(), tzinfo=current_tz)
 
-        category = None
-        field_items = event_component.find_all('div', class_='field__item')
-        for field_item in field_items:
-            a_tag = field_item.find('a')
-            if a_tag:
-                category = a_tag.get_text(strip=True)
-                break
-
+        # Extract host
         host = None
         p_tags = event_component.find_all('p')
         for p_tag in p_tags:
@@ -241,6 +241,7 @@ class EventManager(models.Manager):
                 p_text = p_tag.get_text(separator=' ', strip=True)
                 host = p_text.split('Speaker:')[1].split('|')[0].strip()
                 break
+            
         # Check if event exists and create or update accordingly
         if not self.filter(event_url=event_url).exists():
             event = self.create(
@@ -251,6 +252,7 @@ class EventManager(models.Manager):
             event = self.get(event_url=event_url)
             if event.update_mode != 2:
                 return None
+        
         # Update event details
         event.title = title
         event.description = description
@@ -258,24 +260,13 @@ class EventManager(models.Manager):
         event.end_time = end_time
         event.location = location
         event.category = 'seminar'
-        event.hidden = self.phas_judge_hidden(category)
+        event.hidden = False
         event.host = host
         event.update_mode = 1
         event.save()
+        
         return event
-    
-    def phas_judge_hidden(self, category):
-        '''
-        Returns True if event is online, isn't for undergraduates, or doesn't have enough information to categorize
-        '''
-        if category in ['Departmental Colloquia', 'Astronomy Colloquia', 'Theory Seminars', 'Quantum Information Seminars', 'Gravity Seminars', 'Condensed Matter Seminars',
-                        'Atomic, Molecular & Optical Physics (AMO) Seminars', 'Physics & Astronomy Education', 'Graduate Student Seminars', 'Graduate Thesis Presentations',
-                        'PITP Lectures', 'TRIUMF Talks', 'IsoSIM CREATE Seminars', 'UBC High Energy Theory Seminars', 'Other Talks'
-                        ]:
-            return True
-
-        return False
-              
+                  
 @register_snippet
 class Event(models.Model):
     title = models.CharField(

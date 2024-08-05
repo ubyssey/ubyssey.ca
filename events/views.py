@@ -173,9 +173,8 @@ def update_events(request):
 
         current_tz = timezone.get_current_timezone()
         current_time = datetime.now(current_tz)
-
+        
         for event in events:
-            print("HIIII")
             start_time_str = event.find('span', class_='start').get_text(strip=True)
             parsed_start_time = datetime.fromisoformat(start_time_str)
             start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)

@@ -120,7 +120,14 @@ ical, rss feed, and api should be linked here
             <div class="events-info--content {{selectedEvent.category}}">
                 <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
                 <p><b>Location:</b> {{selectedEvent.location}}</p>
-                <p>{% if selectedEvent.host %}<b>{{selectedEvent.host}}:</b>{% endif %} {{selectedEvent.description|safe}}</p>
+                <p>{% if selectedEvent.host %}
+                        <b>{% if  selectedEvent.description %}
+                            {{selectedEvent.host}}:
+                            {% else %}
+                                Hosted by {{selectedEvent.host}}
+                            {% endif %}
+                        </b>
+                    {% endif %} {{selectedEvent.description|safe}}</p>
                 <p>
                     <a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a>
                     {% if request.user.is_authenticated %}
