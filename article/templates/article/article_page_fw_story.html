@@ -1,7 +1,7 @@
 {% extends 'article/article_page.html' %}
 {% load static %}
 {% load wagtailimages_tags %}
-
+{% load ubyssey_ad_tags %}
 
 
 {% block specific_article_class %}
@@ -24,15 +24,14 @@
 {% block sidebar %}
 
     <div class="o-advertisement--fw-end">
-        {% if explicit is not True %}
+        {% if not self.is_explicit  %}
             {% if self.minutes_to_read >= 3 %}
-                {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}
-                {% include 'objects/advertisement.html' with size='box' name='Box_B' id=4 article=article.id %}
-            {% else %}
-                {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
+                {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
+                    {% gpt_placement_tag orderable.ad_slot %}
+                {% endfor %}  
             {% endif %}
         {% else %}
-            {% include 'objects/replacement.html' with size='box' %}
+            {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
         {% endif %}
     </div>
 {% endblock %}

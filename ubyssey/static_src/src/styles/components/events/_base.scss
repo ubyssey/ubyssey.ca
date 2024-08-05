@@ -23,11 +23,14 @@ main.events-page {
             position: sticky;
             top: 0;
             width: 30%;
-            padding: 12vh 0;
-            height: 76vh;
+            height: 100vh;
+            display: flex;
+        }
+        .events-info-container--div {
+            margin: auto 0;
+            min-height: 70vh;
         }
         .events-info {
-            margin-bottom: 2em;
             max-width: 500px;
             max-height: 81vh;
             border: 0.35em solid $color-ubyssey-blue-dark;
@@ -40,6 +43,7 @@ main.events-page {
                 margin: 0.75em;
                 color: white;
                 text-align: center;
+                font-family: noto-sans;
                 font-size: 1em;
                 line-height: 1em;
             }
@@ -59,6 +63,7 @@ main.events-page {
 
                 p {
                     line-height: 1.5em;
+                    font-family: noto-sans;
                 }
 
                 h2 {
@@ -86,7 +91,7 @@ main.events-page {
 
 .events-calendar--categories {
     display: flex;
-    margin: 1em 0 2em 0;
+    margin: 1em 0 1.5em 0;
     justify-content: center;
     ul {
         margin: 0;
@@ -97,6 +102,7 @@ main.events-page {
             margin: 0 0.25em;
             
             text-align: center;
+            font-family: noto-sans;
 
             &.selected {
                 text-decoration: underline;
@@ -149,6 +155,7 @@ div.day{
 
     li {
         border: 2px solid transparent;
+        font-family: noto-sans;
     }
 
     li.selected {
@@ -168,9 +175,11 @@ div.day{
         background-color: $color-ubyssey-blue;
         color: white;
         li a:hover, li a:focus {
+            color: inherit;
             text-decoration: underline;
         }
         li.selected {
+            color: white;
             text-decoration: underline;
         }
     }
@@ -188,6 +197,7 @@ div.day{
         list-style: none;
         overflow: clip;
         li {
+            margin: 0.3em 0;
             padding-inline: 0.25em;
             border-radius: 0.5em;
             height: 1.5em;
@@ -266,10 +276,6 @@ button.events-calendar--number {
     background-position: left;
     background-position-x: right;
     clip-path: polygon(33% 0px, 100% 0, 100% 100%, 0px 100%);
-}
-
-.events-calendar--rows {
-    margin-bottom: 5em;
 }
 
 header.events{
@@ -373,7 +379,7 @@ header.events{
     .events-calendar .day {
         width: 100%;
     }
-    .events-info-container {
+    main.events-page .events-flex .events-info-container {
         display: none;
     }
     button.events-calendar--number {
@@ -385,8 +391,20 @@ header.events{
             margin-right: 2em;
         }
     }
+    .events-calendar--rows .events-calendar--row:first-child {
+        display: none;
+    }
+    
+    div.day.past {
+        display: none;
+    }
+
+    .events-calendar--rows:nth-child(2) .events-calendar--month {
+        display: block;
+    }
+
     main.events-page .event-view {
-        .events-calendar--rows {
+        .events-calendar--rows, .legend {
             display: none;
         }
         .events-info-container {
@@ -405,8 +423,31 @@ header.events{
     }
 }
 
+.alt-icon {
+    display: inline;
+    margin-left: 1em;
+    @media($bp-smaller-than-phablet) {
+        display: none;
+    }
+}
+
+.mobile-alt {
+    text-align: center;
+    a {
+        margin-right: 1em;
+    }
+
+    @media($bp-larger-than-phablet) {
+        display: none;
+    }
+}
+
 .legend {
+    margin-bottom: 5em;
     width: 75%;
+    @media($bp-smaller-than-phablet) {
+        margin-bottom: 2em;
+    }
     ul {
         display: flex;
         padding: 0;
@@ -415,10 +456,26 @@ header.events{
     
         li {
             margin-left: 3em;
+            font-family: noto-sans;
         }
         li::marker {
             color: var(--highlight);
             font-size: 1.5em;
         }
+    }
+
+    .inactive {
+        text-decoration: line-through;
+    }
+
+    button {
+        padding: 0;
+        line-height: unset;
+        background: none;
+        border: none;
+        font-size: inherit;
+        color: inherit;
+        font-weight: 500;
+        margin: 0;
     }
 }

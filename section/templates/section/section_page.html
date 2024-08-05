@@ -55,11 +55,10 @@
           {% endif %}
           {% if self.category_menu.count and not category %}
           <div class="featured_categories">
-            <p>Featured Categories:&nbsp; </p>
             <ul>
               {% for category_menu_item in self.category_menu.all %}
                 {% if category_menu_item.category %}
-                  <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
+                  <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}" title="{{ category_menu_item.category.title }}">{{ category_menu_item.category.title }}</a></li>
                 {% else %}
                   comment Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! endcomment
                   <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
@@ -81,7 +80,7 @@
         
             <div class="setup-modal c-section__button-label">
               <a class="open-modal" href="#"> 
-                <p><i class="fa fa-tag"></i> Categories</p>
+                <p><i class="fa fa-tag"></i> {% if category %}Other {% endif %}Categories</p>
               </a>
 
               <dialog class="modal" aria-modal="true">

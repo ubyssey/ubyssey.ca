@@ -282,29 +282,6 @@ def update_events(request):
  
     except:
         return HttpResponse("Failed requesting to UBC Stats", status=500)
-    
-    try:
-        response = requests.get('https://phas.ubc.ca/events')
-        html_content = response.text
-
-        # Parse the HTML content
-        soup = BeautifulSoup(html_content, 'html.parser')
-        events = soup.find_all(class_='views-row')
-
-        current_tz = timezone.get_current_timezone()
-        current_time = datetime.now(current_tz)
-        
-        for event in events:
-            start_time_str = event.find('span', class_='start').get_text(strip=True)
-            parsed_start_time = datetime.fromisoformat(start_time_str)
-            start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
-
-            if start_time >= current_time:
-                Event.objects.process_and_store_physics_and_astronomy_event(event)
-            else:
-                break
-    except:
-        return HttpResponse("Failed requesting to Physics and Astronomy Events page", status=500)
 
     for event in Event.objects.filter(update_mode=2):
         event.delete()
