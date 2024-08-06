@@ -40,7 +40,7 @@
         {% with self.featured_media.first as featured_image_object %}
             <div class="banner-image">
                 {% image featured_image_object.image original as featured_image %}
-                <div class="backdrop" style="background-image: url('{{ featured_image.url }}');"></div>
+                <div class="backdrop" style="background-image: url('{{ featured_image.url }}'); {{ featured_image.background_position_style }};"></div>
                 <div class="headline-container">
                     <div class="u-container u-container--padded">
                         

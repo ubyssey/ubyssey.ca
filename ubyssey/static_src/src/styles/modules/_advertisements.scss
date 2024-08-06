@@ -158,13 +158,12 @@ main.article .o-advertisement--leaderboard {
 .o-advertisement--box {
   $width: nth(map-get($adslots, box), 1);
   $height: nth(map-get($adslots, box), 2);
-
+  padding-bottom: 1em;
   .adslot {
     width: $width;
     height: $height;
     margin-left: auto;
     margin-right: auto;
-    padding-top: 1.5rem;
   }
 }
 
@@ -217,6 +216,7 @@ main.article .o-advertisement--leaderboard {
 }
 
 .o-advertisement--fw-end {
+  margin-bottom: 2em;
   display: flex;
   justify-content: space-around;
 

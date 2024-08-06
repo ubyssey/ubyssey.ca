@@ -13,7 +13,7 @@
         --highlight: {{value}};
     }
     div.day li.{{key|slugify}} {
-        color: black;    
+        color: black !important;    
     }
 {% endfor %}
 </style>
@@ -24,6 +24,8 @@
 {% comment %} 
 ical, rss feed, and api should be linked here
 {% endcomment %}
+<link rel="alternate" type="text/calendar" title="{{ical.title}}" href="{{ical.url}}" />
+<link rel="alternate" type="application/atom+xml" title="{{rss.title}}" href="{{rss.url}}">
 {% endblock %}
 
 {% block header %}  
@@ -56,7 +58,10 @@ ical, rss feed, and api should be linked here
                         <li {% if tab == 'community' %}class="selected"{% endif %}><a href="?category=community">Community</a></li>
                         <li {% if tab == 'seminar' %}class="selected"{% endif %}><a href="?category=seminar">Seminar</a></li>
                     </ul>
+                    <a class="alt-icon" href="{{ical.url}}" title="{{ical.title}}"><i class="fa-solid fa-calendar-days"></i></a>
+                    <a class="alt-icon" href="{{rss.url}}" title="{{rss.title}}"><i class="fa fa-rss"></i></a>
                 </div>
+                <p class="mobile-alt"><a href="{{ical.url}}"><i class="fa-solid fa-calendar-days"></i> iCal File</a> <a href="{{rss.url}}"><i class="fa fa-rss"></i> Rss Feed</a></p>
             </header>
 
             <div class="events-calendar--days-of-week">
@@ -91,7 +96,9 @@ ical, rss feed, and api should be linked here
                             </button>
                             <ul>
                             {% for event in day.events %} 
-                                <li class="{% if event.host %}{{event.host|slugify}} {% endif %}{% if event.category %}{{event.category}} {% endif %}{% if event.event_url == selectedEvent.event_url %}selected{% endif %}"><a title="{{event.title}}" class="calendar-item" href="?event={{event.event_url}}" event-url="{{event.event_url}}">
+                                <li class="{% if event.host %}{{event.host|slugify}} {% endif %}{% if event.category %}{{event.category}} {% endif %}{% if event.event_url == selectedEvent.event_url %}selected{% endif %}"
+                                {% if highlight == 'category' and event.category == 'seminar' %}style="display: none;"{% endif %}>
+                                <a title="{{event.title}}" class="calendar-item" href="?event={{event.event_url}}" event-url="{{event.event_url}}">
                                     {% if event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {{event.title|safe}}
                                 </a></li>
                             {% endfor %}
@@ -100,27 +107,30 @@ ical, rss feed, and api should be linked here
                     {% endfor %}
                 </div>
             {% endfor %}
+            </div>
 
             <div class="legend">
                 <ul>
                 {% for key in legend %}
-                <li class="{{key|slugify}}">{{key}}</li>
+                <li class="{{key|slugify}}">
+                    <button id="{{key|slugify}}" class="legend-button {% if key == 'seminar' %}inactive{% endif %}" onClick="toggleCategory(this)">{{key}}</button>
+                </li>
                 {% endfor %}
                 </ul>
             </div>
 
-            </div>
         </div>
         <div class="events-info-container">
         {% if selectedEvent %}
+        <div class="events-info-container--div">
         <div class="events-info">
             <h2 class="event-info--time">
                 {{selectedEvent.displayTime}}
             </h2>
-            <div class="events-info--content {{selectedEvent.category}}">
-                <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
-                <p><b>Location:</b> {{selectedEvent.location}}</p>
-                <p>{% if selectedEvent.host %}
+            <div class="events-info--content {{selectedEvent.category}} {{selectedEvent.host|slugify}}">
+                    <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
+                    <p><b>Location:</b> {{selectedEvent.location}}</p>
+                    <p>{% if selectedEvent.host %}
                         <b>{% if  selectedEvent.description %}
                             {{selectedEvent.host}}:
                             {% else %}
@@ -128,21 +138,22 @@ ical, rss feed, and api should be linked here
                             {% endif %}
                         </b>
                     {% endif %} {{selectedEvent.description|safe}}</p>
-                <p>
-                    <a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a>
-                    {% if request.user.is_authenticated %}
-                    <a href="/admin/snippets/events/event/edit/{{selectedEvent.id}}" id="edit_link">Edit</a>
-                    {% endif %}
-                </p>
-                <script>
-                    var s = document.getElementById('source_link');
-                    s.href = s.href.replace("__AND__", "&");
-                    s.innerHTML = s.host;
+                    <p>
+                        <a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a>
+                        {% if request.user.is_authenticated %}
+                        <a href="/admin/snippets/events/event/edit/{{selectedEvent.id}}" id="edit_link">edit</a>
+                        {% endif %}
+                    </p>
+                    <script>
+                        var s = document.getElementById('source_link');
+                        s.href = s.href.replace("__AND__", "&");
+                        s.innerHTML = s.host;
 
-                    var s = document.getElementById('selected-title');
-                    s.href = s.href.replace("__AND__", "&");
-                </script>
+                        var s = document.getElementById('selected-title');
+                        s.href = s.href.replace("__AND__", "&");
+                    </script>
             </div>
+        </div>
         </div>
         {% endif %}
         </div>
@@ -159,7 +170,18 @@ ical, rss feed, and api should be linked here
         params.set('event', this.getAttribute('event-url'));
         console.log(params);
         window.location.search = params.toString();
-    })
+    });
+
+    function toggleCategory(that) {
+        console.log(that);
+        if (that.classList.contains("inactive"))
+        {
+            $('.day li.' + that.id).show();
+        } else {
+            $('.day li.' + that.id).hide();
+        }
+        that.classList.toggle('inactive');
+    }
 </script>
 {% endblock %}
 

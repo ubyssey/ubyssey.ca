@@ -222,6 +222,9 @@ function initializeModals() {
     if (modal.classList.contains("show")) {
       closeModal(modal);
     } else {
+      for(let m=0; m<document.getElementsByClassName("modal").length; m++) {
+        closeModal(document.getElementsByClassName("modal")[m]);
+      }
       openModal(modal);
     }
   });
