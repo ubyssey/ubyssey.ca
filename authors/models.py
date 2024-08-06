@@ -260,14 +260,14 @@ class AuthorPage(RoutablePageMixin, Page):
         from urllib.parse import urlparse
         from django.utils.safestring import mark_safe
         
-        domainToIcon = {'www.tumblr.com': 'fa-tumblr',
-                        'www.instagram.com': 'fa-instagram',
-                        'twitter.com': 'fa-twitter',
-                        'www.facebook.com': 'fa-facebook',
-                        'www.youtube.com': 'fa-youtube-play',
-                        'www.tiktok.com': 'fa-tiktok',
-                        'www.linkedin.com': 'fa-linkedin',
-                        'www.reddit.com': 'fa-reddit'}
+        domainToIcon = {'www.tumblr.com': 'logo-tumblr',
+                        'www.instagram.com': 'logo-instagram',
+                        'twitter.com': 'logo-twitter',
+                        'www.facebook.com': 'logo-facebook',
+                        'www.youtube.com': 'logo-youtube',
+                        'www.tiktok.com': 'logo-tiktok',
+                        'www.linkedin.com': 'logo-linkedin',
+                        'www.reddit.com': 'logo-reddit'}
 
         for i in range(len(self.linkIcons)):
             del self.linkIcons[-1]
@@ -277,29 +277,29 @@ class AuthorPage(RoutablePageMixin, Page):
             domain = urlparse(url).netloc    
             extra = ""
             if domain in domainToIcon:
+                icon = domainToIcon[domain]
                 if domain == "www.linkedin.com":
                     username = self.full_name
                 else:
-                    icon = domainToIcon[domain]
                     if url[-1] == "/":
                         url = url[0:-1]
                     username = url.split("/")[-1]
                     username = username.replace("@","")
             else:
-                icon = "fa-globe"
+                icon = "globe"
                 try:
                     json = requests.get(urlparse(url).scheme + "://" + domain + "/api/v2/instance").json()
                     if 'source_url' in json:
                         if json['source_url']=='https://github.com/mastodon/mastodon':
-                            icon = "fa-brands fa-mastodon"    
+                            icon = "logo-mastodon"    
                             extra = "rel='me'"
                             username = url.split("/")[-1]
                             username = username.replace("@","")
                 except:
-                    icon = "fa-globe"
+                    icon = "globe"
                     username = domain
 
-            self.linkIcons.append(('raw_html', '<a ' + extra + 'class="social_media_links" href="'+url+'"><i class="fa ' + icon + ' fa-fw" style="font-size:1em;"></i>&nbsp;'+username+'</a>'))
+            self.linkIcons.append(('raw_html', '<a ' + extra + 'class="social_media_links" href="'+url+'"><ion-icon name="' + icon + '" style="font-size:1em;"></ion-icon>&nbsp;'+username+'</a>'))
             
         if self.last_activity == None:
             self.last_activity = self.first_published_at

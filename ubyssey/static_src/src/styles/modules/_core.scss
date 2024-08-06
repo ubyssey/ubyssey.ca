@@ -419,3 +419,16 @@ a.image {
   cursor: pointer;
 }
 
+ion-icon {
+  margin-bottom: -0.1em;
+}
+
+.spin {
+  animation: spin 0.5s infinite;
+  font-size: 25px;
+}
+
+@keyframes spin {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(359deg);}
+}

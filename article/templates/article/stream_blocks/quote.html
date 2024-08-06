@@ -9,7 +9,7 @@
     <p class="meta">
     {% if self.audio %}
         <a href="#" audio="{{id}}" class="playAudioQuote">
-            <i id="icon-{{id}}" class="fa-solid fa-volume-off volume"></i>
+            <ion-icon id="icon-{{id}}" class="volume" name="volume-off"></ion-icon>
             {% if self.source %}<span class="source">Listen to {{ self.source }}</span>{% endif %}
         </a>
     {% elif self.source %}

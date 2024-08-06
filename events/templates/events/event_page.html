@@ -58,10 +58,10 @@ ical, rss feed, and api should be linked here
                         <li {% if tab == 'community' %}class="selected"{% endif %}><a href="?category=community">Community</a></li>
                         <li {% if tab == 'seminar' %}class="selected"{% endif %}><a href="?category=seminar">Seminar</a></li>
                     </ul>
-                    <a class="alt-icon" href="{{ical.url}}" title="{{ical.title}}"><i class="fa-solid fa-calendar-days"></i></a>
-                    <a class="alt-icon" href="{{rss.url}}" title="{{rss.title}}"><i class="fa fa-rss"></i></a>
+                    <a class="alt-icon" href="{{ical.url}}" title="{{ical.title}}"><ion-icon name="calendar"></ion-icon></a>
+                    <a class="alt-icon" href="{{rss.url}}" title="{{rss.title}}"><ion-icon name="logo-rss"></ion-icon></a>
                 </div>
-                <p class="mobile-alt"><a href="{{ical.url}}"><i class="fa-solid fa-calendar-days"></i> iCal File</a> <a href="{{rss.url}}"><i class="fa fa-rss"></i> Rss Feed</a></p>
+                <p class="mobile-alt"><a href="{{ical.url}}"><ion-icon name="calendar"></ion-icon> iCal File</a> <a href="{{rss.url}}"><ion-icon name="logo-rss"></ion-icon> Rss Feed</a></p>
             </header>
 
             <div class="events-calendar--days-of-week">
