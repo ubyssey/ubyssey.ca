@@ -306,7 +306,10 @@ def create_ical(request):
         ical_event = icalendar.Event()
         ical_event.add('summary', event.title.replace("<br>", ""))
         ical_event.add('description', event.description)
-        ical_event.add('location', event.location + ", " + event.address)
+        if event.address == None or event.address == "":
+            ical_event.add('location', event.location)
+        else:
+            ical_event.add('location', event.location + ", " + event.address)
         ical_event.add('dtstart', event.start_time.astimezone(timezone.get_current_timezone()))
         ical_event.add('dtend', event.end_time.astimezone(timezone.get_current_timezone()))
         if request.GET.get('category'):
