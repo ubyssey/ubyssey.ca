@@ -10,7 +10,6 @@ from datetime import datetime, time, timedelta
 
 class EventManager(models.Manager):
     def ubcevents_create_event(self, ical_component):
-
         if not self.filter(event_url=ical_component.get('url')).exists():
             event = self.create(
                 title=ical_component.get('summary'),
@@ -201,7 +200,73 @@ class EventManager(models.Manager):
         
         # Otherwise assume its good
         return False
+    def phas_ubc_create_event(self, event_component):
+        # Extract event url
+        a_tag = event_component.find('div', class_='event-title').find('a')
+        href_value = a_tag['href']
+        event_url = f"https://phas.ubc.ca{href_value}"
 
+        # Extract title
+        title_span = event_component.find('span', class_='title')
+        title = title_span.find('span', class_='field field--name-title field--type-string field--label-hidden')
+        title = title.get_text(strip=True)
+
+        # Check if event exists and create or update accordingly
+        if not self.filter(event_url=event_url).exists():
+            event = self.create(
+                title=title,
+                event_url=event_url,
+            )
+        else:
+            event = self.get(event_url=event_url)
+            if event.update_mode != 2:
+                return None
+
+        print(event_url)
+        # Extract start time
+        start_time_str = event_component.find('span', class_='start').get_text(strip=True)
+        parsed_start_time = datetime.fromisoformat(start_time_str)
+        current_tz = timezone.get_current_timezone()
+        start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
+        
+        # Extract location
+        location_span = event_component.find('span', class_='location')
+        location = location_span.get_text(strip=True).replace("Event Location:", "").strip()
+        
+        # Extract description
+        description_span = event_component.find('span', class_='description')
+        description_text = description_span.get_text(strip=True)
+        description = description_text if description_text != "Abstract:" else ""
+
+        # Extract end time
+        end_time_str = event_component.find('span', class_='end').get_text(strip=True)
+        parsed_end_time = datetime.fromisoformat(end_time_str)
+        end_time = datetime.combine(parsed_end_time.date(), parsed_end_time.time(), tzinfo=current_tz)
+
+        '''
+        Extract speaker
+        p_tags = event_component.find_all('p')
+        for p_tag in p_tags:
+            if 'Speaker:' in p_tag.get_text():
+                p_text = p_tag.get_text(separator=' ', strip=True)
+                host = p_text.split('Speaker:')[1].split('|')[0].strip()
+                break
+        '''            
+        
+        # Update event details
+        event.title = title
+        event.description = description
+        event.start_time = start_time
+        event.end_time = end_time
+        event.location = location
+        event.category = 'seminar'
+        event.hidden = False
+        event.host = 'UBC Physics & Astronomy'
+        event.update_mode = 1
+        event.save()
+        
+        return event
+    
     def cs_ubc_create_event(self, ical_component):
         if not self.filter(event_url=ical_component.get('url')).exists():
             event = self.create(
@@ -343,7 +408,7 @@ class EventManager(models.Manager):
 
         # Otherwise assume its good
         return False
-
+          
 @register_snippet
 class Event(models.Model):
     title = models.CharField(
