@@ -5,8 +5,7 @@
 
 	<div class="o-archive__search">
 		<form method="get">
-			<label class="o-archive__search__label" for="c-articles-list__searchbar"><i
-					class="fa fa-search"></i></label>
+			<label class="o-archive__search__label" for="c-articles-list__searchbar"><ion-icon name="search"></ion-icon></label>
 			<input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
 				{% if q %}value="{{ q }}" {% endif %} placeholder="Search" />
 		</form>
@@ -60,7 +59,7 @@
 
 					<a class="o-mobile-dropdown__button js-disable-scroll" href="#">
 						<span>{% if year %}{{ year }}{% else %}All years{% endif %}</span>
-						<i class="fa fa-sort-desc"></i>
+						<ion-icon name="caret-down-outline"></ion-icon>
 					</a>
 
 					<div class="o-mobile-dropdown__list js-dropdown-list">
@@ -69,7 +68,7 @@
 								<div class="o-mobile-dropdown__header">
 									<h2 class="o-mobile-dropdown__title">Filter by year:</h3>
 										<div class="o-mobile-dropdown__close">
-											<i class="fa fa-close"></i>
+											<ion-icon name="close-circle"></ion-icon>
 										</div>
 								</div>
 								<ul>
@@ -97,7 +96,7 @@
 					<a class="o-mobile-dropdown__button js-disable-scroll" href="#">
 						{% comment %} NTS ugly placeholder {% endcomment %}
 						<span>{% if section_slug %}{{ section_slug }}{% else %}All sections{% endif %}</span>
-						<i class="fa fa-sort-desc"></i>
+						<ion-icon name="caret-down-outline"></ion-icon>
 					</a>
 
 					<div class="o-mobile-dropdown__list js-dropdown-list">
@@ -106,7 +105,7 @@
 								<div class="o-mobile-dropdown__header">
 									<h2 class="o-mobile-dropdown__title">Filter by section:</h3>
 										<div class="o-mobile-dropdown__close">
-											<i class="fa fa-close"></i>
+											<ion-icon name="close-circle"></ion-icon>
 										</div>
 								</div>
 								<ul>
@@ -137,7 +136,7 @@
 				<div class="o-archive__header__sort o-dropdown js-dropdown">
 					<a class="o-button o-dropdown__button">
 						<span>{{ order|title }}</span>
-						<i class="fa fa-sort-desc"></i>
+						<ion-icon name="caret-down-outline"></ion-icon>
 					</a>
 					<ul class="o-dropdown__list js-dropdown-list">
 						<li class="o-dropdown__item{% if order == 'newest' %} o-dropdown__item--is-active{% endif %}">
@@ -161,7 +160,7 @@
 				{% if page_obj.has_previous %}
 				<a class="o-button o-archive__pagination__prev"
 					href="?{% modify_query_string 'page' page_obj.previous_page_number %}">
-					<i class="fa fa-caret-left" aria-hidden="true"></i>
+					<ion-icon name="caret-back" aria-hidden="true"></ion-icon>
 					Previous
 				</a>
 				{% endif %}
@@ -174,7 +173,7 @@
 				<a class="o-button o-archive__pagination__next"
 					href="?{% modify_query_string 'page' page_obj.next_page_number %}">
 					Next
-					<i class="fa fa-caret-right" aria-hidden="true"></i>
+					<ion-icon name="caret-forward" aria-hidden="true"></ion-icon>
 				</a>
 				{% endif %}
 			</div>
