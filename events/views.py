@@ -251,8 +251,8 @@ def update_events(request):
             parsed_start_time = datetime.fromisoformat(start_time_str)
             start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
 
-            if start_time >= current_time:
-                Event.objects.process_and_store_event(event)
+            if start_time >= current_time - timedelta(days=7):
+                Event.objects.phas_ubc_create_event(event)
             else:
                 break
     except:
