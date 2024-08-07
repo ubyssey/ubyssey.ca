@@ -71,11 +71,11 @@ jobs:
       
       selenium-chrome:
         image: selenium/standalone-chrome:latest
-        options: > 
-          --shm-size=2g
         ports:
           - 4444:4444
-          - 7900:7900 
+          - 7900:7900
+        options: >-
+          --shm-size=2g
       
     steps:
       - uses: actions/checkout@v2
