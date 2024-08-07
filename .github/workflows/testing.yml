@@ -41,7 +41,12 @@
 name: Django CI
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ "add-a-CI/CD-pipeline" ]
+  pull_request:
+    branches: [ "add-a-CI/CD-pipeline" ]
+
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -92,11 +97,11 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py collectstatic --noinput
           rm -rf .git/ ubyssey/static_src/
-      - name: Login to Docker Hub  # Step 1: Log in to Docker Hub
-        uses: docker/login-action@v1  # Use the docker/login-action to log in to Docker Hub
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use the stored Docker Hub username
-          password: ${{ secrets.DOCKERHUB_TOKEN }}  # Use the stored Docker Hub token for authentication
+      # - name: Login to Docker Hub  # Step 1: Log in to Docker Hub
+      #   uses: docker/login-action@v1  # Use the docker/login-action to log in to Docker Hub
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use the stored Docker Hub username
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}  # Use the stored Docker Hub token for authentication
 
       - name: Run Django server
         run: |
@@ -116,12 +121,11 @@ jobs:
           # pwd
           docker-compose -f docker-compose-test.yml ps
 
-          python manage.py migrate
           # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
           # mysql -uroot -pubyssey
           pip install selenium
           echo "Testing started"
-          export browser=chrome
+          # export browser=chrome
           echo "Selenium server started"
           python manage.py test
         env: 
