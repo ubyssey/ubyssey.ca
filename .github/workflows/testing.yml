@@ -135,7 +135,7 @@ jobs:
           echo "Testing started"
           # export browser=chrome
           echo "Selenium server started"
-          export SELENIUM_URL="http://localhost:4444/wd/hub"
+          # export SELENIUM_URL="http://localhost:4444/wd/hub"
           python manage.py test
         env: 
           SQL_HOST: 0.0.0.0
