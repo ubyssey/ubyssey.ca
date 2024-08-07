@@ -69,6 +69,14 @@ jobs:
           --health-timeout=5s
           --health-retries=3
       
+      selenium-chrome:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+          - 7900:7900 
+        shm_size: 2gb
+
+      
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -127,6 +135,7 @@ jobs:
           echo "Testing started"
           # export browser=chrome
           echo "Selenium server started"
+          export SELENIUM_URL="http://localhost:4444/wd/hub"
           python manage.py test
         env: 
           SQL_HOST: 0.0.0.0
