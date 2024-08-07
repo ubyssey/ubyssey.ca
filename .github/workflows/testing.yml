@@ -103,23 +103,23 @@ jobs:
       #     username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use the stored Docker Hub username
       #     password: ${{ secrets.DOCKERHUB_TOKEN }}  # Use the stored Docker Hub token for authentication
 
-      - name: Run Django server
-        run: |
-          export DJANGO_SETTINGS_MODULE="config.settings.development"
-          docker volume create --name=ubyssey_db_volume
-          docker-compose -f docker-compose-test.yml up -d
-      - name: Get MySQL Container IP Address
-        id: get_mysql_ip
-        run: |
-          CONTAINER_ID=$(docker-compose -f docker-compose-test.yml ps -q db)
-          IP_ADDRESS=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_ID)
-          echo "MYSQL_IP=$IP_ADDRESS" >> $GITHUB_ENV
+      # - name: Run Django server
+      #   run: |
+      #     export DJANGO_SETTINGS_MODULE="config.settings.development"
+      #     docker volume create --name=ubyssey_db_volume
+      #     docker-compose -f docker-compose-test.yml up -d
+      # - name: Get MySQL Container IP Address
+      #   id: get_mysql_ip
+      #   run: |
+      #     CONTAINER_ID=$(docker-compose -f docker-compose-test.yml ps -q db)
+      #     IP_ADDRESS=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_ID)
+      #     echo "MYSQL_IP=$IP_ADDRESS" >> $GITHUB_ENV
 
       - name: Run Migrations
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           # pwd
-          docker-compose -f docker-compose-test.yml ps
+          # docker-compose -f docker-compose-test.yml ps
 
           # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
           # mysql -uroot -pubyssey
