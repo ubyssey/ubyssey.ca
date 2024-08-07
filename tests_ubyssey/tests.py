@@ -121,6 +121,94 @@ class MySeleniumTests(BaseTestCase):
         self.driver.execute_script("window.scrollTo(0,444.4444885253906)")
         self.driver.find_element(By.CSS_SELECTOR, ".o-article--coverstory .o-article__headline > a").click()
         self.article_page_exists()
+        
+        self.driver.get(f'{self.live_server_url}/')
+        assert "The Ubyssey" in self.driver.title
+        self.driver.set_window_size(1296, 688)
+        self.driver.find_element(By.CSS_SELECTOR, ".middle .nav > li:nth-child(1) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("News"))
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(2) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Culture"))
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(3) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Features"))
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(4) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Opinion"))
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(5) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Humour"))
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(6) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Science"))
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(7) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Sports"))
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(8) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Photo"))
+        self.driver.find_element(By.CSS_SELECTOR, "nav > .nav > li:nth-child(9) > a").click()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("Video"))
+        html_content = self.driver.page_source
+        file_path = 'page.html'
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(html_content)
+
+        # Find the light logo image using the src attribute (or class if it's more specific)
+        light_logo = self.driver.find_element(By.CSS_SELECTOR, 'img.light-logo')
+
+        # Click on the light logo
+        ActionChains(self.driver).move_to_element(light_logo).click().perform()
+        WebDriverWait(self.driver, 60).until(EC.title_contains("The Ubyssey"))
+        self.driver.find_element(By.CSS_SELECTOR, ".o-article:nth-child(2) > .o-article__right > .o-article__headline > a").click()        
+        print("HELddLO")
+        self.driver.get(f'{self.live_server_url}/')
+        self.driver.set_window_size(1296, 688)
+        wait = WebDriverWait(self.driver, 10)
+        # html_content = self.driver.page_source
+        # file_path = 'page.html'
+        # with open(file_path, 'w', encoding='utf-8') as file:
+        #     file.write(html_content)
+        
+        wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".o-article__meta > .o-article__headline > a"))).click()
+        self.article_page_exists()
+
+        self.driver.get(f'{self.live_server_url}/')
+        self.driver.set_window_size(1296, 688)
+        # Find the author's link and extract the href attribute
+        author_link_element = self.driver.find_element(By.CSS_SELECTOR, ".o-article__byline .o-article__author a")
+        author_link = author_link_element.get_attribute("href")
+
+        # Extract the relative URL part
+        relative_url = author_link.split('http://localhost:8000/')[-1]
+
+        # Concatenate with self.live_server_url
+        full_url = f'{self.live_server_url}/{relative_url}'
+
+        # Navigate to the full URL
+        self.driver.get(full_url)
+
+        # Wait until the author-info elements are present on the page
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_all_elements_located((By.CLASS_NAME, 'author-info'))
+        )
+
+        # Get the page source and save it to a file
+        html_content = self.driver.page_source
+        file_path = 'page.html'
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(html_content)
+
+        # Find the author cards
+        author_cards = self.driver.find_elements(By.CLASS_NAME, 'author-info')
+
+        # Assert that the author cards are present
+        assert len(author_cards) > 0, "Author page does not exist"
+    
+        self.driver.get(f'{self.live_server_url}/')
+        self.driver.find_element(By.CSS_SELECTOR, ".o-article:nth-child(2) > .o-article__right > .o-article__headline > a").click()
+        self.article_page_exists()                
+
+    
+        self.driver.get(f'{self.live_server_url}/')
+        self.driver.set_window_size(1296, 688)
+        self.driver.find_element(By.CSS_SELECTOR, ".o-article > .o-article__headline > a").click()
+        self.article_page_exists()
+
 
     # def test_home_page_news_block(self):
     #     print("HELLO")
@@ -172,6 +260,10 @@ class MySeleniumTests(BaseTestCase):
 
     #     # Assert that the author cards are present
     #     assert len(author_cards) > 0, "Author page does not exist"
+    #     self.driver.get(f'{self.live_server_url}/')
+    #     self.driver.find_element(By.CSS_SELECTOR, ".o-article:nth-child(2) > .o-article__right > .o-article__headline > a").click()
+    #     self.article_page_exists()                
+
 
     # def test_top_article_list(self):
     #     self.driver.get(f'{self.live_server_url}/')
@@ -200,12 +292,21 @@ class MySeleniumTests(BaseTestCase):
         
     #     # Assert that the color-css-theme attribute value is 'light'
     #     # assert color_css_theme_value == 'light', f"The color-css-theme value is incorrect. Found: {color_css_theme_value}"
+    #     html_content = self.driver.page_source
+    #     file_path = 'page.html'
+    #     with open(file_path, 'w', encoding='utf-8') as file:
+    #         file.write(html_content)
 
     #     self.driver.find_element(By.CSS_SELECTOR, ".right .sun-and-moon").click()
     #     script = '''
     #     return getComputedStyle(document.documentElement)
     #         .getPropertyValue('--background').trim();
     #     '''
+    #     html_content = self.driver.page_source
+    #     file_path = 'pagess.html'
+    #     with open(file_path, 'w', encoding='utf-8') as file:
+    #         file.write(html_content)
+
     #     # Execute the JavaScript and get the background value
     #     background_nav_value = self.driver.execute_script(script)
 
@@ -217,16 +318,16 @@ class MySeleniumTests(BaseTestCase):
     # def test_news_featured_section_first_article(self):
     #     self.driver.get(f'{self.live_server_url}/')
     #     self.driver.set_window_size(1296, 688)
-    #     self.driver.find_element(By.CSS_SELECTOR, ".c-infinitefeed__feed:nth-child(1) .c-homepage__section:nth-child(2) .o-article:nth-child(1) > .o-article__meta a").click()
+    #     self.driver.find_element(By.CSS_SELECTOR, ".o-article > .o-article__headline > a").click()
     #     self.article_page_exists()
 
     # def test_search_bar_news(self):
-        # self.driver.get(f'{self.live_server_url}/news/?q=UBCO')
-        # implicit_wait = WebDriverWait(self.driver, 60)
-        # html_content = self.driver.page_source
-        # file_path = 'page.html'
-        # with open(file_path, 'w', encoding='utf-8') as file:
-        #     file.write(html_content)
+    #     self.driver.get(f'{self.live_server_url}/news/?q=UBCO')
+    #     implicit_wait = WebDriverWait(self.driver, 60)
+    #     html_content = self.driver.page_source
+    #     file_path = 'page.html'
+    #     with open(file_path, 'w', encoding='utf-8') as file:
+    #         file.write(html_content)
 
     #     # html_content = self.driver.page_source
     #     # # print(html_content)
@@ -278,19 +379,18 @@ class MySeleniumTests(BaseTestCase):
         # self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys(Keys.ENTER)
         # self.driver.implicitly_wait(60)
         # articles = self.driver.find_elements(By.CSS_SELECTOR,"#feed article")
-        # # Assert that there is at least one article after searching
-        # assert len(articles) > 0, "No articles found in the feed section."
-
         # html_content = self.driver.page_source
         # file_path = 'page.html'
         # with open(file_path, 'w', encoding='utf-8') as file:
         #     file.write(html_content)
+        # # Assert that there is at least one article after searching
+        # assert len(articles) > 0, "No articles found in the feed section."
+
     # def test_archive_in_footer(self):
     #     self.driver.get(f'{self.live_server_url}/')
     #     self.driver.set_window_size(1296, 688)
-    #     self.driver.execute_script("window.scrollTo(0,6560.00048828125)")
-    #     self.driver.find_element(By.CSS_SELECTOR, ".second_footer_menu li:nth-child(1) > a").click()
-    #     WebDriverWait(self.driver, 60).until(EC.title_contains("Archive"))
+    #     self.driver.find_element(By.CSS_SELECTOR, ".o-article > .o-article__headline > a").click()
+    #     WebDriverWait(self.driver, 60).until(EC.title_contains("News"))
                     
 # class EdgeTestCase(BaseTestCase):
 #     browser = 'edge'
