@@ -134,11 +134,11 @@ jobs:
           cd ..
           # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
           # mysql -uroot -pubyssey
-          # pip install selenium
+          pip install selenium
           echo "Testing started"
           # export browser=chrome
           echo "Selenium server started"
-          # python manage.py test
+          python manage.py test
         env: 
           SQL_HOST: 0.0.0.0
           # SQL_PORT: 3306

@@ -59,8 +59,8 @@ class BaseTestCase(StaticLiveServerTestCase):
         super().tearDown()
 
 class MySeleniumTests(BaseTestCase):
-    fixtures = ["/workspaces/ubyssey.ca/tests_ubyssey/tests.json"]  # Correct path to the fixture file
-    
+    # fixtures = ["/workspaces/ubyssey.ca/tests_ubyssey/tests.json"]  # Correct path to the fixture file
+    fixtures = ['/home/runner/work/ubyssey.ca/ubyssey.ca/tests_ubyssey/tests.json']
     # @override_settings(DEBUG=True)  # Override settings if necessary for testing
     # def setUp(self):
     #     super().setUp()
