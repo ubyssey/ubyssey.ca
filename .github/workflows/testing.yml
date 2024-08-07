@@ -69,13 +69,13 @@ jobs:
           --health-timeout=5s
           --health-retries=3
       
-      selenium-chrome:
-        image: selenium/standalone-chrome:latest
-        ports:
-          - 4444:4444
-          - 7900:7900
-        options: >-
-          --shm-size=2g
+      # selenium-chrome:
+      #   image: selenium/standalone-chrome:latest
+      #   ports:
+      #     - 4444:4444
+      #     - 7900:7900
+      #   options: >-
+      #     --shm-size=2g
       
     steps:
       - uses: actions/checkout@v2
@@ -141,6 +141,7 @@ jobs:
           # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
           # mysql -uroot -pubyssey
           pip install selenium
+          docker run -d -p 4444:4444 -p 7900:7900 --shm-size="2g" selenium-chrome/standalone-chrome:latest
           echo "Testing started"
           # export browser=chrome
           echo "Selenium server started"
