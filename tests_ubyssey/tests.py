@@ -35,7 +35,8 @@ class BaseTestCase(StaticLiveServerTestCase):
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         self.driver = webdriver.Remote(
-            command_executor='http://selenium-chrome:4444/wd/hub',
+            # command_executor='http://selenium-chrome:4444/wd/hub',
+            command_executor='http://localhost:4444/wd/hub',
             options=chrome_options
         )
         # elif hasattr(self, 'browser') and self.browser == 'firefox':

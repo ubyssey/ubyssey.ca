@@ -134,10 +134,10 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           # pwd
           # docker-compose -f docker-compose-test.yml ps
-          cd ./tests_ubyssey
-          ls
-          pwd
-          cd ..
+          # cd ./tests_ubyssey
+          # ls
+          # pwd
+          # cd ..
           # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
           # mysql -uroot -pubyssey
           pip install selenium
