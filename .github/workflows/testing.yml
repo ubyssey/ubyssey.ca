@@ -1,43 +1,3 @@
-# on:
-#   push:
-#     branches: [ "add-a-CI/CD-pipeline" ]
-#   pull_request:
-#     branches: [ "add-a-CI/CD-pipeline" ]
-    
-# jobs:
-
-#   test:  # Define a job named 'test'
-#       name: Run unit tests  # A more descriptive name for the job
-#       runs-on: ubuntu-22.04  # Specify the runner environment (Ubuntu 22.04)
-
-#       steps:  # Steps to be run as part of this job
-#           - name: Login to Docker Hub  # Step 1: Log in to Docker Hub
-#             uses: docker/login-action@v1  # Use the docker/login-action to log in to Docker Hub
-#             with:
-#               username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use the stored Docker Hub username
-#               password: ${{ secrets.DOCKERHUB_TOKEN }}  # Use the stored Docker Hub token for authentication
-
-#           - name: Checkout  # Step 2: Checkout the repository code
-#             uses: actions/checkout@v2  # Use the checkout action to checkout the code
-
-#           - name: Test  # Step 3: Run the tests
-#             run: |
-#               docker build . -t ubyssey/ubyssey.ca:latest
-#               echo "Docker image built successfully"
-#               git clone https://github.com/ubyssey/ubyssey-dev.git
-#               docker volume create --name=ubyssey_db_volume
-#               docker exec -t -i ubyssey_db bash
-#               mysql -u root -pubyssey
-#               CREATE DATABASE ubyssey;
-#               quit;
-#               # echo "Changed directory to .devcontainer"
-#               # docker-compose up 
-#               # --rm web sh -c "python3 manage.py test"
-#               # ls
-#               # cd ubyssey-dev
-#               # pwd
-#               # ls
-#               # docker-compose run --rm web sh -c "python3 manage.py test"  # Use Docker Compose to run the Django unit tests
 name: Django CI
 
 on:
@@ -77,6 +37,22 @@ jobs:
         options: >-
           --shm-size=2g
       
+      selenium-edge:
+        image: selenium/standalone-edge:latest
+        ports:
+          - 4444:4444
+          - 7901:7900
+        options: >-
+          --shm-size=2g
+
+      selenium-firefox:
+        image: selenium/standalone-firefox:latest
+        ports:
+          - 4446:4444 
+          - 7902:7900 
+        options: >-
+          --shm-size=2g
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -105,23 +81,6 @@ jobs:
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py collectstatic --noinput
           rm -rf .git/ ubyssey/static_src/
-      # - name: Login to Docker Hub  # Step 1: Log in to Docker Hub
-      #   uses: docker/login-action@v1  # Use the docker/login-action to log in to Docker Hub
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use the stored Docker Hub username
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}  # Use the stored Docker Hub token for authentication
-
-      # - name: Run Django server
-      #   run: |
-      #     export DJANGO_SETTINGS_MODULE="config.settings.development"
-      #     docker volume create --name=ubyssey_db_volume
-      #     docker-compose -f docker-compose-test.yml up -d
-      # - name: Get MySQL Container IP Address
-      #   id: get_mysql_ip
-      #   run: |
-      #     CONTAINER_ID=$(docker-compose -f docker-compose-test.yml ps -q db)
-      #     IP_ADDRESS=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_ID)
-      #     echo "MYSQL_IP=$IP_ADDRESS" >> $GITHUB_ENV
       - name: Download wait-for-it script
         run: |
           curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -o wait-for-it.sh
@@ -129,20 +88,10 @@ jobs:
       - name: Wait for Selenium to be ready
         run: ./wait-for-it.sh localhost:4444 --timeout=60 -- echo "Selenium is up"
 
-      - name: Run Migrations
+      - name: Run test on chrome browser
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
-          # pwd
-          # docker-compose -f docker-compose-test.yml ps
-          # cd ./tests_ubyssey
-          # ls
-          # pwd
-          # cd ..
-          # docker exec -it $(docker-compose -f docker-compose-test.yml ps -q db) bash
-          # mysql -uroot -pubyssey
           pip install selenium
-          echo "Testing started"
-          echo "Selenium server started"
           export BROWSER=chrome
           export CI_ENVIRONMENT=testing
           python manage.py test
@@ -151,3 +100,28 @@ jobs:
           SQL_DATABASE: ubyssey
           SQL_USER: root
           SQL_PASSWORD: ubyssey
+      
+      - name: Run test on firefox browser
+        run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.development"
+          export BROWSER=firefox
+          export CI_ENVIRONMENT=testing
+          python manage.py test
+        env: 
+          SQL_HOST: 0.0.0.0
+          SQL_DATABASE: ubyssey
+          SQL_USER: root
+          SQL_PASSWORD: ubyssey
+      
+      - name: Run test on chrome browser
+        run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.development"
+          export BROWSER=edge
+          export CI_ENVIRONMENT=testing
+          python manage.py test
+        env: 
+          SQL_HOST: 0.0.0.0
+          SQL_DATABASE: ubyssey
+          SQL_USER: root
+          SQL_PASSWORD: ubyssey
+
