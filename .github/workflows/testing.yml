@@ -40,7 +40,7 @@ jobs:
       selenium-edge:
         image: selenium/standalone-edge:latest
         ports:
-          - 4444:4444
+          - 4445:4444
           - 7901:7900
         options: >-
           --shm-size=2g
@@ -124,4 +124,3 @@ jobs:
           SQL_DATABASE: ubyssey
           SQL_USER: root
           SQL_PASSWORD: ubyssey
-
