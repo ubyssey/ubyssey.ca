@@ -10,9 +10,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from dotenv import load_dotenv
-
-load_dotenv()
 
 @override_settings(ALLOWED_HOSTS=['*'])  # Disable ALLOWED_HOSTS
 class BaseTestCase(StaticLiveServerTestCase):
