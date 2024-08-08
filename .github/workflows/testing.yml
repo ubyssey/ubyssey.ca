@@ -117,6 +117,7 @@ jobs:
       - name: Run test on edge browser
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
+          pip install selenium
           export BROWSER=edge
           export CI_ENVIRONMENT=testing
           python manage.py test
