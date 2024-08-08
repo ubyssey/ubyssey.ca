@@ -101,23 +101,11 @@ jobs:
       #     SQL_USER: root
       #     SQL_PASSWORD: ubyssey
       
-      - name: Run test on firefox browser
-        run: |
-          export DJANGO_SETTINGS_MODULE="config.settings.development"
-          pip install selenium
-          export BROWSER=firefox
-          export CI_ENVIRONMENT=testing
-          python manage.py test
-        env: 
-          SQL_HOST: 0.0.0.0
-          SQL_DATABASE: ubyssey
-          SQL_USER: root
-          SQL_PASSWORD: ubyssey
-      
-      # - name: Run test on edge browser
+      # - name: Run test on firefox browser
       #   run: |
       #     export DJANGO_SETTINGS_MODULE="config.settings.development"
-      #     export BROWSER=edge
+      #     pip install selenium
+      #     export BROWSER=firefox
       #     export CI_ENVIRONMENT=testing
       #     python manage.py test
       #   env: 
@@ -125,3 +113,15 @@ jobs:
       #     SQL_DATABASE: ubyssey
       #     SQL_USER: root
       #     SQL_PASSWORD: ubyssey
+      
+      - name: Run test on edge browser
+        run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.development"
+          export BROWSER=edge
+          export CI_ENVIRONMENT=testing
+          python manage.py test
+        env: 
+          SQL_HOST: 0.0.0.0
+          SQL_DATABASE: ubyssey
+          SQL_USER: root
+          SQL_PASSWORD: ubyssey
