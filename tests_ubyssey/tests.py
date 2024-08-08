@@ -1,14 +1,18 @@
+import argparse
+import os
 import socket
-from bs4 import BeautifulSoup
+import sys
+from django.core.management import execute_from_command_line
 from django.test import override_settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from urllib.parse import urlencode
 from selenium.webdriver.common.action_chains import ActionChains
+from dotenv import load_dotenv
+
+load_dotenv()
 
 @override_settings(ALLOWED_HOSTS=['*'])  # Disable ALLOWED_HOSTS
 class BaseTestCase(StaticLiveServerTestCase):
@@ -23,36 +27,37 @@ class BaseTestCase(StaticLiveServerTestCase):
         super().setUpClass()
         # Set host to externally accessible web server address
         cls.host = socket.gethostbyname(socket.gethostname())
-        print("HUH")
-        # cls.live_server_url = f'http://{cls.host}:8000'
+        cls.browser = os.getenv('BROWSER', 'chrome')
+        cls.ci_environment = os.getenv('CI_ENVIRONMENT', 'development')
 
     def setUp(self):
         super().setUp()
         # Instantiate the remote WebDriver based on the browser type
-        # if hasattr(self, 'browser') and self.browser == 'chrome':
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        self.driver = webdriver.Remote(
-            command_executor='http://selenium-chrome:4444/wd/hub',
-            # command_executor='http://localhost:4444/wd/hub',
-            options=chrome_options
-        )
-        # elif hasattr(self, 'browser') and self.browser == 'firefox':
-        #     firefox_options = webdriver.FirefoxOptions()
-        #     firefox_options.add_argument('--headless')
-        #     self.driver = webdriver.Remote(
-        #         command_executor='http://selenium-firefox:4444/wd/hub',
-        #         options=firefox_options
-        #     )
-        # else:
-        #     edge_options = webdriver.EdgeOptions()
-        #     edge_options.add_argument('--headless')
-        #     self.driver = webdriver.Remote(
-        #         command_executor='http://selenium-edge:4444/wd/hub',
-        #         options=edge_options
-        #     )
+        if hasattr(self, 'browser') and self.browser == 'chrome':
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+            self.driver = webdriver.Remote(
+                command_executor='http://selenium-chrome:4444/wd/hub',
+                options=chrome_options
+            )
+        elif hasattr(self, 'browser') and self.browser == 'firefox':
+            firefox_options = webdriver.FirefoxOptions()
+            firefox_options.add_argument('--headless')
+            self.driver = webdriver.Remote(
+                command_executor='http://selenium-firefox:4444/wd/hub',
+                options=firefox_options
+            )
+        elif hasattr(self, 'browser') and self.browser == 'edge':
+            edge_options = webdriver.EdgeOptions()
+            edge_options.add_argument('--headless')
+            self.driver = webdriver.Remote(
+                command_executor='http://selenium-edge:4444/wd/hub',
+                options=edge_options
+            )
+        else:
+            raise ValueError(f"Unsupported browser: {self.browser}")
         self.driver.implicitly_wait(5)
     
     def tearDown(self):
@@ -164,3 +169,27 @@ class MySeleniumTests(BaseTestCase):
         self.driver.set_window_size(1296, 688)
         self.driver.find_element(By.CSS_SELECTOR, ".o-article > .o-article__headline > a").click()
         self.article_page_exists()
+        
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Django management command with browser argument.')
+    parser.add_argument(
+        '--BROWSER', 
+        choices=['chrome', 'firefox', 'edge'], 
+        default='chrome', 
+        help='Specify the browser to use for tests.'
+    )
+    args = parser.parse_args()
+    
+    parser.add_argument(
+        '--CI_ENV',
+        choices=['development', 'testing'],
+        default='development',
+        help='Specify the CI environment.'
+    )
+    args = parser.parse_args()
+    
+    # Set the browser type as an environment variable
+    os.environ['BROWSER'] = args.browser
+    os.environ['CI_ENV'] = args.ci_env
+
+    execute_from_command_line(sys.argv)
