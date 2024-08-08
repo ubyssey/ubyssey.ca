@@ -31,7 +31,7 @@ class BaseTestCase(StaticLiveServerTestCase):
         super().setUp()
         # Determine the command executor URL based on the CI environment
         if self.ci_environment == 'testing':
-            command_executor = 'http://localhost:4444/wd/hub'
+            command_executor = 'http://localhost:4445/wd/hub'
         else:
             if hasattr(self, 'browser') and self.browser == 'chrome':
                 command_executor = 'http://selenium-chrome:4444/wd/hub'
