@@ -132,29 +132,34 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-    
+
     steps:
       - uses: actions/checkout@v2
+
+      - name: Set up Docker
+        run: |
+          brew install --cask docker
+          open -a Docker
+          echo "Waiting for Docker to start..."
+          sleep 30 # Wait for Docker to fully initialize
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install MySQL on macOS
+      - name: Install and run MySQL in Docker
         run: |
           docker pull mysql:5.7
           docker run --name mysql57 -e MYSQL_ROOT_PASSWORD=ubyssey -e MYSQL_DATABASE=ubyssey -p 3306:3306 -d mysql:5.7
-          docker ps
+          echo "Waiting for MySQL to be ready..."
+          sleep 30 # Wait for MySQL to be fully initialized
+
       - name: Configure MySQL
         run: |
-          mysqladmin -u root password 'ubyssey'
-          mysql -u root -pubyssey -e "CREATE DATABASE IF NOT EXISTS ubyssey;"
-        env: 
-          SQL_HOST: 0.0.0.0
-          SQL_DATABASE: ubyssey
-          SQL_USER: root
-          SQL_PASSWORD: ubyssey
+          docker exec mysql57 mysql -u root -pubyssey -e "CREATE DATABASE IF NOT EXISTS ubyssey;"
+        env:
+          MYSQL_ROOT_PASSWORD: ubyssey
 
       - name: Install Python packages and dependencies
         run: |
@@ -189,7 +194,7 @@ jobs:
           export BROWSER=safari
           export CI_ENVIRONMENT=testing
           python manage.py test
-        env: 
+        env:
           SQL_HOST: 0.0.0.0
           SQL_DATABASE: ubyssey
           SQL_USER: root
