@@ -139,7 +139,8 @@ jobs:
       - name: Set up Docker
         run: |
           brew install --cask docker
-          open -a Docker
+          # open -a Docker
+          docker ps
           echo "Waiting for Docker to start..."
           sleep 30 # Wait for Docker to fully initialize
 
