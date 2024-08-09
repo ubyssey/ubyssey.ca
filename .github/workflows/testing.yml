@@ -140,8 +140,8 @@ jobs:
         run: |
           brew install --cask docker
           # open -a Docker
-          docker ps
-          echo "Waiting for Docker to start..."
+          # docker ps
+          # echo "Waiting for Docker to start..."
           sleep 30 # Wait for Docker to fully initialize
 
       - name: Set up Python ${{ matrix.python-version }}
