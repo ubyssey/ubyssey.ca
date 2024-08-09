@@ -139,10 +139,10 @@ jobs:
       - name: 
         run: |
           brew tap homebrew/services
-          brew install mysql@5.7
-          brew services start mysql@5.7
-          brew services list
-          brew link mysql@5.7 --force
+          brew install mysql
+          # brew services start mysql@5.7
+          # brew services list
+          # brew link mysql@5.7 --force
           mysql -V
           # open -a Docker
           # docker ps
