@@ -8,165 +8,65 @@ on:
 
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: [3.8]
-
-  #   services:
-  #     db:
-  #       image: mysql:5.7
-  #       volumes:
-  #         - database:/var/lib/mysql
-  #       env:
-  #         MYSQL_ROOT_PASSWORD: ubyssey
-  #         MYSQL_DATABASE: ubyssey
-  #       ports: ['3306:3306']
-  #       options: >-
-  #         --health-cmd="mysqladmin ping --silent"
-  #         --health-interval=10s
-  #         --health-timeout=5s
-  #         --health-retries=3
-      
-  #     selenium-chrome:
-  #       image: selenium/standalone-chrome:latest
-  #       ports:
-  #         - 4444:4444
-  #         - 7900:7900
-  #       options: >-
-  #         --shm-size=2g
-      
-  #     selenium-edge:
-  #       image: selenium/standalone-edge:latest
-  #       ports:
-  #         - 4445:4444
-  #         - 7901:7900
-  #       options: >-
-  #         --shm-size=2g
-
-  #     selenium-firefox:
-  #       image: selenium/standalone-firefox:latest
-  #       ports:
-  #         - 4446:4444 
-  #         - 7902:7900 
-  #       options: >-
-  #         --shm-size=2g
-
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python ${{ matrix.python-version }}
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Install Python packages and dependencies
-  #       run: |
-  #         pip install -r requirements-prd.txt --use-pep517 
-  #         pip install requests --upgrade
-  #     - name: Set up Node.js environment
-  #       uses: actions/setup-node@v2.1.4
-  #       with:
-  #         node-version: 14.x  
-  #     - name: Run gulp to ready frontend static files for production
-  #       run: |
-  #         cd ubyssey/static_src
-  #         npm install -g gulp
-  #         npm install
-  #         npm ddp
-  #         gulp build
-  #         rm -rf node_modules
-  #         cd ../../
-  #     - name: Collect static files
-  #       run: |
-  #         export DJANGO_SETTINGS_MODULE="config.settings.development"
-  #         python manage.py collectstatic --noinput
-  #         rm -rf .git/ ubyssey/static_src/
-  #     - name: Download wait-for-it script
-  #       run: |
-  #         curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -o wait-for-it.sh
-  #         chmod +x wait-for-it.sh
-  #     - name: Wait for Selenium to be ready
-  #       run: ./wait-for-it.sh localhost:4444 --timeout=60 -- echo "Selenium is up"
-
-  #     - name: Run test on chrome browser
-  #       run: |
-  #         export DJANGO_SETTINGS_MODULE="config.settings.development"
-  #         pip install selenium
-  #         export BROWSER=chrome
-  #         export CI_ENVIRONMENT=testing
-  #         python manage.py test
-  #       env: 
-  #         SQL_HOST: 0.0.0.0
-  #         SQL_DATABASE: ubyssey
-  #         SQL_USER: root
-  #         SQL_PASSWORD: ubyssey
-      
-  #     - name: Run test on firefox browser
-  #       run: |
-  #         export DJANGO_SETTINGS_MODULE="config.settings.development"
-  #         pip install selenium
-  #         export BROWSER=firefox
-  #         export CI_ENVIRONMENT=testing
-  #         python manage.py test
-  #       env: 
-  #         SQL_HOST: 0.0.0.0
-  #         SQL_DATABASE: ubyssey
-  #         SQL_USER: root
-  #         SQL_PASSWORD: ubyssey
-      
-  #     - name: Run test on edge browser
-  #       run: |
-  #         export DJANGO_SETTINGS_MODULE="config.settings.development"
-  #         pip install selenium
-  #         export BROWSER=edge
-  #         export CI_ENVIRONMENT=testing
-  #         python manage.py test
-  #       env: 
-  #         SQL_HOST: 0.0.0.0
-  #         SQL_DATABASE: ubyssey
-  #         SQL_USER: root
-  #         SQL_PASSWORD: ubyssey
-
-  test-safari:
-    runs-on: macos-latest
+  test:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.8]
-    
+
+    services:
+      # db:
+      #   image: mysql:5.7
+      #   volumes:
+      #     - database:/var/lib/mysql
+      #   env:
+      #     MYSQL_ROOT_PASSWORD: ubyssey
+      #     MYSQL_DATABASE: ubyssey
+      #   ports: ['3306:3306']
+      #   options: >-
+      #     --health-cmd="mysqladmin ping --silent"
+      #     --health-interval=10s
+      #     --health-timeout=5s
+      #     --health-retries=3
+      
+      selenium-chrome:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+          - 7900:7900
+        options: >-
+          --shm-size=2g
+      
+      selenium-edge:
+        image: selenium/standalone-edge:latest
+        ports:
+          - 4445:4444
+          - 7901:7900
+        options: >-
+          --shm-size=2g
+
+      selenium-firefox:
+        image: selenium/standalone-firefox:latest
+        ports:
+          - 4446:4444 
+          - 7902:7900 
+        options: >-
+          --shm-size=2g
+
     steps:
       - uses: actions/checkout@v2
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install MySQL on macOS
-        run: |
-          brew update
-          brew install mysql@5.7
-          brew services start mysql@5.7
-
-      - name: Configure MySQL
-        run: |
-          mysqladmin -u root password 'ubyssey'
-          mysql -u root -pubyssey -e "CREATE DATABASE IF NOT EXISTS ubyssey;"
-        env: 
-          SQL_HOST: 127.0.0.1
-          SQL_DATABASE: ubyssey
-          SQL_USER: root
-          SQL_PASSWORD: ubyssey
-
       - name: Install Python packages and dependencies
         run: |
           pip install -r requirements-prd.txt --use-pep517 
           pip install requests --upgrade
-
       - name: Set up Node.js environment
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: 14.x
-
+          node-version: 14.x  
       - name: Run gulp to ready frontend static files for production
         run: |
           cd ubyssey/static_src
@@ -176,22 +76,122 @@ jobs:
           gulp build
           rm -rf node_modules
           cd ../../
-
       - name: Collect static files
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           python manage.py collectstatic --noinput
           rm -rf .git/ ubyssey/static_src/
+      - name: Download wait-for-it script
+        run: |
+          curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -o wait-for-it.sh
+          chmod +x wait-for-it.sh
+      - name: Wait for Selenium to be ready
+        run: ./wait-for-it.sh localhost:4444 --timeout=60 -- echo "Selenium is up"
 
-      - name: Run tests on Safari browser
+      - name: Run test on chrome browser
         run: |
           export DJANGO_SETTINGS_MODULE="config.settings.development"
           pip install selenium
-          export BROWSER=safari
+          export BROWSER=chrome
           export CI_ENVIRONMENT=testing
           python manage.py test
-        env: 
-          SQL_HOST: 127.0.0.1
-          SQL_DATABASE: ubyssey
-          SQL_USER: root
-          SQL_PASSWORD: ubyssey
+        # env: 
+        #   SQL_HOST: 0.0.0.0
+        #   SQL_DATABASE: ubyssey
+        #   SQL_USER: root
+        #   SQL_PASSWORD: ubyssey
+      
+      - name: Run test on firefox browser
+        run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.development"
+          pip install selenium
+          export BROWSER=firefox
+          export CI_ENVIRONMENT=testing
+          python manage.py test
+        # env: 
+        #   SQL_HOST: 0.0.0.0
+        #   SQL_DATABASE: ubyssey
+        #   SQL_USER: root
+        #   SQL_PASSWORD: ubyssey
+      
+      - name: Run test on edge browser
+        run: |
+          export DJANGO_SETTINGS_MODULE="config.settings.development"
+          pip install selenium
+          export BROWSER=edge
+          export CI_ENVIRONMENT=testing
+          python manage.py test
+        # env: 
+        #   SQL_HOST: 0.0.0.0
+        #   SQL_DATABASE: ubyssey
+        #   SQL_USER: root
+        #   SQL_PASSWORD: ubyssey
+
+  # test-safari:
+  #   runs-on: macos-latest
+  #   strategy:
+  #     matrix:
+  #       python-version: [3.8]
+    
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - name: Set up Python ${{ matrix.python-version }}
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
+
+  #     - name: Install MySQL on macOS
+  #       run: |
+  #         brew update
+  #         brew install mysql@5.7
+  #         brew services start mysql@5.7
+
+  #     - name: Configure MySQL
+  #       run: |
+  #         mysqladmin -u root password 'ubyssey'
+  #         mysql -u root -pubyssey -e "CREATE DATABASE IF NOT EXISTS ubyssey;"
+  #       env: 
+  #         SQL_HOST: 127.0.0.1
+  #         SQL_DATABASE: ubyssey
+  #         SQL_USER: root
+  #         SQL_PASSWORD: ubyssey
+
+  #     - name: Install Python packages and dependencies
+  #       run: |
+  #         pip install -r requirements-prd.txt --use-pep517 
+  #         pip install requests --upgrade
+
+  #     - name: Set up Node.js environment
+  #       uses: actions/setup-node@v2.1.4
+  #       with:
+  #         node-version: 14.x
+
+  #     - name: Run gulp to ready frontend static files for production
+  #       run: |
+  #         cd ubyssey/static_src
+  #         npm install -g gulp
+  #         npm install
+  #         npm ddp
+  #         gulp build
+  #         rm -rf node_modules
+  #         cd ../../
+
+  #     - name: Collect static files
+  #       run: |
+  #         export DJANGO_SETTINGS_MODULE="config.settings.development"
+  #         python manage.py collectstatic --noinput
+  #         rm -rf .git/ ubyssey/static_src/
+
+  #     - name: Run tests on Safari browser
+  #       run: |
+  #         export DJANGO_SETTINGS_MODULE="config.settings.development"
+  #         pip install selenium
+  #         export BROWSER=safari
+  #         export CI_ENVIRONMENT=testing
+  #         python manage.py test
+  #       env: 
+  #         SQL_HOST: 127.0.0.1
+  #         SQL_DATABASE: ubyssey
+  #         SQL_USER: root
+  #         SQL_PASSWORD: ubyssey
