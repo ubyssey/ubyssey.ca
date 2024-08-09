@@ -30,49 +30,54 @@ class BaseTestCase(StaticLiveServerTestCase):
     def setUp(self):
         super().setUp()
         # Determine the command executor URL based on the CI environment
-        if self.ci_environment == 'testing':
-            if hasattr(self, 'browser') and self.browser == 'chrome':
-                command_executor = 'http://localhost:4444/wd/hub'
-            elif hasattr(self, 'browser') and self.browser == 'firefox':
-                command_executor = 'http://localhost:4446/wd/hub'
-            else:
-                command_executor = 'http://localhost:4445/wd/hub'
+        if hasattr(self, 'browser') and self.browser == 'safari':
+            self.driver = webdriver.Safari()
         else:
-            if hasattr(self, 'browser') and self.browser == 'chrome':
-                command_executor = 'http://selenium-chrome:4444/wd/hub'
-            elif hasattr(self, 'browser') and self.browser == 'firefox':
-                command_executor = 'http://selenium-firefox:4444/wd/hub'
-            elif hasattr(self, 'browser') and self.browser == 'edge':
-                command_executor = 'http://selenium-edge:4444/wd/hub'
+            # Determine the command executor URL based on the CI environment
+            if self.ci_environment == 'testing':
+                if self.browser == 'chrome':
+                    command_executor = 'http://localhost:4444/wd/hub'
+                elif self.browser == 'firefox':
+                    command_executor = 'http://localhost:4446/wd/hub'
+                else:
+                    command_executor = 'http://localhost:4445/wd/hub'
+            else:
+                if self.browser == 'chrome':
+                    command_executor = 'http://selenium-chrome:4444/wd/hub'
+                elif self.browser == 'firefox':
+                    command_executor = 'http://selenium-firefox:4444/wd/hub'
+                elif self.browser == 'edge':
+                    command_executor = 'http://selenium-edge:4444/wd/hub'
+                else:
+                    raise ValueError(f"Unsupported browser: {self.browser}")
+
+            # Instantiate the remote WebDriver based on the browser type
+            if self.browser == 'chrome':
+                chrome_options = webdriver.ChromeOptions()
+                chrome_options.add_argument('--headless')
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument('--disable-dev-shm-usage')
+                self.driver = webdriver.Remote(
+                    command_executor=command_executor,
+                    options=chrome_options
+                )
+            elif self.browser == 'firefox':
+                firefox_options = webdriver.FirefoxOptions()
+                firefox_options.add_argument('--headless')
+                self.driver = webdriver.Remote(
+                    command_executor=command_executor,
+                    options=firefox_options
+                )
+            elif self.browser == 'edge':
+                edge_options = webdriver.EdgeOptions()
+                edge_options.add_argument('--headless')
+                self.driver = webdriver.Remote(
+                    command_executor=command_executor,
+                    options=edge_options
+                )
             else:
                 raise ValueError(f"Unsupported browser: {self.browser}")
-
-        # Instantiate the remote WebDriver based on the browser type
-        if hasattr(self, 'browser') and self.browser == 'chrome':
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_argument('--headless')
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            self.driver = webdriver.Remote(
-                command_executor=command_executor,
-                options=chrome_options
-            )
-        elif hasattr(self, 'browser') and self.browser == 'firefox':
-            firefox_options = webdriver.FirefoxOptions()
-            firefox_options.add_argument('--headless')
-            self.driver = webdriver.Remote(
-                command_executor=command_executor,
-                options=firefox_options
-            )
-        elif hasattr(self, 'browser') and self.browser == 'edge':
-            edge_options = webdriver.EdgeOptions()
-            edge_options.add_argument('--headless')
-            self.driver = webdriver.Remote(
-                command_executor=command_executor,
-                options=edge_options
-            )
-        else:
-            raise ValueError(f"Unsupported browser: {self.browser}")
+        
         self.driver.implicitly_wait(5)
     
     def tearDown(self):
