@@ -60,7 +60,13 @@
                         <h2 class="title-tag">{{self.category.title}}//</h2>
                     {% endif %}
 
-                    <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
+                    <h1 class="o-headline o-headline--article">
+                        {% if self.fw_alternate_title %}
+                            {{self.fw_alternate_title|safe}}
+                        {% else %}
+                            {{ self.title|safe }}
+                        {% endif %}
+                    </h1>
                     {% if self.fw_above_cut_lede %}
                         <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
                     {% endif %}

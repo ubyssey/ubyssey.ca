@@ -325,7 +325,7 @@ def create_ical(request):
         cal['X-WR-CALNAME'] = 'Events Around Campus from The Ubyssey'
         cal['X-ORIGINAL-URL'] = 'https://ubyssey.ca/events'
         cal['X-WR-CALDESC'] = 'Events at UBC collected by The Ubyssey'
-        all_events = Event.objects.filter(hidden=False)
+        all_events = Event.objects.filter(hidden=False).exclude(category='seminar')
 
     for event in all_events:
         ical_event = icalendar.Event()
@@ -407,7 +407,7 @@ class EventsFeed(Feed):
         if category:
             return Event.objects.filter(hidden=False, category=category, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21))
         else:
-            return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21))
+            return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21)).exclude(category='seminar')
 
     def item_title(self, item):
         item.start_time = item.start_time.astimezone(timezone.get_current_timezone())

@@ -469,13 +469,20 @@ header.events{
     }
 
     button {
+        max-width: 15em;
+        
+        margin: 0;
         padding: 0;
-        line-height: unset;
-        background: none;
         border: none;
-        font-size: inherit;
+        background: none;
+
+        overflow-x: clip;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
         color: inherit;
         font-weight: 500;
-        margin: 0;
+        font-size: inherit;
+        line-height: unset;
     }
 }

@@ -61,7 +61,7 @@ class EventManager(models.Manager):
         Returns True if event is online, not in UBC, or isn't for undergraduates
         '''
         
-        title = event.get('summary')
+        title = event.get('summary').lower()
         location = event.get('location').lower()
         description = event.get('description').lower()
         categories = event.get('categories')
@@ -75,6 +75,12 @@ class EventManager(models.Manager):
                 if not 'hybrid' in location and not 'in-person' in location and not 'in-person' in description and not 'hybrid' in description:
                     return True            
         
+        # Hide events with certain terms in the title
+        # The two listed right now are on an inaccurate repeating schedule
+        for i in ['coffee hour', 'advanced research computing summer school']:
+            if i in title:
+                return True
+
         # Default to showing events when there are no categories listed
         if not categories:
             return False
@@ -83,7 +89,7 @@ class EventManager(models.Manager):
 
         # Hide events that aren't for undergraduates
         if 'audience' in categories:
-            if 'all students' not in categories and 'audience – community' not in categories:
+            if 'students' not in categories and 'audience – community' not in categories:
                 return True
         if 'staff only' in title:
             return True
@@ -92,6 +98,13 @@ class EventManager(models.Manager):
         if 'okanagan' in categories and not 'vancouver' in categories:
             return True
         
+        # Hide events from certain organizers
+        if event.get("organizer", False):
+            host = event.get("organizer").params['cn'].lower()
+            for i in ['ubc career centre']:
+                if i in host:
+                    return True
+                
         # If it passes all these tests its probably good
         return False
 
@@ -114,7 +127,7 @@ class EventManager(models.Manager):
         categories = categories.to_ical().decode().lower()
 
         # Check for seminar keywords  
-        for i in ['workshop', 'seminar', 'research', 'learning']:
+        for i in ['workshop', 'seminar', 'research', 'learning', 'conference', 'graduate students']:
             if i in categories:
                 return 'seminar'
             
@@ -222,7 +235,6 @@ class EventManager(models.Manager):
             if event.update_mode != 2:
                 return None
 
-        print(event_url)
         # Extract start time
         start_time_str = event_component.find('span', class_='start').get_text(strip=True)
         parsed_start_time = datetime.fromisoformat(start_time_str)
