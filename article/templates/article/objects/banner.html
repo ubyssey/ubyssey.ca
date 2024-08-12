@@ -40,7 +40,7 @@
         {% with self.featured_media.first as featured_image_object %}
             <div class="banner-image">
                 {% image featured_image_object.image original as featured_image %}
-                <div class="backdrop" style="background-image: url('{{ featured_image.url }}');"></div>
+                <div class="backdrop" style="background-image: url('{{ featured_image.url }}'); {{ featured_image.background_position_style }};"></div>
                 <div class="headline-container">
                     <div class="u-container u-container--padded">
                         
@@ -50,7 +50,13 @@
                             <h2 class="title-tag">{{self.category.title}}//</h2>
                         {% endif %}
                         
-                        <h1 class="headline">{{ self.title|safe }}</h1>
+                        <h1 class="headline">
+                            {% if self.fw_alternate_title %}
+                                {{self.fw_alternate_title|safe}}
+                            {% else %}
+                                {{ self.title|safe }}
+                            {% endif %}
+                        </h1>
                         {% if self.fw_above_cut_lede %}
                             <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
                         {% endif %}

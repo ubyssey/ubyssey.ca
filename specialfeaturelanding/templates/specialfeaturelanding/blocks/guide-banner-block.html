@@ -2,7 +2,7 @@
 {% image self.image original as banner_image %}
 
 <div class="c-banner c-banner--welcome"
-	style="background-image: url({{ banner_image.url }})">
+	style="background-image: url({{ banner_image.url }}); {{ banner_image.background_position_style }};">
 	<div class="c-banner__container">
 		<div class="c-banner--welcome__inner">
 			<h2 class="c-banner--welcome__intro"> {{ self.title_intro }} </h2>

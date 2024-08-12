@@ -13,7 +13,7 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
-from events.views import update_events
+from events.views import update_events, create_ical, EventsFeed
 from events.urls import urlpatterns as events_urls
 from events.urls import api as events_api_urls
 
@@ -62,6 +62,8 @@ urlpatterns += [
 
     # Events
     re_path(r'^events/$', include(events_urls)),
+    re_path(r'^events/ical/$', create_ical, name="events_ical"),
+    re_path(r'^events/rss/$', EventsFeed(), name='events-feed'),  
     re_path(r'^api/events_calendar/', include(events_api_urls.urls)),
 
     # Tag

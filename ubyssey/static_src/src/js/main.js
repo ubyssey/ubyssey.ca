@@ -222,6 +222,9 @@ function initializeModals() {
     if (modal.classList.contains("show")) {
       closeModal(modal);
     } else {
+      for(let m=0; m<document.getElementsByClassName("modal").length; m++) {
+        closeModal(document.getElementsByClassName("modal")[m]);
+      }
       openModal(modal);
     }
   });
@@ -345,30 +348,30 @@ function initializeAudioQuote() {
       sound.play();
     
       var icon = document.getElementById("icon-" + id);
-      var frames = ["fa-volume-off", "fa-volume-low", "fa-volume-high"];
+      var frames = ["volume-off", "volume-low", "volume-high"];
     
       var animateIcon = setInterval(function () {
     
           for (let i=0; i < frames.length; i++) {
-              if (icon.classList.contains(frames[i])) {
-                  icon.classList.toggle(frames[i]);
+              if (icon.getAttribute("name") == frames[i]) {
+                  icon.classList.remove(frames[i]);
                   if (i == frames.length - 1 ) {
-                      icon.classList.toggle(frames[0]);
+                    icon.setAttribute("name", frames[0]);
+                    icon.classList.add(frames[0]);
                   } else {
-                      icon.classList.toggle(frames[i+1]);
+                    icon.setAttribute("name", frames[i+1]);
+                    icon.classList.add(frames[i+1]);
                   }
                   break;
               }
           }
     
           if (sound.paused) {
-              icon.classList.remove("fa-volume-low");
-              icon.classList.remove("fa-volume-high");
-              icon.classList.add("fa-volume-off");
+              icon.setAttribute("name", "volume-off");
               clearInterval(animateIcon);
           }
     
-      }, 200);
+      }, 250);
     } else {
       sound.pause();
       sound.currentTime = 0;
@@ -441,7 +444,10 @@ function initializeFilterDropdown() {
   $(document).on('click', 'a.filterDropdown', function (e) {
     e.preventDefault();
     this.parentElement.nextElementSibling.classList.toggle('hide_filter');
-    this.children[0].classList.toggle("fa-caret-down");
-    this.children[0].classList.toggle("fa-caret-up");
+    if (this.children[0].getAttribute('name') == 'caret-down-outline') {
+      this.children[0].setAttribute('name', 'caret-up-outline');
+    } else {
+      this.children[0].setAttribute('name', 'caret-down-outline');
+    }
   });
 }

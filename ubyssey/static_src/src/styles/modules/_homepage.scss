@@ -16,7 +16,7 @@ h2.block-title {
   font-size: 1.125em;
   margin-top: 0;
   margin-bottom: 0;
-  padding: 15px 0;
+  padding-bottom: 0.5em;
 }
 
 html.hairlines {
@@ -94,12 +94,16 @@ html.hairlines {
 }
 
 .home-featured {
-  @media($bp-smaller-than-phablet) {
+  @media only screen and (max-width: 900px) {
     display: block;
     margin-top: 20px;
+    .o-article--coverstory {
+      width: 100%;
+      margin: auto;
+    }
   }
 
-  @media($bp-larger-than-phablet) {
+  @media only screen and (min-width: 900px) {
     display: flex;
     margin-top: 60px;
   }
@@ -110,7 +114,7 @@ html.hairlines {
   height: fit-content;
   padding: 10px;
 
-  @media($bp-larger-than-phablet) {
+  @media only screen and (min-width: 900px) {
     margin-top: -30px;
     filter: drop-shadow(-7px 10px 4px #0416201c);
     width: 415px;
@@ -126,12 +130,11 @@ html.hairlines {
 
 
 .home_links {
-  padding-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: auto;
-  justify-content: center;
+  padding: 1em;
 
   @media($bp-smaller-than-phablet) {
     padding: 20px;
@@ -139,8 +142,8 @@ html.hairlines {
 }
 
 .home_link_content {
-  width: 45%;
-  margin: auto;
+  width: 50%;
+  margin: auto auto auto 0;
 
   @media($bp-smaller-than-phablet) {
     width: 100%;
@@ -172,11 +175,14 @@ html.hairlines {
 }
 
 .home_link_ad {
-  width: 40%;
-  margin: auto;
+  width: 439px;
+  max-width: 40%;
+  box-sizing: border-box;
 
   @media($bp-smaller-than-phablet) {
     width: 100%;
+    max-width: none;
+    padding: 1em;
   }
 }
 
@@ -285,7 +291,7 @@ html.hairlines {
 }
 
 .c-homepage__section__timeline {
-  margin-bottom: 3em;
+  margin: 2em auto;
   border-top: 2px solid;
   border-bottom: 2px solid;
 
@@ -400,7 +406,6 @@ html.hairlines {
   .c-homepage__section__timeline {
     max-width: none;
     width: 100%;
-    margin: 2em 0;
   }
 
   .c-homepage__section__timeline-flex {

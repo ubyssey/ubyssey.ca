@@ -34,7 +34,7 @@
     <div class="u-container u-container--mid">
 
       {% if banner %}
-        {% image banner width-700 as banner_image %}
+        {% image banner original as banner_image %}
         <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{title}} Banner" >
           <svg class="c-section__heading" viewBox="0 0 450 70">
             <text class="c-section__heading" x="10" y="50" {% if not category %}style="stroke: {{self.colour}}"{% endif %}>{{title}}</text>
@@ -42,6 +42,7 @@
         </div>
       {%else%}
         <div class="c-page__header">
+          {% if category %}<p><a href="/{{self.slug}}">{{self.title}}</a></p>{% endif %}
           <h1 class="c-page__heading">{{title}}</h1>
         </div>
       {% endif %}
@@ -50,15 +51,14 @@
         <div class="lightmode section_infinitefeed">
         <div class="c-section__info">
           {% if description or not category %}
-          <p class="c-section__description">{{description}}{% if not category %} &ensp;<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><i class="fa fa-rss"></i></a>{% endif%}</p>
+          <p class="c-section__description">{{description}}{% if not category %} &ensp;<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% endif%}</p>
           {% endif %}
           {% if self.category_menu.count and not category %}
           <div class="featured_categories">
-            <p>Featured Categories:&nbsp; </p>
             <ul>
               {% for category_menu_item in self.category_menu.all %}
                 {% if category_menu_item.category %}
-                  <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}">{{ category_menu_item.category.title }}</a></li>
+                  <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}" title="{{ category_menu_item.category.title }}">{{ category_menu_item.category.title }}</a></li>
                 {% else %}
                   comment Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! endcomment
                   <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
@@ -71,8 +71,7 @@
           <div class="c-section__buttons">
             <div class="o-archive__search c-section__button-label">
               <form method="get">
-                <label class="o-archive__search__label" for="c-articles-list__searchbar"><i
-                    class="fa fa-search"></i></label>
+                <label class="o-archive__search__label" for="c-articles-list__searchbar"><ion-icon name="search"></ion-icon></label>
                 <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
                   {% if search_query %}value="{{ search_query }}" {% endif %} placeholder="Search" />
               </form>
@@ -80,16 +79,16 @@
         
             <div class="setup-modal c-section__button-label">
               <a class="open-modal" href="#"> 
-                <p><i class="fa fa-tag"></i> Categories</p>
+                <p><ion-icon name="pricetag"></ion-icon> {% if category %}Other {% endif %}Categories</p>
               </a>
 
               <dialog class="modal" aria-modal="true">
                 <div class="js-dropdown-container close-modal"></div>
                 <div class="category_menu u-container u-container--padded">
                 <a href="#" class="c-section__modal_close close-modal">
-                  <i class="fa fa-close"></i>
+                  <ion-icon name="close"></ion-icon>
                 </a>
-                <h1><i class="fa fa-tag"></i> All Categories</h1> <!-- Why Series? Why not Categories? -->
+                <h1><ion-icon name="pricetag"></ion-icon> All Categories</h1> <!-- Why Series? Why not Categories? -->
                 <p><a href="{% pageurl self %}">{{self.title}}</a>{% if self.description %} - {{self.description}}{% endif %}</p>
                 <ul>
                 {% for category in all_categories reversed %}

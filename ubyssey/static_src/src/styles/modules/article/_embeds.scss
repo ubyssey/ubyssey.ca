@@ -439,6 +439,7 @@ div.article-content {
     }
 
     .source {
+      margin-left: 2.25em;
       display: inline-block;
       position: relative;
       left: 25%;
@@ -446,11 +447,17 @@ div.article-content {
     }
 
     .volume {
-      position: relative;
+      position: absolute;
       left: 25%;
-      top: 0.05rem;
+      top: 0.1rem;
       display: inline-block;
       width: 3%;
+      &.volume-low {
+        margin-left: 0.1em;
+      }
+      &.volume-high {
+        margin-left: 0.225em;
+      }
     }
   }
 }
