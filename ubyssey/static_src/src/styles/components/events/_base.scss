@@ -57,6 +57,14 @@ main.events-page {
                 overflow-y: auto;
                 background-color: white;
 
+                * {
+                    max-width: 100%;
+                }
+
+                img {
+                    height: auto;
+                }
+
                 h2, p {
                     color: black;
                 }

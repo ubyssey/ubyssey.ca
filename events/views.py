@@ -258,53 +258,73 @@ def update_events(request):
     except:
         return HttpResponse("Failed requesting to Physics and Astronomy Events page", status=500)
 
-    try:
-        req = Request("https://events.ubc.ca/events/?ical=1", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        con = urlopen(req)
+    wp_apis = [
 
-        cal = Calendar.from_ical(con.read())
-        for component in cal.walk():
-            if component.name == "VEVENT":
-                Event.objects.ubcevents_create_event(component)
-            
-    except:
-        return HttpResponse("Failed requesting to UBCevents", status=500)
+        {'name': 'UBC Anthropology', 
+         'api': 'https://anth.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
 
-    try:
-        req = Request("https://gothunderbirds.ca/calendar.ashx/calendar.ics", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        con = urlopen(req)
+        {'name': 'UBC Asian Studies', 
+         'api': 'https://asia.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
 
-        cal = Calendar.from_ical(con.read())
-        for component in cal.walk():
-            if component.name == "VEVENT":
-                Event.objects.gothunderbirds_create_event(component)
-                
-    except:
-        return HttpResponse("Failed requesting to UBCevents", status=500)
-    
-    try:
-        req = Request("https://www.cs.ubc.ca/views/ical/related_events/calendar.ics", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        con = urlopen(req)
+        {'name': 'UBC Central, Eastern, and Northern European Studies', 
+         'api': 'https://cenes.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},    
 
-        cal = Calendar.from_ical(con.read())
-        for component in cal.walk():
-            if component.name == "VEVENT":
-                Event.objects.cs_ubc_create_event(component)
-                
-    except:
-        return HttpResponse("Failed requesting to UBC CS", status=500)
-    
-    try:
-        req = Request("https://www.stat.ubc.ca/events-calendar-feed/", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        con = urlopen(req)
+        {'name': 'UBC English Language and Literatures', 
+         'api': 'https://english.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
 
-        cal = Calendar.from_ical(con.read())
-        for component in cal.walk():
-            if component.name == "VEVENT":
-                Event.objects.stats_ubc_create_event(component)
- 
-    except:
-        return HttpResponse("Failed requesting to UBC Stats", status=500)
+        {'name': 'UBC French, Hispanic, and Itallian Studies', 
+         'api': 'http://fhis.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
+
+        {'name': 'UBC Asian Studies', 
+         'api': 'https://grsj.arts.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
+
+        {'name': 'UBC History', 
+         'api': 'https://history.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
+
+        {'name': 'UBC Migration Studies', 
+         'api': 'https://migration.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
+
+        {'name': 'UBC Pyschology', 
+         'api': 'https://psych.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
+
+        {'name': 'UBC School of Social Work', 
+         'api': 'https://socialwork.ubc.ca/wp-json/wp/v2/', 
+         'category': 'seminar'},
+    ]
+
+    for a in wp_apis:
+        Event.objects.read_wp_events_api(a['name'], a['api'], a['category'])
+
+    ical_files = [
+
+        {'name': 'Go Thunderbirds', 
+         'file': "https://gothunderbirds.ca/calendar.ashx/calendar.ics", 
+         'create_function': Event.objects.gothunderbirds_create_event},
+
+        {'name': 'UBC CS', 
+         'file': "https://www.cs.ubc.ca/views/ical/related_events/calendar.ics", 
+         'create_function': Event.objects.cs_ubc_create_event},
+
+        {'name': 'UBC Statistics', 
+         'file': "https://www.stat.ubc.ca/events-calendar-feed/", 
+         'create_function': Event.objects.stats_ubc_create_event},
+
+        {'name': 'UBCevents', 
+         'file': "https://events.ubc.ca/events/?ical=1", 
+         'create_function': Event.objects.ubcevents_create_event},
+    ]
+
+    for f in ical_files:
+        Event.objects.read_ical(f['name'], f['file'], f['create_function'])
 
     for event in Event.objects.filter(update_mode=2):
         event.delete()
