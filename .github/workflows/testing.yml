@@ -2,9 +2,9 @@ name: Cross-browser test automation
 
 on:
   push:
-    branches: [ "add-a-CI/CD-pipeline" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "add-a-CI/CD-pipeline" ]
+    branches: [ "develop" ]
 
 
 jobs:
