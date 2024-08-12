@@ -25,7 +25,11 @@
         {% endif %}
         
         <h1 class="o-headline o-headline--article">
-            {{ self.title|safe }}
+            {% if self.fw_alternate_title %}
+                {{self.fw_alternate_title|safe}}
+            {% else %}
+                {{ self.title|safe }}
+            {% endif %}
         </h1>
     {% endif %}
 

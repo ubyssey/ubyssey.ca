@@ -10,7 +10,7 @@ from datetime import datetime, time, timedelta
 
 class EventManager(models.Manager):
     def ubcevents_create_event(self, ical_component):
-
+        print("VFVFFFikfvjijvopesikv")
         if not self.filter(event_url=ical_component.get('url')).exists():
             event = self.create(
                 title=ical_component.get('summary'),
@@ -62,7 +62,7 @@ class EventManager(models.Manager):
         Returns True if event is online, not in UBC, or isn't for undergraduates
         '''
         
-        title = event.get('summary')
+        title = event.get('summary').lower()
         location = event.get('location').lower()
         description = event.get('description').lower()
         categories = event.get('categories')
@@ -76,6 +76,12 @@ class EventManager(models.Manager):
                 if not 'hybrid' in location and not 'in-person' in location and not 'in-person' in description and not 'hybrid' in description:
                     return True            
         
+        # Hide events with certain terms in the title
+        # The two listed right now are on an inaccurate repeating schedule
+        for i in ['coffee hour', 'advanced research computing summer school']:
+            if i in title:
+                return True
+
         # Default to showing events when there are no categories listed
         if not categories:
             return False
@@ -84,7 +90,7 @@ class EventManager(models.Manager):
 
         # Hide events that aren't for undergraduates
         if 'audience' in categories:
-            if 'all students' not in categories and 'audience – community' not in categories:
+            if 'students' not in categories and 'audience – community' not in categories:
                 return True
         if 'staff only' in title:
             return True
@@ -93,6 +99,13 @@ class EventManager(models.Manager):
         if 'okanagan' in categories and not 'vancouver' in categories:
             return True
         
+        # Hide events from certain organizers
+        if event.get("organizer", False):
+            host = event.get("organizer").params['cn'].lower()
+            for i in ['ubc career centre']:
+                if i in host:
+                    return True
+                
         # If it passes all these tests its probably good
         return False
 
@@ -115,7 +128,7 @@ class EventManager(models.Manager):
         categories = categories.to_ical().decode().lower()
 
         # Check for seminar keywords  
-        for i in ['workshop', 'seminar', 'research', 'learning']:
+        for i in ['workshop', 'seminar', 'research', 'learning', 'conference', 'graduate students']:
             if i in categories:
                 return 'seminar'
             
@@ -201,6 +214,7 @@ class EventManager(models.Manager):
         
         # Otherwise assume its good
         return False
+<<<<<<<<< Temporary merge branch 1
 
     def cs_ubc_create_event(self, ical_component):
         if not self.filter(event_url=ical_component.get('url')).exists():
@@ -343,8 +357,9 @@ class EventManager(models.Manager):
 
         # Otherwise assume its good
         return False
-    
-    def process_and_store_physics_and_astronomy_event(self, event_component):
+
+=========
+    def process_and_store_event(self, event_component):
         
         # Extract start time
         start_time_str = event_component.find('span', class_='start').get_text(strip=True)
@@ -391,7 +406,6 @@ class EventManager(models.Manager):
                 title=title,
                 event_url=event_url,
             )
-            
         else:
             event = self.get(event_url=event_url)
             if event.update_mode != 2:
@@ -410,7 +424,8 @@ class EventManager(models.Manager):
         event.save()
         
         return event
-
+                  
+>>>>>>>>> Temporary merge branch 2
 @register_snippet
 class Event(models.Model):
     title = models.CharField(

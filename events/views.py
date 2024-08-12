@@ -252,7 +252,7 @@ def update_events(request):
             start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
 
             if start_time >= current_time:
-                Event.objects.process_and_store_physics_and_astronomy_event(event)
+                Event.objects.process_and_store_event(event)
             else:
                 break
     except:
@@ -326,13 +326,16 @@ def create_ical(request):
         cal['X-WR-CALNAME'] = 'Events Around Campus from The Ubyssey'
         cal['X-ORIGINAL-URL'] = 'https://ubyssey.ca/events'
         cal['X-WR-CALDESC'] = 'Events at UBC collected by The Ubyssey'
-        all_events = Event.objects.filter(hidden=False)
+        all_events = Event.objects.filter(hidden=False).exclude(category='seminar')
 
     for event in all_events:
         ical_event = icalendar.Event()
         ical_event.add('summary', event.title.replace("<br>", ""))
         ical_event.add('description', event.description)
-        ical_event.add('location', event.location + ", " + event.address)
+        if event.address == None or event.address == "":
+            ical_event.add('location', event.location)
+        else:
+            ical_event.add('location', event.location + ", " + event.address)
         ical_event.add('dtstart', event.start_time.astimezone(timezone.get_current_timezone()))
         ical_event.add('dtend', event.end_time.astimezone(timezone.get_current_timezone()))
         if request.GET.get('category'):
@@ -405,7 +408,7 @@ class EventsFeed(Feed):
         if category:
             return Event.objects.filter(hidden=False, category=category, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21))
         else:
-            return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21))
+            return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21)).exclude(category='seminar')
 
     def item_title(self, item):
         item.start_time = item.start_time.astimezone(timezone.get_current_timezone())

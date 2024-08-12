@@ -71,7 +71,13 @@
         </div>
         <main class="c-article">
             <div class="o-container">
-                <p class="c-article__title">{{ self.title }}</p>
+                <p class="c-article__title">
+                    {% if self.fw_alternate_title %}
+                        {{self.fw_alternate_title|safe}}
+                    {% else %}
+                        {{ self.title|safe }}
+                    {% endif %}
+                </p>
                 {% comment %} <div class="c-banner-credits article">
                     {% if featured_image_object.credit %}
                         {{ featured_image_object.credit }}

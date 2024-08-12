@@ -57,7 +57,13 @@
             {% block banner %}
             
                 <div class="u-container u-container--content u-container--padded">
-                    <p class="c-article__title">{{ self.title }}</p>
+                    <p class="c-article__title">
+                        {% if self.fw_alternate_title %}
+                            {{self.fw_alternate_title|safe}}
+                        {% else %}
+                            {{ self.title|safe }}
+                        {% endif %}
+                    </p>
                     <div class="c-article__info">
                         {% comment %}
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
