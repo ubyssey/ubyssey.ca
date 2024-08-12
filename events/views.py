@@ -252,7 +252,7 @@ def update_events(request):
             start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
 
             if start_time >= current_time:
-                Event.objects.process_and_store_event(event)
+                Event.objects.physics_astronomy_create_events(event)
             else:
                 break
     except:

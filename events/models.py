@@ -10,7 +10,6 @@ from datetime import datetime, time, timedelta
 
 class EventManager(models.Manager):
     def ubcevents_create_event(self, ical_component):
-        print("VFVFFFikfvjijvopesikv")
         if not self.filter(event_url=ical_component.get('url')).exists():
             event = self.create(
                 title=ical_component.get('summary'),
@@ -357,7 +356,7 @@ class EventManager(models.Manager):
         # Otherwise assume its good
         return False
 
-    def process_and_store_event(self, event_component):
+    def physics_astronomy_create_events(self, event_component):
         
         # Extract start time
         start_time_str = event_component.find('span', class_='start').get_text(strip=True)
