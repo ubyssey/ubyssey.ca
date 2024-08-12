@@ -214,7 +214,6 @@ class EventManager(models.Manager):
         
         # Otherwise assume its good
         return False
-<<<<<<<<< Temporary merge branch 1
 
     def cs_ubc_create_event(self, ical_component):
         if not self.filter(event_url=ical_component.get('url')).exists():
@@ -358,7 +357,6 @@ class EventManager(models.Manager):
         # Otherwise assume its good
         return False
 
-=========
     def process_and_store_event(self, event_component):
         
         # Extract start time
@@ -425,7 +423,6 @@ class EventManager(models.Manager):
         
         return event
                   
->>>>>>>>> Temporary merge branch 2
 @register_snippet
 class Event(models.Model):
     title = models.CharField(
