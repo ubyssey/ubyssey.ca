@@ -39,8 +39,10 @@ class BaseTestCase(StaticLiveServerTestCase):
                     command_executor = 'http://localhost:4444/wd/hub'
                 elif self.browser == 'firefox':
                     command_executor = 'http://localhost:4446/wd/hub'
-                else:
+                elif self.browser == 'edge':
                     command_executor = 'http://localhost:4445/wd/hub'
+                else:
+                    raise ValueError(f"Unsupported browser: {self.browser}")    
             else:
                 if self.browser == 'chrome':
                     command_executor = 'http://selenium-chrome:4444/wd/hub'
@@ -97,6 +99,7 @@ class MySeleniumTests(BaseTestCase):
     def test_ubyssey_homepage(self):
         #Testing the cover story works image is displayed
         base_url = f'{self.live_server_url}/'
+        print(base_url)
         self.driver.get(base_url)
         WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//img[@src='/media/renditions/housing_explainer.width-1200.for.width-1320.format-webp.webp']"))
