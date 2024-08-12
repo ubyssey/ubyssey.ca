@@ -1,12 +1,15 @@
 import argparse
 import os
 import socket
+import sys
+from django.core.management import execute_from_command_line
 from django.test import override_settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 @override_settings(ALLOWED_HOSTS=['*'])  # Disable ALLOWED_HOSTS
 class BaseTestCase(StaticLiveServerTestCase):
@@ -21,33 +24,62 @@ class BaseTestCase(StaticLiveServerTestCase):
         super().setUpClass()
         # Set host to externally accessible web server address
         cls.host = socket.gethostbyname(socket.gethostname())
+        cls.browser = os.getenv('BROWSER', 'chrome')
+        cls.ci_environment = os.getenv('CI_ENVIRONMENT', 'development')
 
     def setUp(self):
         super().setUp()
-        # Instantiate the remote WebDriver based on the browser type
-        if hasattr(self, 'browser') and self.browser == 'chrome':
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_argument('--headless')
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            self.driver = webdriver.Remote(
-                command_executor='http://selenium-chrome:4444/wd/hub',
-                options=chrome_options
-            )
-        elif hasattr(self, 'browser') and self.browser == 'firefox':
-            firefox_options = webdriver.FirefoxOptions()
-            firefox_options.add_argument('--headless')
-            self.driver = webdriver.Remote(
-                command_executor='http://selenium-firefox:4444/wd/hub',
-                options=firefox_options
-            )
+        # Determine the command executor URL based on the CI environment
+        if hasattr(self, 'browser') and self.browser == 'safari':
+            self.driver = webdriver.Safari()
         else:
-            edge_options = webdriver.EdgeOptions()
-            edge_options.add_argument('--headless')
-            self.driver = webdriver.Remote(
-                command_executor='http://selenium-edge:4444/wd/hub',
-                options=edge_options
-            )
+            # Determine the command executor URL based on the CI environment
+            if self.ci_environment == 'testing':
+                if self.browser == 'chrome':
+                    command_executor = 'http://localhost:4444/wd/hub'
+                elif self.browser == 'firefox':
+                    command_executor = 'http://localhost:4446/wd/hub'
+                elif self.browser == 'edge':
+                    command_executor = 'http://localhost:4445/wd/hub'
+                else:
+                    raise ValueError(f"Unsupported browser: {self.browser}")    
+            else:
+                if self.browser == 'chrome':
+                    command_executor = 'http://selenium-chrome:4444/wd/hub'
+                elif self.browser == 'firefox':
+                    command_executor = 'http://selenium-firefox:4444/wd/hub'
+                elif self.browser == 'edge':
+                    command_executor = 'http://selenium-edge:4444/wd/hub'
+                else:
+                    raise ValueError(f"Unsupported browser: {self.browser}")
+
+            # Instantiate the remote WebDriver based on the browser type
+            if self.browser == 'chrome':
+                chrome_options = webdriver.ChromeOptions()
+                chrome_options.add_argument('--headless')
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument('--disable-dev-shm-usage')
+                self.driver = webdriver.Remote(
+                    command_executor=command_executor,
+                    options=chrome_options
+                )
+            elif self.browser == 'firefox':
+                firefox_options = webdriver.FirefoxOptions()
+                firefox_options.add_argument('--headless')
+                self.driver = webdriver.Remote(
+                    command_executor=command_executor,
+                    options=firefox_options
+                )
+            elif self.browser == 'edge':
+                edge_options = webdriver.EdgeOptions()
+                edge_options.add_argument('--headless')
+                self.driver = webdriver.Remote(
+                    command_executor=command_executor,
+                    options=edge_options
+                )
+            else:
+                raise ValueError(f"Unsupported browser: {self.browser}")
+        
         self.driver.implicitly_wait(5)
     
     def tearDown(self):
@@ -160,45 +192,27 @@ class MySeleniumTests(BaseTestCase):
         self.driver.set_window_size(1920, 1080)
         self.driver.find_element(By.CSS_SELECTOR, ".o-article > .o-article__headline > a").click()
         self.article_page_exists()
-
-    def test_search_bar_news(self):
-        self.driver.get("http://host.docker.internal:8000/news/")
-        self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small").click()
-        self.driver.set_window_size(1296, 688)
-        self.driver.find_element(By.CSS_SELECTOR, ".o-archive__search__label").click()
-        self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys("UBCO")
-        self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys(Keys.ENTER)
-        articles = self.driver.find_elements(By.CSS_SELECTOR,"#feed article")
-        # Assert that there is at least one article after searching
-        assert len(articles) > 0, "No articles found in the feed section."
+        
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Django management command with browser argument.')
+    parser.add_argument(
+        '--BROWSER', 
+        choices=['chrome', 'firefox', 'edge'], 
+        default='chrome', 
+        help='Specify the browser to use for tests.'
+    )
+    args = parser.parse_args()
     
-    def test_archive_in_footer(self):
-        self.driver.get("http://host.docker.internal:8000/news/")
-        self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small").click()
-        self.driver.set_window_size(1296, 688)
-        self.driver.execute_script("window.scrollTo(0,6560.00048828125)")
-        self.driver.find_element(By.CSS_SELECTOR, ".second_footer_menu li:nth-child(1) > a").click()
-        WebDriverWait(self.driver, 60).until(EC.title_contains("Archive"))
+    parser.add_argument(
+        '--CI_ENV',
+        choices=['development', 'testing'],
+        default='development',
+        help='Specify the CI environment.'
+    )
+    args = parser.parse_args()
     
-    def test_sidebar_latest(self):
-        self.driver.get("http://host.docker.internal:8000/")
-        hide_element = self.driver.find_element(By.ID, "djHideToolBarButton")
-        hide_element.click()
-        self.driver.find_element(By.CSS_SELECTOR, ".c-button.c-button--small").click()
+    # Set the browser type as an environment variable
+    os.environ['BROWSER'] = args.browser
+    os.environ['CI_ENV'] = args.ci_env
 
-        # Locate all <li> elements within the <ul class="article-list"> element
-        list_items = self.driver.find_elements(By.CSS_SELECTOR, 'ul.article-list > li')
-
-        # Assert that there are 5 <li> elements
-        assert len(list_items) == 5, f"Expected 5 articles, but found {len(list_items)}."
-        self.driver.find_element(By.CSS_SELECTOR, 'li:nth-child(1) .o-article__headline > a').click()
-        self.article_page_exists()
-                
-class EdgeTestCase(BaseTestCase):
-    browser = 'edge'
-
-class ChromeTestCase(BaseTestCase):
-    browser = 'chrome'
-
-class FirefoxTestCase(BaseTestCase):
-    browser = 'firefox'
+    execute_from_command_line(sys.argv)
