@@ -122,7 +122,6 @@ ical, rss feed, and api should be linked here
             <h2 class="event-info--time">
                 {{selectedEvent.displayTime}}
             </h2>
-<<<<<<<<< Temporary merge branch 1
             <div class="events-info--content {{selectedEvent.category}} {{selectedEvent.host|slugify}}">
                     <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
                     <p><b>Location:</b> {{selectedEvent.location}}</p>
@@ -137,7 +136,6 @@ ical, rss feed, and api should be linked here
                         var s = document.getElementById('source_link');
                         s.href = s.href.replace("__AND__", "&");
                         s.innerHTML = s.host;
-=========
             <div class="events-info--content {{selectedEvent.category}}">
                 <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
                 <p><b>Location:</b> {{selectedEvent.location}}</p>
@@ -159,8 +157,6 @@ ical, rss feed, and api should be linked here
                     var s = document.getElementById('source_link');
                     s.href = s.href.replace("__AND__", "&");
                     s.innerHTML = s.host;
->>>>>>>>> Temporary merge branch 2
-
                     var s = document.getElementById('selected-title');
                     s.href = s.href.replace("__AND__", "&");
                 </script>
