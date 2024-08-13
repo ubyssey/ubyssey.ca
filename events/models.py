@@ -5,10 +5,107 @@ from wagtail.admin.panels import FieldPanel
 from django.forms.widgets import Select
 from django.utils import timezone
 from datetime import datetime, time, timedelta
-
+from urllib.request import urlopen, Request
+from django.http import HttpResponse
+import json
+from urllib.request import urlopen, Request
+from icalendar import Calendar
+from django.http import HttpResponse
 # Create your models here.
 
 class EventManager(models.Manager):
+
+    def read_ical(self, name, file, create_function):
+        
+        try:
+            req = Request(file, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+            con = urlopen(req)
+
+            cal = Calendar.from_ical(con.read())
+            for component in cal.walk():
+                if component.name == "VEVENT":
+                    create_function(component)
+            
+        except:
+            print("Failed requesting to " + name)
+
+    def read_wp_events_api(self, name, api, categorize):
+        try: 
+            req = Request(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+            con = urlopen(req)
+            result = json.loads(con.read())
+            for i in result:
+                self.wp_events_api_create_event(i, api, name, categorize)
+        except:
+            print("Failed requesting to " + name)
+
+    def wp_events_api_create_event(self, event_json, api, host, categorize):
+        if not self.filter(event_url=event_json['link']).exists():
+            event = self.create(
+                title=event_json['title'],
+                event_url=event_json['link'],
+            )
+        else:
+            event = self.get(event_url=event_json['link'])
+            if event.update_mode != 2:
+                return None
+            
+        event.title = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
+        event.description = str(event_json['excerpt']['rendered'].encode('utf-8'), 'UTF-8')
+
+        event.start_time = datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())
+        event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
+
+        if len(event_json['event-venues']) > 0:
+            req = Request(api + 'event-venues/' + str(event_json['event-venues'][0]), headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+            con = urlopen(req)
+            venue = json.loads(con.read())
+            event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
+            event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
+        else:
+            event.location=''
+            event.address=''
+
+        event.email=''
+        event.event_url=event_json['link']
+
+        event.category = categorize['default']
+
+        if 'seminar_ids' in categorize:
+            for id in event_json['event-type']:
+            
+                for seminar_id in categorize['seminar_ids']:
+                    if id == seminar_id:
+                        event.category = "seminar"
+                        break
+
+                if event.category != categorize['default']:
+                    break
+            
+        event.hidden=False
+
+        req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+        if req.host in event_json['link']:
+            event.host = host
+
+        event.update_mode = 1
+        event.save()
+
+    def wp_events_api_get_type_ids(self, api, terms):
+        ids = []
+
+        req = Request(api + "event-type?per_page=99", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+        con = urlopen(req)
+        result = json.loads(con.read())
+        if result != "":
+            for r in result:
+                for t in terms:
+                    if t in r['name'].lower():
+                        ids.append(str(r['id']))
+                        break
+        print(api + ": [" + ", ".join(ids) + "]")
+        return ids
+
     def ubcevents_create_event(self, ical_component):
         if not self.filter(event_url=ical_component.get('url')).exists():
             event = self.create(
@@ -46,7 +143,7 @@ class EventManager(models.Manager):
         event.email=ical_component.decoded('organizer', default="")
         event.event_url=ical_component.decoded('url')
         event.category = self.ubcevents_category(ical_component)
-        event.hidden=self.ubcevents_judge_hidden(ical_component)
+        event.hidden=self.ubcevents_judge_hidden(event, ical_component)
 
         if ical_component.get("organizer", False):
             event.host = ical_component.get("organizer").params['cn']
@@ -56,16 +153,20 @@ class EventManager(models.Manager):
 
         return event
     
-    def ubcevents_judge_hidden(self, event):
+    def ubcevents_judge_hidden(self, event, ical):
         '''
         Returns True if event is online, not in UBC, or isn't for undergraduates
         '''
+
+        title = event.title.lower()
+        location = event.location.lower()
+        description = event.description.lower()
+        categories = ical.get('categories')
         
-        title = event.get('summary').lower()
-        location = event.get('location').lower()
-        description = event.get('description').lower()
-        categories = event.get('categories')
-        
+        # Hide events that are already listed in other feeds we read
+        if self.filter(title=event.title, start_time=event.start_time).exclude(event_url=event.event_url).exists():
+            return True
+
         # Hide online events (the online events are cringe)
         if 'online' in location or 'virtual' in location:
             if not 'hybrid' in location and not 'in-person' in location:
@@ -99,8 +200,8 @@ class EventManager(models.Manager):
             return True
         
         # Hide events from certain organizers
-        if event.get("organizer", False):
-            host = event.get("organizer").params['cn'].lower()
+        if ical.get("organizer", False):
+            host = ical.get("organizer").params['cn'].lower()
             for i in ['ubc career centre']:
                 if i in host:
                     return True
@@ -140,6 +241,13 @@ class EventManager(models.Manager):
         for i in ['thunderbird athletics']:
             if i in categories:
                 return 'sports'
+
+        # Always mark events from certain organizers as seminars
+        if event.get("organizer", False):
+            host = event.get("organizer").params['cn'].lower()
+            for i in ['centre for teaching']:
+                if i in host:
+                    return 'seminar'
 
         return 'community'
 
@@ -292,6 +400,12 @@ class EventManager(models.Manager):
 
         event.title=ical_component.get('summary')
         event.description= "<br>" + ical_component.get('description').replace("&amp;", "&")
+        if "<br>Name:" in event.description and "\nTitle" in event.description:
+            if event.description.index("<br>Name:") < event.description.index("\nTitle"):
+                event.description = event.description.replace(event.description[event.description.index("<br>Name:"):event.description.index("\nTitle")], "")
+        if "\nName:" in event.description and "\nTitle" in event.description:
+            if event.description.index("\nName:") < event.description.index("\nTitle"):
+               event.description = event.description.replace(event.description[event.description.index("\nName:"):event.description.index("\nTitle")], "")
 
         if isinstance(ical_component.decoded('dtstart'), datetime):
             event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
@@ -427,11 +541,13 @@ class Event(models.Model):
         max_length=255,
         blank=False,
         null=False,
+        db_collation = "utf8mb4_general_ci",
     )
     description = models.TextField(
         null=False,
         blank=True,
         default='',
+        db_collation = "utf8mb4_general_ci",
     )
     start_time = models.DateTimeField(
         null=True,
