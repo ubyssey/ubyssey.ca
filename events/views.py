@@ -261,48 +261,89 @@ def update_events(request):
     wp_apis = [
 
         {'name': 'UBC Anthropology', 
-         'api': 'https://anth.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+         'api': 'https://anth.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+             'seminar_ids': [633, 632, 634, 528, 530],
+         },
+        },
 
         {'name': 'UBC Asian Studies', 
          'api': 'https://asia.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+         'categorize': {
+            'default': 'community',
+             'seminar_ids': [570, 572, 571, 574, 739],
+         },
+        },
 
         {'name': 'UBC Central, Eastern, and Northern European Studies', 
-         'api': 'https://cenes.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},    
+         'api': 'https://cenes.ubc.ca/wp-json/wp/v2/',
+        'categorize': {
+            'default': 'community',
+            'seminar_ids': [552, 554, 559, 553, 677, 558]
+         },
+        },    
 
         {'name': 'UBC English Language and Literatures', 
-         'api': 'https://english.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+         'api': 'https://english.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+             'seminar_ids': [512, 515, 510, 513]
+         },
+        },
 
         {'name': 'UBC French, Hispanic, and Itallian Studies', 
-         'api': 'http://fhis.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+         'api': 'http://fhis.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_ids': [534, 537, 532]
+         },
+        },
 
-        {'name': 'UBC Asian Studies', 
-         'api': 'https://grsj.arts.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+        {'name': 'UBC Institute for Gender, Race, Sexuality and Social Justice', 
+         'api': 'https://grsj.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_ids': [512, 514, 632, 517]
+         },
+        },
 
         {'name': 'UBC History', 
-         'api': 'https://history.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+         'api': 'https://history.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_ids': [531, 525, 527, 526, 530]
+         },
+        },
 
         {'name': 'UBC Migration Studies', 
          'api': 'https://migration.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
 
         {'name': 'UBC Pyschology', 
-         'api': 'https://psych.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+         'api': 'https://psych.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_ids': [433, 384, 906, 792, 377, 931, 560, 559]
+         },
+        },
 
         {'name': 'UBC School of Social Work', 
-         'api': 'https://socialwork.ubc.ca/wp-json/wp/v2/', 
-         'category': 'seminar'},
+         'api': 'https://socialwork.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_ids': [520, 527, 525]
+         },
+        },
     ]
 
+    terms = ['lecture', 'workshop', 'conference', 'talk', 'seminar', 'colloquia']
     for a in wp_apis:
-        Event.objects.read_wp_events_api(a['name'], a['api'], a['category'])
+        # Event.objects.wp_events_api_get_type_ids(a['api'], terms) # Uncomment to print the event-type id for types wuth the terms above in their name. Used for categorizing the events
+        Event.objects.read_wp_events_api(a['name'], a['api'], a['categorize'])
 
     ical_files = [
 

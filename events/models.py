@@ -29,15 +29,15 @@ class EventManager(models.Manager):
         except:
             return HttpResponse("Failed requesting to " + name, status=500)
 
-    def read_wp_events_api(self, name, api, category):
+    def read_wp_events_api(self, name, api, categorize):
 
-        req = Request(api + "events/?order=desc&page=1&per_page=20", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+        req = Request(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
         con = urlopen(req)
         result = json.loads(con.read())
         for i in result:
-            self.wp_events_api_create_event(i, api, name, category)
+            self.wp_events_api_create_event(i, api, name, categorize)
 
-    def wp_events_api_create_event(self, event_json, api, host, category):
+    def wp_events_api_create_event(self, event_json, api, host, categorize):
         if not self.filter(event_url=event_json['link']).exists():
             event = self.create(
                 title=event_json['title'],
@@ -51,11 +51,8 @@ class EventManager(models.Manager):
         event.title = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
         event.description = str(event_json['excerpt']['rendered'].encode('utf-8'), 'UTF-8')
 
-    	# "2024-08-09T12:00:00-07:00"
-        start = datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())
-        end = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
-        event.start_time = start
-        event.end_time = end
+        event.start_time = datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())
+        event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
 
         if len(event_json['event-venues']) > 0:
             req = Request(api + 'event-venues/' + str(event_json['event-venues'][0]), headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
@@ -69,14 +66,43 @@ class EventManager(models.Manager):
 
         event.email=''
         event.event_url=event_json['link']
-        event.category = category
+
+        event.category = categorize['default']
+
+        if 'seminar_ids' in categorize:
+            for id in event_json['event-type']:
+            
+                for seminar_id in categorize['seminar_ids']:
+                    if id == seminar_id:
+                        event.category = "seminar"
+                        break
+
+                if event.category != categorize['default']:
+                    break
+            
         event.hidden=False
 
-        event.host = host
+        req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+        if req.host in event_json['link']:
+            event.host = host
 
         event.update_mode = 1
         event.save()
 
+    def wp_events_api_get_type_ids(self, api, terms):
+        ids = []
+
+        req = Request(api + "event-type?per_page=99", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+        con = urlopen(req)
+        result = json.loads(con.read())
+        if result != "":
+            for r in result:
+                for t in terms:
+                    if t in r['name'].lower():
+                        ids.append(str(r['id']))
+                        break
+        print(api + ": [" + ", ".join(ids) + "]")
+        return ids
 
     def ubcevents_create_event(self, ical_component):
         if not self.filter(event_url=ical_component.get('url')).exists():
@@ -213,6 +239,13 @@ class EventManager(models.Manager):
         for i in ['thunderbird athletics']:
             if i in categories:
                 return 'sports'
+
+        # Always mark events from certain organizers as seminars
+        if event.get("organizer", False):
+            host = event.get("organizer").params['cn'].lower()
+            for i in ['centre for teaching']:
+                if i in host:
+                    return 'seminar'
 
         return 'community'
 
@@ -365,6 +398,12 @@ class EventManager(models.Manager):
 
         event.title=ical_component.get('summary')
         event.description= "<br>" + ical_component.get('description').replace("&amp;", "&")
+        if "<br>Name:" in event.description and "\nTitle" in event.description:
+            if event.description.index("<br>Name:") < event.description.index("\nTitle"):
+                event.description = event.description.replace(event.description[event.description.index("<br>Name:"):event.description.index("\nTitle")], "")
+        if "\nName:" in event.description and "\nTitle" in event.description:
+            if event.description.index("\nName:") < event.description.index("\nTitle"):
+               event.description = event.description.replace(event.description[event.description.index("\nName:"):event.description.index("\nTitle")], "")
 
         if isinstance(ical_component.decoded('dtstart'), datetime):
             event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
