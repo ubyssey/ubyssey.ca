@@ -27,15 +27,17 @@ class EventManager(models.Manager):
                     create_function(component)
             
         except:
-            return HttpResponse("Failed requesting to " + name, status=500)
+            print("Failed requesting to " + name)
 
     def read_wp_events_api(self, name, api, categorize):
-
-        req = Request(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        con = urlopen(req)
-        result = json.loads(con.read())
-        for i in result:
-            self.wp_events_api_create_event(i, api, name, categorize)
+        try: 
+            req = Request(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+            con = urlopen(req)
+            result = json.loads(con.read())
+            for i in result:
+                self.wp_events_api_create_event(i, api, name, categorize)
+        except:
+            print("Failed requesting to " + name)
 
     def wp_events_api_create_event(self, event_json, api, host, categorize):
         if not self.filter(event_url=event_json['link']).exists():

@@ -153,8 +153,10 @@ class EventsTheme(object):
                 events[events_index].start_time = events[events_index].start_time.astimezone(timezone.get_current_timezone())
                 events[events_index].end_time = events[events_index].end_time.astimezone(timezone.get_current_timezone())
 
-                if closest_event == None and timezone.now() <= events[events_index].start_time:
-                    closest_event = events[events_index]
+                if request.GET.get("category")=='seminar' or events[events_index].category!='seminar':
+                    if closest_event == None and timezone.now() <= events[events_index].start_time:
+                        closest_event = events[events_index]
+                        
                 if day > events[events_index].start_time:
                     events_index = events_index + 1
                 else:
@@ -190,6 +192,8 @@ class EventsTheme(object):
             category_order = ["sports", "entertainment", "community", "seminar"]
             e = lambda a : category_order.index(a)
             legend.sort(key=e)
+        else:
+            legend.sort()
 
         highlight_colours = {}
         for i in range(len(legend)):
@@ -256,7 +260,7 @@ def update_events(request):
             else:
                 break
     except:
-        return HttpResponse("Failed requesting to Physics and Astronomy Events page", status=500)
+        print("Failed requesting to Physics and Astronomy Events page")
 
     wp_apis = [
 
@@ -304,7 +308,7 @@ def update_events(request):
          'api': 'https://grsj.arts.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [512, 514, 632, 517]
+            'seminar_ids': [512, 514, 632]
          },
         },
 
