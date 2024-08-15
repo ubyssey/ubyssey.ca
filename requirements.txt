@@ -1,4 +1,4 @@
-Django==4.1.0
+Django==4.2.0
 wagtail==5.2.5
 git+https://github.com/ubyssey/django-google-storage.git@v0.5.4#egg=django-google-storage-updated
 django-storages[google]==1.14.2
