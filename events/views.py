@@ -348,8 +348,7 @@ async def update_events(request):
     for f in ical_files:
         tasks.append(asyncio.create_task(Event.objects.read_ical(f['name'], f['file'], f['create_function'])))
 
-    for t in tasks:
-        await t
+    await asyncio.gather(*tasks)
 
     async for event in Event.objects.filter(update_mode=2):
         await event.adelete()

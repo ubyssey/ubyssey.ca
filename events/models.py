@@ -13,47 +13,50 @@ from icalendar import Calendar
 from django.http import HttpResponse
 import asyncio
 from asgiref.sync import sync_to_async
+import aiohttp
 
 # Create your models here.
 
 class EventManager(models.Manager):
 
     async def read_ical(self, name, file, create_function):
-        
-        #try:
-        req = Request(file, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        con = urlopen(req)
-        cal = Calendar.from_ical(con.read())
-        
-        tasks = []
-        for component in cal.walk():
-            if component.name == "VEVENT":
-                tasks.append(asyncio.create_task(create_function(component)))
-        
-        for t in tasks:
-            await t
+        try:
+            #print("Requesting " + name)
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get(file) as response:
+                    cal = Calendar.from_ical(await response.text())
+                    #print("Connected to " + name)
 
-        print(name + " finished " + str(len(tasks)) + " tasks")
+                    tasks = []
+                    for component in cal.walk():
+                        if component.name == "VEVENT":
+                            tasks.append(asyncio.create_task(create_function(component)))
+                    
+                    await asyncio.gather(*tasks)
 
-        #except:
-        #    print("Failed requesting to " + name)
+                    print(name + " finished " + str(len(tasks)) + " tasks")
+
+        except:
+            print("Failed requesting to " + name)
 
     async def read_wp_events_api(self, name, api, categorize):
-        #try: 
-        req = Request(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        con = urlopen(req)
-        result = json.loads(con.read())
-        
-        tasks = []
-        for i in result:
-            tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize)))
-        
-        for t in tasks:
-            await t
+        try:
+            #print("Requesting " + name) 
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20") as response:
+            
+                    result = json.loads(await response.text())
+                    #print("Connected to " + name)
+                    
+                    tasks = []
+                    for i in result:
+                        tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize)))
+                    
+                    await asyncio.gather(*tasks)
 
-        print(name + " finished " + str(len(tasks)) + " tasks")
-        #except:
-        #    print("Failed requesting to " + name)
+                    print(name + " finished " + str(len(tasks)) + " tasks")
+        except:
+            print("Failed requesting to " + name)
 
     async def wp_events_api_create_event(self, event_json, api, host, categorize):
         if not await self.filter(event_url=event_json['link']).aexists():
@@ -73,11 +76,11 @@ class EventManager(models.Manager):
         event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
 
         if len(event_json['event-venues']) > 0:
-            req = Request(api + 'event-venues/' + str(event_json['event-venues'][0]), headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-            con = urlopen(req)
-            venue = json.loads(con.read())
-            event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
-            event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get(api + 'event-venues/' + str(event_json['event-venues'][0])) as response:
+                    venue = json.loads(await response.text())
+                    event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
+                    event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
         else:
             event.location=''
             event.address=''
@@ -105,7 +108,10 @@ class EventManager(models.Manager):
             event.host = host
 
         event.update_mode = 1
+        
         await event.asave()
+        #print("Finished event " + event.event_url)
+        return event
 
     def wp_events_api_get_type_ids(self, api, terms):
         ids = []
@@ -166,7 +172,7 @@ class EventManager(models.Manager):
 
         event.update_mode = 1
         await event.asave()
-
+        #print("Finished event " + event.event_url)
         return event
     
     async def ubcevents_judge_hidden(self, event, ical):
@@ -321,7 +327,7 @@ class EventManager(models.Manager):
 
         event.update_mode = 1
         await event.asave()
-
+        #print("Finished event " + event.event_url)
         return event
     
     def gothunderbirds_judge_hidden(self, event):
@@ -343,31 +349,33 @@ class EventManager(models.Manager):
         from bs4 import BeautifulSoup
         
         try:
-            response = requests.get('https://phas.ubc.ca/events')
-            html_content = response.text
-
-            # Parse the HTML content
-            soup = BeautifulSoup(html_content, 'html.parser')
-            events = soup.find_all(class_='views-row')
-
-            current_tz = timezone.get_current_timezone()
-            current_time = datetime.now(current_tz)
+            #print("Requesting UBC Physics and Astronomy")
             
-            tasks = []
-            for event in events:
-                start_time_str = event.find('span', class_='start').get_text(strip=True)
-                parsed_start_time = datetime.fromisoformat(start_time_str)
-                start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get("https://phas.ubc.ca/events") as response:
+                    html_content = await response.text()
+                    #print("Connected to UBC Physics and Astronomy")
+                    # Parse the HTML content
+                    soup = BeautifulSoup(html_content, 'html.parser')
+                    events = soup.find_all(class_='views-row')
 
-                if start_time >= current_time - timedelta(days=7):
-                    tasks.append(asyncio.create_task(Event.objects.phas_ubc_create_event(event)))
-                else:
-                    break
+                    current_tz = timezone.get_current_timezone()
+                    current_time = datetime.now(current_tz)
+                    
+                    tasks = []
+                    for event in events:
+                        start_time_str = event.find('span', class_='start').get_text(strip=True)
+                        parsed_start_time = datetime.fromisoformat(start_time_str)
+                        start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
 
-            for t in tasks:
-                await t
+                        if start_time >= current_time - timedelta(days=7):
+                            tasks.append(asyncio.create_task(Event.objects.phas_ubc_create_event(event)))
+                        else:
+                            break
 
-            print("UBC Physics and Astronomy finished " + str(len(tasks)) + " tasks")
+                    await asyncio.gather(*tasks)
+
+                    print("UBC Physics and Astronomy finished " + str(len(tasks)) + " tasks")
         except:
             print("Failed requesting to Physics and Astronomy Events page")
 
@@ -434,7 +442,7 @@ class EventManager(models.Manager):
         event.host = 'UBC Physics & Astronomy'
         event.update_mode = 1
         await event.asave()
-        
+        #print("Finished event " + event.event_url)
         return event
     
     async def cs_ubc_create_event(self, ical_component):
@@ -482,7 +490,7 @@ class EventManager(models.Manager):
 
         event.update_mode = 1
         await event.asave()
-
+        #print("Finished event " + event.event_url)
         return event
 
     def cs_ubc_judge_hidden(self, event):
@@ -565,7 +573,7 @@ class EventManager(models.Manager):
 
         event.update_mode = 1
         await event.asave()
-
+        #print("Finished event " + event.event_url)
         return event
 
 
