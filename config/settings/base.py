@@ -160,6 +160,7 @@ INSTALLED_APPS = [
     'dashboard',
     'infinitefeed',
     'events',
+    'tests_ubyssey',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
