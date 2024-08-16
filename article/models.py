@@ -966,7 +966,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     search_fields = Page.search_fields + [
         index.SearchField('lede'),
         index.AutocompleteField('lede'),
-        index.SearchField('content'),
         index.SearchField('seo_keyword', boost=1.5),
         index.AutocompleteField('seo_keyword'),
         index.SearchField('tags'),
