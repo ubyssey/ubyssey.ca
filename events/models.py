@@ -11,42 +11,61 @@ import json
 from urllib.request import urlopen, Request
 from icalendar import Calendar
 from django.http import HttpResponse
+import asyncio
+from asgiref.sync import sync_to_async
+import aiohttp
+
 # Create your models here.
 
 class EventManager(models.Manager):
 
-    def read_ical(self, name, file, create_function):
-        
+    async def read_ical(self, name, file, create_function):
         try:
-            req = Request(file, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-            con = urlopen(req)
+            #print("Requesting " + name)
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get(file) as response:
+                    cal = Calendar.from_ical(await response.text())
+                    #print("Connected to " + name)
 
-            cal = Calendar.from_ical(con.read())
-            for component in cal.walk():
-                if component.name == "VEVENT":
-                    create_function(component)
+                    tasks = []
+                    for component in cal.walk():
+                        if component.name == "VEVENT":
+                            tasks.append(asyncio.create_task(create_function(component)))
+                    
+                    await asyncio.gather(*tasks)
+
+                    print(name + " finished " + str(len(tasks)) + " tasks")
+
+        except:
+            print("Failed requesting to " + name)
+
+    async def read_wp_events_api(self, name, api, categorize):
+        try:
+            #print("Requesting " + name) 
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20") as response:
             
+                    result = json.loads(await response.text())
+                    #print("Connected to " + name)
+                    
+                    tasks = []
+                    for i in result:
+                        tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize)))
+                    
+                    await asyncio.gather(*tasks)
+
+                    print(name + " finished " + str(len(tasks)) + " tasks")
         except:
             print("Failed requesting to " + name)
 
-    def read_wp_events_api(self, name, api, categorize):
-        try: 
-            req = Request(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20", headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-            con = urlopen(req)
-            result = json.loads(con.read())
-            for i in result:
-                self.wp_events_api_create_event(i, api, name, categorize)
-        except:
-            print("Failed requesting to " + name)
-
-    def wp_events_api_create_event(self, event_json, api, host, categorize):
-        if not self.filter(event_url=event_json['link']).exists():
-            event = self.create(
+    async def wp_events_api_create_event(self, event_json, api, host, categorize):
+        if not await self.filter(event_url=event_json['link']).aexists():
+            event = await self.acreate(
                 title=event_json['title'],
                 event_url=event_json['link'],
             )
         else:
-            event = self.get(event_url=event_json['link'])
+            event = await self.filter(event_url=event_json['link']).afirst()
             if event.update_mode != 2:
                 return None
             
@@ -57,11 +76,11 @@ class EventManager(models.Manager):
         event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
 
         if len(event_json['event-venues']) > 0:
-            req = Request(api + 'event-venues/' + str(event_json['event-venues'][0]), headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-            con = urlopen(req)
-            venue = json.loads(con.read())
-            event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
-            event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get(api + 'event-venues/' + str(event_json['event-venues'][0])) as response:
+                    venue = json.loads(await response.text())
+                    event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
+                    event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
         else:
             event.location=''
             event.address=''
@@ -89,7 +108,10 @@ class EventManager(models.Manager):
             event.host = host
 
         event.update_mode = 1
-        event.save()
+        
+        await event.asave()
+        #print("Finished event " + event.event_url)
+        return event
 
     def wp_events_api_get_type_ids(self, api, terms):
         ids = []
@@ -106,14 +128,14 @@ class EventManager(models.Manager):
         print(api + ": [" + ", ".join(ids) + "]")
         return ids
 
-    def ubcevents_create_event(self, ical_component):
-        if not self.filter(event_url=ical_component.get('url')).exists():
-            event = self.create(
+    async def ubcevents_create_event(self, ical_component):
+        if not await self.filter(event_url=ical_component.get('url')).aexists():
+            event = await self.acreate(
                 title=ical_component.get('summary'),
                 event_url=ical_component.decoded('url'),
             )
         else:
-            event = self.get(event_url=ical_component.get('url'))
+            event = await self.filter(event_url=ical_component.get('url')).afirst()
             if event.update_mode != 2:
                 return None
 
@@ -143,17 +165,17 @@ class EventManager(models.Manager):
         event.email=ical_component.decoded('organizer', default="")
         event.event_url=ical_component.decoded('url')
         event.category = self.ubcevents_category(ical_component)
-        event.hidden=self.ubcevents_judge_hidden(event, ical_component)
+        event.hidden=await self.ubcevents_judge_hidden(event, ical_component)
 
         if ical_component.get("organizer", False):
             event.host = ical_component.get("organizer").params['cn']
 
         event.update_mode = 1
-        event.save()
-
+        await event.asave()
+        #print("Finished event " + event.event_url)
         return event
     
-    def ubcevents_judge_hidden(self, event, ical):
+    async def ubcevents_judge_hidden(self, event, ical):
         '''
         Returns True if event is online, not in UBC, or isn't for undergraduates
         '''
@@ -164,7 +186,7 @@ class EventManager(models.Manager):
         categories = ical.get('categories')
         
         # Hide events that are already listed in other feeds we read
-        if self.filter(title=event.title, start_time=event.start_time).exclude(event_url=event.event_url).exists():
+        if await self.filter(title=event.title, start_time=event.start_time).exclude(event_url=event.event_url).aexists():
             return True
 
         # Hide online events (the online events are cringe)
@@ -251,15 +273,15 @@ class EventManager(models.Manager):
 
         return 'community'
 
-    def gothunderbirds_create_event(self, ical_component):
+    async def gothunderbirds_create_event(self, ical_component):
 
-        if not self.filter(event_url=ical_component.get('url').replace("&amp;", "__AND__")).exists():
-            event = self.create(
+        if not await self.filter(event_url=ical_component.get('url').replace("&amp;", "__AND__")).aexists():
+            event = await self.acreate(
                 title=ical_component.get('summary'),
                 event_url=ical_component.decoded('url').replace("&amp;", "__AND__"),
             )
         else:
-            event = self.get(event_url=ical_component.get('url').replace("&amp;", "__AND__"))
+            event = await self.filter(event_url=ical_component.get('url').replace("&amp;", "__AND__")).afirst()
             if event.update_mode != 2:
                 return None
 
@@ -304,8 +326,8 @@ class EventManager(models.Manager):
         event.hidden=self.gothunderbirds_judge_hidden(ical_component)
 
         event.update_mode = 1
-        event.save()
-
+        await event.asave()
+        #print("Finished event " + event.event_url)
         return event
     
     def gothunderbirds_judge_hidden(self, event):
@@ -321,7 +343,43 @@ class EventManager(models.Manager):
         
         # Otherwise assume its good
         return False
-    def phas_ubc_create_event(self, event_component):
+
+    async def phas_scrape(self):
+        import requests
+        from bs4 import BeautifulSoup
+        
+        try:
+            #print("Requesting UBC Physics and Astronomy")
+            
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get("https://phas.ubc.ca/events") as response:
+                    html_content = await response.text()
+                    #print("Connected to UBC Physics and Astronomy")
+                    # Parse the HTML content
+                    soup = BeautifulSoup(html_content, 'html.parser')
+                    events = soup.find_all(class_='views-row')
+
+                    current_tz = timezone.get_current_timezone()
+                    current_time = datetime.now(current_tz)
+                    
+                    tasks = []
+                    for event in events:
+                        start_time_str = event.find('span', class_='start').get_text(strip=True)
+                        parsed_start_time = datetime.fromisoformat(start_time_str)
+                        start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
+
+                        if start_time >= current_time - timedelta(days=7):
+                            tasks.append(asyncio.create_task(Event.objects.phas_ubc_create_event(event)))
+                        else:
+                            break
+
+                    await asyncio.gather(*tasks)
+
+                    print("UBC Physics and Astronomy finished " + str(len(tasks)) + " tasks")
+        except:
+            print("Failed requesting to Physics and Astronomy Events page")
+
+    async def phas_ubc_create_event(self, event_component):
         # Extract event url
         a_tag = event_component.find('div', class_='event-title').find('a')
         href_value = a_tag['href']
@@ -333,13 +391,13 @@ class EventManager(models.Manager):
         title = title.get_text(strip=True)
 
         # Check if event exists and create or update accordingly
-        if not self.filter(event_url=event_url).exists():
-            event = self.create(
+        if not await self.filter(event_url=event_url).aexists():
+            event = await self.acreate(
                 title=title,
                 event_url=event_url,
             )
         else:
-            event = self.get(event_url=event_url)
+            event = await self.filter(event_url=event_url).afirst()
             if event.update_mode != 2:
                 return None
 
@@ -383,18 +441,18 @@ class EventManager(models.Manager):
         event.hidden = False
         event.host = 'UBC Physics & Astronomy'
         event.update_mode = 1
-        event.save()
-        
+        await event.asave()
+        #print("Finished event " + event.event_url)
         return event
     
-    def cs_ubc_create_event(self, ical_component):
-        if not self.filter(event_url=ical_component.get('url')).exists():
-            event = self.create(
+    async def cs_ubc_create_event(self, ical_component):
+        if not await self.filter(event_url=ical_component.get('url')).aexists():
+            event = await self.acreate(
                 title=ical_component.get('summary'),
                 event_url=ical_component.decoded('url'),
             )
         else:
-            event = self.get(event_url=ical_component.get('url'))
+            event = await self.filter(event_url=ical_component.get('url')).afirst()
             if event.update_mode != 2:
                 return None
 
@@ -431,8 +489,8 @@ class EventManager(models.Manager):
         event.host = "UBC Computer Science"
 
         event.update_mode = 1
-        event.save()
-
+        await event.asave()
+        #print("Finished event " + event.event_url)
         return event
 
     def cs_ubc_judge_hidden(self, event):
@@ -462,15 +520,15 @@ class EventManager(models.Manager):
         return 'community'
     
     
-    def stats_ubc_create_event(self, ical_component):
+    async def stats_ubc_create_event(self, ical_component):
         if timedelta(days=30) > abs(timezone.now() - ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())):
-            if not self.filter(event_url=ical_component.get('url')).exists():
-                event = self.create(
+            if not await self.filter(event_url=ical_component.get('url')).aexists():
+                event = await self.acreate(
                     title=ical_component.get('summary'),
                     event_url=ical_component.decoded('url'),
                 )
             else:
-                event = self.get(event_url=ical_component.get('url'))
+                event = await self.filter(event_url=ical_component.get('url')).afirst()
                 if event.update_mode != 2:
                     return None
         else:
@@ -514,8 +572,8 @@ class EventManager(models.Manager):
         event.host = "UBC Statistics"
 
         event.update_mode = 1
-        event.save()
-
+        await event.asave()
+        #print("Finished event " + event.event_url)
         return event
 
 
