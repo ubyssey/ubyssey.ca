@@ -60,6 +60,9 @@ def format_event_date(start, end, weekDay=False):
 class EventsTheme(object):
     """Theme for the events microsite"""
 
+    def react(self, request):
+        return render(request, "events/event_page_react.html", {})
+
     def landing(self, request):
         """Events page landing page"""
 
