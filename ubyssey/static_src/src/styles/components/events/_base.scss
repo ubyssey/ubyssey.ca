@@ -314,7 +314,7 @@ header.events{
       top: 1em;
       z-index: 500;
       button.dark-mode-switcher {
-        color: white;
+        color: var(--header_color);
       }
     }
 }
