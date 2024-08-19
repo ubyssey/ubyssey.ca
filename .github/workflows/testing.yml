@@ -9,14 +9,13 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: [3.8]
 
     services:
       db:
-        platform: linux/x86_64
         image: mysql:8.0
         volumes:
           - database:/var/lib/mysql
