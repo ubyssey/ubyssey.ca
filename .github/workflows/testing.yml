@@ -2,7 +2,7 @@ name: Cross-browser test automation
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "fixing-automated-testing" ]
   pull_request:
     branches: [ "develop" ]
 
@@ -16,7 +16,8 @@ jobs:
 
     services:
       db:
-        image: mysql:5.7
+        platform: linux/x86_64
+        image: mysql:8.0
         volumes:
           - database:/var/lib/mysql
         env:
