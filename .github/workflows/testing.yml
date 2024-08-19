@@ -2,7 +2,7 @@ name: Cross-browser test automation
 
 on:
   push:
-    branches: [ "fixing-automated-testing" ]
+    branches: [ "develop" ]
   pull_request:
     branches: [ "develop" ]
 
