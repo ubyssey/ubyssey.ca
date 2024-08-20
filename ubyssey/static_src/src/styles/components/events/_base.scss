@@ -388,7 +388,19 @@ header.events{
         width: 100%;
     }
     main.events-page .events-flex .events-info-container {
-        display: none;
+        width: 100%;
+        position: fixed;
+        .events-info-container--div {
+            width: 100%;
+            padding: 1em;
+            position: fixed;
+            box-sizing: border-box;
+            background-color: #0000008a;
+            height: 100%;
+            .events-info {
+                margin: auto;
+            }
+        }
     }
     button.events-calendar--number {
         font-size: 14px;

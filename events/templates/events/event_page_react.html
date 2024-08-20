@@ -7,17 +7,6 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'ubyssey/css/events.css' %}" type="text/css" />
-<style>
-{% for key, value in highlight_colours.items %}
-    .{{key|slugify}} {
-        --highlight: {{value}};
-    }
-    div.day li.{{key|slugify}} {
-        color: black !important;    
-    }
-{% endfor %}
-</style>
-
 {% endblock %}
 
 {% block head_scripts%}
@@ -34,61 +23,11 @@ ical, rss feed, and api should be linked here
 {% block content %}
 <div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://storage.googleapis.com/ubyssey/media/renditions/Guide_2022_AMS.original.jpg')"></div>
 <main class="c-page events-page highlight-{{highlight}}">
-    <div class="events-flex {% if selectedEvent.selected %}event-view{% endif %}">
-        <div id="calendar" class="events-calendar"></div>
-        <div class="events-info-container">
-        {% if selectedEvent %}
-        <div class="events-info-container--div">
-        <div class="events-info">
-            <h2 class="event-info--time">
-                {{selectedEvent.displayTime}}
-            </h2>
-            <div class="events-info--content {{selectedEvent.category}} {{selectedEvent.host|slugify}}">
-                    <h2><a id="selected-title" href="{{selectedEvent.event_url}}">{{selectedEvent.title|safe}}</a></h2>
-                    <p><b>Location:</b> {{selectedEvent.location}}</p>
-                    <p>{% if selectedEvent.host %}
-                        <b>{% if  selectedEvent.description %}
-                            {{selectedEvent.host}}:
-                            {% else %}
-                                Hosted by {{selectedEvent.host}}
-                            {% endif %}
-                        </b>
-                    {% endif %} {{selectedEvent.description|safe}}</p>
-                    <p>
-                        <a href="{{selectedEvent.event_url}}" target="blank" id="source_link"></a>
-                        {% if request.user.is_authenticated %}
-                        <a href="/admin/snippets/events/event/edit/{{selectedEvent.id}}" id="edit_link">edit</a>
-                        {% endif %}
-                    </p>
-                    <script>
-                        var s = document.getElementById('source_link');
-                        s.href = s.href.replace("__AND__", "&");
-                        s.innerHTML = s.host;
-
-                        var s = document.getElementById('selected-title');
-                        s.href = s.href.replace("__AND__", "&");
-                    </script>
-            </div>
-        </div>
-        </div>
-        {% endif %}
-        </div>
-    </div>
+    <div id="calendar"></div>
 </main>
 {% endblock %}
 
 {% block scripts %}
-<script>
-    $('.calendar-item').click(function (e) {
-        e.preventDefault();
-        
-        var params = new URLSearchParams(location.search);
-        params.set('event', this.getAttribute('event-url'));
-        console.log(params);
-        window.location.search = params.toString();
-    });
-</script>
-
 <script src="{% static 'ubyssey/js/events.js' %}" type="text/javascript"></script>
 {% endblock %}
 

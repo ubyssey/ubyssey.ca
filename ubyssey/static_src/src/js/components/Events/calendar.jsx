@@ -16,34 +16,38 @@ export function QueryEventsCalendar() {
         )
         .then((response) => {
             const res = response.data.results;
-            console.log(res);
             setEvents(res);
         });
     }
     React.useEffect(()=>{
         getEvents();
-    },[])
+    },[]);
     return (
         <Router>
-            <header class="events">
-                <div class="u-container">
-                    <div class="logo-area">
-                        <a class="home-link" href="/" title="Go to The Ubyssey Homepage">
-                        <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo-small.e935f233a50c.svg')"}} alt="Ubyssey Logo"></div>
-                        <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo%201.f3b3c0235809.svg')"}} alt="Ubyssey Logo"></div>
-                        </a>
+            <div class="events-flex">
+                <div class="events-calendar">
+                    <header class="events">
+                        <div class="u-container">
+                            <div class="logo-area">
+                                <a class="home-link" href="/" title="Go to The Ubyssey Homepage">
+                                <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo-small.e935f233a50c.svg')"}} alt="Ubyssey Logo"></div>
+                                <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo%201.f3b3c0235809.svg')"}} alt="Ubyssey Logo"></div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <h1 class="title">Events around campus</h1>
+
+                        <EventsOptions />
+                    </header>
+
+                    <div id="calendar-rows">
+                        <EventsCalendar events={events} />
                     </div>
                 </div>
-
-                <h1 class="title">Events around campus</h1>
-
-                <EventsOptions />
-            </header>
-
-            <div id="calendar-rows">
-                <EventsCalendar events={events} />
-            </div>
- 
+            
+            <EventInfo events={events}/>
+        </div>
         </Router>
     );
 }
@@ -68,6 +72,35 @@ function slugify(str) {
              .replace(/-+/g, '-'); // remove consecutive hyphens
     return str;
 }
+function displayTime(time) {
+    var p = "AM"
+    if (time.getHours() >= 12) {
+        p = "PM"
+    }
+
+    var display = String(time.getHours() % 12)
+    if (display == "0") {
+        display = "12";
+    }
+
+    if (time.getMinutes() != 0) {
+        display = display + ":" + String(time.getMinutes());
+    }
+
+    display = display + p;
+
+    return display;
+}
+
+function eventsTags(event) {
+    var tags = [];
+    if (event.host != null) {
+        tags.push(slugify(event.host));
+    }
+    tags.push(slugify(event.category));
+
+    return tags.join(" ");
+}
 
 function EventsOptions() {
     let query = useQuery();
@@ -75,7 +108,6 @@ function EventsOptions() {
     if (query.get("category") != null){
         category = query.get("category");
     }
-    console.log(category);
 
     var highlight = "category";
 
@@ -127,23 +159,12 @@ function EventsOptions() {
 }
 
 function EventsCalendar({events}) {
-    function eventsTags(event) {
-        var tags = [];
-        if (event.host != null) {
-            tags.push(slugify(event.host));
-        }
-        tags.push(slugify(event.category));
-    
-        return tags.join(" ");
-    }
 
     function dayString(date) {
         return String(date.getDate()) + String(date.getMonth()) + String(date.getFullYear()); 
     }
 
     function arrangeCalendar(events) {
-        console.log("filtered events: ")
-        console.log(events);
         const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const shortenedMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -153,6 +174,7 @@ function EventsCalendar({events}) {
         const d = h * 24;
 
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
         var start = new Date(today.getTime() - (10*d));
         while(start.getDay() != 1) {
@@ -192,7 +214,6 @@ function EventsCalendar({events}) {
             }
             calendar.push(week);
         }
-        console.log(calendar);
 
         function placeEvents(calendar, event) {
             const delta = Math.floor((new Date(event.start_time).getTime() - start.getTime()) / d);
@@ -201,15 +222,12 @@ function EventsCalendar({events}) {
         }
 
         calendar = events.reduce(placeEvents, calendar);
-        console.log(calendar);
         return calendar;
     }
 
     function getHosts(hosts, event) {
         if (event.host != null) {
-            console.log(event.host);
             if (!(hosts.includes(event.host))) {
-                console.log("pushed");
                 hosts.push(event.host);
             }
         }
@@ -217,7 +235,6 @@ function EventsCalendar({events}) {
     }
 
     function toggleCategory(that) {
-        console.log(that);
         if (that.classList.contains("inactive"))
         {
             $('.day li.' + that.id).show();
@@ -227,6 +244,17 @@ function EventsCalendar({events}) {
         that.classList.toggle('inactive');
     }
 
+    function colourIn(legend) {
+        for (let i=0; i<legend.length; i++) {
+            let r = 200 + Math.floor(50 * Math.cos(i/legend.length * 2 * Math.PI))
+            let g = 200 + Math.floor(50 * Math.sin(i/legend.length * 2 * Math.PI))
+            let b = 200 + Math.floor(50 * Math.cos(i/legend.length * 2 * Math.PI + Math.PI))
+            let colour = "rgb(" + [String(r), String(g), String(b)].join(",") + ")"
+
+            $('.' + slugify(legend[i])).css("--highlight", colour);
+        }
+    }
+
     let query = useQuery();
     var category = "all";
     if (query.get("category") != null){
@@ -234,12 +262,13 @@ function EventsCalendar({events}) {
     }
     var displayedEvents = events.filter((e) => e.category===category || category==="all");
     var calendar = arrangeCalendar(displayedEvents);
-    console.log(calendar);
     var legend = ["Sports", "Entertainment", "Community", "Seminar"];
     if (category != "all") {
         legend = displayedEvents.reduce(getHosts, []);
     }
-    console.log(legend);
+    React.useEffect(()=>{
+        colourIn(legend);
+    });
     var highlight = "";
 
     return (
@@ -280,11 +309,12 @@ function EventsCalendar({events}) {
                             style={highlight == 'category' && event.category == 'seminar' && 
                                 {"display": "none"}
                             }*/>
-                            <a title={event.title} className="calendar-item" href={"?event=" + event.event_url} event-url={event.event_url}>
+                            <Link title={event.title} className="calendar-item" to={"?event=" + event.event_url} event-url={event.event_url}>
+                                <b>{displayTime(new Date(event.start_time))}</b> {event.title}
                                 {/*
                                 {event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {event.title|safe}
-                                */ event.title}
-                            </a>
+                                */}
+                            </Link>
                             </li>
                         )}</ul>
                     </div>
@@ -295,10 +325,61 @@ function EventsCalendar({events}) {
         <div class="legend">
             <ul>{legend.map((key, i) =>
                 <li key={i} className={slugify(key)}>
-                    <button id={slugify(key)} className="legend-button" onClick={(e) => toggleCategory(e.target)}>{key}</button>
+                    <button id={slugify(key)} className="legend-button" onClick={(e) => toggleCategory(e.target)} title={key}>{key}</button>
                 </li>
             )}</ul>
         </div>
         </>
+    );
+}
+
+function EventInfo({events}) {
+
+    function shortenUrl(url) {
+        var a = document.createElement("a");
+        a.href= url;
+        return a.host;
+    }
+
+    let query = useQuery();
+    var event = false;
+    if (query.get("event") != null){
+        let eventHash = query.get("event");
+        console.log(eventHash);
+        for (let i=0; i<events.length; i++) {
+            console.log("--" + events[i].event_url);
+            if (events[i].event_url == eventHash) {
+                event = events[i];
+                break;
+            }
+        }
+        console.log(event);
+    }
+
+    return (
+        <div class="events-info-container">
+        {event && 
+            <div class="events-info-container--div">
+            <div class="events-info">
+                <h2 class="event-info--time">
+                    {displayTime(new Date(event.start_time))}
+                </h2>
+                <div class={"events-info--content " + eventsTags(event)}>
+                        <h2><a id="selected-title" href={event.event_url}>{event.title}</a></h2>
+                        <p><b>Location:</b> {event.location}</p>
+                        <p>
+                            {event.host && <b>{event.description ? event.host : "Hosted by " + event.host}</b>} {event.description}
+                        </p>
+                        <p>
+                            <a href={event.event_url} target="blank" id="source_link">{shortenUrl(event.event_url)}</a>
+                            {/*% if request.user.is_authenticated %}
+                            <a href="/admin/snippets/events/event/edit/{{selectedEvent.id}}" id="edit_link">edit</a>
+                            {% endif %*/}
+                        </p>
+                </div>
+            </div>
+            </div>
+        }
+        </div>
     );
 }
