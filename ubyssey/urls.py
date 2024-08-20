@@ -13,14 +13,15 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
-from events.views import update_events, create_ical, EventsFeed
+from events.views import update_events, create_ical, EventsFeed, EventsViewSet
 from events.urls import urlpatterns as events_urls
-from events.urls import api as events_api_urls
 
 from infinitefeed.views import infinitefeed
 
 from newsletter.urls import urlpatterns as newsletter_urls
 from django.conf.urls import handler500
+
+from rest_framework import routers
 
 handler500 = 'ubyssey.views.main.custom_500'
 
@@ -29,6 +30,8 @@ tag = TagPage()
 
 urlpatterns = []
 
+api = routers.DefaultRouter()
+api.register(r'events', EventsViewSet)
 
 if settings.DEBUG:
     import debug_toolbar
@@ -64,7 +67,7 @@ urlpatterns += [
     re_path(r'^events/$', include(events_urls)),
     re_path(r'^events/ical/$', create_ical, name="events_ical"),
     re_path(r'^events/rss/$', EventsFeed(), name='events-feed'),  
-    re_path(r'^api/events_calendar/', include(events_api_urls.urls)),
+    re_path(r'^api/', include(api.urls)),
 
     # Tag
     re_path(r'^tag/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  

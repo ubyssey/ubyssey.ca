@@ -4,9 +4,6 @@ from rest_framework import routers
 
 events = EventsTheme()
 
-api = routers.DefaultRouter()
-api.register(r'events', EventsViewSet)
-
 app_name = 'events'
 urlpatterns = [
     path('', events.react, name='events-page'),
