@@ -25,16 +25,26 @@ export function QueryEventsCalendar() {
     },[])
     return (
         <Router>
-            <EventsCalendar events={events} />
-        </Router>
-    );
-}
+            <header class="events">
+                <div class="u-container">
+                    <div class="logo-area">
+                        <a class="home-link" href="/" title="Go to The Ubyssey Homepage">
+                        <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo-small.e935f233a50c.svg')"}} alt="Ubyssey Logo"></div>
+                        <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo%201.f3b3c0235809.svg')"}} alt="Ubyssey Logo"></div>
+                        </a>
+                    </div>
+                </div>
 
-export function QueryEventsOption() {
-    return (
-      <Router>
-        <EventsOptions />
-      </Router>
+                <h1 class="title">Events around campus</h1>
+
+                <EventsOptions />
+            </header>
+
+            <div id="calendar-rows">
+                <EventsCalendar events={events} />
+            </div>
+ 
+        </Router>
     );
 }
 
@@ -120,9 +130,9 @@ function EventsCalendar({events}) {
     function eventsTags(event) {
         var tags = [];
         if (event.host != null) {
-            tags.push(event.host);
+            tags.push(slugify(event.host));
         }
-        tags.push(event.category);
+        tags.push(slugify(event.category));
     
         return tags.join(" ");
     }
@@ -131,10 +141,12 @@ function EventsCalendar({events}) {
         return String(date.getDate()) + String(date.getMonth()) + String(date.getFullYear()); 
     }
 
-    function arrangeCalendar(events, category) {
-        events = events.filter((e) => e.category===category || category==="all");
+    function arrangeCalendar(events) {
         console.log("filtered events: ")
         console.log(events);
+        const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const shortenedMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const s = 1000
         const m = s * 60;
         const h = m * 60;
@@ -143,7 +155,7 @@ function EventsCalendar({events}) {
         const today = new Date();
 
         var start = new Date(today.getTime() - (10*d));
-        while(start.getDay() != 0) {
+        while(start.getDay() != 1) {
             start = new Date(start.getTime() + d);
         }
 
@@ -152,15 +164,15 @@ function EventsCalendar({events}) {
         var calendar = [];
         for(let i=0; i<4; i++) {
             var week = {
-                'month': 'August',
-                'month_short': 'Aug.',
+                'month': months[cur.getMonth()],
+                'month_short': shortenedMonths[cur.getMonth()],
                 'days': []
             };
             for(let a=0; a<7; a++) {
                 var day = {
                     'day': cur.getDate(),
                     'phase': 'today',
-                    'day_of_week': 'Monday',
+                    'day_of_week': weekDays[cur.getDay()],
                     'events': [],
                 };
                 if (dayString(cur) == dayString(today)) {
@@ -169,6 +181,11 @@ function EventsCalendar({events}) {
                     day['phase'] = 'past';
                 } else {
                     day['phase'] = 'future';
+                }
+
+                if (cur.getDate() == 1) {
+                    week['month'] = months[cur.getMonth()];
+                    week['month_short'] = shortenedMonths[cur.getMonth()];
                 }
                 var cur = new Date(cur.getTime() + d);
                 week['days'].push(day);
@@ -187,16 +204,43 @@ function EventsCalendar({events}) {
         console.log(calendar);
         return calendar;
     }
+
+    function getHosts(hosts, event) {
+        if (event.host != null) {
+            console.log(event.host);
+            if (!(hosts.includes(event.host))) {
+                console.log("pushed");
+                hosts.push(event.host);
+            }
+        }
+        return hosts;
+    }
+
+    function toggleCategory(that) {
+        console.log(that);
+        if (that.classList.contains("inactive"))
+        {
+            $('.day li.' + that.id).show();
+        } else {
+            $('.day li.' + that.id).hide();
+        }
+        that.classList.toggle('inactive');
+    }
+
     let query = useQuery();
     var category = "all";
     if (query.get("category") != null){
         category = query.get("category");
     }
-    console.log(category + " yeah yeah yeah");
-    var calendar = arrangeCalendar(events, category);
+    var displayedEvents = events.filter((e) => e.category===category || category==="all");
+    var calendar = arrangeCalendar(displayedEvents);
     console.log(calendar);
-    var highlight = [];
-    var legend = [];
+    var legend = ["Sports", "Entertainment", "Community", "Seminar"];
+    if (category != "all") {
+        legend = displayedEvents.reduce(getHosts, []);
+    }
+    console.log(legend);
+    var highlight = "";
 
     return (
         <>
@@ -209,20 +253,19 @@ function EventsCalendar({events}) {
             <h2 class="day">Sat</h2>
             <h2 class="day">Sun</h2>
         </div>
-        <p>{category}</p>
 
-        <div class="events-calendar--rows">{calendar.map((week, i) => 
+        <div class="events-calendar--rows">{calendar.map((week, week_index) => 
 
             <div className="events-calendar--row">
-                {i==0 && 
+                {week_index===0 && 
                     <h2 class="events-calendar--month">
                         <span className="full">{week.month}</span>
                         <span className="short">{week.month_short}</span>
                     </h2>
                 }
-                {week.days.map((day, i) => 
+                {week.days.map((day, day_index) => 
                 <>
-                    {i != 0 && day.day == 1 && 
+                    {(day.day === 1 && week_index!== 0) && 
                         <h2 className="events-calendar--month">
                         <span className="full">{week.month}</span>
                         <span className="short">{week.month_short}</span>
@@ -250,9 +293,9 @@ function EventsCalendar({events}) {
         )}</div>
 
         <div class="legend">
-            <ul>{legend.map(key =>
-                <li class="{{key|slugify}}">
-                    <button id="{{key|slugify}}" class="legend-button {% if key == 'seminar' %}inactive{% endif %}" onClick="toggleCategory(this)">{{key}}</button>
+            <ul>{legend.map((key, i) =>
+                <li key={i} className={slugify(key)}>
+                    <button id={slugify(key)} className="legend-button" onClick={(e) => toggleCategory(e.target)}>{key}</button>
                 </li>
             )}</ul>
         </div>

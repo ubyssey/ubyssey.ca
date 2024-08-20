@@ -35,27 +35,7 @@ ical, rss feed, and api should be linked here
 <div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://storage.googleapis.com/ubyssey/media/renditions/Guide_2022_AMS.original.jpg')"></div>
 <main class="c-page events-page highlight-{{highlight}}">
     <div class="events-flex {% if selectedEvent.selected %}event-view{% endif %}">
-        <div id="calendar" class="events-calendar">
-            <header class="events">
-                <div class="u-container">
-                    <div class="logo-area">
-                        <a class="home-link" href="{% url 'wagtail_serve' '' %}" title="Go to The Ubyssey Homepage">
-                        <div class="top-logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/ubyssey-logo-small.svg' %}')" alt=""></div>
-                        <div class="top-logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/ubyssey-logo 1.svg' %}')" alt=""></div>
-                        </a>
-                    </div>
-                </div>
-                <div class="darkmode-toggle">
-                    {% include 'article/objects/darkmode_button.html' with id="topbar" %}
-                </div>
-                <h1 class="title">Events around campus</h1>
-
-                <div id="calendar-header"></div>
-            </header>
-
-            <div id="calendar-rows"></div>
-
-        </div>
+        <div id="calendar" class="events-calendar"></div>
         <div class="events-info-container">
         {% if selectedEvent %}
         <div class="events-info-container--div">
@@ -107,17 +87,6 @@ ical, rss feed, and api should be linked here
         console.log(params);
         window.location.search = params.toString();
     });
-
-    function toggleCategory(that) {
-        console.log(that);
-        if (that.classList.contains("inactive"))
-        {
-            $('.day li.' + that.id).show();
-        } else {
-            $('.day li.' + that.id).hide();
-        }
-        that.classList.toggle('inactive');
-    }
 </script>
 
 <script src="{% static 'ubyssey/js/events.js' %}" type="text/javascript"></script>
