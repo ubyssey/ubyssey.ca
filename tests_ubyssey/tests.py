@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 @override_settings(ALLOWED_HOSTS=['*'])  # Disable ALLOWED_HOSTS
 class BaseTestCase(StaticLiveServerTestCase):
@@ -30,55 +31,51 @@ class BaseTestCase(StaticLiveServerTestCase):
     def setUp(self):
         super().setUp()
         # Determine the command executor URL based on the CI environment
-        if hasattr(self, 'browser') and self.browser == 'safari':
-            self.driver = webdriver.Safari()
-        else:
-            # Determine the command executor URL based on the CI environment
-            if self.ci_environment == 'testing':
-                if self.browser == 'chrome':
-                    command_executor = 'http://localhost:4444/wd/hub'
-                elif self.browser == 'firefox':
-                    command_executor = 'http://localhost:4446/wd/hub'
-                elif self.browser == 'edge':
-                    command_executor = 'http://localhost:4445/wd/hub'
-                else:
-                    raise ValueError(f"Unsupported browser: {self.browser}")    
-            else:
-                if self.browser == 'chrome':
-                    command_executor = 'http://selenium-chrome:4444/wd/hub'
-                elif self.browser == 'firefox':
-                    command_executor = 'http://selenium-firefox:4444/wd/hub'
-                elif self.browser == 'edge':
-                    command_executor = 'http://selenium-edge:4444/wd/hub'
-                else:
-                    raise ValueError(f"Unsupported browser: {self.browser}")
-
-            # Instantiate the remote WebDriver based on the browser type
+        if self.ci_environment == 'testing':
             if self.browser == 'chrome':
-                chrome_options = webdriver.ChromeOptions()
-                chrome_options.add_argument('--headless')
-                chrome_options.add_argument('--no-sandbox')
-                chrome_options.add_argument('--disable-dev-shm-usage')
-                self.driver = webdriver.Remote(
-                    command_executor=command_executor,
-                    options=chrome_options
-                )
+                command_executor = 'http://localhost:4444/wd/hub'
             elif self.browser == 'firefox':
-                firefox_options = webdriver.FirefoxOptions()
-                firefox_options.add_argument('--headless')
-                self.driver = webdriver.Remote(
-                    command_executor=command_executor,
-                    options=firefox_options
-                )
+                command_executor = 'http://localhost:4446/wd/hub'
             elif self.browser == 'edge':
-                edge_options = webdriver.EdgeOptions()
-                edge_options.add_argument('--headless')
-                self.driver = webdriver.Remote(
-                    command_executor=command_executor,
-                    options=edge_options
-                )
+                command_executor = 'http://localhost:4445/wd/hub'
+            else:
+                raise ValueError(f"Unsupported browser: {self.browser}")    
+        else:
+            if self.browser == 'chrome':
+                command_executor = 'http://selenium-chrome:4444/wd/hub'
+            elif self.browser == 'firefox':
+                command_executor = 'http://selenium-firefox:4444/wd/hub'
+            elif self.browser == 'edge':
+                command_executor = 'http://selenium-edge:4444/wd/hub'
             else:
                 raise ValueError(f"Unsupported browser: {self.browser}")
+
+        # Instantiate the remote WebDriver based on the browser type
+        if self.browser == 'chrome':
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+            self.driver = webdriver.Remote(
+                command_executor=command_executor,
+                options=chrome_options
+            )
+        elif self.browser == 'firefox':
+            firefox_options = webdriver.FirefoxOptions()
+            firefox_options.add_argument('--headless')
+            self.driver = webdriver.Remote(
+                command_executor=command_executor,
+                options=firefox_options
+            )
+        elif self.browser == 'edge':
+            edge_options = webdriver.EdgeOptions()
+            edge_options.add_argument('--headless')
+            self.driver = webdriver.Remote(
+                command_executor=command_executor,
+                options=edge_options
+            )
+        else:
+            raise ValueError(f"Unsupported browser: {self.browser}")
         
         self.driver.implicitly_wait(5)
     
@@ -97,6 +94,17 @@ class MySeleniumTests(BaseTestCase):
         self.assertGreater(len(author_cards), 0, "No author cards found on the page")
 
     def test_ubyssey_homepage(self):
+        # Testing searching UBCO  and then asserting one article exists
+        base_url = f'{self.live_server_url}/news/'
+        self.driver.get(base_url)
+        self.driver.find_element(By.CSS_SELECTOR, ".o-archive__search__label").click()
+        actions = ActionChains(self.driver)
+        self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys("UBCO")
+        self.driver.find_element(By.ID, "c-articles-list__searchbar").send_keys(Keys.ENTER)
+        articles = self.driver.find_elements(By.CLASS_NAME,"o-article.article--infinitefeed")
+        # Assert that at least one article exists
+        self.assertTrue(len(articles) > 0, "No articles with the class 'o-article article--infinitefeed' found on the page.")
+
         #Testing the cover story works image is displayed
         base_url = f'{self.live_server_url}/'
         print(base_url)
