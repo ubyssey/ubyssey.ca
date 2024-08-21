@@ -291,7 +291,7 @@ function EventsCalendar({events}) {
             var cur = new Date(event.start_time);
             cur.setHours(0,0,0,0);
             event.displayTime = displayTime(event.start_time);
-            if (event.end_time.getTime() - event.start_time.getTime() > d) {
+            if (event.end_time.getTime() - event.start_time.getTime() >= d-h) {
                 event.displayTime = "";
             }
             while(cur < new Date(event.end_time)) {
@@ -484,7 +484,7 @@ function EventInfo({events}) {
                         <h2><a id="selected-title" href={event.event_url} target="blank" dangerouslySetInnerHTML={
                            {__html: event.title} 
                         }></a></h2>
-                        <p><b>Location:</b> {event.location}</p>
+                        {event.location != "" && <p><b>Location:</b> {event.location}</p>}
                         <p dangerouslySetInnerHTML={
                             {__html: (event.host!=null ? "<b>" + (event.description ? event.host : "Hosted by " + event.host) + "</b> " : "") + event.description.replace(/(?:\r\n|\r|\n)/g, '<br>')}
                         }>
