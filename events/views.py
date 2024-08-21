@@ -489,7 +489,7 @@ class EventsSerializer(serializers.HyperlinkedModelSerializer):
 
 class EventsViewSet(viewsets.ModelViewSet):
     serializer_class = EventsSerializer
-    queryset = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).order_by("start_time")
+    queryset = Event.objects.filter(hidden=False)
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['category', 'location', 'host']
     search_fields = ['title', 'description', 'host', 'location', '^event_url']
