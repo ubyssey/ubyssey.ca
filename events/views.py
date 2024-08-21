@@ -61,7 +61,18 @@ class EventsTheme(object):
     """Theme for the events microsite"""
 
     def react(self, request):
-        return render(request, "events/event_page_react.html", {})
+        ical = {'url': 'https://ubyssey.ca/events/ical/',
+                'title': "Ubyssey's Events Around Campus iCal Feed"}
+
+        rss = {'url': 'https://ubyssey.ca/events/rss/',
+                'title': "Ubyssey's Events Around Campus rss Feed"}
+    
+        meta = {
+            'title': "Events Around Campus Calendar",
+            'description': "Events Around Campus collected by The Ubyssey",
+            'url': 'https://ubyssey.ca/events/',
+            }
+        return render(request, "events/event_page_react.html", {'ical':ical, 'rss':rss, 'meta':meta})
 
     def landing(self, request):
         """Events page landing page"""
@@ -488,7 +499,7 @@ class EventsFeed(Feed):
 class EventsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Event
-        fields = ['title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'category']
+        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'category']
 
 class EventsViewSet(viewsets.ModelViewSet):
     serializer_class = EventsSerializer

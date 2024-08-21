@@ -2,7 +2,8 @@ import React from 'react'
 import {
     BrowserRouter as Router,
     Link,
-    useLocation
+    useLocation,
+    useSearchParams
 } from "react-router-dom";
 import ReactDOM from 'react-dom';
 import axios from "axios";
@@ -64,6 +65,9 @@ function capitalize(s)
 }
 
 function slugify(str) {
+    if (str == null) {
+        return "null";
+    }
     // Thanks https://dev.to/bybydev/how-to-slugify-a-string-in-javascript-4o9n
     str = str.replace(/^\s+|\s+$/g, ''); // trim leading/trailing white space
     str = str.toLowerCase(); // convert string to lowercase
@@ -72,6 +76,7 @@ function slugify(str) {
              .replace(/-+/g, '-'); // remove consecutive hyphens
     return str;
 }
+
 function displayTime(time) {
     var p = "AM"
     if (time.getHours() >= 12) {
@@ -90,6 +95,38 @@ function displayTime(time) {
     display = display + p;
 
     return display;
+}
+
+function displayMonthDay(date) {
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    return months[date.getMonth()] + " " + String(date.getDate());
+}
+
+function displayEventTime(start, end) {
+    //event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {event.title|safe}
+    const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const shortenedMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const s = 1000
+    const m = s * 60;
+    const h = m * 60;
+    const d = h * 24;
+    
+    start = new Date(start);
+    end = new Date(end);
+
+    if (start == end) {
+        return displayMonthDay(start) + ", " + displayTime(start);
+    } else if (d >= end.getTime() - start.getTime()) {
+        if (start.getHours() == 0) {
+            return displayMonthDay(start);
+        } else {
+            return displayMonthDay(start) + ", " + displayTime(start) + " - " + displayTime(end);
+        }
+    } else if (end.getHours() == start.getHours()) {
+        return displayMonthDay(start) + " - " + displayMonthDay(end);
+    } else {
+        return displayMonthDay(start) + ", " + displayTime(start) + " - " + displayMonthDay(end) + ", " + displayTime(end)
+    }
 }
 
 function eventsTags(event) {
@@ -188,7 +225,8 @@ function EventsCalendar({events}) {
             var week = {
                 'month': months[cur.getMonth()],
                 'month_short': shortenedMonths[cur.getMonth()],
-                'days': []
+                'days': [],
+                'this_week': false,
             };
             for(let a=0; a<7; a++) {
                 var day = {
@@ -199,6 +237,7 @@ function EventsCalendar({events}) {
                 };
                 if (dayString(cur) == dayString(today)) {
                     day['phase'] = 'today';
+                    week['this_week'] = true;
                 } else if (cur < today) {
                     day['phase'] = 'past';
                 } else {
@@ -234,42 +273,70 @@ function EventsCalendar({events}) {
         return hosts;
     }
 
-    function toggleCategory(that) {
-        if (that.classList.contains("inactive"))
-        {
-            $('.day li.' + that.id).show();
-        } else {
-            $('.day li.' + that.id).hide();
+    function toggleCategory(that, searchParams, setSearchParams) {
+
+        var hidden = [];
+        if (searchParams.has("hidden")) {
+            hidden = searchParams.get("hidden").split(" ");
         }
-        that.classList.toggle('inactive');
+        hidden = hidden.filter((i) => i!="");
+        
+        if (hidden.includes(that.id)) {
+            hidden.pop(hidden.indexOf(that.id));
+        } else {
+            hidden.push(that.id);
+        }
+        
+        if (hidden.length == 0) {
+            searchParams.delete("hidden");
+        } else {
+            searchParams.set("hidden", hidden.join(" "));
+        }
+        setSearchParams(searchParams);
     }
 
     function colourIn(legend) {
+        $('div.day li').removeAttr("style");
         for (let i=0; i<legend.length; i++) {
-            let r = 200 + Math.floor(50 * Math.cos(i/legend.length * 2 * Math.PI))
-            let g = 200 + Math.floor(50 * Math.sin(i/legend.length * 2 * Math.PI))
-            let b = 200 + Math.floor(50 * Math.cos(i/legend.length * 2 * Math.PI + Math.PI))
-            let colour = "rgb(" + [String(r), String(g), String(b)].join(",") + ")"
+            let r = 200 + Math.floor(50 * Math.cos(i/legend.length * 2 * Math.PI));
+            let g = 200 + Math.floor(50 * Math.sin(i/legend.length * 2 * Math.PI));
+            let b = 200 + Math.floor(50 * Math.cos(i/legend.length * 2 * Math.PI + Math.PI));
+            let colour = "rgb(" + [String(r), String(g), String(b)].join(",") + ")";
 
             $('.' + slugify(legend[i])).css("--highlight", colour);
+            $('div.day li.' + slugify(legend[i])).css("color", "black");
         }
     }
 
     let query = useQuery();
     var category = "all";
+    var highlight = "category";
     if (query.get("category") != null){
         category = query.get("category");
+        highlight = "host";
     }
-    var displayedEvents = events.filter((e) => e.category===category || category==="all");
-    var calendar = arrangeCalendar(displayedEvents);
+    var eventHash = "";
+    if (query.get("event") != null){
+        eventHash = query.get("event");
+    }
+
+    let [searchParams, setSearchParams] = useSearchParams();
+
+    var hidden = [];
+    if (searchParams.has("hidden")) {
+        hidden = searchParams.get("hidden").split(" ");
+    }
+
+    var displayedEvents = events.filter((e) => (e.category===category || category==="all"));
     var legend = ["Sports", "Entertainment", "Community", "Seminar"];
     if (category != "all") {
         legend = displayedEvents.reduce(getHosts, []);
     }
+    displayedEvents = displayedEvents.filter((e) => !hidden.includes(slugify(e[highlight])));
+    var calendar = arrangeCalendar(displayedEvents);
     React.useEffect(()=>{
         colourIn(legend);
     });
-    var highlight = "";
 
     return (
         <>
@@ -285,7 +352,7 @@ function EventsCalendar({events}) {
 
         <div class="events-calendar--rows">{calendar.map((week, week_index) => 
 
-            <div className="events-calendar--row">
+            <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
                 {week_index===0 && 
                     <h2 class="events-calendar--month">
                         <span className="full">{week.month}</span>
@@ -301,16 +368,20 @@ function EventsCalendar({events}) {
                         </h2>
                     }
                     <div className={"day " + day.phase}>
-                        <button onClick="this.parentElement.parentElement.classList.toggle('enlarged')" className="events-calendar--number">
+                        <button onClick={(e) => e.target.parentElement.parentElement.classList.toggle('enlarged')} className="events-calendar--number">
                             <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>{day.day}.
                         </button>
                         <ul>{day.events.map((event) => 
-                            <li className={eventsTags(event)}/*{event.event_url == selectedEvent.event_url && "selected"}
-                            style={highlight == 'category' && event.category == 'seminar' && 
-                                {"display": "none"}
-                            }*/>
-                            <Link title={event.title} className="calendar-item" to={"?event=" + event.event_url} event-url={event.event_url}>
-                                <b>{displayTime(new Date(event.start_time))}</b> {event.title}
+                            <li className={(eventHash==event.event_url && "selected") + " " + eventsTags(event)}>
+                            <Link title={event.title.replace("<br>", ", ")} className="calendar-item" to={"?event=" + event.event_url} event-url={event.event_url}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                searchParams.set("event", event.event_url);
+                                setSearchParams(searchParams);
+                            }}
+                            dangerouslySetInnerHTML={
+                               {__html: "<b>" + displayTime(new Date(event.start_time)) + "</b> " +  event.title}
+                            }>
                                 {/*
                                 {event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {event.title|safe}
                                 */}
@@ -325,7 +396,8 @@ function EventsCalendar({events}) {
         <div class="legend">
             <ul>{legend.map((key, i) =>
                 <li key={i} className={slugify(key)}>
-                    <button id={slugify(key)} className="legend-button" onClick={(e) => toggleCategory(e.target)} title={key}>{key}</button>
+                    <button id={slugify(key)} className={"legend-button" + (hidden.includes(slugify(key)) ? " inactive" : "")}
+                    onClick={(e) => toggleCategory(e.target, searchParams, setSearchParams)} title={key}>{key}</button>
                 </li>
             )}</ul>
         </div>
@@ -345,15 +417,12 @@ function EventInfo({events}) {
     var event = false;
     if (query.get("event") != null){
         let eventHash = query.get("event");
-        console.log(eventHash);
         for (let i=0; i<events.length; i++) {
-            console.log("--" + events[i].event_url);
             if (events[i].event_url == eventHash) {
                 event = events[i];
                 break;
             }
         }
-        console.log(event);
     }
 
     return (
@@ -362,19 +431,22 @@ function EventInfo({events}) {
             <div class="events-info-container--div">
             <div class="events-info">
                 <h2 class="event-info--time">
-                    {displayTime(new Date(event.start_time))}
+                    {displayEventTime(event.start_time, event.end_time)}
                 </h2>
                 <div class={"events-info--content " + eventsTags(event)}>
-                        <h2><a id="selected-title" href={event.event_url}>{event.title}</a></h2>
+                        <h2><a id="selected-title" href={event.event_url} target="blank" dangerouslySetInnerHTML={
+                           {__html: event.title} 
+                        }></a></h2>
                         <p><b>Location:</b> {event.location}</p>
-                        <p>
-                            {event.host && <b>{event.description ? event.host : "Hosted by " + event.host}</b>} {event.description}
+                        <p dangerouslySetInnerHTML={
+                            {__html: (event.host!=null ? "<b>" + (event.description ? event.host : "Hosted by " + event.host) + "</b> " : "") + event.description.replace(/(?:\r\n|\r|\n)/g, '<br>')}
+                        }>
                         </p>
                         <p>
-                            <a href={event.event_url} target="blank" id="source_link">{shortenUrl(event.event_url)}</a>
-                            {/*% if request.user.is_authenticated %}
-                            <a href="/admin/snippets/events/event/edit/{{selectedEvent.id}}" id="edit_link">edit</a>
-                            {% endif %*/}
+                            <a href={event.event_url.replace("__AND__", "&")} target="blank" id="source_link">{shortenUrl(event.event_url)}</a>
+                            {document.getElementById('calendar').getAttribute("authenticated")=="True" && 
+                            <a href={"/admin/snippets/events/event/edit/" + event.id} id="edit_link">edit</a>
+                            }
                         </p>
                 </div>
             </div>

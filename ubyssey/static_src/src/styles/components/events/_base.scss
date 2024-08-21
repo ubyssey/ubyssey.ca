@@ -29,6 +29,7 @@ main.events-page {
         .events-info-container--div {
             margin: auto 0;
             min-height: 70vh;
+            width: 100%;
         }
         .events-info {
             max-width: 500px;
@@ -172,20 +173,18 @@ div.day{
         border-color: black;
     }
 
+    li a:hover, li a:focus {
+        color: inherit;
+        text-decoration: underline;
+    }
+
     &.past {
         background-color: #EEE;
         color: black;
-        li a:hover, li a:focus {
-            color: $color-ubyssey-blue;
-        }
     }
     &.today {
         background-color: $color-ubyssey-blue;
         color: white;
-        li a:hover, li a:focus {
-            color: inherit;
-            text-decoration: underline;
-        }
         li.selected {
             color: white;
             text-decoration: underline;
@@ -194,9 +193,6 @@ div.day{
     &.future {
         background-color: $color-ubyssey-blue-light;
         color: black;
-        li a:hover, li a:focus {
-            color: $color-ubyssey-blue;
-        }
     }
 
     ul {

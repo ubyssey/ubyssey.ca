@@ -15,6 +15,7 @@ ical, rss feed, and api should be linked here
 {% endcomment %}
 <link rel="alternate" type="text/calendar" title="{{ical.title}}" href="{{ical.url}}" />
 <link rel="alternate" type="application/atom+xml" title="{{rss.title}}" href="{{rss.url}}">
+<link rel="alternate" type="application/json" title="Ubyssey Events API" href="https://ubyssey.ca/api/events">
 {% endblock %}
 
 {% block header %}  
@@ -23,7 +24,7 @@ ical, rss feed, and api should be linked here
 {% block content %}
 <div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://storage.googleapis.com/ubyssey/media/renditions/Guide_2022_AMS.original.jpg')"></div>
 <main class="c-page events-page highlight-{{highlight}}">
-    <div id="calendar"></div>
+    <div id="calendar" authenticated={{request.user.is_authenticated}}></div>
 </main>
 {% endblock %}
 
