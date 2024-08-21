@@ -19,23 +19,18 @@ export function QueryEventsCalendar() {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        console.log(today);
         var start = new Date(today.getTime() - (10*d));
-        console.log(start);
         while(start.getDay() != 1) {
             start = new Date(start.getTime() + d);
         }
-        console.log(start);
         let end = new Date(start.getTime() + 29*d)
 
         let q = ["end_time__gte=" + start.toLocaleDateString(),"start_time__lte=" + end.toLocaleDateString(),"limit=300"];
-        console.log('/api/events/?' + q.join("&"));
         axios
         .get(
             '/api/events/?' + q.join("&")
         )
         .then((response) => {
-            console.log(response);
             const res = response.data.results;
 
             for (let i=0; i<res.length; i++) {
@@ -301,7 +296,6 @@ function EventsCalendar({events}) {
                 }
                 cur = new Date(cur.getTime() + d);
                 event = JSON.parse(JSON.stringify(event));
-                console.log(event);
                 event.displayTime = "Ongoing";
             }
             return calendar;
