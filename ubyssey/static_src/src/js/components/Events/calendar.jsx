@@ -11,14 +11,41 @@ import axios from "axios";
 export function QueryEventsCalendar() {
     const [events, setEvents] = React.useState([]);
     function getEvents(){
+        
+        const s = 1000
+        const m = s * 60;
+        const h = m * 60;
+        const d = h * 24;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        console.log(today);
+        var start = new Date(today.getTime() - (10*d));
+        console.log(start);
+        while(start.getDay() != 1) {
+            start = new Date(start.getTime() + d);
+        }
+        console.log(start);
+        let end = new Date(start.getTime() + 29*d)
+
+        let q = ["end_time__gte=" + start.toLocaleDateString(),"start_time__lte=" + end.toLocaleDateString(),"limit=300"];
+        console.log('/api/events/?' + q.join("&"));
         axios
         .get(
-            `/api/events/`
+            '/api/events/?' + q.join("&")
         )
         .then((response) => {
+            console.log(response);
             const res = response.data.results;
+
+            for (let i=0; i<res.length; i++) {
+                res[i].start_time = changeTimezone(new Date(res[i].start_time), "America/Vancouver");
+                res[i].end_time = changeTimezone(new Date(res[i].end_time), "America/Vancouver");
+            }
+
             setEvents(res);
-        });
+        })
+        .catch((err) => console.log(err));
     }
     React.useEffect(()=>{
         getEvents();
@@ -76,6 +103,16 @@ function slugify(str) {
              .replace(/-+/g, '-'); // remove consecutive hyphens
     return str;
 }
+
+function changeTimezone(date, ianatz) {
+
+    var invdate = new Date(date.toLocaleString('en-US', {
+      timeZone: ianatz
+    }));
+  
+    var diff = date.getTime() - invdate.getTime();
+    return new Date(date.getTime() - diff);
+  }
 
 function displayTime(time) {
     var p = "AM"
@@ -181,7 +218,7 @@ function EventsOptions() {
         <>
         <div class="events-calendar--categories">
             <ul>
-                <li class={category == 'all' && "selected"}><Link to="?">All</Link></li>
+                <li class={category == 'all' && "selected"}><Link to="?hidden=seminar">All</Link></li>
                 <li class={category == 'sports' && "selected"}><Link to="?category=sports">Sports</Link></li>
                 <li class={category == 'entertainment' && "selected"}><Link to="?category=entertainment">Entertainment</Link></li>
                 <li class={category == 'community' && "selected"}><Link to="?category=community">Community</Link></li>
@@ -196,10 +233,6 @@ function EventsOptions() {
 }
 
 function EventsCalendar({events}) {
-
-    function dayString(date) {
-        return String(date.getDate()) + String(date.getMonth()) + String(date.getFullYear()); 
-    }
 
     function arrangeCalendar(events) {
         const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -235,7 +268,7 @@ function EventsCalendar({events}) {
                     'day_of_week': weekDays[cur.getDay()],
                     'events': [],
                 };
-                if (dayString(cur) == dayString(today)) {
+                if (cur.toLocaleDateString() == today.toLocaleDateString()) {
                     day['phase'] = 'today';
                     week['this_week'] = true;
                 } else if (cur < today) {
@@ -255,8 +288,22 @@ function EventsCalendar({events}) {
         }
 
         function placeEvents(calendar, event) {
-            const delta = Math.floor((new Date(event.start_time).getTime() - start.getTime()) / d);
-            calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
+            var cur = new Date(event.start_time);
+            cur.setHours(0,0,0,0);
+            event.displayTime = displayTime(event.start_time);
+            if (event.end_time.getTime() - event.start_time.getTime() > d) {
+                event.displayTime = "";
+            }
+            while(cur < new Date(event.end_time)) {
+                const delta = Math.floor((cur.getTime() - start.getTime()) / d);
+                if (delta > 0 && delta < (7*4)) {
+                    calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
+                }
+                cur = new Date(cur.getTime() + d);
+                event = JSON.parse(JSON.stringify(event));
+                console.log(event);
+                event.displayTime = "Ongoing";
+            }
             return calendar;
         }
 
@@ -380,7 +427,7 @@ function EventsCalendar({events}) {
                                 setSearchParams(searchParams);
                             }}
                             dangerouslySetInnerHTML={
-                               {__html: "<b>" + displayTime(new Date(event.start_time)) + "</b> " +  event.title}
+                               {__html: "<b>" + event.displayTime + "</b> " +  event.title}
                             }>
                                 {/*
                                 {event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {event.title|safe}
