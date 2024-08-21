@@ -447,13 +447,7 @@ function EventsCalendar({events}) {
 }
 
 function EventInfo({events}) {
-
-    function shortenUrl(url) {
-        var a = document.createElement("a");
-        a.href= url;
-        return a.host;
-    }
-
+    let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     var event = false;
     if (query.get("event") != null){
@@ -466,33 +460,71 @@ function EventInfo({events}) {
         }
     }
 
+    React.useEffect(()=>{
+        console.log(document.getElementById('event-dialog'));
+        if(document.getElementById('event-dialog')) {
+            document.getElementById('event-dialog').showModal();
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    })
+
+    function exitEvent(searchParams, setSearchParams) {
+        searchParams.delete("event");
+        setSearchParams(searchParams);
+    }
+
     return (
         <div class="events-info-container">
         {event && 
-            <div class="events-info-container--div">
-            <div class="events-info">
-                <h2 class="event-info--time">
-                    {displayEventTime(event.start_time, event.end_time)}
-                </h2>
-                <div class={"events-info--content " + eventsTags(event)}>
-                        <h2><a id="selected-title" href={event.event_url} target="blank" dangerouslySetInnerHTML={
-                           {__html: event.title} 
-                        }></a></h2>
-                        {event.location != "" && <p><b>Location:</b> {event.location}</p>}
-                        <p dangerouslySetInnerHTML={
-                            {__html: (event.host!=null ? "<b>" + (event.description ? event.host : "Hosted by " + event.host) + "</b> " : "") + event.description.replace(/(?:\r\n|\r|\n)/g, '<br>')}
-                        }>
-                        </p>
-                        <p>
-                            <a href={event.event_url.replace("__AND__", "&")} target="blank" id="source_link">{shortenUrl(event.event_url)}</a>
-                            {document.getElementById('calendar').getAttribute("authenticated")=="True" && 
-                            <a href={"/admin/snippets/events/event/edit/" + event.id} id="edit_link">edit</a>
-                            }
-                        </p>
+        <>
+            {screen.width <= 759 ?
+            <>
+                <dialog id="event-dialog" open="" aria-modal="true">
+                    <div className="events-info-shadow" onClick={() => exitEvent(searchParams, setSearchParams)}></div>
+                    <button onClick={() => exitEvent(searchParams, setSearchParams)}><ion-icon name="close"></ion-icon></button>
+                    <EventInfoBox event={event}/>                
+                </dialog>
+            </>
+            :
+                <div class="events-info-container--div">
+                    <EventInfoBox event={event}/>
                 </div>
-            </div>
-            </div>
+            }
+        </>
         }
         </div>
+    );
+}
+
+function EventInfoBox({event}) {
+    function shortenUrl(url) {
+        var a = document.createElement("a");
+        a.href= url;
+        return a.host;
+    }
+    return (
+        <div class="events-info">
+        <h2 class="event-info--time">
+            {displayEventTime(event.start_time, event.end_time)}
+        </h2>
+        <div class={"events-info--content " + eventsTags(event)}>
+                <h2><a id="selected-title" href={event.event_url} target="blank" dangerouslySetInnerHTML={
+                   {__html: event.title} 
+                }></a></h2>
+                {event.location != "" && <p><b>Location:</b> {event.location}</p>}
+                <p dangerouslySetInnerHTML={
+                    {__html: (event.host!=null ? "<b>" + (event.description ? event.host : "Hosted by " + event.host) + "</b> " : "") + event.description.replace(/(?:\r\n|\r|\n)/g, '<br>')}
+                }>
+                </p>
+                <p>
+                    <a href={event.event_url.replace("__AND__", "&")} target="blank" id="source_link">{shortenUrl(event.event_url)}</a>
+                    {document.getElementById('calendar').getAttribute("authenticated")=="True" && 
+                    <a href={"/admin/snippets/events/event/edit/" + event.id} id="edit_link">edit</a>
+                    }
+                </p>
+        </div>
+    </div>
     );
 }

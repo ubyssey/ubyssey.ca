@@ -503,7 +503,7 @@ class EventsSerializer(serializers.HyperlinkedModelSerializer):
 
 class EventsViewSet(viewsets.ModelViewSet):
     serializer_class = EventsSerializer
-    queryset = Event.objects.filter(hidden=False)
+    queryset = Event.objects.filter(hidden=False).order_by("start_time")
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = {
         'start_time': ['gte', 'lte'],
