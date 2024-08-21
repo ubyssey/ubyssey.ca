@@ -249,15 +249,15 @@ class EventManager(models.Manager):
 
         categories = categories.to_ical().decode().lower()
 
-        # Check for seminar keywords  
-        for i in ['workshop', 'seminar', 'research', 'learning', 'conference', 'graduate students']:
-            if i in categories:
-                return 'seminar'
-            
         # Check for entertainmnet keywords
         for i in ['entertainment', 'concert', 'perform']:
             if i in categories:
                 return 'entertainment'
+
+        # Check for seminar keywords  
+        for i in ['workshop', 'seminar', 'research', 'learning', 'conference', 'graduate students']:
+            if i in categories:
+                return 'seminar'
             
         # Check for sports keywords
         for i in ['thunderbird athletics']:
