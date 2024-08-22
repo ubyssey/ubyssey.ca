@@ -60,6 +60,20 @@ def format_event_date(start, end, weekDay=False):
 class EventsTheme(object):
     """Theme for the events microsite"""
 
+    def react(self, request):
+        ical = {'url': 'https://ubyssey.ca/events/ical/',
+                'title': "Ubyssey's Events Around Campus iCal Feed"}
+
+        rss = {'url': 'https://ubyssey.ca/events/rss/',
+                'title': "Ubyssey's Events Around Campus rss Feed"}
+    
+        meta = {
+            'title': "Events Around Campus Calendar",
+            'description': "Events Around Campus collected by The Ubyssey",
+            'url': 'https://ubyssey.ca/events/',
+            }
+        return render(request, "events/event_page_react.html", {'ical':ical, 'rss':rss, 'meta':meta})
+
     def landing(self, request):
         """Events page landing page"""
 
@@ -207,7 +221,7 @@ class EventsTheme(object):
         if request.GET.get("event"):
             print(request.GET.get("event"))
             if Event.objects.filter(event_url=request.GET.get("event")).exists():
-                event = Event.objects.get(event_url=request.GET.get("event"))
+                event = Event.objects.filter(event_url=request.GET.get("event")).first()
                 event.selected = True
 
                 meta = {
@@ -227,40 +241,17 @@ class EventsTheme(object):
 
         return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours, 'tab': tab, 'ical': ical, 'rss': rss, 'meta': meta})
 
-def update_events(request):
-    from urllib.request import urlopen, Request
-    from icalendar import Calendar
+async def update_events(request):
     from django.http import HttpResponse
-    from datetime import datetime
-    import requests
-    from bs4 import BeautifulSoup
+    import asyncio
 
-    for event in Event.objects.filter(update_mode=1, end_time__gte=timezone.now()):
+    async for event in Event.objects.filter(update_mode=1, end_time__gte=timezone.now()):
         event.update_mode = 2
-        event.save()
+        await event.asave()
     
-    try:
-        response = requests.get('https://phas.ubc.ca/events')
-        html_content = response.text
-
-        # Parse the HTML content
-        soup = BeautifulSoup(html_content, 'html.parser')
-        events = soup.find_all(class_='views-row')
-
-        current_tz = timezone.get_current_timezone()
-        current_time = datetime.now(current_tz)
-        
-        for event in events:
-            start_time_str = event.find('span', class_='start').get_text(strip=True)
-            parsed_start_time = datetime.fromisoformat(start_time_str)
-            start_time = datetime.combine(parsed_start_time.date(), parsed_start_time.time(), tzinfo=current_tz)
-
-            if start_time >= current_time - timedelta(days=7):
-                Event.objects.phas_ubc_create_event(event)
-            else:
-                break
-    except:
-        print("Failed requesting to Physics and Astronomy Events page")
+    tasks = []
+    
+    tasks.append(asyncio.create_task(Event.objects.phas_scrape()))
 
     wp_apis = [
 
@@ -347,7 +338,7 @@ def update_events(request):
     terms = ['lecture', 'workshop', 'conference', 'talk', 'seminar', 'colloquia']
     for a in wp_apis:
         # Event.objects.wp_events_api_get_type_ids(a['api'], terms) # Uncomment to print the event-type id for types wuth the terms above in their name. Used for categorizing the events
-        Event.objects.read_wp_events_api(a['name'], a['api'], a['categorize'])
+        tasks.append(asyncio.create_task(Event.objects.read_wp_events_api(a['name'], a['api'], a['categorize'])))
 
     ical_files = [
 
@@ -369,10 +360,12 @@ def update_events(request):
     ]
 
     for f in ical_files:
-        Event.objects.read_ical(f['name'], f['file'], f['create_function'])
+        tasks.append(asyncio.create_task(Event.objects.read_ical(f['name'], f['file'], f['create_function'])))
 
-    for event in Event.objects.filter(update_mode=2):
-        event.delete()
+    await asyncio.gather(*tasks)
+
+    async for event in Event.objects.filter(update_mode=2):
+        await event.adelete()
 
     return HttpResponse("Success!", status=200)
 
@@ -506,11 +499,18 @@ class EventsFeed(Feed):
 class EventsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Event
-        fields = ['title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'category']
+        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'category']
 
 class EventsViewSet(viewsets.ModelViewSet):
     serializer_class = EventsSerializer
-    queryset = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).order_by("start_time")
+    queryset = Event.objects.filter(hidden=False).order_by("start_time")
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
-    filterset_fields = ['category', 'location', 'host']
+    filterset_fields = {
+        'start_time': ['gte', 'lte'],
+        'end_time': ['gte', 'lte'],
+        'category': ['exact'],
+        'location': ['exact'], 
+        'host': ['exact'],
+        'event_url': ['exact'],
+    }
     search_fields = ['title', 'description', 'host', 'location', '^event_url']

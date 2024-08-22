@@ -1,4 +1,4 @@
-Django==4.1.0
+Django==4.2.0
 wagtail==5.2.5
 git+https://github.com/ubyssey/django-google-storage.git@v0.5.4#egg=django-google-storage-updated
 django-storages[google]==1.14.2
@@ -39,3 +39,4 @@ redis==5.0.1
 hiredis==2.2.3
 appengine-python-standard>=1.0.0
 icalendar===5.0.12
+aiohttp===3.10.3

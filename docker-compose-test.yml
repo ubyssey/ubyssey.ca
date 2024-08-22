@@ -24,7 +24,7 @@ services:
 ## Starts up mySQL server for ubyssey.ca and Dispatch
   db:
     platform: linux/x86_64
-    image: mysql:5.7
+    image: mysql:8.0
     volumes:
       - database:/var/lib/mysql
       - ./my_custom.cnf:/etc/mysql/conf.d/my_custom.cnf
