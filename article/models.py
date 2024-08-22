@@ -1039,7 +1039,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 return '<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name)
             return article_author.author.full_name
 
-        if authors_list is not None:
+        if not authors_list:
             authors_list = self.article_authors.all()
 
         # Create a set to track unique author names and filter duplicates
@@ -1047,7 +1047,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         unique_authors = []
         
         for article_author in authors_list:
-            author_name = article_author.author.full_name
+            author_name = article_author.author.id
             if author_name not in seen_authors:
                 seen_authors.add(author_name)
                 unique_authors.append(article_author)
