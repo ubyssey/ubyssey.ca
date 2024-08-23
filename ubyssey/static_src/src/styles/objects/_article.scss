@@ -367,6 +367,7 @@ ul.article-list, ol.article-list {
     margin: .25rem !important;
     padding: .25rem .5rem;
     color: white;
+    background-color: var(--linkColour);
     transition: .2s;
     cursor: default;
 
@@ -381,7 +382,7 @@ ul.article-list, ol.article-list {
 .header {
   padding: 0.75rem !important;
   font-weight: 600;
-  background-color: #0071c9;
+  background-color: var(--linkColour);
 
   >h2 {
     margin: 0;

@@ -76,10 +76,10 @@
       opacity: 0;
       transition: 0.5s;
     }
-    .fa-circle-arrow-left {
+    [name="arrow-back-circle-outline"] {
       left: -1.5em;
     }
-    .fa-circle-arrow-right {
+    [name="arrow-forward-circle-outline"] {
       right: -1.5em;
     }
 

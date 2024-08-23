@@ -7,7 +7,7 @@
         <p class="article-box--article_prev">{{title}}</p>
     </a>
     <a href="{% pageurl page %}">
-    <ion-icon name="arrow-back-circle-outline"></ion-icon>
+    <ion-icon class="arrow" name="arrow-back-circle-outline"></ion-icon>
     </a>
 </nav>            
 {% elif prevornext == 'next' %}
@@ -17,7 +17,7 @@
         <p class="article-box--article_next">{{title}}</p>
     </a>
     <a href="{% pageurl page %}">
-    <ion-icon name="arrow-forward-circle-outline"></ion-icon>
+    <ion-icon class="arrow" name="arrow-forward-circle-outline"></ion-icon>
     </a>
 </nav>
 {% endif %}
