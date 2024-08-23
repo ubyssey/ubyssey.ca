@@ -1084,7 +1084,32 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         return authors_list
     authors_in_order = property(fget=get_authors_in_order)
-    
+
+    def get_authors_in_order_for_cards(self):
+        AUTHOR_TYPES = ["org_role", "author", "photographer", "illustrator", "videographer"]
+        authors = self.article_authors.all()
+
+        authors_dict = {}
+
+        for author_type in AUTHOR_TYPES:
+            for author in authors:
+                author_id = author.author.id
+                author_role = author.author_role
+
+                if author_role == author_type:
+                    if author_id not in authors_dict:
+                        authors_dict[author_id] = {
+                            'author': author,
+                            'roles': [author_role]
+                        }
+                    else:
+                        # If the author is already in the dict, just append the role
+                        if author_role not in authors_dict[author_id]['roles']:
+                            authors_dict[author_id]['roles'].append(author_role)
+
+        return authors_dict
+
+    authors_in_order_for_cards = property(fget=get_authors_in_order_for_cards)
 
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string

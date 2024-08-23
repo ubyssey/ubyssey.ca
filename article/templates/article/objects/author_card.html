@@ -2,32 +2,20 @@
 {% load wagtailimages_tags %}
 {% load article_authors %}
 
-<div class="author_card">
-    <style>
-        /* Hide author cards initially */
-        .author_card {
-        visibility: hidden;
-        }
-    </style>
-  
+<div class="author_card">  
     <div class="author_title {% if author.author.image and author.author.display_image %}with_image{%endif%}">
-    {% if author.author.image and author.author.display_image %}     
-        {% image author.author.image width-200 format-webp class="author_image" alt=author.author.full_name %}
-    {% endif %}
+        {% if author.author.image and author.author.display_image %}     
+            {% image author.author.image width-200 format-webp class="author_image" alt=author.author.full_name %}
+        {% endif %}
         <p>
         <span class="author_name">
             <a href="{{ author.author.full_url }}"> {{ author.author.full_name|safe }}</a>
         </span>
         <span class="author_role">
-        {% if author.author_role == "org_role" %}
-        {{author.author.ubyssey_role}}
-        {% else %}
-        {{author.author_role}}
-        {% endif %}
+        {{ author_roles|join:", " }}
         </span>
         </p>
     </div>   
-    <!-- if forloop.first and no image then 0 padding for the authors_info left, author_info and author title-->
     <div class="author_info">
         {% if author.author.short_bio_description != "" %}
             <p>{{ author.author.short_bio_description }}</p>
@@ -35,41 +23,4 @@
         <li><a href="{{ author.author.full_url }}">See more from {{ author.author.full_name|safe }}</a></li> 
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Track URLs that have already been seen
-    const seenUrls = new Map();
-    
-    // Get all elements with the class 'author_card'
-    const authorCards = document.querySelectorAll('.author_card');
-    
-    authorCards.forEach(card => {
-        const authorLink = card.querySelector('.author_name a');
-        
-        if (authorLink) {
-            const url = authorLink.href.trim();
-            const authorRole = card.querySelector('.author_role');
-
-            if (seenUrls.has(url)) {
-                // If a card with the same URL already exists
-                const existingCard = seenUrls.get(url);
-                const existingRoleSpan = existingCard.querySelector('.author_role');
-
-                // Append the new author role to the existing card's author_role span
-                if (existingRoleSpan && authorRole) {
-                    existingRoleSpan.textContent = existingRoleSpan.textContent.trimEnd() + `, ${authorRole.textContent}`;
-                }
-
-                // Remove the duplicate card
-                card.remove();
-            } else {
-                // If not seen, add the card to the map and make it visible
-                seenUrls.set(url, card);
-                card.style.visibility = 'visible';
-            }
-        }
-    });
-});
-</script>
          
