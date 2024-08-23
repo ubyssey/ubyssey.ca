@@ -1098,6 +1098,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
                 if author_role == author_type:
                     if author_id not in authors_dict:
+                        # Create the author dictionary container author and authors multiple roles
                         authors_dict[author_id] = {
                             'author': author,
                             'roles': [author_role]
