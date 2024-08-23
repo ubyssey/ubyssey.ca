@@ -2,21 +2,23 @@
 {% load wagtailimages_tags %}
 {% load article_authors %}
 
-<div class="author_card">
+<div class="author_card">  
     <div class="author_title {% if author.author.image and author.author.display_image %}with_image{%endif%}">
-    {% if author.author.image and author.author.display_image %}     
-        {% image author.author.image width-200 format-webp class="author_image" alt=author.author.full_name %}
-    {% endif %}
+        {% if author.author.image and author.author.display_image %}     
+            {% image author.author.image width-200 format-webp class="author_image" alt=author.author.full_name %}
+        {% endif %}
         <p>
         <span class="author_name">
             <a href="{{ author.author.full_url }}"> {{ author.author.full_name|safe }}</a>
         </span>
         <span class="author_role">
-        {% if author.author_role == "org_role" %}
-        {{author.author.ubyssey_role}}
-        {% else %}
-        {{author.author_role}}
-        {% endif %}
+            {% for role in author_roles %}
+                {% if role == "org_role" %}
+                    {{ author.author.ubyssey_role }}{% if not forloop.last %},{% endif %}
+                {% else %}
+                    {{ role }}{% if not forloop.last %},{% endif %}
+                {% endif %}
+            {% endfor %}
         </span>
         </p>
     </div>   
@@ -27,4 +29,4 @@
         {% endif %}
         <li><a href="{{ author.author.full_url }}">See more from {{ author.author.full_name|safe }}</a></li> 
     </div>
-</div>
+</div>         

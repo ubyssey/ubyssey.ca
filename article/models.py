@@ -1040,11 +1040,21 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return article_author.author.full_name
 
         if not authors_list:
-            authors = list(map(format_author, self.article_authors.all()))
-        else:
-            authors = list(map(format_author, authors_list))
-           
+            authors_list = self.article_authors.all()
 
+        # Create a set to track unique author names and filter duplicates
+        seen_authors = set()
+        unique_authors = []
+        
+        # Ensuring duplicate authors are not added to the author list
+        for article_author in authors_list:
+            author_name = article_author.author.id
+            if author_name not in seen_authors:
+                seen_authors.add(author_name)
+                unique_authors.append(article_author)
+
+        authors = list(map(format_author, unique_authors))
+           
         if not authors:
             return ""
         elif len(authors) == 1:
@@ -1075,7 +1085,33 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         return authors_list
     authors_in_order = property(fget=get_authors_in_order)
-    
+
+    def get_authors_in_order_for_author_cards(self):
+        AUTHOR_TYPES = ["org_role", "author", "photographer", "illustrator", "videographer"]
+        authors = self.article_authors.all()
+
+        authors_dict = {}
+
+        for author_type in AUTHOR_TYPES:
+            for author in authors:
+                author_id = author.author.id
+                author_role = author.author_role
+
+                if author_role == author_type:
+                    if author_id not in authors_dict:
+                        # Create the author dictionary containing author object and authors multiple roles
+                        authors_dict[author_id] = {
+                            'author': author,
+                            'roles': [author_role]
+                        }
+                    else:
+                        # If the author is already in the dict, just append the role
+                        if author_role not in authors_dict[author_id]['roles']:
+                            authors_dict[author_id]['roles'].append(author_role)
+
+        return authors_dict
+
+    authors_in_order_for_cards = property(fget=get_authors_in_order_for_author_cards)
 
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string
@@ -1090,7 +1126,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         for author in authors:
             if author == 'author':
-                string_written += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
+                string_written += 'Words by ' + self.get_authors_string(links=True, authors_list=authors['author'])
             if author == 'photographer':
                 string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
             if author == 'illustrator':
