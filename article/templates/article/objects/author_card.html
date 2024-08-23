@@ -12,7 +12,11 @@
             <a href="{{ author.author.full_url }}"> {{ author.author.full_name|safe }}</a>
         </span>
         <span class="author_role">
-        {{ author_roles|join:", " }}
+        {% if author.author_role == "org_role" %}
+            {{author.author.ubyssey_role}}
+        {% else %}
+            {{ author_roles|join:", " }}
+        {% endif %}
         </span>
         </p>
     </div>   
@@ -22,5 +26,4 @@
         {% endif %}
         <li><a href="{{ author.author.full_url }}">See more from {{ author.author.full_name|safe }}</a></li> 
     </div>
-</div>
-         
+</div>         
