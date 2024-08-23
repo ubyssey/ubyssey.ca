@@ -12,11 +12,13 @@
             <a href="{{ author.author.full_url }}"> {{ author.author.full_name|safe }}</a>
         </span>
         <span class="author_role">
-        {% if author.author_role == "org_role" %}
-            {{author.author.ubyssey_role}}
-        {% else %}
-            {{ author_roles|join:", " }}
-        {% endif %}
+            {% for role in author_roles %}
+                {% if role == "org_role" %}
+                    {{ author.author.ubyssey_role }}{% if not forloop.last %},{% endif %}
+                {% else %}
+                    {{ role }}{% if not forloop.last %},{% endif %}
+                {% endif %}
+            {% endfor %}
         </span>
         </p>
     </div>   
