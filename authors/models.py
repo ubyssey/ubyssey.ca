@@ -200,7 +200,7 @@ class AuthorPage(RoutablePageMixin, Page):
                 article_order = "explicit_published_at"
             else:            
                 article_order = "-explicit_published_at"
-            authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
+            authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).distinct().order_by(article_order)
 
         if search_query:
             if media_type == "videos":

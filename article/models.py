@@ -1126,7 +1126,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
         for author in authors:
             if author == 'author':
-                string_written += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
+                string_written += 'Words by ' + self.get_authors_string(links=True, authors_list=authors['author'])
             if author == 'photographer':
                 string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
             if author == 'illustrator':
