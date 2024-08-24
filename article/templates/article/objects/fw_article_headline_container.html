@@ -3,27 +3,15 @@
     It was seperated out to try to make the code more readable
 {% endcomment %}
 <div class="headline-container">
-    {% if self.header_layout == 'right-image' or self.header_layout == 'left-image' %}
-        {% comment %} Odd choice of class names in this div. Should check the corresponding CSS {% endcomment %}
-        <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
-        
-        {% if self.title_tag %}
-            <h2 class="title-tag">{{self.title_tag}}//</h2>
-        {% elif self.category %}
-            <h2 class="title-tag">{{self.category.title}}//</h2>
-        {% endif %}
-        <h1 class="headline">
-            {{ self.title |safe }}
-        </h1>
-	{% elif self.header_layout == 'top-image' %}
-        <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
+    <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
 
-        {% if self.title_tag %}
-            <h2 class="title-tag">{{self.title_tag}}//</h2>    
-        {% elif self.category %}
-            <h2 class="title-tag">{{self.category.title}}//</h2> 
-        {% endif %}
-        
+    {% if self.title_tag %}
+        <p class="title-tag">{{self.title_tag}}//</p>
+    {% elif self.category %}
+        <p class="title-tag">{{self.category.title}}//</p>
+    {% endif %}
+
+    <header>
         <h1 class="o-headline o-headline--article">
             {% if self.fw_alternate_title %}
                 {{self.fw_alternate_title|safe}}
@@ -31,7 +19,11 @@
                 {{ self.title|safe }}
             {% endif %}
         </h1>
-    {% endif %}
+
+        {% if self.subtitle %}
+            <p class="subtitle">{{self.subtitle|safe}}</p>    
+        {% endif %}
+    </header>
 
 	{% if self.fw_above_cut_lede %}
 		<p class="fw-description">{{ self.fw_above_cut_lede }}</p>

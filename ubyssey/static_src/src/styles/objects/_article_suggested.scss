@@ -39,7 +39,7 @@
     font-weight: 400;
 
     @media($bp-smaller-than-phablet) {
-        margin-left: 1em;
+        margin-inline: 1em;
     }
 
     a {

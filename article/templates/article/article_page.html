@@ -40,44 +40,13 @@
 
 {% block content %}
     <main id="article-{{ self.slug }}" class="article">
-        <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}c-article--default {% endblock %}"> <!--article-->
+        <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}{% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                {% comment %}<div class="u-container">
-                     {% if breaking %}
-                        <a class="o-breaking-news" href="{{ breaking.get_absolute_url }}">
-                            <h3>BREAKING: {{ breaking.headline|safe }}</h3>
-                        </a>        
-                    {% endif %}
-                </div>{% endcomment %}
-
-                <div class="u-container u-container--content u-container--padded">
-                    <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
-                    
-                    {% if self.title_tag %}
-                        <h2 class="title-tag">{{self.title_tag}}//</h2>
-                    {% elif self.category %}
-                        <h2 class="title-tag">{{self.category.title}}//</h2>
-                    {% endif %}
-
-                    <h1 class="o-headline o-headline--article">
-                        {% if self.fw_alternate_title %}
-                            {{self.fw_alternate_title|safe}}
-                        {% else %}
-                            {{ self.title|safe }}
-                        {% endif %}
-                    </h1>
-                    {% if self.fw_above_cut_lede %}
-                        <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
-                    {% endif %}
-                    <div class="c-article__info">
-                        <p class="author-string">{{self.authors_with_roles |safe }}</p>
-                    </div>
-
-                    {% include "article/objects/featured_media.html" with featured_media=self.featured_media %}
+                {% include 'article/objects/banner.html' %}
             {% endblock %}
             <!-- Below is the container for Article content -->
-            <div class="u-container clearfix {% block right_column_class %}{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
+            <div class="u-container clearfix {% block right_column_class %}c-article--default u-container u-container--content u-container--padded{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
                 <!-- Below is the container for the left column article content  -->
                     <div class="cell left article-content">
                         {% block pre-content %}
