@@ -77,15 +77,15 @@
       transition: 0.5s;
     }
     [name="arrow-back-circle-outline"] {
-      left: -1.5em;
+      left: 0;
     }
     [name="arrow-forward-circle-outline"] {
-      right: -1.5em;
+      right: 0;
     }
 
     &:hover {
-      margin-right: 1.5em;
-      margin-left: 1.5em;
+      padding-right: 3.5em;
+      padding-left: 3.5em;
     }
 
     &:hover .arrow {

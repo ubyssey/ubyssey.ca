@@ -13,6 +13,7 @@
 
   .header {
     margin: 2em auto;
+    padding-inline: 1em;
     max-width: 400px;
     h2 {
       text-align: center;
@@ -44,6 +45,7 @@
     }
     .header {
       margin: 1em;
+      padding: 0;
     }
   }
 }
@@ -73,6 +75,23 @@ nav.navbar {
   }
   .vs-side-by-side .o-visual-essay__right-container {
     max-width: 500px;
+  }
+}
+
+@media($bp-smaller-than-phablet) {
+  .vs-side-by-side {
+    .o-visual-essay__left-container {
+      position: relative;
+    }
+    .o-visual-essay__right-container {
+      margin-top: 1em;
+    }
+    .o-visual-essay__right-div {
+      margin-top: 1em;
+    }
+    .o-visual-essay__right-div:last-child {
+      margin-bottom: 1em !important;
+    }
   }
 }
 
