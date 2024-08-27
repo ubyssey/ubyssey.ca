@@ -322,7 +322,7 @@ class EventManager(models.Manager):
             )
         else:
             event = await self.filter(event_url=ical_component.get('url')).afirst()
-            if event.update_mode != 2:
+            if event.update_mode == 0: # Go Thunderbirds is unqiue because the events are updated after they pass to include the result
                 return None
 
                 
@@ -343,7 +343,7 @@ class EventManager(models.Manager):
 
         event.description=" ".join(ical_component.get('description').split(" ")[0:-1])
 
-        splitDesc = ical_component.get('description').split(" ")
+        splitDesc = ical_component.get('description').replace("[W] ", "").replace("[L] ", "").split("\n")[0].split(" ")
         i = 0
         while splitDesc[i][0].isupper():
             i = i + 1

@@ -178,7 +178,7 @@ function displayEventTime(start, end) {
 
 function eventsTags(event) {
     var tags = [];
-    if (event.host != null) {
+    if (event.host != null && event.host != "") {
         tags.push(slugify(event.host));
     }
     tags.push(slugify(event.category));
@@ -322,7 +322,7 @@ function EventsCalendar({events}) {
     }
 
     function getHosts(hosts, event) {
-        if (event.host != null) {
+        if (event.host != null && event.host != "") {
             if (!(hosts.includes(event.host))) {
                 hosts.push(event.host);
             }
