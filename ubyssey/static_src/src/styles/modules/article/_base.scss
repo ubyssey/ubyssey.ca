@@ -33,6 +33,7 @@ $text-color: var(--text_color);
   margin-bottom: 0;
   color: #808080;
   font-size: 1em;
+  font-weight: 600;
   text-transform: uppercase;
 }
 
@@ -156,13 +157,6 @@ p.fw-description {
   font-family: $font-body;
   font-size: 18px;
 }
-
-@media($bp-larger-than-mobile) {
-  div.headline-container {
-    padding: 0;
-  }
-}
-
 
 // Article content
 div.article-content {
@@ -387,7 +381,7 @@ div.article-content {
   }
 }
 @media($bp-larger-than-mobile) {
-  div.headline-container {
+  header.headline-container {
     padding: 0;
   }
 }

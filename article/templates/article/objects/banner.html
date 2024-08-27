@@ -36,18 +36,25 @@
                 {% include 'article/objects/fw_article_headline_container.html' %}
             </div>
         </div>
+    {% elif self.header_layout == 'bottom-image' %}
+        <div class="header-container">
+            {% include 'article/objects/fw_article_headline_container.html' %}
+            <div class="featured-media">
+                {% include 'article/objects/fw_article_featured_media.html' %}
+            </div>
+        </div>
     {% elif self.header_layout == 'banner-image' %}
         {% with self.featured_media.first as featured_image_object %}
             <div class="banner-image">
                 {% image featured_image_object.image original as featured_image %}
                 <div class="backdrop" style="background-image: url('{{ featured_image.url }}'); {{ featured_image.background_position_style }};"></div>
                 <div class="headline-container">
-                    <div class="u-container u-container--padded">
+                    <header class="u-container u-container--padded">
                         
                         {% if self.title_tag %}
-                            <h2 class="title-tag">{{self.title_tag}}//</h2>
+                            <p class="title-tag">{{self.title_tag}}//</p>
                         {% elif self.category %}
-                            <h2 class="title-tag">{{self.category.title}}//</h2>
+                            <p class="title-tag">{{self.category.title}}//</p>
                         {% endif %}
                         
                         <h1 class="headline">
@@ -57,13 +64,18 @@
                                 {{ self.title|safe }}
                             {% endif %}
                         </h1>
+
+                        {% if self.subtitle %}
+                            <p class="subtitle">{{self.subtitle|safe}}</p>    
+                        {% endif %}
+
                         {% if self.fw_above_cut_lede %}
                             <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
                         {% endif %}
                         <div class="article-byline c-article__byline-center">
                             <span class="author">By {{ self.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at }}</span>
                         </div>
-                    </div>
+                    </header>
                     {% if featured_image_object.caption or featured_image_object.credit %}
                         <div class="caption">
                             {% if featured_image_object.caption %}

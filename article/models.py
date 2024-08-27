@@ -646,6 +646,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         max_length=255,
     )
 
+    subtitle = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Subtitle (Optional)',
+        help_text="Displayed below the title",
+        max_length=255,
+    )
+
     title_tag = models.CharField(
         null=False,
         blank=True,
@@ -879,6 +888,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     widget=Select(
                         choices=[
                             ('right-image', 'Right Image'),
+                            ('bottom-image', 'Bottom Image'),
                             ('left-image', 'Left Image'),
                             ('top-image', 'Top Image'),
                             ('banner-image', 'Banner Image')
@@ -886,8 +896,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     ),
                     help_text='This field is used to set variations on the \"Full-Width Story\" and similar layouts.',
                 ),
-                FieldPanel('fw_alternate_title'),
                 FieldPanel('title_tag'),
+                FieldPanel('fw_alternate_title'),
+                FieldPanel('subtitle'),
                 FieldPanel('fw_above_cut_lede'),
             ],
             heading = "Optional Header/Banner Fields",
