@@ -523,3 +523,33 @@ header.events{
         line-height: unset;
     }
 }
+
+.dropdown-button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 1000;
+}
+
+.dropdown-menu li {
+    padding: 10px;
+}
+
+.dropdown-menu li.selected {
+    background-color: #f0f0f0;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #333;
+}

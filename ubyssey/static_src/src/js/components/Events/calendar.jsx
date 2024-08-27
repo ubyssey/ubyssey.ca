@@ -188,6 +188,9 @@ function eventsTags(event) {
 
 function EventsOptions() {
     let query = useQuery();
+    const [isCategoryOpen, setCategoryOpen] = React.useState(false);
+    const [isCurrentEventsOpen, setCurrentEventsOpen] = React.useState(false);
+
     var category = "all";
     if (query.get("category") != null){
         category = query.get("category");
@@ -195,51 +198,92 @@ function EventsOptions() {
 
     var highlight = "category";
 
-    var ical = {'url': 'https://ubyssey.ca/events/ical/',
-            'title': "Ubyssey's Events Around Campus iCal Feed"};
+    var ical = {
+        'url': 'https://ubyssey.ca/events/ical/',
+        'title': "Ubyssey's Events Around Campus iCal Feed"
+    };
 
-    var rss = {'url': 'https://ubyssey.ca/events/rss/',
-        'title': "Ubyssey's Events Around Campus rss Feed"};
+    var rss = {
+        'url': 'https://ubyssey.ca/events/rss/',
+        'title': "Ubyssey's Events Around Campus rss Feed"
+    };
 
     var meta = {
         'title': "Events Around Campus Calendar",
         'description': "Events Around Campus collected by The Ubyssey",
         'url': 'https://ubyssey.ca/events/',
-        };
+    };
 
-    if (category != "all") {
+    if (category !== "all") {
         highlight = "host";
         
-        ical = {'url': 'https://ubyssey.ca/events/ical/?category=' + category,
-                'title': "Ubyssey's " + capitalize(category)  + " Around Campus iCal Feed"};
+        ical = {
+            'url': 'https://ubyssey.ca/events/ical/?category=' + category,
+            'title': "Ubyssey's " + capitalize(category)  + " Around Campus iCal Feed"
+        };
 
-        rss = {'url': 'https://ubyssey.ca/events/rss/?category=' + category,
-            'title': "Ubyssey's " + capitalize(category)  + " Around Campus rss Feed"};
+        rss = {
+            'url': 'https://ubyssey.ca/events/rss/?category=' + category,
+            'title': "Ubyssey's " + capitalize(category)  + " Around Campus rss Feed"
+        };
 
         meta = {
             'title': capitalize(category) + " Around Campus Calendar",
             'description': capitalize(category)  + " Around Campus collected by The Ubyssey",
             'url': 'https://ubyssey.ca/events/?category=' + category,
-            };
-
+        };
     }
+
+    const toggleCategoryDropdown = () => {
+        setCategoryOpen(!isCategoryOpen);
+    };
+
+    const toggleCurrentEventsDropdown = () => {
+        setCurrentEventsOpen(!isCurrentEventsOpen);
+    };
 
     return (
         <>
-        <div class="events-calendar--categories">
-            <ul>
-                <li class={category == 'all' && "selected"}><Link to="?hidden=seminar">All</Link></li>
-                <li class={category == 'sports' && "selected"}><Link to="?category=sports">Sports</Link></li>
-                <li class={category == 'entertainment' && "selected"}><Link to="?category=entertainment">Entertainment</Link></li>
-                <li class={category == 'community' && "selected"}><Link to="?category=community">Community</Link></li>
-                <li class={category == 'seminar' && "selected"}><Link to="?category=seminar">Seminar</Link></li>
-            </ul>
-            <a class="alt-icon" href={ical.url} title={ical.title}><ion-icon name="calendar"></ion-icon></a>
-            <a class="alt-icon" href={rss.url} title={rss.title}><ion-icon name="logo-rss"></ion-icon></a>
+        <div className="events-calendar--options">
+            <button onClick={toggleCategoryDropdown} className="dropdown-button">
+                {capitalize(category)}
+            </button>
+            {isCategoryOpen && (
+                <ul className="dropdown-menu">
+                    <li className={category === 'all' ? "selected" : ""}><Link to="?category=all">All</Link></li>
+                    <li className={category === 'sports' ? "selected" : ""}><Link to="?category=sports">Sports</Link></li>
+                    <li className={category === 'entertainment' ? "selected" : ""}><Link to="?category=entertainment">Entertainment</Link></li>
+                    <li className={category === 'community' ? "selected" : ""}><Link to="?category=community">Community</Link></li>
+                    <li className={category === 'seminar' ? "selected" : ""}><Link to="?category=seminar">Seminar</Link></li>
+                </ul>
+            )}
+            
+            <button onClick={toggleCurrentEventsDropdown} className="dropdown-button">
+                Current Events
+            </button>
+            {isCurrentEventsOpen && (
+                <ul className="dropdown-menu">
+                    <li><Link to="?event=jan">Jan</Link></li>
+                    <li><Link to="?event=feb">Feb</Link></li>
+                    <li><Link to="?event=mar">Mar</Link></li>
+                    <li><Link to="?event=apr">Apr</Link></li>
+                    <li><Link to="?event=may">May</Link></li>
+                    <li><Link to="?event=jun">Jun</Link></li>
+                    <li><Link to="?event=jul">Jul</Link></li>
+                    <li><Link to="?event=aug">Aug</Link></li>
+                    <li><Link to="?event=sep">Sep</Link></li>
+                    <li><Link to="?event=oct">Oct</Link></li>
+                    <li><Link to="?event=nov">Nov</Link></li>
+                    <li><Link to="?event=dec">Dec</Link></li>
+                </ul>
+            )}
+            
+            <a className="alt-icon" href={ical.url} title={ical.title}><ion-icon name="calendar"></ion-icon></a>
+            <a className="alt-icon" href={rss.url} title={rss.title}><ion-icon name="logo-rss"></ion-icon></a>
         </div>
-        <p class="mobile-alt"><a href={ical.url}><ion-icon name="calendar"></ion-icon> iCal File</a> <a href={rss.url}><ion-icon name="logo-rss"></ion-icon> Rss Feed</a></p>
+        <p className="mobile-alt"><a href={ical.url}><ion-icon name="calendar"></ion-icon> iCal File</a> <a href={rss.url}><ion-icon name="logo-rss"></ion-icon> Rss Feed</a></p>
         </>
-    )
+    );
 }
 
 function EventsCalendar({events}) {
