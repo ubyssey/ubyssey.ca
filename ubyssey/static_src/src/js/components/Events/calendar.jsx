@@ -15,7 +15,7 @@ function getDateString(date) {
     } else {
         str = str + String(date.getMonth()+1) + "-";
     }
-    if (String(date.getDay()).length < 2) {
+    if (String(date.getDate()).length < 2) {
         str = str + "0" + String(date.getDate());
     } else {
         str = str + String(date.getDate());

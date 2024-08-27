@@ -59,13 +59,13 @@ class EventManager(models.Manager):
             print("Failed requesting to " + name)
 
     async def wp_events_api_create_event(self, event_json, api, host, categorize):
-        if not await self.filter(event_url=event_json['link']).aexists():
+        if not await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).aexists():
             event = await self.acreate(
                 title=event_json['title'],
                 event_url=event_json['link'],
             )
         else:
-            event = await self.filter(event_url=event_json['link']).afirst()
+            event = await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).afirst()
             if event.update_mode != 2:
                 return None
             
@@ -89,19 +89,43 @@ class EventManager(models.Manager):
         event.event_url=event_json['link']
 
         event.category = categorize['default']
+        categories = ['entertainment', 'seminar', 'community', 'sports']
+        for category in categories:
+            categorize_key = category + '_type'
+            if categorize_key in categorize:
+                for event_type in event_json['event-type']:
+                
+                    for category_type in categorize[categorize_key]:
+                        if event_type == category_type:
+                            event.category = category
+                            break
 
-        if 'seminar_ids' in categorize:
-            for id in event_json['event-type']:
-            
-                for seminar_id in categorize['seminar_ids']:
-                    if id == seminar_id:
-                        event.category = "seminar"
+                    if event.category != categorize['default']:
                         break
 
-                if event.category != categorize['default']:
-                    break
-            
+            if event.category != categorize['default']:
+                break
+
         event.hidden=False
+        if 'hidden_topics' in categorize:
+            for id in event_json['event-topic']:
+            
+                for topic in categorize['hidden_topics']:
+                    if id == topic:
+                        event.hidden = True
+                        break
+
+                if event.hidden == True:
+                    break
+
+        if event.hidden == False and 'hidden_title_terms' in categorize:
+            for term in categorize['hidden_title_terms']:
+                if term.lower() in event.title.lower():
+                    event.hidden = True
+                    break
+
+        if timedelta(days=14) < event.end_time - event.start_time:
+            event.hidden=True
 
         req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
         if req.host in event_json['link']:
@@ -199,9 +223,9 @@ class EventManager(models.Manager):
                     return True            
         
         # Hide events with certain terms in the title
-        # The two listed right now are on an inaccurate repeating schedule
-        for i in ['coffee hour', 'advanced research computing summer school']:
-            if i in title:
+        # The first two listed right now are on an inaccurate repeating schedule, the last was an advertisment for a sale that lasted too long
+        for i in ['coffee hour', 'advanced research computing summer school', 'Student Indoor Plant Sale at UBC Botanical Garden']:
+            if i.lower() in title.lower():
                 return True
 
         # Default to showing events when there are no categories listed

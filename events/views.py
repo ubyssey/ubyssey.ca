@@ -259,7 +259,8 @@ async def update_events(request):
          'api': 'https://anth.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-             'seminar_ids': [633, 632, 634, 528, 530],
+            'seminar_type': [633, 632, 634, 528, 530],
+            'hidden_title_terms': ['coffee hour']
          },
         },
 
@@ -267,7 +268,7 @@ async def update_events(request):
          'api': 'https://asia.ubc.ca/wp-json/wp/v2/', 
          'categorize': {
             'default': 'community',
-             'seminar_ids': [570, 572, 571, 574, 739],
+             'seminar_type': [570, 572, 571, 574, 739],
          },
         },
 
@@ -275,7 +276,8 @@ async def update_events(request):
          'api': 'https://cenes.ubc.ca/wp-json/wp/v2/',
         'categorize': {
             'default': 'community',
-            'seminar_ids': [552, 554, 559, 553, 677, 558]
+            'seminar_type': [552, 554, 559, 553, 677, 558],
+            'hidden_title_terms': ['fika', 'plauder', 'kaffeestunde']
          },
         },    
 
@@ -283,7 +285,7 @@ async def update_events(request):
          'api': 'https://english.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-             'seminar_ids': [512, 515, 510, 513]
+             'seminar_type': [512, 515, 510, 513]
          },
         },
 
@@ -291,7 +293,7 @@ async def update_events(request):
          'api': 'http://fhis.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [534, 537, 532]
+            'seminar_type': [534, 537, 532]
          },
         },
 
@@ -299,7 +301,7 @@ async def update_events(request):
          'api': 'https://grsj.arts.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [512, 514, 632]
+            'seminar_type': [512, 514, 632]
          },
         },
 
@@ -307,7 +309,7 @@ async def update_events(request):
          'api': 'https://history.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [531, 525, 527, 526, 530]
+            'seminar_type': [531, 525, 527, 526, 530]
          },
         },
 
@@ -322,7 +324,7 @@ async def update_events(request):
          'api': 'https://psych.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [433, 384, 906, 792, 377, 931, 560, 559]
+            'seminar_type': [433, 384, 906, 792, 377, 931, 560, 559]
          },
         },
 
@@ -330,7 +332,7 @@ async def update_events(request):
          'api': 'https://socialwork.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [520, 527, 525]
+            'seminar_type': [520, 527, 525]
          },
         },
 
@@ -338,7 +340,9 @@ async def update_events(request):
          'api': 'https://www.arts.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [1962, 1785]
+            'entertainment_type': [802],
+            'seminar_type': [1962, 1785],
+            'hidden_topics': [1783, 1950, 1996, 2378, 2379, 1995, 2375]
          },
         },
 
@@ -349,11 +353,71 @@ async def update_events(request):
          },
         },
 
-        {'name': 'UBC Art History, Visual Art & Theory ', 
+        {'name': 'UBC Art History, Visual Art & Theory', 
          'api': 'https://ahva.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [820, 926, 817]
+            'seminar_type': [820, 926, 817, 930, 824, 825]
+         },
+        },
+
+        {'name': 'UBC Ancient Mediterranean and Near Eastern Studies', 
+         'api': 'https://amne.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [718, 568, 570, 569]
+         },
+        },
+
+        {'name': 'UBC Coordinated Arts Programs', 
+         'api': 'https://cap.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC School of Public Policy and Global Affairs', 
+         'api': 'https://sppga.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC Geography', 
+         'api': 'https://geog.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+            'hidden_title_terms': ['green day'],
+         },
+        },
+
+        {'name': 'UBC Linguistics', 
+         'api': 'https://linguistics.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC Philosophy', 
+         'api': 'https://philosophy.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC Political Science', 
+         'api': 'https://politics.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+            'community_type': [544, 546, 549]
+         },
+        },
+
+        {'name': 'UBC Theatre & Film', 
+         'api': 'https://politics.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'entertainment',
+            'seminar_type': [1262, 1263, 1265]
          },
         },
     ]
@@ -362,6 +426,10 @@ async def update_events(request):
     for a in wp_apis:
         # Event.objects.wp_events_api_get_type_ids(a['api'], terms) # Uncomment to print the event-type id for types wuth the terms above in their name. Used for categorizing the events
         tasks.append(asyncio.create_task(Event.objects.read_wp_events_api(a['name'], a['api'], a['categorize'])))
+        if len(tasks) >= 15:
+            await asyncio.gather(*tasks)
+            tasks = []
+
 
     ical_files = [
 
@@ -384,6 +452,9 @@ async def update_events(request):
 
     for f in ical_files:
         tasks.append(asyncio.create_task(Event.objects.read_ical(f['name'], f['file'], f['create_function'])))
+        if len(tasks) >= 15:
+            await asyncio.gather(*tasks)
+            tasks = []
 
     await asyncio.gather(*tasks)
 
