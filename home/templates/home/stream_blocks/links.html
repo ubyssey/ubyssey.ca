@@ -21,7 +21,7 @@
 
 			<div class="events-sidebar">
 				<h2><a href="/events/?hidden=seminar">Events Around Campus</a></h2>
-				<a class="featured_event" href="/events/?event={{events.0.event_url}}" title="{{events.0.title}}">
+				<a class="featured_event" href="/events/?event={{events.0.hash}}" title="{{events.0.title}}">
 					<p class="featured_event__time">{{events.0.display_time}} - {{events.0.location}}</p>
 					<p class="featured_event__title">{{events.0.title}}</p>
 				</a>
@@ -30,7 +30,7 @@
 				{% for event in events %}
 					{% if not forloop.counter0 == 0 %}
 						<li>
-							<a href="/events/?event={{event.event_url}}&hidden=seminar" title="{{event.title}}">
+							<a href="/events/?event={{event.hash}}&hidden=seminar" title="{{event.title}}">
 							<b>{{event.display_time}}</b> {{event.title}}
 							</a>
 						</li>

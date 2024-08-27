@@ -14,10 +14,15 @@ from django.http import HttpResponse
 import asyncio
 from asgiref.sync import sync_to_async
 import aiohttp
+import hashlib 
+import base64
 
 # Create your models here.
 
 class EventManager(models.Manager):
+
+    def hashing(self, string):
+        return base64.b64encode(hashlib.blake2b(string.encode(), digest_size=6).hexdigest().encode()).decode()
 
     async def read_ical(self, name, file, create_function):
         try:
@@ -63,6 +68,7 @@ class EventManager(models.Manager):
             event = await self.acreate(
                 title=event_json['title'],
                 event_url=event_json['link'],
+                hash=self.hashing(event_json['link'] + str(event_json['start']))
             )
         else:
             event = await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).afirst()
@@ -70,6 +76,10 @@ class EventManager(models.Manager):
                 return None
             
         event.title = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
+
+        if event.hash == "":
+            event.hash = self.hashing(event_json['link'] + str(event_json['start']))
+
         event.description = str(event_json['excerpt']['rendered'].encode('utf-8'), 'UTF-8')
 
         event.start_time = datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())
@@ -157,11 +167,16 @@ class EventManager(models.Manager):
             event = await self.acreate(
                 title=ical_component.get('summary'),
                 event_url=ical_component.decoded('url'),
+                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
             )
         else:
             event = await self.filter(event_url=ical_component.get('url')).afirst()
             if event.update_mode != 2:
                 return None
+
+
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
 
         # Split location and address
         location = ical_component.get('location')
@@ -299,15 +314,21 @@ class EventManager(models.Manager):
 
     async def gothunderbirds_create_event(self, ical_component):
 
-        if not await self.filter(event_url=ical_component.get('url').replace("&amp;", "__AND__")).aexists():
+        if not await self.filter(event_url=ical_component.get('url')).aexists():
             event = await self.acreate(
                 title=ical_component.get('summary'),
-                event_url=ical_component.decoded('url').replace("&amp;", "__AND__"),
+                event_url=ical_component.decoded('url'),
+                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
             )
         else:
-            event = await self.filter(event_url=ical_component.get('url').replace("&amp;", "__AND__")).afirst()
+            event = await self.filter(event_url=ical_component.get('url')).afirst()
             if event.update_mode != 2:
                 return None
+
+                
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+
 
         # Split location and address
         address = ical_component.get('location')
@@ -345,7 +366,7 @@ class EventManager(models.Manager):
 
         event.address=address
         event.location=location
-        event.event_url=ical_component.decoded('url').replace("&amp;", "__AND__")
+        event.event_url=ical_component.decoded('url')
         event.category='sports'
         event.hidden=self.gothunderbirds_judge_hidden(ical_component)
 
@@ -419,11 +440,15 @@ class EventManager(models.Manager):
             event = await self.acreate(
                 title=title,
                 event_url=event_url,
+                hash=self.hashing(title + str(event_component.find('span', class_='start').get_text(strip=True)))
             )
         else:
             event = await self.filter(event_url=event_url).afirst()
             if event.update_mode != 2:
                 return None
+
+        if event.hash == "":
+            event.hash = self.hashing(title + str(event_component.find('span', class_='start').get_text(strip=True)))
 
         # Extract start time
         start_time_str = event_component.find('span', class_='start').get_text(strip=True)
@@ -474,6 +499,7 @@ class EventManager(models.Manager):
             event = await self.acreate(
                 title=ical_component.get('summary'),
                 event_url=ical_component.decoded('url'),
+                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
             )
         else:
             event = await self.filter(event_url=ical_component.get('url')).afirst()
@@ -481,6 +507,10 @@ class EventManager(models.Manager):
                 return None
 
         event.title=ical_component.get('summary')
+
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+
         event.description= "<br>" + ical_component.get('description').replace("&amp;", "&")
         if "<br>Name:" in event.description and "\nTitle" in event.description:
             if event.description.index("<br>Name:") < event.description.index("\nTitle"):
@@ -550,6 +580,7 @@ class EventManager(models.Manager):
                 event = await self.acreate(
                     title=ical_component.get('summary'),
                     event_url=ical_component.decoded('url'),
+                    hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
                 )
             else:
                 event = await self.filter(event_url=ical_component.get('url')).afirst()
@@ -560,6 +591,9 @@ class EventManager(models.Manager):
 
         event.title=ical_component.get('summary')
         
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+
         # Clean up event description because they are so messy and have unnecessary information
         description = str(ical_component.decoded('description'), 'UTF-8')
         safety = 10
@@ -663,6 +697,12 @@ class Event(models.Model):
         null=True,
         blank=True,
     )
+    hash = models.CharField(
+        max_length=50,
+        blank=False,
+        null=True,
+        default=''
+    )
     image = models.CharField(
         max_length=255,
         blank=True,
@@ -696,6 +736,7 @@ class Event(models.Model):
         FieldPanel("address"),
         FieldPanel("host"),
         FieldPanel("event_url"),
+        FieldPanel("hash"),
         FieldPanel("image"),
         FieldPanel(
             "category",

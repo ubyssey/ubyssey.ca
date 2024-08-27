@@ -72,6 +72,18 @@ class EventsTheme(object):
             'description': "Events Around Campus collected by The Ubyssey",
             'url': 'https://ubyssey.ca/events/',
             }
+
+        if request.GET.get("event"):
+            if Event.objects.filter(hash=request.GET.get("event")).exists():
+                event = Event.objects.filter(hash=request.GET.get("event")).first()
+
+                meta = {
+                    'title': event.title,
+                    'description': event.description,
+                    'url': "https://ubyssey.ca/events/?event=" + event.hash,
+                    'noindex': True,
+                }
+
         return render(request, "events/event_page_react.html", {'ical':ical, 'rss':rss, 'meta':meta})
 
     def landing(self, request):
@@ -593,7 +605,7 @@ class EventsFeed(Feed):
 class EventsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'category']
+        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'hash', 'category']
 
 class EventsViewSet(viewsets.ModelViewSet):
     serializer_class = EventsSerializer
