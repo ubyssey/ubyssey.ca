@@ -263,18 +263,18 @@ function EventsOptions() {
             </button>
             {isCurrentEventsOpen && (
                 <ul className="dropdown-menu">
-                    <li><Link to="?event=jan">Jan</Link></li>
-                    <li><Link to="?event=feb">Feb</Link></li>
-                    <li><Link to="?event=mar">Mar</Link></li>
-                    <li><Link to="?event=apr">Apr</Link></li>
-                    <li><Link to="?event=may">May</Link></li>
-                    <li><Link to="?event=jun">Jun</Link></li>
-                    <li><Link to="?event=jul">Jul</Link></li>
-                    <li><Link to="?event=aug">Aug</Link></li>
-                    <li><Link to="?event=sep">Sep</Link></li>
-                    <li><Link to="?event=oct">Oct</Link></li>
-                    <li><Link to="?event=nov">Nov</Link></li>
-                    <li><Link to="?event=dec">Dec</Link></li>
+                <li><Link to="?event=jan">Jan</Link></li>
+                <li><Link to="?event=feb">Feb</Link></li>
+                <li><Link to="?event=mar">Mar</Link></li>
+                <li><Link to="?event=apr">Apr</Link></li>
+                <li><Link to="?event=may">May</Link></li>
+                <li><Link to="?event=jun">Jun</Link></li>
+                <li><Link to="?event=jul">Jul</Link></li>
+                <li><Link to="?event=aug">Aug</Link></li>
+                <li><Link to="?event=sep">Sep</Link></li>
+                <li><Link to="?event=oct">Oct</Link></li>
+                <li><Link to="?event=nov">Nov</Link></li>
+                <li><Link to="?event=dec">Dec</Link></li>
                 </ul>
             )}
             
