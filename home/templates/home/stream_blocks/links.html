@@ -30,7 +30,7 @@
 				{% for event in events %}
 					{% if not forloop.counter0 == 0 %}
 						<li>
-							<a href="/events/?event={{event.event_url}}" title="{{event.title}}">
+							<a href="/events/?event={{event.event_url}}&hidden=seminar" title="{{event.title}}">
 							<b>{{event.display_time}}</b> {{event.title}}
 							</a>
 						</li>

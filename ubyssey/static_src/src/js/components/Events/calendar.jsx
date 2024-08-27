@@ -8,6 +8,21 @@ import {
 import ReactDOM from 'react-dom';
 import axios from "axios";
 
+function getDateString(date) {
+    var str = String(date.getFullYear()) + "-";
+    if (String(date.getMonth()+1).length < 2) {
+        str = str + "0" + String(date.getMonth()+1) + "-";
+    } else {
+        str = str + String(date.getMonth()+1) + "-";
+    }
+    if (String(date.getDay()).length < 2) {
+        str = str + "0" + String(date.getDay());
+    } else {
+        str = str + String(date.getDay());
+    }
+    return str;
+}
+
 export function QueryEventsCalendar() {
     const [events, setEvents] = React.useState([]);
     function getEvents(){
@@ -25,7 +40,7 @@ export function QueryEventsCalendar() {
         }
         let end = new Date(start.getTime() + 29*d)
 
-        let q = ["end_time__gte=" + start.toLocaleDateString(),"start_time__lte=" + end.toLocaleDateString(),"limit=300"];
+        let q = ["end_time__gte=" + getDateString(start),"start_time__lte=" + getDateString(end),"limit=300"];
         axios
         .get(
             '/api/events/?' + q.join("&")
