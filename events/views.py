@@ -333,6 +333,29 @@ async def update_events(request):
             'seminar_ids': [520, 527, 525]
          },
         },
+
+        {'name': 'UBC Faculty of Arts', 
+         'api': 'https://www.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_ids': [1962, 1785]
+         },
+        },
+
+        {'name': 'UBC School of Information', 
+         'api': 'https://ischool.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC Art History, Visual Art & Theory ', 
+         'api': 'https://ahva.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_ids': [820, 926, 817]
+         },
+        },
     ]
 
     terms = ['lecture', 'workshop', 'conference', 'talk', 'seminar', 'colloquia']
