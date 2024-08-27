@@ -15,10 +15,10 @@ function getDateString(date) {
     } else {
         str = str + String(date.getMonth()+1) + "-";
     }
-    if (String(date.getDay()).length < 2) {
-        str = str + "0" + String(date.getDay());
+    if (String(date.getDate()).length < 2) {
+        str = str + "0" + String(date.getDate());
     } else {
-        str = str + String(date.getDay());
+        str = str + String(date.getDate());
     }
     return str;
 }
@@ -221,8 +221,9 @@ function EventsOptions() {
             'description': capitalize(category)  + " Around Campus collected by The Ubyssey",
             'url': 'https://ubyssey.ca/events/?category=' + category,
             };
-
     }
+
+    document.getElementsByTagName("title")[0].innerHTML = meta.title
 
     return (
         <>
@@ -428,11 +429,11 @@ function EventsCalendar({events}) {
                             <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>{day.day}.
                         </button>
                         <ul>{day.events.map((event) => 
-                            <li className={(eventHash==event.event_url && "selected") + " " + eventsTags(event)}>
-                            <Link title={event.title.replace("<br>", ", ")} className="calendar-item" to={"?event=" + event.event_url} event-url={event.event_url}
+                            <li className={(eventHash==event.hash && "selected") + " " + eventsTags(event)}>
+                            <Link title={event.title.replace("<br>", ", ")} className="calendar-item" to={"?event=" + event.hash} event-url={event.event_url}
                             onClick={(e) => {
                                 e.preventDefault();
-                                searchParams.set("event", event.event_url);
+                                searchParams.set("event", event.hash);
                                 setSearchParams(searchParams);
                             }}
                             dangerouslySetInnerHTML={
@@ -468,8 +469,9 @@ function EventInfo({events}) {
     if (query.get("event") != null){
         let eventHash = query.get("event");
         for (let i=0; i<events.length; i++) {
-            if (events[i].event_url == eventHash) {
+            if (events[i].hash == eventHash) {
                 event = events[i];
+                document.getElementsByTagName("title")[0].innerHTML = event.title;
                 break;
             }
         }
