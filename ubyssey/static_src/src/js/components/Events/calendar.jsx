@@ -1,4 +1,4 @@
-import React from 'react'
+import React,  { useState, useEffect } from 'react'
 import {
     BrowserRouter as Router,
     Link,
@@ -244,6 +244,57 @@ function EventsOptions() {
 }
 
 function EventsCalendar({events}) {
+    const d = 24 * 60 * 60 * 1000; // One day in milliseconds
+
+    // Add state to track the start date of the calendar
+    const [start, setStart] = useState(getInitialStartDate());
+
+    function getInitialStartDate() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let start = new Date(today.getTime() - 10 * d);
+        while (start.getDay() !== 1) {
+            start = new Date(start.getTime() + d);
+        }
+
+        return start;
+    }
+
+// Function to update the start date to the week of the first day of the previous or next month
+const handleMonthNavigation = (direction) => {
+    // Set the start date to the first day of the current month
+    let newStart = new Date(start);
+
+    console.log("Start date is :"+start)
+    if(newStart.getDate() !== 1){
+    while (newStart.getDay() !== 1) {
+        newStart = new Date(newStart.getTime() + d);
+    }
+    newStart.setDate(1);
+    newStart.setMonth(newStart.getMonth()+1)
+}
+    // Adjust the month based on the direction
+    const currentMonth = newStart.getMonth();
+    console.log(direction);
+    if (direction === 'next') {
+        console.log("Current month is" + newStart);
+        newStart.setMonth(currentMonth + 1);
+        console.log("Current month is after update" +newStart);        
+    } else {
+        newStart.setMonth(currentMonth - 1);
+    }
+
+    // Ensure the new start date begins on the Monday of that week
+    while (newStart.getDay() !== 1) {
+        newStart = new Date(newStart.getTime() - d);
+    }
+
+    // Update the start date
+    setStart(newStart);
+    console.log(newStart);
+};
+
 
     function arrangeCalendar(events) {
         const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -256,11 +307,6 @@ function EventsCalendar({events}) {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
-        var start = new Date(today.getTime() - (10*d));
-        while(start.getDay() != 1) {
-            start = new Date(start.getTime() + d);
-        }
 
         var cur = new Date(start);
 
@@ -405,6 +451,11 @@ function EventsCalendar({events}) {
             <h2 class="day">Fri</h2>
             <h2 class="day">Sat</h2>
             <h2 class="day">Sun</h2>
+        </div>
+        
+        <div className="events-calendar--navigation">
+                <button onClick={() => handleMonthNavigation('previous')} className="arrow-button up-arrow">⬆</button>
+                <button onClick={() => handleMonthNavigation('next')} className="arrow-button down-arrow">⬇</button>
         </div>
 
         <div class="events-calendar--rows">{calendar.map((week, week_index) => 
