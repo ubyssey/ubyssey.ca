@@ -85,16 +85,11 @@ const handleMonthNavigation = (direction) => {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        // var start = new Date(today.getTime() - (10*d));
-        // while(start.getDay() != 1) {
-        //     start = new Date(start.getTime() + d);
-        // }
         let end = new Date(start.getTime() + 29*d)
 
-        let q = ["end_time__gte=" + getDateString(start),"start_time__lte=" + getDateString(end),"limit=1000"];
         axios
         .get(
-            '/api/events/?' + q.join("&")
+            '/api/events/?limit=300' //If needed you can increase or decrease the limit to include more or lesser events
         )
         .then((response) => {
             const res = response.data.results;
