@@ -485,10 +485,30 @@ async def update_events(request):
         {'name': 'UBCevents', 
          'file': "https://events.ubc.ca/events/?ical=1", 
          'create_function': Event.objects.ubcevents_create_event},
+
+        {'name': 'Thunderbird Arena', 
+         'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % datetime.now().month) + "-01&ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'category': 'entertainment'},
+
+        {'name': 'Thunderbird Arena', 
+         'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % ((datetime.now().month%12) + 1)) + "-01&ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'category': 'entertainment'},
+
+        {'name': 'UBC Mathematics', 
+         'file': "https://www.math.ubc.ca/news-events/events/ical", 
+         'create_function': Event.objects.ical_create_event,
+         'category': 'seminar'},
+
+        {'name': 'AMS', 
+         'file': "https://www.ams.ubc.ca/events/?ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'category': 'community'},
     ]
 
     for f in ical_files:
-        tasks.append(asyncio.create_task(Event.objects.read_ical(f['name'], f['file'], f['create_function'])))
+        tasks.append(asyncio.create_task(Event.objects.read_ical(f)))
         if len(tasks) >= 15:
             await asyncio.gather(*tasks)
             tasks = []

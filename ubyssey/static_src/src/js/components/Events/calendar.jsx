@@ -471,6 +471,9 @@ function EventInfo({events}) {
         for (let i=0; i<events.length; i++) {
             if (events[i].hash == eventHash) {
                 event = events[i];
+                if (event.description == null) {
+                    event.description = "";
+                }
                 document.getElementsByTagName("title")[0].innerHTML = event.title;
                 break;
             }
