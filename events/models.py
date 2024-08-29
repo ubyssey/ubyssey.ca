@@ -100,7 +100,21 @@ class EventManager(models.Manager):
 
         event.category = categorize['default']
         categories = ['entertainment', 'seminar', 'community', 'sports']
+
         for category in categories:
+            if event.category != categorize['default']:
+                break
+            categorize_key = category + '_title_terms'
+            if categorize_key in categorize:
+            
+                for term in categorize[categorize_key]:
+                    if term.lower() in event.title.lower():
+                        event.category = category
+                        break
+
+        for category in categories:
+            if event.category != categorize['default']:
+                break
             categorize_key = category + '_type'
             if categorize_key in categorize:
                 for event_type in event_json['event-type']:
@@ -113,8 +127,11 @@ class EventManager(models.Manager):
                     if event.category != categorize['default']:
                         break
 
-            if event.category != categorize['default']:
-                break
+        if event.hidden == False and 'hidden_title_terms' in categorize:
+            for term in categorize['hidden_title_terms']:
+                if term.lower() in event.title.lower():
+                    event.hidden = True
+                    break
 
         event.hidden=False
         if 'hidden_topics' in categorize:

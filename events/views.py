@@ -289,7 +289,7 @@ async def update_events(request):
         'categorize': {
             'default': 'community',
             'seminar_type': [552, 554, 559, 553, 677, 558],
-            'hidden_title_terms': ['fika', 'plauder', 'kaffeestunde']
+            'hidden_title_terms': ['fika', 'plauder', 'kaffeestunde', 'slavic tea']
          },
         },    
 
@@ -328,7 +328,9 @@ async def update_events(request):
         {'name': 'UBC Migration Studies', 
          'api': 'https://migration.ubc.ca/wp-json/wp/v2/', 
          'categorize': {
-            'default': 'seminar',
+            'default': 'community',
+            'seminar_type': [1208,1209,785,546,1206,1198],
+            'hidden_title_terms': ['community luncheon'],
          },
         },
 
@@ -414,6 +416,7 @@ async def update_events(request):
          'api': 'https://philosophy.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'seminar',
+            'community_title_terms': ['imagine day']
          },
         },
 
@@ -426,10 +429,32 @@ async def update_events(request):
         },
 
         {'name': 'UBC Theatre & Film', 
-         'api': 'https://politics.ubc.ca/wp-json/wp/v2/',
+         'api': 'https://theatrefilm.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'entertainment',
             'seminar_type': [1262, 1263, 1265]
+         },
+        },
+
+        {'name': 'UBC Sociology', 
+         'api': 'https://sociology.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC School of Journalism, Writing, and Media', 
+         'api': 'https://jwam.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC School of Music', 
+         'api': 'https://music.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'entertainment',
+            'seminar_type': [562, 564, 567, 762, 563],
          },
         },
     ]
@@ -569,9 +594,9 @@ class EventsFeed(Feed):
 
     def items(self, category):
         if category:
-            return Event.objects.filter(hidden=False, category=category, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21))
+            return Event.objects.filter(hidden=False, category=category, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=7))
         else:
-            return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21)).exclude(category='seminar')
+            return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=7)).exclude(category='seminar')
 
     def item_title(self, item):
         item.start_time = item.start_time.astimezone(timezone.get_current_timezone())

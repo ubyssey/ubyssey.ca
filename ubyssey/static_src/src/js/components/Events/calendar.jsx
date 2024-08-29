@@ -38,7 +38,7 @@ export function QueryEventsCalendar() {
         while(start.getDay() != 1) {
             start = new Date(start.getTime() + d);
         }
-        let end = new Date(start.getTime() + 29*d)
+        let end = new Date(start.getTime() + (4*7+1)*d)
 
         let q = ["end_time__gte=" + getDateString(start),"start_time__lte=" + getDateString(end),"limit=300"];
         axios
