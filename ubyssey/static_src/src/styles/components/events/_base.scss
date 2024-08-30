@@ -523,3 +523,34 @@ header.events{
         line-height: unset;
     }
 }
+.events-calendar--navigation {
+    position: relative;
+    left: -2.5em;
+    top: -2.8em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .arrow-button {
+        background: none; /* Remove default button styling */
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+
+        svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        &.down-arrow svg {
+            transform: rotate(180deg); /* Rotate for down arrow */
+        }
+
+        &:hover {
+            background-color: #f0f0f0; 
+            transition: background-color 0.3s; 
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); 
+        }
+    }
+}
