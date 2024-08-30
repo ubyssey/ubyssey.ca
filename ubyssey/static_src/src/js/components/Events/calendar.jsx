@@ -5,7 +5,7 @@ import {
     useLocation,
     useSearchParams
 } from "react-router-dom";
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import axios from "axios";
 
 function getDateString(date) {
@@ -25,6 +25,7 @@ function getDateString(date) {
 
 export function QueryEventsCalendar() {
     const [events, setEvents] = React.useState([]);
+    const [numberOfWeeks, setNumberOfWeeks] = React.useState(4);
     const d = 24 * 60 * 60 * 1000; // One day in milliseconds
 
     // Add state to track the start date of the calendar
@@ -66,6 +67,18 @@ const handleMonthNavigation = (direction) => {
         newStart.setMonth(currentMonth - 1);
     }
 
+    //Set the number of weeks to 6 if the 1st day is Saturday and the month has more than 29 days
+    // or if the 1st day is Sunday and the month has 31 days
+    if (
+        (newStart.getDay() === 6 && new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate() === 31) || 
+        (newStart.getDay() === 0 && new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate() > 29)
+    ) {
+        console.log("The date is" + new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate())
+        setNumberOfWeeks(6);
+    } else {
+        setNumberOfWeeks(5);
+    }
+    
     // Ensure the new start date begins on the Monday of that week
     while (newStart.getDay() !== 1) {
         newStart = new Date(newStart.getTime() - d);
@@ -89,7 +102,7 @@ const handleMonthNavigation = (direction) => {
 
         axios
         .get(
-            '/api/events/?limit=300' //If needed you can increase or decrease the limit to include more or lesser events
+            '/api/events/?limit=300' //If needed you can increase or decrease the limit to include more or lesser events or add more query parmaters
         )
         .then((response) => {
             const res = response.data.results;
@@ -126,7 +139,7 @@ const handleMonthNavigation = (direction) => {
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} handleMonthNavigation={handleMonthNavigation}/>
+                        <EventsCalendar events={events} start={start} handleMonthNavigation={handleMonthNavigation} numberOfWeeks={numberOfWeeks}/>
                     </div>
                 </div>
             
@@ -289,7 +302,7 @@ function EventsOptions() {
     )
 }
 
-function EventsCalendar({events, start, handleMonthNavigation}) {
+function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
 
 
     function arrangeCalendar(events) {
@@ -307,7 +320,7 @@ function EventsCalendar({events, start, handleMonthNavigation}) {
         var cur = new Date(start);
 
         var calendar = [];
-        for(let i=0; i<5; i++) {
+        for(let i=0; i<numberOfWeeks; i++) {
             var week = {
                 'month': months[cur.getMonth()],
                 'month_short': shortenedMonths[cur.getMonth()],
@@ -349,7 +362,7 @@ function EventsCalendar({events, start, handleMonthNavigation}) {
             }
             while(cur < new Date(event.end_time)) {
                 const delta = Math.floor((cur.getTime() - start.getTime()) / d);
-                if (delta > 0 && delta < (7*5)) {
+                if (delta > 0 && delta < (7*(numberOfWeeks))) {
                     calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
                 }
                 cur = new Date(cur.getTime() + d);
