@@ -19,7 +19,10 @@ import aiohttp
 
 class EventManager(models.Manager):
 
-    async def read_ical(self, name, file, create_function):
+    async def read_ical(self, f):
+        name = f['name']
+        file = f['file']
+        create_function = f['create_function']
         try:
             #print("Requesting " + name)
             async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
@@ -30,7 +33,10 @@ class EventManager(models.Manager):
                     tasks = []
                     for component in cal.walk():
                         if component.name == "VEVENT":
-                            tasks.append(asyncio.create_task(create_function(component)))
+                            if 'category' in f:
+                                tasks.append(asyncio.create_task(create_function(component, f['name'], f['category'])))
+                            else:
+                                tasks.append(asyncio.create_task(create_function(component)))
                     
                     await asyncio.gather(*tasks)
 
@@ -89,18 +95,23 @@ class EventManager(models.Manager):
         event.event_url=event_json['link']
 
         event.category = categorize['default']
+        categories = ['entertainment', 'seminar', 'community', 'sports']
+        for category in categories:
+            categorize_key = category + '_type'
+            if categorize_key in categorize:
+                for event_type in event_json['event-type']:
+                
+                    for category_type in categorize[categorize_key]:
+                        if event_type == category_type:
+                            event.category = category
+                            break
 
-        if 'seminar_ids' in categorize:
-            for id in event_json['event-type']:
-            
-                for seminar_id in categorize['seminar_ids']:
-                    if id == seminar_id:
-                        event.category = "seminar"
+                    if event.category != categorize['default']:
                         break
 
-                if event.category != categorize['default']:
-                    break
-            
+            if event.category != categorize['default']:
+                break
+
         event.hidden=False
 
         req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
@@ -127,6 +138,57 @@ class EventManager(models.Manager):
                         break
         print(api + ": [" + ", ".join(ids) + "]")
         return ids
+
+    async def ical_create_event(self, ical_component, name, category):
+        if not await self.filter(event_url=ical_component.get('url')).aexists():
+            event = await self.acreate(
+                title=ical_component.get('summary'),
+                event_url=ical_component.decoded('url'),
+                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+            )
+        else:
+            event = await self.filter(event_url=ical_component.get('url')).afirst()
+            if event.update_mode != 2:
+                return None
+
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+
+        # Split location and address
+        location = ical_component.get('location')
+        address = ""
+        if "," in location:
+            address = location[location.index(',')+1:]
+            location = location[:location.index(',')]
+        
+        event.title=str(ical_component.decoded('summary'), 'UTF-8')
+        if ical_component.get('description', False):
+            event.description=str(ical_component.decoded('description'), 'UTF-8')
+        else:
+            event.description=""
+
+        if isinstance(ical_component.decoded('dtstart'), datetime):
+            event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+        else:
+            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+
+        if isinstance(ical_component.decoded('dtend'), datetime):
+            event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
+        else:
+            event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+            
+        event.address=address
+        event.location=location
+        event.email=ical_component.decoded('organizer', default="")
+        event.event_url=ical_component.decoded('url')
+        event.category = category
+        event.hidden=False
+        event.host = name
+
+        event.update_mode = 1
+        await event.asave()
+        #print("Finished event " + event.event_url)
+        return event
 
     async def ubcevents_create_event(self, ical_component):
         if not await self.filter(event_url=ical_component.get('url')).aexists():

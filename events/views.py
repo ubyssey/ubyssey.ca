@@ -275,7 +275,8 @@ async def update_events(request):
          'api': 'https://cenes.ubc.ca/wp-json/wp/v2/',
         'categorize': {
             'default': 'community',
-            'seminar_ids': [552, 554, 559, 553, 677, 558]
+            'seminar_type': [552, 554, 559, 553, 677, 558],
+            'hidden_title_terms': ['fika', 'plauder', 'kaffeestunde']
          },
         },    
 
@@ -314,7 +315,9 @@ async def update_events(request):
         {'name': 'UBC Migration Studies', 
          'api': 'https://migration.ubc.ca/wp-json/wp/v2/', 
          'categorize': {
-            'default': 'seminar',
+            'default': 'community',
+            'seminar_type': [1208,1209,785,546,1206,1198],
+            'hidden_title_terms': ['community luncheon'],
          },
         },
 
@@ -330,7 +333,114 @@ async def update_events(request):
          'api': 'https://socialwork.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_ids': [520, 527, 525]
+            'seminar_type': [520, 527, 525]
+         },
+        },
+
+        {'name': 'UBC Faculty of Arts', 
+         'api': 'https://www.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'entertainment_type': [802],
+            'seminar_type': [1962, 1785],
+            'hidden_topics': [1783, 1950, 1996, 2378, 2379, 1995, 2375]
+         },
+        },
+
+        {'name': 'UBC School of Information', 
+         'api': 'https://ischool.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC Art History, Visual Art & Theory', 
+         'api': 'https://ahva.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [820, 926, 817, 930, 824, 825]
+         },
+        },
+
+        {'name': 'UBC Ancient Mediterranean and Near Eastern Studies', 
+         'api': 'https://amne.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [718, 568, 570, 569]
+         },
+        },
+
+        {'name': 'UBC Coordinated Arts Programs', 
+         'api': 'https://cap.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC School of Public Policy and Global Affairs', 
+         'api': 'https://sppga.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC Geography', 
+         'api': 'https://geog.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+            'hidden_title_terms': ['green day'],
+         },
+        },
+
+        {'name': 'UBC Linguistics', 
+         'api': 'https://linguistics.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC Philosophy', 
+         'api': 'https://philosophy.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC Political Science', 
+         'api': 'https://politics.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+            'community_type': [544, 546, 549]
+         },
+        },
+
+        {'name': 'UBC Theatre & Film', 
+         'api': 'https://politics.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'entertainment',
+            'seminar_type': [1262, 1263, 1265]
+         },
+        },
+
+        {'name': 'UBC Sociology', 
+         'api': 'https://sociology.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC School of Journalism, Writing, and Media', 
+         'api': 'https://jwam.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
+        {'name': 'UBC School of Music', 
+         'api': 'https://music.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'entertainment',
+            'seminar_type': [562, 564, 567, 762, 563],
          },
         },
     ]
@@ -357,10 +467,33 @@ async def update_events(request):
         {'name': 'UBCevents', 
          'file': "https://events.ubc.ca/events/?ical=1", 
          'create_function': Event.objects.ubcevents_create_event},
+
+        {'name': 'Thunderbird Arena', 
+         'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % datetime.now().month) + "-01&ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'category': 'entertainment'},
+
+        {'name': 'Thunderbird Arena', 
+         'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % ((datetime.now().month%12) + 1)) + "-01&ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'category': 'entertainment'},
+
+        {'name': 'UBC Mathematics', 
+         'file': "https://www.math.ubc.ca/news-events/events/ical", 
+         'create_function': Event.objects.ical_create_event,
+         'category': 'seminar'},
+
+        {'name': 'AMS', 
+         'file': "https://www.ams.ubc.ca/events/?ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'category': 'community'},
     ]
 
     for f in ical_files:
         tasks.append(asyncio.create_task(Event.objects.read_ical(f['name'], f['file'], f['create_function'])))
+        if len(tasks) >= 15:
+            await asyncio.gather(*tasks)
+            tasks = []
 
     await asyncio.gather(*tasks)
 
@@ -463,9 +596,9 @@ class EventsFeed(Feed):
 
     def items(self, category):
         if category:
-            return Event.objects.filter(hidden=False, category=category, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21))
+            return Event.objects.filter(hidden=False, category=category, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=7))
         else:
-            return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=21)).exclude(category='seminar')
+            return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=7)).exclude(category='seminar')
 
     def item_title(self, item):
         item.start_time = item.start_time.astimezone(timezone.get_current_timezone())
