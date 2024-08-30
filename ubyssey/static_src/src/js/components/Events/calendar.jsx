@@ -98,10 +98,6 @@ const handleMonthNavigation = (direction) => {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        var start = new Date(today.getTime() - (10*d));
-        while(start.getDay() != 1) {
-            start = new Date(start.getTime() + d);
-        }
         let end = new Date(start.getTime() + 29*d)
 
         axios
