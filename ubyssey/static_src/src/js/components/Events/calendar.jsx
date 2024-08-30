@@ -307,7 +307,7 @@ function EventsCalendar({events, start, handleMonthNavigation}) {
         var cur = new Date(start);
 
         var calendar = [];
-        for(let i=0; i<4; i++) {
+        for(let i=0; i<5; i++) {
             var week = {
                 'month': months[cur.getMonth()],
                 'month_short': shortenedMonths[cur.getMonth()],
@@ -349,7 +349,7 @@ function EventsCalendar({events, start, handleMonthNavigation}) {
             }
             while(cur < new Date(event.end_time)) {
                 const delta = Math.floor((cur.getTime() - start.getTime()) / d);
-                if (delta > 0 && delta < (7*4)) {
+                if (delta > 0 && delta < (7*5)) {
                     calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
                 }
                 cur = new Date(cur.getTime() + d);
@@ -450,10 +450,20 @@ function EventsCalendar({events, start, handleMonthNavigation}) {
         </div>
         
         <div className="events-calendar--navigation">
-                <button onClick={() => handleMonthNavigation('previous')} className="arrow-button up-arrow">⬆</button>
-                <button onClick={() => handleMonthNavigation('next')} className="arrow-button down-arrow">⬇</button>
-        </div>
-
+            <button onClick={() => handleMonthNavigation('previous')} className="arrow-button up-arrow" title='Previous Month'>
+                <svg width="32px" height="32px" viewBox="0 0 32 32">
+                    <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                </svg>
+            </button>
+            <button onClick={() => handleMonthNavigation('next')} className="arrow-button down-arrow" title='Next Month'>
+                <svg width="32px" height="32px" viewBox="0 0 32 32">
+                    <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                </svg>
+            </button>
+        </div>  
+        {/* <div className="events-calendar--navigations">
+        <button onClick={() => handleMonthNavigation('next')} className="arrow-button down-arrow">⬇</button>
+        </div> */}
         <div class="events-calendar--rows">{calendar.map((week, week_index) => 
 
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
