@@ -548,9 +548,14 @@ header.events{
         }
 
         &:hover {
-            background-color: #f0f0f0; 
+            background-color: #f7f7f7; 
             transition: background-color 0.3s; 
-            box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+            border-radius: 100%; 
         }
+        &:active {
+            background-color: #d3d3d3; /* Grey background when button is clicked */
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+        }        
     }
 }
