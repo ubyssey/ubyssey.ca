@@ -428,7 +428,7 @@ header.events{
             margin-right: 2em;
         }
     }
-    .events-calendar--rows .events-calendar--row:first-child {
+    .events-calendar--rows .events-calendar--row:first-child .events-calendar--month {
         display: none;
     }
     
@@ -483,7 +483,7 @@ header.events{
     margin-bottom: 5em;
     width: 75%;
     @media($bp-smaller-than-phablet) {
-        margin-bottom: 2em;
+        margin: 0.5em 0 1em 0;
     }
     ul {
         display: flex;
