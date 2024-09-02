@@ -262,7 +262,7 @@ async def update_events(request):
         await event.asave()
     
     tasks = []
-    
+    max_at_a_time = 30
     tasks.append(asyncio.create_task(Event.objects.phas_scrape()))
 
     wp_apis = [
@@ -463,7 +463,7 @@ async def update_events(request):
     for a in wp_apis:
         # Event.objects.wp_events_api_get_type_ids(a['api'], terms) # Uncomment to print the event-type id for types wuth the terms above in their name. Used for categorizing the events
         tasks.append(asyncio.create_task(Event.objects.read_wp_events_api(a['name'], a['api'], a['categorize'])))
-        if len(tasks) >= 15:
+        if len(tasks) >= max_at_a_time:
             await asyncio.gather(*tasks)
             tasks = []
 
@@ -509,7 +509,7 @@ async def update_events(request):
 
     for f in ical_files:
         tasks.append(asyncio.create_task(Event.objects.read_ical(f)))
-        if len(tasks) >= 15:
+        if len(tasks) >= max_at_a_time:
             await asyncio.gather(*tasks)
             tasks = []
 
