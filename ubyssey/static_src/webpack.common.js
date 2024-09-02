@@ -30,7 +30,7 @@ module.exports = {
     initializeDarkmode: './src/js/initializeDarkmode.js',
     'events': './src/js/events.jsx',
 
-    'queer-substance-use': './src/js/queer-substance-use.js',
+    'queer-substance-abuse': './src/js/queer-substance-abuse.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
