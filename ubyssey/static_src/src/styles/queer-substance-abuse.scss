@@ -1,4 +1,5 @@
-$accent-colour: #995fd3;
+//$accent-colour: #995fd3;
+$accent-colour: #0071c9;
 
 body {
     background-color: black;
@@ -35,6 +36,7 @@ header {
         border-bottom: $accent-colour 0.1em solid;
         font-size: 2em;
         line-height: 1em;
+        font-weight: 500;
     }
     p {
         max-width: 800px;
@@ -118,11 +120,13 @@ div.quote {
 
     font-family: "Montserrat", sans-serif;
     color: #ddd;
-    font-size: 0.9em;
+    text-align: left;
     line-height: 1.5em;
-    @media only screen and (min-width: 800px) {
-        font-size: 1.5em;
-    }
+    //font-size: 0.9em;
+    //line-height: 1.5em;
+    //@media only screen and (min-width: 800px) {
+    //    font-size: 1.5em;
+    //}
 }
 
 .fade-in-out {
@@ -152,7 +156,7 @@ div.quote {
 
 span.quote {
     font-family: "Roboto", system-ui;
-    font-weight: 600;
+    //font-weight: 600;
     color: white;
 }
 
@@ -160,9 +164,13 @@ p.dropcap:first-letter {
     margin-top: 0.1em;
     float: left;
     font-size: 4em;
+    font-weight: 600;
     //line-height: 4em;
     height: 0.7em;
     padding-right: 10px;
+}
+p.dropcap:first-line {
+    font-weight: 600;
 }
 
 p.dropcap {
@@ -170,7 +178,6 @@ p.dropcap {
     max-width: 800px;
 
     color: white;
-    font-weight: 600;
     @media only screen and (min-width: 800px) {
         font-size: 1.2em;
     }
