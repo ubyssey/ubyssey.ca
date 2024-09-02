@@ -3,6 +3,7 @@ from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views import defaults as default_views
+from django.views.generic.base import TemplateView
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
@@ -51,6 +52,8 @@ urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
+    # Special design articles
+    re_path(r'^features/queer-substance-abuse', TemplateView.as_view(template_name='article/queer-substance-abuse.html')),
     # re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
     # re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
     # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),

@@ -29,6 +29,8 @@ module.exports = {
     error_page: './src/js/error_page.js',
     initializeDarkmode: './src/js/initializeDarkmode.js',
     'events': './src/js/events.jsx',
+
+    'queer-substance-abuse': './src/js/queer-substance-abuse.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),

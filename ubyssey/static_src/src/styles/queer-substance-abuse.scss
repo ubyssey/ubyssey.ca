@@ -1,0 +1,177 @@
+$accent-colour: #995fd3;
+
+body {
+    background-color: black;
+    color: white;
+    font-size: 18px;
+    font-family: "Oswald", sans-serif;
+}
+
+article > div > * {
+    max-width: 1000px;
+    padding-inline: 1em;
+    margin: 2em auto;
+
+    text-align: center;
+}
+
+.cover-screen > * {
+    padding-inline: 1em;
+}
+
+.cover-screen ul {
+    width: 75%;
+    margin: 0 auto;
+    text-align: left;
+    li {
+        margin: 1em;
+    }
+}
+
+header {
+    h1 {
+        max-width: 1000px;
+        margin: 1em auto;
+        border-bottom: $accent-colour 0.1em solid;
+        font-size: 2em;
+        line-height: 1em;
+    }
+    p {
+        max-width: 800px;
+        margin: 1em auto;
+        font-family: "Montserrat", sans-serif;
+    }
+}
+
+.end {
+    display: flex;
+    flex-direction: column;
+    a {
+        text-decoration: underline;
+        color: white;
+        border: none;
+    }
+}
+
+article > div > p {
+    max-width: 700px;
+
+    color: #ccc;
+    text-align: left;
+    font-family: "Montserrat", sans-serif;
+    line-height: 1.75em;
+}
+
+article > div > ul {
+    max-width: 600px;
+    font-size: 1.2em;
+    font-family: "Montserrat", sans-serif;
+} 
+article > div > ul li {
+    margin: 1em 0;
+    text-align: left;
+}
+
+a {
+    color: $accent-colour;
+    border-bottom: solid 2px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.logo {
+    color: #eee;
+    text-align: center;
+    padding-inline: 1em;
+    margin: 1em auto;
+    a {
+        border: none;
+    }
+    * {
+        margin: 0 auto;
+    }
+}
+
+.warning {
+    margin-top: 2em;
+    @media only screen and (min-width: 800px) {
+        font-size: 0.8em;
+    }
+}
+
+div.quote {
+    font-family: "Oswald", sans-serif;
+    margin: auto;
+    font-size: 2em;
+    line-height: 1.5em;
+    color: white;
+    @media only screen and (min-width: 800px) {
+        font-size: 2.5em;
+    }
+}
+
+.cover-screen {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+
+    font-family: "Montserrat", sans-serif;
+    color: #ddd;
+    font-size: 0.9em;
+    line-height: 1.5em;
+    @media only screen and (min-width: 800px) {
+        font-size: 1.5em;
+    }
+}
+
+.fade-in-out {
+    opacity: 0;
+    transition-duration: 1.5s;
+}
+
+.fade-in-out.visible {
+    opacity: 1;
+}
+
+.side-quote {
+    margin: 0.5em;
+    margin-left: calc(50vw - 600px);
+    padding: 1em;
+    
+    max-width: 400px;
+    background-color: $accent-colour;
+    color: black;
+    float: left;
+    font-size: 1.75em;
+
+    @media only screen and (max-width: 1200px) {
+        display: none;
+    }
+}
+
+span.quote {
+    font-family: "Roboto", system-ui;
+    font-weight: 600;
+    color: white;
+}
+
+p.dropcap:first-letter {
+    margin-top: 0.1em;
+    float: left;
+    font-size: 4em;
+    line-height: 4em;
+    height: 0.7em;
+    padding-right: 10px;
+}
+
+p.dropcap {
+    margin-top: 5em;
+    max-width: 800px;
+
+    color: white;
+    font-weight: 600;
+    @media only screen and (min-width: 800px) {
+        font-size: 1.2em;
+    }
+}
