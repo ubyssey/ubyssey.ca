@@ -53,7 +53,7 @@ urlpatterns += [
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
     # Special design articles
-    re_path(r'^features/queer-substance-abuse', TemplateView.as_view(template_name='article/queer-substance-abuse.html')),
+    re_path(r'^features/how-substance-use-impacts-queer-students', TemplateView.as_view(template_name='article/queer-substance-abuse.html')),
     # re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
     # re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
     # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
