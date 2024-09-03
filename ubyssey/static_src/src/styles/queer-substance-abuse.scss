@@ -1,5 +1,5 @@
 //$accent-colour: #995fd3;
-$accent-colour: #0071c9;
+$accent-colour: #b7b7b7;
 
 body {
     background-color: black;
@@ -29,19 +29,48 @@ article > div > * {
     }
 }
 
-header {
+.cover {
     h1 {
-        max-width: 1000px;
-        margin: 1em auto;
-        border-bottom: $accent-colour 0.1em solid;
-        font-size: 2em;
-        line-height: 1em;
+        padding-inline: 1em;
+        max-width: 600px;
+        font-size: 1.75em;
         font-weight: 500;
+        line-height: 1.2em;
     }
     p {
         max-width: 800px;
         margin: 1em auto;
         font-family: "Montserrat", sans-serif;
+        background-color: black;
+    }
+    .byline {
+        margin: 1em auto 1em 10%;
+    }
+    header {
+        margin: 0;
+        text-align: left;
+        max-width: none;
+        padding: 0;
+        @media only screen and (max-width: 800px) {
+            background-size: cover;
+            background-image: url("https://storage.googleapis.com/ubyssey/media/renditions/i_janmohamed_elena_cover.original.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    }
+    @media only screen and (min-width: 800px) {
+        background-size: contain;
+        background-image: url('https://storage.googleapis.com/ubyssey/media/renditions/i_janmohamed_elena_cover.original.jpg');
+        background-position: top;
+        background-repeat: no-repeat;
+        h1 {
+            margin: 1em 40% 1em 10%;
+            font-size: 2em;
+        }
+        .lede {
+            margin: 0 auto 2em 35%;
+            transform: rotate(-1deg);
+        }
     }
 }
 
@@ -94,6 +123,10 @@ a {
     }
 }
 
+.footer-logo {
+    padding-right: 7%;
+}
+
 .warning {
     margin-top: 2em;
     @media only screen and (min-width: 800px) {
@@ -138,7 +171,7 @@ div.quote {
     opacity: 1;
 }
 
-.side-quote {
+.pull-quote {
     margin: 0.5em;
     margin-left: calc(50vw - 600px);
     padding: 1em;
@@ -151,6 +184,10 @@ div.quote {
 
     @media only screen and (max-width: 1200px) {
         display: none;
+    }
+
+    .attribution {
+        font-size: 0.8em;
     }
 }
 
