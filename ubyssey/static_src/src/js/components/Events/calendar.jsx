@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 // import ReactDOM from 'react-dom';
 import axios from "axios";
+const mobileScreenSize = 760;
 
 function getDateString(date) {
     var str = String(date.getFullYear()) + "-";
@@ -247,59 +248,104 @@ function eventsTags(event) {
 
 function EventsOptions() {
     let query = useQuery();
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileScreenSize);
+
+    // Check screen width on resize
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= mobileScreenSize);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     var category = "all";
-    if (query.get("category") != null){
+    if (query.get("category") != null) {
         category = query.get("category");
     }
 
     var highlight = "category";
 
-    var ical = {'url': 'https://ubyssey.ca/events/ical/',
-            'title': "Ubyssey's Events Around Campus iCal Feed"};
+    var ical = {
+        'url': 'https://ubyssey.ca/events/ical/',
+        'title': "Ubyssey's Events Around Campus iCal Feed"
+    };
 
-    var rss = {'url': 'https://ubyssey.ca/events/rss/',
-        'title': "Ubyssey's Events Around Campus rss Feed"};
+    var rss = {
+        'url': 'https://ubyssey.ca/events/rss/',
+        'title': "Ubyssey's Events Around Campus rss Feed"
+    };
 
     var meta = {
         'title': "Events Around Campus Calendar",
         'description': "Events Around Campus collected by The Ubyssey",
         'url': 'https://ubyssey.ca/events/',
+    };
+
+    if (category !== "all") {
+        highlight = "host";
+
+        ical = {
+            'url': 'https://ubyssey.ca/events/ical/?category=' + category,
+            'title': "Ubyssey's " + capitalize(category) + " Around Campus iCal Feed"
         };
 
-    if (category != "all") {
-        highlight = "host";
-        
-        ical = {'url': 'https://ubyssey.ca/events/ical/?category=' + category,
-                'title': "Ubyssey's " + capitalize(category)  + " Around Campus iCal Feed"};
-
-        rss = {'url': 'https://ubyssey.ca/events/rss/?category=' + category,
-            'title': "Ubyssey's " + capitalize(category)  + " Around Campus rss Feed"};
+        rss = {
+            'url': 'https://ubyssey.ca/events/rss/?category=' + category,
+            'title': "Ubyssey's " + capitalize(category) + " Around Campus rss Feed"
+        };
 
         meta = {
             'title': capitalize(category) + " Around Campus Calendar",
-            'description': capitalize(category)  + " Around Campus collected by The Ubyssey",
+            'description': capitalize(category) + " Around Campus collected by The Ubyssey",
             'url': 'https://ubyssey.ca/events/?category=' + category,
-            };
+        };
     }
 
-    document.getElementsByTagName("title")[0].innerHTML = meta.title
+    document.getElementsByTagName("title")[0].innerHTML = meta.title;
+
+    const categories = [
+        { value: 'all', label: 'All' },
+        { value: 'sports', label: 'Sports' },
+        { value: 'entertainment', label: 'Entertainment' },
+        { value: 'community', label: 'Community' },
+        { value: 'seminar', label: 'Seminar' }
+    ];
 
     return (
         <>
-        <div class="events-calendar--categories">
-            <ul>
-                <li class={category == 'all' && "selected"}><Link to="?hidden=seminar">All</Link></li>
-                <li class={category == 'sports' && "selected"}><Link to="?category=sports">Sports</Link></li>
-                <li class={category == 'entertainment' && "selected"}><Link to="?category=entertainment">Entertainment</Link></li>
-                <li class={category == 'community' && "selected"}><Link to="?category=community">Community</Link></li>
-                <li class={category == 'seminar' && "selected"}><Link to="?category=seminar">Seminar</Link></li>
-            </ul>
-            <a class="alt-icon" href={ical.url} title={ical.title}><ion-icon name="calendar"></ion-icon></a>
-            <a class="alt-icon" href={rss.url} title={rss.title}><ion-icon name="logo-rss"></ion-icon></a>
-        </div>
-        <p class="mobile-alt"><a href={ical.url}><ion-icon name="calendar"></ion-icon> iCal File</a> <a href={rss.url}><ion-icon name="logo-rss"></ion-icon> Rss Feed</a></p>
+            <div className="events-calendar--categories">
+                {isMobile ? (
+                    <select
+                        onChange={(e) => window.location.href = `?category=${e.target.value}`}
+                        value={category}
+                    >
+                        {categories.map(cat => (
+                            <option key={cat.value} value={cat.value}>{cat.label}</option>
+                        ))}
+                    </select>
+                ) : (
+                    <ul>
+                        {categories.map(cat => (
+                            <li key={cat.value} className={category === cat.value ? "selected" : ""}>
+                                <Link to={`?category=${cat.value}`}>{cat.label}</Link>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                <a className="alt-icon" href={ical.url} title={ical.title}><ion-icon name="calendar"></ion-icon></a>
+                <a className="alt-icon" href={rss.url} title={rss.title}><ion-icon name="logo-rss"></ion-icon></a>
+            </div>
+            <p className="mobile-alt">
+                <a href={ical.url}><ion-icon name="calendar"></ion-icon> iCal File</a>
+                <a href={rss.url}><ion-icon name="logo-rss"></ion-icon> Rss Feed</a>
+            </p>
         </>
-    )
+    );
 }
 
 function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
@@ -474,9 +520,6 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
                 </svg>
             </button>
         </div>  
-        {/* <div className="events-calendar--navigations">
-        <button onClick={() => handleMonthNavigation('next')} className="arrow-button down-arrow">⬇</button>
-        </div> */}
         <div class="events-calendar--rows">{calendar.map((week, week_index) => 
 
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
