@@ -3,7 +3,8 @@ import {
     BrowserRouter as Router,
     Link,
     useLocation,
-    useSearchParams
+    useSearchParams,
+    useNavigate
 } from "react-router-dom";
 // import ReactDOM from 'react-dom';
 import axios from "axios";
@@ -248,6 +249,7 @@ function eventsTags(event) {
 
 function EventsOptions() {
     let query = useQuery();
+    const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileScreenSize);
 
     // Check screen width on resize
@@ -263,10 +265,7 @@ function EventsOptions() {
         };
     }, []);
 
-    var category = "all";
-    if (query.get("category") != null) {
-        category = query.get("category");
-    }
+    var category = query.get("category") || "all";
 
     var highlight = "category";
 
@@ -290,42 +289,45 @@ function EventsOptions() {
         highlight = "host";
 
         ical = {
-            'url': 'https://ubyssey.ca/events/ical/?category=' + category,
-            'title': "Ubyssey's " + capitalize(category) + " Around Campus iCal Feed"
+            'url': `https://ubyssey.ca/events/ical/?category=${category}`,
+            'title': `Ubyssey's ${capitalize(category)} Around Campus iCal Feed`
         };
 
         rss = {
-            'url': 'https://ubyssey.ca/events/rss/?category=' + category,
-            'title': "Ubyssey's " + capitalize(category) + " Around Campus rss Feed"
+            'url': `https://ubyssey.ca/events/rss/?category=${category}`,
+            'title': `Ubyssey's ${capitalize(category)} Around Campus rss Feed`
         };
 
         meta = {
-            'title': capitalize(category) + " Around Campus Calendar",
-            'description': capitalize(category) + " Around Campus collected by The Ubyssey",
-            'url': 'https://ubyssey.ca/events/?category=' + category,
+            'title': `${capitalize(category)} Around Campus Calendar`,
+            'description': `${capitalize(category)} Around Campus collected by The Ubyssey`,
+            'url': `https://ubyssey.ca/events/?category=${category}`,
         };
     }
 
-    document.getElementsByTagName("title")[0].innerHTML = meta.title;
-
     const categories = [
-        { value: 'all', label: 'All' },
-        { value: 'sports', label: 'Sports' },
-        { value: 'entertainment', label: 'Entertainment' },
-        { value: 'community', label: 'Community' },
-        { value: 'seminar', label: 'Seminar' }
+        { id: 0, value: 'all', label: 'All', },
+        { id: 1, value: 'sports', label: 'Sports' },
+        { id: 2, value: 'entertainment', label: 'Entertainment' },
+        { id: 3, value: 'community', label: 'Community' },
+        { id: 4, value: 'seminar', label: 'Seminar' }
     ];
+
+    const handleCategoryChange = (e) => {
+        const newCategory = e.target.value;
+        navigate(`?category=${newCategory}`);
+    };
 
     return (
         <>
             <div className="events-calendar--categories">
                 {isMobile ? (
                     <select
-                        onChange={(e) => window.location.href = `?category=${e.target.value}`}
+                        onChange={handleCategoryChange}
                         value={category}
                     >
                         {categories.map(cat => (
-                            <option key={cat.value} value={cat.value}>{cat.label}</option>
+                            <option key={cat.id} value={cat.value}>{cat.label}</option>
                         ))}
                     </select>
                 ) : (
