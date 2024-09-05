@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 // import ReactDOM from 'react-dom';
 import axios from "axios";
-const mobileScreenSize = 760;
+const BP_PHABLET_SIZE = 760;
 
 function getDateString(date) {
     var str = String(date.getFullYear()) + "-";
@@ -250,12 +250,12 @@ function eventsTags(event) {
 function EventsOptions() {
     let query = useQuery();
     const navigate = useNavigate();
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileScreenSize);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= BP_PHABLET_SIZE);
 
     // Check screen width on resize
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth <= mobileScreenSize);
+            setIsMobile(window.innerWidth <= BP_PHABLET_SIZE);
         };
 
         window.addEventListener('resize', handleResize);
@@ -497,6 +497,20 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
     React.useEffect(()=>{
         colourIn(legend);
     });
+    
+    const [isPhablet, setIsPhablet] = useState(window.innerWidth <= BP_PHABLET_SIZE);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsPhablet(window.innerWidth <= BP_PHABLET_SIZE);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     return (
         <>
@@ -511,17 +525,35 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
         </div>
         
         <div className="events-calendar--navigation">
-            <button onClick={() => handleMonthNavigation('previous')} className="arrow-button up-arrow" title='Previous month'>
-                <svg width="32px" height="32px" viewBox="0 0 32 32">
-                    <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
-                </svg>
-            </button>
-            <button onClick={() => handleMonthNavigation('next')} className="arrow-button down-arrow" title='Next month'>
-                <svg width="32px" height="32px" viewBox="0 0 32 32">
-                    <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
-                </svg>
-            </button>
-        </div>  
+            {isPhablet ? (
+                <>
+                    <button onClick={() => handleMonthNavigation('previous')} className="arrow-button left-arrow" title='Previous month'>
+                        <svg width="32px" height="32px" viewBox="0 0 32 32">
+                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                        </svg>
+                    </button>
+                    <span className="month-label">Month</span>
+                    <button onClick={() => handleMonthNavigation('next')} className="arrow-button right-arrow" title='Next month'>
+                        <svg width="32px" height="32px" viewBox="0 0 32 32">
+                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                        </svg>
+                    </button>
+                </>
+            ) : (
+                <>
+                    <button onClick={() => handleMonthNavigation('previous')} className="arrow-button up-arrow" title='Previous month'>
+                        <svg width="32px" height="32px" viewBox="0 0 32 32">
+                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                        </svg>
+                    </button>
+                    <button onClick={() => handleMonthNavigation('next')} className="arrow-button down-arrow" title='Next month'>
+                        <svg width="32px" height="32px" viewBox="0 0 32 32">
+                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                        </svg>
+                    </button>
+                </>
+            )}
+        </div>
         <div class="events-calendar--rows">{calendar.map((week, week_index) => 
 
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>

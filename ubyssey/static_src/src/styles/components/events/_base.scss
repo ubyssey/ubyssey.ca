@@ -559,3 +559,51 @@ header.events{
         }        
     }
 }
+@media (max-width: 760px) {
+    .events-calendar--navigation {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-top: 15%;
+    }
+
+    .arrow-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+    }
+
+    .arrow-button svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    .arrow-button.left-arrow {
+        margin-left: 40px; /* Adjust if needed */
+    }
+
+    .arrow-button.left-arrow svg {
+        transform: rotate(270deg);
+    }
+
+
+    .arrow-button.right-arrow {
+        margin-right: -40px; /* Adjust if needed */
+    }
+
+    .arrow-button.right-arrow svg {
+        transform: rotate(90deg);
+    }
+
+
+    .month-label {
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        flex-grow: 1;
+    }
+}
