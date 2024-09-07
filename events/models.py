@@ -38,10 +38,16 @@ class EventManager(models.Manager):
                     tasks = []
                     for component in cal.walk():
                         if component.name == "VEVENT":
-                            if 'category' in f:
-                                tasks.append(asyncio.create_task(create_function(component, f['name'], f['category'])))
+                            if isinstance(component.decoded('dtstart'), datetime):
+                                start =component.decoded('dtstart').astimezone(timezone.get_current_timezone())
                             else:
-                                tasks.append(asyncio.create_task(create_function(component)))
+                                start=datetime.combine(component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+
+                            if timedelta(days=30) > timezone.now() - start:
+                                if 'category' in f:
+                                    tasks.append(asyncio.create_task(create_function(component, f['name'], f['category'])))
+                                else:
+                                    tasks.append(asyncio.create_task(create_function(component)))
                     
                     await asyncio.gather(*tasks)
 
@@ -396,7 +402,7 @@ class EventManager(models.Manager):
             )
         else:
             event = await self.filter(event_url=ical_component.get('url')).afirst()
-            if event.update_mode == 0: # Go Thunderbirds is unqiue because the events are updated after they pass to include the result
+            if event.update_mode != 2 and event.end_time.astimezone(timezone.get_current_timezone()) <= timezone.now() - timedelta(days=7): # Go Thunderbirds is unqiue because the events are updated after they pass to include the result
                 return None
 
                 
@@ -415,7 +421,10 @@ class EventManager(models.Manager):
             g = "W. "
         event.title=g + ical_component.get('summary').replace("UBC ", "").replace("vs", "<br>UBC vs").replace("Men's ", "").replace("Women's ", "")
 
-        event.description=" ".join(ical_component.get('description').split(" ")[0:-1])
+        description=" ".join(ical_component.get('description').split(" ")[0:-1])
+        if description == event.description:
+            return
+        event.description = description
 
         splitDesc = ical_component.get('description').replace("[W] ", "").replace("[L] ", "").split("\n")[0].split(" ")
         i = 0
