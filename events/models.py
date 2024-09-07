@@ -44,8 +44,8 @@ class EventManager(models.Manager):
                                 start=datetime.combine(component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
 
                             if timedelta(days=30) > timezone.now() - start:
-                                if 'category' in f:
-                                    tasks.append(asyncio.create_task(create_function(component, f['name'], f['category'])))
+                                if 'instructions' in f:
+                                    tasks.append(asyncio.create_task(create_function(component, f['name'], f['instructions'])))
                                 else:
                                     tasks.append(asyncio.create_task(create_function(component)))
                     
@@ -169,6 +169,11 @@ class EventManager(models.Manager):
         req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
         if req.host in event_json['link']:
             event.host = host
+        else:
+            if await self.filter(title=event.title, start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).exclude(id=event.id).aexists():
+                event.hidden = True
+            elif not '.ubc.ca' in event_json['link']:
+                event.host = host
 
         event.update_mode = 1
         
@@ -191,7 +196,7 @@ class EventManager(models.Manager):
         print(api + ": [" + ", ".join(ids) + "]")
         return ids
 
-    async def ical_create_event(self, ical_component, name, category):
+    async def ical_create_event(self, ical_component, name, instructions):
         if not await self.filter(event_url=ical_component.get('url')).aexists():
             event = await self.acreate(
                 title=ical_component.get('summary'),
@@ -233,9 +238,12 @@ class EventManager(models.Manager):
         event.location=location
         event.email=ical_component.decoded('organizer', default="")
         event.event_url=ical_component.decoded('url')
-        event.category = category
+        event.category = instructions['category']
         event.hidden=False
         event.host = name
+
+        if 'description_transform' in instructions:
+            event.description = instructions['description_transform'](event)
 
         event.update_mode = 1
         await event.asave()
@@ -421,12 +429,9 @@ class EventManager(models.Manager):
             g = "W. "
         event.title=g + ical_component.get('summary').replace("UBC ", "").replace("vs", "<br>UBC vs").replace("Men's ", "").replace("Women's ", "")
 
-        description=" ".join(ical_component.get('description').split(" ")[0:-1])
-        if description == event.description:
-            return
-        event.description = description
+        event.description=" ".join(ical_component.get('description').split(" ")[0:-1])
 
-        splitDesc = ical_component.get('description').replace("[W] ", "").replace("[L] ", "").split("\n")[0].split(" ")
+        splitDesc = ical_component.get('description').replace("[W] ", "").replace("[L] ", "").replace("[T] ", "").split("\n")[0].split(" ")
         i = 0
         while splitDesc[i][0].isupper():
             i = i + 1

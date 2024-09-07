@@ -262,7 +262,7 @@ async def update_events(request):
         await event.asave()
     
     tasks = []
-    max_at_a_time = 30
+    max_at_a_time = 50
     tasks.append(asyncio.create_task(Event.objects.phas_scrape()))
 
     wp_apis = [
@@ -489,22 +489,37 @@ async def update_events(request):
         {'name': 'Thunderbird Arena', 
          'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % datetime.now().month) + "-01&ical=1", 
          'create_function': Event.objects.ical_create_event,
-         'category': 'entertainment'},
+         'instructions': {
+            'category': 'entertainment',
+            'description_transform': lambda d : "",    
+         }
+        },
 
         {'name': 'Thunderbird Arena', 
          'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % ((datetime.now().month%12) + 1)) + "-01&ical=1", 
          'create_function': Event.objects.ical_create_event,
-         'category': 'entertainment'},
+         'instructions': {
+            'category': 'entertainment',
+            'description_transform': lambda d : "", 
+         }
+        },
 
         {'name': 'UBC Mathematics', 
          'file': "https://www.math.ubc.ca/news-events/events/ical", 
          'create_function': Event.objects.ical_create_event,
-         'category': 'seminar'},
+         'instructions': {
+            'category': 'seminar',
+         }
+        },
 
         {'name': 'AMS', 
          'file': "https://www.ams.ubc.ca/events/?ical=1", 
          'create_function': Event.objects.ical_create_event,
-         'category': 'community'},
+         'instructions': {
+            'category': 'community',
+            'description_transform': lambda e : e.description.replace("UBC, UBC Vancouver, UBC students, UBC student life, UBC students, UBC events, events at UBC, UBC student events, UBC back to school, UBC back to school events, UBC campus, UBC campus events", ""),
+         }
+        },
     ]
 
     for f in ical_files:
