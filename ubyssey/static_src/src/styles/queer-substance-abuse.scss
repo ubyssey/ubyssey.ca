@@ -17,16 +17,24 @@ article > div > * {
 }
 
 .cover-screen > * {
+    margin: 1em auto;
     padding-inline: 1em;
 }
 
 .cover-screen ul {
-    width: 75%;
+    max-width: 600px;
     margin: 0 auto;
     text-align: left;
     li {
         margin: 1em;
     }
+}
+
+.publishDate {
+    width: 100%;
+    margin: 1em auto 0 auto;
+    font-style: italic;
+    box-sizing: border-box;
 }
 
 .cover {
@@ -84,7 +92,7 @@ article > div > * {
     }
 }
 
-article > div > p {
+article > div > p, .cover-screen > p {
     max-width: 700px;
 
     color: #ccc;
@@ -165,6 +173,11 @@ div.quote {
 .fade-in-out {
     opacity: 0;
     transition-duration: 1.5s;
+}
+@media print {
+    .fade-in-out {
+        opacity: 1;
+    }
 }
 
 .fade-in-out.visible {
