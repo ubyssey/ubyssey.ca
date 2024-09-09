@@ -387,7 +387,9 @@ header.events{
         height: 0;
         position: fixed;
         dialog {
+            padding: 1em;
             display: block;
+            box-sizing: border-box;
             .events-info-shadow {
                 left: 0;
                 right: 0;
@@ -407,6 +409,7 @@ header.events{
             }
             .events-info {
                 margin: 5em auto auto auto;
+                max-height: 500px;
             }
         }
         .events-info-container--div {
