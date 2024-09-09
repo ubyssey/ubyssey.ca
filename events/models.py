@@ -56,6 +56,62 @@ class EventManager(models.Manager):
         except:
             print("Failed requesting to " + name)
 
+    async def ical_create_event(self, ical_component, name, instructions):
+        if not await self.filter(event_url=ical_component.get('url')).aexists():
+            event = await self.acreate(
+                title=ical_component.get('summary'),
+                event_url=ical_component.decoded('url'),
+                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+            )
+        else:
+            event = await self.filter(event_url=ical_component.get('url')).afirst()
+            if event.update_mode != 2:
+                return None
+
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+
+        # Split location and address
+        location = ""
+        address = ""
+        if ical_component.get('location', False):
+            location = ical_component.get('location')            
+            if "," in location:
+                address = location[location.index(',')+1:]
+                location = location[:location.index(',')]
+        
+        event.title=str(ical_component.decoded('summary'), 'UTF-8')
+        if ical_component.get('description', False):
+            event.description=str(ical_component.decoded('description'), 'UTF-8')
+        else:
+            event.description=""
+
+        if isinstance(ical_component.decoded('dtstart'), datetime):
+            event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+        else:
+            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+
+        if isinstance(ical_component.decoded('dtend'), datetime):
+            event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
+        else:
+            event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+            
+        event.address=address
+        event.location=location
+        event.email=ical_component.decoded('organizer', default="")
+        event.event_url=ical_component.decoded('url')
+        event.category = instructions['category']
+        event.hidden=False
+        event.host = name
+
+        if 'description_transform' in instructions:
+            event.description = instructions['description_transform'](event)
+
+        event.update_mode = 1
+        await event.asave()
+        #print("Finished event " + event.event_url)
+        return event
+
     async def read_wp_events_api(self, name, api, categorize):
         try:
             #print("Requesting " + name) 
@@ -195,60 +251,6 @@ class EventManager(models.Manager):
                         break
         print(api + ": [" + ", ".join(ids) + "]")
         return ids
-
-    async def ical_create_event(self, ical_component, name, instructions):
-        if not await self.filter(event_url=ical_component.get('url')).aexists():
-            event = await self.acreate(
-                title=ical_component.get('summary'),
-                event_url=ical_component.decoded('url'),
-                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
-            )
-        else:
-            event = await self.filter(event_url=ical_component.get('url')).afirst()
-            if event.update_mode != 2:
-                return None
-
-        if event.hash == "":
-            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
-
-        # Split location and address
-        location = ical_component.get('location')
-        address = ""
-        if "," in location:
-            address = location[location.index(',')+1:]
-            location = location[:location.index(',')]
-        
-        event.title=str(ical_component.decoded('summary'), 'UTF-8')
-        if ical_component.get('description', False):
-            event.description=str(ical_component.decoded('description'), 'UTF-8')
-        else:
-            event.description=""
-
-        if isinstance(ical_component.decoded('dtstart'), datetime):
-            event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
-        else:
-            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
-
-        if isinstance(ical_component.decoded('dtend'), datetime):
-            event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
-        else:
-            event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
-            
-        event.address=address
-        event.location=location
-        event.email=ical_component.decoded('organizer', default="")
-        event.event_url=ical_component.decoded('url')
-        event.category = instructions['category']
-        event.hidden=False
-        event.host = name
-
-        if 'description_transform' in instructions:
-            event.description = instructions['description_transform'](event)
-
-        event.update_mode = 1
-        await event.asave()
-        #print("Finished event " + event.event_url)
-        return event
 
     async def ubcevents_create_event(self, ical_component):
         if not await self.filter(event_url=ical_component.get('url')).aexists():

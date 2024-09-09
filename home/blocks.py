@@ -109,12 +109,14 @@ class LinksStreamBlock(blocks.StructBlock):
             else:
                 day = pubdate.strftime("%B %-d") + ","
 
-            time = pubdate.strftime("%-I")
-            if pubdate.strftime("%M") != "00":
-                time = time + pubdate.strftime(":%M")
-            time = time + pubdate.strftime("%P")
+            time = ""
+            if pubdate.hour != 0 and pubdate.hour != 23:
+                time = " " + pubdate.strftime("%-I")
+                if pubdate.strftime("%M") != "00":
+                    time = time + pubdate.strftime(":%M")
+                time = time + pubdate.strftime("%P")
 
-            display = display + day + " " + time
+            display = display + day + time
             
             context['events'][i].display_time = display
 

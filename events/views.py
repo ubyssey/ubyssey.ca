@@ -544,12 +544,12 @@ def create_ical(request):
         cal['X-WR-CALNAME'] = request.GET.get('category').capitalize() + ' Around Campus from The Ubyssey'
         cal['X-ORIGINAL-URL'] = 'https://ubyssey.ca/events/?category=' + request.GET.get('category')
         cal['X-WR-CALDESC'] = request.GET.get('category').capitalize() + ' at UBC collected by The Ubyssey'
-        all_events = Event.objects.filter(hidden=False, category=request.GET.get("category"))
+        all_events = Event.objects.filter(hidden=False, category=request.GET.get("category")).exclude(start_time=None, end_time=None)
     else:
         cal['X-WR-CALNAME'] = 'Events Around Campus from The Ubyssey'
         cal['X-ORIGINAL-URL'] = 'https://ubyssey.ca/events'
         cal['X-WR-CALDESC'] = 'Events at UBC collected by The Ubyssey'
-        all_events = Event.objects.filter(hidden=False).exclude(category='seminar')
+        all_events = Event.objects.filter(hidden=False).exclude(category='seminar', start_time=None, end_time=None)
 
     for event in all_events:
         ical_event = icalendar.Event()

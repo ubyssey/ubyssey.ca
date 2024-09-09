@@ -51,6 +51,13 @@ header.main, header.topbar {
 header.main{
   .branding {
     font-size: 13px;
+
+    .left, .right {
+      padding-top: 2em;
+    }
+    .left {
+      max-width: 200px;
+    }
   }
 
   .since-line {
@@ -67,7 +74,7 @@ header.main{
     .left, .middle, .right {
       display: inline-block;
       height: 100%;
-      line-height: 50px;
+      line-height: 1em;
       color: var(--header_color);
     }
   

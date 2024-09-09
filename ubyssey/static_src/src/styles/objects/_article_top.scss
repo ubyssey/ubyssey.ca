@@ -76,6 +76,10 @@
         color: $color-ubyssey-blue-dark;
     }
 
+    .o-article__published {
+        white-space: nowrap;
+    }
+
     .o-article__meta__image {
         // Structure
         width: 4.5em;
