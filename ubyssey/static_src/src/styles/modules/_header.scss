@@ -182,9 +182,11 @@ header.main{
           ul {
             display: block;
             li {
+              margin: 1em 0;
               display: block;
               border: none;
               text-align: left;
+              line-height: 1em;
             }
           }
         }
