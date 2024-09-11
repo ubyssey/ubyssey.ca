@@ -562,11 +562,11 @@ def create_ical(request):
         ical_event.add('dtstart', event.start_time.astimezone(timezone.get_current_timezone()))
         ical_event.add('dtend', event.end_time.astimezone(timezone.get_current_timezone()))
         if request.GET.get('category'):
-            ical_event.add('url', "https://ubyssey.ca/events/?category=" + request.GET.get('category') + "&event=" + event.event_url)
+            ical_event.add('url', "https://ubyssey.ca/events/?category=" + request.GET.get('category') + "&event=" + event.hash)
         else:
-            ical_event.add('url', "https://ubyssey.ca/events/?event=" + event.event_url)
+            ical_event.add('url', "https://ubyssey.ca/events/?event=" + event.hash)
         ical_event.add('categories', event.category)
-        ical_event.add('uid', event.event_url)
+        ical_event.add('uid', event.hash)
         if event.host:
             if 'gothunderbirds.ca' in event.event_url:
                 ical_event.add('organizer', 'UBC ' + event.host)                
@@ -648,7 +648,7 @@ class EventsFeed(Feed):
         if "https" in item.event_url:
             item.link = item.event_url
         else:
-            item.link = "https://ubyssey.ca/events/?event=" + item.event_url
+            item.link = "https://ubyssey.ca/events/?event=" + item.hash
         
         item.displayTime = format_event_date(item.start_time, item.end_time, weekDay=True)
 
@@ -660,7 +660,7 @@ class EventsFeed(Feed):
         return item.host
 
     def item_link(self, item):
-        return "https://ubyssey.ca/events/?event=" + item.event_url
+        return "https://ubyssey.ca/events/?event=" + item.hash
 
 class EventsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
