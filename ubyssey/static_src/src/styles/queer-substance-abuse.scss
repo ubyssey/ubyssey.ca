@@ -32,9 +32,14 @@ article > div > * {
 
 .publishDate {
     width: 100%;
-    margin: 1em auto 0 auto;
+    padding-left: 2em;
+    width: fit-content;
     font-style: italic;
     box-sizing: border-box;
+}
+
+.lede {
+    font-weight: 600;
 }
 
 .cover {
@@ -47,7 +52,10 @@ article > div > * {
     }
     p {
         max-width: 800px;
-        margin: 1em auto;
+        width: fit-content;
+        margin: 0;
+        margin-bottom: 0.5em;
+        padding-left: 2em;
         font-family: "Montserrat", sans-serif;
         background-color: black;
     }
@@ -78,6 +86,9 @@ article > div > * {
         .lede {
             margin: 0 auto 2em 35%;
             transform: rotate(-1deg);
+        }
+        p {
+            margin: 1em auto 0 10%;
         }
     }
 }
