@@ -428,13 +428,13 @@ header.events{
             margin-right: 2em;
         }
     }
-    .events-calendar--rows .events-calendar--row:first-child {
-        display: none;
-    }
+    // .events-calendar--rows .events-calendar--row:first-child {
+    //     display: none;
+    // }
     
-    div.day.past {
-        display: none;
-    }
+    // div.day.past {
+    //     display: none;
+    // }
 
     .events-calendar--rows:nth-child(2) .events-calendar--month {
         display: block;
@@ -567,6 +567,7 @@ header.events{
         align-items: center;
         width: 100%;
         margin-top: 15%;
+        margin-bottom: -2.7em;
     }
 
     .arrow-button {

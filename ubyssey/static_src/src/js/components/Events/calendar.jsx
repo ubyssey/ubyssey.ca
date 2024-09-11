@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 // import ReactDOM from 'react-dom';
 import axios from "axios";
-const BP_PHABLET_SIZE = 760;
+const BP_PHABLET_SIZE = 759;
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= BP_PHABLET_SIZE);
@@ -64,7 +64,7 @@ export function QueryEventsCalendar() {
     }
 
 // Function to update the start date to the week of the first day of the previous or next month
-const handleMonthNavigation = (direction) => {
+const handleMonthNavigation = (direction, isMobile) => {
     // Set the start date to the first day of the current month
     let newStart = new Date(start);
 
@@ -97,6 +97,11 @@ const handleMonthNavigation = (direction) => {
         setNumberOfWeeks(6);
     } else {
         setNumberOfWeeks(5);
+    }
+    
+    if (isMobile) {
+        setStart(newStart);
+        return;
     }
     
     // Ensure the new start date begins on the Monday of that week
@@ -545,13 +550,13 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
         <div className="events-calendar--navigation">
             {isPhablet ? (
                 <>
-                    <button onClick={() => handleMonthNavigation('previous')} className="arrow-button left-arrow" title='Previous month'>
+                    <button onClick={() => handleMonthNavigation('previous',isPhablet)} className="arrow-button left-arrow" title='Previous month'>
                         <svg width="32px" height="32px" viewBox="0 0 32 32">
                             <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
                         </svg>
                     </button>
                     <span className="month-label">Month</span>
-                    <button onClick={() => handleMonthNavigation('next')} className="arrow-button right-arrow" title='Next month'>
+                    <button onClick={() => handleMonthNavigation('next',isPhablet)} className="arrow-button right-arrow" title='Next month'>
                         <svg width="32px" height="32px" viewBox="0 0 32 32">
                             <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
                         </svg>
@@ -559,12 +564,12 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
                 </>
             ) : (
                 <>
-                    <button onClick={() => handleMonthNavigation('previous')} className="arrow-button up-arrow" title='Previous month'>
+                    <button onClick={() => handleMonthNavigation('previous', isPhablet)} className="arrow-button up-arrow" title='Previous month'>
                         <svg width="32px" height="32px" viewBox="0 0 32 32">
                             <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
                         </svg>
                     </button>
-                    <button onClick={() => handleMonthNavigation('next')} className="arrow-button down-arrow" title='Next month'>
+                    <button onClick={() => handleMonthNavigation('next', isPhablet)} className="arrow-button down-arrow" title='Next month'>
                         <svg width="32px" height="32px" viewBox="0 0 32 32">
                             <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
                         </svg>
