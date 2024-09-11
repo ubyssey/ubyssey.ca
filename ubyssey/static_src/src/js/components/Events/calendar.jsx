@@ -10,6 +10,24 @@ import {
 import axios from "axios";
 const BP_PHABLET_SIZE = 760;
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= BP_PHABLET_SIZE);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= BP_PHABLET_SIZE);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return isMobile;
+}
+
 function getDateString(date) {
     var str = String(date.getFullYear()) + "-";
     if (String(date.getMonth()+1).length < 2) {
@@ -250,7 +268,7 @@ function eventsTags(event) {
 function EventsOptions() {
     let query = useQuery();
     const navigate = useNavigate();
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= BP_PHABLET_SIZE);
+    const isMobile = useIsMobile();
 
     // Check screen width on resize
     useEffect(() => {
@@ -498,7 +516,7 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
         colourIn(legend);
     });
     
-    const [isPhablet, setIsPhablet] = useState(window.innerWidth <= BP_PHABLET_SIZE);
+    const isPhablet = useIsMobile();
 
     useEffect(() => {
         const handleResize = () => {
