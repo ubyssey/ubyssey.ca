@@ -327,6 +327,7 @@ function EventsCalendar({events}) {
                 hosts.push(event.host);
             }
         }
+        hosts.sort();
         return hosts;
     }
 

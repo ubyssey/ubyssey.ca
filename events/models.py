@@ -115,6 +115,17 @@ class EventManager(models.Manager):
     async def read_wp_events_api(self, name, api, categorize):
         try:
             #print("Requesting " + name) 
+            locations = {}
+            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                async with session.get(api + 'event-venues/?per_page=100') as response:
+                    result = json.loads(await response.text())
+                    for l in result:
+                        locations[l['id']] = {
+                            'name': l['name'],
+                            'address': l['address'],
+                            'city': l['city'],
+                            'state': l['state'],                  
+                        }
             async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
                 async with session.get(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20") as response:
             
@@ -123,7 +134,7 @@ class EventManager(models.Manager):
                     
                     tasks = []
                     for i in result:
-                        tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize)))
+                        tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize, locations)))
                     
                     await asyncio.gather(*tasks)
 
@@ -131,7 +142,7 @@ class EventManager(models.Manager):
         except:
             print("Failed requesting to " + name)
 
-    async def wp_events_api_create_event(self, event_json, api, host, categorize):
+    async def wp_events_api_create_event(self, event_json, api, host, categorize, locations):
         if not await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).aexists():
             event = await self.acreate(
                 title=event_json['title'],
@@ -154,11 +165,14 @@ class EventManager(models.Manager):
         event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
 
         if len(event_json['event-venues']) > 0:
-            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
-                async with session.get(api + 'event-venues/' + str(event_json['event-venues'][0])) as response:
-                    venue = json.loads(await response.text())
-                    event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
-                    event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
+            if event_json['event-venues'][0] in locations:
+                venue = locations[event_json['event-venues'][0]]
+            else:
+                async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                    async with session.get(api + 'event-venues/' + str(event_json['event-venues'][0])) as response:
+                        venue = json.loads(await response.text())
+            event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
+            event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
         else:
             event.location=''
             event.address=''
@@ -767,16 +781,19 @@ class Event(models.Model):
         max_length=255,
         blank=True,
         null=True,
+        db_collation = "utf8mb4_general_ci",
     )
     address = models.CharField(
         max_length=255,
         blank=True,
         null=True,
+        db_collation = "utf8mb4_general_ci",
     )
     host = models.CharField(
         max_length=255,
         blank=True,
         null=True,
+        db_collation = "utf8mb4_general_ci",
     )
     email = models.CharField(
         max_length=255,

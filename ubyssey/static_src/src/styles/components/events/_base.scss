@@ -159,8 +159,16 @@ h2.events-calendar--month {
 
 div.day{
     min-height: 4em;
-    padding: 1em;
+    padding: 1em 0.5em;
     font-size: 12px;
+
+    &:first-child {
+        padding-left: 1em;
+    }
+
+    &:last-child {
+        padding-right: 1em;
+    }
 
     li {
         border: 2px solid transparent;
@@ -203,14 +211,9 @@ div.day{
             margin: 0.3em 0;
             padding-inline: 0.25em;
             border-radius: 0.5em;
-            height: 1.5em;
             max-width: 400px;
             
             background-color: var(--highlight);
-
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
             line-height: 1.5em;
             b {
                 text-transform: lowercase;
@@ -220,6 +223,14 @@ div.day{
 }
 
 @media($bp-larger-than-phablet) {
+
+    div.day li {
+        height: 1.5em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .events-calendar--row:first-child div.day:first-of-type {
         border-radius: 0.5em 0 0 0;
     }
@@ -265,6 +276,14 @@ button.events-calendar--number {
     white-space: initial !important;
     overflow: unset !important;
     height: auto !important;
+        a {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            line-clamp: 5;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+        }
     }
 }
 
@@ -386,6 +405,7 @@ header.events{
         width: 100%;
         height: 0;
         position: fixed;
+        font-size: 0.9em;
         dialog {
             padding: 1em;
             display: block;
@@ -429,6 +449,9 @@ header.events{
         padding: 1.5em;
         li {
             margin-right: 2em;
+            b {
+                display: block;
+            }
         }
     }
     .events-calendar--rows .events-calendar--row:first-child .events-calendar--month {
