@@ -455,7 +455,10 @@ function EventsCalendar({events}) {
             <ul>{legend.map((key, i) =>
                 <li key={i} className={slugify(key)}>
                     <button id={slugify(key)} className={"legend-button" + (hidden.includes(slugify(key)) ? " inactive" : "")}
-                    onClick={(e) => toggleCategory(e.target, searchParams, setSearchParams)} title={key}>{key}</button>
+                    onClick={(e) => toggleCategory(e.target, searchParams, setSearchParams)} title={key}
+                    dangerouslySetInnerHTML={
+                        {__html: key}
+                     }></button>
                 </li>
             )}</ul>
         </div>

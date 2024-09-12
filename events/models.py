@@ -615,13 +615,19 @@ class EventManager(models.Manager):
         if event.hash == "":
             event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
 
-        event.description= "<br>" + ical_component.get('description').replace("&amp;", "&")
-        if "<br>Name:" in event.description and "\nTitle" in event.description:
-            if event.description.index("<br>Name:") < event.description.index("\nTitle"):
-                event.description = event.description.replace(event.description[event.description.index("<br>Name:"):event.description.index("\nTitle")], "")
-        if "\nName:" in event.description and "\nTitle" in event.description:
-            if event.description.index("\nName:") < event.description.index("\nTitle"):
-               event.description = event.description.replace(event.description[event.description.index("\nName:"):event.description.index("\nTitle")], "")
+        if ical_component.get('description', False):
+            event.description= "<br>" + ical_component.get('description').replace("&amp;", "&")
+            if "<br>Name:" in event.description and "\nTitle" in event.description:
+                if event.description.index("<br>Name:") < event.description.index("\nTitle"):
+                    event.description = event.description.replace(event.description[event.description.index("<br>Name:"):event.description.index("\nTitle")], "")
+            if "\nName:" in event.description and "\nTitle" in event.description:
+                if event.description.index("\nName:") < event.description.index("\nTitle"):
+                    event.description = event.description.replace(event.description[event.description.index("\nName:"):event.description.index("\nTitle")], "")
+
+            if "Location: " in ical_component.get('description'):
+                s = ical_component.get('description')[ical_component.get('description').index("Location: ") + len("Location: "):]
+                event.location = s[:s.index("\n")]
+
 
         if isinstance(ical_component.decoded('dtstart'), datetime):
             event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
@@ -632,12 +638,9 @@ class EventManager(models.Manager):
             event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
         else:
             event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
-            
-        event.location = ical_component.get('location')
-
-        if "Location: " in ical_component.get('description'):
-            s = ical_component.get('description')[ical_component.get('description').index("Location: ") + len("Location: "):]
-            event.location = s[:s.index("\n")]
+        
+        if ical_component.get('location', False):
+            event.location = ical_component.get('location')
 
         event.event_url = ical_component.get("url")
         event.email=""
