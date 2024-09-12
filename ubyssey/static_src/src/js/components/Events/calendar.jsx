@@ -453,6 +453,7 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
                 hosts.push(event.host);
             }
         }
+        hosts.sort();
         return hosts;
     }
 
