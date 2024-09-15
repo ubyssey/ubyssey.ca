@@ -47,6 +47,7 @@ export function QueryEventsCalendar() {
     const [events, setEvents] = React.useState([]);
     const [numberOfWeeks, setNumberOfWeeks] = React.useState(4);
     const d = 24 * 60 * 60 * 1000; // One day in milliseconds
+    const [isMonthToggled, setIsMonthToggled] = React.useState(false);
 
     // Add state to track the start date of the calendar
     const [start, setStart] = useState(getInitialStartDate());
@@ -107,6 +108,7 @@ const handleMonthNavigation = (direction, isMobile) => {
     // Update the start date
     setStart(newStart);
     console.log(newStart);
+    setIsMonthToggled(true);
 };
 
     function getEvents(){
@@ -159,7 +161,7 @@ const handleMonthNavigation = (direction, isMobile) => {
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} handleMonthNavigation={handleMonthNavigation} numberOfWeeks={numberOfWeeks}/>
+                        <EventsCalendar events={events} start={start} handleMonthNavigation={handleMonthNavigation} numberOfWeeks={numberOfWeeks} isMonthToggled={isMonthToggled}/>
                     </div>
                 </div>
             
@@ -368,7 +370,7 @@ function EventsOptions() {
     );
 }
 
-function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
+function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, isMonthToggled}) {
 
 
     function arrangeCalendar(events) {
@@ -569,38 +571,47 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
                         <span className="short">{week.month_short}</span>
                     </h2>
                 }
-                
+
                 {week.days.map((day, day_index) => 
-                <>
-                    {(day.day === 1 && week_index!== 0) && 
-                        <h2 className="events-calendar--month">
-                        <span className="full">{week.month}</span>
-                        <span className="short">{week.month_short}</span>
-                        </h2>
-                    }
-                    <div className={"day " + day.phase}>
-                        <button onClick={(e) => e.target.parentElement.parentElement.classList.toggle('enlarged')} className="events-calendar--number">
-                            <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>{day.day}.
-                        </button>
-                        <ul>{day.events.map((event) => 
-                            <li className={(eventHash==event.hash && "selected") + " " + eventsTags(event)}>
-                            <Link title={event.title.replace("<br>", ", ")} className="calendar-item" to={"?event=" + event.hash} event-url={event.event_url}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                searchParams.set("event", event.hash);
-                                setSearchParams(searchParams);
-                            }}
-                            dangerouslySetInnerHTML={
-                               {__html: "<b>" + event.displayTime + "</b> " +  event.title}
-                            }>
-                                {/*
-                                {event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {event.title|safe}
-                                */}
-                            </Link>
-                            </li>
-                        )}</ul>
-                    </div>
-                </>)}
+                    <>
+                        {(day.day === 1 && week_index !== 0) && (
+                            <h2 className="events-calendar--month">
+                                <span className="full">{week.month}</span>
+                                <span className="short">{week.month_short}</span>
+                            </h2>
+                        )}
+                        
+                        {/* Hide days in first week until day.day === 1 for mobile phone */}
+                        {!(isMonthToggled && week_index === 0 && day.day > 7 && isPhablet) && (
+                            <div className={"day " + day.phase}>
+                                <button onClick={(e) => e.target.parentElement.parentElement.classList.toggle('enlarged')} className="events-calendar--number">
+                                    <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>{day.day}.
+                                </button>
+                                <ul>
+                                    {day.events.map((event) => (
+                                        <li className={(eventHash == event.hash && "selected") + " " + eventsTags(event)}>
+                                            <Link
+                                                title={event.title.replace("<br>", ", ")}
+                                                className="calendar-item"
+                                                to={"?event=" + event.hash}
+                                                event-url={event.event_url}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    searchParams.set("event", event.hash);
+                                                    setSearchParams(searchParams);
+                                                }}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: "<b>" + event.displayTime + "</b> " + event.title,
+                                                }}
+                                            ></Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </>
+                )}
+
             </div>
         )}</div>
 
