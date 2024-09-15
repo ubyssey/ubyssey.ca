@@ -99,11 +99,6 @@ const handleMonthNavigation = (direction, isMobile) => {
         setNumberOfWeeks(5);
     }
     
-    if (isMobile) {
-        setStart(newStart);
-        return;
-    }
-    
     // Ensure the new start date begins on the Monday of that week
     while (newStart.getDay() !== 1) {
         newStart = new Date(newStart.getTime() - d);
@@ -523,18 +518,6 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
     
     const isPhablet = useIsMobile();
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsPhablet(window.innerWidth <= BP_PHABLET_SIZE);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
     return (
         <>
         <div class="events-calendar--days-of-week">
@@ -580,12 +563,13 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks}) {
         <div class="events-calendar--rows">{calendar.map((week, week_index) => 
 
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
-                {week_index===0 && 
+                {week_index===0 && !isPhablet &&
                     <h2 class="events-calendar--month">
                         <span className="full">{week.month}</span>
                         <span className="short">{week.month_short}</span>
                     </h2>
                 }
+                
                 {week.days.map((day, day_index) => 
                 <>
                     {(day.day === 1 && week_index!== 0) && 
