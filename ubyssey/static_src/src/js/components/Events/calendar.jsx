@@ -574,7 +574,7 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, is
 
                 {week.days.map((day, day_index) => 
                     <>
-                        {(day.day === 1 && week_index !== 0) && (
+                        {(day.day === 1 && week_index !== 0 && !(isMonthToggled && isPhablet)) && (
                             <h2 className="events-calendar--month">
                                 <span className="full">{week.month}</span>
                                 <span className="short">{week.month_short}</span>
@@ -582,7 +582,8 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, is
                         )}
                         
                         {/* Hide days in first week until day.day === 1 for mobile phone */}
-                        {!(isMonthToggled && week_index === 0 && day.day > 7 && isPhablet) && (
+                        {!(isMonthToggled && week_index === 0 && day.day > 7 && isPhablet) && 
+                          !(week_index >= 4 && isPhablet && day.day < 7 && isMonthToggled) && (
                             <div className={"day " + day.phase}>
                                 <button onClick={(e) => e.target.parentElement.parentElement.classList.toggle('enlarged')} className="events-calendar--number">
                                     <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>{day.day}.
