@@ -520,6 +520,15 @@ async def update_events(request):
             'description_transform': lambda e : e.description.replace("UBC, UBC Vancouver, UBC students, UBC student life, UBC students, UBC events, events at UBC, UBC student events, UBC back to school, UBC back to school events, UBC campus, UBC campus events", ""),
          }
         },
+
+        {'name': 'UBC Libraries', 
+         'file': "https://libcal.library.ubc.ca/ical_subscribe.php?src=p&cid=7544", 
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'community',
+            'hidden_override': lambda e : len(e.get('categories').cats) > 0, # The scheduled events are all cringe but well categorized. Events added manually can be cool but categories typically aren't added. At some point we should be more sophistiacted in filtering this lmao
+         }
+        },
     ]
 
     for f in ical_files:

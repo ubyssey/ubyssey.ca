@@ -102,6 +102,10 @@ class EventManager(models.Manager):
         event.event_url=ical_component.decoded('url')
         event.category = instructions['category']
         event.hidden=False
+
+        if 'hidden_override' in instructions:
+            event.hidden = instructions['hidden_override'](ical_component)
+
         event.host = name
 
         if 'description_transform' in instructions:
