@@ -559,6 +559,20 @@ header.events{
         }        
     }
 }
+/* Dark mode styles */
+html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
+    &:hover {
+        background-color: #2c2c2c; /* Darker shade for hover in dark mode */
+        transition: background-color 0.3s;
+        box-shadow: 0 0 1px rgba(255, 255, 255, 0.1); /* Lighter shadow for dark mode */
+        border-radius: 100%; 
+    }
+    &:active {
+        background-color: #505050; /* Dark grey background when clicked in dark mode */
+        box-shadow: 0 0 1px rgba(255, 255, 255, 0.1); /* Lighter shadow */
+    }
+}
+
 @media (max-width: 760px) {
     .events-calendar--navigation {
         display: flex;

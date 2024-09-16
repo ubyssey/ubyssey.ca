@@ -48,6 +48,7 @@ export function QueryEventsCalendar() {
     const [numberOfWeeks, setNumberOfWeeks] = React.useState(4);
     const d = 24 * 60 * 60 * 1000; // One day in milliseconds
     const [isMonthToggled, setIsMonthToggled] = React.useState(false);
+    const [currentMonth, setCurrentMonth] = React.useState("");
 
     // Add state to track the start date of the calendar
     const [start, setStart] = useState(getInitialStartDate());
@@ -519,6 +520,13 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, is
     });
     
     const isPhablet = useIsMobile();
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+        // Check if the page has the "dark" theme applied
+        const theme = document.documentElement.getAttribute('color-css-theme');
+        setIsDarkMode(theme === 'dark');
+    }, []);
 
     return (
         <>
@@ -533,17 +541,17 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, is
         </div>
         
         <div className="events-calendar--navigation">
-            {isPhablet ? (
+        {isPhablet ? (
                 <>
-                    <button onClick={() => handleMonthNavigation('previous',isPhablet)} className="arrow-button left-arrow" title='Previous month'>
+                    <button onClick={() => handleMonthNavigation('previous', isPhablet)} className="arrow-button left-arrow" title='Previous month'>
                         <svg width="32px" height="32px" viewBox="0 0 32 32">
-                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
                         </svg>
                     </button>
-                    <span className="month-label">Month</span>
-                    <button onClick={() => handleMonthNavigation('next',isPhablet)} className="arrow-button right-arrow" title='Next month'>
+                    <span className="month-label">{calendar[0]?.month}</span>
+                    <button onClick={() => handleMonthNavigation('next', isPhablet)} className="arrow-button right-arrow" title='Next month'>
                         <svg width="32px" height="32px" viewBox="0 0 32 32">
-                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
                         </svg>
                     </button>
                 </>
@@ -551,12 +559,12 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, is
                 <>
                     <button onClick={() => handleMonthNavigation('previous', isPhablet)} className="arrow-button up-arrow" title='Previous month'>
                         <svg width="32px" height="32px" viewBox="0 0 32 32">
-                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
                         </svg>
                     </button>
                     <button onClick={() => handleMonthNavigation('next', isPhablet)} className="arrow-button down-arrow" title='Next month'>
                         <svg width="32px" height="32px" viewBox="0 0 32 32">
-                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill="#000000" />
+                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
                         </svg>
                     </button>
                 </>
