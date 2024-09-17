@@ -37,7 +37,7 @@
       {% endif %}
       <div class="o-article__right">
         <div class="o-article__meta">
-          <p class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</p>
+          <p class="o-article__published">{% if article.explicit_published_at %}{{ article.explicit_published_at|display_pubdate }}{% else %}{{ article.first_published_at|display_pubdate }}{%endif%}</p>
           <h3 class="o-article__headline">
             <a href="{% pageurl article %}">{{ article.title|safe }}</a>
           </h3>
@@ -55,7 +55,7 @@
         <div class="bullet"></div>
         {% endif %}
         <article class="o-article o-article--bullet">
-          {% if forloop.counter == 1 %}<p class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</p>{% endif %}
+          {% if forloop.counter == 1 %}<p class="o-article__published">{% if article.explicit_published_at %}{{ article.explicit_published_at|display_pubdate }}{% else %}{{ article.first_published_at|display_pubdate }}{%endif%}</p>{% endif %}
           <h3 class="o-article__headline">
             <a href={% pageurl article %}>{{ article.title|safe }}</a>
           </h3>

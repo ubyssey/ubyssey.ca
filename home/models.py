@@ -72,6 +72,7 @@ class HomePage(Page):
             ("links", homeblocks.LinksStreamBlock()),
             ('section', homeblocks.SectionBlock()),
             ('category', homeblocks.CategoryBlock()),
+            ('landing', homeblocks.SpecialLandingPageBlock()),
             ('tag', homeblocks.TagBlock()),
         ],
         null=True,

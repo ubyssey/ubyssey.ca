@@ -6,6 +6,7 @@ from article.models import ArticlePage
 from django.db.models import Q
 
 from wagtail import blocks
+from wagtail.models import Page
 from wagtail.blocks import field_block
 from infinitefeed.blocks import AbstractArticleList
 
@@ -170,4 +171,17 @@ class CategoryBlock(AbstractArticleList):
         context['title'] = value['category'].title
         context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
         context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-first_published_at')[:9]
+        return context
+    
+class SpecialLandingPageBlock(AbstractArticleList):
+    landing = field_block.PageChooserBlock(
+        page_type='specialfeaturelanding.SpecialLandingPage'
+    )
+    template = MidStreamListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['landing'].title
+        context['link'] = value['landing'].url
+        context['articles'] = [value['landing']] + list(Page.objects.child_of(value['landing']).all())
         return context

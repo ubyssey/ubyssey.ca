@@ -42,8 +42,6 @@ def display_pubdate(value):
     pubdate = value.astimezone(timezone.get_current_timezone())
     today = timezone.now().astimezone(timezone.get_current_timezone())
     delta = today - pubdate
-    print(today.date())
-    print(pubdate.date())
 
     if delta.total_seconds() > datetime.timedelta(days=365).total_seconds():
         return pubdate.strftime("%B xx%d, %Y").replace("xx0","").replace("xx","")
