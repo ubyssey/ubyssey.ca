@@ -542,6 +542,9 @@ async def update_events(request):
     async for event in Event.objects.filter(update_mode=2):
         await event.adelete()
 
+    async for event in Event.objects.filter(hidden=True, end_time__lt=timezone.now()):
+        await event.adelete()
+
     return HttpResponse("Success!", status=200)
 
 def create_ical(request):
