@@ -11,12 +11,16 @@
   {% if articles.0 %}
     {% with article=articles.0 %}
     <article class="o-article article--timeline {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.explicit_published_at|naturalday}}">
-      {% if article.featured_media.first %}
-      {% if article.featured_media.first.image %}
+      {% if article.featured_media.first or article.featured_media %}
+      {% if article.featured_media.first.image  or article.featured_media%}
       <div class="o-article__left">
         <div style="position:relative">
           <a href="{% pageurl article %}" class="o-article__image">
-            {% image article.featured_media.first.image fill-340x238-c100 format-webp %}
+            {% if article.featured_media.first.image %}
+              {% image article.featured_media.first.image fill-340x238-c100 format-webp %}
+            {% else %}
+              {% image article.featured_media fill-340x238-c100 format-webp %}
+            {% endif %}
           </a>
           {% if label %}
             {% if article|get_label %}
