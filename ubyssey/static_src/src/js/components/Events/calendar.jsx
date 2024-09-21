@@ -302,12 +302,12 @@ function EventsCalendar({events}) {
             var cur = new Date(event.start_time);
             cur.setHours(0,0,0,0);
             event.displayTime = displayTime(event.start_time);
-            if (event.end_time.getTime() - event.start_time.getTime() >= d-h) {
+            if (event.end_time.getTime() - event.start_time.getTime() >= d-h || event.end_time.getTime() == event.start_time.getTime()) {
                 event.displayTime = "";
             }
-            while(cur < new Date(event.end_time)) {
+            while(cur <= new Date(event.end_time)) {
                 const delta = Math.floor((cur.getTime() - start.getTime()) / d);
-                if (delta > 0 && delta < (7*4)) {
+                if (delta >= 0 && delta < (7*4)) {
                     calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
                 }
                 cur = new Date(cur.getTime() + d);

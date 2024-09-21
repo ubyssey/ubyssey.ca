@@ -447,6 +447,9 @@ header.events{
     }
     div.day {
         padding: 1.5em;
+        ul {
+            filter: drop-shadow(0 1px 3px black);
+        }
         li {
             margin-right: 2em;
             b {

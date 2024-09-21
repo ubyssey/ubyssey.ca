@@ -246,6 +246,8 @@ class EventManager(models.Manager):
         else:
             if await self.filter(title=event.title, start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).exclude(id=event.id).aexists():
                 event.hidden = True
+            elif 'chancentre.com' in event_json['link']:
+                event.host = 'Chan Centre for the Performing Arts'
             elif not '.ubc.ca' in event_json['link']:
                 event.host = host
 
