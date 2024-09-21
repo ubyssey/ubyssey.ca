@@ -302,7 +302,7 @@ function EventsCalendar({events}) {
             var cur = new Date(event.start_time);
             cur.setHours(0,0,0,0);
             event.displayTime = displayTime(event.start_time);
-            if (event.end_time.getTime() - event.start_time.getTime() >= d-h || event.end_time.getTime() == event.start_time.getTime()) {
+            if (event.end_time.getTime() - event.start_time.getTime() >= d-h || event.start_time.getHours() == 0) {
                 event.displayTime = "";
             }
             while(cur <= new Date(event.end_time)) {
@@ -478,7 +478,7 @@ function EventInfo({events}) {
                 if (event.description == null) {
                     event.description = "";
                 }
-                document.getElementsByTagName("title")[0].innerHTML = event.title;
+                document.getElementsByTagName("title")[0].innerHTML = event.title.replace("<br>", "- ") +  " - Ubyssey Events Around Campus";
                 break;
             }
         }

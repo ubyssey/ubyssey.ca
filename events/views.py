@@ -272,7 +272,8 @@ async def update_events(request):
          'categorize': {
             'default': 'community',
             'seminar_type': [633, 632, 634, 528, 530],
-            'hidden_title_terms': ['coffee hour']
+            'hidden_title_terms': ['coffee hour'],
+            'seminar_title_terms': ['Archaeology Lab Nights'],
          },
         },
 
