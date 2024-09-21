@@ -133,6 +133,7 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
     choices=[
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
+        ('section/objects/section_landing.html', 'Landing'),
     ]
 
 class SectionBlock(AbstractArticleList):

@@ -85,10 +85,14 @@ def get_id(value):
 def group_by_date(value):
     groups = []
     for article in value:
+        if hasattr(article, 'article.explicit_published_at'):
+            article.pubTime = article.explicit_published_at
+        else:
+            article.pubTime = article.first_published_at
         if len(groups) < 1:
             groups.append([article])
         else:
-            if display_pubdate(groups[-1][-1].explicit_published_at) == display_pubdate(article.explicit_published_at):
+            if display_pubdate(groups[-1][-1].pubTime) == display_pubdate(article.pubTime):
                 groups[-1].append(article)
             else:
                 groups.append([article])
