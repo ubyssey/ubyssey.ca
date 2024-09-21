@@ -1,0 +1,59 @@
+{% load humanize %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="c-homepage__section__landing u-container u-container--large u-container--padded" style="--section-colour:{{articles.0.colour}}">
+<div class="c-homepage__section__landing-flex">
+  {% if articles.0 %}
+    {% with article=articles.0 %}
+    <article class="o-article article--landing {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.explicit_published_at|naturalday}}">
+      {% if article.featured_media.first or article.featured_media %}
+      {% if article.featured_media.first.image  or article.featured_media%}
+      <div class="o-article__left">
+        <div style="position:relative">
+          <a href="{% pageurl article %}" class="o-article__image">
+            {% if article.featured_media.first.image %}
+              {% image article.featured_media.first.image width-600 format-webp %}
+            {% else %}
+              {% image article.featured_media width-600 format-webp %}
+            {% endif %}
+          </a>
+        </div>
+      </div>
+      {% elif article.featured_media.first.video %}
+      <div class="o-article__left">
+        <div class="o-article__video">
+          <iframe src="https://www.youtube.com/embed/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+      <div class="o-article__right">
+        <div class="o-article__meta">
+          <h3 class="o-article__headline">
+            <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+          </h3>
+          <p>{{article.search_description}}</p>
+        </div>
+      </div>
+    </article>
+    {% endwith %}
+  {% endif %}
+
+	<ul>
+      {% for article in articles|slice:"1:" %}
+			<li>
+        <article class="o-article" style="--section-colour:{{articles.0.colour}}">
+          <h3 class="o-article__headline">
+            <a href={% pageurl article %}>{{ article.title|safe }}</a>
+          </h3>
+        </article>
+      </li>
+      {% endfor %}
+	</ul>
+</div>
+
+</div>
