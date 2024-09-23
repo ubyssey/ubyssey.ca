@@ -273,19 +273,6 @@ function EventsOptions() {
     const navigate = useNavigate();
     const isMobile = useIsMobile();
 
-    // Check screen width on resize
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= BP_PHABLET_SIZE);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
     var category = query.get("category") || "all";
 
     var highlight = "category";
