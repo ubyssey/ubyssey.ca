@@ -302,6 +302,7 @@ div.article-content {
       .attachment {
         margin-inline: auto;
         height: 100%;
+        max-width: none;
         display: flex;
         flex-direction: column;
         justify-content: center;
