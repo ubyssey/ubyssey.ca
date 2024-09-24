@@ -244,6 +244,11 @@ div.article-content {
   }
 
   .carousel {
+    position: relative;
+    width: 100%;
+    padding-bottom: 3em;
+    aspect-ratio: calc(80 / var(--aspect-ratio));
+    box-sizing: initial;
 
     @media($bp-larger-than-phablet){
       &.right, &.left {
@@ -264,30 +269,21 @@ div.article-content {
   
       &.small {
         width:100px;
-        .carousel-indicators {top: 80px;}
-        button {bottom: 45px;}
       }
   
       &.medium {
         width:200px;
-        .carousel-indicators {top: 150px;}
-        button {bottom: 25px;}
       }
   
       &.large {
         width:300px;
-        .carousel-indicators {top: 215px;}
-        button {bottom: 25px;}
-      }
-
-      &.full {
-        .carousel-indicators {top: 410px;}
-        button {bottom: 100px;}
       }
     }
 
     .carousel-indicators {
-      z-index: 0;
+      position: absolute;
+      bottom: 0;
+      z-index: 100;
       button {
         opacity: 1;
         background-color: #A9A9A9;
@@ -299,15 +295,40 @@ div.article-content {
       }
     }
 
+    .carousel-item {
+      height: 100%;
+      margin-block: auto;
+
+      .attachment {
+        margin-inline: auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        img {
+          margin-inline: auto;
+          width: auto;
+          max-height: 75%;
+        }
+      }
+    }
+
+    .carousel-inner {
+      height: 100%;
+      display: flex;
+    }
+
     .carousel-control-next, .carousel-control-prev {
       margin: 0;
       opacity: 1;
+      font-size: 1em;
       
-      i {
-        background: black;
-        aspect-ratio: 1;
-        width: 20px;
+      ion-icon {
         padding: 4px;
+        width: 20px;
+        height: auto;
+        aspect-ratio: 1;
+        background: $color-ubyssey-blue;
         border-radius: 100%;
       }
     }
