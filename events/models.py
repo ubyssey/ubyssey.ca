@@ -454,12 +454,16 @@ class EventManager(models.Manager):
         event.description=" ".join(ical_component.get('description').split(" ")[0:-1])
 
         splitDesc = ical_component.get('description').replace("[W] ", "").replace("[L] ", "").replace("[T] ", "").split("\n")[0].split(" ")
-        i = 0
-        while splitDesc[i][0].isupper():
-            i = i + 1
-        sport = " ".join(splitDesc[0:i])
-        sport = sport.replace("Men's ", "").replace("Women's ", "").replace("UBC ", "")
-        event.host = sport
+        splitDesc = list(filter(lambda s: s!="", splitDesc))
+        if len(splitDesc) > 0:
+            i = 0
+            while splitDesc[i][0].isupper() and i+1<len(splitDesc):
+                i = i + 1
+            sport = " ".join(splitDesc[0:i])
+            sport = sport.replace("Men's ", "").replace("Women's ", "").replace("UBC ", "")
+            event.host = sport
+        else:
+            event.host = ""
 
         if isinstance(ical_component.decoded('dtstart'), datetime):
             event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
