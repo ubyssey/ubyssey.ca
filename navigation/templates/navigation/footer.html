@@ -6,8 +6,8 @@
 
         <div class="about">
             <div class="footer-branding">
-                <img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-blue.svg' %}" alt="The Ubyssey Logo"/>
-                <img class="funding" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" alt="Funded by the Government of Canada"/>
+                <img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-blue.svg' %}" loading="lazy" alt="The Ubyssey Logo"/>
+                <img class="funding" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada"/>
             </div>
             
             <div class="about-text">
@@ -32,14 +32,10 @@
         </div>
         <nav>
             <div class="top-row">
-                <ul class="sections">
-                    {% main_menu show_multiple_levels=False apply_active_classes=False %}
-                </ul>
+                {% main_menu show_multiple_levels=False apply_active_classes=False %}
             </div>
             <div class="bottom-row">
-                <ul class="pages">
-                    {% flat_menu 'second_footer_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-                </ul>
+                {% flat_menu 'second_footer_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
             </div>
         </nav>
         <div class="copyright">&copy; {% now "Y" %} The Ubyssey</div>

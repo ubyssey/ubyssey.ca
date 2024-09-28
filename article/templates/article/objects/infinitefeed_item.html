@@ -12,7 +12,7 @@
 	<div class="o-article__left">
 		<div style="position:relative">
 			<a href="{% pageurl article %}" class="o-article__image">
-				{% image article.featured_media.first.image fill-340x238-c100 format-webp alt=article.featured_media.first.alt_text %}
+				{% image article.featured_media.first.image fill-340x238-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
 			</a>
 			{% if label %}
 				{% if article|get_label %}

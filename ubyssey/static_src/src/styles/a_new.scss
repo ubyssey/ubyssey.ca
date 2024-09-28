@@ -97,6 +97,10 @@ html, body {
   display: flex;
   align-items: center;
 
+  a {
+    display: inherit;
+  }
+  
   .c-header__nav__logo__image {
     // Structure
     display: inline-block;
