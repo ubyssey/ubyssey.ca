@@ -647,8 +647,10 @@ class EventsFeed(Feed):
             return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=7)).exclude(category='seminar')
 
     def item_title(self, item):
+        import re
         item.start_time = item.start_time.astimezone(timezone.get_current_timezone())
-        return item.start_time.strftime("%-m/%-d %-I:%M%P") + " " + item.title.replace("<br>", "")
+        title = item.start_time.strftime("%-m/%-d %-I:%M%P") + " " + item.title.replace("<br>", "")
+        return re.sub(r'[\x00-\x1f\x7f-\x9f]', '', title)
 
     def item_pubdate(self, item):
         return item.start_time.astimezone(timezone.get_current_timezone())

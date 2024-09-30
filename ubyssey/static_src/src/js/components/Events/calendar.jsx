@@ -340,7 +340,7 @@ function EventsCalendar({events}) {
         hidden = hidden.filter((i) => i!="");
         
         if (hidden.includes(that.id)) {
-            hidden.pop(hidden.indexOf(that.id));
+            hidden.splice(hidden.indexOf(that.id), 1);
         } else {
             hidden.push(that.id);
         }
@@ -455,7 +455,7 @@ function EventsCalendar({events}) {
             <ul>{legend.map((key, i) =>
                 <li key={i} className={slugify(key)}>
                     <button id={slugify(key)} className={"legend-button" + (hidden.includes(slugify(key)) ? " inactive" : "")}
-                    onClick={(e) => toggleCategory(e.target, searchParams, setSearchParams)} title={key}
+                    onClick={(e) => {console.log(e); toggleCategory(e.target, searchParams, setSearchParams);}} title={key}
                     dangerouslySetInnerHTML={
                         {__html: key}
                      }></button>
@@ -467,6 +467,7 @@ function EventsCalendar({events}) {
 }
 
 function EventInfo({events}) {
+    const [widthMode, setWidthMode] = React.useState(window.innerWidth <= 759);
     let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     var event = false;
@@ -484,15 +485,21 @@ function EventInfo({events}) {
         }
     }
 
+    React.useLayoutEffect(()=> {
+
+        window.addEventListener('resize', ()=> {
+            setWidthMode(window.innerWidth <= 759);
+        });
+    }, []);
+
     React.useEffect(()=>{
-        console.log(document.getElementById('event-dialog'));
         if(document.getElementById('event-dialog')) {
             document.getElementById('event-dialog').showModal();
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
         }
-    })
+    });
 
     function exitEvent(searchParams, setSearchParams) {
         searchParams.delete("event");
@@ -503,7 +510,7 @@ function EventInfo({events}) {
         <div class="events-info-container">
         {event && 
         <>
-            {screen.width <= 759 ?
+            {widthMode ?
             <>
                 <dialog id="event-dialog" open="" aria-modal="true">
                     <div className="events-info-shadow" onClick={() => exitEvent(searchParams, setSearchParams)}></div>

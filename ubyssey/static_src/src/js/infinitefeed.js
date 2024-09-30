@@ -43,12 +43,9 @@ function recievedata(data) {
     congratz.innerHTML = "You reached the end! 🥳";
     loader.replaceChildren(congratz);
   } else {
-    console.log("epic");
     for (let i=0; i<data.length; i++) {
       feed.insertAdjacentHTML("beforeend", data[i]);
-      console.log("placed");
     }
-    console.log("done");
     loader.classList.add("hide");
     loader.removeAttribute("inactive");
   }  

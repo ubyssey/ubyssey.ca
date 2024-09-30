@@ -195,9 +195,9 @@ class ArchivePage(RoutablePageMixin, Page):
     def get_order_objects(self, order, objects, videos_section):
         if videos_section == False:
             if order == 'oldest':
-                article_order = "explicit_published_at"
+                article_order = "first_published_at"
             else:            
-                article_order = "-explicit_published_at"
+                article_order = "-first_published_at"
             
             return objects.order_by(article_order)
         else:
@@ -211,7 +211,7 @@ class ArchivePage(RoutablePageMixin, Page):
 
     def get_year_objects(self, objects, videos_section):
         if videos_section == False:
-            return objects.filter(explicit_published_at__year=str(self.year))
+            return objects.filter(first_published_at__year=str(self.year))
         else:
             return objects.filter(created_at__gte=str(self.year) + "-01-01", created_at__lte = str(self.year + 1) + "-12-31")
         

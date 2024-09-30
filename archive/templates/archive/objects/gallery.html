@@ -133,12 +133,12 @@
 					{% if page_obj %} {{ page_obj.paginator.count }} RESULTS {% else %}NO RESULTS{% endif %}
 					{% if q %} FOR "{{ q }}"{% endif %}
 				</h3>
-				<div class="o-archive__header__sort o-dropdown js-dropdown">
-					<a class="o-button o-dropdown__button">
+				<div class="o-archive__header__sort o-dropdown">
+					<a class="o-button o-dropdown__button preventDefault" href="#">
 						<span>{{ order|title }}</span>
 						<ion-icon name="caret-down-outline"></ion-icon>
 					</a>
-					<ul class="o-dropdown__list js-dropdown-list">
+					<ul class="o-dropdown__list">
 						<li class="o-dropdown__item{% if order == 'newest' %} o-dropdown__item--is-active{% endif %}">
 							<a href="?{% modify_query_string 'order' 'newest' %}">Newest</a>
 						</li>
