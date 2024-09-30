@@ -2,15 +2,16 @@
 {% load wagtailimages_tags %}
 
 <div class="image-attachment attachment {{ self.style }} {{ self.width }} {% if self.click_to_enlarge %}setup-modal image-modal{% endif %}" >
-    {% image self.image original as image %}
-    <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{self.caption}}{% endif %}" />
+    {% image self.image width-1000 format-webp as image %}
+    {% image self.image original as ogImage %}
+    <img class="article-attachment" loading="lazy" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{self.caption}}{% endif %}" />
     
     {% if self.click_to_enlarge %}
-    <a class="open-modal" href="#enlarge"></a>
+    <button class="open-modal"></button>
     <dialog class="modal close-modal hide js-dropdown-container">
         <div class="u-container u-container--large modal-contents">
-            <div class="image-modal-image" style="background-image: url('{{image.url}}')"></div>
-            <a class="close-modal focus-on" href="#close"><ion-icon name="close-circle"></ion-icon></a>
+            <div class="image-modal-image" style="background-image: url('{{ogImage.url}}')"></div>
+            <button class="close-modal focus-on" ><ion-icon name="close-circle"></ion-icon></button>
         </div>
     </dialog>
     {% endif %}

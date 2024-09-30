@@ -419,7 +419,11 @@ $search-bar-height: 50px;
 
 .image-modal {
 	position: relative;
-
+	button {
+		margin: 0;
+		border: none;
+		background: none;
+	}
 	.open-modal {
 		position:absolute;
 		top: 0;
