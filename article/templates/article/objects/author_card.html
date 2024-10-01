@@ -27,6 +27,8 @@
         {% if author.author.short_bio_description != "" %}
             <p>{{ author.author.short_bio_description }}</p>
         {% endif %}
-        <li><a href="{{ author.author.full_url }}">See more from {{ author.author.full_name|safe }}</a></li> 
+        <ul>
+            <li><a href="{{ author.author.full_url }}">See more from {{ author.author.full_name|safe }}</a></li> 
+        <ul>
     </div>
 </div>         

@@ -233,7 +233,7 @@ class AuthorPage(RoutablePageMixin, Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        
+        context["self"].featured_media = self.image
         media_types = []
         if VideoSnippet.objects.all().count() > 0:
             media_types.append("videos")
