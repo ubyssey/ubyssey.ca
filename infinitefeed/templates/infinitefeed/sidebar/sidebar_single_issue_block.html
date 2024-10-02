@@ -4,7 +4,7 @@
         <h3 class="issueText">{{ self.date }}</h3>
         {% if self.show_image and self.image %}
             {% image self.image width-700 format-webp as mag %}
-            <img class="issue_img" src="{{mag.url}}" loading='lazy' alt="{{self.date}} Issue">
+            <img class="issue_img" src="{{mag.url}}" width="{{mag.width}}" height="{{mag.height}}" loading='lazy' alt="{{self.date}} Issue">
         {% endif %}
     </a>
 </li>

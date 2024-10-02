@@ -4,7 +4,7 @@
 <div class="image-attachment attachment {{ self.style }} {{ self.width }} {% if self.click_to_enlarge %}setup-modal image-modal{% endif %}" >
     {% image self.image width-1000 format-webp as image %}
     {% image self.image original as ogImage %}
-    <img class="article-attachment" decoding="async" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{self.caption}}{% endif %}" />
+    <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{self.caption}}{% endif %}" />
     
     {% if self.click_to_enlarge %}
     <button class="open-modal" aria-label="Enlarge image"></button>

@@ -9,6 +9,8 @@
         {% image featured_image_object.image width-1500 format-webp as featured_image %}
         <img
             class="article-attachment"
+            width="{{ featured_image_object.width }}"
+            height="{{ featured_image_object.height }}"
             data-id="{{ featured_image_object.image.id }}"
             data-caption="{{ featured_image_object.caption }}"
             data-url="{{ featured_image.url }}"
