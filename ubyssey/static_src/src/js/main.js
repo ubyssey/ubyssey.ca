@@ -1,5 +1,5 @@
 // import * as mp from './modules/Mixpanel';    //commented out because creepy af
-import upcomingEvents from './widgets/upcoming-events';
+//import upcomingEvents from './widgets/upcoming-events';
 import { initializeDarkModeToggle } from './darkmode';
 
 // self-executing js anonymous function
@@ -417,28 +417,6 @@ function openModal(modal) {
 
   disableScroll();
 }
-
-/*
-function moveModals() {
-  var modalBlocks = document.getElementsByClassName("add-to-modal");
-  var modal = document.getElementById("modal");
-  var index = 0;
-  while (modalBlocks.length > 0) {
-    //modalBlocks[i].remove();  
-    var div = document.createElement("div");
-    div.classList.add("openModal");
-    div.setAttribute("modal", index);
-
-    var mod = modalBlocks[0];
-    mod.insertAdjacentElement("beforebegin", div);
-    mod.classList.remove("add-to-modal");
-    modal.appendChild(mod);
-
-    modalBlocks = document.getElementsByClassName("add-to-modal");
-    index = index + 1;
-  } 
-}
-*/
 
 function initializeFilterDropdown() {
   $(document).on('click', 'a.filterDropdown', function (e) {
