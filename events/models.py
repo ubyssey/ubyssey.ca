@@ -83,6 +83,12 @@ class EventManager(models.Manager):
         event.title=str(ical_component.decoded('summary'), 'UTF-8')
         if ical_component.get('description', False):
             event.description=str(ical_component.decoded('description'), 'UTF-8')
+            while '\t' in event.description: 
+                event.description = event.description.replace("\t", "")
+            while '\n ' in event.description: 
+                event.description = event.description.replace("\n ", "\n")
+            while '\n\n\n' in event.description: 
+                event.description = event.description.replace("\n\n\n", "\n\n")
         else:
             event.description=""
 

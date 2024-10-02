@@ -438,7 +438,7 @@ function EventsCalendar({events}) {
                                 setSearchParams(searchParams);
                             }}
                             dangerouslySetInnerHTML={
-                               {__html: "<b>" + event.displayTime + "</b> " +  event.title}
+                               {__html: "<b>" + event.displayTime + "</b> " +  ((event.host && event.category=="seminar") ? event.host.replace("UBC ", "").split("for ").slice(-1)[0].split("of ").slice(-1)[0] + ":<br>" : "" ) + event.title}
                             }>
                                 {/*
                                 {event.start_time|date:"F j" != event.end_time|date:"F j" and day.day|stringformat:"i" != event.start_time|date:"j" %}<b>Ongoing</b>{% elif event.start_time|time == 'midnight' %}{% else %}<b>{{event.start_time|time:"fA"}}</b>{% endif %} {event.title|safe}

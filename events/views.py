@@ -468,7 +468,6 @@ async def update_events(request):
             await asyncio.gather(*tasks)
             tasks = []
 
-
     ical_files = [
 
         {'name': 'Go Thunderbirds', 
@@ -528,6 +527,15 @@ async def update_events(request):
          'instructions': {
             'category': 'community',
             'hidden_override': lambda e : len(e.get('categories').cats) > 0, # The scheduled events are all cringe but well categorized. Events added manually can be cool but categories typically aren't added. At some point we should be more sophistiacted in filtering this lmao
+         }
+        },
+
+        {'name': 'Green College',
+         'file': 'https://greencollege.ubc.ca/civicrm/event/ical',
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'seminar',
+            'description_transform': lambda e : e.description.split('in the series\n\n')[-1][e.description.split('in the series\n\n')[-1].index("\n")+4:],
          }
         },
     ]
