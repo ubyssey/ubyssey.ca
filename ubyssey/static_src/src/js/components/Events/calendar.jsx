@@ -10,6 +10,20 @@ import {
 import axios from "axios";
 const BP_PHABLET_SIZE = 759;
 
+function useQuery() {
+    const { search } = useLocation();
+  
+    // Ensure `search` is always defined (default to empty string if not present)
+    return React.useMemo(() => {
+      try {
+        return new URLSearchParams(search || "");
+      } catch (error) {
+        console.error("Failed to parse query params:", error);
+        return new URLSearchParams(); // Return an empty URLSearchParams object on failure
+      }
+    }, [search]);
+  }
+  
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= BP_PHABLET_SIZE);
 
@@ -44,10 +58,8 @@ function getDateString(date) {
 }
 
 export function QueryEventsCalendar() {
+    const d = 24 * 60 * 60 * 1000;
     const [events, setEvents] = React.useState([]);
-    const [numberOfWeeks, setNumberOfWeeks] = React.useState(4);
-    const d = 24 * 60 * 60 * 1000; // One day in milliseconds
-    const [isMonthToggled, setIsMonthToggled] = React.useState(false);
     const [currentMonth, setCurrentMonth] = React.useState("");
 
     // Add state to track the start date of the calendar
@@ -64,53 +76,6 @@ export function QueryEventsCalendar() {
 
         return start;
     }
-
-// Function to update the start date to the week of the first day of the previous or next month
-const handleMonthNavigation = (direction, isMobile) => {
-    // Set the start date to the first day of the current month
-    let newStart = new Date(start);
-
-    console.log("Start date is :"+start)
-    if(newStart.getDate() !== 1){
-    while (newStart.getDay() !== 1) {
-        newStart = new Date(newStart.getTime() + d);
-    }
-    newStart.setDate(1);
-    newStart.setMonth(newStart.getMonth()+1)
-}
-    // Adjust the month based on the direction
-    const currentMonth = newStart.getMonth();
-    console.log(direction);
-    if (direction === 'next') {
-        console.log("Current month is" + newStart);
-        newStart.setMonth(currentMonth + 1);
-        console.log("Current month is after update" +newStart);        
-    } else {
-        newStart.setMonth(currentMonth - 1);
-    }
-
-    //Set the number of weeks to 6 if the 1st day is Saturday and the month has more than 29 days
-    // or if the 1st day is Sunday and the month has 31 days
-    if (
-        (newStart.getDay() === 6 && new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate() === 31) || 
-        (newStart.getDay() === 0 && new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate() > 29)
-    ) {
-        console.log("The date is" + new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate())
-        setNumberOfWeeks(6);
-    } else {
-        setNumberOfWeeks(5);
-    }
-    
-    // Ensure the new start date begins on the Monday of that week
-    while (newStart.getDay() !== 1) {
-        newStart = new Date(newStart.getTime() - d);
-    }
-
-    // Update the start date
-    setStart(newStart);
-    console.log(newStart);
-    setIsMonthToggled(true);
-};
 
     function getEvents(){
         
@@ -162,7 +127,7 @@ const handleMonthNavigation = (direction, isMobile) => {
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} handleMonthNavigation={handleMonthNavigation} numberOfWeeks={numberOfWeeks} isMonthToggled={isMonthToggled}/>
+                        <EventsCalendar events={events} start={start} setStart={setStart}/>
                     </div>
                 </div>
             
@@ -171,12 +136,6 @@ const handleMonthNavigation = (direction, isMobile) => {
         </Router>
     );
 }
-
-function useQuery() {
-    const { search } = useLocation();
-  
-    return React.useMemo(() => new URLSearchParams(search), [search]);
-}  
 
 function capitalize(s)
 {
@@ -358,8 +317,15 @@ function EventsOptions() {
     );
 }
 
-function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, isMonthToggled}) {
+function EventsCalendar({events, start, setStart}) {
 
+    const [numberOfWeeks, setNumberOfWeeks] = React.useState(4);
+    const [isMonthToggled, setIsMonthToggled] = React.useState(false);
+    let query = useQuery();
+    const s = 1000
+    const m = s * 60;
+    const h = m * 60;
+    const d = h * 24;
 
     function arrangeCalendar(events) {
         const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -475,8 +441,76 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, is
             $('div.day li.' + slugify(legend[i])).css("color", "black");
         }
     }
+    
+    const calculateNewStart = (direction, start) => {
+        // Set the start date to the first day of the current month
+        let newStart = new Date(start);
 
-    let query = useQuery();
+        // console.log("Start date is :"+start)
+        if(newStart.getDate() !== 1){
+        while (newStart.getDay() !== 1) {
+            newStart = new Date(newStart.getTime() + d);
+        }
+        newStart.setDate(1);
+        newStart.setMonth(newStart.getMonth()+1)
+        }
+        // Adjust the month based on the direction
+        const currentMonth = newStart.getMonth();
+        console.log(direction);
+        if (direction === 'next') {
+            // console.log("Current month is" + newStart);
+            newStart.setMonth(currentMonth + 1);
+            // console.log("Current month is after update" +newStart);        
+        } else {
+            newStart.setMonth(currentMonth - 1);
+        }    
+        // Extract the new month and year after the adjustment
+        const adjustedYear = newStart.getFullYear();
+        const adjustedMonth = (newStart.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is two digits (01-12)
+
+        return {
+            year: adjustedYear,
+            month: adjustedMonth,
+        };
+    };    
+    
+    // Function to update the start date to the week of the first day of the previous or next month
+    const handleMonthNavigation = (event) => {
+        event.preventDefault();
+        const monthParam = query.get('month');
+        const year = query.get('year');
+
+        if (monthParam && year) {
+            console.log("The new start is FFR");
+            let newStart = new Date(year, monthParam - 1, 1); // Month is 0-indexed in JavaScript (0 for January, 11 for December)
+            console.log("The new start is"+newStart);
+            //Set the number of weeks to 6 if the 1st day is Saturday and the month has more than 29 days
+            // or if the 1st day is Sunday and the month has 31 days
+            if (
+                (newStart.getDay() === 6 && new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate() === 31) || 
+                (newStart.getDay() === 0 && new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate() > 29)
+            ) {
+                console.log("The date is" + new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate())
+                setNumberOfWeeks(6);
+            } else {
+                setNumberOfWeeks(5);
+            }
+            
+            // Ensure the new start date begins on the Monday of that week
+            while (newStart.getDay() !== 1) {
+                newStart = new Date(newStart.getTime() - d);
+            }
+
+            // Update the start date
+            setStart(newStart);
+            console.log(newStart);
+            setIsMonthToggled(true);
+        } 
+        else {
+            console.error("Invalid or missing month parameter");
+        }
+    };
+    
     var category = "all";
     var highlight = "category";
     if (query.get("category") != null){
@@ -529,34 +563,55 @@ function EventsCalendar({events, start, handleMonthNavigation, numberOfWeeks, is
         
         <div className="events-calendar--navigation">
         {isPhablet ? (
-                <>
-                    <button onClick={() => handleMonthNavigation('previous', isPhablet)} className="arrow-button left-arrow" title='Previous month'>
-                        <svg width="32px" height="32px" viewBox="0 0 32 32">
-                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
-                        </svg>
-                    </button>
-                    <span className="month-label">{calendar[0]?.month}</span>
-                    <button onClick={() => handleMonthNavigation('next', isPhablet)} className="arrow-button right-arrow" title='Next month'>
-                        <svg width="32px" height="32px" viewBox="0 0 32 32">
-                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
-                        </svg>
-                    </button>
-                </>
-            ) : (
-                <>
-                    <button onClick={() => handleMonthNavigation('previous', isPhablet)} className="arrow-button up-arrow" title='Previous month'>
-                        <svg width="32px" height="32px" viewBox="0 0 32 32">
-                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
-                        </svg>
-                    </button>
-                    <button onClick={() => handleMonthNavigation('next', isPhablet)} className="arrow-button down-arrow" title='Next month'>
-                        <svg width="32px" height="32px" viewBox="0 0 32 32">
-                            <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
-                        </svg>
-                    </button>
-                </>
-            )}
+            <>
+            <Link 
+                to={`?month=${calculateNewStart('previous', start).month}&year=${calculateNewStart('previous', start).year}`}                
+                className="arrow-button left-arrow" 
+                title="Previous month"
+                onClick={handleMonthNavigation}
+            >
+                <svg width="32px" height="32px" viewBox="0 0 32 32">
+                <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
+                </svg>
+            </Link>
+            <span className="month-label">{calendar[0]?.month}</span>
+            <Link 
+                to={`?month=${calculateNewStart('next', start).month}&year=${calculateNewStart('next', start).year}`}                
+                className="arrow-button right-arrow" 
+                title="Next month"
+                onClick={handleMonthNavigation}
+            >
+                <svg width="32px" height="32px" viewBox="0 0 32 32">
+                <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
+                </svg>
+            </Link>
+            </>
+        ) : (
+            <>
+            <Link 
+                to={`?month=${calculateNewStart('previous', start).month}&year=${calculateNewStart('previous', start).year}`}                
+                className="arrow-button up-arrow" 
+                title="Previous month"
+                onClick={handleMonthNavigation}
+            >
+                <svg width="32px" height="32px" viewBox="0 0 32 32">
+                <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
+                </svg>
+            </Link>
+            <Link 
+                to={`?month=${calculateNewStart('next', start).month}&year=${calculateNewStart('next', start).year}`}                
+                className="arrow-button down-arrow" 
+                title="Next month"
+                onClick={handleMonthNavigation}
+            >
+                <svg width="32px" height="32px" viewBox="0 0 32 32">
+                <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
+                </svg>
+            </Link>
+            </>
+        )}
         </div>
+
         <div class="events-calendar--rows">{calendar.map((week, week_index) => 
 
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
