@@ -328,7 +328,6 @@ function EventsCalendar({events, start, setStart}) {
     const d = h * 24;
     // const history = useHistory();
     const navigate = useNavigate();
-    
 
     function arrangeCalendar(events) {
         const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
