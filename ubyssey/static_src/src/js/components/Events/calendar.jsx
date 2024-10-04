@@ -4,7 +4,7 @@ import {
     Link,
     useLocation,
     useSearchParams,
-    useNavigate
+    useNavigate,
 } from "react-router-dom";
 // import ReactDOM from 'react-dom';
 import axios from "axios";
@@ -326,6 +326,9 @@ function EventsCalendar({events, start, setStart}) {
     const m = s * 60;
     const h = m * 60;
     const d = h * 24;
+    // const history = useHistory();
+    const navigate = useNavigate();
+    
 
     function arrangeCalendar(events) {
         const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -475,40 +478,36 @@ function EventsCalendar({events, start, setStart}) {
     };    
     
     // Function to update the start date to the week of the first day of the previous or next month
-    const handleMonthNavigation = (event) => {
-        event.preventDefault();
-        const monthParam = query.get('month');
-        const year = query.get('year');
+    const handleMonthNavigation = (direction) => {
+        let newStart, newMonth, newYear;
+        newStart = calculateNewStart(direction, start);
+        newMonth = newStart.month;
+        newYear = newStart.year;    
 
-        if (monthParam && year) {
-            console.log("The new start is FFR");
-            let newStart = new Date(year, monthParam - 1, 1); // Month is 0-indexed in JavaScript (0 for January, 11 for December)
-            console.log("The new start is"+newStart);
-            //Set the number of weeks to 6 if the 1st day is Saturday and the month has more than 29 days
-            // or if the 1st day is Sunday and the month has 31 days
-            if (
-                (newStart.getDay() === 6 && new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate() === 31) || 
-                (newStart.getDay() === 0 && new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate() > 29)
-            ) {
-                console.log("The date is" + new Date(newStart.getFullYear(), newStart.getMonth() + 1, 0).getDate())
-                setNumberOfWeeks(6);
-            } else {
-                setNumberOfWeeks(5);
-            }
-            
-            // Ensure the new start date begins on the Monday of that week
-            while (newStart.getDay() !== 1) {
-                newStart = new Date(newStart.getTime() - d);
-            }
+        // Update the URL programmatically using history.push
+        navigate(`?month=${newMonth}&year=${newYear}`);
 
-            // Update the start date
-            setStart(newStart);
-            console.log(newStart);
-            setIsMonthToggled(true);
-        } 
-        else {
-            console.error("Invalid or missing month parameter");
+        // Set the new start date and other logic
+        console.log("Navigating to", newMonth, newYear);
+        let newStartDate = new Date(newYear, newMonth - 1, 1); // Month is 0-indexed
+
+        if (
+            (newStartDate.getDay() === 6 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() === 31) || 
+            (newStartDate.getDay() === 0 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() > 29)
+        ) {
+            setNumberOfWeeks(6);
+        } else {
+            setNumberOfWeeks(5);
         }
+
+        // Ensure the new start date begins on the Monday of that week
+        while (newStartDate.getDay() !== 1) {
+            newStartDate = new Date(newStartDate.getTime() - 24 * 60 * 60 * 1000);
+        }
+
+        // Update the start state
+        setStart(newStartDate);
+        setIsMonthToggled(true);
     };
     
     var category = "all";
@@ -564,25 +563,37 @@ function EventsCalendar({events, start, setStart}) {
         <div className="events-calendar--navigation">
         {isPhablet ? (
             <>
-            <Link 
-                to={`?month=${calculateNewStart('previous', start).month}&year=${calculateNewStart('previous', start).year}`}                
-                className="arrow-button left-arrow" 
+            <Link
+                to={`?month=${calculateNewStart('previous', start).month}&year=${calculateNewStart('previous', start).year}`}
+                className="arrow-button left-arrow"
                 title="Previous month"
-                onClick={handleMonthNavigation}
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleMonthNavigation('previous');
+                }}
             >
                 <svg width="32px" height="32px" viewBox="0 0 32 32">
-                <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
+                    <path
+                        d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z"
+                        fill={isDarkMode ? "#FFFFFF" : "#000000"}
+                    />
                 </svg>
             </Link>
             <span className="month-label">{calendar[0]?.month}</span>
-            <Link 
-                to={`?month=${calculateNewStart('next', start).month}&year=${calculateNewStart('next', start).year}`}                
-                className="arrow-button right-arrow" 
+            <Link
+                to={`?month=${calculateNewStart('next', start).month}&year=${calculateNewStart('next', start).year}`}
+                className="arrow-button right-arrow"
                 title="Next month"
-                onClick={handleMonthNavigation}
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleMonthNavigation('next');
+                }}
             >
                 <svg width="32px" height="32px" viewBox="0 0 32 32">
-                <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
+                    <path
+                        d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z"
+                        fill={isDarkMode ? "#FFFFFF" : "#000000"}
+                    />
                 </svg>
             </Link>
             </>
@@ -592,7 +603,10 @@ function EventsCalendar({events, start, setStart}) {
                 to={`?month=${calculateNewStart('previous', start).month}&year=${calculateNewStart('previous', start).year}`}                
                 className="arrow-button up-arrow" 
                 title="Previous month"
-                onClick={handleMonthNavigation}
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleMonthNavigation('previous');
+                }}
             >
                 <svg width="32px" height="32px" viewBox="0 0 32 32">
                 <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
@@ -602,7 +616,10 @@ function EventsCalendar({events, start, setStart}) {
                 to={`?month=${calculateNewStart('next', start).month}&year=${calculateNewStart('next', start).year}`}                
                 className="arrow-button down-arrow" 
                 title="Next month"
-                onClick={handleMonthNavigation}
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleMonthNavigation('next');
+                }}
             >
                 <svg width="32px" height="32px" viewBox="0 0 32 32">
                 <path d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z" fill={isDarkMode ? "#FFFFFF" : "#000000"} />
