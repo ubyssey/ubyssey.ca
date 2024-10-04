@@ -61,11 +61,24 @@ export function QueryEventsCalendar() {
     const d = 24 * 60 * 60 * 1000;
     const [events, setEvents] = React.useState([]);
     const [currentMonth, setCurrentMonth] = React.useState("");
+    let fullUrl = window.location.href;
+    const decodedUrl = decodeURIComponent(fullUrl);
+    const queryString = decodedUrl.split('?')[1]; // Get the part after the "?"
+    const urlParams = new URLSearchParams(queryString);
 
-    // Add state to track the start date of the calendar
     const [start, setStart] = useState(getInitialStartDate());
 
     function getInitialStartDate() {
+        // console.log("Get query month"+ query.get("month"));
+        if(urlParams.has("month") && urlParams.has("year")){
+            const month = parseInt(urlParams.get("month"));
+            console.log("Month is "+month);
+            const year = parseInt(urlParams.get("year"));
+            console.log("Year is "+year);
+            return new Date(year, month - 1, 1);
+        }
+        else{
+        console.log("No month and year");
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -76,6 +89,7 @@ export function QueryEventsCalendar() {
 
         return start;
     }
+}
 
     function getEvents(){
         
