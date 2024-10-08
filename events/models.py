@@ -466,7 +466,7 @@ class EventManager(models.Manager):
 
         event.description=" ".join(ical_component.get('description').split(" ")[0:-1])
 
-        splitDesc = ical_component.get('description').replace("[W] ", "").replace("[L] ", "").replace("[T] ", "").split("\n")[0].split(" ")
+        splitDesc = ical_component.get('description').replace("[W] ", "").replace("[L] ", "").replace("[T] ", "").replace("[O] ", "").split("\n")[0].split(" ")
         splitDesc = list(filter(lambda s: s!="", splitDesc))
         if len(splitDesc) > 0:
             i = 0

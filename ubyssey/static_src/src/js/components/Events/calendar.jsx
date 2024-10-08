@@ -546,7 +546,7 @@ function EventInfoBox({event}) {
                 }></a></h2>
                 {event.location != "" && <p><b>Location:</b> {event.location}</p>}
                 <p dangerouslySetInnerHTML={
-                    {__html: (event.host!=null ? "<b>" + (event.description ? event.host : "Hosted by " + event.host) + "</b> " : "") + event.description.replace(/(?:\r\n|\r|\n)/g, '<br>')}
+                    {__html: (event.host!=null ? "<b>" + (event.description ? event.host : "From " + event.host) + "</b> " : "") + event.description.replace(/(?:\r\n|\r|\n)/g, '<br>')}
                 }>
                 </p>
                 <p>
