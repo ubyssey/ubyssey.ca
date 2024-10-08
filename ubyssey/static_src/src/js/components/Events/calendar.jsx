@@ -305,7 +305,7 @@ function EventsCalendar({events}) {
             if (event.end_time.getTime() - event.start_time.getTime() >= d-h || event.start_time.getHours() == 0) {
                 event.displayTime = "";
             }
-            while(cur <= new Date(event.end_time)) {
+            while(cur < new Date(event.end_time) || cur==event.start_time) {
                 const delta = Math.floor((cur.getTime() - start.getTime()) / d);
                 if (delta >= 0 && delta < (7*4)) {
                     calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);

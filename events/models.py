@@ -137,7 +137,7 @@ class EventManager(models.Manager):
                             'state': l['state'],                  
                         }
             async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
-                async with session.get(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20") as response:
+                async with session.get(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=100") as response:
             
                     result = json.loads(await response.text())
                     #print("Connected to " + name)
@@ -153,115 +153,122 @@ class EventManager(models.Manager):
             print("Failed requesting to " + name)
 
     async def wp_events_api_create_event(self, event_json, api, host, categorize, locations):
-        if not await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).aexists():
-            event = await self.acreate(
-                title=event_json['title'],
-                event_url=event_json['link'],
-                hash=self.hashing(event_json['link'] + str(event_json['start']))
-            )
-        else:
-            event = await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).afirst()
-            if event.update_mode != 2:
-                return None
-            
-        event.title = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
-
-        if event.hash == "":
-            event.hash = self.hashing(event_json['link'] + str(event_json['start']))
-
-        event.description = str(event_json['excerpt']['rendered'].encode('utf-8'), 'UTF-8')
-
-        event.start_time = datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())
-        event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
-
-        if len(event_json['event-venues']) > 0:
-            if event_json['event-venues'][0] in locations:
-                venue = locations[event_json['event-venues'][0]]
+        if len(event_json['link']) > 150 and "?" in event_json['link']:
+            event_json['link'] = event_json['link'].split("?")[0]
+        try:
+            if not await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).aexists():
+                event = await self.acreate(
+                    title=event_json['title'],
+                    event_url=event_json['link'],
+                    hash=self.hashing(event_json['link'] + str(event_json['start']))
+                )
             else:
-                async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
-                    async with session.get(api + 'event-venues/' + str(event_json['event-venues'][0])) as response:
-                        venue = json.loads(await response.text())
-            event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
-            event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
-        else:
-            event.location=''
-            event.address=''
+                event = await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).afirst()
+                if event.update_mode != 2:
+                    return None
 
-        event.email=''
-        event.event_url=event_json['link']
+            event.title = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
 
-        event.category = categorize['default']
-        categories = ['entertainment', 'seminar', 'community', 'sports']
+            if event.hash == "":
+                event.hash = self.hashing(event_json['link'] + str(event_json['start']))
 
-        for category in categories:
-            if event.category != categorize['default']:
-                break
-            categorize_key = category + '_title_terms'
-            if categorize_key in categorize:
-            
-                for term in categorize[categorize_key]:
-                    if term.lower() in event.title.lower():
-                        event.category = category
-                        break
+            event.description = str(event_json['excerpt']['rendered'].encode('utf-8'), 'UTF-8')
 
-        for category in categories:
-            if event.category != categorize['default']:
-                break
-            categorize_key = category + '_type'
-            if categorize_key in categorize:
-                for event_type in event_json['event-type']:
+            event.start_time = datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())
+            event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
+
+            if len(event_json['event-venues']) > 0:
+                if event_json['event-venues'][0] in locations:
+                    venue = locations[event_json['event-venues'][0]]
+                else:
+                    async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                        async with session.get(api + 'event-venues/' + str(event_json['event-venues'][0])) as response:
+                            venue = json.loads(await response.text())
+                event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
+                event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
+            else:
+                event.location=''
+                event.address=''
+
+            event.email=''
+            event.event_url=event_json['link']
+
+            event.category = categorize['default']
+            categories = ['entertainment', 'seminar', 'community', 'sports']
+
+            for category in categories:
+                if event.category != categorize['default']:
+                    break
+                categorize_key = category + '_title_terms'
+                if categorize_key in categorize:
                 
-                    for category_type in categorize[categorize_key]:
-                        if event_type == category_type:
+                    for term in categorize[categorize_key]:
+                        if term.lower() in event.title.lower():
                             event.category = category
                             break
 
-                    if event.category != categorize['default']:
-                        break
-
-        if event.hidden == False and 'hidden_title_terms' in categorize:
-            for term in categorize['hidden_title_terms']:
-                if term.lower() in event.title.lower():
-                    event.hidden = True
+            for category in categories:
+                if event.category != categorize['default']:
                     break
+                categorize_key = category + '_type'
+                if categorize_key in categorize:
+                    for event_type in event_json['event-type']:
+                    
+                        for category_type in categorize[categorize_key]:
+                            if event_type == category_type:
+                                event.category = category
+                                break
 
-        event.hidden=False
-        if 'hidden_topics' in categorize:
-            for id in event_json['event-topic']:
-            
-                for topic in categorize['hidden_topics']:
-                    if id == topic:
+                        if event.category != categorize['default']:
+                            break
+
+            if event.hidden == False and 'hidden_title_terms' in categorize:
+                for term in categorize['hidden_title_terms']:
+                    if term.lower() in event.title.lower():
                         event.hidden = True
                         break
 
-                if event.hidden == True:
-                    break
+            event.hidden=False
+            if 'hidden_topics' in categorize:
+                for id in event_json['event-topic']:
+                
+                    for topic in categorize['hidden_topics']:
+                        if id == topic:
+                            event.hidden = True
+                            break
 
-        if event.hidden == False and 'hidden_title_terms' in categorize:
-            for term in categorize['hidden_title_terms']:
-                if term.lower() in event.title.lower():
-                    event.hidden = True
-                    break
+                    if event.hidden == True:
+                        break
 
-        if timedelta(days=14) < event.end_time - event.start_time:
-            event.hidden=True
+            if event.hidden == False and 'hidden_title_terms' in categorize:
+                for term in categorize['hidden_title_terms']:
+                    if term.lower() in event.title.lower():
+                        event.hidden = True
+                        break
 
-        req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        if req.host in event_json['link']:
-            event.host = host
-        else:
-            if await self.filter(title=event.title, start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).exclude(id=event.id).aexists():
-                event.hidden = True
-            elif 'chancentre.com' in event_json['link']:
-                event.host = 'Chan Centre for the Performing Arts'
-            elif not '.ubc.ca' in event_json['link']:
+            if timedelta(days=14) < event.end_time - event.start_time:
+                event.hidden=True
+
+            req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+            if req.host in event_json['link']:
                 event.host = host
+            else:
+                if await self.filter(title=event.title, start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).exclude(id=event.id).aexists():
+                    event.hidden = True
+                elif 'chancentre.com' in event_json['link']:
+                    event.host = 'Chan Centre for the Performing Arts'
+                elif not '.ubc.ca' in event_json['link']:
+                    event.host = host
 
-        event.update_mode = 1
-        
-        await event.asave()
-        #print("Finished event " + event.event_url)
-        return event
+            event.update_mode = 1
+            
+            await event.asave()
+            #print("Finished event " + event.event_url)
+            return event
+        except:
+            print("Failed on " + api)
+            print("- " + str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8') + ": " + event_json['link'])
+            return None
 
     def wp_events_api_get_type_ids(self, api, terms):
         ids = []
