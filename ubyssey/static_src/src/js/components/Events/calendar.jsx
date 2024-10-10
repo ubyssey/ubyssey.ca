@@ -242,6 +242,7 @@ function eventsTags(event) {
 }
 
 function EventsOptions() {
+    let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     const navigate = useNavigate();
     const isMobile = useIsMobile();
@@ -296,9 +297,10 @@ function EventsOptions() {
 
     const handleCategoryChange = (e) => {
         const newCategory = e.target.value;
-        navigate(`?category=${newCategory}`);
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set('category', newCategory);
+        navigate(`?${searchParams.toString()}`);
     };
-
     return (
         <>
             <div className="events-calendar--categories">
@@ -315,7 +317,13 @@ function EventsOptions() {
                     <ul>
                         {categories.map(cat => (
                             <li key={cat.value} className={category === cat.value ? "selected" : ""}>
-                                <Link to={`?category=${cat.value}`}>{cat.label}</Link>
+                                <Link to={`?category=${cat.value}`}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        searchParams.set("category", cat.value);
+                                        setSearchParams(searchParams);
+                                    }}
+                                >{cat.label}</Link>
                             </li>
                         ))}
                     </ul>
