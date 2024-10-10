@@ -109,6 +109,9 @@ class EventManager(models.Manager):
         event.category = instructions['category']
         event.hidden=False
 
+        if 'hidden_title_terms' in instructions:
+            event.hidden = True in (term in ical_component.get('summary') for term in instructions['hidden_title_terms'])
+
         if 'hidden_override' in instructions:
             event.hidden = instructions['hidden_override'](ical_component)
 
@@ -437,14 +440,14 @@ class EventManager(models.Manager):
 
     async def gothunderbirds_create_event(self, ical_component):
 
-        if not await self.filter(event_url=ical_component.get('url')).aexists():
+        if not await self.filter(event_url=ical_component.get('url').replace("&amp;", "&")).aexists():
             event = await self.acreate(
                 title=ical_component.get('summary'),
-                event_url=ical_component.decoded('url'),
+                event_url=ical_component.decoded('url').replace("&amp;", "&"),
                 hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
             )
         else:
-            event = await self.filter(event_url=ical_component.get('url')).afirst()
+            event = await self.filter(event_url=ical_component.get('url').replace("&amp;", "&")).afirst()
             if event.update_mode != 2 and event.end_time.astimezone(timezone.get_current_timezone()) <= timezone.now() - timedelta(days=7): # Go Thunderbirds is unqiue because the events are updated after they pass to include the result
                 return None
 
@@ -466,7 +469,10 @@ class EventManager(models.Manager):
 
         event.description=" ".join(ical_component.get('description').split(" ")[0:-1])
 
-        splitDesc = ical_component.get('description').replace("[W] ", "").replace("[L] ", "").replace("[T] ", "").replace("[O] ", "").split("\n")[0].split(" ")
+        splitDesc = ical_component.get('description')
+        for t in ['[W]','[L]', '[T]', '[O]', 'CANCELLED']:
+            splitDesc = splitDesc.replace(t, '')
+        splitDesc = splitDesc.split("\n")[0].split(" ")
         splitDesc = list(filter(lambda s: s!="", splitDesc))
         if len(splitDesc) > 0:
             i = 0
@@ -493,7 +499,7 @@ class EventManager(models.Manager):
 
         event.address=address
         event.location=location
-        event.event_url=ical_component.decoded('url')
+        event.event_url=ical_component.decoded('url').replace("&amp;", "&")
         event.category='sports'
         event.hidden=self.gothunderbirds_judge_hidden(ical_component)
 

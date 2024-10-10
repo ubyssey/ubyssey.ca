@@ -518,6 +518,16 @@ async def update_events(request):
          'instructions': {
             'category': 'community',
             'description_transform': lambda e : e.description.replace("UBC, UBC Vancouver, UBC students, UBC student life, UBC students, UBC events, events at UBC, UBC student events, UBC back to school, UBC back to school events, UBC campus, UBC campus events", ""),
+            'hidden_title_terms': ['SASC'],
+         }
+        },
+
+        {'name': 'AMS SASC', 
+         'file': "https://www.amssasc.ca/events/?ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'community',
+            'hidden_title_terms': ['Roots and Resilience'],
          }
         },
 
