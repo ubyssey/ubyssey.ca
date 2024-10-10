@@ -65,29 +65,58 @@ export function QueryEventsCalendar() {
     const decodedUrl = decodeURIComponent(fullUrl);
     const queryString = decodedUrl.split('?')[1]; // Get the part after the "?"
     const urlParams = new URLSearchParams(queryString);
-
+    const [numberOfWeeks, setNumberOfWeeks] = useState(calculateNumberOfWeeks());
     const [start, setStart] = useState(getInitialStartDate());
 
+    function getDate(month, year) {
+        let newStartDate = new Date(year, month - 1, 1); // Month is 0-indexed
+
+        // Ensure the new start date begins on the Monday of that week
+        while (newStartDate.getDay() !== 1) {
+            newStartDate = new Date(newStartDate.getTime() - 24 * 60 * 60 * 1000);
+        }    
+        return newStartDate;
+    }
+
+    function calculateNumberOfWeeks() {
+        if(urlParams.has("month") && urlParams.has("year")){
+            const month = parseInt(urlParams.get("month"));
+            const year = parseInt(urlParams.get("year"));
+            const date = new Date(year, month - 1, 1);
+            if (
+                (date.getDay() === 6 && new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() === 31) || 
+                (date.getDay() === 0 && new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() > 29)
+            ) {
+                return 6;
+            } else {
+                return 5;
+            }
+        }
+        else{
+            return 4;
+        }
+    }
+
+
     function getInitialStartDate() {
-        // console.log("Get query month"+ query.get("month"));
         if(urlParams.has("month") && urlParams.has("year")){
             const month = parseInt(urlParams.get("month"));
             console.log("Month is "+month);
             const year = parseInt(urlParams.get("year"));
             console.log("Year is "+year);
-            return new Date(year, month - 1, 1);
+            return getDate(month, year);
         }
+
         else{
-        console.log("No month and year");
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+            console.log("No month and year");
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-        let start = new Date(today.getTime() - 10 * d);
-        while (start.getDay() !== 1) {
-            start = new Date(start.getTime() + d);
-        }
-
-        return start;
+            let start = new Date(today.getTime() - 10 * d);
+            while (start.getDay() !== 1) {
+                start = new Date(start.getTime() + d);
+            }
+            return start;
     }
 }
 
@@ -141,7 +170,7 @@ export function QueryEventsCalendar() {
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} setStart={setStart}/>
+                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} />
                     </div>
                 </div>
             
@@ -339,9 +368,8 @@ function EventsOptions() {
     );
 }
 
-function EventsCalendar({events, start, setStart}) {
+function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks}) {
 
-    const [numberOfWeeks, setNumberOfWeeks] = React.useState(4);
     const [isMonthToggled, setIsMonthToggled] = React.useState(false);
     let query = useQuery();
     const s = 1000
