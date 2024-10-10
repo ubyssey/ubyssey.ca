@@ -335,6 +335,7 @@ function EventsOptions() {
             <div className="events-calendar--categories">
                 {isMobile ? (
                     <select
+                        className = "category-select"
                         onChange={handleCategoryChange}
                         value={category}
                     >

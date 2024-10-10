@@ -365,7 +365,20 @@ header.events{
                 margin: 0 0.5em;
             }
         }
-    }   
+        select.category-select {
+            width: 50%;                  
+            font-size: 1em;               
+            text-align: center;           
+            border-radius: 8px;        
+            appearance: none; 
+            font-family: "noto-sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;            /* Remove default styling */
+        }        
+    }     
+    html[color-css-theme="dark"] .events-calendar--categories select.category-select {
+        background-color: #EEE;   
+        color: black;
+    }
+
     .events-calendar--days-of-week {
         display: none;
     }
