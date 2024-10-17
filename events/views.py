@@ -335,7 +335,7 @@ async def update_events(request):
          },
         },
 
-        {'name': 'UBC Pyschology', 
+        {'name': 'UBC Psychology', 
          'api': 'https://psych.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
