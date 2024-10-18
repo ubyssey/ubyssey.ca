@@ -54,11 +54,8 @@ header.main{
 
     .middle {
       margin-left: 2em;
-      max-width: 600px;
+      max-width: 520px;
       width: 100%;
-    }
-    .left, .right {
-      padding-top: 0.5em;
     }
     .right {
       margin-left: auto;
@@ -75,7 +72,7 @@ header.main{
   .row {
     margin-top: 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     //overflow: hidden;
 
     .left, .middle, .right {
@@ -91,9 +88,9 @@ header.main{
     .right {
       text-align: right;
   
-      //.rss-icon {
-      //  margin-right: 1.5em;
-      //}
+      .rss-icon {
+        margin-right: 1.5em;
+      }
 
       a {
           position: relative;
@@ -202,6 +199,7 @@ header.main{
       width: fit-content;
       margin: auto;
       height: 100%;
+      gap: 0.5em;
       li {
         display: inline-block;
       }

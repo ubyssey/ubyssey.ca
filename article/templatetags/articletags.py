@@ -70,6 +70,34 @@ def display_pubdate(value):
         return "1 second ago"
     return str(seconds) + " seconds ago"
 
+@register.filter(name='time_ago')
+def time_ago(value):
+
+    if value == None:
+        return "Unknown"
+
+    pubdate = value.astimezone(timezone.get_current_timezone())
+    today = timezone.now().astimezone(timezone.get_current_timezone())
+    delta = today - pubdate
+
+    if delta.total_seconds() > datetime.timedelta(days=7).total_seconds():
+        delta = round(delta.total_seconds()/(3600*24*7))
+        unit = "w"    
+    elif delta.total_seconds() > datetime.timedelta(days=1).total_seconds():
+        delta = round(delta.total_seconds()/(3600*24))
+        unit = "d"
+    elif delta.total_seconds() > datetime.timedelta(hours=1).total_seconds():
+        delta = round(delta.total_seconds()/3600)
+        unit = "h"
+    elif delta.total_seconds() > datetime.timedelta(minutes=1).total_seconds():
+        delta = round(delta.total_seconds()/60)
+        unit = "m"
+    else:
+        delta = round(delta.total_seconds())
+        unit = "s"
+
+    return str(delta) + unit + " ago"
+
 @register.filter(name="get_id")
 def get_id(value):
     from wagtail.models import Page, PageManager, SiteRootPath

@@ -68,6 +68,9 @@ footer {
     margin: 2em auto;
     padding: 1em;
     max-width: 1150px;
+    a {
+      text-decoration: underline;
+    }
   }
 
   .copyright {
@@ -139,7 +142,8 @@ footer {
 
       .logo {
         width: 50%;
-        margin: auto;
+        margin-inline: auto;
+        margin-bottom: 1em;
       }
       .funding {
         margin-inline: auto;
@@ -163,10 +167,6 @@ footer {
         margin: 0 0.5em;
         text-decoration: underline;
       }
-    }
-
-    .land-acknowledgement {
-      display: none;
     }
   }
 
