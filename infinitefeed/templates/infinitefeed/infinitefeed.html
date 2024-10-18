@@ -24,11 +24,11 @@ section = "{{filters.section}}"
 >
   {% if label %}
       {% for article in filters|preload_articles:"15" %}
-          {% include 'article/objects/infinitefeed_item.html' with label=label article=article %}
+          {% include 'article/objects/infinitefeed_item.html' with label=label article=article expectedSection=filters.section %}
       {% endfor %}
   {% else %}
       {% for article in filters|preload_articles:"15" %}
-          {% include 'article/objects/infinitefeed_item.html' with article=article %}
+          {% include 'article/objects/infinitefeed_item.html' with article=article expectedSection=filters.section %}
       {% endfor %}
   {% endif %}
 </div>

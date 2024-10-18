@@ -75,24 +75,10 @@
         flex-direction: column;
         margin-bottom: 0.5em;
 
-
         .o-article__section {
-            margin-top: 1em;
-            margin-bottom: 0.25em;
-            font-size: 0.65em;
-            text-transform: uppercase;
-            width: fit-content;
-            padding-left: 0.2em;
-            padding-right: 0.2em;
             color: black;
-            a {
-                color: inherit;
-            }
-            &:hover {
-                text-decoration: underline;
-            }
         }
-
+        
         .o-article__headline {
             margin-top: 0;
             margin-bottom: 0.5em;

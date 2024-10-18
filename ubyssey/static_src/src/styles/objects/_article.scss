@@ -120,6 +120,24 @@
   font-size: 1%;
 }
 
+.o-article__section {
+  margin-top: 1em;
+  margin-bottom: 0.25em;
+  padding-inline: 0.2em;
+  width: fit-content;
+
+  font-weight: 600;
+  font-size: 0.65em;
+  text-transform: uppercase;
+  a {
+      color: inherit;
+  }
+  &:hover {
+      text-decoration: underline;
+  }
+}
+
+
 ul.article-list, ol.article-list {
   margin: 0;
   padding: 0;

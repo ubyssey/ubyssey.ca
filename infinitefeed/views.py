@@ -10,7 +10,7 @@ from django.http import JsonResponse
 
 def getArticles(filters, start, number):
 
-    if "section" in filters:
+    if "section" in filters and not "category" in filters:
         if filters["section"] == "home":
             return ArticlePage.objects.live().public().order_by('-explicit_published_at')[int(start):int(start)+int(number)]
         else:

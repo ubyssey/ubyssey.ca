@@ -33,14 +33,17 @@
 	{% endif %}
 	<div class="o-article__right">
 		<div class="o-article__meta">
+			{%if expectedSection != article.current_section %}
+			<div class="o-article__section">
+				<a href="{{article|get_section_link}}">{{article|get_section_title}}</a>
+			</div>
+			{% endif %}
 			<h2 class="o-article__headline">
 				<a href="{% pageurl article %}">{{ article.title|safe }}</a>
 			</h2>
 			<p class="o-article__snippet">{{ article.lede|safe }}</p>
 			<p class="o-article__byline">
 				<span class="o-article__author">{{ article.get_authors_with_urls|safe }}</span>
-				<span> &nbsp;&nbsp; </span>
-				<a href="{{article|get_section_link}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article|get_section_title}}</a>
 				<span> &nbsp;&nbsp; </span>
 				<span class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</span>
 			</p>
