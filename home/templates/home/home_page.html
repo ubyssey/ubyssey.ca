@@ -4,6 +4,7 @@
 {% load wagtailimages_tags %}
 {% load ubyssey_ad_tags %}
 {% load ubyssey_ad_filters %}
+{% load articletags %}
 
 {% block stylesheet %}
 	<link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}" type="text/css" />
@@ -52,9 +53,7 @@
 			{% include "article/objects/cover_story.html" with article=coverstory%}
 		{% endif %}
 		<div class="home-top-article-list">
-			{% now "d N Y" as date %}
-			{% now "l" as dayOfWeek %}
-			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text=date textBold=dayOfWeek %}
+			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=self.last_published_at|time_ago %}
 			
 			{% for article in self.top_articles_list %}
 				{% include "article/objects/top_article.html" with article=article.article count=forloop.counter %}
