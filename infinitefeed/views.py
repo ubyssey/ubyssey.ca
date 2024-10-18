@@ -56,6 +56,8 @@ def infinitefeed(request):
                 data = {'article': article}
                 if "label" in request.GET:
                     data["label"] = True
+                if "section" in request.GET:
+                    data["expectedSection"] = request.GET['section']
                 articleHtml.append(loader.render_to_string("article/objects/infinitefeed_item.html", data))
                    
             articleHtml_json = json.dumps(articleHtml)

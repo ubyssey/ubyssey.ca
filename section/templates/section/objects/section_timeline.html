@@ -17,9 +17,9 @@
         <div style="position:relative">
           <a href="{% pageurl article %}" class="o-article__image">
             {% if article.featured_media.first.image %}
-              {% image article.featured_media.first.image fill-680x476-c100 format-webp %}
+              {% image article.featured_media.first.image fill-680x476-c100 format-webp loading="lazy" %}
             {% else %}
-              {% image article.featured_media fill-680x476-c100 format-webp %}
+              {% image article.featured_media fill-680x476-c100 format-webp loading="lazy" %}
             {% endif %}
           </a>
           {% if label %}
