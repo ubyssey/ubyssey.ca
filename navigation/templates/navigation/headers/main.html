@@ -4,55 +4,55 @@
 <header class="main">
   <div class="u-container u-container--mid">
     <div class="branding row">
-      <div class="left"><span class="since-line">
-        {% if tagline_url %}
-          <a href="{{tagline_url}}">{% if tagline %}{{tagline}}{% else %}!{% endif %}</a>
-        {% else %}
-          {% if tagline %}{{tagline}}{% endif %}
-        {% endif %}
-      </span></div>
       <div class="middle">
         <img class="top-logo light-logo" src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt="The Ubyssey logo"/>
         <img class="top-logo dark-logo" src="{% static 'ubyssey/images/ubyssey-logo 1.svg' %}" alt="The Ubyssey logo"/>
       </div>
       <div class="right">
-        <!-- <a class="store-link" href="https://store.ubyssey.ca/">
-          <i class="fa fa-shopping-bag"></i><span>Store</span>
-        </a> -->
-        {% comment %} <a class="o-snapchat-icon"><i class="fa fa-snapchat"></i><div class="o-snapchat-icon__code"></div></a> {% endcomment %}
-        <a class = "rss-icon" href="/rss" target="_blank" title="The Ubyssey rss feed"><ion-icon name="logo-rss"></ion-icon></a>
-        <a class = "instagram-icon" href="https://www.instagram.com/ubyssey/" target="_blank" title="The Ubyssey on Instagram"><ion-icon name="logo-instagram"></ion-icon></a>
-        <a class = "tiktok-icon" href="https://www.tiktok.com/@ubyssey" target="_blank" title="The Ubyssey on Tiktok"><ion-icon name="logo-tiktok"></ion-icon></a>
-        <a class = "twitter-icon" href="https://twitter.com/Ubyssey" target="_blank" title="The Ubyssey on Twitter"><ion-icon name="logo-twitter"></ion-icon></a>
-        <a class = "facebook-icon" href="https://www.facebook.com/ubyssey" target="_blank" title="The Ubyssey on Facebook"><ion-icon name="logo-facebook"></ion-icon></a>
-        
-        {% include 'article/objects/darkmode_button.html' with id="main"%}
+        <p class="since-line">
+          {% if tagline_url %}
+            <a href="{{tagline_url}}">{% if tagline %}{{tagline}}{% else %}!{% endif %}</a>
+          {% else %}
+            {% if tagline %}{{tagline}}{% endif %}
+          {% endif %}
+        </p>
+
+        <p>
+          {% now "F d, Y" as date %}
+          {% now "l" as dayOfWeek %}
+          {{date}} <b>{{dayOfWeek}}</b>
+        </p>       
+
+        <div>
+          <a class = "rss-icon" href="/rss" target="_blank" title="The Ubyssey rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+
+          <a class = "instagram-icon" href="https://www.instagram.com/ubyssey/" target="_blank" title="The Ubyssey on Instagram"><ion-icon name="logo-instagram"></ion-icon></a>
+          <a class = "tiktok-icon" href="https://www.tiktok.com/@ubyssey" target="_blank" title="The Ubyssey on Tiktok"><ion-icon name="logo-tiktok"></ion-icon></a>
+          <a class = "twitter-icon" href="https://twitter.com/Ubyssey" target="_blank" title="The Ubyssey on Twitter"><ion-icon name="logo-twitter"></ion-icon></a>
+          <a class = "facebook-icon" href="https://www.facebook.com/ubyssey" target="_blank" title="The Ubyssey on Facebook"><ion-icon name="logo-facebook"></ion-icon></a>
+
+          {% include 'article/objects/darkmode_button.html' with id="main"%}
+        </div>
         {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
       </div>
     </div>
     <nav class="main row">
-      <div class="left">
-        <ul class="meta">
+      <div class="left meta">
           {% flat_menu 'left_header_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-        </ul> 
       </div>
-      <div class="middle">
-        <ul class="sections">
-          {% main_menu %}
-          <li class="dropdown">
-            <a class="more-dropdown preventDefault" href="#">MORE <ion-icon name="caret-down" class="dropdown-hidden"></ion-icon><ion-icon class="dropdown-show" name="caret-up"></ion-icon></a>
-            <div class="more-list dropdown-content">
-              <ul>
-                {% flat_menu 'dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-              </ul>
-            </div>
-          </li>
-        </ul>
+      <div class="middle sections">
+        {% main_menu %}
+        <div class="dropdown">
+          <a class="more-dropdown preventDefault" href="#">MORE <ion-icon name="caret-down" class="dropdown-hidden"></ion-icon><ion-icon class="dropdown-show" name="caret-up"></ion-icon></a>
+          <div class="more-list dropdown-content">
+            <ul>
+              {% flat_menu 'dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="right">
-        <ul class="meta">
+      <div class="right meta">
           {% flat_menu 'right_header_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-        </ul>
       </div>
     </nav>
 </div>
