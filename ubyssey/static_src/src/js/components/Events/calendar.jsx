@@ -292,7 +292,8 @@ function EventsCalendar({events}) {
                     week['month'] = months[cur.getMonth()];
                     week['month_short'] = shortenedMonths[cur.getMonth()];
                 }
-                var cur = new Date(cur.getTime() + d);
+                var cur = new Date(cur.getTime() + (h * 25));
+                cur.setHours(0, 0, 0, 0);
                 week['days'].push(day);
             }
             calendar.push(week);
