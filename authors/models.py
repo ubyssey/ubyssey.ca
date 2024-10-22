@@ -197,7 +197,7 @@ class AuthorPage(RoutablePageMixin, Page):
             # Get articles where this author is credited with something other than "author" and "org_role"
             authors_media = [] 
             keys = []
-            for a in ArticleAuthorsOrderable.objects.filter(author=self).exclude(Q(author_role="author") | Q(author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
+            for a in ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True).exclude(Q(author_role="author") | Q(author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
                 # we gotta do this because I can't use .distinct() on a field with mysql. We have to move to postgres for that (sounds like a lot of work) - samlow 21/10/2024
                 if not a.article_page_id in keys:
                     keys.append(a.article_page_id)
@@ -206,7 +206,7 @@ class AuthorPage(RoutablePageMixin, Page):
             # Get articles where this author is creditted with either "author" or "org_role"
             authors_media = [] 
             keys = []
-            for a in ArticleAuthorsOrderable.objects.filter(Q(author=self, author_role="author") | Q(author=self, author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
+            for a in ArticleAuthorsOrderable.objects.filter(Q(author=self, author_role="author", article_page__live=True) | Q(author=self, author_role="org_role", article_page__live=True)).order_by(article_order+'article_page__explicit_published_at'):
                 # same here, can't use .distinct() cause not using postgres - samlow 21/10/2024
                 if not a.article_page_id in keys:
                     keys.append(a.article_page_id)
