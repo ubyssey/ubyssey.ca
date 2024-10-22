@@ -7,7 +7,7 @@ from images.models import GallerySnippet
 from dbtemplates.models import Template as DBTemplate
 
 from django.db import models
-from django.db.models import fields
+from django.db.models import fields, Q
 from django.db.models.fields import CharField
 from django.shortcuts import render
 from django.db.models.query import QuerySet
@@ -1150,6 +1150,50 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         return ', '.join(map(lambda a: a[1], authors_with_roles))
     authors_with_roles = property(fget=get_authors_with_roles)
  
+    def get_authors_split_out_visual_bylines(self) -> str:
+        """Returns list of authors as a comma-separated string
+        sorted by author type (with 'and' before last author)."""
+
+        role_types_words = {
+            'author': 'Words by ',
+            'photographer': 'Photos by ',
+            'illustrator': 'Illustrations by ',
+            'videographer': 'Videos by ',
+            'designer': 'Design by ',
+        }
+        role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
+        writers = []
+        visuals = []
+        word_authors = []
+        visual_authors = []
+        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
+            v = list(v)
+            if k=='org_role' or k=='author':
+                for author in v:
+                    word_authors.append(author.author)
+                writers = writers + v
+            else:
+                for author in v:
+                    visual_authors.append(author.author)
+                visuals.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=v)])
+        visuals.sort(key=lambda s: role_types.index(s[0]))
+
+        visual_only_author = False
+        for visual_author in visual_authors:
+            if not visual_author in word_authors:
+                visual_only_author = True
+                break
+
+        writers = self.get_authors_string(links=True, authors_list=list(writers))
+
+        if len(visuals) > 0 and visual_only_author:
+            visuals = ', ' + ', '.join(map(lambda a: a[1], visuals))
+        else:
+            visuals = ''
+
+        return writers + visuals
+    authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
+
     def get_category_articles(self, order='-first_published_at') -> QuerySet:
         """
         Returns a list of articles within the Article's category

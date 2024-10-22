@@ -196,17 +196,21 @@ class AuthorPage(RoutablePageMixin, Page):
         elif media_type == "visual-bylines":
             # Get articles where this author is credited with something other than "author" and "org_role"
             authors_media = [] 
+            keys = []
             for a in ArticleAuthorsOrderable.objects.filter(author=self).exclude(Q(author_role="author") | Q(author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
                 # we gotta do this because I can't use .distinct() on a field with mysql. We have to move to postgres for that (sounds like a lot of work) - samlow 21/10/2024
-                if not a.article_page in authors_media:
-                    authors_media.append(a.article_page)
+                if not a.article_page_id in keys:
+                    keys.append(a.article_page_id)
+                    authors_media.append(a)
         else:
             # Get articles where this author is creditted with either "author" or "org_role"
             authors_media = [] 
+            keys = []
             for a in ArticleAuthorsOrderable.objects.filter(Q(author=self, author_role="author") | Q(author=self, author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
                 # same here, can't use .distinct() cause not using postgres - samlow 21/10/2024
-                if not a.article_page in authors_media:
-                    authors_media.append(a.article_page)
+                if not a.article_page_id in keys:
+                    keys.append(a.article_page_id)
+                    authors_media.append(a)
             #authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).distinct().order_by(article_order)
 
         if search_query:
@@ -234,6 +238,8 @@ class AuthorPage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(paginator.num_pages)
             context["current_page"] = paginator.num_pages
 
+        if media_type == "visual-bylines" or "articles":
+            context['is_orderable'] = True
         context["paginated_articles"] = paginated_articles
 
         return context
@@ -246,14 +252,14 @@ class AuthorPage(RoutablePageMixin, Page):
 
         media_types = []
         
-        if VideoAuthorsOrderable.objects.filter(author=self).exists():
-            media_types.append(("videos", "videos"))
-        if UbysseyImage.objects.filter(author=self).exists():
-            media_types.append(("photos", "photos"))
         if ArticleAuthorsOrderable.objects.filter(author=self, author_role="author").exists():
             media_types.append(("articles", "articles"))
         if ArticleAuthorsOrderable.objects.filter(author=self).exclude(author_role="author").exists():
             media_types.append(("visual-bylines", "visual bylines"))
+        if UbysseyImage.objects.filter(author=self).exists():
+            media_types.append(("photos", "photos"))
+        if VideoAuthorsOrderable.objects.filter(author=self).exists():
+            media_types.append(("videos", "videos"))
 
         context["media_types"] = media_types
         context["media_type"] = self.main_media_type
