@@ -51,20 +51,14 @@
 		{% endif %}
 		
 		<div class="options">
-			{% if "articles" in media_types %}
-				<h2 class="author-heading {% if media_type == "articles" %}selected{% endif %}"><a href="/authors/{{self.slug}}/articles">Articles</a></h2>
-			{% endif %}
-			{% if "photos" in media_types %}
-				<h2 class="author-heading {% if media_type == "photos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/photos">Photos</a></h2>
-			{% endif %}
-			{% if "videos" in media_types %}
-				<h2 class="author-heading {% if media_type == "videos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/videos">Videos</a></h2>
-			{% endif %}
+			{% for type in media_types %}
+				<h2 class="author-heading {% if media_type == type.0 %}selected{% endif %}"><a href="/authors/{{self.slug}}/{{type.0}}/">{{type.1}}</a></h2>
+			{% endfor %}
 		</div>
 
-		<h2 class="author-heading">Latest {{media_type}} from {{self.title}}</h2>
-		
-		{% if media_type == "articles" %}
+		<h2 class="author-heading">Latest {{media_type_name}} from {{self.title}}</h2>
+
+		{% if media_type == "articles" or media_type == "visual-bylines" %}
 			{% include 'archive/objects/archive.html' with page_obj=paginated_articles %}
 		{% elif media_type == "photos" %}
 			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}

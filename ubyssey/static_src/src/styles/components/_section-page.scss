@@ -138,6 +138,9 @@
   @media($bp-smaller-than-phablet) {
     display: block;
   }
+  .o-archive__search__input {
+    width: 115px;
+  }
 }
 
 .c-section__button-label {

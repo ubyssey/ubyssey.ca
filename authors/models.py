@@ -1,9 +1,11 @@
 from django.db import models
 from django.db.models.query import QuerySet
+from videos.models import VideoAuthorsOrderable
+from django.db.models import Q
 from django.utils.text import slugify
 from django_extensions.db.fields import AutoSlugField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from article.models import ArticlePage
+from article.models import ArticlePage, ArticleAuthorsOrderable
 from wagtail.admin.panels import (
     # Panels
     FieldPanel,
@@ -125,7 +127,7 @@ class AuthorPage(RoutablePageMixin, Page):
 
    
 
-    CHOICES = [("articles", "Articles"), ("photos", "Photos"), ("videos", "Videos")]
+    CHOICES = [("articles", "Articles"), ("photos", "Photos"), ("videos", "Videos"), ('visual-bylines', "Visual Bylines")]
     main_media_type = models.CharField(
         choices=CHOICES,
         default='articles',
@@ -182,25 +184,30 @@ class AuthorPage(RoutablePageMixin, Page):
         search_query = request.GET.get("q")
         page = request.GET.get("page")
         order = request.GET.get("order")
+        if order == 'oldest':
+            article_order = ""
+        else:            
+            article_order = "-"
 
         if media_type == "photos":
-            if order == 'oldest':
-                article_order = "updated_at"
-            else:            
-                article_order = "-updated_at"
-            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order)
+            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order+"updated_at")
         elif media_type == "videos":
-            if order == 'oldest':
-                article_order = "updated_at"
-            else:            
-                article_order = "-updated_at"
-            authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order)
+            authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order+"updated_at")
+        elif media_type == "visual-bylines":
+            # Get articles where this author is credited with something other than "author" and "org_role"
+            authors_media = [] 
+            for a in ArticleAuthorsOrderable.objects.filter(author=self).exclude(Q(author_role="author") | Q(author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
+                # we gotta do this because I can't use .distinct() on a field with mysql. We have to move to postgres for that (sounds like a lot of work) - samlow 21/10/2024
+                if not a.article_page in authors_media:
+                    authors_media.append(a.article_page)
         else:
-            if order == 'oldest':
-                article_order = "explicit_published_at"
-            else:            
-                article_order = "-explicit_published_at"
-            authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).distinct().order_by(article_order)
+            # Get articles where this author is creditted with either "author" or "org_role"
+            authors_media = [] 
+            for a in ArticleAuthorsOrderable.objects.filter(Q(author=self, author_role="author") | Q(author=self, author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
+                # same here, can't use .distinct() cause not using postgres - samlow 21/10/2024
+                if not a.article_page in authors_media:
+                    authors_media.append(a.article_page)
+            #authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).distinct().order_by(article_order)
 
         if search_query:
             if media_type == "videos":
@@ -233,17 +240,24 @@ class AuthorPage(RoutablePageMixin, Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        # For meta tags (see ubyssey.ca/ubyssey/templates/ubyssey/meta_tags.html)
         context["self"].featured_media = self.image
+        context["self"].lede = self.bio_description
+
         media_types = []
-        if VideoSnippet.objects.all().count() > 0:
-            media_types.append("videos")
-        if UbysseyImage.objects.all().count() > 0:
-            media_types.append("photos")
-        if ArticlePage.objects.live().public().all().count() > 0:
-            media_types.append("articles")
+        
+        if VideoAuthorsOrderable.objects.filter(author=self).exists():
+            media_types.append(("videos", "videos"))
+        if UbysseyImage.objects.filter(author=self).exists():
+            media_types.append(("photos", "photos"))
+        if ArticleAuthorsOrderable.objects.filter(author=self, author_role="author").exists():
+            media_types.append(("articles", "articles"))
+        if ArticleAuthorsOrderable.objects.filter(author=self).exclude(author_role="author").exists():
+            media_types.append(("visual-bylines", "visual bylines"))
 
         context["media_types"] = media_types
         context["media_type"] = self.main_media_type
+        context["media_type_name"] = self.main_media_type.replace("-", " ")
 
         order = request.GET.get("order")
         if order == 'oldest':
@@ -332,8 +346,24 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.get_context(request, *args, **kwargs)
 
         context["media_type"] = "articles"
+        context["media_type_name"] = "articles"
 
         context = self.organize_media("articles", request, context)
+
+        return render(request, self.template, context)
+    
+    @route(r'^visual-bylines/$')
+    def visuals_page(self, request, *args, **kwargs):
+        """
+        View function for author's stories
+        """
+
+        context = self.get_context(request, *args, **kwargs)
+
+        context["media_type"] = "visual-bylines"
+        context["media_type_name"] = "visual bylines"
+
+        context = self.organize_media("visual-bylines", request, context)
 
         return render(request, self.template, context)
     
@@ -346,6 +376,7 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.get_context(request, *args, **kwargs)
 
         context["media_type"] = "photos"
+        context["media_type_name"] = "photos"
         
         context = self.organize_media("photos", request, context)
 
@@ -360,6 +391,7 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.get_context(request, *args, **kwargs)
 
         context["media_type"] = "videos"
+        context["media_type_name"] = "videos"
         
         context = self.organize_media("videos", request, context)
 
