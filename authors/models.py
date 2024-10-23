@@ -127,7 +127,7 @@ class AuthorPage(RoutablePageMixin, Page):
 
    
 
-    CHOICES = [("articles", "Articles"), ("photos", "Photos"), ("videos", "Videos"), ('visual-bylines', "Visual Bylines")]
+    CHOICES = [("articles", "Articles"), ("photos", "Gallery"), ("videos", "Videos"), ('visuals', "Visual Bylines")]
     main_media_type = models.CharField(
         choices=CHOICES,
         default='articles',
@@ -193,7 +193,7 @@ class AuthorPage(RoutablePageMixin, Page):
             authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order+"updated_at")
         elif media_type == "videos":
             authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order+"updated_at")
-        elif media_type == "visual-bylines":
+        elif media_type == "visuals":
             # Get articles where this author is credited with something other than "author" and "org_role"
             authors_media = [] 
             keys = []
@@ -238,7 +238,7 @@ class AuthorPage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(paginator.num_pages)
             context["current_page"] = paginator.num_pages
 
-        if media_type == "visual-bylines" or "articles":
+        if media_type == "visuals" or "articles":
             context['is_orderable'] = True
         context["paginated_articles"] = paginated_articles
 
@@ -255,9 +255,9 @@ class AuthorPage(RoutablePageMixin, Page):
         if ArticleAuthorsOrderable.objects.filter(author=self, author_role="author").exists():
             media_types.append(("articles", "articles"))
         if ArticleAuthorsOrderable.objects.filter(author=self).exclude(author_role="author").exists():
-            media_types.append(("visual-bylines", "visual bylines"))
+            media_types.append(("visuals", "visuals"))
         if UbysseyImage.objects.filter(author=self).exists():
-            media_types.append(("photos", "photos"))
+            media_types.append(("photos", "gallery"))
         if VideoAuthorsOrderable.objects.filter(author=self).exists():
             media_types.append(("videos", "videos"))
 
@@ -352,13 +352,12 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.get_context(request, *args, **kwargs)
 
         context["media_type"] = "articles"
-        context["media_type_name"] = "articles"
 
         context = self.organize_media("articles", request, context)
 
         return render(request, self.template, context)
     
-    @route(r'^visual-bylines/$')
+    @route(r'^visuals/$')
     def visuals_page(self, request, *args, **kwargs):
         """
         View function for author's stories
@@ -366,10 +365,9 @@ class AuthorPage(RoutablePageMixin, Page):
 
         context = self.get_context(request, *args, **kwargs)
 
-        context["media_type"] = "visual-bylines"
-        context["media_type_name"] = "visual bylines"
+        context["media_type"] = "visuals"
 
-        context = self.organize_media("visual-bylines", request, context)
+        context = self.organize_media("visuals", request, context)
 
         return render(request, self.template, context)
     
@@ -382,7 +380,6 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.get_context(request, *args, **kwargs)
 
         context["media_type"] = "photos"
-        context["media_type_name"] = "photos"
         
         context = self.organize_media("photos", request, context)
 
@@ -397,7 +394,6 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.get_context(request, *args, **kwargs)
 
         context["media_type"] = "videos"
-        context["media_type_name"] = "videos"
         
         context = self.organize_media("videos", request, context)
 

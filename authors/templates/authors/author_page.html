@@ -56,9 +56,7 @@
 			{% endfor %}
 		</div>
 
-		<h2 class="author-heading">Latest {{media_type_name}} from {{self.title}}</h2>
-
-		{% if media_type == "articles" or media_type == "visual-bylines" %}
+		{% if media_type == "articles" or media_type == "visuals" %}
 			{% include 'archive/objects/archive.html' with page_obj=paginated_articles current_page_articles=current_page_articles %}
 		{% elif media_type == "photos" %}
 			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
