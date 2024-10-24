@@ -61,15 +61,16 @@
   position:relative;
   margin-bottom:40px;
   background-size:cover;
+  background-position: center;
   svg.c-section__heading {
     position: absolute;
-    bottom: -50px;
+    bottom: -55px;
     padding-inline: 20px;
-    stroke: black;
     box-sizing: border-box;
     @media($bp-smaller-than-phablet) {
-      bottom: -20px;
+      bottom: -25px;
       padding-inline: 10px;
+      font-size: 2em;
     }
   }
 
@@ -199,15 +200,16 @@
 }
 
 .c-section__heading {
-  fill: white;
-  stroke: black;
-  stroke-width: 4px;
+  fill: var(--header_color);
+  stroke: var(--background);
+  stroke-width: 0.5em;
   stroke-linejoin: round;
   paint-order: stroke;
-  font-size: 2rem;
+  font-size: 1em;
   font-weight: bolder;
-  text-transform: uppercase;
-  font-family: $font-banner;
+
+  transition: stroke 0.5s ease, color 0.5s ease;
+  //font-family: $font-banner;
 }
 
 .section_infinitefeed {

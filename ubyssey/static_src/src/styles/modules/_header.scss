@@ -504,6 +504,8 @@ nav.mobile {
   color: $nav-span-color;
   z-index: 200;
 
+  transition: background 0.5s ease, color 0.5s ease;
+
   h2 {
     font-size: 1.5em;
     margin-top: 0;
