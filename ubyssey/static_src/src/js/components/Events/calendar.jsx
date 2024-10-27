@@ -67,6 +67,7 @@ export function QueryEventsCalendar() {
     const urlParams = new URLSearchParams(queryString);
     const [numberOfWeeks, setNumberOfWeeks] = useState(calculateNumberOfWeeks());
     const [start, setStart] = useState(getInitialStartDate());
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
     function getDate(month, year) {
         let newStartDate = new Date(year, month - 1, 1); // Month is 0-indexed
@@ -149,7 +150,14 @@ export function QueryEventsCalendar() {
     }
     React.useEffect(()=>{
         getEvents();
+        const theme = document.documentElement.getAttribute('color-css-theme');
+        setIsDarkMode(theme === 'dark');
     },[]);
+
+    const toggleDarkMode = () => {
+        setIsDarkMode(prevMode => !prevMode); // Toggle dark mode state
+    };
+
     return (
         <Router>
             <div class="events-flex">
@@ -163,6 +171,32 @@ export function QueryEventsCalendar() {
                                 </a>
                             </div>
                         </div>
+                        <button 
+                            className="theme-toggle dark-mode-switcher" 
+                            id="theme-toggle" 
+                            onClick={toggleDarkMode} 
+                            title="Toggles light & dark" 
+                            aria-label="auto" 
+                            aria-live="polite"
+                        >
+                            <svg className="sun-and-moon" aria-hidden="true" width="1.75em" height="1.75em" viewBox="0 0 24 24">
+                                <mask className="moon" id="moon-mask">
+                                    <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                                    <circle cx="24" cy="10" r="6" fill="black" />
+                                </mask>
+                                <circle className="sun" cx="12" cy="12" r="6" mask="url(#moon-mask)" fill="currentColor" />
+                                <g className="sun-beams" stroke="currentColor">
+                                    <line x1="12" y1="1" x2="12" y2="3" />
+                                    <line x1="12" y1="21" x2="12" y2="23" />
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                    <line x1="1" y1="12" x2="3" y2="12" />
+                                    <line x1="21" y1="12" x2="23" y2="12" />
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                                </g>
+                            </svg>
+                        </button>
 
                         <h1 class="title">Events around campus</h1>
 
@@ -170,7 +204,7 @@ export function QueryEventsCalendar() {
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} />
+                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} />
                     </div>
                 </div>
             
@@ -369,7 +403,7 @@ function EventsOptions() {
     );
 }
 
-function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks}) {
+function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode}) {
 
     const [isMonthToggled, setIsMonthToggled] = React.useState(false);
     let query = useQuery();
@@ -603,14 +637,6 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
     });
     
     const isPhablet = useIsMobile();
-    const [isDarkMode, setIsDarkMode] = useState(false);
-
-    useEffect(() => {
-        // Check if the page has the "dark" theme applied
-        const theme = document.documentElement.getAttribute('color-css-theme');
-        setIsDarkMode(theme === 'dark');
-    }, []);
-
     return (
         <>
         <div class="events-calendar--days-of-week">
@@ -683,7 +709,6 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                             fill={isDarkMode ? "#FFFFFF" : "#000000"}
                         />
                     </svg>
-
                 </Link>
 
             </>
