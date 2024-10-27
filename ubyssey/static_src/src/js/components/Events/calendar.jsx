@@ -562,6 +562,17 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
         setStart(newStartDate);
         setIsMonthToggled(true);
     };
+
+    const getInitialStartDate = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let start = new Date(today.getTime() - 10 * d);
+        while (start.getDay() !== 1) {
+            start = new Date(start.getTime() + d);
+        }
+        return start;
+    };
+
     
     var category = "all";
     var highlight = "category";
@@ -631,8 +642,6 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                 <Link
                     to={() => {
                         const searchParams = new URLSearchParams(window.location.search);
-                        searchParams.set('month', calculateNewStart('previous', start).month);
-                        searchParams.set('year', calculateNewStart('previous', start).year);
                         return `?${searchParams.toString()}`;
                     }}
                     className="arrow-button left-arrow"
@@ -653,8 +662,25 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                 <Link
                     to={() => {
                         const searchParams = new URLSearchParams(window.location.search);
-                        searchParams.set('month', calculateNewStart('next', start).month);
-                        searchParams.set('year', calculateNewStart('next', start).year);
+                        return `?${searchParams.toString()}`;
+                    }}
+                    className="today-button"
+                    title="Today"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        const searchParams = new URLSearchParams(window.location.search);
+                        searchParams.delete('month');
+                        searchParams.delete('year');
+                        navigate(`?${searchParams.toString()}`);
+                        setStart(getInitialStartDate());
+                        setIsMonthToggled(false);
+                    }}
+                >
+                    Today
+                </Link>
+                <Link
+                    to={() => {
+                        const searchParams = new URLSearchParams(window.location.search);
                         return `?${searchParams.toString()}`;
                     }}
                     className="arrow-button right-arrow"
@@ -670,15 +696,15 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                             fill={isDarkMode ? "#FFFFFF" : "#000000"}
                         />
                     </svg>
+
                 </Link>
+
             </>
         ) : (
             <>
                 <Link
                     to={() => {
                         const searchParams = new URLSearchParams(window.location.search);
-                        searchParams.set('month', calculateNewStart('previous', start).month);
-                        searchParams.set('year', calculateNewStart('previous', start).year);
                         return `?${searchParams.toString()}`;
                     }}
                     className="arrow-button up-arrow"
@@ -698,8 +724,25 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                 <Link
                     to={() => {
                         const searchParams = new URLSearchParams(window.location.search);
-                        searchParams.set('month', calculateNewStart('next', start).month);
-                        searchParams.set('year', calculateNewStart('next', start).year);
+                        return `?${searchParams.toString()}`;
+                    }}
+                    className="today-button"
+                    title="Today"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        const searchParams = new URLSearchParams(window.location.search);
+                        searchParams.delete('month');
+                        searchParams.delete('year');
+                        navigate(`?${searchParams.toString()}`);
+                        setStart(getInitialStartDate());
+                        setIsMonthToggled(false);
+                    }}
+                >
+                    Today
+                </Link>
+                <Link
+                    to={() => {
+                        const searchParams = new URLSearchParams(window.location.search);
                         return `?${searchParams.toString()}`;
                     }}
                     className="arrow-button down-arrow"

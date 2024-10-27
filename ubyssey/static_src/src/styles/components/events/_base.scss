@@ -598,6 +598,9 @@ header.events{
             box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
         }        
     }
+    .today-button {
+        margin-left: -5px;
+    }
 }
 /* Dark mode styles */
 html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
