@@ -32,14 +32,15 @@ class PullQuoteBlock(blocks.StructBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
-        if value['audio'].url[-4:] == '.wav':
-            context['self'].format = 'wav'
-        if value['audio'].url[-4:] == '.mp3':
-            context['self'].format = 'mpeg'
-        if value['audio'].url[-4:] == '.ogg':
-            context['self'].format = 'ogg'
-        else:
-            context['self'].format = 'mp4'
+        if value['audio']:
+            if value['audio'].url[-4:] == '.wav':
+                context['self'].format = 'wav'
+            if value['audio'].url[-4:] == '.mp3':
+                context['self'].format = 'mpeg'
+            if value['audio'].url[-4:] == '.ogg':
+                context['self'].format = 'ogg'
+            else:
+                context['self'].format = 'mp4'
         return context
 
     class Meta:

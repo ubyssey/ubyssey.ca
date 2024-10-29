@@ -1,20 +1,19 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<div class="image-attachment attachment {{ self.style }} {{ self.width }} {% if self.click_to_enlarge %}setup-modal image-modal{% endif %}" >
+{% if self.click_to_enlarge %}
+<div class="image-attachment attachment {{ self.style }} {{ self.width }} setup-modal image-modal" >
     {% image self.image width-1000 format-webp as image %}
     {% image self.image original as ogImage %}
     <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{self.caption}}{% endif %}" />
     
-    {% if self.click_to_enlarge %}
-    <button class="open-modal" aria-label="Enlarge image"></button>
+    <a class="open-modal" aria-label="Enlarge image"></a>
     <dialog class="modal close-modal hide js-dropdown-container">
         <div class="u-container u-container--large modal-contents">
             <div class="image-modal-image" style="background-image: url('{{ogImage.url}}')"></div>
             <button class="close-modal focus-on" aria-label="Minimize image"><ion-icon name="close-circle"></ion-icon></button>
         </div>
     </dialog>
-    {% endif %}
 
     {% if self.caption or self.credit %}
         <div class="caption">
@@ -22,3 +21,7 @@
         </div>
     {% endif %}
 </div>
+{% else %}
+    {% image self.image width-1000 format-webp as image %}
+    <img class="image-attachment attachment article-attachment {{ self.style }} {{ self.width }}" style="shape-outside: url('{{image.url}}')" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ self.caption }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{self.caption}}{% endif %}" />
+{% endif %}

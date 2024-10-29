@@ -376,6 +376,11 @@ div.article-content {
   top: 0;
 }
 
+img.image-attachment {
+  shape-image-threshold: 0.7;
+  shape-margin: 2em;
+}
+
 .image-attachment {
   img {
     width: 100%;
