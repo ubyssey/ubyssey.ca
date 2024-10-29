@@ -431,7 +431,7 @@ function EventsCalendar({events}) {
                             <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>{day.day}.
                         </button>
                         <ul>{day.events.map((event) => 
-                            <li className={(eventHash==event.hash && "selected") + " " + eventsTags(event)}>
+                            <li className={(eventHash==event.hash && "selected") + " " + eventsTags(event) + " " + (event.update_mode==0 && "manual")}>
                             <Link title={event.title.replace("<br>", ", ")} className="calendar-item" to={"?event=" + event.hash} event-url={event.event_url}
                             onClick={(e) => {
                                 e.preventDefault();

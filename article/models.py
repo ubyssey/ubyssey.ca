@@ -480,7 +480,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('dropcap', blocks.TextBlock(
                 label = "Dropcap Block",
                 template = 'article/stream_blocks/dropcap.html',
-                help_text = "DO NOT USE - Legacy block. Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
+                help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
             )),
             ('video', video_blocks.OneOffVideoBlock(
                 label = "Credited/Captioned One-Off Video",
@@ -546,7 +546,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         blank=True,
         default='',
         max_length=255,
-        help_text="Enter the slug of the tag to be used for linking at the end of the article. For example, the slug of the tag 'blue chip' is 'blue-chip'.",
+        help_text="IF USED, SHOULD ALSO BE IN TAGS FIELD. Enter the slug of the tag to be used for linking at the end of the article. For example, the slug of the tag 'blue chip' is 'blue-chip'.",
     )
     tag_page_link = models.BooleanField(
         null=False,

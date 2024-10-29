@@ -90,7 +90,9 @@ main.events-page {
         }
     }
 }
-
+[authenticated=True] .manual {
+    border: 1px solid red;
+}
 .events-calendar {
     width: 500px;
     max-width: 1200px;

@@ -1,3 +1,4 @@
+{% load wagtailcore_tags %}
 <div class="header">
-    <h2 class="pageLink{{self.id}}" id="{{self.id}}">{{self.title}}</h2>
+    <h2 class="pageLink{{self.id|slugify}}" id="{{self.id|slugify}}">{{self.title}}</h2>
 </div>

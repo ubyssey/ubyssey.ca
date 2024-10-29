@@ -698,7 +698,7 @@ class EventsFeed(Feed):
 class EventsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'hash', 'category']
+        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'hash', 'category', 'update_mode']
 
 class EventsViewSet(viewsets.ModelViewSet):
     serializer_class = EventsSerializer

@@ -428,15 +428,16 @@ class EventManager(models.Manager):
 
         categories = categories.to_ical().decode().lower()
 
+        # Check for entertainment keywords
+        for i in ['entertainment', 'concert', 'perform', 'film']:
+            if i in categories:
+                return 'entertainment'
+
         # Check for community keywords
         for i in ['orientations', 'festival']:
             if i in categories:
                 return 'community'
 
-        # Check for entertainment keywords
-        for i in ['entertainment', 'concert', 'perform']:
-            if i in categories:
-                return 'entertainment'
 
         if 'graduate students' in categories:
             if not True in (term in categories for term in ['audience – community', 'audience – undergraduate students', 'audience – all students']):
