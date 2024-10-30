@@ -418,7 +418,7 @@ class EventManager(models.Manager):
             if i in title:
                 return 'community'
             
-        for i in ['ubc cpd',]:
+        for i in ['ubc cpd', 'seminar']:
             if i in title:
                 return 'seminar'
 
