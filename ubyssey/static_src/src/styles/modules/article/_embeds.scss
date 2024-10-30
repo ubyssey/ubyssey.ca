@@ -381,6 +381,10 @@ img.image-attachment {
   height: auto;
   shape-image-threshold: 0.7;
   shape-margin: 2em;
+  @media($bp-smaller-than-phablet){
+    width: 200px;
+    margin: auto;
+  }
 }
 
 .image-attachment {
