@@ -68,8 +68,8 @@ export function QueryEventsCalendar() {
                         <div class="u-container">
                             <div class="logo-area">
                                 <a class="home-link" href="/" title="Go to The Ubyssey Homepage">
-                                <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo-small.e935f233a50c.svg')"}} alt="Ubyssey Logo"></div>
-                                <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo%201.f3b3c0235809.svg')"}} alt="Ubyssey Logo"></div>
+                                <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/logos/ubyssey-logo-blue-light.e935f233a50c.svg')"}} alt="Ubyssey Logo"></div>
+                                <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/logos/ubyssey-logo-blue-dark.f3b3c0235809.svg')"}} alt="Ubyssey Logo"></div>
                                 </a>
                             </div>
                         </div>

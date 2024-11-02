@@ -59,15 +59,16 @@ p {
 
 h2, h3, h4 {
   margin-top: 1.5em;
-  font-size: 1.2em;
+  font-size: 1.25em;
+  font-family: freight-big-pro, serif;
 }
 
 p.drop-cap:first-letter {
+  padding-right: 0.1em;
   float: left;
   color: var(--highlightColour);
   font-size: 3.75em;
   line-height: 3.75em;
-  padding-right: 0.1em;
 }
 
 .o-container {
@@ -77,7 +78,9 @@ p.drop-cap:first-letter {
 .author-string {
   color: var(--highlightColour);
   font-style: italic;
+  font-family: freight-big-pro, serif;
   a {
+    margin-left: 0.1em;
     font-size: 1.1em;
     font-style: normal;
     text-decoration: none;
@@ -172,8 +175,14 @@ img.image-attachment {
 
 .c-share {
   font-weight: 600;
+  font-family: freight-big-pro, serif;
   .c-share-buttons {
-    margin-left: 0.25em;
+    margin-inline: 0.25em;
+    vertical-align: middle;
+    a {
+      margin-inline: 0.25em;
+      color: black;
+    }
   }
 }
 #custom-tooltip {
@@ -207,6 +216,9 @@ img.image-attachment {
         color: #B93636;
         text-align: center;
         text-decoration: none;
+      }
+      h3 {
+        color: #B93636;
       }
     }
   }
@@ -287,8 +299,12 @@ nav.supplement-nav {
     * {
       margin: 0;
     }
+    p {
+      font-family: freight-big-pro, serif;
+    }
     h1 {
-      font-size: 3em;
+      font-size: 5em;
+      font-family: salo-variable, serif;
     }
   }
   div.article-list {
@@ -328,17 +344,33 @@ nav.supplement-nav {
     .logo {
       margin: auto;
       padding: 2em;
-      width: 150px;
+      width: 50px;
     }
     div.title {
       padding-inline: 1em;
       margin: auto;
       * {
+        margin: auto;
+        text-align: center;
         width: fit-content;
+      }
+      h1 {
+        font-size: 3em;
+      }
+      .editor-credit {
+        display: none;
       }
     }
     div.article-list {
       display: none;
+    }
+  }
+
+  .category-list ul {
+    flex-direction: column;
+
+    li {
+      max-width: none;
     }
   }
 

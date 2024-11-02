@@ -299,6 +299,12 @@ function initializeSocialMediaActions() {
     'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
+  $(document).on('click', '.share-mastodon', function (e) {
+    e.preventDefault();
+    window.open('https://tootpick.org/#text=' + title + '%20' + window.location.href + ' #ubyssey',
+    'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+  });
+
 
   // on clicking on the a element w/ class=='twitter', share on twitter
   $(document).on('click', '.share-twitter', function (e) {

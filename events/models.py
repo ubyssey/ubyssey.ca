@@ -375,7 +375,7 @@ class EventManager(models.Manager):
         
         # Hide events with certain terms in the title
         # The first two listed right now are on an inaccurate repeating schedule, the last was an advertisment for a sale that lasted too long
-        for i in ['coffee hour', 'advanced research computing summer school', 'Student Indoor Plant Sale at UBC Botanical Garden']:
+        for i in ['coffee hour', 'advanced research computing summer school', 'Student Indoor Plant Sale at UBC Botanical Garden', 'Grapes to Glass']:
             if i.lower() in title.lower():
                 return True
 
