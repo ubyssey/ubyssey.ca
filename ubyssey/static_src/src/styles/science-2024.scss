@@ -285,6 +285,10 @@ nav.supplement-nav {
     width: 100px;
     flex-grow: 0;
     flex-shrink: 0;
+    display: flex;
+    a {
+      margin: auto;
+    }
     svg {
       width: 100%;
     }
