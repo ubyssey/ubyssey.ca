@@ -477,25 +477,6 @@ function EventsOptions({getInitialStartDate, handleMonthNavigation, isMonthToggl
                         const searchParams = new URLSearchParams(window.location.search);
                         return `?${searchParams.toString()}`;
                     }}
-                    className="today-button"
-                    title="Today"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        const searchParams = new URLSearchParams(window.location.search);
-                        searchParams.delete('month');
-                        searchParams.delete('year');
-                        navigate(`?${searchParams.toString()}`);
-                        setStart(getInitialStartDate());
-                        setIsMonthToggled(false);
-                    }}
-                >
-                    Today
-                </Link>
-                <Link
-                    to={() => {
-                        const searchParams = new URLSearchParams(window.location.search);
-                        return `?${searchParams.toString()}`;
-                    }}
                     className="arrow-button down-arrow"
                     title="Next month"
                     onClick={(e) => {
@@ -509,6 +490,25 @@ function EventsOptions({getInitialStartDate, handleMonthNavigation, isMonthToggl
                             fill={isDarkMode ? "#FFFFFF" : "#000000"}
                         />
                     </svg>
+                </Link>
+                <Link
+                    to={() => {
+                        const searchParams = new URLSearchParams(window.location.search);
+                        return `?${searchParams.toString()}`;
+                    }}
+                    className="today-button"
+                    title="Today"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        const searchParams = new URLSearchParams(window.location.search);
+                        searchParams.delete('month');
+                        searchParams.delete('year');
+                        navigate(`?${searchParams.toString()}`);
+                        setStart(getInitialStartDate());
+                        setIsMonthToggled(false);
+                    }}
+                >
+                    Today
                 </Link>
             </>
         )}

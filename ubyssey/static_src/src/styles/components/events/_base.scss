@@ -100,7 +100,7 @@ main.events-page {
 
 .events-calendar--categories {
     display: flex;
-    margin: 1em 0 1.5em 0;
+    // margin: 1em 0 1.5em 0;
     justify-content: center;
     ul {
         margin: 0;
@@ -131,7 +131,7 @@ button.events-calendar--enlarge-toggle {
 .events-calendar--days-of-week {
     display: flex;
     justify-content: center;
-    margin-bottom: -7%;
+    // margin-bottom: -7%;
     h2 {
         margin-left: 1em;
         margin-top: 0.5em;
@@ -564,13 +564,12 @@ header.events{
     }
 }
 .events-calendar--navigation {
-    position: relative;
     left: -2.5em;
     // top: -2.8em;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    bottom: 2.5vw;
+    // bottom: 2.5vw;
 
     .arrow-button {
         background: none; /* Remove default button styling */
@@ -602,9 +601,6 @@ header.events{
             box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
         }        
     }
-    .today-button {
-        margin-left: 1vw;
-    }
 }
 /* Dark mode styles */
 html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
@@ -626,7 +622,8 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
+        position: relative;
+        // width: 100%;
     }
 
     .arrow-button {
@@ -666,3 +663,38 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
         flex-grow: 1;
     }
 }
+.today-button {
+    background-color: #0095ff;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    box-shadow: rgba(255, 255, 255, 0.4) 0 1px 0 0 inset;
+    box-sizing: border-box;
+    color: #c3e2f0;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.15385;
+    margin: 0;
+    outline: none;
+    padding: 8px 0.8em;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+  
+  .today-button:hover,
+  .today-button:focus {
+    background-color: #07c;
+  }
+  
+  .today-button:focus {
+    box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.15);
+  }
+  
