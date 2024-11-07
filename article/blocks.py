@@ -27,8 +27,17 @@ class AudioBlock(blocks.StructBlock):
 
 class PullQuoteBlock(blocks.StructBlock):
     content = blocks.CharBlock(required=True)
+    position = blocks.ChoiceBlock(
+        choices=[
+            ('default', 'Default'),
+            ('left', 'Left'),
+            ('right', 'Right'),   
+        ],
+        default='default',
+    )
     source =  blocks.CharBlock(required=False)
     audio = DocumentChooserBlock(required=False, help_text="Optional, file format: .m4a, .mp4, .mp, .wav, or .ogg")
+
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
