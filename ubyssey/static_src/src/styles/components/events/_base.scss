@@ -542,8 +542,9 @@ header.events{
     left: -2.5em;
     // top: -2.8em;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
+    bottom: 2.5vw;
 
     .arrow-button {
         background: none; /* Remove default button styling */
@@ -551,14 +552,17 @@ header.events{
         cursor: pointer;
         padding: 0;
         margin: 0;
-
         svg {
             width: 30px;
             height: 30px;
         }
 
+        &.up-arrow svg {
+            transform: rotate(270deg); /* Rotate for up arrow */
+        }
+
         &.down-arrow svg {
-            transform: rotate(180deg); /* Rotate for down arrow */
+            transform: rotate(90deg); /* Rotate for down arrow */
         }
 
         &:hover {
@@ -573,7 +577,7 @@ header.events{
         }        
     }
     .today-button {
-        margin-left: -5px;
+        margin-left: 1vw;
     }
 }
 /* Dark mode styles */

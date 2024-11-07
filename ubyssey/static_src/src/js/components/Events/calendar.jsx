@@ -68,6 +68,7 @@ export function QueryEventsCalendar() {
     const [numberOfWeeks, setNumberOfWeeks] = useState(calculateNumberOfWeeks());
     const [start, setStart] = useState(getInitialStartDate());
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isMonthToggled, setIsMonthToggled] = React.useState(false);
 
     function getDate(month, year) {
         let newStartDate = new Date(year, month - 1, 1); // Month is 0-indexed
@@ -98,7 +99,6 @@ export function QueryEventsCalendar() {
         }
     }
 
-
     function getInitialStartDate() {
         if(urlParams.has("month") && urlParams.has("year")){
             const month = parseInt(urlParams.get("month"));
@@ -120,6 +120,85 @@ export function QueryEventsCalendar() {
             return start;
     }
 }
+    const calculateNewStart = (direction, start) => {
+        // Set the start date to the first day of the current month
+        let newStart = new Date(start);
+
+        // console.log("Start date is :"+start)
+        if(newStart.getDate() !== 1){
+        while (newStart.getDay() !== 1) {
+            newStart = new Date(newStart.getTime() + d);
+        }
+        newStart.setDate(1);
+        newStart.setMonth(newStart.getMonth()+1)
+        }
+        // Adjust the month based on the direction
+        const currentMonth = newStart.getMonth();
+        console.log(direction);
+        if (direction === 'next') {
+            // console.log("Current month is" + newStart);
+            newStart.setMonth(currentMonth + 1);
+            // console.log("Current month is after update" +newStart);        
+        } else {
+            newStart.setMonth(currentMonth - 1);
+        }    
+        // Extract the new month and year after the adjustment
+        const adjustedYear = newStart.getFullYear();
+        const adjustedMonth = (newStart.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is two digits (01-12)
+
+        return {
+            year: adjustedYear,
+            month: adjustedMonth,
+        };
+    };    
+
+    // Function to update the start date to the week of the first day of the previous or next month
+    const handleMonthNavigation = (direction) => {
+
+        console.log("Handling month navigation");
+        let newStart, newMonth, newYear;
+        newStart = calculateNewStart(direction, start);
+        console.log("Handling month navigation");
+        newMonth = newStart.month;
+        newYear = newStart.year;    
+
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set('month', newMonth);
+        searchParams.set('year', newYear);
+        window.history.pushState(null, '', `?${searchParams.toString()}`);
+
+        // Set the new start date and other logic
+        console.log("Navigating to", newMonth, newYear);
+        let newStartDate = new Date(newYear, newMonth - 1, 1); // Month is 0-indexed
+
+        if (
+            (newStartDate.getDay() === 6 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() === 31) || 
+            (newStartDate.getDay() === 0 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() > 29)
+        ) {
+            setNumberOfWeeks(6);
+        } else {
+            setNumberOfWeeks(5);
+        }
+
+        // Ensure the new start date begins on the Monday of that week
+        while (newStartDate.getDay() !== 1) {
+            newStartDate = new Date(newStartDate.getTime() - 24 * 60 * 60 * 1000);
+        }
+
+        // Update the start state
+        setStart(newStartDate);
+        setIsMonthToggled(true);
+    };
+
+    const startDate = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let start = new Date(today.getTime() - 10 * d);
+        while (start.getDay() !== 1) {
+            start = new Date(start.getTime() + d);
+        }
+        return start;
+    };
 
     function getEvents(){
         
@@ -201,11 +280,11 @@ export function QueryEventsCalendar() {
                         </div>
                         <h1 class="title">Events around campus</h1>
 
-                        <EventsOptions />
+                        <EventsOptions isDarkMode={isDarkMode}  setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} isMonthToggled={isMonthToggled}/>
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} />
+                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} isMonthToggled={isMonthToggled}/>
                     </div>
                 </div>
             
@@ -305,7 +384,7 @@ function eventsTags(event) {
     return tags.join(" ");
 }
 
-function EventsOptions() {
+function EventsOptions({getInitialStartDate, handleMonthNavigation, isMonthToggled, isDarkMode}) {
     let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     const navigate = useNavigate();
@@ -368,6 +447,72 @@ function EventsOptions() {
     return (
         <>
             <div className="events-calendar--categories">
+            <div className="events-calendar--navigation">
+        {isMobile ? (
+            <>
+            </>
+        ) : (
+            <>
+                <Link
+                    to={() => {
+                        const searchParams = new URLSearchParams(window.location.search);
+                        return `?${searchParams.toString()}`;
+                    }}
+                    className="arrow-button up-arrow"
+                    title="Previous month"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleMonthNavigation('previous');
+                    }}
+                >
+                    <svg width="32px" height="32px" viewBox="0 0 32 32">
+                        <path
+                            d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z"
+                            fill={isDarkMode ? "#FFFFFF" : "#000000"}
+                        />
+                    </svg>
+                </Link>
+                <Link
+                    to={() => {
+                        const searchParams = new URLSearchParams(window.location.search);
+                        return `?${searchParams.toString()}`;
+                    }}
+                    className="today-button"
+                    title="Today"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        const searchParams = new URLSearchParams(window.location.search);
+                        searchParams.delete('month');
+                        searchParams.delete('year');
+                        navigate(`?${searchParams.toString()}`);
+                        setStart(getInitialStartDate());
+                        setIsMonthToggled(false);
+                    }}
+                >
+                    Today
+                </Link>
+                <Link
+                    to={() => {
+                        const searchParams = new URLSearchParams(window.location.search);
+                        return `?${searchParams.toString()}`;
+                    }}
+                    className="arrow-button down-arrow"
+                    title="Next month"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleMonthNavigation('next');
+                    }}
+                >
+                    <svg width="32px" height="32px" viewBox="0 0 32 32">
+                        <path
+                            d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z"
+                            fill={isDarkMode ? "#FFFFFF" : "#000000"}
+                        />
+                    </svg>
+                </Link>
+            </>
+        )}
+        </div>
                 {isMobile ? (
                     <select
                         className = "category-select"
@@ -404,15 +549,13 @@ function EventsOptions() {
     );
 }
 
-function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode}) {
+function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode, getInitialStartDate, handleMonthNavigation, isMonthToggled}) {
 
-    const [isMonthToggled, setIsMonthToggled] = React.useState(false);
     let query = useQuery();
     const s = 1000
     const m = s * 60;
     const h = m * 60;
     const d = h * 24;
-    // const history = useHistory();
     const navigate = useNavigate();
 
     function arrangeCalendar(events) {
@@ -530,82 +673,6 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
         }
     }
     
-    const calculateNewStart = (direction, start) => {
-        // Set the start date to the first day of the current month
-        let newStart = new Date(start);
-
-        // console.log("Start date is :"+start)
-        if(newStart.getDate() !== 1){
-        while (newStart.getDay() !== 1) {
-            newStart = new Date(newStart.getTime() + d);
-        }
-        newStart.setDate(1);
-        newStart.setMonth(newStart.getMonth()+1)
-        }
-        // Adjust the month based on the direction
-        const currentMonth = newStart.getMonth();
-        console.log(direction);
-        if (direction === 'next') {
-            // console.log("Current month is" + newStart);
-            newStart.setMonth(currentMonth + 1);
-            // console.log("Current month is after update" +newStart);        
-        } else {
-            newStart.setMonth(currentMonth - 1);
-        }    
-        // Extract the new month and year after the adjustment
-        const adjustedYear = newStart.getFullYear();
-        const adjustedMonth = (newStart.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is two digits (01-12)
-
-        return {
-            year: adjustedYear,
-            month: adjustedMonth,
-        };
-    };    
-    
-    // Function to update the start date to the week of the first day of the previous or next month
-    const handleMonthNavigation = (direction) => {
-        let newStart, newMonth, newYear;
-        newStart = calculateNewStart(direction, start);
-        newMonth = newStart.month;
-        newYear = newStart.year;    
-
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('month', newMonth);
-        searchParams.set('year', newYear);
-        navigate(`?${searchParams.toString()}`);
-
-        // Set the new start date and other logic
-        console.log("Navigating to", newMonth, newYear);
-        let newStartDate = new Date(newYear, newMonth - 1, 1); // Month is 0-indexed
-
-        if (
-            (newStartDate.getDay() === 6 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() === 31) || 
-            (newStartDate.getDay() === 0 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() > 29)
-        ) {
-            setNumberOfWeeks(6);
-        } else {
-            setNumberOfWeeks(5);
-        }
-
-        // Ensure the new start date begins on the Monday of that week
-        while (newStartDate.getDay() !== 1) {
-            newStartDate = new Date(newStartDate.getTime() - 24 * 60 * 60 * 1000);
-        }
-
-        // Update the start state
-        setStart(newStartDate);
-        setIsMonthToggled(true);
-    };
-
-    const getInitialStartDate = () => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        let start = new Date(today.getTime() - 10 * d);
-        while (start.getDay() !== 1) {
-            start = new Date(start.getTime() + d);
-        }
-        return start;
-    };
 
     
     var category = "all";
@@ -715,63 +782,6 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             </>
         ) : (
             <>
-                <Link
-                    to={() => {
-                        const searchParams = new URLSearchParams(window.location.search);
-                        return `?${searchParams.toString()}`;
-                    }}
-                    className="arrow-button up-arrow"
-                    title="Previous month"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        handleMonthNavigation('previous');
-                    }}
-                >
-                    <svg width="32px" height="32px" viewBox="0 0 32 32">
-                        <path
-                            d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z"
-                            fill={isDarkMode ? "#FFFFFF" : "#000000"}
-                        />
-                    </svg>
-                </Link>
-                <Link
-                    to={() => {
-                        const searchParams = new URLSearchParams(window.location.search);
-                        return `?${searchParams.toString()}`;
-                    }}
-                    className="today-button"
-                    title="Today"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        const searchParams = new URLSearchParams(window.location.search);
-                        searchParams.delete('month');
-                        searchParams.delete('year');
-                        navigate(`?${searchParams.toString()}`);
-                        setStart(getInitialStartDate());
-                        setIsMonthToggled(false);
-                    }}
-                >
-                    Today
-                </Link>
-                <Link
-                    to={() => {
-                        const searchParams = new URLSearchParams(window.location.search);
-                        return `?${searchParams.toString()}`;
-                    }}
-                    className="arrow-button down-arrow"
-                    title="Next month"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        handleMonthNavigation('next');
-                    }}
-                >
-                    <svg width="32px" height="32px" viewBox="0 0 32 32">
-                        <path
-                            d="M18.221,7.206l9.585,9.585c0.879,0.879,0.879,2.317,0,3.195l-0.8,0.801c-0.877,0.878-2.316,0.878-3.194,0l-7.315-7.315l-7.315,7.315c-0.878,0.878-2.317,0.878-3.194,0l-0.8-0.801c-0.879-0.878-0.879-2.316,0-3.195l9.587-9.585c0.471-0.472,1.103-0.682,1.723-0.647C17.115,6.524,17.748,6.734,18.221,7.206z"
-                            fill={isDarkMode ? "#FFFFFF" : "#000000"}
-                        />
-                    </svg>
-                </Link>
             </>
         )}
         </div>
