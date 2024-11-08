@@ -280,11 +280,11 @@ export function QueryEventsCalendar() {
                         </div>
                         <h1 class="title">Events around campus</h1>
 
-                        <EventsOptions isDarkMode={isDarkMode}  setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} isMonthToggled={isMonthToggled}/>
+                        <EventsOptions isDarkMode={isDarkMode}  setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} setIsMonthToggled={setIsMonthToggled} isMonthToggled={isMonthToggled} setStart={setStart}/>
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} isMonthToggled={isMonthToggled}/>
+                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} setIsMonthToggled={setIsMonthToggled} isMonthToggled={isMonthToggled}/>
                     </div>
                 </div>
             
@@ -384,7 +384,7 @@ function eventsTags(event) {
     return tags.join(" ");
 }
 
-function EventsOptions({getInitialStartDate, handleMonthNavigation, isMonthToggled, isDarkMode}) {
+function EventsOptions({getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isDarkMode, isMonthToggled, setStart}) { 
     let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     const navigate = useNavigate();
@@ -549,7 +549,7 @@ function EventsOptions({getInitialStartDate, handleMonthNavigation, isMonthToggl
     );
 }
 
-function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode, getInitialStartDate, handleMonthNavigation, isMonthToggled}) {
+function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode, getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isMonthToggled}) {
 
     let query = useQuery();
     const s = 1000
