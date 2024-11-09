@@ -312,10 +312,15 @@ header.events{
       top: 1em;
       z-index: 500;
       button.dark-mode-switcher {
+        color: var(--header_color);
+      }
+      
+      @media ($bp-larger-than-desktop) {
+        button.dark-mode-switcher {
         color: #ffffff;
+        }
       }
     }
-    
 }
 
 @media($bp-larger-than-desktop) {
