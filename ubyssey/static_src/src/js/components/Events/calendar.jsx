@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 // import ReactDOM from 'react-dom';
 import axios from "axios";
-const BP_PHABLET_SIZE = 759;
+const BP_DESKTOP_SIZE = 1199;
 
 function useQuery() {
     const { search } = useLocation();
@@ -25,11 +25,11 @@ function useQuery() {
   }
   
 function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= BP_PHABLET_SIZE);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= BP_DESKTOP_SIZE);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= BP_PHABLET_SIZE);
+      setIsMobile(window.innerWidth <= BP_DESKTOP_SIZE);
     };
 
     window.addEventListener('resize', handleResize);
@@ -60,7 +60,6 @@ function getDateString(date) {
 export function QueryEventsCalendar() {
     const d = 24 * 60 * 60 * 1000;
     const [events, setEvents] = React.useState([]);
-    const [currentMonth, setCurrentMonth] = React.useState("");
     let fullUrl = window.location.href;
     const decodedUrl = decodeURIComponent(fullUrl);
     const queryString = decodedUrl.split('?')[1]; // Get the part after the "?"
@@ -102,9 +101,7 @@ export function QueryEventsCalendar() {
     function getInitialStartDate() {
         if(urlParams.has("month") && urlParams.has("year")){
             const month = parseInt(urlParams.get("month"));
-            console.log("Month is "+month);
             const year = parseInt(urlParams.get("year"));
-            console.log("Year is "+year);
             return getDate(month, year);
         }
 
@@ -124,7 +121,6 @@ export function QueryEventsCalendar() {
         // Set the start date to the first day of the current month
         let newStart = new Date(start);
 
-        // console.log("Start date is :"+start)
         if(newStart.getDate() !== 1){
         while (newStart.getDay() !== 1) {
             newStart = new Date(newStart.getTime() + d);
@@ -136,9 +132,7 @@ export function QueryEventsCalendar() {
         const currentMonth = newStart.getMonth();
         console.log(direction);
         if (direction === 'next') {
-            // console.log("Current month is" + newStart);
             newStart.setMonth(currentMonth + 1);
-            // console.log("Current month is after update" +newStart);        
         } else {
             newStart.setMonth(currentMonth - 1);
         }    
