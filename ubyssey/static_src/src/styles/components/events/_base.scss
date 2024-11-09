@@ -337,7 +337,7 @@ header.events{
     
 }
 
-@media($bp-larger-than-phablet) {
+@media($bp-larger-than-desktop) {
     .events-calendar--number-dayOfWeek {
         display: none;
     }
@@ -346,7 +346,7 @@ header.events{
     }
 }
 
-@media($bp-smaller-than-phablet) {
+@media($bp-smaller-than-desktop) {
     main.events-page {
         padding: 0;
         h2.events-calendar--month {
@@ -506,7 +506,7 @@ header.events{
 .alt-icon {
     display: inline;
     margin-left: 1em;
-    @media($bp-smaller-than-phablet) {
+    @media($bp-smaller-than-desktop) {
         display: none;
     }
 }
@@ -517,7 +517,7 @@ header.events{
         margin-right: 1em;
     }
 
-    @media($bp-larger-than-phablet) {
+    @media($bp-larger-than-desktop) {
         display: none;
     }
 }
@@ -604,6 +604,31 @@ header.events{
             box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
         }        
     }
+    .today-button {
+        background-color: #0095ff;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        box-sizing: border-box;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-block;
+        line-height: 1.15385;
+        margin: 0;
+        outline: none;
+        padding: 5px 0.8em;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: baseline;
+        white-space: nowrap;
+      }
+      .today-button:hover {
+        background-color: #0095ff; /* Keep the same background color */
+        box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2); /* Inner shadow for hover feedback */
+    }
 }
 /* Dark mode styles */
 html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
@@ -619,7 +644,7 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
     }
 }
 
-@media (max-width: 760px) {
+@media ($bp-smaller-than-desktop) {
     .events-calendar--navigation {
         display: flex;
         flex-direction: row;
@@ -668,37 +693,10 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
     }
 }
 
-@media (min-width: 760px) {
+@media ($bp-larger-than-desktop) {
     .events-calendar--navigation {
         // position: absolute;
         // left: 3em;
         margin-right: 1em;
     }
 }
-
-
-.today-button {
-    background-color: #0095ff;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    box-sizing: border-box;
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-block;
-    line-height: 1.15385;
-    margin: 0;
-    outline: none;
-    padding: 5px 0.8em;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: baseline;
-    white-space: nowrap;
-  }
-  .today-button:hover {
-    background-color: #0095ff; /* Keep the same background color */
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2); /* Inner shadow for hover feedback */
-  }
