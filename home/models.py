@@ -74,6 +74,7 @@ class HomePage(Page):
             ('category', homeblocks.CategoryBlock()),
             ('landing', homeblocks.SpecialLandingPageBlock()),
             ('tag', homeblocks.TagBlock()),
+            ('article_promo', homeblocks.ArticlePromo()),
         ],
         null=True,
         blank=True,

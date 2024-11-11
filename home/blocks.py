@@ -186,3 +186,12 @@ class SpecialLandingPageBlock(AbstractArticleList):
         context['link'] = value['landing'].url
         context['articles'] = [value['landing']] + list(Page.objects.child_of(value['landing']).all())
         return context
+    
+
+class ArticlePromo(blocks.StructBlock):
+    article = field_block.PageChooserBlock(
+        page_type='article.ArticlePage'
+    )
+
+    class Meta:
+        template = "home/stream_blocks/special/article_midsection.html"

@@ -555,3 +555,104 @@ html.hairlines {
     opacity: 0.8;
   }
 }
+
+.article-midsection-promo {
+  margin-top: 2em;
+  margin-bottom: 150px;
+  padding: 2em 100px;
+
+  border-top: solid;
+  border-bottom: solid;
+  border-width: 2px;
+  border-color: $color-ubyssey-blue;  
+
+  .o-article__section {
+    font-size: 0.8em;
+  }
+
+  h2 {
+    margin-top: 0;
+    font-size: 2.5em;
+    font-family: noto-serif, serif;
+  }
+
+  .logo {
+    position: relative;
+    float: left;
+    background: var(--background);
+    padding-right: 2em;
+    padding-left: 1em;
+    padding-bottom: 1em;
+    p  {
+      margin-top: 0;
+      position: absolute;
+      left: 1em;
+      right: 1em;
+      a {
+        font-weight: 600;
+        border-bottom: 1px solid
+      }
+    }
+    img {
+      height: 270px;
+      width: auto;
+      margin-top: 1em;
+    }
+  }
+  p.lede {
+    height: fit-content;
+
+    font-size: 1.25em;
+    line-height: 2em;
+    font-family: noto-serif, serif;
+
+    background-size: 1px 2em;
+    background-image: linear-gradient(transparent calc(100% - 1px), var(--header_color));
+    b {
+      margin-right: 0.5em;
+    }
+    i {
+      white-space: nowrap;
+    }
+  }
+  .article-midsection-promo-div {
+    min-height: calc(270px + 4em);
+  }
+  @media($bp-smaller-than-phablet) {
+    padding-inline: 3em;
+    .o-article__section {
+      text-align: center;
+      width: 100%;
+    }
+    h2 {
+      font-size: 1.5em;
+    }
+    p.lede {
+      font-size: 1em;
+      background: none;
+    }
+    .logo {
+      float: none;
+      img {
+        padding: 1em;
+      }
+    }
+    .article-midsection-promo-div {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.lightmode .article-midsection-promo p.lede {
+  background-image: linear-gradient(transparent calc(100% - 1px), #00000040);
+}
+
+.darkmode .article-midsection-promo p.lede {
+  background-image: linear-gradient(transparent calc(100% - 1px), #ffffff40);
+}
+
+.midsection-flex {
+  display: flex;
+  flex-direction: row;
+}
