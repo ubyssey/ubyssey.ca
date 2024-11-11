@@ -588,6 +588,8 @@ html.hairlines {
       position: absolute;
       left: 1em;
       right: 1em;
+
+      bottom: 0;
       a {
         font-weight: 600;
         border-bottom: 1px solid
@@ -597,6 +599,8 @@ html.hairlines {
       height: 270px;
       width: auto;
       margin-top: 1em;
+
+      margin-bottom: 3em;
     }
   }
   p.lede {
@@ -633,8 +637,15 @@ html.hairlines {
     }
     .logo {
       float: none;
+      padding: 0;
       img {
-        padding: 1em;
+        margin-bottom: 1em;
+        padding: 0;
+        width: 100%;
+        height: auto;
+      }
+      p {
+        position: static;
       }
     }
     .article-midsection-promo-div {
