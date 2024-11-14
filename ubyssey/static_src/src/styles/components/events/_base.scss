@@ -480,13 +480,13 @@ header.events{
             }
         }
     }
-    // .events-calendar--rows .events-calendar--row:first-child {
-    //     display: none;
-    // }
+    .today-calendar .events-calendar--row:first-child {
+         display: none;
+    }
     
-    // div.day.past {
-    //     display: none;
-    // }
+    .today-calendar div.day.past {
+         display: none;
+    }
 
     .events-calendar--rows:nth-child(2) .events-calendar--month {
         display: block;

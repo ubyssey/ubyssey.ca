@@ -785,7 +785,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             </>
         )}
         </div>
-        <div class="events-calendar--rows">{calendar.map((week, week_index) => 
+        <div class={"events-calendar--rows" + (!isMonthToggled ? " today-calendar" : "")}>{calendar.map((week, week_index) => 
 
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
                 {week_index===0 && 
