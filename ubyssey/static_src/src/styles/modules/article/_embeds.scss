@@ -376,9 +376,21 @@ div.article-content {
   top: 0;
 }
 
+img.image-attachment {
+  display: block;
+  height: auto;
+  shape-image-threshold: 0.7;
+  shape-margin: 2em;
+  @media($bp-smaller-than-phablet){
+    width: 200px;
+    margin: auto;
+  }
+}
+
 .image-attachment {
   img {
     width: 100%;
+    height: auto;
   }
 
   a {

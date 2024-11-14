@@ -41,7 +41,7 @@
         <a href="{% pageurl article %}">{{ article.title|safe }}</a>
       </h2>
       <div class="o-article__byline">
-        <span class="o-article__author">{{ article.get_authors_with_urls|safe }}</span>
+        <span class="o-article__author">{{ article.get_authors_split_out_visual_bylines|safe }}</span>
         <span> &nbsp;&nbsp; </span>
         <span class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</span>
       </div>

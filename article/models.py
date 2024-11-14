@@ -7,7 +7,7 @@ from images.models import GallerySnippet
 from dbtemplates.models import Template as DBTemplate
 
 from django.db import models
-from django.db.models import fields
+from django.db.models import fields, Q
 from django.db.models.fields import CharField
 from django.shortcuts import render
 from django.db.models.query import QuerySet
@@ -168,6 +168,7 @@ class ArticleAuthorsOrderable(Orderable):
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
                             ('videographer','Videographer'),
+                            ('designer','Designer'),
                             ('org_role', 'Show organization role'),
                         ],
                     ),
@@ -479,7 +480,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('dropcap', blocks.TextBlock(
                 label = "Dropcap Block",
                 template = 'article/stream_blocks/dropcap.html',
-                help_text = "DO NOT USE - Legacy block. Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
+                help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
             )),
             ('video', video_blocks.OneOffVideoBlock(
                 label = "Credited/Captioned One-Off Video",
@@ -545,7 +546,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         blank=True,
         default='',
         max_length=255,
-        help_text="Enter the slug of the tag to be used for linking at the end of the article. For example, the slug of the tag 'blue chip' is 'blue-chip'.",
+        help_text="IF USED, SHOULD ALSO BE IN TAGS FIELD. Enter the slug of the tag to be used for linking at the end of the article. For example, the slug of the tag 'blue chip' is 'blue-chip'.",
     )
     tag_page_link = models.BooleanField(
         null=False,
@@ -743,6 +744,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return "article/article_page_spoof_2024.html"
         elif self.layout == 'guide-2024':
             return "article/article_page_guide_2024.html"
+        elif self.layout == 'science-2024':
+            return "article/article_page_supplement_2024_science.html"
 
         return "article/article_page.html"
 
@@ -873,6 +876,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                             ('magazine-2024', 'Magazine (2024 style)'),
                             ('spoof-2024', 'Spoof (2024 style)'),
                             ('guide-2024', 'Guide (2024 style)'),
+                            ('science-2024', 'Science Supplement (2024)'),
                         ],
                     ),
                 ),
@@ -1131,51 +1135,89 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
 
-        string_written = ''
-        string_photos = ''
-        string_illustrations = ''
-        string_videos = ''
-        string_org = ''
-
-        authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
-        for author in authors:
-            if author == 'author':
-                string_written += 'Words by ' + self.get_authors_string(links=True, authors_list=authors['author'])
-            if author == 'photographer':
-                string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
-            if author == 'illustrator':
-                string_illustrations += 'Illustrations by ' + self.get_authors_string(links=True, authors_list=authors['illustrator'])
-            if author == 'videographer':
-                string_videos += 'Videos by ' + self.get_authors_string(links=True, authors_list=authors['videographer'])
-            if author == 'org_role':
-                string_org = ",".join( map(lambda a: ' ' + a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]) , authors['org_role'])) 
-                
-       
-        authors_with_roles = filter(lambda a: a != '', [string_written, string_photos, string_illustrations, string_videos, string_org])
-        return ', '.join(authors_with_roles)
+        role_types_words = {
+            'author': 'Words by ',
+            'photographer': 'Photos by ',
+            'illustrator': 'Illustrations by ',
+            'videographer': 'Videos by ',
+            'designer': 'Design by ',
+        }
+        role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
+        authors_with_roles = []
+        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
+            if k=='org_role':
+                authors_with_roles.append([k, ",".join( map(lambda a: ' ' + a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]) , list(v)))])
+            else:
+                authors_with_roles.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=list(v))])
+        authors_with_roles.sort(key=lambda s: role_types.index(s[0]))
+        return ', '.join(map(lambda a: a[1], authors_with_roles))
     authors_with_roles = property(fget=get_authors_with_roles)
  
-    def get_category_articles(self, order='-first_published_at') -> QuerySet:
+    def get_authors_split_out_visual_bylines(self) -> str:
+        """Returns list of authors as a comma-separated string
+        sorted by author type (with 'and' before last author)."""
+
+        role_types_words = {
+            'author': 'Words by ',
+            'photographer': 'Photos by ',
+            'illustrator': 'Illustrations by ',
+            'videographer': 'Videos by ',
+            'designer': 'Design by ',
+        }
+        role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
+        writers = []
+        visuals = []
+        word_authors = []
+        visual_authors = []
+        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
+            v = list(v)
+            if k=='org_role' or k=='author':
+                for author in v:
+                    word_authors.append(author.author)
+                writers = writers + v
+            else:
+                for author in v:
+                    visual_authors.append(author.author)
+                visuals.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=v)])
+        visuals.sort(key=lambda s: role_types.index(s[0]))
+
+        visual_only_author = False
+        for visual_author in visual_authors:
+            if not visual_author in word_authors:
+                visual_only_author = True
+                break
+
+        writers = self.get_authors_string(links=True, authors_list=list(writers))
+
+        if len(visuals) > 0 and visual_only_author:
+            visuals = ', ' + ', '.join(map(lambda a: a[1], visuals))
+        else:
+            visuals = ''
+
+        return writers + visuals
+    authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
+
+    def get_category_articles(self, order='-first_published_at', max=10) -> QuerySet:
         """
         Returns a list of articles within the Article's category
         """
-        category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)
+        category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)[:max]
 
         return category_articles
     
-    def get_section_articles(self, order='-first_published_at') -> QuerySet:
+    def get_section_articles(self, order='-first_published_at', max=10) -> QuerySet:
         """
         Returns a list of articles within the Article's section
         """
 
-        section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)
+        section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)[:max]
         
         return section_articles
-    def get_articles_by_tag(self, order='-first_published_at') -> QuerySet:
+    def get_articles_by_tag(self, order='-first_published_at', max=10) -> QuerySet:
         """
         Returns a list of articles with the same tags as the current article
         """
-        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)
+        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
     def get_suggested(self, number_suggested=3):
@@ -1185,7 +1227,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         from taggit.models import Tag
         suggested = {}
         if self.filter_by_tags:
-            articles_by_tag = self.get_articles_by_tag()
+            articles_by_tag = self.get_articles_by_tag(max=number_suggested)
             if len(articles_by_tag) > 0:
                 tag = Tag.objects.get(slug=self.primary_tag_slug)
                 suggested = {}
@@ -1194,7 +1236,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 suggested['link'] = "/tag/" + tag.slug
         if not suggested:
             if self.category != None:
-                category_articles = self.get_category_articles()
+                category_articles = self.get_category_articles(max=number_suggested)
                 if len(category_articles) > 0:
                     suggested = {}
                     suggested['title'] = self.category.title
@@ -1202,7 +1244,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
 
         if not suggested:
-            section_articles = self.get_section_articles()
+            section_articles = self.get_section_articles(max=number_suggested)
             if len(section_articles) > 0:
                 suggested = {}
                 suggested['title'] = self.get_parent().title

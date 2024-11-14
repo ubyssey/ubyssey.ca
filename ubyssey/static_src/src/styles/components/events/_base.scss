@@ -90,7 +90,9 @@ main.events-page {
         }
     }
 }
-
+[authenticated=True] .manual {
+    border: 1px solid red;
+}
 .events-calendar {
     width: 500px;
     max-width: 1200px;
@@ -208,7 +210,6 @@ div.day{
         margin: 0;
         padding: 0;
         list-style: none;
-        overflow: clip;
         li {
             margin: 0.3em 0;
             padding-inline: 0.25em;
@@ -469,6 +470,9 @@ header.events{
     }
     div.day {
         padding: 1.5em;
+        ul {
+            filter: drop-shadow(0 1px 3px black);
+        }
         li {
             margin-right: 2em;
             b {

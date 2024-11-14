@@ -64,6 +64,7 @@
 .o-article__published {
   // Text
   color: var(--article-publish);
+  white-space: pre;
 }
 
 
@@ -118,6 +119,23 @@
   left: 20%;
   font-size: 1%;
 }
+
+.o-article__section {
+  margin-bottom: 0.25em;
+  padding-inline: 0.2em;
+  width: fit-content;
+
+  font-weight: 600;
+  font-size: 0.65em;
+  text-transform: uppercase;
+  a {
+      color: inherit;
+  }
+  a:hover {
+      text-decoration: underline;
+  }
+}
+
 
 ul.article-list, ol.article-list {
   margin: 0;

@@ -34,10 +34,10 @@
     <div class="u-container u-container--mid">
 
       {% if banner %}
-        {% image banner original as banner_image %}
+        {% image banner fill-2200x734-c100 format-webp as banner_image %}
         <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{title}} Banner" >
           <svg class="c-section__heading" viewBox="0 0 450 70">
-            <text class="c-section__heading" x="10" y="50" {% if not category %}style="stroke: {{self.colour}}"{% endif %}>{{title}}</text>
+            <text class="c-section__heading" x="10" y="50">{{title}}</text>
           </svg>
         </div>
       {%else%}

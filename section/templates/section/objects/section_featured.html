@@ -4,7 +4,7 @@ Used in both section pages and homepage
 {% endcomment %}
 {% load wagtailcore_tags %}
 
-{% include 'article/objects/infinitefeed_item.html' with article=featured_articles.first %}
+{% include 'article/objects/infinitefeed_item.html' with article=featured_articles.first expectedSection=section.slug %}
 
 <div class="c-section__featured__articles">
   {% for article in featured_articles %}

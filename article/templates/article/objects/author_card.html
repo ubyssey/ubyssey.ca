@@ -5,7 +5,7 @@
 <div class="author_card">  
     <div class="author_title {% if author.author.image and author.author.display_image %}with_image{%endif%}">
         {% if author.author.image and author.author.display_image %}     
-            {% image author.author.image width-200 format-webp class="author_image" alt=author.author.full_name %}
+            {% image author.author.image width-200 format-webp loading="lazy" class="author_image" alt=author.author.full_name %}
         {% endif %}
         <p>
         <span class="author_name">
@@ -27,6 +27,8 @@
         {% if author.author.short_bio_description != "" %}
             <p>{{ author.author.short_bio_description }}</p>
         {% endif %}
-        <li><a href="{{ author.author.full_url }}">See more from {{ author.author.full_name|safe }}</a></li> 
+        <ul>
+            <li><a href="{{ author.author.full_url }}">See more from {{ author.author.full_name|safe }}</a></li> 
+        </ul>
     </div>
 </div>         

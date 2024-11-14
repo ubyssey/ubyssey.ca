@@ -100,7 +100,11 @@
     }
 }
 .author-heading {
+    white-space: nowrap;
     font-size: 1.2rem;
+}
+.options .author-heading {
+    text-transform: capitalize;
 }
 .options {
     display: flex;

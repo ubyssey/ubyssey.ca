@@ -21,7 +21,7 @@
     }
 
     .o-article__meta__image {
-        background-color: black;
+        background-color: var(--background);
         margin-right: 0.65rem;
 
         .o-article__image {
@@ -75,27 +75,11 @@
         flex-direction: column;
         margin-bottom: 0.5em;
 
-
         .o-article__section {
-            margin-top: 0.5em;
-            margin-bottom: 0.25em;
-            font-size: 0.65em;
-            text-transform: uppercase;
-            width: fit-content;
-            padding-left: 0.2em;
-            padding-right: 0.2em;
-            background-color: $color-ubyssey-blue;
-            color: white;
-
-            &:hover {
-                background-color: $color-ubyssey-blue-dark !important;
-            }
-
-            a:hover {
-                color: white;
-            }
+            margin-top: 1em;
+            color: black;
         }
-
+        
         .o-article__headline {
             margin-top: 0;
             margin-bottom: 0.5em;

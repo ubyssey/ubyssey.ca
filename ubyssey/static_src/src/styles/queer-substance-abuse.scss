@@ -69,14 +69,14 @@ article > div > * {
         padding: 0;
         @media only screen and (max-width: 800px) {
             background-size: cover;
-            background-image: url("https://storage.googleapis.com/ubyssey/media/renditions/i_janmohamed_elena_cover.original.jpg");
+            background-image: url("https://storage.googleapis.com/ubyssey/media/renditions/i_janmohamed_elena_cover-resized.original.jpg");
             background-position: center;
             background-repeat: no-repeat;
         }
     }
     @media only screen and (min-width: 800px) {
         background-size: contain;
-        background-image: url('https://storage.googleapis.com/ubyssey/media/renditions/i_janmohamed_elena_cover.original.jpg');
+        background-image: url('https://storage.googleapis.com/ubyssey/media/renditions/i_janmohamed_elena_cover-resized.original.jpg');
         background-position: top;
         background-repeat: no-repeat;
         h1 {

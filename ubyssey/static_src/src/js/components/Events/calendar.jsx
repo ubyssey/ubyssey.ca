@@ -203,7 +203,11 @@ export function QueryEventsCalendar() {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        let end = new Date(start.getTime() + 29*d)
+        var start = new Date(today.getTime() - (10*d));
+        while(start.getDay() != 1) {
+            start = new Date(start.getTime() + d);
+        }
+        let end = new Date(start.getTime() + (4*7+1)*d)
 
         axios
         .get(
@@ -239,8 +243,8 @@ export function QueryEventsCalendar() {
                         <div class="u-container">
                             <div class="logo-area">
                                 <a class="home-link" href="/" title="Go to The Ubyssey Homepage">
-                                <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo-small.e935f233a50c.svg')"}} alt="Ubyssey Logo"></div>
-                                <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/ubyssey-logo%201.f3b3c0235809.svg')"}} alt="Ubyssey Logo"></div>
+                                <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/logos/ubyssey-logo-blue-light.e935f233a50c.svg')"}} alt="Ubyssey Logo"></div>
+                                <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('https://ubyssey.ca/static/ubyssey/images/logos/ubyssey-logo-blue-dark.f3b3c0235809.svg')"}} alt="Ubyssey Logo"></div>
                                 </a>
                             </div>
                         </div>
@@ -594,7 +598,8 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                     week['month'] = months[cur.getMonth()];
                     week['month_short'] = shortenedMonths[cur.getMonth()];
                 }
-                var cur = new Date(cur.getTime() + d);
+                var cur = new Date(cur.getTime() + (h * 25));
+                cur.setHours(0, 0, 0, 0);
                 week['days'].push(day);
             }
             calendar.push(week);
@@ -604,12 +609,12 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             var cur = new Date(event.start_time);
             cur.setHours(0,0,0,0);
             event.displayTime = displayTime(event.start_time);
-            if (event.end_time.getTime() - event.start_time.getTime() >= d-h) {
+            if (event.end_time.getTime() - event.start_time.getTime() >= d-h || event.start_time.getHours() == 0) {
                 event.displayTime = "";
             }
-            while(cur < new Date(event.end_time)) {
+            while(cur < new Date(event.end_time) || cur==event.start_time) {
                 const delta = Math.floor((cur.getTime() - start.getTime()) / d);
-                if (delta > 0 && delta < (7*(numberOfWeeks))) {
+                if (delta >= 0 && delta < (7*(numberOfWeeks))) {
                     calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
                 }
                 cur = new Date(cur.getTime() + d);
@@ -642,7 +647,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
         hidden = hidden.filter((i) => i!="");
         
         if (hidden.includes(that.id)) {
-            hidden.pop(hidden.indexOf(that.id));
+            hidden.splice(hidden.indexOf(that.id), 1);
         } else {
             hidden.push(that.id);
         }
@@ -819,7 +824,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                                                     setSearchParams(searchParams);
                                                 }}
                                                 dangerouslySetInnerHTML={{
-                                                    __html: "<b>" + event.displayTime + "</b> " + event.title,
+                                                    __html: "<b>" + event.displayTime + "</b> " + ((event.host && event.category=="seminar") ? event.host.replace("UBC ", "").split("for ").slice(-1)[0].split("of ").slice(-1)[0] + ":<br>" : "" ) + event.title,
                                                 }}
                                             ></Link>
                                         </li>
@@ -837,7 +842,10 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             <ul>{legend.map((key, i) =>
                 <li key={i} className={slugify(key)}>
                     <button id={slugify(key)} className={"legend-button" + (hidden.includes(slugify(key)) ? " inactive" : "")}
-                    onClick={(e) => toggleCategory(e.target, searchParams, setSearchParams)} title={key}>{key}</button>
+                    onClick={(e) => {console.log(e); toggleCategory(e.target, searchParams, setSearchParams);}} title={key}
+                    dangerouslySetInnerHTML={
+                        {__html: key}
+                     }></button>
                 </li>
             )}</ul>
         </div>
@@ -846,6 +854,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
 }
 
 function EventInfo({events}) {
+    const [widthMode, setWidthMode] = React.useState(window.innerWidth <= 759);
     let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     var event = false;
@@ -854,21 +863,30 @@ function EventInfo({events}) {
         for (let i=0; i<events.length; i++) {
             if (events[i].hash == eventHash) {
                 event = events[i];
-                document.getElementsByTagName("title")[0].innerHTML = event.title;
+                if (event.description == null) {
+                    event.description = "";
+                }
+                document.getElementsByTagName("title")[0].innerHTML = event.title.replace("<br>", "- ") +  " - Ubyssey Events Around Campus";
                 break;
             }
         }
     }
 
+    React.useLayoutEffect(()=> {
+
+        window.addEventListener('resize', ()=> {
+            setWidthMode(window.innerWidth <= 759);
+        });
+    }, []);
+
     React.useEffect(()=>{
-        console.log(document.getElementById('event-dialog'));
         if(document.getElementById('event-dialog')) {
             document.getElementById('event-dialog').showModal();
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
         }
-    })
+    });
 
     function exitEvent(searchParams, setSearchParams) {
         searchParams.delete("event");
@@ -879,7 +897,7 @@ function EventInfo({events}) {
         <div class="events-info-container">
         {event && 
         <>
-            {screen.width <= 759 ?
+            {widthMode ?
             <>
                 <dialog id="event-dialog" open="" aria-modal="true">
                     <div className="events-info-shadow" onClick={() => exitEvent(searchParams, setSearchParams)}></div>
@@ -915,7 +933,7 @@ function EventInfoBox({event}) {
                 }></a></h2>
                 {event.location != "" && <p><b>Location:</b> {event.location}</p>}
                 <p dangerouslySetInnerHTML={
-                    {__html: (event.host!=null ? "<b>" + (event.description ? event.host : "Hosted by " + event.host) + "</b> " : "") + event.description.replace(/(?:\r\n|\r|\n)/g, '<br>')}
+                    {__html: (event.host!=null ? "<b>" + (event.description ? event.host : "From " + event.host) + "</b> " : "") + event.description.replace(/(?:\r\n|\r|\n)/g, '<br>')}
                 }>
                 </p>
                 <p>

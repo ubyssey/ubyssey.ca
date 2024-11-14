@@ -23,9 +23,9 @@
 				<a href="{% pageurl article %}">{{ article.title|safe }}</a>
 			</h3>
 			<div class="o-article__byline">
-				<span class="o-article__author">By {{ article.get_authors_with_urls|safe }}</span>
+				<span class="o-article__author">{{article.authors_with_roles |safe }}</span>
 				<span> &nbsp;·&nbsp; </span>
-				<span class="o-article__published">{{ article.first_published_at|naturaltime }}</span>
+				<span class="o-article__published">{{ article.explicit_published_at|naturaltime }}</span>
 			</div>
 		</div>
 		{% if not hide_snippet %}

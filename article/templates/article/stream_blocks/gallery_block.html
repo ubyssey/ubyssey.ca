@@ -2,10 +2,11 @@
 {% load wagtailimages_tags %}
 {% load static %}
 
-  <div id="{{self.id}}" class="carousel carousel-dark slide {{self.images.0.style}} {{self.images.0.width}}" data-bs-ride="true" style="position: relative;">
-    <div class="carousel-indicators" style="position: absolute;">
+{% image self.images.0.image width-100 as first %}
+  <div id="{{self.id|slugify}}" class="carousel carousel-dark slide {{self.images.0.style}} {{self.images.0.width}}" data-bs-ride="true" style="--aspect-ratio: {{first.height}};">
+    <div class="carousel-indicators">
       {% for image in self.images %}
-        <button type="button" data-bs-target="#{{self.id}}" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+        <button type="button" data-bs-target="#{{self.id|slugify}}" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
       {% endfor %}
     </div>
     <div class="carousel-inner">
@@ -18,11 +19,11 @@
         </div>
       {% endfor %}
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#{{self.id}}" data-bs-slide="prev" style="position: absolute;">
+    <button class="carousel-control-prev" type="button" data-bs-target="#{{self.id|slugify}}" data-bs-slide="prev" style="position: absolute;">
       <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
       <span class="visually-hidden">Previous</span>
     </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#{{self.id}}" data-bs-slide="next" style="position: absolute;">
+    <button class="carousel-control-next" type="button" data-bs-target="#{{self.id|slugify}}" data-bs-slide="next" style="position: absolute;">
       <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
       <span class="visually-hidden">Next</span>
     </button>

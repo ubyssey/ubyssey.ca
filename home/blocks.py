@@ -6,6 +6,7 @@ from article.models import ArticlePage
 from django.db.models import Q
 
 from wagtail import blocks
+from wagtail.models import Page
 from wagtail.blocks import field_block
 from infinitefeed.blocks import AbstractArticleList
 
@@ -132,6 +133,7 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
     choices=[
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
+        ('section/objects/section_landing.html', 'Landing'),
     ]
 
 class SectionBlock(AbstractArticleList):
@@ -171,3 +173,25 @@ class CategoryBlock(AbstractArticleList):
         context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
         context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-first_published_at')[:9]
         return context
+    
+class SpecialLandingPageBlock(AbstractArticleList):
+    landing = field_block.PageChooserBlock(
+        page_type='specialfeaturelanding.SpecialLandingPage'
+    )
+    template = MidStreamListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['landing'].title
+        context['link'] = value['landing'].url
+        context['articles'] = [value['landing']] + list(Page.objects.child_of(value['landing']).all())
+        return context
+    
+
+class ArticlePromo(blocks.StructBlock):
+    article = field_block.PageChooserBlock(
+        page_type='article.ArticlePage'
+    )
+
+    class Meta:
+        template = "home/stream_blocks/special/article_midsection.html"

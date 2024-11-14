@@ -14,12 +14,20 @@ from django.http import HttpResponse
 import asyncio
 from asgiref.sync import sync_to_async
 import aiohttp
+import hashlib 
+import base64
 
 # Create your models here.
 
 class EventManager(models.Manager):
 
-    async def read_ical(self, name, file, create_function):
+    def hashing(self, string):
+        return base64.b64encode(hashlib.blake2b(string.encode(), digest_size=6).hexdigest().encode()).decode()
+
+    async def read_ical(self, f):
+        name = f['name']
+        file = f['file']
+        create_function = f['create_function']
         try:
             #print("Requesting " + name)
             async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
@@ -30,7 +38,16 @@ class EventManager(models.Manager):
                     tasks = []
                     for component in cal.walk():
                         if component.name == "VEVENT":
-                            tasks.append(asyncio.create_task(create_function(component)))
+                            if isinstance(component.decoded('dtstart'), datetime):
+                                start =component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+                            else:
+                                start=datetime.combine(component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+
+                            if timedelta(days=30) > timezone.now() - start:
+                                if 'instructions' in f:
+                                    tasks.append(asyncio.create_task(create_function(component, f['name'], f['instructions'])))
+                                else:
+                                    tasks.append(asyncio.create_task(create_function(component)))
                     
                     await asyncio.gather(*tasks)
 
@@ -40,60 +57,78 @@ class EventManager(models.Manager):
             print("Failed requesting to " + name)
 
     async def ical_create_event(self, ical_component, name, instructions):
-        if not await self.filter(event_url=ical_component.get('url')).aexists():
-            event = await self.acreate(
-                title=ical_component.get('summary'),
-                event_url=ical_component.decoded('url'),
-                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
-            )
-        else:
-            event = await self.filter(event_url=ical_component.get('url')).afirst()
-            if event.update_mode != 2:
-                return None
+        try:
+            if not await self.filter(event_url=ical_component.get('url')).aexists():
+                event = await self.acreate(
+                    title=ical_component.get('summary'),
+                    event_url=ical_component.decoded('url'),
+                    hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+                )
+            else:
+                event = await self.filter(event_url=ical_component.get('url')).afirst()
+                if event.update_mode != 2:
+                    return None
 
-        if event.hash == "":
-            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+            if event.hash == "":
+                event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
 
-        # Split location and address
-        location = ""
-        address = ""
-        if ical_component.get('location', False):
-            location = ical_component.get('location')            
-            if "," in location:
-                address = location[location.index(',')+1:]
-                location = location[:location.index(',')]
-        
-        event.title=str(ical_component.decoded('summary'), 'UTF-8')
-        if ical_component.get('description', False):
-            event.description=str(ical_component.decoded('description'), 'UTF-8')
-        else:
-            event.description=""
-
-        if isinstance(ical_component.decoded('dtstart'), datetime):
-            event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
-        else:
-            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
-
-        if isinstance(ical_component.decoded('dtend'), datetime):
-            event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
-        else:
-            event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+            # Split location and address
+            location = ""
+            address = ""
+            if ical_component.get('location', False):
+                location = ical_component.get('location')            
+                if "," in location:
+                    address = location[location.index(',')+1:]
+                    location = location[:location.index(',')]
             
-        event.address=address
-        event.location=location
-        event.email=ical_component.decoded('organizer', default="")
-        event.event_url=ical_component.decoded('url')
-        event.category = instructions['category']
-        event.hidden=False
-        event.host = name
+            event.title=str(ical_component.decoded('summary'), 'UTF-8')
+            if ical_component.get('description', False):
+                event.description=str(ical_component.decoded('description'), 'UTF-8')
+                while '\t' in event.description: 
+                    event.description = event.description.replace("\t", "")
+                while '\n ' in event.description: 
+                    event.description = event.description.replace("\n ", "\n")
+                while '\n\n\n' in event.description: 
+                    event.description = event.description.replace("\n\n\n", "\n\n")
+            else:
+                event.description=""
 
-        if 'description_transform' in instructions:
-            event.description = instructions['description_transform'](event)
+            if isinstance(ical_component.decoded('dtstart'), datetime):
+                event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+            else:
+                event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
 
-        event.update_mode = 1
-        await event.asave()
-        #print("Finished event " + event.event_url)
-        return event
+            if isinstance(ical_component.decoded('dtend'), datetime):
+                event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
+            else:
+                event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+                
+            event.address=address
+            event.location=location
+            event.email=ical_component.decoded('organizer', default="")
+            event.event_url=ical_component.decoded('url')
+            event.category = instructions['category']
+            event.hidden=False
+
+            if 'hidden_title_terms' in instructions:
+                event.hidden = True in (term in ical_component.get('summary') for term in instructions['hidden_title_terms'])
+
+            if 'hidden_override' in instructions:
+                event.hidden = instructions['hidden_override'](ical_component)
+
+            event.host = name
+
+            if 'description_transform' in instructions:
+                event.description = instructions['description_transform'](event)
+
+            event.update_mode = 1
+            await event.asave()
+            #print("Finished event " + event.event_url)
+            return event
+        except:
+            print("Failed on " + name)
+            print("- " + ical_component.get('summary') + ": " + ical_component.get('url'))
+            return None
 
     async def read_wp_events_api(self, name, api, categorize):
         try:
@@ -110,7 +145,7 @@ class EventManager(models.Manager):
                             'state': l['state'],                  
                         }
             async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
-                async with session.get(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=20") as response:
+                async with session.get(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=100") as response:
             
                     result = json.loads(await response.text())
                     #print("Connected to " + name)
@@ -126,103 +161,122 @@ class EventManager(models.Manager):
             print("Failed requesting to " + name)
 
     async def wp_events_api_create_event(self, event_json, api, host, categorize, locations):
-        if not await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).aexists():
-            event = await self.acreate(
-                title=event_json['title'],
-                event_url=event_json['link'],
-            )
-        else:
-            event = await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).afirst()
-            if event.update_mode != 2:
-                return None
-            
-        event.title = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
-        event.description = str(event_json['excerpt']['rendered'].encode('utf-8'), 'UTF-8')
-
-        event.start_time = datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())
-        event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
-
-        if len(event_json['event-venues']) > 0:
-            if event_json['event-venues'][0] in locations:
-                venue = locations[event_json['event-venues'][0]]
+        if len(event_json['link']) > 150 and "?" in event_json['link']:
+            event_json['link'] = event_json['link'].split("?")[0]
+        try:
+            if not await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).aexists():
+                event = await self.acreate(
+                    title=event_json['title'],
+                    event_url=event_json['link'],
+                    hash=self.hashing(event_json['link'] + str(event_json['start']))
+                )
             else:
-                async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
-                    async with session.get(api + 'event-venues/' + str(event_json['event-venues'][0])) as response:
-                        venue = json.loads(await response.text())
-            event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
-            event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
-        else:
-            event.location=''
-            event.address=''
+                event = await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).afirst()
+                if event.update_mode != 2:
+                    return None
 
-        event.email=''
-        event.event_url=event_json['link']
+            event.title = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
 
-        event.category = categorize['default']
-        categories = ['entertainment', 'seminar', 'community', 'sports']
+            if event.hash == "":
+                event.hash = self.hashing(event_json['link'] + str(event_json['start']))
 
-        for category in categories:
-            if event.category != categorize['default']:
-                break
-            categorize_key = category + '_title_terms'
-            if categorize_key in categorize:
-            
-                for term in categorize[categorize_key]:
-                    if term.lower() in event.title.lower():
-                        event.category = category
-                        break
+            event.description = str(event_json['excerpt']['rendered'].encode('utf-8'), 'UTF-8')
 
-        for category in categories:
-            if event.category != categorize['default']:
-                break
-            categorize_key = category + '_type'
-            if categorize_key in categorize:
-                for event_type in event_json['event-type']:
+            event.start_time = datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())
+            event.end_time = datetime.fromisoformat(event_json['end']).astimezone(timezone.get_current_timezone())
+
+            if len(event_json['event-venues']) > 0:
+                if event_json['event-venues'][0] in locations:
+                    venue = locations[event_json['event-venues'][0]]
+                else:
+                    async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+                        async with session.get(api + 'event-venues/' + str(event_json['event-venues'][0])) as response:
+                            venue = json.loads(await response.text())
+                event.location=str(venue['name'].encode('utf-8'), 'UTF-8')
+                event.address=str((venue['address'] + ", " + venue['city'] + ", " + venue['state']).encode('utf-8'), 'UTF-8')
+            else:
+                event.location=''
+                event.address=''
+
+            event.email=''
+            event.event_url=event_json['link']
+
+            event.category = categorize['default']
+            categories = ['entertainment', 'seminar', 'community', 'sports']
+
+            for category in categories:
+                if event.category != categorize['default']:
+                    break
+                categorize_key = category + '_title_terms'
+                if categorize_key in categorize:
                 
-                    for category_type in categorize[categorize_key]:
-                        if event_type == category_type:
+                    for term in categorize[categorize_key]:
+                        if term.lower() in event.title.lower():
                             event.category = category
                             break
 
-                    if event.category != categorize['default']:
-                        break
-
-        if event.hidden == False and 'hidden_title_terms' in categorize:
-            for term in categorize['hidden_title_terms']:
-                if term.lower() in event.title.lower():
-                    event.hidden = True
+            for category in categories:
+                if event.category != categorize['default']:
                     break
+                categorize_key = category + '_type'
+                if categorize_key in categorize:
+                    for event_type in event_json['event-type']:
+                    
+                        for category_type in categorize[categorize_key]:
+                            if event_type == category_type:
+                                event.category = category
+                                break
 
-        event.hidden=False
-        if 'hidden_topics' in categorize:
-            for id in event_json['event-topic']:
-            
-                for topic in categorize['hidden_topics']:
-                    if id == topic:
+                        if event.category != categorize['default']:
+                            break
+
+            if event.hidden == False and 'hidden_title_terms' in categorize:
+                for term in categorize['hidden_title_terms']:
+                    if term.lower() in event.title.lower():
                         event.hidden = True
                         break
 
-                if event.hidden == True:
-                    break
+            event.hidden=False
+            if 'hidden_topics' in categorize:
+                for id in event_json['event-topic']:
+                
+                    for topic in categorize['hidden_topics']:
+                        if id == topic:
+                            event.hidden = True
+                            break
 
-        if event.hidden == False and 'hidden_title_terms' in categorize:
-            for term in categorize['hidden_title_terms']:
-                if term.lower() in event.title.lower():
+                    if event.hidden == True:
+                        break
+
+            if event.hidden == False and 'hidden_title_terms' in categorize:
+                for term in categorize['hidden_title_terms']:
+                    if term.lower() in event.title.lower():
+                        event.hidden = True
+                        break
+
+            if timedelta(days=14) < event.end_time - event.start_time:
+                event.hidden=True
+
+            req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
+            if req.host in event_json['link']:
+                event.host = host
+            else:
+                if await self.filter(title=event.title, start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).exclude(id=event.id).aexists():
                     event.hidden = True
-                    break
+                elif 'chancentre.com' in event_json['link']:
+                    event.host = 'Chan Centre for the Performing Arts'
+                elif not '.ubc.ca' in event_json['link']:
+                    event.host = host
 
-        if timedelta(days=14) < event.end_time - event.start_time:
-            event.hidden=True
-
-        req = Request(api, headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"})
-        if req.host in event_json['link']:
-            event.host = host
-
-        event.update_mode = 1
-        
-        await event.asave()
-        #print("Finished event " + event.event_url)
-        return event
+            event.update_mode = 1
+            
+            await event.asave()
+            #print("Finished event " + event.event_url)
+            return event
+        except:
+            print("Failed on " + api)
+            print("- " + str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8') + ": " + event_json['link'])
+            return None
 
     def wp_events_api_get_type_ids(self, api, terms):
         ids = []
@@ -240,51 +294,61 @@ class EventManager(models.Manager):
         return ids
 
     async def ubcevents_create_event(self, ical_component):
-        if not await self.filter(event_url=ical_component.get('url')).aexists():
-            event = await self.acreate(
-                title=ical_component.get('summary'),
-                event_url=ical_component.decoded('url'),
-            )
-        else:
-            event = await self.filter(event_url=ical_component.get('url')).afirst()
-            if event.update_mode != 2:
-                return None
+        try:
+            if not await self.filter(event_url=ical_component.get('url')).aexists():
+                event = await self.acreate(
+                    title=ical_component.get('summary'),
+                    event_url=ical_component.decoded('url'),
+                    hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+                )
+            else:
+                event = await self.filter(event_url=ical_component.get('url')).afirst()
+                if event.update_mode != 2:
+                    return None
 
-        # Split location and address
-        location = ical_component.get('location')
-        address = ""
-        if "," in location:
-            address = location[location.index(',')+1:]
-            location = location[:location.index(',')]
 
-        
-        event.title=ical_component.get('summary')
-        event.description=ical_component.get('description')
+            if event.hash == "":
+                event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
 
-        if isinstance(ical_component.decoded('dtstart'), datetime):
-            event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
-        else:
-            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+            # Split location and address
+            location = ical_component.get('location')
+            address = ""
+            if "," in location:
+                address = location[location.index(',')+1:]
+                location = location[:location.index(',')]
 
-        if isinstance(ical_component.decoded('dtend'), datetime):
-            event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
-        else:
-            event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
             
-        event.address=address
-        event.location=location
-        event.email=ical_component.decoded('organizer', default="")
-        event.event_url=ical_component.decoded('url')
-        event.category = self.ubcevents_category(ical_component)
-        event.hidden=await self.ubcevents_judge_hidden(event, ical_component)
+            event.title=ical_component.get('summary')
+            event.description=ical_component.get('description')
 
-        if ical_component.get("organizer", False):
-            event.host = ical_component.get("organizer").params['cn']
+            if isinstance(ical_component.decoded('dtstart'), datetime):
+                event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+            else:
+                event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
 
-        event.update_mode = 1
-        await event.asave()
-        #print("Finished event " + event.event_url)
-        return event
+            if isinstance(ical_component.decoded('dtend'), datetime):
+                event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
+            else:
+                event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+                
+            event.address=address
+            event.location=location
+            event.email=ical_component.decoded('organizer', default="")
+            event.event_url=ical_component.decoded('url')
+            event.category = self.ubcevents_category(ical_component)
+            event.hidden=await self.ubcevents_judge_hidden(event, ical_component)
+
+            if ical_component.get("organizer", False):
+                event.host = ical_component.get("organizer").params['cn']
+
+            event.update_mode = 1
+            await event.asave()
+            #print("Finished event " + event.event_url)
+            return event
+        except:
+            print("Failed on UBC events")
+            print("- " + ical_component.get('summary') + ": " + ical_component.get('url'))
+            return None
     
     async def ubcevents_judge_hidden(self, event, ical):
         '''
@@ -311,7 +375,7 @@ class EventManager(models.Manager):
         
         # Hide events with certain terms in the title
         # The first two listed right now are on an inaccurate repeating schedule, the last was an advertisment for a sale that lasted too long
-        for i in ['coffee hour', 'advanced research computing summer school', 'Student Indoor Plant Sale at UBC Botanical Garden']:
+        for i in ['coffee hour', 'advanced research computing summer school', 'Student Indoor Plant Sale at UBC Botanical Garden', 'Grapes to Glass']:
             if i.lower() in title.lower():
                 return True
 
@@ -350,9 +414,13 @@ class EventManager(models.Manager):
         title = event.get('summary').lower()
 
         # Set farmer's markets events to community even though UBCevents tags them as entertainment for some reason
-        for i in ['lunch', 'market', 'ubc farm']:
+        for i in ['lunch', 'market', 'ubc farm',]:
             if i in title:
                 return 'community'
+            
+        for i in ['ubc cpd', 'seminar']:
+            if i in title:
+                return 'seminar'
 
         # Hide events without categories because there isn't enough information
         if not categories:
@@ -360,13 +428,23 @@ class EventManager(models.Manager):
 
         categories = categories.to_ical().decode().lower()
 
-        # Check for entertainmnet keywords
-        for i in ['entertainment', 'concert', 'perform']:
+        # Check for entertainment keywords
+        for i in ['entertainment', 'concert', 'perform', 'film']:
             if i in categories:
                 return 'entertainment'
 
+        # Check for community keywords
+        for i in ['orientations', 'festival']:
+            if i in categories:
+                return 'community'
+
+
+        if 'graduate students' in categories:
+            if not True in (term in categories for term in ['audience – community', 'audience – undergraduate students', 'audience – all students']):
+                return 'seminar'
+
         # Check for seminar keywords  
-        for i in ['workshop', 'seminar', 'research', 'learning', 'conference', 'graduate students']:
+        for i in ['workshop', 'seminar', 'research', 'learning', 'conference',]:
             if i in categories:
                 return 'seminar'
             
@@ -386,15 +464,21 @@ class EventManager(models.Manager):
 
     async def gothunderbirds_create_event(self, ical_component):
 
-        if not await self.filter(event_url=ical_component.get('url').replace("&amp;", "__AND__")).aexists():
+        if not await self.filter(event_url=ical_component.get('url').replace("&amp;", "&")).aexists():
             event = await self.acreate(
                 title=ical_component.get('summary'),
-                event_url=ical_component.decoded('url').replace("&amp;", "__AND__"),
+                event_url=ical_component.decoded('url').replace("&amp;", "&"),
+                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
             )
         else:
-            event = await self.filter(event_url=ical_component.get('url').replace("&amp;", "__AND__")).afirst()
-            if event.update_mode != 2:
+            event = await self.filter(event_url=ical_component.get('url').replace("&amp;", "&")).afirst()
+            if event.update_mode != 2 and event.end_time.astimezone(timezone.get_current_timezone()) <= timezone.now() - timedelta(days=7): # Go Thunderbirds is unqiue because the events are updated after they pass to include the result
                 return None
+
+                
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+
 
         # Split location and address
         address = ical_component.get('location')
@@ -409,13 +493,20 @@ class EventManager(models.Manager):
 
         event.description=" ".join(ical_component.get('description').split(" ")[0:-1])
 
-        splitDesc = ical_component.get('description').split(" ")
-        i = 0
-        while splitDesc[i][0].isupper():
-            i = i + 1
-        sport = " ".join(splitDesc[0:i])
-        sport = sport.replace("Men's ", "").replace("Women's ", "").replace("UBC ", "")
-        event.host = sport
+        splitDesc = ical_component.get('description')
+        for t in ['[W]','[L]', '[T]', '[O]', 'CANCELLED']:
+            splitDesc = splitDesc.replace(t, '')
+        splitDesc = splitDesc.split("\n")[0].split(" ")
+        splitDesc = list(filter(lambda s: s!="", splitDesc))
+        if len(splitDesc) > 0:
+            i = 0
+            while splitDesc[i][0].isupper() and i+1<len(splitDesc):
+                i = i + 1
+            sport = " ".join(splitDesc[0:i])
+            sport = sport.replace("Men's ", "").replace("Women's ", "").replace("UBC ", "")
+            event.host = sport
+        else:
+            event.host = ""
 
         if isinstance(ical_component.decoded('dtstart'), datetime):
             event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
@@ -432,7 +523,7 @@ class EventManager(models.Manager):
 
         event.address=address
         event.location=location
-        event.event_url=ical_component.decoded('url').replace("&amp;", "__AND__")
+        event.event_url=ical_component.decoded('url').replace("&amp;", "&")
         event.category='sports'
         event.hidden=self.gothunderbirds_judge_hidden(ical_component)
 
@@ -506,11 +597,15 @@ class EventManager(models.Manager):
             event = await self.acreate(
                 title=title,
                 event_url=event_url,
+                hash=self.hashing(title + str(event_component.find('span', class_='start').get_text(strip=True)))
             )
         else:
             event = await self.filter(event_url=event_url).afirst()
             if event.update_mode != 2:
                 return None
+
+        if event.hash == "":
+            event.hash = self.hashing(title + str(event_component.find('span', class_='start').get_text(strip=True)))
 
         # Extract start time
         start_time_str = event_component.find('span', class_='start').get_text(strip=True)
@@ -561,6 +656,7 @@ class EventManager(models.Manager):
             event = await self.acreate(
                 title=ical_component.get('summary'),
                 event_url=ical_component.decoded('url'),
+                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
             )
         else:
             event = await self.filter(event_url=ical_component.get('url')).afirst()
@@ -568,13 +664,23 @@ class EventManager(models.Manager):
                 return None
 
         event.title=ical_component.get('summary')
-        event.description= "<br>" + ical_component.get('description').replace("&amp;", "&")
-        if "<br>Name:" in event.description and "\nTitle" in event.description:
-            if event.description.index("<br>Name:") < event.description.index("\nTitle"):
-                event.description = event.description.replace(event.description[event.description.index("<br>Name:"):event.description.index("\nTitle")], "")
-        if "\nName:" in event.description and "\nTitle" in event.description:
-            if event.description.index("\nName:") < event.description.index("\nTitle"):
-               event.description = event.description.replace(event.description[event.description.index("\nName:"):event.description.index("\nTitle")], "")
+
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+
+        if ical_component.get('description', False):
+            event.description= "<br>" + ical_component.get('description').replace("&amp;", "&")
+            if "<br>Name:" in event.description and "\nTitle" in event.description:
+                if event.description.index("<br>Name:") < event.description.index("\nTitle"):
+                    event.description = event.description.replace(event.description[event.description.index("<br>Name:"):event.description.index("\nTitle")], "")
+            if "\nName:" in event.description and "\nTitle" in event.description:
+                if event.description.index("\nName:") < event.description.index("\nTitle"):
+                    event.description = event.description.replace(event.description[event.description.index("\nName:"):event.description.index("\nTitle")], "")
+
+            if "Location: " in ical_component.get('description'):
+                s = ical_component.get('description')[ical_component.get('description').index("Location: ") + len("Location: "):]
+                event.location = s[:s.index("\n")]
+
 
         if isinstance(ical_component.decoded('dtstart'), datetime):
             event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
@@ -585,12 +691,9 @@ class EventManager(models.Manager):
             event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
         else:
             event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
-            
-        event.location = ical_component.get('location')
-
-        if "Location: " in ical_component.get('description'):
-            s = ical_component.get('description')[ical_component.get('description').index("Location: ") + len("Location: "):]
-            event.location = s[:s.index("\n")]
+        
+        if ical_component.get('location', False):
+            event.location = ical_component.get('location')
 
         event.event_url = ical_component.get("url")
         event.email=""
@@ -637,6 +740,7 @@ class EventManager(models.Manager):
                 event = await self.acreate(
                     title=ical_component.get('summary'),
                     event_url=ical_component.decoded('url'),
+                    hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
                 )
             else:
                 event = await self.filter(event_url=ical_component.get('url')).afirst()
@@ -647,6 +751,9 @@ class EventManager(models.Manager):
 
         event.title=ical_component.get('summary')
         
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+
         # Clean up event description because they are so messy and have unnecessary information
         description = str(ical_component.decoded('description'), 'UTF-8')
         safety = 10
@@ -753,6 +860,12 @@ class Event(models.Model):
         null=True,
         blank=True,
     )
+    hash = models.CharField(
+        max_length=50,
+        blank=False,
+        null=True,
+        default=''
+    )
     image = models.CharField(
         max_length=255,
         blank=True,
@@ -786,6 +899,7 @@ class Event(models.Model):
         FieldPanel("address"),
         FieldPanel("host"),
         FieldPanel("event_url"),
+        FieldPanel("hash"),
         FieldPanel("image"),
         FieldPanel(
             "category",

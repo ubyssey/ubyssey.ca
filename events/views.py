@@ -72,6 +72,18 @@ class EventsTheme(object):
             'description': "Events Around Campus collected by The Ubyssey",
             'url': 'https://ubyssey.ca/events/',
             }
+
+        if request.GET.get("event"):
+            if Event.objects.filter(hash=request.GET.get("event")).exists():
+                event = Event.objects.filter(hash=request.GET.get("event")).first()
+
+                meta = {
+                    'title': event.title,
+                    'description': event.description,
+                    'url': "https://ubyssey.ca/events/?event=" + event.hash,
+                    'noindex': True,
+                }
+
         return render(request, "events/event_page_react.html", {'ical':ical, 'rss':rss, 'meta':meta})
 
     def landing(self, request):
@@ -250,7 +262,7 @@ async def update_events(request):
         await event.asave()
     
     tasks = []
-    
+    max_at_a_time = 50
     tasks.append(asyncio.create_task(Event.objects.phas_scrape()))
 
     wp_apis = [
@@ -260,7 +272,8 @@ async def update_events(request):
          'categorize': {
             'default': 'community',
             'seminar_type': [633, 632, 634, 528, 530],
-            'hidden_title_terms': ['coffee hour']
+            'hidden_title_terms': ['coffee hour'],
+            'seminar_title_terms': ['Archaeology Lab Nights', 'Information Session'],
          },
         },
 
@@ -285,7 +298,8 @@ async def update_events(request):
          'api': 'https://english.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-             'seminar_type': [512, 515, 510, 513]
+             'seminar_type': [512, 515, 510, 513],
+             'seminar_title_terms': ['Information Session'],
          },
         },
 
@@ -293,7 +307,8 @@ async def update_events(request):
          'api': 'http://fhis.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_type': [534, 537, 532]
+            'seminar_type': [534, 537, 532],
+            'seminar_title_terms': ['Information Session'],
          },
         },
 
@@ -322,7 +337,7 @@ async def update_events(request):
          },
         },
 
-        {'name': 'UBC Pyschology', 
+        {'name': 'UBC Psychology', 
          'api': 'https://psych.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
@@ -359,7 +374,7 @@ async def update_events(request):
          'api': 'https://ahva.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_type': [820, 926, 817, 930, 824, 825]
+            'seminar_type': [820, 926, 817, 930, 824, 825, 822]
          },
         },
 
@@ -451,10 +466,9 @@ async def update_events(request):
     for a in wp_apis:
         # Event.objects.wp_events_api_get_type_ids(a['api'], terms) # Uncomment to print the event-type id for types wuth the terms above in their name. Used for categorizing the events
         tasks.append(asyncio.create_task(Event.objects.read_wp_events_api(a['name'], a['api'], a['categorize'])))
-        if len(tasks) >= 15:
+        if len(tasks) >= max_at_a_time:
             await asyncio.gather(*tasks)
             tasks = []
-
 
     ical_files = [
 
@@ -473,17 +487,83 @@ async def update_events(request):
         {'name': 'UBCevents', 
          'file': "https://events.ubc.ca/events/?ical=1", 
          'create_function': Event.objects.ubcevents_create_event},
+
+        {'name': 'Thunderbird Arena', 
+         'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % datetime.now().month) + "-01&ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'entertainment',
+            'description_transform': lambda d : "",    
+         }
+        },
+
+        {'name': 'Thunderbird Arena', 
+         'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % ((datetime.now().month%12) + 1)) + "-01&ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'entertainment',
+            'description_transform': lambda d : "", 
+         }
+        },
+
+        {'name': 'UBC Mathematics', 
+         'file': "https://www.math.ubc.ca/news-events/events/ical", 
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'seminar',
+         }
+        },
+
+        {'name': 'AMS', 
+         'file': "https://www.ams.ubc.ca/events/?ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'community',
+            'description_transform': lambda e : e.description.replace("UBC, UBC Vancouver, UBC students, UBC student life, UBC students, UBC events, events at UBC, UBC student events, UBC back to school, UBC back to school events, UBC campus, UBC campus events", ""),
+            'hidden_title_terms': ['SASC'],
+         }
+        },
+
+        {'name': 'AMS SASC', 
+         'file': "https://www.amssasc.ca/events/?ical=1", 
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'community',
+            'hidden_title_terms': ['Roots and Resilience'],
+         }
+        },
+
+        {'name': 'UBC Libraries', 
+         'file': "https://libcal.library.ubc.ca/ical_subscribe.php?src=p&cid=7544", 
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'community',
+            'hidden_override': lambda e : len(e.get('categories').cats) > 0, # The scheduled events are all cringe but well categorized. Events added manually can be cool but categories typically aren't added. At some point we should be more sophistiacted in filtering this lmao
+         }
+        },
+
+        {'name': 'Green College',
+         'file': 'https://greencollege.ubc.ca/civicrm/event/ical',
+         'create_function': Event.objects.ical_create_event,
+         'instructions': {
+            'category': 'seminar',
+            'description_transform': lambda e : e.description.split('in the series\n\n')[-1][e.description.split('in the series\n\n')[-1].index("\n")+4:],
+         }
+        },
     ]
 
     for f in ical_files:
-        tasks.append(asyncio.create_task(Event.objects.read_ical(f['name'], f['file'], f['create_function'])))
-        if len(tasks) >= 15:
+        tasks.append(asyncio.create_task(Event.objects.read_ical(f)))
+        if len(tasks) >= max_at_a_time:
             await asyncio.gather(*tasks)
             tasks = []
 
     await asyncio.gather(*tasks)
 
     async for event in Event.objects.filter(update_mode=2):
+        await event.adelete()
+
+    async for event in Event.objects.filter(hidden=True, end_time__lt=timezone.now()):
         await event.adelete()
 
     return HttpResponse("Success!", status=200)
@@ -587,8 +667,10 @@ class EventsFeed(Feed):
             return Event.objects.filter(hidden=False, end_time__gte=timezone.now(), start_time__lte=timezone.now() + timedelta(days=7)).exclude(category='seminar')
 
     def item_title(self, item):
+        import re
         item.start_time = item.start_time.astimezone(timezone.get_current_timezone())
-        return item.start_time.strftime("%-m/%-d %-I:%M%P") + " " + item.title.replace("<br>", "")
+        title = item.start_time.strftime("%-m/%-d %-I:%M%P") + " " + item.title.replace("<br>", "")
+        return re.sub(r'[\x00-\x1f\x7f-\x9f]', '', title)
 
     def item_pubdate(self, item):
         return item.start_time.astimezone(timezone.get_current_timezone())
@@ -618,7 +700,7 @@ class EventsFeed(Feed):
 class EventsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'category']
+        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'location', 'address', 'host', 'email', 'event_url', 'hash', 'category', 'update_mode']
 
 class EventsViewSet(viewsets.ModelViewSet):
     serializer_class = EventsSerializer

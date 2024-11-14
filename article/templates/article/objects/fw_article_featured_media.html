@@ -6,9 +6,11 @@
 
 {% if self.featured_media.first.image %}
     {% with self.featured_media.first as featured_image_object %}
-        {% image featured_image_object.image original as featured_image %}
+        {% image featured_image_object.image width-1500 format-webp as featured_image %}
         <img
             class="article-attachment"
+            width="{{ featured_image.width }}"
+            height="{{ featured_image.height }}"
             data-id="{{ featured_image_object.image.id }}"
             data-caption="{{ featured_image_object.caption }}"
             data-url="{{ featured_image.url }}"
@@ -22,9 +24,7 @@
                     {{ featured_image_object.caption }}
                 {% endif %}
                 {% if featured_image_object.credit %}
-                    <span class="credit">
-                        {{ featured_image_object.credit }}
-                    </span>
+                    <span class="credit">{{ featured_image_object.credit }}</span>
                 {% endif %}
             </div>
         {% endif %}

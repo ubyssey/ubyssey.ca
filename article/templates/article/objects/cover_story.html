@@ -25,7 +25,7 @@
     <div class="o-article__meta">
       <p class="o-article__snippet">{% if article.lede %}{{article.lede|safe}}{% else %}{{article.search_description|safe}}{% endif %}</p>
       <div class="o-article__byline">
-        <span class="o-article__author">{% if article.get_authors_with_urls %}{{article.get_authors_with_urls|safe }}{% else %}Ubyssey Staff{% endif %}</span>
+        <span class="o-article__author">{% if article.get_authors_split_out_visual_bylines %}{{article.authors_split_out_visual_bylines |safe }}{% else %}Ubyssey Staff{% endif %}</span>
         <span> &nbsp;&nbsp; </span>
         <a href="{{article|get_section_link}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article|get_section_title}}</a>
         <span> &nbsp;&nbsp; </span>

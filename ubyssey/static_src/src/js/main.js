@@ -1,5 +1,5 @@
 // import * as mp from './modules/Mixpanel';    //commented out because creepy af
-import upcomingEvents from './widgets/upcoming-events';
+//import upcomingEvents from './widgets/upcoming-events';
 import { initializeDarkModeToggle } from './darkmode';
 
 // self-executing js anonymous function
@@ -299,6 +299,12 @@ function initializeSocialMediaActions() {
     'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
+  $(document).on('click', '.share-mastodon', function (e) {
+    e.preventDefault();
+    window.open('https://tootpick.org/#text=' + title + '%20' + window.location.href + ' #ubyssey',
+    'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+  });
+
 
   // on clicking on the a element w/ class=='twitter', share on twitter
   $(document).on('click', '.share-twitter', function (e) {
@@ -417,28 +423,6 @@ function openModal(modal) {
 
   disableScroll();
 }
-
-/*
-function moveModals() {
-  var modalBlocks = document.getElementsByClassName("add-to-modal");
-  var modal = document.getElementById("modal");
-  var index = 0;
-  while (modalBlocks.length > 0) {
-    //modalBlocks[i].remove();  
-    var div = document.createElement("div");
-    div.classList.add("openModal");
-    div.setAttribute("modal", index);
-
-    var mod = modalBlocks[0];
-    mod.insertAdjacentElement("beforebegin", div);
-    mod.classList.remove("add-to-modal");
-    modal.appendChild(mod);
-
-    modalBlocks = document.getElementsByClassName("add-to-modal");
-    index = index + 1;
-  } 
-}
-*/
 
 function initializeFilterDropdown() {
   $(document).on('click', 'a.filterDropdown', function (e) {

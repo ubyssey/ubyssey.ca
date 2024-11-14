@@ -39,6 +39,8 @@
       .c-button {
         // Structure
         margin: 0;
+        border: none;
+        padding: 0.5em 1em;
 
         // Background
         background-color: white;
@@ -46,6 +48,8 @@
         // Text
         font-size: 1rem;
         color: $color-accent-blue;
+
+        cursor: pointer;
   
         &:hover {
           // Background

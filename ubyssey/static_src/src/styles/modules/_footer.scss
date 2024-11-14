@@ -7,18 +7,31 @@ footer {
   padding: 15px 0;
   border-top: 0.5em solid $color-ubyssey-blue;
   background-color: $color-ubyssey-blue-dark;
-  color: white;
+  color: $color-ubyssey-blue-light;
   position: relative;
   bottom: 0;
   left: 0;
   right: 0;
+
+  h3 {
+    color: $color-ubyssey-blue-classic;
+    text-transform: uppercase;
+    font-size: 1em;
+  }
+  h2, p, li {
+    color: $color-ubyssey-blue-light;
+  }
+
   .about {
-    line-height: 2em;
-    max-width: 1000px;
-    margin: auto;
-    margin-top: 2em;
+    padding-inline: 1em;
+    margin-inline: auto;
+    margin-top: 4em;
     margin-bottom: 2em;
+
+    max-width: 1050px;
     display: flex;
+
+    line-height: 1.75em;
     h2 {
       font-size: 2em;
       font-weight: 200;
@@ -27,56 +40,42 @@ footer {
         font-style: italic;
       }
     }
-    h2, p, li {
-      color: $color-ubyssey-blue-light;
-    }
-    a {
-      text-decoration: underline;
-    }
   }
 
   div.footer-branding {
-    margin-right: 2em;
+    margin-right: 5em;
     display: flex;
     flex-direction: column;
-    width: 250px;
+    width: 350px;
     .logo {
       height: auto;
       width: 100%;
     }
     .funding {
-      margin-top: 30px;
-      align-self: end;
-      width: 55%;
-      margin-right: 1em;
-      @media($bp-smaller-than-tablet){
-        align-self: center;
-        margin-right: 0;
-      }
+      margin: 1em 0;
+      width: 250px;
     }
   }
 
-  nav {
-    text-align: center;
-    line-height: 40px;
-    ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
+  div.footer-links {
+    padding-top: 1em;
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+  }
 
-      li {
-        margin: 0 8px;
-        display: inline-block;
-      }
+  .land-acknowledgement {
+    margin: 2em auto;
+    padding: 1em;
+    max-width: 1150px;
+    a {
+      text-decoration: underline;
     }
   }
 
   .copyright {
-    margin: 0.5em;
+    margin: 3em 0.5em;
     text-align: center;
-  }
-  .navbar-nav {
-    display: block;
   }
 
   ul {
@@ -86,92 +85,87 @@ footer {
     flex-direction: row;
   }
 
-  div.about-text {
-    h3 {
-      margin-top: 1em;
-      color: $color-ubyssey-blue-light;
-      font-weight: 500;
-      font-size: 1em;
-    }
-    ul {
-      display: flex;
-      flex-wrap: wrap;
-      li {
-        margin-right: 0.5em;
-      }
+  @media (min-width: 1200px) {
+    div.footer-branding .logo {
+      margin-left: -4em;
+      width: calc(100% + 7em);
     }
   }
+
   @media($bp-larger-than-tablet){
+    .mobile {
+      display: none;
+    }
+    .desktop {
+      display: block;
+    }
+
     .about {
       h2 {
         margin-top: 0;
         margin-bottom: 0;
       }
-      p {
-        margin: 0.5em 0 1.5em 0;
-      }
     }
-    div.about-text {
+
+    div.footer-links-section {
       flex-grow: 1;
-      width: 0;
-      ul {
-        padding-left: 2em;
+      h3 {
+        margin-bottom: 2em;
       }
-      p:last-child {
-        margin-top: 1.5em;
-      }
-    }
-    nav .top-row {
-      font-size: 21px;
-      font-weight: 600;
       li {
-        margin: 0 10px;
+        line-height: 2em;
       }
     }
+
   }
 
   @media($bp-smaller-than-tablet){
+    text-align: center;
+
+    .mobile {
+      display: block;
+    }
+    .desktop {
+      display: none;
+    }
+
     .about {
       flex-direction: column;
       max-width: 600px;
       padding: 1em;
-      h2 {
-        text-align: center;
-      }
     }
-    div.about-text {
-      width: auto;
-      text-align: center;
-      ul {
-        justify-content: center;
-      }
-      h3 {
-        font-weight: 600;
-      }
-      p:last-child {
-        margin-top: 2em;
-      }
-    }
-    nav{
-      display: flex;
-    }
+ 
     div.footer-branding {
       margin: auto;
+      margin-bottom: 2em;
       width: 100%;
-      max-width: 200px;
 
       .logo {
         width: 50%;
-        margin: auto;
+        margin-inline: auto;
+        margin-bottom: 1em;
       }
       .funding {
-        width: 100%;
+        margin-inline: auto;
+        width: 50%;
       }
     }
-    .top-row, .bottom-row{
-      width: 50%;
-      li{
-        display: block;
+
+    div.footer-links-section {
+      width: 100%;
+      h3 {
+        margin-top: 1em;
+        color: #BBE3F1;
+      }
+      ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      li {
+        margin: 0 0.5em;
+        text-decoration: underline;
       }
     }
   }
