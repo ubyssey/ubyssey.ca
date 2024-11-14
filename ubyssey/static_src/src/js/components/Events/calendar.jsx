@@ -103,9 +103,7 @@ export function QueryEventsCalendar() {
             const month = parseInt(urlParams.get("month"));
             const year = parseInt(urlParams.get("year"));
             return getDate(month, year);
-        }
-
-        else{
+        } else{
             console.log("No month and year");
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -115,8 +113,8 @@ export function QueryEventsCalendar() {
                 start = new Date(start.getTime() + d);
             }
             return start;
+        }
     }
-}
     const calculateNewStart = (direction, start) => {
         // Set the start date to the first day of the current month
         let newStart = new Date(start);
@@ -201,17 +199,15 @@ export function QueryEventsCalendar() {
         const h = m * 60;
         const d = h * 24;
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        var start = new Date(today.getTime() - (10*d));
-        while(start.getDay() != 1) {
-            start = new Date(start.getTime() + d);
-        }
-        let end = new Date(start.getTime() + (4*7+1)*d)
+        var apiStart = new Date(start.getTime() - d*25);
+        apiStart.setDate(1);
 
+        var apiEnd = new Date(apiStart.getTime() + d*120);
+        apiEnd.setDate(1);
+        console.log(String(apiStart) + " " + String(apiEnd));
         axios
         .get(
-            '/api/events/?limit=300' //If needed you can increase or decrease the limit to include more or lesser events or add more query parmaters
+            '/api/events/?limit=300&start_time__gte=' + apiStart.toISOString() + "&end_time__lte=" + apiEnd.toISOString() //2024-10-15T11:00:00-07:00 If needed you can increase or decrease the limit to include more or lesser events or add more query parmaters
         )
         .then((response) => {
             const res = response.data.results;
@@ -229,7 +225,7 @@ export function QueryEventsCalendar() {
         getEvents();
         const theme = document.documentElement.getAttribute('color-css-theme');
         setIsDarkMode(theme === 'dark');
-    },[]);
+    },[start]);
 
     const toggleDarkMode = () => {
         setIsDarkMode(prevMode => !prevMode); // Toggle dark mode state
