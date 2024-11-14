@@ -524,7 +524,11 @@ function EventsOptions({getInitialStartDate, handleMonthNavigation, setIsMonthTo
                                 <Link to={`?category=${cat.value}`}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        searchParams.set("category", cat.value);
+                                        if(cat.value=="all") {
+                                            searchParams.delete("category");
+                                        } else {
+                                            searchParams.set("category", cat.value);
+                                        }
                                         setSearchParams(searchParams);
                                     }}
                                 >{cat.label}</Link>
@@ -625,7 +629,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
     }
 
     function getHosts(hosts, event) {
-        if (event.host != null && event.host != "") {
+        if (event.host != null && event.host != "" && event.start_time >= start.getTime() && event.start_time < start.getTime() + (d * 7 * numberOfWeeks)) {
             if (!(hosts.includes(event.host))) {
                 hosts.push(event.host);
             }
@@ -673,7 +677,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
     
     var category = "all";
     var highlight = "category";
-    if (query.get("category") != null){
+    if (query.get("category") != null && query.get("category") != "all"){
         category = query.get("category");
         highlight = "host";
     }
