@@ -1197,27 +1197,27 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         return writers + visuals
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 
-    def get_category_articles(self, order='-first_published_at') -> QuerySet:
+    def get_category_articles(self, order='-first_published_at', max=10) -> QuerySet:
         """
         Returns a list of articles within the Article's category
         """
-        category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)
+        category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)[:max]
 
         return category_articles
     
-    def get_section_articles(self, order='-first_published_at') -> QuerySet:
+    def get_section_articles(self, order='-first_published_at', max=10) -> QuerySet:
         """
         Returns a list of articles within the Article's section
         """
 
-        section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)
+        section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)[:max]
         
         return section_articles
-    def get_articles_by_tag(self, order='-first_published_at') -> QuerySet:
+    def get_articles_by_tag(self, order='-first_published_at', max=10) -> QuerySet:
         """
         Returns a list of articles with the same tags as the current article
         """
-        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)
+        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
     def get_suggested(self, number_suggested=3):
@@ -1227,7 +1227,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         from taggit.models import Tag
         suggested = {}
         if self.filter_by_tags:
-            articles_by_tag = self.get_articles_by_tag()
+            articles_by_tag = self.get_articles_by_tag(max=number_suggested)
             if len(articles_by_tag) > 0:
                 tag = Tag.objects.get(slug=self.primary_tag_slug)
                 suggested = {}
@@ -1236,7 +1236,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 suggested['link'] = "/tag/" + tag.slug
         if not suggested:
             if self.category != None:
-                category_articles = self.get_category_articles()
+                category_articles = self.get_category_articles(max=number_suggested)
                 if len(category_articles) > 0:
                     suggested = {}
                     suggested['title'] = self.category.title
@@ -1244,7 +1244,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
 
         if not suggested:
-            section_articles = self.get_section_articles()
+            section_articles = self.get_section_articles(max=number_suggested)
             if len(section_articles) > 0:
                 suggested = {}
                 suggested['title'] = self.get_parent().title
