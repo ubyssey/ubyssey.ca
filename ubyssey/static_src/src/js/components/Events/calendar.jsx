@@ -207,7 +207,7 @@ export function QueryEventsCalendar() {
         console.log(String(apiStart) + " " + String(apiEnd));
         axios
         .get(
-            '/api/events/?limit=300&start_time__gte=' + apiStart.toISOString() + "&end_time__lte=" + apiEnd.toISOString() //2024-10-15T11:00:00-07:00 If needed you can increase or decrease the limit to include more or lesser events or add more query parmaters
+            '/api/events/?limit=1000&start_time__gte=' + apiStart.toISOString() + "&end_time__lte=" + apiEnd.toISOString() //2024-10-15T11:00:00-07:00 If needed you can increase or decrease the limit to include more or lesser events or add more query parmaters
         )
         .then((response) => {
             const res = response.data.results;
