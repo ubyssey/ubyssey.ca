@@ -33,7 +33,7 @@
                 </svg> the ubyssey culture//
             </a>
             &nbsp;&nbsp;&nbsp;&nbsp;<span class="editor-credit">edited by <a href="https://ubyssey.ca/authors/elena-massing/">Elena Massing</a></span></p>
-        <h1>femme</h1>
+        <h1><a href="{{self.category.section_page.url}}category/{{self.category.slug}}">femme</a></h1>
     </div>
 </nav>
 {% endblock %}
@@ -144,7 +144,7 @@
                 {% if article.featured_media.first.image %}
                 <li>
                     <a href="{% pageurl article %}">
-                        {% image article.featured_media.first.image height-500 format-webp alt=article.featured_media.first.alt_text %}
+                        {% image article.featured_media.first.image fill-1000x500-c100 format-webp alt=article.featured_media.first.alt_text %}
                     </a>
                     <a href="{% pageurl article %}">
                         <h3>{{article.title}}</h3>
