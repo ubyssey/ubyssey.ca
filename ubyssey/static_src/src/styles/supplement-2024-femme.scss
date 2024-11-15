@@ -55,12 +55,14 @@ header h1 {
 }
 
 .fw-description, .subtitle {
-  margin: 1em auto;
+  margin: 2em auto;
   
   text-align: center;
   font-size: 2em;
   line-height: 1em;
   color: var(--highlightColour);
+  font-family: norman-variable, sans-serif;
+  font-variation-settings: 'wght' 600;
 }
 
 a {
@@ -249,6 +251,8 @@ img {
       flex-direction: column;
       img {
         margin: 0 auto;
+        height: 250px;
+        width: auto;
       }
       a {
         color: #a71d2c;

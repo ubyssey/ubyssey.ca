@@ -1200,12 +1200,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         return writers + visuals
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 
-    def get_category_articles(self, order='-first_published_at', max=10) -> QuerySet:
+    def get_category_articles(self, order='-first_published_at', max=False) -> QuerySet:
         """
         Returns a list of articles within the Article's category
         """
-        category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)[:max]
-
+        category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)
+        if max:
+            return category_articles[:max]
         return category_articles
     
     def get_section_articles(self, order='-first_published_at', max=10) -> QuerySet:
