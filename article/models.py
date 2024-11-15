@@ -746,6 +746,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return "article/article_page_guide_2024.html"
         elif self.layout == 'science-2024':
             return "article/article_page_supplement_2024_science.html"
+        elif self.layout == 'femme-2024':
+            return "article/supplements/article_page_supplement_2024_femme.html"
 
         return "article/article_page.html"
 
@@ -877,6 +879,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                             ('spoof-2024', 'Spoof (2024 style)'),
                             ('guide-2024', 'Guide (2024 style)'),
                             ('science-2024', 'Science Supplement (2024)'),
+                            ('femme-2024', 'Femme Culture Special Issue (2024)'),
                         ],
                     ),
                 ),
