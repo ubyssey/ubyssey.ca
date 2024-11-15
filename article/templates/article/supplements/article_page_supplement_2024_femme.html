@@ -144,7 +144,7 @@
                 {% if article.featured_media.first.image %}
                 <li>
                     <a href="{% pageurl article %}">
-                        {% image article.featured_media.first.image width-800 format-webp alt=article.featured_media.first.alt_text %}
+                        {% image article.featured_media.first.image height-500 format-webp alt=article.featured_media.first.alt_text %}
                     </a>
                     <a href="{% pageurl article %}">
                         <h3>{{article.title}}</h3>

@@ -54,8 +54,8 @@ header h1 {
   font-variation-settings: 'wght' 700;
 }
 
-.fw-description {
-  margin-inline: auto;
+.fw-description, .subtitle {
+  margin: 1em auto;
   
   text-align: center;
   font-size: 2em;
@@ -399,6 +399,10 @@ nav.supplement-nav {
   .pull-quote .quote {
     line-height: 1.5em;
     font-size: 1.5em;
+  }
+
+  .image-attachment {
+    padding: 0;
   }
 
   .category-list ul {
