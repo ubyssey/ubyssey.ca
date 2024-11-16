@@ -88,9 +88,9 @@ h2, h3, h4 {
 }
 
 p.drop-cap:first-letter {
-  margin-top: 0.05em;
+  padding-top: 0.05em;
   padding-right: 0.1em;
-  height: 1em;
+  height: 0.7em;
   float: left;
 
   color: var(--highlightColour);
@@ -417,6 +417,10 @@ nav.supplement-nav {
   .pull-quote .quote {
     line-height: 1.5em;
     font-size: 1.5em;
+  }
+
+  .editor-credit {
+    display: none;
   }
 
   .image-attachment {
