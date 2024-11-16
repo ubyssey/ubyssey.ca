@@ -119,21 +119,16 @@ export function QueryEventsCalendar() {
         // Set the start date to the first day of the current month
         let newStart = new Date(start);
 
-        if(newStart.getDate() !== 1){
-        while (newStart.getDay() !== 1) {
-            newStart = new Date(newStart.getTime() + d);
-        }
-        newStart.setDate(1);
-        newStart.setMonth(newStart.getMonth()+1)
-        }
         // Adjust the month based on the direction
-        const currentMonth = newStart.getMonth();
         console.log(direction);
         if (direction === 'next') {
-            newStart.setMonth(currentMonth + 1);
+            newStart = new Date(newStart.getTime() + (40*d));
         } else {
-            newStart.setMonth(currentMonth - 1);
-        }    
+            if (newStart.getDate() == 1) {
+                newStart = new Date(newStart.getTime() - (2*d));
+            }
+        }
+        newStart.setDate(1);
         // Extract the new month and year after the adjustment
         const adjustedYear = newStart.getFullYear();
         const adjustedMonth = (newStart.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is two digits (01-12)
@@ -739,26 +734,27 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                         />
                     </svg>
                 </Link>
-                <span className="month-label">{calendar[0]?.month}</span>
-                <Link
-                    to={() => {
-                        const searchParams = new URLSearchParams(window.location.search);
-                        return `?${searchParams.toString()}`;
-                    }}
-                    className="today-button"
-                    title="Today"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        const searchParams = new URLSearchParams(window.location.search);
-                        searchParams.delete('month');
-                        searchParams.delete('year');
-                        navigate(`?${searchParams.toString()}`);
-                        setStart(getInitialStartDate());
-                        setIsMonthToggled(false);
-                    }}
-                >
-                    Today
-                </Link>
+                {isMonthToggled && 
+                    <Link
+                        to={() => {
+                            const searchParams = new URLSearchParams(window.location.search);
+                            return `?${searchParams.toString()}`;
+                        }}
+                        className="today-button"
+                        title="Today"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            const searchParams = new URLSearchParams(window.location.search);
+                            searchParams.delete('month');
+                            searchParams.delete('year');
+                            navigate(`?${searchParams.toString()}`);
+                            setStart(getInitialStartDate());
+                            setIsMonthToggled(false);
+                        }}
+                    >
+                        Jump to Today
+                    </Link>
+                }
                 <Link
                     to={() => {
                         const searchParams = new URLSearchParams(window.location.search);

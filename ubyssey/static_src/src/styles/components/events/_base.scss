@@ -480,9 +480,6 @@ header.events{
             }
         }
     }
-    .today-calendar .events-calendar--row:first-child {
-         display: none;
-    }
     
     .today-calendar div.day.past {
          display: none;
@@ -688,11 +685,6 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
         }
 
         .today-button {
-            position: absolute;
-            right: 3em;
-        }
-
-        .month-label {
             position: absolute;
             
             left: 50%;
