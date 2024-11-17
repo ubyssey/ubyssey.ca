@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 // import ReactDOM from 'react-dom';
 import axios from "axios";
+import { RotatingLines } from "react-loader-spinner";
+
 const BP_DESKTOP_SIZE = 1199;
 
 function useQuery() {
@@ -68,6 +70,7 @@ export function QueryEventsCalendar() {
     const [start, setStart] = useState(getInitialStartDate());
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isMonthToggled, setIsMonthToggled] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     function getDate(month, year) {
         let newStartDate = new Date(year, month - 1, 1); // Month is 0-indexed
@@ -213,6 +216,7 @@ export function QueryEventsCalendar() {
             }
 
             setEvents(res);
+            setIsLoading(false);
         })
         .catch((err) => console.log(err));
     }
@@ -273,7 +277,7 @@ export function QueryEventsCalendar() {
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} setIsMonthToggled={setIsMonthToggled} isMonthToggled={isMonthToggled}/>
+                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} setIsMonthToggled={setIsMonthToggled} isMonthToggled={isMonthToggled} isLoading={isLoading}/>
                     </div>
                 </div>
             
@@ -542,7 +546,7 @@ function EventsOptions({getInitialStartDate, handleMonthNavigation, setIsMonthTo
     );
 }
 
-function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode, getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isMonthToggled}) {
+function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode, getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isMonthToggled, isLoading}) {
 
     let query = useQuery();
     const s = 1000
@@ -781,58 +785,79 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             </>
         )}
         </div>
-        <div class={"events-calendar--rows" + (!isMonthToggled ? " today-calendar" : "")}>{calendar.map((week, week_index) => 
 
+        {calendar.map((week, week_index) => (
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
-                {week_index===0 && 
-                    <h2 class="events-calendar--month">
+                {week_index === 0 && (
+                    <h2 className="events-calendar--month">
                         <span className="full">{week.month}</span>
                         <span className="short">{week.month_short}</span>
                     </h2>
-                }
-                {week.days.map((day, day_index) => 
-                    <>
-                        {(day.day === 1 && week_index !== 0 && !(isMonthToggled && isPhablet)) && (
-                            <h2 className="events-calendar--month">
-                                <span className="full">{week.month}</span>
-                                <span className="short">{week.month_short}</span>
-                            </h2>
-                        )}
-                        
-                        {/* Hide days in first week until day.day === 1 for mobile phone */}
-                        {!(isMonthToggled && week_index === 0 && day.day > 7 && isPhablet) && 
-                          !(week_index >= 4 && isPhablet && day.day < 7 && isMonthToggled) && (
-                            <div className={"day " + day.phase}>
-                                <button onClick={(e) => e.target.parentElement.parentElement.classList.toggle('enlarged')} className="events-calendar--number">
-                                    <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>{day.day}.
-                                </button>
-                                <ul>
-                                    {day.events.map((event) => (
-                                        <li className={(eventHash == event.hash && "selected") + " " + eventsTags(event)}>
-                                            <Link
-                                                title={event.title.replace("<br>", ", ")}
-                                                className="calendar-item"
-                                                to={"?event=" + event.hash}
-                                                event-url={event.event_url}
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    searchParams.set("event", event.hash);
-                                                    setSearchParams(searchParams);
-                                                }}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: "<b>" + event.displayTime + "</b> " + ((event.host && event.category=="seminar") ? event.host.replace("UBC ", "").split("for ").slice(-1)[0].split("of ").slice(-1)[0] + ":<br>" : "" ) + event.title,
-                                                }}
-                                            ></Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                    </>
                 )}
-
+                {week.days.map((day, day_index) => {
+                    const loaderWeek = Math.floor((numberOfWeeks - 1) / 2);
+                    const isMiddleDay = week_index === loaderWeek && day_index === Math.floor(week.days.length / 2);
+                    return (
+                        <div key={day_index} className={"day " + day.phase}>
+                            {isMiddleDay && isLoading && (
+                                <div className="loader-container">
+                                    <RotatingLines
+                                        strokeColor="grey"
+                                        strokeWidth="5"
+                                        width="60"
+                                        visible={true}
+                                    />
+                                </div>
+                            )}
+                            <button
+                                onClick={(e) =>
+                                    e.target.parentElement.parentElement.classList.toggle("enlarged")
+                                }
+                                className="events-calendar--number"
+                            >
+                                <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>
+                                {day.day}.
+                            </button>
+                            <ul>
+                                {day.events.map((event) => (
+                                    <li
+                                        key={event.hash}
+                                        className={(eventHash === event.hash ? "selected " : "") + eventsTags(event)}
+                                    >
+                                        <Link
+                                            title={event.title.replace("<br>", ", ")}
+                                            className="calendar-item"
+                                            to={"?event=" + event.hash}
+                                            event-url={event.event_url}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                searchParams.set("event", event.hash);
+                                                setSearchParams(searchParams);
+                                            }}
+                                            dangerouslySetInnerHTML={{
+                                                __html:
+                                                    "<b>" +
+                                                    event.displayTime +
+                                                    "</b> " +
+                                                    (event.host && event.category === "seminar"
+                                                        ? event.host
+                                                            .replace("UBC ", "")
+                                                            .split("for ")
+                                                            .slice(-1)[0]
+                                                            .split("of ")
+                                                            .slice(-1)[0] + ":<br>"
+                                                        : "") +
+                                                    event.title,
+                                            }}
+                                        ></Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    );
+                })}
             </div>
-        )}</div>
+        ))}
 
         <div class="legend">
             <ul>{legend.map((key, i) =>

@@ -703,3 +703,25 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
         margin-right: 1em;
     }
 }
+@media ($bp-smaller-than-desktop) {
+    .loader-container {
+        display: flex;
+        justify-content: center; /* Horizontally center */
+        align-items: center;    /* Vertically center */
+    }
+}
+.loader-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;    /* Center vertically */
+    height: 100%;           /* Full height of the parent container */
+    width: 100%;            /* Full width of the parent container */
+    // background-color: rgba(255, 255, 255, 0.7); /* Optional overlay effect */
+    position: absolute;     /* Ensure it doesn't disrupt layout flow */
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+
+
