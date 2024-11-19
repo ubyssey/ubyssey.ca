@@ -103,7 +103,7 @@
     width: 100%;
 }
 
-.sidebar-issue{
+.sidebar-issue ul {
     color:white;
     padding:0;
     display: flex;
@@ -167,17 +167,22 @@
     padding: 2em 1.5em;
     border-radius: 1.5em;
 
+    h2.block-title {
+        color: black;
+    }
+
     ul.article-list {
         padding-inline: 2em;
         list-style-type: circle;
         li {
             padding-bottom: 0.5em;
             border-bottom: 1px solid #00000045;
+            color: $color-ubyssey-blue-dark;
             a {
                 display: contents;
             }
             b {
-                margin-right: 1em;
+                margin-right: 0.5em;
             }
         }
     }
@@ -191,10 +196,10 @@
 
 [color-css-theme="dark"] {
 
-    h2.block-title {
+    .basic-sidebar h2.block-title {
         text-shadow: #000000 1px 1px 15px;
     }
-    div.sidebar-block {  
+    div.basic-sidebar  {  
         h2.block-title {
         color: white;
         }

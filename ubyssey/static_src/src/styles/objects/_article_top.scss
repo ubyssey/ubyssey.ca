@@ -179,8 +179,11 @@
 [color-css-theme="dark"] {
     .o-article--top_article {
         border-color: white;
-    }
-    .o-article__section-tag {
-        background-color: $color-ubyssey-blue-dark;
+        .o-article__section-tag {
+            background-color: $color-ubyssey-blue-dark;
+        }
+        .o-article__image, .o-article__meta__image  {
+            border-color: $color-ubyssey-blue-dark;
+        }
     }
 }
