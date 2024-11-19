@@ -139,6 +139,16 @@
     }
 }
 
+@media ($bp-smaller-than-tablet) {
+    .o-article--top_article {
+        flex-direction: row-reverse;
+        justify-content: left;
+        .o-article__right {
+            margin-left: 0;
+            margin-right: 1em;
+        }
+    }
+}
 
 [color-css-theme="light"] {
     .o-article--top_article {
