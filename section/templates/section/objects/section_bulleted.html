@@ -7,7 +7,7 @@
 	{% endif %}
 </div>
 <div>
-	<ul class="c-homepage__section__bullets" style="color: {{section.colour}}">
+	<ul class="c-homepage__section__bullets">
 		{% for article in articles %}
 		{% if forloop.counter != 1 %}
 			<li>{% include 'article/objects/bullet.html' with article=article %}</li>

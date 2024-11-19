@@ -229,6 +229,14 @@
           }
       }
   }
+  .sidebar-block--advertisement, .o-advertisement--ad-page-promo {
+    display: none;
+  }
+
+  .c-sidebar_container {
+    min-height: 125vh;
+    margin-bottom: 25vh;
+  }
 }
 
 .section-error {

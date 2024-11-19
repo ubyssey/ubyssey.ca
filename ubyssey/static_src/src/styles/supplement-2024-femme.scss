@@ -252,6 +252,25 @@ img {
   margin: auto;
   padding: 1em;
   max-width: 1200px;
+  .category-list-title {
+    position: relative;
+    margin: 4em;
+    background-color: #a71d2c;
+    height: 0.5em;
+    svg {
+      position: absolute;
+      padding: 0.25em 1.5em;
+      height: 5em;
+      width: auto;
+      
+      top: -3.5em;
+      left: 50%;
+      transform: translateX(-50%);
+
+      background-color: white;
+      fill: #a71d2c;
+    }
+  }
   ul {
     padding: 0;
     display: flex;
@@ -365,14 +384,11 @@ nav.supplement-nav {
       padding-bottom: 0.25em;
     }
 
-    h1 {
-      margin: 0;
-      
-      text-align: center;
-      font-variation-settings: 'wght' 700;
-      font-size: 5em;
-      color: #a71d2c;
-      
+    .femme-logo {
+      margin-bottom: 1em;
+      height: 6em;
+      width: auto;
+      fill: #a71d2c;
     }
   }
   div.article-list {
@@ -410,8 +426,25 @@ nav.supplement-nav {
     font-size: 3em;
   }
 
+  .c-share {
+    font-size: 18px;
+  }
+
   header h1 {
     font-size: 2.5em;
+  }
+
+  .category-list-title {
+    margin: 4em 1em;
+
+    svg {
+      height: 3em;
+      top: -2em;
+    }
+  }
+
+  .title {
+    text-align: center;
   }
 
   .pull-quote .quote {

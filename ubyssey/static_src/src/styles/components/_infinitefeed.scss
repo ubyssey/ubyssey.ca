@@ -153,6 +153,33 @@
     }
 }
 
+.article-list.sidebar-block {
+    background: #c3e2f0;
+    padding: 2em 1.5em;
+    border-radius: 1.5em;
+
+    ul.article-list {
+        padding-inline: 2em;
+        list-style-type: circle;
+        li {
+            padding-bottom: 0.5em;
+            border-bottom: 1px solid #00000045;
+            a {
+                display: contents;
+            }
+            b {
+                margin-right: 1em;
+            }
+        }
+    }
+}
+
+.latest-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
 [color-css-theme="dark"] {
 
     h2.block-title {

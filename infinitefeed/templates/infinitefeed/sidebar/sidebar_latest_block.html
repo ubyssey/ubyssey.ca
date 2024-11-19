@@ -1,8 +1,8 @@
 {% load articletags %}
 
-<div class="article-list blog sidebar-block">
+<div class="sidebar-block latest-list">
     {% include 'home/objects/home_heading-box.html' with styling='boxLabel-highlight' title=title text='Updated' textBold=articles.0.first_published_at|time_ago %}
-	<ul class="article-list">
+	<ul>
 		{% for article in articles %}
 		<li>
 			{% include 'article/objects/blog_column-latest.html' with sameColour=True article=article %}
