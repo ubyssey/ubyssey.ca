@@ -62,7 +62,7 @@
             width: auto;
 
             border-radius: 0.5em;
-            border: 2px solid $color-ubyssey-blue-dark;
+            border: 2px solid $color-ubyssey-blue-dark-3;
         }
     }
 
@@ -143,9 +143,29 @@
     .o-article--top_article {
         flex-direction: row-reverse;
         justify-content: left;
+        .o-article__left .o-article__section-tag {
+            display: none;
+        }
+        .o-article__meta__image {
+            margin-top: 0;
+            width: 4.5em;
+            border: 2px solid $color-ubyssey-blue-dark-3;
+            img {
+                border-radius: 0;
+                border: none;
+            }
+        }
         .o-article__right {
             margin-left: 0;
             margin-right: 1em;
+        }
+    }
+}
+
+@media ($bp-larger-than-tablet) {
+    .o-article--top_article {
+        .o-article__right .o-article__section-tag {
+            display: none;
         }
     }
 }

@@ -26,6 +26,7 @@
     </div>
     
     <div class="o-article__right">
+      <a href="{{article|get_section_link}}" class="o-article__section-tag">{{article|get_section_title}}</a>
       <div class="o-article__meta__image">
         {% if article.featured_media.first %}
             <a class="o-article__image" href="{% pageurl article %}">
