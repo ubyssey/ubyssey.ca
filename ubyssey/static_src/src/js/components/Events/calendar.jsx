@@ -786,6 +786,11 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
         )}
         </div>
 
+        {isLoading && isPhablet &&                             
+            <div className="loader-container">
+                <LoaderComponent width={50}/>
+            </div>}
+
         {calendar.map((week, week_index) => (
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
                 {week_index === 0 && (
@@ -796,19 +801,15 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                 )}
                 {week.days.map((day, day_index) => {
                     const loaderWeek = Math.floor((numberOfWeeks - 1) / 2);
-                    const isMiddleDay = week_index === loaderWeek && day_index === Math.floor(week.days.length / 2);
+                    const isMiddleDay = !isPhablet? week_index === loaderWeek && day_index === Math.floor(week.days.length / 2)
+                                                    : week_index === 0 && day_index === 0;
+                    console.log(isMiddleDay);
                     return (
                         <div key={day_index} className={"day " + day.phase}>
-                            {isMiddleDay && isLoading && (
-                                <div className="loader-container">
-                                    <RotatingLines
-                                        strokeColor="grey"
-                                        strokeWidth="5"
-                                        width="60"
-                                        visible={true}
-                                    />
-                                </div>
-                            )}
+                            {isMiddleDay && isLoading && !isPhablet &&
+                            <div className="loader-container">
+                                    <LoaderComponent width={60}/>
+                            </div>}
                             <button
                                 onClick={(e) =>
                                     e.target.parentElement.parentElement.classList.toggle("enlarged")
@@ -965,5 +966,18 @@ function EventInfoBox({event}) {
                 </p>
         </div>
     </div>
+    );
+}
+
+function LoaderComponent({width}) {
+    return (
+        <div className="loader">
+            <RotatingLines
+                strokeColor="grey"
+                strokeWidth="5"
+                width={width}
+                visible={true}
+            />
+        </div>
     );
 }
