@@ -786,7 +786,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
         )}
         </div>
 
-        {isLoading && isPhablet &&                             
+        {isPhablet && isLoading &&                           
             <div className="loader-container">
                 <LoaderComponent width={50}/>
             </div>}

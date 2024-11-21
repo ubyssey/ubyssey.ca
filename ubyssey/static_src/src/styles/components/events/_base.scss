@@ -708,7 +708,13 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
     .loader-container {
         display: flex;
         justify-content: center; 
-        align-items: center;    
+        align-items: center;  
+        position: fixed;       
+        top: 0;                
+        left: 0;               
+        width: 100vw;          
+        height: 120vh;
+        z-index: 9999;        
     }
 }
 
