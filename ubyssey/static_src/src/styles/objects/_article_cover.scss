@@ -10,7 +10,8 @@
       width: 400px;
       max-width: 685px;
   
-      .o-article__headline {
+      .o-article__headline mark {
+        margin-left: 1em;
         // Text
         font-size: 2rem;
         line-height: 3.2rem;
@@ -28,13 +29,13 @@
       width: 100%;
   
       .o-article__headline {
+        margin-inline: 1em;
+      }
+
+      .o-article__headline mark {
         // Text
         font-size: 1.5rem;
         line-height: 2.5rem;
-  
-        @media($bp-larger-than-phablet) {
-          left: 20px;
-        }
       }
   
       .o-article__image {
@@ -76,8 +77,7 @@
       }
     }
   
-    .o-article__headline {
-      margin-left: 1em;
+    .o-article__headline mark {
       position: relative;
 
       background-color: $color-ubyssey-blue;
