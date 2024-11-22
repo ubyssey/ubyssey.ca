@@ -157,6 +157,8 @@ class SidebarManualArticles(AbstractArticleList):
 class SidebarImageLinkBlock(blocks.StructBlock):
     image = ImageChooserBlock(required=True)
     link = blocks.URLBlock(required=False)
+    alt_text = blocks.CharBlock(max_length=255,
+        help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
     class Meta:
         template = "infinitefeed/sidebar/sidebar_image_link_block.html"
         verbose_name = "Sidebar Image with Optional Link"

@@ -295,7 +295,7 @@ function initializeSocialMediaActions() {
   // shares the page
   $(document).on('click', '.share-facebook', function (e) {
     e.preventDefault();
-    window.open('http://facebook.com/sharer.php?u=' + window.location.href + '&text=' + title + '&', 'facebookwindow',
+    window.open('http://facebook.com/sharer.php?u=' + window.location.href + '&text=' + title + '%20via%20@ubyssey&', 'facebookwindow',
     'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
@@ -307,14 +307,14 @@ function initializeSocialMediaActions() {
 
   $(document).on('click', '.share-bsky', function (e) {
     e.preventDefault();
-    window.open('https://bsky.app/intent/compose/?text=' + title + '%20' + window.location.href + ' #ubyssey',
+    window.open('https://bsky.app/intent/compose/?text=' + title + '%20' + window.location.href + '%20via%20@ubyssey.bsky.social',
     'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
   // on clicking on the a element w/ class=='twitter', share on twitter
   $(document).on('click', '.share-twitter', function (e) {
     e.preventDefault();
-    window.open('http://twitter.com/share?url=' + window.location.href + '&text=' + title + '&', 'twitterwindow',
+    window.open('http://twitter.com/share?url=' + window.location.href + '&text=' + title + ' via @ubyssey &', 'twitterwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
