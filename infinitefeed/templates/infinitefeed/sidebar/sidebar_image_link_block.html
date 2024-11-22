@@ -2,7 +2,7 @@
 {% if self.link %}
     <a href={{ self.link }}>
 {% endif %}
-{% image self.image width-700 format-webp alt=self.alt_text title=self.alt_text %}
+{% image self.image width-700 format-webp loading='lazy' alt=self.alt_text title=self.alt_text %}
 {% if self.link %}
     </a>
 {% endif %}
