@@ -200,6 +200,25 @@ div.article-content {
     text-align: right;
   }
 
+  h1, h2, h3, h4 {
+    > a {
+      text-decoration: none;
+      background-image: linear-gradient($color-ubyssey-blue, $color-ubyssey-blue);
+      background-position: 0 calc(100% - 0.1em);
+      background-repeat: no-repeat;
+      background-size: 100% 0.25em;
+      transition: background-size 0.3s ease;
+      color: inherit;
+      position: relative;
+      z-index: 1;
+      
+      &:hover {
+        background-size: 100% 100%;
+        color: #fff;
+      }
+    } 
+  }
+
   > p,
   > h1,
   > h2 {
