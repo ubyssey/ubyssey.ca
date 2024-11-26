@@ -307,7 +307,7 @@ function initializeSocialMediaActions() {
 
   $(document).on('click', '.share-bsky', function (e) {
     e.preventDefault();
-    window.open('https://bsky.app/intent/compose/?text=' + title + '%20%20via%20@ubyssey.bsky.social%20' + window.location.href,
+    window.open('https://bsky.app/intent/compose/?text=' + title + '%20%20via%20@ubyssey.ca%20' + window.location.href,
     'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
