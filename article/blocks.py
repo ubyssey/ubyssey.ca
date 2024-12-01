@@ -29,9 +29,16 @@ class PullQuoteBlock(blocks.StructBlock):
     content = blocks.CharBlock(required=True)
     position = blocks.ChoiceBlock(
         choices=[
-            ('default', 'Default'),
+            ('position_default', 'Default'),
             ('left', 'Left'),
             ('right', 'Right'),   
+        ],
+        default='default',
+    )
+    style = blocks.ChoiceBlock(
+        choices=[
+            ('style_default', 'Default'),
+            ('contrast', 'Contrast'),
         ],
         default='default',
     )

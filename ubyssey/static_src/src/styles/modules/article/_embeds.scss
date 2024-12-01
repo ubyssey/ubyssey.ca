@@ -452,22 +452,38 @@ img.image-attachment {
   }
 
   &.left {
+    position: relative;
     float: left;
     max-width: 50% !important;
-    margin-right: 15px;
+    margin-right: 1em;
     text-align: left;
+
+    @media($bp-larger-than-phablet) {
+      margin-left: -3em;
+    }
   }
 
-  &.default {
+  &.position_default {
     text-align: center;
   }
 
+  &.contrast {
+    background: #{$color-ubyssey-blue-light} !important;
+    color: black;
+    padding: 1em;
+    border-radius: 20px;
+
+  }
+
   p.quote {
+    margin-top: 0;
     font: bold 1.625em/1.5em 'Minion Pro';
+    color: inherit;
 
   }
 
   p.meta {
+    color: inherit;
     position: relative;
 
     margin-top: 10px;
@@ -483,6 +499,7 @@ img.image-attachment {
     }
 
     .source {
+      color: inherit;
       margin-left: 2.25em;
       display: inline-block;
       position: relative;
