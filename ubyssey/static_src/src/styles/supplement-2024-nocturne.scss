@@ -2,6 +2,58 @@
 @import 'modules/_fonts.scss';
 $accent-colour: #b7b7b7;
 
+@font-face {
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-Medium.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-Medium.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-Medium.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-Medium.svg#PlayfairDisplay-Medium') format('svg');
+	font-weight: 500;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-MediumItalic.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-MediumItalic.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-MediumItalic.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-MediumItalic.svg#PlayfairDisplay-MediumItalic') format('svg');
+	font-weight: 500;
+	font-style: italic;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-Bold.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-Bold.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-Bold.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-Bold.svg#PlayfairDisplay-Bold') format('svg');
+	font-weight: 700;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-BoldItalic.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-BoldItalic.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-BoldItalic.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-BoldItalic.svg#PlayfairDisplay-BoldItalic') format('svg');
+	font-weight: 700;
+	font-style: italic;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
 html {
   --highlightColour: #0D0B0C;
 }
@@ -176,8 +228,33 @@ a {
       justify-content: space-around;
       list-style: none;
       li {
+        position: relative;
         width: 30%;
         flex-grow: 1;
+        a {
+          border: none;
+        }
+        img {
+          filter: blur(5px) brightness(0.1);
+          opacity: 0.5;
+          transition-duration: 1.5s;
+        }
+        h3 {
+          padding: 1em;
+          margin: auto;
+          width: 100%;
+          box-sizing: border-box;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        &:hover{
+          img {
+            opacity: 1;
+            filter: none;
+            box-shadow: 0 0 20px #834714;
+          }
+        }
       }
     }
 }
@@ -193,7 +270,7 @@ a {
 h2, h3, h4 {
   margin-top: 1.5em;
   font-size: 1.25em;
-  font-family: playfair-display, serif;
+  font-family: 'playfair-display', serif;
   font-style: italic;
   font-variation-settings: 'wght' 700;
 }

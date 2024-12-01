@@ -164,12 +164,10 @@
         <ul>
             {% for article in self.get_category_articles %}
                 <li>
-                    {% if article.featured_media.first.image %}
                     <a href="{% pageurl article %}">
-                        {% image article.featured_media.first.image fill-1000x600-c100 format-webp alt=article.featured_media.first.alt_text %}
-                    </a>
-                    {% endif %}
-                    <a href="{% pageurl article %}">
+                        {% if article.featured_media.first.image %}
+                            {% image article.featured_media.first.image fill-1000x600-c100 format-webp alt=article.featured_media.first.alt_text %}
+                        {% endif %}
                         <h3>{{article.title}}</h3>
                     </a>
                 </li>
