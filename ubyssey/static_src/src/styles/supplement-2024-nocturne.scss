@@ -153,6 +153,7 @@ article > div > * {
         -webkit-user-select: none; /* Safari */
         -ms-user-select: none; /* IE 10 and IE 11 */
         user-select: none; /* Standard syntax */
+        z-index: -1;
     }
     .lighted-window {
         display: none;
@@ -181,9 +182,12 @@ article > div > * {
     margin-inline: 1em;
     font-size: 22px;
     p {
+      
+        position: relative;  
         margin: 2em auto;
         padding: 1em;
         max-width: 700px;
+        z-index: 10;
 
         background-color: #00000073;
 
