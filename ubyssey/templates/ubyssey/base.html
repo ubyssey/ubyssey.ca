@@ -1,7 +1,7 @@
 {% load static %}
 {% load wagtailuserbar %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" {%block root%}{% endblock %}>
 	{% if request.in_preview_panel %}
     	<base target="_blank">
   	{% endif %}
