@@ -12,9 +12,6 @@
 {% block darkmode %}{%endblock%}
 
 {% block stylesheet %}
-<!-- Adobe fonts from sports email account -->
-<link rel="stylesheet" href="https://use.typekit.net/uwo1hap.css">
-
 <link rel="stylesheet" href="{% static 'ubyssey/css/supplement-2024-nocturne.css' %}" type="text/css" />
 {% endblock %}
 
@@ -48,7 +45,8 @@
         </defs>
       </svg>
       </a>
-      <div>Nocturne, Creative non-fiction supplement 2024</div>
+      <div class="title"><a href="{{self.category.section_page.url}}category/{{self.category.slug}}">Nocturne</a></div>
+      <div class="desc">Creative non-fiction supplement 2024, Edited by <a href="https://ubyssey.ca/authors/fiona-sjaus/">Fiona Sjaus</a></div>
     </div>
 </nav>
 {% endblock %}

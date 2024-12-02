@@ -1,3 +1,5 @@
+/*This style sheet is so terribly messy. I am sorry. - Sam Low*/
+
 @import 'modules/_variables.scss';
 @import 'modules/_fonts.scss';
 $accent-colour: #b7b7b7;
@@ -11,19 +13,6 @@ $accent-colour: #b7b7b7;
 		url('../fonts/PlayfairDisplay-Medium.svg#PlayfairDisplay-Medium') format('svg');
 	font-weight: 500;
 	font-style: normal;
-	font-stretch: normal;
-	unicode-range: U+0020-25CA;
-}
-
-@font-face {
-	font-family:'playfair-display';
-	src: 
-		url('../fonts/PlayfairDisplay-MediumItalic.woff2') format('woff2'),
-		url('../fonts/PlayfairDisplay-MediumItalic.woff') format('woff'),
-		url('../fonts/PlayfairDisplay-MediumItalic.ttf') format('truetype'),
-		url('../fonts/PlayfairDisplay-MediumItalic.svg#PlayfairDisplay-MediumItalic') format('svg');
-	font-weight: 500;
-	font-style: italic;
 	font-stretch: normal;
 	unicode-range: U+0020-25CA;
 }
@@ -54,6 +43,39 @@ $accent-colour: #b7b7b7;
 	unicode-range: U+0020-25CA;
 }
 
+@font-face {
+	font-family:'playfair-display';
+	src: 
+		url('../fonts/PlayfairDisplay-Medium.woff2') format('woff2'),
+		url('../fonts/PlayfairDisplay-Medium.woff') format('woff'),
+		url('../fonts/PlayfairDisplay-Medium.ttf') format('truetype'),
+		url('../fonts/PlayfairDisplay-Medium.svg#PlayfairDisplay-Medium') format('svg');
+	font-weight: 500;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'Montserrat';
+	src:
+		url('../fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
+@font-face {
+	font-family:'Montserrat';
+	src:
+		url('../fonts/Montserrat-Italic-VariableFont_wght.ttf') format('truetype');
+	font-weight: 400;
+	font-style: italic;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+
 html {
   --highlightColour: #0D0B0C;
 }
@@ -61,7 +83,7 @@ body {
     margin: 0;
     background-color: var(--highlightColour);
     color: #D4C5A5;
-    font-size: 22px;
+    font-size: 20px;
     font-family: 'playfair-display', 'serif';
 }
 
@@ -95,23 +117,27 @@ article > div > * {
   h1 {
     margin: 1em auto 0.5em auto;
     font-size: 5em;
+    font-style: italic;
   }
 }
 
 .c-article__info {
-  margin: 3em;
+  margin: 3em 1em;
+  font-weight: 600;
+  font-style: italic;
 }
 
 .c-article__content {
   p {
     margin: 2em auto;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.45);
     max-width: 800px;
     line-height: 2em;
   }
 }
 
 @media only screen and (max-width: 600px) {
-    .banner h1 {
+    .banner h1, .header-container h1 {
         font-size: 2em;
     }   
 }
@@ -154,6 +180,7 @@ article > div > * {
     position: relative;
     padding-right: 20%;
     padding-bottom: 3em;
+    font-size: 22px;
     p {
         margin: 2em auto;
         padding: 1em;
@@ -211,6 +238,23 @@ a {
     * {
         margin: 0 auto;
     }
+    .title {
+      width: fit-content;
+      margin-top: 0.5em;
+      padding-inline: 2em;
+      padding-top: 0.25em;
+      border-top: 1px solid;
+
+      font-size: 2em;
+    }
+    .desc {
+      width: fit-content;
+      padding-inline: 2em;
+      padding-bottom: 1em;
+      border-bottom: 1px solid;
+
+      font-style: normal;
+    }
 }
 
 .category-list {
@@ -226,18 +270,31 @@ a {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-around;
+      gap: 1em;
       list-style: none;
       li {
         position: relative;
-        width: 30%;
+        max-width: 300px;
         flex-grow: 1;
         a {
           border: none;
         }
         img {
-          filter: blur(5px) brightness(0.1);
+          border: 1px solid #fbe284;
           opacity: 0.5;
-          transition-duration: 1.5s;
+          filter: blur(5px) brightness(0.1);
+        }
+        @media ($bp-larger-than-tablet) {
+          img {
+            border-radius: 100%;
+            transition-duration: 1.5s;
+          }
+          &:hover img {
+              border-radius: 0;
+              opacity: 1;
+              filter: none;
+              box-shadow: 0 0 20px #834714;
+          }
         }
         h3 {
           padding: 1em;
@@ -248,16 +305,10 @@ a {
           top: 50%;
           transform: translateY(-50%);
         }
-        &:hover{
-          img {
-            opacity: 1;
-            filter: none;
-            box-shadow: 0 0 20px #834714;
-          }
-        }
       }
     }
 }
+
 
 @media print {
     .fade-in-out {
@@ -321,8 +372,9 @@ p.drop-cap:first-letter {
 }
 
 .credit {
+  display: inline-block;
   margin-top: 0;
-  margin-inline: 0.5em;
+  margin-left: 0.5em;
   width: fit-content;
 
   font-size: 0.75em;
