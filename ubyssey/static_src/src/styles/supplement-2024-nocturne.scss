@@ -136,12 +136,6 @@ article > div > * {
   }
 }
 
-@media only screen and (max-width: 600px) {
-    .banner h1, .header-container h1 {
-        font-size: 2em;
-    }   
-}
-
 @keyframes slide-in {
     0% {opacity: 0; top: 5em;}
     100% {opacity: 1; top: 0;}
@@ -180,6 +174,7 @@ article > div > * {
     position: relative;
     padding-right: 20%;
     padding-bottom: 3em;
+    margin-inline: 1em;
     font-size: 22px;
     p {
         margin: 2em auto;
@@ -202,6 +197,21 @@ article > div > * {
         font-size: 2em;
     }
 }
+
+
+@media only screen and (max-width: 600px) {
+  .banner h1, .header-container h1 {
+      font-size: 2em;
+  }
+  .content p.large-text {
+    font-size: 1.25em;
+    line-height: 1.5em;
+  }
+  p.highlight {
+    opacity: 0.8;
+  }
+}
+
 
 .end {
     display: flex;
@@ -255,6 +265,12 @@ a {
 
       font-style: normal;
     }
+}
+
+.window-watching {
+  .title, .desc {
+    border: none;
+  }
 }
 
 .category-list {

@@ -25,15 +25,14 @@
     <link rel="icon" type="image/png" href="https://ubyssey.storage.googleapis.com/static/images/favicons/favicon-16x16.png" sizes="16x16">
     <link rel="manifest" href="https://ubyssey.storage.googleapis.com/static/images/favicons/manifest.json">
     
-    <link rel="prefetch" href="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_dark.original.png">
-    <link rel="prefetch" href="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_1.original.png">
-    <link rel="prefetch" href="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_2.original.png">
-    <link rel="prefetch" href="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_3.original.png">
-    <link rel="prefetch" href="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_4.original.png">
-    <link rel="prefetch" href="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_5.original.png">
-    <link rel="prefetch" href="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_6.original.png">
-    <link rel="prefetch" href="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_7.original.png">
-
+    <link rel="prefetch" href="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_dark.original.png">
+    <link rel="prefetch" href="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_1.original.png">
+    <link rel="prefetch" href="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_2.original.png">
+    <link rel="prefetch" href="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_3.original.png">
+    <link rel="prefetch" href="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_4.original.png">
+    <link rel="prefetch" href="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_5.original.png">
+    <link rel="prefetch" href="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_7.original.png">
+    
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
     <meta name="theme-color" content="#0D0B0C">
@@ -43,14 +42,14 @@
 
     <link rel="canonical" href="https://ubyssey.ca/features/window-watching/">
     <meta name="description" content="Through those large windows come small glimpses into my neighbours’ lives. I don’t live close enough to see specific details, but having a short impression of someone’s life can be a beautiful thing, and it doesn’t take much to start imagining what I cannot see. For my overly creative mind, those glimpses turn into stories. True or not." />
-    <meta name="author" content="Iman Janmohamed" />
+    <meta name="author" content="Olivia Vos" />
 
     <!-- Open Graph data -->
     <meta property="og:title" content="Window Watching" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="://ubyssey.ca/features/window-watching/" />
-    <meta property="og:image" content="https://storage.googleapis.com/ubyssey/media/renditions/i_janmohamed_elena_cover.original.jpg" />
-    <meta property="og:description" content="With high rates of substance use in Queer communities and BC’s ongoing toxic drug crisis, many Queer youth are left to navigate substance use and recovery on their own." />
+    <meta property="og:image" content="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_7.original.png" />
+    <meta property="og:description" content="Through those large windows come small glimpses into my neighbours’ lives. I don’t live close enough to see specific details, but having a short impression of someone’s life can be a beautiful thing, and it doesn’t take much to start imagining what I cannot see. For my overly creative mind, those glimpses turn into stories. True or not." />
     <meta property="og:site_name" content="The Ubyssey" />
 
     <!-- Twitter Card data -->
@@ -58,7 +57,7 @@
     <meta name="twitter:site" content="@ubyssey">
     <meta name="twitter:title" content="Window Watching">
     <meta name="twitter:description" content="Through those large windows come small glimpses into my neighbours’ lives. I don’t live close enough to see specific details, but having a short impression of someone’s life can be a beautiful thing, and it doesn’t take much to start imagining what I cannot see. For my overly creative mind, those glimpses turn into stories. True or not.">
-    <meta name="twitter:image" content="https://storage.googleapis.com/ubyssey/media/renditions/i_janmohamed_elena_cover.original.jpg">
+    <meta name="twitter:image" content="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_7.original.png">
  
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3D8SDLCGE"></script>
@@ -71,7 +70,7 @@
     </script>
   </head>
   <body>
-    <article>
+    <article class="window-watching">
           
         <div class="banner">
           <div class="branding">
@@ -97,7 +96,8 @@
               </defs>
             </svg>
             </a>
-            <div>Nocturne, Creative non-fiction supplement 2024</div>
+            <div class="title"><a href="{{self.category.section_page.url}}category/{{self.category.slug}}">Nocturne</a></div>
+            <div class="desc">Creative non-fiction supplement 2024, Edited by <a href="https://ubyssey.ca/authors/fiona-sjaus/">Fiona Sjaus</a></div>
           </div>
 
           <div class="article-info">
@@ -108,13 +108,13 @@
 
         <div class="sticky-images">
           <div id="windows">
-            <img loading="eager" class="windows" src="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_dark.original.png">
-            <img loading="eager" class="windows lighted-window" src="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_1.original.png">
-            <img loading="eager" class="windows lighted-window" src="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_2.original.png">
-            <img loading="eager" class="windows lighted-window" src="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_3.original.png">
-            <img loading="eager" class="windows lighted-window" src="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_4.original.png">
-            <img loading="eager" class="windows lighted-window" src="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_5.original.png">
-            <img loading="eager" class="windows lighted-window" src="http://localhost:8000/media/renditions/20241120_kamra_s4_krita_edit_smaller_7.original.png">
+            <img loading="eager" class="windows" src="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_dark.original.png">
+            <img loading="eager" class="windows lighted-window" src="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_1.original.png">
+            <img loading="eager" class="windows lighted-window" src="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_2.original.png">
+            <img loading="eager" class="windows lighted-window" src="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_3.original.png">
+            <img loading="eager" class="windows lighted-window" src="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_4.original.png">
+            <img loading="eager" class="windows lighted-window" src="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_5.original.png">
+            <img loading="eager" class="windows lighted-window" src="https://storage.googleapis.com/ubyssey/media/renditions/20241120_kamra_s4_krita_edit_smaller_7.original.png">
           </div>
         </div>
 
@@ -153,7 +153,7 @@
       </article>
       <div class="category-list">
         <h1>
-          <a href="/" title="Go to Ubyssey Homepage" class="footer-logo">
+          <a href="/features/category/nocturne/" title="Go to Nocturne page">
             Nocturne
           </a>
         </h1>
