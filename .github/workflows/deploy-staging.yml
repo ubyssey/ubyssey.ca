@@ -36,3 +36,14 @@ jobs:
 
       - name: Collect Django static files
         run: DJANGO_SETTINGS_MODULE=config.settings.base python manage.py collectstatic --noinput
+
+      - uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/1012602718138/locations/global/workloadIdentityPools/ubyssey-wif-pool-staging/providers/ubyssey-oidc-github-staging'
+          service_account: 'deployment@ubyssey-staging.iam.gserviceaccount.com'
+
+      - uses: 'google-github-actions/upload-cloud-storage@v2'
+        with:
+          path: 'static'
+          destination: 'ubyssey-staging'
+
