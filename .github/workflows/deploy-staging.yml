@@ -69,7 +69,7 @@ jobs:
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_STAGING }}
 
       - name: Update environment variables
-        run: ssh staging 'export $(gcloud secrets versions access latest --secret="$SECRET_NAME" | xargs)'
+        run: ssh staging 'export $(gcloud secrets versions access latest --secret="${SECRET_NAME}" | xargs)'
         env:
           SECRET_NAME: ${{ secrets.GCP_ENV_CONFIGS_SECRET_NAME }}
 
