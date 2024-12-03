@@ -69,9 +69,7 @@ jobs:
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_STAGING }}
 
       - name: Update environment variables
-        run: ssh staging 'export $(gcloud secrets versions access latest --secret="${SECRET_NAME}" | xargs)'
-        env:
-          SECRET_NAME: ${{ secrets.GCP_ENV_CONFIGS_SECRET_NAME }}
+        run: ssh staging 'export $(gcloud secrets versions access latest --secret="${{ secrets.GCP_ENV_CONFIGS_SECRET_NAME }}" | xargs)'
 
       - name: Update docker-compose.yml
         run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
