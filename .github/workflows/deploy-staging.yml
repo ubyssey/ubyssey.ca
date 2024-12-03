@@ -75,5 +75,6 @@ jobs:
           SSH_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY_STAGING }}
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_STAGING }}
 
-      - name: Test
-        run: ssh staging 'whoami'
+      - name: Update docker-compose.yml
+        run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
+
