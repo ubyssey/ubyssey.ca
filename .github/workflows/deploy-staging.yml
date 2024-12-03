@@ -51,13 +51,6 @@ jobs:
       #     path: 'static'
       #     destination: 'ubyssey-staging'
 
-      # - uses: 'google-github-actions/ssh-compute@v1'
-      #   with:
-      #     instance_name: 'ubyssey-staging-vm-1'
-      #     zone: 'us-west1-a'
-      #     ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY_STAGING }}'
-      #     command: 'echo Hello world'
-
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh/
@@ -78,3 +71,5 @@ jobs:
       - name: Update docker-compose.yml
         run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
 
+      - name: Restart services
+        run: ssh staging 'docker compose -f /opt/ubyssey.ca/docker-compose.yml -p ubyssey up -d'
