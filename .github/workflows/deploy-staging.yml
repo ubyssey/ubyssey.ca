@@ -11,6 +11,10 @@ on:
 jobs:
   deploy-static:
 
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     runs-on: ubuntu-latest
 
     steps:
