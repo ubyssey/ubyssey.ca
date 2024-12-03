@@ -51,9 +51,17 @@ jobs:
       #     path: 'static'
       #     destination: 'ubyssey-staging'
 
-      - uses: 'google-github-actions/ssh-compute@v1'
+      # - uses: 'google-github-actions/ssh-compute@v1'
+      #   with:
+      #     instance_name: 'ubyssey-staging-vm-1'
+      #     zone: 'us-west1-a'
+      #     ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY_STAGING }}'
+      #     command: 'echo Hello world'
+
+      - uses: appleboy/ssh-action@v1.2.0
         with:
-          instance_name: 'ubyssey-staging-vm-1'
-          zone: 'us-west1-a'
-          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY_STAGING }}'
-          command: 'echo Hello world'
+          host: ${{ secrets.GCP_SSH_HOST_STAGING }}
+          username: deploy
+          key: ${{ secrets.GCP_SSH_PRIVATE_KEY_STAGING }}
+          port: 22
+          script: whoami
