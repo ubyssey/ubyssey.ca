@@ -14,75 +14,30 @@ https://codelabs.developers.google.com/codelabs/cloud-run-django/index.html?inde
 """
 
 import os
-import sys
 import environ
-import google_crc32c
 
 BASE_DIR = environ.Path(__file__) - 3
 
-env = environ.Env() # will reinitialize later once "earliest" configs have been set
-
-# If we don't have Google app credentials, grab them
-if not "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(BASE_DIR, 'client-secret.json')
-
-# Look for the environment variables file in the root directory
-# Absolute rather than relative path here, to play nice with Google App Engine
-env_file = os.path.join(BASE_DIR, 'tmp/.env')
-
-# In production we can get .envfrom Google Cloud if we don't have it. This requires authentication.
-if os.environ['DJANGO_SETTINGS_MODULE'] == 'config.settings.production' and not os.path.isfile(env_file):
-    import google.auth
-    from google.cloud import secretmanager as sm
-    env_file = os.path.join('/tmp/.env')
-
-    try:
-        _, project = google.auth.default()
-
-        if project:
-            # See documentation https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets
-            # (Accessed 2022/05/25)
-            client = sm.SecretManagerServiceClient()
-            # path = client.secret_version_path(project, "ubyssey_env_configs", "latest")
-            name = f"projects/{project}/secrets/ubyssey_env_configs/versions/latest"
-            response = client.access_secret_version(request={"name": name})
-            crc32c = google_crc32c.Checksum()
-            crc32c.update(response.payload.data)
-            if response.payload.data_crc32c != int(crc32c.hexdigest(), 16):                
-                raise Exception("Data corruption detected when accessing secret from secret manager!")      
-            payload = response.payload.data.decode("UTF-8")
-
-            with open(env_file, "w") as f:
-                f.write(payload)
-        else:
-            sys.stderr.write("\nError: Unsuccessful attempt to get a project from google.auth!\n")      
-    except Exception as ex:       
-        sys.stderr.write("\nError in trying to generate .env file using Google application credentials!\n")
-        raise ex
-
-# We now have an .env file.
-# An env object from environ library simplifies reading/writing env vars.
-# We intialize this object, setting castings and defaults (an advantage of the environ library over simply using the os library)
 env = environ.Env(
     #set casting and defaults for config vars which are to be read from environment
 
     # Development defaults
     # VERSION=(str,'0.0.0'),
-    DEBUG=(bool,False),
+    DEBUG=(bool, False),
     ORGANIZATION_NAME = (str, 'Ubyssey'),
 
     # Temporary
-    SPECIAL_MESSAGE_AVAILABLE = (bool,False),
+    SPECIAL_MESSAGE_AVAILABLE = (bool, False),
     
     # URL defaults
-    STATIC_URL = (str,'/static/'),
-    MEDIA_URL = (str,'/media/'),
+    STATIC_URL = (str, '/static/'),
+    MEDIA_URL = (str, '/media/'),
     ADS_TXT_URL = (str, 'https://ubyssey.storage.googleapis.com/ads.txt'),
-    ROOT_URLCONF = (str,'ubyssey.urls'),
+    ROOT_URLCONF = (str, 'ubyssey.urls'),
 
     # Time zone defaults
     USE_TZ=(bool,True),
-    TIME_ZONE=(str,'Canada/Pacific'),
+    TIME_ZONE=(str, 'Canada/Pacific'),
 
     # SQL defaults
     SQL_HOST = (str, 'db'),
@@ -101,9 +56,6 @@ env = environ.Env(
     # delete me
     SECRET_URL = (str, 'somethingsilly')
 )
-
-# Read the .env file into os.environ.
-environ.Env.read_env(env_file)
 
 # Set Django's configs to the values taken from the .env file (or else to their defaults listed above)
 ORGANIZATION_NAME = env('ORGANIZATION_NAME') # Used for registration/invitation
@@ -333,8 +285,8 @@ PHONENUMBER_DEFAULT_REGION = 'CA'
 
 PASSWORD_RESET_TIMEOUT = 86400
 
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 

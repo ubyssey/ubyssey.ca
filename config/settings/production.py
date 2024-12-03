@@ -20,11 +20,15 @@ INSTALLED_APPS += []
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 CACHES = {
+    # 'default': {
+    #     'BACKEND': 'ubyssey.cache.AppEngineMemcacheCache',
+    #     'TIMEOUT': 3600, # 1 hour
+    # },
+    # "renditions": {
+    #     'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    #     'TIMEOUT': 3600, # 1 hour
+    # }
     'default': {
-        'BACKEND': 'ubyssey.cache.AppEngineMemcacheCache',
-        'TIMEOUT': 3600, # 1 hour
-    },
-    "renditions": {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
         'TIMEOUT': 3600, # 1 hour
     }
@@ -45,17 +49,13 @@ GS_LOCATION = 'media'
 GS_QUERYSTRING_AUTH = False
 GS_FILE_OVERWRITE = False
 
-# Facebook - Production Only
-FACEBOOK_CLIENT_ID = env('FACEBOOK_CLIENT_ID')
-FACEBOOK_CLIENT_SECRET = env('FACEBOOK_CLIENT_SECRET')
-
 # Emails - Production Only
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = 465
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_USE_SSL = True
-UBYSSEY_ADVERTISING_EMAIL = env('UBYSSEY_ADVERTISING_EMAIL')
+# EMAIL_HOST = env('EMAIL_HOST')
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+# EMAIL_USE_SSL = True
+# UBYSSEY_ADVERTISING_EMAIL = env('UBYSSEY_ADVERTISING_EMAIL')
 
 # Use in-memory file handler on Google App Engine
 FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.MemoryFileUploadHandler',]
@@ -64,3 +64,5 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 25621440
 ADMINS = [
 	('Webmaster', 'webmaster@ubyssey.ca'),
 ]
+
+print(STATIC_URL)
