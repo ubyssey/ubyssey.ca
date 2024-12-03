@@ -68,11 +68,11 @@ jobs:
           SSH_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY_STAGING }}
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_STAGING }}
 
-      # - name: Update environment variables
-      #   run: ssh staging 'export $(gcloud secrets versions access latest --secret="${{ secrets.GCP_ENV_CONFIGS_SECRET_NAME }}" | xargs)'
+      - name: Update environment variables
+        run: ssh staging 'export $(gcloud secrets versions access latest --secret="ubyssey_env_configs" | xargs)'
 
-      # - name: Update docker-compose.yml
-      #   run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
+      - name: Update docker-compose.yml
+        run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
 
       - name: Restart services
         run: ssh staging 'docker compose -f /opt/ubyssey.ca/docker-compose.yml -p ubyssey up -d'
