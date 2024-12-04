@@ -34,12 +34,21 @@ CACHES = {
     }
 }
 
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 
 # GCS File Storage - Production Only
 MEDIA_URL = 'https://ubyssey.storage.googleapis.com/media/'
 MEDIA_ROOT = ''
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
 GS_ACCESS_KEY_ID = env('GS_ACCESS_KEY_ID')
 GS_SECRET_ACCESS_KEY = env('GS_SECRET_ACCESS_KEY')
 # GS_CREDENTIALS = service_account.Credentials.from_service_account_file('ubyssey-prd-ee6290e6327f.json')
@@ -64,5 +73,3 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 25621440
 ADMINS = [
 	('Webmaster', 'webmaster@ubyssey.ca'),
 ]
-
-print(STATIC_URL)

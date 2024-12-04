@@ -100,8 +100,7 @@ NOTIFICATION_KEY = env('NOTIFICATION_KEY')
 # Application definition
 INSTALLED_APPS = [
 
-    # 'whitenoise.runserver_nostatic', # uncomment for testing "production-like" serving of collected static files with DEBUG=False
-    'ubyssey', #For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
+    'ubyssey', # For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
     'users',
     'home',
     'archive',
@@ -243,7 +242,6 @@ MIDDLEWARE = [
     'wagtailcache.cache.UpdateCacheMiddleware',
 
     'canonical_domain.middleware.CanonicalDomainMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.gzip.GZipMiddleware',
 ]
 
@@ -285,15 +283,19 @@ PHONENUMBER_DEFAULT_REGION = 'CA'
 
 PASSWORD_RESET_TIMEOUT = 86400
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 WAGTAIL_SITE_NAME = 'The Ubyssey'
-
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
-
 
 # wagtailmenus settings
 WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html
