@@ -200,6 +200,25 @@ div.article-content {
     text-align: right;
   }
 
+  h1, h2, h3, h4 {
+    > a {
+      text-decoration: none;
+      background-image: linear-gradient($color-ubyssey-blue, $color-ubyssey-blue);
+      background-position: 0 calc(100% - 0.1em);
+      background-repeat: no-repeat;
+      background-size: 100% 0.25em;
+      transition: background-size 0.3s ease;
+      color: inherit;
+      position: relative;
+      z-index: 1;
+      
+      &:hover {
+        background-size: 100% 100%;
+        color: #fff;
+      }
+    } 
+  }
+
   > p,
   > h1,
   > h2 {
@@ -216,12 +235,9 @@ div.article-content {
 
   div.caption {
     margin-bottom: 0;
-    padding-left: 10px;
-    padding-right: 10px;
   }
 
   > p,
-  div.caption,
   > h1,
   > h2,
   > h3,
@@ -338,17 +354,17 @@ div.article-content {
 }
 
 div.caption {
-  margin-top: 6px;
-  font-family: $font-default;
+  margin-inline: 1em;
+  padding-block: 1em 0.5em;
+  padding-inline: 1em;
+  border-bottom: 2px solid $color-ubyssey-blue;
+
   font-size: 15px;
-  color: var(--article_caption);
   line-height: 19px;
 
-  padding-left: 15px;
-  padding-right: 15px;
-  @media($bp-larger-than-phablet) {
-    padding: 0;
-  }
+  color: var(--article_caption);
+  font-style: italic;
+  font-family: $font-default;
 }
 
 div.article-content {
@@ -437,9 +453,21 @@ p.c-article__published-at {
   font-family: $font-default;
   font-weight: 600;
 
-  span.c-share-buttons > a{
-    padding: 0px 4px 10px 4px;
-    color: var(--text_color);
-    border: none;
+  .share-bsky svg {
+    vertical-align: initial;
+    padding-top: 0.15em;
+    height: 1em;
+    width: auto;
+    fill: var(--text_color);
+  }
+
+  span.c-share-buttons {
+    display: inline-block;
+
+    > a{
+      padding: 0px 4px 10px 4px;
+      color: var(--text_color);
+      border: none;
+    }
   }
 }

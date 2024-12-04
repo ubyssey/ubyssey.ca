@@ -26,6 +26,18 @@
     margin-top: 0.5em;
     display: flex;
     justify-content: center;
+
+    * {
+        max-width: 100%;
+    }
+
+    img {
+        margin: auto;
+        display: block;
+        
+        max-width: 100%;
+        height: auto;
+    }
 }
 
 .c-sidebar_container {
@@ -51,15 +63,8 @@
         padding: 0;
     }
 
-    @media ($bp-smaller-than-phablet) {
+    @media ($bp-smaller-than-tablet) {
         display:none;
-    }
-}
-
-.flex-stream {
-    img {
-        margin: auto;
-        display: block;
     }
 }
 
@@ -67,6 +72,15 @@
     margin-left: 20px;
     width: 37%;
     top:100px;
+
+    .sidebar-block--advertisement, .o-advertisement--ad-page-promo {
+        display: none;
+    }
+
+    .c-sidebar_container {
+    min-height: 125vh;
+    margin-bottom: 25vh;
+    }
 }
 
 .c-infinitefeed__feed {
@@ -94,7 +108,7 @@
     width: 100%;
 }
 
-.sidebar-issue{
+.sidebar-issue ul {
     color:white;
     padding:0;
     display: flex;
@@ -153,12 +167,44 @@
     }
 }
 
-[color-css-theme="dark"] {
+.article-list.sidebar-block {
+    background: #c3e2f0;
+    padding: 2em 1.5em;
+    border-radius: 1.5em;
 
     h2.block-title {
+        color: black;
+    }
+
+    ul.article-list {
+        padding-inline: 2em;
+        list-style-type: circle;
+        li {
+            padding-bottom: 0.5em;
+            border-bottom: 1px solid #00000045;
+            color: $color-ubyssey-blue-dark;
+            a {
+                display: contents;
+            }
+            b {
+                margin-right: 0.5em;
+            }
+        }
+    }
+}
+
+.latest-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+[color-css-theme="dark"] {
+
+    .basic-sidebar h2.block-title {
         text-shadow: #000000 1px 1px 15px;
     }
-    div.sidebar-block {  
+    div.basic-sidebar  {  
         h2.block-title {
         color: white;
         }

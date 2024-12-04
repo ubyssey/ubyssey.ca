@@ -92,6 +92,12 @@ header.main{
         margin-right: 1.5em;
       }
 
+      .bluesky-icon svg {
+        height: 0.85em;
+        vertical-align: baseline;
+        fill: var(--header_color);
+      }
+
       a {
           position: relative;
           margin-right: 0.75em;

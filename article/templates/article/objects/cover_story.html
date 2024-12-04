@@ -19,9 +19,11 @@
   </div>
   {% endif %}
   <div class="o-article__right">
-    <mark class="o-article__headline" id="coverstory" >
-      <a href="{% pageurl article %}">{{ article.title|safe }}</a>
-    </mark>
+    <div class="o-article__headline">
+      <mark id="coverstory" >
+        <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+      </mark>
+    </div>
     <div class="o-article__meta">
       <p class="o-article__snippet">{% if article.lede %}{{article.lede|safe}}{% else %}{{article.search_description|safe}}{% endif %}</p>
       <div class="o-article__byline">

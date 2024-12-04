@@ -1,4 +1,5 @@
 @import 'fonts';
+@import 'modules/variables';
 
 img.featured {
   width: 100%;
@@ -52,8 +53,15 @@ html.hairlines {
 
 [color-css-theme="light"] {
 
-  h1.section > a {
+  h1.section {
     color: black;
+  }
+}
+
+[color-css-theme="dark"] {
+
+  h1.section {
+    color: $color-ubyssey-blue
   }
 }
 
@@ -109,10 +117,17 @@ html.hairlines {
   }
 }
 
-.home-top-article-list {
+.home-featured .home-top-article-list {
   background-color: #c3e2f0;
   height: fit-content;
   padding: 10px;
+
+  .boxLabel {
+    --boxPrimary: #{$color-ubyssey-blue-dark-3};
+    --boxSecondary: none;
+    --boxTextLeft: white;
+    --boxTextRight: #{$color-ubyssey-blue-dark};
+  }
 
   @media only screen and (min-width: 900px) {
     margin-top: -30px;
@@ -120,6 +135,12 @@ html.hairlines {
     width: 415px;
     border: 2px var(--header_color) solid;
     margin-bottom: 40px;
+  }
+}
+
+[color-css-theme="dark"] { 
+  .home-featured .home-top-article-list .boxLabel {
+    --boxPrimary: #{$color-ubyssey-blue-dark};
   }
 }
 
@@ -186,11 +207,15 @@ html.hairlines {
   }
 }
 
+.c-homepage__section__bullets {
+  color: $color-ubyssey-blue;
+}
+
 .c-homepage__sections {
   width: 100%;
   padding-bottom: 3em;
 
-  @media ($bp-larger-than-phablet) {
+  @media ($bp-larger-than-tablet) {
       margin-right: 20px;
       width: 50%;
       padding-right: 20px;
