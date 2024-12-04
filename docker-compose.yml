@@ -18,15 +18,17 @@ services:
       retries: 20
 
   django:
-    image: ubyssey/ubyssey.ca:latest
+    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
     command: >
       bash -c "python manage.py migrate
-      && python manage.py runserver 0.0.0.0:8000"
+      && gunicorn ubyssey.wsgi:application --bind 0.0.0.0:8000"
     environment:
-      DEBUG: True
-      DJANGO_SETTINGS_MODULE: config.settings.production
+      STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
       GS_ACCESS_KEY_ID: ${GS_ACCESS_KEY_ID}
       GS_SECRET_ACCESS_KEY: ${GS_SECRET_ACCESS_KEY}
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
+    secrets:
+      - GOOGLE_APPLICATION_CREDENTIALS
     ports:
       - "8000:8000"
       - "4444:4444"
@@ -37,13 +39,9 @@ services:
     stdin_open: true
     tty: true
 
-  cache:
-    platform: linux/x86_64
-    image: memcached:1.6.10
-    ports:
-      - "11211:11211"
-    depends_on:
-      - django
+secrets:
+  GOOGLE_APPLICATION_CREDENTIALS:
+    file: ./service-account.json
 
 volumes:
   database:
