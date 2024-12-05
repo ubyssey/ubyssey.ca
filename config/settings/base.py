@@ -40,7 +40,7 @@ env = environ.Env(
     TIME_ZONE=(str, 'Canada/Pacific'),
 
     # SQL defaults
-    SQL_HOST = (str, 'db'),
+    SQL_HOST = (str, 'mysql'),
     SQL_DATABASE = (str, 'ubyssey'),
     SQL_USER = (str, 'root'),
     SQL_PASSWORD = (str, 'ubyssey'),

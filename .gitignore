@@ -42,3 +42,5 @@ gcs-local.json
 pyvenv.cfg
 
 ubyssey/settings*.py
+
+mysql-data

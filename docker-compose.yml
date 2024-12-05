@@ -1,18 +1,18 @@
 version: "3.7"
 services:
 
-  db:
+  mysql:
     platform: linux/x86_64
     image: mysql:8.0
-    volumes:
-      - database:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ubyssey
       MYSQL_DATABASE: ubyssey
-    ports:
-      - "3307:3306"
+      MYSQL_USER: ubyssey
+      MYSQL_PASSWORD: ${SQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${SQL_PASSWORD}
+    volumes:
+      - ./mysql-data:/var/lib/mysql
     healthcheck:
-      test: "/usr/bin/mysql --user=root --password=ubyssey --execute \"SHOW DATABASES;\""
+      test: "/usr/bin/mysql --user=ubyssey --password=${SQL_PASSWORD} --execute \"SHOW DATABASES;\""
       interval: 2s
       timeout: 20s
       retries: 20
@@ -23,16 +23,20 @@ services:
       bash -c "python manage.py migrate
       && gunicorn ubyssey.wsgi:application --bind 0.0.0.0:8000"
     environment:
-      STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
+      SQL_HOST: mysql
+      SQL_USER: root
+      SQL_PASSWORD: ${SQL_PASSWORD}
+      SQL_DATABASE: ubyssey
       GS_ACCESS_KEY_ID: ${GS_ACCESS_KEY_ID}
       GS_SECRET_ACCESS_KEY: ${GS_SECRET_ACCESS_KEY}
+      STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
     secrets:
       - GOOGLE_APPLICATION_CREDENTIALS
     expose:
       - 8000
     depends_on:
-      db:
+      mysql:
         condition: service_healthy
         restart: true
 
@@ -57,6 +61,3 @@ services:
 secrets:
   GOOGLE_APPLICATION_CREDENTIALS:
     file: ./service-account.json
-
-volumes:
-  database:
