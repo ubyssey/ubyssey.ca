@@ -18,7 +18,7 @@ services:
       retries: 20
 
   django:
-    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
+    image: ghcr.io/ubyssey/ubyssey.ca:staging-deploy
     command: >
       bash -c "python manage.py migrate
       && gunicorn ubyssey.wsgi:application --bind 0.0.0.0:8000"

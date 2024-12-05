@@ -74,8 +74,9 @@ jobs:
       - name: Update environment variables
         run: ssh staging 'export $(gcloud secrets versions access latest --secret="ubyssey_env_configs" | xargs)'
 
-      - name: Set tag in docker-compose.yml
-        run: sed -i "s/\${TAG}/${{ github.ref }}/" docker-compose.yml
+      # TODO: Fix this
+      # - name: Set tag in docker-compose.yml
+      #   run: sed -i "s/\${TAG}/${{ github.ref }}/" docker-compose.yml
 
       - name: Update docker-compose.yml
         run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
