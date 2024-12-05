@@ -29,15 +29,30 @@ services:
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
     secrets:
       - GOOGLE_APPLICATION_CREDENTIALS
-    ports:
-      - "8000:8000"
-      - "4444:4444"
+    expose:
+      - 8000
     depends_on:
       db:
         condition: service_healthy
         restart: true
-    stdin_open: true
-    tty: true
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+      - ./certbot/www/:/var/www/certbot/:ro
+    depends_on:
+      - django
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:r
 
 secrets:
   GOOGLE_APPLICATION_CREDENTIALS:
