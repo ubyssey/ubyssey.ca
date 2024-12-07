@@ -142,9 +142,16 @@ article > div > * {
 }
 
 .sticky-images {
+    margin-bottom: 100vh;
     position: sticky;
     top: 0;
-    margin-bottom: 100vh;
+    z-index: -100;
+    #windows {
+      position: absolute;
+      right: 0;
+      padding: 0;
+      margin: 0;
+    }
     img {
         position: absolute;
         padding: 0;
@@ -211,9 +218,11 @@ article > div > * {
   .banner h1, .header-container h1 {
       font-size: 2em;
   }
+  .content p {
+    line-height: 1.5em;
+  }
   .content p.large-text {
     font-size: 1.25em;
-    line-height: 1.5em;
   }
   p.highlight {
     opacity: 0.8;
@@ -276,6 +285,9 @@ a {
 }
 
 .window-watching {
+  display: flex;
+  flex-direction: column;
+
   .title, .desc {
     border: none;
   }
@@ -306,12 +318,13 @@ a {
         img {
           border: 1px solid #fbe284;
           opacity: 0.5;
-          filter: blur(5px) brightness(0.1);
+          filter: blur(5px) brightness(0.75);
         }
         @media ($bp-larger-than-tablet) {
           img {
             border-radius: 100%;
             transition-duration: 1.5s;
+            filter: blur(5px) brightness(0.1);
           }
           &:hover img {
               border-radius: 0;
