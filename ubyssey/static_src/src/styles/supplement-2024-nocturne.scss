@@ -88,7 +88,7 @@ body {
 }
 
 article > div > * {
-    max-width: 1000px;
+    max-width: 1100px;
     margin:auto;
     padding-inline: 1em;
     text-align: center;
@@ -507,6 +507,7 @@ img {
   font-weight: 600;
   .c-share-buttons {
     position: relative;
+    display: inline-block;
     margin-inline: 0.25em;
     vertical-align: middle;
     a {
@@ -531,7 +532,7 @@ img {
 footer {
   margin: auto;
   padding: 2em 1em;
-  max-width: 1000px;
+  max-width: 1200px;
   text-align: center;
   .footer-links-section {
     margin: auto;
@@ -568,5 +569,11 @@ footer {
     a {
       font-weight: 500;
     }
+  }
+}
+
+@media($bp-smaller-than-phablet) {
+  footer .footer-links-section {
+    flex-direction: column;
   }
 }
