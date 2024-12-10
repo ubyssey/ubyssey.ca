@@ -53,9 +53,12 @@ header.main{
     font-size: 13px;
 
     .middle {
-      margin-left: 2em;
+      //margin-left: 2em;
       max-width: 520px;
       width: 100%;
+      .light-logo {
+        filter: drop-shadow(0 0 5px #1A6996);
+      }
     }
     .right {
       margin-left: auto;
