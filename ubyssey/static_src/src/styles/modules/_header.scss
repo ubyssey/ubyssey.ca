@@ -56,8 +56,10 @@ header.main{
       //margin-left: 2em;
       max-width: 520px;
       width: 100%;
-      .light-logo {
-        filter: drop-shadow(0 0 5px #1A6996);
+      img {
+        width: 125px;
+        position: absolute;
+        margin: 1em 1em 0 1em;
       }
     }
     .right {
@@ -118,7 +120,7 @@ header.main{
       margin: 0;
       line-height: 60px;
     }
-    img.top-logo {
+    img.top-logo, svg.top-logo {
       width: 100%;
       vertical-align: middle;
     }
@@ -594,11 +596,20 @@ a.store-link {
   .dark-logo {
     display: none !important;
   }
+  .main .middle img {
+    filter: drop-shadow(0 0 5px #1A6996);
+  }
+  .main .middle .top-logo {
+    fill: black;
+  }
 }
 
 [color-css-theme="dark"] {
 
   .light-logo {
     display: none !important;
+  }
+  .main .middle .top-logo {
+    fill: white;
   }
 }
