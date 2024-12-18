@@ -2,6 +2,7 @@ from django.db.models.query import QuerySet
 from .sectionable.models import SectionablePage
 
 from article.models import ArticlePage
+from home import blocks as homeblocks
 
 from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -181,6 +182,19 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         related_name='+'
     )
 
+    top_stream = StreamField(
+        [
+            ('section', homeblocks.SectionBlock()),
+            ('category', homeblocks.CategoryBlock()),
+            ('landing', homeblocks.SpecialLandingPageBlock()),
+            ('tag', homeblocks.TagBlock()),
+            ('article_promo', homeblocks.ArticlePromo()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+
     sidebar_stream = StreamField(
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
@@ -207,6 +221,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 FieldPanel("description"),
             ],
             heading="Description",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("top_stream"),
+            ],
+            heading="Top stream"
         ),
         MultiFieldPanel(
             [

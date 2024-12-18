@@ -582,14 +582,8 @@ html.hairlines {
 }
 
 .article-midsection-promo {
-  margin-top: 2em;
-  margin-bottom: 150px;
+  margin-block: 2em;
   padding: 2em 100px;
-
-  border-top: solid;
-  border-bottom: solid;
-  border-width: 2px;
-  border-color: $color-ubyssey-blue;  
 
   .o-article__section {
     font-size: 0.8em;
@@ -601,7 +595,7 @@ html.hairlines {
     font-family: noto-serif, serif;
   }
 
-  .logo {
+  .image {
     position: relative;
     float: left;
     background: var(--background);
@@ -691,4 +685,80 @@ html.hairlines {
 .midsection-flex {
   display: flex;
   flex-direction: row;
+}
+
+.article-timeline {
+  margin-block: 3em;
+
+  .o-article__published {
+    margin-bottom: 0.5em;
+    color: $color-ubyssey-blue;
+    font-weight: 600;
+  }
+  h2 {
+    margin-block: 0 0.5em;
+    font-size: 3em;
+  }
+  .article-timeline--container {
+    display: flex;
+    .left{
+      width: 400px;
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+    .right{
+      margin-left: 2em;
+      .lede {
+        margin-block: 0.25em;
+        font-size: 1.5em;
+        font-family: $font-body;
+        a {
+          color: $color-ubyssey-blue;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+  .timeline {
+    .timeline-title {
+      margin: 1.5em auto;
+      color: $color-ubyssey-blue;
+      text-align: center;
+      font-size: 1.25em;
+      font-weight: 600;
+      a:hover {
+        text-decoration: underline;
+      }
+    }
+    ul {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      justify-content: center;
+      li {
+        position: relative;
+        max-width: 25%;
+        padding: 1.5em 3em 0 1.5em;
+        border-top: 0.2em solid $color-ubyssey-blue;
+        &.timeline-dot {
+          ::before {
+            position: absolute;
+            width: 1em;
+            height: 1em;
+
+            left: -0.5em;
+            top: -0.6em;
+            content: "";
+
+            background-color: $color-ubyssey-blue;
+            border-radius: 100%;
+          }
+        }
+      }
+    }
+  }
 }

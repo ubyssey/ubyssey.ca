@@ -1262,6 +1262,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             suggested = False
 
         return suggested
+    
+    def get_primary_tag_link(self) -> str:
+        from taggit.models import Tag
+        tag = Tag.objects.get(slug=self.primary_tag_slug)
+        return "<a href='/tag/" + tag.slug + "'>" + tag.name + "</a>"
+    primary_tag_link = property(fget=get_primary_tag_link)
 
     @property
     def published_at(self):

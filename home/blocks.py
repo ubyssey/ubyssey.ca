@@ -134,6 +134,8 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_landing.html', 'Landing'),
+        ('article/objects/article_promo.html', 'Article promo'),
+        ('article/objects/article_timeline.html', 'Article timeline'),
     ]
 
 class SectionBlock(AbstractArticleList):
@@ -146,7 +148,9 @@ class SectionBlock(AbstractArticleList):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['section'].title
         context['link'] = value['section'].url
-        context['articles'] = value['section'].get_featured_articles(number_featured=9)          
+        context['articles'] = value['section'].get_featured_articles(number_featured=9)  
+        if "article/" in value['template'] and len(context['articles']) > 0:
+            context['self']['article'] = context['articles'][0]        
         return context
     
 class TagBlock(AbstractArticleList):
@@ -160,6 +164,8 @@ class TagBlock(AbstractArticleList):
             context['title'] = tag.name
             context['link'] = '/tag/' + value['tag_slug']
             context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at').filter(tags__slug=value["tag_slug"])[:9]
+            if "article/" in value['template'] and len(context['articles']) > 0:
+                context['self']['article'] = context['articles'][0]
         return context
     
 class CategoryBlock(AbstractArticleList):
@@ -172,6 +178,8 @@ class CategoryBlock(AbstractArticleList):
         context['title'] = value['category'].title
         context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
         context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-first_published_at')[:9]
+        if "article/" in value['template'] and len(context['articles']) > 0:
+            context['self']['article'] = context['articles'][0]
         return context
     
 class SpecialLandingPageBlock(AbstractArticleList):
@@ -194,4 +202,4 @@ class ArticlePromo(blocks.StructBlock):
     )
 
     class Meta:
-        template = "home/stream_blocks/special/article_midsection.html"
+        template = "article/objects/article_promo.html"
