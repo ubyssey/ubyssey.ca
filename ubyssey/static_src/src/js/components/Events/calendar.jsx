@@ -21,7 +21,6 @@ function useQuery() {
       try {
         return new URLSearchParams(search || "");
       } catch (error) {
-        console.error("Failed to parse query params:", error);
         return new URLSearchParams(); // Return an empty URLSearchParams object on failure
       }
     }, [search]);
@@ -108,7 +107,6 @@ export function QueryEventsCalendar() {
             const year = parseInt(urlParams.get("year"));
             return getDate(month, year);
         } else{
-            console.log("No month and year");
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
@@ -124,7 +122,6 @@ export function QueryEventsCalendar() {
         let newStart = new Date(start);
 
         // Adjust the month based on the direction
-        console.log(direction);
         if (direction === 'next') {
             newStart = new Date(newStart.getTime() + (40*d));
         } else {
@@ -146,10 +143,8 @@ export function QueryEventsCalendar() {
     // Function to update the start date to the week of the first day of the previous or next month
     const handleMonthNavigation = (direction) => {
 
-        console.log("Handling month navigation");
         let newStart, newMonth, newYear;
         newStart = calculateNewStart(direction, start);
-        console.log("Handling month navigation");
         newMonth = newStart.month;
         newYear = newStart.year;    
 
@@ -159,7 +154,6 @@ export function QueryEventsCalendar() {
         window.history.pushState(null, '', `?${searchParams.toString()}`);
 
         // Set the new start date and other logic
-        console.log("Navigating to", newMonth, newYear);
         let newStartDate = new Date(newYear, newMonth - 1, 1); // Month is 0-indexed
 
         if (
@@ -788,7 +782,6 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                     const loaderWeek = Math.floor((numberOfWeeks - 1) / 2);
                     const isMiddleDay = !isPhablet? week_index === loaderWeek && day_index === Math.floor(week.days.length / 2)
                                                     : week_index === 0 && day_index === 0;
-                    console.log(isMiddleDay);
                     return (
                         <div key={day_index} className={"day " + day.phase}>
                             {isMiddleDay && isLoading && !isPhablet &&
