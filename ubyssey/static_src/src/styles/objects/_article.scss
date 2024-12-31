@@ -181,7 +181,7 @@ ul.article-list, ol.article-list {
     display: flex;
   }
 
-  @media($bp-larger-than-desktop) {
+  @media($bp-smaller-than-phablet) {
     // Structure
     display: block;
   }

@@ -6,7 +6,7 @@
 {% load video_filters %}
 {% load articletags %}
 
-<div class="article-midsection-promo u-container u-container--large u-container--padded">
+<article class="article-promo u-container u-container--large u-container--padded">
     <div class="o-article__section">From <a href="{{self.article.get_parent.url}}">{{self.article.get_parent.title}}</a></div>
     <h2><a href="{% pageurl self.article %}">{{self.article.title}}</a></h2>
     <div class="article-midsection-promo-div">
@@ -15,4 +15,4 @@
         </div>
         <p class="lede"><b>{{ self.article.published_at|date:'N j' }}</b> {{self.article.lede|safe}} <i><a href="{% pageurl self.article %}">Read more.</a></i></p>
     </div>
-</div>
+</article>

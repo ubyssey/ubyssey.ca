@@ -5,14 +5,14 @@
 {% load video_filters %}
 {% load articletags %}
 
-<div class="c-homepage__section__timeline u-container u-container--large u-container--padded">
-  <div class="c-homepage__section__timeline-header">
+<div class="landing-stream-block__timeline landing_stream_block u-container u-container--large u-container--padded">
+  <div class="landing_stream_block--header">
     <h2><a href="{{link}}">{{title}}</a></h2>
     {% if description %}
       {{description}}
     {% endif %}
   </div>
-<div class="c-homepage__section__timeline-flex">
+<div class="landing_stream_block--flex-container">
   {% if articles.0 %}
     {% with article=articles.0 %}
     <article class="o-article article--timeline {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.explicit_published_at|naturalday}}">
