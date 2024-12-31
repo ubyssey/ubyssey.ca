@@ -7,29 +7,35 @@
 {% load articletags %}
 
 <div class="article-timeline u-container u-container--large">
-    <div class="o-article__published">{{ self.article.published_at|display_pubdate }} <span>{{self.article.title_tag}}</span></div>
+    <div class="above-headline"><span class="o-article__published">{{ self.article.published_at|display_pubdate }}</span> <span class="title-tag">{{self.article.title_tag}}//</span></div>
     <h2><a href="{% pageurl self.article %}">{{self.article.title}}</a></h2>
     <div class="article-timeline--container">
         <div class="left">
-            {% image self.article.featured_media.first.image fill-680x476-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
+            <a href="{% pageurl self.article %}">
+                {% image self.article.featured_media.first.image fill-680x476-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
+            </a>
         </div>
         <div class="right">
-            <p class="lede">{{self.article.lede|safe}} <i><a href="{% pageurl self.article %}">Read more.</a></i></p>
+            <p class="lede">{{self.article.lede|safe}} <span class="read-more"><a href="{% pageurl self.article %}">Read more.</a></span></p>
             <p class="o-article__byline">
 				<span class="o-article__author">{{ self.article.get_authors_split_out_visual_bylines|safe }}</span>
 			</p>
         </div>
     </div>
 
+    {% with self.article.get_articles_by_tag as tagArticles %}
+    {% if tagArticles %}
     <div class="timeline">
         <div class="timeline-title">More on '{{self.article.get_primary_tag_link|safe}}'</div>
-        <ul>
-            {% for tagArticle in self.article.get_articles_by_tag %}
+        <ul class="horizontal-timeline">
+            {% for tagArticle in tagArticles %}
             <li class="timeline-dot">
                 <div class="o-article__published">{{tagArticle.published_at|display_pubdate}}</div>
-                <a href="{% pageurl tagArticle %}">{{tagArticle.title}}</a>
+                <div class="o-article__headline"><a href="{% pageurl tagArticle %}">{{tagArticle.title}}</a></div>
             </li>
             {% endfor %}
         </ul>
     </div>
+    {% endif %}
+    {% endwith %}
 </div>

@@ -253,7 +253,7 @@ html.hairlines {
   }
 
   .c-homepage__section__timeline-flex {
-    .bullet {
+    li.timeline-dot::before {
       background-color: $color-ubyssey-blue;
     }
 
@@ -295,7 +295,7 @@ html.hairlines {
       color: $color-ubyssey-blue-light;
     }
 
-    .bullet {
+    li.timeline-dot::before {
       background-color: white;
     }
 
@@ -316,19 +316,28 @@ html.hairlines {
 }
 
 .c-homepage__section__timeline {
-  margin: 2em auto;
+  margin: 3em auto 5em auto;
   border-top: 2px solid;
   border-bottom: 2px solid;
 
-  h2 {
-    text-transform: capitalize;
+  .c-homepage__section__timeline-header {
+    font-family: $font-headline;
+    font-weight: 800;
+    font-variation-settings: "wght" 800;
+    margin-block: 2em;
+    h2 {
+      display: inline;
+      margin-right: 0.5em;
+      text-transform: capitalize;
+      font-size: 2.5em;
+    }
   }
 }
 
 .c-homepage__section__timeline-flex {
   display: flex;
   position: relative;
-  min-height: 400px;
+  min-height: fit-content;
   margin-bottom: 2em;
 
   article.article--timeline {
@@ -352,9 +361,12 @@ html.hairlines {
     }
 
     h3.o-article__headline {
+      margin: 0;
       padding: 0.5em 0;
       border-bottom: 2px solid;
-      font-size: 1.2em;
+      font-size: 1.1em;
+      font-weight: 600;
+      font-variation-settings: "wght" 600;
     }
   }
 
@@ -370,60 +382,9 @@ html.hairlines {
 
   h3.o-article__headline {
     margin: 0.5em 0;
-    font-weight: 500;
+    font-weight: 400;
+    font-variation-settings: "wght" 400;
     color: $color-ubyssey-blue-light;
-  }
-
-  ul {
-    margin: 0;
-    margin-top: 0.5em;
-    padding-left: 5em;
-
-    position: absolute;
-    height: 100%;
-    top: 0;
-    bottom: 0;
-    left: 300px;
-    right: 0;
-
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    list-style: none;
-    overflow-x: clip;
-
-    li:last-child {
-      border-color: transparent;
-    }
-
-    li {
-      margin-right: 3em;
-      width: calc(50% - 2.5em);
-      border-left: 3px solid;
-      position: relative;
-      font-size: 15px;
-
-      &.first_of_date {
-        padding-top: 1em;
-      }
-
-      &:first-child {
-        padding-top: 0;
-      }
-
-      .bullet {
-        width: 0.8em;
-        aspect-ratio: 1;
-        border-radius: 100%;
-        position: absolute;
-        left: calc(-0.5em);
-      }
-
-      .o-article--bullet {
-        margin-left: 1em;
-        margin-bottom: 1.25em;
-      }
-    }
   }
 }
 
@@ -688,21 +649,26 @@ html.hairlines {
 }
 
 .article-timeline {
-  margin-block: 3em;
-
-  .o-article__published {
+  margin-block: 3em 5em;
+  .above-headline {
     margin-bottom: 0.5em;
+    font-weight: 600;
+  }
+  .o-article__published {
+    margin-right: 0.5em;
     color: $color-ubyssey-blue;
     font-weight: 600;
   }
   h2 {
     margin-block: 0 0.5em;
-    font-size: 3em;
+    font-family: $font-headline;
+    font-size: 2.5em;
   }
   .article-timeline--container {
     display: flex;
     .left{
-      width: 400px;
+      width: 475px;
+      flex-shrink: 0;
       img {
         max-width: 100%;
         height: auto;
@@ -713,7 +679,6 @@ html.hairlines {
       .lede {
         margin-block: 0.25em;
         font-size: 1.5em;
-        font-family: $font-body;
         a {
           color: $color-ubyssey-blue;
           &:hover {
@@ -721,43 +686,40 @@ html.hairlines {
           }
         }
       }
+      .read-more {
+        display: inline-block;
+        font-style: italic;
+      }
+      .o-article__byline {
+        font-size: 1em;
+      }
     }
   }
   .timeline {
     .timeline-title {
-      margin: 1.5em auto;
+      margin: 1.25em auto;
       color: $color-ubyssey-blue;
       text-align: center;
-      font-size: 1.25em;
+      font-size: 1.15em;
+      line-height: 1.25em;
       font-weight: 600;
       a:hover {
         text-decoration: underline;
       }
     }
-    ul {
-      display: flex;
-      list-style: none;
-      padding: 0;
-      justify-content: center;
-      li {
-        position: relative;
-        max-width: 25%;
-        padding: 1.5em 3em 0 1.5em;
-        border-top: 0.2em solid $color-ubyssey-blue;
-        &.timeline-dot {
-          ::before {
-            position: absolute;
-            width: 1em;
-            height: 1em;
-
-            left: -0.5em;
-            top: -0.6em;
-            content: "";
-
-            background-color: $color-ubyssey-blue;
-            border-radius: 100%;
-          }
-        }
+    li {
+      border-color: $color-ubyssey-blue;
+      &.timeline-dot::before {
+          background-color: $color-ubyssey-blue;
+      }
+      .o-article__published {
+        font-size: 0.75em;
+        text-transform: uppercase;
+      }
+      .o-article__headline {
+        font-size: 1em;
+        font-weight: 400;
+        font-variation-settings: "wght" 400;
       }
     }
   }

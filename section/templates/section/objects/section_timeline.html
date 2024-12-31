@@ -6,7 +6,12 @@
 {% load articletags %}
 
 <div class="c-homepage__section__timeline u-container u-container--large u-container--padded">
-  <h2><a href="{{link}}">{{title}}</a></h2>
+  <div class="c-homepage__section__timeline-header">
+    <h2><a href="{{link}}">{{title}}</a></h2>
+    {% if description %}
+      {{description}}
+    {% endif %}
+  </div>
 <div class="c-homepage__section__timeline-flex">
   {% if articles.0 %}
     {% with article=articles.0 %}
@@ -49,13 +54,10 @@
     {% endwith %}
   {% endif %}
 
-	<ul>
+	<ul class="vertical-timeline">
     {% for group in articles|slice:"1:"|group_by_date %}
       {% for article in group %}
-			<li {% if forloop.counter == 1 %}class="first_of_date"{% endif %}>
-        {% if forloop.counter == 1 %}
-        <div class="bullet"></div>
-        {% endif %}
+			<li {% if forloop.counter == 1 %}class="timeline-dot"{% endif %}>
         <article class="o-article o-article--bullet">
           {% if forloop.counter == 1 %}<p class="o-article__published">{% if article.explicit_published_at %}{{ article.explicit_published_at|display_pubdate }}{% else %}{{ article.first_published_at|display_pubdate }}{%endif%}</p>{% endif %}
           <h3 class="o-article__headline">
@@ -65,8 +67,7 @@
       </li>
       {% endfor %}
 		{% endfor %}
-		<li>
-      <div class="bullet"></div>
+		<li class="timeline-dot">
 			<div class="o-article--bullet">
 				<h3 class="o-article__seemore">
 					<a href="{{link}}">See more</a>

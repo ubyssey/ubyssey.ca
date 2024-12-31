@@ -1224,7 +1224,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         Returns a list of articles with the same tags as the current article
         """
-        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
+        articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
     def get_suggested(self, number_suggested=3):
@@ -1266,7 +1266,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     def get_primary_tag_link(self) -> str:
         from taggit.models import Tag
         tag = Tag.objects.get(slug=self.primary_tag_slug)
-        return "<a href='/tag/" + tag.slug + "'>" + tag.name + "</a>"
+        return "<a href='/tag/" + tag.slug + "/'>" + tag.name + "</a>"
     primary_tag_link = property(fget=get_primary_tag_link)
 
     @property

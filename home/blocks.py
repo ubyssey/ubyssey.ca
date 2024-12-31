@@ -147,6 +147,7 @@ class SectionBlock(AbstractArticleList):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['section'].title
+        context['description'] = value['section'].description
         context['link'] = value['section'].url
         context['articles'] = value['section'].get_featured_articles(number_featured=9)  
         if "article/" in value['template'] and len(context['articles']) > 0:
@@ -176,7 +177,8 @@ class CategoryBlock(AbstractArticleList):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['category'].title
-        context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
+        context['description'] = value['category'].description
+        context['link'] = value['category'].section_page.url + "category/" + value['category'].slug + "/"
         context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-first_published_at')[:9]
         if "article/" in value['template'] and len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]

@@ -232,19 +232,23 @@ svg .c-section__heading {
 .c-section__heading {
   margin-block: 2em;
   padding-inline: 20%;
-  padding-top: 1em;
+  padding-top: 0.5em;
   border-bottom: 2px solid $color-ubyssey-blue;
 
   text-align: center;
+  font-family: $font-headline;
 
   h1 {
     margin-bottom: 0;
+    font-size: 1.5em;
+    text-transform: uppercase;
     color: $color-ubyssey-blue;
   }
   p.c-section__description {
     max-width: 600px;
     font-size: 0.9em;
     font-weight: 600;
+    font-variation-settings: "wght" 600;
   }
 }
 

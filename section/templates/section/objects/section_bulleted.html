@@ -3,7 +3,7 @@
 
 <div>
 	{% if articles.0 %}
-	{% include 'article/objects/infinitefeed_item.html' with article=articles.0 padded=True %}
+	{% include 'article/objects/infinitefeed_item.html' with article=articles.0 padded=True expectedSection=section.slug %}
 	{% endif %}
 </div>
 <div>
