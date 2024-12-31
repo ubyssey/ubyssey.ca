@@ -87,7 +87,9 @@
 .featured_categories {
   display: flex;
   margin-left: 1em;
-  flex-wrap: wrap;
+  flex-grow: 1;
+  width: 0;
+  overflow-x: auto;
 
   p {
     margin-bottom: 0;
@@ -100,7 +102,6 @@
     //width: fit-content;
     margin-block: auto;
     padding: 0;
-    flex-wrap: wrap;
 
     li {
       margin: 0 1em;
@@ -111,6 +112,9 @@
       overflow: clip;
       text-overflow: ellipsis;
     }
+  }
+  @media($bp-smaller-than-phablet) { 
+    display: none;
   }
 }
 
@@ -136,12 +140,14 @@
   display: flex;
   text-align: right;
   justify-content: right;
-  width: 100%;
   @media($bp-smaller-than-phablet) {
     display: block;
   }
   .o-archive__search__input {
     width: 115px;
+    &:focus {
+      width: 500px;
+    }
   }
 }
 
@@ -149,7 +155,6 @@
   margin-left: 0.5em;
   text-align: right;
   display: inline-block;
-  max-width: 50%;
   z-index:3;
   position: relative;
   a, form, input {

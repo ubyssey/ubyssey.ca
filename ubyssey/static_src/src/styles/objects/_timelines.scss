@@ -22,6 +22,27 @@ ul.horizontal-timeline {
             border-radius: 100%;
         }
     }
+    @media($bp-smaller-than-phablet) {
+        padding-left: 5em;
+        flex-direction: column;
+        li {
+            padding: 1em 0 0 1.5em;
+            margin-right: 3em;
+            max-width: none;
+            border: none;
+            border-left: 0.2em solid;
+            &.timeline-dot::before {
+                left: -0.6em;
+                top: 1em;
+            }
+        }
+        li.timeline-dot:first-child {
+            padding-top: 0;
+            &::before {
+                top: 0;
+            }
+        }
+    }
 }
 
 ul.vertical-timeline {

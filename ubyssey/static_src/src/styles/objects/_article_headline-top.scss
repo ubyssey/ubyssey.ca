@@ -29,10 +29,12 @@ article.headline-top {
     }
     
     .left{
-        width: 475px;
+        margin: auto;
+        width: 100%;
+        max-width: 475px;
         flex-shrink: 0;
         img {
-        max-width: 100%;
+        width: 100%;
         height: auto;
         }
     }
@@ -54,6 +56,24 @@ article.headline-top {
         }
         .o-article__byline {
         font-size: 1em;
+        }
+    }
+
+    @media($bp-smaller-than-phablet) { 
+        h2, .above-headline {
+            margin-inline: 1em;
+        }
+        h2 {
+            font-size: 1.5em;
+        }
+        .left {
+            max-width: 100%;
+        }
+        .right {
+            margin-inline: 1.5em;
+            .lede {
+                font-size: 1.2em;
+            }
         }
     }
 }
