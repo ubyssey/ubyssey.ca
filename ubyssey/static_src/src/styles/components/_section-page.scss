@@ -66,7 +66,6 @@
     position: absolute;
     bottom: -55px;
     padding-inline: 20px;
-    box-sizing: border-box;
     @media($bp-smaller-than-phablet) {
       bottom: -25px;
       padding-inline: 10px;
@@ -138,8 +137,9 @@
 
 .c-section__buttons {
   display: flex;
-  text-align: right;
+  margin-left: auto;
   justify-content: right;
+  text-align: right;
   @media($bp-smaller-than-phablet) {
     display: block;
   }

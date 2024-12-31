@@ -42,7 +42,7 @@
         </div>
       {%else%}
         <div class="c-section__heading">
-          {% if category %}<p><a href="/{{self.slug}}">{{self.title}}</a></p>{% endif %}
+          {% if category %}<p><a href="/{{self.slug}}/">{{self.title}}</a></p>{% endif %}
           <h1 class="">{{title}}</h1>
           {% if description or not category %}
           <p class="c-section__description">{{description}}{% if not category %} &ensp;<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% endif%}</p>
@@ -50,9 +50,11 @@
         </div>
       {% endif %}
 
-      {% for block in self.top_stream %}
-      {% include_block block %}
-      {% endfor %}
+      {% if not category %}
+        {% for block in self.top_stream %}
+        {% include_block block %}
+        {% endfor %}
+      {% endif %}
 
       <div class="c-section__info">
         <h2>More in {{title}}</h1>

@@ -16,6 +16,9 @@ article.headline-top {
     .above-headline {
         margin-bottom: 0.5em;
         font-weight: 600;
+        .title-tag {
+            display: inline-block;
+        }
     }
     .o-article__published {
         margin-right: 0.5em;
@@ -61,7 +64,7 @@ article.headline-top {
 
     @media($bp-smaller-than-phablet) { 
         h2, .above-headline {
-            margin-inline: 1em;
+            margin-inline: 15px;
         }
         h2 {
             font-size: 1.5em;

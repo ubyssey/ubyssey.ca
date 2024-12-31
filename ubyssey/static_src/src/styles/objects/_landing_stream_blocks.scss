@@ -16,11 +16,15 @@
     }
 
     .landing_stream_block--flex-container {
-        display: flex;
-        position: relative;
-        min-height: fit-content;
-        margin-bottom: 2em;
+      display: flex;
+      position: relative;
+      min-height: fit-content;
+      margin-bottom: 2em;
     }
+
+  @media($bp-smaller-than-phablet) {
+    margin: 2em auto 5em auto;
+  }
 }
 
 

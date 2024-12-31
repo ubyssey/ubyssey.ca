@@ -7,23 +7,7 @@
 {% load articletags %}
 
 <div class="article-timeline landing_stream_block u-container u-container--large">
-    <article class="headline-top">
-        <div class="above-headline"><span class="o-article__published">{{ self.article.published_at|display_pubdate }}</span> <span class="title-tag">{{self.article.title_tag}}//</span></div>
-        <h2><a href="{% pageurl self.article %}">{{self.article.title}}</a></h2>
-        <div class="o-article--default">
-            <div class="left">
-                <a href="{% pageurl self.article %}">
-                    {% image self.article.featured_media.first.image fill-680x476-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
-                </a>
-            </div>
-            <div class="right">
-                <p class="lede">{{self.article.lede|safe}} <span class="read-more"><a href="{% pageurl self.article %}">Read more.</a></span></p>
-                <p class="o-article__byline">
-                    <span class="o-article__author">{{ self.article.get_authors_split_out_visual_bylines|safe }}</span>
-                </p>
-            </div>
-        </div>
-    </article>
+    {%include 'article/objects/article_top-headline.html' with article=self.article %}
 
     {% with self.article.get_articles_by_tag as tagArticles %}
     {% if tagArticles %}
