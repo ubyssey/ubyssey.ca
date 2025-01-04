@@ -62,10 +62,11 @@
   margin-bottom:40px;
   background-size:cover;
   background-position: center;
-  svg.c-section__heading {
+  svg.banner-title {
     position: absolute;
     bottom: -55px;
     padding-inline: 20px;
+    border: none;
     @media($bp-smaller-than-phablet) {
       bottom: -25px;
       padding-inline: 10px;
@@ -181,7 +182,9 @@
 }
 
 .c-section__description {
+  padding-inline: 1em; 
   display: inline-block;
+  box-sizing: border-box;
   @media($bp-smaller-than-phablet) {
     width:100%;
   }
@@ -195,14 +198,17 @@
 
   color: $text-color;
 
-  h2 {
+  h2.c-section__info-header {
     max-width: fit-content;
-    width: 300px;
     margin-right: 1em;
     margin-block: auto;
 
     font-size: 1.25em;
     text-transform: uppercase;
+
+    @media($bp-smaller-than-phablet) {
+      display: none;
+    }
   }
 
   .o-archive__search {
@@ -217,25 +223,26 @@
 
 .c-section__modal_close {
   position:absolute;
-  right:50px;
-  top:50px;
+  right: 20px;
+  top: 1.5em;
 }
 
-svg .c-section__heading {
+svg.banner-title text{
   fill: var(--header_color);
   stroke: var(--background);
   stroke-width: 0.5em;
   stroke-linejoin: round;
   paint-order: stroke;
-  font-size: 1em;
-  font-weight: bolder;
 
   transition: stroke 0.5s ease, color 0.5s ease;
-  //font-family: $font-banner;
+  
+  font-family: $font-headline;
+  font-size: 1em;
+  font-weight: bolder;
 }
 
 .c-section__heading {
-  margin-block: 2em;
+  margin-block: 1em 2em;
   padding-inline: 20%;
   padding-top: 0.5em;
   border-bottom: 2px solid $color-ubyssey-blue;
