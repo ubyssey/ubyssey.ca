@@ -9,8 +9,6 @@ services:
       MYSQL_USER: ubyssey
       MYSQL_PASSWORD: ${SQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${SQL_PASSWORD}
-    ports:
-      - 3306:3306
     volumes:
       - ./mysql-data:/var/lib/mysql
     healthcheck:
