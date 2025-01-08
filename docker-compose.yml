@@ -45,7 +45,7 @@ services:
       mysql:
         condition: service_healthy
         restart: true
-      memcached:
+      cache:
         condition: service_started
         restart: true
 
