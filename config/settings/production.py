@@ -28,9 +28,13 @@ CACHES = {
     #     'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     #     'TIMEOUT': 3600, # 1 hour
     # }
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        'TIMEOUT': 3600, # 1 hour
+    # 'default': {
+    #     'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    #     'TIMEOUT': 3600, # 1 hour
+    # }
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        "LOCATION": "cache:11211",
     }
 }
 
