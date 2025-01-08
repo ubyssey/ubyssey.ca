@@ -9,6 +9,8 @@ services:
       MYSQL_USER: ubyssey
       MYSQL_PASSWORD: ${SQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${SQL_PASSWORD}
+    ports:
+      - 3306:3306
     volumes:
       - ./mysql-data:/var/lib/mysql
     healthcheck:
@@ -18,7 +20,7 @@ services:
       retries: 20
 
   django:
-    image: ghcr.io/ubyssey/ubyssey.ca:staging-deploy
+    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
     command: >
       bash -c "python manage.py migrate
       && gunicorn ubyssey.wsgi:application --bind 0.0.0.0:8000"
