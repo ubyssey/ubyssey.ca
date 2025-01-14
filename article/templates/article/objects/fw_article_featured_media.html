@@ -6,19 +6,36 @@
 
 {% if self.featured_media.first.image %}
     {% with self.featured_media.first as featured_image_object %}
-        {% image featured_image_object.image width-1500 format-webp as featured_image %}
+        {% image featured_image_object.image fill-1500x1000-c100 format-webp as featured_image_large %}
+        {% image featured_image_object.image fill-750x500-c100 format-webp as featured_image_medium %}
+        {% image featured_image_object.image fill-340x238-c100 format-webp as featured_image_small %}        
         <img
             class="article-attachment"
-            width="{{ featured_image.width }}"
-            height="{{ featured_image.height }}"
             data-id="{{ featured_image_object.image.id }}"
             data-caption="{{ featured_image_object.caption }}"
-            data-url="{{ featured_image.url }}"
+            data-url="{{ featured_image_large.url }}"
             data-credit="{{ featured_image_object.credits }}"
-            src="{{ featured_image.url }}"
-            alt="{{featured_image_object.alt_text}}"
+            src="{{ featured_image_large.url }}"
+            srcset="{{ featured_image_large.url }} 1500w, {{ featured_image_medium.url }} 750w, {{ featured_image_small.url }} 340w"
+            sizes="(max-width: 600px) 340px, (max-width: 1200px) 750px, 1500px"
+            alt="{{ featured_image_object.alt_text }}"
         />
-        {% if featured_image_object.caption or featured_image_object.credit %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var img = document.querySelector('.article-attachment');
+                if (window.innerWidth <= 600) {
+                    img.width = {{ featured_image_small.width }};
+                    img.height = {{ featured_image_small.height }};
+                } else if (window.innerWidth <= 1200) {
+                    img.width = {{ featured_image_medium.width }};
+                    img.height = {{ featured_image_medium.height }};
+                } else {
+                    img.width = {{ featured_image_large.width }};
+                    img.height = {{ featured_image_large.height }};
+                }
+            });
+        </script>
+                {% if featured_image_object.caption or featured_image_object.credit %}
             <div class="caption">
                 {% if featured_image_object.caption %}
                     {{ featured_image_object.caption }}
