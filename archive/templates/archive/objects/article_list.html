@@ -12,7 +12,6 @@
                 {% image article.featured_media.first.image fill-1500x1000-c100 format-webp as featured_image_large %}
                 {% image article.featured_media.first.image fill-700x500-c100 format-webp as featured_image_medium %}
                 {% image article.featured_media.first.image fill-340x238-c100 format-webp as featured_image_small %}
-                
                 <img
                     class="article-attachment"
                     src="{{ featured_image_large.url }}"
