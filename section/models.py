@@ -184,11 +184,9 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     top_stream = StreamField(
         [
-            ('section', homeblocks.SectionBlock()),
-            ('category', homeblocks.CategoryBlock()),
+            ('article_gatherer', homeblocks.ArticleGathererBlock()),
             ('landing', homeblocks.SpecialLandingPageBlock()),
-            ('tag', homeblocks.TagBlock()),
-            ('article_promo', homeblocks.ArticlePromo()),
+            ('article_manual', homeblocks.ManualArticles()),
         ],
         null=True,
         blank=True,
