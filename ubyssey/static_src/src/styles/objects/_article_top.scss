@@ -24,13 +24,9 @@
         margin-left: auto;
     }
 
-    .o-article__above-headline {
-        display: flex;
-        flex-direction: row;
-    }
-
     .o-article__section-tag {
-        display: block;
+        display: inline-block;
+        height: fit-content;
         width: fit-content;
         margin-right: 1em;
         padding-inline: 0.5em 0.8em;
@@ -67,6 +63,7 @@
     }
 
     .top_article-title-tag {
+        display: inline-block;
         color: black;
         font-size: 0.7em;
         font-weight: 600;
