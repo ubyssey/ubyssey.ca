@@ -1224,7 +1224,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         Returns a list of articles with the same tags as the current article
         """
-        articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
+        articles_by_tag = []
+        if self.primary_tag_slug:
+            articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
     def get_suggested(self, number_suggested=3):

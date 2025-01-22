@@ -15,8 +15,11 @@
         <div class="timeline-title">More on '{{self.article.get_primary_tag_link|safe}}'</div>
         <ul class="horizontal-timeline">
             {% for tagArticle in tagArticles %}
-            <li class="timeline-dot">
-                <div class="o-article__published">{{tagArticle.published_at|display_pubdate}}</div>
+            <li {% ifchanged tagArticle.published_at %}class="timeline-dot"{% endifchanged %} >
+                
+                {% ifchanged tagArticle.published_at %}
+                    <div class="o-article__published">{{tagArticle.published_at|display_pubdate}}</div>
+                {% endifchanged %}
                 <div class="o-article__headline"><a href="{% pageurl tagArticle %}">{{tagArticle.title}}</a></div>
             </li>
             {% endfor %}
