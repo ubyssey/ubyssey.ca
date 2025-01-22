@@ -3,7 +3,7 @@
 
 {% if item.featured_media.first.image %}
     {% image item.featured_media.first.image original as original_image %}
-    <img alt="{{item.featured_media.first.caption}}" src="{{original_image.full_url}}">
+    <img alt="{% if item.featured_media.first.alt_text %}{{item.featured_media.first.alt_text}}{% else %}{{item.featured_media.first.caption}}{% endif %}" src="{{original_image.full_url}}">
     <p>{{item.featured_media.first.credit}}</p>
 {% elif item.featured_media.first.video %}
     <iframe 

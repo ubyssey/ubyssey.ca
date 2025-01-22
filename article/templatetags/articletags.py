@@ -39,8 +39,8 @@ def display_pubdate(value):
     if value == None:
         return "Unknown"
 
-    pubdate = value
-    today = timezone.now()
+    pubdate = value.astimezone(timezone.get_current_timezone())
+    today = timezone.now().astimezone(timezone.get_current_timezone())
     delta = today - pubdate
 
     if delta.total_seconds() > datetime.timedelta(days=365).total_seconds():
@@ -70,6 +70,34 @@ def display_pubdate(value):
         return "1 second ago"
     return str(seconds) + " seconds ago"
 
+@register.filter(name='time_ago')
+def time_ago(value):
+
+    if value == None:
+        return "Unknown"
+
+    pubdate = value.astimezone(timezone.get_current_timezone())
+    today = timezone.now().astimezone(timezone.get_current_timezone())
+    delta = today - pubdate
+
+    if delta.total_seconds() > datetime.timedelta(days=7).total_seconds():
+        delta = round(delta.total_seconds()/(3600*24*7))
+        unit = "w"    
+    elif delta.total_seconds() > datetime.timedelta(days=1).total_seconds():
+        delta = round(delta.total_seconds()/(3600*24))
+        unit = "d"
+    elif delta.total_seconds() > datetime.timedelta(hours=1).total_seconds():
+        delta = round(delta.total_seconds()/3600)
+        unit = "h"
+    elif delta.total_seconds() > datetime.timedelta(minutes=1).total_seconds():
+        delta = round(delta.total_seconds()/60)
+        unit = "m"
+    else:
+        delta = round(delta.total_seconds())
+        unit = "s"
+
+    return str(delta) + unit + " ago"
+
 @register.filter(name="get_id")
 def get_id(value):
     from wagtail.models import Page, PageManager, SiteRootPath
@@ -85,10 +113,14 @@ def get_id(value):
 def group_by_date(value):
     groups = []
     for article in value:
+        if hasattr(article, 'article.explicit_published_at'):
+            article.pubTime = article.explicit_published_at
+        else:
+            article.pubTime = article.first_published_at
         if len(groups) < 1:
             groups.append([article])
         else:
-            if display_pubdate(groups[-1][-1].explicit_published_at) == display_pubdate(article.explicit_published_at):
+            if display_pubdate(groups[-1][-1].pubTime) == display_pubdate(article.pubTime):
                 groups[-1].append(article)
             else:
                 groups.append([article])

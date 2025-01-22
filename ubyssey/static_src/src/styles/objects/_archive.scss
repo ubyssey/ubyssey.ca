@@ -1,10 +1,10 @@
-$search-bar-height: 46px;
+$search-bar-height: 50px;
 
 .o-archive__search {
   // Structure
   position: relative;
   margin-bottom: 1rem;
-  width:fit-content;
+  flex-grow: 1;
 }
 
 .o-archive__search__label {
@@ -20,7 +20,7 @@ $search-bar-height: 46px;
 
 .o-archive__search__input {
   // Structure
-  width: 115px;
+  width: 180px;
   padding-left: $search-bar-height;
   padding-right: 1rem;
   box-sizing: border-box;
@@ -29,6 +29,7 @@ $search-bar-height: 46px;
   border: none;
   border-bottom: 1px solid;
   border-color: #ffffff00;
+  border-radius: 0;
 
   // Background
   background: none;
@@ -44,9 +45,10 @@ $search-bar-height: 46px;
   &:focus {
 	border-color: var(--header_color);
     outline: 0;
-	width:100%;
+	width:100% !important;
 	opacity: 1;
 	color: $color-accent-blue;
+	cursor: text;
   }
 
   &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -140,7 +142,8 @@ $search-bar-height: 46px;
 	}
 }
 
-.lightmode {	
+[color-css-theme="light"] {
+	
 	.o-archive__sidebar__filter {
 		a {
 			color: #353535;
@@ -158,7 +161,8 @@ $search-bar-height: 46px;
 	}
 }
 
-.darkmode {	
+[color-css-theme="dark"] {
+	
 	.o-archive__sidebar__filter {
 		a {
 			color: #c4c4c4;
@@ -416,13 +420,18 @@ $search-bar-height: 46px;
 
 .image-modal {
 	position: relative;
-
+	button {
+		margin: 0;
+		border: none;
+		background: none;
+	}
 	.open-modal {
 		position:absolute;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
+		cursor: pointer;
 	}
 
 	.modal-contents {

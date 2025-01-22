@@ -19,7 +19,7 @@
                 {% endcomment %}
                 data-url="{{ original_image.url }}"
                 src="{{ featured_image.url }}"
-                alt=""
+                alt="{{featured_image.alt_text}}"
             />
             {% if featured_image_object.caption or featured_image_object.credit %}
                 <div class="caption">

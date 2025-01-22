@@ -13,7 +13,7 @@
         <meta name="robots" content="noindex">
     {% endif %}
 
-    <meta name="description" content="{{ meta.description }}" />
+    <meta name="description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.seo_description %}{{ self.seo_description }}{% elif self.lede %}{{ self.lede }}{% endif %}" />
     {% if self.authors_with_roles %}<meta name="author" content="{{ self.get_authors_string }}" />{% endif %}
 
     <!-- Open Graph data -->
@@ -51,6 +51,11 @@
 {% else %}
     <title>{{ meta.title|striptags|safe }}</title>
     <link rel="canonical" href="{{ meta.url }}">
+
+    {% if meta.noindex %}
+        <meta name="robots" content="noindex">
+    {% endif %}
+
     <meta name="description" content="{{ meta.description }}" />
     {% if article %}<meta name="author" content="{{ meta.author }}" />{% endif %}
 

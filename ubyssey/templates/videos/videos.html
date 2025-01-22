@@ -15,7 +15,7 @@
 
     <div class="o-archive__pagination">
       {% if page_obj.has_previous %}
-      <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+      <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}"><ion-icon name="caret-back-outline" aria-hidden="true"></ion-icon> Previous</a>
       {% endif %}
 
       <span class="o-archive__pagination__current" >
@@ -23,7 +23,7 @@
       </span>
 
       {% if page_obj.has_next %}
-        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">Next <ion-icon name="caret-forward-outline" aria-hidden="true"></ion-icon></a>
       {% endif %}
     </div>
 
@@ -35,7 +35,7 @@
 
     <div class="o-archive__pagination">
       {% if page_obj.has_previous %}
-      <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+      <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}"><ion-icon name="caret-back-outline" aria-hidden="true"></ion-icon> Previous</a>
       {% endif %}
 
       <span class="o-archive__pagination__current" >
@@ -43,7 +43,7 @@
       </span>
 
       {% if page_obj.has_next %}
-        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">Next <ion-icon name="caret-forward-outline" aria-hidden="true"></ion-icon></a>
       {% endif %}
     </div>
 

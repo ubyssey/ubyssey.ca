@@ -22,7 +22,7 @@
     {% comment %} Un-DRY alert: this div is repeated later {% endcomment %}
     <div class="o-archive__pagination">
       {% if paginated_videos.has_previous %}
-        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.previous_page_number }}"><ion-icon name="caret-back-outline" aria-hidden="true"></ion-icon> Previous</a>
       {% endif %}
 
       <span class="o-archive__pagination__current" >
@@ -30,7 +30,7 @@
       </span>
 
       {% if paginated_videos.has_next %}
-        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.next_page_number }}">Next <ion-icon name="caret-forward-outline" aria-hidden="true"></ion-icon></a>
       {% endif %}
     </div>
 
@@ -43,7 +43,7 @@
     {% comment %} Un-DRY repetition of above {% endcomment %}
     <div class="o-archive__pagination">
       {% if paginated_videos.has_previous %}
-        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.previous_page_number }}"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous</a>
+        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.previous_page_number }}"><ion-icon name="caret-back-outline" aria-hidden="true"></ion-icon> Previous</a>
       {% endif %}
 
       <span class="o-archive__pagination__current" >
@@ -51,7 +51,7 @@
       </span>
 
       {% if paginated_videos.has_next %}
-        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.next_page_number }}">Next <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.next_page_number }}">Next <ion-icon name="caret-forward-outline" aria-hidden="true"></ion-icon></a>
       {% endif %}
     </div>
 

@@ -124,7 +124,7 @@ class Article extends React.Component {
   };
 
   render() {
-    const html = {__html: this.props.html};
+    // const html = {__html: this.props.html};
     return (
       <div className={this.props.html ? "article-slide" : "article-extras"}>
           {this.props.html ? this.renderHTML() : null}

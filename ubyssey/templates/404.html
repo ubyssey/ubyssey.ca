@@ -5,6 +5,10 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/error-page.css' %}" type="text/css" />
+{% endblock %}
+
 {% block header %}
 {% include 'navigation/headers/topbar.html' %}
 {% include 'navigation/headers/mobile.html' %}
@@ -20,7 +24,7 @@
             <p>The page you have searched is not available.</p>
             <p>Questions? Contact EMAIL: <a class="email-link"
                     href="mailto:webmaster@ubyssey.ca">webmaster@ubyssey.ca</a></p>
-            <h2 class="load-articles"><i class="fa-solid fa-spinner fa-spin-pulse"></i></h2>
+            <h2 class="load-articles"><ion-icon name="refresh" class="spin"></ion-icon></h2>
 
             <div id="feed"></div>
             <script src="{% static 'ubyssey/js/error_page.js' %}" type="text/javascript"></script>

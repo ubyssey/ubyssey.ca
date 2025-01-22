@@ -1,9 +1,11 @@
 from django.db import models
 from django.db.models.query import QuerySet
+from videos.models import VideoAuthorsOrderable
+from django.db.models import Q
 from django.utils.text import slugify
 from django_extensions.db.fields import AutoSlugField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from article.models import ArticlePage
+from article.models import ArticlePage, ArticleAuthorsOrderable
 from wagtail.admin.panels import (
     # Panels
     FieldPanel,
@@ -120,12 +122,12 @@ class AuthorPage(RoutablePageMixin, Page):
         null=False,
         blank=True,
         default='',
-        help_text="Please provide your title, year and program"
+        help_text="Please give a short bio in third person"
     )
 
    
 
-    CHOICES = [("articles", "Articles"), ("photos", "Photos"), ("videos", "Videos")]
+    CHOICES = [("articles", "Articles"), ("photos", "Gallery"), ("videos", "Videos"), ('visuals', "Visual Bylines")]
     main_media_type = models.CharField(
         choices=CHOICES,
         default='articles',
@@ -182,25 +184,34 @@ class AuthorPage(RoutablePageMixin, Page):
         search_query = request.GET.get("q")
         page = request.GET.get("page")
         order = request.GET.get("order")
+        if order == 'oldest':
+            article_order = ""
+        else:            
+            article_order = "-"
 
         if media_type == "photos":
-            if order == 'oldest':
-                article_order = "updated_at"
-            else:            
-                article_order = "-updated_at"
-            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order)
+            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order+"updated_at")
         elif media_type == "videos":
-            if order == 'oldest':
-                article_order = "updated_at"
-            else:            
-                article_order = "-updated_at"
-            authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order)
+            authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order+"updated_at")
+        elif media_type == "visuals":
+            # Get articles where this author is credited with something other than "author" and "org_role"
+            authors_media = [] 
+            keys = []
+            for a in ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True).exclude(Q(author_role="author") | Q(author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
+                # we gotta do this because I can't use .distinct() on a field with mysql. We have to move to postgres for that (sounds like a lot of work) - samlow 21/10/2024
+                if not a.article_page_id in keys:
+                    keys.append(a.article_page_id)
+                    authors_media.append(a)
         else:
-            if order == 'oldest':
-                article_order = "explicit_published_at"
-            else:            
-                article_order = "-explicit_published_at"
-            authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).order_by(article_order)
+            # Get articles where this author is creditted with either "author" or "org_role"
+            authors_media = [] 
+            keys = []
+            for a in ArticleAuthorsOrderable.objects.filter(Q(author=self, author_role="author", article_page__live=True) | Q(author=self, author_role="org_role", article_page__live=True)).order_by(article_order+'article_page__explicit_published_at'):
+                # same here, can't use .distinct() cause not using postgres - samlow 21/10/2024
+                if not a.article_page_id in keys:
+                    keys.append(a.article_page_id)
+                    authors_media.append(a)
+            #authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).distinct().order_by(article_order)
 
         if search_query:
             if media_type == "videos":
@@ -227,23 +238,32 @@ class AuthorPage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(paginator.num_pages)
             context["current_page"] = paginator.num_pages
 
+        if media_type == "visuals" or "articles":
+            context['is_orderable'] = True
         context["paginated_articles"] = paginated_articles
 
         return context
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        
+        # For meta tags (see ubyssey.ca/ubyssey/templates/ubyssey/meta_tags.html)
+        context["self"].featured_media = self.image
+        context["self"].lede = self.bio_description
+
         media_types = []
-        if VideoSnippet.objects.all().count() > 0:
-            media_types.append("videos")
-        if UbysseyImage.objects.all().count() > 0:
-            media_types.append("photos")
-        if ArticlePage.objects.live().public().all().count() > 0:
-            media_types.append("articles")
+        
+        if ArticleAuthorsOrderable.objects.filter(author=self, author_role="author").exists():
+            media_types.append(("articles", "articles"))
+        if ArticleAuthorsOrderable.objects.filter(author=self).exclude(author_role="author").exists():
+            media_types.append(("visuals", "visuals"))
+        if UbysseyImage.objects.filter(author=self).exists():
+            media_types.append(("photos", "gallery"))
+        if VideoAuthorsOrderable.objects.filter(author=self).exists():
+            media_types.append(("videos", "videos"))
 
         context["media_types"] = media_types
         context["media_type"] = self.main_media_type
+        context["media_type_name"] = self.main_media_type.replace("-", " ")
 
         order = request.GET.get("order")
         if order == 'oldest':
@@ -260,14 +280,14 @@ class AuthorPage(RoutablePageMixin, Page):
         from urllib.parse import urlparse
         from django.utils.safestring import mark_safe
         
-        domainToIcon = {'www.tumblr.com': 'fa-tumblr',
-                        'www.instagram.com': 'fa-instagram',
-                        'twitter.com': 'fa-twitter',
-                        'www.facebook.com': 'fa-facebook',
-                        'www.youtube.com': 'fa-youtube-play',
-                        'www.tiktok.com': 'fa-tiktok',
-                        'www.linkedin.com': 'fa-linkedin',
-                        'www.reddit.com': 'fa-reddit'}
+        domainToIcon = {'www.tumblr.com': 'logo-tumblr',
+                        'www.instagram.com': 'logo-instagram',
+                        'twitter.com': 'logo-twitter',
+                        'www.facebook.com': 'logo-facebook',
+                        'www.youtube.com': 'logo-youtube',
+                        'www.tiktok.com': 'logo-tiktok',
+                        'www.linkedin.com': 'logo-linkedin',
+                        'www.reddit.com': 'logo-reddit'}
 
         for i in range(len(self.linkIcons)):
             del self.linkIcons[-1]
@@ -277,29 +297,29 @@ class AuthorPage(RoutablePageMixin, Page):
             domain = urlparse(url).netloc    
             extra = ""
             if domain in domainToIcon:
+                icon = domainToIcon[domain]
                 if domain == "www.linkedin.com":
                     username = self.full_name
                 else:
-                    icon = domainToIcon[domain]
                     if url[-1] == "/":
                         url = url[0:-1]
                     username = url.split("/")[-1]
                     username = username.replace("@","")
             else:
-                icon = "fa-globe"
+                icon = "globe"
                 try:
                     json = requests.get(urlparse(url).scheme + "://" + domain + "/api/v2/instance").json()
                     if 'source_url' in json:
                         if json['source_url']=='https://github.com/mastodon/mastodon':
-                            icon = "fa-brands fa-mastodon"    
+                            icon = "logo-mastodon"    
                             extra = "rel='me'"
                             username = url.split("/")[-1]
                             username = username.replace("@","")
                 except:
-                    icon = "fa-globe"
+                    icon = "globe"
                     username = domain
 
-            self.linkIcons.append(('raw_html', '<a ' + extra + 'class="social_media_links" href="'+url+'"><i class="fa ' + icon + ' fa-fw" style="font-size:1em;"></i>&nbsp;'+username+'</a>'))
+            self.linkIcons.append(('raw_html', '<a ' + extra + 'class="social_media_links" href="'+url+'"><ion-icon name="' + icon + '" style="font-size:1em;"></ion-icon>&nbsp;'+username+'</a>'))
             
         if self.last_activity == None:
             self.last_activity = self.first_published_at
@@ -334,6 +354,20 @@ class AuthorPage(RoutablePageMixin, Page):
         context["media_type"] = "articles"
 
         context = self.organize_media("articles", request, context)
+
+        return render(request, self.template, context)
+    
+    @route(r'^visuals/$')
+    def visuals_page(self, request, *args, **kwargs):
+        """
+        View function for author's stories
+        """
+
+        context = self.get_context(request, *args, **kwargs)
+
+        context["media_type"] = "visuals"
+
+        context = self.organize_media("visuals", request, context)
 
         return render(request, self.template, context)
     

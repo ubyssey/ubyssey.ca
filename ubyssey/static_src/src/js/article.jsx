@@ -1,30 +1,32 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Search from './components/Search.jsx';
-import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
-import { Galleries } from './components/Gallery'
+//import Search from './components/Search.jsx';
+//import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
+import { CookieDisclaimer } from './components/Cookies'
+//import { Galleries } from './components/Gallery'
 
 
 
-window.articleHeader = false;
+//window.articleHeader = false;
 
-const BOX_HEIGHT = 274
-const SKYSCRAPER_HEIGHT = 624
+//const BOX_HEIGHT = 274
+//const SKYSCRAPER_HEIGHT = 624
 
 $(function () {
-
+    /*
     ReactDOM.render(
         <AdblockSplash />,
         document.getElementById('adblock-splash')
     )
+    */
+
     ReactDOM.render(
         <CookieDisclaimer />,
         document.getElementById('cookie-disclaimer')
     )
-
-
+    
 });
-
+/*
 if ($('main.article').length) {
 
     const $article = $('article');
@@ -33,21 +35,23 @@ if ($('main.article').length) {
     var articleHeadline = $article.data('headline');
     var articleURL = $article.data('url');
 
-    var userId = $article.data('user-id');
+    // var userId = $article.data('user-id');
 
     var articleIds = $article.data('list');
-    var listName = $article.data('list-name');
+    // var listName = $article.data('list-name');
     if (articleIds === parseInt(articleIds, 10)) {
         articleIds = [articleIds];
     } else {
         articleIds = articleIds.split(',');
     }
-
-    var firstArticle = {
-        id: articleId,
-        headline: articleHeadline,
-        url: articleURL
-    };
+    
+    
+    //var firstArticle = {
+    //    id: articleId,
+    //    headline: articleHeadline,
+    //    url: articleURL
+    //};
+    
 
     function stickyAds(scrollTop, stickyElements) {
 
@@ -200,18 +204,19 @@ if ($('main.article').length) {
     ];
 
 
-
-    const gallery = ReactDOM.render(
-        <Galleries galleries={galleries} />,
-        document.getElementById('gallery')
-    );
+    
+    //const gallery = ReactDOM.render(
+    //    <Galleries galleries={galleries} />,
+    //    document.getElementById('gallery')
+    //);
+    
 
 
 }
 
-/*
-ReactDOM.render(
-    <Search />,
-    document.getElementById('search-form')
-);
+
+//ReactDOM.render(
+//    <Search />,
+//    document.getElementById('search-form')
+//);
 */

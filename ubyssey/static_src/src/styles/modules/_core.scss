@@ -203,7 +203,12 @@ h1, h2, h3 {
   line-height: 1.2;
 }
 
+h2, h3 {
+  font-weight: 600;
+}
+
 p{
+  margin: 1em 0;
   color: var(--text_color);
 }
 
@@ -222,7 +227,7 @@ html {
   transition: background 0.5s ease, color 0.5s ease;
 }
 
-html.lightmode {
+html[color-css-theme="light"] {
   --background-nav: rgba(255, 255, 255, 0.99);
   --background: white;
   --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
@@ -233,14 +238,14 @@ html.lightmode {
   --text_color: #1b1b1b;
   --header_color: black;
   --article_info: #777777;
-  --article_caption: #5A5A5A;
+  --article_caption: #{$color-ubyssey-blue-dark-3};
   --authors-title-bio: #1B1B1B;
   --archive-text: #4e4e4e;
   --article-publish: #2B2B2B;
   --pagination: #353535;
 }
 
-html.darkmode {
+html[color-css-theme="dark"] {
   --background-nav: #031723;
   --background: #031621;
   --nav-mobile-background-barely-transparent: #031723;
@@ -296,20 +301,13 @@ dialog {
 body { 
   background-color: var(--background);
   transition: background-color 0.5s ease, color 0.5s ease;
+  min-height: 100vh;
 }
 
 #content-wrapper {
   -webkit-overflow-scrolling: touch;
 }
 
-span.upper-right-decorator {
-  color: $color-ub-blue-light;
-  font-size: .8em;
-  position: relative;
-  top: -.8em;
-  font-family: $font-default;
-  text-transform: capitalize;
-}
 div.image-container {
     height: 100%;
     display: table;
@@ -323,23 +321,12 @@ div.image-inner {
     width: 100%;
 }
 
-p.slide-caption {
-    font-family: $font-default;
-    font-size: 13px;
-    color: #fff;
-    line-height: 19px;
-}
-
-p.slide-credit {
-		font-family: $font-default;
-		font-size: 13px;
-		color: #9c9c9c;
-		font-style: italic;
-}
-
 span.credit {
+  display: inline-block;
+  margin-left: 0.5em;
   font-style: italic;
-  color: #969696;
+  font-size: 0.9em;
+  color: $color-ubyssey-blue;
 }
 
 img.slide-image {
@@ -369,6 +356,11 @@ div.navigation a:hover {
 
 .no-scroll {
     overflow: hidden;
+}
+
+.u-no-scroll {
+  // Func: Disable scrolling
+  overflow-y: hidden;
 }
 
 a.image {
@@ -414,11 +406,6 @@ a.image {
 .show {
 	display: block;
 }
-/* Restoring browsering effects */
-
-.floating-share-buttons {
-  size: 4px;
-}
 
 .js-dropdown-container{
   position: fixed;
@@ -435,3 +422,16 @@ a.image {
   cursor: pointer;
 }
 
+ion-icon {
+  margin-bottom: -0.1em;
+}
+
+.spin {
+  animation: spin 0.5s infinite;
+  font-size: 25px;
+}
+
+@keyframes spin {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(359deg);}
+}

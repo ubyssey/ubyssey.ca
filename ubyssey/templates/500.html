@@ -14,14 +14,14 @@
 {% endblock %}
 
 {% block stylesheet %}
-<link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'ubyssey/css/error-page.css' %}" type="text/css" />
 {% endblock %}
 
 {% block content %}
 <main class="500">
     <div class="error-page">
         <a class="top-logo" href="{% url 'wagtail_serve' '' %}">
-            <img src="{% static 'ubyssey/images/ubyssey-logo-small.svg' %}" alt="Ubyssey Logo">
+            <img src="{% static 'ubyssey/images/logos/ubyssey-logo-blue-light.svg' %}" alt="Ubyssey Logo">
         </a>
         <div class="center-container">
             <h1>500</h1>

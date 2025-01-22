@@ -1,3 +1,4 @@
+{% comment%} This is not actively in use for the 2020guide {% endcomment %}
 {% extends 'guide/2020/base.html' %}
 {% block content %}
 <main id="article-{{ article.parent_id }}" class="article">
@@ -67,5 +68,7 @@
     {% endfor %}
   </div>
 </main>
-{% endblock %}
 </main>
+{% endblock %}
+{% block footernav%}
+{% endblock %}

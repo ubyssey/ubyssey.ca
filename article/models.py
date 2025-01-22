@@ -7,7 +7,7 @@ from images.models import GallerySnippet
 from dbtemplates.models import Template as DBTemplate
 
 from django.db import models
-from django.db.models import fields
+from django.db.models import fields, Q
 from django.db.models.fields import CharField
 from django.shortcuts import render
 from django.db.models.query import QuerySet
@@ -44,7 +44,7 @@ from wagtail.admin.panels import (
 )
 
 from wagtail import blocks
-from wagtail.fields import StreamField
+from wagtail.fields import StreamField, RichTextField
 from wagtail.models import Page, PageManager, Orderable
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
@@ -168,6 +168,7 @@ class ArticleAuthorsOrderable(Orderable):
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
                             ('videographer','Videographer'),
+                            ('designer','Designer'),
                             ('org_role', 'Show organization role'),
                         ],
                     ),
@@ -266,6 +267,8 @@ class ArticleFeaturedMediaOrderable(Orderable):
 
     caption = models.TextField(blank=True, null=False, default='')
     credit = models.TextField(blank=True, null=False, default='')
+    alt_text = models.TextField(blank=True, null=False, default='',
+        help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
     # style = models.CharField(max_length=255, blank=True, null=False, default='')
     # width = models.CharField(max_length=255, blank=True, null=False, default='')
     image = models.ForeignKey(
@@ -295,6 +298,7 @@ class ArticleFeaturedMediaOrderable(Orderable):
             [
                 FieldPanel("caption"),
                 FieldPanel("credit"),
+                FieldPanel("alt_text"),
             ],
             heading="Caption/Credits",
         ),
@@ -476,7 +480,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('dropcap', blocks.TextBlock(
                 label = "Dropcap Block",
                 template = 'article/stream_blocks/dropcap.html',
-                help_text = "DO NOT USE - Legacy block. Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
+                help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
             )),
             ('video', video_blocks.OneOffVideoBlock(
                 label = "Credited/Captioned One-Off Video",
@@ -531,7 +535,38 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         null=True,
         on_delete=models.SET_NULL,
     )
-    tags = ClusterTaggableManager(through='article.ArticlePageTag', blank=True)
+    tags = ClusterTaggableManager(
+        through='article.ArticlePageTag', 
+        blank=True, 
+        related_name='tags', 
+        help_text="Tags entered here will be listed in the tag page at '/tag/tag-name'",
+        verbose_name="Tags")
+    primary_tag_slug = models.CharField(
+        null=True,
+        blank=True,
+        default='',
+        max_length=255,
+        help_text="IF USED, SHOULD ALSO BE IN TAGS FIELD. Enter the slug of the tag to be used for linking at the end of the article. For example, the slug of the tag 'blue chip' is 'blue-chip'.",
+    )
+    tag_page_link = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="Check this box if you want to add a link to the tag page.",
+    )
+    filter_by_tags = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="Check this box if you want to filter suggested articles by tag.",
+    )
+
+    disclaimer = RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        help_text = "Used for Opinion articles or when corrections are made"
+    )
 
     # template #TODO
 
@@ -612,12 +647,21 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         max_length=255,
     )
 
-    fw_optional_subtitle = models.CharField(
+    subtitle = models.CharField(
         null=False,
         blank=True,
         default='',
         verbose_name='Subtitle (Optional)',
-        help_text="When there is a \"special feature\" or full-width style article, sometime we want to add a subtitle alongside the title",
+        help_text="Displayed below the title",
+        max_length=255,
+    )
+
+    title_tag = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Title Tag (Optional)',
+        help_text="This appears above the title. It mimics the title tags in the print issue.",
         max_length=255,
     )
     
@@ -698,6 +742,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return "article/article_page_magazine_2024.html"
         elif self.layout == 'spoof-2024':
             return "article/article_page_spoof_2024.html"
+        elif self.layout == 'guide-2024':
+            return "article/article_page_guide_2024.html"
+        elif self.layout == 'science-2024':
+            return "article/article_page_supplement_2024_science.html"
+        elif self.layout == 'femme-2024':
+            return "article/supplements/article_page_supplement_2024_femme.html"
+        elif self.layout == 'nocturne-2024':
+            return "article/supplements/article_page_supplement_2024_nocturne.html"
 
         return "article/article_page.html"
 
@@ -740,6 +792,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 # FieldPanel("section"),
                 FieldPanel("category"),
                 FieldPanel("tags"),
+                FieldPanel("primary_tag_slug"),
+                FieldPanel("tag_page_link"),
+                FieldPanel("filter_by_tags"),
             ],
             heading="Categories and Tags",
             classname="collapsible",
@@ -749,6 +804,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 InlinePanel("featured_media", label="Featured Image or Video"),
             ],
             heading="Featured Media",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("disclaimer")
+            ],
+            heading="Disclaimer",
             classname="collapsible",
         ),
     ] + UbysseyMenuMixin.menu_content_panels # content_panels
@@ -817,6 +879,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                             ('guide-2023', 'Guide (2023 style)'),
                             ('magazine-2024', 'Magazine (2024 style)'),
                             ('spoof-2024', 'Spoof (2024 style)'),
+                            ('guide-2024', 'Guide (2024 style)'),
+                            ('science-2024', 'Science Supplement (2024)'),
+                            ('femme-2024', 'Femme Culture Special Issue (2024)'),
+                            ('nocturne-2024', 'Nocturne Features Supplement (2024)'),
                         ],
                     ),
                 ),
@@ -832,14 +898,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     widget=Select(
                         choices=[
                             ('right-image', 'Right Image'),
+                            ('bottom-image', 'Bottom Image'),
+                            ('left-image', 'Left Image'),
                             ('top-image', 'Top Image'),
                             ('banner-image', 'Banner Image')
                         ],
                     ),
                     help_text='This field is used to set variations on the \"Full-Width Story\" and similar layouts.',
                 ),
+                FieldPanel('title_tag'),
                 FieldPanel('fw_alternate_title'),
-                FieldPanel('fw_optional_subtitle'),
+                FieldPanel('subtitle'),
                 FieldPanel('fw_above_cut_lede'),
             ],
             heading = "Optional Header/Banner Fields",
@@ -921,7 +990,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     search_fields = Page.search_fields + [
         index.SearchField('lede'),
         index.AutocompleteField('lede'),
-        index.SearchField('content'),
         index.SearchField('seo_keyword', boost=1.5),
         index.AutocompleteField('seo_keyword'),
         index.SearchField('tags'),
@@ -953,6 +1021,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         All the below code occurs after the user submits a request and before they receive it.
         Therefore, keep the length of this method to a minimum; otherwise users will be kept waiting
         """
+        from taggit.models import Tag
+
         context = super().get_context(request, *args, **kwargs)
 
         user_agent = get_user_agent(request)
@@ -975,6 +1045,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         context["suggested"] = self.get_suggested()
 
+        if self.tag_page_link and self.primary_tag_slug:
+            context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
+
         return context
 
 
@@ -991,11 +1064,21 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return article_author.author.full_name
 
         if not authors_list:
-            authors = list(map(format_author, self.article_authors.all()))
-        else:
-            authors = list(map(format_author, authors_list))
-           
+            authors_list = self.article_authors.all()
 
+        # Create a set to track unique author names and filter duplicates
+        seen_authors = set()
+        unique_authors = []
+        
+        # Ensuring duplicate authors are not added to the author list
+        for article_author in authors_list:
+            author_name = article_author.author.id
+            if author_name not in seen_authors:
+                seen_authors.add(author_name)
+                unique_authors.append(article_author)
+
+        authors = list(map(format_author, unique_authors))
+           
         if not authors:
             return ""
         elif len(authors) == 1:
@@ -1026,74 +1109,154 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         return authors_list
     authors_in_order = property(fget=get_authors_in_order)
-    
+
+    def get_authors_in_order_for_author_cards(self):
+        AUTHOR_TYPES = ["org_role", "author", "photographer", "illustrator", "videographer"]
+        authors = self.article_authors.all()
+
+        authors_dict = {}
+
+        for author_type in AUTHOR_TYPES:
+            for author in authors:
+                author_id = author.author.id
+                author_role = author.author_role
+
+                if author_role == author_type:
+                    if author_id not in authors_dict:
+                        # Create the author dictionary containing author object and authors multiple roles
+                        authors_dict[author_id] = {
+                            'author': author,
+                            'roles': [author_role]
+                        }
+                    else:
+                        # If the author is already in the dict, just append the role
+                        if author_role not in authors_dict[author_id]['roles']:
+                            authors_dict[author_id]['roles'].append(author_role)
+
+        return authors_dict
+
+    authors_in_order_for_cards = property(fget=get_authors_in_order_for_author_cards)
 
     def get_authors_with_roles(self) -> str:
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
 
-        authors_with_roles = ''
-        string_written = ''
-        string_photos = ''
-        string_author = ''
-        string_videos = ''
-
-        authors = dict((k, list(v)) for k, v in groupby(self.article_authors.all(), lambda a: a.author_role))
-        for author in authors:
-            if author == 'author':
-                authors_with_roles += 'Written by ' + self.get_authors_string(links=True, authors_list=authors['author'])
-            if author == 'photographer':
-                string_photos += 'Photos by ' + self.get_authors_string(links=True, authors_list=authors['photographer'])
-            if author == 'illustrator':
-                string_author += 'Illustrations by ' + self.get_authors_string(links=True, authors_list=authors['illustrator'])
-            if author == 'videographer':
-                string_videos += 'Videos by ' + self.get_authors_string(links=True, authors_list=authors['videographer'])
-        if string_written != '':
-            authors_with_roles += string_written # Unneccessary if statement
-        if string_photos != '':
-            authors_with_roles += ', ' + string_photos
-        if string_author != '':
-            authors_with_roles += ', ' + string_author
-        if string_videos != '':
-            authors_with_roles += ', ' + string_videos
-        return authors_with_roles
+        role_types_words = {
+            'author': 'Words by ',
+            'photographer': 'Photos by ',
+            'illustrator': 'Illustrations by ',
+            'videographer': 'Videos by ',
+            'designer': 'Design by ',
+        }
+        role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
+        authors_with_roles = []
+        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
+            if k=='org_role':
+                authors_with_roles.append([k, ",".join( map(lambda a: ' ' + a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]) , list(v)))])
+            else:
+                authors_with_roles.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=list(v))])
+        authors_with_roles.sort(key=lambda s: role_types.index(s[0]))
+        return ', '.join(map(lambda a: a[1], authors_with_roles))
     authors_with_roles = property(fget=get_authors_with_roles)
  
-    def get_category_articles(self, order='-first_published_at') -> QuerySet:
+    def get_authors_split_out_visual_bylines(self) -> str:
+        """Returns list of authors as a comma-separated string
+        sorted by author type (with 'and' before last author)."""
+
+        role_types_words = {
+            'author': 'Words by ',
+            'photographer': 'Photos by ',
+            'illustrator': 'Illustrations by ',
+            'videographer': 'Videos by ',
+            'designer': 'Design by ',
+        }
+        role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
+        writers = []
+        visuals = []
+        word_authors = []
+        visual_authors = []
+        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
+            v = list(v)
+            if k=='org_role' or k=='author':
+                for author in v:
+                    word_authors.append(author.author)
+                writers = writers + v
+            else:
+                for author in v:
+                    visual_authors.append(author.author)
+                visuals.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=v)])
+        visuals.sort(key=lambda s: role_types.index(s[0]))
+
+        visual_only_author = False
+        for visual_author in visual_authors:
+            if not visual_author in word_authors:
+                visual_only_author = True
+                break
+
+        writers = self.get_authors_string(links=True, authors_list=list(writers))
+
+        if len(visuals) > 0 and visual_only_author:
+            visuals = ', ' + ', '.join(map(lambda a: a[1], visuals))
+        else:
+            visuals = ''
+
+        return writers + visuals
+    authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
+
+    def get_category_articles(self, order='-first_published_at', max=False) -> QuerySet:
         """
         Returns a list of articles within the Article's category
         """
         category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)
-
+        if max:
+            return category_articles[:max]
         return category_articles
     
-    def get_section_articles(self, order='-first_published_at') -> QuerySet:
+    def get_section_articles(self, order='-first_published_at', max=10) -> QuerySet:
         """
         Returns a list of articles within the Article's section
         """
 
-        section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)
+        section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)[:max]
         
         return section_articles
+    def get_articles_by_tag(self, order='-first_published_at', max=10) -> QuerySet:
+        """
+        Returns a list of articles with the same tags as the current article
+        """
+        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
+        return articles_by_tag
 
-    def get_suggested(self, number_suggested=6):
+    def get_suggested(self, number_suggested=3):
         """
         Defines the title and articles in the suggested box
         """
+        from taggit.models import Tag
         suggested = {}
-        if self.category != None:
-            category_articles = self.get_category_articles()
-            if len(category_articles) > 0:
+        if self.filter_by_tags:
+            articles_by_tag = self.get_articles_by_tag(max=number_suggested)
+            if len(articles_by_tag) > 0:
+                tag = Tag.objects.get(slug=self.primary_tag_slug)
                 suggested = {}
-                suggested['title'] = "From " + self.get_parent().title + " - " + self.category.title
-                suggested['articles'] = category_articles[:number_suggested]
+                suggested['title'] = "'" + tag.name + "'"
+                suggested['articles'] = articles_by_tag[:number_suggested]
+                suggested['link'] = "/tag/" + tag.slug
+        if not suggested:
+            if self.category != None:
+                category_articles = self.get_category_articles(max=number_suggested)
+                if len(category_articles) > 0:
+                    suggested = {}
+                    suggested['title'] = self.category.title
+                    suggested['articles'] = category_articles[:number_suggested]
+                    suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
 
         if not suggested:
-            section_articles = self.get_section_articles()
+            section_articles = self.get_section_articles(max=number_suggested)
             if len(section_articles) > 0:
                 suggested = {}
-                suggested['title'] = "From " + self.get_parent().title
+                suggested['title'] = self.get_parent().title
                 suggested['articles'] = section_articles[:number_suggested]
+                suggested['link'] = self.get_parent().url
         
         if not suggested:
             suggested = False

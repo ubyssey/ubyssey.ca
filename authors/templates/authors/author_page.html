@@ -24,14 +24,14 @@
 		<div class="author-header">
 			{% if self.image %}
 				{% image self.image width-350 format-webp as pfp %}
-				<div class="author-img" style="background-image: url('{{pfp.full_url}}')"></div>
+				<div class="author-img" style="background-image: url('{{pfp.full_url}}')" aria-label="{{ self.title }}"></div>
 			{% endif %}
 			<div class="author-info">
 				<h1 class="author-name">{{ self.title }}</h1>
 				<h2 class="author-role"> {{self.ubyssey_role}} </h2>
 				{% if self.bio_description %}<p class="author-desc">{{ self.bio_description|safe }}</p>{% endif %}
 				<p class="author-links">
-					<a class="social_media_links" href="/authors/{{self.slug}}/rss"><i class="fa fa-rss fa-fw" style="font-size:1em;"></i>&nbsp;rss</a>
+					<a class="social_media_links" href="/authors/{{self.slug}}/rss"><ion-icon name="logo-rss" style="font-size:1em;"></ion-icon>&nbsp;rss</a>
 					{% for icon in self.linkIcons %}
 						{{icon}}
 					{% endfor %}
@@ -44,28 +44,20 @@
 			<div class="author-pinned_list">
 				{% for article in self.pinned_articles.all %}
 					<div class="author-pinned_article">	
-						{% include 'article/objects/author_pinned.html' with article=article.article %}
+						{% include 'article/objects/suggested_article.html' with article=article.article %}
 					</div>
 				{% endfor %}
 			</div>
 		{% endif %}
 		
-		<div class="options">
-			{% if "articles" in media_types %}
-				<h2 class="author-heading {% if media_type == "articles" %}selected{% endif %}"><a href="/authors/{{self.slug}}/articles">Articles</a></h2>
-			{% endif %}
-			{% if "photos" in media_types %}
-				<h2 class="author-heading {% if media_type == "photos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/photos">Photos</a></h2>
-			{% endif %}
-			{% if "videos" in media_types %}
-				<h2 class="author-heading {% if media_type == "videos" %}selected{% endif %}"><a href="/authors/{{self.slug}}/videos">Videos</a></h2>
-			{% endif %}
+		<div class="options" id="results">
+			{% for type in media_types %}
+				<h2 class="author-heading {% if media_type == type.0 %}selected{% endif %}"><a href="/authors/{{self.slug}}/{{type.0}}/#results">{{type.1}}</a></h2>
+			{% endfor %}
 		</div>
 
-		<h2 class="author-heading">Latest {{media_type}} from {{self.title}}</h2>
-		
-		{% if media_type == "articles" %}
-			{% include 'archive/objects/archive.html' with page_obj=paginated_articles %}
+		{% if media_type == "articles" or media_type == "visuals" %}
+			{% include 'archive/objects/archive.html' with page_obj=paginated_articles current_page_articles=current_page_articles %}
 		{% elif media_type == "photos" %}
 			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
 		{% elif media_type == "videos" %}

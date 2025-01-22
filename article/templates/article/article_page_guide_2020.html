@@ -9,7 +9,7 @@
         {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=2 article=self.id %}
         {% with self.featured_media.first as featured_image_object %}
             {% image featured_image_object.image original as featured_image %}
-            <div class="c-banner c-banner--welcome" style="background-image: url('{{ featured_image.url }}');">
+            <div class="c-banner c-banner--welcome" style="background-image: url('{{ featured_image.url }}'); {{ featured_image.background_position_style }};" aria-label="{{featured_image_object.alt_text}}">
                 <div class="c-banner__container">
                     <div class="c-banner--welcome__inner">
                         <p class="c-banner--welcome__snippet">{{ self.title }}</p>
@@ -19,8 +19,6 @@
                             {{ featured_image_object.credit }}
                         {% endif %}
                     </div>
-                    {% include 'article/objects/share_bar.html' %}
-                    {% comment %} TODO: address weird field {% endcomment %}
                     {% if article.template_fields.banner_quote and article.template_fields.banner_quote != ' ' %}
                         {% comment %} TODO address "subsection" context variable use {% endcomment %}
                         <div id='quote-top' class="c-welcome-article __{{ subsection }}"> 
@@ -91,4 +89,6 @@
             </main>
         {% endwith %}        
     </main>
+{% endblock %}
+{% block footernav%}
 {% endblock %}

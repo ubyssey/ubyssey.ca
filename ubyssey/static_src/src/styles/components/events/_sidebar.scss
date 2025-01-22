@@ -1,0 +1,56 @@
+.events-sidebar {
+    border: 1px solid;
+    padding: 0 1em;
+    border-radius: 0.5em;
+
+    h2, h3 {
+        font-family: noto-serif;
+        font-size: 1.17em;
+    }
+    p {
+        color: inherit;
+    }
+    .featured_event {
+        &:hover * {
+            color: $color-ubyssey-blue;
+        } 
+        .featured_event__time {
+            margin-bottom: 0;
+            text-decoration: underline;
+        }
+        .featured_event__title {
+            margin-top: 0;
+        }
+    }
+    ul {
+        padding: 0;
+        list-style: none;
+        li {
+            white-space: nowrap;
+            overflow: clip;
+            text-overflow: ellipsis;
+        }
+    }
+    .see_more {
+        font-size: 0.8em;
+        text-decoration: underline;
+    }
+}
+
+[color-css-theme="dark"] .events-sidebar {
+    color: $color-ubyssey-blue-light;
+    border-color: #5b7480;
+
+    h2, h3 {
+        color: white;
+    }
+}
+
+[color-css-theme="light"] .events-sidebar {
+    color: #3b3b3b;
+    border-color: #c2c2c2;
+
+    h2, h3 {
+        color: #222;
+    }
+}

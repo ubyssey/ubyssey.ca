@@ -134,6 +134,10 @@ DATABASES = {
         'USER': env('SQL_USER'),
         'PASSWORD': env('SQL_PASSWORD'),
         'PORT': '3306',
+        "OPTIONS": {
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_0900_ai_ci",
+        },
     },
 }
 
@@ -159,6 +163,8 @@ INSTALLED_APPS = [
     'navigation',
     'dashboard',
     'infinitefeed',
+    'events',
+    'tests_ubyssey',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
@@ -193,6 +199,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'django_user_agents',
     'django.contrib.admin',
     'django_extensions',
@@ -268,9 +275,10 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'UNICODE_JSON': True,
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 20,
     'DATETIME_INPUT_FORMATS': ['iso-8601']
 }
 

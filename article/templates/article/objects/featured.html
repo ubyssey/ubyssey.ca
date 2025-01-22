@@ -10,14 +10,14 @@
 	{% if article.featured_media.first.image %}
 	<div class="o-article__left">
 		<a class="o-article__image" href="{% pageurl article %}">
-			{% image article.featured_media.first.image fill-340x238-c100 %}
+			{% image article.featured_media.first.image fill-340x238-c100 alt=article.featured_media.first.alt_text %}
 		</a>
 	</div>
 	{% elif article.featured_media.first.video %}
 	<div class="o-article__left">
 		<a class="o-article__image" href="{% pageurl article %}">
 			<img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg"
-				width=300 alt="" />
+				width=300 alt="{{article.featured_media.first.alt_text}}" />
 		</a>
 	</div>
 	{% endif %}

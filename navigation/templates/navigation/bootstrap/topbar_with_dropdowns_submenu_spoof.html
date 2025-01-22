@@ -9,7 +9,7 @@
 <div class="menu">
 
   <a href="#" class="close-modal">
-    <i class="fa fa-close"></i>
+    <ion-icon name="close-circle"></ion-icon>
   </a>
   <p>{{item.text}}</p>
   <ul id="article-list-{{item.text}}" class="article-carousel">
@@ -19,7 +19,7 @@
         {% if item.featured_media.first %}
           {% if item.featured_media.first.image %}
             <div class="o-article__image">
-              {% image item.featured_media.first.image fill-250x250-c100 format-webp %}
+              {% image item.featured_media.first.image fill-250x250-c100 format-webp alt=item.featured_media.first.alt_text %}
             </div>
           {% elif item.featured_media.first.video %}
             <div class="o-article__image" style="background-image: url('http://img.youtube.com/vi/{{ item.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></div>
@@ -31,10 +31,10 @@
     {% endfor %}
   </ul>
   <a href="#" id="left-{{item.text}}" class="scroll-arrow">
-    <i class="fa-solid fa-chevron-left"></i>
+    <ion-icon name="chevron-back"></ion-icon>
   </a>
   <a href="#" id="right-{{item.text}}" class="scroll-arrow">
-    <i class="fa-solid fa-chevron-right"></i>
+    <ion-icon name="chevron-forward"></ion-icon>
   </a>
 </div>
 

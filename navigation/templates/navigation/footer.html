@@ -2,23 +2,59 @@
 {% load cache %}
 {% load menu_tags %}
 <footer>
-    <div class="u-container{% if homepage %} u-container--large{% endif %}">
+    <div class="u-container u-container--large">
 
-        <a class="home-link" href="{% url 'wagtail_serve' '' %}"><img class="logo" src="{% static 'ubyssey/images/ubyssey-logo-small-grey.svg' %}" alt=""/></a>
-        <div class="funding light-logo"><img class="logo" src="{% static 'ubyssey/images/canada-funding-light.png' %}" alt=""/></div>
-        <div class="funding dark-logo"><img class="logo" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" alt=""/></div>
-        <nav>
-            <div class="top-row">
-                <ul class="sections">
+        <div class="about">
+            <div class="footer-branding">
+                <img class="logo mobile" src="{% static 'ubyssey/images/ubyssey-logo-blue.svg' %}" alt="The Ubyssey"/>
+                <img class="logo desktop" src="{% static 'ubyssey/images/logos/ubyssey-logo-blue-dark.svg' %}" alt="The Ubyssey"/>
+                <img class="funding mobile" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada"/>
+                <p>
+                    <b><i>The Ubyssey</i></b> has been the definitive source of news on campus since 1918. Published by an independent non-profit society, written and 
+                    edited by students and funded by a combination 
+                    of student fees and advertising, we cover what 
+                    matters most to the UBC community.
+                </p>
+                <img class="funding desktop" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada"/>
+                <p>Have feedback? Email <a href="mailto:feedback@ubyssey.ca" title="Email address for feedback">feedback@ubyssey.ca</a>.</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-links-section">
+                    <h3>Sections</h3>
                     {% main_menu show_multiple_levels=False apply_active_classes=False %}
-                </ul>
-            </div>
-            <div class="bottom-row">
-                <ul class="pages">
+                </div>
+                <div class="footer-links-section">
+                    <h3>Stay in the loop</h3>
+                    <ul>
+                        <li><a href="/rss" target="_blank" title="Rss feed">Rss feed</a></li>
+                        <li><a href="/newsletter" target="_blank" title="Newsletter">Newsletter</a></li>
+                        <li><a href="https://discord.gg/aTkCjyAvxh" target="_blank" title="Discord link">Join the Discord</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links-section">
+                    <h3>Social media</h3>
+                    <ul>
+                        <li><a href="https://bsky.app/profile/ubyssey.ca" target="_blank" title="The Ubyssey on Bluesky">Bluesky</a></li>
+                        <li><a href="https://www.instagram.com/ubyssey/" target="_blank" title="The Ubyssey on Instagram">Instagram</a></li>
+                        <li><a href="https://www.tiktok.com/@ubyssey" target="_blank" title="The Ubyssey on Tiktok">TikTok</a></li>
+                        <li><a href="https://www.facebook.com/ubyssey" target="_blank" title="The Ubyssey on Facebook">Facebook</a></li>
+                        <li><a href="https://twitter.com/Ubyssey" target="_blank" title="The Ubyssey on X">X</a></li>
+
+                    </ul>
+                </div>
+                <div class="footer-links-section">
+                    <h3>Explore</h3>
                     {% flat_menu 'second_footer_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-                </ul>
+                </div>
             </div>
-        </nav>
+        </div>
+        <div class="land-acknowledgement">
+            <h3>Land Acknowledgement</h3>
+            <p>
+                <i>The Ubyssey</i> acknowledges we operate on the traditional, ancestral and stolen territories of the Coast Salish peoples including the xʷməθkʷəy̓əm (Musqueam), Sḵwx̱wú7mesh Úxwumixw (Squamish) and səlilwətaɬ (Tsleil-Waututh) nations. <a href="https://ubyssey.ca/pages/about/">Read More</a>.
+            </p>
+        </div>
         <div class="copyright">&copy; {% now "Y" %} The Ubyssey</div>
     </div>
 </footer>

@@ -3,6 +3,7 @@ from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views import defaults as default_views
+from django.views.generic.base import TemplateView
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
@@ -14,11 +15,15 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
+from events.views import update_events, create_ical, EventsFeed, EventsViewSet
+from events.urls import urlpatterns as events_urls
 
 from infinitefeed.views import infinitefeed
 
 from newsletter.urls import urlpatterns as newsletter_urls
 from django.conf.urls import handler500
+
+from rest_framework import routers
 
 handler500 = 'ubyssey.views.main.custom_500'
 
@@ -27,6 +32,8 @@ tag = TagPage()
 
 urlpatterns = []
 
+api = routers.DefaultRouter()
+api.register(r'events', EventsViewSet)
 
 if settings.DEBUG:
     import debug_toolbar
@@ -46,6 +53,9 @@ urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
+    # Special design articles
+    re_path(r'^features/how-substance-use-impacts-queer-students', TemplateView.as_view(template_name='article/queer-substance-abuse.html')),
+    re_path(r'^features/window-watching', TemplateView.as_view(template_name='article/nocturne-window-watching.html')),
     # re_path(r'^culture/special/self-isolation/', IsolationView.as_view(), name='special-isolation'),
     # re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
     # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
@@ -59,8 +69,10 @@ urlpatterns += [
     re_path(r'^newsletter/', include(newsletter_urls)),
 
     # Events
-    # re_path(r'^events/', include(events_urls)),
-    # re_path(r'^api/events/', include(event_api_urls)),
+    re_path(r'^events/$', include(events_urls)),
+    re_path(r'^events/ical/$', create_ical, name="events_ical"),
+    re_path(r'^events/rss/$', EventsFeed(), name='events-feed'),  
+    re_path(r'^api/', include(api.urls)),
 
     # Tag
     re_path(r'^tag/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  
@@ -70,6 +82,7 @@ urlpatterns += [
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
 
     # Cron job
+    re_path(r'^cron/update-events/$', update_events, name='update_events'),
     re_path(r'^cron/publish-scheduled/$', publish_scheduled, name='publish_scheduled'),
 
     # Wagtail

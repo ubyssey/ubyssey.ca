@@ -91,12 +91,13 @@
 }
 .main {
   .dark-mode-switcher{
-    padding: 13px 4px 4px 4px;
+    padding: 0 4px 4px 4px;
+    margin-top: -0.385em;
   }
 }
 .right {
   .dark-mode-switcher{
-    margin-left: 1em;
+    margin-left: 0.75em;
     color: var(--header_color);
   }
 }
@@ -105,9 +106,11 @@
   .toggle-container {
     display: inline-block;
     width: 100%;
+    margin-top: 1em;
     .dark-mode-switcher{
       float: left;
       display: block;
+      margin-left: 0;
       color: var(--header_color);
     }
   }

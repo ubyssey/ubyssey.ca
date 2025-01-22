@@ -7,8 +7,20 @@ from wagtail.images.blocks import ImageChooserBlock
 
 class AudioBlock(blocks.StructBlock):
     caption =  blocks.CharBlock(required=False)
-    audio = DocumentChooserBlock(required=True, help_text="Must be mp3 format")
-
+    audio = DocumentChooserBlock(required=True, help_text="File format: .m4a, .mp4, .mp, .wav, or .ogg")
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        if value['audio'].url[-4:] == '.wav':
+            context['self'].format = 'wav'
+        if value['audio'].url[-4:] == '.mp3':
+            context['self'].format = 'mpeg'
+        if value['audio'].url[-4:] == '.ogg':
+            context['self'].format = 'ogg'
+        else:
+            context['self'].format = 'mp4'
+        return context
+    
     class Meta:
         template = 'article/stream_blocks/audio.html',
         icon = "media"
@@ -16,7 +28,20 @@ class AudioBlock(blocks.StructBlock):
 class PullQuoteBlock(blocks.StructBlock):
     content = blocks.CharBlock(required=True)
     source =  blocks.CharBlock(required=False)
-    audio = DocumentChooserBlock(required=False, help_text="optional, must be mp3 format")
+    audio = DocumentChooserBlock(required=False, help_text="Optional, file format: .m4a, .mp4, .mp, .wav, or .ogg")
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        if value['audio']:
+            if value['audio'].url[-4:] == '.wav':
+                context['self'].format = 'wav'
+            if value['audio'].url[-4:] == '.mp3':
+                context['self'].format = 'mpeg'
+            if value['audio'].url[-4:] == '.ogg':
+                context['self'].format = 'ogg'
+            else:
+                context['self'].format = 'mp4'
+        return context
 
     class Meta:
         template = 'article/stream_blocks/quote.html',

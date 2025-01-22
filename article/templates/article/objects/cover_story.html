@@ -7,11 +7,11 @@
 <article class="o-article o-article--coverstory{% if padded %} o-article--padded{% endif %}">
   {% if not hide_image and article.featured_media.first.image or article.featured_media.first.video or article.featured_media.file %}
   <div class="o-article__left">
-    <a class="o-article__image" href={% pageurl article %}>
+    <a class="o-article__image" href={% pageurl article %} >
       {% if article.featured_media.first.image %}
-       {% image article.featured_media.first.image width-1320 format-webp %}
+       {% image article.featured_media.first.image width-1320 format-webp alt=article.featured_media.first.alt_text %}
       {% elif article.featured_media.first.video %}
-        <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
+        <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg" alt="{{article.featured_media.first.alt_text}}"/>
       {% else %}
         {% image article.featured_media width-1320 format-webp %}
       {% endif %}
@@ -19,13 +19,15 @@
   </div>
   {% endif %}
   <div class="o-article__right">
-    <mark class="o-article__headline">
-      <a href="{% pageurl article %}">{{ article.title|safe }}</a>
-    </mark>
+    <div class="o-article__headline">
+      <mark id="coverstory" >
+        <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+      </mark>
+    </div>
     <div class="o-article__meta">
       <p class="o-article__snippet">{% if article.lede %}{{article.lede|safe}}{% else %}{{article.search_description|safe}}{% endif %}</p>
       <div class="o-article__byline">
-        <span class="o-article__author">{% if article.get_authors_with_urls %}{{article.get_authors_with_urls|safe }}{% else %}Ubyssey Staff{% endif %}</span>
+        <span class="o-article__author">{% if article.get_authors_split_out_visual_bylines %}{{article.authors_split_out_visual_bylines |safe }}{% else %}Ubyssey Staff{% endif %}</span>
         <span> &nbsp;&nbsp; </span>
         <a href="{{article|get_section_link}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article|get_section_title}}</a>
         <span> &nbsp;&nbsp; </span>

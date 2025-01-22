@@ -26,6 +26,7 @@
     // Text
     color: white;
     h3 {
+      color: white;
       margin-top: 0;
     }
     .c-row {
@@ -38,6 +39,8 @@
       .c-button {
         // Structure
         margin: 0;
+        border: none;
+        padding: 0.5em 1em;
 
         // Background
         background-color: white;
@@ -45,6 +48,8 @@
         // Text
         font-size: 1rem;
         color: $color-accent-blue;
+
+        cursor: pointer;
   
         &:hover {
           // Background
@@ -57,6 +62,7 @@
 
       p {
         margin: 0 0 15px 0;
+        color: white;
       }
   
       a {

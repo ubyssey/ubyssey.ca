@@ -3,38 +3,41 @@
     It was seperated out to try to make the code more readable
 {% endcomment %}
 <div class="headline-container">
-    {% if self.header_layout == 'right-image' %}
-        {% comment %} Odd choice of class names in this div. Should check the corresponding CSS {% endcomment %}
-        <h1 class="headline">
-            {{ self.title |safe }}
-            
-        </h1>
-	{% elif self.header_layout == 'top-image' %}
-        <h1 class="o-headline o-headline--article">
-            {{ self.title|safe }}
-        </h1>
+    <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
+
+    {% if self.title_tag %}
+        <p class="title-tag">{{self.title_tag}}//</p>
+    {% elif self.category %}
+        <p class="title-tag">{{self.category.title}}//</p>
     {% endif %}
+
+    <header>
+        <h1 class="o-headline o-headline--article">
+            {% if self.fw_alternate_title %}
+                {{self.fw_alternate_title|safe}}
+            {% else %}
+                {{ self.title|safe }}
+            {% endif %}
+        </h1>
+
+        {% if self.subtitle %}
+            <p class="subtitle">{{self.subtitle|safe}}</p>    
+        {% endif %}
+    </header>
+
 	{% if self.fw_above_cut_lede %}
 		<p class="fw-description">{{ self.fw_above_cut_lede }}</p>
 	{% endif %}
 
     <div class="c-article__info">
-        {% comment %}
-            {% include 'objects/social-icons.html' with article=article layout='top' %}
-        {% endcomment %}
-            
-        <div class="c-fw_authors_info">
-            {% include "article/objects/author_bio.html" %}
-        </div>
-        
+        <p class="author-string">{{self.authors_with_roles |safe }}</p>
     </div>
 
+    {% comment %}
     <div class="c-authors_bio_meta">
         <div class="c-article__byline">
 
             <div class="c-article__byline__meta">
-                <span class="c-article__published-at">Published on {{ self.published_at|date:'N j, Y' }}</span>
-                                    
                 {% if reading_time %}
                     <span> &nbsp;&middot;&nbsp; </span>
                     <span class="c-article__reading-time">{{ reading_time }} min read</span>
@@ -49,13 +52,6 @@
                 
             </div>
         </div>
-
 	</div>
-    <div class="c-article__byline c-article_byline_fw">
-        {% include 'article/objects/share_bar.html' %}
-        <span class="c-article_dark_mode">
-            {% include 'article/objects/darkmode_button.html' with id="fw_article"%}
-        </span>
-    </div>
-
+    {% endcomment %}
 </div>

@@ -4,6 +4,7 @@
 {% load wagtailimages_tags %}
 {% load ubyssey_ad_tags %}
 {% load ubyssey_ad_filters %}
+{% load articletags %}
 
 {% block stylesheet %}
 	<link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}" type="text/css" />
@@ -52,9 +53,7 @@
 			{% include "article/objects/cover_story.html" with article=coverstory%}
 		{% endif %}
 		<div class="home-top-article-list">
-			{% now "d N Y" as date %}
-			{% now "l" as dayOfWeek %}
-			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text=date textBold=dayOfWeek %}
+			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=self.last_published_at|time_ago %}
 			
 			{% for article in self.top_articles_list %}
 				{% include "article/objects/top_article.html" with article=article.article count=forloop.counter %}
@@ -70,18 +69,28 @@
 </div>
 
 <div id="feed-section" class="home_infinitefeed">
-	<div class="u-container u-container--large c-infinitefeed__feed">
-		<div class="c-home-infinitefeed">
-			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox sticky' title='Sections' text='Most Recent' textId='timeBox' %}
-			
-			<div class="c-homepage__sections">
-			{% for block in self.sections_stream %}
-			{% include_block block %}
-			{% endfor %}
-			</div>
-		</div>
+	<div class="u-container u-container--large">
 
-        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
+			{% for group in section_groups %}
+			<div class="c-infinitefeed__feed">
+				<div class="c-homepage__sections">
+
+					{% if forloop.counter0 == 0 %}
+					{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox' title='Sections' text='Most Recent' textId='timeBox' %}
+					{% endif %}
+					
+					{% for section in group.sections %}
+					{% include_block section %}
+					{% endfor %}
+				</div>
+				
+				{% if group.sidebar %}
+					{% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=group.sidebar %}
+				{% else %}
+					<div class="c-sidebar empty-sidebar"></div>
+				{% endif %}
+			</div>
+			{% endfor %}
 
 	</div>
 

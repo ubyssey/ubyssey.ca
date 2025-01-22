@@ -6,6 +6,7 @@ from article.models import ArticlePage
 from django.db.models import Q
 
 from wagtail import blocks
+from wagtail.models import Page
 from wagtail.blocks import field_block
 from infinitefeed.blocks import AbstractArticleList
 
@@ -80,6 +81,50 @@ class LinksStreamBlock(blocks.StructBlock):
         )
     )
 
+    def get_context(self, value, parent_context=None):
+        from events.models import Event
+        from django.utils import timezone
+        from datetime import timedelta
+        context = super().get_context(value, parent_context)
+        context['events'] = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).exclude(category='seminar').order_by("start_time")[:5]
+
+        today = timezone.now().astimezone(timezone.get_current_timezone())
+        for i in range(len(context['events'])):
+            
+            if context['events'][i].start_time < today:
+                pubdate = context['events'][i].end_time.astimezone(timezone.get_current_timezone())
+                display = "Ends "
+            else:
+                pubdate = context['events'][i].start_time.astimezone(timezone.get_current_timezone())
+                display = ""
+                
+            delta = abs(today - pubdate)
+
+            day = ""
+            if pubdate.date() == today.date():
+                day = "Today"
+            elif (pubdate - timedelta(days=1)).date() == today.date():
+                day = "Tomorrow"
+            elif delta.total_seconds() < timedelta(days=6).total_seconds():
+                day = pubdate.strftime("%a")
+            else:
+                day = pubdate.strftime("%B %-d") + ","
+
+            time = ""
+            if pubdate.hour != 0 and pubdate.hour != 23:
+                time = " " + pubdate.strftime("%-I")
+                if pubdate.strftime("%M") != "00":
+                    time = time + pubdate.strftime(":%M")
+                time = time + pubdate.strftime("%P")
+
+            display = display + day + time
+            
+            context['events'][i].display_time = display
+
+            context['events'][i].title = context['events'][i].title.replace("<br>", "")
+
+        return context
+
     class Meta:
         template = "home/stream_blocks/links.html"
 
@@ -88,6 +133,7 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
     choices=[
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
+        ('section/objects/section_landing.html', 'Landing'),
     ]
 
 class SectionBlock(AbstractArticleList):
@@ -127,3 +173,25 @@ class CategoryBlock(AbstractArticleList):
         context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
         context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-first_published_at')[:9]
         return context
+    
+class SpecialLandingPageBlock(AbstractArticleList):
+    landing = field_block.PageChooserBlock(
+        page_type='specialfeaturelanding.SpecialLandingPage'
+    )
+    template = MidStreamListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['landing'].title
+        context['link'] = value['landing'].url
+        context['articles'] = [value['landing']] + list(Page.objects.child_of(value['landing']).all())
+        return context
+    
+
+class ArticlePromo(blocks.StructBlock):
+    article = field_block.PageChooserBlock(
+        page_type='article.ArticlePage'
+    )
+
+    class Meta:
+        template = "home/stream_blocks/special/article_midsection.html"

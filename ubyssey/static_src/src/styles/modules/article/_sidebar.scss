@@ -28,7 +28,6 @@ aside.sidebar {
   // Smaller than tablet size, have sidebar on the bottom
   @media only screen and ($bp-smaller-than-tablet) {
     float: left;
-    padding: 15px 0;
     width: 100%;
     max-width: 585px;
   }

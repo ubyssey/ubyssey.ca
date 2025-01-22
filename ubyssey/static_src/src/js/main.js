@@ -1,5 +1,5 @@
 // import * as mp from './modules/Mixpanel';    //commented out because creepy af
-import upcomingEvents from './widgets/upcoming-events';
+//import upcomingEvents from './widgets/upcoming-events';
 import { initializeDarkModeToggle } from './darkmode';
 
 // self-executing js anonymous function
@@ -89,6 +89,7 @@ function enableScroll() {
   $('body').removeClass('u-no-scroll');
 }
 
+/*
 // Set element image-attachment variables left and right's respective margins to that of 
 // the first child of parent element p (with direct parent element article-content)
 function embedMargins() {
@@ -132,6 +133,7 @@ function issueParser() {
   };
   req.send();
 }
+*/
 
 // If hovering over sections-more-dropdown element,
 // element slides up or down.
@@ -220,6 +222,9 @@ function initializeModals() {
     if (modal.classList.contains("show")) {
       closeModal(modal);
     } else {
+      for(let m=0; m<document.getElementsByClassName("modal").length; m++) {
+        closeModal(document.getElementsByClassName("modal")[m]);
+      }
       openModal(modal);
     }
   });
@@ -290,15 +295,26 @@ function initializeSocialMediaActions() {
   // shares the page
   $(document).on('click', '.share-facebook', function (e) {
     e.preventDefault();
-    window.open('http://facebook.com/sharer.php?u=' + window.location.href + '&text=' + title + '&', 'facebookwindow',
+    window.open('http://facebook.com/sharer.php?u=' + window.location.href + '&text=' + title + '%20via%20@ubyssey&', 'facebookwindow',
     'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
+  $(document).on('click', '.share-mastodon', function (e) {
+    e.preventDefault();
+    window.open('https://tootpick.org/#text=' + title + '%20' + window.location.href + '%20#ubyssey',
+    'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+  });
+
+  $(document).on('click', '.share-bsky', function (e) {
+    e.preventDefault();
+    window.open('https://bsky.app/intent/compose/?text=' + title + '%20%20via%20@ubyssey.ca%20' + window.location.href,
+    'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+  });
 
   // on clicking on the a element w/ class=='twitter', share on twitter
   $(document).on('click', '.share-twitter', function (e) {
     e.preventDefault();
-    window.open('http://twitter.com/share?url=' + window.location.href + '&text=' + title + '&', 'twitterwindow',
+    window.open('http://twitter.com/share?url=' + window.location.href + '&text=' + title + '%20via%20@ubyssey&', 'twitterwindow',
       'height=450, width=550, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
   });
 
@@ -343,30 +359,30 @@ function initializeAudioQuote() {
       sound.play();
     
       var icon = document.getElementById("icon-" + id);
-      var frames = ["fa-volume-off", "fa-volume-low", "fa-volume-high"];
+      var frames = ["volume-off", "volume-low", "volume-high"];
     
       var animateIcon = setInterval(function () {
     
           for (let i=0; i < frames.length; i++) {
-              if (icon.classList.contains(frames[i])) {
-                  icon.classList.toggle(frames[i]);
+              if (icon.getAttribute("name") == frames[i]) {
+                  icon.classList.remove(frames[i]);
                   if (i == frames.length - 1 ) {
-                      icon.classList.toggle(frames[0]);
+                    icon.setAttribute("name", frames[0]);
+                    icon.classList.add(frames[0]);
                   } else {
-                      icon.classList.toggle(frames[i+1]);
+                    icon.setAttribute("name", frames[i+1]);
+                    icon.classList.add(frames[i+1]);
                   }
                   break;
               }
           }
     
           if (sound.paused) {
-              icon.classList.remove("fa-volume-low");
-              icon.classList.remove("fa-volume-high");
-              icon.classList.add("fa-volume-off");
+              icon.setAttribute("name", "volume-off");
               clearInterval(animateIcon);
           }
     
-      }, 200);
+      }, 250);
     } else {
       sound.pause();
       sound.currentTime = 0;
@@ -413,31 +429,14 @@ function openModal(modal) {
   disableScroll();
 }
 
-function moveModals() {
-  var modalBlocks = document.getElementsByClassName("add-to-modal");
-  var modal = document.getElementById("modal");
-  var index = 0;
-  while (modalBlocks.length > 0) {
-    //modalBlocks[i].remove();  
-    var div = document.createElement("div");
-    div.classList.add("openModal");
-    div.setAttribute("modal", index);
-
-    var mod = modalBlocks[0];
-    mod.insertAdjacentElement("beforebegin", div);
-    mod.classList.remove("add-to-modal");
-    modal.appendChild(mod);
-
-    modalBlocks = document.getElementsByClassName("add-to-modal");
-    index = index + 1;
-  } 
-}
-
 function initializeFilterDropdown() {
   $(document).on('click', 'a.filterDropdown', function (e) {
     e.preventDefault();
     this.parentElement.nextElementSibling.classList.toggle('hide_filter');
-    this.children[0].classList.toggle("fa-caret-down");
-    this.children[0].classList.toggle("fa-caret-up");
+    if (this.children[0].getAttribute('name') == 'caret-down-outline') {
+      this.children[0].setAttribute('name', 'caret-up-outline');
+    } else {
+      this.children[0].setAttribute('name', 'caret-down-outline');
+    }
   });
 }

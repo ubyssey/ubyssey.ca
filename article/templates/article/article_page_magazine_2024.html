@@ -57,7 +57,13 @@
             {% block banner %}
             
                 <div class="u-container u-container--content u-container--padded">
-                    <p class="c-article__title">{{ self.title }}</p>
+                    <p class="c-article__title">
+                        {% if self.fw_alternate_title %}
+                            {{self.fw_alternate_title|safe}}
+                        {% else %}
+                            {{ self.title|safe }}
+                        {% endif %}
+                    </p>
                     <div class="c-article__info">
                         {% comment %}
                             {% include 'objects/social-icons.html' with article=article layout='top' %}
@@ -93,7 +99,7 @@
                                     {% endcomment %}
                                     data-url="{{ original_image.url }}"
                                     src="{{ featured_image.url }}"
-                                    alt=""
+                                    alt="{{featured_image_object}}"
                                 />
                                 {% if featured_image_object.caption or featured_image_object.credit %}
                                     <div class="caption">

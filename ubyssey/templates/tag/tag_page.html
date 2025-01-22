@@ -10,6 +10,10 @@
     	<base target="_blank">
   	{% endif %}
 <head>
+	<!-- Ionicons https://ionic.io/ionicons/usage -->
+	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+	
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -84,8 +88,6 @@
 		</div>
 		<div id="adblock-splash">
 		</div>
-
-		<div id="modal" aria-modal="true"></div>
 		
         {% include 'navigation/headers/mobile.html' %}
         {% include 'navigation/headers/topbar.html' %}
@@ -101,7 +103,7 @@
                     <div class="c-page__header tag-page__title">
                         <h1 class="c-page__heading u-text-center">{{self.title}}</h1>
 						<p>
-							<a href="/tag/{{self.slug}}/rss" aria-label="Go to section's rss feed">Be notified through Rss &ensp;<i class="fa fa-rss"></i></a>
+							<a href="/tag/{{self.slug}}/rss" aria-label="Go to {{self.title}} tag's rss feed">Be notified through Rss &ensp;<ion-icon name="logo-rss"></ion-icon></a>
 						</p>
                     </div>
                     <div class="lightmode section_infinitefeed">

@@ -76,16 +76,16 @@
       opacity: 0;
       transition: 0.5s;
     }
-    .fa-circle-arrow-left {
-      left: -1.5em;
+    [name="arrow-back-circle-outline"] {
+      left: 0;
     }
-    .fa-circle-arrow-right {
-      right: -1.5em;
+    [name="arrow-forward-circle-outline"] {
+      right: 0;
     }
 
     &:hover {
-      margin-right: 1.5em;
-      margin-left: 1.5em;
+      padding-right: 3.5em;
+      padding-left: 3.5em;
     }
 
     &:hover .arrow {

@@ -42,13 +42,15 @@
   }
 }
 
-.lightmode {
+[color-css-theme="light"] {
+
   .c-page__heading {
     color: black;
   }
 }
 
-.darkmode {
+[color-css-theme="dark"] {
+
   .c-page__heading {
     color: white;
   }
@@ -59,14 +61,16 @@
   position:relative;
   margin-bottom:40px;
   background-size:cover;
+  background-position: center;
   svg.c-section__heading {
     position: absolute;
-    bottom: -46px;
-    left: 20px;
-    stroke: black;
+    bottom: -55px;
+    padding-inline: 20px;
+    box-sizing: border-box;
     @media($bp-smaller-than-phablet) {
-      bottom: -20px;
-      left: 10px;
+      bottom: -25px;
+      padding-inline: 10px;
+      font-size: 2em;
     }
   }
 
@@ -97,20 +101,14 @@
     flex-wrap: wrap;
 
     li {
+      margin: 0.25em 1em;
       list-style: none;
-      background-color: var(--background);
-      padding-right: 5px;
-      padding-left: 5px;
-      margin-bottom: -2.5px;
       display: inline;
-      //flex-grow: 1;
-      //text-align: center;
-      border-right: solid;
-      border-color: var(--text_color);
-      border-width: 1px;
-      &:last-child {
-        border-right: none;
-      }
+      max-width: 250px;
+      white-space: nowrap;
+      overflow: clip;
+      text-overflow: ellipsis;
+      border-bottom: 1px solid;
     }
   }
 }
@@ -134,17 +132,21 @@
 }
 
 .c-section__buttons {
-  display: inline-block;
+  display: flex;
   text-align: right;
+  justify-content: right;
   width: 100%;
   @media($bp-smaller-than-phablet) {
     display: block;
   }
+  .o-archive__search__input {
+    width: 115px;
+  }
 }
 
 .c-section__button-label {
+  margin-left: 0.5em;
   text-align: right;
-  margin-left: 10%;
   display: inline-block;
   max-width: 50%;
   z-index:3;
@@ -198,15 +200,16 @@
 }
 
 .c-section__heading {
-  fill: white;
-  stroke: black;
-  stroke-width: 4px;
+  fill: var(--header_color);
+  stroke: var(--background);
+  stroke-width: 0.5em;
   stroke-linejoin: round;
   paint-order: stroke;
-  font-size: 2rem;
+  font-size: 1em;
   font-weight: bolder;
-  text-transform: uppercase;
-  font-family: $font-banner;
+
+  transition: stroke 0.5s ease, color 0.5s ease;
+  //font-family: $font-banner;
 }
 
 .section_infinitefeed {
@@ -256,6 +259,7 @@ main.tag {
     @media ($bp-larger-than-phablet) {
       position: sticky;
       top: 6em;
+      margin-bottom: 50vh;
     }
   }
 }

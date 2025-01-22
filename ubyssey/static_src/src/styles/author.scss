@@ -4,7 +4,6 @@
 @import 'modules/advertisements';
 @import 'modules/variables';
 @import 'modules/mixins';
-@import 'modules/utilities';
 
 // Ubyssey site-specific files
 @import 'modules/header';
@@ -14,11 +13,10 @@
 
 @import 'modules/darkmode';  
 
-@import 'modules/homepage';
-
 @import 'modules/search';
 
 @import 'objects/article';
+@import 'objects/article_suggested';
 @import 'objects/inputs';
 @import 'objects/archive';
 
@@ -27,7 +25,6 @@
 @import 'components/adblock-splash';
 @import 'components/cookie-disclaimer';
 
-@import 'components/heading';
 @import 'components/page';
 @import 'components/text-input';
 @import 'components/video';

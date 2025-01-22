@@ -26,9 +26,11 @@ function buildRoute(route, id) {
   return fullRoute
 }
 
+/*
 function handleError(response) {
   return response.ok ? response : Promise.reject(response.statusText)
 }
+*/
 
 function parseJSON(response) {
   return response.json()
