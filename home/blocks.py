@@ -133,6 +133,7 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
     choices=[
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
+        ('section/objects/section_horizontal.html', 'Horizontal'),
         ('section/objects/section_landing.html', 'Landing'),
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
