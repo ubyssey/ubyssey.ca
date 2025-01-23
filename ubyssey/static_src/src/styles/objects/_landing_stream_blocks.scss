@@ -68,6 +68,9 @@
 
 // Timeline 
 .landing-stream-block__timeline {
+    article.article--round_with_border {
+      height: fit-content;
+    }
     p.o-article__published, .o-article__seemore {
         margin: 0;
 
