@@ -133,45 +133,64 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
     choices=[
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
+        ('section/objects/section_horizontal.html', 'Horizontal'),
         ('section/objects/section_landing.html', 'Landing'),
+        ('section/objects/single_promo.html', 'Single (promo)'),
+        ('section/objects/single_top-headline.html', 'Single (top headline)'),
+        ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
     ]
-
-class SectionBlock(AbstractArticleList):
+    
+class ArticleGathererBlock(AbstractArticleList):
     section = field_block.PageChooserBlock(
-        page_type='section.SectionPage'
+        page_type='section.SectionPage',
+        required=False
+    )
+    category = SnippetChooserBlock('section.CategorySnippet',
+        required=False
+    )
+    tag_slug = field_block.CharBlock(
+        help_text="Enter tag slug. For example for 'Christmas Movie' the slug would be 'christmas-movie'.",
+        required=False
     )
     template = MidStreamListTemplates()
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        context['title'] = value['section'].title
-        context['link'] = value['section'].url
-        context['articles'] = value['section'].get_featured_articles(number_featured=9)          
-        return context
-    
-class TagBlock(AbstractArticleList):
-    tag_slug = field_block.CharBlock(help_text="Enter tag slug. For example for 'Christmas Movie' the slug would be 'christmas-movie'.")
-    template = MidStreamListTemplates()
 
-    def get_context(self, value, parent_context=None):
-        context = super().get_context(value, parent_context=parent_context)
-        if Tag.objects.filter(slug=value['tag_slug']).exists():
-            tag = Tag.objects.get(slug=value['tag_slug'])
-            context['title'] = tag.name
-            context['link'] = '/tag/' + value['tag_slug']
-            context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at').filter(tags__slug=value["tag_slug"])[:9]
-        return context
-    
-class CategoryBlock(AbstractArticleList):
-    category = SnippetChooserBlock('section.CategorySnippet')
+        if value['section']:
+            context['title'] = value['section'].title
+            context['description'] = value['section'].description
+            context['link'] = value['section'].url
+            context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
+        else:
+            context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at')
 
-    template = MidStreamListTemplates()
+        if value['tag_slug']:
+            if Tag.objects.filter(slug=value['tag_slug']).exists():
+                tag = Tag.objects.get(slug=value['tag_slug'])
+                context['title'] = tag.name
+                if value['section']:
+                    context['description'] = "Stories on '" + tag.name + "' in " + value['section'].title
+                else:
+                    context['description'] = None
+                context['link'] = '/tag/' + value['tag_slug']
+                context['articles'] = context['articles'].filter(tags__slug=value["tag_slug"])
 
-    def get_context(self, value, parent_context=None):
-        context = super().get_context(value, parent_context=parent_context)
-        context['title'] = value['category'].title
-        context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
-        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-first_published_at')[:9]
+        if value['category']:
+            context['title'] = value['category'].title
+            context['description'] = value['category'].description
+            context['link'] = value['category'].section_page.url + "category/" + value['category'].slug + "/"
+            context['articles'] = context['articles'].filter(category=value['category'])
+        
+        limit = 9
+        if 'section/objects/section_horizontal.html' in value['template']:        
+            limit = 4
+
+        context['articles'] = context['articles'][:limit]
+
+        if "section/objects/single" in value['template'] and len(context['articles']) > 0:
+            context['self']['article'] = context['articles'][0]
+        
         return context
     
 class SpecialLandingPageBlock(AbstractArticleList):
@@ -188,10 +207,24 @@ class SpecialLandingPageBlock(AbstractArticleList):
         return context
     
 
-class ArticlePromo(blocks.StructBlock):
-    article = field_block.PageChooserBlock(
-        page_type='article.ArticlePage'
+class ManualArticles(AbstractArticleList):
+    title = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        )
+    description = blocks.TextBlock(required=False)
+    link = blocks.URLBlock(required=False)
+    template = MidStreamListTemplates()
+    articles = blocks.ListBlock(
+        field_block.PageChooserBlock(
+            page_type='article.ArticlePage'
+        )
     )
 
-    class Meta:
-        template = "home/stream_blocks/special/article_midsection.html"
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['title']
+        context['description'] = value['description']
+        context['link'] = value['link']
+        context['articles'] = [article for article in value['articles']]
+        return context
