@@ -1,0 +1,185 @@
+// Shared classes among landing stream blocks
+.landing_stream_block {
+    margin: 3em auto 5em auto;
+  
+    .landing_stream_block--header {
+      font-family: $font-headline;
+      font-weight: 800;
+      font-variation-settings: "wght" 800;
+      margin-block: 2em;
+      h2 {
+        display: inline;
+        margin-right: 0.5em;
+        text-transform: capitalize;
+        font-size: 2.5em;
+      }
+      @media($bp-smaller-than-phablet) {
+        padding-inline: 1em;
+        h2 {
+          display: block;
+          font-size: 1.5em;
+        }
+      }
+    }
+
+    .landing_stream_block--flex-container {
+      display: flex;
+      position: relative;
+      min-height: fit-content;
+      margin-bottom: 2em;
+    }
+
+  @media($bp-smaller-than-phablet) {
+    margin: 2em auto 5em auto;
+  }
+}
+
+
+// Landing
+.landing_stream_block__landing {
+    border-top: 2px solid;
+    border-bottom: 2px solid;
+    border-color: var(--section-colour);
+
+      ul {
+        height: fit-content;
+        margin: auto 0;
+        padding-bottom: 5%;
+        li {
+          margin: 1em 0;
+          .o-article__headline {
+            border-bottom: 0.2em solid;
+            border-color: var(--section-colour);
+          }
+        }
+    }
+}
+
+@media($bp-smaller-than-phablet) {
+    .landing-stream-block__timeline {
+        max-width: none;
+        width: 100%;
+    }
+
+    .landing_stream_block--flex-container {
+        flex-direction: column;
+        min-height: unset;
+        margin-bottom: 1em;
+    }
+}
+
+.landing-stream-block__borders {
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+}
+
+// Timeline 
+.landing-stream-block__timeline {
+    article.article--round_with_border {
+      height: fit-content;
+    }
+    p.o-article__published, .o-article__seemore {
+        margin: 0;
+
+        color: white;
+        font-weight: 600;
+        font-size: 0.75em;
+        text-transform: uppercase;
+    }
+
+    h3.o-article__headline {
+        margin: 0.5em 0;
+        font-weight: 400;
+        font-variation-settings: "wght" 400;
+        color: $color-ubyssey-blue-light;
+    }
+}
+
+// Article timeline
+.article-timeline {
+    .timeline {
+        padding-inline: 0.5em;
+        @media($bp-smaller-than-desktop) {
+          padding-inline: 2em;
+        }
+
+        .timeline-title {
+        margin: 1.25em auto;
+        color: $color-ubyssey-blue;
+        text-align: center;
+        font-size: 1.15em;
+        line-height: 1.25em;
+        font-weight: 600;
+            a:hover {
+                text-decoration: underline;
+            }
+        }
+        .o-article__published {
+            @media($bp-larger-than-phablet) {
+              margin-top: -1.4em;
+            }
+            margin-right: 0.5em;
+            color: $color-ubyssey-blue;
+            font-weight: 600;
+        }
+        li {
+        border-color: $color-ubyssey-blue;
+        &.timeline-dot::before {
+            background-color: $color-ubyssey-blue;
+        }
+        .o-article__published {
+            font-size: 0.75em;
+            text-transform: uppercase;
+        }
+        .o-article__headline {
+            margin-top: 0.5em;
+            font-size: 1em;
+            font-weight: 400;
+            font-variation-settings: "wght" 400;
+        }
+        }
+    }
+}
+
+[color-css-theme="light"] {
+  .landing-stream-block__borders {
+    border-color: $color-ubyssey-blue;
+  }
+  .landing-stream-block__timeline {
+      border-color: $color-ubyssey-blue;
+      li.timeline-dot::before {
+        background-color: $color-ubyssey-blue;
+      }
+  
+      li {
+        border-color: $color-ubyssey-blue;
+      }
+  
+      p.o-article__published,
+      .o-article__seemore {
+        width: fit-content;
+        color: black;
+      }
+    }
+}
+  
+[color-css-theme="dark"] {
+  .landing-stream-block__borders {
+    border-color: $color-ubyssey-blue-light;
+  }
+  .landing-stream-block__timeline {
+      border-color: $color-ubyssey-blue-light;
+      h3.o-article__headline {
+        color: $color-ubyssey-blue-light;
+      }
+  
+      li.timeline-dot::before {
+        background-color: white;
+      }
+  
+      li {
+        border-color: white;
+      }
+    }
+  }
+  
