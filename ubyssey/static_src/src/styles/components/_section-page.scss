@@ -206,7 +206,7 @@
     font-size: 1.25em;
     text-transform: uppercase;
 
-    @media($bp-smaller-than-phablet) {
+    @media($bp-smaller-than-mobile) {
       display: none;
     }
   }

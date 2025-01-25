@@ -12,7 +12,10 @@
         margin-right: 0.5em;
         text-transform: capitalize;
         font-size: 2.5em;
-        @media($bp-smaller-than-phablet) {
+      }
+      @media($bp-smaller-than-phablet) {
+        padding-inline: 1em;
+        h2 {
           display: block;
           font-size: 1.5em;
         }
