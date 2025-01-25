@@ -67,6 +67,9 @@
             </ul>
           </div>
           {% endif %}
+          {% if category %}
+          <a href="{% pageurl self %}category/{{category}}/rss" aria-label="Go to category's rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+          {% endif %}
           
           <div class="c-section__buttons">
             <div class="o-archive__search c-section__button-label">

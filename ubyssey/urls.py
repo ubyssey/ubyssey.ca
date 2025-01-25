@@ -11,7 +11,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled
-from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
+from ubyssey.views.feed import CategoryFeed, FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
 from events.views import update_events, create_ical, EventsFeed, EventsViewSet
@@ -90,6 +90,7 @@ urlpatterns += [
     re_path(r'^infinitefeed/$', infinitefeed, name='infinitefeed'), 
     re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
     re_path(r'^rss/(?P<slug>[-\w]+)/$', SectionFeed(), name='section-feed'),
+    re_path(r'^[-\w]+/category/(?P<slug>[-\w]+)/rss/$', CategoryFeed(), name='category-feed'),
     re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
     re_path(r'^blog/', redirect_blog_to_humour),
     re_path(r'^sitemap.xml$', sitemap),
