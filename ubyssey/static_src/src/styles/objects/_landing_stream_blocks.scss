@@ -12,6 +12,10 @@
         margin-right: 0.5em;
         text-transform: capitalize;
         font-size: 2.5em;
+        @media($bp-smaller-than-phablet) {
+          display: block;
+          font-size: 1.5em;
+        }
       }
     }
 
@@ -91,6 +95,11 @@
 // Article timeline
 .article-timeline {
     .timeline {
+        padding-inline: 0.5em;
+        @media($bp-smaller-than-desktop) {
+          padding-inline: 2em;
+        }
+
         .timeline-title {
         margin: 1.25em auto;
         color: $color-ubyssey-blue;
@@ -103,7 +112,9 @@
             }
         }
         .o-article__published {
-            margin-top: -1.4em;
+            @media($bp-larger-than-phablet) {
+              margin-top: -1.4em;
+            }
             margin-right: 0.5em;
             color: $color-ubyssey-blue;
             font-weight: 600;

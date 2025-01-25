@@ -68,7 +68,11 @@ article.headline-top {
         }
     }
 
+    @media($bp-smaller-than-desktop) {
+        padding-inline: 1em;   
+    }
     @media($bp-smaller-than-phablet) { 
+        padding-inline: 0;
         h2, .above-headline {
             margin-inline: 15px;
         }

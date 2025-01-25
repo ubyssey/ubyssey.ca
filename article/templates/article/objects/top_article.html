@@ -9,10 +9,8 @@
     <div class="o-article__left">
       <div class="o-article__above-headline">
         <a href="{{article|get_section_link}}" class="o-article__section-tag">{{article|get_section_title}}</a>
-        {% if article.title_tag %}
-          <div class="top_article-title-tag">{{article.title_tag}}//</div>
-        {% elif article.category %}
-          <div class="top_article-title-tag">{{article.category.title}}//</div>
+        {% if article.title_tag_str %}
+          <div class="top_article-title-tag">{{article.title_tag_str}}//</div>
         {% endif %}
       </div>  
       <h2 class="o-article__headline">

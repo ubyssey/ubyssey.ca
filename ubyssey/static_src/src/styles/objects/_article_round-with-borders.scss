@@ -1,9 +1,14 @@
 article.article--round_with_border {
     display: inline;
+    width: 100%;
     max-width: 300px;
     margin-right: 2em;
     margin-bottom: 1em;
     border-bottom: 2px solid var(--borderColour);
+
+    @media($bp-smaller-than-phablet) {
+      margin-inline: auto;
+    }
 
     .o-article__left {
       margin-bottom: 1em;

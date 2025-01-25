@@ -1264,7 +1264,16 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             suggested = False
 
         return suggested
-    
+
+    def get_title_tag(self) -> str:
+        if self.title_tag:
+            return self.title_tag
+        elif self.category:
+            return self.category.title
+        else:
+            False
+    title_tag_str = property(fget=get_title_tag)
+
     def get_primary_tag_link(self) -> str:
         from taggit.models import Tag
         tag = Tag.objects.get(slug=self.primary_tag_slug)

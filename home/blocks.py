@@ -182,7 +182,12 @@ class ArticleGathererBlock(AbstractArticleList):
             context['link'] = value['category'].section_page.url + "category/" + value['category'].slug + "/"
             context['articles'] = context['articles'].filter(category=value['category'])
         
-        context['articles'][:9]
+        limit = 9
+        if 'section/objects/section_horizontal.html' in value['template']:        
+            limit = 4
+
+        context['articles'] = context['articles'][:limit]
+
         if "section/objects/single" in value['template'] and len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
         

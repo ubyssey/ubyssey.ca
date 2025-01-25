@@ -243,7 +243,10 @@ svg.banner-title text{
 
 .c-section__heading {
   margin-block: 1em 2em;
-  padding-inline: 20%;
+  padding-inline: 2em;
+  @media ($bp-larger-than-phablet) {
+    padding-inline: 20%;
+  }
   padding-top: 0.5em;
   border-bottom: 2px solid $color-ubyssey-blue;
 
