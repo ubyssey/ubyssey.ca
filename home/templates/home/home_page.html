@@ -49,14 +49,14 @@
 	{% endcomment %}
 
 	<div class="home-featured">
-		{% if self.cover_story %}
-			{% include "article/objects/cover_story.html" with article=coverstory%}
+		{% if cover_story %}
+			{% include "article/objects/cover_story.html" with article=cover_story%}
 		{% endif %}
 		<div class="home-top-article-list">
 			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=self.last_published_at|time_ago %}
 			
-			{% for article in self.top_articles_list %}
-				{% include "article/objects/top_article.html" with article=article.article count=forloop.counter %}
+			{% for article in top_stories %}
+				{% include "article/objects/top_article.html" with article=article count=forloop.counter %}
 			{% endfor %}
 		</div>
 	</div>
