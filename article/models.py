@@ -1220,7 +1220,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)[:max]
         
         return section_articles
-    def get_articles_by_tag(self, order='-first_published_at', max=10) -> QuerySet:
+    def get_articles_by_tag(self, order='-first_published_at', max=5) -> QuerySet:
         """
         Returns a list of articles with the same tags as the current article
         """
