@@ -63,7 +63,7 @@ class UbysseyArticleFeed(Feed):
             "image_link": 'https://ubyssey.ca'}
 
     def items(self, section):
-        return ArticlePage.objects.live().public().order_by('-explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().exclude(current_section = "pages").order_by('-explicit_published_at')[:self.max_items]
         # .get_frontpage(limit=self.max_items)
 
     def item_title(self, item):

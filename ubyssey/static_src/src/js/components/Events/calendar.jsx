@@ -635,22 +635,28 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
 
     function toggleCategory(that, searchParams, setSearchParams) {
 
-        var hidden = [];
-        if (searchParams.has("hidden")) {
-            hidden = searchParams.get("hidden").split(" ");
+        var selected = [];
+        var selectType = "hidden";
+
+        if (searchParams.has("include")) {
+            selectType = "include";
         }
-        hidden = hidden.filter((i) => i!="");
+
+        if (searchParams.has(selectType)) {
+            selected = searchParams.get(selectType).split(" ");
+        }
+        selected = selected.filter((i) => i!="");
         
-        if (hidden.includes(that.id)) {
-            hidden.splice(hidden.indexOf(that.id), 1);
+        if (selected.includes(that.id)) {
+            selected.splice(selected.indexOf(that.id), 1);
         } else {
-            hidden.push(that.id);
+            selected.push(that.id);
         }
         
-        if (hidden.length == 0) {
-            searchParams.delete("hidden");
+        if (selected.length == 0) {
+            searchParams.delete(selectType);
         } else {
-            searchParams.set("hidden", hidden.join(" "));
+            searchParams.set(selectType, selected.join(" "));
         }
         setSearchParams(searchParams);
     }
@@ -683,17 +689,21 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
 
     let [searchParams, setSearchParams] = useSearchParams();
 
-    var hidden = [];
-    if (searchParams.has("hidden")) {
-        hidden = searchParams.get("hidden").split(" ");
-    }
-
     var displayedEvents = events.filter((e) => (e.category===category || category==="all"));
     var legend = ["Sports", "Entertainment", "Community", "Seminar"];
     if (category != "all") {
         legend = displayedEvents.reduce(getHosts, []);
     }
-    displayedEvents = displayedEvents.filter((e) => !hidden.includes(slugify(e[highlight])));
+
+    var selected = [];
+    if (searchParams.has("hidden")) {
+        selected = searchParams.get("hidden").split(" ");
+        displayedEvents = displayedEvents.filter((e) => !selected.includes(slugify(e[highlight])));
+    } else if (searchParams.has("include")) {
+        selected = searchParams.get("include").split(" ");
+        displayedEvents = displayedEvents.filter((e) => selected.includes(slugify(e[highlight])));
+    }
+
     var calendar = arrangeCalendar(displayedEvents);
     React.useEffect(()=>{
         colourIn(legend);
@@ -835,9 +845,25 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
         )}</div>
 
         <div class="legend">
-            <ul>{legend.map((key, i) =>
-                <li key={i} className={slugify(key)}>
-                    <button id={slugify(key)} className={"legend-button" + (hidden.includes(slugify(key)) ? " inactive" : "")}
+            <ul>
+                <li class="selection-toggle">
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            if (!searchParams.has("include")) {
+                                searchParams.delete("hidden");
+                                searchParams.append("include", "");
+                            } else {
+                                searchParams.delete("include");
+                            }
+                            setSearchParams(searchParams);
+                        }}>
+                        {searchParams.has("include") ? "Show all" : "Hide all"}
+                    </button>
+                </li>
+                {legend.map((key, i) =>
+                <li key={i} className={"legend-item " + slugify(key)}>
+                    <button id={slugify(key)} className={"legend-button" + (selected.includes(slugify(key)) == !searchParams.has("include") ? " inactive" : "")}
                     onClick={(e) => {console.log(e); toggleCategory(e.target, searchParams, setSearchParams);}} title={key}
                     dangerouslySetInnerHTML={
                         {__html: key}
@@ -850,7 +876,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
 }
 
 function EventInfo({events}) {
-    const [widthMode, setWidthMode] = React.useState(window.innerWidth <= 759);
+    const [widthMode, setWidthMode] = React.useState(window.innerWidth <= 1199);
     let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     var event = false;
@@ -871,7 +897,7 @@ function EventInfo({events}) {
     React.useLayoutEffect(()=> {
 
         window.addEventListener('resize', ()=> {
-            setWidthMode(window.innerWidth <= 759);
+            setWidthMode(window.innerWidth <= 1199);
         });
     }, []);
 
