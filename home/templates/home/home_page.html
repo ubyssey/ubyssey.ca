@@ -53,7 +53,7 @@
 			{% include "article/objects/cover_story.html" with article=cover_story%}
 		{% endif %}
 		<div class="home-top-article-list">
-			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=self.last_published_at|time_ago %}
+			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=update_time|time_ago %}
 			
 			{% for article in top_stories %}
 				{% include "article/objects/top_article.html" with article=article count=forloop.counter %}
