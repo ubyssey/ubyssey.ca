@@ -64,6 +64,9 @@
         margin: 1em;
         padding: 0;
         width: 9em;
+        @media($bp-larger-than-phablet) {
+            width: 12em;
+        }
         float: right;
     }
     .o-article__image {
