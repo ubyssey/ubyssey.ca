@@ -170,6 +170,11 @@ main {
     display: none;
   }
 }
+.hide-mobile {
+  @media($bp-smaller-than-phablet){
+    display: none;
+  }
+}
 
 .image-aspect-4-3 {
   width: 100%;

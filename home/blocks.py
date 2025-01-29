@@ -188,7 +188,7 @@ class ArticleGathererBlock(AbstractArticleList):
 
         context['articles'] = context['articles'][:limit]
 
-        if "section/objects/single" in value['template'] and len(context['articles']) > 0:
+        if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
         
         return context
@@ -227,4 +227,8 @@ class ManualArticles(AbstractArticleList):
         context['description'] = value['description']
         context['link'] = value['link']
         context['articles'] = [article for article in value['articles']]
+
+        if len(context['articles']) > 0:
+            context['self']['article'] = context['articles'][0]
+
         return context

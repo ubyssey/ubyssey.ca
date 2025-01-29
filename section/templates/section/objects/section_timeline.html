@@ -19,9 +19,9 @@
 
 	<ul class="vertical-timeline">
     {% for article in articles|slice:"1:" %}
-			<li {% ifchanged article.published_at %}class="timeline-dot"{% endifchanged %}>
+			<li class="{% if forloop.counter > 3 %}hide-mobile {%endif %}{% ifchanged article.published_at|display_pubdate %}timeline-dot{% endifchanged %}">
         <article class="o-article o-article--bullet">
-          {% ifchanged article.published_at %}<p class="o-article__published">{{ article.published_at|display_pubdate }}</p>{% endifchanged %}
+          {% ifchanged article.published_at|display_pubdate %}<p class="o-article__published">{{ article.published_at|display_pubdate }}</p>{% endifchanged %}
           <h3 class="o-article__headline">
             <a href={% pageurl article %}>{{ article.title|safe }}</a>
           </h3>

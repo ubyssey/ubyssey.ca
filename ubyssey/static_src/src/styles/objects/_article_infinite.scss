@@ -50,6 +50,18 @@
     }
 }
 
+.section_infinitefeed article.article--infinitefeed {
+    @media($bp-smaller-than-desktop) {
+        display: block;
+        .o-article__left {
+            margin: 1em;
+            padding: 0;
+            width: 9em;
+            float: right;
+        }
+    }
+}
+
 [color-css-theme="light"], .lightmode {
     .article--infinitefeed {
         .o-article__headline {
