@@ -50,14 +50,27 @@
     }
 }
 
-.section_infinitefeed article.article--infinitefeed {
+.section_infinitefeed #feed article.article--infinitefeed {
     @media($bp-smaller-than-desktop) {
-        display: block;
-        .o-article__left {
-            margin: 1em;
-            padding: 0;
-            width: 9em;
-            float: right;
+        margin-inline: 1em;
+    }
+    display: block;
+    border-bottom: 1px solid #EEE !important;
+    .o-article__right {
+        width: auto;
+        padding-inline: 0.5em;
+    }
+    .o-article__left {
+        margin: 1em;
+        padding: 0;
+        width: 9em;
+        float: right;
+    }
+    .o-article__image {
+        border:none;
+        img {
+            border-radius: 0.5em;
+            border: 1px solid #EEE;
         }
     }
 }
