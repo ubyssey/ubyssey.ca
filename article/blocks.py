@@ -33,14 +33,14 @@ class PullQuoteBlock(blocks.StructBlock):
             ('left', 'Left'),
             ('right', 'Right'),   
         ],
-        default='default',
+        default='position_default',
     )
     style = blocks.ChoiceBlock(
         choices=[
             ('style_default', 'Default'),
             ('contrast', 'Contrast'),
         ],
-        default='default',
+        default='style_default',
     )
     source =  blocks.CharBlock(required=False)
     audio = DocumentChooserBlock(required=False, help_text="Optional, file format: .m4a, .mp4, .mp, .wav, or .ogg")
