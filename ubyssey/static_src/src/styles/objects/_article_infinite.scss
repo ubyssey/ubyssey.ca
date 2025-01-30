@@ -11,6 +11,12 @@
         flex-direction: column;
     }
 
+    .o-article__published {
+        margin-bottom: 0.5em;
+        font-size: 0.8em;
+        font-weight: 600;
+    }
+
     .o-article__headline {
         font-size: 1.3rem;
     }
@@ -40,6 +46,35 @@
 
         @media($bp-larger-than-mobile) {
             width: 35%;
+        }
+    }
+}
+
+.section_infinitefeed #feed article.article--infinitefeed {
+    @media($bp-smaller-than-desktop) {
+        margin-inline: 1em;
+    }
+    display: block;
+    border-bottom: 1px solid #EEE !important;
+    .o-article__right {
+        width: auto;
+        min-height: 10em;
+        padding-inline: 0.5em;
+    }
+    .o-article__left {
+        margin: 1em;
+        padding: 0;
+        width: 9em;
+        @media($bp-larger-than-phablet) {
+            width: 12em;
+        }
+        float: right;
+    }
+    .o-article__image {
+        border:none;
+        img {
+            border-radius: 0.5em;
+            border: 1px solid #EEE;
         }
     }
 }

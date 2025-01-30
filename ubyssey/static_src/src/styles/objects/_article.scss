@@ -12,6 +12,7 @@
   // Text
   font-family: $font-headline;
   font-weight: $font-weight-bold;
+  font-variation-settings: 'wght' 700;
   line-height: 1.15em;
   font-size: font-size(24);
 
@@ -180,7 +181,7 @@ ul.article-list, ol.article-list {
     display: flex;
   }
 
-  @media($bp-larger-than-desktop) {
+  @media($bp-smaller-than-phablet) {
     // Structure
     display: block;
   }

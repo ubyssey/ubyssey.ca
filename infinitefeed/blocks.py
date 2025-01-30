@@ -135,7 +135,7 @@ class SidebarLatestBlock(AbstractArticleList):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value["title"]
-        context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at')[:5]         
+        context['articles'] = ArticlePage.objects.live().public().exclude(current_section = "pages").order_by('-first_published_at')[:5]         
         return context
 
 class SidebarManualArticles(AbstractArticleList):
