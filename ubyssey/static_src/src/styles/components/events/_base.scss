@@ -738,3 +738,31 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
         margin-right: 1em;
     }
 }
+
+@media ($bp-smaller-than-desktop) {
+    .loader-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center;  
+        position: fixed;       
+        top: 0;                
+        left: 0;               
+        width: 100vw;          
+        height: 120vh;
+        z-index: 9999;        
+    }
+}
+
+@media ($bp-larger-than-desktop) {
+    .loader-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center;    
+        height: 100%;           
+        width: 100%;            
+        position: absolute;     
+        top: 0;
+        left: 0;
+        z-index: 10;
+    }
+}
