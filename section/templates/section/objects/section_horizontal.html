@@ -1,0 +1,21 @@
+{% load humanize %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="landing_stream_block__horizontal landing-stream-block__borders landing_stream_block u-container u-container--large u-container--padded">
+  <div class="landing_stream_block--header">
+    <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>
+    {% if description %}
+      {{description}}
+    {% endif %}
+  </div>
+<div class="landing_stream_block--flex-container">
+  {% for article in articles %}
+    {% include 'article/objects/article_column.html' with article=article style='article--round_with_border' lede=false byline=false %}
+  {% endfor %}
+</div>
+
+</div>

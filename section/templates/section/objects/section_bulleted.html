@@ -3,11 +3,11 @@
 
 <div>
 	{% if articles.0 %}
-	{% include 'article/objects/infinitefeed_item.html' with article=articles.0 padded=True %}
+	{% include 'article/objects/infinitefeed_item.html' with article=articles.0 padded=True expectedSection=section.slug %}
 	{% endif %}
 </div>
 <div>
-	<ul class="c-homepage__section__bullets" style="color: {{section.colour}}">
+	<ul class="c-homepage__section__bullets">
 		{% for article in articles %}
 		{% if forloop.counter != 1 %}
 			<li>{% include 'article/objects/bullet.html' with article=article %}</li>
@@ -16,7 +16,7 @@
 		<li>
 			<div class="o-article--bullet">
 				<h3 class="o-article__headline">
-					<a href="{% pageurl section %}">See more</a>
+					<a href="{{link}}">See more</a>
 				</h3>
 			</article>
 		</li>

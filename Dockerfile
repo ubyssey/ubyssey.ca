@@ -1,4 +1,4 @@
-FROM python:3.9-buster
+FROM python:3.10-bullseye
 COPY . /workspaces/ubyssey.ca/
 WORKDIR /workspaces/ubyssey.ca/
 # Installs some basics

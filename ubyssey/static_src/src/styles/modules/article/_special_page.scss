@@ -1,6 +1,15 @@
 // Special article-like page
 @import 'modules/variables';
 
+.page {
+  h1 {
+    font-family: $font-headline;
+    @media($bp-larger-than-phablet){ 
+      width: 60%;
+    }
+  }
+}
+
 .article-like-special-page {
 
   display: flex;
@@ -9,7 +18,7 @@
     flex-direction: row;
     padding-left: 20px;
     padding-right: 20px;
-    
+
     // Left column (content)
     .article-content {
       padding: 0 20px 0 0;
@@ -34,6 +43,10 @@
       :first-child {
         margin-top: 5px;
       }  
+    }
+
+    a {
+      text-decoration: underline;
     }
   }
 

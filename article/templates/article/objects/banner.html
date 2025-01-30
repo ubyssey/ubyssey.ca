@@ -51,10 +51,8 @@
                 <div class="headline-container">
                     <header class="u-container u-container--padded">
                         
-                        {% if self.title_tag %}
-                            <p class="title-tag">{{self.title_tag}}//</p>
-                        {% elif self.category %}
-                            <p class="title-tag">{{self.category.title}}//</p>
+                        {% if self.title_tag_str %}
+                            <p class="title-tag">{{self.title_tag_str}}//</p>
                         {% endif %}
                         
                         <h1 class="headline">

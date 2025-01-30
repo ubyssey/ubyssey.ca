@@ -1,0 +1,18 @@
+{% load humanize %}
+{% load cache %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<article class="article-promo u-container u-container--large u-container--padded">
+    <div class="o-article__section">From <a href="{{self.article.get_parent.url}}">{{self.article.get_parent.title}}</a></div>
+    <h2><a href="{% pageurl self.article %}">{{self.article.title}}</a></h2>
+    <div class="article-midsection-promo-div">
+        <div class="image">
+            {% image self.article.featured_media.first.image fill-680x476-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
+        </div>
+        <p class="lede"><b>{{ self.article.published_at|date:'N j' }}</b> {{self.article.lede|safe}} <i><a href="{% pageurl self.article %}">Read more.</a></i></p>
+    </div>
+</article>

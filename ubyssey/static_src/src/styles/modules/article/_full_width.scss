@@ -9,17 +9,14 @@ div.container.clearfix.fw-story,
 .c-article--isolation-last-article {
   @media($bp-smaller-than-phablet) {
     .article-content {
-
-      >p,
-      >h1,
-      >h2 {
-        padding-left: 1em;
-        padding-right: 1em;
+      > p,
+      > h1,
+      > h2 {
+        padding-inline: 1em;
       }
 
       div.caption {
-        padding-left: 1em;
-        padding-right: 1em;
+        padding-inline: 1em;
       }
     }
   }

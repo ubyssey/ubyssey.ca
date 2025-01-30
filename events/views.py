@@ -273,7 +273,7 @@ async def update_events(request):
             'default': 'community',
             'seminar_type': [633, 632, 634, 528, 530],
             'hidden_title_terms': ['coffee hour'],
-            'seminar_title_terms': ['Archaeology Lab Nights'],
+            'seminar_title_terms': ['Archaeology Lab Nights', 'Information Session'],
          },
         },
 
@@ -298,7 +298,8 @@ async def update_events(request):
          'api': 'https://english.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-             'seminar_type': [512, 515, 510, 513]
+             'seminar_type': [512, 515, 510, 513],
+             'seminar_title_terms': ['Information Session'],
          },
         },
 
@@ -306,7 +307,8 @@ async def update_events(request):
          'api': 'http://fhis.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_type': [534, 537, 532]
+            'seminar_type': [534, 537, 532],
+            'seminar_title_terms': ['Information Session'],
          },
         },
 
@@ -372,7 +374,7 @@ async def update_events(request):
          'api': 'https://ahva.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_type': [820, 926, 817, 930, 824, 825]
+            'seminar_type': [820, 926, 817, 930, 824, 825, 822]
          },
         },
 

@@ -31,6 +31,7 @@ module.exports = {
     'events': './src/js/events.jsx',
 
     'queer-substance-abuse': './src/js/queer-substance-abuse.js',
+    'nocturne-window-watching': './src/js/nocturne-window-watching.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
