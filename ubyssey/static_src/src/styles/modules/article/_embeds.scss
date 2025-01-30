@@ -442,69 +442,55 @@ img.image-attachment {
 }
 
 div.article-content blockquote.pull-quote {
-
-  margin-block: 15%;
-
-}
-
-.pull-quote {
-  min-width: 300px;
-  margin-inline: auto;
+  margin: 2em auto;
+  text-align: center;
 
   @media($bp-larger-than-phablet) {
-    margin-block: 15%;
+
+    &.right, &.left {
+      margin-inline: 1em;
+      max-width: 300px;
+      text-align: left;
+      p.meta {
+        span.source {
+          margin-left: 2.5em;
+          max-width: none;
+        }
+        .volume {
+          left: 0;
+        }
+      }
+    }
 
     &.right {
-      text-align: left;
       float: right;
-      max-width: 300px !important;
       margin-left: 2em;
-
-
     }
 
     &.left {
-      position: relative;
       float: left;
-      max-width: 300px !important;
       margin-right: 2em;
-      text-align: left;
-
-
     }
-
-    &.position_default {
-      margin-inline: auto;
-      text-align: center !important;
-
-    }
-
   }
 
-
-
   &.contrast {
-    background: #{$color-ubyssey-blue-light} !important;
-    color: black;
     padding: 1em;
-    border-radius: 20px;
-
+    background: #{$color-ubyssey-blue-light};
+    color: black;
+    border-radius: 1em;
   }
 
   p.quote {
-    margin-top: 0;
+    margin-block: 0;
     font: bold 1.625em/1.5em 'Minion Pro';
     color: inherit;
-
   }
 
   p.meta {
-    color: inherit;
     position: relative;
+    margin-block: 0;
 
-    margin-top: 10px;
-    margin-bottom: 0;
-
+    color: inherit;
     text-transform: uppercase;
     font-weight: 100;
     font-style: italic;
@@ -515,25 +501,20 @@ div.article-content blockquote.pull-quote {
     }
 
     .source {
-      color: inherit;
-
-      &.left,
-      &.right {
-        margin-left: 2.25em;
-      }
-
       display: inline-block;
       position: relative;
-      left: 25%;
-
+      max-width: 40%;
+      color: inherit;
     }
 
     .volume {
       position: absolute;
+      display: inline-block;
+      width: 1em;
+      
       left: 25%;
       top: 0.1rem;
-      display: inline-block;
-      width: 3%;
+
 
       &.volume-low {
         margin-left: 0.1em;
