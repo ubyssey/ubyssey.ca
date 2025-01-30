@@ -73,13 +73,15 @@ div.container.clearfix.fw-story,
     padding-right: 1em;
   }
 
-  .pull-quote {
-    &.left {
-      margin-left: 15%;
-    }
+  @media($bp-larger-than-phablet) {
+    .pull-quote {
+      &.left {
+        margin-left: 15%;
+      }
 
-    &.right {
-      margin-right: 15%
+      &.right {
+        margin-right: 15%
+      }
     }
   }
 }
