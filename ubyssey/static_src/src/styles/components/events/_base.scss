@@ -548,6 +548,10 @@ header.events{
         margin: 0.5em 0;
         list-style: none;
         flex-wrap: wrap;
+
+        @media($bp-smaller-than-phablet) {
+            flex-direction: column;
+        }
     
         li.legend-item {
             position: relative;
