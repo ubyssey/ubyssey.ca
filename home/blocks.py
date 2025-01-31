@@ -108,7 +108,10 @@ class LinksStreamBlock(blocks.StructBlock):
             elif (pubdate - timedelta(days=1)).date() == today.date():
                 day = "Tomorrow"
             elif delta.total_seconds() < timedelta(days=6).total_seconds():
-                day = pubdate.strftime("%a")
+                if events[i].start_time < today:
+                    day = pubdate.strftime("%A")
+                else:
+                    day = pubdate.strftime("%a")
             else:
                 day = pubdate.strftime("%B %-d") + ","
 
@@ -127,7 +130,8 @@ class LinksStreamBlock(blocks.StructBlock):
                 context["ongoing"].append(events[i])
             else:
                 context["upcoming"].append(events[i])
-
+        
+        context["ongoing"].sort(key=lambda e: e.end_time)
         return context
 
     class Meta:

@@ -4,7 +4,7 @@
     border-radius: 0.5em;
 
     h2, h3 {
-        font-family: noto-serif;
+        font-family: librefranklin;
         font-size: 1.17em;
     }
     p {
@@ -16,6 +16,7 @@
         } 
         .featured_event__time {
             margin-block: 0;
+            font-weight: 600;
             text-decoration: underline;
         }
         .featured_event__title {
@@ -27,11 +28,24 @@
         list-style: none;
         li {
             margin-bottom: 0.5em;
+            padding-left: 0.5em;
             display: -webkit-box;
+            border-left: 0.25em solid;
+
             overflow: clip;
             text-overflow: ellipsis;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
+
+            &.community {
+                border-color: rgb(150,200,250);
+            }
+            &.entertainment {
+                border-color: rgb(200,250,199)
+            }
+            &.sports {
+                border-color: (250,200,150)
+            }
         }
     }
     .see_more {
