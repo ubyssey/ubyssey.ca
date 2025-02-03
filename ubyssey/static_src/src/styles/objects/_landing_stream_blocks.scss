@@ -1,3 +1,4 @@
+@import 'modules/fonts';
 // Shared classes among landing stream blocks
 .landing_stream_block {
     margin: 3em auto 5em auto;
@@ -23,11 +24,25 @@
       }
     }
 
+    .landing_stream_block--header-small {
+      h2 {
+        font-size: 1.5em;
+        border-bottom: 1px solid;
+      }
+    }
+
     .landing_stream_block--flex-container {
       display: flex;
       position: relative;
       min-height: fit-content;
       margin-bottom: 2em;
+    }
+
+    .landing_stream_block--grid-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 0.5em;
     }
 
   @media($bp-smaller-than-phablet) {

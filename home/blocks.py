@@ -144,6 +144,7 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_horizontal.html', 'Horizontal'),
         ('section/objects/section_landing.html', 'Landing'),
+        ('section/objects/minimal_grid.html', 'Minimal grid'),
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
@@ -165,11 +166,11 @@ class ArticleGathererBlock(AbstractArticleList):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-
         if value['section']:
             context['title'] = value['section'].title
             context['description'] = value['section'].description
             context['link'] = value['section'].url
+            context['expectedSection'] = value['section'].slug
             context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
         else:
             context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at')
@@ -189,11 +190,17 @@ class ArticleGathererBlock(AbstractArticleList):
             context['title'] = value['category'].title
             context['description'] = value['category'].description
             context['link'] = value['category'].section_page.url + "category/" + value['category'].slug + "/"
+            context['expectedSection'] = value['category'].section_page.slug
             context['articles'] = context['articles'].filter(category=value['category'])
-        
+
+        if not 'title' in context:
+            context['title'] = "Latest stories"
+
         limit = 9
         if 'section/objects/section_horizontal.html' in value['template']:        
             limit = 4
+        if 'section/objects/minimal_grid.html' in value['template']:        
+            limit = 6
 
         context['articles'] = context['articles'][:limit]
 
