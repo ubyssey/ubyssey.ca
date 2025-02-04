@@ -1,3 +1,4 @@
+@import 'modules/fonts';
 // Shared classes among landing stream blocks
 .landing_stream_block {
     margin: 3em auto 5em auto;
@@ -23,11 +24,36 @@
       }
     }
 
+    .landing_stream_block--header-small {
+      h2 {
+        font-size: 1.5em;
+        border-bottom: 1px solid;
+      }
+    }
+
+    .landing_stream_block--header-blurb {
+      h2 {
+        font-family: $font-headline;
+        font-size: 1.5em;
+      }
+      margin-bottom: 1em;
+      font-family: $font-default;
+      font-weight: 500;
+      line-height: 1.75em;
+    }
+
     .landing_stream_block--flex-container {
       display: flex;
       position: relative;
       min-height: fit-content;
       margin-bottom: 2em;
+    }
+
+    .landing_stream_block--grid-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 0.5em;
     }
 
   @media($bp-smaller-than-phablet) {
@@ -107,6 +133,12 @@
     }
 }
 
+@media($bp-larger-than-phablet) {
+  .landing-stream-block_blurb-with-timeline .horizontal-timeline-wrap {
+    padding-inline: 1em;
+  }
+}
+
 // Article timeline
 .article-timeline {
     .timeline {
@@ -124,9 +156,6 @@
             }
         }
         .o-article__published {
-            @media($bp-larger-than-phablet) {
-              margin-top: -1.4em;
-            }
             margin-right: 0.5em;
             color: $color-ubyssey-blue;
             font-weight: 600;

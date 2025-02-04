@@ -21,6 +21,11 @@ ul.horizontal-timeline {
 
             border-radius: 100%;
         }
+        @media($bp-larger-than-phablet) {
+            &.timeline-dot .o-article__published,.o-article__seemore {
+                margin-top: -1.4em;
+            }
+        }
     }
     @media($bp-smaller-than-phablet) {
         padding-left: 5em;
@@ -41,6 +46,39 @@ ul.horizontal-timeline {
             &::before {
                 top: 0;
             }
+        }
+    }
+}
+
+ul.horizontal-timeline-wrap {
+    flex-wrap: wrap;
+    justify-content: left;
+    li {
+        @media($bp-larger-than-phablet) {
+            margin-bottom: 2em;
+        }
+        padding-top: 1em;
+        .o-article__headline {
+            margin-block: 1em;
+            font-size: 0.85em;
+        }
+
+        &.timeline-dot::before {
+            position: absolute;
+            width: 0.6em;
+            height: 0.6em;
+            border: 0.3em solid var(--background);
+
+            left: -0.7em;
+            top: -0.7em;
+            content: "";
+
+            border-radius: 100%;
+        }
+
+        &.timeline-dot .o-article__published,.o-article__seemore {
+            margin-top: 0;
+            margin-bottom: 1em;
         }
     }
 }

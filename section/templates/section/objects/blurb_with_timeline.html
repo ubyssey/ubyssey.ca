@@ -1,0 +1,39 @@
+{% load humanize %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="landing-stream-block__timeline landing-stream-block_blurb-with-timeline landing_stream_block u-container u-container--large u-container--padded">
+  <div class="landing_stream_block--header landing_stream_block--header-blurb">
+    <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>
+    {% if description %}
+      {{description}}
+    {% endif %}
+  </div>
+<div class="landing_stream_block--flex-container">
+	<ul class="horizontal-timeline horizontal-timeline-wrap">
+    {% for group in articles|group_by_date %}
+    <li class="timeline-dot{% if forloop.counter > 4 %} hide-mobile {%endif %}">
+      {% for article in group %}
+			<article class="o-article o-article--bullet">
+          {% ifchanged article.published_at|display_pubdate %}<p class="o-article__published">{{ article.published_at|display_pubdate }}</p>{% endifchanged %}
+          <h3 class="o-article__headline">
+            <a href={% pageurl article %}>{{ article.title|safe }}</a>
+          </h3>
+      </article>
+      {% endfor %}
+    </li>
+		{% endfor %}
+		<li class="timeline-dot">
+			<div class="o-article--bullet">
+				<h3 class="o-article__seemore">
+					<a href="{{link}}">See more</a>
+				</h3>
+			</article>
+		</li>
+	</ul>
+</div>
+
+</div>
