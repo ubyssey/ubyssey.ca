@@ -50,6 +50,35 @@
     }
 }
 
+.section_infinitefeed #feed article.article--infinitefeed {
+    @media($bp-smaller-than-desktop) {
+        margin-inline: 1em;
+    }
+    display: block;
+    border-bottom: 1px solid #EEE !important;
+    .o-article__right {
+        width: auto;
+        min-height: 10em;
+        padding-inline: 0.5em;
+    }
+    .o-article__left {
+        margin: 1em;
+        padding: 0;
+        width: 9em;
+        @media($bp-larger-than-phablet) {
+            width: 12em;
+        }
+        float: right;
+    }
+    .o-article__image {
+        border:none;
+        img {
+            border-radius: 0.5em;
+            border: 1px solid #EEE;
+        }
+    }
+}
+
 [color-css-theme="light"], .lightmode {
     .article--infinitefeed {
         .o-article__headline {

@@ -7,7 +7,9 @@ import {
     useNavigate,
 } from "react-router-dom";
 // import ReactDOM from 'react-dom';
-import axios from "axios";
+import Throbber from '../../../images/throbber.svg';
+import axios from 'axios';
+
 const BP_DESKTOP_SIZE = 1199;
 
 function useQuery() {
@@ -18,7 +20,6 @@ function useQuery() {
       try {
         return new URLSearchParams(search || "");
       } catch (error) {
-        console.error("Failed to parse query params:", error);
         return new URLSearchParams(); // Return an empty URLSearchParams object on failure
       }
     }, [search]);
@@ -68,6 +69,7 @@ export function QueryEventsCalendar() {
     const [start, setStart] = useState(getInitialStartDate());
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isMonthToggled, setIsMonthToggled] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     function getDate(month, year) {
         let newStartDate = new Date(year, month - 1, 1); // Month is 0-indexed
@@ -104,7 +106,6 @@ export function QueryEventsCalendar() {
             const year = parseInt(urlParams.get("year"));
             return getDate(month, year);
         } else{
-            console.log("No month and year");
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
@@ -120,7 +121,6 @@ export function QueryEventsCalendar() {
         let newStart = new Date(start);
 
         // Adjust the month based on the direction
-        console.log(direction);
         if (direction === 'next') {
             newStart = new Date(newStart.getTime() + (40*d));
         } else {
@@ -142,10 +142,8 @@ export function QueryEventsCalendar() {
     // Function to update the start date to the week of the first day of the previous or next month
     const handleMonthNavigation = (direction) => {
 
-        console.log("Handling month navigation");
         let newStart, newMonth, newYear;
         newStart = calculateNewStart(direction, start);
-        console.log("Handling month navigation");
         newMonth = newStart.month;
         newYear = newStart.year;    
 
@@ -155,7 +153,6 @@ export function QueryEventsCalendar() {
         window.history.pushState(null, '', `?${searchParams.toString()}`);
 
         // Set the new start date and other logic
-        console.log("Navigating to", newMonth, newYear);
         let newStartDate = new Date(newYear, newMonth - 1, 1); // Month is 0-indexed
 
         if (
@@ -213,6 +210,7 @@ export function QueryEventsCalendar() {
             }
 
             setEvents(res);
+            setIsLoading(false);
         })
         .catch((err) => console.log(err));
     }
@@ -248,13 +246,13 @@ export function QueryEventsCalendar() {
                                 aria-label="auto" 
                                 aria-live="polite"
                             >
-                                <svg className="sun-and-moon" aria-hidden="true" width="1.75em" height="1.75em" viewBox="0 0 24 24">
-                                    <mask className="moon" id="moon-mask">
+                                <svg class="sun-and-moon" aria-hidden="true" width="1.75em" height="1.75em" viewBox="0 0 24 24">
+                                    <mask class="moon" id="moon-mask{{id}}">
                                         <rect x="0" y="0" width="100%" height="100%" fill="white" />
                                         <circle cx="24" cy="10" r="6" fill="black" />
                                     </mask>
-                                    <circle className="sun" cx="12" cy="12" r="6" mask="url(#moon-mask)" fill="currentColor" />
-                                    <g className="sun-beams" stroke="currentColor">
+                                    <circle class="sun" cx="12" cy="12" r="6" mask="url(#moon-mask{{id}})" fill="currentColor" />
+                                    <g class="sun-beams" stroke="currentColor">
                                         <line x1="12" y1="1" x2="12" y2="3" />
                                         <line x1="12" y1="21" x2="12" y2="23" />
                                         <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
@@ -264,7 +262,7 @@ export function QueryEventsCalendar() {
                                         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
                                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
                                     </g>
-                                </svg>
+                                </svg>                            
                             </button>
                         </div>
                         <h1 class="title">Events around campus</h1>
@@ -273,7 +271,7 @@ export function QueryEventsCalendar() {
                     </header>
 
                     <div id="calendar-rows">
-                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} setIsMonthToggled={setIsMonthToggled} isMonthToggled={isMonthToggled}/>
+                        <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} setIsMonthToggled={setIsMonthToggled} isMonthToggled={isMonthToggled} isLoading={isLoading}/>
                     </div>
                 </div>
             
@@ -542,7 +540,7 @@ function EventsOptions({getInitialStartDate, handleMonthNavigation, setIsMonthTo
     );
 }
 
-function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode, getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isMonthToggled}) {
+function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode, getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isMonthToggled, isLoading}) {
 
     let query = useQuery();
     const s = 1000
@@ -607,8 +605,15 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             if (event.end_time.getTime() - event.start_time.getTime() >= d-h || event.start_time.getHours() == 0) {
                 event.displayTime = "";
             }
-            while(cur < new Date(event.end_time) || cur==event.start_time) {
-                const delta = Math.floor((cur.getTime() - start.getTime()) / d);
+
+            console.log(event.start_time);
+            while(cur < new Date(event.end_time) || cur.valueOf() == event.start_time.valueOf()) {
+                var delta = Math.floor((cur.getTime() - start.getTime()) / d);
+                if (getDateString(new Date(start.getTime() + (d*delta))) != getDateString(cur)) {
+                    delta = delta + 1;
+                }
+                console.log((cur.getTime() - start.getTime()) / d);
+                console.log(delta);
                 if (delta >= 0 && delta < (7*(numberOfWeeks))) {
                     calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
                 }
@@ -618,7 +623,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             }
             return calendar;
         }
-
+        console.log(start);
         calendar = events.reduce(placeEvents, calendar);
         return calendar;
     }
@@ -791,58 +796,79 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             </>
         )}
         </div>
-        <div class={"events-calendar--rows" + (!isMonthToggled ? " today-calendar" : "")}>{calendar.map((week, week_index) => 
 
+        {isPhablet && isLoading &&                           
+            <div className="loader-container">
+                <LoaderComponent width={50}/>
+            </div>}
+
+        {calendar.map((week, week_index) => (
             <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
-                {week_index===0 && 
-                    <h2 class="events-calendar--month">
+                {week_index === 0 && (
+                    <h2 className="events-calendar--month">
                         <span className="full">{week.month}</span>
                         <span className="short">{week.month_short}</span>
                     </h2>
-                }
-                {week.days.map((day, day_index) => 
-                    <>
-                        {(day.day === 1 && week_index !== 0 && !(isMonthToggled && isPhablet)) && (
-                            <h2 className="events-calendar--month">
-                                <span className="full">{week.month}</span>
-                                <span className="short">{week.month_short}</span>
-                            </h2>
-                        )}
-                        
-                        {/* Hide days in first week until day.day === 1 for mobile phone */}
-                        {!(isMonthToggled && week_index === 0 && day.day > 7 && isPhablet) && 
-                          !(week_index >= 4 && isPhablet && day.day < 7 && isMonthToggled) && (
-                            <div className={"day " + day.phase}>
-                                <button onClick={(e) => e.target.parentElement.parentElement.classList.toggle('enlarged')} className="events-calendar--number">
-                                    <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>{day.day}.
-                                </button>
-                                <ul>
-                                    {day.events.map((event) => (
-                                        <li className={(eventHash == event.hash && "selected") + " " + eventsTags(event)}>
-                                            <Link
-                                                title={event.title.replace("<br>", ", ")}
-                                                className="calendar-item"
-                                                to={"?event=" + event.hash}
-                                                event-url={event.event_url}
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    searchParams.set("event", event.hash);
-                                                    setSearchParams(searchParams);
-                                                }}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: "<b>" + event.displayTime + "</b> " + ((event.host && event.category=="seminar") ? event.host.replace("UBC ", "").split("for ").slice(-1)[0].split("of ").slice(-1)[0] + ":<br>" : "" ) + event.title,
-                                                }}
-                                            ></Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                    </>
                 )}
-
+                {week.days.map((day, day_index) => {
+                    const loaderWeek = Math.floor((numberOfWeeks - 1) / 2);
+                    const isMiddleDay = !isPhablet? week_index === loaderWeek && day_index === Math.floor(week.days.length / 2)
+                                                    : week_index === 0 && day_index === 0;
+                    return (
+                        <div key={day_index} className={"day " + day.phase}>
+                            {isMiddleDay && isLoading && !isPhablet &&
+                            <div className="loader-container">
+                                    <LoaderComponent width={60}/>
+                            </div>}
+                            <button
+                                onClick={(e) =>
+                                    e.target.parentElement.parentElement.classList.toggle("enlarged")
+                                }
+                                className="events-calendar--number"
+                            >
+                                <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>
+                                {day.day}.
+                            </button>
+                            <ul>
+                                {day.events.map((event) => (
+                                    <li
+                                        key={event.hash}
+                                        className={(eventHash === event.hash ? "selected " : "") + eventsTags(event)}
+                                    >
+                                        <Link
+                                            title={event.title.replace("<br>", ", ")}
+                                            className="calendar-item"
+                                            to={"?event=" + event.hash}
+                                            event-url={event.event_url}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                searchParams.set("event", event.hash);
+                                                setSearchParams(searchParams);
+                                            }}
+                                            dangerouslySetInnerHTML={{
+                                                __html:
+                                                    "<b>" +
+                                                    event.displayTime +
+                                                    "</b> " +
+                                                    (event.host && event.category === "seminar"
+                                                        ? event.host
+                                                            .replace("UBC ", "")
+                                                            .split("for ")
+                                                            .slice(-1)[0]
+                                                            .split("of ")
+                                                            .slice(-1)[0] + ":<br>"
+                                                        : "") +
+                                                    event.title,
+                                            }}
+                                        ></Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    );
+                })}
             </div>
-        )}</div>
+        ))}
 
         <div class="legend">
             <ul>
@@ -966,5 +992,13 @@ function EventInfoBox({event}) {
                 </p>
         </div>
     </div>
+    );
+}
+
+function LoaderComponent({ width }) {
+    return (
+        <div className="loader">
+            <Throbber />
+        </div>
     );
 }

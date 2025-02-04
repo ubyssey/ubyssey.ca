@@ -86,27 +86,32 @@ class LinksStreamBlock(blocks.StructBlock):
         from django.utils import timezone
         from datetime import timedelta
         context = super().get_context(value, parent_context)
-        context['events'] = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).exclude(category='seminar').order_by("start_time")[:5]
-
+        events = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).exclude(category='seminar').order_by("start_time")[:15]
+        context["ongoing"] = []
+        context["upcoming"] = []
         today = timezone.now().astimezone(timezone.get_current_timezone())
-        for i in range(len(context['events'])):
+        for i in range(len(events)):
             
-            if context['events'][i].start_time < today:
-                pubdate = context['events'][i].end_time.astimezone(timezone.get_current_timezone())
+            if events[i].start_time < today:
+                pubdate = events[i].end_time.astimezone(timezone.get_current_timezone())
                 display = "Ends "
             else:
-                pubdate = context['events'][i].start_time.astimezone(timezone.get_current_timezone())
+                if len(context["ongoing"]) + len(context["upcoming"]) > 5:
+                    break
+                pubdate = events[i].start_time.astimezone(timezone.get_current_timezone())
                 display = ""
                 
             delta = abs(today - pubdate)
 
-            day = ""
             if pubdate.date() == today.date():
-                day = "Today"
+                day = ""
             elif (pubdate - timedelta(days=1)).date() == today.date():
                 day = "Tomorrow"
             elif delta.total_seconds() < timedelta(days=6).total_seconds():
-                day = pubdate.strftime("%a")
+                if events[i].start_time < today:
+                    day = pubdate.strftime("%A")
+                else:
+                    day = pubdate.strftime("%a")
             else:
                 day = pubdate.strftime("%B %-d") + ","
 
@@ -118,11 +123,15 @@ class LinksStreamBlock(blocks.StructBlock):
                 time = time + pubdate.strftime("%P")
 
             display = display + day + time
-            
-            context['events'][i].display_time = display
+            events[i].display_time = display
+            events[i].title = events[i].title.replace("<br>", ", ")
 
-            context['events'][i].title = context['events'][i].title.replace("<br>", "")
-
+            if events[i].start_time < today:
+                context["ongoing"].append(events[i])
+            else:
+                context["upcoming"].append(events[i])
+        
+        context["ongoing"].sort(key=lambda e: e.end_time)
         return context
 
     class Meta:
@@ -188,7 +197,7 @@ class ArticleGathererBlock(AbstractArticleList):
 
         context['articles'] = context['articles'][:limit]
 
-        if "section/objects/single" in value['template'] and len(context['articles']) > 0:
+        if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
         
         return context
@@ -227,4 +236,8 @@ class ManualArticles(AbstractArticleList):
         context['description'] = value['description']
         context['link'] = value['link']
         context['articles'] = [article for article in value['articles']]
+
+        if len(context['articles']) > 0:
+            context['self']['article'] = context['articles'][0]
+
         return context

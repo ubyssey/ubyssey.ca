@@ -24,7 +24,7 @@ function getArticles() {
 
   $.ajax({
     type:"GET",
-    url: "/infinitefeed",
+    url: "/infinitefeed/",
     data:data,
     success: function(data) 
     {

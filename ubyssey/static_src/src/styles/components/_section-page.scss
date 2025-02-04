@@ -215,7 +215,7 @@
     margin-bottom: 0;
   }
 
-  @media($bp-smaller-than-phablet) {
+  @media($bp-smaller-than-desktop) {
     margin: 1em;
     margin-top: 0;
   }
@@ -268,7 +268,7 @@ svg.banner-title text{
 }
 
 .section_infinitefeed {
-  @media ($bp-larger-than-phablet) {
+  @media ($bp-larger-than-tablet) {
     width: 65%;
   }
 
