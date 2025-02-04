@@ -145,14 +145,15 @@ class EventManager(models.Manager):
                             'state': l['state'],                  
                         }
             async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
-                async with session.get(api + "events/?event_end_after=" + (timezone.now()-timedelta(days=7)).strftime("%Y-%m-%d") + "T00:00:00&page=1&per_page=100") as response:
+                async with session.get(api + "events/?order=desc&page=1&per_page=30") as response:
             
                     result = json.loads(await response.text())
                     #print("Connected to " + name)
                     
                     tasks = []
                     for i in result:
-                        tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize, locations)))
+                        if timezone.now() < datetime.fromisoformat(i['end']).astimezone(timezone.get_current_timezone()):
+                            tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize, locations)))
                     
                     await asyncio.gather(*tasks)
 
