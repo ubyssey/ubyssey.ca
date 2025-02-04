@@ -5,7 +5,7 @@
 {% load video_filters %}
 {% load articletags %}
 
-<div class="landing_stream_block u-container u-container--large u-container--padded">
+<div class="landing_stream_block u-container u-container--large u-container--padded {% if self.hide_mobile %}hide-mobile{% endif %}">
   {% if title %}
   <div class="landing_stream_block--header landing_stream_block--header-small">
     <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>

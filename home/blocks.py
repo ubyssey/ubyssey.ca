@@ -145,12 +145,20 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/section_horizontal.html', 'Horizontal'),
         ('section/objects/section_landing.html', 'Landing'),
         ('section/objects/minimal_grid.html', 'Minimal grid'),
+        ('section/objects/blurb_with_timeline.html', 'Blurb with timeline'),
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
     ]
     
 class ArticleGathererBlock(AbstractArticleList):
+    title = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Fill in to overwrite title"
+        )
+    description = blocks.TextBlock(required=False,
+                                   help_text="Fill in to overwrite description")
     section = field_block.PageChooserBlock(
         page_type='section.SectionPage',
         required=False
@@ -163,6 +171,9 @@ class ArticleGathererBlock(AbstractArticleList):
         required=False
     )
     template = MidStreamListTemplates()
+    hide_mobile = field_block.BooleanBlock(required=False,
+                                           help_text="If checked, will hide on small devices",
+                                           default=False)
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
@@ -173,7 +184,7 @@ class ArticleGathererBlock(AbstractArticleList):
             context['expectedSection'] = value['section'].slug
             context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
         else:
-            context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at')
+            context['articles'] = ArticlePage.objects.live().public().exclude(current_section = "pages").order_by('-first_published_at')
 
         if value['tag_slug']:
             if Tag.objects.filter(slug=value['tag_slug']).exists():
@@ -196,10 +207,16 @@ class ArticleGathererBlock(AbstractArticleList):
         if not 'title' in context:
             context['title'] = "Latest stories"
 
+        if value["title"]:
+            context['title'] = value["title"]
+
+        if value["description"]:
+            context['description'] = value["description"]
+
         limit = 9
         if 'section/objects/section_horizontal.html' in value['template']:        
             limit = 4
-        if 'section/objects/minimal_grid.html' in value['template']:        
+        elif 'section/objects/minimal_grid.html' in value['template']:        
             limit = 6
 
         context['articles'] = context['articles'][:limit]

@@ -31,6 +31,17 @@
       }
     }
 
+    .landing_stream_block--header-blurb {
+      h2 {
+        font-family: $font-headline;
+        font-size: 1.5em;
+      }
+      margin-bottom: 1em;
+      font-family: $font-default;
+      font-weight: 500;
+      line-height: 1.75em;
+    }
+
     .landing_stream_block--flex-container {
       display: flex;
       position: relative;
@@ -122,6 +133,12 @@
     }
 }
 
+@media($bp-larger-than-phablet) {
+  .landing-stream-block_blurb-with-timeline .horizontal-timeline-wrap {
+    padding-inline: 1em;
+  }
+}
+
 // Article timeline
 .article-timeline {
     .timeline {
@@ -139,9 +156,6 @@
             }
         }
         .o-article__published {
-            @media($bp-larger-than-phablet) {
-              margin-top: -1.4em;
-            }
             margin-right: 0.5em;
             color: $color-ubyssey-blue;
             font-weight: 600;
