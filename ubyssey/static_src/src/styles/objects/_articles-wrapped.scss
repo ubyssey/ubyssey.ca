@@ -1,0 +1,37 @@
+.article-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Adjust spacing between articles */
+    justify-content: space-between;
+
+    .headline-top {
+        flex: 1;
+        min-width: 250px; /* Ensure they don't shrink too much */
+        max-width: calc(25% - 20px); /* Four in a row */
+        box-sizing: border-box;
+    }
+
+    .o-article--default {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Ensure images fit properly */
+    .headline-top .left img {
+        width: 100%;
+        height: auto;
+    }
+
+    /* Responsive: Stack on smaller screens */
+    @media (max-width: 1024px) {
+        .headline-top {
+            max-width: calc(50% - 20px); /* Two in a row on medium screens */
+        }
+    }
+
+    @media (max-width: 600px) {
+        .headline-top {
+            max-width: 100%; /* Full width on small screens */
+        }
+    }
+}

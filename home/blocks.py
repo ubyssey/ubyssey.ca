@@ -147,6 +147,7 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
+        ('section/objects/single_top-headline_with_wrapped_articles.html', 'Single article with wrapped articles below'),
     ]
     
 class ArticleGathererBlock(AbstractArticleList):

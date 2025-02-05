@@ -1,0 +1,14 @@
+{% load humanize %}
+{% load cache %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="article-timeline landing_stream_block u-container u-container--large">
+    {% with first_article=articles|first remaining_articles=articles|slice:"1:5" %}
+        {% include 'article/objects/article_top-headline.html' with article=first_article %}
+        {% include 'article/objects/articles_wrapped.html' with articles=remaining_articles %}
+    {% endwith %}
+</div>
