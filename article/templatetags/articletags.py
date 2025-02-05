@@ -117,8 +117,6 @@ def group_by_date(value):
             article.pubTime = article.explicit_published_at
         else:
             article.pubTime = article.first_published_at
-
-        print(display_pubdate(article.pubTime))
         if len(groups) < 1:
             groups.append([article])
         else:
