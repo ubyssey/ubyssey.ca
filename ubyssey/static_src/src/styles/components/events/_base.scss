@@ -531,22 +531,47 @@ header.events{
 .legend {
     margin-bottom: 5em;
     width: 75%;
-    @media($bp-smaller-than-phablet) {
-        margin: 0.5em 0 1em 0;
+    li.selection-toggle {
+        margin: 0;
+        button {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            margin: 0;
+            border-radius: 0.25em;
+            background-color: #0071c9;
+            color: white;
+        }
     }
     ul {
         display: flex;
         padding: 0;
-        margin: 0;
+        margin: 0.5em 0;
+        list-style: none;
         flex-wrap: wrap;
+
+        @media($bp-smaller-than-phablet) {
+            flex-direction: column;
+        }
     
-        li {
-            margin-left: 3em;
+        li.legend-item {
+            position: relative;
+            margin-left: 2em;
+            margin-block: 0.2em;
+            padding-left: 1em;
             font-family: noto-sans;
         }
-        li::marker {
-            color: var(--highlight);
+        li.legend-item::before {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0.45em;
+            width: 0.3em;
+            height: 0.3em;
+
+            background-color: var(--highlight);
+            border-radius: 100%;
             font-size: 1.5em;
+            content: "";
         }
     }
 
@@ -570,6 +595,16 @@ header.events{
         font-weight: 500;
         font-size: inherit;
         line-height: unset;
+    }
+
+    @media($bp-smaller-than-phablet) {
+        margin: 0.5em 1em 1em 1em;
+        li.legend-item {
+            margin-left: 1em;
+        }
+        li.selection-toggle {
+            margin: 1em;
+        }
     }
 }
 .events-calendar--navigation {
@@ -701,5 +736,33 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
         // position: absolute;
         // left: 3em;
         margin-right: 1em;
+    }
+}
+
+@media ($bp-smaller-than-desktop) {
+    .loader-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center;  
+        position: fixed;       
+        top: 0;                
+        left: 0;               
+        width: 100vw;          
+        height: 120vh;
+        z-index: 9999;        
+    }
+}
+
+@media ($bp-larger-than-desktop) {
+    .loader-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center;    
+        height: 100%;           
+        width: 100%;            
+        position: absolute;     
+        top: 0;
+        left: 0;
+        z-index: 10;
     }
 }

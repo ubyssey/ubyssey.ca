@@ -113,7 +113,7 @@ def get_id(value):
 def group_by_date(value):
     groups = []
     for article in value:
-        if hasattr(article, 'article.explicit_published_at'):
+        if hasattr(article, 'explicit_published_at'):
             article.pubTime = article.explicit_published_at
         else:
             article.pubTime = article.first_published_at

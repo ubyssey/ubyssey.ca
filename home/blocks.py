@@ -86,27 +86,32 @@ class LinksStreamBlock(blocks.StructBlock):
         from django.utils import timezone
         from datetime import timedelta
         context = super().get_context(value, parent_context)
-        context['events'] = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).exclude(category='seminar').order_by("start_time")[:5]
-
+        events = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).exclude(category='seminar').order_by("start_time")[:15]
+        context["ongoing"] = []
+        context["upcoming"] = []
         today = timezone.now().astimezone(timezone.get_current_timezone())
-        for i in range(len(context['events'])):
+        for i in range(len(events)):
             
-            if context['events'][i].start_time < today:
-                pubdate = context['events'][i].end_time.astimezone(timezone.get_current_timezone())
+            if events[i].start_time < today:
+                pubdate = events[i].end_time.astimezone(timezone.get_current_timezone())
                 display = "Ends "
             else:
-                pubdate = context['events'][i].start_time.astimezone(timezone.get_current_timezone())
+                if len(context["ongoing"]) + len(context["upcoming"]) > 5:
+                    break
+                pubdate = events[i].start_time.astimezone(timezone.get_current_timezone())
                 display = ""
                 
             delta = abs(today - pubdate)
 
-            day = ""
             if pubdate.date() == today.date():
-                day = "Today"
+                day = ""
             elif (pubdate - timedelta(days=1)).date() == today.date():
                 day = "Tomorrow"
             elif delta.total_seconds() < timedelta(days=6).total_seconds():
-                day = pubdate.strftime("%a")
+                if events[i].start_time < today:
+                    day = pubdate.strftime("%A")
+                else:
+                    day = pubdate.strftime("%a")
             else:
                 day = pubdate.strftime("%B %-d") + ","
 
@@ -118,11 +123,15 @@ class LinksStreamBlock(blocks.StructBlock):
                 time = time + pubdate.strftime("%P")
 
             display = display + day + time
-            
-            context['events'][i].display_time = display
+            events[i].display_time = display
+            events[i].title = events[i].title.replace("<br>", ", ")
 
-            context['events'][i].title = context['events'][i].title.replace("<br>", "")
-
+            if events[i].start_time < today:
+                context["ongoing"].append(events[i])
+            else:
+                context["upcoming"].append(events[i])
+        
+        context["ongoing"].sort(key=lambda e: e.end_time)
         return context
 
     class Meta:
@@ -133,45 +142,88 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
     choices=[
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
+        ('section/objects/section_horizontal.html', 'Horizontal'),
         ('section/objects/section_landing.html', 'Landing'),
+        ('section/objects/minimal_grid.html', 'Minimal grid'),
+        ('section/objects/blurb_with_timeline.html', 'Blurb with timeline'),
+        ('section/objects/single_promo.html', 'Single (promo)'),
+        ('section/objects/single_top-headline.html', 'Single (top headline)'),
+        ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
     ]
-
-class SectionBlock(AbstractArticleList):
+    
+class ArticleGathererBlock(AbstractArticleList):
+    title = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Fill in to overwrite title"
+        )
+    description = blocks.TextBlock(required=False,
+                                   help_text="Fill in to overwrite description")
     section = field_block.PageChooserBlock(
-        page_type='section.SectionPage'
+        page_type='section.SectionPage',
+        required=False
+    )
+    category = SnippetChooserBlock('section.CategorySnippet',
+        required=False
+    )
+    tag_slug = field_block.CharBlock(
+        help_text="Enter tag slug. For example for 'Christmas Movie' the slug would be 'christmas-movie'.",
+        required=False
     )
     template = MidStreamListTemplates()
+    hide_mobile = field_block.BooleanBlock(required=False,
+                                           help_text="If checked, will hide on small devices",
+                                           default=False)
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-        context['title'] = value['section'].title
-        context['link'] = value['section'].url
-        context['articles'] = value['section'].get_featured_articles(number_featured=9)          
-        return context
-    
-class TagBlock(AbstractArticleList):
-    tag_slug = field_block.CharBlock(help_text="Enter tag slug. For example for 'Christmas Movie' the slug would be 'christmas-movie'.")
-    template = MidStreamListTemplates()
+        if value['section']:
+            context['title'] = value['section'].title
+            context['description'] = value['section'].description
+            context['link'] = value['section'].url
+            context['expectedSection'] = value['section'].slug
+            context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
+        else:
+            context['articles'] = ArticlePage.objects.live().public().exclude(current_section = "pages").order_by('-first_published_at')
 
-    def get_context(self, value, parent_context=None):
-        context = super().get_context(value, parent_context=parent_context)
-        if Tag.objects.filter(slug=value['tag_slug']).exists():
-            tag = Tag.objects.get(slug=value['tag_slug'])
-            context['title'] = tag.name
-            context['link'] = '/tag/' + value['tag_slug']
-            context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at').filter(tags__slug=value["tag_slug"])[:9]
-        return context
-    
-class CategoryBlock(AbstractArticleList):
-    category = SnippetChooserBlock('section.CategorySnippet')
+        if value['tag_slug']:
+            if Tag.objects.filter(slug=value['tag_slug']).exists():
+                tag = Tag.objects.get(slug=value['tag_slug'])
+                context['title'] = tag.name
+                if value['section']:
+                    context['description'] = "Stories on '" + tag.name + "' in " + value['section'].title
+                else:
+                    context['description'] = None
+                context['link'] = '/tag/' + value['tag_slug']
+                context['articles'] = context['articles'].filter(tags__slug=value["tag_slug"])
 
-    template = MidStreamListTemplates()
+        if value['category']:
+            context['title'] = value['category'].title
+            context['description'] = value['category'].description
+            context['link'] = value['category'].section_page.url + "category/" + value['category'].slug + "/"
+            context['expectedSection'] = value['category'].section_page.slug
+            context['articles'] = context['articles'].filter(category=value['category'])
 
-    def get_context(self, value, parent_context=None):
-        context = super().get_context(value, parent_context=parent_context)
-        context['title'] = value['category'].title
-        context['link'] = value['category'].section_page.url + "category/" + value['category'].slug
-        context['articles'] = ArticlePage.objects.live().public().filter(category=value['category']).order_by('-first_published_at')[:9]
+        if not 'title' in context:
+            context['title'] = "Latest stories"
+
+        if value["title"]:
+            context['title'] = value["title"]
+
+        if value["description"]:
+            context['description'] = value["description"]
+
+        limit = 9
+        if 'section/objects/section_horizontal.html' in value['template']:        
+            limit = 4
+        elif 'section/objects/minimal_grid.html' in value['template']:        
+            limit = 6
+
+        context['articles'] = context['articles'][:limit]
+
+        if len(context['articles']) > 0:
+            context['self']['article'] = context['articles'][0]
+        
         return context
     
 class SpecialLandingPageBlock(AbstractArticleList):
@@ -188,10 +240,28 @@ class SpecialLandingPageBlock(AbstractArticleList):
         return context
     
 
-class ArticlePromo(blocks.StructBlock):
-    article = field_block.PageChooserBlock(
-        page_type='article.ArticlePage'
+class ManualArticles(AbstractArticleList):
+    title = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        )
+    description = blocks.TextBlock(required=False)
+    link = blocks.URLBlock(required=False)
+    template = MidStreamListTemplates()
+    articles = blocks.ListBlock(
+        field_block.PageChooserBlock(
+            page_type='article.ArticlePage'
+        )
     )
 
-    class Meta:
-        template = "home/stream_blocks/special/article_midsection.html"
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['title']
+        context['description'] = value['description']
+        context['link'] = value['link']
+        context['articles'] = [article for article in value['articles']]
+
+        if len(context['articles']) > 0:
+            context['self']['article'] = context['articles'][0]
+
+        return context

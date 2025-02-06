@@ -2,6 +2,7 @@ $text-color: var(--text_color);
 
 .featured-media {
   margin-bottom: 2em;
+
   img {
     width: 100%;
     height: auto;
@@ -21,6 +22,7 @@ $text-color: var(--text_color);
   h3 {
     padding-left: 1rem;
     color: white;
+
     p {
       color: white;
       font-weight: lighter;
@@ -46,6 +48,7 @@ div.article-content .disclaimer {
 
   color: $color-ubyssey-blue;
   font-family: $font-body;
+
   p {
     margin-top: 0;
     color: $color-ubyssey-blue;
@@ -130,6 +133,7 @@ div.article-content .disclaimer {
   float: left;
   color: var(--article_info);
   font-weight: $font-weight-normal;
+
   @media($bp-larger-than-tablet) {
     display: inline-block;
     margin-right: 0.75em;
@@ -148,7 +152,10 @@ div.article-content .disclaimer {
   color: #fff;
 }
 
-.visuallyhidden{position:absolute;clip:rect(1px,1px,1px,1px)}
+.visuallyhidden {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px)
+}
 
 .c-share_space {
   padding-right: 1em;
@@ -200,18 +207,40 @@ div.article-content {
     text-align: right;
   }
 
+  h1, h2, h3, h4 {
+    > a {
+      text-decoration: none;
+      background-image: linear-gradient($color-ubyssey-blue, $color-ubyssey-blue);
+      background-position: 0 calc(100% - 0.1em);
+      background-repeat: no-repeat;
+      background-size: 100% 0.25em;
+      transition: background-size 0.3s ease;
+      color: inherit;
+      position: relative;
+      z-index: 1;
+      
+      &:hover {
+        background-size: 100% 100%;
+        color: #fff;
+      }
+    } 
+  }
+
   > p,
   > h1,
   > h2 {
     margin-top: 1.8em;
     margin-bottom: 0;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-inline: 10px;
   }
-  > h3,
-  > ul,
-  > .attachment.pull-quote {
+
+  >h3,
+  >ul {
     padding-right: $article-content-div-child-padding;
+  }
+
+  >.attachment.pull-quote {
+    padding-inline: $article-content-div-child-padding;
   }
 
   div.caption {
@@ -231,10 +260,11 @@ div.article-content {
     }
   }
 
-  > ul {
+  >ul {
     padding-left: $article-content-ul-padding-left + 15;
     padding-right: 15px;
-    @media($bp-larger-than-phablet){
+
+    @media($bp-larger-than-phablet) {
       padding-left: $article-content-ul-padding-left;
       max-width: 585px - $article-content-ul-padding-left;
       padding-right: 0;
@@ -248,33 +278,37 @@ div.article-content {
     aspect-ratio: calc(80 / var(--aspect-ratio));
     box-sizing: initial;
 
-    @media($bp-larger-than-phablet){
-      &.right, &.left {
+    @media($bp-larger-than-phablet) {
+
+      &.right,
+      &.left {
         height: auto;
         margin: 0;
         margin-top: 15px !important;
       }
+
       &.right {
         margin-left: 15px !important;
         float: right;
         clear: right;
       }
+
       &.left {
         margin-right: 15px !important;
         float: left;
         clear: left;
       }
-  
+
       &.small {
-        width:100px;
+        width: 100px;
       }
-  
+
       &.medium {
-        width:200px;
+        width: 200px;
       }
-  
+
       &.large {
-        width:300px;
+        width: 300px;
       }
     }
 
@@ -282,12 +316,14 @@ div.article-content {
       position: absolute;
       bottom: 0;
       z-index: 100;
+
       button {
         opacity: 1;
         background-color: #A9A9A9;
         background-image: none;
         transition: background-color .6s ease;
-        &.active{
+
+        &.active {
           background-color: #545454;
         }
       }
@@ -304,6 +340,7 @@ div.article-content {
         display: flex;
         flex-direction: column;
         justify-content: center;
+
         img {
           margin-inline: auto;
           width: auto;
@@ -317,11 +354,12 @@ div.article-content {
       display: flex;
     }
 
-    .carousel-control-next, .carousel-control-prev {
+    .carousel-control-next,
+    .carousel-control-prev {
       margin: 0;
       opacity: 1;
       font-size: 1em;
-      
+
       ion-icon {
         padding: 4px;
         width: 20px;
@@ -350,7 +388,9 @@ div.caption {
 
 div.article-content {
 
-  > p, > ul, > ol {
+  >p,
+  >ul, 
+  >ol {
     font-family: $font-body;
     font-weight: $font-weight-normal;
     font-size: font-size(17);
@@ -364,20 +404,21 @@ div.article-content {
       font-weight: 600;
       transition-duration: 0.5s;
       color: $color-ubyssey-blue;
-      &:hover{
+
+      &:hover {
         color: $color-ubyssey-blue;
       }
     }
 
     &:first-child {
-        margin-top: 5px;
-        margin-right: auto;
-        /*font-weight: bold;
+      margin-top: 5px;
+      margin-right: auto;
+      /*font-weight: bold;
         font-size: font-size(19);*/
     }
   }
 
-  > h1 {
+  >h1 {
     font-family: $font-default;
     font-weight: normal;
     font-size: 28px;
@@ -390,17 +431,20 @@ div.article-content {
 
   >p.tag-link {
     margin-top: 2em;
+
     a {
       text-transform: capitalize;
       color: #0071c9;
       text-decoration: none;
       border: none;
     }
+
     i.fa-rss {
       margin-left: 0.53em;
     }
   }
 }
+
 @media($bp-larger-than-mobile) {
   header.headline-container {
     padding: 0;
@@ -410,6 +454,7 @@ div.article-content {
 
 // Article-list
 #article-list {
+
   // Hide when printed
   @media print {
     display: none;
@@ -421,9 +466,9 @@ div.article-content {
   font-size: font-size(19);
 }
 
-p.author-string > a {
+p.author-string>a {
   font-weight: 600;
-  color: $color-ubyssey-blue;  
+  color: $color-ubyssey-blue;
 }
 
 p.c-article__published-at {
