@@ -389,7 +389,8 @@ div.caption {
 div.article-content {
 
   >p,
-  >ul {
+  >ul, 
+  >ol {
     font-family: $font-body;
     font-weight: $font-weight-normal;
     font-size: font-size(17);
