@@ -121,6 +121,12 @@
   font-size: 1%;
 }
 
+.above-headline {
+  .o-article__section {
+    margin-left: 0.5em;
+  }
+}
+
 .o-article__section {
   margin-bottom: 0.25em;
   padding-inline: 0.2em;

@@ -4,15 +4,16 @@
     margin: 3em auto 5em auto;
   
     .landing_stream_block--header {
-      font-family: $font-headline;
-      font-weight: 800;
-      font-variation-settings: "wght" 800;
       margin-block: 2em;
+      font-family: $font-default;
+      font-weight: 800;
       h2 {
         display: inline;
         margin-right: 0.5em;
         text-transform: capitalize;
         font-size: 2.5em;
+        font-family: $font-headline;
+        font-variation-settings: "wght" 800;
       }
       @media($bp-smaller-than-phablet) {
         padding-inline: 1em;
@@ -33,11 +34,9 @@
 
     .landing_stream_block--header-blurb {
       h2 {
-        font-family: $font-headline;
         font-size: 1.5em;
       }
       margin-bottom: 1em;
-      font-family: $font-default;
       font-weight: 500;
       line-height: 1.75em;
     }
@@ -133,10 +132,16 @@
     }
 }
 
-@media($bp-larger-than-phablet) {
-  .landing-stream-block_blurb-with-timeline .horizontal-timeline-wrap {
-    padding-inline: 1em;
+.landing-stream-block_blurb-with-timeline {
+  margin-bottom: 0;
+  .landing_stream_block--flex-container {
+    margin-bottom: 0;
   }
+  @media($bp-larger-than-phablet) {
+    .horizontal-timeline-wrap {
+       padding-inline: 1em;
+     }
+   }
 }
 
 // Article timeline
