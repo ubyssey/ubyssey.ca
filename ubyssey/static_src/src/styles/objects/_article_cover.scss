@@ -52,11 +52,9 @@
     .o-article__image {
       width: 100%;
       display: flex;
-      clip-path: inset(0% 0% 0% 0%);
   
       img {
         margin: auto;
-        max-height: 100%;
       }
     }
   
