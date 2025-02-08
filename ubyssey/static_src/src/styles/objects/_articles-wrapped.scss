@@ -6,7 +6,7 @@
 
     .headline-top {
         flex: 1 1 calc(25% - 24px); /* 4 articles per row */
-        min-width: 200px; /* Ensures responsiveness */
+        min-width: 200px; 
         box-sizing: border-box;
         padding-bottom: 24px;
     }
@@ -14,8 +14,18 @@
     /* Add vertical separator between articles */
     .headline-top:not(:nth-child(4n)) {
         border-right: 1px solid #ddd;
-        padding-right: 1.7vw; /* Adjust this value to push the border */
     }
+
+    .headline-top {
+        &:nth-child(4n+1) {
+            padding-right: 1vw;
+        }
+    }
+    
+    /* Add padding-left to every article except the first in each row */
+    .headline-top:not(:nth-child(4n + 1)) {
+        padding-left: 1.4vw;
+    }    
 
     .o-article--default {
         display: flex;
