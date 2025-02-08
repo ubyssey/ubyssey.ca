@@ -1,37 +1,81 @@
 .article-wrap {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Adjust spacing between articles */
+    gap: 24px;
     justify-content: space-between;
 
     .headline-top {
-        flex: 1;
-        min-width: 250px; /* Ensure they don't shrink too much */
-        max-width: calc(25% - 20px); /* Four in a row */
+        flex: 1 1 calc(25% - 24px); /* 4 articles per row */
+        min-width: 200px; /* Ensures responsiveness */
         box-sizing: border-box;
+        padding-bottom: 24px;
+    }
+
+    /* Add vertical separator between articles */
+    .headline-top:not(:nth-child(4n)) {
+        border-right: 1px solid #ddd;
+        padding-right: 1.7vw; /* Adjust this value to push the border */
     }
 
     .o-article--default {
         display: flex;
         flex-direction: column;
+        gap: 8px;
     }
 
-    /* Ensure images fit properly */
-    .headline-top .left img {
+    .left img {
         width: 100%;
         height: auto;
+        object-fit: cover;
     }
 
-    /* Responsive: Stack on smaller screens */
-    @media (max-width: 1024px) {
+    .above-headline {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    h2 {
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 1.4;
+        margin: 8px 0;
+    }
+
+    .o-article__byline {
+        font-size: 14px;
+    }
+
+    .o-article__published {
+        color: $color-ubyssey-blue;
+    }    
+
+    /* Tablet: 2 in a row if article width goes below 200px */
+    @media ($bp-smaller-than-desktop), (max-width: 799px) {
         .headline-top {
-            max-width: calc(50% - 20px); /* Two in a row on medium screens */
+            flex: 1 1 calc(50% - 24px); /* 2 articles per row */
+        }
+        .headline-top:not(:nth-child(2n)) {
+            border-right: 1px solid #ddd;
+        }
+        .headline-top:nth-child(2n) {
+            border-right: none;
+        }
+        .o-article--default {
+            padding: 1rem;
         }
     }
 
-    @media (max-width: 600px) {
+    /* Mobile: 1 article per row */
+    @media ($bp-smaller-than-phablet) {
         .headline-top {
-            max-width: 100%; /* Full width on small screens */
+            flex: 1 1 100%;
+            border-right: none;
+        }
+    }
+    
+    @media ($bp-larger-than-desktop) {
+        .left img {
+            max-width: 200px;
         }
     }
 }
