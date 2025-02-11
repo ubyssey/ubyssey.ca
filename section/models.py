@@ -16,7 +16,7 @@ from modelcluster.fields import ParentalKey
 
 
 from wagtail.admin.panels import TitleFieldPanel, FieldPanel, InlinePanel, MultiFieldPanel
-from wagtail.fields import StreamField
+from wagtail.fields import StreamField, RichTextField
 from wagtail import models as wagtail_core_models
 from wagtail.models import Page
 from wagtail.contrib.routable_page.models import route, RoutablePageMixin
@@ -167,7 +167,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         related_name='banner',
     )
 
-    description = models.TextField(
+    description = RichTextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
         null=False,
         blank=True,
