@@ -182,6 +182,7 @@
 }
 
 .c-section__description {
+  margin-block: 1em;
   padding-inline: 1em; 
   display: inline-block;
   box-sizing: border-box;
@@ -259,11 +260,18 @@ svg.banner-title text{
     text-transform: uppercase;
     color: $color-ubyssey-blue;
   }
-  p.c-section__description {
-    max-width: 600px;
-    font-size: 0.9em;
+  .c-section__description {
     font-weight: 600;
     font-variation-settings: "wght" 600;
+    p {
+      display: inline;
+      max-width: 600px;
+      font-size: 0.9em;
+      a {
+        font-style: italic;
+        text-decoration: underline;
+      }
+    }
   }
 }
 
