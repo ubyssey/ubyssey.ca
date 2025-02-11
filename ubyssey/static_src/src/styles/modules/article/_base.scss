@@ -62,6 +62,10 @@ div.article-content .disclaimer {
 
 .c-article--default {
 
+  .author_card {
+    margin-left: 0;
+  }
+
   .o-headline--article {
     @media($bp-larger-than-tablet) {
       line-height: 1.277em;
@@ -442,6 +446,20 @@ div.article-content {
     i.fa-rss {
       margin-left: 0.53em;
     }
+  }
+
+  .time-stamp {
+    font-style: italic;
+    span {
+      display: inline-block;
+    }
+  }
+  
+  .report a {
+    color: var(--text_color);
+    font-family: $font-default;
+    font-style: italic;
+    font-weight: 400;
   }
 }
 
