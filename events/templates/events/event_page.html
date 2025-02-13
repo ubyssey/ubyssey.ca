@@ -13,7 +13,7 @@
         --highlight: {{value}};
     }
     div.day li.{{key|slugify}} {
-        color: black !important;    
+        color: black !important;
     }
 {% endfor %}
 </style>
@@ -21,14 +21,14 @@
 {% endblock %}
 
 {% block head_scripts%}
-{% comment %} 
+{% comment %}
 ical, rss feed, and api should be linked here
 {% endcomment %}
 <link rel="alternate" type="text/calendar" title="{{ical.title}}" href="{{ical.url}}" />
 <link rel="alternate" type="application/atom+xml" title="{{rss.title}}" href="{{rss.url}}">
 {% endblock %}
 
-{% block header %}  
+{% block header %}
 {% endblock %}
 
 {% block content %}
@@ -95,7 +95,7 @@ ical, rss feed, and api should be linked here
                                 <span class="events-calendar--number-dayOfWeek">{{day.day_of_week}} </span>{{day.day}}.
                             </button>
                             <ul>
-                            {% for event in day.events %} 
+                            {% for event in day.events %}
                                 <li class="{% if event.host %}{{event.host|slugify}} {% endif %}{% if event.category %}{{event.category}} {% endif %}{% if event.event_url == selectedEvent.event_url %}selected{% endif %}"
                                 {% if highlight == 'category' and event.category == 'seminar' %}style="display: none;"{% endif %}>
                                 <a title="{{event.title}}" class="calendar-item" href="?event={{event.event_url}}" event-url="{{event.event_url}}">
@@ -165,7 +165,7 @@ ical, rss feed, and api should be linked here
 <script>
     $('.calendar-item').click(function (e) {
         e.preventDefault();
-        
+
         var params = new URLSearchParams(location.search);
         params.set('event', this.getAttribute('event-url'));
         console.log(params);

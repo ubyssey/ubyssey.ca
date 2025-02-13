@@ -1,7 +1,7 @@
 from . import blocks as homeblocks
 
 from article.models import ArticlePage
-from section.models import SectionPage , CategorySnippet
+from section.models import SectionPage, CategorySnippet
 from django.db import models
 from django.utils import timezone
 
@@ -16,13 +16,14 @@ import datetime
 
 # Create your models here.
 
+
 class TopArticlesOrderable(Orderable):
     home_page = ParentalKey(
         "home.HomePage",
         related_name="top_articles",
     )
     article = models.ForeignKey(
-        'article.ArticlePage',
+        "article.ArticlePage",
         on_delete=models.CASCADE,
         related_name="top_articles",
     )
@@ -30,65 +31,68 @@ class TopArticlesOrderable(Orderable):
     panels = [
         MultiFieldPanel(
             [
-                FieldPanel('article'),
+                FieldPanel("article"),
             ],
-            heading="Article"
+            heading="Article",
         ),
     ]
+
 
 class HomePage(Page):
     show_in_menus_default = True
     template = "home/home_page.html"
-    
+
     parent_page_types = [
-        'wagtailcore.Page',
+        "wagtailcore.Page",
     ]
 
     subpage_types = [
-        'section.SectionPage',
-        'authors.AllAuthorsPage',
-        'videos.VideosPage',
-        'archive.ArchivePage',
+        "section.SectionPage",
+        "authors.AllAuthorsPage",
+        "videos.VideosPage",
+        "archive.ArchivePage",
     ]
 
-    tagline = models.CharField(
-        blank=True,
-        null=True,
-        max_length=50)
-    
-    tagline_url = models.URLField(
-        blank=True,
-        null=True
-    )
+    tagline = models.CharField(blank=True, null=True, max_length=50)
+
+    tagline_url = models.URLField(blank=True, null=True)
 
     cover_story = ParentalKey(
         "wagtailcore.Page",
-        related_name = "home_cover_story",
+        related_name="home_cover_story",
         null=True,
         blank=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
     )
 
     cover_story_timeout = models.DateTimeField(
         null=True,
         blank=True,
         verbose_name="Cover story timeout",
-        help_text = "Before this date the manually set coverstory will be displayed. After this date the most recent News article tagged with 'Top stories' will be used as the cover story.",
+        help_text=(
+            "Before this date the manually set coverstory will be displayed. After this"
+            " date the most recent News article tagged with 'Top stories' will be used"
+            " as the cover story."
+        ),
     )
 
     top_stories_timeout = models.DateTimeField(
         null=True,
         blank=True,
         verbose_name="Top stories timeout",
-        help_text = "Before this date the manually set top stories list will be displayed. After this date the top stories list will be the 5 most recent articles of different sections tagged with 'Top stories'.",
+        help_text=(
+            "Before this date the manually set top stories list will be displayed."
+            " After this date the top stories list will be the 5 most recent articles"
+            " of different sections tagged with 'Top stories'."
+        ),
     )
 
     middle_stream = StreamField(
         [
             ("links", homeblocks.LinksStreamBlock()),
-            ('article_gatherer', homeblocks.ArticleGathererBlock()),
-            ('landing', homeblocks.SpecialLandingPageBlock()),
-            ('article_manual', homeblocks.ManualArticles()),
+            ("article_gatherer", homeblocks.ArticleGathererBlock()),
+            ("landing", homeblocks.SpecialLandingPageBlock()),
+            ("article_manual", homeblocks.ManualArticles()),
         ],
         null=True,
         blank=True,
@@ -96,27 +100,28 @@ class HomePage(Page):
     )
 
     sections_stream = StreamField(
-        [
-            ("home_page_section_block", homeblocks.HomepageFeaturedSectionBlock())
-        ],
+        [("home_page_section_block", homeblocks.HomepageFeaturedSectionBlock())],
         null=True,
         blank=True,
         use_json_field=True,
     )
 
     sidebar_stream = StreamField(
-    [
-        ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
-        ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
-        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_latest", infinitefeedblocks.SidebarLatestBlock()),
-        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles())        
-    ],
-    null=True,
-    blank=True,
-    use_json_field=True,
+        [
+            (
+                "sidebar_advertisement_block",
+                infinitefeedblocks.SidebarAdvertisementBlock(),
+            ),
+            ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
+            ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
+            ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),
+            ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
+            ("sidebar_latest", infinitefeedblocks.SidebarLatestBlock()),
+            ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
     )
 
     # home_leaderboard_ad_slot = models.ForeignKey(
@@ -154,7 +159,7 @@ class HomePage(Page):
                 FieldPanel("tagline"),
                 FieldPanel("tagline_url"),
             ],
-            heading="Tagline"
+            heading="Tagline",
         ),
         FieldPanel("cover_story_timeout"),
         FieldPanel("top_stories_timeout"),
@@ -163,7 +168,7 @@ class HomePage(Page):
             [
                 InlinePanel("top_articles"),
             ],
-            heading="Top articles"
+            heading="Top articles",
         ),
         FieldPanel("middle_stream", heading="Middle Stream"),
         FieldPanel("sidebar_stream", heading="Sidebar"),
@@ -176,21 +181,24 @@ class HomePage(Page):
 
     def get_context(self, request, *args, **kwargs):
         import math
+
         context = super().get_context(request, *args, **kwargs)
         context["filters"] = {}
 
-        context["cover_story"], context["top_stories"], context["update_time"] = self.getHomeFeatured()
-        
+        (
+            context["cover_story"],
+            context["top_stories"],
+            context["update_time"],
+        ) = self.getHomeFeatured()
+
         section_groups = []
-        for i in range(math.ceil(len(self.sections_stream)/2)):
-            group = {
-                'sections': self.sections_stream[i*2:i*2+2]
-            }
+        for i in range(math.ceil(len(self.sections_stream) / 2)):
+            group = {"sections": self.sections_stream[i * 2 : i * 2 + 2]}
             if i < len(self.sidebar_stream):
-                group['sidebar'] = [self.sidebar_stream[i]]
+                group["sidebar"] = [self.sidebar_stream[i]]
             section_groups.append(group)
 
-        context['section_groups'] = section_groups
+        context["section_groups"] = section_groups
 
         return context
 
@@ -203,7 +211,7 @@ class HomePage(Page):
             cover = self.cover_story.specific
         elif now < self.cover_story_timeout:
             cover = self.cover_story.specific
-        
+
         top = []
         if not self.top_stories_timeout:
             top = [article.article for article in self.top_articles.all()]
@@ -211,7 +219,14 @@ class HomePage(Page):
             top = [article.article for article in self.top_articles.all()]
         else:
             filled_sections = {}
-            tagged = ArticlePage.objects.live().filter(tags__slug='top-stories',first_published_at__gte=now-datetime.timedelta(weeks=2)).order_by('-first_published_at')[:15]
+            tagged = (
+                ArticlePage.objects.live()
+                .filter(
+                    tags__slug="top-stories",
+                    first_published_at__gte=now - datetime.timedelta(weeks=2),
+                )
+                .order_by("-first_published_at")[:15]
+            )
             if len(tagged) > 0:
                 if tagged[0].first_published_at > update_time:
                     update_time = tagged[0].first_published_at
@@ -226,14 +241,17 @@ class HomePage(Page):
                     filled_sections[article.current_section] = True
                     if len(top) >= 5:
                         break
-        
+
         if not cover:
-            cover = ArticlePage.objects.live().filter(tags__slug='top-stories',current_section='news').order_by('-first_published_at')[0]
-        
+            cover = (
+                ArticlePage.objects.live()
+                .filter(tags__slug="top-stories", current_section="news")
+                .order_by("-first_published_at")[0]
+            )
+
         return cover, top, update_time
-     
+
     def get_all_section_slug(self):
-        
         allsection_slug = []
         allsectionPages = SectionPage.objects.all()
 

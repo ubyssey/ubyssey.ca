@@ -54,7 +54,7 @@
 		{% endif %}
 		<div class="home-top-article-list">
 			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=update_time|time_ago %}
-			
+
 			{% for article in top_stories %}
 				{% include "article/objects/top_article.html" with article=article count=forloop.counter %}
 			{% endfor %}
@@ -78,12 +78,12 @@
 					{% if forloop.counter0 == 0 %}
 					{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox' title='Sections' text='Most Recent' textId='timeBox' %}
 					{% endif %}
-					
+
 					{% for section in group.sections %}
 					{% include_block section %}
 					{% endfor %}
 				</div>
-				
+
 				{% if group.sidebar %}
 					{% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=group.sidebar %}
 				{% else %}

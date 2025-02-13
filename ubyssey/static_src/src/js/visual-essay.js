@@ -22,7 +22,7 @@ document.body.onscroll = function () {
 
             var left = containers[i].getElementsByClassName("o-visual-essay__left-container")[0];
             var right = containers[i].getElementsByClassName("o-visual-essay__right-container")[0];
-    
+
             for(let i=0; i<right.children.length; i++) {
                 var block = right.children[i];
 
@@ -44,7 +44,7 @@ document.body.onscroll = function () {
                 removeClasses(containers[i], views);
                 containers[i].classList.add(containers[i].getElementsByClassName("switch_view")[viewCount-1].getAttribute("view"));
             }
-            
+
             if (pastCount != count) {
                 pastCount = count;
 

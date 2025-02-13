@@ -207,4 +207,3 @@ class Magazine extends React.Component {
 }
 
 export default Magazine
-

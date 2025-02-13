@@ -90,7 +90,7 @@ function enableScroll() {
 }
 
 /*
-// Set element image-attachment variables left and right's respective margins to that of 
+// Set element image-attachment variables left and right's respective margins to that of
 // the first child of parent element p (with direct parent element article-content)
 function embedMargins() {
   const marginLeft = $('.article-content > p:first-child').css('marginLeft')
@@ -327,19 +327,19 @@ function initializeSocialMediaActions() {
 
   $(document).on('click', '.share-link', function (e) {
     e.preventDefault();
-   
+
     navigator.clipboard.writeText(window.location.href).then(() => {
       /* Resolved - text copied to clipboard successfully */
       document.getElementById("custom-tooltip").style.display = "inline";
       setTimeout( function() {
         document.getElementById("custom-tooltip").style.display = "none";
     }, 1000);
-      
+
     });
-   
+
   });
 
-  
+
 }
 
 function initializePreventDefault() {
@@ -351,18 +351,18 @@ function initializePreventDefault() {
 function initializeAudioQuote() {
   $(document).on('click', 'a.playAudioQuote', function (e) {
     e.preventDefault();
-  
+
     var id = this.getAttribute("audio");
-  
+
     var sound = document.getElementById(id);
-    if (sound.paused) {   
+    if (sound.paused) {
       sound.play();
-    
+
       var icon = document.getElementById("icon-" + id);
       var frames = ["volume-off", "volume-low", "volume-high"];
-    
+
       var animateIcon = setInterval(function () {
-    
+
           for (let i=0; i < frames.length; i++) {
               if (icon.getAttribute("name") == frames[i]) {
                   icon.classList.remove(frames[i]);
@@ -376,22 +376,22 @@ function initializeAudioQuote() {
                   break;
               }
           }
-    
+
           if (sound.paused) {
               icon.setAttribute("name", "volume-off");
               clearInterval(animateIcon);
           }
-    
+
       }, 250);
     } else {
       sound.pause();
       sound.currentTime = 0;
     }
-  
+
   });
 }
 function closeModal(modal) {
-  
+
   modal.classList.add("hide");
   modal.classList.remove("show");
 

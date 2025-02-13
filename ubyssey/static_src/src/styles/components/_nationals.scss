@@ -75,10 +75,10 @@ $mapHeight: 675px;
       left: 0;
       bottom: 0;
       right: 0;
-  
+
       // BORDER
       border-radius: 300px;
-  
+
       // BACKGROUND
       background-size: 100% auto;
       background-repeat: no-repeat;
@@ -117,7 +117,7 @@ $mapHeight: 675px;
         position: relative;
         top: 0;
       }
-  
+
       .c-n-image-container {
         width: 35%;
         height: 100%;
@@ -132,7 +132,7 @@ $mapHeight: 675px;
           background-position: center;
         }
       }
-  
+
       .c-n-title{
         padding-right: 1rem;
         font-size: 1.5rem;
@@ -157,12 +157,12 @@ $mapHeight: 675px;
 }
 
 // RIBBONS
-.non-semantic-protector { 
-  position: relative; 
+.non-semantic-protector {
+  position: relative;
   top: -2.5rem;
   height: 5rem;
   width: 100%;
-  z-index: 1; 
+  z-index: 1;
   display:flex;
   justify-content: center;
   margin: 0 auto;
@@ -265,7 +265,7 @@ $mapHeight: 675px;
           align-items: center;
           h1, h2, h3, h4 {
             text-align: center;
- 
+
           }
         }
       }
@@ -282,7 +282,7 @@ span.c-n-team-stat {
   height: auto;
   width: 80%;
   margin: 2rem auto;
-  
+
   $time1: .25s;
   .c-n-map {
     cursor: pointer;
@@ -301,12 +301,12 @@ span.c-n-team-stat {
     path.c-n-path-blue {
       animation: fade-in $time1 linear 3*$time1;
     }
-    
+
     path.c-n-path-purple {
       animation: fade-in $time1 linear 4*$time1;
     }
   }
-  
+
   .c-nationals-map-marker {
     opacity: 0;
     animation: fade-in $time1 linear 5*$time1 forwards;

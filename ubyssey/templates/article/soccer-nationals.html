@@ -3,15 +3,15 @@
 
 {% block content %}
 <main id="article-{{ article.parent_id }}" class="article">
-    <article class="c-article c-article--fw-story js-article" 
-      {% if user.is_authenticated %}data-user-id="{{ user.id }}"{% endif %} 
-      data-id="{{ article.parent_id }}" 
-      data-list="{{ reading_list.ids }}" 
-      data-list-name="{{ reading_list.name }}" 
-      data-headline="{{ article.headline }}" 
-      data-author="{{ authors_json }}" 
-      data-section="{{ article.section.slug }}" 
-      data-url="{{ article.get_absolute_url }}" 
+    <article class="c-article c-article--fw-story js-article"
+      {% if user.is_authenticated %}data-user-id="{{ user.id }}"{% endif %}
+      data-id="{{ article.parent_id }}"
+      data-list="{{ reading_list.ids }}"
+      data-list-name="{{ reading_list.name }}"
+      data-headline="{{ article.headline }}"
+      data-author="{{ authors_json }}"
+      data-section="{{ article.section.slug }}"
+      data-url="{{ article.get_absolute_url }}"
       data-explicit="{{ explicit }}">
 
     <div class="u-container clearfix fw-story">
@@ -22,10 +22,10 @@
                 </div>
             </div>
         </div>
-        
+
         {% block banner %}
-            <div class='c-soccer-nationals' 
-                data-current-article-id='{{article.parent_id}}' 
+            <div class='c-soccer-nationals'
+                data-current-article-id='{{article.parent_id}}'
                 data-map='{{article.featured_image.image.get_medium_url}}'
                 data-team-data='{{article.team_data}}'>
                 <div class='c-soccer-loading'>

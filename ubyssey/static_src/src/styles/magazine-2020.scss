@@ -160,7 +160,7 @@ h4 {
   width:100%;
   background-color: transparent;
   z-index: 100;
-  position: relative; 
+  position: relative;
   height: $headerHeight;
   left: 0;
   right: 0;
@@ -261,7 +261,7 @@ h4 {
       @media ($bp-larger-than-tablet) {
         border-color: #fff;
       }
-      
+
       &.selected,
       &:hover {
         border-color: #000000;
@@ -471,7 +471,7 @@ h4 {
       background-color: #fff;
       margin-top: -100vh;
       padding-top: $headerHeight;
-      min-height: 100vh; 
+      min-height: 100vh;
     }
   }
   .article-grid-container {

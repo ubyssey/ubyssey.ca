@@ -66,13 +66,13 @@
         <div class="sidebar offset">
         {% elif article.featured_video %}
         <div class="featured-media">
-          <iframe 
-            width="500px" 
-            height="281px" 
+          <iframe
+            width="500px"
+            height="281px"
             allowfullscreen="allowfullscreen"
-            mozallowfullscreen="mozallowfullscreen" 
-            msallowfullscreen="msallowfullscreen" 
-            oallowfullscreen="oallowfullscreen" 
+            mozallowfullscreen="mozallowfullscreen"
+            msallowfullscreen="msallowfullscreen"
+            oallowfullscreen="oallowfullscreen"
             webkitallowfullscreen="webkitallowfullscreen"
             src="{{ article.featured_video.video.url|youtube_embed_url|safe }}"></iframe>
           {% if article.featured_video.caption or article.featured_video.credit %}

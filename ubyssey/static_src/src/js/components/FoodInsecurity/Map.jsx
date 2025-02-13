@@ -28,7 +28,7 @@ class Map extends React.Component {
       if((timesince < 500) && (timesince > 0)){
         this.zoomMap(e)
       }
-    
+
       this.myLatestTap = new Date().getTime();
     }
   }
@@ -44,7 +44,7 @@ class Map extends React.Component {
     mY = mY - this.MAP_HEIGHT/2
 
     //normalize click point to be centered in zoomed SVG
-    mX = (mX + (this.state.scale - 1)*this.viewBox[2]/this.state.scale)/2 
+    mX = (mX + (this.state.scale - 1)*this.viewBox[2]/this.state.scale)/2
     mY = (mY + (this.state.scale - 1)*this.viewBox[3]/this.state.scale)/2
 
     const newViewBox = [mX, mY, this.viewBox[2]/this.state.scale, this.viewBox[3]/this.state.scale]
@@ -80,7 +80,7 @@ class Map extends React.Component {
 
   renderMap() {
     return(
-      <svg xmlns="http://www.w3.org/2000/svg" 
+      <svg xmlns="http://www.w3.org/2000/svg"
         className='c-i-map'
         width={this.MAP_WIDTH}
         height={this.MAP_HEIGHT}
@@ -104,12 +104,12 @@ class Map extends React.Component {
               }
             })
             return(
-              <svg xmlns="http://www.w3.org/2000/svg" 
+              <svg xmlns="http://www.w3.org/2000/svg"
                 style={{overflow: 'auto'}}>
                 <title style={{textTransform: 'capitalize'}}>{point.name}</title>
-                <polygon className='cls-5' 
+                <polygon className='cls-5'
                   id={name}
-                  points={locations[location]} 
+                  points={locations[location]}
                   onClick={(e) => {this.selectPoint(e, point)}}/>
               </svg>
             )
@@ -132,16 +132,16 @@ class Map extends React.Component {
               return(
                 <div className='c-i-map__content'>
                   <div className='c-i-map__content-header'>
-                    <span className='c-i-map__content-title'>{point.name}</span> 
-                    
+                    <span className='c-i-map__content-title'>{point.name}</span>
+
                   </div>
                   <div className='c-i-map__content-subtitle'>{point.location}</div>
                   {point.content.map((paragraph) => {
                     return <p>{paragraph}</p>
-                  })} 
+                  })}
                 </div>
               )
-            })} 
+            })}
           </div>
         </div>
       </div>
@@ -160,12 +160,12 @@ class Map extends React.Component {
           {currentPoint && currentPoint.map((point) => {
             return(
               <div className='c-i-map__content'>
-                <span className='c-i-map__content-title'>{point.name}</span> 
+                <span className='c-i-map__content-title'>{point.name}</span>
                 <div className='c-i-map__content-subtitle'>{point.location}</div>
                 {point.content.map((paragraph) => {
                   return <p>{paragraph}</p>
-                })} 
-                
+                })}
+
               </div>
             )
           })}
@@ -183,12 +183,10 @@ class Map extends React.Component {
         {!this.props.isDesktop && this.renderMobile(currentPoint)}
         {!this.props.isDesktop && <div className='c-i-map__instructions'>Double Tap to Zoom | Tap to Select </div> }
       </div>
-      
+
 
     )
   }
 }
 
 export default Map
-
-

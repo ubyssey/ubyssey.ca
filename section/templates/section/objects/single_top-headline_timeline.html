@@ -16,7 +16,7 @@
         <ul class="horizontal-timeline">
             {% for tagArticle in tagArticles %}
             <li {% ifchanged tagArticle.published_at|display_pubdate %}class="timeline-dot"{% endifchanged %} >
-                
+
                 {% ifchanged tagArticle.published_at|display_pubdate %}
                     <div class="o-article__published">{{tagArticle.published_at|display_pubdate}}</div>
                 {% endifchanged %}

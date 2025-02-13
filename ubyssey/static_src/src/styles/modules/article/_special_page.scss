@@ -4,7 +4,7 @@
 .page {
   h1 {
     font-family: $font-headline;
-    @media($bp-larger-than-phablet){ 
+    @media($bp-larger-than-phablet){
       width: 60%;
     }
   }
@@ -37,12 +37,12 @@
     @media($bp-larger-than-phablet){
       padding-left: 20px;
       width: 40%;
-  
+
       border-left: 1px solid $color-border-gray-light;
-  
+
       :first-child {
         margin-top: 5px;
-      }  
+      }
     }
 
     a {
@@ -54,5 +54,3 @@
     display: none;
   }
 }
-
-

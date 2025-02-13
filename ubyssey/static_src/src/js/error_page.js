@@ -11,7 +11,7 @@ $.ajax({
   type:"GET",
   url: "/infinitefeed",
   data:data,
-  success: function(data) 
+  success: function(data)
   {
     recievedata(data);
   }

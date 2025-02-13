@@ -1,4 +1,4 @@
-{% comment %} 
+{% comment %}
     This template object exists because both the "right image" and "top image" style fw articles were using almost identical contents when div class="headline-container"
     It was seperated out to try to make the code more readable
 {% endcomment %}
@@ -19,7 +19,7 @@
         </h1>
 
         {% if self.subtitle %}
-            <p class="subtitle">{{self.subtitle|safe}}</p>    
+            <p class="subtitle">{{self.subtitle|safe}}</p>
         {% endif %}
     </header>
 
@@ -47,7 +47,7 @@
                         <span class="c-article__reading-time">{{ article.subsection.name }}</span>
                     </a>
                 {% endif %}
-                
+
             </div>
         </div>
 	</div>

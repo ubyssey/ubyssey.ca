@@ -4,7 +4,7 @@
     position: sticky;
     top: 20px;
 }
-  
+
 .boxLabel {
     z-index: 100;
     display:flex;
@@ -27,11 +27,11 @@
     border-width: 0.1em;
     border-style: solid;
 }
-  
+
 .boxLabel-right strong {
     white-space: pre;
 }
-  
+
 .boxText {
     margin: 0;
     font-size: 1em;
@@ -39,7 +39,7 @@
     top: 50%;
     transform: translate(0,-50%);
 }
-  
+
 .boxLabel-left {
     background-color: var(--boxPrimary);
     border-color: var(--boxPrimary);
@@ -52,8 +52,8 @@
     border-color: var(--boxPrimary);
     .boxText-right {
         color: var(--boxTextRight);
-    } 
-}  
+    }
+}
 
 [color-css-theme="light"] {
     .boxLabel {
@@ -73,15 +73,15 @@
         }
     }
 }
-  
+
 [color-css-theme="dark"] {
-  
+
     .boxLabel {
         &.sticky {
             box-shadow: 0 5px 20px 6px $color-ubyssey-blue-dark;
         }
     }
-  
+
     .boxLabel {
         --boxPrimary: #{$color-ubyssey-blue-light};
         --boxSecondary: #{$color-ubyssey-blue-dark};

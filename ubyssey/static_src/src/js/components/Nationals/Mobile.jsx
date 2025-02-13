@@ -31,7 +31,7 @@ class Mobile extends React.Component {
         onClick={() => {this.props.selectTeam(team)}}>
         <div className='c-n-image-container'>
           <div className='c-n-image' style={{backgroundImage: 'url("' + team.image.thumbnail + '")'}} />
-        </div> 
+        </div>
         <span className='c-n-title'>{team.name}</span>
       </div>
     )
@@ -41,8 +41,8 @@ class Mobile extends React.Component {
     const teamId = this.preId + index
     return(
       <div id={teamId} style={{height: isSelected ? this.state.heights[index]: 0}}>
-        <TeamContent ref='teamContent' 
-          team={team} 
+        <TeamContent ref='teamContent'
+          team={team}
           isDesktop={this.props.isDesktop} />
         <Mvp ref='mvp'
           player={team.player}
@@ -91,5 +91,3 @@ var styles = {
 }
 
 export default Mobile
-
-

@@ -48,7 +48,7 @@
     <main class="c-article">
         <div class="o-container">
             {% block banner %}
-            
+
                 <div class="u-container u-container--content u-container--padded">
                     <p class="c-article__title">
                         {% if self.fw_alternate_title %}
@@ -71,7 +71,7 @@
                             <div class="featured-media">
                                 {% image featured_image_object.image original as original_image %}
                                 {% image featured_image_object.image width-1000 as featured_image %}
-                                <img class="article-attachment" 
+                                <img class="article-attachment"
                                     data-id="{{ featured_image_object.id }}"
                                     data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
                                     data-credit="{% if featured_image_object.credit %}{{ featured_image_object.credit }}{% endif %}"

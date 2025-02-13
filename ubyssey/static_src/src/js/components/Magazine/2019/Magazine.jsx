@@ -103,8 +103,8 @@ class Magazine extends React.Component {
           <div className={`subsection-container ${show}`}>
             <div className="subsection-image" style={{ backgroundImage: `url(${this.image})` }}>
               {this.state.subsection === 'editorial' && this.renderCredits()}
-              {this.state.subsection !== 'editorial' && 
-                <div className={`subsection-image-text ${this.state.subsection}`}> 
+              {this.state.subsection !== 'editorial' &&
+                <div className={`subsection-image-text ${this.state.subsection}`}>
                   {!this.state.isDesktop && <div className="scroll-show"><i className="down"/><i className="down"/></div>}
                   {this.state.subsection}
                   {!this.state.isDesktop && <div className="scroll-show"><i className="down"/><i className="down"/></div>}
@@ -112,8 +112,8 @@ class Magazine extends React.Component {
               }
             </div>
 
-            <div className="article-grid-scroll"> 
-            {this.state.subsection === 'editorial' && 
+            <div className="article-grid-scroll">
+            {this.state.subsection === 'editorial' &&
               <div className="editorial-content">
                 <div className="title">{editorial.title}</div>
                 {editorial.paragraphs.map((paragraph) => {
@@ -121,7 +121,7 @@ class Magazine extends React.Component {
                 })}
               </div>
             }
-            {this.state.subsection !== 'editorial' && 
+            {this.state.subsection !== 'editorial' &&
               <div className="article-grid-container">
                 {this.state.subsection !== 'editorial' && this.props.articles[this.state.subsection].map((box, index) => {
                   return (
@@ -205,4 +205,3 @@ class Magazine extends React.Component {
 }
 
 export default Magazine
-

@@ -34,9 +34,9 @@
 
 
 
- 
+
     {% if year < 2021%}
-    
+
     <div class="c-article__suggested u-container u-container--large">
       {% for a in suggested %}
       <a class="o-article-box {{subsection}} o-article-box--{{ a.template_fields.color }}" href="{{ a.get_absolute_url }}" style="background-image: url('{{ a.featured_image.image.get_medium_url }}');">

@@ -36,7 +36,7 @@
                         <img src="{{ article.featured_image.image.get_thumbnail_url }}" alt=""/>
                       {% elif article.featured_video %}
                         <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
-                      {% endif %}  
+                      {% endif %}
                     </a>
                 </div>
                 <div>
@@ -57,11 +57,11 @@
                 <a class="image" href="{{ article.get_absolute_url }}?ref=frontpage">
                   {% if article.featured_image %}
                     <img src="{{ article.featured_image.image.get_medium_url }}" alt=""/>
-                  {% elif article.featured_video %} 
+                  {% elif article.featured_video %}
                     <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
                   {% endif %}
                 </a>
-                
+
                 <div class="meta">
                   <a href="{{ article.get_absolute_url }}?ref=frontpage"><h1 class="headline">{{ article.headline|safe }}</h1></a>
                   <div class="o-article__byline">

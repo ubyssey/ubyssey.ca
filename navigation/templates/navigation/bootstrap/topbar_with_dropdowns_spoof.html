@@ -26,8 +26,8 @@ background_color - hex color
                     {% comment %} We ignore the first item in the menu, because that's used for the home page
                     {% endcomment %}
                     {% if forloop.counter0 > 0 %}
-                        {% if item.has_children_in_menu %} 
-                        <li class="desktop setup-modal nav-item dropdown">    
+                        {% if item.has_children_in_menu %}
+                        <li class="desktop setup-modal nav-item dropdown">
                             <a class="open-modal nav-link dropdown-toggle" href="#">{{ item.text }}</a>
                             <div class="modal hide">
                                 {% sub_menu item template="navigation/bootstrap/topbar_with_dropdowns_submenu_spoof.html"%}

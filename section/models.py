@@ -15,7 +15,12 @@ from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
 
-from wagtail.admin.panels import TitleFieldPanel, FieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.admin.panels import (
+    TitleFieldPanel,
+    FieldPanel,
+    InlinePanel,
+    MultiFieldPanel,
+)
 from wagtail.fields import StreamField, RichTextField
 from wagtail import models as wagtail_core_models
 from wagtail.models import Page
@@ -37,27 +42,19 @@ from infinitefeed import blocks as infinitefeedblocks
 import datetime
 
 
-#-----Snippet models-----
+# -----Snippet models-----
 @register_snippet
 class CategorySnippet(index.Indexed, ClusterableModel):
     """
     Formerly known as a 'Subsection'
     """
-    title = CharField(
-        blank=False,
-        null=False,
-        max_length=100
-    )
-    slug = SlugField(
-        unique=True,
-        blank=False,
-        null=False,
-        max_length=100
-    )
+
+    title = CharField(blank=False, null=False, max_length=100)
+    slug = SlugField(unique=True, blank=False, null=False, max_length=100)
     description = TextField(
         null=False,
         blank=True,
-        default='',
+        default="",
     )
 
     banner = models.ForeignKey(
@@ -65,19 +62,17 @@ class CategorySnippet(index.Indexed, ClusterableModel):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='categoryBanner',
+        related_name="categoryBanner",
     )
 
     # authors = ManyToManyField('Author', related_name='subsection_authors')
-    is_active = BooleanField( # legacy field
-        default=False
-    )
+    is_active = BooleanField(default=False)  # legacy field
     section_page = ParentalKey(
         "section.SectionPage",
         related_name="categories",
     )
     search_fields = [
-        index.AutocompleteField('title'),
+        index.AutocompleteField("title"),
     ]
 
     panels = [
@@ -88,7 +83,7 @@ class CategorySnippet(index.Indexed, ClusterableModel):
                 FieldPanel("section_page"),
                 FieldPanel("description"),
             ],
-            heading="Essentials"
+            heading="Essentials",
         ),
         MultiFieldPanel(
             [
@@ -100,17 +95,19 @@ class CategorySnippet(index.Indexed, ClusterableModel):
             [
                 InlinePanel("category_authors"),
             ],
-            heading="Category Author(s)"
+            heading="Category Author(s)",
         ),
     ]
+
     def __str__(self):
         return "%s - %s" % (self.section_page, self.title)
-    
+
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
 
-#-----Orderable models-----
+
+# -----Orderable models-----
 class CategoryAuthor(wagtail_core_models.Orderable):
     author = ForeignKey(
         "authors.AuthorPage",
@@ -127,6 +124,7 @@ class CategoryAuthor(wagtail_core_models.Orderable):
     panels = [
         FieldPanel("author"),
     ]
+
 
 class CategoryMenuItem(wagtail_core_models.Orderable):
     category = ForeignKey(
@@ -145,16 +143,17 @@ class CategoryMenuItem(wagtail_core_models.Orderable):
         FieldPanel("category"),
     ]
 
+
 class SectionPage(RoutablePageMixin, SectionablePage):
-    template = 'section/section_page.html'
+    template = "section/section_page.html"
 
     subpage_types = [
-        'article.ArticlePage',
-        'article.SpecialArticleLikePage',
-        'specialfeaturelanding.SpecialLandingPage',
+        "article.ArticlePage",
+        "article.SpecialArticleLikePage",
+        "specialfeaturelanding.SpecialLandingPage",
     ]
     parent_page_types = [
-        'home.HomePage',
+        "home.HomePage",
     ]
 
     show_in_menus_default = True
@@ -164,29 +163,29 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='banner',
+        related_name="banner",
     )
 
     description = RichTextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
         null=False,
         blank=True,
-        default='',
+        default="",
     )
 
     label_svg = models.ForeignKey(
-        'wagtaildocs.Document',
+        "wagtaildocs.Document",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+'
+        related_name="+",
     )
 
     top_stream = StreamField(
         [
-            ('article_gatherer', homeblocks.ArticleGathererBlock()),
-            ('landing', homeblocks.SpecialLandingPageBlock()),
-            ('article_manual', homeblocks.ManualArticles()),
+            ("article_gatherer", homeblocks.ArticleGathererBlock()),
+            ("landing", homeblocks.SpecialLandingPageBlock()),
+            ("article_manual", homeblocks.ManualArticles()),
         ],
         null=True,
         blank=True,
@@ -194,17 +193,20 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     )
 
     sidebar_stream = StreamField(
-    [
-        ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
-        ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
-        ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
-        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),        
-    ],
-    null=True,
-    blank=True,
-    use_json_field=True,
+        [
+            (
+                "sidebar_advertisement_block",
+                infinitefeedblocks.SidebarAdvertisementBlock(),
+            ),
+            ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
+            ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),
+            ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
+            ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
+            ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
     )
 
     content_panels = wagtail_core_models.Page.content_panels + [
@@ -224,13 +226,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             [
                 FieldPanel("top_stream"),
             ],
-            heading="Top stream"
+            heading="Top stream",
         ),
         MultiFieldPanel(
             [
-                FieldPanel('label_svg'),
+                FieldPanel("label_svg"),
             ],
-            heading="Label svg"
+            heading="Label svg",
         ),
         MultiFieldPanel(
             [
@@ -242,8 +244,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             [
                 FieldPanel("sidebar_stream"),
             ],
-            heading="Sidebar"
-        )
+            heading="Sidebar",
+        ),
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -252,20 +254,22 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         page = request.GET.get("page")
         order = request.GET.get("order")
 
-        if order == 'oldest':
+        if order == "oldest":
             article_order = "explicit_published_at"
-        else:            
+        else:
             article_order = "-explicit_published_at"
         context["order"] = order
 
-        context["all_categories"] = CategorySnippet.objects.all().filter(section_page=self)
+        context["all_categories"] = CategorySnippet.objects.all().filter(
+            section_page=self
+        )
 
         context["filters"] = {"section": self.current_section}
-        if 'category_slug' in kwargs:
-            if kwargs['category_slug'] != None:
-                context["category"] = kwargs['category_slug']
-                context["filters"]["category"] = kwargs['category_slug']
-                category  = CategorySnippet.objects.get(slug=kwargs['category_slug'])
+        if "category_slug" in kwargs:
+            if kwargs["category_slug"] != None:
+                context["category"] = kwargs["category_slug"]
+                context["filters"]["category"] = kwargs["category_slug"]
+                category = CategorySnippet.objects.get(slug=kwargs["category_slug"])
                 context["title"] = category.title
                 context["description"] = category.description
                 if category.banner:
@@ -287,16 +291,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         if search_query:
             context["search_query"] = search_query
             context["filters"]["search_query"] = search_query
-    
+
         return context
-    
-    def get_section_articles(self, order='-first_published_at') -> QuerySet:
+
+    def get_section_articles(self, order="-first_published_at") -> QuerySet:
         # order should be explicit_published_at but that is in the ArticlePage table and accessing slows down the query
-        section_articles = ArticlePage.objects \
-            .child_of(self) \
-            .order_by(order) \
-            .live()
-        
+        section_articles = ArticlePage.objects.child_of(self).order_by(order).live()
+
         return section_articles
 
     def get_featured_articles(self, queryset=None, number_featured=4) -> QuerySet:
@@ -308,22 +309,23 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         if queryset == None:
             # queryset = ArticlePage.objects.from_section(section_root=self)
             queryset = self.get_section_articles()
-        return queryset[:number_featured]    
+        return queryset[:number_featured]
+
     featured_articles = property(fget=get_featured_articles)
 
-    @route(r'^category/(?P<category_slug>[-\w]+)/$', name='category_view')
+    @route(r"^category/(?P<category_slug>[-\w]+)/$", name="category_view")
     def category_view(self, request, category_slug):
-        if(len(CategorySnippet.objects.filter(slug=category_slug)) > 0):
+        if len(CategorySnippet.objects.filter(slug=category_slug)) > 0:
             context = self.get_context(request, category_slug=category_slug)
-            return render(request, 'section/section_page.html', context)
+            return render(request, "section/section_page.html", context)
         else:
             context = self.get_context(request, category_slug=None)
-            return render(request, 'section/section_page.html', context, status=404)
+            return render(request, "section/section_page.html", context, status=404)
 
     def save(self, *args, **kwargs):
         self.current_section = self.slug
-        return Page.save(self,*args, **kwargs)
-    
+        return Page.save(self, *args, **kwargs)
+
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"

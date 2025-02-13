@@ -4,7 +4,7 @@ from rest_framework import routers
 
 events = EventsTheme()
 
-app_name = 'events'
+app_name = "events"
 urlpatterns = [
-    path('', events.react, name='events-page'),
+    path("", events.react, name="events-page"),
 ]

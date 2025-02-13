@@ -2,7 +2,7 @@
     padding-top:2em;
     @media($bp-larger-than-tablet) {
         padding: 4em;
-    }   
+    }
     width: 100%;
 
     background-color: #FEFFE3;
@@ -25,7 +25,7 @@
             img {
                 @media($bp-smaller-than-tablet) {
                     margin: auto;
-                }   
+                }
             }
             .article-box-title {
                 display:flex;
@@ -38,7 +38,7 @@
                     @media($bp-smaller-than-tablet) {
                         text-align: center;
                         width: 100%;
-                    }   
+                    }
                 }
             }
         }

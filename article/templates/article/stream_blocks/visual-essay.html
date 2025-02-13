@@ -11,7 +11,7 @@
                 {% if block.block_type == 'image' %}
                     {% if block.value.block.caption or block.value.block.credit %}
                     <div class="caption">
-                        {% if block.value.block.caption %}{{ block.value.block.caption|safe }}{% endif %} 
+                        {% if block.value.block.caption %}{{ block.value.block.caption|safe }}{% endif %}
                         <span class="credit">{% if block.value.block.credit %}{{ block.value.block.credit }}{% endif %}</span>
                     </div>
                     {% endif %}

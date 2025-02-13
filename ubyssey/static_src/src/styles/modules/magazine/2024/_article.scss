@@ -62,7 +62,7 @@
 .featured-media {
   width: 100%;
   max-width: 1000px;
-  height: auto; 
+  height: auto;
   margin-top: 4%;
   margin-bottom: 5%;
   img {
@@ -79,7 +79,7 @@
   }
 }
 
-.c-article__content {  
+.c-article__content {
   color: #3C3C3C;
   font-family: $text-font;
   // margin: 50%;
@@ -142,17 +142,17 @@
     .caption {
       margin-bottom: 1em;
       text-align: center;
-      
+
       .credit {
         margin-left: 1em;
-        
+
         color: #57574D;
         font-style: italic;
-        
+
         white-space: pre;
       }
     }
-  
+
     @media ($bp-larger-than-tablet) {
       &.right,
       &.left {
@@ -170,15 +170,15 @@
         float: left;
         clear: left;
       }
-  
+
       &.small {
         width: 100px;
       }
-  
+
       &.medium {
         width: 200px;
       }
-  
+
       &.large {
         width: 300px;
       }

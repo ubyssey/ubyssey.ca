@@ -70,7 +70,7 @@ $margin-size: 10px;
             line-height: 70px;
             grid-column: 7 / 12;
             grid-row: 2 / 5;
-            
+
 
             p{
                 width: 85%;
@@ -106,7 +106,7 @@ $margin-size: 10px;
                 }
                 &2{
                     grid-row-start: $row-start+3;
-                    grid-row-end: $row-height350-end+3; 
+                    grid-row-end: $row-height350-end+3;
                 }
                 &3{
                     grid-row-start: $row-start+6;
@@ -200,7 +200,7 @@ $margin-size: 10px;
                     grid-column-start: $normal-column-left-start;
                     grid-column-end: $normal-column-left-end;
                 }
-                    
+
 
                 &1{
                     grid-row-start: 12;

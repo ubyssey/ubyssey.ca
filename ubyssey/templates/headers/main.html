@@ -1,6 +1,6 @@
 {% load static %}
 <header class="main">
-  
+
   <div class="u-container u-container--large">
     <div class="branding row">
       <div class="left"><span class="since-line">UBC’s student newspaper since 1918</span></div>
@@ -32,7 +32,7 @@
           <ul class="sections">
             <!-- <li><a href="{% url 'section' 'themainmaller' %}">The Main Maller</a></li> -->
             <li><a href="{% url 'section' 'news' %}">News</a></li>
-            <li {% if section == 'culture' %} class="current" {% endif %} id="culture-sections-more-dropdown" >  
+            <li {% if section == 'culture' %} class="current" {% endif %} id="culture-sections-more-dropdown" >
             <a>Culture</a>
               <ul class="culture-sections-more">
                   <li>
@@ -42,7 +42,7 @@
                       <a href="{% url 'special-isolation' %}">Isolation </a>
                   </li>
                 </ul>
-         
+
             </li>
             <li><a href="{% url 'section' 'features' %}">Features</a></li>
             <li><a href="{% url 'section' 'opinion' %}">Opinion</a></li>

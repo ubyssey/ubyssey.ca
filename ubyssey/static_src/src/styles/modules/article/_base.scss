@@ -222,12 +222,12 @@ div.article-content {
       color: inherit;
       position: relative;
       z-index: 1;
-      
+
       &:hover {
         background-size: 100% 100%;
         color: #fff;
       }
-    } 
+    }
   }
 
   > p,
@@ -393,7 +393,7 @@ div.caption {
 div.article-content {
 
   >p,
-  >ul, 
+  >ul,
   >ol {
     font-family: $font-body;
     font-weight: $font-weight-normal;
@@ -454,7 +454,7 @@ div.article-content {
       display: inline-block;
     }
   }
-  
+
   .report a {
     color: var(--text_color);
     font-family: $font-default;

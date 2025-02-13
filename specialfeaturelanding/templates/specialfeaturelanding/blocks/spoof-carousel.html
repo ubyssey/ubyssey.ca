@@ -10,10 +10,10 @@
         <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
         {% include_block block %}
         </div>
-        {% endfor %}    
+        {% endfor %}
     </div>
     <a class="carousel-control-prev" href="#carouselExampleControls" data-bs-target="#carouselExampleControls" role="button" data-bs-slide="prev">
-        
+
         <svg class="button-icon" focusable="false" viewBox="0 0 32 32" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
           <title>Chevron</title>
           <path d="M19.071 16L12 8.929l1.414-1.414L21.9 16l-8.485 8.485L12 23.071z" fill-rule="nonzero"></path>
@@ -37,7 +37,7 @@
     <li>
     {% include_block block %}
     </li>
-    {% endfor %}  
+    {% endfor %}
   </ul>
   <a href="#" id="left-carousel" class="scroll-arrow left">
     <ion-icon name="chevron-back"></ion-icon>

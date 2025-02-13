@@ -6,13 +6,13 @@
     <img alt="{% if item.featured_media.first.alt_text %}{{item.featured_media.first.alt_text}}{% else %}{{item.featured_media.first.caption}}{% endif %}" src="{{original_image.full_url}}">
     <p>{{item.featured_media.first.credit}}</p>
 {% elif item.featured_media.first.video %}
-    <iframe 
-        width="500px" 
-        height="281px" 
+    <iframe
+        width="500px"
+        height="281px"
         allowfullscreen="allowfullscreen"
-        mozallowfullscreen="mozallowfullscreen" 
-        msallowfullscreen="msallowfullscreen" 
-        oallowfullscreen="oallowfullscreen" 
+        mozallowfullscreen="mozallowfullscreen"
+        msallowfullscreen="msallowfullscreen"
+        oallowfullscreen="oallowfullscreen"
         webkitallowfullscreen="webkitallowfullscreen"
         src="{{ item.featured_media.first.video.url|youtube_embed_url|safe }}">
     </iframe>

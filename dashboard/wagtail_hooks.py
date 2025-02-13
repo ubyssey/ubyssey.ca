@@ -4,52 +4,57 @@ from django.templatetags.static import static
 from wagtail import hooks
 
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
-from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler
+from wagtail.admin.rich_text.converters.html_to_contentstate import (
+    InlineStyleElementHandler,
+)
 
 from authors.views import author_chooser_viewset
 from images.views import ubyssey_image_viewset
 
-@hooks.register('insert_global_admin_css')
+
+@hooks.register("insert_global_admin_css")
 def global_admin_css():
-    return format_html('<link rel="stylesheet" href="{}">', static('css/custom.css'))
+    return format_html('<link rel="stylesheet" href="{}">', static("css/custom.css"))
+
 
 # 1. Use the register_rich_text_features hook.
-@hooks.register('register_rich_text_features')
+@hooks.register("register_rich_text_features")
 def register_strikethrough_feature(features):
     """
     Registering the `mark` feature, which uses the `MARK` Draft.js inline style type,
     and is stored as HTML with a `<mark>` tag.
     """
-    feature_name = 'strikethrough'
-    type_ = 'STRIKETHROUGH'
-    tag = 'strikethrough'
+    feature_name = "strikethrough"
+    type_ = "STRIKETHROUGH"
+    tag = "strikethrough"
 
     # 2. Configure how Draftail handles the feature in its toolbar.
     control = {
-        'type': type_,
-        'label': 's',
-        'description': 'Strikethrough',
+        "type": type_,
+        "label": "s",
+        "description": "Strikethrough",
         # This isn’t even required – Draftail has predefined styles for MARK.
         # 'style': {'textDecoration': 'line-through'},
     }
 
     # 3. Call register_editor_plugin to register the configuration for Draftail.
     features.register_editor_plugin(
-        'draftail', feature_name, draftail_features.InlineStyleFeature(control)
+        "draftail", feature_name, draftail_features.InlineStyleFeature(control)
     )
 
     # 4.configure the content transform from the DB to the editor and back.
     db_conversion = {
-        'from_database_format': {tag: InlineStyleElementHandler(type_)},
-        'to_database_format': {'style_map': {type_: tag}},
+        "from_database_format": {tag: InlineStyleElementHandler(type_)},
+        "to_database_format": {"style_map": {type_: tag}},
     }
 
     # 5. Call register_converter_rule to register the content transformation conversion.
-    features.register_converter_rule('contentstate', feature_name, db_conversion)
+    features.register_converter_rule("contentstate", feature_name, db_conversion)
 
     # 6. (optional) Add the feature to the default features list to make it available
     # on rich text fields that do not specify an explicit 'features' list
-    features.default_features.append('strikethrough')
+    features.default_features.append("strikethrough")
+
 
 @hooks.register("register_rich_text_features")
 def register_centertext_feature(features):
@@ -81,14 +86,9 @@ def register_centertext_feature(features):
         "from_database_format": {tag: InlineStyleElementHandler(type_)},
         "to_database_format": {
             "style_map": {
-                type_: {
-                    "element": tag,
-                    "props": {
-                        "class": "d-block text-center"
-                    }
-                }
+                type_: {"element": tag, "props": {"class": "d-block text-center"}}
             }
-        }
+        },
     }
 
     # Step 5
@@ -96,6 +96,7 @@ def register_centertext_feature(features):
 
     # Step 6, This is optional.
     features.default_features.append(feature_name)
+
 
 @hooks.register("register_rich_text_features")
 def register_righttext_feature(features):
@@ -127,14 +128,9 @@ def register_righttext_feature(features):
         "from_database_format": {tag: InlineStyleElementHandler(type_)},
         "to_database_format": {
             "style_map": {
-                type_: {
-                    "element": tag,
-                    "props": {
-                        "class": "d-block text-right"
-                    }
-                }
+                type_: {"element": tag, "props": {"class": "d-block text-right"}}
             }
-        }
+        },
     }
 
     # Step 5
@@ -143,57 +139,56 @@ def register_righttext_feature(features):
     # Step 6, This is optional.
     features.default_features.append(feature_name)
 
+
 # 1. Use the register_rich_text_features hook.
-@hooks.register('register_rich_text_features')
+@hooks.register("register_rich_text_features")
 def register_redacted_feature(features):
     """
     Registering the `mark` feature, which uses the `MARK` Draft.js inline style type,
     and is stored as HTML with a `<mark>` tag.
     """
-    feature_name = 'redacted'
-    type_ = 'REDACTED'
-    tag = "span" # This tag is currently 
+    feature_name = "redacted"
+    type_ = "REDACTED"
+    tag = "span"  # This tag is currently
 
     # 2. Configure how Draftail handles the feature in its toolbar.
     control = {
-        'type': type_,
-        'label': '▮',
-        'description': 'Redacted',
+        "type": type_,
+        "label": "▮",
+        "description": "Redacted",
         # This isn’t even required – Draftail has predefined styles for MARK.
-        'style': {
-            'background-color': 'currentcolor',
-            },
+        "style": {
+            "background-color": "currentcolor",
+        },
     }
 
     # 3. Call register_editor_plugin to register the configuration for Draftail.
     features.register_editor_plugin(
-        'draftail', feature_name, draftail_features.InlineStyleFeature(control)
+        "draftail", feature_name, draftail_features.InlineStyleFeature(control)
     )
 
     # 4.configure the content transform from the DB to the editor and back.
     db_conversion = {
-        'from_database_format': {tag: InlineStyleElementHandler(type_)},
-        'to_database_format': {'style_map': {
-            type_: {
-                    "element": tag,
-                    "props": {
-                        "class": "d-block redacted"
-                    }
-                } 
+        "from_database_format": {tag: InlineStyleElementHandler(type_)},
+        "to_database_format": {
+            "style_map": {
+                type_: {"element": tag, "props": {"class": "d-block redacted"}}
             }
         },
     }
 
     # 5. Call register_converter_rule to register the content transformation conversion.
-    features.register_converter_rule('contentstate', feature_name, db_conversion)
+    features.register_converter_rule("contentstate", feature_name, db_conversion)
 
     # 6. (optional) Add the feature to the default features list to make it available
     # on rich text fields that do not specify an explicit 'features' list
-    features.default_features.append('redacted')
+    features.default_features.append("redacted")
+
 
 @hooks.register("register_admin_viewset")
 def register_viewset():
     return author_chooser_viewset
+
 
 @hooks.register("register_admin_viewset")
 def register_image_chooser_viewset():

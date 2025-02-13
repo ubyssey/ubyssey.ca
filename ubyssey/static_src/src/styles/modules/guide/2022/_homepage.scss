@@ -63,7 +63,7 @@
 .land_mark_image-container img{
     max-height: 100%;
     max-width: 100%;
-    
+
 }
 
 .land_mark_note-container{
@@ -74,7 +74,7 @@
     justify-content: center;
     background-color: lightblue;
     font-family: 'Noto Sans', sans-serif;
-    
+
     font-size: 1.3rem;
     font-weight: 300;
     line-height: 1.6rem;
@@ -121,7 +121,7 @@
     overflow: hidden;
     text-align: center;
     margin-bottom: 20px;
-    
+
 
 }
 
@@ -129,7 +129,7 @@
     border-radius: 10%;
 }
 
-.p-bio-container{ 
+.p-bio-container{
     border:1px solid black;
     width: 100%;
     height: 60%;
@@ -144,7 +144,7 @@
 
 .p-bio h3{
     font-weight: bold;
-    
+
 }
 
 .p-title{
@@ -156,7 +156,7 @@
     color: #6F8FAF;
     font-size: 3.5em;
     font-weight: bold;
-    
+
 }
 
 @media (min-width: 1000px) {
@@ -223,12 +223,12 @@
 .box > a > img {
     width: 100%;
     height: auto;
-    
+
 }
 
 .photo_cover {
     object-fit: cover;
-    max-width: 100%; 
+    max-width: 100%;
 }
 
 @media($bp-smaller-than-tablet) {
@@ -240,4 +240,3 @@
     }
 
 }
-

@@ -24,7 +24,7 @@ $(function () {
         <CookieDisclaimer />,
         document.getElementById('cookie-disclaimer')
     )
-    
+
 });
 /*
 if ($('main.article').length) {
@@ -44,14 +44,14 @@ if ($('main.article').length) {
     } else {
         articleIds = articleIds.split(',');
     }
-    
-    
+
+
     //var firstArticle = {
     //    id: articleId,
     //    headline: articleHeadline,
     //    url: articleURL
     //};
-    
+
 
     function stickyAds(scrollTop, stickyElements) {
 
@@ -204,12 +204,12 @@ if ($('main.article').length) {
     ];
 
 
-    
+
     //const gallery = ReactDOM.render(
     //    <Galleries galleries={galleries} />,
     //    document.getElementById('gallery')
     //);
-    
+
 
 
 }

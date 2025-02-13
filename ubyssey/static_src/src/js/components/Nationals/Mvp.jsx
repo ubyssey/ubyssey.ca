@@ -15,8 +15,8 @@ function Mvp(props) {
               style={playerImage}>
             </div>
           </div>
-          <Ribbon html={player.name} 
-            isDesktop={props.isDesktop} 
+          <Ribbon html={player.name}
+            isDesktop={props.isDesktop}
             primaryColor={primaryColor}/>
         </div>
 

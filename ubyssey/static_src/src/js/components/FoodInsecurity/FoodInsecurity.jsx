@@ -39,13 +39,13 @@ class FoodInsecurity extends React.Component {
       <div className={'c-i-container'}>
         <span className='c-i-title'>Affordable Food Map</span>
         <div className='c-i-desktop'>
-          <Map 
+          <Map
             isDesktop = {isDesktop}
-            pointData={this.props.pointData} 
+            pointData={this.props.pointData}
             mapImage={this.props.map}
             currentPoint={this.state.currentPoint}
             resetPoint={() => this.resetPoint()}
-            selectPoint={(point) => this.selectPoint(point)}/> 
+            selectPoint={(point) => this.selectPoint(point)}/>
         </div>
       </div>
     )
@@ -54,5 +54,3 @@ class FoodInsecurity extends React.Component {
 
 
 export default FoodInsecurity
-
-

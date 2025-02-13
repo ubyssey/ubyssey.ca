@@ -5,7 +5,7 @@
 // new DFP ad tags are known as GPT (Google Publisher Tags)
 
 const SIZES = {
-    'box': [300, 250], 
+    'box': [300, 250],
     'skyscraper' : [[300, 250], [300, 600]],
     'banner': [468, 60],
     'leaderboard': [[728, 90], [970, 90]],
@@ -36,7 +36,7 @@ class DFP {
     googletag.enableServices();
   }
 
-  // Select visible adslots and for any new adslots not already 
+  // Select visible adslots and for any new adslots not already
   collectAds() {
 
     // Only select visible adslots
@@ -51,10 +51,10 @@ class DFP {
 
       // Declares const priorSlotNames as this.adslots
       // NOTE: Reduce function does not appear to change array, const priorSlotNames = this.adslots looks like it should produce the same behaviour
-      const priorSlotNames = this.adslots.reduce((acc, val) => acc.concat(val), []) 
-      
+      const priorSlotNames = this.adslots.reduce((acc, val) => acc.concat(val), [])
+
       // If the slot is not already on the page
-      // Sets const slot to a newly constructed ad slot with a given ad unit path and size 
+      // Sets const slot to a newly constructed ad slot with a given ad unit path and size
       // and associates it with the ID of a div element on the page that will contain the ad.
       if (!priorSlotNames.includes(slotName)) {
         const slot = googletag.defineSlot(
@@ -65,7 +65,7 @@ class DFP {
         )
         .setCollapseEmptyDiv(true) // Ad slot will be collapsed after no ads detected available for the slot
         .addService(googletag.pubads());
-  
+
         this.adslots.push([slotName, slot]); // add new adslot to array of adslots
       }
     });

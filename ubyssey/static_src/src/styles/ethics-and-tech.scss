@@ -174,7 +174,7 @@ $font-avenir: Avenir, serif;
     display: inline-block;
     top: 50%;
     margin-top: 7.5px;
-  
+
     &.red {
       background-color: $dot-red;
       // left: 3px;
@@ -216,7 +216,7 @@ $font-avenir: Avenir, serif;
     //background: linear-gradient(to bottom right, $pastel-pink, $pastel-blue);
     background: linear-gradient(to bottom right, $pastel-blue, $pastel-green);
 
-  
+
     .quote {
       margin: 0;
       font-family: $font-avenir;
@@ -225,7 +225,7 @@ $font-avenir: Avenir, serif;
       color: $dark-accent-1;
       line-height: 1.4em;
     }
-  
+
     .source {
       margin-top: 0.5rem;
       margin-bottom: 0;
@@ -255,18 +255,18 @@ $font-avenir: Avenir, serif;
   position: absolute;
   text-align: center;
 }
-  
+
 .eit-header-logo > a {
   display: inline-block;
   width: 141px;
   height: 33px;
   background-image: url('../images/ubyssey_logo_white.png');
   background-size: 100%;
-  
+
   opacity: 1;
   transition: opacity 0.25s;
 }
-  
+
 .eit-header-logo > a:hover {
   opacity: 0.75;
 }
@@ -299,7 +299,7 @@ $font-avenir: Avenir, serif;
     @media(min-width: 760px) {
       padding-top: 1rem;
     }
-  
+
     p {
       max-width: 585px;
       margin-left: auto;
@@ -309,7 +309,7 @@ $font-avenir: Avenir, serif;
       padding-left: 15px;
       padding-right: 15px;
     }
-  
+
     p {
       font-family: $font-avenir;
       //font-family: "Georgia", serif;
@@ -318,7 +318,7 @@ $font-avenir: Avenir, serif;
       color: #333333;
       line-height: 1.625rem;
       margin-top: 1.4rem;
-  
+
       a {
         color: $dark-purple;
       }
@@ -342,7 +342,7 @@ $font-avenir: Avenir, serif;
     background: linear-gradient(to bottom right, $pastel-pink, $pastel-blue);
     font-family: $font-avenir;
 
-  
+
     h3 {
       font-family: 'Azonix';
       color: $dark-purple;
@@ -350,7 +350,7 @@ $font-avenir: Avenir, serif;
       margin-bottom: 1rem;
       margin-top: 1rem;
     }
-  
+
     p {
       color: $dark-accent-1;
       // font-family: $font-avenir;
@@ -359,7 +359,7 @@ $font-avenir: Avenir, serif;
       font-size: 17px;
       line-height: 1.5em;
     }
-  
+
 }
 
 html, body {

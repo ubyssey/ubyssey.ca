@@ -1,5 +1,5 @@
 <!--
-    This template is for an issue. 
+    This template is for an issue.
     If the issue is for feature request, please start clean and tell us why and what feature you want
 -->
 

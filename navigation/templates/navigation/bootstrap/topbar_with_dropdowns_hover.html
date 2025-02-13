@@ -25,7 +25,7 @@ background_color - hex color
                     {% comment %} We ignore the first item in the menu, because that's used for the home page
                     {% endcomment %}
                     {% if forloop.counter0 > 0 %}
-                        {% if item.has_children_in_menu %} 
+                        {% if item.has_children_in_menu %}
                         <li class="nav-item dropdown">
                             <a class="nav-link {% if item.text == page.get_parent.title %}current{% endif %}" href="{{ item.href }}" role="button">{{ item.text }}</a>
                             {% sub_menu item template="navigation/bootstrap/topbar_with_dropdowns_submenu.html"%}

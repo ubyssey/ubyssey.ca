@@ -88,7 +88,7 @@
 }
 
 .card_wrapper_1 {
-    
+
     grid-column: 1 / -1;
     @media(min-width: 768px) {
         border-bottom: medium;
@@ -133,7 +133,7 @@
     img {
         width: 100%;
     }
-    
+
     grid-column-start: 1;
     grid-column-end: -1;
 
@@ -155,7 +155,7 @@
     justify-content: space-between;
     margin-top: 2em;
     margin-bottom: 2em;
-    
+
     .stream_title{
         width: 100%;
     }

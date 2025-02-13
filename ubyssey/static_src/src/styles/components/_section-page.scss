@@ -17,7 +17,7 @@
 
     li {
       display: inline-block;
-      
+
       &:not(:last-child):after {
         content: "  |  ";
       }
@@ -113,7 +113,7 @@
       text-overflow: ellipsis;
     }
   }
-  @media($bp-smaller-than-phablet) { 
+  @media($bp-smaller-than-phablet) {
     display: none;
   }
 }
@@ -183,7 +183,7 @@
 
 .c-section__description {
   margin-block: 1em;
-  padding-inline: 1em; 
+  padding-inline: 1em;
   display: inline-block;
   box-sizing: border-box;
   @media($bp-smaller-than-phablet) {
@@ -236,7 +236,7 @@ svg.banner-title text{
   paint-order: stroke;
 
   transition: stroke 0.5s ease, color 0.5s ease;
-  
+
   font-family: $font-headline;
   font-size: 1em;
   font-weight: bolder;

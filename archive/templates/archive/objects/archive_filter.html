@@ -9,7 +9,7 @@
 
 {% if sections or years %}
 <div class="o-archive__sidebar show-desktop">
-    
+
     <div class="o-archive__sidebar__filters">
         <h2>Year <a href="#" class="filterDropdown"><ion-icon name="caret-down-outline"></ion-icon></a></h2>
         <ul class="hide_filter">
@@ -20,7 +20,7 @@
                     <a href="?{% modify_query_string 'year' y %}">{{ y }}</a>
                 </li>
                 {% endif %}
-            {% endfor %}            
+            {% endfor %}
             <li
                 class="o-archive__sidebar__filter{% if not year %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="?{% remove_field_from_query_string 'year' %}">All years</a>
@@ -53,7 +53,7 @@
                 class="o-archive__sidebar__filter {% if video_section == True %} o-archive__sidebar__filter--is-active{% endif %}">
                 <a href="{% pageurl self %}videos/{{ request|query_string }}">Videos</a>
             </li>
-        
+
         </ul>
 
         <h2>Magazines <a href="#" class="filterDropdown"><ion-icon name="caret-down-outline"></ion-icon></a></h2>
@@ -118,7 +118,7 @@
                 <span>{% if year %}{{ year }}{% else %}All years{% endif %}</span>
                 <ion-icon name="caret-down-outline"></ion-icon>
             </a>
-            
+
             <dialog class="modal o-mobile-dropdown__list" aria-modal="true">
                 <div class="js-dropdown-container close-modal"></div>
                 <div class="o-mobile-dropdown__list__container">
@@ -191,7 +191,7 @@
                         <li
                             class="o-mobile-dropdown__item {% if spoof_slug == "All Spoofs" %} o-mobile-dropdown__item--is-active{% endif %}">
                             <a href="{% pageurl self %}spoofs/{{ request|query_string }}">All Spoofs</a>
-                        </li>  
+                        </li>
                         {% for iter in self.spoofs_filters.all %}
                             <li
                                 class="o-mobile-dropdown__item {% if iter.spoof_filter.slug == spoof_slug %} o-mobile-dropdown__item--is-active {% endif %}">

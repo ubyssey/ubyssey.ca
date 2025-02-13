@@ -1,6 +1,6 @@
 export const editorial = {
   title: "A letter from the editor",
-  paragraphs: [`We are a campus of over 60,000 people, all with different stories, backgrounds, trials, and tribulations. 
+  paragraphs: [`We are a campus of over 60,000 people, all with different stories, backgrounds, trials, and tribulations.
   How does UBC support or hinder those differences? How do we --- as individuals, departments, and communities at a university --- claim our own space?
   How do we continue to evolve and grow when the campus around us seems not to fit us? How do we stand up for our beliefs?
   How do we continue to be us and celebrate our diversity?

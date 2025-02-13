@@ -21,7 +21,7 @@
                     </div>
                     {% if article.template_fields.banner_quote and article.template_fields.banner_quote != ' ' %}
                         {% comment %} TODO address "subsection" context variable use {% endcomment %}
-                        <div id='quote-top' class="c-welcome-article __{{ subsection }}"> 
+                        <div id='quote-top' class="c-welcome-article __{{ subsection }}">
                             <div class="c-banner-credits inside-quote">{{ article.featured_image.credit }}</div>
                                 <div class='quote-content--container'>
                                     <div class="c-welcome-article__ quote">
@@ -87,7 +87,7 @@
                     {% include 'article/objects/guide/article-box2022.html' with style='article' title=next.title page=next image=next_image.url %}
                 </div>
             </main>
-        {% endwith %}        
+        {% endwith %}
     </main>
 {% endblock %}
 {% block footernav%}

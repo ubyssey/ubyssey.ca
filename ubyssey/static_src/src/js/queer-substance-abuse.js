@@ -9,7 +9,7 @@ mm.add("(min-width: 1px), (min-height: 1px)", () => {
     covers.forEach((cover) => {
         console.log(cover);
         gsap.to(cover, {
-            scrollTrigger: {trigger: cover, start: "start center", end: "bottom +=300", scrub: true,  
+            scrollTrigger: {trigger: cover, start: "start center", end: "bottom +=300", scrub: true,
                 onToggle: self => {self.trigger.classList.toggle('visible');}
             },
             immediateRender: false,

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from taggit.models import Tag
 
+
 class TagPage(object):
     def tag(self, request, slug):
         if Tag.objects.filter(slug=slug).exists():
@@ -8,9 +9,8 @@ class TagPage(object):
 
             context = {
                 "filters": {"tag": tag.slug},
-                "self": {"title": tag.name,
-                         "slug": tag.slug},
+                "self": {"title": tag.name, "slug": tag.slug},
             }
-            return render(request, 'tag/tag_page.html', context)
+            return render(request, "tag/tag_page.html", context)
         else:
-            return render(request, '404.html', {}, status=404)
+            return render(request, "404.html", {}, status=404)
