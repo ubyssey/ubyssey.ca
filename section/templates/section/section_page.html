@@ -97,7 +97,7 @@
                 <ion-icon name="close"></ion-icon>
               </a>
               <h1><ion-icon name="pricetag"></ion-icon> All Categories</h1> <!-- Why Series? Why not Categories? -->
-              <p><a href="{% pageurl self %}">{{self.title}}</a>{% if self.description %} - {{self.description}}{% endif %}</p>
+              <p><a href="{% pageurl self %}">{{self.title}}</a></p>
               <ul>
               {% for category in all_categories reversed %}
                 <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a></li>
