@@ -41,7 +41,7 @@
           </svg>
         </div>
         {% if description or not category %}
-        <p class="c-section__description">{% if category %}<b><a href="/{{self.slug}}/">From {{self.title}}</a></b> &ensp;{% endif %}{{description}}{% if not category %} &ensp;<a href="/rss/{{self.slug}}/" aria-label="Go to section's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% else %} &ensp;<a href="{% pageurl self %}category/{{category}}/rss/" aria-label="Go to category's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% endif%}</p>
+        <p class="c-section__description">{% if category %}<b><a href="/{{self.slug}}/">From {{self.title}}</a></b> &ensp;{% endif %}{{description|safe}}{% if not category %} &ensp;<a href="/rss/{{self.slug}}/" aria-label="Go to section's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% else %} &ensp;<a href="{% pageurl self %}category/{{category}}/rss/" aria-label="Go to category's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% endif%}</p>
         {% endif %}
       {%else%}
         <div class="c-section__heading">
