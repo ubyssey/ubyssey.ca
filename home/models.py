@@ -80,7 +80,7 @@ class HomePage(Page):
         null=True,
         blank=True,
         verbose_name="Top stories timeout",
-        help_text = "Before this date the manually set top stories list will be displayed. After this date the top stories list will be the 5 most recent articles in the last 2 weeks tagged with 'Top stories'. Each section is limited to two articles.",
+        help_text = "Before this date the manually set top stories list will be displayed. After this date the top stories list will be the 5 most recent articles tagged with 'Top stories'. Each section is limited to two articles. Only articles published in the last 2 weeks are included.",
     )
 
     middle_stream = StreamField(

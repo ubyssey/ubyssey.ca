@@ -539,7 +539,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         through='article.ArticlePageTag', 
         blank=True, 
         related_name='tags', 
-        help_text="Tags entered here will be listed in the tag page at '/tag/tag-name'",
+        help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST. Tags entered here will be listed in the tag page with the format 'https://ubyssey.ca/tag/top-stories/'.",
         verbose_name="Tags")
     primary_tag_slug = models.CharField(
         null=True,
@@ -552,13 +552,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         null=False,
         blank=False,
         default=False,
-        help_text="Check this box if you want to add a link to the tag page.",
+        help_text="Check this if you want to add a link to the primary tag page at the end of the article.",
+        verbose_name="Link to Primary Tag at the End of the Article"
     )
     filter_by_tags = models.BooleanField(
         null=False,
         blank=False,
         default=False,
-        help_text="Check this box if you want to filter suggested articles by tag.",
+        help_text="CHECK THIS to fill the suggested bar with other articles in this section that are also tagged with the primary tag.",
+        verbose_name="Use Primary Tag for Suggested Bar"
     )
 
     disclaimer = RichTextField(
