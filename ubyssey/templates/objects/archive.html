@@ -174,7 +174,7 @@
         {% comment %}
           This for loop was designed on the assumption that many object types would be paginated together.
           That proved wildly infeasible. Only AuthorView is designed with this assumption in place
-          It is because of AuthorView that there are so many odd if-statements here       
+          It is because of AuthorView that there are so many odd if-statements here
         {% endcomment %}
         {% if forloop.counter0 == articles_start_idx and page_obj.number == articles_start_page %}
           <div class="o-archive__divider">
@@ -183,7 +183,7 @@
             <div class="o-archive__line"></div>
           </div>
         {% endif %}
-       
+
         {% if forloop.counter0 == people_start_idx and page_obj.number == people_start_page %}
           <div class="o-archive__divider">
             <div class="o-archive__line"></div>

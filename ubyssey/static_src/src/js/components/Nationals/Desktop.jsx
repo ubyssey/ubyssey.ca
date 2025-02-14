@@ -6,10 +6,10 @@ class Desktop extends React.Component {
   constructor(props){
     super(props)
   }
-  
+
   render() {
     const {teamData, isDesktop, selectedTeam} = this.props
-    
+
     return (
       <div>
         {teamData.map((team) => {
@@ -17,11 +17,11 @@ class Desktop extends React.Component {
           return(
             <div className='c-n-content-container'>
               <div className='c-n-content'>
-                <Mvp player={team.player} 
+                <Mvp player={team.player}
                   primaryColor={team.colors[0]}
                   isDesktop={isDesktop}
                   isSelected={isSelected}/>
-                <TeamContent team={team} 
+                <TeamContent team={team}
                   isDesktop={isDesktop}
                   isSelected={isSelected}/>
               </div>
@@ -34,5 +34,3 @@ class Desktop extends React.Component {
 }
 
 export default Desktop
-
-

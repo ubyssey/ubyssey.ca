@@ -235,7 +235,7 @@ html {
 html[color-css-theme="light"] {
   --background-nav: rgba(255, 255, 255, 0.99);
   --background: white;
-  --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
+  --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99);
   --nav-h3-color: #5D5D5D;
   --nav-span-color: #33331E;
   --nav-headline-h1: #373737;
@@ -303,7 +303,7 @@ dialog {
   border: none;
 }
 
-body { 
+body {
   background-color: var(--background);
   transition: background-color 0.5s ease, color 0.5s ease;
   min-height: 100vh;
@@ -394,10 +394,10 @@ a.image {
 
 .dropdown:focus-within, .dropdown:hover {
   .dropdown-content {
-    display: block; 
+    display: block;
   }
   .dropdown-show {
-    display: inherit; 
+    display: inherit;
   }
   .dropdown-hidden {
     display: none;

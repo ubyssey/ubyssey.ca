@@ -33,7 +33,7 @@
 		<!-- Manually selected menu: {{ page.menu.handle }} -->
 		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
 	{% elif create_menu_from_parent %}
-		<!-- Menu created from parent page -->	 
+		<!-- Menu created from parent page -->
 		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
 	{% endif %}
 {% endblock %}
@@ -55,8 +55,8 @@
 
     {% with self.featured_media.first as featured_image_object %}
         {% image featured_image_object.image original as featured_image %}
-        <div class="c-banner c-banner--welcome" 
-        style="background-image: url('{{ featured_image.url }}'); {{ featured_image.background_position_style }};" 
+        <div class="c-banner c-banner--welcome"
+        style="background-image: url('{{ featured_image.url }}'); {{ featured_image.background_position_style }};"
         aria-label="{{featured_image_object.alt_text}}">
             <div class="c-banner__container">
                 {% comment %} <div class="c-banner--welcome__inner">
@@ -99,7 +99,7 @@
                 {% include 'article/objects/guide/article-box2023.html' with style='article' title=next.title page=next image=next_image.url prevornext='next' %}
             </div>
         </main>
-    {% endwith %}        
+    {% endwith %}
 </main>
 
 {% endblock %}

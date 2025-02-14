@@ -14,7 +14,7 @@ const BP_DESKTOP_SIZE = 1199;
 
 function useQuery() {
     const { search } = useLocation();
-  
+
     // Ensure `search` is always defined (default to empty string if not present)
     return React.useMemo(() => {
       try {
@@ -24,7 +24,7 @@ function useQuery() {
       }
     }, [search]);
   }
-  
+
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= BP_DESKTOP_SIZE);
 
@@ -77,7 +77,7 @@ export function QueryEventsCalendar() {
         // Ensure the new start date begins on the Monday of that week
         while (newStartDate.getDay() !== 1) {
             newStartDate = new Date(newStartDate.getTime() - 24 * 60 * 60 * 1000);
-        }    
+        }
         return newStartDate;
     }
 
@@ -87,7 +87,7 @@ export function QueryEventsCalendar() {
             const year = parseInt(urlParams.get("year"));
             const date = new Date(year, month - 1, 1);
             if (
-                (date.getDay() === 6 && new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() === 31) || 
+                (date.getDay() === 6 && new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() === 31) ||
                 (date.getDay() === 0 && new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() > 29)
             ) {
                 return 6;
@@ -137,7 +137,7 @@ export function QueryEventsCalendar() {
             year: adjustedYear,
             month: adjustedMonth,
         };
-    };    
+    };
 
     // Function to update the start date to the week of the first day of the previous or next month
     const handleMonthNavigation = (direction) => {
@@ -145,7 +145,7 @@ export function QueryEventsCalendar() {
         let newStart, newMonth, newYear;
         newStart = calculateNewStart(direction, start);
         newMonth = newStart.month;
-        newYear = newStart.year;    
+        newYear = newStart.year;
 
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set('month', newMonth);
@@ -156,7 +156,7 @@ export function QueryEventsCalendar() {
         let newStartDate = new Date(newYear, newMonth - 1, 1); // Month is 0-indexed
 
         if (
-            (newStartDate.getDay() === 6 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() === 31) || 
+            (newStartDate.getDay() === 6 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() === 31) ||
             (newStartDate.getDay() === 0 && new Date(newStartDate.getFullYear(), newStartDate.getMonth() + 1, 0).getDate() > 29)
         ) {
             setNumberOfWeeks(6);
@@ -185,7 +185,7 @@ export function QueryEventsCalendar() {
     };
 
     function getEvents(){
-        
+
         const s = 1000
         const m = s * 60;
         const h = m * 60;
@@ -238,12 +238,12 @@ export function QueryEventsCalendar() {
                             </div>
                         </div>
                         <div class="darkmode-toggle">
-                            <button 
-                                className="theme-toggle dark-mode-switcher" 
-                                id="theme-toggle" 
-                                onClick={toggleDarkMode} 
-                                title="Toggles light & dark" 
-                                aria-label="auto" 
+                            <button
+                                className="theme-toggle dark-mode-switcher"
+                                id="theme-toggle"
+                                onClick={toggleDarkMode}
+                                title="Toggles light & dark"
+                                aria-label="auto"
                                 aria-live="polite"
                             >
                                 <svg class="sun-and-moon" aria-hidden="true" width="1.75em" height="1.75em" viewBox="0 0 24 24">
@@ -262,7 +262,7 @@ export function QueryEventsCalendar() {
                                         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
                                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
                                     </g>
-                                </svg>                            
+                                </svg>
                             </button>
                         </div>
                         <h1 class="title">Events around campus</h1>
@@ -274,7 +274,7 @@ export function QueryEventsCalendar() {
                         <EventsCalendar events={events} start={start} setStart={setStart} numberOfWeeks={numberOfWeeks} setNumberOfWeeks={setNumberOfWeeks} isDarkMode={isDarkMode} setIsMobile={setIsDarkMode} getInitialStartDate={startDate} handleMonthNavigation={handleMonthNavigation} setIsMonthToggled={setIsMonthToggled} isMonthToggled={isMonthToggled} isLoading={isLoading}/>
                     </div>
                 </div>
-            
+
             <EventInfo events={events}/>
         </div>
         </Router>
@@ -304,7 +304,7 @@ function changeTimezone(date, ianatz) {
     var invdate = new Date(date.toLocaleString('en-US', {
       timeZone: ianatz
     }));
-  
+
     var diff = date.getTime() - invdate.getTime();
     return new Date(date.getTime() - diff);
   }
@@ -342,7 +342,7 @@ function displayEventTime(start, end) {
     const m = s * 60;
     const h = m * 60;
     const d = h * 24;
-    
+
     start = new Date(start);
     end = new Date(end);
 
@@ -371,7 +371,7 @@ function eventsTags(event) {
     return tags.join(" ");
 }
 
-function EventsOptions({getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isDarkMode, isMonthToggled, setStart}) { 
+function EventsOptions({getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isDarkMode, isMonthToggled, setStart}) {
     let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     const navigate = useNavigate();
@@ -647,13 +647,13 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             selected = searchParams.get(selectType).split(" ");
         }
         selected = selected.filter((i) => i!="");
-        
+
         if (selected.includes(that.id)) {
             selected.splice(selected.indexOf(that.id), 1);
         } else {
             selected.push(that.id);
         }
-        
+
         if (selected.length == 0) {
             searchParams.delete(selectType);
         } else {
@@ -674,9 +674,9 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             $('div.day li.' + slugify(legend[i])).css("color", "black");
         }
     }
-    
 
-    
+
+
     var category = "all";
     var highlight = "category";
     if (query.get("category") != null && query.get("category") != "all"){
@@ -709,7 +709,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
     React.useEffect(()=>{
         colourIn(legend);
     });
-    
+
     const isPhablet = useIsMobile();
     return (
         <>
@@ -722,7 +722,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             <h2 class="day">Sat</h2>
             <h2 class="day">Sun</h2>
         </div>
-        
+
         <div className="events-calendar--navigation">
         {isPhablet ? (
             <>
@@ -745,7 +745,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                         />
                     </svg>
                 </Link>
-                {isMonthToggled && 
+                {isMonthToggled &&
                     <Link
                         to={() => {
                             const searchParams = new URLSearchParams(window.location.search);
@@ -793,7 +793,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
         )}
         </div>
 
-        {isPhablet && isLoading &&                           
+        {isPhablet && isLoading &&
             <div className="loader-container">
                 <LoaderComponent width={50}/>
             </div>}
@@ -939,14 +939,14 @@ function EventInfo({events}) {
 
     return (
         <div class="events-info-container">
-        {event && 
+        {event &&
         <>
             {widthMode ?
             <>
                 <dialog id="event-dialog" open="" aria-modal="true">
                     <div className="events-info-shadow" onClick={() => exitEvent(searchParams, setSearchParams)}></div>
                     <button onClick={() => exitEvent(searchParams, setSearchParams)}><ion-icon name="close"></ion-icon></button>
-                    <EventInfoBox event={event}/>                
+                    <EventInfoBox event={event}/>
                 </dialog>
             </>
             :
@@ -973,7 +973,7 @@ function EventInfoBox({event}) {
         </h2>
         <div class={"events-info--content " + eventsTags(event)}>
                 <h2><a id="selected-title" href={event.event_url} target="blank" dangerouslySetInnerHTML={
-                   {__html: event.title} 
+                   {__html: event.title}
                 }></a></h2>
                 {event.location != "" && <p><b>Location:</b> {event.location}</p>}
                 <p dangerouslySetInnerHTML={
@@ -982,7 +982,7 @@ function EventInfoBox({event}) {
                 </p>
                 <p>
                     <a href={event.event_url.replace("__AND__", "&")} target="blank" id="source_link">{shortenUrl(event.event_url)}</a>
-                    {document.getElementById('calendar').getAttribute("authenticated")=="True" && 
+                    {document.getElementById('calendar').getAttribute("authenticated")=="True" &&
                     <a href={"/admin/snippets/events/event/edit/" + event.id} id="edit_link">edit</a>
                     }
                 </p>

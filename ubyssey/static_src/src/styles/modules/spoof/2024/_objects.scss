@@ -42,7 +42,7 @@ nav.navbar {
     &:focus {
       color:rgb(255, 218, 8);
     }
-  } 
+  }
   .navbar-nav li {
     position: static;
     a.nav-link {
@@ -50,16 +50,16 @@ nav.navbar {
       font-size: 15px;
       font-weight: 500;
       text-transform: uppercase;
-      border-color: transparent !important; 
+      border-color: transparent !important;
       border-bottom: .2em solid;
       padding-bottom: 0;
       &.show,&:hover{
-        color: rgb(255, 218, 8);  
+        color: rgb(255, 218, 8);
       }
       &.active, &.dropdown-toggle.show {
         border-color: rgb(255, 218, 8) !important;
       }
-    } 
+    }
   }
 }
 
@@ -90,7 +90,7 @@ nav.navbar {
     margin: 1em;
     margin-bottom: 0;
     padding: 0;
-    padding-bottom: 0.5em;  
+    padding-bottom: 0.5em;
 
     color: white;
     font-size: 20px;

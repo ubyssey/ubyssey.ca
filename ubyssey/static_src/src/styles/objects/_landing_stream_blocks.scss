@@ -2,7 +2,7 @@
 // Shared classes among landing stream blocks
 .landing_stream_block {
     margin: 3em auto 5em auto;
-  
+
     .landing_stream_block--header {
       margin-block: 2em;
       font-family: $font-default;
@@ -110,7 +110,7 @@
   }
 }
 
-// Timeline 
+// Timeline
 .landing-stream-block__timeline {
     article.article--round_with_border {
       height: fit-content;
@@ -204,11 +204,11 @@
       li.timeline-dot::before {
         background-color: $color-ubyssey-blue;
       }
-  
+
       li {
         border-color: $color-ubyssey-blue;
       }
-  
+
       p.o-article__published,
       .o-article__seemore {
         width: fit-content;
@@ -216,7 +216,7 @@
       }
     }
 }
-  
+
 [color-css-theme="dark"] {
   .landing-stream-block__borders {
     border-color: $color-ubyssey-blue-light;
@@ -226,14 +226,13 @@
       h3.o-article__headline {
         color: $color-ubyssey-blue-light;
       }
-  
+
       li.timeline-dot::before {
         background-color: white;
       }
-  
+
       li {
         border-color: white;
       }
     }
   }
-  

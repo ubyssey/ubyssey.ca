@@ -4,21 +4,21 @@ services:
     image: selenium/standalone-chrome:latest
     ports:
       - 4444:4444
-      - 7900:7900 
+      - 7900:7900
     shm_size: 2gb
-    
+
   selenium-edge:
     image: selenium/standalone-edge:latest
     ports:
-      - 4445:4444 
-      - 7901:7900 
+      - 4445:4444
+      - 7901:7900
     shm_size: 2gb
 
   selenium-firefox:
     image: selenium/standalone-firefox:latest
     ports:
-      - 4446:4444 
-      - 7902:7900 
+      - 4446:4444
+      - 7902:7900
     shm_size: 2gb
 
 ## Starts up mySQL server for ubyssey.ca and Dispatch
@@ -39,7 +39,7 @@ services:
       timeout: 20s
       retries: 20
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
-  
+
   # web:
   #   build: .
   #   command: python manage.py runserver 0.0.0.0:8000
@@ -49,7 +49,7 @@ services:
   #     - "8000:8000"
   #   depends_on:
   #     - db
-    
+
 volumes:
   database:
     external:

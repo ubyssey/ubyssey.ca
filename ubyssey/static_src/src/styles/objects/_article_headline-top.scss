@@ -36,7 +36,7 @@ article.headline-top {
     .o-article--default {
         padding-block: 0.5em;
     }
-    
+
     .left{
         margin: auto;
         width: 100%;
@@ -70,9 +70,9 @@ article.headline-top {
     }
 
     @media($bp-smaller-than-desktop) {
-        padding-inline: 1em;   
+        padding-inline: 1em;
     }
-    @media($bp-smaller-than-phablet) { 
+    @media($bp-smaller-than-phablet) {
         padding-inline: 0;
         h2, .above-headline {
             margin-inline: 15px;

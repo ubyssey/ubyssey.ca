@@ -18,7 +18,7 @@
         height: 100%;
         width: 1000px;
         max-width: 100%;
-        
+
         background-size: cover;
         background-position: center;
 
@@ -33,20 +33,20 @@
 
         >h1 {
             position: absolute;
-        
+
             left: 0;
-            
+
             font-size: 6em;
             font-weight: 700;
             line-height: 0.8em;
             white-space: nowrap;
             color: #FEFFE3;
             opacity: 0;
-    
+
             transform-origin: left top;
             transform: rotateZ(-90deg);
-            font-family: $header-font; 
-    
+            font-family: $header-font;
+
             &.postSized {
                 opacity: 1;
             }
@@ -59,7 +59,7 @@
 
     .banner-text {
         bottom: 15px;
-    
+
         >h1 {
         position: relative;
         margin: 0;

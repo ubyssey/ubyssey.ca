@@ -44,17 +44,17 @@
 
         // Background
         background-color: white;
-  
+
         // Text
         font-size: 1rem;
         color: $color-accent-blue;
 
         cursor: pointer;
-  
+
         &:hover {
           // Background
           background-color: #338dd4;
-  
+
           // Text
           color: white;
         }
@@ -64,7 +64,7 @@
         margin: 0 0 15px 0;
         color: white;
       }
-  
+
       a {
         &:hover {
           color: #DADADA;

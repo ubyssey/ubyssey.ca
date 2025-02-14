@@ -22,7 +22,7 @@ class Map extends React.Component {
 
     return(
       <img className='c-nationals-map-marker'
-        src={team.image.thumbnail} 
+        src={team.image.thumbnail}
         alt=""
         onClick={() => {this.props.selectTeam(team)}}
         style={logoStyle}/>
@@ -32,7 +32,7 @@ class Map extends React.Component {
   render() {
     return (
       <div id='c-nationals-map' >
-        <svg xmlns="http://www.w3.org/2000/svg" 
+        <svg xmlns="http://www.w3.org/2000/svg"
           className='c-n-map'
           viewBox={this.props.mapViewBox.join(' ')}
           onClick={() => {this.resetMap()}}
@@ -47,5 +47,3 @@ class Map extends React.Component {
 }
 
 export default Map
-
-

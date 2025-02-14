@@ -48,15 +48,15 @@ if os.environ['DJANGO_SETTINGS_MODULE'] == 'config.settings.production' and not 
             response = client.access_secret_version(request={"name": name})
             crc32c = google_crc32c.Checksum()
             crc32c.update(response.payload.data)
-            if response.payload.data_crc32c != int(crc32c.hexdigest(), 16):                
-                raise Exception("Data corruption detected when accessing secret from secret manager!")      
+            if response.payload.data_crc32c != int(crc32c.hexdigest(), 16):
+                raise Exception("Data corruption detected when accessing secret from secret manager!")
             payload = response.payload.data.decode("UTF-8")
 
             with open(env_file, "w") as f:
                 f.write(payload)
         else:
-            sys.stderr.write("\nError: Unsuccessful attempt to get a project from google.auth!\n")      
-    except Exception as ex:       
+            sys.stderr.write("\nError: Unsuccessful attempt to get a project from google.auth!\n")
+    except Exception as ex:
         sys.stderr.write("\nError in trying to generate .env file using Google application credentials!\n")
         raise ex
 
@@ -73,7 +73,7 @@ env = environ.Env(
 
     # Temporary
     SPECIAL_MESSAGE_AVAILABLE = (bool,False),
-    
+
     # URL defaults
     STATIC_URL = (str,'/static/'),
     MEDIA_URL = (str,'/media/'),
@@ -203,7 +203,7 @@ INSTALLED_APPS = [
     'django_user_agents',
     'django.contrib.admin',
     'django_extensions',
-    
+
     'dbtemplates',
     'wagtailmodelchooser',
     'wagtailmenus',

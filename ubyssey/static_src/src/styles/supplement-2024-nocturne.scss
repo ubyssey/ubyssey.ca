@@ -6,7 +6,7 @@ $accent-colour: #b7b7b7;
 
 @font-face {
 	font-family:'playfair-display';
-	src: 
+	src:
 		url('../fonts/PlayfairDisplay-Medium.woff2') format('woff2'),
 		url('../fonts/PlayfairDisplay-Medium.woff') format('woff'),
 		url('../fonts/PlayfairDisplay-Medium.ttf') format('truetype'),
@@ -19,7 +19,7 @@ $accent-colour: #b7b7b7;
 
 @font-face {
 	font-family:'playfair-display';
-	src: 
+	src:
 		url('../fonts/PlayfairDisplay-Bold.woff2') format('woff2'),
 		url('../fonts/PlayfairDisplay-Bold.woff') format('woff'),
 		url('../fonts/PlayfairDisplay-Bold.ttf') format('truetype'),
@@ -32,7 +32,7 @@ $accent-colour: #b7b7b7;
 
 @font-face {
 	font-family:'playfair-display';
-	src: 
+	src:
 		url('../fonts/PlayfairDisplay-BoldItalic.woff2') format('woff2'),
 		url('../fonts/PlayfairDisplay-BoldItalic.woff') format('woff'),
 		url('../fonts/PlayfairDisplay-BoldItalic.ttf') format('truetype'),
@@ -45,7 +45,7 @@ $accent-colour: #b7b7b7;
 
 @font-face {
 	font-family:'playfair-display';
-	src: 
+	src:
 		url('../fonts/PlayfairDisplay-Medium.woff2') format('woff2'),
 		url('../fonts/PlayfairDisplay-Medium.woff') format('woff'),
 		url('../fonts/PlayfairDisplay-Medium.ttf') format('truetype'),
@@ -172,7 +172,7 @@ article > div > * {
         height: 100vh;
     }
     img.windows.lighted {
-        display: block;        
+        display: block;
     }
     .watcher {
         left: 0;
@@ -189,8 +189,8 @@ article > div > * {
     margin-inline: 1em;
     font-size: 22px;
     p {
-      
-        position: relative;  
+
+        position: relative;
         margin: 2em auto;
         padding: 1em;
         max-width: 700px;
@@ -452,7 +452,7 @@ img {
   height: auto;
 }
 
-.image-attachment { 
+.image-attachment {
   margin: auto;
   padding: 2em;
 

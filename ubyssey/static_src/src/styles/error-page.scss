@@ -8,7 +8,7 @@
 @import 'modules/header';
 @import 'modules/footer';
 
-@import 'modules/darkmode';  
+@import 'modules/darkmode';
 
 @import 'objects/article';
 @import 'objects/article_infinite';
@@ -69,7 +69,7 @@
         padding: 0 1em;
         text-align: center;
     }
-    
+
     .top-logo {
         width: 100%;
         margin: 1em 0;
@@ -82,7 +82,7 @@
             transform: translateX(-50%);
         }
     }
-    
+
     .admin-edit-link {
         display: block;
         width: fit-content;
@@ -94,11 +94,11 @@
         color: #fff;
         text-decoration: none;
     }
-    
+
     .admin-edit-link:hover {
         background-color: #1867A5
     }
-    
+
 }
 
 [color-css-theme="dark"] {

@@ -49,7 +49,7 @@
   margin-top: 0;
   margin-bottom: .5rem;
 
-  //Text 
+  //Text
   font-weight: 600;
   font-size: 1.5rem;
   font-family: "Georgia", serif
@@ -381,7 +381,7 @@ ul.article-list, ol.article-list {
   .menu-title {
     margin: .25rem !important;
     border: 1px solid transparent;
-    
+
     flex-grow: 1;
     background-color: var(--linkColour);
     transition: .2s;
@@ -410,7 +410,7 @@ div.article-content h2.header {
   margin-top: 2em;
   background: linear-gradient(transparent calc(100% - 0.25em), var(--linkColour) 0%);
   background-size: 100% 1.5em;
-  
+
   color: var(--header_color);
   line-height: 1.5em;
   font-weight: 600;

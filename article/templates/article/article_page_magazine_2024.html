@@ -34,7 +34,7 @@
 		<!-- Manually selected menu: {{ page.menu.handle }} -->
 		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns_hover.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
 	{% elif create_menu_from_parent %}
-		<!-- Menu created from parent page -->	 
+		<!-- Menu created from parent page -->
 		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns_hover.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
 	{% endif %}
 {% endblock %}
@@ -55,7 +55,7 @@
     <main class="c-article">
         <div class="o-container">
             {% block banner %}
-            
+
                 <div class="u-container u-container--content u-container--padded">
                     <p class="c-article__title">
                         {% if self.fw_alternate_title %}
@@ -87,7 +87,7 @@
                             <div class="featured-media">
                                 {% image featured_image_object.image original as original_image %}
                                 {% image featured_image_object.image width-1000 as featured_image %}
-                                <img class="article-attachment" 
+                                <img class="article-attachment"
                                     data-id="{{ featured_image_object.id }}"
                                     data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
                                     data-credit="{% if featured_image_object.credit %}{{ featured_image_object.credit }}{% endif %}"

@@ -7,7 +7,7 @@
         <div class="featured-media">
             {% image featured_image_object.image original as original_image %}
             {% image featured_image_object.image width-1200 format-webp as featured_image %}
-            <img class="article-attachment" 
+            <img class="article-attachment"
                 data-id="{{ featured_image_object.id }}"
                 data-caption="{% if featured_image_object.caption %}{{ featured_image_object.caption }}{% endif %}"
                 data-credit="{% if featured_image_object.credit %}{{ featured_image_object.credit }}{% endif %}"
@@ -38,13 +38,13 @@
 {% elif featured_media.first.video %}
     {% with featured_media.first as featured_video_object %}
         <div class="featured-media">
-            <iframe 
-                width="500px" 
-                height="281px" 
+            <iframe
+                width="500px"
+                height="281px"
                 allowfullscreen="allowfullscreen"
-                mozallowfullscreen="mozallowfullscreen" 
-                msallowfullscreen="msallowfullscreen" 
-                oallowfullscreen="oallowfullscreen" 
+                mozallowfullscreen="mozallowfullscreen"
+                msallowfullscreen="msallowfullscreen"
+                oallowfullscreen="oallowfullscreen"
                 webkitallowfullscreen="webkitallowfullscreen"
                 src="{{ featured_video_object.video.url|youtube_embed_url|safe }}">
             </iframe>

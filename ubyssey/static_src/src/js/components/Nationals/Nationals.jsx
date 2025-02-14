@@ -22,7 +22,7 @@ class Nationals extends React.Component {
       selectedTeam: team
     })
   }
-  
+
   resetTeam() {
     this.setState({
       selectedTeam: null
@@ -33,22 +33,22 @@ class Nationals extends React.Component {
     const isDesktop = window.innerWidth > desktopSize ? true: false
     return (
       <div className={'c-n-container'}>
-        { isDesktop && 
+        { isDesktop &&
           <div className='c-n-desktop'>
-            <Map teamData={this.props.teamData} 
+            <Map teamData={this.props.teamData}
               resetMap={() => {this.resetTeam()}}
               selectedTeam={this.state.selectedTeam}
               mapViewBox={this.mapViewBox}
               mapPath={mapPath}
-              selectTeam={(team) => this.selectTeam(team)}/> 
-            <Desktop teamData={this.props.teamData} 
+              selectTeam={(team) => this.selectTeam(team)}/>
+            <Desktop teamData={this.props.teamData}
               isDesktop={isDesktop}
               selectedTeam={this.state.selectedTeam}/>
           </div>
-        }{ !isDesktop && 
+        }{ !isDesktop &&
           <div>
             <div id='c-nationals-map' >
-              <svg xmlns="http://www.w3.org/2000/svg" 
+              <svg xmlns="http://www.w3.org/2000/svg"
                 className='c-n-map'
                 viewBox={this.mapViewBox.join(' ')}
                 dangerouslySetInnerHTML={{__html: mapPath}} />
@@ -56,7 +56,7 @@ class Nationals extends React.Component {
             <Mobile selectedTeam={this.state.selectedTeam}
               teamData={this.props.teamData}
               isDesktop={isDesktop}
-              selectTeam={(team) => this.selectTeam(team)}/> 
+              selectTeam={(team) => this.selectTeam(team)}/>
           </div>
         }
       </div>
@@ -66,5 +66,3 @@ class Nationals extends React.Component {
 
 
 export default Nationals
-
-

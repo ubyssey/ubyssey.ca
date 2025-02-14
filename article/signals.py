@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from wagtail.signals import page_published
 from .models import ArticlePage
 
+
 @receiver(page_published, sender=ArticlePage)
 def update_default_explicit_published_at(instance, **kwargs):
     if not instance.explicit_published_at:
@@ -11,6 +12,7 @@ def update_default_explicit_published_at(instance, **kwargs):
             author.author.last_activity = instance.first_published_at
             author.author.save()
         instance.save()
+
 
 @receiver(pre_save, sender=ArticlePage)
 def update_timeline_on_article_alteration_pre_save(instance, **kwargs):
@@ -30,12 +32,13 @@ def update_timeline_on_article_alteration_pre_save(instance, **kwargs):
         instance._old_timeline = None
     return
 
+
 @receiver(post_save, sender=ArticlePage)
 def update_timeline_on_article_alteration_post_save(instance, **kwargs):
 
     if instance.timeline:
         instance.timeline.save()
-    
+
         if instance._old_timeline:
             if instance.timeline != instance._old_timeline:
                 # We should do a second update only if it turns out timeline changed since the save before our current one
@@ -44,6 +47,7 @@ def update_timeline_on_article_alteration_post_save(instance, **kwargs):
     elif instance._old_timeline:
         instance._old_timeline.save()
     return
+
 
 @receiver(post_delete, sender=ArticlePage)
 def update_timeline_on_article_deletion(instance, **kwargs):

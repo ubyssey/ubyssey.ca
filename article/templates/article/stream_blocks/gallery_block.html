@@ -11,7 +11,7 @@
     </div>
     <div class="carousel-inner">
       {% for image_block in self.images %}
-        
+
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
 
           {% include_block image_block %}

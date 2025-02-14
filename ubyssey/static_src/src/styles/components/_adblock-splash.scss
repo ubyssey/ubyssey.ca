@@ -11,7 +11,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   // Extra
   z-index: 1000000000;
 }
@@ -22,10 +22,10 @@
   width: 100vw;
   top: 0;
   right: 0;
-  
+
   // Background
   background-color: white;
-  
+
   // Extra
   opacity: .5;
   z-index: 10;
@@ -37,14 +37,14 @@
   height: auto;
   max-width: 500px;
   padding: 25px;
-  
+
   // Background
   background-color: $color-ub-blue;
-  
+
   // Extra
   opacity: 1;
   z-index: 11;
-  
+
   // Fonts
   color: white;
   h1{
@@ -69,10 +69,10 @@
   // Background
   background-color: white;
   background-image: none;
-  
+
   // Font
   color: $color-ub-blue;
-  
+
   // Borders
   border: none;
 

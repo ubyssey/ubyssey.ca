@@ -7,7 +7,7 @@ var data = {};
 function getData(attribute) {
   if (feed.getAttribute(attribute) != null) {
     data[attribute] = feed.getAttribute(attribute);
-  }  
+  }
 }
 
 getData("section");
@@ -26,7 +26,7 @@ function getArticles() {
     type:"GET",
     url: "/infinitefeed/",
     data:data,
-    success: function(data) 
+    success: function(data)
     {
       recievedata(data);
     }
@@ -48,15 +48,15 @@ function recievedata(data) {
     }
     loader.classList.add("hide");
     loader.removeAttribute("inactive");
-  }  
+  }
 }
 
 loader.setAttribute("start", "15");
 loader.setAttribute("number", "15");
 
 
-function loadArticles() 
-{ 
+function loadArticles()
+{
   if(loader.hasAttribute("inactive") == false) {
     if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
       getArticles();

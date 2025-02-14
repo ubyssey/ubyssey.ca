@@ -105,11 +105,11 @@
                       display: inline-block;
                       height: 1.5em;
                       width: 1em;
-                
+
                       background-image: url("../images/magazine/2024/mag2024-star.png");
                       background-size: cover;
                       background-position: center;
-                      
+
                       vertical-align: text-top;
                     }
                     text-align: center;
@@ -154,7 +154,7 @@
 
                 .editorial__credits-item {
                     padding: 2em;
-                    
+
                     @media($bp-larger-than-phablet) {
                         width: 30%;
                     }

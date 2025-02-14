@@ -1,26 +1,26 @@
 export function initializeDarkModeToggle() {
     $(document).on('click', '.dark-mode-switcher', function (e) {
         var mode = getDarkMode();
-    
+
         if (mode == "dark") {
             document.getElementsByTagName('meta')["color-scheme"].content = "light";
-            
+
             // document.querySelector('meta[name="color-scheme"]').setAttribute("content", "light");
             mode = "light";
-  
+
             setDarkMode(mode);
-  
+
         } else if (mode == "light") {
             document.getElementsByTagName('meta')["color-scheme"].content = "dark";
-            
+
             // document.querySelector('meta[name="color-scheme"]').setAttribute("content", "dark");
             mode = "dark";
-  
+
             setDarkMode(mode);
         }
     });
   }
-  
+
   export function setDarkMode(mode) {
     document.getElementsByTagName('meta')["color-scheme"].content = mode;
     if (mode == "light") {
@@ -38,7 +38,7 @@ export function initializeDarkModeToggle() {
     }
     localStorage.setItem("color-scheme", mode);
   }
-  
+
 export function getDarkMode() {
     return localStorage.getItem("color-scheme");
 }

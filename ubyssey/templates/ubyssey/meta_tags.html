@@ -5,7 +5,7 @@
 {% if self %}
     <title>{{ self.title|striptags|safe }}</title>
     <link rel="canonical" href="https://ubyssey.ca{% pageurl self %}">
-    
+
     {% if self.noindex %}
         {% comment %}
             Set by editors if someone requests the removal of an article from the website.

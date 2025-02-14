@@ -79,7 +79,7 @@ export function initializeUI(swReg) {
   swRegistration.pushManager.getSubscription()
   .then(function(subscription) {
     isSubscribed = !(subscription === null);
-    
+
     updateSubscriptionOnServer(subscription);
 
     if (!isSubscribed) {

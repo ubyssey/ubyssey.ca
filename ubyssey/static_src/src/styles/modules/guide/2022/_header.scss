@@ -7,7 +7,7 @@
     width: 166px;
     background-image: url('../images/guide/guide-logo.png');
     background-size: 100%;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
     transition: background-image 0.15s;
     flex-shrink: 0; // logo does not shrink with screen size changes (used in conjunction with backg-size 100%)
     &:hover {
@@ -16,11 +16,11 @@
 }
 
 .c-header .c-nav-right .c-nav-section{
-   
+
     font-size: 0.8em;
     width: 150px;
     margin-top: 0.8em;
-   
+
 }
 
 .c-section-more{

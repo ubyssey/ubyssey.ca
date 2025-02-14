@@ -77,7 +77,7 @@
             <a href="https://www.ubyssey.ca"></a>
           </div>
           <ul class="oyl-nav__list">
-            {% if article.template_fields.article_september %} 
+            {% if article.template_fields.article_september %}
             <li>
               {% if article.slug == article.template_fields.article_september.slug %}
               <a class="is-selected" href="{{ article.template_fields.article_september.get_absolute_url }}">
@@ -88,10 +88,10 @@
                 <img src="{% static 'ubyssey/images/sport-series/start.PNG' %}"/>
               </a>
               {% endif %}
-            
+
             {% endif %}
 
-            {% if article.template_fields.article_october %} 
+            {% if article.template_fields.article_october %}
             <li>
               {% if article.slug == article.template_fields.article_october.slug %}
               <a class="is-selected" href="{{ article.template_fields.article_october.get_absolute_url }}">
@@ -102,10 +102,10 @@
                 <img src="{% static 'ubyssey/images/sport-series/dot.PNG' %}"/>
               </a>
               {% endif %}
-            
+
             {% endif %}
 
-            {% if article.template_fields.article_november %} 
+            {% if article.template_fields.article_november %}
             <li>
               {% if article.slug == article.template_fields.article_november.slug %}
               <a class="is-selected" href="{{ article.template_fields.article_november.get_absolute_url }}">
@@ -116,10 +116,10 @@
                 <img src="{% static 'ubyssey/images/sport-series/dot.PNG' %}"/>
               </a>
               {% endif %}
-            
+
             {% endif %}
 
-            {% if article.template_fields.article_december %} 
+            {% if article.template_fields.article_december %}
             <li>
               {% if article.slug == article.template_fields.article_december.slug %}
               <a class="is-selected" href="{{ article.template_fields.article_december.get_absolute_url }}">

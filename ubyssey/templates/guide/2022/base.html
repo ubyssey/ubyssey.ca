@@ -73,14 +73,14 @@
    {% flat_menu 'guide2021' template="navigation/headers/guide/2022/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True  section=section %}
 
   {% endwith %}
-  
+
   {% endblock %}
   <div class="o-site-wrapper">
   {% block content %}
   {% endblock %}
   </div>
   {% with self.slug as section %}
-    {% include 'guide/2022/footer.html' with section=section %} 
+    {% include 'guide/2022/footer.html' with section=section %}
   {% endwith %}
 
 

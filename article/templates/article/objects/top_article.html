@@ -12,7 +12,7 @@
         {% if article.title_tag_str %}
           <div class="top_article-title-tag">{{article.title_tag_str}}//</div>
         {% endif %}
-      </div>  
+      </div>
       <h2 class="o-article__headline">
         <a href="{% pageurl article %}">{{ article.title|safe }}</a>
       </h2>
@@ -22,7 +22,7 @@
         <span class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</span>
       </div>
     </div>
-    
+
     <div class="o-article__right">
       <a href="{{article|get_section_link}}" class="o-article__section-tag">{{article|get_section_title}}</a>
       <div class="o-article__meta__image">

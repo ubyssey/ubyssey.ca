@@ -48,7 +48,7 @@ Once you have your local environment configured, follow [the steps here](https:/
 
 ## Contributing
 
-You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository. We welcome volunteers to help make student journalism better! Head over to the [Getting Started Guide](https://code.ubyssey.ca/getting-started) to get started. 
+You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository. We welcome volunteers to help make student journalism better! Head over to the [Getting Started Guide](https://code.ubyssey.ca/getting-started) to get started.
 
 <br>
 

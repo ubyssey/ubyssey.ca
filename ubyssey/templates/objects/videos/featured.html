@@ -13,7 +13,7 @@
         </h3>
         <div class="o-article__byline">
           {% if video.videoAuthors %}
-            <span class="o-article__author">By 
+            <span class="o-article__author">By
               {% for author in video.videoAuthors %}
                 {% if forloop.last and video.numAuthors > 1 %} and {% endif %}
                 <a href="{{ author.link }}">{{ author.name|safe }}</a>{% if not forloop.last and forloop.counter != video.numAuthors|add:-1 %},{% endif %}
@@ -26,4 +26,3 @@
       </div>
     </div>
   </article>
-  

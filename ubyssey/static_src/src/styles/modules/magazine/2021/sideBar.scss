@@ -2,7 +2,7 @@
     .NavbarItems {
       position: relative;
     }
-  
+
     .nav-menu {
       padding: 0px;
       display: flex;
@@ -16,7 +16,7 @@
       transition: all 0.5s ease;
       font-family: 'Azonix';
     }
-  
+
     .nav-menu.active {
       background: #242222;
       left: 0;
@@ -24,33 +24,33 @@
       transition: all 0.5s ease;
       z-index: 1;
     }
-  
+
     .nav-menu li:nth-child(1) :hover {
       background-color: orange;
     }
-  
+
     .nav-menu li:nth-child(2) :hover {
       background-color: #ff534a;
     }
-  
+
     .nav-menu li:nth-child(3) :hover {
       background-color: #a39ef8;
     }
-  
+
     .nav-menu li:nth-child(4) :hover {
       background-color: #2b806e;
     }
-  
+
     .nav-menu li:nth-child(5) :hover {
       background-color: navy;
     }
-  
+
     .nav-menu li h3 {
       margin: 0px;
       padding: 30px;
     }
   }
-  
+
   @media screen and (min-width: 1050px) {
     .nav-menu {
       display: none;
@@ -59,7 +59,7 @@
       display: none;
     }
   }
-  
+
   .menu_button {
     position: absolute;
     right: 0px;

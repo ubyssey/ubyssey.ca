@@ -32,7 +32,7 @@ $three-bar-logo-color: var(--three-bar-logo-color);
     line-height: 2;
     padding: 0;
     height:auto;
-    
+
     border-bottom: 3px solid transparent;
     &:hover {
      border-bottom: 3px solid #3490d6;
@@ -93,13 +93,13 @@ header.main{
       line-height: 1em;
       color: var(--header_color);
     }
-  
+
     .middle {
       text-align: center;
     }
     .right {
       text-align: right;
-  
+
       .rss-icon {
         margin-right: 1.5em;
       }
@@ -118,9 +118,9 @@ header.main{
               margin-right: 0;
           }
       }
-  
+
     }
-  
+
     h1.section-title {
       font-family: $font-default;
       font-size: 34px;
@@ -150,7 +150,7 @@ header.main{
         margin-right: 15px;
       }
     }
-  
+
     li, div {
       line-height: 3em;
     }
@@ -167,16 +167,16 @@ header.main{
       li, div.dropdown {
         padding-inline: 1em;
         margin: 0;
-        
+
         font-family: $font-default;
         font-size: 0.75em;
         font-weight: $font-weight-semi-bold;
         color: var(--header_color);
         text-transform: uppercase;
-        
+
         &.elections a {
           color: $color-red;
-        } 
+        }
       }
     }
 
@@ -221,17 +221,17 @@ header.main{
       li {
         display: inline-block;
       }
-  
+
       &.sections-more {
         @include sectionsMore;
-      } 
+      }
 
       &.culture-sections-more{
         @include sectionsMore;
 
       }
-      
-  
+
+
       &.meta {
         li {
           font-family: $font-default;
@@ -242,7 +242,7 @@ header.main{
           font-weight: 600;
           text-transform: uppercase;
           height: 100%;
-  
+
           &.store {
             margin: 0 3px;
           }
@@ -270,7 +270,7 @@ header.visual-essay{
       background-position: center;
       background-size: contain;
       background-repeat: no-repeat;
-    }  
+    }
   }
 
   .section {
@@ -337,7 +337,7 @@ header.topbar {
     vertical-align: middle;
     display: inline-block;
   }
-  
+
   .right {
     margin-left: 2em;
     display: inline;
@@ -424,7 +424,7 @@ header.topbar {
   }
 }
 
-#header-mobile-spacer--homepage {  
+#header-mobile-spacer--homepage {
   height: 54px;
   min-height: 54px;
   @media ($bp-larger-than-desktop) {

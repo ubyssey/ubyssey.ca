@@ -43,13 +43,13 @@
 			<h2 class="author-heading">Pinned</h2>
 			<div class="author-pinned_list">
 				{% for article in self.pinned_articles.all %}
-					<div class="author-pinned_article">	
+					<div class="author-pinned_article">
 						{% include 'article/objects/suggested_article.html' with article=article.article %}
 					</div>
 				{% endfor %}
 			</div>
 		{% endif %}
-		
+
 		<div class="options" id="results">
 			{% for type in media_types %}
 				<h2 class="author-heading {% if media_type == type.0 %}selected{% endif %}"><a href="/authors/{{self.slug}}/{{type.0}}/#results">{{type.1}}</a></h2>

@@ -9,7 +9,7 @@
         <img class="roof-image" src="{% static 'ubyssey/images/isolation/dollhouseroof.png' %}"/>
         <div class="roof-headline">Stories from self-isolation</div>
     </div>
-    
+
     <main class="section-flex-container">
         <div class="isolation-description">
             <p>Fourteen months ago we locked our doors on the world that we once knew, a world without masks and a newfound fear of the outside. This series of stories is about the last year of our lives: the flights we took as we hurried home from campus, the connections rekindled with family and, of course, the never-ending boredom.</p>
@@ -31,7 +31,7 @@
             {% include 'isolation/article-box.html' with type=1 title=article8.headline authors=article8.get_author_string url=article8.get_absolute_url  image=article8.featured_image.image.get_absolute_url%}
         </div>
     </main>
-     
+
 </div>
 
 {% endblock %}

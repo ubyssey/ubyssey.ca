@@ -63,7 +63,7 @@ function webpackBuildDevTask(callback) {
     }
 
     log('[webpackBuildDevTask]', stats.toString({ colors: true }));
-    
+
     callback();
   });
 }
@@ -102,7 +102,7 @@ function copyFontsTask() {
     .pipe(dest('../static/ubyssey/fonts/'));
 }
 
-function watchTask() { 
+function watchTask() {
   watch('./src/js/**/*', series(cleanJsTask, webpackBuildDevTask));
   watch('./src/styles/**/*', series(cleanCssTask, sassBuildDevTask));
   watch('./src/images/**/*', series(cleanImagesTask, copyImagesTask));
@@ -125,6 +125,6 @@ exports.buildDev = series(
   parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask),
   parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask))
 exports.default = series(
-  parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask), 
-  parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask), 
+  parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask),
+  parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask),
   watchTask)
