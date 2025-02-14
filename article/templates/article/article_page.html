@@ -1,144 +1,144 @@
-{% extends 'ubyssey/base.html' %} {% load static %} {% load wagtailcore_tags %}
-{% load wagtailimages_tags %} {% load video_filters %} {% load
-ubyssey_ad_filters %} {% load ubyssey_ad_tags %} {% block head_scripts %}
-<!-- Register ads for article page -->
-{% for orderable in settings.ads.AdTagSettings.article_head_tags.all %} {%
-gpt_define_tag orderable.ad_slot is_mobile %} {% endfor %}
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load ubyssey_ad_filters %}
+{% load ubyssey_ad_tags %}
 
-<script
-  defer
-  src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
-  integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
-  crossorigin="anonymous"
-></script>
-{% endblock %} {% block stylesheet %}
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-  integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-  crossorigin="anonymous"
-/>
+{% block head_scripts %}
+    <!-- Register ads for article page -->
+    {% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
+        {% gpt_define_tag orderable.ad_slot is_mobile %}
+    {% endfor %}
 
-{% if self.styles.all|length == 0 %}
-<link
-  rel="stylesheet"
-  href="{% static 'ubyssey/css/article.css' %}"
-  type="text/css"
-/>
-{% else %} {% for style_obj in self.styles.all %}
-<link rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
-{% endfor %} {% endif %} {% endblock %} {% block header %} {% include
-'navigation/headers/mobile.html' %} {% block banner_ad %}
-<!-- Article Page header ads go here -->
-{% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
-{% gpt_placement_tag orderable.ad_slot %} {% endfor %} {% endblock %} {% include
-'navigation/headers/topbar.html' %} {% endblock %} {% block content %}
-<main id="article-{{ self.slug }}" class="article">
-  <article
-    class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}{% endblock %}"
-  >
-    <!--article-->
-    <!-- Below is the Article heading, including Article headline and bylines -->
-    {% block banner %} {% include 'article/objects/banner.html' %} {% endblock
-    %}
-    <!-- Below is the container for Article content -->
-    <div
-      class="u-container clearfix {% block right_column_class %}c-article--default u-container u-container--content u-container--padded{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}"
-    >
-      <!-- Below is the container for the left column article content  -->
-      <div class="cell left article-content">
-        {% block pre-content %} {% endblock %}
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+{% endblock %}
 
-        <!-- Content unique to the article starts here -->
+{% block stylesheet %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
 
-        {% if not self.is_explicit %} {% filter inject_ads:is_mobile %}
-        <!-- Article text -->
-        {% for block in self.content %} {% include_block block with id=block.id
-        %} {% endfor %} {% endfilter %} {% else %}
-        <!-- Article text -->
-        {% for block in self.content %} {% include_block block with id=block.id
-        %} {% endfor %} {% endif %}
-        <!-- Content unique to the article ends here -->
+    {% if self.styles.all|length == 0 %}
+        <link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
+    {% else %}
+        {% for style_obj in self.styles.all %}
+            <link rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+        {% endfor %}
+    {% endif %}
+{% endblock %}
 
-        {% if self.disclaimer %}
-        <div class="disclaimer">{{self.disclaimer|safe}}</div>
-        {% endif %} {% block post-content %} {% if self.tag_page_link and
-        self.primary_tag_slug %}
-        <p class="tag-link">
-          <b
-            >See all stories on
-            <a href="/tag/{{primary_tag.slug}}">"{{ primary_tag }}"</a> and be
-            notified through Rss
-            <a
-              href="/tag/{{primary_tag.slug}}/rss"
-              class="rss-feed-link"
-              aria-label="Go to {{ primary_tag }} tag's rss feed"
-            >
-              <ion-icon name="logo-rss"></ion-icon> </a
-          ></b>
-        </p>
-        {% endif %} {% include 'article/objects/share_bar.html' %}
+{% block header %}
+    {% include 'navigation/headers/mobile.html' %}
+    {% block banner_ad %}
+        <!-- Article Page header ads go here -->
+        {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
+            {% gpt_placement_tag orderable.ad_slot %}
+        {% endfor %}
+    {% endblock %}
+    {% include 'navigation/headers/topbar.html' %}
+{% endblock %}
 
-        <p class="time-stamp">
-          <span
-            >First online
-            <time datetime="{{self.first_published_at|date:'Y-m-d H:i'}}"
-              >{{self.first_published_at}}</time
-            ></span
-          >{% if self.show_last_modified %},
-          <span
-            >last modified
-            <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}"
-              >{{self.last_published_at}}</time
-            ></span
-          >{% endif %}
-        </p>
+{% block content %}
+    <main id="article-{{ self.slug }}" class="article">
+        <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}{% endblock %}"> <!--article-->
+            <!-- Below is the Article heading, including Article headline and bylines -->
+            {% block banner %}
+                {% include 'article/objects/banner.html' %}
+            {% endblock %}
+            <!-- Below is the container for Article content -->
+            <div class="u-container clearfix {% block right_column_class %}c-article--default u-container u-container--content u-container--padded{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
+                <!-- Below is the container for the left column article content  -->
+                    <div class="cell left article-content">
+                        {% block pre-content %}
+                        {% endblock %}
 
-        <p class="report">
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing"
-            >Report a complaint</a
-          >
-        </p>
+                        <!-- Content unique to the article starts here -->
 
-        {% for author_id, author_data in self.authors_in_order_for_cards.items
-        %} {% include "article/objects/author_card.html" with
-        author=author_data.author author_roles=author_data.roles %} {% endfor %}
-        {% endblock %}
-      </div>
+                        {% if not self.is_explicit %}
+                            {% filter inject_ads:is_mobile %}
+                            <!-- Article text -->
+                            {% for block in self.content %}
+                                {% include_block block with id=block.id %}
+                            {% endfor %}
+                            {% endfilter %}
+                        {% else %}
+                            <!-- Article text -->
+                            {% for block in self.content %}
+                                {% include_block block with id=block.id %}
+                            {% endfor %}
+                        {% endif %}
+                        <!-- Content unique to the article ends here -->
 
-      <!-- Below is the container for the right column article content, not entirely unique to the article -->
-      <aside class="cell right sidebar">
-        {% block sidebar %}
-        <!-- Article Page sidebar ads go here -->
-        {% if self.is_explicit is not True %} {% for orderable in
-        settings.ads.AdTagSettings.article_sidebar_placements.all %} {%
-        gpt_placement_tag orderable.ad_slot %} {% endfor %} {% else %} {%
-        comment %} {% include 'objects/replacement.html' with size='box' %} {%
-        endcomment %} {% endif %} {% comment %} Suggested articles in the same
-        Section up to 6 articles that are not itself {% endcomment %} {%
-        endblock %}
-      </aside>
+                        {% if self.disclaimer %}
+                            <div class="disclaimer">{{self.disclaimer|safe}}</div>
+                        {% endif %}
+
+                        {% block post-content %}
+
+                        {% if self.tag_page_link and self.primary_tag_slug %}
+                            <p class="tag-link">
+                                <b>See all stories on <a href="/tag/{{primary_tag.slug}}">"{{ primary_tag }}"</a> and be notified through Rss
+                                <a href="/tag/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to {{ primary_tag }} tag's rss feed">
+                                <ion-icon name="logo-rss"></ion-icon>
+                                </a></b>
+                            </p>
+                        {% endif %}
+
+                        {% include 'article/objects/share_bar.html' %}
+
+                        <p class="time-stamp"><span>First online <time datetime="{{self.first_published_at|date:'Y-m-d H:i'}}">{{self.first_published_at}}</time></span>{% if self.show_last_modified %}, <span>last modified <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}">{{self.last_published_at}}</time></span>{% endif %}</p>
+
+                        <p class="report"><a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Report a complaint</a></p>
+
+                        {% for author_id, author_data in self.authors_in_order_for_cards.items %}
+                            {% include "article/objects/author_card.html" with author=author_data.author author_roles=author_data.roles %}
+                        {% endfor %}
+
+                        {% endblock %}
+
+                    </div>
+
+                <!-- Below is the container for the right column article content, not entirely unique to the article -->
+                <aside class="cell right sidebar">
+                    {% block sidebar %}
+                        <!-- Article Page sidebar ads go here -->
+                        {% if self.is_explicit is not True %}
+                            {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
+                                {% gpt_placement_tag orderable.ad_slot %}
+                            {% endfor %}
+                        {% else %}
+                            {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
+                        {% endif %}
+                        {% comment %} Suggested articles in the same Section up to 6 articles that are not itself {% endcomment %}
+                    {% endblock %}
+                </aside>
+            </div>
+            <div class="suggested-sidebar">
+                {% block suggested_articles %}
+
+                {% if suggested and suggested.articles|length > 0 %}
+                {% include 'article/objects/suggested_articles.html' %}
+                {% endif %}
+
+                {% endblock %}
+            </div>
+
+            {% comment %} {% include 'objects/social-icons-bottom.html' with article=article %} {% endcomment %}
+        </article>
+    </main>
+
+
+    {% comment %} Former location of suggested/trending articles. Do not re-implement until a design contract exists {% endcomment %}
+    {% comment %} <div class='bottom-banner-wrapper'>
+    <div class='bottom-banner-container'>
     </div>
-    <div class="suggested-sidebar">
-      {% block suggested_articles %} {% if suggested and
-      suggested.articles|length > 0 %} {% include
-      'article/objects/suggested_articles.html' %} {% endif %} {% endblock %}
-    </div>
+    </div> {% endcomment %}
 
-    {% comment %} {% include 'objects/social-icons-bottom.html' with
-    article=article %} {% endcomment %}
-  </article>
-</main>
-
-{% comment %} Former location of suggested/trending articles. Do not
-re-implement until a design contract exists {% endcomment %} {% comment %}
-<div class="bottom-banner-wrapper">
-  <div class="bottom-banner-container"></div>
-</div>
-{% endcomment %} {% endblock %}
+{% endblock %}
 
 <!-- Article-specific scripts -->
-{% block scripts %} {% for script_obj in self.scripts.all %}
-<script src="{{ script_obj.script.file.url }}" type="text/javascript"></script>
-{% endfor %} {% endblock %}
+{% block scripts %}
+    {% for script_obj in self.scripts.all %}
+        <script src="{{ script_obj.script.file.url }}" type="text/javascript"></script>
+    {% endfor %}
+{% endblock %}

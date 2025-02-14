@@ -1,6 +1,10 @@
-{% extends 'base.html' %} {% load static %} {% block header %} {% include
-'headers/topbar.html' with section='events' %} {% include 'headers/mobile.html'
-%} {% endblock %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+  {% include 'headers/topbar.html' with section='events' %}
+  {% include 'headers/mobile.html' %}
+{% endblock %}
+{% block content %}
 <main class="c-page c-page--author u-container u-container--padded">
   <div class="c-page__content">
     {% include 'components/event-detail.html' with event=event %}
@@ -11,11 +15,10 @@
   <div class="c-page__sidebar">
     <div class="c-page__sidebar__sticky">
       <div class="c-page__sidebar__item">
-        {% include 'widgets/upcoming-events.html' with upcoming=upcoming %}
+      {% include 'widgets/upcoming-events.html' with upcoming=upcoming %}
       </div>
       <div class="c-page__sidebar__item">
-        {% include 'components/info-box.html' with text=info.text
-        link_text=info.link_text link=info.link %}
+      {% include 'components/info-box.html' with text=info.text link_text=info.link_text link=info.link %}
       </div>
     </div>
   </div>

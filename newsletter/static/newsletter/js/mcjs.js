@@ -1,11 +1,1 @@
-!(function (c, h, i, m, p) {
-  (m = c.createElement(h)),
-    (p = c.getElementsByTagName(h)[0]),
-    (m.async = 1),
-    (m.src = i),
-    p.parentNode.insertBefore(m, p);
-})(
-  document,
-  "script",
-  "https://chimpstatic.com/mcjs-connected/js/users/ae9a0995cf91e8c746ab242fe/2ccb930b505d0513a70955a38.js",
-);
+!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/ae9a0995cf91e8c746ab242fe/2ccb930b505d0513a70955a38.js");

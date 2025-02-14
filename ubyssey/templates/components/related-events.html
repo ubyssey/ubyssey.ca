@@ -2,10 +2,9 @@
   <div class="c-related-events__label">Related Events</div>
   <div class="c-related-events__row">
     {% for event in related %}
-    <div class="c-related-events__event">
-      {% include 'components/event-box.html' with event=event hide_image=False
-      only %}
-    </div>
+      <div class="c-related-events__event">
+        {% include 'components/event-box.html' with event=event hide_image=False only %}
+      </div>
     {% endfor %}
   </div>
 </div>

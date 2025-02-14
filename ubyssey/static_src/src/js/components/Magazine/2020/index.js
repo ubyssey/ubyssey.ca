@@ -1,1 +1,1 @@
-export { default as Magazine } from "./Magazine.jsx";
+export { default as Magazine } from './Magazine.jsx'

@@ -1,11 +1,11 @@
 .c-text-input,
-.c-form__input > input[type="text"],
-.c-form__input > input[type="email"],
-.c-form__input > input[type="tel"],
+.c-form__input > input[type='text'],
+.c-form__input > input[type='email'],
+.c-form__input > input[type='tel'],
 .c-form__input > textarea {
   // Structure
   height: 45px;
-  padding: 0 0.75rem;
+  padding: 0 .75rem;
   box-sizing: border-box;
 
   // Border

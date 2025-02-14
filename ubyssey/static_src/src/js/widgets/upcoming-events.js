@@ -3,12 +3,12 @@ var FADE_OUT_SPEED = 100; // ms
 var FADE_IN_SPEED = 600; // ms
 
 function registerWidget() {
-  $(".js-scrollbar").mCustomScrollbar({
-    theme: "minimal-dark",
-    scrollInertia: 100,
-  });
+  $('.js-scrollbar').mCustomScrollbar({
+    theme: 'minimal-dark',
+    scrollInertia: 100
+  })
 
-  $(".js-carousel").each(function () {
+  $('.js-carousel').each(function() {
     var carousel = $(this);
     carousel.currentSlide = 0;
     carousel.slides = [];
@@ -16,33 +16,29 @@ function registerWidget() {
     let containerHeight = 0;
     let containerWidth = 0;
 
-    carousel.find(".js-carousel__item").each(function (i) {
+    carousel.find('.js-carousel__item').each(function(i) {
       var item = $(this);
-      item.css("display", "block");
+      item.css('display', 'block');
       item.slideIndex = i;
       carousel.slides.push(item);
       containerHeight = Math.max(containerHeight, item.outerHeight());
       containerWidth = item.outerWidth();
-      if (containerHeight == 0) {
-        containerHeight = 150;
-      }
-      if (containerWidth == 0) {
-        containerWidth = 318;
-      }
-      item.css("position", "absolute");
-      item.css("height", containerHeight);
-      item.css("width", containerWidth);
+      if(containerHeight == 0) { containerHeight = 150; }
+      if(containerWidth == 0) { containerWidth = 318; }
+      item.css('position', 'absolute');
+      item.css('height', containerHeight);
+      item.css('width', containerWidth);
 
       if (i) {
-        item.css("display", "none");
+        item.css('display', 'none');
       }
     });
-    carousel.find(".js-carousel-inner").css("height", containerHeight + 5);
+    carousel.find('.js-carousel-inner').css('height', containerHeight+5);
 
     var numSlides = carousel.slides.length;
 
     if (numSlides > 1) {
-      carousel.setSlide = function (n) {
+      carousel.setSlide = function(n) {
         carousel.currentSlide = n;
 
         if (carousel.currentSlide >= numSlides) {
@@ -53,48 +49,43 @@ function registerWidget() {
 
         var slideToActivate = carousel.slides[carousel.currentSlide];
 
-        slideToActivate.css("opacity", 0);
-        slideToActivate.css("display", "block");
-        slideToActivate.animate({ opacity: 1 }, FADE_IN_SPEED, "linear");
+        slideToActivate.css('opacity', 0);
+        slideToActivate.css('display', 'block');
+        slideToActivate.animate({ opacity: 1 }, FADE_IN_SPEED, 'linear');
 
-        $.each(carousel.slides, function (i, slide) {
-          if (slide != slideToActivate && slide.is(":visible")) {
-            slide.animate(
-              { opacity: 0 },
-              FADE_OUT_SPEED,
-              "linear",
-              function () {
-                slide.css("display", "none");
-              },
-            );
+        $.each(carousel.slides, function(i, slide) {
+          if (slide != slideToActivate && slide.is(':visible')) {
+            slide.animate({ opacity: 0 }, FADE_OUT_SPEED, 'linear', function() {
+              slide.css('display', 'none');
+            });
           }
         });
 
-        $.each(carouselButtons, function (i, button) {
-          button.removeClass("carousel-button--active");
+        $.each(carouselButtons, function(i, button) {
+          button.removeClass('carousel-button--active');
           if (carousel.currentSlide == i) {
-            button.addClass("carousel-button--active");
+            button.addClass('carousel-button--active');
           }
-        });
+        })
       };
 
-      var startAutoplay = function () {
-        carousel.interval = setInterval(function () {
+      var startAutoplay = function() {
+        carousel.interval = setInterval(function() {
           carousel.setSlide(carousel.currentSlide + 1);
         }, AUTOPLAY_SPEED);
       };
 
       var carouselButtons = [];
-      var buttonRow = $("<div>", { class: "carousel-button-row" });
+      var buttonRow = $('<div>', { class: 'carousel-button-row' });
       carousel.append(buttonRow);
       for (var j = 0; j < carousel.slides.length; j++) {
-        var button = $("<div>", {
-          class: "carousel-button" + (!j ? " carousel-button--active" : ""),
-          "data-index": j,
+        var button = $('<div>', {
+          class: 'carousel-button' + (!j ? ' carousel-button--active' : ''),
+          'data-index': j
         });
 
-        button.click(function () {
-          var i = $(this).data("index");
+        button.click(function() {
+          var i = $(this).data('index')
           carousel.setSlide(i);
           clearInterval(carousel.interval);
 

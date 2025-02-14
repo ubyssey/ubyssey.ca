@@ -1,9 +1,8 @@
-a.button,
-button {
+a.button, button {
   font-family: $font-default;
   display: inline-block;
   border-radius: 2px;
-  color: #4e4d4d;
+  color: #4E4D4D;
   font-size: 12px;
   font-weight: 600;
   line-height: 28px;
@@ -13,18 +12,12 @@ button {
   text-decoration: none;
   background-color: #eee;
   border-color: #d5d5d5;
-  background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==");
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background-size: 100%;
-  background-image: -webkit-gradient(
-    linear,
-    50% 0%,
-    50% 100%,
-    color-stop(0%, #fcfcfc),
-    color-stop(100%, #eeeeee)
-  );
-  background-image: -moz-linear-gradient(#fcfcfc, #eeeeee);
-  background-image: -webkit-linear-gradient(#fcfcfc, #eeeeee);
-  background-image: linear-gradient(#fcfcfc, #eeeeee);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcfcfc),color-stop(100%, #eeeeee));
+  background-image: -moz-linear-gradient(#fcfcfc,#eeeeee);
+  background-image: -webkit-linear-gradient(#fcfcfc,#eeeeee);
+  background-image: linear-gradient(#fcfcfc,#eeeeee);
 
   margin-right: 8px;
 
@@ -32,8 +25,7 @@ button {
     cursor: pointer;
   }
 
-  &:active,
-  &:focus {
+  &:active, &:focus {
     //outline: none;
   }
 

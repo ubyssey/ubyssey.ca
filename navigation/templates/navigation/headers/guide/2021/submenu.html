@@ -1,5 +1,7 @@
-{% load menu_tags %} {% for item in menu_items %}
-<li>
-  <a class="header-button" href="{{ item.href }}">{{ item.text }}</a>
-</li>
+{% load menu_tags %}
+
+{% for item in menu_items %}
+    <li>
+        <a class="header-button" href="{{ item.href }}">{{ item.text }}</a>
+    </li>
 {% endfor %}

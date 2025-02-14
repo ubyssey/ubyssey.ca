@@ -1,7 +1,7 @@
 $font-avenir: Avenir, serif;
 
-html,
-body {
+
+html, body {
   margin: 0;
   background: #fff;
   -webkit-font-smoothing: antialiased;
@@ -23,6 +23,7 @@ body {
   flex: 1;
   width: 100%;
 
+
   > div {
     display: flex;
     flex-direction: column;
@@ -35,7 +36,7 @@ body {
 .oyl-nav {
   height: 50px;
   width: 100%;
-  background: #ffc300;
+  background: #FFC300;
   position: relative;
   z-index: 400;
 
@@ -69,7 +70,7 @@ body {
 
   display: none;
 
-  @media (min-width: 800px) {
+  @media(min-width: 800px) {
     display: block;
   }
 
@@ -100,7 +101,7 @@ body {
 
   display: none;
 
-  @media (min-width: 760px) {
+  @media(min-width: 760px) {
     display: block;
   }
 }
@@ -116,7 +117,7 @@ body {
 
   height: 50px;
 
-  @media (min-width: 760px) {
+  @media(min-width: 760px) {
     top: 0;
     position: absolute;
 
@@ -156,7 +157,7 @@ body {
   display: inline-block;
   width: 141px;
   height: 33px;
-  background-image: url("../images/ubyssey_logo_white.png");
+  background-image: url('../images/ubyssey_logo_white.png');
   background-size: 100%;
 
   opacity: 1;
@@ -188,16 +189,12 @@ body {
   height: 150%;
   left: -50%;
   width: 200%;
-  background-image: radial-gradient(
-    50% 97%,
-    rgba(0, 0, 0, 0.5) 50%,
-    rgba(0, 0, 0, 0) 97%
-  );
+  background-image: radial-gradient(50% 97%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.00) 97%);
 
   opacity: 0;
   transition: opacity 4.5s ease-in;
 
-  @media (min-width: 760px) {
+  @media(min-width: 760px) {
     left: -25%;
     width: 150%;
   }
@@ -236,17 +233,17 @@ body {
   font-family: $font-avenir;
   font-weight: bold;
   font-size: 22px;
-  color: #ffffff;
+  color: #FFFFFF;
   letter-spacing: 0;
   text-align: center;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.23);
+  text-shadow: 0 2px 0 rgba(0,0,0,0.23);
 }
 
 .oyl-article__title {
-  font-family: "ub-minion-pro", serif;
-  color: #f5a623;
+  font-family: 'ub-minion-pro', serif;
+  color: #F5A623;
   text-align: center;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.42);
+  text-shadow: 0 2px 0 rgba(0,0,0,0.42);
   line-height: 1em;
 
   margin-top: 1rem;
@@ -254,7 +251,7 @@ body {
 
   font-size: 48px;
 
-  @media (min-width: 760px) {
+  @media(min-width: 760px) {
     font-size: 64px;
   }
 }
@@ -263,10 +260,10 @@ body {
   font-family: $font-avenir;
   font-weight: bold;
   font-size: 18px;
-  color: #ffffff;
+  color: #FFFFFF;
   letter-spacing: 0;
   text-align: center;
-  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 2px 3px rgba(0,0,0,0.35);
 
   max-width: 460px;
   width: 100%;
@@ -286,7 +283,8 @@ body {
 }
 
 .oyl-article__body {
-  @media (min-width: 760px) {
+
+  @media(min-width: 760px) {
     padding-top: 1rem;
   }
 
@@ -308,7 +306,7 @@ body {
     margin-top: 1.4rem;
 
     a {
-      color: #f5a623;
+      color: #F5A623;
     }
   }
 }
@@ -356,7 +354,7 @@ body {
   }
 }
 
-@media (min-width: 760px) {
+@media(min-width: 760px) {
   .oyl-article__body .attachment:nth-of-type(odd) {
     float: left;
     margin-right: 1.75rem;
@@ -399,7 +397,7 @@ body {
     padding-left: 15px;
     padding-right: 15px;
 
-    @media (min-width: 760px) {
+    @media(min-width: 760px) {
       padding-right: 0;
       padding-left: 0;
     }
@@ -431,11 +429,7 @@ body {
   left: 0;
   bottom: 0;
   right: 0;
-  background-image: linear-gradient(
-    -180deg,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.81) 100%
-  );
+  background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.81) 100%);
 
   opacity: 1;
   transition: opacity 0.2s;
@@ -450,7 +444,7 @@ body {
   padding-bottom: 1.5rem;
   z-index: 200;
 
-  @media (min-width: 500px) {
+  @media(min-width: 500px) {
     padding-left: 3rem;
     padding-right: 3rem;
     padding-bottom: 2rem;
@@ -459,7 +453,7 @@ body {
   h3 {
     font-family: $font-avenir;
     font-size: 16px;
-    color: #f5a623;
+    color: #F5A623;
     letter-spacing: 1px;
     margin-top: 0;
     margin-bottom: 0.25rem;
@@ -471,7 +465,7 @@ body {
     margin-top: 0.25rem;
     font-family: $font-avenir;
     font-size: 36px;
-    color: #ffffff;
+    color: #FFFFFF;;
   }
 
   p {
@@ -496,6 +490,7 @@ body {
   top: 0;
 }
 
+
 .oyl-about {
   max-width: 585px;
   margin-left: auto;
@@ -504,8 +499,7 @@ body {
   padding-left: 15px;
   padding-right: 15px;
 
-  h3,
-  p {
+  h3, p {
     font-family: $font-avenir;
     color: #555;
   }
@@ -521,4 +515,5 @@ body {
     font-size: 17px;
     line-height: 1.5em;
   }
+
 }

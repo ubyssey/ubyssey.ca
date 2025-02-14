@@ -1,4 +1,4 @@
-@import "../modules/variables";
+@import '../modules/variables';
 
 .sa-container-outer {
   // Structure
@@ -36,7 +36,7 @@
       h3 {
         // Text
         font-weight: 500;
-        font-size: 0.875rem;
+        font-size: .875rem;
         margin-top: 0;
         width: 75%;
         max-height: 50px;
@@ -45,14 +45,14 @@
       }
 
       &:hover {
-        background-color: #dadada;
+        background-color: #DADADA;
       }
     }
 
     .sa-date,
     .sa-author {
       // Text
-      font-size: 0.75rem;
+      font-size: .75rem;
     }
 
     .sa-subtitle {
@@ -87,12 +87,13 @@
 
       // Text
       color: $color-text-gray-light;
-      font-size: 0.75rem;
+      font-size: .75rem;
+
     }
   }
 }
 .sa-container-outer {
-  @media ($bp-larger-than-phablet) {
+  @media($bp-larger-than-phablet) {
     .u-container {
       // Strucuture
       max-width: 960px;

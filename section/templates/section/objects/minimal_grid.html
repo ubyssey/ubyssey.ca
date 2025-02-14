@@ -1,19 +1,20 @@
-{% load humanize %} {% load cache %} {% load wagtailcore_tags %} {% load
-wagtailimages_tags %} {% load video_filters %} {% load articletags %}
+{% load humanize %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
 
-<div
-  class="landing_stream_block u-container u-container--large u-container--padded {% if self.hide_mobile %}hide-mobile{% endif %}"
->
+<div class="landing_stream_block u-container u-container--large u-container--padded {% if self.hide_mobile %}hide-mobile{% endif %}">
   {% if title %}
   <div class="landing_stream_block--header landing_stream_block--header-small">
-    <h2>
-      {% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}
-    </h2>
+    <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>
   </div>
   {% endif %}
-  <div class="landing_stream_block--grid-container">
-    {% for article in articles %} {% include
-    'article/objects/article_minimal.html' with article=article style="minimal"
-    expectedSection=expectedSection %} {% endfor %}
-  </div>
+<div class="landing_stream_block--grid-container">
+  {% for article in articles %}
+    {% include 'article/objects/article_minimal.html' with article=article style="minimal" expectedSection=expectedSection %}
+  {% endfor %}
+</div>
+
 </div>

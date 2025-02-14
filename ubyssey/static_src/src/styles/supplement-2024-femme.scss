@@ -1,5 +1,5 @@
-@import "modules/_variables.scss";
-@import "modules/_fonts.scss";
+@import 'modules/_variables.scss';
+@import 'modules/_fonts.scss';
 
 body {
   margin: 0;
@@ -33,9 +33,7 @@ body {
   margin-block: 3em;
 }
 
-h2,
-h3,
-h4 {
+h2 , h3 , h4 {
   margin-block: 1.5em;
 }
 
@@ -46,11 +44,7 @@ p {
   line-height: 2em;
 }
 
-h1,
-h2,
-h3,
-h4,
-a {
+h1, h2, h3, h4, a {
   color: var(--highlightColour);
 }
 
@@ -61,11 +55,10 @@ header h1 {
   text-align: center;
   font-size: 4em;
   font-family: norman-variable, sans-serif;
-  font-variation-settings: "wght" 700;
+  font-variation-settings: 'wght' 700;
 }
 
-.fw-description,
-.subtitle {
+.fw-description, .subtitle {
   margin: 2em auto;
 
   text-align: center;
@@ -73,7 +66,7 @@ header h1 {
   line-height: 1em;
   color: var(--highlightColour);
   font-family: norman-variable, sans-serif;
-  font-variation-settings: "wght" 600;
+  font-variation-settings: 'wght' 600;
 }
 
 a {
@@ -87,13 +80,11 @@ a {
   }
 }
 
-h2,
-h3,
-h4 {
+h2, h3, h4 {
   margin-top: 1.5em;
   font-size: 1.25em;
   font-family: norman-variable, sans-serif;
-  font-variation-settings: "wght" 700;
+  font-variation-settings: 'wght' 700;
 }
 
 p.drop-cap:first-letter {
@@ -106,7 +97,7 @@ p.drop-cap:first-letter {
   font-size: 4em;
   line-height: 1em;
   font-family: norman-variable, sans-serif;
-  font-variation-settings: "wght" 700;
+  font-variation-settings: 'wght' 700;
 }
 
 .cookie-disclaimer-wrapper {
@@ -144,7 +135,7 @@ p.drop-cap:first-letter {
     color: var(--highlightColour);
     font-size: 2em;
     font-family: norman-variable, sans-serif;
-    font-variation-settings: "wght" 700;
+    font-variation-settings: 'wght' 700;
   }
   .meta {
     text-align: right;
@@ -317,11 +308,11 @@ footer {
     margin: auto;
     display: flex;
     width: fit-content;
-    h3 {
-      margin: auto 1em;
-      font-weight: 600;
-      color: #b93636;
-    }
+  h3 {
+    margin: auto 1em;
+    font-weight: 600;
+    color: #B93636;
+  }
   }
   ul {
     margin-block: 0;
@@ -430,7 +421,7 @@ nav.supplement-nav {
   }
 }
 
-@media ($bp-smaller-than-phablet) {
+@media($bp-smaller-than-phablet) {
   nav.supplement-nav h1 {
     font-size: 3em;
   }

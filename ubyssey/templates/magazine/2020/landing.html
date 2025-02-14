@@ -1,4 +1,6 @@
-{% extends 'magazine/base.html' %} {% load static %} {% block content %}
+{% extends 'magazine/base.html' %}
+{% load static %}
+{% block content %}
 
 <link
   rel="stylesheet"
@@ -9,9 +11,9 @@
   id="magazine-wrapper"
   data-articles="{{ json_articles }}"
   data-cover="{% static cover %}"
-  data-goesAround-image="{%static section1Image%}"
-  data-comesAround-image="{%static section2Image%}"
-  data-waysForward-image="{%static section3Image%}"
+  data-goesAround-image = "{%static section1Image%}"
+  data-comesAround-image = "{%static section2Image%}"
+  data-waysForward-image = "{%static section3Image%}"
   data-title="Hot Mess"
 ></div>
 

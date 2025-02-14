@@ -1,9 +1,13 @@
-{% extends 'base.html' %} {% load humanize %} {% load static %} {% block header
-%} {% include 'headers/topbar.html' with section=section.slug %} {% include
-'headers/mobile.html' %} {% endblock %} {% block content %}
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% block header %}
+{% include 'headers/topbar.html' with section=section.slug %}
+{% include 'headers/mobile.html' %}
+{% endblock %}
+{% block content %}
 <main class="subsection" data-id="{{ subsection.id }}" data-type="{{ type }}">
-  {% include 'objects/advertisement.html' with size='leaderboard'
-  name='Leaderboard' id=1 %}
+  {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 %}
   <div class="u-container u-container--padded">
     <div class="c-page__header">
       <h1 class="c-page__heading">{{ subsection.name|safe }}</h1>
@@ -13,16 +17,17 @@
     {% endif %}
 
     <div class="c-section__featured">
-      {% include 'objects/articles/featured.html' with
-      article=featured_articles.first %}
+      {% include 'objects/articles/featured.html' with article=featured_articles.first %}
       <div class="c-section__featured__articles u-flex--tablet">
-        {% for article in featured_articles.rest %} {% include
-        'objects/articles/column.html' with article=article %} {% endfor %}
+      {% for article in featured_articles.rest %}
+        {% include 'objects/articles/column.html' with article=article %}
+      {% endfor %}
       </div>
     </div>
 
     <h3 class="c-page__section">Archive</h3>
     {% include 'objects/archive.html' %}
+
   </div>
 </main>
 {% endblock %}

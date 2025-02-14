@@ -30,7 +30,7 @@ nav.navbar {
   color: white;
   font-family: $font-default;
   .navbar-nav {
-    flex-wrap: wrap;
+    flex-wrap:wrap;
     width: 100%;
   }
   .navbar-toggler {
@@ -40,7 +40,7 @@ nav.navbar {
     box-shadow: none;
     font-size: 1.2em;
     &:focus {
-      color: rgb(255, 218, 8);
+      color:rgb(255, 218, 8);
     }
   }
   .navbar-nav li {
@@ -51,21 +51,19 @@ nav.navbar {
       font-weight: 500;
       text-transform: uppercase;
       border-color: transparent !important;
-      border-bottom: 0.2em solid;
+      border-bottom: .2em solid;
       padding-bottom: 0;
-      &.show,
-      &:hover {
+      &.show,&:hover{
         color: rgb(255, 218, 8);
       }
-      &.active,
-      &.dropdown-toggle.show {
+      &.active, &.dropdown-toggle.show {
         border-color: rgb(255, 218, 8) !important;
       }
     }
   }
 }
 
-.menu {
+.menu{
   position: fixed;
   margin: 0;
   padding: 2em;
@@ -77,7 +75,7 @@ nav.navbar {
   z-index: 10;
 
   border-radius: 0;
-  border: none;
+  border:none;
   border-top: 1px solid rgb(102, 102, 102);
 
   .close-modal {
@@ -86,7 +84,7 @@ nav.navbar {
     color: white;
   }
 
-  > p {
+  >p {
     width: fit-content;
     border-bottom: 1px solid rgb(255, 218, 8);
     margin: 1em;
@@ -116,7 +114,7 @@ nav.navbar {
   list-style: none;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  li {
+  li{
     scroll-snap-align: start;
     @media (max-width: 576px) {
       width: 100% !important;
@@ -124,26 +122,26 @@ nav.navbar {
   }
   .dropdown-item {
     padding: 0;
-    &:hover,
-    &:focus {
+    &:hover, &:focus{
       color: inherit;
       background-color: transparent;
     }
   }
 }
 
-a.scroll-arrow {
+a.scroll-arrow{
   margin: 0.5em;
   color: white;
   text-decoration: none;
   &:hover {
-    color: rgb(255, 218, 8);
+    color:rgb(255, 218, 8);
   }
 }
 
 .hide {
   display: none;
 }
+
 
 @media (min-width: 576px) {
   .desktop {
@@ -162,9 +160,9 @@ a.scroll-arrow {
   }
 }
 
-.js-dropdown-container {
-  width: 100%;
-  top: 0;
+.js-dropdown-container{
+	width: 100%;
+	top: 0;
   bottom: 0;
   position: fixed;
   background-color: rgba(0, 0, 0, 0.7);
@@ -199,10 +197,10 @@ a.scroll-arrow {
   justify-items: center;
   margin: auto;
   padding-bottom: 5%;
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
     min-width: 600px;
   }
-  @media ($bp-smaller-than-tablet) {
+  @media($bp-smaller-than-tablet) {
     padding: 0 5% 0 5%;
   }
 }

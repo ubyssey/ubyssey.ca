@@ -1,24 +1,26 @@
-@import "modules/fonts";
-@import "modules/variables";
+@import 'modules/fonts';
+@import 'modules/variables';
 
 // Right column
 aside.sidebar {
+
   width: 37%;
   vertical-align: top;
   box-sizing: border-box;
   display: table-cell;
 
   // < medium
-  @media ($bp-smaller-than-tablet) {
+    @media($bp-smaller-than-tablet) {
   }
 
   // if even smaller, < small
-  @media ($bp-smaller-than-mobile) {
+  @media($bp-smaller-than-mobile) {
     padding: 0 3%;
   }
 
   // > medium; screensize just greater than the min width of article content + sidebar
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
+
     padding: 0 0 40px 15px;
     // max-width: 300px;
   }
@@ -31,8 +33,7 @@ aside.sidebar {
   }
 }
 
-.fw-story,
-.timeline {
+.fw-story, .timeline {
   div.sidebar {
     display: none;
     right: -150px;

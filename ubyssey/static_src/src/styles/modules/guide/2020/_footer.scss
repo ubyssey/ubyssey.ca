@@ -1,31 +1,31 @@
 .c-footer {
   display: flex;
   padding-top: 3%;
-  .o-logo--small {
+  .o-logo--small{
     @media ($bp-smaller-than-mobile) {
       display: none;
     }
   }
-  &__copyright {
+  &__copyright{
     color: white;
     line-height: 2.5em;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding: 8px 0;
   }
-  &__social {
-    ul {
+  &__social{
+    ul{
       list-style-type: none;
       margin: 0;
       padding: 0;
       overflow: hidden;
     }
-    li {
+    li{
       display: inline-block;
       margin: 35px auto 0 auto;
-      font-size: 1.4em;
+      font-size: 1.4em
     }
-    a {
+    a{
       display: block;
       color: white;
       margin: 0 6px;
@@ -33,8 +33,8 @@
     }
   }
 }
-.ubyssey-dingbat {
-  img {
+.ubyssey-dingbat{
+  img{
     width: 40px;
     height: 40px;
   }
@@ -53,7 +53,7 @@
   flex-basis: 50%;
   margin-bottom: 30px;
 
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
     flex: 1;
     width: 20%;
     flex-basis: auto;
@@ -97,13 +97,9 @@
     }
   }
 
-  @media ($bp-smaller-than-mobile) {
-    &#footer- {
-      &academics,
-      &vancouver,
-      &adulting,
-      &sdp,
-      &ubc {
+  @media($bp-smaller-than-mobile) {
+    &#footer-{
+      &academics,&vancouver,&adulting,&sdp,&ubc{
         display: none;
       }
     }

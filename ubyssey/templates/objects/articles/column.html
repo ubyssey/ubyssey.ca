@@ -1,21 +1,11 @@
 {% load video_filters %}
-<article
-  class="o-article o-article--column{% if padded %} o-article--padded{% endif %}"
->
+<article class="o-article o-article--column{% if padded %} o-article--padded{% endif %}">
   <div class="o-article__meta">
     <div class="o-article__meta__image">
       {% if article.featured_image %}
-      <a
-        class="o-article__image"
-        href="{{ article.get_absolute_url }}"
-        style="background-image: url('{{ article.featured_image.image.get_thumbnail_url }}');"
-      ></a>
+        <a class="o-article__image" href="{{ article.get_absolute_url }}" style="background-image: url('{{ article.featured_image.image.get_thumbnail_url }}');"></a>
       {% else %}
-      <a
-        class="o-article__image"
-        href="{{ article.get_absolute_url }}"
-        style="background-image: url('http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"
-      ></a>
+        <a class="o-article__image" href="{{ article.get_absolute_url }}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
       {% endif %}
       <h3 class="o-article__headline">
         <a href="{{ article.get_absolute_url }}">{{ article.headline|safe }}</a>
@@ -23,9 +13,7 @@
     </div>
     {% if not hide_byline %}
     <div class="o-article__byline">
-      <span class="o-article__author"
-        >By {{ article.get_author_url|safe }}</span
-      >
+      <span class="o-article__author">By {{ article.get_author_url|safe }}</span>
       <span> &nbsp;·&nbsp; </span>
       <span class="o-article__published">{{ article.published_at }}</span>
     </div>

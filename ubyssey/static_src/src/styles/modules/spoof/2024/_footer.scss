@@ -6,15 +6,15 @@
   }
   flex-wrap: wrap;
   align-items: stretch;
-  background-color: black;
+  background-color:black;
   color: white;
   font-family: $text-font;
   * {
-    color: inherit;
+    color:inherit;
     text-decoration: none;
   }
   a:hover {
-    color: rgb(255, 218, 8);
+    color:rgb(255, 218, 8);
   }
 
   .c-footer__self-link {
@@ -43,10 +43,10 @@
     @media (max-width: 576px) {
       justify-content: center;
     }
-    > a {
+    >a {
       font-size: 1.5em;
-      &:hover i {
-        color: rgb(255, 218, 8);
+      &:hover i{
+        color:rgb(255, 218, 8);
       }
     }
   }
@@ -64,4 +64,5 @@
     font-family: $font-default;
     font-weight: 500;
   }
+
 }

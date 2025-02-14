@@ -1,5 +1,5 @@
-@import "../fonts";
-@import "../variables";
+@import '../fonts';
+@import '../variables';
 
 .c-widget-upcoming-events__featured {
   margin-bottom: 0.625em;
@@ -98,9 +98,9 @@
 
 .js-carousel-inner {
   position: relative;
-  .o-article {
-    &__headline {
-      a {
+  .o-article{
+    &__headline{
+      a{
         text-overflow: ellipsis;
         word-wrap: break-word;
         overflow: hidden;

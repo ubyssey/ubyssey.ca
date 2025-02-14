@@ -1,5 +1,5 @@
-@import "modules/fonts";
-@import "modules/variables";
+@import 'modules/fonts';
+@import 'modules/variables';
 
 .c-article--fw-story,
 div.container.clearfix.fw-story,
@@ -7,7 +7,7 @@ div.container.clearfix.fw-story,
 .c-article--isolation,
 .c-article--isolation-first-article,
 .c-article--isolation-last-article {
-  @media ($bp-smaller-than-phablet) {
+  @media($bp-smaller-than-phablet) {
     .article-content {
       > p,
       > h1,
@@ -27,19 +27,20 @@ div.container.clearfix.fw-story,
     width: auto;
     height: 36px;
 
-    @media ($bp-larger-than-phablet) {
+    @media($bp-larger-than-phablet) {
       width: 585px;
       height: 54px;
     }
   }
 
   div.article-content {
-    > p,
-    > h1,
-    > h2,
-    > h3,
-    > h4,
-    > ul,
+
+    >p,
+    >h1,
+    >h2,
+    >h3,
+    >h4,
+    >ul,
     div.caption,
     div.attachment,
     div.attachment,
@@ -72,14 +73,14 @@ div.container.clearfix.fw-story,
     padding-right: 1em;
   }
 
-  @media ($bp-larger-than-phablet) {
+  @media($bp-larger-than-phablet) {
     .pull-quote {
       &.left {
         margin-left: 15%;
       }
 
       &.right {
-        margin-right: 15%;
+        margin-right: 15%
       }
     }
   }

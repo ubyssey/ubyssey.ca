@@ -19,8 +19,7 @@
   color: $color-text-black;
 }
 
-.c-form__input > textarea,
-.c-form__input > input {
+.c-form__input > textarea, .c-form__input > input {
   // Structure
   width: 100%;
 }
@@ -39,7 +38,7 @@
   border-radius: 2px;
 
   // Text
-  font-family: "ub-lft-etica";
+  font-family: 'ub-lft-etica';
   font-size: 16px;
   color: $color-text-black;
 

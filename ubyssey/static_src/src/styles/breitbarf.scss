@@ -1,26 +1,24 @@
-@import "modules/variables";
-@import "modules/advertisements";
+@import 'modules/variables';
+@import 'modules/advertisements';
 
 @font-face {
-  font-family: "BebasNeue";
-  src: url("../fonts/BebasNeue.eot");
-  src:
-    url("../fonts/BebasNeue.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/BebasNeue.woff2") format("woff2"),
-    url("../fonts/BebasNeue.woff") format("woff"),
-    url("../fonts/BebasNeue.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'BebasNeue';
+    src: url('../fonts/BebasNeue.eot');
+    src: url('../fonts/BebasNeue.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/BebasNeue.woff2') format('woff2'),
+         url('../fonts/BebasNeue.woff') format('woff'),
+         url('../fonts/BebasNeue.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
-html,
-body {
+html, body {
   margin: 0;
 }
 
 body {
   background: #000;
-  font-family: "BebasNeue", Helvetica, Arial, sans-serif;
+  font-family: 'BebasNeue', Helvetica, Arial, sans-serif;
   font-size: 16px;
 }
 
@@ -39,7 +37,7 @@ body {
   height: 50px;
   width: auto;
 
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
     height: 75px;
   }
 }
@@ -48,7 +46,7 @@ body {
   background: #fff;
   padding: 20px;
 
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
     display: flex;
   }
 }
@@ -64,12 +62,14 @@ body {
   margin-left: auto;
   margin-right: auto;
 
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
     margin: 0;
   }
+
 }
 
 .c-article {
+
 }
 
 h2 {
@@ -82,7 +82,7 @@ h2 {
   font-size: 48px;
   margin-top: 0;
   margin-bottom: 15px;
-  line-height: 0.9em;
+  line-height: .9em;
 }
 
 .c-article__image {
@@ -91,18 +91,14 @@ h2 {
 }
 
 .c-article__byline {
-  font:
-    11px/1.4 Georgia,
-    serif;
+  font: 11px/1.4 Georgia, serif;
   color: #777;
   padding-top: 15px;
   padding-bottom: 15px;
 }
 
 .c-article__content {
-  font:
-    16px/1.4 Georgia,
-    serif;
+  font: 16px/1.4 Georgia, serif;
 }
 
 .c-article__content > p {
@@ -140,6 +136,7 @@ h2 {
     }
   }
 }
+
 
 .c-footer {
   padding: 20px;

@@ -1,102 +1,117 @@
-{% extends 'ubyssey/base.html' %} {% load static %} {% load wagtailcore_tags %}
-{% load wagtailimages_tags %} {% load ubyssey_ad_tags %} {% load
-ubyssey_ad_filters %} {% load articletags %} {% block stylesheet %}
-<link
-  rel="stylesheet"
-  href="{% static 'ubyssey/css/home.css' %}"
-  type="text/css"
-/>
-{% endblock %} {% block head_scripts %}
-<link
-  rel="alternate"
-  type="application/atom+xml"
-  title="Ubyssey Rss Feed"
-  href="/rss"
-/>
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load ubyssey_ad_tags %}
+{% load ubyssey_ad_filters %}
+{% load articletags %}
+
+{% block stylesheet %}
+	<link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}" type="text/css" />
+{% endblock %}
+
+
+{% block head_scripts %}
+<link rel="alternate" type="application/atom+xml" title="Ubyssey Rss Feed" href="/rss">
 <!-- Register ads for home page -->
-{% for orderable in settings.ads.AdTagSettings.home_head_tags.all %} {%
-gpt_define_tag orderable.ad_slot %} {% endfor %} {% endblock %} {% block header
-%} {% include 'navigation/headers/mobile.html' with class='homepage' %}
+{% for orderable in settings.ads.AdTagSettings.home_head_tags.all %}
+{% gpt_define_tag orderable.ad_slot %}
+{% endfor %}
+{% endblock %}
+
+{% block header %}
+{% include 'navigation/headers/mobile.html' with class='homepage' %}
 
 <div class="o-advertisement--header-bar">
-  <!-- Place header ads for home page -->
-  {% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
-  {% gpt_placement_tag orderable.ad_slot %} {% endfor %}
+<!-- Place header ads for home page -->
+{% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
+{% gpt_placement_tag orderable.ad_slot %}
+{% endfor %}
 </div>
 
-{% include 'navigation/headers/main.html' with tagline=self.tagline
-tagline_url=self.tagline_url %} {% endblock %} {% block content %} {% filter
-specify_homepage_sidebar_ads:request %}
+{% include 'navigation/headers/main.html' with tagline=self.tagline tagline_url=self.tagline_url %}
+{% endblock %}
+
+{% block content %}
+{% filter specify_homepage_sidebar_ads:request %}
 
 <main class="u-container u-container--mid homepage">
-  {% comment %} breaking_news_article is passed through from context and it
-  contains all of the breaking articles from each section {% endcomment %} {%
-  for article in breaking_news_article %}
-  <a class="o-breaking-news" href="{%" pageurl article %}>
-    <h3>BREAKING: {{ article.title|safe }}</h3>
-  </a>
-  {% endfor %} {% comment %} Additional fields/blocks will go here to alert
-  students to some special events {% endcomment %}
+	{% comment %}
+	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
+	{% endcomment %}
+	{% for article in breaking_news_article %}
+	<a class="o-breaking-news" href={% pageurl article %}>
+		<h3>BREAKING: {{ article.title|safe }}</h3>
+	</a>
+	{% endfor %}
+	{% comment %}
+	Additional fields/blocks will go here to alert students to some special events
+	{% endcomment %}
 
-  <div class="home-featured">
-    {% if cover_story %} {% include "article/objects/cover_story.html" with
-    article=cover_story%} {% endif %}
-    <div class="home-top-article-list">
-      {% include 'home/objects/home_heading-box.html' with styling='lightmode'
-      title="Top Stories" text="Updated" textBold=update_time|time_ago %} {% for
-      article in top_stories %} {% include "article/objects/top_article.html"
-      with article=article count=forloop.counter %} {% endfor %}
-    </div>
-  </div>
+	<div class="home-featured">
+		{% if cover_story %}
+			{% include "article/objects/cover_story.html" with article=cover_story%}
+		{% endif %}
+		<div class="home-top-article-list">
+			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=update_time|time_ago %}
+
+			{% for article in top_stories %}
+				{% include "article/objects/top_article.html" with article=article count=forloop.counter %}
+			{% endfor %}
+		</div>
+	</div>
 </main>
 
 <div>
-  {% for block in self.middle_stream %} {% include_block block %} {% endfor %}
+	{% for block in self.middle_stream %}
+	{% include_block block %}
+	{% endfor %}
 </div>
 
 <div id="feed-section" class="home_infinitefeed">
-  <div class="u-container u-container--large">
-    {% for group in section_groups %}
-    <div class="c-infinitefeed__feed">
-      <div class="c-homepage__sections">
-        {% if forloop.counter0 == 0 %} {% include
-        'home/objects/home_heading-box.html' with id="feed-box-label"
-        styling='c-home-bannerbox' title='Sections' text='Most Recent'
-        textId='timeBox' %} {% endif %} {% for section in group.sections %} {%
-        include_block section %} {% endfor %}
-      </div>
+	<div class="u-container u-container--large">
 
-      {% if group.sidebar %} {% include
-      'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar"
-      sidebar_stream=group.sidebar %} {% else %}
-      <div class="c-sidebar empty-sidebar"></div>
-      {% endif %}
-    </div>
-    {% endfor %}
-  </div>
+			{% for group in section_groups %}
+			<div class="c-infinitefeed__feed">
+				<div class="c-homepage__sections">
 
-  {% comment %}
-  <div class="u-container u-container--large darkmode c-infinitefeed__feed">
-    <div class="c-home-infinitefeed">
-      {% include 'home/objects/home_heading-box.html' with id="feed-box-label"
-      styling='darkmode c-home-bannerbox sticky' title='Infinite feed'
-      textBold='Today' textId='timeBox' %} {% include
-      'infinitefeed/infinitefeed.html' with filters=filters label="True"
-      inactive="True" %}
-    </div>
+					{% if forloop.counter0 == 0 %}
+					{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox' title='Sections' text='Most Recent' textId='timeBox' %}
+					{% endif %}
 
-    {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with
-    id="sidebar" sidebar_stream=self.sidebar_stream %}
-  </div>
-  <script
-    src="{% static 'ubyssey/js/home.js' %}"
-    type="text/javascript"
-  ></script>
-  <script
-    src="{% static 'ubyssey/js/infinitefeed.js' %}"
-    type="text/javascript"
-  ></script>
-  {% endcomment %}
+					{% for section in group.sections %}
+					{% include_block section %}
+					{% endfor %}
+				</div>
+
+				{% if group.sidebar %}
+					{% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=group.sidebar %}
+				{% else %}
+					<div class="c-sidebar empty-sidebar"></div>
+				{% endif %}
+			</div>
+			{% endfor %}
+
+	</div>
+
+
+	{% comment %}
+	<div class="u-container u-container--large darkmode c-infinitefeed__feed">
+		<div class="c-home-infinitefeed">
+			{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='darkmode c-home-bannerbox sticky' title='Infinite feed' textBold='Today' textId='timeBox' %}
+			{% include 'infinitefeed/infinitefeed.html' with filters=filters label="True" inactive="True" %}
+		</div>
+
+        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=self.sidebar_stream %}
+
+	</div>
+	<script src="{% static 'ubyssey/js/home.js' %}" type="text/javascript"></script>
+	<script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
+	{% endcomment %}
 </div>
-{% endfilter %} {% endblock %} {% block footer %} {% include
-'navigation/footer.html' with homepage=True %} {% endblock %}
+{% endfilter %}
+{% endblock %}
+
+{% block footer %}
+{% include 'navigation/footer.html' with homepage=True %}
+{% endblock %}

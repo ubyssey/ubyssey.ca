@@ -1,23 +1,17 @@
 {% comment %}
-<div
-  class="article-box{% if style %}--{{ style }}{% endif %}{% if type %} type-{{ type }}{% endif %}"
-  style="
-    background-image: url(&quot;/media/images/2020/11/tiannerawmeat-mayarodrigo-abdi.png&quot;);
-  "
->
-  <nav class="article-box{% if style %}--{{ style }}{% endif %}-container">
-    <a class="article-box--nav" href="#">
-      <div class="article-box-gradient"></div>
-      <div class="title">
-        <p class="title">Temperature Checks</p>
-        <p class="author">By samantha raw</p>
-      </div>
-    </a>
-  </nav>
-</div>
-{% endcomment %}
+<div class="article-box{% if style %}--{{ style }}{% endif %}{% if type %} type-{{ type }}{% endif %}" style="background-image: url('/media/images/2020/11/tiannerawmeat-mayarodrigo-abdi.png');">
+    <nav class="article-box{% if style %}--{{ style }}{% endif %}-container">
+        <a class="article-box--nav" href="#">
+            <div class="article-box-gradient"></div>
+            <div class='title'>
+                <p class='title'>Temperature Checks</p>
+                <p class='author'>By samantha raw</p>
+            </div>
+        </a>
+    </nav>
+</div> {% endcomment %}
 
 <div class="article-box">
-  <p>Hello from article_box.html!</p>
-  <p>This box corresponds to {{self.article_slug}}</p>
+    <p>Hello from article_box.html!</p>
+    <p>This box corresponds to {{self.article_slug}}</p>
 </div>

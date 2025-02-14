@@ -1,30 +1,17 @@
-{% load static %} {% load menu_tags %}
+{% load static %}
+{% load menu_tags %}
 
 <header class="visual-essay">
   <div class="u-container">
     <div class="logo-area">
       <a class="home-link" href="{% url 'wagtail_serve' '' %}">
-        <div
-          class="top-logo ubyssey_small_logo light-logo"
-          style="
-            background-image: url(&quot;{% static &quot;ubyssey/images/logos/ubyssey-logo-blue-light.svg&quot; %}&quot;);
-          "
-          alt=""
-        ></div>
-        <div
-          class="top-logo ubyssey_small_logo dark-logo"
-          style="
-            background-image: url(&quot;{% static &quot;ubyssey/images/logos/ubyssey-logo-blue-dark.svg&quot; %}&quot;);
-          "
-          alt=""
-        ></div>
+        <div class="top-logo ubyssey_small_logo light-logo" style="background-image: url('{% static 'ubyssey/images/logos/ubyssey-logo-blue-light.svg' %}')" alt=""></div>
+        <div class="top-logo ubyssey_small_logo dark-logo"  style="background-image: url('{% static 'ubyssey/images/logos/ubyssey-logo-blue-dark.svg' %}')" alt=""></div>
       </a>
     </div>
-    <p class="section">
-      From<a href="{{self.get_parent.full_url}}">{{self.get_parent.title}}</a>
-    </p>
+    <p class="section">From<a href="{{self.get_parent.full_url}}">{{self.get_parent.title}}</a></p>
   </div>
-  <div class="darkmode-toggle">
-    {% include 'article/objects/darkmode_button.html' with id="topbar" %}
-  </div>
+<div class="darkmode-toggle">
+  {% include 'article/objects/darkmode_button.html' with id="topbar" %}
+</div>
 </header>

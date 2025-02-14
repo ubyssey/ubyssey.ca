@@ -1,8 +1,9 @@
 .carousel {
   padding-left: 48px;
   padding-right: 48px;
-  padding-bottom: 3rem;
-  padding-top: 1rem;
+  padding-bottom:3rem;
+  padding-top:1rem;
+
 }
 
 .carousel_title,
@@ -27,15 +28,15 @@
     --grid-margin: 3rem;
   }
 
-  @media (min-width: 1024px) {
+  @media(min-width:1024px) {
     --grid-gap: 2rem;
   }
 
-  @media (min-width: 1280px) {
+  @media(min-width:1280px) {
     --grid-margin: 4rem;
   }
 
-  .stream_title > p {
+  .stream_title>p{
     color: black;
   }
 }
@@ -44,6 +45,7 @@
   display: flex;
   align-items: stretch;
   justify-content: center;
+
 
   :first-child {
     margin-left: 0;
@@ -59,10 +61,10 @@
   max-width: 100%;
   max-height: 100%;
 }
-.card-body {
-  padding: 0 !important ;
+.card-body{
+  padding:0 !important ;
 
-  h3.card-title {
+  h3.card-title{
     font-size: 24px !important;
   }
 }
@@ -144,7 +146,7 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.5em;
-    &:hover {
+    &:hover{
       color: inherit;
     }
   }

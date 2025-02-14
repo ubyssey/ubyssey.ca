@@ -1,10 +1,10 @@
-@import "modules/variables";
-@import "modules/fonts";
+@import 'modules/variables';
+@import 'modules/fonts';
 
 // BODY
 
 * {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 body {
@@ -46,7 +46,7 @@ body {
   padding-left: 15px;
   padding-right: 15px;
 
-  @media ($bp-larger-than-phablet) {
+  @media($bp-larger-than-phablet) {
     padding-left: 20px;
     padding-right: 20px;
   }
@@ -62,7 +62,8 @@ body {
   max-width: none;
 }
 
-@media ($bp-larger-than-phablet) {
+
+@media($bp-larger-than-phablet){
   div.table-row {
     display: table;
     div.cell {
@@ -92,12 +93,11 @@ main {
     float: right;
   }
 
-  > .left.stack-mobile,
-  > .right.stack-mobile {
+  > .left.stack-mobile, > .right.stack-mobile {
     float: none;
   }
 
-  @media ($bp-larger-than-mobile) {
+  @media($bp-larger-than-mobile){
     > .left.stack-mobile {
       float: left;
     }
@@ -107,9 +107,7 @@ main {
   }
 }
 
-.col,
-.col-4,
-.col-8 {
+.col, .col-4, .col-8 {
   float: left;
 }
 
@@ -154,32 +152,26 @@ main {
 }
 
 .clearfix:after {
-  visibility: hidden;
-  display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
-}
-.clearfix {
-  display: inline-block;
-}
+     visibility: hidden;
+     display: block;
+     font-size: 0;
+     content: " ";
+     clear: both;
+     height: 0;
+     }
+.clearfix { display: inline-block; }
 /* start commented backslash hack \*/
-* html .clearfix {
-  height: 1%;
-}
-.clearfix {
-  display: block;
-}
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
 /* close commented backslash hack */
 
 .hide-desktop {
-  @media ($bp-larger-than-phablet) {
+  @media($bp-larger-than-phablet){
     display: none;
   }
 }
 .hide-mobile {
-  @media ($bp-smaller-than-phablet) {
+  @media($bp-smaller-than-phablet){
     display: none;
   }
 }
@@ -192,7 +184,7 @@ main {
 .image-aspect-4-3:after {
   padding-top: 68%;
   display: block;
-  content: "";
+  content: '';
 }
 .image-aspect-4-3 > div {
   position: absolute;
@@ -205,11 +197,10 @@ main {
   background-position: center;
 }
 
+
 // Defualt text colours
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
   margin: 0.67em 0;
 
   color: var(--header_color);
@@ -217,12 +208,11 @@ h3 {
   line-height: 1.2;
 }
 
-h2,
-h3 {
+h2, h3 {
   font-weight: 600;
 }
 
-p {
+p{
   margin: 1em 0;
   color: var(--text_color);
 }
@@ -237,27 +227,26 @@ a {
   }
 }
 
+
 html {
-  transition:
-    background 0.5s ease,
-    color 0.5s ease;
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
 html[color-css-theme="light"] {
   --background-nav: rgba(255, 255, 255, 0.99);
   --background: white;
   --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99);
-  --nav-h3-color: #5d5d5d;
-  --nav-span-color: #33331e;
+  --nav-h3-color: #5D5D5D;
+  --nav-span-color: #33331E;
   --nav-headline-h1: #373737;
   --three-bar-logo-color: #303030;
   --text_color: #1b1b1b;
   --header_color: black;
   --article_info: #777777;
   --article_caption: #{$color-ubyssey-blue-dark-3};
-  --authors-title-bio: #1b1b1b;
+  --authors-title-bio: #1B1B1B;
   --archive-text: #4e4e4e;
-  --article-publish: #2b2b2b;
+  --article-publish: #2B2B2B;
   --pagination: #353535;
 }
 
@@ -265,24 +254,22 @@ html[color-css-theme="dark"] {
   --background-nav: #031723;
   --background: #031621;
   --nav-mobile-background-barely-transparent: #031723;
-  --nav-h3-color: #efefef;
-  --nav-span-color: #efefef;
-  --nav-headline-h1: #5d5d5d;
-  --three-bar-logo-color: #efefef;
-  --text_color: #d9d9d9;
+  --nav-h3-color: #EFEFEF;
+  --nav-span-color: #EFEFEF;
+  --nav-headline-h1: #5D5D5D;
+  --three-bar-logo-color: #EFEFEF;
+  --text_color: #D9D9D9;
   --header_color: white;
-  --article_info: #bfbbbb;
-  --article_caption: #bfbbbb;
-  --authors-title-bio: #d8d8d8;
+  --article_info: #BFBBBB;
+  --article_caption: #BFBBBB;
+  --authors-title-bio: #D8D8D8;
   background-color: #031621;
-  --archive-text: #bfbfbf;
-  --article-publish: #bfbfbf;
-  --pagination: #bfbfbf;
+  --archive-text: #BFBFBF;
+  --article-publish: #BFBFBF;
+  --pagination: #BFBFBF;
 }
 
-body,
-html,
-#page-wrapper {
+body, html, #page-wrapper {
   //max-height: 100%;
   //height: 100%;
 }
@@ -291,6 +278,7 @@ html,
   @media screen {
     display: flex;
     flex-direction: column;
+
   }
 }
 
@@ -317,9 +305,7 @@ dialog {
 
 body {
   background-color: var(--background);
-  transition:
-    background-color 0.5s ease,
-    color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
   min-height: 100vh;
 }
 
@@ -328,16 +314,16 @@ body {
 }
 
 div.image-container {
-  height: 100%;
-  display: table;
-  margin: 0 auto;
-  width: 100%;
+    height: 100%;
+    display: table;
+    margin: 0 auto;
+    width: 100%;
 }
 
 div.image-inner {
-  display: table-cell;
-  vertical-align: middle;
-  width: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
 }
 
 span.credit {
@@ -349,32 +335,32 @@ span.credit {
 }
 
 img.slide-image {
-  max-width: 100%;
+    max-width: 100%;
 }
 
 div.navigation {
-  color: white;
-  font-family: $font-secondary;
-  font-size: 13px;
-  text-align: center;
+    color: white;
+    font-family: $font-secondary;
+    font-size: 13px;
+    text-align: center;
 }
 
 div.navigation a {
-  display: inline-block;
-  padding: 6px 9px;
-  color: white;
-  text-decoration: none;
-  margin: 0 15px;
-  font-size: 12px;
+    display: inline-block;
+    padding: 6px 9px;
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 12px;
 }
 
 div.navigation a:hover {
-  color: black;
-  background: #fff;
+    color: black;
+    background: #fff;
 }
 
 .no-scroll {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .u-no-scroll {
@@ -388,7 +374,7 @@ a.image {
   img {
     display: block;
   }
-  @media ($bp-larger-than-phablet) {
+  @media($bp-larger-than-phablet){
     margin-bottom: 0;
   }
 }
@@ -406,8 +392,7 @@ a.image {
   display: none;
 }
 
-.dropdown:focus-within,
-.dropdown:hover {
+.dropdown:focus-within, .dropdown:hover {
   .dropdown-content {
     display: block;
   }
@@ -420,17 +405,17 @@ a.image {
 }
 
 .hide {
-  display: none;
+	display: none;
 }
 
 .show {
-  display: block;
+	display: block;
 }
 
-.js-dropdown-container {
+.js-dropdown-container{
   position: fixed;
   width: 100%;
-  height: 100%;
+	height: 100%;
 
   left: 0;
   right: 0;
@@ -451,10 +436,6 @@ ion-icon {
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
+  from {transform: rotate(0deg);}
+  to {transform: rotate(359deg);}
 }

@@ -1,23 +1,18 @@
-{% load wagtailimages_tags %} {% image image height-300 as img%} {% image image
-original as big%}
+{% load wagtailimages_tags %}
+
+{% image image height-300 as img%}
+{% image image original as big%}
 
 <div class="setup-modal gallery-item image-modal">
-  <a class="open-modal" href="#">
-    <div
-      class="gallery-image"
-      style="background-image: url('{{img.full_url}}')"
-    ></div>
-  </a>
+    <a class="open-modal" href="#">
+        <div class="gallery-image" style="background-image: url('{{img.full_url}}')"></div>
+    </a>
 
-  <dialog class="modal close-modal hide js-dropdown-container">
-    <div class="u-container u-container--large modal-contents">
-      <div
-        class="image-modal-image"
-        style="background-image: url('{{big.full_url}}')"
-      ></div>
-      <a class="close-modal" href="#"
-        ><ion-icon name="close-circle-outline"></ion-icon
-      ></a>
-    </div>
-  </dialog>
+    <dialog class="modal close-modal hide js-dropdown-container">
+        <div class="u-container u-container--large modal-contents">
+            <div class="image-modal-image" style="background-image: url('{{big.full_url}}')"></div>
+            <a class="close-modal" href="#"><ion-icon name="close-circle-outline"></ion-icon></a>
+        </div>
+    </dialog>
+
 </div>

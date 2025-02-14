@@ -1,6 +1,6 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Magazine } from "./components/Magazine/2020";
+import React from "react"
+import ReactDOM from "react-dom"
+import { Magazine } from "./components/Magazine/2020"
 
 $(function () {
   ReactDOM.render(
@@ -12,6 +12,6 @@ $(function () {
       section3Image={$("#magazine-wrapper").data("waysforward-image")}
       title={$("#magazine-wrapper").data("title")}
     />,
-    $("#magazine-wrapper")[0],
-  );
-});
+    $("#magazine-wrapper")[0]
+  )
+})

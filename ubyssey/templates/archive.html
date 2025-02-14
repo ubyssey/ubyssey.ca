@@ -1,13 +1,19 @@
-{% extends 'base.html' %} {% load static %} {% block header %} {% include
-'headers/topbar.html' with article=article section=article.section.slug %} {%
-include 'headers/mobile.html' %} {% endblock %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+	{% include 'headers/topbar.html' with article=article section=article.section.slug %}
+	{% include 'headers/mobile.html' %}
+{% endblock %}
+{% block content %}
 <main class="c-page c-page--archive">
   <div class="u-container u-container--padded">
-    <div class="c-page__header">
-      <h1 class="c-page__heading">Search the archive</h1>
-    </div>
 
-    {% include 'objects/archive.html' %}
-  </div>
+		<div class="c-page__header">
+			<h1 class="c-page__heading">Search the archive</h1>
+		</div>
+
+		{% include 'objects/archive.html' %}
+
+	</div>
 </main>
 {% endblock %}

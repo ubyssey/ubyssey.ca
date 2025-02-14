@@ -1,28 +1,29 @@
-@import "modules/fonts";
+@import 'modules/fonts';
 
 // -------- CONSTANTS -------- //
 // Colours
-$dark-shade: #000000;
+$dark-shade:    #000000;
 $dark-accent-1: #313133;
-$dark-accent-2: #3b3b3d;
-$light-shade: #ffffff;
-$pastel-green: #a0ffa9;
-$pastel-blue: #b5fcfe;
-$pastel-pink: #ffcced;
-$dark-purple: #654daf;
-$dot-red: #ed645b;
-$dot-yellow: #dfc04b;
-$dot-green: #74be45;
+$dark-accent-2: #3B3B3D;
+$light-shade:   #FFFFFF;
+$pastel-green:  #A0FFA9;
+$pastel-blue:   #B5FCFE;
+$pastel-pink:   #FFCCED;
+$dark-purple:   #654DAF;
+$dot-red:       #ED645B;
+$dot-yellow:    #DFC04B;
+$dot-green:     #74BE45;
 
 // --------- STYLES ---------- //
 // Fonts
 @font-face {
-  font-family: "Azonix";
-  src: url("https://storage.googleapis.com/ubyssey/fonts/Azonix.otf");
+    font-family: 'Azonix';
+    src: url("https://storage.googleapis.com/ubyssey/fonts/Azonix.otf");
 }
 
 // font-family: 'ub-avenir', Avenir, serif;
 $font-avenir: Avenir, serif;
+
 
 .tableauholder {
   margin-bottom: 1.25rem;
@@ -98,7 +99,7 @@ $font-avenir: Avenir, serif;
 }
 
 .btn {
-  font-family: "Azonix";
+  font-family: 'Azonix';
   color: $dark-purple;
   font-size: 32px;
   margin-bottom: 1rem;
@@ -108,15 +109,16 @@ $font-avenir: Avenir, serif;
 }
 
 .btn:hover {
-  transition: box-shadow 0.3s;
+  transition: box-shadow .3s;
   //color: $pastel-pink;
   color: $dark-accent-1;
 }
 
+
 .eit-test-bkg {
   background-image:
     linear-gradient(to bottom, transparent, white),
-    url("https://storage.googleapis.com/ubyssey/images/spring-2021-science-feature/BlueGrid.png");
+    url('https://storage.googleapis.com/ubyssey/images/spring-2021-science-feature/BlueGrid.png');
   margin: 0 auto;
   height: auto;
   min-height: 600px;
@@ -125,7 +127,7 @@ $font-avenir: Avenir, serif;
   position: relative;
 }
 .eit-headline {
-  font-family: "Azonix";
+  font-family: 'Azonix';
   color: $dark-purple;
   text-align: center;
   font-size: 3.375em;
@@ -166,26 +168,26 @@ $font-avenir: Avenir, serif;
 
 // Styled Items
 .dot {
-  height: 15px;
-  width: 15px;
-  border-radius: 50%;
-  display: inline-block;
-  top: 50%;
-  margin-top: 7.5px;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    display: inline-block;
+    top: 50%;
+    margin-top: 7.5px;
 
-  &.red {
-    background-color: $dot-red;
-    // left: 3px;
-    margin-left: 10px;
-  }
-  &.yellow {
-    background-color: $dot-yellow;
-    margin-left: 5px;
-  }
-  &.green {
-    background-color: $dot-green;
-    margin-left: 5px;
-  }
+    &.red {
+      background-color: $dot-red;
+      // left: 3px;
+      margin-left: 10px;
+    }
+    &.yellow {
+      background-color: $dot-yellow;
+      margin-left: 5px;
+    }
+    &.green {
+      background-color: $dot-green;
+      margin-left: 5px;
+    }
 }
 
 .dropcap > p:first-letter {
@@ -197,39 +199,40 @@ $font-avenir: Avenir, serif;
 }
 
 .attachment.pull-quote {
-  //background: #f3a633;
-  padding: 1.5rem;
-  margin-bottom: 1.25rem;
-  width: 100%;
-  max-width: 585px;
+    //background: #f3a633;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    width: 100%;
+    max-width: 585px;
 
-  overflow: auto;
+    overflow: auto;
 
-  margin: 40px auto;
-  padding-bottom: 1rem;
-  display: table;
-  //height: 500px;
-  border-radius: 5px;
-  border: 2px solid $dark-accent-1;
-  //background: linear-gradient(to bottom right, $pastel-pink, $pastel-blue);
-  background: linear-gradient(to bottom right, $pastel-blue, $pastel-green);
+    margin: 40px auto;
+    padding-bottom: 1rem;
+    display: table;
+    //height: 500px;
+    border-radius: 5px;
+    border: 2px solid $dark-accent-1;
+    //background: linear-gradient(to bottom right, $pastel-pink, $pastel-blue);
+    background: linear-gradient(to bottom right, $pastel-blue, $pastel-green);
 
-  .quote {
-    margin: 0;
-    font-family: $font-avenir;
-    font-weight: bold;
-    font-size: 22px;
-    color: $dark-accent-1;
-    line-height: 1.4em;
+
+    .quote {
+      margin: 0;
+      font-family: $font-avenir;
+      font-weight: bold;
+      font-size: 22px;
+      color: $dark-accent-1;
+      line-height: 1.4em;
+    }
+
+    .source {
+      margin-top: 0.5rem;
+      margin-bottom: 0;
+      font-family: $font-avenir;
+      color: $dark-accent-2;
+    }
   }
-
-  .source {
-    margin-top: 0.5rem;
-    margin-bottom: 0;
-    font-family: $font-avenir;
-    color: $dark-accent-2;
-  }
-}
 
 // Header
 .eit-header-top-style-bar {
@@ -241,6 +244,7 @@ $font-avenir: Avenir, serif;
   width: 100%;
   max-width: 840px;
   background: linear-gradient($dark-accent-2, $dark-accent-1);
+
 }
 
 .eit-header-logo {
@@ -256,7 +260,7 @@ $font-avenir: Avenir, serif;
   display: inline-block;
   width: 141px;
   height: 33px;
-  background-image: url("../images/ubyssey_logo_white.png");
+  background-image: url('../images/ubyssey_logo_white.png');
   background-size: 100%;
 
   opacity: 1;
@@ -277,86 +281,88 @@ $font-avenir: Avenir, serif;
   border: 2px solid $dark-accent-1;
   background: linear-gradient(to bottom right, $pastel-pink, $pastel-blue);
 
-  .headline-container {
-    text-align: center;
-    max-width: 585px;
-    margin-left: auto;
-    margin-right: auto;
-    //margin-top: 1.5rem;
-    margin-top: 75px;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
+    .headline-container {
+      text-align: center;
+      max-width: 585px;
+      margin-left: auto;
+      margin-right: auto;
+      //margin-top: 1.5rem;
+      margin-top: 75px;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
 }
 
 // Article body
 .eit-article-body {
-  @media (min-width: 760px) {
-    padding-top: 1rem;
+
+    @media(min-width: 760px) {
+      padding-top: 1rem;
+    }
+
+    p {
+      max-width: 585px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 1.6rem;
+      margin-bottom: 1.6rem;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    p {
+      font-family: $font-avenir;
+      //font-family: "Georgia", serif;
+      //font-size: 1.0625em;
+      font-size: 1.08em;
+      color: #333333;
+      line-height: 1.625rem;
+      margin-top: 1.4rem;
+
+      a {
+        color: $dark-purple;
+      }
+      a:hover {
+        transition-duration: 0.25s;
+        color: $pastel-pink;
+        cursor: pointer;
+      }
+    }
   }
 
-  p {
+.eit-about {
     max-width: 585px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 1.6rem;
-    margin-bottom: 1.6rem;
+    margin-bottom: 1.5rem;
     padding-left: 15px;
     padding-right: 15px;
-  }
-
-  p {
+    border-radius: 5px;
+    border: 2px solid $dark-accent-1;
+    background: linear-gradient(to bottom right, $pastel-pink, $pastel-blue);
     font-family: $font-avenir;
-    //font-family: "Georgia", serif;
-    //font-size: 1.0625em;
-    font-size: 1.08em;
-    color: #333333;
-    line-height: 1.625rem;
-    margin-top: 1.4rem;
 
-    a {
+
+    h3 {
+      font-family: 'Azonix';
       color: $dark-purple;
+      font-size: 24px;
+      margin-bottom: 1rem;
+      margin-top: 1rem;
     }
-    a:hover {
-      transition-duration: 0.25s;
-      color: $pastel-pink;
-      cursor: pointer;
+
+    p {
+      color: $dark-accent-1;
+      // font-family: $font-avenir;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 17px;
+      line-height: 1.5em;
     }
-  }
+
 }
 
-.eit-about {
-  max-width: 585px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1.5rem;
-  padding-left: 15px;
-  padding-right: 15px;
-  border-radius: 5px;
-  border: 2px solid $dark-accent-1;
-  background: linear-gradient(to bottom right, $pastel-pink, $pastel-blue);
-  font-family: $font-avenir;
-
-  h3 {
-    font-family: "Azonix";
-    color: $dark-purple;
-    font-size: 24px;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-  }
-
-  p {
-    color: $dark-accent-1;
-    // font-family: $font-avenir;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-    font-size: 17px;
-    line-height: 1.5em;
-  }
-}
-
-html,
-body {
+html, body {
   margin: 0;
   background: #fff;
   -webkit-font-smoothing: antialiased;
@@ -387,11 +393,7 @@ body {
   left: 0;
   bottom: 0;
   right: 0;
-  background-image: linear-gradient(
-    -180deg,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.81) 100%
-  );
+  background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.81) 100%);
 
   opacity: 1;
   transition: opacity 0.2s;
@@ -406,7 +408,7 @@ body {
   padding-bottom: 1.5rem;
   z-index: 200;
 
-  @media (min-width: 500px) {
+  @media(min-width: 500px) {
     padding-left: 3rem;
     padding-right: 3rem;
     padding-bottom: 2rem;
@@ -415,7 +417,7 @@ body {
   h3 {
     font-family: $font-avenir;
     font-size: 16px;
-    color: #f5a623;
+    color: #F5A623;
     letter-spacing: 1px;
     margin-top: 0;
     margin-bottom: 0.25rem;
@@ -427,7 +429,7 @@ body {
     margin-top: 0.25rem;
     font-family: $font-avenir;
     font-size: 36px;
-    color: #ffffff;
+    color: #FFFFFF;;
   }
 
   p {

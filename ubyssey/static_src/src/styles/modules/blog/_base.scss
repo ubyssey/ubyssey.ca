@@ -1,4 +1,4 @@
-@import "modules/blog/header";
+@import 'modules/blog/header';
 
 body {
   font-family: "Montserrat";
@@ -8,10 +8,7 @@ main.blog {
   margin-top: 0;
 }
 
-h1,
-h2,
-h3,
-h4 {
+h1, h2, h3, h4 {
   margin-top: 0;
   margin-bottom: 15px;
 }
@@ -35,7 +32,7 @@ h3.headline {
 h4.caps {
   font-weight: 500;
   font-size: 16px;
-  color: #a5a5a5;
+  color: #A5A5A5;
   letter-spacing: 0.75px;
   text-transform: uppercase;
   margin-bottom: 15px;
@@ -46,7 +43,7 @@ a.article {
 }
 
 a:hover {
-  color: #f11d1d;
+  color: #F11D1D;
 }
 
 p.snippet {
@@ -66,7 +63,7 @@ div.blog-header {
     background-size: cover;
     background-position: center center;
 
-    opacity: 0.85;
+    opacity: .85;
     -webkit-filter: contrast(60%);
   }
 
@@ -106,11 +103,12 @@ div.blog-header {
 }
 
 div.featured-articles {
+
   overflow: auto;
-  background: #f1f1f1;
+  background: #F1F1F1;
 
   .topbar {
-    border-bottom: 1px solid #d6d6d6;
+    border-bottom: 1px solid #D6D6D6;
     background: #fff;
   }
 
@@ -123,7 +121,7 @@ div.featured-articles {
       a {
         font-weight: 500;
         font-size: 16px;
-        color: #a5a5a5;
+        color: #A5A5A5;
         letter-spacing: 0.75px;
         text-transform: uppercase;
         padding: 20px 0;
@@ -148,6 +146,7 @@ div.featured-articles {
     }
   }
 }
+
 
 article.blog {
   margin: 25px 0;

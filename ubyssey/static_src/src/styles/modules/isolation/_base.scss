@@ -1,31 +1,28 @@
-html,
-body {
+html, body {
   padding: 0;
   margin: 0;
   font-size: 18px;
-  @media ($bp-smaller-than-tablet) {
+  @media($bp-smaller-than-tablet) {
     font-size: 16px;
   }
-  @media ($bp-smaller-than-mobile) {
+  @media($bp-smaller-than-mobile) {
     font-size: 14px;
   }
 }
 
-.topbar,
-.mobile,
-#header-mobile-spacer {
+.topbar, .mobile, #header-mobile-spacer{
   display: none !important;
 }
 
 body {
   font-family: $font-secondary;
   font-size: 1rem;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
 }
 
-.quote {
+.quote{
   color: $color-white;
   font-family: $quote-font;
   font-size: $quote-size;
@@ -33,7 +30,8 @@ body {
   line-height: 1.6rem;
 }
 
-.source {
+
+.source{
   color: $color-white;
   font-family: $credit-font;
   font-style: $credit-style;

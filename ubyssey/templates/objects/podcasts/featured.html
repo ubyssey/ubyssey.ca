@@ -1,10 +1,8 @@
-<article
-  class="o-article o-article--featured{% if padded %} o-article--padded{% endif %}"
->
+<article class="o-article o-article--featured{% if padded %} o-article--padded{% endif %}">
   {% if episode.image %}
   <div class="o-article__left">
     <a class="o-article__image" href="{{ episode_url }}">
-      <img src="{{ episode.image.get_medium_url }}" alt="" />
+      <img src="{{ episode.image.get_medium_url }}" alt=""/>
     </a>
   </div>
   {% endif %}
@@ -19,8 +17,6 @@
         <span class="o-article__published">{{ episode.published_at }}</span>
       </div>
     </div>
-    <p class="o-article__snippet__podcast__featured">
-      {{ episode.description|safe }}
-    </p>
+    <p class="o-article__snippet__podcast__featured">{{ episode.description|safe }}</p>
   </div>
 </article>

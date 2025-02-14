@@ -4,7 +4,7 @@
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 
-  @media ($bp-larger-than-mobile) {
+  @media($bp-larger-than-mobile) {
     // Structure
     margin-top: 0;
   }
@@ -15,7 +15,7 @@
   font-size: font-size(24);
   font-weight: 400;
 
-  @media ($bp-larger-than-mobile) {
+  @media($bp-larger-than-mobile) {
     // Text
     font-size: font-size(34);
   }
@@ -38,13 +38,7 @@
     > p:first-child:first-letter {
       background-color: $color-primary-1;
     }
-    h1,
-    h2,
-    h3,
-    > p > a,
-    p.source {
-      color: $color-primary-1;
-    }
+    h1, h2, h3, > p > a, p.source { color: $color-primary-1; }
   }
 
   .c-article__snippet {
@@ -63,13 +57,7 @@
     > p:first-child:first-letter {
       background-color: $color-primary-2;
     }
-    h1,
-    h2,
-    h3,
-    > p > a,
-    p.source {
-      color: $color-primary-2;
-    }
+    h1, h2, h3, > p > a, p.source { color: $color-primary-2; }
   }
 
   .c-article__snippet {
@@ -88,13 +76,7 @@
     > p:first-child:first-letter {
       background-color: $color-primary-3;
     }
-    h1,
-    h2,
-    h3,
-    > p > a,
-    p.source {
-      color: $color-primary-3;
-    }
+    h1, h2, h3, > p > a, p.source { color: $color-primary-3; }
   }
 
   .c-article__snippet {

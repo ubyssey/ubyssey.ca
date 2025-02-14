@@ -1,75 +1,68 @@
-{% extends 'ubyssey/base.html' %} {% load static %} {% load wagtailcore_tags %}
-{% load wagtailimages_tags %} {% load authors_tags %} {% block stylesheet %}
-<link
-  rel="stylesheet"
-  href="{% static 'ubyssey/css/author.css' %}"
-  type="text/css"
-/>
-{% endblock %} {% block head_scripts%}
-<link
-  rel="alternate"
-  type="application/atom+xml"
-  title="{{self.title}} - Ubyssey feed"
-  href="/authors/{{self.slug}}/rss"
-/>
-{% endblock %} {% block header %} {% include 'navigation/headers/topbar.html' %}
-{% include 'navigation/headers/mobile.html' %} {% endblock %} {% block content
-%}
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load authors_tags %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/author.css' %}" type="text/css" />
+{% endblock %}
+
+{% block head_scripts%}
+<link rel="alternate" type="application/atom+xml" title="{{self.title}} - Ubyssey feed" href="/authors/{{self.slug}}/rss">
+{% endblock %}
+
+{% block header %}
+{% include 'navigation/headers/topbar.html' %}
+{% include 'navigation/headers/mobile.html' %}
+{% endblock %}
+
+{% block content %}
 <main class="c-page c-page--author">
-  <div class="u-container u-container--padded">
-    <div class="author-header">
-      {% if self.image %} {% image self.image width-350 format-webp as pfp %}
-      <div
-        class="author-img"
-        style="background-image: url('{{pfp.full_url}}')"
-        aria-label="{{ self.title }}"
-      ></div>
-      {% endif %}
-      <div class="author-info">
-        <h1 class="author-name">{{ self.title }}</h1>
-        <h2 class="author-role">{{self.ubyssey_role}}</h2>
-        {% if self.bio_description %}
-        <p class="author-desc">{{ self.bio_description|safe }}</p>
-        {% endif %}
-        <p class="author-links">
-          <a class="social_media_links" href="/authors/{{self.slug}}/rss"
-            ><ion-icon name="logo-rss" style="font-size: 1em"></ion-icon
-            >&nbsp;rss</a
-          >
-          {% for icon in self.linkIcons %} {{icon}} {% endfor %}
-        </p>
-      </div>
-    </div>
+	<div class="u-container u-container--padded">
 
-    {% if self.pinned_articles.count > 0 and current_page == 1 %}
-    <h2 class="author-heading">Pinned</h2>
-    <div class="author-pinned_list">
-      {% for article in self.pinned_articles.all %}
-      <div class="author-pinned_article">
-        {% include 'article/objects/suggested_article.html' with
-        article=article.article %}
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
+		<div class="author-header">
+			{% if self.image %}
+				{% image self.image width-350 format-webp as pfp %}
+				<div class="author-img" style="background-image: url('{{pfp.full_url}}')" aria-label="{{ self.title }}"></div>
+			{% endif %}
+			<div class="author-info">
+				<h1 class="author-name">{{ self.title }}</h1>
+				<h2 class="author-role"> {{self.ubyssey_role}} </h2>
+				{% if self.bio_description %}<p class="author-desc">{{ self.bio_description|safe }}</p>{% endif %}
+				<p class="author-links">
+					<a class="social_media_links" href="/authors/{{self.slug}}/rss"><ion-icon name="logo-rss" style="font-size:1em;"></ion-icon>&nbsp;rss</a>
+					{% for icon in self.linkIcons %}
+						{{icon}}
+					{% endfor %}
+				</p>
+			</div>
+		</div>
 
-    <div class="options" id="results">
-      {% for type in media_types %}
-      <h2
-        class="author-heading {% if media_type == type.0 %}selected{% endif %}"
-      >
-        <a href="/authors/{{self.slug}}/{{type.0}}/#results">{{type.1}}</a>
-      </h2>
-      {% endfor %}
-    </div>
+		{% if self.pinned_articles.count > 0 and current_page == 1 %}
+			<h2 class="author-heading">Pinned</h2>
+			<div class="author-pinned_list">
+				{% for article in self.pinned_articles.all %}
+					<div class="author-pinned_article">
+						{% include 'article/objects/suggested_article.html' with article=article.article %}
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
 
-    {% if media_type == "articles" or media_type == "visuals" %} {% include
-    'archive/objects/archive.html' with page_obj=paginated_articles
-    current_page_articles=current_page_articles %} {% elif media_type ==
-    "photos" %} {% include 'archive/objects/gallery.html' with
-    page_obj=paginated_articles %} {% elif media_type == "videos" %} {% include
-    'archive/objects/archive.html' with page_obj=paginated_articles
-    video_section=true%} {% endif %}
-  </div>
+		<div class="options" id="results">
+			{% for type in media_types %}
+				<h2 class="author-heading {% if media_type == type.0 %}selected{% endif %}"><a href="/authors/{{self.slug}}/{{type.0}}/#results">{{type.1}}</a></h2>
+			{% endfor %}
+		</div>
+
+		{% if media_type == "articles" or media_type == "visuals" %}
+			{% include 'archive/objects/archive.html' with page_obj=paginated_articles current_page_articles=current_page_articles %}
+		{% elif media_type == "photos" %}
+			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
+		{% elif media_type == "videos" %}
+			{% include 'archive/objects/archive.html' with page_obj=paginated_articles video_section=true%}
+		{% endif %}
+	</div>
 </main>
 {% endblock %}

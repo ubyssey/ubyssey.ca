@@ -4,14 +4,14 @@
   height: 40px;
   width: 166px;
 
-  background-image: url("../images/magazine/2024/unlimited-logo.svg");
+  background-image: url('../images/magazine/2024/unlimited-logo.svg');
   background-repeat: no-repeat;
   background-size: 100%;
 
   transition: background-image 0.15s;
 
   &:hover {
-    background-image: url("../images/magazine/2024/unlimited-logo-stroke.svg");
+    background-image: url('../images/magazine/2024/unlimited-logo-stroke.svg');
   }
 }
 
@@ -19,19 +19,18 @@ nav {
   background-color: black !important;
 
   .navbar-nav {
-    flex-wrap: wrap;
+    flex-wrap:wrap;
     width: 100%;
   }
 
-  .dropdown:hover .dropdown-menu,
-  .dropdown:focus-within .dropdown-menu {
+  .dropdown:hover .dropdown-menu, .dropdown:focus-within .dropdown-menu {
     display: block;
   }
 
   li.nav-item {
     text-align: center;
     &::before {
-      content: "";
+      content: '';
       display: inline-block;
       height: 1.5em;
       width: 1em;
@@ -48,7 +47,7 @@ nav {
       padding-left: 0 !important;
       padding-right: 1em !important;
 
-      color: #fadb92 !important;
+      color: #FADB92 !important;
     }
   }
 }
@@ -66,10 +65,10 @@ nav {
   justify-items: center;
   margin: auto;
   padding-bottom: 5%;
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
     min-width: 600px;
   }
-  @media ($bp-smaller-than-tablet) {
+  @media($bp-smaller-than-tablet) {
     padding: 0 5% 0 5%;
   }
 }

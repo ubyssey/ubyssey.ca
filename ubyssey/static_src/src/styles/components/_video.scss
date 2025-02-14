@@ -6,7 +6,7 @@ $show-more-height: 60px;
   max-width: 600px;
   .c-page__header {
     // Structure
-    display: flex;
+    display:flex;
     flex-direction: column;
     h1 {
       // Structure
@@ -16,11 +16,7 @@ $show-more-height: 60px;
       // Structure
       margin-top: 0;
       // Text
-      font:
-        1.2rem "ub-minion-pro",
-        "Minion Pro",
-        "Georgia",
-        serif;
+      font: 1.2rem "ub-minion-pro", "Minion Pro", "Georgia", serif
     }
   }
 }

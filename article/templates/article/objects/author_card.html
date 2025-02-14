@@ -1,38 +1,34 @@
-{% load wagtailcore_tags %} {% load wagtailimages_tags %} {% load
-article_authors %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load article_authors %}
 
 <div class="author_card">
-  <div
-    class="author_title {% if author.author.image and author.author.display_image %}with_image{%endif%}"
-  >
-    {% if author.author.image and author.author.display_image %} {% image
-    author.author.image width-200 format-webp loading="lazy"
-    class="author_image" alt=author.author.full_name %} {% endif %}
-    <p>
-      <span class="author_name">
-        <a href="{{ author.author.full_url }}">
-          {{ author.author.full_name|safe }}</a
-        >
-      </span>
-      <span class="author_role">
-        {% for role in author_roles %} {% if role == "org_role" %} {{
-        author.author.ubyssey_role }}{% if not forloop.last %},{% endif %} {%
-        else %} {{ role }}{% if not forloop.last %},{% endif %} {% endif %} {%
-        endfor %}
-      </span>
-    </p>
-  </div>
-  <!-- if forloop.first and no image then 0 padding for the authors_info left, author_info and author title-->
-  <div class="author_info">
-    {% if author.author.short_bio_description != "" %}
-    <p>{{ author.author.short_bio_description }}</p>
-    {% endif %}
-    <ul>
-      <li>
-        <a href="{{ author.author.full_url }}"
-          >See more from {{ author.author.full_name|safe }}</a
-        >
-      </li>
-    </ul>
-  </div>
+    <div class="author_title {% if author.author.image and author.author.display_image %}with_image{%endif%}">
+        {% if author.author.image and author.author.display_image %}
+            {% image author.author.image width-200 format-webp loading="lazy" class="author_image" alt=author.author.full_name %}
+        {% endif %}
+        <p>
+        <span class="author_name">
+            <a href="{{ author.author.full_url }}"> {{ author.author.full_name|safe }}</a>
+        </span>
+        <span class="author_role">
+            {% for role in author_roles %}
+                {% if role == "org_role" %}
+                    {{ author.author.ubyssey_role }}{% if not forloop.last %},{% endif %}
+                {% else %}
+                    {{ role }}{% if not forloop.last %},{% endif %}
+                {% endif %}
+            {% endfor %}
+        </span>
+        </p>
+    </div>
+    <!-- if forloop.first and no image then 0 padding for the authors_info left, author_info and author title-->
+    <div class="author_info">
+        {% if author.author.short_bio_description != "" %}
+            <p>{{ author.author.short_bio_description }}</p>
+        {% endif %}
+        <ul>
+            <li><a href="{{ author.author.full_url }}">See more from {{ author.author.full_name|safe }}</a></li>
+        </ul>
+    </div>
 </div>

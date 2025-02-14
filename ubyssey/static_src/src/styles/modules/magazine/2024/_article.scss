@@ -1,10 +1,10 @@
-.c-article {
+.c-article{
   padding: 3em 0;
-  background-color: #feffe3;
+  background-color: #FEFFE3;
 
   color: black;
 
-  a {
+  a{
     color: black;
 
     &:hover {
@@ -13,17 +13,16 @@
   }
 }
 
-.c-article__title,
-.o-article__snippet {
+.c-article__title, .o-article__snippet {
   text-align: center;
-  color: #3c3c3c;
+  color: #3C3C3C;
   font-family: $font-default;
   padding: 0 5% 0 5%;
   margin: 2.5% 0 2.5% 0;
   font-size: 3.5rem;
   line-height: 4rem;
   max-width: 1000px;
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
     width: auto;
   }
   @media ($bp-smaller-than-mobile) {
@@ -37,6 +36,7 @@
   font-size: 2rem;
 }
 
+
 .c-authors_info {
   display: flex;
   flex-flow: row wrap;
@@ -47,13 +47,13 @@
   text-align: center;
   font-family: $text-font;
   * {
-    color: #3c3c3c;
+    color: #3C3C3C;
     text-decoration: none;
   }
 
   display: block;
   justify-content: center;
-  @media ($bp-larger-than-tablet) {
+  @media($bp-larger-than-tablet) {
     display: flex;
     flex-wrap: wrap;
   }
@@ -69,24 +69,22 @@
     width: 1000px;
     height: auto;
     margin-bottom: 1%;
-    @media ($bp-smaller-than-desktop) {
+    @media($bp-smaller-than-desktop) {
       width: 100%;
     }
   }
   .caption {
     text-align: right;
-    color: #3c3c3c;
+    color:#3C3C3C;
   }
 }
 
 .c-article__content {
-  color: #3c3c3c;
+  color: #3C3C3C;
   font-family: $text-font;
   // margin: 50%;
   // margin: auto;
-  h1,
-  h2,
-  h3 {
+  h1, h2, h3 {
     text-align: left;
     font-family: $header-font;
     font-size: 1.3rem;
@@ -95,13 +93,12 @@
     margin-bottom: 0.5em;
     margin-left: 0.5rem;
   }
-  h1 {
+  h1{
     font-size: 1.45rem;
     margin-bottom: 1.5em;
   }
 
-  > p,
-  ul {
+  > p, ul {
     font-family: $text-font;
     font-size: $text-size;
     font-weight: normal;
@@ -117,15 +114,14 @@
     font-style: italic;
   }
 
-  .advertisement,
-  .pull-quote {
+  .advertisement, .pull-quote {
     width: 300px;
 
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 35px;
 
-    @media ($bp-larger-than-phablet) {
+    @media($bp-larger-than-phablet) {
       margin: 0;
       float: right;
       padding-left: 35px;
@@ -150,7 +146,7 @@
       .credit {
         margin-left: 1em;
 
-        color: #57574d;
+        color: #57574D;
         font-style: italic;
 
         white-space: pre;
@@ -194,7 +190,8 @@
   }
 }
 
-.article .o-article-embed {
+
+.article .o-article-embed{
   margin: 0;
   max-width: 600px;
   display: block;

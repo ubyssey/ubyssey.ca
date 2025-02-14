@@ -24,36 +24,42 @@ $row-height450-end: 11;
 
 $margin-size: 10px;
 
+
 @media (max-width: 760px) {
   $margin-size: 5px;
 }
 
 @font-face {
-  font-family: "Azonix";
+  font-family: 'Azonix';
   src: url("https://storage.googleapis.com/ubyssey/fonts/Azonix.otf");
 }
 
-.mag_title {
+
+
+.mag_title{
   margin-left: 0;
   margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.5em
 }
 
-.editor_title h1 {
+.editor_title h1{
   margin-left: 0;
 }
 
-.editors p {
+.editors p{
   margin-top: 0;
 }
 
-.editor_name p {
+.editor_name p{
   margin-top: 0;
+
 }
 
-.editor_name h4 {
+.editor_name h4{
   margin-bottom: 0;
+
 }
+
 
 .home_wrapper {
   z-index: 1;
@@ -63,8 +69,8 @@ $margin-size: 10px;
 }
 
 @media only screen and (max-width: 1050px) {
-  .mag_title {
-    font-size: 0.75em;
+  .mag_title{
+  font-size: 0.75em;
   }
 
   .home_grid_container {

@@ -1,25 +1,14 @@
 {% load static %}
 <div>
-  <div
-    class="o-advertisement o-advertisement--{{ size }}{% if class %} o-advertisement--{{ class }}{% endif %}"
-  >
+  <div class="o-advertisement o-advertisement--{{ size }}{% if class %} o-advertisement--{{ class }}{% endif %}">
     <!-- google-adsense-test -->
-    <div
-      class="adslot"
-      id="div-gpt-ad-1443288719995-{{ name }}-{{ id }}{% if article %}-{{ article }}{% endif %}"
-      data-size="{{ size }}"
-      data-dfp="{{ name }}"
-    ></div>
+    <div class="adslot" id="div-gpt-ad-1443288719995-{{ name }}-{{ id }}{% if article %}-{{ article }}{% endif %}" data-size="{{ size }}" data-dfp="{{ name }}"></div>
     <!-- <div class="adslot-test" id="div-{{ size }}{% if article %}-{{ article }}{% endif %}" data-size="{{ size }}" data-dfp="{{ name }}"></div> -->
   </div>
   {% if size == "box" %}
-  <a href="http://ubyssey.ca/volunteer" target="_blank">
-    <div
-      class="o-hidden o-replacement o-replacement--{{ size }}{% if class %} o-replacement--{{ class }}{% endif %}"
-      style="
-        background-image: url({%static&quot;ubyssey/images/house/volunteer.jpg&quot;%});
-      "
-    ></div>
+  <a href='http://ubyssey.ca/volunteer' target="_blank">
+    <div class="o-hidden o-replacement o-replacement--{{ size }}{% if class %} o-replacement--{{ class }}{% endif %}" style="background-image:url({% static 'ubyssey/images/house/volunteer.jpg' %});">
+    </div>
   </a>
   {% endif %}
 </div>

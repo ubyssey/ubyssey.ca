@@ -1,17 +1,18 @@
 {% load wagtailcore_tags %}
 
 <div class="article-list sidebar-block">
-  <h2 class="block-title" style="color: {{section.colour}}">
-    {% if link %}
-    <a href="{{link}}">{{ title }}</a>
-    {% else %} {{ title }} {% endif %}
-  </h2>
-  <ul class="article-list">
-    {% for article in articles %}
-    <li>
-      <b>{{ article.published_at|date:'N j, Y' }}</b>
-      <a href="{% pageurl article %}">{{ article.title|safe }}</a>
-    </li>
-    {% endfor %}
-  </ul>
+	<h2 class="block-title" style="color: {{section.colour}}">
+		{% if link %}
+		<a href="{{link}}">{{ title }}</a>
+		{% else %}
+		{{ title }}
+		{% endif %}
+	</h2>
+	<ul class="article-list">
+		{% for article in articles %}
+		<li>
+			<b>{{ article.published_at|date:'N j, Y' }}</b> <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+		</li>
+		{% endfor %}
+	</ul>
 </div>
