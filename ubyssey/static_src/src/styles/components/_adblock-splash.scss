@@ -27,7 +27,7 @@
   background-color: white;
 
   // Extra
-  opacity: .5;
+  opacity: 0.5;
   z-index: 10;
 }
 
@@ -47,7 +47,7 @@
 
   // Fonts
   color: white;
-  h1{
+  h1 {
     margin-top: 0;
   }
   h3 {
@@ -77,9 +77,9 @@
   border: none;
 
   // Extra
-  transition: opacity .1s;
+  transition: opacity 0.1s;
   &:hover {
-    opacity: .8;
+    opacity: 0.8;
   }
 }
 
@@ -98,11 +98,12 @@
     opacity: 1;
   }
 }
-.adblock-close:before, .adblock-close:after {
+.adblock-close:before,
+.adblock-close:after {
   // Structure
   position: absolute;
   left: 15px;
-  content: ' ';
+  content: " ";
   height: 15px;
   width: 2px;
 

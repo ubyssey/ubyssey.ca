@@ -1,12 +1,6 @@
-{% comment %}
-Note this is a very "lazy" version of a video block, and wagtail currently lacks some features which would allow us to be less lazy:
-
-See this blog post:
-
-https://danielms.site/blog/wagtail-embedurl-youtube-tags/
-
-TODO: produce custom tags that allow nice video logic!
-{% endcomment %}
-{% load wagtailembeds_tags %}
-{% load video_filters %}
-{{ value.video_embed.url|youtube_embed_id }}
+{% comment %} Note this is a very "lazy" version of a video block, and wagtail
+currently lacks some features which would allow us to be less lazy: See this
+blog post: https://danielms.site/blog/wagtail-embedurl-youtube-tags/ TODO:
+produce custom tags that allow nice video logic! {% endcomment %} {% load
+wagtailembeds_tags %} {% load video_filters %} {{
+value.video_embed.url|youtube_embed_id }}

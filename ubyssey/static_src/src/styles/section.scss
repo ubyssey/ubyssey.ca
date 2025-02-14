@@ -1,42 +1,42 @@
-@import 'modules/core';
-@import 'modules/fonts';
-@import 'modules/font_faces';
-@import 'modules/advertisements';
-@import 'modules/variables';
-@import 'modules/mixins';
+@import "modules/core";
+@import "modules/fonts";
+@import "modules/font_faces";
+@import "modules/advertisements";
+@import "modules/variables";
+@import "modules/mixins";
 
 // Ubyssey site-specific files
-@import 'modules/header';
-@import 'modules/footer';
+@import "modules/header";
+@import "modules/footer";
 
-@import 'modules/buttons';
+@import "modules/buttons";
 
-@import 'modules/darkmode';
+@import "modules/darkmode";
 
-@import 'modules/homepage';
+@import "modules/homepage";
 
-@import 'modules/search';
+@import "modules/search";
 
-@import 'objects/timelines';
-@import 'objects/article';
-@import 'objects/article_column';
-@import 'objects/article_infinite';
-@import 'objects/article_headline-top';
-@import 'objects/article_promo';
-@import 'objects/article_round-with-borders';
-@import 'objects/article_minimal';
-@import 'objects/landing_stream_blocks';
-@import 'objects/inputs';
-@import 'objects/archive';
+@import "objects/timelines";
+@import "objects/article";
+@import "objects/article_column";
+@import "objects/article_infinite";
+@import "objects/article_headline-top";
+@import "objects/article_promo";
+@import "objects/article_round-with-borders";
+@import "objects/article_minimal";
+@import "objects/landing_stream_blocks";
+@import "objects/inputs";
+@import "objects/archive";
 
-@import 'components/button';
-@import 'components/adblock-splash';
-@import 'components/cookie-disclaimer';
-@import 'components/replacement';
-@import 'components/section-page';
-@import 'components/suggested-articles';
+@import "components/button";
+@import "components/adblock-splash";
+@import "components/cookie-disclaimer";
+@import "components/replacement";
+@import "components/section-page";
+@import "components/suggested-articles";
 
-@import 'components/page';
-@import 'components/text-input';
-@import 'components/video';
-@import 'components/infinitefeed';
+@import "components/page";
+@import "components/text-input";
+@import "components/video";
+@import "components/infinitefeed";

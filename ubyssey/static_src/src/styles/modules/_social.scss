@@ -1,4 +1,4 @@
-@import 'modules/mixins';
+@import "modules/mixins";
 
 // Social/share icons
 
@@ -20,7 +20,7 @@
     margin-right: 5px;
   }
 
-  @media($bp-larger-than-tablet){
+  @media ($bp-larger-than-tablet) {
     li {
       margin-right: 0;
       margin-left: 5px;
@@ -36,7 +36,7 @@
   padding-right: 15px;
   text-align: center;
 
-  @media($bp-larger-than-phablet){
+  @media ($bp-larger-than-phablet) {
     text-align: unset;
   }
 
@@ -61,14 +61,14 @@
     }
   }
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     padding-left: 0;
     padding-right: 0;
   }
 }
 
 .o-social-icons--left {
-  @media($bp-larger-than-mobile){
+  @media ($bp-larger-than-mobile) {
     float: left;
   }
   li {
@@ -115,21 +115,24 @@
 
 .o-social-icons__icon--facebook {
   background-color: $color-social-facebook;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: $color-social-facebook-dark;
   }
 }
 
 .o-social-icons__icon--twitter {
   background-color: $color-social-twitter;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: $color-social-twitter-dark;
   }
 }
 
 .o-social-icons__icon--reddit {
   background-color: $color-social-reddit;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: $color-social-reddit-dark;
   }
 }

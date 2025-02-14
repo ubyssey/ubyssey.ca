@@ -1,23 +1,21 @@
-{% load wagtailcore_tags %}
-
-{% if prevornext == 'prev' %}
+{% load wagtailcore_tags %} {% if prevornext == 'prev' %}
 <nav class="article-box--article-container">
-    <a class="article-box--nav" href="{% pageurl page %}">
-        <p class="article-box--article_prev">previous article</p>
-        <p class="article-box--article_prev">{{title}}</p>
-    </a>
-    <a href="{% pageurl page %}">
+  <a class="article-box--nav" href="{% pageurl page %}">
+    <p class="article-box--article_prev">previous article</p>
+    <p class="article-box--article_prev">{{title}}</p>
+  </a>
+  <a href="{% pageurl page %}">
     <ion-icon class="arrow" name="arrow-back-circle-outline"></ion-icon>
-    </a>
+  </a>
 </nav>
 {% elif prevornext == 'next' %}
 <nav class="article-box--article-container">
-    <a class="article-box--nav" href="{% pageurl page %}">
-        <p class="article-box--article_next">next article</p>
-        <p class="article-box--article_next">{{title}}</p>
-    </a>
-    <a href="{% pageurl page %}">
+  <a class="article-box--nav" href="{% pageurl page %}">
+    <p class="article-box--article_next">next article</p>
+    <p class="article-box--article_next">{{title}}</p>
+  </a>
+  <a href="{% pageurl page %}">
     <ion-icon class="arrow" name="arrow-forward-circle-outline"></ion-icon>
-    </a>
+  </a>
 </nav>
 {% endif %}

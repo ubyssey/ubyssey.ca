@@ -1,6 +1,4 @@
 {% load wagtailcore_tags %}
 <div class="section-grid-container">
-    {% for block in self.stream %}
-        {% include_block block %}
-    {% endfor %}
+  {% for block in self.stream %} {% include_block block %} {% endfor %}
 </div>

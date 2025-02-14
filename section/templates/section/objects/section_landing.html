@@ -1,33 +1,31 @@
-{% load humanize %}
-{% load cache %}
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
-{% load video_filters %}
-{% load articletags %}
+{% load humanize %} {% load cache %} {% load wagtailcore_tags %} {% load
+wagtailimages_tags %} {% load video_filters %} {% load articletags %}
 
-<div class="landing_stream_block u-container u-container--large u-container--padded" style="--section-colour:{{articles.0.colour}}">
+<div
+  class="landing_stream_block u-container u-container--large u-container--padded"
+  style="--section-colour:{{articles.0.colour}}"
+>
   <div class="landing_stream_block--header">
     <h2><a href="{{link}}">{{title}}</a></h2>
-    {% if description %}
-      {{description}}
-    {% endif %}
+    {% if description %} {{description}} {% endif %}
   </div>
   <div class="landing_stream_block--flex-container">
-  {% if articles.0 %}
-    {% include 'article/objects/suggested_article.html' with article=articles.0 %}
-  {% endif %}
+    {% if articles.0 %} {% include 'article/objects/suggested_article.html' with
+    article=articles.0 %} {% endif %}
 
-	<ul>
+    <ul>
       {% for article in articles|slice:"1:" %}
-			<li>
-        <article class="o-article" style="--section-colour:{{articles.0.colour}}">
+      <li>
+        <article
+          class="o-article"
+          style="--section-colour:{{articles.0.colour}}"
+        >
           <h3 class="o-article__headline">
-            <a href={% pageurl article %}>{{ article.title|safe }}</a>
+            <a href="{%" pageurl article %}>{{ article.title|safe }}</a>
           </h3>
         </article>
       </li>
       {% endfor %}
-	</ul>
-</div>
-
+    </ul>
+  </div>
 </div>

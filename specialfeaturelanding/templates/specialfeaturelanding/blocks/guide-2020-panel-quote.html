@@ -1,21 +1,16 @@
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
+{% load wagtailcore_tags %} {% load wagtailimages_tags %}
 
 <div class="panel-quote">
-    <div class="{{ self.class_name }}-container">
-        <div class="{{ self.class_name }}-container-text">
-            <div class="{{ self.class_name }}-container-image">
-                {% image self.image original as image %}
-                <img src="{{ image.url }}" alt="cover">
-            </div>
-            <div class="{{ self.class_name }}-text">
-                <div class="{{ self.class_name }}-text__ quote">
-                    {{ self.quote }}
-                </div>
-                <div class="{{ self.class_name }}-text__ source">
-                    {{ self.source }}
-                </div>
-            </div>
-        </div>
+  <div class="{{ self.class_name }}-container">
+    <div class="{{ self.class_name }}-container-text">
+      <div class="{{ self.class_name }}-container-image">
+        {% image self.image original as image %}
+        <img src="{{ image.url }}" alt="cover" />
+      </div>
+      <div class="{{ self.class_name }}-text">
+        <div class="{{ self.class_name }}-text__ quote">{{ self.quote }}</div>
+        <div class="{{ self.class_name }}-text__ source">{{ self.source }}</div>
+      </div>
     </div>
+  </div>
 </div>

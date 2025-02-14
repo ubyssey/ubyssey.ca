@@ -1,49 +1,25 @@
-{% extends 'article/article_page.html' %}
-{% load static %}
-{% load wagtailimages_tags %}
-{% load ubyssey_ad_tags %}
+{% extends 'article/article_page.html' %} {% load static %} {% load
+wagtailimages_tags %} {% load ubyssey_ad_tags %} {% block specific_article_class
+%} c-article--fw-story {% endblock %} {% block banner %} {% include
+'article/objects/banner.html' %} {% endblock %} {% block right_column_class %}
+fw-story {% endblock %} {% if self.header_layout == 'banner-image' %} {% block
+banner_ad %}{% endblock %} {% endif %} {% block pre-content %} {% endblock %} {%
+block sidebar %}
 
-
-{% block specific_article_class %}
-    c-article--fw-story
-{% endblock %}
-{% block banner %}
-{% include 'article/objects/banner.html' %}
-{% endblock %}
-{% block right_column_class %}
-    fw-story
-{% endblock %}
-
-{% if self.header_layout == 'banner-image' %}
-    {% block banner_ad %}{% endblock %}
-{% endif %}
-
-{% block pre-content %}
-{% endblock %}
-
-{% block sidebar %}
-
-    <div class="o-advertisement--fw-end">
-        {% if not self.is_explicit  %}
-            {% if self.minutes_to_read >= 3 %}
-                {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
-                    {% gpt_placement_tag orderable.ad_slot %}
-                {% endfor %}
-            {% endif %}
-        {% else %}
-            {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
-        {% endif %}
-    </div>
-{% endblock %}
-
-{% block suggested_articles %}
-{% if suggested and suggested.articles|length > 0 %}
-    {% include 'article/objects/suggested_articles.html' with title=suggested.title articles=suggested.articles %}
-{% endif %}
-{% endblock %}
-
-{% block scripts %}
-    {% if self.show_timeline%}
-         <script src="{% static 'ubyssey/js/timeline.js' %}" type="text/javascript"></script>
-    {% endif %}
- {% endblock %}
+<div class="o-advertisement--fw-end">
+  {% if not self.is_explicit %} {% if self.minutes_to_read >= 3 %} {% for
+  orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %} {%
+  gpt_placement_tag orderable.ad_slot %} {% endfor %} {% endif %} {% else %} {%
+  comment %} {% include 'objects/replacement.html' with size='box' %} {%
+  endcomment %} {% endif %}
+</div>
+{% endblock %} {% block suggested_articles %} {% if suggested and
+suggested.articles|length > 0 %} {% include
+'article/objects/suggested_articles.html' with title=suggested.title
+articles=suggested.articles %} {% endif %} {% endblock %} {% block scripts %} {%
+if self.show_timeline%}
+<script
+  src="{% static 'ubyssey/js/timeline.js' %}"
+  type="text/javascript"
+></script>
+{% endif %} {% endblock %}

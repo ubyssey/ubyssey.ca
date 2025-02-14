@@ -2,10 +2,9 @@ name: Cross-browser test automation
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ["develop"]
   pull_request:
-    branches: [ "develop" ]
-
+    branches: ["develop"]
 
 jobs:
   test:
@@ -22,7 +21,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: ubyssey
           MYSQL_DATABASE: ubyssey
-        ports: ['3306:3306']
+        ports: ["3306:3306"]
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s

@@ -7,11 +7,11 @@
   ul {
     // Structure
     margin: 0;
-    padding: .5rem 0;
+    padding: 0.5rem 0;
 
     // Border
-    border-top: 1px solid #e2e2e2;;
-    border-bottom: thin groove #C8C8C8;
+    border-top: 1px solid #e2e2e2;
+    border-bottom: thin groove #c8c8c8;
 
     list-style-type: none;
 
@@ -26,7 +26,7 @@
 }
 
 .c-section__featured__articles {
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     width: 100%;
   }
 }
@@ -37,37 +37,35 @@
 
   // Text
   font-size: 6em;
-  @media($bp-smaller-than-phablet) {
+  @media ($bp-smaller-than-phablet) {
     font-size: 4em;
   }
 }
 
 [color-css-theme="light"] {
-
   .c-page__heading {
     color: black;
   }
 }
 
 [color-css-theme="dark"] {
-
   .c-page__heading {
     color: white;
   }
 }
 
 .banner {
-  aspect-ratio:3;
-  position:relative;
-  margin-bottom:40px;
-  background-size:cover;
+  aspect-ratio: 3;
+  position: relative;
+  margin-bottom: 40px;
+  background-size: cover;
   background-position: center;
   svg.banner-title {
     position: absolute;
     bottom: -55px;
     padding-inline: 20px;
     border: none;
-    @media($bp-smaller-than-phablet) {
+    @media ($bp-smaller-than-phablet) {
       bottom: -25px;
       padding-inline: 10px;
       font-size: 2em;
@@ -78,7 +76,7 @@
     position: absolute;
     bottom: -50px;
     left: 50px;
-    @media($bp-smaller-than-phablet) {
+    @media ($bp-smaller-than-phablet) {
       bottom: -25px;
     }
   }
@@ -113,7 +111,7 @@
       text-overflow: ellipsis;
     }
   }
-  @media($bp-smaller-than-phablet) {
+  @media ($bp-smaller-than-phablet) {
     display: none;
   }
 }
@@ -124,7 +122,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     width: 50%;
   }
   overflow-y: auto;
@@ -141,7 +139,7 @@
   margin-left: auto;
   justify-content: right;
   text-align: right;
-  @media($bp-smaller-than-phablet) {
+  @media ($bp-smaller-than-phablet) {
     display: block;
   }
   .o-archive__search__input {
@@ -156,9 +154,11 @@
   margin-left: 0.5em;
   text-align: right;
   display: inline-block;
-  z-index:3;
+  z-index: 3;
   position: relative;
-  a, form, input {
+  a,
+  form,
+  input {
     cursor: pointer;
     color: var(--header_color);
     &:hover {
@@ -168,7 +168,7 @@
   a > p {
     color: var(--header_color);
 
-    &:hover{
+    &:hover {
       color: $color-accent-blue;
     }
   }
@@ -176,8 +176,8 @@
 
 .main-content {
   width: 55%;
-  @media($bp-smaller-than-phablet) {
-    width:100%
+  @media ($bp-smaller-than-phablet) {
+    width: 100%;
   }
 }
 
@@ -186,8 +186,8 @@
   padding-inline: 1em;
   display: inline-block;
   box-sizing: border-box;
-  @media($bp-smaller-than-phablet) {
-    width:100%;
+  @media ($bp-smaller-than-phablet) {
+    width: 100%;
   }
 }
 
@@ -207,7 +207,7 @@
     font-size: 1.25em;
     text-transform: uppercase;
 
-    @media($bp-smaller-than-mobile) {
+    @media ($bp-smaller-than-mobile) {
       display: none;
     }
   }
@@ -216,26 +216,28 @@
     margin-bottom: 0;
   }
 
-  @media($bp-smaller-than-desktop) {
+  @media ($bp-smaller-than-desktop) {
     margin: 1em;
     margin-top: 0;
   }
 }
 
 .c-section__modal_close {
-  position:absolute;
+  position: absolute;
   right: 20px;
   top: 1.5em;
 }
 
-svg.banner-title text{
+svg.banner-title text {
   fill: var(--header_color);
   stroke: var(--background);
   stroke-width: 0.5em;
   stroke-linejoin: round;
   paint-order: stroke;
 
-  transition: stroke 0.5s ease, color 0.5s ease;
+  transition:
+    stroke 0.5s ease,
+    color 0.5s ease;
 
   font-family: $font-headline;
   font-size: 1em;
@@ -281,16 +283,16 @@ svg.banner-title text{
   }
 
   #feed {
-      @media ($bp-larger-than-phablet) {
-          padding-right: 20px;
+    @media ($bp-larger-than-phablet) {
+      padding-right: 20px;
+    }
+    .article--infinitefeed {
+      //border-color: #646464 !important;
+      border: none;
+      .o-article__image {
+        border-color: #646464 !important;
       }
-      .article--infinitefeed {
-          //border-color: #646464 !important;
-          border: none;
-          .o-article__image {
-              border-color: #646464 !important;
-          }
-      }
+    }
   }
 }
 

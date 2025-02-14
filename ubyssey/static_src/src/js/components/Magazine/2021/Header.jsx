@@ -1,32 +1,41 @@
-import React from "react"
-import {colors} from "./colors.js"
+import React from "react";
+import { colors } from "./colors.js";
 
 class Header extends React.Component {
   renderSubsection(subsection) {
     return (
       <li
         className={`subsection ${this.props.selected === subsection ? "selected" : ""}`}
-        onClick={() => this.props.selectSubsection(subsection)}>
+        onClick={() => this.props.selectSubsection(subsection)}
+      >
         <span>{subsection}</span>
       </li>
-    )
+    );
   }
 
   render() {
-    const show = this.props.nextSubsection && this.props.selected && this.props.isDesktop ? "show" : ""
+    const show =
+      this.props.nextSubsection && this.props.selected && this.props.isDesktop
+        ? "show"
+        : "";
     if (show || !this.props.isDesktop) {
-      document.body.style.overflow = "scroll"
+      document.body.style.overflow = "scroll";
     } else {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     }
     return (
-      <div id="magazine-nav" className={show} style={{ backgroundColor: colors[this.props.selected] }}>
+      <div
+        id="magazine-nav"
+        className={show}
+        style={{ backgroundColor: colors[this.props.selected] }}
+      >
         <div className={`item left ${show}`}>
           <a
             className="subsection"
             onClick={() => {
-              this.props.selectSubsection()
-            }}>
+              this.props.selectSubsection();
+            }}
+          >
             The Ubyssey:Hot Mess
           </a>
         </div>
@@ -36,12 +45,12 @@ class Header extends React.Component {
 
         <ul className={`item show ${show ? "right" : "center"}`}>
           {this.props.subsections.map((subsection) => {
-            return this.renderSubsection(subsection)
+            return this.renderSubsection(subsection);
           })}
         </ul>
       </div>
-    )
+    );
   }
 }
 
-export default Header
+export default Header;

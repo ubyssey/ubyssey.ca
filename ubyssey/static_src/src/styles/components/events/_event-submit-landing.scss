@@ -14,7 +14,7 @@
   // Text
   text-align: center;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     // Structure
     display: flex;
   }
@@ -27,7 +27,7 @@
 
   &:first-child {
     border-bottom: 1px solid #e7e7e7;
-    @media($bp-larger-than-tablet) {
+    @media ($bp-larger-than-tablet) {
       // Border
       border-right: 1px solid #e7e7e7;
       border-bottom: none;

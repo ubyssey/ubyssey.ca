@@ -1,31 +1,52 @@
-[{
-  "name": "Agora Cafe",
-"location": "HR MacMillan Building 2357 Main Mall",
-  "content": ["Agora — a student volunteer-run cafe — offers affordable food and drinks that are all below $4. Customers can get a discount if they bring their own containers and mug, while there are small “green taxes” for take-out coffee cups and containers.", "The cafe is cash only.", "Agora is open from 9:30 a.m. to 3 p.m. on weekdays between September and April. It’s housed in the HR MacMillan Building (2357 Main Mall) on the lower level." ]
-},
-{
-  "name": "Seedlings",
-"location": "Thea Koerner House 6371 Crescent Road",
-  "content": ["A Sprouts’ offshoot, Seedlings — a student volunteer-run eatery — offers affordable vegan and vegetarian food and drinks that are all below $4. Their most expensive items are $4 lunch items like curry bowls, which start at 11:30 a.m.", "It’s required that customers bring your own containers and mugs to avoid waste.", "Seedlings is open from 9:30 a.m. to 4 p.m. on weekdays. It’s located on the penthouse of the Thea Koerner House (6371 Crescent Road)."]
-},
-{
-  "name": "UBC Farm markets",
-"location": "3461 Ross Drive",
-  "content": ["The Farm markets offers a wide arrays of vendors selling produces, meat, eggs, baked goods, coffee and more. UBC students can get a 20 per cent discount with their student card.", "Between June and November, there are three markets per week with two at the Farm and one near the Bookstore. This year’s markets are unfortunately already over."]
-},
-{
-  "name": "AMS Food Bank",
-"location": "Life Building 6138 Student Union Blvd",
-  "content": ["The AMS Food Bank provides free access to mainly non-perishable food like canned meat, canned soup, cereal and more. It also stocks baby products and female hygiene products.", "To access the service, students just need to show their student card without having to prove income level or needs. Individual customers are allowed one bag of groceries per visit, while families are allowed two bags. Every student get up to six visits per term.", "The Food Bank is open from 10 a.m. to 4 p.m. on Mondays and Wednesdays. It’s located in room 0032 in the Life Building’s basement."]
-},
-{
-"name": "Sprouts Cafe",
-"location": "Life Building 6138 Student Union Blvd",
-  "content": ["Prior to its temporary shutdown due to space complication, Sprouts — a student volunteer-run cafe — serves affordable vegan and vegetarian food. The cafe is expected to re-open in the Life Building’s basement at the end of term. "]
-},
-{
-  "name": "Community Eats",
-"location": "Walter Gage Residence Commonsblock 5959 Student Union Blvd",
-  "content": ["A Sprouts initiative, Community Eats is a student volunteer-run program that offers vegetarian hot lunch by donation. It’s required that you bring your own container and cutlery.", "It currently takes place every Fridays from 11 a.m. to 2:30 p.m. at the Walter Gage Residence Commonsblock. Since it used to be housed under Sprouts Cafe, the cafe’s upcoming re-opening could change the program’s location."]
-}
+[
+  {
+    "name": "Agora Cafe",
+    "location": "HR MacMillan Building 2357 Main Mall",
+    "content": [
+      "Agora — a student volunteer-run cafe — offers affordable food and drinks that are all below $4. Customers can get a discount if they bring their own containers and mug, while there are small “green taxes” for take-out coffee cups and containers.",
+      "The cafe is cash only.",
+      "Agora is open from 9:30 a.m. to 3 p.m. on weekdays between September and April. It’s housed in the HR MacMillan Building (2357 Main Mall) on the lower level."
+    ]
+  },
+  {
+    "name": "Seedlings",
+    "location": "Thea Koerner House 6371 Crescent Road",
+    "content": [
+      "A Sprouts’ offshoot, Seedlings — a student volunteer-run eatery — offers affordable vegan and vegetarian food and drinks that are all below $4. Their most expensive items are $4 lunch items like curry bowls, which start at 11:30 a.m.",
+      "It’s required that customers bring your own containers and mugs to avoid waste.",
+      "Seedlings is open from 9:30 a.m. to 4 p.m. on weekdays. It’s located on the penthouse of the Thea Koerner House (6371 Crescent Road)."
+    ]
+  },
+  {
+    "name": "UBC Farm markets",
+    "location": "3461 Ross Drive",
+    "content": [
+      "The Farm markets offers a wide arrays of vendors selling produces, meat, eggs, baked goods, coffee and more. UBC students can get a 20 per cent discount with their student card.",
+      "Between June and November, there are three markets per week with two at the Farm and one near the Bookstore. This year’s markets are unfortunately already over."
+    ]
+  },
+  {
+    "name": "AMS Food Bank",
+    "location": "Life Building 6138 Student Union Blvd",
+    "content": [
+      "The AMS Food Bank provides free access to mainly non-perishable food like canned meat, canned soup, cereal and more. It also stocks baby products and female hygiene products.",
+      "To access the service, students just need to show their student card without having to prove income level or needs. Individual customers are allowed one bag of groceries per visit, while families are allowed two bags. Every student get up to six visits per term.",
+      "The Food Bank is open from 10 a.m. to 4 p.m. on Mondays and Wednesdays. It’s located in room 0032 in the Life Building’s basement."
+    ]
+  },
+  {
+    "name": "Sprouts Cafe",
+    "location": "Life Building 6138 Student Union Blvd",
+    "content": [
+      "Prior to its temporary shutdown due to space complication, Sprouts — a student volunteer-run cafe — serves affordable vegan and vegetarian food. The cafe is expected to re-open in the Life Building’s basement at the end of term. "
+    ]
+  },
+  {
+    "name": "Community Eats",
+    "location": "Walter Gage Residence Commonsblock 5959 Student Union Blvd",
+    "content": [
+      "A Sprouts initiative, Community Eats is a student volunteer-run program that offers vegetarian hot lunch by donation. It’s required that you bring your own container and cutlery.",
+      "It currently takes place every Fridays from 11 a.m. to 2:30 p.m. at the Walter Gage Residence Commonsblock. Since it used to be housed under Sprouts Cafe, the cafe’s upcoming re-opening could change the program’s location."
+    ]
+  }
 ]

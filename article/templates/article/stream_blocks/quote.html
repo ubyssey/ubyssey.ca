@@ -1,21 +1,24 @@
-{% load wagtailcore_tags %}
-
-{% if self.audio %}
+{% load wagtailcore_tags %} {% if self.audio %}
 <audio id="{{id|slugify}}">
-    <source src="{{self.audio.url}}" type="audio/{{self.format}}">
+  <source src="{{self.audio.url}}" type="audio/{{self.format}}" />
 </audio>
 {% endif %}
 
 <blockquote class="pull-quote attachment {{self.position}} {{self.style}}">
-    <p class="quote">{{ self.content }}</p>
-    <p class="meta">
+  <p class="quote">{{ self.content }}</p>
+  <p class="meta">
     {% if self.audio %}
-        <a href="#" audio="{{id|slugify}}" class="playAudioQuote">
-            <ion-icon id="icon-{{id|slugify}}" class="volume" name="volume-off"></ion-icon>
-            {% if self.source %}<span class="source">Listen to {{ self.source }}</span>{% endif %}
-        </a>
+    <a href="#" audio="{{id|slugify}}" class="playAudioQuote">
+      <ion-icon
+        id="icon-{{id|slugify}}"
+        class="volume"
+        name="volume-off"
+      ></ion-icon>
+      {% if self.source %}<span class="source">Listen to {{ self.source }}</span
+      >{% endif %}
+    </a>
     {% elif self.source %}
-        <span class="source">— {{ self.source }}</span>
+    <span class="source">— {{ self.source }}</span>
     {% endif %}
-    </p>
+  </p>
 </blockquote>

@@ -1,30 +1,41 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
-{% load static %}
-{% include 'headers/topbar.html' %}
-{% include 'headers/mobile.html' %}
+{% extends 'base.html' %} {% load static %} {% block content %} {% load static
+%} {% include 'headers/topbar.html' %} {% include 'headers/mobile.html' %}
 <main class="c-page c-page--author">
   <div class="u-container u-container--padded">
-
     <div class="c-page__header">
       {% if person.image %}
       <div class="c-page__header__thumbnail">
-        <img src="{{ person.get_absolute_image_url }}" alt="{{ person.full_name }}" />
+        <img
+          src="{{ person.get_absolute_image_url }}"
+          alt="{{ person.full_name }}"
+        />
       </div>
       {% endif %}
       <div class="c-page__header__meta">
-        <h1 class="c-page__heading">{{ person.full_name }}
-          {% if person.facebook_url %}<a class="social_media_links"href={{person.facebook_url}}><ion-icon name="logo-facebook" style="font-size:1em;"></ion-icon>&nbsp;{{person.full_name}}</a> {% endif %}
-          {% if person.twitter_url %}<a class="social_media_links" href="https://twitter.com/{{person.twitter_url}}"><ion-icon name="logo-twitter" style="font-size:1em;"></ion-icon>&nbsp;{{person.twitter_url}}</a> {% endif %}
+        <h1 class="c-page__heading">
+          {{ person.full_name }} {% if person.facebook_url %}<a
+            class="social_media_links"
+            href="{{person.facebook_url}}"
+            ><ion-icon name="logo-facebook" style="font-size: 1em"></ion-icon
+            >&nbsp;{{person.full_name}}</a
+          >
+          {% endif %} {% if person.twitter_url %}<a
+            class="social_media_links"
+            href="https://twitter.com/{{person.twitter_url}}"
+            ><ion-icon name="logo-twitter" style="font-size: 1em"></ion-icon
+            >&nbsp;{{person.twitter_url}}</a
+          >
+          {% endif %}
         </h1>
-        {% if person.title %}<h3 class="c-page__sub-heading">{{ person.title }}</h3>{% endif %}
-        {% if person.description %}<p class="c-page__description">{{ person.description|safe }}</p>{% endif %}
+        {% if person.title %}
+        <h3 class="c-page__sub-heading">{{ person.title }}</h3>
+        {% endif %} {% if person.description %}
+        <p class="c-page__description">{{ person.description|safe }}</p>
+        {% endif %}
       </div>
     </div>
 
     {% include 'objects/archive.html' %}
-
   </div>
 </main>
 {% endblock %}

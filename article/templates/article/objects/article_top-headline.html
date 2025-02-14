@@ -1,25 +1,35 @@
-{% load humanize %}
-{% load cache %}
-{% load static %}
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
-{% load video_filters %}
-{% load articletags %}
+{% load humanize %} {% load cache %} {% load static %} {% load wagtailcore_tags
+%} {% load wagtailimages_tags %} {% load video_filters %} {% load articletags %}
 
 <article class="headline-top">
-    <div class="above-headline"><span class="o-article__published">{{ article.published_at|display_pubdate }}</span> {% if article.title_tag_str %}<span class="title-tag">{{article.title_tag_str}}//</span>{% endif %}</div>
-    <h2><a href="{% pageurl article %}">{{article.title|safe}}</a></h2>
-    <div class="o-article--default">
-        <div class="left">
-            <a href="{% pageurl article %}">
-                {% image article.featured_media.first.image fill-680x476-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
-            </a>
-        </div>
-        <div class="right">
-            <p class="lede">{{article.lede|safe}} <span class="read-more"><a href="{% pageurl article %}">Read more.</a></span></p>
-            <p class="o-article__byline">
-                <span class="o-article__author">{{ article.get_authors_split_out_visual_bylines|safe }}</span>
-            </p>
-        </div>
+  <div class="above-headline">
+    <span class="o-article__published"
+      >{{ article.published_at|display_pubdate }}</span
+    >
+    {% if article.title_tag_str %}<span class="title-tag"
+      >{{article.title_tag_str}}//</span
+    >{% endif %}
+  </div>
+  <h2><a href="{% pageurl article %}">{{article.title|safe}}</a></h2>
+  <div class="o-article--default">
+    <div class="left">
+      <a href="{% pageurl article %}">
+        {% image article.featured_media.first.image fill-680x476-c100
+        format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
+      </a>
     </div>
+    <div class="right">
+      <p class="lede">
+        {{article.lede|safe}}
+        <span class="read-more"
+          ><a href="{% pageurl article %}">Read more.</a></span
+        >
+      </p>
+      <p class="o-article__byline">
+        <span class="o-article__author"
+          >{{ article.get_authors_split_out_visual_bylines|safe }}</span
+        >
+      </p>
+    </div>
+  </div>
 </article>

@@ -1,6 +1,4 @@
-{% extends 'magazine/base.html' %}
-{% load static %}
-{% block content %}
+{% extends 'magazine/base.html' %} {% load static %} {% block content %}
 
 <link
   rel="stylesheet"
@@ -12,9 +10,9 @@
   id="magazine-wrapper"
   data-articles="{{ json_articles }}"
   data-cover="{% static cover %}"
-  data-reclaim-image = "{%static section1Image%}"
-  data-redefine-image = "{%static section2Image%}"
-  data-resolve-image = "{%static section3Image%}"
+  data-reclaim-image="{%static section1Image%}"
+  data-redefine-image="{%static section2Image%}"
+  data-resolve-image="{%static section3Image%}"
   data-title="Presence"
 ></div>
 
@@ -29,10 +27,6 @@
   type="text/javascript"
 ></script>
 
-{% endblock %}
-
-
-
-data-reclaim-image = "{%static section1Image%}"
-data-redefine-image = "{%static section2Image%}"
-data-resolve-image = "{%static section3Image%}"
+{% endblock %} data-reclaim-image = "{%static section1Image%}"
+data-redefine-image = "{%static section2Image%}" data-resolve-image = "{%static
+section3Image%}"

@@ -2,13 +2,13 @@
   display: block;
   height: 40px;
   width: 166px;
-  background-image: url('../images/guide/guide-logo.png');
+  background-image: url("../images/guide/guide-logo.png");
   background-size: 100%;
 
   transition: background-image 0.15s;
 
   &:hover {
-    background-image: url('../images/guide/guide-logo-hover.png');
+    background-image: url("../images/guide/guide-logo-hover.png");
   }
 }
 
@@ -25,10 +25,10 @@
   justify-items: center;
   margin: auto;
   padding-bottom: 5%;
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     min-width: 600px;
   }
-  @media($bp-smaller-than-tablet) {
+  @media ($bp-smaller-than-tablet) {
     padding: 0 5% 0 5%;
   }
 }

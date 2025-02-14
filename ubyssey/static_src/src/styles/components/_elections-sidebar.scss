@@ -27,11 +27,10 @@
     }
   }
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Border
     border-top: thin dotted $color-border-gray-dark;
   }
-
 }
 
 .c-elections-sidebar__list {
@@ -45,7 +44,7 @@
   margin-bottom: 0.15rem;
 
   // Text
-  font-size: $font-weight-semi-bold .625em $font-default;
+  font-size: $font-weight-semi-bold 0.625em $font-default;
   letter-spacing: 0.05em;
   color: $color-red;
   text-transform: uppercase;
@@ -59,7 +58,7 @@
   // Border
   border-bottom: thin dotted $color-border-gray-dark;
 
-  @media($bp-larger-than-phablet) {
+  @media ($bp-larger-than-phablet) {
     // Structure
     padding-left: 0;
     padding-right: 0;

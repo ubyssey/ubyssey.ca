@@ -1,4 +1,3 @@
-{% load wagtailimages_tags %}
-{% image self.image original as banner_image %}
+{% load wagtailimages_tags %} {% image self.image original as banner_image %}
 
-<img src="{{ banner_image.url }}" class= "{{ self.class_selector}}">
+<img src="{{ banner_image.url }}" class="{{ self.class_selector}}" />

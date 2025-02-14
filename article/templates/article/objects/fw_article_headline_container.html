@@ -1,55 +1,50 @@
-{% comment %}
-    This template object exists because both the "right image" and "top image" style fw articles were using almost identical contents when div class="headline-container"
-    It was seperated out to try to make the code more readable
-{% endcomment %}
+{% comment %} This template object exists because both the "right image" and
+"top image" style fw articles were using almost identical contents when div
+class="headline-container" It was seperated out to try to make the code more
+readable {% endcomment %}
 <div class="headline-container">
-    <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
+  <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
 
-    {% if self.title_tag_str %}
-        <p class="title-tag">{{self.title_tag_str}}//</p>
+  {% if self.title_tag_str %}
+  <p class="title-tag">{{self.title_tag_str}}//</p>
+  {% endif %}
+
+  <header>
+    <h1 class="o-headline o-headline--article">
+      {% if self.fw_alternate_title %} {{self.fw_alternate_title|safe}} {% else
+      %} {{ self.title|safe }} {% endif %}
+    </h1>
+
+    {% if self.subtitle %}
+    <p class="subtitle">{{self.subtitle|safe}}</p>
     {% endif %}
+  </header>
 
-    <header>
-        <h1 class="o-headline o-headline--article">
-            {% if self.fw_alternate_title %}
-                {{self.fw_alternate_title|safe}}
-            {% else %}
-                {{ self.title|safe }}
-            {% endif %}
-        </h1>
+  {% if self.fw_above_cut_lede %}
+  <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
+  {% endif %}
 
-        {% if self.subtitle %}
-            <p class="subtitle">{{self.subtitle|safe}}</p>
+  <div class="c-article__info">
+    <p class="author-string">{{self.authors_with_roles |safe }}</p>
+  </div>
+
+  {% comment %}
+  <div class="c-authors_bio_meta">
+    <div class="c-article__byline">
+      <div class="c-article__byline__meta">
+        {% if reading_time %}
+        <span> &nbsp;&middot;&nbsp; </span>
+        <span class="c-article__reading-time">{{ reading_time }} min read</span>
+        {% endif %} {% if article.subsection %}
+        <span> &nbsp;&middot;&nbsp; </span>
+        <a href="{{ article.subsection.get_absolute_url }}">
+          <span class="c-article__reading-time"
+            >{{ article.subsection.name }}</span
+          >
+        </a>
         {% endif %}
-    </header>
-
-	{% if self.fw_above_cut_lede %}
-		<p class="fw-description">{{ self.fw_above_cut_lede }}</p>
-	{% endif %}
-
-    <div class="c-article__info">
-        <p class="author-string">{{self.authors_with_roles |safe }}</p>
+      </div>
     </div>
-
-    {% comment %}
-    <div class="c-authors_bio_meta">
-        <div class="c-article__byline">
-
-            <div class="c-article__byline__meta">
-                {% if reading_time %}
-                    <span> &nbsp;&middot;&nbsp; </span>
-                    <span class="c-article__reading-time">{{ reading_time }} min read</span>
-                {% endif %}
-
-                {% if article.subsection  %}
-                    <span> &nbsp;&middot;&nbsp; </span>
-                    <a href="{{ article.subsection.get_absolute_url }}">
-                        <span class="c-article__reading-time">{{ article.subsection.name }}</span>
-                    </a>
-                {% endif %}
-
-            </div>
-        </div>
-	</div>
-    {% endcomment %}
+  </div>
+  {% endcomment %}
 </div>

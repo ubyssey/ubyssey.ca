@@ -32,99 +32,99 @@
   }
 }
 
-  .fade-in-title {
-    animation: fadeIn ease 2s;
-    -webkit-animation: fadeIn ease 2s;
-    -moz-animation: fadeIn ease 2s;
-    -o-animation: fadeIn ease 2s;
-    -ms-animation: fadeIn ease 2s;
+.fade-in-title {
+  animation: fadeIn ease 2s;
+  -webkit-animation: fadeIn ease 2s;
+  -moz-animation: fadeIn ease 2s;
+  -o-animation: fadeIn ease 2s;
+  -ms-animation: fadeIn ease 2s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
   }
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.loader {
+  margin-bottom: 2%;
+  position: relative;
+}
+
+.loader .loading_1 {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border: 1px solid white;
+  animation: turn 2s linear 1.75s infinite;
+}
+
+.loader .loading_1:before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 100%;
+  background-color: white;
+  box-shadow: 10px 0px 15px 0px white;
+  animation: load 1.5s linear infinite;
+}
+
+@keyframes load {
+  0% {
+    width: 0%;
   }
 
-  @-moz-keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  @-webkit-keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  @-o-keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  @-ms-keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  .loader {
-    margin-bottom: 2%;
-    position: relative;
-  }
-
-  .loader .loading_1 {
-    position: relative;
+  100% {
     width: 100%;
-    height: 10px;
-    border: 1px solid white;
-    animation: turn 2s linear 1.75s infinite;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    top: 10px;
   }
 
-  .loader .loading_1:before {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 0;
-    height: 100%;
-    background-color: white;
-    box-shadow: 10px 0px 15px 0px white;
-    animation: load 1.5s linear infinite;
+  12.5% {
+    top: 30px;
   }
-
-  @keyframes load {
-    0% {
-      width: 0%;
-    }
-
-    100% {
-      width: 100%;
-    }
-  }
-
-  @keyframes bounce {
-    0%,
-    100% {
-      top: 10px;
-    }
-
-    12.5% {
-      top: 30px;
-    }
-  }
+}

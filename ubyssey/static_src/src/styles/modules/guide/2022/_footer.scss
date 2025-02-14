@@ -1,9 +1,9 @@
 .c-nav-footer {
-    margin-top: 30px;
-    display: flex;
-    @media ($bp-smaller-than-mobile) {
-      display: block;
-    }
-    flex-wrap: wrap;
-    align-items: stretch;
+  margin-top: 30px;
+  display: flex;
+  @media ($bp-smaller-than-mobile) {
+    display: block;
   }
+  flex-wrap: wrap;
+  align-items: stretch;
+}

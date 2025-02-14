@@ -1,39 +1,41 @@
-{% extends 'ubyssey/base.html' %}
-{% comment %} //load in static {% endcomment %}
-{% load static %}
-{% comment %} // block of content for actual page {% endcomment %}
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
-
-{% block stylesheet %}
-<link rel="stylesheet" href="{% static 'ubyssey/css/error-page.css' %}" type="text/css" />
-{% endblock %}
-
-{% block header %}
-{% include 'navigation/headers/topbar.html' %}
-{% include 'navigation/headers/mobile.html' %}
-{% endblock %}
-
-{% block content %}
+{% extends 'ubyssey/base.html' %} {% comment %} //load in static {% endcomment
+%} {% load static %} {% comment %} // block of content for actual page {%
+endcomment %} {% load wagtailcore_tags %} {% load wagtailimages_tags %} {% block
+stylesheet %}
+<link
+  rel="stylesheet"
+  href="{% static 'ubyssey/css/error-page.css' %}"
+  type="text/css"
+/>
+{% endblock %} {% block header %} {% include 'navigation/headers/topbar.html' %}
+{% include 'navigation/headers/mobile.html' %} {% endblock %} {% block content
+%}
 <main class="404">
-    <div class="u-container u-container--padded error-page">
+  <div class="u-container u-container--padded error-page">
+    <div class="center-container">
+      <h1>404</h1>
+      <h2>Page Not Found</h2>
+      <p>The page you have searched is not available.</p>
+      <p>
+        Questions? Contact EMAIL:
+        <a class="email-link" href="mailto:webmaster@ubyssey.ca"
+          >webmaster@ubyssey.ca</a
+        >
+      </p>
+      <h2 class="load-articles">
+        <img
+          src="{% static 'ubyssey/images/throbber.svg' %}"
+          class="spin"
+          alt="Loading icon"
+        />
+      </h2>
 
-        <div class="center-container">
-            <h1>404</h1>
-            <h2>Page Not Found</h2>
-            <p>The page you have searched is not available.</p>
-            <p>Questions? Contact EMAIL: <a class="email-link"
-                    href="mailto:webmaster@ubyssey.ca">webmaster@ubyssey.ca</a></p>
-            <h2 class="load-articles">
-                <img src="{% static 'ubyssey/images/throbber.svg' %}" class="spin" alt="Loading icon">
-            </h2>
-
-            <div id="feed"></div>
-            <script src="{% static 'ubyssey/js/error_page.js' %}" type="text/javascript"></script>
-        </div>
+      <div id="feed"></div>
+      <script
+        src="{% static 'ubyssey/js/error_page.js' %}"
+        type="text/javascript"
+      ></script>
     </div>
+  </div>
 </main>
-{% endblock %}
-
-{% block footer %}
-{% endblock %}
+{% endblock %} {% block footer %} {% endblock %}

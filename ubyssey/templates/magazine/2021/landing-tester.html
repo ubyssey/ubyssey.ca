@@ -1,6 +1,4 @@
-{% extends 'magazine/base.html' %}
-{% load static %}
-{% block content %}
+{% extends 'magazine/base.html' %} {% load static %} {% block content %}
 
 <link
   rel="stylesheet"
@@ -8,19 +6,18 @@
   type="text/css"
 />
 
-{% comment %} <div
+{% comment %}
+<div
   id="magazine-wrapper"
   data-articles="{{ articles }}"
   data-cover="{% static cover %}"
-  data-goesAround-image = "{%static section1Image%}"
-  data-comesAround-image = "{%static section2Image%}"
-  data-waysForward-image = "{%static section3Image%}"
+  data-goesAround-image="{%static section1Image%}"
+  data-comesAround-image="{%static section2Image%}"
+  data-waysForward-image="{%static section3Image%}"
   data-title="Hot Mess"
-
-></div> {% endcomment %}
-<div>
-This is a placeholder for Magazine 2021!
-</div>
+></div>
+{% endcomment %}
+<div>This is a placeholder for Magazine 2021!</div>
 
 <!-- {% include 'magazine/footer.html' %} -->
 <script
