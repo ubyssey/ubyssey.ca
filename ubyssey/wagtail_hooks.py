@@ -1,38 +1,40 @@
 from urllib.parse import urljoin
 
+from dbtemplates.models import Template as DBTemplate
 from django.conf import settings
-
 from wagtail import hooks
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
-
-from dbtemplates.models import Template as DBTemplate
-from wagtailmodelchooser import register_model_chooser
 from wagtailcache.cache import clear_cache
+from wagtailmodelchooser import register_model_chooser
 
 register_model_chooser(DBTemplate)
 
+
 class DBTemplateAdmin(SnippetViewSet):
     model = DBTemplate
-    menu_label = 'Custom HTML'
-    icon = 'code'
+    menu_label = "Custom HTML"
+    icon = "code"
     menu_order = 800
-    list_display = ('name','id','creation_date','last_changed')
+    list_display = ("name", "id", "creation_date", "last_changed")
+
 
 register_snippet(DBTemplateAdmin)
 
+
 def match_exact_url(url):
     """Return a regular expression that exactly matches the provided URL."""
-    return '%s$' % url
+    return "%s$" % url
 
-@hooks.register('after_create_page')
-@hooks.register('after_edit_page')
+
+@hooks.register("after_create_page")
+@hooks.register("after_edit_page")
 def clear_wagtailcache(request, page):
     """
     Clear URLs from the Wagtail cache when a new or existing page is published.
     This prevents stale pages and ensures that the website is always
     up to date for readers.
-    
+
     URLs to to be cleared:
       - The page itself.
       - Its parent page (usually a section page, e.g. "news").
@@ -40,7 +42,6 @@ def clear_wagtailcache(request, page):
     """
 
     if page.live:
-
         page_url = page.full_url
         parent_url = page.get_parent().full_url
 

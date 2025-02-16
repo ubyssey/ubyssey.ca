@@ -3,4 +3,4 @@ export const colors = {
   reclaim: "#f8d839",
   redefine: "#abcdbb",
   resolve: "#bb99bb",
-}
+};

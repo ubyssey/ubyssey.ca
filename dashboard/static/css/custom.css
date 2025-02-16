@@ -1,21 +1,21 @@
 :root {
-    --color-primary: #3490d6;
-    --color-primary-darker: #055C9D;
-    --color-primary-dark: #003060;
-    --color-primary-lighter: #0E86D4;
-    --color-primary-light: aliceblue;
-    --color-input-focus: aliceblue;
-    --color-input-focus-border: #189AB4;
+  --color-primary: #3490d6;
+  --color-primary-darker: #055c9d;
+  --color-primary-dark: #003060;
+  --color-primary-lighter: #0e86d4;
+  --color-primary-light: aliceblue;
+  --color-input-focus: aliceblue;
+  --color-input-focus-border: #189ab4;
 }
 
 .nav-main .menu-active a {
-    border-left-color: #3490d6;
+  border-left-color: #3490d6;
 }
 
 .object .title-wrapper {
- background-color: #fff7ed !important;
+  background-color: #fff7ed !important;
 }
 
-.object .title-wrapper:before{
-background-color: #fec47f !important;
+.object .title-wrapper:before {
+  background-color: #fec47f !important;
 }

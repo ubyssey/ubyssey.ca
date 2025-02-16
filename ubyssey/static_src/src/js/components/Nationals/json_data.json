@@ -1,153 +1,195 @@
-[{
-			"name": "UBC Thunderbirds",
-			"content": ["After claiming the Canada West division title this past weekend against the Trinity Western Spartans, UBC will look to continue their positive string of games into the nationals tournament — and perhaps claim gold as they host for the first time since 2007. The Thunderbirds posted the best regular season results in Canada West Pacific at 13-1-2. The only loss for the ’Birds came at the hands of the Thompson Rivers Wolfpack in the final game of the season after UBC had secured top spot and rested a few players in the second of a back-to-back road weekend. The rock solid defensive play of the T-Birds this season alongside superb goalkeeping from Jason Roberts has earned them eight clean sheets. Roberts held the collective opposition to just 7 goals in 14 games. Evidently, they are a bit of a powerhouse in the West. It remains to be seen how they will line up against the rest of the country’s best."],
-			"location": [55, 6.5],
-			"colors": ["#b11e24", ""],
-			"stats": [1,1,1],
-			"image": {
-				"thumbnail": "",
-				"medium": ""
-			},
-			"player": {
-				"name": "Kristian Yli-Hietanen",
-				"content": ["Striker Kristian Yli-Hietanen had an unreal back half to the season, pocketing over 10 goals in his 13+ games this season. He has been a thriller for T-Bird fans. Since his epic breakout game against the University of Northern British Columbia on September 30, when he netted four goals during the match, he has continued to impress. Since then, he has been the poster boy up front for UBC and a centrepiece around the box that opposing teams have struggled to contain. Yli-Hietanen is a physical presence at 6’1” that has a keen eye for holes in an opposing team’s back line."],
-				"image": {
-					"thumbnail": "",
-					"medium": ""
-				}
-			}
-		},
-		{
-			"name": "Trinity Western Spartans",
-			"content": ["Trinity chased the heels of UBC for top spot in the Pacific all season, ending on an 8-3-4 record, though they dropped their last two regular season games. This veteran team has 11 players in their fourth or fifth year, bringing lots of cohesive experience to their playoff run.", "The team averaged just over two goals a game in the regular season, putting in a total of 34 goals. That said, the team only recorded two clean sheets, allowing an average of 1.47 goals against. If the Spartans want to continue their regular season success in the national tournament, they may need to tighten up on the back end. The Spartans are looking to break some hearts just down the road from home and perhaps upset their Canada West title-vanquisher:  the T-Birds."],
-			"location": [58, 11],
-			"colors": ["#b11e24", ""],
-			"stats": [0,0,0],
-			"image": {
-				"thumbnail": "",
-				"medium": ""
-			},
-			"player": {
-				"name": "Joel Waterman",
-				"content": ["Midfielder Joel Waterman is a controlling fifth-year presence in the centre of the pitch, named to the Canada West all star first team. He plays a key role in the Trinity offence as a distributor and even netted a pair of goals himself. Throughout his career at Trinity, Waterman has been given a handful of yellow cards — 10 to be exact, 5 of which came this season and none of those 5 on home soil. He is a veteran player, expect to see him laying some beautiful balls out for the Spartans around him and rustling some feathers while he’s at it."],
-				"image": {
-					"thumbnail": "",
-					"medium": ""
-				}
-			}
-		},
-		{
-			"name": "York Lions",
-			"content": ["The Lions have dominated the OUA West for the last six years, winning the division five times. They are the back-to-back and current champions of the men’s soccer OUA division, with six of their players featuring on the OUA All-Star team this season. This year’s OUA final only goes to show that they are far more lethal than they appear on paper, having beaten the Carleton Ravens — who looked like the stronger side according to statistics throughout the game — 3-1 to retain their title.", "The Lions last won the U Sports Championship in 2015 and will be looking to add this year’s title to their five-title tally. They head to UBC riding high on confidence and a ten-game winning streak in tow. The Lions are highly organized, resulting in dominant performances against Ontario region opponents."],
-			"location": [90, 67.5],
-			"colors": ["#1BA549", ""],
-			"stats": [1,1,1],
-			"image": {
-				"thumbnail": "",
-				"medium": ""
-			},
-			"player": {
-				"name": "Omar Marzouk",
-				"content": ["Marzouk has put on an impressive display this OUA season, with 16 goals in as many games, and three assists — he is the second highest goal-scorer in the division. Marzouk was also one of  six Lions named to the OUA All-Star Team this season. Apart from his consistent goal-scoring abilities, Marzouk has a tendency to show up when it matters most for the Lions, with five game-winning goals this year. While his game-winning moments make him highly valuable, it is his consistency that the team has looked to more often. He can make the difference in their championship run ahead — he’s already shown that mettle and dependability on more than one occasion."],
-				"image": {
-					"thumbnail": "",
-					"medium": ""
-				}
-			}
-		},
-		{
-			"name": "Carleton Ravens",
-			"content": ["The Ravens finished the regular season sitting atop the OUA East table, tied on points with the Ryerson Rams. They are, statistically speaking, one of the best teams in all the leagues, proof of which is their startling goal difference of +54 in the regular season. Apart from their loss to the Lions on Saturday November 3 for the OUA title, they’ve recorded just one loss all season.","Carleton featured strongly in the OUA awards as well, having bagged six OUA All-Star picks, Most Valuable Player in the East with Dario Conte and Coach of the Season with Kwesi Loney. The Ravens embody strength in numbers as multiple members of the team pitch in to create their stellar performances, showing consistency on attack and defense. Their hunger, possession-play and all-round talent this season could set them up in prime position to win it all."],
-			"location": [82, 69],
-			"colors": ["#1BA549", ""],
-			"stats": [0,0,0],
-			"image": {
-				"thumbnail": "",
-				"medium": ""
-			},
-			"player": {
-				"name": "Gabriel Bitar",
-				"content": ["The 2017 OUA East Most Valuable Player and Rookie of the Year has been phenomenal for the Ravens again this season. He is the third-highest goal-scorer in the division and sits second in points. Interestingly, he also has the most shots in the division and has scored six game-winning goals. His skill with the ball and ability to skip away from defenders makes him a player to watch out for at the front of the Raven offense. His aggression and work ethic, coupled with his ability to secure game-changing moments could prove the ace the Ravens need to challenge for that national title this year."],
-				"image": {
-					"thumbnail": "",
-					"medium": ""
-				}
-			}
-		},
-		{
-			"name": "Universite de Quebec a Montreal Citadins",
-			"content": ["The Université de Québec à Montréal (UQAM) Citadins had a less straightforward run to the national finals — which perhaps plays in their favour.",	"From season start, the Citadins played consistent soccer. Though maybe not as flashy as the Carabins, they are a team that can get the job done — three of their five wins this year were won by just one goal. On the other hand, this could be a point of worry against some of Canada’s best who are goal-hungry.", "Defensively, though, they are a formidable force. They shared the lowest goals-against tally with fellow RSEQ national representatives, the Carabins, at just nine all year. They are lead by a core of senior players in the back, which lends well to their playing style going into nationals this year. If the older guys on the roster can continue to lead by example and maybe even bang a few goals in, which they have been doing this year, the Citadins will be ones to watch this coming weekend as an outside threat for the title."],
-			"location": [82, 74],
-			"colors": ["#47a3db", ""],
-			"stats": [1,1,1],
-			"image": {
-				"thumbnail": "",
-				"medium": ""
-			},
-			"player": {
-				"name": "Valentin Lamoulie",
-				"content": ["He was rookie of the year in 2015. In 2016, he won his second national title with UQAM while earning a U Sport first all start team nomination. Though this year Lamoulie has generally split his time in net with fellow netminder Simon Beauregarde-Barette. Lamoulie has been the go-to in UQAM's recent string of all important playoff games. Why? He led the division in save percentage this year, earning him a U Sports second-all star team nomination."],
-				"image": {
-					"thumbnail": "",
-					"medium": ""
-				}
-			}
-		},
-		{
-			"name": "Universite de Montreal Carabins",
-			"content": ["The reigning RSEQ divisional champions earned their second-consecutive title banner with a 3-0 win over fellow national representative the UQAM Citadins on November 2. This year, the Carabins have been an offensive powerhouse, scoring 30 goals throughout the season — 12 more than anything other Quebecois side. That said, they had the league’s lowest goals-against tally at 9, proving they’ve got a solid defensive rotation too. They are a highly-organized team who are not only capable of racking up goals in their more dominant games, but can also squeak out a win in their tougher matchups. History is perhaps on their side too, as the Carabins made it all the way to the national final last season. They’ve been in the high-stakes games, they’ve lost on the biggest stage in Canadian university soccer and they are likely out for some redemption. Quality and vengeance are a powerful combination."],
-			"location": [74, 71.5],
-			"colors": ["#47a3db", ""],
-			"stats": [0,0,0],
-			"image": {
-				"thumbnail": "",
-				"medium": ""
-			},
-			"player": {
-				"name": "Frederic Lajoie-Gravelle",
-				"content": ["Lajoie-Gravelle is Montreal’s definitive all-star this year. With more than double the points of any of his teammates this year, he is the RSEQ leading goal scorer with 14 in 12 games. That makes him the all-time points leader in RSEQ history. The 25-year-old is a former Montreal Impact academy recruit, and is this year’s RSEQ player of the year to boot. He scored in seven of his side’s games this year, including a hat trick against Sherbrooke."],
-				"image": {
-					"thumbnail": "",
-					"medium": ""
-				}
-			}
-		},
-		{
-			"name": "Cape Breton Capers",
-			"content": ["The Cape Breton Capers, the defending national champions, went unbeaten this regular season — winning their third consecutive AUS championship with a 10-0-2 record. Spurred by an attacking style of play, they’ve cracked 14 shots per game on average, fueling a total of 36 goals scored across 12 matches (averaging three a game, which is good for second in the league). More impressively, they’ve only conceded five goals the entire season — ranked first in the AUS — a testament to their capable defence and midfield. Beyond that, expect an experienced team that uses its wings to move the ball before cutting in and finding an open man.", "Their best game of the year was a 6-0 demolition of Saint Mary’s on October 12. In that game, defender and league MVP Peter Schalle scored a hat-trick to complement goals from Marcus Campanile and Mitchell Wong."],
-			"location": [61.5, 92],
-			"colors": ["#2a367f", ""],
-			"stats": [1,1,1],
-			"image": {
-				"thumbnail": "",
-				"medium": ""
-			},
-			"player": {
-				"name": "Cory Bent",
-				"content": ["Entering his third U Sports championship, forward Cory Bent is well aware of what it takes to win. He led the Capers in goals and points this season — seven and ten respectively — driving their powerful attack forward.", "Primarily playing on the left wing, Bent finds himself in the 18-yard box quite often, where his finishing skills are best utilized. His speed and cunning ability to slice inside of defenders to attain goal-side advantage is where most of his damage occurs."],
-				"image": {
-					"thumbnail": "",
-					"medium": ""
-				}
-			}
-		},
-		{
-			"name": "University of New Brunswick Varsity Reds",
-			"content": ["Going unbeaten in their last eight matches of the season, New Brunswick will get a chance to dance this weekend. Fuelled by an AUS leading attack, the Reds were able to clinch a U Sports championship berth with an 2-1 double overtime win over St. Francis Xavier.", "New Brunswick’s strongest game of the year was an 11-0 thrashing of Mount Allison and is a perfect example of why they should be taken seriously this weekend. In the aforementioned game, Grant Takacs netted a hat-trick alongside a plethora of other goals from too many players to name. Simply put, their high-octane offense is as opportunistic as it is skilled. UNB will be a bit of a dark horse this coming weekend with a diverse group experience-wise who aren’t afraid to pull their weight — and also launch some deadly through-balls."],
-			"location": [70.5, 83.5],
-			"colors": ["#2a367f", ""],
-			"stats": [0,0,0],
-			"image": {
-				"thumbnail": "",
-				"medium": ""
-			},
-			"player": {
-				"name": "Dan Walker",
-				"content": ["It’s another striker, but rightly so. Dan Walker, now in his fourth year, has started every match this season for the Reds. He has six goals and six assists to combine for twelve points in twelve games. As demonstrated by his stats, Walker is more of a clinical forward, relying less on intuition and more on skill and technique. He plays a physical game too to retain possession and territory up front, something the Reds struggled with in last years’ championship.", "A New Brunswick native, you can be sure Walker will play his heart out as a senior, with these games potentially being his last for the Reds."],
-				"image": {
-					"thumbnail": "",
-					"medium": ""
-				}
-			}
-		}
-	]
+[
+  {
+    "name": "UBC Thunderbirds",
+    "content": [
+      "After claiming the Canada West division title this past weekend against the Trinity Western Spartans, UBC will look to continue their positive string of games into the nationals tournament — and perhaps claim gold as they host for the first time since 2007. The Thunderbirds posted the best regular season results in Canada West Pacific at 13-1-2. The only loss for the ’Birds came at the hands of the Thompson Rivers Wolfpack in the final game of the season after UBC had secured top spot and rested a few players in the second of a back-to-back road weekend. The rock solid defensive play of the T-Birds this season alongside superb goalkeeping from Jason Roberts has earned them eight clean sheets. Roberts held the collective opposition to just 7 goals in 14 games. Evidently, they are a bit of a powerhouse in the West. It remains to be seen how they will line up against the rest of the country’s best."
+    ],
+    "location": [55, 6.5],
+    "colors": ["#b11e24", ""],
+    "stats": [1, 1, 1],
+    "image": {
+      "thumbnail": "",
+      "medium": ""
+    },
+    "player": {
+      "name": "Kristian Yli-Hietanen",
+      "content": [
+        "Striker Kristian Yli-Hietanen had an unreal back half to the season, pocketing over 10 goals in his 13+ games this season. He has been a thriller for T-Bird fans. Since his epic breakout game against the University of Northern British Columbia on September 30, when he netted four goals during the match, he has continued to impress. Since then, he has been the poster boy up front for UBC and a centrepiece around the box that opposing teams have struggled to contain. Yli-Hietanen is a physical presence at 6’1” that has a keen eye for holes in an opposing team’s back line."
+      ],
+      "image": {
+        "thumbnail": "",
+        "medium": ""
+      }
+    }
+  },
+  {
+    "name": "Trinity Western Spartans",
+    "content": [
+      "Trinity chased the heels of UBC for top spot in the Pacific all season, ending on an 8-3-4 record, though they dropped their last two regular season games. This veteran team has 11 players in their fourth or fifth year, bringing lots of cohesive experience to their playoff run.",
+      "The team averaged just over two goals a game in the regular season, putting in a total of 34 goals. That said, the team only recorded two clean sheets, allowing an average of 1.47 goals against. If the Spartans want to continue their regular season success in the national tournament, they may need to tighten up on the back end. The Spartans are looking to break some hearts just down the road from home and perhaps upset their Canada West title-vanquisher:  the T-Birds."
+    ],
+    "location": [58, 11],
+    "colors": ["#b11e24", ""],
+    "stats": [0, 0, 0],
+    "image": {
+      "thumbnail": "",
+      "medium": ""
+    },
+    "player": {
+      "name": "Joel Waterman",
+      "content": [
+        "Midfielder Joel Waterman is a controlling fifth-year presence in the centre of the pitch, named to the Canada West all star first team. He plays a key role in the Trinity offence as a distributor and even netted a pair of goals himself. Throughout his career at Trinity, Waterman has been given a handful of yellow cards — 10 to be exact, 5 of which came this season and none of those 5 on home soil. He is a veteran player, expect to see him laying some beautiful balls out for the Spartans around him and rustling some feathers while he’s at it."
+      ],
+      "image": {
+        "thumbnail": "",
+        "medium": ""
+      }
+    }
+  },
+  {
+    "name": "York Lions",
+    "content": [
+      "The Lions have dominated the OUA West for the last six years, winning the division five times. They are the back-to-back and current champions of the men’s soccer OUA division, with six of their players featuring on the OUA All-Star team this season. This year’s OUA final only goes to show that they are far more lethal than they appear on paper, having beaten the Carleton Ravens — who looked like the stronger side according to statistics throughout the game — 3-1 to retain their title.",
+      "The Lions last won the U Sports Championship in 2015 and will be looking to add this year’s title to their five-title tally. They head to UBC riding high on confidence and a ten-game winning streak in tow. The Lions are highly organized, resulting in dominant performances against Ontario region opponents."
+    ],
+    "location": [90, 67.5],
+    "colors": ["#1BA549", ""],
+    "stats": [1, 1, 1],
+    "image": {
+      "thumbnail": "",
+      "medium": ""
+    },
+    "player": {
+      "name": "Omar Marzouk",
+      "content": [
+        "Marzouk has put on an impressive display this OUA season, with 16 goals in as many games, and three assists — he is the second highest goal-scorer in the division. Marzouk was also one of  six Lions named to the OUA All-Star Team this season. Apart from his consistent goal-scoring abilities, Marzouk has a tendency to show up when it matters most for the Lions, with five game-winning goals this year. While his game-winning moments make him highly valuable, it is his consistency that the team has looked to more often. He can make the difference in their championship run ahead — he’s already shown that mettle and dependability on more than one occasion."
+      ],
+      "image": {
+        "thumbnail": "",
+        "medium": ""
+      }
+    }
+  },
+  {
+    "name": "Carleton Ravens",
+    "content": [
+      "The Ravens finished the regular season sitting atop the OUA East table, tied on points with the Ryerson Rams. They are, statistically speaking, one of the best teams in all the leagues, proof of which is their startling goal difference of +54 in the regular season. Apart from their loss to the Lions on Saturday November 3 for the OUA title, they’ve recorded just one loss all season.",
+      "Carleton featured strongly in the OUA awards as well, having bagged six OUA All-Star picks, Most Valuable Player in the East with Dario Conte and Coach of the Season with Kwesi Loney. The Ravens embody strength in numbers as multiple members of the team pitch in to create their stellar performances, showing consistency on attack and defense. Their hunger, possession-play and all-round talent this season could set them up in prime position to win it all."
+    ],
+    "location": [82, 69],
+    "colors": ["#1BA549", ""],
+    "stats": [0, 0, 0],
+    "image": {
+      "thumbnail": "",
+      "medium": ""
+    },
+    "player": {
+      "name": "Gabriel Bitar",
+      "content": [
+        "The 2017 OUA East Most Valuable Player and Rookie of the Year has been phenomenal for the Ravens again this season. He is the third-highest goal-scorer in the division and sits second in points. Interestingly, he also has the most shots in the division and has scored six game-winning goals. His skill with the ball and ability to skip away from defenders makes him a player to watch out for at the front of the Raven offense. His aggression and work ethic, coupled with his ability to secure game-changing moments could prove the ace the Ravens need to challenge for that national title this year."
+      ],
+      "image": {
+        "thumbnail": "",
+        "medium": ""
+      }
+    }
+  },
+  {
+    "name": "Universite de Quebec a Montreal Citadins",
+    "content": [
+      "The Université de Québec à Montréal (UQAM) Citadins had a less straightforward run to the national finals — which perhaps plays in their favour.",
+      "From season start, the Citadins played consistent soccer. Though maybe not as flashy as the Carabins, they are a team that can get the job done — three of their five wins this year were won by just one goal. On the other hand, this could be a point of worry against some of Canada’s best who are goal-hungry.",
+      "Defensively, though, they are a formidable force. They shared the lowest goals-against tally with fellow RSEQ national representatives, the Carabins, at just nine all year. They are lead by a core of senior players in the back, which lends well to their playing style going into nationals this year. If the older guys on the roster can continue to lead by example and maybe even bang a few goals in, which they have been doing this year, the Citadins will be ones to watch this coming weekend as an outside threat for the title."
+    ],
+    "location": [82, 74],
+    "colors": ["#47a3db", ""],
+    "stats": [1, 1, 1],
+    "image": {
+      "thumbnail": "",
+      "medium": ""
+    },
+    "player": {
+      "name": "Valentin Lamoulie",
+      "content": [
+        "He was rookie of the year in 2015. In 2016, he won his second national title with UQAM while earning a U Sport first all start team nomination. Though this year Lamoulie has generally split his time in net with fellow netminder Simon Beauregarde-Barette. Lamoulie has been the go-to in UQAM's recent string of all important playoff games. Why? He led the division in save percentage this year, earning him a U Sports second-all star team nomination."
+      ],
+      "image": {
+        "thumbnail": "",
+        "medium": ""
+      }
+    }
+  },
+  {
+    "name": "Universite de Montreal Carabins",
+    "content": [
+      "The reigning RSEQ divisional champions earned their second-consecutive title banner with a 3-0 win over fellow national representative the UQAM Citadins on November 2. This year, the Carabins have been an offensive powerhouse, scoring 30 goals throughout the season — 12 more than anything other Quebecois side. That said, they had the league’s lowest goals-against tally at 9, proving they’ve got a solid defensive rotation too. They are a highly-organized team who are not only capable of racking up goals in their more dominant games, but can also squeak out a win in their tougher matchups. History is perhaps on their side too, as the Carabins made it all the way to the national final last season. They’ve been in the high-stakes games, they’ve lost on the biggest stage in Canadian university soccer and they are likely out for some redemption. Quality and vengeance are a powerful combination."
+    ],
+    "location": [74, 71.5],
+    "colors": ["#47a3db", ""],
+    "stats": [0, 0, 0],
+    "image": {
+      "thumbnail": "",
+      "medium": ""
+    },
+    "player": {
+      "name": "Frederic Lajoie-Gravelle",
+      "content": [
+        "Lajoie-Gravelle is Montreal’s definitive all-star this year. With more than double the points of any of his teammates this year, he is the RSEQ leading goal scorer with 14 in 12 games. That makes him the all-time points leader in RSEQ history. The 25-year-old is a former Montreal Impact academy recruit, and is this year’s RSEQ player of the year to boot. He scored in seven of his side’s games this year, including a hat trick against Sherbrooke."
+      ],
+      "image": {
+        "thumbnail": "",
+        "medium": ""
+      }
+    }
+  },
+  {
+    "name": "Cape Breton Capers",
+    "content": [
+      "The Cape Breton Capers, the defending national champions, went unbeaten this regular season — winning their third consecutive AUS championship with a 10-0-2 record. Spurred by an attacking style of play, they’ve cracked 14 shots per game on average, fueling a total of 36 goals scored across 12 matches (averaging three a game, which is good for second in the league). More impressively, they’ve only conceded five goals the entire season — ranked first in the AUS — a testament to their capable defence and midfield. Beyond that, expect an experienced team that uses its wings to move the ball before cutting in and finding an open man.",
+      "Their best game of the year was a 6-0 demolition of Saint Mary’s on October 12. In that game, defender and league MVP Peter Schalle scored a hat-trick to complement goals from Marcus Campanile and Mitchell Wong."
+    ],
+    "location": [61.5, 92],
+    "colors": ["#2a367f", ""],
+    "stats": [1, 1, 1],
+    "image": {
+      "thumbnail": "",
+      "medium": ""
+    },
+    "player": {
+      "name": "Cory Bent",
+      "content": [
+        "Entering his third U Sports championship, forward Cory Bent is well aware of what it takes to win. He led the Capers in goals and points this season — seven and ten respectively — driving their powerful attack forward.",
+        "Primarily playing on the left wing, Bent finds himself in the 18-yard box quite often, where his finishing skills are best utilized. His speed and cunning ability to slice inside of defenders to attain goal-side advantage is where most of his damage occurs."
+      ],
+      "image": {
+        "thumbnail": "",
+        "medium": ""
+      }
+    }
+  },
+  {
+    "name": "University of New Brunswick Varsity Reds",
+    "content": [
+      "Going unbeaten in their last eight matches of the season, New Brunswick will get a chance to dance this weekend. Fuelled by an AUS leading attack, the Reds were able to clinch a U Sports championship berth with an 2-1 double overtime win over St. Francis Xavier.",
+      "New Brunswick’s strongest game of the year was an 11-0 thrashing of Mount Allison and is a perfect example of why they should be taken seriously this weekend. In the aforementioned game, Grant Takacs netted a hat-trick alongside a plethora of other goals from too many players to name. Simply put, their high-octane offense is as opportunistic as it is skilled. UNB will be a bit of a dark horse this coming weekend with a diverse group experience-wise who aren’t afraid to pull their weight — and also launch some deadly through-balls."
+    ],
+    "location": [70.5, 83.5],
+    "colors": ["#2a367f", ""],
+    "stats": [0, 0, 0],
+    "image": {
+      "thumbnail": "",
+      "medium": ""
+    },
+    "player": {
+      "name": "Dan Walker",
+      "content": [
+        "It’s another striker, but rightly so. Dan Walker, now in his fourth year, has started every match this season for the Reds. He has six goals and six assists to combine for twelve points in twelve games. As demonstrated by his stats, Walker is more of a clinical forward, relying less on intuition and more on skill and technique. He plays a physical game too to retain possession and territory up front, something the Reds struggled with in last years’ championship.",
+        "A New Brunswick native, you can be sure Walker will play his heart out as a senior, with these games potentially being his last for the Reds."
+      ],
+      "image": {
+        "thumbnail": "",
+        "medium": ""
+      }
+    }
+  }
+]

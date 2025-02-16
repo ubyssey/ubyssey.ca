@@ -1,9 +1,9 @@
-import time
 import logging
+import time
 
 from django.core.cache.backends.base import BaseCache
-
 from google.appengine.api import memcache
+
 
 class AppEngineMemcacheCache(BaseCache):
     """
@@ -26,7 +26,7 @@ class AppEngineMemcacheCache(BaseCache):
         way. Call this function to obtain a safe value for your timeout.
         """
         timeout = timeout or self.default_timeout
-        if timeout > 2592000: # 60*60*24*30, 30 days
+        if timeout > 2592000:  # 60*60*24*30, 30 days
             # See http://code.google.com/p/memcached/wiki/FAQ
             # "You can set expire times up to 30 days in the future. After that
             # memcached interprets it as a date, and will expire the item after
@@ -103,4 +103,4 @@ class AppEngineMemcacheCache(BaseCache):
         memcache.delete_multi(map(l, keys))
 
     def clear(self):
-       return memcache.flush_all()
+        return memcache.flush_all()

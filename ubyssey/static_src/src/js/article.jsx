@@ -1,11 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom";
 //import Search from './components/Search.jsx';
 //import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
-import { CookieDisclaimer } from './components/Cookies'
+import { CookieDisclaimer } from "./components/Cookies";
 //import { Galleries } from './components/Gallery'
-
-
 
 //window.articleHeader = false;
 
@@ -13,18 +11,17 @@ import { CookieDisclaimer } from './components/Cookies'
 //const SKYSCRAPER_HEIGHT = 624
 
 $(function () {
-    /*
+  /*
     ReactDOM.render(
         <AdblockSplash />,
         document.getElementById('adblock-splash')
     )
     */
 
-    ReactDOM.render(
-        <CookieDisclaimer />,
-        document.getElementById('cookie-disclaimer')
-    )
-    
+  ReactDOM.render(
+    <CookieDisclaimer />,
+    document.getElementById("cookie-disclaimer"),
+  );
 });
 /*
 if ($('main.article').length) {
@@ -44,14 +41,14 @@ if ($('main.article').length) {
     } else {
         articleIds = articleIds.split(',');
     }
-    
-    
+
+
     //var firstArticle = {
     //    id: articleId,
     //    headline: articleHeadline,
     //    url: articleURL
     //};
-    
+
 
     function stickyAds(scrollTop, stickyElements) {
 
@@ -204,12 +201,12 @@ if ($('main.article').length) {
     ];
 
 
-    
+
     //const gallery = ReactDOM.render(
     //    <Galleries galleries={galleries} />,
     //    document.getElementById('gallery')
     //);
-    
+
 
 
 }

@@ -2,13 +2,13 @@
   margin-top: 4em;
 }
 
-.c-article{
+.c-article {
   padding: 3em 0;
   background-color: white;
 
   color: black;
 
-  a{
+  a {
     color: black;
 
     &:hover {
@@ -20,17 +20,17 @@
 .header-container {
   display: flex;
   border-bottom: 1px solid rgb(236, 236, 236);
-  
+
   @media ($bp-smaller-than-mobile) {
     margin-bottom: 1em;
     flex-direction: column;
   }
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     .left {
       width: 50%;
     }
-  
+
     .right {
       width: 50%;
     }
@@ -55,11 +55,12 @@
   text-align: center;
 }
 
-.c-article__title, .o-article__snippet {
+.c-article__title,
+.o-article__snippet {
   padding: 1rem 0px;
-  margin:auto;
+  margin: auto;
   max-width: 500px;
-  
+
   color: black;
   text-align: center;
   font-family: $font-default;
@@ -67,7 +68,7 @@
   line-height: 1.16667em;
   font-weight: 600;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     width: auto;
   }
   @media ($bp-smaller-than-mobile) {
@@ -83,12 +84,12 @@
 
 .black {
   color: white;
-  background-color: black;  
+  background-color: black;
 }
 
 .white {
   color: black;
-  background-color: white;  
+  background-color: white;
 }
 
 .section-tag {
@@ -116,7 +117,7 @@
 
   justify-content: center;
 
-  >p {
+  > p {
     margin-top: 0.5em;
   }
 }
@@ -138,24 +139,24 @@
 .featured-media {
   width: 100%;
   max-width: 1600px;
-  height: auto; 
+  height: auto;
   margin: auto;
   margin-top: 2em;
   img {
     width: 100%;
     height: auto;
-    @media($bp-smaller-than-desktop) {
+    @media ($bp-smaller-than-desktop) {
       width: 100%;
     }
   }
   .caption {
     text-align: left;
     margin-left: 6em;
-    @media($bp-smaller-than-phablet) {
+    @media ($bp-smaller-than-phablet) {
       margin: auto;
       padding: 0.5em 2em 3em 2em;
     }
-    color:black;
+    color: black;
     font-family: $font-default;
   }
 }
@@ -164,19 +165,22 @@
   margin: auto;
   padding: 1em 1em 3em 1em;
   max-width: 600px;
-  
+
   font-size: 15px;
   font-weight: 600;
   font-family: $font-default;
   text-align: center;
 }
 
-.c-article__content {  
+.c-article__content {
   color: black;
   font-family: $text-font;
   // margin: 50%;
   // margin: auto;
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     text-align: left;
     font-family: $header-font;
     font-weight: 600;
@@ -184,7 +188,7 @@
     margin-bottom: 0.5em;
     margin-left: 0.5rem;
   }
-  h1{
+  h1 {
     font-size: 1.45rem;
     margin-bottom: 1.5em;
   }
@@ -206,7 +210,8 @@
     margin-top: 2em;
   }
 
-  > p, ul {
+  > p,
+  ul {
     font-family: $text-font;
     font-size: $text-size;
     font-weight: normal;
@@ -241,20 +246,22 @@
   table.recipe-table {
     margin-bottom: 2em;
 
-    tr, td {
+    tr,
+    td {
       padding: 0.5em;
       border: none;
     }
   }
 
-  .advertisement, .pull-quote {
+  .advertisement,
+  .pull-quote {
     width: 300px;
 
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 35px;
 
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       margin: 0;
       float: right;
       padding-left: 35px;
@@ -276,17 +283,17 @@
     .caption {
       margin-bottom: 1em;
       text-align: center;
-      
+
       .credit {
         margin-left: 1em;
-        
-        color: #57574D;
+
+        color: #57574d;
         font-style: italic;
-        
+
         white-space: pre;
       }
     }
-  
+
     @media ($bp-larger-than-tablet) {
       &.right,
       &.left {
@@ -304,15 +311,15 @@
         float: left;
         clear: left;
       }
-  
+
       &.small {
         width: 100px;
       }
-  
+
       &.medium {
         width: 200px;
       }
-  
+
       &.large {
         width: 300px;
       }
@@ -331,12 +338,12 @@
   width: 100%;
   max-width: 1300px;
 
-  @media($bp-larger-than-tablet) {
+  @media ($bp-larger-than-tablet) {
     margin-top: 2em;
   }
 }
 
-.article .o-article-embed{
+.article .o-article-embed {
   margin: 0;
   max-width: 600px;
   display: block;
@@ -345,8 +352,8 @@
 .suggested {
   width: 100%;
   max-width: 1600px;
-  margin:auto;
-  >h1 {
+  margin: auto;
+  > h1 {
     margin: 2em 0;
     padding: 1em 0;
     width: 100%;
@@ -360,53 +367,54 @@
     text-transform: uppercase;
   }
 
-.suggested-articles {
-  display: flex;
-  flex-wrap: wrap;
+  .suggested-articles {
+    display: flex;
+    flex-wrap: wrap;
 
-  article {
-    width: 50%;
-    min-width: 300px;
-    aspect-ratio: 4/3;
-    flex-grow: 1;
-    position: relative;
-    background-size: cover;
+    article {
+      width: 50%;
+      min-width: 300px;
+      aspect-ratio: 4/3;
+      flex-grow: 1;
+      position: relative;
+      background-size: cover;
 
-    &:hover .overlay {
-      opacity: 0.7;
-    }
-
-    .overlay {
-      background: linear-gradient(to top, rgb(0, 0, 0), transparent 65%) 0% 0% / calc(100% + 1px) calc(100% + 1px);
-      width: 100%;
-      height: 100%;
-
-      transition-duration: 0.5s;
-    }
-  
-    .o-article__meta {
-      position: absolute;
-      width: 100%;
-      bottom: 50px;
-      color: white;
-      user-select: none;
-
-      .o-article__headline {
-        text-align: center;
-        margin: 1em;
+      &:hover .overlay {
+        opacity: 0.7;
       }
 
-      .byline {
-        margin: 2em 0 0 4em;
-      }  
+      .overlay {
+        background: linear-gradient(to top, rgb(0, 0, 0), transparent 65%) 0%
+          0% / calc(100% + 1px) calc(100% + 1px);
+        width: 100%;
+        height: 100%;
 
-      @media($bp-larger-than-phablet) {
+        transition-duration: 0.5s;
+      }
+
+      .o-article__meta {
+        position: absolute;
+        width: 100%;
+        bottom: 50px;
+        color: white;
+        user-select: none;
+
         .o-article__headline {
-          text-align: left;
-          margin: 0.5em 0 0 4em;
+          text-align: center;
+          margin: 1em;
+        }
+
+        .byline {
+          margin: 2em 0 0 4em;
+        }
+
+        @media ($bp-larger-than-phablet) {
+          .o-article__headline {
+            text-align: left;
+            margin: 0.5em 0 0 4em;
+          }
         }
       }
     }
   }
-}
 }
