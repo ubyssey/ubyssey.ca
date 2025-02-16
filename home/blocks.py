@@ -157,13 +157,14 @@ class ArticleGathererBlock(AbstractArticleList):
         max_length=255,
         help_text="Fill in to overwrite title"
         )
-    description = blocks.TextBlock(required=False,
+    description = blocks.RichTextBlock(required=False,
                                    help_text="Fill in to overwrite description")
     section = field_block.PageChooserBlock(
         page_type='section.SectionPage',
         required=False
     )
-    category = SnippetChooserBlock('section.CategorySnippet',
+    category = field_block.PageChooserBlock(
+        page_type='section.CategoryPage',
         required=False
     )
     tag_slug = field_block.CharBlock(
@@ -200,9 +201,9 @@ class ArticleGathererBlock(AbstractArticleList):
         if value['category']:
             context['title'] = value['category'].title
             context['description'] = value['category'].description
-            context['link'] = value['category'].section_page.url + "category/" + value['category'].slug + "/"
-            context['expectedSection'] = value['category'].section_page.slug
-            context['articles'] = context['articles'].filter(category=value['category'])
+            context['link'] = value['category'].url
+            context['expectedSection'] = value['category'].get_parent().slug
+            context['articles'] = context['articles'].filter(category_page=value['category'])
 
         if not 'title' in context:
             context['title'] = "Latest stories"
@@ -245,7 +246,7 @@ class ManualArticles(AbstractArticleList):
         required=False,
         max_length=255,
         )
-    description = blocks.TextBlock(required=False)
+    description = blocks.RichTextBlock(required=False)
     link = blocks.URLBlock(required=False)
     template = MidStreamListTemplates()
     articles = blocks.ListBlock(

@@ -42,7 +42,7 @@
         </div>
         {% if self.description %}
         <div class="c-section__description">
-          {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|safe}} &ensp;<a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+          {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|safe}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
         </div>
         {% endif %}
       {%else%}
@@ -50,7 +50,7 @@
           {% if parent %}<p><a href="{% pageurl parent %}">{{parent.title}}</a></p>{% endif %}
           <h1 class="">{{self.title}}</h1>
           <div class="c-section__description">
-            {{self.description|safe}} &ensp;<a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+            {{self.description|safe}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
           </div>
         </div>
       {% endif %}

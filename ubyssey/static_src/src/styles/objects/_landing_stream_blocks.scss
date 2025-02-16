@@ -15,6 +15,14 @@
         font-family: $font-headline;
         font-variation-settings: "wght" 800;
       }
+      p {
+        margin-right: 0.5em;
+        display: inline;
+        a {
+          font-style: italic;
+          text-decoration: underline;
+        }
+      }
       @media($bp-smaller-than-phablet) {
         padding-inline: 1em;
         text-align: center;

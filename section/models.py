@@ -301,14 +301,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         return queryset[:number_featured]    
     featured_articles = property(fget=get_featured_articles)
 
-    @route(r'^category/(?P<category_slug>[-\w]+)/$', name='category_view')
-    def category_view(self, request, category_slug):
-        if(len(CategorySnippet.objects.filter(slug=category_slug)) > 0):
-            context = self.get_context(request, category_slug=category_slug)
-            return render(request, 'section/section_page.html', context)
-        else:
-            context = self.get_context(request, category_slug=None)
-            return render(request, 'section/section_page.html', context, status=404)
+    def get_recent_articles(self, max_items=10):
+        return ArticlePage.objects.live().child_of(self).order_by("-first_published_at")[:max_items]
+        
+    @route(r'^rss/$', name='rss_view')
+    def rss_view(self, request):
+        from ubyssey.views.feed import SectionFeed
+        return SectionFeed().__call__(request, section=self)
 
     def save(self, *args, **kwargs):
         self.current_section = self.slug
@@ -329,11 +328,15 @@ class CategoryPage(SectionPage):
     def get_filter(self):
         filters = {"section": self.get_parent().slug, "category": self.slug}
         return filters
-
+    filter = property(fget=get_filter)
+    
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["parent"] = self.get_parent()
         context["all_categories"] = self.get_parent().specific.get_all_categories()
         return context
+    
+    def get_recent_articles(self, max_items=10):
+        return ArticlePage.objects.live().filter(category_page = self).order_by("-first_published_at")[:max_items]
 
-    filter = property(fget=get_filter) 
+     

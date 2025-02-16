@@ -9,7 +9,7 @@
   <div class="landing_stream_block--header">
     <h2><a href="{{link}}">{{title}}</a></h2>
     {% if description %}
-      {{description}}
+      {{description|safe}}
     {% endif %}
   </div>
   <div class="landing_stream_block--flex-container">

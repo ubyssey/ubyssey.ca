@@ -10,7 +10,7 @@
   <div class="landing_stream_block--header">
     <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>
     {% if description %}
-      {{description}}
+      {{description|safe}}
     {% endif %}
   </div>
   {% endif %}
