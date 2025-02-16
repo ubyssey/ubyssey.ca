@@ -23,7 +23,7 @@ def getArticles(filters, start, number):
         articles = articles.filter(tags__slug=filters["tag"])
 
     if "category" in filters:
-        articles = articles.filter(category__slug=filters["category"])
+        articles = articles.filter(category_page__slug=filters["category"])
 
     if "search_query" in filters:
         return articles.search(filters["search_query"])[int(start):int(start)+int(number)]

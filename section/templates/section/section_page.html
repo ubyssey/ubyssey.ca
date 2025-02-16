@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block head_scripts %}
-<link rel="alternate" type="application/atom+xml" title="Ubyssey {{title}} feed" href="/rss/{{self.slug}}">
+<link rel="alternate" type="application/atom+xml" title="Ubyssey {{self.title}} feed" href="{% pageurl self %}rss/">
   <!-- Register ads for section page -->
   {% for orderable in settings.ads.AdTagSettings.section_head_tags.all %}
     {% gpt_define_tag orderable.ad_slot %}
@@ -33,40 +33,40 @@
     
     <div class="u-container u-container--mid">
 
-      {% if banner %}
-        {% image banner fill-2200x734-c100 format-webp as banner_image %}
-        <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{title}} Banner" >
+      {% if self.banner %}
+        {% image self.banner fill-2200x734-c100 format-webp as banner_image %}
+        <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{self.title}} Banner" >
           <svg class="banner-title" viewBox="0 0 450 70">
-            <text x="10" y="50">{{title}}</text>
+            <text x="10" y="50">{{self.title}}</text>
           </svg>
         </div>
-        {% if description or not category %}
-        <p class="c-section__description">{% if category %}<b><a href="/{{self.slug}}/">From {{self.title}}</a></b> &ensp;{% endif %}{{description|safe}}{% if not category %} &ensp;<a href="/rss/{{self.slug}}/" aria-label="Go to section's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% else %} &ensp;<a href="{% pageurl self %}category/{{category}}/rss/" aria-label="Go to category's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% endif%}</p>
+        {% if self.description %}
+        <div class="c-section__description">
+          {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|safe}} &ensp;<a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+        </div>
         {% endif %}
       {%else%}
         <div class="c-section__heading">
-          {% if category %}<p><a href="/{{self.slug}}/">{{self.title}}</a></p>{% endif %}
-          <h1 class="">{{title}}</h1>
+          {% if parent %}<p><a href="{% pageurl parent %}">{{parent.title}}</a></p>{% endif %}
+          <h1 class="">{{self.title}}</h1>
           <div class="c-section__description">
-            {{description|safe}}{% if not category %} &ensp;<a class="rss" href="/rss/{{self.slug}}/" aria-label="Go to section's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% else %} &ensp;<a class="rss" href="{% pageurl self %}category/{{category}}/rss/" aria-label="Go to category's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% endif%}
+            {{self.description|safe}} &ensp;<a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
           </div>
         </div>
       {% endif %}
 
-      {% if not category %}
-        {% for block in self.top_stream %}
+      {% for block in self.top_stream %}
         {% include_block block %}
-        {% endfor %}
-      {% endif %}
+      {% endfor %}
 
       <div class="c-section__info">
-        <h2 class="c-section__info-header">All in {{title}}</h1>
-        {% if self.category_menu.count and not category %}
+        <h2 class="c-section__info-header">All in {{self.title}}</h1>
+        {% if self.category_menu.count %}
         <div class="featured_categories">
           <ul>
             {% for category_menu_item in self.category_menu.all %}
-              {% if category_menu_item.category %}
-                <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}" title="{{ category_menu_item.category.title }}">{{ category_menu_item.category.title }}</a></li>
+              {% if category_menu_item.category_page %}
+                <li><a href="{% pageurl category_menu_item.category_page %}" title="{{ category_menu_item.category_page.title }}">{{ category_menu_item.category_page.title }}</a></li>
               {% else %}
                 comment Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! endcomment
                 <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
@@ -87,7 +87,7 @@
       
           <div class="setup-modal c-section__button-label">
             <a class="open-modal" href="#"> 
-              <p><ion-icon name="pricetag"></ion-icon> {% if category %}Other {% endif %}Categories</p>
+              <p><ion-icon name="pricetag"></ion-icon> {% if parent %}Other {% endif %}Categories</p>
             </a>
 
             <dialog class="modal" aria-modal="true">
@@ -97,10 +97,14 @@
                 <ion-icon name="close"></ion-icon>
               </a>
               <h1><ion-icon name="pricetag"></ion-icon> All Categories</h1> <!-- Why Series? Why not Categories? -->
-              <p><a href="{% pageurl self %}">{{self.title}}</a></p>
+              {% if parent %}
+                <p><a href="{% pageurl parent %}">{{parent.title}}</a></p> 
+              {% else %}
+                <p><a href="{% pageurl self %}">{{self.title}}</a></p>
+              {% endif %}
               <ul>
-              {% for category in all_categories reversed %}
-                <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a></li>
+              {% for category in all_categories %}
+                <li><a href="{% pageurl category %}">{{ category.title }}</a></li>
               {% endfor %}
               </ul>
               </div>

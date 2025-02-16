@@ -129,8 +129,8 @@ class CategoryAuthor(wagtail_core_models.Orderable):
     ]
 
 class CategoryMenuItem(wagtail_core_models.Orderable):
-    category = ForeignKey(
-        "section.CategorySnippet",
+    category_page = ForeignKey(
+        "section.CategoryPage",
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
@@ -142,7 +142,7 @@ class CategoryMenuItem(wagtail_core_models.Orderable):
         related_name="category_menu",
     )
     panels = [
-        FieldPanel("category"),
+        FieldPanel("category_page"),
     ]
 
 class SectionPage(RoutablePageMixin, SectionablePage):
@@ -152,6 +152,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         'article.ArticlePage',
         'article.SpecialArticleLikePage',
         'specialfeaturelanding.SpecialLandingPage',
+        'section.CategoryPage',
     ]
     parent_page_types = [
         'home.HomePage',
@@ -246,47 +247,36 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         )
     ]
 
+    def get_filter(self):
+        filters = {"section": self.current_section}
+        return filters
+    filter = property(fget=get_filter) 
+
+    def get_all_categories(self):
+        categories_filter_value = lambda category: ArticlePage.objects.live().filter(category_page=category).exists()
+        categories_order_value = lambda category: ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].first_published_at
+        categories = list(CategoryPage.objects.live().child_of(self))
+        categories = list(filter(categories_filter_value, categories))
+        categories.sort(key=categories_order_value)
+        return categories
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         search_query = request.GET.get("q")
-        page = request.GET.get("page")
-        order = request.GET.get("order")
 
-        if order == 'oldest':
-            article_order = "explicit_published_at"
-        else:            
-            article_order = "-explicit_published_at"
-        context["order"] = order
+        context["all_categories"] = self.get_all_categories()
 
-        context["all_categories"] = CategorySnippet.objects.all().filter(section_page=self)
+        filters = self.filter
 
-        context["filters"] = {"section": self.current_section}
-        if 'category_slug' in kwargs:
-            if kwargs['category_slug'] != None:
-                context["category"] = kwargs['category_slug']
-                context["filters"]["category"] = kwargs['category_slug']
-                category  = CategorySnippet.objects.get(slug=kwargs['category_slug'])
-                context["title"] = category.title
-                context["description"] = category.description
-                if category.banner:
-                    context["banner"] = category.banner
-            else:
-                context["error"] = "The category requested does not exist"
-                context["title"] = self.title
-                context["description"] = self.description
-                if self.banner:
-                    context["banner"] = self.banner
-        else:
-            context["title"] = self.title
-            context["description"] = self.description
-            if self.banner:
-                context["banner"] = self.banner
+        if search_query:
+            filters["search_query"] = search_query
 
+        context["filters"] = filters
+        
         # context["featured_articles"] = self.get_featured_articles()
 
         if search_query:
             context["search_query"] = search_query
-            context["filters"]["search_query"] = search_query
     
         return context
     
@@ -327,3 +317,23 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"
+
+class CategoryPage(SectionPage):
+    template = 'section/section_page.html'
+
+    parent_page_types = [
+        'section.SectionPage',
+    ]
+    subpage_types = []
+
+    def get_filter(self):
+        filters = {"section": self.get_parent().slug, "category": self.slug}
+        return filters
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["parent"] = self.get_parent()
+        context["all_categories"] = self.get_parent().specific.get_all_categories()
+        return context
+
+    filter = property(fget=get_filter) 
