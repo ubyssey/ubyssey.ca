@@ -254,12 +254,37 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     filter = property(fget=get_filter) 
 
     def get_all_categories(self):
+        def get_academic_year(date):
+            academic_year = "Unknown"
+            if date != None:
+                if date.month > 5:
+                    academic_year = str(date.year) + "/" + str(date.year+1)[-2:]
+                else:
+                    academic_year = str(date.year-1) + "/" + str(date.year)[-2:]
+            return academic_year
+        
         categories_filter_value = lambda category: ArticlePage.objects.live().filter(category_page=category).exists()
-        categories_order_value = lambda category: datetime.datetime.min if ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].first_published_at == None else ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].first_published_at.replace(tzinfo=None)
+        categories_order_value = lambda category: datetime.datetime.min if ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].published_at == None else ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].published_at.replace(tzinfo=None)
         categories = list(CategoryPage.objects.live().child_of(self))
         categories = list(filter(categories_filter_value, categories))
-        categories.sort(key=categories_order_value, reverse=True)
-        return categories
+        categories = list(map(lambda c: [categories_order_value(c), c], categories))
+        categories.sort(key=lambda c: c[0], reverse=True)
+
+        category_groups = {}
+        current = get_academic_year(datetime.datetime.now())
+        for category in categories:
+            group = "Unknown"
+            if category[0] != datetime.datetime.min:
+                group = get_academic_year(category[0])
+            if group == current:
+                group = "Current"
+            
+            if group in category_groups:
+                category_groups[group].append(category[1])
+            else:
+                category_groups[group] = [category[1]]
+        category_groups = list(map(lambda k: {"group": k, "categories": category_groups[k]}, category_groups.keys()))
+        return category_groups
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

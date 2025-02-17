@@ -120,6 +120,7 @@
 
 .category_menu {
   position: fixed;
+  padding: 1em 2em;
   height: 75%;
   top: 50%;
   left: 50%;
@@ -131,6 +132,24 @@
   background-color: var(--background);
   text-align: left;
 
+  h2 {
+    margin-block: 0;
+    width: fit-content;
+    border-bottom: 1px solid;
+    font-size: 1em;
+  }
+
+  ul {
+    margin-block: 0 0.5em;
+    padding-block: 1em;
+    padding-right: 2em;
+    @media($bp-larger-than-phablet) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      list-style: none;
+    }
+  }
   li {
     width: fit-content;
   }
