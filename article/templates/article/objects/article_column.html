@@ -34,7 +34,9 @@
     {% endif %}
     <div class="o-article__right">
       <div class="o-article__meta">
-        <p class="o-article__published">{{ article.published_at|display_pubdate }}</p>
+        {% if pubdate %}
+            <p class="o-article__published">{{ article.published_at|display_pubdate }}</p>
+        {% endif %}
         <h3 class="o-article__headline">
           <a href="{% pageurl article %}">{{ article.title|safe }}</a>
         </h3>

@@ -189,6 +189,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             ('article_gatherer', homeblocks.ArticleGathererBlock()),
             ('landing', homeblocks.SpecialLandingPageBlock()),
             ('article_manual', homeblocks.ManualArticles()),
+            ('article_gatherer_with_pinned', homeblocks.ArticleGathererWithPinnedBlock()),
         ],
         null=True,
         blank=True,

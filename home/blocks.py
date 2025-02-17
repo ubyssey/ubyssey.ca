@@ -226,6 +226,25 @@ class ArticleGathererBlock(AbstractArticleList):
             context['self']['article'] = context['articles'][0]
         
         return context
+
+class MidStreamDoubleListTemplates(blocks.ChoiceBlock):
+ 
+    choices=[
+        ('section/objects/elections_race_timeline_with_candidates.html', 'Default'),
+    ]
+ 
+class ArticleGathererWithPinnedBlock(ArticleGathererBlock):
+    template = MidStreamDoubleListTemplates()
+    pinned = blocks.ListBlock(
+        field_block.PageChooserBlock(
+            page_type='article.ArticlePage'
+        ),
+        required=False,
+    )
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context["pinned"] = [article for article in value['pinned']]
+        return context
     
 class SpecialLandingPageBlock(AbstractArticleList):
     landing = field_block.PageChooserBlock(
@@ -252,7 +271,8 @@ class ManualArticles(AbstractArticleList):
     articles = blocks.ListBlock(
         field_block.PageChooserBlock(
             page_type='article.ArticlePage'
-        )
+        ),
+        required=False,
     )
 
     def get_context(self, value, parent_context=None):
