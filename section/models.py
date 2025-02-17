@@ -35,6 +35,7 @@ from infinitefeed import blocks as infinitefeedblocks
 
 
 import datetime
+from django.utils import timezone
 
 
 #-----Snippet models-----
@@ -254,10 +255,10 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     def get_all_categories(self):
         categories_filter_value = lambda category: ArticlePage.objects.live().filter(category_page=category).exists()
-        categories_order_value = lambda category: ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].first_published_at
+        categories_order_value = lambda category: datetime.datetime.min if ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].first_published_at == None else ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].first_published_at.replace(tzinfo=None)
         categories = list(CategoryPage.objects.live().child_of(self))
         categories = list(filter(categories_filter_value, categories))
-        categories.sort(key=categories_order_value)
+        categories.sort(key=categories_order_value, reverse=True)
         return categories
 
     def get_context(self, request, *args, **kwargs):
