@@ -13,19 +13,24 @@ class Command(BaseCommand):
             new_path = c.section_page.url_path + c.slug + "/"
             if Page.objects.filter(url_path = new_path).exists():
                 print(new_path + " already exists")
-                continue
-            new_category = CategoryPage(
-                title=c.title, 
-                slug=c.slug,
-                description = c.description,
-                banner = c.banner)
-            new_category = c.section_page.add_child(instance=new_category)
+                if CategoryPage.objects.filter(url_path = new_path).exists():
+                    new_category = CategoryPage.objects.get(url_path = new_path)
+                else:
+                    print(" - Existing is not a category page")
+                    continue
+            else:
+                new_category = CategoryPage(
+                    title=c.title, 
+                    slug=c.slug,
+                    description = c.description,
+                    banner = c.banner)
+                new_category = c.section_page.add_child(instance=new_category)
             
-            old_path = "/" + c.section_page.slug + "/category/" + c.slug + "/"
-            Redirect.add_redirect(old_path, redirect_to = new_category)
-            Redirect.add_redirect(old_path+"rss/", redirect_to = new_category.url + "rss/")
+                old_path = "/" + c.section_page.slug + "/category/" + c.slug + "/"
+                Redirect.add_redirect(old_path, redirect_to = new_category)
+                Redirect.add_redirect(old_path+"rss/", redirect_to = new_category.url + "rss/")
 
-            articles = ArticlePage.objects.filter(category=c)
+            articles = ArticlePage.objects.filter(category=c).exclude(category_page = new_category)
             for a in articles:
                 a.category_page = new_category
                 a.save()
