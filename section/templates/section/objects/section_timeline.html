@@ -9,15 +9,15 @@
   <div class="landing_stream_block--header">
     <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>
     {% if description %}
-      {{description}}
+      {{description|safe}}
     {% endif %}
   </div>
 <div class="landing_stream_block--flex-container">
   {% if articles.0 %}
-    {% include 'article/objects/article_column.html' with article=articles.0 style='article--round_with_border' lede=false byline=false %}
+    {% include 'article/objects/article_column.html' with article=articles.0 style='article--round_with_border' pubdate="true" %}
   {% endif %}
 
-	<ul class="vertical-timeline">
+	<ul class="vertical-timeline wrapping">
     {% for article in articles|slice:"1:" %}
 			<li class="{% if forloop.counter > 3 %}hide-mobile {%endif %}{% ifchanged article.published_at|display_pubdate %}timeline-dot{% endifchanged %}">
         <article class="o-article o-article--bullet">

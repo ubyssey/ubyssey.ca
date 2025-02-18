@@ -15,6 +15,14 @@
         font-family: $font-headline;
         font-variation-settings: "wght" 800;
       }
+      p {
+        margin-right: 0.5em;
+        display: inline;
+        a {
+          font-style: italic;
+          text-decoration: underline;
+        }
+      }
       @media($bp-smaller-than-phablet) {
         padding-inline: 1em;
         text-align: center;
@@ -165,11 +173,8 @@
             color: $color-ubyssey-blue;
             font-weight: 600;
         }
+        --timeline-colour: #{$color-ubyssey-blue};
         li {
-          border-color: $color-ubyssey-blue;
-          &.timeline-dot::before {
-              background-color: $color-ubyssey-blue;
-          }
           .o-article__published {
               font-size: 0.75em;
               text-transform: uppercase;
@@ -195,20 +200,52 @@
     }
 }
 
+.landing_stream_block__elections_race {
+  display: flex;
+  --timeline-colour: #{$color-ubyssey-blue};
+  ul.vertical-timeline {
+    padding: 0;
+    width: 300px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    li {
+      .o-article__headline {
+        margin-block: 0.5em;
+      }
+      .o-article__published {
+        margin-bottom: 0.5em;
+        font-size: 0.8em;
+        font-weight: 600;
+      }
+      .o-article__image {
+        margin-left: 2em;
+        display: block;
+        img {
+          border-radius: 0.5em;
+          border: 2px solid var(--timeline-colour);
+        }
+      }
+    }
+  }
+  .landing_stream_block--flex-container {
+    flex-wrap: wrap;
+    gap: 1em;
+    justify-content: space-between;
+    .o-article {
+      margin-inline: 0;
+      max-width: 185px;
+    }
+  }
+}
+
 [color-css-theme="light"] {
   .landing-stream-block__borders {
     border-color: $color-ubyssey-blue;
   }
   .landing-stream-block__timeline {
       border-color: $color-ubyssey-blue;
-      li.timeline-dot::before {
-        background-color: $color-ubyssey-blue;
-      }
-  
-      li {
-        border-color: $color-ubyssey-blue;
-      }
-  
+      --timeline-colour: #{$color-ubyssey-blue};
+
       p.o-article__published,
       .o-article__seemore {
         width: fit-content;
@@ -223,16 +260,9 @@
   }
   .landing-stream-block__timeline {
       border-color: $color-ubyssey-blue-light;
+      --timeline-colour: white;
       h3.o-article__headline {
         color: $color-ubyssey-blue-light;
-      }
-  
-      li.timeline-dot::before {
-        background-color: white;
-      }
-  
-      li {
-        border-color: white;
       }
     }
   }

@@ -1,7 +1,7 @@
 from . import blocks as homeblocks
 
 from article.models import ArticlePage
-from section.models import SectionPage , CategorySnippet
+from section.models import SectionPage
 from django.db import models
 from django.utils import timezone
 

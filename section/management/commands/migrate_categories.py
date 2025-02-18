@@ -1,0 +1,32 @@
+from django.core.management.base import BaseCommand
+from section.models import CategorySnippet, SectionPage, CategoryPage
+from article.models import ArticlePage
+from wagtail.models import Page
+from wagtail.contrib.redirects.models import Redirect
+
+class Command(BaseCommand): 
+    help = 'Migrates the categories snippet model to section page'
+
+    def handle(self, *args, **kwargs): 
+        for c in CategorySnippet.objects.all():
+            print(c.title)
+            new_path = c.section_page.url_path + c.slug + "/"
+            if Page.objects.filter(url_path = new_path).exists():
+                print(new_path + " already exists")
+                continue
+            new_category = CategoryPage(
+                title=c.title, 
+                slug=c.slug,
+                description = c.description,
+                banner = c.banner)
+            new_category = c.section_page.add_child(instance=new_category)
+            
+            old_path = "/" + c.section_page.slug + "/category/" + c.slug + "/"
+            Redirect.add_redirect(old_path, redirect_to = new_category)
+            Redirect.add_redirect(old_path+"rss/", redirect_to = new_category.url + "rss/")
+
+            articles = ArticlePage.objects.filter(category=c)
+            for a in articles:
+                a.category_page = new_category
+                a.save()
+            print(" - Transitioned %d articles" % len(articles))

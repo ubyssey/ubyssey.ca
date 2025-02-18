@@ -10,13 +10,13 @@
   <div class="landing_stream_block--header">
     <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>
     {% if description %}
-      {{description}}
+      {{description|safe}}
     {% endif %}
   </div>
   {% endif %}
 <div class="landing_stream_block--flex-container">
   {% for article in articles %}
-    {% include 'article/objects/article_column.html' with article=article style='article--round_with_border' lede=false byline=false %}
+    {% include 'article/objects/article_column.html' with article=article style='article--round_with_border' pubdate="true" %}
   {% endfor %}
 </div>
 
