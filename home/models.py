@@ -108,11 +108,9 @@ class HomePage(Page):
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_latest", infinitefeedblocks.SidebarLatestBlock()),
-        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles())        
+        ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
+        ("sidebar_manual", homeblocks.SidebarManualArticles())        
     ],
     null=True,
     blank=True,

@@ -8,10 +8,12 @@ from django.db.models import Q
 from wagtail import blocks
 from wagtail.models import Page
 from wagtail.blocks import field_block
-from infinitefeed.blocks import AbstractArticleList
 
 from taggit.models import Tag
 from wagtail.snippets.blocks import SnippetChooserBlock
+from django.utils.safestring import mark_safe
+from django.template.loader import render_to_string
+from infinitefeed.blocks import SideBarListTemplates
 
 class HomepageFeaturedSectionBlock(blocks.StructBlock):
 
@@ -137,6 +139,40 @@ class LinksStreamBlock(blocks.StructBlock):
     class Meta:
         template = "home/stream_blocks/links.html"
 
+class TemplateSelectStructBlock(blocks.StructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('infinitefeed/sidebar/sidebar_section_block.html', 'default'),
+        ],
+        required=True,
+    )
+
+    def render(self, value, context=None):
+        """
+        According to the below stackoverflow, we need to modify this specific method in order to allow template selection
+        in such a way that the block itself tracks
+        https://stackoverflow.com/questions/55875597/wagtail-how-to-access-structblock-class-attribute-inside-block
+
+        In some ways this is a proof of concept for modifiable blocks
+        """
+
+        # Rather than the "normal" template logic, we look at our self.template variable
+        block_template = value.get('template')
+        if block_template != '':
+            template = block_template
+        else:
+            return self.render_basic(value, context=context) # Wagtail's default for when 
+
+        # Below this point, this render() is identical to its original counterpart
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+        return mark_safe(render_to_string(template, new_context))
+
+
+
 class MidStreamListTemplates(blocks.ChoiceBlock):
  
     choices=[
@@ -150,7 +186,22 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
     ]
-    
+
+
+class AbstractArticleList(TemplateSelectStructBlock):
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('infinitefeed/sidebar/sidebar_section_block.html', 'default'),
+        ]
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["link"] = ""
+        context["articles"] = []
+        return context
+
 class ArticleGathererBlock(AbstractArticleList):
     title = blocks.CharBlock(
         required=False,
@@ -285,4 +336,23 @@ class ManualArticles(AbstractArticleList):
         if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
 
+        return context
+
+    
+class SidebarArticleGatherer(ArticleGathererBlock):
+
+    template = SideBarListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['articles'] = context['articles'][:5]        
+        return context
+
+class SidebarManualArticles(ManualArticles):
+
+    template = SideBarListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['articles'] = context['articles'][:5]        
         return context

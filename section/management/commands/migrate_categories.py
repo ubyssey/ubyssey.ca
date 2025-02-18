@@ -1,3 +1,4 @@
+'''
 from django.core.management.base import BaseCommand
 from section.models import CategorySnippet, SectionPage, CategoryPage
 from article.models import ArticlePage
@@ -35,3 +36,5 @@ class Command(BaseCommand):
                 a.category_page = new_category
                 a.save()
             print(" - Transitioned %d articles" % len(articles))
+
+'''

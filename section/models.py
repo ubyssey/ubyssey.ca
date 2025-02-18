@@ -39,7 +39,6 @@ from django.utils import timezone
 
 
 #-----Snippet models-----
-@register_snippet
 class CategorySnippet(index.Indexed, ClusterableModel):
     """
     Formerly known as a 'Subsection'
@@ -200,10 +199,9 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
-        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),        
+        ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
+        ("sidebar_manual", homeblocks.SidebarManualArticles()),        
     ],
     null=True,
     blank=True,
