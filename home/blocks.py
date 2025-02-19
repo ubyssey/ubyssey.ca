@@ -208,29 +208,39 @@ class ArticleGathererBlock(AbstractArticleList):
         max_length=255,
         help_text="Fill in to overwrite title"
         )
-    description = blocks.RichTextBlock(required=False,
-                                   help_text="Fill in to overwrite description")
+    description = blocks.RichTextBlock(
+        required=False,
+        help_text="Fill in to overwrite description"
+        )
     section = field_block.PageChooserBlock(
         page_type='section.SectionPage',
         required=False
-    )
+        )
     category = field_block.PageChooserBlock(
         page_type='section.CategoryPage',
         required=False
-    )
+        )
     tag_slug = field_block.CharBlock(
         help_text="Enter tag slug. For example for 'Christmas Movie' the slug would be 'christmas-movie'.",
         required=False
-    )
+        )
     template = MidStreamListTemplates()
-    hide_mobile = field_block.BooleanBlock(required=False,
-                                           help_text="If checked, will hide on small devices",
-                                           default=False)
+    hide_mobile = field_block.BooleanBlock(
+        required=False,
+        help_text="If checked, will hide on small devices",
+        default=False
+        )
+    highlight_colour = blocks.CharBlock(
+        required=False,
+        default='0071c9',
+        max_length=6,
+        help_text="Only applicable to some templates"
+        )
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         if value['section']:
-            context['title'] = value['section'].title
+            context['gather_title'] = value['section'].title
             context['description'] = value['section'].description
             context['link'] = value['section'].url
             context['expectedSection'] = value['section'].slug
@@ -238,10 +248,17 @@ class ArticleGathererBlock(AbstractArticleList):
         else:
             context['articles'] = ArticlePage.objects.live().public().exclude(current_section = "pages").order_by('-first_published_at')
 
+        if value['category']:
+            context['gather_title'] = value['category'].title
+            context['description'] = value['category'].description
+            context['link'] = value['category'].url
+            context['expectedSection'] = value['category'].get_parent().slug
+            context['articles'] = context['articles'].filter(category_page=value['category'])
+
         if value['tag_slug']:
             if Tag.objects.filter(slug=value['tag_slug']).exists():
                 tag = Tag.objects.get(slug=value['tag_slug'])
-                context['title'] = tag.name
+                context['gather_title'] = tag.name
                 if value['section']:
                     context['description'] = "Stories on '" + tag.name + "' in " + value['section'].title
                 else:
@@ -249,21 +266,19 @@ class ArticleGathererBlock(AbstractArticleList):
                 context['link'] = '/tag/' + value['tag_slug']
                 context['articles'] = context['articles'].filter(tags__slug=value["tag_slug"])
 
-        if value['category']:
-            context['title'] = value['category'].title
-            context['description'] = value['category'].description
-            context['link'] = value['category'].url
-            context['expectedSection'] = value['category'].get_parent().slug
-            context['articles'] = context['articles'].filter(category_page=value['category'])
-
-        if not 'title' in context:
-            context['title'] = "Latest stories"
+        if not 'gather_title' in context:
+            context['gather_title'] = "Latest stories"
 
         if value["title"]:
             context['title'] = value["title"]
+        else:
+            context['title'] = context['gather_title']
 
         if value["description"]:
             context['description'] = value["description"]
+
+        if value["highlight_colour"]:
+            context['highlight_colour'] = value["highlight_colour"]
 
         limit = 9
         if 'section/objects/section_horizontal.html' in value['template']:        
@@ -286,6 +301,13 @@ class MidStreamDoubleListTemplates(blocks.ChoiceBlock):
  
 class ArticleGathererWithPinnedBlock(ArticleGathererBlock):
     template = MidStreamDoubleListTemplates()
+
+    pinned_title = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Fill in to overwrite title"
+        )
+
     pinned = blocks.ListBlock(
         field_block.PageChooserBlock(
             page_type='article.ArticlePage'
@@ -294,6 +316,8 @@ class ArticleGathererWithPinnedBlock(ArticleGathererBlock):
     )
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
+        if value['pinned_title']:
+            context['pinned_title'] = value['pinned_title']
         context["pinned"] = [article for article in value['pinned']]
         return context
     

@@ -134,6 +134,16 @@ ul.vertical-timeline {
                 background-color: var(--timeline-colour);
             }
         }
+        
+        &.inverted.timeline-dot::before {
+            width: 1em;
+            height: 1em;
+            left: -0.8em;
+
+            border: 0.2em solid var(--background);
+            background-color: var(--timeline-colour);
+            transition: border-color 0.5s ease;
+        }
     }
     li.timeline-dot:first-child {
         padding-top: 0;
@@ -142,22 +152,30 @@ ul.vertical-timeline {
         }
     }
 
-    &.right-align {
-        li 
-        {
-            border-left: none;
-            border-right: 0.2em solid var(--timeline-colour);
+    @media($bp-larger-than-phablet) {
+        &.right-align-on-desktop {
+            li 
+            {
+                border-left: none;
+                border-right: 0.2em solid var(--timeline-colour);
 
-            text-align: right;
+                text-align: right;
 
-            .o-article--bullet {
-                margin-inline: 0 1em;
-            }
+                .o-article--bullet {
+                    margin-inline: 0 1.25em;
+                }
 
-            &.timeline-dot {
-                &::before {
-                    left: auto;
-                    right: -0.6em;
+                &.timeline-dot {
+                    &::before {
+                        left: auto;
+                        right: -0.6em;
+                    }
+                }
+                &.inverted.timeline-dot {
+                    &::before {
+                        left: auto;
+                        right: -0.8em;
+                    }
                 }
             }
         }
