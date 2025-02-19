@@ -29,3 +29,8 @@ repos:
     hooks:
       - id: prettier
         exclude: '(/migrations/|/config/|/__pycache__/|.*\.html$)'
+
+  - repo: https://github.com/Riverside-Healthcare/djLint
+    rev: v1.32.0
+    hooks:
+      - id: djlint-reformat-django
