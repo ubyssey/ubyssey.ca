@@ -16,7 +16,7 @@ from modelcluster.fields import ParentalKey
 
 
 from wagtail.admin.panels import TitleFieldPanel, FieldPanel, InlinePanel, MultiFieldPanel
-from wagtail.fields import StreamField
+from wagtail.fields import StreamField, RichTextField
 from wagtail import models as wagtail_core_models
 from wagtail.models import Page
 from wagtail.contrib.routable_page.models import route, RoutablePageMixin
@@ -35,10 +35,10 @@ from infinitefeed import blocks as infinitefeedblocks
 
 
 import datetime
+from django.utils import timezone
 
 
 #-----Snippet models-----
-@register_snippet
 class CategorySnippet(index.Indexed, ClusterableModel):
     """
     Formerly known as a 'Subsection'
@@ -129,8 +129,8 @@ class CategoryAuthor(wagtail_core_models.Orderable):
     ]
 
 class CategoryMenuItem(wagtail_core_models.Orderable):
-    category = ForeignKey(
-        "section.CategorySnippet",
+    category_page = ForeignKey(
+        "section.CategoryPage",
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
@@ -142,7 +142,7 @@ class CategoryMenuItem(wagtail_core_models.Orderable):
         related_name="category_menu",
     )
     panels = [
-        FieldPanel("category"),
+        FieldPanel("category_page"),
     ]
 
 class SectionPage(RoutablePageMixin, SectionablePage):
@@ -152,6 +152,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         'article.ArticlePage',
         'article.SpecialArticleLikePage',
         'specialfeaturelanding.SpecialLandingPage',
+        'section.CategoryPage',
     ]
     parent_page_types = [
         'home.HomePage',
@@ -167,7 +168,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         related_name='banner',
     )
 
-    description = models.TextField(
+    description = RichTextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
         null=False,
         blank=True,
@@ -187,6 +188,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             ('article_gatherer', homeblocks.ArticleGathererBlock()),
             ('landing', homeblocks.SpecialLandingPageBlock()),
             ('article_manual', homeblocks.ManualArticles()),
+            ('article_gatherer_with_pinned', homeblocks.ArticleGathererWithPinnedBlock()),
         ],
         null=True,
         blank=True,
@@ -197,10 +199,9 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
-        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),        
+        ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
+        ("sidebar_manual", homeblocks.SidebarManualArticles()),        
     ],
     null=True,
     blank=True,
@@ -246,47 +247,61 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         )
     ]
 
+    def get_filter(self):
+        filters = {"section": self.current_section}
+        return filters
+    filter = property(fget=get_filter) 
+
+    def get_all_categories(self):
+        def get_academic_year(date):
+            academic_year = "Unknown"
+            if date != None:
+                if date.month > 5:
+                    academic_year = str(date.year) + "/" + str(date.year+1)[-2:]
+                else:
+                    academic_year = str(date.year-1) + "/" + str(date.year)[-2:]
+            return academic_year
+        
+        categories_filter_value = lambda category: ArticlePage.objects.live().filter(category_page=category).exists()
+        categories_order_value = lambda category: datetime.datetime.min if ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].published_at == None else ArticlePage.objects.live().filter(category_page=category).order_by("-first_published_at")[0].published_at.replace(tzinfo=None)
+        categories = list(CategoryPage.objects.live().child_of(self))
+        categories = list(filter(categories_filter_value, categories))
+        categories = list(map(lambda c: [categories_order_value(c), c], categories))
+        categories.sort(key=lambda c: c[0], reverse=True)
+
+        category_groups = {}
+        current = get_academic_year(datetime.datetime.now())
+        for category in categories:
+            group = "Unknown"
+            if category[0] != datetime.datetime.min:
+                group = get_academic_year(category[0])
+            if group == current:
+                group = "Current"
+            
+            if group in category_groups:
+                category_groups[group].append(category[1])
+            else:
+                category_groups[group] = [category[1]]
+        category_groups = list(map(lambda k: {"group": k, "categories": category_groups[k]}, category_groups.keys()))
+        return category_groups
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         search_query = request.GET.get("q")
-        page = request.GET.get("page")
-        order = request.GET.get("order")
 
-        if order == 'oldest':
-            article_order = "explicit_published_at"
-        else:            
-            article_order = "-explicit_published_at"
-        context["order"] = order
+        context["all_categories"] = self.get_all_categories()
 
-        context["all_categories"] = CategorySnippet.objects.all().filter(section_page=self)
+        filters = self.filter
 
-        context["filters"] = {"section": self.current_section}
-        if 'category_slug' in kwargs:
-            if kwargs['category_slug'] != None:
-                context["category"] = kwargs['category_slug']
-                context["filters"]["category"] = kwargs['category_slug']
-                category  = CategorySnippet.objects.get(slug=kwargs['category_slug'])
-                context["title"] = category.title
-                context["description"] = category.description
-                if category.banner:
-                    context["banner"] = category.banner
-            else:
-                context["error"] = "The category requested does not exist"
-                context["title"] = self.title
-                context["description"] = self.description
-                if self.banner:
-                    context["banner"] = self.banner
-        else:
-            context["title"] = self.title
-            context["description"] = self.description
-            if self.banner:
-                context["banner"] = self.banner
+        if search_query:
+            filters["search_query"] = search_query
 
+        context["filters"] = filters
+        
         # context["featured_articles"] = self.get_featured_articles()
 
         if search_query:
             context["search_query"] = search_query
-            context["filters"]["search_query"] = search_query
     
         return context
     
@@ -311,14 +326,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         return queryset[:number_featured]    
     featured_articles = property(fget=get_featured_articles)
 
-    @route(r'^category/(?P<category_slug>[-\w]+)/$', name='category_view')
-    def category_view(self, request, category_slug):
-        if(len(CategorySnippet.objects.filter(slug=category_slug)) > 0):
-            context = self.get_context(request, category_slug=category_slug)
-            return render(request, 'section/section_page.html', context)
-        else:
-            context = self.get_context(request, category_slug=None)
-            return render(request, 'section/section_page.html', context, status=404)
+    def get_recent_articles(self, max_items=10):
+        return ArticlePage.objects.live().child_of(self).order_by("-first_published_at")[:max_items]
+        
+    @route(r'^rss/$', name='rss_view')
+    def rss_view(self, request):
+        from ubyssey.views.feed import SectionFeed
+        return SectionFeed().__call__(request, section=self)
 
     def save(self, *args, **kwargs):
         self.current_section = self.slug
@@ -327,3 +341,27 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"
+
+class CategoryPage(SectionPage):
+    template = 'section/section_page.html'
+
+    parent_page_types = [
+        'section.SectionPage',
+    ]
+    subpage_types = []
+
+    def get_filter(self):
+        filters = {"section": self.get_parent().slug, "category": self.slug}
+        return filters
+    filter = property(fget=get_filter)
+    
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["parent"] = self.get_parent()
+        context["all_categories"] = self.get_parent().specific.get_all_categories()
+        return context
+    
+    def get_recent_articles(self, max_items=10):
+        return ArticlePage.objects.live().filter(category_page = self).order_by("-first_published_at")[:max_items]
+
+     

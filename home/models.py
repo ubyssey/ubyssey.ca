@@ -1,7 +1,7 @@
 from . import blocks as homeblocks
 
 from article.models import ArticlePage
-from section.models import SectionPage , CategorySnippet
+from section.models import SectionPage
 from django.db import models
 from django.utils import timezone
 
@@ -80,7 +80,7 @@ class HomePage(Page):
         null=True,
         blank=True,
         verbose_name="Top stories timeout",
-        help_text = "Before this date the manually set top stories list will be displayed. After this date the top stories list will be the 5 most recent articles of different sections tagged with 'Top stories'.",
+        help_text = "Before this date the manually set top stories list will be displayed. After this date the top stories list will be the 5 most recent articles tagged with 'Top stories'. Each section is limited to two articles. Only articles published in the last 2 weeks are included.",
     )
 
     middle_stream = StreamField(
@@ -108,11 +108,9 @@ class HomePage(Page):
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_latest", infinitefeedblocks.SidebarLatestBlock()),
-        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles())        
+        ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
+        ("sidebar_manual", homeblocks.SidebarManualArticles())        
     ],
     null=True,
     blank=True,
@@ -216,14 +214,16 @@ class HomePage(Page):
                 if tagged[0].first_published_at > update_time:
                     update_time = tagged[0].first_published_at
             for article in tagged:
+                if article.current_section not in filled_sections:
+                    filled_sections[article.current_section] = 0
                 if article.current_section == "news" and not cover:
                     cover = article
-                elif article.current_section not in filled_sections:
+                elif filled_sections[article.current_section] < 2:
                     if cover:
                         if article == cover:
                             continue
                     top.append(article)
-                    filled_sections[article.current_section] = True
+                    filled_sections[article.current_section] = filled_sections[article.current_section] + 1
                     if len(top) >= 5:
                         break
         

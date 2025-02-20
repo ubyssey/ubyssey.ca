@@ -379,16 +379,22 @@ ul.article-list, ol.article-list {
   }
 
   .menu-title {
-    flex-grow: 1;
-    font-size: 1.2rem;
-    text-align: center;
-    border: 1px solid transparent;
     margin: .25rem !important;
-    padding: .25rem .5rem;
-    color: white;
+    border: 1px solid transparent;
+    
+    flex-grow: 1;
     background-color: var(--linkColour);
     transition: .2s;
     cursor: default;
+
+    color: white;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+
+    a {
+      padding: .25rem .5rem;
+    }
 
     &:hover {
       background-color: transparent !important;
@@ -398,17 +404,18 @@ ul.article-list, ol.article-list {
   }
 }
 
-.header {
-  padding: 0.75rem !important;
+div.article-content h2.header {
+  width: fit-content;
+  padding-inline: 0.75rem;
+  margin-top: 2em;
+  background: linear-gradient(transparent calc(100% - 0.25em), var(--linkColour) 0%);
+  background-size: 100% 1.5em;
+  
+  color: var(--header_color);
+  line-height: 1.5em;
   font-weight: 600;
-  background-color: var(--linkColour);
 
-  >h2 {
-    margin: 0;
-
-    color: white;
-    scroll-margin-top: 100px;
-  }
+  scroll-margin-top: 100px;
 }
 
 // Scroll to top button

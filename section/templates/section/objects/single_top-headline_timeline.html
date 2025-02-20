@@ -20,7 +20,7 @@
                 {% ifchanged tagArticle.published_at|display_pubdate %}
                     <div class="o-article__published">{{tagArticle.published_at|display_pubdate}}</div>
                 {% endifchanged %}
-                <div class="o-article__headline"><a href="{% pageurl tagArticle %}">{{tagArticle.title}}</a></div>
+                <div class="o-article__headline"><a href="{% pageurl tagArticle %}">{{tagArticle.title|safe}}</a></div>
             </li>
             {% endfor %}
         </ul>

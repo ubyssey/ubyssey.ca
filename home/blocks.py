@@ -8,10 +8,12 @@ from django.db.models import Q
 from wagtail import blocks
 from wagtail.models import Page
 from wagtail.blocks import field_block
-from infinitefeed.blocks import AbstractArticleList
 
 from taggit.models import Tag
 from wagtail.snippets.blocks import SnippetChooserBlock
+from django.utils.safestring import mark_safe
+from django.template.loader import render_to_string
+from infinitefeed.blocks import SideBarListTemplates
 
 class HomepageFeaturedSectionBlock(blocks.StructBlock):
 
@@ -137,6 +139,40 @@ class LinksStreamBlock(blocks.StructBlock):
     class Meta:
         template = "home/stream_blocks/links.html"
 
+class TemplateSelectStructBlock(blocks.StructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('infinitefeed/sidebar/sidebar_section_block.html', 'default'),
+        ],
+        required=True,
+    )
+
+    def render(self, value, context=None):
+        """
+        According to the below stackoverflow, we need to modify this specific method in order to allow template selection
+        in such a way that the block itself tracks
+        https://stackoverflow.com/questions/55875597/wagtail-how-to-access-structblock-class-attribute-inside-block
+
+        In some ways this is a proof of concept for modifiable blocks
+        """
+
+        # Rather than the "normal" template logic, we look at our self.template variable
+        block_template = value.get('template')
+        if block_template != '':
+            template = block_template
+        else:
+            return self.render_basic(value, context=context) # Wagtail's default for when 
+
+        # Below this point, this render() is identical to its original counterpart
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+        return mark_safe(render_to_string(template, new_context))
+
+
+
 class MidStreamListTemplates(blocks.ChoiceBlock):
  
     choices=[
@@ -144,41 +180,86 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_horizontal.html', 'Horizontal'),
         ('section/objects/section_landing.html', 'Landing'),
+        ('section/objects/minimal_grid.html', 'Minimal grid'),
+        ('section/objects/blurb_with_timeline.html', 'Blurb with timeline'),
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
         ('section/objects/single_top-headline_with_wrapped_articles.html', 'Single article with wrapped articles below'),
     ]
-    
+
+
+class AbstractArticleList(TemplateSelectStructBlock):
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('infinitefeed/sidebar/sidebar_section_block.html', 'default'),
+        ]
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["link"] = ""
+        context["articles"] = []
+        return context
+
 class ArticleGathererBlock(AbstractArticleList):
+    title = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Fill in to overwrite title"
+        )
+    description = blocks.RichTextBlock(
+        required=False,
+        help_text="Fill in to overwrite description"
+        )
     section = field_block.PageChooserBlock(
         page_type='section.SectionPage',
         required=False
-    )
-    category = SnippetChooserBlock('section.CategorySnippet',
+        )
+    category = field_block.PageChooserBlock(
+        page_type='section.CategoryPage',
         required=False
-    )
+        )
     tag_slug = field_block.CharBlock(
         help_text="Enter tag slug. For example for 'Christmas Movie' the slug would be 'christmas-movie'.",
         required=False
-    )
+        )
     template = MidStreamListTemplates()
+    hide_mobile = field_block.BooleanBlock(
+        required=False,
+        help_text="If checked, will hide on small devices",
+        default=False
+        )
+    highlight_colour = blocks.CharBlock(
+        required=False,
+        default='0071c9',
+        max_length=6,
+        help_text="Only applicable to some templates"
+        )
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-
         if value['section']:
-            context['title'] = value['section'].title
+            context['gather_title'] = value['section'].title
             context['description'] = value['section'].description
             context['link'] = value['section'].url
+            context['expectedSection'] = value['section'].slug
             context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
         else:
-            context['articles'] = ArticlePage.objects.live().public().order_by('-first_published_at')
+            context['articles'] = ArticlePage.objects.live().public().exclude(current_section = "pages").order_by('-first_published_at')
+
+        if value['category']:
+            context['gather_title'] = value['category'].title
+            context['description'] = value['category'].description
+            context['link'] = value['category'].url
+            context['expectedSection'] = value['category'].get_parent().slug
+            context['articles'] = context['articles'].filter(category_page=value['category'])
 
         if value['tag_slug']:
             if Tag.objects.filter(slug=value['tag_slug']).exists():
                 tag = Tag.objects.get(slug=value['tag_slug'])
-                context['title'] = tag.name
+                context['gather_title'] = tag.name
                 if value['section']:
                     context['description'] = "Stories on '" + tag.name + "' in " + value['section'].title
                 else:
@@ -186,21 +267,59 @@ class ArticleGathererBlock(AbstractArticleList):
                 context['link'] = '/tag/' + value['tag_slug']
                 context['articles'] = context['articles'].filter(tags__slug=value["tag_slug"])
 
-        if value['category']:
-            context['title'] = value['category'].title
-            context['description'] = value['category'].description
-            context['link'] = value['category'].section_page.url + "category/" + value['category'].slug + "/"
-            context['articles'] = context['articles'].filter(category=value['category'])
-        
+        if not 'gather_title' in context:
+            context['gather_title'] = "Latest stories"
+
+        if value["title"]:
+            context['title'] = value["title"]
+        else:
+            context['title'] = context['gather_title']
+
+        if value["description"]:
+            context['description'] = value["description"]
+
+        if value["highlight_colour"]:
+            context['highlight_colour'] = value["highlight_colour"]
+
         limit = 9
         if 'section/objects/section_horizontal.html' in value['template']:        
             limit = 4
+        elif 'section/objects/minimal_grid.html' in value['template']:        
+            limit = 6
 
         context['articles'] = context['articles'][:limit]
 
         if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
         
+        return context
+
+class MidStreamDoubleListTemplates(blocks.ChoiceBlock):
+ 
+    choices=[
+        ('section/objects/elections_race_timeline_with_candidates.html', 'Default'),
+    ]
+ 
+class ArticleGathererWithPinnedBlock(ArticleGathererBlock):
+    template = MidStreamDoubleListTemplates()
+
+    pinned_title = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        help_text="Fill in to overwrite title"
+        )
+
+    pinned = blocks.ListBlock(
+        field_block.PageChooserBlock(
+            page_type='article.ArticlePage'
+        ),
+        required=False,
+    )
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        if value['pinned_title']:
+            context['pinned_title'] = value['pinned_title']
+        context["pinned"] = [article for article in value['pinned']]
         return context
     
 class SpecialLandingPageBlock(AbstractArticleList):
@@ -222,13 +341,14 @@ class ManualArticles(AbstractArticleList):
         required=False,
         max_length=255,
         )
-    description = blocks.TextBlock(required=False)
+    description = blocks.RichTextBlock(required=False)
     link = blocks.URLBlock(required=False)
     template = MidStreamListTemplates()
     articles = blocks.ListBlock(
         field_block.PageChooserBlock(
             page_type='article.ArticlePage'
-        )
+        ),
+        required=False,
     )
 
     def get_context(self, value, parent_context=None):
@@ -241,4 +361,23 @@ class ManualArticles(AbstractArticleList):
         if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
 
+        return context
+
+    
+class SidebarArticleGatherer(ArticleGathererBlock):
+
+    template = SideBarListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['articles'] = context['articles'][:5]        
+        return context
+
+class SidebarManualArticles(ManualArticles):
+
+    template = SideBarListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['articles'] = context['articles'][:5]        
         return context

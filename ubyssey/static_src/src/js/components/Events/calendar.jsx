@@ -606,14 +606,11 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                 event.displayTime = "";
             }
 
-            console.log(event.start_time);
             while(cur < new Date(event.end_time) || cur.valueOf() == event.start_time.valueOf()) {
                 var delta = Math.floor((cur.getTime() - start.getTime()) / d);
                 if (getDateString(new Date(start.getTime() + (d*delta))) != getDateString(cur)) {
                     delta = delta + 1;
                 }
-                console.log((cur.getTime() - start.getTime()) / d);
-                console.log(delta);
                 if (delta >= 0 && delta < (7*(numberOfWeeks))) {
                     calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
                 }
@@ -623,7 +620,6 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             }
             return calendar;
         }
-        console.log(start);
         calendar = events.reduce(placeEvents, calendar);
         return calendar;
     }
