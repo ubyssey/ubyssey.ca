@@ -1,5 +1,17 @@
 @import 'modules/variables';
 
+li.timeline-dot::before {
+    position: absolute;
+    content: "";        
+    border-radius: 100%;
+    background-color: var(--timeline-colour);
+}
+
+li.timeline-dot.inverted::before {
+    border-color: var(--background);
+    transition: border-color 0.5s ease;
+}
+
 ul.horizontal-timeline {
     display: flex;
     list-style: none;
@@ -9,17 +21,13 @@ ul.horizontal-timeline {
         position: relative;
         max-width: 25%;
         padding: 2.5em 2em 0 0;
-        border-top: 0.2em solid;
+        border-top: 0.2em solid var(--timeline-colour);
         &.timeline-dot::before {
-            position: absolute;
             width: 1em;
             height: 1em;
 
             left: -0.5em;
             top: -0.6em;
-            content: "";
-
-            border-radius: 100%;
         }
         @media($bp-larger-than-phablet) {
             &.timeline-dot .o-article__published,.o-article__seemore {
@@ -35,7 +43,7 @@ ul.horizontal-timeline {
             margin-right: 3em;
             max-width: none;
             border: none;
-            border-left: 0.2em solid;
+            border-left: 0.2em solid var(--timeline-colour);
             &.timeline-dot::before {
                 left: -0.6em;
                 top: 1em;
@@ -64,16 +72,12 @@ ul.horizontal-timeline-wrap {
         }
 
         &.timeline-dot::before {
-            position: absolute;
             width: 0.6em;
             height: 0.6em;
             border: 0.3em solid var(--background);
 
             left: -0.7em;
             top: -0.7em;
-            content: "";
-
-            border-radius: 100%;
         }
 
         &.timeline-dot .o-article__published,.o-article__seemore {
@@ -122,16 +126,11 @@ ul.vertical-timeline {
         &.timeline-dot {
             padding-top: 1em;
             &::before {
-                position: absolute;
                 width: 1em;
                 height: 1em;
                 
                 left: -0.6em;
                 top: 1em;
-                content: "";
-                
-                border-radius: 100%;
-                background-color: var(--timeline-colour);
             }
         }
         
@@ -141,8 +140,6 @@ ul.vertical-timeline {
             left: -0.8em;
 
             border: 0.2em solid var(--background);
-            background-color: var(--timeline-colour);
-            transition: border-color 0.5s ease;
         }
     }
     li.timeline-dot:first-child {

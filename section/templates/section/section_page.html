@@ -40,7 +40,7 @@
             <text x="10" y="50">{{self.title}}</text>
           </svg>
         </div>
-        <div class="c-section__description">
+        <div class="c-section__description banner-description">
           {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|safe}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
         </div>
       {%else%}
