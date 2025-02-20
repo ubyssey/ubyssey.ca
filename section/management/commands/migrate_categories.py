@@ -1,4 +1,3 @@
-'''
 from django.core.management.base import BaseCommand
 from section.models import CategorySnippet, SectionPage, CategoryPage
 from article.models import ArticlePage
@@ -7,8 +6,18 @@ from wagtail.contrib.redirects.models import Redirect
 
 class Command(BaseCommand): 
     help = 'Migrates the categories snippet model to section page'
-
     def handle(self, *args, **kwargs): 
+        articles = ArticlePage.objects.live().exclude(category_page = None)
+        print(" - %d categoried articles" % len(articles))
+        for a in range(len(articles)):
+            revision = articles[a].save_revision()
+            if articles[a].first_published_at != None:
+                revision.publish()
+            if (a % 10 == 0):
+                print(" - Transitioned %d articles" % a)
+        print(" - Transitioned %d articles" % len(articles))
+        
+    '''
         for c in CategorySnippet.objects.all():
             print(c.title)
             new_path = c.section_page.url_path + c.slug + "/"
@@ -35,6 +44,8 @@ class Command(BaseCommand):
             for a in articles:
                 a.category_page = new_category
                 a.save()
+                revision = a.save_revision()
+                if a.first_published_at != None:
+                    revision.publish()
             print(" - Transitioned %d articles" % len(articles))
-
-'''
+    '''
