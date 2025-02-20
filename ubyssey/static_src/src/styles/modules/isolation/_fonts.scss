@@ -1,4 +1,4 @@
-$font-default: 'Helvetica Neue', sans-serif;
+$font-default: "Helvetica Neue", sans-serif;
 $font-secondary: Montserrat, Helvetica, sans-serif;
 
 $header-font: Montserrat, sans-serif;
@@ -21,18 +21,16 @@ $accent-font: sans-serif;
 $accent-size: 1.3rem;
 
 h1 {
-	font-weight: 600;
-	font-size: 1.75em;
-	line-height: 1.25;
-	font-family: 'DancingScript', serif;
-    font-style: italic;
+  font-weight: 600;
+  font-size: 1.75em;
+  line-height: 1.25;
+  font-family: "DancingScript", serif;
+  font-style: italic;
 }
 
 @font-face {
-	font-family: 'DancingScript';
-	src: url('../fonts/DancingScript.ttf');
-	font-weight: normal;
-	font-style: normal;
+  font-family: "DancingScript";
+  src: url("../fonts/DancingScript.ttf");
+  font-weight: normal;
+  font-style: normal;
 }
-
-

@@ -1,5 +1,5 @@
-$font-default: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-$font-secondary: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-default: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+$font-secondary: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 $font-serif: Georgia;
 
 $font-size-base: 16;
@@ -17,7 +17,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h3, h3, h4 {
+h1,
+h3,
+h3,
+h4 {
   // Structure
   margin: 0;
 
@@ -26,11 +29,11 @@ h1, h3, h3, h4 {
 }
 
 .o-link {
-	// Text
-	text-decoration: none;
-	color: inherit;
+  // Text
+  text-decoration: none;
+  color: inherit;
 
-	&:hover {
-		color: $color-primary-1;
-	}
+  &:hover {
+    color: $color-primary-1;
+  }
 }

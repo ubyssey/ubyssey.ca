@@ -1,7 +1,7 @@
-.c-article{
+.c-article {
   padding: 3em 0;
 }
-.c-article__intro{
+.c-article__intro {
   &__subheading {
     font-family: $header-font;
     font-size: 2.5rem;
@@ -10,11 +10,11 @@
     line-height: 3rem;
     letter-spacing: 0.5px;
     margin: 2em 0 1em 0;
-    @media($bp-smaller-than-desktop){
+    @media ($bp-smaller-than-desktop) {
       margin: 0.5em 0;
     }
   }
-  &__text{
+  &__text {
     font-family: $header-font;
     font-weight: 500;
     line-height: 1.2rem;
@@ -23,7 +23,9 @@
 }
 
 .c-article__content {
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     text-align: left;
     font-family: $header-font;
     font-size: 1.3rem;
@@ -31,12 +33,13 @@
     font-weight: 500;
     margin-bottom: 0.5em;
   }
-  h1{
+  h1 {
     font-size: 1.45rem;
     margin-bottom: 1.5em;
   }
 
-  > p, ul {
+  > p,
+  ul {
     font-family: $text-font;
     font-size: $text-size;
     font-weight: normal;
@@ -55,23 +58,23 @@
     font-style: italic;
   }
 
-  .advertisement, .pull-quote {
+  .advertisement,
+  .pull-quote {
     width: 300px;
 
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 35px;
 
-    @media($bp-larger-than-phablet) {
+    @media ($bp-larger-than-phablet) {
       margin: 0;
       float: right;
       padding-left: 35px;
     }
-
   }
 }
 
-p{
+p {
   text-align: left;
 }
 
@@ -82,20 +85,21 @@ p{
   text-align: center;
 }
 
-.c-up-next__arrow, .c-up-next__text {
+.c-up-next__arrow,
+.c-up-next__text {
   display: inline-block;
   vertical-align: middle;
 }
 
 .c-up-next__arrow {
-  background-image: url('../images/guide/up-next-arrow-left.png');
+  background-image: url("../images/guide/up-next-arrow-left.png");
   background-size: 100%;
   width: 21px;
   height: 22px;
   margin-top: 20px;
 
   &--right {
-    background-image: url('../images/guide/up-next-arrow-right.png');
+    background-image: url("../images/guide/up-next-arrow-right.png");
   }
 }
 
@@ -105,11 +109,10 @@ p{
   text-transform: lowercase;
   font-weight: 500;
   line-height: 1.2rem;
-  color: #6E6E6E;
+  color: #6e6e6e;
 }
 
-
-.c-welcome-article{
+.c-welcome-article {
   position: absolute;
   display: none;
   bottom: 999999px;
@@ -122,53 +125,53 @@ p{
 
   font-family: $font-default;
   color: #ffffff;
-  
-  @media($bp-larger-than-desktop) {
+
+  @media ($bp-larger-than-desktop) {
     display: block;
   }
 
-  .quote-content--container{
+  .quote-content--container {
     padding: 30px 5%;
   }
 
-  &__.quote{
+  &__.quote {
     width: 100%;
     height: 100%;
     text-align: left;
   }
-  &__.source{
+  &__.source {
     padding-top: 20px;
     text-transform: capitalize;
     text-align: right;
   }
 }
 
-.c-welcome-article-bottom{
+.c-welcome-article-bottom {
   position: relative;
   font-family: $font-default;
   color: #ffffff;
   z-index: 1000;
   display: block;
-  @media($bp-larger-than-desktop) {
+  @media ($bp-larger-than-desktop) {
     display: none;
   }
-  .quote-content--container{
+  .quote-content--container {
     padding: 30px 0;
     margin: 0% 5%;
   }
-  &__.quote{
+  &__.quote {
     width: 100%;
     height: 100%;
     text-align: left;
   }
-  &__.source{
+  &__.source {
     padding-top: 20px;
     text-transform: capitalize;
     text-align: right;
   }
 }
 
-.article .o-article-embed{
+.article .o-article-embed {
   margin: 0;
   max-width: 600px;
   display: block;

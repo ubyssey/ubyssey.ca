@@ -1,8 +1,8 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import { Magazine } from "./components/Magazine/2019"
+import React from "react";
+import ReactDOM from "react-dom";
+import { Magazine } from "./components/Magazine/2019";
 
-$(function() {
+$(function () {
   ReactDOM.render(
     <Magazine
       articles={$("#magazine-wrapper").data("articles")}
@@ -12,6 +12,6 @@ $(function() {
       section3Image={$("#magazine-wrapper").data("resolve-image")}
       title={$("#magazine-wrapper").data("title")}
     />,
-    $("#magazine-wrapper")[0]
-  )
-})
+    $("#magazine-wrapper")[0],
+  );
+});

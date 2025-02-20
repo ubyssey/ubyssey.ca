@@ -16,7 +16,7 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 20
-  
+
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/ubyssey/static_src" # Location of package manifests
     schedule:

@@ -1,1 +1,1 @@
-export const desktopSize = 960
+export const desktopSize = 960;

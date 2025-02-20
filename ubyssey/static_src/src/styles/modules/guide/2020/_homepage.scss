@@ -1,33 +1,33 @@
-.home-content-container{
-  .editorial{
-    &-container{
+.home-content-container {
+  .editorial {
+    &-container {
       display: flex;
       overflow: hidden;
-      @media($bp-smaller-than-tablet) {
+      @media ($bp-smaller-than-tablet) {
         display: block;
       }
     }
 
-    &__credits-{
-      &container{
+    &__credits- {
+      &container {
         width: 35%;
         background-color: $color-academics;
-        @media($bp-smaller-than-tablet) {
+        @media ($bp-smaller-than-tablet) {
           width: 100%;
         }
       }
-      &content{
+      &content {
         padding: 15% 20%;
         letter-spacing: 1px;
         color: black;
-        h1{
+        h1 {
           text-transform: uppercase;
           font-family: $header-font;
           text-align: right;
           font-size: 18px;
           margin-bottom: 0;
         }
-        h2{
+        h2 {
           font-weight: 300;
           text-align: right;
           font-family: $header-font;
@@ -36,216 +36,217 @@
         }
       }
     }
-    &__note-{
-      &container{
+    &__note- {
+      &container {
         position: relative;
         width: 65%;
-        @media($bp-smaller-than-tablet) {
+        @media ($bp-smaller-than-tablet) {
           width: 100%;
         }
       }
     }
-    &__.home-content{
+    &__.home-content {
       padding: 5% 18%;
-      @media($bp-smaller-than-tablet) {
+      @media ($bp-smaller-than-tablet) {
         padding: 5% 5%;
       }
-      .content-wrapper{
+      .content-wrapper {
         padding: 5% 18%;
       }
     }
   }
 
-  .who{
-    &-container{
+  .who {
+    &-container {
       position: relative;
       margin-left: 10%;
       margin-right: 25%;
-      @media($bp-smaller-than-tablet) {
+      @media ($bp-smaller-than-tablet) {
         margin-left: 0;
         margin-right: 0;
       }
     }
-    &__.home-content{
+    &__.home-content {
       padding: 5% 8%;
     }
   }
 
-  .involved{
-    &-container{
+  .involved {
+    &-container {
       position: relative;
       margin-left: 30%;
       margin-right: 10%;
-      @media($bp-smaller-than-tablet) {
+      @media ($bp-smaller-than-tablet) {
         margin-left: 0;
         margin-right: 0;
       }
     }
-    &__.home-content{
+    &__.home-content {
       padding: 5% 5%;
-      &__nav{
+      &__nav {
         text-align: right;
       }
     }
   }
 
-.home-content{
-  .title{
-    text-align: center;
-    text-transform: uppercase;
-    font-size: $header-size;
-    font-family: $header-font;
-    font-weight: $header-weight;
-    line-height: 3.8rem;
-  }
-  .content-wrapper{
-    padding: 5% 15%;
-    line-height: 1.3rem;
-    font-family: $text-font;
-    font-size: $text-size;
-    @media($bp-smaller-than-mobile){
-      margin-bottom: 50px;
+  .home-content {
+    .title {
+      text-align: center;
+      text-transform: uppercase;
+      font-size: $header-size;
+      font-family: $header-font;
+      font-weight: $header-weight;
+      line-height: 3.8rem;
+    }
+    .content-wrapper {
       padding: 5% 15%;
+      line-height: 1.3rem;
+      font-family: $text-font;
+      font-size: $text-size;
+      @media ($bp-smaller-than-mobile) {
+        margin-bottom: 50px;
+        padding: 5% 15%;
+      }
+      h1 {
+        color: $color-home;
+        font-size: 1.1em;
+      }
     }
-    h1{
-      color: $color-home;
-      font-size: 1.1em;
-    }
-  }
-  &__nav{
-    display: block;
-    text-align: left;
-    padding-top: 8%;
+    &__nav {
+      display: block;
+      text-align: left;
+      padding-top: 8%;
 
-    font-family: $accent-font;
-    font-size: $accent-size;
-    line-height: 1.4rem;
-    text-transform: lowercase;
-    text-decoration: none!important;
-    color: black;
-    transition: 0.1s;
-    &:hover{
-      font-weight: bold;
-      font-size: $accent-size + 0.1rem;
-    }
-  }
-}
-
-.panel-quote{
-  margin-top: 0.5em;
-  &.__1-{
-    &container{
-      &-text{
-        background-color: $color-vancouver;
-        width: 55%;
-        margin-left: 45%;
-        height: fit-content;
-        position: relative;
-        @media($bp-smaller-than-tablet) {
-          margin-left: 40%;
-        }
-      }
-      &-image{
-        position: absolute;
-        margin-top: -200px;
-        left: -45%;
-        z-index: 100;
-        width: 50%;
-        margin-bottom: 7%;
-        img{
-          height: auto;
-          width: 100%;
-        }
-        @media($bp-smaller-than-tablet) {
-          margin-left: -22%;
-        }
-      }
-    }
-    &text{
-      padding: 5% 15%;
-      &__.source{
-        text-align: right;
-        padding-top: 20px;
-      }
-    }    
-  }
-
-  &.__2-{
-    &container{
-      &-text{
-        background-color: $color-adulting;
-        width: 70%;
-        height: fit-content;
-        position: relative;
-      }
-      &-image{
-        position: absolute;
-        right: -37%;
-        z-index: 100;
-        width: 40%;
-        margin-bottom: 5%;
-        img{
-          height: auto;
-          width: 100%;
-        }
-        @media($bp-smaller-than-tablet) {
-          margin-right: -30%;
-        }
-      }
-    }
-    &text{
-      padding: 5% 10%;
-      &__.quote{
-        margin-top: 0;
-      }
-      &__.source{
-        text-align: right;
-        padding-top: 20px;
+      font-family: $accent-font;
+      font-size: $accent-size;
+      line-height: 1.4rem;
+      text-transform: lowercase;
+      text-decoration: none !important;
+      color: black;
+      transition: 0.1s;
+      &:hover {
+        font-weight: bold;
+        font-size: $accent-size + 0.1rem;
       }
     }
   }
 
-    &.__1-, &.__2-{
-      @media($bp-larger-than-tablet){
-        &container{
-          &-image{
+  .panel-quote {
+    margin-top: 0.5em;
+    &.__1- {
+      &container {
+        &-text {
+          background-color: $color-vancouver;
+          width: 55%;
+          margin-left: 45%;
+          height: fit-content;
+          position: relative;
+          @media ($bp-smaller-than-tablet) {
+            margin-left: 40%;
+          }
+        }
+        &-image {
+          position: absolute;
+          margin-top: -200px;
+          left: -45%;
+          z-index: 100;
+          width: 50%;
+          margin-bottom: 7%;
+          img {
+            height: auto;
+            width: 100%;
+          }
+          @media ($bp-smaller-than-tablet) {
+            margin-left: -22%;
+          }
+        }
+      }
+      &text {
+        padding: 5% 15%;
+        &__.source {
+          text-align: right;
+          padding-top: 20px;
+        }
+      }
+    }
+
+    &.__2- {
+      &container {
+        &-text {
+          background-color: $color-adulting;
+          width: 70%;
+          height: fit-content;
+          position: relative;
+        }
+        &-image {
+          position: absolute;
+          right: -37%;
+          z-index: 100;
+          width: 40%;
+          margin-bottom: 5%;
+          img {
+            height: auto;
+            width: 100%;
+          }
+          @media ($bp-smaller-than-tablet) {
+            margin-right: -30%;
+          }
+        }
+      }
+      &text {
+        padding: 5% 10%;
+        &__.quote {
+          margin-top: 0;
+        }
+        &__.source {
+          text-align: right;
+          padding-top: 20px;
+        }
+      }
+    }
+
+    &.__1-,
+    &.__2- {
+      @media ($bp-larger-than-tablet) {
+        &container {
+          &-image {
             top: auto;
             bottom: 0;
           }
         }
       }
-      @media($bp-smaller-than-tablet){
-        &container{
-          &-text{
+      @media ($bp-smaller-than-tablet) {
+        &container {
+          &-text {
             width: 60%;
           }
-          &-image{
+          &-image {
             margin-top: 0;
             width: 67%;
             height: 100%;
-            img{
+            img {
               height: 100%;
             }
           }
         }
       }
 
-      @media($bp-smaller-than-phablet){
-        &container{
-          &-text{
+      @media ($bp-smaller-than-phablet) {
+        &container {
+          &-text {
             width: 100%;
             margin: 0;
-            @media($bp-smaller-than-mobile){
+            @media ($bp-smaller-than-mobile) {
               padding-bottom: 10px;
             }
           }
-          &-image{
+          &-image {
             display: none;
           }
         }
-        @media($bp-smaller-than-mobile){
-          &text__.source{
-              bottom: 5px;
+        @media ($bp-smaller-than-mobile) {
+          &text__.source {
+            bottom: 5px;
           }
         }
       }

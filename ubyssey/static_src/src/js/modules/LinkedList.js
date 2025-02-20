@@ -2,12 +2,11 @@ function Node(data) {
   return {
     data,
     next: null,
-    prev: null
+    prev: null,
   };
 }
 
 export default class LinkedList {
-
   constructor(array) {
     if (!array) {
       return null;
@@ -22,7 +21,6 @@ export default class LinkedList {
       tail = prev;
     }
 
-    return tail
+    return tail;
   }
-
 }

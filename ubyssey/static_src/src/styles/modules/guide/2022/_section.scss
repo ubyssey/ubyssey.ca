@@ -1,89 +1,75 @@
-.guide-section-container{
-    display: flex;
-    flex-direction: column;
-    padding: 4em;
+.guide-section-container {
+  display: flex;
+  flex-direction: column;
+  padding: 4em;
 }
 
-
-.section-img{
-    width: 100%;
-
-
+.section-img {
+  width: 100%;
 }
 
-.section-articles{
-    margin-top: 5%;
-    width: 100%;
-   
+.section-articles {
+  margin-top: 5%;
+  width: 100%;
 }
 
-.section-articles h2{
-    background-color: white;
-    font-size: 3em;
-    font-weight: bold;
+.section-articles h2 {
+  background-color: white;
+  font-size: 3em;
+  font-weight: bold;
 }
 
-.student-resources{
-    color: #C27BA0;
+.student-resources {
+  color: #c27ba0;
 }
 
-
-.student-life{
-    color: #93C47D;
+.student-life {
+  color: #93c47d;
 }
 
-.the-ubyssey{
-    color: #76A5Af;
-
+.the-ubyssey {
+  color: #76a5af;
 }
 
-.parties-sex-and-drugs{
-    color: #8E7CC3;
+.parties-sex-and-drugs {
+  color: #8e7cc3;
 }
 
-.vancouver{
-    color: #F6B26B;
+.vancouver {
+  color: #f6b26b;
 }
 
-.ubc{
-    color: #6FA8DC;
-
+.ubc {
+  color: #6fa8dc;
 }
 
-.academics{
-    color: #E06666;
+.academics {
+  color: #e06666;
 }
 
-.section-articles-list{
-    margin-top: 5%;
-    padding-right: 1em;
+.section-articles-list {
+  margin-top: 5%;
+  padding-right: 1em;
 }
 
-.section-articles-list li{
-    margin-bottom: 5%;
+.section-articles-list li {
+  margin-bottom: 5%;
 }
 
 @media (min-width: 1000px) {
+  .guide-section-container {
+    display: flex;
+    flex-direction: row;
+    padding: 4em;
+  }
 
-    .guide-section-container{
-        display: flex;
-        flex-direction: row;
-        padding: 4em;
-    }
+  .section-img {
+    width: 50%;
+    padding: 4em;
+  }
 
-    .section-img{
-        width: 50%;
-        padding: 4em;
-    
-    
-    }
-    
-    .section-articles{
-        width: 50%;
-        padding: 3em;
-    }
-
-
-
+  .section-articles {
+    width: 50%;
+    padding: 3em;
+  }
 }
-

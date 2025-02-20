@@ -1,9 +1,8 @@
-@import 'modules/variables';
+@import "modules/variables";
 
 $text-color: var(--text_color);
 
 footer {
-
   padding: 15px 0;
   border-top: 0.5em solid $color-ubyssey-blue;
   background-color: $color-ubyssey-blue-dark;
@@ -18,7 +17,9 @@ footer {
     text-transform: uppercase;
     font-size: 1em;
   }
-  h2, p, li {
+  h2,
+  p,
+  li {
     color: $color-ubyssey-blue-light;
   }
 
@@ -92,7 +93,7 @@ footer {
     }
   }
 
-  @media($bp-larger-than-tablet){
+  @media ($bp-larger-than-tablet) {
     .mobile {
       display: none;
     }
@@ -116,10 +117,9 @@ footer {
         line-height: 2em;
       }
     }
-
   }
 
-  @media($bp-smaller-than-tablet){
+  @media ($bp-smaller-than-tablet) {
     text-align: center;
 
     .mobile {
@@ -134,7 +134,7 @@ footer {
       max-width: 600px;
       padding: 1em;
     }
- 
+
     div.footer-branding {
       margin: auto;
       margin-bottom: 2em;
@@ -155,7 +155,7 @@ footer {
       width: 100%;
       h3 {
         margin-top: 1em;
-        color: #BBE3F1;
+        color: #bbe3f1;
       }
       ul {
         display: flex;
@@ -169,5 +169,4 @@ footer {
       }
     }
   }
-
 }

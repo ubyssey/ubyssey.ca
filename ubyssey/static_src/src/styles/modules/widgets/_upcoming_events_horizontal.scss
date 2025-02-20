@@ -10,7 +10,7 @@
   border-bottom: solid 1px $color-border-gray;
 }
 
-.c-widget-upcoming-events-horizontal__label-row {;
+.c-widget-upcoming-events-horizontal__label-row {
   display: flex;
 
   // Text
@@ -34,14 +34,13 @@
   display: flex;
   justify-content: space-between;
 
-  @media($bp-smaller-than-tablet) {
+  @media ($bp-smaller-than-tablet) {
     display: block;
 
     .c-widget-upcoming-events-horizontal__event-wrapper:not(:last-child) {
       margin-bottom: 0.5rem;
     }
   }
-
 }
 
 .c-widget-upcoming-events-horizontal__event-wrapper {
