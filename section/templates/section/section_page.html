@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block head_scripts %}
-<link rel="alternate" type="application/atom+xml" title="Ubyssey {{title}} feed" href="/rss/{{self.slug}}">
+<link rel="alternate" type="application/atom+xml" title="Ubyssey {{self.title}} feed" href="{% pageurl self %}rss/">
   <!-- Register ads for section page -->
   {% for orderable in settings.ads.AdTagSettings.section_head_tags.all %}
     {% gpt_define_tag orderable.ad_slot %}
@@ -33,74 +33,92 @@
     
     <div class="u-container u-container--mid">
 
-      {% if banner %}
-        {% image banner fill-2200x734-c100 format-webp as banner_image %}
-        <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{title}} Banner" >
-          <svg class="c-section__heading" viewBox="0 0 450 70">
-            <text class="c-section__heading" x="10" y="50">{{title}}</text>
+      {% if self.banner %}
+        {% image self.banner fill-2200x734-c100 format-webp as banner_image %}
+        <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{self.title}} Banner" >
+          <svg class="banner-title" viewBox="0 0 450 70">
+            <text x="10" y="50">{{self.title}}</text>
           </svg>
         </div>
+        <div class="c-section__description banner-description">
+          {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|safe}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+        </div>
       {%else%}
-        <div class="c-page__header">
-          {% if category %}<p><a href="/{{self.slug}}">{{self.title}}</a></p>{% endif %}
-          <h1 class="c-page__heading">{{title}}</h1>
+        <div class="c-section__heading">
+          {% if parent %}<p><a href="{% pageurl parent %}">{{parent.title}}</a></p>{% endif %}
+          <h1 class="">{{self.title}}</h1>
+          <div class="c-section__description">
+            {{self.description|safe}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+          </div>
         </div>
       {% endif %}
 
-      <div class="c-infinitefeed__feed">
-        <div class="lightmode section_infinitefeed">
-        <div class="c-section__info">
-          {% if description or not category %}
-          <p class="c-section__description">{{description}}{% if not category %} &ensp;<a href="/rss/{{self.slug}}" aria-label="Go to section's rss feed"><ion-icon name="logo-rss"></ion-icon></a>{% endif%}</p>
-          {% endif %}
-          {% if self.category_menu.count and not category %}
-          <div class="featured_categories">
-            <ul>
-              {% for category_menu_item in self.category_menu.all %}
-                {% if category_menu_item.category %}
-                  <li><a href="{% pageurl self %}category/{{ category_menu_item.category.slug }}" title="{{ category_menu_item.category.title }}">{{ category_menu_item.category.title }}</a></li>
-                {% else %}
-                  comment Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! endcomment
-                  <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
-          
-          <div class="c-section__buttons">
-            <div class="o-archive__search c-section__button-label">
-              <form method="get">
-                <label class="o-archive__search__label" for="c-articles-list__searchbar"><ion-icon name="search"></ion-icon></label>
-                <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
-                  {% if search_query %}value="{{ search_query }}" {% endif %} placeholder="Search" />
-              </form>
-            </div>
+      {% for block in self.top_stream %}
+        {% include_block block %}
+      {% endfor %}
+
+      <div class="c-section__info">
+        <h2 class="c-section__info-header">All in {{self.title}}</h1>
+        {% if self.category_menu.count %}
+        <div class="featured_categories">
+          <ul>
+            {% for category_menu_item in self.category_menu.all %}
+              {% if category_menu_item.category_page %}
+                <li><a href="{% pageurl category_menu_item.category_page %}" title="{{ category_menu_item.category_page.title }}">{{ category_menu_item.category_page.title }}</a></li>
+              {% else %}
+                comment Failsafe, since wagtail seems to delete empty menu items. Shouldn't ever end up here! endcomment
+                <li><a href="#">ERROR: EMPTY CATEGORY MENU ITEM! PLEASE CHECK THE SECTION PAGE IN WAGTAIL</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
         
-            <div class="setup-modal c-section__button-label">
-              <a class="open-modal" href="#"> 
-                <p><ion-icon name="pricetag"></ion-icon> {% if category %}Other {% endif %}Categories</p>
+        <div class="c-section__buttons">
+          <div class="o-archive__search c-section__button-label">
+            <form method="get">
+              <label class="o-archive__search__label" for="c-articles-list__searchbar"><ion-icon name="search"></ion-icon></label>
+              <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
+                {% if search_query %}value="{{ search_query }}" {% endif %} placeholder="Search" />
+            </form>
+          </div>
+      
+          <div class="setup-modal c-section__button-label">
+            <a class="open-modal" href="#"> 
+              <p><ion-icon name="pricetag"></ion-icon> {% if parent %}Other {% endif %}Categories</p>
+            </a>
+
+            <dialog class="modal" aria-modal="true">
+              <div class="js-dropdown-container close-modal"></div>
+              <div class="category_menu u-container u-container--padded">
+              <a href="#" class="c-section__modal_close close-modal">
+                <ion-icon name="close"></ion-icon>
               </a>
+              <h1><ion-icon name="pricetag"></ion-icon> All Categories</h1> <!-- Why Series? Why not Categories? -->
+              {% if parent %}
+                <p><a href="{% pageurl parent %}">{{parent.title}}</a></p> 
+              {% else %}
+                <p><a href="{% pageurl self %}">{{self.title}}</a></p>
+              {% endif %}
 
-              <dialog class="modal" aria-modal="true">
-                <div class="js-dropdown-container close-modal"></div>
-                <div class="category_menu u-container u-container--padded">
-                <a href="#" class="c-section__modal_close close-modal">
-                  <ion-icon name="close"></ion-icon>
-                </a>
-                <h1><ion-icon name="pricetag"></ion-icon> All Categories</h1> <!-- Why Series? Why not Categories? -->
-                <p><a href="{% pageurl self %}">{{self.title}}</a>{% if self.description %} - {{self.description}}{% endif %}</p>
-                <ul>
-                {% for category in all_categories reversed %}
-                  <li><a href="{% pageurl self %}category/{{ category.slug }}">{{ category.title }}</a></li>
+              {% for group in all_categories %}
+              <h2>{{group.group}}</h2>
+              <ul>
+                {% for category in group.categories %}
+                <li><a href="{% pageurl category %}">{{ category.title }}</a></li>
                 {% endfor %}
-                </ul>
-                </div>
-              </dialog>
+              </ul>
+              {% endfor %}
+              </div>
+            </dialog>
 
-            </div>
           </div>
         </div>
+      </div>
+
+      <div class="c-infinitefeed__feed">
+        <div class="lightmode section_infinitefeed">
+
         {% if error %}
           <p class="section-error"><a href="{% pageurl self %}">{{error}}</a></p>
         {% else %}

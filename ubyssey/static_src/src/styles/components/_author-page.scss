@@ -60,6 +60,9 @@
 .author-desc {
     color: $color-ubyssey-blue-dark-2;
     line-height: 1.45em;
+    a {
+        text-decoration: underline;
+    }
 }
 [color-css-theme="dark"] {
 

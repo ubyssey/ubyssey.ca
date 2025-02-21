@@ -62,11 +62,11 @@
   margin-bottom:40px;
   background-size:cover;
   background-position: center;
-  svg.c-section__heading {
+  svg.banner-title {
     position: absolute;
     bottom: -55px;
     padding-inline: 20px;
-    box-sizing: border-box;
+    border: none;
     @media($bp-smaller-than-phablet) {
       bottom: -25px;
       padding-inline: 10px;
@@ -84,9 +84,17 @@
   }
 }
 
+.banner-description.c-section__description {
+  font-size: 1em;
+  font-weight: 400;
+}
+
 .featured_categories {
   display: flex;
-  flex-wrap: wrap;
+  margin-left: 1em;
+  flex-grow: 1;
+  width: 0;
+  overflow-x: auto;
 
   p {
     margin-bottom: 0;
@@ -97,24 +105,27 @@
     //gap: 1px;
     //background-color: var(--text_color);
     //width: fit-content;
+    margin-block: auto;
     padding: 0;
-    flex-wrap: wrap;
 
     li {
-      margin: 0.25em 1em;
+      margin: 0 1em;
       list-style: none;
       display: inline;
       max-width: 250px;
       white-space: nowrap;
       overflow: clip;
       text-overflow: ellipsis;
-      border-bottom: 1px solid;
     }
+  }
+  @media($bp-smaller-than-phablet) { 
+    display: none;
   }
 }
 
 .category_menu {
   position: fixed;
+  padding: 1em 2em;
   height: 75%;
   top: 50%;
   left: 50%;
@@ -126,6 +137,24 @@
   background-color: var(--background);
   text-align: left;
 
+  h2 {
+    margin-block: 0;
+    width: fit-content;
+    border-bottom: 1px solid;
+    font-size: 1em;
+  }
+
+  ul {
+    margin-block: 0 0.5em;
+    padding-block: 1em;
+    padding-right: 2em;
+    @media($bp-larger-than-phablet) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      list-style: none;
+    }
+  }
   li {
     width: fit-content;
   }
@@ -133,14 +162,17 @@
 
 .c-section__buttons {
   display: flex;
-  text-align: right;
+  margin-left: auto;
   justify-content: right;
-  width: 100%;
+  text-align: right;
   @media($bp-smaller-than-phablet) {
     display: block;
   }
   .o-archive__search__input {
     width: 115px;
+    &:focus {
+      width: 500px;
+    }
   }
 }
 
@@ -148,7 +180,6 @@
   margin-left: 0.5em;
   text-align: right;
   display: inline-block;
-  max-width: 50%;
   z-index:3;
   position: relative;
   a, form, input {
@@ -175,19 +206,56 @@
 }
 
 .c-section__description {
+  margin-block: 1em;
+  padding-inline: 1em; 
   display: inline-block;
+  box-sizing: border-box;
+
+  font-weight: 600;
+  font-variation-settings: "wght" 600;
+  font-size: 0.9em;
+
   @media($bp-smaller-than-phablet) {
     width:100%;
+  }
+
+  p {
+    margin-right: 0.5em;
+    display: inline;
+    max-width: 600px;
+    a {
+      font-style: italic;
+      text-decoration: underline;
+    }
   }
 }
 
 .c-section__info {
+  display: flex;
+
+  margin-block: 2em;
+  border-bottom: 2px solid var(--header_color);
+
   color: $text-color;
-  @media($bp-larger-than-phablet) {
-    padding-left: 1em;
-    width: 83%;
+
+  h2.c-section__info-header {
+    max-width: fit-content;
+    margin-right: 1em;
+    margin-block: auto;
+
+    font-size: 1.25em;
+    text-transform: uppercase;
+
+    @media($bp-smaller-than-mobile) {
+      display: none;
+    }
   }
-  @media($bp-smaller-than-phablet) {
+
+  .o-archive__search {
+    margin-bottom: 0;
+  }
+
+  @media($bp-smaller-than-desktop) {
     margin: 1em;
     margin-top: 0;
   }
@@ -195,25 +263,46 @@
 
 .c-section__modal_close {
   position:absolute;
-  right:50px;
-  top:50px;
+  right: 20px;
+  top: 1.5em;
 }
 
-.c-section__heading {
+svg.banner-title text{
   fill: var(--header_color);
   stroke: var(--background);
   stroke-width: 0.5em;
   stroke-linejoin: round;
   paint-order: stroke;
-  font-size: 1em;
-  font-weight: bolder;
 
   transition: stroke 0.5s ease, color 0.5s ease;
-  //font-family: $font-banner;
+  
+  font-family: $font-headline;
+  font-size: 1em;
+  font-weight: bolder;
+}
+
+.c-section__heading {
+  margin-block: 1em 2em;
+  padding-inline: 2em;
+  @media ($bp-larger-than-phablet) {
+    padding-inline: 20%;
+  }
+  padding-top: 0.5em;
+  border-bottom: 2px solid $color-ubyssey-blue;
+
+  text-align: center;
+  font-family: $font-headline;
+
+  h1 {
+    margin-bottom: 0;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    color: $color-ubyssey-blue;
+  }
 }
 
 .section_infinitefeed {
-  @media ($bp-larger-than-phablet) {
+  @media ($bp-larger-than-tablet) {
     width: 65%;
   }
 

@@ -5,10 +5,8 @@
 <div class="headline-container">
     <p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
 
-    {% if self.title_tag %}
-        <p class="title-tag">{{self.title_tag}}//</p>
-    {% elif self.category %}
-        <p class="title-tag">{{self.category.title}}//</p>
+    {% if self.title_tag_str %}
+        <p class="title-tag">{{self.title_tag_str}}//</p>
     {% endif %}
 
     <header>

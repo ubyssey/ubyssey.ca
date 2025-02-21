@@ -90,10 +90,6 @@
                 </li>
                 {% endif %}
             {% endfor %}
-            <li
-                class="o-archive__sidebar__filter{% if spoof_slug == "All Spoofs" %} o-archive__sidebar__filter--is-active{% endif %}">
-                <span><a href="{% pageurl self %}spoofs/{{ request|query_string }}">All Spoofs</a></span>
-            </li>
             {% for iter in self.spoofs_filters.all %}
                 {% if iter.spoof_filter.slug != spoof_slug %}
                 <li

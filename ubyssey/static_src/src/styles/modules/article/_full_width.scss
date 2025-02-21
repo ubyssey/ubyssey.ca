@@ -1,7 +1,12 @@
 @import 'modules/fonts';
 @import 'modules/variables';
 
-.c-article--fw-story, div.container.clearfix.fw-story, .c-article--timeline, .c-article--isolation , .c-article--isolation-first-article , .c-article--isolation-last-article  {
+.c-article--fw-story,
+div.container.clearfix.fw-story,
+.c-article--timeline,
+.c-article--isolation,
+.c-article--isolation-first-article,
+.c-article--isolation-last-article {
   @media($bp-smaller-than-phablet) {
     .article-content {
       > p,
@@ -9,7 +14,7 @@
       > h2 {
         padding-inline: 1em;
       }
-  
+
       div.caption {
         padding-inline: 1em;
       }
@@ -21,6 +26,7 @@
     margin-right: auto;
     width: auto;
     height: 36px;
+
     @media($bp-larger-than-phablet) {
       width: 585px;
       height: 54px;
@@ -28,12 +34,13 @@
   }
 
   div.article-content {
-    > p,
-    > h1,
-    > h2,
-    > h3,
-    > h4,
-    > ul,
+
+    >p,
+    >h1,
+    >h2,
+    >h3,
+    >h4,
+    >ul,
     div.caption,
     div.attachment,
     div.attachment,
@@ -61,8 +68,20 @@
     box-sizing: border-box;
   }
 
-  .disclaimer { 
+  .disclaimer {
     padding-left: 1em;
     padding-right: 1em;
+  }
+
+  @media($bp-larger-than-phablet) {
+    .pull-quote {
+      &.left {
+        margin-left: 15%;
+      }
+
+      &.right {
+        margin-right: 15%
+      }
+    }
   }
 }

@@ -1,0 +1,13 @@
+{% load humanize %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<article class="o-article {{style}}" time="{{article.published_at|naturalday}}"> 
+    <p class="o-article__above-headline">{% if expectedSection != article.current_section%}<a class="section-tag" href="{{article|get_section_link}}">{{article.current_section}}</a></span>{%endif%} <span class="o-article__published">{{ article.published_at|display_pubdate }}</span></p>
+    <h3 class="o-article__headline">
+        <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+    </h3>
+  </article>
