@@ -30,7 +30,8 @@
       line-height: 2em;
     }
   }
-  h2, p {
+  h2,
+  p {
     margin-bottom: 0;
     margin-inline: auto;
     text-align: center;
@@ -65,7 +66,7 @@ nav.navbar {
   bottom: 1em;
   z-index: 10;
 }
-@media($bp-larger-than-phablet) {
+@media ($bp-larger-than-phablet) {
   #myBtn {
     display: block;
   }
@@ -78,7 +79,7 @@ nav.navbar {
   }
 }
 
-@media($bp-smaller-than-phablet) {
+@media ($bp-smaller-than-phablet) {
   .vs-side-by-side {
     .o-visual-essay__left-container {
       position: relative;

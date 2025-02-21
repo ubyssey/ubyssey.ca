@@ -1,74 +1,74 @@
-@import 'modules/core';
-@import 'modules/grid';
-@import 'modules/fonts';
-@import 'modules/font_faces';
-@import 'modules/advertisements';
-@import 'modules/variables';
-@import 'modules/mixins';
-@import 'modules/utilities';
+@import "modules/core";
+@import "modules/grid";
+@import "modules/fonts";
+@import "modules/font_faces";
+@import "modules/advertisements";
+@import "modules/variables";
+@import "modules/mixins";
+@import "modules/utilities";
 
 // Ubyssey site-specific files
 
-@import 'modules/header';
-@import 'modules/footer';
+@import "modules/header";
+@import "modules/footer";
 
-@import 'modules/headlines';
-@import 'modules/buttons';
+@import "modules/headlines";
+@import "modules/buttons";
 
-@import 'modules/darkmode';  
+@import "modules/darkmode";
 
-@import 'modules/homepage';
+@import "modules/homepage";
 
-@import 'modules/article/base';
-@import 'modules/article/embeds';
-@import 'modules/article/comments_bar';
-@import 'modules/article/gallery';
-@import 'modules/article/full_width';
-@import 'modules/article/sidebar';
-@import 'modules/article/special_page.scss';
-@import 'modules/social';
-@import 'modules/search';
+@import "modules/article/base";
+@import "modules/article/embeds";
+@import "modules/article/comments_bar";
+@import "modules/article/gallery";
+@import "modules/article/full_width";
+@import "modules/article/sidebar";
+@import "modules/article/special_page.scss";
+@import "modules/social";
+@import "modules/search";
 
-@import 'objects/article';
-@import 'objects/inputs';
-@import 'objects/archive';
-@import 'objects/bottom_banner';
+@import "objects/article";
+@import "objects/inputs";
+@import "objects/archive";
+@import "objects/bottom_banner";
 
-@import 'components/adblock-splash';
-@import 'components/author-page';
-@import 'components/button';
-@import 'components/cookie-disclaimer';
-@import 'components/elections-sidebar';
-@import 'components/replacement';
-@import 'components/section-page';
-@import 'components/suggested-articles';
-@import 'components/form';
-@import 'components/header-banner';
-@import 'components/heading';
-@import 'components/info-box';
-@import 'components/input-group';
-@import 'components/page';
-@import 'components/paragraph';
-@import 'components/text-input';
-@import 'components/video';
-@import 'components/loading';
-@import 'components/infinitefeed';
+@import "components/adblock-splash";
+@import "components/author-page";
+@import "components/button";
+@import "components/cookie-disclaimer";
+@import "components/elections-sidebar";
+@import "components/replacement";
+@import "components/section-page";
+@import "components/suggested-articles";
+@import "components/form";
+@import "components/header-banner";
+@import "components/heading";
+@import "components/info-box";
+@import "components/input-group";
+@import "components/page";
+@import "components/paragraph";
+@import "components/text-input";
+@import "components/video";
+@import "components/loading";
+@import "components/infinitefeed";
 
-@import 'components/events/calendar';
-@import 'components/events/event-submit-form';
-@import 'components/events/event-submit-landing';
-@import 'components/events/related-events';
-@import 'components/timeline';
-@import 'components/nationals';
+@import "components/events/calendar";
+@import "components/events/event-submit-form";
+@import "components/events/event-submit-landing";
+@import "components/events/related-events";
+@import "components/timeline";
+@import "components/nationals";
 
-@import 'modules/events/calendar';
-@import 'modules/events/event';
-@import 'modules/events/date_box';
+@import "modules/events/calendar";
+@import "modules/events/event";
+@import "modules/events/date_box";
 
-@import 'modules/widgets/event';
-@import 'modules/widgets/upcoming_events';
-@import 'modules/widgets/upcoming_events_horizontal';
-@import 'modules/widgets/facebook_video_big';
-@import 'modules/widgets/banner';
-@import 'modules/widgets/weekly-events';
-@import 'modules/widgets/twitter';
+@import "modules/widgets/event";
+@import "modules/widgets/upcoming_events";
+@import "modules/widgets/upcoming_events_horizontal";
+@import "modules/widgets/facebook_video_big";
+@import "modules/widgets/banner";
+@import "modules/widgets/weekly-events";
+@import "modules/widgets/twitter";

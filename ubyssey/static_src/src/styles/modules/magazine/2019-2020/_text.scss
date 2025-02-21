@@ -1,7 +1,6 @@
 $font-default: Montserrat, sans-serif;
 $font-secondary: $font-default;
-$font-serif: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-
+$font-serif: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
 $font-size-base: 12;
 
@@ -22,7 +21,10 @@ h2 {
   font-weight: 400;
 }
 
-h1, h3, h3, h4 {
+h1,
+h3,
+h3,
+h4 {
   // Structure
   margin: 0;
 
@@ -31,15 +33,15 @@ h1, h3, h3, h4 {
 }
 
 .o-link {
-	// Text
-	text-decoration: none;
+  // Text
+  text-decoration: none;
   color: inherit;
-  margin: 0 .8rem;
+  margin: 0 0.8rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0);
-  transition: border .25s;
+  transition: border 0.25s;
 
-	&:hover {
+  &:hover {
     color: #333;
     border-color: #333;
-	}
+  }
 }

@@ -8,9 +8,9 @@ name: Lint Code Base
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ["develop"]
   pull_request:
-    branches: [ "develop" ]
+    branches: ["develop"]
 jobs:
   run-lint:
     runs-on: ubuntu-latest
@@ -32,11 +32,10 @@ jobs:
           VALIDATE_CSS: false
           VALIDATE_HTML: false
           VALIDATE_MARKDOWN: false
-          
+
           IGNORE_GENERATED_FILE: true
           IGNORE_GITIGNORED_FILES: true
-          
+
           PYTHON_BLACK_CONFIG_FILE: .github/linters/pyproject.toml
           PYTHON_ISORT_CONFIG_FILE: .github/linters/pyproject.toml
           PYTHON_FLAKE8_CONFIG_FILE: .github/linters/.flake8
-          

@@ -1,228 +1,227 @@
 .c-sidebar_inactive {
-    top: -100%;
-    position:absolute;
-    opacity: 0;
-    visibility: hidden;
+  top: -100%;
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .c-sidebar_active {
-    top:0;
-    position:absolute;
-    opacity: 1;
-    z-index: 200;
+  top: 0;
+  position: absolute;
+  opacity: 1;
+  z-index: 200;
 }
 
 .c-sidebar_item {
-    width: 100%;
-    position:sticky;
-    top: 5em;
+  width: 100%;
+  position: sticky;
+  top: 5em;
 }
 
 .home_infinitefeed .c-sidebar_item {
-    top: 3em;
+  top: 3em;
 }
 
 .flex-stream {
-    margin-top: 0.5em;
-    display: flex;
-    justify-content: center;
+  margin-top: 0.5em;
+  display: flex;
+  justify-content: center;
 
-    * {
-        max-width: 100%;
-    }
+  * {
+    max-width: 100%;
+  }
 
-    img {
-        margin: auto;
-        display: block;
-        
-        max-width: 100%;
-        height: auto;
-    }
+  img {
+    margin: auto;
+    display: block;
+
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 .c-sidebar_container {
-    min-height: fit-content;
-    margin-bottom: 65px;
-    flex-grow: 1;
+  min-height: fit-content;
+  margin-bottom: 65px;
+  flex-grow: 1;
 }
 
 .sidebar-block > .boxLabel {
-    font-size: 1.1em;
+  font-size: 1.1em;
 }
 
 .c-sidebar {
-    height: 100%;
-    width:38%;
-    padding-left: 1em;
-    border-left: solid 1px transparent;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  width: 38%;
+  padding-left: 1em;
+  border-left: solid 1px transparent;
+  display: flex;
+  flex-direction: column;
 
-    &.empty-sidebar {
-        height: 0;
-        padding: 0;
-    }
+  &.empty-sidebar {
+    height: 0;
+    padding: 0;
+  }
 
-    @media ($bp-smaller-than-tablet) {
-        display:none;
-    }
+  @media ($bp-smaller-than-tablet) {
+    display: none;
+  }
 }
 
 .c-section__sidebar {
-    margin-left: 20px;
-    width: 37%;
-    top:100px;
+  margin-left: 20px;
+  width: 37%;
+  top: 100px;
 
-    .sidebar-block--advertisement, .o-advertisement--ad-page-promo {
-        display: none;
-    }
+  .sidebar-block--advertisement,
+  .o-advertisement--ad-page-promo {
+    display: none;
+  }
 
-    .c-sidebar_container {
+  .c-sidebar_container {
     min-height: 125vh;
     margin-bottom: 25vh;
-    }
+  }
 }
 
 .c-infinitefeed__feed {
-    margin:auto;
-    display:flex;
-    flex-direction: column;
-    @media ($bp-larger-than-phablet) {
-        flex-direction: row;
-        justify-content: space-evenly;
-    }
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  @media ($bp-larger-than-phablet) {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
 }
 
 .c-home-infinitefeed {
-    width: 100%;
-    padding-bottom: 3em;
+  width: 100%;
+  padding-bottom: 3em;
 
-    @media ($bp-larger-than-phablet) {
-        margin-right: 20px;
-        width: 50%;
-        padding-right: 20px;
-    }
+  @media ($bp-larger-than-phablet) {
+    margin-right: 20px;
+    width: 50%;
+    padding-right: 20px;
+  }
 }
 
 .c-home-bannerbox {
-    width: 100%;
+  width: 100%;
 }
 
 .sidebar-issue ul {
-    color:white;
-    padding:0;
-    display: flex;
-    flex-wrap: wrap;
-    @media($bp-smaller-than-phablet){
-      text-align: center;
-    }
-}
-.issue{
-    transition-duration: 0.2s;
-    position: relative;
-    left:0;
-    margin: 5px;
-    margin-bottom: 10px;
-    list-style-type: none;
-    background-color:$color-ubyssey-blue;
-    border: 2px solid black;
-    width: 100px;
-    flex-grow: 1;
+  color: white;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  @media ($bp-smaller-than-phablet) {
     text-align: center;
-    height: fit-content;
-    &:hover{
-        top: -7px;
-    }
-
-    a {
-        &:hover{
-        text-decoration: underline;
-        color: white;
-        }
-    }
+  }
 }
-.issueText{
-    margin: 2px;
-    margin-right: 10px;
-    margin-left: 10px;
-    font-size: 1em;
-    color: white;
+.issue {
+  transition-duration: 0.2s;
+  position: relative;
+  left: 0;
+  margin: 5px;
+  margin-bottom: 10px;
+  list-style-type: none;
+  background-color: $color-ubyssey-blue;
+  border: 2px solid black;
+  width: 100px;
+  flex-grow: 1;
+  text-align: center;
+  height: fit-content;
+  &:hover {
+    top: -7px;
+  }
+
+  a {
+    &:hover {
+      text-decoration: underline;
+      color: white;
+    }
+  }
+}
+.issueText {
+  margin: 2px;
+  margin-right: 10px;
+  margin-left: 10px;
+  font-size: 1em;
+  color: white;
 }
 
 .issue_img {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 
 [color-css-theme="light"] {
-
-    .issue {
-        box-shadow: -7px 10px 5px 0px #EEE;
-    }
-    #loader {
-        color: black;
-    }
-    .c-sidebar {
-        border-color: #EEE;
-    }
+  .issue {
+    box-shadow: -7px 10px 5px 0px #eee;
+  }
+  #loader {
+    color: black;
+  }
+  .c-sidebar {
+    border-color: #eee;
+  }
 }
 
 .article-list.sidebar-block {
-    background: #c3e2f0;
-    padding: 2em 1.5em;
-    border-radius: 1.5em;
+  background: #c3e2f0;
+  padding: 2em 1.5em;
+  border-radius: 1.5em;
 
-    h2.block-title {
-        color: black;
-    }
+  h2.block-title {
+    color: black;
+  }
 
-    ul.article-list {
-        padding-inline: 2em;
-        list-style-type: circle;
-        li {
-            padding-bottom: 0.5em;
-            border-bottom: 1px solid #00000045;
-            color: $color-ubyssey-blue-dark;
-            a {
-                display: contents;
-            }
-            b {
-                margin-right: 0.5em;
-            }
-        }
+  ul.article-list {
+    padding-inline: 2em;
+    list-style-type: circle;
+    li {
+      padding-bottom: 0.5em;
+      border-bottom: 1px solid #00000045;
+      color: $color-ubyssey-blue-dark;
+      a {
+        display: contents;
+      }
+      b {
+        margin-right: 0.5em;
+      }
     }
+  }
 }
 
 .latest-list ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 [color-css-theme="dark"] {
-
-    .basic-sidebar h2.block-title {
-        text-shadow: #000000 1px 1px 15px;
+  .basic-sidebar h2.block-title {
+    text-shadow: #000000 1px 1px 15px;
+  }
+  div.basic-sidebar {
+    h2.block-title {
+      color: white;
     }
-    div.basic-sidebar  {  
-        h2.block-title {
+    .issue {
+      color: white;
+      box-shadow: #000000 1px 5px 15px;
+      .issueText {
         color: white;
-        }
-        .issue {
-        color:white;
-        box-shadow: #000000 1px 5px 15px;
-        .issueText{
-            color: white;
-        }
-        }
+      }
     }
-    #loader {
-        color: white;
-    }
+  }
+  #loader {
+    color: white;
+  }
 }
 
 #loader {
-    text-align: center;
-    font-size: 1.5em;
-    margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.5em;
+  margin-bottom: 20px;
 }

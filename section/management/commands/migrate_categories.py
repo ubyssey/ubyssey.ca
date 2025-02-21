@@ -1,23 +1,26 @@
 from django.core.management.base import BaseCommand
-from section.models import CategorySnippet, SectionPage, CategoryPage
-from article.models import ArticlePage
-from wagtail.models import Page
 from wagtail.contrib.redirects.models import Redirect
+from wagtail.models import Page
 
-class Command(BaseCommand): 
-    help = 'Migrates the categories snippet model to section page'
-    def handle(self, *args, **kwargs): 
-        articles = ArticlePage.objects.live().exclude(category_page = None)
+from article.models import ArticlePage
+from section.models import CategoryPage, CategorySnippet, SectionPage
+
+
+class Command(BaseCommand):
+    help = "Migrates the categories snippet model to section page"
+
+    def handle(self, *args, **kwargs):
+        articles = ArticlePage.objects.live().exclude(category_page=None)
         print(" - %d categoried articles" % len(articles))
         for a in range(len(articles)):
             revision = articles[a].save_revision()
             if articles[a].first_published_at != None:
                 revision.publish()
-            if (a % 10 == 0):
+            if a % 10 == 0:
                 print(" - Transitioned %d articles" % a)
         print(" - Transitioned %d articles" % len(articles))
-        
-    '''
+
+    """
         for c in CategorySnippet.objects.all():
             print(c.title)
             new_path = c.section_page.url_path + c.slug + "/"
@@ -30,12 +33,12 @@ class Command(BaseCommand):
                     continue
             else:
                 new_category = CategoryPage(
-                    title=c.title, 
+                    title=c.title,
                     slug=c.slug,
                     description = c.description,
                     banner = c.banner)
                 new_category = c.section_page.add_child(instance=new_category)
-            
+
                 old_path = "/" + c.section_page.slug + "/category/" + c.slug + "/"
                 Redirect.add_redirect(old_path, redirect_to = new_category)
                 Redirect.add_redirect(old_path+"rss/", redirect_to = new_category.url + "rss/")
@@ -48,4 +51,4 @@ class Command(BaseCommand):
                 if a.first_published_at != None:
                     revision.publish()
             print(" - Transitioned %d articles" % len(articles))
-    '''
+    """

@@ -4,14 +4,13 @@
   display: block;
   width: 100%;
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     display: flex;
 
     .c-event:not(:last-child) {
       padding-bottom: 5px;
     }
   }
-
 }
 
 .c-related-events__event {
@@ -24,10 +23,10 @@
     padding-bottom: 0;
   }
 
-  @media($bp-larger-than-mobile) {
+  @media ($bp-larger-than-mobile) {
     // Structure
     padding-bottom: 0;
-    
+
     &:first-child {
       padding-right: 0.5rem;
     }

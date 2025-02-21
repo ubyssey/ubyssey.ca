@@ -1,5 +1,5 @@
-@import 'modules/_variables.scss';
-@import 'modules/_fonts.scss';
+@import "modules/_variables.scss";
+@import "modules/_fonts.scss";
 
 //@import 'modules/magazine/2024/fonts';
 
@@ -14,7 +14,7 @@
 
 //@import 'modules/magazine/2024/homepage';
 //@import 'modules/magazine/2024/article';
-  
+
 html {
   //background-color: #f2e8db;
 }
@@ -35,16 +35,22 @@ body {
   margin-block: 3em;
 }
 
-h2 , h3 , h4 {
+h2,
+h3,
+h4 {
   margin-block: 1.5em;
 }
 
 p {
-    margin-block: 1rem;
-    line-height: 1.5em;
+  margin-block: 1rem;
+  line-height: 1.5em;
 }
 
-h1, h2, h3, h4, a {
+h1,
+h2,
+h3,
+h4,
+a {
   color: var(--highlightColour);
 }
 
@@ -57,7 +63,9 @@ p {
   font-size: 1em;
 }
 
-h2, h3, h4 {
+h2,
+h3,
+h4 {
   margin-top: 1.5em;
   font-size: 1.25em;
   font-family: freight-big-pro, serif;
@@ -123,13 +131,13 @@ img.image-attachment {
   .caption {
     margin-bottom: 1em;
     text-align: center;
-    
+
     .credit {
       margin-left: 1em;
-      
-      color: #57574D;
+
+      color: #57574d;
       font-style: italic;
-      
+
       white-space: pre;
     }
   }
@@ -213,12 +221,12 @@ img.image-attachment {
         margin: 0 auto;
       }
       a {
-        color: #B93636;
+        color: #b93636;
         text-align: center;
         text-decoration: none;
       }
       h3 {
-        color: #B93636;
+        color: #b93636;
       }
     }
   }
@@ -233,11 +241,11 @@ footer {
     margin: auto;
     display: flex;
     width: fit-content;
-  h3 {
-    margin: auto 1em;
-    font-weight: 600;
-    color: #B93636;
-  }
+    h3 {
+      margin: auto 1em;
+      font-weight: 600;
+      color: #b93636;
+    }
   }
   ul {
     margin-block: 0;
@@ -295,7 +303,7 @@ nav.supplement-nav {
   }
   div.title {
     margin-inline: 2em;
-    color: #B93636;
+    color: #b93636;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -341,7 +349,7 @@ nav.supplement-nav {
   }
 }
 
-@media($bp-smaller-than-phablet) {
+@media ($bp-smaller-than-phablet) {
   nav.supplement-nav {
     flex-direction: column;
     padding-top: 0;
