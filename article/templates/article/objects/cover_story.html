@@ -43,7 +43,11 @@
       <div class="o-article__byline">
         <span class="o-article__author">{% if article.get_authors_split_out_visual_bylines %}{{article.authors_split_out_visual_bylines |safe }}{% else %}Ubyssey Staff{% endif %}</span>
         <span> &nbsp;&nbsp; </span>
-        <a href="{{article|get_section_link}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article|get_section_title}}</a>
+        {% with article.get_parent.specific as parent %}
+        {% if parent.live %}
+        <a href="{% pageurl parent %}" class="o-article__section-tag" style="background-color: {{parent.colour}}">{{parent.title}}</a>
+        {% endif %}
+        {% endwith %}
         <span> &nbsp;&nbsp; </span>
         <span class="o-article__published">{% if article.explicit_published_at %}{{article.explicit_published_at|display_pubdate }}{% else %}{{article.first_published_at|display_pubdate}}{% endif %}</span>
       </div>

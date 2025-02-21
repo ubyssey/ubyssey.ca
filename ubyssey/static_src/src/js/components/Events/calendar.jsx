@@ -68,7 +68,7 @@ export function QueryEventsCalendar() {
     const [numberOfWeeks, setNumberOfWeeks] = useState(calculateNumberOfWeeks());
     const [start, setStart] = useState(getInitialStartDate());
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [isMonthToggled, setIsMonthToggled] = React.useState(false);
+    const [isMonthToggled, setIsMonthToggled] = React.useState(urlParams.has("month"));
     const [isLoading, setIsLoading] = React.useState(true);
 
     function getDate(month, year) {
@@ -810,7 +810,19 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                     const loaderWeek = Math.floor((numberOfWeeks - 1) / 2);
                     const isMiddleDay = !isPhablet? week_index === loaderWeek && day_index === Math.floor(week.days.length / 2)
                                                     : week_index === 0 && day_index === 0;
+                    if (isPhablet && ((!isMonthToggled && day.phase == "past") || (isMonthToggled && week_index === 0 && day.day > 7) || (isMonthToggled && week_index > 1 && day.day < 8))) {
+                        return (<></>);
+                    }
+
                     return (
+                        <>
+                       {(week_index !== 0 && day.day == 1) &&
+                            <h2 className="events-calendar--month">
+                            <span className="full">{week.month}</span>
+                            <span className="short">{week.month_short}</span>
+                            </h2>
+                        }
+
                         <div key={day_index} className={"day " + day.phase}>
                             {isMiddleDay && isLoading && !isPhablet &&
                             <div className="loader-container">
@@ -861,6 +873,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                                 ))}
                             </ul>
                         </div>
+                        </>
                     );
                 })}
             </div>

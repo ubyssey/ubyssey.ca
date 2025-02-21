@@ -1049,7 +1049,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
           links: Whether the author names link to their respective pages.
         """
         def format_author(article_author):
-            if links:
+            if links and article_author.author.live:
                 return '<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name)
             return article_author.author.full_name
 
