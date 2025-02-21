@@ -1,5 +1,17 @@
 @import "modules/variables";
 
+li.timeline-dot::before {
+  position: absolute;
+  content: "";
+  border-radius: 100%;
+  background-color: var(--timeline-colour);
+}
+
+li.timeline-dot.inverted::before {
+  border-color: var(--background);
+  transition: border-color 0.5s ease;
+}
+
 ul.horizontal-timeline {
   display: flex;
   list-style: none;
@@ -32,20 +44,43 @@ ul.horizontal-timeline {
     padding-left: 5em;
     flex-direction: column;
     li {
-      padding: 1em 0 0 1.5em;
-      margin-right: 3em;
-      max-width: none;
-      border: none;
-      border-left: 0.2em solid;
+      position: relative;
+      max-width: 25%;
+      padding: 2.5em 2em 0 0;
+      border-top: 0.2em solid var(--timeline-colour);
       &.timeline-dot::before {
-        left: -0.6em;
-        top: 1em;
+        width: 1em;
+        height: 1em;
+
+        left: -0.5em;
+        top: -0.6em;
+      }
+      @media ($bp-larger-than-phablet) {
+        &.timeline-dot .o-article__published,
+        .o-article__seemore {
+          margin-top: -1.4em;
+        }
       }
     }
-    li.timeline-dot:first-child {
-      padding-top: 0;
-      &::before {
-        top: 0;
+    @media ($bp-smaller-than-phablet) {
+      padding-left: 5em;
+      flex-direction: column;
+      li {
+        padding: 1em 0 0 1.5em;
+        margin-right: 3em;
+        max-width: none;
+        border: none;
+        border-left: 0.2em solid var(--timeline-colour);
+        &.timeline-dot::before {
+          left: -0.6em;
+          top: 1em;
+        }
+      }
+      li.timeline-dot:first-child {
+        padding-top: 0;
+        &::before {
+          top: 0;
+        }
       }
     }
   }
@@ -65,16 +100,12 @@ ul.horizontal-timeline-wrap {
     }
 
     &.timeline-dot::before {
-      position: absolute;
       width: 0.6em;
       height: 0.6em;
       border: 0.3em solid var(--background);
 
       left: -0.7em;
       top: -0.7em;
-      content: "";
-
-      border-radius: 100%;
     }
 
     &.timeline-dot .o-article__published,
@@ -168,10 +199,28 @@ ul.vertical-timeline {
         }
 
         &.timeline-dot {
+          padding-top: 1em;
           &::before {
-            left: auto;
-            right: -0.6em;
+            width: 1em;
+            height: 1em;
+
+            left: -0.6em;
+            top: 1em;
           }
+        }
+
+        &.inverted.timeline-dot::before {
+          width: 1em;
+          height: 1em;
+          left: -0.8em;
+
+          border: 0.2em solid var(--background);
+        }
+      }
+      li.timeline-dot:first-child {
+        padding-top: 0;
+        &::before {
+          top: 0;
         }
         &.inverted.timeline-dot {
           &::before {
