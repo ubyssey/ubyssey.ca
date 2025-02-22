@@ -337,7 +337,6 @@ class ArchivePage(RoutablePageMixin, Page):
         return render(request, "archive/archive_page.html", context)
     
     @route(r'^spoofs/(?P<spoof_slug>[-\w]+)/$', name="spoofs_view")
-    @route(r'^spoofs/$', name="spoofs_general_view")
     def get_spoof_articles(self, request, spoof_slug):
         video_section = False
         context = self.get_context(request, video_section)
