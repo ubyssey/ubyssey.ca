@@ -318,8 +318,7 @@ class ArchivePage(RoutablePageMixin, Page):
         
         
         if CategoryPage.objects.filter(slug = magazine_slug).exists():
-            category = CategoryPage.objects.get(slug = magazine_slug)
-            articles = ArticlePage.objects.live().public().filter(category_page=category)   
+            articles = ArticlePage.objects.live().public().filter(category_page__slug=magazine_slug)   
         else:
             return render(request, '404.html', {}, status=404)
         
@@ -346,8 +345,7 @@ class ArchivePage(RoutablePageMixin, Page):
         search_query = context["q"]
 
         if CategoryPage.objects.filter(slug = spoof_slug).exists():
-            category = CategoryPage.objects.get(slug = spoof_slug)
-            articles = ArticlePage.objects.live().public().filter(category_page=category)   
+            articles = ArticlePage.objects.live().public().filter(category_page__slug=spoof_slug)   
         else:
             return render(request, '404.html', {}, status=404)
             

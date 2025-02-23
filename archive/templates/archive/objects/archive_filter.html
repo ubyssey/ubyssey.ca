@@ -66,10 +66,6 @@
                 </li>
                 {% endif %}
             {% endfor %}
-            <li
-                class="o-archive__sidebar__filter{% if section_slug == "magazine" %} o-archive__sidebar__filter--is-active{% endif %}">
-                <a href="{% pageurl self %}magazines/{{ request|query_string }}">All magazines</a>
-            </li>
             {% for iter in self.magazines_filters.all %}
                 {% if iter.magazine_filter.slug != magazine_slug %}
                 <li
