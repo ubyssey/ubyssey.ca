@@ -49,21 +49,27 @@ header.main, header.topbar {
 }
 
 header.main{
-  .branding {
+  .branding.row {
+    margin-top: 2em;
     font-size: 13px;
 
     .middle {
-      //margin-left: 2em;
-      max-width: 520px;
+      position: relative;
       width: 100%;
+      max-width: 520px;
       img {
-        width: 125px;
         position: absolute;
-        margin: 1em 1em 0 1em;
+        margin-inline: 0em;
+        height: calc(100% + 1em);
+        bottom: -0.5em;
+      }
+      svg.top-logo {
+        margin: 2em 0 1em 7em;
+        height: 3em;
+        width: auto;
       }
     }
     .right {
-      margin-top: 2em;
       margin-left: auto;
     }
   }
@@ -76,7 +82,7 @@ header.main{
   }
 
   .row {
-    margin-top: 20px;
+    margin-top: 1em;
     display: flex;
     justify-content: center;
     //overflow: hidden;
@@ -596,9 +602,6 @@ a.store-link {
 
   .dark-logo {
     display: none !important;
-  }
-  .main .middle img {
-    filter: drop-shadow(0 0 5px #1A6996);
   }
   .main .middle .top-logo {
     fill: black;

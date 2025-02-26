@@ -1,10 +1,12 @@
+@import 'modules/fonts';
+
 .events-sidebar {
     border: 1px solid;
     padding: 0 1em;
     border-radius: 0.5em;
 
     h2, h3 {
-        font-family: noto-serif;
+        font-family: $font-default;
         font-size: 1.17em;
     }
     p {
@@ -15,20 +17,44 @@
             color: $color-ubyssey-blue;
         } 
         .featured_event__time {
-            margin-bottom: 0;
+            margin-block: 0;
+            font-weight: 600;
+            font-variation-settings: "wght" 600;
             text-decoration: underline;
         }
         .featured_event__title {
-            margin-top: 0;
+            margin-block: 0;
         }
     }
     ul {
         padding: 0;
         list-style: none;
         li {
-            white-space: nowrap;
+            margin-bottom: 0.5em;
+            padding-left: 0.5em;
+            display: -webkit-box;
+            border-left: 0.25em solid;
+
             overflow: clip;
+            font-family: $font-headline;
+            font-variation-settings: "wght" 400;
             text-overflow: ellipsis;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+
+            b {
+                font-variation-settings: "wght" 600;
+            }
+
+            &.community {
+                border-color: rgb(150,200,250);
+            }
+            &.entertainment {
+                border-color: rgb(200,250,199)
+            }
+            &.sports {
+                border-color: rgb(250,200,150)
+            }
         }
     }
     .see_more {
@@ -48,7 +74,7 @@
 
 [color-css-theme="light"] .events-sidebar {
     color: #3b3b3b;
-    border-color: #c2c2c2;
+    border-color: #EEE;
 
     h2, h3 {
         color: #222;

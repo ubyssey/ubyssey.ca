@@ -38,8 +38,8 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
     use_default_template = models.BooleanField(default=True)
 
-    category = models.ForeignKey(
-        "section.CategorySnippet",
+    category_page = models.ForeignKey(
+        "section.CategoryPage",
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
@@ -194,7 +194,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         ),
          MultiFieldPanel(
             [
-                FieldPanel("category"),
+                FieldPanel("category_page"),
             ],
             heading="Categories",
             classname="collapsible",

@@ -9,7 +9,19 @@
   <div class="o-article__left">
     <a class="o-article__image" href={% pageurl article %} >
       {% if article.featured_media.first.image %}
-       {% image article.featured_media.first.image width-1320 format-webp alt=article.featured_media.first.alt_text %}
+       
+      {% image article.featured_media.first.image width-1320 format-webp as coverimage %}
+
+       <img
+        src="{{ coverimage.url }}"
+        width="{{coverimage.width}}"
+        height="{{coverimage.height}}"
+        alt="{{ article.featured_media.first.alt_text }}"
+        {% if coverimage.focal_point %}
+          style="object-position: 0 calc(100% * calc({{ coverimage.focal_point.centroid.y }} / {{coverimage.height}}));"
+        {% endif %}
+      />
+
       {% elif article.featured_media.first.video %}
         <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg" alt="{{article.featured_media.first.alt_text}}"/>
       {% else %}
@@ -19,17 +31,23 @@
   </div>
   {% endif %}
   <div class="o-article__right">
-    <div class="o-article__headline">
-      <mark id="coverstory" >
-        <a href="{% pageurl article %}">{{ article.title|safe }}</a>
-      </mark>
+    <div class="headline-container">
+      <div class="o-article__headline">
+          <mark id="coverstory" >
+            <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+          </mark>
+      </div>
     </div>
     <div class="o-article__meta">
       <p class="o-article__snippet">{% if article.lede %}{{article.lede|safe}}{% else %}{{article.search_description|safe}}{% endif %}</p>
       <div class="o-article__byline">
         <span class="o-article__author">{% if article.get_authors_split_out_visual_bylines %}{{article.authors_split_out_visual_bylines |safe }}{% else %}Ubyssey Staff{% endif %}</span>
         <span> &nbsp;&nbsp; </span>
-        <a href="{{article|get_section_link}}" class="o-article__section-tag" style="background-color: {{article|get_colour}}">{{article|get_section_title}}</a>
+        {% with article.get_parent.specific as parent %}
+        {% if parent.live %}
+        <a href="{% pageurl parent %}" class="o-article__section-tag" style="background-color: {{parent.colour}}">{{parent.title}}</a>
+        {% endif %}
+        {% endwith %}
         <span> &nbsp;&nbsp; </span>
         <span class="o-article__published">{% if article.explicit_published_at %}{{article.explicit_published_at|display_pubdate }}{% else %}{{article.first_published_at|display_pubdate}}{% endif %}</span>
       </div>

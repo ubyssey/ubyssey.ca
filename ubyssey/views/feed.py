@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 from taggit.models import Tag
 
 from article.models import ArticlePage
-from section.models import SectionPage
 from authors.models import AuthorPage
 
 class RssFeedWithImage(feedgenerator.Rss201rev2Feed):
@@ -105,24 +104,24 @@ class SectionFeed(UbysseyArticleFeed):
     def __init__(self, max_items=10):
         self.max_items = max_items
 
-    def get_object(self, request, slug):
-        return SectionPage.objects.get(slug=slug)
+    def get_object(self, request, section):
+        return section
 
     def title(self, section):
-        return 'Ubyssey %s' % section.title
+        return '"' + section.title + '" from The Ubyssey'
 
     def description(self, section):
-        return 'From your friends at The Ubyssey %s' % section.title
+        return section.description
 
     def link(self, section):
         return section.get_full_url()
     
     def feed_url(self, section):
-        return 'https://ubyssey.ca/rss/%s' % section.slug
+        return section.get_full_url() + "rss/"
 
     def items(self, section):
-        return ArticlePage.objects.live().public().descendant_of(section).order_by('-explicit_published_at')[:self.max_items]
-    
+        return section.get_recent_articles()
+
 class AuthorFeed(UbysseyArticleFeed):
 
     def __init__(self, max_items=10):

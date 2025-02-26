@@ -13,7 +13,7 @@
         <meta name="robots" content="noindex">
     {% endif %}
 
-    <meta name="description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.seo_description %}{{ self.seo_description }}{% elif self.lede %}{{ self.lede }}{% endif %}" />
+    <meta name="description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.seo_description %}{{ self.seo_description }}{% elif self.lede %}{{ self.lede }}{% elif self.description %}{{ self.description|striptags|safe }}{% endif %}" />
     {% if self.authors_with_roles %}<meta name="author" content="{{ self.get_authors_string }}" />{% endif %}
 
     <!-- Open Graph data -->
@@ -33,7 +33,7 @@
     {% else %}
         <meta property="og:image" content="{% static 'ubyssey/images/ubyssey-logo-square.png' %}" />
     {% endif %}
-    <meta property="og:description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.seo_description %}{{ self.seo_description }}{% elif self.lede %}{{ self.lede }}{% endif %}" />
+    <meta property="og:description" content="{% if self.search_description %}{{ self.search_description }}{% elif self.seo_description %}{{ self.seo_description }}{% elif self.lede %}{{ self.lede }}{% elif self.description %}{{ self.description|striptags|safe }}{% endif %}" />
     <meta property="og:keywords" content="{% if self.seo_keyword %}{{ self.seo_keyword }}{% elif self.tags.count %}{% for tag in self.tags.all %}{{ tag }}, {% endfor %}{% endif %}" />
     <meta property="og:site_name" content="The Ubyssey" />
 

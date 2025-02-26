@@ -4,7 +4,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
 
 from specialfeaturelanding.models import SpecialLandingPage
-from section.models import SectionablePage, CategorySnippet
+from section.models import CategoryPage
 from article.models import ArticlePage
 from modelcluster.fields import ParentalKey
 
@@ -41,7 +41,7 @@ class MagazineOrderables(Orderable):
     page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="magazines_filters")
     
     magazine_filter = models.ForeignKey(
-        'section.CategorySnippet',
+        'section.CategoryPage',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -62,7 +62,7 @@ class SpoofOrderables(Orderable):
     page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="spoofs_filters")
     
     spoof_filter = models.ForeignKey(
-        'section.CategorySnippet',
+        'section.CategoryPage',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -100,7 +100,7 @@ class ArchivePage(RoutablePageMixin, Page):
         ),
         MultiFieldPanel(
           [
-            HelpPanel("List all the category snippets you want to have in the magazine filter"),
+            HelpPanel("List all the categories you want to have in the magazine filter"),
             InlinePanel('magazines_filters', min_num=1, label="Magazines"),
           ],
         heading="Magazine Filters",
@@ -108,7 +108,7 @@ class ArchivePage(RoutablePageMixin, Page):
         ),
         MultiFieldPanel(
           [
-            HelpPanel("List all the category snippets you want to have in the spoof filter"),
+            HelpPanel("List all the categories you want to have in the spoof filter"),
             InlinePanel('spoofs_filters', min_num=1, label="Spoofs"),
           ],
         heading="Spoof Filters",
@@ -224,10 +224,6 @@ class ArchivePage(RoutablePageMixin, Page):
         else:
             return objects.filter(title=search_query)
 
-    def get_category(self):
-        return CategorySnippet.objects.all()
-    categories = property(fget=get_category)
-
     @route(r'^$', name='general_view')
     def get_archive_general_articles(self, request):
         video_section = False
@@ -321,10 +317,10 @@ class ArchivePage(RoutablePageMixin, Page):
         search_query = context["q"]
         
         
-        if len(SpecialLandingPage.objects.filter(category__slug=magazine_slug)) > 0:
-            articles = ArticlePage.objects.from_magazine_special_section(section_slug=magazine_slug)
+        if CategoryPage.objects.filter(slug = magazine_slug).exists():
+            articles = ArticlePage.objects.live().public().filter(category_page__slug=magazine_slug)   
         else:
-            articles = ArticlePage.objects.live().public().filter(category__slug=magazine_slug)
+            return render(request, '404.html', {}, status=404)
         
         if context["order"]:
             articles = self.get_order_objects(context["order"], articles, video_section)           
@@ -340,29 +336,18 @@ class ArchivePage(RoutablePageMixin, Page):
         return render(request, "archive/archive_page.html", context)
     
     @route(r'^spoofs/(?P<spoof_slug>[-\w]+)/$', name="spoofs_view")
-    @route(r'^spoofs/$', name="spoofs_general_view")
-    def get_spoof_articles(self, request, spoof_slug="All Spoofs"):
+    def get_spoof_articles(self, request, spoof_slug):
         video_section = False
         context = self.get_context(request, video_section)
         context['self'].noindex = True
         context['spoof_slug'] = spoof_slug
 
         search_query = context["q"]
-        
-        if spoof_slug == "All Spoofs":
-            articles = ArticlePage.objects.none()
 
-            for iter in self.spoofs_filters.all():
-                sections = SectionPage.objects.filter(categories__slug=iter.spoof_filter.slug).live().public()
-                articles = articles | ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
+        if CategoryPage.objects.filter(slug = spoof_slug).exists():
+            articles = ArticlePage.objects.live().public().filter(category_page__slug=spoof_slug)   
         else:
-            sections = SectionPage.objects.filter(categories__slug=spoof_slug).live().public()
-            if sections[0].title.capitalize() != "Humour" :
-                articles = ArticlePage.objects.from_section(section_slug=sections[0].slug).live().public()
-            else:
-
-                articles = ArticlePage.objects.live().public().filter(category__slug=spoof_slug)   
-
+            return render(request, '404.html', {}, status=404)
             
         if context["order"]:
             articles = self.get_order_objects(context["order"], articles, video_section)           
@@ -373,7 +358,6 @@ class ArchivePage(RoutablePageMixin, Page):
         if search_query:
             articles = self.get_search_objects(search_query, articles, video_section)
         
-
         context = self.get_paginated_articles(context, articles, video_section, request)
         
         return render(request, "archive/archive_page.html", context)

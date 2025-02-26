@@ -1,7 +1,7 @@
 from . import blocks as homeblocks
 
 from article.models import ArticlePage
-from section.models import SectionPage , CategorySnippet
+from section.models import SectionPage
 from django.db import models
 from django.utils import timezone
 
@@ -11,6 +11,8 @@ from wagtail.models import Page, Orderable
 from wagtail.fields import StreamField
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 
@@ -67,14 +69,26 @@ class HomePage(Page):
         on_delete=models.SET_NULL
     )
 
+    cover_story_timeout = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Cover story timeout",
+        help_text = "Before this date the manually set coverstory will be displayed. After this date the most recent News article tagged with 'Top stories' will be used as the cover story.",
+    )
+
+    top_stories_timeout = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Top stories timeout",
+        help_text = "Before this date the manually set top stories list will be displayed. After this date the top stories list will be the 5 most recent articles tagged with 'Top stories'. Each section is limited to two articles. Only articles published in the last 2 weeks are included.",
+    )
+
     middle_stream = StreamField(
         [
             ("links", homeblocks.LinksStreamBlock()),
-            ('section', homeblocks.SectionBlock()),
-            ('category', homeblocks.CategoryBlock()),
+            ('article_gatherer', homeblocks.ArticleGathererBlock()),
             ('landing', homeblocks.SpecialLandingPageBlock()),
-            ('tag', homeblocks.TagBlock()),
-            ('article_promo', homeblocks.ArticlePromo()),
+            ('article_manual', homeblocks.ManualArticles()),
         ],
         null=True,
         blank=True,
@@ -94,11 +108,9 @@ class HomePage(Page):
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
-        ("sidebar_category_block", infinitefeedblocks.SidebarCategoryBlock()),
-        ("sidebar_section_block", infinitefeedblocks.SidebarSectionBlock()),         
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_latest", infinitefeedblocks.SidebarLatestBlock()),
-        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles())        
+        ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
+        ("sidebar_manual", homeblocks.SidebarManualArticles())        
     ],
     null=True,
     blank=True,
@@ -142,6 +154,8 @@ class HomePage(Page):
             ],
             heading="Tagline"
         ),
+        FieldPanel("cover_story_timeout"),
+        FieldPanel("top_stories_timeout"),
         FieldPanel("cover_story"),
         MultiFieldPanel(
             [
@@ -163,8 +177,7 @@ class HomePage(Page):
         context = super().get_context(request, *args, **kwargs)
         context["filters"] = {}
 
-        if self.cover_story != None:
-            context["coverstory"] = self.cover_story.specific
+        context["cover_story"], context["top_stories"], context["update_time"] = self.getHomeFeatured()
         
         section_groups = []
         for i in range(math.ceil(len(self.sections_stream)/2)):
@@ -179,9 +192,45 @@ class HomePage(Page):
 
         return context
 
-    def getTopArticles(self):
-        return self.top_articles.all() 
-    top_articles_list = property(fget=getTopArticles)
+    def getHomeFeatured(self):
+        now = timezone.now().astimezone(timezone.get_current_timezone())
+        update_time = self.last_published_at
+
+        cover = None
+        if not self.cover_story_timeout:
+            cover = self.cover_story.specific
+        elif now < self.cover_story_timeout:
+            cover = self.cover_story.specific
+        
+        top = []
+        if not self.top_stories_timeout:
+            top = [article.article for article in self.top_articles.all()]
+        elif now < self.top_stories_timeout:
+            top = [article.article for article in self.top_articles.all()]
+        else:
+            filled_sections = {}
+            tagged = ArticlePage.objects.live().filter(tags__slug='top-stories',first_published_at__gte=now-datetime.timedelta(weeks=2)).order_by('-first_published_at')[:15]
+            if len(tagged) > 0:
+                if tagged[0].first_published_at > update_time:
+                    update_time = tagged[0].first_published_at
+            for article in tagged:
+                if article.current_section not in filled_sections:
+                    filled_sections[article.current_section] = 0
+                if article.current_section == "news" and not cover:
+                    cover = article
+                elif filled_sections[article.current_section] < 2:
+                    if cover:
+                        if article == cover:
+                            continue
+                    top.append(article)
+                    filled_sections[article.current_section] = filled_sections[article.current_section] + 1
+                    if len(top) >= 5:
+                        break
+        
+        if not cover:
+            cover = ArticlePage.objects.live().filter(tags__slug='top-stories',current_section='news').order_by('-first_published_at')[0]
+        
+        return cover, top, update_time
      
     def get_all_section_slug(self):
         
