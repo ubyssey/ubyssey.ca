@@ -1,0 +1,156 @@
+{% load static %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="personality_quiz">
+{% for question in self.questions %}
+
+    <div class="personality-quiz__question">
+        {{question.question_text|safe}}
+
+        <div class="personality-quiz__answers">
+        {% for answer in question.answers %}
+            <button class="personality-quiz__answer" values="{% for point in answer.points %}{{point}},{% endfor %}">{{answer.answer_text|safe}}</button>
+        {% endfor %}
+        </div>
+    </div>
+
+{% endfor %}
+
+    <button class="personality-quiz__results">Reveal result</button>
+
+    <div class="personality-quiz__personality_container covered">
+        {% for personality in self.personalities %}
+            <div class="personality-quiz__personality image-attachment full hidden">
+                <h2>{{personality.personality_name|safe}}</h2>
+                {{personality.personality_result_text|safe}}
+                {% if personality.personality_image.image %}
+                    {% image personality.personality_image.image width-1000 format-webp as image %}
+                    <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ personality.personality_image.caption }}" data-credit="{{ personality.personality_image.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if personality.personality_image.alt_text %}{{ personality.personality_image.alt_text }}{% else %}{{personality.personality_image.caption}}{% endif %}" />
+                    {% if personality.personality_image.caption or personality.personality_image.credit %}
+                    <div class="caption">
+                        {% if personality.personality_image.caption %}{{ personality.personality_image.caption|safe }}{% endif %} <span class="credit">{% if personality.personality_image.credit %}{{ personality.personality_image.credit }}{% endif %}</span>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div class="personality-quiz__personality_wrapper"></div>
+        <img class="loader-logo" src="{% static 'ubyssey/images/ubyssey-logo-blue.svg' %}" alt="The Ubyssey"/>
+    </div>
+
+</div>
+
+<script>
+    let answers = document.getElementsByClassName("personality-quiz__answer");
+    for (let i=0; i < answers.length; i++) {
+        let answer = answers[i];
+        answer.addEventListener("click", function() {
+            if (this.classList.contains("selected")) {
+                this.classList.remove("selected");
+            } else {
+                let others = this.parentElement.getElementsByClassName("personality-quiz__answer");
+                for (let o=0; o < others.length; o++) {
+                    others[o].classList.remove("selected");
+                }
+                this.classList.add("selected");
+            }
+          });
+    }
+
+    let questions = document.getElementsByClassName("personality-quiz__question");
+    let personalities = document.getElementsByClassName("personality-quiz__personality");
+    let maxValues = [];
+    for (let p=0; p<personalities.length; p++) {
+        maxValues.push(0);
+    }
+
+    for (let q=0; q<questions.length; q++) {
+        let questionMaxValues = [];
+        for (let p=0; p<personalities.length; p++) {
+            questionMaxValues.push(null);
+        }
+
+        let answer = questions[q].getElementsByClassName("personality-quiz__answer");
+        
+        for (let a=0; a < answer.length; a++) {
+            answerValues = answer[a].getAttribute("values").split(",").slice(0,-1);
+
+            for (let v=0; v<answerValues.length && v<questionMaxValues.length; v++) {
+                let answerValue = parseInt(answerValues[v]);
+                if (questionMaxValues[v] == null) {
+                    questionMaxValues[v] = answerValue;
+                } else if (questionMaxValues[v] < answerValue) {
+                    questionMaxValues[v] = answerValue;
+                }
+            }
+        }
+
+        for (let i=0; i<questionMaxValues.length; i++) {
+            if (questionMaxValues[i]!= null) {
+                maxValues[i] = maxValues[i] + questionMaxValues[i];
+            }
+        }
+    }
+
+    document.getElementsByClassName("personality-quiz__results")[0].addEventListener("click", function() {
+        let questions = document.getElementsByClassName("personality-quiz__question");
+        let values = [];
+        let personalities = document.getElementsByClassName("personality-quiz__personality");
+        document.getElementsByClassName("personality-quiz__personality_container")[0].classList.add("covered");
+        
+        for (let p=0; p<personalities.length; p++) {
+            personalities[p].classList.add("hidden");
+            values.push(0);
+        }
+        for (let q=0; q<questions.length; q++) {
+            let answer = questions[q].getElementsByClassName("selected");
+            if (answer.length == 0) {
+                alert("Quiz not completed!");
+                return;
+            }
+            answer = answer[0].getAttribute("values").split(",").slice(0,-1);
+            for (let v=0; v<values.length && v<answer.length; v++) {
+                values[v] = values[v] + parseInt(answer[v]);
+            }
+        }
+
+        document.getElementsByClassName("personality-quiz__personality_container")[0].classList.add("load");
+
+        let maxIndex = 0;
+        let max = null;
+        let score = null;
+        for (let i=0; i<values.length; i++) {
+            if (maxValues[i] == 0) {
+                continue;
+            }
+            score = values[i]/maxValues[i];
+            if (max == null) {
+                max = score;
+            }
+            if (score >= max) {
+                max = score;
+                maxIndex = i;
+            }
+            console.log(score);
+        }
+
+        let percent_match = String(Math.round(max * 100)) + "%";
+
+        let percetMatchSpans = personalities[maxIndex].getElementsByClassName("percent-match");
+        for (let i=0; i<percetMatchSpans.length; i++) {
+            percetMatchSpans[i].innerHTML = percent_match;
+        }
+        personalities[maxIndex].innerHTML = personalities[maxIndex].innerHTML.replaceAll("$PERCENTMATCH$", "<span class='percent-match'>" + percent_match + "</span>");
+
+        setTimeout(function(){
+            personalities[maxIndex].classList.remove("hidden");
+            
+            setTimeout(function(){
+                document.getElementsByClassName("personality-quiz__personality_container")[0].classList.remove("load");
+                document.getElementsByClassName("personality-quiz__personality_container")[0].classList.remove("covered");
+            }, 1500);
+        }, 500);
+    });
+</script>
