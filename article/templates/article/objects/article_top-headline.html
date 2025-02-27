@@ -6,7 +6,7 @@
 {% load video_filters %}
 {% load articletags %}
 
-<article class="headline-top">
+<article class="headline-top-articles">
     <div class="above-headline"><span class="o-article__published">{{ article.published_at|display_pubdate }}</span> {% if article.title_tag_str %}<span class="title-tag">{{article.title_tag_str}}//</span>{% endif %}</div>
     <h2><a href="{% pageurl article %}">{{article.title|safe}}</a></h2>
     <div class="o-article--default">
