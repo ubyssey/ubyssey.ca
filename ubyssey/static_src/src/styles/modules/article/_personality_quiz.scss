@@ -1,0 +1,85 @@
+@import 'modules/fonts';
+
+.personality_quiz {
+    .personality-quiz__question p {
+        font-family: $font-body;
+    }
+    .personality-quiz__answers {
+        margin-block: 1em 2em;
+        display: flex;
+    }
+    button.personality-quiz__answer {
+        background: none;
+        border-radius: 1em;
+        
+        background-color: var(--background);
+        transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+    
+        color: var(--text_color);
+        border-color: var(--text_color);
+        font-weight: 400;
+    }
+    
+    button.personality-quiz__answer.selected {
+        border-color: $color-ubyssey-blue;
+        background-color: #0071c9;
+        color: white;
+        text-decoration: underline;
+    }
+    
+    .personality-quiz__personality.hidden {
+        display: none;
+    }
+    
+    .personality-quiz__results {
+        margin: 3em;
+        border: none;
+        border-radius: 0;
+        background: none;
+        background-color: $color-ubyssey-blue;
+        color: white;
+    }
+    
+    .personality-quiz__personality_container {
+        margin-bottom: 3em;
+        position: relative;
+    }
+    
+    .personality-quiz__personality_container .personality-quiz__personality_wrapper {
+        position: absolute;
+        height: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--background);
+        transition: height 0.5s ease;
+    }
+    
+    .personality-quiz__personality_container.covered .personality-quiz__personality_wrapper {
+        height: 100%;
+    }
+    
+    img.loader-logo {
+        position: absolute;
+        left: calc(50% - 0.75em);
+        top: calc(50% - 0.75em);
+        width: 1.5em;
+        height: auto;
+        display: none;
+    
+        animation: spin 0.25s infinite linear;
+    }
+    .personality-quiz__personality_container.load img.loader-logo {
+        display: block;
+    }
+    
+    .personality-quiz__personality {
+        padding: 2em;
+        border: 1px solid #EEE;
+        border-radius: 1em;
+    }
+    
+    .personality-quiz__personality h2 {
+        margin-top: 0;
+    }
+}

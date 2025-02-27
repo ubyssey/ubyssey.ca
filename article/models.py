@@ -490,6 +490,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('header_link', article_blocks.HeaderLinkBlock()),
             ('header_menu', article_blocks.HeaderMenuBlock()),
             ('visual_essay', article_blocks.VisualEssayBlock()),
+            ('personality_quiz', article_blocks.PersonalityQuizBlock()),
         ],
         null=True,
         blank=True,
