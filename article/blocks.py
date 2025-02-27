@@ -223,10 +223,11 @@ class PersonalityQuizBlock(blocks.StructBlock):
                                 max_length=255,
                                 required=True,)),
                             ('points', blocks.ListBlock(
-                                blocks.IntegerBlock(help_text="The amount of points selecting this answer adds to the personality of the same item number (first item corresponds with the first personality).")
+                                blocks.IntegerBlock(help_text="The amount of points selecting this answer adds to the personality of the same item number (first item corresponds with the first personality)."),
+                                help_text="Selecting an answer can give points to multiple personalities. The item number of the point corresponds with the item number of the personality."
                             )),
                         ]
-                    )
+                    ),
                 )),
             ]
         )
