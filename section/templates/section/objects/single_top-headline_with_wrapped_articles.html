@@ -7,8 +7,12 @@
 {% load articletags %}
 
 <div class="article-timeline landing_stream_block u-container u-container--large">
-    {% with first_article=articles|first remaining_articles=articles|slice:"1:5" %}
-        {% include 'article/objects/article_top-headline.html' with article=first_article %}
-        {% include 'article/objects/articles_wrapped.html' with articles=remaining_articles %}
-    {% endwith %}
+
+    {% include 'article/objects/article_column-pubdate-bottom.html' with style="pubdate-bottom left-right-desktop big" article=articles|first lede="true" byline="true" pubdate="true" %}
+
+    <div class="article-wrap">
+        {% for article in articles|slice:"1:"%}
+            {% include 'article/objects/article_column-pubdate-bottom.html' with style="pubdate-bottom small" article=article pubdate="true" %}
+        {% endfor %}
+    </div>
 </div>
