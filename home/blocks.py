@@ -180,12 +180,12 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_horizontal.html', 'Horizontal'),
         ('section/objects/section_landing.html', 'Landing'),
+        ('section/objects/featured_with_wrapped_articles.html', 'Featured article with wrapped articles below'),
         ('section/objects/minimal_grid.html', 'Minimal grid'),
         ('section/objects/blurb_with_timeline.html', 'Blurb with timeline'),
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
-        ('section/objects/single_top-headline_with_wrapped_articles.html', 'Single article with wrapped articles below'),
     ]
 
 

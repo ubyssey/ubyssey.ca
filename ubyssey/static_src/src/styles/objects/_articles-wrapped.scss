@@ -1,27 +1,28 @@
 .article-wrap {
-    margin-top: 2em;
+    margin-top: 1em;
+    padding-top: 2em;
+    border-top: 1px solid #EEE;
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
     justify-content: space-between;
 
     article.o-article {
-        flex: 1 1 calc(25% - 24px); /* 4 articles per row */
         min-width: 200px; 
-        box-sizing: border-box;
         padding-bottom: 0.5em;
+        border-bottom: 1px solid #eee;
+        flex: 1 1 calc(25% - 24px); /* 4 articles per row */
+        box-sizing: border-box;
     }
 
     /* Mobile: 1 article per row */
     @media ($bp-smaller-than-phablet) {
-        border-top: 1px solid #EEE;
         flex-direction: column;
         gap: 0;
         article.o-article {
             width: auto;
             display: flex;
             margin-inline: 2em;
-            border-bottom: 1px solid #EEE;
             .o-article__left {
                 margin-block: auto;
                 width: 8em;
@@ -40,16 +41,9 @@
     @media ($bp-larger-than-phablet) {
         /* Add vertical separator between articles */
         article.o-article {
-            padding-right: 1em;
-            max-width: 300px;
-            border-right: 1px solid #eee;
+            max-width: 50%;
         }
 
-        article.o-article:last-child {
-            padding-right: 0;
-            padding-left: 1em;
-            border-right: none;
-        }
         .left img {
             max-width: 200px;
         }

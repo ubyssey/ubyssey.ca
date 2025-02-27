@@ -8,7 +8,7 @@
 
 <div class="article-timeline landing_stream_block u-container u-container--large">
 
-    {% include 'article/objects/article_column-pubdate-bottom.html' with style="pubdate-bottom left-right-desktop big" article=articles|first lede="true" byline="true" pubdate="true" %}
+    {% include 'article/objects/article_column-pubdate-bottom.html' with style="pubdate-bottom left-right-desktop big" article=articles|first image_size="large" lede="true" byline="true" pubdate="true" %}
 
     <div class="article-wrap">
         {% for article in articles|slice:"1:"%}
