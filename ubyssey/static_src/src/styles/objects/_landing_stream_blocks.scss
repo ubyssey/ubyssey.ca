@@ -10,6 +10,7 @@
       h2 {
         display: inline;
         margin-right: 0.5em;
+        scroll-margin-top: 5em;
         font-size: 2.5em;
         font-family: $font-headline;
         font-variation-settings: "wght" 800;
@@ -290,6 +291,7 @@
           margin-right: 1em;
           margin-block: auto;
           width: 7em;
+          flex-shrink: 0;
         }
 
         .o-article__right {

@@ -379,15 +379,12 @@ ul.article-list, ol.article-list {
   }
 
   .menu-title {
-    margin: .25rem !important;
-    border: 1px solid transparent;
-    
+    margin: 1em !important;
     flex-grow: 1;
-    background-color: var(--linkColour);
+    background: linear-gradient(transparent calc(100% - 0.25em), var(--linkColour) 0);
     transition: .2s;
     cursor: default;
 
-    color: white;
     text-align: center;
     font-size: 1.2rem;
     font-weight: 600;

@@ -30,7 +30,7 @@
                 <ul>
                     {% for article in group.articles %}
                     <li>{% if article.article %}
-                            <a href="{% pageurl article.article %}">{% if article.alias %}{{article.alias}}{% else %}{{article.title}}{% endif %}</a>
+                            <a href="{% pageurl article.article %}">{% if article.alias %}{{article.alias}}{% else %}{{article.article.title}}{% endif %}</a>
                         {% else %}
                             {% if article.alias %}{{article.alias}}{% endif %}
                         {% endif %}

@@ -1,7 +1,7 @@
 .article-wrap {
     margin-top: 1em;
     padding-top: 2em;
-    border-top: 1px solid #EEE;
+    border-top: 1px solid var(--light-border);
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
@@ -10,7 +10,7 @@
     article.o-article {
         min-width: 200px; 
         padding-bottom: 0.5em;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--light-border);
         flex: 1 1 calc(25% - 24px); /* 4 articles per row */
         box-sizing: border-box;
     }
