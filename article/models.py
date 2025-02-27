@@ -1037,7 +1037,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         context["suggested"] = self.get_suggested()
 
         if self.tag_page_link and self.primary_tag_slug:
-            context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
+            if Tag.objects.filter(slug=self.primary_tag_slug).exists():
+                context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
 
         return context
 
