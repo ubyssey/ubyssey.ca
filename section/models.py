@@ -3,6 +3,7 @@ from .sectionable.models import SectionablePage
 
 from article.models import ArticlePage
 from home import blocks as homeblocks
+from article import blocks as article_blocks
 
 from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -189,6 +190,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             ('landing', homeblocks.SpecialLandingPageBlock()),
             ('article_manual', homeblocks.ManualArticles()),
             ('article_gatherer_with_pinned', homeblocks.ArticleGathererWithPinnedBlock()),
+            ('grouped_articles_manual', homeblocks.ManualArticleGroup()),
+            ('header_menu', article_blocks.HeaderMenuBlock()),
         ],
         null=True,
         blank=True,

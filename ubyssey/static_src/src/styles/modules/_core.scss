@@ -167,12 +167,12 @@ main {
 
 .hide-desktop {
   @media($bp-larger-than-phablet){
-    display: none;
+    display: none !important;
   }
 }
 .hide-mobile {
   @media($bp-smaller-than-phablet){
-    display: none;
+    display: none !important;
   }
 }
 
