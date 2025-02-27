@@ -10,9 +10,11 @@
 
     {% include 'article/objects/article_column-pubdate-bottom.html' with style="pubdate-bottom left-right-desktop big" article=articles|first image_size="large" lede="true" byline="true" pubdate="true" %}
 
+    {% if articles|slice:"1:" %}
     <div class="article-wrap">
         {% for article in articles|slice:"1:"%}
             {% include 'article/objects/article_column-pubdate-bottom.html' with style="pubdate-bottom small" article=article pubdate="true" %}
         {% endfor %}
     </div>
+    {% endif %}
 </div>

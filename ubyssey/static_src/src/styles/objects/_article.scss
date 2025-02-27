@@ -379,12 +379,15 @@ ul.article-list, ol.article-list {
   }
 
   .menu-title {
-    margin: 1em !important;
+    margin: .25rem !important;
+    border: 1px solid transparent;
+    
     flex-grow: 1;
-    background: linear-gradient(transparent calc(100% - 0.25em), var(--linkColour) 0);
+    background-color: var(--linkColour);
     transition: .2s;
     cursor: default;
 
+    color: white;
     text-align: center;
     font-size: 1.2rem;
     font-weight: 600;
@@ -395,7 +398,7 @@ ul.article-list, ol.article-list {
 
     &:hover {
       background-color: transparent !important;
-      border-color: #555;
+      border-color: var(--linkColour);
       color: #555;
     }
   }
