@@ -264,8 +264,10 @@ class ArticleGathererBlock(AbstractArticleList):
                     context['description'] = "Stories on '" + tag.name + "' in " + value['section'].title
                 else:
                     context['description'] = None
-                context['link'] = '/tag/' + value['tag_slug']
+                context['link'] = '/tag/' + value['tag_slug'] + '/'
                 context['articles'] = context['articles'].filter(tags__slug=value["tag_slug"])
+            else:
+                context['articles'] = []
 
         if not 'gather_title' in context:
             context['gather_title'] = "Latest stories"
@@ -385,7 +387,7 @@ class MidStreamGroupedArticlesTemplates(blocks.ChoiceBlock):
     ]
 
 
-class ManualArticleGroup(AbstractArticleGroup):
+class ManualArticleLinkGroup(AbstractArticleGroup):
     title = blocks.CharBlock(
         required=False,
         max_length=255,
@@ -412,7 +414,8 @@ class ManualArticleGroup(AbstractArticleGroup):
             ('articles', blocks.ListBlock(
                 blocks.StructBlock([
                     ('alias', blocks.CharBlock(required=False)),
-                    ('article', field_block.PageChooserBlock(page_type='article.ArticlePage', required=False))
+                    ('article', field_block.PageChooserBlock(page_type='article.ArticlePage', required=False)),
+                    ('link', blocks.URLBlock(required=False, help_text="Only use when linking to something outside of site!")),
                 ])
             ))
         ])

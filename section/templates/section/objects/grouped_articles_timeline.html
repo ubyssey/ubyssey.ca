@@ -31,6 +31,8 @@
                     {% for article in group.articles %}
                     <li>{% if article.article %}
                             <a href="{% pageurl article.article %}">{% if article.alias %}{{article.alias}}{% else %}{{article.article.title}}{% endif %}</a>
+                        {% elif article.link %}
+                            <a href="{{article.link}}">{{article.alias}}</a>
                         {% else %}
                             {% if article.alias %}{{article.alias}}{% endif %}
                         {% endif %}
