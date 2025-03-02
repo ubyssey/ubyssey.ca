@@ -637,10 +637,10 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
     function toggleCategory(that, searchParams, setSearchParams) {
 
         var selected = [];
-        var selectType = "hidden";
+        var selectType = "include";
 
-        if (searchParams.has("include")) {
-            selectType = "include";
+        if (searchParams.has("hidden")) {
+            selectType = "hidden";
         }
 
         if (searchParams.has(selectType)) {
@@ -850,6 +850,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                                             event-url={event.event_url}
                                             onClick={(e) => {
                                                 e.preventDefault();
+                                                const searchParams = new URLSearchParams(window.location.search);
                                                 searchParams.set("event", event.hash);
                                                 setSearchParams(searchParams);
                                             }}

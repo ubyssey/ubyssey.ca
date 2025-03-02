@@ -532,7 +532,7 @@ header.events{
     margin-bottom: 5em;
     width: 75%;
     li.selection-toggle {
-        margin: 0;
+        margin-right: 0.25em;
         button {
             display: inline-block;
             padding: 0.25em 0.5em;
@@ -555,37 +555,24 @@ header.events{
     
         li.legend-item {
             position: relative;
-            margin-left: 2em;
-            margin-block: 0.2em;
-            padding-left: 1em;
+            margin: 0.25em;
             font-family: noto-sans;
-        }
-        li.legend-item::before {
-            display: block;
-            position: absolute;
-            left: 0;
-            top: 0.45em;
-            width: 0.3em;
-            height: 0.3em;
-
-            background-color: var(--highlight);
-            border-radius: 100%;
-            font-size: 1.5em;
-            content: "";
         }
     }
 
     .inactive {
         text-decoration: line-through;
+        filter: grayscale(1) contrast(0.25) brightness(1.6);
     }
 
     button {
         max-width: 15em;
         
         margin: 0;
-        padding: 0;
+        padding: 0 0.5em;
         border: none;
-        background: none;
+        border-radius: 0.5em;
+        background: var(--highlight);
 
         overflow-x: clip;
         white-space: nowrap;
