@@ -272,8 +272,9 @@ div.article-content {
 .o-article-embed--video__play-small {
   // Structure
   position: relative;
-  width: 120px;
-  height: 30px;
+  width: fit-content;
+  height: auto;
+  padding-inline: 0.75em;
   margin-bottom: 0.75rem;
 
   // Text
