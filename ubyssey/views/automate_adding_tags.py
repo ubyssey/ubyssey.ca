@@ -5,7 +5,9 @@ from openai import OpenAI
 from images.models import UbysseyImage
 import os
 from dotenv import load_dotenv, find_dotenv
-    
+import csv
+from datetime import datetime
+
 def split_tags_and_description(input_string):
     images_data = input_string.strip().split("\n\n")
     tags_list = []
@@ -28,20 +30,21 @@ def split_tags_and_description(input_string):
 
 # openai.api_key = settings.OPENAI_API_KEY
 def get_image_urls(request):
-    images = UbysseyImage.objects.all()  # Fetch all UbysseyImage instances
+    images = UbysseyImage.objects.exclude(tags__name='Tagged by OpenAI Vision')  # Fetch all UbysseyImage instances
     base_url = settings.MEDIA_URL  # Access the MEDIA_URL setting
     image_urls = []
-
     for image in images:
         url = request.build_absolute_uri(base_url + image.file.name)
         image_urls.append(url)
+    # Write URLs to a text file
+    output_file = 'latest_image_urls.txt'
+    with open(output_file, 'w') as f:
+        for url in image_urls:
+            f.write(f"{url}\n")
+
     # print(image_urls)
     # print(image_urls[333])
-    get_image_tags(['http://ubyssey.storage.googleapis.com/media/wagtail_images/2015/10/DA-TOOPSTER_20140228__MACKENZIE-WALKER.jpg', 
-                    'http://ubyssey.storage.googleapis.com/media/wagtail_images/2015/10/Choice-Chain-Will-McDonald.jpg', 
-                    'http://ubyssey.storage.googleapis.com/media/wagtail_images/2015/10/Screen-Shot-2014-04-06-at-5.52.15-PM-200x166.png', 
-                    'http://ubyssey.storage.googleapis.com/media/wagtail_images/2015/10/Screen-shot-2014-04-14-at-10.10.57-PM-325x295.png', 
-                    'http://ubyssey.storage.googleapis.com/media/wagtail_images/2015/10/Emily-Chang_20140317__Rehyana-Heatherington.jpg'])
+    get_image_tags(image_urls)
     # Pass image_urls to OpenAI API or render them in a template if needed
     return render(request, 'centennial.html', {})
 
@@ -52,6 +55,7 @@ def get_image_tags(image_urls):
     prompt = (
         "Can you provide tags and a description for each image with no additional information? All images are from UBC and are intended for UBC students.\n\n"
         "Also take hints from the urls regarding who might be in picture or what the picture might be about.\n"
+        "Also add synonyms for the tags.\n"
         "For each image:\n"
         "1. Tags: Describe what happens in the image and the medium of photography. Each tag should be concise. Provide 4 to 5 tags for each image. Also remember all images are taken UBC.\n"
         "2. Description: Describe the image to assist in indexing for faster search.\n\n"
@@ -68,52 +72,136 @@ def get_image_tags(image_urls):
         "Note: Ensure that each set of tags and descriptions is clearly separated by a double newline. Each set should be formatted as shown above with tags separated by commas and the description in plain text. This format will make it easier to use the `split_tags_and_description` function to separate the tags and descriptions where tags is a list of lists of strings."
     )
 
-    # Build the messages payload using the new structure
-    messages = [
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": prompt
-                }
-            ]
-        }
-    ]
-    # Iterate through all image URLs and append each one as an image_url object
-    for url in image_urls:
-        print(url)
-        messages[0]["content"].append({
-            "type": "image_url",
-            "image_url": {
-                "url": url
+    # # Build the messages payload using the new structure
+    # messages = [
+    #     {
+    #         "role": "user",
+    #         "content": [
+    #             {
+    #                 "type": "text",
+    #                 "text": prompt
+    #             }
+    #         ]
+    #     }
+    # ]
+    # # Iterate through all image URLs and append each one as an image_url object
+    # for url in image_urls:
+    #     print(url)
+    #     messages[0]["content"].append({
+    #         "type": "image_url",
+    #         "image_url": {
+    #             "url": url
+    #         }
+    #     })
+
+    # response = client.chat.completions.create(
+    #     model="gpt-4o",
+    #     messages=messages,
+    #     temperature=1,
+    #     # max_tokens=2048,
+    #     top_p=1,
+    #     frequency_penalty=0,
+    #     presence_penalty=0
+    # )
+    # choices = response.choices
+    # chat_completion = choices[0]
+    # content = chat_completion.message.content 
+
+    # # print(response.choices[0].message.content)
+    # tags, descriptions = split_tags_and_description(response.choices[0].message.content)
+    # print("Length is"+str(len(tags))+" descriptions: "+str(len(descriptions)))
+    
+    # # Write results to CSV file
+    # timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    # output_file = f'image_tags_{timestamp}.csv'
+    
+    # with open(output_file, 'w', newline='', encoding='utf-8') as f:
+    #     writer = csv.writer(f)
+    #     # Write header
+    #     writer.writerow(['Image URL', 'Tags', 'Description'])
+        
+    #     # Write data for each image
+    #     for url, tag_list, description in zip(image_urls, tags, descriptions):
+    #         writer.writerow([
+    #             url,
+    #             '; '.join(tag_list),  # Convert tag list to semicolon-separated string
+    #             description
+    #         ])
+    
+    # print(f"Wrote results to {output_file}")
+    # # populate_tags(tags, descriptions)
+
+    # Process images in smaller batches
+    batch_size = 50
+    all_tags = []
+    all_descriptions = []
+    
+    for i in range(0, len(image_urls), batch_size):
+        batch_urls = image_urls[i:i + batch_size]
+        print(f"Processing batch {i//batch_size + 1} of {(len(image_urls) + batch_size - 1)//batch_size}")
+        
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": prompt
+                    }
+                ]
             }
-        })
+        ]
+        
+        # Add batch of image URLs to messages
+        for url in batch_urls:
+            print(f"Processing: {url}")
+            messages[0]["content"].append({
+                "type": "image_url",
+                "image_url": {"url": url}
+            })
 
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=messages,
-        temperature=1,
-        # max_tokens=2048,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-    choices = response.choices
-    chat_completion = choices[0]
-    content = chat_completion.message.content 
-
-    # print(response.choices[0].message.content)
-    tags, descriptions = split_tags_and_description(response.choices[0].message.content)
-    print("Length is"+str(len(tags))+" descriptions: "+str(len(descriptions)))
-    populate_tags(tags, descriptions)
-
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4o",  # Updated model name
+                messages=messages,
+                temperature=1,
+                max_tokens=1000,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+            
+            batch_tags, batch_descriptions = split_tags_and_description(response.choices[0].message.content)
+            all_tags.extend(batch_tags)
+            all_descriptions.extend(batch_descriptions)
+            
+        except Exception as e:
+            print(f"Error processing batch: {e}")
+            continue
+    
+    # Write results to CSV
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    output_file = f'image_tags_{timestamp}.csv'
+    
+    with open(output_file, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Image URL', 'Tags', 'Description'])
+        
+        for url, tag_list, description in zip(image_urls[:len(all_tags)], all_tags, all_descriptions):
+            writer.writerow([
+                url,
+                '; '.join(tag_list),
+                description
+            ])
+    
+    print(f"Wrote results to {output_file}")
+    return all_tags, all_descriptions
 def populate_tags(tags, descriptions):
     images = UbysseyImage.objects.all()[:len(tags)] 
     # print(f"Processing {len(images)} images with {len(tags)} tag sets")
     
     for image, tag_list, description in zip(images, tags, descriptions):
-        # print(f"Adding tags to image: {image.id}")
+        print(f"Adding tags to image: {image.id}")
                 
         for tag in tag_list:
             image.tags.add(tag)
