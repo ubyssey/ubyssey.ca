@@ -20,12 +20,14 @@
 {% endblock %}
 
 {% block header %}
+  <div class="o-advertisement--above-sticky-nav-bar">
   {% include 'navigation/headers/mobile.html' %}
       <!-- Place header ads for section page -->
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
-  {% include 'navigation/headers/topbar.html' %}
+  </div>
+    {% include 'navigation/headers/topbar.html' %}
 {% endblock %}
 
 {% block content %}

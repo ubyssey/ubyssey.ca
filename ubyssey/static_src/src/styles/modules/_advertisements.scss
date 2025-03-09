@@ -33,7 +33,6 @@ $adslots: (
     margin-right: auto;
     min-width: $width;
     height: $height;
-    padding-top: 1.5rem;
   }
 
   &.o-advertisement--homepage {
@@ -117,7 +116,6 @@ main.article .o-advertisement--leaderboard {
     display:flex;
     width: $width;
     height: $height;
-    padding-top: 1rem;
     margin-left: auto;
     margin-right: auto;
   }
@@ -210,9 +208,14 @@ main.article .o-advertisement--leaderboard {
   }
 }
 
-.o-advertisement--header-bar{
+.o-advertisement--home-header-bar{
   width: 100%;
-  padding-bottom: 1.5em;
+  padding-bottom: 1em 1.5em;
+}
+
+.o-advertisement--above-sticky-nav-bar{
+  width: 100%;
+  padding-top: 1em;
 }
 
 .o-advertisement--fw-end {
