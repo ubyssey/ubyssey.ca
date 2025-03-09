@@ -36,6 +36,9 @@
     margin-bottom: 10px;
     clip-path: inset(0);
     overflow: clip;
+    iframe {
+      margin: 0;
+    }
   }
 
   &:before {
