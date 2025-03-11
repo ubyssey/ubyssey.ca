@@ -349,8 +349,7 @@ async def update_events(request):
         {'name': 'UBC School of Social Work', 
          'api': 'https://socialwork.ubc.ca/wp-json/wp/v2/',
          'categorize': {
-            'default': 'community',
-            'seminar_type': [520, 527, 525]
+            'default': 'seminar',
          },
         },
 
@@ -461,6 +460,14 @@ async def update_events(request):
             'seminar_type': [562, 564, 567, 762, 563],
          },
         },
+
+        {'name': 'UBC Arts One Program', 
+         'api': 'https://artsone.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
     ]
 
     terms = ['lecture', 'workshop', 'conference', 'talk', 'seminar', 'colloquia']

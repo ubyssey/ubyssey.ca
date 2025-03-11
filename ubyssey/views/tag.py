@@ -12,7 +12,7 @@ class TagPage(object):
                 "meta": {"title": tag.name,
                          "slug": tag.slug,
                          "url": site.root_url + "/tag/" + tag.slug + "/",
-                         "description": "Tag page for stories tagged '" + tag.name + "' from The Ubyssey."},
+                         "description": "Stories tagged '" + tag.name + "' from The Ubyssey."},
             }
             return render(request, 'tag/tag_page.html', context)
         else:
