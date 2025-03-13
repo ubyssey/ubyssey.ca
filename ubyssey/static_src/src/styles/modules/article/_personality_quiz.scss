@@ -81,6 +81,12 @@
         padding: 2em;
         border: 1px solid #EEE;
         border-radius: 1em;
+        a {
+            display: inline;
+            border-bottom: 1px solid;
+            font-weight: 600;
+            color: $color-ubyssey-blue;
+        }
     }
     
     .personality-quiz__personality h2 {

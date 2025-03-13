@@ -285,7 +285,7 @@ class ArticleGathererBlock(AbstractArticleList):
 
         limit = 9
         if 'section/objects/section_horizontal.html' in value['template']:        
-            limit = 4
+            limit = 5
         elif 'section/objects/minimal_grid.html' in value['template']:        
             limit = 6
 
