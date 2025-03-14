@@ -115,12 +115,14 @@
 }
 
 .landing_stream_block__horizontal {
-  .landing_stream_block--flex-container--wrap {
-    flex-wrap: wrap;
-    gap: 1.5em;
-    article.o-article {
-      margin-inline: 0;
-      max-width: 185px;
+  @media($bp-larger-than-phablet) {
+    .landing_stream_block--flex-container--wrap {
+      flex-wrap: wrap;
+      gap: 1.5em;
+      article.o-article {
+        margin-inline: 0;
+        max-width: 185px;
+      }
     }
   }
   @media($bp-smaller-than-phablet) {
