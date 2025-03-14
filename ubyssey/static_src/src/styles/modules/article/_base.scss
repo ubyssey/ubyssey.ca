@@ -39,27 +39,36 @@ $text-color: var(--text_color);
   text-transform: uppercase;
 }
 
-div.article-content .disclaimer {
-  margin: 2em auto;
-  border-top: 2px solid;
-  padding-top: 0.75em;
-  max-width: 585px;
+div.article-content {
+  
+  .disclaimer {
+    margin: 2em auto;
+    border-top: 2px solid;
+    padding-top: 0.75em;
+    max-width: 585px;
 
-  color: $color-ubyssey-blue;
-  font-family: $font-body;
-
-  p {
-    margin-top: 0;
     color: $color-ubyssey-blue;
-    line-height: 2em;
-  }
+    font-family: $font-body;
 
-  a {
-    text-decoration: underline;
+    p {
+      margin-top: 0;
+      color: $color-ubyssey-blue;
+      line-height: 2em;
+    }
+
+    a {
+      text-decoration: underline;
+    }
   }
 }
 
 .c-article--default {
+
+
+  div.article-content .disclaimer {
+    margin-left: 0;
+  }
+
   .author_card {
     margin-left: 0;
   }
@@ -144,13 +153,19 @@ div.article-content .disclaimer {
 
 #custom-tooltip {
   display: none;
-  margin-left: 1em;
-  padding: 5px 8px;
-  font-size: 11px;
-  font-family: $font-default;
+  padding: 0.5em;
+  position: absolute;
+  bottom: 100%;
+  max-width: none;
+  z-index: 10;
+
   background-color: $color-ubyssey-blue;
   border-radius: 4px;
-  color: #fff;
+  
+  color: white;
+  line-height: 1.5em;
+  font-size: 11px;
+  font-family: $font-default
 }
 
 .visuallyhidden {
@@ -181,7 +196,11 @@ div.article-content {
   }
 
   iframe {
+    margin-block: 2em;
     border: none;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   @media ($bp-larger-than-tablet) {
@@ -506,7 +525,8 @@ p.c-article__published-at {
   span.c-share-buttons {
     display: inline-block;
 
-    > a {
+    > a{
+      position: relative;
       padding: 0px 4px 10px 4px;
       color: var(--text_color);
       border: none;

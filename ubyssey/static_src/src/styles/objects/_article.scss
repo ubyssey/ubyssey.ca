@@ -360,6 +360,7 @@ ol.article-list {
 
 // Page link headers
 .header-menu {
+  margin-block: 1em;
   ul {
     list-style-type: none;
     display: flex;
@@ -395,7 +396,7 @@ ol.article-list {
 
     &:hover {
       background-color: transparent !important;
-      border-color: #555;
+      border-color: var(--linkColour);
       color: #555;
     }
   }

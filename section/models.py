@@ -1,4 +1,9 @@
-import datetime
+from django.db.models.query import QuerySet
+from .sectionable.models import SectionablePage
+
+from article.models import ArticlePage
+from home import blocks as homeblocks
+from article import blocks as article_blocks
 
 from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -174,13 +179,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     top_stream = StreamField(
         [
-            ("article_gatherer", homeblocks.ArticleGathererBlock()),
-            ("landing", homeblocks.SpecialLandingPageBlock()),
-            ("article_manual", homeblocks.ManualArticles()),
-            (
-                "article_gatherer_with_pinned",
-                homeblocks.ArticleGathererWithPinnedBlock(),
-            ),
+            ('article_gatherer', homeblocks.ArticleGathererBlock()),
+            ('landing', homeblocks.SpecialLandingPageBlock()),
+            ('article_manual', homeblocks.ManualArticles()),
+            ('article_gatherer_with_pinned', homeblocks.ArticleGathererWithPinnedBlock()),
+            ('grouped_articles_manual', homeblocks.ManualArticleLinkGroup()),
+            ('header_menu', article_blocks.HeaderMenuBlock()),
         ],
         null=True,
         blank=True,

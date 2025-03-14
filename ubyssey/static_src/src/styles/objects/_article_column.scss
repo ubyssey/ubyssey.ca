@@ -91,3 +91,56 @@
     }
   }
 }
+
+@media ($bp-larger-than-phablet) {
+article.left-right-desktop {
+    display: flex;
+    flex-direction: row;
+
+    padding-bottom: 2em;
+    border-bottom: 1px solid var(--light-border);
+    .o-article__left {
+        width: 50%;
+        flex-shrink: 0;
+        .o-article__image {
+            margin-block: auto;
+            padding-bottom: 1em;
+        }
+    }
+}
+}
+
+article.pubdate-bottom {
+    .o-article__right {
+        padding: 1em;
+    }
+    p.o-article__snippet {
+        margin-block: 1em;
+        font-family: $font-body;
+        font-size: 1em;
+    }
+    .o-article__meta {
+        margin-block: 0.5rem;
+        > * {
+            margin-right: 1em;
+            display: inline;
+            font-size: .875em;
+            line-height: 1.5em;
+        }
+    }
+}
+
+article.big {
+    .o-article__right {
+        padding: 1em 2em;
+    }
+    h3.o-article__headline {
+        font-size: 2em;
+    }
+}
+
+article.small {
+    h3.o-article__headline {
+        font-size: 1.25em;
+    }
+}

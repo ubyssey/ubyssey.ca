@@ -61,57 +61,55 @@ function getDateString(date) {
 }
 
 export function QueryEventsCalendar() {
-  const d = 24 * 60 * 60 * 1000;
-  const [events, setEvents] = React.useState([]);
-  let fullUrl = window.location.href;
-  const decodedUrl = decodeURIComponent(fullUrl);
-  const queryString = decodedUrl.split("?")[1]; // Get the part after the "?"
-  const urlParams = new URLSearchParams(queryString);
-  const [numberOfWeeks, setNumberOfWeeks] = useState(calculateNumberOfWeeks());
-  const [start, setStart] = useState(getInitialStartDate());
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isMonthToggled, setIsMonthToggled] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
+    const h = 60 * 60 * 1000;
+    const d = 24 * h;
+    const [events, setEvents] = React.useState([]);
+    let fullUrl = window.location.href;
+    const decodedUrl = decodeURIComponent(fullUrl);
+    const queryString = decodedUrl.split('?')[1]; // Get the part after the "?"
+    const urlParams = new URLSearchParams(queryString);
+    const [numberOfWeeks, setNumberOfWeeks] = useState(calculateNumberOfWeeks());
+    const [start, setStart] = useState(getInitialStartDate());
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isMonthToggled, setIsMonthToggled] = React.useState(urlParams.has("month"));
+    const [isLoading, setIsLoading] = React.useState(true);
 
-  function getDate(month, year) {
-    let newStartDate = new Date(year, month - 1, 1); // Month is 0-indexed
+    function getDate(month, year) {
+        let newStartDate = new Date(year, month - 1, 1); // Month is 0-indexed
 
-    // Ensure the new start date begins on the Monday of that week
-    while (newStartDate.getDay() !== 1) {
-      newStartDate = new Date(newStartDate.getTime() - 24 * 60 * 60 * 1000);
+        // Ensure the new start date begins on the Monday of that week
+        while (newStartDate.getDay() !== 1) {
+            newStartDate = new Date(newStartDate.getTime() - 24 * 60 * 60 * 1000);
+        }    
+        return newStartDate;
     }
-    return newStartDate;
-  }
 
-  function calculateNumberOfWeeks() {
-    if (urlParams.has("month") && urlParams.has("year")) {
-      const month = parseInt(urlParams.get("month"));
-      const year = parseInt(urlParams.get("year"));
-      const date = new Date(year, month - 1, 1);
-      if (
-        (date.getDay() === 6 &&
-          new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() ===
-            31) ||
-        (date.getDay() === 0 &&
-          new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() > 29)
-      ) {
-        return 6;
-      } else {
-        return 5;
-      }
-    } else {
-      return 4;
+    function calculateNumberOfWeeks() {
+        if(urlParams.has("month") && urlParams.has("year")){
+            const month = parseInt(urlParams.get("month"));
+            const year = parseInt(urlParams.get("year"));
+            const date = new Date(year, month - 1, 1);
+            if (
+                (date.getDay() === 6 && new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() === 31) || 
+                (date.getDay() === 0 && new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() > 29)
+            ) {
+                return 6;
+            } else {
+                return 5;
+            }
+        }
+        else{
+            return 4;
+        }
     }
-  }
 
-  function getInitialStartDate() {
-    if (urlParams.has("month") && urlParams.has("year")) {
-      const month = parseInt(urlParams.get("month"));
-      const year = parseInt(urlParams.get("year"));
-      return getDate(month, year);
-    } else {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+    function getInitialStartDate() {
+        if(urlParams.has("month") && urlParams.has("year")){
+            const month = parseInt(urlParams.get("month"));
+            const year = parseInt(urlParams.get("year"));
+            return getDate(month, year);
+        } else{
+            const today = new Date();
 
       let start = new Date(today.getTime() - 10 * d);
       while (start.getDay() !== 1) {
@@ -123,6 +121,19 @@ export function QueryEventsCalendar() {
   const calculateNewStart = (direction, start) => {
     // Set the start date to the first day of the current month
     let newStart = new Date(start);
+            let start = new Date(today.getTime() - 10 * d);
+            start.setHours(0, 0, 0, 0);
+            while (start.getDay() !== 1) {
+                start = new Date(start.getTime() + d + h);
+                start = changeTimezone(start, "America/Vancouver");
+                start.setHours(0, 0, 0, 0);
+            }
+            return start;
+        }
+    }
+    const calculateNewStart = (direction, start) => {
+        // Set the start date to the first day of the current month
+        let newStart = new Date(start);
 
     // Adjust the month based on the direction
     if (direction === "next") {
@@ -187,63 +198,55 @@ export function QueryEventsCalendar() {
     setIsMonthToggled(true);
   };
 
-  const startDate = () => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    let start = new Date(today.getTime() - 10 * d);
-    while (start.getDay() !== 1) {
-      start = new Date(start.getTime() + d);
-    }
-    return start;
-  };
-
-  function getEvents() {
-    const s = 1000;
-    const m = s * 60;
-    const h = m * 60;
-    const d = h * 24;
-
-    var apiStart = new Date(start.getTime() - d * 25);
-    apiStart.setDate(1);
-
-    var apiEnd = new Date(apiStart.getTime() + d * 120);
-    apiEnd.setDate(1);
-    console.log(String(apiStart) + " " + String(apiEnd));
-    axios
-      .get(
-        "/api/events/?limit=1000&start_time__gte=" +
-          apiStart.toISOString() +
-          "&end_time__lte=" +
-          apiEnd.toISOString(), //2024-10-15T11:00:00-07:00 If needed you can increase or decrease the limit to include more or lesser events or add more query parmaters
-      )
-      .then((response) => {
-        const res = response.data.results;
-
-        for (let i = 0; i < res.length; i++) {
-          res[i].start_time = changeTimezone(
-            new Date(res[i].start_time),
-            "America/Vancouver",
-          );
-          res[i].end_time = changeTimezone(
-            new Date(res[i].end_time),
-            "America/Vancouver",
-          );
+    const startDate = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let start = new Date(today.getTime() - 10 * d);
+        while (start.getDay() !== 1) {
+            start = new Date(start.getTime() + d);
         }
+        start.setHours(0, 0, 0, 0);
+        return start;
+    };
 
-        setEvents(res);
-        setIsLoading(false);
-      })
-      .catch((err) => console.log(err));
-  }
-  React.useEffect(() => {
-    getEvents();
-    const theme = document.documentElement.getAttribute("color-css-theme");
-    setIsDarkMode(theme === "dark");
-  }, [start]);
+    function getEvents(){
+        
+        const s = 1000
+        const m = s * 60;
+        const h = m * 60;
+        const d = h * 24;
 
-  const toggleDarkMode = () => {
-    setIsDarkMode((prevMode) => !prevMode); // Toggle dark mode state
-  };
+        var apiStart = new Date(start.getTime() - d*25);
+        apiStart.setDate(1);
+
+        var apiEnd = new Date(apiStart.getTime() + d*120);
+        apiEnd.setDate(1);
+        axios
+        .get(
+            '/api/events/?limit=1000&start_time__gte=' + apiStart.toISOString() + "&end_time__lte=" + apiEnd.toISOString() //2024-10-15T11:00:00-07:00 If needed you can increase or decrease the limit to include more or lesser events or add more query parmaters
+        )
+        .then((response) => {
+            const res = response.data.results;
+
+            for (let i=0; i<res.length; i++) {
+                res[i].start_time = changeTimezone(new Date(res[i].start_time), "America/Vancouver");
+                res[i].end_time = changeTimezone(new Date(res[i].end_time), "America/Vancouver");
+            }
+
+            setEvents(res);
+            setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+    }
+    React.useEffect(()=>{
+        getEvents();
+        const theme = document.documentElement.getAttribute('color-css-theme');
+        setIsDarkMode(theme === 'dark');
+    },[start]);
+
+    const toggleDarkMode = () => {
+        setIsDarkMode(prevMode => !prevMode); // Toggle dark mode state
+    };
 
   return (
     <Router>
@@ -634,156 +637,94 @@ function EventsOptions({
                 Today
               </Link>
             </>
-          )}
-        </div>
-        {isMobile ? (
-          <select
-            className="category-select"
-            onChange={handleCategoryChange}
-            value={category}
-          >
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.value}>
-                {cat.label}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <ul>
-            {categories.map((cat) => (
-              <li
-                key={cat.value}
-                className={category === cat.value ? "selected" : ""}
-              >
-                <Link
-                  to={`?category=${cat.value}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (cat.value == "all") {
-                      searchParams.delete("category");
-                    } else {
-                      searchParams.set("category", cat.value);
-                    }
-                    setSearchParams(searchParams);
-                  }}
-                >
-                  {cat.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
         )}
-        <a className="alt-icon" href={ical.url} title={ical.title}>
-          <ion-icon name="calendar"></ion-icon>
-        </a>
-        <a className="alt-icon" href={rss.url} title={rss.title}>
-          <ion-icon name="logo-rss"></ion-icon>
-        </a>
-      </div>
-      <p className="mobile-alt">
-        <a href={ical.url}>
-          <ion-icon name="calendar"></ion-icon> iCal File
-        </a>
-        <a href={rss.url}>
-          <ion-icon name="logo-rss"></ion-icon> Rss Feed
-        </a>
-      </p>
-    </>
-  );
+        </div>
+                {isMobile ? (
+                    <select
+                        className = "category-select"
+                        onChange={handleCategoryChange}
+                        value={category}
+                    >
+                        {categories.map(cat => (
+                            <option key={cat.id} value={cat.value}>{cat.label}</option>
+                        ))}
+                    </select>
+                ) : (
+                    <ul>
+                        {categories.map(cat => (
+                            <li key={cat.value} className={category === cat.value ? "selected" : ""}>
+                                <Link to={`?category=${cat.value}`}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if(cat.value=="all") {
+                                            searchParams.delete("category");
+                                        } else {
+                                            searchParams.set("category", cat.value);
+                                        }
+                                        setSearchParams(searchParams);
+                                    }}
+                                >{cat.label}</Link>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                <a className="alt-icon" href={ical.url} title={ical.title}><ion-icon name="calendar"></ion-icon></a>
+                <a className="alt-icon" href={rss.url} title={rss.title}><ion-icon name="logo-rss"></ion-icon></a>
+            </div>
+            <p className="mobile-alt">
+                <a href={ical.url}><ion-icon name="calendar"></ion-icon> iCal File</a>
+                <a href={rss.url}><ion-icon name="logo-rss"></ion-icon> RSS Feed</a>
+            </p>
+        </>
+    );
 }
 
-function EventsCalendar({
-  events,
-  start,
-  setStart,
-  numberOfWeeks,
-  setNumberOfWeeks,
-  isDarkMode,
-  setIsDarkMode,
-  getInitialStartDate,
-  handleMonthNavigation,
-  setIsMonthToggled,
-  isMonthToggled,
-  isLoading,
-}) {
-  let query = useQuery();
-  const s = 1000;
-  const m = s * 60;
-  const h = m * 60;
-  const d = h * 24;
-  const navigate = useNavigate();
+function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeeks, isDarkMode, setIsDarkMode, getInitialStartDate, handleMonthNavigation, setIsMonthToggled, isMonthToggled, isLoading}) {
 
-  function arrangeCalendar(events) {
-    const weekDays = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    const shortenedMonths = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const s = 1000;
+    let query = useQuery();
+    const s = 1000
     const m = s * 60;
     const h = m * 60;
     const d = h * 24;
+    const navigate = useNavigate();
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    function arrangeCalendar(events) {
+        const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const shortenedMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const s = 1000
+        const m = s * 60;
+        const h = m * 60;
+        const d = h * 24;
 
-    var cur = new Date(start);
+        const today = new Date();
+        
+        var cur = new Date(start);
+        cur.setHours(0, 0, 0, 0);
 
-    var calendar = [];
-    for (let i = 0; i < numberOfWeeks; i++) {
-      var week = {
-        month: months[cur.getMonth()],
-        month_short: shortenedMonths[cur.getMonth()],
-        days: [],
-        this_week: false,
-      };
-      for (let a = 0; a < 7; a++) {
-        var day = {
-          day: cur.getDate(),
-          phase: "today",
-          day_of_week: weekDays[cur.getDay()],
-          events: [],
-        };
-        if (cur.toLocaleDateString() == today.toLocaleDateString()) {
-          day["phase"] = "today";
-          week["this_week"] = true;
-        } else if (cur < today) {
-          day["phase"] = "past";
-        } else {
-          day["phase"] = "future";
-        }
+        var calendar = [];
+        for(let i=0; i<numberOfWeeks; i++) {
+            var week = {
+                'month': months[cur.getMonth()],
+                'month_short': shortenedMonths[cur.getMonth()],
+                'days': [],
+                'this_week': false,
+            };
+            for(let a=0; a<7; a++) {
+                var day = {
+                    'day': cur.getDate(),
+                    'phase': 'today',
+                    'day_of_week': weekDays[cur.getDay()],
+                    'events': [],
+                };
+                if (cur.toLocaleDateString() == today.toLocaleDateString()) {
+                    day['phase'] = 'today';
+                    week['this_week'] = true;
+                } else if (cur < today) {
+                    day['phase'] = 'past';
+                } else {
+                    day['phase'] = 'future';
+                }
 
         if (cur.getDate() == 1) {
           week["month"] = months[cur.getMonth()];
@@ -833,28 +774,27 @@ function EventsCalendar({
     return calendar;
   }
 
-  function getHosts(hosts, event) {
-    if (
-      event.host != null &&
-      event.host != "" &&
-      event.start_time >= start.getTime() &&
-      event.start_time < start.getTime() + d * 7 * numberOfWeeks
-    ) {
-      if (!hosts.includes(event.host)) {
-        hosts.push(event.host);
-      }
+    function getHosts(hosts, event) {
+        if (event.host != null && event.host != "" && event.start_time >= start.getTime() && event.start_time < start.getTime() + (d * 7 * numberOfWeeks)) {
+            if (!(hosts.includes(event.host))) {
+                hosts.push(event.host);
+            }
+        }
+        hosts.sort();
+        return hosts;
     }
-    hosts.sort();
-    return hosts;
-  }
 
-  function toggleCategory(that, searchParams, setSearchParams) {
-    var selected = [];
-    var selectType = "hidden";
+    function toggleCategory(that, searchParams, setSearchParams) {
+
+        var selected = [];
+        var selectType = "include";
 
     if (searchParams.has("include")) {
       selectType = "include";
     }
+        if (searchParams.has("hidden")) {
+            selectType = "hidden";
+        }
 
     if (searchParams.has(selectType)) {
       selected = searchParams.get(selectType).split(" ");
@@ -1026,87 +966,87 @@ function EventsCalendar({
         </div>
       )}
 
-      {calendar.map((week, week_index) => (
-        <div
-          className={
-            "events-calendar--row" + (week.this_week ? " enlarged" : "")
-          }
-        >
-          {week_index === 0 && (
-            <h2 className="events-calendar--month">
-              <span className="full">{week.month}</span>
-              <span className="short">{week.month_short}</span>
-            </h2>
-          )}
-          {week.days.map((day, day_index) => {
-            const loaderWeek = Math.floor((numberOfWeeks - 1) / 2);
-            const isMiddleDay = !isPhablet
-              ? week_index === loaderWeek &&
-                day_index === Math.floor(week.days.length / 2)
-              : week_index === 0 && day_index === 0;
-            return (
-              <div key={day_index} className={"day " + day.phase}>
-                {isMiddleDay && isLoading && !isPhablet && (
-                  <div className="loader-container">
-                    <LoaderComponent width={60} />
-                  </div>
+        {calendar.map((week, week_index) => (
+            <div className={"events-calendar--row" + (week.this_week ? " enlarged" : "")}>
+                {week_index === 0 && (
+                    <h2 className="events-calendar--month">
+                        <span className="full">{week.month}</span>
+                        <span className="short">{week.month_short}</span>
+                    </h2>
                 )}
-                <button
-                  onClick={(e) =>
-                    e.target.parentElement.parentElement.classList.toggle(
-                      "enlarged",
-                    )
-                  }
-                  className="events-calendar--number"
-                >
-                  <span className="events-calendar--number-dayOfWeek">
-                    {day.day_of_week}{" "}
-                  </span>
-                  {day.day}.
-                </button>
-                <ul>
-                  {day.events.map((event) => (
-                    <li
-                      key={event.hash}
-                      className={
-                        (eventHash === event.hash ? "selected " : "") +
-                        eventsTags(event)
-                      }
-                    >
-                      <Link
-                        title={event.title.replace("<br>", ", ")}
-                        className="calendar-item"
-                        to={"?event=" + event.hash}
-                        event-url={event.event_url}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          searchParams.set("event", event.hash);
-                          setSearchParams(searchParams);
-                        }}
-                        dangerouslySetInnerHTML={{
-                          __html:
-                            "<b>" +
-                            event.displayTime +
-                            "</b> " +
-                            (event.host && event.category === "seminar"
-                              ? event.host
-                                  .replace("UBC ", "")
-                                  .split("for ")
-                                  .slice(-1)[0]
-                                  .split("of ")
-                                  .slice(-1)[0] + ":<br>"
-                              : "") +
-                            event.title,
-                        }}
-                      ></Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
-      ))}
+                {week.days.map((day, day_index) => {
+                    const loaderWeek = Math.floor((numberOfWeeks - 1) / 2);
+                    const isMiddleDay = !isPhablet? week_index === loaderWeek && day_index === Math.floor(week.days.length / 2)
+                                                    : week_index === 0 && day_index === 0;
+                    if (isPhablet && ((!isMonthToggled && day.phase == "past") || (isMonthToggled && week_index === 0 && day.day > 7) || (isMonthToggled && week_index > 1 && day.day < 8))) {
+                        return (<></>);
+                    }
+
+                    return (
+                        <>
+                       {(week_index !== 0 && day.day == 1) &&
+                            <h2 className="events-calendar--month">
+                            <span className="full">{week.month}</span>
+                            <span className="short">{week.month_short}</span>
+                            </h2>
+                        }
+
+                        <div key={day_index} className={"day " + day.phase}>
+                            {isMiddleDay && isLoading && !isPhablet &&
+                            <div className="loader-container">
+                                    <LoaderComponent width={60}/>
+                            </div>}
+                            <button
+                                onClick={(e) =>
+                                    e.target.parentElement.parentElement.classList.toggle("enlarged")
+                                }
+                                className="events-calendar--number"
+                            >
+                                <span className="events-calendar--number-dayOfWeek">{day.day_of_week} </span>
+                                {day.day}.
+                            </button>
+                            <ul>
+                                {day.events.map((event) => (
+                                    <li
+                                        key={event.hash}
+                                        className={(eventHash === event.hash ? "selected " : "" + (event.update_mode == 0 ? "manual " : "")) + eventsTags(event)}
+                                    >
+                                        <Link
+                                            title={event.title.replace("<br>", ", ")}
+                                            className="calendar-item"
+                                            to={"?event=" + event.hash}
+                                            event-url={event.event_url}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                const searchParams = new URLSearchParams(window.location.search);
+                                                searchParams.set("event", event.hash);
+                                                setSearchParams(searchParams);
+                                            }}
+                                            dangerouslySetInnerHTML={{
+                                                __html:
+                                                    "<b>" +
+                                                    event.displayTime +
+                                                    "</b> " +
+                                                    (event.host && event.category === "seminar"
+                                                        ? event.host
+                                                            .replace("UBC ", "")
+                                                            .split("for ")
+                                                            .slice(-1)[0]
+                                                            .split("of ")
+                                                            .slice(-1)[0] + ":<br>"
+                                                        : "") +
+                                                    event.title,
+                                            }}
+                                        ></Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        </>
+                    );
+                })}
+            </div>
+        ))}
 
       <div class="legend">
         <ul>

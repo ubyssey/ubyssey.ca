@@ -1,36 +1,37 @@
 @import "modules/fonts";
 // Shared classes among landing stream blocks
 .landing_stream_block {
-  margin: 3em auto 5em auto;
-
-  .landing_stream_block--header {
-    margin-block: 2em;
-    font-family: $font-default;
-    font-weight: 800;
-    h2 {
-      display: inline;
-      margin-right: 0.5em;
-      font-size: 2.5em;
-      font-family: $font-headline;
-      font-variation-settings: "wght" 800;
-    }
-    p {
-      margin-right: 0.5em;
-      display: inline;
-      a {
-        font-style: italic;
-        text-decoration: underline;
-      }
-    }
-    @media ($bp-smaller-than-phablet) {
-      padding-inline: 1em;
-      text-align: center;
+    margin: 3em auto 5em auto;
+  
+    .landing_stream_block--header {
+      margin-block: 2em;
+      font-family: $font-default;
+      font-weight: 800;
       h2 {
-        display: block;
-        font-size: 1.5em;
+        display: inline;
+        margin-right: 0.5em;
+        scroll-margin-top: 5em;
+        font-size: 2.5em;
+        font-family: $font-headline;
+        font-variation-settings: "wght" 800;
+      }
+      p {
+        margin-right: 0.5em;
+        display: inline;
+        a {
+          font-style: italic;
+          text-decoration: underline;
+        }
+      }
+      @media($bp-smaller-than-phablet) {
+        padding-inline: 1em;
+        text-align: center;
+        h2 {
+          display: block;
+          font-size: 1.5em;
+        }
       }
     }
-  }
 
   .landing_stream_block--header-small {
     h2 {
@@ -113,7 +114,17 @@
 }
 
 .landing_stream_block__horizontal {
-  @media ($bp-smaller-than-phablet) {
+  @media($bp-larger-than-phablet) {
+    .landing_stream_block--flex-container--wrap {
+      flex-wrap: wrap;
+      gap: 1.5em;
+      article.o-article {
+        margin-inline: 0;
+        max-width: 185px;
+      }
+    }
+  }
+  @media($bp-smaller-than-phablet) {
     .landing_stream_block--flex-container {
       flex-direction: column;
     }
@@ -294,6 +305,7 @@
           margin-right: 1em;
           margin-block: auto;
           width: 7em;
+          flex-shrink: 0;
         }
 
         .o-article__right {
@@ -308,6 +320,25 @@
   }
 }
 
+.section .header-menu 
+{
+  margin-top: 4em;
+  .menu-title {
+    border: none;
+    background: linear-gradient(transparent calc(100% - 0.25em), var(--linkColour) 0);
+    color: var(--header_color);
+    a {
+      margin: auto;
+      width: fit-content;
+      border-radius: 0.5em 0.5em 0 0;
+      background: var(--linkColour);
+      color: white;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}
 [color-css-theme="light"] {
   .landing-stream-block__borders {
     border-color: $color-ubyssey-blue;

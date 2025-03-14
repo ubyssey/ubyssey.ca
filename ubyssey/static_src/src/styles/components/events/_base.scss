@@ -538,63 +538,50 @@ header.events {
 }
 
 .legend {
-  margin-bottom: 5em;
-  width: 75%;
-  li.selection-toggle {
-    margin: 0;
+    margin-bottom: 5em;
+    width: 75%;
+    li.selection-toggle {
+        margin-right: 0.25em;
+        button {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            margin: 0;
+            border-radius: 0.25em;
+            background-color: #0071c9;
+            color: white;
+        }
+    }
+    ul {
+        display: flex;
+        padding: 0;
+        margin: 0.5em 0;
+        list-style: none;
+        flex-wrap: wrap;
+
+        @media($bp-smaller-than-phablet) {
+            flex-direction: column;
+        }
+    
+        li.legend-item {
+            position: relative;
+            margin: 0.25em;
+            font-family: noto-sans;
+        }
+    }
+
+    .inactive {
+        text-decoration: line-through;
+        filter: grayscale(1) contrast(0.25) brightness(1.6);
+    }
+
     button {
-      display: inline-block;
-      padding: 0.25em 0.5em;
-      margin: 0;
-      border-radius: 0.25em;
-      background-color: #0071c9;
-      color: white;
-    }
-  }
-  ul {
-    display: flex;
-    padding: 0;
-    margin: 0.5em 0;
-    list-style: none;
-    flex-wrap: wrap;
-
-    @media ($bp-smaller-than-phablet) {
-      flex-direction: column;
-    }
-
-    li.legend-item {
-      position: relative;
-      margin-left: 2em;
-      margin-block: 0.2em;
-      padding-left: 1em;
-      font-family: noto-sans;
-    }
-    li.legend-item::before {
-      display: block;
-      position: absolute;
-      left: 0;
-      top: 0.45em;
-      width: 0.3em;
-      height: 0.3em;
-
-      background-color: var(--highlight);
-      border-radius: 100%;
-      font-size: 1.5em;
-      content: "";
-    }
-  }
-
-  .inactive {
-    text-decoration: line-through;
-  }
-
-  button {
-    max-width: 15em;
-
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: none;
+        max-width: 15em;
+        
+        margin: 0;
+        padding: 0 0.5em;
+        border: none;
+        border-radius: 0.5em;
+        background: var(--highlight);
 
     overflow-x: clip;
     white-space: nowrap;
@@ -605,6 +592,11 @@ header.events {
     font-size: inherit;
     line-height: unset;
   }
+        color: black;
+        font-weight: 500;
+        font-size: inherit;
+        line-height: unset;
+    }
 
   @media ($bp-smaller-than-phablet) {
     margin: 0.5em 1em 1em 1em;

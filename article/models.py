@@ -496,76 +496,40 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     # -----Field attributes-----
     content = StreamField(
         [
-            (
-                "richtext",
-                blocks.RichTextBlock(
-                    label="Rich Text Block",
-                    help_text=(
-                        "Write your article contents here. See documentation:"
-                        " https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
-                    ),
-                ),
-            ),
-            (
-                "plaintext",
-                blocks.TextBlock(
-                    label="Plain Text Block",
-                    help_text=(
-                        "Warning: Rich Text Blocks preferred! Plain text primarily"
-                        " exists for importing old Dispatch text."
-                    ),
-                ),
-            ),
-            (
-                "dropcap",
-                blocks.TextBlock(
-                    label="Dropcap Block",
-                    template="article/stream_blocks/dropcap.html",
-                    help_text=(
-                        "Create a block where special dropcap styling with be applied"
-                        " to the first letter and the first letter only.\n\nThe"
-                        " contents of this block will be enclosed in a <p"
-                        ' class="drop-cap">...</p> element, allowing its targetting for'
-                        " styling.\n\nNo RichText allowed."
-                    ),
-                ),
-            ),
-            (
-                "video",
-                video_blocks.OneOffVideoBlock(
-                    label="Credited/Captioned One-Off Video",
-                    help_text=(
-                        "Use this to credit or caption videos that will only be"
-                        " associated with this current article, rather than entered"
-                        " into our video library. You can also embed videos in a Rich"
-                        " Text Block."
-                    ),
-                ),
-            ),
-            ("audio", article_blocks.AudioBlock()),
-            ("image", image_blocks.ImageBlock()),
-            (
-                "raw_html",
-                blocks.RawHTMLBlock(
-                    label="Raw HTML Block",
-                    help_text=(
-                        "WARNING: DO NOT use this unless you really know what you're"
-                        " doing!"
-                    ),
-                ),
-            ),
-            ("quote", article_blocks.PullQuoteBlock()),
-            (
-                "gallery",
-                SnippetChooserBlock(
-                    target_model=GallerySnippet,
-                    template="article/stream_blocks/gallery.html",
-                ),
-            ),
-            ("gallery_block", article_blocks.GalleryBlock()),
-            ("header_link", article_blocks.HeaderLinkBlock()),
-            ("header_menu", article_blocks.HeaderMenuBlock()),
-            ("visual_essay", article_blocks.VisualEssayBlock()),
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+            )),
+            ('plaintext', blocks.TextBlock(
+                label="Plain Text Block",
+                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
+            ('dropcap', blocks.TextBlock(
+                label = "Dropcap Block",
+                template = 'article/stream_blocks/dropcap.html',
+                help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
+            )),
+            ('video', video_blocks.OneOffVideoBlock(
+                label = "Credited/Captioned One-Off Video",
+                help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
+            )),
+            ('audio', article_blocks.AudioBlock()),
+            ('image', image_blocks.ImageBlock(
+            )),
+            ('raw_html', blocks.RawHTMLBlock(
+                label = "Raw HTML Block",
+                help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
+            )),
+            ('quote', article_blocks.PullQuoteBlock()),
+            ('gallery', SnippetChooserBlock(
+                target_model = GallerySnippet,
+                template = 'article/stream_blocks/gallery.html',
+            )),
+            ('gallery_block', article_blocks.GalleryBlock()),
+            ('header_link', article_blocks.HeaderLinkBlock()),
+            ('header_menu', article_blocks.HeaderMenuBlock()),
+            ('visual_essay', article_blocks.VisualEssayBlock()),
+            ('personality_quiz', article_blocks.PersonalityQuizBlock()),
         ],
         null=True,
         blank=True,
@@ -1257,7 +1221,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         context["suggested"] = self.get_suggested()
 
         if self.tag_page_link and self.primary_tag_slug:
-            context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
+            if Tag.objects.filter(slug=self.primary_tag_slug).exists():
+                context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
 
         return context
 
@@ -1270,11 +1235,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
 
         def format_author(article_author):
-            if links:
-                return '<a href="%s">%s</a>' % (
-                    article_author.author.full_url,
-                    article_author.author.full_name,
-                )
+            if links and article_author.author.live:
+                return '<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name)
             return article_author.author.full_name
 
         if not authors_list:
@@ -1385,33 +1347,26 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             "org_role",
         ]
         authors_with_roles = []
-        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role):
-            if k == "org_role":
-                authors_with_roles.append(
-                    [
-                        k,
-                        ",".join(
-                            map(
-                                lambda a: " "
-                                + a.author.ubyssey_role
-                                + ": "
-                                + self.get_authors_string(links=True, authors_list=[a]),
-                                list(v),
-                            )
-                        ),
-                    ]
-                )
-            else:
-                authors_with_roles.append(
-                    [
-                        k,
-                        role_types_words[k]
-                        + self.get_authors_string(links=True, authors_list=list(v)),
-                    ]
-                )
-        authors_with_roles.sort(key=lambda s: role_types.index(s[0]))
-        return ", ".join(map(lambda a: a[1], authors_with_roles))
+        for i in range(len(role_types)):
+            authors_with_roles.append([])
 
+        for author in self.article_authors.all():
+            if author.author_role in role_types:
+                authors_with_roles[role_types.index(author.author_role)].append(author)
+            
+        authors_strings = []
+        for i in range(len(role_types)):
+            if len(authors_with_roles[i]) > 0:
+                if role_types[i] == "org_role":
+                    authors_strings.append(\
+                        ', '.join(map(lambda a: a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]), authors_with_roles[i])) \
+                    )
+                elif role_types[i] in role_types_words:
+                    authors_strings.append(\
+                        role_types_words[role_types[i]] + self.get_authors_string(links=True, authors_list=authors_with_roles[i]) \
+                    )
+                                    
+        return ', '.join(authors_strings)
     authors_with_roles = property(fget=get_authors_with_roles)
 
     def get_authors_split_out_visual_bylines(self) -> str:

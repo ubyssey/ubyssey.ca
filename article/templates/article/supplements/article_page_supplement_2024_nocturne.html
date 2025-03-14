@@ -45,7 +45,7 @@
         </defs>
       </svg>
       </a>
-      <div class="title"><a href="{{self.category.section_page.url}}category/{{self.category.slug}}">Nocturne</a></div>
+      <div class="title"><a href="{% pageurl self.category_page %}">Nocturne</a></div>
       <div class="desc">Creative non-fiction supplement 2024, Edited by <a href="https://ubyssey.ca/authors/fiona-sjaus/">Fiona Sjaus</a></div>
     </div>
 </nav>
@@ -155,7 +155,7 @@
     </article>
     <div class="category-list">
         <h1>
-          <a href="/" title="Go to Ubyssey Homepage" class="footer-logo">
+          <a href="{%pageurl self.category_page %}" title="Nocturne" class="footer-logo">
             Nocturne
           </a>
         </h1>

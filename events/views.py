@@ -390,135 +390,138 @@ async def update_events(request):
     tasks.append(asyncio.create_task(Event.objects.phas_scrape()))
 
     wp_apis = [
-        {
-            "name": "UBC Anthropology",
-            "api": "https://anth.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [633, 632, 634, 528, 530],
-                "hidden_title_terms": ["coffee hour"],
-                "seminar_title_terms": [
-                    "Archaeology Lab Nights",
-                    "Information Session",
-                ],
-            },
+
+        {'name': 'UBC Anthropology', 
+         'api': 'https://anth.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [528, 530, 632, 633, 634, 728, 729],
+            'hidden_title_terms': ['coffee hour'],
+            'seminar_title_terms': ['Archaeology Lab Nights', 'Information Session'],
+         },
         },
-        {
-            "name": "UBC Asian Studies",
-            "api": "https://asia.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [570, 572, 571, 574, 739],
-            },
+
+        {'name': 'UBC Asian Studies', 
+         'api': 'https://asia.ubc.ca/wp-json/wp/v2/', 
+         'categorize': {
+            'default': 'community',
+             'seminar_type': [570, 571, 572, 574, 739],
+         },
         },
-        {
-            "name": "UBC Central, Eastern, and Northern European Studies",
-            "api": "https://cenes.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [552, 554, 559, 553, 677, 558],
-                "hidden_title_terms": ["fika", "plauder", "kaffeestunde", "slavic tea"],
-            },
+
+        {'name': 'UBC Central, Eastern, and Northern European Studies', 
+         'api': 'https://cenes.ubc.ca/wp-json/wp/v2/',
+        'categorize': {
+            'default': 'community',
+            'seminar_type': [552, 554, 553, 558, 559, 677],
+            'hidden_title_terms': ['fika', 'plauder', 'kaffeestunde', 'slavic tea']
+         },
+        },    
+
+        {'name': 'UBC English Language and Literatures', 
+         'api': 'https://english.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+             'seminar_type': [510, 512, 513, 515],
+             'seminar_title_terms': ['Information Session'],
+         },
         },
-        {
-            "name": "UBC English Language and Literatures",
-            "api": "https://english.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [512, 515, 510, 513],
-                "seminar_title_terms": ["Information Session"],
-            },
+
+        {'name': 'UBC French, Hispanic, and Itallian Studies', 
+         'api': 'http://fhis.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [532, 534, 537],
+            'seminar_title_terms': ['Information Session'],
+         },
         },
-        {
-            "name": "UBC French, Hispanic, and Itallian Studies",
-            "api": "http://fhis.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [534, 537, 532],
-                "seminar_title_terms": ["Information Session"],
-            },
+
+        {'name': 'UBC Institute for Gender, Race, Sexuality and Social Justice', 
+         'api': 'https://grsj.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+            'community_type': [516, ]
+         },
         },
-        {
-            "name": "UBC Institute for Gender, Race, Sexuality and Social Justice",
-            "api": "https://grsj.arts.ubc.ca/wp-json/wp/v2/",
-            "categorize": {"default": "community", "seminar_type": [512, 514, 632]},
+
+        {'name': 'UBC History', 
+         'api': 'https://history.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [525, 526, 527, 530, 531]
+         },
         },
-        {
-            "name": "UBC History",
-            "api": "https://history.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [531, 525, 527, 526, 530],
-            },
+
+        {'name': 'UBC Migration Studies', 
+         'api': 'https://migration.ubc.ca/wp-json/wp/v2/', 
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [1208,1209,785,546,1206,1198],
+            'seminar_tags': [1269],
+            'hidden_title_terms': ['community luncheon'],
+         },
         },
-        {
-            "name": "UBC Migration Studies",
-            "api": "https://migration.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [1208, 1209, 785, 546, 1206, 1198],
-                "hidden_title_terms": ["community luncheon"],
-            },
+
+        {'name': 'UBC Psychology', 
+         'api': 'https://psych.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [433, 384, 906, 792, 377, 931, 560, 559]
+         },
         },
-        {
-            "name": "UBC Psychology",
-            "api": "https://psych.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [433, 384, 906, 792, 377, 931, 560, 559],
-            },
+
+        {'name': 'UBC School of Social Work', 
+         'api': 'https://socialwork.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
         },
-        {
-            "name": "UBC School of Social Work",
-            "api": "https://socialwork.ubc.ca/wp-json/wp/v2/",
-            "categorize": {"default": "community", "seminar_type": [520, 527, 525]},
+
+        {'name': 'UBC Faculty of Arts', 
+         'api': 'https://www.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'entertainment_type': [802],
+            'seminar_type': [1962, 1785],
+            'hidden_topics': [1783, 1950, 1996, 2378, 2379, 1995, 2375]
+         },
         },
-        {
-            "name": "UBC Faculty of Arts",
-            "api": "https://www.arts.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "entertainment_type": [802],
-                "seminar_type": [1962, 1785],
-                "hidden_topics": [1783, 1950, 1996, 2378, 2379, 1995, 2375],
-            },
+
+        {'name': 'UBC School of Information', 
+         'api': 'https://ischool.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
         },
-        {
-            "name": "UBC School of Information",
-            "api": "https://ischool.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "seminar",
-            },
+
+        {'name': 'UBC Art History, Visual Art & Theory', 
+         'api': 'https://ahva.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [820, 926, 817, 930, 824, 825, 822]
+         },
         },
-        {
-            "name": "UBC Art History, Visual Art & Theory",
-            "api": "https://ahva.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [820, 926, 817, 930, 824, 825, 822],
-            },
+
+        {'name': 'UBC Ancient Mediterranean and Near Eastern Studies', 
+         'api': 'https://amne.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'community',
+            'seminar_type': [718, 568, 570, 569]
+         },
         },
-        {
-            "name": "UBC Ancient Mediterranean and Near Eastern Studies",
-            "api": "https://amne.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "community",
-                "seminar_type": [718, 568, 570, 569],
-            },
+
+        {'name': 'UBC Coordinated Arts Programs', 
+         'api': 'https://cap.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
         },
-        {
-            "name": "UBC Coordinated Arts Programs",
-            "api": "https://cap.arts.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "seminar",
-            },
-        },
-        {
-            "name": "UBC School of Public Policy and Global Affairs",
-            "api": "https://sppga.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "seminar",
-            },
+
+        {'name': 'UBC School of Public Policy and Global Affairs', 
+         'api': 'https://sppga.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
         },
         {
             "name": "UBC Geography",
@@ -570,14 +573,22 @@ async def update_events(request):
                 "default": "seminar",
             },
         },
-        {
-            "name": "UBC School of Music",
-            "api": "https://music.ubc.ca/wp-json/wp/v2/",
-            "categorize": {
-                "default": "entertainment",
-                "seminar_type": [562, 564, 567, 762, 563],
-            },
+
+        {'name': 'UBC School of Music', 
+         'api': 'https://music.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'entertainment',
+            'seminar_type': [562, 564, 567, 762, 563],
+         },
         },
+
+        {'name': 'UBC Arts One Program', 
+         'api': 'https://artsone.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
     ]
 
     terms = ["lecture", "workshop", "conference", "talk", "seminar", "colloquia"]
@@ -708,8 +719,8 @@ async def update_events(request):
 
 
 def create_ical(request):
-    import icalendar
     from django.http import HttpResponse
+    import icalendar
 
     cal = icalendar.Calendar()
     if request.GET.get("category"):

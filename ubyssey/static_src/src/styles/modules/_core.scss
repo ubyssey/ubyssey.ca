@@ -174,13 +174,13 @@ main {
 /* close commented backslash hack */
 
 .hide-desktop {
-  @media ($bp-larger-than-phablet) {
-    display: none;
+  @media($bp-larger-than-phablet){
+    display: none !important;
   }
 }
 .hide-mobile {
-  @media ($bp-smaller-than-phablet) {
-    display: none;
+  @media($bp-smaller-than-phablet){
+    display: none !important;
   }
 }
 
@@ -259,6 +259,7 @@ html[color-css-theme="light"] {
   --archive-text: #4e4e4e;
   --article-publish: #2b2b2b;
   --pagination: #353535;
+  --light-border: #EEE;
 }
 
 html[color-css-theme="dark"] {
@@ -275,9 +276,10 @@ html[color-css-theme="dark"] {
   --article_caption: #bfbbbb;
   --authors-title-bio: #d8d8d8;
   background-color: #031621;
-  --archive-text: #bfbfbf;
-  --article-publish: #bfbfbf;
-  --pagination: #bfbfbf;
+  --archive-text: #BFBFBF;
+  --article-publish: #BFBFBF;
+  --pagination: #BFBFBF;
+  --light-border: #{$color-ubyssey-blue-light};
 }
 
 body,
