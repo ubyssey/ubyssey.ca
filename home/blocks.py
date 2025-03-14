@@ -179,6 +179,7 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_horizontal.html', 'Horizontal'),
+        ('section/objects/section_horizontal-wrapped.html', 'Horizontal wrapped'),
         ('section/objects/section_landing.html', 'Landing'),
         ('section/objects/featured_with_wrapped_articles.html', 'Featured article with wrapped articles below'),
         ('section/objects/minimal_grid.html', 'Minimal grid'),
@@ -284,8 +285,9 @@ class ArticleGathererBlock(AbstractArticleList):
             context['highlight_colour'] = value["highlight_colour"]
 
         limit = 9
-        if 'section/objects/section_horizontal.html' in value['template']:        
+        if 'section/objects/section_horizontal' in value['template']:        
             limit = 5
+
         elif 'section/objects/minimal_grid.html' in value['template']:        
             limit = 6
 
