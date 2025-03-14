@@ -583,15 +583,10 @@ header.events {
         border-radius: 0.5em;
         background: var(--highlight);
 
-    overflow-x: clip;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+        overflow-x: clip;
+        white-space: nowrap;
+        text-overflow: ellipsis;
 
-    color: inherit;
-    font-weight: 500;
-    font-size: inherit;
-    line-height: unset;
-  }
         color: black;
         font-weight: 500;
         font-size: inherit;

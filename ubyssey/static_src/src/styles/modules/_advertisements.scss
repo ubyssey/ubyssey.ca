@@ -206,7 +206,7 @@ main.article .o-advertisement--leaderboard {
     }
   }
 
-  @media (min-width: $width + 40) {
+  @media (min-width: $width) {
     display: block;
     z-index: -1;
     &.o-advertisement--homepage {

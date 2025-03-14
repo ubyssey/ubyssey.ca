@@ -111,16 +111,6 @@ export function QueryEventsCalendar() {
         } else{
             const today = new Date();
 
-      let start = new Date(today.getTime() - 10 * d);
-      while (start.getDay() !== 1) {
-        start = new Date(start.getTime() + d);
-      }
-      return start;
-    }
-  }
-  const calculateNewStart = (direction, start) => {
-    // Set the start date to the first day of the current month
-    let newStart = new Date(start);
             let start = new Date(today.getTime() - 10 * d);
             start.setHours(0, 0, 0, 0);
             while (start.getDay() !== 1) {
