@@ -12,11 +12,6 @@ services:
        - SQL_PASSWORD
     volumes:
       - ./mysql-data:/var/lib/mysql
-    healthcheck:
-      test: "/usr/bin/mysql --user=ubyssey --password=${SQL_PASSWORD} --execute \"SHOW DATABASES;\""
-      interval: 2s
-      timeout: 20s
-      retries: 20
 
   cache:
     image: memcached:1.6.10
