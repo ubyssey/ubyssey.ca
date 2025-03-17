@@ -27,10 +27,10 @@ services:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
     command: >
       bash -c "python manage.py migrate
-      && gunicorn ubyssey.wsgi:application --bind 0.0.0.0:8000"
+      && gunicorn ubyssey.wsgi:application --workers=17 --bind 0.0.0.0:8000"
     environment:
       SQL_HOST: mysql
-      SQL_USER: ubyssey
+      SQL_USER: root
       SQL_PASSWORD: ${SQL_PASSWORD}
       SQL_DATABASE: ubyssey
       GS_ACCESS_KEY_ID: ${GS_ACCESS_KEY_ID}
@@ -56,7 +56,7 @@ services:
       - 443:443
     restart: always
     volumes:
-      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+      - ./nginx/:/etc/nginx/:ro
       - ./certbot/www/:/var/www/certbot/:ro
     depends_on:
       - django
