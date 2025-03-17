@@ -84,4 +84,4 @@ jobs:
         run: cat sync-secrets.sh | ssh staging
 
       - name: Restart services
-        run: ssh staging docker stack deploy --compose-file docker-compose.yml ubyssey
+        run: ssh staging docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
