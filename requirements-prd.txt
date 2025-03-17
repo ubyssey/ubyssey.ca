@@ -22,7 +22,7 @@ requests==2.31.0
 whitenoise==6.5.0
 brotli==1.0.9
 django-extensions==3.2.3
-git+https://github.com/jazzband/django-dbtemplates.git@233a401#egg=django-dbtemplates
+git+https://github.com/jazzband/django-dbtemplates.git@ac740e0#egg=django-dbtemplates
 wagtail-modelchooser==4.0.1
 wagtailmenus==4.0.0
 wagtail-cache==2.3.0
