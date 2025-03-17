@@ -152,7 +152,8 @@ class EventManager(models.Manager):
                     
                     tasks = []
                     for i in result:
-                        tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize, locations)))
+                        if timezone.now() < datetime.fromisoformat(i['end']).astimezone(timezone.get_current_timezone()):
+                            tasks.append(asyncio.create_task(self.wp_events_api_create_event(i, api, name, categorize, locations)))
                     
                     await asyncio.gather(*tasks)
 
@@ -218,17 +219,19 @@ class EventManager(models.Manager):
             for category in categories:
                 if event.category != categorize['default']:
                     break
-                categorize_key = category + '_type'
-                if categorize_key in categorize:
-                    for event_type in event_json['event-type']:
-                    
-                        for category_type in categorize[categorize_key]:
-                            if event_type == category_type:
-                                event.category = category
-                                break
+                for param in ['type', 'tags']:
+                    categorize_key = category + '_' + param
+                    if categorize_key in categorize:
+                        for event_type in event_json['event-' + param]:
+                        
+                            for category_type in categorize[categorize_key]:
+                                if event_type == category_type:
+                                    event.category = category
+                                    break
 
-                        if event.category != categorize['default']:
-                            break
+                            if event.category != categorize['default']:
+                                break
+                
 
             if event.hidden == False and 'hidden_title_terms' in categorize:
                 for term in categorize['hidden_title_terms']:
@@ -418,7 +421,7 @@ class EventManager(models.Manager):
             if i in title:
                 return 'community'
             
-        for i in ['ubc cpd', 'seminar']:
+        for i in ['ubc cpd', 'seminar',]:
             if i in title:
                 return 'seminar'
 
@@ -444,7 +447,7 @@ class EventManager(models.Manager):
                 return 'seminar'
 
         # Check for seminar keywords  
-        for i in ['workshop', 'seminar', 'research', 'learning', 'conference',]:
+        for i in ['workshop', 'seminar', 'research', 'learning', 'conference', 'lecture']:
             if i in categories:
                 return 'seminar'
             

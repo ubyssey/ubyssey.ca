@@ -1,0 +1,48 @@
+{% load humanize %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="landing-stream-block__timeline landing-stream-block_blurb-with-timeline landing_stream_block u-container u-container--large u-container--padded {% if self.hide_mobile %}hide-mobile{% endif %}">
+    <div class="landing_stream_block--header landing_stream_block--header-blurb">
+        <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>
+        {% if description %}
+        {{description|safe}}
+        {% endif %}
+    </div>
+
+    <div class="landing_stream_block--flex-container hide-mobile">
+        <table class="grouped_timeline" style="--timeline-colour: #{{self.highlight_colour}}">
+            <thead><tr>
+                {% for group in article_groups %}
+                <th class="grouped_timeline--group-header">
+                    <div class="grouped_timeline--group-header-date">{{group.title|safe}}</div>
+                    <h3 class="grouped_timeline--group-header-label">{{group.description|safe}}</h3>
+                </th>
+                {% endfor %}
+            </tr></thead>
+            <tbody>
+                <tr>
+                {% for group in article_groups %}
+                <td>
+                <ul>
+                    {% for article in group.articles %}
+                    <li>{% if article.article %}
+                            <a href="{% pageurl article.article %}">{% if article.alias %}{{article.alias}}{% else %}{{article.article.title}}{% endif %}</a>
+                        {% elif article.link %}
+                            <a href="{{article.link}}">{{article.alias}}</a>
+                        {% else %}
+                            {% if article.alias %}{{article.alias}}{% endif %}
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                </td>
+                {% endfor %}
+                </tr>
+            </tr>
+        </table>
+    </div>
+</div>

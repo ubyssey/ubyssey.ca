@@ -14,7 +14,7 @@ def getArticles(filters, start, number):
         if filters["section"] == "home":
             return ArticlePage.objects.live().public().order_by('-explicit_published_at')[int(start):int(start)+int(number)]
         else:
-            section = SectionPage.objects.get(slug=filters["section"])
+            section = SectionPage.objects.get(slug=filters["section"], depth=3)
             articles = ArticlePage.objects.live().public().descendant_of(section).order_by('-explicit_published_at')
     else:
         articles = ArticlePage.objects.live().public().order_by('-explicit_published_at')
@@ -23,7 +23,7 @@ def getArticles(filters, start, number):
         articles = articles.filter(tags__slug=filters["tag"])
 
     if "category" in filters:
-        articles = articles.filter(category__slug=filters["category"])
+        articles = articles.filter(category_page__slug=filters["category"])
 
     if "search_query" in filters:
         return articles.search(filters["search_query"])[int(start):int(start)+int(number)]

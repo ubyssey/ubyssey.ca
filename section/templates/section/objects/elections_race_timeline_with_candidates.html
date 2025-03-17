@@ -1,0 +1,84 @@
+{% load humanize %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="landing_stream_block__elections_race landing_stream_block u-container u-container--large" style="--highlight-colour: #{{highlight_colour}}">
+  
+    {% if articles %}
+	<ul class="vertical-timeline right-align-on-desktop">
+        {% for article in articles %}
+            <li class="{% ifchanged article.published_at|display_pubdate %}timeline-dot{% endifchanged %}">
+                <article class="o-article o-article--bullet">
+                {% ifchanged article.published_at|display_pubdate %}<p class="o-article__published">{{ article.published_at|display_pubdate }}</p>{% endifchanged %}
+                {% if forloop.counter == 1 %}
+                    {% if article.featured_media.first.image %}  
+                    <a href="{% pageurl article %}" class="o-article__image">        
+                        {% image article.featured_media.first.image fill-680x476-c100 format-webp loading="lazy" %}
+                    </a>
+                    {% endif %}
+                {% endif %}
+                <h3 class="o-article__headline">
+                    <a href={% pageurl article %}>{{ article.title|safe }}</a>
+                </h3>
+                </article>
+            </li>
+        {% endfor %}
+        {% if link %}
+            <li class="timeline-dot inverted">
+                <div class="o-article--bullet">
+                    <h3 class="o-article__seemore">
+                        <a href="{{link}}">{{gather_title}}</a> &nbsp;<a href="{{link}}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+                    </h3>
+                </div>
+            </li>
+        {% endif %}
+    </ul>
+    {% endif %}
+
+    <div class="blurb_with_pinned">
+        {% if title or description %}
+            <div class="landing_stream_block--header landing_stream_block--header-blurb">
+            {% if title %}<h2 id="{{title|slugify}}">{{title}}</h2>{% endif %}
+            {% if description %}
+                {{description|safe}}
+            {% endif %}
+            </div>
+        {% endif %}
+        
+        {% if pinned %}
+            {% if pinned_title %}
+                <h3 class="pinned-title">{{pinned_title}}</h3>
+            {% endif %}
+            <div class="landing_stream_block--flex-container">
+
+                {% for article in pinned %}
+                    <article class="o-article article--round_with_border" time="{{article.published_at|naturalday}}">
+                        {% if article.featured_media.first or article.featured_media %}
+                        {% if article.featured_media.first.image  or article.featured_media%}
+                        <div class="o-article__left">
+                        <div style="position:relative">
+                            <a href="{% pageurl article %}" class="o-article__image">
+                            {% if article.featured_media.first.image %}
+                                {% image article.featured_media.first.image fill-680x476-c100 format-webp loading="lazy" %}
+                            {% endif %}
+                            </a>
+                        </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        <div class="o-article__right">
+                            <h3 class="o-article__headline">
+                            <a href="{% pageurl article %}">{% if article.fw_alternate_title %}{{article.fw_alternate_title|safe}}{% else %}{{ article.title|safe }}{% endif %}</a>
+                            </h3>
+                        </div>
+                    </article>
+                {% endfor %}
+
+            </div>
+        {% endif %}
+    </div>
+
+</div>

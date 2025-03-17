@@ -26,6 +26,18 @@
     margin-top: 0.5em;
     display: flex;
     justify-content: center;
+
+    * {
+        max-width: 100%;
+    }
+
+    img {
+        margin: auto;
+        display: block;
+        
+        max-width: 100%;
+        height: auto;
+    }
 }
 
 .c-sidebar_container {
@@ -53,13 +65,6 @@
 
     @media ($bp-smaller-than-tablet) {
         display:none;
-    }
-}
-
-.flex-stream {
-    img {
-        margin: auto;
-        display: block;
     }
 }
 

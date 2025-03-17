@@ -167,7 +167,12 @@ main {
 
 .hide-desktop {
   @media($bp-larger-than-phablet){
-    display: none;
+    display: none !important;
+  }
+}
+.hide-mobile {
+  @media($bp-smaller-than-phablet){
+    display: none !important;
   }
 }
 
@@ -243,6 +248,7 @@ html[color-css-theme="light"] {
   --archive-text: #4e4e4e;
   --article-publish: #2B2B2B;
   --pagination: #353535;
+  --light-border: #EEE;
 }
 
 html[color-css-theme="dark"] {
@@ -262,6 +268,7 @@ html[color-css-theme="dark"] {
   --archive-text: #BFBFBF;
   --article-publish: #BFBFBF;
   --pagination: #BFBFBF;
+  --light-border: #{$color-ubyssey-blue-light};
 }
 
 body, html, #page-wrapper {
@@ -419,7 +426,6 @@ a.image {
 
   background-color: #00000085;
   border: none;
-  cursor: pointer;
 }
 
 ion-icon {

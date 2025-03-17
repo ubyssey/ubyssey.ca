@@ -437,19 +437,7 @@ class ArticlePageManager(PageManager):
                 articles = SectionPage.objects.none()
             
         return articles
-    
-    def from_magazine_special_section(self, section_slug='', section_root=None) -> QuerySet:
-        from .models import ArticlePage
-        from specialfeaturelanding.models import SpecialLandingPage
-        if section_slug:
-            try:
-                section_root = SpecialLandingPage.objects.get(category__slug=section_slug)
-                articles = self.live().public().descendant_of(section_root).exact_type(ArticlePage) 
-            except SpecialLandingPage.DoesNotExist:
-                articles = SpecialLandingPage.objects.none()
 
-        return articles
-  
 #-----Page models-----
 
 class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
@@ -502,6 +490,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('header_link', article_blocks.HeaderLinkBlock()),
             ('header_menu', article_blocks.HeaderMenuBlock()),
             ('visual_essay', article_blocks.VisualEssayBlock()),
+            ('personality_quiz', article_blocks.PersonalityQuizBlock()),
         ],
         null=True,
         blank=True,
@@ -529,8 +518,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
 
     #-----Category and Tag stuff-----
-    category = models.ForeignKey(
-        "section.CategorySnippet",
+    category_page = models.ForeignKey(
+        "section.CategoryPage",
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
@@ -539,7 +528,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         through='article.ArticlePageTag', 
         blank=True, 
         related_name='tags', 
-        help_text="Tags entered here will be listed in the tag page at '/tag/tag-name'",
+        help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST. Tags entered here will be listed in the tag page with the format 'https://ubyssey.ca/tag/top-stories/'.",
         verbose_name="Tags")
     primary_tag_slug = models.CharField(
         null=True,
@@ -552,13 +541,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         null=False,
         blank=False,
         default=False,
-        help_text="Check this box if you want to add a link to the tag page.",
+        help_text="Check this if you want to add a link to the primary tag page at the end of the article.",
+        verbose_name="Link to Primary Tag at the End of the Article"
     )
     filter_by_tags = models.BooleanField(
         null=False,
         blank=False,
         default=False,
-        help_text="Check this box if you want to filter suggested articles by tag.",
+        help_text="CHECK THIS to fill the suggested bar with other articles in this section that are also tagged with the primary tag.",
+        verbose_name="Use Primary Tag for Suggested Bar"
     )
 
     disclaimer = RichTextField(
@@ -748,6 +739,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return "article/article_page_supplement_2024_science.html"
         elif self.layout == 'femme-2024':
             return "article/supplements/article_page_supplement_2024_femme.html"
+        elif self.layout == 'nocturne-2024':
+            return "article/supplements/article_page_supplement_2024_nocturne.html"
 
         return "article/article_page.html"
 
@@ -788,7 +781,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 # FieldPanel("section"),
-                FieldPanel("category"),
+                FieldPanel("category_page"),
                 FieldPanel("tags"),
                 FieldPanel("primary_tag_slug"),
                 FieldPanel("tag_page_link"),
@@ -880,6 +873,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                             ('guide-2024', 'Guide (2024 style)'),
                             ('science-2024', 'Science Supplement (2024)'),
                             ('femme-2024', 'Femme Culture Special Issue (2024)'),
+                            ('nocturne-2024', 'Nocturne Features Supplement (2024)'),
                         ],
                     ),
                 ),
@@ -997,7 +991,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.AutocompleteField('slug'),
         index.FilterField('explicit_published_at'),
 
-        index.RelatedFields('category', [
+        index.RelatedFields('category_page', [
             index.FilterField('slug'),
             index.SearchField('title'),
             index.AutocompleteField('title'),
@@ -1043,7 +1037,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         context["suggested"] = self.get_suggested()
 
         if self.tag_page_link and self.primary_tag_slug:
-            context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
+            if Tag.objects.filter(slug=self.primary_tag_slug).exists():
+                context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
 
         return context
 
@@ -1056,7 +1051,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
           links: Whether the author names link to their respective pages.
         """
         def format_author(article_author):
-            if links:
+            if links and article_author.author.live:
                 return '<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name)
             return article_author.author.full_name
 
@@ -1147,13 +1142,26 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
         authors_with_roles = []
-        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
-            if k=='org_role':
-                authors_with_roles.append([k, ",".join( map(lambda a: ' ' + a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]) , list(v)))])
-            else:
-                authors_with_roles.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=list(v))])
-        authors_with_roles.sort(key=lambda s: role_types.index(s[0]))
-        return ', '.join(map(lambda a: a[1], authors_with_roles))
+        for i in range(len(role_types)):
+            authors_with_roles.append([])
+
+        for author in self.article_authors.all():
+            if author.author_role in role_types:
+                authors_with_roles[role_types.index(author.author_role)].append(author)
+            
+        authors_strings = []
+        for i in range(len(role_types)):
+            if len(authors_with_roles[i]) > 0:
+                if role_types[i] == "org_role":
+                    authors_strings.append(\
+                        ', '.join(map(lambda a: a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]), authors_with_roles[i])) \
+                    )
+                elif role_types[i] in role_types_words:
+                    authors_strings.append(\
+                        role_types_words[role_types[i]] + self.get_authors_string(links=True, authors_list=authors_with_roles[i]) \
+                    )
+                                    
+        return ', '.join(authors_strings)
     authors_with_roles = property(fget=get_authors_with_roles)
  
     def get_authors_split_out_visual_bylines(self) -> str:
@@ -1204,7 +1212,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         Returns a list of articles within the Article's category
         """
-        category_articles = ArticlePage.objects.live().filter(category=self.category).not_page(self).order_by(order)
+        category_articles = ArticlePage.objects.live().filter(category_page=self.category_page).not_page(self).order_by(order)
         if max:
             return category_articles[:max]
         return category_articles
@@ -1217,11 +1225,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         section_articles = ArticlePage.objects.live().child_of(self.get_parent()).not_page(self).order_by(order)[:max]
         
         return section_articles
-    def get_articles_by_tag(self, order='-first_published_at', max=10) -> QuerySet:
+    def get_articles_by_tag(self, order='-first_published_at', max=5) -> QuerySet:
         """
         Returns a list of articles with the same tags as the current article
         """
-        articles_by_tag = ArticlePage.objects.live().filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
+        articles_by_tag = []
+        if self.primary_tag_slug:
+            articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
     def get_suggested(self, number_suggested=3):
@@ -1239,13 +1249,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 suggested['articles'] = articles_by_tag[:number_suggested]
                 suggested['link'] = "/tag/" + tag.slug
         if not suggested:
-            if self.category != None:
+            if self.category_page != None:
                 category_articles = self.get_category_articles(max=number_suggested)
                 if len(category_articles) > 0:
                     suggested = {}
-                    suggested['title'] = self.category.title
+                    suggested['title'] = self.category_page.title
                     suggested['articles'] = category_articles[:number_suggested]
-                    suggested['link'] = self.category.section_page.url + "category/" + self.category.slug
+                    suggested['link'] = self.category_page.url
 
         if not suggested:
             section_articles = self.get_section_articles(max=number_suggested)
@@ -1259,6 +1269,21 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             suggested = False
 
         return suggested
+
+    def get_title_tag(self) -> str:
+        if self.title_tag:
+            return self.title_tag
+        elif self.category_page:
+            return self.category_page.title
+        else:
+            False
+    title_tag_str = property(fget=get_title_tag)
+
+    def get_primary_tag_link(self) -> str:
+        from taggit.models import Tag
+        tag = Tag.objects.get(slug=self.primary_tag_slug)
+        return "<a href='/tag/" + tag.slug + "/'>" + tag.name + "</a>"
+    primary_tag_link = property(fget=get_primary_tag_link)
 
     @property
     def published_at(self):
@@ -1290,7 +1315,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         indexes = [
             models.Index(fields=['current_section','last_modified_at']),
             models.Index(fields=['last_modified_at']),
-            models.Index(fields=['category',]),
+            models.Index(fields=['category_page',]),
         ]
 
 class SpecialArticleLikePage(ArticlePage):

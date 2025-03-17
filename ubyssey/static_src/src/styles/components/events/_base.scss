@@ -531,45 +531,67 @@ header.events{
 .legend {
     margin-bottom: 5em;
     width: 75%;
-    @media($bp-smaller-than-phablet) {
-        margin: 0.5em 0 1em 0;
+    li.selection-toggle {
+        margin-right: 0.25em;
+        button {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            margin: 0;
+            border-radius: 0.25em;
+            background-color: #0071c9;
+            color: white;
+        }
     }
     ul {
         display: flex;
         padding: 0;
-        margin: 0;
+        margin: 0.5em 0;
+        list-style: none;
         flex-wrap: wrap;
-    
-        li {
-            margin-left: 3em;
-            font-family: noto-sans;
+
+        @media($bp-smaller-than-phablet) {
+            flex-direction: column;
         }
-        li::marker {
-            color: var(--highlight);
-            font-size: 1.5em;
+    
+        li.legend-item {
+            position: relative;
+            margin: 0.25em;
+            font-family: noto-sans;
         }
     }
 
     .inactive {
         text-decoration: line-through;
+        filter: grayscale(1) contrast(0.25) brightness(1.6);
     }
 
     button {
         max-width: 15em;
         
         margin: 0;
-        padding: 0;
+        padding: 0 0.5em;
         border: none;
-        background: none;
+        border-radius: 0.5em;
+        background: var(--highlight);
 
         overflow-x: clip;
         white-space: nowrap;
         text-overflow: ellipsis;
 
-        color: inherit;
+        color: black;
         font-weight: 500;
         font-size: inherit;
         line-height: unset;
+    }
+
+    @media($bp-smaller-than-phablet) {
+        margin: 0.5em 1em 1em 1em;
+        li.legend-item {
+            margin-left: 1em;
+        }
+        li.selection-toggle {
+            margin: 1em;
+        }
     }
 }
 .events-calendar--navigation {
@@ -701,5 +723,33 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
         // position: absolute;
         // left: 3em;
         margin-right: 1em;
+    }
+}
+
+@media ($bp-smaller-than-desktop) {
+    .loader-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center;  
+        position: fixed;       
+        top: 0;                
+        left: 0;               
+        width: 100vw;          
+        height: 120vh;
+        z-index: 9999;        
+    }
+}
+
+@media ($bp-larger-than-desktop) {
+    .loader-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center;    
+        height: 100%;           
+        width: 100%;            
+        position: absolute;     
+        top: 0;
+        left: 0;
+        z-index: 10;
     }
 }

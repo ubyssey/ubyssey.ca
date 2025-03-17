@@ -271,7 +271,7 @@ async def update_events(request):
          'api': 'https://anth.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_type': [633, 632, 634, 528, 530],
+            'seminar_type': [528, 530, 632, 633, 634, 728, 729],
             'hidden_title_terms': ['coffee hour'],
             'seminar_title_terms': ['Archaeology Lab Nights', 'Information Session'],
          },
@@ -281,7 +281,7 @@ async def update_events(request):
          'api': 'https://asia.ubc.ca/wp-json/wp/v2/', 
          'categorize': {
             'default': 'community',
-             'seminar_type': [570, 572, 571, 574, 739],
+             'seminar_type': [570, 571, 572, 574, 739],
          },
         },
 
@@ -289,7 +289,7 @@ async def update_events(request):
          'api': 'https://cenes.ubc.ca/wp-json/wp/v2/',
         'categorize': {
             'default': 'community',
-            'seminar_type': [552, 554, 559, 553, 677, 558],
+            'seminar_type': [552, 554, 553, 558, 559, 677],
             'hidden_title_terms': ['fika', 'plauder', 'kaffeestunde', 'slavic tea']
          },
         },    
@@ -298,7 +298,7 @@ async def update_events(request):
          'api': 'https://english.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-             'seminar_type': [512, 515, 510, 513],
+             'seminar_type': [510, 512, 513, 515],
              'seminar_title_terms': ['Information Session'],
          },
         },
@@ -307,7 +307,7 @@ async def update_events(request):
          'api': 'http://fhis.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_type': [534, 537, 532],
+            'seminar_type': [532, 534, 537],
             'seminar_title_terms': ['Information Session'],
          },
         },
@@ -315,8 +315,8 @@ async def update_events(request):
         {'name': 'UBC Institute for Gender, Race, Sexuality and Social Justice', 
          'api': 'https://grsj.arts.ubc.ca/wp-json/wp/v2/',
          'categorize': {
-            'default': 'community',
-            'seminar_type': [512, 514, 632]
+            'default': 'seminar',
+            'community_type': [516, ]
          },
         },
 
@@ -324,7 +324,7 @@ async def update_events(request):
          'api': 'https://history.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
-            'seminar_type': [531, 525, 527, 526, 530]
+            'seminar_type': [525, 526, 527, 530, 531]
          },
         },
 
@@ -333,6 +333,7 @@ async def update_events(request):
          'categorize': {
             'default': 'community',
             'seminar_type': [1208,1209,785,546,1206,1198],
+            'seminar_tags': [1269],
             'hidden_title_terms': ['community luncheon'],
          },
         },
@@ -348,8 +349,7 @@ async def update_events(request):
         {'name': 'UBC School of Social Work', 
          'api': 'https://socialwork.ubc.ca/wp-json/wp/v2/',
          'categorize': {
-            'default': 'community',
-            'seminar_type': [520, 527, 525]
+            'default': 'seminar',
          },
         },
 
@@ -460,6 +460,14 @@ async def update_events(request):
             'seminar_type': [562, 564, 567, 762, 563],
          },
         },
+
+        {'name': 'UBC Arts One Program', 
+         'api': 'https://artsone.arts.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
     ]
 
     terms = ['lecture', 'workshop', 'conference', 'talk', 'seminar', 'colloquia']

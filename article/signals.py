@@ -23,8 +23,8 @@ def update_timeline_on_article_alteration_pre_save(instance, **kwargs):
         # previous_article represents the article as it currently exists in the database
         previous_version = ArticlePage.objects.get(id=instance.id)
         instance._old_timeline = previous_version.timeline
-        print("Set instance._old_timeline: ")
-        print(instance._old_timeline)
+        #print("Set instance._old_timeline: ")
+        #print(instance._old_timeline)
     else:
         # Exists to prevent AttributeError later
         instance._old_timeline = None

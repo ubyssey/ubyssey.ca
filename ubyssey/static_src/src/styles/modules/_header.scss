@@ -49,13 +49,26 @@ header.main, header.topbar {
 }
 
 header.main{
-  .branding {
+  .branding.row {
+    margin-top: 2em;
     font-size: 13px;
 
     .middle {
-      margin-left: 2em;
-      max-width: 520px;
+      position: relative;
       width: 100%;
+      max-width: 520px;
+      img {
+        position: absolute;
+        margin-inline: 0em;
+        height: calc(100% + 1em);
+        bottom: -0.5em;
+        left: 1em;
+      }
+      svg.top-logo {
+        margin: 2em 0 1em 7em;
+        height: 3em;
+        width: auto;
+      }
     }
     .right {
       margin-left: auto;
@@ -70,7 +83,7 @@ header.main{
   }
 
   .row {
-    margin-top: 20px;
+    margin-top: 1em;
     display: flex;
     justify-content: center;
     //overflow: hidden;
@@ -92,6 +105,12 @@ header.main{
         margin-right: 1.5em;
       }
 
+      .bluesky-icon svg {
+        height: 0.85em;
+        vertical-align: baseline;
+        fill: var(--header_color);
+      }
+
       a {
           position: relative;
           margin-right: 0.75em;
@@ -109,7 +128,7 @@ header.main{
       margin: 0;
       line-height: 60px;
     }
-    img.top-logo {
+    img.top-logo, svg.top-logo {
       width: 100%;
       vertical-align: middle;
     }
@@ -585,11 +604,17 @@ a.store-link {
   .dark-logo {
     display: none !important;
   }
+  .main .middle .top-logo {
+    fill: black;
+  }
 }
 
 [color-css-theme="dark"] {
 
   .light-logo {
     display: none !important;
+  }
+  .main .middle .top-logo {
+    fill: white;
   }
 }
