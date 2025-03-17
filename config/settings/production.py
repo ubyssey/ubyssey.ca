@@ -14,36 +14,22 @@ ALLOWED_HOSTS = ['localhost', '*']
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 
-INSTALLED_APPS += []
-
 # Sessions are used to anonymously keep track of individual site visitors
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 CACHES = {
-    # 'default': {
-    #     'BACKEND': 'ubyssey.cache.AppEngineMemcacheCache',
-    #     'TIMEOUT': 3600, # 1 hour
-    # },
-    # "renditions": {
-    #     'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    #     'TIMEOUT': 3600, # 1 hour
-    # }
-    # 'default': {
-    #     'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    #     'TIMEOUT': 3600, # 1 hour
-    # }
-    "default": {
-        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-        "LOCATION": "cache:11211",
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': 'cache:11211',
     }
 }
 
 STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+    'default': {
+        'BACKEND': 'storages.backends.gcloud.GoogleCloudStorage',
     },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    'staticfiles': {
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
     },
 }
 

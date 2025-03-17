@@ -30,7 +30,7 @@ services:
       && gunicorn ubyssey.wsgi:application --bind 0.0.0.0:8000"
     environment:
       SQL_HOST: mysql
-      SQL_USER: root
+      SQL_USER: ubyssey
       SQL_PASSWORD: ${SQL_PASSWORD}
       SQL_DATABASE: ubyssey
       GS_ACCESS_KEY_ID: ${GS_ACCESS_KEY_ID}

@@ -16,91 +16,37 @@ https://codelabs.developers.google.com/codelabs/cloud-run-django/index.html?inde
 import os
 import environ
 
-BASE_DIR = environ.Path(__file__) - 3
-
 env = environ.Env(
-    #set casting and defaults for config vars which are to be read from environment
+    # Define mappings and defaults for config vars which are to be read from environment
 
-    # Development defaults
-    # VERSION=(str,'0.0.0'),
-    DEBUG=(bool, False),
-    ORGANIZATION_NAME = (str, 'Ubyssey'),
-
-    # Temporary
-    SPECIAL_MESSAGE_AVAILABLE = (bool, False),
+    SECRET_KEY = (str, 'thisisakey'),
+    DEBUG = (bool, False),
     
-    # URL defaults
-    STATIC_URL = (str, '/static/'),
-    MEDIA_URL = (str, '/media/'),
-    ADS_TXT_URL = (str, 'https://ubyssey.storage.googleapis.com/ads.txt'),
-    ROOT_URLCONF = (str, 'ubyssey.urls'),
-
-    # Time zone defaults
-    USE_TZ=(bool,True),
-    TIME_ZONE=(str, 'Canada/Pacific'),
-
-    # SQL defaults
     SQL_HOST = (str, 'mysql'),
     SQL_DATABASE = (str, 'ubyssey'),
     SQL_USER = (str, 'root'),
     SQL_PASSWORD = (str, 'ubyssey'),
 
-    # Redis defaults
-    REDIS_HOST = (str, '127.0.0.1'),
-    REDIS_PORT = (str, '6379'),
+    STATIC_URL = (str, '/static/'),
+    MEDIA_URL = (str, '/media/'),
+    ADS_TXT_URL = (str, 'https://ubyssey.storage.googleapis.com/ads.txt'),
 
-    # Keys
-    SECRET_KEY = (str, 'thisisakey'),
-    NOTIFICATION_KEY= (str, 'thisisakeytoo'),
-
-    # delete me
-    SECRET_URL = (str, 'somethingsilly')
+    # Temporary
+    SPECIAL_MESSAGE_AVAILABLE = (bool, False),
 )
 
-# Set Django's configs to the values taken from the .env file (or else to their defaults listed above)
-ORGANIZATION_NAME = env('ORGANIZATION_NAME') # Used for registration/invitation
+SITE_ID = 1
+
+BASE_DIR = environ.Path(__file__) - 3
+
+SECRET_KEY = env('SECRET_KEY')
+
 DEBUG = env('DEBUG')
 
-SPECIAL_MESSAGE_AVAILABLE = env('SPECIAL_MESSAGE_AVAILABLE')
-
-USE_TZ = env('USE_TZ')
-TIME_ZONE = env('TIME_ZONE')
-
-STATIC_URL = env('STATIC_URL')
-MEDIA_URL = env('MEDIA_URL')
-ADS_TXT_URL = env('ADS_TXT_URL')
-ROOT_URLCONF = env('ROOT_URLCONF')
-
-REDIS_HOST = env('REDIS_HOST')
-REDIS_PORT = env('REDIS_PORT')
-
-# Initialize the databases.
-# Note it should be possible to parse all this information in a single line:
-# DATABASES = {'default': env.db('DATABASE_URL')}
-# However, Google Cloud Services does not seem to like providing an easily parsable URL for such purposes
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': env('SQL_HOST'),
-        'NAME': env('SQL_DATABASE'),
-        'USER': env('SQL_USER'),
-        'PASSWORD': env('SQL_PASSWORD'),
-        'PORT': '3306',
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            "collation": "utf8mb4_0900_ai_ci",
-        },
-    },
-}
-
-# Set secret keys
-SECRET_KEY = env('SECRET_KEY')
-NOTIFICATION_KEY = env('NOTIFICATION_KEY')
-
 # Application definition
-INSTALLED_APPS = [
 
-    'ubyssey', # For some reason using ubyssey.apps.UbysseyConfig breaks static file finding?
+INSTALLED_APPS = [
+    'ubyssey', # For some reason, using ubyssey.apps.UbysseyConfig breaks static file finding?
     'users',
     'home',
     'archive',
@@ -167,75 +113,6 @@ if DEBUG:
 		'debug_toolbar'
 	]
 
-# Replace default user model
-AUTH_USER_MODEL = 'users.User'
-
-API_URL = '/api/'
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': 9,
-        }
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-# Templates
-TEMPLATES = [
-    {
-        'NAME': 'app_dirs',
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'APP_DIRS': False,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'wagtail.contrib.settings.context_processors.settings',
-                'wagtailmenus.context_processors.wagtailmenus',
-            ],
-            'loaders': [
-                (
-                    'django.template.loaders.cached.Loader',
-                    [
-                        'django.template.loaders.filesystem.Loader',
-                        'django.template.loaders.app_directories.Loader',
-                        'dbtemplates.loader.Loader',
-                    ],
-                ),
-            ],
-        },
-    }
-]
-
-# REST framework settings
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'UNICODE_JSON': True,
-    'PAGE_SIZE': 20,
-    'DATETIME_INPUT_FORMATS': ['iso-8601']
-}
-
-STATICFILES_DIRS = []
-
-# Set the middleware
 MIDDLEWARE = [
     # UpdateCacheMiddleware must come first.
     # Ref: https://github.com/coderedcorp/wagtail-cache/blob/main/docs/getting_started/install.rst#1-install
@@ -265,23 +142,86 @@ MIDDLEWARE += [
     'wagtailcache.cache.FetchFromCacheMiddleware',
 ]
 
-# Clear these URLs from the cache each time an article or page is published.
-#
-# Note: this is a custom setting used in ubyssey/wagtail_hooks.py.
-#
-CACHE_CLEAR_ON_PUBLISH = [
-    '/$',           # Home page
-    '/archive/$',   # Archive page
-    '/infinitefeed' # Endpoint used to populate infinite scrolling on section pages
+ROOT_URLCONF = 'ubyssey.urls'
+
+TEMPLATES = [
+    {
+        'NAME': 'app_dirs',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': False,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'wagtail.contrib.settings.context_processors.settings',
+                'wagtailmenus.context_processors.wagtailmenus',
+            ],
+            'loaders': [
+                (
+                    'django.template.loaders.cached.Loader',
+                    [
+                        'django.template.loaders.filesystem.Loader',
+                        'django.template.loaders.app_directories.Loader',
+                        'dbtemplates.loader.Loader',
+                    ],
+                ),
+            ],
+        },
+    }
 ]
 
-GS_LOCATION = None
-GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
+# Database
+# Ref: https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-PHONENUMBER_DB_FORMAT = 'NATIONAL'
-PHONENUMBER_DEFAULT_REGION = 'CA'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': env('SQL_HOST'),
+        'NAME': env('SQL_DATABASE'),
+        'USER': env('SQL_USER'),
+        'PASSWORD': env('SQL_PASSWORD'),
+        'PORT': '3306',
+        "OPTIONS": {
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_0900_ai_ci",
+        },
+    },
+}
 
-PASSWORD_RESET_TIMEOUT = 86400
+# Substitute a custom user model.
+# Ref: https://docs.djangoproject.com/en/4.2/topics/auth/customizing/#auth-custom-user
+
+AUTH_USER_MODEL = 'users.User'
+
+# Password validation
+# Ref: https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 9,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Static files
+# Ref: https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+STATIC_URL = env('STATIC_URL')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# File storage
+# Ref: https://docs.djangoproject.com/en/4.2/topics/files/
+
+MEDIA_URL = env('MEDIA_URL')
 
 STORAGES = {
     "default": {
@@ -292,23 +232,65 @@ STORAGES = {
     },
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+GS_LOCATION = None
+GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
+
+# Internationalization
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
+
+USE_TZ = True
+TIME_ZONE = 'Canada/Pacific'
+
+# Wagtail settings
+# Ref: https://docs.wagtail.org/en/stable/reference/settings.html
 
 WAGTAIL_SITE_NAME = 'The Ubyssey'
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
 
-# wagtailmenus settings
-WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html
-WAGTAILMENUS_ACTIVE_ANCESTOR_CLASS = 'current'
-
-# wagtail search settings
 WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.database',
     }
 }
 
-# Model defaults
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+# wagtailmenus settings
+# Ref: https://wagtailmenus.readthedocs.io/en/stable/settings_reference.html
 
-SITE_ID = 1
+WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html
+WAGTAILMENUS_ACTIVE_ANCESTOR_CLASS = 'current'
+
+# Django REST framework settings
+# Ref: https://www.django-rest-framework.org/api-guide/settings/
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'UNICODE_JSON': True,
+    'PAGE_SIZE': 20,
+    'DATETIME_INPUT_FORMATS': ['iso-8601']
+}
+
+# Extras - custom settings required by The Ubyssey website
+
+SPECIAL_MESSAGE_AVAILABLE = env('SPECIAL_MESSAGE_AVAILABLE')
+ADS_TXT_URL = env('ADS_TXT_URL')
+API_URL = '/api/'
+
+# Clear these URLs from the cache each time an article or page is published.
+#
+# Note: this is a custom setting used in ubyssey/wagtail_hooks.py.
+#
+CACHE_CLEAR_ON_PUBLISH = [
+    '/$',           # Home page
+    '/archive/$',   # Archive page
+    '/infinitefeed' # Endpoint used to populate infinite scrolling on section pages
+]
