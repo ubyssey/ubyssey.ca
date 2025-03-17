@@ -80,8 +80,8 @@ jobs:
       - name: Upload nginx configuration
         run: scp -r nginx staging:/opt/ubyssey.ca/nginx
         
+      - name: Sync secrets from Google
+        run: cat sync-secrets.sh | ssh staging
+
       - name: Restart services
-        run: ssh staging << EOF
-          export $(gcloud secrets versions access latest --secret="ubyssey_env_configs" | xargs)
-          docker compose -f /opt/ubyssey.ca/docker-compose.yml -p ubyssey up -d
-          EOF
+        run: ssh staging docker stack deploy --compose-file docker-compose.yml ubyssey

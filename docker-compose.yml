@@ -2,13 +2,14 @@ version: "3.7"
 services:
 
   mysql:
-    platform: linux/x86_64
     image: mysql:8.0
     environment:
       MYSQL_DATABASE: ubyssey
       MYSQL_USER: ubyssey
-      MYSQL_PASSWORD: ${SQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${SQL_PASSWORD}
+      MYSQL_PASSWORD: /run/secrets/SQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: /run/secrets/SQL_PASSWORD
+    secrets:
+       - SQL_PASSWORD
     volumes:
       - ./mysql-data:/var/lib/mysql
     healthcheck:
@@ -18,7 +19,6 @@ services:
       retries: 20
 
   cache:
-    platform: linux/x86_64
     image: memcached:1.6.10
     ports:
       - "11211:11211"
@@ -29,25 +29,26 @@ services:
       bash -c "python manage.py migrate
       && gunicorn ubyssey.wsgi:application --workers=17 --bind 0.0.0.0:8000"
     environment:
+      SECRET_KEY: /run/secrets/DJANGO_SECRET_KEY
       SQL_HOST: mysql
       SQL_USER: root
-      SQL_PASSWORD: ${SQL_PASSWORD}
+      SQL_PASSWORD: /run/secrets/SQL_PASSWORD
       SQL_DATABASE: ubyssey
-      GS_ACCESS_KEY_ID: ${GS_ACCESS_KEY_ID}
-      GS_SECRET_ACCESS_KEY: ${GS_SECRET_ACCESS_KEY}
+      GS_ACCESS_KEY_ID: /run/secrets/GS_ACCESS_KEY_ID
+      GS_SECRET_ACCESS_KEY: /run/secrets/GS_SECRET_ACCESS_KEY
       STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
     secrets:
+      - DJANGO_SECRET_KEY
+      - SQL_PASSWORD
+      - GS_ACCESS_KEY_ID
+      - GS_SECRET_ACCESS_KEY
       - GOOGLE_APPLICATION_CREDENTIALS
     expose:
       - 8000
     depends_on:
-      mysql:
-        condition: service_healthy
-        restart: true
-      cache:
-        condition: service_started
-        restart: true
+      - mysql
+      - cache
 
   nginx:
     image: nginx:latest
@@ -68,5 +69,13 @@ services:
       - ./certbot/conf/:/etc/letsencrypt/:r
 
 secrets:
+  DJANGO_SECRET_KEY:
+    external: true
+  SQL_PASSWORD:
+    external: true
+  GS_ACCESS_KEY_ID:
+    external: true
+  GS_SECRET_ACCESS_KEY:
+    external: true
   GOOGLE_APPLICATION_CREDENTIALS:
     file: ./service-account.json
