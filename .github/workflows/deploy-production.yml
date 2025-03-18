@@ -67,7 +67,7 @@ jobs:
             StrictHostKeyChecking no
           END
         env:
-          SSH_USER: deploy
+          SSH_USER: deploy-production
           SSH_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY_PRODUCTION }}
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_PRODUCTION }}
 
