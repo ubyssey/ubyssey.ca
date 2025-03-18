@@ -468,6 +468,13 @@ async def update_events(request):
          },
         },
 
+        {'name': 'UBC Centre for Climate Justice ', 
+         'api': 'https://climatejustice.ubc.ca/wp-json/wp/v2/',
+         'categorize': {
+            'default': 'seminar',
+         },
+        },
+
     ]
 
     terms = ['lecture', 'workshop', 'conference', 'talk', 'seminar', 'colloquia']
