@@ -109,6 +109,9 @@ header.main{
         height: 0.85em;
         vertical-align: baseline;
         fill: var(--header_color);
+        &:hover {
+          fill: $color-ubyssey-blue;
+        }
       }
 
       a {
