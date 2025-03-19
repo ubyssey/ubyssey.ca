@@ -60,6 +60,8 @@ urlpatterns += [
     # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
     # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
 
+    re_path(r'humour/girlslowermainland', TemplateView.as_view(template_name='spoof/2025/landing.html')),
+
     re_path(r'^djadmin/', admin.site.urls),
 
     # re_path(r'^admin', include(admin_urls)),

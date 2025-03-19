@@ -1,0 +1,41 @@
+@import 'modules/spoof/2025/base';
+
+.landing-container {
+    min-height: 100vh;
+    width: 100%;
+    
+    background-image: radial-gradient($glm-blue-gradient-1, $glm-blue-gradient-2);
+}
+
+.preview {
+    position: absolute;
+    > * {
+        position: absolute;
+        padding: 50px;
+        background-image: radial-gradient(closest-side at 50% 50%, white, transparent);
+    }
+    a img {
+        padding: 1em;
+        border: 0.5em dotted transparent;
+        &:hover {
+            border-color:white;
+        }
+    }
+    span {
+        font-size: 1.5em;
+        font-weight: 800;
+        -webkit-text-stroke: 4px white;
+        paint-order: stroke;
+    }
+}
+
+.preview_1 {
+    top: 10%;
+    left: 2%;
+    > span {
+        width: 100px;
+    }
+    > a {
+        top: 75px;
+    }
+}

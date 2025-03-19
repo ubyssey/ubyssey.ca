@@ -1,0 +1,29 @@
+@import 'modules/spoof/2025/base';
+
+nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-bottom: 5px solid transparent;
+    border-image: url("/static/ubyssey/images/spoof/2025/nav-border-img.svg") 20% round;
+    z-index: 100;
+
+    ul {
+        display: flex;
+        margin: 0;
+        padding: 20px 45px;
+        background-color: #FDF37D;
+        gap: 1.5em;
+        list-style: none;
+        li {
+            width: fit-content;
+
+            font-size: 2em;
+            font-weight: 600;
+
+            color: $glm-pink;
+            -webkit-text-stroke: 4px white;
+            paint-order: stroke;
+        }
+    }
+}
