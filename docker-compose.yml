@@ -53,15 +53,15 @@ services:
     restart: always
     volumes:
       - ./nginx/:/etc/nginx/:ro
-      - ./certbot/www/:/var/www/certbot/:ro
+      # - ./certbot/www/:/var/www/certbot/:ro
     depends_on:
       - django
 
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:r
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   volumes:
+  #     - ./certbot/www/:/var/www/certbot/:rw
+  #     - ./certbot/conf/:/etc/letsencrypt/:r
 
 secrets:
   DJANGO_SECRET_KEY:
