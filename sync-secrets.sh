@@ -22,12 +22,6 @@ fi
 # Get a list of all Docker secrets
 DOCKER_SECRETS=$(docker secret ls --format '{{.Name}}')
 
-# Check if there are any secrets
-if [ -z "$DOCKER_SECRETS" ]; then
-    echo "No Docker secrets found."
-    exit 0
-fi
-
 # Loop through and remove each Docker secret
 echo "Deleting Docker secrets..."
 for SECRET in $DOCKER_SECRETS; do
@@ -45,8 +39,8 @@ for SECRET_NAME in $GCLOUD_SECRETS; do
     SECRET_VALUE=$(gcloud secrets versions access latest --secret="$SECRET_NAME" --project="$PROJECT_ID" 2>/dev/null)
 
     if [[ -z "$SECRET_VALUE" ]]; then
-        echo "Warning: Unable to retrieve value for secret $SECRET_NAME. Skipping."
-        continue
+        echo "Error: Unable to retrieve value for secret $SECRET_NAME." >&2
+        exit 1
     fi
 
     # Check if Docker secret already exists
