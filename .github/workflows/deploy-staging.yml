@@ -78,8 +78,8 @@ jobs:
         run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
 
       - name: Upload nginx configuration
-        run: scp -r nginx staging:/opt/ubyssey.ca/nginx
-        
+        run: scp nginx.conf staging:/opt/ubyssey.ca/nginx/nginx.conf
+
       - name: Sync secrets from Google
         run: cat sync-secrets.sh | ssh staging
 
