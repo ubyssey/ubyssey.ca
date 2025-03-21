@@ -14,7 +14,7 @@
     {% endif %}
   </div>
   {% endif %}
-<div class="landing_stream_block--flex-container">
+<div class="landing_stream_block--flex-container {{flex_style}}">
   {% for article in articles %}
     {% include 'article/objects/article_column.html' with article=article style='article--round_with_border' pubdate="true" %}
   {% endfor %}

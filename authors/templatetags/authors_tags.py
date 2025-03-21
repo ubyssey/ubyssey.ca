@@ -10,7 +10,6 @@ def get_link_icon(url):
     domain = urlparse(url).netloc    
     domainToIcon = {'www.tumblr.com': 'logo-tumblr',
                     'www.instagram.com': 'logo-instagram',
-                    'twitter.com': 'logo-twitter',
                     'www.facebook.com': 'logo-facebook',
                     'www.youtube.com': 'logo-youtube-play',
                     'www.tiktok.com': 'logo-tiktok',
