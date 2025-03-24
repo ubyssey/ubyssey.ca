@@ -474,6 +474,8 @@ div.article-content {
   }
   
   .report a {
+    display: inline-block;
+    margin-right: 1em;
     color: var(--text_color);
     font-family: $font-default;
     font-style: italic;
