@@ -75,6 +75,7 @@ class UbysseyImage(AbstractImage):
 
     search_fields = AbstractImage.search_fields + [
         index.FilterField('author_id'),
+        index.SearchField('description')
     ]
 
     def get_upload_to(self, filename):
