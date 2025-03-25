@@ -16,9 +16,13 @@
     }
     a img {
         padding: 1em;
+        height: auto;
+        width: 100%;
+        
         border: 0.5em dotted transparent;
         &:hover {
-            border-color:white;
+            border-color: white;
+            animation: flashing-dots alternate-reverse 0.5s infinite linear;
         }
     }
     span {
@@ -27,6 +31,12 @@
         -webkit-text-stroke: 4px white;
         paint-order: stroke;
     }
+}
+
+.center-image {
+    left: 25%;
+    right: 25%;
+    top: 5%;
 }
 
 .preview_1 {
@@ -38,4 +48,9 @@
     > a {
         top: 75px;
     }
+}
+
+@keyframes flashing-dots {
+    from {border-style: dotted;}
+    to {border-style: dashed;}
 }

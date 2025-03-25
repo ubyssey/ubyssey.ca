@@ -1,7 +1,8 @@
 @import 'modules/spoof/2025/base';
 
 nav {
-    position: absolute;
+    margin-bottom: -1em;
+    position: relative;
     left: 0;
     right: 0;
     border-bottom: 5px solid transparent;
@@ -18,12 +19,16 @@ nav {
         li {
             width: fit-content;
 
-            font-size: 2em;
+            font-size: 1.5em;
             font-weight: 600;
 
             color: $glm-pink;
             -webkit-text-stroke: 4px white;
             paint-order: stroke;
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
         }
     }
 }
