@@ -3,7 +3,6 @@ from django.shortcuts import render
 from openai import OpenAI
 from images.models import UbysseyImage
 import os
-from dotenv import load_dotenv, find_dotenv
 import csv
 from datetime import datetime
 from django.db.models import Q
@@ -113,7 +112,6 @@ def get_image_tags(image_data):
         image_data (list): List of dictionaries containing image objects, URLs, and article titles
     """
     
-    _ = load_dotenv(find_dotenv())
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     
     # Process one image at a time
