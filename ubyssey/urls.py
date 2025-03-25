@@ -11,6 +11,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled
+
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
