@@ -58,23 +58,27 @@ def get_image_urls(request):
         extension_filter |= Q(file__endswith=ext)
 
     images = []    
-    images = UbysseyImage.objects.exclude(tags__name='Tagged by OpenAI Vision').filter(extension_filter).order_by("-created_at")[:10]
+    images = UbysseyImage.objects.exclude(tags__name='Tagged by OpenAI Vision').filter(extension_filter).order_by("-created_at")
 
     iterate_images(images, request)
 
 @async_to_sync
 async def iterate_images(images, request):
     tasks = []
-    max_at_a_time = 50
-    
+    max_at_a_time = 10
+    counter = 0
     async for image in images:
         tasks.append(asyncio.create_task(process_image(image, request)))
-        
+        counter = counter + 1
         if len(tasks) >= max_at_a_time:
+            print("---")
             await asyncio.gather(*tasks)
+            print(f"{counter} / {len(images)}")
+            await asyncio.sleep(0.5)
             tasks = []
 
     await asyncio.gather(*tasks)
+    print(f"{counter} / {len(images)}")
 
 async def process_image(image, request):
     data = await get_image_references(image, request)
@@ -99,7 +103,7 @@ def get_image_references(image, request):
 
     base_url = settings.MEDIA_URL
     url = request.build_absolute_uri(base_url + image.file.name)
-    print(url)
+    #print(url)
     
     article_titles = []
     try:
@@ -113,9 +117,9 @@ def get_image_references(image, request):
         
         for article in articles:
             article_titles.append(article.title)
-            print(f"Found reference to article: {article.title} (ID: {article.id})")
+            #print(f"Found reference to article: {article.title} (ID: {article.id})")
     except Exception as e:
-        print(f"Error accessing references for image {image.id}: {e}")        
+        print(f"Error accessing references for image {image.id}: {e}")  
     
     # Store the URL and all found article titles
     data = {
@@ -151,7 +155,6 @@ async def get_image_tags(data):
             f"Consider URL clues about the subject. Include synonyms in your tags.\n\n"
             f"The tags and description is to make images more searchable by improving the search indexing.\n\n"
             f"For context these images are intended for UBC students.\n\n"
-            f"If you cannot recognize the image, respond with 'sorry' only.\n\n"
             f"Format:\n"
             f"1. First line: 4-5 concise tags separated by commas\n"
             f"2. Second line: Detailed description for search indexing\n\n"
@@ -176,7 +179,7 @@ async def get_image_tags(data):
     ]
 
     try:
-        print(f"Processing image: {url}")
+        #print(f"Processing image: {url}")
         response = await client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
@@ -187,10 +190,12 @@ async def get_image_tags(data):
             presence_penalty=0
         )
         content = response.choices[0].message.content
-        print(content)
+        #print(content)
         # Check if the response indicates the image couldn't be recognized
-        if "sorry" in content.lower() or "I can't" in content:
-            print(f"Skipping unrecognizable image: {url}")
+        exclude = ["sorry", "i can't", "i'm unable to"]
+        if True in [x in content.lower() for x in exclude]:
+            print(f" - Skipping: {url}")
+            print(f"     {content}")
             with open(output_file, 'a', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 #writer.writerow(['Image URL', 'Article Titles', 'Tags', 'Description'])
@@ -205,15 +210,16 @@ async def get_image_tags(data):
         
         # Each response only contains one image's tags/description
         batch_tags, batch_descriptions = split_tags_and_description(content)
+        tag_list = []
+        description = ""
         if batch_tags and batch_descriptions:
-            print(batch_tags)
-            print(batch_descriptions)
+            #print(batch_tags)
+            #print(batch_descriptions)
             tag_list = batch_tags
             description = batch_descriptions
-            processed_image = image  
         
     except Exception as e:
-        print(f"Error processing image: {e}")
+        print(f" - Error processing image: {e}")
         with open(output_file, 'a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             #writer.writerow(['Image URL', 'Article Titles', 'Tags', 'Description'])
@@ -237,8 +243,8 @@ async def get_image_tags(data):
             description
         ])
 
-    print(f"Wrote results to {output_file}")
-    return processed_image, tag_list, description
+    #print(f"Wrote results to {output_file}")
+    return image, tag_list, description
 
 async def populate_tags(image, tag_list, description):
     """
@@ -250,15 +256,22 @@ async def populate_tags(image, tag_list, description):
         descriptions: List of descriptions (one description per image)
     """
 
-    print(f"Adding tags to image: {image.id}")
+    #print(f"Adding tags to image: {image.id}")
+
+    try:              
+        for tag in tag_list:
+            await sync_to_async(image.tags.add)(tag)
             
-    for tag in tag_list:
-        await sync_to_async(image.tags.add)(tag)
+        tagged_ai = "Tagged by OpenAI Vision"
+        await sync_to_async(image.tags.add)(tagged_ai)
+    except Exception as e:
+        tag_list_str = ",".join(tag_list)
+        print(f" - Error saving image tags {image.id}\n    {tag_list_str}\n\n    {e}")  
+
+    try:              
+        image.description = "DESCRIPTION PROVIDED BY OPENAI VISION: " + description
         
-    tagged_ai = "Tagged by OpenAI Vision"
-    await sync_to_async(image.tags.add)(tagged_ai)
-    
-    image.description = "DESCRIPTION PROVIDED BY OPENAI VISION: " + description
-    
-    await image.asave()
-    print(f"Successfully updated image {image.id} with {len(tag_list)} tags")
+        await image.asave()
+        #print(f"Successfully updated image {image.id} with {len(tag_list)} tags")
+    except Exception as e:
+        print(f" - Error saving image description {image.id}\n    {description}\n\n    {e}")  
