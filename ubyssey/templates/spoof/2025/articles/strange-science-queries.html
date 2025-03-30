@@ -1,0 +1,28 @@
+<script>
+    function createSnowflakes() {
+        const snowflakeCount = 50;
+        for (let i = 0; i < snowflakeCount; i++) {
+            let snowflake = document.createElement("div");
+            snowflake.innerHTML = "❄";
+            snowflake.classList.add("snowflake");
+            snowflake.style.left = Math.random() * 100 + "vw";
+            snowflake.style.animationDuration = (Math.random() * 3 + 2) + "s";
+            document.body.appendChild(snowflake);
+            setTimeout(() => snowflake.remove(), 5000);
+        }
+    }
+    setInterval(createSnowflakes, 500);
+</script>
+<div class="container">
+    <h1>By: Misenfier May Sean</h1>
+    <p class="snowflakes">“Why does snow disappear overnight?” — Aria, 12</p>
+    <p>When temperatures drop below 0°C, water vapor condenses. Skipping the liquid stage, these would-be raindrops freeze and become the beloved substance we know as “snow.”</p>
+    <p>However, like all good things in life, snow will leave you...</p>
+    <p>Reportedly, these snow particles ask themselves existential questions such as “Why are we sticking together?”</p>
+    <p>“FOMO” is real, even for snowflakes!</p>
+    <p>Some lucky snowflakes get to be felt on one’s skin, and others’ dreams are dashed...</p>
+    <h2>“Can my dog understand me?” — Mindy, 10</h2>
+    <p class="dog-facts">Thanks for asking, Mindy! Did you know that dogs were selectively bred from wolves?</p>
+    <p>Dogs have excellent hearing. They detect sounds that are much quieter than humans can.</p>
+    <p>So can dogs understand us? Yes! They are our wolf familiars, the sneaky snitches we keep near.</p>
+</div>
