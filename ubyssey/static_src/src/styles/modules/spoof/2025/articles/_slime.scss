@@ -1,10 +1,3 @@
-@import 'modules/spoof/2025/base';
-
-article {
-    padding: 2em;
-    background-size: cover;
-}
-
 .slime {
     background-image: url('../images/spoof/2025/backgrounds/hearts-bg.jpg');
     h2 {
@@ -101,74 +94,6 @@ article {
                 bottom: 0;
                 left: 32%;
             }
-        }
-    }
-}
-
-.frat-girl {
-    display: flex;
-    background-image: linear-gradient(white, pink);
-
-    .intro {
-        margin: 2em;
-        margin-bottom: 0;
-        width: 500px;
-        flex-grow: 1;
-        h2 {
-            margin: 1em;
-            text-align: center;
-            font-size: 2.5em;
-        }
-        p {
-            font-size: 1.2em;
-            line-height: 1.5em;
-        }
-        img.frat-girl-img {
-            width: 150%;
-            height: auto;
-            margin: 0em -4em;
-            position: sticky;
-            top: 0;
-            bottom: -4px;
-        }
-    }
-    .interview {
-        margin-left: 2em;
-        margin-bottom: 7em;
-        width: 100%;
-        max-width: 700px;
-        .interview-glm, .interview-wardhat {
-            padding: 0.75em;
-            max-width: 600px;
-            width: fit-content;
-
-            color: white;
-            font-family: sans-serif;
-            line-height: 1.5em;
-        }
-        .interview-glm {
-            margin-right: auto;
-            border-radius: 0.25em 1em 1em 1em;
-            background-color: $glm-pink;
-        }
-        .interview-wardhat {
-            margin-left: auto;
-            border-radius: 1em 0.25em 1em 1em;
-            background-color: $glm-blue-gradient-2;
-        }
-    }
-
-    @media screen and (max-width: 1000px) {
-        flex-direction: column;
-        .intro img.frat-girl-img {
-            width: 100%;
-            margin: auto;
-            position: relative;
-        }
-        .interview {
-            margin: 0;
-            padding-inline: 3em;
-            box-sizing: border-box;
         }
     }
 }
