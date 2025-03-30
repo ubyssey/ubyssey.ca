@@ -1,0 +1,101 @@
+article.bookshelf {
+    background-color: wheat;
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        gap: 1em;            
+    }
+    img.bookcover {
+        margin-left: -40%;
+        width: 130%;
+        height: auto;
+        border-radius: 0 1em 1em 0;
+        transform: rotate(4deg);
+        filter: drop-shadow(0 0 5px black);
+    }
+    .beowulf {
+        margin: auto 3em;
+        transform: rotate(-2deg);
+        .beowulf-bg {
+            margin: 0;
+            padding: 1.5em 1.5em 4em 1.5em;
+            background-color: white;
+        }
+        h2 {
+            margin-top: 0.5em;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        .book-container {
+            width: 150px;
+            flex-shrink: 0;
+        }
+        .beowulf-summary {
+            margin-inline: 1em;
+            .percent-loved {
+                margin: 1em 1em 0 0;
+                transform: rotate(2deg);
+
+                color: $glm-pink;
+                text-align: center;
+                font-size: 1.5em;
+                font-weight: 600;
+            }
+        }
+        .beowulf-reviews {
+            margin: -2em -1.5em 0 -1.5em;
+            display: flex;
+            flex-direction: row;
+            gap: 2em;
+            transform: rotate(2deg);
+            
+            .review {
+                padding: 1em;
+                display: flex;
+                flex-direction: column;
+                background: $glm-pink;
+                border: 2px solid black;
+                border-radius: 2em;
+                filter: drop-shadow(-0.75em 0.75em 0 #282727);
+                text-align: center;
+                span {
+                    margin-block: auto;
+                    padding-block: 0.5em;
+                    display: block;
+                    color: #f4db6a;
+                    font-weight: 600;
+                }
+            }
+        }
+
+    }
+    .recommended-container {
+        margin: 2em;
+        width: 500px;
+        flex-shrink: 0;
+        h2 {
+            margin-bottom: 0;
+            font-size: 2em;
+        }
+        span {
+            margin-block: 1em;
+            display: block;
+        }
+        .recommended {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            .review {
+                display: flex;
+                padding: 0 1.5em;
+                background: white;
+                border-bottom: 3px solid $glm-pink;
+                .book-container {
+                    margin: auto 1em auto -1em;
+                    width: 50px;
+                    flex-shrink: 0;
+                }
+            }
+        }
+    }
+}
