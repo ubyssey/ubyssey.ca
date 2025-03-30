@@ -1,0 +1,111 @@
+
+.frat-girl {
+    $wd-blue: #99bce2;
+    $gw-pink: #ba2e62;
+    $gw-pink-2: #bf2a63;
+    display: flex;
+    padding-bottom: 0;
+    background: linear-gradient(to right, #f2e4ed 33%, #e7cade 36%);
+
+    .intro {
+        margin-bottom: 0;
+        display: flex;
+        width: 700px;
+        flex-direction: column;
+        .intro-container {
+            padding: 1.5em;
+            margin: 2em 0 2em 3em;
+            background-color: $wd-blue;
+            border-radius: 1em;
+            transform: rotate(2deg);
+
+            color: $gw-pink;
+            font-weight: 600;
+            filter: drop-shadow(0 0 15px $wd-blue);
+        }
+        h2 {
+            margin: 1em;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        p {
+            margin-inline: auto;
+            max-width: 700px;
+            font-size: 1.2em;
+            line-height: 1.5em;
+        }
+        .frat-girl-container {
+            flex-grow: 1;
+        }
+        img.frat-girl-img {
+            max-width: 150%;
+            max-height: 100vh;
+            height: auto;
+            margin: 0em -2em;
+            position: sticky;
+            top: 0;
+            bottom: -4px;
+        }
+    }
+    .interview {
+        margin-inline: auto;
+        margin-block: 10em;
+        width: 100%;
+        max-width: 850px;
+        .interview-glm, .interview-wardhat {
+            padding: 0.75em;
+            max-width: 540px;
+            width: fit-content;
+
+            filter: drop-shadow(0 0 15px #f2e4ed);
+            color: white;
+            font-family: sans-serif;
+            line-height: 1.5em;
+        }
+        .interview-glm {
+            &::before {
+                padding: 0.25em;
+                display: block;
+                position: absolute;
+                top: -0.5em;
+                right: -4em;
+                height: 3em;
+                width: 3em;
+
+                content: "";
+                background-image: url('/static/ubyssey/images/spoof/2025/gwl-logo.png');
+                background-size: contain;
+            }
+            position: relative;
+            margin-left: auto;
+            margin-right: 4em;
+            margin-block: 1.5em;
+            border-radius: 1em 0.25em 1em 1em;
+            background-color: $glm-pink;
+            color: white;
+            font-weight: 600;
+        }
+        .interview-wardhat {
+            margin-right: auto;
+            margin-left: 4em;
+            margin-left: auto;
+            border-radius: 0.25em 1em 1em 1em;
+            background-color: $wd-blue;
+            color: #bf2a63;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        flex-direction: column;
+        .intro img.frat-girl-img {
+            width: 100%;
+            margin: auto;
+            position: relative;
+        }
+        .interview {
+            margin: 0;
+            padding-inline: 3em;
+            box-sizing: border-box;
+        }
+    }
+}
