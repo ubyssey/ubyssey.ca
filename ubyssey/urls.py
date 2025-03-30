@@ -62,6 +62,7 @@ urlpatterns += [
 
     re_path(r'^humour/girlslowermainland/$', TemplateView.as_view(template_name='spoof/2025/landing.html')),
     re_path(r'^humour/girlslowermainland/star-time/$', TemplateView.as_view(template_name='spoof/2025/star-time.html')),
+    re_path(r'^humour/girlslowermainland/src-north-guide-to-growing-up/$', TemplateView.as_view(template_name='spoof/2025/src-north-guide-to-growing-up-article.html')),
 
     re_path(r'^djadmin/', admin.site.urls),
 
