@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growing Up: Big Sis Advice 💖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff8fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .header-bg {
+            background: linear-gradient(to right, #ff80bf, #9381ff);
+            height: 200px;
+            border-radius: 15px;
+            margin-bottom: -50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-bg::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/api/placeholder/800/200') center/cover;
+            opacity: 0.3;
+            border-radius: 15px;
+        }
+        
+        .title {
+            position: relative;
+            font-size: 2.8rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            padding-top: 60px;
+        }
+        
+        .subtitle {
+            position: relative;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: 300;
+            margin-top: 10px;
+        }
+        
+        .author-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .author-intro {
+            font-size: 1.1rem;
+            color: #ff4d94;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .article-intro {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .article-paragraph {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .highlight {
+            background: linear-gradient(to right, rgba(255, 182, 193, 0.3), rgba(255, 182, 193, 0));
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .tips-heading {
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            text-align: center;
+            color: #ff4d94;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .tips-heading::after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, #ff80bf, #9381ff);
+            margin: 10px auto;
+            border-radius: 3px;
+        }
+        
+        .emoji-accent {
+            font-size: 1.5rem;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+        
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 40px auto;
+            /* Add a fixed height to contain both the arrows and card */
+            height: 500px; 
+        }
+        
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* Ensure it doesn't change the wrapper's dimensions */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-button {
+            position: absolute;
+            /* Fixed positions from top */
+            top: 50%;
+            margin-top: -12px; /* Half of icon height */
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-button:hover {
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        
+        .prev-button {
+            left: -15px;
+        }
+        
+        .next-button {
+            right: -15px;
+        }
+        
+        .advice-card-wrapper {
+            width: 100%;
+            /* Allow content to expand */
+            overflow: visible;
+        }
+        
+        .advice-card {
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            color: white;
+            transition: all 0.5s ease;
+            /* Allow card to expand with content */
+            min-height: 380px;
+            width: 100%;
+            /* Setup for flex positioning of children */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .advice-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .emoji {
+            font-size: 2rem;
+        }
+        
+        .advice-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            /* Use flex-grow to take remaining space */
+            flex-grow: 1;
+            /* Ensure text is visible */
+            overflow: visible;
+        }
+        
+        .page-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding-bottom: 10px;
+        }
+        
+        .indicator {
+            height: 10px;
+            width: 10px;
+            margin: 0 5px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+        
+        .indicator.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in-out {
+            animation: fadeInOut 0.6s ease forwards;
+        }
+        
+        .conclusion {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: center;
+        }
+        
+        .signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.8rem;
+            color: #ff4d94;
+            margin-top: 15px;
+            text-align: right;
+            padding-right: 30px;
+        }
+        
+        .hearts {
+            text-align: center;
+            margin: 30px 0;
+            color: #ff80bf;
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .header-bg {
+                height: 180px;
+            }
+            
+            .advice-card {
+                padding: 2rem;
+            }
+            
+            .carousel-wrapper {
+                height: 520px; /* Slightly taller for mobile */
+            }
+            
+            .nav-button {
+                padding: 8px; /* Slightly smaller buttons on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-bg">
+                <h1 class="title">SRC North's Guide to Growing Up</h1>
+            </div>
+        </header>
+        
+        <div class="author-box">
+            <p class="article-intro">
+                Growing up is hard. I get that, I get you and I feel so blessed to have been invited to share some of my best big sis style advice, girl-to-girl.
+            </p>
+            <p class="article-paragraph">
+                Four short years ago, I was just a blueprint — an old bus loop and a dream. Now, I am grateful to be making waves as UBC campus' hottest incoming structure. Students and faculty alike either want to be me or be in me. Hehe!
+            </p>
+            <p class="article-paragraph">
+                Though my grand opening is widely anticipated and set to be the campus event of the century, I am, in fact, just a girl. Like you, I have struggles. I have dreams. I have baddie moments and saddie moments. I have ambitions, goals, a backstory and most importantly, a future. Getting to share my real, raw, unfiltered story with you all is my favorite part of the job.
+            </p>
+            <p class="article-paragraph">
+                Thank you to my fans, this one's for you. (And thank you Beyoncé.)
+            </p>
+        </div>
+        
+        <h2 class="tips-heading">
+            <span class="emoji-accent">💫</span> My Best Tips for Growing Up <span class="emoji-accent">💫</span>
+        </h2>
+        
+        <div class="carousel-wrapper">
+            <div class="carousel-container">
+                <button class="nav-button prev-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                
+                <button class="nav-button next-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+                
+                <div class="advice-card-wrapper">
+                    <div id="advice-card" class="advice-card animate-fade-in-out">
+                        <h2 id="advice-title" class="advice-title">
+                            <span id="emoji" class="emoji"></span>
+                            <span id="title-text"></span>
+                        </h2>
+                        <p id="advice-content" class="advice-content"></p>
+                        <div id="page-indicators" class="page-indicators"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="conclusion">
+            <p>
+              Keep getting bigger and better, girlies, because that's what growth is all about. 
+            </p>
+            <p class="signature">XOXO</p>
+        </div>
+        
+        <div class="hearts">♥ ♥ ♥</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const advices = [
+                {
+                    title: "Be you, loud and proud",
+                    content: "Some people say four years of construction is 'noise pollution,' but I say that it's just letting my presence be known. That's confidence — that's living, boldly! Never let anyone dull your sparkle, never let anyone take your karaoke mic even if you've sung the last 17 songs and never let anyone stop you from demolishing inoperable structures at 4 a.m. You have to fight for your right to bang those hammers and drive those Bobcats! Do it for feminism!",
+                    bgColor: "#ec4899", // pink-500
+                    emoji: "🔊"
+                },
+                {
+                    title: "You are not an inconvenience!",
+                    content: "Stand your ground. Make them move, drive, duck, dip, dive and dodge around you. So what if I made you walk the long way to Great Dane, adding an extra six minutes onto your journey? Yeah, you were late to your PSYC 102 midterm because my people blocked the entrance to North Parkade for 27 minutes on a random Tuesday. Am I sorry? Absolutely not! The discomfort of others is not your burden to bear. Their emotions are not your responsibility.",
+                    bgColor: "#a855f7", // purple-500
+                    emoji: "🛑"
+                },
+                {
+                    title: "Track your goals",
+                    content: "Or, rather, tracks are #goals. If you want to be as popular as me, try installing a 200m indoor track inside of you. This is an easy, permanent way to add to your fashionability and functionality. You'll have the student body running in circles trying to keep up with your trendy awesomeness.",
+                    bgColor: "#f59e0b", // amber-500
+                    emoji: "🏃‍♀️"
+                },
+                {
+                    title: "It's okay to be messy (on the inside)!",
+                    content: "You may not know it from my glistening, modern exterior, but I haven't quite got my footing (or flooring) all figured out. That's okay — when in doubt, lie! You may have noticed that I'm set to make my debut in '[insert constantly changing month here] 2025.' See how I give myself the whole year to figure shit out? Very demure, very mindful.",
+                    bgColor: "#3b82f6", // blue-500
+                    emoji: "🤫"
+                },
+                {
+                    title: "Growing up is never finished!",
+                    content: "You might think that once I'm open for business, my growth is done — but no! I'll keep finding a way to expand. #GrowthMindset. Remember: there is always another side hustle to be hustled, another scheme to be schemed, another ridiculously expensive and widely unnecessary vision to be executed!",
+                    bgColor: "#22c55e", // green-500
+                    emoji: "🌱"
+                }
+            ];
+            
+            let currentAdvice = 0;
+            const emojiEl = document.getElementById('emoji');
+            const titleTextEl = document.getElementById('title-text');
+            const contentEl = document.getElementById('advice-content');
+            const cardEl = document.getElementById('advice-card');
+            const indicatorsEl = document.getElementById('page-indicators');
+            const prevButton = document.querySelector('.prev-button');
+            const nextButton = document.querySelector('.next-button');
+            
+            // Initialize page indicators
+            advices.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.classList.add('indicator');
+                if (index === 0) indicator.classList.add('active');
+                indicatorsEl.appendChild(indicator);
+            });
+            
+            // Function to update display
+            function updateDisplay() {
+                // Remove and re-add animation class
+                cardEl.classList.remove('animate-fade-in-out');
+                void cardEl.offsetWidth; // Force reflow
+                cardEl.classList.add('animate-fade-in-out');
+                
+                const advice = advices[currentAdvice];
+                emojiEl.textContent = advice.emoji;
+                titleTextEl.textContent = advice.title;
+                contentEl.textContent = advice.content;
+                cardEl.style.backgroundColor = advice.bgColor;
+                
+                // Update indicators
+                const indicators = document.querySelectorAll('.indicator');
+                indicators.forEach((indicator, index) => {
+                    if (index === currentAdvice) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Initial display
+            updateDisplay();
+            
+            // Event listeners for navigation
+            prevButton.addEventListener('click', function() {
+                currentAdvice = (currentAdvice - 1 + advices.length) % advices.length;
+                updateDisplay();
+            });
+            
+            nextButton.addEventListener('click', function() {
+                currentAdvice = (currentAdvice + 1) % advices.length;
+                updateDisplay();
+            });
+        });
+    </script>
+</body>
+</html>
