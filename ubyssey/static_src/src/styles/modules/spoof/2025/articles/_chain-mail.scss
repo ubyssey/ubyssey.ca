@@ -1,0 +1,124 @@
+article.chain-mail {
+    $sm-blue: #5e6498;
+    $sm-beige: #fdf6e8;
+    position: relative;
+    display: flex;
+    .wallpaper {
+        display: flex;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        justify-content: space-around;
+
+        background: linear-gradient(white, pink);
+        marquee {
+            color: white;
+            font-size: 1.5em;
+        }
+    }
+    .left {
+        display: flex;
+        flex-direction: column;
+    }
+    .file-container {
+        display: flex;
+        gap: 4em;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-block: auto;
+    }
+    .file {
+        position: relative;
+        img {
+            width: 100px;
+            height: auto;
+            box-shadow: 0 0.5em 1em;
+        }
+        span {
+            position: absolute;
+            top: calc(100% + 0.5em);
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+    }
+    .note {
+        margin: 5%;
+        position: relative;
+        height: fit-content;
+        border-radius: 0.25em;
+        border-top: 1em solid rgb(255, 233, 189);
+        background: linear-gradient($sm-beige, rgb(255, 233, 189));
+        filter: drop-shadow(0 1em 1em);
+        p {
+            margin: 1em;
+            font-weight: 300;
+            line-height: 1.5em;
+            span {
+                color: $glm-magenta;
+                text-decoration: underline 1px;
+            }
+        }
+    }
+    .window {
+        margin: 5% 5% 5% 5%;
+        padding: 0.5em;
+        position: relative;
+        height: fit-content;
+        max-width: 700px;
+        border: 1px $glm-purple outset;
+        border-radius: 1em;
+        background: linear-gradient(#ad286a80, #803f8dcf);
+        filter: drop-shadow(0 1em 1em);
+
+        .top-bar {
+            margin-block: 0.25em;
+            color: white;
+            filter: blur(0.5px);
+        }
+        .window-inner {
+            padding: 0.5em;
+            background: $sm-beige;
+            border-radius: 0.25em;
+            .chat-name {
+                margin-bottom: 0.5em;
+                display: block;
+                position: relative;
+                width: 100%;                
+                border-bottom: 1px ridge black;
+                background: linear-gradient( transparent, white, transparent);
+            }
+            .chat {
+                padding: 0.5em 2em 1em 0.5em;
+                border: 1px ridge black;
+                background-color: white;
+                max-height: 500px;
+                overflow-y: scroll;
+            }
+            p {
+                margin-block: 0.5em;
+                font-family: sans-serif;
+                span {
+                    font-weight: 600;
+                }
+                span.glm {
+                    color: $glm-pink;
+                }
+                span.sm {
+                    color: $sm-blue;
+                }
+            }
+            .input {
+                margin-top: 0.5em;
+                display: flex;
+                width: 100%;
+                input {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+} 
