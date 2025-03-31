@@ -1,18 +1,20 @@
 
 .frat-girl {
-    $wd-blue: #99bce2;
+    $wd-blue: #adcef2;
+    $wd-blue-2: #cedbff;
     $gw-pink: #ba2e62;
     $gw-pink-2: #bf2a63;
     display: flex;
     padding-bottom: 0;
     background: linear-gradient(to right, #f2e4ed 33%, #e7cade 36%);
 
-    .intro {
-        margin-bottom: 0;
+    .left {
+        margin-right: 2em;
         display: flex;
-        width: 700px;
+        width: 550px;
         flex-direction: column;
-        .intro-container {
+        flex-shrink: 0;
+        .intro {
             padding: 1.5em;
             margin: 2em 0 2em 3em;
             background-color: $wd-blue;
@@ -20,13 +22,14 @@
             transform: rotate(2deg);
 
             color: $gw-pink;
+            font-family: sans-serif;
             font-weight: 600;
             filter: drop-shadow(0 0 15px $wd-blue);
         }
         h2 {
             margin: 1em;
             text-align: center;
-            font-size: 2.5em;
+            font-size: 2em;
         }
         p {
             margin-inline: auto;
@@ -47,51 +50,83 @@
             bottom: -4px;
         }
     }
-    .interview {
-        margin-inline: auto;
-        margin-block: 10em;
+    .right {
         width: 100%;
-        max-width: 850px;
-        .interview-glm, .interview-wardhat {
-            padding: 0.75em;
-            max-width: 540px;
+        div.header {
+            padding: 0.25em;
+            margin-left: 10%;
+            margin-block: 2em;
             width: fit-content;
 
-            filter: drop-shadow(0 0 15px #f2e4ed);
-            color: white;
-            font-family: sans-serif;
-            line-height: 1.5em;
-        }
-        .interview-glm {
-            &::before {
-                padding: 0.25em;
+            transform: rotate(-3deg);
+            span {
+                margin-inline: auto;
                 display: block;
-                position: absolute;
-                top: -0.5em;
-                right: -4em;
-                height: 3em;
-                width: 3em;
-
-                content: "";
-                background-image: url('/static/ubyssey/images/spoof/2025/gwl-logo.png');
-                background-size: contain;
+                width: fit-content;
+                font-size: 1.25em;
             }
-            position: relative;
-            margin-left: auto;
-            margin-right: 4em;
-            margin-block: 1.5em;
-            border-radius: 1em 0.25em 1em 1em;
-            background-color: $glm-pink;
-            color: white;
-            font-weight: 600;
+            h2 {
+                margin-top: 0;
+                width: fit-content;
+                font-size: 4em;
+
+                color: $gw-pink;
+                text-shadow: -0.1em 0.1em white;
+                font-family: sans-serif;
+            }
         }
-        .interview-wardhat {
-            margin-right: auto;
-            margin-left: 4em;
-            margin-left: auto;
-            border-radius: 0.25em 1em 1em 1em;
-            background-color: $wd-blue;
-            color: #bf2a63;
+        .interview {
+            margin-inline: auto;
+            margin-bottom: 50%;
+            width: 100%;
+            max-width: 700px;
+            .interview-glm, .interview-wardhat {
+                padding: 0.75em;
+                max-width: 540px;
+                width: fit-content;
+
+                filter: drop-shadow(0 0 15px #f2e4ed);
+                color: white;
+                font-family: sans-serif;
+                line-height: 1.5em;
+                &::before {
+                    padding: 0.25em;
+                    display: block;
+                    position: absolute;
+                    top: -0.5em;
+                    height: 3em;
+                    width: 3em;
+
+                    content: "";
+
+                    background-size: contain;
+                }
+            }
+            .interview-glm {
+                &::before {
+                    right: -4em;
+                    background-image: url('/static/ubyssey/images/spoof/2025/gwl-logo.png');
+                }
+                position: relative;
+                margin-left: auto;
+                margin-right: 4em;
+                margin-block: 1.5em;
+                border-radius: 1em 0.25em 1em 1em;
+                background-color: $glm-pink;
+                color: white;
+                font-weight: 600;
+            }
+            .interview-wardhat {
+                &::before {
+                    left: -4em;
+                    background-image: url('/static/ubyssey/images/spoof/2025/gwl-logo.png');
+                }
+                margin-right: auto;
+                margin-left: 4em;
+                border-radius: 0.25em 1em 1em 1em;
+                background-color: $wd-blue-2;
+                color: #bf2a63;
+            }
         }
     }
 
