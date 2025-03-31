@@ -23,18 +23,18 @@
 
             color: $gw-pink;
             font-family: sans-serif;
-            font-weight: 600;
             filter: drop-shadow(0 0 15px $wd-blue);
         }
         h2 {
             margin: 1em;
             text-align: center;
             font-size: 2em;
+            font-weight: 800;
         }
         p {
             margin-inline: auto;
             max-width: 700px;
-            font-size: 1.2em;
+            font-size: 1.1em;
             line-height: 1.5em;
         }
         .frat-girl-container {
