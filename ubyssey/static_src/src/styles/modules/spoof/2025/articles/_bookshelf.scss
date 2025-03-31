@@ -18,7 +18,7 @@ article.bookshelf {
         transform: rotate(-2deg);
         .beowulf-bg {
             margin: 0;
-            padding: 1.5em 1.5em 4.5em 1.5em;
+            padding: 1.5em 1.5em 3.5em 1.5em;
             background-color: white;
             border-radius: 1em;
             box-shadow: -5px 10px 5px #00000024;
@@ -30,13 +30,17 @@ article.bookshelf {
         }
         .book-container {
             margin-top: 1em;
+            padding-bottom: 2em;
             width: 150px;
             flex-shrink: 0;
         }
         .beowulf-summary {
             margin-inline: 1em;
+            display: flex;
+            flex-direction: column;
             .percent-loved {
-                margin: 1em 1em 0 0;
+                margin: auto 1em auto 0;
+                padding-block: 0.5em;
 
                 color: $glm-pink;
                 text-align: center;
@@ -45,7 +49,6 @@ article.bookshelf {
                 text-decoration: underline #a1e4ff;
                 
                 transform: rotate(2deg);
-                filter: drop-shadow(0 0 5px #80808036);
             }
             p {
                 line-height: 1.5em;

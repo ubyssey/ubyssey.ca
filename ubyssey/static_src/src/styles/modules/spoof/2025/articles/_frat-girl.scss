@@ -6,7 +6,7 @@
     $gw-pink-2: #bf2a63;
     display: flex;
     padding-bottom: 0;
-    background: linear-gradient(to right, #f2e4ed 33%, #e7cade 36%);
+    background: linear-gradient(88deg, #f2e4ed 36%, #e7cade 36%);
 
     .left {
         margin-right: 2em;
@@ -17,7 +17,7 @@
         .intro {
             padding: 1.5em;
             margin: 2em 0 2em 3em;
-            background-color: $wd-blue;
+            background-color: white;
             border-radius: 1em;
             transform: rotate(2deg);
 
@@ -41,34 +41,33 @@
             flex-grow: 1;
         }
         img.frat-girl-img {
-            max-width: 150%;
-            max-height: 100vh;
-            height: auto;
-            margin: 0em -2em;
+            margin-inline: -2em;
             position: sticky;
-            top: 0;
-            bottom: -4px;
+            top: 2em;
+            width: auto;
+            height: calc(100vh - 2em);
+            filter: drop-shadow(0 0 2em white);
         }
     }
     .right {
         width: 100%;
         div.header {
             padding: 0.25em;
-            margin-left: 10%;
+            margin-left: 5%;
             margin-block: 2em;
             width: fit-content;
 
-            transform: rotate(-3deg);
+            transform: skewY(-3deg);
             span {
                 margin-inline: auto;
                 display: block;
                 width: fit-content;
-                font-size: 1.25em;
+                font-size: 1.5em;
             }
             h2 {
                 margin-top: 0;
                 width: fit-content;
-                font-size: 4em;
+                font-size: 5em;
 
                 color: $gw-pink;
                 text-shadow: -0.1em 0.1em white;
@@ -85,7 +84,8 @@
                 max-width: 540px;
                 width: fit-content;
 
-                filter: drop-shadow(0 0 15px #f2e4ed);
+                border: 2px solid white;
+                filter: drop-shadow(0 0 2em #f2e4ed);
                 color: white;
                 font-family: sans-serif;
                 line-height: 1.5em;
@@ -101,6 +101,9 @@
 
                     background-size: contain;
                 }
+            }
+            .emphasis {
+                font-size: 2em;
             }
             .interview-glm {
                 &::before {
@@ -119,12 +122,13 @@
             .interview-wardhat {
                 &::before {
                     left: -4em;
-                    background-image: url('/static/ubyssey/images/spoof/2025/gwl-logo.png');
+                    background-image: url('/static/ubyssey/images/spoof/2025/frat-girl/frat-girl-pfp.png');
+                    border-radius: 100%;
                 }
                 margin-right: auto;
                 margin-left: 4em;
                 border-radius: 0.25em 1em 1em 1em;
-                background-color: $wd-blue-2;
+                background: linear-gradient($wd-blue-2, white, $wd-blue-2);
                 color: #bf2a63;
             }
         }
