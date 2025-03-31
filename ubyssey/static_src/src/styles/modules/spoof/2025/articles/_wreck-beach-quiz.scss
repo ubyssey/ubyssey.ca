@@ -1,0 +1,119 @@
+article.wreck-beach-quiz {
+    $beach-yellow: #f8f275;
+    $beach-pink: #ed028c;
+    $beach-blue: #00adee;
+
+    background-image: url('/static/ubyssey/images/spoof/2025/wreck-beach-quiz/wreck-beach-bg.jpg');
+    background-size: cover;
+    background-position: center bottom;
+    h2 {
+        margin-inline: 1em;
+
+        color: $beach-pink;
+        -webkit-text-stroke: 0.2em white;
+        paint-order: stroke;
+
+        font-size: 3em;
+        transform: skewY(-2deg);
+        span {
+            display: block;
+            font-size: 2em;
+        }
+    }
+    .quiz-container {
+        margin: 10% 10% 2% 10%;
+        position: relative;
+        height: 500px;
+    }
+    img.beachball {
+        position: absolute;
+        left: 0;
+        width: 250px;
+        height: auto;
+        animation: jump 1s ease-in-out infinite;
+        transition-duration: 1s;
+        &.right {
+            left: calc(100% - 250px);
+        }
+    }
+    .question-container {
+        margin: auto auto 20% auto;
+        display: flex;
+        max-width: 600px;
+        height: 200px;
+        text-align: center;
+        flex-direction: column;
+        span.question {
+            color: $beach-blue;
+            font-size: 3em;
+            text-align: center;
+            -webkit-text-stroke: white 0.2em;
+            paint-order: stroke;
+        }
+        .result {
+            padding: 2em;
+            border-radius: 1em;
+            color: white;
+            background: linear-gradient(transparent, var(--resultColour), transparent);
+            filter: drop-shadow(0 0 1em);            
+
+            &.human {
+                --resultColour: #{$beach-pink};
+            }
+            &.vampire {
+                --resultColour: red;
+            }
+            &.eldritch {
+                --resultColour: purple;
+            }
+            &.swamp {
+                --resultColour: green;
+            }
+
+            h3 {
+                margin-block: 0;
+                font-size: 3em;
+                -webkit-text-stroke: 10px var(--resultColour);
+                paint-order: stroke;    
+            }
+            p {
+                padding-block: 2em;
+            }
+        }
+        button.restart, .result {
+            display: none;
+        }
+        &.end {
+            button.answer, span.question {
+                display: none;
+            }
+            button.restart, .result {
+                display: block;
+            }
+        }
+        .answer-container {
+            margin-top: auto;
+            padding-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            gap: 2em;
+            button {
+                margin-inline: auto;
+                padding: 0.25em 0.5em;
+                background: linear-gradient($beach-yellow, white, $beach-yellow);
+                border-radius: 0.5em;
+                color: black;
+                font-size: 2em;
+                text-align: center;
+                box-shadow: 0 0.25em 1em white;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+@keyframes jump {
+    0% {bottom: 0}
+    50% {bottom: 100%;}
+    100% {bottom: 0;}
+}
