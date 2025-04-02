@@ -1,14 +1,12 @@
 .src-north-guide-to-growing-up {
+    font-family: 'franklin-gothic-urw', 'sans-serif';  
+    background-color: #fff8fa;
+    color: #333;
+    line-height: 1.6;
+
     * {
         margin: 0;
         box-sizing: border-box;
-    }
-    
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; //TODO fix the font-family
-        background-color: #fff8fa;
-        color: #333;
-        line-height: 1.6;
     }
     
     .container {
