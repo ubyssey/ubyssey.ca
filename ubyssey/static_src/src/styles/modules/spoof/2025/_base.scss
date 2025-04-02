@@ -27,3 +27,27 @@ article {
     0% {transform: rotateY(0);}
     100% {transform: rotateY(360deg);}
 }
+
+
+@keyframes up-down {
+    0% {bottom: -10px;}
+    50% {bottom: -50px;}
+    100% {bottom: -10px;}    
+}
+
+@keyframes waving {
+    0% {transform: rotate(0deg);}
+    20% {transform: rotate(7deg);}
+    60% {transform: rotate(-10deg);}
+    100% {transform: rotate(0deg);}
+}
+
+@keyframes flashing-dots {
+    from {border-style: dotted;}
+    to {border-style: dashed;}
+}
+
+@keyframes stroking {
+    from {-webkit-text-stroke-width: 0;}
+    to {-webkit-text-stroke-width: 2px;}
+}

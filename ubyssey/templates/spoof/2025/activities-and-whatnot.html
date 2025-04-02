@@ -67,39 +67,11 @@
 </head>
 
 <body>
-    {% comment %}
-        {% include 'spoof/2025/nav.html' %}
-    {% endcomment %}
 
-    <div class="landing-container">
+    {% include 'spoof/2025/nav.html' with selected="activities-and-whatnot" %}
 
-        <div class="logo">
-            <img src="{% static 'ubyssey/images/spoof/2025/gwl-logo.png' %}" alt="Girl's Lower Mainland">
-        </div>
-
-        <div class="previews">
-            <div class="center-image">
-                <img src="{% static 'ubyssey/images/spoof/2025/glm-cover-sidney-joyce.png' %}" alt="Girl's Lower Mainland">
-            </div>
-        
-            <div class="preview useless-crafts right bottom">
-                <a class="section" href="/humour/girlslowermainland/useless-crafts">Useless Crafts</a>
-            </div>
-            <div class="preview get-it-together right bottom">
-                <a class="section" href="/humour/girlslowermainland/get-it-together">Get it together</a>
-            </div>
-            <div class="preview people-and-cairns left bottom">
-                <a class="section" href="/humour/girlslowermainland/people-and-cairns">People & Cairns</a>
-            </div>
-            <div class="preview from-alleged-readers right bottom">
-                <a class="section" href="/humour/girlslowermainland/from-alleged-readers">From Alleged Readers</a>
-            </div>
-            <div class="preview activities-and-whatnot left">
-                <a class="section" href="/humour/girlslowermainland/activities-and-whatnot">Activities & Whatnot</a>
-            </div>
-        </div>
-    </div>
-
+    {% include 'spoof/2025/articles/wreck-beach-quiz.html' %}
+    
 	{% wagtailuserbar %}
 </body>
 

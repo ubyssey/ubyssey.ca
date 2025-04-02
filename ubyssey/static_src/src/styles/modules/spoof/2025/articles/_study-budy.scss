@@ -1,0 +1,167 @@
+article.study-budy {
+    $study-budy-pink: #fb3199;
+    $study-budy-yellow: #ffeb3d;
+    $study-budy-green: #45b348;
+    $study-budy-purple: #67307f;
+
+    position: relative;
+    background-color: white;
+
+    h2 {
+        color: black;
+        font-size: 3em;
+        text-align: center;
+        span {
+            display: block;
+            color: $study-budy-pink;
+            font-size: 1.5em;
+        }
+    }
+    .note {
+        padding: 1em;
+        max-width: 500px;
+        background: linear-gradient($glm-yellow, $study-budy-yellow);
+        filter: drop-shadow(0 0 1em black);
+        
+        &.bonus {
+            margin-inline: auto;
+            transform: rotate(-2deg);
+        }
+        &.you-will-need {
+            transform: rotate(2deg);
+        }
+        h3 {
+            font-size: 1.25em;
+        }
+    }
+    
+    .warning {
+        position: absolute;
+        right: 1em;
+        top: 2em;
+        z-index: 100;
+
+        max-width: 200px;
+        padding: 1em;
+        border: 0.5em dashed black;
+        border-radius: 100%;
+        background: $study-budy-pink;
+
+        text-align: center;
+
+        animation: waving infinite 5s linear;
+        filter: drop-shadow(0 0 1em black);
+        &::before {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% - 0.6em);
+            width: 1.25em;
+            height: 1.25em;
+            border-radius: 100%;
+            
+            content: "!";
+            color: $study-budy-green;
+            -webkit-text-stroke-color: $study-budy-green;
+            text-align: center;
+            font-size: 3em;
+
+            background: $study-budy-yellow;
+            transform: translateX(-50%);
+            filter: drop-shadow(0 0.1em 0.25em #000000ad);
+            animation: stroking 0.5s infinite ease-in-out alternate-reverse;
+        }
+        h3 {
+            margin-block: 0.5em 0;
+            font-size: 2em;
+            color: $study-budy-green;
+        }
+        p {
+            margin-top: 0;
+            padding: 0 1em;
+            color: white;
+        }
+    }
+
+    .flex-container {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .intro {
+        width: 40%;
+        font-size: 1.1em;
+        .subtitle {
+            color: $study-budy-pink;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+    }
+    .steps-img-container {
+        .cut-out-img {
+            max-width: 700px;
+            flex-shrink: 0;
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
+        .steps {
+            margin-block: 4em;
+            display: flex;
+            justify-content: space-around;
+            flex-direction: column;
+            .step {
+                margin: 1em;
+                padding: 1em;
+                span.button {
+                    margin-left: -1em;
+                    padding-top: 1.3em;
+
+                    float: left;
+                    position: relative;
+                    top: -0.5em;
+                    right: 0.5em;
+                    height: 3.5em;
+                    width: 3.5em;
+
+
+                    border: 0.25em dashed white;
+                    border-radius: 100%;
+
+                    color: white;
+                    font-size: 1.5em;
+                    text-align: center;
+
+                    filter: drop-shadow(0 0 0.5em black);
+                    box-sizing: border-box;
+
+                    &.green {
+                        right: 1em;
+                        background: $study-budy-green;
+                        transform: rotate(10deg);
+                    }
+                    &.pink {
+                        right: 1.5em;
+                        background: $study-budy-pink;
+                        transform: rotate(5deg);
+                    }
+                    &.purple {
+                        right: 1.25em;
+                        background: $study-budy-purple;
+                        transform: rotate(-10deg);                        
+                    }
+
+                    &::before {
+                        position: absolute;
+                        top: 0.3em;
+                        left: 0;
+                        right: 0;
+
+                        content: "Step";
+                        text-align: center;
+                    }
+                }
+            }
+        }
+    }
+}

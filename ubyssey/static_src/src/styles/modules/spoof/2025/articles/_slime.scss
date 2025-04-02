@@ -1,99 +1,45 @@
 .slime {
-    background-image: url('../images/spoof/2025/backgrounds/hearts-bg.jpg');
+    background-image: linear-gradient(to bottom, #afcefb, #affbca);
     h2 {
-        font-size: 3em;
+        margin-block: auto 0;
+        font-size: 2em;
         text-align: center;
+        span {
+            display: block;
+            font-size: 2em;
+        }
     }
-    .slime-steps {
-        position: relative;
-        @media screen and (max-width: 1400px) {
-            display: flex;
-            flex-direction: column;
-            img.slime-img {
-                margin: auto;
-                width: 700px;
-                height: auto;
-                max-width: 100%;
+
+    .col-container {
+        display: flex;
+        justify-content: space-around;
+    }
+    .card-container {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        gap: 2em;
+        width: 30%;
+        justify-content: space-around;
+
+        .step {
+            margin-block: auto;
+            padding: 1em;
+            height: fit-content;
+            background: linear-gradient(transparent, white);
+            border-radius: 1em;
+            border: 1px solid gray;
+        }
+        &.center {
+            .step {
+                margin-block: auto 0;
             }
         }
-        @media screen and (min-width: 1400px) {
-            img.slime-img {
-                padding-bottom: 85px;
-                padding-top: 20px;
-                position: relative;
-                width: 50%;
-                height: auto;
-                left: 17%;
-                top: 75px;
-            }
-            h3.subtitle {
-                position: absolute;
-                width: 28%;
-                left: 0;
-            }  
-            p {
-                padding: 0.5em;
-                position: absolute;
-                background-color: white;
-            }
-            .tip {
-                position: absolute;
-                bottom: 0;
-                width: 300px;
-                padding: 1em;
-                border: 0.5em dashed red;
-                font-size: 1.1em;
-                background: white;
-                line-height: 1.5em;
-            }
-            .step-1 {
-                width: 23%;
-                top: 90px;
-                left: 0;
-            }
-            .step-2 {
-                width: 28%;
-                top: 0;
-                left: 29%;
-            }
-            .step-3 {
-                width: 30%;
-                top: 2%;
-                right: 9%;
-            }
-            .step-4 {
-                width: 33%;
-                top: 20%;
-                right: 1%;
-            }
-            .step-5 {
-                width: 32%;
-                top: 39%;
-                right: 0;
-            }
-            .step-6 {
-                width: 32%;
-                bottom: 24%;
-                right: 1%;
-            }
-            .step-7 {
-                width: 33%;
-                bottom: 12%;
-                right: 4%;
-            }
-            .step-8 {
-                width: 33%;
-                bottom: 0;
-                right: 5%;
-            }
-            .step-9 {
-                bottom: 0%;
-                left: 49%;
-            }
-            .step-10 {
-                bottom: 0;
-                left: 32%;
-            }
+        .tip {
+            margin-top: 1em;
+            padding: 1em;
+            border: 0.25em dashed;
+            transform: rotate(-3deg);
         }
     }
 }

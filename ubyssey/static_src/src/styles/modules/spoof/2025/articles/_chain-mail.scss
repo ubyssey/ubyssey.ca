@@ -18,8 +18,9 @@ article.chain-mail {
         background: linear-gradient(#ffffff8c, pink);
         marquee {
             height: fit-content;
-            color: white;
+            color: #ffffff82;
             font-size: 1.5em;
+            font-family: monospace;
         }
     }
     .left {
@@ -56,6 +57,7 @@ article.chain-mail {
         border-top: 1em solid rgb(255, 233, 189);
         background: linear-gradient($sm-beige, rgb(255, 233, 189));
         filter: drop-shadow(0 1em 1em);
+        transform: rotate(1deg);
         p {
             margin: 1em;
             font-weight: 300;
@@ -76,6 +78,7 @@ article.chain-mail {
         border-radius: 1em;
         background: linear-gradient(#ad286a80, #803f8dcf);
         filter: drop-shadow(0 1em 1em);
+        transform: rotate(-1deg);
 
         .top-bar {
             margin-block: 0.25em;

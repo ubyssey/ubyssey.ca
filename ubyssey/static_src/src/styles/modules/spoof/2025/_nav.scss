@@ -6,12 +6,18 @@ nav {
     border-bottom: 5px solid transparent;
     border-image: url("/static/ubyssey/images/spoof/2025/nav-border-img.svg") 20% round;
     z-index: 100;
+    filter: drop-shadow(0 0 1em #0005);
+
+    &.useless-crafts li.useless-crafts, &.get-it-together li.get-it-together, &.people-and-cairns li.people-and-cairns, &.from-alleged-readers li.from-alleged-readers, &.activities-and-whatnot li.activities-and-whatnot {
+        text-shadow: 0 0 0.5em #ffd147;
+        animation: waving 2s infinite;
+    }
 
     ul {
         display: flex;
         margin: 0;
-        padding: 20px 45px;
-        background-color: #FDF37D;
+        padding: 2.5em 3em 1.5em 3em;
+        background-color: #ffe247;
         gap: 1.5em;
         list-style: none;
         li {
@@ -21,11 +27,40 @@ nav {
             font-weight: 600;
 
             color: $glm-pink;
-            -webkit-text-stroke: 4px white;
+            -webkit-text-stroke-width: 4px;
+            -webkit-text-stroke-color: white;
             paint-order: stroke;
             a {
                 color: inherit;
                 text-decoration: none;
+            }
+
+            &.useless-crafts {
+                --sectionColor: #ffaa2f;
+            }
+            &.get-it-together {
+                --sectionColor: #8a46a4;
+            }
+            &.people-and-cairns {
+                --sectionColor: #bad548;
+            }
+            &.from-alleged-readers {
+                --sectionColor: #4ad1f6;
+            }
+            &.activities-and-whatnot {
+                --sectionColor: #f755a9;
+            }
+            color: var(--sectionColor);
+        }
+        li.logo {
+            position: relative;
+            width: 5em;
+            img {
+                position: absolute;
+                top: -1.5em;
+                left: 0;
+                width: 100%;
+                height: auto;
             }
         }
     }

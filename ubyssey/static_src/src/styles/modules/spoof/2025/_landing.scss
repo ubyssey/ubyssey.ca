@@ -1,54 +1,133 @@
+$glm-landing-bg-1: #fff0f8;
+$glm-landing-bg-2: #c67178;
+
 .landing-container {
+    position: relative;
     min-height: 100vh;
     width: 100%;
     
-    background-image: radial-gradient($glm-blue-gradient-1, $glm-blue-gradient-2);
-}
-
-.preview {
-    position: absolute;
-    > * {
-        position: absolute;
-        padding: 50px;
-        background-image: radial-gradient(closest-side at 50% 50%, white, transparent);
+    background-image: radial-gradient($glm-landing-bg-1, $glm-landing-bg-2);
+    overflow: clip;
+    
+    .dotted {
+        border: 0.5em dotted white;
+        animation: flashing-dots alternate-reverse 0.5s infinite linear;
     }
-    a img {
-        padding: 1em;
-        height: auto;
-        width: 100%;
-        
-        border: 0.5em dotted transparent;
-        &:hover {
-            border-color: white;
-            animation: flashing-dots alternate-reverse 0.5s infinite linear;
+    
+    .logo {
+        position: absolute;
+        top: 0;
+        left: 5%;
+        width: 400px;
+        img {
+            width: 100%;
+            height: auto;
+            transform: rotate(-10deg);
         }
     }
-    span {
-        font-size: 1.5em;
-        font-weight: 800;
-        -webkit-text-stroke: 4px white;
-        paint-order: stroke;
-    }
-}
 
-.center-image {
-    left: 25%;
-    right: 25%;
-    top: 5%;
-}
-
-.preview_1 {
-    top: 10%;
-    left: 2%;
-    > span {
-        width: 100px;
+    .center-image {
+        position: absolute;
+        right: 25%;
+        bottom: 0;
+    
+        img {
+            padding: 0;
+            display: block;
+            position: relative;
+            bottom: 0;
+            height: calc(100vh - 25px);
+            width: auto;
+            border: none;
+    
+            animation: waving 2s infinite ease-in-out, up-down 2.5s infinite ease-in-out;
+        }
     }
-    > a {
-        top: 75px;
-    }
-}
 
-@keyframes flashing-dots {
-    from {border-style: dotted;}
-    to {border-style: dashed;}
+    .previews {
+        display: flex;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        .preview {
+            position: relative;
+            flex-grow: 1;
+
+            &.left {
+                left: 2%;
+                a.section {
+                    left: 0;
+                }
+            }
+            &.right {
+                right: 2%;
+                a.section {
+                    right: 0;
+                }
+            }
+
+            &.bottom {
+                a.section {
+                    bottom: 0;
+                }
+            }
+
+            > * {
+                position: absolute;
+                padding: 25px 50px;
+                background-image: radial-gradient(closest-side at 50% 50%, white, transparent);
+            }
+            a img {
+                padding: 1em;
+                height: auto;
+                width: 100%;
+            }
+            a.section {
+                padding-right: 0;
+                width: max-content;
+                max-width: 6em;
+    
+                font-size: 1.75em;
+                font-weight: 800;
+                -webkit-text-stroke: 4px white;
+                paint-order: stroke;
+                text-wrap: balance;
+
+                transform: skewY(-4deg);
+            }
+        }
+    }
+
+    .preview.useless-crafts {
+        a.section {
+            color: #ffaa2f;
+        }
+    }
+
+    .preview.get-it-together {
+        a.section {
+            color: #8a46a4;
+        }
+    }
+
+    .preview.people-and-cairns {
+        a.section {
+            color: #bad548;
+        }
+    }
+
+    .preview.from-alleged-readers {
+        a.section {
+            color: #4ad1f6;
+        }
+    }
+
+    .preview.activities-and-whatnot {
+        a.section {
+            color: #f755a9;
+        }
+    }
 }

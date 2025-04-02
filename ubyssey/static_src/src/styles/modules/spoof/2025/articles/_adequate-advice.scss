@@ -1,0 +1,42 @@
+article.awesome-advice {
+    h2 {
+        font-size: 4em;
+        text-align: center;
+    }
+    .col-container {
+        display: flex;
+        justify-content: space-around;
+    }
+    .card-container {
+        display: flex;
+        width: 30%;
+
+        flex-direction: column;
+        justify-content: space-around;
+        gap: 2em;
+        .card {
+            height: fit-content;
+            color: white;
+
+            &.out {
+                transform: rotate(-5deg);
+            }
+            &.in {
+                transform: rotate(5deg);
+            }
+
+            h3.question {
+                color: purple;
+            }
+            .answer {
+                padding: 0.5em 1em;
+
+                font-weight: 300;
+                color: purple;
+
+                background: linear-gradient(#7ad07a, white);
+                filter: drop-shadow(0 0 1em purple);
+            }
+        }
+    }
+}

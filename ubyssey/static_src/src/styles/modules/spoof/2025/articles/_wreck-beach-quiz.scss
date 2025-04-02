@@ -54,26 +54,30 @@ article.wreck-beach-quiz {
             padding: 2em;
             border-radius: 1em;
             color: white;
-            background: linear-gradient(transparent, var(--resultColour), transparent);
+            background: linear-gradient(var(--resultSecondary), var(--resultColour));
             filter: drop-shadow(0 0 1em);            
 
             &.human {
                 --resultColour: #{$beach-pink};
+                --resultSecondary: #{$beach-blue};
             }
             &.vampire {
                 --resultColour: red;
+                --resultSecondary: black;
             }
             &.eldritch {
                 --resultColour: purple;
+                --resultSecondary: rgb(37, 39, 85);
             }
             &.swamp {
                 --resultColour: green;
+                --resultSecondary: rgb(14, 42, 42);
             }
 
             h3 {
                 margin-block: 0;
                 font-size: 3em;
-                -webkit-text-stroke: 10px var(--resultColour);
+                -webkit-text-stroke: 10px var(--resultSecondary);
                 paint-order: stroke;    
             }
             p {

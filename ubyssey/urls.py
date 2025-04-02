@@ -61,7 +61,11 @@ urlpatterns += [
     # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
 
     re_path(r'^humour/girlslowermainland/$', TemplateView.as_view(template_name='spoof/2025/landing.html')),
-    re_path(r'^humour/girlslowermainland/star-time/$', TemplateView.as_view(template_name='spoof/2025/star-time.html')),
+    re_path(r'^humour/girlslowermainland/useless-crafts/$', TemplateView.as_view(template_name='spoof/2025/useless-crafts.html')),
+    re_path(r'^humour/girlslowermainland/get-it-together/$', TemplateView.as_view(template_name='spoof/2025/get-it-together.html')),
+    re_path(r'^humour/girlslowermainland/people-and-cairns/$', TemplateView.as_view(template_name='spoof/2025/people-and-cairns.html')),
+    re_path(r'^humour/girlslowermainland/from-alleged-readers/$', TemplateView.as_view(template_name='spoof/2025/from-alleged-readers.html')),
+    re_path(r'^humour/girlslowermainland/activities-and-whatnot/$', TemplateView.as_view(template_name='spoof/2025/activities-and-whatnot.html')),
 
     re_path(r'^djadmin/', admin.site.urls),
 
