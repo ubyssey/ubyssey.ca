@@ -1,5 +1,4 @@
 .strange-science-queries {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
     background-color: #B3E5FC;
     margin: 0;
     padding: 0;
@@ -15,29 +14,13 @@
       position: relative;
       z-index: 1;
       border: 2px solid #FF4081;
-      transform: scale(0.8);
+      transform: scale(0.9);
     }
     
     h1 {
-      font-size: 24px;
+      font-family: 'felt-tip-roman', sans-serif;
       color: #FF4081;
-    }
-    
-    h2 {
-      font-size: 22px;
-      color: #333;
-    }
-    
-    .snowflakes {
-      font-size: 16px;
-      color: #03A9F4;
       font-weight: bold;
-    }
-    
-    .dog-facts {
-      font-size: 14px;
-      color: #4CAF50;
-      font-style: italic;
     }
         
     .snowflake {
@@ -49,6 +32,10 @@
       opacity: 1;
       animation: fallDisappear linear infinite;
       z-index: 0;
+    }
+
+    p {
+        font-family: 'myriad-pro', sans-serif;
     }
   }
   
@@ -66,4 +53,5 @@
       transform: translateY(110vh);
       opacity: 0;
     }
+
   }
