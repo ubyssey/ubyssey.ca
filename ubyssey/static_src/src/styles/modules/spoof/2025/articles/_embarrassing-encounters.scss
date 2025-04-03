@@ -19,13 +19,15 @@ article.embarrassing-encounters {
         h2 {
             text-align: right;
             font-size: 5em;
+            font-family: "zubilo-shadow",sans-serif;
             color: #803f8d;
             -webkit-text-stroke: 0.25em white;
             paint-order: stroke;
         }
         p {
             text-align: center;
-            font-size: 1.25em;
+            font-size: 1.75em;
+            font-family: "patrick-hand-sc",sans-serif;
         }
     }
     .encounters {
@@ -54,14 +56,16 @@ article.embarrassing-encounters {
             }
 
             h3 {
+                margin-block: 0;
                 color: $embarrassing-yellow;
                 font-size: 2em;
-                margin-block: 0;
+                font-family: "zubilo-black",sans-serif;
             }
             p {
                 color: black;
                 font-weight: 300;
                 line-height: 1.5em;
+                font-family: "playpen-sans",sans-serif;;
             }
         }
     }

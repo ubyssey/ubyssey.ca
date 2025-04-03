@@ -1,7 +1,12 @@
 article.academic-probation {
+    $probation-pink: #f0c9e2;
+    $probation-hotpink: #f0f;
+    $probation-purple: #7f1fa2;
+    $probation-green: #9adbc0;
+
     border-image: url('/static/ubyssey/images/spoof/2025/elena.gif');
     border-image-width: 25%;
-    background-color: #9adbc0;
+    background-color: $probation-green;
     .flex-container {
         margin-inline: auto;
         display: flex;
@@ -12,7 +17,7 @@ article.academic-probation {
             width: fit-content;
             border-radius: 1em;
             border: ridge;
-            background: #f0c9e2;
+            background: linear-gradient($probation-pink, white, $probation-pink);
             font-weight: 300;
         }
     }
@@ -20,20 +25,22 @@ article.academic-probation {
         font-size: 2em;
         text-align: center;
         transform: skewY(-3deg);
-        span.title {
-            display: block;
-            font-size: 1.5em;
-        }
+        font-family: "nickainley", serif;
         span.emphasis {
-            font-size: 1.2em;
-            transform: skewY(3deg);
-            position: relative;
-            display: inline-block;
             padding: 0.25em;
+            display: block;
+
+            color: white;
+            font-family: "campus-mn",sans-serif;
             text-decoration: underline;
+            font-size: 1.5em;
+            transform: skewY(3deg);
+
+            text-shadow: -2px 2px 2px $probation-hotpink;
         }
     }
     p {
         max-width: 600px;
+        line-height: 1.5em;
     }
 }

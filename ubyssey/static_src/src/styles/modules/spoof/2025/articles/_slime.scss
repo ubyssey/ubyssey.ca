@@ -1,13 +1,27 @@
 .slime {
-    background-image: linear-gradient(to bottom, #afcefb, #affbca);
+    $slime-blue: #afcefb;
+    $slime-green: #affbca;
+    $slime-purple: #994299;
+    background-image: linear-gradient(to bottom, $slime-blue, $slime-green);
     h2 {
         margin-block: auto 0;
         font-size: 2em;
         text-align: center;
+        font-family: "chauncy-pro",sans-serif;
         span {
             display: block;
             font-size: 2em;
+            font-family: "zubilo-inline",sans-serif;
         }
+    }
+    p.subtitle {
+        font-size: 1.5em;
+        font-family: "myriad-pro",sans-serif;
+
+        color: $slime-purple;
+        -webkit-text-stroke: 0.25em #fff;
+        paint-order: stroke;
+        text-shadow: 0 0.25em 0.5em black;
     }
 
     .col-container {
@@ -25,10 +39,22 @@
         .step {
             margin-block: auto;
             padding: 1em;
+            position: relative;
             height: fit-content;
             background: linear-gradient(transparent, white);
             border-radius: 1em;
             border: 1px solid gray;
+
+            font-weight: 300;
+            span.iter {
+                position: absolute;
+                right: calc(100% - 0.25em);
+                bottom: calc(100% - 1em);
+
+                font-size: 2em;
+                text-wrap: nowrap;
+                font-family: "zubilo-shadow",sans-serif;
+            }
         }
         &.center {
             .step {
@@ -38,7 +64,11 @@
         .tip {
             margin-top: 1em;
             padding: 1em;
-            border: 0.25em dashed;
+            border: 0.5em dashed #ffffff73;
+
+            color: $slime-purple;
+            font-family: "permanent-marker",sans-serif;
+            
             transform: rotate(-3deg);
         }
     }

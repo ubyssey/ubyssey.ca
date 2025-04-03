@@ -30,12 +30,14 @@
             text-align: center;
             font-size: 2em;
             font-weight: 800;
+            font-family: "zubilo-shadow",sans-serif;
         }
         p {
             margin-inline: auto;
             max-width: 700px;
             font-size: 1.1em;
             line-height: 1.5em;
+            font-family: "myriad-pro",sans-serif;
         }
         .frat-girl-container {
             flex-grow: 1;
@@ -63,6 +65,7 @@
                 display: block;
                 width: fit-content;
                 font-size: 1.5em;
+                font-family: "felt-tip-roman",sans-serif;
             }
             h2 {
                 margin-top: 0;
@@ -71,7 +74,7 @@
 
                 color: $gw-pink;
                 text-shadow: -0.1em 0.1em white;
-                font-family: sans-serif;
+                font-family: "octin-college",sans-serif;
             }
         }
         .interview {

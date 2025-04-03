@@ -1,17 +1,35 @@
 article.fashion {
+    $fashion-blue: #91bfe2;
+    $fashion-purple: #86599e;
+
+    background: linear-gradient(white, $fashion-blue);
     .header-bar {
-        margin: 5em -2em;
+        margin-block: 5em;
         padding: 1em;
-        border-top: 0.25em solid;
-        border-bottom: 0.25em solid;
         transform: skewY(-5deg);
-        background: yellow;
         h2 {
+            color: white;
             text-align: center;
             font-size: 3em;
+            font-family: "specter",sans-serif;
+
+            -webkit-text-stroke: $fashion-blue 0.2em;
+            paint-order: stroke;
+            text-shadow: 0 0.25em 0.5em black;
+            span.emphasis {
+                color: $fashion-purple;
+                -webkit-text-stroke-color: white;
+                font-size: 1.5em;
+            }
         }
         p {
-            margin-inline: 5em;
+            margin-inline: auto;
+            max-width: 800px;
+            font-size: 1.25em;
+
+            color: $fashion-purple;
+            text-shadow: 0 0 0.5em white;
+            font-family: "myriad-pro",sans-serif;
         }
     }
     .item-container {
@@ -20,11 +38,34 @@ article.fashion {
         justify-content: space-around;
         gap: 2em;
         .item {
-            max-width: 30%;
+            padding: 1em;
+            max-width: 25%;
+            border: 0.25em solid;
+            border-image: linear-gradient($fashion-blue, $fashion-purple) 30 stretch;
+            background: white;
+
+            h3 {
+                font-family: "specter",sans-serif;
+            }
+            p {
+                font-weight: 300;
+            }
         }
     }
     .endnote {
+        margin: 4em auto 1em auto;
+        padding: 1em;
+        width: fit-content;
+  
+        border-radius: 1em;
+        background: $fashion-purple;
+        
+        font-family: "myriad-pro",sans-serif;
         text-align: center;
         font-size: 1.2em;
+        color: white;
+
+        filter: drop-shadow(0 0.25em 0.5em black);
+
     }
 }

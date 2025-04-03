@@ -11,10 +11,12 @@ article.study-budy {
         color: black;
         font-size: 3em;
         text-align: center;
+        font-family: "chauncy-pro",sans-serif;
         span {
             display: block;
             color: $study-budy-pink;
             font-size: 1.5em;
+            font-family: "specter",sans-serif;
         }
     }
     .note {
@@ -22,6 +24,7 @@ article.study-budy {
         max-width: 500px;
         background: linear-gradient($glm-yellow, $study-budy-yellow);
         filter: drop-shadow(0 0 1em black);
+        font-family: "playpen-sans",sans-serif;
         
         &.bonus {
             margin-inline: auto;
@@ -31,7 +34,10 @@ article.study-budy {
             transform: rotate(2deg);
         }
         h3 {
-            font-size: 1.25em;
+            font-size: 2em;
+            color: $study-budy-purple;
+            font-family: "specter",sans-serif;
+            margin-bottom: 0.5em;
         }
     }
     
@@ -43,7 +49,7 @@ article.study-budy {
 
         max-width: 200px;
         padding: 1em;
-        border: 0.5em dashed black;
+        border: 0.5em dashed $study-budy-purple;
         border-radius: 100%;
         background: $study-budy-pink;
 
@@ -74,6 +80,7 @@ article.study-budy {
             margin-block: 0.5em 0;
             font-size: 2em;
             color: $study-budy-green;
+            font-family: "specter",sans-serif;
         }
         p {
             margin-top: 0;
@@ -89,7 +96,8 @@ article.study-budy {
 
     .intro {
         width: 40%;
-        font-size: 1.1em;
+        font-size: 1.2em;
+        font-weight: 300;
         .subtitle {
             color: $study-budy-pink;
             font-size: 1.5em;
@@ -113,9 +121,12 @@ article.study-budy {
             .step {
                 margin: 1em;
                 padding: 1em;
+                font-weight: 300;
+                line-height: 1.5em;
+                font-size: 1.1em;
                 span.button {
                     margin-left: -1em;
-                    padding-top: 1.3em;
+                    padding-top: 1.5em;
 
                     float: left;
                     position: relative;
@@ -131,6 +142,7 @@ article.study-budy {
                     color: white;
                     font-size: 1.5em;
                     text-align: center;
+                    font-family: "felt-tip-roman",sans-serif;
 
                     filter: drop-shadow(0 0 0.5em black);
                     box-sizing: border-box;
@@ -153,12 +165,14 @@ article.study-budy {
 
                     &::before {
                         position: absolute;
-                        top: 0.3em;
+                        top: 0.5em;
                         left: 0;
                         right: 0;
 
                         content: "Step";
                         text-align: center;
+                        font-family: "lindsey-signature",sans-serif;
+                        font-weight: 600;;
                     }
                 }
             }

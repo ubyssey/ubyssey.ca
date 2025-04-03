@@ -5,8 +5,8 @@ article.cairn {
     $cairn-orange: #f9b277;
 
     background-color: white;
-    border-top: 5em solid transparent;
-    border-bottom: 5em solid transparent;
+    border-top: 4em solid transparent;
+    border-bottom: 4em solid transparent;
     border-image: linear-gradient(to right, $cairn-orange, $cairn-pink, $cairn-blue) 30 stretch;
     .cairn-img {
         max-width: 500px;
@@ -24,7 +24,8 @@ article.cairn {
         display: flex;
         justify-content: space-around;
         p {
-            font-size: 1.1em;
+            font-size: 1.25em;
+            font-weight: 300;
         }
     }
     .header {
@@ -32,17 +33,25 @@ article.cairn {
     }
     h2 {
         font-size: 3em;
-        span {
+        > span {
             display: block;
             &.six-ways {
                 font-size: 1.5em;
-                color: $cairn-blue;
+                font-family: "nexa-rust-slab-black-shad-2",sans-serif;
+                >.purple {
+                    color: $cairn-purple;
+                }
+                >.blue {
+                    color: $cairn-blue;
+                }
             }
             &.engineering-cairn {
                 color: $cairn-pink;
+                font-family: "specter",sans-serif;
             }
             &.like-you {
                 color: $cairn-orange;
+                font-family: "nickainley", serif;
             }
         }
     }
@@ -73,6 +82,29 @@ article.cairn {
 
             &.right {
                 transform: skewY(2deg) rotate(-5deg);
+            }
+
+            h3 {
+                margin-block: 0.5em;
+                font-size: 1.5em;
+                font-family: "felt-tip-roman",sans-serif;
+
+                &.pink {
+                    color: $cairn-pink;
+                }
+                &.blue {
+                    color: $cairn-blue;
+                }
+                &.orange {
+                    color: $cairn-orange;
+                }
+                &.purple {
+                    color: $cairn-purple;
+                }
+            }
+            p {
+                font-weight: 300;
+                line-height: 1.5em;
             }
         }
     }

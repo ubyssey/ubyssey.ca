@@ -1,4 +1,6 @@
 article.bookshelf {
+    $bookshelf-blue: #63c0bb;
+    $bookshelf-pink: #d9407a;
     background-color: wheat;
     .flex-row {
         display: flex;
@@ -27,6 +29,8 @@ article.bookshelf {
             margin-top: 0.5em;
             text-align: center;
             font-size: 2.5em;
+            font-family: "specter",sans-serif;
+            color: $bookshelf-pink;
         }
         .book-container {
             margin-top: 1em;
@@ -42,11 +46,12 @@ article.bookshelf {
                 margin: auto 1em auto 0;
                 padding-block: 0.5em;
 
-                color: $glm-pink;
+                color: $bookshelf-pink;
+                font-family: "cabin-sketch-bold",sans-serif;
                 text-align: center;
                 font-size: 2em;
                 font-weight: 600;
-                text-decoration: underline #a1e4ff;
+                text-decoration: underline $bookshelf-blue;
                 
                 transform: rotate(2deg);
             }
@@ -68,7 +73,7 @@ article.bookshelf {
                 padding: 1em;
                 display: flex;
                 flex-direction: column;
-                background: radial-gradient(white, $glm-pink);
+                background: radial-gradient(white, $bookshelf-pink);
                 border: 2px solid black;
                 border-radius: 2em;
                 filter: drop-shadow(-0.75em 0.75em 0 #282727);
@@ -96,11 +101,8 @@ article.bookshelf {
         flex-shrink: 0;
         h2 {
             margin-bottom: 0;
-            font-size: 2em;
-        }
-        span {
-            margin-block: 1em;
-            display: block;
+            font-size: 3em;
+            font-family: "nickainley", serif;            
         }
         .recommended {
             display: flex;
@@ -124,13 +126,17 @@ article.bookshelf {
                     margin-top: -0.75em;
                     paint-order: stroke;
 
-                    color: #c65997;
+                    color: $bookshelf-pink;
                     -webkit-text-stroke: white 10px;
                     text-shadow: 0 8px 5px #949494;
 
+                    font-family: "specter",sans-serif;
                     font-size: 1em;
                     font-weight: 600;
                     line-height: 1.5em;
+                    .author {
+                        color: $bookshelf-blue;
+                    }
                 }
                 p {
                     line-height: 1.5em;
