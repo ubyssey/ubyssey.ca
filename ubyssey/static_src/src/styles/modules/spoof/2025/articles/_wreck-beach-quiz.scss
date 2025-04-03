@@ -13,6 +13,7 @@ article.wreck-beach-quiz {
         -webkit-text-stroke: 0.2em white;
         paint-order: stroke;
 
+        font-family: "chauncy-pro",sans-serif;
         font-size: 3em;
         transform: skewY(-2deg);
         span {
@@ -44,6 +45,11 @@ article.wreck-beach-quiz {
         text-align: center;
         flex-direction: column;
         span.question {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+
             color: $beach-blue;
             font-size: 3em;
             text-align: center;
@@ -51,10 +57,8 @@ article.wreck-beach-quiz {
             paint-order: stroke;
         }
         .result {
-            padding: 2em;
             border-radius: 1em;
             color: white;
-            background: linear-gradient(var(--resultSecondary), var(--resultColour));
             filter: drop-shadow(0 0 1em);            
 
             &.human {
@@ -77,11 +81,15 @@ article.wreck-beach-quiz {
             h3 {
                 margin-block: 0;
                 font-size: 3em;
+                font-family: "chauncy-pro",sans-serif;
                 -webkit-text-stroke: 10px var(--resultSecondary);
                 paint-order: stroke;    
             }
             p {
-                padding-block: 2em;
+                font-size: 1.25em;
+                text-shadow: 0 0 0.5em var(--resultColour);
+                -webkit-text-stroke: 0.25em var(--resultColour);
+                paint-order: stroke;
             }
         }
         button.restart, .result {
@@ -112,6 +120,25 @@ article.wreck-beach-quiz {
                 box-shadow: 0 0.25em 1em white;
                 cursor: pointer;
             }
+        }
+    }
+    @media ($bp-smaller-than-phablet) {
+        h2 {
+            margin-bottom: 6em;
+            font-size: 2em;
+        }
+        .answer-container {
+            flex-direction: column;
+        }
+        .question-container {
+            position: relative;
+            z-index: 1;
+            span.question {
+                font-size: 2em;
+            }
+        }
+        .result  {
+            margin-top:-6em;
         }
     }
 }

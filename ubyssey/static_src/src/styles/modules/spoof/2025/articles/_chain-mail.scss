@@ -3,6 +3,7 @@ article.chain-mail {
     $sm-beige: #fdf6e8;
     position: relative;
     display: flex;
+    justify-content: space-around;
 
     background-image: url('/static/ubyssey/images/spoof/2025/backgrounds/flowers-bg.jpg');
     .wallpaper {
@@ -52,6 +53,7 @@ article.chain-mail {
     .note {
         margin: 5%;
         position: relative;
+        max-width: 500px;
         height: fit-content;
         border-radius: 0.25em;
         border-top: 1em solid rgb(255, 233, 189);
@@ -124,6 +126,18 @@ article.chain-mail {
                 input {
                     flex-grow: 1;
                 }
+            }
+        }
+    }
+    @media ($bp-smaller-than-phablet) { 
+        flex-direction: column;
+        .left .note {
+            margin: 2em auto;
+        }
+        .window {
+            transform: none;
+            .window-inner .chat {
+                max-height: none;
             }
         }
     }

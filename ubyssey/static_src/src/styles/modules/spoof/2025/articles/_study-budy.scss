@@ -116,6 +116,7 @@ article.study-budy {
         .steps {
             margin-block: 4em;
             display: flex;
+            max-width: 800px;
             justify-content: space-around;
             flex-direction: column;
             .step {

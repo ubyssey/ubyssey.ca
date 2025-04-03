@@ -3,10 +3,12 @@ article.academic-probation {
     $probation-hotpink: #f0f;
     $probation-purple: #7f1fa2;
     $probation-green: #9adbc0;
+    $probation-green-pale: #ddfcef;
 
     border-image: url('/static/ubyssey/images/spoof/2025/elena.gif');
     border-image-width: 25%;
-    background-color: $probation-green;
+    background: linear-gradient(-45deg, $probation-green, $probation-green-pale);
+    background-size: 50px 50px;
     .flex-container {
         margin-inline: auto;
         display: flex;
@@ -42,5 +44,9 @@ article.academic-probation {
     p {
         max-width: 600px;
         line-height: 1.5em;
+    }
+
+    @media ($bp-smaller-than-phablet) { 
+        border-image-width: 150px;
     }
 }

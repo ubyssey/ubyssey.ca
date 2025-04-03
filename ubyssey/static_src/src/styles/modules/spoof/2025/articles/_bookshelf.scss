@@ -5,18 +5,35 @@ article.bookshelf {
     .flex-row {
         display: flex;
         flex-direction: row;
-        gap: 1em;            
+        gap: 1em;
+        justify-content: center;            
     }
     img.bookcover {
-        margin-left: -40%;
-        width: 130%;
+        width: 100%;
         height: auto;
         border-radius: 0 1em 1em 0;
+    }
+    .shine {
+        margin-left: -40%;
         transform: rotate(4deg);
         filter: drop-shadow(0 0 5px black);
+
+        overflow: hidden;
+        position: relative;
+        &::before {
+            content: "";
+            position: absolute;
+            transform: skewY(-25deg) rotate(25deg);
+            width: 1em;
+            top: 0;
+            bottom: 0;
+            background-image: linear-gradient(to right, transparent, white, transparent);
+            animation: move-right 0.5s 2s infinite;
+        }
     }
     .beowulf {
         margin: auto 3em;
+        max-width: 800px;
         transform: rotate(-2deg);
         .beowulf-bg {
             margin: 0;
@@ -56,6 +73,8 @@ article.bookshelf {
                 transform: rotate(2deg);
             }
             p {
+                font-size: 1.1em;
+                font-weight: 300;
                 line-height: 1.5em;
             }
             p:first-child {
@@ -97,7 +116,7 @@ article.bookshelf {
     }
     .recommended-container {
         margin: 2em;
-        width: 500px;
+        max-width: 500px;
         flex-shrink: 0;
         h2 {
             margin-bottom: 0;
@@ -139,10 +158,36 @@ article.bookshelf {
                     }
                 }
                 p {
+                    font-weight: 300;
                     line-height: 1.5em;
                     text-shadow: 0 0 5px white;
                 }
             }
+        }
+    }
+    @media ($bp-smaller-than-phablet) { 
+        .flex-row {
+            flex-direction: column;            
+        }
+        .beowulf {
+            margin-inline: 0;
+            transform: rotate(0);
+            .beowulf-reviews {
+                margin-inline: 1em;
+                flex-direction: column;
+            }
+            .book-container  {
+                padding-inline: 2em;
+                width: 100%;
+                box-sizing: border-box;
+                img {
+                    margin: auto;
+                    width: 100%;
+                }
+            }
+        }
+        .recommended-container {
+            margin: 0;
         }
     }
 }

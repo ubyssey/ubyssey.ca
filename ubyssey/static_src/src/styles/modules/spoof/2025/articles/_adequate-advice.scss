@@ -117,9 +117,26 @@ article.awesome-advice {
                 font-weight: 300;
                 line-height: 1.5em;
 
-                border-top: 3em solid #7d7d7d40;
+                border-top: 3em solid #f9f2932b;
                 background: var(--answerColour);
                 filter: drop-shadow(0 0.5em 1em #00000082);
+            }
+        }
+    }
+
+    @media ($bp-smaller-than-phablet) {
+        .header-container h2 {
+            margin-inline: -0.5em;
+        }
+        .col-container {
+            flex-direction: column;
+            .card-container {
+                width: auto;
+                .quip {
+                    padding: 1em;
+                    position: static;
+                    text-wrap: auto;
+                }
             }
         }
     }

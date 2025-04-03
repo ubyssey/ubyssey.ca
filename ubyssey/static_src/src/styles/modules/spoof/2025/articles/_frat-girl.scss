@@ -11,7 +11,7 @@
     .left {
         margin-right: 2em;
         display: flex;
-        width: 550px;
+        max-width: 550px;
         flex-direction: column;
         flex-shrink: 0;
         .intro {
@@ -40,6 +40,7 @@
             font-family: "myriad-pro",sans-serif;
         }
         .frat-girl-container {
+            display: flex;
             flex-grow: 1;
         }
         img.frat-girl-img {
@@ -139,15 +140,20 @@
 
     @media screen and (max-width: 1000px) {
         flex-direction: column;
-        .intro img.frat-girl-img {
-            width: 100%;
+        .frat-girl-container img.frat-girl-img {
             margin: auto;
             position: relative;
+            top: 0;
         }
         .interview {
             margin: 0;
             padding-inline: 3em;
             box-sizing: border-box;
+        }
+        .left {
+            margin-right: 0;
+            max-width: none;
+            width: auto;
         }
     }
 }

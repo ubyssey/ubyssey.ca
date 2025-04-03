@@ -110,4 +110,19 @@ article.girl-power {
         height: auto;
         animation: flip-y infinite 3s ease-in-out alternate-reverse;
     }
+
+    @media ($bp-smaller-than-desktop) { 
+        .col-container {
+            flex-direction: column;
+            .card-container {
+                margin-bottom: 2em;
+                .card {
+                    width: auto;
+                }
+                .girl-power-img {
+                    margin-inline: auto;
+                }
+            }
+        }
+    }
 }

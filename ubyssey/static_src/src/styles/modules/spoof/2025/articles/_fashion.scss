@@ -66,6 +66,17 @@ article.fashion {
         color: white;
 
         filter: drop-shadow(0 0.25em 0.5em black);
+    }
 
+    @media ($bp-smaller-than-phablet) { 
+        .header-bar h2 {
+            font-size: 2em;
+        }
+        .item-container {
+            flex-direction: column;
+            .item {
+                max-width: none;
+            }
+        }
     }
 }

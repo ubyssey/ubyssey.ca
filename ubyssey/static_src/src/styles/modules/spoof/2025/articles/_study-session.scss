@@ -31,6 +31,7 @@ article.study-session {
                 width: 100%;
                 height: auto;
                 border: 0.25em solid $glm-purple;
+                box-sizing: border-box;
             }
             span.credit {
                 display: block;
@@ -39,6 +40,15 @@ article.study-session {
                 paint-order: stroke;
                 color: $glm-magenta;
             }
+        }
+    }
+
+    @media ($bp-smaller-than-phablet) {
+        .header-container {
+            padding-left: 0;
+        }
+        .arts {
+            flex-direction: column;
         }
     }
 }

@@ -64,4 +64,14 @@ nav {
             }
         }
     }
+
+    @media ($bp-smaller-than-phablet) {
+        ul  {
+            flex-wrap: wrap;
+            justify-content: space-around;
+            li.logo {
+                margin-left: -2em;
+            }
+        }
+    }
 }

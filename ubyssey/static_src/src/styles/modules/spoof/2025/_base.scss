@@ -6,6 +6,24 @@ $glm-magenta: #ad286a;
 $glm-blue-gradient-1: #F0FAFF;
 $glm-blue-gradient-2: #8fcaf2;
 
+// Breakpoints
+$bp-mobile-size             : 501;
+$bp-phablet-size            : 760;
+$bp-tablet-size             : 960;
+$bp-desktop-size            : 1200;
+$bp-desktophd-size          : 1400;
+
+$bp-larger-than-mobile      : "min-width: #{$bp-mobile-size}px" !default;
+$bp-smaller-than-mobile     : "max-width: #{$bp-mobile-size - 1}px" !default;
+$bp-larger-than-phablet     : "min-width: #{$bp-phablet-size}px" !default;
+$bp-smaller-than-phablet    : "max-width: #{$bp-phablet-size - 1}px" !default;
+$bp-larger-than-tablet      : "min-width: #{$bp-tablet-size}px" !default;
+$bp-smaller-than-tablet     : "max-width: #{$bp-tablet-size - 1}px" !default;
+$bp-larger-than-desktop     : "min-width: #{$bp-desktop-size}px" !default;
+$bp-smaller-than-desktop    : "max-width: #{$bp-desktop-size - 1}px" !default;
+$bp-larger-than-desktophd   : "min-width: #{$bp-desktophd-size}px" !default;
+$bp-smaller-than-desktophd  : "max-width: #{$bp-desktophd-size - 1}px" !default;
+
 body {
     margin: 0;
     font-family: "franklin-gothic-urw",sans-serif;
@@ -59,4 +77,9 @@ article.every-font {
 @keyframes stroking {
     from {-webkit-text-stroke-width: 0;}
     to {-webkit-text-stroke-width: 2px;}
+}
+
+@keyframes move-right {
+    from {left: 100%;}
+    to {left: 100%;}
 }
