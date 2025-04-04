@@ -1,7 +1,6 @@
 .strange-science-queries {
     background-color: #B3E5FC;
-    margin: 0;
-    padding: 0;
+    position: relative;
     text-align: center;
     
     .container {
@@ -14,7 +13,6 @@
       position: relative;
       z-index: 1;
       border: 2px solid #FF4081;
-      transform: scale(0.9);
     }
     
     h1 {
@@ -24,7 +22,7 @@
     }
         
     .snowflake {
-      position: fixed;
+      position: absolute;
       top: -10px;
       color: white;
       font-size: 20px;
