@@ -2,9 +2,12 @@
     $slime-blue: #afcefb;
     $slime-green: #affbca;
     $slime-purple: #994299;
-    background-image: linear-gradient(to bottom, $slime-blue, $slime-green);
+    
+    position: relative;
+    background-image: url('/static/ubyssey/images/spoof/2025/backgrounds/rainbow-dots.png');
+    background-size: cover;
     h2 {
-        margin-block: auto 0;
+        margin-block: 1em;
         font-size: 2em;
         text-align: center;
         font-family: "chauncy-pro",sans-serif;
@@ -16,7 +19,7 @@
     }
     p.subtitle {
         font-size: 1.5em;
-        font-family: "myriad-pro",sans-serif;
+        font-family: "chauncy-pro",sans-serif;
 
         color: $slime-purple;
         -webkit-text-stroke: 0.25em #fff;
@@ -24,18 +27,29 @@
         text-shadow: 0 0.25em 0.5em black;
     }
 
-    .col-container {
-        display: flex;
-        justify-content: space-around;
-    }
-    .card-container {
-        display: flex;
-        flex-direction: column;
-        flex-shrink: 0;
-        gap: 2em;
-        width: 30%;
-        justify-content: space-around;
+    .tip {
+        margin-inline: auto;
+        padding: 1em;
+        max-width: 500px;
 
+        border: 0.25em dashed #000000a3;
+        
+        font-family: "permanent-marker",sans-serif;
+       
+        transform: rotate(2deg);
+    }
+
+    .card-container {
+        margin-block: 3em;
+        display: flex;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+        gap: 2.5em;
+        justify-content: center;
+
+        > * {
+            max-width: 250px;
+        }
         .step {
             margin-block: auto;
             padding: 1em;
@@ -56,21 +70,6 @@
                 text-wrap: nowrap;
                 font-family: "zubilo-shadow",sans-serif;
             }
-        }
-        &.center {
-            .step {
-                margin-block: auto 0;
-            }
-        }
-        .tip {
-            margin-top: 1em;
-            padding: 1em;
-            border: 0.5em dashed #ffffff73;
-
-            color: $slime-purple;
-            font-family: "permanent-marker",sans-serif;
-            
-            transform: rotate(-3deg);
         }
     }
 }

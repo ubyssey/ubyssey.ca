@@ -11,13 +11,15 @@ nav {
     &.useless-crafts li.useless-crafts, &.get-it-together li.get-it-together, &.people-and-cairns li.people-and-cairns, &.from-alleged-readers li.from-alleged-readers, &.activities-and-whatnot li.activities-and-whatnot {
         text-shadow: 0 0 0.5em #ffd147;
         animation: waving 2s infinite;
+        -webkit-text-stroke-color: var(--sectionColor);
+        color: white;
     }
 
     ul {
         display: flex;
         margin: 0;
         padding: 2.5em 3em 1.5em 3em;
-        background-color: #ffe247;
+        background: linear-gradient(#fdf37d,#fff, #fdf37d);
         gap: 1.5em;
         list-style: none;
         li {

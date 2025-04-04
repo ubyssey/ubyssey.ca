@@ -108,6 +108,7 @@
             }
             .emphasis {
                 font-size: 2em;
+                font-weight: 600;
             }
             .interview-glm {
                 &::before {
@@ -144,11 +145,15 @@
             margin: auto;
             position: relative;
             top: 0;
+            max-width: 100%;
+            height: auto;
         }
-        .interview {
+        .right .interview {
             margin: 0;
-            padding-inline: 3em;
             box-sizing: border-box;
+            .emphasis {
+                font-size: 1.25em;
+            }
         }
         .left {
             margin-right: 0;

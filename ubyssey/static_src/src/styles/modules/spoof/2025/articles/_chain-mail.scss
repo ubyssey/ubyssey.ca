@@ -4,8 +4,11 @@ article.chain-mail {
     position: relative;
     display: flex;
     justify-content: space-around;
+    gap: 100px;
 
-    background-image: url('/static/ubyssey/images/spoof/2025/backgrounds/flowers-bg.jpg');
+    background-image: url('/static/ubyssey/images/spoof/2025/boss-lady/boss-lady.jpg');
+    background-position: top;
+    background-attachment: fixed;
     .wallpaper {
         display: flex;
         position: absolute;
@@ -16,12 +19,20 @@ article.chain-mail {
         flex-direction: column;
         justify-content: space-around;
 
-        background: linear-gradient(#ffffff8c, pink);
+        /*background: linear-gradient(#ffffff8c, pink);*/
         marquee {
-            height: fit-content;
-            color: #ffffff82;
+            height: 0;
+            flex-grow: 1;
+            color: #ffffff20;
             font-size: 1.5em;
-            font-family: "permanent-marker",sans-serif;
+            font-family: pixel-arial;
+            text-align: center;
+
+            &.horizontal {
+                margin-block: auto;
+                height: fit-content;
+                flex-grow: 0;
+            }
         }
     }
     .left {
@@ -41,6 +52,7 @@ article.chain-mail {
             width: 100px;
             height: auto;
             box-shadow: 0 0.5em 1em;
+            border: 2px solid white;
         }
         span {
             position: absolute;
@@ -48,6 +60,12 @@ article.chain-mail {
             left: 0;
             right: 0;
             text-align: center;
+
+            font-family: pixel-arial;
+            font-size: 0.75em;
+            color: white;
+            text-shadow: -1px 1px black;
+
         }
     }
     .note {
@@ -60,6 +78,8 @@ article.chain-mail {
         background: linear-gradient($sm-beige, rgb(255, 233, 189));
         filter: drop-shadow(0 1em 1em);
         transform: rotate(1deg);
+
+        font-family: "medodica", serif;
         p {
             margin: 1em;
             font-weight: 300;
@@ -75,7 +95,7 @@ article.chain-mail {
         padding: 0.5em;
         position: relative;
         height: fit-content;
-        max-width: 700px;
+        max-width: 600px;
         border: 1px $glm-purple outset;
         border-radius: 1em;
         background: linear-gradient(#ad286a80, #803f8dcf);
@@ -86,6 +106,10 @@ article.chain-mail {
             margin-block: 0.25em;
             color: white;
             filter: blur(0.5px);
+
+            font-family: "pixel-arial", serif;
+            font-size: 0.7em;
+            text-align: center;
         }
         .window-inner {
             padding: 0.5em;
@@ -98,6 +122,10 @@ article.chain-mail {
                 width: 100%;                
                 border-bottom: 1px ridge black;
                 background: linear-gradient( transparent, white, transparent);
+
+                font-family: "pixel-arial", serif;
+                font-size: 0.8em;
+                text-align: center;
             }
             .chat {
                 padding: 0.5em 2em 1em 0.5em;
@@ -105,12 +133,15 @@ article.chain-mail {
                 background-color: white;
                 max-height: 500px;
                 overflow-y: scroll;
+
+                font-family: "medodica", serif;
             }
             p {
                 margin-block: 0.5em;
-                font-family: sans-serif;
                 span {
                     font-weight: 600;
+                    font-family: "pixel-arial", serif;
+                    font-size: 0.6em;
                 }
                 span.glm {
                     color: $glm-pink;

@@ -6,7 +6,7 @@ article.academic-probation {
     $probation-green-pale: #ddfcef;
 
     border-image: url('/static/ubyssey/images/spoof/2025/elena.gif');
-    border-image-width: 25%;
+    border-image-width: 500px;
     background: linear-gradient(-45deg, $probation-green, $probation-green-pale);
     background-size: 50px 50px;
     .flex-container {
@@ -20,6 +20,9 @@ article.academic-probation {
             border-radius: 1em;
             border: ridge;
             background: linear-gradient($probation-pink, white, $probation-pink);
+
+            font-family: "medodica", serif;
+            font-size: 1.25em;
             font-weight: 300;
         }
     }
@@ -48,5 +51,8 @@ article.academic-probation {
 
     @media ($bp-smaller-than-phablet) { 
         border-image-width: 150px;
+        .flex-container .right {
+            margin-bottom: 150px;
+        }
     }
 }

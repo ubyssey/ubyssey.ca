@@ -2,6 +2,8 @@ article.bookshelf {
     $bookshelf-blue: #63c0bb;
     $bookshelf-pink: #d9407a;
     background-color: wheat;
+
+    padding-block: 4em;
     .flex-row {
         display: flex;
         flex-direction: row;
@@ -9,26 +11,27 @@ article.bookshelf {
         justify-content: center;            
     }
     img.bookcover {
+        display: block;
         width: 100%;
         height: auto;
-        border-radius: 0 1em 1em 0;
     }
-    .shine {
+    .beowulf-book-container {
         margin-left: -40%;
         transform: rotate(4deg);
         filter: drop-shadow(0 0 5px black);
-
+    }
+    .shine {
         overflow: hidden;
         position: relative;
         &::before {
             content: "";
             position: absolute;
             transform: skewY(-25deg) rotate(25deg);
-            width: 1em;
+            width: 100%;
             top: 0;
             bottom: 0;
             background-image: linear-gradient(to right, transparent, white, transparent);
-            animation: move-right 0.5s 2s infinite;
+            animation: move-right 0.9s 2s infinite;
         }
     }
     .beowulf {
@@ -82,7 +85,7 @@ article.bookshelf {
             }
         }
         .beowulf-reviews {
-            margin: -2em -1.5em 0 -1.5em;
+            margin: -2em -1.5em 2em -1.5em;
             display: flex;
             flex-direction: row;
             gap: 2em;
@@ -137,9 +140,11 @@ article.bookshelf {
                 background-size: 100% 1.5em;
 
                 .book-container {
-                    margin: auto 1em auto -1em;
+                    margin: auto 1em auto -2em;
                     width: 50px;
                     flex-shrink: 0;
+                    transform: rotate(4deg);
+                    box-shadow: 0 0 5px black;
                 }
                 h3 {
                     margin-top: -0.75em;
@@ -184,6 +189,10 @@ article.bookshelf {
                     margin: auto;
                     width: 100%;
                 }
+            }
+            .beowulf-book-container {
+                margin-inline: auto;
+                max-width: 200px;
             }
         }
         .recommended-container {

@@ -56,10 +56,12 @@ article.cairn {
         }
     }
     .item-container {
+        margin-inline:auto;
+        max-width: 1200px;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
-        gap: 1em;
+        gap:0.5em;
         .item {
             margin-bottom: 2em;
             padding: 1em;
@@ -113,6 +115,7 @@ article.cairn {
 
     @media ($bp-smaller-than-phablet) { 
         .header-flex {
+            margin-inline: 0;
             flex-direction: column;
         }
         .item-container {

@@ -72,17 +72,22 @@ article.embarrassing-encounters {
 
     @media ($bp-smaller-than-phablet) {
         flex-direction: column;
-        border-left: 4em solid;
-        border-right: 4em solid;
-        .header-container h2 {
-            margin-inline: -1em;
+        border-left: none;
+        border-right: none;
+        border-image-width: 4em;
+        .header-container {
+            h2 {
             font-size: 3em;
             text-align: center;
+            }
+            p {
+                margin-inline:2em;
+                font-size: 1.25em;
+                transform: rotate(-5deg);
+            }
         }
         .encounters {
             transform: none;
-            margin-inline: -2em;
-            width: calc(100% + 4em);
         }
     }
 }

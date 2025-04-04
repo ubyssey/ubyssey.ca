@@ -22,7 +22,19 @@ $glm-landing-bg-2: #c67178;
         img {
             width: 100%;
             height: auto;
+        }
+        .glm {
             transform: rotate(-10deg);
+        }
+        .ubyssey {
+            width: 15em;
+
+            position: absolute;
+            left: -2.5em;
+            top: 1.5em;
+            z-index: 10;
+            
+            transform: rotate(-5deg);
         }
     }
 
@@ -128,6 +140,20 @@ $glm-landing-bg-2: #c67178;
     .preview.activities-and-whatnot {
         a.section {
             color: #f755a9;
+        }
+    }
+
+    @media ($bp-smaller-than-tablet) {
+        .logo {
+            top: -30px;
+            img.ubyssey {
+                top: 35px;
+                left: 0;
+            }
+        }
+        .center-image {
+            bottom: -30px;
+            right: 0;
         }
     }
 }

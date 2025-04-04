@@ -2,6 +2,7 @@ $glm-yellow: #FDF37D;
 $glm-pink: #C65997;
 $glm-purple: #803f8d;
 $glm-magenta: #ad286a;
+$glm-pink-2: #f75a8f;
 
 $glm-blue-gradient-1: #F0FAFF;
 $glm-blue-gradient-2: #8fcaf2;
@@ -50,6 +51,92 @@ article.every-font {
     }
 }
 
+footer {
+    position: relative;
+    z-index: 10;
+    border-top: 0.5em solid $glm-pink-2;
+    background: linear-gradient(#f75a8f, white);
+    box-shadow: 0 0 1em;
+    
+    h3 {
+        color: $glm-pink-2;
+    }
+    li, p {
+        font-weight: 300;
+    }
+    img.logo {
+        margin-block: auto;
+        width: 300px;
+        height: fit-content;
+    }
+    .footer-flex {
+        margin: 2em auto;
+        max-width: 1200px;
+        display: flex;
+        justify-content: center;
+        gap: 2em;
+    }
+    .left, .right {
+        padding-bottom: 1em;
+        border-bottom: 0.5em solid $glm-pink-2;
+    }
+    .left {
+        display: flex;
+        flex-direction: column;
+    }
+    .right {
+        padding: 1em;
+        border-radius: 1em 1em 0 0;
+        background:white;
+        filter: drop-shadow(0 0 0.25em);
+    }
+
+    .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1em;
+        a {
+            padding: 1em;
+            display: block;
+            border-radius: 2em;
+
+            color: white;
+            text-decoration: none;
+            -webkit-text-stroke: $glm-pink-2 3px;
+            paint-order: stroke;
+            text-shadow: 0 1px 0.25em black;
+
+            background: white;
+            filter: drop-shadow(0 0 0.25em #552837);
+        }
+    }
+
+    .legal {
+        margin-inline: auto;
+        padding-bottom: 2em;
+        max-width: 1200px;
+        font-size: 0.75em;
+    }
+
+    @media ($bp-smaller-than-phablet) {
+        padding: 1em;
+        .footer-flex {
+            flex-direction: column;
+        }
+        .logo {
+            margin: auto;
+        }
+        .buttons {
+            justify-content: center;
+        }
+        .land-acknowledgement {
+            h3, p {
+                color: white;
+            }
+        }
+    }
+}
+
 @keyframes flip-y {
     0% {transform: rotateY(0);}
     100% {transform: rotateY(360deg);}
@@ -80,6 +167,6 @@ article.every-font {
 }
 
 @keyframes move-right {
-    from {left: 100%;}
-    to {left: 100%;}
+    from {left: -100%;}
+    to {left: 200%;}
 }

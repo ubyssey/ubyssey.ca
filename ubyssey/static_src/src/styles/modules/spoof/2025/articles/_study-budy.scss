@@ -31,6 +31,7 @@ article.study-budy {
             transform: rotate(-2deg);
         }
         &.you-will-need {
+            margin-left: 2em;
             transform: rotate(2deg);
         }
         h3 {
@@ -96,6 +97,7 @@ article.study-budy {
 
     .intro {
         width: 40%;
+        flex-shrink: 0;
         font-size: 1.2em;
         font-weight: 300;
         .subtitle {
@@ -106,8 +108,6 @@ article.study-budy {
     }
     .steps-img-container {
         .cut-out-img {
-            max-width: 700px;
-            flex-shrink: 0;
             img {
                 width: 100%;
                 height: auto;
@@ -116,7 +116,7 @@ article.study-budy {
         .steps {
             margin-block: 4em;
             display: flex;
-            max-width: 800px;
+            max-width: 600px;
             justify-content: space-around;
             flex-direction: column;
             .step {
@@ -177,6 +177,25 @@ article.study-budy {
                     }
                 }
             }
+        }
+    }
+
+    @media ($bp-smaller-than-phablet) {
+        h2 {
+            margin-top: 150px;
+        }
+        .intro-container {
+            flex-direction: column;
+        }
+        .steps-img-container {
+            flex-direction: column-reverse;
+            .steps .step span.button {
+                margin-left: 0;
+            }
+        }
+        .intro {
+            margin-bottom: 2em;
+            width: auto;
         }
     }
 }
