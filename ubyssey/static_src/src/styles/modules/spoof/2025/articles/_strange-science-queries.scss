@@ -2,6 +2,7 @@
     background-color: #B3E5FC;
     position: relative;
     text-align: center;
+    overflow: clip;
     
     .flex {
       display: flex;
@@ -32,7 +33,6 @@
         -webkit-text-stroke: 0.2em #de2a98;
         paint-order: stroke;
         color: white;
-        text-shadow: 0 0.25em 0.25em black;
       }
     }
 

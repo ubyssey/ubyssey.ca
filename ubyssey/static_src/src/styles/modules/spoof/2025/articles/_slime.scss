@@ -24,7 +24,7 @@
         color: $slime-purple;
         -webkit-text-stroke: 0.25em #fff;
         paint-order: stroke;
-        text-shadow: 0 0.25em 0.5em black;
+        filter: drop-shadow(0 0 0.25em black);
     }
 
     .tip {

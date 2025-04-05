@@ -16,7 +16,7 @@ article.fashion {
             -webkit-text-stroke: $fashion-blue 0.2em;
             paint-order: stroke;
 
-            filter: drop-shadow(0.25em 0.5em black);
+            filter: drop-shadow(0.25em 0.5em rgba(0, 0, 0, 0.322));
             span.emphasis {
                 color: $fashion-purple;
                 -webkit-text-stroke-color: white;
@@ -27,6 +27,7 @@ article.fashion {
             margin-inline: auto;
             max-width: 800px;
             font-size: 1.25em;
+            text-align: center;
 
             color: $fashion-purple;
             text-shadow: 0 0 0.5em white;
