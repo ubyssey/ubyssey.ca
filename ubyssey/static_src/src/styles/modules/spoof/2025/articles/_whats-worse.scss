@@ -1,0 +1,113 @@
+article.whats-worse {
+    $whats-worse-yellow-2: #fcf179;
+    $whats-worse-magenta: #a92876;
+    $whats-worse-purple: #7f68a4;
+    $whats-worse-blue: #7daccc;
+    $whats-worse-yellow: #cfba47;
+    $whats-worse-green: #5c8752;
+
+    display: flex;
+    justify-content: space-around;
+
+    background:#7daccc;
+    background: linear-gradient(-66deg, $whats-worse-blue 33%, $whats-worse-yellow 33%, $whats-worse-yellow 66%, $whats-worse-green 66%);
+
+    .intro  {
+        position: relative;
+    }
+
+    .header {
+        margin-block: 2em;
+        padding: 1.5em;
+        max-width: 400px;
+        height: fit-content;
+
+        border: 0.5em solid black;
+        background-color: white;
+
+        text-align: center;
+
+        transform: rotate(-5deg);
+        h2 {
+            font-size: 4em;
+            font-family: "playpen-sans",sans-serif;
+            color: $whats-worse-purple;
+            span.emphasis {
+                display: block;
+                font-size: 1.5em;
+                color: $whats-worse-magenta;
+            }
+        }
+        p {
+            font-size: 1.5em;
+        }
+    }
+    .questions {
+        text-align: center;
+        transform: skewY(-2deg);
+        .question {
+            --questionColour: #{$whats-worse-magenta};
+            &:nth-child(2n) {
+                --questionColour: #{$whats-worse-purple};
+            }
+            .answer {
+                margin: 1em;
+                padding: 1.5em;
+                display: inline-block;
+
+                border: 0.25em solid;
+
+                font-weight: 300;
+                background-color: $whats-worse-yellow-2;
+                box-shadow: 0.75em 0.75em 0 var(--questionColour);
+            }
+            .or {
+                font-size: 2em;
+                font-family: "permanent-marker", sans-serif;
+                color: white;
+                text-shadow: 0.2em 0.2em 0 black;
+                -webkit-text-stroke: 0.25em black;
+                paint-order: stroke;
+            }
+        }
+    }
+
+    @media ($bp-smaller-than-phablet) { 
+        flex-direction: column;
+        .intro {
+            transform: none;
+            h2 {
+                font-size: 3em;
+            }
+            .header {
+                margin-top: 0;
+                transform: none;
+            }
+        }
+    }
+
+    @media ($bp-larger-than-desktop) {
+        .intro img {
+            display: block;
+            max-width: 700px;
+            height: auto;
+            position: absolute;
+            left: 75%;
+            transform: rotate(25deg);
+
+            border-radius:100%;
+            border:1em solid $whats-worse-purple;
+            background:$whats-worse-blue;
+        }
+    }
+
+    @media ($bp-smaller-than-desktop) {
+        .intro img {
+            position: relative;
+            transform: none;
+            left: 0;
+            right: 0;
+            max-width: 100%;
+        }
+    }
+}
