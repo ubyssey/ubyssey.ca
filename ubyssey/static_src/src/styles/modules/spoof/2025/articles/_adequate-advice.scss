@@ -1,0 +1,143 @@
+article.awesome-advice {
+    $advice-green: #a9c75d;
+    $advice-purple: #683187;
+    $advice-orange: #cd8540;
+    $advice-blue: #81bbc1;
+    $advice-magenta: #9b2b89;
+
+    background: linear-gradient(white calc(100% - 1px), #8f8ff2);
+    background-size: 100% 3em;
+
+    .header-container {
+        margin-bottom: 2em;
+        padding: 2em;
+        
+        color: purple;
+
+        transform: skewY(-2deg);
+        h2 {
+            margin-block: 0.25em 0;
+            font-size: 5em;
+            text-align: center;
+            font-family: "cabin-sketch-bold",sans-serif;
+        }
+        p.subtitle {
+            margin-top: 0.5em;
+            font-family: "patrick-hand-sc",sans-serif;
+            font-size: 2em;
+            text-align: center;
+            text-decoration: underline;
+        }
+    }
+    
+    .col-container {
+        display: flex;
+        justify-content: space-between;
+    }
+    .left .quip {
+        text-align: left;
+        left: 0.5em;
+    }
+    .right .quip {
+        text-align: right;
+        right: 0.5em;
+    }
+    .center .quip {
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+    .card-container {
+        display: flex;
+        width: 30%;
+
+        flex-direction: column;
+        justify-content: space-around;
+        gap: 5em;
+        .card {
+            position: relative;
+            height: fit-content;
+            color: white;
+
+            &.out {
+                transform: rotate(-2deg);
+            }
+            &.in {
+                transform: rotate(2deg);
+            }
+
+
+            &.green {
+                --answerColour: #{$advice-green};
+            }
+            &.purple {
+                .answer {
+                    color: white;
+                }
+                --answerColour: #{$advice-purple};
+            }
+            &.orange {
+                .answer {
+                    color: white;
+                }
+                --answerColour: #{$advice-orange};
+            }
+            &.blue {
+                --answerColour: #{$advice-blue};
+            }
+            &.magenta {
+                --answerColour: #{$advice-magenta};
+                .answer {
+                    color: white;
+                }
+            }
+
+            h3.question {
+                margin-bottom: 1em;
+
+                color: purple;
+                font-weight: 600;
+                font-family: "felt-tip-roman",sans-serif;
+            }
+            .quip {
+                position: absolute;
+                bottom: 100%;
+
+                color: var(--answerColour);
+                font-size: 2.5em;
+                font-family: "blockhead-plain",sans-serif;
+                text-wrap: nowrap;
+            }
+            .answer {
+                padding: 0.25em 1em 1em 1em;
+                position: relative;
+                z-index: 1;
+
+                color: purple;
+                font-weight: 300;
+                line-height: 1.5em;
+
+                border-top: 3em solid #f9f2932b;
+                background: var(--answerColour);
+                filter: drop-shadow(0 0.5em 1em #00000082);
+            }
+        }
+    }
+
+    @media ($bp-smaller-than-phablet) {
+        .header-container h2 {
+            margin-inline: -0.5em;
+        }
+        .col-container {
+            flex-direction: column;
+            .card-container {
+                width: auto;
+                .quip {
+                    padding: 1em;
+                    position: static;
+                    text-wrap: auto;
+                }
+            }
+        }
+    }
+}

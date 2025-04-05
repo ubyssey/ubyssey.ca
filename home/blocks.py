@@ -176,6 +176,7 @@ class TemplateSelectStructBlock(blocks.StructBlock):
 class MidStreamListTemplates(blocks.ChoiceBlock):
  
     choices=[
+        ('section/objects/promo_glm.html', 'GIRLS LOWERMAINLAND PROMO'),
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_horizontal.html', 'Horizontal'),

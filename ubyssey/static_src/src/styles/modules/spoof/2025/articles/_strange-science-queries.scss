@@ -1,0 +1,87 @@
+.strange-science-queries {
+    background-color: #B3E5FC;
+    position: relative;
+    text-align: center;
+    
+    .flex {
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.3), inset 3px 3px 6px rgba(255, 255, 255, 0.8);
+      position: relative;
+      z-index: 1;
+      border: 2px solid #FF4081;
+    }
+    
+    .header {
+      max-width: 300px;
+      position: relative;
+      z-index: 1;
+      h2 {
+        font-family: "permanent-marker", sans-serif;
+        font-size: 4em;
+        text-align: center;
+        font-weight: 800;
+        -webkit-text-stroke: 0.2em #de2a98;
+        paint-order: stroke;
+        color: white;
+        text-shadow: 0 0.25em 0.25em black;
+      }
+    }
+
+    h3 {
+      font-family: 'felt-tip-roman', 'sans-serif';
+      color: #FF4081;
+      font-weight: bold;
+    }
+        
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      color: white;
+      font-size: 20px;
+      user-select: none;
+      opacity: 1;
+      animation: fallDisappear linear infinite;
+      z-index: 0;
+    }
+
+    p {
+        font-weight: 300;
+        font-family: 'franklin-gothic-urw', 'sans-serif';
+    }
+ 
+    @media ($bp-smaller-than-phablet) {
+      .flex {
+        flex-direction: column;
+      }
+      .header h2 {
+        font: 1.5em;
+      }
+    }
+ 
+  }
+  
+  @keyframes fallDisappear {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    80% {
+      opacity: 1;
+    }
+    
+    100% {
+      transform: translateY(110vh);
+      opacity: 0;
+    }
+
+  }

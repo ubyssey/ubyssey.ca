@@ -1,0 +1,159 @@
+$glm-landing-bg-1: #fff0f8;
+$glm-landing-bg-2: #c67178;
+
+.landing-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    
+    background-image: radial-gradient($glm-landing-bg-1, $glm-landing-bg-2);
+    overflow: clip;
+    
+    .dotted {
+        border: 0.5em dotted white;
+        animation: flashing-dots alternate-reverse 0.5s infinite linear;
+    }
+    
+    .logo {
+        position: absolute;
+        top: 0;
+        left: 5%;
+        width: 400px;
+        img {
+            width: 100%;
+            height: auto;
+        }
+        .glm {
+            transform: rotate(-10deg);
+        }
+        .ubyssey {
+            width: 15em;
+
+            position: absolute;
+            left: -2.5em;
+            top: 1.5em;
+            z-index: 10;
+            
+            transform: rotate(-5deg);
+        }
+    }
+
+    .center-image {
+        position: absolute;
+        right: 25%;
+        bottom: 0;
+    
+        img {
+            padding: 0;
+            display: block;
+            position: relative;
+            bottom: 0;
+            height: calc(100vh - 25px);
+            width: auto;
+            border: none;
+    
+            animation: waving 2s infinite ease-in-out, up-down 2.5s infinite ease-in-out;
+        }
+    }
+
+    .previews {
+        display: flex;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        .preview {
+            position: relative;
+            flex-grow: 1;
+
+            &.left {
+                left: 2%;
+                a.section {
+                    left: 0;
+                }
+            }
+            &.right {
+                right: 2%;
+                a.section {
+                    right: 0;
+                }
+            }
+
+            &.bottom {
+                a.section {
+                    bottom: 0;
+                }
+            }
+
+            > * {
+                position: absolute;
+                padding: 25px 50px;
+                background-image: radial-gradient(closest-side at 50% 50%, white, transparent);
+            }
+            a img {
+                padding: 1em;
+                height: auto;
+                width: 100%;
+            }
+            a.section {
+                padding-right: 0;
+                width: max-content;
+                max-width: 6em;
+    
+                font-size: 1.75em;
+                font-weight: 800;
+                -webkit-text-stroke: 4px white;
+                paint-order: stroke;
+                text-wrap: balance;
+
+                transform: skewY(-4deg);
+            }
+        }
+    }
+
+    .preview.useless-crafts {
+        a.section {
+            color: #ffaa2f;
+        }
+    }
+
+    .preview.get-it-together {
+        a.section {
+            color: #8a46a4;
+        }
+    }
+
+    .preview.people-and-cairns {
+        a.section {
+            color: #bad548;
+        }
+    }
+
+    .preview.from-alleged-readers {
+        a.section {
+            color: #4ad1f6;
+        }
+    }
+
+    .preview.activities-and-whatnot {
+        a.section {
+            color: #f755a9;
+        }
+    }
+
+    @media ($bp-smaller-than-tablet) {
+        .logo {
+            top: -30px;
+            img.ubyssey {
+                top: 35px;
+                left: 0;
+            }
+        }
+        .center-image {
+            bottom: -30px;
+            right: 0;
+        }
+    }
+}
