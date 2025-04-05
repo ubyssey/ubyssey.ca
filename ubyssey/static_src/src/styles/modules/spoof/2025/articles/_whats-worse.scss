@@ -14,6 +14,9 @@ article.whats-worse {
 
     .intro  {
         position: relative;
+        img {
+            display: block;
+        }
     }
 
     .header {
@@ -86,9 +89,8 @@ article.whats-worse {
         }
     }
 
-    @media ($bp-larger-than-desktop) {
+    @media ($bp-larger-than-desktophd) {
         .intro img {
-            display: block;
             max-width: 700px;
             height: auto;
             position: absolute;
@@ -101,7 +103,7 @@ article.whats-worse {
         }
     }
 
-    @media ($bp-smaller-than-desktop) {
+    @media ($bp-smaller-than-desktophd) {
         .intro img {
             position: relative;
             transform: none;
