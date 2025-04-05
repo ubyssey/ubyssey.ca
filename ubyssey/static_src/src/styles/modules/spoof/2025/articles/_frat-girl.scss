@@ -54,7 +54,7 @@
     }
     .right {
         width: 100%;
-        div.header {
+        .header {
             padding: 0.25em;
             margin-left: 5%;
             margin-block: 2em;
@@ -148,11 +148,16 @@
             max-width: 100%;
             height: auto;
         }
-        .right .interview {
-            margin: 0;
-            box-sizing: border-box;
-            .emphasis {
-                font-size: 1.25em;
+        .right {
+            .header h2 {
+                font-size: 2em;
+            }
+            .interview {
+                margin: 0;
+                box-sizing: border-box;
+                .emphasis {
+                    font-size: 1.25em;
+                }
             }
         }
         .left {

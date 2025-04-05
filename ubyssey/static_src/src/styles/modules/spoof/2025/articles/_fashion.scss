@@ -15,7 +15,8 @@ article.fashion {
 
             -webkit-text-stroke: $fashion-blue 0.2em;
             paint-order: stroke;
-            text-shadow: 0 0.25em 0.5em black;
+
+            filter: drop-shadow(0.25em 0.5em black);
             span.emphasis {
                 color: $fashion-purple;
                 -webkit-text-stroke-color: white;
