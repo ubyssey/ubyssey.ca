@@ -162,6 +162,8 @@ article.chain-mail {
     }
     @media ($bp-smaller-than-phablet) { 
         flex-direction: column;
+        background-size: contain;
+        background-repeat: repeat;
         .left .note {
             margin: 2em auto;
         }
