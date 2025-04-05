@@ -5,29 +5,43 @@
     line-height: 1.6;
 
     * {
-        margin: 0;
         box-sizing: border-box;
     }
     
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
+    .src-flex {
+        margin-top: 2em;
+        margin: auto;
+        display: flex;
+        max-width: 1200px;
+        justify-content: space-between;
     }
-    
+
+    .intro {
+        max-width: 500px;
+    }
+
     header {
         text-align: center;
         margin-bottom: 30px;
         position: relative;
     }
+
+    .src-north-img {
+        width: 250px;
+        height: fit-content;
+        transform: rotate(-15deg);
+        border: 1em solid white;
+        box-shadow: 0 0 0.5em;
+        margin-left: -2.5em;
+        margin-block: auto;
+    }
     
     .header-bg {
+        display: flex;
+        padding: 0.5em;
         background: linear-gradient(to right, #ff80bf, #9381ff);
-        height: 200px;
         border-radius: 15px;
-        margin-bottom: -50px;
         position: relative;
-        overflow: hidden;
     }
         
     .title {
@@ -35,7 +49,6 @@
         font-size: 2.8rem;
         color: white;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        padding-top: 60px;
     }
         
     .author-box {
@@ -44,6 +57,7 @@
         padding: 20px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         margin-bottom: 30px;
+        font-weight: 300;
     }
     
     .article-intro {
@@ -91,32 +105,35 @@
     
     .nav-button {
         position: absolute;
-        top: 11rem;
-        margin-top: -12px; 
+        top: 10rem;
+        margin-top: -0.25em; 
         z-index: 10;
-        background-color: rgba(255, 255, 255, 0.7);
+
         border: none;
         border-radius: 50%;
         padding: 10px;
         cursor: pointer;
         transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        background:none;
+
+        font-size: 4em;
+        font-family: "permanent-marker", sans-serif;
+        color: white;
+        -webkit-text-stroke:#9381ff 0.2em;
+        paint-order: stroke;
+        text-shadow: 0 0 0.25em black;
     }
     
     .nav-button:hover {
-        background-color: white;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        -webkit-text-stroke-color:  #ff4d94;
     }
     
     .prev-button {
-        left: -15px;
+        left: -0.5em;
     }
     
     .next-button {
-        right: -15px;
+        right: -0.5em;
     }
     
     .advice-card-wrapper {
@@ -128,6 +145,7 @@
         padding: 2.5rem;
         border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        opacity: 1;
         color: white;
         transition: all 0.5s ease;
         min-height: 380px;
@@ -153,6 +171,7 @@
     
     .advice-content {
         font-size: 1.1rem;
+        font-weight: 300;
         line-height: 1.8;
         margin-bottom: 1.5rem;
         flex-grow: 1;
@@ -182,7 +201,7 @@
     
     @keyframes fadeInOut {
         0% {
-            opacity: 0;
+            opacity: 0.5;
             transform: translateY(15px);
         }
         100% {
@@ -200,8 +219,12 @@
         border-radius: 10px;
         padding: 25px;
         margin-top: 40px;
+        margin-inline: auto;
+        max-width: 800px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        font-size: 1.1rem;
+        
+        font-size: 1.2em;
+        font-family: "felt-tip-roman",sans-serif;
         line-height: 1.8;
         text-align: center;
     }
@@ -211,6 +234,7 @@
         font-size: 1.8rem;
         color: #ff4d94;
         margin-top: 15px;
+        margin-bottom: 0;
         text-align: right;
         padding-right: 30px;
     }
@@ -224,6 +248,9 @@
     }
     
     @media (max-width: 768px) {
+        .src-flex {
+            flex-direction: column;
+        }
         .container {
             padding: 15px;
         }
@@ -233,7 +260,10 @@
         }
         
         .header-bg {
-            height: 180px;
+            flex-direction: column;
+            .src-north-img {
+                margin-inline: auto;
+            }
         }
         
         .advice-card {

@@ -1,3 +1,5 @@
+{% load static %}
+
 <script>
     function createSnowflakes() {
         const snowflakeCount = 50;
@@ -11,82 +13,90 @@
             setTimeout(() => snowflake.remove(), 5000);
         }
     }
-    setInterval(createSnowflakes, 500);
+    setInterval(createSnowflakes, 750);
  </script>
  <article id="strange-science-queries" class="strange-science-queries">
-   <div class="container">
-      <h1>“Why does snow disappear overnight?” — Aria, 12</h1>
-      <p>When temperatures drop below 0°C, water vapor condenses. Skipping the liquid stage, these would-be raindrops freeze and become the beloved substance we know as “snow.”</p>
-      <p>However, like all good things in life, snow will leave
-         you. As days pass, snow particles wonder: did I miss
-         out? Will I ever raindrop, drop top? Are the best and
-         wettest days of my life behind me?
-      </p>
-      <p>Reportedly, these snow particles ask themselves
-         questions such as “Why are we sticking together?” “Is
-         this love or just these cold circumstances?” Just like
-         real relationships, things can change a lot. The flake beside you may not be the same one you fell in love with
-         on your journey from the big slushy machine malfunctioning in the sky. 
-      </p>
-      <p>When asked to comment on the recent uptick in
-         snowflake dissatisfaction, accredited Woman in STEM
-         Natasha Beddingfield cited the cultural phenomenon of
-         “FOMO.” She answered, “What is a raindrop’s purpose,
-         if not to be felt on your skin?” Some lucky snowflakes
-         get to be felt on one’s skin, and others’ dreams are
-         dashed. 
-      </p>
-      <p>Thus overnight, amicably parting ways, snowflakes
-         choose to go on their new journeys: becoming liquid,
-         evaporating, exploring the dirt they dreamed of in the
-         clouds or even getting sucked up crazy-style by plants.
-         In the process, they disappear.
-      </p>
-      <h1>“Can my dog understand me?” — Mindy, 10</h1>
-      <p>Thanks for asking, Mindy! Did you know that
-         dogs were selectively bred from wolves? In scientific terms, dogs are actually called ‘Canis lupus familiaris’ which means ‘the familiar wolf’ in Latin (this is not
-         to be confused with ‘Canis taylorus lautneris,’ which is
-         used for wolves during full moons).
-      </p>
-      <p>Because of their heritage, dogs carry several lupine
-         genetic traits. For example, wolves have long snouts
-         (for sniffing suspicious things out). This, combined with
-         an unrelenting desire to please authority figures (hence
-         the alpha structure of their packs), makes them huge
-         narcs. Thus, dogs are genetically designed to detect
-         and report suspicious activity, in deference to their
-         masters who walk them and give them treats. 
-      </p>
-      <p>This is also why you’ll see dogs recruited by federal
-         policing agencies.
-      </p>
-      <p>Additionally, dogs have excellent hearing. They can
-         detect sounds that are much quieter than ones humans
-         can. This is because these sound waves are amplified
-         by the bad vibes given off by those who don’t want to
-         be heard. 
-      </p>
-      <p>Has your dog ever barked at you while you’re climbing
-         out your bedroom window to go meet your BFF Stacey
-         at 3 a.m.? Now you know why. They’re literally built to
-         snitch. Other dog bark-inducers include: the sound of
-         lying heartbeats, anxious typing at 3 a.m., the sound
-         of hand washing without flushing and the creak of the
-         fridge door at midnight when one is trying to gobble up
-         that last piece of pizza that your older sister was saving
-         for lunch. 
-      </p>
-      <p>So can dogs understand us? Yes! They are our wolf
-         familiars, they are the snitches we keep near. They defer to their alphas and report what they know.
-         Either become their
-         alpha by eating treats
-         out of their bowl while
-         staring them directly
-         in the eye or don’t
-         do things that
-         force them
-         to report
-         you, silly! 
-      </p>
+   <div class="flex">
+      <div class="header">
+         <h2>TRICKY SCIENCE QUESTIONS — ANSWERED!</h2>
+      </div>
+   <div class="queries">
+      <div class="container">
+         <h3>“Why does snow disappear overnight?” — Aria, 12</h3>
+         <p>When temperatures drop below 0°C, water vapor condenses. Skipping the liquid stage, these would-be raindrops freeze and become the beloved substance we know as “snow.”</p>
+         <p>However, like all good things in life, snow will leave
+            you. As days pass, snow particles wonder: did I miss
+            out? Will I ever raindrop, drop top? Are the best and
+            wettest days of my life behind me?
+         </p>
+         <p>Reportedly, these snow particles ask themselves
+            questions such as “Why are we sticking together?” “Is
+            this love or just these cold circumstances?” Just like
+            real relationships, things can change a lot. The flake beside you may not be the same one you fell in love with
+            on your journey from the big slushy machine malfunctioning in the sky. 
+         </p>
+         <p>When asked to comment on the recent uptick in
+            snowflake dissatisfaction, accredited Woman in STEM
+            Natasha Beddingfield cited the cultural phenomenon of
+            “FOMO.” She answered, “What is a raindrop’s purpose,
+            if not to be felt on your skin?” Some lucky snowflakes
+            get to be felt on one’s skin, and others’ dreams are
+            dashed. 
+         </p>
+         <p>Thus overnight, amicably parting ways, snowflakes
+            choose to go on their new journeys: becoming liquid,
+            evaporating, exploring the dirt they dreamed of in the
+            clouds or even getting sucked up crazy-style by plants.
+            In the process, they disappear.
+         </p>
+      </div>
+      <div class="container">
+         <h3>“Can my dog understand me?” — Mindy, 10</h3>
+         <p>Thanks for asking, Mindy! Did you know that
+            dogs were selectively bred from wolves? In scientific terms, dogs are actually called ‘Canis lupus familiaris’ which means ‘the familiar wolf’ in Latin (this is not
+            to be confused with ‘Canis taylorus lautneris,’ which is
+            used for wolves during full moons).
+         </p>
+         <p>Because of their heritage, dogs carry several lupine
+            genetic traits. For example, wolves have long snouts
+            (for sniffing suspicious things out). This, combined with
+            an unrelenting desire to please authority figures (hence
+            the alpha structure of their packs), makes them huge
+            narcs. Thus, dogs are genetically designed to detect
+            and report suspicious activity, in deference to their
+            masters who walk them and give them treats. 
+         </p>
+         <p>This is also why you’ll see dogs recruited by federal
+            policing agencies.
+         </p>
+         <p>Additionally, dogs have excellent hearing. They can
+            detect sounds that are much quieter than ones humans
+            can. This is because these sound waves are amplified
+            by the bad vibes given off by those who don’t want to
+            be heard. 
+         </p>
+         <p>Has your dog ever barked at you while you’re climbing
+            out your bedroom window to go meet your BFF Stacey
+            at 3 a.m.? Now you know why. They’re literally built to
+            snitch. Other dog bark-inducers include: the sound of
+            lying heartbeats, anxious typing at 3 a.m., the sound
+            of hand washing without flushing and the creak of the
+            fridge door at midnight when one is trying to gobble up
+            that last piece of pizza that your older sister was saving
+            for lunch. 
+         </p>
+         <p>So can dogs understand us? Yes! They are our wolf
+            familiars, they are the snitches we keep near. They defer to their alphas and report what they know.
+            Either become their
+            alpha by eating treats
+            out of their bowl while
+            staring them directly
+            in the eye or don’t
+            do things that
+            force them
+            to report
+            you, silly! 
+         </p>
+      </div>
    </div>
 </article>
