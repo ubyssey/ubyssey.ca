@@ -26,7 +26,7 @@ div.glm-promo {
         color: white;
         -webkit-text-stroke: 0.25em #eb5988;
         paint-order: stroke;
-        text-shadow: 0 0 0.25em black;
+        filter: drop-shadow(0 5px 1px #00000030);
         i {
             display: block;
         }
