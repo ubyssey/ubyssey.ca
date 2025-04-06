@@ -8,13 +8,6 @@ nav {
     z-index: 100;
     filter: drop-shadow(0 0 1em #0005);
 
-    &.useless-crafts li.useless-crafts, &.get-it-together li.get-it-together, &.people-and-cairns li.people-and-cairns, &.from-alleged-readers li.from-alleged-readers, &.activities-and-whatnot li.activities-and-whatnot {
-        text-shadow: 0 0 0.5em #ffd147;
-        animation: waving 2s infinite;
-        -webkit-text-stroke-color: var(--sectionColor);
-        color: white;
-    }
-
     ul {
         display: flex;
         margin: 0;
@@ -28,12 +21,12 @@ nav {
             font-size: 1.5em;
             font-weight: 600;
 
-            color: $glm-pink;
-            -webkit-text-stroke-width: 4px;
-            -webkit-text-stroke-color: white;
-            paint-order: stroke;
-            a {
-                color: inherit;
+            a, a:visited  {
+                color: var(--sectionColor);
+                -webkit-text-stroke-width: 4px;
+                -webkit-text-stroke-color: white;
+                paint-order: stroke;
+            
                 text-decoration: none;
             }
 
@@ -52,7 +45,6 @@ nav {
             &.activities-and-whatnot {
                 --sectionColor: #f755a9;
             }
-            color: var(--sectionColor);
         }
         li.logo {
             position: relative;
@@ -66,6 +58,16 @@ nav {
             }
         }
     }
+
+    &.useless-crafts ul > li.useless-crafts, &.get-it-together ul > li.get-it-together, &.people-and-cairns ul > li.people-and-cairns, &.from-alleged-readers ul > li.from-alleged-readers, &.activities-and-whatnot ul > li.activities-and-whatnot {
+        animation: waving 2s infinite;
+        a, a:visited {
+            text-shadow: 0 0 0.5em #ffd147;
+            -webkit-text-stroke-color: var(--sectionColor);
+            color: white;
+        }
+    }
+
 
     @media ($bp-smaller-than-phablet) {
         ul  {
