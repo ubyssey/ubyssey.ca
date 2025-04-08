@@ -318,8 +318,7 @@ class ArchivePage(RoutablePageMixin, Page):
         
         
         if CategoryPage.objects.filter(slug = magazine_slug).exists():
-            category = CategoryPage.objects.get(slug = magazine_slug)
-            articles = ArticlePage.objects.live().public().filter(category_page=category)   
+            articles = ArticlePage.objects.live().public().filter(category_page__slug=magazine_slug)   
         else:
             return render(request, '404.html', {}, status=404)
         
@@ -337,7 +336,6 @@ class ArchivePage(RoutablePageMixin, Page):
         return render(request, "archive/archive_page.html", context)
     
     @route(r'^spoofs/(?P<spoof_slug>[-\w]+)/$', name="spoofs_view")
-    @route(r'^spoofs/$', name="spoofs_general_view")
     def get_spoof_articles(self, request, spoof_slug):
         video_section = False
         context = self.get_context(request, video_section)
@@ -347,8 +345,7 @@ class ArchivePage(RoutablePageMixin, Page):
         search_query = context["q"]
 
         if CategoryPage.objects.filter(slug = spoof_slug).exists():
-            category = CategoryPage.objects.get(slug = spoof_slug)
-            articles = ArticlePage.objects.live().public().filter(category_page=category)   
+            articles = ArticlePage.objects.live().public().filter(category_page__slug=spoof_slug)   
         else:
             return render(request, '404.html', {}, status=404)
             

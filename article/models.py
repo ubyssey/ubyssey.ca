@@ -490,6 +490,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('header_link', article_blocks.HeaderLinkBlock()),
             ('header_menu', article_blocks.HeaderMenuBlock()),
             ('visual_essay', article_blocks.VisualEssayBlock()),
+            ('personality_quiz', article_blocks.PersonalityQuizBlock()),
         ],
         null=True,
         blank=True,
@@ -1036,7 +1037,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         context["suggested"] = self.get_suggested()
 
         if self.tag_page_link and self.primary_tag_slug:
-            context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
+            if Tag.objects.filter(slug=self.primary_tag_slug).exists():
+                context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
 
         return context
 
@@ -1049,7 +1051,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
           links: Whether the author names link to their respective pages.
         """
         def format_author(article_author):
-            if links:
+            if links and article_author.author.live:
                 return '<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name)
             return article_author.author.full_name
 
@@ -1140,13 +1142,26 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
         authors_with_roles = []
-        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
-            if k=='org_role':
-                authors_with_roles.append([k, ",".join( map(lambda a: ' ' + a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]) , list(v)))])
-            else:
-                authors_with_roles.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=list(v))])
-        authors_with_roles.sort(key=lambda s: role_types.index(s[0]))
-        return ', '.join(map(lambda a: a[1], authors_with_roles))
+        for i in range(len(role_types)):
+            authors_with_roles.append([])
+
+        for author in self.article_authors.all():
+            if author.author_role in role_types:
+                authors_with_roles[role_types.index(author.author_role)].append(author)
+            
+        authors_strings = []
+        for i in range(len(role_types)):
+            if len(authors_with_roles[i]) > 0:
+                if role_types[i] == "org_role":
+                    authors_strings.append(\
+                        ', '.join(map(lambda a: a.author.ubyssey_role + ": " + self.get_authors_string(links=True, authors_list=[a]), authors_with_roles[i])) \
+                    )
+                elif role_types[i] in role_types_words:
+                    authors_strings.append(\
+                        role_types_words[role_types[i]] + self.get_authors_string(links=True, authors_list=authors_with_roles[i]) \
+                    )
+                                    
+        return ', '.join(authors_strings)
     authors_with_roles = property(fget=get_authors_with_roles)
  
     def get_authors_split_out_visual_bylines(self) -> str:

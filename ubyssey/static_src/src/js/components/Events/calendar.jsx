@@ -59,7 +59,8 @@ function getDateString(date) {
 }
 
 export function QueryEventsCalendar() {
-    const d = 24 * 60 * 60 * 1000;
+    const h = 60 * 60 * 1000;
+    const d = 24 * h;
     const [events, setEvents] = React.useState([]);
     let fullUrl = window.location.href;
     const decodedUrl = decodeURIComponent(fullUrl);
@@ -68,7 +69,7 @@ export function QueryEventsCalendar() {
     const [numberOfWeeks, setNumberOfWeeks] = useState(calculateNumberOfWeeks());
     const [start, setStart] = useState(getInitialStartDate());
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [isMonthToggled, setIsMonthToggled] = React.useState(false);
+    const [isMonthToggled, setIsMonthToggled] = React.useState(urlParams.has("month"));
     const [isLoading, setIsLoading] = React.useState(true);
 
     function getDate(month, year) {
@@ -107,11 +108,13 @@ export function QueryEventsCalendar() {
             return getDate(month, year);
         } else{
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
 
             let start = new Date(today.getTime() - 10 * d);
+            start.setHours(0, 0, 0, 0);
             while (start.getDay() !== 1) {
-                start = new Date(start.getTime() + d);
+                start = new Date(start.getTime() + d + h);
+                start = changeTimezone(start, "America/Vancouver");
+                start.setHours(0, 0, 0, 0);
             }
             return start;
         }
@@ -181,6 +184,7 @@ export function QueryEventsCalendar() {
         while (start.getDay() !== 1) {
             start = new Date(start.getTime() + d);
         }
+        start.setHours(0, 0, 0, 0);
         return start;
     };
 
@@ -196,7 +200,6 @@ export function QueryEventsCalendar() {
 
         var apiEnd = new Date(apiStart.getTime() + d*120);
         apiEnd.setDate(1);
-        console.log(String(apiStart) + " " + String(apiEnd));
         axios
         .get(
             '/api/events/?limit=1000&start_time__gte=' + apiStart.toISOString() + "&end_time__lte=" + apiEnd.toISOString() //2024-10-15T11:00:00-07:00 If needed you can increase or decrease the limit to include more or lesser events or add more query parmaters
@@ -534,7 +537,7 @@ function EventsOptions({getInitialStartDate, handleMonthNavigation, setIsMonthTo
             </div>
             <p className="mobile-alt">
                 <a href={ical.url}><ion-icon name="calendar"></ion-icon> iCal File</a>
-                <a href={rss.url}><ion-icon name="logo-rss"></ion-icon> Rss Feed</a>
+                <a href={rss.url}><ion-icon name="logo-rss"></ion-icon> RSS Feed</a>
             </p>
         </>
     );
@@ -559,9 +562,9 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
         const d = h * 24;
 
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
+        
         var cur = new Date(start);
+        cur.setHours(0, 0, 0, 0);
 
         var calendar = [];
         for(let i=0; i<numberOfWeeks; i++) {
@@ -637,10 +640,10 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
     function toggleCategory(that, searchParams, setSearchParams) {
 
         var selected = [];
-        var selectType = "hidden";
+        var selectType = "include";
 
-        if (searchParams.has("include")) {
-            selectType = "include";
+        if (searchParams.has("hidden")) {
+            selectType = "hidden";
         }
 
         if (searchParams.has(selectType)) {
@@ -810,7 +813,19 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                     const loaderWeek = Math.floor((numberOfWeeks - 1) / 2);
                     const isMiddleDay = !isPhablet? week_index === loaderWeek && day_index === Math.floor(week.days.length / 2)
                                                     : week_index === 0 && day_index === 0;
+                    if (isPhablet && ((!isMonthToggled && day.phase == "past") || (isMonthToggled && week_index === 0 && day.day > 7) || (isMonthToggled && week_index > 1 && day.day < 8))) {
+                        return (<></>);
+                    }
+
                     return (
+                        <>
+                       {(week_index !== 0 && day.day == 1) &&
+                            <h2 className="events-calendar--month">
+                            <span className="full">{week.month}</span>
+                            <span className="short">{week.month_short}</span>
+                            </h2>
+                        }
+
                         <div key={day_index} className={"day " + day.phase}>
                             {isMiddleDay && isLoading && !isPhablet &&
                             <div className="loader-container">
@@ -829,7 +844,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                                 {day.events.map((event) => (
                                     <li
                                         key={event.hash}
-                                        className={(eventHash === event.hash ? "selected " : "") + eventsTags(event)}
+                                        className={(eventHash === event.hash ? "selected " : "" + (event.update_mode == 0 ? "manual " : "")) + eventsTags(event)}
                                     >
                                         <Link
                                             title={event.title.replace("<br>", ", ")}
@@ -838,6 +853,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                                             event-url={event.event_url}
                                             onClick={(e) => {
                                                 e.preventDefault();
+                                                const searchParams = new URLSearchParams(window.location.search);
                                                 searchParams.set("event", event.hash);
                                                 setSearchParams(searchParams);
                                             }}
@@ -861,6 +877,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                                 ))}
                             </ul>
                         </div>
+                        </>
                     );
                 })}
             </div>

@@ -1,0 +1,54 @@
+article.study-session {
+    display: flex;
+    background-image: url('/static/ubyssey/images/spoof/2025/study-session/stripe-dots-bg.png');
+    .header-container {
+        padding: 2em;
+        width: fit-content;
+        transform: skewY(-5deg);
+        h2 {
+            margin-bottom: 0;
+            font-size: 4em;
+            font-family: "nickainley", serif;
+            color: $glm-magenta;
+            -webkit-text-stroke: 0.1em white;
+            paint-order: stroke;
+        }
+        p {
+            font-size: 1.5em;
+            text-align: right;
+        }
+    }
+
+    .arts {
+        margin: 2%;
+        display: flex;
+        gap: 2em;
+
+        .art {
+            margin-block: auto;
+            flex-grow: 1;
+            img {
+                width: 100%;
+                height: auto;
+                border: 0.25em solid $glm-purple;
+                box-sizing: border-box;
+            }
+            span.credit {
+                display: block;
+                text-align: center;
+                -webkit-text-stroke: 0.25em white;
+                paint-order: stroke;
+                color: $glm-magenta;
+            }
+        }
+    }
+
+    @media ($bp-smaller-than-phablet) {
+        .header-container {
+            padding-left: 0;
+        }
+        .arts {
+            flex-direction: column;
+        }
+    }
+}

@@ -1,0 +1,175 @@
+$glm-yellow: #FDF37D;
+$glm-pink: #C65997;
+$glm-purple: #803f8d;
+$glm-magenta: #ad286a;
+$glm-pink-2: #f75a8f;
+
+$glm-blue-gradient-1: #F0FAFF;
+$glm-blue-gradient-2: #8fcaf2;
+
+// Breakpoints
+$bp-mobile-size             : 501;
+$bp-phablet-size            : 760;
+$bp-tablet-size             : 960;
+$bp-desktop-size            : 1200;
+$bp-desktophd-size          : 1400;
+
+$bp-larger-than-mobile      : "min-width: #{$bp-mobile-size}px" !default;
+$bp-smaller-than-mobile     : "max-width: #{$bp-mobile-size - 1}px" !default;
+$bp-larger-than-phablet     : "min-width: #{$bp-phablet-size}px" !default;
+$bp-smaller-than-phablet    : "max-width: #{$bp-phablet-size - 1}px" !default;
+$bp-larger-than-tablet      : "min-width: #{$bp-tablet-size}px" !default;
+$bp-smaller-than-tablet     : "max-width: #{$bp-tablet-size - 1}px" !default;
+$bp-larger-than-desktop     : "min-width: #{$bp-desktop-size}px" !default;
+$bp-smaller-than-desktop    : "max-width: #{$bp-desktop-size - 1}px" !default;
+$bp-larger-than-desktophd   : "min-width: #{$bp-desktophd-size}px" !default;
+$bp-smaller-than-desktophd  : "max-width: #{$bp-desktophd-size - 1}px" !default;
+
+body {
+    margin: 0;
+    font-family: "franklin-gothic-urw",sans-serif;
+}
+
+nav .logo {
+    img {
+        width: 100px;
+        height: auto;
+    }
+}
+
+article {
+    padding: 2em;
+    background-size: cover;
+}
+
+article.every-font {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    h2 {
+        width: fit-content;
+    }
+}
+
+footer {
+    position: relative;
+    z-index: 10;
+    border-top: 0.5em solid $glm-pink-2;
+    background: linear-gradient(#f75a8f, white);
+    box-shadow: 0 0 1em;
+    
+    h3 {
+        color: $glm-pink-2;
+    }
+    li, p {
+        font-weight: 300;
+    }
+    img.logo {
+        margin-block: auto;
+        width: 300px;
+        height: fit-content;
+    }
+    .footer-flex {
+        margin: 2em auto;
+        max-width: 1200px;
+        display: flex;
+        justify-content: center;
+        gap: 2em;
+    }
+    .left, .right {
+        padding-bottom: 1em;
+        border-bottom: 0.5em solid $glm-pink-2;
+    }
+    .left {
+        display: flex;
+        flex-direction: column;
+    }
+    .right {
+        padding: 1em;
+        border-radius: 1em 1em 0 0;
+        background:white;
+        filter: drop-shadow(0 0 0.25em);
+    }
+
+    .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1em;
+        a {
+            padding: 1em;
+            display: block;
+            border-radius: 2em;
+
+            color: white;
+            text-decoration: none;
+            -webkit-text-stroke: $glm-pink-2 3px;
+            paint-order: stroke;
+            text-shadow: 0 1px 0.25em black;
+
+            background: white;
+            filter: drop-shadow(0 0 0.25em #552837);
+        }
+    }
+
+    .legal {
+        margin-inline: auto;
+        padding-bottom: 2em;
+        max-width: 1200px;
+        font-size: 0.75em;
+    }
+
+    @media ($bp-smaller-than-phablet) {
+        padding: 1em;
+        .footer-flex {
+            flex-direction: column;
+        }
+        .logo {
+            margin: auto;
+        }
+        .buttons {
+            justify-content: center;
+             a {
+                text-shadow: none;
+             }
+        }
+        .land-acknowledgement {
+            h3, p {
+                color: white;
+            }
+        }
+    }
+}
+
+@keyframes flip-y {
+    0% {transform: rotateY(0);}
+    100% {transform: rotateY(360deg);}
+}
+
+
+@keyframes up-down {
+    0% {bottom: -10px;}
+    50% {bottom: -50px;}
+    100% {bottom: -10px;}    
+}
+
+@keyframes waving {
+    0% {transform: rotate(0deg);}
+    20% {transform: rotate(7deg);}
+    60% {transform: rotate(-10deg);}
+    100% {transform: rotate(0deg);}
+}
+
+@keyframes flashing-dots {
+    from {border-style: dotted;}
+    to {border-style: dashed;}
+}
+
+@keyframes stroking {
+    from {-webkit-text-stroke-width: 0;}
+    to {-webkit-text-stroke-width: 2px;}
+}
+
+@keyframes move-right {
+    from {left: -100%;}
+    to {left: 200%;}
+}

@@ -1,0 +1,81 @@
+nav {
+    margin-bottom: -1em;
+    position: relative;
+    left: 0;
+    right: 0;
+    border-bottom: 5px solid transparent;
+    border-image: url("/static/ubyssey/images/spoof/2025/nav-border-img.svg") 20% round;
+    z-index: 100;
+    filter: drop-shadow(0 0 1em #0005);
+
+    ul {
+        display: flex;
+        margin: 0;
+        padding: 2.5em 3em 1.5em 3em;
+        background: linear-gradient(#fdf37d,#fff, #fdf37d);
+        gap: 1.5em;
+        list-style: none;
+        li {
+            width: fit-content;
+
+            font-size: 1.5em;
+            font-weight: 600;
+
+            a, a:visited  {
+                color: var(--sectionColor);
+                -webkit-text-stroke-width: 4px;
+                -webkit-text-stroke-color: white;
+                paint-order: stroke;
+            
+                text-decoration: none;
+            }
+
+            &.useless-crafts {
+                --sectionColor: #ffaa2f;
+            }
+            &.get-it-together {
+                --sectionColor: #8a46a4;
+            }
+            &.people-and-cairns {
+                --sectionColor: #bad548;
+            }
+            &.from-alleged-readers {
+                --sectionColor: #4ad1f6;
+            }
+            &.activities-and-whatnot {
+                --sectionColor: #f755a9;
+            }
+        }
+        li.logo {
+            position: relative;
+            width: 5em;
+            img {
+                position: absolute;
+                top: -1.5em;
+                left: 0;
+                width: 100%;
+                height: auto;
+            }
+        }
+    }
+
+    &.useless-crafts ul > li.useless-crafts, &.get-it-together ul > li.get-it-together, &.people-and-cairns ul > li.people-and-cairns, &.from-alleged-readers ul > li.from-alleged-readers, &.activities-and-whatnot ul > li.activities-and-whatnot {
+        animation: waving 2s infinite;
+        a, a:visited {
+            text-shadow: 0 0 0.5em #ffd147;
+            -webkit-text-stroke-color: var(--sectionColor);
+            color: white;
+        }
+    }
+
+
+    @media ($bp-smaller-than-phablet) {
+        ul  {
+            flex-wrap: wrap;
+            justify-content: space-around;
+            li.logo {
+                margin-left: -2em;
+            }
+        }
+    }
+}

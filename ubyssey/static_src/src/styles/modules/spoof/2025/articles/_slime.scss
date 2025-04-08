@@ -1,0 +1,75 @@
+.slime {
+    $slime-blue: #afcefb;
+    $slime-green: #affbca;
+    $slime-purple: #994299;
+    
+    position: relative;
+    background-image: url('/static/ubyssey/images/spoof/2025/backgrounds/rainbow-dots.png');
+    background-size: cover;
+    h2 {
+        margin-block: 1em;
+        font-size: 2em;
+        text-align: center;
+        font-family: "chauncy-pro",sans-serif;
+        span {
+            display: block;
+            font-size: 2em;
+            font-family: "zubilo-inline",sans-serif;
+        }
+    }
+    p.subtitle {
+        font-size: 1.5em;
+        font-family: "chauncy-pro",sans-serif;
+
+        color: $slime-purple;
+        -webkit-text-stroke: 0.25em #fff;
+        paint-order: stroke;
+        filter: drop-shadow(0 0 0.25em black);
+    }
+
+    .tip {
+        margin-inline: auto;
+        padding: 1em;
+        max-width: 500px;
+
+        border: 0.25em dashed #000000a3;
+        
+        font-family: "permanent-marker",sans-serif;
+       
+        transform: rotate(2deg);
+    }
+
+    .card-container {
+        margin-block: 3em;
+        display: flex;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+        gap: 2.5em;
+        justify-content: center;
+
+        > * {
+            max-width: 250px;
+        }
+        .step {
+            margin-block: auto;
+            padding: 1em;
+            position: relative;
+            height: fit-content;
+            background: linear-gradient(transparent, white);
+            border-radius: 1em;
+            border: 1px solid gray;
+
+            font-weight: 300;
+            line-height: 1.5em;
+            span.iter {
+                position: absolute;
+                right: calc(100% - 0.25em);
+                bottom: calc(100% - 1em);
+
+                font-size: 2em;
+                text-wrap: nowrap;
+                font-family: "zubilo-shadow",sans-serif;
+            }
+        }
+    }
+}

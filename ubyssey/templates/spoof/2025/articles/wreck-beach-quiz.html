@@ -1,0 +1,112 @@
+{% load static %}
+<article class="wreck-beach-quiz">
+    <h2>Spend a day at <span>Wreck Beach</span> and find out what kind of girl you are!</h2>
+
+    <div class="quiz-container">
+        <img id="beachball" class="beachball" src="{% static 'ubyssey/images/spoof/2025/wreck-beach-quiz/beachball-1.png' %}" alt="Bloody beachball">
+    
+        <div id="question-container" class="question-container">
+            <span id="question" class="question">Question</span>
+            <div id="result" class="result">
+                <h3 id="result-title">Result</h3>
+                <p id="result-text">text</p>
+            </div>
+            <div class="answer-container">
+                <button onClick="nextOnBeachQuiz(0)" id="answer-0" class="answer">yes</button>
+                <button onClick="nextOnBeachQuiz(1)" id="answer-1" class="answer">no</button>
+                <button onClick="restart()" class="restart">Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let quiz = [
+            {
+                "question": "Where do you set down your stuff?",
+                "answers": [
+                        {"text": "By the logs", "next": 2},
+                        {"text": "Near the trees", "next": 1},
+                    ],
+            },
+            {
+                "question": "First beach activity?",
+                "answers": [
+                        {"text": "Splash around in the waves", "next": 2},
+                        {"text": "Read for a while", "next": 4},
+                    ],
+            },
+            {
+                "question": "What did you pack for lunch?",
+                "answers": [
+                        {"text": "A sandwich with the crusts cut off", "next": 4},
+                        {"text": "The blood of the innocent", "next": 5},
+                    ],
+            },
+            {
+                "question": "There’s someone thrashing in the waves! Quick! What do you do?",
+                "answers": [
+                        {"text": "Help them!", "class": "human", "result": "Human girl", "result-text": "Hey, we can’t all be horrific nightmare beings, right? It’s perfectly fine to just chill out at the beach with your buds and conduct yourself in a conventional homo sapien manner. And we totally support you as well!"},
+                        {"text": "I’m what’s drowning them, duh!", "class": "swamp", "result": "Swamp creature girl", "result-text": "OMG! You’re right at home with the waves and algae caking your limbs! Based on your answers, you’re the kind of girl who loves to go for a swim, volley a beach ball and pop childrens’ pool floats so you can drown them and display their bodies in your underwater lair."},
+                    ],
+            },
+            {
+                "question": "Any fun sports?",
+                "answers": [
+                        {"text": "Beach volleyball", "next": 3}, 
+                        {"text": "Hunt and consume people", "next": 6}
+                    ],
+            },
+            {
+                "question": "What’s next?",
+                "answers": [
+                        {"text": "Build sandcastles", "next": 3}, 
+                        {"text": "Gossip with my girls", "next": 6}
+                    ],
+            },
+            {
+                "question": "Time to get back up the stairs! What’s your method?",
+                "answers": [
+                        {"text": "Transform into a bat and fly", "class": "vampire", "result": "Blood-thirsty vampire girl", "result-text": "Not a beach fan, huh? No worries — there’s plenty of room in the shade for you to sip on a nice, warm bystander’s neck. Your friends can always count on you to bring the SPF 300 (AD) and some light gothic beach reads, but they know night swims are more your style."}, 
+                        {"text": "Create a portal", "class": "eldritch", "result": "Eldritch horror girl", "result-text": "People turn their heads when you walk by — and how could they not, with the spindly tentacles emerging from your abdomen! You turn every vacation into a slay-cation by decapitating any innocent passersby who dare block your tan with the shadows of their ugly mortal flesh sacks. Go off, queen!"}
+                    ]
+            }
+        ];
+
+        let result = -1;
+        let state = 0;
+
+        function restart() {
+            result = -1;
+            state = 0;    
+            updateBeachQuiz();
+        }
+
+        restart();
+
+        function updateBeachQuiz() {
+            if (result == -1) {
+                document.getElementById("question-container").classList.remove("end");
+                document.getElementById("question").innerHTML = quiz[state]["question"];
+                document.getElementById("answer-0").innerHTML = quiz[state]["answers"][0]["text"];
+                document.getElementById("answer-1").innerHTML = quiz[state]["answers"][1]["text"];
+            } else {
+                document.getElementById("result-title").innerHTML = quiz[state]["answers"][result]["result"];
+                document.getElementById("result-text").innerHTML = quiz[state]["answers"][result]["result-text"];
+                document.getElementById("question-container").classList.add("end");
+                document.getElementById("result").classList = "result";
+                document.getElementById("result").classList.add(quiz[state]["answers"][result]["class"]);
+            }
+        }
+
+        function nextOnBeachQuiz(answer) {
+            document.getElementById("beachball").classList.toggle("right");
+            if ("next" in quiz[state]["answers"][answer]) {
+                state = quiz[state]["answers"][answer]["next"];
+            } else {
+                result = answer;
+            }
+            updateBeachQuiz();
+        }
+
+    </script>
+</article>

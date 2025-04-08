@@ -1,0 +1,177 @@
+article.chain-mail {
+    $sm-blue: #5e6498;
+    $sm-beige: #fdf6e8;
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    gap: 100px;
+
+    background-image: url('/static/ubyssey/images/spoof/2025/boss-lady/boss-lady.jpg');
+    background-position: top;
+    background-attachment: fixed;
+    .wallpaper {
+        display: flex;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        justify-content: space-around;
+
+        /*background: linear-gradient(#ffffff8c, pink);*/
+        marquee {
+            height: 0;
+            flex-grow: 1;
+            color: #ffffff20;
+            font-size: 1.5em;
+            font-family: pixel-arial;
+            text-align: center;
+
+            &.horizontal {
+                margin-block: auto;
+                height: fit-content;
+                flex-grow: 0;
+            }
+        }
+    }
+    .left {
+        display: flex;
+        flex-direction: column;
+    }
+    .file-container {
+        display: flex;
+        gap: 4em;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-block: auto;
+    }
+    .file {
+        position: relative;
+        img {
+            width: 100px;
+            height: auto;
+            box-shadow: 0 0.5em 1em;
+            border: 2px solid white;
+        }
+        span {
+            position: absolute;
+            top: calc(100% + 0.5em);
+            left: 0;
+            right: 0;
+            text-align: center;
+
+            font-family: pixel-arial;
+            font-size: 0.75em;
+            color: white;
+            text-shadow: -1px 1px black;
+
+        }
+    }
+    .note {
+        margin: 5%;
+        position: relative;
+        max-width: 500px;
+        height: fit-content;
+        border-radius: 0.25em;
+        border-top: 1em solid rgb(255, 233, 189);
+        background: linear-gradient($sm-beige, rgb(255, 233, 189));
+        filter: drop-shadow(0 1em 1em);
+        transform: rotate(1deg);
+
+        font-family: "medodica", serif;
+        p {
+            margin: 1em;
+            font-weight: 300;
+            line-height: 1.5em;
+            span {
+                color: $glm-magenta;
+                text-decoration: underline 1px;
+            }
+        }
+    }
+    .window {
+        margin: 5% 5% 5% 5%;
+        padding: 0.5em;
+        position: relative;
+        height: fit-content;
+        max-width: 600px;
+        border: 1px $glm-purple outset;
+        border-radius: 1em;
+        background: linear-gradient(#ad286a80, #803f8dcf);
+        filter: drop-shadow(0 1em 1em);
+        transform: rotate(-1deg);
+
+        .top-bar {
+            margin-block: 0.25em;
+            color: white;
+            filter: blur(0.5px);
+
+            font-family: "pixel-arial", serif;
+            font-size: 0.7em;
+            text-align: center;
+        }
+        .window-inner {
+            padding: 0.5em;
+            background: $sm-beige;
+            border-radius: 0.25em;
+            .chat-name {
+                margin-bottom: 0.5em;
+                display: block;
+                position: relative;
+                width: 100%;                
+                border-bottom: 1px ridge black;
+                background: linear-gradient( transparent, white, transparent);
+
+                font-family: "pixel-arial", serif;
+                font-size: 0.8em;
+                text-align: center;
+            }
+            .chat {
+                padding: 0.5em 2em 1em 0.5em;
+                border: 1px ridge black;
+                background-color: white;
+                max-height: 500px;
+                overflow-y: scroll;
+
+                font-family: "medodica", serif;
+            }
+            p {
+                margin-block: 0.5em;
+                span {
+                    font-weight: 600;
+                    font-family: "pixel-arial", serif;
+                    font-size: 0.6em;
+                }
+                span.glm {
+                    color: $glm-pink;
+                }
+                span.sm {
+                    color: $sm-blue;
+                }
+            }
+            .input {
+                margin-top: 0.5em;
+                display: flex;
+                width: 100%;
+                input {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+    @media ($bp-smaller-than-phablet) { 
+        flex-direction: column;
+        background-size: contain;
+        background-repeat: repeat;
+        .left .note {
+            margin: 2em auto;
+        }
+        .window {
+            transform: none;
+            .window-inner .chat {
+                max-height: none;
+            }
+        }
+    }
+} 

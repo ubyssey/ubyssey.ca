@@ -176,10 +176,13 @@ class TemplateSelectStructBlock(blocks.StructBlock):
 class MidStreamListTemplates(blocks.ChoiceBlock):
  
     choices=[
+        ('section/objects/promo_glm.html', 'GIRLS LOWERMAINLAND PROMO'),
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_horizontal.html', 'Horizontal'),
+        ('section/objects/section_horizontal-wrapped.html', 'Horizontal wrapped'),
         ('section/objects/section_landing.html', 'Landing'),
+        ('section/objects/featured_with_wrapped_articles.html', 'Featured article with wrapped articles below'),
         ('section/objects/minimal_grid.html', 'Minimal grid'),
         ('section/objects/blurb_with_timeline.html', 'Blurb with timeline'),
         ('section/objects/single_promo.html', 'Single (promo)'),
@@ -263,8 +266,10 @@ class ArticleGathererBlock(AbstractArticleList):
                     context['description'] = "Stories on '" + tag.name + "' in " + value['section'].title
                 else:
                     context['description'] = None
-                context['link'] = '/tag/' + value['tag_slug']
+                context['link'] = '/tag/' + value['tag_slug'] + '/'
                 context['articles'] = context['articles'].filter(tags__slug=value["tag_slug"])
+            else:
+                context['articles'] = []
 
         if not 'gather_title' in context:
             context['gather_title'] = "Latest stories"
@@ -281,8 +286,9 @@ class ArticleGathererBlock(AbstractArticleList):
             context['highlight_colour'] = value["highlight_colour"]
 
         limit = 9
-        if 'section/objects/section_horizontal.html' in value['template']:        
-            limit = 4
+        if 'section/objects/section_horizontal' in value['template']:        
+            limit = 5
+
         elif 'section/objects/minimal_grid.html' in value['template']:        
             limit = 6
 
@@ -362,6 +368,77 @@ class ManualArticles(AbstractArticleList):
 
         return context
 
+
+class AbstractArticleGroup(TemplateSelectStructBlock):
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('infinitefeed/sidebar/sidebar_section_block.html', 'default'),
+        ]
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["link"] = ""
+        context["article_groups"] = []
+        return context
+
+class MidStreamGroupedArticlesTemplates(blocks.ChoiceBlock):
+ 
+    choices=[
+        ('section/objects/grouped_articles_timeline.html', 'Timeline'),
+    ]
+
+
+class ManualArticleLinkGroup(AbstractArticleGroup):
+    title = blocks.CharBlock(
+        required=False,
+        max_length=255,
+        )
+    description = blocks.RichTextBlock(required=False)
+    link = blocks.URLBlock(required=False)
+    template = MidStreamGroupedArticlesTemplates()
+    highlight_colour = blocks.CharBlock(
+        required=False,
+        default='0071c9',
+        max_length=6,
+        help_text="Only applicable to some templates"
+        )
+    hide_mobile = field_block.BooleanBlock(
+        required=False,
+        help_text="If checked, will hide on small devices",
+        default=False
+        )
+
+    article_groups = blocks.ListBlock(
+        blocks.StructBlock([
+            ('title', blocks.CharBlock()),
+            ('description', blocks.CharBlock()),
+            ('articles', blocks.ListBlock(
+                blocks.StructBlock([
+                    ('alias', blocks.CharBlock(required=False)),
+                    ('article', field_block.PageChooserBlock(page_type='article.ArticlePage', required=False)),
+                    ('link', blocks.URLBlock(required=False, help_text="Only use when linking to something outside of site!")),
+                ])
+            ))
+        ])
+    )
+
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['title']
+        context['description'] = value['description']
+        context['link'] = value['link']
+        
+        for group_block in value['article_groups']:
+            group = {}
+            group["title"] = group_block["title"]
+            group["description"] = group_block["description"]
+            group["articles"] = [article for article in group_block["articles"]]
+            context['article_groups'].append(group)
+
+        return context
     
 class SidebarArticleGatherer(ArticleGathererBlock):
 

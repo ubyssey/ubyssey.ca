@@ -182,3 +182,57 @@ class GalleryBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/gallery_block.html'
         icon = "image"
+
+class PersonalityQuizBlock(blocks.StructBlock):
+    personalities = blocks.ListBlock(
+        blocks.StructBlock (
+            [
+                ('personality_name', blocks.CharBlock()),
+                ('personality_result_text', blocks.RichTextBlock(help_text="Appears when user is matched with this personality. Use $PERCENTMATCH$ as a placeholder for the percent match with this personlity that is calculated from the users choices. The percent match is calculated by the amount of points obtained for that personality divided by the maximum possible amount of points you can get for that personality.")),
+                ('personality_image', blocks.StructBlock(
+                    [
+                        ('image', ImageChooserBlock(required=False)),
+                        ('caption', blocks.CharBlock(
+                            max_length=255,
+                            required=False,
+                        )),
+                        ('credit', blocks.CharBlock(
+                            max_length=255,
+                            required=False,
+                        )),
+                        ('alt_text', blocks.CharBlock(
+                            max_length=255,
+                            required=False,
+                            help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image."
+                        )),
+                    ],
+                    )
+                )
+            ]
+        )
+    )
+
+    questions = blocks.ListBlock(
+        blocks.StructBlock (
+            [
+                ('question_text', blocks.RichTextBlock()),
+                ('answers', blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ('answer_text', blocks.CharBlock(
+                                max_length=255,
+                                required=True,)),
+                            ('points', blocks.ListBlock(
+                                blocks.IntegerBlock(help_text="The amount of points selecting this answer adds to the personality of the same item number (first item corresponds with the first personality)."),
+                                help_text="Selecting an answer can give points to multiple personalities. The item number of the point corresponds with the item number of the personality."
+                            )),
+                        ]
+                    ),
+                )),
+            ]
+        )
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/personality_quiz.html'
+        icon = "help"

@@ -1,0 +1,82 @@
+{% load static %}
+{% load wagtailuserbar %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="utf-8" />
+	<meta name="viewport"
+		content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <title>Girls’ Lower Mainland</title>
+    <link rel="canonical" href="https://ubyssey.ca/humour/girlslowermainland/">
+
+    <meta name="description" content="Girls’ Lower Mainland" />
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Girls’ Lower Mainland" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ meta.url }}" />
+    <meta property="og:image" content="{% static 'ubyssey/images/ubyssey-logo-square.png' %}" />
+    <meta property="og:description" content="Girls’ Lower Mainland" />
+    <meta property="og:site_name" content="The Ubyssey" />
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@ubyssey">
+    <meta name="twitter:title" content="Girls’ Lower Mainland">
+    <meta name="twitter:description" content="Girls’ Lower Mainland">
+    <meta name="twitter:image" content="{% static 'ubyssey/images/ubyssey-logo-square.png' %}">
+    
+    <!-- Additional stuff-->
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'ubyssey/images/favicons/apple-touch-icon-57x57.png' %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'ubyssey/images/favicons/apple-touch-icon-60x60.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'ubyssey/images/favicons/apple-touch-icon-72x72.png' %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'ubyssey/images/favicons/apple-touch-icon-76x76.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'ubyssey/images/favicons/apple-touch-icon-114x114.png' %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'ubyssey/images/favicons/apple-touch-icon-120x120.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'ubyssey/images/favicons/apple-touch-icon-144x144.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'ubyssey/images/favicons/apple-touch-icon-152x152.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'ubyssey/images/favicons/apple-touch-icon-180x180.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'ubyssey/images/favicons/android-chrome-192x192.png' %}" sizes="192x192">
+    <link rel="icon" type="image/png" href="{% static 'ubyssey/images/favicons/favicon-16x16.png' %}" sizes="16x16">
+    <link rel="icon" type="image/png" href="{% static 'ubyssey/images/favicons/favicon-32x32.png' %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{% static 'ubyssey/images/favicons/favicon-96x96.png' %}" sizes="96x96">
+    <link rel="manifest" href="{% static 'ubyssey/images/favicons/manifest.json' %}">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="fb:pages" content="99164676792" />
+
+    <link rel="stylesheet" href="https://use.typekit.net/kth6got.css"/>
+	<link rel="stylesheet" href="{% static 'ubyssey/css/spoof-2025.css' %}" type="text/css" />
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3D8SDLCGE"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-M3D8SDLCGE');
+	</script>
+
+
+</head>
+
+<body>
+
+    {% include 'spoof/2025/nav.html' with selected="useless-crafts" %}
+
+    {% include 'spoof/2025/articles/study-budy.html' %}
+
+    {% include 'spoof/2025/articles/slime.html' %}
+
+    {% include 'spoof/2025/footer.html' %}
+    
+	{% wagtailuserbar %}
+</body>
+
+</html>
