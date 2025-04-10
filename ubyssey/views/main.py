@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.shortcuts import render
+from django.conf import settings
+from django.shortcuts import render
 
 def custom_500(request):
     return render(request, '500.html', status=500)
@@ -27,7 +29,6 @@ def publish_scheduled(request):
         return HttpResponse("Success!")
     except:
         return HttpResponse("Failed :/", status=500)
-     
 
 class UbysseyTheme:
     @staticmethod

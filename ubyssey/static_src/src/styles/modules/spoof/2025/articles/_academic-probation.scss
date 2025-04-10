@@ -1,0 +1,61 @@
+article.academic-probation {
+    $probation-pink: #f0c9e2;
+    $probation-hotpink: #f0f;
+    $probation-purple: #7f1fa2;
+    $probation-green: #9adbc0;
+    $probation-green-pale: #ddfcef;
+
+    border-image: url('/static/ubyssey/images/spoof/2025/elena.gif');
+    border-image-width: 500px;
+    background: linear-gradient(-45deg, $probation-green, $probation-green-pale);
+    background-size: 50px 50px;
+    .flex-container {
+        margin-inline: auto;
+        display: flex;
+        flex-direction: column;
+        .right {
+            margin: 2em auto;
+            padding: 0.5em;
+            width: fit-content;
+            border-radius: 1em;
+            border: ridge;
+            background: linear-gradient($probation-pink, white, $probation-pink);
+
+            font-family: "medodica", serif;
+            font-size: 1.25em;
+            font-weight: 300;
+        }
+    }
+    h2 {
+        font-size: 2em;
+        text-align: center;
+        transform: skewY(-3deg);
+        font-family: "nickainley", serif;
+        span.emphasis {
+            padding: 0.25em;
+            display: block;
+
+            color: white;
+            font-family: "campus-mn",sans-serif;
+            text-decoration: underline;
+            font-size: 1.5em;
+            transform: skewY(3deg);
+
+            text-shadow: -2px 2px 2px $probation-hotpink;
+        }
+        span.believe {
+            text-shadow: 2px 2px 0 white;
+        }
+    }
+    p {
+        max-width: 600px;
+        line-height: 1.5em;
+    }
+
+    @media ($bp-smaller-than-phablet) { 
+        border-image-width: 150px;
+        .flex-container .right {
+            margin-bottom: 150px;
+        }
+    }
+}

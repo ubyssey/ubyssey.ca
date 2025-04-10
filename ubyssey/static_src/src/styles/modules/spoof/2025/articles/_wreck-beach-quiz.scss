@@ -1,0 +1,150 @@
+article.wreck-beach-quiz {
+    $beach-yellow: #f8f275;
+    $beach-pink: #ed028c;
+    $beach-blue: #00adee;
+
+    background-image: url('/static/ubyssey/images/spoof/2025/wreck-beach-quiz/wreck-beach-bg.jpg');
+    background-size: cover;
+    background-position: center bottom;
+    h2 {
+        margin-inline: 1em;
+
+        color: $beach-pink;
+        -webkit-text-stroke: 0.2em white;
+        paint-order: stroke;
+
+        font-family: "chauncy-pro",sans-serif;
+        font-size: 3em;
+        transform: skewY(-2deg);
+        span {
+            display: block;
+            font-size: 2em;
+        }
+    }
+    .quiz-container {
+        margin: 10% 10% 2% 10%;
+        position: relative;
+        height: 500px;
+    }
+    img.beachball {
+        position: absolute;
+        left: 0;
+        width: 250px;
+        height: auto;
+        animation: jump 1s ease-in-out infinite;
+        transition-duration: 1s;
+        &.right {
+            left: calc(100% - 250px);
+        }
+    }
+    .question-container {
+        margin: auto auto 20% auto;
+        display: flex;
+        max-width: 600px;
+        height: 200px;
+        text-align: center;
+        flex-direction: column;
+        span.question {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+
+            color: $beach-blue;
+            font-size: 3em;
+            text-align: center;
+            -webkit-text-stroke: white 0.2em;
+            paint-order: stroke;
+        }
+        .result {
+            border-radius: 1em;
+            color: white;
+            filter: drop-shadow(0 0 1em);            
+
+            &.human {
+                --resultColour: #{$beach-pink};
+                --resultSecondary: #{$beach-blue};
+            }
+            &.vampire {
+                --resultColour: red;
+                --resultSecondary: black;
+            }
+            &.eldritch {
+                --resultColour: purple;
+                --resultSecondary: rgb(37, 39, 85);
+            }
+            &.swamp {
+                --resultColour: green;
+                --resultSecondary: rgb(14, 42, 42);
+            }
+
+            h3 {
+                margin-block: 0;
+                font-size: 3em;
+                font-family: "chauncy-pro",sans-serif;
+                -webkit-text-stroke: 10px var(--resultSecondary);
+                paint-order: stroke;    
+            }
+            p {
+                font-size: 1.25em;
+                text-shadow: 0 0 0.5em var(--resultColour);
+                -webkit-text-stroke: 0.25em var(--resultColour);
+                paint-order: stroke;
+            }
+        }
+        button.restart, .result {
+            display: none;
+        }
+        &.end {
+            button.answer, span.question {
+                display: none;
+            }
+            button.restart, .result {
+                display: block;
+            }
+        }
+        .answer-container {
+            margin-top: auto;
+            padding-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            gap: 2em;
+            button {
+                margin-inline: auto;
+                padding: 0.25em 0.5em;
+                background: linear-gradient($beach-yellow, white, $beach-yellow);
+                border-radius: 0.5em;
+                color: black;
+                font-size: 2em;
+                text-align: center;
+                box-shadow: 0 0.25em 1em white;
+                cursor: pointer;
+            }
+        }
+    }
+    @media ($bp-smaller-than-phablet) {
+        h2 {
+            margin-bottom: 6em;
+            font-size: 2em;
+        }
+        .answer-container {
+            flex-direction: column;
+        }
+        .question-container {
+            position: relative;
+            z-index: 1;
+            span.question {
+                font-size: 2em;
+            }
+        }
+        .result  {
+            margin-top:-6em;
+        }
+    }
+}
+
+@keyframes jump {
+    0% {bottom: 0}
+    50% {bottom: 100%;}
+    100% {bottom: 0;}
+}

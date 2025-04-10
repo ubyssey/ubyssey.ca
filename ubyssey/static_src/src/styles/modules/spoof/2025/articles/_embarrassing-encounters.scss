@@ -1,0 +1,93 @@
+article.embarrassing-encounters {
+    $embarrassing-pink: #fb3199;
+    $embarrassing-orange: #ff8751;
+    $embarrassing-yellow: #ffeb3d;
+    $embarrassing-green: #00ff0d;
+
+    $embarrassing-pale-green: #8dbf8f;
+    $embarrassing-pale-orange: #ff974e;
+    $embarrassing-pale-pink: #f471c1;
+
+    display: flex;
+    flex-direction: row-reverse;
+    border-left: 110px solid;
+    border-right: 110px solid;
+    border-image: url("/static/ubyssey/images/spoof/2025/xd-border.png") 220 round;
+    background-image: linear-gradient(to bottom, #fb3199, #ff8751, #ffeb3d, #00ff0d);
+
+    .header-container {
+        h2 {
+            text-align: left;
+            font-size: 500%;            
+            font-family: "zubilo-shadow",sans-serif;
+            color: #803f8d;
+            -webkit-text-stroke: 0.25em white;
+            paint-order: stroke;
+        }
+        p {
+            text-align: center;
+            font-size: 1.75em;
+            font-family: "patrick-hand-sc",sans-serif;
+        }
+    }
+    .encounters {
+        transform: rotate(-5deg);
+        width: 100%;
+        .encounter {
+            margin-block: 2em;
+            max-width: 600px;
+            border-radius: 2em 0 0 2em;
+            color: white;
+            padding: 1.5em;
+            filter: drop-shadow(0 0.5em 0.5em #803f8d);
+            border-right: 0.5em #ffeb3d dashed;
+
+            &.top {
+                margin-right: auto;
+                background-color: $embarrassing-pale-green;
+            }
+            &.mid {
+                margin-inline: auto;
+                background-color: $embarrassing-pale-orange;
+            }
+            &.bottom {
+                margin-left: auto;
+                background-color: $embarrassing-pale-pink;
+            }
+
+            h3 {
+                margin-block: 0;
+                color: $embarrassing-yellow;
+                font-size: 2em;
+                font-family: "zubilo-black",sans-serif;
+            }
+            p {
+                color: black;
+                font-weight: 300;
+                line-height: 1.5em;
+                font-family: "playpen-sans",sans-serif;;
+            }
+        }
+    }
+
+    @media ($bp-smaller-than-phablet) {
+        flex-direction: column;
+        border-left: none;
+        border-right: none;
+        border-image-width: 4em;
+        .header-container {
+            h2 {
+            font-size: 3em;
+            text-align: center;
+            }
+            p {
+                margin-inline:2em;
+                font-size: 1.25em;
+                transform: rotate(-5deg);
+            }
+        }
+        .encounters {
+            transform: none;
+        }
+    }
+}

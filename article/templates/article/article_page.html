@@ -88,7 +88,10 @@
 
                         <p class="time-stamp"><span>First online <time datetime="{{self.first_published_at|date:'Y-m-d H:i'}}">{{self.first_published_at}}</time></span>{% if self.show_last_modified %}, <span>last modified <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}">{{self.last_published_at}}</time></span>{% endif %}</p>
 
-                        <p class="report"><a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Report a complaint</a></p>
+                        <p class="report">
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Submit a complaint</a>
+                            <a href="https://forms.gle/RbJjhEpqqt7tz4AF6">Report a correction</a>
+                        </p>
 
                         {% for author_id, author_data in self.authors_in_order_for_cards.items %}
                             {% include "article/objects/author_card.html" with author=author_data.author author_roles=author_data.roles %}

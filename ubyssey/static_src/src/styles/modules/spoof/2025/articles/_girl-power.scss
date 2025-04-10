@@ -1,0 +1,131 @@
+article.girl-power {
+    $girl-power-purple: #803f8d;
+    $girl-power-magenta: #ad286a;
+    background: #c6c9e3;
+    .slanted-border {
+        position: relative;
+        margin-inline: -2em;
+        clip-path: inset(0 0 0 0);
+        &::before {
+            position: absolute;
+            left: 0;
+            right: 0;
+            content: "";
+            transform: skewY(-1deg);
+        }
+    }
+    .top-border {
+        margin-top: -2em;
+        height: 6em;
+        &::before {
+            bottom: 2em;
+            top: -2em;
+            border-bottom: 2em $girl-power-purple solid;
+            background-color: $girl-power-magenta;
+        }
+    }
+    .bottom-border {
+        margin-bottom: -2em;
+        margin-top: 3em;
+        height: 3em;
+        &::before {
+            bottom: -1em;
+            top: 0em;
+            background-color: $girl-power-purple;
+        }
+    }
+    h2 {
+        text-transform: uppercase;
+        color: $girl-power-purple;
+        font-size: 4em;
+        font-weight: 900;
+        
+        text-shadow: 0 4px 20px white;
+        -webkit-text-stroke: white 5px;
+        paint-order: stroke;
+        text-align: center;
+
+        transform: skewY(-2deg);
+        b {
+            color: $girl-power-magenta;
+            font-family: "nexa-rust-slab-black-shad-2",sans-serif;
+            font-size: 1.1em;
+            -webkit-text-stroke: white 7px;
+        }
+    }
+    .col-container {
+        display: flex;
+        justify-content: space-around;
+    }
+    .card-container {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        gap: 2em;
+        .card {
+            margin-block: auto;
+            padding: 1em;
+            width: 300px;
+            height: fit-content;
+            background: white;
+            border-radius: 1em;
+            border: 1px solid gray;
+            filter: drop-shadow(0 0 5px #78759e);
+            &.purple {
+                --cardColour: #{$girl-power-purple};
+            }
+            &.magenta {
+                --cardColour: #{$girl-power-magenta};
+            }
+            .author {
+                display: block;
+                font-weight: 600;
+                color: var(--cardColour);
+            }
+            a {
+                color: var(--cardColour);
+            }
+            .quote {
+                position: relative;
+                display: block;
+                font-weight: 300;
+                &::first-letter {
+                    margin-left: 1em;
+                }
+                &::before {
+                    position: absolute;
+                    left: -0.4em;
+                    top: -0.4em;
+
+                    color: var(--cardColour);
+                    font-size: 5em;
+                    font-weight: 600;
+
+                    content: "“";
+                    -webkit-text-stroke: 2px white;
+                    filter: drop-shadow(0 0 2px #78759e);                  
+                }
+            }
+        }
+    }
+    .girl-power-img {
+        width: 300px;
+        height: auto;
+        animation: flip-y infinite 3s ease-in-out alternate-reverse;
+    }
+
+    @media ($bp-smaller-than-desktop) { 
+        .col-container {
+            flex-direction: column;
+            .card-container {
+                margin-bottom: 2em;
+                .card {
+                    width: auto;
+                }
+                .girl-power-img {
+                    margin-inline: auto;
+                }
+            }
+        }
+    }
+}

@@ -11,6 +11,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled
+
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage
@@ -59,6 +60,13 @@ urlpatterns += [
     # re_path(r'^(?P<section>culture)/(?P<slug>boredom-and-binging|in-full-bloom|temperature-checks|a-breath-of-fresh-air|paradise-found|under-water|healing-wounds|feeling-raw)/$', ArticleView.as_view()),
     # re_path(r'^magazine/(?P<year>[0-9]{4})/$', magazine.magazine, name='magazine-landing'),
     # re_path(r'^magazine/(?P<slug>[-\w]+)/$', magazine.article, name='magazine-article'),
+
+    re_path(r'^humour/girlslowermainland/$', TemplateView.as_view(template_name='spoof/2025/landing.html')),
+    re_path(r'^humour/girlslowermainland/useless-crafts/$', TemplateView.as_view(template_name='spoof/2025/useless-crafts.html')),
+    re_path(r'^humour/girlslowermainland/get-it-together/$', TemplateView.as_view(template_name='spoof/2025/get-it-together.html')),
+    re_path(r'^humour/girlslowermainland/people-and-cairns/$', TemplateView.as_view(template_name='spoof/2025/people-and-cairns.html')),
+    re_path(r'^humour/girlslowermainland/from-alleged-readers/$', TemplateView.as_view(template_name='spoof/2025/from-alleged-readers.html')),
+    re_path(r'^humour/girlslowermainland/activities-and-whatnot/$', TemplateView.as_view(template_name='spoof/2025/activities-and-whatnot.html')),
 
     re_path(r'^djadmin/', admin.site.urls),
 

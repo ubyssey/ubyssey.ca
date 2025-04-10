@@ -1,0 +1,202 @@
+article.bookshelf {
+    $bookshelf-blue: #63c0bb;
+    $bookshelf-pink: #d9407a;
+    background-color: wheat;
+
+    padding-block: 4em;
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        gap: 1em;
+        justify-content: center;            
+    }
+    img.bookcover {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+    .beowulf-book-container {
+        margin-left: -40%;
+        transform: rotate(4deg);
+        filter: drop-shadow(0 0 5px black);
+    }
+    .shine {
+        overflow: hidden;
+        position: relative;
+        &::before {
+            content: "";
+            position: absolute;
+            transform: skewY(-25deg) rotate(25deg);
+            width: 100%;
+            top: 0;
+            bottom: 0;
+            background-image: linear-gradient(to right, transparent, white, transparent);
+            animation: move-right 0.9s 2s infinite;
+        }
+    }
+    .beowulf {
+        margin: auto 3em;
+        max-width: 800px;
+        transform: rotate(-2deg);
+        .beowulf-bg {
+            margin: 0;
+            padding: 1.5em 1.5em 3.5em 1.5em;
+            background-color: white;
+            border-radius: 1em;
+            box-shadow: -5px 10px 5px #00000024;
+        }
+        h2 {
+            margin-top: 0.5em;
+            text-align: center;
+            font-size: 2.5em;
+            font-family: "specter",sans-serif;
+            color: $bookshelf-pink;
+        }
+        .book-container {
+            margin-top: 1em;
+            padding-bottom: 2em;
+            width: 150px;
+            flex-shrink: 0;
+        }
+        .beowulf-summary {
+            margin-inline: 1em;
+            display: flex;
+            flex-direction: column;
+            .percent-loved {
+                margin: auto 1em auto 0;
+                padding-block: 0.5em;
+
+                color: $bookshelf-pink;
+                font-family: "cabin-sketch-bold",sans-serif;
+                text-align: center;
+                font-size: 2em;
+                font-weight: 600;
+                text-decoration: underline $bookshelf-blue;
+                
+                transform: rotate(2deg);
+            }
+            p {
+                font-size: 1.1em;
+                font-weight: 300;
+                line-height: 1.5em;
+            }
+            p:first-child {
+                margin-top: 0;
+            }
+        }
+        .beowulf-reviews {
+            margin: -2em -1.5em 2em -1.5em;
+            display: flex;
+            flex-direction: row;
+            gap: 2em;
+            transform: rotate(2deg);
+            
+            .review {
+                padding: 1em;
+                display: flex;
+                flex-direction: column;
+                background: radial-gradient(white, $bookshelf-pink);
+                border: 2px solid black;
+                border-radius: 2em;
+                filter: drop-shadow(-0.75em 0.75em 0 #282727);
+                text-align: center;
+                text-shadow: 0 0 5px white;
+                span {
+                    margin-block: auto;
+                    padding-block: 0.5em;
+                    display: block;
+
+                    color: #ffe300;
+                    font-weight: 600;
+                    font-family: sans-serif;
+                    white-space: nowrap;
+                    
+                    text-shadow: 0 0 2px #713000;
+                }
+            }
+        }
+
+    }
+    .recommended-container {
+        margin: 2em;
+        max-width: 500px;
+        flex-shrink: 0;
+        h2 {
+            margin-bottom: 0;
+            font-size: 3em;
+            font-family: "nickainley", serif;            
+        }
+        .recommended {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            .review {
+                margin-top: 2em;
+                padding: 0 1.5em;
+                display: flex;
+                background: white;
+                border-bottom: 3px solid $glm-pink;
+                background: linear-gradient(white calc(100% - 1px), #00b7ff91);
+                background-size: 100% 1.5em;
+
+                .book-container {
+                    margin: auto 1em auto -2em;
+                    width: 50px;
+                    flex-shrink: 0;
+                    transform: rotate(4deg);
+                    box-shadow: 0 0 5px black;
+                }
+                h3 {
+                    margin-top: -0.75em;
+                    paint-order: stroke;
+
+                    color: $bookshelf-pink;
+                    -webkit-text-stroke: white 10px;
+                    text-shadow: 0 8px 5px #949494;
+
+                    font-family: "specter",sans-serif;
+                    font-size: 1em;
+                    font-weight: 600;
+                    line-height: 1.5em;
+                    .author {
+                        color: $bookshelf-blue;
+                    }
+                }
+                p {
+                    font-weight: 300;
+                    line-height: 1.5em;
+                    text-shadow: 0 0 5px white;
+                }
+            }
+        }
+    }
+    @media ($bp-smaller-than-phablet) { 
+        .flex-row {
+            flex-direction: column;            
+        }
+        .beowulf {
+            margin-inline: 0;
+            transform: rotate(0);
+            .beowulf-reviews {
+                margin-inline: 1em;
+                flex-direction: column;
+            }
+            .book-container  {
+                padding-inline: 2em;
+                width: 100%;
+                box-sizing: border-box;
+                img {
+                    margin: auto;
+                    width: 100%;
+                }
+            }
+            .beowulf-book-container {
+                margin-inline: auto;
+                max-width: 200px;
+            }
+        }
+        .recommended-container {
+            margin: 0;
+        }
+    }
+}
