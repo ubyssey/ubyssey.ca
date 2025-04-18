@@ -9,17 +9,17 @@
   <div class="o-article__left">
     <a class="o-article__image" href={% pageurl article %} >
       {% if article.featured_media.first.image %}
-      {% srcset_image article.featured_media.first.image width-{200,800,1320} format-webp webpquality-70 as cover_renditions %}
+      {% srcset_image article.featured_media.first.image width-{340,750,1500} format-webp webpquality-70 as cover_renditions %}
   
       <img
           src="{{ cover_renditions.renditions.0.url }}"
           width="{{ cover_renditions.renditions.0.width }}"
           height="{{ cover_renditions.renditions.0.height }}"
           alt="{{ article.featured_media.first.alt_text }}"
-          srcset="{{ cover_renditions.renditions.0.url }} 200w, {{ cover_renditions.renditions.1.url }} 800w, {{ cover_renditions.renditions.2.url }} 1320w"
-          sizes="(max-width: 200px) 200vw,
-                 (max-width: 400px) 400px,
-                 1320px"
+          srcset="{{ cover_renditions.renditions.0.url }} 340w, {{ cover_renditions.renditions.1.url }} 760w, {{ cover_renditions.renditions.2.url }} 1500w"
+          sizes="(max-width: 600px) 340px,
+                 (max-width: 1200px) 750px,
+                 1500px"
           class="article-attachment"
           {% if coverimage.focal_point %}
               style="object-position: 0 calc(100% * calc({{ coverimage.focal_point.centroid.y }} / {{coverimage.height}}));"
