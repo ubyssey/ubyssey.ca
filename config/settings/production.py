@@ -39,8 +39,8 @@ ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 MEDIA_URL = 'https://ubyssey.storage.googleapis.com/media/'
 MEDIA_ROOT = ''
 
-GS_ACCESS_KEY_ID = env('GS_ACCESS_KEY_ID', '') or read_file(env('GS_ACCESS_KEY_ID_FILE'))
-GS_SECRET_ACCESS_KEY = env('GS_SECRET_ACCESS_KEY', '') or read_file(env('GS_SECRET_ACCESS_KEY_FILE'))
+GS_ACCESS_KEY_ID = env('GS_ACCESS_KEY_ID', default='') or read_file(env('GS_ACCESS_KEY_ID_FILE'))
+GS_SECRET_ACCESS_KEY = env('GS_SECRET_ACCESS_KEY', default='') or read_file(env('GS_SECRET_ACCESS_KEY_FILE'))
 # GS_CREDENTIALS = service_account.Credentials.from_service_account_file('ubyssey-prd-ee6290e6327f.json')
 # GS_CREDENTIALS = env('GOOGLE_APPLICATION_CREDENTIALS')
 GS_BUCKET_NAME = 'ubyssey'
