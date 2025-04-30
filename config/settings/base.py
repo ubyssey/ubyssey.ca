@@ -16,16 +16,27 @@ https://codelabs.developers.google.com/codelabs/cloud-run-django/index.html?inde
 import os
 import environ
 
+def read_file(filename):
+    if not os.path.exists(filename) or os.path.getsize(filename) == 0:
+        return ""
+
+    with open(filename, 'r') as f:
+        return f.read()
+
 env = environ.Env(
     # Define mappings and defaults for config vars which are to be read from environment
 
-    SECRET_KEY = (str, 'thisisakey'),
+    SECRET_KEY = (str),
+    SECRET_KEY_FILE = (str),
+
     DEBUG = (bool, False),
     
     SQL_HOST = (str, 'mysql'),
     SQL_DATABASE = (str, 'ubyssey'),
     SQL_USER = (str, 'root'),
-    SQL_PASSWORD = (str, 'ubyssey'),
+
+    SQL_PASSWORD = (str),
+    SQL_PASSWORD_FILE = (str),
 
     STATIC_URL = (str, '/static/'),
     MEDIA_URL = (str, '/media/'),
@@ -39,7 +50,7 @@ SITE_ID = 1
 
 BASE_DIR = environ.Path(__file__) - 3
 
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY') or read_file(env('SECRET_KEY_FILE')) or 'thisisakey'
 
 DEBUG = env('DEBUG')
 
@@ -174,13 +185,15 @@ TEMPLATES = [
 # Database
 # Ref: https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+SQL_PASSWORD = env('SQL_PASSWORD') or read_file(env('SQL_PASSWORD_FILE')) or 'ubyssey'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': env('SQL_HOST'),
         'NAME': env('SQL_DATABASE'),
         'USER': env('SQL_USER'),
-        'PASSWORD': env('SQL_PASSWORD'),
+        'PASSWORD': SQL_PASSWORD,
         'PORT': '3306',
         "OPTIONS": {
             "charset": "utf8mb4",
