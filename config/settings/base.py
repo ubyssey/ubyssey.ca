@@ -26,8 +26,8 @@ def read_file(filename):
 env = environ.Env(
     # Define mappings and defaults for config vars which are to be read from environment
 
-    SECRET_KEY = (str),
-    SECRET_KEY_FILE = (str),
+    SECRET_KEY = (str, ''),
+    SECRET_KEY_FILE = (str, ''),
 
     DEBUG = (bool, False),
     
@@ -35,8 +35,8 @@ env = environ.Env(
     SQL_DATABASE = (str, 'ubyssey'),
     SQL_USER = (str, 'root'),
 
-    SQL_PASSWORD = (str),
-    SQL_PASSWORD_FILE = (str),
+    SQL_PASSWORD = (str, ''),
+    SQL_PASSWORD_FILE = (str, ''),
 
     STATIC_URL = (str, '/static/'),
     MEDIA_URL = (str, '/media/'),
