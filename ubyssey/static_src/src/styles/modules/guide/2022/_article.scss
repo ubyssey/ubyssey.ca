@@ -1,19 +1,22 @@
+@use "../../variables";
+@use "fonts";
+
 .c-article{
   padding: 3em 0;
 }
 
 .c-article__title {
   color: #0471a7;
-  font-family: $accent-font;
+  font-family: fonts.$accent-font;
   margin: 5% 0 7.5%;
   font-size: 3.5rem;
   line-height: 4rem;
   text-transform: uppercase;
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     width: 600px;
   }
   max-width: 600px;
-  @media ($bp-smaller-than-mobile) {
+  @media (variables.$bp-smaller-than-mobile) {
     font-size: 3rem;
     line-height: 3rem;
   }
@@ -46,7 +49,7 @@
   margin: auto;
   h1, h2, h3 {
     text-align: left;
-    font-family: $header-font;
+    font-family: fonts.$header-font;
     font-size: 1.3rem;
     line-height: 1.6rem;
     font-weight: 500;
@@ -58,8 +61,8 @@
   }
 
   > p, ul {
-    font-family: $text-font;
-    font-size: $text-size;
+    font-family: fonts.$text-font;
+    font-size: fonts.$text-size;
     font-weight: normal;
     letter-spacing: 0.2px;
     line-height: 1.3rem;
@@ -83,7 +86,7 @@
     margin-right: auto;
     padding-bottom: 35px;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       margin: 0;
       float: right;
       padding-left: 35px;
@@ -94,7 +97,7 @@
 
 p {
   text-align: left;
-  font-family: $text-font;
+  font-family: fonts.$text-font;
 }
 
 .c-up-next {
@@ -123,7 +126,7 @@ p {
 
 .c-up-next__text {
   margin: 0 15px;
-  font-family: $header-font;
+  font-family: fonts.$header-font;
   text-transform: lowercase;
   font-weight: 500;
   line-height: 1.2rem;
@@ -142,10 +145,10 @@ p {
   width: 450px;
   height: auto;
 
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   color: #ffffff;
   
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     display: block;
   }
 
@@ -167,11 +170,11 @@ p {
 
 .c-welcome-article-bottom{
   position: relative;
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   color: #ffffff;
   z-index: 1000;
   display: block;
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     display: none;
   }
   .quote-content--container{

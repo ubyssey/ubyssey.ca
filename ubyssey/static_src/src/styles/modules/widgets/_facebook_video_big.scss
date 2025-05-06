@@ -1,3 +1,6 @@
+@use "../fonts";
+@use "../variables";
+
 .c-facebook-video {
 	width: 100%;
 	box-sizing: border-box;
@@ -5,7 +8,7 @@
 	margin-bottom: 15px;
 	padding: 15px;
 
-	border: 1px solid $color-border-gray;
+	border: 1px solid variables.$color-border-gray;
 	border-radius: 1px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
 
@@ -24,11 +27,11 @@
 
 	.c-facebook-video__title {
 		flex: 1;
-		font-size: font-size(22);
-		font-weight: $font-weight-bold;
+		font-size: fonts.font-size(22);
+		font-weight: fonts.$font-weight-bold;
 		padding-left: 1rem;
 		padding-right: 0;
-		font-family: $font-default;
+		font-family: fonts.$font-default;
 		margin-top: 1rem;
 		margin-bottom: 0;
 	}
@@ -38,7 +41,7 @@
 	width: 100%;
 	display: flex;
 
-	@media($bp-smaller-than-tablet) {
+	@media(variables.$bp-smaller-than-tablet) {
 		display: block;
 
 		.fb-comments {
@@ -59,14 +62,14 @@
 		flex: 1;
 		margin-right: 15px;
 
-		@media($bp-smaller-than-tablet) {
+		@media(variables.$bp-smaller-than-tablet) {
 			display: block;
 		}
 	}
 
 }
 
-@media($bp-larger-than-tablet) {
+@media(variables.$bp-larger-than-tablet) {
 	.c-facebook-video__comments {
 	  max-height: 450px;
 	  overflow-y: auto;
@@ -74,18 +77,18 @@
 }
 
 .c-facebook-video__info {
-	font-size: font-size(14);
+	font-size: fonts.font-size(14);
 	margin-bottom: 0.5rem;
 }
 
 .c-facebook-video__host {
-	font-weight: $font-weight-bold;
+	font-weight: fonts.$font-weight-bold;
 }
 
 .c-facebook-video__start-time,
 .c-facebook-video__end-time,
 .c-facebook-video__description {
-	color: $color-text-gray;
+	color: variables.$color-text-gray;
 }
 
 .c-facebook-video__description {

@@ -1,3 +1,7 @@
+@use "../fonts" as footer;
+@use "../footer";
+@use "../variables";
+
 $text-color: var(--text_color);
 
 .featured-media {
@@ -48,12 +52,12 @@ div.article-content {
     padding-top: 0.75em;
     max-width: 585px;
 
-    color: $color-ubyssey-blue;
-    font-family: $font-body;
+    color: variables.$color-ubyssey-blue;
+    font-family: fonts.$font-body;
 
     p {
       margin-top: 0;
-      color: $color-ubyssey-blue;
+      color: variables.$color-ubyssey-blue;
       line-height: 2em;
     }
 
@@ -75,14 +79,14 @@ div.article-content {
   }
 
   .o-headline--article {
-    @media($bp-larger-than-tablet) {
+    @media(variables.$bp-larger-than-tablet) {
       line-height: 1.277em;
       padding-bottom: 25px;
       margin: 0;
     }
   }
 
-  @media($bp-smaller-than-mobile) {
+  @media(variables.$bp-smaller-than-mobile) {
     .author_card {
       margin-inline: -15px;
     }
@@ -93,7 +97,7 @@ div.article-content {
   display: block;
   padding-bottom: 1em;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     display: flex;
     flex-wrap: wrap;
   }
@@ -103,17 +107,17 @@ div.article-content {
   display: inline-flex;
   width: 65%;
   margin: 0.5rem 0em 0.5em 0em;
-  font-family: $font-default;
-  font-size: $font-size-15px;
+  font-family: fonts.$font-default;
+  font-size: fonts.$font-size-15px;
   // font-weight: $font-weight-semi-bold;
-  font-weight: $font-weight-bold;
+  font-weight: fonts.$font-weight-bold;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     flex: 1 0;
     margin-bottom: 0.5em;
   }
 
-  @media($bp-smaller-than-tablet) {
+  @media(variables.$bp-smaller-than-tablet) {
     display: inline-block;
     width: 100%;
   }
@@ -123,10 +127,10 @@ div.article-content {
 .c-authors_bio_meta {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-  font-family: $font-default;
-  font-size: $font-size-15px;
+  font-family: fonts.$font-default;
+  font-size: fonts.$font-size-15px;
   // font-weight: $font-weight-semi-bold;
-  font-weight: $font-weight-bold;
+  font-weight: fonts.$font-weight-bold;
 
   display: flex;
   position: relative;
@@ -144,9 +148,9 @@ div.article-content {
   margin-bottom: 0.75rem;
   float: left;
   color: var(--article_info);
-  font-weight: $font-weight-normal;
+  font-weight: fonts.$font-weight-normal;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     display: inline-block;
     margin-right: 0.75em;
     margin-bottom: 0;
@@ -161,13 +165,13 @@ div.article-content {
   max-width: none;
   z-index: 10;
 
-  background-color: $color-ubyssey-blue;
+  background-color: variables.$color-ubyssey-blue;
   border-radius: 4px;
   
   color: white;
   line-height: 1.5em;
   font-size: 11px;
-  font-family: $font-default
+  font-family: fonts.$font-default
 }
 
 .visuallyhidden {
@@ -180,7 +184,7 @@ div.article-content {
 }
 
 p.fw-description {
-  font-family: $font-body;
+  font-family: fonts.$font-body;
   font-size: 18px;
 }
 
@@ -208,7 +212,7 @@ div.article-content {
     transform: translateX(-50%);
   }
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     display: table-cell;
     padding-right: 15px;
     padding-left: 0;
@@ -234,7 +238,7 @@ div.article-content {
   h1, h2, h3, h4 {
     > a {
       text-decoration: none;
-      background-image: linear-gradient($color-ubyssey-blue, $color-ubyssey-blue);
+      background-image: linear-gradient(variables.$color-ubyssey-blue, variables.$color-ubyssey-blue);
       background-position: 0 calc(100% - 0.1em);
       background-repeat: no-repeat;
       background-size: 100% 0.25em;
@@ -260,11 +264,11 @@ div.article-content {
 
   >h3,
   >ul {
-    padding-right: $article-content-div-child-padding;
+    padding-right: variables.$article-content-div-child-padding;
   }
 
   >.attachment.pull-quote {
-    padding-inline: $article-content-div-child-padding;
+    padding-inline: variables.$article-content-div-child-padding;
   }
 
   div.caption {
@@ -278,19 +282,19 @@ div.article-content {
   > h4,
   > div.c-widget-event,
   > .attachment.pull-quote {
-    @media($bp-larger-than-phablet){
+    @media(variables.$bp-larger-than-phablet){
       padding: 0;
       max-width: 585px;
     }
   }
 
   >ul {
-    padding-left: $article-content-ul-padding-left + 15;
+    padding-left: variables.$article-content-ul-padding-left + 15;
     padding-right: 15px;
 
-    @media($bp-larger-than-phablet) {
-      padding-left: $article-content-ul-padding-left;
-      max-width: 585px - $article-content-ul-padding-left;
+    @media(variables.$bp-larger-than-phablet) {
+      padding-left: variables.$article-content-ul-padding-left;
+      max-width: 585px - variables.$article-content-ul-padding-left;
       padding-right: 0;
     }
   }
@@ -302,7 +306,7 @@ div.article-content {
     aspect-ratio: calc(80 / var(--aspect-ratio));
     box-sizing: initial;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
 
       &.right,
       &.left {
@@ -389,7 +393,7 @@ div.article-content {
         width: 20px;
         height: auto;
         aspect-ratio: 1;
-        background: $color-ubyssey-blue;
+        background: variables.$color-ubyssey-blue;
         border-radius: 100%;
       }
     }
@@ -400,14 +404,14 @@ div.caption {
   margin-inline: 1em;
   padding-block: 1em 0.5em;
   padding-inline: 1em;
-  border-bottom: 2px solid $color-ubyssey-blue;
+  border-bottom: 2px solid variables.$color-ubyssey-blue;
 
   font-size: 15px;
   line-height: 19px;
 
   color: var(--article_caption);
   font-style: italic;
-  font-family: $font-default;
+  font-family: fonts.$font-default;
 }
 
 div.article-content {
@@ -415,9 +419,9 @@ div.article-content {
   >p,
   >ul, 
   >ol {
-    font-family: $font-body;
-    font-weight: $font-weight-normal;
-    font-size: font-size(17);
+    font-family: fonts.$font-body;
+    font-weight: fonts.$font-weight-normal;
+    font-size: fonts.font-size(17);
     line-height: 2rem;
     margin-top: 1.4rem;
 
@@ -427,10 +431,10 @@ div.article-content {
 
       font-weight: 600;
       transition-duration: 0.5s;
-      color: $color-ubyssey-blue;
+      color: variables.$color-ubyssey-blue;
 
       &:hover {
-        color: $color-ubyssey-blue;
+        color: variables.$color-ubyssey-blue;
       }
     }
 
@@ -443,7 +447,7 @@ div.article-content {
   }
 
   >h1 {
-    font-family: $font-default;
+    font-family: fonts.$font-default;
     font-weight: normal;
     font-size: 28px;
     margin: 30px 0 0 0;
@@ -479,13 +483,13 @@ div.article-content {
     display: inline-block;
     margin-right: 1em;
     color: var(--text_color);
-    font-family: $font-default;
+    font-family: fonts.$font-default;
     font-style: italic;
     font-weight: 400;
   }
 }
 
-@media($bp-larger-than-mobile) {
+@media(variables.$bp-larger-than-mobile) {
   header.headline-container {
     padding: 0;
   }
@@ -503,12 +507,12 @@ div.article-content {
 
 .article-content p.drop-cap {
   font-weight: bold;
-  font-size: font-size(19);
+  font-size: fonts.font-size(19);
 }
 
 p.author-string>a {
   font-weight: 600;
-  color: $color-ubyssey-blue;
+  color: variables.$color-ubyssey-blue;
 }
 
 p.c-article__published-at {
@@ -516,7 +520,7 @@ p.c-article__published-at {
 }
 
 .article-content p.c-share {
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   font-weight: 600;
 
   .share-bsky svg {

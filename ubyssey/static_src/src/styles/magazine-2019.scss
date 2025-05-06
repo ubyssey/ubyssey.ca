@@ -1,14 +1,14 @@
-@import "modules/magazine/2019-2020/colors";
-@import "modules/magazine/mixins";
-@import "modules/magazine/utilities";
-@import "modules/magazine/2019-2020/text";
+@use "modules/magazine/2019-2020/colors";
+@use "modules/magazine/mixins";
+@use "modules/magazine/utilities";
+@use "modules/magazine/2019-2020/text";
 // @import "modules/magazine/header";
-@import "modules/magazine/footer";
-@import "modules/magazine/article";
-@import "modules/magazine/2019-2020/article";
-@import "modules/magazine/2019-2020/header";
-@import "modules/magazine/2019-2020/poetry";
-@import "modules/magazine/objects";
+@use "modules/magazine/footer";
+@use "modules/magazine/article";
+@use "modules/magazine/2019-2020/article" as article2;
+@use "modules/magazine/2019-2020/header";
+@use "modules/magazine/2019-2020/poetry";
+@use "modules/magazine/objects";
 
 // $font-mont: "Montserrat", sans-serif;
 $font-mont: Montserrat, sans-serif;
@@ -17,7 +17,7 @@ $font-avenir: Avenir, serif;
 
 
 
-$border: 15px solid $color-primary-1;
+$border: 15px solid colors.$color-primary-1;
 
 $spacing: 1.5rem;
 
@@ -63,12 +63,12 @@ video {
   // Text
   font-family: $font-mont;
   font-weight: 500;
-  font-size: font-size(40);
+  font-size: text.font-size(40);
   text-align: center;
   color: #fff;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-  @media ($bp-larger-than-mobile) {
-    font-size: font-size(64);
+  @media (utilities.$bp-larger-than-mobile) {
+    font-size: text.font-size(64);
   }
 }
 
@@ -80,7 +80,7 @@ video {
   text-align: center;
   font-size: 1rem;
 
-  @media ($bp-larger-than-tablet) {
+  @media (utilities.$bp-larger-than-tablet) {
     // Structure
     padding: .5rem;
     padding-right: 2rem;
@@ -220,7 +220,7 @@ h4 {
       transform: translateX(-50%);
       text-align:center;
       padding: 0;
-      @media ($bp-larger-than-tablet) {
+      @media (utilities.$bp-larger-than-tablet) {
         color: #fff;
       }
       @media (max-width: 640px) {
@@ -262,7 +262,7 @@ h4 {
         margin-right: 0;
         width:23.75%;
       }
-      @media ($bp-larger-than-tablet) {
+      @media (utilities.$bp-larger-than-tablet) {
         border-color: #fff;
       }
       
@@ -285,7 +285,7 @@ h4 {
   overflow-y: scroll;
   height: calc(100vh - 65px);
 
-  @media ($bp-larger-than-tablet) {
+  @media (utilities.$bp-larger-than-tablet) {
     overflow-y: hidden;
     flex-direction: row;
     margin-top: 0;
@@ -328,7 +328,7 @@ h4 {
     }
   }
 
-  @media ($bp-larger-than-tablet) {
+  @media (utilities.$bp-larger-than-tablet) {
     flex-direction: row;
     align-items: center;
     // Structure
@@ -347,13 +347,13 @@ h4 {
       width: auto;
       // Background
       &.comesAround {
-        color: $color-primary-1;
+        color: colors.$color-primary-1;
       }
       &.waysForward {
-        color: $color-primary-2;
+        color: colors.$color-primary-2;
       }
       &.goesAround {
-        color: $color-primary-3;
+        color: colors.$color-primary-3;
       }
     }
   }
@@ -369,7 +369,7 @@ h4 {
   font-size: 1.1rem;
   margin: 0 auto;
 
-  @media ($bp-larger-than-tablet) {
+  @media (utilities.$bp-larger-than-tablet) {
     padding: 2rem;
   }
 
@@ -378,7 +378,7 @@ h4 {
     font-size: 2rem;
     font-family: $font-mont;
     font-weight: 300;
-    @media ($bp-larger-than-tablet) {
+    @media (utilities.$bp-larger-than-tablet) {
       // Structure
       margin-top: 3rem;
     }
@@ -407,7 +407,7 @@ h4 {
     display: flex;
   }
 
-  @media ($bp-larger-than-tablet) {
+  @media (utilities.$bp-larger-than-tablet) {
     // Structure
     width: calc(100% - #{$spacing});
     padding-left: 1.5rem;
@@ -437,7 +437,7 @@ h4 {
       background-size: cover;
       box-shadow: none;
 
-      @media ($bp-larger-than-tablet) {
+      @media (utilities.$bp-larger-than-tablet) {
         background-position-x: center;
       }
     }
@@ -445,7 +445,7 @@ h4 {
 
   .article-grid-scroll {
     width: 100%;
-    @media ($bp-larger-than-tablet) {
+    @media (utilities.$bp-larger-than-tablet) {
       overflow-y: scroll;
       height: calc(100vh - 65px);
       margin-left: 114px;
@@ -463,7 +463,7 @@ h4 {
 
     // Background
     background-color: rgba(255,255,255, 0.3);
-    @media ($bp-larger-than-tablet) {
+    @media (utilities.$bp-larger-than-tablet) {
       background-color: rgba(0, 0, 0, 0.3);
     }
 
@@ -487,7 +487,7 @@ h4 {
     flex-direction: column;
     box-sizing: border-box;
 
-    @media ($bp-larger-than-mobile) {
+    @media (utilities.$bp-larger-than-mobile) {
       flex-wrap: wrap;
       align-items: stretch;
       flex-direction: row;
@@ -511,33 +511,33 @@ h4 {
       // Background
       &.comesAround {
         .o-article-box {
-          background-color: $color-primary-1;
+          background-color: colors.$color-primary-1;
           > h2 {
-            background-color: $color-primary-1;
+            background-color: colors.$color-primary-1;
             font-size: 1.5rem;
           }
         }
       }
       &.waysForward {
         .o-article-box {
-          background-color: $color-primary-2;
+          background-color: colors.$color-primary-2;
           > h2 {
-            background-color: $color-primary-2;
+            background-color: colors.$color-primary-2;
             font-size: 1.5rem;
           }
         }
       }
       &.goesAround {
         .o-article-box {
-          background-color: $color-primary-3;
+          background-color: colors.$color-primary-3;
           > h2 {
-            background-color: $color-primary-3;
+            background-color: colors.$color-primary-3;
             font-size: 1.5rem;
           }
         }
       }
 
-      @media ($bp-larger-than-mobile) {
+      @media (utilities.$bp-larger-than-mobile) {
         $gridSize: 320px;
 
         // Other
@@ -588,7 +588,7 @@ h4 {
     width: 100%;
   }
 
-  @media ($bp-larger-than-tablet) {
+  @media (utilities.$bp-larger-than-tablet) {
     &.right,
     &.left {
       height: auto;

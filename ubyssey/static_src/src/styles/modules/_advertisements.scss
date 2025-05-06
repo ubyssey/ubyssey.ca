@@ -1,3 +1,8 @@
+@use "sass:list";
+@use "sass:map";
+@use "variables";
+@use "sass:math";
+
 $adslots: (
   billboard: (970px, 250px),
   large-leaderboard: (760px, 90px),
@@ -23,8 +28,8 @@ $adslots: (
 
 // Desktop leaderboard ad
 .o-advertisement--leaderboard {
-  $width: nth(map-get($adslots, leaderboard), 1);
-  $height: nth(map-get($adslots, leaderboard), 2);
+  $width: list.nth(map.get($adslots, leaderboard), 1);
+  $height: list.nth(map.get($adslots, leaderboard), 2);
 
   display: flex;
 
@@ -54,13 +59,13 @@ $adslots: (
 
   @media( min-width: 1010px ){
     .adslot {
-      min-width: nth(map-get($adslots, leaderboard), 1);
-      max-width: nth(map-get($adslots, large-leaderboard), 1);
+      min-width: list.nth(map.get($adslots, leaderboard), 1);
+      max-width: list.nth(map.get($adslots, large-leaderboard), 1);
       height: $height;
     }
   }
 
-  @media($bp-larger-than-tablet){
+  @media(variables.$bp-larger-than-tablet){
     &.o-advertisement--homepage {
       display: flex;
     }
@@ -70,8 +75,8 @@ $adslots: (
 #article-list {
   .o-advertisement--leaderboard {
     @media( min-width: 1010px ){
-      $width: nth(map-get($adslots, billboard), 1);
-      $height: nth(map-get($adslots, billboard), 2);
+      $width: list.nth(map.get($adslots, billboard), 1);
+      $height: list.nth(map.get($adslots, billboard), 2);
 
       .adslot {
         width: $width;
@@ -107,10 +112,10 @@ main.article .o-advertisement--leaderboard {
 
 // Mobile leaderboard ad
 .o-advertisement--mobile-leaderboard {
-  $width: nth(map-get($adslots, mobile-leaderboard), 1);
-  $height: nth(map-get($adslots, mobile-leaderboard), 2);
+  $width: list.nth(map.get($adslots, mobile-leaderboard), 1);
+  $height: list.nth(map.get($adslots, mobile-leaderboard), 2);
 
-  $desktop-width: nth(map-get($adslots, leaderboard), 1);
+  $desktop-width: list.nth(map.get($adslots, leaderboard), 1);
 
   .adslot {
     display:flex;
@@ -133,29 +138,29 @@ main.article .o-advertisement--leaderboard {
   // Border
   border-bottom: thin dotted #C8C8C8;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     display: none;
   }
 }
 
 .o-advertisement--banner {
-  $width: nth(map-get($adslots, banner), 1);
-  $height: nth(map-get($adslots, banner), 2);
+  $width: list.nth(map.get($adslots, banner), 1);
+  $height: list.nth(map.get($adslots, banner), 2);
 
   .adslot {
     width: $width;
     height: $height;
   }
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     display: none;
   }
 }
 
 .o-advertisement--box {
-  $width: nth(map-get($adslots, box), 1);
-  $height: nth(map-get($adslots, box), 2);
+  $width: list.nth(map.get($adslots, box), 1);
+  $height: list.nth(map.get($adslots, box), 2);
   padding-bottom: 1em;
   .adslot {
     width: $width;
@@ -167,8 +172,8 @@ main.article .o-advertisement--leaderboard {
 
 // Desktop skyscraper ad
 .o-advertisement--skyscraper {
-  $width: nth(map-get($adslots, box), 1);
-  $height: nth(map-get($adslots, box), 2);
+  $width: list.nth(map.get($adslots, box), 1);
+  $height: list.nth(map.get($adslots, box), 2);
 
   display: none;
 
@@ -186,7 +191,7 @@ main.article .o-advertisement--leaderboard {
     }
   }
 
-  @media(min-width: $width + 40) {
+  @media(min-width: ($width + 40)) {
     display: block;
     z-index: -1;
     &.o-advertisement--homepage {
@@ -194,7 +199,7 @@ main.article .o-advertisement--leaderboard {
     }
   }
 
-  @media($bp-larger-than-tablet){
+  @media(variables.$bp-larger-than-tablet){
     &.o-advertisement--homepage {
       display: block;
     }
@@ -223,7 +228,7 @@ main.article .o-advertisement--leaderboard {
   display: flex;
   justify-content: space-around;
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     flex-direction: column;
   }
 }

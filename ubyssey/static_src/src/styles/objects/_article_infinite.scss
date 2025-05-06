@@ -1,13 +1,15 @@
+@use "../modules/variables";
+
 .article--infinitefeed {
     display: flex;
     margin-bottom: 25px;
     padding-top: 10px;
     padding-bottom: 10px;
-    border-top: solid $color-ubyssey-blue;
-    border-bottom: solid $color-ubyssey-blue;
+    border-top: solid variables.$color-ubyssey-blue;
+    border-bottom: solid variables.$color-ubyssey-blue;
     border-width: 2px;
 
-    @media($bp-smaller-than-mobile) {
+    @media(variables.$bp-smaller-than-mobile) {
         flex-direction: column;
     }
 
@@ -28,7 +30,7 @@
     }
 
     .o-article__image {
-        border: solid $color-ubyssey-blue;
+        border: solid variables.$color-ubyssey-blue;
         border-width: 2px;
         display: flex;
         position: relative;
@@ -42,7 +44,7 @@
         padding-left: 20px;
         padding-right: 20px;
 
-        @media($bp-larger-than-mobile) {
+        @media(variables.$bp-larger-than-mobile) {
             width: 65%;
         }
     }
@@ -50,14 +52,14 @@
     .o-article__left {
         padding-bottom: 20px;
 
-        @media($bp-larger-than-mobile) {
+        @media(variables.$bp-larger-than-mobile) {
             width: 35%;
         }
     }
 }
 
 .section_infinitefeed #feed article.article--infinitefeed {
-    @media($bp-smaller-than-desktop) {
+    @media(variables.$bp-smaller-than-desktop) {
         margin-inline: 1em;
     }
     display: block;
@@ -71,7 +73,7 @@
         margin: 1em;
         padding: 0;
         width: 9em;
-        @media($bp-larger-than-phablet) {
+        @media(variables.$bp-larger-than-phablet) {
             width: 12em;
         }
         float: right;

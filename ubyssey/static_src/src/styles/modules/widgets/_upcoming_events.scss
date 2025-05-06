@@ -1,5 +1,6 @@
-@import '../fonts';
-@import '../variables';
+@use "sass:color";
+@use '../fonts';
+@use '../variables';
 
 .c-widget-upcoming-events__featured {
   margin-bottom: 0.625em;
@@ -12,8 +13,8 @@
 
 .c-widget-upcoming-events__events {
   border-radius: 2px;
-  border-top: solid 1px $color-border-gray-light;
-  border-bottom: solid 1px $color-border-gray-light;
+  border-top: solid 1px variables.$color-border-gray-light;
+  border-bottom: solid 1px variables.$color-border-gray-light;
 
   .c-event {
     border-bottom: none;
@@ -30,9 +31,9 @@
   margin-bottom: 0.5em;
 
   // Text
-  font-size: font-size(14);
-  font-weight: $font-weight-semi-bold;
-  color: $color-text-gray-light;
+  font-size: fonts.font-size(14);
+  font-weight: fonts.$font-weight-semi-bold;
+  color: variables.$color-text-gray-light;
 }
 
 .c-widget-upcoming-events__view-all {
@@ -44,7 +45,7 @@
 
   // Border
   border-radius: 1px;
-  border: solid 1px $color-border-gray;
+  border: solid 1px variables.$color-border-gray;
   border-top: 0;
 
   // Display
@@ -52,10 +53,10 @@
   background-color: #f6f6f6;
 
   // Text
-  color: $color-text-gray-light;
+  color: variables.$color-text-gray-light;
   text-align: center;
-  font-size: font-size(12);
-  font-weight: $font-weight-semi-bold;
+  font-size: fonts.font-size(12);
+  font-weight: fonts.$font-weight-semi-bold;
   letter-spacing: 0.045em;
 }
 
@@ -73,7 +74,7 @@
 }
 
 .c-widget-upcoming-events {
-  $button-color: lighten($color-text-gray-light, 10%);
+  $button-color: color.adjust(variables.$color-text-gray-light, $lightness: 10%);
 
   .carousel-button-row {
     margin: 20px 0;

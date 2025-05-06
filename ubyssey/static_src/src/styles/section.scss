@@ -1,45 +1,45 @@
-@import 'modules/core';
-@import 'modules/fonts';
-@import 'modules/font_faces';
-@import 'modules/advertisements';
-@import 'modules/variables';
-@import 'modules/mixins';
+@use 'modules/core';
+@use 'modules/fonts';
+@use 'modules/font_faces';
+@use 'modules/advertisements';
+@use 'modules/variables';
+@use 'modules/mixins';
 
 // Ubyssey site-specific files
-@import 'modules/header';
-@import 'modules/footer';
+@use 'modules/header';
+@use 'modules/footer';
 
-@import 'modules/buttons';
+@use 'modules/buttons';
 
-@import 'modules/darkmode';  
+@use 'modules/darkmode';  
 
-@import 'modules/homepage';
+@use 'modules/homepage';
 
-@import 'modules/search';
+@use 'modules/search';
 
-@import 'objects/timelines';
-@import 'objects/article';
-@import 'objects/article_column';
-@import 'objects/article_infinite';
-@import 'objects/article_headline-top';
-@import 'objects/articles-wrapped';
-@import 'objects/article_promo';
-@import 'objects/article_round-with-borders';
-@import 'objects/article_minimal';
-@import 'objects/landing_stream_blocks';
-@import 'objects/inputs';
-@import 'objects/archive';
+@use 'objects/timelines';
+@use 'objects/article';
+@use 'objects/article_column';
+@use 'objects/article_infinite';
+@use 'objects/article_headline-top';
+@use 'objects/articles-wrapped';
+@use 'objects/article_promo';
+@use 'objects/article_round-with-borders';
+@use 'objects/article_minimal';
+@use 'objects/landing_stream_blocks';
+@use 'objects/inputs';
+@use 'objects/archive';
 
-@import 'components/button';
-@import 'components/adblock-splash';
-@import 'components/cookie-disclaimer';
-@import 'components/replacement';
-@import 'components/section-page';
-@import 'components/suggested-articles';
+@use 'components/button';
+@use 'components/adblock-splash';
+@use 'components/cookie-disclaimer';
+@use 'components/replacement';
+@use 'components/section-page';
+@use 'components/suggested-articles';
 
-@import 'components/page';
-@import 'components/text-input';
-@import 'components/video';
-@import 'components/infinitefeed';
+@use 'components/page';
+@use 'components/text-input';
+@use 'components/video';
+@use 'components/infinitefeed';
 
-@import 'modules/spoof/2025/homepage-promo';
+@use 'modules/spoof/2025/homepage-promo';

@@ -1,5 +1,8 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .c-page {
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     // Structure
     display: flex;
   }
@@ -10,7 +13,7 @@
   margin: 1.5rem 0;
   margin-left: 1em;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     display: flex;
     flex-direction: column;
@@ -25,7 +28,7 @@
   // Structure
   margin: 1.5rem 0;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     display: flex;
     margin: 1.75rem 0;
@@ -42,7 +45,7 @@
   padding: 3rem 0;
 
   // Background
-  background-color: $color-ub-blue-light;
+  background-color: variables.$color-ub-blue-light;
   background-position: center;
   background-repeat: no-repeat;
 
@@ -52,7 +55,7 @@
   .c-page__heading,
   .c-page__sub-heading {
     // Text
-    color: $color-white;
+    color: variables.$color-white;
   }
 
   .c-page__sub-heading {
@@ -60,7 +63,7 @@
     margin-top: 0.75rem;
 
     // Text
-    font-weight: $font-weight-normal;
+    font-weight: fonts.$font-weight-normal;
   }
 }
 
@@ -72,7 +75,7 @@
     width: 100%;
   }
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     padding-right: 1.75rem;
 
@@ -93,7 +96,7 @@
   margin: 0;
 
   // Text
-  font-size: font-size(32);
+  font-size: fonts.font-size(32);
 }
 
 .c-page__sub-heading {
@@ -101,8 +104,8 @@
   margin: 1rem 0 0 0;
 
   // Text
-  font-weight: $font-weight-semi-bold;
-  color: $color-text-black;
+  font-weight: fonts.$font-weight-semi-bold;
+  color: variables.$color-text-black;
 }
 
 .c-page__description {
@@ -110,13 +113,13 @@
   margin: 1rem 0 0 0;
 
   // Text
-  color: $color-text-gray;
+  color: variables.$color-text-gray;
   line-height: 1.45em;
   white-space: pre-wrap;
 
   a {
     // Text
-    color: $color-accent-blue;
+    color: variables.$color-accent-blue;
     font-weight: 600;
 
     &:hover {
@@ -139,7 +142,7 @@
   // Structure
   padding: 1rem 0;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     // Structure
     padding: 1.5rem;
   }
@@ -149,7 +152,7 @@
   // Structure
   flex: 2;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     // Structure
     padding-right: 1.5rem;
   }
@@ -161,7 +164,7 @@
 }
 
 .c-page__sidebar__sticky {
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     // Structure
     position: sticky;
     top: 1.5rem;

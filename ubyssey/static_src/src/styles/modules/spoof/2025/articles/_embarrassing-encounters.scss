@@ -1,3 +1,5 @@
+@use "../base";
+
 article.embarrassing-encounters {
     $embarrassing-pink: #fb3199;
     $embarrassing-orange: #ff8751;
@@ -70,7 +72,7 @@ article.embarrassing-encounters {
         }
     }
 
-    @media ($bp-smaller-than-phablet) {
+    @media (base.$bp-smaller-than-phablet) {
         flex-direction: column;
         border-left: none;
         border-right: none;

@@ -1,6 +1,9 @@
+@use "../../fonts" as fonts2;
+@use "../../variables";
+
 .section-grid-container {
     padding-top:2em;
-    @media($bp-larger-than-tablet) {
+    @media(variables.$bp-larger-than-tablet) {
         padding: 4em;
     }   
     width: 100%;
@@ -19,11 +22,11 @@
                 color: #626262;
             }
 
-            @media($bp-smaller-than-tablet) {
+            @media(variables.$bp-smaller-than-tablet) {
                 flex-direction: column;
             }
             img {
-                @media($bp-smaller-than-tablet) {
+                @media(variables.$bp-smaller-than-tablet) {
                     margin: auto;
                 }   
             }
@@ -34,8 +37,8 @@
                     margin-bottom: auto;
                     padding: 0.5em;
 
-                    font-family: $font-default;
-                    @media($bp-smaller-than-tablet) {
+                    font-family: fonts2.$font-default;
+                    @media(variables.$bp-smaller-than-tablet) {
                         text-align: center;
                         width: 100%;
                     }   

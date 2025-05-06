@@ -1,3 +1,6 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .c-form__section {
   // Structure
   margin-bottom: 2.5rem;
@@ -14,9 +17,9 @@
   margin-bottom: 0.75rem;
 
   // Text
-  font-weight: $font-weight-semi-bold;
-  font-size: font-size(16);
-  color: $color-text-black;
+  font-weight: fonts.$font-weight-semi-bold;
+  font-size: fonts.font-size(16);
+  color: variables.$color-text-black;
 }
 
 .c-form__input > textarea, .c-form__input > input {
@@ -34,13 +37,13 @@
   margin-bottom: 1rem;
 
   // Border
-  border: 1px solid $color-border-gray-light;
+  border: 1px solid variables.$color-border-gray-light;
   border-radius: 2px;
 
   // Text
   font-family: 'ub-lft-etica';
   font-size: 16px;
-  color: $color-text-black;
+  color: variables.$color-text-black;
 
   // Background
   background-color: #dfdfdf;
@@ -62,8 +65,8 @@
   border-radius: 4px;
 
   // Text
-  font-size: font-size(13);
-  color: $color-white;
+  font-size: fonts.font-size(13);
+  color: variables.$color-white;
   text-align: center;
 }
 

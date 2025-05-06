@@ -1,10 +1,13 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .c-info-box {
   // Structure
   display: flex;
   padding: 1rem;
 
   // Border
-  border: solid 1px $color-border-gray;
+  border: solid 1px variables.$color-border-gray;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
   border-radius: 2px;
 }
@@ -14,8 +17,8 @@
   padding-right: 1rem;
 
   // Text
-  font-size: font-size(18);
-  color: $color-text-gray;
+  font-size: fonts.font-size(18);
+  color: variables.$color-text-gray;
 }
 
 .c-info-box__content {
@@ -29,7 +32,7 @@
   margin-bottom: 1rem;
 
   // Text
-  font-size: font-size(14);
-  font-weight: $font-weight-semi-bold;
-  color: $color-text-gray;
+  font-size: fonts.font-size(14);
+  font-weight: fonts.$font-weight-semi-bold;
+  color: variables.$color-text-gray;
 }

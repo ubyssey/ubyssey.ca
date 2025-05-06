@@ -1,5 +1,5 @@
-@import 'modules/variables';
-@import 'modules/fonts';
+@use 'variables';
+@use 'fonts';
 
 // BODY
 
@@ -8,8 +8,8 @@
 }
 
 body {
-  font-family: $font-default;
-  font-size: $font-size-base + px;
+  font-family: fonts.$font-default;
+  font-size: fonts.$font-size-base + px;
   padding: 0;
   margin: 0;
 
@@ -46,7 +46,7 @@ body {
   padding-left: 15px;
   padding-right: 15px;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     padding-left: 20px;
     padding-right: 20px;
   }
@@ -63,7 +63,7 @@ body {
 }
 
 
-@media($bp-larger-than-phablet){
+@media(variables.$bp-larger-than-phablet){
   div.table-row {
     display: table;
     div.cell {
@@ -97,7 +97,7 @@ main {
     float: none;
   }
 
-  @media($bp-larger-than-mobile){
+  @media(variables.$bp-larger-than-mobile){
     > .left.stack-mobile {
       float: left;
     }
@@ -166,12 +166,12 @@ main {
 /* close commented backslash hack */
 
 .hide-desktop {
-  @media($bp-larger-than-phablet){
+  @media(variables.$bp-larger-than-phablet){
     display: none !important;
   }
 }
 .hide-mobile {
-  @media($bp-smaller-than-phablet){
+  @media(variables.$bp-smaller-than-phablet){
     display: none !important;
   }
 }
@@ -243,7 +243,7 @@ html[color-css-theme="light"] {
   --text_color: #1b1b1b;
   --header_color: black;
   --article_info: #777777;
-  --article_caption: #{$color-ubyssey-blue-dark-3};
+  --article_caption: #{variables.$color-ubyssey-blue-dark-3};
   --authors-title-bio: #1B1B1B;
   --archive-text: #4e4e4e;
   --article-publish: #2B2B2B;
@@ -268,7 +268,7 @@ html[color-css-theme="dark"] {
   --archive-text: #BFBFBF;
   --article-publish: #BFBFBF;
   --pagination: #BFBFBF;
-  --light-border: #{$color-ubyssey-blue-light};
+  --light-border: #{variables.$color-ubyssey-blue-light};
 }
 
 body, html, #page-wrapper {
@@ -333,7 +333,7 @@ span.credit {
   margin-left: 0.5em;
   font-style: italic;
   font-size: 0.9em;
-  color: $color-ubyssey-blue;
+  color: variables.$color-ubyssey-blue;
 }
 
 img.slide-image {
@@ -342,7 +342,7 @@ img.slide-image {
 
 div.navigation {
     color: white;
-    font-family: $font-secondary;
+    font-family: fonts.$font-secondary;
     font-size: 13px;
     text-align: center;
 }
@@ -376,7 +376,7 @@ a.image {
   img {
     display: block;
   }
-  @media($bp-larger-than-phablet){
+  @media(variables.$bp-larger-than-phablet){
     margin-bottom: 0;
   }
 }

@@ -1,3 +1,5 @@
+@use "../../fonts";
+
 
 @font-face {
 	font-family:'radley';
@@ -17,9 +19,9 @@
 	unicode-range: U+0020-25CA;
 }
 
-$font-default: futura-pt, sans-serif; 
+fonts.$font-default: futura-pt, sans-serif; 
 
-$font-secondary: radley, serif; 
+fonts.$font-secondary: radley, serif; 
 
 $header-font: futura-pt, sans-serif; 
 $header-weight-regular: 400;

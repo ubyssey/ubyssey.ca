@@ -1,3 +1,5 @@
+@use "../../fonts";
+
 
 @font-face {
 	font-family:'rasa';
@@ -17,9 +19,9 @@
 	unicode-range: U+0020-25CA;
 }
 
-$font-default: rasa, serif; 
+fonts.$font-default: rasa, serif; 
 
-$font-secondary: minion-pro, serif; 
+fonts.$font-secondary: minion-pro, serif; 
 
 $header-font: kepler-std-condensed-subhead, serif; 
 $header-weight-regular: 400;

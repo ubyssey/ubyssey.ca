@@ -1,27 +1,27 @@
-@import 'modules/_variables.scss';
-@import 'modules/_fonts.scss';
+@use 'modules/_variables.scss';
+@use 'modules/_fonts.scss' as fonts2;
 
-@import 'modules/spoof/2024/fonts';
+@use 'modules/spoof/2024/fonts';
 
-@import 'modules/spoof/2024/objects';
-@import 'modules/magazine/2023/card';
+@use 'modules/spoof/2024/objects';
+@use 'modules/magazine/2023/card';
 
-@import 'modules/magazine/2023/banner';
+@use 'modules/magazine/2023/banner';
 
-@import 'modules/spoof/2024/footer';
-@import 'modules/magazine/2023/header';
-@import 'modules/magazine/2023/article-box';
+@use 'modules/spoof/2024/footer';
+@use 'modules/magazine/2023/header';
+@use 'modules/magazine/2023/article-box';
 
-@import 'modules/magazine/2023/homepage';
-@import 'modules/spoof/2024/article';
+@use 'modules/magazine/2023/homepage';
+@use 'modules/spoof/2024/article';
 
-@import 'modules/spoof/2024/spoofcard';
-@import 'modules/spoof/2024/spoofcarousel';
-@import 'modules/spoof/2024/spoofstreams';
+@use 'modules/spoof/2024/spoofcard';
+@use 'modules/spoof/2024/spoofcarousel';
+@use 'modules/spoof/2024/spoofstreams';
 
 body {
   color: black;
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
 }
 
 
@@ -78,7 +78,7 @@ dialog {
 }
 
 .c-header a{
-  font-family: $header-font;
+  font-family: fonts.$header-font;
 
 }
 

@@ -1,3 +1,6 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 article.headline-top-articles {
     .o-article__left {
       margin-bottom: 1em;
@@ -23,12 +26,12 @@ article.headline-top-articles {
     }
     .o-article__published {
         margin-right: 0.5em;
-        color: $color-ubyssey-blue;
+        color: variables.$color-ubyssey-blue;
         font-weight: 600;
     }
     h2 {
         margin-block: 0.5em;
-        font-family: $font-headline;
+        font-family: fonts.$font-headline;
         font-size: 2.5em;
         line-height: 1.25em;
     }
@@ -54,7 +57,7 @@ article.headline-top-articles {
         margin-block: 0.25em;
         font-size: 1.5em;
         a {
-            color: $color-ubyssey-blue;
+            color: variables.$color-ubyssey-blue;
             &:hover {
             text-decoration: underline;
             }
@@ -69,10 +72,10 @@ article.headline-top-articles {
         }
     }
 
-    @media($bp-smaller-than-desktop) {
+    @media(variables.$bp-smaller-than-desktop) {
         padding-inline: 1em;   
     }
-    @media($bp-smaller-than-phablet) { 
+    @media(variables.$bp-smaller-than-phablet) { 
         padding-inline: 0;
         h2, .above-headline {
             margin-inline: 15px;

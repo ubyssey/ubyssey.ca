@@ -1,5 +1,5 @@
-@import 'fonts';
-@import 'modules/variables';
+@use 'fonts';
+@use 'variables';
 
 img.featured {
   width: 100%;
@@ -12,7 +12,7 @@ h2.title,
 h2.block-title {
   font-weight: 700;
   text-align: center;
-  font-family: $font-secondary;
+  font-family: fonts.$font-secondary;
   text-transform: uppercase;
   font-size: 1.125em;
   margin-top: 0;
@@ -28,9 +28,9 @@ html.hairlines {
   }
 }
 
-@media($bp-larger-than-phablet) {
+@media(variables.$bp-larger-than-phablet) {
   h1.section {
-    font-family: $font-secondary;
+    font-family: fonts.$font-secondary;
     font-size: 26px;
     color: white;
     letter-spacing: 1px;
@@ -61,7 +61,7 @@ html.hairlines {
 [color-css-theme="dark"] {
 
   h1.section {
-    color: $color-ubyssey-blue
+    color: variables.$color-ubyssey-blue
   }
 }
 
@@ -95,7 +95,7 @@ html.hairlines {
   background-color: green;
 }
 
-@media($bp-larger-than-phablet) {
+@media(variables.$bp-larger-than-phablet) {
   ol.article-list {
     padding: 0;
   }
@@ -123,10 +123,10 @@ html.hairlines {
   padding: 10px;
 
   .boxLabel {
-    --boxPrimary: #{$color-ubyssey-blue-dark-3};
+    --boxPrimary: #{variables.$color-ubyssey-blue-dark-3};
     --boxSecondary: none;
     --boxTextLeft: white;
-    --boxTextRight: #{$color-ubyssey-blue-dark};
+    --boxTextRight: #{variables.$color-ubyssey-blue-dark};
   }
 
   @media only screen and (min-width: 900px) {
@@ -140,7 +140,7 @@ html.hairlines {
 
 [color-css-theme="dark"] { 
   .home-featured .home-top-article-list .boxLabel {
-    --boxPrimary: #{$color-ubyssey-blue-dark};
+    --boxPrimary: #{variables.$color-ubyssey-blue-dark};
   }
 }
 
@@ -158,7 +158,7 @@ html.hairlines {
   margin: auto;
   padding: 1em;
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     padding: 20px;
   }
 }
@@ -167,7 +167,7 @@ html.hairlines {
   width: 50%;
   margin: auto auto auto 0;
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     width: 100%;
   }
 
@@ -201,7 +201,7 @@ html.hairlines {
   max-width: 40%;
   box-sizing: border-box;
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     width: 100%;
     max-width: none;
     padding: 1em;
@@ -209,14 +209,14 @@ html.hairlines {
 }
 
 .c-homepage__section__bullets {
-  color: $color-ubyssey-blue;
+  color: variables.$color-ubyssey-blue;
 }
 
 .c-homepage__sections {
   width: 100%;
   padding-bottom: 3em;
 
-  @media ($bp-larger-than-tablet) {
+  @media (variables.$bp-larger-than-tablet) {
       margin-right: 20px;
       width: 50%;
       padding-right: 20px;
@@ -240,7 +240,7 @@ html.hairlines {
   // Structure
   padding-bottom: 1.5rem;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     margin-top: 2rem;
     margin-bottom: 5rem;
@@ -251,8 +251,8 @@ html.hairlines {
 
   .home_link_content {
     li {
-      color: $color-ubyssey-blue-light;
-      background-color: $color-ubyssey-blue-dark;
+      color: variables.$color-ubyssey-blue-light;
+      background-color: variables.$color-ubyssey-blue-dark;
 
       a:hover {
         color: white;
@@ -262,7 +262,7 @@ html.hairlines {
 
   .c-homepage__section {
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       margin-top: 1rem;
       margin-bottom: 4rem;
       border-bottom: solid;
@@ -277,8 +277,8 @@ html.hairlines {
 
   .home_link_content {
     li {
-      color: $color-ubyssey-blue-dark;
-      background-color: $color-ubyssey-blue-light;
+      color: variables.$color-ubyssey-blue-dark;
+      background-color: variables.$color-ubyssey-blue-light;
     }
   }
 }
@@ -289,10 +289,10 @@ html.hairlines {
   margin-bottom: 3em;
   position: relative;
   &.darkmode {
-    background-color: $color-ubyssey-blue-dark-2;
+    background-color: variables.$color-ubyssey-blue-dark-2;
   }
   &.lightmode {
-    background-color: $color-ubyssey-blue-light;
+    background-color: variables.$color-ubyssey-blue-light;
   }
 
   padding-left: 20px;
@@ -312,7 +312,7 @@ html.hairlines {
 .home_infinitefeed_cutoff_seemore {
   display: block;
   border-radius: 10px;
-  background-color: $color-ubyssey-blue-light;
+  background-color: variables.$color-ubyssey-blue-light;
   cursor: pointer;
   text-align: center;
   padding: 5px;

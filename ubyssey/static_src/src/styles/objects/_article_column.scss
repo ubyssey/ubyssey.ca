@@ -1,4 +1,5 @@
-@import 'modules/variables';
+@use '../modules/variables';
+@use "../modules/fonts";
 
 // Article column
 
@@ -10,7 +11,7 @@
 
 .o-article--column {
     margin-bottom: 1rem;
-    background-color: $color-ubyssey-blue;
+    background-color: variables.$color-ubyssey-blue;
     position: relative;
     left: 0;
     transition-duration: 0.2s;
@@ -64,7 +65,7 @@
 
 
 .o-article--column-latest {
-    background-color: $color-ubyssey-blue-light;
+    background-color: variables.$color-ubyssey-blue-light;
 
     .o-article__meta__image .o-article__image {
         width: 5em;
@@ -94,7 +95,7 @@
     }
 }
 
-@media ($bp-larger-than-phablet) {
+@media (variables.$bp-larger-than-phablet) {
 article.left-right-desktop {
     display: flex;
     flex-direction: row;
@@ -118,7 +119,7 @@ article.pubdate-bottom {
     }
     p.o-article__snippet {
         margin-block: 1em;
-        font-family: $font-body;
+        font-family: fonts.$font-body;
         font-size: 1em;
     }
     .o-article__meta {

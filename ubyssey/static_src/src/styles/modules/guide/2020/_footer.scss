@@ -1,8 +1,10 @@
+@use "../../variables";
+
 .c-footer {
   display: flex;
   padding-top: 3%;
   .o-logo--small{
-    @media ($bp-smaller-than-mobile) {
+    @media (variables.$bp-smaller-than-mobile) {
       display: none;
     }
   }
@@ -42,7 +44,7 @@
 .c-nav-footer {
   margin-top: 30px;
   display: flex;
-  @media ($bp-smaller-than-mobile) {
+  @media (variables.$bp-smaller-than-mobile) {
     display: block;
   }
   flex-wrap: wrap;
@@ -53,7 +55,7 @@
   flex-basis: 50%;
   margin-bottom: 30px;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     flex: 1;
     width: 20%;
     flex-basis: auto;
@@ -63,15 +65,15 @@
   h2 {
     font-size: 1rem;
     font-weight: bold;
-    color: $color-white;
+    color: variables.$color-white;
     letter-spacing: 0.45px;
     line-height: 1.4rem;
     text-transform: uppercase;
     margin-bottom: 5px;
-    @media ($bp-smaller-than-mobile) {
+    @media (variables.$bp-smaller-than-mobile) {
       font-size: 1.4em;
     }
-    @media ($bp-smaller-than-tablet) {
+    @media (variables.$bp-smaller-than-tablet) {
       font-size: 1.2em;
     }
   }
@@ -80,14 +82,14 @@
     line-height: 1.2em;
     padding: 0 10px;
     text-transform: lowercase;
-    @media ($bp-smaller-than-mobile) {
+    @media (variables.$bp-smaller-than-mobile) {
       font-size: 1.7em;
     }
-    @media ($bp-smaller-than-tablet) {
+    @media (variables.$bp-smaller-than-tablet) {
       font-size: 1.3em;
     }
     a {
-      color: $color-white;
+      color: variables.$color-white;
       text-decoration: none;
       font-size: 0.8em;
 
@@ -97,7 +99,7 @@
     }
   }
 
-  @media($bp-smaller-than-mobile) {
+  @media(variables.$bp-smaller-than-mobile) {
     &#footer-{
       &academics,&vancouver,&adulting,&sdp,&ubc{
         display: none;

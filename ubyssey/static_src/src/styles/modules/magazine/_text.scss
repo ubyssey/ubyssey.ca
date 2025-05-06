@@ -1,3 +1,7 @@
+@use "2017/colors";
+
+@use "sass:math";
+
 $font-default: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 $font-secondary: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 $font-serif: Georgia;
@@ -5,14 +9,14 @@ $font-serif: Georgia;
 $font-size-base: 16;
 
 @function font-size($size) {
-  $scaled-size: ($size / $font-size-base) + em;
+  $scaled-size: math.div($size, $font-size-base) + em;
   @return $scaled-size;
 }
 
 body {
   font-family: $font-default;
   font-size: $font-size-base + px;
-  color: $color-text-black;
+  color: colors.$color-text-black;
 
   -webkit-font-smoothing: antialiased;
 }
@@ -31,6 +35,6 @@ h1, h3, h3, h4 {
 	color: inherit;
 
 	&:hover {
-		color: $color-primary-1;
+		color: colors.$color-primary-1;
 	}
 }

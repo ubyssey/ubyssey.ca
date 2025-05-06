@@ -1,3 +1,5 @@
+@use "../base";
+
 article.study-budy {
     $study-budy-pink: #fb3199;
     $study-budy-yellow: #ffeb3d;
@@ -22,7 +24,7 @@ article.study-budy {
     .note {
         padding: 1em;
         max-width: 500px;
-        background: linear-gradient($glm-yellow, $study-budy-yellow);
+        background: linear-gradient(base.$glm-yellow, $study-budy-yellow);
         filter: drop-shadow(0 0 1em black);
         font-family: "playpen-sans",sans-serif;
         
@@ -183,7 +185,7 @@ article.study-budy {
         }
     }
 
-    @media ($bp-smaller-than-phablet) {
+    @media (base.$bp-smaller-than-phablet) {
         h2 {
             margin-top: 150px;
         }

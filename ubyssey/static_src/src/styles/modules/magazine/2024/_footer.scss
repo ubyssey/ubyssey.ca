@@ -1,13 +1,16 @@
+@use "../../variables";
+@use "fonts";
+
 .c-nav-footer {
   padding-top: 4rem;
   display: flex;
-  @media ($bp-smaller-than-mobile) {
+  @media (variables.$bp-smaller-than-mobile) {
     display: block;
   }
   flex-wrap: wrap;
   align-items: stretch;
   background-color:#41475F;
-  font-family: $text-font;
+  font-family: fonts.$text-font;
   * {
     color:#E8B131;
     text-decoration: none;
@@ -18,7 +21,7 @@
   }
 
   .c-footer__self-link {
-    font-family: $header-font;
+    font-family: fonts.$header-font;
     h1 {
       font-size: 6rem;
     }
@@ -37,16 +40,16 @@
 
   h3 {
     font-size: 1rem;
-    font-weight: $text-weight-bold;
+    font-weight: fonts.$text-weight-bold;
   
-    @media ($bp-larger-than-phablet) {
+    @media (variables.$bp-larger-than-phablet) {
       font-size: 1.5rem;
     }
   }
 
   p {
     font-size: 0.625em;
-    font-weight: $text-weight;
+    font-weight: fonts.$text-weight;
     text-align: center;
   }
 

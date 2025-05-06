@@ -1,7 +1,9 @@
+@use "../../variables";
+
 .c-nav-footer {
     margin-top: 30px;
     display: flex;
-    @media ($bp-smaller-than-mobile) {
+    @media (variables.$bp-smaller-than-mobile) {
       display: block;
     }
     flex-wrap: wrap;

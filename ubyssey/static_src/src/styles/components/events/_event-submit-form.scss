@@ -1,3 +1,6 @@
+@use "../../modules/fonts";
+@use "../../modules/variables";
+
 .c-url-err-message {
   // Structure
   margin-bottom: 2.5rem;
@@ -13,8 +16,8 @@
   border-radius: 4px 4px 0 0;
 
   // Text
-  color: $color-white;
-  font-size: font-size(16);
+  color: variables.$color-white;
+  font-size: fonts.font-size(16);
 }
 
 .c-url-err-message__body {
@@ -22,7 +25,7 @@
   padding: 1rem;
 
   // Border
-  border: 1px solid $color-border-gray;
+  border: 1px solid variables.$color-border-gray;
   border-radius: 0 0 4px 4px;
 }
 

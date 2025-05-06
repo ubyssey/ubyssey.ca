@@ -1,74 +1,74 @@
-@import 'modules/core';
-@import 'modules/grid';
-@import 'modules/fonts';
-@import 'modules/font_faces';
-@import 'modules/advertisements';
-@import 'modules/variables';
-@import 'modules/mixins';
-@import 'modules/utilities';
+@use 'modules/core';
+@use 'modules/grid';
+@use 'modules/fonts';
+@use 'modules/font_faces';
+@use 'modules/advertisements';
+@use 'modules/variables';
+@use 'modules/mixins';
+@use 'modules/utilities';
 
 // Ubyssey site-specific files
 
-@import 'modules/header';
-@import 'modules/footer';
+@use 'modules/header';
+@use 'modules/footer';
 
-@import 'modules/headlines';
-@import 'modules/buttons';
+@use 'modules/headlines';
+@use 'modules/buttons';
 
-@import 'modules/darkmode';  
+@use 'modules/darkmode';  
 
-@import 'modules/homepage';
+@use 'modules/homepage';
 
-@import 'modules/article/base';
-@import 'modules/article/embeds';
-@import 'modules/article/comments_bar';
-@import 'modules/article/gallery';
-@import 'modules/article/full_width';
-@import 'modules/article/sidebar';
-@import 'modules/article/special_page.scss';
-@import 'modules/social';
-@import 'modules/search';
+@use 'modules/article/base';
+@use 'modules/article/embeds';
+@use 'modules/article/comments_bar';
+@use 'modules/article/gallery';
+@use 'modules/article/full_width';
+@use 'modules/article/sidebar';
+@use 'modules/article/special_page.scss';
+@use 'modules/social';
+@use 'modules/search';
 
-@import 'objects/article';
-@import 'objects/inputs';
-@import 'objects/archive';
-@import 'objects/bottom_banner';
+@use 'objects/article';
+@use 'objects/inputs';
+@use 'objects/archive';
+@use 'objects/bottom_banner';
 
-@import 'components/adblock-splash';
-@import 'components/author-page';
-@import 'components/button';
-@import 'components/cookie-disclaimer';
-@import 'components/elections-sidebar';
-@import 'components/replacement';
-@import 'components/section-page';
-@import 'components/suggested-articles';
-@import 'components/form';
-@import 'components/header-banner';
-@import 'components/heading';
-@import 'components/info-box';
-@import 'components/input-group';
-@import 'components/page';
-@import 'components/paragraph';
-@import 'components/text-input';
-@import 'components/video';
-@import 'components/loading';
-@import 'components/infinitefeed';
+@use 'components/adblock-splash';
+@use 'components/author-page';
+@use 'components/button';
+@use 'components/cookie-disclaimer';
+@use 'components/elections-sidebar';
+@use 'components/replacement';
+@use 'components/section-page';
+@use 'components/suggested-articles';
+@use 'components/form';
+@use 'components/header-banner';
+@use 'components/heading';
+@use 'components/info-box';
+@use 'components/input-group';
+@use 'components/page';
+@use 'components/paragraph';
+@use 'components/text-input';
+@use 'components/video';
+@use 'components/loading';
+@use 'components/infinitefeed';
 
-@import 'components/events/calendar';
-@import 'components/events/event-submit-form';
-@import 'components/events/event-submit-landing';
-@import 'components/events/related-events';
-@import 'components/timeline';
-@import 'components/nationals';
+@use 'components/events/calendar';
+@use 'components/events/event-submit-form';
+@use 'components/events/event-submit-landing';
+@use 'components/events/related-events';
+@use 'components/timeline';
+@use 'components/nationals';
 
-@import 'modules/events/calendar';
-@import 'modules/events/event';
-@import 'modules/events/date_box';
+@use 'modules/events/calendar' as calendar2;
+@use 'modules/events/event';
+@use 'modules/events/date_box';
 
-@import 'modules/widgets/event';
-@import 'modules/widgets/upcoming_events';
-@import 'modules/widgets/upcoming_events_horizontal';
-@import 'modules/widgets/facebook_video_big';
-@import 'modules/widgets/banner';
-@import 'modules/widgets/weekly-events';
-@import 'modules/widgets/twitter';
+@use 'modules/widgets/event' as event2;
+@use 'modules/widgets/upcoming_events';
+@use 'modules/widgets/upcoming_events_horizontal';
+@use 'modules/widgets/facebook_video_big';
+@use 'modules/widgets/banner';
+@use 'modules/widgets/weekly-events';
+@use 'modules/widgets/twitter';

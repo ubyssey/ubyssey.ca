@@ -1,3 +1,6 @@
+@use "2019-2020/colors";
+@use "utilities";
+
 .o-article-box {
   // Structure
   flex: 1;
@@ -7,36 +10,36 @@
   margin-bottom: 1.5rem;
 
   // Background
-  background-color: $color-primary-1;
+  background-color: colors.$color-primary-1;
   background-size: cover;
   background-position: center;
 
   &--green {
-    background-color: $color-primary-2;
+    background-color: colors.$color-primary-2;
   }
 
   &--blue {
-    background-color: $color-primary-3;
+    background-color: colors.$color-primary-3;
   }
 
   &.comesAround {
-    background-color: $color-primary-1;
+    background-color: colors.$color-primary-1;
     & > h2 {
-      background: $color-primary-1;
+      background: colors.$color-primary-1;
     }
   }
 
   &.waysForward {
-    background-color: $color-primary-2;
+    background-color: colors.$color-primary-2;
     & > h2 {
-      background: $color-primary-2;
+      background: colors.$color-primary-2;
     }
   }
 
   &.goesAround {
-    background-color: $color-primary-3;
+    background-color: colors.$color-primary-3;
     & > h2 {
-      background: $color-primary-3;
+      background: colors.$color-primary-3;
     }
   }
 
@@ -49,7 +52,7 @@
     opacity: 0.75;
   }
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     margin-bottom: 0;
     height: 20rem;
@@ -108,13 +111,13 @@
 }
 
 .o-article-box--green > h2 {
-  background: $color-primary-2;
+  background: colors.$color-primary-2;
 }
 
 .o-article-box--pink > h2 {
-  background: $color-primary-1;
+  background: colors.$color-primary-1;
 }
 
 .o-article-box--blue > h2 {
-  background: $color-primary-3;
+  background: colors.$color-primary-3;
 }

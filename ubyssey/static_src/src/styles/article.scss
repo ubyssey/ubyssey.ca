@@ -1,35 +1,35 @@
-@import 'modules/core';
-@import 'modules/fonts';
-@import 'modules/font_faces';
-@import 'modules/advertisements';
-@import 'modules/variables';
-@import 'modules/mixins';
+@use 'modules/core';
+@use 'modules/fonts';
+@use 'modules/font_faces';
+@use 'modules/advertisements';
+@use 'modules/variables';
+@use 'modules/mixins';
 
 // Ubyssey site-specific files
-@import 'modules/header';
-@import 'modules/footer';
+@use 'modules/header';
+@use 'modules/footer';
 
-@import 'modules/headlines';
-@import 'modules/buttons';
-@import 'modules/darkmode';
+@use 'modules/headlines';
+@use 'modules/buttons';
+@use 'modules/darkmode';
 
-@import 'modules/article/base';
-@import 'modules/article/author_card';
-@import 'modules/article/embeds';
-@import 'modules/article/full_width';
-@import 'modules/article/banner';
-@import 'modules/article/sidebar';
-@import 'modules/article/special_page.scss';
-@import 'modules/article/visual_essay';
-@import 'modules/article/personality_quiz';
+@use 'modules/article/base';
+@use 'modules/article/author_card';
+@use 'modules/article/embeds';
+@use 'modules/article/full_width';
+@use 'modules/article/banner';
+@use 'modules/article/sidebar';
+@use 'modules/article/special_page.scss';
+@use 'modules/article/visual_essay';
+@use 'modules/article/personality_quiz';
 
-@import 'objects/article';
-@import 'objects/archive';
-@import 'objects/article_suggested';
+@use 'objects/article';
+@use 'objects/archive';
+@use 'objects/article_suggested';
 
-@import 'components/adblock-splash';
-@import 'components/cookie-disclaimer';
-@import 'components/replacement';
+@use 'components/adblock-splash';
+@use 'components/cookie-disclaimer';
+@use 'components/replacement';
 
-@import 'modules/widgets/facebook_video_big';
-@import 'modules/widgets/twitter';
+@use 'modules/widgets/facebook_video_big';
+@use 'modules/widgets/twitter';

@@ -1,9 +1,12 @@
+@use "../fonts";
+@use "../variables";
+
 .c-event {
   // Background
-  background: $color-white;
+  background: variables.$color-white;
 
   // Text
-  font-family: $font-default;
+  font-family: fonts.$font-default;
 }
 
 .c-event__image {
@@ -42,27 +45,27 @@
   margin-top: 0;
 
   // Text
-  font-size: font-size(16);
-  font-weight: $font-weight-semi-bold;
+  font-size: fonts.font-size(16);
+  font-weight: fonts.$font-weight-semi-bold;
 }
 
 .c-event__time,
 .c-event__location {
   // Text
-  font-size: font-size(13);
-  color: $color-text-gray;
+  font-size: fonts.font-size(13);
+  color: variables.$color-text-gray;
 }
 
 .c-event__time {
   // Text
-  font-weight: $font-weight-semi-bold;
+  font-weight: fonts.$font-weight-semi-bold;
 }
 
 // EventBox
 .c-event--box {
   display: block;
   // Border
-  border: solid 1px $color-border-gray;
+  border: solid 1px variables.$color-border-gray;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
   border-radius: 2px;
 
@@ -101,13 +104,13 @@
     margin-bottom: 0.5rem;
 
     // Text
-    font-size: font-size(24);
+    font-size: fonts.font-size(24);
   }
 
   .c-event__time,
   .c-event__location {
     // Text
-    font-size: font-size(16);
+    font-size: fonts.font-size(16);
   }
 
   .c-event__buttons {
@@ -120,7 +123,7 @@
     }
   }
 
-  @media($bp-larger-than-mobile) {
+  @media(variables.$bp-larger-than-mobile) {
     .c-event__meta {
       // Structure
       margin-top: 1.5rem;
@@ -151,7 +154,7 @@
 
   .c-event__title {
     // Text
-    font-size: font-size(14);
+    font-size: fonts.font-size(14);
     line-height: 1.4em;
   }
 

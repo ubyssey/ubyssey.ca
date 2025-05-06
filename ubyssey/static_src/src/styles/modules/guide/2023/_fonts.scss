@@ -1,3 +1,5 @@
+@use "../2020/fonts";
+
 @font-face {
 	font-family:'lora';
 	src: 
@@ -58,26 +60,26 @@
 	unicode-range: U+0020-25CA;
 }
 
-$font-default: 'spartan', sans-serif;
-$font-secondary: 'lora', sans-serif;
+fonts.fonts.$font-default: 'spartan', sans-serif;
+fonts.fonts.$font-secondary: 'lora', sans-serif;
 
-$header-font: 'spartan', sans-serif;
+fonts.fonts.$header-font: 'spartan', sans-serif;
 $header-weight-regular: 400;
-$header-weight: 500;
-$header-size: 3.1rem;
+fonts.fonts.$header-weight: 500;
+fonts.fonts.$header-size: 3.1rem;
 
-$text-font: 'lora', sans-serif;
+fonts.fonts.$text-font: 'lora', sans-serif;
 $text-weight: 400;
 $text-weight-bold: 500;
-$text-size: 1rem;
+fonts.fonts.$text-size: 1rem;
 
-$quote-font: 'spartan', sans-serif;
-$quote-size: 1.3rem;
-$quote-weight: 400;
+fonts.fonts.$quote-font: 'spartan', sans-serif;
+fonts.fonts.$quote-size: 1.3rem;
+fonts.fonts.$quote-weight: 400;
 
-$credit-font: 'lora', sans-serif;
-$credit-style: italic;
-$credit-size: 1rem;
+fonts.fonts.$credit-font: 'lora', sans-serif;
+fonts.fonts.$credit-style: italic;
+fonts.fonts.$credit-size: 1rem;
 
-$accent-font: 'spartan', sans-serif;
-$accent-size: 1.3rem;
+fonts.fonts.$accent-font: 'spartan', sans-serif;
+fonts.fonts.$accent-size: 1.3rem;

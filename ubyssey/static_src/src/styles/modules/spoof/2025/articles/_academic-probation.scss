@@ -1,3 +1,5 @@
+@use "../base";
+
 article.academic-probation {
     $probation-pink: #f0c9e2;
     $probation-hotpink: #f0f;
@@ -52,7 +54,7 @@ article.academic-probation {
         line-height: 1.5em;
     }
 
-    @media ($bp-smaller-than-phablet) { 
+    @media (base.$bp-smaller-than-phablet) { 
         border-image-width: 150px;
         .flex-container .right {
             margin-bottom: 150px;

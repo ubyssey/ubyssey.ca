@@ -1,44 +1,44 @@
-@import 'modules/reset';
-@import 'modules/_variables.scss';
+@use 'modules/reset';
+@use 'modules/_variables.scss';
 
-@import 'modules/article/embeds';
-@import 'modules/advertisements';
+@use 'modules/article/embeds';
+@use 'modules/advertisements';
 
-@import 'modules/guide/2020/fonts';
-@import 'modules/guide/2020/colors';
-@import 'modules/guide/2023/fonts';
+@use 'modules/guide/2020/fonts';
+@use 'modules/guide/2020/colors';
+@use 'modules/guide/2023/fonts' as fonts2;
 
-@import 'modules/guide/2020/base';
-@import 'modules/guide/2020/objects';
-@import 'modules/guide/2020/banner';
-@import 'modules/guide/2020/footer';
+@use 'modules/guide/2020/base';
+@use 'modules/guide/2020/objects';
+@use 'modules/guide/2020/banner';
+@use 'modules/guide/2020/footer';
 
-@import 'modules/guide/2020/header';
+@use 'modules/guide/2020/header';
 // Pages
-@import 'modules/guide/2020/homepage';
-@import 'modules/guide/2020/article';
-@import 'modules/guide/2020/section';
+@use 'modules/guide/2020/homepage';
+@use 'modules/guide/2020/article';
+@use 'modules/guide/2020/section';
 
-@import 'modules/guide/2022/objects';
+@use 'modules/guide/2022/objects' as objects2;
 
-@import 'modules/guide/2022/banner';
+@use 'modules/guide/2022/banner' as banner2;
 
-@import 'modules/guide/2022/footer';
-@import 'modules/guide/2023/footer';
+@use 'modules/guide/2022/footer' as footer2;
+@use 'modules/guide/2023/footer' as footer3;
 
-@import 'modules/guide/2022/header';
-@import 'modules/guide/2023/article-box';
-
-
-@import 'modules/guide/2022/homepage';
-@import 'modules/guide/2022/article';
-@import 'modules/guide/2023/article';
-
-@import 'modules/guide/2022/section';
-
-@import 'modules/guide/2023/nav';
-@import 'modules/guide/2023/advertisements';
+@use 'modules/guide/2022/header' as header2;
+@use 'modules/guide/2023/article-box';
 
 
-@import 'modules/article/visual_essay';
-@import 'modules/guide/2024/article';
+@use 'modules/guide/2022/homepage' as homepage2;
+@use 'modules/guide/2022/article' as article2;
+@use 'modules/guide/2023/article' as article3;
+
+@use 'modules/guide/2022/section' as section2;
+
+@use 'modules/guide/2023/nav';
+@use 'modules/guide/2023/advertisements' as advertisements2;
+
+
+@use 'modules/article/visual_essay';
+@use 'modules/guide/2024/article' as article4;

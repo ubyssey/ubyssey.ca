@@ -1,3 +1,7 @@
+@use "../../fonts" as fonts2;
+@use "../../variables";
+@use "fonts";
+
 #content-wrapper {
   margin-top: 4em;
 }
@@ -21,12 +25,12 @@
   display: flex;
   border-bottom: 1px solid rgb(236, 236, 236);
   
-  @media ($bp-smaller-than-mobile) {
+  @media (variables.$bp-smaller-than-mobile) {
     margin-bottom: 1em;
     flex-direction: column;
   }
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     .left {
       width: 50%;
     }
@@ -51,7 +55,7 @@
   color: rgb(102, 102, 102);
   font-size: 13px;
   font-weight: 600;
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   text-align: center;
 }
 
@@ -62,15 +66,15 @@
   
   color: black;
   text-align: center;
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   font-size: 48px;
   line-height: 1.16667em;
   font-weight: 600;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     width: auto;
   }
-  @media ($bp-smaller-than-mobile) {
+  @media (variables.$bp-smaller-than-mobile) {
     font-size: 3rem;
     line-height: 3rem;
   }
@@ -97,7 +101,7 @@
   padding: 0.5rem;
 
   letter-spacing: 0.125em;
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 600;
@@ -107,7 +111,7 @@
   display: block;
 
   text-align: center;
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   line-height: 0.5em;
   * {
     color: black;
@@ -122,7 +126,7 @@
 }
 
 .byline {
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   font-size: 12px;
   text-transform: uppercase;
   font-weight: 600;
@@ -130,7 +134,7 @@
 }
 
 .pubdate {
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   font-size: 13px;
   font-weight: 500;
 }
@@ -144,19 +148,19 @@
   img {
     width: 100%;
     height: auto;
-    @media($bp-smaller-than-desktop) {
+    @media(variables.$bp-smaller-than-desktop) {
       width: 100%;
     }
   }
   .caption {
     text-align: left;
     margin-left: 6em;
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
       margin: auto;
       padding: 0.5em 2em 3em 2em;
     }
     color:black;
-    font-family: $font-default;
+    font-family: fonts2.$font-default;
   }
 }
 
@@ -167,18 +171,18 @@
   
   font-size: 15px;
   font-weight: 600;
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   text-align: center;
 }
 
 .c-article__content {  
   color: black;
-  font-family: $text-font;
+  font-family: fonts.$text-font;
   // margin: 50%;
   // margin: auto;
   h1, h2, h3, h4 {
     text-align: left;
-    font-family: $header-font;
+    font-family: fonts.$header-font;
     font-weight: 600;
     line-height: 1.6rem;
     margin-bottom: 0.5em;
@@ -207,8 +211,8 @@
   }
 
   > p, ul {
-    font-family: $text-font;
-    font-size: $text-size;
+    font-family: fonts.$text-font;
+    font-size: fonts.$text-size;
     font-weight: normal;
     letter-spacing: 0.2px;
     line-height: 1.7rem;
@@ -219,8 +223,8 @@
   }
 
   b {
-    font-family: $font-default;
-    font-size: calc($text-size + 1);
+    font-family: fonts2.$font-default;
+    font-size: calc(fonts.$text-size + 1);
   }
 
   em {
@@ -233,7 +237,7 @@
     padding: 0.2em 0.5rem;
     color: black;
     background-color: #ffda08;
-    font-family: $font-default;
+    font-family: fonts2.$font-default;
     font-size: 15px;
     font-weight: 500;
   }
@@ -254,7 +258,7 @@
     margin-right: auto;
     padding-bottom: 35px;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       margin: 0;
       float: right;
       padding-left: 35px;
@@ -287,7 +291,7 @@
       }
     }
   
-    @media ($bp-larger-than-tablet) {
+    @media (variables.$bp-larger-than-tablet) {
       &.right,
       &.left {
         height: auto;
@@ -331,7 +335,7 @@
   width: 100%;
   max-width: 1300px;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     margin-top: 2em;
   }
 }
@@ -355,7 +359,7 @@
 
     text-align: center;
     font-size: 18px;
-    font-family: $font-default;
+    font-family: fonts2.$font-default;
     font-weight: 600;
     text-transform: uppercase;
   }
@@ -400,7 +404,7 @@
         margin: 2em 0 0 4em;
       }  
 
-      @media($bp-larger-than-phablet) {
+      @media(variables.$bp-larger-than-phablet) {
         .o-article__headline {
           text-align: left;
           margin: 0.5em 0 0 4em;

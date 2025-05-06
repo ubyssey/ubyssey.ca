@@ -1,4 +1,6 @@
-@import 'modules/mixins';
+@use 'mixins';
+@use "fonts";
+@use "variables";
 
 // Social/share icons
 
@@ -20,7 +22,7 @@
     margin-right: 5px;
   }
 
-  @media($bp-larger-than-tablet){
+  @media(variables.$bp-larger-than-tablet){
     li {
       margin-right: 0;
       margin-left: 5px;
@@ -36,7 +38,7 @@
   padding-right: 15px;
   text-align: center;
 
-  @media($bp-larger-than-phablet){
+  @media(variables.$bp-larger-than-phablet){
     text-align: unset;
   }
 
@@ -61,14 +63,14 @@
     }
   }
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     padding-left: 0;
     padding-right: 0;
   }
 }
 
 .o-social-icons--left {
-  @media($bp-larger-than-mobile){
+  @media(variables.$bp-larger-than-mobile){
     float: left;
   }
   li {
@@ -87,15 +89,15 @@
 
   border-radius: 4px;
 
-  font-family: $font-secondary;
-  font-size: font-size(13);
-  font-weight: $font-weight-bold;
+  font-family: fonts.$font-secondary;
+  font-size: fonts.font-size(13);
+  font-weight: fonts.$font-weight-bold;
   color: #fff;
 
   i {
     display: inline-block;
     vertical-align: middle;
-    font-size: font-size(19);
+    font-size: fonts.font-size(19);
     margin-right: 0.4em;
   }
 
@@ -114,23 +116,23 @@
 }
 
 .o-social-icons__icon--facebook {
-  background-color: $color-social-facebook;
+  background-color: variables.$color-social-facebook;
   &:hover, &:focus {
-    background-color: $color-social-facebook-dark;
+    background-color: variables.$color-social-facebook-dark;
   }
 }
 
 .o-social-icons__icon--twitter {
-  background-color: $color-social-twitter;
+  background-color: variables.$color-social-twitter;
   &:hover, &:focus {
-    background-color: $color-social-twitter-dark;
+    background-color: variables.$color-social-twitter-dark;
   }
 }
 
 .o-social-icons__icon--reddit {
-  background-color: $color-social-reddit;
+  background-color: variables.$color-social-reddit;
   &:hover, &:focus {
-    background-color: $color-social-reddit-dark;
+    background-color: variables.$color-social-reddit-dark;
   }
 }
 
@@ -156,7 +158,7 @@
   border-radius: 25px;
   border: 3px solid #fff;
 
-  @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.4));
+  @include mixins.box-shadow(0 1px 5px rgba(0, 0, 0, 0.4));
 
   // Background
   // background-image: url('../images/ubyssey-snapchat-code.png');

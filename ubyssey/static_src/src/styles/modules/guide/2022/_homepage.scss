@@ -1,3 +1,5 @@
+@use "../../variables";
+
 .o-site-wrapper {
     max-width: 100%;
     width: 100%;
@@ -42,7 +44,7 @@
 .home-content-container .home-content .title {
     text-align: left;
     padding-top: 5%;
-    @media($bp-larger-than-mobile) {
+    @media(variables.$bp-larger-than-mobile) {
         padding-left: 5%;
     }
     color: #0471a7;
@@ -231,7 +233,7 @@
     max-width: 100%; 
 }
 
-@media($bp-smaller-than-tablet) {
+@media(variables.$bp-smaller-than-tablet) {
 
     .section-grid-container {
         display: block;

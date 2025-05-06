@@ -15,7 +15,6 @@ WORKDIR /workspaces/ubyssey.ca/ubyssey/static_src/
 RUN rm -rf node_modules
 RUN npm install
 RUN npm install -g gulp
-RUN npm rebuild node-sass
 RUN gulp buildDev
 RUN rm -rf node_modules
 

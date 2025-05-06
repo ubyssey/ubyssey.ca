@@ -1,7 +1,10 @@
+@use "../fonts";
+@use "../variables";
+
 div.slideshow {
 
   display: none;
-  z-index: $z-scale-3;
+  z-index: variables.$z-scale-3;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -157,7 +160,7 @@ div.slideshow {
     }
   }
 
-  @media($bp-larger-than-mobile){
+  @media(variables.$bp-larger-than-mobile){
 
     li.slide div.img {
       width: 80%;
@@ -170,14 +173,14 @@ div.slideshow {
 }
 
 p.slide-caption {
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   font-size: 13px;
   color: #fff;
   line-height: 19px;
 }
 
 p.slide-credit {
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   font-size: 13px;
   color: #9c9c9c;
   font-style: italic;
@@ -198,7 +201,7 @@ div.article-slide {
     padding-top: 0;
   }
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     margin-bottom: 50px;
   }
 }

@@ -1,4 +1,4 @@
-@import 'modules/variables';
+@use 'variables';
 
 // Variables
 //––––––––––––––––––––––––––––––––––––––––––––––––––
@@ -29,7 +29,7 @@ $column-margin: 4% !default; // space between columns
 }
 
 // For devices larger than 550px
-@media (#{$bp-larger-than-phablet}) {
+@media (#{variables.$bp-larger-than-phablet}) {
   .column,
   .columns {
     margin-left: $column-margin;

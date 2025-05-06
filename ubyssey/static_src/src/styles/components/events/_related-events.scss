@@ -1,10 +1,13 @@
+@use "../../modules/fonts";
+@use "../../modules/variables";
+
 .c-related-events__row {
   // Structure
   margin-top: 0.75rem;
   display: block;
   width: 100%;
 
-  @media($bp-larger-than-mobile) {
+  @media(variables.$bp-larger-than-mobile) {
     display: flex;
 
     .c-event:not(:last-child) {
@@ -24,7 +27,7 @@
     padding-bottom: 0;
   }
 
-  @media($bp-larger-than-mobile) {
+  @media(variables.$bp-larger-than-mobile) {
     // Structure
     padding-bottom: 0;
     
@@ -47,7 +50,7 @@
   margin-bottom: 0.75em;
 
   // Text
-  font-size: font-size(14);
-  font-weight: $font-weight-semi-bold;
-  color: $color-text-gray-light;
+  font-size: fonts.font-size(14);
+  font-weight: fonts.$font-weight-semi-bold;
+  color: variables.$color-text-gray-light;
 }

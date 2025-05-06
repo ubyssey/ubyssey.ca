@@ -1,14 +1,16 @@
-$border                           : 1px dotted $color-border-gray-dark;
+$border                           : 1px dotted variables.$color-border-gray-dark;
 $calendar-event-time-label-color  : #006fcc;
 $tiles-margin                     : 35px;
 
-@import 'calendar_categories';
+@use 'calendar_categories';
+@use "../fonts";
+@use "../variables";
 
 .c-event-calendar {
   min-height: 500px;
   margin-bottom: 40px;
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     padding: 0 2px;
 
     h1 {
@@ -28,7 +30,7 @@ $tiles-margin                     : 35px;
   width: 11.5rem;
   padding-right: 2rem;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     // Structure
     display: block;
   }
@@ -40,14 +42,14 @@ $tiles-margin                     : 35px;
 }
 
 .c-event-calendar__year-label {
-  font-size: font-size(32);
-  font-weight: $font-weight-semi-bold;
+  font-size: fonts.font-size(32);
+  font-weight: fonts.$font-weight-semi-bold;
   border-bottom: $border;
 }
 
 .c-event-calendar__month-label {
-  font-size: font-size(32);
-  font-weight: $font-weight-semi-bold;
+  font-size: fonts.font-size(32);
+  font-weight: fonts.$font-weight-semi-bold;
   margin-bottom: 1rem;
 }
 
@@ -58,7 +60,7 @@ $tiles-margin                     : 35px;
   // Border
   border-top: $border;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     display: flex;
   }
 
@@ -75,9 +77,9 @@ $tiles-margin                     : 35px;
   margin-bottom: 1rem;
 
   // Text
-  font-size: font-size(24);
+  font-size: fonts.font-size(24);
   color: $calendar-event-time-label-color;
-  font-weight: $font-weight-semi-bold;
+  font-weight: fonts.$font-weight-semi-bold;
 }
 
 .c-event-calendar__event-list-wrapper {
@@ -85,7 +87,7 @@ $tiles-margin                     : 35px;
 }
 
 .c-event-calendar__event-list-container {
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -97,7 +99,7 @@ $tiles-margin                     : 35px;
   // Structure
   padding-bottom: 1.5rem;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     flex: 1 0;
 
     &:nth-child(3n+1) {

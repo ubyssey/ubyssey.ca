@@ -1,6 +1,8 @@
+fonts.@use "../../fonts";
+
 $font-default: 'Abril Fatface', cursive;
 
-$font-secondary: 'Montserrat', sans-serif;
+fonts.$font-secondary: 'Montserrat', sans-serif;
 
 $header-font: 'Abril Fatface', cursive;
 $header-weight-regular: 400;

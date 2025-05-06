@@ -1,3 +1,6 @@
+@use "../../fonts" as fonts2;
+@use "fonts";
+
 .card_wrapper_five {
     --grid-gap: 1rem;
     --grid-margin: 1.5rem;
@@ -41,7 +44,7 @@
     h3 {
         --type-token: discovery.subhed-section-primary;
         text-transform: uppercase;
-        font-family: $header-font;
+        font-family: fonts.$header-font;
         font-feature-settings: normal;
         font-style: normal;
         letter-spacing: 0.0117647em;
@@ -69,7 +72,7 @@
         padding-top: var(--section-title-margin);
         color: rgb(102, 102, 102);
         text-transform: none;
-        font-family: $font-default;
+        font-family: fonts2.$font-default;
         font-feature-settings: normal;
         font-style: normal;
         letter-spacing: normal;

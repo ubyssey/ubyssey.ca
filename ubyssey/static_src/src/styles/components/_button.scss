@@ -1,3 +1,6 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .c-button {
   // Structure
   display: inline-block;
@@ -8,7 +11,7 @@
   padding-right: 1rem;
 
   // Background
-  background-color: $color-accent-blue;
+  background-color: variables.$color-accent-blue;
   background-image: none;
 
   // Border
@@ -16,9 +19,9 @@
   border-radius: 2px;
 
   // Text
-  color: $color-white;
+  color: variables.$color-white;
   text-align: center;
-  font-size: font-size(16);
+  font-size: fonts.font-size(16);
 
   // Extra
   cursor: pointer;
@@ -28,7 +31,7 @@
     background-color: #338dd4;
 
     // Text
-    color: $color-white;
+    color: variables.$color-white;
   }
 
   i {
@@ -50,5 +53,5 @@
   padding: 0 0.75rem;
 
   // Text
-  font-size: font-size(14);
+  font-size: fonts.font-size(14);
 }

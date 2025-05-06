@@ -1,15 +1,15 @@
 // Magazine styles go here
-@import 'modules/mixins';
+@use 'modules/mixins';
 
-@import 'modules/magazine/2017/colors';
-@import 'modules/magazine/mixins';
-@import 'modules/magazine/utilities';
-@import 'modules/magazine/text';
-@import 'modules/magazine/header';
-@import 'modules/magazine/footer';
-@import 'modules/magazine/article';
-@import 'modules/magazine/poetry';
-@import 'modules/magazine/objects';
+@use 'modules/magazine/2017/colors';
+@use 'modules/magazine/mixins' as mixins2;
+@use 'modules/magazine/utilities';
+@use 'modules/magazine/text';
+@use 'modules/magazine/header';
+@use 'modules/magazine/footer';
+@use 'modules/magazine/article';
+@use 'modules/magazine/poetry';
+@use 'modules/magazine/objects';
 
 $turqoise: #21988a;
 $yellow: #f5cd3a;
@@ -22,7 +22,7 @@ $grey: #cbcbcb;
 $white: #fff;
 $pink: #ed028c;
 
-$border: 15px solid $color-primary-1;
+$border: 15px solid colors.$color-primary-1;
 
 $spacing: 1.5rem;
 
@@ -42,9 +42,9 @@ html, body {
 	padding-left: 1.5rem;
 	padding-right: 1.5rem;
 
-	font-family: $font-default;
+	font-family: text.$font-default;
 
-	@media($bp-larger-than-mobile) {
+	@media(utilities.$bp-larger-than-mobile) {
 		margin-top: 3rem;
 	}
 
@@ -83,19 +83,19 @@ html, body {
 			transform: translate(-50%, -50%);
 
 			.title {
-				font-family: $font-secondary;
+				font-family: text.$font-secondary;
 				font-weight: 400;
-				font-size: font-size(48);
+				font-size: text.font-size(48);
 				color: $white;
 				text-transform: uppercase;
 
-				border-bottom: 15px solid $color-primary-1;
+				border-bottom: 15px solid colors.$color-primary-1;
 			}
 
-			@media($bp-larger-than-mobile) {
+			@media(utilities.$bp-larger-than-mobile) {
 				bottom: 4%;
 				.title {
-					font-size: font-size(80);
+					font-size: text.font-size(80);
 				}
 			}
 
@@ -140,11 +140,11 @@ html, body {
 			z-index: 20;
 
 			.title {
-				font-family: $font-default;
+				font-family: text.$font-default;
 				text-transform: uppercase;
 				color: $white;
 				font-weight: 600;
-				font-size: font-size(32);
+				font-size: text.font-size(32);
 			}
 		}
 	}
@@ -153,7 +153,7 @@ html, body {
 
 		margin-top: $spacing;
 
-		@media($bp-larger-than-mobile) {
+		@media(utilities.$bp-larger-than-mobile) {
 			display: flex;
 	    flex-wrap: wrap;
 	    align-items: stretch;
@@ -163,7 +163,7 @@ html, body {
 			height: 240px;
 			margin-bottom: $spacing;
 
-			@media($bp-larger-than-mobile) {
+			@media(utilities.$bp-larger-than-mobile) {
 
 				flex-basis: 50%;
 
@@ -196,11 +196,11 @@ html, body {
 
 
 		.article-grid-row {
-			@include flex;
-			@include justify-content(space-between);
+			@include mixins.flex;
+			@include mixins.justify-content(space-between);
 
 			.article-grid-3 {
-				@include flex;
+				@include mixins.flex;
 				margin-bottom: $spacing;
 
 				background-color: $blue;

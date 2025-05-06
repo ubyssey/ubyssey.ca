@@ -1,3 +1,6 @@
+@use "../../fonts" as fonts2;
+@use "../../variables";
+
 .o-logo--small {
   display: block;
   margin-top: 0.9em !important;
@@ -28,7 +31,7 @@ nav.navbar {
   z-index: 500;
   background-color: black !important;
   color: white;
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   .navbar-nav {
     flex-wrap:wrap;
     width: 100%;
@@ -103,7 +106,7 @@ nav.navbar {
     p {
       margin: 1em;
       color: white;
-      font-family: $font-default;
+      font-family: fonts2.$font-default;
     }
   }
 }
@@ -197,10 +200,10 @@ a.scroll-arrow{
   justify-items: center;
   margin: auto;
   padding-bottom: 5%;
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     min-width: 600px;
   }
-  @media($bp-smaller-than-tablet) {
+  @media(variables.$bp-smaller-than-tablet) {
     padding: 0 5% 0 5%;
   }
 }
@@ -231,7 +234,7 @@ a.scroll-arrow{
   height: 200px;
   background-color: white;
   transition: height 0.5s cubic-bezier(0.65, 0, 0.35, 1);
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   h1 {
     margin: 0;
     margin-top: 1em;

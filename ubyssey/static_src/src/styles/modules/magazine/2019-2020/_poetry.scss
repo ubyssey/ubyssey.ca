@@ -1,3 +1,5 @@
+@use "text";
+
 .c-poetry__backdrop {
   // Structure
   width: 100%;
@@ -12,7 +14,7 @@
   margin-bottom: 0.25em;
 
   // Text
-  font-size: font-size(34);
+  font-size: text.font-size(34);
 }
 
 .c-poetry__content {
@@ -25,8 +27,8 @@
 
 .c-poetry__byline {
   // Text
-  font-family: $font-serif;
-  font-size: font-size(17);
+  font-family: text.$font-serif;
+  font-size: text.font-size(17);
   line-height: 1.75em;
 }
 
@@ -42,7 +44,7 @@
   margin-bottom: 0;
 
   // Text
-  font-family: $font-serif;
-  font-size: font-size(17);
+  font-family: text.$font-serif;
+  font-size: text.font-size(17);
   line-height: 2em;
 }
