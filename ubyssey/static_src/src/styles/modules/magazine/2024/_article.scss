@@ -48,6 +48,8 @@
 }
 
 .c-article__info {
+  display: block;
+  justify-content: center;
   text-align: center;
   font-family: fonts.$text-font;
   * {
@@ -55,8 +57,6 @@
     text-decoration: none;
   }
 
-  display: block;
-  justify-content: center;
   @media(variables.$bp-larger-than-tablet) {
     display: flex;
     flex-wrap: wrap;

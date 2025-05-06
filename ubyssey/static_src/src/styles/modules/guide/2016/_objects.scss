@@ -1,18 +1,21 @@
+@use "../../variables";
+@use "fonts";
+
 .o-logo {
   display: inline-block;
-  border: 5px solid $color-white;
+  border: 5px solid variables.$color-white;
   padding: 35px 40px 20px 40px;
 
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   font-size: 3em;
   text-transform: uppercase;
-  color: $color-white;
+  color: variables.$color-white;
   letter-spacing: 1.3px;
   text-shadow: 0 2px 1px rgba(0,0,0,0.23);
 
   line-height: 1.25em;
 
-  @media($bp-larger-than-mobile) {
+  @media(variables.$bp-larger-than-mobile) {
     font-size: 3.5em;
   }
 }
@@ -57,16 +60,16 @@
 
   display: none;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     display: block;
   }
 }
 
 
 .o-welcome-arrow__text {
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   font-size: 32px;
-  color: $color-white;
+  color: variables.$color-white;
   letter-spacing: 0.73px;
   text-shadow: 0 1px 2px rgba(0,0,0,0.50);
   margin-bottom: 10px;

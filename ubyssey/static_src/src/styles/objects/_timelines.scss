@@ -63,10 +63,11 @@ ul.horizontal-timeline-wrap {
     flex-wrap: wrap;
     justify-content: left;
     > li {
+        padding-top: 1em;
+
         @media(variables.$bp-larger-than-phablet) {
             margin-bottom: 2em;
         }
-        padding-top: 1em;
         .o-article__headline {
             margin-block: 1em;
             font-size: 0.85em;

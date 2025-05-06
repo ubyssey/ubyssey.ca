@@ -43,6 +43,11 @@
     }
 
     .landing_stream_block--header-blurb {
+
+      margin-bottom: 1em;
+      font-weight: 500;
+      line-height: 1.75em;
+
       h2 {
         font-size: 1.5em;
       }
@@ -53,9 +58,6 @@
           text-align: left;
         }
       }
-      margin-bottom: 1em;
-      font-weight: 500;
-      line-height: 1.75em;
     }
 
     .landing_stream_block--flex-container {

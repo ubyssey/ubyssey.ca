@@ -12,10 +12,10 @@
   font-size: 3.5rem;
   line-height: 4rem;
   text-transform: uppercase;
+  max-width: 600px;
   @media(variables.$bp-larger-than-tablet) {
     width: 600px;
   }
-  max-width: 600px;
   @media (variables.$bp-smaller-than-mobile) {
     font-size: 3rem;
     line-height: 3rem;

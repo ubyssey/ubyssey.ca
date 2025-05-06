@@ -14,6 +14,10 @@
   background-size: cover;
   background-position: center;
 
+  // Extra
+  transition: opacity 0.3s;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+
   &--green {
     background-color: colors.$color-primary-2;
   }
@@ -43,9 +47,7 @@
     }
   }
 
-  // Extra
-  transition: opacity 0.3s;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+
 
   &:hover {
     // Extra

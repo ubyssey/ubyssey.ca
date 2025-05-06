@@ -59,11 +59,12 @@
 }
 
 .section_infinitefeed #feed article.article--infinitefeed {
+    display: block;
+    border-bottom: 1px solid #EEE !important;
+
     @media(variables.$bp-smaller-than-desktop) {
         margin-inline: 1em;
     }
-    display: block;
-    border-bottom: 1px solid #EEE !important;
     .o-article__right {
         width: auto;
         min-height: 10em;
@@ -73,10 +74,12 @@
         margin: 1em;
         padding: 0;
         width: 9em;
+        float: right;
+
         @media(variables.$bp-larger-than-phablet) {
             width: 12em;
         }
-        float: right;
+        
     }
     .o-article__image {
         border:none;

@@ -1,7 +1,4 @@
-$border                           : 1px dotted variables.$color-border-gray-dark;
-$calendar-event-time-label-color  : #006fcc;
-$tiles-margin                     : 35px;
-
+@use "calendar_variables";
 @use 'calendar_categories';
 @use "../fonts";
 @use "../variables";
@@ -44,7 +41,7 @@ $tiles-margin                     : 35px;
 .c-event-calendar__year-label {
   font-size: fonts.font-size(32);
   font-weight: fonts.$font-weight-semi-bold;
-  border-bottom: $border;
+  border-bottom: calendar_variables.$border;
 }
 
 .c-event-calendar__month-label {
@@ -58,7 +55,7 @@ $tiles-margin                     : 35px;
   padding-top: 1rem;
 
   // Border
-  border-top: $border;
+  border-top: calendar_variables.$border;
 
   @media(variables.$bp-larger-than-phablet) {
     display: flex;
@@ -78,7 +75,7 @@ $tiles-margin                     : 35px;
 
   // Text
   font-size: fonts.font-size(24);
-  color: $calendar-event-time-label-color;
+  color: calendar_variables.$calendar-event-time-label-color;
   font-weight: fonts.$font-weight-semi-bold;
 }
 

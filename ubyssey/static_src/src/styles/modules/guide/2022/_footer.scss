@@ -3,10 +3,12 @@
 .c-nav-footer {
     margin-top: 30px;
     display: flex;
+
+    flex-wrap: wrap;
+    align-items: stretch;
+
     @media (variables.$bp-smaller-than-mobile) {
       display: block;
     }
-    flex-wrap: wrap;
-    align-items: stretch;
   }
   

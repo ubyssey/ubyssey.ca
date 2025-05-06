@@ -113,7 +113,8 @@
 
 .c-banner--article__headings {
   padding-bottom: 5%;
-
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  
   @media(variables.$bp-larger-than-tablet) {
     position: absolute;
     bottom: 0;
@@ -122,8 +123,6 @@
   @media(variables.$bp-larger-than-desktop) {
     padding-bottom: 12%;
   }
-
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .c-banner-credits{

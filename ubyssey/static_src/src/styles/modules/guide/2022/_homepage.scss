@@ -44,10 +44,12 @@
 .home-content-container .home-content .title {
     text-align: left;
     padding-top: 5%;
+
+    color: #0471a7;
+
     @media(variables.$bp-larger-than-mobile) {
         padding-left: 5%;
     }
-    color: #0471a7;
 }
 
 

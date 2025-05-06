@@ -60,26 +60,26 @@
 	unicode-range: U+0020-25CA;
 }
 
-fonts.fonts.$font-default: 'spartan', sans-serif;
-fonts.fonts.$font-secondary: 'lora', sans-serif;
+$font-default: 'spartan', sans-serif;
+$font-secondary: 'lora', sans-serif;
 
-fonts.fonts.$header-font: 'spartan', sans-serif;
+$header-font: 'spartan', sans-serif;
 $header-weight-regular: 400;
-fonts.fonts.$header-weight: 500;
-fonts.fonts.$header-size: 3.1rem;
+$header-weight: 500;
+$header-size: 3.1rem;
 
-fonts.fonts.$text-font: 'lora', sans-serif;
+$text-font: 'lora', sans-serif;
 $text-weight: 400;
 $text-weight-bold: 500;
-fonts.fonts.$text-size: 1rem;
+$text-size: 1rem;
 
-fonts.fonts.$quote-font: 'spartan', sans-serif;
-fonts.fonts.$quote-size: 1.3rem;
-fonts.fonts.$quote-weight: 400;
+$quote-font: 'spartan', sans-serif;
+$quote-size: 1.3rem;
+$quote-weight: 400;
 
-fonts.fonts.$credit-font: 'lora', sans-serif;
-fonts.fonts.$credit-style: italic;
-fonts.fonts.$credit-size: 1rem;
+$credit-font: 'lora', sans-serif;
+$credit-style: italic;
+$credit-size: 1rem;
 
-fonts.fonts.$accent-font: 'spartan', sans-serif;
-fonts.fonts.$accent-size: 1.3rem;
+$accent-font: 'spartan', sans-serif;
+$accent-size: 1.3rem;

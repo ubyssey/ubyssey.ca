@@ -41,15 +41,15 @@
 
 .c-header{
     display: none;
-    @media(variables.$bp-larger-than-desktop){
-        display:block;
-    }
-
     position: fixed;
     width: 100%;
     height: 50px;
     top: 0;
     z-index: 10000;
+
+    @media(variables.$bp-larger-than-desktop){
+        display:block;
+    }
 
     a {
         color: white;
@@ -99,19 +99,18 @@
 //Tablet header
 .c-header-tablet{
     display: none;
-    @media(variables.$bp-larger-than-mobile){
-        display:block;
-    }
-    @media(variables.$bp-larger-than-desktop){
-        display:none;
-    }
-
     position: fixed;
     width: 100%;
     height: 50px;
     top: 0;
     z-index: 10000;
 
+    @media(variables.$bp-larger-than-mobile){
+        display:block;
+    }
+    @media(variables.$bp-larger-than-desktop){
+        display:none;
+    }
     a {
         color: white;
         text-decoration: none;
@@ -195,15 +194,15 @@
 //Mobile header
 .c-header-mobile{
     display: block;
-    @media(variables.$bp-larger-than-mobile){
-        display:none;
-    }
-
     position: fixed;
     width: 100%;
     height: 50px;
     top: 0;
     z-index: 10000;
+
+    @media(variables.$bp-larger-than-mobile){
+        display:none;
+    }
 
     a {
         text-decoration: none;

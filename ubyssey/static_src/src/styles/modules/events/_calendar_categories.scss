@@ -1,5 +1,5 @@
 @use "../variables";
-@use "calendar";
+@use "calendar_variables";
 
 .c-event-calendar-categories {
   text-align: right;
@@ -45,7 +45,7 @@
 }
 
 .c-event-calendar-categories__label {
-  border-bottom: calendar.$border;
+  border-bottom: calendar_variables.$border;
 
   h2 {
     margin-top: 0;

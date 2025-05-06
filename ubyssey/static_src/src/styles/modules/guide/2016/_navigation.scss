@@ -1,3 +1,5 @@
+@use "../../variables";
+
 .c-nav-top {
   display: flex;
   height: 40px;
@@ -7,7 +9,7 @@
 .c-nav-top__message {
   flex: 1;
   text-align: right;
-  color: $color-white;
+  color: variables.$color-white;
   font-weight: 100;
   font-style: italic;
   letter-spacing: 0.72px;
@@ -18,18 +20,18 @@
 
   display: none;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     display: block;
   }
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     font-size: 1em;
   }
 
   a {
     font-weight: 400;
     font-style: normal;
-    color: $color-white;
+    color: variables.$color-white;
     text-decoration: none;
 
     &:hover {
@@ -50,7 +52,7 @@
   flex-basis: 50%;
   margin-bottom: 30px;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     flex: 1;
     flex-basis: auto;
     margin-bottom: 0;
@@ -59,7 +61,7 @@
   h2 {
     font-size: 18px;
     font-weight: 600;
-    color: $color-white;
+    color: variables.$color-white;
     letter-spacing: 0.45px;
     line-height: 26px;
     text-transform: uppercase;
@@ -69,7 +71,7 @@
   li {
     line-height: 1.2em;
     a {
-      color: $color-white;
+      color: variables.$color-white;
       text-decoration: none;
       font-size: 0.8em;
 

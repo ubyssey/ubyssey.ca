@@ -1,5 +1,5 @@
-@import 'modules/fonts';
-@import 'modules/font_faces';
+@use 'modules/fonts';
+@use 'modules/font_faces';
 
 $color-white: #fff;
 $color-background: rgba(36, 65, 135, 0.9);
@@ -10,7 +10,7 @@ html {
 }
 
 body {
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   color: $color-white;
   -webkit-font-smoothing: antialiased;
   background-image: url('../images/centennial/office.jpg');
@@ -115,29 +115,27 @@ a.c-button--white {
 }
 
 .c-join {
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+
   @media(min-width: 840px) {
     display: flex;
     margin-top: 3rem;
     margin-bottom: 4rem;
   }
-
-  align-items: center;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
 .c-join__left {
   flex: 2;
+  text-align: center;
+  padding-top: 2rem;
 
   @media(min-width: 840px) {
     padding-right: 3rem;
     max-width: none;
     text-align: right;
   }
-
-  text-align: center;
-
-  padding-top: 2rem;
 }
 
 .c-join__left, .c-join__right {
@@ -186,15 +184,15 @@ a.c-button--white {
 }
 
 .c-date {
+   align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+ 
   @media(min-width: 840px) {
     display: flex;
     margin-top: 3rem;
     margin-bottom: 4rem;
   }
-
-  align-items: center;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
 
@@ -210,7 +208,9 @@ a.c-button--white {
 }
 
 .c-date__right {
+  padding-top: 2rem;
   flex: 3;
+  text-align: center;
 
   @media(min-width: 840px) {
     padding-left: 3rem;
@@ -218,10 +218,6 @@ a.c-button--white {
     max-width: none;
     text-align: left;
   }
-
-  text-align: center;
-
-  padding-top: 2rem;
 }
 
 .c-date__box {

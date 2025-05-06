@@ -1,3 +1,5 @@
+@use "../variables";
+
 .page {
     background-color: #ecbcbc;
     position: relative;
@@ -43,11 +45,12 @@
     width: 65%;
     margin: auto;
     padding: 0 12.5% 325px 12.5%;
-    @media ($bp-smaller-than-desktop){
-        padding-bottom: 20%;
-    }
     background: #F0E0CE;
     position: relative;
+
+    @media (variables.$bp-smaller-than-desktop){
+        padding-bottom: 20%;
+    }
     .isolation-description {
         font-weight: 300;
         margin-bottom: 1em;
@@ -71,7 +74,7 @@
     }
 }
 
-@media($bp-larger-than-tablet){
+@media(variables.$bp-larger-than-tablet){
     .section-flex-container {
         .isolation-row {
             flex-direction: row;
@@ -87,7 +90,7 @@
     }
 }
 
-@media($bp-smaller-than-mobile){
+@media(variables.$bp-smaller-than-mobile){
     .roof-headline {
         bottom: 0;
         width: 200px;

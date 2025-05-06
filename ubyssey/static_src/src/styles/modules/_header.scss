@@ -350,10 +350,6 @@ header.topbar {
 
   nav {
     display: none;
-    @media(variables.$bp-larger-than-phablet){
-      display: inline-block;
-    }
-
     white-space: nowrap;
     vertical-align: top;
     font-family: fonts.$font-default;
@@ -395,6 +391,10 @@ header.topbar {
       &.sections-more {
         @include sectionsMore;
       }
+    }
+
+    @media(variables.$bp-larger-than-phablet){
+      display: inline-block;
     }
   }
 

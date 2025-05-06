@@ -158,13 +158,11 @@
 
                 .editorial__credits-item {
                     padding: 2em;
-                    
+                    font-family: fonts.$text-font;
+                    text-align: center;
                     @media(variables.$bp-larger-than-phablet) {
                         width: 30%;
                     }
-
-                    font-family: fonts.$text-font;
-                    text-align: center;
                 }
             }
         }

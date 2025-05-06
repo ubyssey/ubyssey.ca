@@ -75,16 +75,19 @@ function jasmineTask() {
 
 function sassBuildTask() {
   return src('./src/styles/**/*.scss')
-      .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+      .pipe(sass({ style: 'compressed' }).on('error', sass.logError))
       .pipe(dest('../static/ubyssey/css/'));
 }
 
 function sassBuildDevTask(){
   return src('./src/styles/**/*.scss')
     .pipe(sourcemaps.init())
+    .on('end', function(){ log('Almost there...'); })
     .pipe(sass().on('error', sass.logError))
+    .on('end', function(){ log('Almost there...'); })
     .pipe(sourcemaps.write())
-    .pipe(dest('../static/ubyssey/css/'));
+    .pipe(dest('../static/ubyssey/css/'))
+    .on('end', function(){ log('Done!'); });
 }
 
 function copyImagesTask() {

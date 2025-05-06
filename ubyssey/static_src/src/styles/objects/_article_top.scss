@@ -46,14 +46,12 @@
     }
 
     .o-article__image {
-
+        display: block;
         @media (variables.$bp-smaller-than-tablet) {
             min-width: 100%;
             height: auto;
 
         }
-
-        display: block;
 
         img {
             position: absolute;

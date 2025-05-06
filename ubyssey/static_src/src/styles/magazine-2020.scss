@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "modules/magazine/2019-2020/colors";
 @use "modules/magazine/mixins";
 @use "modules/magazine/utilities";
@@ -84,9 +85,6 @@ video {
     // Text
     text-align: right;
   }
-
-  // Text
-  color: white;
 
   h1 {
     font-size: 1em;
@@ -216,14 +214,14 @@ h4 {
       transform: translateX(-50%);
       text-align:center;
       padding: 0;
+      // Text
+      text-transform: capitalize;
       @media (utilities.$bp-larger-than-tablet) {
         color: #fff;
       }
       @media (max-width: 640px) {
         width:95%;
       }
-      // Text
-      text-transform: capitalize;
       h1 {
         // Text
         font-weight: 400;
@@ -249,7 +247,7 @@ h4 {
       margin-right: 0.7rem;
       border-bottom: 1px solid transparent;
       border-color: #333333;
-      transition: border-color #{$time/2};
+      transition: border-color #{math.div($time, 2)};
       font-size: 1.5rem;
       @media (max-width: 640px) {
         overflow: hidden;
@@ -457,14 +455,15 @@ h4 {
     margin-top: 0;
     min-height: 100vh;
 
+    // Other
+    transition: margin $time;
+
     // Background
     background-color: rgba(255,255,255, 0.3);
     @media (utilities.$bp-larger-than-tablet) {
       background-color: rgba(0, 0, 0, 0.3);
     }
 
-    // Other
-    transition: margin $time;
 
     &.slide-up {
       // Structure
@@ -537,7 +536,7 @@ h4 {
         $gridSize: 320px;
 
         // Other
-        transition: opacity #{$time/2};
+        transition: opacity #{math.div($time, 2)};
 
         &:hover {
           opacity: 0.75;
@@ -551,8 +550,8 @@ h4 {
           flex-shrink: 0;
           .o-article-box {
             // Structure
-            margin-left: #{$spacing/2};
-            margin-right: #{$spacing/2};
+            margin-left: #{math.div($spacing, 2)};
+            margin-right: #{math.div($spacing, 2)};
           }
         }
 

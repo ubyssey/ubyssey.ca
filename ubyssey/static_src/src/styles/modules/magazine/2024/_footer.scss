@@ -4,13 +4,14 @@
 .c-nav-footer {
   padding-top: 4rem;
   display: flex;
-  @media (variables.$bp-smaller-than-mobile) {
-    display: block;
-  }
   flex-wrap: wrap;
   align-items: stretch;
   background-color:#41475F;
   font-family: fonts.$text-font;
+
+  @media (variables.$bp-smaller-than-mobile) {
+    display: block;
+  }
   * {
     color:#E8B131;
     text-decoration: none;

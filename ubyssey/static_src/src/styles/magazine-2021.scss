@@ -5,13 +5,10 @@
 @use "modules/magazine/2021/sideBar";
 @use "modules/magazine/2021/loading.scss";
 
-
-
 @font-face {
   font-family: 'Azonix';
   src: url("https://storage.googleapis.com/ubyssey/fonts/Azonix.otf");
-  }
-  
+}
 
 h1{
     font-family: 'Azonix';

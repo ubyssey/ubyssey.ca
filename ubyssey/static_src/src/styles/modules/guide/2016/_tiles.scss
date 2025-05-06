@@ -1,5 +1,8 @@
+@use "../../variables";
+@use "fonts";
+
 .c-tiles {
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     display: flex;
     flex-wrap: wrap;
     align-items: stretch;
@@ -12,17 +15,16 @@
 
   background-position: center;
   background-size: cover;
-
-  @media($bp-larger-than-mobile) {
+  position: relative;
+  text-decoration: none;
+  
+  @media(variables.$bp-larger-than-mobile) {
     min-height: 200px;
   }
 
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     min-height: 340px;
   }
-
-  position: relative;
-  text-decoration: none;
 
   &:before {
     content: '';
@@ -44,11 +46,11 @@
     content: '';
     display: block;
 
-    @media($bp-larger-than-mobile) {
+    @media(variables.$bp-larger-than-mobile) {
       padding-top: 42%;
     }
 
-    @media($bp-larger-than-desktop) {
+    @media(variables.$bp-larger-than-desktop) {
       padding-top: 45%;
     }
   }
@@ -59,7 +61,7 @@
     padding: 25px 0;
   }
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     .c-tile__container {
       display: flex;
       height: 100%;
@@ -111,14 +113,14 @@
 
   &--hide-mobile {
     display: none;
-    @media($bp-larger-than-tablet) {
+    @media(variables.$bp-larger-than-tablet) {
       display: block;
     }
   }
 }
 
 .c-tile__flex {
-  @media($bp-larger-than-mobile) {
+  @media(variables.$bp-larger-than-mobile) {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -128,10 +130,10 @@
 .c-tile__container {
   position: relative;
   z-index: 20;
-  color: $color-white;
+  color: variables.$color-white;
   text-shadow: 0 2px 4px rgba(0,0,0,0.50);
 
-  @media($bp-larger-than-mobile) {
+  @media(variables.$bp-larger-than-mobile) {
     position: absolute;
     left: 0;
     right: 0;
@@ -141,33 +143,33 @@
 .c-tile__inner {
   padding: 25px;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     width: 100%;
   }
 
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     padding: 50px;
   }
 }
 
 .c-tile__title {
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   font-size: 2.5em;
   letter-spacing: 2.25px;
   line-height: 1.25em;
 
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     font-size: 3.33em;
   }
 }
 
 .c-tile__snippet {
-  font-family: $font-secondary;
+  font-family: fonts.$font-secondary;
   font-size: 1.25em;
   letter-spacing: 0.78px;
   line-height: 30px;
 
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     font-size: 1.33em;
   }
 }
@@ -185,7 +187,7 @@
 
 .c-tile--quote__text {
   font-style: italic;;
-  color: $color-white;
+  color: variables.$color-white;
   letter-spacing: 1.35px;
   font-weight: 600;
   line-height: 1.3em;
@@ -200,7 +202,7 @@
   margin-top: 15px;
   font-weight: 600;
   text-transform: uppercase;
-  color: $color-white;
+  color: variables.$color-white;
   letter-spacing: 1.2px;
   line-height: 1.5em;
 

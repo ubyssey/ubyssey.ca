@@ -109,17 +109,16 @@
 
 .c-article__info {
   display: block;
-
+  justify-content: center;
+  
   text-align: center;
   font-family: fonts2.$font-default;
   line-height: 0.5em;
+  
   * {
     color: black;
     text-decoration: none;
   }
-
-  justify-content: center;
-
   >p {
     margin-top: 0.5em;
   }
@@ -153,14 +152,17 @@
     }
   }
   .caption {
-    text-align: left;
     margin-left: 6em;
+    
+    color:black;
+    text-align: left;
+    font-family: fonts2.$font-default;
+
     @media(variables.$bp-smaller-than-phablet) {
       margin: auto;
       padding: 0.5em 2em 3em 2em;
     }
-    color:black;
-    font-family: fonts2.$font-default;
+
   }
 }
 
@@ -224,7 +226,7 @@
 
   b {
     font-family: fonts2.$font-default;
-    font-size: calc(fonts.$text-size + 1);
+    font-size: fonts.$text-size + 1;
   }
 
   em {

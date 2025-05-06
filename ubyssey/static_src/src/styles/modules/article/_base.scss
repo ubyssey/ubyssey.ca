@@ -1,5 +1,5 @@
-@use "../fonts" as footer;
-@use "../footer";
+@use "../fonts";
+@use "../footer" as footer;
 @use "../variables";
 
 $text-color: var(--text_color);

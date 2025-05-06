@@ -3,12 +3,12 @@
 
 .section-grid-container {
     padding-top:2em;
+    width: 100%;
+    background-color: #FEFFE3;
     @media(variables.$bp-larger-than-tablet) {
         padding: 4em;
     }   
-    width: 100%;
 
-    background-color: #FEFFE3;
     .section-grid {
         margin:auto;
         max-width: 1000px;
