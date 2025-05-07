@@ -483,11 +483,29 @@ div.article-content blockquote.pull-quote {
     }
   }
 
+  // Styling
   &.contrast {
     padding: 1em;
     background: #{variables.$color-ubyssey-blue-light};
     color: black;
     border-radius: 1em;
+  }
+  &.enlarged_quotation {
+    position: relative;
+    padding-left: 3em;
+    padding-top: 1em;
+    text-align: left;
+    &.center {
+      width: fit-content;
+    }
+    &::before {
+      content: "“";
+      position: absolute;
+      left: 0;
+      top:0;
+      font-size: 4em;
+      font-family: 'librefranklin';
+    }
   }
 
   p.quote {

@@ -39,6 +39,7 @@ class PullQuoteBlock(blocks.StructBlock):
         choices=[
             ('style_default', 'Default'),
             ('contrast', 'Contrast'),
+            ('enlarged_quotation', 'Enlarged Quotation')
         ],
         default='style_default',
     )
