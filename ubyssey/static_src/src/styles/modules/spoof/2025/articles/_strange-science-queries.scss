@@ -1,3 +1,5 @@
+@use "../base";
+
 .strange-science-queries {
     background-color: #B3E5FC;
     position: relative;
@@ -58,7 +60,7 @@
         font-family: 'franklin-gothic-urw', 'sans-serif';
     }
  
-    @media ($bp-smaller-than-phablet) {
+    @media (base.$bp-smaller-than-phablet) {
       .flex {
         flex-direction: column;
       }

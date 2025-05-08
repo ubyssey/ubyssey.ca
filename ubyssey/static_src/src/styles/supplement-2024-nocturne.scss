@@ -1,7 +1,7 @@
 /*This style sheet is so terribly messy. I am sorry. - Sam Low*/
 
-@import 'modules/_variables.scss';
-@import 'modules/_fonts.scss';
+@use 'modules/_variables.scss';
+@use 'modules/_fonts.scss';
 $accent-colour: #b7b7b7;
 
 @font-face {
@@ -320,7 +320,7 @@ a {
           opacity: 0.5;
           filter: blur(5px) brightness(0.75);
         }
-        @media ($bp-larger-than-tablet) {
+        @media (variables.$bp-larger-than-tablet) {
           img {
             border-radius: 100%;
             transition-duration: 1.5s;
@@ -477,7 +477,7 @@ img {
     -ms-user-select: none;
   }
 
-  @media ($bp-larger-than-tablet) {
+  @media (variables.$bp-larger-than-tablet) {
     &.right,
     &.left {
       height: auto;
@@ -585,7 +585,7 @@ footer {
   }
 }
 
-@media($bp-smaller-than-phablet) {
+@media(variables.$bp-smaller-than-phablet) {
   footer .footer-links-section {
     flex-direction: column;
   }

@@ -1,3 +1,5 @@
+@use "../base";
+
 article.whats-worse {
     $whats-worse-yellow-2: #fcf179;
     $whats-worse-magenta: #a92876;
@@ -75,7 +77,7 @@ article.whats-worse {
         }
     }
 
-    @media ($bp-smaller-than-phablet) { 
+    @media (base.$bp-smaller-than-phablet) { 
         flex-direction: column;
         .intro {
             transform: none;
@@ -89,7 +91,7 @@ article.whats-worse {
         }
     }
 
-    @media ($bp-larger-than-desktophd) {
+    @media (base.$bp-larger-than-desktophd) {
         .intro img {
             max-width: 700px;
             height: auto;
@@ -103,7 +105,7 @@ article.whats-worse {
         }
     }
 
-    @media ($bp-smaller-than-desktophd) {
+    @media (base.$bp-smaller-than-desktophd) {
         .intro img {
             position: relative;
             transform: none;

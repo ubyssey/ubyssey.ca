@@ -1,3 +1,5 @@
+@use "base";
+
 $glm-landing-bg-1: #fff0f8;
 $glm-landing-bg-2: #c67178;
 
@@ -143,7 +145,7 @@ $glm-landing-bg-2: #c67178;
         }
     }
 
-    @media ($bp-smaller-than-tablet) {
+    @media (base.$bp-smaller-than-tablet) {
         .logo {
             top: -30px;
             .ubyssey {

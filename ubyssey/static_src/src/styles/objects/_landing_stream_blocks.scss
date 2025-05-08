@@ -1,18 +1,20 @@
-@import 'modules/fonts';
+@use '../modules/fonts';
+@use "../modules/variables";
+
 // Shared classes among landing stream blocks
 .landing_stream_block {
     margin: 3em auto 5em auto;
   
     .landing_stream_block--header {
       margin-block: 2em;
-      font-family: $font-default;
+      font-family: fonts.$font-default;
       font-weight: 800;
       h2 {
         display: inline;
         margin-right: 0.5em;
         scroll-margin-top: 5em;
         font-size: 2.5em;
-        font-family: $font-headline;
+        font-family: fonts.$font-headline;
         font-variation-settings: "wght" 800;
       }
       p {
@@ -23,7 +25,7 @@
           text-decoration: underline;
         }
       }
-      @media($bp-smaller-than-phablet) {
+      @media(variables.$bp-smaller-than-phablet) {
         padding-inline: 1em;
         text-align: center;
         h2 {
@@ -41,19 +43,21 @@
     }
 
     .landing_stream_block--header-blurb {
+
+      margin-bottom: 1em;
+      font-weight: 500;
+      line-height: 1.75em;
+
       h2 {
         font-size: 1.5em;
       }
       p {
-        font-family: $font-body;
-        @media($bp-smaller-than-phablet) {
+        font-family: fonts.$font-body;
+        @media(variables.$bp-smaller-than-phablet) {
           display: block;
           text-align: left;
         }
       }
-      margin-bottom: 1em;
-      font-weight: 500;
-      line-height: 1.75em;
     }
 
     .landing_stream_block--flex-container {
@@ -70,7 +74,7 @@
       gap: 0.5em;
     }
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     margin: 2em auto 5em auto;
   }
 }
@@ -96,7 +100,7 @@
     }
 }
 
-@media($bp-smaller-than-mobile) {
+@media(variables.$bp-smaller-than-mobile) {
     .landing-stream-block__timeline {
         max-width: none;
         width: 100%;
@@ -115,7 +119,7 @@
 }
 
 .landing_stream_block__horizontal {
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     .landing_stream_block--flex-container--wrap {
       flex-wrap: wrap;
       gap: 1.5em;
@@ -125,7 +129,7 @@
       }
     }
   }
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     .landing_stream_block--flex-container {
       flex-direction: column;
     }
@@ -153,7 +157,7 @@
         margin: 0.5em 0;
         font-weight: 400;
         font-variation-settings: "wght" 400;
-        color: $color-ubyssey-blue-light;
+        color: variables.$color-ubyssey-blue-light;
     }
 }
 
@@ -162,7 +166,7 @@
   .landing_stream_block--flex-container {
     margin-bottom: 0;
   }
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     .horizontal-timeline-wrap {
        padding-inline: 1em;
      }
@@ -176,7 +180,7 @@
 
         .timeline-title {
         margin: 1.25em auto;
-        color: $color-ubyssey-blue;
+        color: variables.$color-ubyssey-blue;
         text-align: center;
         font-size: 1.15em;
         line-height: 1.25em;
@@ -187,10 +191,10 @@
         }
         .o-article__published {
             margin-right: 0.5em;
-            color: $color-ubyssey-blue;
+            color: variables.$color-ubyssey-blue;
             font-weight: 600;
         }
-        --timeline-colour: #{$color-ubyssey-blue};
+        --timeline-colour: #{variables.$color-ubyssey-blue};
         li {
           .o-article__published {
               font-size: 0.75em;
@@ -204,10 +208,10 @@
           }
         }
 
-        @media($bp-smaller-than-desktop) {
+        @media(variables.$bp-smaller-than-desktop) {
           padding-inline: 2em;
         }
-        @media($bp-smaller-than-phablet) {
+        @media(variables.$bp-smaller-than-phablet) {
           display: flex;
           flex-direction: column-reverse;
           .timeline-title {
@@ -220,11 +224,11 @@
 .landing_stream_block__elections_race {
   display: flex;
 
-  @media($bp-smaller-than-desktop) {
+  @media(variables.$bp-smaller-than-desktop) {
     padding-inline: 1em;
   }
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     flex-direction: column-reverse;
   }
 
@@ -236,7 +240,7 @@
     flex-grow: 0;
     flex-shrink: 0;
     li {
-      @media($bp-smaller-than-phablet) {
+      @media(variables.$bp-smaller-than-phablet) {
         margin-inline: 0.5em;
       }
       
@@ -270,7 +274,7 @@
     }
   }
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     .pinned-title {
       margin: 2em;
       text-align: center;
@@ -278,11 +282,11 @@
   }
 
   .landing_stream_block--flex-container {
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       flex-wrap: wrap;
       gap: 1.5em;
     }
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
       flex-direction: column;
     }
 
@@ -291,7 +295,7 @@
       margin-inline: 0;
       --borderColour: var(--highlight-colour);
 
-      @media($bp-smaller-than-phablet) {
+      @media(variables.$bp-smaller-than-phablet) {
         display: flex;
         margin-inline: 2em;
         max-width: none;
@@ -337,11 +341,11 @@
 }
 [color-css-theme="light"] {
   .landing-stream-block__borders {
-    border-color: $color-ubyssey-blue;
+    border-color: variables.$color-ubyssey-blue;
   }
   .landing-stream-block__timeline {
-      border-color: $color-ubyssey-blue;
-      --timeline-colour: #{$color-ubyssey-blue};
+      border-color: variables.$color-ubyssey-blue;
+      --timeline-colour: #{variables.$color-ubyssey-blue};
 
       p.o-article__published,
       .o-article__seemore {
@@ -353,13 +357,13 @@
   
 [color-css-theme="dark"] {
   .landing-stream-block__borders {
-    border-color: $color-ubyssey-blue-light;
+    border-color: variables.$color-ubyssey-blue-light;
   }
   .landing-stream-block__timeline {
-      border-color: $color-ubyssey-blue-light;
+      border-color: variables.$color-ubyssey-blue-light;
       --timeline-colour: white;
       h3.o-article__headline {
-        color: $color-ubyssey-blue-light;
+        color: variables.$color-ubyssey-blue-light;
       }
     }
   }

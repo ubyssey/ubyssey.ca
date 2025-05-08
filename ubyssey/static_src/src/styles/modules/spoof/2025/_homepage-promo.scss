@@ -1,3 +1,5 @@
+@use "../../variables";
+
 div.glm-promo {
     margin: 100px auto 1em auto;
     display: flex;
@@ -55,7 +57,7 @@ div.glm-promo {
         bottom: 0;
     }
 
-    @media ($bp-smaller-than-phablet) {
+    @media (variables.$bp-smaller-than-phablet) {
         h2 {
             left: 0.5em;
             bottom: calc(100% - 1.5em);
@@ -70,7 +72,7 @@ div.glm-promo {
         }
     }
 
-    @media ($bp-smaller-than-mobile) {
+    @media (variables.$bp-smaller-than-mobile) {
         .piggyback {
             height: 250px;
             width: auto;

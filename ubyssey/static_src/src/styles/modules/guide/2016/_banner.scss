@@ -1,3 +1,5 @@
+@use "../../variables";
+
 .c-banner {
   position: relative;
   width: 100%;
@@ -21,7 +23,7 @@
     content: '';
     display: block;
 
-    @media($bp-larger-than-tablet) {
+    @media(variables.$bp-larger-than-tablet) {
       padding-top: 37%;
     }
   }
@@ -47,25 +49,24 @@
   &:after {
     padding-top: 140%;
 
-    @media($bp-larger-than-mobile) {
+    @media(variables.$bp-larger-than-mobile) {
       padding-top: 55%;
     }
 
-    @media($bp-larger-than-desktop) {
+    @media(variables.$bp-larger-than-desktop) {
       padding-top: 37%;
     }
   }
 }
 
 .c-banner__container {
-
-  @media($bp-larger-than-tablet) {
-    position: absolute;
-  }
-
   height: 100%;
   width: 100%;
   display: flex;
+
+  @media(variables.$bp-larger-than-tablet) {
+    position: absolute;
+  }
 }
 
 .c-banner--welcome__inner {
@@ -75,7 +76,7 @@
   padding: 30px;
   text-align: center;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     margin-top: -40px;
   }
 }
@@ -83,7 +84,7 @@
 .c-banner--welcome__intro {
   font-style: italic;
   font-size: 24px;
-  color: $color-white;
+  color: variables.$color-white;
   letter-spacing: 0.48px;
   line-height: 28px;
   text-shadow: 0 1px 2px rgba(0,0,0,0.50);
@@ -93,7 +94,7 @@
 .c-banner--welcome__snippet {
   margin-top: 15px;
   font-size: 18px;
-  color: $color-white;
+  color: variables.$color-white;
   letter-spacing: 0.36px;
   line-height: 22px;
   text-shadow: 0 1px 2px rgba(0,0,0,0.50);
@@ -111,22 +112,20 @@
 .c-banner--article__nav {
   padding: 2em 0;
 
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     padding: 3em 0;
   }
 }
 
 .c-banner--article__headings {
   padding-bottom: 5%;
-
-  @media($bp-larger-than-tablet) {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  @media(variables.$bp-larger-than-tablet) {
     position: absolute;
     bottom: 0;
   }
 
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     padding-bottom: 12%;
   }
-
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }

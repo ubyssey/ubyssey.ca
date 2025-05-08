@@ -1,3 +1,7 @@
+@use "../modules/fonts";
+@use "../modules/footer";
+@use "../modules/variables";
+
 .c-section__featured {
   // Structure
   margin-bottom: 2rem;
@@ -26,7 +30,7 @@
 }
 
 .c-section__featured__articles {
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     width: 100%;
   }
 }
@@ -37,7 +41,7 @@
 
   // Text
   font-size: 6em;
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     font-size: 4em;
   }
 }
@@ -67,7 +71,7 @@
     bottom: -55px;
     padding-inline: 20px;
     border: none;
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
       bottom: -25px;
       padding-inline: 10px;
       font-size: 2em;
@@ -78,7 +82,7 @@
     position: absolute;
     bottom: -50px;
     left: 50px;
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
       bottom: -25px;
     }
   }
@@ -118,7 +122,7 @@
       text-overflow: ellipsis;
     }
   }
-  @media($bp-smaller-than-phablet) { 
+  @media(variables.$bp-smaller-than-phablet) { 
     display: none;
   }
 }
@@ -130,13 +134,14 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  @media($bp-larger-than-phablet) {
-    width: 50%;
-  }
+
   overflow-y: auto;
   background-color: var(--background);
   text-align: left;
 
+  @media(variables.$bp-larger-than-phablet) {
+    width: 50%;
+  }
   h2 {
     margin-block: 0;
     width: fit-content;
@@ -148,7 +153,7 @@
     margin-block: 0 0.5em;
     padding-block: 1em;
     padding-right: 2em;
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       display: flex;
       flex-wrap: wrap;
       gap: 1em;
@@ -165,7 +170,7 @@
   margin-left: auto;
   justify-content: right;
   text-align: right;
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     display: block;
   }
   .o-archive__search__input {
@@ -186,21 +191,21 @@
     cursor: pointer;
     color: var(--header_color);
     &:hover {
-      color: $color-accent-blue;
+      color: variables.$color-accent-blue;
     }
   }
   a > p {
     color: var(--header_color);
 
     &:hover{
-      color: $color-accent-blue;
+      color: variables.$color-accent-blue;
     }
   }
 }
 
 .main-content {
   width: 55%;
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     width:100%
   }
 }
@@ -215,7 +220,7 @@
   font-variation-settings: "wght" 600;
   font-size: 0.9em;
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     width:100%;
   }
 
@@ -236,7 +241,7 @@
   margin-block: 2em;
   border-bottom: 2px solid var(--header_color);
 
-  color: $text-color;
+  color: footer.$text-color;
 
   h2.c-section__info-header {
     max-width: fit-content;
@@ -246,7 +251,7 @@
     font-size: 1.25em;
     text-transform: uppercase;
 
-    @media($bp-smaller-than-mobile) {
+    @media(variables.$bp-smaller-than-mobile) {
       display: none;
     }
   }
@@ -255,7 +260,7 @@
     margin-bottom: 0;
   }
 
-  @media($bp-smaller-than-desktop) {
+  @media(variables.$bp-smaller-than-desktop) {
     margin: 1em;
     margin-top: 0;
   }
@@ -276,7 +281,7 @@ svg.banner-title text{
 
   transition: stroke 0.5s ease, color 0.5s ease;
   
-  font-family: $font-headline;
+  font-family: fonts.$font-headline;
   font-size: 1em;
   font-weight: bolder;
 }
@@ -284,30 +289,31 @@ svg.banner-title text{
 .c-section__heading {
   margin-block: 1em 2em;
   padding-inline: 2em;
-  @media ($bp-larger-than-phablet) {
-    padding-inline: 20%;
-  }
+
   padding-top: 0.5em;
-  border-bottom: 2px solid $color-ubyssey-blue;
+  border-bottom: 2px solid variables.$color-ubyssey-blue;
 
   text-align: center;
-  font-family: $font-headline;
+  font-family: fonts.$font-headline;
 
+  @media (variables.$bp-larger-than-phablet) {
+    padding-inline: 20%;
+  }
   h1 {
     margin-bottom: 0;
     font-size: 1.5em;
     text-transform: uppercase;
-    color: $color-ubyssey-blue;
+    color: variables.$color-ubyssey-blue;
   }
 }
 
 .section_infinitefeed {
-  @media ($bp-larger-than-tablet) {
+  @media (variables.$bp-larger-than-tablet) {
     width: 65%;
   }
 
   #feed {
-      @media ($bp-larger-than-phablet) {
+      @media (variables.$bp-larger-than-phablet) {
           padding-right: 20px;
       }
       .article--infinitefeed {
@@ -345,7 +351,7 @@ main.tag {
       padding-bottom: 5px;
       text-transform: capitalize;
     }
-    @media ($bp-larger-than-phablet) {
+    @media (variables.$bp-larger-than-phablet) {
       position: sticky;
       top: 6em;
       margin-bottom: 50vh;

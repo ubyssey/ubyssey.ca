@@ -1,3 +1,6 @@
+@use "../../variables";
+@use "../2020/fonts" as fonts2;
+
 .article-box--nav{
   display: block;
   width: fit-content;  
@@ -14,7 +17,7 @@
       padding-bottom: 0.5em;
       z-index: 0;
       margin: 0;
-      font-family: $accent-font;
+      font-family: fonts2.$accent-font;
       line-height: 1em;
       letter-spacing: 0.2rem;
       text-transform: lowercase;
@@ -48,7 +51,7 @@
     justify-content: space-between;
     width: 80%;
     margin: auto;
-    @media($bp-smaller-than-tablet){
+    @media(variables.$bp-smaller-than-tablet){
         display: block;
         padding-top: 10%;
     }

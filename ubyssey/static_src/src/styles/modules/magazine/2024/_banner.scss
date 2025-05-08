@@ -1,3 +1,5 @@
+@use "fonts";
+
 .c-banner {
     position: sticky;
     top: 0;
@@ -45,7 +47,7 @@
     
             transform-origin: left top;
             transform: rotateZ(-90deg);
-            font-family: $header-font; 
+            font-family: fonts.$header-font; 
     
             &.postSized {
                 opacity: 1;

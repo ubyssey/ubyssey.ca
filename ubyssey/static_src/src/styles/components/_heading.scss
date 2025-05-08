@@ -1,24 +1,27 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .c-heading {
   // Structure
   margin: 0 0 1rem 0;
 
   // Text
-  font: $font-weight-bold 1em $font-default;
-  color: $color-text-black;
+  font: fonts.$font-weight-bold 1em fonts.$font-default;
+  color: variables.$color-text-black;
 }
 
 .c-heading--light {
   // Text
-  color: $color-text-gray;
-  font-weight: $font-weight-semi-bold;
+  color: variables.$color-text-gray;
+  font-weight: fonts.$font-weight-semi-bold;
 }
 
 .c-heading--2 {
   // Text
-  font-size: font-size(24);
+  font-size: fonts.font-size(24);
 }
 
 .c-heading--3 {
   // Text
-  font-size: font-size(18);
+  font-size: fonts.font-size(18);
 }

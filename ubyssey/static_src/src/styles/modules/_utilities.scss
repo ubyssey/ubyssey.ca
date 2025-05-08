@@ -1,10 +1,12 @@
+@use "variables";
+
 .u-no-scroll {
   // Func: Disable scrolling
   overflow-y: hidden;
 }
 
 .u-flex--tablet {
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     display: flex;
   }
 }

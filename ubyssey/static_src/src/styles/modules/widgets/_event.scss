@@ -1,3 +1,6 @@
+@use "../fonts";
+@use "../variables";
+
 .c-widget-event {
   margin-top: 2rem;
 }
@@ -6,9 +9,9 @@
   margin-top: 0.777em;
   text-align: right;
 
-  font-family: $font-default;
-  font-size: font-size(14);
-  font-weight: $font-weight-semi-bold;
-  color: $color-text-gray-light;
+  font-family: fonts.$font-default;
+  font-size: fonts.font-size(14);
+  font-weight: fonts.$font-weight-semi-bold;
+  color: variables.$color-text-gray-light;
   letter-spacing: 0.045em;
 }

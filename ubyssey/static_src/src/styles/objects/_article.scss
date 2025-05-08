@@ -1,3 +1,6 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .o-article__image>img {
   // Structure
   width: 100%;
@@ -10,11 +13,11 @@
   margin-bottom: 0.5rem;
 
   // Text
-  font-family: $font-headline;
-  font-weight: $font-weight-bold;
+  font-family: fonts.$font-headline;
+  font-weight: fonts.$font-weight-bold;
   font-variation-settings: 'wght' 700;
   line-height: 1.15em;
-  font-size: font-size(24);
+  font-size: fonts.font-size(24);
 
   a {
     // Text
@@ -23,7 +26,7 @@
 
     &:hover {
       // Text
-      color: $color-accent-blue;
+      color: variables.$color-accent-blue;
     }
   }
 }
@@ -35,7 +38,7 @@
 
 .o-article__byline {
   // Text
-  font-size: font-size(14);
+  font-size: fonts.font-size(14);
   line-height: 1.5em;
 }
 
@@ -77,7 +80,7 @@
   // Text
   line-height: 1.5em;
   color: var(--archive-text);
-  font-size: font-size(14);
+  font-size: fonts.font-size(14);
   word-wrap: break-word;
 }
 
@@ -85,7 +88,7 @@
   padding-left: 15px;
   padding-right: 15px;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     padding-left: 0;
     padding-right: 0;
@@ -101,7 +104,7 @@
 
   &:hover {
     color: white;
-    background-color: $color-ubyssey-blue-dark !important;
+    background-color: variables.$color-ubyssey-blue-dark !important;
   }
 }
 
@@ -151,7 +154,7 @@ ul.article-list, ol.article-list {
     }
 
     h4.headline {
-      font-family: $font-headline;
+      font-family: fonts.$font-headline;
       margin-top: 0;
       margin-bottom: 10px;
       font-size: 17px;
@@ -176,12 +179,12 @@ ul.article-list, ol.article-list {
 
 .o-article--default {
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     display: flex;
   }
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     // Structure
     display: block;
   }
@@ -190,14 +193,14 @@ ul.article-list, ol.article-list {
     // Structure
     margin-bottom: 0.5rem;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       // Structure
       width: 15rem;
       margin-right: 1rem;
       margin-bottom: 0;
     }
 
-    @media($bp-larger-than-desktop) {
+    @media(variables.$bp-larger-than-desktop) {
       // Structure
       width: 100%;
       margin-bottom: 0.5rem;
@@ -205,7 +208,7 @@ ul.article-list, ol.article-list {
   }
 
   .o-article__right {
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       // Structure
       flex: 1;
     }
@@ -224,9 +227,9 @@ ul.article-list, ol.article-list {
   padding-bottom: 1rem;
 
   // Border
-  border-bottom: thin dotted $color-border-gray-dark;
+  border-bottom: thin dotted variables.$color-border-gray-dark;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
@@ -235,11 +238,11 @@ ul.article-list, ol.article-list {
 
   .o-article__headline {
     // Text
-    font-size: font-size(20);
+    font-size: fonts.font-size(20);
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       // Text
-      font-size: font-size(24);
+      font-size: fonts.font-size(24);
     }
   }
 
@@ -248,7 +251,7 @@ ul.article-list, ol.article-list {
     width: 6rem;
     padding-right: 1rem;
 
-    @media($bp-larger-than-mobile) {
+    @media(variables.$bp-larger-than-mobile) {
       // Structure
       width: 9rem;
       padding-right: 1.25rem;
@@ -264,7 +267,7 @@ ul.article-list, ol.article-list {
     // Structure
     margin-bottom: 0;
 
-    @media($bp-larger-than-mobile) {
+    @media(variables.$bp-larger-than-mobile) {
       // Structure
       margin-bottom: 0.5rem;
     }
@@ -275,7 +278,7 @@ ul.article-list, ol.article-list {
     display: none;
     margin-bottom: 0;
 
-    @media($bp-larger-than-mobile) {
+    @media(variables.$bp-larger-than-mobile) {
       // Structure
       display: block;
     }
@@ -285,7 +288,7 @@ ul.article-list, ol.article-list {
 // Article bullet point
 .o-article--bullet {
   .o-article__headline {
-    font-size: font-size(17);
+    font-size: fonts.font-size(17);
   }
 }
 
@@ -322,7 +325,7 @@ ul.article-list, ol.article-list {
 }
 
 .video-article {
-  @media($bp-smaller-than-mobile) {
+  @media(variables.$bp-smaller-than-mobile) {
     display: block;
   }
 
@@ -339,7 +342,7 @@ ul.article-list, ol.article-list {
     padding-left: 2%;
     padding-right: 2%;
 
-    @media($bp-smaller-than-mobile) {
+    @media(variables.$bp-smaller-than-mobile) {
       width: 96%;
       padding: 2%;
     }
@@ -349,7 +352,7 @@ ul.article-list, ol.article-list {
     width: 65%;
     position: relative;
 
-    @media($bp-smaller-than-mobile) {
+    @media(variables.$bp-smaller-than-mobile) {
       width: 100%;
     }
   }

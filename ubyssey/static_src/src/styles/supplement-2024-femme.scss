@@ -1,5 +1,5 @@
-@import 'modules/_variables.scss';
-@import 'modules/_fonts.scss';
+@use 'modules/_variables.scss';
+@use 'modules/_fonts.scss';
 
 body {
   margin: 0;
@@ -189,7 +189,7 @@ img {
     -ms-user-select: none;
   }
 
-  @media ($bp-larger-than-tablet) {
+  @media (variables.$bp-larger-than-tablet) {
     &.right,
     &.left {
       height: auto;
@@ -421,7 +421,7 @@ nav.supplement-nav {
   }
 }
 
-@media($bp-smaller-than-phablet) {
+@media(variables.$bp-smaller-than-phablet) {
   nav.supplement-nav h1 {
     font-size: 3em;
   }

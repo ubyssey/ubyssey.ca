@@ -1,3 +1,6 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 // Basic button
 .o-button {
   // Structure
@@ -10,13 +13,13 @@
   background: #fff;
 
   // Border
-  border: thin solid $color-border-gray-light;
+  border: thin solid variables.$color-border-gray-light;
   border-radius: 4px;
 
   // Text
-  font-size: font-size(13);
+  font-size: fonts.font-size(13);
   font-weight: 600;
-  color: $color-text-gray;
+  color: variables.$color-text-gray;
   line-height: 2rem;
 
   // Extras
@@ -38,7 +41,7 @@
     background: whitesmoke;
 
     // Text
-    color: $color-text-gray;
+    color: variables.$color-text-gray;
   }
 }
 
@@ -68,7 +71,7 @@
   background: #fff;
 
   // Border
-  border: thin solid $color-border-gray-light;
+  border: thin solid variables.$color-border-gray-light;
   border-radius: 4px;
 
   // Extras
@@ -96,8 +99,8 @@
 
     // Text
     line-height: 2rem;
-    color: $color-text-gray;
-    font-size: font-size(13);
+    color: variables.$color-text-gray;
+    font-size: fonts.font-size(13);
     font-weight: 600;
   }
 
@@ -117,7 +120,7 @@
   &--is-active a,
   &--is-active a:hover {
     background: whitesmoke;
-		color: $color-text-gray;
+		color: variables.$color-text-gray;
   }
 
   a:hover {
@@ -154,7 +157,7 @@
 	border-radius: 3px;
 
 	// Text
-	font-size: font-size(13);
+	font-size: fonts.font-size(13);
 	text-align: center;
 	line-height: 40px;
 	font-weight: 600;
@@ -213,7 +216,7 @@
 		// Text
 		color: white;
 		text-align: center;
-		font-size: font-size(18);
+		font-size: fonts.font-size(18);
 	}
 
 	&:hover .fa,
@@ -289,7 +292,7 @@
 
 		// Text
 		text-align: center;
-		font-size: font-size(16);
+		font-size: fonts.font-size(16);
 		font-weight: 600;
 	}
 
@@ -321,7 +324,7 @@
 [color-css-theme="light"] {
 
 	.o-mobile-dropdown__button {
-		background: $color-ubyssey-blue-dark;
+		background: variables.$color-ubyssey-blue-dark;
 		color: #fff;
 		box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
 
@@ -342,7 +345,7 @@
 		&--is-active,
 		&--is-active a:hover,
 		&--is-active a:focus {
-			background: $color-ubyssey-blue-dark;
+			background: variables.$color-ubyssey-blue-dark;
 			color: #fff;
 		}
 	}
@@ -362,8 +365,8 @@
 [color-css-theme="dark"] {
 
 	.o-mobile-dropdown__button {
-		background: $color-ubyssey-blue-light;
-		color: $color-ubyssey-blue-dark;
+		background: variables.$color-ubyssey-blue-light;
+		color: variables.$color-ubyssey-blue-dark;
 		box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
 
 		&:hover,
@@ -385,7 +388,7 @@
 		&--is-active,
 		&--is-active a:hover,
 		&--is-active a:focus {
-			background: $color-ubyssey-blue-dark;
+			background: variables.$color-ubyssey-blue-dark;
 			color: #fff;
 		}
 	}
@@ -394,7 +397,7 @@
 		background: rgba(255, 255, 255, 0.97);
 
 		ul {
-			background: $color-ubyssey-blue-light;
+			background: variables.$color-ubyssey-blue-light;
 			border-top-color: #e8e8e8;
 			border-bottom-color: #e8e8e8;
 			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);

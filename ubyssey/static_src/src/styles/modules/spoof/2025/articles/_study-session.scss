@@ -1,3 +1,5 @@
+@use "../base";
+
 article.study-session {
     display: flex;
     background-image: url('/static/ubyssey/images/spoof/2025/study-session/stripe-dots-bg.png');
@@ -9,7 +11,7 @@ article.study-session {
             margin-bottom: 0;
             font-size: 4em;
             font-family: "nickainley", serif;
-            color: $glm-magenta;
+            color: base.$glm-magenta;
             -webkit-text-stroke: 0.1em white;
             paint-order: stroke;
         }
@@ -30,7 +32,7 @@ article.study-session {
             img {
                 width: 100%;
                 height: auto;
-                border: 0.25em solid $glm-purple;
+                border: 0.25em solid base.$glm-purple;
                 box-sizing: border-box;
             }
             span.credit {
@@ -38,12 +40,12 @@ article.study-session {
                 text-align: center;
                 -webkit-text-stroke: 0.25em white;
                 paint-order: stroke;
-                color: $glm-magenta;
+                color: base.$glm-magenta;
             }
         }
     }
 
-    @media ($bp-smaller-than-phablet) {
+    @media (base.$bp-smaller-than-phablet) {
         .header-container {
             padding-left: 0;
         }

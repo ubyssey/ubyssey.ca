@@ -1,3 +1,6 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .c-text-input,
 .c-form__input > input[type='text'],
 .c-form__input > input[type='email'],
@@ -9,13 +12,13 @@
   box-sizing: border-box;
 
   // Border
-  border: 1px solid $color-border-gray;
+  border: 1px solid variables.$color-border-gray;
   border-radius: 2px;
 
   // Text
   line-height: 1.5rem;
-  font-size: font-size(16);
-  color: $color-text-black;
+  font-size: fonts.font-size(16);
+  color: variables.$color-text-black;
 
   // Extra
   transition: border-color 0.4s;

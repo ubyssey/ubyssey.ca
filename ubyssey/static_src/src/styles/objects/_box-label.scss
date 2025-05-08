@@ -1,4 +1,4 @@
-@import 'modules/variables';
+@use '../modules/variables';
 
 .sticky {
     position: sticky;
@@ -57,14 +57,14 @@
 
 [color-css-theme="light"] {
     .boxLabel {
-        --boxPrimary: #{$color-ubyssey-blue-dark};
+        --boxPrimary: #{variables.$color-ubyssey-blue-dark};
         --boxSecondary: none;
         --boxTextLeft: white;
-        --boxTextRight: #{$color-ubyssey-blue-dark};
+        --boxTextRight: #{variables.$color-ubyssey-blue-dark};
     }
 
     .boxLabel.boxLabel-highlight {
-        --boxSecondary: #{$color-ubyssey-blue-light};
+        --boxSecondary: #{variables.$color-ubyssey-blue-light};
     }
 
     .boxLabel {
@@ -78,14 +78,14 @@
   
     .boxLabel {
         &.sticky {
-            box-shadow: 0 5px 20px 6px $color-ubyssey-blue-dark;
+            box-shadow: 0 5px 20px 6px variables.$color-ubyssey-blue-dark;
         }
     }
   
     .boxLabel {
-        --boxPrimary: #{$color-ubyssey-blue-light};
-        --boxSecondary: #{$color-ubyssey-blue-dark};
-        --boxTextLeft: #{$color-ubyssey-blue-dark-2};
-        --boxTextRight: #{$color-ubyssey-blue-light};
+        --boxPrimary: #{variables.$color-ubyssey-blue-light};
+        --boxSecondary: #{variables.$color-ubyssey-blue-dark};
+        --boxTextLeft: #{variables.$color-ubyssey-blue-dark-2};
+        --boxTextRight: #{variables.$color-ubyssey-blue-light};
     }
 }

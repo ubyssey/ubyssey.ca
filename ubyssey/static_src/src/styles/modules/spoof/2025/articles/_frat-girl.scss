@@ -1,3 +1,5 @@
+@use "../base";
+
 
 .frat-girl {
     $wd-blue: #adcef2;
@@ -120,7 +122,7 @@
                 margin-right: 4em;
                 margin-block: 1.5em;
                 border-radius: 1em 0.25em 1em 1em;
-                background-color: $glm-pink;
+                background-color: base.$glm-pink;
                 color: white;
                 font-weight: 600;
             }

@@ -1,4 +1,4 @@
-@import './modules/variables';
+@use 'modules/variables';
 
 $desktop-map-height: 640px;
 $map-marker-size: 20px;
@@ -11,7 +11,7 @@ h1, h2 {
   font-family: "ub-lft-etica","LFT Etica","Helvetica Neue","Helvetica","Arial",sans-serif;
   max-width: 585px;
   margin: 0 auto;
-  @media ($bp-smaller-than-tablet) {
+  @media (variables.$bp-smaller-than-tablet) {
     padding-left: 1rem;
     padding-right: 1rem;
   }
@@ -97,7 +97,7 @@ h1, h2 {
       background-size: cover;
     }
   }
-  @media($bp-smaller-than-tablet)  {
+  @media(variables.$bp-smaller-than-tablet)  {
     .c-i-map {
       height: 409px;
       overflow:hidden;
@@ -123,7 +123,7 @@ h1, h2 {
   }
 }
 
-@media($bp-smaller-than-tablet)  {
+@media(variables.$bp-smaller-than-tablet)  {
   .oyl-header__video.vertical {
     width: 100%;
     height: 100%;
@@ -143,7 +143,7 @@ h1, h2 {
   margin-right: .5rem;
 
   
-  @media($bp-smaller-than-tablet){
+  @media(variables.$bp-smaller-than-tablet){
     position: absolute;
     right: 0;
     top: 33px;

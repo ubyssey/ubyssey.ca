@@ -1,4 +1,5 @@
-@import 'modules/variables';
+@use '../modules/variables';
+@use "../modules/fonts";
 
 li.timeline-dot::before {
     position: absolute;
@@ -29,13 +30,13 @@ ul.horizontal-timeline {
             left: -0.5em;
             top: -0.6em;
         }
-        @media($bp-larger-than-phablet) {
+        @media(variables.$bp-larger-than-phablet) {
             &.timeline-dot .o-article__published,.o-article__seemore {
                 margin-top: -1.4em;
             }
         }
     }
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
         padding-left: 5em;
         flex-direction: column;
         li {
@@ -62,10 +63,11 @@ ul.horizontal-timeline-wrap {
     flex-wrap: wrap;
     justify-content: left;
     > li {
-        @media($bp-larger-than-phablet) {
+        padding-top: 1em;
+
+        @media(variables.$bp-larger-than-phablet) {
             margin-bottom: 2em;
         }
-        padding-top: 1em;
         .o-article__headline {
             margin-block: 1em;
             font-size: 0.85em;
@@ -100,7 +102,7 @@ ul.vertical-timeline {
     overflow-x: clip;
 
     &.wrapping {
-        @media($bp-larger-than-phablet) {
+        @media(variables.$bp-larger-than-phablet) {
             max-height: 400px;
             li {
                 width: calc(50% - 2.5em);
@@ -149,7 +151,7 @@ ul.vertical-timeline {
         }
     }
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
         &.right-align-on-desktop {
             li 
             {
@@ -213,7 +215,7 @@ ul.vertical-timeline {
         }
         h3.grouped_timeline--group-header-label {
             margin-top: 0.25em;
-            color: $color-ubyssey-blue;
+            color: variables.$color-ubyssey-blue;
             font-weight: 600;
         }
         &::after {
@@ -244,7 +246,7 @@ ul.vertical-timeline {
         list-style: circle;
         li {
             margin-bottom: 1em;
-            font-family: $font-headline;
+            font-family: fonts.$font-headline;
             font-variation-settings: "wght" 400;
             font-size: 0.9em;
             a {

@@ -1,3 +1,5 @@
+@use "../modules/variables";
+
 
 article.article-promo {
   
@@ -57,7 +59,7 @@ article.article-promo {
     .article-midsection-promo-div {
       min-height: calc(270px + 4em);
     }
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
       padding-inline: 3em;
       .o-article__section {
         text-align: center;

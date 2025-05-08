@@ -1,4 +1,4 @@
-@import 'variables';
+@use 'variables';
 
 .dark-mode-switcher {
   border: transparent;
@@ -118,7 +118,7 @@
 
 
 .c-article_dark_mode {
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     display: none;
   }
 }

@@ -1,3 +1,7 @@
+@use "2017/colors";
+@use "text";
+@use "utilities";
+
 .c-header {
   // Structure
   position: fixed;
@@ -8,7 +12,7 @@
   padding-right: 0;
 
   // Background
-  background: $color-primary-1;
+  background: colors.$color-primary-1;
 
   // Text
   text-align: center;
@@ -20,17 +24,17 @@
 
   &--pink {
     // Background
-    background: $color-primary-1;
+    background: colors.$color-primary-1;
   }
 
   &--green {
     // Background
-    background: $color-primary-2;
+    background: colors.$color-primary-2;
   }
 
   &--blue {
     // Background
-    background: $color-primary-3;
+    background: colors.$color-primary-3;
   }
 
   &--poetry {
@@ -51,11 +55,11 @@
       padding-bottom: 0.4rem;
 
       // Border
-      border-bottom: 4px solid $color-primary-1;
+      border-bottom: 4px solid colors.$color-primary-1;
     }
   }
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     position: static;
     display: flex;
@@ -90,9 +94,9 @@
   display: inline-block;
 
   // Text
-  font-family: $font-secondary;
+  font-family: text.$font-secondary;
   text-transform: uppercase;
-  font-size: font-size(20);
+  font-size: text.font-size(20);
   font-weight: 400;
 }
 
@@ -104,46 +108,46 @@
 
   transition: color 0.2s;
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     padding-bottom: 0.4rem;
 
     // Border
-    border-bottom: 4px solid $color-primary-1;
+    border-bottom: 4px solid colors.$color-primary-1;
 
     // Text
-    font-size: font-size(24);
-    color: $color-text-black;
+    font-size: text.font-size(24);
+    color: colors.$color-text-black;
 
     &:hover {
-      color: $color-primary-1;
+      color: colors.$color-primary-1;
     }
   }
 }
 
 .c-header--pink .c-header__logo {
-  border-color: $color-primary-1;
-  @media($bp-larger-than-mobile) {
+  border-color: colors.$color-primary-1;
+  @media(utilities.$bp-larger-than-mobile) {
     &:hover {
-      color: $color-primary-1;
+      color: colors.$color-primary-1;
     }
   }
 }
 
 .c-header--green .c-header__logo {
-  border-color: $color-primary-2;
-  @media($bp-larger-than-mobile) {
+  border-color: colors.$color-primary-2;
+  @media(utilities.$bp-larger-than-mobile) {
     &:hover {
-      color: $color-primary-2;
+      color: colors.$color-primary-2;
     }
   }
 }
 
 .c-header--blue .c-header__logo {
-  border-color: $color-primary-3;
-  @media($bp-larger-than-mobile) {
+  border-color: colors.$color-primary-3;
+  @media(utilities.$bp-larger-than-mobile) {
     &:hover {
-      color: $color-primary-3;
+      color: colors.$color-primary-3;
     }
   }
 }
@@ -155,11 +159,11 @@
 
   // Text
   text-align: right;
-  font-size: font-size(18);
-  line-height: font-size(28);
-  color: $color-text-gray;
+  font-size: text.font-size(18);
+  line-height: text.font-size(28);
+  color: colors.$color-text-gray;
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     display: block;
   }

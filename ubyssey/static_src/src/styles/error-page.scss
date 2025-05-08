@@ -1,29 +1,29 @@
-@import 'modules/core';
-@import 'modules/fonts';
-@import 'modules/font_faces';
-@import 'modules/variables';
-@import 'modules/mixins';
+@use 'modules/core';
+@use 'modules/fonts';
+@use 'modules/font_faces';
+@use 'modules/variables';
+@use 'modules/mixins';
 
 // Ubyssey site-specific files
-@import 'modules/header';
-@import 'modules/footer';
+@use 'modules/header';
+@use 'modules/footer';
 
-@import 'modules/darkmode';  
+@use 'modules/darkmode';  
 
-@import 'objects/article';
-@import 'objects/article_infinite';
+@use 'objects/article';
+@use 'objects/article_infinite';
 
-@import 'components/adblock-splash';
-@import 'components/cookie-disclaimer';
-@import 'components/replacement';
-@import 'components/infinitefeed';
+@use 'components/adblock-splash';
+@use 'components/cookie-disclaimer';
+@use 'components/replacement';
+@use 'components/infinitefeed';
 
 .error-page {
     margin: auto;
     padding: 0;
     height: 100%;
     width: 100%;
-    font-family: $font-default;
+    font-family: fonts.$font-default;
     color: #333;
 
     h1, h2, p {
@@ -44,7 +44,7 @@
         margin: 0.5em 0;
     }
     .email-link {
-        color: $color-ubyssey-blue;
+        color: variables.$color-ubyssey-blue;
         text-decoration: none;
         &:hover {
             text-decoration: underline;

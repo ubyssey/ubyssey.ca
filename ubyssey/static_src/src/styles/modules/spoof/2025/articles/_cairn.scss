@@ -1,3 +1,5 @@
+@use "../base";
+
 article.cairn {
     $cairn-purple: #928ec8;
     $cairn-blue: #4cc1ec;
@@ -104,7 +106,7 @@ article.cairn {
         }
     }
 
-    @media ($bp-larger-than-phablet) {
+    @media (base.$bp-larger-than-phablet) {
         .item.top-left {
             margin-top: 1em;
         }
@@ -113,7 +115,7 @@ article.cairn {
         }
     }
 
-    @media ($bp-smaller-than-phablet) { 
+    @media (base.$bp-smaller-than-phablet) { 
         .header-flex {
             margin-inline: 0;
             flex-direction: column;

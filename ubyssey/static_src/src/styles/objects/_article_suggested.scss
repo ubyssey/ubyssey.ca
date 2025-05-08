@@ -1,3 +1,6 @@
+@use "../modules/footer";
+@use "../modules/variables";
+
 .o-article--suggested_article {
 
     .o-article__headline {
@@ -6,7 +9,7 @@
     }
 
     .o-article__published {
-        color: $text-color;
+        color: footer.$text-color;
     }
 
     .o-article__snippet {
@@ -28,7 +31,7 @@
     }
 }
 
-@media($bp-smaller-than-phablet) {
+@media(variables.$bp-smaller-than-phablet) {
     .c-article--fw-story .suggested-title {
         margin-left: 1em;
     }
@@ -38,7 +41,7 @@
     font-size: 24px;
     font-weight: 400;
 
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
         margin-inline: 1em;
     }
 

@@ -1,15 +1,15 @@
-@import 'modules/variables';
+@use '../variables';
 
 .author_card {
     padding: 1.5em;
     display: flex;
-    background-color: $color-ubyssey-blue-light;
+    background-color: variables.$color-ubyssey-blue-light;
     border-radius: 20px;
     margin: auto;
     margin-top: 2em;
     flex-direction: column;
 
-    @media($bp-smaller-than-mobile) {
+    @media(variables.$bp-smaller-than-mobile) {
         width: auto;
         padding-bottom: 3em;
         border-radius: 0;

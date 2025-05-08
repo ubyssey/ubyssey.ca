@@ -1,8 +1,11 @@
+@use "../fonts";
+@use "../variables";
+
 .c-weekly-events {
   // Structure
   display: flex;
 
-  @media($bp-smaller-than-phablet){
+  @media(variables.$bp-smaller-than-phablet){
     // Structure
     display: block;
   }
@@ -25,7 +28,7 @@
     padding-right: 0;
   }
   
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
       margin-bottom: 1rem;
   }
 }
@@ -35,9 +38,9 @@
   padding-bottom: 0.75rem;
 
   // Text
-  font-size: font-size(14);
-  font-weight: $font-weight-semi-bold;
-  color: $color-text-gray-light;
+  font-size: fonts.font-size(14);
+  font-weight: fonts.$font-weight-semi-bold;
+  color: variables.$color-text-gray-light;
   text-transform: uppercase;
   text-align: center;
   letter-spacing: 0.5px;

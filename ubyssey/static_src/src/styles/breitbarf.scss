@@ -1,5 +1,5 @@
-@import 'modules/variables';
-@import 'modules/advertisements';
+@use 'modules/variables';
+@use 'modules/advertisements';
 
 @font-face {
     font-family: 'BebasNeue';
@@ -37,7 +37,7 @@ body {
   height: 50px;
   width: auto;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     height: 75px;
   }
 }
@@ -46,7 +46,7 @@ body {
   background: #fff;
   padding: 20px;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     display: flex;
   }
 }
@@ -62,7 +62,7 @@ body {
   margin-left: auto;
   margin-right: auto;
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     margin: 0;
   }
 

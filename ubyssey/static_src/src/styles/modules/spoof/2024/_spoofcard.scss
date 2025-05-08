@@ -1,3 +1,5 @@
+@use "../../fonts" as fonts2;
+
 .card {
     background-color: transparent !important;
     border: none !important;
@@ -15,7 +17,7 @@
     .section-button {
         display: inline-block;
         text-transform: uppercase;
-        font-family: $font-default;
+        font-family: fonts2.$font-default;
         font-feature-settings: normal;
         font-style: normal;
         letter-spacing: 0.125em;
@@ -38,7 +40,7 @@
 
     h3.card-title {
         text-transform: none;
-        font-family: $font-default;
+        font-family: fonts2.$font-default;
         font-feature-settings: normal;
         font-style: normal;
         letter-spacing: 0.02em;
@@ -58,7 +60,7 @@
     p.card-text {
         margin: 0 !important;
         color: rgb(102, 102, 102);
-        font-family: $font-default;
+        font-family: fonts2.$font-default;
     }
 
 }
@@ -69,7 +71,7 @@
     background-color: transparent !important;
     border: none !important;
     text-transform: none;
-    font-family: $font-default;
+    font-family: fonts2.$font-default;
     font-feature-settings: normal;
     font-style: normal;
     letter-spacing: normal;

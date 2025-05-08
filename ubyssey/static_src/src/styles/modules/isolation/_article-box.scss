@@ -1,3 +1,5 @@
+@use "../variables";
+
 .article-box--nav{
     margin: 0;
     position: absolute;
@@ -26,7 +28,7 @@
 
 .article-boxes{
     display: flex;
-    @media($bp-smaller-than-tablet){
+    @media(variables.$bp-smaller-than-tablet){
         display: block;
     }
   
@@ -41,7 +43,7 @@
       width: 50%;
       height: 30vw;
       max-height: 400px;
-      @media($bp-smaller-than-tablet){
+      @media(variables.$bp-smaller-than-tablet){
         width: 95%;
         height: 35vw;
         margin: 2.5%;

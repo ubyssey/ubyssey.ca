@@ -1,3 +1,5 @@
+@use "base";
+
 nav {
     margin-bottom: -1em;
     position: relative;
@@ -69,7 +71,7 @@ nav {
     }
 
 
-    @media ($bp-smaller-than-phablet) {
+    @media (base.$bp-smaller-than-phablet) {
         ul  {
             flex-wrap: wrap;
             justify-content: space-around;

@@ -1,3 +1,5 @@
+@use "../modules/variables";
+
 .article-wrap {
     margin-top: 2em;
     display: flex;
@@ -14,7 +16,7 @@
     }
 
     /* Mobile: 1 article per row */
-    @media ($bp-smaller-than-phablet) {
+    @media (variables.$bp-smaller-than-phablet) {
         flex-direction: column;
         gap: 0;
         article.o-article {
@@ -36,7 +38,7 @@
         }
     }
     
-    @media ($bp-larger-than-phablet) {
+    @media (variables.$bp-larger-than-phablet) {
         /* Add vertical separator between articles */
         article.o-article {
             max-width: 50%;

@@ -1,4 +1,4 @@
-@import '../modules/variables';
+@use '../modules/variables';
 
 .sa-container-outer {
   // Structure
@@ -62,7 +62,7 @@
       justify-content: space-between;
 
       // Text
-      color: $color-text-gray-light;
+      color: variables.$color-text-gray-light;
     }
 
     .sa-content {
@@ -86,14 +86,14 @@
       background-size: contain;
 
       // Text
-      color: $color-text-gray-light;
+      color: variables.$color-text-gray-light;
       font-size: .75rem;
 
     }
   }
 }
 .sa-container-outer {
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     .u-container {
       // Strucuture
       max-width: 960px;

@@ -1,0 +1,4 @@
+@use "../variables";
+$border                           : 1px dotted variables.$color-border-gray-dark;
+$calendar-event-time-label-color  : #006fcc;
+$tiles-margin                     : 35px;

@@ -1,3 +1,6 @@
+@use "../../variables";
+@use "fonts";
+
 $more-column-left-start: 2;
 $more-column-left-end: 8;
 
@@ -23,15 +26,15 @@ $row-height400-end: 10;
 $row-height450-end: 11;
 
 $margin-size: 10px;
-@media($bp-smaller-than-tablet){
+@media(variables.$bp-smaller-than-tablet){
     $margin-size: 5px;
 }
 
 .section-grid-container {
     .section-title{
         width: 100%;
-        font-family: $header-font;
-        font-weight: $header-weight;
+        font-family: fonts.$header-font;
+        font-weight: fonts.$header-weight;
         text-transform: uppercase;
     }
 
@@ -53,7 +56,7 @@ $margin-size: 10px;
     }
 }
 
-@media($bp-larger-than-tablet){
+@media(variables.$bp-larger-than-tablet){
     .section-grid-container {
         display: grid;
         grid-template-columns: repeat(12, 1fr);
@@ -235,7 +238,7 @@ $margin-size: 10px;
     }
 }
 
-@media($bp-smaller-than-tablet){
+@media(variables.$bp-smaller-than-tablet){
     .section-grid-container {
         display: grid;
         grid-template-columns: repeat(2, 1fr);

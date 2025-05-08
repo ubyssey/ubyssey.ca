@@ -1,3 +1,5 @@
+@use "../base";
+
 article.fashion {
     $fashion-blue: #91bfe2;
     $fashion-purple: #86599e;
@@ -70,7 +72,7 @@ article.fashion {
         filter: drop-shadow(0 0.25em 0.5em black);
     }
 
-    @media ($bp-smaller-than-phablet) { 
+    @media (base.$bp-smaller-than-phablet) { 
         .header-bar h2 {
             font-size: 2em;
         }

@@ -1,13 +1,16 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .c-elections-sidebar__header {
   // Structure
   margin: 0 0 1rem 0;
   padding: 0.65rem 0 0.8rem 0;
 
   // Border
-  border-bottom: thin dotted $color-border-gray-dark;
+  border-bottom: thin dotted variables.$color-border-gray-dark;
 
   // Text
-  font-size: font-size(16);
+  font-size: fonts.font-size(16);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-align: center;
@@ -19,24 +22,24 @@
     }
 
     &:hover {
-      color: $color-red;
+      color: variables.$color-red;
 
       u {
-        border-bottom: 2px solid $color-red;
+        border-bottom: 2px solid variables.$color-red;
       }
     }
   }
 
-  @media($bp-larger-than-mobile) {
+  @media(variables.$bp-larger-than-mobile) {
     // Border
-    border-top: thin dotted $color-border-gray-dark;
+    border-top: thin dotted variables.$color-border-gray-dark;
   }
 
 }
 
 .c-elections-sidebar__list {
   // Border
-  border-top: thin dotted $color-border-gray-dark;
+  border-top: thin dotted variables.$color-border-gray-dark;
 }
 
 .c-elections-sidebar__tag {
@@ -45,9 +48,9 @@
   margin-bottom: 0.15rem;
 
   // Text
-  font-size: $font-weight-semi-bold .625em $font-default;
+  font-size: fonts.$font-weight-semi-bold .625em fonts.$font-default;
   letter-spacing: 0.05em;
-  color: $color-red;
+  color: variables.$color-red;
   text-transform: uppercase;
 }
 
@@ -57,9 +60,9 @@
   margin-bottom: 0.5rem;
 
   // Border
-  border-bottom: thin dotted $color-border-gray-dark;
+  border-bottom: thin dotted variables.$color-border-gray-dark;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     padding-left: 0;
     padding-right: 0;
@@ -73,7 +76,7 @@
 
   // Text
   text-align: center;
-  font-size: font-size(13);
+  font-size: fonts.font-size(13);
   color: gray;
 }
 
@@ -89,16 +92,16 @@
 
   // Text
   text-align: center;
-  color: $color-white;
-  font-size: font-size(18);
+  color: variables.$color-white;
+  font-size: fonts.font-size(18);
   text-transform: uppercase;
-  font-weight: $font-weight-semi-bold;
+  font-weight: fonts.$font-weight-semi-bold;
   letter-spacing: 0.5px;
 
   // Extras
   box-shadow: 0 4px #8d1010;
 
   &:hover {
-    color: $color-white;
+    color: variables.$color-white;
   }
 }

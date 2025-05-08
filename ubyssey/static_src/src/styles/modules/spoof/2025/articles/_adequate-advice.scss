@@ -1,3 +1,5 @@
+@use "../base";
+
 article.awesome-advice {
     $advice-green: #a9c75d;
     $advice-purple: #683187;
@@ -124,7 +126,7 @@ article.awesome-advice {
         }
     }
 
-    @media ($bp-smaller-than-phablet) {
+    @media (base.$bp-smaller-than-phablet) {
         .header-container h2 {
             margin-inline: -0.5em;
         }

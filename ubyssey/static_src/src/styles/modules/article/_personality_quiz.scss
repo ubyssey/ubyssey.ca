@@ -1,8 +1,9 @@
-@import 'modules/fonts';
+@use '../fonts';
+@use "../variables";
 
 .personality_quiz {
     .personality-quiz__question p {
-        font-family: $font-body;
+        font-family: fonts.$font-body;
     }
     .personality-quiz__answers {
         margin-block: 1em 2em;
@@ -25,7 +26,7 @@
     }
     
     button.personality-quiz__answer.selected {
-        border-color: $color-ubyssey-blue;
+        border-color: variables.$color-ubyssey-blue;
         background-color: #0071c9;
         color: white;
         text-decoration: underline;
@@ -40,7 +41,7 @@
         border: none;
         border-radius: 0;
         background: none;
-        background-color: $color-ubyssey-blue;
+        background-color: variables.$color-ubyssey-blue;
         color: white;
     }
     
@@ -85,7 +86,7 @@
             display: inline;
             border-bottom: 1px solid;
             font-weight: 600;
-            color: $color-ubyssey-blue;
+            color: variables.$color-ubyssey-blue;
         }
     }
     
