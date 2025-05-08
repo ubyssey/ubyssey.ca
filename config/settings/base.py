@@ -293,7 +293,6 @@ MIDDLEWARE = [
     'canonical_domain.middleware.CanonicalDomainMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.gzip.GZipMiddleware',
-    'wagtailcache.cache.FetchFromCacheMiddleware',
 ]
 
 if DEBUG:
