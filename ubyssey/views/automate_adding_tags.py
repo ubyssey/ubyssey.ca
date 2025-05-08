@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render
-from openai import OpenAI
+from openai import AsyncOpenAI
 from images.models import UbysseyImage
 import os
 import csv
@@ -8,6 +8,8 @@ from datetime import datetime
 from django.db.models import Q
 from wagtail.models.reference_index import ReferenceIndex
 from article.models import ArticlePage
+import asyncio
+from asgiref.sync import async_to_sync, sync_to_async
 
 def split_tags_and_description(input_string):
     """
@@ -27,20 +29,16 @@ def split_tags_and_description(input_string):
     
     # Split by the first newline to separate tags from description
     parts = cleaned_input.split('\n', 1)
-    tags_list = []
-    descriptions_list = []
     
+    description = ""
     if len(parts) >= 2:  # We have both tags and description
         tags = [tag.strip() for tag in parts[0].split(',')]
         description = parts[1].strip()
-        tags_list.append(tags)
-        descriptions_list.append(description)
+
     elif len(parts) == 1 and parts[0]:  # Only tags, no description
         tags = [tag.strip() for tag in parts[0].split(',')]
-        tags_list.append(tags)
-        descriptions_list.append("")
                 
-    return tags_list, descriptions_list
+    return tags, description
 
 def get_image_urls(request):
     """
@@ -58,53 +56,80 @@ def get_image_urls(request):
     extension_filter = Q()
     for ext in valid_extensions:
         extension_filter |= Q(file__endswith=ext)
-        
-    images = UbysseyImage.objects.exclude(tags__name='Tagged by OpenAI Vision').filter(extension_filter).order_by("-created_at")[:10]
-    base_url = settings.MEDIA_URL
-    image_data = []
-    
-    for image in images:
-        url = request.build_absolute_uri(base_url + image.file.name)
-        print(url)
-        
-        article_titles = []
-                
-        try:
-            # Get all references to the image
-            references = ReferenceIndex.get_references_to(image)
-                        
-            # Extract the object_id values directly (these are the article IDs)
-            article_ids_from_refs = set(references.values_list('object_id', flat=True))
-            
-            articles = ArticlePage.objects.filter(id__in=article_ids_from_refs, live=True)
-            
-            for article in articles:
-                article_titles.append(article.title)
-                print(f"Found reference to article: {article.title} (ID: {article.id})")
-        except Exception as e:
-            print(f"Error accessing references for image {image.id}: {e}")        
-        
-        # Store the URL and all found article titles
-        image_data.append({
-            'image': image,
-            'url': url,
-            'article_titles': article_titles
-        })
-    
+
+    images = []    
+    images = UbysseyImage.objects.exclude(tags__name='Tagged by OpenAI Vision').filter(extension_filter).order_by("-created_at")
+
+    iterate_images(images, request)
+
+@async_to_sync
+async def iterate_images(images, request):
+    tasks = []
+    max_at_a_time = 10
+    counter = 0
+    async for image in images:
+        tasks.append(asyncio.create_task(process_image(image, request)))
+        counter = counter + 1
+        if len(tasks) >= max_at_a_time:
+            print("---")
+            await asyncio.gather(*tasks)
+            print(f"{counter} / {len(images)}")
+            await asyncio.sleep(0.5)
+            tasks = []
+
+    await asyncio.gather(*tasks)
+    print(f"{counter} / {len(images)}")
+
+async def process_image(image, request):
+    data = await get_image_references(image, request)
+
     # Write URLs to a text file with article titles
     output_file = 'latest_image_urls.txt'
-    with open(output_file, 'w') as f:
-        for data in image_data:
-            f.write(f"Image URL: {data['url']}\n")
-            if data['article_titles']:
-                f.write("Used in articles:\n")
-                for title in data['article_titles']:
-                    f.write(f"  - {title}\n")
-            f.write("\n")
+    with open(output_file, 'a') as f:
+        
+        f.write(f"Image URL: {data['url']}\n")
+        if data['article_titles']:
+            f.write("Used in articles:\n")
+            for title in data['article_titles']:
+                f.write(f"  - {title}\n")
+        f.write("\n")
     
-    get_image_tags(image_data)
+    processed_image, tag_list, description = await get_image_tags(data)
+    if not (tag_list=="" and description == ""):
+        await populate_tags(processed_image, tag_list, description)
 
-def get_image_tags(image_data):
+@sync_to_async
+def get_image_references(image, request):
+
+    base_url = settings.MEDIA_URL
+    url = request.build_absolute_uri(base_url + image.file.name)
+    #print(url)
+    
+    article_titles = []
+    try:
+        # Get all references to the image
+        references = ReferenceIndex.get_references_to(image)
+                    
+        # Extract the object_id values directly (these are the article IDs)
+        article_ids_from_refs = set(references.values_list('object_id', flat=True))
+        
+        articles = ArticlePage.objects.filter(id__in=article_ids_from_refs, live=True)
+        
+        for article in articles:
+            article_titles.append(article.title)
+            #print(f"Found reference to article: {article.title} (ID: {article.id})")
+    except Exception as e:
+        print(f"Error accessing references for image {image.id}: {e}")  
+    
+    # Store the URL and all found article titles
+    data = {
+        'image': image,
+        'url': url,
+        'article_titles': article_titles
+    }
+    return data
+
+async def get_image_tags(data):
     """
     Process images with OpenAI Vision to generate descriptive tags and detailed descriptions.
     
@@ -112,102 +137,116 @@ def get_image_tags(image_data):
         image_data (list): List of dictionaries containing image objects, URLs, and article titles
     """
     
-    client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+    output_file = f'image_tags_processed.csv'
+    client = AsyncOpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     
-    # Process one image at a time
-    all_tags = []
-    all_descriptions = []
-    processed_images = []
+    url = data['url']
+    article_titles = data['article_titles']
+    image = data['image']
     
-    for data in image_data:
-        url = data['url']
-        article_titles = data['article_titles']
-        image = data['image']
-        
-        # Create article title context if it exists
-        article_context = ""
-        if article_titles:
-            article_context = f"This image appears in these articles: {', '.join(article_titles)}. "
-        
-        prompt = (f"Provide tags and description for this UBC campus image." + 
-                (f" Here are the article titles: {article_context}" if article_titles else "") + 
-                "\n\n"
-                f"Consider URL clues about the subject. Include synonyms in your tags.\n\n"
-                f"The tags and description is to make images more searchable by improving the search indexing.\n\n"
-                f"For context these images are intended for UBC students.\n\n"
-                f"If you cannot recognize the image, respond with 'sorry' only.\n\n"
-                f"Format:\n"
-                f"1. First line: 4-5 concise tags separated by commas\n"
-                f"2. Second line: Detailed description for search indexing\n\n"
-                f"Example:\n"
-                f"campus, students, lecture, learning, education\n"
-                f"A classroom at UBC with students attending a lecture.")        
-        
-        messages = [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": url}
-                    }
-                ]
-            }
-        ]
+    # Create article title context if it exists
+    article_context = ""
+    if article_titles:
+        article_context = f"This image appears in these articles: {', '.join(article_titles)}. "
+    
+    prompt = (f"Provide tags and description for this UBC campus image." + 
+            (f" Here are the article titles: {article_context}" if article_titles else "") + 
+            "\n\n"
+            f"Consider URL clues about the subject. Include synonyms in your tags.\n\n"
+            f"The tags and description is to make images more searchable by improving the search indexing.\n\n"
+            f"For context these images are intended for UBC students.\n\n"
+            f"Format:\n"
+            f"1. First line: 4-5 concise tags separated by commas\n"
+            f"2. Second line: Detailed description for search indexing\n\n"
+            f"Example:\n"
+            f"campus, students, lecture, learning, education\n"
+            f"A classroom at UBC with students attending a lecture.")        
+    
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": prompt
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": url}
+                }
+            ]
+        }
+    ]
 
-        try:
-            print(f"Processing image: {url}")
-            response = client.chat.completions.create(
-                model="gpt-4o",
-                messages=messages,
-                temperature=1,
-                max_tokens=1000,
-                top_p=1,
-                frequency_penalty=0,
-                presence_penalty=0
-            )
-            content = response.choices[0].message.content
-            print(content)
-            # Check if the response indicates the image couldn't be recognized
-            if "sorry" in content.lower() or "I can't" in content:
-                print(f"Skipping unrecognizable image: {url}")
-                continue
+    try:
+        #print(f"Processing image: {url}")
+        response = await client.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            temperature=1,
+            max_tokens=1000,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        content = response.choices[0].message.content
+        #print(content)
+        # Check if the response indicates the image couldn't be recognized
+        exclude = ["sorry", "i can't", "i'm unable to"]
+        if True in [x in content.lower() for x in exclude]:
+            print(f" - Skipping: {url}")
+            print(f"     {content}")
+            with open(output_file, 'a', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                #writer.writerow(['Image URL', 'Article Titles', 'Tags', 'Description'])
+                
+                writer.writerow([
+                    data['url'],
+                    '; '.join(data['article_titles']),
+                    "UNRECOGNIZED",
+                    "UNRECOGNIZED"
+                ])
+            return image, "", ""
+        
+        # Each response only contains one image's tags/description
+        batch_tags, batch_descriptions = split_tags_and_description(content)
+        tag_list = []
+        description = ""
+        if batch_tags and batch_descriptions:
+            #print(batch_tags)
+            #print(batch_descriptions)
+            tag_list = batch_tags
+            description = batch_descriptions
+        
+    except Exception as e:
+        print(f" - Error processing image: {e}")
+        with open(output_file, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            #writer.writerow(['Image URL', 'Article Titles', 'Tags', 'Description'])
             
-            # Each response only contains one image's tags/description
-            batch_tags, batch_descriptions = split_tags_and_description(content)
-            if batch_tags and batch_descriptions:
-                all_tags.extend(batch_tags)
-                all_descriptions.extend(batch_descriptions)
-                processed_images.append(image)  
-            
-        except Exception as e:
-            print(f"Error processing image: {e}")
-            continue
-
-    # Write results to CSV
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_file = f'image_tags_{timestamp}.csv'
-
-    with open(output_file, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Image URL', 'Article Titles', 'Tags', 'Description'])
-        
-        for i, (data, tag_list, description) in enumerate(zip(image_data[:len(all_tags)], all_tags, all_descriptions)):
             writer.writerow([
                 data['url'],
                 '; '.join(data['article_titles']),
-                '; '.join(tag_list),
-                description
+                "ERROR",
+                "ERROR"
             ])
+        return image, "", ""
 
-    print(f"Wrote results to {output_file}")
-    populate_tags(processed_images, all_tags, all_descriptions)
+    with open(output_file, 'a', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        #writer.writerow(['Image URL', 'Article Titles', 'Tags', 'Description'])
+        
+        writer.writerow([
+            data['url'],
+            '; '.join(data['article_titles']),
+            '; '.join(tag_list),
+            description
+        ])
 
-def populate_tags(images, tags, descriptions):
+    #print(f"Wrote results to {output_file}")
+    return image, tag_list, description
+
+async def populate_tags(image, tag_list, description):
     """
     Update images with AI-generated tags and descriptions
     
@@ -216,16 +255,23 @@ def populate_tags(images, tags, descriptions):
         tags: List of tag lists (each inner list contains tags for one image)
         descriptions: List of descriptions (one description per image)
     """
-    for image, tag_list, description in zip(images, tags, descriptions):
-        print(f"Adding tags to image: {image.id}")
-                
+
+    #print(f"Adding tags to image: {image.id}")
+
+    try:              
         for tag in tag_list:
-            image.tags.add(tag)
+            await sync_to_async(image.tags.add)(tag)
             
         tagged_ai = "Tagged by OpenAI Vision"
-        image.tags.add(tagged_ai)
-        
+        await sync_to_async(image.tags.add)(tagged_ai)
+    except Exception as e:
+        tag_list_str = ",".join(tag_list)
+        print(f" - Error saving image tags {image.id}\n    {tag_list_str}\n\n    {e}")  
+
+    try:              
         image.description = "DESCRIPTION PROVIDED BY OPENAI VISION: " + description
         
-        image.save()
-        print(f"Successfully updated image {image.id} with {len(tag_list)} tags")
+        await image.asave()
+        #print(f"Successfully updated image {image.id} with {len(tag_list)} tags")
+    except Exception as e:
+        print(f" - Error saving image description {image.id}\n    {description}\n\n    {e}")  
