@@ -191,6 +191,82 @@ def register_redacted_feature(features):
     # on rich text fields that do not specify an explicit 'features' list
     features.default_features.append('redacted')
 
+# Richtext option for editors to suggest deletions inline
+@hooks.register('register_rich_text_features')
+def register_deletion__feature(features):
+    feature_name = 'deletion'
+    type_ = 'DELETION'
+    tag = 'deletion'
+
+    control = {
+        'type': type_,
+        'label': 'd',
+        'description': 'Deletion (Inline edit)',
+        'style': {'color': 'red', 'textDecoration': 'line-through'},
+    }
+
+    features.register_editor_plugin(
+        'draftail', feature_name, draftail_features.InlineStyleFeature(control)
+    )
+
+    db_conversion = {
+        'from_database_format': {tag: InlineStyleElementHandler(type_)},
+        'to_database_format': 
+            {
+                'style_map': {
+                    type_: 
+                    {
+                        "element": tag,
+                        "props": {
+                            "style": "display: none"
+                        }
+                    } 
+                }
+            },
+    }
+
+    features.register_converter_rule('contentstate', feature_name, db_conversion)
+
+    features.default_features.append(feature_name)
+
+# Richtext option for editors to suggest additions inline
+@hooks.register('register_rich_text_features')
+def register_addition__feature(features):
+
+    feature_name = 'addition'
+    type_ = 'ADDITION'
+    tag = 'addition'
+
+    control = {
+        'type': type_,
+        'label': 'a',
+        'description': 'Addition (Inline edit)',
+        'style': {'color': 'green'},
+    }
+
+    features.register_editor_plugin(
+        'draftail', feature_name, draftail_features.InlineStyleFeature(control)
+    )
+
+    db_conversion = {
+        'from_database_format': {tag: InlineStyleElementHandler(type_)},
+        'to_database_format': 
+            {
+                'style_map': {
+                    type_: 
+                    {
+                        "element": tag,
+                    } 
+                }
+            },
+    }
+
+    features.register_converter_rule('contentstate', feature_name, db_conversion)
+
+    features.default_features.append(feature_name)
+
+
+
 @hooks.register("register_admin_viewset")
 def register_viewset():
     return author_chooser_viewset
