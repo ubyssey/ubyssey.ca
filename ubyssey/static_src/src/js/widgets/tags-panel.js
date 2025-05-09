@@ -46,8 +46,6 @@ waitForElm('#id_tags').then((elem) => {
     waitForElm('#id_primary_tag_slug').then((elem) => {
         setTimeout(() => {
             const primaryTags = Array.from($('#id_tags').tagit("instance").tagList.children()).map((tag) => tag.children[0].innerText.replaceAll('"', ""));
-            console.log(primaryTags);
-            console.log(Array.from(elem.children).map((child) => [child.value, child.innerText]));
             primaryTagOptions = Array.from(elem.children).filter((child) => primaryTags.includes(child.innerText)).map((child) => [child.value, child.innerText]);
             
             for (tag of primaryTags) {
@@ -56,21 +54,22 @@ waitForElm('#id_tags').then((elem) => {
                 }
             }
             
-            console.log(primaryTagOptions);
             redoPrimaryTagSelection();
+        
+            $('#id_tags').tagit({"afterTagRemoved": function(event, tag) {
+                primaryTagOptions = primaryTagOptions.filter((t) => !t.includes(tag.tagLabel));
+                redoPrimaryTagSelection();
+            }});
+            
+            $('#id_tags').tagit({"afterTagAdded": function(event,tag) {
+                if (primaryTagOptions.filter((t) => t.includes(tag.tagLabel)).length == 0) {
+                    primaryTagOptions.push([tag.tagLabel, tag.tagLabel]);
+                    redoPrimaryTagSelection()
+                }
+            }});
+        
         }, 100);
 
     });
-
-    $('#id_tags').tagit({"afterTagRemoved": function(event, tag) { 
-        primaryTagOptions = primaryTagOptions.filter((t) => !t.includes(tag.tagLabel));
-        redoPrimaryTagSelection();
-    }});
-
-    $('#id_tags').tagit({"afterTagAdded": function(event,tag) {
-        if (primaryTagOptions.filter((t) => t.includes(tag.tagLabel)).length == 0) {
-            primaryTagOptions.push([tag.tagLabel, tag.tagLabel]);
-            redoPrimaryTagSelection()
-        }
-    }});
+    
 });
