@@ -23,6 +23,9 @@ function waitForElm(selector) {
 }
 
 function redoPrimaryTagSelection(){
+    // Empties the primary tag dropdown and then fills it back up from the value of primaryTagOptions. 
+    // Keeps same selected value if any.
+
     const select = document.getElementById("id_primary_tag_slug"); 
     let selected = Array.from(select.children).filter((child) => child.hasAttribute("selected")).map((child) => child.value);
     select.innerHTML = "";
@@ -45,10 +48,15 @@ function redoPrimaryTagSelection(){
 waitForElm('#id_tags').then((elem) => {
     waitForElm('#id_primary_tag_slug').then((elem) => {
         setTimeout(() => {
-            const primaryTags = Array.from($('#id_tags').tagit("instance").tagList.children()).map((tag) => tag.children[0].innerText.replaceAll('"', ""));
-            primaryTagOptions = Array.from(elem.children).filter((child) => primaryTags.includes(child.innerText)).map((child) => [child.value, child.innerText]);
+            // Read all tags from the tags field
+            const tags = Array.from($('#id_tags').tagit("instance").tagList.children()).map((tag) => tag.children[0].innerText.replaceAll('"', "")).filter((tag) => tag!="");
+           
+            // Start primaryTagOptions as everything in the primary tag dropdown. Then remove everything that isn't in the tags field.
+            // This is somewhat redundant as the dropdown should start either be empty or include only the saved value (which should already be chosen from the tags field)
+            primaryTagOptions = Array.from(elem.children).filter((child) => tags.includes(child.innerText)).map((child) => [child.value, child.innerText]);
             
-            for (tag of primaryTags) {
+            // Add every tag of the tags field that wasn't already in the primary tags dropdown
+            for (const tag of tags) {
                 if (primaryTagOptions.filter((t) => t.includes(tag)).length == 0) {
                     primaryTagOptions.push([tag, tag]);
                 }
@@ -56,11 +64,15 @@ waitForElm('#id_tags').then((elem) => {
             
             redoPrimaryTagSelection();
         
+            // callbacks are defined here:  https://github.com/wagtail/wagtail/blob/main/wagtail/admin/static_src/wagtailadmin/js/vendor/tag-it.js
+            
+            // When a tag is removed, remove it from the dropdown
             $('#id_tags').tagit({"afterTagRemoved": function(event, tag) {
                 primaryTagOptions = primaryTagOptions.filter((t) => !t.includes(tag.tagLabel));
                 redoPrimaryTagSelection();
             }});
             
+            // When a tag is added, add it to the dropdown
             $('#id_tags').tagit({"afterTagAdded": function(event,tag) {
                 if (primaryTagOptions.filter((t) => t.includes(tag.tagLabel)).length == 0) {
                     primaryTagOptions.push([tag.tagLabel, tag.tagLabel]);

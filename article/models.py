@@ -61,10 +61,7 @@ from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
 
 
-UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17)
-
-
-all_tags = (list(map(lambda tag: (tag.slug, tag.name), list(Tag.objects.all()))))    
+UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17) 
 
 #-----Mixins-----
 class UbysseyMenuMixin(models.Model):
@@ -416,9 +413,25 @@ class ArticlePageTag(TaggedItemBase):
         verbose_name_plural = "article tags"
 
 class TagsFieldPanel(FieldPanel):
+    '''
+    Adds the javascript that fills the dropdown based on the contents of the tag field
+    '''
     class BoundPanel(FieldPanel.BoundPanel):
         class Media:
             js = ["ubyssey/js/widgets/tags-panel.js"]    
+
+class PrimaryTagSelect(Select):
+    '''
+    Bizzare roundabout way to add the value of the field as one of the choices.
+    slightly altered method of ChoiceWidget found here: https://github.com/django/django/blob/main/django/forms/widgets.py
+    '''
+    def optgroups(self, name, value, attrs=None):
+        # Add value of primary tag field as one of the choices
+        if len(value) > 0:
+            if Tag.objects.filter(slug=value[0]).exists():
+                self.choices.append((value[0], Tag.objects.get(slug=value[0]).name))
+
+        return super().optgroups(name, value, attrs)  
 
 #-----Manager models-----
 class ArticlePageManager(PageManager):
@@ -794,9 +807,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 TagsFieldPanel("tags"),
                 FieldPanel(
                     "primary_tag_slug",
-                    widget=Select(
-                        choices=all_tags,
-                    ),
+                    widget=PrimaryTagSelect(),
                 ),
                 FieldPanel("tag_page_link"),
                 FieldPanel("filter_by_tags"),
