@@ -2,6 +2,8 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 from wagtail.signals import page_published
 from .models import ArticlePage
+from taggit.models import Tag
+from django.utils.text import slugify
 
 @receiver(page_published, sender=ArticlePage)
 def update_default_explicit_published_at(instance, **kwargs):
@@ -11,6 +13,25 @@ def update_default_explicit_published_at(instance, **kwargs):
             author.author.last_activity = instance.first_published_at
             author.author.save()
         instance.save()
+
+@receiver(page_published, sender=ArticlePage)
+def update_primary_tag(instance, **kwargs):
+    '''
+    On new tags, the primary tag field is set to the name of the tag 
+    instead of the slug because the slug is not defined until after
+    the page is published. So after we published and the tag is created,
+    we set the primary tag field to the slug using this receiver.
+    '''
+    if not Tag.objects.filter(slug=instance.primary_tag_slug).exists() and instance.primary_tag_slug!="":
+        tag = None
+        if Tag.objects.filter(slug=slugify(instance.primary_tag_slug)).exists():
+            tag =Tag.objects.get(slug=slugify(instance.primary_tag_slug))
+        elif Tag.objects.filter(name=instance.primary_tag_slug).exists():
+            tag =Tag.objects.get(name=instance.primary_tag_slug)
+            
+        if tag:
+            instance.primary_tag_slug = tag.slug
+            instance.save()
 
 @receiver(pre_save, sender=ArticlePage)
 def update_timeline_on_article_alteration_pre_save(instance, **kwargs):

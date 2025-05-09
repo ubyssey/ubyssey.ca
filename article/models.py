@@ -26,6 +26,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from section.sectionable.models import SectionablePage
 
 from taggit.models import TaggedItemBase
+from taggit.models import Tag
 
 from videos import blocks as video_blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
@@ -60,7 +61,7 @@ from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
 
 
-UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17)
+UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17) 
 
 #-----Mixins-----
 class UbysseyMenuMixin(models.Model):
@@ -410,6 +411,27 @@ class ArticlePageTag(TaggedItemBase):
     class Meta:
         verbose_name = "article tag"
         verbose_name_plural = "article tags"
+
+class TagsFieldPanel(FieldPanel):
+    '''
+    Adds the javascript that fills the dropdown based on the contents of the tag field
+    '''
+    class BoundPanel(FieldPanel.BoundPanel):
+        class Media:
+            js = ["ubyssey/js/widgets/tags-panel.js"]    
+
+class PrimaryTagSelect(Select):
+    '''
+    Bizzare roundabout way to add the value of the field as one of the choices.
+    slightly altered method of ChoiceWidget found here: https://github.com/django/django/blob/main/django/forms/widgets.py
+    '''
+    def optgroups(self, name, value, attrs=None):
+        # Add value of primary tag field as one of the choices
+        if len(value) > 0:
+            if Tag.objects.filter(slug=value[0]).exists():
+                self.choices.append((value[0], Tag.objects.get(slug=value[0]).name))
+
+        return super().optgroups(name, value, attrs)  
 
 #-----Manager models-----
 class ArticlePageManager(PageManager):
@@ -782,8 +804,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             [
                 # FieldPanel("section"),
                 FieldPanel("category_page"),
-                FieldPanel("tags"),
-                FieldPanel("primary_tag_slug"),
+                TagsFieldPanel("tags"),
+                FieldPanel(
+                    "primary_tag_slug",
+                    widget=PrimaryTagSelect(),
+                ),
                 FieldPanel("tag_page_link"),
                 FieldPanel("filter_by_tags"),
             ],
@@ -1012,7 +1037,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         All the below code occurs after the user submits a request and before they receive it.
         Therefore, keep the length of this method to a minimum; otherwise users will be kept waiting
         """
-        from taggit.models import Tag
 
         context = super().get_context(request, *args, **kwargs)
 
@@ -1284,6 +1308,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         tag = Tag.objects.get(slug=self.primary_tag_slug)
         return "<a href='/tag/" + tag.slug + "/'>" + tag.name + "</a>"
     primary_tag_link = property(fget=get_primary_tag_link)
+
+    def primary_tag_options(self):
+        print(self.tags())
+        return self.tags()
 
     @property
     def published_at(self):
