@@ -60,12 +60,12 @@ video {
   // Text
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
-  font-size: font-size(40);
+  font-size: text.font-size(40);
   text-align: center;
   color: #fff;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   @media (utilities.$bp-larger-than-mobile) {
-    font-size: font-size(64);
+    font-size: text.font-size(64);
   }
 }
 
