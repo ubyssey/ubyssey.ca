@@ -20,9 +20,15 @@ services:
 
   django:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
+
+    # The number of gunicorn workers below is derived from the number of CPU cores
+    # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
+    #
+    # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
       bash -c "python manage.py migrate
       && gunicorn ubyssey.wsgi:application --workers=17 --bind 0.0.0.0:8000"
+
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
       SQL_HOST: mysql
@@ -41,6 +47,8 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS
     expose:
       - 8000
+    logging:
+      driver: gcplogs
     depends_on:
       - mysql
       - cache
@@ -55,6 +63,8 @@ services:
       - ./nginx/:/etc/nginx/:ro
       - ./certbot/www/:/var/www/certbot/:ro
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:ro
+    logging:
+      driver: gcplogs
     depends_on:
       - django
   
@@ -64,7 +74,7 @@ services:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:rw
       - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
-    # Attempt to renew SSL certificate every 12 hours
+    # Attempt to renew TLS certificate every 12 hours
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 secrets:
