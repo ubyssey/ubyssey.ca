@@ -9,19 +9,22 @@
   <div class="o-article__left">
     <a class="o-article__image" href={% pageurl article %} >
       {% if article.featured_media.first.image %}
-       
-      {% image article.featured_media.first.image width-1320 format-webp as coverimage %}
-
-       <img
-        src="{{ coverimage.url }}"
-        width="{{coverimage.width}}"
-        height="{{coverimage.height}}"
-        alt="{{ article.featured_media.first.alt_text }}"
-        {% if coverimage.focal_point %}
-          style="object-position: 0 calc(100% * calc({{ coverimage.focal_point.centroid.y }} / {{coverimage.height}}));"
-        {% endif %}
+      {% srcset_image article.featured_media.first.image width-{340,750,1500} format-webp webpquality-70 as cover_renditions %}
+  
+      <img
+          src="{{ cover_renditions.renditions.0.url }}"
+          width="{{ cover_renditions.renditions.0.width }}"
+          height="{{ cover_renditions.renditions.0.height }}"
+          alt="{{ article.featured_media.first.alt_text }}"
+          srcset="{{ cover_renditions.renditions.0.url }} 340w, {{ cover_renditions.renditions.1.url }} 760w, {{ cover_renditions.renditions.2.url }} 1500w"
+          sizes="(max-width: 600px) 340px,
+                 (max-width: 1200px) 750px,
+                 1500px"
+          class="article-attachment"
+          {% if coverimage.focal_point %}
+              style="object-position: 0 calc(100% * calc({{ coverimage.focal_point.centroid.y }} / {{coverimage.height}}));"
+          {% endif %}
       />
-
       {% elif article.featured_media.first.video %}
         <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg" alt="{{article.featured_media.first.alt_text}}"/>
       {% else %}
