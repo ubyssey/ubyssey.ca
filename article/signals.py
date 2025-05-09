@@ -2,6 +2,7 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 from wagtail.signals import page_published
 from .models import ArticlePage
+from taggit.models import Tag
 
 @receiver(page_published, sender=ArticlePage)
 def update_default_explicit_published_at(instance, **kwargs):
@@ -10,6 +11,15 @@ def update_default_explicit_published_at(instance, **kwargs):
         for author in instance.article_authors.all():
             author.author.last_activity = instance.first_published_at
             author.author.save()
+        instance.save()
+
+@receiver(page_published, sender=ArticlePage)
+def update_primary_tag(instance, **kwargs):
+    if not Tag.objects.filter(slug=instance.primary_tag_slug).exists():
+        if Tag.objects.filter(name=instance.primary_tag_slug).exists():
+            instance.primary_tag_slug = Tag.objects.get(name=instance.primary_tag_slug).slug
+        else:
+            instance.primary_tag_slug = ""
         instance.save()
 
 @receiver(pre_save, sender=ArticlePage)
