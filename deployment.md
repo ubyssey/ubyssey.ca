@@ -41,7 +41,7 @@ Nginx is an HTTP web server that acts as the entrypoint for all client requests 
 
 - Forwards traffic to the Django server
 - Redirects requests from www.ubyssey.ca to ubyssey.ca
-- Handles HTTPS traffic, including redirecting insecure HTTP requests to HTTPS (see [SSL Certificates](#ssl-certificates) below)
+- Handles HTTPS traffic, including redirecting insecure HTTP requests to HTTPS (see [TLS Certificates](#tls-certificates) below)
 - _In the future: serve archived versions of the website as static HTML files_
 
 The Nginx configuration is defined in [nginx.conf](./nginx.conf).
@@ -50,7 +50,7 @@ The Nginx configuration is defined in [nginx.conf](./nginx.conf).
 
 The Django app server is the main part of the deployment. It is where all the user-facing pages are defined and also serves the backend CMS used to manage the website content.
 
-Django runs inside of a custom Docker image that we build from our source code, using the Python Docker image as a base. This imagine is defined in the [Dockerfile](./Dockerfile).
+Django runs inside of a custom Docker image that we build from our source code, using the [Python Docker image](https://hub.docker.com/_/python) as a base. This image is defined in the [Dockerfile](./Dockerfile) in this repository.
 
 ### 3. Database (MySQL)
 
@@ -101,11 +101,7 @@ The `ubyssey/ubyssey.ca` image is deployed as the `django` service defined in [d
 3. Create and publish a new release for the tag you made above.
 4. Wait for the deploy workflow to complete.
 
-## Logs
-
-// TODO
-
-## Connecting to the server
+## Connecting to the Server
 
 ### SSH into the VM
 
@@ -142,18 +138,13 @@ docker service ls --format '{{.Name}}' | xargs -n1 docker service update --force
 docker service update --force ubyssey_django
 ```
 
-```bash
-# View the realtime logs for a service
-docker service logs -f ubyssey_django
-```
+## TLS Certificates
 
-## SSL certificates
+To secure our website and serve HTTPS traffic, we use a free TLS certificate from [Let's Encrypt](https://letsencrypt.org/) and manage it using [Certbot](https://certbot.eff.org/).
 
-We use a free SSL certificate from [Let's Encrypt](https://letsencrypt.org/) and manage it using [Certbot](https://certbot.eff.org/).
+### Create a TLS certificate
 
-### Create an SSL certificate
-
-After connecting to the server and switching to the app directory (see above), run the following command to request a new SSL certificate from Let's Encrypt using the `certonly` command:
+After connecting to the server and switching to the app directory (see above), run the following command to request a new TLS certificate from Let's Encrypt using the `certonly` command:
 
 ```bash
 docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d ubyssey.ca
@@ -163,9 +154,9 @@ docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certb
 
 _Note: we run certbot with Docker to avoid having to install it on the Linux system._
 
-### Renew an SSL certificate
+### Renew a TLS certificate
 
-Our SSL certificate needs to be renewed at least once every 90 days to avoid expiry. The `certbot` service in our Docker Swarm is configured to automatically check and renew our certificate every 12 hours.
+Our TLS certificate needs to be renewed at least once every 90 days to avoid expiry. The `certbot` service in our Docker Swarm is configured to automatically check and renew our certificate every 12 hours.
 
 However, use this command if you need to trigger a renewal manually:
 
@@ -173,6 +164,10 @@ However, use this command if you need to trigger a renewal manually:
 docker compose run --rm certbot renew
 ```
 
-### Handle HTTPS traffic
+### How we handle HTTPS traffic
 
-Nginx uses our SSL certificate to encrypt HTTPS traffic. The SSL certificate files are mounted to the Nginx Docker container and then loaded by the Nginx configuration. Please reference the Nginx configuration ([nginx.conf](./nginx.conf) for more information.
+Nginx uses our TLS certificate to encrypt HTTPS traffic. The TLS certificate files are mounted to the Nginx Docker container and then loaded by Nginx. Please reference the Nginx configuration ([nginx.conf](./nginx.conf) for more information.
+
+## Logs
+
+You can view realtime logs from the Ubyssey Docker services in the Google Cloud Logging console. Logs are delivered to Cloud Logging using the [Docker Google Cloud Logging driver](https://docs.docker.com/engine/logging/drivers/gcplogs/).
