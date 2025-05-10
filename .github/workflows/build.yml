@@ -3,6 +3,7 @@ name: Create and publish a Docker image
 on:
   push:
     branches:
+      # TODO: change this to main "develop" branch
       - staging-deploy
     tags:
       - 'v*'
