@@ -999,9 +999,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.AutocompleteField('lede'),
         index.SearchField('seo_keyword', boost=1.5),
         index.AutocompleteField('seo_keyword'),
-        index.SearchField('tags'),
-        index.AutocompleteField('tags'),
-        
+        index.RelatedFields(
+            "tags",
+            [
+                index.SearchField("name", boost=10),
+                index.AutocompleteField("name"),
+            ],
+        ),        
         index.FilterField('current_section'),
         index.FilterField('slug'),
         index.AutocompleteField('slug'),
