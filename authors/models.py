@@ -170,11 +170,8 @@ class AuthorPage(RoutablePageMixin, Page):
     #-----Search fields etc-----
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [
-        index.SearchField('full_name'),
+        index.SearchField('full_name', boost=10),
         index.AutocompleteField("full_name", partial_match=True),
-        index.AutocompleteField("slug", partial_match=True),
-        index.AutocompleteField("ubyssey_role", partial_match=True),
-        index.AutocompleteField('bio_description'),
         index.SearchField("slug"),
         index.SearchField('bio_description'),
         index.SearchField("ubyssey_role"),
