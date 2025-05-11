@@ -341,7 +341,6 @@ WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 WAGTAIL_SITE_NAME = 'The Ubyssey'
 
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
-WAGTAILIMAGES_IMAGE_FORM_BASE = 'images.forms.UbysseyImageForm'
 
 # wagtailmenus settings
 WAGTAILMENUS_ACTIVE_CLASS = 'current' # used for css in e.g. navigation/header.html

@@ -69,8 +69,6 @@ class UbysseyImage(AbstractImage):
     admin_form_fields = Image.admin_form_fields + (
         'author',
         'description',
-        'legacy_filename',
-        'legacy_authors',
     )
 
     search_fields = AbstractImage.search_fields + [
