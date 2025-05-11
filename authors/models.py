@@ -21,7 +21,7 @@ from wagtail.admin.panels import (
 
 from wagtail import blocks
 from wagtail.fields import StreamField
-from wagtail.models import Page, Orderable
+from wagtail.models import Page, PageManager, Orderable
 from wagtail.search import index
 from modelcluster.fields import ParentalKey
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
@@ -61,6 +61,13 @@ class PinnedArticlesOrderable(Orderable):
             heading="Article"
         ),
     ]
+
+class AuthorsPageManager(PageManager):
+
+    def get_queryset(self):
+        return super()\
+            .get_queryset()\
+            .order_by("full_name")
 
 class AuthorPage(RoutablePageMixin, Page):
 
@@ -125,8 +132,6 @@ class AuthorPage(RoutablePageMixin, Page):
         help_text="Please give a short bio in third person"
     )
 
-   
-
     CHOICES = [("articles", "Articles"), ("photos", "Gallery"), ("videos", "Videos"), ('visuals', "Visual Bylines")]
     main_media_type = models.CharField(
         choices=CHOICES,
@@ -143,6 +148,8 @@ class AuthorPage(RoutablePageMixin, Page):
         null=True,
         blank=True,
     )
+
+    objects = AuthorsPageManager()
 
     # For editting in wagtail:
     content_panels = [
@@ -337,6 +344,7 @@ class AuthorPage(RoutablePageMixin, Page):
         return self.full_name
     
     class Meta:
+        ordering = ["full_name"]
         verbose_name = "Author"
         verbose_name_plural = "Authors"
 
