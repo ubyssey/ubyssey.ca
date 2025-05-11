@@ -834,20 +834,19 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     promote_panels = Page.promote_panels + [
         MultiFieldPanel(
             [
+                FieldPanel("seo_keyword", help_text = "Seperate words with commas"),
+            ],
+            heading="Keywords for Search Engines",
+        ),
+        MultiFieldPanel(
+            [
                 HelpPanel(content="\"Breaking Timeout\" is irrelevant if news is not breaking news."),
                 FieldPanel("is_breaking"),
                 FieldPanel("breaking_timeout"),
             ],
             heading="Breaking",
         ),
-        MultiFieldPanel(
-            [
-                FieldPanel("seo_keyword"),
-                FieldPanel("seo_description"),
-            ],
-            heading="Old Search Engine/SEO stuff",
-            help_text="In Dispatch, \"SEO Keyword\" was referred to as \"Focus Keywords\", and  \"SEO Description\" was referred to as \"Meta Description\""
-        ),
+
         MultiFieldPanel(
             [
                 FieldPanel("noindex"),
@@ -865,15 +864,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ],
             heading="Advertising-Releated",
         ),
-        MultiFieldPanel(
-            [
-                FieldPanel(
-                    'legacy_revision_number',
-                    help_text = "DO NOT TOUCH",
-                ),
-            ],
-            heading='Legacy stuff'
-        ),
+
     ] # settings_panels   
     fw_article_panels = [
         HelpPanel(
