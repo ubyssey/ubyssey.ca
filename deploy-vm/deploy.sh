@@ -123,6 +123,8 @@ install_gcloud_sdk() {
     fi
 }
 
+# --- Main functions ---
+
 install_terraform() {
   # Check if Terraform is installed
   if command -v terraform &> /dev/null; then
@@ -169,7 +171,10 @@ install_terraform() {
   
   log "Unzipping ${TERRAFORM_ZIP}..."
   unzip "${TERRAFORM_ZIP}" || error_exit "Failed to unzip ${TERRAFORM_ZIP}."
-  
+
+  log "Removing downloaded Terraform zip file: ${TERRAFORM_ZIP}..."
+  rm -f "${TERRAFORM_ZIP}" || warn "Could not remove Terraform zip file: ${TERRAFORM_ZIP}"
+
   log "Moving Terraform to ${TERRAFORM_BIN}..."
   mkdir -p "${TERRAFORM_DIR}" || error_exit "Failed to create directory ${TERRAFORM_DIR}. Check permissions."
   mv terraform "${TERRAFORM_BIN}" || error_exit "Failed to move Terraform to ${TERRAFORM_BIN}."

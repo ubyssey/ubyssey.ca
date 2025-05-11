@@ -48,5 +48,5 @@ ubyssey/settings*.py
 *.tfstate
 *.tfstate.*
 .terraform.lock.hcl
-*.zip
 mysql-data
+*.zip
