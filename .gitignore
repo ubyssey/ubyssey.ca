@@ -43,4 +43,10 @@ pyvenv.cfg
 
 ubyssey/settings*.py
 
+# Terraform files
+.terraform
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+*.zip
 mysql-data
