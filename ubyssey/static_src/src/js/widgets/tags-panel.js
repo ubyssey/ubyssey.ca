@@ -34,15 +34,16 @@ function redoPrimaryTagSelection(){
         selected = selected[0];
     }
 
-    for (option of primaryTagOptions) {
+    primaryTagOptions.forEach((option, index) => {
         const elem = document.createElement("option");
         elem.value = option[0];
         elem.innerText = option[1];
-        if (selected === option[0]) {
+        if (selected === option[0] || selected.length===0 && index===0) {
+            elem.selected = true;
             elem.setAttribute("selected", "");
         }
         select.appendChild(elem);
-    }
+    });
 }
 
 waitForElm('#id_tags').then((elem) => {
@@ -75,7 +76,7 @@ waitForElm('#id_tags').then((elem) => {
             // When a tag is added, add it to the dropdown
             $('#id_tags').tagit({"afterTagAdded": function(event,tag) {
                 if (primaryTagOptions.filter((t) => t.includes(tag.tagLabel)).length == 0) {
-                    primaryTagOptions.push([tag.tagLabel, tag.tagLabel]);
+                    primaryTagOptions.push([tag.tagLabel.replaceAll('"', ""), tag.tagLabel.replaceAll('"', "")]);
                     redoPrimaryTagSelection()
                 }
             }});

@@ -420,6 +420,19 @@ class TagsFieldPanel(FieldPanel):
         class Media:
             js = ["ubyssey/js/widgets/tags-panel.js"]    
 
+class SuggestedBarFieldPanel(FieldPanel):
+    '''
+    Adds the javascript that auto-updates the choice of suggested bar when editors select a category.
+    Generally we want the suggested bar to use the category if there is one and the primary tag if there isn't.
+    But there might be exceptions so we want editors to have control. But editors can't be trusted to actually
+    to use this control reliably. They usually just use the default settings on everything.
+    So we auto update this field which technically offers editors control but does whats generally correct as defualt otherwise.
+    '''
+    class BoundPanel(FieldPanel.BoundPanel):
+        class Media:
+            js = ["ubyssey/js/widgets/auto-update-suggested-bar-choice.js"]    
+
+
 class PrimaryTagSelect(Select):
     '''
     Bizzare roundabout way to add the value of the field as one of the choices.
@@ -557,7 +570,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         blank=True,
         default='',
         max_length=255,
-        help_text="IF USED, SHOULD ALSO BE IN TAGS FIELD. Enter the slug of the tag to be used for linking at the end of the article. For example, the slug of the tag 'blue chip' is 'blue-chip'.",
+        help_text="The primary tag can be used for listing articles in the suggested bar at the end. It is also used to gather related articles to be presented on some section pages.",
     )
     tag_page_link = models.BooleanField(
         null=False,
@@ -569,9 +582,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     filter_by_tags = models.BooleanField(
         null=False,
         blank=False,
-        default=False,
-        help_text="CHECK THIS to fill the suggested bar with other articles in this section that are also tagged with the primary tag.",
-        verbose_name="Use Primary Tag for Suggested Bar"
+        default=True,
+        help_text="This determines what articles will be listed in the suggested bar at the end of the article.",
+        verbose_name="Suggested Bar"
     )
 
     disclaimer = RichTextField(
@@ -810,7 +823,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     widget=PrimaryTagSelect(),
                 ),
                 FieldPanel("tag_page_link"),
-                FieldPanel("filter_by_tags"),
+                SuggestedBarFieldPanel(
+                    "filter_by_tags",
+                    widget=Select(choices=[
+                        (False, "Section"),
+                        (True, "Primary tag")
+                    ])
+                )
             ],
             heading="Categories and Tags",
             classname="collapsible",
