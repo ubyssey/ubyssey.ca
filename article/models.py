@@ -1015,7 +1015,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [
         index.SearchField('lede'),
-        index.AutocompleteField('lede'),
         index.SearchField('seo_keyword', boost=1.5),
         index.AutocompleteField('seo_keyword'),
         index.RelatedFields(
@@ -1027,7 +1026,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         ),        
         index.FilterField('current_section'),
         index.FilterField('slug'),
-        index.AutocompleteField('slug'),
         index.FilterField('explicit_published_at'),
 
         index.RelatedFields('category_page', [

@@ -220,7 +220,7 @@ class ArchivePage(RoutablePageMixin, Page):
         # If there's a search query, then we run the search on the articles LAST.
         # Once we hit thes earch then we can't run .filter(...) on the results as if it were a queryset
         if video_section == False:
-            return objects.search(search_query)
+            return objects.autocomplete(search_query)
         else:
             return objects.filter(title=search_query)
 
