@@ -551,6 +551,16 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         blank=True,
         default='',
     )
+    storystream_view = StreamField(
+        [
+            ('horizontal_bar', article_blocks.StorystreamHorizontalBar()),
+            ('gallery', article_blocks.StorystreamGallery()),
+        ],
+        blank = False,
+        use_json_field=True,
+        min_num = 1,
+        max_num = 1,
+    )
 
     #-----Category and Tag stuff-----
     category_page = models.ForeignKey(
@@ -800,7 +810,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         ),
         MultiFieldPanel(
             [
-                FieldPanel("lede")
+                FieldPanel("lede"),
+                FieldPanel("storystream_view"),
             ],
             heading="Front Page Stuff",
             classname="collapsible",

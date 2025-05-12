@@ -1,0 +1,30 @@
+{% load cache %}
+{% load humanize %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+{% if article %}
+<article class="o-article" time="{{article.explicit_published_at|naturalday}}">
+    
+	<div class="o-article__left">
+        {% include "article/stream_blocks/gallery_block.html" %}
+	</div>
+
+	<div class="o-article__right">
+		<div class="o-article__meta">
+			<div class="above-headline">
+				<span class="o-article__published">{{ article.published_at|display_pubdate }}</span>{%if expectedSection != article.current_section %}<a class="o-article__section" href="{{article|get_section_link}}">{{article|get_section_title}}</a>{% endif %}
+			</div>
+			<h2 class="o-article__headline">
+				<a href="{% pageurl article %}">{{ article.title|safe }}</a>
+			</h2>
+			<p class="o-article__snippet">{{ article.lede|safe }}</p>
+			<p class="o-article__byline">
+				<span class="o-article__author">{{ article.get_authors_split_out_visual_bylines|safe }}</span>
+			</p>
+		</div>
+	</div>
+</article>
+{% endif  %}

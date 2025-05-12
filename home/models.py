@@ -177,18 +177,22 @@ class HomePage(Page):
         context = super().get_context(request, *args, **kwargs)
         context["filters"] = {}
 
-        context["cover_story"], context["top_stories"], context["update_time"] = self.getHomeFeatured()
+        cover_story, top_stories, context["update_time"] = self.getHomeFeatured()
+        context["cover_story"] = cover_story
+        context["top_stories"] = top_stories
         
-        section_groups = []
-        for i in range(math.ceil(len(self.sections_stream)/2)):
+        exclude_from_hompage_stream = map(lambda article: article.page_ptr_id, top_stories + [cover_story])
+        homepage_stream_articles = ArticlePage.objects.exclude(page_ptr_id__in=exclude_from_hompage_stream).order_by("-explicit_published_at")[:15]
+        homepage_stream_groups = []
+        for i in range(max(math.ceil(len(homepage_stream_articles)/2), len(self.sidebar_stream))):
             group = {
-                'sections': self.sections_stream[i*2:i*2+2]
+                'articles': homepage_stream_articles[i*2:i*2+2]
             }
             if i < len(self.sidebar_stream):
                 group['sidebar'] = [self.sidebar_stream[i]]
-            section_groups.append(group)
+            homepage_stream_groups.append(group)
 
-        context['section_groups'] = section_groups
+        context['homepage_stream'] = homepage_stream_groups
 
         return context
 

@@ -4,6 +4,8 @@ from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
+from django.utils.safestring import mark_safe
+from django.template.loader import render_to_string
 
 class AudioBlock(blocks.StructBlock):
     caption =  blocks.CharBlock(required=False)
@@ -237,3 +239,48 @@ class PersonalityQuizBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/personality_quiz.html'
         icon = "help"
+
+
+# Storystream views
+class StorystreamHorizontalBar(blocks.StructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('article/objects/storystream_views/blog_column-latest.html', 'Horizontal bar'),
+            ('article/objects/storystream_views/infinitefeed_item.html', 'Feed item'),
+        ],
+        required=True,
+    )
+    
+    def render(self, value, context=None):
+        """
+        According to the below stackoverflow, we need to modify this specific method in order to allow template selection
+        in such a way that the block itself tracks
+        https://stackoverflow.com/questions/55875597/wagtail-how-to-access-structblock-class-attribute-inside-block
+
+        In some ways this is a proof of concept for modifiable blocks
+        """
+
+        # Rather than the "normal" template logic, we look at our self.template variable
+        block_template = value.get('template')
+        if block_template != '':
+            template = block_template
+        else:
+            return self.render_basic(value, context=context) # Wagtail's default for when 
+
+        # Below this point, this render() is identical to its original counterpart
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+        return mark_safe(render_to_string(template, new_context))
+
+class StorystreamGallery(blocks.StructBlock):
+    id = blocks.CharBlock(help_text="No numbers or spaces. Must be different from other ids defined in this article.", required=True)
+    images = blocks.ListBlock(
+        image_blocks.ImageBlock()
+    )
+
+    class Meta:
+        template = 'article/objects/storystream_views/gallery.html'
+        icon = "image"

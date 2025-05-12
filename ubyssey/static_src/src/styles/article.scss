@@ -23,6 +23,8 @@
 @use 'modules/article/visual_essay';
 @use 'modules/article/personality_quiz';
 
+@use 'components/carousel';
+
 @use 'objects/article';
 @use 'objects/archive';
 @use 'objects/article_suggested';

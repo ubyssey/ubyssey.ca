@@ -27,6 +27,8 @@
 @use 'objects/article_minimal';
 @use 'objects/landing_stream_blocks';
 
+@use 'components/carousel';
+
 @use 'components/adblock-splash';
 @use 'components/cookie-disclaimer';
 @use 'components/replacement';
