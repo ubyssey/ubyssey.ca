@@ -7,6 +7,7 @@ import json
 from django.template import loader
 from section.models import SectionPage
 from django.http import JsonResponse
+from wagtail.search.query import Phrase, PlainText
 
 def getArticles(filters, start, number):
 
@@ -26,7 +27,7 @@ def getArticles(filters, start, number):
         articles = articles.filter(category_page__slug=filters["category"])
 
     if "search_query" in filters:
-        return articles.search(filters["search_query"])[int(start):int(start)+int(number)]
+        return articles.search(Phrase(filters["search_query"]) | PlainText(filters["search_query"]))[int(start):int(start)+int(number)]
     else:
         return articles.order_by('-explicit_published_at')[int(start):int(start)+int(number)]
 
