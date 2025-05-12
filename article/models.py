@@ -512,6 +512,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('audio', article_blocks.AudioBlock()),
             ('image', image_blocks.ImageBlock(
             )),
+            ('pdf', article_blocks.PdfBlock()),
             ('raw_html', blocks.RawHTMLBlock(
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"

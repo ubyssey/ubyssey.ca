@@ -237,3 +237,20 @@ class PersonalityQuizBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/personality_quiz.html'
         icon = "help"
+
+class PdfBlock(blocks.StructBlock):
+    pdf = DocumentChooserBlock(required=True, help_text="File format: .pdf")
+    
+    caption = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+    
+    credit = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/pdf.html'
+        icon = "doc-full"

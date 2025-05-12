@@ -1,0 +1,8 @@
+<div class="attachment">
+    <iframe class="pdf" src="{{self.pdf.url}}" width="800" height="500"></iframe>
+    {% if self.caption or self.credit %}
+    <div class="caption">
+        {{ self.caption|safe }} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
+    </div>
+{% endif %}
+</div>
