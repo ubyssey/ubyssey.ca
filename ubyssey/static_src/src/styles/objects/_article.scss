@@ -58,13 +58,6 @@
   font-family: "Georgia", serif
 }
 
-.home-featured {
-  .o-article__published {
-    // Text
-    color: #2B2B2B;
-  }
-}
-
 .o-article__published {
   // Text
   color: var(--article-publish);
@@ -445,5 +438,76 @@ div.article-content h2.header {
 
   &:hover {
     background-color: #555;
+  }
+}
+
+
+
+
+.o-article {
+
+  .above-headline {
+      margin-bottom: 0.5em;
+      .o-article__section {
+        margin-left: 0.5em;
+      }
+
+      .o-article__published {
+          font-size: 0.8em;
+          font-weight: 600;
+      }
+    }
+
+  .o-article__headline {
+      font-size: 1.3rem;
+  }
+
+}
+
+[color-css-theme="light"], .lightmode {
+  .o-article {
+      .o-article__headline {
+          color: black;
+      }
+
+      .o-article__byline {
+          color: black;
+      }
+
+      .o-article__published {
+          color: #1871C4;
+      }
+
+      .o-article__snippet {
+          color: #646464;
+      }
+
+      .o-article__section {
+          color: black;
+      }
+  }
+}
+
+[color-css-theme="dark"], .darkmode {
+  .o-article {
+      .o-article__headline {
+          color: white;
+      }
+
+      .o-article__byline {
+          color: white;
+      }
+
+      .o-article__published {
+          color: #1871C4;
+      }
+
+      .o-article__snippet {
+          color: #D9D9D9;
+      }
+      
+      .o-article__section {
+          color: #fbfbfb;
+      }
   }
 }

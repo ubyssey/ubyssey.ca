@@ -1,0 +1,11 @@
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="above-headline">
+    <span class="o-article__published">{{ article.published_at|display_pubdate }}</span>{%if expectedSection != article.current_section %}<a class="o-article__section" href="{{article|get_section_link}}">{{article|get_section_title}}</a>{% endif %}
+</div>
+<h2 class="o-article__headline">
+    <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+</h2>

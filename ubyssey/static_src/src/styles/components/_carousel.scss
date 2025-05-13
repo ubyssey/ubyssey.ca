@@ -3,9 +3,16 @@
 .carousel {
     position: relative;
     width: 100%;
-    padding-bottom: 3em;
     aspect-ratio: calc(80 / var(--aspect-ratio));
     box-sizing: initial;
+
+    &.indicators {
+      padding-bottom: 3em;
+    }
+
+    &.no-caption {
+      aspect-ratio: calc(100/var(--aspect-ratio));
+    }
 
     @media(variables.$bp-larger-than-phablet) {
 
@@ -62,25 +69,21 @@
       height: 100%;
       margin-block: auto;
 
-      .attachment {
+      img {
         margin-inline: auto;
-        height: 100%;
-        max-width: none;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-        img {
-          margin-inline: auto;
-          width: auto;
-          max-height: 75%;
-        }
+        width: auto;
+        height: auto;
+        max-height: 100%;
+        max-width: 100%;
       }
     }
 
     .carousel-inner {
-      height: 100%;
-      display: flex;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
     }
 
     .carousel-control-next,

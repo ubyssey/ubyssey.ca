@@ -4,6 +4,7 @@ from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
+from wagtail.embeds import blocks as embed_blocks
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
@@ -245,7 +246,7 @@ class PersonalityQuizBlock(blocks.StructBlock):
 class StorystreamHorizontalBar(blocks.StructBlock):
     template = blocks.ChoiceBlock(
         choices=[
-            ('article/objects/storystream_views/blog_column-latest.html', 'Horizontal bar'),
+            ('article/objects/storystream_views/minimal.html', 'Minimal'),
             ('article/objects/storystream_views/infinitefeed_item.html', 'Feed item'),
         ],
         required=True,
@@ -276,11 +277,22 @@ class StorystreamHorizontalBar(blocks.StructBlock):
         return mark_safe(render_to_string(template, new_context))
 
 class StorystreamGallery(blocks.StructBlock):
-    id = blocks.CharBlock(help_text="No numbers or spaces. Must be different from other ids defined in this article.", required=True)
+
     images = blocks.ListBlock(
-        image_blocks.ImageBlock()
+        image_blocks.ReducedImageBlock()
     )
 
     class Meta:
         template = 'article/objects/storystream_views/gallery.html'
+        icon = "image"
+
+class StorystreamVideo(blocks.StructBlock):
+
+    raw_html = blocks.RawHTMLBlock(
+        label = "Raw HTML Block",
+        help_text = "You can use for this for embedding stuff from other sites (like youtube videos)"
+    )
+
+    class Meta:
+        template = 'article/objects/storystream_views/video.html'
         icon = "image"

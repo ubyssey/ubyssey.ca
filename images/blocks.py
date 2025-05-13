@@ -46,3 +46,19 @@ class ImageBlock(blocks.StructBlock):
     class Meta:
         template = 'images/stream_blocks/image_block.html'
         icon = 'image'
+
+class ReducedImageBlock(blocks.StructBlock):
+
+    image = ImageChooserBlock(
+        required=True,
+    )
+
+    alt_text = blocks.CharBlock(
+        max_length=255,
+        required=False,
+        help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image."
+    )
+
+    class Meta:
+        template = 'images/stream_blocks/image_block.html'
+        icon = 'image'

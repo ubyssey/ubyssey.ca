@@ -91,6 +91,7 @@
   
     .o-article__headline mark {
       position: relative;
+      padding: 0;
 
       background-color: variables.$color-ubyssey-blue;
       box-shadow: 0.4em 0 0 variables.$color-ubyssey-blue, -0.4em 0 0 variables.$color-ubyssey-blue;

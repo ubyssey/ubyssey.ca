@@ -1,7 +1,7 @@
 @use '../modules/variables';
 @use "../modules/fonts";
 
-.o-article--top_article {
+.o-article.o-article--top_article {
     display: flex;
     width: 95%;
     margin: auto;
@@ -22,7 +22,6 @@
     }
 
     .o-article__right {
-        margin-left: auto;
         .o-article__section-tag {
             padding-bottom: 2px;
         }
@@ -93,6 +92,7 @@
 
     .o-article__published {
         white-space: nowrap;
+        color: #2B2B2B;
     }
 
     .o-article__meta__image {
@@ -166,8 +166,11 @@
 
 @media (variables.$bp-larger-than-tablet) {
     .o-article--top_article {
-        .o-article__right .o-article__section-tag {
-            display: none;
+        .o-article__right {
+            margin-left: auto;
+            .o-article__section-tag {
+                display: none;
+            }
         }
     }
 }

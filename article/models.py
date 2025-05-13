@@ -553,8 +553,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
     storystream_view = StreamField(
         [
-            ('horizontal_bar', article_blocks.StorystreamHorizontalBar()),
+            ('simple', article_blocks.StorystreamHorizontalBar()),
             ('gallery', article_blocks.StorystreamGallery()),
+            ('video', article_blocks.StorystreamVideo()),
         ],
         blank = False,
         use_json_field=True,

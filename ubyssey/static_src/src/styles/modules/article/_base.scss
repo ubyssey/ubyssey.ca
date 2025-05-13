@@ -300,20 +300,6 @@ div.article-content {
   }
 }
 
-div.caption {
-  margin-inline: 1em;
-  padding-block: 1em 0.5em;
-  padding-inline: 1em;
-  border-bottom: 2px solid variables.$color-ubyssey-blue;
-
-  font-size: 15px;
-  line-height: 19px;
-
-  color: var(--article_caption);
-  font-style: italic;
-  font-family: fonts.$font-default;
-}
-
 div.article-content {
 
   >p,
