@@ -10,6 +10,8 @@ This template is for the columns for the blog section on the home page under the
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load video_filters %}
+
+{% if article %}
 <article class="o-article o-article_storystream o-article_storystream_minimal">
   <div class="o-article__left">
     {% include "article/objects/headline.html" %}
@@ -25,5 +27,5 @@ This template is for the columns for the blog section on the home page under the
       {% endif %}
     {% endif %}
   </div>
-
 </article>
+{% endif %}

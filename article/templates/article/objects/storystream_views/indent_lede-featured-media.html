@@ -1,0 +1,28 @@
+{% load cache %}
+{% load humanize %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+{% load wagtailembeds_tags %}
+{% load video_filters %}
+
+{% if article %}
+<article class="o-article o-article_storystream o-article_storystream_indent" time="{{article.explicit_published_at|naturalday}}">
+
+	<div class="o-article__left">
+		{% include "article/objects/headline.html" %}
+	</div>
+
+	<div class="o-article__right">
+		<p>{{article.lede}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>
+		
+		{% if article.featured_media.first.image %}
+			{% image article.featured_media.first.image width-1000 format-webp as image %}
+			<img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ article.featured_media.first.caption }}" data-credit="{{ article.featured_media.first.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if article.featured_media.first.alt_text %}{{ article.featured_media.first.alt_text }}{% else %}{{article.featured_media.first.caption}}{% endif %}" />	
+		{% endif %}
+	</div>
+
+</article>
+{% endif  %}

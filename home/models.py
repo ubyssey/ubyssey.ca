@@ -110,7 +110,8 @@ class HomePage(Page):
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
         ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
-        ("sidebar_manual", homeblocks.SidebarManualArticles())        
+        ("sidebar_manual", homeblocks.SidebarManualArticles()),
+        ("siderbar_events_block", infinitefeedblocks.SidebarEventsBlock()),
     ],
     null=True,
     blank=True,
@@ -184,7 +185,7 @@ class HomePage(Page):
         exclude_from_hompage_stream = map(lambda article: article.page_ptr_id, top_stories + [cover_story])
         homepage_stream_articles = ArticlePage.objects.exclude(page_ptr_id__in=exclude_from_hompage_stream).order_by("-explicit_published_at")[:15]
         homepage_stream_groups = []
-        articles_per_sidebar_item = 5
+        articles_per_sidebar_item = 4
         for i in range(max(math.ceil(len(homepage_stream_articles)/articles_per_sidebar_item), len(self.sidebar_stream))):
             group = {
                 'articles': homepage_stream_articles[i*articles_per_sidebar_item:(i+1)*articles_per_sidebar_item]

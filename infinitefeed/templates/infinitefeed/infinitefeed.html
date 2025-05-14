@@ -1,3 +1,4 @@
+{% load wagtailcore_tags %}
 {% load infinitefeed_tags %}
 {% load static %}
 
@@ -21,16 +22,18 @@ section = "{{filters.section}}"
 {% if label %}
   label = "true"
 {% endif %}
+
+{% if storystream %}
+  storystream = "true"
+{% endif %}
 >
-  {% if label %}
-      {% for article in filters|preload_articles:"15" %}
-          {% include 'article/objects/infinitefeed_item.html' with label=label article=article expectedSection=filters.section %}
-      {% endfor %}
-  {% else %}
-      {% for article in filters|preload_articles:"15" %}
-          {% include 'article/objects/infinitefeed_item.html' with article=article expectedSection=filters.section %}
-      {% endfor %}
-  {% endif %}
+    {% for article in filters|preload_articles:"15" %}
+      {% if storystream %}
+        {% include_block article.storystream_view.0 %}
+      {% else %}  
+        {% include 'article/objects/infinitefeed_item.html' with article=article expectedSection=filters.section %}
+      {% endif %}
+    {% endfor %}
 </div>
 
 

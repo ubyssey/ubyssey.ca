@@ -1,16 +1,19 @@
 @use "../modules/variables";
 
 .article--infinitefeed {
-    display: flex;
-    margin-bottom: 25px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-top: solid variables.$color-ubyssey-blue;
-    border-bottom: solid variables.$color-ubyssey-blue;
-    border-width: 2px;
+    display: block;
+    margin-bottom: 2em;
+    padding-block: 0.5em;
+
+    border-bottom: 1px solid var(--light-border);
+
 
     @media(variables.$bp-smaller-than-mobile) {
         flex-direction: column;
+    }
+
+    @media(variables.$bp-smaller-than-desktop) {
+        margin-inline: 1em;
     }
 
     .above-headline {
@@ -30,10 +33,13 @@
     }
 
     .o-article__image {
-        border: solid variables.$color-ubyssey-blue;
-        border-width: 2px;
         display: flex;
         position: relative;
+
+        img {
+            border-radius: 0.5em;
+            border: 1px solid #EEE;
+        }
     }
 
     .o-article__author {
@@ -41,35 +47,15 @@
     }
 
     .o-article__right {
-        padding-left: 20px;
-        padding-right: 20px;
+        width: auto;
+        min-height: 10em;
+        padding-inline: 0.5em;
 
         @media(variables.$bp-larger-than-mobile) {
             width: 65%;
         }
     }
 
-    .o-article__left {
-        padding-bottom: 20px;
-
-        @media(variables.$bp-larger-than-mobile) {
-            width: 35%;
-        }
-    }
-}
-
-.section_infinitefeed #feed article.article--infinitefeed {
-    display: block;
-    border-bottom: 1px solid #EEE !important;
-
-    @media(variables.$bp-smaller-than-desktop) {
-        margin-inline: 1em;
-    }
-    .o-article__right {
-        width: auto;
-        min-height: 10em;
-        padding-inline: 0.5em;
-    }
     .o-article__left {
         margin: 1em;
         padding: 0;
@@ -78,14 +64,6 @@
 
         @media(variables.$bp-larger-than-phablet) {
             width: 12em;
-        }
-        
-    }
-    .o-article__image {
-        border:none;
-        img {
-            border-radius: 0.5em;
-            border: 1px solid #EEE;
         }
     }
 }

@@ -246,8 +246,9 @@ class PersonalityQuizBlock(blocks.StructBlock):
 class StorystreamHorizontalBar(blocks.StructBlock):
     template = blocks.ChoiceBlock(
         choices=[
-            ('article/objects/storystream_views/minimal.html', 'Minimal'),
-            ('article/objects/storystream_views/infinitefeed_item.html', 'Feed item'),
+            ('article/objects/storystream_views/large-headline.html', 'Large headline'),
+            ('article/objects/storystream_views/indent_lede.html', 'Indent: Only lede'),
+            ('article/objects/storystream_views/indent_lede-featured-media.html', 'Indent: Lede + featured media'),
         ],
         required=True,
     )
@@ -283,10 +284,10 @@ class StorystreamGallery(blocks.StructBlock):
     )
 
     class Meta:
-        template = 'article/objects/storystream_views/gallery.html'
+        template = 'article/objects/storystream_views/featured_gallery.html'
         icon = "image"
 
-class StorystreamVideo(blocks.StructBlock):
+class StorystreamEmbed(blocks.StructBlock):
 
     raw_html = blocks.RawHTMLBlock(
         label = "Raw HTML Block",
@@ -294,5 +295,5 @@ class StorystreamVideo(blocks.StructBlock):
     )
 
     class Meta:
-        template = 'article/objects/storystream_views/video.html'
+        template = 'article/objects/storystream_views/featured_embed.html'
         icon = "image"

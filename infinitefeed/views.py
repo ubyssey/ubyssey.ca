@@ -8,6 +8,7 @@ from django.template import loader
 from section.models import SectionPage
 from django.http import JsonResponse
 from wagtail.search.query import Phrase, PlainText
+from wagtail.templatetags.wagtailcore_tags import IncludeBlockNode
 
 def getArticles(filters, start, number):
 
@@ -59,7 +60,11 @@ def infinitefeed(request):
                     data["label"] = True
                 if "section" in request.GET:
                     data["expectedSection"] = request.GET['section']
-                articleHtml.append(loader.render_to_string("article/objects/infinitefeed_item.html", data))
+                if "storystream" in request.GET:
+                    storystream_item = article.storystream_view[0]
+                    articleHtml.append(storystream_item.render_as_block(context=data))
+                else:
+                    articleHtml.append(loader.render_to_string("article/objects/infinitefeed_item.html", data))
                    
             articleHtml_json = json.dumps(articleHtml)
             return HttpResponse(articleHtml_json, content_type ="application/json")

@@ -555,7 +555,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         [
             ('simple', article_blocks.StorystreamHorizontalBar()),
             ('gallery', article_blocks.StorystreamGallery()),
-            ('video', article_blocks.StorystreamVideo()),
+            ('embed', article_blocks.StorystreamEmbed()),
         ],
         blank = False,
         use_json_field=True,

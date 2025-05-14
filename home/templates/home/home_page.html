@@ -72,15 +72,11 @@
 	{% endfor %}
 </div>
 
-<div class="u-container u-container--large">
+<div class="u-container u-container--large storystream">
+	{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox' title='Other Most Recent' text='<i>The Ubyssey</i>' textId='timeBox' %}
 	{% for group in homepage_stream %}
 	<div class="c-infinitefeed__feed">
 		<div class="c-homepage__sections">
-
-			{% if forloop.counter0 == 0 %}
-				{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox' title='Other Most Recent' text='From <i>The Ubyssey</i>' textId='timeBox' %}
-			{% endif %}
-
 			{% for article in group.articles %}
 				{% include_block article.storystream_view.0 %}
 			{% endfor %}
@@ -95,7 +91,7 @@
 	{% endfor %}
 </div>
 
-<div class="u-container u-container--large">
+<div class="u-container u-container--massive">
 	{% for section in self.sections_stream %}
 		{% include_block section %}
 	{% endfor %}
