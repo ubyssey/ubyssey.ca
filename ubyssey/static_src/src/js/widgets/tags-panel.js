@@ -27,7 +27,7 @@ function redoPrimaryTagSelection(){
     // Keeps same selected value if any.
 
     const select = document.getElementById("id_primary_tag_slug"); 
-    let selected = Array.from(select.children).filter((child) => child.hasAttribute("selected")).map((child) => child.value);
+    let selected = Array.from(select.children).filter((child) => (child.selected)).map((child) => child.value);
     select.innerHTML = "";
     
     if (selected.length > 0) {
