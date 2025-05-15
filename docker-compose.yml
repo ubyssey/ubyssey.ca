@@ -39,16 +39,27 @@ services:
       GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
       STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
+
     secrets:
       - DJANGO_SECRET_KEY
       - SQL_PASSWORD
       - GS_ACCESS_KEY_ID
       - GS_SECRET_ACCESS_KEY
       - GOOGLE_APPLICATION_CREDENTIALS
+
     expose:
       - 8000
+
     logging:
       driver: gcplogs
+    
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
     depends_on:
       - mysql
       - cache
