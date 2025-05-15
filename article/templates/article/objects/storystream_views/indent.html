@@ -17,6 +17,10 @@
 
 	<div class="o-article__right">
 		<p>{{article.lede}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>
+		
+		<div class="attachment">
+			{{attachment|safe}}
+		</div>
 	</div>
 
 </article>

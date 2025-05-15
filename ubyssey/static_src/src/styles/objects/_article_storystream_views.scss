@@ -3,6 +3,9 @@
 .o-article_storystream {
     padding-block: 3em;
     border-bottom: 1px solid var(--light-border);
+    img {
+        height: auto;
+    }
 }
 
 // Feature
@@ -10,8 +13,8 @@
     padding-inline: 3em;
     .o-article__left {
         margin-inline: auto;
-        iframe {
-            width: 100%;
+        * {
+            max-width: 100%;
         }
     }
     .o-article__right {
@@ -65,7 +68,6 @@
             margin: auto;
             border-radius: 0.5em;
             width: 100%;
-            height: auto;
         }
     }
     @media(variables.$bp-smaller-than-phablet) {
@@ -98,11 +100,12 @@
             font-weight: 600;
             color: variables.$color-ubyssey-blue;
         }
-        img, iframe {
+        .attachment {
             margin-block: 0.75em;
             padding-right: 1.5em;
+        }
+        img, iframe {
             max-width: 100%;
-            height: auto;
         }
     }
 }

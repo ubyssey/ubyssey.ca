@@ -121,6 +121,7 @@ html.hairlines {
   background-color: #c3e2f0;
   height: fit-content;
   padding: 10px;
+  box-sizing: content-box;
 
   .boxLabel {
     --boxPrimary: #{variables.$color-ubyssey-blue-dark-3};
@@ -236,13 +237,38 @@ html.hairlines {
   }
 }
 
+.bottom-separator::after {
+  content: "";
+  display: block;
+  margin-top: 2em;
+  margin-inline: auto;
+  width: 75%;
+  border-bottom: solid 1px var(--light-border);
+}
+
 .c-homepage__section {
-  display: flex;
   padding-bottom: 1.5rem;
 
   margin-top: 1rem;
   margin-bottom: 4rem;
-  border-bottom: solid 1px var(--light-border);
+
+  .c-section__featured {
+    display: flex;
+    @media(variables.$bp-smaller-than-phablet) {
+      flex-direction: column;
+    }
+  }
+  .headline-top-articles {
+    h2 {
+      font-size: 2em;
+    }
+    .left {
+      max-width: 400px;
+    }
+    .right .lede {
+      font-size: 1.25em;
+    }
+  }
 
   @media(variables.$bp-larger-than-phablet) {
     // Structure
@@ -257,20 +283,33 @@ html.hairlines {
       padding-left: 1.5em;
     }
   }
-  @media(variables.$bp-smaller-than-phablet) {
-    flex-direction: column;
-  }
 }
 
 .storystream {
+  margin-top: 2em;
+  padding-bottom: 5em;
+
   .boxLabel {
-    width: 60%;
-    margin-right: auto;
-    margin-left: 0;
-    margin-bottom: 3em;
+    @media(variables.$bp-larger-than-phablet) {
+      width: 60%;
+      margin-right: auto;
+      margin-left: 0;
+      margin-bottom: 3em;
+    }
+    @media(variables.$bp-smaller-than-phablet) {
+      margin: 1.5em;
+    }
   }
   .c-infinitefeed__feed .c-homepage__sections:first-child article:first-child{
     padding-top: 0;
+  }
+  .storystream-endnote {
+    margin: 3em auto 0 auto;
+    border-bottom: 1px solid;
+    width: fit-content;
+
+    text-align: center;
+    color: variables.$color-ubyssey-blue-light;
   }
 }
 

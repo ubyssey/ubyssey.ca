@@ -1,9 +1,10 @@
 {% load wagtailcore_tags %}
 
-<h1 class="section">
-    <a href={% pageurl section %}>{{ section|title }}</a>
-</h1>
+
 <section class="c-homepage__section">
+    <h1 class="section">
+        <a href={% pageurl section %}>{{ section|title }}</a>
+    </h1>
     {% if layout == 'bulleted' %}
     {% include "section/objects/section_bulleted.html" %}
     {% else %}

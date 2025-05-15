@@ -39,63 +39,44 @@
 {% block content %}
 {% filter specify_homepage_sidebar_ads:request %}
 
-<main class="u-container u-container--mid homepage">
-	{% comment %}
-	breaking_news_article is passed through from context and it contains all of the breaking articles from each section
-	{% endcomment %}
-	{% for article in breaking_news_article %}
-	<a class="o-breaking-news" href={% pageurl article %}>
-		<h3>BREAKING: {{ article.title|safe }}</h3>
-	</a>
-	{% endfor %}
-	{% comment %}
-	Additional fields/blocks will go here to alert students to some special events
-	{% endcomment %}
+	<main class="homepage">
+		{% comment %}
+		breaking_news_article is passed through from context and it contains all of the breaking articles from each section
+		{% endcomment %}
+		{% for article in breaking_news_article %}
+		<a class="o-breaking-news" href={% pageurl article %}>
+			<h3>BREAKING: {{ article.title|safe }}</h3>
+		</a>
+		{% endfor %}
 
-	<div class="home-featured">
-		{% if cover_story %}
-			{% include "article/objects/cover_story.html" with article=cover_story%}
-		{% endif %}
-		<div class="home-top-article-list">
-			{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=update_time|time_ago %}
-			
-			{% for article in top_stories %}
-				{% include "article/objects/top_article.html" with article=article count=forloop.counter %}
+		<div class="home-featured u-container u-container--mid">
+			{% if cover_story %}
+				{% include "article/objects/cover_story.html" with article=cover_story%}
+			{% endif %}
+			<div class="home-top-article-list">
+				{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=update_time|time_ago %}
+				
+				{% for article in top_stories %}
+					{% include "article/objects/top_article.html" with article=article count=forloop.counter %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<div>
+			{% for block in self.middle_stream %}
+			{% include_block block %}
 			{% endfor %}
 		</div>
-	</div>
-</main>
 
-<div>
-	{% for block in self.middle_stream %}
-	{% include_block block %}
-	{% endfor %}
-</div>
+		{% include "home/components/storystream.html" %}
 
-<div class="u-container u-container--large storystream">
-	{% include 'home/objects/home_heading-box.html' with id="feed-box-label" styling='c-home-bannerbox' title='Other Most Recent' text='<i>The Ubyssey</i>' textId='timeBox' %}
-	{% for group in homepage_stream %}
-	<div class="c-infinitefeed__feed">
-		<div class="c-homepage__sections">
-			{% for article in group.articles %}
-				{% include_block article.storystream_view.0 %}
+		<div class="u-container u-container--large">
+			{% for section in self.sections_stream %}
+				{% include_block section %}
 			{% endfor %}
 		</div>
 		
-		{% if group.sidebar %}
-			{% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=group.sidebar %}
-		{% else %}
-			<div class="c-sidebar empty-sidebar"></div>
-		{% endif %}
-	</div>
-	{% endfor %}
-</div>
-
-<div class="u-container u-container--massive">
-	{% for section in self.sections_stream %}
-		{% include_block section %}
-	{% endfor %}
-</div>
+	</main>
 
 {% endfilter %}
 {% endblock %}

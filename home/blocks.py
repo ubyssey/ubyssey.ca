@@ -298,6 +298,40 @@ class ArticleGathererBlock(AbstractArticleList):
             context['self']['article'] = context['articles'][0]
         
         return context
+    
+class SectionBlock(AbstractArticleList):
+    section = field_block.PageChooserBlock(
+        page_type='section.SectionPage',
+        required=True
+        )
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('section/objects/section_one-large-two-small.html', 'One large, two small'),
+            ('section/objects/section_horizontal.html', 'Horizontal'),
+        ]
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['section'].title
+        context['description'] = value['section'].description
+        context['link'] = value['section'].url
+        context['expectedSection'] = value['section'].slug
+        context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
+
+        limit = 9
+        if 'section/objects/section_horizontal' in value['template']:        
+            limit = 5
+
+        elif 'section/objects/minimal_grid.html' in value['template']:        
+            limit = 6
+
+        context['articles'] = context['articles'][:limit]
+
+        if len(context['articles']) > 0:
+            context['self']['article'] = context['articles'][0]
+        
+        return context
 
 class MidStreamDoubleListTemplates(blocks.ChoiceBlock):
  

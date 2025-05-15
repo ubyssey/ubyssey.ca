@@ -260,16 +260,14 @@ class PdfBlock(blocks.StructBlock):
 
 
 # Storystream views
-class StorystreamHorizontalBar(blocks.StructBlock):
+class StorystreamStructBlock(blocks.StructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('article/objects/storystream_views/large-headline.html', 'Large headline'),
-            ('article/objects/storystream_views/indent_lede.html', 'Indent: Only lede'),
-            ('article/objects/storystream_views/indent_lede-featured-media.html', 'Indent: Lede + featured media'),
         ],
         required=True,
     )
-    
+
     def render(self, value, context=None):
         """
         According to the below stackoverflow, we need to modify this specific method in order to allow template selection
@@ -293,24 +291,66 @@ class StorystreamHorizontalBar(blocks.StructBlock):
             new_context = self.get_context(value, parent_context=dict(context))
 
         return mark_safe(render_to_string(template, new_context))
+    
+class StorystreamFeaturedImage(StorystreamStructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('article/objects/storystream_views/large-headline.html', 'Large headline'),
+            ('article/objects/storystream_views/featured.html', 'Featured (Featured media above, Headline below'),
+            ('article/objects/storystream_views/indent.html', 'Indent (Headline above, lede + featured media below'),
+        ],
+        required=True,
+    )
 
-class StorystreamGallery(blocks.StructBlock):
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/image.html', parent_context))
+        return context
+    
+class StorystreamGallery(StorystreamStructBlock):
 
     images = blocks.ListBlock(
         image_blocks.ReducedImageBlock()
     )
 
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('article/objects/storystream_views/featured.html', 'Featured (gallery above, headline below)'),
+            ('article/objects/storystream_views/indent.html', 'Indent (headline above, gallery below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        gallery_context = parent_context
+        gallery_context["indicators"] = "false"
+        gallery_context["nocaption"] = "true"
+        context["attachment"] = mark_safe(render_to_string('article/stream_blocks/gallery_block.html', gallery_context))
+        return context
+
     class Meta:
-        template = 'article/objects/storystream_views/featured_gallery.html'
         icon = "image"
 
-class StorystreamEmbed(blocks.StructBlock):
+class StorystreamEmbed(StorystreamStructBlock):
 
     raw_html = blocks.RawHTMLBlock(
         label = "Raw HTML Block",
         help_text = "You can use for this for embedding stuff from other sites (like youtube videos)"
     )
 
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('article/objects/storystream_views/featured.html', 'Featured (embed above, headline below)'),
+            ('article/objects/storystream_views/indent.html', 'Indent (headline above, embed below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["attachment"] = value["raw_html"]
+        return context
+
     class Meta:
-        template = 'article/objects/storystream_views/featured_embed.html'
         icon = "image"

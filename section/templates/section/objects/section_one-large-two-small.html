@@ -1,0 +1,22 @@
+{% comment %} 
+Arguments: featured_articles a list of article pages
+Used in both section pages and homepage
+{% endcomment %}
+{% load wagtailcore_tags %}
+
+<section class="c-homepage__section bottom-separator">
+  <h2 class="section">
+      <a href={{ link }}>{{ title|title }}</a>
+  </h2>
+  <div class="c-section__featured">
+    {% include 'article/objects/article_top-headline.html' with article=articles.first expectedSection=section.slug %}
+  
+    <div class="c-section__featured__articles">
+      {% for article in articles %}
+        {% if forloop.counter != 1 and forloop.counter < 4 %}
+          {% include 'article/objects/infinitefeed_item.html' with article=article%}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

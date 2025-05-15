@@ -554,7 +554,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
     storystream_view = StreamField(
         [
-            ('simple', article_blocks.StorystreamHorizontalBar()),
+            ('simple', article_blocks.StorystreamFeaturedImage()),
             ('gallery', article_blocks.StorystreamGallery()),
             ('embed', article_blocks.StorystreamEmbed()),
         ],
