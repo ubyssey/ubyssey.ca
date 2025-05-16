@@ -237,9 +237,10 @@ html[color-css-theme="light"] {
   --background: white;
   --text_color: #1b1b1b;
   --header_color: black;
-  --supporting_text_color: #333;
+  --supporting_text_color: #111;
   --article-publish: #1871C4;
-  --light-border: #EEE;
+  --light-border: #{variables.$color-ubyssey-blue};
+  --contrast-color: #{variables.$color-ubyssey-blue-dark};
 
     // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
@@ -264,6 +265,7 @@ html[color-css-theme="dark"] {
   --supporting_text_color: #eee;
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue-light};
+  --contrast-color: #{variables.$color-ubyssey-blue-dark};
 
   // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: #031723;

@@ -1238,23 +1238,30 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             else:
                 for author in v:
                     visual_authors.append(author.author)
-                visuals.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=v)])
+                visuals.append([k, self.get_authors_string(links=True, authors_list=v)])
         visuals.sort(key=lambda s: role_types.index(s[0]))
 
-        visual_only_author = False
-        for visual_author in visual_authors:
-            if not visual_author in word_authors:
-                visual_only_author = True
-                break
+        if len(word_authors) > 0:
+            visual_only_author = False
+            for visual_author in visual_authors:
+                if not visual_author in word_authors:
+                    visual_only_author = True
+                    break
 
-        writers = self.get_authors_string(links=True, authors_list=list(writers))
+            writers = self.get_authors_string(links=True, authors_list=list(writers))
 
-        if len(visuals) > 0 and visual_only_author:
-            visuals = ', ' + ', '.join(map(lambda a: a[1], visuals))
+            if len(visuals) > 0 and visual_only_author:
+                visuals = ', ' + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
+            else:
+                visuals = ''
+
+            return writers + visuals
         else:
-            visuals = ''
-
-        return writers + visuals
+            if len(visuals) > 1:
+                return ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))                
+            else:
+                return ', '.join(map(lambda a: a[1], visuals))
+        
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 
     def get_category_articles(self, order='-first_published_at', max=False) -> QuerySet:

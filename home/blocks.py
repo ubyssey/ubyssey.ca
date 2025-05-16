@@ -306,15 +306,16 @@ class SectionBlock(AbstractArticleList):
         )
     template = blocks.ChoiceBlock(
         choices=[
-            ('section/objects/section_one-large-two-small.html', 'One large, two small'),
+            ('section/objects/section_one-large-two-small.html', 'Default (One left, two right)'),
+            ('section/objects/section_feature-top-two-below.html', 'Feature (One top, two below)'),
             ('section/objects/section_horizontal.html', 'Horizontal'),
+            ('section/objects/section_timeline.html', 'Timeline'),
         ]
     )
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context['title'] = value['section'].title
-        context['description'] = value['section'].description
         context['link'] = value['section'].url
         context['expectedSection'] = value['section'].slug
         context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()

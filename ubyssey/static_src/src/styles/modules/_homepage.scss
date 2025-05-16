@@ -243,7 +243,7 @@ html.hairlines {
   margin-top: 2em;
   margin-inline: auto;
   width: 75%;
-  border-bottom: solid 1px var(--light-border);
+  border-bottom: solid 2px var(--light-border);
 }
 
 .c-homepage__section {
@@ -303,13 +303,16 @@ html.hairlines {
   .c-infinitefeed__feed .c-homepage__sections:first-child article:first-child{
     padding-top: 0;
   }
+  .c-infinitefeed__feed .c-homepage__sections:last-child{
+    padding-bottom: 0;
+  }
   .storystream-endnote {
     margin: 3em auto 0 auto;
     border-bottom: 1px solid;
     width: fit-content;
 
     text-align: center;
-    color: variables.$color-ubyssey-blue-light;
+    color: var(--light-border);
   }
 }
 

@@ -75,7 +75,9 @@
 
 [color-css-theme="light"] .events-sidebar {
     color: #3b3b3b;
-    border-color: #EEE;
+    border: var(--contrast-color) 2px solid;
+    background-color: white;
+    filter:drop-shadow(-7px 10px 4px rgba(4, 22, 32, 0.1098039216));
 
     h2, h3 {
         color: #222;
