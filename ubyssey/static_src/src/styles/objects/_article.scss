@@ -446,13 +446,27 @@ div.article-content h2.header {
 .o-article {
   .above-headline {
       margin-bottom: 0.5em;
+      font-size: 0.8em;
+      .o-article__published {
+        font-size: 1em;
+        font-weight: 600;
+      }      
       .o-article__section {
         margin-left: 0.5em;
+        font-weight: 600;
       }
-
-      .o-article__published {
-          font-size: 0.8em;
-          font-weight: 600;
+      .o-article__section, .o-article__byline {
+        font-size: 0.85em;
+        text-transform: uppercase;
+        color: var(--supporting_text_color);
+      }
+      .o-article__byline {
+        font-weight: 400;
+        font-style: italic;
+        &::before {
+          content: "|";
+          margin-inline: 0.25em;
+        }
       }
     }
 }

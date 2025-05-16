@@ -5,9 +5,7 @@
 
 <div class="above-headline">
     <span class="o-article__published">{{ article.published_at|display_pubdate }}</span>
-    {%if expectedSection != article.current_section %}
-        <a class="o-article__section" href="{{article|get_section_link}}">{{article|get_section_title}}</a>
-    {% endif %}
+    {%if expectedSection != article.current_section %}<a class="o-article__section" href="{{article|get_section_link}}">{{article|get_section_title}}</a>{% endif %}<span class="o-article__byline">{{article.get_authors_split_out_visual_bylines|safe}}</span>
 </div>
 <h3 class="o-article__headline">
     <a href="{% pageurl article %}">{{ article.title|safe }}</a>
