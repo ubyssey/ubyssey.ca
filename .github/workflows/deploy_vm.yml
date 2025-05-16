@@ -1,0 +1,74 @@
+name: Terraform GCP VM Deployment
+
+on:
+  push:
+    branches:
+      - automate-deploying-vm 
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action to perform (deploy or destroy)'
+        required: true
+        default: 'deploy'
+        type: choice
+        options:
+          - deploy
+          - destroy
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+
+jobs:
+  terraform:
+    name: 'Terraform ${{ github.event.inputs.action || ''deploy'' }}' 
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./deploy-vm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.11.3"
+
+      # Authenticate to Google Cloud using Workload Identity Federation
+      # TODO: IMPORTANT - Update with your PRODUCTION WIF provider and Service Account for 'ubyssey-prd'
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/1012602718138/locations/global/workloadIdentityPools/ubyssey-wif-pool-staging/providers/ubyssey-oidc-github-staging'          # Replace with your PRODUCTION Service Account for 'ubyssey-prd'
+          service_account: 'deployment@ubyssey-staging.iam.gserviceaccount.com'
+          
+      - name: Determine Action
+        id: get_action
+        run: |
+          ACTION="deploy" # Default for push events
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            ACTION="${{ github.event.inputs.action }}"
+          fi
+          echo "action=$ACTION" >> $GITHUB_OUTPUT
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        if: steps.get_action.outputs.action == 'deploy'
+        run: terraform plan -out=tfplan -input=false
+        continue-on-error: false # Optional: set to true if you want to see plan even if it fails
+
+      - name: Terraform Apply
+        if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
+        run: terraform apply -auto-approve -input=false tfplan
+
+      - name: Terraform Destroy
+        if: steps.get_action.outputs.action == 'destroy'
+        run: terraform destroy -auto-approve -input=false
