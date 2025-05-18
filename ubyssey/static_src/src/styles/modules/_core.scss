@@ -7,6 +7,10 @@
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
+*, ::after, ::before {
+  box-sizing: inherit;
+}
+
 body {
   font-family: fonts.$font-default;
   font-size: fonts.$font-size-base + px;

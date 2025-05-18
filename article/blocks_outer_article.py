@@ -170,10 +170,8 @@ class SectionBlock(AbstractArticleList):
         )
     template = blocks.ChoiceBlock(
         choices=[
-            ('section/objects/section_one-large-two-small.html', 'Default (One left, two right)'),
-            ('section/objects/section_article-top-row-below.html', 'Feature (One top, four below)'),
-            ('section/objects/section_horizontal.html', 'Horizontal'),
-            ('section/objects/section_timeline.html', 'Timeline'),
+            ('section/objects/section_one-large-two-small.html', 'One left, two right'),
+            ('section/objects/section_article-row.html', 'Four articles in a row'),
         ]
     )
 
@@ -185,11 +183,10 @@ class SectionBlock(AbstractArticleList):
         context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
 
         limit = 9
-        if 'section/objects/section_horizontal' in value['template'] or 'section/objects/section_article-top-row-below.html' in value['template']:        
-            limit = 5
-
-        elif 'section/objects/minimal_grid.html' in value['template']:        
-            limit = 6
+        if 'section/objects/section_one-large-two-small.html' in value['template']:
+            limit = 3
+        if 'section/objects/section_article-row.html' in value['template']:
+            limit = 4
 
         context['articles'] = context['articles'][:limit]
 

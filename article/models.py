@@ -555,12 +555,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
     storystream_view = StreamField(
         [
-            ('use_featured_media', blocks_storystream.StorystreamFeaturedImage()),
+            ('featured_media', blocks_storystream.StorystreamFeaturedImage()),
+            ('image', blocks_storystream.StorystreamImage()),
             ('gallery', blocks_storystream.StorystreamGallery()),
+            ('video', blocks_storystream.StorystreamVideo()),
             ('embed', blocks_storystream.StorystreamRawHtml()),
             ('pdf', blocks_storystream.StorystreamPDF())
         ],
-        default = [{"type": "use_featured_media", "value": {"template": "article/objects/storystream_views/large-headline.html"}}],
+        default = [{"type": "featured_media", "value": {"template": "large-headline"}}],
         blank = False,
         use_json_field=True,
         min_num = 1,

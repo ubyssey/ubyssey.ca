@@ -4,12 +4,15 @@ from wagtail.documents.blocks import DocumentChooserBlock
 
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
+from django.db import models
+
+from ubyssey.validators import validate_youtube_url
 
 # Storystream views
 class StorystreamStructBlock(blocks.StructBlock):
     template = blocks.ChoiceBlock(
         choices=[
-            ('article/objects/storystream_views/large-headline.html', 'Large headline'),
+            ('large-headline', 'Large headline'),
         ],
         required=True,
     )
@@ -26,7 +29,7 @@ class StorystreamStructBlock(blocks.StructBlock):
         # Rather than the "normal" template logic, we look at our self.template variable
         block_template = value.get('template')
         if block_template != '':
-            template = block_template
+            template = 'article/objects/storystream_views/' + block_template + '.html'
         else:
             return self.render_basic(value, context=context) # Wagtail's default for when 
 
@@ -41,20 +44,21 @@ class StorystreamStructBlock(blocks.StructBlock):
 class StorystreamFeaturedImage(StorystreamStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
-            ('article/objects/storystream_views/large-headline.html', 'Standard (Large headline left, small featured media right)'),
-            ('article/objects/storystream_views/featured.html', 'Featured (Featured media above, Headline below'),
-            ('article/objects/storystream_views/indent.html', 'Indent (Headline above, lede + featured media below'),
+            ('large-headline', 'Standard (Large headline left, small featured media right)'),
+            ('featured', 'Featured (Featured media above, Headline below'),
+            ('indent', 'Indent (Headline above, lede + featured media below'),
         ],
         required=True,
     )
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
-        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/image.html', parent_context))
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/featured_media_image.html', parent_context))
         return context
     
     class Meta:
         icon = "image"
+        label = "Use featured media"
     
 class StorystreamGallery(StorystreamStructBlock):
 
@@ -64,8 +68,8 @@ class StorystreamGallery(StorystreamStructBlock):
 
     template = blocks.ChoiceBlock(
         choices=[
-            ('article/objects/storystream_views/featured.html', 'Featured (gallery above, headline below)'),
-            ('article/objects/storystream_views/indent.html', 'Indent (headline above, gallery below)'),
+            ('featured', 'Featured (gallery above, headline below)'),
+            ('indent', 'Indent (headline above, gallery below)'),
         ],
         required=True,
     )
@@ -91,8 +95,8 @@ class StorystreamRawHtml(StorystreamStructBlock):
 
     template = blocks.ChoiceBlock(
         choices=[
-            ('article/objects/storystream_views/featured.html', 'Featured (embed above, headline below)'),
-            ('article/objects/storystream_views/indent.html', 'Indent (headline above, embed below)'),
+            ('featured', 'Featured (embed above, headline below)'),
+            ('indent', 'Indent (headline above, embed below)'),
         ],
         required=True,
     )
@@ -111,8 +115,8 @@ class StorystreamPDF(StorystreamStructBlock):
 
     template = blocks.ChoiceBlock(
         choices=[
-            ('article/objects/storystream_views/featured.html', 'Featured (embeded pdf above, headline below)'),
-            ('article/objects/storystream_views/indent.html', 'Indent (headline above, embeded pdf below)'),
+            ('featured', 'Featured (embeded pdf above, headline below)'),
+            ('indent', 'Indent (headline above, embeded pdf below)'),
         ],
         required=True,
     )
@@ -124,3 +128,55 @@ class StorystreamPDF(StorystreamStructBlock):
 
     class Meta:
         icon = "doc-full"
+
+class StorystreamVideo(StorystreamStructBlock):
+
+    video = blocks.URLBlock(
+        max_length=500,
+        null=False,
+        blank=False,
+        default='',
+        validators=[validate_youtube_url,]
+    )
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('featured', 'Featured (video above, headline below)'),
+            ('indent', 'Indent (headline above, video below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        video_context = parent_context
+        video_context["video"] = value["video"]
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/video.html', video_context))
+        return context
+
+    class Meta:
+        icon = "media"
+
+    
+class StorystreamImage(StorystreamStructBlock):
+
+    image = image_blocks.ReducedImageBlock()
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('featured', 'Featured (image above, headline below)'),
+            ('indent', 'Indent (headline above, image below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        image_context = parent_context
+        image_context["image_block"] = value["image"]
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/image.html', image_context))
+        return context
+
+    class Meta:
+        icon = "image"
+        label = "Image"
