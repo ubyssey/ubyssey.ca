@@ -3,7 +3,7 @@ from wagtail.blocks import field_block
 from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
-from article.models import ArticlePage
+from article.blocks_outer_article import ArticleGathererBlock, ManualArticles 
 from django.db.models import Q
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
@@ -79,3 +79,22 @@ class SidebarFlexStreamBlock(blocks.StructBlock):
         template = "infinitefeed/sidebar/sidebar_flex_stream_block.html"
         verbose_name = "Sidebar Stream Flex Block"
         verbose_name_plural = "Sidebar Stream Flex Blocks"
+
+    
+class SidebarArticleGatherer(ArticleGathererBlock):
+
+    template = SideBarListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['articles'] = context['articles'][:5]        
+        return context
+
+class SidebarManualArticles(ManualArticles):
+
+    template = SideBarListTemplates()
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['articles'] = context['articles'][:5]        
+        return context

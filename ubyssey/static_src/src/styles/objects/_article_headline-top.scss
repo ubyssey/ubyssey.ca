@@ -29,7 +29,7 @@ article.headline-top-articles {
         color: variables.$color-ubyssey-blue;
         font-weight: 600;
     }
-    h2 {
+    .o-article__headline {
         margin-block: 0.5em;
         font-family: fonts.$font-headline;
         font-size: 2.5em;
@@ -37,7 +37,7 @@ article.headline-top-articles {
     }
 
     .o-article--default {
-        padding-block: 2em;
+        padding-block: 1em;
     }
 
     .left{
@@ -77,7 +77,7 @@ article.headline-top-articles {
     }
     @media(variables.$bp-smaller-than-phablet) { 
         padding-inline: 0;
-        h2, .above-headline {
+        .o-article__headline, .above-headline {
             margin-inline: 15px;
         }
         h2 {
@@ -87,7 +87,7 @@ article.headline-top-articles {
             max-width: 100%;
         }
         .right {
-            margin: 1em 1.5em;
+            margin: 1.5em;
             width: auto;
             .lede {
                 font-size: 1.2em;

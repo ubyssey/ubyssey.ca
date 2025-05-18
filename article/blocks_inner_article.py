@@ -4,6 +4,9 @@ from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
+from wagtail.embeds import blocks as embed_blocks
+from django.utils.safestring import mark_safe
+from django.template.loader import render_to_string
 
 class AudioBlock(blocks.StructBlock):
     caption =  blocks.CharBlock(required=False)
@@ -175,7 +178,6 @@ class VisualEssayBlock(blocks.StructBlock):
         icon = "form"
 
 class GalleryBlock(blocks.StructBlock):
-    id = blocks.CharBlock(help_text="No numbers or spaces. Must be different from other ids defined in this article.", required=True)
     images = blocks.ListBlock(
         image_blocks.ImageBlock()
     )
@@ -183,6 +185,7 @@ class GalleryBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/gallery_block.html'
         icon = "image"
+        label = "Carousel"
 
 class PersonalityQuizBlock(blocks.StructBlock):
     personalities = blocks.ListBlock(

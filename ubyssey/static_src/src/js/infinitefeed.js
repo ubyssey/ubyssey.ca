@@ -15,6 +15,7 @@ getData("tag");
 getData("category");
 getData("search_query");
 getData("label");
+getData("storystream");
 
 function getArticles() {
   loader.setAttribute("inactive", "True");

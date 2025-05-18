@@ -1,0 +1,27 @@
+{% load cache %}
+{% load humanize %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+{% load wagtailembeds_tags %}
+{% load video_filters %}
+
+{% if article %}
+<article class="o-article o-article_storystream o-article_storystream_indent" time="{{article.explicit_published_at|naturalday}}">
+
+	<div class="o-article__left">
+		{% include "article/objects/headline.html" %}
+	</div>
+
+	<div class="o-article__right">
+		<p>{{article.lede}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>
+		
+		<div class="attachment">
+			{{attachment|safe}}
+		</div>
+	</div>
+
+</article>
+{% endif  %}

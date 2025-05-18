@@ -3,15 +3,18 @@
 {% load static %}
 
 {% image self.images.0.image width-100 as first %}
-  <div id="{{self.id|slugify}}" class="carousel carousel-dark slide {{self.images.0.style}} {{self.images.0.width}}" data-bs-ride="true" style="--aspect-ratio: {{first.height}};">
-    <div class="carousel-indicators">
-      {% for image in self.images %}
-        <button type="button" data-bs-target="#{{self.id|slugify}}" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
-      {% endfor %}
-    </div>
+  <div id="{{first.url|slugify}}" class="carousel carousel-dark slide {% if indicators != "false" %}indicators {% endif %}{% if nocaption %}no-caption {% endif %}{{self.images.0.style}} {{self.images.0.width}}"  style="--aspect-ratio: {{first.height}};">
+    
+    {% if indicators != "false" %}
+      <div class="carousel-indicators">
+        {% for image in self.images %}
+          <button type="button" data-bs-target="#{{first.url|slugify}}" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+        {% endfor %}
+      </div>
+    {% endif %}
+    
     <div class="carousel-inner">
       {% for image_block in self.images %}
-        
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
 
           {% include_block image_block %}
@@ -19,11 +22,12 @@
         </div>
       {% endfor %}
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#{{self.id|slugify}}" data-bs-slide="prev" style="position: absolute;">
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#{{first.url|slugify}}" data-bs-slide="prev" style="position: absolute;">
       <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
       <span class="visually-hidden">Previous</span>
     </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#{{self.id|slugify}}" data-bs-slide="next" style="position: absolute;">
+    <button class="carousel-control-next" type="button" data-bs-target="#{{first.url|slugify}}" data-bs-slide="next" style="position: absolute;">
       <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
       <span class="visually-hidden">Next</span>
     </button>

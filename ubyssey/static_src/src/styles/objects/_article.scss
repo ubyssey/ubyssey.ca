@@ -58,13 +58,6 @@
   font-family: "Georgia", serif
 }
 
-.home-featured {
-  .o-article__published {
-    // Text
-    color: #2B2B2B;
-  }
-}
-
 .o-article__published {
   // Text
   color: var(--article-publish);
@@ -132,6 +125,7 @@
   font-weight: 600;
   font-size: 0.65em;
   text-transform: uppercase;
+  color: var(--supporting_text_color);
   a {
       color: inherit;
   }
@@ -446,4 +440,33 @@ div.article-content h2.header {
   &:hover {
     background-color: #555;
   }
+}
+
+
+.o-article {
+  .above-headline {
+      margin-bottom: 0.5em;
+      font-size: 0.8em;
+      .o-article__published {
+        font-size: 1em;
+        font-weight: 600;
+      }      
+      .o-article__section {
+        margin-left: 0.5em;
+        font-weight: 600;
+      }
+      .o-article__section, .o-article__byline {
+        font-size: 0.85em;
+        text-transform: uppercase;
+        color: var(--supporting_text_color);
+      }
+      .o-article__byline {
+        font-weight: 400;
+        font-style: italic;
+        &::before {
+          content: "|";
+          margin-inline: 0.25em;
+        }
+      }
+    }
 }

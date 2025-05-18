@@ -1,0 +1,5 @@
+{% load cache %}
+{% load wagtailimages_tags %}
+
+{% image image_block.image width-1000 format-webp as image %}
+<img class="article-attachment" loading="lazy" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{{ image_block.alt_text }}" />	

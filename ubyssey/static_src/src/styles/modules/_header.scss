@@ -49,6 +49,7 @@ header.main, header.topbar {
   }
 }
 
+
 header.main{
   .branding.row {
     margin-top: 2em;
@@ -87,8 +88,17 @@ header.main{
     margin-top: 1em;
     display: flex;
     justify-content: center;
+    flex-wrap: nowrap;
     //overflow: hidden;
 
+    > * {
+      flex-shrink: 1;
+      padding-left: 0;
+      padding-right: 0;
+      margin-top: 0;
+      width: auto;
+      max-width: none;
+    }
     .left, .middle, .right {
       display: inline-block;
       height: 100%;
@@ -142,6 +152,7 @@ header.main{
     padding-inline: 1em;
     border-top: 2px solid;
     border-bottom: 1px solid;
+    color: var(--nav-h3-color);
 
     .left, .middle, .right {
       padding: 0;
@@ -219,6 +230,7 @@ header.main{
       padding: 0;
       display: flex;
       justify-content: space-between;
+      flex-direction: row;
       width: fit-content;
       margin: auto;
       height: 100%;

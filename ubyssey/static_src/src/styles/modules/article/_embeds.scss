@@ -453,6 +453,28 @@ img.image-attachment {
   }
 }
 
+div.caption {
+  margin-inline: 1em;
+  padding-block: 1em 0.5em;
+  padding-inline: 1em;
+  border-bottom: 2px solid variables.$color-ubyssey-blue;
+
+  font-size: 15px;
+  line-height: 19px;
+
+  color: var(--article_caption);
+  font-style: italic;
+  font-family: fonts.$font-default;
+}
+
+span.credit {
+  display: inline-block;
+  margin-left: 0.5em;
+  font-style: italic;
+  font-size: 0.9em;
+  color: variables.$color-ubyssey-blue;
+}
+
 div.article-content blockquote.pull-quote {
   margin: 2em auto;
   text-align: center;

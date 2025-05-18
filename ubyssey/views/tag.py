@@ -8,6 +8,7 @@ class TagPage(object):
             tag = Tag.objects.get(slug=slug)
             site =  Site.find_for_request(request)
             context = {
+                "storystream": "true",
                 "filters": {"tag": tag.slug},
                 "meta": {"title": tag.name,
                          "slug": tag.slug,

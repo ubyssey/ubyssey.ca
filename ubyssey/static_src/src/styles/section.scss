@@ -30,6 +30,10 @@
 @use 'objects/inputs';
 @use 'objects/archive';
 
+@use 'objects/article_storystream_views';
+@use 'modules/article/embeds';
+@use 'components/carousel';
+
 @use 'components/button';
 @use 'components/adblock-splash';
 @use 'components/cookie-disclaimer';

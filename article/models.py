@@ -30,7 +30,8 @@ from taggit.models import Tag
 
 from videos import blocks as video_blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from article import blocks as article_blocks
+from article import blocks_inner_article as blocks_inner_article
+from article import blocks_storystream
 
 from wagtail.admin.panels import (
     # Panels
@@ -509,24 +510,24 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 label = "Credited/Captioned One-Off Video",
                 help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
             )),
-            ('audio', article_blocks.AudioBlock()),
+            ('audio', blocks_inner_article.AudioBlock()),
             ('image', image_blocks.ImageBlock(
             )),
-            ('pdf', article_blocks.PdfBlock()),
+            ('pdf', blocks_inner_article.PdfBlock()),
             ('raw_html', blocks.RawHTMLBlock(
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', article_blocks.PullQuoteBlock()),
+            ('quote', blocks_inner_article.PullQuoteBlock()),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
-            ('gallery_block', article_blocks.GalleryBlock()),
-            ('header_link', article_blocks.HeaderLinkBlock()),
-            ('header_menu', article_blocks.HeaderMenuBlock()),
-            ('visual_essay', article_blocks.VisualEssayBlock()),
-            ('personality_quiz', article_blocks.PersonalityQuizBlock()),
+            ('gallery_block', blocks_inner_article.GalleryBlock()),
+            ('header_link', blocks_inner_article.HeaderLinkBlock()),
+            ('header_menu', blocks_inner_article.HeaderMenuBlock()),
+            ('visual_essay', blocks_inner_article.VisualEssayBlock()),
+            ('personality_quiz', blocks_inner_article.PersonalityQuizBlock()),
         ],
         null=True,
         blank=True,
@@ -551,6 +552,21 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         null=False,
         blank=True,
         default='',
+    )
+    storystream_view = StreamField(
+        [
+            ('featured_media', blocks_storystream.StorystreamFeaturedImage()),
+            ('image', blocks_storystream.StorystreamImage()),
+            ('gallery', blocks_storystream.StorystreamGallery()),
+            ('video', blocks_storystream.StorystreamVideo()),
+            ('embed', blocks_storystream.StorystreamRawHtml()),
+            ('pdf', blocks_storystream.StorystreamPDF())
+        ],
+        default = [{"type": "featured_media", "value": {"template": "large-headline"}}],
+        blank = False,
+        use_json_field=True,
+        min_num = 1,
+        max_num = 1,
     )
 
     #-----Category and Tag stuff-----
@@ -801,7 +817,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         ),
         MultiFieldPanel(
             [
-                FieldPanel("lede")
+                FieldPanel("lede"),
+                FieldPanel("storystream_view"),
             ],
             heading="Front Page Stuff",
             classname="collapsible",
@@ -1226,23 +1243,30 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             else:
                 for author in v:
                     visual_authors.append(author.author)
-                visuals.append([k, role_types_words[k] + self.get_authors_string(links=True, authors_list=v)])
+                visuals.append([k, self.get_authors_string(links=True, authors_list=v)])
         visuals.sort(key=lambda s: role_types.index(s[0]))
 
-        visual_only_author = False
-        for visual_author in visual_authors:
-            if not visual_author in word_authors:
-                visual_only_author = True
-                break
+        if len(word_authors) > 0:
+            visual_only_author = False
+            for visual_author in visual_authors:
+                if not visual_author in word_authors:
+                    visual_only_author = True
+                    break
 
-        writers = self.get_authors_string(links=True, authors_list=list(writers))
+            writers = self.get_authors_string(links=True, authors_list=list(writers))
 
-        if len(visuals) > 0 and visual_only_author:
-            visuals = ', ' + ', '.join(map(lambda a: a[1], visuals))
+            if len(visuals) > 0 and visual_only_author:
+                visuals = ', ' + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
+            else:
+                visuals = ''
+
+            return writers + visuals
         else:
-            visuals = ''
-
-        return writers + visuals
+            if len(visuals) > 1:
+                return ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))                
+            else:
+                return ', '.join(map(lambda a: a[1], visuals))
+        
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 
     def get_category_articles(self, order='-first_published_at', max=False) -> QuerySet:

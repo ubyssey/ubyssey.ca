@@ -1,7 +1,7 @@
 {% load articletags %}
 
 <div class="sidebar-block latest-list">
-    {% include 'home/objects/home_heading-box.html' with styling='boxLabel-highlight' title=title text='Updated' textBold=articles.0.first_published_at|time_ago %}
+    {% include 'home/objects/home_heading-box.html' with styling='o-boxLabel-highlight' title=title text='Updated' textBold=articles.0.first_published_at|time_ago %}
 	<ul>
 		{% for article in articles %}
 		<li>
