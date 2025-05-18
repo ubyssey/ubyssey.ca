@@ -888,7 +888,12 @@ class Event(models.Model):
     # 0: manually inputted so don't delete on updates, 1: updated by cronjob, 2: currently updating by cronjob
     update_mode = models.IntegerField(
         default=0,
-        help_text="Make sure you select 'Manual input', otherwise this event will be overwritten or deleted during the calendar's automatic daily update"
+        help_text="Make sure you select 'Manual input', otherwise this event will be overwritten or deleted during the calendar's automatic daily update. Hide from homepage is NOT overwritten."
+    )
+    hide_from_homepage = models.BooleanField(
+        default=False,
+        editable=True,
+        help_text="Check this to prevent the event from being featured on the homepage. This will NOT be overwritten, no matter the update mode.",
     )
 
     objects = EventManager()

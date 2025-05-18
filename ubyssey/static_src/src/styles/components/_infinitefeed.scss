@@ -48,7 +48,7 @@
     flex-grow: 1;
 }
 
-.sidebar-block > .boxLabel {
+.sidebar-block > .o-boxLabel {
     font-size: 1.1em;
 }
 
@@ -60,7 +60,7 @@
     display: flex;
     flex-direction: column;
 
-    &.empty-sidebar {
+    &.o-sidebar-empty {
         height: 0;
         padding: 0;
         @media (variables.$bp-smaller-than-tablet) {
@@ -95,7 +95,7 @@
     }
 }
 
-.c-infinitefeed__feed {
+.o-feed-item {
     margin:auto;
     display:flex;
     flex-direction: column;

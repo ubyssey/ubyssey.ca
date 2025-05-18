@@ -3,7 +3,8 @@ from .sectionable.models import SectionablePage
 
 from article.models import ArticlePage
 from home import blocks as homeblocks
-from article import blocks as article_blocks
+from article import blocks_outer_article
+from article import blocks_inner_article
 
 from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -186,12 +187,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     top_stream = StreamField(
         [
-            ('article_gatherer', homeblocks.ArticleGathererBlock()),
-            ('landing', homeblocks.SpecialLandingPageBlock()),
-            ('article_manual', homeblocks.ManualArticles()),
-            ('article_gatherer_with_pinned', homeblocks.ArticleGathererWithPinnedBlock()),
-            ('grouped_articles_manual', homeblocks.ManualArticleLinkGroup()),
-            ('header_menu', article_blocks.HeaderMenuBlock()),
+            ('article_gatherer', blocks_outer_article.ArticleGathererBlock()),
+            ('landing', blocks_outer_article.SpecialLandingPageBlock()),
+            ('article_manual', blocks_outer_article.ManualArticles()),
+            ('article_gatherer_with_pinned', blocks_outer_article.ArticleGathererWithPinnedBlock()),
+            ('grouped_articles_manual', blocks_outer_article.ManualArticleLinkGroup()),
+            ('header_menu', blocks_inner_article.HeaderMenuBlock()),
         ],
         null=True,
         blank=True,
@@ -203,8 +204,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
-        ("sidebar_manual", homeblocks.SidebarManualArticles()),        
+        ("sidebar_gatherer_block", infinitefeedblocks.SidebarArticleGatherer()),
+        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),        
     ],
     null=True,
     blank=True,

@@ -54,6 +54,8 @@
     display: flex;
     .o-article__left {
         margin-right: 2em;
+        margin-block: auto;
+        height: fit-content;
         .o-article__headline {
             width: fit-content;
             border-bottom: 2px solid variables.$color-ubyssey-blue;

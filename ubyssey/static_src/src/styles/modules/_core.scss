@@ -265,7 +265,7 @@ html[color-css-theme="dark"] {
   --supporting_text_color: #eee;
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue-light};
-  --contrast-color: #{variables.$color-ubyssey-blue-dark};
+  --contrast-color: #{variables.$color-ubyssey-blue-light};
 
   // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: #031723;

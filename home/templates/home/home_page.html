@@ -62,15 +62,13 @@
 			</div>
 		</div>
 
-		<div>
-			{% for block in self.middle_stream %}
+		{% for block in self.middle_stream %}
 			{% include_block block %}
-			{% endfor %}
-		</div>
+		{% endfor %}
 
 		{% include "home/components/storystream.html" %}
 
-		<div class="u-container u-container--large">
+		<div class="u-container u-container--large c-home-section_stream">
 			{% for section in self.sections_stream %}
 				{% include_block section %}
 			{% endfor %}

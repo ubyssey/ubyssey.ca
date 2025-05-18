@@ -11,6 +11,8 @@ from wagtail.models import Page, Orderable
 from wagtail.fields import StreamField
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
+from events import blocks as eventblocks
+from article import blocks_outer_article as articleblocks
 from django.utils import timezone
 import datetime
 
@@ -86,9 +88,10 @@ class HomePage(Page):
     middle_stream = StreamField(
         [
             ("links", homeblocks.LinksStreamBlock()),
-            ('article_gatherer', homeblocks.ArticleGathererBlock()),
-            ('landing', homeblocks.SpecialLandingPageBlock()),
-            ('article_manual', homeblocks.ManualArticles()),
+            ('article_gatherer', articleblocks.ArticleGathererBlock()),
+            ('landing', articleblocks.SpecialLandingPageBlock()),
+            ('article_manual', articleblocks.ManualArticles()),
+            ('events_bar', eventblocks.MidstreamEventsBar())
         ],
         null=True,
         blank=True,
@@ -97,7 +100,7 @@ class HomePage(Page):
 
     sections_stream = StreamField(
         [
-            ("home_page_section_block", homeblocks.SectionBlock())
+            ("home_page_section_block", articleblocks.SectionBlock())
         ],
         null=True,
         blank=True,
@@ -109,9 +112,9 @@ class HomePage(Page):
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
-        ("sidebar_manual", homeblocks.SidebarManualArticles()),
-        ("siderbar_events_block", infinitefeedblocks.SidebarEventsBlock()),
+        ("sidebar_gatherer_block", infinitefeedblocks.SidebarArticleGatherer()),
+        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),
+        ("siderbar_events_block", eventblocks.SidebarEventsBlock()),
     ],
     null=True,
     blank=True,

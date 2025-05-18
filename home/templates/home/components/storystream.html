@@ -1,22 +1,22 @@
 {% load wagtailcore_tags %}
-<div class="u-container u-container--large storystream bottom-separator">
+<div class="u-container u-container--large c-storystream u-bottom-separator">
 	{% include 'home/objects/home_heading-box.html' with id="feed-box-label" title='More Recent Stories' text='<i>The Ubyssey</i>' textId='timeBox' %}
 	{% for group in homepage_stream %}
-	<div class="c-infinitefeed__feed">
-		<div class="c-homepage__sections">
+	<div class="o-feed-item">
+		<div class="o-storystream_group">
 			{% for article in group.articles %}
 				{% include_block article.storystream_view.0 %}
 			{% endfor %}
 
             {% if forloop.last %}
-                <p class="storystream-endnote"><a href="/all">See our archive!</a></p>
+                <p class="c-storystream-endnote"><a href="/all">See our archive!</a></p>
             {% endif %}
         </div>
 		
 		{% if group.sidebar %}
 			{% include 'infinitefeed/objects/infinitefeed-sidebar.html' with id="sidebar" sidebar_stream=group.sidebar %}
 		{% else %}
-			<div class="c-sidebar empty-sidebar"></div>
+			<div class="c-sidebar o-sidebar-empty"></div>
 		{% endif %}
 	</div>
 	{% endfor %}

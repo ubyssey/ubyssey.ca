@@ -4,17 +4,17 @@ Used in both section pages and homepage
 {% endcomment %}
 {% load wagtailcore_tags %}
 
-<section class="c-homepage__section bottom-separator">
+<section class="home-section_one_large_two_small landing_stream_block u-container--padded">
   <h2 class="section">
       <a href={{ link }}>{{ title|title }}</a>
   </h2>
   <div class="c-section__featured">
-    {% include 'article/objects/article_top-headline.html' with article=articles.first expectedSection=section.slug %}
+    {% include 'article/objects/infinitefeed_item.html' with article=articles.first expectedSection=articles.first.current_section %}
   
     <div class="c-section__featured__articles">
       {% for article in articles %}
         {% if forloop.counter != 1 and forloop.counter < 4 %}
-          {% include 'article/objects/infinitefeed_item.html' with article=article%}
+          {% include 'article/objects/infinitefeed_item.html' with article=article expectedSection=article.current_section %}
         {% endif %}
       {% endfor %}
     </div>

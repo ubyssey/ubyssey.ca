@@ -30,7 +30,8 @@ from taggit.models import Tag
 
 from videos import blocks as video_blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from article import blocks as article_blocks
+from article import blocks_inner_article as blocks_inner_article
+from article import blocks_storystream
 
 from wagtail.admin.panels import (
     # Panels
@@ -509,24 +510,24 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 label = "Credited/Captioned One-Off Video",
                 help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
             )),
-            ('audio', article_blocks.AudioBlock()),
+            ('audio', blocks_inner_article.AudioBlock()),
             ('image', image_blocks.ImageBlock(
             )),
-            ('pdf', article_blocks.PdfBlock()),
+            ('pdf', blocks_inner_article.PdfBlock()),
             ('raw_html', blocks.RawHTMLBlock(
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', article_blocks.PullQuoteBlock()),
+            ('quote', blocks_inner_article.PullQuoteBlock()),
             ('gallery', SnippetChooserBlock(
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
-            ('gallery_block', article_blocks.GalleryBlock()),
-            ('header_link', article_blocks.HeaderLinkBlock()),
-            ('header_menu', article_blocks.HeaderMenuBlock()),
-            ('visual_essay', article_blocks.VisualEssayBlock()),
-            ('personality_quiz', article_blocks.PersonalityQuizBlock()),
+            ('gallery_block', blocks_inner_article.GalleryBlock()),
+            ('header_link', blocks_inner_article.HeaderLinkBlock()),
+            ('header_menu', blocks_inner_article.HeaderMenuBlock()),
+            ('visual_essay', blocks_inner_article.VisualEssayBlock()),
+            ('personality_quiz', blocks_inner_article.PersonalityQuizBlock()),
         ],
         null=True,
         blank=True,
@@ -554,10 +555,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
     storystream_view = StreamField(
         [
-            ('simple', article_blocks.StorystreamFeaturedImage()),
-            ('gallery', article_blocks.StorystreamGallery()),
-            ('embed', article_blocks.StorystreamEmbed()),
+            ('use_featured_media', blocks_storystream.StorystreamFeaturedImage()),
+            ('gallery', blocks_storystream.StorystreamGallery()),
+            ('embed', blocks_storystream.StorystreamRawHtml()),
+            ('pdf', blocks_storystream.StorystreamPDF())
         ],
+        default = [{"type": "use_featured_media", "value": {"template": "article/objects/storystream_views/large-headline.html"}}],
         blank = False,
         use_json_field=True,
         min_num = 1,

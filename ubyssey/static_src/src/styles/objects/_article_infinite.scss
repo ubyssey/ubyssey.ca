@@ -38,10 +38,6 @@
         width: auto;
         min-height: 10em;
         padding-inline: 0.5em;
-
-        @media(variables.$bp-larger-than-mobile) {
-            width: 65%;
-        }
     }
 
     .o-article__left {
