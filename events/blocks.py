@@ -68,7 +68,7 @@ class MidstreamEventsBar(blocks.StructBlock):
 
         events = []
         for category in ["community", "entertainment", "sports", "seminar"]:
-            event = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).filter(category=category).order_by("start_time")[:1]
+            event = Event.objects.filter(hidden=False, hide_from_homepage=False, end_time__gte=timezone.now()).filter(category=category).order_by("start_time")[:1]
             if len(event) > 0:
                 events.append(event[0])
 

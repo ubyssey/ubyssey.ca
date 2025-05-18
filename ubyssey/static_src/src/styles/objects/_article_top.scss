@@ -28,6 +28,10 @@
         }
     }
 
+    .o-article__right, .o-article__above-headline {
+        line-height: 1em;
+    } 
+
     .o-article__section-tag {
         display: inline-block;
         height: fit-content;

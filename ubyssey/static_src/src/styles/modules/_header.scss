@@ -49,6 +49,7 @@ header.main, header.topbar {
   }
 }
 
+
 header.main{
   .branding.row {
     margin-top: 2em;
@@ -95,6 +96,8 @@ header.main{
       padding-left: 0;
       padding-right: 0;
       margin-top: 0;
+      width: auto;
+      max-width: none;
     }
     .left, .middle, .right {
       display: inline-block;
@@ -227,6 +230,7 @@ header.main{
       padding: 0;
       display: flex;
       justify-content: space-between;
+      flex-direction: row;
       width: fit-content;
       margin: auto;
       height: 100%;
