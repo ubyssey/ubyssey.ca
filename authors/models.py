@@ -194,9 +194,9 @@ class AuthorPage(RoutablePageMixin, Page):
             article_order = "-"
 
         if media_type == "photos":
-            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order+"updated_at")
+            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order+"created_at")
         elif media_type == "videos":
-            authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order+"updated_at")
+            authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order+"created_at")
         elif media_type == "visuals":
             # Get articles where this author is credited with something other than "author" and "org_role"
             authors_media = [] 

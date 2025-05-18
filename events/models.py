@@ -922,6 +922,7 @@ class Event(models.Model):
             ),
         ),
         FieldPanel("hidden"),
+        FieldPanel("hide_from_homepage"),
         FieldPanel(
             "update_mode",
             widget=Select(

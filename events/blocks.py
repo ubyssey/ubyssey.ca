@@ -73,6 +73,8 @@ class MidstreamEventsBar(blocks.StructBlock):
                 events.append(event[0])
 
         today = timezone.now().astimezone(timezone.get_current_timezone())
+        events.sort(key=lambda e: e.end_time if today > e.start_time else e.start_time)
+        
         for i in range(len(events)):
             event = events[i]
             if event.start_time < today:
