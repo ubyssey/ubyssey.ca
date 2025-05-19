@@ -2,6 +2,7 @@
 {% load cache %}
 {% load menu_tags %}
 
+{% cache 600 mobilenav %}
 <header class="mobile dark-mode">
     <div class="setup-modal">
         <a class="open-modal menu left" href="#"><ion-icon name="menu"></ion-icon></a>
@@ -32,3 +33,4 @@
     {% comment %} <a class="search right" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
 </header>
 <div id="header-mobile-spacer{% if class %}--{{ class }}{% endif %}"></div>
+{% endcache %}

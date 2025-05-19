@@ -459,7 +459,7 @@ class ArticlePageManager(PageManager):
         """
         return super() \
             .get_queryset() \
-            .prefetch_related('featured_media__image')
+            .prefetch_related('featured_media__image', "article_authors__author")
 
     def from_section(self, section_slug='', section_root=None) -> QuerySet:
         from .models import ArticlePage
@@ -1072,21 +1072,21 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         user_agent = get_user_agent(request)
         context['is_mobile'] = user_agent.is_mobile
+        if self.current_section == "guide":
+            context['prev'] = self.get_prev_sibling()
+            context['next'] = self.get_next_sibling()
+            
+            if self.current_section == 'guide':
+                # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
+                if not context['prev']:
+                    context['prev'] = self.get_last_sibling()
+                if not context['next']:
+                    context['next'] = self.get_first_sibling()
 
-        context['prev'] = self.get_prev_sibling()
-        context['next'] = self.get_next_sibling()
-        
-        if self.current_section == 'guide':
-            # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
-            if not context['prev']:
-                context['prev'] = self.get_last_sibling()
-            if not context['next']:
-                context['next'] = self.get_first_sibling()
-
-        if context['prev']:
-            context['prev'] = context['prev'].specific
-        if context['next']:
-            context['next'] = context['next'].specific
+            if context['prev']:
+                context['prev'] = context['prev'].specific
+            if context['next']:
+                context['next'] = context['next'].specific
 
         context["suggested"] = self.get_suggested()
 

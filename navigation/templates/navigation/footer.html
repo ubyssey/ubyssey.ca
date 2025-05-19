@@ -1,6 +1,8 @@
 {% load static %}
 {% load cache %}
 {% load menu_tags %}
+
+{% cache 6000 footer %}
 <footer>
     <div class="u-container u-container--large">
 
@@ -56,3 +58,4 @@
         <div class="copyright">&copy; {% now "Y" %} The Ubyssey</div>
     </div>
 </footer>
+{% endcache %}

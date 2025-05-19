@@ -35,7 +35,9 @@
             {% gpt_placement_tag orderable.ad_slot %}
         {% endfor %}
     {% endblock %}
-    {% include 'navigation/headers/topbar.html' %}
+
+    {% include 'navigation/headers/topbar.html' with section=self.current_section %}
+
 {% endblock %}
 
 {% block content %}

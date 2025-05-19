@@ -15,8 +15,8 @@
 		</a>
 		{% if label %}
 			{% if article|get_label %}
-				<a href="{{article|get_section_link}}">
-					<img class="o-article__label" src="{{article|get_label}}" alt="{{article|get_section_title}}" >
+				<a href="/{{article.current_section}}/">
+					<img class="o-article__label" src="{{article|get_label}}" alt="{{article.current_section}}" >
 				</a>
 			{% endif %}
 		{% endif %}
@@ -31,7 +31,7 @@
 	{% endif %}
 	<div class="o-article__right">
 		<div class="above-headline">
-			<span class="o-article__published">{{ article.published_at|display_pubdate }}</span>{%if expectedSection != article.current_section %}<a class="o-article__section" href="{{article|get_section_link}}">{{article|get_section_title}}</a>{% endif %}
+			<span class="o-article__published">{{ article.published_at|display_pubdate }}</span>{%if expectedSection != article.current_section %}<a class="o-article__section" href="/{{article.current_section}}/">{{article.current_section}}</a>{% endif %}
 		</div>
 		<h3 class="o-article__headline">
 			<a href="{% pageurl article %}">{{ article.title|safe }}</a>
