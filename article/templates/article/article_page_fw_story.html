@@ -1,5 +1,6 @@
 {% extends 'article/article_page.html' %}
 {% load static %}
+{% load cache %}
 {% load wagtailimages_tags %}
 {% load ubyssey_ad_tags %}
 
@@ -26,9 +27,11 @@
     <div class="o-advertisement--fw-end">
         {% if not self.is_explicit  %}
             {% if self.minutes_to_read >= 3 %}
+                {% cache 6000 article_sidebar_ads %}
                 {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
                     {% gpt_placement_tag orderable.ad_slot %}
                 {% endfor %}  
+                {% endcache %}
             {% endif %}
         {% else %}
             {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}

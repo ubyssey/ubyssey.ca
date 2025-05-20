@@ -1,5 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static %}
+{% load cache %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load video_filters %}
@@ -7,10 +8,12 @@
 {% load ubyssey_ad_tags %}
 
 {% block head_scripts %}
+    {% cache 6000 article_ad_tags %}
     <!-- Register ads for article page -->
     {% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
         {% gpt_define_tag orderable.ad_slot is_mobile %}
     {% endfor %}
+    {% endcache %}
 
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
 {% endblock %}
@@ -30,10 +33,12 @@
 {% block header %}
     {% include 'navigation/headers/mobile.html' %}
     {% block banner_ad %}
+        {% cache 6000 article_header_ads %}
         <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
             {% gpt_placement_tag orderable.ad_slot %}
         {% endfor %}
+        {% endcache %}
     {% endblock %}
 
     {% include 'navigation/headers/topbar.html' with section=self.current_section %}
@@ -108,9 +113,11 @@
                     {% block sidebar %}
                         <!-- Article Page sidebar ads go here -->
                         {% if self.is_explicit is not True %}
+                            {% cache 6000 article_sidebar_ads %}
                             {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
                                 {% gpt_placement_tag orderable.ad_slot %}
                             {% endfor %}            
+                            {% endcache %}
                         {% else %}
                             {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
                         {% endif %}

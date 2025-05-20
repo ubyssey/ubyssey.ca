@@ -1,6 +1,7 @@
 {% extends 'ubyssey/base.html' %}
 {% load humanize %}
 {% load static %}
+{% load cache %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load wagtailuserbar %}
@@ -13,19 +14,23 @@
 
 {% block head_scripts %}
 <link rel="alternate" type="application/atom+xml" title="Ubyssey {{self.title}} feed" href="{% pageurl self %}rss/">
+  {% cache 6000 section_ad_tags %}
   <!-- Register ads for section page -->
   {% for orderable in settings.ads.AdTagSettings.section_head_tags.all %}
     {% gpt_define_tag orderable.ad_slot %}
   {% endfor %}
+  {% endcache %}
 {% endblock %}
 
 {% block header %}
   <div class="o-advertisement--above-sticky-nav-bar">
   {% include 'navigation/headers/mobile.html' %}
-      <!-- Place header ads for section page -->
+    {% cache 6000 section_header_ads %}
+    <!-- Place header ads for section page -->
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
+    {% endcache %}
   </div>
   {% include 'navigation/headers/topbar.html' with section=self.slug %}
 {% endblock %}
