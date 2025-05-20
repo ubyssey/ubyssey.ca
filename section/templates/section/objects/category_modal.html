@@ -1,0 +1,28 @@
+{% load cache %}
+{% load wagtailcore_tags %}
+
+{% cache 6000 category_modal section %}
+<dialog class="modal" aria-modal="true">
+    <div class="js-dropdown-container close-modal"></div>
+    <div class="category_menu u-container u-container--padded">
+    <a href="#" class="c-section__modal_close close-modal">
+    <ion-icon name="close"></ion-icon>
+    </a>
+    <h1><ion-icon name="pricetag"></ion-icon> All Categories</h1>
+    {% if parent %}
+    <p><a href="{% pageurl parent %}">{{parent.title}}</a></p> 
+    {% else %}
+    <p><a href="{% pageurl self %}">{{self.title}}</a></p>
+    {% endif %}
+
+    {% for group in self.all_categories %}
+    <h2>{{group.group}}</h2>
+    <ul>
+    {% for category in group.categories %}
+    <li><a href="{% pageurl category %}">{{ category.title }}</a></li>
+    {% endfor %}
+    </ul>
+    {% endfor %}
+    </div>
+</dialog>
+{% endcache %}

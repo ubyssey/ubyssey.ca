@@ -32,7 +32,7 @@
     {% endfor %}
     {% endcache %}
   </div>
-  {% include 'navigation/headers/topbar.html' with section="topbar_"|add:section_slug %}
+  {% include 'navigation/headers/topbar.html' with section=section_slug %}
 {% endblock %}
 
 {% block content %}
@@ -92,31 +92,7 @@
               <p><ion-icon name="pricetag"></ion-icon> {% if parent %}Other {% endif %}Categories</p>
             </a>
 
-            {% cache 6000 "category_modal_"|add:section_slug %}
-            <dialog class="modal" aria-modal="true">
-              <div class="js-dropdown-container close-modal"></div>
-              <div class="category_menu u-container u-container--padded">
-              <a href="#" class="c-section__modal_close close-modal">
-                <ion-icon name="close"></ion-icon>
-              </a>
-              <h1><ion-icon name="pricetag"></ion-icon> All Categories</h1> <!-- Why Series? Why not Categories? -->
-              {% if parent %}
-                <p><a href="{% pageurl parent %}">{{parent.title}}</a></p> 
-              {% else %}
-                <p><a href="{% pageurl self %}">{{self.title}}</a></p>
-              {% endif %}
-
-              {% for group in self.all_categories %}
-              <h2>{{group.group}}</h2>
-              <ul>
-                {% for category in group.categories %}
-                <li><a href="{% pageurl category %}">{{ category.title }}</a></li>
-                {% endfor %}
-              </ul>
-              {% endfor %}
-              </div>
-            </dialog>
-            {% endcache %}
+            {% include "section/objects/category_modal.html" with section=section_slug %}
 
           </div>
         </div>
