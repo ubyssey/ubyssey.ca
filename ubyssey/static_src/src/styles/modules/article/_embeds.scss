@@ -476,7 +476,7 @@ span.credit {
 }
 
 div.article-content blockquote.pull-quote {
-  margin: 2em auto;
+  margin: 1.4em auto;
   text-align: center;
 
   @media(variables.$bp-larger-than-phablet) {
@@ -512,7 +512,9 @@ div.article-content blockquote.pull-quote {
     padding: 1em;
     background: #{variables.$color-ubyssey-blue-light};
     color: black;
-    border-radius: 1em;
+    @media(variables.$bp-larger-than-phablet) {
+      border-radius: 1em;
+    }
   }
   &.enlarged_quotation {
     position: relative;
@@ -528,19 +530,45 @@ div.article-content blockquote.pull-quote {
       left: 0;
       top:0;
       font-size: 4em;
-      font-family: 'librefranklin';
+      font-family: fonts.$font-headline;
     }
   }
 
   p.quote {
     margin-block: 0;
-    font: bold 1.625em/1.5em 'Minion Pro';
+    font-weight: 600;
+    font-size: 1.5em;
+    line-height: 1.5em;
+    font-family: fonts.$font-headline;
     color: inherit;
+  }
+
+  &.block_quote {
+    padding: .25em 1em;
+    border-left: 2px solid var(--light-border-grey);
+    transition: border-color 0.5s ease;
+    
+    text-align: left;
+    color: var(--text_color_supporting);
+    @media(variables.$bp-larger-than-phablet) {
+      &.right {
+        margin-left: 1.5em;
+      } 
+    }
+    @media(variables.$bp-smaller-than-phablet) {
+      margin-inline: 1em;
+    }
+    p.quote {
+      font-size: 0.9em;
+      font-weight: 400;
+      font-family: fonts.$font-body;
+      line-height: 1.75em;
+    }
   }
 
   p.meta {
     position: relative;
-    margin-block: 0;
+    margin-block: 1em 0;
 
     color: inherit;
     text-transform: uppercase;
@@ -553,6 +581,7 @@ div.article-content blockquote.pull-quote {
     }
 
     .source {
+      margin-left: 2em;
       display: inline-block;
       position: relative;
       max-width: 40%;
@@ -564,8 +593,7 @@ div.article-content blockquote.pull-quote {
       display: inline-block;
       width: 1em;
       
-      left: 25%;
-      top: 0.1rem;
+      top: 0.25em;
 
 
       &.volume-low {

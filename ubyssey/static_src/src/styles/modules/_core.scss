@@ -240,10 +240,12 @@ html[color-css-theme="light"] {
   --background-nav: rgba(255, 255, 255, 0.99);
   --background: white;
   --text_color: #1b1b1b;
+  --text_color_supporting: #666;
   --header_color: black;
-  --supporting_text_color: #111;
+  --header_color_supporting: #111;
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue};
+  --light-border-grey: #eee;
   --contrast-color: #{variables.$color-ubyssey-blue-dark};
 
     // colours that should be removed or renamed
@@ -265,10 +267,12 @@ html[color-css-theme="dark"] {
   --background-nav: #031723;
   --background: #031621;
   --text_color: #D9D9D9;
+  --text_color_supporting: #aaa;
   --header_color: white;
-  --supporting_text_color: #eee;
+  --header_color_supporting: #eee;
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue-light};
+  --light-border-grey: #888;
   --contrast-color: #{variables.$color-ubyssey-blue-light};
 
   // colours that should be removed or renamed

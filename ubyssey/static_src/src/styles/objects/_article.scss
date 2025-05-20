@@ -125,7 +125,7 @@
   font-weight: 600;
   font-size: 0.65em;
   text-transform: uppercase;
-  color: var(--supporting_text_color);
+  color: var(--header_color_supporting);
   a {
       color: inherit;
   }
@@ -458,7 +458,7 @@ div.article-content h2.header {
       .o-article__section, .o-article__byline {
         font-size: 0.85em;
         text-transform: uppercase;
-        color: var(--supporting_text_color);
+        color: var(--header_color_supporting);
       }
       .o-article__byline {
         font-weight: 400;
