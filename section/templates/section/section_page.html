@@ -32,7 +32,7 @@
     {% endfor %}
     {% endcache %}
   </div>
-  {% include 'navigation/headers/topbar.html' with section=self.slug %}
+  {% include 'navigation/headers/topbar.html' with section="topbar_"|add:section_slug %}
 {% endblock %}
 
 {% block content %}
@@ -92,6 +92,7 @@
               <p><ion-icon name="pricetag"></ion-icon> {% if parent %}Other {% endif %}Categories</p>
             </a>
 
+            {% cache 6000 "category_modal_"|add:section_slug %}
             <dialog class="modal" aria-modal="true">
               <div class="js-dropdown-container close-modal"></div>
               <div class="category_menu u-container u-container--padded">
@@ -105,7 +106,7 @@
                 <p><a href="{% pageurl self %}">{{self.title}}</a></p>
               {% endif %}
 
-              {% for group in all_categories %}
+              {% for group in self.all_categories %}
               <h2>{{group.group}}</h2>
               <ul>
                 {% for category in group.categories %}
@@ -115,6 +116,7 @@
               {% endfor %}
               </div>
             </dialog>
+            {% endcache %}
 
           </div>
         </div>

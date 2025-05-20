@@ -288,12 +288,11 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 category_groups[group] = [category[1]]
         category_groups = list(map(lambda k: {"group": k, "categories": category_groups[k]}, category_groups.keys()))
         return category_groups
+    all_categories = property(fget=get_all_categories)
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         search_query = request.GET.get("q")
-
-        context["all_categories"] = self.get_all_categories()
 
         filters = self.filter
 
@@ -301,6 +300,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             filters["search_query"] = search_query
 
         context["filters"] = filters
+        context["section_slug"] = self.slug
         
         # context["featured_articles"] = self.get_featured_articles()
 
@@ -358,11 +358,15 @@ class CategoryPage(SectionPage):
         filters = {"section": self.get_parent().slug, "category": self.slug}
         return filters
     filter = property(fget=get_filter)
-    
+
+    def get_all_categories(self):
+        return self.get_parent().specific.get_all_categories()
+    all_categories = property(fget=get_all_categories)
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["parent"] = self.get_parent()
-        context["all_categories"] = self.get_parent().specific.get_all_categories()
+        context["section_slug"] = context["parent"].slug
         return context
     
     def get_recent_articles(self, max_items=10):
