@@ -13,7 +13,7 @@
         <nav class="c-article-storyline--nav">
             <ul>
             {% for item in menu_items|slice:"1:" %}
-                <li class="{% if item.href == request.path %}current{% else %}{{request.path}}{% endif %}"><a href="{{item.href}}">{{item.text}}</a></li>
+                <li class="{% if request.path in item.href %}current{% endif %}"><a href="{{item.href}}">{{item.text}}</a></li>
             {% endfor %}
             </ul>
         </nav>
