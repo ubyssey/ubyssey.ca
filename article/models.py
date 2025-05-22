@@ -1360,7 +1360,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             section_articles = self.get_section_articles(max=number_suggested)
             if len(section_articles) > 0:
                 suggested = {}
-                suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a<"
+                suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a>"
                 suggested['articles'] = section_articles[:number_suggested]
         
         if not suggested:
