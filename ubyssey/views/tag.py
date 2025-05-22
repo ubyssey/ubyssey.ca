@@ -1,6 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from taggit.models import Tag
 from wagtail.models import Site
+
+def redirect_tag_to_topic(request, slug):
+    return redirect("/topic/" + slug + "/")
+
+def redirect_tag_feed_to_topic(request, slug):
+    return redirect("/topic/" + slug + "/rss/")
 
 class TagPage(object):
     def tag(self, request, slug):
@@ -12,7 +18,7 @@ class TagPage(object):
                 "filters": {"tag": tag.slug},
                 "meta": {"title": tag.name,
                          "slug": tag.slug,
-                         "url": site.root_url + "/tag/" + tag.slug + "/",
+                         "url": site.root_url + "/topic/" + tag.slug + "/",
                          "description": "Stories tagged '" + tag.name + "' from The Ubyssey."},
             }
             return render(request, 'tag/tag_page.html', context)
