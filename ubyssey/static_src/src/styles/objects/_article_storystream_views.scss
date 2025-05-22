@@ -97,9 +97,16 @@
             font-size: 1.1em;
             line-height: 1.5em;
         }
+        a {
+            font-style: italic;
+            text-decoration: underline;
+            
+        }
         .read-more {
             margin-left: 0.25em;
             font-weight: 600;
+            font-style: normal;
+            text-decoration: none;
             color: variables.$color-ubyssey-blue;
         }
         .attachment {
