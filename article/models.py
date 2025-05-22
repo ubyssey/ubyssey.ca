@@ -1346,7 +1346,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 elif Tag.objects.filter(name=self.primary_tag_slug).exists():
                     tag = Tag.objects.get(name=self.primary_tag_slug)
                 suggested = {}
-                suggested['title'] = "More on <a href='/tag/" + tag.slug + "/'>" + tag.name + "</a>"
+                suggested['title'] = "More on <a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
                 suggested['articles'] = articles_by_tag[:number_suggested]
         if not suggested:
             if self.category_page != None:
@@ -1380,7 +1380,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     def get_primary_tag_link(self) -> str:
         from taggit.models import Tag
         tag = Tag.objects.get(slug=self.primary_tag_slug)
-        return "<a href='/tag/" + tag.slug + "/'>" + tag.name + "</a>"
+        return "<a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
     primary_tag_link = property(fget=get_primary_tag_link)
 
     def primary_tag_options(self):

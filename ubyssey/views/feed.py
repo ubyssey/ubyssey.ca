@@ -160,10 +160,10 @@ class TagFeed(UbysseyArticleFeed):
         return 'Stories tagged "%s" from The Ubyssey' % tag.name
     
     def link(self, tag):
-        return 'https://ubyssey.ca/tag/%s/' % tag.slug
+        return 'https://ubyssey.ca/topic/%s/' % tag.slug
     
     def feed_url(self, tag):
-        return 'https://ubyssey.ca/tag/%s/rss/' % tag.slug
+        return 'https://ubyssey.ca/topic/%s/rss/' % tag.slug
 
     def items(self, tag):
         return ArticlePage.objects.live().public().filter(tags=tag).order_by('-explicit_published_at')[:self.max_items]

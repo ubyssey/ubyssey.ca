@@ -130,7 +130,7 @@ class ArticleGathererBlock(AbstractArticleList):
                     context['description'] = "Stories on '" + tag.name + "' in " + value['section'].title
                 else:
                     context['description'] = None
-                context['link'] = '/tag/' + value['tag_slug'] + '/'
+                context['link'] = '/topic/' + value['tag_slug'] + '/'
                 context['articles'] = context['articles'].filter(tags__slug=value["tag_slug"])
             else:
                 context['articles'] = []
