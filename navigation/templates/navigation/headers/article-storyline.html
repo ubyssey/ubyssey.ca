@@ -1,0 +1,26 @@
+{% load static %}
+<header class="topbar c-article-storyline header-site dark-mode">
+    <div class="u-container u-container-topbar">
+        <div class="c-article-storyline--header">
+            <a href="{% url 'wagtail_serve' '' %}">
+                <div class="dingbat" style="background-image: url('{% static 'ubyssey/images/logos/dingbat-blue.svg' %}')" alt="Ubyssey logo"></div>
+            </a>
+            <a href="{{menu_items.0.href}}">
+                {{menu_items.0.text}}
+            </a>
+        </div>
+
+        <nav class="c-article-storyline--nav">
+            <ul>
+            {% for item in menu_items|slice:"1:" %}
+                <li class="{% if item.href == request.path %}current{% else %}{{request.path}}{% endif %}"><a href="{{item.href}}">{{item.text}}</a></li>
+            {% endfor %}
+            </ul>
+        </nav>
+
+        <div class="right">
+            {% include 'article/objects/darkmode_button.html' with id="topbar" %}
+        </div>
+        {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
+    </div>
+</header>

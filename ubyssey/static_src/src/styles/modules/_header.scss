@@ -432,6 +432,63 @@ header.topbar {
   }
 }
 
+// Article storyline
+header.topbar.c-article-storyline {
+  display: block;
+
+  .dingbat {
+    display: inline-block;
+    position: relative;
+    height: 30px;
+    aspect-ratio: 1;
+
+    background-image: url('/static/ubyssey/images/logos/dingbat-blue.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    transform: translateY(25%);
+  }
+  .u-container-topbar {
+    display: flex;
+  }
+  .c-article-storyline--header {
+    display: inline;
+    font-weight: 600;
+  }
+  .c-article-storyline--nav {
+    display: inline-block;
+    width: 0;
+    flex-grow: 1;
+    font-weight: 400;
+    
+    ul {
+      display: flex;
+      list-style: none; 
+      overflow-x: auto;
+    }
+    li {
+      max-width: 20em;
+      overflow: clip;
+      text-overflow: ellipsis;
+      text-transform: none;
+      a {
+        display: contents;
+      }
+    }
+  }
+
+  @media(variables.$bp-smaller-than-desktop){
+    height: 54px;
+    border-top: $header-border;
+    .dingbat, .right {
+      display: none;
+    }
+  }
+}
+
+
+
 #header-mobile-spacer {
   height: 54px;
   min-height: 54px;

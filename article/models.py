@@ -204,11 +204,6 @@ class ConnectedArticleOrderable(Orderable):
         blank=True,
         related_name="+",
     )
-    article_description = models.TextField(
-        null=False,
-        blank=True,
-        default='',
-    )
     parent_article = ParentalKey(
         "article.ArticlePage",
         default='',
@@ -222,7 +217,6 @@ class ConnectedArticleOrderable(Orderable):
             ],
             heading="Article"
         ),
-        FieldPanel('article_description')
     ]
 
 
@@ -424,7 +418,7 @@ class TagsFieldPanel(FieldPanel):
 class SuggestedBarFieldPanel(FieldPanel):
     '''
     Adds the javascript that auto-updates the choice of suggested bar when editors select a category.
-    Generally we want the suggested bar to use the category if there is one and the primary tag if there isn't.
+    Generally we want the suggested bar to use the category if there is one and the primary topic if there isn't.
     But there might be exceptions so we want editors to have control. But editors can't be trusted to actually
     to use this control reliably. They usually just use the default settings on everything.
     So we auto update this field which technically offers editors control but does whats generally correct as defualt otherwise.
@@ -488,7 +482,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     subpage_types = [] #Prevents article pages from having child pages
 
-    show_in_menus_default = False
+    show_in_menus_default = True
+    show_in_menus = True
 
     #-----Field attributes-----
     content = StreamField(
@@ -516,10 +511,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
             ('quote', blocks_inner_article.PullQuoteBlock()),
-            ('gallery', SnippetChooserBlock(
-                target_model = GallerySnippet,
-                template = 'article/stream_blocks/gallery.html',
-            )),
+
             ('gallery_block', blocks_inner_article.GalleryBlock(
                 label="Image carousel",
             )),
@@ -530,6 +522,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('plaintext', blocks.TextBlock(
                 label="Plain Text Block",
                 help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
+            ('gallery', SnippetChooserBlock(
+                target_model = GallerySnippet,
+                template = 'article/stream_blocks/gallery.html',
             )),
         ],
         null=True,
@@ -578,26 +574,28 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
+        help_text="Categories are created for subsections, columns, supplements, and special issues."
     )
     tags = ClusterTaggableManager(
         through='article.ArticlePageTag', 
         blank=True, 
         related_name='tags', 
-        help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST. Tags entered here will be listed in the tag page with the format 'https://ubyssey.ca/tag/top-stories/'.",
-        verbose_name="Tags")
+        help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST.",
+        verbose_name="Topics")
     primary_tag_slug = models.CharField(
         null=True,
         blank=True,
         default='',
         max_length=255,
-        help_text="The primary tag can be used for listing articles in the suggested bar at the end. It is also used to gather related articles to be presented on some section pages.",
+        help_text="The primary topic can be used for listing articles in the suggested bar at the end. It is also used to gather related articles to be presented on some section pages.",
+        verbose_name="Primary Topic",
     )
     tag_page_link = models.BooleanField(
         null=False,
         blank=False,
         default=False,
-        help_text="Check this if you want to add a link to the primary tag page at the end of the article.",
-        verbose_name="Link to Primary Tag at the End of the Article"
+        help_text="Check this if you want to add a link to the primary topic page at the end of the article.",
+        verbose_name="Link to Primary Topic at the End of the Article"
     )
     filter_by_tags = models.BooleanField(
         null=False,
@@ -810,20 +808,47 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         ),
         MultiFieldPanel(
             [
+                FieldPanel('title_tag'),
+                FieldRowPanel(
+                    [
+                        InlinePanel("featured_media", label="Featured Image or Video"),
+                        FieldPanel(
+                            "header_layout",
+                            widget=Select(
+                                choices=[
+                                    ('right-image', 'Right Image'),
+                                    ('bottom-image', 'Bottom Image'),
+                                    ('left-image', 'Left Image'),
+                                    ('top-image', 'Top Image'),
+                                    ('banner-image', 'Banner Image')
+                                ],
+                            ),
+                            help_text='Sets layout of the header. (Right image, bottom image, left image, top image, banner)',
+                        ),
+                    ]
+                ),
+            ],
+            heading = "Header/Banner Fields",
+            classname="collapsible",
+        ), # Optional Header/Banner Fields
+        MultiFieldPanel(
+            [
+                FieldPanel('fw_alternate_title'),
+                FieldPanel('subtitle'),
+                FieldPanel('fw_above_cut_lede'),
+            ],
+            heading = "Optional Header/Banner Fields (Alternate title, Subtitle, Above cut lede)",
+            classname="collapsible collapsed",
+        ),
+        MultiFieldPanel(
+            [
                 HelpPanel(
                     content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
                 ),
                 FieldPanel("content"),
+                FieldPanel("disclaimer")
             ],
             heading="Article Content",
-            classname="collapsible",
-        ),
-        MultiFieldPanel(
-            [
-                FieldPanel("lede"),
-                FieldPanel("storystream_view"),
-            ],
-            heading="Front Page Stuff",
             classname="collapsible",
         ),
         MultiFieldPanel(
@@ -836,40 +861,61 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         ), # Author(s)
         MultiFieldPanel(
             [
-                # FieldPanel("section"),
                 FieldPanel("category_page"),
-                TagsFieldPanel("tags"),
-                FieldPanel(
-                    "primary_tag_slug",
-                    widget=PrimaryTagSelect(),
+                HelpPanel(
+                    content='''
+                        <h1>About Topics</h1>
+                        <p>Topics entered here will be listed in the topic page with the format <a href='https://ubyssey.ca/topic/top-stories/' target='_blank'>https://ubyssey.ca/topic/top-stories/</a>.</p>
+                        <p>Do NOT think of this like tagging an instagram post. It is NOT useless metadata or for SEO. <b><u>We tag articles so that ongoing subjects and stories are easy for readers to find and follow within our website</u></b>. These readers include everyone from students studying at UBC right now, to future Ubyssey editors, and journalists covering UBC at larger publications like the CBC and the Globe and Mail. <i>(More needs to be done to make use of topics and link to topic pages on the website. I'm working on it! - Sam Low)</i></p>
+                        <p>Make articles from our archive easier to find and they will be read more often. Tagging newspapers has a long history. The New York Times became known as the 'Paper of Record' because of its <a href='https://en.wikipedia.org/wiki/New_York_Times_Index' target='_blank'>New York Times Index</a> which rigoursly tagged every article of every paper by topic. This act unlocked the value of their archive and secured New York Times reporting center stage in the canon of history.</p>
+                        <h2>Tips for topics</h2>
+                        <ol>
+                            <li>1. Consistency is very important. Use the full name with correct capitalization every time.</li>
+                            <li>2. Tag the full name of every subject of the article. Subjects can include individuals, organizations, buildings, exhibits, concepts, etc.</li>
+                            <li>3. Add tags at all levels of specificity. For example 'AMS', 'AMS Candidate Profile'  'AMS elections', 'AMS elections 2025', 'AMS Candidate Profile 2025'.</li>
+                            <li>4. Decide on a full name for ongoing stories such as lawsuits.</li>
+                        </ol>
+
+                    '''
                 ),
-                FieldPanel("tag_page_link"),
+                TagsFieldPanel("tags"),
+                FieldRowPanel(
+                    [
+                        FieldPanel(
+                            "primary_tag_slug",
+                            widget=PrimaryTagSelect(),
+                        ),
+                        FieldPanel("tag_page_link"),
+                    ]
+                ),
                 SuggestedBarFieldPanel(
                     "filter_by_tags",
                     widget=Select(choices=[
                         (False, "Section"),
-                        (True, "Primary tag")
+                        (True, "Primary topic")
                     ])
-                )
+                ),
+                MultiFieldPanel(
+                    [
+                        HelpPanel(content="THIS OVERWRITES SUGGESTED BAR. Usually creating a topic or category is better because there will be a page dedicated to that topic or category and this article's suggested bar will update when new articles in that topic or category are published. But if you have specific related articles you want to recommend rather than a topic or subsection or column, then use this."),
+                        InlinePanel("connected_articles"),
+                    ],
+                    heading="Connected or Related Articles (Non-Series)",
+                    classname="collapsible collapsed",
+                ),
             ],
-            heading="Categories and Tags",
+            heading="Categories, Topics, Suggested bar",
             classname="collapsible",
         ),
         MultiFieldPanel(
             [
-                InlinePanel("featured_media", label="Featured Image or Video"),
+                FieldPanel("lede"),
+                FieldPanel("storystream_view"),
             ],
-            heading="Featured Media",
+            heading="Front Page Stuff",
             classname="collapsible",
         ),
-        MultiFieldPanel(
-            [
-                FieldPanel("disclaimer")
-            ],
-            heading="Disclaimer",
-            classname="collapsible",
-        ),
-    ] + UbysseyMenuMixin.menu_content_panels # content_panels
+    ] # content_panels
 
     promote_panels = Page.promote_panels + [
         MultiFieldPanel(
@@ -878,14 +924,19 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ],
             heading="Keywords for Search Engines",
         ),
-        MultiFieldPanel(
-            [
-                HelpPanel(content="\"Breaking Timeout\" is irrelevant if news is not breaking news."),
-                FieldPanel("is_breaking"),
-                FieldPanel("breaking_timeout"),
-            ],
-            heading="Breaking",
-        ),
+
+        #  To do: Decide what to do with breaking. We would usually just put such an article
+        #  as the coverstory. Is there any case where marking an article as breaking and/or 
+        #  putting above the homepage header would be better than using the cover story? - Sam Low 22/05/2025
+        # 
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content="\"Breaking Timeout\" is irrelevant if news is not breaking news."),
+        #        FieldPanel("is_breaking"),
+        #        FieldPanel("breaking_timeout"),
+        #    ],
+        #    heading="Breaking",
+        #),
 
         MultiFieldPanel(
             [
@@ -905,8 +956,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             heading="Advertising-Releated",
         ),
 
-    ] # settings_panels   
-    fw_article_panels = [
+    ] # settings_panels  
+
+    customization_panels = [
         HelpPanel(
             content = "<h1>Help</h1><p>IF you need an alternate layout for your article, but still a frequently-used layout (such as including a full-width banner), THEN, rather making than a highly customized frontend (as you can do in the next tab over), select the options you require here.</p> <p>The majority of articles will just use the default layout. Thus, <u>for the majority of articles, nothing on this tab should be touched</u>; the majority of these fields are not even used in most layouts. They primarily exist to keep our data organized.</p>"
         ),
@@ -935,60 +987,37 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 ),
             ],
             heading = "Select Stock Layout",
-            classname="collapsible collapsed",
+            classname="collapsible",
         ), # Select Stock Layout
-        MultiFieldPanel(
-            [
-                HelpPanel(content="<p>This information is generally used in articles that use a full-width banner of some sort.</p>"),
-                FieldPanel(
-                    "header_layout",
-                    widget=Select(
-                        choices=[
-                            ('right-image', 'Right Image'),
-                            ('bottom-image', 'Bottom Image'),
-                            ('left-image', 'Left Image'),
-                            ('top-image', 'Top Image'),
-                            ('banner-image', 'Banner Image')
-                        ],
-                    ),
-                    help_text='This field is used to set variations on the \"Full-Width Story\" and similar layouts.',
-                ),
-                FieldPanel('title_tag'),
-                FieldPanel('fw_alternate_title'),
-                FieldPanel('subtitle'),
-                FieldPanel('fw_above_cut_lede'),
-            ],
-            heading = "Optional Header/Banner Fields",
-            classname="collapsible collapsed",
-        ), # Optional Header/Banner Fields
-        MultiFieldPanel(
-            [
-                HelpPanel(content='<h1>Warning</h1><p>If a timeline is included in your article, <u>additional processing will be required when the article is saved</u>.</p><p>It is recommended you add a Timeline snippet LAST, <i>after</i> your article is otherwise written.</p><p><u>Developers</u> should note: the Timeline/Article sync is accomplished with Django signals, to prevent tight coupling of the two classes. Do not allow use of signals to turn into noodle logic.</p>'),
-                FieldPanel('show_timeline'),
-                FieldPanel('timeline_date'),
-                FieldPanel('timeline'),
-            ],
-            heading = "Timeline",
-            classname="collapsible collapsed",
-        ), # Timeline
-        MultiFieldPanel(
-            [
-                HelpPanel(content="<p>This information is generally used in a special article that has additional credits beyond the normal byline.</p>"),
-                FieldPanel('fw_about_this_article'),
-            ],
-            heading = "Additional Credits",
-            classname="collapsible collapsed",
-        ), # Additional Credits
-        MultiFieldPanel(
-            [
-                HelpPanel(content="Somewhat legacy. These will not be used with the majority of templates, but are used with how Magazines or Guides or some special articles have traditionally been set up."),
-                InlinePanel("connected_articles"),
-            ],
-            heading="Connected or Related Article Links (Non-Series)",
-            classname="collapsible collapsed",
-        ), # Connected or Related Article Links (Non-Series) 
-    ] # fw_article_panels
-    customization_panels = [
+        ] + UbysseyMenuMixin.menu_content_panels + [
+           
+        #   To Do: This is not used anywhere. Figure out what exactly timeline was for. If it was
+        #   a good idea then we can pick it up. I'm pretty sure even it was a good idea it was a
+        #   bad implementation though. So deal with articles that used it (if any) and then remove 
+        #   the fields - Sam Low (22/05/2025)
+        #
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content='<h1>Warning</h1><p>If a timeline is included in your article, <u>additional processing will be required when the article is saved</u>.</p><p>It is recommended you add a Timeline snippet LAST, <i>after</i> your article is otherwise written.</p><p><u>Developers</u> should note: the Timeline/Article sync is accomplished with Django signals, to prevent tight coupling of the two classes. Do not allow use of signals to turn into noodle logic.</p>'),
+        #        FieldPanel('show_timeline'),
+        #        FieldPanel('timeline_date'),
+        #        FieldPanel('timeline'),
+        #    ],
+        #    heading = "Timeline",
+        #    classname="collapsible collapsed",
+        #), # Timeline
+        
+        #   To Do: Individually deal with any article using it and remove the fw_about_this_article
+        #   field. Something like this can be handled within the content streamfield such as with
+        #   an extra article info editors note. 
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content="<p>This information is generally used in a special article that has additional credits beyond the normal byline.</p>"),
+        #        FieldPanel('fw_about_this_article'),
+        #    ],
+        #    heading = "Additional Credits",
+        #    classname="collapsible collapsed",
+        #), # Additional Credits
         HelpPanel(
             content="<h1>Help</h1><p>This tab exists so that every aspect of the frontend for an individual article may be customized, down to the finest detail. There are three fundamental tools of frontend web programming - HTML, CSS and JavaScript, and here you may utilize all three.</p><p>Custom HTML templates, which use the Django templating language, should be uploaded not as files/documents but as \"Custom HTML\" in the site admin.\n\n Custom CSS or JavaScript should be uploaded to \"Documents\"</p>"
         ),
@@ -1027,8 +1056,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ObjectList(content_panels, heading='Content'),
             ObjectList(promote_panels, heading='Promote'),
             ObjectList(settings_panels, heading='Settings'),
-            ObjectList(fw_article_panels, heading='Layout (Stock Templates)'),
-            ObjectList(customization_panels, heading='Custom Frontend (Advanced!)'),
+            ObjectList(customization_panels, heading='Special article stuff'),
         ],
     ) # edit_handler
 
@@ -1296,6 +1324,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         articles_by_tag = []
         if self.primary_tag_slug:
             articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
+            if len(articles_by_tag) == 0:
+                articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(tags__name=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
     def get_suggested(self, number_suggested=3):
@@ -1304,30 +1334,34 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         from taggit.models import Tag
         suggested = {}
-        if self.filter_by_tags:
+        if len(self.connected_articles.all()) > 0:
+            suggested = {}
+            suggested['title'] = "Related stories"
+            suggested['articles'] = list(map(lambda article: article.connected_article, self.connected_articles.all()))      
+        elif self.filter_by_tags:
             articles_by_tag = self.get_articles_by_tag(max=number_suggested)
             if len(articles_by_tag) > 0:
-                tag = Tag.objects.get(slug=self.primary_tag_slug)
+                if Tag.objects.filter(slug=self.primary_tag_slug).exists():
+                    tag = Tag.objects.get(slug=self.primary_tag_slug)
+                elif Tag.objects.filter(name=self.primary_tag_slug).exists():
+                    tag = Tag.objects.get(name=self.primary_tag_slug)
                 suggested = {}
-                suggested['title'] = "'" + tag.name + "'"
+                suggested['title'] = "More on <a href='/tag/" + tag.slug + "/'>" + tag.name + "</a>"
                 suggested['articles'] = articles_by_tag[:number_suggested]
-                suggested['link'] = "/tag/" + tag.slug
         if not suggested:
             if self.category_page != None:
                 category_articles = self.get_category_articles(max=number_suggested)
                 if len(category_articles) > 0:
                     suggested = {}
-                    suggested['title'] = self.category_page.title
+                    suggested['title'] = "More from <a href='" + self.category_page.url + "'>" + self.category_page.title + "</a>"
                     suggested['articles'] = category_articles[:number_suggested]
-                    suggested['link'] = self.category_page.url
 
         if not suggested:
             section_articles = self.get_section_articles(max=number_suggested)
             if len(section_articles) > 0:
                 suggested = {}
-                suggested['title'] = self.get_parent().title
+                suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a<"
                 suggested['articles'] = section_articles[:number_suggested]
-                suggested['link'] = self.get_parent().url
         
         if not suggested:
             suggested = False
@@ -1433,7 +1467,6 @@ class SpecialArticleLikePage(ArticlePage):
             ObjectList(content_panels, heading='Content'),
             ObjectList(ArticlePage.promote_panels, heading='Promote'),
             ObjectList(ArticlePage.settings_panels, heading='Settings'),
-            ObjectList(ArticlePage.fw_article_panels, heading='Layout (Stock Templates)'),
             ObjectList(ArticlePage.customization_panels, heading='Custom Frontend (Advanced!)'),
         ],
     ) # edit_handler
