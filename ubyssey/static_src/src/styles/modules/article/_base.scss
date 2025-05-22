@@ -428,3 +428,112 @@ p.c-article__published-at {
     }
   }
 }
+
+
+// Extra article info blocks
+.o-extra-article-info {
+  margin: 1.4em;
+  display: flex;
+
+  @media(variables.$bp-larger-than-mobile) {
+    &.right {
+      margin-right: 0;
+      float: right;
+    }
+    &.left {
+      margin-left: 0;
+      float: left;
+    }
+    &.left, &.right {
+      max-width: 250px;
+    }
+    &.center {
+      margin-inline: auto;
+      width: fit-content;
+      max-width: 600px;
+    }
+  }
+
+  @media(variables.$bp-smaller-than-mobile) {
+      margin-inline: auto;
+      max-width: 350px;
+  }
+
+  &.o-extra-article-info--editors-note, &.o-extra-article-info--highlight {
+    padding-block: 0.5em;
+    .o-extra-article-info__image img {
+      margin: auto;
+      height: auto;
+    }
+
+    &.left, &.right {
+      text-align: center;
+    }
+    h2 {
+      font-size: 1.2em;
+    }
+    p {
+      font-size: 0.9em;
+      font-family: fonts.$font-default;
+    }
+    a {
+      text-decoration: underline;
+    }
+  }
+
+  &.o-extra-article-info--highlight {
+    padding: 1em 1.5em;
+    background-color: variables.$color-ubyssey-blue-light;
+
+    flex-direction: column;
+    gap: 0;
+
+    .o-extra-article-info__image {
+      margin: 1em auto;
+      display: flex;
+      flex-shrink: 0;
+      max-width: 150px;
+      img {
+        border-radius: 100%;
+      }
+    }
+    .o-extra-article-info__content {
+      height: fit-content;
+      margin: auto;
+    }
+    h2, p {
+      color: variables.$color-ubyssey-blue-dark;
+    }
+
+    @media(variables.$bp-larger-than-phablet) {
+      &.center {
+        flex-direction: row;
+        gap: 1.5em;
+        .o-extra-article-info__image {
+          margin: auto;
+        }
+      }
+    }
+  }
+
+  &.o-extra-article-info--editors-note {
+    flex-direction: column;
+    border: variables.$color-ubyssey-blue solid 0.25em;
+
+    &::before {
+      margin: 1em auto;
+      display: block;
+      width: 2.5em; 
+      aspect-ratio: 1;
+
+      content: "";
+      background-image: url("/static/ubyssey/images/logos/dingbat-blue.svg");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .o-extra-article-info__content {
+      padding-inline: 1em;
+    }
+  }
+}

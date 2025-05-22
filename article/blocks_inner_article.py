@@ -68,6 +68,44 @@ class PullQuoteBlock(blocks.StructBlock):
         template = 'article/stream_blocks/quote.html',
         icon = "openquote"
 
+class ExtraArticleInfoBlock(blocks.StructBlock):
+    header = blocks.CharBlock(required=False, help_text="Optional!")
+    content = blocks.RichTextBlock()
+    images = blocks.ListBlock(image_blocks.ReducedImageBlock(), default=[], help_text="Optional!")
+
+    position = blocks.ChoiceBlock(
+        choices=[
+            ('center', 'Center'),
+            ('left', 'Left'),
+            ('right', 'Right'),   
+        ],
+        default='right',
+    )
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('editors-note', "Editor's note"),
+            ('highlight', "Highlight"),
+        ],
+        required=True,
+    )
+
+    def render(self, value, context=None):
+        block_template = value.get('template')
+        if block_template != '':
+            if block_template in ["editors-note", "highlight"]:
+                template = "article/stream_blocks/extra-article-info.html"
+            else:
+                template = block_template
+        else:
+            return self.render_basic(value, context=context)
+
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+        return mark_safe(render_to_string(template, new_context))
+
 class HeaderMenuBlock(blocks.StructBlock):
 
     list = blocks.ListBlock(

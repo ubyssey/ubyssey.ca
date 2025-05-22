@@ -497,10 +497,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 label="Rich Text Block",
                 help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
             )),
-            ('plaintext', blocks.TextBlock(
-                label="Plain Text Block",
-                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
-            )),
+            ('extra_article_info', blocks_inner_article.ExtraArticleInfoBlock()),
             ('dropcap', blocks.TextBlock(
                 label = "Dropcap Block",
                 template = 'article/stream_blocks/dropcap.html',
@@ -523,11 +520,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
-            ('gallery_block', blocks_inner_article.GalleryBlock()),
+            ('gallery_block', blocks_inner_article.GalleryBlock(
+                label="Image carousel",
+            )),
             ('header_link', blocks_inner_article.HeaderLinkBlock()),
             ('header_menu', blocks_inner_article.HeaderMenuBlock()),
             ('visual_essay', blocks_inner_article.VisualEssayBlock()),
             ('personality_quiz', blocks_inner_article.PersonalityQuizBlock()),
+            ('plaintext', blocks.TextBlock(
+                label="Plain Text Block",
+                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
         ],
         null=True,
         blank=True,
