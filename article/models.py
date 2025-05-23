@@ -25,8 +25,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 
 from section.sectionable.models import SectionablePage
 
-from taggit.models import TaggedItemBase
-from taggit.models import Tag
+from taggit.models import TaggedItemBase, Tag, TagBase, ItemBase
 
 from videos import blocks as video_blocks
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
@@ -53,7 +52,7 @@ from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.search import index
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.snippets.models import register_snippet
-
+from wagtail.snippets.views.snippets import SnippetViewSet
 
 from wagtailmenus.models import FlatMenu
 
@@ -395,8 +394,28 @@ class TimelineSnippet(models.Model):
     def __str__(self) -> str:
         return self.title
 
+#-----Taggit models-----
+
+@register_snippet
+class ArticleTopic(TagBase):
+    free_tagging = False
+
+    class Meta:
+        verbose_name = "Article topic"
+        verbose_name_plural = "Article topic"
 
 #-----Taggit models-----
+class TaggedArticlePage(ItemBase):
+    """
+    Reference: 
+    https://docs.wagtail.io/en/stable/reference/pages/model_recipes.html
+    """
+    tag = models.ForeignKey(
+        ArticleTopic, related_name="tagged_articles", on_delete=models.CASCADE
+    )
+    content_object = ParentalKey('article.ArticlePage', on_delete=models.CASCADE, related_name='tagged_articles')
+
+
 class ArticlePageTag(TaggedItemBase):
     """
     Reference: 
@@ -576,12 +595,18 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         on_delete=models.SET_NULL,
         help_text="Categories are created for subsections, columns, supplements, and special issues."
     )
+    topics = ClusterTaggableManager(
+        through='article.TaggedArticlePage', 
+        blank=True, 
+        related_name='topics', 
+        help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST.",
+        verbose_name="Topics")
     tags = ClusterTaggableManager(
         through='article.ArticlePageTag', 
         blank=True, 
         related_name='tags', 
         help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST.",
-        verbose_name="Topics")
+        verbose_name="Tags")
     primary_tag_slug = models.CharField(
         null=True,
         blank=True,
@@ -879,6 +904,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     '''
                 ),
                 TagsFieldPanel("tags"),
+                TagsFieldPanel("topics"),
                 FieldRowPanel(
                     [
                         FieldPanel(
