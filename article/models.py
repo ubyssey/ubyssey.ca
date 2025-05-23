@@ -743,7 +743,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         default=timezone.now,
     )
 
-    # Featured image stuff used for tempalte customization
+    # Featured image stuff used for template customization
     header_layout = models.CharField(
         null=False,
         blank=False,
@@ -897,7 +897,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 ),
                 MultiFieldPanel(
                     [
-                        HelpPanel(content="THIS OVERWRITES SUGGESTED BAR. Usually creating a topic or category is better because there will be a page dedicated to that topic or category and this article's suggested bar will update when new articles in that topic or category are published. But if you have specific related articles you want to recommend rather than a topic or subsection or column, then use this."),
+                        HelpPanel(content="<p>THIS OVERWRITES SUGGESTED BAR. Usually creating a topic or category is better because there will be a page dedicated to that topic or category and this article's suggested bar will update when new articles in that topic or category are published. But if you have specific related articles you want to recommend rather than a topic or subsection or column, then use this.</p>"),
                         InlinePanel("connected_articles"),
                     ],
                     heading="Connected or Related Articles (Non-Series)",
@@ -910,6 +910,18 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 FieldPanel("lede"),
+                HelpPanel(content='''
+                    <h1>About storystream views</h1>
+                    <p>Storystream views are used to control the presentationo of articles in the homepage storystream and in topic pages.</p>
+                    <p>Storystream views allow us to signal effort and differentiate our articles. They also allow us to move more of the value (journalism) from articles into the homepage - making the homepage valueable in and of itself (not just a set of links to click).</p>
+                    <h2>Guidelines for choosing storystream</h2>
+                    <ol>
+                        <li>1. <b>For profiles:</b> select 'Image' and the 'Profile' template. Use a cutout image of the individual. Make sure empty space is cropped out. If you don't know how to cutout an image you can ask the photo editor or web developers!</li>  
+                        <li>2. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
+                        <li>3. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
+                        <li>3. <b>Default (large headline left, small featured media right):</b> Use when the featured media image is a courtesy photo or file photo and there is no supporting media to use for the indent option. This template deemphasizes the article in the storystream.</li>
+                    </ol>
+                    '''),
                 FieldPanel("storystream_view"),
             ],
             heading="Front Page Stuff",
