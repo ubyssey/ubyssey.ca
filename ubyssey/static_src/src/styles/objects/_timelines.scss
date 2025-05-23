@@ -221,8 +221,8 @@ ul.vertical-timeline {
         &::after {
             content: "";
             background-color: var(--background);
-            width: 0.6em;
-            height: 0.6em;
+            width: 1em;
+            aspect-ratio: 1;
             border: 0.2em solid var(--timeline-colour);
             transition: background-color 0.5s ease;
             border-radius: 100%;
