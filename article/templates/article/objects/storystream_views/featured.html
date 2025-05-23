@@ -6,7 +6,7 @@
 {% load articletags %}
 
 {% if article %}
-<article class="o-article o-article_storystream o-article_storystream_feature" time="{{article.explicit_published_at|naturalday}}">
+<article class="o-article o-article_storystream o-article_storystream_feature {{style}}" time="{{article.explicit_published_at|naturalday}}">
     
 	<div class="o-article__left">
         {{ attachment|safe }}

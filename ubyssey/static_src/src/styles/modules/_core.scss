@@ -247,6 +247,7 @@ html[color-css-theme="light"] {
   --light-border: #{variables.$color-ubyssey-blue};
   --light-border-grey: #eee;
   --contrast-color: #{variables.$color-ubyssey-blue-dark};
+  --shadow-color: #888;
 
     // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
@@ -274,6 +275,7 @@ html[color-css-theme="dark"] {
   --light-border: #{variables.$color-ubyssey-blue-light};
   --light-border-grey: #888;
   --contrast-color: #{variables.$color-ubyssey-blue-light};
+  --shadow-color: black;
 
   // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: #031723;

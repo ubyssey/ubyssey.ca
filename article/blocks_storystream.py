@@ -26,18 +26,22 @@ class StorystreamStructBlock(blocks.StructBlock):
         In some ways this is a proof of concept for modifiable blocks
         """
 
-        # Rather than the "normal" template logic, we look at our self.template variable
-        block_template = value.get('template')
-        if block_template != '':
-            template = 'article/objects/storystream_views/' + block_template + '.html'
-        else:
-            return self.render_basic(value, context=context) # Wagtail's default for when 
-
         # Below this point, this render() is identical to its original counterpart
         if context is None:
             new_context = self.get_context(value)
         else:
             new_context = self.get_context(value, parent_context=dict(context))
+
+        # Rather than the "normal" template logic, we look at our self.template variable
+        block_template = value.get('template')
+        if block_template != '':
+            if block_template == 'profile':
+                new_context['style'] = 'o-article_storystream_profile'
+                template = 'article/objects/storystream_views/featured.html'
+            else:
+                template = 'article/objects/storystream_views/' + block_template + '.html'
+        else:
+            return self.render_basic(value, context=context) # Wagtail's default for when 
 
         return mark_safe(render_to_string(template, new_context))
     
@@ -165,6 +169,7 @@ class StorystreamImage(StorystreamStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('featured', 'Featured (image above, headline below)'),
+            ('profile', 'Profile (headline left, tall cut out image with dropshadow right)'),
             ('indent', 'Indent (headline above, image below)'),
         ],
         required=True,
