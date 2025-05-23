@@ -408,14 +408,10 @@ img.image-attachment {
   }
 }
 
-.image-attachment {
+div.article-content .image-attachment {
   img {
     width: 100%;
     height: auto;
-  }
-
-  a {
-    display: block;
   }
 
   @media(variables.$bp-larger-than-phablet) {
@@ -444,11 +440,18 @@ img.image-attachment {
     }
 
     &.medium {
-      width: 200px;
+      width: auto;
+      max-width: 300px;
     }
 
     &.large {
-      width: 300px;
+      width: auto;
+      max-width: 500px;
+    }
+
+    &.full {
+      width: auto;
+      max-width: 100%;
     }
   }
 }

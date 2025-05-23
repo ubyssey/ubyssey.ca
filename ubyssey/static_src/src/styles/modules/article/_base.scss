@@ -535,5 +535,12 @@ p.c-article__published-at {
     .o-extra-article-info__content {
       padding-inline: 1em;
     }
+    &.center .o-extra-article-info__content > * {
+      margin-inline: auto;
+      width:fit-content;
+      @media(variables.$bp-larger-than-phablet) {
+        padding-inline: 0.5em;
+      }
+    }
   }
 }
