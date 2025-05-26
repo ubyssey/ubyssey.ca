@@ -81,7 +81,6 @@
 
 // Minimal
 .o-article_storystream_minimal {
-    padding-block: 2.5em;
     display: flex;
     .o-article__left {
         margin-right: 2em;
@@ -122,6 +121,7 @@
 
 // Indent 
 .o-article_storystream_indent {
+    padding-block: 2.5em;
     .o-article__left {
         h2 {
             font-size: 1.4em;
@@ -153,6 +153,9 @@
         }
         img, iframe {
             max-width: 100%;
+        }
+        *:last-child {
+            margin-bottom: 0;
         }
     }
 }
