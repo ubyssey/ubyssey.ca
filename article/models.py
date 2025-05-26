@@ -556,12 +556,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         [
             ('featured_media', blocks_storystream.StorystreamFeaturedImage()),
             ('image', blocks_storystream.StorystreamImage()),
+            ('no_attachment', blocks_storystream.StorystreamNoAttachment()),
             ('gallery', blocks_storystream.StorystreamGallery()),
             ('video', blocks_storystream.StorystreamVideo()),
             ('embed', blocks_storystream.StorystreamRawHtml()),
             ('pdf', blocks_storystream.StorystreamPDF())
         ],
-        default = [{"type": "featured_media", "value": {"template": "large-headline"}}],
         blank = False,
         use_json_field=True,
         min_num = 1,
@@ -747,7 +747,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     header_layout = models.CharField(
         null=False,
         blank=False,
-        default='right-image',
+        default='no-image',
         max_length=50,
         help_text="Based on from Dispatch's obselete \"Templates\" feature",
     )
@@ -816,6 +816,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                             "header_layout",
                             widget=Select(
                                 choices=[
+                                    ('no-image', 'No Image'),
                                     ('right-image', 'Right Image'),
                                     ('bottom-image', 'Bottom Image'),
                                     ('left-image', 'Left Image'),
@@ -919,7 +920,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                         <li>1. <b>For profiles:</b> select 'Image' and the 'Profile' template. Use a cutout image of the individual. Make sure empty space is cropped out. If you don't know how to cutout an image you can ask the photo editor or web developers!</li>  
                         <li>2. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
                         <li>3. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
-                        <li>3. <b>Default (large headline left, small featured media right):</b> Use when the featured media image is a courtesy photo or file photo and there is no supporting media to use for the indent option. This template deemphasizes the article in the storystream.</li>
+                        <li>4. <b>No attachment (only lede):</b> Use when the lede adds information beyond the headline, there are no relevant attachments, and the featured media image not extremely related to the article (courtesy photo, file photo).</li>
+                        <li>5. <b>Standard (large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo). This template deemphasizes the article in the storystream.</li>
                     </ol>
                     '''),
                 FieldPanel("storystream_view"),

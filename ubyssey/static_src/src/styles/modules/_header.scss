@@ -435,6 +435,7 @@ header.topbar {
 // Article storyline
 header.topbar.c-article-storyline {
   display: block;
+  overflow-x: auto;
 
   .dingbat {
     display: inline-block;
@@ -484,6 +485,12 @@ header.topbar.c-article-storyline {
     border-top: $header-border;
     .dingbat, .right {
       display: none;
+    }
+    .c-article-storyline--nav ul {
+      overflow-x: visible;
+      li:last-child {
+        padding-right: 2em;
+      }
     }
   }
 }

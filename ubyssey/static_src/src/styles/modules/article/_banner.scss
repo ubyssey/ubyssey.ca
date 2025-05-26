@@ -90,6 +90,14 @@
     font-size: 18px;
   }
 
+  &.no-image {
+    margin: auto;
+    max-width: 1000px;
+    .header-container {
+      padding-bottom: 0;
+    }
+  }
+
   &.top-image, &.bottom-image {
     header {
       margin: 1em 0;

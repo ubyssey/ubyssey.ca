@@ -63,6 +63,23 @@ class StorystreamFeaturedImage(StorystreamStructBlock):
     class Meta:
         icon = "image"
         label = "Use featured media"
+
+class StorystreamNoAttachment(StorystreamStructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('indent', 'Indent (Headline above, lede below'),
+        ],
+        default='indent',
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        return context
+    
+    class Meta:
+        icon = "cross"
+        label = "No attachment (only lede)"
     
 class StorystreamGallery(StorystreamStructBlock):
 

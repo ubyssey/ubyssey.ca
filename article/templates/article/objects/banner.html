@@ -6,7 +6,9 @@
     {% if self.show_timeline%}
         <div class='c-timeline' data-current-article-id={{self.id}} data-timeline-title="{{self.timeline}}" data-nodes="{{self.timeline.data}}"></div>
     {% endif %}
-    {% if self.header_layout == 'right-image' %}
+    {% if self.header_layout == 'no-image' %}
+        {% include 'article/objects/fw_article_headline_container.html' %}
+    {% elif self.header_layout == 'right-image' %}
         <div class="header-container">
             <div class="headline-container left">
                 {% include 'article/objects/fw_article_headline_container.html' %}
