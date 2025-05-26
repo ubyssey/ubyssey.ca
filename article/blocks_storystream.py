@@ -67,7 +67,7 @@ class StorystreamFeaturedImage(StorystreamStructBlock):
 class StorystreamNoAttachment(StorystreamStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
-            ('indent', 'Indent (Headline above, lede below'),
+            ('indent', 'Indent (Headline above, lede below)'),
         ],
         default='indent',
         required=True,

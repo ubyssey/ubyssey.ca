@@ -913,14 +913,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 FieldPanel("lede"),
                 HelpPanel(content='''
                     <h1>About storystream views</h1>
-                    <p>Storystream views are used to control the presentationo of articles in the homepage storystream and in topic pages.</p>
+                    <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>
                     <p>Storystream views allow us to signal effort and differentiate our articles. They also allow us to move more of the value (journalism) from articles into the homepage - making the homepage valueable in and of itself (not just a set of links to click).</p>
                     <h2>Guidelines for choosing storystream</h2>
                     <ol>
                         <li>1. <b>For profiles:</b> select 'Image' and the 'Profile' template. Use a cutout image of the individual. Make sure empty space is cropped out. If you don't know how to cutout an image you can ask the photo editor or web developers!</li>  
                         <li>2. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
                         <li>3. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
-                        <li>4. <b>No attachment (only lede):</b> Use when the lede adds information beyond the headline, there are no relevant attachments, and the featured media image not extremely related to the article (courtesy photo, file photo).</li>
+                        <li>4. <b>No attachment (only lede):</b> Use when the lede adds information beyond the headline, there are no relevant attachments, and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
                         <li>5. <b>Standard (large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo). This template deemphasizes the article in the storystream.</li>
                     </ol>
                     '''),
