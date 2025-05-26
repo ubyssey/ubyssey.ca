@@ -435,7 +435,6 @@ header.topbar {
 // Article storyline
 header.topbar.c-article-storyline {
   display: block;
-  overflow-x: auto;
 
   .dingbat {
     display: inline-block;
@@ -452,9 +451,11 @@ header.topbar.c-article-storyline {
   }
   .u-container-topbar {
     display: flex;
+    overflow-x: auto;
   }
   .c-article-storyline--header {
     display: inline;
+    flex-shrink: 0;
     font-weight: 600;
     color: var(--header_color)
   }
@@ -486,11 +487,8 @@ header.topbar.c-article-storyline {
     .dingbat, .right {
       display: none;
     }
-    .c-article-storyline--nav ul {
-      overflow-x: visible;
-      li:last-child {
-        padding-right: 2em;
-      }
+    .c-article-storyline--nav {
+      width: fit-content;
     }
   }
 }
