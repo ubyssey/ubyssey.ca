@@ -128,6 +128,7 @@
         }
     }
     .o-article__right {
+        margin-right: 1em;
         padding-left: 1.5em;
         border-left: 1px solid var(--light-border);
         p {
@@ -160,7 +161,7 @@
     }
 }
 
-@media(variables.$bp-smaller-than-phablet) {
+@media(variables.$bp-smaller-than-tablet) {
     .o-article_storystream_indent {
         margin-inline: 1em;
     }

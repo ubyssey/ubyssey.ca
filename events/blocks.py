@@ -107,7 +107,15 @@ class MidstreamEventsBar(blocks.StructBlock):
 
             display = display + day + time
             events[i].display_time = display
-            events[i].title = event.title.replace(" <br>", ", ")
+
+            title = event.title
+            if event.category == "seminar" and event.host != None:
+                title = event.host.replace("UBC ", "") \
+                    .split("for ")[-1] \
+                    .split("of ")[-1] \
+                     + ": " + title
+
+            events[i].title = title.replace(" <br>", ", ")
         context["events"] = events
         return context
 
