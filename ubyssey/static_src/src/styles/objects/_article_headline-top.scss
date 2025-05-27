@@ -77,6 +77,9 @@ article.headline-top-articles {
     }
     @media(variables.$bp-smaller-than-phablet) { 
         padding-inline: 0;
+        .o-article__headline {
+            font-size: 1.5em;
+        }
         .o-article__headline, .above-headline {
             margin-inline: 15px;
         }
