@@ -1,4 +1,5 @@
 @use "../modules/variables";
+@use "../modules/fonts";
 
 .o-article_storystream {
     padding-block: 3em;
@@ -171,6 +172,53 @@
     .o-article_storystream_indent .o-article__right {
         p {
             color: variables.$color-ubyssey-blue-light;
+        }
+    }
+}
+
+
+// Attachments
+
+// quote with background
+
+.o-article_storystream--quote_with_background {
+    padding: 1em;
+    position: relative;
+    display: flex;
+    min-height: 300px;
+    background-size: cover;
+    --quote_bg: black;
+    --quote_text: white;
+    &::before {
+        content: "";
+        position: absolute;
+        background: linear-gradient(transparent, var(--quote_bg));
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+    blockquote {
+        margin: auto;
+        padding: 1.5em 2.5em 1em 2.5em;
+        
+        position: relative;
+        z-index: 10;
+
+        font-weight: 400;
+        font-family: fonts.$font-default;
+        font-size: 1.1em;
+        color: var(--quote_text);
+        text-shadow: 0 0 5px var(--quote_bg);
+        &::before {
+            content: "“";
+            position: absolute;
+            left: 0;
+            top:0;
+            line-height: 1em;
+            font-size: 4em;
+            font-family: fonts.$font-headline;
+            font-variation-settings: "wght" 600;
         }
     }
 }

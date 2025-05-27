@@ -560,7 +560,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('gallery', blocks_storystream.StorystreamGallery()),
             ('video', blocks_storystream.StorystreamVideo()),
             ('embed', blocks_storystream.StorystreamRawHtml()),
-            ('pdf', blocks_storystream.StorystreamPDF())
+            ('pdf', blocks_storystream.StorystreamPDF()),
+            ('quote', blocks_storystream.StorystreamQuote())
         ],
         blank = False,
         use_json_field=True,

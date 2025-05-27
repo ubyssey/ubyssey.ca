@@ -202,3 +202,24 @@ class StorystreamImage(StorystreamStructBlock):
     class Meta:
         icon = "image"
         label = "Image"
+
+class StorystreamQuote(StorystreamStructBlock):
+
+    image = image_blocks.ReducedImageBlock()
+
+    quote = blocks.TextBlock(required=True)
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('featured', 'Featured (quote above with image as background, headline below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        quote_context = parent_context
+        quote_context["quote"] = value["quote"]
+        quote_context["image"] = value["image"]
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/quote_with_background.html', quote_context))
+        return context
