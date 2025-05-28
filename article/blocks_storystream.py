@@ -105,7 +105,7 @@ class StorystreamGallery(StorystreamStructBlock):
 
     class Meta:
         icon = "image"
-        label = "Carousel"
+        label = "Image carousel"
 
 class StorystreamRawHtml(StorystreamStructBlock):
 
@@ -149,6 +149,7 @@ class StorystreamPDF(StorystreamStructBlock):
 
     class Meta:
         icon = "doc-full"
+        label = "PDF"
 
 class StorystreamVideo(StorystreamStructBlock):
 
@@ -201,7 +202,7 @@ class StorystreamImage(StorystreamStructBlock):
 
     class Meta:
         icon = "image"
-        label = "Image"
+        label = "Image (for a different image than featured media)"
 
 class StorystreamQuote(StorystreamStructBlock):
 
@@ -223,6 +224,10 @@ class StorystreamQuote(StorystreamStructBlock):
         quote_context["image"] = value["image"]
         context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/quote_with_background.html', quote_context))
         return context
+
+    class Meta:
+        icon = "openquote"
+        label = "Quote (for Opinons, personal essays, interviews)"
     
 class StorystreamRichText(StorystreamStructBlock):
 
@@ -238,3 +243,7 @@ class StorystreamRichText(StorystreamStructBlock):
         context = super().get_context(value, parent_context)
         context["attachment"] = value["richtext"]
         return context
+    
+    class Meta:
+        icon = "pilcrow"
+        label = "Rich text (for AMS, BoG, Senate recaps)"
