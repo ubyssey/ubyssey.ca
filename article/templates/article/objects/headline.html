@@ -9,14 +9,18 @@
 </div>
 <h3 class="o-article__headline">
     <a href="{% pageurl article %}">
-        {% if article.fw_alternate_title %}
-            {{article.fw_alternate_title|safe}}
+        {% if alternate_fields %}
+            {% if article.fw_alternate_title %}
+                {{article.fw_alternate_title|safe}}
+            {% else %}
+                {{ article.title|safe }}
+            {% endif %}
+
+            {% if article.subtitle %}
+                <span class="subtitle">{{article.subtitle|safe}}</span>    
+            {% endif %}
         {% else %}
             {{ article.title|safe }}
         {% endif %}
-
-        {% if article.subtitle %}
-            <span class="subtitle">{{article.subtitle|safe}}</span>    
-        {% endif %}
-    </a>
+        </a>
 </h3>

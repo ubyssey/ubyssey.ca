@@ -48,7 +48,7 @@ class StorystreamStructBlock(blocks.StructBlock):
 class StorystreamFeaturedImage(StorystreamStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
-            ('large-headline', 'Standard (Large headline left, small featured media right)'),
+            ('large-headline', 'Large headline (Large headline left, small featured media right)'),
             ('featured', 'Featured (Featured media above, Headline below'),
             ('indent', 'Indent (Headline above, lede + featured media below'),
         ],
@@ -222,4 +222,19 @@ class StorystreamQuote(StorystreamStructBlock):
         quote_context["quote"] = value["quote"]
         quote_context["image"] = value["image"]
         context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/quote_with_background.html', quote_context))
+        return context
+    
+class StorystreamRichText(StorystreamStructBlock):
+
+    richtext = blocks.RichTextBlock(required=True)
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('indent', 'Indent (headline above, lede + richtext below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["attachment"] = value["richtext"]
         return context

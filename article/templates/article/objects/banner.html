@@ -35,9 +35,7 @@
             <div class="featured-media">
                 {% include 'article/objects/fw_article_featured_media.html' %}
             </div>
-            <div class="headline-container">
-                {% include 'article/objects/fw_article_headline_container.html' %}
-            </div>
+            {% include 'article/objects/fw_article_headline_container.html' %}
         </div>
     {% elif self.header_layout == 'bottom-image' %}
         <div class="header-container">

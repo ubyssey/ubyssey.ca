@@ -1,9 +1,11 @@
 @use '../fonts';
 @use '../variables';
 
-.fw-banner.right-image > .header-container, .fw-banner.left-image > .header-container {
-  width: 100%;
-  border-bottom: 1px solid #E4E4E4;
+.fw-banner.right-image, .fw-banner.left-image {
+  > .header-container {
+    width: 100%;
+    border-bottom: 1px solid #E4E4E4;
+  }
 }
 
 @media(variables.$bp-larger-than-phablet) {
@@ -93,8 +95,12 @@
   &.no-image {
     margin: auto;
     max-width: 1000px;
-    .header-container {
-      padding-bottom: 0;
+    .headline-container {
+      padding: 0 1em;
+      border-bottom: 1px solid #E4E4E4;
+    }
+    .c-article__info {
+      padding-block: 0.5em;
     }
   }
 
@@ -114,6 +120,7 @@
   &.top-image {
     width: 100%;
     max-width: 840px;
+    margin-top: 2em;
     margin-inline: auto;
 
     .featured-media {
