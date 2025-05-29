@@ -58,7 +58,7 @@
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}{% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                {% include 'article/objects/banner.html' %}
+                {% include 'article/components/headers/'|add:self.header_layout|add:'.html' %}
             {% endblock %}
             <!-- Below is the container for Article content -->
             <div class="u-container clearfix {% block right_column_class %}c-article--default u-container u-container--content u-container--padded{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">

@@ -3,8 +3,11 @@
     It was seperated out to try to make the code more readable
 {% endcomment %}
 {% load wagtailimages_tags %}
+{% load video_filters %}
 
-{% if self.featured_media.first.image %}
+{% if self.featured_media.first.video %}
+    <iframe src="https://www.youtube.com/embed/{{ self.featured_media.first.video.url|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="" height="315" width="560"></iframe>
+{% elif self.featured_media.first.image %}
     {% with self.featured_media.first as featured_image_object %}
         {% srcset_image featured_image_object.image width-{340,750,1500} format-webp webpquality-70 as featured_image_renditions %}     
         <img

@@ -823,7 +823,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                                     ('bottom-image', 'Bottom Image'),
                                     ('left-image', 'Left Image'),
                                     ('top-image', 'Top Image'),
-                                    ('banner-image', 'Banner Image')
+                                    ('banner-image', 'Banner Image'),
+                                    ('video-banner', 'Video banner'),
                                 ],
                             ),
                             help_text='Sets layout of the header. (Right image, bottom image, left image, top image, banner)',
