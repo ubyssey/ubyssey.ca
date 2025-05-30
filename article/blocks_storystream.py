@@ -61,8 +61,9 @@ class StorystreamFeaturedImage(StorystreamStructBlock):
         featured_media=parent_context["article"].featured_media.all()
         if len(featured_media) > 0:
             if featured_media[0].image:
-                image_context["image"] = value["article"].featured_media.all()[0].image
-                image_context["alt_text"] = value["article"].featured_media.all()[0].alt_text
+                image_context["image"] = featured_media[0].image
+            if featured_media[0].alt_text:
+                image_context["alt_text"] = featured_media[0].alt_text
         context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/image.html', image_context))
         return context
     
