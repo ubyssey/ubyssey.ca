@@ -29,6 +29,7 @@ from taggit.models import TaggedItemBase
 from taggit.models import Tag
 
 from videos import blocks as video_blocks
+from ubyssey.validators import validate_youtube_url
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from article import blocks_inner_article as blocks_inner_article
 from article import blocks_storystream
@@ -274,12 +275,12 @@ class ArticleFeaturedMediaOrderable(Orderable):
         on_delete=models.SET_NULL,
         related_name='+',
     )
-    video = models.ForeignKey(
-        "videos.VideoSnippet",
+    video = models.URLField(
+        max_length=500,
         null=True,
         blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
+        default='',
+        validators=[validate_youtube_url,]
     )
 
     panels = [
@@ -559,6 +560,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ('richtext', blocks_storystream.StorystreamRichText()),
             ('no_attachment', blocks_storystream.StorystreamNoAttachment()),
             ('gallery', blocks_storystream.StorystreamGallery()),
+            ('featured_video', blocks_storystream.StorystreamFeaturedVideo()),
             ('video', blocks_storystream.StorystreamVideo()),
             ('embed', blocks_storystream.StorystreamRawHtml()),
             ('pdf', blocks_storystream.StorystreamPDF()),
@@ -1240,7 +1242,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             'author': 'Words by ',
             'photographer': 'Photos by ',
             'illustrator': 'Illustrations by ',
-            'videographer': 'Videos by ',
+            'videographer': 'Video by ',
             'designer': 'Design by ',
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']

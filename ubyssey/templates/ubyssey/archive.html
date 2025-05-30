@@ -45,7 +45,7 @@
                     {% if article.featured_media.first.image %}
                       {% image article.featured_media.first.image fill-340x238-c100 alt=article.featured_media.first.alt_text %}
                     {% else %}
-                      <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}/0.jpg" width=300 alt="{{article.featured_media.first.alt_text}}" />
+                      <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg" width=300 alt="{{article.featured_media.first.alt_text}}" />
                     {% endif %}
                   </a>
                 </div>

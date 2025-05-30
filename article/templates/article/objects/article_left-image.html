@@ -15,7 +15,7 @@
       </a>
       {% elif article.featured_media.first.video %}
       <div class="o-article__video">
-        <iframe src="https://www.youtube.com/embed/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/{{ article.featured_media.first.video|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
       {% endif %}
     </div>

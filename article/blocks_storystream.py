@@ -57,12 +57,18 @@ class StorystreamFeaturedImage(StorystreamStructBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
-        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/featured_media_image.html', parent_context))
+        image_context = parent_context
+        featured_media=parent_context["article"].featured_media.all()
+        if len(featured_media) > 0:
+            if featured_media[0].image:
+                image_context["image"] = value["article"].featured_media.all()[0].image
+                image_context["alt_text"] = value["article"].featured_media.all()[0].alt_text
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/image.html', image_context))
         return context
     
     class Meta:
         icon = "image"
-        label = "Use featured media"
+        label = "Use featured media image"
 
 class StorystreamNoAttachment(StorystreamStructBlock):
     template = blocks.ChoiceBlock(
@@ -178,8 +184,31 @@ class StorystreamVideo(StorystreamStructBlock):
 
     class Meta:
         icon = "media"
+        label = "Video (for a different video than featured media)"
 
-    
+
+class StorystreamFeaturedVideo(StorystreamStructBlock):
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('featured', 'Featured (video above, headline below)'),
+            ('indent', 'Indent (headline above, video below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        video_context = parent_context
+        video_context["video"] = parent_context["article"].featured_media.all()[0].video
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/video.html', video_context))
+        return context
+
+    class Meta:
+        icon = "media"
+        label = "Use featured media video"
+
+
 class StorystreamImage(StorystreamStructBlock):
 
     image = image_blocks.ReducedImageBlock()
@@ -196,7 +225,8 @@ class StorystreamImage(StorystreamStructBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
         image_context = parent_context
-        image_context["image_block"] = value["image"]
+        image_context["image"] = value["image"]["image"]
+        image_context["alt_text"] = value["image"]["alt_text"]
         context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/image.html', image_context))
         return context
 
