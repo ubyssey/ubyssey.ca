@@ -323,13 +323,6 @@ div.article-content {
         color: variables.$color-ubyssey-blue;
       }
     }
-
-    &:first-child {
-      margin-top: 5px;
-      margin-right: auto;
-      /*font-weight: bold;
-        font-size: fonts.font-size(19);*/
-    }
   }
 
   >h1 {
@@ -391,7 +384,7 @@ div.article-content {
   }
 }
 
-.article-content p.drop-cap {
+.article-content p.drop-cap::first-line {
   font-weight: bold;
   font-size: fonts.font-size(19);
 }
