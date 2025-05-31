@@ -1,34 +1,28 @@
 provider "google" {
-  project = "ubyssey-prd"
-  region  = "us-west1"
-  zone    = "us-west1-a"
+  project = var.project
+  region  = var.region
+  zone    = var.zone
 }
 
 data "google_compute_snapshot" "ubyssey_snapshot" {
-  project     = "ubyssey-prd"
-  filter      = "name eq ^ubyssey-prd-vm.*"
+  project     = var.project
+  filter      = var.snapshot_filter
   most_recent = true
 }
 
-resource "random_id" "suffix" {
-  byte_length = 4
-}
-//TODO: add snapshot of the disk
-
 resource "google_compute_disk" "boot_disk_from_snapshot" {
-  name     = "boot-disk-from-snapshot-${random_id.suffix.hex}"
-  size     = 40
-  type     = "pd-balanced"
-  snapshot = data.google_compute_snapshot.ubyssey_snapshot.self_link
+  name     = var.boot_disk_from_snapshot
+  size     = var.disk_size_gb
+  type     = var.disk_type
+  snapshot = var.boot_disk_image != null ? null : data.google_compute_snapshot.ubyssey_snapshot.self_link
+  image    = var.boot_disk_image
 }
 
-//TODO: update name
 resource "google_compute_instance" "ubyssey_prd_vm_2" {
-  name                      = "ubyssey-prd-vm-2"
-  //TODO: create a variable for the name
-  machine_type              = "e2-highcpu-8"
-  zone                      = "us-west1-a"
-  description               = ""
+  name                      = var.vm_name
+  machine_type              = var.machine_type
+  zone                      = var.zone
+  description               = "the single VM for ubyssey.ca"
   allow_stopping_for_update = true
 
   boot_disk {
@@ -51,9 +45,9 @@ resource "google_compute_instance" "ubyssey_prd_vm_2" {
   }
 
   metadata = {
-    startup-script = "sudo ufw allow 22"
     enable-osconfig = "TRUE"
   }
+  
   tags = ["http-server", "https-server"]
 
   labels = {
@@ -65,7 +59,7 @@ resource "google_compute_instance" "ubyssey_prd_vm_2" {
   }
 
   service_account {
-    email  = "863738545301-compute@developer.gserviceaccount.com"
+    email  = var.service_account_email
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
 }
