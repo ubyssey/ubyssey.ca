@@ -10,6 +10,8 @@ data "google_compute_snapshot" "ubyssey_snapshot" {
   most_recent = true
 }
 
+//TODO: add snapshot of the disk
+
 resource "google_compute_disk" "boot_disk_from_snapshot" {
   name     = var.boot_disk_from_snapshot
   size     = var.disk_size_gb
@@ -62,4 +64,34 @@ resource "google_compute_instance" "ubyssey_prd_vm_2" {
     email  = var.service_account_email
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
+}
+
+# Resource policy for automatic snapshot schedule and retention
+resource "google_compute_resource_policy" "snapshot_retention" {
+  name   = "${var.vm_name}-snapshot-policy"
+  region = var.region
+  snapshot_schedule_policy {
+    schedule {
+      daily_schedule {
+        days_in_cycle = 1
+        start_time    = "03:00"
+      }
+    }
+    retention_policy {
+      max_retention_days    = var.snapshot_retention_days
+      on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
+    }
+    snapshot_properties {
+      labels = {
+        created_by = "terraform"
+        vm_name    = var.vm_name
+      }
+    }
+  }
+}
+
+resource "google_compute_disk_resource_policy_attachment" "attach_policy" {
+  name = google_compute_resource_policy.snapshot_retention.name
+  disk = google_compute_disk.boot_disk_from_snapshot.name
+  zone = var.zone
 }

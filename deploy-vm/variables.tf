@@ -64,3 +64,8 @@ variable "boot_disk_image" {
   default     = null
 }
 
+variable "snapshot_retention_days" {
+  description = "Number of days to retain snapshots. Default is 7."
+  type        = number
+  default     = 7
+}
