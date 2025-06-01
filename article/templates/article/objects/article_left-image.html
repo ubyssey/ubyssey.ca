@@ -5,19 +5,17 @@
 {% load video_filters %}
 {% load articletags %}
 
-<article class="o-article {{style}} {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.published_at|naturalday}}">
+<article class="o-article {{style}}" time="{{article.published_at|naturalday}}">
     {% if article.featured_media.first or article.featured_media %}
     {% if article.featured_media.first.image  or article.featured_media%}
     <div class="o-article__left">
-      {% if article.featured_media.first.image %}
       <a href="{% pageurl article %}" class="o-article__image">
+        {% if article.featured_media.first.image %}  
           {% image article.featured_media.first.image fill-680x476-c100 format-webp loading="lazy" %}
+        {% elif article.featured_media.first.video %}
+            <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg" loading='lazy' alt="{{article.featured_media.first.alt_text}}" >
+        {% endif %}
       </a>
-      {% elif article.featured_media.first.video %}
-      <div class="o-article__video">
-        <iframe src="https://www.youtube.com/embed/{{ article.featured_media.first.video|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-      </div>
-      {% endif %}
     </div>
     {% endif %}
     {% endif %}

@@ -5,6 +5,7 @@ from article.models import ArticlePage
 from home import blocks as homeblocks
 from article import blocks_outer_article
 from article import blocks_inner_article
+from ubyssey import blocks as general_blocks
 
 from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -193,6 +194,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             ('article_gatherer_with_pinned', blocks_outer_article.ArticleGathererWithPinnedBlock()),
             ('grouped_articles_manual', blocks_outer_article.ManualArticleLinkGroup()),
             ('header_menu', blocks_inner_article.HeaderMenuBlock()),
+            ('info', general_blocks.LandingStreamInfo()),
         ],
         null=True,
         blank=True,
@@ -205,7 +207,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
         ("sidebar_gatherer_block", infinitefeedblocks.SidebarArticleGatherer()),
-        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),        
+        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),
+        ('siderbar_info', infinitefeedblocks.SidebarInfo()),
     ],
     null=True,
     blank=True,

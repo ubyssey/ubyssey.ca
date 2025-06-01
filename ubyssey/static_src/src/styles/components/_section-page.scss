@@ -174,7 +174,7 @@
     display: block;
   }
   .o-archive__search__input {
-    width: 115px;
+    width: 8em;
     &:focus {
       width: 500px;
     }
@@ -319,11 +319,6 @@ svg.banner-title text{
       --light-border: #eee;
       @media (variables.$bp-larger-than-phablet) {
           padding-right: 20px;
-      }
-      .article--infinitefeed {
-          .o-article__image {
-              border-color: var(--light-border) !important;
-          }
       }
   }
 }

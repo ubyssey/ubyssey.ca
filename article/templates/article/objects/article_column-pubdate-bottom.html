@@ -5,19 +5,19 @@
 {% load video_filters %}
 {% load articletags %}
 
-<article class="o-article {{style}} {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.published_at|naturalday}}">
+<article class="o-article {{style}}" time="{{article.published_at|naturalday}}">
     {% if article.featured_media.first or article.featured_media %}
     {% if article.featured_media.first.image  or article.featured_media%}
     <div class="o-article__left">
       <a href="{% pageurl article %}" class="o-article__image">
-        {% if article.featured_media.first.image  or article.featured_video %}
+        {% if article.featured_media.first.image%}
           {% if image_size == "large" %}
             {% image article.featured_media.first.image fill-1100x770-c100 format-webp loading="lazy" %}
           {% else %}
             {% image article.featured_media.first.image fill-680x476-c100 format-webp loading="lazy" %}
           {% endif %}
-        {% elif article.featured_video %}
-          <img src="http://img.youtube.com/vi/{{ article.featured_video.video.url|youtube_embed_id|safe }}/0.jpg" alt=""/>
+        {% elif article.featured_media.first.video %}
+          <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg" loading='lazy' alt="{{article.featured_media.first.alt_text}}" >
         {% endif %}
       </a>
     </div>

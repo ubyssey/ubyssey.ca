@@ -53,15 +53,19 @@ article.headline-top-articles {
     .right{
         margin-left: 2em;
         width: 100%;
-        .lede {
-        margin-block: 0.25em;
-        font-size: 1.5em;
-        a {
-            color: variables.$color-ubyssey-blue;
-            &:hover {
-            text-decoration: underline;
-            }
+        @media(variables.$bp-larger-than-phablet) {
+            margin-block: auto;
+            padding-bottom: 2em;
         }
+        .lede {
+            margin-block: 0.25em;
+            font-size: 1.5em;
+            a {
+                color: variables.$color-ubyssey-blue;
+                &:hover {
+                text-decoration: underline;
+                }
+            }
         }
         .read-more {
         display: inline-block;

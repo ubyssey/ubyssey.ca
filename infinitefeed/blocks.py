@@ -98,3 +98,11 @@ class SidebarManualArticles(ManualArticles):
         context = super().get_context(value, parent_context=parent_context)
         context['articles'] = context['articles'][:5]        
         return context
+    
+class SidebarInfo(blocks.StructBlock):
+
+    richtext = blocks.RichTextBlock(required=True)
+
+    class Meta:
+        template = 'objects/landing-stream__info.html'
+        icon = 'info-circle'
