@@ -201,15 +201,17 @@ div.article-content {
   * {
     max-width: 100%;
   }
+  
+  > * {
+    margin-inline: auto;
+  }
 
   iframe {
     margin-block: 2em;
     border: none;
   }
   > iframe {
-    position: relative !important;
-    left: 50%;
-    transform: translateX(-50%);
+    display: block;
   }
 
   @media(variables.$bp-larger-than-tablet) {

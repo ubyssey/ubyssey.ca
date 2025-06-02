@@ -4,7 +4,9 @@ from wagtail.models import Page
 from article.models import ArticlePage
 from taggit.models import Tag
 from django.utils.safestring import mark_safe
+from django.utils import timezone
 from django.template.loader import render_to_string
+
 
 class TemplateSelectStructBlock(blocks.StructBlock):
     template = blocks.ChoiceBlock(
@@ -195,6 +197,90 @@ class SectionBlock(AbstractArticleList):
 
         if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
+        
+        return context
+    
+class SingleCategorySectionRowBlock(AbstractArticleList):
+    template = blocks.ChoiceBlock(choices=[
+                    ('section/objects/section_row_block.html', 'Grouped by categories'),
+                ])
+    category = blocks.PageChooserBlock("section.CategoryPage")
+
+    show_bylines = blocks.BooleanBlock(required=False)
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["title"] = value["category"].title
+        context["link"] = value["category"].url
+        if "section" in parent_context:
+            context["articles"] = ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = value["category"])[:3]
+        else:
+            context["articles"] = ArticlePage.objects.live().filter(category_page = value["category"])[:3]
+        return context
+    
+class MultiCategorySectionRowBlock(AbstractArticleList):
+    template = blocks.ChoiceBlock(choices=[
+                    ('section/objects/section_row_block.html', 'Grouped by categories'),
+                ])
+
+    title = blocks.CharBlock(required=True)
+
+    categories = blocks.ListBlock(blocks.PageChooserBlock("section.CategoryPage"))
+
+    show_bylines = blocks.BooleanBlock(required=False)
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["title"] = value["title"]
+        context["articles"] = []
+        for category in value["categories"]:
+            if "section" in parent_context:
+                context["articles"] = context["articles"] + \
+                    list(ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = category)[:1])
+            else:
+                context["articles"] = context["articles"] + \
+                    list(ArticlePage.objects.filter(category_page = category)[:1])
+        return context
+
+class SectionCategorizedBlock(AbstractArticleList):
+    section = field_block.PageChooserBlock(
+        page_type='section.SectionPage',
+        required=True
+        )
+
+    fill_topic = blocks.CharBlock(required=False)
+
+    columns = blocks.StreamBlock(
+        [
+            ('single_category', SingleCategorySectionRowBlock()),
+            ('multi_category', MultiCategorySectionRowBlock())
+        ],
+        required=False
+    )
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('section/objects/section_article-row--categorized.html', 'Grouped by categories'),
+        ]
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context['title'] = value['section'].title
+        context['link'] = value['section'].url
+        context['expectedSection'] = value['section'].slug
+
+        exclude = []
+        if "exclude" in parent_context:
+            exclude = parent_context["exclude"]
+        
+        context['articles'] = ArticlePage.objects.child_of(value['section']).exclude(page_ptr_id__in=exclude).order_by('-first_published_at').live()
+        if value["fill_topic"]:
+            context['articles'] = context['articles'].filter(tags__slug=value["fill_topic"])
+
+        limit = 4
+
+        context['articles'] = context['articles'][:limit-len(value["columns"])]
         
         return context
 

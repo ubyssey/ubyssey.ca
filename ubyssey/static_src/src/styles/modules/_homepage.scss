@@ -292,13 +292,13 @@ html.hairlines {
   padding-bottom: 5em;
 
   .o-boxLabel {
-    @media(variables.$bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-tablet) {
       width: 60%;
       margin-right: auto;
       margin-left: 0;
       margin-bottom: 3em;
     }
-    @media(variables.$bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-tablet) {
       margin: 0.75em;
       .o-boxLabel-left {
         padding-inline: 2%;
@@ -310,7 +310,7 @@ html.hairlines {
       }
     }
   }
-  @media(variables.$bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-tablet) {
     .o-feed-item .o-storystream_group:first-child article:first-child{
       padding-top: 0;
     }

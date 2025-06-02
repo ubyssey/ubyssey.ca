@@ -100,7 +100,8 @@ class HomePage(Page):
 
     sections_stream = StreamField(
         [
-            ("home_page_section_block", articleblocks.SectionBlock())
+            ("home_page_section_block", articleblocks.SectionBlock()),
+            ("home_page_section_block_categorized", articleblocks.SectionCategorizedBlock()),
         ],
         null=True,
         blank=True,

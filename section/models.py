@@ -263,7 +263,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         def get_academic_year(date):
             academic_year = "Unknown"
             if date != None:
-                if date.month > 5:
+                if date.month > 4:
                     academic_year = str(date.year) + "/" + str(date.year+1)[-2:]
                 else:
                     academic_year = str(date.year-1) + "/" + str(date.year)[-2:]

@@ -11,7 +11,7 @@
 	<div class="o-article__left">
 		<a href="{% pageurl article %}" class="o-article__image">
 			{% if article.featured_media.first.image %}
-				{% image article.featured_media.first.image fill-238x238-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
+				{% srcset_image article.featured_media.first.image format-webp loading='lazy' alt=article.featured_media.first.alt_text  fill-{190x190,352x352} sizes="(max-width: 780px) 184px, 352px" %}
 			{% elif article.featured_media.first.video %}
 				<img src="http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg" loading='lazy' alt="{{article.featured_media.first.alt_text}}" >
 			{% endif %}
