@@ -253,10 +253,10 @@ class MultiCategorySectionRowBlock(AbstractArticleList):
 
         for category in value["categories"]:
             if "section" in parent_context:
-                category_articles = context["articles"] + \
+                category_articles = \
                     list(ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = category).order_by('-first_published_at')[:4])
             else:
-                category_articles = context["articles"] + \
+                category_articles = \
                     list(ArticlePage.objects.live().filter(category_page = category).order_by('-first_published_at')[:4])
                 
             for article in category_articles:
