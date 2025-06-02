@@ -212,10 +212,23 @@ class SingleCategorySectionRowBlock(AbstractArticleList):
         context = super().get_context(value, parent_context)
         context["title"] = value["category"].title
         context["link"] = value["category"].url
+
+        exclude = []
+        if "exclude" in parent_context:
+            exclude = parent_context["exclude"]
+
         if "section" in parent_context:
-            context["articles"] = ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = value["category"]).order_by('-first_published_at')[:3]
+            articles = ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = value["category"]).order_by('-first_published_at')[:6]
         else:
-            context["articles"] = ArticlePage.objects.live().filter(category_page = value["category"]).order_by('-first_published_at')[:3]
+            articles = ArticlePage.objects.live().filter(category_page = value["category"]).order_by('-first_published_at')[:6]
+        
+        context["articles"] = []
+        for article in articles:
+            if article not in exclude:
+                context["articles"].append(article)
+            if len(context["articles"]) >= 3:
+                break
+
         return context
     
 class MultiCategorySectionRowBlock(AbstractArticleList):
@@ -233,13 +246,24 @@ class MultiCategorySectionRowBlock(AbstractArticleList):
         context = super().get_context(value, parent_context)
         context["title"] = value["title"]
         context["articles"] = []
+
+        exclude = []
+        if "exclude" in parent_context:
+            exclude = parent_context["exclude"]
+
         for category in value["categories"]:
             if "section" in parent_context:
-                context["articles"] = context["articles"] + \
-                    list(ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = category).order_by('-first_published_at')[:1])
+                category_articles = context["articles"] + \
+                    list(ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = category).order_by('-first_published_at')[:4])
             else:
-                context["articles"] = context["articles"] + \
-                    list(ArticlePage.objects.live().filter(category_page = category).order_by('-first_published_at')[:1])
+                category_articles = context["articles"] + \
+                    list(ArticlePage.objects.live().filter(category_page = category).order_by('-first_published_at')[:4])
+                
+            for article in category_articles:
+                if article not in exclude:
+                    context["articles"].append(article)
+                    break
+
         return context
 
 class SectionCategorizedBlock(AbstractArticleList):
