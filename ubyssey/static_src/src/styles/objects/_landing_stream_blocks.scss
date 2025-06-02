@@ -393,6 +393,9 @@
       color: var(--text_color_supporting);
     }
   }
+  @media(variables.$bp-smaller-than-tablet) {
+    padding-inline: 1em;
+  }
   @media(variables.$bp-smaller-than-phablet) {
     padding: 2em 1.5em;
     flex-direction: column;
@@ -456,7 +459,7 @@
 
       @media(variables.$bp-smaller-than-phablet) {
         margin-inline: auto;
-        max-width: 45%;
+        max-width: 400px;
         .o-article__headline {
           font-size: 1em;
         }
