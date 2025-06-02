@@ -213,9 +213,9 @@ class SingleCategorySectionRowBlock(AbstractArticleList):
         context["title"] = value["category"].title
         context["link"] = value["category"].url
         if "section" in parent_context:
-            context["articles"] = ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = value["category"])[:3]
+            context["articles"] = ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = value["category"]).order_by('-first_published_at')[:3]
         else:
-            context["articles"] = ArticlePage.objects.live().filter(category_page = value["category"])[:3]
+            context["articles"] = ArticlePage.objects.live().filter(category_page = value["category"]).order_by('-first_published_at')[:3]
         return context
     
 class MultiCategorySectionRowBlock(AbstractArticleList):
@@ -236,10 +236,10 @@ class MultiCategorySectionRowBlock(AbstractArticleList):
         for category in value["categories"]:
             if "section" in parent_context:
                 context["articles"] = context["articles"] + \
-                    list(ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = category)[:1])
+                    list(ArticlePage.objects.live().descendant_of(parent_context["section"]).filter(category_page = category).order_by('-first_published_at')[:1])
             else:
                 context["articles"] = context["articles"] + \
-                    list(ArticlePage.objects.filter(category_page = category)[:1])
+                    list(ArticlePage.objects.live().filter(category_page = category).order_by('-first_published_at')[:1])
         return context
 
 class SectionCategorizedBlock(AbstractArticleList):
@@ -274,7 +274,7 @@ class SectionCategorizedBlock(AbstractArticleList):
         if "exclude" in parent_context:
             exclude = parent_context["exclude"]
         
-        context['articles'] = ArticlePage.objects.child_of(value['section']).exclude(page_ptr_id__in=exclude).order_by('-first_published_at').live()
+        context['articles'] = ArticlePage.objects.live().child_of(value['section']).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
         if value["fill_topic"]:
             context['articles'] = context['articles'].filter(tags__slug=value["fill_topic"])
 
