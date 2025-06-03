@@ -1,0 +1,5 @@
+{% load wagtailcore_tags %}
+
+<section class="landing_stream_info landing_stream_block{% if self.hide_from_desktop %} hide-desktop{% endif %}"> 
+    {{self.richtext|richtext}}
+</section>

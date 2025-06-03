@@ -12,18 +12,22 @@
     <div class="o-article--default">
         <div class="left">
             <a href="{% pageurl article %}">
-                {% srcset_image article.featured_media.first.image width-{340,750,1500} format-webp webpquality-70 as article_top_headline_image %}
+                {% if article.featured_media.first.image %}
+                    {% srcset_image article.featured_media.first.image width-{340,750,1500} format-webp webpquality-70 as article_top_headline_image %}
 
-                <img
-                    src="{{ article_top_headline_image.renditions.0.url }}"
-                    width="{{ article_top_headline_image.renditions.0.width }}"
-                    height="{{ article_top_headline_image.renditions.0.height }}"
-                    alt="{{ article.featured_media.first.alt_text }}"
-                    srcset="{{ article_top_headline_image.renditions.0.url }} 340w, {{ article_top_headline_image.renditions.1.url }} 750w, {{ article_top_headline_image.renditions.2.url }} 1500w"
-                    sizes="(max-width: 600px) 340px,
-                           (max-width: 1200px) 750px,
-                           1500px"
-                />
+                    <img
+                        src="{{ article_top_headline_image.renditions.0.url }}"
+                        width="{{ article_top_headline_image.renditions.0.width }}"
+                        height="{{ article_top_headline_image.renditions.0.height }}"
+                        alt="{{ article.featured_media.first.alt_text }}"
+                        srcset="{{ article_top_headline_image.renditions.0.url }} 340w, {{ article_top_headline_image.renditions.1.url }} 750w, {{ article_top_headline_image.renditions.2.url }} 1500w"
+                        sizes="(max-width: 600px) 340px,
+                            (max-width: 1200px) 750px,
+                            1500px"
+                    />
+                {% elif article.featured_media.first.video %}
+                    <img src="http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg" loading='lazy' alt="{{article.featured_media.first.alt_text}}" >
+                {% endif %}
             </a>
         </div>
         <div class="right">

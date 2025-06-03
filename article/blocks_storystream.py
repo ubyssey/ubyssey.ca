@@ -48,7 +48,7 @@ class StorystreamStructBlock(blocks.StructBlock):
 class StorystreamFeaturedImage(StorystreamStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
-            ('large-headline', 'Standard (Large headline left, small featured media right)'),
+            ('large-headline', 'Large headline (Large headline left, small featured media right)'),
             ('featured', 'Featured (Featured media above, Headline below'),
             ('indent', 'Indent (Headline above, lede + featured media below'),
         ],
@@ -57,12 +57,36 @@ class StorystreamFeaturedImage(StorystreamStructBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
-        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/featured_media_image.html', parent_context))
+        image_context = parent_context
+        featured_media=parent_context["article"].featured_media.all()
+        if len(featured_media) > 0:
+            if featured_media[0].image:
+                image_context["image"] = featured_media[0].image
+            if featured_media[0].alt_text:
+                image_context["alt_text"] = featured_media[0].alt_text
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/image.html', image_context))
         return context
     
     class Meta:
         icon = "image"
-        label = "Use featured media"
+        label = "Use featured media image"
+
+class StorystreamNoAttachment(StorystreamStructBlock):
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('indent', 'Indent (Headline above, lede below)'),
+        ],
+        default='indent',
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        return context
+    
+    class Meta:
+        icon = "cross"
+        label = "No attachment (only lede)"
     
 class StorystreamGallery(StorystreamStructBlock):
 
@@ -88,7 +112,7 @@ class StorystreamGallery(StorystreamStructBlock):
 
     class Meta:
         icon = "image"
-        label = "Carousel"
+        label = "Image carousel"
 
 class StorystreamRawHtml(StorystreamStructBlock):
 
@@ -132,6 +156,7 @@ class StorystreamPDF(StorystreamStructBlock):
 
     class Meta:
         icon = "doc-full"
+        label = "PDF"
 
 class StorystreamVideo(StorystreamStructBlock):
 
@@ -160,8 +185,31 @@ class StorystreamVideo(StorystreamStructBlock):
 
     class Meta:
         icon = "media"
+        label = "Video (for a different video than featured media)"
 
-    
+
+class StorystreamFeaturedVideo(StorystreamStructBlock):
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('featured', 'Featured (video above, headline below)'),
+            ('indent', 'Indent (headline above, video below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        video_context = parent_context
+        video_context["video"] = parent_context["article"].featured_media.all()[0].video
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/video.html', video_context))
+        return context
+
+    class Meta:
+        icon = "media"
+        label = "Use featured media video"
+
+
 class StorystreamImage(StorystreamStructBlock):
 
     image = image_blocks.ReducedImageBlock()
@@ -178,10 +226,55 @@ class StorystreamImage(StorystreamStructBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
         image_context = parent_context
-        image_context["image_block"] = value["image"]
+        image_context["image"] = value["image"]["image"]
+        image_context["alt_text"] = value["image"]["alt_text"]
         context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/image.html', image_context))
         return context
 
     class Meta:
         icon = "image"
-        label = "Image"
+        label = "Image (for a different image than featured media)"
+
+class StorystreamQuote(StorystreamStructBlock):
+
+    image = image_blocks.ReducedImageBlock()
+
+    quote = blocks.TextBlock(required=True)
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('featured', 'Featured (quote above with image as background, headline below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        quote_context = parent_context
+        quote_context["quote"] = value["quote"]
+        quote_context["image"] = value["image"]
+        context["attachment"] = mark_safe(render_to_string('article/objects/storystream_views/storystream_attachments/quote_with_background.html', quote_context))
+        return context
+
+    class Meta:
+        icon = "openquote"
+        label = "Quote (for Opinons, personal essays, interviews)"
+    
+class StorystreamRichText(StorystreamStructBlock):
+
+    richtext = blocks.RichTextBlock(required=True)
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('indent', 'Indent (headline above, lede + richtext below)'),
+        ],
+        required=True,
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["attachment"] = value["richtext"]
+        return context
+    
+    class Meta:
+        icon = "pilcrow"
+        label = "Rich text (for AMS, BoG, Senate recaps)"

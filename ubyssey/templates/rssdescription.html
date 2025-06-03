@@ -1,11 +1,7 @@
 {% load wagtailimages_tags %}
 {% load video_filters %}
 
-{% if item.featured_media.first.image %}
-    {% image item.featured_media.first.image original as original_image %}
-    <img alt="{% if item.featured_media.first.alt_text %}{{item.featured_media.first.alt_text}}{% else %}{{item.featured_media.first.caption}}{% endif %}" src="{{original_image.full_url}}">
-    <p>{{item.featured_media.first.credit}}</p>
-{% elif item.featured_media.first.video %}
+{% if item.featured_media.first.video %}
     <iframe 
         width="500px" 
         height="281px" 
@@ -14,8 +10,12 @@
         msallowfullscreen="msallowfullscreen" 
         oallowfullscreen="oallowfullscreen" 
         webkitallowfullscreen="webkitallowfullscreen"
-        src="{{ item.featured_media.first.video.url|youtube_embed_url|safe }}">
+        src="{{ item.featured_media.first.video|youtube_embed_url|safe }}">
     </iframe>
+    <p>{{item.featured_media.first.credit}}</p>
+{% elif item.featured_media.first.image %}
+    {% image item.featured_media.first.image original as original_image %}
+    <img alt="{% if item.featured_media.first.alt_text %}{{item.featured_media.first.alt_text}}{% else %}{{item.featured_media.first.caption}}{% endif %}" src="{{original_image.full_url}}">
     <p>{{item.featured_media.first.credit}}</p>
 {% endif %}
 <p>{{item.lede}}</p>

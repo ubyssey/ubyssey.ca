@@ -32,16 +32,6 @@
 {% endblock %}
 
 {% block header %}
-    {% include 'navigation/headers/mobile.html' %}
-    {% block banner_ad %}
-        {% cache 6000 article_header_ads %}
-        <!-- Article Page header ads go here -->
-        {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
-            {% gpt_placement_tag orderable.ad_slot %}
-        {% endfor %}
-        {% endcache %}
-    {% endblock %}
-
     {% if self.menu %}
 		<!-- Manually selected menu: {{ page.menu.handle }} -->
 		{% flat_menu self.menu.handle template="navigation/headers/article-storyline.html" show_menu_heading=True fall_back_to_default_site_menus=True %}
@@ -52,6 +42,15 @@
         {% include 'navigation/headers/topbar.html' with section=self.current_section %}
     {% endif %}
 
+    {% include 'navigation/headers/mobile.html' %}
+    {% block banner_ad %}
+        {% cache 6000 article_header_ads %}
+        <!-- Article Page header ads go here -->
+        {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
+            {% gpt_placement_tag orderable.ad_slot %}
+        {% endfor %}
+        {% endcache %}
+    {% endblock %}
 {% endblock %}
 
 {% block content %}
@@ -59,7 +58,7 @@
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}{% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                {% include 'article/objects/banner.html' %}
+                {% include 'article/components/headers/'|add:self.header_layout|add:'.html' %}
             {% endblock %}
             <!-- Below is the container for Article content -->
             <div class="u-container clearfix {% block right_column_class %}c-article--default u-container u-container--content u-container--padded{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">

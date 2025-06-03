@@ -1,7 +1,0 @@
-{% load cache %}
-{% load wagtailimages_tags %}
-
-{% if article.featured_media.first.image %}
-{% image article.featured_media.first.image width-1000 format-webp as image %}
-<img class="article-attachment" loading="lazy" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if article.featured_media.first.alt_text %}{{ article.featured_media.first.alt_text }}{% endif %}" />	
-{% endif %}

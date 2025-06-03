@@ -435,6 +435,7 @@ header.topbar {
 // Article storyline
 header.topbar.c-article-storyline {
   display: block;
+  z-index: 300;
 
   .dingbat {
     display: inline-block;
@@ -451,9 +452,11 @@ header.topbar.c-article-storyline {
   }
   .u-container-topbar {
     display: flex;
+    overflow-x: auto;
   }
   .c-article-storyline--header {
     display: inline;
+    flex-shrink: 0;
     font-weight: 600;
     color: var(--header_color)
   }
@@ -481,9 +484,11 @@ header.topbar.c-article-storyline {
 
   @media(variables.$bp-smaller-than-desktop){
     height: 54px;
-    border-top: $header-border;
     .dingbat, .right {
       display: none;
+    }
+    .c-article-storyline--nav {
+      width: fit-content;
     }
   }
 }
@@ -509,7 +514,7 @@ header.topbar.c-article-storyline {
 }
 
 header.mobile {
-  position: fixed;
+  position: sticky;
   height: 54px;
   min-height: 54px;
   line-height: 54px;
@@ -587,6 +592,7 @@ nav.mobile {
   position: absolute;
   padding: 10px 20px;
   height: calc(100vh - 54px);
+  box-sizing: border-box;
   top: 54px;
   left: 0;
   right: 0;

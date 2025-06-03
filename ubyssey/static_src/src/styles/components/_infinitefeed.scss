@@ -90,7 +90,7 @@
     }
 
     .c-sidebar_container {
-    min-height: 125vh;
+    max-height: 125vh;
     margin-bottom: 25vh;
     }
 }
@@ -99,7 +99,7 @@
     margin:auto;
     display:flex;
     flex-direction: column;
-    @media (variables.$bp-larger-than-phablet) {
+    @media (variables.$bp-larger-than-tablet) {
         flex-direction: row;
         justify-content: space-evenly;
     }
@@ -109,7 +109,7 @@
     width: 100%;
     padding-bottom: 3em;
 
-    @media (variables.$bp-larger-than-phablet) {
+    @media (variables.$bp-larger-than-tablet) {
         margin-right: 20px;
         width: 50%;
         padding-right: 20px;

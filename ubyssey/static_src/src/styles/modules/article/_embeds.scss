@@ -482,6 +482,56 @@ div.article-content blockquote.pull-quote {
   margin: 1.4em auto;
   text-align: center;
 
+  p.quote {
+    margin-block: 0;
+    font-weight: 600;
+    font-variation-settings: "wght" 600;
+    font-size: 1.5em;
+    line-height: 1.5em;
+    font-family: fonts.$font-headline;
+    color: inherit;
+  }
+
+  p.meta {
+    position: relative;
+    margin-block: 1em 0;
+
+    color: inherit;
+    text-transform: uppercase;
+    font-weight: 100;
+    font-style: italic;
+    font-size: 0.77em;
+
+    .playAudioQuote {
+      display: block;
+    }
+
+    .source {
+      margin-left: 2em;
+      display: inline-block;
+      position: relative;
+      max-width: 40%;
+      color: inherit;
+    }
+
+    .volume {
+      position: absolute;
+      display: inline-block;
+      width: 1em;
+      
+      top: 0.25em;
+
+
+      &.volume-low {
+        margin-left: 0.1em;
+      }
+
+      &.volume-high {
+        margin-left: 0.225em;
+      }
+    }
+  }
+
   @media(variables.$bp-larger-than-phablet) {
 
     &.right, &.left {
@@ -537,15 +587,6 @@ div.article-content blockquote.pull-quote {
     }
   }
 
-  p.quote {
-    margin-block: 0;
-    font-weight: 600;
-    font-size: 1.5em;
-    line-height: 1.5em;
-    font-family: fonts.$font-headline;
-    color: inherit;
-  }
-
   &.block_quote {
     padding: .25em 1em;
     border-left: 2px solid var(--light-border-grey);
@@ -567,47 +608,19 @@ div.article-content blockquote.pull-quote {
       font-family: fonts.$font-body;
       line-height: 1.75em;
     }
-  }
-
-  p.meta {
-    position: relative;
-    margin-block: 1em 0;
-
-    color: inherit;
-    text-transform: uppercase;
-    font-weight: 100;
-    font-style: italic;
-    font-size: 0.77em;
-
-    .playAudioQuote {
-      display: block;
-    }
-
-    .source {
-      margin-left: 2em;
-      display: inline-block;
-      position: relative;
-      max-width: 40%;
-      color: inherit;
-    }
-
-    .volume {
-      position: absolute;
-      display: inline-block;
-      width: 1em;
-      
-      top: 0.25em;
-
-
-      &.volume-low {
-        margin-left: 0.1em;
-      }
-
-      &.volume-high {
-        margin-left: 0.225em;
+    p.meta {
+        margin-top: 0.5em;
+        font-style: normal;
+      span.source {
+        margin-left: 1em;
+        max-width: none;
+        font-size: 0.9em;
+        text-transform: none;
       }
     }
   }
+
+
 }
 
 .audio {
@@ -626,13 +639,13 @@ hr.page-break {
 }
 
 .drop-cap:first-letter {
-  height: 0.7em;
+  height: 4.5rem;
   margin-top: 0.1em;
   margin-right: 0.1em;
   float: left;
 
-  font-size: 5.5em;
-  line-height: 2rem;
+  font-size: 4.5rem;
+  line-height: 4.5rem;
 }
 
 div.article-content>p.drop-cap {

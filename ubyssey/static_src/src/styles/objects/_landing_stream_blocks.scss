@@ -378,14 +378,24 @@
   article {
     width: 200px;
     flex-grow: 1;
+    @media(variables.$bp-larger-than-phablet) {
+      max-width: 300px;
+    }
     .o-article__published {
       font-size: 0.75em;
       font-weight: 600;
       color: variables.$color-ubyssey-blue;
+      white-space: pre-line;
     }
     .o-article__headline {
       font-size: 1.1em;
     }
+    .o-article__byline {
+      color: var(--text_color_supporting);
+    }
+  }
+  @media(variables.$bp-smaller-than-tablet) {
+    padding-inline: 1em;
   }
   @media(variables.$bp-smaller-than-phablet) {
     padding: 2em 1.5em;
@@ -398,4 +408,86 @@
       display: none;
     }
   }
+
+  .o-section_row_block {
+    margin-left: auto;
+    margin-bottom: 0.5em;
+
+    @media(variables.$bp-smaller-than-phablet) {
+      margin-inline: auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+    }
+
+    .o-section_row_block__title {
+      margin-bottom: 0.25em;
+      width: 100%;
+      display: block;
+      font-family: fonts.$font-default;
+      font-weight: 600;
+      font-size: 1.2em;
+      line-height: 1em;
+      color: var(--header_color);
+    }
+    article {
+      margin-bottom: 0.25em;
+      padding-block: 0.75em;
+      width: 300px;
+      display: flex;
+      gap: 1em;
+      border-bottom: 1px solid var(--light-border);
+
+      .o-article__headline {
+        font-size: 1em;
+        line-height: 1.5em;
+      }
+      .o-article__published {
+        margin-block: 0;
+        font-weight: 400;
+        color: var(--text_color_supporting);
+      }
+      .right {
+        margin: 0;
+        width: 5em;
+        flex-shrink: 0;
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      @media(variables.$bp-smaller-than-phablet) {
+        margin-inline: auto;
+        max-width: 400px;
+        .o-article__headline {
+          font-size: 1em;
+        }
+      }
+    }
+  }
+}
+
+// Landing stream info
+.landing_stream_info {
+  padding: 0.5em 1.5em;
+  max-width: 1000px;
+  background-color: variables.$color-ubyssey-blue-light;
+  p {
+    line-height: 1.5em;
+    color: variables.$color-ubyssey-blue-dark;
+    a {
+      font-style: italic;
+      text-decoration: underline;
+    }
+  }
+}
+
+.landing_stream_block + .landing_stream_info {
+  margin-block: -3em 4em;
+}
+
+.c-sidebar_item .landing_stream_info {
+  margin: 0.5em;
 }
