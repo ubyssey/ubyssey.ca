@@ -67,8 +67,8 @@
     }
 }
 
-.c-topic-list {
-    padding-block: 0.5em 0.25em;
+  div.article-content > ul.c-topic-list {
+    padding: 0.5em 0.25em;
     margin-bottom: 2em;
     display: flex;
     flex-wrap: wrap;
