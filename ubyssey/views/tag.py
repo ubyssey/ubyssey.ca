@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from taggit.models import Tag
 from wagtail.models import Site
+from article.models import ArticleTopic
 
 def redirect_tag_to_topic(request, slug):
     return redirect("/topic/" + slug + "/")
@@ -10,12 +11,13 @@ def redirect_tag_feed_to_topic(request, slug):
 
 class TagPage(object):
     def tag(self, request, slug):
-        if Tag.objects.filter(slug=slug).exists():
-            tag = Tag.objects.get(slug=slug)
+        if ArticleTopic.objects.filter(slug=slug).exists():
+            tag = ArticleTopic.objects.get(slug=slug)
             site =  Site.find_for_request(request)
             context = {
+                "object": tag,
                 "storystream": "true",
-                "filters": {"tag": tag.slug},
+                "filters": {"tag": tag.id},
                 "meta": {"title": tag.name,
                          "slug": tag.slug,
                          "url": site.root_url + "/topic/" + tag.slug + "/",

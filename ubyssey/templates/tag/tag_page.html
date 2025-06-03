@@ -40,9 +40,10 @@
 	
 			<div class="o-feed-item">
 			<div class="c-page__header tag-page__title">
-				<h1 class="c-page__heading u-text-center">{{meta.title}}</h1>
+				<h1 class="c-page__heading u-text-center">{{object.name}}</h1>
+				{% if object.description %}{{object.description|richtext}}{% endif %}
 				<p>
-					<a href="{{meta.url}}rss/" aria-label="Go to {{meta.title}} tag's rss feed">Be notified with RSS &ensp;<ion-icon name="logo-rss"></ion-icon></a>
+					<a href="{{meta.url}}rss/" aria-label="Go to {{object.title}} tag's rss feed">Be notified with RSS &ensp;<ion-icon name="logo-rss"></ion-icon></a>
 				</p>
 			</div>
 			<div class="section_infinitefeed">

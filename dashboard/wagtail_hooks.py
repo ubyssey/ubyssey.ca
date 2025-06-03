@@ -2,12 +2,13 @@ from django.utils.html import format_html
 from django.templatetags.static import static
 
 from wagtail import hooks
-
+from wagtail.snippets.models import register_snippet
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
 from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler
 
 from authors.views import author_chooser_viewset
 from images.views import ubyssey_image_viewset
+from article.views import ArticleTopicViewSet
 
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
@@ -274,3 +275,5 @@ def register_viewset():
 @hooks.register("register_admin_viewset")
 def register_image_chooser_viewset():
     return ubyssey_image_viewset
+
+register_snippet(ArticleTopicViewSet)

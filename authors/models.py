@@ -16,6 +16,8 @@ from wagtail.admin.panels import (
     # Custom admin tabs
     ObjectList,
     TabbedInterface,
+
+    TitleFieldPanel
 )
 
 
@@ -154,7 +156,7 @@ class AuthorPage(RoutablePageMixin, Page):
     # For editting in wagtail:
     content_panels = [
         # title not present, title should NOT be directly editable
-        FieldPanel("full_name"),
+        TitleFieldPanel("full_name", targets=['slug']),
         MultiFieldPanel(
             [
                 FieldPanel("image"),
