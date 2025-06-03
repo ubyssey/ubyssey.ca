@@ -219,7 +219,7 @@ class HomePage(Page):
             top = [article.article for article in self.top_articles.all()]
         else:
             filled_sections = {}
-            tagged = ArticlePage.objects.live().filter(tags__slug='top-stories',first_published_at__gte=now-datetime.timedelta(weeks=4)).order_by('-first_published_at')[:15]
+            tagged = ArticlePage.objects.live().filter(topics__slug='top-stories',first_published_at__gte=now-datetime.timedelta(weeks=4)).order_by('-first_published_at')[:15]
             if len(tagged) > 0:
                 if tagged[0].first_published_at > update_time:
                     update_time = tagged[0].first_published_at
@@ -238,7 +238,7 @@ class HomePage(Page):
                         break
         
         if not cover:
-            cover = ArticlePage.objects.live().filter(tags__slug='top-stories',current_section='news').order_by('-first_published_at')[0]
+            cover = ArticlePage.objects.live().filter(topics__slug='top-stories',current_section='news').order_by('-first_published_at')[0]
         
         return cover, top, update_time
      

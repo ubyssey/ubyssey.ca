@@ -133,7 +133,7 @@ class ArticleGathererBlock(AbstractArticleList):
                 else:
                     context['description'] = None
                 context['link'] = '/topic/' + value['tag_slug'] + '/'
-                context['articles'] = context['articles'].filter(tags__slug=value["tag_slug"])
+                context['articles'] = context['articles'].filter(topics__slug=value["tag_slug"])
             else:
                 context['articles'] = []
 
@@ -300,7 +300,7 @@ class SectionCategorizedBlock(AbstractArticleList):
         
         context['articles'] = ArticlePage.objects.live().child_of(value['section']).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
         if value["fill_topic"]:
-            context['articles'] = context['articles'].filter(tags__slug=value["fill_topic"])
+            context['articles'] = context['articles'].filter(topics__slug=value["fill_topic"])
 
         limit = 4
 

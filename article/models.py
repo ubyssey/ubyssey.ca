@@ -672,12 +672,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         related_name='topics', 
         help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST.",
         verbose_name="Topics")
-    tags = ClusterTaggableManager(
-        through='article.ArticlePageTag', 
-        blank=True, 
-        related_name='tags', 
-        help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST.",
-        verbose_name="Tags")
+    
     primary_tag_slug = models.CharField(
         null=True,
         blank=True,
@@ -976,7 +971,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
                     '''
                 ),
-                TagsFieldPanel("tags"),
                 TagsFieldPanel("topics"),
                 FieldRowPanel(
                     [
@@ -1180,7 +1174,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         index.SearchField('seo_keyword', boost=1.5),
         index.AutocompleteField('seo_keyword'),
         index.RelatedFields(
-            "tags",
+            "topics",
             [
                 index.SearchField("name", boost=10),
                 index.AutocompleteField("name"),
@@ -1436,9 +1430,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         articles_by_tag = []
         if self.primary_tag_slug:
-            articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(tags__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
+            articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(topics__slug=self.primary_tag_slug).not_page(self).order_by(order)[:max]
             if len(articles_by_tag) == 0:
-                articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(tags__name=self.primary_tag_slug).not_page(self).order_by(order)[:max]
+                articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(topics__name=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
     def get_suggested(self, number_suggested=3):
@@ -1498,10 +1492,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         tag = Tag.objects.get(slug=self.primary_tag_slug)
         return "<a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
     primary_tag_link = property(fget=get_primary_tag_link)
-
-    def primary_tag_options(self):
-        print(self.tags())
-        return self.tags()
 
     @property
     def published_at(self):

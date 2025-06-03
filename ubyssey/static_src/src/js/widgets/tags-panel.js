@@ -46,11 +46,11 @@ function redoPrimaryTagSelection(){
     });
 }
 
-waitForElm('#id_tags').then((elem) => {
+waitForElm('#id_topics').then((elem) => {
     waitForElm('#id_primary_tag_slug').then((elem) => {
         setTimeout(() => {
             // Read all tags from the tags field
-            const tags = Array.from($('#id_tags').tagit("instance").tagList.children()).map((tag) => tag.children[0].innerText.replaceAll('"', "")).filter((tag) => tag!="");
+            const tags = Array.from($('#id_topics').tagit("instance").tagList.children()).map((tag) => tag.children[0].innerText.replaceAll('"', "")).filter((tag) => tag!="");
            
             // Start primaryTagOptions as everything in the primary tag dropdown. Then remove everything that isn't in the tags field.
             // This is somewhat redundant as the dropdown should start either be empty or include only the saved value (which should already be chosen from the tags field)
@@ -68,13 +68,13 @@ waitForElm('#id_tags').then((elem) => {
             // callbacks are defined here:  https://github.com/wagtail/wagtail/blob/main/wagtail/admin/static_src/wagtailadmin/js/vendor/tag-it.js
             
             // When a tag is removed, remove it from the dropdown
-            $('#id_tags').tagit({"afterTagRemoved": function(event, tag) {
+            $('#id_topics').tagit({"afterTagRemoved": function(event, tag) {
                 primaryTagOptions = primaryTagOptions.filter((t) => !t.includes(tag.tagLabel));
                 redoPrimaryTagSelection();
             }});
             
             // When a tag is added, add it to the dropdown
-            $('#id_tags').tagit({"afterTagAdded": function(event,tag) {
+            $('#id_topics').tagit({"afterTagAdded": function(event,tag) {
                 if (primaryTagOptions.filter((t) => t.includes(tag.tagLabel)).length == 0) {
                     primaryTagOptions.push([tag.tagLabel.replaceAll('"', ""), tag.tagLabel.replaceAll('"', "")]);
                     redoPrimaryTagSelection()

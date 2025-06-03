@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     @sync_to_async
     def put_topic(self, tag, article):
-
+        print("put")
         topic = ArticleTopic.objects.filter(slug=tag.slug).first()
         if topic == None:
             try:
@@ -19,12 +19,16 @@ class Command(BaseCommand):
                 print(e)
                 topic = ArticleTopic.objects.filter(slug=tag.slug).first()
 
-        if topic.last_used_at != None:
-            if topic.last_used_at >= article.first_published_at:
-                return topic
+        if topic.last_used_at == None:
+            topic.last_used_at = article.first_published_at
+        elif not article.first_published_at == None:
+            if topic.last_used_at <= article.first_published_at:
+                topic.last_used_at = article.first_published_at
+                
         print(topic.name)
-        topic.last_used_at = article.first_published_at
+
         topic.save()
+        print("save")
 
         return topic
 
@@ -33,12 +37,20 @@ class Command(BaseCommand):
 
         async def handle_pair(pair):
             tag = await Tag.objects.aget(id=pair.tag_id)
+            print(tag.name)
             article = await ArticlePage.objects.aget(page_ptr_id=pair.content_object_id)
             topic = await self.put_topic(tag, article)
+            if not await TaggedArticlePage.objects.filter(tag=topic, content_object_id=pair.content_object_id).aexists():
+                await TaggedArticlePage.objects.acreate(tag=topic, content_object_id=pair.content_object_id)
 
-            await TaggedArticlePage.objects.acreate(tag=topic, content_object_id=pair.content_object_id)
-
-        tasks = [asyncio.create_task(handle_pair(pair)) async for pair in ArticlePageTag.objects.all()]
+        TASK_MAX = 50
+        tasks = []
+        async for pair in ArticlePageTag.objects.all():
+            tasks.append(asyncio.create_task(handle_pair(pair)))
+            if len(tasks) > TASK_MAX:
+                await asyncio.gather(*tasks)
+                print("*** handling ***")
+                tasks = []
         await asyncio.gather(*tasks)
 
         async def set_count(topic):
@@ -46,5 +58,11 @@ class Command(BaseCommand):
             print(topic.tagged_articles_count)
             await topic.asave()
 
-        tasks = [asyncio.create_task(set_count(topic)) async for topic in ArticleTopic.objects.all()]
+        tasks = []
+        async for topic in ArticleTopic.objects.all():
+            tasks.append(asyncio.create_task(set_count(topic)))
+            if len(tasks) > TASK_MAX:
+                await asyncio.gather(*tasks)
+                print("*** counting ***")
+                tasks = []
         await asyncio.gather(*tasks)
