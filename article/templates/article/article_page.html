@@ -90,18 +90,22 @@
 
                         {% block post-content %}
 
-                        {% if self.tag_page_link and primary_tag %}
-                            <p class="tag-link">
-                                <b>See all stories on <a href="/topic/{{primary_tag.slug}}">"{{ primary_tag }}"</a> and be notified with RSS
-                                <a href="/topic/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to {{ primary_tag }} tag's rss feed">
-                                <ion-icon name="logo-rss"></ion-icon>
-                                </a></b>
-                            </p>
+                        <p class="time-stamp"><span>First online <time datetime="{{self.first_published_at|date:'Y-m-d H:i'}}">{{self.first_published_at}}</time></span>{% if self.show_last_modified %}, <span>last modified <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}">{{self.last_published_at}}</time></span>{% endif %}</p>
+
+                        {% with listed_topics=self.get_listed_topics %}
+                        {% if listed_topics %}
+                        <ul class="c-topic-list u-container u-container--padded">
+                            <li class="c-topic-list--header">Read more on: </li>
+                            {% for topic in listed_topics %}
+                                {% if topic.listed %}
+                                    <li><a href="/topic/{{topic.slug}}">{{topic.name}}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                         {% endif %}
+                        {% endwith %}
 
                         {% include 'article/objects/share_bar.html' %}
-
-                        <p class="time-stamp"><span>First online <time datetime="{{self.first_published_at|date:'Y-m-d H:i'}}">{{self.first_published_at}}</time></span>{% if self.show_last_modified %}, <span>last modified <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}">{{self.last_published_at}}</time></span>{% endif %}</p>
 
                         <p class="report">
                             <a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Submit a complaint</a>
@@ -133,6 +137,7 @@
                     {% endblock %}
                 </aside>                        
             </div>
+
             <div class="suggested-sidebar">
                 {% block suggested_articles %}
 

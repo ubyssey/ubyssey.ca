@@ -25,8 +25,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 
 from section.sectionable.models import SectionablePage
 
-from taggit.models import TaggedItemBase
-from taggit.models import Tag
+from taggit.models import TaggedItemBase, Tag, TagBase, ItemBase
 
 from videos import blocks as video_blocks
 from ubyssey.validators import validate_youtube_url
@@ -44,17 +43,19 @@ from wagtail.admin.panels import (
     # Custom admin tabs
     ObjectList,
     TabbedInterface,
+    TitleFieldPanel
 )
-
+from wagtail.admin.widgets.slug import SlugInput
+from wagtail.admin.filters import WagtailFilterSet
 from wagtail import blocks
 from wagtail.fields import StreamField, RichTextField
-from wagtail.models import Page, PageManager, Orderable
+from wagtail.models import Page, PageManager, Orderable, RevisionMixin, PreviewableMixin
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.search import index
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.snippets.models import register_snippet
-
+from wagtail.snippets.views.snippets import SnippetViewSet
 
 from wagtailmenus.models import FlatMenu
 
@@ -396,8 +397,93 @@ class TimelineSnippet(models.Model):
     def __str__(self) -> str:
         return self.title
 
+#-----Taggit models-----
+
+class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
+    free_tagging = False
+
+    description = RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        help_text = "Give an overview of the topic. Link densely to our coverage."
+    )
+
+    info_updated_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Description Updated Date/Time",
+        help_text = "Delete before saving ",
+    )
+
+    listed = models.BooleanField(
+        default=False,
+        help_text = "Listed topics are displayed at the end of tagged articles"
+    )
+
+    last_used_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Last used at",
+        editable=False,
+        help_text = "Stores the last time an article tagged with this topic was published",
+    )
+
+    tagged_articles_count = models.IntegerField(default=0, editable=False)
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("slug", widget=SlugInput()),
+        FieldPanel("description"),
+        FieldPanel("listed")
+    ]
+    
+    def get_count_of_tagged_articles(self):
+        return TaggedArticlePage.objects.filter(tag=self).count()
+
+    def recent_sections(self):
+        return ", ".join(set([tagged.content_object.current_section for tagged in TaggedArticlePage.objects.filter(tag=self)[:5]]))
+
+    def most_frequent_section(self):
+        def most_common(lst):
+            return max(set(lst), key=lst.count)
+        return most_common([tagged.content_object.current_section for tagged in TaggedArticlePage.objects.filter(tag=self)])
+
+    def last_tagged_at(self):
+        tagged = TaggedArticlePage.objects.filter(tag=self).order_by("-id").first()
+        if tagged == None:
+            return 0
+        return tagged.content_object.first_published_at
+
+    def get_preview_context(self, request, mode_name):
+        context = super().get_preview_context(request, mode_name)
+        context["filters"] = {"tag": self.id}
+        return context
+
+    def get_preview_template(self, request, mode_name):
+        return "tag/tag_page.html"
+
+    class Meta:
+        verbose_name = "Article topic"
+        verbose_name_plural = "Article topics"
+
+class ArticleTopicFilterSet(WagtailFilterSet):
+    class Meta:
+        model = ArticleTopic
+        fields = ["name"]
 
 #-----Taggit models-----
+class TaggedArticlePage(ItemBase):
+    """
+    Reference: 
+    https://docs.wagtail.io/en/stable/reference/pages/model_recipes.html
+    """
+    tag = models.ForeignKey(
+        ArticleTopic, related_name="tagged_articles", on_delete=models.CASCADE
+    )
+    content_object = ParentalKey('article.ArticlePage', on_delete=models.CASCADE, related_name='tagged_articles')
+
+
 class ArticlePageTag(TaggedItemBase):
     """
     Reference: 
@@ -580,12 +666,18 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         on_delete=models.SET_NULL,
         help_text="Categories are created for subsections, columns, supplements, and special issues."
     )
+    topics = ClusterTaggableManager(
+        through='article.TaggedArticlePage', 
+        blank=True, 
+        related_name='topics', 
+        help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST.",
+        verbose_name="Topics")
     tags = ClusterTaggableManager(
         through='article.ArticlePageTag', 
         blank=True, 
         related_name='tags', 
         help_text="ADD 'Top stories' IF YOU WANT IT TO GO ON TOP STORIES LIST.",
-        verbose_name="Topics")
+        verbose_name="Tags")
     primary_tag_slug = models.CharField(
         null=True,
         blank=True,
@@ -885,6 +977,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     '''
                 ),
                 TagsFieldPanel("tags"),
+                TagsFieldPanel("topics"),
                 FieldRowPanel(
                     [
                         FieldPanel(
@@ -1387,6 +1480,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             suggested = False
 
         return suggested
+
+    def get_listed_topics(self):
+        return self.topics.filter(listed=True)
 
     def get_title_tag(self) -> str:
         if self.title_tag:

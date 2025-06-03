@@ -22,7 +22,7 @@ def getArticles(filters, start, number):
         articles = ArticlePage.objects.live().public().order_by('-explicit_published_at')
 
     if "tag" in filters:
-        articles = articles.filter(tags__slug=filters["tag"])
+        articles = articles.filter(topics__id=filters["tag"])
 
     if "category" in filters:
         articles = articles.filter(category_page__slug=filters["category"])

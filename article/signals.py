@@ -4,6 +4,8 @@ from wagtail.signals import page_published
 from .models import ArticlePage
 from taggit.models import Tag
 from django.utils.text import slugify
+import asyncio
+from asgiref.sync import async_to_sync, sync_to_async
 
 @receiver(page_published, sender=ArticlePage)
 def update_default_explicit_published_at(instance, **kwargs):
@@ -32,6 +34,26 @@ def update_primary_tag(instance, **kwargs):
         if tag:
             instance.primary_tag_slug = tag.slug
             instance.save()
+
+@receiver(page_published, sender=ArticlePage)
+def update_topic_last_used_at(instance, **kwargs):
+
+    async def update_topic(topic):
+        topic.tagged_articles_count = await sync_to_async(topic.get_count_of_tagged_articles)()
+
+        if topic.last_used_at == None:
+            topic.last_used_at = instance.first_published_at    
+        elif topic.last_used_at >= instance.first_published_at:
+            topic.last_used_at = instance.first_published_at
+
+        await topic.asave()
+
+    @async_to_sync
+    async def process_topics():
+        tasks = [asyncio.create_task(update_topic(topic)) async for topic in instance.topics.all()]
+        await asyncio.gather(*tasks)
+    
+    process_topics()
 
 @receiver(pre_save, sender=ArticlePage)
 def update_timeline_on_article_alteration_pre_save(instance, **kwargs):

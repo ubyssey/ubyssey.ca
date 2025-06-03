@@ -1,5 +1,6 @@
 @use "../modules/footer";
 @use "../modules/variables";
+@use "../modules/fonts";
 
 .o-article--suggested_article {
 
@@ -63,5 +64,25 @@
 
     article {
         width: 300px;
+    }
+}
+
+.c-topic-list {
+    padding-block: 0.5em;
+    margin-bottom: 2em;
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    li {
+        margin-right: 1em;
+        font-size: 0.9em;
+        font-family: fonts.$font-default;
+
+        &.c-topic-list--header {
+            font-weight: 600;
+        }
+    }
+    a {
+        border-bottom: solid 1px;
     }
 }
