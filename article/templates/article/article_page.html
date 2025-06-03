@@ -94,7 +94,7 @@
 
                         {% with listed_topics=self.get_listed_topics %}
                         {% if listed_topics %}
-                        <ul class="c-topic-list u-container u-container--padded">
+                        <ul class="c-topic-list u-container">
                             <li class="c-topic-list--header">Read more on: </li>
                             {% for topic in listed_topics %}
                                 {% if topic.listed %}

@@ -400,7 +400,7 @@ class TimelineSnippet(models.Model):
 #-----Taggit models-----
 
 class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
-    free_tagging = False
+    #free_tagging = False
 
     description = RichTextField(
         null=False,

@@ -18,6 +18,6 @@ class ArticleTopicViewSet(SnippetViewSet):
 
     filterset_class = ArticleTopicFilterSet
     search_fields = ["name"]
-    ordering = "last_used_at"
+    ordering = "-last_used_at"
 
     list_export = ["name", "tagged_articles_count", "most_frequent_section", "last_used_at"]
