@@ -1429,7 +1429,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(topics__name=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
-    def get_suggested(self, number_suggested=6):
+    def get_primary_suggested(self, number_suggested=6):
         """
         Defines the title and articles in the suggested box
         """
@@ -1473,9 +1473,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         return suggested
 
-    def get_listed_topics(self, topic_max=4):
+    def get_suggested(self, topic_max=4):
 
-        primary = self.get_suggested()
+        primary = self.get_primary_suggested()
+        print(primary)
 
         seen_articles = [self] + primary['articles']
 

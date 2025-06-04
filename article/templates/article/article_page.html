@@ -143,7 +143,7 @@
 
             {% block suggested_articles %}
 
-            {% with suggested=self.get_listed_topics %}
+            {% with suggested=self.get_suggested %}
                 {% include 'article/objects/suggested_articles.html' %}
             {% endwith %}
 
