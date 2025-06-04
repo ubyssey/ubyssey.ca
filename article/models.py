@@ -972,15 +972,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     '''
                 ),
                 TagsFieldPanel("topics"),
-                FieldRowPanel(
-                    [
-                        FieldPanel(
-                            "primary_tag_slug",
-                            widget=PrimaryTagSelect(),
-                        ),
-                        FieldPanel("tag_page_link"),
-                    ]
+                FieldPanel(
+                    "primary_tag_slug",
+                    widget=PrimaryTagSelect(),
                 ),
+
                 SuggestedBarFieldPanel(
                     "filter_by_tags",
                     widget=Select(choices=[
@@ -1226,8 +1222,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if context['next']:
                 context['next'] = context['next'].specific
 
-        context["suggested"] = self.get_suggested()
-
         if self.tag_page_link and self.primary_tag_slug:
             if Tag.objects.filter(slug=self.primary_tag_slug).exists():
                 context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
@@ -1435,7 +1429,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 articles_by_tag = ArticlePage.objects.live().child_of(self.get_parent()).filter(topics__name=self.primary_tag_slug).not_page(self).order_by(order)[:max]
         return articles_by_tag
 
-    def get_suggested(self, number_suggested=3):
+    def get_suggested(self, number_suggested=6):
         """
         Defines the title and articles in the suggested box
         """
@@ -1445,6 +1439,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             suggested = {}
             suggested['title'] = "Related stories"
             suggested['articles'] = list(map(lambda article: article.connected_article, self.connected_articles.all()))      
+            suggested['type'] = 'connected'
         elif self.filter_by_tags:
             articles_by_tag = self.get_articles_by_tag(max=number_suggested)
             if len(articles_by_tag) > 0:
@@ -1455,6 +1450,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 suggested = {}
                 suggested['title'] = "More on <a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
                 suggested['articles'] = articles_by_tag[:number_suggested]
+                suggested['type'] = 'topic'
         if not suggested:
             if self.category_page != None:
                 category_articles = self.get_category_articles(max=number_suggested)
@@ -1462,6 +1458,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     suggested = {}
                     suggested['title'] = "More from <a href='" + self.category_page.url + "'>" + self.category_page.title + "</a>"
                     suggested['articles'] = category_articles[:number_suggested]
+                    suggested['type'] = 'category'
 
         if not suggested:
             section_articles = self.get_section_articles(max=number_suggested)
@@ -1469,14 +1466,55 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 suggested = {}
                 suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a>"
                 suggested['articles'] = section_articles[:number_suggested]
+                suggested['type'] = 'section'
         
         if not suggested:
             suggested = False
 
         return suggested
 
-    def get_listed_topics(self):
-        return self.topics.filter(listed=True)
+    def get_listed_topics(self, topic_max=4):
+
+        primary = self.get_suggested()
+
+        seen_articles = [self] + primary['articles']
+
+        listed_topics = self.topics.filter(listed=True)
+        if primary['type'] == 'topic':
+            listed_topics = listed_topics.exclude(slug=self.primary_tag_slug)
+
+        listed_topics = listed_topics.order_by("last_used_at")
+
+        time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
+        topic_articles = [
+            {
+                "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
+                "articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, first_published_at__gte=time_cutoff).order_by("-first_published_at")[:5]
+            } for topic in listed_topics
+        ]
+
+        for i in range(len(topic_articles)):
+            topic = topic_articles[i]
+            topic["is_copy"] = False
+            for other_topic in topic_articles[i+1:]:        
+                if not False in [article in other_topic["articles"] for article in topic["articles"]]:
+                    other_topic["topic"] = f'{other_topic["topic"]}, {topic["topic"]}'
+                    topic["is_copy"] = True
+                    break
+        topic_articles = list(filter(lambda topic: not topic["is_copy"], topic_articles))
+
+        for topic in topic_articles:
+            for article in topic["articles"]:
+                if not article in seen_articles:
+                    topic["articles"] = [article]
+                    seen_articles.append(article)
+                    break
+                topic["articles"] = False
+
+        topic_articles = reversed(list(filter(lambda topic: not topic["articles"] == False, topic_articles))[:topic_max])
+
+        return {"primary": primary, "topics": topic_articles}
+
 
     def get_title_tag(self) -> str:
         if self.title_tag:

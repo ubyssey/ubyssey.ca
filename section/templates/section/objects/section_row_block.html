@@ -4,7 +4,7 @@
     <span class="o-section_row_block__title">{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{% endif %}</span>
     {% with show_bylines=self.show_bylines %}
     {% for article in articles %}
-        {% include "article/objects/article_section-row-block-item.html" %}
+        {% include "article/objects/article_list-item.html" %}
     {% endfor %}
     {% endwith %}
 </div>

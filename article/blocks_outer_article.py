@@ -50,6 +50,8 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/section_horizontal-wrapped.html', 'Horizontal wrapped'),
         ('section/objects/section_landing.html', 'Landing'),
         ('section/objects/featured_with_wrapped_articles.html', 'Featured article with wrapped articles below'),
+        ('section/objects/featured_top_headline_with_wrapped_articles.html', 'Top headline article, articles underneath'),
+        ('section/objects/section_one-large-two-small.html', 'One large, two small'),
         ('section/objects/minimal_grid.html', 'Minimal grid'),
         ('section/objects/blurb_with_timeline.html', 'Blurb with timeline'),
         ('section/objects/single_promo.html', 'Single (promo)'),
@@ -156,6 +158,9 @@ class ArticleGathererBlock(AbstractArticleList):
             limit = 5
 
         elif 'section/objects/featured_with_wrapped_articles.html' in value['template']:
+            limit = 5
+
+        elif 'section/objects/featured_top_headline_with_wrapped_articles.html' in value['template']:
             limit = 5
 
         elif 'section/objects/minimal_grid.html' in value['template']:        

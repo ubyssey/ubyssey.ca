@@ -19,7 +19,7 @@
 
 // Feature
 .o-article_storystream_feature {
-    padding-inline: 3em;
+    padding-inline: 1em;
     .o-article__left {
         margin-inline: auto;
         display: flex;
@@ -35,13 +35,14 @@
     .o-article__right {
         margin-top: 1em;
         margin-inline: auto;
-        padding-inline: 1.5em;
+        
         border-bottom: 2px solid variables.$color-ubyssey-blue;
         width: fit-content;
         * {
             width: fit-content;
         }
-        h2 {
+        .o-article__headline {
+            margin-inline: auto;
             font-size: 1.5em;
         }
     }
@@ -53,8 +54,16 @@
         right: -3.5em;
     }
 
+    @media(variables.$bp-larger-than-phablet) {
+        .o-article__left {
+            padding-inline: 2em;
+        }
+    }
+
     @media(variables.$bp-smaller-than-phablet) {
-        padding-inline: 1em;
+        .o-article__right {
+            padding-inline: 1.5em;
+        }
         .carousel-control-prev {
             left: -0.5em;
         }
@@ -67,10 +76,12 @@
         display: flex;
         flex-direction: column;
         .o-article__left > * {
+            padding-inline: 0;
             filter: drop-shadow(0 0 0.5em var(--shadow-color));
             clip-path: inset(-1em -1em 0 -1em);
         }
         @media(variables.$bp-larger-than-phablet) {
+            padding-inline: 3em;
             flex-direction: row-reverse;
             .o-article__right {
                 margin: auto;
@@ -88,10 +99,9 @@
         margin-right: 2em;
         margin-block: auto;
         height: fit-content;
+        border-bottom: 2px solid variables.$color-ubyssey-blue;
         .o-article__headline {
-            padding-bottom: 0.5rem;
             width: fit-content;
-            border-bottom: 2px solid variables.$color-ubyssey-blue;
             font-size: 1.75em;
         }    
     }
@@ -125,7 +135,7 @@
 .o-article_storystream_indent {
     padding-block: 2.5em;
     .o-article__left {
-        h2 {
+        .o-article__headline {
             font-size: 1.4em;
         }
     }
@@ -141,7 +151,6 @@
             line-height: 1.5em;
         }
         a {
-            font-style: italic;
             text-decoration: underline;
             
         }
@@ -174,14 +183,17 @@
             margin-bottom: 0;
         }
     }
-}
 
-@media(variables.$bp-smaller-than-tablet) {
-    .o-article_storystream_indent {
+    @media(variables.$bp-smaller-than-tablet) {
         margin-inline: 1em;
     }
-}
 
+    @media(variables.$bp-smaller-than-phablet) {
+        .o-article__left .o-article__headline {
+            font-size: 1.25em;
+        }
+    }
+}
 
 // Attachments
 

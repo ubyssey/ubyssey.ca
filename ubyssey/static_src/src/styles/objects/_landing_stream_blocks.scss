@@ -371,11 +371,11 @@
 
 .o-section_article-row {
   display: flex;
-  gap: 1.5em;
+  gap: 1.25em;
   margin-top: 1em;
   border-block: 2px solid var(--light-border);
   padding-block: 2em 1em;
-  article {
+  > article {
     width: 200px;
     flex-grow: 1;
     @media(variables.$bp-larger-than-phablet) {
@@ -400,12 +400,35 @@
   @media(variables.$bp-smaller-than-phablet) {
     padding: 2em 1.5em;
     flex-direction: column;
+
+    .o-article__published {
+      margin-block: 0.25em;
+    }
+
+    .o-article__left {
+      margin-bottom: 0.5em;
+    }
+
     article {
       width: auto;
       border-bottom: 1px solid var(--light-border);
     }
-    article:not(:first-child) .o-article__left {
-      display: none;
+    > article:not(:first-child) {
+      display: flex;
+      flex-direction: row-reverse;
+      .o-article__right {
+        width: 100%;
+      }
+      .o-article__left {
+        img {
+          width: 5em;
+          aspect-ratio: 1;
+          object-fit: cover;
+        }
+      }
+      .o-article__published {
+        margin-top: 0;
+      }
     }
   }
 
@@ -418,7 +441,6 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 1em;
     }
 
     .o-section_row_block__title {
@@ -430,41 +452,6 @@
       font-size: 1.2em;
       line-height: 1em;
       color: var(--header_color);
-    }
-    article {
-      margin-bottom: 0.25em;
-      padding-block: 0.75em;
-      width: 300px;
-      display: flex;
-      gap: 1em;
-      border-bottom: 1px solid var(--light-border);
-
-      .o-article__headline {
-        font-size: 1em;
-        line-height: 1.5em;
-      }
-      .o-article__published {
-        margin-block: 0;
-        font-weight: 400;
-        color: var(--text_color_supporting);
-      }
-      .right {
-        margin: 0;
-        width: 5em;
-        flex-shrink: 0;
-        img {
-          width: 100%;
-          height: auto;
-        }
-      }
-
-      @media(variables.$bp-smaller-than-phablet) {
-        margin-inline: auto;
-        max-width: 400px;
-        .o-article__headline {
-          font-size: 1em;
-        }
-      }
     }
   }
 }
