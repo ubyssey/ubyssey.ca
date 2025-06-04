@@ -5,6 +5,7 @@ from .base import *
 from google.oauth2 import service_account
 
 import environ
+import sys
 
 env = environ.Env() # Scope issues without this line?
 
@@ -63,3 +64,28 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 25621440
 ADMINS = [
 	('Webmaster', 'webmaster@ubyssey.ca'),
 ]
+
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'formatters': {
+       'verbose': {
+           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+       },
+   },
+   'handlers': {
+       'console': {
+           'level': 'INFO',
+           'class': 'logging.StreamHandler',
+           'stream': sys.stdout,
+           'formatter': 'verbose'
+       },
+   },
+   'loggers': {
+       '': {
+           'handlers': ['console'],
+           'level': 'INFO',
+           'propagate': True,
+       },
+   },
+}
