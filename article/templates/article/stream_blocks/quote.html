@@ -7,7 +7,7 @@
 {% endif %}
 
 <blockquote class="pull-quote attachment {{self.position}} {{self.style}}">
-    <p class="quote">{{ self.content }}</p>
+    <p class="quote">{{ self.content|safe }}</p>
     {% if self.audio or self.source %}
     <p class="meta">
         {% if self.audio %}
