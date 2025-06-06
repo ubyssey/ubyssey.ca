@@ -1479,10 +1479,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         Determines the articles to suggested at the bottom of the page based on listed topics, category, primary topic, section, and editor choice
         '''
 
-        # Gathers the 2-6 large articles suggested at the bottom 
+        # Gathers the 2-6 large articles suggested at the bottom of the page
         primary = self.get_primary_suggested()
 
-        # This is tracked to avoid suggesting duplicates or the article itself
+        # The rest is determining the "topics" to suggest on the right of those articles
+
+        # "seen articles" are tracked to avoid suggesting duplicates or the article itself
         seen_articles = [self] + primary['articles']
 
         # Holds each topic to be listed on the right of the suggested bar
