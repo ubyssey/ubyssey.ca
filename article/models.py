@@ -458,6 +458,7 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
     def get_preview_context(self, request, mode_name):
         context = super().get_preview_context(request, mode_name)
         context["filters"] = {"tag": self.id}
+        context["storystream"] = "true"
         return context
 
     def get_preview_template(self, request, mode_name):
@@ -1496,8 +1497,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             topic_articles.append({
                 "topic": f'<a href="{category.url}">{category.title}</a>',
                 "considered_articles": category.get_recent_articles(max_items=5),
-                "articles": [],
             })
+        
+        time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
+
+        if self.current_section in ['opinion', 'humour', 'features'] and self.primary_tag_slug:
+            primary_topic = self.get_primary_topic()
+            if primary_topic != None:
+                topic_articles.append({
+                    "topic": f'News: <a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
+                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                })
 
         # Get the article's topics marked as listed
         listed_topics = self.topics.filter(listed=True)
@@ -1506,41 +1516,37 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         listed_topics = listed_topics.order_by("last_used_at")
 
         # Add each listed topic, order by article publish date 
-        time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
         topic_articles = topic_articles + list(sorted([
             {
                 "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
                 "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
-                "articles": [],
             } for topic in listed_topics
         ], key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True))
 
-        # If two "topics" have the exact same five articles, combine them. Otherwise we consider the topics sufficiently unique
-        for i in range(len(topic_articles)):
-            topic = topic_articles[i]
-            topic["is_copy"] = False
-            for other_topic in topic_articles[i+1:]:
-                if len(other_topic["considered_articles"]) > len(topic["considered_articles"]):
-                    topic["is_copy"] = not False in [article in topic["considered_articles"] for article in other_topic["considered_articles"]]
-                else:
-                    topic["is_copy"] = not False in [article in other_topic["considered_articles"] for article in topic["considered_articles"]]
-                if topic["is_copy"]:
-                    other_topic["topic"] = f'{other_topic["topic"]}, {topic["topic"]}'
-                    break
-        
-        topic_articles = list(filter(lambda topic: not topic["is_copy"], topic_articles))
-
-        
-        # Choose articles for each of the topics amd remove topics that don't have articles
+        # Choose articles from each of the topic and combine topics with shared articles
         article_count = 0
         new_added = True
+        combined_topics = []
 
         while article_count < topic_max and new_added:
             new_added = False
             for topic in topic_articles:
                 for article in topic["considered_articles"]:
                     if not article in seen_articles:
-                        topic["articles"].append(article)
+                        combined = False
+                        for combined_topic in combined_topics:
+                            if not False in [combined_topic_article in topic["considered_articles"] for combined_topic_article in combined_topic["articles"]]:
+                                combined_topic["articles"].append(article)
+                                if not topic["topic"] in combined_topic["topic"]:
+                                    combined_topic["topic"] = combined_topic["topic"] + ", " + topic["topic"]
+                                combined = True
+                                break
+                        if not combined:
+                            combined_topics.append({
+                                "topic": topic["topic"],
+                                "articles": [article]
+                            })
+
                         seen_articles.append(article)
                         article_count = article_count + 1
                         new_added = True
@@ -1548,13 +1554,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 if article_count >= topic_max:
                     break
 
-            topic_articles = list(filter(lambda topic: not len(topic["articles"]) == 0, topic_articles))
-            topic_articles = sorted(topic_articles, key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True)
+
+        combined_topics = sorted(combined_topics, key= lambda topic: topic["articles"][0].first_published_at, reverse=True)
 
         # Ensure the number of topics is at or below the maximum
-        topic_articles = topic_articles[:topic_max]
+        combined_topics = combined_topics[:topic_max]
 
-        return {"primary": primary, "topics": topic_articles}
+        return {"primary": primary, "topics": combined_topics}
 
 
     def get_title_tag(self) -> str:
@@ -1566,10 +1572,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             False
     title_tag_str = property(fget=get_title_tag)
 
+    def get_primary_topic(self) -> str:
+        return ArticleTopic.objects.filter(slug=self.primary_tag_slug).first()
+
     def get_primary_tag_link(self) -> str:
-        from taggit.models import Tag
-        tag = Tag.objects.get(slug=self.primary_tag_slug)
-        return "<a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
+        tag = ArticleTopic.objects.filter(slug=self.primary_tag_slug).first()
+        if tag != None:
+            return "<a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
+        return ""
     primary_tag_link = property(fget=get_primary_tag_link)
 
     @property
@@ -1577,6 +1587,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         if self.explicit_published_at:
             return self.explicit_published_at
         return self.first_published_at
+
+    def first_online_at(self):
+        # Some articles seem to have correct explicit published but not first published (due to migration). 
+        # Others have correct explicit but not correct first published (due to editors not understanding the explicit field).
+        if self.explicit_published_at and self.first_published_at:
+            if self.explicit_published_at - self.first_published_at < timezone.timedelta(days=5):
+                return self.first_published_at
+        return self.explicit_published_at
     
     @property
     def word_count(self) -> int:

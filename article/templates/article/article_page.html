@@ -90,22 +90,7 @@
 
                         {% block post-content %}
 
-                        <p class="time-stamp"><span>First online <time datetime="{{self.first_published_at|date:'Y-m-d H:i'}}">{{self.first_published_at}}</time></span>{% if self.show_last_modified %}, <span>last modified <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}">{{self.last_published_at}}</time></span>{% endif %}</p>
-
-                        {% comment %}
-                            {% with listed_topics=self.get_listed_topics %}
-                            {% if listed_topics %}
-                            <ul class="c-topic-list u-container">
-                                <li class="c-topic-list--header">Read more on: </li>
-                                {% for topic in listed_topics %}
-                                    {% if topic.listed %}
-                                        <li><a href="/topic/{{topic.slug}}">{{topic.name}}</a></li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                            {% endwith %}
-                        {% endcomment %}
+                        <p class="time-stamp"><span>First online <time datetime="{{self.first_online_at|date:'Y-m-d H:i'}}">{{self.first_online_at}}</time></span>{% if self.show_last_modified %}, <span>last modified <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}">{{self.last_published_at}}</time></span>{% endif %}</p>
 
                         {% include 'article/objects/share_bar.html' %}
 
