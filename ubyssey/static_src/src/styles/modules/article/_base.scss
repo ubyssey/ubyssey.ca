@@ -69,13 +69,12 @@ div.article-content {
 
 .c-article--default {
 
-
-  div.article-content .disclaimer {
-    margin-left: 0;
-  }
-
-  .author_card {
-    margin-left: 0;
+  @media(variables.$bp-larger-than-tablet) {
+    div.article-content {
+      .author_card, .disclaimer {
+        margin-left: 0;
+      }
+    }
   }
 
   .o-headline--article {
@@ -284,10 +283,8 @@ div.article-content {
   > h4,
   > div.c-widget-event,
   > .attachment.pull-quote {
-    @media(variables.$bp-larger-than-phablet){
-      padding: 0;
-      max-width: 585px;
-    }
+    padding: 0;
+    max-width: 585px;
   }
 
   >ul {
@@ -310,7 +307,7 @@ div.article-content {
     font-family: fonts.$font-body;
     font-weight: fonts.$font-weight-normal;
     font-size: fonts.font-size(17);
-    line-height: 2rem;
+    line-height: 2em;
     margin-top: 1.4rem;
 
     a {

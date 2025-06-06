@@ -32,6 +32,7 @@
 .c-suggested-bar {
     margin-bottom: 3em;
     display: flex;
+    width: fit-content;
 
     @media(variables.$bp-smaller-than-tablet) {
         flex-direction: column;
@@ -68,6 +69,7 @@
 }
 
 .c-suggested-bar--topic-list {
+    margin-top: 1em;
     margin-left: 1em;
     .c-suggested-bar--topic-list__topic-title {
         margin-top: 0.75em;
@@ -81,6 +83,7 @@
         }
     }
     @media(variables.$bp-smaller-than-tablet) {
+        padding-inline: 1em;
         margin-inline: auto;
         max-width: 400px;
         .o-article_list-item {

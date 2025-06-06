@@ -391,6 +391,7 @@
       font-size: 1.1em;
     }
     .o-article__byline {
+      font-size: 0.75em;
       color: var(--text_color_supporting);
     }
   }
@@ -416,6 +417,7 @@
     > article:not(:first-child) {
       display: flex;
       flex-direction: row-reverse;
+      gap: 1em;
       .o-article__right {
         width: 100%;
       }

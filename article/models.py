@@ -442,7 +442,7 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
         return TaggedArticlePage.objects.filter(tag=self).count()
 
     def recent_sections(self):
-        return ", ".join(set([tagged.content_object.current_section for tagged in TaggedArticlePage.objects.filter(tag=self)[:5]]))
+        return ", ".join(set([tagged.content_object.current_section for tagged in TaggedArticlePage.objects.filter(tag=self).order_by("-id")[:5]]))
 
     def most_frequent_section(self):
         def most_common(lst):
@@ -1435,6 +1435,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         from taggit.models import Tag
         suggested = {}
+        MIN_ARTICLES = 2
         if len(self.connected_articles.all()) > 0:
             suggested = {}
             suggested['title'] = "Related stories"
@@ -1442,7 +1443,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             suggested['type'] = 'connected'
         elif self.filter_by_tags:
             articles_by_tag = self.get_articles_by_tag(max=number_suggested)
-            if len(articles_by_tag) > 0:
+            if len(articles_by_tag) >= MIN_ARTICLES:
                 if Tag.objects.filter(slug=self.primary_tag_slug).exists():
                     tag = Tag.objects.get(slug=self.primary_tag_slug)
                 elif Tag.objects.filter(name=self.primary_tag_slug).exists():
@@ -1454,7 +1455,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         if not suggested:
             if self.category_page != None:
                 category_articles = self.get_category_articles(max=number_suggested)
-                if len(category_articles) > 0:
+                if len(category_articles) >= MIN_ARTICLES:
                     suggested = {}
                     suggested['title'] = "More from <a href='" + self.category_page.url + "'>" + self.category_page.title + "</a>"
                     suggested['articles'] = category_articles[:number_suggested]
@@ -1462,7 +1463,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if not suggested:
             section_articles = self.get_section_articles(max=number_suggested)
-            if len(section_articles) > 0:
+            if len(section_articles) >= MIN_ARTICLES:
                 suggested = {}
                 suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a>"
                 suggested['articles'] = section_articles[:number_suggested]
@@ -1474,45 +1475,82 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         return suggested
 
     def get_suggested(self, topic_max=4):
+        '''
+        Determines the articles to suggested at the bottom of the page based on listed topics, category, primary topic, section, and editor choice
+        '''
 
+        # Gathers the 2-6 large articles suggested at the bottom 
         primary = self.get_primary_suggested()
-        print(primary)
 
+        # This is tracked to avoid suggesting duplicates or the article itself
         seen_articles = [self] + primary['articles']
 
+        # Holds each topic to be listed on the right of the suggested bar
+        topic_articles = []
+
+        # If the category is not used for the primary suggested, then add the category as a "topic"
+        category = self.category_page
+        if category and primary['type'] != 'category':
+            topic_articles.append({
+                "topic": f'<a href="{category.url}">{category.title}</a>',
+                "considered_articles": category.get_recent_articles(max_items=5),
+                "articles": [],
+            })
+
+        # Get the article's topics marked as listed
         listed_topics = self.topics.filter(listed=True)
         if primary['type'] == 'topic':
             listed_topics = listed_topics.exclude(slug=self.primary_tag_slug)
-
         listed_topics = listed_topics.order_by("last_used_at")
 
+        # Add each listed topic, order by article publish date 
         time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
-        topic_articles = [
+        topic_articles = topic_articles + list(sorted([
             {
                 "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
-                "articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, first_published_at__gte=time_cutoff).order_by("-first_published_at")[:5]
+                "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                "articles": [],
             } for topic in listed_topics
-        ]
+        ], key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True))
 
+        # If two "topics" have the exact same five articles, combine them. Otherwise we consider the topics sufficiently unique
         for i in range(len(topic_articles)):
             topic = topic_articles[i]
             topic["is_copy"] = False
-            for other_topic in topic_articles[i+1:]:        
-                if not False in [article in other_topic["articles"] for article in topic["articles"]]:
+            for other_topic in topic_articles[i+1:]:
+                if len(other_topic["considered_articles"]) > len(topic["considered_articles"]):
+                    topic["is_copy"] = not False in [article in topic["considered_articles"] for article in other_topic["considered_articles"]]
+                else:
+                    topic["is_copy"] = not False in [article in other_topic["considered_articles"] for article in topic["considered_articles"]]
+                if topic["is_copy"]:
                     other_topic["topic"] = f'{other_topic["topic"]}, {topic["topic"]}'
-                    topic["is_copy"] = True
                     break
+        
         topic_articles = list(filter(lambda topic: not topic["is_copy"], topic_articles))
 
-        for topic in topic_articles:
-            for article in topic["articles"]:
-                if not article in seen_articles:
-                    topic["articles"] = [article]
-                    seen_articles.append(article)
-                    break
-                topic["articles"] = False
+        
+        # Choose articles for each of the topics amd remove topics that don't have articles
+        article_count = 0
+        new_added = True
 
-        topic_articles = reversed(list(filter(lambda topic: not topic["articles"] == False, topic_articles))[:topic_max])
+        while article_count < topic_max and new_added:
+            new_added = False
+            for topic in topic_articles:
+                for article in topic["considered_articles"]:
+                    if not article in seen_articles:
+                        topic["articles"].append(article)
+                        seen_articles.append(article)
+                        article_count = article_count + 1
+                        new_added = True
+                        break
+                if article_count >= topic_max:
+                    break
+
+            topic_articles = list(filter(lambda topic: not len(topic["articles"]) == 0, topic_articles))
+            topic_articles = sorted(topic_articles, key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True)
+
+        # Ensure the number of topics is at or below the maximum
+        topic_articles = topic_articles[:topic_max]
 
         return {"primary": primary, "topics": topic_articles}
 
