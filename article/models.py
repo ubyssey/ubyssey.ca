@@ -1011,7 +1011,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                         <li>3. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
                         <li>4. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
                         <li>5. <b>Large headline (large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo). This template deemphasizes the article in the storystream.</li>
-                        <li>6. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.
+                        <li>6. <b>Small headline + lede (small headline + lede left, featured media right):</b> Use when the article can be reduced to the headline and lede, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
+                        <li>7. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.</li>
                     </ol>
                     '''),
                 FieldPanel("storystream_view"),
@@ -1497,6 +1498,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             topic_articles.append({
                 "topic": f'<a href="{category.url}">{category.title}</a>',
                 "considered_articles": category.get_recent_articles(max_items=5),
+                "type": "category",
             })
         
         time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
@@ -1507,6 +1509,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 topic_articles.append({
                     "topic": f'News: <a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
                     "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                    "type": "other section",
                 })
 
         # Get the article's topics marked as listed
@@ -1520,6 +1523,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             {
                 "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
                 "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                "type": "topic",
             } for topic in listed_topics
         ], key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True))
 
@@ -1535,8 +1539,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     if not article in seen_articles:
                         combined = False
                         for combined_topic in combined_topics:
-                            if not False in [combined_topic_article in topic["considered_articles"] for combined_topic_article in combined_topic["articles"]]:
+                            if article in combined_topic["possible_articles"] and not False in [combined_topic_article in topic["considered_articles"] for combined_topic_article in combined_topic["articles"]]:
                                 combined_topic["articles"].append(article)
+                                combined_topic["possible_articles"] = list(filter(lambda article: article in topic["considered_articles"], combined_topic["possible_articles"]))
                                 if not topic["topic"] in combined_topic["topic"]:
                                     combined_topic["topic"] = combined_topic["topic"] + ", " + topic["topic"]
                                 combined = True
@@ -1544,7 +1549,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                         if not combined:
                             combined_topics.append({
                                 "topic": topic["topic"],
-                                "articles": [article]
+                                "articles": [article],
+                                "possible_articles": topic["considered_articles"],
+                                "type": topic["type"]
                             })
 
                         seen_articles.append(article)
@@ -1554,13 +1561,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 if article_count >= topic_max:
                     break
 
-
-        combined_topics = sorted(combined_topics, key= lambda topic: topic["articles"][0].first_published_at, reverse=True)
+        orderd_topics = list(filter(lambda topic: topic["type"]=="category", combined_topics)) + \
+            list(sorted(filter(lambda topic: topic["type"]=="topic", combined_topics), key= lambda topic: topic["articles"][0].first_published_at, reverse=True)) + \
+            list(filter(lambda topic: not topic["type"] in ["category", "topic"], combined_topics))
 
         # Ensure the number of topics is at or below the maximum
-        combined_topics = combined_topics[:topic_max]
+        orderd_topics = orderd_topics[:topic_max]
 
-        return {"primary": primary, "topics": combined_topics}
+        return {"primary": primary, "topics": orderd_topics}
 
 
     def get_title_tag(self) -> str:

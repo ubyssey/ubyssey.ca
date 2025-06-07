@@ -55,13 +55,13 @@
 }
 
 .c-suggested-bar--primary-articles {
+    margin: auto;
+    margin-top: 1.5em;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     gap: 10px;
     max-width: 1200px;
-    margin: auto;
-    margin-top: 2em;
 
     article {
         width: 300px;
