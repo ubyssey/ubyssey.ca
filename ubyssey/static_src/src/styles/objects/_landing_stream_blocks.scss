@@ -387,6 +387,17 @@
     }
     .o-article__snippet {
       font-size: 0.75em;
+      font-family: fonts.$font-body;
+      @media(variables.$bp-larger-than-tablet) {
+        display: -webkit-box;
+        height: fit-content;
+        overflow: clip;
+
+        font-variation-settings: "wght" 400;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+      }
     }
     .o-article__published {
       font-size: 0.75em;
