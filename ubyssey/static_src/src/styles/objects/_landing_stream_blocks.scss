@@ -469,8 +469,10 @@
   .o-section_article-cluster--group {
     margin-inline: auto;
     max-width: 500px;
+    display: contents;
 
     @media(variables.$bp-larger-than-tablet) {
+      display: block;
       width: 0;
       flex-grow: 1;
     }
@@ -483,13 +485,17 @@
       article.o-article_list-item {
         width: auto;
         .o-article__headline {
-          font-size: 0.8em;
+          margin-bottom: 0;
+          font-size: 0.85em;
           font-variation-settings: "wght" 400;
         }
         @media(variables.$bp-smaller-than-phablet) {
           .left {
             margin-block: auto;
             height: fit-content;
+            .o-article__headline {
+              margin-bottom: 0.5rem;
+            }
           }
         }
       }
