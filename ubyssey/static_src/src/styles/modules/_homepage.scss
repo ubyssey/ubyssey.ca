@@ -403,8 +403,10 @@ html.hairlines {
     font-variation-settings: "wght" 800;
     width: fit-content;
     border-bottom: 0.1em solid var(--light-border);
-
-    @media(variables.$bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-tablet) {
+      margin-left: 1em;
+    }
+    @media(variables.$bp-smaller-than-desktop) {
       margin: 1em auto;
     }
   }

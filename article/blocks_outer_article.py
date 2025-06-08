@@ -182,6 +182,7 @@ class SectionBlock(AbstractArticleList):
         choices=[
             ('section/objects/section_one-large-two-small.html', 'One left, two right'),
             ('section/objects/section_article-row.html', 'Four articles in a row'),
+            ('section/objects/section_article-row--cluster.html', 'Articles clustered into by topic'),
         ]
     )
 

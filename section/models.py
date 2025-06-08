@@ -335,6 +335,121 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     def get_recent_articles(self, max_items=10):
         return ArticlePage.objects.live().child_of(self).order_by("-first_published_at")[:max_items]
+    
+    def get_recent_topic_cluster(self, items=12, max_in_cluster=3, cut_off=timezone.now() - timezone.timedelta(days=60)):
+        '''
+        Cluster articles by their topic. The clustering works by iterating
+        from the most recent article and selecting a unique primary or listed topic. These topics are
+        then iterated through and recent articles with these topics are joined in a cluster
+        '''
+        
+        # Get recent articles to cluster
+        considered_articles = ArticlePage.objects.live().child_of(self).filter(first_published_at__gte=cut_off).order_by('-first_published_at')[:2*items]
+        
+        # Get the topics of all these articles
+        article_topics = [
+            {
+                "article": article,
+                "topics": article.topics.all()
+            }
+            for article in considered_articles
+        ]
+
+        # Iterate through articles and select a topic to represent it
+        used_topics = []
+        for article_topic in article_topics:
+            article = article_topic["article"]
+
+            # Use the primary topic if multiple recent articles are tagged with it
+            primary_topic = article.get_primary_topic()
+            if primary_topic and not primary_topic in used_topics:
+                possible_articles = list(filter(lambda article: primary_topic in article["topics"], 
+                                                   article_topics))
+                if len(possible_articles) > 1:
+                    used_topics.append(primary_topic)
+                    continue
+
+            # Get the number of recent articles tagged by topic tagged by this article
+            possible_topics = [
+                {
+                    "topic": topic,
+                    "count": len(list(filter(lambda considered_article: topic in considered_article["topics"], article_topics)))
+                }
+            for topic in article_topic["topics"]]
+            
+            # Remove topics that aren't listed or tagged with multiple articles
+            possible_topics = list(filter(lambda topic: topic["count"] > 1 and topic["topic"].listed, possible_topics))
+            
+            # If the there are no listed topics that are tagged with multiple aritcles, then use the primary topic 
+            if primary_topic:
+                if len(possible_topics) == 0 and not primary_topic in used_topics:
+                    used_topics.append(primary_topic)
+                    continue
+        
+            # Use the first unique listed topic with the lowest number of tagged articles greater than 1  
+            possible_topics = sorted(possible_topics, key=lambda topic: topic["count"])
+            for topic in possible_topics:
+                if not topic["topic"] in used_topics:
+                    used_topics.append(topic["topic"])
+                    break
+
+        # Iterate through the collected topics in the order they were added at.
+        # We gather the articles under these topics, avoiding articles we have already gathered. 
+        seen_articles = []
+        cluster = []
+        for topic in used_topics:
+            articles_in_topic = list(filter(lambda considered_article: topic in considered_article["topics"], article_topics))
+            
+            cluster_articles = []
+            for article_topic in articles_in_topic:
+                article = article_topic["article"]
+                if not article in seen_articles:
+                    cluster_articles.append(article)
+                    seen_articles.append(article)
+                    if len(seen_articles) >= items or len(cluster_articles) >= max_in_cluster:
+                        break
+            if len(cluster_articles) > 0:
+                cluster.append({"topic": topic, "articles": cluster_articles})
+            if len(seen_articles) >= items:
+                break
+
+        #for clust in cluster:
+        #    print(clust["topic"].name)
+        #    for article in clust["articles"]:
+        #        print(" - " + article.title)
+        return cluster
+
+    def get_recent_topic_cluster_grouped(self, items=12, columns=4, group_max=3, cut_off=timezone.now() - timezone.timedelta(days=60)):
+        '''
+        Divide the topic clusers into groups where each group has 'group_max' number of articles.
+        '''
+        
+        # Get clusters
+        clusters = self.get_recent_topic_cluster(items=items+columns, max_in_cluster=group_max, cut_off=cut_off)
+        groups = []
+
+        # Iterate through clusters, first adding 'columns' number to 'groups', 
+        # then iterating back over 'groups' to fill in each group so that they include 'group_max' number of articles.
+        for cluster in clusters:
+            if len(groups) < columns:
+                if len(groups) > 0:
+                    length = sum(map(lambda cluster: len(cluster["articles"]), groups[-1]))
+                    if length + len(cluster["articles"]) <= group_max:
+                        groups[-1].append(cluster)
+                        continue
+                groups.append([cluster])
+            else:
+                is_perfect = True
+                for group in groups:
+                    length = sum(map(lambda cluster: len(cluster["articles"]), group))
+                    if length < group_max:
+                        is_perfect = False
+                        cluster["articles"] = cluster["articles"][:group_max - length]
+                        group.append(cluster)
+                        break
+                if is_perfect:
+                    break
+        return groups
         
     @route(r'^rss/$', name='rss_view')
     def rss_view(self, request):
