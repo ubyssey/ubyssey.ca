@@ -25,7 +25,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 
 from section.sectionable.models import SectionablePage
 
-from taggit.models import TaggedItemBase, Tag, TagBase, ItemBase
+from taggit.models import TaggedItemBase, TagBase, ItemBase
 
 from videos import blocks as video_blocks
 from ubyssey.validators import validate_youtube_url
@@ -524,8 +524,8 @@ class PrimaryTagSelect(Select):
     def optgroups(self, name, value, attrs=None):
         # Add value of primary tag field as one of the choices
         if len(value) > 0:
-            if Tag.objects.filter(slug=value[0]).exists():
-                self.choices.append((value[0], Tag.objects.get(slug=value[0]).name))
+            if ArticleTopic.objects.filter(slug=value[0]).exists():
+                self.choices.append((value[0], ArticleTopic.objects.get(slug=value[0]).name))
 
         return super().optgroups(name, value, attrs)  
 
@@ -1224,10 +1224,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if context['next']:
                 context['next'] = context['next'].specific
 
-        if self.tag_page_link and self.primary_tag_slug:
-            if Tag.objects.filter(slug=self.primary_tag_slug).exists():
-                context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
-
         return context
 
 
@@ -1435,7 +1431,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         Defines the title and articles in the suggested box
         """
-        from taggit.models import Tag
         suggested = {}
         MIN_ARTICLES = 2
         if len(self.connected_articles.all()) > 0:
@@ -1446,10 +1441,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         elif self.filter_by_tags:
             articles_by_tag = self.get_articles_by_tag(max=number_suggested)
             if len(articles_by_tag) >= MIN_ARTICLES:
-                if Tag.objects.filter(slug=self.primary_tag_slug).exists():
-                    tag = Tag.objects.get(slug=self.primary_tag_slug)
-                elif Tag.objects.filter(name=self.primary_tag_slug).exists():
-                    tag = Tag.objects.get(name=self.primary_tag_slug)
+                if ArticleTopic.objects.filter(slug=self.primary_tag_slug).exists():
+                    tag = ArticleTopic.objects.get(slug=self.primary_tag_slug)
+                elif ArticleTopic.objects.filter(name=self.primary_tag_slug).exists():
+                    tag = ArticleTopic.objects.get(name=self.primary_tag_slug)
                 suggested = {}
                 suggested['title'] = "More on <a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
                 suggested['articles'] = articles_by_tag[:number_suggested]

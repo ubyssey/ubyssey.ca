@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from taggit.models import Tag
 from wagtail.models import Site
 from article.models import ArticleTopic
 

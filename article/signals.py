@@ -1,8 +1,7 @@
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 from wagtail.signals import page_published
-from .models import ArticlePage
-from taggit.models import Tag
+from .models import ArticlePage, ArticleTopic
 from django.utils.text import slugify
 import asyncio
 from asgiref.sync import async_to_sync, sync_to_async
@@ -24,12 +23,12 @@ def update_primary_tag(instance, **kwargs):
     the page is published. So after we published and the tag is created,
     we set the primary tag field to the slug using this receiver.
     '''
-    if not Tag.objects.filter(slug=instance.primary_tag_slug).exists() and instance.primary_tag_slug!="":
+    if not ArticleTopic.objects.filter(slug=instance.primary_tag_slug).exists() and instance.primary_tag_slug!="":
         tag = None
-        if Tag.objects.filter(slug=slugify(instance.primary_tag_slug)).exists():
-            tag =Tag.objects.get(slug=slugify(instance.primary_tag_slug))
-        elif Tag.objects.filter(name=instance.primary_tag_slug).exists():
-            tag =Tag.objects.get(name=instance.primary_tag_slug)
+        if ArticleTopic.objects.filter(slug=slugify(instance.primary_tag_slug)).exists():
+            tag =ArticleTopic.objects.get(slug=slugify(instance.primary_tag_slug))
+        elif ArticleTopic.objects.filter(name=instance.primary_tag_slug).exists():
+            tag =ArticleTopic.objects.get(name=instance.primary_tag_slug)
             
         if tag:
             instance.primary_tag_slug = tag.slug

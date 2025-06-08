@@ -468,10 +468,13 @@
   }
   .o-section_article-cluster--group {
     margin-inline: auto;
-    width: 0;
     max-width: 500px;
-    flex-grow: 1;
-    
+
+    @media(variables.$bp-larger-than-tablet) {
+      width: 0;
+      flex-grow: 1;
+    }
+
     .o-section_row_block {
       margin-top: 1em;
         .o-section_row_block__title {
