@@ -375,11 +375,18 @@
   margin-top: 1em;
   border-block: 2px solid var(--light-border);
   padding-block: 2em 1em;
-  > article {
+
+  article.o-article--suggested_article {
     width: 200px;
     flex-grow: 1;
-    @media(variables.$bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-tablet) {
       max-width: 300px;
+    }
+    .o-article__right {
+      margin: 1em 0.5em;
+    }
+    .o-article__snippet {
+      font-size: 0.75em;
     }
     .o-article__published {
       font-size: 0.75em;
@@ -398,7 +405,7 @@
   @media(variables.$bp-smaller-than-desktop) {
     padding-inline: 1em;
   }
-  @media(variables.$bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-tablet) {
     padding: 2em 1.5em;
     flex-direction: column;
 
@@ -409,19 +416,34 @@
     .o-article__left {
       margin-bottom: 0.5em;
     }
-
-    article {
+    article.o-article--suggested_article {
       width: auto;
+    }
+    article.o-article_list-item {
+      width: 100%;
+    }
+    article {
       border-bottom: 1px solid var(--light-border);
     }
-    > article:not(:first-child) {
+
+    article.o-article--suggested_article:not(:first-child) {
       display: flex;
       flex-direction: row-reverse;
       gap: 1em;
       .o-article__right {
+        margin: 0;
         width: 100%;
+        .o-article__snippet {
+          display: none;
+        }
+        .o-article__headline {
+          font-size: 1em;
+          line-height: 1.5em;
+          font-variation-settings: "wght" 400;
+        }
       }
       .o-article__left {
+        margin-bottom: 1em;
         img {
           width: 5em;
           aspect-ratio: 1;
@@ -438,7 +460,7 @@
     margin-left: auto;
     margin-bottom: 0.5em;
 
-    @media(variables.$bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-tablet) {
       margin-inline: auto;
       display: flex;
       flex-wrap: wrap;
@@ -486,10 +508,8 @@
         width: auto;
         .o-article__headline {
           margin-bottom: 0;
-          font-size: 0.85em;
-          font-variation-settings: "wght" 400;
         }
-        @media(variables.$bp-smaller-than-phablet) {
+        @media(variables.$bp-smaller-than-tablet) {
           .left {
             margin-block: auto;
             height: fit-content;

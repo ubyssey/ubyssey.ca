@@ -9,7 +9,8 @@ article.o-article_list-item {
     border-bottom: 1px solid var(--light-border);
 
     .o-article__headline {
-        font-size: 1em;
+        font-size: .85em;
+        font-variation-settings: "wght" 400;
         line-height: 1.5em;
     }
     .o-article__byline {
@@ -31,7 +32,7 @@ article.o-article_list-item {
         }
     }
 
-    @media(variables.$bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-tablet) {
         margin-inline: auto;
         max-width: 400px;
         .o-article__headline {
