@@ -1509,13 +1509,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if primary['type'] != 'topic' and self.primary_tag_slug:
             primary_topic = self.get_primary_topic()
-            topic_articles.append(
-                {
-                    "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
-                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
-                    "type": "topic",
-                }
-            )
+            if primary_topic:
+                topic_articles.append(
+                    {
+                        "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
+                        "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                        "type": "topic",
+                    }
+                )
 
         # Get the article's topics marked as listed
         listed_topics = self.topics.filter(listed=True) \
