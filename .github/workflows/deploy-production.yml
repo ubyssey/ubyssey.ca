@@ -9,7 +9,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-image:
+  build:
     runs-on: ubuntu-latest
 
     permissions:
@@ -53,6 +53,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy:
+
+    needs: build
 
     permissions:
       contents: 'read'
