@@ -48,7 +48,7 @@ jobs:
       - name: Authenticate with Google Cloud Platform
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/1012602718138/locations/global/workloadIdentityPools/ubyssey-wif-pool-staging/providers/ubyssey-oidc-github-staging'
+          workload_identity_provider: 'projects/863738545301/locations/global/workloadIdentityPools/ubyssey-wif-pool-prd/providers/ubyssey-oidc-github-prd'
           service_account: 'deployment@ubyssey-prd.iam.gserviceaccount.com'
 
       - name: Upload static files to Google Cloud Storage
