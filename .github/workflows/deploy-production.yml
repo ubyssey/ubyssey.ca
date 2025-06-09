@@ -1,14 +1,8 @@
 name: Deploy to production
 
-# TODO: uncomment this
-# on:
-#   release:
-#     types: [published]
-
 on:
-  push:
-    branches:
-      - staging-deploy
+  release:
+    types: [published]
 
 jobs:
   deploy:
