@@ -2,6 +2,7 @@
 {% load static %}
 {% load wagtailimages_tags %}
 {% load ubyssey_ad_tags %}
+{% load menu_tags %}
 
 {% block head_scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -16,7 +17,15 @@
 {% endblock %}
 
 {% block header %}
-    {% include 'navigation/headers/visual-essay-header.html' %}
+    {% if self.menu %}
+		<!-- Manually selected menu: {{ page.menu.handle }} -->
+		{% flat_menu self.menu.handle template="navigation/headers/article-storyline.html" show_menu_heading=True fall_back_to_default_site_menus=True %}
+	{% elif self.create_menu_from_parent %}
+		<!-- Menu created from parent page -->	 
+		{% children_menu self.parent_page_for_menu_generation template="navigation/headers/article-storyline.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% else %}
+        {% include 'navigation/headers/visual-essay-header.html' %}
+    {% endif %}
 {% endblock %}
 
 
@@ -54,12 +63,6 @@
         </div>
     </div>
 {% endcomment %}
-{% endblock %}
-
-{% block suggested_articles %}
-{% if suggested %}
-    {% include 'article/objects/suggested_articles.html' with title=suggested.title articles=suggested.articles %}
-{% endif %}
 {% endblock %}
 
 {% block scripts %} 

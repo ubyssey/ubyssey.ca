@@ -1,3 +1,7 @@
+@use "../modules/footer";
+@use "../modules/variables";
+@use "../modules/fonts";
+
 .o-article--suggested_article {
 
     .o-article__headline {
@@ -6,7 +10,7 @@
     }
 
     .o-article__published {
-        color: $text-color;
+        color: footer.$text-color;
     }
 
     .o-article__snippet {
@@ -19,26 +23,27 @@
     }
 }
 
-
-.suggested-sidebar {
-    margin-bottom: 3em;
-
-    article {
-        font-size: 0.8em;
-    }
-}
-
-@media($bp-smaller-than-phablet) {
-    .c-article--fw-story .suggested-title {
+@media(variables.$bp-smaller-than-phablet) {
+    .c-article--fw-story .c-suggested-bar--primary-title {
         margin-left: 1em;
     }
 }
 
-.suggested-title {
+.c-suggested-bar {
+    margin-bottom: 3em;
+    display: flex;
+    width: fit-content;
+
+    @media(variables.$bp-smaller-than-tablet) {
+        flex-direction: column;
+    }
+}
+
+.c-suggested-bar--primary-title {
     font-size: 24px;
     font-weight: 400;
 
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
         margin-inline: 1em;
     }
 
@@ -49,16 +54,60 @@
     }
 }
 
-.suggested-bottom {
+.c-suggested-bar--primary-articles {
+    margin: auto;
+    margin-top: 1.5em;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     gap: 10px;
     max-width: 1200px;
-    margin: auto;
-    margin-top: 2em;
 
     article {
         width: 300px;
+    }
+}
+
+.c-suggested-bar--topic-list {
+    margin-top: 1em;
+    margin-left: 1em;
+    .c-suggested-bar--topic-list__topic-title {
+        margin-top: 0.75em;
+        display: block;
+        font-size: 1em;
+        color: var(--header_color);
+        font-family: fonts.$font-default;
+        font-weight: 600;
+        a {
+            text-decoration: underline;
+        }
+    }
+    @media(variables.$bp-smaller-than-tablet) {
+        padding-inline: 1em;
+        margin-inline: auto;
+        max-width: 400px;
+        .o-article_list-item {
+            width: auto;
+        }
+    }
+}
+
+  div.article-content > ul.c-topic-list {
+    padding: 0.5em 0.25em;
+    margin-bottom: 2em;
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    li {
+        margin-right: 1em;
+        font-size: 0.9em;
+        font-family: fonts.$font-default;
+
+        &.c-topic-list--header {
+            font-weight: 600;
+        }
+    }
+    a {
+        border-bottom: solid 1px;
     }
 }

@@ -1,37 +1,41 @@
-@import 'modules/core';
-@import 'modules/fonts';
-@import 'modules/font_faces';
-@import 'modules/advertisements';
-@import 'modules/variables';
-@import 'modules/mixins';
+@use 'modules/core';
+@use 'modules/fonts';
+@use 'modules/font_faces';
+@use 'modules/advertisements';
+@use 'modules/variables';
+@use 'modules/mixins';
 
 // Ubyssey site-specific files
-@import 'modules/header';
-@import 'modules/footer';
+@use 'modules/header';
+@use 'modules/footer';
 
-@import 'modules/darkmode';  
+@use 'modules/darkmode';  
 
-@import 'modules/homepage';
+@use 'modules/homepage';
 
-@import 'objects/box-label';
-@import 'objects/timelines';
-@import 'objects/article';
-@import 'objects/article_cover';
-@import 'objects/article_top';
-@import 'objects/article_column';
-@import 'objects/article_infinite';
-@import 'objects/article_headline-top';
-@import 'objects/articles-wrapped';
-@import 'objects/article_promo';
-@import 'objects/article_round-with-borders';
-@import 'objects/article_minimal';
-@import 'objects/landing_stream_blocks';
+@use 'objects/box-label';
+@use 'objects/timelines';
+@use 'objects/article';
+@use 'objects/article_cover';
+@use 'objects/article_top';
+@use 'objects/article_column';
+@use 'objects/article_infinite';
+@use 'objects/article_headline-top';
+@use 'objects/articles-wrapped';
+@use 'objects/article_list-item';
+@use 'objects/article_promo';
+@use 'objects/article_round-with-borders';
+@use 'objects/article_minimal';
+@use 'objects/landing_stream_blocks';
+@use 'objects/article_storystream_views';
+@use 'modules/article/embeds';
+@use 'components/carousel';
 
-@import 'components/adblock-splash';
-@import 'components/cookie-disclaimer';
-@import 'components/replacement';
-@import 'components/infinitefeed';
+@use 'components/adblock-splash';
+@use 'components/cookie-disclaimer';
+@use 'components/replacement';
+@use 'components/infinitefeed';
 
-@import 'components/events/sidebar';
+@use 'components/events/events-homepage-blocks';
 
-@import 'modules/spoof/2025/homepage-promo';
+@use 'modules/spoof/2025/homepage-promo';

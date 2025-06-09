@@ -1,5 +1,7 @@
+@use "fonts";
+
 a.button, button {
-  font-family: $font-default;
+  font-family: fonts.$font-default;
   display: inline-block;
   border-radius: 2px;
   color: #4E4D4D;

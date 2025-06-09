@@ -1,4 +1,4 @@
-@import 'modules/variables';
+@use '../../modules/variables';
 
 main.events-page {
     display: block;
@@ -34,10 +34,10 @@ main.events-page {
         .events-info {
             max-width: 500px;
             max-height: 81vh;
-            border: 0.35em solid $color-ubyssey-blue-dark;
+            border: 0.35em solid variables.$color-ubyssey-blue-dark;
             border-radius: 1em;
 
-            background-color: $color-ubyssey-blue-dark;
+            background-color: variables.$color-ubyssey-blue-dark;
             overflow: auto;
 
             h2.event-info--time {
@@ -194,7 +194,7 @@ div.day{
         color: black;
     }
     &.today {
-        background-color: $color-ubyssey-blue;
+        background-color: variables.$color-ubyssey-blue;
         color: white;
         li.selected {
             color: white;
@@ -202,7 +202,7 @@ div.day{
         }
     }
     &.future {
-        background-color: $color-ubyssey-blue-light;
+        background-color: variables.$color-ubyssey-blue-light;
         color: black;
     }
 
@@ -225,10 +225,9 @@ div.day{
     }
 }
 
-@media($bp-larger-than-phablet) {
+@media(variables.$bp-larger-than-phablet) {
 
     div.day li {
-        height: 1.5em;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -335,7 +334,7 @@ header.events{
         color: var(--header_color);
       }
       
-      @media ($bp-larger-than-desktop) {
+      @media (variables.$bp-larger-than-desktop) {
         button.dark-mode-switcher {
         color: #ffffff;
         }
@@ -343,7 +342,7 @@ header.events{
     }
 }
 
-@media($bp-larger-than-desktop) {
+@media(variables.$bp-larger-than-desktop) {
     .events-calendar--number-dayOfWeek {
         display: none;
     }
@@ -352,7 +351,7 @@ header.events{
     }
 }
 
-@media($bp-smaller-than-desktop) {
+@media(variables.$bp-smaller-than-desktop) {
     main.events-page {
         padding: 0;
         h2.events-calendar--month {
@@ -512,7 +511,7 @@ header.events{
 .alt-icon {
     display: inline;
     margin-left: 1em;
-    @media($bp-smaller-than-desktop) {
+    @media(variables.$bp-smaller-than-desktop) {
         display: none;
     }
 }
@@ -523,7 +522,7 @@ header.events{
         margin-right: 1em;
     }
 
-    @media($bp-larger-than-desktop) {
+    @media(variables.$bp-larger-than-desktop) {
         display: none;
     }
 }
@@ -549,7 +548,7 @@ header.events{
         list-style: none;
         flex-wrap: wrap;
 
-        @media($bp-smaller-than-phablet) {
+        @media(variables.$bp-smaller-than-phablet) {
             flex-direction: column;
         }
     
@@ -584,7 +583,7 @@ header.events{
         line-height: unset;
     }
 
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
         margin: 0.5em 1em 1em 1em;
         li.legend-item {
             margin-left: 1em;
@@ -643,7 +642,7 @@ header.events{
         
         line-height: 1.5em;
         color: white;
-        background-color: $color-ubyssey-blue;
+        background-color: variables.$color-ubyssey-blue;
         
         text-align: center;
         text-decoration: none;
@@ -674,7 +673,7 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
     }
 }
 
-@media ($bp-smaller-than-desktop) {
+@media (variables.$bp-smaller-than-desktop) {
     .events-calendar--navigation {
         margin-bottom: 0.5em;
 
@@ -718,7 +717,7 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
     }
 }
 
-@media ($bp-larger-than-desktop) {
+@media (variables.$bp-larger-than-desktop) {
     .events-calendar--navigation {
         // position: absolute;
         // left: 3em;
@@ -726,7 +725,7 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
     }
 }
 
-@media ($bp-smaller-than-desktop) {
+@media (variables.$bp-smaller-than-desktop) {
     .loader-container {
         display: flex;
         justify-content: center; 
@@ -740,7 +739,7 @@ html[color-css-theme="dark"] .events-calendar--navigation .arrow-button {
     }
 }
 
-@media ($bp-larger-than-desktop) {
+@media (variables.$bp-larger-than-desktop) {
     .loader-container {
         display: flex;
         justify-content: center; 

@@ -35,8 +35,8 @@ def get_section_title(value):
 
 @register.filter(name='display_pubdate')
 def display_pubdate(value):
-
-    if value == None:
+    
+    if value == None or value == "":
         return "Unknown"
 
     pubdate = value.astimezone(timezone.get_current_timezone())

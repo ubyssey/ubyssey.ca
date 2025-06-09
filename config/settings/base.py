@@ -307,3 +307,13 @@ CACHE_CLEAR_ON_PUBLISH = [
     '/archive/$',   # Archive page
     '/infinitefeed' # Endpoint used to populate infinite scrolling on section pages
 ]
+
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'CA'
+
+PASSWORD_RESET_TIMEOUT = 86400
+
+# Model defaults
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_SECRET_KEY')

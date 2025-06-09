@@ -6,44 +6,36 @@
 {% load articletags %}
 
 {% if article %}
-<article class="o-article article--infinitefeed {%if article.featured_media.first.video %}video-article{% endif %}" time="{{article.explicit_published_at|naturalday}}">
+<article class="o-article article--infinitefeed" time="{{article.explicit_published_at|naturalday}}">
 	{% if article.featured_media.first %}
-	{% if article.featured_media.first.image %}
 	<div class="o-article__left">
-		<div style="position:relative">
-			<a href="{% pageurl article %}" class="o-article__image">
-				{% image article.featured_media.first.image fill-340x238-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}
-			</a>
-			{% if label %}
-				{% if article|get_label %}
-					<a href="{{article|get_section_link}}">
-						<img class="o-article__label" src="{{article|get_label}}" alt="{{article|get_section_title}}" >
-					</a>
-				{% endif %}
+		<a href="{% pageurl article %}" class="o-article__image">
+			{% if article.featured_media.first.image %}
+				{% srcset_image article.featured_media.first.image format-webp loading='lazy' alt=article.featured_media.first.alt_text  fill-{190x190,352x352} sizes="(max-width: 780px) 184px, 352px" %}
+			{% elif article.featured_media.first.video %}
+				<img src="http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg" loading='lazy' alt="{{article.featured_media.first.alt_text}}" >
 			{% endif %}
-		</div>
+		</a>
+		{% if label %}
+			{% if article|get_label %}
+				<a href="/{{article.current_section}}/">
+					<img class="o-article__label" src="{{article|get_label}}" alt="{{article.current_section}}" >
+				</a>
+			{% endif %}
+		{% endif %}
 	</div>
-	{% elif article.featured_media.first.video %}
-	<div class="o-article__left">
-		<div class="o-article__video">
-			<iframe src="https://www.youtube.com/embed/{{ article.featured_media.first.video.url|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-		</div>
-	</div>
-	{% endif %}
 	{% endif %}
 	<div class="o-article__right">
-		<div class="o-article__meta">
-			<div class="above-headline">
-				<span class="o-article__published">{{ article.published_at|display_pubdate }}</span>{%if expectedSection != article.current_section %}<a class="o-article__section" href="{{article|get_section_link}}">{{article|get_section_title}}</a>{% endif %}
-			</div>
-			<h2 class="o-article__headline">
-				<a href="{% pageurl article %}">{{ article.title|safe }}</a>
-			</h2>
-			<p class="o-article__snippet">{{ article.lede|safe }}</p>
-			<p class="o-article__byline">
-				<span class="o-article__author">{{ article.get_authors_split_out_visual_bylines|safe }}</span>
-			</p>
+		<div class="above-headline">
+			<span class="o-article__published">{{ article.published_at|display_pubdate }}</span>{%if expectedSection != article.current_section %}<a class="o-article__section" href="/{{article.current_section}}/">{{article.current_section}}</a>{% endif %}
 		</div>
+		<h3 class="o-article__headline">
+			<a href="{% pageurl article %}">{{ article.title|safe }}</a>
+		</h3>
+		<p class="o-article__snippet">{{ article.lede|safe }}</p>
+		<p class="o-article__byline">
+			<span class="o-article__author">{{ article.get_authors_split_out_visual_bylines|safe }}</span>
+		</p>
 	</div>
 </article>
 {% endif  %}

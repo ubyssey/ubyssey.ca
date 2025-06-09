@@ -1,16 +1,12 @@
-$adslots: (
-  leaderboard: (759px, 90px),
-  large-leaderboard: (760px, 90px),
-  mobile-leaderboard: (320px, 50px),
-  banner: (468px, 60px),
-  box: (300px, 250px),
-  large-skyscraper: (300px, 600px)
-);
+@use "sass:list";
+@use "sass:map";
+@use "../modules/advertisements" as advertisements;
+@use "../modules/variables";
 
 // Desktop leaderboard ad
 .o-replacement--leaderboard {
-  $width: nth(map-get($adslots, leaderboard), 1);
-  $height: nth(map-get($adslots, leaderboard), 2);
+  $width: list.nth(map.get(advertisements.$adslots, leaderboard), 1);
+  $height: list.nth(map.get(advertisements.$adslots, leaderboard), 2);
 
   display: none;
 
@@ -35,8 +31,8 @@ $adslots: (
   }
 
   @media( min-width: 1010px ){
-    $width: nth(map-get($adslots, large-leaderboard), 1);
-    $height: nth(map-get($adslots, large-leaderboard), 2);
+    $width: list.nth(map.get(advertisements.$adslots, large-leaderboard), 1);
+    $height: list.nth(map.get(advertisements.$adslots, large-leaderboard), 2);
 
     .replacement {
       width: $width;
@@ -44,7 +40,7 @@ $adslots: (
     }
   }
 
-  @media($bp-larger-than-tablet){
+  @media(variables.$bp-larger-than-tablet){
     &.o-replacement--homepage {
       display: block;
     }
@@ -52,8 +48,8 @@ $adslots: (
 }
 
 .o-replacement--banner {
-  $width: nth(map-get($adslots, banner), 1);
-  $height: nth(map-get($adslots, banner), 2);
+  $width: list.nth(map.get(advertisements.$adslots, banner), 1);
+  $height: list.nth(map.get(advertisements.$adslots, banner), 2);
 
   .replacement {
     margin: 0 auto;
@@ -87,10 +83,10 @@ main.article .o-replacement--leaderboard {
 
 // Mobile leaderboard ad
 .o-replacement--mobile-leaderboard {
-  $width: nth(map-get($adslots, mobile-leaderboard), 1);
-  $height: nth(map-get($adslots, mobile-leaderboard), 2);
+  $width: list.nth(map.get(advertisements.$adslots, mobile-leaderboard), 1);
+  $height: list.nth(map.get(advertisements.$adslots, mobile-leaderboard), 2);
 
-  $desktop-width: nth(map-get($adslots, leaderboard), 1);
+  $desktop-width: list.nth(map.get(advertisements.$adslots, leaderboard), 1);
 
   .replacement {
     width: $width;
@@ -112,15 +108,15 @@ main.article .o-replacement--leaderboard {
   // Border
   border-bottom: thin dotted #C8C8C8;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
     display: none;
   }
 }
 
 .o-replacement--box {
-  $width: nth(map-get($adslots, box), 1);
-  $height: nth(map-get($adslots, box), 2);
+  $width: list.nth(map.get(advertisements.$adslots, box), 1);
+  $height: list.nth(map.get(advertisements.$adslots, box), 2);
 
   width: $width;
   min-height: $height;

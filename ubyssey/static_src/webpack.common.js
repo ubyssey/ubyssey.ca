@@ -32,6 +32,8 @@ module.exports = {
 
     'queer-substance-abuse': './src/js/queer-substance-abuse.js',
     'nocturne-window-watching': './src/js/nocturne-window-watching.js',
+    'widgets/tags-panel': './src/js/widgets/tags-panel.js',
+    'widgets/auto-update-suggested-bar-choice': './src/js/widgets/auto-update-suggested-bar-choice.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),

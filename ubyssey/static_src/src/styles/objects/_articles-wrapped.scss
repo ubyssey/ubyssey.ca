@@ -1,3 +1,5 @@
+@use "../modules/variables";
+
 .article-wrap {
     margin-top: 2em;
     display: flex;
@@ -7,36 +9,35 @@
 
     article.o-article {
         min-width: 200px; 
-        padding-bottom: 0.5em;
         border-bottom: 1px solid var(--light-border);
         flex: 1 1 calc(25% - 24px); /* 4 articles per row */
         box-sizing: border-box;
     }
 
     /* Mobile: 1 article per row */
-    @media ($bp-smaller-than-phablet) {
+    @media (variables.$bp-smaller-than-phablet) {
+        margin-block: 0;
         flex-direction: column;
         gap: 0;
         article.o-article {
             width: auto;
             display: flex;
-            margin-inline: 2em;
+            margin-inline: 1.5em;
+            flex-direction: row-reverse;
             .o-article__left {
-                margin-block: auto;
+                margin-block: auto 1em;
+                padding-block: 1em;
                 width: 8em;
-                margin-right: 1em;
                 flex-shrink: 0;
-                img {
-                    border-radius: 1em;
-                }
             }
             .o-article__right {
                 margin-top: 1em;
+                width: 100%;
             }
         }
     }
     
-    @media ($bp-larger-than-phablet) {
+    @media (variables.$bp-larger-than-phablet) {
         /* Add vertical separator between articles */
         article.o-article {
             max-width: 50%;

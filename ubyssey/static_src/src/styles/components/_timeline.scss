@@ -1,4 +1,5 @@
-@import '../modules/variables';
+@use '../modules/variables';
+@use 'sass:math';
 
 $scaleModifier: 1.6;
 $nodeRadius: 10px;
@@ -12,7 +13,7 @@ $colorPrimary: white;
 $colorSecondary: black;
 
 .timeline-banner {
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     padding-top: $bannerHeight;
   }
 }
@@ -130,7 +131,7 @@ $colorSecondary: black;
     }
   }
 
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     width: 100%;
     margin-left: 0;
     .t-container {
@@ -254,7 +255,7 @@ $colorSecondary: black;
               .t-node-info {
                 background: transparent;
                 width: 60px;
-                height: $infoBoxHeight + $bannerHeight/2 + 10;
+                height: $infoBoxHeight + math.div($bannerHeight,2) + 10;
                 position: relative;
                 opacity: 1;
                 font-size: 12px;

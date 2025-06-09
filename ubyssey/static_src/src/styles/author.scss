@@ -1,30 +1,30 @@
-@import 'modules/core';
-@import 'modules/fonts';
-@import 'modules/font_faces';
-@import 'modules/advertisements';
-@import 'modules/variables';
-@import 'modules/mixins';
+@use 'modules/core';
+@use 'modules/fonts';
+@use 'modules/font_faces';
+@use 'modules/advertisements';
+@use 'modules/variables';
+@use 'modules/mixins';
 
 // Ubyssey site-specific files
-@import 'modules/header';
-@import 'modules/footer';
+@use 'modules/header';
+@use 'modules/footer';
 
-@import 'modules/buttons';
+@use 'modules/buttons';
 
-@import 'modules/darkmode';  
+@use 'modules/darkmode';  
 
-@import 'modules/search';
+@use 'modules/search';
 
-@import 'objects/article';
-@import 'objects/article_suggested';
-@import 'objects/inputs';
-@import 'objects/archive';
+@use 'objects/article';
+@use 'objects/article_suggested';
+@use 'objects/inputs';
+@use 'objects/archive';
 
-@import 'components/author-page';
-@import 'components/button';
-@import 'components/adblock-splash';
-@import 'components/cookie-disclaimer';
+@use 'components/author-page';
+@use 'components/button';
+@use 'components/adblock-splash';
+@use 'components/cookie-disclaimer';
 
-@import 'components/page';
-@import 'components/text-input';
-@import 'components/video';
+@use 'components/page';
+@use 'components/text-input';
+@use 'components/video';

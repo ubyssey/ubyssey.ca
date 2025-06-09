@@ -1,4 +1,4 @@
-@import 'modules/variables';
+@use '../modules/variables';
 
 article.minimal {
     margin-block: 0.5em;
@@ -8,7 +8,7 @@ article.minimal {
     flex-grow: 1;
     box-sizing: border-box;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
         max-width: 32%;
     }
 
@@ -20,7 +20,7 @@ article.minimal {
             text-transform: uppercase;
         }
         span.o-article__published {
-            color: $color-ubyssey-blue;
+            color: variables.$color-ubyssey-blue;
         }
     }
     .o-article__headline {

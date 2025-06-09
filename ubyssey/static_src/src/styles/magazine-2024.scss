@@ -1,19 +1,19 @@
-@import 'modules/_variables.scss';
-@import 'modules/_fonts.scss';
+@use 'modules/_variables.scss';
+@use 'modules/_fonts.scss' as fonts2;
 
-@import 'modules/magazine/2024/fonts';
+@use 'modules/magazine/2024/fonts';
 
-@import 'modules/magazine/2024/objects';
-@import 'modules/magazine/2023/card';
+@use 'modules/magazine/2024/objects';
+@use 'modules/magazine/2023/card';
 
-@import 'modules/magazine/2024/banner';
+@use 'modules/magazine/2024/banner';
 
-@import 'modules/magazine/2024/footer';
-@import 'modules/magazine/2023/header';
-@import 'modules/magazine/2024/article-box';
+@use 'modules/magazine/2024/footer';
+@use 'modules/magazine/2023/header';
+@use 'modules/magazine/2024/article-box';
 
-@import 'modules/magazine/2024/homepage';
-@import 'modules/magazine/2024/article';
+@use 'modules/magazine/2024/homepage';
+@use 'modules/magazine/2024/article';
   
 body {
   color: black;
@@ -25,7 +25,7 @@ body {
 }
 
 .c-header a{
-  font-family: $header-font;
+  font-family: fonts.$header-font;
 
 }
 

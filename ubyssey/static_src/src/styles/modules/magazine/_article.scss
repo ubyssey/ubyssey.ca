@@ -1,10 +1,14 @@
+@use "2019-2020/colors";
+@use "2019-2020/text";
+@use "utilities";
+
 .c-article {
   // Structure
   margin-top: 65px;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     margin-top: 0;
   }
@@ -12,19 +16,19 @@
 
 .c-article__headline {
   // Text
-  font-size: font-size(34);
+  font-size: text.font-size(34);
   text-transform: uppercase;
   margin-bottom: 0.5rem;
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Text
-    font-size: font-size(54);
+    font-size: text.font-size(54);
   }
 }
 
 .c-article__byline {
   // Text
-  color: $color-text-gray;
+  color: colors.$color-text-gray;
   line-height: 1.5em;
 }
 
@@ -39,25 +43,25 @@
   padding-right: 0.75rem;
 
   // Text
-  font-family: $font-serif;
+  font-family: text.$font-serif;
   text-transform: uppercase;
   font-weight: 600;
   font-style: italic;
-  font-size: font-size(14);
+  font-size: text.font-size(14);
   color: #fff;
   line-height: 1.5em;
 }
 
 .c-article__snippet--green {
-  background: $color-primary-2;
+  background: colors.$color-primary-2;
 }
 
 .c-article__snippet--pink {
-  background: $color-primary-1;
+  background: colors.$color-primary-1;
 }
 
 .c-article__snippet--blue {
-  background: $color-primary-3;
+  background: colors.$color-primary-3;
 }
 
 .c-article__featured-media {
@@ -68,7 +72,7 @@
   // Background
   // background: $color-primary-2;
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -95,7 +99,7 @@
   // Structure
   margin-bottom: 2rem;
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     margin-bottom: 4rem;
   }
@@ -106,21 +110,21 @@
     margin-bottom: 1.5rem;
 
     // Text
-    font-family: $font-serif;
-    font-size: font-size(19);
+    font-family: text.$font-serif;
+    font-size: text.font-size(19);
     line-height: 1.6em;
   }
 
   > p > a {
     // Text
-    color: $color-primary-1;
+    color: colors.$color-primary-1;
   }
 
   // Pull quote
   p.quote {
     // Text
-    font-family: $font-serif;
-    font-size: font-size(24);
+    font-family: text.$font-serif;
+    font-size: text.font-size(24);
     line-height: 1.5em;
     font-weight: 600;
     font-style: italic;
@@ -129,7 +133,7 @@
   p.source {
     // Text
     text-transform: uppercase;
-    color: $color-primary-1;
+    color: colors.$color-primary-1;
     font-weight: 600;
   }
 
@@ -159,7 +163,7 @@
   padding-left: 0.25em;
 
   // Background
-  background: $color-primary-1;
+  background: colors.$color-primary-1;
 
   // Text
   font-size: 3em;
@@ -169,27 +173,27 @@
 
 
 .c-article--pink .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-primary-1; }
+  h1, h2, h3, > p > a, p.source { color: colors.$color-primary-1; }
 }
 
 .c-article--pink:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-primary-1; }
+  > p:first-child:first-letter { background: colors.$color-primary-1; }
 }
 
 .c-article--green .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-primary-2; }
+  h1, h2, h3, > p > a, p.source { color: colors.$color-primary-2; }
 }
 
 .c-article--green:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-primary-2; }
+  > p:first-child:first-letter { background: colors.$color-primary-2; }
 }
 
 .c-article--blue .c-article__body {
-  h1, h2, h3, > p > a, p.source { color: $color-primary-3; }
+  h1, h2, h3, > p > a, p.source { color: colors.$color-primary-3; }
 }
 
 .c-article--blue:not(.c-article--basic) .c-article__body {
-  > p:first-child:first-letter { background: $color-primary-3; }
+  > p:first-child:first-letter { background: colors.$color-primary-3; }
 }
 
 .c-article__suggested {
@@ -197,7 +201,7 @@
   margin-top: 2rem;
   margin-bottom: 1.5rem;
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     display: flex;
     margin-bottom: 3rem;
@@ -215,14 +219,14 @@
   padding: 1rem;
 
   // Background
-  background: $color-primary-1;
+  background: colors.$color-primary-1;
 
   // Text
   color: #fff;
   text-transform: uppercase;
   text-decoration: none;
   font-weight: 600;
-  font-size: font-size(24);
+  font-size: text.font-size(24);
 
   // Extra
   transition: opacity 0.3s;
@@ -256,6 +260,6 @@
 
   // Text
   text-transform: uppercase;
-  font-size: font-size(13);
-  color: $color-text-gray;
+  font-size: text.font-size(13);
+  color: colors.$color-text-gray;
 }

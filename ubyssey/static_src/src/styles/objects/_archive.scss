@@ -1,3 +1,7 @@
+@use "../modules/fonts";
+@use "../modules/footer";
+@use "../modules/variables";
+
 $search-bar-height: 50px;
 
 .o-archive__search {
@@ -13,7 +17,7 @@ $search-bar-height: 50px;
   width: $search-bar-height;
 
   // Text
-  font-size: font-size(20);
+  font-size: fonts.font-size(20);
   text-align: center;
   line-height: $search-bar-height;
 }
@@ -37,7 +41,7 @@ $search-bar-height: 50px;
   // Text
   text-overflow: ellipsis;
   line-height: $search-bar-height;
-  font-size: font-size(16);
+  font-size: fonts.font-size(16);
   color: var(--header_color);
 
   // Transition
@@ -48,21 +52,21 @@ $search-bar-height: 50px;
     outline: 0;
 	width:100% !important;
 	opacity: 1;
-	color: $color-accent-blue;
+	color: variables.$color-accent-blue;
 	cursor: text;
   }
 
   &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-	color: $text-color;
+	color: footer.$text-color;
 	opacity: 1; /* Firefox */
   }
   
   &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-	color: $text-color;
+	color: footer.$text-color;
   }
   
   &::-ms-input-placeholder { /* Microsoft Edge */
-	color: $text-color;
+	color: footer.$text-color;
   }
 }
 
@@ -77,7 +81,7 @@ $search-bar-height: 50px;
 	width: 11.5rem;
 	padding-right: 2rem;
 
-	@media($bp-larger-than-phablet) {
+	@media(variables.$bp-larger-than-phablet) {
 		// Structure
 		display: block;
 		height: fit-content;
@@ -101,8 +105,8 @@ $search-bar-height: 50px;
 		margin-bottom: 0.25rem;
 
 		// Text
-		font-size: font-size(14);
-		color: $color-text-gray;
+		font-size: fonts.font-size(14);
+		color: variables.$color-text-gray;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 		font-weight: 600;
@@ -137,7 +141,7 @@ $search-bar-height: 50px;
 		border-radius: 2px;
 
 		// Text
-		font-size: font-size(13);
+		font-size: fonts.font-size(13);
 		font-weight: 600;
 		line-height: 32px;
 	}
@@ -156,7 +160,7 @@ $search-bar-height: 50px;
 
 		&--is-active a,
 		&--is-active a:hover {
-			background: $color-ubyssey-blue-dark;
+			background: variables.$color-ubyssey-blue-dark;
 			color: #fff;
 		}
 	}
@@ -170,13 +174,13 @@ $search-bar-height: 50px;
 		}
 
 		a:hover {
-			background: $color-ubyssey-blue-dark;
+			background: variables.$color-ubyssey-blue-dark;
 		}
 
 		&--is-active a,
 		&--is-active a:hover {
-			background: $color-ubyssey-blue-light;
-			color: $color-ubyssey-blue-dark;
+			background: variables.$color-ubyssey-blue-light;
+			color: variables.$color-ubyssey-blue-dark;
 		}
 	}
 }
@@ -214,7 +218,7 @@ $search-bar-height: 50px;
 		border-radius: 3px;
 
 		// Text
-		font-size: font-size(13);
+		font-size: fonts.font-size(13);
 		color: #353535;
 		line-height: 26px;
 
@@ -272,7 +276,7 @@ $search-bar-height: 50px;
 	margin: 0;
 
 	// Text
-	font-size: font-size(14);
+	font-size: fonts.font-size(14);
 	color: var(--archive-text);
 	letter-spacing: 0.05em;
 	font-weight: 600;
@@ -283,7 +287,7 @@ $search-bar-height: 50px;
 	// Structure
 	display: none;
 
-	@media($bp-larger-than-mobile) {
+	@media(variables.$bp-larger-than-mobile) {
 		// Structure
 		display: block;
 	}
@@ -299,7 +303,7 @@ $search-bar-height: 50px;
 		flex: 1;
 	}
 
-	@media($bp-larger-than-phablet) {
+	@media(variables.$bp-larger-than-phablet) {
 		// Structure
 		display: none;
 	}
@@ -313,7 +317,7 @@ $search-bar-height: 50px;
 	// Text
 	text-align: center;
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     // Structure
   	margin-top: 1.5rem;
   	margin-bottom: 1.5rem;
@@ -328,7 +332,7 @@ $search-bar-height: 50px;
 	margin-right: 1rem;
 
 	// Text
-	font-size: font-size(13);
+	font-size: fonts.font-size(13);
 	font-weight: 600;
 	color: var(--pagination);
 	line-height: 2rem;
@@ -427,11 +431,6 @@ $search-bar-height: 50px;
 		background: none;
 	}
 	.open-modal {
-		position:absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
 		cursor: pointer;
 	}
 
@@ -445,7 +444,7 @@ $search-bar-height: 50px;
 			right: 5em;
 			display:block;
 			color: white;	
-			@media($bp-smaller-than-phablet) {
+			@media(variables.$bp-smaller-than-phablet) {
 				right: 1em;
 			}	
 		}

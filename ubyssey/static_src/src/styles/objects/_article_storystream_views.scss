@@ -1,0 +1,267 @@
+@use "../modules/variables";
+@use "../modules/fonts";
+
+.o-article_storystream {
+    padding-block: 3em;
+    border-bottom: 1px solid var(--light-border);
+    img {
+        margin: auto;
+        height: auto;
+        width: auto;
+    }
+
+    .o-article__headline span.subtitle {
+        font-weight: 400;
+        font-variation-settings: 'wght' 400;
+        font-size: 0.9em;
+    }
+}
+
+// Feature
+.o-article_storystream_feature {
+    padding-inline: 1em;
+    .o-article__left {
+        margin-inline: auto;
+        display: flex;
+        flex-shrink: 0;
+        > * {
+            margin-inline: auto;
+            max-width: 100%;
+        }
+        > img {
+            max-height: 350px;
+        }
+    }
+    .o-article__right {
+        margin-top: 1em;
+        margin-inline: auto;
+        
+        border-bottom: 2px solid variables.$color-ubyssey-blue;
+        width: fit-content;
+        * {
+            width: fit-content;
+        }
+        .o-article__headline {
+            margin-inline: auto;
+            font-size: 1.5em;
+        }
+    }
+
+    .carousel-control-prev {
+        left: -3.5em;
+    }
+    .carousel-control-next {
+        right: -3.5em;
+    }
+
+    @media(variables.$bp-larger-than-phablet) {
+        .o-article__left {
+            padding-inline: 2em;
+        }
+    }
+
+    @media(variables.$bp-smaller-than-phablet) {
+        .o-article__right {
+            padding-inline: 1.5em;
+        }
+        .carousel-control-prev {
+            left: -0.5em;
+        }
+        .carousel-control-next {
+            right: -0.5em;
+        }
+    }
+
+    &.o-article_storystream_profile {
+        display: flex;
+        flex-direction: column;
+        .o-article__left > * {
+            padding-inline: 0;
+            filter: drop-shadow(0 0 0.5em var(--shadow-color));
+            clip-path: inset(-1em -1em 0 -1em);
+        }
+        @media(variables.$bp-larger-than-phablet) {
+            padding-inline: 3em;
+            flex-direction: row-reverse;
+            .o-article__right {
+                margin: auto;
+                padding: 0;
+                height: fit-content;
+            }
+        }
+    }
+}
+
+// Minimal
+.o-article_storystream_minimal {
+    display: flex;
+    flex-direction: row-reverse;
+    .o-article__left {
+        margin-right: 2em;
+        margin-block: auto;
+        height: fit-content;
+        border-bottom: 2px solid variables.$color-ubyssey-blue;
+        .o-article__headline {
+            width: fit-content;
+            font-size: 1.75em;
+        }    
+    }
+    .o-article__right {
+        margin-left: auto;
+        width: 8em;
+        flex-shrink: 0;
+        img {
+            margin: auto;
+            border-radius: 0.5em;
+            width: 100%;
+        }
+    }
+    @media(variables.$bp-smaller-than-tablet) {
+        padding-inline: 1.5em;
+    }
+    @media(variables.$bp-smaller-than-phablet) {
+        .o-article__left .o-article__headline {
+            font-size: 1.25em;
+        }
+        .o-article__left {
+            margin-right: 1.5em;
+        }
+        .o-article__right {
+            width: 5.5em;
+        }
+    }
+}
+
+.o-article_storystream_small-headline {
+    .o-article__left {
+        padding-bottom: 1em;
+        .o-article__headline {
+            font-size: 1.5em;
+        }
+    }
+    @media(variables.$bp-larger-than-phablet) {
+        .o-article__right {
+            width: 200px;
+        }
+    }
+    @media(variables.$bp-smaller-than-phablet) {
+        display: block;
+        .o-article__left {
+            margin-right: 0;
+        }
+        .o-article__right {
+            margin: 1em 0 0 1em;
+            float: right;
+        }
+    }
+}
+
+// Indent 
+.o-article_storystream_indent {
+    padding-block: 2.5em;
+    .o-article__left {
+        .o-article__headline {
+            font-size: 1.4em;
+        }
+    }
+    .o-article__right {
+        margin-right: 1em;
+        padding-left: 1.5em;
+        border-left: 1px solid var(--light-border);
+        > * {
+            color: var(--text_color_contrast);
+        }
+        p {
+            font-size: 1em;
+            line-height: 1.5em;
+        }
+        a {
+            text-decoration: underline;
+            
+        }
+        b {
+            font-size: 1.1em;
+        }
+        ul {
+            list-style: square;
+        }
+        li {
+            margin-bottom: 1em;
+        }
+        .read-more {
+            margin-left: 0.25em;
+            font-weight: 600;
+            font-style: normal;
+            text-decoration: none;
+            white-space: nowrap;
+            color: variables.$color-ubyssey-blue;
+        }
+        .attachment {
+            margin-block: 0.75rem;
+            padding-right: 1.5rem;
+            font-size: 0.9em;
+        }
+        img, iframe {
+            max-width: 100%;
+        }
+        *:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    @media(variables.$bp-smaller-than-tablet) {
+        margin-inline: 1em;
+    }
+
+    @media(variables.$bp-smaller-than-phablet) {
+        .o-article__left .o-article__headline {
+            font-size: 1.25em;
+        }
+    }
+}
+
+// Attachments
+
+// quote with background
+
+.o-article_storystream--quote_with_background {
+    padding: 1em;
+    position: relative;
+    display: flex;
+    min-height: 300px;
+    background-size: cover;
+    --quote_bg: black;
+    --quote_text: white;
+    &::before {
+        content: "";
+        position: absolute;
+        background: linear-gradient(transparent, var(--quote_bg));
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+    blockquote {
+        margin: auto;
+        padding: 1.5em 2.5em 1em 2.5em;
+        
+        position: relative;
+        z-index: 10;
+
+        font-weight: 400;
+        font-family: fonts.$font-default;
+        font-size: 1.1em;
+        color: var(--quote_text);
+        text-shadow: 0 0 5px var(--quote_bg);
+        &::before {
+            content: "“";
+            position: absolute;
+            left: 0;
+            top:0;
+            line-height: 1em;
+            font-size: 4em;
+            font-family: fonts.$font-headline;
+            font-variation-settings: "wght" 600;
+        }
+    }
+}

@@ -1,7 +1,10 @@
+@use "fonts";
+@use "variables";
+
 // Headlines
 .o-headline {
-  font-family: $font-display;
-  font-weight: $font-weight-headline;
+  font-family: fonts.$font-headline;
+  font-weight: fonts.$font-weight-headline;
   line-height: 1.177em;
   margin-top: 0;
   margin-bottom: 0;
@@ -10,18 +13,18 @@
     color: inherit;
     text-decoration: none;
     &:hover {
-      color: $color-accent-blue;
+      color: variables.$color-accent-blue;
     }
   }
 }
 
 .o-headline--h1 {
-  font-size: font-size(30);
+  font-size: fonts.font-size(30);
   margin-bottom: 0.75rem;
 }
 
 .o-headline--h2 {
-  font-size: $font-size-24px;
+  font-size: fonts.$font-size-24px;
   font-weight: 200;
 }
 
@@ -38,10 +41,10 @@
   margin-top: 0;
   margin-bottom: 0.85rem;
 
-  font-size: font-size(30);
+  font-size: fonts.font-size(30);
 
-  @media($bp-larger-than-mobile) {
-    font-size: font-size(36);
+  @media(variables.$bp-larger-than-mobile) {
+    font-size: fonts.font-size(36);
   }
 }
 
@@ -50,8 +53,8 @@
   margin-bottom: 0.85rem;
 
   // Text
-  font-family: $font-default;
-  font-size: font-size(30);
+  font-family: fonts.$font-default;
+  font-size: fonts.font-size(30);
   line-height: 1.15em;
 }
 
@@ -59,8 +62,8 @@ h1, h2, h3, h4, h5 {
   &.headline {
     margin-top: 0;
     margin-bottom: 10px;
-    font-family: $font-headline;
-    font-weight: $font-weight-headline;
+    font-family: fonts.$font-headline;
+    font-weight: fonts.$font-weight-headline;
     line-height: 1.177em;
     a {
       color: inherit;
@@ -72,12 +75,12 @@ h1, h2, h3, h4, h5 {
   }
 
   &.basic {
-    font-family: $font-default;
-    font-weight: $font-weight-semi-bold;
+    font-family: fonts.$font-default;
+    font-weight: fonts.$font-weight-semi-bold;
     margin: 0;
   }
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     &.headline {
       margin: 7px 0;
       &:first-child {
@@ -92,7 +95,7 @@ h1.basic {
 }
 
 h2.headline {
-  font-size: $font-size-21px;
+  font-size: fonts.$font-size-21px;
 }
 
 h3.headline {
@@ -103,7 +106,7 @@ h4.headline {
   font-size: 18px;
 }
 
-@media($bp-larger-than-phablet){
+@media(variables.$bp-larger-than-phablet){
   h4.headline {
     font-size: 20px;
   }

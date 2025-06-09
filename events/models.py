@@ -378,7 +378,7 @@ class EventManager(models.Manager):
         
         # Hide events with certain terms in the title
         # The first two listed right now are on an inaccurate repeating schedule, the last was an advertisment for a sale that lasted too long
-        for i in ['coffee hour', 'advanced research computing summer school', 'Student Indoor Plant Sale at UBC Botanical Garden', 'Grapes to Glass']:
+        for i in ['coffee hour', 'advanced research computing summer school', 'Student Indoor Plant Sale at UBC Botanical Garden', 'Grapes to Glass', 'UBC Staff Toastmasters Club']:
             if i.lower() in title.lower():
                 return True
 
@@ -888,7 +888,12 @@ class Event(models.Model):
     # 0: manually inputted so don't delete on updates, 1: updated by cronjob, 2: currently updating by cronjob
     update_mode = models.IntegerField(
         default=0,
-        help_text="Make sure you select 'Manual input', otherwise this event will be overwritten or deleted during the calendar's automatic daily update"
+        help_text="Make sure you select 'Manual input', otherwise this event will be overwritten or deleted during the calendar's automatic daily update. Hide from homepage is NOT overwritten."
+    )
+    hide_from_homepage = models.BooleanField(
+        default=False,
+        editable=True,
+        help_text="Check this to prevent the event from being featured on the homepage. This will NOT be overwritten, no matter the update mode.",
     )
 
     objects = EventManager()
@@ -917,6 +922,7 @@ class Event(models.Model):
             ),
         ),
         FieldPanel("hidden"),
+        FieldPanel("hide_from_homepage"),
         FieldPanel(
             "update_mode",
             widget=Select(

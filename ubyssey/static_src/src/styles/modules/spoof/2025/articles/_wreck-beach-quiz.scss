@@ -1,3 +1,5 @@
+@use "../base";
+
 article.wreck-beach-quiz {
     $beach-yellow: #f8f275;
     $beach-pink: #ed028c;
@@ -122,7 +124,7 @@ article.wreck-beach-quiz {
             }
         }
     }
-    @media ($bp-smaller-than-phablet) {
+    @media (base.$bp-smaller-than-phablet) {
         h2 {
             margin-bottom: 6em;
             font-size: 2em;

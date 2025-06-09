@@ -1,6 +1,7 @@
 {% extends 'ubyssey/base.html' %}
 {% load humanize %}
 {% load static %}
+{% load cache %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load wagtailuserbar %}
@@ -13,21 +14,25 @@
 
 {% block head_scripts %}
 <link rel="alternate" type="application/atom+xml" title="Ubyssey {{self.title}} feed" href="{% pageurl self %}rss/">
+  {% cache 6000 section_ad_tags %}
   <!-- Register ads for section page -->
   {% for orderable in settings.ads.AdTagSettings.section_head_tags.all %}
     {% gpt_define_tag orderable.ad_slot %}
   {% endfor %}
+  {% endcache %}
 {% endblock %}
 
 {% block header %}
   <div class="o-advertisement--above-sticky-nav-bar">
   {% include 'navigation/headers/mobile.html' %}
-      <!-- Place header ads for section page -->
+    {% cache 6000 section_header_ads %}
+    <!-- Place header ads for section page -->
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
+    {% endcache %}
   </div>
-    {% include 'navigation/headers/topbar.html' %}
+  {% include 'navigation/headers/topbar.html' with section=section_slug %}
 {% endblock %}
 
 {% block content %}
@@ -43,14 +48,14 @@
           </svg>
         </div>
         <div class="c-section__description banner-description">
-          {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|safe}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+          {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|richtext}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
         </div>
       {%else%}
         <div class="c-section__heading">
           {% if parent %}<p><a href="{% pageurl parent %}">{{parent.title}}</a></p>{% endif %}
           <h1 class="">{{self.title}}</h1>
           <div class="c-section__description">
-            {{self.description|safe}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+            {{self.description|richtext}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
           </div>
         </div>
       {% endif %}
@@ -87,35 +92,13 @@
               <p><ion-icon name="pricetag"></ion-icon> {% if parent %}Other {% endif %}Categories</p>
             </a>
 
-            <dialog class="modal" aria-modal="true">
-              <div class="js-dropdown-container close-modal"></div>
-              <div class="category_menu u-container u-container--padded">
-              <a href="#" class="c-section__modal_close close-modal">
-                <ion-icon name="close"></ion-icon>
-              </a>
-              <h1><ion-icon name="pricetag"></ion-icon> All Categories</h1> <!-- Why Series? Why not Categories? -->
-              {% if parent %}
-                <p><a href="{% pageurl parent %}">{{parent.title}}</a></p> 
-              {% else %}
-                <p><a href="{% pageurl self %}">{{self.title}}</a></p>
-              {% endif %}
-
-              {% for group in all_categories %}
-              <h2>{{group.group}}</h2>
-              <ul>
-                {% for category in group.categories %}
-                <li><a href="{% pageurl category %}">{{ category.title }}</a></li>
-                {% endfor %}
-              </ul>
-              {% endfor %}
-              </div>
-            </dialog>
+            {% include "section/objects/category_modal.html" with section=section_slug %}
 
           </div>
         </div>
       </div>
 
-      <div class="c-infinitefeed__feed">
+      <div class="o-feed-item">
         <div class="lightmode section_infinitefeed">
 
         {% if error %}

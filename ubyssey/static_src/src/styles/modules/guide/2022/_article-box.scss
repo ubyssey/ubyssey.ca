@@ -1,3 +1,6 @@
+@use "../../variables";
+@use "fonts";
+
 .article-box--nav{
     margin: 0;
     position: absolute;
@@ -16,7 +19,7 @@
         width: 70%;
         z-index: 0;
 
-        font-family: $accent-font;
+        font-family: fonts.$accent-font;
         line-height: 1em;
         letter-spacing: 0.2rem;
         text-transform: lowercase;
@@ -48,7 +51,7 @@
 
 .article-boxes{
     display: flex;
-    @media($bp-smaller-than-tablet){
+    @media(variables.$bp-smaller-than-tablet){
         display: block;
         padding-top: 10%;
     }
@@ -64,7 +67,7 @@
       width: 50%;
       height: 10vw;
       max-height: 400px;
-      @media($bp-smaller-than-tablet){
+      @media(variables.$bp-smaller-than-tablet){
         width: 95%;
         height: 35vw;
         margin: 2.5% 2.5% 10% 2.5%;

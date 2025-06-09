@@ -1,3 +1,7 @@
+@use "colors";
+
+@use "sass:math";
+
 $font-default: Montserrat, sans-serif;
 $font-secondary: $font-default;
 $font-serif: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
@@ -6,14 +10,14 @@ $font-serif: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 $font-size-base: 12;
 
 @function font-size($size) {
-  $scaled-size: ($size / $font-size-base) + em;
+  $scaled-size: math.div($size, $font-size-base) + em;
   @return $scaled-size;
 }
 
 body {
   font-family: $font-default;
   font-size: $font-size-base + px;
-  color: $color-text-black;
+  color: colors.$color-text-black;
 
   -webkit-font-smoothing: antialiased;
 }

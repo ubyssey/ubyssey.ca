@@ -1,5 +1,5 @@
-@import 'modules/fonts';
-@import 'modules/variables';
+@use '../fonts';
+@use '../variables';
 
 .c-article--fw-story,
 div.container.clearfix.fw-story,
@@ -7,7 +7,7 @@ div.container.clearfix.fw-story,
 .c-article--isolation,
 .c-article--isolation-first-article,
 .c-article--isolation-last-article {
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     .article-content {
       > p,
       > h1,
@@ -27,7 +27,7 @@ div.container.clearfix.fw-story,
     width: auto;
     height: 36px;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       width: 585px;
       height: 54px;
     }
@@ -73,7 +73,7 @@ div.container.clearfix.fw-story,
     padding-right: 1em;
   }
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     .pull-quote {
       &.left {
         margin-left: 15%;

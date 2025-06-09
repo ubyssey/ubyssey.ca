@@ -1,16 +1,20 @@
 {% extends 'ubyssey/base.html' %}
 {% load static %}
+{% load cache %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load video_filters %}
 {% load ubyssey_ad_filters %}
 {% load ubyssey_ad_tags %}
+{% load menu_tags %}
 
 {% block head_scripts %}
+    {% cache 6000 article_ad_tags %}
     <!-- Register ads for article page -->
     {% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
         {% gpt_define_tag orderable.ad_slot is_mobile %}
     {% endfor %}
+    {% endcache %}
 
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
 {% endblock %}
@@ -28,14 +32,25 @@
 {% endblock %}
 
 {% block header %}
+    {% if self.menu %}
+		<!-- Manually selected menu: {{ page.menu.handle }} -->
+		{% flat_menu self.menu.handle template="navigation/headers/article-storyline.html" show_menu_heading=True fall_back_to_default_site_menus=True %}
+	{% elif self.create_menu_from_parent %}
+		<!-- Menu created from parent page -->	 
+		{% children_menu self.parent_page_for_menu_generation template="navigation/headers/article-storyline.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% else %}
+        {% include 'navigation/headers/topbar.html' with section=self.current_section %}
+    {% endif %}
+
     {% include 'navigation/headers/mobile.html' %}
     {% block banner_ad %}
+        {% cache 6000 article_header_ads %}
         <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
             {% gpt_placement_tag orderable.ad_slot %}
         {% endfor %}
+        {% endcache %}
     {% endblock %}
-    {% include 'navigation/headers/topbar.html' %}
 {% endblock %}
 
 {% block content %}
@@ -43,7 +58,7 @@
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}{% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
             {% block banner %}
-                {% include 'article/objects/banner.html' %}
+                {% include 'article/components/headers/'|add:self.header_layout|add:'.html' %}
             {% endblock %}
             <!-- Below is the container for Article content -->
             <div class="u-container clearfix {% block right_column_class %}c-article--default u-container u-container--content u-container--padded{% comment %} This block is used to override the styling of the right column (as in e.g. a full width banner article){% endcomment %}{% endblock %}">
@@ -75,18 +90,9 @@
 
                         {% block post-content %}
 
-                        {% if self.tag_page_link and primary_tag %}
-                            <p class="tag-link">
-                                <b>See all stories on <a href="/tag/{{primary_tag.slug}}">"{{ primary_tag }}"</a> and be notified with RSS
-                                <a href="/tag/{{primary_tag.slug}}/rss" class="rss-feed-link" aria-label="Go to {{ primary_tag }} tag's rss feed">
-                                <ion-icon name="logo-rss"></ion-icon>
-                                </a></b>
-                            </p>
-                        {% endif %}
+                        <p class="time-stamp"><span>First online <time datetime="{{self.first_online_at|date:'Y-m-d H:i'}}">{{self.first_online_at}}</time></span>{% if self.show_last_modified %}, <span>last modified <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}">{{self.last_published_at}}</time></span>{% endif %}</p>
 
                         {% include 'article/objects/share_bar.html' %}
-
-                        <p class="time-stamp"><span>First online <time datetime="{{self.first_published_at|date:'Y-m-d H:i'}}">{{self.first_published_at}}</time></span>{% if self.show_last_modified %}, <span>last modified <time datetime="{{self.last_published_at|date:'Y-m-d H:i'}}">{{self.last_published_at}}</time></span>{% endif %}</p>
 
                         <p class="report">
                             <a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Submit a complaint</a>
@@ -106,9 +112,11 @@
                     {% block sidebar %}
                         <!-- Article Page sidebar ads go here -->
                         {% if self.is_explicit is not True %}
+                            {% cache 6000 article_sidebar_ads %}
                             {% for orderable in settings.ads.AdTagSettings.article_sidebar_placements.all %}
                                 {% gpt_placement_tag orderable.ad_slot %}
                             {% endfor %}            
+                            {% endcache %}
                         {% else %}
                             {% comment %} {% include 'objects/replacement.html' with size='box' %} {% endcomment %}
                         {% endif %}
@@ -116,15 +124,16 @@
                     {% endblock %}
                 </aside>                        
             </div>
-            <div class="suggested-sidebar">
-                {% block suggested_articles %}
 
-                {% if suggested and suggested.articles|length > 0 %}
+
+            {% block suggested_articles %}
+
+            {% with suggested=self.get_suggested %}
                 {% include 'article/objects/suggested_articles.html' %}
-                {% endif %}
+            {% endwith %}
 
-                {% endblock %}
-            </div>
+            {% endblock %}
+
 
             {% comment %} {% include 'objects/social-icons-bottom.html' with article=article %} {% endcomment %}
         </article>

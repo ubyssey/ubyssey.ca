@@ -1,9 +1,12 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 .c-paragraph {
   // Structure
   margin: 0 0 1.25rem 0;
 
   // Text
-  font: 1rem/1.375em $font-default;
-  color: $color-text-gray;
+  font: 1rem/1.375em fonts.$font-default;
+  color: variables.$color-text-gray;
   white-space: pre-wrap;
 }

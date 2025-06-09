@@ -1,21 +1,24 @@
+@use "../../variables";
+@use "fonts";
+
 .c-heading {
 
   &--main {
-    font-family: $font-default;
+    font-family: fonts.$font-default;
     font-size: 2.5em;
-    color: $color-white;
+    color: variables.$color-white;
     margin-bottom: 7px;
     line-height: 1.25em;
 
-    @media($bp-larger-than-desktop) {
+    @media(variables.$bp-larger-than-desktop) {
       font-size: 3.5em;
     }
   }
 
   &--subheading {
-    font-family: $font-secondary;
+    font-family: fonts.$font-secondary;
     font-weight: 200;
-    color: $color-white;
+    color: variables.$color-white;
     letter-spacing: 0.5px;
     line-height: 1.25em;
 
@@ -23,11 +26,11 @@
 
     margin-bottom: 25px;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       margin-bottom: 0;
     }
 
-    @media($bp-larger-than-desktop) {
+    @media(variables.$bp-larger-than-desktop) {
       font-size: 1.33em;
     }
   }

@@ -1,10 +1,11 @@
-@import 'modules/variables';
+@use '../variables';
+@use "../fonts";
 
 $bp-comments-bar: "min-width: 960px" !default;
 
 #comments-bar {
   .inner {
-    font-family: $font-default;
+    font-family: fonts.$font-default;
   }
 
   div.close, div.sort, div.comments-list, div.comments-field {

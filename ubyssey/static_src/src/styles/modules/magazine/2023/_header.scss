@@ -1,3 +1,5 @@
+@use "../../spoof/2024/fonts";
+
 .u-container-topbar {
     background-color:#3C3C3C;
     display: flex;
@@ -26,7 +28,7 @@
     text-transform: uppercase;
     margin: 0.5% auto;
     font-size: 1.5rem;
-    font-family: $header-font;
+    font-family: fonts.$header-font;
 }
 
 .self-link:hover {

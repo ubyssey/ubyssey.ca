@@ -1,0 +1,18 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<article class="o-article_list-item">
+    <div class="left">
+        <h3 class="o-article__headline"><a href="{% pageurl article %}">{{article.title|safe}}</a></h3>
+        {% if show_bylines %}
+        <p class="o-article__byline">{{article.get_authors_split_out_visual_bylines|safe}}</p>
+        {% endif %}
+    </div>
+    <div class="right">
+        {% if article.featured_media.first %}
+        <a href="{% pageurl article %}">
+        {% image article.featured_media.first.image format-webp fill-200x200 loading="lazy" alt=article.featured_media.first.alt_text %}
+        </a>
+        {% endif %}
+    </div>
+</article>

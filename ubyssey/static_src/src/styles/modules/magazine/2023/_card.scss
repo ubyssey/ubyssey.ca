@@ -1,8 +1,12 @@
+@use "../../fonts" as fonts2;
+@use "../../spoof/2024/fonts";
+@use "../../variables";
+
 // Note: Will's contribution to this file March 3, 2023
 .cs1, .cs3, .cs2, .cs4 {
   text-align: center;
   margin: 5%;
-  @media($bp-smaller-than-tablet) {
+  @media(variables.$bp-smaller-than-tablet) {
     margin: 10px;
   }
 }
@@ -12,7 +16,7 @@
     width: 100%;
     max-height: auto;
   }
-  @media($bp-smaller-than-desktop) {
+  @media(variables.$bp-smaller-than-desktop) {
     margin: 0 5% 5%;
   }
   * {
@@ -26,13 +30,13 @@
   flex-direction: column;
   text-align: center;
   p.card__title {
-    font-family: $header-font;
+    font-family: fonts.$header-font;
     font-size: 1.5rem;
     margin-top: 1rem;
   }
   p.card__credit {
-    font-family: $font-default;
-    font-weight: $credit-weight;
+    font-family: fonts2.$font-default;
+    font-weight: fonts.$credit-weight;
     margin-top: 0;
     margin-bottom: 1rem;
   }
@@ -46,7 +50,7 @@
   justify-items: center; 
   justify-content: center;
   width:100%; 
-  @media($bp-smaller-than-desktop) {
+  @media(variables.$bp-smaller-than-desktop) {
     grid-template-columns: none;
   }
 }
@@ -59,7 +63,7 @@
   justify-items: center;
   justify-content: center;
   width: 100%;
-  @media($bp-smaller-than-desktop) {
+  @media(variables.$bp-smaller-than-desktop) {
     grid-template-columns: none;
   }
 }

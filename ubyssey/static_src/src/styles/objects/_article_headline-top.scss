@@ -1,3 +1,6 @@
+@use "../modules/fonts";
+@use "../modules/variables";
+
 article.headline-top-articles {
     .o-article__left {
       margin-bottom: 1em;
@@ -23,18 +26,18 @@ article.headline-top-articles {
     }
     .o-article__published {
         margin-right: 0.5em;
-        color: $color-ubyssey-blue;
+        color: variables.$color-ubyssey-blue;
         font-weight: 600;
     }
-    h2 {
+    .o-article__headline {
         margin-block: 0.5em;
-        font-family: $font-headline;
+        font-family: fonts.$font-headline;
         font-size: 2.5em;
         line-height: 1.25em;
     }
 
     .o-article--default {
-        padding-block: 2em;
+        padding-block: 1em;
     }
 
     .left{
@@ -45,20 +48,27 @@ article.headline-top-articles {
         img {
         width: 100%;
         height: auto;
+        max-height: 500px;
+
+        object-fit: cover;
         }
     }
     .right{
         margin-left: 2em;
         width: 100%;
-        .lede {
-        margin-block: 0.25em;
-        font-size: 1.5em;
-        a {
-            color: $color-ubyssey-blue;
-            &:hover {
-            text-decoration: underline;
-            }
+        @media(variables.$bp-larger-than-phablet) {
+            margin-block: auto;
+            padding-bottom: 2em;
         }
+        .lede {
+            margin-block: 0.25em;
+            font-size: 1.5em;
+            a {
+                color: variables.$color-ubyssey-blue;
+                &:hover {
+                text-decoration: underline;
+                }
+            }
         }
         .read-more {
         display: inline-block;
@@ -69,12 +79,15 @@ article.headline-top-articles {
         }
     }
 
-    @media($bp-smaller-than-desktop) {
+    @media(variables.$bp-smaller-than-desktop) {
         padding-inline: 1em;   
     }
-    @media($bp-smaller-than-phablet) { 
+    @media(variables.$bp-smaller-than-phablet) { 
         padding-inline: 0;
-        h2, .above-headline {
+        .o-article__headline {
+            font-size: 1.5em;
+        }
+        .o-article__headline, .above-headline {
             margin-inline: 15px;
         }
         h2 {
@@ -84,7 +97,7 @@ article.headline-top-articles {
             max-width: 100%;
         }
         .right {
-            margin: 1em 1.5em;
+            margin: 1.5em;
             width: auto;
             .lede {
                 font-size: 1.2em;

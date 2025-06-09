@@ -1,0 +1,17 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="o-extra-article-info o-extra-article-info--{{self.template}} {{self.position}}">
+    {% if self.images %}
+    <div class="o-extra-article-info__image">
+        {% for image in self.images %}
+            {% image image.image fill-500x500-c100 format-webp alt=image.alt_text loading="lazy" %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="o-extra-article-info__content">
+        {% if self.header %}<h2>{{self.header|safe}}</h2>{% endif %}
+        {{self.content|safe}}
+    </div>
+</div>

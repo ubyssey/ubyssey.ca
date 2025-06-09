@@ -1,0 +1,7 @@
+{% load cache %}
+{% load wagtailimages_tags %}
+
+{% if image %}
+{% image image width-1000 max-1000x1000 format-webp as rendered_image %}
+<img class="article-attachment" loading="lazy" width="{{rendered_image.width}}" height="{{rendered_image.height}}" decoding="async" data-id="{{ rendered_image.id }}" data-url="{{ rendered_image.url }}" src="{{ rendered_image.url }}" alt="{{ alt_text }}" />	
+{% endif %}

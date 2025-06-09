@@ -1,3 +1,5 @@
+@use "sass:math";
+
 // Font families
 $font-default: 'noto-sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 
@@ -10,7 +12,7 @@ $font-body: 'noto-serif', 'Georgia', serif;
 $font-size-base: 16;
 
 @function font-size($size) {
-  $scaled-size: ($size / $font-size-base) + em;
+  $scaled-size: math.div($size, $font-size-base) + em;
   @return $scaled-size;
 }
 

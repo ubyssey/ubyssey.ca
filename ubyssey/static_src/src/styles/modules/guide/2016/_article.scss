@@ -1,3 +1,5 @@
+@use "../../variables";
+
 .c-article {
   padding-top: 50px;
 }
@@ -39,7 +41,7 @@
     width: 100%;
     max-width: 600px;
 
-    @media($bp-larger-than-desktop) {
+    @media(variables.$bp-larger-than-desktop) {
       max-width: 700px;
       margin-left: -100px;
     }
@@ -56,7 +58,7 @@
   .pull-quote {
     text-align: left;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       text-align: right;
     }
 
@@ -87,7 +89,7 @@
     margin-right: auto;
     padding-bottom: 35px;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       margin: 0;
       float: right;
       padding-left: 35px;

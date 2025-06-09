@@ -16,12 +16,14 @@ from wagtail.admin.panels import (
     # Custom admin tabs
     ObjectList,
     TabbedInterface,
+
+    TitleFieldPanel
 )
 
 
 from wagtail import blocks
 from wagtail.fields import StreamField
-from wagtail.models import Page, Orderable
+from wagtail.models import Page, PageManager, Orderable
 from wagtail.search import index
 from modelcluster.fields import ParentalKey
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
@@ -61,6 +63,13 @@ class PinnedArticlesOrderable(Orderable):
             heading="Article"
         ),
     ]
+
+class AuthorsPageManager(PageManager):
+
+    def get_queryset(self):
+        return super()\
+            .get_queryset()\
+            .order_by("full_name")
 
 class AuthorPage(RoutablePageMixin, Page):
 
@@ -125,8 +134,6 @@ class AuthorPage(RoutablePageMixin, Page):
         help_text="Please give a short bio in third person"
     )
 
-   
-
     CHOICES = [("articles", "Articles"), ("photos", "Gallery"), ("videos", "Videos"), ('visuals', "Visual Bylines")]
     main_media_type = models.CharField(
         choices=CHOICES,
@@ -144,10 +151,12 @@ class AuthorPage(RoutablePageMixin, Page):
         blank=True,
     )
 
+    objects = AuthorsPageManager()
+
     # For editting in wagtail:
     content_panels = [
         # title not present, title should NOT be directly editable
-        FieldPanel("full_name"),
+        TitleFieldPanel("full_name", targets=['slug']),
         MultiFieldPanel(
             [
                 FieldPanel("image"),
@@ -170,11 +179,8 @@ class AuthorPage(RoutablePageMixin, Page):
     #-----Search fields etc-----
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [
-        index.SearchField('full_name'),
+        index.SearchField('full_name', boost=10),
         index.AutocompleteField("full_name", partial_match=True),
-        index.AutocompleteField("slug", partial_match=True),
-        index.AutocompleteField("ubyssey_role", partial_match=True),
-        index.AutocompleteField('bio_description'),
         index.SearchField("slug"),
         index.SearchField('bio_description'),
         index.SearchField("ubyssey_role"),
@@ -190,14 +196,20 @@ class AuthorPage(RoutablePageMixin, Page):
             article_order = "-"
 
         if media_type == "photos":
-            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order+"updated_at")
+            authors_media = UbysseyImage.objects.filter(author=self).order_by(article_order+"created_at")
         elif media_type == "videos":
-            authors_media = VideoSnippet.objects.filter(video_authors__author=self).order_by(article_order+"updated_at")
-        elif media_type == "visuals":
-            # Get articles where this author is credited with something other than "author" and "org_role"
+            # Get articles distinct articles where author is credited with video
             authors_media = [] 
             keys = []
-            for a in ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True).exclude(Q(author_role="author") | Q(author_role="org_role")).order_by(article_order+'article_page__explicit_published_at'):
+            for a in ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True, author_role="videographer").order_by(article_order+'article_page__explicit_published_at'):
+                if not a.article_page_id in keys:
+                    keys.append(a.article_page_id)
+                    authors_media.append(a)
+        elif media_type == "visuals":
+            # Get articles where this author is credited with something other than "author", "org_role", video
+            authors_media = [] 
+            keys = []
+            for a in ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True).exclude(Q(author_role="author") | Q(author_role="org_role") | Q(author_role="videographer")).order_by(article_order+'article_page__explicit_published_at'):
                 # we gotta do this because I can't use .distinct() on a field with mysql. We have to move to postgres for that (sounds like a lot of work) - samlow 21/10/2024
                 if not a.article_page_id in keys:
                     keys.append(a.article_page_id)
@@ -214,13 +226,7 @@ class AuthorPage(RoutablePageMixin, Page):
             #authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).distinct().order_by(article_order)
 
         if search_query:
-            if media_type == "videos":
-                #from wagtail.search.backends import get_search_backend
-                #s = get_search_backend()
-                #authors_media = s.search(search_query, authors_media)
-                authors_media = authors_media.filter(title=search_query)
-            else:
-                authors_media = authors_media.search(search_query)
+            authors_media = authors_media.search(search_query)
 
         # Paginate all posts by 15 per page
         paginator = Paginator(authors_media, per_page=15)
@@ -238,7 +244,7 @@ class AuthorPage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(paginator.num_pages)
             context["current_page"] = paginator.num_pages
 
-        if media_type == "visuals" or "articles":
+        if not media_type == "photos":
             context['is_orderable'] = True
         context["paginated_articles"] = paginated_articles
 
@@ -340,6 +346,7 @@ class AuthorPage(RoutablePageMixin, Page):
         return self.full_name
     
     class Meta:
+        ordering = ["full_name"]
         verbose_name = "Author"
         verbose_name_plural = "Authors"
 

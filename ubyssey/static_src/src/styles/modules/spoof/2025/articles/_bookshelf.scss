@@ -1,3 +1,5 @@
+@use "../base";
+
 article.bookshelf {
     $bookshelf-blue: #63c0bb;
     $bookshelf-pink: #d9407a;
@@ -135,7 +137,7 @@ article.bookshelf {
                 padding: 0 1.5em;
                 display: flex;
                 background: white;
-                border-bottom: 3px solid $glm-pink;
+                border-bottom: 3px solid base.$glm-pink;
                 background: linear-gradient(white calc(100% - 1px), #00b7ff91);
                 background-size: 100% 1.5em;
 
@@ -170,7 +172,7 @@ article.bookshelf {
             }
         }
     }
-    @media ($bp-smaller-than-phablet) { 
+    @media (base.$bp-smaller-than-phablet) { 
         .flex-row {
             flex-direction: column;            
         }

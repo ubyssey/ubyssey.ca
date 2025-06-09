@@ -1,6 +1,8 @@
 {% load static %}
 {% load cache %}
 {% load menu_tags %}
+
+{% cache 6000 footer %}
 <footer>
     <div class="u-container u-container--large">
 
@@ -16,7 +18,10 @@
                     matters most to the UBC community.
                 </p>
                 <img class="funding desktop" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada"/>
-                <p>Have feedback? Email <a href="mailto:feedback@ubyssey.ca" title="Email address for feedback">feedback@ubyssey.ca</a>.</p>
+                <div class="footer-address">
+                    <div class="footer-address-location"><b>NEST 2208</b>, 6133 University Blvd.<br>Vancouver, BC Canada V6T 1Z1</div> 
+                    <div class="footer-address-endnote">Have feedback? Email <a href="mailto:feedback@ubyssey.ca" title="Email address for feedback">feedback@ubyssey.ca</a>.</div>
+                </div>
             </div>
             
             <div class="footer-links">
@@ -56,3 +61,4 @@
         <div class="copyright">&copy; {% now "Y" %} The Ubyssey</div>
     </div>
 </footer>
+{% endcache %}

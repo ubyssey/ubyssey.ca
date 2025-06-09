@@ -4,6 +4,9 @@ from images import blocks as image_blocks
 from videos import blocks as video_blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
+from wagtail.embeds import blocks as embed_blocks
+from django.utils.safestring import mark_safe
+from django.template.loader import render_to_string
 
 class AudioBlock(blocks.StructBlock):
     caption =  blocks.CharBlock(required=False)
@@ -39,6 +42,8 @@ class PullQuoteBlock(blocks.StructBlock):
         choices=[
             ('style_default', 'Default'),
             ('contrast', 'Contrast'),
+            ('enlarged_quotation', 'Enlarged quotation'),
+            ('block_quote', 'Block quote'),
         ],
         default='style_default',
     )
@@ -62,6 +67,44 @@ class PullQuoteBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/quote.html',
         icon = "openquote"
+
+class ExtraArticleInfoBlock(blocks.StructBlock):
+    header = blocks.CharBlock(required=False, help_text="Optional!")
+    content = blocks.RichTextBlock()
+    images = blocks.ListBlock(image_blocks.ReducedImageBlock(), default=[], help_text="Optional!")
+
+    position = blocks.ChoiceBlock(
+        choices=[
+            ('center', 'Center'),
+            ('left', 'Left'),
+            ('right', 'Right'),   
+        ],
+        default='right',
+    )
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('editors-note', "Editor's note"),
+            ('highlight', "Highlight"),
+        ],
+        required=True,
+    )
+
+    def render(self, value, context=None):
+        block_template = value.get('template')
+        if block_template != '':
+            if block_template in ["editors-note", "highlight"]:
+                template = "article/stream_blocks/extra-article-info.html"
+            else:
+                template = block_template
+        else:
+            return self.render_basic(value, context=context)
+
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+        return mark_safe(render_to_string(template, new_context))
 
 class HeaderMenuBlock(blocks.StructBlock):
 
@@ -174,7 +217,6 @@ class VisualEssayBlock(blocks.StructBlock):
         icon = "form"
 
 class GalleryBlock(blocks.StructBlock):
-    id = blocks.CharBlock(help_text="No numbers or spaces. Must be different from other ids defined in this article.", required=True)
     images = blocks.ListBlock(
         image_blocks.ImageBlock()
     )
@@ -182,6 +224,7 @@ class GalleryBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/gallery_block.html'
         icon = "image"
+        label = "Carousel"
 
 class PersonalityQuizBlock(blocks.StructBlock):
     personalities = blocks.ListBlock(
@@ -236,3 +279,20 @@ class PersonalityQuizBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/personality_quiz.html'
         icon = "help"
+
+class PdfBlock(blocks.StructBlock):
+    pdf = DocumentChooserBlock(required=True, help_text="File format: .pdf")
+    
+    caption = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+    
+    credit = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/pdf.html'
+        icon = "doc-full"

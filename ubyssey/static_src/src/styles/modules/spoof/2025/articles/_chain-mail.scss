@@ -1,3 +1,5 @@
+@use "../base";
+
 article.chain-mail {
     $sm-blue: #5e6498;
     $sm-beige: #fdf6e8;
@@ -85,7 +87,7 @@ article.chain-mail {
             font-weight: 300;
             line-height: 1.5em;
             span {
-                color: $glm-magenta;
+                color: base.$glm-magenta;
                 text-decoration: underline 1px;
             }
         }
@@ -96,7 +98,7 @@ article.chain-mail {
         position: relative;
         height: fit-content;
         max-width: 600px;
-        border: 1px $glm-purple outset;
+        border: 1px base.$glm-purple outset;
         border-radius: 1em;
         background: linear-gradient(#ad286a80, #803f8dcf);
         filter: drop-shadow(0 1em 1em);
@@ -144,7 +146,7 @@ article.chain-mail {
                     font-size: 0.6em;
                 }
                 span.glm {
-                    color: $glm-pink;
+                    color: base.$glm-pink;
                 }
                 span.sm {
                     color: $sm-blue;
@@ -160,7 +162,7 @@ article.chain-mail {
             }
         }
     }
-    @media ($bp-smaller-than-phablet) { 
+    @media (base.$bp-smaller-than-phablet) { 
         flex-direction: column;
         background-size: contain;
         background-repeat: repeat;

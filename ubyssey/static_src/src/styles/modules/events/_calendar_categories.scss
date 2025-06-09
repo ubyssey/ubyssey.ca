@@ -1,11 +1,14 @@
+@use "../variables";
+@use "calendar_variables";
+
 .c-event-calendar-categories {
   text-align: right;
 
-  @media($bp-smaller-than-phablet) {
+  @media(variables.$bp-smaller-than-phablet) {
     padding: 0 5px;
   }
 
-  @media($bp-larger-than-phablet) {
+  @media(variables.$bp-larger-than-phablet) {
     padding: 0 30px;
   }
 
@@ -22,7 +25,7 @@
       margin: 10px 2px;
       min-width: 50px;
 
-      border: 1px solid $color-border-gray;
+      border: 1px solid variables.$color-border-gray;
       border-radius: 2px;
       background-color: #EEE;
       text-align: center;
@@ -42,7 +45,7 @@
 }
 
 .c-event-calendar-categories__label {
-  border-bottom: $border;
+  border-bottom: calendar_variables.$border;
 
   h2 {
     margin-top: 0;

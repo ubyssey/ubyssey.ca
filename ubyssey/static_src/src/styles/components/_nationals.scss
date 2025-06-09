@@ -1,3 +1,5 @@
+@use "../modules/fonts";
+
 @import url('https://fonts.googleapis.com/css?family=Hind+Siliguri|Sanchez');
 
 $mapWidth: 95vw;
@@ -40,7 +42,7 @@ $mapHeight: 675px;
     font-weight: 600;
     margin-top: 0;
   }
-  font-family: $font-body;
+  font-family: fonts.$font-body;
   color: #333;
 }
 

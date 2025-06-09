@@ -1,3 +1,7 @@
+@use "2019-2020/colors";
+@use "2019-2020/text";
+@use "utilities";
+
 .c-footer {
   // Structure
   display: flex;
@@ -5,9 +9,9 @@
   padding-bottom: 1.1rem;
 
   // Text
-  color: $color-text-dark-gray;
+  color: colors.$color-text-dark-gray;
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     padding-top: 3rem;
     padding-bottom: 3rem;
@@ -17,7 +21,7 @@
     background: none;
 
     // Text
-    color: $color-text-dark-gray;
+    color: colors.$color-text-dark-gray;
   }
 }
 
@@ -27,9 +31,9 @@
   flex: 1;
 
   // Text
-  font-family: $font-secondary;
+  font-family: text.$font-secondary;
   text-transform: uppercase;
-  font-size: font-size(20);
+  font-size: text.font-size(20);
   font-weight: 400;
   text-decoration: none;
 }
@@ -41,10 +45,10 @@
 
   // Text
   text-align: right;
-  font-size: font-size(18);
-  line-height: font-size(28);
+  font-size: text.font-size(18);
+  line-height: text.font-size(28);
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     display: block;
   }
@@ -56,8 +60,8 @@
 
   // Text
   text-align: center;
-  font-size: font-size(16);
-  line-height: font-size(28);
+  font-size: text.font-size(16);
+  line-height: text.font-size(28);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -69,10 +73,10 @@
 
   // Text
   text-align: left;
-  font-size: font-size(18);
-  line-height: font-size(28);
+  font-size: text.font-size(18);
+  line-height: text.font-size(28);
 
-  @media($bp-larger-than-mobile) {
+  @media(utilities.$bp-larger-than-mobile) {
     // Structure
     display: block;
   }

@@ -1,3 +1,5 @@
+@use "../base";
+
 article.girl-power {
     $girl-power-purple: #803f8d;
     $girl-power-magenta: #ad286a;
@@ -114,7 +116,7 @@ article.girl-power {
         animation: flip-y infinite 3s ease-in-out alternate-reverse;
     }
 
-    @media ($bp-smaller-than-desktop) { 
+    @media (base.$bp-smaller-than-desktop) { 
         .col-container {
             flex-direction: column;
             .card-container {

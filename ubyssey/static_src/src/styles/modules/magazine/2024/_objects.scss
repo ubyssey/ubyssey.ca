@@ -1,3 +1,5 @@
+@use "../../variables";
+
 .o-logo--small {
   display: block;
   margin-top: 0.5em !important;
@@ -65,10 +67,10 @@ nav {
   justify-items: center;
   margin: auto;
   padding-bottom: 5%;
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     min-width: 600px;
   }
-  @media($bp-smaller-than-tablet) {
+  @media(variables.$bp-smaller-than-tablet) {
     padding: 0 5% 0 5%;
   }
 }

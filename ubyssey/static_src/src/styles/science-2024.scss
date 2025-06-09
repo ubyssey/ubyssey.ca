@@ -1,5 +1,5 @@
-@import 'modules/_variables.scss';
-@import 'modules/_fonts.scss';
+@use 'modules/_variables.scss';
+@use 'modules/_fonts.scss';
 
 //@import 'modules/magazine/2024/fonts';
 
@@ -134,7 +134,7 @@ img.image-attachment {
     }
   }
 
-  @media ($bp-larger-than-tablet) {
+  @media (variables.$bp-larger-than-tablet) {
     &.right,
     &.left {
       height: auto;
@@ -341,7 +341,7 @@ nav.supplement-nav {
   }
 }
 
-@media($bp-smaller-than-phablet) {
+@media(variables.$bp-smaller-than-phablet) {
   nav.supplement-nav {
     flex-direction: column;
     padding-top: 0;

@@ -1,13 +1,16 @@
+@use "../fonts";
+@use "../variables";
+
 .c-banner {
   display: block;
   z-index: 200;
   padding: 15px 0;
 
   line-height: 1rem;
-  background-color: $color-ub-blue;
-  color: $color-white;
-  font-size: font-size(16);
-  font-weight: $font-weight-semi-bold;
+  background-color: variables.$color-ub-blue;
+  color: variables.$color-white;
+  font-size: fonts.font-size(16);
+  font-weight: fonts.$font-weight-semi-bold;
   text-align: center;
 
   &:hover {

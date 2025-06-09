@@ -11,6 +11,8 @@ from wagtail.models import Page, Orderable
 from wagtail.fields import StreamField
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
+from events import blocks as eventblocks
+from article import blocks_outer_article as articleblocks
 from django.utils import timezone
 import datetime
 
@@ -86,9 +88,10 @@ class HomePage(Page):
     middle_stream = StreamField(
         [
             ("links", homeblocks.LinksStreamBlock()),
-            ('article_gatherer', homeblocks.ArticleGathererBlock()),
-            ('landing', homeblocks.SpecialLandingPageBlock()),
-            ('article_manual', homeblocks.ManualArticles()),
+            ('article_gatherer', articleblocks.ArticleGathererBlock()),
+            ('landing', articleblocks.SpecialLandingPageBlock()),
+            ('article_manual', articleblocks.ManualArticles()),
+            ('events_bar', eventblocks.MidstreamEventsBar())
         ],
         null=True,
         blank=True,
@@ -97,7 +100,8 @@ class HomePage(Page):
 
     sections_stream = StreamField(
         [
-            ("home_page_section_block", homeblocks.HomepageFeaturedSectionBlock())
+            ("home_page_section_block", articleblocks.SectionBlock()),
+            ("home_page_section_block_categorized", articleblocks.SectionCategorizedBlock()),
         ],
         null=True,
         blank=True,
@@ -109,8 +113,9 @@ class HomePage(Page):
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
         ("sidebar_issues_block", infinitefeedblocks.SidebarIssuesBlock()),
         ("sidebar_flex_stream_block", infinitefeedblocks.SidebarFlexStreamBlock()),
-        ("sidebar_gatherer_block", homeblocks.SidebarArticleGatherer()),
-        ("sidebar_manual", homeblocks.SidebarManualArticles())        
+        ("sidebar_gatherer_block", infinitefeedblocks.SidebarArticleGatherer()),
+        ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),
+        ("siderbar_events_block", eventblocks.SidebarEventsBlock()),
     ],
     null=True,
     blank=True,
@@ -177,18 +182,23 @@ class HomePage(Page):
         context = super().get_context(request, *args, **kwargs)
         context["filters"] = {}
 
-        context["cover_story"], context["top_stories"], context["update_time"] = self.getHomeFeatured()
+        cover_story, top_stories, context["update_time"] = self.getHomeFeatured()
+        context["cover_story"] = cover_story
+        context["top_stories"] = top_stories
         
-        section_groups = []
-        for i in range(math.ceil(len(self.sections_stream)/2)):
+        exclude_from_hompage_stream = map(lambda article: article.page_ptr_id, top_stories + [cover_story])
+        homepage_stream_articles = ArticlePage.objects.live().public().exclude(page_ptr_id__in=exclude_from_hompage_stream).exclude(current_section = "pages").order_by("-explicit_published_at")[:15]
+        homepage_stream_groups = []
+        articles_per_sidebar_item = 5
+        for i in range(max(math.ceil(len(homepage_stream_articles)/articles_per_sidebar_item), len(self.sidebar_stream))):
             group = {
-                'sections': self.sections_stream[i*2:i*2+2]
+                'articles': homepage_stream_articles[i*articles_per_sidebar_item:(i+1)*articles_per_sidebar_item]
             }
             if i < len(self.sidebar_stream):
                 group['sidebar'] = [self.sidebar_stream[i]]
-            section_groups.append(group)
+            homepage_stream_groups.append(group)
 
-        context['section_groups'] = section_groups
+        context['homepage_stream'] = homepage_stream_groups
 
         return context
 
@@ -209,7 +219,7 @@ class HomePage(Page):
             top = [article.article for article in self.top_articles.all()]
         else:
             filled_sections = {}
-            tagged = ArticlePage.objects.live().filter(tags__slug='top-stories',first_published_at__gte=now-datetime.timedelta(weeks=2)).order_by('-first_published_at')[:15]
+            tagged = ArticlePage.objects.live().filter(topics__slug='top-stories',first_published_at__gte=now-datetime.timedelta(weeks=4)).order_by('-first_published_at')[:15]
             if len(tagged) > 0:
                 if tagged[0].first_published_at > update_time:
                     update_time = tagged[0].first_published_at
@@ -228,7 +238,7 @@ class HomePage(Page):
                         break
         
         if not cover:
-            cover = ArticlePage.objects.live().filter(tags__slug='top-stories',current_section='news').order_by('-first_published_at')[0]
+            cover = ArticlePage.objects.live().filter(topics__slug='top-stories',current_section='news').order_by('-first_published_at')[0]
         
         return cover, top, update_time
      

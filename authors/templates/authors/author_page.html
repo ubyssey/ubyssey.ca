@@ -13,8 +13,8 @@
 {% endblock %}
 
 {% block header %}
-{% include 'navigation/headers/topbar.html' %}
-{% include 'navigation/headers/mobile.html' %}
+	{% include 'navigation/headers/topbar.html' with section="none" %}
+	{% include 'navigation/headers/mobile.html' %}
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@
 
 		<div class="author-header">
 			{% if self.image %}
-				{% image self.image width-350 format-webp as pfp %}
+				{% image self.image fill-350x350-c100 format-webp as pfp %}
 				<div class="author-img" style="background-image: url('{{pfp.full_url}}')" aria-label="{{ self.title }}"></div>
 			{% endif %}
 			<div class="author-info">

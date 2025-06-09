@@ -5,6 +5,7 @@
 {% load cache %}
 {% load menu_tags %}
 
+{% cache 6000 topbarnav section %}
 <header class="topbar header-site dark-mode">
     <div class="u-container u-container-topbar">
         <a class="home-link" href="{% url 'wagtail_serve' '' %}" title="The Ubyssey homepage" >
@@ -19,5 +20,5 @@
         </div>
         {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
     </div>
-
 </header>
+{% endcache %}

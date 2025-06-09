@@ -1,5 +1,6 @@
-@import 'fonts';
-@import 'modules/variables';
+@use 'fonts';
+@use 'variables';
+@use "mixins";
 
 
 $header-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
@@ -43,10 +44,11 @@ $three-bar-logo-color: var(--three-bar-logo-color);
 // Main header
 header.main, header.topbar {
   display: none;
-  @media($bp-larger-than-desktop){
+  @media(variables.$bp-larger-than-desktop){
     display: block;
   }
 }
+
 
 header.main{
   .branding.row {
@@ -60,12 +62,12 @@ header.main{
       img {
         position: absolute;
         margin-inline: 0em;
-        height: calc(100% + 1em);
+        height: calc(100%);
         bottom: -0.5em;
         left: 1em;
       }
       svg.top-logo {
-        margin: 2em 0 1em 7em;
+        margin: 2em 0 1em 3em;
         height: 3em;
         width: auto;
       }
@@ -86,8 +88,17 @@ header.main{
     margin-top: 1em;
     display: flex;
     justify-content: center;
+    flex-wrap: nowrap;
     //overflow: hidden;
 
+    > * {
+      flex-shrink: 1;
+      padding-left: 0;
+      padding-right: 0;
+      margin-top: 0;
+      width: auto;
+      max-width: none;
+    }
     .left, .middle, .right {
       display: inline-block;
       height: 100%;
@@ -110,14 +121,14 @@ header.main{
         vertical-align: baseline;
         fill: var(--header_color);
         &:hover {
-          fill: $color-ubyssey-blue;
+          fill: variables.$color-ubyssey-blue;
         }
       }
 
       a {
           position: relative;
           margin-right: 0.75em;
-          font-size: font-size(16);
+          font-size: fonts.font-size(16);
           &:last-child {
               margin-right: 0;
           }
@@ -126,7 +137,7 @@ header.main{
     }
   
     h1.section-title {
-      font-family: $font-default;
+      font-family: fonts.$font-default;
       font-size: 34px;
       margin: 0;
       line-height: 60px;
@@ -141,6 +152,7 @@ header.main{
     padding-inline: 1em;
     border-top: 2px solid;
     border-bottom: 1px solid;
+    color: var(--nav-h3-color);
 
     .left, .middle, .right {
       padding: 0;
@@ -172,14 +184,14 @@ header.main{
         padding-inline: 1em;
         margin: 0;
         
-        font-family: $font-default;
+        font-family: fonts.$font-default;
         font-size: 0.75em;
-        font-weight: $font-weight-semi-bold;
+        font-weight: fonts.$font-weight-semi-bold;
         color: var(--header_color);
         text-transform: uppercase;
         
         &.elections a {
-          color: $color-red;
+          color: variables.$color-red;
         } 
       }
     }
@@ -218,6 +230,7 @@ header.main{
       padding: 0;
       display: flex;
       justify-content: space-between;
+      flex-direction: row;
       width: fit-content;
       margin: auto;
       height: 100%;
@@ -238,8 +251,8 @@ header.main{
   
       &.meta {
         li {
-          font-family: $font-default;
-          font-size: font-size(10);
+          font-family: fonts.$font-default;
+          font-size: fonts.font-size(10);
           color: var(--text_color);
           margin: 0 6px;
           line-height: 2.2em;
@@ -300,7 +313,7 @@ header.visual-essay{
 
 header.topbar, header.mobile {
   width: 100%;
-  z-index: $z-scale-2;
+  z-index: variables.$z-scale-2;
   transform: translate3d(0,0,0);
   top: 0;
 }
@@ -313,16 +326,16 @@ header.topbar {
   transition: background 0.5s ease, color 0.5s ease;
 
   border-bottom: $header-border;
-  @include box-shadow($header-box-shadow);
+  @include mixins.box-shadow($header-box-shadow);
 
   .section-name {
       display: inline-block;
       margin-right: 10px;
       span {
         margin-left: 7px;
-        font-family: $font-default;
-        font-weight: $font-weight-semi-bold;
-        font-size: font-size(12.5);
+        font-family: fonts.$font-default;
+        font-weight: fonts.$font-weight-semi-bold;
+        font-size: fonts.font-size(12.5);
         text-transform: uppercase;
         color: $nav-span-color;
       }
@@ -349,15 +362,11 @@ header.topbar {
 
   nav {
     display: none;
-    @media($bp-larger-than-phablet){
-      display: inline-block;
-    }
-
     white-space: nowrap;
     vertical-align: top;
-    font-family: $font-default;
-    font-weight: $font-weight-semi-bold;
-    font-size: font-size(13);
+    font-family: fonts.$font-default;
+    font-weight: fonts.$font-weight-semi-bold;
+    font-size: fonts.font-size(13);
     margin-left: 20px;
     text-transform: uppercase;
 
@@ -377,16 +386,16 @@ header.topbar {
         }
         &.current, &:hover {
           border-bottom: 3px solid rgba(52, 144, 214, 1);
-          color: $color-accent-blue;
+          color: variables.$color-accent-blue;
         }
 
         &.elections {
           a {
-            color: $color-red;
+            color: variables.$color-red;
           }
 
           &.current, &:hover {
-            border-bottom: 3px solid $color-red;
+            border-bottom: 3px solid variables.$color-red;
           }
         }
       }
@@ -395,15 +404,19 @@ header.topbar {
         @include sectionsMore;
       }
     }
+
+    @media(variables.$bp-larger-than-phablet){
+      display: inline-block;
+    }
   }
 
   h1.nav-headline {
     display: inline-block;
     top: 16px;
     white-space: nowrap;
-    font-family: $font-default;
-    font-size: font-size(13);
-    font-weight: $font-weight-semi-bold;
+    font-family: fonts.$font-default;
+    font-size: fonts.font-size(13);
+    font-weight: fonts.$font-weight-semi-bold;
     color: #373737 $nav-headline-h1;
     line-height: 19px;
     margin-top: 0;
@@ -419,10 +432,73 @@ header.topbar {
   }
 }
 
+// Article storyline
+header.topbar.c-article-storyline {
+  display: block;
+  z-index: 300;
+
+  .dingbat {
+    display: inline-block;
+    position: relative;
+    height: 30px;
+    aspect-ratio: 1;
+
+    background-image: url('/static/ubyssey/images/logos/dingbat-blue.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    transform: translateY(25%);
+  }
+  .u-container-topbar {
+    display: flex;
+    overflow-x: auto;
+  }
+  .c-article-storyline--header {
+    display: inline;
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--header_color)
+  }
+  .c-article-storyline--nav {
+    display: inline-block;
+    width: 0;
+    flex-grow: 1;
+    font-weight: 400;
+    
+    ul {
+      display: flex;
+      list-style: none; 
+      overflow-x: auto;
+    }
+    li {
+      max-width: 20em;
+      overflow: clip;
+      text-overflow: ellipsis;
+      text-transform: none;
+      a {
+        display: contents;
+      }
+    }
+  }
+
+  @media(variables.$bp-smaller-than-desktop){
+    height: 54px;
+    .dingbat, .right {
+      display: none;
+    }
+    .c-article-storyline--nav {
+      width: fit-content;
+    }
+  }
+}
+
+
+
 #header-mobile-spacer {
   height: 54px;
   min-height: 54px;
-  @media ($bp-larger-than-desktop) {
+  @media (variables.$bp-larger-than-desktop) {
     height: 48px;
     min-height: 48px;
   }
@@ -431,14 +507,14 @@ header.topbar {
 #header-mobile-spacer--homepage {  
   height: 54px;
   min-height: 54px;
-  @media ($bp-larger-than-desktop) {
+  @media (variables.$bp-larger-than-desktop) {
     height: 0;
     min-height: 0;
   }
 }
 
 header.mobile {
-  position: fixed;
+  position: sticky;
   height: 54px;
   min-height: 54px;
   line-height: 54px;
@@ -500,14 +576,14 @@ header.mobile {
       max-height: 24px;
     }
   }
-  @media($bp-larger-than-desktop){
+  @media(variables.$bp-larger-than-desktop){
     display: none;
   }
 }
 
 #header-mobile-spacer {
   display: block;
-  @media($bp-larger-than-desktop){
+  @media(variables.$bp-larger-than-desktop){
     display: none;
   }
 }
@@ -516,6 +592,7 @@ nav.mobile {
   position: absolute;
   padding: 10px 20px;
   height: calc(100vh - 54px);
+  box-sizing: border-box;
   top: 54px;
   left: 0;
   right: 0;
@@ -579,9 +656,9 @@ a.store-link {
   font-size: 12px;
   padding: 5px 7px 5px 10px;
   border-radius: 3px;
-  color: $color-accent-blue;
+  color: variables.$color-accent-blue;
   background: rgba(0, 113, 201, 0.1);
-  font-weight: $font-weight-semi-bold;
+  font-weight: fonts.$font-weight-semi-bold;
 
   transition: background 0.5s ease, color 0.5s ease;
 

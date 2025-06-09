@@ -1,0 +1,27 @@
+<div class="o-events-sidebar">
+    <h2><a href="/events/?hidden=seminar">Events Around Campus</a></h2>
+    <ul>
+    {% for event in ongoing %}
+    <li class="{{event.category}} event">
+        <a class="featured_event" href="/events/?event={{event.hash}}&hidden=seminar" title="{{event.title}}">
+        <p class="featured_event__time">{{event.display_time}}{% if event.location %}{% endif %}</p>
+        <p class="featured_event__title">{{event.title|safe}}</p>
+        </a>
+    </li>
+    {% endfor %}
+    </ul>
+
+    {% if upcoming|length > 0 %}
+        <h3>Upcoming</h3>
+        <ul>
+        {% for event in upcoming %}
+            <li class="{{event.category}} event">
+                <a href="/events/?event={{event.hash}}&hidden=seminar" title="{{event.title}}">
+                <b>{{event.display_time}}</b> {{event.title|safe}}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <p class="see_more"><a href="/events/?hidden=seminar">See calendar for more</a></p>
+</div>

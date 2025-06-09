@@ -7,6 +7,8 @@ import json
 from django.template import loader
 from section.models import SectionPage
 from django.http import JsonResponse
+from wagtail.search.query import Phrase, PlainText
+from wagtail.templatetags.wagtailcore_tags import IncludeBlockNode
 
 def getArticles(filters, start, number):
 
@@ -20,13 +22,13 @@ def getArticles(filters, start, number):
         articles = ArticlePage.objects.live().public().order_by('-explicit_published_at')
 
     if "tag" in filters:
-        articles = articles.filter(tags__slug=filters["tag"])
+        articles = articles.filter(topics__id=filters["tag"])
 
     if "category" in filters:
         articles = articles.filter(category_page__slug=filters["category"])
 
     if "search_query" in filters:
-        return articles.search(filters["search_query"])[int(start):int(start)+int(number)]
+        return articles.search(Phrase(filters["search_query"]) | PlainText(filters["search_query"]))[int(start):int(start)+int(number)]
     else:
         return articles.order_by('-explicit_published_at')[int(start):int(start)+int(number)]
 
@@ -58,7 +60,11 @@ def infinitefeed(request):
                     data["label"] = True
                 if "section" in request.GET:
                     data["expectedSection"] = request.GET['section']
-                articleHtml.append(loader.render_to_string("article/objects/infinitefeed_item.html", data))
+                if "storystream" in request.GET:
+                    storystream_item = article.storystream_view[0]
+                    articleHtml.append(storystream_item.render_as_block(context=data))
+                else:
+                    articleHtml.append(loader.render_to_string("article/objects/infinitefeed_item.html", data))
                    
             articleHtml_json = json.dumps(articleHtml)
             return HttpResponse(articleHtml_json, content_type ="application/json")

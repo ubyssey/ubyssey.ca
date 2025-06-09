@@ -1,25 +1,25 @@
-@import 'modules/variables';
+@use 'variables';
 
 $text-color: var(--text_color);
 
 footer {
 
   padding: 15px 0;
-  border-top: 0.5em solid $color-ubyssey-blue;
-  background-color: $color-ubyssey-blue-dark;
-  color: $color-ubyssey-blue-light;
+  border-top: 0.5em solid variables.$color-ubyssey-blue;
+  background-color: variables.$color-ubyssey-blue-dark;
+  color: variables.$color-ubyssey-blue-light;
   position: relative;
   bottom: 0;
   left: 0;
   right: 0;
 
   h3 {
-    color: $color-ubyssey-blue;
+    color: variables.$color-ubyssey-blue;
     text-transform: uppercase;
     font-size: 1em;
   }
-  h2, p, li {
-    color: $color-ubyssey-blue-light;
+  h2, p, li, .footer-address {
+    color: variables.$color-ubyssey-blue-light;
   }
 
   .about {
@@ -64,6 +64,17 @@ footer {
     flex-wrap: wrap;
   }
 
+  .footer-address {
+    margin: 1em 0;
+    .footer-address-location {
+      margin-block: 0.25em;
+    }
+    .footer-address-endnote {
+      margin-top: 0.75em;
+      font-style: italic;
+    }
+  }
+
   .land-acknowledgement {
     margin: 2em auto;
     padding: 1em;
@@ -92,7 +103,7 @@ footer {
     }
   }
 
-  @media($bp-larger-than-tablet){
+  @media(variables.$bp-larger-than-tablet){
     .mobile {
       display: none;
     }
@@ -119,7 +130,7 @@ footer {
 
   }
 
-  @media($bp-smaller-than-tablet){
+  @media(variables.$bp-smaller-than-tablet){
     text-align: center;
 
     .mobile {

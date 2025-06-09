@@ -11,7 +11,7 @@ from modelcluster.fields import ParentalKey
 from section.models import SectionPage
 from wagtail.models import Page, Orderable
 from wagtail.admin.panels import MultiFieldPanel, InlinePanel, HelpPanel, PageChooserPanel, FieldPanel
-
+from wagtail.search.query import Phrase, PlainText
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
 from videos.models import VideosPage, VideoSnippet
 
@@ -220,7 +220,7 @@ class ArchivePage(RoutablePageMixin, Page):
         # If there's a search query, then we run the search on the articles LAST.
         # Once we hit thes earch then we can't run .filter(...) on the results as if it were a queryset
         if video_section == False:
-            return objects.search(search_query)
+            return objects.search(Phrase(search_query) | PlainText(search_query))
         else:
             return objects.filter(title=search_query)
 

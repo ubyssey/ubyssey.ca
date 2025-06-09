@@ -1,9 +1,9 @@
-@import 'modules/_variables';
-@import 'modules/advertisements';
+@use 'modules/_variables';
+@use 'modules/advertisements';
 
 
-@import 'modules/isolation/fonts';
-@import 'modules/isolation/base';
-@import 'modules/isolation/homepage';
-@import 'modules/isolation/article-box';
-@import 'modules/isolation/article';
+@use 'modules/isolation/fonts';
+@use 'modules/isolation/base';
+@use 'modules/isolation/homepage';
+@use 'modules/isolation/article-box';
+@use 'modules/isolation/article';

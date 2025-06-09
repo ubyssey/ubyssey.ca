@@ -1,3 +1,6 @@
+@use "../../spoof/2024/fonts";
+@use "../../variables";
+
 .o-site-wrapper {
     max-width: 100%;
     width: 100%;
@@ -37,14 +40,14 @@
 
 .home-content-container .home-content .content-wrapper {
     line-height: 2em;
-    font-family: $text-font;
+    font-family: fonts.$text-font;
     font-size: 1rem;
 }
 
 .home-content-container .home-content .title {
     text-align: left;
     padding-top: 5%;
-    @media($bp-larger-than-mobile) {
+    @media(variables.$bp-larger-than-mobile) {
         padding-left: 5%;
     }
 }
@@ -62,15 +65,15 @@
     height: auto;
     padding: 5% 5% 5% 10%;
     color: #3C3C3C;
-    font-family: $header-font;
+    font-family: fonts.$header-font;
     font-size: 6rem;
     text-align: right;
     line-height: 6rem;
-    @media($bp-smaller-than-desktop) {
+    @media(variables.$bp-smaller-than-desktop) {
         font-size: 3rem;
         line-height: 3rem;
     }
-    @media($bp-smaller-than-tablet) {
+    @media(variables.$bp-smaller-than-tablet) {
         width: 100%;
         font-size: 2rem;
         line-height: 2rem;
@@ -82,10 +85,10 @@
 .editors-note__content {
     width: 50%;
     padding: 5% 5% 0;
-    font-family: $text-font;
+    font-family: fonts.$text-font;
     font-weight: 400;
     font-size: 1rem;
-    @media($bp-smaller-than-tablet) {
+    @media(variables.$bp-smaller-than-tablet) {
         width: 100%;
         padding: 5%;
     }
@@ -94,12 +97,12 @@
 .editorial__credits-container {
     width: 50%;
     padding: 5%;
-    font-family: $text-font;
+    font-family: fonts.$text-font;
     font-size: 1.25rem;
     h2 {
         font-weight: 300;
     }
-    @media($bp-smaller-than-tablet) {
+    @media(variables.$bp-smaller-than-tablet) {
         width: 100%;
     }
 }

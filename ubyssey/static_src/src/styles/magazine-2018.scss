@@ -1,12 +1,12 @@
-@import 'modules/magazine/2017/colors';
-@import 'modules/magazine/mixins';
-@import 'modules/magazine/utilities';
-@import 'modules/magazine/text';
+@use 'modules/magazine/2017/colors';
+@use 'modules/magazine/mixins';
+@use 'modules/magazine/utilities';
+@use 'modules/magazine/text';
 
 .c-cover__logo {
 	font-family: 'Georgia', Georgia, serif;
 	font-weight: 500;
-	font-size: font-size(32);
+	font-size: text.font-size(32);
 	position: absolute;
 	margin-top: 37%;
 	width: 100%;
@@ -14,8 +14,8 @@
 	color: #fff;
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 
-	@media($bp-larger-than-mobile) {
-		font-size: font-size(50);
+	@media(utilities.$bp-larger-than-mobile) {
+		font-size: text.font-size(50);
 		margin-top: 38%;
 	}
 }

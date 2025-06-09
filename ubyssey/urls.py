@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views import defaults as default_views
 from django.views.generic.base import TemplateView
+from django.shortcuts import redirect
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
@@ -14,7 +15,7 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
-from ubyssey.views.tag import TagPage
+from ubyssey.views.tag import TagPage, redirect_tag_feed_to_topic, redirect_tag_to_topic
 from events.views import update_events, create_ical, EventsFeed, EventsViewSet
 from events.urls import urlpatterns as events_urls
 
@@ -82,8 +83,10 @@ urlpatterns += [
     re_path(r'^api/', include(api.urls)),
 
     # Tag
-    re_path(r'^tag/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  
-    re_path(r'^tag/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),    
+    re_path(r'^tag/(?P<slug>[-\w]+)/$', redirect_tag_to_topic),
+    re_path(r'^tag/(?P<slug>[-\w]+)/rss/$', redirect_tag_feed_to_topic),  
+    re_path(r'^topic/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  
+    re_path(r'^topic/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),    
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),

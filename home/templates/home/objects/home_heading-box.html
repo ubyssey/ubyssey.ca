@@ -1,8 +1,8 @@
-<div {%if id %} id="{{id}}" {% endif %} class="boxLabel {{styling}}">
-    <div class="boxLabel-left">
-        <h1 class="boxText boxText-left">{{title}}</h1>
+<div {%if id %} id="{{id}}" {% endif %} class="o-boxLabel {{styling}}">
+    <div class="o-boxLabel-left">
+        <h2 class="boxText boxText-left">{{title|safe}}</h2>
     </div>
-    <div class="boxLabel-right">
-        <p class="boxText boxText-right" {%if textId %}id="{{textId}}"{% endif %}>{% if text %} {{text}}{% endif %}{% if textBold %}&nbsp; <strong>{{textBold}}</strong>{% endif %}</p>
+    <div class="o-boxLabel-right">
+        <p class="boxText boxText-right" {%if textId %}id="{{textId}}"{% endif %}>{% if text %} {{text|safe}}{% endif %}{% if textBold %}&nbsp; <strong>{{textBold|safe}}</strong>{% endif %}</p>
     </div>
 </div>

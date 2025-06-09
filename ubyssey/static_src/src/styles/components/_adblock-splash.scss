@@ -1,3 +1,5 @@
+@use "../modules/variables";
+
 #adblock-splash {
   // Structure
   display: none;
@@ -39,7 +41,7 @@
   padding: 25px;
   
   // Background
-  background-color: $color-ub-blue;
+  background-color: variables.$color-ub-blue;
   
   // Extra
   opacity: 1;
@@ -71,7 +73,7 @@
   background-image: none;
   
   // Font
-  color: $color-ub-blue;
+  color: variables.$color-ub-blue;
   
   // Borders
   border: none;

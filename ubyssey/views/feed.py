@@ -2,9 +2,8 @@ from typing import Any, Dict
 from django.contrib.syndication.views import Feed
 from django.utils import feedgenerator
 from bs4 import BeautifulSoup
-from taggit.models import Tag
 
-from article.models import ArticlePage
+from article.models import ArticlePage, ArticleTopic
 from authors.models import AuthorPage
 
 class RssFeedWithImage(feedgenerator.Rss201rev2Feed):
@@ -151,7 +150,7 @@ class TagFeed(UbysseyArticleFeed):
         self.max_items = max_items
 
     def get_object(self, request, slug):
-        return Tag.objects.get(slug=slug)
+        return ArticleTopic.objects.get(slug=slug)
 
     def title(self, tag):
         return 'Stories tagged "%s" from The Ubyssey' % tag.name
@@ -160,10 +159,10 @@ class TagFeed(UbysseyArticleFeed):
         return 'Stories tagged "%s" from The Ubyssey' % tag.name
     
     def link(self, tag):
-        return 'https://ubyssey.ca/tag/%s/' % tag.slug
+        return 'https://ubyssey.ca/topic/%s/' % tag.slug
     
     def feed_url(self, tag):
-        return 'https://ubyssey.ca/tag/%s/rss/' % tag.slug
+        return 'https://ubyssey.ca/topic/%s/rss/' % tag.slug
 
     def items(self, tag):
-        return ArticlePage.objects.live().public().filter(tags=tag).order_by('-explicit_published_at')[:self.max_items]
+        return ArticlePage.objects.live().public().filter(topics=tag).order_by('-explicit_published_at')[:self.max_items]

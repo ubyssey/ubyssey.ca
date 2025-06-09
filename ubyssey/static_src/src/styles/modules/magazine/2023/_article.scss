@@ -1,3 +1,7 @@
+@use "../../fonts" as fonts2;
+@use "../../variables";
+@use "fonts";
+
 .c-article{
   padding: 3em 0;
 }
@@ -5,16 +9,16 @@
 .c-article__title, .o-article__snippet {
   text-align: center;
   color: #3C3C3C;
-  font-family: $font-default;
+  font-family: fonts2.$font-default;
   padding: 0 5% 0 5%;
   margin: 2.5% 0 2.5% 0;
   font-size: 3.5rem;
   line-height: 4rem;
   max-width: 1000px;
-  @media($bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-tablet) {
     width: auto;
   }
-  @media ($bp-smaller-than-mobile) {
+  @media (variables.$bp-smaller-than-mobile) {
     font-size: 3rem;
     line-height: 3rem;
   }
@@ -27,7 +31,7 @@
 
 .c-article__info {
   text-align: center;
-  font-family: $text-font;
+  font-family: fonts.$text-font;
   * {
     color: #3C3C3C;
     text-decoration: none;
@@ -44,7 +48,7 @@
     width: 1000px;
     height: auto;
     margin-bottom: 1%;
-    @media($bp-smaller-than-desktop) {
+    @media(variables.$bp-smaller-than-desktop) {
       width: 100%;
     }
   }
@@ -56,12 +60,12 @@
 
 .c-article__content {  
   color: #3C3C3C;
-  font-family: $text-font;
+  font-family: fonts.$text-font;
   // margin: 50%;
   // margin: auto;
   h1, h2, h3 {
     text-align: left;
-    font-family: $header-font;
+    font-family: fonts.$header-font;
     font-size: 1.3rem;
     line-height: 1.6rem;
     font-weight: 500;
@@ -74,8 +78,8 @@
   }
 
   > p, ul {
-    font-family: $text-font;
-    font-size: $text-size;
+    font-family: fonts.$text-font;
+    font-size: fonts.$text-size;
     font-weight: normal;
     letter-spacing: 0.2px;
     line-height: 1.3rem;
@@ -96,7 +100,7 @@
     margin-right: auto;
     padding-bottom: 35px;
 
-    @media($bp-larger-than-phablet) {
+    @media(variables.$bp-larger-than-phablet) {
       margin: 0;
       float: right;
       padding-left: 35px;

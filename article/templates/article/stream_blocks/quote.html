@@ -7,15 +7,17 @@
 {% endif %}
 
 <blockquote class="pull-quote attachment {{self.position}} {{self.style}}">
-    <p class="quote">{{ self.content }}</p>
+    <p class="quote">{{ self.content|safe }}</p>
+    {% if self.audio or self.source %}
     <p class="meta">
-    {% if self.audio %}
-        <a href="#" audio="{{id|slugify}}" class="playAudioQuote">
-            <ion-icon id="icon-{{id|slugify}}" class="volume" name="volume-off"></ion-icon>
-            {% if self.source %}<span class="source">Listen to {{ self.source }}</span>{% endif %}
-        </a>
-    {% elif self.source %}
-        <span class="source">— {{ self.source }}</span>
-    {% endif %}
+        {% if self.audio %}
+            <a href="#" audio="{{id|slugify}}" class="playAudioQuote">
+                <ion-icon id="icon-{{id|slugify}}" class="volume" name="volume-off"></ion-icon>
+                <span class="source">{% if self.source %}Listen to {{ self.source }}{% else %}Listen{% endif %}</span>
+            </a>
+        {% elif self.source %}
+            <span class="source">— {{ self.source }}</span>
+        {% endif %}
     </p>
+    {% endif%}
 </blockquote>

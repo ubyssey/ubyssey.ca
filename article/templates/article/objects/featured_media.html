@@ -46,7 +46,7 @@
                 msallowfullscreen="msallowfullscreen" 
                 oallowfullscreen="oallowfullscreen" 
                 webkitallowfullscreen="webkitallowfullscreen"
-                src="{{ featured_video_object.video.url|youtube_embed_url|safe }}">
+                src="{{ featured_video_object.video|youtube_embed_url|safe }}">
             </iframe>
             {% if featured_video_object.caption or featured_video_object.credit %}
                 <div class="caption">

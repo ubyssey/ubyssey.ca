@@ -1,3 +1,5 @@
+@use "../modules/variables";
+
 article.article--round_with_border {
     display: inline;
     width: 100%;
@@ -6,7 +8,7 @@ article.article--round_with_border {
     margin-bottom: 1em;
     border-bottom: 2px solid var(--borderColour);
 
-    @media($bp-smaller-than-phablet) {
+    @media(variables.$bp-smaller-than-phablet) {
       margin-inline: auto;
     }
 
@@ -42,11 +44,11 @@ article.article--round_with_border {
 
 [color-css-theme="light"] {
   article.article--round_with_border {
-    --borderColour: #{$color-ubyssey-blue};
+    --borderColour: #{variables.$color-ubyssey-blue};
 
     h3.o-article__headline {
       padding-bottom: 0.5em;
-      color: $color-ubyssey-blue-dark;
+      color: variables.$color-ubyssey-blue-dark;
     }
 
     p.o-article__published {
@@ -56,6 +58,6 @@ article.article--round_with_border {
 }
 [color-css-theme="dark"] {
   article.article--round_with_border {
-    --borderColour: #{$color-ubyssey-blue-light};
+    --borderColour: #{variables.$color-ubyssey-blue-light};
   }
 }

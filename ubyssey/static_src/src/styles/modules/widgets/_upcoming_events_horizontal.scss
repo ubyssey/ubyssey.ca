@@ -1,3 +1,6 @@
+@use "../fonts";
+@use "../variables";
+
 .c-widget-upcoming-events-horizontal {
   background-color: #f5f5f5;
   margin: 15px 0;
@@ -6,17 +9,17 @@
   padding-bottom: 1.5rem;
 
   box-sizing: border-box;
-  border-top: solid 1px $color-border-gray;
-  border-bottom: solid 1px $color-border-gray;
+  border-top: solid 1px variables.$color-border-gray;
+  border-bottom: solid 1px variables.$color-border-gray;
 }
 
 .c-widget-upcoming-events-horizontal__label-row {;
   display: flex;
 
   // Text
-  color: $color-text-gray;
-  font-size: font-size(14);
-  font-weight: $font-weight-semi-bold;
+  color: variables.$color-text-gray;
+  font-size: fonts.font-size(14);
+  font-weight: fonts.$font-weight-semi-bold;
   letter-spacing: 0.045em;
   text-transform: uppercase;
 }
@@ -34,7 +37,7 @@
   display: flex;
   justify-content: space-between;
 
-  @media($bp-smaller-than-tablet) {
+  @media(variables.$bp-smaller-than-tablet) {
     display: block;
 
     .c-widget-upcoming-events-horizontal__event-wrapper:not(:last-child) {

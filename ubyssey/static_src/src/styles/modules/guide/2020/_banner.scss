@@ -1,3 +1,6 @@
+@use "../../variables";
+@use "fonts";
+
 .c-banner {
   margin-top: 0;
   position: relative;
@@ -44,11 +47,11 @@
   &:after {
     padding-top: 60%;
 
-    @media($bp-larger-than-mobile) {
+    @media(variables.$bp-larger-than-mobile) {
       padding-top: 55%;
     }
 
-    @media($bp-larger-than-desktop) {
+    @media(variables.$bp-larger-than-desktop) {
       padding-top: 37%;
     }
   }
@@ -66,14 +69,14 @@
   left: 5%;
   bottom: 10%;
   width: 90%;
-  @media($bp-larger-than-desktop){
+  @media(variables.$bp-larger-than-desktop){
     width: calc(90% - 450px);
   }
 }
 
 .c-banner--welcome__intro {
-  color: $color-white;
-  font-family: $header-font;
+  color: variables.$color-white;
+  font-family: fonts.$header-font;
   font-weight: 500;
   font-size: 1rem;
   line-height: 1.2rem;
@@ -82,13 +85,13 @@
 }
 
 .c-banner--welcome__snippet {
-  color: $color-white;
-  font-family: $accent-font;
+  color: variables.$color-white;
+  font-family: fonts.$accent-font;
   margin: 2% 0;
   font-size: 3.5rem;
   line-height: 4rem;
   text-transform: uppercase;
-  @media ($bp-smaller-than-mobile) {
+  @media (variables.$bp-smaller-than-mobile) {
     font-size: 3rem;
     line-height: 3rem;
   }
@@ -103,30 +106,29 @@
 .c-banner--article__nav {
   padding: 2em 0;
 
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     padding: 3em 0;
   }
 }
 
 .c-banner--article__headings {
   padding-bottom: 5%;
-
-  @media($bp-larger-than-tablet) {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  
+  @media(variables.$bp-larger-than-tablet) {
     position: absolute;
     bottom: 0;
   }
 
-  @media($bp-larger-than-desktop) {
+  @media(variables.$bp-larger-than-desktop) {
     padding-bottom: 12%;
   }
-
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .c-banner-credits{
   font-size: 0.8rem;
-  font-family: $credit-font;
-  font-style: $credit-style;
+  font-family: fonts.$credit-font;
+  font-style: fonts.$credit-style;
   z-index: 11;
   color: white;
   position: absolute;

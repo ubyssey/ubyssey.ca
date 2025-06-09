@@ -1,17 +1,18 @@
-@import 'modules/variables';
+@use 'variables';
+@use 'sass:math';
 
 // Variables
 //––––––––––––––––––––––––––––––––––––––––––––––––––
 
 //Grid Variables
 $total-columns: 12 !default;
-$column-width: 100 / $total-columns !default; // calculates individual column width based off of # of columns
+$column-width: math.div(100, $total-columns) !default; // calculates individual column width based off of # of columns
 $column-margin: 4% !default; // space between columns
 
 
 // Functions
 @function grid-column-width($n) {
-  @return $column-width * $n - ($column-margin*($total-columns - $n)/$total-columns);
+  @return $column-width * $n - ($column-margin*math.div(($total-columns - $n), $total-columns));
 }
 
 @function grid-offset-length($n) {
@@ -29,7 +30,7 @@ $column-margin: 4% !default; // space between columns
 }
 
 // For devices larger than 550px
-@media (#{$bp-larger-than-phablet}) {
+@media (#{variables.$bp-larger-than-phablet}) {
   .column,
   .columns {
     margin-left: $column-margin;

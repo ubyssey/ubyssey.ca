@@ -1,3 +1,5 @@
+@use "../modules/variables";
+
 .c-sidebar_inactive {
     top: -100%;
     position:absolute;
@@ -46,25 +48,35 @@
     flex-grow: 1;
 }
 
-.sidebar-block > .boxLabel {
+.sidebar-block > .o-boxLabel {
     font-size: 1.1em;
 }
 
 .c-sidebar {
-    height: 100%;
+    height: auto;
     width:38%;
     padding-left: 1em;
     border-left: solid 1px transparent;
     display: flex;
     flex-direction: column;
 
-    &.empty-sidebar {
+    &.o-sidebar-empty {
         height: 0;
         padding: 0;
+        @media (variables.$bp-smaller-than-tablet) {
+            display: none;
+        }
     }
+}
 
-    @media ($bp-smaller-than-tablet) {
-        display:none;
+@media (variables.$bp-smaller-than-tablet) {
+    .c-sidebar {
+        margin-block: 5em;
+        padding-inline: 1em;
+        width: auto;
+    }
+    .section .c-sidebar {
+        display: none;
     }
 }
 
@@ -78,16 +90,16 @@
     }
 
     .c-sidebar_container {
-    min-height: 125vh;
+    max-height: 125vh;
     margin-bottom: 25vh;
     }
 }
 
-.c-infinitefeed__feed {
+.o-feed-item {
     margin:auto;
     display:flex;
     flex-direction: column;
-    @media ($bp-larger-than-phablet) {
+    @media (variables.$bp-larger-than-tablet) {
         flex-direction: row;
         justify-content: space-evenly;
     }
@@ -97,15 +109,11 @@
     width: 100%;
     padding-bottom: 3em;
 
-    @media ($bp-larger-than-phablet) {
+    @media (variables.$bp-larger-than-tablet) {
         margin-right: 20px;
         width: 50%;
         padding-right: 20px;
     }
-}
-
-.c-home-bannerbox {
-    width: 100%;
 }
 
 .sidebar-issue ul {
@@ -113,7 +121,7 @@
     padding:0;
     display: flex;
     flex-wrap: wrap;
-    @media($bp-smaller-than-phablet){
+    @media(variables.$bp-smaller-than-phablet){
       text-align: center;
     }
 }
@@ -124,7 +132,7 @@
     margin: 5px;
     margin-bottom: 10px;
     list-style-type: none;
-    background-color:$color-ubyssey-blue;
+    background-color:variables.$color-ubyssey-blue;
     border: 2px solid black;
     width: 100px;
     flex-grow: 1;
@@ -182,7 +190,7 @@
         li {
             padding-bottom: 0.5em;
             border-bottom: 1px solid #00000045;
-            color: $color-ubyssey-blue-dark;
+            color: variables.$color-ubyssey-blue-dark;
             a {
                 display: contents;
             }
