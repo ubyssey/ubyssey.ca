@@ -6,7 +6,7 @@ from wagtail.admin.ui.tables import UpdatedAtColumn
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
-from article.models import ArticleTopic, ArticleTopicFilterSet
+from article.models import ArticleTopic
 
 class ArticleTopicViewSet(SnippetViewSet):
     model = ArticleTopic
@@ -15,8 +15,6 @@ class ArticleTopicViewSet(SnippetViewSet):
     list_per_page = 50
     copy_view_enabled = False
     inspect_view_enabled = True
-
-    filterset_class = ArticleTopicFilterSet
     search_fields = ["name"]
     ordering = "-last_used_at"
 

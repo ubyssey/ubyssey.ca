@@ -468,11 +468,6 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
         verbose_name = "Article topic"
         verbose_name_plural = "Article topics"
 
-class ArticleTopicFilterSet(WagtailFilterSet):
-    class Meta:
-        model = ArticleTopic
-        fields = ["name"]
-
 #-----Taggit models-----
 class TaggedArticlePage(ItemBase):
     """

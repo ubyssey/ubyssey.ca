@@ -9,6 +9,7 @@ from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleE
 from authors.views import author_chooser_viewset
 from images.views import ubyssey_image_viewset
 from article.views import ArticleTopicViewSet
+from events.views import EventsDashboardViewSet
 
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
@@ -277,3 +278,5 @@ def register_image_chooser_viewset():
     return ubyssey_image_viewset
 
 register_snippet(ArticleTopicViewSet)
+
+register_snippet(EventsDashboardViewSet)
