@@ -76,7 +76,7 @@ services:
         max_attempts: 10
         window: 120s
 
-      # Update 2 containers at a time.
+      # Update 2 containers at a time. This prevents downtime when releasing an update.
       # Ref: https://docs.docker.com/reference/compose-file/deploy/#update_config
       update_config:
         parallelism: 2
