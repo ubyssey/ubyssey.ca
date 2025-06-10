@@ -26,5 +26,5 @@
 
 <div class="u-container u-container--padded headline-container">
     <h1 class="o-headline o-headline--article">{{ self.title|safe }}</h1>
-    <p class="author-string">{{self.authors_with_roles |safe }}</p> 
+    <p class="author-string">{{self.get_authors_split_out_visual_bylines |safe }}</p> 
 </div>

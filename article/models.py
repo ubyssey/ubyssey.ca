@@ -1006,7 +1006,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                         <li>2. <b>Quotes</b> Can be used for opinions, personal essays, interviews</li> 
                         <li>3. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
                         <li>4. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
-                        <li>5. <b>Large headline (large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo). This template deemphasizes the article in the storystream.</li>
+                        <li>5. <b>Standard (Desktop homepage: Small headline + lede left, image right) (Mobile homepage, topic page: Large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
                         <li>6. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.</li>
                     </ol>
                     '''),
@@ -1355,42 +1355,43 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             'designer': 'Design by ',
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
-        writers = []
-        visuals = []
+
+        authors_by_role = {}
+        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role):
+            authors_by_role[k] = list(v)
+
+        print(authors_by_role)
+
         word_authors = []
-        visual_authors = []
-        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
-            v = list(v)
-            if k=='org_role' or k=='author':
-                for author in v:
-                    word_authors.append(author.author)
-                writers = writers + v
-            else:
-                for author in v:
-                    visual_authors.append(author.author)
-                visuals.append([k, self.get_authors_string(links=True, authors_list=v)])
+        words_byline = ""
+        if 'author' in authors_by_role:
+            word_authors = list(map(lambda author: author.author, authors_by_role['author']))
+            words_byline = self.get_authors_string(links=True, authors_list=authors_by_role['author'])
+    
+        visuals = []
+        has_multi_contribution_author = False
+        for k in authors_by_role:
+            v = authors_by_role[k]
+            visual_authors = map(lambda author: author.author, v)
+            if True in [word_author in visual_authors for word_author in word_authors]:
+                has_multi_contribution_author = True
+            only_visuals_authors = list(filter(lambda author: not author.author in word_authors, v))
+            if len(only_visuals_authors) > 0:
+                visuals.append([k, self.get_authors_string(links=True, authors_list=only_visuals_authors)])
         visuals.sort(key=lambda s: role_types.index(s[0]))
+        
+        visuals_byline = ''
 
-        if len(word_authors) > 0:
-            visual_only_author = False
-            for visual_author in visual_authors:
-                if not visual_author in word_authors:
-                    visual_only_author = True
-                    break
+        if len(visuals) > 0:
+            visuals_byline = ' '
+            if has_multi_contribution_author:
+                visuals_byline = visuals_byline + 'with '
+            visuals_byline = visuals_byline + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
 
-            writers = self.get_authors_string(links=True, authors_list=list(writers))
+        print(word_authors)
+        print(visuals)
 
-            if len(visuals) > 0 and visual_only_author:
-                visuals = ', ' + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
-            else:
-                visuals = ''
-
-            return writers + visuals
-        else:
-            if len(visuals) > 1:
-                return ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))                
-            else:
-                return ', '.join(map(lambda a: a[1], visuals))
+        return words_byline + visuals_byline
         
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 

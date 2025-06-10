@@ -28,7 +28,7 @@ This template is for the columns for the blog section on the home page under the
   <div class="o-article__left">
     {% include "article/objects/headline.html" with alternate_fields="true" %}
     <p class="o-article__snippet">
-      {{article.lede}}
+      {{article.lede|safe}}
     </p>
   </div>
 </article>

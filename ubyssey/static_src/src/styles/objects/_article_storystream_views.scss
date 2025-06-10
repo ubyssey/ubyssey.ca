@@ -265,34 +265,12 @@
 
         // Feature
         .o-article_storystream_feature {
-            display: flex;
-            flex-direction: row-reverse;
-            gap: 2em;
-            justify-content: center;
-            .o-article__left {
-                padding: 0;
-                width: 500px;
-                > * {
-                    width: 100%;
-                }
-            }
-            .o-article__right {
-                margin-block: auto;
-                height: fit-content;
-            }
-        }
-        .o-article_storystream_profile {
-            padding-inline: 1em;
-            .o-article__left img {
-                margin: 0;  
-                width: auto;
-                max-height: 500px;
-            }
+            padding-inline: 5em;
         }
 
         // Indent
         .o-article_storystream_indent {
-            padding-inline: 2em;
+            padding-inline: 4em;
         }
 
         // Large, Small headline
@@ -308,7 +286,7 @@
                 }
             }
             .o-article__right {
-                width: 500px;
+                width: 400px;
                 img.o-article_storystream_minimal--image_small {
                     display: none;
                 }
