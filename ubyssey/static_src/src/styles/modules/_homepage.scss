@@ -216,10 +216,11 @@ html.hairlines {
 .o-storystream_group {
   width: 100%;
   padding-bottom: 3em;
+  flex-shrink: 0;
 
   @media (variables.$bp-larger-than-tablet) {
       margin-right: 20px;
-      width: 50%;
+      width: 66%;
       padding-right: 20px;
   }
   
@@ -293,7 +294,7 @@ html.hairlines {
 
   .o-boxLabel {
     @media(variables.$bp-larger-than-tablet) {
-      width: 60%;
+      width: 66%;
       margin-right: auto;
       margin-left: 0;
       margin-bottom: 3em;

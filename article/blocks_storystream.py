@@ -49,7 +49,6 @@ class StorystreamFeaturedImage(StorystreamStructBlock):
     template = blocks.ChoiceBlock(
         choices=[
             ('large-headline', 'Large headline (Large headline left, small featured media right)'),
-            ('small-headline', 'Small headline + lede (Small headline + lede left, featured media right)'),
             ('featured', 'Featured (Featured media above, Headline below'),
             ('indent', 'Indent (Headline above, lede + featured media below'),
         ],
