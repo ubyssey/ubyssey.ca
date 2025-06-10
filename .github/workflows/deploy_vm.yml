@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   terraform:
-    name: 'Terraform ${{ github.event.inputs.action }}' 
+    name: 'Terraform ${{ github.event.inputs.action || ''deploy'' }}' 
     runs-on: ubuntu-latest
 
     defaults:
@@ -49,8 +49,11 @@ jobs:
       - name: Determine Action
         id: get_action
         run: |
+          ACTION="destroy" # Default for push events
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             ACTION="${{ github.event.inputs.action }}"
-            echo "action=$ACTION" >> $GITHUB_OUTPUT
+          fi
+          echo "action=$ACTION" >> $GITHUB_OUTPUT
 
       - name: Terraform Init
         id: init
