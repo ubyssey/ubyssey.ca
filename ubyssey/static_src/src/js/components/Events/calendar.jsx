@@ -234,8 +234,8 @@ export function QueryEventsCalendar() {
                         <div class="u-container">
                             <div class="logo-area">
                                 <a class="home-link" href="/" title="Go to The Ubyssey Homepage">
-                                <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('/static/ubyssey/images/logos/ubyssey-logo-blue-light.svg')"}} alt="Ubyssey Logo"></div>
-                                <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('/static/ubyssey/images/logos/ubyssey-logo-blue-dark.svg')"}} alt="Ubyssey Logo"></div>
+                                <div class="top-logo ubyssey_small_logo light-logo" style={{'background-image': "url('https://storage.googleapis.com/ubyssey/static/ubyssey/images/logos/ubyssey-logo-blue-light.svg')"}} alt="Ubyssey Logo"></div>
+                                <div class="top-logo ubyssey_small_logo dark-logo"  style={{'background-image': "url('https://storage.googleapis.com/ubyssey/static/ubyssey/images/logos/ubyssey-logo-blue-dark.svg')"}} alt="Ubyssey Logo"></div>
                                 </a>
                             </div>
                         </div>
