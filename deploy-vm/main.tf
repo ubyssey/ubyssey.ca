@@ -10,8 +10,6 @@ data "google_compute_snapshot" "ubyssey_snapshot" {
   most_recent = true
 }
 
-//TODO: add snapshot of the disk
-
 resource "google_compute_disk" "boot_disk_from_snapshot" {
   name     = var.boot_disk_from_snapshot
   size     = var.disk_size_gb
@@ -49,7 +47,7 @@ resource "google_compute_instance" "ubyssey_prd_vm_2" {
   metadata = {
     enable-osconfig = "TRUE"
   }
-  
+
   tags = ["http-server", "https-server"]
 
   labels = {

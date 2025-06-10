@@ -43,9 +43,9 @@ jobs:
         id: auth
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/1012602718138/locations/global/workloadIdentityPools/ubyssey-wif-pool-staging/providers/ubyssey-oidc-github-staging'          # Replace with your PRODUCTION Service Account for 'ubyssey-prd'
-          service_account: 'deployment@ubyssey-staging.iam.gserviceaccount.com'
-          
+          workload_identity_provider: 'projects/863738545301/locations/global/workloadIdentityPools/ubyssey-wif-pool-prd/providers/ubyssey-oidc-github-prd'
+          service_account: 'deployment@ubyssey-prd.iam.gserviceaccount.com'
+                    
       - name: Determine Action
         id: get_action
         run: |
