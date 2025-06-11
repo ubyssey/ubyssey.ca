@@ -1,0 +1,101 @@
+version: "3.7"
+services:
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ubyssey
+      MYSQL_USER: ubyssey
+      MYSQL_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
+    secrets:
+       - SQL_PASSWORD
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+  cache:
+    image: memcached:1.6.10
+    ports:
+      - "11211:11211"
+
+  django:
+    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
+
+    # The number of gunicorn workers below is derived from the number of CPU cores
+    # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
+    #
+    # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
+    command: >
+      bash -c "python manage.py migrate
+      && gunicorn ubyssey.wsgi:application --workers=17 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
+
+    environment:
+      SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
+      SQL_HOST: mysql
+      SQL_USER: root
+      SQL_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
+      SQL_DATABASE: ubyssey
+      GS_ACCESS_KEY_ID_FILE: /run/secrets/GS_ACCESS_KEY_ID
+      GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
+      STATIC_URL: https://storage.googleapis.com/ubyssey/static/
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
+
+    secrets:
+      - DJANGO_SECRET_KEY
+      - SQL_PASSWORD
+      - GS_ACCESS_KEY_ID
+      - GS_SECRET_ACCESS_KEY
+      - GOOGLE_APPLICATION_CREDENTIALS
+
+    expose:
+      - 8000
+
+    logging:
+      driver: gcplogs
+    
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+    depends_on:
+      - mysql
+      - cache
+
+  nginx:
+    image: nginx:1.27
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/:/etc/nginx/:ro
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:ro
+    logging:
+      driver: gcplogs
+    depends_on:
+      - django
+  
+  certbot:
+    image: certbot/certbot:v4.0.0
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:rw
+      - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
+    # Attempt to renew TLS certificate every 12 hours
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+secrets:
+  DJANGO_SECRET_KEY:
+    external: true
+  SQL_PASSWORD:
+    external: true
+  GS_ACCESS_KEY_ID:
+    external: true
+  GS_SECRET_ACCESS_KEY:
+    external: true
+  GOOGLE_APPLICATION_CREDENTIALS:
+    file: ./service-account.json

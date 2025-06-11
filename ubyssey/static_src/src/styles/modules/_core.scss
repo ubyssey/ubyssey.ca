@@ -241,6 +241,7 @@ html[color-css-theme="light"] {
   --background: white;
   --text_color: #1b1b1b;
   --text_color_supporting: #666;
+  --text_color_contrast: #333;
   --header_color: black;
   --header_color_supporting: #111;
   --article-publish: #1871C4;
@@ -269,6 +270,7 @@ html[color-css-theme="dark"] {
   --background: #031621;
   --text_color: #D9D9D9;
   --text_color_supporting: #aaa;
+  --text_color_contrast: #{variables.$color-ubyssey-blue-light};
   --header_color: white;
   --header_color_supporting: #eee;
   --article-publish: #1871C4;

@@ -25,7 +25,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 
 from section.sectionable.models import SectionablePage
 
-from taggit.models import TaggedItemBase, Tag, TagBase, ItemBase
+from taggit.models import TaggedItemBase, TagBase, ItemBase
 
 from videos import blocks as video_blocks
 from ubyssey.validators import validate_youtube_url
@@ -458,6 +458,7 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
     def get_preview_context(self, request, mode_name):
         context = super().get_preview_context(request, mode_name)
         context["filters"] = {"tag": self.id}
+        context["storystream"] = "true"
         return context
 
     def get_preview_template(self, request, mode_name):
@@ -466,11 +467,6 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
     class Meta:
         verbose_name = "Article topic"
         verbose_name_plural = "Article topics"
-
-class ArticleTopicFilterSet(WagtailFilterSet):
-    class Meta:
-        model = ArticleTopic
-        fields = ["name"]
 
 #-----Taggit models-----
 class TaggedArticlePage(ItemBase):
@@ -523,8 +519,8 @@ class PrimaryTagSelect(Select):
     def optgroups(self, name, value, attrs=None):
         # Add value of primary tag field as one of the choices
         if len(value) > 0:
-            if Tag.objects.filter(slug=value[0]).exists():
-                self.choices.append((value[0], Tag.objects.get(slug=value[0]).name))
+            if ArticleTopic.objects.filter(slug=value[0]).exists():
+                self.choices.append((value[0], ArticleTopic.objects.get(slug=value[0]).name))
 
         return super().optgroups(name, value, attrs)  
 
@@ -1003,14 +999,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     <h1>About storystream views</h1>
                     <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>
                     <p>Storystream views allow us to signal effort and differentiate our articles. They also allow us to move more of the value (journalism) from articles into the homepage - making the homepage valueable in and of itself (not just a set of links to click).</p>
+                    <p>Storystream views are used on the homepage and on topic pages. They display differently between these pages. Storystream views are titled according to how they are displayed in the topic pages and mobile because there is more variation between storystream views when presented on the topic pages than on the homepage.</p>
                     <h2>Guidelines for choosing storystream</h2>
                     <ol>
                         <li>1. <b>For profiles:</b> select 'Image' and the 'Profile' template. Use a cutout image of the individual. Make sure empty space is cropped out. If you don't know how to cutout an image you can ask the photo editor or web developers!</li>  
                         <li>2. <b>Quotes</b> Can be used for opinions, personal essays, interviews</li> 
                         <li>3. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
                         <li>4. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
-                        <li>5. <b>Large headline (large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo). This template deemphasizes the article in the storystream.</li>
-                        <li>6. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.
+                        <li>5. <b>Standard (Desktop homepage: Small headline + lede left, image right) (Mobile homepage, topic page: Large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
+                        <li>6. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.</li>
                     </ol>
                     '''),
                 FieldPanel("storystream_view"),
@@ -1222,10 +1219,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if context['next']:
                 context['next'] = context['next'].specific
 
-        if self.tag_page_link and self.primary_tag_slug:
-            if Tag.objects.filter(slug=self.primary_tag_slug).exists():
-                context["primary_tag"] = Tag.objects.get(slug=self.primary_tag_slug)
-
         return context
 
 
@@ -1362,42 +1355,43 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             'designer': 'Design by ',
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
-        writers = []
-        visuals = []
+
+        authors_by_role = {}
+        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role):
+            authors_by_role[k] = list(v)
+
+        print(authors_by_role)
+
         word_authors = []
-        visual_authors = []
-        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role): 
-            v = list(v)
-            if k=='org_role' or k=='author':
-                for author in v:
-                    word_authors.append(author.author)
-                writers = writers + v
-            else:
-                for author in v:
-                    visual_authors.append(author.author)
-                visuals.append([k, self.get_authors_string(links=True, authors_list=v)])
+        words_byline = ""
+        if 'author' in authors_by_role:
+            word_authors = list(map(lambda author: author.author, authors_by_role['author']))
+            words_byline = self.get_authors_string(links=True, authors_list=authors_by_role['author'])
+    
+        visuals = []
+        has_multi_contribution_author = False
+        for k in authors_by_role:
+            v = authors_by_role[k]
+            visual_authors = map(lambda author: author.author, v)
+            if True in [word_author in visual_authors for word_author in word_authors]:
+                has_multi_contribution_author = True
+            only_visuals_authors = list(filter(lambda author: not author.author in word_authors, v))
+            if len(only_visuals_authors) > 0:
+                visuals.append([k, self.get_authors_string(links=True, authors_list=only_visuals_authors)])
         visuals.sort(key=lambda s: role_types.index(s[0]))
+        
+        visuals_byline = ''
 
-        if len(word_authors) > 0:
-            visual_only_author = False
-            for visual_author in visual_authors:
-                if not visual_author in word_authors:
-                    visual_only_author = True
-                    break
+        if len(visuals) > 0:
+            visuals_byline = ' '
+            if has_multi_contribution_author:
+                visuals_byline = visuals_byline + 'with '
+            visuals_byline = visuals_byline + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
 
-            writers = self.get_authors_string(links=True, authors_list=list(writers))
+        print(word_authors)
+        print(visuals)
 
-            if len(visuals) > 0 and visual_only_author:
-                visuals = ', ' + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
-            else:
-                visuals = ''
-
-            return writers + visuals
-        else:
-            if len(visuals) > 1:
-                return ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))                
-            else:
-                return ', '.join(map(lambda a: a[1], visuals))
+        return words_byline + visuals_byline
         
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 
@@ -1433,7 +1427,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """
         Defines the title and articles in the suggested box
         """
-        from taggit.models import Tag
         suggested = {}
         MIN_ARTICLES = 2
         if len(self.connected_articles.all()) > 0:
@@ -1444,10 +1437,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         elif self.filter_by_tags:
             articles_by_tag = self.get_articles_by_tag(max=number_suggested)
             if len(articles_by_tag) >= MIN_ARTICLES:
-                if Tag.objects.filter(slug=self.primary_tag_slug).exists():
-                    tag = Tag.objects.get(slug=self.primary_tag_slug)
-                elif Tag.objects.filter(name=self.primary_tag_slug).exists():
-                    tag = Tag.objects.get(name=self.primary_tag_slug)
+                if ArticleTopic.objects.filter(slug=self.primary_tag_slug).exists():
+                    tag = ArticleTopic.objects.get(slug=self.primary_tag_slug)
+                elif ArticleTopic.objects.filter(name=self.primary_tag_slug).exists():
+                    tag = ArticleTopic.objects.get(name=self.primary_tag_slug)
                 suggested = {}
                 suggested['title'] = "More on <a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
                 suggested['articles'] = articles_by_tag[:number_suggested]
@@ -1496,51 +1489,72 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             topic_articles.append({
                 "topic": f'<a href="{category.url}">{category.title}</a>',
                 "considered_articles": category.get_recent_articles(max_items=5),
-                "articles": [],
+                "type": "category",
             })
+        
+        time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
+
+        if self.current_section in ['opinion', 'humour', 'features'] and self.primary_tag_slug:
+            primary_topic = self.get_primary_topic()
+            if primary_topic != None:
+                topic_articles.append({
+                    "topic": f'News: <a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
+                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                    "type": "other section",
+                })
+
+        if primary['type'] != 'topic' and self.primary_tag_slug:
+            primary_topic = self.get_primary_topic()
+            if primary_topic:
+                topic_articles.append(
+                    {
+                        "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
+                        "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                        "type": "topic",
+                    }
+                )
 
         # Get the article's topics marked as listed
-        listed_topics = self.topics.filter(listed=True)
-        if primary['type'] == 'topic':
-            listed_topics = listed_topics.exclude(slug=self.primary_tag_slug)
-        listed_topics = listed_topics.order_by("last_used_at")
+        listed_topics = self.topics.filter(listed=True) \
+            .exclude(slug=self.primary_tag_slug) \
+            .order_by("last_used_at")
 
         # Add each listed topic, order by article publish date 
-        time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
         topic_articles = topic_articles + list(sorted([
             {
                 "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
                 "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
-                "articles": [],
+                "type": "topic",
             } for topic in listed_topics
         ], key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True))
 
-        # If two "topics" have the exact same five articles, combine them. Otherwise we consider the topics sufficiently unique
-        for i in range(len(topic_articles)):
-            topic = topic_articles[i]
-            topic["is_copy"] = False
-            for other_topic in topic_articles[i+1:]:
-                if len(other_topic["considered_articles"]) > len(topic["considered_articles"]):
-                    topic["is_copy"] = not False in [article in topic["considered_articles"] for article in other_topic["considered_articles"]]
-                else:
-                    topic["is_copy"] = not False in [article in other_topic["considered_articles"] for article in topic["considered_articles"]]
-                if topic["is_copy"]:
-                    other_topic["topic"] = f'{other_topic["topic"]}, {topic["topic"]}'
-                    break
-        
-        topic_articles = list(filter(lambda topic: not topic["is_copy"], topic_articles))
-
-        
-        # Choose articles for each of the topics amd remove topics that don't have articles
+        # Choose articles from each of the topic and combine topics with shared articles
         article_count = 0
         new_added = True
+        combined_topics = []
 
         while article_count < topic_max and new_added:
             new_added = False
             for topic in topic_articles:
                 for article in topic["considered_articles"]:
                     if not article in seen_articles:
-                        topic["articles"].append(article)
+                        combined = False
+                        for combined_topic in combined_topics:
+                            if article in combined_topic["possible_articles"] and not False in [combined_topic_article in topic["considered_articles"] for combined_topic_article in combined_topic["articles"]]:
+                                combined_topic["articles"].append(article)
+                                combined_topic["possible_articles"] = list(filter(lambda article: article in topic["considered_articles"], combined_topic["possible_articles"]))
+                                if not topic["topic"] in combined_topic["topic"]:
+                                    combined_topic["topic"] = combined_topic["topic"] + ", " + topic["topic"]
+                                combined = True
+                                break
+                        if not combined:
+                            combined_topics.append({
+                                "topic": topic["topic"],
+                                "articles": [article],
+                                "possible_articles": topic["considered_articles"],
+                                "type": topic["type"]
+                            })
+
                         seen_articles.append(article)
                         article_count = article_count + 1
                         new_added = True
@@ -1548,13 +1562,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 if article_count >= topic_max:
                     break
 
-            topic_articles = list(filter(lambda topic: not len(topic["articles"]) == 0, topic_articles))
-            topic_articles = sorted(topic_articles, key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True)
+        orderd_topics = list(filter(lambda topic: topic["type"]=="category", combined_topics)) + \
+            list(sorted(filter(lambda topic: topic["type"]=="topic", combined_topics), key= lambda topic: topic["articles"][0].first_published_at, reverse=True)) + \
+            list(filter(lambda topic: not topic["type"] in ["category", "topic"], combined_topics))
 
         # Ensure the number of topics is at or below the maximum
-        topic_articles = topic_articles[:topic_max]
+        orderd_topics = orderd_topics[:topic_max]
 
-        return {"primary": primary, "topics": topic_articles}
+        return {"primary": primary, "topics": orderd_topics}
 
 
     def get_title_tag(self) -> str:
@@ -1566,10 +1581,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             False
     title_tag_str = property(fget=get_title_tag)
 
+    def get_primary_topic(self) -> str:
+        return ArticleTopic.objects.filter(slug=self.primary_tag_slug).first()
+
     def get_primary_tag_link(self) -> str:
-        from taggit.models import Tag
-        tag = Tag.objects.get(slug=self.primary_tag_slug)
-        return "<a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
+        tag = ArticleTopic.objects.filter(slug=self.primary_tag_slug).first()
+        if tag != None:
+            return "<a href='/topic/" + tag.slug + "/'>" + tag.name + "</a>"
+        return ""
     primary_tag_link = property(fget=get_primary_tag_link)
 
     @property
@@ -1577,6 +1596,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         if self.explicit_published_at:
             return self.explicit_published_at
         return self.first_published_at
+
+    def first_online_at(self):
+        # Some articles seem to have correct explicit published but not first published (due to migration). 
+        # Others have correct explicit but not correct first published (due to editors not understanding the explicit field).
+        if self.explicit_published_at and self.first_published_at:
+            if self.explicit_published_at - self.first_published_at < timezone.timedelta(days=5):
+                return self.first_published_at
+        return self.explicit_published_at
     
     @property
     def word_count(self) -> int:

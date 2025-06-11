@@ -1,0 +1,28 @@
+{% comment %} 
+Arguments: featured_articles a list of article pages
+Used in both section pages and homepage
+{% endcomment %}
+{% load wagtailcore_tags %}
+
+<section class="landing_stream_block">
+  <h2 class="section">
+      <a href={{ link }}>{{ title|title }}</a>
+  </h2>
+  <div class="o-section_article-row o-section_article-cluster">
+
+    {% for group in self.section.get_recent_topic_cluster_grouped %}
+    <div class="o-section_article-cluster--group">
+    {% for cluster in group %}
+      <div class="o-section_row_block">
+        <span class="o-section_row_block__title"><a href="/topic/{{cluster.topic.slug}}/">{{cluster.topic.name}}</a></span>
+
+        {% for article in cluster.articles %}
+            {% include "article/objects/article_list-item.html" %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+    </div>
+    {% endfor %}
+
+  </div>
+</section>

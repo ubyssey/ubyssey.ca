@@ -814,7 +814,6 @@ class EventManager(models.Manager):
         # Otherwise assume its good
         return False
           
-@register_snippet
 class Event(models.Model):
     title = models.CharField(
         max_length=255,

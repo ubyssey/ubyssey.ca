@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from rest_framework import serializers, viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from wagtail.snippets.views.snippets import SnippetViewSet
 import math
 from django.contrib.syndication.views import Feed
 from ubyssey.views.feed import RssFeedWithImage
@@ -730,3 +731,16 @@ class EventsViewSet(viewsets.ModelViewSet):
         'event_url': ['exact'],
     }
     search_fields = ['title', 'description', 'host', 'location', '^event_url']
+
+class EventsDashboardViewSet(SnippetViewSet):
+    model = Event
+    icon = "calendar"
+    list_display = ["title", "host", "start_time", "end_time", "event_url", "category"]
+    list_per_page = 50
+    copy_view_enabled = False
+    inspect_view_enabled = True
+
+    search_fields = ["title", "host", "category"]
+    ordering = "-start_time"
+
+    list_export = ["title", "description", "host", "start_time", "end_time", "location", "event_url", "category"]

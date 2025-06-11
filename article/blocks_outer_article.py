@@ -1,8 +1,7 @@
 from wagtail import blocks
 from wagtail.blocks import field_block
 from wagtail.models import Page
-from article.models import ArticlePage
-from taggit.models import Tag
+from article.models import ArticlePage, ArticleTopic
 from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.template.loader import render_to_string
@@ -127,8 +126,8 @@ class ArticleGathererBlock(AbstractArticleList):
             context['articles'] = context['articles'].filter(category_page=value['category'])
 
         if value['tag_slug']:
-            if Tag.objects.filter(slug=value['tag_slug']).exists():
-                tag = Tag.objects.get(slug=value['tag_slug'])
+            if ArticleTopic.objects.filter(slug=value['tag_slug']).exists():
+                tag = ArticleTopic.objects.get(slug=value['tag_slug'])
                 context['gather_title'] = tag.name
                 if value['section']:
                     context['description'] = "Stories on '" + tag.name + "' in " + value['section'].title
@@ -182,6 +181,7 @@ class SectionBlock(AbstractArticleList):
         choices=[
             ('section/objects/section_one-large-two-small.html', 'One left, two right'),
             ('section/objects/section_article-row.html', 'Four articles in a row'),
+            ('section/objects/section_article-row--cluster.html', 'Articles clustered into by topic'),
         ]
     )
 
