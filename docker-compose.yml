@@ -24,10 +24,16 @@ services:
     # The number of gunicorn workers below is derived from the number of CPU cores
     # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
     #
+    # Total workers = (2 x 8) + 1 = 17
+    #
+    # We then further divide by the number of container replicas (4):
+    #
+    # Workers per replica = floor(17 / 4) = 4
+    #
     # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
       bash -c "python manage.py migrate
-      && gunicorn ubyssey.wsgi:application --workers=17 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
+      && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
@@ -50,16 +56,33 @@ services:
     expose:
       - 8000
 
+    # Send container logs to Google Cloud Logging
+    # Ref: https://docs.docker.com/engine/logging/drivers/gcplogs/
     logging:
       driver: gcplogs
     
     deploy:
+      # Deploy 4 replicas of the Django app. This makes us more resilient to errors
+      # that might cause a single container to crash momentarily.
+      #
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#replicas
+      mode: replicated
+      replicas: 4
+
+      # Restart containers on failure up to a maximum of 10 times.
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#restart_policy
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
+        max_attempts: 10
         window: 120s
 
+      # Update 2 containers at a time. This prevents downtime when releasing an update.
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#update_config
+      update_config:
+        parallelism: 2
+        delay: 10s
+        order: stop-first
+  
     depends_on:
       - mysql
       - cache
