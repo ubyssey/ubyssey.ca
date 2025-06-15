@@ -46,7 +46,7 @@ jobs:
       - name: Determine Action
         id: get_action
         run: |
-          ACTION="deploy" # Default for push events
+          ACTION="destroy" # Default for push events
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             ACTION="${{ github.event.inputs.action }}"
           fi
