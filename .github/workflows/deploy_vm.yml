@@ -9,7 +9,7 @@ on:
       action:
         description: 'Terraform action to perform (deploy or destroy)'
         required: true
-        default: 'destroy'
+        default: 'deploy'
         type: choice
         options:
           - deploy
@@ -46,7 +46,7 @@ jobs:
       - name: Determine Action
         id: get_action
         run: |
-          ACTION="destroy" # Default for push events
+          ACTION="deploy" # Default for push events
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             ACTION="${{ github.event.inputs.action }}"
           fi
@@ -56,15 +56,15 @@ jobs:
         id: init
         run: terraform init
 
-      # - name: Terraform Plan
-      #   id: plan
-      #   if: steps.get_action.outputs.action == 'deploy'
-      #   run: terraform plan -out=tfplan -input=false
-      #   continue-on-error: false 
+      - name: Terraform Plan
+        id: plan
+        if: steps.get_action.outputs.action == 'deploy'
+        run: terraform plan -out=tfplan -input=false
+        continue-on-error: false 
 
-      # - name: Terraform Apply
-      #   if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
-      #   run: terraform apply -auto-approve -input=false tfplan
+      - name: Terraform Apply
+        if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
+        run: terraform apply -auto-approve -input=false tfplan
 
       - name: Terraform Destroy
         if: steps.get_action.outputs.action == 'destroy'
