@@ -1,11 +1,18 @@
+terraform {
+  backend "gcs" {
+    bucket = "ubyssey-terraform-state-bucket"
+    prefix = "terraform-state"
+  }
+}
+
 provider "google" {
-  project = var.project
+  project = var.project_provider
   region  = var.region
   zone    = var.zone
 }
 
 data "google_compute_snapshot" "ubyssey_snapshot" {
-  project     = var.project
+  project     = var.project_snapshot
   filter      = var.snapshot_filter
   most_recent = true
 }
@@ -58,10 +65,10 @@ resource "google_compute_instance" "ubyssey_prd_vm_2" {
     type = "ANY_RESERVATION"
   }
 
-  service_account {
-    email  = var.service_account_email
-    scopes = ["https://www.googleapis.com/auth/cloud-platform"]
-  }
+  # service_account {
+  #   email  = var.service_account_email
+  #   scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+  # }
 }
 
 # Resource policy for automatic snapshot schedule and retention

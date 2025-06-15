@@ -1,4 +1,10 @@
-variable "project" {
+variable "project_provider" {
+  description = "GCP project ID"
+  type        = string
+  default     = "ubyssey-staging"
+}
+
+variable "project_snapshot" {
   description = "GCP project ID"
   type        = string
   default     = "ubyssey-prd"
