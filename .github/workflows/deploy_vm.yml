@@ -46,7 +46,7 @@ jobs:
       - name: Determine Action
         id: get_action
         run: |
-          ACTION="deploy" # Default for push events
+          ACTION="destroy" # Default for push events
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             ACTION="${{ github.event.inputs.action }}"
           fi
@@ -62,9 +62,9 @@ jobs:
       #   run: terraform plan -out=tfplan -input=false
       #   continue-on-error: false 
 
-      - name: Terraform Apply
-        if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
-        run: terraform apply -auto-approve -input=false tfplan
+      # - name: Terraform Apply
+      #   if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
+      #   run: terraform apply -auto-approve -input=false tfplan
 
       - name: Terraform Destroy
         if: steps.get_action.outputs.action == 'destroy'
