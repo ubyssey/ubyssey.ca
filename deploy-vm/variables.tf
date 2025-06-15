@@ -25,7 +25,7 @@ variable "zone" {
 variable "vm_name" {
   description = "Name of the VM instance"
   type        = string
-  default     = "ubyssey-prd-vm-2"
+  default     = "ubyssey-staging-vm-2"
 }
 
 variable "machine_type" {
