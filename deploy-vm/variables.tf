@@ -7,7 +7,7 @@ variable "project_provider" {
 variable "project_snapshot" {
   description = "GCP project ID"
   type        = string
-  default     = "ubyssey-prd"
+  default     = "ubyssey-staging"
 }
 
 variable "region" {
@@ -49,7 +49,7 @@ variable "disk_type" {
 variable "snapshot_filter" {
   description = "Filter for finding the latest snapshot"
   type        = string
-  default     = "name eq ^ubyssey-prd-vm.*"
+  default     = "name eq ^ubyssey-staging-vm.*"
 }
 
 variable "service_account_email" {
@@ -60,7 +60,7 @@ variable "service_account_email" {
 
 variable "boot_disk_from_snapshot" {
   type        = string
-  default     = "boot-disk-from-snapshot-1"
+  default     = "ubyssey-staging-vm"
   description = "Optional: Boot disk from snapshot, if not provided a new disk will be created with the default name"
 }
 
