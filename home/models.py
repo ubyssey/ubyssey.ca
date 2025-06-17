@@ -85,6 +85,15 @@ class HomePage(Page):
         help_text = "Before this date the manually set top stories list will be displayed. After this date the top stories list will be the 5 most recent articles tagged with 'Top stories'. Each section is limited to two articles. Only articles published in the last 2 weeks are included.",
     )
 
+    curated_stream = StreamField(
+        [
+            ("curated_group", homeblocks.CuratedGroup()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+
     middle_stream = StreamField(
         [
             ("links", homeblocks.LinksStreamBlock()),
@@ -116,6 +125,7 @@ class HomePage(Page):
         ("sidebar_gatherer_block", infinitefeedblocks.SidebarArticleGatherer()),
         ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),
         ("siderbar_events_block", eventblocks.SidebarEventsBlock()),
+        ("sidebar_recent_stories", homeblocks.RecentStoriesByDay()),
     ],
     null=True,
     blank=True,
@@ -159,6 +169,7 @@ class HomePage(Page):
             ],
             heading="Tagline"
         ),
+        FieldPanel("curated_stream"),
         FieldPanel("cover_story_timeout"),
         FieldPanel("top_stories_timeout"),
         FieldPanel("cover_story"),

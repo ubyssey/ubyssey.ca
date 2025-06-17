@@ -49,15 +49,13 @@
 		</a>
 		{% endfor %}
 
-		<div class="home-featured u-container u-container--mid">
-			{% if cover_story %}
-				{% include "article/objects/cover_story.html" with article=cover_story%}
-			{% endif %}
-			<div class="home-top-article-list">
-				{% include 'home/objects/home_heading-box.html' with styling='lightmode' title="Top Stories" text="Updated" textBold=update_time|time_ago %}
-				
-				{% for article in top_stories %}
-					{% include "article/objects/top_article.html" with article=article count=forloop.counter %}
+
+		<div class="c-home-top u-container u-container--large u-container--padded">
+			{% include "home/components/curated_stream.html" %}
+
+			<div class="c-home-top--sidebar">
+				{% for sidebar in self.sidebar_stream %}
+					{% include_block sidebar %}
 				{% endfor %}
 			</div>
 		</div>
@@ -65,8 +63,6 @@
 		{% for block in self.middle_stream %}
 			{% include_block block %}
 		{% endfor %}
-
-		{% include "home/components/storystream.html" %}
 
 		<div class="u-container u-container--large c-home-section_stream">
 			{% for section in self.sections_stream %}

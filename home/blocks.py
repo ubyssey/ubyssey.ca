@@ -2,6 +2,10 @@
 Blocks used on the home page of the site
 """
 from wagtail import blocks
+from article.models import ArticlePage
+from django.utils import timezone
+from django.utils.functional import cached_property
+
 
 class LinksStreamBlock(blocks.StructBlock):
 
@@ -73,3 +77,89 @@ class LinksStreamBlock(blocks.StructBlock):
 
     class Meta:
         template = "home/stream_blocks/links.html"
+
+# Curated stream
+
+class StorystreamItem(blocks.StructBlock):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage")
+
+    def render(self, value, context=None):
+        context["article"] = value["article"]
+        return value["article"].storystream_view[0].render_as_block(context=context)
+
+class CuratedGroupHeadline(blocks.StructBlock):
+    headline = blocks.CharBlock()
+    style = blocks.ChoiceBlock(
+        choices=[
+            ('small', 'Small'),
+            ('large', 'Large'),
+        ],
+        default='small',
+        )
+    link = blocks.URLBlock(required=False)
+
+    class Meta:
+        template = 'home/objects/group_headline.html'
+
+class CuratedGroup(blocks.StructBlock):
+    headline = blocks.StreamBlock([
+            ('normal_headline', CuratedGroupHeadline())
+        ],
+        required=False,
+        max_num=1
+        )
+    items = blocks.StreamBlock([
+            ('storystream_item', StorystreamItem())
+        ])
+
+    class Meta:
+        template = "home/objects/curated_group.html"
+
+
+# Sidebar 
+
+class RecentStoriesByDay(blocks.StructBlock):
+
+    def get_recent_stories_by_day(self):
+        print("whats gamed out?")
+        cutoff = timezone.now() - timezone.timedelta(days=14)
+        cutoff = cutoff.replace(hour=0, minute=0)
+        articles = ArticlePage.objects.live().public().filter(first_published_at__gte=cutoff).order_by("-last_published_at")
+
+        if len(articles) < 10:
+            articles = ArticlePage.objects.live().public().order_by("-last_published_at")[:10]
+
+        articlesByDate = []
+
+        def format_date(datetime):
+            today = timezone.now()
+            if today.date() == datetime.date():
+                return "Today"
+            elif today.date() - timezone.timedelta(days=1) == datetime.date():
+                return "Yesterday"
+            else:
+                return datetime.strftime("%B %d")
+
+        for article in articles:
+            if len(articlesByDate) > 0:
+                if articlesByDate[-1]["day"] == format_date(article.first_published_at):
+                    articlesByDate[-1]["articles"].append(article)
+                    continue    
+        
+            articlesByDate.append({
+                "day": format_date(article.first_published_at),
+                "articles": [article]
+            })
+
+        return articlesByDate
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["recent_articles_by_day"] = self.get_recent_stories_by_day
+        return context
+
+    class Meta:
+        template = "home/stream_blocks/recent_stories.html"
+            
+
+

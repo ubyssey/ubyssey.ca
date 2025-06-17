@@ -1,6 +1,9 @@
+{% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
 {% image image.image width-1000 format-webp as bg_image %}
+<a href="{% pageurl article %}" title="{{article.title}}">
 <div class="o-article_storystream--quote_with_background" style="background-image: url('{{bg_image.url}}'); {{ bg_image.background_position_style }};" aria-label="{{image.alt_text}}">
     <blockquote>{{quote}}</blockquote>
 </div>
+</a>

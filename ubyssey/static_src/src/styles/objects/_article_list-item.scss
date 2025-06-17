@@ -6,7 +6,7 @@ article.o-article_list-item {
     width: 300px;
     display: flex;
     gap: 1em;
-    border-bottom: 1px solid var(--light-border);
+    border-bottom: 1px dashed var(--header_color);
 
     .o-article__headline {
         font-size: .85em;

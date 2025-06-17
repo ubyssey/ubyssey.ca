@@ -1,0 +1,20 @@
+{% load wagtailcore_tags %}
+
+<section class="c-home-recent-stories">
+    <h2>Recent stories</h2>
+    <ul class="c-home-recent-stories--day-list">
+        {% for day in recent_articles_by_day %}
+            <li>
+                <div class="c-home-recent-stories--day">{{day.day}}</div>
+                <ul class="c-home-recent-stories--article-list">
+                    {% for article in day.articles%}
+                        <li><a href="{% pageurl article %}">
+                            <span class="c-home-recent-stories--article-list--section">{{article.current_section}}</span>
+                            <span class="c-home-recent-stories--article-list--article">{{article.title}}</span></a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</section>

@@ -2,13 +2,15 @@
 @use "../../modules/variables";
 
 .o-events-sidebar {
-    border: 1px solid;
-    padding: 0 1em;
-    border-radius: 0.5em;
 
+    h2 {
+        font-size: 1.25em;
+    }
+    h3 {
+        font-size: 1.17em;
+    }
     h2, h3 {
         font-family: fonts.$font-default;
-        font-size: 1.17em;
     }
     p {
         color: inherit;
@@ -28,10 +30,12 @@
         }
     }
     ul {
-        padding: 0;
+        padding: 0.5em 0;
+        margin-bottom: 0;
         list-style: none;
     }
     .see_more {
+        margin-block: 0 2em;
         font-size: 0.8em;
         text-decoration: underline;
     }
@@ -40,7 +44,7 @@
 li.o-event {
     margin-bottom: 0.5em;
     padding-left: 0.5em;
-    border-left: 0.25em solid;
+    border-left: 3px solid;
     display: -webkit-box;
     a {
         display: -webkit-box;
@@ -70,31 +74,10 @@ li.o-event {
     }
 }
 
-[color-css-theme="dark"] .o-events-sidebar {
-    color: variables.$color-ubyssey-blue-light;
-    border-color: #5b7480;
-
-    h2, h3 {
-        color: white;
-    }
-}
-
-[color-css-theme="light"] .o-events-sidebar {
-    color: #3b3b3b;
-    border: var(--contrast-color) 2px solid;
-    background-color: white;
-    filter:drop-shadow(-7px 10px 4px rgba(4, 22, 32, 0.1098039216));
-
-    h2, h3 {
-        color: #222;
-    }
-}
-
 .o-events-bar {
     margin: 2em auto;
     padding: 0 1em;
     display: flex;
-    max-width: 1200px;
     border-block: 1px solid;
     color: var(--contrast-color);
   
