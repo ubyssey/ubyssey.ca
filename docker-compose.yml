@@ -124,3 +124,5 @@ secrets:
     external: true
   GOOGLE_APPLICATION_CREDENTIALS:
     file: ./service-account.json
+  EMAIL_HOST_PASSWORD:
+    external: true
