@@ -45,6 +45,7 @@ services:
       GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
       STATIC_URL: https://storage.googleapis.com/ubyssey/static/
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
+      EMAIL_HOST_PASSWORD_FILE: /run/secrets/EMAIL_HOST_PASSWORD
 
     secrets:
       - DJANGO_SECRET_KEY
@@ -52,6 +53,7 @@ services:
       - GS_ACCESS_KEY_ID
       - GS_SECRET_ACCESS_KEY
       - GOOGLE_APPLICATION_CREDENTIALS
+      - EMAIL_HOST_PASSWORD
 
     expose:
       - 8000
