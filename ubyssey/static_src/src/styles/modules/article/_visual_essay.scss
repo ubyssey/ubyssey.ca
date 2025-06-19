@@ -1,27 +1,12 @@
 @use '../variables';
+@use '../fonts';
 
 div.article-content {
     .o-visual-essay__content-container {
+        margin-block: 2.8em auto;
         display: flex;
         flex-direction: row;
-        transition-duration: 1s;
         width: 100%;
-        margin: auto;
-        margin-top: 50px;
-        margin-bottom: 100px;
-
-        a {
-            padding: 0px 3px;
-            border-bottom: 1px solid;
-
-            color: inherit;
-            font-weight: 600;
-            transition-duration: 0.5s;
-
-            &:hover {
-                color: variables.$color-ubyssey-blue;
-            }
-        }
 
         @media (variables.$bp-smaller-than-phablet) {
             flex-direction: column;
@@ -57,7 +42,7 @@ div.article-content {
 
     .o-visual-essay__left-div {
         position: absolute;
-        transition-duration: 1s;
+        transition: opacity 1s, visibility 1s;
         bottom: 0;
         top: 0;
         margin-bottom: 10vh;
@@ -77,7 +62,6 @@ div.article-content {
     }
 
     .o-visual-essay__left-image {
-        transition-duration: 1s;
         width: 100%;
         height: 100%;
         background-size: contain;
@@ -93,7 +77,8 @@ div.article-content {
     .o-visual-essay__right-container {
         margin: auto;
         width: 40%;
-        max-width: 400px;
+        max-width: 600px;
+        transition: margin 1s ease;
 
         @media (variables.$bp-smaller-than-phablet) {
             width: 100%;
@@ -107,15 +92,8 @@ div.article-content {
     .o-visual-essay__right-div {
         margin: auto;
         margin-top: 300px;
-        max-width: 400px;
-        line-height: 2em;
-        font-family: "noto-serif", "Georgia", serif;
         color: #333333;
-        padding: 10px 30px 10px 30px;
-
-        &:last-child {
-            margin-bottom: 500px !important;
-        }
+        padding: 0.25em 1.5em;
     }
 
     .o-visual-essay__left-show {
@@ -160,8 +138,15 @@ div.article-content {
         left: 0;
     }
 
-    .vs-over-image {
+    .vs-side-by-side {
+        .o-visual-essay__right-div:last-child {
+            margin-bottom: 500px !important;
+        }
+    }
 
+    .vs-over-image {
+        display: block;
+        
         .o-visual-essay__left-image {
             height: 100%;
             flex-grow: 1;
@@ -171,6 +156,11 @@ div.article-content {
         .o-visual-essay__left-div {
             width: 100%;
             max-width: 100vw;
+
+            img {
+                height: 100%;
+                object-fit: contain;
+            }
         }
 
         .o-visual-essay__left-container {
@@ -178,36 +168,36 @@ div.article-content {
         }
 
         .o-visual-essay__right-container {
-            @media (variables.$bp-larger-than-phablet) {
-                margin-top: 40vh;
-                width: 0;
-            }
+            padding-inline: 1em;
+            padding-bottom: 100vh;
+        }
 
-            @media (variables.$bp-smaller-than-phablet) {
-                margin-top: -40vh;
+        &.vs-over-image--left {
+            .o-visual-essay__right-container {
+                margin-left: 5%;
             }
         }
 
         .o-visual-essay__right-div {
             position: relative;
-            background-color: #ffffff;
-            filter: drop-shadow(2px 4px 6px black);
+            border: 2px solid;
+            border-radius: 1em;
+            background-color: white;
+            --text-color: #1b1b1b;
+            //opacity: 0;
+            transition: opacity 1s, visibility 1s;
 
             @media (variables.$bp-larger-than-phablet) {
-                transform: translate(-110%, 0);
-                width: 400px;
+                margin-inline: auto;
+                width: fit-content;
             }
 
-            @media (variables.$bp-smaller-than-phablet) {
-                //width: 80vw;
-                //transform: translate(-50%,0);
+            &.in-view {
+                //opacity: 1;
             }
 
-            >p,
-            >h2,
-            >h3,
-            >h4 {
-                color: #333333;
+            p {
+                font-family: fonts.$font-default;
             }
         }
     }
