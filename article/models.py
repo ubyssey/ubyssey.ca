@@ -1360,8 +1360,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         for k, v in groupby(self.article_authors.all(), lambda a: a.author_role):
             authors_by_role[k] = list(v)
 
-        print(authors_by_role)
-
         word_authors = []
         words_byline = ""
         if 'author' in authors_by_role:
@@ -1387,9 +1385,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if has_multi_contribution_author:
                 visuals_byline = visuals_byline + 'with '
             visuals_byline = visuals_byline + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
-
-        print(word_authors)
-        print(visuals)
 
         return words_byline + visuals_byline
         
