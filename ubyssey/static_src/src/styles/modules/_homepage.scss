@@ -453,10 +453,12 @@ html.hairlines {
         margin-top: 0;
         font-size: 3em;
         font-variation-settings: "wght" 600;
+        font-weight: 600;
       }
       &.small {
         font-size: 2em;
         font-variation-settings: "wght" 500;
+        font-weight: 500;
       }
 
       @media(variables.$bp-smaller-than-tablet) {
@@ -529,6 +531,7 @@ html.hairlines {
 
   h2 {
     font-size: 1.25em;
+    font-family: fonts.$font-home-headline;
   }
 
   > section {
@@ -539,24 +542,33 @@ html.hairlines {
 
 .c-home-recent-stories {
   ul {
+    padding: 0;
     list-style: none;
-    padding: 0.5em 0 0.5em 0;
   }
   .c-home-recent-stories--day-list {
+    margin-block: 0.5em;
     max-height: 400px;
     overflow: auto;
   }
-  .c-home-recent-stories--article-list > li {
-    margin-bottom: 0.5em;
-    a {
-      border-bottom: 2.5px dotted variables.$color-ubyssey-blue;
-      color: var(--text_color);
-      transition: border-color 0.25s;
-      &:visited {
-        border-color: var(--background);
-      }
-      &:hover {
+  .c-home-recent-stories--article-list {
+    margin: .5em 0 1em 0;
+    padding-right: 0.5em;
+    border-bottom: 1px dashed #bababa;
+    > li {
+      margin-bottom: .5em;
+      font-size: 0.9em;
+      a {
+        //border-bottom: 2.5px dotted variables.$color-ubyssey-blue;
+        //color: var(--text_color);
+        //transition: border-color 0.25s;
         color: variables.$color-ubyssey-blue;
+        &:visited {
+          color: var(--text_color);
+          //border-color: var(--background);
+        }
+        &:hover {
+          color: variables.$color-ubyssey-blue;
+        }
       }
     }
   }
@@ -564,14 +576,18 @@ html.hairlines {
     margin-right: 0.5em;
     font-size: 0.8em;
     font-weight: 600;
+    font-variation-settings: "wght" 600;
+    font-family: fonts.$font-home-headline;
     text-transform: uppercase;
   }
   .c-home-recent-stories--article-list--article {
-    font-family: fonts.$font-headline;
     font-variation-settings: "wght" 400;
   }
   .c-home-recent-stories--day {
-    font-weight: 600;
+    font-size: 0.8em;
+    font-weight: 400;
+    font-variation-settings: "wght" 400;
+    font-family: fonts.$font-home-headline;
     color: var(--header_color);
   }
 }

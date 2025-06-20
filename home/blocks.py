@@ -124,10 +124,10 @@ class RecentStoriesByDay(blocks.StructBlock):
         print("whats gamed out?")
         cutoff = timezone.now() - timezone.timedelta(days=14)
         cutoff = cutoff.replace(hour=0, minute=0)
-        articles = ArticlePage.objects.live().public().filter(first_published_at__gte=cutoff).order_by("-last_published_at")
+        articles = ArticlePage.objects.live().public().filter(first_published_at__gte=cutoff).order_by("-first_published_at")
 
         if len(articles) < 10:
-            articles = ArticlePage.objects.live().public().order_by("-last_published_at")[:10]
+            articles = ArticlePage.objects.live().public().order_by("-first_published_at")[:10]
 
         articlesByDate = []
 

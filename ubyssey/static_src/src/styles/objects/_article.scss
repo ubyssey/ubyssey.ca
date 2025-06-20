@@ -16,6 +16,7 @@
   font-family: fonts.$font-headline;
   font-weight: fonts.$font-weight-bold;
   font-variation-settings: 'wght' 700;
+  font-weight: 600;
   line-height: 1.15em;
   font-size: fonts.font-size(24);
 
@@ -466,6 +467,7 @@ div.article-content h2.header {
         &::before {
           content: "|";
           margin-inline: 0.25em;
+          font-style: normal;
         }
       }
     }

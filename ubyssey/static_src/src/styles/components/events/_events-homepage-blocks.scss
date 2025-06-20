@@ -10,7 +10,7 @@
         font-size: 1.17em;
     }
     h2, h3 {
-        font-family: fonts.$font-default;
+        font-family: fonts.$font-home-headline;
     }
     p {
         color: inherit;
@@ -46,17 +46,21 @@ li.o-event {
     padding-left: 0.5em;
     border-left: 3px solid;
     display: -webkit-box;
+    font-size: 0.9em;
     a {
         display: -webkit-box;
         height: fit-content;
         overflow: clip;
-        font-family: fonts.$font-headline;
         font-variation-settings: "wght" 400;
         text-overflow: ellipsis;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         b {
+            font-family: fonts.$font-headline;
             font-variation-settings: "wght" 600;
+            font-weight: 600;
+            font-size: 0.8em;
+            text-transform: uppercase;
         }
     }
 
