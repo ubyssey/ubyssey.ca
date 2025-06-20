@@ -45,8 +45,8 @@ class AdvertiseTheme(object):
                 send_mail(
                     'Advertising inquiry from %s' % name,
                     content,
-                    os.environ['EMAIL_HOST_USER'],
-                    [os.environ['UBYSSEY_ADVERTISING_EMAIL']],
+                    settings.EMAIL_HOST_USER,
+                    [settings.UBYSSEY_ADVERTISING_EMAIL],
                     fail_silently=False,
                 )
 
