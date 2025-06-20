@@ -53,7 +53,7 @@ GS_FILE_OVERWRITE = False
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'noreply@ubyssey.ca'
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD') or read_file(env('EMAIL_HOST_PASSWORD_FILE'))
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='') or read_file(env('EMAIL_HOST_PASSWORD_FILE'))
 EMAIL_USE_SSL = True
 UBYSSEY_ADVERTISING_EMAIL = 'advertising@ubyssey.ca'
 
