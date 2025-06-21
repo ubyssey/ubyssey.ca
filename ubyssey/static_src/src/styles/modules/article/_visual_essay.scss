@@ -180,10 +180,9 @@ div.article-content {
 
         .o-visual-essay__right-div {
             position: relative;
-            border: 2px solid;
             border-radius: 1em;
-            background-color: white;
-            --text-color: #1b1b1b;
+            background-color: #eee;
+            --text_color: #1b1b1b;
             //opacity: 0;
             transition: opacity 1s, visibility 1s;
 
@@ -197,7 +196,8 @@ div.article-content {
             }
 
             p {
-                font-family: fonts.$font-default;
+                font-size: 1.2em;
+                line-height: 1.75em;
             }
         }
     }
