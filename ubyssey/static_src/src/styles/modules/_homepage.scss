@@ -557,14 +557,31 @@ html.hairlines {
       display: flex;
       justify-content: space-between;
       line-height: 1.25em;
-      a {
+      color: var(--text_color);
+      a.marked {
         //border-bottom: 2.5px dotted variables.$color-ubyssey-blue;
         //color: var(--text_color);
         //transition: border-color 0.25s;
-        color: variables.$color-ubyssey-blue;
+        &::before {
+          content: "";
+          aspect-ratio: 1;
+          width: 0.5em;
+          height: auto;
+          background-color: variables.$color-ubyssey-blue;
+
+
+
+          content: "";
+          aspect-ratio: 1;
+          width: 2px;
+          height: auto;
+
+        }
         &:visited {
-          color: var(--text_color);
-          //border-color: var(--background);
+          //color: var(--text_color);
+          &::before {
+            background-color: var(--background);
+          }
         }
         &:hover {
           color: variables.$color-ubyssey-blue;

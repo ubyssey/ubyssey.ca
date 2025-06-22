@@ -13,7 +13,7 @@
                     {% for article in cluster.articles%}
                         <li>
                             <div class="left">
-                                <a href="{% pageurl article %}">
+                                <a class="marked" href="{% pageurl article %}">
                                     <span class="c-home-recent-stories--article-list--section">{{article.current_section}}</span>
                                     <span class="c-home-recent-stories--article-list--article">{{article.title|safe}}</span>
                                 </a>
