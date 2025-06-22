@@ -46,7 +46,6 @@ li.o-event {
     padding-left: 0.5em;
     border-left: 3px solid;
     display: -webkit-box;
-    font-size: 0.9em;
     a {
         display: -webkit-box;
         height: fit-content;
@@ -56,9 +55,8 @@ li.o-event {
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         b {
-            font-family: fonts.$font-headline;
-            font-variation-settings: "wght" 600;
-            font-weight: 600;
+            font-variation-settings: "wght" 700;
+            font-weight: 700;
             font-size: 0.8em;
             text-transform: uppercase;
         }

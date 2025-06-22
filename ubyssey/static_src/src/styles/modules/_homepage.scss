@@ -437,11 +437,11 @@ html.hairlines {
   }
 
   .o-curated_group {
-    margin-bottom: 6rem;
+    margin-top: 4rem;
     border-bottom: 1px dashed var(--header_color);
 
-    &:last-child {
-      margin-bottom: 0;
+    &:first-child {
+      margin-top: 0;
     }
 
     .o-home-group_headline {
@@ -519,9 +519,9 @@ html.hairlines {
 }
 
 .c-home-top--sidebar {
-  padding-inline: 1.5em;
   color: var(--text_color);
   @media(variables.$bp-larger-than-tablet) {
+    padding-left: 1.5em;
     width: 33.3%;
     border-left: 1px dashed var(--header_color);
   }
@@ -545,18 +545,18 @@ html.hairlines {
     padding: 0;
     list-style: none;
   }
-  .c-home-recent-stories--day-list {
+  > ul {
     margin-block: 0.5em;
-    max-height: 400px;
-    overflow: auto;
   }
   .c-home-recent-stories--article-list {
-    margin: .5em 0 1em 0;
+    margin: .5em 0 1.5em 0;
     padding-right: 0.5em;
     border-bottom: 1px dashed #bababa;
     > li {
       margin-bottom: .5em;
-      font-size: 0.9em;
+      display: flex;
+      justify-content: space-between;
+      line-height: 1.25em;
       a {
         //border-bottom: 2.5px dotted variables.$color-ubyssey-blue;
         //color: var(--text_color);
@@ -569,6 +569,19 @@ html.hairlines {
         &:hover {
           color: variables.$color-ubyssey-blue;
         }
+      }
+      .o-article__meta {
+        margin: 0.5em 0 0 0;
+        font-size: 0.75em;
+        > span {
+          margin-right: 1em;
+          font-size: 1em;
+        }
+      }
+      .right {
+        margin-left: 1.5em;
+        width: 5em;
+        flex-shrink: 0;
       }
     }
   }
@@ -583,11 +596,28 @@ html.hairlines {
   .c-home-recent-stories--article-list--article {
     font-variation-settings: "wght" 400;
   }
-  .c-home-recent-stories--day {
-    font-size: 0.8em;
+  .c-home-recent-stories--article-list--header {
+    font-size: 0.9em;
     font-weight: 400;
     font-variation-settings: "wght" 400;
-    font-family: fonts.$font-home-headline;
     color: var(--header_color);
+    a {
+      text-decoration: underline;
+    }
+  }
+}
+
+.c-home-recent-stories--day-list--clustered {
+  ul.c-home-recent-stories--article-list {
+    border-bottom: 1px dashed var(--header_color);
+    li {
+      margin-bottom: 1em;
+      padding-bottom: 0.25em;
+      border-bottom: 1px dashed #bababa;
+      &:last-child {
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+    }
   }
 }

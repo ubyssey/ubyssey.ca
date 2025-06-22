@@ -6,6 +6,7 @@ from article.models import ArticlePage
 from django.utils import timezone
 from django.utils.functional import cached_property
 
+from topics.views import cluster_articles_by_topic
 
 class LinksStreamBlock(blocks.StructBlock):
 
@@ -121,7 +122,6 @@ class CuratedGroup(blocks.StructBlock):
 class RecentStoriesByDay(blocks.StructBlock):
 
     def get_recent_stories_by_day(self):
-        print("whats gamed out?")
         cutoff = timezone.now() - timezone.timedelta(days=14)
         cutoff = cutoff.replace(hour=0, minute=0)
         articles = ArticlePage.objects.live().public().filter(first_published_at__gte=cutoff).order_by("-first_published_at")
@@ -162,4 +162,21 @@ class RecentStoriesByDay(blocks.StructBlock):
         template = "home/stream_blocks/recent_stories.html"
             
 
+class RecentStoriesByTopic(blocks.StructBlock):
+
+    def get_recent_stories_by_topic(self):
+        #cutoff = timezone.now() - timezone.timedelta(days=35)
+        #cutoff = cutoff.replace(hour=0, minute=0)
+        #articles = ArticlePage.objects.live().public().filter(first_published_at__gte=cutoff).order_by("-first_published_at")
+        articles = ArticlePage.objects.live().public().order_by("-first_published_at")[:30]
+        return cluster_articles_by_topic(considered_articles=articles, items=10, clusters=5)
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context["get_recent_stories_by_topic"] = self.get_recent_stories_by_topic()
+        return context
+
+    class Meta:
+        template = "home/stream_blocks/recent_stories--clustered.html"
+            
 

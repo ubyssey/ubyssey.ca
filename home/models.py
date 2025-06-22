@@ -126,6 +126,7 @@ class HomePage(Page):
         ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),
         ("siderbar_events_block", eventblocks.SidebarEventsBlock()),
         ("sidebar_recent_stories", homeblocks.RecentStoriesByDay()),
+        ("sidebar_recent_stories__clustered", homeblocks.RecentStoriesByTopic()),
     ],
     null=True,
     blank=True,
