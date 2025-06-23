@@ -13,6 +13,7 @@ from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
 from events import blocks as eventblocks
 from article import blocks_outer_article as articleblocks
+from newsletter import blocks as newsletterblocks 
 from django.utils import timezone
 import datetime
 
@@ -116,6 +117,7 @@ class HomePage(Page):
         ("sidebar_gatherer_block", infinitefeedblocks.SidebarArticleGatherer()),
         ("sidebar_manual", infinitefeedblocks.SidebarManualArticles()),
         ("siderbar_events_block", eventblocks.SidebarEventsBlock()),
+        ("sidebar_newsletter_signup", newsletterblocks.NewsletterSignupBlock()),
     ],
     null=True,
     blank=True,
