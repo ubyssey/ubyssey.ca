@@ -11,7 +11,7 @@
                 <div class="c-home-recent-stories--article-list--header"><a href="/topic/{{cluster.topic.slug}}/">{{cluster.topic.name}}</a></div>
                 <ul class="c-home-recent-stories--article-list">
                     {% for article in cluster.articles%}
-                        <li>
+                        <li style="--section: {{article.colour}}">
                             <div class="left">
                                 <a class="marked" href="{% pageurl article %}">
                                     <span class="c-home-recent-stories--article-list--section">{{article.current_section}}</span>

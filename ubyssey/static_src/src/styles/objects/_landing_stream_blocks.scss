@@ -405,6 +405,7 @@
     }
     .o-article__headline {
       font-size: 1.1em;
+      font-weight: 500;
     }
     .o-article__byline {
       font-size: 0.75em;
@@ -485,6 +486,7 @@
       display: block;
       font-family: fonts.$font-default;
       font-weight: 600;
+      font-variation-settings: "wght" 600;
       font-size: 1.2em;
       line-height: 1em;
       color: var(--header_color);

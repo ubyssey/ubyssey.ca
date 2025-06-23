@@ -169,7 +169,7 @@ class RecentStoriesByTopic(blocks.StructBlock):
         #cutoff = cutoff.replace(hour=0, minute=0)
         #articles = ArticlePage.objects.live().public().filter(first_published_at__gte=cutoff).order_by("-first_published_at")
         articles = ArticlePage.objects.live().public().order_by("-first_published_at")[:30]
-        return cluster_articles_by_topic(considered_articles=articles, items=10, clusters=5)
+        return cluster_articles_by_topic(considered_articles=articles, items=8, clusters=None)
     
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)

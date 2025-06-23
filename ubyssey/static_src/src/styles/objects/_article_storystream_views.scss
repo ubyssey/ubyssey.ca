@@ -154,7 +154,7 @@
     .o-article__right {
         margin-right: 1em;
         padding-left: 1.5em;
-        border-left: 2px solid var(--light-border);
+        border-left: 2px solid variables.$color-ubyssey-blue;
         > * {
             color: var(--text_color_contrast);
         }
