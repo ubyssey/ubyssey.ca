@@ -1354,6 +1354,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             'illustrator': 'Illustrations by ',
             'videographer': 'Videos by ',
             'designer': 'Design by ',
+            'org_role': '',
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
 

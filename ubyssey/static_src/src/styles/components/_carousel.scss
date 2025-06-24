@@ -13,6 +13,7 @@
 
     &.no-caption {
       aspect-ratio: calc(100 / var(--aspect-ratio));
+      border-bottom: 1px solid variables.$color-ubyssey-blue;
     }
 
     @media(variables.$bp-larger-than-phablet) {
