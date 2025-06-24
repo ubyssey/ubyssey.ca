@@ -29,9 +29,9 @@ env = environ.Env(
     SECRET_KEY = (str, ''),
     SECRET_KEY_FILE = (str, ''),
 
-    DEBUG = (bool, True),
+    DEBUG = (bool, False),
     
-    SQL_HOST = (str, 'db'),
+    SQL_HOST = (str, 'mysql'),
     SQL_DATABASE = (str, 'ubyssey'),
     SQL_USER = (str, 'root'),
 
