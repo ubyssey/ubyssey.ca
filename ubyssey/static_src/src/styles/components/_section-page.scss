@@ -355,3 +355,128 @@ main.tag {
     }
   }
 }
+
+.o-analytics_month {
+  color: var(--text_color);
+
+  h1 {
+    text-align: center;
+  }
+
+  .prev {
+    float: left;
+  }
+  .next {
+    float: right;
+  }
+  p {
+    text-align: center;
+  }
+  .o-analytics_month--flex {
+    margin-bottom: 2em;
+    display: flex;
+    gap: 2em;
+
+    .o-analytics_month--authors {
+      margin-block: 1em;
+      width: 250px;
+      flex-shrink: 0;
+      .o-analytics_month--authors--images {
+        margin: 1em 0.5em 1em 1.5em;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .author_image {
+        margin-top: -0.75em;
+        margin-left: -1em;
+        &:first-child{
+          margin-left: 0;
+        }
+        img {
+          width: 4em;
+          height: auto;
+          border-radius: 100%;
+          aspect-ratio: 1;
+        }
+      }
+      .o-analytics_month--author {
+        &.new {
+          background-color: var(--light-border-grey);
+        }
+        ul {
+          margin: 0.5em;
+          padding: 1em 2em;
+
+          display: none;
+          background: var(--light-border-grey);
+          
+          li {
+            margin-bottom: 0.5em;
+            font-size: 0.8em;
+            .o-analytics_month--author--section {
+              font-size: 0.8em;
+              font-weight: 600;
+              text-transform: uppercase;
+            }
+          }
+        }
+        &:hover {
+          ul {
+            display: block;
+          }
+        }
+      }
+    }
+
+    .o-analytics_month--sections {
+      margin-bottom: 1em;
+      width: 100%;
+      .o-analytics_month--sections--flex {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1em;
+        .o-article--overview_article {
+          padding: 0.5em;
+          width: 150px;
+          max-width: 35%;
+          flex-grow: 1;
+          background: var(--light-border-grey);
+          .o-article__headline {
+            font-size: 0.8em;
+            font-variation-settings: "wght" 500;
+          }
+          .pubdate {
+            margin-right: 0.5em;
+            font-size: 0.8em;
+            color: var(--text_color_supporting);
+          }
+          .o-article__left {
+            margin-bottom: 1em;
+          }
+        }
+      }
+    }
+  }
+}
+
+.c-analytics_years {
+  margin-bottom: 2em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  .o-analytics_years--year {
+    padding: 0 1em 1em 1em;
+    width: 200px;
+    max-width: 30%;
+    flex-grow: 1;
+    background: var(--light-border-grey);
+
+    h2 {
+      text-align: center;
+    }
+    ul {
+      width: fit-content;
+      margin-inline: auto;
+    }
+  }
+}

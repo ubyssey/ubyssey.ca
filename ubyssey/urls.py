@@ -24,6 +24,8 @@ from infinitefeed.views import infinitefeed
 from newsletter.urls import urlpatterns as newsletter_urls
 from django.conf.urls import handler500
 
+from publishing_analytics import views as publishing_analytics_views 
+
 from rest_framework import routers
 
 handler500 = 'ubyssey.views.main.custom_500'
@@ -86,7 +88,11 @@ urlpatterns += [
     re_path(r'^tag/(?P<slug>[-\w]+)/$', redirect_tag_to_topic),
     re_path(r'^tag/(?P<slug>[-\w]+)/rss/$', redirect_tag_feed_to_topic),  
     re_path(r'^topic/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  
-    re_path(r'^topic/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),    
+    re_path(r'^topic/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),
+
+    # Publish analytics
+    re_path(r'^overview/$', publishing_analytics_views.overview),
+    re_path(r'^overview/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', publishing_analytics_views.month_overview),
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
