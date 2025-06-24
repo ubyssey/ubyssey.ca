@@ -137,7 +137,7 @@ class ChooseSideBlock(blocks.ChoiceBlock):
 
 class ChooseViewBlock(blocks.StructBlock):
     view = blocks.ChoiceBlock(
-        choices=[('vs-side-by-side', 'Side By Side'),('vs-over-image', 'Text Over Image'),],
+        choices=[('vs-side-by-side', 'Side By Side'),('vs-over-image', 'Text Over Image'),('vs-over-image vs-over-image--left', 'Text (left) Over Image')],
         default=('vs-over-image', 'Text Over Image'),
         required=True
     )
