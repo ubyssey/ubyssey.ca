@@ -29,9 +29,9 @@ env = environ.Env(
     SECRET_KEY = (str, ''),
     SECRET_KEY_FILE = (str, ''),
 
-    DEBUG = (bool, False),
+    DEBUG = (bool, True),
     
-    SQL_HOST = (str, 'mysql'),
+    SQL_HOST = (str, 'db'),
     SQL_DATABASE = (str, 'ubyssey'),
     SQL_USER = (str, 'root'),
 
@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'infinitefeed',
     'events',
     'tests_ubyssey',
+    'publishing_analytics',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
