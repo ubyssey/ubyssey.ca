@@ -3,15 +3,12 @@
 .carousel {
     position: relative;
     width: 100%;
-    aspect-ratio: calc(80 / var(--aspect-ratio));
+    height: auto;
+    aspect-ratio: calc(90 / var(--aspect-ratio));
     box-sizing: initial;
 
     &.indicators {
-      padding-bottom: 3em;
-    }
-
-    &.no-caption {
-      aspect-ratio: calc(100/var(--aspect-ratio));
+      padding-bottom: 4em;
     }
 
     @media(variables.$bp-larger-than-phablet) {
@@ -49,6 +46,7 @@
     }
 
     .carousel-indicators {
+      margin-block: 1.4em;
       position: absolute;
       bottom: 0;
       z-index: 100;
@@ -69,6 +67,9 @@
       height: 100%;
       margin-block: auto;
 
+      .image-attachment {
+        margin-bottom: 0;
+      }
       img {
         margin-inline: auto;
         width: auto;
@@ -79,7 +80,7 @@
     }
 
     .carousel-inner {
-      position: absolute;
+      position: relative;
       top: 0;
       bottom: 0;
       left: 0;
