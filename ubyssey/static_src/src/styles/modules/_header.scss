@@ -432,6 +432,12 @@ header.topbar {
   }
 }
 
+.visual-essay  {
+  header.topbar, header.mobile {
+    position: static;
+  }
+}
+
 // Article storyline
 header.topbar.c-article-storyline {
   display: block;

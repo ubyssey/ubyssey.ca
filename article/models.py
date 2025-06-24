@@ -903,6 +903,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                             "header_layout",
                             widget=Select(
                                 choices=[
+                                    ('no-banner', 'No Banner'),
                                     ('no-image', 'No Image'),
                                     ('right-image', 'Right Image'),
                                     ('bottom-image', 'Bottom Image'),
