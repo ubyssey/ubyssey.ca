@@ -13,10 +13,6 @@
 
     &.no-caption {
       aspect-ratio: calc(100 / var(--aspect-ratio));
-      .carousel-item img {
-        height: 100%;
-        object-fit: cover;
-      }
     }
 
     @media(variables.$bp-larger-than-phablet) {
