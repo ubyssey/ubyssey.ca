@@ -1,5 +1,8 @@
 terraform {
-  backend "gcs" {}
+  backend "gcs" {
+    bucket = "ubyssey-terraform-state-bucket"
+    prefix = "terraform/state"
+  }
 }
 
 provider "google" {
