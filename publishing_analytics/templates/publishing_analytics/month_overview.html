@@ -44,7 +44,7 @@
         </h1>
       </div>
       <p>{{month.articles}} articles, {{month.authors|length}} authors, {{month.new_contributors|length}} new authors</p>
-      <p>{{month.top}}% of authors authored ~50% of articles</p>
+      <p>{{month.top_fifty_str}}% of authors authored ~50% of articles</p>
 
       {% for section in month.sections %}
         {% include "publishing_analytics/objects/section_overview.html" %}

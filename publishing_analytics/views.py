@@ -42,8 +42,8 @@ def collect_authors(articles, identify_new_authors=False, get_page=True):
                     author_info["page"] = author.author
 
                 if identify_new_authors:
-                    first = get_first_article(author.author_id)
-                    author_info["new_contributors"] = article==first
+                    first = get_first_article(author.author)
+                    author_info["new_contributor"] = article==first
                 
                 authors.append(author_info)
                     
@@ -86,7 +86,7 @@ async def get_month_overview(year, month, reduce_to_length=False):
     yearEnd = yearEnd - timezone.timedelta(days=(yearEnd.day - 1))
     articles = ArticlePage.objects.live().filter(explicit_published_at__gte=yearStart, explicit_published_at__lt=yearEnd).order_by("explicit_published_at")
 
-    print(month)
+    #print(month)
     window = {
         "month": month,
         "year": year,
@@ -107,7 +107,6 @@ async def get_month_overview(year, month, reduce_to_length=False):
 
     await retrieve_new_authors_from_sections(window)
 
-    window["top"] = window["top_fifty"] * 100
     window["articles"] = await articles.acount()
     window["link"] = f"/overview/{year}/{'%02d' % (month,)}/"
 
@@ -123,12 +122,12 @@ async def get_article_analytics(window, reduce_to_length=False, identify_new_aut
     if len(authors) > 0:
         window["article_per_author"] = len(articles) / len(authors)
     if identify_new_authors:
-        window["new_contributors"] = list(filter(lambda author: author["new_contributors"], authors))
+        window["new_contributors"] = list(filter(lambda author: author["new_contributor"], authors))
     window["top_fifty"] = get_bernie_sanders_statistic(authors, articles, 0.5)
     window["top_twenty_five"] = get_bernie_sanders_statistic(authors, articles, 0.25)
 
-    window["top_fifty_str"] = round(window["top_fifty"] * 100, 4)
-    window["top_twenty_five_str"] = round(window["top_twenty_five"] * 100, 4)
+    window["top_fifty_str"] = round(window["top_fifty"] * 100, 2)
+    window["top_twenty_five_str"] = round(window["top_twenty_five"] * 100, 2)
 
     if reduce_to_length:
         window["articles"] = len(window["articles"])
@@ -148,7 +147,7 @@ async def get_sections(window):
         if len(section) > 0:
             section[0]["articles"].append(article)
         else:
-            print(f'got {window["title"]} {article.current_section}')
+            #print(f'got {window["title"]} {article.current_section}')
             sections.append({
                 "title": article.current_section,
                 "articles": [article],
@@ -163,7 +162,7 @@ async def get_year_overview(year, identify_new_authors=True):
     yearEnd = timezone.datetime(year=year+1, month=5, day=1)
     articles = ArticlePage.objects.live().filter(explicit_published_at__gte=yearStart, explicit_published_at__lt=yearEnd).order_by("explicit_published_at")
 
-    print(f'got {year} articles')
+    #print(f'got {year} articles')
     window = {
         "year": year,
         "title": f'{yearStart.strftime("%Y")}/{yearEnd.strftime("%Y")}',
@@ -206,13 +205,13 @@ def overview(request):
         for i in range(7):
             tasks.append(asyncio.create_task(get_year(2014 + i)))
         await asyncio.gather(*tasks)
-        print('got years')
+        #print('got years')
         years = sorted(years, key=lambda year: year["year"])
         return years
 
-    context= {"windows": get_years()}
-    print("finished???")
-    print(context)
+    context= {"title": "Overview", "windows": get_years()}
+    #print("finished???")
+    #print(context)
     return render(request, 'publishing_analytics/overview.html', context)
 
 def year_overview(request, year):
@@ -225,12 +224,12 @@ def year_overview(request, year):
         for i in range(12):
             tasks.append(asyncio.create_task(get_month(1 + i)))
         await asyncio.gather(*tasks)
-        print('got years')
+        #print('got years')
         months = sorted(months, key=lambda month: month["month"])
         return months
 
-    context= {"windows": get_months()}
-    print("finished???")
+    context= {"title": str(year), "windows": get_months()}
+    #print("finished???")
     return render(request, 'publishing_analytics/overview.html', context)
 
 def month_overview(request, year, month):
@@ -244,7 +243,7 @@ def month_overview(request, year, month):
         prev = date_format(int(year), int(month)-1)
     elif int(month) == 1:
         next = date_format(int(year), int(month)+1)
-        prev = date_format(int(year-1), 12)
+        prev = date_format(int(year)-1, 12)
     else:
         next = date_format(int(year), int(month)+1)
         prev = date_format(int(year), int(month)-1)

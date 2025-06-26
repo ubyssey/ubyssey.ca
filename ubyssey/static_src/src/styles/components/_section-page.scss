@@ -381,8 +381,16 @@ main.tag {
     display: flex;
     gap: 2em;
 
+    @media (variables.$bp-smaller-than-phablet) {
+      padding: 1em;
+      flex-direction: column;
+      .author_image {
+        justify-content: center;
+      }
+    }
+
     .o-analytics_month--authors {
-      margin-block: 1em;
+      margin: 1em auto;
       width: 250px;
       flex-shrink: 0;
       .o-analytics_month--authors--images {
@@ -442,9 +450,12 @@ main.tag {
         .o-article--overview_article {
           padding: 0.5em;
           width: 150px;
-          max-width: 35%;
           flex-grow: 1;
           background: var(--light-border-grey);
+          @media (variables.$bp-larger-than-phablet) {
+            max-width: 35%;
+          }
+
           .o-article__headline {
             font-size: 0.8em;
             font-variation-settings: "wght" 500;
