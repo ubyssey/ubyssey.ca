@@ -55,7 +55,7 @@ variable "snapshot_filter" {
 variable "service_account_email" {
   description = "Service account email for the VM"
   type        = string
-  default     = "863738545301-compute@developer.gserviceaccount.com"
+  default     = "1012602718138-compute@developer.gserviceaccount.com"
 }
 
 variable "boot_disk_from_snapshot" {

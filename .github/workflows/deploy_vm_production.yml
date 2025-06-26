@@ -1,6 +1,9 @@
 name: Terraform GCP VM Deployment
 
 on:
+  push:
+    branches:
+      - automate-deploying-vm
   workflow_dispatch:
     inputs:
       action:
@@ -11,42 +14,6 @@ on:
         options:
           - deploy
           - destroy
-      project_provider:
-        description: 'GCP Project ID for the provider (e.g., ubyssey-staging). Default from variables.tf will be used if empty.'
-        required: false
-        type: string
-      project_snapshot:
-        description: 'GCP Project ID for snapshots. Default from variables.tf will be used if empty.'
-        required: false
-        type: string
-      vm_name:
-        description: 'Name for the VM (e.g., ubyssey-staging-vm). Default from variables.tf will be used if empty.'
-        required: false
-        type: string
-      machine_type:
-        description: 'Machine type for the VM (e.g., e2-medium). Default from variables.tf will be used if empty.'
-        required: false
-        type: string
-      disk_type:
-        description: 'Boot disk type (e.g., pd-standard). Default from variables.tf will be used if empty.'
-        required: false
-        type: string
-      snapshot_filter:
-        description: 'Filter for selecting the snapshot. Default from variables.tf will be used if empty.'
-        required: false
-        type: string
-      service_account_email:
-        description: 'Service account email for the VM. Default from variables.tf will be used if empty.'
-        required: false
-        type: string
-      boot_disk_from_snapshot:
-        description: 'Name for the boot disk created from snapshot. Default from variables.tf will be used if empty.'
-        required: false
-        type: string
-      boot_disk_image:
-        description: 'Boot disk image to use (overrides snapshot). Default from variables.tf will be used if empty (null).'
-        required: false
-        type: string
 
 permissions:
   contents: 'read'
@@ -93,42 +60,36 @@ jobs:
         id: plan
         if: steps.get_action.outputs.action == 'deploy'
         env:
-          TF_VAR_project_provider: ${{ github.event.inputs.project_provider }}
-          TF_VAR_project_snapshot: ${{ github.event.inputs.project_snapshot }}
-          TF_VAR_vm_name: ${{ github.event.inputs.vm_name }}
-          TF_VAR_machine_type: ${{ github.event.inputs.machine_type }}
-          TF_VAR_disk_type: ${{ github.event.inputs.disk_type }}
-          TF_VAR_snapshot_filter: ${{ github.event.inputs.snapshot_filter }}
-          TF_VAR_service_account_email: ${{ github.event.inputs.service_account_email }}
-          TF_VAR_boot_disk_from_snapshot: ${{ github.event.inputs.boot_disk_from_snapshot }}
-          TF_VAR_boot_disk_image: ${{ github.event.inputs.boot_disk_image }}
+          TF_VAR_project_provider: "ubyssey-prd"
+          TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
+          TF_VAR_vm_name: "ubyssey-prd-vm-2"
+          TF_VAR_machine_type: "e2-highcpu-8"
+          TF_VAR_snapshot_filter: "ubyssey-prd-vm"
+          TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
+          TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
         run: terraform plan -out=tfplan -input=false
         continue-on-error: false
 
       - name: Terraform Apply
         if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
         env:
-          TF_VAR_project_provider: ${{ github.event.inputs.project_provider }}
-          TF_VAR_project_snapshot: ${{ github.event.inputs.project_snapshot }}
-          TF_VAR_vm_name: ${{ github.event.inputs.vm_name }}
-          TF_VAR_machine_type: ${{ github.event.inputs.machine_type }}
-          TF_VAR_disk_type: ${{ github.event.inputs.disk_type }}
-          TF_VAR_snapshot_filter: ${{ github.event.inputs.snapshot_filter }}
-          TF_VAR_service_account_email: ${{ github.event.inputs.service_account_email }}
-          TF_VAR_boot_disk_from_snapshot: ${{ github.event.inputs.boot_disk_from_snapshot }}
-          TF_VAR_boot_disk_image: ${{ github.event.inputs.boot_disk_image }}
+          TF_VAR_project_provider: "ubyssey-prd"
+          TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
+          TF_VAR_vm_name: "ubyssey-prd-vm-2"
+          TF_VAR_machine_type: "e2-highcpu-8"
+          TF_VAR_snapshot_filter: "ubyssey-prd-vm"
+          TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
+          TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
         run: terraform apply -auto-approve -input=false tfplan
 
       - name: Terraform Destroy
         if: steps.get_action.outputs.action == 'destroy'
         env:
-          TF_VAR_project_provider: ${{ github.event.inputs.project_provider }}
-          TF_VAR_project_snapshot: ${{ github.event.inputs.project_snapshot }}
-          TF_VAR_vm_name: ${{ github.event.inputs.vm_name }}
-          TF_VAR_machine_type: ${{ github.event.inputs.machine_type }}
-          TF_VAR_disk_type: ${{ github.event.inputs.disk_type }}
-          TF_VAR_snapshot_filter: ${{ github.event.inputs.snapshot_filter }}
-          TF_VAR_service_account_email: ${{ github.event.inputs.service_account_email }}
-          TF_VAR_boot_disk_from_snapshot: ${{ github.event.inputs.boot_disk_from_snapshot }}
-          TF_VAR_boot_disk_image: ${{ github.event.inputs.boot_disk_image }}
+          TF_VAR_project_provider: "ubyssey-prd"
+          TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
+          TF_VAR_vm_name: "ubyssey-prd-vm-2"
+          TF_VAR_machine_type: "e2-highcpu-8"
+          TF_VAR_snapshot_filter: "ubyssey-prd-vm"
+          TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
+          TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
         run: terraform destroy -auto-approve -input=false

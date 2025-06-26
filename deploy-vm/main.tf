@@ -65,10 +65,10 @@ resource "google_compute_instance" "ubyssey_vm" {
     type = "ANY_RESERVATION"
   }
 
-  # service_account {
-  #   email  = var.service_account_email
-  #   scopes = ["https://www.googleapis.com/auth/cloud-platform"]
-  # }
+  service_account {
+    email  = var.service_account_email
+    scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+  }
 }
 
 # Resource policy for automatic snapshot schedule and retention
