@@ -1,0 +1,11 @@
+<div class="o-analytics_windows--window">
+    <h2><a href="{{window.link}}">{{window.title}}</a></h2>
+    <p>{{window.articles}} articles, {{window.authors}} authors</p>
+    <p>{{window.top_fifty_str}}% of authors authored ~50% of articles</p>
+
+    <ul>
+    {% for section in window.sections %}
+        <li>{{section.title}} ({{section.articles}})</li>
+    {% endfor %}
+    </ul>
+</div>

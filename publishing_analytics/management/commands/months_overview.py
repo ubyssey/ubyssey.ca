@@ -3,7 +3,10 @@ from django.core.management.base import BaseCommand
 from authors.models import AuthorPage
 from article.models import ArticleAuthorsOrderable, ArticlePage
 
-from views import get_month_overview
+import asyncio
+from asgiref.sync import async_to_sync, sync_to_async
+
+from publishing_analytics.views import get_month_overview
 
 from django.utils import timezone
 
@@ -11,23 +14,81 @@ class Command(BaseCommand):
     help = 'Runs the get_image_urls method'
 
     def handle(self, *args, **options):
-        windows = get_month_overview()
+        @async_to_sync
+        async def info():
+            tasks = []
+            months = []
+            for y in range(12):
+                year = 2014 + y
+                for m in range(12):
+                    month = m + 1
+                    tasks.append(asyncio.create_task(
+                        sync_to_async(months.append)(await get_month_overview(year, month, reduce_to_length=True))
+                    ))
 
-        output_file = 'month_overview.csv'
+            await asyncio.gather(*tasks)
+            months = sorted(months, key=lambda month: month["yyyymm"])
+            return months
+        
+        windows = info()
+        output_file = 'months_overview.csv'
         with open(output_file, 'w') as f:
+            f.write("Year, \
+                    Academic year, \
+                    Month, \
+                    YYYY-MM,\
+                    Article Count, \
+                    Author count, \
+                    New contributors, \
+                    Articles per author, \
+                    % of authors responsible for ~50%, \
+                    % of authors responsible for ~25%\n")
+            
             for window in windows:
-                print(window["title"])
-                f.write(f'{window["title"]}\n')
-                for author in window["authors"]:
-                    print(f' - {author["page"].full_name}')
-                    f.write(f' - {author["page"].full_name}\n')
+                f.write(
+                    f'{window["year"]}, \
+                    {window["academic_year"]}, \
+                    {window["month"]}, \
+                    {window["yyyy-mm"]}, \
+                    {window["articles"]}, \
+                    {window["authors"]}, \
+                    {window["new_contributors"]}, \
+                    {window["article_per_author"]}, \
+                    {window["top_fifty"]}, \
+                    {window["top_twenty_five"]}\n'
+                    )
 
-                    for article in author["articles"]:
-                        print(f'   - {article.title} https://ubyssey.ca/{article.current_section}/{article.slug}/')
-                        f.write(f'   - {article.title} https://ubyssey.ca/{article.current_section}/{article.slug}/\n')
-
-                f.write(f'\n')
-                print("")
+        output_file = 'months_sections_overview.csv'
+        with open(output_file, 'w') as f:
+            f.write(
+                "Year, \
+                Academic year, \
+                Month, \
+                YYYY-MM,\
+                Section, \
+                Article Count, \
+                Author count, \
+                New contributors, \
+                Articles per author, \
+                % of authors responsible for ~50%, \
+                % of authors responsible for ~25%\n"
+                )
+            
+            for window in windows:
+                for section in window["sections"]:
+                    f.write(
+                        f'{window["year"]}, \
+                        {window["academic_year"]}, \
+                        {window["month"]}, \
+                        {window["yyyy-mm"]}, \
+                        {section["title"]}, \
+                        {section["articles"]}, \
+                        {section["authors"]}, \
+                        {section["new_contributors"]}, \
+                        {section["article_per_author"]}, \
+                        {section["top_fifty"]}, \
+                        {section["top_twenty_five"]}\n'
+                        )
 
 
             

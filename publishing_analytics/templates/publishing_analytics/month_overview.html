@@ -39,9 +39,11 @@
       <div class="u-container u-container--padded">
         <div class="prev"><a href="/overview/{{prev}}/">Previous</a></div>
         <div class="next"><a href="/overview/{{next}}/">Next</a></div>
-        <h1>{{month.title}}</h1>
+        <h1>
+          <a href="/overview/{{month.year}}/">{{month.title}}</a>
+        </h1>
       </div>
-      <p>{{month.articles|length}} articles, {{month.authors|length}} authors, {{month.new_contributors|length}} new authors</p>
+      <p>{{month.articles}} articles, {{month.authors|length}} authors, {{month.new_contributors|length}} new authors</p>
       <p>{{month.top}}% of authors authored ~50% of articles</p>
 
       {% for section in month.sections %}

@@ -360,6 +360,10 @@ main.tag {
   color: var(--text_color);
 
   h1 {
+    span.year {
+      display: block;
+      font-size: 0.5em;
+    }
     text-align: center;
   }
 
@@ -459,12 +463,12 @@ main.tag {
   }
 }
 
-.c-analytics_years {
+.c-analytics_windows {
   margin-bottom: 2em;
   display: flex;
   flex-wrap: wrap;
   gap: 1em;
-  .o-analytics_years--year {
+  .o-analytics_windows--window {
     padding: 0 1em 1em 1em;
     width: 200px;
     max-width: 30%;
