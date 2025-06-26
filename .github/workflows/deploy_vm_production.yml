@@ -64,7 +64,7 @@ jobs:
           TF_VAR_project_snapshot: "ubyssey-prd"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
           TF_VAR_machine_type: "e2-highcpu-8"
-          TF_VAR_snapshot_filter: "ubyssey-prd-vm"
+          TF_VAR_snapshot_filter: "name eq ^ubyssey-prd-vm.*"
           TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
           TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
         run: terraform plan -out=tfplan -input=false
@@ -77,7 +77,7 @@ jobs:
           TF_VAR_project_snapshot: "ubyssey-prd"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
           TF_VAR_machine_type: "e2-highcpu-8"
-          TF_VAR_snapshot_filter: "ubyssey-prd-vm"
+          TF_VAR_snapshot_filter: "name eq ^ubyssey-prd-vm.*"
           TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
           TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
         run: terraform apply -auto-approve -input=false tfplan
@@ -89,7 +89,7 @@ jobs:
           TF_VAR_project_snapshot: "ubyssey-prd"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
           TF_VAR_machine_type: "e2-highcpu-8"
-          TF_VAR_snapshot_filter: "ubyssey-prd-vm"
+          TF_VAR_snapshot_filter: "name eq ^ubyssey-prd-vm.*"
           TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
           TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
         run: terraform destroy -auto-approve -input=false
