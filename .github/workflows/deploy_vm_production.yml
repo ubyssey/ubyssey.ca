@@ -9,7 +9,7 @@ on:
       action:
         description: 'Terraform action to perform (deploy or destroy)'
         required: true
-        default: 'deploy'
+        default: 'destroy'
         type: choice
         options:
           - deploy
@@ -46,7 +46,7 @@ jobs:
       - name: Determine Action
         id: get_action
         run: |
-          ACTION="deploy" # Default for push events
+          ACTION="destroy" # Default for push events
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             ACTION="${{ github.event.inputs.action }}"
           fi
