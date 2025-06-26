@@ -31,7 +31,7 @@ variable "vm_name" {
 variable "machine_type" {
   description = "Machine type for the VM"
   type        = string
-  default     = "e2-highcpu-8"
+  default     = "custom-4-7936"
 }
 
 variable "disk_size_gb" {
