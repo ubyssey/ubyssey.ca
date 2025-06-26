@@ -61,7 +61,7 @@ jobs:
         if: steps.get_action.outputs.action == 'deploy'
         env:
           TF_VAR_project_provider: "ubyssey-prd"
-          TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
+          TF_VAR_project_snapshot: "ubyssey-prd"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
           TF_VAR_machine_type: "e2-highcpu-8"
           TF_VAR_snapshot_filter: "ubyssey-prd-vm"
@@ -74,7 +74,7 @@ jobs:
         if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
         env:
           TF_VAR_project_provider: "ubyssey-prd"
-          TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
+          TF_VAR_project_snapshot: "ubyssey-prd"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
           TF_VAR_machine_type: "e2-highcpu-8"
           TF_VAR_snapshot_filter: "ubyssey-prd-vm"
@@ -86,7 +86,7 @@ jobs:
         if: steps.get_action.outputs.action == 'destroy'
         env:
           TF_VAR_project_provider: "ubyssey-prd"
-          TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
+          TF_VAR_project_snapshot: "ubyssey-prd"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
           TF_VAR_machine_type: "e2-highcpu-8"
           TF_VAR_snapshot_filter: "ubyssey-prd-vm"
