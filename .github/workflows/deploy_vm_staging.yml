@@ -1,9 +1,6 @@
 name: Terraform GCP VM Deployment
 
 on:
-  push:
-    branches:
-      - automate-deploying-vm
   workflow_dispatch:
     inputs:
       action:
