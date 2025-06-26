@@ -1,8 +1,5 @@
 terraform {
-  backend "gcs" {
-    bucket = var.gcs_bucket
-    prefix = "terraform-state"
-  }
+  backend "gcs" {}
 }
 
 provider "google" {

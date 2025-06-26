@@ -1,9 +1,3 @@
-variable "gcs_bucket" {
-  description = "GCS bucket for Terraform state"
-  type        = string
-  default     = "ubyssey-terraform-state-bucket"
-}
-
 variable "project_provider" {
   description = "GCP project ID"
   type        = string
