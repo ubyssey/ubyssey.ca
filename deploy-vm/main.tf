@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "ubyssey-terraform-state-bucket"
+    bucket = var.gcs_bucket
     prefix = "terraform-state"
   }
 }

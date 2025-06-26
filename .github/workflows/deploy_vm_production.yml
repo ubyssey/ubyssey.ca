@@ -60,6 +60,7 @@ jobs:
         id: plan
         if: steps.get_action.outputs.action == 'deploy'
         env:
+          TF_VAR_gcs_bucket: "ubyssey-terraform-state-bucket-prd"
           TF_VAR_project_provider: "ubyssey-prd"
           TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
@@ -73,6 +74,7 @@ jobs:
       - name: Terraform Apply
         if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
         env:
+          TF_VAR_gcs_bucket: "ubyssey-terraform-state-bucket-prd"
           TF_VAR_project_provider: "ubyssey-prd"
           TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
@@ -85,6 +87,7 @@ jobs:
       - name: Terraform Destroy
         if: steps.get_action.outputs.action == 'destroy'
         env:
+          TF_VAR_gcs_bucket: "ubyssey-terraform-state-bucket-prd"
           TF_VAR_project_provider: "ubyssey-prd"
           TF_VAR_project_snapshot: "ubyssey-prd-snapshot"
           TF_VAR_vm_name: "ubyssey-prd-vm-2"
