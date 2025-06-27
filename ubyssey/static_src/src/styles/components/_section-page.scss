@@ -356,6 +356,74 @@ main.tag {
   }
 }
 
+
+.o-analytics_month--authors {
+  margin: 1em auto;
+  flex-shrink: 0;
+  .o-analytics_month--authors--images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .author_image {
+    img {
+      width: 4em;
+      height: auto;
+      border-radius: 100%;
+      aspect-ratio: 1;
+    }
+  }
+  .o-analytics_month--author {
+    position: relative;
+    &.new {
+      background-color: var(--light-border-grey);
+    }
+    ul {
+      margin: 0.5em;
+      padding: 1em 2em;
+
+      display: none;
+      background: var(--light-border-grey);
+      
+      li {
+        margin-bottom: 0.5em;
+        font-size: 0.8em;
+        .o-analytics_month--author--section {
+          font-size: 0.8em;
+          font-weight: 600;
+          text-transform: uppercase;
+        }
+      }
+    }
+    &:hover {
+      ul {
+        display: block;
+      }
+    }
+  }
+}
+
+.authors_by_month--header {
+  .o-analytics_month--authors {
+    > ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+      list-style: none;
+    }
+    .o-analytics_month--author > ul {
+      position: absolute;
+      z-index: 10;
+    }
+    .author_image {
+      img {
+        width: 7em;
+      }
+    }
+  }
+}
+
 .o-analytics_month {
   color: var(--text_color);
 
@@ -376,67 +444,37 @@ main.tag {
   p {
     text-align: center;
   }
+
   .o-analytics_month--flex {
     margin-bottom: 2em;
     display: flex;
     gap: 2em;
+
+    .o-analytics_month--authors {
+        width: 250px;
+    }
+    .author_image {
+      margin-top: -0.75em;
+      margin-left: -1em;
+    }
+
+    @media (variables.$bp-larger-than-phablet) {
+      .o-analytics_month--authors--images {
+        margin: 1em 0.5em 1em 1.5em;
+        justify-content: start;
+      }
+      .author_image {
+        &:first-child{
+          margin-left: 0;
+        }
+      }
+    }
 
     @media (variables.$bp-smaller-than-phablet) {
       padding: 1em;
       flex-direction: column;
       .author_image {
         justify-content: center;
-      }
-    }
-
-    .o-analytics_month--authors {
-      margin: 1em auto;
-      width: 250px;
-      flex-shrink: 0;
-      .o-analytics_month--authors--images {
-        margin: 1em 0.5em 1em 1.5em;
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .author_image {
-        margin-top: -0.75em;
-        margin-left: -1em;
-        &:first-child{
-          margin-left: 0;
-        }
-        img {
-          width: 4em;
-          height: auto;
-          border-radius: 100%;
-          aspect-ratio: 1;
-        }
-      }
-      .o-analytics_month--author {
-        &.new {
-          background-color: var(--light-border-grey);
-        }
-        ul {
-          margin: 0.5em;
-          padding: 1em 2em;
-
-          display: none;
-          background: var(--light-border-grey);
-          
-          li {
-            margin-bottom: 0.5em;
-            font-size: 0.8em;
-            .o-analytics_month--author--section {
-              font-size: 0.8em;
-              font-weight: 600;
-              text-transform: uppercase;
-            }
-          }
-        }
-        &:hover {
-          ul {
-            display: block;
-          }
-        }
       }
     }
 
@@ -481,8 +519,8 @@ main.tag {
   gap: 1em;
   .o-analytics_windows--window {
     padding: 0 1em 1em 1em;
-    width: 200px;
-    max-width: 30%;
+    width: 300px;
+    max-width: 600px;
     flex-grow: 1;
     background: var(--light-border-grey);
 
@@ -490,8 +528,23 @@ main.tag {
       text-align: center;
     }
     ul {
-      width: fit-content;
-      margin-inline: auto;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      li {
+        margin-bottom: 0.25em;
+        background-color: var(--background);
+        a {
+          width: 70%;
+          display: inline-block;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: clip;
+        }
+        .count {
+          float: right;
+        }
+      }
     }
   }
 }

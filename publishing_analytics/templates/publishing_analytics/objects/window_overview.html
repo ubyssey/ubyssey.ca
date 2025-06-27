@@ -1,11 +1,16 @@
 <div class="o-analytics_windows--window">
     <h2><a href="{{window.link}}">{{window.title}}</a></h2>
     <p>{{window.articles}} articles, {{window.authors}} authors</p>
-    <p>{{window.top_fifty_str}}% of authors authored ~50% of articles</p>
+    {% if window.author_cluster %}
+        {% include 'publishing_analytics/objects/author_list.html' with text='Most contributions' authors=window.author_cluster.0 %}
+    {% endif %}
 
+    {% if window.sections %}
+    <p>Sections</p>
     <ul>
     {% for section in window.sections %}
-        <li>{{section.title}} ({{section.articles}})</li>
+        <li>{{section.title}} <span class="count">({{section.articles}})</span></li>
     {% endfor %}
     </ul>
+    {% endif %}
 </div>

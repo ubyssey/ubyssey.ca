@@ -2,30 +2,9 @@
 {% load wagtailimages_tags %}
 
 <div class="o-analytics_month--flex">
-    <div class="o-analytics_month--authors">
-        <div class="o-analytics_month--authors--images">
-            {% for author in section.authors %}
-                {% if author.page.image %}
-                    <a class="author_image" href="{% pageurl author.page %}" title={{author.page.full_name}}> 
-                    {% image author.page.image fill-350x350-c100 format-webp alt=author.page.full_name %}
-                    </a>
-                {% endif %}
-            {% endfor %}
-        </div>
-        <p>{{section.authors|length}} authors, {{section.articles|length}} articles</p>
-        <ul>
-        {% for author in section.authors %}
-            <li class="o-analytics_month--author{% if author.new_contributor %} new{% endif %}">
-                <div><a href={% pageurl author.page %}>{{author.page.full_name}}</a> ({{author.articles|length}})</div>
-                <ul>
-                    {% for article in author.articles %}
-                    <li class="o-analytics_month--author--article"><a href="{% pageurl article %}"><span class="o-analytics_month--author--section">{{article.current_section}}</span> {{article.title|safe}}</a></li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-        </ul>
-    </div>
+    {% with text=section.authors|length|add:" authors, "|add:section.articles|length|add:" articles" %}
+    {% include 'publishing_analytics/objects/author_list.html' with authors=section.authors list_articles="true" %}
+    {% endwith %}
 
     <div class="o-analytics_month--sections">
 
