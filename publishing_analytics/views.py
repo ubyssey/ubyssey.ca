@@ -6,6 +6,8 @@ from django.db.models import Q
 import asyncio
 from asgiref.sync import async_to_sync, sync_to_async
 
+import copy
+
 from authors.models import AuthorPage
 from article.models import ArticleAuthorsOrderable, ArticlePage
 
@@ -421,7 +423,7 @@ def section_year_overview(request, section, year0, year1):
                 matching_authors[0]["articles"] = matching_authors[0]["articles"] + author["articles"]
                 matching_authors[0]["new_contributor"] = matching_authors[0]["new_contributor"] or author["new_contributor"]
             else:
-                overview["authors"].append(author)
+                overview["authors"].append(copy.deepcopy(author))
 
     overview["author_cluster"] = split_top_authors(overview["authors"], overview["articles"], 0.25)
     overview["authors"] = len(overview["authors"])
