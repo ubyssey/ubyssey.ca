@@ -283,6 +283,7 @@ class ArchivePage(RoutablePageMixin, Page):
 
         return render(request, "archive/archive_page.html", context)
     
+    '''
     @route(r'^videos/$', name="videos_view")
     def get_videos(self, request, *args, **kwargs):
         video_section = True
@@ -305,7 +306,7 @@ class ArchivePage(RoutablePageMixin, Page):
         context = self.get_paginated_articles(context, videos, video_section, request)
         
         return render(request, "archive/archive_page.html", context)
-    
+    '''
 
     @route(r'^magazines/(?P<magazine_slug>[-\w]+)/$', name="magazines_view")
     def get_magazine_articles(self, request, magazine_slug):
