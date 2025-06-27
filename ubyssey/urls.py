@@ -94,7 +94,8 @@ urlpatterns += [
     re_path(r'^overview/$', publishing_analytics_views.overview),
     re_path(r'^overview/(?P<year>[0-9]{4})/$', publishing_analytics_views.year_overview),
     re_path(r'^overview/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', publishing_analytics_views.month_overview),
-    re_path(r'^overview/(?P<section>[-\w]+).$', publishing_analytics_views.section_overview),
+    re_path(r'^overview/(?P<section>[-\w]+)/$', publishing_analytics_views.section_overview),
+    re_path(r'^overview/(?P<section>[-\w]+)/(?P<year0>[0-9]{4})-(?P<year1>[0-9]{4})/$', publishing_analytics_views.section_year_overview),
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),

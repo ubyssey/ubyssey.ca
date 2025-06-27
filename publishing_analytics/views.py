@@ -53,13 +53,15 @@ def collect_authors(articles, identify_new_authors=False, get_page=True):
     
     return authors
 
-def split_top_authors(authors, articles, percent):
+def split_top_authors(authors, articleCount, percent):
     '''
     Split authors by percent of articles authors are responsible for.
     In the form [list of top authors responsible PERCENT of articles, list of all other authors]
     '''
     if len(authors) == 0:
         return 0 
+    
+    authors = sorted(authors, key=lambda author: len(author["articles"]), reverse=True)
     
     authors_grouped_by_article_count = []
     for author in authors:
@@ -72,7 +74,7 @@ def split_top_authors(authors, articles, percent):
 
     top_sum = 0
 
-    threshhold = len(articles) * percent
+    threshhold = articleCount * percent
     for i in range(len(authors_grouped_by_article_count)):
         group = authors_grouped_by_article_count[i]
 
@@ -122,12 +124,15 @@ def get_academic_year(year, month):
     else:
         return f'{year-1}/{year}'
 
-async def get_month_overview(year, month, reduce_to_length=False, split_authors=False):
+async def get_month_overview(year, month, articleFilters=None, reduce_to_length=False, split_authors=False, get_sections=True):
 
     yearStart = timezone.datetime(year=year, month=month, day=1)
     yearEnd = (yearStart+timezone.timedelta(days=40))
     yearEnd = yearEnd - timezone.timedelta(days=(yearEnd.day - 1))
-    articles = ArticlePage.objects.live().filter(explicit_published_at__gte=yearStart, explicit_published_at__lt=yearEnd).order_by("explicit_published_at")
+    articles = ArticlePage.objects.live().filter(explicit_published_at__gte=yearStart, explicit_published_at__lt=yearEnd)
+    if articleFilters != None:
+        articles = articles.filter(articleFilters)
+    articles = articles.order_by("explicit_published_at")
 
     #print(month)
     window = {
@@ -137,20 +142,25 @@ async def get_month_overview(year, month, reduce_to_length=False, split_authors=
         "title": yearStart.strftime("%B %Y"),
         "yyyymm": int(f'{year}{"%02d" % (month,)}'),
         "yyyy-mm": f'{year}-{"%02d" % (month,)}',
+        "link": f'/overview/{year}/{"%02d" % (month,)}/',
         "articles": articles,
     }
 
-    await get_sections(window)
-    await get_article_analytics(window, reduce_to_length=reduce_to_length, identify_new_authors=False, split_authors=split_authors)
+    if get_sections:
+        await split_into_sections(window)
+        await get_article_analytics(window, reduce_to_length=reduce_to_length, identify_new_authors=False, split_authors=split_authors)
 
-    tasks = []
-    for section in window["sections"]:
-        tasks.append(asyncio.create_task(get_article_analytics(section, reduce_to_length=reduce_to_length, identify_new_authors=True)))
-    await asyncio.gather(*tasks)
+        tasks = []
+        for section in window["sections"]:
+            tasks.append(asyncio.create_task(get_article_analytics(section, reduce_to_length=reduce_to_length, identify_new_authors=True)))
+        await asyncio.gather(*tasks)
 
-    await retrieve_new_authors_from_sections(window)
+        await retrieve_new_authors_from_sections(window)
+    
+        window["articles"] = await articles.acount()
+    else:
+        await get_article_analytics(window, reduce_to_length=reduce_to_length, identify_new_authors=True, split_authors=split_authors)
 
-    window["articles"] = await articles.acount()
     window["link"] = f"/overview/{year}/{'%02d' % (month,)}/"
 
     return window
@@ -173,7 +183,7 @@ async def get_article_analytics(window, reduce_to_length=False, identify_new_aut
     window["top_twenty_five_str"] = round(window["top_twenty_five"] * 100, 2)
 
     if split_authors:
-        window["author_cluster"] = split_top_authors(authors, articles, 0.25)
+        window["author_cluster"] = split_top_authors(authors, len(articles), 0.25)
 
     if reduce_to_length:
         window["articles"] = len(window["articles"])
@@ -184,7 +194,7 @@ async def get_article_analytics(window, reduce_to_length=False, identify_new_aut
     
     return window
 
-async def get_sections(window):
+async def split_into_sections(window):
     articles = window["articles"]
     sections = []
     async for article in articles:
@@ -196,6 +206,7 @@ async def get_sections(window):
             #print(f'got {window["title"]} {article.current_section}')
             sections.append({
                 "title": article.current_section,
+                "link": f'/overview/{article.current_section}/',
                 "articles": [article],
             })
     
@@ -203,7 +214,7 @@ async def get_sections(window):
     return window["sections"]
 
 async def get_year_overview(year, articleFilters=None, reduce_to_length=True, identify_new_authors=True, split_authors=False, get_sections=True):
-    print(year)
+    #print(year)
     yearStart = timezone.datetime(year=year, month=5, day=1)
     yearEnd = timezone.datetime(year=year+1, month=5, day=1)
     articles = ArticlePage.objects.live().filter(explicit_published_at__gte=yearStart, explicit_published_at__lt=yearEnd)
@@ -221,7 +232,7 @@ async def get_year_overview(year, articleFilters=None, reduce_to_length=True, id
     if get_sections:
         tasks = []
         tasks.append(asyncio.create_task(
-            get_sections(window)
+            split_into_sections(window)
             ))
         tasks.append(asyncio.create_task(
             get_article_analytics(window, reduce_to_length=reduce_to_length, identify_new_authors=identify_new_authors, split_authors=split_authors)
@@ -241,7 +252,27 @@ async def get_year_overview(year, articleFilters=None, reduce_to_length=True, id
 
     window["link"] = f"/overview/{year}/"
 
-    print(year)
+    #print(year)
+    return window
+
+async def get_section_year_overview(year, section, reduce_to_length=True, identify_new_authors=True, split_authors=False, get_sections=True):
+    #print(year)
+    yearStart = timezone.datetime(year=year, month=5, day=1)
+    yearEnd = timezone.datetime(year=year+1, month=5, day=1)
+    articles = ArticlePage.objects.live().filter(explicit_published_at__gte=yearStart, explicit_published_at__lt=yearEnd)
+    articles = articles.filter(current_section=section)
+    articles = articles.order_by("explicit_published_at")
+
+    window = {
+        "year": year,
+        "title": f'{yearStart.strftime("%Y")}/{yearEnd.strftime("%Y")}',
+        "link": f'/overview/{section}/{year}-{year+1}/',
+        "articles": articles,
+    }
+
+    await get_article_analytics(window, reduce_to_length=reduce_to_length, identify_new_authors=identify_new_authors, split_authors=split_authors)
+
+    #print(year)
     return window
 
 def get_all_years():
@@ -283,7 +314,7 @@ def section_overview(request, section):
     async def get_years():
         years = []
         async def get_year(year):
-            years.append(await get_year_overview(year, articleFilters=Q(current_section=section), identify_new_authors=False, split_authors=True, get_sections=False))
+            years.append(await get_section_year_overview(year, section, identify_new_authors=False, split_authors=True))
         tasks = []
         for year in await sync_to_async(get_all_years)():
             tasks.append(asyncio.create_task(get_year(year)))
@@ -322,20 +353,86 @@ def month_overview(request, year, month):
         return f"{year}/{'%02d' % (month,)}"
 
     if int(month) == 12:
-        next = date_format(int(year)+1, 1)
-        prev = date_format(int(year), int(month)-1)
+        next = f'/overview/{date_format(int(year)+1, 1)}'
+        prev = f'/overview/{date_format(int(year), int(month)-1)}'
     elif int(month) == 1:
-        next = date_format(int(year), int(month)+1)
-        prev = date_format(int(year)-1, 12)
+        next = f'/overview/{date_format(int(year), int(month)+1)}'
+        prev = f'/overview/{date_format(int(year)-1, 12)}'
     else:
-        next = date_format(int(year), int(month)+1)
-        prev = date_format(int(year), int(month)-1)
+        next = f'/overview/{date_format(int(year), int(month)+1)}'
+        prev = f'/overview/{date_format(int(year), int(month)-1)}'
+
+    overview["link"] = f'/overview/{year}/'
+
+    overview["authors"] = len(overview["authors"])
+    overview["new_contributors"] = len(overview["new_contributors"])
+
+    overview["windows"] = overview["sections"]
+
+    overview["sections"] = None
 
     context = {
         "year": year,
-        "month": overview,
+        "overview": overview,
 
         "next": next,
         "prev": prev,
         }
-    return render(request, 'publishing_analytics/month_overview.html', context)
+    return render(request, 'publishing_analytics/overview-verbose.html', context)
+
+
+def section_year_overview(request, section, year0, year1):
+    years = [year0, year1]
+    if int(years[1]) - int(years[0]) != 1:
+        return render(request, '404.html', {}, status=404)
+
+    @async_to_sync
+    async def get_months():
+        months = []
+        async def get_month(month):
+            year = int(years[0])
+            if month < 5:
+                year = int(years[1])
+            months.append(await get_month_overview(year, month, articleFilters=Q(current_section=section), reduce_to_length=False, split_authors=True, get_sections=False))
+        tasks = []
+        for i in range(12):
+            tasks.append(asyncio.create_task(get_month(1 + i)))
+        await asyncio.gather(*tasks)
+        #print('got years')
+        months = sorted(months, key=lambda month: month["yyyymm"])
+        return months
+    
+    overview = {}
+    overview["windows"] = get_months()
+
+    next = f'/overview/{section}/{int(years[0])+1}-{int(years[1])+1}/'
+    prev = f'/overview/{section}/{int(years[0])-1}-{int(years[1])-1}/'
+
+    overview["link"] = f'/overview/{section}/'
+
+    for variable in ["articles", "new_contributors"]:
+        overview[variable] = sum([len(window[variable]) for window in overview["windows"]])
+
+    overview["authors"] = []
+    for window in overview["windows"]:
+        for author in window["authors"]:                 
+            matching_authors = list(filter(lambda existing_author: existing_author["id"]==author["id"], overview["authors"]))
+            if len(matching_authors) > 0:
+                matching_authors[0]["articles"] = matching_authors[0]["articles"] + author["articles"]
+                matching_authors[0]["new_contributor"] = matching_authors[0]["new_contributor"] or author["new_contributor"]
+            else:
+                overview["authors"].append(author)
+
+    overview["author_cluster"] = split_top_authors(overview["authors"], overview["articles"], 0.25)
+    overview["authors"] = len(overview["authors"])
+
+    overview["sections"] = None
+    overview["title"] = f'{section} {year0}-{year1}'
+
+    context = {
+        "overview": overview,
+
+        "next": next,
+        "prev": prev,
+        }
+    return render(request, 'publishing_analytics/overview-verbose.html', context)

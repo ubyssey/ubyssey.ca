@@ -37,25 +37,25 @@
 	<main class="authors_by_month o-analytics_month">
 		<div class="u-container u-container--large">
       <div class="u-container u-container--padded">
-        <div class="prev"><a href="/overview/{{prev}}/">Previous</a></div>
-        <div class="next"><a href="/overview/{{next}}/">Next</a></div>
+        <div class="prev"><a href="{{prev}}">Previous</a></div>
+        <div class="next"><a href="{{next}}">Next</a></div>
       </div>
 
       <div class="authors_by_month--header u-container u-container--padded">
         <h1>
-          <a href="/overview/{{month.year}}/">{{month.title}}</a>
+          <a href="{{overview.link}}">{{overview.title}}</a>
         </h1>
 
-        <p>{{month.articles}} articles, {{month.authors|length}} authors, {{month.new_contributors|length}} new authors</p>
+        <p>{{overview.articles}} articles, {{overview.authors}} authors, {{overview.new_contributors}} new authors</p>
 
-        {% if month.author_cluster %}
-          {% include 'publishing_analytics/objects/author_list.html' with authors=month.author_cluster.0 text='Most contributions' list_articles="true" %}
+        {% if overview.author_cluster %}
+          {% include 'publishing_analytics/objects/author_list.html' with authors=overview.author_cluster.0 text='Most contributions' list_articles="true" %}
         {% endif %}
 
       </div>
 
-      {% for section in month.sections %}
-        {% include "publishing_analytics/objects/section_overview.html" %}
+      {% for window in overview.windows %}
+        {% include "publishing_analytics/objects/window_overview-verbose.html" %}
       {% endfor %}
 		</div>
     </main>
