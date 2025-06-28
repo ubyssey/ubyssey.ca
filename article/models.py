@@ -1629,6 +1629,704 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             models.Index(fields=['category_page',]),
         ]
 
+class StandardArticlePage(ArticlePage):
+    #-----Django/Wagtail settings etc-----
+    objects = ArticlePageManager()
+
+    parent_page_types = [
+        'specialfeaturelanding.SpecialLandingPage',
+        'section.SectionPage',
+    ]
+
+    subpage_types = [] #Prevents article pages from having child pages
+
+    show_in_menus_default = True
+    show_in_menus = True
+
+    #-----Field attributes-----
+    content_sap = StreamField(
+        [
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+            )),
+            ('extra_article_info', blocks_inner_article.ExtraArticleInfoBlock()),
+            ('dropcap', blocks.TextBlock(
+                label = "Dropcap Block",
+                template = 'article/stream_blocks/dropcap.html',
+                help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
+            )),
+            ('video', video_blocks.OneOffVideoBlock(
+                label = "Credited/Captioned One-Off Video",
+                help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
+            )),
+            ('audio', blocks_inner_article.AudioBlock()),
+            ('image', image_blocks.ImageBlock(
+            )),
+            ('pdf', blocks_inner_article.PdfBlock()),
+            ('raw_html', blocks.RawHTMLBlock(
+                label = "Raw HTML Block",
+                help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
+            )),
+            ('quote', blocks_inner_article.PullQuoteBlock()),
+
+            ('gallery_block', blocks_inner_article.GalleryBlock(
+                label="Image carousel",
+            )),
+            ('header_link', blocks_inner_article.HeaderLinkBlock()),
+            ('header_menu', blocks_inner_article.HeaderMenuBlock()),
+            ('visual_essay', blocks_inner_article.VisualEssayBlock()),
+            ('personality_quiz', blocks_inner_article.PersonalityQuizBlock()),
+            ('plaintext', blocks.TextBlock(
+                label="Plain Text Block",
+                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
+            ('gallery', SnippetChooserBlock(
+                target_model = GallerySnippet,
+                template = 'article/stream_blocks/gallery.html',
+            )),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+    explicit_published_at_sap = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Publication Date/Time",
+        help_text = "Techically optional (computer will fill it in for you if you do not). Publication date which is explicitly shown to the reader. Articles are seperately date/timestamped for database use; if this field is left blank, it will by default be set to the \"first published date\" on publication.",
+    )
+    show_last_modified_sap = models.BooleanField(
+        default = False,
+        help_text = "Check this to alert readers the article has been revised since its publication.",
+    )
+    storystream_view_sap = StreamField(
+        [
+            ('featured_media', blocks_storystream.StorystreamFeaturedImage()),
+            ('image', blocks_storystream.StorystreamImage()),
+            ('richtext', blocks_storystream.StorystreamRichText()),
+            ('no_attachment', blocks_storystream.StorystreamNoAttachment()),
+            ('gallery', blocks_storystream.StorystreamGallery()),
+            ('featured_video', blocks_storystream.StorystreamFeaturedVideo()),
+            ('video', blocks_storystream.StorystreamVideo()),
+            ('embed', blocks_storystream.StorystreamRawHtml()),
+            ('pdf', blocks_storystream.StorystreamPDF()),
+            ('quote', blocks_storystream.StorystreamQuote())
+        ],
+        blank = False,
+        use_json_field=True,
+        min_num = 1,
+        max_num = 1,
+    )
+
+    filter_by_tags_sap = models.BooleanField(
+        null=False,
+        blank=False,
+        default=True,
+        help_text="This determines what articles will be listed in the suggested bar at the end of the article.",
+        verbose_name="Suggested Bar"
+    )
+
+    disclaimer_sap = RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        help_text = "Used for Opinion articles or when corrections are made"
+    )
+
+    # template #TODO
+
+    #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
+
+    legacy_template_sap = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        max_length=3000,
+    )
+    legacy_template_data_sap = models.TextField(
+        null=False,
+        blank=True,
+        default='',
+    )
+    legacy_revision_number_sap = models.IntegerField(
+        default=0
+    )
+
+    # "Layouts (stores data that once was Template data)"
+    layout_sap = models.CharField(
+        null=False,
+        blank=False,
+        default='default',
+        verbose_name='Article Layout',
+        help_text="These correspond to very frequently used templates. More \"bespoke\", one-off templates should be added to the library of DB Templates",
+        max_length=100,
+    )
+
+    fw_alternate_title_sap = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Alternate Title (Optional)',
+        help_text="When there is a \"special feature\" or full-width style article, sometimes we would like to override the title as it render in the template",
+        max_length=255,
+    )
+
+    subtitle_sap = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Subtitle (Optional)',
+        help_text="Displayed below the title",
+        max_length=255,
+    )
+
+    stand_first = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Title Tag (Optional)',
+        help_text="This appears above the title. It mimics the title tags in the print issue.",
+        max_length=255,
+    )
+    
+    # Corresponds to the pseudo-field called "snippet" in some templates
+    above_cut_lede = models.TextField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Above Cut Lede (Optional)',
+        help_text="Articles that use a special header/banner often contain a second lede/abstract summary ",
+    )
+
+    # Featured image stuff used for template customization
+    header_layout_sap = models.CharField(
+        null=False,
+        blank=False,
+        default='right-image',
+        max_length=50,
+        help_text="Based on from Dispatch's obselete \"Templates\" feature",
+    )
+
+    #-----Advanted, custom layout etc-----
+    use_default_template_sap = models.BooleanField(default=True)
+
+    db_template_sap = models.ForeignKey(
+        DBTemplate,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',        
+    )
+
+    def get_template(self, request):
+        if not self.use_default_template:
+            if self.db_template:
+                return self.db_template.name
+
+        if self.layout == 'fw-story':
+            return "article/article_page_fw_story.html"
+        elif self.layout == 'empty':
+            return "article/article_page_empty.html"
+        elif self.layout == 'visual-essay':
+            return "article/article_page_visual_essay.html"
+        elif self.layout == 'guide-2020':
+            return "article/article_page_guide_2020.html"
+        elif self.layout == 'guide-2022':
+            return "article/article_page_guide_2022.html"
+        elif self.layout == 'magazine-2023':
+            return "article/article_page_magazine_2023.html"
+        elif self.layout == 'guide-2023':
+            return "article/article_page_guide_2023.html"
+        elif self.layout == 'magazine-2024':
+            return "article/article_page_magazine_2024.html"
+        elif self.layout == 'spoof-2024':
+            return "article/article_page_spoof_2024.html"
+        elif self.layout == 'guide-2024':
+            return "article/article_page_guide_2024.html"
+        elif self.layout == 'science-2024':
+            return "article/article_page_supplement_2024_science.html"
+        elif self.layout == 'femme-2024':
+            return "article/supplements/article_page_supplement_2024_femme.html"
+        elif self.layout == 'nocturne-2024':
+            return "article/supplements/article_page_supplement_2024_nocturne.html"
+
+        return "article/article_page.html"
+
+    #-----For Wagtail's user interface-----
+    content_panels = Page.content_panels + [
+        FieldRowPanel(
+            [
+                FieldPanel("explicit_published_at"),
+                FieldPanel("show_last_modified"),
+            ],
+            heading="Publication Date",
+        ),
+        MultiFieldPanel(
+            [ 
+                FieldPanel('title_tag'),
+                FieldRowPanel(
+                    [
+                        InlinePanel("featured_media", label="Featured Image or Video"),
+                        FieldPanel(
+                            "header_layout",
+                            widget=Select(
+                                choices=[
+                                    ('no-banner', 'No Banner'),
+                                    ('no-image', 'No Image'),
+                                    ('right-image', 'Right Image'),
+                                    ('bottom-image', 'Bottom Image'),
+                                    ('left-image', 'Left Image'),
+                                    ('top-image', 'Top Image'),
+                                    ('banner-image', 'Banner Image'),
+                                    ('video-banner', 'Video banner'),
+                                ],
+                            ),
+                            help_text='Sets layout of the header. (Right image, bottom image, left image, top image, banner)',
+                        ),
+                    ]
+                ),
+            ],
+            heading = "Header/Banner Fields",
+            classname="collapsible",
+        ), # Optional Header/Banner Fields
+        MultiFieldPanel(
+            [
+                FieldPanel('fw_alternate_title'),
+                FieldPanel('subtitle'),
+                FieldPanel('fw_above_cut_lede'),
+            ],
+            heading = "Optional Header/Banner Fields (Alternate title, Subtitle, Above cut lede)",
+            classname="collapsible collapsed",
+        ),
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
+                ),
+                FieldPanel("content_sap"),
+                FieldPanel("disclaimer_sap")
+            ],
+            heading="Article Content",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
+                InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
+            ],
+            heading="Author(s)",
+            classname="collapsible",
+        ), # Author(s)
+        MultiFieldPanel(
+            [
+                FieldPanel("category_page"),
+                HelpPanel(
+                    content='''
+                        <h1>About Topics</h1>
+                        <p>Topics entered here will be listed in the topic page with the format <a href='https://ubyssey.ca/topic/top-stories/' target='_blank'>https://ubyssey.ca/topic/top-stories/</a>.</p>
+                        <p>Do NOT think of this like tagging an instagram post. It is NOT useless metadata or for SEO. <b><u>We tag articles so that ongoing subjects and stories are easy for readers to find and follow within our website</u></b>. These readers include everyone from students studying at UBC right now, to future Ubyssey editors, and journalists covering UBC at larger publications like the CBC and the Globe and Mail. <i>(More needs to be done to make use of topics and link to topic pages on the website. I'm working on it! - Sam Low)</i></p>
+                        <p>Make articles from our archive easier to find and they will be read more often. Tagging newspapers has a long history. The New York Times became known as the 'Paper of Record' because of its <a href='https://en.wikipedia.org/wiki/New_York_Times_Index' target='_blank'>New York Times Index</a> which rigoursly tagged every article of every paper by topic. This act unlocked the value of their archive and secured New York Times reporting center stage in the canon of history.</p>
+                        <h2>Tips for topics</h2>
+                        <ol>
+                            <li>1. Consistency is very important. Use the full name with correct capitalization every time.</li>
+                            <li>2. Tag the full name of every subject of the article. Subjects can include individuals, organizations, buildings, exhibits, concepts, etc.</li>
+                            <li>3. Add tags at all levels of specificity. For example 'AMS', 'AMS Candidate Profile'  'AMS elections', 'AMS elections 2025', 'AMS Candidate Profile 2025'.</li>
+                            <li>4. Decide on a full name for ongoing stories such as lawsuits.</li>
+                        </ol>
+
+                    '''
+                ),
+                TagsFieldPanel("topics"),
+                FieldPanel(
+                    "primary_tag_slug",
+                    widget=PrimaryTagSelect(),
+                ),
+
+                SuggestedBarFieldPanel(
+                    "filter_by_tags",
+                    widget=Select(choices=[
+                        (False, "Section"),
+                        (True, "Primary topic")
+                    ])
+                ),
+                MultiFieldPanel(
+                    [
+                        HelpPanel(content="<p>THIS OVERWRITES SUGGESTED BAR. Usually creating a topic or category is better because there will be a page dedicated to that topic or category and this article's suggested bar will update when new articles in that topic or category are published. But if you have specific related articles you want to recommend rather than a topic or subsection or column, then use this.</p>"),
+                        InlinePanel("connected_articles"),
+                    ],
+                    heading="Connected or Related Articles (Non-Series)",
+                    classname="collapsible collapsed",
+                ),
+            ],
+            heading="Categories, Topics, Suggested bar",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("lede"),
+                HelpPanel(content='''
+                    <h1>About storystream views</h1>
+                    <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>
+                    <p>Storystream views allow us to signal effort and differentiate our articles. They also allow us to move more of the value (journalism) from articles into the homepage - making the homepage valueable in and of itself (not just a set of links to click).</p>
+                    <p>Storystream views are used on the homepage and on topic pages. They display differently between these pages. Storystream views are titled according to how they are displayed in the topic pages and mobile because there is more variation between storystream views when presented on the topic pages than on the homepage.</p>
+                    <h2>Guidelines for choosing storystream</h2>
+                    <ol>
+                        <li>1. <b>For profiles:</b> select 'Image' and the 'Profile' template. Use a cutout image of the individual. Make sure empty space is cropped out. If you don't know how to cutout an image you can ask the photo editor or web developers!</li>  
+                        <li>2. <b>Quotes</b> Can be used for opinions, personal essays, interviews</li> 
+                        <li>3. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
+                        <li>4. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
+                        <li>5. <b>Standard (Desktop homepage: Small headline + lede left, image right) (Mobile homepage, topic page: Large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
+                        <li>6. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.</li>
+                    </ol>
+                    '''),
+                FieldPanel("storystream_view"),
+            ],
+            heading="Front Page Stuff",
+            classname="collapsible",
+        ),
+    ] # content_panels
+
+    promote_panels = Page.promote_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel("seo_keyword", help_text = "Seperate words with commas"),
+            ],
+            heading="Keywords for Search Engines",
+        ),
+
+        #  To do: Decide what to do with breaking. We would usually just put such an article
+        #  as the coverstory. Is there any case where marking an article as breaking and/or 
+        #  putting above the homepage header would be better than using the cover story? - Sam Low 22/05/2025
+        # 
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content="\"Breaking Timeout\" is irrelevant if news is not breaking news."),
+        #        FieldPanel("is_breaking"),
+        #        FieldPanel("breaking_timeout"),
+        #    ],
+        #    heading="Breaking",
+        #),
+
+        MultiFieldPanel(
+            [
+                FieldPanel("noindex"),
+            ],
+            heading="Special search engine-related meta tagging",
+        )
+    ] # promote_panels
+    settings_panels = SectionablePage.settings_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel(
+                    'is_explicit',
+                    help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article.",
+                ),
+            ],
+            heading="Advertising-Releated",
+        ),
+
+    ] # settings_panels  
+
+    customization_panels = [
+        HelpPanel(
+            content = "<h1>Help</h1><p>IF you need an alternate layout for your article, but still a frequently-used layout (such as including a full-width banner), THEN, rather making than a highly customized frontend (as you can do in the next tab over), select the options you require here.</p> <p>The majority of articles will just use the default layout. Thus, <u>for the majority of articles, nothing on this tab should be touched</u>; the majority of these fields are not even used in most layouts. They primarily exist to keep our data organized.</p>"
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel(
+                    "layout",
+                    widget=Select(
+                        choices=[
+                            ('default', 'Default'), 
+                            ('fw-story', 'Full-Width Story'),
+                            ('empty', 'Empty template'),
+                            ('visual-essay', 'Visual Essay'),
+                            ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
+                            ('guide-2022', 'Guide (2022 style)'),
+                            ('magazine-2023', 'Magazine (2023 style)'),
+                            ('guide-2023', 'Guide (2023 style)'),
+                            ('magazine-2024', 'Magazine (2024 style)'),
+                            ('spoof-2024', 'Spoof (2024 style)'),
+                            ('guide-2024', 'Guide (2024 style)'),
+                            ('science-2024', 'Science Supplement (2024)'),
+                            ('femme-2024', 'Femme Culture Special Issue (2024)'),
+                            ('nocturne-2024', 'Nocturne Features Supplement (2024)'),
+                        ],
+                    ),
+                ),
+            ],
+            heading = "Select Stock Layout",
+            classname="collapsible",
+        ), # Select Stock Layout
+        ] + UbysseyMenuMixin.menu_content_panels + [
+           
+        #   To Do: This is not used anywhere. Figure out what exactly timeline was for. If it was
+        #   a good idea then we can pick it up. I'm pretty sure even it was a good idea it was a
+        #   bad implementation though. So deal with articles that used it (if any) and then remove 
+        #   the fields - Sam Low (22/05/2025)
+        #
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content='<h1>Warning</h1><p>If a timeline is included in your article, <u>additional processing will be required when the article is saved</u>.</p><p>It is recommended you add a Timeline snippet LAST, <i>after</i> your article is otherwise written.</p><p><u>Developers</u> should note: the Timeline/Article sync is accomplished with Django signals, to prevent tight coupling of the two classes. Do not allow use of signals to turn into noodle logic.</p>'),
+        #        FieldPanel('show_timeline'),
+        #        FieldPanel('timeline_date'),
+        #        FieldPanel('timeline'),
+        #    ],
+        #    heading = "Timeline",
+        #    classname="collapsible collapsed",
+        #), # Timeline
+        
+        #   To Do: Individually deal with any article using it and remove the fw_about_this_article
+        #   field. Something like this can be handled within the content streamfield such as with
+        #   an extra article info editors note. 
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content="<p>This information is generally used in a special article that has additional credits beyond the normal byline.</p>"),
+        #        FieldPanel('fw_about_this_article'),
+        #    ],
+        #    heading = "Additional Credits",
+        #    classname="collapsible collapsed",
+        #), # Additional Credits
+        HelpPanel(
+            content="<h1>Help</h1><p>This tab exists so that every aspect of the frontend for an individual article may be customized, down to the finest detail. There are three fundamental tools of frontend web programming - HTML, CSS and JavaScript, and here you may utilize all three.</p><p>Custom HTML templates, which use the Django templating language, should be uploaded not as files/documents but as \"Custom HTML\" in the site admin.\n\n Custom CSS or JavaScript should be uploaded to \"Documents\"</p>"
+        ),
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content="<p>Making a template requires some understanding of how the Django backend works, so that you might know variable names etc. for the data that the template is supposed to render.</p> <p>Because of the potential complexity of a template, it is desirable to be able to quickly switch the article back to a default template. Turn on \"Use default template\" to use the stock template and turn it off to be able to override the default with a custom template. Defaults to \"on\".</p>",
+                ),
+                FieldPanel("use_default_template"),
+                FieldPanel("db_template"),
+            ],
+            heading="Custom HTML",
+            classname="collapsible collapsed",
+        ), # Custom HTML
+        MultiFieldPanel(
+            [
+                InlinePanel("styles"),
+            ],
+            heading="Custom CSS",
+            help_text="Please upload any custom CSS to \"Documents\", then select the appropriate document here.\n\nSelecting a non-CSS Document will cause errors.",
+            classname="collapsible collapsed",
+        ), # Custom CSS
+        MultiFieldPanel(
+            [
+                InlinePanel("scripts"),
+            ],
+            heading="Custom JavaScript",
+            help_text="Please upload any custom JavaScript to \"Documents\", then select the appropriate document here.\n\nSelecting a non-JavaScript Document will cause errors.",
+            classname="collapsible collapsed",
+        ), # Custom JavaScript
+    ] # customization_panels
+
+    # This overrides the default Wagtail edit handler, in order to add custom tabs to the article editting interface
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(promote_panels, heading='Promote'),
+            ObjectList(settings_panels, heading='Settings'),
+            ObjectList(customization_panels, heading='Special article stuff'),
+        ],
+    ) # edit_handler
+
+    #-----Search fields etc-----
+    #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
+    search_fields = Page.search_fields + [
+        index.SearchField('lede'),
+        index.SearchField('seo_keyword', boost=1.5),
+        index.AutocompleteField('seo_keyword'),
+        index.RelatedFields(
+            "topics",
+            [
+                index.SearchField("name", boost=10),
+                index.AutocompleteField("name"),
+            ],
+        ),        
+        index.FilterField('current_section'),
+        index.FilterField('slug'),
+        index.FilterField('explicit_published_at'),
+
+        index.RelatedFields('category_page', [
+            index.FilterField('slug'),
+            index.SearchField('title'),
+            index.AutocompleteField('title'),
+        ]),
+        index.RelatedFields('article_authors', [
+            index.SearchField('full_name'),
+            index.AutocompleteField('full_name'),
+        ]),
+        
+        index.FilterField('author_id')
+    ]
+
+    #-----Properties, getters, setters, etc.-----
+
+    def get_context(self, request, *args, **kwargs):
+        """
+        Wagtail uses this method to add context variables following a request at a URL.
+        All the below code occurs after the user submits a request and before they receive it.
+        Therefore, keep the length of this method to a minimum; otherwise users will be kept waiting
+        """
+
+        context = super().get_context(request, *args, **kwargs)
+
+        user_agent = get_user_agent(request)
+        context['is_mobile'] = user_agent.is_mobile
+        if self.current_section == "guide":
+            context['prev'] = self.get_prev_sibling()
+            context['next'] = self.get_next_sibling()
+            
+            if self.current_section == 'guide':
+                # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
+                if not context['prev']:
+                    context['prev'] = self.get_last_sibling()
+                if not context['next']:
+                    context['next'] = self.get_first_sibling()
+
+            if context['prev']:
+                context['prev'] = context['prev'].specific
+            if context['next']:
+                context['next'] = context['next'].specific
+
+        return context
+
+    def get_suggested(self, topic_max=4):
+        '''
+        Determines the articles to suggested at the bottom of the page based on listed topics, category, primary topic, section, and editor choice
+        '''
+
+        # Gathers the 2-6 large articles suggested at the bottom of the page
+        primary = self.get_primary_suggested()
+
+        # The rest is determining the "topics" to suggest on the right of those articles
+
+        # "seen articles" are tracked to avoid suggesting duplicates or the article itself
+        seen_articles = [self] + primary['articles']
+
+        # Holds each topic to be listed on the right of the suggested bar
+        topic_articles = []
+
+        # If the category is not used for the primary suggested, then add the category as a "topic"
+        category = self.category_page
+        if category and primary['type'] != 'category':
+            topic_articles.append({
+                "topic": f'<a href="{category.url}">{category.title}</a>',
+                "considered_articles": category.get_recent_articles(max_items=5),
+                "type": "category",
+            })
+        
+        time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
+
+        if self.current_section in ['opinion', 'humour', 'features'] and self.primary_tag_slug:
+            primary_topic = self.get_primary_topic()
+            if primary_topic != None:
+                topic_articles.append({
+                    "topic": f'News: <a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
+                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                    "type": "other section",
+                })
+
+        if primary['type'] != 'topic' and self.primary_tag_slug:
+            primary_topic = self.get_primary_topic()
+            if primary_topic:
+                topic_articles.append(
+                    {
+                        "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
+                        "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                        "type": "topic",
+                    }
+                )
+
+        # Get the article's topics marked as listed
+        listed_topics = self.topics.filter(listed=True) \
+            .exclude(slug=self.primary_tag_slug) \
+            .order_by("last_used_at")
+
+        # Add each listed topic, order by article publish date 
+        topic_articles = topic_articles + list(sorted([
+            {
+                "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
+                "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                "type": "topic",
+            } for topic in listed_topics
+        ], key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True))
+
+        # Choose articles from each of the topic and combine topics with shared articles
+        article_count = 0
+        new_added = True
+        combined_topics = []
+
+        while article_count < topic_max and new_added:
+            new_added = False
+            for topic in topic_articles:
+                for article in topic["considered_articles"]:
+                    if not article in seen_articles:
+                        combined = False
+                        for combined_topic in combined_topics:
+                            if article in combined_topic["possible_articles"] and not False in [combined_topic_article in topic["considered_articles"] for combined_topic_article in combined_topic["articles"]]:
+                                combined_topic["articles"].append(article)
+                                combined_topic["possible_articles"] = list(filter(lambda article: article in topic["considered_articles"], combined_topic["possible_articles"]))
+                                if not topic["topic"] in combined_topic["topic"]:
+                                    combined_topic["topic"] = combined_topic["topic"] + ", " + topic["topic"]
+                                combined = True
+                                break
+                        if not combined:
+                            combined_topics.append({
+                                "topic": topic["topic"],
+                                "articles": [article],
+                                "possible_articles": topic["considered_articles"],
+                                "type": topic["type"]
+                            })
+
+                        seen_articles.append(article)
+                        article_count = article_count + 1
+                        new_added = True
+                        break
+                if article_count >= topic_max:
+                    break
+
+        orderd_topics = list(filter(lambda topic: topic["type"]=="category", combined_topics)) + \
+            list(sorted(filter(lambda topic: topic["type"]=="topic", combined_topics), key= lambda topic: topic["articles"][0].first_published_at, reverse=True)) + \
+            list(filter(lambda topic: not topic["type"] in ["category", "topic"], combined_topics))
+
+        # Ensure the number of topics is at or below the maximum
+        orderd_topics = orderd_topics[:topic_max]
+
+        return {"primary": primary, "topics": orderd_topics}
+
+
+    def get_title_tag(self) -> str:
+        if self.title_tag:
+            return self.title_tag
+        elif self.category_page:
+            return self.category_page.title
+        else:
+            False
+    title_tag_str = property(fget=get_title_tag)
+    
+    @property
+    def word_count(self) -> int:
+        # gotten from https://stackoverflow.com/questions/42585858/display-word-count-in-blog-post-with-wagtail
+        count = 0
+        for block in self.content:
+            if block.block_type == 'richtext' or block.block_type == 'plaintext':
+                count += len(str(block.value).split())
+        return count
+
+    @property
+    def minutes_to_read(self) -> int:
+        """
+        Assumes readers read 150 wpm on average. Returns self.world_count // 150
+        """
+        return self.word_count // 150
+
+    class Meta:
+        # TODO Should probably index on:
+        # Author then article
+        verbose_name = "Standard Article"
+        verbose_name_plural = "Standard Articles"
+
 class SpecialArticleLikePage(ArticlePage):
 
     show_in_menus_default = True
