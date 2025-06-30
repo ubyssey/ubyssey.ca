@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     @async_to_sync
     async def handle(self, *args, **options):
-        TASK_MAX = 50
+        TASK_MAX = 25
         ct = await sync_to_async(ContentType.objects.get_for_model)(StandardArticlePage)
 
         async def convert_article(article):
@@ -42,19 +42,19 @@ class Command(BaseCommand):
 
             await sync_to_async(standard_article.save_base)(raw=True)
 
+            specific = await sync_to_async(article.get_specific)()
+            revision = await sync_to_async(specific.save_revision)()
             try:
-                revision = await sync_to_async(standard_article.save_revision)()
-                if standard_article.first_published_at != None:
+                if article.first_published_at != None:
                     await sync_to_async(revision.publish)()
-            except:
-                print(article)
-                print(f'{article.current_section}/{article.slug}/')
+            except Exception as e:
+                print("The error is: ",e)
 
         tasks = []
-        async for article in ArticlePage.objects.all():
+        async for article in ArticlePage.objects.exclude(content_type=ct):
             tasks.append(asyncio.create_task(convert_article(article)))
             if len(tasks) >= TASK_MAX:
                 print("sheesh")
-                await asyncio.gather(*tasks)                
+                await asyncio.gather(*tasks)
                 tasks = []
         await asyncio.gather(*tasks)
