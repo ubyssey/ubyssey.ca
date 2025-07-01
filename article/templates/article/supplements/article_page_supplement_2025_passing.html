@@ -106,8 +106,10 @@
 {% block footer %}
 <footer>
 
+    {% with articles=self.get_category_articles %}
+    {% if articles %}
     <div class="article-list">
-        {% for article in self.get_category_articles %}
+        {% for article in articles %}
             {% if article.featured_media.first.image %}
             <div class="article-preview">
                 <a href="{% pageurl article %}">
@@ -120,6 +122,8 @@
             {% endif %}
         {% endfor %}
     </div>
+    {% endif %}
+    {% endwith %}
 
     <div class="u-container u-container--large">
         <p>The name “Pride Month” often evokes images of rainbow flags, sparkles and loud music. The irony in this literal parade — in screams for visibility and in flashy displays of Queer identity — is that there’s little dialogue about those who don’t look visibly Queer. In other words, people who “pass.”</p>
