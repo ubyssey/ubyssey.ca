@@ -59,13 +59,12 @@
         {% block banner %}
         <div class="banner">
 
-                    
             <header>
                 <h1 class="o-headline o-headline--article">
                     {{self.fw_alternate_title|safe}}
                 </h1>
         
-                <div class="subtitle">{{self.subtitle|safe}}</div>    
+                <div class="subtitle {{self.subtitle|slugify}}">{{self.subtitle|safe}}</div>    
             </header>
     
         </div>
@@ -95,22 +94,6 @@
             </div>
         </div>
     </article>
-    <div class="category-list">
-        <ul>
-            {% for article in self.get_category_articles %}
-                {% if article.featured_media.first.image %}
-                <li>
-                    <a href="{% pageurl article %}">
-                        {% image article.featured_media.first.image fill-1000x600-c100 format-webp alt=article.featured_media.first.alt_text %}
-                    </a>
-                    <a href="{% pageurl article %}">
-                        <h3>{{article.title}}</h3>
-                    </a>
-                </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
 </main>
 
 {% endblock %}
@@ -122,8 +105,26 @@
 
 {% block footer %}
 <footer>
-    <div class="u-container u-container--large">
 
+    <div class="article-list">
+        {% for article in self.get_category_articles %}
+            {% if article.featured_media.first.image %}
+            <div class="article-preview">
+                <a href="{% pageurl article %}">
+                    {% image article.featured_media.first.image height-1000 format-webp alt=article.featured_media.first.alt_text %}
+                </a>
+                <a href="{% pageurl article %}">
+                    <h3>{{article.fw_above_cut_lede|safe}}</h3>
+                </a>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="u-container u-container--large">
+        <p>The name “Pride Month” often evokes images of rainbow flags, sparkles and loud music. The irony in this literal parade — in screams for visibility and in flashy displays of Queer identity — is that there’s little dialogue about those who don’t look visibly Queer. In other words, people who “pass.”</p>
+        <p>When starting this project, the concept of gender passing seemed simple enough: it is the experience of being interpreted as the gender one hopes to be seen as. But as we interviewed people with different gender identities and at varying stages in their journey, it was clear that the term “passing” had different interpretations within the Trans community.</p>
+        <p>These stories some of the ways in which four Trans UBC students have expressed what passing means to them and, in the process, reflect on their own queer journeys.</p>
         <div class="about">
             
             <div class="footer-links">
@@ -137,11 +138,7 @@
                 </div>
             </div>
         </div>
-        <div class="land-acknowledgement">
-            <p>
-                <i>The Ubyssey</i> acknowledges we operate on the traditional, ancestral and stolen territories of the Coast Salish peoples including the xʷməθkʷəy̓əm (Musqueam), Sḵwx̱wú7mesh Úxwumixw (Squamish) and səlilwətaɬ (Tsleil-Waututh) nations. <a href="https://ubyssey.ca/pages/about/">Read More</a>.
-            </p>
-        </div>
+
         <div class="copyright">&copy; {% now "Y" %} The Ubyssey</div>
     </div>
 </footer>
