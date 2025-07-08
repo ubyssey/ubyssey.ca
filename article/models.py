@@ -1362,8 +1362,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
 
         authors_by_role = {}
-        for k, v in groupby(self.article_authors.all(), lambda a: a.author_role):
-            authors_by_role[k] = list(v)
+        for author in self.article_authors.all():
+            if author.author_role in authors_by_role:
+                authors_by_role[author.author_role].append(author)
+            else:
+                authors_by_role[author.author_role] = [author]
 
         word_authors = []
         words_byline = ""
