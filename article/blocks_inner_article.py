@@ -49,7 +49,7 @@ class PullQuoteBlock(blocks.StructBlock):
     )
     source =  blocks.CharBlock(required=False)
     audio = DocumentChooserBlock(required=False, help_text="Optional, file format: .m4a, .mp4, .mp, .wav, or .ogg")
-
+    images = blocks.ListBlock(image_blocks.ReducedImageBlock(), default=[], help_text="Optional!")
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
