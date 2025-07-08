@@ -111,14 +111,20 @@ nav.branding {
 
 .banner {
     display: flex;
-    min-height: 100vh;
+    min-height: 200vh;
 
     background-color: var(--banner-colour);
     border-bottom: 2px solid var(--banner-border);
 
     header {
-        margin: auto;
-        border-bottom: 1px solid var(--banner-border);
+        margin: 0 auto;
+    }
+
+    .headline {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     h1 {
@@ -132,12 +138,14 @@ nav.branding {
 
     div.subtitle {
         margin: 0;
+        border-bottom: 1px solid var(--banner-border);
+
         font-size: 7em;
         font-weight: 600;
     }
 }
 
-.c-title {
+h2 {
     margin: 1.5em auto;
     width: fit-content;
 
@@ -255,9 +263,59 @@ p.drop-cap:first-letter {
   border-top: 2px solid;
 }
 
+.header {
+  padding: 1em 1em 2em 1em;
+  margin: auto;
+  min-height: 100vh;
+  max-width: 1280px;
+  display: flex;
+  p {
+    margin: 1em auto;
+    max-width: none;
+  }
+  .c-editors-note {
+    margin-block: auto;
+    height: fit-content;
+    max-width: 400px;
+    flex-shrink: 0;
+    line-height: 1.75em;
+    font-size: .85em;
+    p:first-child::first-line {
+      font-size: 1.25em;
+    }
+  }
+  img.logo {
+    padding-top: 3em;
+    margin: auto;
+    margin-bottom: -4%;
+    max-width: 800px;
+    display: block;
+  }
+  .c-article__info {
+    margin-block: 1em;
+    text-align: center;
+  }
+  .logo-container {
+    flex-grow: 1;
+    height: fit-content;
+    margin-block: auto;
+  }
+  @media (variables.$bp-smaller-than-tablet) {
+    flex-direction: column;
+    .c-editors-note {
+      font-size: .9em;
+      p {
+        font-size: 1em;
+      }
+    }
+  }
+}
+
 .o-container {
     margin: auto;
-    padding-inline: 1em;
+    p {
+      padding-inline: 1em;
+    }
 }
 
 .caption {
@@ -376,7 +434,7 @@ img {
   }
 
   &.large {
-    width: 600px;
+    width: 500px;
   }
 }
 
@@ -436,7 +494,7 @@ footer {
   p {
     margin-inline: auto;
     max-width: 1000px;
-    text-align: left;
+    text-align: center;
   }
   .footer-links-section {
     margin: auto;
