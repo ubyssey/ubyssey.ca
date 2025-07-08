@@ -31,7 +31,6 @@ ScrollTrigger.create({
     animation: safetytl,
     pin: ".banner.safety header",
     scrub: true,
-    markers: true,
     invalidateOnRefresh: true,
 });
 
@@ -59,7 +58,6 @@ ScrollTrigger.create({
     animation: pastPassingtl,
     pin: ".banner.past-passing header",
     scrub: true,
-    markers: true,
     invalidateOnRefresh: true,
 });
 
@@ -84,7 +82,6 @@ ScrollTrigger.create({
     animation: invisibilitytl,
     pin: ".banner.invisibility header",
     scrub: true,
-    markers: true,
     invalidateOnRefresh: true,
 });
 
@@ -103,7 +100,6 @@ ScrollTrigger.create({
     animation: notPossibletl,
     pin: ".banner.not-possible header",
     scrub: true,
-    markers: true,
     invalidateOnRefresh: true,
 });
 
