@@ -266,6 +266,12 @@
         // Feature
         .o-article_storystream_feature {
             padding-inline: 5em;
+            .o-article__left {
+                padding-inline: 0;
+                > img {
+                    max-height: none;
+                }
+            }
         }
 
         // Indent
@@ -279,7 +285,6 @@
             .o-article__left {
                 .o-article__headline {
                     font-size: 1.25em;
-                    font-variation-settings: "wght" 500;
                 }
                 .o-article__snippet {
                     display: block;
