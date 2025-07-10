@@ -69,8 +69,9 @@ LOGGING = {
    'version': 1,
    'disable_existing_loggers': False,
    'formatters': {
-       'verbose': {
-           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+       'json': {
+           '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+           'format': '%(asctime)s %(name)s %(levelname)s %(message)s',
        },
    },
    'handlers': {
@@ -78,7 +79,7 @@ LOGGING = {
            'level': 'DEBUG',
            'class': 'logging.StreamHandler',
            'stream': sys.stdout,
-           'formatter': 'verbose'
+           'formatter': 'json'
        },
    },
    'loggers': {
