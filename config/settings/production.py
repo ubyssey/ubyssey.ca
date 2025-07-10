@@ -71,7 +71,7 @@ LOGGING = {
    'formatters': {
        'json': {
            '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
-           'fmt': '%(asctime)s %(name)s %(levelname)s %(message)s',
+           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
            'reserved_attrs': ['name', 'msg', 'args', 'levelname', 'levelno', 'pathname', 'filename', 'module', 'lineno', 'funcName', 'created', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'stack_info'],
        },
    },
