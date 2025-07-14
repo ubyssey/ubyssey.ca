@@ -272,16 +272,28 @@ p.drop-cap:first-letter {
   p {
     margin: 1em auto;
     max-width: none;
+
+    background: linear-gradient(transparent calc(100% - 1px), var(--banner-border));
+    background-size: 100% 2em;
+    
+    -webkit-text-stroke: 0;
   }
   .c-editors-note {
     margin-block: auto;
+    padding: 0 1em;
     height: fit-content;
     max-width: 400px;
     flex-shrink: 0;
+
+    border-radius: 1em;
+    border: solid 1px var(--banner-border);
+    background: var(--banner-colour);
+
     line-height: 1.75em;
     font-size: .85em;
     p:first-child::first-line {
       font-size: 1.25em;
+      font-weight: 600;
     }
   }
   img.logo {
