@@ -118,6 +118,10 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
+    'health_check',                    # Required
+    'health_check.db',                 # Database check
+    'health_check.cache',              # Cache check (memcached)  
+    'ubyssey.health_checks',           # Custom checks
 ]
 
 if DEBUG:

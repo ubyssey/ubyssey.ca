@@ -113,8 +113,8 @@ urlpatterns += [
     re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
     re_path(r'^blog/', redirect_blog_to_humour),
     re_path(r'^sitemap.xml$', sitemap),
+    re_path(r'^health/', include('health_check.urls')),
     path('', include(wagtail_urls)),
-
     # # standard Ubyssey site
     # re_path(r'^$', HomePageView.as_view(), name='home'),
     # re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
