@@ -413,7 +413,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 seen_articles.append(article)
                 if len(seen_articles) >= items or len(cluster_articles) >= max_in_cluster:
                     break
-                
+
             if len(cluster_articles) > 0:
                 cluster.append({"topic": topic, "articles": cluster_articles})
             if len(seen_articles) >= items:
@@ -423,6 +423,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             for topic in used_topics:
                 articles_by_topic[topic.name] = list(filter(lambda article: not article in seen_articles, articles_by_topic[topic.name]))
             
+            used_topics = list(filter(lambda t: len(articles_by_topic[t.name]) > 0, used_topics))
             used_topics = sorted(used_topics, key=lambda t: articles_by_topic[t.name][0].published_at, reverse=True)
 
         #for clust in cluster:
