@@ -121,7 +121,6 @@ INSTALLED_APPS = [
     'health_check',                    # Required
     'health_check.db',                 # Database check
     'health_check.cache',              # Cache check (memcached)  
-    'ubyssey.health_checks',           # Custom checks
 ]
 
 if DEBUG:
