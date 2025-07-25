@@ -118,9 +118,9 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
-    'health_check',                    # Required
-    'health_check.db',                 # Database check
-    'health_check.cache',              # Cache check (memcached)  
+    'health_check',                    
+    'health_check.db',                 
+    'health_check.cache',              
 ]
 
 if DEBUG:
