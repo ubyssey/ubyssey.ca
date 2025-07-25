@@ -125,7 +125,26 @@ jobs:
 
       - name: Upload nginx configuration
         run: scp nginx.conf production:/opt/ubyssey.ca/nginx/nginx.conf
-        
+
+      - name: Verify Docker secrets exist
+        run: |
+          echo "Verifying each docker secret exists..."
+
+          # Get all secret names
+          SECRET_NAMES=$(ssh production "docker secret ls --format '{{.Name}}'")
+          
+          # Inspect each secret to verify it exists
+          for secret in $SECRET_NAMES; do
+            if ssh production "docker secret inspect $secret" >/dev/null 2>&1; then
+              echo "✅ $secret"
+            else
+              echo "❌ $secret failed inspection"
+              exit 1
+            fi
+          done
+          
+          echo "All secrets verified"
+
       - name: Sync secrets from Google Cloud Platform
         run: cat sync-secrets.sh | ssh production
 
