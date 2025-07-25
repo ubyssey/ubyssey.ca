@@ -1481,7 +1481,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         # The rest is determining the "topics" to suggest on the right of those articles
 
         # "seen articles" are tracked to avoid suggesting duplicates or the article itself
-        seen_articles = [self] + primary['articles']
+        seen_articles = [self]
+        if primary:
+            seen_articles = seen_articles + primary['articles']
 
         # Holds each topic to be listed on the right of the suggested bar
         topic_articles = []
@@ -1506,15 +1508,16 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     "type": "other section",
                 })
 
-        if primary['type'] != 'topic' and self.primary_tag_slug:
-            primary_topic = self.get_primary_topic()
-            if primary_topic:
-                topic_articles.append(
-                    {
-                        "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
-                        "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
-                        "type": "topic",
-                    }
+        if primary:
+            if primary['type'] != 'topic' and self.primary_tag_slug:
+                primary_topic = self.get_primary_topic()
+                if primary_topic:
+                    topic_articles.append(
+                        {
+                            "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
+                            "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                            "type": "topic",
+                        }
                 )
 
         # Get the article's topics marked as listed
