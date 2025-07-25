@@ -117,8 +117,13 @@ services:
     volumes:
       - thoth_data:/var/lib/postgresql/data/
 
-  backend:
+  thoth_backend:
     image: ghcr.io/ubyssey/thoth:latest
+
+    command: >
+      bash -c "python manage.py migrate
+      && python manage.py crontab add"
+    
     ports:
       - "8080:8080"
     depends_on:
@@ -126,14 +131,14 @@ services:
     stdin_open: true
     tty: true
   
-  frontend:
+  thoth_frontend:
     image: ghcr.io/ubyssey/thoth-frontend:latest
     ports:
       - "5000:5000"
     environment:
       NODE_ENV: development
     depends_on:
-      - backend
+      - thoth_backend
 
   nginx:
     image: nginx:1.27
@@ -149,7 +154,8 @@ services:
       driver: gcplogs
     depends_on:
       - django
-      - backend
+      - thoth_backend
+      - thoth_frontend
   
   certbot:
     image: certbot/certbot:v4.0.0
