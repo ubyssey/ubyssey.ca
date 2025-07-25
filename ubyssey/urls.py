@@ -56,6 +56,12 @@ urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 
+    # For politely telling annoying guys to leave us alone
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
+
     # Special design articles
     re_path(r'^features/how-substance-use-impacts-queer-students', TemplateView.as_view(template_name='article/queer-substance-abuse.html')),
     re_path(r'^features/window-watching', TemplateView.as_view(template_name='article/nocturne-window-watching.html')),
