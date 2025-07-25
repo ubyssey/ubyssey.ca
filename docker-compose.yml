@@ -124,8 +124,6 @@ services:
       bash -c "python manage.py migrate
       && python manage.py crontab add"
     
-    ports:
-      - "8080:8080"
     depends_on:
       - db
     stdin_open: true
@@ -133,8 +131,7 @@ services:
   
   thoth_frontend:
     image: ghcr.io/ubyssey/thoth-frontend:latest
-    ports:
-      - "5000:5000"
+
     environment:
       NODE_ENV: development
     depends_on:
