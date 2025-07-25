@@ -103,6 +103,38 @@ services:
       - mysql
       - cache
 
+  db:
+    image: ankane/pgvector:latest
+    restart: always
+    environment:
+      POSTGRES_DB: thoth
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  backend:
+    image: ghcr.io/ubyssey/thoth:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+  
+  frontend:
+    image: ghcr.io/ubyssey/thoth-frontend:latest
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - backend
+
   nginx:
     image: nginx:1.27
     ports:
@@ -117,6 +149,7 @@ services:
       driver: gcplogs
     depends_on:
       - django
+      - backend
   
   certbot:
     image: certbot/certbot:v4.0.0
