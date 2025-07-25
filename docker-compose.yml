@@ -115,7 +115,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data/
+      - thoth_data:/var/lib/postgresql/data/
 
   backend:
     image: ghcr.io/ubyssey/thoth:latest
@@ -159,6 +159,9 @@ services:
       - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
     # Attempt to renew TLS certificate every 12 hours
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  thoth_data:
 
 secrets:
   DJANGO_SECRET_KEY:
