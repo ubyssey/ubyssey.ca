@@ -157,8 +157,6 @@ jobs:
       - name: Check health of the application
         run: |
           echo "Waiting for services to start..."
-          # sleep 180 # testing
-          
           MAX_ATTEMPTS=15
           for ((i=1; i<=MAX_ATTEMPTS; i++)); do
             echo "Health check attempt $i/$MAX_ATTEMPTS..."
