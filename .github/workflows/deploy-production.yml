@@ -1,104 +1,16 @@
-name: Deploy to production
+name: Test health check only
 
 on:
-  release:
-    types: [published]
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  push:
+    branches:
+      - fixing-deployment-script
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern=v{{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-  deploy:
-
-    needs: build
-
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
+  test-health:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '14.x'
-
-      - run: |
-          npm install
-          npm install -g gulp
-          npm rebuild node-sass
-          gulp build
-        working-directory: ubyssey/static_src
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
-      - name: Install Python dependencies
-        run: python -m pip install -r requirements.txt
-
-      - name: Collect Django static files
-        run: DJANGO_SETTINGS_MODULE=config.settings.base python manage.py collectstatic --noinput
-
-      - name: Authenticate with Google Cloud Platform
-        uses: 'google-github-actions/auth@v2'
-        with:
-          workload_identity_provider: 'projects/863738545301/locations/global/workloadIdentityPools/ubyssey-wif-pool-prd/providers/ubyssey-oidc-github-prd'
-          service_account: 'deployment@ubyssey-prd.iam.gserviceaccount.com'
-
-      - name: Upload static files to Google Cloud Storage
-        uses: 'google-github-actions/upload-cloud-storage@v2'
-        with:
-          path: 'static'
-          destination: 'ubyssey'
 
       - name: Configure SSH
         run: |
@@ -117,46 +29,20 @@ jobs:
           SSH_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY_PRODUCTION }}
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_PRODUCTION }}
 
-      - name: Set tag in docker-compose.yml
-        run: sed -i "s/\${TAG}/${{ github.ref_name }}/g" docker-compose.yml
-
-      - name: Upload Docker Compose configuration
-        run: scp docker-compose.yml production:/opt/ubyssey.ca/docker-compose.yml
-
-      - name: Upload nginx configuration
-        run: scp nginx.conf production:/opt/ubyssey.ca/nginx/nginx.conf
-
-      - name: Verify Docker secrets exist
-        run: |
-          echo "Verifying each docker secret exists..."
-
-          # Get all secret names
-          SECRET_NAMES=$(ssh production "docker secret ls --format '{{.Name}}'")
-          
-          # Inspect each secret to verify it exists
-          for secret in $SECRET_NAMES; do
-            if ssh production "docker secret inspect $secret" >/dev/null 2>&1; then
-              echo "✅ $secret"
-            else
-              echo "❌ $secret failed inspection"
-              exit 1
-            fi
-          done
-          
-          echo "All secrets verified"
-
-      - name: Sync secrets from Google Cloud Platform
-        run: cat sync-secrets.sh | ssh production
-
-      - name: Restart services
-        run: ssh production docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
-
       - name: Check health of the application
         run: |
+          echo "Waiting for services to start..."
+          sleep 60
+          
           MAX_ATTEMPTS=15
           for ((i=1; i<=MAX_ATTEMPTS; i++)); do
-            if ssh production curl -f -s https://ubyssey.ca/health/ >/dev/null 2>&1; then
+            echo "Health check attempt $i/$MAX_ATTEMPTS..."
+            if ssh production "curl -f https://ubyssey.ca/health/" >/dev/null 2>&1; then
+              echo "Health check passed"
               exit 0
+            else
+              echo "Attempt $i failed - showing error details:"
+              ssh production "curl -f https://ubyssey.ca/health/"
             fi
             sleep 10
           done
