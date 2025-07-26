@@ -125,9 +125,40 @@ jobs:
 
       - name: Upload nginx configuration
         run: scp nginx.conf production:/opt/ubyssey.ca/nginx/nginx.conf
-        
+
+      - name: Verify Docker secrets exist
+        run: |
+          echo "Verifying each docker secret exists..."
+
+          # Get all secret names
+          SECRET_NAMES=$(ssh production "docker secret ls --format '{{.Name}}'")
+          
+          # Inspect each secret to verify it exists
+          for secret in $SECRET_NAMES; do
+            if ssh production "docker secret inspect $secret" >/dev/null 2>&1; then
+              echo "✅ $secret"
+            else
+              echo "❌ $secret failed inspection"
+              exit 1
+            fi
+          done
+          
+          echo "All secrets verified"
+
       - name: Sync secrets from Google Cloud Platform
         run: cat sync-secrets.sh | ssh production
 
       - name: Restart services
         run: ssh production docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+
+      - name: Check health of the application
+        run: |
+          MAX_ATTEMPTS=15
+          for ((i=1; i<=MAX_ATTEMPTS; i++)); do
+            if ssh production curl -f -s https://ubyssey.ca/health/ >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Health check failed"
+          exit 1
