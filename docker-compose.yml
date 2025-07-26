@@ -117,7 +117,7 @@ services:
     volumes:
       - thoth_data:/var/lib/postgresql/data/
 
-  thoth_backend:
+  thothbackend:
     image: ghcr.io/ubyssey/thoth:latest
 
     command: >
@@ -129,13 +129,13 @@ services:
     stdin_open: true
     tty: true
   
-  thoth_frontend:
+  thothfrontend:
     image: ghcr.io/ubyssey/thoth-frontend:latest
 
     environment:
       NODE_ENV: development
     depends_on:
-      - thoth_backend
+      - thothbackend
 
   nginx:
     image: nginx:1.27
@@ -151,8 +151,8 @@ services:
       driver: gcplogs
     depends_on:
       - django
-      - thoth_backend
-      - thoth_frontend
+      - thothbackend
+      - thothfrontend
   
   certbot:
     image: certbot/certbot:v4.0.0
