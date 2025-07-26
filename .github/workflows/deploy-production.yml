@@ -1,11 +1,8 @@
 name: Deploy to production
 
 on:
-  # release:
-  #   types: [published]
-  push:
-    branches:
-      - 1665-add-pre-deployment-health-check-before-container-deployment
+  release:
+    types: [published]
 
 env:
   REGISTRY: ghcr.io
