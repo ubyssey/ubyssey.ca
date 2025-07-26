@@ -103,6 +103,40 @@ services:
       - mysql
       - cache
 
+  db:
+    image: ankane/pgvector:latest
+    restart: always
+    environment:
+      POSTGRES_DB: thoth
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+    ports:
+      - 5432:5432
+    volumes:
+      - thoth_data:/var/lib/postgresql/data/
+
+  thothbackend:
+    image: ghcr.io/ubyssey/thoth:latest
+
+    command: >
+      bash -c "python manage.py migrate
+      && python manage.py crontab add"
+    
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+  
+  thothfrontend:
+    image: ghcr.io/ubyssey/thoth-frontend:latest
+
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - thothbackend
+
   nginx:
     image: nginx:1.27
     ports:
@@ -117,6 +151,8 @@ services:
       driver: gcplogs
     depends_on:
       - django
+      - thothbackend
+      - thothfrontend
   
   certbot:
     image: certbot/certbot:v4.0.0
@@ -126,6 +162,9 @@ services:
       - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
     # Attempt to renew TLS certificate every 12 hours
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  thoth_data:
 
 secrets:
   DJANGO_SECRET_KEY:
