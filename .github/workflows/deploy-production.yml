@@ -1,16 +1,84 @@
-name: Test health check only
+name: Deploy to production
 
 on:
+  # release:
+  #   types: [published]
   push:
     branches:
       - fixing-deployment-script
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
-  test-health:
+  # build:
+  #   runs-on: ubuntu-latest
+
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #     attestations: write
+  #     id-token: write
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Log in to the Container registry
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ${{ env.REGISTRY }}
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+
+  #     - name: Extract metadata (tags, labels) for Docker
+  #       id: meta
+  #       uses: docker/metadata-action@v4
+  #       with:
+  #         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+  #         tags: |
+  #           type=schedule
+  #           type=ref,event=branch
+  #           type=ref,event=pr
+  #           type=semver,pattern=v{{version}}
+  #           type=semver,pattern={{major}}.{{minor}}
+  #           type=semver,pattern={{major}}
+  #           type=sha
+
+  #     - name: Build and push Docker image
+  #       id: push
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}
+  #         labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+
+    # needs: build
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Authenticate with Google Cloud Platform
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/863738545301/locations/global/workloadIdentityPools/ubyssey-wif-pool-prd/providers/ubyssey-oidc-github-prd'
+          service_account: 'deployment@ubyssey-prd.iam.gserviceaccount.com'
+
+      # - name: Upload static files to Google Cloud Storage
+      #   uses: 'google-github-actions/upload-cloud-storage@v2'
+      #   with:
+      #     path: 'static'
+      #     destination: 'ubyssey'
 
       - name: Configure SSH
         run: |
@@ -28,6 +96,25 @@ jobs:
           SSH_USER: deploy-production
           SSH_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY_PRODUCTION }}
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_PRODUCTION }}
+
+      - name: Verify Docker secrets exist
+        run: |
+          echo "Verifying each docker secret exists..."
+
+          # Get all secret names
+          SECRET_NAMES=$(ssh production "docker secret ls --format '{{.Name}}'")
+          
+          # Inspect each secret to verify it exists
+          for secret in $SECRET_NAMES; do
+            if ssh production "docker secret inspect $secret" >/dev/null 2>&1; then
+              echo "✅ $secret"
+            else
+              echo "❌ $secret failed inspection"
+              exit 1
+            fi
+          done
+          
+          echo "All secrets verified"
 
       - name: Check health of the application
         run: |
