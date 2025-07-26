@@ -156,7 +156,7 @@ jobs:
       - name: Check health of the application
         run: |
           echo "Waiting for services to start..."
-          sleep 60
+          sleep 180
           
           MAX_ATTEMPTS=15
           for ((i=1; i<=MAX_ATTEMPTS; i++)); do
