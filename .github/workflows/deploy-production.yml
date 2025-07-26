@@ -5,7 +5,8 @@ on:
   #   types: [published]
   push:
     branches:
-      - 1655-add-pre-deployment-health-check-before-container-deployment
+      - 1665-add-pre-deployment-health-check-before-container-deployment
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -156,7 +157,7 @@ jobs:
       - name: Check health of the application
         run: |
           echo "Waiting for services to start..."
-          sleep 60
+          sleep 180
           
           MAX_ATTEMPTS=15
           for ((i=1; i<=MAX_ATTEMPTS; i++)); do
