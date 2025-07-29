@@ -18,7 +18,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
-      
+
   cache:
     image: memcached:1.6.10
     ports:
@@ -31,7 +31,7 @@ services:
       start_period: 20s
 
   django:
-    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
+    image: ghcr.io/ubyssey/ubyssey.ca:v23.0.41
 
     # The number of gunicorn workers below is derived from the number of CPU cores
     # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
@@ -74,7 +74,7 @@ services:
     # Ref: https://docs.docker.com/engine/logging/drivers/gcplogs/
     logging:
       driver: gcplogs
-    
+
     deploy:
       # Deploy 4 replicas of the Django app. This makes us more resilient to errors
       # that might cause a single container to crash momentarily.
@@ -122,18 +122,18 @@ services:
 
     command: >
       bash -c "python manage.py migrate
-      && python manage.py crontab add"
-    
+      && python manage.py crontab add && python manage.py runserver 0.0.0.0:8000"
+
     depends_on:
       - db
     stdin_open: true
     tty: true
-  
+
   thothfrontend:
     image: ghcr.io/ubyssey/thoth-frontend:latest
 
     environment:
-      NODE_ENV: development
+      ORIGIN: https://thoth.ubyssey.ca
     depends_on:
       - thothbackend
 
@@ -153,7 +153,7 @@ services:
       - django
       - thothbackend
       - thothfrontend
-  
+
   certbot:
     image: certbot/certbot:v4.0.0
     volumes:
