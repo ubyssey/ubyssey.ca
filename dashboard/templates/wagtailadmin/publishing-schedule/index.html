@@ -1,0 +1,54 @@
+{% extends "wagtailadmin/base.html" %}
+{% load static %}
+
+{% block titletag %}Publishing schedule{% endblock %}
+
+{% comment %}
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/calendar.css' %}">
+{% endblock %}
+{% endcomment %}
+
+{% block content %}
+    {% include "wagtailadmin/shared/header.html" with title="Publishing schedule" icon="date" %}
+
+    <div class="nice-padding">
+        <table>
+            <tr>
+                <th><a href="/admin/pages/{{live.id}}/revisions/{{live_revision_id}}/revert/">Live</a></th>
+                <th><a href="/admin/pages/{{live.id}}/edit/">Scheduled in draft</a></th>
+                {% comment%}
+                <th>Ready to publish</th>
+                {% endcomment %}
+            </tr>
+
+            <tr>
+                <td>
+                    <ul>
+                        {% for article in live_articles %}
+                        <li>{{article.title}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+
+                <td>
+                    <ul>
+                        {% for article in scheduled_articles %}
+                        <li>{{article.title}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                {% comment %}
+                <td>
+                    <ul>
+                        {% for article in ready_articles %}
+                        <li>{article.title}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                {% endcomment %}
+            </tr>
+        </table>
+    </div>
+{% endblock %}
