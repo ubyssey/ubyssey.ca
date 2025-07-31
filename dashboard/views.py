@@ -1,4 +1,7 @@
 from django.shortcuts import render
+
+from wagtail.models import Workflow
+
 from home.models import HomePage
 
 # Create your views here.
@@ -14,6 +17,11 @@ def publishing_schedule_dashboard(request):
     live_revision_id = live.live_revision.id
     scheduled_revision_id = live.latest_revision.id
 
+    workflow_states = []
+    workflow = Workflow.objects.filter(name="Publishing committee").first()
+    if workflow != None:
+        workflow_states = workflow.workflow_states.filter(status="in_progress")
+
     return render(request, "wagtailadmin/publishing-schedule/index.html", {
         'live': live,
         'live_revision_id': live_revision_id,
@@ -22,4 +30,7 @@ def publishing_schedule_dashboard(request):
         'scheduled': scheduled,
         'scheduled_revision_id': scheduled_revision_id,
         'scheduled_articles':scheduled_articles,
+
+        'workflow': workflow,
+        'workflow_states': workflow_states
         })

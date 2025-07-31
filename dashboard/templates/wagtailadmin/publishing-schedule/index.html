@@ -3,12 +3,10 @@
 
 {% block titletag %}Publishing schedule{% endblock %}
 
-{% comment %}
 {% block extra_css %}
     {{ block.super }}
-    <link rel="stylesheet" href="{% static 'css/calendar.css' %}">
+    <link rel="stylesheet" href="{% static 'ubyssey/css/admin_publishing-schedule.css' %}">
 {% endblock %}
-{% endcomment %}
 
 {% block content %}
     {% include "wagtailadmin/shared/header.html" with title="Publishing schedule" icon="date" %}
@@ -18,36 +16,42 @@
             <tr>
                 <th><a href="/admin/pages/{{live.id}}/revisions/{{live_revision_id}}/revert/">Live</a></th>
                 <th><a href="/admin/pages/{{live.id}}/edit/">Scheduled in draft</a></th>
-                {% comment%}
-                <th>Ready to publish</th>
-                {% endcomment %}
+                {% if workflow %}
+                <th><a href="/admin/reports/workflow/?workflow={{workflow.id}}">Ready to publish</a></th>
+                {% endif %}
             </tr>
 
             <tr>
                 <td>
                     <ul>
+                        {% with show_bylines="true" %}
                         {% for article in live_articles %}
-                        <li>{{article.title}}</li>
+                            {% include "article/objects/article_list-item.html" %}
                         {% endfor %}
+                        {% endwith %}
                     </ul>
                 </td>
 
                 <td>
                     <ul>
+                        {% with show_bylines="true" %}
                         {% for article in scheduled_articles %}
-                        <li>{{article.title}}</li>
+                            {% include "article/objects/article_list-item.html" %}
                         {% endfor %}
+                        {% endwith %}
                     </ul>
                 </td>
-                {% comment %}
+                {% if workflow %}
                 <td>
                     <ul>
-                        {% for article in ready_articles %}
-                        <li>{article.title}</li>
+                        {% with show_bylines="true" %}
+                        {% for workflow_states in workflow_states %}
+                            {% include "article/objects/article_list-item.html" with article=workflow_states.content_object %}
                         {% endfor %}
+                        {% endwith %}
                     </ul>
                 </td>
-                {% endcomment %}
+                {% endif %}
             </tr>
         </table>
     </div>
