@@ -16,9 +16,7 @@
             <tr>
                 <th><a href="/admin/pages/{{live.id}}/revisions/{{live_revision_id}}/revert/">Live</a></th>
                 <th><a href="/admin/pages/{{live.id}}/edit/">Scheduled in draft</a></th>
-                {% if workflow %}
-                <th><a href="/admin/reports/workflow/?workflow={{workflow.id}}">Ready to publish</a></th>
-                {% endif %}
+                <th><a href="/admin/reports/workflow/">Ready to publish</a></th>
             </tr>
 
             <tr>
@@ -26,7 +24,9 @@
                     <ul>
                         {% with show_bylines="true" %}
                         {% for article in live_articles %}
+                            <li>
                             {% include "article/objects/article_list-item.html" %}
+                            </li>
                         {% endfor %}
                         {% endwith %}
                     </ul>
@@ -36,22 +36,35 @@
                     <ul>
                         {% with show_bylines="true" %}
                         {% for article in scheduled_articles %}
+                            <li>
                             {% include "article/objects/article_list-item.html" %}
+                            </li>
                         {% endfor %}
                         {% endwith %}
                     </ul>
                 </td>
-                {% if workflow %}
+
                 <td>
                     <ul>
                         {% with show_bylines="true" %}
-                        {% for workflow_states in workflow_states %}
-                            {% include "article/objects/article_list-item.html" with article=workflow_states.content_object %}
+                        {% for task_state in task_states %}
+                        <li>
+                            <div>Requested <time datetime="{{task_state.started_at}}">{{task_state.started_at}}</time></div>
+                            <div>
+                                <div class="comments">
+                                {% for sibling_tasks_states in task_state.workflow_state.task_states.all %}
+                                    <p><b>{{sibling_tasks_states.task.name}}</b> {{sibling_tasks_states.comment}} {{sibling_tasks_states.timeliness}}</p> 
+                                {% endfor %}
+                                </div>
+                                {% with article=task_state.workflow_state.content_object.get_latest_revision_as_object %}
+                                    {% include "article/objects/article_list-item.html" %}
+                                {% endwith %}
+                            </div>
+                        </li>
                         {% endfor %}
                         {% endwith %}
                     </ul>
                 </td>
-                {% endif %}
             </tr>
         </table>
     </div>

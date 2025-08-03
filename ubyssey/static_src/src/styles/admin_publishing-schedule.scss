@@ -1,1 +1,13 @@
 @use 'objects/article_list-item';
+
+table {
+    --light-border: var(--w-color-border-field-default);
+    td {
+        vertical-align: top;
+
+        .comments {
+            padding: 0.5em;
+            float: right;
+        }
+    }
+}

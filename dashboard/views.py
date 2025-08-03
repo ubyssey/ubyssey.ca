@@ -1,26 +1,24 @@
 from django.shortcuts import render
 
-from wagtail.models import Workflow
+from wagtail.models import Workflow, TaskState, Task
 
 from home.models import HomePage
+from dashboard.models import PublishingCommitteeApprovalTaskState
 
 # Create your views here.
 
 def publishing_schedule_dashboard(request):
 
     live = HomePage.objects.all().first()
-    live_articles = [live.cover_story] + [a.article for a in live.top_articles.all()] 
+    live_articles = [live.cover_story.specific] + [a.article for a in live.top_articles.all()] 
 
     scheduled = live.get_latest_revision_as_object()
-    scheduled_articles = [scheduled.cover_story] + [a.article for a in scheduled.top_articles.all()]
+    scheduled_articles = [scheduled.cover_story.specific.get_latest_revision_as_object()] + [a.article.get_latest_revision_as_object() for a in scheduled.top_articles.all()]
 
     live_revision_id = live.live_revision.id
     scheduled_revision_id = live.latest_revision.id
 
-    workflow_states = []
-    workflow = Workflow.objects.filter(name="Publishing committee").first()
-    if workflow != None:
-        workflow_states = workflow.workflow_states.filter(status="in_progress")
+    task_states = PublishingCommitteeApprovalTaskState.objects.filter(status=TaskState.STATUS_IN_PROGRESS).order_by("-started_at")
 
     return render(request, "wagtailadmin/publishing-schedule/index.html", {
         'live': live,
@@ -31,6 +29,5 @@ def publishing_schedule_dashboard(request):
         'scheduled_revision_id': scheduled_revision_id,
         'scheduled_articles':scheduled_articles,
 
-        'workflow': workflow,
-        'workflow_states': workflow_states
+        'task_states': task_states
         })
