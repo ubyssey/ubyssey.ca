@@ -120,9 +120,10 @@ services:
   thothbackend:
     image: ghcr.io/ubyssey/thoth:latest
 
-    command: >
-      bash -c "python manage.py migrate
-      && python manage.py crontab add && service cron start && python manage.py runserver 0.0.0.0:8000"
+    command:
+      - bash
+      - -c
+      - "python manage.py migrate && python manage.py crontab add && service cron start && python manage.py runserver 0.0.0.0:8000"
 
     depends_on:
       - db
@@ -179,4 +180,6 @@ secrets:
     file: ./service-account.json
   EMAIL_HOST_PASSWORD:
     external: true
+
+
 
