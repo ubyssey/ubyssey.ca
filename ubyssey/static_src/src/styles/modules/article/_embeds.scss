@@ -4,8 +4,10 @@
 // for articles
 .article {
   .o-article-embed {
+    padding: 2em;
     margin: 30px 0;
-    max-width: 585px;
+    border-block: 1px solid #ccc;
+    background: #eee;
   }
 }
 
@@ -450,6 +452,11 @@ div.article-content .image-attachment {
     }
 
     &.full {
+      width: auto;
+      max-width: 1200px;
+    }
+
+    &.full-width {
       width: auto;
       max-width: 100%;
     }
