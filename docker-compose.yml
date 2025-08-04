@@ -123,7 +123,7 @@ services:
     command:
       - bash
       - -c
-      - "set -e -x && echo 'Starting migrations...' && python manage.py migrate && echo 'Adding crontab...' && python manage.py crontab add && echo 'Starting cron service...' && service cron start && echo 'Starting Django server...' && python manage.py runserver 0.0.0.0:8000"
+      - "python manage.py migrate && python manage.py crontab add && service cron start && python manage.py runserver 0.0.0.0:8000"
 
     depends_on:
       - db
@@ -180,5 +180,6 @@ secrets:
     file: ./service-account.json
   EMAIL_HOST_PASSWORD:
     external: true
+
 
 
