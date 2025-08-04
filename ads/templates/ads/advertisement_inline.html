@@ -8,10 +8,10 @@
                 {% endcomment %}
                 <script>
                     var size = "";
-                    if(screen.width > 500) {
-                        size = "banner";
+                    if(screen.width > 728) {
+                        size = "leaderboard";
                     } else if (screen.width > 320) {
-                        size = "mobile-leaderboard";
+                        size = "box";
                     }
                     if(screen.width > 320) {
                         var ad = document.getElementById("{{div_id}}");
