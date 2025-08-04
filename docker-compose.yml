@@ -31,7 +31,7 @@ services:
       start_period: 20s
 
   django:
-    image: ghcr.io/ubyssey/ubyssey.ca:v23.0.41
+    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
 
     # The number of gunicorn workers below is derived from the number of CPU cores
     # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
@@ -179,3 +179,4 @@ secrets:
     file: ./service-account.json
   EMAIL_HOST_PASSWORD:
     external: true
+
