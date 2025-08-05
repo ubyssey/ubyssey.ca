@@ -1699,42 +1699,6 @@ class StandardArticlePage(ArticlePage):
         blank=True,
         use_json_field=True,
     )
-    explicit_published_at_sap = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="Publication Date/Time",
-        help_text = "Techically optional (computer will fill it in for you if you do not). Publication date which is explicitly shown to the reader. Articles are seperately date/timestamped for database use; if this field is left blank, it will by default be set to the \"first published date\" on publication.",
-    )
-    show_last_modified_sap = models.BooleanField(
-        default = False,
-        help_text = "Check this to alert readers the article has been revised since its publication.",
-    )
-    storystream_view_sap = StreamField(
-        [
-            ('featured_media', blocks_storystream.StorystreamFeaturedImage()),
-            ('image', blocks_storystream.StorystreamImage()),
-            ('richtext', blocks_storystream.StorystreamRichText()),
-            ('no_attachment', blocks_storystream.StorystreamNoAttachment()),
-            ('gallery', blocks_storystream.StorystreamGallery()),
-            ('featured_video', blocks_storystream.StorystreamFeaturedVideo()),
-            ('video', blocks_storystream.StorystreamVideo()),
-            ('embed', blocks_storystream.StorystreamRawHtml()),
-            ('pdf', blocks_storystream.StorystreamPDF()),
-            ('quote', blocks_storystream.StorystreamQuote())
-        ],
-        blank = False,
-        use_json_field=True,
-        min_num = 1,
-        max_num = 1,
-    )
-
-    filter_by_tags_sap = models.BooleanField(
-        null=False,
-        blank=False,
-        default=True,
-        help_text="This determines what articles will be listed in the suggested bar at the end of the article.",
-        verbose_name="Suggested Bar"
-    )
 
     disclaimer_sap = RichTextField(
         null=False,
@@ -2200,120 +2164,6 @@ class StandardArticlePage(ArticlePage):
 
         return context
 
-    def get_suggested(self, topic_max=4):
-        '''
-        Determines the articles to suggested at the bottom of the page based on listed topics, category, primary topic, section, and editor choice
-        '''
-
-        # Gathers the 2-6 large articles suggested at the bottom of the page
-        primary = self.get_primary_suggested()
-
-        # The rest is determining the "topics" to suggest on the right of those articles
-
-        # "seen articles" are tracked to avoid suggesting duplicates or the article itself
-        seen_articles = [self] + primary['articles']
-
-        # Holds each topic to be listed on the right of the suggested bar
-        topic_articles = []
-
-        # If the category is not used for the primary suggested, then add the category as a "topic"
-        category = self.category_page
-        if category and primary['type'] != 'category':
-            topic_articles.append({
-                "topic": f'<a href="{category.url}">{category.title}</a>',
-                "considered_articles": category.get_recent_articles(max_items=5),
-                "type": "category",
-            })
-        
-        time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
-
-        if self.current_section in ['opinion', 'humour', 'features'] and self.primary_tag_slug:
-            primary_topic = self.get_primary_topic()
-            if primary_topic != None:
-                topic_articles.append({
-                    "topic": f'News: <a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
-                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
-                    "type": "other section",
-                })
-
-        if primary['type'] != 'topic' and self.primary_tag_slug:
-            primary_topic = self.get_primary_topic()
-            if primary_topic:
-                topic_articles.append(
-                    {
-                        "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
-                        "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
-                        "type": "topic",
-                    }
-                )
-
-        # Get the article's topics marked as listed
-        listed_topics = self.topics.filter(listed=True) \
-            .exclude(slug=self.primary_tag_slug) \
-            .order_by("last_used_at")
-
-        # Add each listed topic, order by article publish date 
-        topic_articles = topic_articles + list(sorted([
-            {
-                "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
-                "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
-                "type": "topic",
-            } for topic in listed_topics
-        ], key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True))
-
-        # Choose articles from each of the topic and combine topics with shared articles
-        article_count = 0
-        new_added = True
-        combined_topics = []
-
-        while article_count < topic_max and new_added:
-            new_added = False
-            for topic in topic_articles:
-                for article in topic["considered_articles"]:
-                    if not article in seen_articles:
-                        combined = False
-                        for combined_topic in combined_topics:
-                            if article in combined_topic["possible_articles"] and not False in [combined_topic_article in topic["considered_articles"] for combined_topic_article in combined_topic["articles"]]:
-                                combined_topic["articles"].append(article)
-                                combined_topic["possible_articles"] = list(filter(lambda article: article in topic["considered_articles"], combined_topic["possible_articles"]))
-                                if not topic["topic"] in combined_topic["topic"]:
-                                    combined_topic["topic"] = combined_topic["topic"] + ", " + topic["topic"]
-                                combined = True
-                                break
-                        if not combined:
-                            combined_topics.append({
-                                "topic": topic["topic"],
-                                "articles": [article],
-                                "possible_articles": topic["considered_articles"],
-                                "type": topic["type"]
-                            })
-
-                        seen_articles.append(article)
-                        article_count = article_count + 1
-                        new_added = True
-                        break
-                if article_count >= topic_max:
-                    break
-
-        orderd_topics = list(filter(lambda topic: topic["type"]=="category", combined_topics)) + \
-            list(sorted(filter(lambda topic: topic["type"]=="topic", combined_topics), key= lambda topic: topic["articles"][0].first_published_at, reverse=True)) + \
-            list(filter(lambda topic: not topic["type"] in ["category", "topic"], combined_topics))
-
-        # Ensure the number of topics is at or below the maximum
-        orderd_topics = orderd_topics[:topic_max]
-
-        return {"primary": primary, "topics": orderd_topics}
-
-
-    def get_title_tag(self) -> str:
-        if self.title_tag:
-            return self.title_tag
-        elif self.category_page:
-            return self.category_page.title
-        else:
-            False
-    title_tag_str = property(fget=get_title_tag)
-    
     @property
     def word_count(self) -> int:
         # gotten from https://stackoverflow.com/questions/42585858/display-word-count-in-blog-post-with-wagtail
@@ -2340,10 +2190,7 @@ class SpecialArticleLikePage(ArticlePage):
 
     show_in_menus_default = True
 
-    parent_page_types = [
-        'specialfeaturelanding.SpecialLandingPage',
-        'section.SectionPage',
-    ]
+    parent_page_types = []
 
     subpage_types = [] #Prevents article pages from having child pages
 
@@ -2377,28 +2224,42 @@ class SpecialArticleLikePage(ArticlePage):
         ),
     ]
 
-    # This overrides the default Wagtail edit handler, in order to add custom tabs to the article editing interface
-    edit_handler = TabbedInterface(
-        [
-            ObjectList(content_panels, heading='Content'),
-            ObjectList(ArticlePage.promote_panels, heading='Promote'),
-            ObjectList(ArticlePage.settings_panels, heading='Settings'),
-            ObjectList(ArticlePage.customization_panels, heading='Custom Frontend (Advanced!)'),
-        ],
-    ) # edit_handler
-    
-    def get_template(self, request):
-        if not self.use_default_template:
-            if self.db_template:
-                return self.db_template.name
-
-        if self.layout == 'fw-story':
-            return "article/article_page_fw_story.html"
-        elif self.layout == 'guide-2020':
-            return "article/article_page_guide_2020.html"
-                        
-        return "article/article_like_special_page.html"
-
     class Meta:
         verbose_name = "Special Article-Like Page (for About Page, Contact, etc.)"
+        verbose_name_plural = "Articles"
+
+class StandardArticlePageWithRightColumn(StandardArticlePage):
+
+    right_column_content = StreamField(
+        # intended for use only for the About/Contant Us page as of Jun 9, 2022
+        [
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+            )),
+            ('plaintext',blocks.TextBlock(
+                label="Plain Text Block",
+                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+
+    content_panels = StandardArticlePage.content_panels + [
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content=''
+                ),
+                FieldPanel("right_column_content")
+            ],
+            heading="Article Right Column Content",
+            classname="collapsible",
+        ),
+    ]
+
+    class Meta:
+        verbose_name = "Standard Article Page with Right Column (for About Page, Contact, etc.)"
         verbose_name_plural = "Articles"
