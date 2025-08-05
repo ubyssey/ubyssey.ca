@@ -344,7 +344,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         '''
         
         # Get recent articles to cluster
-        considered_articles = ArticlePage.objects.live().child_of(self).filter(first_published_at__gte=cut_off).order_by('-first_published_at')[:2*items]
+        considered_articles = ArticlePage.objects.live().child_of(self).order_by('-first_published_at')[:2*items]
         
         # Get the topics of all these articles
         article_topics = [
@@ -397,21 +397,34 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         # We gather the articles under these topics, avoiding articles we have already gathered. 
         seen_articles = []
         cluster = []
+
+        articles_by_topic = {}
         for topic in used_topics:
-            articles_in_topic = list(filter(lambda considered_article: topic in considered_article["topics"], article_topics))
+            articles_by_topic[topic.name] = list(filter(lambda considered_article: topic in considered_article["topics"], article_topics))
+            articles_by_topic[topic.name] = list(map(lambda a: a["article"], articles_by_topic[topic.name]))
+
+        while len(used_topics) > 0:
+            topic = used_topics[0]
+            articles_in_topic = articles_by_topic[topic.name]
             
             cluster_articles = []
-            for article_topic in articles_in_topic:
-                article = article_topic["article"]
-                if not article in seen_articles:
-                    cluster_articles.append(article)
-                    seen_articles.append(article)
-                    if len(seen_articles) >= items or len(cluster_articles) >= max_in_cluster:
-                        break
+            for article in articles_in_topic:
+                cluster_articles.append(article)
+                seen_articles.append(article)
+                if len(seen_articles) >= items or len(cluster_articles) >= max_in_cluster:
+                    break
+
             if len(cluster_articles) > 0:
                 cluster.append({"topic": topic, "articles": cluster_articles})
             if len(seen_articles) >= items:
                 break
+
+            used_topics.pop(0)
+            for topic in used_topics:
+                articles_by_topic[topic.name] = list(filter(lambda article: not article in seen_articles, articles_by_topic[topic.name]))
+            
+            used_topics = list(filter(lambda t: len(articles_by_topic[t.name]) > 0, used_topics))
+            used_topics = sorted(used_topics, key=lambda t: articles_by_topic[t.name][0].published_at, reverse=True)
 
         #for clust in cluster:
         #    print(clust["topic"].name)

@@ -63,7 +63,7 @@
     "@svgr/webpack": "^8.1.0",
     "axios": "^1.7.4",
     "global": "^4.3.2",
-    "gsap": "^3.12.5",
+    "gsap": "^3.13.0",
     "js-cookie": "^2.2.0",
     "react-loader-spinner": "^6.1.6",
     "react-router": "^6.26.1",

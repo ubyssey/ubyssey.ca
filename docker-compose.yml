@@ -12,15 +12,27 @@ services:
        - SQL_PASSWORD
     volumes:
       - ./mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h localhost -u root -p$$(cat /run/secrets/SQL_PASSWORD) --execute='SHOW DATABASES;' >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   cache:
     image: memcached:1.6.10
     ports:
       - "11211:11211"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "timeout 5 bash -c '</dev/tcp/localhost/11211'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   django:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
-
+    
     # The number of gunicorn workers below is derived from the number of CPU cores
     # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
     #
@@ -62,7 +74,7 @@ services:
     # Ref: https://docs.docker.com/engine/logging/drivers/gcplogs/
     logging:
       driver: gcplogs
-    
+
     deploy:
       # Deploy 4 replicas of the Django app. This makes us more resilient to errors
       # that might cause a single container to crash momentarily.
@@ -84,10 +96,47 @@ services:
         parallelism: 2
         delay: 10s
         order: stop-first
-  
+
+      # TODO add a health check using curl http://localhost:8000/health/ endpoint
+
     depends_on:
       - mysql
       - cache
+
+  db:
+    image: ankane/pgvector:latest
+    restart: always
+    environment:
+      POSTGRES_DB: thoth
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+    ports:
+      - 5432:5432
+    volumes:
+      - thoth_data:/var/lib/postgresql/data/
+
+  thothbackend:
+    image: ghcr.io/ubyssey/thoth:latest
+
+    command:
+      - bash
+      - -c
+      - "python manage.py migrate && python manage.py crontab add && service cron start && python manage.py runserver 0.0.0.0:8000"
+
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+
+  thothfrontend:
+    image: ghcr.io/ubyssey/thoth-frontend:latest
+
+    environment:
+      ORIGIN: https://thoth.ubyssey.ca
+    depends_on:
+      - thothbackend
 
   nginx:
     image: nginx:1.27
@@ -103,7 +152,9 @@ services:
       driver: gcplogs
     depends_on:
       - django
-  
+      - thothbackend
+      - thothfrontend
+
   certbot:
     image: certbot/certbot:v4.0.0
     volumes:
@@ -112,6 +163,9 @@ services:
       - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
     # Attempt to renew TLS certificate every 12 hours
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  thoth_data:
 
 secrets:
   DJANGO_SECRET_KEY:
@@ -126,3 +180,6 @@ secrets:
     file: ./service-account.json
   EMAIL_HOST_PASSWORD:
     external: true
+
+
+

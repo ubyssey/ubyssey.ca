@@ -20,10 +20,6 @@ class Command(BaseCommand):
                 standard_article = await StandardArticlePage.objects.aget(pk=article.pk)
             
             standard_article.content_sap = article.content                   
-            standard_article.explicit_published_at_sap = article.explicit_published_at
-            standard_article.show_last_modified_sap = article.show_last_modified            
-            standard_article.storystream_view_sap = article.storystream_view
-            standard_article.filter_by_tags_sap = article.filter_by_tags
             standard_article.disclaimer_sap = article.disclaimer
             standard_article.legacy_template_sap = article.legacy_template            
             standard_article.legacy_template_data_sap = article.legacy_template_data

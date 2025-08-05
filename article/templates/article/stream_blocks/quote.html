@@ -1,4 +1,5 @@
 {% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 
 {% if self.audio %}
 <audio id="{{id|slugify}}">
@@ -6,18 +7,28 @@
 </audio>
 {% endif %}
 
-<blockquote class="pull-quote attachment {{self.position}} {{self.style}}">
-    <p class="quote">{{ self.content|safe }}</p>
-    {% if self.audio or self.source %}
-    <p class="meta">
-        {% if self.audio %}
-            <a href="#" audio="{{id|slugify}}" class="playAudioQuote">
-                <ion-icon id="icon-{{id|slugify}}" class="volume" name="volume-off"></ion-icon>
-                <span class="source">{% if self.source %}Listen to {{ self.source }}{% else %}Listen{% endif %}</span>
-            </a>
-        {% elif self.source %}
-            <span class="source">— {{ self.source }}</span>
-        {% endif %}
-    </p>
-    {% endif%}
+<blockquote class="pull-quote attachment {{self.position}} {{self.style}}{% if self.images %} has-image{% endif %}">
+    {% if self.images %}
+        <div class="pull-quote-images">
+        {% for image in self.images %}
+            {% image image.image format-webp loading='lazy' alt=image.alt_text width-600 %}
+        {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="pull-quote-quote">
+        <p class="quote">{{ self.content|safe }}</p>
+        {% if self.audio or self.source %}
+        <p class="meta">
+            {% if self.audio %}
+                <a href="#" audio="{{id|slugify}}" class="playAudioQuote">
+                    <ion-icon id="icon-{{id|slugify}}" class="volume" name="volume-off"></ion-icon>
+                    <span class="source">{% if self.source %}Listen to {{ self.source }}{% else %}Listen{% endif %}</span>
+                </a>
+            {% elif self.source %}
+                <span class="source">— {{ self.source }}</span>
+            {% endif %}
+        </p>
+        {% endif%}
+    </div>
 </blockquote>

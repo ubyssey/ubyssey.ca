@@ -4,8 +4,10 @@
 // for articles
 .article {
   .o-article-embed {
+    padding: 2em;
     margin: 30px 0;
-    max-width: 585px;
+    border-block: 1px solid var(--ad-border);
+    background: var(--ad-background);
   }
 }
 
@@ -45,7 +47,7 @@
   &:before {
     content: 'advertisement';
     font-size: fonts.font-size(11);
-    color: #9e9e9e;
+    color: var(--ad-text);
     text-transform: uppercase;
     text-decoration: underline;
     letter-spacing: 0.075em;
@@ -451,6 +453,11 @@ div.article-content .image-attachment {
 
     &.full {
       width: auto;
+      max-width: 1200px;
+    }
+
+    &.full-width {
+      width: auto;
       max-width: 100%;
     }
   }
@@ -481,6 +488,44 @@ span.credit {
 div.article-content blockquote.pull-quote {
   margin: 1.4em auto;
   text-align: center;
+  display: flex;
+  gap: 2.8em;
+
+  &.has-image {
+    max-width: 1000px;
+    width: fit-content;
+    
+    p.meta {
+      .playAudioQuote {
+        font-size: 1.5em;
+        margin-top: 2em;
+      }
+      .volume {
+        width: 1em;
+        top: 0;
+        font-size: 1.5em;
+      }
+      .source {
+        margin-left: 2.5em;
+      }
+    }
+  }
+
+  .pull-quote-images {
+    display: flex;
+    max-width: 300px;
+
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    img {
+      height: auto;
+    }
+  }
+  .pull-quote-quote {
+    margin: auto;
+    height: fit-content;
+  }
 
   p.quote {
     margin-block: 0;
@@ -532,6 +577,22 @@ div.article-content blockquote.pull-quote {
     }
   }
 
+  @media(variables.$bp-smaller-than-phablet) {
+    flex-direction: column;
+    .pull-quote-images {
+      max-width: none;
+    }
+    .pull-quote-quote {
+      padding-inline: 1em;
+    }
+    p.quote {
+      font-size: 1.25em;
+    }
+    p.meta .source {
+      max-width: none;
+    }
+  }
+
   @media(variables.$bp-larger-than-phablet) {
 
     &.right, &.left {
@@ -547,6 +608,10 @@ div.article-content blockquote.pull-quote {
           left: 0;
         }
       }
+    }
+
+    &.center {
+      margin: 2.8em auto;
     }
 
     &.right {
