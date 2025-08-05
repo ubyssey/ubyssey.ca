@@ -29,7 +29,7 @@ def gpt_define_tag(slug, is_mobile=False) -> dict:
             'box': '[300, 250]', 
             'skyscraper' : '[[300, 250], [300, 600]]',
             'banner': '[468, 60]',
-            'leaderboard': '[[728, 90], [970, 90], [970, 250]], [300, 250]',
+            'leaderboard': '[[728, 90], [970, 90], [970, 250], [300, 250]]',
             'mobile-leaderboard': '[320, 50]'
         }
 
