@@ -69,22 +69,24 @@ LOGGING = {
    'version': 1,
    'disable_existing_loggers': False,
    'formatters': {
-       'verbose': {
+       'json': {
+           '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+           'reserved_attrs': ['name', 'msg', 'args', 'levelname', 'levelno', 'pathname', 'filename', 'module', 'lineno', 'funcName', 'created', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'stack_info'],
        },
    },
    'handlers': {
        'console': {
-           'level': 'DEBUG',
+           'level': 'INFO', 
            'class': 'logging.StreamHandler',
            'stream': sys.stdout,
-           'formatter': 'verbose'
+           'formatter': 'json'
        },
    },
    'loggers': {
        '': {
            'handlers': ['console'],
-           'level': 'DEBUG',
+           'level': 'INFO',  
            'propagate': True,
        },
    },

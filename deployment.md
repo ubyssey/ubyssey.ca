@@ -147,7 +147,7 @@ To secure our website and serve HTTPS traffic, we use a free TLS certificate fro
 After connecting to the server and switching to the app directory (see above), run the following command to request a new TLS certificate from Let's Encrypt using the `certonly` command:
 
 ```bash
-docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d ubyssey.ca
+docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d ubyssey.ca -d www.ubyssey.ca
 ```
 
 **:warning: Important:** this command requires that at least the `nginx` service is running. This is so that Let's Encrypt can complete an ACME verification of our domain name.
