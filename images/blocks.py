@@ -21,10 +21,11 @@ class ImageBlock(blocks.StructBlock):
     )
     width = blocks.ChoiceBlock(
         choices=[
-            ('full', 'Full'),
-            ('small', 'Small'),
+            ('full-width', 'Full width'),
+            ('full', 'Wide'),
+            ('large', 'Normal'),
             ('medium', 'Medium'),
-            ('large', 'Large'),
+            ('small', 'Small'),
         ],
         default='full',
     )
