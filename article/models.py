@@ -1296,7 +1296,7 @@ class StandardArticlePage(ArticlePage):
     show_in_menus = True
 
     #-----Field attributes-----
-    content_sap = StreamField(
+    content = StreamField(
         [
             ('richtext', blocks.RichTextBlock(                                
                 label="Rich Text Block",
@@ -1342,44 +1342,8 @@ class StandardArticlePage(ArticlePage):
         blank=True,
         use_json_field=True,
     )
-    explicit_published_at_sap = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="Publication Date/Time",
-        help_text = "Techically optional (computer will fill it in for you if you do not). Publication date which is explicitly shown to the reader. Articles are seperately date/timestamped for database use; if this field is left blank, it will by default be set to the \"first published date\" on publication.",
-    )
-    show_last_modified_sap = models.BooleanField(
-        default = False,
-        help_text = "Check this to alert readers the article has been revised since its publication.",
-    )
-    storystream_view_sap = StreamField(
-        [
-            ('featured_media', blocks_storystream.StorystreamFeaturedImage()),
-            ('image', blocks_storystream.StorystreamImage()),
-            ('richtext', blocks_storystream.StorystreamRichText()),
-            ('no_attachment', blocks_storystream.StorystreamNoAttachment()),
-            ('gallery', blocks_storystream.StorystreamGallery()),
-            ('featured_video', blocks_storystream.StorystreamFeaturedVideo()),
-            ('video', blocks_storystream.StorystreamVideo()),
-            ('embed', blocks_storystream.StorystreamRawHtml()),
-            ('pdf', blocks_storystream.StorystreamPDF()),
-            ('quote', blocks_storystream.StorystreamQuote())
-        ],
-        blank = False,
-        use_json_field=True,
-        min_num = 1,
-        max_num = 1,
-    )
-
-    filter_by_tags_sap = models.BooleanField(
-        null=False,
-        blank=False,
-        default=True,
-        help_text="This determines what articles will be listed in the suggested bar at the end of the article.",
-        verbose_name="Suggested Bar"
-    )
-
-    disclaimer_sap = RichTextField(
+    
+    disclaimer = RichTextField(
         null=False,
         blank=True,
         default='',
@@ -1390,23 +1354,23 @@ class StandardArticlePage(ArticlePage):
 
     #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
 
-    legacy_template_sap = models.CharField(
+    legacy_template = models.CharField(
         null=False,
         blank=True,
         default='',
         max_length=3000,
     )
-    legacy_template_data_sap = models.TextField(
+    legacy_template_data = models.TextField(
         null=False,
         blank=True,
         default='',
     )
-    legacy_revision_number_sap = models.IntegerField(
+    legacy_revision_number = models.IntegerField(
         default=0
     )
 
     # "Layouts (stores data that once was Template data)"
-    layout_sap = models.CharField(
+    layout = models.CharField(
         null=False,
         blank=False,
         default='default',
@@ -1415,7 +1379,7 @@ class StandardArticlePage(ArticlePage):
         max_length=100,
     )
 
-    fw_alternate_title_sap = models.CharField(
+    fw_alternate_title = models.CharField(
         null=False,
         blank=True,
         default='',
@@ -1424,7 +1388,7 @@ class StandardArticlePage(ArticlePage):
         max_length=255,
     )
 
-    subtitle_sap = models.CharField(
+    subtitle = models.CharField(
         null=False,
         blank=True,
         default='',
@@ -1452,7 +1416,7 @@ class StandardArticlePage(ArticlePage):
     )
 
     # Featured image stuff used for template customization
-    header_layout_sap = models.CharField(
+    header_layout = models.CharField(
         null=False,
         blank=False,
         default='right-image',
@@ -1461,9 +1425,9 @@ class StandardArticlePage(ArticlePage):
     )
 
     #-----Advanted, custom layout etc-----
-    use_default_template_sap = models.BooleanField(default=True)
+    use_default_template = models.BooleanField(default=True)
 
-    db_template_sap = models.ForeignKey(
+    db_template = models.ForeignKey(
         DBTemplate,
         null=True,
         blank=True,
@@ -1472,9 +1436,9 @@ class StandardArticlePage(ArticlePage):
     )
 
     def get_template(self, request):
-        if not self.use_default_template_sap:
-            if self.db_template_sap:
-                return self.db_template_sap.name
+        if not self.use_default_template:
+            if self.db_template:
+                return self.db_template.name
 
         if self.layout == 'fw-story':
             return "article/article_page_fw_story.html"
@@ -1523,7 +1487,7 @@ class StandardArticlePage(ArticlePage):
                     [
                         InlinePanel("featured_media", label="Featured Image or Video"),
                         FieldPanel(
-                            "header_layout_sap",
+                            "header_layout",
                             widget=Select(
                                 choices=[
                                     ('no-banner', 'No Banner'),
@@ -1546,8 +1510,8 @@ class StandardArticlePage(ArticlePage):
         ), # Optional Header/Banner Fields
         MultiFieldPanel(
             [
-                FieldPanel('fw_alternate_title_sap'),
-                FieldPanel('subtitle_sap'),
+                FieldPanel('fw_alternate_title'),
+                FieldPanel('subtitle'),
                 FieldPanel('above_cut_lede'),
             ],
             heading = "Optional Header/Banner Fields (Alternate title, Subtitle, Above cut lede)",
@@ -1558,8 +1522,8 @@ class StandardArticlePage(ArticlePage):
                 HelpPanel(
                     content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
                 ),
-                FieldPanel("content_sap"),
-                FieldPanel("disclaimer_sap")
+                FieldPanel("content"),
+                FieldPanel("disclaimer")
             ],
             heading="Article Content",
             classname="collapsible",
@@ -1689,7 +1653,7 @@ class StandardArticlePage(ArticlePage):
         MultiFieldPanel(
             [
                 FieldPanel(
-                    "layout_sap",
+                    "layout",
                     widget=Select(
                         choices=[
                             ('default', 'Default'), 
@@ -1751,8 +1715,8 @@ class StandardArticlePage(ArticlePage):
                 HelpPanel(
                     content="<p>Making a template requires some understanding of how the Django backend works, so that you might know variable names etc. for the data that the template is supposed to render.</p> <p>Because of the potential complexity of a template, it is desirable to be able to quickly switch the article back to a default template. Turn on \"Use default template\" to use the stock template and turn it off to be able to override the default with a custom template. Defaults to \"on\".</p>",
                 ),
-                FieldPanel("use_default_template_sap"),
-                FieldPanel("db_template_sap"),
+                FieldPanel("use_default_template"),
+                FieldPanel("db_template"),
             ],
             heading="Custom HTML",
             classname="collapsible collapsed",
