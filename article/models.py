@@ -1425,8 +1425,6 @@ class StandardArticlePage(ArticlePage):
             return "article/article_page_fw_story.html"
         elif self.layout == 'empty':
             return "article/article_page_empty.html"
-        elif self.layout == 'right-column':
-            return "article/article_like_special_page.html"
         elif self.layout == 'visual-essay':
             return "article/article_page_visual_essay.html"
         elif self.layout == 'guide-2020':
@@ -1449,6 +1447,10 @@ class StandardArticlePage(ArticlePage):
             return "article/supplements/article_page_supplement_2024_femme.html"
         elif self.layout == 'nocturne-2024':
             return "article/supplements/article_page_supplement_2024_nocturne.html"
+        elif self.layout == 'passing-2025':
+            return "article/supplements/article_page_supplement_2025_passing.html"
+        elif self.layout == 'right-column':
+            return "article/article_like_special_page.html"
 
         return "article/article_page.html"
 
