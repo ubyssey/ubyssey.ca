@@ -1,4 +1,6 @@
 from django.core.management.base import BaseCommand
+from django.utils import timezone
+
 from article.models import ArticlePage, StandardArticlePage
 from asgiref.sync import async_to_sync, sync_to_async
 import asyncio
@@ -27,11 +29,10 @@ class Command(BaseCommand):
             standard_article.layout_sap = article.layout
             standard_article.fw_alternate_title_sap = article.fw_alternate_title
             standard_article.subtitle_sap = article.subtitle
-            standard_article.stand_first = article.title_tag
             standard_article.above_cut_lede = article.fw_above_cut_lede
             standard_article.header_layout_sap = article.header_layout
             standard_article.use_default_template_sap = article.use_default_template
-            standard_article.db_template_sap = article.db_template
+            standard_article.db_template_sap_id = article.db_template_id
             article.content_type = ct
 
             await article.asave(update_fields=["content_type"])
@@ -46,11 +47,17 @@ class Command(BaseCommand):
             except Exception as e:
                 print("The error is: ",e)
 
+        start = timezone.now()
+        count = 0
         tasks = []
-        async for article in ArticlePage.objects.exclude(content_type=ct):
+        articles = ArticlePage.objects.exclude(content_type=ct)
+        total = await articles.acount()
+        async for article in articles:
             tasks.append(asyncio.create_task(convert_article(article)))
             if len(tasks) >= TASK_MAX:
-                print("sheesh")
+                count = count + len(tasks)
+                estimate = start + (((timezone.now() - start)/count) * (total-count))
+                print(f"{count}/{total}: ESTIMATED END {estimate}")
                 await asyncio.gather(*tasks)
                 tasks = []
         await asyncio.gather(*tasks)
