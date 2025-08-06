@@ -545,7 +545,7 @@ class ArticlePageManager(PageManager):
         if section_slug:
             try:
                 section_root = SectionPage.objects.get(slug=section_slug)
-                articles = self.live().public().descendant_of(section_root).exact_type(ArticlePage)
+                articles = self.live().public().descendant_of(section_root)
             except SectionPage.DoesNotExist:
                 articles = SectionPage.objects.none()
             
@@ -1130,9 +1130,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         # The rest is determining the "topics" to suggest on the right of those articles
 
         # "seen articles" are tracked to avoid suggesting duplicates or the article itself
-        seen_articles = [self]
+        seen_articles = [self.id]
         if primary:
-            seen_articles = seen_articles + primary['articles']
+            seen_articles = seen_articles + [article.id for article in primary['articles']]
 
         # Holds each topic to be listed on the right of the suggested bar
         topic_articles = []
@@ -1192,7 +1192,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             new_added = False
             for topic in topic_articles:
                 for article in topic["considered_articles"]:
-                    if not article in seen_articles:
+                    if not article.id in seen_articles:
                         combined = False
                         for combined_topic in combined_topics:
                             if article in combined_topic["possible_articles"] and not False in [combined_topic_article in topic["considered_articles"] for combined_topic_article in combined_topic["articles"]]:
@@ -1210,7 +1210,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                                 "type": topic["type"]
                             })
 
-                        seen_articles.append(article)
+                        seen_articles.append(article.id)
                         article_count = article_count + 1
                         new_added = True
                         break
@@ -1259,22 +1259,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if self.explicit_published_at - self.first_published_at < timezone.timedelta(days=5):
                 return self.first_published_at
         return self.explicit_published_at
-    
-    @property
-    def word_count(self) -> int:
-        # gotten from https://stackoverflow.com/questions/42585858/display-word-count-in-blog-post-with-wagtail
-        count = 0
-        for block in self.content:
-            if block.block_type == 'richtext' or block.block_type == 'plaintext':
-                count += len(str(block.value).split())
-        return count
-
-    @property
-    def minutes_to_read(self) -> int:
-        """
-        Assumes readers read 150 wpm on average. Returns self.world_count // 150
-        """
-        return self.word_count // 150
 
     class Meta:
         # TODO Should probably index on:
