@@ -1753,15 +1753,6 @@ class StandardArticlePage(ArticlePage):
         help_text="Displayed below the title",
         max_length=255,
     )
-
-    stand_first = models.CharField(
-        null=False,
-        blank=True,
-        default='',
-        verbose_name='Title Tag (Optional)',
-        help_text="This appears above the title. It mimics the title tags in the print issue.",
-        max_length=255,
-    )
     
     # Corresponds to the pseudo-field called "snippet" in some templates
     above_cut_lede = models.TextField(
