@@ -153,6 +153,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     subpage_types = [
         'article.StandardArticlePage',
+        'article.StandardArticlePageWithRightColumn',
         'article.SpecialArticleLikePage',
         'specialfeaturelanding.SpecialLandingPage',
         'section.CategoryPage',

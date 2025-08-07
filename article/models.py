@@ -1890,6 +1890,15 @@ class StandardArticlePageWithRightColumn(StandardArticlePage):
         ),
     ]
 
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(StandardArticlePage.promote_panels, heading='Promote'),
+            ObjectList(StandardArticlePage.settings_panels, heading='Settings'),
+            ObjectList(StandardArticlePage.customization_panels, heading='Special article stuff'),
+        ],
+    )
+
     class Meta:
         verbose_name = "Standard Article Page with Right Column (for About Page, Contact, etc.)"
         verbose_name_plural = "Articles"
