@@ -545,7 +545,7 @@ class ArticlePageManager(PageManager):
         if section_slug:
             try:
                 section_root = SectionPage.objects.get(slug=section_slug)
-                articles = self.live().public().descendant_of(section_root).exact_type(ArticlePage)
+                articles = self.live().public().descendant_of(section_root)
             except SectionPage.DoesNotExist:
                 articles = SectionPage.objects.none()
             
@@ -568,53 +568,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     show_in_menus_default = True
     show_in_menus = True
 
-    #-----Field attributes-----
-    content = StreamField(
-        [
-            ('richtext', blocks.RichTextBlock(                                
-                label="Rich Text Block",
-                help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
-            )),
-            ('extra_article_info', blocks_inner_article.ExtraArticleInfoBlock()),
-            ('dropcap', blocks.TextBlock(
-                label = "Dropcap Block",
-                template = 'article/stream_blocks/dropcap.html',
-                help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
-            )),
-            ('video', video_blocks.OneOffVideoBlock(
-                label = "Credited/Captioned One-Off Video",
-                help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
-            )),
-            ('audio', blocks_inner_article.AudioBlock()),
-            ('image', image_blocks.ImageBlock(
-            )),
-            ('pdf', blocks_inner_article.PdfBlock()),
-            ('raw_html', blocks.RawHTMLBlock(
-                label = "Raw HTML Block",
-                help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
-            )),
-            ('quote', blocks_inner_article.PullQuoteBlock()),
-
-            ('gallery_block', blocks_inner_article.GalleryBlock(
-                label="Image carousel",
-            )),
-            ('header_link', blocks_inner_article.HeaderLinkBlock()),
-            ('header_menu', blocks_inner_article.HeaderMenuBlock()),
-            ('visual_essay', blocks_inner_article.VisualEssayBlock()),
-            ('personality_quiz', blocks_inner_article.PersonalityQuizBlock()),
-            ('plaintext', blocks.TextBlock(
-                label="Plain Text Block",
-                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
-            )),
-            ('gallery', SnippetChooserBlock(
-                target_model = GallerySnippet,
-                template = 'article/stream_blocks/gallery.html',
-            )),
-        ],
-        null=True,
-        blank=True,
-        use_json_field=True,
-    )
     explicit_published_at = models.DateTimeField(
         null=True,
         blank=True,
@@ -692,13 +645,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         verbose_name="Suggested Bar"
     )
 
-    disclaimer = RichTextField(
-        null=False,
-        blank=True,
-        default='',
-        help_text = "Used for Opinion articles or when corrections are made"
-    )
-
     # template #TODO
 
     #-----Promote panel stuff------
@@ -741,52 +687,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article."
     )
 
-
-    #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
-
-    legacy_template = models.CharField(
-        null=False,
-        blank=True,
-        default='',
-        max_length=3000,
-    )
-    legacy_template_data = models.TextField(
-        null=False,
-        blank=True,
-        default='',
-    )
-    legacy_revision_number = models.IntegerField(
-        default=0
-    )
-
-    # "Layouts (stores data that once was Template data)"
-    layout = models.CharField(
-        null=False,
-        blank=False,
-        default='default',
-        verbose_name='Article Layout',
-        help_text="These correspond to very frequently used templates. More \"bespoke\", one-off templates should be added to the library of DB Templates",
-        max_length=100,
-    )
-
-    fw_alternate_title = models.CharField(
-        null=False,
-        blank=True,
-        default='',
-        verbose_name='Alternate Title (Optional)',
-        help_text="When there is a \"special feature\" or full-width style article, sometimes we would like to override the title as it render in the template",
-        max_length=255,
-    )
-
-    subtitle = models.CharField(
-        null=False,
-        blank=True,
-        default='',
-        verbose_name='Subtitle (Optional)',
-        help_text="Displayed below the title",
-        max_length=255,
-    )
-
     title_tag = models.CharField(
         null=False,
         blank=True,
@@ -796,96 +696,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         max_length=255,
     )
     
-    # Corresponds to the pseudo-field called "snippet" in some templates
-    fw_above_cut_lede = models.TextField(
-        null=False,
-        blank=True,
-        default='',
-        verbose_name='Above Cut Lede (Optional)',
-        help_text="Articles that use a special header/banner often contain a second lede/abstract summary ",
-    )
-
-    # Corresponds to pseudo-field called "About" in some templates
-    fw_about_this_article = models.TextField(
-        null=False,
-        blank=True,
-        default='',
-        verbose_name='About This Article (Optional)',
-    )
-
-    # Timelines
-    show_timeline = models.BooleanField(
-        default=False,
-        help_text="Layout MUST be full-width (or else customized) to display a timeline",
-    )
-    timeline = models.ForeignKey(
-        TimelineSnippet,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="timeline_articles",
-        help_text="Create a timeline in the Snippets menu and set it here."
-    )
-    timeline_date = models.DateTimeField(
-        default=timezone.now,
-    )
-
-    # Featured image stuff used for template customization
-    header_layout = models.CharField(
-        null=False,
-        blank=False,
-        default='right-image',
-        max_length=50,
-        help_text="Based on from Dispatch's obselete \"Templates\" feature",
-    )
-
-    #-----Advanted, custom layout etc-----
-    use_default_template = models.BooleanField(default=True)
-
-    db_template = models.ForeignKey(
-        DBTemplate,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',        
-    )
-
-    def get_template(self, request):
-        if not self.use_default_template:
-            if self.db_template:
-                return self.db_template.name
-
-        if self.layout == 'fw-story':
-            return "article/article_page_fw_story.html"
-        elif self.layout == 'empty':
-            return "article/article_page_empty.html"
-        elif self.layout == 'visual-essay':
-            return "article/article_page_visual_essay.html"
-        elif self.layout == 'guide-2020':
-            return "article/article_page_guide_2020.html"
-        elif self.layout == 'guide-2022':
-            return "article/article_page_guide_2022.html"
-        elif self.layout == 'magazine-2023':
-            return "article/article_page_magazine_2023.html"
-        elif self.layout == 'guide-2023':
-            return "article/article_page_guide_2023.html"
-        elif self.layout == 'magazine-2024':
-            return "article/article_page_magazine_2024.html"
-        elif self.layout == 'spoof-2024':
-            return "article/article_page_spoof_2024.html"
-        elif self.layout == 'guide-2024':
-            return "article/article_page_guide_2024.html"
-        elif self.layout == 'science-2024':
-            return "article/article_page_supplement_2024_science.html"
-        elif self.layout == 'femme-2024':
-            return "article/supplements/article_page_supplement_2024_femme.html"
-        elif self.layout == 'nocturne-2024':
-            return "article/supplements/article_page_supplement_2024_nocturne.html"
-        elif self.layout == 'passing-2025':
-            return "article/supplements/article_page_supplement_2025_passing.html"
-
-        return "article/article_page.html"
-
     #-----For Wagtail's user interface-----
     content_panels = Page.content_panels + [
         FieldRowPanel(
@@ -898,51 +708,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 FieldPanel('title_tag'),
-                FieldRowPanel(
-                    [
-                        InlinePanel("featured_media", label="Featured Image or Video"),
-                        FieldPanel(
-                            "header_layout",
-                            widget=Select(
-                                choices=[
-                                    ('no-banner', 'No Banner'),
-                                    ('no-image', 'No Image'),
-                                    ('right-image', 'Right Image'),
-                                    ('bottom-image', 'Bottom Image'),
-                                    ('left-image', 'Left Image'),
-                                    ('top-image', 'Top Image'),
-                                    ('banner-image', 'Banner Image'),
-                                    ('video-banner', 'Video banner'),
-                                ],
-                            ),
-                            help_text='Sets layout of the header. (Right image, bottom image, left image, top image, banner)',
-                        ),
-                    ]
-                ),
+                InlinePanel("featured_media", label="Featured Image or Video"),
             ],
             heading = "Header/Banner Fields",
             classname="collapsible",
         ), # Optional Header/Banner Fields
-        MultiFieldPanel(
-            [
-                FieldPanel('fw_alternate_title'),
-                FieldPanel('subtitle'),
-                FieldPanel('fw_above_cut_lede'),
-            ],
-            heading = "Optional Header/Banner Fields (Alternate title, Subtitle, Above cut lede)",
-            classname="collapsible collapsed",
-        ),
-        MultiFieldPanel(
-            [
-                HelpPanel(
-                    content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
-                ),
-                FieldPanel("content"),
-                FieldPanel("disclaimer")
-            ],
-            heading="Article Content",
-            classname="collapsible",
-        ),
         MultiFieldPanel(
             [
                 HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
@@ -1061,98 +831,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     ] # settings_panels  
 
-    customization_panels = [
-        HelpPanel(
-            content = "<h1>Help</h1><p>IF you need an alternate layout for your article, but still a frequently-used layout (such as including a full-width banner), THEN, rather making than a highly customized frontend (as you can do in the next tab over), select the options you require here.</p> <p>The majority of articles will just use the default layout. Thus, <u>for the majority of articles, nothing on this tab should be touched</u>; the majority of these fields are not even used in most layouts. They primarily exist to keep our data organized.</p>"
-        ),
-        MultiFieldPanel(
-            [
-                FieldPanel(
-                    "layout",
-                    widget=Select(
-                        choices=[
-                            ('default', 'Default'), 
-                            ('fw-story', 'Full-Width Story'),
-                            ('empty', 'Empty template'),
-                            ('visual-essay', 'Visual Essay'),
-                            ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
-                            ('guide-2022', 'Guide (2022 style)'),
-                            ('magazine-2023', 'Magazine (2023 style)'),
-                            ('guide-2023', 'Guide (2023 style)'),
-                            ('magazine-2024', 'Magazine (2024 style)'),
-                            ('spoof-2024', 'Spoof (2024 style)'),
-                            ('guide-2024', 'Guide (2024 style)'),
-                            ('science-2024', 'Science Supplement (2024)'),
-                            ('femme-2024', 'Femme Culture Special Issue (2024)'),
-                            ('nocturne-2024', 'Nocturne Features Supplement (2024)'),
-                            ('passing-2025', 'Passing (2025)')
-                        ],
-                    ),
-                ),
-            ],
-            heading = "Select Stock Layout",
-            classname="collapsible",
-        ), # Select Stock Layout
-        ] + UbysseyMenuMixin.menu_content_panels + [
-           
-        #   To Do: This is not used anywhere. Figure out what exactly timeline was for. If it was
-        #   a good idea then we can pick it up. I'm pretty sure even it was a good idea it was a
-        #   bad implementation though. So deal with articles that used it (if any) and then remove 
-        #   the fields - Sam Low (22/05/2025)
-        #
-        # MultiFieldPanel(
-        #    [
-        #        HelpPanel(content='<h1>Warning</h1><p>If a timeline is included in your article, <u>additional processing will be required when the article is saved</u>.</p><p>It is recommended you add a Timeline snippet LAST, <i>after</i> your article is otherwise written.</p><p><u>Developers</u> should note: the Timeline/Article sync is accomplished with Django signals, to prevent tight coupling of the two classes. Do not allow use of signals to turn into noodle logic.</p>'),
-        #        FieldPanel('show_timeline'),
-        #        FieldPanel('timeline_date'),
-        #        FieldPanel('timeline'),
-        #    ],
-        #    heading = "Timeline",
-        #    classname="collapsible collapsed",
-        #), # Timeline
-        
-        #   To Do: Individually deal with any article using it and remove the fw_about_this_article
-        #   field. Something like this can be handled within the content streamfield such as with
-        #   an extra article info editors note. 
-        # MultiFieldPanel(
-        #    [
-        #        HelpPanel(content="<p>This information is generally used in a special article that has additional credits beyond the normal byline.</p>"),
-        #        FieldPanel('fw_about_this_article'),
-        #    ],
-        #    heading = "Additional Credits",
-        #    classname="collapsible collapsed",
-        #), # Additional Credits
-        HelpPanel(
-            content="<h1>Help</h1><p>This tab exists so that every aspect of the frontend for an individual article may be customized, down to the finest detail. There are three fundamental tools of frontend web programming - HTML, CSS and JavaScript, and here you may utilize all three.</p><p>Custom HTML templates, which use the Django templating language, should be uploaded not as files/documents but as \"Custom HTML\" in the site admin.\n\n Custom CSS or JavaScript should be uploaded to \"Documents\"</p>"
-        ),
-        MultiFieldPanel(
-            [
-                HelpPanel(
-                    content="<p>Making a template requires some understanding of how the Django backend works, so that you might know variable names etc. for the data that the template is supposed to render.</p> <p>Because of the potential complexity of a template, it is desirable to be able to quickly switch the article back to a default template. Turn on \"Use default template\" to use the stock template and turn it off to be able to override the default with a custom template. Defaults to \"on\".</p>",
-                ),
-                FieldPanel("use_default_template"),
-                FieldPanel("db_template"),
-            ],
-            heading="Custom HTML",
-            classname="collapsible collapsed",
-        ), # Custom HTML
-        MultiFieldPanel(
-            [
-                InlinePanel("styles"),
-            ],
-            heading="Custom CSS",
-            help_text="Please upload any custom CSS to \"Documents\", then select the appropriate document here.\n\nSelecting a non-CSS Document will cause errors.",
-            classname="collapsible collapsed",
-        ), # Custom CSS
-        MultiFieldPanel(
-            [
-                InlinePanel("scripts"),
-            ],
-            heading="Custom JavaScript",
-            help_text="Please upload any custom JavaScript to \"Documents\", then select the appropriate document here.\n\nSelecting a non-JavaScript Document will cause errors.",
-            classname="collapsible collapsed",
-        ), # Custom JavaScript
-    ] # customization_panels
+    customization_panels = UbysseyMenuMixin.menu_content_panels
 
     # This overrides the default Wagtail edit handler, in order to add custom tabs to the article editting interface
     edit_handler = TabbedInterface(
@@ -1195,36 +874,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     ]
 
     #-----Properties, getters, setters, etc.-----
-
-    def get_context(self, request, *args, **kwargs):
-        """
-        Wagtail uses this method to add context variables following a request at a URL.
-        All the below code occurs after the user submits a request and before they receive it.
-        Therefore, keep the length of this method to a minimum; otherwise users will be kept waiting
-        """
-
-        context = super().get_context(request, *args, **kwargs)
-
-        user_agent = get_user_agent(request)
-        context['is_mobile'] = user_agent.is_mobile
-        if self.current_section == "guide":
-            context['prev'] = self.get_prev_sibling()
-            context['next'] = self.get_next_sibling()
-            
-            if self.current_section == 'guide':
-                # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
-                if not context['prev']:
-                    context['prev'] = self.get_last_sibling()
-                if not context['next']:
-                    context['next'] = self.get_first_sibling()
-
-            if context['prev']:
-                context['prev'] = context['prev'].specific
-            if context['next']:
-                context['next'] = context['next'].specific
-
-        return context
-
 
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
@@ -1481,9 +1130,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         # The rest is determining the "topics" to suggest on the right of those articles
 
         # "seen articles" are tracked to avoid suggesting duplicates or the article itself
-        seen_articles = [self]
+        seen_articles = [self.id]
         if primary:
-            seen_articles = seen_articles + primary['articles']
+            seen_articles = seen_articles + [article.id for article in primary['articles']]
 
         # Holds each topic to be listed on the right of the suggested bar
         topic_articles = []
@@ -1543,7 +1192,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             new_added = False
             for topic in topic_articles:
                 for article in topic["considered_articles"]:
-                    if not article in seen_articles:
+                    if not article.id in seen_articles:
                         combined = False
                         for combined_topic in combined_topics:
                             if article in combined_topic["possible_articles"] and not False in [combined_topic_article in topic["considered_articles"] for combined_topic_article in combined_topic["articles"]]:
@@ -1561,7 +1210,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                                 "type": topic["type"]
                             })
 
-                        seen_articles.append(article)
+                        seen_articles.append(article.id)
                         article_count = article_count + 1
                         new_added = True
                         break
@@ -1610,7 +1259,540 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if self.explicit_published_at - self.first_published_at < timezone.timedelta(days=5):
                 return self.first_published_at
         return self.explicit_published_at
+
+    class Meta:
+        # TODO Should probably index on:
+        # Author then article
+        verbose_name = "Article"
+        verbose_name_plural = "Articles"
+        indexes = [
+            models.Index(fields=['current_section','last_modified_at']),
+            models.Index(fields=['last_modified_at']),
+            models.Index(fields=['category_page',]),
+        ]
+
+class StandardArticlePage(ArticlePage):
+    #-----Django/Wagtail settings etc-----
+    objects = ArticlePageManager()
+
+    parent_page_types = [
+        'specialfeaturelanding.SpecialLandingPage',
+        'section.SectionPage',
+    ]
+
+    subpage_types = [] #Prevents article pages from having child pages
+
+    show_in_menus_default = True
+    show_in_menus = True
+
+    #-----Field attributes-----
+    content = StreamField(
+        [
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+            )),
+            ('extra_article_info', blocks_inner_article.ExtraArticleInfoBlock()),
+            ('dropcap', blocks.TextBlock(
+                label = "Dropcap Block",
+                template = 'article/stream_blocks/dropcap.html',
+                help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
+            )),
+            ('video', video_blocks.OneOffVideoBlock(
+                label = "Credited/Captioned One-Off Video",
+                help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
+            )),
+            ('audio', blocks_inner_article.AudioBlock()),
+            ('image', image_blocks.ImageBlock(
+            )),
+            ('pdf', blocks_inner_article.PdfBlock()),
+            ('raw_html', blocks.RawHTMLBlock(
+                label = "Raw HTML Block",
+                help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
+            )),
+            ('quote', blocks_inner_article.PullQuoteBlock()),
+
+            ('gallery_block', blocks_inner_article.GalleryBlock(
+                label="Image carousel",
+            )),
+            ('header_link', blocks_inner_article.HeaderLinkBlock()),
+            ('header_menu', blocks_inner_article.HeaderMenuBlock()),
+            ('visual_essay', blocks_inner_article.VisualEssayBlock()),
+            ('personality_quiz', blocks_inner_article.PersonalityQuizBlock()),
+            ('plaintext', blocks.TextBlock(
+                label="Plain Text Block",
+                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
+            ('gallery', SnippetChooserBlock(
+                target_model = GallerySnippet,
+                template = 'article/stream_blocks/gallery.html',
+            )),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
     
+    disclaimer = RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        help_text = "Used for Opinion articles or when corrections are made"
+    )
+
+    # template #TODO
+
+    #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
+
+    legacy_template = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        max_length=3000,
+    )
+    legacy_template_data = models.TextField(
+        null=False,
+        blank=True,
+        default='',
+    )
+    legacy_revision_number = models.IntegerField(
+        default=0
+    )
+
+    # "Layouts (stores data that once was Template data)"
+    layout = models.CharField(
+        null=False,
+        blank=False,
+        default='default',
+        verbose_name='Article Layout',
+        help_text="These correspond to very frequently used templates. More \"bespoke\", one-off templates should be added to the library of DB Templates",
+        max_length=100,
+    )
+
+    fw_alternate_title = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Alternate Title (Optional)',
+        help_text="When there is a \"special feature\" or full-width style article, sometimes we would like to override the title as it render in the template",
+        max_length=255,
+    )
+
+    subtitle = models.CharField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Subtitle (Optional)',
+        help_text="Displayed below the title",
+        max_length=255,
+    )
+    
+    # Corresponds to the pseudo-field called "snippet" in some templates
+    above_cut_lede = models.TextField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Above Cut Lede (Optional)',
+        help_text="Articles that use a special header/banner often contain a second lede/abstract summary ",
+    )
+
+    # Featured image stuff used for template customization
+    header_layout = models.CharField(
+        null=False,
+        blank=False,
+        default='right-image',
+        max_length=50,
+        help_text="Based on from Dispatch's obselete \"Templates\" feature",
+    )
+
+    #-----Advanted, custom layout etc-----
+    use_default_template = models.BooleanField(default=True)
+
+    db_template = models.ForeignKey(
+        DBTemplate,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',        
+    )
+
+    def get_template(self, request):
+        if not self.use_default_template:
+            if self.db_template:
+                return self.db_template.name
+
+        if self.layout == 'fw-story':
+            return "article/article_page_fw_story.html"
+        elif self.layout == 'empty':
+            return "article/article_page_empty.html"
+        elif self.layout == 'visual-essay':
+            return "article/article_page_visual_essay.html"
+        elif self.layout == 'guide-2020':
+            return "article/article_page_guide_2020.html"
+        elif self.layout == 'guide-2022':
+            return "article/article_page_guide_2022.html"
+        elif self.layout == 'magazine-2023':
+            return "article/article_page_magazine_2023.html"
+        elif self.layout == 'guide-2023':
+            return "article/article_page_guide_2023.html"
+        elif self.layout == 'magazine-2024':
+            return "article/article_page_magazine_2024.html"
+        elif self.layout == 'spoof-2024':
+            return "article/article_page_spoof_2024.html"
+        elif self.layout == 'guide-2024':
+            return "article/article_page_guide_2024.html"
+        elif self.layout == 'science-2024':
+            return "article/article_page_supplement_2024_science.html"
+        elif self.layout == 'femme-2024':
+            return "article/supplements/article_page_supplement_2024_femme.html"
+        elif self.layout == 'nocturne-2024':
+            return "article/supplements/article_page_supplement_2024_nocturne.html"
+        elif self.layout == 'passing-2025':
+            return "article/supplements/article_page_supplement_2025_passing.html"
+        elif self.layout == 'right-column':
+            return "article/article_like_special_page.html"
+
+        return "article/article_page.html"
+
+    #-----For Wagtail's user interface-----
+    content_panels = Page.content_panels + [
+        FieldRowPanel(
+            [
+                FieldPanel("explicit_published_at"),
+                FieldPanel("show_last_modified"),
+            ],
+            heading="Publication Date",
+        ),
+        MultiFieldPanel(
+            [ 
+                FieldPanel('title_tag'),
+                FieldRowPanel(
+                    [
+                        InlinePanel("featured_media", label="Featured Image or Video"),
+                        FieldPanel(
+                            "header_layout",
+                            widget=Select(
+                                choices=[
+                                    ('no-banner', 'No Banner'),
+                                    ('no-image', 'No Image'),
+                                    ('right-image', 'Right Image'),
+                                    ('bottom-image', 'Bottom Image'),
+                                    ('left-image', 'Left Image'),
+                                    ('top-image', 'Top Image'),
+                                    ('banner-image', 'Banner Image'),
+                                    ('video-banner', 'Video banner'),
+                                ],
+                            ),
+                            help_text='Sets layout of the header. (Right image, bottom image, left image, top image, banner)',
+                        ),
+                    ]
+                ),
+            ],
+            heading = "Header/Banner Fields",
+            classname="collapsible",
+        ), # Optional Header/Banner Fields
+        MultiFieldPanel(
+            [
+                FieldPanel('fw_alternate_title'),
+                FieldPanel('subtitle'),
+                FieldPanel('above_cut_lede'),
+            ],
+            heading = "Optional Header/Banner Fields (Alternate title, Subtitle, Above cut lede)",
+            classname="collapsible collapsed",
+        ),
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
+                ),
+                FieldPanel("content"),
+                FieldPanel("disclaimer")
+            ],
+            heading="Article Content",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
+                InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
+            ],
+            heading="Author(s)",
+            classname="collapsible",
+        ), # Author(s)
+        MultiFieldPanel(
+            [
+                FieldPanel("category_page"),
+                HelpPanel(
+                    content='''
+                        <h1>About Topics</h1>
+                        <p>Topics entered here will be listed in the topic page with the format <a href='https://ubyssey.ca/topic/top-stories/' target='_blank'>https://ubyssey.ca/topic/top-stories/</a>.</p>
+                        <p>Do NOT think of this like tagging an instagram post. It is NOT useless metadata or for SEO. <b><u>We tag articles so that ongoing subjects and stories are easy for readers to find and follow within our website</u></b>. These readers include everyone from students studying at UBC right now, to future Ubyssey editors, and journalists covering UBC at larger publications like the CBC and the Globe and Mail. <i>(More needs to be done to make use of topics and link to topic pages on the website. I'm working on it! - Sam Low)</i></p>
+                        <p>Make articles from our archive easier to find and they will be read more often. Tagging newspapers has a long history. The New York Times became known as the 'Paper of Record' because of its <a href='https://en.wikipedia.org/wiki/New_York_Times_Index' target='_blank'>New York Times Index</a> which rigoursly tagged every article of every paper by topic. This act unlocked the value of their archive and secured New York Times reporting center stage in the canon of history.</p>
+                        <h2>Tips for topics</h2>
+                        <ol>
+                            <li>1. Consistency is very important. Use the full name with correct capitalization every time.</li>
+                            <li>2. Tag the full name of every subject of the article. Subjects can include individuals, organizations, buildings, exhibits, concepts, etc.</li>
+                            <li>3. Add tags at all levels of specificity. For example 'AMS', 'AMS Candidate Profile'  'AMS elections', 'AMS elections 2025', 'AMS Candidate Profile 2025'.</li>
+                            <li>4. Decide on a full name for ongoing stories such as lawsuits.</li>
+                        </ol>
+
+                    '''
+                ),
+                TagsFieldPanel("topics"),
+                FieldPanel(
+                    "primary_tag_slug",
+                    widget=PrimaryTagSelect(),
+                ),
+
+                SuggestedBarFieldPanel(
+                    "filter_by_tags",
+                    widget=Select(choices=[
+                        (False, "Section"),
+                        (True, "Primary topic")
+                    ])
+                ),
+                MultiFieldPanel(
+                    [
+                        HelpPanel(content="<p>THIS OVERWRITES SUGGESTED BAR. Usually creating a topic or category is better because there will be a page dedicated to that topic or category and this article's suggested bar will update when new articles in that topic or category are published. But if you have specific related articles you want to recommend rather than a topic or subsection or column, then use this.</p>"),
+                        InlinePanel("connected_articles"),
+                    ],
+                    heading="Connected or Related Articles (Non-Series)",
+                    classname="collapsible collapsed",
+                ),
+            ],
+            heading="Categories, Topics, Suggested bar",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("lede"),
+                HelpPanel(content='''
+                    <h1>About storystream views</h1>
+                    <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>
+                    <p>Storystream views allow us to signal effort and differentiate our articles. They also allow us to move more of the value (journalism) from articles into the homepage - making the homepage valueable in and of itself (not just a set of links to click).</p>
+                    <p>Storystream views are used on the homepage and on topic pages. They display differently between these pages. Storystream views are titled according to how they are displayed in the topic pages and mobile because there is more variation between storystream views when presented on the topic pages than on the homepage.</p>
+                    <h2>Guidelines for choosing storystream</h2>
+                    <ol>
+                        <li>1. <b>For profiles:</b> select 'Image' and the 'Profile' template. Use a cutout image of the individual. Make sure empty space is cropped out. If you don't know how to cutout an image you can ask the photo editor or web developers!</li>  
+                        <li>2. <b>Quotes</b> Can be used for opinions, personal essays, interviews</li> 
+                        <li>3. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
+                        <li>4. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
+                        <li>5. <b>Standard (Desktop homepage: Small headline + lede left, image right) (Mobile homepage, topic page: Large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
+                        <li>6. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.</li>
+                    </ol>
+                    '''),
+                FieldPanel("storystream_view"),
+            ],
+            heading="Front Page Stuff",
+            classname="collapsible",
+        ),
+    ] # content_panels
+
+    promote_panels = Page.promote_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel("seo_keyword", help_text = "Seperate words with commas"),
+            ],
+            heading="Keywords for Search Engines",
+        ),
+
+        #  To do: Decide what to do with breaking. We would usually just put such an article
+        #  as the coverstory. Is there any case where marking an article as breaking and/or 
+        #  putting above the homepage header would be better than using the cover story? - Sam Low 22/05/2025
+        # 
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content="\"Breaking Timeout\" is irrelevant if news is not breaking news."),
+        #        FieldPanel("is_breaking"),
+        #        FieldPanel("breaking_timeout"),
+        #    ],
+        #    heading="Breaking",
+        #),
+
+        MultiFieldPanel(
+            [
+                FieldPanel("noindex"),
+            ],
+            heading="Special search engine-related meta tagging",
+        )
+    ] # promote_panels
+    settings_panels = SectionablePage.settings_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel(
+                    'is_explicit',
+                    help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article.",
+                ),
+            ],
+            heading="Advertising-Releated",
+        ),
+
+    ] # settings_panels  
+
+    customization_panels = [
+        HelpPanel(
+            content = "<h1>Help</h1><p>IF you need an alternate layout for your article, but still a frequently-used layout (such as including a full-width banner), THEN, rather making than a highly customized frontend (as you can do in the next tab over), select the options you require here.</p> <p>The majority of articles will just use the default layout. Thus, <u>for the majority of articles, nothing on this tab should be touched</u>; the majority of these fields are not even used in most layouts. They primarily exist to keep our data organized.</p>"
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel(
+                    "layout",
+                    widget=Select(
+                        choices=[
+                            ('default', 'Default'), 
+                            ('fw-story', 'Full-Width Story'),
+                            ('empty', 'Empty template'),
+                            ('right-column', "Right Column"),
+                            ('visual-essay', 'Visual Essay'),
+                            ('guide-2020', 'Guide (2020 style - currently broken, last checked 2022/09)'),
+                            ('guide-2022', 'Guide (2022 style)'),
+                            ('magazine-2023', 'Magazine (2023 style)'),
+                            ('guide-2023', 'Guide (2023 style)'),
+                            ('magazine-2024', 'Magazine (2024 style)'),
+                            ('spoof-2024', 'Spoof (2024 style)'),
+                            ('guide-2024', 'Guide (2024 style)'),
+                            ('science-2024', 'Science Supplement (2024)'),
+                            ('femme-2024', 'Femme Culture Special Issue (2024)'),
+                            ('nocturne-2024', 'Nocturne Features Supplement (2024)'),
+                        ],
+                    ),
+                ),
+            ],
+            heading = "Select Stock Layout",
+            classname="collapsible",
+        ), # Select Stock Layout
+        ] + UbysseyMenuMixin.menu_content_panels + [
+           
+        #   To Do: This is not used anywhere. Figure out what exactly timeline was for. If it was
+        #   a good idea then we can pick it up. I'm pretty sure even it was a good idea it was a
+        #   bad implementation though. So deal with articles that used it (if any) and then remove 
+        #   the fields - Sam Low (22/05/2025)
+        #
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content='<h1>Warning</h1><p>If a timeline is included in your article, <u>additional processing will be required when the article is saved</u>.</p><p>It is recommended you add a Timeline snippet LAST, <i>after</i> your article is otherwise written.</p><p><u>Developers</u> should note: the Timeline/Article sync is accomplished with Django signals, to prevent tight coupling of the two classes. Do not allow use of signals to turn into noodle logic.</p>'),
+        #        FieldPanel('show_timeline'),
+        #        FieldPanel('timeline_date'),
+        #        FieldPanel('timeline'),
+        #    ],
+        #    heading = "Timeline",
+        #    classname="collapsible collapsed",
+        #), # Timeline
+        
+        #   To Do: Individually deal with any article using it and remove the fw_about_this_article
+        #   field. Something like this can be handled within the content streamfield such as with
+        #   an extra article info editors note. 
+        # MultiFieldPanel(
+        #    [
+        #        HelpPanel(content="<p>This information is generally used in a special article that has additional credits beyond the normal byline.</p>"),
+        #        FieldPanel('fw_about_this_article'),
+        #    ],
+        #    heading = "Additional Credits",
+        #    classname="collapsible collapsed",
+        #), # Additional Credits
+        HelpPanel(
+            content="<h1>Help</h1><p>This tab exists so that every aspect of the frontend for an individual article may be customized, down to the finest detail. There are three fundamental tools of frontend web programming - HTML, CSS and JavaScript, and here you may utilize all three.</p><p>Custom HTML templates, which use the Django templating language, should be uploaded not as files/documents but as \"Custom HTML\" in the site admin.\n\n Custom CSS or JavaScript should be uploaded to \"Documents\"</p>"
+        ),
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content="<p>Making a template requires some understanding of how the Django backend works, so that you might know variable names etc. for the data that the template is supposed to render.</p> <p>Because of the potential complexity of a template, it is desirable to be able to quickly switch the article back to a default template. Turn on \"Use default template\" to use the stock template and turn it off to be able to override the default with a custom template. Defaults to \"on\".</p>",
+                ),
+                FieldPanel("use_default_template"),
+                FieldPanel("db_template"),
+            ],
+            heading="Custom HTML",
+            classname="collapsible collapsed",
+        ), # Custom HTML
+        MultiFieldPanel(
+            [
+                InlinePanel("styles"),
+            ],
+            heading="Custom CSS",
+            help_text="Please upload any custom CSS to \"Documents\", then select the appropriate document here.\n\nSelecting a non-CSS Document will cause errors.",
+            classname="collapsible collapsed",
+        ), # Custom CSS
+        MultiFieldPanel(
+            [
+                InlinePanel("scripts"),
+            ],
+            heading="Custom JavaScript",
+            help_text="Please upload any custom JavaScript to \"Documents\", then select the appropriate document here.\n\nSelecting a non-JavaScript Document will cause errors.",
+            classname="collapsible collapsed",
+        ), # Custom JavaScript
+    ] # customization_panels
+
+    # This overrides the default Wagtail edit handler, in order to add custom tabs to the article editting interface
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(promote_panels, heading='Promote'),
+            ObjectList(settings_panels, heading='Settings'),
+            ObjectList(customization_panels, heading='Special article stuff'),
+        ],
+    ) # edit_handler
+
+    #-----Search fields etc-----
+    #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
+    search_fields = Page.search_fields + [
+        index.SearchField('lede'),
+        index.SearchField('seo_keyword', boost=1.5),
+        index.AutocompleteField('seo_keyword'),
+        index.RelatedFields(
+            "topics",
+            [
+                index.SearchField("name", boost=10),
+                index.AutocompleteField("name"),
+            ],
+        ),        
+        index.FilterField('current_section'),
+        index.FilterField('slug'),
+        index.FilterField('explicit_published_at'),
+
+        index.RelatedFields('category_page', [
+            index.FilterField('slug'),
+            index.SearchField('title'),
+            index.AutocompleteField('title'),
+        ]),
+        index.RelatedFields('article_authors', [
+            index.SearchField('full_name'),
+            index.AutocompleteField('full_name'),
+        ]),
+        
+        index.FilterField('author_id')
+    ]
+
+    #-----Properties, getters, setters, etc.-----
+
+    def get_context(self, request, *args, **kwargs):
+        """
+        Wagtail uses this method to add context variables following a request at a URL.
+        All the below code occurs after the user submits a request and before they receive it.
+        Therefore, keep the length of this method to a minimum; otherwise users will be kept waiting
+        """
+
+        context = super().get_context(request, *args, **kwargs)
+
+        user_agent = get_user_agent(request)
+        context['is_mobile'] = user_agent.is_mobile
+        if self.current_section == "guide":
+            context['prev'] = self.get_prev_sibling()
+            context['next'] = self.get_next_sibling()
+            
+            if self.current_section == 'guide':
+                # Desired behaviour for guide articles is to always have two adjacent articles. Therefore we create an "infinite loop"
+                if not context['prev']:
+                    context['prev'] = self.get_last_sibling()
+                if not context['next']:
+                    context['next'] = self.get_first_sibling()
+
+            if context['prev']:
+                context['prev'] = context['prev'].specific
+            if context['next']:
+                context['next'] = context['next'].specific
+
+        return context
+
     @property
     def word_count(self) -> int:
         # gotten from https://stackoverflow.com/questions/42585858/display-word-count-in-blog-post-with-wagtail
@@ -1630,22 +1812,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     class Meta:
         # TODO Should probably index on:
         # Author then article
-        verbose_name = "Article"
-        verbose_name_plural = "Articles"
-        indexes = [
-            models.Index(fields=['current_section','last_modified_at']),
-            models.Index(fields=['last_modified_at']),
-            models.Index(fields=['category_page',]),
-        ]
+        verbose_name = "Standard Article"
+        verbose_name_plural = "Standard Articles"
+
 
 class SpecialArticleLikePage(ArticlePage):
 
     show_in_menus_default = True
 
-    parent_page_types = [
-        'specialfeaturelanding.SpecialLandingPage',
-        'section.SectionPage',
-    ]
+    parent_page_types = []
 
     subpage_types = [] #Prevents article pages from having child pages
 
@@ -1679,28 +1854,42 @@ class SpecialArticleLikePage(ArticlePage):
         ),
     ]
 
-    # This overrides the default Wagtail edit handler, in order to add custom tabs to the article editing interface
-    edit_handler = TabbedInterface(
-        [
-            ObjectList(content_panels, heading='Content'),
-            ObjectList(ArticlePage.promote_panels, heading='Promote'),
-            ObjectList(ArticlePage.settings_panels, heading='Settings'),
-            ObjectList(ArticlePage.customization_panels, heading='Custom Frontend (Advanced!)'),
-        ],
-    ) # edit_handler
-    
-    def get_template(self, request):
-        if not self.use_default_template:
-            if self.db_template:
-                return self.db_template.name
-
-        if self.layout == 'fw-story':
-            return "article/article_page_fw_story.html"
-        elif self.layout == 'guide-2020':
-            return "article/article_page_guide_2020.html"
-                        
-        return "article/article_like_special_page.html"
-
     class Meta:
         verbose_name = "Special Article-Like Page (for About Page, Contact, etc.)"
+        verbose_name_plural = "Articles"
+
+class StandardArticlePageWithRightColumn(StandardArticlePage):
+
+    right_column_content = StreamField(
+        # intended for use only for the About/Contant Us page as of Jun 9, 2022
+        [
+            ('richtext', blocks.RichTextBlock(                                
+                label="Rich Text Block",
+                help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+            )),
+            ('plaintext',blocks.TextBlock(
+                label="Plain Text Block",
+                help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."
+            )),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+
+    content_panels = StandardArticlePage.content_panels + [
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content=''
+                ),
+                FieldPanel("right_column_content")
+            ],
+            heading="Article Right Column Content",
+            classname="collapsible",
+        ),
+    ]
+
+    class Meta:
+        verbose_name = "Standard Article Page with Right Column (for About Page, Contact, etc.)"
         verbose_name_plural = "Articles"
