@@ -43,7 +43,7 @@ class Command(BaseCommand):
         #article = await StandardArticlePage.objects.filter(slug="ways-to-avoid-ams").afirst()
         #await self.migrate_article(article)        
         tasks = []
-        async for article in StandardArticlePage.objects.live().all().order_by("-first_published_at"):
+        async for article in StandardArticlePage.objects.live().filter(header__isnull=True).order_by("-first_published_at"):
             tasks.append(asyncio.create_task(self.migrate_article(article)))
             if len(tasks) > 100:
                 print("gather")
