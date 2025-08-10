@@ -57,9 +57,13 @@
     <main id="article-{{ self.slug }}" class="article">
         <article class="c-article {% if timeline %}c-article--timeline {% endif %}js-article {% block specific_article_class %}c-article--fw-story{% comment %} This block is used to override styling for the main article body (as in e.g. a full width banner article) {% endcomment %}{% endblock %}"> <!--article-->
             <!-- Below is the Article heading, including Article headline and bylines -->
+            
             {% block banner %}
-                {% include 'article/components/headers/'|add:self.header_layout|add:'.html' %}
+                {% for header_block in self.header %}
+                    {% include_block header_block %}
+                {% endfor %}
             {% endblock %}
+
             <!-- Below is the container for Article content -->
             <div class="clearfix">
                 <!-- Below is the container for the left column article content  -->

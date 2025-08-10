@@ -3,12 +3,3 @@
 {% load cache %}
 {% load wagtailimages_tags %}
 {% load ubyssey_ad_tags %}
-
-
-{% block specific_article_class %}
-    c-article--fw-story
-{% endblock %}
-
-{% if self.header_layout == 'banner-image' %}
-    {% block banner_ad %}{% endblock %}
-{% endif %}

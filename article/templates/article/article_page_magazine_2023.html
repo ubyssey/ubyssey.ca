@@ -51,8 +51,8 @@
             
                 <div class="u-container u-container--content u-container--padded">
                     <p class="c-article__title">
-                        {% if self.fw_alternate_title %}
-                            {{self.fw_alternate_title|safe}}
+                        {% if self.header.0.value.title %}
+                            {{self.header.0.value.title|safe}}
                         {% else %}
                             {{ self.title|safe }}
                         {% endif %}

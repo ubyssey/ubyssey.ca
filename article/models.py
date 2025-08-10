@@ -1286,6 +1286,21 @@ class StandardArticlePage(ArticlePage):
     show_in_menus = True
 
     #-----Field attributes-----
+
+    header = StreamField(
+        [
+            ('standard_header', blocks_inner_article.StandardHeader()),
+            ('standard_header_with_youtube_video', blocks_inner_article.StandardHeaderWithYoutTubeVideo()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+        default = [
+            {"type": "standard_header",
+             "value": {"title": "", "layout": "bottom-image", "subtitle": "", "above_cut_lede": ""}}
+        ]
+    )
+
     content = StreamField(
         [
             ('richtext', blocks.RichTextBlock(                                
@@ -1421,9 +1436,7 @@ class StandardArticlePage(ArticlePage):
             if self.db_template:
                 return self.db_template.name
 
-        if self.layout == 'fw-story':
-            return "article/article_page_fw_story.html"
-        elif self.layout == 'empty':
+        if self.layout == 'empty':
             return "article/article_page_empty.html"
         elif self.layout == 'visual-essay':
             return "article/article_page_visual_essay.html"
@@ -1466,40 +1479,12 @@ class StandardArticlePage(ArticlePage):
         MultiFieldPanel(
             [ 
                 FieldPanel('title_tag'),
-                FieldRowPanel(
-                    [
-                        InlinePanel("featured_media", label="Featured Image or Video"),
-                        FieldPanel(
-                            "header_layout",
-                            widget=Select(
-                                choices=[
-                                    ('no-banner', 'No Banner'),
-                                    ('no-image', 'No Image'),
-                                    ('right-image', 'Right Image'),
-                                    ('bottom-image', 'Bottom Image'),
-                                    ('left-image', 'Left Image'),
-                                    ('top-image', 'Top Image'),
-                                    ('banner-image', 'Banner Image'),
-                                    ('video-banner', 'Video banner'),
-                                ],
-                            ),
-                            help_text='Sets layout of the header. (Right image, bottom image, left image, top image, banner)',
-                        ),
-                    ]
-                ),
+                InlinePanel("featured_media", label="Featured Image or Video"),
+                FieldPanel("header"),
             ],
             heading = "Header/Banner Fields",
             classname="collapsible",
         ), # Optional Header/Banner Fields
-        MultiFieldPanel(
-            [
-                FieldPanel('fw_alternate_title'),
-                FieldPanel('subtitle'),
-                FieldPanel('above_cut_lede'),
-            ],
-            heading = "Optional Header/Banner Fields (Alternate title, Subtitle, Above cut lede)",
-            classname="collapsible collapsed",
-        ),
         MultiFieldPanel(
             [
                 HelpPanel(

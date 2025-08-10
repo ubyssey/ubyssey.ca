@@ -84,11 +84,6 @@
     font-family: fonts.$font-headline;
   }
 
-  p.fw-description {
-    font-family: fonts.$font-body;
-    font-size: 18px;
-  }
-
   div.caption {
     border: none;
   }
@@ -194,8 +189,8 @@
         margin-bottom: 15px;
       }
 
-      p.fw-description {
-        color: #333;
+      .o-article--header--above_cut_lede {
+        --text_color: white;
         font-family: fonts.$font-default;
 
         width: 100%;
@@ -330,4 +325,14 @@
 .c-article__published-at.video-pubdate {
   margin: 1em 0;
   font-size: 0.95em;
+}
+
+
+.o-article--header--above_cut_lede {
+  font-family: fonts.$font-body;
+  line-height: 1.75em;
+
+  a {
+    text-decoration: underline;
+  }
 }

@@ -5,33 +5,35 @@
 {% load wagtailimages_tags %}
 {% load video_filters %}
 
-{% if self.featured_media.first.video %}
-    <iframe src="https://www.youtube.com/embed/{{ self.featured_media.first.video|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="" height="315" width="560"></iframe>
-{% elif self.featured_media.first.image %}
-    {% with self.featured_media.first as featured_image_object %}
-        {% srcset_image featured_image_object.image width-{340,750,1500} format-webp webpquality-70 as featured_image_renditions %}     
-        <img
-            class="article-attachment"
-            data-id="{{ featured_image_object.image.id }}"
-            data-caption="{{ featured_image_object.caption }}"
-            data-url="{{ featured_image_renditions.renditions.0.url }}"
-            data-credit="{{ featured_image_object.credit }}"
-            src="{{ featured_image_renditions.renditions.0.url }}"
-            width="{{ featured_image_renditions.renditions.0.width }}"
-            height="{{ featured_image_renditions.renditions.0.height }}"
-            srcset="{{ featured_image_renditions.renditions.0.url }} 340w, {{ featured_image_renditions.renditions.1.url }} 750w, {{ featured_image_renditions.renditions.2.url }} 1500w"
-            sizes="(max-width: 600px) 340px, (max-width: 1200px) 750px, 1500px"
-            alt="{{ featured_image_object.alt_text }}"
-        />
-        {% if featured_image_object.caption or featured_image_object.credit %}
-            <div class="caption">
-                {% if featured_image_object.caption %}
-                    {{ featured_image_object.caption }}
-                {% endif %}
-                {% if featured_image_object.credit %}
-                    <span class="credit">{{ featured_image_object.credit }}</span>
-                {% endif %}
-            </div>
-        {% endif %}
-    {% endwith %}
+{% if featured_media %}
+    {% if media_type == "video" %}
+        <iframe src="https://www.youtube.com/embed/{{ featured_media|youtube_embed_id|safe }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="" height="315" width="560"></iframe>
+    {% elif media_type == "image" %}
+        {% with featured_media as featured_image_object %}
+            {% srcset_image featured_image_object.image width-{340,750,1500} format-webp webpquality-70 as featured_image_renditions %}     
+            <img
+                class="article-attachment"
+                data-id="{{ featured_image_object.image.id }}"
+                data-caption="{{ featured_image_object.caption }}"
+                data-url="{{ featured_image_renditions.renditions.0.url }}"
+                data-credit="{{ featured_image_object.credit }}"
+                src="{{ featured_image_renditions.renditions.0.url }}"
+                width="{{ featured_image_renditions.renditions.0.width }}"
+                height="{{ featured_image_renditions.renditions.0.height }}"
+                srcset="{{ featured_image_renditions.renditions.0.url }} 340w, {{ featured_image_renditions.renditions.1.url }} 750w, {{ featured_image_renditions.renditions.2.url }} 1500w"
+                sizes="(max-width: 600px) 340px, (max-width: 1200px) 750px, 1500px"
+                alt="{{ featured_image_object.alt_text }}"
+            />
+            {% if featured_image_object.caption or featured_image_object.credit %}
+                <div class="caption">
+                    {% if featured_image_object.caption %}
+                        {{ featured_image_object.caption }}
+                    {% endif %}
+                    {% if featured_image_object.credit %}
+                        <span class="credit">{{ featured_image_object.credit }}</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    {% endif %}
 {% endif %}

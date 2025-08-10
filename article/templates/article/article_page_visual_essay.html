@@ -18,37 +18,8 @@
 {% block specific_article_class %}
     c-article--fw-story
 {% endblock %}
-{% block banner %}
-{% include 'article/objects/banner.html' %}
-{% endblock %}
-{% block right_column_class %}
-    fw-story u-container-max
-{% endblock %}
-
-{% if self.header_layout == 'banner-image' %}
-    {% block banner_ad %}{% endblock %}
-{% endif %}
 
 {% block pre-content %}
-{% endblock %}
-
-{% block sidebar %}
-{% comment %}
-    <div class="right-column">
-        <div class="sidebar">
-            {% if explicit is not True %}
-                {% if self.minutes_to_read >= 3 %}
-                    {% include 'objects/advertisement.html' with size='skyscraper' name='Box_A' id=3 article=article.id %}
-                    {% include 'objects/advertisement.html' with size='box' name='Box_B' id=4 article=article.id %}
-                {% else %}
-                    {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
-                {% endif %}
-            {% else %}
-                {% include 'objects/replacement.html' with size='box' %}
-            {% endif %}
-        </div>
-    </div>
-{% endcomment %}
 {% endblock %}
 
 {% block scripts %} 
