@@ -31,6 +31,7 @@ class HeaderLayoutBlock(blocks.ChoiceBlock):
         ('left-image', 'Left Image'),
         ('top-image', 'Top Image'),
         ('banner-image', 'Banner Image'),
+        ('timeless-meta-page-banner', 'Timeless Meta Page Banner'),
     ]
 
 class HeaderWithYoutubeVideoLayoutBlock(HeaderLayoutBlock):
@@ -401,3 +402,48 @@ class PdfBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/pdf.html'
         icon = "doc-full"
+
+class CardBlock(blocks.StructBlock):
+    text = blocks.RichTextBlock()
+
+    class Meta:
+        template = 'article/stream_blocks/cards/text-card.html'
+
+class ImageCardBlock(CardBlock):
+    image = ImageChooserBlock(
+        required=True
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/cards/image-card.html'
+
+class VideoCardBlock(CardBlock):
+    video = DocumentChooserBlock(
+        required=True, help_text="File format: .mp4"
+        )
+    
+    class Meta:
+        template = 'article/stream_blocks/cards/video-card.html'
+
+class DropdownCardBlock(CardBlock):
+    header = blocks.CharBlock()
+
+    class Meta:
+        template = 'article/stream_blocks/cards/dropdown-card.html'
+
+class CardContainer(blocks.StructBlock):
+    container_type = blocks.ChoiceBlock(choices=[
+        ('promo-staggered', 'Staggered promo'),
+        ('open-positions', 'Open positions'),
+        ('dropdown', 'Dropdown'),
+    ])
+
+    cards = blocks.StreamBlock([
+        ('text_card', CardBlock()),
+        ('image_card', ImageCardBlock()),
+        ('video_card', VideoCardBlock()),
+        ('dropdown_card', DropdownCardBlock()),
+    ])
+
+    class Meta:
+        template = 'article/stream_blocks/card-container.html'

@@ -1278,6 +1278,7 @@ class StandardArticlePage(ArticlePage):
     parent_page_types = [
         'specialfeaturelanding.SpecialLandingPage',
         'section.SectionPage',
+        'wagtailcore.Page',
     ]
 
     subpage_types = [] #Prevents article pages from having child pages
@@ -1342,6 +1343,7 @@ class StandardArticlePage(ArticlePage):
                 target_model = GallerySnippet,
                 template = 'article/stream_blocks/gallery.html',
             )),
+            ('cards', blocks_inner_article.CardContainer()),
         ],
         null=True,
         blank=True,
@@ -1438,6 +1440,8 @@ class StandardArticlePage(ArticlePage):
 
         if self.layout == 'empty':
             return "article/article_page_empty.html"
+        elif self.layout == 'timeless-meta-page':
+            return "article/article_page_timeless_meta_page.html"
         elif self.layout == 'visual-essay':
             return "article/article_page_visual_essay.html"
         elif self.layout == 'guide-2020':
@@ -1624,8 +1628,8 @@ class StandardArticlePage(ArticlePage):
                     "layout",
                     widget=Select(
                         choices=[
-                            ('default', 'Default'), 
-                            ('fw-story', 'Full-Width Story'),
+                            ('default', 'Default'),                             
+                            ('timeless-meta-page', 'Timeless meta page'),
                             ('empty', 'Empty template'),
                             ('right-column', "Right Column"),
                             ('visual-essay', 'Visual Essay'),

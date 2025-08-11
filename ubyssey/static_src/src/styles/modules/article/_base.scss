@@ -296,7 +296,7 @@ div.article-content {
     max-width: 585px;
   }
 
-  >ul {
+  >ul, >ol {
     padding-left: variables.$article-content-ul-padding-left + 15;
     padding-right: 15px;
 

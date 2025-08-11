@@ -685,6 +685,30 @@ a.store-link {
 
 }
 
+
+nav.branding-nav {
+    padding-inline: 1em;
+    margin: 1em auto;
+
+    position: absolute;
+    left: 50%;
+    z-index: 100;
+
+    transform: translateX(-50%);
+
+    svg {
+        fill: var(--header_color);
+        max-width: 150px;
+    }
+    a {
+        border: none;
+    }
+    * {
+        margin: 0 auto;
+    }
+}
+
+
 [color-css-theme="light"] {
 
   .dark-logo {

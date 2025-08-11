@@ -1,0 +1,21 @@
+{% extends 'article/article_page.html' %}
+{% load static %}
+{% load wagtailimages_tags %}
+{% load ubyssey_ad_tags %}
+{% load menu_tags %}
+
+{% block header %}
+    {% include "navigation/headers/branding-nav.html" %}
+{% endblock%}
+
+{% block banner_ad %}{% endblock %}
+
+{% block page_wrapper %}timeless-meta-page{% endblock %}
+
+{% block specific_article_class %}
+    c-article--timeless-meta-page
+{% endblock %}
+
+{% block post-content %}{% endblock%}
+
+{% block suggested_articles %}{% endblock%}

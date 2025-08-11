@@ -1,0 +1,9 @@
+{% load wagtailimages_tags %}
+{% image featured_media.image original as featured_image %}
+
+<div class="c-meta-page--header" style="background-image: url('{{featured_image.url}}');">
+    <header>
+        <div class="subtitle">{{self.subtitle|safe}}</div>
+        <h1>{{title|safe}}</h1>
+    </header>
+</div>
