@@ -8,6 +8,112 @@ from wagtail.embeds import blocks as embed_blocks
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
+# Featured image
+
+class FeaturedImage(blocks.StructBlock):
+    # Not used yet
+    image = ImageChooserBlock(
+        required=True,
+    )
+    caption = blocks.CharBlock(blank=True, null=False, default='')
+    credit = blocks.CharBlock(blank=True, null=False, default='')
+    alt_text = blocks.CharBlock(blank=True, null=False, default='',
+        help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
+
+
+# Header blocks
+
+class HeaderLayoutBlock(blocks.ChoiceBlock):
+    choices = [
+        ('no-image', 'No Image'),
+        ('right-image', 'Right Image'),
+        ('bottom-image', 'Bottom Image'),
+        ('left-image', 'Left Image'),
+        ('top-image', 'Top Image'),
+        ('banner-image', 'Banner Image'),
+        ('timeless-meta-page-banner', 'Timeless Meta Page Banner'),
+    ]
+
+class HeaderWithYoutubeVideoLayoutBlock(HeaderLayoutBlock):
+    choices = [
+        ('bottom-image', 'Bottom Image'),
+        ('top-image', 'Top Image'),
+        ('video-banner', 'Video banner'),
+    ]
+
+
+class StandardHeader(blocks.StructBlock):
+    layout = HeaderLayoutBlock(default='bottom-image')
+    
+    title = blocks.CharBlock(
+        required=False,
+        label="Alternate title",
+        help_text="When there is a \"special feature\" or full-width style article, sometimes we would like to override the title as it render in the template",
+        max_length=255,
+    )
+    subtitle = blocks.CharBlock(
+        required=False,
+        help_text="Displayed below the title",
+        max_length=255,
+    )
+    above_cut_lede = blocks.RichTextBlock(
+        required=False,
+        help_text="Articles that use a special header/banner often contain a second lede/abstract summary ",
+    )
+    
+    media_type = "image"
+
+    def get_featured_media(self, value, context):
+        return dict(context)["self"].featured_media.first
+
+    def render(self, value, context=None):
+        """
+        According to the below stackoverflow, we need to modify this specific method in order to allow template selection
+        in such a way that the block itself tracks
+        https://stackoverflow.com/questions/55875597/wagtail-how-to-access-structblock-class-attribute-inside-block
+
+        In some ways this is a proof of concept for modifiable blocks
+        """
+
+        # Below this point, this render() is identical to its original counterpart
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+            new_context["title"] = value.get('title')
+            if not new_context["title"]:
+                new_context["title"] = dict(context)["self"].title
+
+            new_context["featured_media"] = self.get_featured_media(value, context)
+
+            new_context["article"] = dict(context)["self"]
+            new_context["media_type"] = self.media_type
+
+        layout = value.get('layout')
+        if layout != '':
+            template = 'article/components/headers/' + layout + '.html'
+        else:
+            return self.render_basic(value, context=context) # Wagtail's default for when 
+
+        return mark_safe(render_to_string(template, new_context))
+    
+    class Meta:
+        label = "Standard Header"
+
+class StandardHeaderWithYoutTubeVideo(StandardHeader):
+    media_type = "video"
+    layout = HeaderWithYoutubeVideoLayoutBlock(default='video-banner')
+    youtube_url = blocks.URLBlock(required=True)
+
+    def get_featured_media(self, value, context):
+        return value.get('youtube_url')
+
+    class Meta:
+        label = "Header with embeded youtube video"
+
+# Article blocks
+
 class AudioBlock(blocks.StructBlock):
     caption =  blocks.CharBlock(required=False)
     audio = DocumentChooserBlock(required=True, help_text="File format: .m4a, .mp4, .mp, .wav, or .ogg")
@@ -49,7 +155,7 @@ class PullQuoteBlock(blocks.StructBlock):
     )
     source =  blocks.CharBlock(required=False)
     audio = DocumentChooserBlock(required=False, help_text="Optional, file format: .m4a, .mp4, .mp, .wav, or .ogg")
-
+    images = blocks.ListBlock(image_blocks.ReducedImageBlock(), default=[], help_text="Optional!")
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
@@ -137,7 +243,7 @@ class ChooseSideBlock(blocks.ChoiceBlock):
 
 class ChooseViewBlock(blocks.StructBlock):
     view = blocks.ChoiceBlock(
-        choices=[('vs-side-by-side', 'Side By Side'),('vs-over-image', 'Text Over Image'),],
+        choices=[('vs-side-by-side', 'Side By Side'),('vs-over-image', 'Text Over Image'),('vs-over-image vs-over-image--left', 'Text (left) Over Image')],
         default=('vs-over-image', 'Text Over Image'),
         required=True
     )
@@ -296,3 +402,48 @@ class PdfBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/pdf.html'
         icon = "doc-full"
+
+class CardBlock(blocks.StructBlock):
+    text = blocks.RichTextBlock()
+
+    class Meta:
+        template = 'article/stream_blocks/cards/text-card.html'
+
+class ImageCardBlock(CardBlock):
+    image = ImageChooserBlock(
+        required=True
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/cards/image-card.html'
+
+class VideoCardBlock(CardBlock):
+    video = DocumentChooserBlock(
+        required=True, help_text="File format: .mp4"
+        )
+    
+    class Meta:
+        template = 'article/stream_blocks/cards/video-card.html'
+
+class DropdownCardBlock(CardBlock):
+    header = blocks.CharBlock()
+
+    class Meta:
+        template = 'article/stream_blocks/cards/dropdown-card.html'
+
+class CardContainer(blocks.StructBlock):
+    container_type = blocks.ChoiceBlock(choices=[
+        ('promo-staggered', 'Staggered promo'),
+        ('open-positions', 'Open positions'),
+        ('dropdown', 'Dropdown'),
+    ])
+
+    cards = blocks.StreamBlock([
+        ('text_card', CardBlock()),
+        ('image_card', ImageCardBlock()),
+        ('video_card', VideoCardBlock()),
+        ('dropdown_card', DropdownCardBlock()),
+    ])
+
+    class Meta:
+        template = 'article/stream_blocks/card-container.html'

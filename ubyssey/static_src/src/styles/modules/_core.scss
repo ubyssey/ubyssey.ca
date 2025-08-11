@@ -248,6 +248,7 @@ html[color-css-theme="light"] {
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue};
   --light-border-grey: #eee;
+  --light-grey: #d9d9d9;
   --contrast-color: #{variables.$color-ubyssey-blue-dark};
   --shadow-color: #888;
   --marked-read: #444;
@@ -263,6 +264,11 @@ html[color-css-theme="light"] {
   --authors-title-bio: #1B1B1B;
   --archive-text: #4e4e4e;
   --pagination: #353535;
+
+  // Ads
+  --ad-background: #eee;
+  --ad-border: #ccc;
+  --ad-text: #9e9e9e;
 }
 
 html[color-css-theme="dark"] {
@@ -278,6 +284,7 @@ html[color-css-theme="dark"] {
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue-light};
   --light-border-grey: #888;
+  --light-grey: #d9d9d9;
   --contrast-color: #{variables.$color-ubyssey-blue-light};
   --shadow-color: black;
   --marked-read: #bbb;
@@ -293,6 +300,10 @@ html[color-css-theme="dark"] {
   --archive-text: #BFBFBF;
   --pagination: #BFBFBF;
 
+  // Ads
+  --ad-background: #161818;
+  --ad-border: #323232;
+  --ad-text: #9e9e9e;
 }
 
 body, html, #page-wrapper {

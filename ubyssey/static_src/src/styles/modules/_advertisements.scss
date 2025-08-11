@@ -60,7 +60,6 @@ $adslots: (
   @media( min-width: 1010px ){
     .adslot {
       min-width: list.nth(map.get($adslots, leaderboard), 1);
-      max-width: list.nth(map.get($adslots, large-leaderboard), 1);
       height: $height;
     }
   }

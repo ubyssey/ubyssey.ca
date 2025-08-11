@@ -29,21 +29,15 @@ def gpt_define_tag(slug, is_mobile=False) -> dict:
             'box': '[300, 250]', 
             'skyscraper' : '[[300, 250], [300, 600]]',
             'banner': '[468, 60]',
-            'leaderboard': '[[728, 90], [970, 90]]',
+            'leaderboard': '[[728, 90], [970, 90], [970, 250], [300, 250]]',
             'mobile-leaderboard': '[320, 50]'
         }
-        if is_mobile and "Intra_Article" in ad_slot.dfp:
-            return {
-                'div_id' : ad_slot.div_id,
-                'dfp' : ad_slot.dfp,
-                'size' : SIZES['mobile-leaderboard'],
-            }
-        else:
-            return {
-                'div_id' : ad_slot.div_id,
-                'dfp' : ad_slot.dfp,
-                'size' : SIZES[ad_slot.size],
-            }
+
+        return {
+            'div_id' : ad_slot.div_id,
+            'dfp' : ad_slot.dfp,
+            'size' : SIZES[ad_slot.size],
+        }
     except:
         return {
             'div_id' : 'ad-tag-error',

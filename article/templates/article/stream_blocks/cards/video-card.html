@@ -1,0 +1,10 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="o-card o-card--video">
+    <video src="{{self.video.url}}" width="320" height="240" autoplay muted loop>
+        Your browser does not support the video tag.
+    </video> 
+
+    {{self.text|safe}}
+</div>

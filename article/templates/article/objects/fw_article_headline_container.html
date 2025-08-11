@@ -3,19 +3,15 @@
     It was seperated out to try to make the code more readable
 {% endcomment %}
 
-<p class="c-article__published-at">{{ self.published_at|date:'N j, Y' }}</p>
+<p class="c-article__published-at">{{ article.published_at|date:'N j, Y' }}</p>
 
-{% if self.title_tag_str %}
-    <p class="title-tag">{{self.title_tag_str}}//</p>
+{% if article.title_tag_str %}
+    <p class="title-tag">{{article.title_tag_str}}//</p>
 {% endif %}
 
 <header>
     <h1 class="o-headline o-headline--article">
-        {% if self.fw_alternate_title %}
-            {{self.fw_alternate_title|safe}}
-        {% else %}
-            {{ self.title|safe }}
-        {% endif %}
+        {{ title|safe }}
     </h1>
 
     {% if self.subtitle %}
@@ -23,10 +19,12 @@
     {% endif %}
 </header>
 
-{% if self.fw_above_cut_lede %}
-    <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
+{% if self.above_cut_lede %}
+    <div class="o-article--header--above_cut_lede">
+    {{ self.above_cut_lede|safe }}
+    </div>
 {% endif %}
 
 <div class="c-article__info">
-    <p class="author-string">{{self.get_authors_split_out_visual_bylines|safe }}</p>
+    <p class="author-string">{{article.get_authors_split_out_visual_bylines|safe }}</p>
 </div>

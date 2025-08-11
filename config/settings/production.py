@@ -50,12 +50,12 @@ GS_QUERYSTRING_AUTH = False
 GS_FILE_OVERWRITE = False
 
 # Emails - Production Only
-# EMAIL_HOST = env('EMAIL_HOST')
-# EMAIL_PORT = 465
-# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-# EMAIL_USE_SSL = True
-# UBYSSEY_ADVERTISING_EMAIL = env('UBYSSEY_ADVERTISING_EMAIL')
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'noreply@ubyssey.ca'
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='') or read_file(env('EMAIL_HOST_PASSWORD_FILE'))
+EMAIL_USE_SSL = True
+UBYSSEY_ADVERTISING_EMAIL = 'advertising@ubyssey.ca'
 
 # Use in-memory file handler on Google App Engine
 FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.MemoryFileUploadHandler',]
@@ -69,22 +69,24 @@ LOGGING = {
    'version': 1,
    'disable_existing_loggers': False,
    'formatters': {
-       'verbose': {
+       'json': {
+           '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+           'reserved_attrs': ['name', 'msg', 'args', 'levelname', 'levelno', 'pathname', 'filename', 'module', 'lineno', 'funcName', 'created', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'stack_info'],
        },
    },
    'handlers': {
        'console': {
-           'level': 'DEBUG',
+           'level': 'INFO', 
            'class': 'logging.StreamHandler',
            'stream': sys.stdout,
-           'formatter': 'verbose'
+           'formatter': 'json'
        },
    },
    'loggers': {
        '': {
            'handlers': ['console'],
-           'level': 'DEBUG',
+           'level': 'INFO',  
            'propagate': True,
        },
    },

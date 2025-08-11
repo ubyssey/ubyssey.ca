@@ -57,14 +57,14 @@
     <main class="c-article">
         {% block banner %}
             <div class="u-container u-container--content u-container--padded">
-                {% if self.header_layout == 'right-image' %}
+                {% if self.header.0.value.layout == 'right-image' %}
                     <div class="header-container">
                         <div class="left">
                             <div class="left-container">
                                 <div class="section-tag black">{{self.get_parent.title}}</div>
                                 <h1 class="c-article__title">{{ self.title|safe }}</h1>
-                                {% if self.fw_above_cut_lede %}
-                                    <p class="above_cut_lede">{{ self.fw_above_cut_lede }}</p>
+                                {% if self.header.0.value.above_cut_lede %}
+                                    <p class="above_cut_lede">{{ self.header.0.value.above_cut_lede }}</p>
                                 {% endif %}
                                 <div class="c-article__info">
                                     {% comment %}
@@ -110,11 +110,11 @@
                     {% endif %}
                     {% endwith %}
                     {% endif %}
-                {% elif self.header_layout == 'top-image' %}
+                {% elif self.header.0.value.layout == 'top-image' %}
                     <div class="section-tag black">{{self.get_parent.title}}</div>
                     <h1 class="c-article__title">{{ self.title|safe }}</h1>
-                    {% if self.fw_above_cut_lede %}
-                        <p class="above_cut_lede">{{ self.fw_above_cut_lede }}</p>
+                    {% if self.header.0.value.above_cut_lede %}
+                        <p class="above_cut_lede">{{ self.header.0.value.above_cut_lede }}</p>
                     {% endif %}
                     <div class="c-article__info">
                         {% comment %}
@@ -129,7 +129,33 @@
                     </div>
                     {% endcomment %}
                     <div class="full-width featured-media">
-                    {% include 'article/objects/fw_article_featured_media.html' %}
+
+                        {% with self.featured_media.first as featured_image_object %}
+                            {% srcset_image featured_image_object.image width-{340,750,1500} format-webp webpquality-70 as featured_image_renditions %}     
+                            <img
+                                class="article-attachment"
+                                data-id="{{ featured_image_object.image.id }}"
+                                data-caption="{{ featured_image_object.caption }}"
+                                data-url="{{ featured_image_renditions.renditions.0.url }}"
+                                data-credit="{{ featured_image_object.credit }}"
+                                src="{{ featured_image_renditions.renditions.0.url }}"
+                                width="{{ featured_image_renditions.renditions.0.width }}"
+                                height="{{ featured_image_renditions.renditions.0.height }}"
+                                srcset="{{ featured_image_renditions.renditions.0.url }} 340w, {{ featured_image_renditions.renditions.1.url }} 750w, {{ featured_image_renditions.renditions.2.url }} 1500w"
+                                sizes="(max-width: 600px) 340px, (max-width: 1200px) 750px, 1500px"
+                                alt="{{ featured_image_object.alt_text }}"
+                            />
+                            {% if featured_image_object.caption or featured_image_object.credit %}
+                                <div class="caption">
+                                    {% if featured_image_object.caption %}
+                                        {{ featured_image_object.caption }}
+                                    {% endif %}
+                                    {% if featured_image_object.credit %}
+                                        <span class="credit">{{ featured_image_object.credit }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
                     </div>
                 </div>
             {% endif %}

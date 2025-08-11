@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'infinitefeed',
     'events',
     'tests_ubyssey',
+    'publishing_analytics',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
@@ -117,6 +118,9 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
+    'health_check',                    
+    'health_check.db',                 
+    'health_check.cache',              
 ]
 
 if DEBUG:

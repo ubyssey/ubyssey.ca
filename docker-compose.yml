@@ -12,22 +12,40 @@ services:
        - SQL_PASSWORD
     volumes:
       - ./mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h localhost -u root -p$$(cat /run/secrets/SQL_PASSWORD) --execute='SHOW DATABASES;' >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   cache:
     image: memcached:1.6.10
     ports:
       - "11211:11211"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "timeout 5 bash -c '</dev/tcp/localhost/11211'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   django:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
-
+    
     # The number of gunicorn workers below is derived from the number of CPU cores
     # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
+    #
+    # Total workers = (2 x 8) + 1 = 17
+    #
+    # We then further divide by the number of container replicas (4):
+    #
+    # Workers per replica = floor(17 / 4) = 4
     #
     # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
       bash -c "python manage.py migrate
-      && gunicorn ubyssey.wsgi:application --workers=17 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
+      && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
@@ -39,6 +57,7 @@ services:
       GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
       STATIC_URL: https://storage.googleapis.com/ubyssey/static/
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
+      EMAIL_HOST_PASSWORD_FILE: /run/secrets/EMAIL_HOST_PASSWORD
 
     secrets:
       - DJANGO_SECRET_KEY
@@ -46,23 +65,78 @@ services:
       - GS_ACCESS_KEY_ID
       - GS_SECRET_ACCESS_KEY
       - GOOGLE_APPLICATION_CREDENTIALS
+      - EMAIL_HOST_PASSWORD
 
     expose:
       - 8000
 
+    # Send container logs to Google Cloud Logging
+    # Ref: https://docs.docker.com/engine/logging/drivers/gcplogs/
     logging:
       driver: gcplogs
-    
+
     deploy:
+      # Deploy 4 replicas of the Django app. This makes us more resilient to errors
+      # that might cause a single container to crash momentarily.
+      #
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#replicas
+      mode: replicated
+      replicas: 4
+
+      # Restart containers on failure up to a maximum of 10 times.
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#restart_policy
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
+        max_attempts: 10
         window: 120s
+
+      # Update 2 containers at a time. This prevents downtime when releasing an update.
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#update_config
+      update_config:
+        parallelism: 2
+        delay: 10s
+        order: stop-first
+
+      # TODO add a health check using curl http://localhost:8000/health/ endpoint
 
     depends_on:
       - mysql
       - cache
+
+  db:
+    image: ankane/pgvector:latest
+    restart: always
+    environment:
+      POSTGRES_DB: thoth
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+    ports:
+      - 5432:5432
+    volumes:
+      - thoth_data:/var/lib/postgresql/data/
+
+  thothbackend:
+    image: ghcr.io/ubyssey/thoth:latest
+
+    command:
+      - bash
+      - -c
+      - "python manage.py migrate && python manage.py crontab add && service cron start && python manage.py runserver 0.0.0.0:8000"
+
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+
+  thothfrontend:
+    image: ghcr.io/ubyssey/thoth-frontend:latest
+
+    environment:
+      ORIGIN: https://thoth.ubyssey.ca
+    depends_on:
+      - thothbackend
 
   nginx:
     image: nginx:1.27
@@ -78,7 +152,9 @@ services:
       driver: gcplogs
     depends_on:
       - django
-  
+      - thothbackend
+      - thothfrontend
+
   certbot:
     image: certbot/certbot:v4.0.0
     volumes:
@@ -87,6 +163,9 @@ services:
       - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
     # Attempt to renew TLS certificate every 12 hours
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  thoth_data:
 
 secrets:
   DJANGO_SECRET_KEY:
@@ -99,3 +178,8 @@ secrets:
     external: true
   GOOGLE_APPLICATION_CREDENTIALS:
     file: ./service-account.json
+  EMAIL_HOST_PASSWORD:
+    external: true
+
+
+

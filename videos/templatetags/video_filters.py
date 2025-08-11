@@ -19,9 +19,7 @@ def youtube_embed_id(url):
     youtube_regex = regex.compile(YOUTUBE_REGEX_STRING)
     match = youtube_regex.match(url)
     if not match:
-        raise template.TemplateSyntaxError(
-            "youtube_embed_id tag requires valid youtube URL as argument. url = %s" %url
-        )
+        return False
     return match.group('id')            
 
 @register.filter(name='youtube_embed_url')
@@ -29,8 +27,9 @@ def youtube_embed_url(url):
     youtube_regex = regex.compile(YOUTUBE_REGEX_STRING)
     match = youtube_regex.match(url)
     if not match:
-        raise template.TemplateSyntaxError(
-            "youtube_embed_url tag requires valid youtube URL as argument. url = %s" %url
-        )
+        #raise template.TemplateSyntaxError(
+        #    "youtube_embed_url tag requires valid youtube URL as argument. url = %s" %url
+        #)
+        return False
     embed_url = 'https://www.youtube.com/embed/%s' %(match.group('id'))
     return embed_url

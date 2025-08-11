@@ -1,0 +1,7 @@
+{% load wagtailcore_tags %}
+
+<div class="o-card-container o-card-container--{{self.container_type}}">
+    {% for card in self.cards %}
+        {% include_block card %}
+    {% endfor %}
+</div>

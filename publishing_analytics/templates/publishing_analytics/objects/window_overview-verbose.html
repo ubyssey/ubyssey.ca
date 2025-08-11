@@ -1,0 +1,23 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="o-analytics_month--flex">
+    {% with authorCount=window.authors|length|stringformat:"d"|add:" authors" articleCount=window.articles|length|stringformat:"d"|add:" articles" %}
+    {% include 'publishing_analytics/objects/author_list.html' with authors=window.authors list_articles="true" text=authorCount|add:", "|add:articleCount %}
+    {% endwith %}
+
+    <div class="o-analytics_verbose--window">
+
+        {% if window.link %}
+        <h2><a href="{{window.link}}">{{window.title}}</a></h2>
+        {% else %}
+        <h2>{{window.title}}</h2>
+        {% endif %}
+
+        <div class="o-analytics_verbose--window--flex">
+        {% for article in window.articles %}
+            {% include "article/objects/overview_article.html" %}
+        {% endfor %}
+        </div>
+    </div>
+</div>

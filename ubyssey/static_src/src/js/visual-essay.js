@@ -1,4 +1,4 @@
-var views = ["vs-side-by-side","vs-over-image"];
+var views = ["vs-side-by-side","vs-over-image", "vs-over-image--left"];
 var leftClasses = ["o-visual-essay__left-next","o-visual-essay__left-show","o-visual-essay__left-prev","o-visual-essay__left-first"];
 var pastViewCount = 0;
 var pastCount = 0;
@@ -42,7 +42,10 @@ document.body.onscroll = function () {
             if (pastViewCount != viewCount) {
                 pastViewCount = viewCount;
                 removeClasses(containers[i], views);
-                containers[i].classList.add(containers[i].getElementsByClassName("switch_view")[viewCount-1].getAttribute("view"));
+                const viewClasses = containers[i].getElementsByClassName("switch_view")[viewCount-1].getAttribute("view").split(" ");
+                for (const viewClass of viewClasses) {
+                    containers[i].classList.add(viewClass);
+                }
             }
             
             if (pastCount != count) {
@@ -71,3 +74,24 @@ function removeClasses(elem, classes) {
         elem.classList.remove(classes[i]);
     }
 }
+
+
+
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+let mm = gsap.matchMedia();
+mm.add("(min-width: 1px), (min-height: 1px)", () => {
+    var covers = gsap.utils.toArray('.o-visual-essay__right-div');
+    covers.forEach((cover) => {
+        console.log(cover);
+        gsap.to(cover, {
+            scrollTrigger: {trigger: cover, start: "-=100 bottom", end: "+=200 start", scrub: true,  
+                onToggle: self => {self.trigger.classList.toggle('in-view');}
+            },
+            immediateRender: false,
+        });
+    })
+});

@@ -3,7 +3,7 @@
 {% load wagtailimages_tags %}
 {% load video_filters %}
 
-{% with self.featured_media.first as featured_image_object %}
+{% with featured_media as featured_image_object %}
 
 <div class="fw-banner banner-image" >
 
@@ -13,27 +13,23 @@
     <div class="headline-container">
         <header class="u-container u-container--padded">
             
-            {% if self.title_tag_str %}
-                <p class="title-tag">{{self.title_tag_str}}//</p>
+            {% if article.title_tag_str %}
+                <p class="title-tag">{{article.title_tag_str}}//</p>
             {% endif %}
             
             <h1 class="headline">
-                {% if self.fw_alternate_title %}
-                    {{self.fw_alternate_title|safe}}
-                {% else %}
-                    {{ self.title|safe }}
-                {% endif %}
+                {{ title|safe }}
             </h1>
 
             {% if self.subtitle %}
                 <p class="subtitle">{{self.subtitle|safe}}</p>    
             {% endif %}
 
-            {% if self.fw_above_cut_lede %}
-                <p class="fw-description">{{ self.fw_above_cut_lede }}</p>
+            {% if self.above_cut_lede %}
+                <div class="o-article--header--above_cut_lede">{{ self.above_cut_lede|safe }}</div>
             {% endif %}
             <div class="article-byline c-article__byline-center">
-                <span class="author">By {{ self.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ self.published_at|date:'N j, Y' }}</span>
+                <span class="author">By {{ article.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ article.published_at|date:'N j, Y' }}</span>
             </div>
         </header>
         {% if featured_image_object.caption or featured_image_object.credit %}

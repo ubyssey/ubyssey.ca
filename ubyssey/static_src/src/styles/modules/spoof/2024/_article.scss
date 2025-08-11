@@ -147,6 +147,9 @@
   img {
     width: 100%;
     height: auto;
+    max-height: 100vh;
+    object-fit: cover;
+    object-position: center;
     @media(variables.$bp-smaller-than-desktop) {
       width: 100%;
     }

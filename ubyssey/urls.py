@@ -24,6 +24,8 @@ from infinitefeed.views import infinitefeed
 from newsletter.urls import urlpatterns as newsletter_urls
 from django.conf.urls import handler500
 
+from publishing_analytics import views as publishing_analytics_views 
+
 from rest_framework import routers
 
 handler500 = 'ubyssey.views.main.custom_500'
@@ -53,6 +55,12 @@ if settings.DEBUG:
 urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
+
+    # For politely telling annoying guys to leave us alone
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
 
     # Special design articles
     re_path(r'^features/how-substance-use-impacts-queer-students', TemplateView.as_view(template_name='article/queer-substance-abuse.html')),
@@ -86,7 +94,14 @@ urlpatterns += [
     re_path(r'^tag/(?P<slug>[-\w]+)/$', redirect_tag_to_topic),
     re_path(r'^tag/(?P<slug>[-\w]+)/rss/$', redirect_tag_feed_to_topic),  
     re_path(r'^topic/(?P<slug>[-\w]+)/$', tag.tag, name='tag-page'),  
-    re_path(r'^topic/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),    
+    re_path(r'^topic/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),
+
+    # Publish analytics
+    re_path(r'^overview/$', publishing_analytics_views.overview),
+    re_path(r'^overview/(?P<year>[0-9]{4})/$', publishing_analytics_views.year_overview),
+    re_path(r'^overview/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', publishing_analytics_views.month_overview),
+    re_path(r'^overview/(?P<section>[-\w]+)/$', publishing_analytics_views.section_overview),
+    re_path(r'^overview/(?P<section>[-\w]+)/(?P<year0>[0-9]{4})-(?P<year1>[0-9]{4})/$', publishing_analytics_views.section_year_overview),
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
@@ -104,8 +119,8 @@ urlpatterns += [
     re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
     re_path(r'^blog/', redirect_blog_to_humour),
     re_path(r'^sitemap.xml$', sitemap),
+    re_path(r'^health/', include('health_check.urls')),
     path('', include(wagtail_urls)),
-
     # # standard Ubyssey site
     # re_path(r'^$', HomePageView.as_view(), name='home'),
     # re_path(r'^search/$', ArchiveView.as_view(), name='search'), #to preserve URL but get rid of tiny redirect view
