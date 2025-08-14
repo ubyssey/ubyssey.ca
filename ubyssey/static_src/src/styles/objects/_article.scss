@@ -5,6 +5,9 @@
   // Structure
   width: 100%;
   height: auto;
+  
+  font-size: 0.5em;
+  line-height: 0.5em;
 }
 
 .o-article__headline {
@@ -458,7 +461,6 @@ div.article-content h2.header {
       }
       .o-article__section, .o-article__byline {
         font-size: 0.85em;
-        text-transform: uppercase;
         color: var(--header_color_supporting);
       }
       .o-article__byline {

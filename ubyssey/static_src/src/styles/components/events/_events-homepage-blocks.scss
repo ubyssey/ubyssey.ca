@@ -8,6 +8,7 @@
     }
     h3 {
         font-size: 1.17em;
+        font-weight: 500;
     }
     h2, h3 {
         font-family: fonts.$font-home-headline;
@@ -34,6 +35,27 @@
         margin-bottom: 0;
         list-style: none;
     }
+    .o-events--event-time {
+        margin-right: 0.5em;
+        padding: 0.25em 0.5em;
+        border-left: 2px solid var(--event-category-color);
+        
+        width: 6em;
+        flex-shrink: 0;
+        
+        background: color-mix(in oklab, var(--event-category-color) 25%, transparent);
+        
+        font-size: .9em;
+        text-align: left;
+        color: var(--three-bar-logo-color);
+    }
+    .o-events--event-title {
+        border-bottom: 1px dashed #cfcece;
+        
+        flex-grow: 1;
+
+        font-variation-settings: "wght" 500;
+    }
     .see_more {
         margin-block: 0 2em;
         font-size: 0.8em;
@@ -43,14 +65,11 @@
 
 li.o-event {
     margin-bottom: 0.5em;
-    padding-left: 0.5em;
-    border-left: 3px solid;
-    display: -webkit-box;
+    display: flex;
     a {
         display: -webkit-box;
         height: fit-content;
         overflow: clip;
-        font-variation-settings: "wght" 400;
         text-overflow: ellipsis;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
@@ -63,16 +82,16 @@ li.o-event {
     }
 
     &.community {
-        border-color: rgb(150,200,250);
+        --event-category-color: rgb(150,200,250);
     }
     &.entertainment {
-        border-color: rgb(200,250,199)
+        --event-category-color: rgb(200,250,199)
     }
     &.sports {
-        border-color: rgb(250,200,150)
+        --event-category-color: rgb(250,200,150)
     }
     &.seminar {
-        border-color: rgb(199,150,200);
+        --event-category-color: rgb(199,150,200);
     }
 }
 

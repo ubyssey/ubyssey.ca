@@ -6,6 +6,7 @@ from django.db import models
 from django.utils import timezone
 
 from ads.models import AdSlot
+from wagtail import blocks
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, InlinePanel
 from wagtail.models import Page, Orderable
 from wagtail.fields import StreamField
@@ -88,6 +89,7 @@ class HomePage(Page):
     curated_stream = StreamField(
         [
             ("curated_group", homeblocks.CuratedGroup()),
+            ("curated_group_cards", homeblocks.CuratedGroupCards()),
         ],
         null=True,
         blank=True,
@@ -127,6 +129,8 @@ class HomePage(Page):
         ("siderbar_events_block", eventblocks.SidebarEventsBlock()),
         ("sidebar_recent_stories", homeblocks.RecentStoriesByDay()),
         ("sidebar_recent_stories__clustered", homeblocks.RecentStoriesByTopic()),
+        ("sidebar_newsletter_signup", homeblocks.SidebarNewsletterSignup()),
+        ("sidebar_raw_html", blocks.RawHTMLBlock()),
     ],
     null=True,
     blank=True,

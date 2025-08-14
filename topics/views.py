@@ -21,11 +21,6 @@ def cluster_articles_by_topic(considered_articles, items=12, clusters=None, max_
     # Iterate through articles and select a topic to represent it
     used_topics = []
     for article_topic in article_topics:
-
-        if clusters != None:
-            if len(used_topics) >= clusters:
-                break
-
         article = article_topic["article"]
 
         # Use the primary topic if multiple recent articles are tagged with it
@@ -59,33 +54,40 @@ def cluster_articles_by_topic(considered_articles, items=12, clusters=None, max_
         for topic in possible_topics:
             if not topic["topic"] in used_topics:
                 used_topics.append(topic["topic"])
-                continue
+                break
 
     # Iterate through the collected topics in the order they were added at.
     # We gather the articles under these topics, avoiding articles we have already gathered. 
     seen_articles = []
     cluster = []
+
+    articles_by_topic = {}
     for topic in used_topics:
-        articles_in_topic = list(filter(lambda considered_article: topic in considered_article["topics"], article_topics))
+        articles_by_topic[topic.name] = list(filter(lambda considered_article: topic in considered_article["topics"], article_topics))
+        articles_by_topic[topic.name] = list(map(lambda a: a["article"], articles_by_topic[topic.name]))
+
+    while len(used_topics) > 0:
+        topic = used_topics[0]
+        articles_in_topic = articles_by_topic[topic.name]
         
         cluster_articles = []
-        for article_topic in articles_in_topic:
-            article = article_topic["article"]
-            if not article in seen_articles:
-                cluster_articles.append(article)
-                seen_articles.append(article)
-
-                if len(cluster_articles) >= max_in_cluster:
-                    break
-                if items != None:
-                    if len(seen_articles) >= items:
-                        break
+        for article in articles_in_topic:
+            cluster_articles.append(article)
+            seen_articles.append(article)
+            if len(seen_articles) >= items or len(cluster_articles) >= max_in_cluster:
+                break
 
         if len(cluster_articles) > 0:
             cluster.append({"topic": topic, "articles": cluster_articles})
-        if items != None:
-            if len(seen_articles) >= items:
-                break
+        if len(seen_articles) >= items:
+            break
+
+        used_topics.pop(0)
+        for topic in used_topics:
+            articles_by_topic[topic.name] = list(filter(lambda article: not article in seen_articles, articles_by_topic[topic.name]))
+        
+        used_topics = list(filter(lambda t: len(articles_by_topic[t.name]) > 0, used_topics))
+        used_topics = sorted(used_topics, key=lambda t: articles_by_topic[t.name][0].published_at, reverse=True)
 
     #for clust in cluster:
     #    print(clust["topic"].name)

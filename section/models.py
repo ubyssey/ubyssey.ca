@@ -346,6 +346,11 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         then iterated through and recent articles with these topics are joined in a cluster
         '''
 
+        #considered_articles = ArticlePage.objects.live().child_of(self).order_by('-first_published_at')[:2*items]
+
+        #return cluster_articles_by_topic(considered_articles, items=items, max_in_cluster=max_in_cluster)
+
+
         # Get recent articles to cluster
         considered_articles = ArticlePage.objects.live().child_of(self).order_by('-first_published_at')[:2*items]
         

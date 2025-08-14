@@ -116,6 +116,11 @@ class CuratedGroup(blocks.StructBlock):
     class Meta:
         template = "home/objects/curated_group.html"
 
+class CuratedGroupCards(CuratedGroup):
+
+    class Meta:
+        template = "home/objects/curated_group--cards.html"
+
 
 # Sidebar 
 
@@ -179,4 +184,9 @@ class RecentStoriesByTopic(blocks.StructBlock):
     class Meta:
         template = "home/stream_blocks/recent_stories--clustered.html"
             
+class SidebarNewsletterSignup(blocks.StructBlock):
+    text = blocks.RichTextBlock()
+    form_placeholder = blocks.CharBlock()
 
+    class Meta:
+        template = "home/stream_blocks/newsletter_signup.html"

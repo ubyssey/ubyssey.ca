@@ -13,11 +13,10 @@
 
 	<div class="o-article__left">
 		{% include "article/objects/headline.html" %}
+		<p>{{article.lede|safe}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>
 	</div>
 
-	<div class="o-article__right">
-		<p>{{article.lede|safe}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>
-		
+	<div class="o-article__right">		
 		{% if attachment %}
 		<div class="attachment">
 			{{attachment|safe}}

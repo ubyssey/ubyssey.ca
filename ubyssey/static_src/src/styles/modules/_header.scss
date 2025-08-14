@@ -42,7 +42,7 @@ $three-bar-logo-color: var(--three-bar-logo-color);
 }
 
 // Main header
-header.main, header.topbar {
+header.main, header.topbar, header.c-home--desktop-header {
   display: none;
   @media(variables.$bp-larger-than-desktop){
     display: block;
@@ -52,7 +52,7 @@ header.main, header.topbar {
 
 header.main{
   .branding.row {
-    margin-top: 2em;
+    margin-block: 2em;
     font-size: 13px;
 
     .middle {
@@ -67,8 +67,8 @@ header.main{
         left: 1em;
       }
       svg.top-logo {
-        margin: 2em 0 1em 3em;
-        height: 3em;
+        margin: 1.5em 0 1.5em 11em;
+        height: 4em;
         width: auto;
       }
     }
@@ -113,7 +113,7 @@ header.main{
       text-align: right;
   
       .rss-icon {
-        margin-right: 1.5em;
+        margin-inline: 1.5em;
       }
 
       .bluesky-icon svg {
@@ -708,6 +708,185 @@ nav.branding-nav {
     }
 }
 
+.c-home--desktop-header {
+  --header-background-color: #{variables.$color-ubyssey-blue};
+  --header-text-color: white;
+  --header-border-color: white;
+
+  padding: 1em;
+  border-block: 2px solid var(--light-grey);
+
+  background: var(--header-background-color);
+
+  color: var(--header-text-color);
+
+  a:hover {
+    color: var(--header-text-color);
+    text-decoration: underline;
+  }
+
+  .dark-mode-switcher {
+    margin: 0 0 auto 0;
+    svg {
+      margin-bottom: 1em;
+      height: 1.25em;
+      fill: var(--header-text-color);
+      color: var(--header-text-color);
+    }
+  }
+
+  .branding.row {
+    margin-top: 2em;
+
+    .middle {
+      position: relative;
+      width: 100%;
+      max-width: 650px;
+      img {
+        position: absolute;
+        margin-inline: 0em;
+        height: calc(100%);
+        bottom: 0;
+        left: 1em;
+      }
+      svg.top-logo {
+        margin: 1em 0 1em 10em;
+        height: 3.5em;
+        width: auto;
+
+        fill: var(--header-text-color);
+      }
+    }
+    .right {
+      margin-left: auto;
+      margin-block: auto;
+      display: flex;
+      height: fit-content;
+      ul {
+        list-style: none;
+        display: flex;
+        gap: 1em;
+      }
+    }
+  }
+
+  .since-line {
+    margin: auto;
+    max-width: 300px;
+    font-weight: 600;
+    font-style: italic;
+    font-variation-settings: "wght" 600;
+  }
+
+  .date-line {
+    font-size: 0.9em;
+    b {
+      font-variation-settings: "wght" 600;
+      margin-left: 0.25em;
+    }
+  }
+
+  .row {
+    margin-top: 1em;
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    //overflow: hidden;
+
+    > * {
+      flex-shrink: 1;
+      padding-left: 0;
+      padding-right: 0;
+      margin-top: 0;
+      width: auto;
+      max-width: none;
+    }
+  
+    &.main {
+      padding-top: 1em;
+      border-top: 1px solid var(--header-border-color);
+    }
+
+    .middle {
+      text-align: center;
+    }
+    .right {
+      text-align: right;
+  
+      .rss-icon {
+        margin-inline: 1.5em;
+      }
+
+      a {
+          position: relative;
+          margin-right: 0.75em;
+          &:last-child {
+              margin-right: 0;
+          }
+      }
+  
+    }
+  
+    h1.section-title {
+      font-family: fonts.$font-default;
+      font-size: 34px;
+      margin: 0;
+      line-height: 60px;
+    }
+    img.top-logo, svg.top-logo {
+      width: 100%;
+      vertical-align: middle;
+    }
+  }
+
+  .sections {
+    padding-inline: 1em;
+    display: flex;
+    ul {
+      display: flex;
+      flex-direction: row;
+    }
+    li, div.dropdown {
+      padding-inline: 1em;
+      margin: 0;
+      
+      font-family: fonts.$font-default;
+      font-weight: fonts.$font-weight-semi-bold;
+      color: var(--header-text-color);
+    }
+  }
+
+  .dropdown:focus-within, .dropdown:hover {
+    text-decoration: underline;
+  }
+  .more-dropdown {
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .more-list {
+    background-color: var(--header-background-color);
+    padding: 2px;
+    border: 2px solid;
+    border-top: none;
+    left: -2px;
+    text-decoration: underline;
+    z-index: 100;
+    font-size: 15px;
+
+    ul {
+      padding: 0;
+      display: block;
+      li {
+        margin: 1em 0;
+        display: block;
+        border: none;
+        text-align: left;
+        line-height: 1em;
+      }
+    }
+  }
+
+}
 
 [color-css-theme="light"] {
 

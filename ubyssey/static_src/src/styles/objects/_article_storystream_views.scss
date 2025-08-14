@@ -15,6 +15,15 @@
         font-variation-settings: 'wght' 400;
         font-size: 0.9em;
     }
+
+    .read-more {
+        margin-left: 0.25em;
+        font-weight: 600;
+        font-style: normal;
+        text-decoration: none;
+        white-space: nowrap;
+        color: variables.$color-ubyssey-blue;
+    }
 }
 
 // Feature
@@ -174,14 +183,6 @@
         }
         li {
             margin-bottom: 1em;
-        }
-        .read-more {
-            margin-left: 0.25em;
-            font-weight: 600;
-            font-style: normal;
-            text-decoration: none;
-            white-space: nowrap;
-            color: variables.$color-ubyssey-blue;
         }
         .attachment {
             margin-block: 0.75rem;
