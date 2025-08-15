@@ -506,6 +506,7 @@ div.article-content blockquote.pull-quote {
   &.has-image {
     max-width: 1000px;
     width: fit-content;
+    text-align: left;
     
     p.meta {
       .playAudioQuote {
