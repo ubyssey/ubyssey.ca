@@ -12,6 +12,9 @@
         <div class="pull-quote-images">
         {% for image in self.images %}
             {% image image.image format-webp loading='lazy' alt=image.alt_text width-600 %}
+            {% if image.credit %}
+                <div class="pull-quote-images--credit">{{image.credit}}</div>
+            {% endif %}
         {% endfor %}
         </div>
     {% endif %}

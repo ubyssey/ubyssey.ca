@@ -509,9 +509,12 @@ div.article-content blockquote.pull-quote {
     text-align: left;
     
     p.meta {
+      margin-block: 1em;
+      text-transform: none;
+
       .playAudioQuote {
         font-size: 1.5em;
-        margin-top: 2em;
+        margin-top: 1em;
       }
       .volume {
         width: 1em;
@@ -520,6 +523,7 @@ div.article-content blockquote.pull-quote {
       }
       .source {
         margin-left: 2.5em;
+        max-width: 65%;
       }
     }
   }
@@ -533,6 +537,15 @@ div.article-content blockquote.pull-quote {
     justify-content: center;
     img {
       height: auto;
+    }
+    .pull-quote-images--credit {
+      margin-block: 0.5em;
+      margin-left: auto;
+      max-width: 75%;
+
+      text-align: right;
+      font-style: italic;
+      font-size: 0.8em;
     }
   }
   .pull-quote-quote {
@@ -592,8 +605,13 @@ div.article-content blockquote.pull-quote {
 
   @media(variables.$bp-smaller-than-phablet) {
     flex-direction: column;
+    gap: 0.5em;
+
     .pull-quote-images {
       max-width: none;
+      .pull-quote-images--credit {
+        margin-right: 1em;
+      }
     }
     .pull-quote-quote {
       padding-inline: 1em;
