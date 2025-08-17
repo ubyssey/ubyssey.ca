@@ -116,6 +116,9 @@ jobs:
           SSH_USER: deploy-production
           SSH_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY_PRODUCTION }}
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_PRODUCTION }}
+      
+      - name: Create ubyssey.ca directory
+        run: ssh production "mkdir -p /opt/ubyssey.ca"
 
       - name: Set tag in docker-compose.yml
         run: sed -i "s/\${TAG}/${{ github.ref_name }}/g" docker-compose.yml
@@ -147,6 +150,9 @@ jobs:
 
       - name: Sync secrets from Google Cloud Platform
         run: cat sync-secrets.sh | ssh production
+      
+      - name: Create shared network
+        run: ssh production "docker network create --driver=overlay proxy-shared || true"
 
       - name: Restart services
         run: ssh production docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
