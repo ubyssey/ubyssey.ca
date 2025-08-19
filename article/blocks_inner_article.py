@@ -404,7 +404,7 @@ class PdfBlock(blocks.StructBlock):
         icon = "doc-full"
 
 class CardBlock(blocks.StructBlock):
-    text = blocks.RichTextBlock()
+    text = blocks.RichTextBlock(required=False)
 
     class Meta:
         template = 'article/stream_blocks/cards/text-card.html'

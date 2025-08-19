@@ -4,5 +4,7 @@
 {% image self.image original as card_image %}
 
 <div class="o-card o-card--image" style="background-image: url('{{card_image.url}}')">
+    {% if self.text %}
     {{self.text|safe}}
+    {% endif %}
 </div>
