@@ -6,5 +6,7 @@
         Your browser does not support the video tag.
     </video> 
 
+    {% if self.text %}
     {{self.text|safe}}
+    {% endif %}
 </div>

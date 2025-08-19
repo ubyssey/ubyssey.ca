@@ -73,6 +73,7 @@
 
                     <!-- Content unique to the article starts here -->
 
+                    {% block article-content %}
                     {% if not self.is_explicit %}
                         {% filter inject_ads:is_mobile %}                            
                         <!-- Article text -->
@@ -87,6 +88,7 @@
                         {% endfor %}
                     {% endif %}
                     <!-- Content unique to the article ends here -->
+                    {% endblock %}
 
                     {% if self.disclaimer %}
                         <div class="disclaimer">{{self.disclaimer|safe}}</div>
