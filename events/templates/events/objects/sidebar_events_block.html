@@ -3,8 +3,8 @@
     {% if ongoing %}
     <ul>
     {% for event in ongoing %}
-    <li class="{{event.category}} o-event">
-        <a class="featured_event" href="/events/?event={{event.hash}}&hidden=seminar" title="{{event.title}}">
+    <li class="{{event.category}} o-event o-events--event-colour">
+        <a class="featured_event" href="/events/?event={{event.hash}}&category={{event.category}}" title="{{event.title}}">
         <p class="featured_event__time">{{event.display_time}}{% if event.location %}{% endif %}</p>
         <p class="featured_event__title">{{event.title|safe}}</p>
         </a>
@@ -18,7 +18,7 @@
         <ul>
         {% for event in upcoming %}
             <li class="{{event.category}} o-event">
-                <span class="o-events--event-time">{{event.display_time}}</span>
+                <span class="o-events--event-time o-events--event-colour">{{event.display_time}}</span>
                 <span class="o-events--event-title">
                     <a href="/events/?event={{event.hash}}&category={{event.category}}" title="{{event.title}}">
                     {{event.title|safe}}

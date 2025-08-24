@@ -368,7 +368,6 @@ header.topbar {
     font-weight: fonts.$font-weight-semi-bold;
     font-size: fonts.font-size(13);
     margin-left: 20px;
-    text-transform: uppercase;
 
     ul {
       line-height: 48px;
@@ -743,14 +742,16 @@ nav.branding-nav {
       width: 100%;
       max-width: 650px;
       img {
-        position: absolute;
+        padding-top: 1em;
         margin-inline: 0em;
+        position: absolute;
         height: calc(100%);
         bottom: 0;
         left: 1em;
       }
       svg.top-logo {
-        margin: 1em 0 1em 10em;
+        //margin: 1em 0 1em 10em;
+        margin: 0.75em 0 1em 7em;
         height: 3.5em;
         width: auto;
 
@@ -762,9 +763,10 @@ nav.branding-nav {
       margin-block: auto;
       display: flex;
       height: fit-content;
-      ul {
-        list-style: none;
+      .right_header_menu ul {
+        padding-left: 0;
         display: flex;
+        list-style: none;
         gap: 1em;
       }
     }
@@ -772,14 +774,15 @@ nav.branding-nav {
 
   .since-line {
     margin: auto;
-    max-width: 300px;
+    max-width: 400px;
     font-weight: 600;
     font-style: italic;
     font-variation-settings: "wght" 600;
   }
 
   .date-line {
-    font-size: 0.9em;
+    padding-right: 01em;
+    border-right: 1px solid;
     b {
       font-variation-settings: "wght" 600;
       margin-left: 0.25em;
@@ -873,11 +876,12 @@ nav.branding-nav {
     z-index: 100;
     font-size: 15px;
 
-    ul {
+    .flat-menu > ul {
       padding: 0;
       display: block;
       li {
         margin: 1em 0;
+        padding-inline: 1em;
         display: block;
         border: none;
         text-align: left;

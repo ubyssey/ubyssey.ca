@@ -41,6 +41,7 @@ $text-color: var(--text_color);
   color: #808080;
   font-size: 1em;
   font-weight: 600;
+  font-variation-settings: "wght" 600;
   text-transform: uppercase;
 }
 
@@ -399,6 +400,7 @@ div.article-content, .o-visual-essay__right-div {
 
 p.author-string>a {
   font-weight: 600;
+  font-variation-settings: "wght" 600;
   color: variables.$color-ubyssey-blue;
 }
 
@@ -409,6 +411,7 @@ p.c-article__published-at {
 .article-content p.c-share {
   font-family: fonts.$font-default;
   font-weight: 600;
+  font-variation-settings: "wght" 600;
 
   .share-bsky svg {
     vertical-align: initial;

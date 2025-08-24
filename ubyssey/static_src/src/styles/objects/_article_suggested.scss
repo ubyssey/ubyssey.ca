@@ -49,6 +49,7 @@
 
     a {
         font-weight: 600;
+        font-variation-settings: "wght" 600;
         text-decoration: underline;
         text-decoration-thickness: 2px;
     }
@@ -78,6 +79,7 @@
         color: var(--header_color);
         font-family: fonts.$font-default;
         font-weight: 600;
+        font-variation-settings: "wght" 600;
         a {
             text-decoration: underline;
         }

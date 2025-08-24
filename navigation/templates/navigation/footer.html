@@ -12,15 +12,11 @@
                 <img class="logo desktop" src="{% static 'ubyssey/images/logos/ubyssey-logo-blue-dark.svg' %}" alt="The Ubyssey"/>
                 <img class="funding mobile" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada"/>
                 <p>
-                    <b><i>The Ubyssey</i></b> has been the definitive source of news on campus since 1918. Published by an independent non-profit society, written and 
-                    edited by students and funded by a combination 
-                    of student fees and advertising, we cover what 
-                    matters most to the UBC community.
+                    <b><i>The Ubyssey</i></b> is an independent, non-profit, public service student press covering the University of British Columbia community since 1918.
                 </p>
                 <img class="funding desktop" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada"/>
                 <div class="footer-address">
                     <div class="footer-address-location"><b>NEST 2208</b>, 6133 University Blvd.<br>Vancouver, BC Canada V6T 1Z1</div> 
-                    <div class="footer-address-endnote">Have feedback? Email <a href="mailto:feedback@ubyssey.ca" title="Email address for feedback">feedback@ubyssey.ca</a>.</div>
                 </div>
             </div>
             
@@ -30,16 +26,11 @@
                     {% main_menu show_multiple_levels=False apply_active_classes=False %}
                 </div>
                 <div class="footer-links-section">
-                    <h3>Stay in the loop</h3>
+                    <h3>Connect</h3>
                     <ul>
                         <li><a href="/rss" target="_blank" title="RSS feed">RSS feed</a></li>
                         <li><a href="/newsletter" target="_blank" title="Newsletter">Newsletter</a></li>
                         <li><a href="https://discord.gg/aTkCjyAvxh" target="_blank" title="Discord link">Join the Discord</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links-section">
-                    <h3>Social media</h3>
-                    <ul>
                         <li><a href="https://bsky.app/profile/ubyssey.ca" target="_blank" title="The Ubyssey on Bluesky">Bluesky</a></li>
                         <li><a href="https://www.youtube.com/@theubyssey1918" target="_blank" title="The Ubyssey on YouTube">YouTube</a></li>
                         <li><a href="https://www.tiktok.com/@theubyssey" target="_blank" title="The Ubyssey on Tiktok">TikTok</a></li>
@@ -47,15 +38,19 @@
                     </ul>
                 </div>
                 <div class="footer-links-section">
-                    <h3>Explore</h3>
-                    {% flat_menu 'second_footer_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+                    <h3>About</h3>
+                    {% flat_menu 'about_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+                </div>
+                <div class="footer-links-section">
+                    <h3>Contact</h3>
+                    {% flat_menu 'contact_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
                 </div>
             </div>
         </div>
         <div class="land-acknowledgement">
             <h3>Land Acknowledgement</h3>
             <p>
-                <i>The Ubyssey</i> acknowledges we operate on the traditional, ancestral and stolen territories of the Coast Salish peoples including the xʷməθkʷəy̓əm (Musqueam), Sḵwx̱wú7mesh Úxwumixw (Squamish) and səlilwətaɬ (Tsleil-Waututh) nations. <a href="https://ubyssey.ca/pages/about/">Read More</a>.
+                <i>The Ubyssey</i> acknowledges we operate on the traditional, ancestral and stolen territories of the Coast Salish peoples including the xʷməθkʷəy̓əm (Musqueam), Sḵwx̱wú7mesh Úxwumixw (Squamish) and səlilwətaɬ (Tsleil-Waututh) nations.
             </p>
         </div>
         <div class="copyright">&copy; {% now "Y" %} The Ubyssey</div>

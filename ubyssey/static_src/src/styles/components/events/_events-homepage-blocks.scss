@@ -7,6 +7,7 @@
         font-size: 1.25em;
     }
     h3 {
+        margin-top: 0;
         font-size: 1.17em;
         font-weight: 500;
     }
@@ -22,12 +23,11 @@
         } 
         .featured_event__time {
             margin-block: 0;
-            font-weight: 600;
-            font-variation-settings: "wght" 600;
-            text-decoration: underline;
+            font-size: 0.9em;
         }
         .featured_event__title {
             margin-block: 0;
+            font-variation-settings: "wght" 500;
         }
     }
     ul {
@@ -38,16 +38,18 @@
     .o-events--event-time {
         margin-right: 0.5em;
         padding: 0.25em 0.5em;
-        border-left: 2px solid var(--event-category-color);
         
         width: 6em;
         flex-shrink: 0;
-        
-        background: color-mix(in oklab, var(--event-category-color) 25%, transparent);
-        
+                
         font-size: .9em;
         text-align: left;
         color: var(--three-bar-logo-color);
+    }
+    .o-events--event-colour {
+        border-left: var(--event-category-color) 2px solid;
+        padding-left: 0.5em;
+        background: color-mix(in oklab, var(--event-category-color) 25%, transparent);
     }
     .o-events--event-title {
         border-bottom: 1px dashed #cfcece;
