@@ -78,7 +78,7 @@ services:
       - EMAIL_HOST_PASSWORD
 
     networks:
-      - proxy-shared  
+      - proxy-shared
       - ubyssey-internal
 
     expose:
