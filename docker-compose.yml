@@ -78,7 +78,7 @@ services:
       - EMAIL_HOST_PASSWORD
 
     networks:
-      - proxy-shared  
+      - proxy-shared
       - ubyssey-internal
 
     expose:
@@ -125,7 +125,7 @@ services:
       - ./certbot/www/:/var/www/certbot/:ro
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:ro
     networks:
-      - proxy-shared  
+      - proxy-shared
       - ubyssey-internal
     ports:
       - 80:80
