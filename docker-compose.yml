@@ -119,6 +119,9 @@ services:
 
   nginx:
     image: nginx:1.27
+    ports:
+      - 80:80
+      - 443:443
     restart: always
     volumes:
       - ./nginx/:/etc/nginx/:ro
