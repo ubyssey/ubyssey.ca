@@ -1181,7 +1181,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
                 "type": "topic",
             } for topic in listed_topics
-        ], key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True))
+        ], key= lambda topic: topic["considered_articles"][0].first_published_at if len(topic["considered_articles"]) > 0 else 0, reverse=True))
 
         # Choose articles from each of the topic and combine topics with shared articles
         article_count = 0

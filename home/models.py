@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from ads.models import AdSlot
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, InlinePanel
-from wagtail.models import Page, Orderable
+from wagtail.models import Site, Page, Orderable
 from wagtail.fields import StreamField
 from modelcluster.fields import ParentalKey
 from infinitefeed import blocks as infinitefeedblocks
@@ -187,7 +187,10 @@ class HomePage(Page):
         context["top_stories"] = top_stories
         
         exclude_from_hompage_stream = map(lambda article: article.page_ptr_id, top_stories + [cover_story])
-        homepage_stream_articles = ArticlePage.objects.live().public().exclude(page_ptr_id__in=exclude_from_hompage_stream).exclude(current_section = "pages").order_by("-explicit_published_at")[:10]
+
+        site =  Site.find_for_request(request)
+
+        homepage_stream_articles = ArticlePage.objects.live().public().descendant_of(site.root_page).exclude(page_ptr_id__in=exclude_from_hompage_stream).exclude(current_section = "pages").order_by("-explicit_published_at")[:10]
         homepage_stream_groups = []
         articles_per_sidebar_item = 5
         for i in range(max(math.ceil(len(homepage_stream_articles)/articles_per_sidebar_item), len(self.sidebar_stream))):

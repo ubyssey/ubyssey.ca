@@ -9,7 +9,7 @@ from article.models import ArticlePage
 from modelcluster.fields import ParentalKey
 
 from section.models import SectionPage
-from wagtail.models import Page, Orderable
+from wagtail.models import Site, Page, Orderable
 from wagtail.admin.panels import MultiFieldPanel, InlinePanel, HelpPanel, PageChooserPanel, FieldPanel
 from wagtail.search.query import Phrase, PlainText
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
@@ -231,7 +231,8 @@ class ArchivePage(RoutablePageMixin, Page):
         context["section_slug"] = "All"
         search_query = context["q"]
 
-        articles = ArticlePage.objects.live().public()
+        site =  Site.find_for_request(request)
+        articles = ArticlePage.objects.live().public().descendant_of(site.root_page)
  
         if context["order"]:
             articles = self.get_order_objects(context["order"], articles, video_section)     

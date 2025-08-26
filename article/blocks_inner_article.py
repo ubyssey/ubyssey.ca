@@ -122,9 +122,9 @@ class AudioBlock(blocks.StructBlock):
         context = super().get_context(value, parent_context)
         if value['audio'].url[-4:] == '.wav':
             context['self'].format = 'wav'
-        if value['audio'].url[-4:] == '.mp3':
+        elif value['audio'].url[-4:] == '.mp3':
             context['self'].format = 'mpeg'
-        if value['audio'].url[-4:] == '.ogg':
+        elif value['audio'].url[-4:] == '.ogg':
             context['self'].format = 'ogg'
         else:
             context['self'].format = 'mp4'
@@ -162,9 +162,9 @@ class PullQuoteBlock(blocks.StructBlock):
         if value['audio']:
             if value['audio'].url[-4:] == '.wav':
                 context['self'].format = 'wav'
-            if value['audio'].url[-4:] == '.mp3':
+            elif value['audio'].url[-4:] == '.mp3':
                 context['self'].format = 'mpeg'
-            if value['audio'].url[-4:] == '.ogg':
+            elif value['audio'].url[-4:] == '.ogg':
                 context['self'].format = 'ogg'
             else:
                 context['self'].format = 'mp4'
@@ -404,7 +404,7 @@ class PdfBlock(blocks.StructBlock):
         icon = "doc-full"
 
 class CardBlock(blocks.StructBlock):
-    text = blocks.RichTextBlock()
+    text = blocks.RichTextBlock(required=False)
 
     class Meta:
         template = 'article/stream_blocks/cards/text-card.html'

@@ -170,6 +170,9 @@ div.article-content {
         .o-visual-essay__right-container {
             padding-inline: 1em;
             padding-bottom: 100vh;
+            
+            position: relative;
+            z-index: 2000;
         }
 
         &.vs-over-image--left {

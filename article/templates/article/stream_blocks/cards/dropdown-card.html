@@ -1,4 +1,6 @@
 <details class="o-card o-card--dropdown">
     <summary>{{self.header}}</summary>
+    {% if self.text %}
     {{self.text|safe}}
+    {% endif %}
 </details>
