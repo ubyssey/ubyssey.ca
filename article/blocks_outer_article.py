@@ -1,6 +1,6 @@
 from wagtail import blocks
 from wagtail.blocks import field_block
-from wagtail.models import Page
+from wagtail.models import Site, Page
 from article.models import ArticlePage, ArticleTopic
 from django.utils.safestring import mark_safe
 from django.utils import timezone
@@ -116,8 +116,11 @@ class ArticleGathererBlock(AbstractArticleList):
             context['expectedSection'] = value['section'].slug
             context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
         else:
-            context['articles'] = ArticlePage.objects.live().public().exclude(current_section = "pages").order_by('-first_published_at')
-
+            if 'request' in parent_context:
+                site =  Site.find_for_request(parent_context['request'])
+                context['articles'] = ArticlePage.objects.live().public().descendant_of(site.root_page).exclude(current_section = "pages").order_by('-first_published_at')
+            else:
+                context['articles'] = ArticlePage.objects.live().public().exclude(current_section = "pages").order_by('-first_published_at')
         if value['category']:
             context['gather_title'] = value['category'].title
             context['description'] = value['category'].description
