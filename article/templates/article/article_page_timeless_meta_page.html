@@ -1,8 +1,14 @@
 {% extends 'article/article_page.html' %}
 {% load static %}
+{% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load ubyssey_ad_tags %}
 {% load menu_tags %}
+
+{% block darkmode %}
+	<meta name="color-scheme" content="light">
+	<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+{% endblock %}
 
 {% block header %}
     {% include "navigation/headers/branding-nav.html" %}
@@ -14,6 +20,14 @@
 
 {% block specific_article_class %}
     c-article--timeless-meta-page
+{% endblock %}
+
+{% block article-content %}
+    <!-- Article text -->
+    {% for block in self.content %}
+        {% include_block block with id=block.id %}
+    {% endfor %}
+<!-- Content unique to the article ends here -->
 {% endblock %}
 
 {% block post-content %}{% endblock%}

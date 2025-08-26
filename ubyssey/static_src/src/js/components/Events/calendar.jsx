@@ -1,4 +1,9 @@
-import React,  { useState, useEffect } from 'react'
+import {
+    useMemo,
+    useState,
+    useEffect,
+    useLayoutEffect
+} from 'react'
 import {
     BrowserRouter as Router,
     Link,
@@ -16,7 +21,7 @@ function useQuery() {
     const { search } = useLocation();
   
     // Ensure `search` is always defined (default to empty string if not present)
-    return React.useMemo(() => {
+    return useMemo(() => {
       try {
         return new URLSearchParams(search || "");
       } catch (error) {
@@ -61,7 +66,7 @@ function getDateString(date) {
 export function QueryEventsCalendar() {
     const h = 60 * 60 * 1000;
     const d = 24 * h;
-    const [events, setEvents] = React.useState([]);
+    const [events, setEvents] = useState([]);
     let fullUrl = window.location.href;
     const decodedUrl = decodeURIComponent(fullUrl);
     const queryString = decodedUrl.split('?')[1]; // Get the part after the "?"
@@ -69,8 +74,8 @@ export function QueryEventsCalendar() {
     const [numberOfWeeks, setNumberOfWeeks] = useState(calculateNumberOfWeeks());
     const [start, setStart] = useState(getInitialStartDate());
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [isMonthToggled, setIsMonthToggled] = React.useState(urlParams.has("month"));
-    const [isLoading, setIsLoading] = React.useState(true);
+    const [isMonthToggled, setIsMonthToggled] = useState(urlParams.has("month"));
+    const [isLoading, setIsLoading] = useState(true);
 
     function getDate(month, year) {
         let newStartDate = new Date(year, month - 1, 1); // Month is 0-indexed
@@ -110,10 +115,10 @@ export function QueryEventsCalendar() {
             const today = new Date();
 
             let start = new Date(today.getTime() - 10 * d);
+            start = changeTimezone(start, "America/Vancouver");
             start.setHours(0, 0, 0, 0);
             while (start.getDay() !== 1) {
                 start = new Date(start.getTime() + d + h);
-                start = changeTimezone(start, "America/Vancouver");
                 start.setHours(0, 0, 0, 0);
             }
             return start;
@@ -216,7 +221,7 @@ export function QueryEventsCalendar() {
         })
         .catch((err) => console.log(err));
     }
-    React.useEffect(()=>{
+    useEffect(()=>{
         getEvents();
         const theme = document.documentElement.getAttribute('color-css-theme');
         setIsDarkMode(theme === 'dark');
@@ -708,7 +713,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
     }
 
     var calendar = arrangeCalendar(displayedEvents);
-    React.useEffect(()=>{
+    useEffect(()=>{
         colourIn(legend);
     });
     
@@ -914,7 +919,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
 }
 
 function EventInfo({events}) {
-    const [widthMode, setWidthMode] = React.useState(window.innerWidth <= 1199);
+    const [widthMode, setWidthMode] = useState(window.innerWidth <= 1199);
     let [searchParams, setSearchParams] = useSearchParams();
     let query = useQuery();
     var event = false;
@@ -932,14 +937,14 @@ function EventInfo({events}) {
         }
     }
 
-    React.useLayoutEffect(()=> {
+    useLayoutEffect(()=> {
 
         window.addEventListener('resize', ()=> {
             setWidthMode(window.innerWidth <= 1199);
         });
     }, []);
 
-    React.useEffect(()=>{
+    useEffect(()=>{
         if(document.getElementById('event-dialog')) {
             document.getElementById('event-dialog').showModal();
             document.body.style.overflow = 'hidden';

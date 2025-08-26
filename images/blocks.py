@@ -60,6 +60,11 @@ class ReducedImageBlock(blocks.StructBlock):
         help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image."
     )
 
+    credit = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+
     class Meta:
         template = 'images/stream_blocks/image_block.html'
         icon = 'image'

@@ -1,7 +1,6 @@
-import React from 'react'
-import { QueryEventsCalendar, QueryEventsOption } from './components/Events/calendar.jsx';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import { QueryEventsCalendar } from './components/Events/calendar.jsx';
 
-ReactDOM.createRoot(document.getElementById("calendar")).render(
+createRoot(document.getElementById("calendar")).render(
     <QueryEventsCalendar />
 );
