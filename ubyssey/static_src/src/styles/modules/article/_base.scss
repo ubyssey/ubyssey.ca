@@ -469,6 +469,9 @@ p.c-article__published-at {
 
     &.left, &.right {
       text-align: center;
+      li {
+        text-align: left;
+      }
     }
     h2 {
       font-size: 1.2em;

@@ -435,6 +435,7 @@ class CardContainer(blocks.StructBlock):
     container_type = blocks.ChoiceBlock(choices=[
         ('promo-staggered', 'Staggered promo'),
         ('open-positions', 'Open positions'),
+        ('profiles', 'Profiles'),
         ('dropdown', 'Dropdown'),
     ])
 

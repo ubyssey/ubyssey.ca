@@ -43,10 +43,17 @@
           opacity: 1;
         }
 
+        ol li {
+          margin-block: 1em;
+        }
+
         .o-card-container--promo-staggered {
           margin-top: -13%;
           margin-bottom: 5em;
           max-width: 1600px;
+        }
+        .o-card-container--profiles {
+          max-width: none;
         }
     }
 }

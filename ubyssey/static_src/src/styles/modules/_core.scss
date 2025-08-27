@@ -337,6 +337,11 @@ dialog {
   border: none;
 }
 
+b {
+  font-weight: 600;
+  font-variation-settings: "wght" 600;
+}
+
 body { 
   background-color: var(--background);
   transition: background-color 0.5s ease, color 0.5s ease;
