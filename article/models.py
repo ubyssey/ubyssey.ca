@@ -454,6 +454,9 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
         if tagged == None:
             return 0
         return tagged.content_object.first_published_at
+    
+    def get_relative_url(self):
+        return "/topic/" + self.slug + "/"
 
     def get_preview_context(self, request, mode_name):
         context = super().get_preview_context(request, mode_name)

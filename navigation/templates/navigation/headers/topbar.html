@@ -15,10 +15,22 @@
         <nav>
             {% main_menu show_multiple_levels=False apply_active_classes=True %}
         </nav>
-        <div class="right">
+        <div class="right setup-modal">
+            <button class="search open-modal">
+                <ion-icon name="search"></ion-icon>
+            </button>
             {% include 'article/objects/darkmode_button.html' with id="topbar" %}
+
+            <dialog class="c-nav-search--dialog modal" aria-modal="true">
+                <div class="js-dropdown-container close-modal"></div>
+                <button class="close-modal">
+                    <ion-icon name="close"></ion-icon>
+                </button>
+                <div id="nav-search" class="c-nav-search--container">
+                </div>  
+            </dialog>
+
         </div>
-        {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
     </div>
 </header>
 {% endcache %}

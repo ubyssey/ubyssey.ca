@@ -356,8 +356,20 @@ header.topbar {
   }
   
   .right {
-    margin-left: 2em;
-    display: inline;
+    float: right;
+    height: 45px;
+
+    button.search {
+      background: none;
+      border: none;
+      font-size: 1.2em;
+      height: 45px;
+      vertical-align: baseline;
+      ion-icon {
+        padding-bottom: 0.1em;
+      }
+    }
+
   }
 
   nav {
@@ -890,6 +902,58 @@ nav.branding-nav {
     }
   }
 
+}
+
+.c-nav-search--dialog {
+  .c-nav-search--container {
+    margin: auto;
+    padding: 2em;
+
+    display: flex;
+    flex-direction: column;
+    max-width: 700px;
+    
+    position: absolute;
+    top: 14%;
+    left: 0;
+    right: 0;
+    
+    background: var(--background);
+    border-radius: 0.5em;
+
+    input {
+      margin-bottom: 1em;
+      padding: .25em .5em;
+      
+      position: relative;
+
+      border-radius: .25em;
+      border: 1px solid #000;
+
+      line-height: 2em;
+      font-size: 1.25em;
+    }
+    ul {
+      margin-top: 0;
+      padding: 0;
+      list-style: none;
+      li {
+        margin-block: 1em;
+        line-height: 1.5em;
+        time {
+          margin-right: 1em;
+          width: 7.5em;
+          display: inline-block;
+          overflow: clip;
+
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          font-size: 0.75em;
+          color: var(--text_color_supporting);
+        }
+      }
+    }
+  }
 }
 
 [color-css-theme="light"] {

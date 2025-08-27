@@ -467,6 +467,15 @@ a.image {
   border: none;
 }
 
+.js-dropdown-container + button.close-modal {
+  background: none;
+  border: none;
+  position: fixed;
+  right: 0.5em;
+  top: 0.5em;
+  color: white;
+}
+
 ion-icon {
   margin-bottom: -0.1em;
 }
