@@ -76,15 +76,18 @@
         flex-wrap: wrap;
         flex-direction: revert;
         .o-card {
-            padding-left: calc(100px + 1em);
             width: 100%;
             max-width: 350px;
-            background-size: 100px;
-            background-repeat: no-repeat;
-            background-position-y: 1em;
 
             @media (variables.$bp-smaller-than-phablet) {
                 max-width: none;
+            }
+
+            &.o-card--image {
+                padding-left: calc(100px + 1em);
+                background-size: 100px;
+                background-repeat: no-repeat;
+                background-position-y: 1em;
             }
         }
     }

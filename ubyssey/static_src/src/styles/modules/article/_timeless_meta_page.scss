@@ -36,6 +36,10 @@
           border: none;
           color: var(--header_color);
           font-style: normal;
+          a {
+            text-decoration: underline;
+            font-style: italic;
+          }
         }
 
         hr {
