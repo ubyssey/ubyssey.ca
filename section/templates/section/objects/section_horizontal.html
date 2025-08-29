@@ -5,19 +5,18 @@
 {% load video_filters %}
 {% load articletags %}
 
-<div class="landing_stream_block__horizontal landing-stream-block__borders landing_stream_block u-container u-container--large u-container--padded">
-  {% if title %}
+{% if title %}
   <div class="landing_stream_block--header">
     <h2>{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{%endif%}</h2>
     {% if description %}
       {{description|safe}}
     {% endif %}
   </div>
-  {% endif %}
-<div class="landing_stream_block--flex-container {{flex_style}}">
-  {% for article in articles %}
-    {% include 'article/objects/article_left-image.html' with article=article style='article--round_with_border' pubdate="true" %}
-  {% endfor %}
-</div>
-
+{% endif %}
+<div class="landing_stream_block__horizontal landing-stream-block__borders landing_stream_block u-container u-container--large u-container--padded">
+  <div class="landing_stream_block--flex-container {{flex_style}}">
+    {% for article in articles %}
+      {% include 'article/objects/article_left-image.html' with article=article style='article--round_with_border' pubdate="true" %}
+    {% endfor %}
+  </div>
 </div>

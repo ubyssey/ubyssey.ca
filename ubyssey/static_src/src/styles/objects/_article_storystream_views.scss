@@ -164,6 +164,12 @@
         .o-article__headline {
             font-size: 1.4em;
         }
+        p {
+            margin-bottom: 0;
+            padding-bottom: 1em;
+            padding-left: 1.5em;
+            border-left: 2px solid variables.$color-ubyssey-blue;
+        }
     }
     .o-article__right {
         margin-right: 1em;
@@ -190,7 +196,7 @@
             margin-bottom: 1em;
         }
         .attachment {
-            margin-block: 0.75rem;
+            margin-block: 0 0.75rem;
             font-size: 0.9em;
             @media(variables.$bp-larger-than-phablet) {
                 padding-right: 1.5rem;

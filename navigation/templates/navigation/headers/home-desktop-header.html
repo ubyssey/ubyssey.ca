@@ -46,6 +46,10 @@
           </div>
 
           {% flat_menu 'right_header_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+          
+          <button class="search open-nav-search">
+            <ion-icon name="search"></ion-icon>
+          </button>
           <a class = "rss-icon" href="/rss" target="_blank" title="The Ubyssey rss feed"><ion-icon name="logo-rss"></ion-icon></a>
           {% include 'article/objects/darkmode_button.html' with id="main"%}
         {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
@@ -53,6 +57,8 @@
     </div>
     <nav class="main row">
       <div class="middle sections">
+          <div id="nav-search" class="c-nav-search--container"></div>  
+
         <div class="date-line">
           {% now "F d, Y" as date %}
           {% now "l" as dayOfWeek %}

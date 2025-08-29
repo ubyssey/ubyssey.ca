@@ -4,10 +4,10 @@ Used in both section pages and homepage
 {% endcomment %}
 {% load wagtailcore_tags %}
 
-<section class="landing_stream_block">
-  <h2 class="section">
+<h2 class="section">
       <a href={{ link }}>{{ title|title }}</a>
-  </h2>
+</h2>
+<section class="landing_stream_block">
   <div class="o-section_article-row">
     {% for article in articles %}
       {% with lede="true" byline="true" style="o-article--suggested_article" %}

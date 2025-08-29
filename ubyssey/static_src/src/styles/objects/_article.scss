@@ -17,9 +17,8 @@
 
   // Text
   font-family: fonts.$font-headline;
-  font-weight: fonts.$font-weight-bold;
-  font-variation-settings: 'wght' 700;
-  font-weight: 600;
+  font-variation-settings: 'wght' 500;
+  font-weight: 500;
   line-height: 1.15em;
   font-size: fonts.font-size(24);
 
@@ -48,8 +47,8 @@
 
 .o-article__author {
   // Text
-  font-weight: 600;
-  font-variation-settings: "wght" 600;
+  font-weight: 500;
+  font-variation-settings: "wght" 500;
 }
 
 .o-author__name {

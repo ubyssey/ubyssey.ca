@@ -9,7 +9,7 @@
     <div class="o-curated_group--cards-flex">
     {% for item in self.items %}
         {% with item.value.article as article %}
-        <div class="o-article o-curated_group--cards--card">
+        <article class="o-article o-curated_group--cards--card">
             {% image article.featured_media.first.image original as rendered_image %}
             <a href="{% pageurl article %}" title="{{article.title}}">
                 <img class="article-attachment" loading="lazy" width="{{rendered_image.width}}" height="{{rendered_image.height}}" decoding="async" data-id="{{ rendered_image.id }}" data-url="{{ rendered_image.url }}" src="{{ rendered_image.url }}" alt="{{ alt_text }}" />	
@@ -17,9 +17,10 @@
 
             <div class="o-curated_group--cards--card--headline">
                 {% include "article/objects/headline.html" %}
+                {% include "article/objects/meta_info.html" %}
             </div>
 
-        </div>
+        </article>
         {% endwith %}
     {% endfor %}
     </div>

@@ -1,8 +1,13 @@
 <div class="c-home-sidebar--newsletter-signup">
     {{self.text|safe}}
 
+    <iframe src="https://embeds.beehiiv.com/8cc31358-f28d-486d-b3ad-99cdf843ce88?slim=true" data-test-id="beehiiv-embed" height="52" frameborder="0" scrolling="no" style="margin: 0; border-radius: 0px !important; background-color: transparent; width: 100%;"></iframe>
+
+    {% comment %}
+    I would like it to be native but we have to verify ourselves with Stripe which I don't want to do right now
     <form class="c-home-sidebar--newsletter-signup--form">
         <input placeholder="{{self.form_placeholder}}" type="text">
         <input type="submit" value="subscribe">
     </form>
+    {% endcomment %}
 </div>

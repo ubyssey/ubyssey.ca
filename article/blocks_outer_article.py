@@ -1,11 +1,13 @@
 from wagtail import blocks
 from wagtail.blocks import field_block
 from wagtail.models import Site, Page
-from article.models import ArticlePage, ArticleTopic
+
+from django.db.models import Q
 from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.template.loader import render_to_string
 
+from article.models import ArticlePage, ArticleTopic
 
 class TemplateSelectStructBlock(blocks.StructBlock):
     template = blocks.ChoiceBlock(
@@ -193,15 +195,28 @@ class SectionBlock(AbstractArticleList):
         context['title'] = value['section'].title
         context['link'] = value['section'].url
         context['expectedSection'] = value['section'].slug
-        context['articles'] = ArticlePage.objects.child_of(value['section']).order_by('-first_published_at').live()
 
+        exclude = []
+        if "curated_articles" in parent_context:
+            exclude = parent_context["curated_articles"]
+        articles = ArticlePage.objects.child_of(value['section']).live().filter(timeliness__gte=ArticlePage.TimelinessChoices.MONTH).exclude(page_ptr_id__in=exclude)
+        
         limit = 9
         if 'section/objects/section_one-large-two-small.html' in value['template']:
-            limit = 3
+            limit = 4
         if 'section/objects/section_article-row.html' in value['template']:
             limit = 4
 
-        context['articles'] = context['articles'][:limit]
+        context['articles'] = []
+        for article in articles.order_by('-first_published_at'):
+            if article.get_relevance_score() == 1:
+                context['articles'].append(article)
+            if len(context["articles"]) >= limit:
+                break
+
+        if len(context['articles']) < limit:
+            print("no evergreen articles")
+            context['articles'] = ArticlePage.objects.child_of(value['section']).live().filter(Q(timeliness__gte=ArticlePage.TimelinessChoices.MONTH) | Q(explicit_published_at__lte=timezone.now() - timezone.timedelta(days=14))).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')[:limit]
 
         if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
@@ -220,6 +235,7 @@ class SingleCategorySectionRowBlock(AbstractArticleList):
         context = super().get_context(value, parent_context)
         context["title"] = value["category"].title
         context["link"] = value["category"].url
+        context["show_bylines"] = value["show_bylines"]
 
         exclude = []
         if "exclude" in parent_context:
@@ -254,10 +270,14 @@ class MultiCategorySectionRowBlock(AbstractArticleList):
         context = super().get_context(value, parent_context)
         context["title"] = value["title"]
         context["articles"] = []
+        context["show_bylines"] = value["show_bylines"]
 
         exclude = []
         if "exclude" in parent_context:
             exclude = parent_context["exclude"]
+
+        if "curated_articles" in parent_context:
+            exclude = exclude + parent_context["curated_articles"]
 
         for category in value["categories"]:
             if "section" in parent_context:
@@ -305,15 +325,25 @@ class SectionCategorizedBlock(AbstractArticleList):
         exclude = []
         if "exclude" in parent_context:
             exclude = parent_context["exclude"]
+
+        if "curated_articles" in parent_context:
+            exclude = exclude + parent_context["curated_articles"]
         
-        context['articles'] = ArticlePage.objects.live().child_of(value['section']).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
+        limit = 4
+        
+        context['articles'] = ArticlePage.objects.live().child_of(value['section']).filter(timeliness__gte=ArticlePage.TimelinessChoices.MONTH).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
+                
+        if len(context['articles']) < limit:
+            context['articles'] = ArticlePage.objects.child_of(value['section']).live().filter(Q(timeliness__gte=ArticlePage.TimelinessChoices.MONTH) | Q(explicit_published_at__lte=timezone.now() - timezone.timedelta(days=14))).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
+
+        
         if value["fill_topic"]:
             context['articles'] = context['articles'].filter(topics__slug=value["fill_topic"])
 
-        limit = 4
-
         context['articles'] = context['articles'][:limit-len(value["columns"])]
         
+        context['articles'] = list(context['articles'])
+
         return context
 
 class MidStreamDoubleListTemplates(blocks.ChoiceBlock):

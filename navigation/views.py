@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Q
 
 from wagtail.models import Site
 from wagtail.search.query import Phrase, PlainText
@@ -22,7 +23,7 @@ class ArticleNavSearchSerializer(serializers.ModelSerializer):
 class TopicNavSearchSerializer(serializers.ModelSerializer):
     title = serializers.CharField(source='name')
     url = serializers.URLField(source="get_relative_url")
-    datetime = serializers.DateTimeField(source="last_used_at")
+    datetime = serializers.DateTimeField(source="last_tagged_at")
 
     class Meta:
         model = ArticleTopic
@@ -47,7 +48,7 @@ def nav_search(request):
 
             site =  Site.find_for_request(request)
             
-            articles = ArticlePage.objects.live().public().descendant_of(site.root_page).filter(title__icontains=query).order_by("-explicit_published_at")
+            articles = ArticlePage.objects.live().public().descendant_of(site.root_page).filter(Q(title__icontains=query) | Q(seo_keyword__icontains=query)).order_by("-explicit_published_at")
             if articles.count() < MAX_ARTICLES:
                 articles = ArticlePage.objects.live().public().descendant_of(site.root_page).search(Phrase(query) | PlainText(query))
             articles = articles[:MAX_ARTICLES]

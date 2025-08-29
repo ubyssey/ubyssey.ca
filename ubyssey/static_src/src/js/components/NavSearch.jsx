@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
 function dateformat(datetime) {
+    if (datetime == null) {
+        return "";
+    }
     const date = new Date(datetime);
 
     const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
@@ -11,52 +14,69 @@ function ResultList({results, name}) {
     return (
     <>
         {results.length > 0 && <h3>{name}</h3>}
-        <ul>{results.map((result) => 
+        <ul className={name.toLowerCase()}>{results.map((result) => 
             <li>
-                <time datetime={result.datetime}>{dateformat(result.datetime)}</time><a href={result.url}>{result.title}</a>
+                {result.datetime && <time datetime={result.datetime}>{dateformat(result.datetime)}</time>}<a href={result.url} dangerouslySetInnerHTML={{__html: result.title}}></a>
             </li>
         )}</ul>
     </>
     )
 }
 export default function NavSearch() {
-    const [query, setQuery] = useState("");
-    const [articles, setArticles] = useState([]); 
-    const [topics, setTopics] = useState([]); 
     const [pending, setPending] = useState(false);
+    const [query, setQuery] = useState("");
+    const [queried, setQueried] = useState("");
+    const [articles, setArticles] = useState([]); 
+    const [topics, setTopics] = useState([]);
+    let results = {};
 
-    function search(searchQuery) {
-        if (searchQuery.length > 0) {
-            setQuery(searchQuery);
-        }
-    }
+    let searchTimeout = setTimeout(() => {}, 0);
 
-    useEffect(async() => {
+    async function search(searchQuery) {
         setPending(true);
-        const current_query = query;
-        const response = await fetch("/search/?q=" + current_query);
-        const result = await response.json();
-        console.log(current_query);
-        console.log(query);
-        if (current_query == query) {
-            setPending(false);
-            setTopics(result["topics"]);
-            setArticles(result["articles"]);
-        }
-    }, [query]);
+        setQuery(searchQuery);  
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(async () => {
+            console.log("search");
+            if (searchQuery.length > 0) {   
+
+                const current_query = searchQuery;
+                console.log("api request to " + current_query);
+                const response = await fetch("/search/?q=" + current_query);
+                console.log(response);
+                
+                if (document.getElementById("nav-search-input").value == current_query) {
+                    const result = await response.json();
+                    setArticles(result["articles"]);
+                    setTopics(result["topics"]);
+
+                    console.log(result);
+                    setPending(false);
+                    setQueried(current_query);
+
+                    results[query] = result;
+                } else {
+                    console.log("outdated: " + current_query);
+                }
+            }
+
+        }, 100);
+    }
 
     return (
     <>
-        <input type="text" onChange={e => search(e.target.value)}></input>
-        
+        <input id="nav-search-input" type="text" onChange={e => search(e.target.value)} placeholder="Search"></input>
+        <div class="c-nav-search--results">
         {!pending ?
-        <>
+        (<>
+        {queried.length > 0 && <div class="c-nav-search--status">Results for <a href={"/archive/?q=" + queried}>"<i>{queried}</i>"</a></div>}
         <ResultList results={topics} name={"Topics"} />
         <ResultList results={articles} name={"Articles"} />
-        </>
+        </>)
         : 
-        <div>Pending {query}</div>
+        (<>{queried.length > 0 && <div class="c-nav-search--status">Pending results for <a href={"/archive/?q=" + query}>"<i>{query}</i>"</a></div>}</>)
         }
+        </div>
 
     </>
     );

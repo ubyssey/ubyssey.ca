@@ -175,15 +175,6 @@ class HomePage(Page):
             heading="Tagline"
         ),
         FieldPanel("curated_stream"),
-        FieldPanel("cover_story_timeout"),
-        FieldPanel("top_stories_timeout"),
-        FieldPanel("cover_story"),
-        MultiFieldPanel(
-            [
-                InlinePanel("top_articles"),
-            ],
-            heading="Top articles"
-        ),
         FieldPanel("middle_stream", heading="Middle Stream"),
         FieldPanel("sidebar_stream", heading="Sidebar"),
         FieldPanel("sections_stream", heading="Sections"),
@@ -194,79 +185,13 @@ class HomePage(Page):
     ]
 
     def get_context(self, request, *args, **kwargs):
-        import math
         context = super().get_context(request, *args, **kwargs)
-        context["filters"] = {}
-
-        cover_story, top_stories, context["update_time"] = self.getHomeFeatured()
-        context["cover_story"] = cover_story
-        context["top_stories"] = top_stories
         
-        exclude_from_hompage_stream = map(lambda article: article.page_ptr_id, top_stories + [cover_story])
+        articles = []
+        for group in self.curated_stream.raw_data:
+            for item in group["value"]["items"]:
+                articles.append(item["value"]["article"])
 
-        site =  Site.find_for_request(request)
-
-        homepage_stream_articles = ArticlePage.objects.live().public().descendant_of(site.root_page).exclude(page_ptr_id__in=exclude_from_hompage_stream).exclude(current_section = "pages").order_by("-explicit_published_at")[:10]
-        homepage_stream_groups = []
-        articles_per_sidebar_item = 5
-        for i in range(max(math.ceil(len(homepage_stream_articles)/articles_per_sidebar_item), len(self.sidebar_stream))):
-            group = {
-                'articles': homepage_stream_articles[i*articles_per_sidebar_item:(i+1)*articles_per_sidebar_item]
-            }
-            if i < len(self.sidebar_stream):
-                group['sidebar'] = [self.sidebar_stream[i]]
-            homepage_stream_groups.append(group)
-
-        context['homepage_stream'] = homepage_stream_groups
+        context["curated_articles"] = articles
 
         return context
-
-    def getHomeFeatured(self):
-        now = timezone.now().astimezone(timezone.get_current_timezone())
-        update_time = self.last_published_at
-
-        cover = None
-        if not self.cover_story_timeout:
-            cover = self.cover_story.specific
-        elif now < self.cover_story_timeout:
-            cover = self.cover_story.specific
-        
-        top = []
-        if not self.top_stories_timeout:
-            top = [article.article for article in self.top_articles.all()]
-        elif now < self.top_stories_timeout:
-            top = [article.article for article in self.top_articles.all()]
-        else:
-            filled_sections = {}
-            tagged = ArticlePage.objects.live().filter(topics__slug='top-stories',first_published_at__gte=now-datetime.timedelta(weeks=4)).order_by('-first_published_at')[:15]
-            if len(tagged) > 0:
-                if tagged[0].first_published_at > update_time:
-                    update_time = tagged[0].first_published_at
-            for article in tagged:
-                if article.current_section not in filled_sections:
-                    filled_sections[article.current_section] = 0
-                if article.current_section == "news" and not cover:
-                    cover = article
-                elif filled_sections[article.current_section] < 2:
-                    if cover:
-                        if article == cover:
-                            continue
-                    top.append(article)
-                    filled_sections[article.current_section] = filled_sections[article.current_section] + 1
-                    if len(top) >= 5:
-                        break
-        
-        if not cover:
-            cover = ArticlePage.objects.live().filter(topics__slug='top-stories',current_section='news').order_by('-first_published_at')[0]
-        
-        return cover, top, update_time
-     
-    def get_all_section_slug(self):
-        
-        allsection_slug = []
-        allsectionPages = SectionPage.objects.all()
-
-        for section in allsectionPages:
-            allsection_slug.append(section.slug)
-
-        return allsection_slug

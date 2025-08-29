@@ -1,0 +1,3 @@
+<div class="above-headline">
+    {%if expectedSection != article.current_section %}<a class="o-article__section" href="/{{article.current_section}}/">{{article.current_section}}</a>{% endif %}<span class="o-article__byline">{{article.get_authors_split_out_visual_bylines|safe}}</span>
+</div>
