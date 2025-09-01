@@ -1,6 +1,12 @@
 version: "3.7"
-services:
 
+networks:
+  proxy-shared:
+    external: true
+  ubyssey-internal:
+    driver: overlay
+
+services:
   mysql:
     image: mysql:8.0
     environment:
@@ -10,6 +16,8 @@ services:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
     secrets:
        - SQL_PASSWORD
+    networks:
+      - ubyssey-internal
     volumes:
       - ./mysql-data:/var/lib/mysql
     healthcheck:
@@ -21,6 +29,8 @@ services:
 
   cache:
     image: memcached:1.6.10
+    networks:
+      - ubyssey-internal
     ports:
       - "11211:11211"
     healthcheck:
@@ -67,6 +77,10 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS
       - EMAIL_HOST_PASSWORD
 
+    networks:
+      - proxy-shared
+      - ubyssey-internal
+
     expose:
       - 8000
 
@@ -103,57 +117,23 @@ services:
       - mysql
       - cache
 
-  db:
-    image: ankane/pgvector:latest
-    restart: always
-    environment:
-      POSTGRES_DB: thoth
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: secret
-      POSTGRES_HOST_AUTH_METHOD: trust
-
-    ports:
-      - 5432:5432
-    volumes:
-      - thoth_data:/var/lib/postgresql/data/
-
-  thothbackend:
-    image: ghcr.io/ubyssey/thoth:latest
-
-    command:
-      - bash
-      - -c
-      - "python manage.py migrate && python manage.py crontab add && service cron start && python manage.py runserver 0.0.0.0:8000"
-
-    depends_on:
-      - db
-    stdin_open: true
-    tty: true
-
-  thothfrontend:
-    image: ghcr.io/ubyssey/thoth-frontend:latest
-
-    environment:
-      ORIGIN: https://thoth.ubyssey.ca
-    depends_on:
-      - thothbackend
-
   nginx:
     image: nginx:1.27
-    ports:
-      - 80:80
-      - 443:443
     restart: always
     volumes:
       - ./nginx/:/etc/nginx/:ro
       - ./certbot/www/:/var/www/certbot/:ro
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:ro
+    networks:
+      - proxy-shared
+      - ubyssey-internal
+    ports:
+      - 80:80
+      - 443:443
     logging:
       driver: gcplogs
     depends_on:
       - django
-      - thothbackend
-      - thothfrontend
 
   certbot:
     image: certbot/certbot:v4.0.0
@@ -161,11 +141,10 @@ services:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:rw
       - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
+    networks:
+      - ubyssey-internal
     # Attempt to renew TLS certificate every 12 hours
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-
-volumes:
-  thoth_data:
 
 secrets:
   DJANGO_SECRET_KEY:
@@ -180,6 +159,3 @@ secrets:
     file: ./service-account.json
   EMAIL_HOST_PASSWORD:
     external: true
-
-
-

@@ -23,13 +23,16 @@ ical, rss feed, and api should be linked here
 
 {% block content %}
 <div class="events-slanted-image" style="background-image: linear-gradient(transparent, #0000000a), url('https://storage.googleapis.com/ubyssey/media/renditions/Guide_2022_AMS.original.jpg')"></div>
+
 <main class="c-page events-page highlight-{{highlight}}">
     <div id="calendar" authenticated={{request.user.is_authenticated}}></div>
 </main>
 {% endblock %}
 
 {% block scripts %}
+
 <script src="{% static 'ubyssey/js/events.js' %}" type="text/javascript"></script>
+
 {% endblock %}
 
 {% block footer %}{% endblock %}

@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 //import Search from './components/Search.jsx';
 //import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
+import NavSearch from './components/NavSearch.jsx';
 import { CookieDisclaimer } from './components/Cookies'
 //import { Galleries } from './components/Gallery'
 
@@ -24,6 +25,11 @@ $(function () {
         <CookieDisclaimer />,
         document.getElementById('cookie-disclaimer')
     )
+
+    ReactDOM.render(
+        <NavSearch />,
+        document.getElementById('nav-search')
+    );
     
 });
 /*
@@ -220,3 +226,4 @@ if ($('main.article').length) {
 //    document.getElementById('search-form')
 //);
 */
+

@@ -18,6 +18,7 @@ from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage, redirect_tag_feed_to_topic, redirect_tag_to_topic
 from events.views import update_events, create_ical, EventsFeed, EventsViewSet
 from events.urls import urlpatterns as events_urls
+from navigation.views import nav_search
 
 from infinitefeed.views import infinitefeed
 
@@ -83,6 +84,8 @@ urlpatterns += [
     # re_path(r'^api/', include(api_urls)),
     # re_path(r'^podcasts/', include(podcasts_urls)),
     re_path(r'^newsletter/', include(newsletter_urls)),
+
+    re_path(r'^search/', nav_search),
 
     # Events
     re_path(r'^events/$', include(events_urls)),

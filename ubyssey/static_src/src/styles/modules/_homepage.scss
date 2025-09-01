@@ -397,6 +397,7 @@ html.hairlines {
   margin-top: 4em;
   margin-bottom: 10%;
   h2 {
+    margin-block: 0.25em;
     width: fit-content;
     border-bottom: .1em solid variables.$color-ubyssey-blue;
     font-size: 2em;
@@ -410,8 +411,11 @@ html.hairlines {
     }
   }
   .landing_stream_block {
-    padding-bottom: 1em;
+    padding-block: 1em;
     border-block: 1px dashed var(--header_color);
+  }
+  h2 + .landing_stream_block {
+    margin: 0.5em auto 5em auto;
   }
 }
 
@@ -444,22 +448,21 @@ html.hairlines {
     .o-home-group_headline {
       margin-block: 2rem;
       font-family: fonts.$font-home-headline;
+      font-variation-settings: "wght" 600;
+      font-weight: 600;
       line-height: 1.25em;
       color: var(--header_color);
       &.large {
         margin-top: 0;
         font-size: 3em;
-        font-variation-settings: "wght" 600;
-        font-weight: 600;
       }
       &.small {
         font-size: 2em;
-        font-variation-settings: "wght" 500;
-        font-weight: 500;
       }
 
       @media(variables.$bp-smaller-than-tablet) {
         &.large, &.small {
+          text-align: center;
           font-variation-settings: "wght" 900;
         }
         &.large {
@@ -478,7 +481,7 @@ html.hairlines {
     }
 
     .o-curated_group--cards--card {
-      margin-bottom: 4em;
+      margin-bottom: 3em;
 
       position: relative;
 
@@ -491,15 +494,20 @@ html.hairlines {
         aspect-ratio: 1;
         object-fit: cover;
       }
-      h3 {
+      .o-curated_group--cards--card--headline {
         font-size: 0.9em;
-        font-variation-settings: "wght" 600;
-        margin: 1.5em 1em 0 1em;
-        padding: 1em;
-        background: var(--background);
-        z-index: 10;
-        position: absolute;
-        bottom: -2em;
+        padding: 1em 0.75em;
+
+        .o-article__published {
+          font-size: 0.8em;
+          font-variation-settings: "wght" 600;
+        }
+        .o-article__headline {
+          font-size: 1.25em;
+        }
+        .above-headline {
+          font-size: 0.8em;
+        }
       }
     }
 
@@ -551,11 +559,13 @@ html.hairlines {
           font-size: 1.25em;
         }
         .above-headline {
-          margin-block: 1.25em 0;
+          margin-block: 1em 0;
           font-size: .75em;
         }
         p {
           margin-top: 0.5em;
+          padding: 0;
+          border: none;
           font-size: 0.9em;
         }
       }

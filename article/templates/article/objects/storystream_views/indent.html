@@ -13,6 +13,7 @@
 
 	<div class="o-article__left">
 		{% include "article/objects/headline.html" %}
+		{% include "article/objects/meta_info.html" %}
 		<p>{{article.lede|safe}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>
 	</div>
 

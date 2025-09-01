@@ -36,8 +36,8 @@ $adslots: (
   .adslot {
     margin-left: auto;
     margin-right: auto;
-    min-width: $width;
-    height: $height;
+    //min-width: $width;
+    //height: $height;
   }
 
   &.o-advertisement--homepage {
@@ -59,8 +59,8 @@ $adslots: (
 
   @media( min-width: 1010px ){
     .adslot {
-      min-width: list.nth(map.get($adslots, leaderboard), 1);
-      height: $height;
+      //min-width: list.nth(map.get($adslots, leaderboard), 1);
+      //height: $height;
     }
   }
 
@@ -78,8 +78,8 @@ $adslots: (
       $height: list.nth(map.get($adslots, billboard), 2);
 
       .adslot {
-        width: $width;
-        height: $height;
+        //width: $width;
+        //height: $height;
       }
     }
   }
@@ -119,7 +119,7 @@ main.article .o-advertisement--leaderboard {
   .adslot {
     display:flex;
     width: $width;
-    height: $height;
+    //height: $height;
     margin-left: auto;
     margin-right: auto;
   }
@@ -149,7 +149,7 @@ main.article .o-advertisement--leaderboard {
 
   .adslot {
     width: $width;
-    height: $height;
+    //height: $height;
   }
 
   @media(variables.$bp-smaller-than-phablet) {
@@ -221,6 +221,7 @@ main.article .o-advertisement--leaderboard {
 .o-advertisement--above-sticky-nav-bar{
   width: 100%;
   padding-top: 1em;
+  background: var(--ad-background);
 }
 
 .o-advertisement--fw-end {

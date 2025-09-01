@@ -454,6 +454,9 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
         if tagged == None:
             return 0
         return tagged.content_object.first_published_at
+    
+    def get_relative_url(self):
+        return "/topic/" + self.slug + "/"
 
     def get_preview_context(self, request, mode_name):
         context = super().get_preview_context(request, mode_name)
@@ -568,6 +571,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     show_in_menus_default = True
     show_in_menus = True
 
+    # Meta info
     explicit_published_at = models.DateTimeField(
         null=True,
         blank=True,
@@ -582,6 +586,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         default = False,
         help_text = "Check this to alert readers the article has been revised since its publication.",
     )
+
+    class TimelinessChoices(models.IntegerChoices):
+        NULL = 0
+        DAY = 1
+        WEEK = 2
+        MONTH = 3
+        YEAR = 4
+        EVERGREEN = 5
+
+    timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.WEEK)
+
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
         null=False,
@@ -791,6 +806,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     ] # content_panels
 
     promote_panels = Page.promote_panels + [
+        FieldPanel("timeliness", help_text = "This metadata field is used for organizing articles on the homepage and determining article relevance in search"),
         MultiFieldPanel(
             [
                 FieldPanel("seo_keyword", help_text = "Seperate words with commas"),
@@ -816,7 +832,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 FieldPanel("noindex"),
             ],
             heading="Special search engine-related meta tagging",
-        )
+        ),
+        
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
         MultiFieldPanel(
@@ -874,7 +891,32 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     ]
 
     #-----Properties, getters, setters, etc.-----
+    
+    # TIMELINESS
+    def get_relevance_score(self):
+        relevance_delta = {
+            self.TimelinessChoices.NULL: 0,
+            self.TimelinessChoices.DAY: 1,
+            self.TimelinessChoices.WEEK: 7,
+            self.TimelinessChoices.MONTH: 35,
+            self.TimelinessChoices.YEAR: 356,
+            self.TimelinessChoices.EVERGREEN: 1000
+        }
 
+        print(self.published_at)
+        if self.published_at == None:
+            return 0
+        
+        relevance_cutoff = timezone.now() - timezone.timedelta(days=relevance_delta[self.timeliness])
+
+        print(relevance_cutoff)
+
+        if self.published_at > relevance_cutoff:
+            return 1
+        else:
+            return 0
+
+    # AUTHORS STRINGS
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
         Returns html-friendly list of the ArticlePage's authors as a comma-separated string (with 'and' before last author).
@@ -1181,7 +1223,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
                 "type": "topic",
             } for topic in listed_topics
-        ], key= lambda topic: topic["considered_articles"][0].first_published_at, reverse=True))
+        ], key= lambda topic: topic["considered_articles"][0].first_published_at if len(topic["considered_articles"]) > 0 else 0, reverse=True))
 
         # Choose articles from each of the topic and combine topics with shared articles
         article_count = 0
@@ -1577,46 +1619,9 @@ class StandardArticlePage(ArticlePage):
         ),
     ] # content_panels
 
-    promote_panels = Page.promote_panels + [
-        MultiFieldPanel(
-            [
-                FieldPanel("seo_keyword", help_text = "Seperate words with commas"),
-            ],
-            heading="Keywords for Search Engines",
-        ),
+    promote_panels = Page.promote_panels + ArticlePage.promote_panels
 
-        #  To do: Decide what to do with breaking. We would usually just put such an article
-        #  as the coverstory. Is there any case where marking an article as breaking and/or 
-        #  putting above the homepage header would be better than using the cover story? - Sam Low 22/05/2025
-        # 
-        # MultiFieldPanel(
-        #    [
-        #        HelpPanel(content="\"Breaking Timeout\" is irrelevant if news is not breaking news."),
-        #        FieldPanel("is_breaking"),
-        #        FieldPanel("breaking_timeout"),
-        #    ],
-        #    heading="Breaking",
-        #),
-
-        MultiFieldPanel(
-            [
-                FieldPanel("noindex"),
-            ],
-            heading="Special search engine-related meta tagging",
-        )
-    ] # promote_panels
-    settings_panels = SectionablePage.settings_panels + [
-        MultiFieldPanel(
-            [
-                FieldPanel(
-                    'is_explicit',
-                    help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article.",
-                ),
-            ],
-            heading="Advertising-Releated",
-        ),
-
-    ] # settings_panels  
+    settings_panels = SectionablePage.settings_panels + ArticlePage.settings_panels
 
     customization_panels = [
         HelpPanel(

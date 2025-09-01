@@ -31,6 +31,8 @@
     {% endif %}
 {% endblock %}
 
+
+
 {% block header %}
     {% if self.menu %}
 		<!-- Manually selected menu: {{ page.menu.handle }} -->
@@ -44,12 +46,14 @@
 
     {% include 'navigation/headers/mobile.html' %}
     {% block banner_ad %}
+        <div class="o-article-embed o-article-embed--advertisement o-advertisement--home-header-bar">
         {% cache 6000 article_header_ads %}
         <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
             {% gpt_placement_tag orderable.ad_slot %}
         {% endfor %}
         {% endcache %}
+        </div>
     {% endblock %}
 {% endblock %}
 
@@ -73,6 +77,7 @@
 
                     <!-- Content unique to the article starts here -->
 
+                    {% block article-content %}
                     {% if not self.is_explicit %}
                         {% filter inject_ads:is_mobile %}                            
                         <!-- Article text -->
@@ -87,6 +92,7 @@
                         {% endfor %}
                     {% endif %}
                     <!-- Content unique to the article ends here -->
+                    {% endblock %}
 
                     {% if self.disclaimer %}
                         <div class="disclaimer">{{self.disclaimer|safe}}</div>

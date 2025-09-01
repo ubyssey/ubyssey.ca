@@ -4,10 +4,11 @@ Used in both section pages and homepage
 {% endcomment %}
 {% load wagtailcore_tags %}
 
+<h2 class="section">
+    <a href={{ link }}>{{ title|title }}</a>
+</h2>
 <section class="landing_stream_block">
-  <h2 class="section">
-      <a href={{ link }}>{{ title|title }}</a>
-  </h2>
+
   <div class="o-section_article-row o-section_article-cluster">
 
     {% for group in self.section.get_recent_topic_cluster_grouped %}

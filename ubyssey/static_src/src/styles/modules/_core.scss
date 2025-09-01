@@ -58,6 +58,7 @@ body {
 }
 
 .u-container-topbar {
+  position: relative;
   max-width: 1200px;
   padding-left: 25px;
   padding-right: 25px;
@@ -210,11 +211,13 @@ h1, h2, h3 {
 
   color: var(--header_color);
   font-weight: 600;
+  font-variation-settings: "wght" 600;
   line-height: 1.2;
 }
 
 h2, h3 {
   font-weight: 600;
+  font-variation-settings: "wght" 600;
 }
 
 p{
@@ -346,6 +349,16 @@ body {
   min-height: 100vh;
 }
 
+b {
+  font-weight: 600;
+  font-variation-settings: "wght" 600;
+}
+
+img {
+  font-size: .5em;
+  line-height: .5em;
+}
+
 #content-wrapper {
   -webkit-overflow-scrolling: touch;
 }
@@ -453,6 +466,15 @@ a.image {
 
   background-color: #00000085;
   border: none;
+}
+
+.js-dropdown-container + button.close-modal {
+  background: none;
+  border: none;
+  position: fixed;
+  right: 0.5em;
+  top: 0.5em;
+  color: white;
 }
 
 ion-icon {

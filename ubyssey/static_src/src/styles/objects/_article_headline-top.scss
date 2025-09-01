@@ -19,6 +19,7 @@ article.headline-top-articles {
     .above-headline {
         margin-bottom: 0.5em;
         font-weight: 600;
+        font-variation-settings: "wght" 600;
         .title-tag {
             display: inline-block;
             text-transform: uppercase;
@@ -63,6 +64,7 @@ article.headline-top-articles {
         .lede {
             margin-block: 0.25em;
             font-size: 1.5em;
+            line-height: 1.5em;
             a {
                 color: variables.$color-ubyssey-blue;
                 &:hover {

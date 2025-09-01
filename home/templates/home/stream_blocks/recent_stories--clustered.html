@@ -3,6 +3,7 @@
 {% load video_filters %}
 {% load articletags %}
 
+{% if get_recent_stories_by_topic %}
 <section class="c-home-recent-stories">
     <h2>Recent stories</h2>
     <ul class="c-home-recent-stories--day-list c-home-recent-stories--day-list--clustered">
@@ -40,3 +41,4 @@
         {% endfor %}
     </ul>
 </section>
+{% endif %}

@@ -28,16 +28,28 @@
           <path d="M5873.29 519.765C5867.15 565.698 5845.72 658.622 5837.55 689.261H5316.81V653.515C5403.59 646.371 5413.8 640.259 5413.8 553.447V161.35C5413.8 72.5265 5403.59 67.4199 5331.12 61.2814V25.5352H5812.04C5813.04 43.8978 5818.15 115.39 5822.25 178.707L5785.5 183.813C5775.29 148.067 5762.01 114.385 5743.62 95.9957C5726.26 77.6067 5698.69 70.4627 5641.51 70.4627H5592.51C5554.72 70.4627 5550.65 72.5 5550.65 106.209V322.697H5619.05C5704.8 322.697 5718.11 317.591 5732.37 246.098H5769.12V452.347H5732.37C5718.08 378.843 5705.83 374.742 5619.05 374.742H5550.65V551.383C5550.65 599.353 5554.73 624.887 5575.15 635.126C5593.54 643.302 5628.26 645.339 5667.07 645.339C5719.14 645.339 5755.89 638.195 5780.39 612.662C5799.79 590.199 5818.18 557.522 5837.57 512.594L5873.29 519.765Z" />
           <path d="M6543.14 61.3079C6477.78 68.4518 6457.38 86.8144 6420.6 147.088C6382.82 207.336 6356.28 251.258 6306.25 347.198C6291.96 374.769 6287.86 386.014 6287.86 417.659V548.34C6287.86 640.233 6296.03 646.371 6386.92 654.521V689.235H6055.07V654.521C6141.88 647.377 6151.06 640.233 6151.06 548.34V434.99C6151.06 409.457 6146.99 399.243 6137.78 379.849C6110.21 323.703 6072.43 255.279 6011.18 148.067C5973.39 80.6759 5956.03 69.4308 5899.86 61.2814V25.5352H6191.89V61.2814C6124.5 70.4627 6125.51 83.7452 6143.89 120.497C6179.64 190.957 6220.49 266.525 6260.29 342.065C6289.9 283.855 6341.97 187.888 6366.49 125.603C6382.85 84.7771 6381.81 71.4946 6306.25 61.2814V25.5352H6543.14V61.3079Z" />
         </svg>    
-        
-        <div class="date-line">
-          {% now "F d, Y" as date %}
-          {% now "l" as dayOfWeek %}
-          {{date}} <b>{{dayOfWeek}}</b>
-        </div>
       
       </div>
       <div class="right">
+          <div class="dropdown">
+            <a class="more-dropdown preventDefault" href="#">About <ion-icon name="caret-down" class="dropdown-hidden"></ion-icon><ion-icon class="dropdown-show" name="caret-up"></ion-icon></a>
+            <div class="more-list dropdown-content">
+              {% flat_menu 'about_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+            </div>
+          </div>
+
+          <div class="dropdown">
+            <a class="more-dropdown preventDefault" href="#">Contact <ion-icon name="caret-down" class="dropdown-hidden"></ion-icon><ion-icon class="dropdown-show" name="caret-up"></ion-icon></a>
+            <div class="more-list dropdown-content">
+              {% flat_menu 'contact_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+            </div>
+          </div>
+
           {% flat_menu 'right_header_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+          
+          <button class="search open-nav-search">
+            <ion-icon name="search"></ion-icon>
+          </button>
           <a class = "rss-icon" href="/rss" target="_blank" title="The Ubyssey rss feed"><ion-icon name="logo-rss"></ion-icon></a>
           {% include 'article/objects/darkmode_button.html' with id="main"%}
         {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
@@ -45,6 +57,13 @@
     </div>
     <nav class="main row">
       <div class="middle sections">
+          <div id="nav-search" class="c-nav-search--container"></div>  
+
+        <div class="date-line">
+          {% now "F d, Y" as date %}
+          {% now "l" as dayOfWeek %}
+          {{date}} <b>{{dayOfWeek}}</b>
+        </div>
         {% main_menu %}
         <div class="dropdown">
           <a class="more-dropdown preventDefault" href="#">More <ion-icon name="caret-down" class="dropdown-hidden"></ion-icon><ion-icon class="dropdown-show" name="caret-up"></ion-icon></a>
