@@ -1,0 +1,7 @@
+{% load wagtailcore_tags %}
+
+<div class="c-curated_stream">
+{% for group in self.curated_stream %}
+    {% include_block group %}
+{% endfor %}
+</div>

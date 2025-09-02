@@ -5,6 +5,9 @@
   // Structure
   width: 100%;
   height: auto;
+  
+  font-size: 0.5em;
+  line-height: 0.5em;
 }
 
 .o-article__headline {
@@ -14,8 +17,8 @@
 
   // Text
   font-family: fonts.$font-headline;
-  font-weight: fonts.$font-weight-bold;
-  font-variation-settings: 'wght' 700;
+  font-variation-settings: 'wght' 500;
+  font-weight: 500;
   line-height: 1.15em;
   font-size: fonts.font-size(24);
 
@@ -44,7 +47,8 @@
 
 .o-article__author {
   // Text
-  font-weight: 600;
+  font-weight: 500;
+  font-variation-settings: "wght" 500;
 }
 
 .o-author__name {
@@ -446,26 +450,21 @@ div.article-content h2.header {
 .o-article {
   .above-headline {
       margin-bottom: 0.5em;
-      font-size: 0.8em;
-      .o-article__published {
-        font-size: 1em;
-        font-weight: 600;
-      }      
+      font-size: 0.8em;      
       .o-article__section {
-        margin-left: 0.5em;
+        padding-inline: 0 0.25em;
         font-weight: 600;
       }
       .o-article__section, .o-article__byline {
         font-size: 0.85em;
-        text-transform: uppercase;
         color: var(--header_color_supporting);
       }
       .o-article__byline {
         font-weight: 400;
-        font-style: italic;
         &::before {
           content: "|";
           margin-inline: 0.25em;
+          font-style: normal;
         }
       }
     }

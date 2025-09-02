@@ -1,10 +1,10 @@
 {% load wagtailcore_tags %}
 
 <div class="o-section_row_block">
-    <span class="o-section_row_block__title">{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{% endif %}</span>
-    {% with show_bylines=self.show_bylines %}
+    {% if title %}<span class="o-section_row_block__title">{% if link %}<a href="{{link}}">{{title}}</a>{% else %}{{title}}{% endif %}</span>{% endif %}
+
     {% for article in articles %}
         {% include "article/objects/article_list-item.html" %}
     {% endfor %}
-    {% endwith %}
+
 </div>

@@ -16,6 +16,8 @@ import { initializeDarkModeToggle } from './darkmode';
   initializeSocialMediaActions();   // Listeners for Facebook, Twitter and Reddit sharing
 
   initializePreventDefault();
+  
+  initializeSearchButton();
 
   initializeAudioQuote();
 
@@ -345,6 +347,21 @@ function initializeSocialMediaActions() {
 function initializePreventDefault() {
   $('.preventDefault').click(function (e) {
       e.preventDefault();
+  });
+}
+
+function initializeSearchButton() {
+  $('.open-nav-search').click(function (e) {
+    e.preventDefault();
+    const navSearchInput = document.getElementById("nav-search-input");
+    const navSearch = document.getElementById("nav-search");
+    console.log(navSearchInput);
+    if (navSearchInput && navSearch) {
+      navSearch.style = "display: block";
+      navSearchInput.focus();
+      console.log("focused");
+      navSearch.style = "";
+    }  
   });
 }
 

@@ -14,6 +14,7 @@
 body {
   font-family: fonts.$font-default;
   font-size: fonts.$font-size-base + px;
+  font-variation-settings: "wght" 400;
   padding: 0;
   margin: 0;
 
@@ -39,7 +40,7 @@ body {
 }
 
 .u-container--large {
-  max-width: 1260px;
+  max-width: 1275px;
 }
 
 .u-container--content {
@@ -57,6 +58,7 @@ body {
 }
 
 .u-container-topbar {
+  position: relative;
   max-width: 1200px;
   padding-left: 25px;
   padding-right: 25px;
@@ -209,11 +211,13 @@ h1, h2, h3 {
 
   color: var(--header_color);
   font-weight: 600;
+  font-variation-settings: "wght" 600;
   line-height: 1.2;
 }
 
 h2, h3 {
   font-weight: 600;
+  font-variation-settings: "wght" 600;
 }
 
 p{
@@ -242,14 +246,15 @@ html[color-css-theme="light"] {
   --text_color: #1b1b1b;
   --text_color_supporting: #666;
   --text_color_contrast: #333;
-  --header_color: black;
-  --header_color_supporting: #111;
+  --header_color: #222;
+  --header_color_supporting: #333;
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue};
   --light-border-grey: #eee;
   --light-grey: #d9d9d9;
   --contrast-color: #{variables.$color-ubyssey-blue-dark};
   --shadow-color: #888;
+  --marked-read: #444;
 
     // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
@@ -285,6 +290,7 @@ html[color-css-theme="dark"] {
   --light-grey: #d9d9d9;
   --contrast-color: #{variables.$color-ubyssey-blue-light};
   --shadow-color: black;
+  --marked-read: #bbb;
 
   // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: #031723;
@@ -346,6 +352,16 @@ body {
   background-color: var(--background);
   transition: background-color 0.5s ease, color 0.5s ease;
   min-height: 100vh;
+}
+
+b {
+  font-weight: 600;
+  font-variation-settings: "wght" 600;
+}
+
+img {
+  font-size: .5em;
+  line-height: .5em;
 }
 
 #content-wrapper {
@@ -455,6 +471,15 @@ a.image {
 
   background-color: #00000085;
   border: none;
+}
+
+.js-dropdown-container + button.close-modal {
+  background: none;
+  border: none;
+  position: fixed;
+  right: 0.5em;
+  top: 0.5em;
+  color: white;
 }
 
 ion-icon {

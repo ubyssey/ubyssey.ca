@@ -1,0 +1,11 @@
+{% load wagtailcore_tags %}
+
+<div class="o-curated_group">
+{% for headline in self.headline %}
+    {% include_block headline%}
+{% endfor %}
+
+{% for item in self.items %}
+    {% include_block item %}
+{% endfor %}
+</div>

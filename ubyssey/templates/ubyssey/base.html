@@ -26,6 +26,7 @@
 	{% endblock %}
 	{% include 'ubyssey/meta_tags.html' %}
 
+	<link rel="stylesheet" href="https://use.typekit.net/ihx1bdj.css">
 	{% block stylesheet %}
 	<link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css" />
 	{% endblock %}
@@ -225,8 +226,8 @@
 	{% comment %} <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> {% endcomment %}
 
 	<script src="{% static 'ubyssey/js/main.js' %}" type="text/javascript"></script>
-	{% block scripts %}
 	<script src="{% static 'ubyssey/js/article.js' %}" type="text/javascript"></script>
+	{% block scripts %}
 	{% endblock %}
 	{% wagtailuserbar %}
 </body>

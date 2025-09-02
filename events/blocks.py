@@ -7,7 +7,7 @@ class SidebarEventsBlock(blocks.StructBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
-        events = Event.objects.filter(hidden=False, end_time__gte=timezone.now()).exclude(category='seminar').order_by("start_time")[:15]
+        events = Event.objects.filter(hidden=False, hide_from_homepage=False, end_time__gte=timezone.now()).order_by("start_time")[:15]
         context["ongoing"] = []
         context["upcoming"] = []
         today = timezone.now().astimezone(timezone.get_current_timezone())

@@ -2,13 +2,17 @@
 @use "../../modules/variables";
 
 .o-events-sidebar {
-    border: 1px solid;
-    padding: 0 1em;
-    border-radius: 0.5em;
 
-    h2, h3 {
-        font-family: fonts.$font-default;
+    h2 {
+        font-size: 1.25em;
+    }
+    h3 {
+        margin-top: 0;
         font-size: 1.17em;
+        font-weight: 500;
+    }
+    h2, h3 {
+        font-family: fonts.$font-home-headline;
     }
     p {
         color: inherit;
@@ -19,19 +23,43 @@
         } 
         .featured_event__time {
             margin-block: 0;
-            font-weight: 600;
-            font-variation-settings: "wght" 600;
-            text-decoration: underline;
+            font-size: 0.9em;
         }
         .featured_event__title {
             margin-block: 0;
+            font-variation-settings: "wght" 500;
         }
     }
     ul {
-        padding: 0;
+        padding: 0.5em 0;
+        margin-bottom: 0;
         list-style: none;
     }
+    .o-events--event-time {
+        margin-right: 0.5em;
+        padding: 0.25em 0.5em;
+        
+        width: 6em;
+        flex-shrink: 0;
+                
+        font-size: .9em;
+        text-align: left;
+        color: var(--three-bar-logo-color);
+    }
+    .o-events--event-colour {
+        border-left: var(--event-category-color) 2px solid;
+        padding-left: 0.5em;
+        background: color-mix(in oklab, var(--event-category-color) 25%, transparent);
+    }
+    .o-events--event-title {
+        border-bottom: 1px dashed #cfcece;
+        
+        flex-grow: 1;
+
+        font-variation-settings: "wght" 500;
+    }
     .see_more {
+        margin-block: 0 2em;
         font-size: 0.8em;
         text-decoration: underline;
     }
@@ -39,54 +67,33 @@
 
 li.o-event {
     margin-bottom: 0.5em;
-    padding-left: 0.5em;
-    border-left: 0.25em solid;
-    display: -webkit-box;
+    display: flex;
     a {
         display: -webkit-box;
         height: fit-content;
         overflow: clip;
-        font-family: fonts.$font-headline;
-        font-variation-settings: "wght" 400;
         text-overflow: ellipsis;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         b {
-            font-variation-settings: "wght" 600;
+            font-variation-settings: "wght" 700;
+            font-weight: 700;
+            font-size: 0.8em;
+            text-transform: uppercase;
         }
     }
 
     &.community {
-        border-color: rgb(150,200,250);
+        --event-category-color: rgb(150,200,250);
     }
     &.entertainment {
-        border-color: rgb(200,250,199)
+        --event-category-color: rgb(200,250,199)
     }
     &.sports {
-        border-color: rgb(250,200,150)
+        --event-category-color: rgb(250,200,150)
     }
     &.seminar {
-        border-color: rgb(199,150,200);
-    }
-}
-
-[color-css-theme="dark"] .o-events-sidebar {
-    color: variables.$color-ubyssey-blue-light;
-    border-color: #5b7480;
-
-    h2, h3 {
-        color: white;
-    }
-}
-
-[color-css-theme="light"] .o-events-sidebar {
-    color: #3b3b3b;
-    border: var(--contrast-color) 2px solid;
-    background-color: white;
-    filter:drop-shadow(-7px 10px 4px rgba(4, 22, 32, 0.1098039216));
-
-    h2, h3 {
-        color: #222;
+        --event-category-color: rgb(199,150,200);
     }
 }
 
@@ -94,7 +101,6 @@ li.o-event {
     margin: 2em auto;
     padding: 0 1em;
     display: flex;
-    max-width: 1200px;
     border-block: 1px solid;
     color: var(--contrast-color);
   

@@ -4,19 +4,19 @@ Used in both section pages and homepage
 {% endcomment %}
 {% load wagtailcore_tags %}
 
-<section class="home-section_one_large_two_small landing_stream_block u-container--padded">
-  <h2 class="section">
+<h2 class="section">
       <a href={{ link }}>{{ title|title }}</a>
-  </h2>
-  <div class="c-section__featured">
-    {% include 'article/objects/infinitefeed_item.html' with article=articles.first expectedSection=articles.first.current_section %}
+</h2>
+<section class="landing_stream_block landing_stream_block--one-large-left">
+
+  <div class="o-section_article-row">
+
+    {% if articles %}
+    {% with lede="true" byline="true" style="o-article--suggested_article o-article--suggested_article--large" article=articles.0 %}
+    {% include 'article/objects/article_left-image.html' %}
+    {% endwith %}
   
-    <div class="c-section__featured__articles">
-      {% for article in articles %}
-        {% if forloop.counter != 1 and forloop.counter < 4 %}
-          {% include 'article/objects/infinitefeed_item.html' with article=article expectedSection=article.current_section %}
-        {% endif %}
-      {% endfor %}
-    </div>
+    {% include 'section/objects/section_row_block.html' with articles=articles|slice:"1:" title="" show_bylines="true" %}
+    {% endif %}
   </div>
 </section>

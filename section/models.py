@@ -40,6 +40,8 @@ from infinitefeed import blocks as infinitefeedblocks
 import datetime
 from django.utils import timezone
 
+from topics.views import cluster_articles_by_topic
+
 
 #-----Snippet models-----
 class CategorySnippet(index.Indexed, ClusterableModel):
@@ -337,13 +339,18 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     def get_recent_articles(self, max_items=10):
         return ArticlePage.objects.live().child_of(self).order_by("-first_published_at")[:max_items]
     
-    def get_recent_topic_cluster(self, items=12, max_in_cluster=3, cut_off=timezone.now() - timezone.timedelta(days=60)):
+    def get_recent_topic_cluster(self, items=12, max_in_cluster=3):
         '''
         Cluster articles by their topic. The clustering works by iterating
         from the most recent article and selecting a unique primary or listed topic. These topics are
         then iterated through and recent articles with these topics are joined in a cluster
         '''
-        
+
+        #considered_articles = ArticlePage.objects.live().child_of(self).order_by('-first_published_at')[:2*items]
+
+        #return cluster_articles_by_topic(considered_articles, items=items, max_in_cluster=max_in_cluster)
+
+
         # Get recent articles to cluster
         considered_articles = ArticlePage.objects.live().child_of(self).order_by('-first_published_at')[:2*items]
         
@@ -433,13 +440,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         #        print(" - " + article.title)
         return cluster
 
-    def get_recent_topic_cluster_grouped(self, items=12, columns=4, group_max=3, cut_off=timezone.now() - timezone.timedelta(days=60)):
+    def get_recent_topic_cluster_grouped(self, items=12, columns=4, group_max=3):
         '''
         Divide the topic clusers into groups where each group has 'group_max' number of articles.
         '''
         
         # Get clusters
-        clusters = self.get_recent_topic_cluster(items=items+columns, max_in_cluster=group_max, cut_off=cut_off)
+        clusters = self.get_recent_topic_cluster(items=items+columns, max_in_cluster=group_max)
         groups = []
 
         # Iterate through clusters, first adding 'columns' number to 'groups', 

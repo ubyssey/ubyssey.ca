@@ -1,0 +1,44 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+{% if get_recent_stories_by_topic %}
+<section class="c-home-recent-stories">
+    <h2>Recent stories</h2>
+    <ul class="c-home-recent-stories--day-list c-home-recent-stories--day-list--clustered">
+        {% for cluster in get_recent_stories_by_topic %}
+            <li>
+                <div class="c-home-recent-stories--article-list--header"><a href="/topic/{{cluster.topic.slug}}/">{{cluster.topic.name}}</a></div>
+                <ul class="c-home-recent-stories--article-list">
+                    {% for article in cluster.articles%}
+                        <li style="--section: {{article.colour}}">
+                            <div class="left">
+                                <a class="marked" href="{% pageurl article %}">
+                                    <span class="c-home-recent-stories--article-list--section">{{article.current_section}}</span>
+                                    <span class="c-home-recent-stories--article-list--article">{{article.title|safe}}</span>
+                                </a>
+                                <div class="o-article__meta">
+                                    <span class="o-article__byline">{{article.get_authors_split_out_visual_bylines|safe}}</span> 
+                                    <span class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</span>
+                                </div>
+                            </div>
+                            <div class="right">
+                            {% if article.featured_media.first %}
+                                <a class="o-article__image" href="{% pageurl article %}">
+                                {% if article.featured_media.first.image %}
+                                {% image article.featured_media.first.image format-webp fill-200x200 loading="lazy" alt=article.featured_media.first.alt_text %}
+                                {% elif article.featured_media.first.video %}
+                                <img src='http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg' alt="{{article.featured_media.first.alt_text}}">
+                                {% endif %}
+                                </a>
+                            {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}

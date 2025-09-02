@@ -1,7 +1,14 @@
 """
 Blocks used on the home page of the site
 """
+from wagtail.models import Site
 from wagtail import blocks
+from article.models import ArticlePage
+from django.db.models import Q
+from django.utils import timezone
+from django.utils.functional import cached_property
+
+from topics.views import cluster_articles_by_topic
 
 class LinksStreamBlock(blocks.StructBlock):
 
@@ -73,3 +80,139 @@ class LinksStreamBlock(blocks.StructBlock):
 
     class Meta:
         template = "home/stream_blocks/links.html"
+
+# Curated stream
+
+class StorystreamItem(blocks.StructBlock):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage")
+
+    def render(self, value, context=None):
+        context["article"] = value["article"]
+        return value["article"].storystream_view[0].render_as_block(context=context)
+
+class CuratedGroupHeadline(blocks.StructBlock):
+    headline = blocks.CharBlock()
+    style = blocks.ChoiceBlock(
+        choices=[
+            ('small', 'Small'),
+            ('large', 'Large'),
+        ],
+        default='small',
+        )
+    link = blocks.URLBlock(required=False)
+
+    class Meta:
+        template = 'home/objects/group_headline.html'
+
+class CuratedGroup(blocks.StructBlock):
+    headline = blocks.StreamBlock([
+            ('normal_headline', CuratedGroupHeadline())
+        ],
+        required=False,
+        max_num=1
+        )
+    items = blocks.StreamBlock([
+            ('storystream_item', StorystreamItem())
+        ])
+
+    class Meta:
+        template = "home/objects/curated_group.html"
+
+class CuratedGroupCards(CuratedGroup):
+
+    class Meta:
+        template = "home/objects/curated_group--cards.html"
+
+
+# Sidebar 
+
+class RecentStoriesByDay(blocks.StructBlock):
+
+    def get_recent_stories_by_day(self, request):
+        cutoff = timezone.now() - timezone.timedelta(days=14)
+        cutoff = cutoff.replace(hour=0, minute=0)
+
+        if request:
+            site = Site.find_for_request(request)
+
+            articleQuery = ArticlePage.objects.live().public().descendant_of(site.root_page).exclude(current_section__in = ["pages","about", "contact"])
+        else:
+            articleQuery = ArticlePage.objects.live().public().exclude(current_section__in = ["pages","about", "contact"])
+
+        articles = articleQuery.filter(explicit_published_at__gte=cutoff).order_by("-explicit_published_at")
+
+        if len(articles) < 10:
+            articles = articleQuery.order_by("-explicit_published_at")[:10]
+
+
+        articlesByDate = []
+
+        def format_date(datetime):
+            today = timezone.now()
+            if today.date() == datetime.date():
+                return "Today"
+            elif today.date() - timezone.timedelta(days=1) == datetime.date():
+                return "Yesterday"
+            else:
+                return datetime.strftime("%B %d")
+
+        for article in articles:
+            if len(articlesByDate) > 0:
+                if articlesByDate[-1]["day"] == format_date(article.first_published_at):
+                    articlesByDate[-1]["articles"].append(article)
+                    continue    
+        
+            articlesByDate.append({
+                "day": format_date(article.first_published_at),
+                "articles": [article]
+            })
+
+        return articlesByDate
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        request = None
+        if "request" in parent_context:
+            request = parent_context["request"]
+        context["recent_articles_by_day"] = self.get_recent_stories_by_day(request)
+        return context
+
+    class Meta:
+        template = "home/stream_blocks/recent_stories.html"
+            
+
+class RecentStoriesByTopic(blocks.StructBlock):
+
+    def get_recent_stories_by_topic(self, exclude, request):
+        cutoff = timezone.now() - timezone.timedelta(days=14)
+        #articles = ArticlePage.objects.live().public().filter(first_published_at__gte=cutoff).order_by("-first_published_at")
+        
+        articleQuery = ArticlePage.objects.live().public().filter(timeliness__lte=ArticlePage.TimelinessChoices.FEW_DAYS).exclude(Q(page_ptr_id__in=exclude) | Q(current_section__in=["pages","about", "contact"]))
+        if request:
+            site = Site.find_for_request(request)
+            articleQuery = articleQuery.descendant_of(site.root_page)
+
+        articles = articleQuery[:30]
+
+        return cluster_articles_by_topic(considered_articles=articles, items=8, clusters=None)
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        exclude = []
+        if "curated_articles" in parent_context:
+            exclude = parent_context["curated_articles"]
+        request = None
+        if "request" in parent_context:
+            request = parent_context["request"]
+        context["get_recent_stories_by_topic"] = self.get_recent_stories_by_topic(exclude, request)
+        return context
+
+    class Meta:
+        template = "home/stream_blocks/recent_stories--clustered.html"
+            
+class SidebarNewsletterSignup(blocks.StructBlock):
+    text = blocks.RichTextBlock()
+    form_placeholder = blocks.CharBlock()
+
+    class Meta:
+        template = "home/stream_blocks/newsletter_signup.html"

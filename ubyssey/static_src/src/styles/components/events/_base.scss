@@ -1,5 +1,9 @@
 @use '../../modules/variables';
 
+b {
+    font-variation-settings: "wght" 600;
+}
+
 main.events-page {
     display: block;
     height: 100vh;
@@ -7,12 +11,14 @@ main.events-page {
     padding: 0 2em;
     margin: 0 auto;
 
-    font-family: noto-serif;
+    font-family: librefranklin;
     font-weight: 500;
+    font-variation-settings: "wght" 500;
 
     h1, h2, h3, p {
-        font-family: noto-serif;
+        font-family: librefranklin;
         font-weight: 500;
+        font-variation-settings: "wght" 500;
     }
 
     .events-flex {
@@ -44,7 +50,7 @@ main.events-page {
                 margin: 0.75em;
                 color: white;
                 text-align: center;
-                font-family: noto-sans;
+                font-family: librefranklin;
                 font-size: 1em;
                 line-height: 1em;
             }
@@ -72,7 +78,7 @@ main.events-page {
 
                 p {
                     line-height: 1.5em;
-                    font-family: noto-sans;
+                    font-family: librefranklin;
                 }
 
                 h2 {
@@ -114,7 +120,7 @@ main.events-page {
             margin: 0 0.25em;
             
             text-align: center;
-            font-family: noto-sans;
+            font-family: librefranklin;
 
             &.selected {
                 text-decoration: underline;
@@ -176,7 +182,7 @@ div.day{
 
     li {
         border: 2px solid transparent;
-        font-family: noto-sans;
+        font-family: librefranklin;
     }
 
     li.selected {
@@ -220,6 +226,7 @@ div.day{
             line-height: 1.5em;
             b {
                 text-transform: lowercase;
+                font-variation-settings: "wght" 600;
             }
         }
     }
@@ -260,6 +267,7 @@ button.events-calendar--number {
     margin: 0;
     line-height: 1em;
     font-weight: 500;
+    font-variation-settings: "wght" 500;
     font-family: inherit;
     &:hover, &:focus {
         text-decoration: underline;
@@ -398,7 +406,7 @@ header.events{
             text-align: center;           
             border-radius: 5px;        
             appearance: none; 
-            font-family: "noto-sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;            /* Remove default styling */
+            font-family: "librefranklin", "noto-sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;            /* Remove default styling */
         }        
     }     
     html[color-css-theme="dark"] .events-calendar--categories select.category-select {
@@ -555,7 +563,7 @@ header.events{
         li.legend-item {
             position: relative;
             margin: 0.25em;
-            font-family: noto-sans;
+            font-family: librefranklin;
         }
     }
 
@@ -579,6 +587,7 @@ header.events{
 
         color: black;
         font-weight: 500;
+        font-variation-settings: "wght" 500;
         font-size: inherit;
         line-height: unset;
     }

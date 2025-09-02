@@ -10,10 +10,24 @@
         width: auto;
     }
 
+    .o-article__published {
+        font-size: 0.9em;
+        font-weight: 600;
+        font-variation-settings: "wght" 600;
+    }
     .o-article__headline span.subtitle {
         font-weight: 400;
         font-variation-settings: 'wght' 400;
         font-size: 0.9em;
+    }
+
+    .read-more {
+        margin-left: 0.25em;
+        font-weight: 600;
+        font-style: normal;
+        text-decoration: none;
+        white-space: nowrap;
+        color: variables.$color-ubyssey-blue;
     }
 }
 
@@ -27,8 +41,10 @@
         > * {
             margin-inline: auto;
             max-width: 100%;
+            width: 100%;
         }
-        > img {
+        img {
+            max-width: 100%;
             max-height: 350px;
         }
     }
@@ -148,11 +164,17 @@
         .o-article__headline {
             font-size: 1.4em;
         }
+        p {
+            margin-bottom: 0;
+            padding-bottom: 1em;
+            padding-left: 1.5em;
+            border-left: 2px solid variables.$color-ubyssey-blue;
+        }
     }
     .o-article__right {
         margin-right: 1em;
         padding-left: 1.5em;
-        border-left: 1px solid var(--light-border);
+        border-left: 2px solid variables.$color-ubyssey-blue;
         > * {
             color: var(--text_color_contrast);
         }
@@ -173,16 +195,8 @@
         li {
             margin-bottom: 1em;
         }
-        .read-more {
-            margin-left: 0.25em;
-            font-weight: 600;
-            font-style: normal;
-            text-decoration: none;
-            white-space: nowrap;
-            color: variables.$color-ubyssey-blue;
-        }
         .attachment {
-            margin-block: 0.75rem;
+            margin-block: 0 0.75rem;
             font-size: 0.9em;
             @media(variables.$bp-larger-than-phablet) {
                 padding-right: 1.5rem;
@@ -190,6 +204,11 @@
         }
         img, iframe {
             max-width: 100%;
+        }
+        iframe.yt-video {
+            aspect-ratio: 16/9;
+            width: 100%;
+            height: auto;
         }
         *:last-child {
             margin-bottom: 0;

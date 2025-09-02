@@ -185,6 +185,7 @@
         font-size: 1.15em;
         line-height: 1.25em;
         font-weight: 600;
+        font-variation-settings: "wght" 600;
             a:hover {
                 text-decoration: underline;
             }
@@ -373,8 +374,6 @@
   display: flex;
   gap: 1.25em;
   margin-top: 1em;
-  border-block: 2px solid var(--light-border);
-  padding-block: 2em 1em;
 
   article.o-article--suggested_article {
     width: 200px;
@@ -387,7 +386,7 @@
     }
     .o-article__snippet {
       font-size: 0.75em;
-      font-family: fonts.$font-body;
+      font-family: fonts.$font-default;
       @media(variables.$bp-larger-than-tablet) {
         display: -webkit-box;
         height: fit-content;
@@ -407,10 +406,46 @@
     }
     .o-article__headline {
       font-size: 1.1em;
+      font-weight: 500;
     }
     .o-article__byline {
       font-size: 0.75em;
       color: var(--text_color_supporting);
+    }
+
+    &.o-article--suggested_article--large {  
+      margin-block: auto;
+      display: flex;
+      flex-grow: 1;
+      height: fit-content;
+      max-width: none;
+
+      @media(variables.$bp-smaller-than-phablet) {
+        flex-direction: column;
+      }
+
+      @media(variables.$bp-larger-than-phablet) {
+        flex-direction: row-reverse;
+      }
+      
+      .o-article__headline {
+        font-size: 1.5em;
+      }
+
+      .o-article__snippet {
+        font-size: 1em;
+        font-family: fonts.$font-default;
+      }
+      .o-article__right {
+        margin: auto 1.5em auto 0;
+        width: 100%;
+        height: fit-content;
+      }
+      .o-article__left {
+        max-width: 500px;
+        height: fit-content;
+        flex-shrink: 0;
+      }
     }
   }
   @media(variables.$bp-smaller-than-desktop) {
@@ -487,6 +522,7 @@
       display: block;
       font-family: fonts.$font-default;
       font-weight: 600;
+      font-variation-settings: "wght" 600;
       font-size: 1.2em;
       line-height: 1em;
       color: var(--header_color);
@@ -495,7 +531,6 @@
 }
 
 .o-section_article-cluster {
-  padding-top: 1em;
   @media(variables.$bp-smaller-than-tablet) {
     flex-direction: column;
   }

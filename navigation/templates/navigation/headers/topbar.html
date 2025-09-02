@@ -16,9 +16,12 @@
             {% main_menu show_multiple_levels=False apply_active_classes=True %}
         </nav>
         <div class="right">
+            <div id="nav-search" class="c-nav-search--container"></div>  
+            <button class="search open-nav-search">
+            <ion-icon name="search"></ion-icon>
+            </button>
             {% include 'article/objects/darkmode_button.html' with id="topbar" %}
         </div>
-        {% comment %} <a class="search" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
     </div>
 </header>
 {% endcache %}
