@@ -426,16 +426,17 @@
 
       @media(variables.$bp-larger-than-phablet) {
         flex-direction: row-reverse;
+
+        .o-article__snippet {
+          font-size: 1em;
+          font-family: fonts.$font-default;
+        }
       }
       
       .o-article__headline {
         font-size: 1.5em;
       }
 
-      .o-article__snippet {
-        font-size: 1em;
-        font-family: fonts.$font-default;
-      }
       .o-article__right {
         margin: auto 1.5em auto 0;
         width: 100%;
@@ -486,12 +487,15 @@
           font-size: 1em;
           line-height: 1.5em;
           font-variation-settings: "wght" 400;
+          font-weight: 400;
         }
       }
       .o-article__left {
         margin-bottom: 1em;
+        width: 5em;
+        flex-shrink: 0;
         img {
-          width: 5em;
+          width: 100%;
           aspect-ratio: 1;
           object-fit: cover;
         }
