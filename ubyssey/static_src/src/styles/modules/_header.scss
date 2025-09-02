@@ -1080,7 +1080,7 @@ nav.branding-nav {
       width: 100%;
 
       .middle-left {
-        padding-right: 1.5em;
+        padding-right: 2em;
         padding-left: 4em;
         border-right: 1px solid var(--header-border-color);
 
@@ -1098,7 +1098,7 @@ nav.branding-nav {
       }
 
       .middle-right {
-        padding-left: 1.5em;
+        padding-left: 2em;
         padding-right: 4em;
 
         width: 33.3%;
@@ -1112,6 +1112,9 @@ nav.branding-nav {
           li {
             padding-inline: 0;
           }
+        }
+        .dropdown ul {
+          padding-inline: 1em;
         }
       }
     }

@@ -187,17 +187,12 @@ class RecentStoriesByTopic(blocks.StructBlock):
         cutoff = timezone.now() - timezone.timedelta(days=14)
         #articles = ArticlePage.objects.live().public().filter(first_published_at__gte=cutoff).order_by("-first_published_at")
 
-        articleQuery = ArticlePage.objects.live().public().filter(timeliness__lte=ArticlePage.TimelinessChoices.WEEK, explicit_published_at__gte=cutoff).exclude(Q(page_ptr_id__in=exclude) | Q(current_section__in=["pages","about", "contact"]))
+        articleQuery = ArticlePage.objects.live().public().filter(timeliness__lte=ArticlePage.TimelinessChoices.FEW_DAYS, explicit_published_at__gte=cutoff).exclude(Q(page_ptr_id__in=exclude) | Q(current_section__in=["pages","about", "contact"]))
         if request:
             site = Site.find_for_request(request)
             articleQuery = articleQuery.descendant_of(site.root_page)
 
-        articles = []
-        for article in articleQuery.order_by("-explicit_published_at"):
-            if article.get_relevance_score() == 1:
-                articles.append(article)
-            if len(articles) >= 30:
-                break
+        articles = articleQuery[:30]
 
         return cluster_articles_by_topic(considered_articles=articles, items=8, clusters=None)
     

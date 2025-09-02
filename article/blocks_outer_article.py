@@ -199,7 +199,7 @@ class SectionBlock(AbstractArticleList):
         exclude = []
         if "curated_articles" in parent_context:
             exclude = parent_context["curated_articles"]
-        articles = ArticlePage.objects.child_of(value['section']).live().filter(timeliness__gte=ArticlePage.TimelinessChoices.MONTH).exclude(page_ptr_id__in=exclude)
+        articles = ArticlePage.objects.child_of(value['section']).live().filter(timeliness__gte=ArticlePage.TimelinessChoices.A_WEEK).exclude(page_ptr_id__in=exclude)
         
         limit = 9
         if 'section/objects/section_one-large-two-small.html' in value['template']:
@@ -213,10 +213,6 @@ class SectionBlock(AbstractArticleList):
                 context['articles'].append(article)
             if len(context["articles"]) >= limit:
                 break
-
-        if len(context['articles']) < limit:
-            print("no evergreen articles")
-            context['articles'] = ArticlePage.objects.child_of(value['section']).live().filter(Q(timeliness__gte=ArticlePage.TimelinessChoices.MONTH) | Q(explicit_published_at__lte=timezone.now() - timezone.timedelta(days=14))).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')[:limit]
 
         if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]
@@ -331,11 +327,7 @@ class SectionCategorizedBlock(AbstractArticleList):
         
         limit = 4
         
-        context['articles'] = ArticlePage.objects.live().child_of(value['section']).filter(timeliness__gte=ArticlePage.TimelinessChoices.MONTH).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
-                
-        if len(context['articles']) < limit:
-            context['articles'] = ArticlePage.objects.child_of(value['section']).live().filter(Q(timeliness__gte=ArticlePage.TimelinessChoices.MONTH) | Q(explicit_published_at__lte=timezone.now() - timezone.timedelta(days=14))).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
-
+        context['articles'] = ArticlePage.objects.live().child_of(value['section']).filter(timeliness__gte=ArticlePage.TimelinessChoices.A_WEEK).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
         
         if value["fill_topic"]:
             context['articles'] = context['articles'].filter(topics__slug=value["fill_topic"])

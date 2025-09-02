@@ -588,14 +588,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
 
     class TimelinessChoices(models.IntegerChoices):
-        NULL = 0
         DAY = 1
-        WEEK = 2
-        MONTH = 3
-        YEAR = 4
-        EVERGREEN = 5
+        FEW_DAYS = 2
+        A_WEEK = 3
+        EVERGREEN = 4
 
-    timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.WEEK)
+    timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.FEW_DAYS)
 
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
@@ -895,21 +893,16 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     # TIMELINESS
     def get_relevance_score(self):
         relevance_delta = {
-            self.TimelinessChoices.NULL: 0,
             self.TimelinessChoices.DAY: 1,
-            self.TimelinessChoices.WEEK: 7,
-            self.TimelinessChoices.MONTH: 35,
-            self.TimelinessChoices.YEAR: 356,
+            self.TimelinessChoices.FEW_DAYS: 3,
+            self.TimelinessChoices.A_WEEK: 7,
             self.TimelinessChoices.EVERGREEN: 1000
         }
 
-        print(self.published_at)
         if self.published_at == None:
             return 0
         
         relevance_cutoff = timezone.now() - timezone.timedelta(days=relevance_delta[self.timeliness])
-
-        print(relevance_cutoff)
 
         if self.published_at > relevance_cutoff:
             return 1
