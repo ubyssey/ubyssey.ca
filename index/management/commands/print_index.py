@@ -6,10 +6,14 @@ class Command(BaseCommand):
     help = 'Runs the get_image_urls method'
 
     def handle(self, *args, **options):
+          
+        output_file = 'index_remove_singles.txt'
+        f = open(output_file, 'w')
         tree = create_index()
 
         def print_branch(root, spacing):
             print(f"{spacing} - {root['topic'].name}")
+            f.write(f"{spacing} - {root['topic'].name}\n")
             for sub_topic in root['sub_topics']:
                 print_branch(sub_topic, spacing + '   ')
             #print("")

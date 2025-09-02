@@ -134,7 +134,7 @@
     list-style-type: none;
     //background-color:variables.$color-ubyssey-blue;
     background-color: variables.$color-ubyssey-blue-classic;
-    border: 2px solid black;
+    border: 1px solid var(--archive-text);
     width: 100px;
     flex-grow: 1;
     text-align: center;

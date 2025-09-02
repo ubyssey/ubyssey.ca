@@ -9,7 +9,7 @@ def create_index():
     # Define the span of tagged articles to conisder for the index
     #cutoff = timezone.now() - timezone.timedelta(weeks=52)
     #considered_articles = ArticlePage.objects.filter(explicit_published_at__gte=cutoff)
-    considered_articles = ArticlePage.objects.all()
+    considered_articles = ArticlePage.objects.live()
 
     # Gather all topics used within the tagged article span
     topics_by_articles = [article.topics.all() for article in considered_articles]
@@ -34,22 +34,30 @@ def create_index():
     # Determine parent-child relationships
     relations = {}
     for topic in adjacency_matrix.keys():
-        most_adjacent = None
-        adjacency_score = 0
-        for existing_topic in adjacency_matrix[topic].keys():
-            if topic != existing_topic and adjacency_matrix[topic][topic] < adjacency_matrix[existing_topic][existing_topic]:
-                intersection = adjacency_matrix[topic][existing_topic]
-                union = adjacency_matrix[existing_topic][existing_topic] - adjacency_matrix[topic][existing_topic] + adjacency_matrix[topic][topic]
-                score = intersection/union
 
-                if score > adjacency_score:
-                    adjacency_score = score
-                    most_adjacent = existing_topic
+        if adjacency_matrix[topic][topic] < 2:
+            relations[topic] = None
 
-        if most_adjacent == None or adjacency_score < 0.5:
-            relations[topic] = 'root'
         else:
-            relations[topic] = most_adjacent
+            most_adjacent = None
+            similarity_score = 0
+            for existing_topic in adjacency_matrix[topic].keys():
+                if topic != existing_topic and adjacency_matrix[topic][topic] <= adjacency_matrix[existing_topic][existing_topic]:
+                    if existing_topic in relations:
+                        if not relations[existing_topic] == topic:
+                            intersection = adjacency_matrix[topic][existing_topic]
+                            union = adjacency_matrix[existing_topic][existing_topic] - adjacency_matrix[topic][existing_topic] + adjacency_matrix[topic][topic]
+                            overlap = intersection/adjacency_matrix[topic][topic]
+                            score = intersection/union
+
+                            if score > similarity_score and overlap > 0.5 and intersection > 1:
+                                similarity_score = score
+                                most_adjacent = existing_topic
+
+            if most_adjacent == None:
+                relations[topic] = 'root'
+            else:
+                relations[topic] = most_adjacent
 
     # Create tree from parent-child relationships
     def build_branch(root, relations):
@@ -58,7 +66,7 @@ def create_index():
             if relations[topic] == root:
                 children.append(build_branch(topic, relations))
 
-        children.sort(key = lambda b: b['topic'].name)
+        children.sort(key = lambda b: b['topic'].name.lower())
 
         topic = None
         for t in all_topics:
@@ -68,15 +76,12 @@ def create_index():
         return {'topic': topic, 'sub_topics': children}
     
     tree = []
-    added_topics = []
-    finished = False
-    while finished == False:
-        finished = True
-        for topic in relations.keys():
-            if relations[topic] == 'root':
-                tree.append(build_branch(topic, relations))
 
-    tree.sort(key = lambda b: b['topic'].name)
+    for topic in relations.keys():
+        if relations[topic] == 'root':
+            tree.append(build_branch(topic, relations))
+
+    tree.sort(key = lambda b: b['topic'].name.lower())
     return tree
 
     

@@ -386,7 +386,7 @@
     }
     .o-article__snippet {
       font-size: 0.75em;
-      font-family: fonts.$font-body;
+      font-family: fonts.$font-default;
       @media(variables.$bp-larger-than-tablet) {
         display: -webkit-box;
         height: fit-content;
@@ -428,16 +428,14 @@
         flex-direction: row-reverse;
       }
       
-
-      @media(variables.$bp-larger-than-desktop) {
-        padding-right: 1em;
-        border-right: 1px dashed var(--header_color);
-      }
-
       .o-article__headline {
         font-size: 1.5em;
       }
 
+      .o-article__snippet {
+        font-size: 1em;
+        font-family: fonts.$font-default;
+      }
       .o-article__right {
         margin: auto 1.5em auto 0;
         width: 100%;

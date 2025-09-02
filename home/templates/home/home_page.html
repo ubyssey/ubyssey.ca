@@ -33,7 +33,7 @@
 {% endfor %}
 </div>
 
-{% include 'navigation/headers/home-desktop-header.html' with tagline=self.tagline tagline_url=self.tagline_url %}
+{% include 'navigation/headers/home-desktop-header--symmetric.html' with tagline=self.tagline tagline_url=self.tagline_url %}
 {% endblock %}
 
 {% block content %}
@@ -64,7 +64,7 @@
 			{% include_block block %}
 		{% endfor %}
 
-		<div class="u-container u-container--large c-home-section_stream">
+		<div class="u-container u-container--large u-container--padded c-home-section_stream">
 			{% for section in self.sections_stream %}
 				{% include_block section %}
 			{% endfor %}

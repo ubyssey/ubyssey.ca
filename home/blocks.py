@@ -139,10 +139,10 @@ class RecentStoriesByDay(blocks.StructBlock):
         else:
             articleQuery = ArticlePage.objects.live().public().exclude(current_section__in = ["pages","about", "contact"])
 
-        articles = articleQuery.filter(first_published_at__gte=cutoff).order_by("-first_published_at")
+        articles = articleQuery.filter(explicit_published_at__gte=cutoff).order_by("-explicit_published_at")
 
         if len(articles) < 10:
-            articles = articleQuery.order_by("-first_published_at")[:10]
+            articles = articleQuery.order_by("-explicit_published_at")[:10]
 
 
         articlesByDate = []
@@ -193,7 +193,7 @@ class RecentStoriesByTopic(blocks.StructBlock):
             articleQuery = articleQuery.descendant_of(site.root_page)
 
         articles = []
-        for article in articleQuery.order_by("-first_published_at"):
+        for article in articleQuery.order_by("-explicit_published_at"):
             if article.get_relevance_score() == 1:
                 articles.append(article)
             if len(articles) >= 30:

@@ -17,6 +17,7 @@
 
             <div class="o-curated_group--cards--card--headline">
                 {% include "article/objects/headline.html" %}
+                <p>{{article.lede|safe}}</p>
                 {% include "article/objects/meta_info.html" %}
             </div>
 

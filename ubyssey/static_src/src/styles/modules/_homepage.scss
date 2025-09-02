@@ -397,14 +397,21 @@ html.hairlines {
   margin-top: 4em;
   margin-bottom: 10%;
   h2 {
-    margin-block: 0.25em;
+    padding-left: 0.25em;
+    margin-block: 0.3em;
+    
     width: fit-content;
-    border-bottom: .1em solid variables.$color-ubyssey-blue;
+
     font-size: 2em;
+    line-height: 1em;
     font-variation-settings: "wght" 600;
     font-family: fonts.$font-home-headline;
     @media(variables.$bp-smaller-than-tablet) {
       margin-left: 1em;
+      border-bottom: 0.2em solid variables.$color-ubyssey-blue;
+    }
+    @media(variables.$bp-larger-than-tablet) {
+      border-left: 0.2em solid variables.$color-ubyssey-blue;
     }
     @media(variables.$bp-smaller-than-desktop) {
       margin: 1em auto;
@@ -413,6 +420,27 @@ html.hairlines {
   .landing_stream_block {
     padding-block: 1em;
     border-block: 1px dashed var(--header_color);
+
+    @media(variables.$bp-larger-than-desktop) {    
+      &.landing_stream_block--one-large-left {
+        .o-section_row_block {
+          padding-left: 1.5em;
+          border-left: 1px dashed var(--header_color);
+          width: 33.3%;
+
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
+          .o-article_list-item {
+            width: 100%;
+            &:first-child {
+              padding-top: 0;
+            }
+          }
+        }
+      }
+    }
   }
   h2 + .landing_stream_block {
     margin: 0.5em auto 5em auto;
