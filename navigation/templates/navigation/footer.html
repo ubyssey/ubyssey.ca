@@ -30,7 +30,6 @@
                     <ul>
                         <li><a href="/rss" target="_blank" title="RSS feed">RSS feed</a></li>
                         <li><a href="/newsletter" target="_blank" title="Newsletter">Newsletter</a></li>
-                        <li><a href="https://discord.gg/aTkCjyAvxh" target="_blank" title="Discord link">Join the Discord</a></li>
                         <li><a href="https://bsky.app/profile/ubyssey.ca" target="_blank" title="The Ubyssey on Bluesky">Bluesky</a></li>
                         <li><a href="https://www.youtube.com/@theubyssey1918" target="_blank" title="The Ubyssey on YouTube">YouTube</a></li>
                         <li><a href="https://www.tiktok.com/@theubyssey" target="_blank" title="The Ubyssey on Tiktok">TikTok</a></li>
@@ -44,6 +43,10 @@
                 <div class="footer-links-section">
                     <h3>Contact</h3>
                     {% flat_menu 'contact_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
+                </div>
+                <div class="footer-links-section">
+                    <h3>Join</h3>
+                    {% flat_menu 'join_footer_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
                 </div>
             </div>
         </div>
