@@ -427,14 +427,13 @@
       @media(variables.$bp-larger-than-phablet) {
         flex-direction: row-reverse;
 
+        .o-article__headline {
+          font-size: 1.5em;
+        }
         .o-article__snippet {
           font-size: 1em;
           font-family: fonts.$font-default;
         }
-      }
-      
-      .o-article__headline {
-        font-size: 1.5em;
       }
 
       .o-article__right {
