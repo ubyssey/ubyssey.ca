@@ -749,6 +749,12 @@ html.hairlines {
   margin-block: 1em 1.5em;
   border-radius: 0.5em;
 
+   p {
+    a {
+      text-decoration: underline;
+    }
+   }
+
   .c-home-sidebar--newsletter-signup--form {
     display: flex;
 
