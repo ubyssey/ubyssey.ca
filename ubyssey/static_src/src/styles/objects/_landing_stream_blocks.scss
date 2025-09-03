@@ -383,6 +383,9 @@
     }
     .o-article__right {
       margin: 1em 0.5em;
+      @media(variables.$bp-smaller-than-tablet) {
+        padding: 1em;
+      }
     }
     .o-article__snippet {
       font-size: 0.75em;
@@ -452,7 +455,7 @@
     padding-inline: 1em;
   }
   @media(variables.$bp-smaller-than-tablet) {
-    padding: 2em 1.5em;
+    padding: 0;
     flex-direction: column;
 
     .o-article__published {
@@ -466,6 +469,7 @@
       width: auto;
     }
     article.o-article_list-item {
+      padding: 1em;
       width: 100%;
     }
     article {

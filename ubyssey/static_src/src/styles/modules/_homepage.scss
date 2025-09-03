@@ -460,6 +460,9 @@ html.hairlines {
   @media(variables.$bp-smaller-than-tablet) {
     flex-direction: column;
   }
+  @media(variables.$bp-larger-than-tablet) {
+    padding-inline: 15px;
+  }
 }
 
 .c-curated_stream {
