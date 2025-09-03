@@ -487,6 +487,10 @@ div.caption {
   color: var(--article_caption);
   font-style: italic;
   font-family: fonts.$font-default;
+
+  a {
+    text-decoration: underline;
+  }
 }
 
 span.credit {

@@ -383,9 +383,6 @@
     }
     .o-article__right {
       margin: 1em 0.5em;
-      @media(variables.$bp-smaller-than-tablet) {
-        padding: 1em;
-      }
     }
     .o-article__snippet {
       font-size: 0.75em;
@@ -437,10 +434,12 @@
           font-size: 1em;
           font-family: fonts.$font-default;
         }
+        .o-article__right {
+          margin: auto 1.5em auto 0;
+        }
       }
 
       .o-article__right {
-        margin: auto 1.5em auto 0;
         width: 100%;
         height: fit-content;
       }
@@ -469,7 +468,7 @@
       width: auto;
     }
     article.o-article_list-item {
-      padding: 1em;
+      max-width: none;
       width: 100%;
     }
     article {
