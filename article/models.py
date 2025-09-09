@@ -1612,7 +1612,7 @@ class StandardArticlePage(ArticlePage):
         ),
     ] # content_panels
 
-    promote_panels = Page.promote_panels + ArticlePage.promote_panels
+    promote_panels = ArticlePage.promote_panels
 
     settings_panels = SectionablePage.settings_panels + ArticlePage.settings_panels
 
