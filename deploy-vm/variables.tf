@@ -37,7 +37,7 @@ variable "machine_type" {
 variable "disk_size_gb" {
   description = "Boot disk size in GB"
   type        = number
-  default     = 40
+  default     = 50
 }
 
 variable "disk_type" {

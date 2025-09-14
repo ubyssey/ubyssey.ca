@@ -25,6 +25,12 @@ resource "google_compute_disk" "boot_disk_from_snapshot" {
   image    = var.boot_disk_image
 }
 
+resource "google_compute_address" "vm_static_ip" {
+  name         = "${var.vm_name}-static-ip"
+  address_type = "EXTERNAL"
+  region       = var.region
+}
+
 resource "google_compute_instance" "ubyssey_vm" {
   name                      = var.vm_name
   machine_type              = var.machine_type
@@ -41,6 +47,7 @@ resource "google_compute_instance" "ubyssey_vm" {
     network    = "default"
     subnetwork = "default"
     access_config {
+      nat_ip = google_compute_address.vm_static_ip.address
     }
   }
 

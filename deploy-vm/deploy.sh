@@ -13,7 +13,7 @@ GCLOUD_SDK_PARENT_DIR="/opt"
 GCLOUD_SDK_INSTALL_DIR="${GCLOUD_SDK_PARENT_DIR}/google-cloud-sdk"
 TEMP_SDK_DOWNLOAD_DIR=$(mktemp -d)
 TEMP_DIR=$(mktemp -d)
-TARGET_PROJECT_ID="ubyssey-prd"
+TARGET_PROJECT_ID="ubyssey-staging"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # --- Color definitions ---
