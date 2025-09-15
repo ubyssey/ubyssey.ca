@@ -42,7 +42,7 @@ services:
     #
     # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
-      bash -c "python manage.py migrate
+      bash -c "python manage.py migrate && python manage.py crontab add && service cron start 
       && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
 
     environment:
