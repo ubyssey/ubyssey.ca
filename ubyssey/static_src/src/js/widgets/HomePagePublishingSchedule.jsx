@@ -166,7 +166,7 @@ export default function PublishingSchedule() {
                 article["ready_at"] = workflow["ready_at"];
 
                 let current = {};
-                if (toBeCuratedArticleID in articles) {
+                if (article["id"] in articles) {
                     current = articles[article["id"]];
                 }
                 Object.assign(current, article);
