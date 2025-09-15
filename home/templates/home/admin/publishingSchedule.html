@@ -1,0 +1,69 @@
+<div class="publishingSchedule" id="publishingSchedule">
+</div>
+
+<style>
+    .publishingSchedule-flexbox {
+        display: flex;
+        gap: 1em;
+        --publishing-schedule_article--live: #59723a;
+        --publishing-schedule_article--to_publish: #6b3a72;
+        --publishing-schedule_article--not_to_publish: #676667;
+        
+        > * {
+            width: 50%;
+            flex-grow: 1;
+        }
+        li {
+            margin-bottom: 0.5em;
+            padding: 0.375em 1em;
+            border-radius: 0.375em;
+
+            display: flex;
+
+            background: var(--publishing-schedule_article--not_to_publish);
+
+            &.to-publish {
+                background: var(--publishing-schedule_article--to_publish)
+            }
+            &.live, &.to-publish.live {
+                background: var(--publishing-schedule_article--live);
+            }
+
+            .status {
+                margin-right: 1em;
+
+                display: inline-block;
+                width: 5em;
+
+                font-size: 0.9em;
+                overflow: clip;
+                text-overflow: ellipsis;
+                color: var(--w-color-text-meta);
+            }
+            .timeliness {
+                margin-left: 1em;
+                float: right;
+                
+                font-size: 0.9em;
+                text-align: right;
+                
+                color: var(--w-color-text-meta);
+            }
+            h3 {
+                margin: 0;
+                width: 0;
+
+                flex-grow: 1;
+                
+                overflow: clip;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            h3 a {
+                color: var(--w-color-text-label);
+            }
+
+        }
+    }
+</style>

@@ -33,6 +33,7 @@ module.exports = {
     'queer-substance-abuse': './src/js/queer-substance-abuse.js',
     'nocturne-window-watching': './src/js/nocturne-window-watching.js',
     'widgets/tags-panel': './src/js/widgets/tags-panel.js',
+    'widgets/HomePagePublishingSchedule': './src/js/widgets/HomePagePublishingSchedule.jsx',
     'widgets/auto-update-suggested-bar-choice': './src/js/widgets/auto-update-suggested-bar-choice.js',
     'passing-2025': './src/js/passing-2025.js',
   },

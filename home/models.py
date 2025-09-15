@@ -7,7 +7,8 @@ from django.utils import timezone
 
 from ads.models import AdSlot
 from wagtail import blocks
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, HelpPanel, FieldRowPanel, InlinePanel
+from wagtail.admin.views import generic
 from wagtail.models import Site, Page, Orderable
 from wagtail.fields import StreamField
 from modelcluster.fields import ParentalKey
@@ -167,14 +168,17 @@ class HomePage(Page):
     # )
 
     content_panels = Page.content_panels + [
-        MultiFieldPanel(
+        FieldRowPanel(
             [
                 FieldPanel("tagline"),
                 FieldPanel("tagline_url"),
             ],
             heading="Tagline"
         ),
+        
+        HelpPanel(template="home/admin/publishingSchedule.html"),
         FieldPanel("curated_stream"),
+        HelpPanel(template="home/admin/publishingScheduleScript.html"),
         FieldPanel("middle_stream", heading="Middle Stream"),
         FieldPanel("sidebar_stream", heading="Sidebar"),
         FieldPanel("sections_stream", heading="Sections"),
@@ -184,14 +188,17 @@ class HomePage(Page):
         # FieldPanel('home_sidebar_ad_slot2'),
     ]
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        
+    def get_curated_articles(self):
         articles = []
         for group in self.curated_stream.raw_data:
             for item in group["value"]["items"]:
                 articles.append(item["value"]["article"])
 
-        context["curated_articles"] = articles
+        return articles
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        context["curated_articles"] = self.get_curated_articles()
 
         return context

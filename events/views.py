@@ -254,8 +254,7 @@ class EventsTheme(object):
 
         return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours, 'tab': tab, 'ical': ical, 'rss': rss, 'meta': meta})
 
-async def update_events(request):
-    from django.http import HttpResponse
+async def update_events():
     import asyncio
 
     async for event in Event.objects.filter(update_mode=1, end_time__gte=timezone.now()):
@@ -582,6 +581,9 @@ async def update_events(request):
     async for event in Event.objects.filter(hidden=True, end_time__lt=timezone.now()):
         await event.adelete()
 
+async def update_events_http(request):
+    from django.http import HttpResponse
+    update_events()
     return HttpResponse("Success!", status=200)
 
 def create_ical(request):
