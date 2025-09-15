@@ -108,32 +108,30 @@ export default function PublishingSchedule() {
         console.log(toBeCuratedArticlesIDs);
 
         if (!compareFunc(toBeCurated, toBeCuratedArticlesIDs)) {
-            console.log("not equal");
+
             setToBeCurated(toBeCuratedArticlesIDs);
-
             console.log(articles);
-            console.log(toBeCuratedArticlesIDs);
             for (let toBeCuratedArticleID of toBeCuratedArticlesIDs) {
-                console.log(toBeCuratedArticleID);
-                console.log(!toBeCuratedArticleID in articles);
-
                 if (!(toBeCuratedArticleID in articles)) {
                     const apiUrl = "/admin/api/main/pages/" + String(toBeCuratedArticleID) + "/";
                     console.log(apiUrl);
                     fetch(apiUrl).then((response) => response.json().then((json) => {
-                        const article = {
+                        let current = {};
+                        console.log("setting");
+                        console.log(toBeCuratedArticleID);
+                        setArticles(prevArticles => ({...prevArticles, [toBeCuratedArticleID]: {...prevArticles[toBeCuratedArticleID],
                             "id": json['id'],
                             "title": json['title'],
                             "url": json["meta"]["html_url"],
                             "datetime": json["meta"]["first_published_at"],
                             "live": json["meta"]["status"]["live"],
                             "to_be_published": true,
-                        };
-
-                        setArticles(prevArticles => ({...prevArticles, [article["id"]]: article}));
+                        }}));
                     }));
                 } else {
-                    setArticles(prevArticles => ({...prevArticles, [toBeCuratedArticleID]: {"to_be_published": true}}));
+                    console.log("adding");
+                    console.log(articles[toBeCuratedArticleID]);
+                    setArticles(prevArticles => ({...prevArticles, [toBeCuratedArticleID]: {...prevArticles[toBeCuratedArticleID], "to_be_published": true}}));
                 }
             }
         }
@@ -141,12 +139,21 @@ export default function PublishingSchedule() {
 
     function readLiveCurated() {
         const apiUrl = "/homepage_curated_api/";
+        console.log(apiUrl);
         fetch(apiUrl).then((response) => response.json().then((json) => {
             setCurrentlyCurated(json["articles"].map((article) => article["id"]));
 
             for (let article of json["articles"]) {
-                setArticles(prevArticles => ({...prevArticles, [article["id"]]: article}));
+                let current = {};
+                if (article["id"] in articles) {
+                    current = articles[article["id"]];
+                }
+                Object.assign(current, article);
+                console.log(current);
+                setArticles(prevArticles => ({...prevArticles, [article["id"]]: current}));
             }
+            console.log("live");
+            console.log(articles);
         }));
     }
 
@@ -156,13 +163,14 @@ export default function PublishingSchedule() {
             let articleIDs = [];
             for (let workflow of json["workflows"]) {
                 let article = workflow["article"];
+                article["ready_at"] = workflow["ready_at"];
 
-                if (!(article["id"] in articles)) {
-                    article["ready_at"] = workflow["ready_at"];
-                    setArticles(prevArticles => ({...prevArticles, [article["id"]]: article}));
-                } else {
-                    setArticles(prevArticles => ({...prevArticles, [article["id"]]: {"ready_at": workflow["ready_at"]}}));
+                let current = {};
+                if (toBeCuratedArticleID in articles) {
+                    current = articles[article["id"]];
                 }
+                Object.assign(current, article);
+                setArticles(prevArticles => ({...prevArticles, [article["id"]]: current}));
 
                 articleIDs.push(article["id"]);
             }
