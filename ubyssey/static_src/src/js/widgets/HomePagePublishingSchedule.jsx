@@ -18,7 +18,7 @@ function daysSince(datetime) {
 
 function humanizeTimeliness(timeliness) {
     const labels = ["A day", "A few days", "A week", "Evergreen"];
-    return labels[timeliness];
+    return labels[timeliness - 1];
 }
 
 const compareFunc = (a, b) =>
