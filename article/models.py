@@ -588,12 +588,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
 
     class TimelinessChoices(models.IntegerChoices):
-        DAY = 1
-        FEW_DAYS = 2
+        A_DAY = 1
+        A_FEW_DAYS = 2
         A_WEEK = 3
         EVERGREEN = 4
 
-    timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.FEW_DAYS)
+    timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.A_FEW_DAYS)
 
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
@@ -893,8 +893,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     # TIMELINESS
     def get_relevance_score(self):
         relevance_delta = {
-            self.TimelinessChoices.DAY: 1,
-            self.TimelinessChoices.FEW_DAYS: 3,
+            self.TimelinessChoices.A_DAY: 1,
+            self.TimelinessChoices.A_FEW_DAYS: 3,
             self.TimelinessChoices.A_WEEK: 7,
             self.TimelinessChoices.EVERGREEN: 1000
         }

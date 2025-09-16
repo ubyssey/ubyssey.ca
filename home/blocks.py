@@ -184,7 +184,7 @@ class RecentStoriesByDay(blocks.StructBlock):
 class RecentStoriesByTopic(blocks.StructBlock):
 
     def get_recent_stories_by_topic(self, exclude, request):       
-        articleQuery = ArticlePage.objects.live().public().filter(timeliness__lte=ArticlePage.TimelinessChoices.FEW_DAYS).exclude(Q(page_ptr_id__in=exclude) | Q(current_section__in=["pages","about", "contact"])).order_by("-explicit_published_at")
+        articleQuery = ArticlePage.objects.live().public().filter(timeliness__lte=ArticlePage.TimelinessChoices.A_FEW_DAYS).exclude(Q(page_ptr_id__in=exclude) | Q(current_section__in=["pages","about", "contact"])).order_by("-explicit_published_at")
         if request:
             site = Site.find_for_request(request)
             articleQuery = articleQuery.descendant_of(site.root_page)
