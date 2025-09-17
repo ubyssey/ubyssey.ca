@@ -87,8 +87,13 @@ class StorystreamItem(blocks.StructBlock):
     article = blocks.PageChooserBlock(page_type="article.ArticlePage")
 
     def render(self, value, context=None):
-        context["article"] = value["article"]
-        return value["article"].storystream_view[0].render_as_block(context=context)
+        article = value["article"]
+        
+        if not article.live:
+            article = article.get_latest_revision_as_object()
+        context["article"] = article
+
+        return article.storystream_view[0].render_as_block(context=context)
 
 class CuratedGroupHeadline(blocks.StructBlock):
     headline = blocks.CharBlock()
