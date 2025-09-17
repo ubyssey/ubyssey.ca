@@ -478,6 +478,12 @@ html.hairlines {
 
     &:first-child {
       margin-top: 0;
+
+      .o-article_storystream_indent:first-child {
+        .o-article__headline {
+          font-size: 1.5em;
+        }
+      }
     }
 
     .o-home-group_headline {
@@ -581,6 +587,9 @@ html.hairlines {
           margin-inline: 0;
           font-size: 2em;
           font-variation-settings: "wght" 500;
+        }
+        .above-headline {
+          margin-bottom: 1em;
         }
       }
     }

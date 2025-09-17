@@ -75,3 +75,20 @@ def publish_committee_workflow_api(request):
             "workflows": articles_serialized.data,
             })
     
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def articlepage_drafts_api(request, id):
+    """
+    List all code snippets, or create a new snippet.
+    """
+
+    if request.method == 'GET':
+        article = ArticlePage.objects.filter(id=id).first()
+
+        if article != None:
+            article_serialized = ArticleHomePageCuratedSerializer(article, many=False)
+        
+            return Response(article_serialized.data)
+        
+        return Response(status=404)

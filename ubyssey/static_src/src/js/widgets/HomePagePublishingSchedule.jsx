@@ -113,7 +113,7 @@ export default function PublishingSchedule() {
             console.log(articles);
             for (let toBeCuratedArticleID of toBeCuratedArticlesIDs) {
                 if (!(toBeCuratedArticleID in articles)) {
-                    const apiUrl = "/admin/api/main/pages/" + String(toBeCuratedArticleID) + "/";
+                    const apiUrl = "/admin/articlepage_drafts_api/" + String(toBeCuratedArticleID) + "/";
                     console.log(apiUrl);
                     fetch(apiUrl).then((response) => response.json().then((json) => {
                         let current = {};
@@ -122,9 +122,10 @@ export default function PublishingSchedule() {
                         setArticles(prevArticles => ({...prevArticles, [toBeCuratedArticleID]: {...prevArticles[toBeCuratedArticleID],
                             "id": json['id'],
                             "title": json['title'],
-                            "url": json["meta"]["html_url"],
-                            "datetime": json["meta"]["first_published_at"],
-                            "live": json["meta"]["status"]["live"],
+                            "url": json["url"],
+                            "datetime": json["datetime"],
+                            "live": json["live"],
+                            "timeliness": json["timeliness"],
                             "to_be_published": true,
                         }}));
                     }));
@@ -138,7 +139,7 @@ export default function PublishingSchedule() {
     }
 
     function readLiveCurated() {
-        const apiUrl = "/homepage_curated_api/";
+        const apiUrl = "/admin/homepage_curated_api/";
         console.log(apiUrl);
         fetch(apiUrl).then((response) => response.json().then((json) => {
             setCurrentlyCurated(json["articles"].map((article) => article["id"]));
@@ -158,7 +159,7 @@ export default function PublishingSchedule() {
     }
 
     function readReady() {
-        const apiUrl = "/publish_committee_workflow_api/";
+        const apiUrl = "/admin/publish_committee_workflow_api/";
         fetch(apiUrl).then((response) => response.json().then((json) => {
             let articleIDs = [];
             for (let workflow of json["workflows"]) {

@@ -588,10 +588,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
     )
 
     class TimelinessChoices(models.IntegerChoices):
-        A_DAY = 1
-        A_FEW_DAYS = 2
-        A_WEEK = 3
-        EVERGREEN = 4
+        A_DAY = 1, ("Timely for a day")
+        A_FEW_DAYS = 2, ("Timely for a few days")
+        A_WEEK = 3, ("Timely for a week")
+        EVERGREEN = 4, ("Evergreen")
 
     timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.A_FEW_DAYS)
 
