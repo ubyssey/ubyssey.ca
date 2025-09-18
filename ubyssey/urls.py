@@ -11,7 +11,7 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
-from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled
+from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled_http
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
@@ -115,7 +115,7 @@ urlpatterns += [
 
     # Cron job
     re_path(r'^cron/update-events/$', update_events_http, name='update_events'),
-    re_path(r'^cron/publish-scheduled/$', publish_scheduled, name='publish_scheduled'),
+    re_path(r'^cron/publish-scheduled/$', publish_scheduled_http, name='publish_scheduled'),
 
     # Wagtail
     re_path(r'^admin/', include(wagtailadmin_urls)),
