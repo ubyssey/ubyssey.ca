@@ -324,6 +324,6 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 OPENAI_API_KEY = os.getenv('OPENAI_API_SECRET_KEY')
 
 CRONJOBS = [
-    ('*/1 * * * *', 'ubyssey.views.main.publish_scheduled'),
-    ('0 0 * * *', 'events.views.update_events')
+    ('*/5 * * * *', 'ubyssey.views.main.publish_scheduled'),
+    ('0 */6 * * *', 'events.views.update_events')
 ]

@@ -11,6 +11,8 @@ from django.contrib.syndication.views import Feed
 from ubyssey.views.feed import RssFeedWithImage
 from typing import Any, Dict
 
+from asgiref.sync import async_to_sync
+
 def format_event_date(start, end, weekDay=False):
     start = start.astimezone(timezone.get_current_timezone())
     end = end.astimezone(timezone.get_current_timezone())
@@ -254,6 +256,7 @@ class EventsTheme(object):
 
         return render(request, "events/event_page.html", {'calendar':calendar,'selectedEvent': event, 'highlight': highlight, 'legend': legend, 'highlight_colours': highlight_colours, 'tab': tab, 'ical': ical, 'rss': rss, 'meta': meta})
 
+@async_to_sync
 async def update_events():
     import asyncio
 
@@ -581,9 +584,9 @@ async def update_events():
     async for event in Event.objects.filter(hidden=True, end_time__lt=timezone.now()):
         await event.adelete()
 
-async def update_events_http(request):
+def update_events_http(request):
     from django.http import HttpResponse
-    await update_events()
+    update_events()
     return HttpResponse("Success!", status=200)
 
 def create_ical(request):
