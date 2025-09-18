@@ -16,7 +16,7 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
 from ubyssey.views.tag import TagPage, redirect_tag_feed_to_topic, redirect_tag_to_topic
-from events.views import update_events, create_ical, EventsFeed, EventsViewSet
+from events.views import update_events_http, create_ical, EventsFeed, EventsViewSet
 from events.urls import urlpatterns as events_urls
 from navigation.views import nav_search
 from home.views import homepage_curated_api, publish_committee_workflow_api, articlepage_drafts_api
@@ -114,7 +114,7 @@ urlpatterns += [
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
 
     # Cron job
-    re_path(r'^cron/update-events/$', update_events, name='update_events'),
+    re_path(r'^cron/update-events/$', update_events_http, name='update_events'),
     re_path(r'^cron/publish-scheduled/$', publish_scheduled, name='publish_scheduled'),
 
     # Wagtail

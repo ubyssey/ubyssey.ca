@@ -583,7 +583,7 @@ async def update_events():
 
 async def update_events_http(request):
     from django.http import HttpResponse
-    update_events()
+    await update_events()
     return HttpResponse("Success!", status=200)
 
 def create_ical(request):
