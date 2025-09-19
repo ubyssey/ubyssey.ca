@@ -265,6 +265,8 @@ TIME_ZONE = 'Canada/Pacific'
 WAGTAIL_SITE_NAME = 'The Ubyssey'
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
 
+WAGTAILADMIN_NOTIFICATION_INCLUDE_SUPERUSERS = False
+
 WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.database',

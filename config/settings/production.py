@@ -9,7 +9,7 @@ import sys
 
 env = environ.Env() # Scope issues without this line?
 
-WAGTAILADMIN_BASE_URL = 'https://www.ubyssey.ca/'
+WAGTAILADMIN_BASE_URL = 'https://ubyssey.ca'
 
 ALLOWED_HOSTS = ['localhost', '*']
 

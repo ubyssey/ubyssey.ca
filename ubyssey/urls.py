@@ -122,7 +122,6 @@ urlpatterns += [
     re_path(r'^documents/', include(wagtaildocs_urls)),
     re_path(r'^infinitefeed/$', infinitefeed, name='infinitefeed'), 
     re_path(r'^rss/$', FrontpageFeed(), name='frontpage-feed'),
-    re_path(r'^rss/(?P<slug>[-\w]+)/$', SectionFeed(), name='section-feed'),
     re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
     re_path(r'^blog/', redirect_blog_to_humour),
     re_path(r'^sitemap.xml$', sitemap),
