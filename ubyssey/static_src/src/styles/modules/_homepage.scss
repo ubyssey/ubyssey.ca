@@ -560,7 +560,7 @@ html.hairlines {
       padding: 0 0 2rem 0;
       border-bottom: 1px solid var(--light-border-grey);
       &:last-child {
-        margin: 0;
+        margin-bottom: 0;
         border: none;
       }
     }
@@ -587,9 +587,6 @@ html.hairlines {
           margin-inline: 0;
           font-size: 2em;
           font-variation-settings: "wght" 500;
-        }
-        .above-headline {
-          margin-bottom: 1em;
         }
       }
     }
