@@ -3,11 +3,14 @@ Blocks used on the home page of the site
 """
 from wagtail.models import Site
 from wagtail import blocks
-from article.models import ArticlePage
+
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.functional import cached_property
+from django.utils.safestring import mark_safe
+from django.template.loader import render_to_string
 
+from article.models import ArticlePage
 from topics.views import cluster_articles_by_topic
 
 class LinksStreamBlock(blocks.StructBlock):
@@ -86,6 +89,9 @@ class LinksStreamBlock(blocks.StructBlock):
 class StorystreamItem(blocks.StructBlock):
     article = blocks.PageChooserBlock(page_type="article.ArticlePage")
 
+    def get_articles(self, value):
+        return [value["article"]]
+
     def render(self, value, context=None):
         article = value["article"]
         
@@ -94,6 +100,35 @@ class StorystreamItem(blocks.StructBlock):
         context["article"] = article
 
         return article.storystream_view[0].render_as_block(context=context)
+
+class CuratedStreamArticleList(blocks.StructBlock):
+    articles = blocks.ListBlock(blocks.PageChooserBlock(page_type="article.ArticlePage"))
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('article_list--cards', "Cards"),
+            ('article_list--cards-with-lede', "Cards with lede"),
+            ('article_list--small-row', "Small row"),
+        ],
+        required=True,
+    )
+
+    def get_articles(self, value):
+        print(value["articles"])
+        return [article["value"] for article in value["articles"]]
+
+    def render(self, value, context=None):
+        block_template = value.get('template')
+        if block_template != '':
+            template = f"home/objects/curated_stream/{block_template}.html"
+        else:
+            return self.render_basic(value, context=context)
+
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+        return mark_safe(render_to_string(template, new_context))
 
 class CuratedGroupHeadline(blocks.StructBlock):
     headline = blocks.CharBlock()
@@ -117,16 +152,20 @@ class CuratedGroup(blocks.StructBlock):
         max_num=1
         )
     items = blocks.StreamBlock([
-            ('storystream_item', StorystreamItem())
+            ('storystream_item', StorystreamItem()),
+            ('article_list', CuratedStreamArticleList()),
         ])
+    
+    def get_articles(self, values):
+        articles = []
+
+        for i in self.to_python(values)['items']:
+            articles = articles + i.block.get_articles(i.get_prep_value()['value'])
+
+        return articles
 
     class Meta:
         template = "home/objects/curated_group.html"
-
-class CuratedGroupCards(CuratedGroup):
-
-    class Meta:
-        template = "home/objects/curated_group--cards.html"
 
 
 # Sidebar 

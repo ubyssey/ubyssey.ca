@@ -90,7 +90,6 @@ class HomePage(Page):
     curated_stream = StreamField(
         [
             ("curated_group", homeblocks.CuratedGroup()),
-            ("curated_group_cards", homeblocks.CuratedGroupCards()),
         ],
         null=True,
         blank=True,
@@ -190,9 +189,8 @@ class HomePage(Page):
 
     def get_curated_articles(self):
         articles = []
-        for group in self.curated_stream.raw_data:
-            for item in group["value"]["items"]:
-                articles.append(item["value"]["article"])
+        for child in self.curated_stream:
+            articles = articles + child.block.get_articles(child.get_prep_value()["value"])
 
         return articles
 
