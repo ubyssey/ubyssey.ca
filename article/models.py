@@ -593,7 +593,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         A_WEEK = 3, ("Timely for a week")
         EVERGREEN = 4, ("Evergreen")
 
-    timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.A_FEW_DAYS)
+    timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.A_FEW_DAYS.value)
 
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
