@@ -207,12 +207,7 @@ class SectionBlock(AbstractArticleList):
         if 'section/objects/section_article-row.html' in value['template']:
             limit = 4
 
-        context['articles'] = []
-        for article in articles.order_by('-first_published_at'):
-            if article.get_relevance_score() == 1:
-                context['articles'].append(article)
-            if len(context["articles"]) >= limit:
-                break
+        context['articles'] = articles[:limit]
 
         if len(context['articles']) > 0:
             context['self']['article'] = context['articles'][0]

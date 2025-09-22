@@ -473,7 +473,7 @@ html.hairlines {
   }
 
   .o-curated_group {
-    margin-top: 3rem;
+    margin-top: 2rem;
     border-bottom: 1px dashed var(--header_color);
 
     &:first-child {
@@ -502,7 +502,7 @@ html.hairlines {
         font-size: 3em;
       }
       &.small {
-        font-size: 2em;
+        font-size: 1.5em;
       }
 
       @media(variables.$bp-smaller-than-tablet) {
@@ -512,9 +512,6 @@ html.hairlines {
         }
         &.large {
           font-size: 2em;
-        }
-        &.small {
-          font-size: 1.5em;
         }
       }
     }
@@ -627,7 +624,7 @@ html.hairlines {
         max-width: 250px;
         flex-shrink: 0;
         .o-article__headline {
-          font-size: 1.25em;
+          font-size: 1.3em;
         }
         .above-headline {
           margin-block: 1em 0;
@@ -636,7 +633,7 @@ html.hairlines {
           margin-top: 0.5em;
           padding: 0;
           border: none;
-          font-size: 0.9em;
+          font-size: 0.95em;
         }
       }
       .o-article__right {

@@ -33,7 +33,6 @@
 
 // Feature
 .o-article_storystream_feature {
-    padding-inline: 1em;
     .o-article__left {
         margin-inline: auto;
         display: flex;
@@ -70,12 +69,6 @@
     }
     .carousel-control-next {
         right: -3.5em;
-    }
-
-    @media(variables.$bp-larger-than-phablet) {
-        .o-article__left {
-            padding-inline: 2em;
-        }
     }
 
     @media(variables.$bp-smaller-than-phablet) {
