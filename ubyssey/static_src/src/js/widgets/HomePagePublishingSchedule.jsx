@@ -27,8 +27,16 @@ const compareFunc = (a, b) =>
     a.every((element, index) => element === b[index]);
 
 function PublishingScheduleArticle({article}) {
+
+    function dragStart(event) {
+        event.dataTransfer.setData("id", String(article.id));
+        event.dataTransfer.setData("adminTitle", article.title);
+        event.dataTransfer.setData("editUrl", "/admin/page/" + String(article.id) + "/edit/");
+    }
+
+
     return (
-        <li key={article.id} className={(article.live ? "live " : "") + (article.to_be_published && "to-publish ")}>
+        <li key={article.id} draggable="true" onDragStart={dragStart} className={(article.live ? "live " : "") + (article.to_be_published ? "to-publish ": "") + "draggable"}>
             <span class="status">{article.live ? "Live " + daysSince(article.datetime) : "Ready " + daysSince(article.ready_at)}</span> <h3><a href={"/admin/pages/" + String(article["id"]) + "/edit/"} title={article["title"]}>{article["title"]}</a></h3> <span class="timeliness">Timely: {humanizeTimeliness(article["timeliness"])}</span>
         </li>
     )
@@ -40,85 +48,95 @@ export default function PublishingSchedule() {
     const [ready, setReady] = useState([]);
     const [articles, setArticles] = useState({});
 
-    // Select the node that will be observed for mutations
-    const targetNode = document.getElementById("panel-child-content-curated_stream-section");
-
-    // Options for the observer (which mutations to observe)
-    const config = { attributes: true, childList: true, subtree: true };
-
-    let readDraftCuratedTimeout = null;
+    let readDraftCallbackTime = null;
+    let readDraftCallback = null;
 
     // Callback function to execute when mutations are observed
+
     const callback = (mutationList, observer) => {
-        console.log("mutation");
-        if (readDraftCuratedTimeout) {
-            clearTimeout(readDraftCuratedTimeout);
+
+        if (readDraftCallbackTime == null) {
+            readDraftCallback = setTimeout(readDraftCurated, 1000);
+            readDraftCallbackTime = (new Date()).getTime();
+            return;
         }
-        readDraftCuratedTimeout = setTimeout(readDraftCurated, 1000);
+        if ((new Date()).getTime() - readDraftCallbackTime > 1000) {
+            //console.log("mutation")
+            readDraftCallback = setTimeout(readDraftCurated, 1000);
+            readDraftCallbackTime = (new Date()).getTime();
+        } else {
+            //console.log("mutation Within a second")
+        }
     };
-
-    // Create an observer instance linked to the callback function
-    const observer = new MutationObserver(callback);
-
-    // Start observing the target node for configured mutations
-    observer.observe(targetNode, config);
 
     function isVisible(elem) {
         return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
     }
 
     function readDraftCurated() {
-        console.log("reading curated");
-        const curatedStreamCount = parseInt(document.getElementsByName("curated_stream-count")[0].value);
+        const pageChoosers = document.getElementById('panel-child-content-curated_stream-section').getElementsByClassName('w-field--admin_page_chooser');
 
         let toBeCuratedArticlesIDs = [];
-        // let inputElements = [];
-        for (let i=0; i<curatedStreamCount; i++) {
-            let itemNum = 0;
+        for (let chooser of pageChoosers) {
+            if (isVisible(chooser)) {
 
-            while (true) {
-                const articleInputId = "curated_stream-" + String(i) + "-value-items-" + String(itemNum) + "-value-article";
-                itemNum = itemNum + 1;
-                const articleElementInput = document.getElementById(articleInputId);
+                if (!chooser.ondragenter) {
+                    // When the draggable p element enters the droptarget, change the DIVS's border style
+                    chooser.addEventListener("dragenter", function(event) {
+                        chooser.style.background = "var(--w-color-grey-400)";
+                        //if (event.target.classList.contains("chosen") || event.target.classList.contains("unchosen")) {
+                        //    event.target.style.background = "var(--w-color-grey-400)";
+                        //}
+                    });
 
-                if (!articleElementInput) {
-                    break;
+                    // By default, data/elements cannot be dropped in other elements. To allow a drop, we must prevent the default handling of the element
+                    chooser.addEventListener("dragover", function(event) {
+                        event.preventDefault();
+                        chooser.style.background = "var(--w-color-grey-400)";
+                    });
+
+                    // When the draggable p element leaves the droptarget, reset the DIVS's border style
+                    chooser.addEventListener("dragleave", function(event) {
+                        chooser.style.background = "";
+                        //if (event.target.classList.contains("chosen") || event.target.classList.contains("unchosen")) {
+                        //    event.target.style.background = "";
+                        //}
+                    });
+
+                    chooser.addEventListener("drop", function(event) {
+                        event.preventDefault();
+
+                        const chooserID = chooser.getElementsByClassName("page-chooser")[0].id.replace("-chooser", "");
+                        const chooserObj = new window.PageChooser(chooserID);
+                        const state = {
+                            "id": event.dataTransfer.getData("id"),
+                            "adminTitle": event.dataTransfer.getData("adminTitle"),
+                            "editUrl": event.dataTransfer.getData("editUrl"),
+                        }
+                        chooserObj.setState(state);
+                        chooser.style.background = "";
+                    });
                 }
 
-                if (!isVisible(articleElementInput.parentElement)) {
-                    console.log("not visible");
-                    console.log(articleElementInput.parentElement);
+                const input = chooser.getElementsByTagName("input")[0];
+                if (input.value == "" || input.value == null) {
                     continue;
                 }
-
-                const articleId = articleElementInput.value;
-
-                if (articleId != "") {
-                    if (!toBeCuratedArticlesIDs.includes(articleId)) {
-                        // inputElements.push(articleElementInput);
-                        toBeCuratedArticlesIDs.push(parseInt(articleId));
-                    }
-                }
+                const articleID = parseInt(input.value);
+                if (!toBeCuratedArticlesIDs.includes(articleID))
+                toBeCuratedArticlesIDs.push(articleID);
             }
         }
-  
+        
         // const getOrder = (e) => parseInt(document.getElementsByName(e.id.replace("value-article", "order"))[0].value);
-
-        console.log(toBeCurated);
-        console.log(toBeCuratedArticlesIDs);
 
         if (!compareFunc(toBeCurated, toBeCuratedArticlesIDs)) {
 
             setToBeCurated(toBeCuratedArticlesIDs);
-            console.log(articles);
             for (let toBeCuratedArticleID of toBeCuratedArticlesIDs) {
                 if (!(toBeCuratedArticleID in articles)) {
                     const apiUrl = "/admin/articlepage_drafts_api/" + String(toBeCuratedArticleID) + "/";
-                    console.log(apiUrl);
                     fetch(apiUrl).then((response) => response.json().then((json) => {
-                        let current = {};
-                        console.log("setting");
-                        console.log(toBeCuratedArticleID);
                         setArticles(prevArticles => ({...prevArticles, [toBeCuratedArticleID]: {...prevArticles[toBeCuratedArticleID],
                             "id": json['id'],
                             "title": json['title'],
@@ -130,8 +148,6 @@ export default function PublishingSchedule() {
                         }}));
                     }));
                 } else {
-                    console.log("adding");
-                    console.log(articles[toBeCuratedArticleID]);
                     setArticles(prevArticles => ({...prevArticles, [toBeCuratedArticleID]: {...prevArticles[toBeCuratedArticleID], "to_be_published": true}}));
                 }
             }
@@ -140,7 +156,6 @@ export default function PublishingSchedule() {
 
     function readLiveCurated() {
         const apiUrl = "/admin/homepage_curated_api/";
-        console.log(apiUrl);
         fetch(apiUrl).then((response) => response.json().then((json) => {
             setCurrentlyCurated(json["articles"].map((article) => article["id"]));
 
@@ -150,11 +165,8 @@ export default function PublishingSchedule() {
                     current = articles[article["id"]];
                 }
                 Object.assign(current, article);
-                console.log(current);
                 setArticles(prevArticles => ({...prevArticles, [article["id"]]: current}));
             }
-            console.log("live");
-            console.log(articles);
         }));
     }
 
@@ -180,41 +192,59 @@ export default function PublishingSchedule() {
     }
 
     useEffect(() => {
+       // Select the node that will be observed for mutations
+        const targetNode = document.getElementById("panel-child-content-curated_stream-section");
+
+        // Options for the observer (which mutations to observe)
+        const config = { attributes: true, childList: true, subtree: true };
+
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
+
+        // Start observing the target node for configured mutations
+        observer.observe(targetNode, config);
+
         readLiveCurated();
         readReady();
         readDraftCurated();        
-    }, [])
+    }, []);
 
     return (
     <>
     <div class="curated publishingSchedule-flexbox">
         <div class="currently-curated" id="currently-curated">
             <h2>Live</h2>
+            {currentlyCurated.length > 0 ?
             <ul>
                 {currentlyCurated.map((articleId) => 
                     (articleId in articles ? <PublishingScheduleArticle article={articles[articleId]}/> : "")
                 )}
             </ul>
+            : <p>There are currently no articles live in the curated stream.</p>}
         </div>
 
         <div class="to-be-curated" id="to-be-curated">
             <h2>Draft</h2>
+            {toBeCurated.length > 0 ?
             <ul>
                 {toBeCurated.map((articleId) => 
                     (articleId in articles ? <PublishingScheduleArticle article={articles[articleId]}/> : "")
                 )}
             </ul>
+            : <p>There are currently no articles drafted for the curated stream.</p>}
         </div>
     </div>
 
     <div class="ready-publish publishingSchedule-flexbox">
         <div class="ready" id="ready">
             <h2>Ready</h2>
+            {ready.length > 0 ?
             <ul>
                 {ready.map((articleId) => 
                     (articleId in articles ? <PublishingScheduleArticle article={articles[articleId]}/> : "")
                 )}
             </ul>
+            : <p>There are currently no active drafts submitted to cabinet.</p>}
         </div>
     </div>
     </>

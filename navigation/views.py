@@ -60,3 +60,5 @@ def nav_search(request):
                 "articles": articles_serialized.data,
                 "authors": [],
                 })
+        else:
+            return render(request, '404.html', {}, status=404) 

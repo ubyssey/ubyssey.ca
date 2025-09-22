@@ -280,3 +280,14 @@ def register_image_chooser_viewset():
 register_snippet(ArticleTopicViewSet)
 
 register_snippet(EventsDashboardViewSet)
+
+
+@hooks.register('construct_page_chooser_queryset')
+def order_pages_in_chooser(pages, request):
+    # https://stackoverflow.com/a/61362963
+    if "choose-page" in request.path:
+        # showing page in a page chooser modal
+        return pages.order_by('-id')  # order randomly
+
+    # search results shown in admin/pages/search - return in default order
+    return pages

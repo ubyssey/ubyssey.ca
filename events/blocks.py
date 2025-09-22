@@ -43,9 +43,13 @@ class SidebarEventsBlock(blocks.StructBlock):
                     time = time + pubdate.strftime(":%M")
                 time = time + pubdate.strftime("%P")
 
+            if day == "" and time == "":
+                day = "Today"
+
             display = display + day + time
+            
             events[i].display_time = display
-            events[i].title = events[i].title.replace("<br>", ", ")
+            events[i].title = events[i].title.replace(" <br>", ", ")
 
             if events[i].start_time < today:
                 context["ongoing"].append(events[i])

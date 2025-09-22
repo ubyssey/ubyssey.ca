@@ -48,7 +48,7 @@
     }
     .o-events--event-colour {
         border-left: var(--event-category-color) 2px solid;
-        padding-left: 0.5em;
+        padding-inline: 0.5em;
         background: color-mix(in oklab, var(--event-category-color) 25%, transparent);
     }
     .o-events--event-title {
