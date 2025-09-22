@@ -199,7 +199,7 @@ class SectionBlock(AbstractArticleList):
         exclude = []
         if "curated_articles" in parent_context:
             exclude = parent_context["curated_articles"]
-        articles = ArticlePage.objects.child_of(value['section']).live().filter(timeliness__gte=ArticlePage.TimelinessChoices.A_WEEK.value).exclude(page_ptr_id__in=exclude)
+        articles = ArticlePage.objects.child_of(value['section']).live().exclude(Q(page_ptr_id__in=exclude) | Q(timeliness__lte=ArticlePage.TimelinessChoices.A_FEW_DAYS.value)).order_by('-first_published_at')
         
         limit = 9
         if 'section/objects/section_one-large-two-small.html' in value['template']:
@@ -327,7 +327,7 @@ class SectionCategorizedBlock(AbstractArticleList):
         
         limit = 4
         
-        context['articles'] = ArticlePage.objects.live().child_of(value['section']).filter(timeliness__gte=ArticlePage.TimelinessChoices.A_WEEK.value).exclude(page_ptr_id__in=exclude).order_by('-first_published_at')
+        context['articles'] = ArticlePage.objects.live().child_of(value['section']).exclude(Q(page_ptr_id__in=exclude) | Q(timeliness__lte=ArticlePage.TimelinessChoices.A_FEW_DAYS.value)).order_by('-first_published_at')
         
         if value["fill_topic"]:
             context['articles'] = context['articles'].filter(topics__slug=value["fill_topic"])

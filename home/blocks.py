@@ -113,7 +113,6 @@ class CuratedStreamArticleList(blocks.StructBlock):
     )
 
     def get_articles(self, value):
-        print(value["articles"])
         return [article["value"] for article in value["articles"]]
 
     def render(self, value, context=None):

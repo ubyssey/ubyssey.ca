@@ -473,7 +473,7 @@ html.hairlines {
   }
 
   .o-curated_group {
-    margin-top: 4rem;
+    margin-top: 3rem;
     border-bottom: 1px dashed var(--header_color);
 
     &:first-child {
@@ -483,6 +483,10 @@ html.hairlines {
         .o-article__headline {
           font-size: 1.5em;
         }
+      }
+      .o-article_storystream_indent:first-child .o-article__headline {
+        font-variation-settings: "wght" 600;
+        font-weight: 600;
       }
     }
 
@@ -642,6 +646,12 @@ html.hairlines {
         .attachment {
           margin-top: 0;
           padding: 0;
+          img {
+            aspect-ratio: 3/2;
+            object-fit: cover;
+            height: auto;
+            width: 100%;
+          }
         }
       }
     }
