@@ -1,5 +1,5 @@
 from wagtail import blocks
-from images import blocks as image_blocks
+
 from wagtail.documents.blocks import DocumentChooserBlock
 
 from django.utils.safestring import mark_safe
@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.db import models
 
 from ubyssey.validators import validate_youtube_url
+from images import blocks as image_blocks
 
 # Storystream views
 class StorystreamStructBlock(blocks.StructBlock):
@@ -278,3 +279,18 @@ class StorystreamRichText(StorystreamStructBlock):
     class Meta:
         icon = "pilcrow"
         label = "Rich text (for AMS, BoG, Senate recaps)"
+
+# StreamField
+
+StoryStreamBlockTypes =  [
+        ('featured_media', StorystreamFeaturedImage()),
+        ('image', StorystreamImage()),
+        ('richtext', StorystreamRichText()),
+        ('no_attachment', StorystreamNoAttachment()),
+        ('gallery', StorystreamGallery()),
+        ('featured_video', StorystreamFeaturedVideo()),
+        ('video', StorystreamVideo()),
+        ('embed', StorystreamRawHtml()),
+        ('pdf', StorystreamPDF()),
+        ('quote', StorystreamQuote())
+    ]

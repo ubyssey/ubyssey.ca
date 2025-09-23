@@ -602,18 +602,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         default='',
     )
     storystream_view = StreamField(
-        [
-            ('featured_media', blocks_storystream.StorystreamFeaturedImage()),
-            ('image', blocks_storystream.StorystreamImage()),
-            ('richtext', blocks_storystream.StorystreamRichText()),
-            ('no_attachment', blocks_storystream.StorystreamNoAttachment()),
-            ('gallery', blocks_storystream.StorystreamGallery()),
-            ('featured_video', blocks_storystream.StorystreamFeaturedVideo()),
-            ('video', blocks_storystream.StorystreamVideo()),
-            ('embed', blocks_storystream.StorystreamRawHtml()),
-            ('pdf', blocks_storystream.StorystreamPDF()),
-            ('quote', blocks_storystream.StorystreamQuote())
-        ],
+        blocks_storystream.StoryStreamBlockTypes,
         blank = False,
         use_json_field=True,
         min_num = 1,

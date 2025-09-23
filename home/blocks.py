@@ -11,6 +11,7 @@ from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
 from article.models import ArticlePage
+from article.blocks_storystream import StoryStreamBlockTypes
 from topics.views import cluster_articles_by_topic
 
 class LinksStreamBlock(blocks.StructBlock):
@@ -88,6 +89,13 @@ class LinksStreamBlock(blocks.StructBlock):
 
 class StorystreamItem(blocks.StructBlock):
     article = blocks.PageChooserBlock(page_type="article.ArticlePage")
+    storystream_overwrite = blocks.StreamBlock(
+        StoryStreamBlockTypes,
+        blank = True,
+        use_json_field=True,
+        max_num = 1,
+        required = False,
+    )
 
     def get_articles(self, value):
         return [value["article"]]
@@ -98,6 +106,9 @@ class StorystreamItem(blocks.StructBlock):
         if not article.live:
             article = article.get_latest_revision_as_object()
         context["article"] = article
+
+        if value["storystream_overwrite"]:
+            return value["storystream_overwrite"][0].render_as_block(context=context)
 
         return article.storystream_view[0].render_as_block(context=context)
 
