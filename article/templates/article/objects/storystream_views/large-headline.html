@@ -12,12 +12,38 @@ This template is for the columns for the blog section on the home page under the
 {% load video_filters %}
 
 {% if article %}
-<article class="o-article o-article_storystream o-article_storystream_minimal">
+{% if curated_articles %}
+<article class="o-article o-article_storystream o-article_storystream_large-headline--curated_stream" time="{{article.explicit_published_at|naturalday}}">
+  <div class="o-article_storystream_large-headline--curated_stream--headline">
+    {% include "article/objects/headline.html" %}
+  </div>
+  <div class="o-article_storystream_large-headline--curated_stream--content">
+    <div class="o-article__left">
+      <p>{{article.lede|safe}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>
+      {% include "article/objects/meta_info.html" %}
+    </div>
+
+    <div class="o-article__right">		
+      {% if article.featured_media.first %}
+        {% if article.featured_media.first.image %}
+          <a class="o-article__image" href="{% pageurl article %}">
+            {% srcset_image article.featured_media.first.image format-webp loading='lazy' alt=article.featured_media.first.alt_text fill-{1080x720,681x454} sizes="(max-width: 780px) 681px, 454px" class="o-article_storystream_large-headline--image_large" %}
+          </a>
+        {% elif article.featured_media.first.video %}
+          <a class="o-article__image" href="{% pageurl article %}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+</article>
+{% else %}
+<article class="o-article o-article_storystream o-article_storystream_large-headline">
   <div class="o-article__right">
     {% if article.featured_media.first %}
       {% if article.featured_media.first.image %}
         <a class="o-article__image" href="{% pageurl article %}">
-          {% srcset_image article.featured_media.first.image format-webp loading='lazy' alt=article.featured_media.first.alt_text fill-{160x160,250x250} sizes="(max-width: 780px) 160px, 250px" class="o-article_storystream_minimal--image_small" %}
+          {% srcset_image article.featured_media.first.image format-webp loading='lazy' alt=article.featured_media.first.alt_text fill-{160x160,250x250} sizes="(max-width: 780px) 160px, 250px" class="o-article_storystream_large-headline--image_small" %}
         </a>
       {% elif article.featured_media.first.video %}
         <a class="o-article__image" href="{% pageurl article %}" style="background-image: url('http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg'); background-size: contain; background-repeat: no-repeat"></a>
@@ -29,4 +55,5 @@ This template is for the columns for the blog section on the home page under the
     {% include "article/objects/meta_info.html" %}
   </div>
 </article>
+{% endif %}
 {% endif %}

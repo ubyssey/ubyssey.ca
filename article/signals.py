@@ -41,10 +41,9 @@ def update_topic_last_used_at(instance, sender, **kwargs):
     if issubclass(sender, ArticlePage):
         async def update_topic(topic):
             topic.tagged_articles_count = await sync_to_async(topic.get_count_of_tagged_articles)()
-
             if topic.last_used_at == None:
                 topic.last_used_at = instance.first_published_at    
-            elif topic.last_used_at >= instance.first_published_at:
+            elif topic.last_used_at <= instance.first_published_at:
                 topic.last_used_at = instance.first_published_at
 
             await topic.asave()

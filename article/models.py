@@ -7,7 +7,7 @@ from images.models import GallerySnippet
 from dbtemplates.models import Template as DBTemplate
 
 from django.db import models
-from django.db.models import fields, Q
+from django.db.models import fields, Q, Max
 from django.db.models.fields import CharField
 from django.shortcuts import render
 from django.db.models.query import QuerySet
@@ -450,10 +450,11 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
         return most_common([tagged.content_object.current_section for tagged in TaggedArticlePage.objects.filter(tag=self)])
 
     def last_tagged_at(self):
-        tagged = TaggedArticlePage.objects.filter(tag=self).order_by("-id").first()
+        tagged = TaggedArticlePage.objects.filter(tag=self).aggregate(Max("content_object__first_published_at"))
+        print(tagged)
         if tagged == None:
             return 0
-        return tagged.content_object.first_published_at
+        return tagged["content_object__first_published_at__max"]
     
     def get_relative_url(self):
         return "/topic/" + self.slug + "/"
@@ -1590,7 +1591,7 @@ class StandardArticlePage(ArticlePage):
                         <li>2. <b>Quotes</b> Can be used for opinions, personal essays, interviews</li> 
                         <li>3. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
                         <li>4. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
-                        <li>5. <b>Standard (Desktop homepage: Small headline + lede left, image right) (Mobile homepage, topic page: Large headline left, small featured media right):</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
+                        <li>5. <b>Large headline</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
                         <li>6. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.</li>
                     </ol>
                     '''),
