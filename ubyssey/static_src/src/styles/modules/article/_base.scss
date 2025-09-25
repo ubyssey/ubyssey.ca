@@ -209,11 +209,11 @@ div.article-content {
   iframe {
     margin-block: 2em;
     border: none;
+    max-width: min(800px, 100%);
   }
   > iframe {
     display: block;
     margin: 2em auto !important;
-    max-width: 1000px;
   }
 
   .carousel {
