@@ -49,8 +49,8 @@ def display_pubdate(value):
         return pubdate.strftime("%B xx%d").replace("xx0","").replace("xx","")
     elif delta.total_seconds() > datetime.timedelta(hours=5).total_seconds():
         if today.date() == pubdate.date():
-            return "Today at " + pubdate.strftime("xx%I:%M %p").replace("xx0","").replace("xx","")
-        return "Yesterday at " + pubdate.strftime("xx%I:%M %p").replace("xx0","").replace("xx","")
+            return "Today"
+        return "Yesterday"
 
     elif delta.total_seconds() > datetime.timedelta(hours=1).total_seconds():
         hours = round(delta.total_seconds()/3600)

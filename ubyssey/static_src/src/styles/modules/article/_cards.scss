@@ -103,6 +103,17 @@
             background-size: cover;
         }
 
+        &.o-card--text {
+            a {
+                color: variables.$color-ubyssey-blue;
+                border-bottom: 1px solid;
+                transition: background 0.5s;
+                &:hover {
+                    background: variables.$color-ubyssey-blue-light;
+                }
+            }
+        }
+
         &.o-card--dropdown {
             margin-bottom: 1em;
             width: 100%;
