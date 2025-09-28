@@ -716,8 +716,10 @@ html.hairlines {
   }
   .c-home-recent-stories--article-list {
     margin: .5em 0 1.5em 0;
-    padding-right: 0.5em;
     border-bottom: 1px dashed #bababa;
+    @media(variables.$bp-larger-than-tablet) {
+      padding-right: 0.5em;
+    }
     > li {
       margin-bottom: .5em;
       display: flex;

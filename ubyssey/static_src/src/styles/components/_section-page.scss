@@ -305,12 +305,9 @@ svg.banner-title text{
   }
 }
 
-.tag .section_infinitefeed {
-  max-width: 630px;
-}
 .section_infinitefeed {
   @media (variables.$bp-larger-than-tablet) {
-    width: 65%;
+    max-width: 630px;
   }
 
   #feed {
@@ -344,7 +341,7 @@ main.tag {
     h1 {
       border-bottom: 2px solid;
       padding-bottom: 5px;
-      text-transform: capitalize;
+      font-family: fonts.$font-headline;
     }
     @media (variables.$bp-larger-than-phablet) {
       position: sticky;
