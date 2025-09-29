@@ -439,17 +439,19 @@ p.c-article__published-at {
   margin: 1.4em;
   display: flex;
 
-  @media(variables.$bp-larger-than-mobile) {
+  @media(variables.$bp-larger-than-tablet) {
     &.right {
-      margin-right: 0;
+      margin-right: calc(50% - 450px);
+      margin-left: 1.4em;
       float: right;
     }
     &.left {
-      margin-left: 0;
+      margin-left: calc(50% - 450px);
+      margin-right: 1.4em;
       float: left;
     }
     &.left, &.right {
-      max-width: 250px;
+      max-width: 300px;
     }
     &.center {
       margin-inline: auto;
@@ -458,7 +460,7 @@ p.c-article__published-at {
     }
   }
 
-  @media(variables.$bp-smaller-than-mobile) {
+  @media(variables.$bp-smaller-than-tablet) {
       margin-inline: auto;
       max-width: 350px;
   }
@@ -483,8 +485,11 @@ p.c-article__published-at {
       font-size: 0.9em;
       font-family: fonts.$font-default;
     }
+    li {
+      margin-bottom: 0.5em;
+    }
     a {
-      text-decoration: underline;
+      border-bottom: 1px solid;
     }
   }
 
@@ -534,7 +539,7 @@ p.c-article__published-at {
       aspect-ratio: 1;
 
       content: "";
-      background-image: url("/static/ubyssey/images/logos/dingbat-blue.svg");
+      background-image: url("https://storage.googleapis.com/ubyssey/static/ubyssey/images/logos/dingbat-blue.svg");
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
