@@ -1,12 +1,15 @@
 name: Deploy to staging
 
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Deploy to production"]
+    types:
+      - completed
 
 jobs:
   deploy:
+    # Only run if the production build job was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     permissions:
       contents: 'read'
