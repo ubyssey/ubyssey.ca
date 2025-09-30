@@ -1,1 +1,2 @@
 docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d ubyssey.ca
+docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d staging.ubyssey.ca
