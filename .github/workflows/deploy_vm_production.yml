@@ -1,0 +1,92 @@
+name: Terraform GCP VM Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action to perform (deploy or destroy)'
+        required: true
+        default: 'deploy'
+        type: choice
+        options:
+          - deploy
+          - destroy
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+
+jobs:
+  terraform:
+    name: 'Terraform ${{ github.event.inputs.action || ''deploy'' }}' 
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./deploy-vm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.11.3"
+
+      - name: Authenticate with Google Cloud Platform
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/863738545301/locations/global/workloadIdentityPools/ubyssey-wif-pool-prd/providers/ubyssey-oidc-github-prd'
+          service_account: 'deployment@ubyssey-prd.iam.gserviceaccount.com'
+                    
+      - name: Determine Action
+        id: get_action
+        run: |
+          ACTION="deploy" 
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            ACTION="${{ github.event.inputs.action }}"
+          fi
+          echo "action=$ACTION" >> $GITHUB_OUTPUT
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -backend-config=backend-production.conf
+
+      - name: Terraform Plan
+        id: plan
+        if: steps.get_action.outputs.action == 'deploy'
+        env:
+          TF_VAR_project_provider: "ubyssey-prd"
+          TF_VAR_project_snapshot: "ubyssey-prd"
+          TF_VAR_vm_name: "ubyssey-prd-vm-2"
+          TF_VAR_machine_type: "e2-highcpu-8"
+          TF_VAR_snapshot_filter: "name eq ^ubyssey-prd-vm.*"
+          TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
+          TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
+        run: terraform plan -out=tfplan -input=false
+        continue-on-error: false
+
+      - name: Terraform Apply
+        if: steps.get_action.outputs.action == 'deploy' && steps.plan.outcome == 'success'
+        env:
+          TF_VAR_project_provider: "ubyssey-prd"
+          TF_VAR_project_snapshot: "ubyssey-prd"
+          TF_VAR_vm_name: "ubyssey-prd-vm-2"
+          TF_VAR_machine_type: "e2-highcpu-8"
+          TF_VAR_snapshot_filter: "name eq ^ubyssey-prd-vm.*"
+          TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
+          TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
+        run: terraform apply -auto-approve -input=false tfplan
+
+      - name: Terraform Destroy
+        if: steps.get_action.outputs.action == 'destroy'
+        env:
+          TF_VAR_project_provider: "ubyssey-prd"
+          TF_VAR_project_snapshot: "ubyssey-prd"
+          TF_VAR_vm_name: "ubyssey-prd-vm-2"
+          TF_VAR_machine_type: "e2-highcpu-8"
+          TF_VAR_snapshot_filter: "name eq ^ubyssey-prd-vm.*"
+          TF_VAR_service_account_email: "863738545301-compute@developer.gserviceaccount.com"
+          TF_VAR_boot_disk_from_snapshot: "ubyssey-prd-vm-2-boot-disk"
+        run: terraform destroy -auto-approve -input=false
