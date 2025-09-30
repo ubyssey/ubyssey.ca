@@ -71,9 +71,15 @@ jobs:
           SSH_USER: deploy
           SSH_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY_STAGING }}
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_STAGING }}
+          
+      - name: Get latest release tag
+        id: get_latest_release
+        run: |
+          echo "RELEASE_TAG=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')" >> $GITHUB_ENV
+          echo "Using latest release tag: $RELEASE_TAG"
 
       - name: Set tag in docker-compose.yml
-        run: sed -i "s/\${TAG}/${{ github.ref_name }}/g" docker-compose.yml
+        run: sed -i "s/\${TAG}/${{ env.RELEASE_TAG }}/g" docker-compose.yml
 
       - name: Upload Docker Compose configuration
         run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
