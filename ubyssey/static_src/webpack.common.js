@@ -36,6 +36,7 @@ module.exports = {
     'widgets/HomePagePublishingSchedule': './src/js/widgets/HomePagePublishingSchedule.jsx',
     'widgets/auto-update-suggested-bar-choice': './src/js/widgets/auto-update-suggested-bar-choice.js',
     'passing-2025': './src/js/passing-2025.js',
+    'contentTracker': './src/js/ContentTracker.jsx',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),

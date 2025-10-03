@@ -291,3 +291,23 @@ def order_pages_in_chooser(pages, request):
 
     # search results shown in admin/pages/search - return in default order
     return pages
+
+
+
+from django.urls import path, reverse
+
+from wagtail.admin.menu import MenuItem
+
+from .views import content_tracker
+
+
+@hooks.register('register_admin_urls')
+def register_calendar_url():
+    return [
+        path('content_tracker/', content_tracker, name='content-tracker'),
+    ]
+
+
+@hooks.register('register_admin_menu_item')
+def register_calendar_menu_item():
+    return MenuItem('Content tracker', reverse('content-tracker'), icon_name='date')

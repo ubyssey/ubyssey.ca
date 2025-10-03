@@ -19,7 +19,7 @@ from ubyssey.views.tag import TagPage, redirect_tag_feed_to_topic, redirect_tag_
 from events.views import update_events_http, create_ical, EventsFeed, EventsViewSet
 from events.urls import urlpatterns as events_urls
 from navigation.views import nav_search
-from home.views import homepage_curated_api, publish_committee_workflow_api, articlepage_drafts_api
+from home.views import homepage_curated_api, publish_committee_workflow_api, articlepage_drafts_api, articlepage_drafts_api_list
 
 from infinitefeed.views import infinitefeed
 
@@ -90,6 +90,7 @@ urlpatterns += [
     re_path(r'^admin/homepage_curated_api/', homepage_curated_api),
     re_path(r'^admin/publish_committee_workflow_api/', publish_committee_workflow_api),
     path('admin/articlepage_drafts_api/<int:id>/', articlepage_drafts_api),
+    path('admin/articlepage_drafts_api/', articlepage_drafts_api_list),
 
     # Events
     re_path(r'^events/$', include(events_urls)),

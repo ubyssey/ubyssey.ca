@@ -1,0 +1,15 @@
+{% extends "wagtailadmin/base.html" %}
+{% load static %}
+
+{% block titletag %}Content tracker{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/content-tracker.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div id="content-tracker" class="c-content-tracker"></div>
+
+    <script src="{% static 'ubyssey/js/contentTracker.js' %}" type="text/javascript"></script>
+{% endblock %}
