@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import ReactDOM from 'react-dom';
 
+function humanizeTimeliness(timeliness) {
+    const labels = ["A day", "A few days", "A week", "Evergreen"];
+    return labels[timeliness - 1];
+}
+
 function labelDate(dateNumber) {
     const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
     const date = dateNumber % 100;
@@ -32,13 +37,13 @@ function dateNumber(datetime) {
     );
 }
 
-function ContentTrackerTimelineArticle({article}) {
+function ContentTrackerTimelineArticle({article, setViewedArticle}) {
     return (
         <div class={"o-content-tracker--timeline-article " + article.current_section}>
             <div class="o-content-tracker--timeline-article--hover-info">
                 <img src={article.image}></img>
             </div>
-            <div class="o-content-tracker--timeline-article--headline"><a href={article.url} title={article.title} dangerouslySetInnerHTML={{__html: article.title}}></a></div>
+            <div class="o-content-tracker--timeline-article--headline" title={article.title} dangerouslySetInnerHTML={{__html: article.title}} onClick={() => {setViewedArticle(article)}}></div>
         </div>
     ) 
 }
@@ -49,6 +54,8 @@ export default function ContentTracker() {
     const [dateRange, setDateRange] = useState([]);
     const [timeCursor, setTimeCursor] = useState(0);
     const [timeScale, setTimeScale] = useState(8);
+
+    const [viewedArticle, setViewedArticle] = useState({});
 
     function getArticles(timeScale, timeCursor) {
         const apiUrl = "/admin/articlepage_drafts_api/?timeCursor=" + String(timeCursor) + "&timeScale=" + String(timeScale);
@@ -97,8 +104,19 @@ export default function ContentTracker() {
             <button onClick={() => {setTimeScale(timeScale + 1)}}>Out {timeScale}</button>
             <button onClick={() => {setTimeScale(timeScale - 1)}}>In</button>
         </div>
-        <div class="c-content-tracker--drafts">
-
+        <div class="c-content-tracker--viewed">
+            {viewedArticle ?
+            <>
+                <div className="c-content-tracker--viewed-img">
+                    <img src={viewedArticle.image}></img>
+                </div>
+                <h1 dangerouslySetInnerHTML={{__html: viewedArticle.title}}></h1>
+                <p><a href={viewedArticle.url} title={viewedArticle.title} dangerouslySetInnerHTML={{__html: viewedArticle.title}}></a></p>
+                <p>Timeliness: {humanizeTimeliness(viewedArticle.timeliness)}</p>
+            </>
+            :
+            <p>Click on an assignment in the timeline to view its information!</p>
+            }
         </div>
     </div>
 
@@ -123,9 +141,11 @@ export default function ContentTracker() {
                         {dateRange.map(date => 
                             <td>
                                 {date in articlesBySectionByDate[section] && 
-                                    articlesBySectionByDate[section][date].map((article) =>
-                                    <ContentTrackerTimelineArticle article={article} />
-                                )}
+                                <div className="c-content-tracker--timeline-articles-container">
+                                    {articlesBySectionByDate[section][date].map((article) =>
+                                    <ContentTrackerTimelineArticle article={article} setViewedArticle={setViewedArticle} />
+                                )}</div>
+                                }
                             </td>
                         )}
                     </tr>

@@ -11,14 +11,27 @@ main {
         .c-content-tracker--upper {
             display: flex;
             flex-grow: 1;            
-            resize: both;
+            resize: vertical;
             overflow: auto;
             .c-content-tracker--data {
                 margin: 0.25em;
                 min-width: 200px;
+                resize: horizontal;
+                overflow: auto;
+                flex-shrink: 0;
             }
-            .c-content-tracker--drafts {
+            .c-content-tracker--viewed {
                 flex-grow: 1;
+                .c-content-tracker--viewed-img {
+                    margin: auto;
+                    max-width: 500px;
+                    img {
+                        width: 100%;
+                        height: auto;
+                        aspect-ratio: 3/2;
+                        object-fit: contain;
+                    }
+                }
             }
         }
     }
@@ -69,6 +82,10 @@ main {
                     border-left: 1px solid var(--w-color-border-field-default);
                     text-align: left;
                 }
+                .c-content-tracker--timeline-articles-container {
+                    max-height: 100px;
+                    overflow-y: auto;
+                }
             }
         }
     }
@@ -84,6 +101,8 @@ main {
 
     color: white;
     background: var(--section);
+
+    cursor: pointer;
 
     a {
         color: inherit;
