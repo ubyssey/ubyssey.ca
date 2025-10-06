@@ -7,7 +7,9 @@
   .caption {
     font-family: fonts.$font-default;
     font-style: italic;
-    color: var(--article_caption);
+    i {
+      font-style: normal;
+    }
   }
 
   &.left-image, &.right-image, &.no-image {
