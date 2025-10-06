@@ -68,3 +68,9 @@ class ReducedImageBlock(blocks.StructBlock):
     class Meta:
         template = 'images/stream_blocks/image_block.html'
         icon = 'image'
+
+class CaptionedImageBlock(ReducedImageBlock):
+    caption = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )

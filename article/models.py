@@ -1026,11 +1026,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         sorted by author type (with 'and' before last author)."""
 
         role_types_words = {
-            'author': 'Words by ',
-            'photographer': 'Photos by ',
-            'illustrator': 'Illustrations by ',
-            'videographer': 'Videos by ',
-            'designer': 'Design by ',
+            'author': 'words by ',
+            'photographer': 'photos by ',
+            'illustrator': 'illustrations by ',
+            'videographer': 'videos by ',
+            'designer': 'design by ',
             'org_role': '',
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
@@ -1063,12 +1063,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         visuals_byline = ''
 
         if len(visuals) > 0:
-            visuals_byline = ' '
-            if has_multi_contribution_author:
-                visuals_byline = visuals_byline + 'with '
             visuals_byline = visuals_byline + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
+            if has_multi_contribution_author:
+                visuals_byline = 'with ' + visuals_byline
 
-        return words_byline + visuals_byline
+        byline = ""
+        if words_byline != "":
+            byline = words_byline + " " + visuals_byline
+        elif len(visuals_byline) > 0:
+            byline = visuals_byline[0].upper() + visuals_byline[1:]
+
+        return byline
         
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 
@@ -1344,8 +1349,8 @@ class StandardArticlePage(ArticlePage):
                 help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
             )),
             ('audio', blocks_inner_article.AudioBlock()),
-            ('image', image_blocks.ImageBlock(
-            )),
+            ('image', image_blocks.ImageBlock()),
+            ('image_grid', blocks_inner_article.ImageGrid()),
             ('pdf', blocks_inner_article.PdfBlock()),
             ('raw_html', blocks.RawHTMLBlock(
                 label = "Raw HTML Block",

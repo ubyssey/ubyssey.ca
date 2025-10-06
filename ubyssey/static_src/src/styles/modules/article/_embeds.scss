@@ -126,8 +126,32 @@ div.article-content {
       }
     }
 
-    &:first-child {
-      margin-top: 20px;
+    &.image-grid-attachment {
+      display: flex;
+      width: 100%;
+      max-width: var(--grid-width);
+      gap: 1em;
+      .image-attachment {
+        margin: 0 auto;
+        width: 0;
+        flex-grow: 1;
+      }
+      img.article-attachment {
+        height: var(--image-height);
+        object-fit: cover;
+      }
+      @media(variables.$bp-smaller-than-phablet) {
+        flex-direction: column;
+        max-width: 100%;
+        .image-attachment {
+          width: 100%;
+          height: auto;
+        }
+        img.article-attachment {
+          height: auto;
+          object-fit: cover;
+        }
+      }
     }
   }
 }
@@ -504,14 +528,11 @@ div.caption {
   margin-inline: 1em;
   padding-block: 1em 0.5em;
   padding-inline: 1em;
-  border-bottom: 2px solid variables.$color-ubyssey-blue;
 
-  font-size: 15px;
-  line-height: 19px;
+  line-height: 1.25em;
 
-  color: var(--article_caption);
-  font-style: italic;
-  font-family: fonts.$font-default;
+  color: var(--text_color_supporting);
+  font-family: fonts.$font-body;
 
   a {
     text-decoration: underline;
@@ -523,7 +544,7 @@ span.credit {
   margin-left: 0.5em;
   font-style: italic;
   font-size: 0.9em;
-  color: variables.$color-ubyssey-blue;
+  color: var(--text_color_supporting-lighter);
 }
 
 div.article-content blockquote.pull-quote {
@@ -657,7 +678,6 @@ div.article-content blockquote.pull-quote {
   @media(variables.$bp-larger-than-phablet) {
 
     &.right, &.left {
-      margin-inline: 1em;
       max-width: 300px;
       text-align: left;
       p.meta {
@@ -673,16 +693,6 @@ div.article-content blockquote.pull-quote {
 
     &.center {
       margin: 2.8em auto;
-    }
-
-    &.right {
-      float: right;
-      margin-left: 2em;
-    }
-
-    &.left {
-      float: left;
-      margin-right: 2em;
     }
   }
 

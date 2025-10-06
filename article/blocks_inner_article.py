@@ -31,6 +31,10 @@ class HeaderLayoutBlock(blocks.ChoiceBlock):
         ('left-image', 'Left Image'),
         ('top-image', 'Top Image'),
         ('banner-image', 'Banner Image'),
+        ('banner-image--full-height--headline-left--headline-bottom', 'Full Height Banner Image (Bottom, Left Headline)'),
+        ('banner-image--full-height--headline-right--headline-bottom', 'Full Height Banner Image (Bottom, Right Headline)'),
+        ('banner-image--full-height--headline-left--headline-top', 'Full Height Banner Image (Top, Left Headline)'),
+        ('banner-image--full-height--headline-right--headline-top', 'Full Height Banner Image (Top, Right Headline)'),
         ('timeless-meta-page-banner', 'Timeless Meta Page Banner'),
     ]
 
@@ -90,9 +94,15 @@ class StandardHeader(blocks.StructBlock):
             new_context["article"] = dict(context)["self"]
             new_context["media_type"] = self.media_type
 
-        layout = value.get('layout')
+        layout = value.get('layout').split("--")
+
+        if len(layout) > 1:
+            new_context["layout_style"] = " ".join(layout[1:])
+
+        layout_template = layout[0]
+
         if layout != '':
-            template = 'article/components/headers/' + layout + '.html'
+            template = 'article/components/headers/' + layout_template + '.html'
         else:
             return self.render_basic(value, context=context) # Wagtail's default for when 
 
@@ -402,6 +412,38 @@ class PdfBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/pdf.html'
         icon = "doc-full"
+
+class ImageGrid(blocks.StructBlock):
+    images = blocks.ListBlock(
+        image_blocks.CaptionedImageBlock()
+    )
+
+    width = blocks.ChoiceBlock(
+        choices=[
+            ('600px', "600"),
+            ('800px', "800"),
+            ('1000px', "1000"),
+            ('1200px', "1200"),
+        ],
+        required=True,
+    )
+
+    height = blocks.ChoiceBlock(
+        choices=[
+            ('auto', "auto"),
+            ('300px', "300"),
+            ('400px', "400"),
+            ('500px', "500"),
+            ('600px', "600"),
+            ('800px', "800"),
+        ],
+        required=True,
+    )
+
+    class Meta:
+        template = "article/stream_blocks/image-grid.html"
+
+# Card block
 
 class CardBlock(blocks.StructBlock):
     text = blocks.RichTextBlock(required=False)

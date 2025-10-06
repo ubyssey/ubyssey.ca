@@ -1,5 +1,5 @@
 {% load wagtailcore_tags %}
-
+{% load wagtailimages_tags %}
 
 <div class="image-attachment attachment  {{ style }} {{ width }}" >
     <img class="article-attachment" data-id="{{ image.id }}" data-caption="{{ caption }}" data-credit="{{ credit }}" data-url="{{ image.get_absolute_url }}" src="{{ image.get_absolute_url }}" alt="{% if image.alt_text %}{{ image.alt_text }}{% else %}{{caption}}{% endif %}" />

@@ -1,0 +1,6 @@
+{% load wagtailcore_tags %}
+<div class="image-grid-attachment attachment" style="--grid-width: {{self.width}}; --image-height: {{self.height}};">
+{% for image in self.images %}
+    {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=image click_to_enlarge="true" %}
+{% endfor %}
+</div>

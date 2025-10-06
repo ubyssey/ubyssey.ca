@@ -4,15 +4,11 @@
     position: relative;
     width: 100%;
     height: auto;
-    //aspect-ratio: calc(90 / var(--aspect-ratio));
+
     box-sizing: initial;
 
     &.indicators {
       padding-bottom: 4em;
-    }
-
-    &.no-caption {
-      aspect-ratio: calc(100 / var(--aspect-ratio));
     }
 
     @media(variables.$bp-larger-than-phablet) {
@@ -76,10 +72,10 @@
       }
       img {
         margin-inline: auto;
-        width: auto;
         height: auto;
-        max-height: 100%;
-        max-width: 100%;
+        width: 100%;
+        aspect-ratio: var(--aspect-ratio);
+        object-fit: contain;
       }
     }
 

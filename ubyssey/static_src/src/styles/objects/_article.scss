@@ -123,12 +123,11 @@
 
 .o-article__section {
   margin-bottom: 0.25em;
-  padding-inline: 0.2em;
   width: fit-content;
 
   font-weight: 600;
   font-size: 0.65em;
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: var(--header_color_supporting);
   a {
       color: inherit;
@@ -452,7 +451,6 @@ div.article-content h2.header {
       margin-bottom: 0.5em;
       font-size: 0.8em;      
       .o-article__section {
-        padding-inline: 0 0.25em;
         font-weight: 600;
       }
       .o-article__section, .o-article__byline {

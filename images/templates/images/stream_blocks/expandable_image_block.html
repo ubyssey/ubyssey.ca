@@ -1,0 +1,26 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="image-attachment attachment {{ imageBlock.style }} {{ imageBlock.width }} setup-modal image-modal" >
+    {% image imageBlock.image width-1000 format-webp as image %}
+    {% image imageBlock.image original as ogImage %}
+    {% if imageBlock.click_to_enlarge or click_to_enlarge %}
+    <a class="open-modal" aria-label="Enlarge image">
+    {% endif %}
+    <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ imageBlock.caption }}" data-credit="{{ imageBlock.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if imageBlock.alt_text %}{{ imageBlock.alt_text }}{% else %}{{imageBlock.caption}}{% endif %}" />
+    {% if imageBlock.click_to_enlarge or click_to_enlarge %}
+    </a>
+    <dialog class="modal close-modal hide js-dropdown-container">
+        <div class="u-container u-container--large modal-contents">
+            <div class="image-modal-image" style="background-image: url('{{ogImage.url}}')"></div>
+            <button class="close-modal focus-on" aria-label="Minimize image"><ion-icon name="close-circle"></ion-icon></button>
+        </div>
+    </dialog>
+    {% endif %}
+
+    {% if imageBlock.caption or imageBlock.credit %}
+        <div class="caption">
+            {% if imageBlock.caption %}{{ imageBlock.caption|safe }}{% endif %} <span class="credit">{% if imageBlock.credit %}{{ imageBlock.credit }}{% endif %}</span>
+        </div>
+    {% endif %}
+</div>

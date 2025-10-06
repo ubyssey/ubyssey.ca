@@ -245,6 +245,7 @@ html[color-css-theme="light"] {
   --background: white;
   --text_color: #1b1b1b;
   --text_color_supporting: #666;
+  --text_color_supporting-lighter: #999;
   --text_color_contrast: #333;
   --header_color: #222;
   --header_color_supporting: #333;
@@ -255,6 +256,7 @@ html[color-css-theme="light"] {
   --contrast-color: #{variables.$color-ubyssey-blue-dark};
   --shadow-color: #888;
   --marked-read: #444;
+  --article-header-border: #e4e4e4;
 
     // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
@@ -281,6 +283,7 @@ html[color-css-theme="dark"] {
   --background: #031621;
   --text_color: #D9D9D9;
   --text_color_supporting: #aaa;
+  --text_color_supporting-lighter: #888;
   --text_color_contrast: #{variables.$color-ubyssey-blue-light};
   --header_color: white;
   --header_color_supporting: #eee;
@@ -291,6 +294,7 @@ html[color-css-theme="dark"] {
   --contrast-color: #{variables.$color-ubyssey-blue-light};
   --shadow-color: black;
   --marked-read: #bbb;
+  --article-header-border: #606b73;
 
   // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: #031723;

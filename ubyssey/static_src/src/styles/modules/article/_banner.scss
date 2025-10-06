@@ -3,9 +3,16 @@
 
 .fw-banner {
   margin: auto;
+
+  .caption {
+    font-family: fonts.$font-default;
+    font-style: italic;
+    color: var(--article_caption);
+  }
+
   &.left-image, &.right-image, &.no-image {
     padding-block: 1.5em;
-    border-bottom: 1px solid #E4E4E4;
+    border-bottom: 1px solid var(--article-header-border);
     vertical-align: middle;
     .header-container {
       margin: auto;
@@ -13,7 +20,7 @@
     }
   }
 
-  &.bottom-image, &.top-image, &.no-image {
+  &.bottom-image, &.top-image {
     margin-top: 3em;
     max-width: 1000px;
 
@@ -36,7 +43,7 @@
     }
   }
 
-  &.top-image, &.no-image {
+  &.top-image {
     h1.o-headline, p.subtitle {
       font-weight: 400;
       font-variation-settings: "wght" 400;
@@ -112,15 +119,21 @@
 
   &.no-image {
     padding-inline: 1em;
-    .c-article__published-at {
-      text-align: center;
-    }
+    max-width: 650px;
     .c-article__info {
       margin-top: 1.5em;
       padding: 0;
       p.author-string {
         margin: 0;
       }
+    }
+    .o-article--header--above_cut_lede + .c-article__info {
+      margin-top: 1em;
+    }
+    h1.o-headline  {
+      font-style: italic;
+      font-weight: 500;
+      font-variation-settings: "wght" 500;
     }
   }
 
@@ -164,6 +177,38 @@
     margin-bottom: 1.5rem;
     position: relative;
     height: 600px;
+
+    &.full-height {
+      min-height: 100vh;
+       .headline-container h1.headline {
+        font-size: 3em;
+       }
+    }
+
+    &.headline-left {
+      .headline-container header {
+        max-width: 75%;
+        margin-inline: 5% auto;
+      }
+    }
+
+    &.headline-right {
+      .headline-container header {
+        max-width: 75%;
+        margin-inline: auto 5%;
+        text-align: right;
+        .o-article--header--above_cut_lede {
+          margin-left: auto;
+        }
+      }
+    }
+
+    &.headline-bottom .headline-container {
+      bottom: 0;
+    } 
+    &.headline-top .headline-container {
+      top: 0;
+    } 
 
     @media(variables.$bp-larger-than-tablet) {
       margin-bottom: 2rem;
@@ -229,7 +274,6 @@
 
         font-family: fonts.$font-default;
         font-size: 12.5px;
-        color: white;
         line-height: 19px;
         text-align: right;
       }
@@ -335,8 +379,8 @@
 
 .o-article--header--above_cut_lede {
   font-family: fonts.$font-body;
-  line-height: 1.75em;
-
+  font-size: 1.3em;
+  line-height: 1.5em;
   a {
     text-decoration: underline;
   }
