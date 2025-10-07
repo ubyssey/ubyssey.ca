@@ -37,5 +37,5 @@ django-redis==5.4.0
 redis==5.0.1
 hiredis==2.2.3
 appengine-python-standard>=1.0.0
-icalendar===5.0.12
+icalendar===6.3.1
 aiohttp===3.10.3

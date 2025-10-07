@@ -33,8 +33,10 @@ class HeaderLayoutBlock(blocks.ChoiceBlock):
         ('banner-image', 'Banner Image'),
         ('banner-image--full-height--headline-left--headline-bottom', 'Full Height Banner Image (Bottom, Left Headline)'),
         ('banner-image--full-height--headline-right--headline-bottom', 'Full Height Banner Image (Bottom, Right Headline)'),
-        ('banner-image--full-height--headline-left--headline-top', 'Full Height Banner Image (Top, Left Headline)'),
-        ('banner-image--full-height--headline-right--headline-top', 'Full Height Banner Image (Top, Right Headline)'),
+        ('banner-image--full-height--headline-left--headline-top--headline-one-third-width', 'Full Height Banner Image (Top, Left Headline)'),
+        ('banner-image--full-height--headline-right--headline-top--headline-one-third-width', 'Full Height Banner Image (Top, Right Headline)'),
+        ('banner-image--full-height--headline-left--headline-mid--headline-one-third-width', 'Full Height Banner Image (Mid, Left Headline)'),
+        ('banner-image--full-height--headline-right--headline-mid--headline-one-third-width', 'Full Height Banner Image (Mid, Right Headline)'),
         ('timeless-meta-page-banner', 'Timeless Meta Page Banner'),
     ]
 

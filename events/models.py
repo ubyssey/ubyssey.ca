@@ -28,107 +28,119 @@ class EventManager(models.Manager):
         name = f['name']
         file = f['file']
         create_function = f['create_function']
-        try:
-            #print("Requesting " + name)
-            async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
-                async with session.get(file) as response:
-                    cal = Calendar.from_ical(await response.text())
+        #try:
+        #print("Requesting " + name)
+        async with aiohttp.ClientSession(headers={'User-Agent': "The Ubyssey https://ubyssey.ca/"}) as session:
+            async with session.get(file) as response:
+                text = await response.text()
+                if text == None: 
+                    print(name + " is None")
+                    return
+                
+                cal = None
+                try:
+                    cal = Calendar.from_ical(text)
                     #print("Connected to " + name)
+                except:
+                    print("Failed reading " + file +  " as ical")
+                    return
+                tasks = []
+                for component in cal.walk():
+                    if component.name == "VEVENT":
+                        if isinstance(component.decoded('dtstart'), datetime):
+                            start =component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+                        else:
+                            start=datetime.combine(component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
 
-                    tasks = []
-                    for component in cal.walk():
-                        if component.name == "VEVENT":
-                            if isinstance(component.decoded('dtstart'), datetime):
-                                start =component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+                        if timedelta(days=30) > timezone.now() - start:
+                            if 'instructions' in f:
+                                tasks.append(asyncio.create_task(create_function(component, f['name'], f['instructions'])))
                             else:
-                                start=datetime.combine(component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+                                tasks.append(asyncio.create_task(create_function(component)))
+                
+                await asyncio.gather(*tasks)
 
-                            if timedelta(days=30) > timezone.now() - start:
-                                if 'instructions' in f:
-                                    tasks.append(asyncio.create_task(create_function(component, f['name'], f['instructions'])))
-                                else:
-                                    tasks.append(asyncio.create_task(create_function(component)))
-                    
-                    await asyncio.gather(*tasks)
+                print(name + " finished " + str(len(tasks)) + " tasks")
 
-                    print(name + " finished " + str(len(tasks)) + " tasks")
-
-        except:
-            print("Failed requesting to " + name)
+        #except:
+        #    print("Failed requesting to " + name)
 
     async def ical_create_event(self, ical_component, name, instructions):
-        try:
-            if not await self.filter(event_url=ical_component.get('url')).aexists():
-                event = await self.acreate(
-                    title=ical_component.get('summary'),
-                    event_url=ical_component.decoded('url'),
-                    hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
-                )
-            else:
-                event = await self.filter(event_url=ical_component.get('url')).afirst()
-                if event.update_mode != 2:
-                    return None
-
-            if event.hash == "":
-                event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
-
-            # Split location and address
-            location = ""
-            address = ""
-            if ical_component.get('location', False):
-                location = ical_component.get('location')            
-                if "," in location:
-                    address = location[location.index(',')+1:]
-                    location = location[:location.index(',')]
+        #try:
+        if not await self.filter(event_url=ical_component.get('url')).aexists():
+            event = await self.acreate(
+                title=ical_component.get('summary'),
+                event_url=ical_component.decoded('url'),
+                hash=self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
+            )
+        else:
+            event = await self.filter(event_url=ical_component.get('url')).afirst()
+            if event.update_mode != 2:
+                return None
             
-            event.title=str(ical_component.decoded('summary'), 'UTF-8')
-            if ical_component.get('description', False):
-                event.description=str(ical_component.decoded('description'), 'UTF-8')
-                while '\t' in event.description: 
-                    event.description = event.description.replace("\t", "")
-                while '\n ' in event.description: 
-                    event.description = event.description.replace("\n ", "\n")
-                while '\n\n\n' in event.description: 
-                    event.description = event.description.replace("\n\n\n", "\n\n")
-            else:
-                event.description=""
+        print("create ical event")
 
-            if isinstance(ical_component.decoded('dtstart'), datetime):
-                event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
-            else:
-                event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
+        if event.hash == "":
+            event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))
 
-            if isinstance(ical_component.decoded('dtend'), datetime):
-                event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
-            else:
-                event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
-                
-            event.address=address
-            event.location=location
-            event.email=ical_component.decoded('organizer', default="")
-            event.event_url=ical_component.decoded('url')
-            event.category = instructions['category']
-            event.hidden=False
+        # Split location and address
+        location = ""
+        address = ""
+        if ical_component.get('location', False):
+            location = ical_component.get('location')            
+            if "," in location:
+                address = location[location.index(',')+1:]
+                location = location[:location.index(',')]
+        
+        event.title=str(ical_component.decoded('summary'), 'UTF-8')
+        if ical_component.get('description', False):
+            event.description=str(ical_component.decoded('description'), 'UTF-8')
+            while '\t' in event.description: 
+                event.description = event.description.replace("\t", "")
+            while '\n ' in event.description: 
+                event.description = event.description.replace("\n ", "\n")
+            while '\n\n\n' in event.description: 
+                event.description = event.description.replace("\n\n\n", "\n\n")
+        else:
+            event.description=""
 
-            if 'hidden_title_terms' in instructions:
-                event.hidden = True in (term in ical_component.get('summary') for term in instructions['hidden_title_terms'])
+        if isinstance(ical_component.decoded('dtstart'), datetime):
+            event.start_time=ical_component.decoded('dtstart').astimezone(timezone.get_current_timezone())
+        else:
+            event.start_time=datetime.combine(ical_component.decoded('dtstart'), time(), tzinfo=timezone.get_current_timezone())
 
-            if 'hidden_override' in instructions:
-                event.hidden = instructions['hidden_override'](ical_component)
+        if isinstance(ical_component.decoded('dtend'), datetime):
+            event.end_time=ical_component.decoded('dtend').astimezone(timezone.get_current_timezone())
+        else:
+            event.end_time=datetime.combine(ical_component.decoded('dtend'), time(), tzinfo=timezone.get_current_timezone())
+            
+        event.address=address
+        event.location=location
+        event.email=ical_component.decoded('organizer', default="")
+        event.event_url=ical_component.decoded('url')
+        print(" ".join(list(ical_component.get('categories'))))
+        event.category = instructions['category'](ical_component)
+        event.hidden=False
 
-            event.host = name
+        if 'hidden_title_terms' in instructions:
+            event.hidden = True in (term in ical_component.get('summary') for term in instructions['hidden_title_terms'])
 
-            if 'description_transform' in instructions:
-                event.description = instructions['description_transform'](event)
+        if 'hidden_override' in instructions:
+            event.hidden = instructions['hidden_override'](ical_component)
 
-            event.update_mode = 1
-            await event.asave()
-            #print("Finished event " + event.event_url)
-            return event
-        except:
-            print("Failed on " + name)
-            print("- " + ical_component.get('summary') + ": " + ical_component.get('url'))
-            return None
+        event.host = name
+
+        if 'description_transform' in instructions:
+            event.description = instructions['description_transform'](event)
+
+        event.update_mode = 1
+        await event.asave()
+        #print("Finished event " + event.event_url)
+        return event
+        #except:
+        #    print("Failed on " + name)
+        #    print("- " + ical_component.get('summary') + ": " + ical_component.get('url'))
+        #    return None
 
     async def read_wp_events_api(self, name, api, categorize):
         try:
@@ -475,9 +487,14 @@ class EventManager(models.Manager):
             )
         else:
             event = await self.filter(event_url=ical_component.get('url').replace("&amp;", "&")).afirst()
-            if event.update_mode != 2 and event.end_time.astimezone(timezone.get_current_timezone()) <= timezone.now() - timedelta(days=7): # Go Thunderbirds is unqiue because the events are updated after they pass to include the result
+            try:
+                if event.update_mode != 2 and event.end_time.astimezone(timezone.get_current_timezone()) <= timezone.now() - timedelta(days=7): # Go Thunderbirds is unqiue because the events are updated after they pass to include the result
+                    return None
+            except:
+                #print("thunderbird oopsie ----------------------------")
+                #print(ical_component)
+                #print("thunderbird oopsie ----------------------------")
                 return None
-
                 
         if event.hash == "":
             event.hash = self.hashing(ical_component.get('summary') + str(ical_component.decoded('dtstart')))

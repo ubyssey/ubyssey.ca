@@ -268,8 +268,8 @@ async def update_events():
     max_at_a_time = 50
     tasks.append(asyncio.create_task(Event.objects.phas_scrape()))
 
-    wp_apis = [
-
+    wp_apis = []
+    '''
         {'name': 'UBC Anthropology', 
          'api': 'https://anth.ubc.ca/wp-json/wp/v2/',
          'categorize': {
@@ -479,6 +479,7 @@ async def update_events():
         },
 
     ]
+    '''
 
     terms = ['lecture', 'workshop', 'conference', 'talk', 'seminar', 'colloquia']
     for a in wp_apis:
@@ -488,8 +489,8 @@ async def update_events():
             await asyncio.gather(*tasks)
             tasks = []
 
-    ical_files = [
-
+    '''
+        
         {'name': 'Go Thunderbirds', 
          'file': "https://gothunderbirds.ca/calendar.ashx/calendar.ics", 
          'create_function': Event.objects.gothunderbirds_create_event},
@@ -510,7 +511,7 @@ async def update_events():
          'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % datetime.now().month) + "-01&ical=1", 
          'create_function': Event.objects.ical_create_event,
          'instructions': {
-            'category': 'entertainment',
+            'category': lambda e: 'entertainment',
             'description_transform': lambda d : "",    
          }
         },
@@ -519,7 +520,7 @@ async def update_events():
          'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % ((datetime.now().month%12) + 1)) + "-01&ical=1", 
          'create_function': Event.objects.ical_create_event,
          'instructions': {
-            'category': 'entertainment',
+            'category': lambda e: 'entertainment',
             'description_transform': lambda d : "", 
          }
         },
@@ -528,7 +529,7 @@ async def update_events():
          'file': "https://www.math.ubc.ca/news-events/events/ical", 
          'create_function': Event.objects.ical_create_event,
          'instructions': {
-            'category': 'seminar',
+            'category': lambda e: 'seminar',
          }
         },
 
@@ -536,7 +537,7 @@ async def update_events():
          'file': "https://www.ams.ubc.ca/events/?ical=1", 
          'create_function': Event.objects.ical_create_event,
          'instructions': {
-            'category': 'community',
+            'category': lambda e: 'community',
             'description_transform': lambda e : e.description.replace("UBC, UBC Vancouver, UBC students, UBC student life, UBC students, UBC events, events at UBC, UBC student events, UBC back to school, UBC back to school events, UBC campus, UBC campus events", ""),
             'hidden_title_terms': ['SASC'],
          }
@@ -546,29 +547,32 @@ async def update_events():
          'file': "https://www.amssasc.ca/events/?ical=1", 
          'create_function': Event.objects.ical_create_event,
          'instructions': {
-            'category': 'community',
+            'category': lambda e: 'community',
             'hidden_title_terms': ['Roots and Resilience'],
          }
         },
-
+    '''
+    ical_files = [
         {'name': 'UBC Libraries', 
          'file': "https://libcal.library.ubc.ca/ical_subscribe.php?src=p&cid=7544", 
          'create_function': Event.objects.ical_create_event,
          'instructions': {
-            'category': 'community',
-            'hidden_override': lambda e : len(e.get('categories').cats) > 0, # The scheduled events are all cringe but well categorized. Events added manually can be cool but categories typically aren't added. At some point we should be more sophistiacted in filtering this lmao
+            'category': lambda e: 'seminar' if (True in [seminar_category in list(e.get('categories')) for seminar_category in ["Writer-in-Residence"]] or "scholar" in " ".join(list(e.get('categories'))).lower()) else 'community',
+            'hidden_override': lambda e: False if (True in [seminar_category in list(e.get('categories')) for seminar_category in ["Writer-in-Residence", "Peña Scholars"]] or "week" in " ".join(list(e.get('categories'))).lower()) else True, # The scheduled events are all cringe but well categorized. Events added manually can be cool but categories typically aren't added. At some point we should be more sophistiacted in filtering this lmao
          }
         },
-
+    ]
+    '''
         {'name': 'Green College',
          'file': 'https://greencollege.ubc.ca/civicrm/event/ical',
          'create_function': Event.objects.ical_create_event,
          'instructions': {
-            'category': 'seminar',
+            'category': lambda e: 'seminar',
             'description_transform': lambda e : e.description.split('in the series\n\n')[-1][e.description.split('in the series\n\n')[-1].index("\n")+4:],
          }
         },
     ]
+    '''
 
     for f in ical_files:
         tasks.append(asyncio.create_task(Event.objects.read_ical(f)))
