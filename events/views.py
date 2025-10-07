@@ -552,8 +552,8 @@ async def update_events():
          'file': "https://libcal.library.ubc.ca/ical_subscribe.php?src=p&cid=7544", 
          'create_function': Event.objects.ical_create_event,
          'instructions': {
-            'category': lambda e: 'seminar' if (True in [seminar_category in list(e.get('categories')) for seminar_category in ["Writer-in-Residence"]] or "scholar" in " ".join(list(e.get('categories'))).lower()) else 'community',
-            'hidden_override': lambda e: False if (True in [seminar_category in list(e.get('categories')) for seminar_category in ["Writer-in-Residence", "Peña Scholars"]] or "week" in " ".join(list(e.get('categories'))).lower()) else True, # The scheduled events are all cringe but well categorized. Events added manually can be cool but categories typically aren't added. At some point we should be more sophistiacted in filtering this lmao
+            'category': lambda e: 'seminar' if (True in [seminar_category in list(e.get('categories')) for seminar_category in ["Writer-in-Residence"]] or "scholar" in " ".join(list(e.get('categories'))).lower()) else 'community', # Would be nice to introduce instruction types to make this easier  - Sam Low 6/10/2025
+            'hidden_override': lambda e: False if (True in [seminar_category in list(e.get('categories')) for seminar_category in ["Writer-in-Residence", "Peña Scholars"]] or "week" in " ".join(list(e.get('categories'))).lower()) else True,
          }
         },
         {'name': 'Green College',
