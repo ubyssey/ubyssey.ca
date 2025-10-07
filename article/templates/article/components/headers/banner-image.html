@@ -29,7 +29,7 @@
                 <div class="o-article--header--above_cut_lede">{{ self.above_cut_lede|safe }}</div>
             {% endif %}
             <div class="article-byline">
-                <span class="author">By {{ article.get_authors_with_urls|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ article.published_at|date:'N j, Y' }}</span>
+                <span class="author">By {{ article.get_authors_split_out_visual_bylines|safe }}</span> &nbsp;&middot;&nbsp; <span class="published">{{ article.published_at|date:'N j, Y' }}</span>
             </div>
         </header>
         {% if featured_image_object.caption or featured_image_object.credit %}
