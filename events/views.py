@@ -268,15 +268,14 @@ async def update_events():
     max_at_a_time = 50
     tasks.append(asyncio.create_task(Event.objects.phas_scrape()))
 
-    wp_apis = []
-    '''
+    wp_apis = [
         {'name': 'UBC Anthropology', 
          'api': 'https://anth.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'community',
             'seminar_type': [528, 530, 632, 633, 634, 728, 729],
             'hidden_title_terms': ['coffee hour'],
-            'seminar_title_terms': ['Archaeology Lab Nights', 'Information Session'],
+            'seminar_title_terms': ['Archaeology Lab Night', 'Information Session'],
          },
         },
 
@@ -460,7 +459,7 @@ async def update_events():
          'api': 'https://music.ubc.ca/wp-json/wp/v2/',
          'categorize': {
             'default': 'entertainment',
-            'seminar_type': [562, 564, 567, 762, 563],
+            'seminar_type': [562, 564, 567, 918],
          },
         },
 
@@ -477,9 +476,7 @@ async def update_events():
             'default': 'seminar',
          },
         },
-
     ]
-    '''
 
     terms = ['lecture', 'workshop', 'conference', 'talk', 'seminar', 'colloquia']
     for a in wp_apis:
@@ -489,8 +486,7 @@ async def update_events():
             await asyncio.gather(*tasks)
             tasks = []
 
-    '''
-        
+    ical_files = [
         {'name': 'Go Thunderbirds', 
          'file': "https://gothunderbirds.ca/calendar.ashx/calendar.ics", 
          'create_function': Event.objects.gothunderbirds_create_event},
@@ -551,8 +547,7 @@ async def update_events():
             'hidden_title_terms': ['Roots and Resilience'],
          }
         },
-    '''
-    ical_files = [
+
         {'name': 'UBC Libraries', 
          'file': "https://libcal.library.ubc.ca/ical_subscribe.php?src=p&cid=7544", 
          'create_function': Event.objects.ical_create_event,
@@ -561,8 +556,6 @@ async def update_events():
             'hidden_override': lambda e: False if (True in [seminar_category in list(e.get('categories')) for seminar_category in ["Writer-in-Residence", "Peña Scholars"]] or "week" in " ".join(list(e.get('categories'))).lower()) else True, # The scheduled events are all cringe but well categorized. Events added manually can be cool but categories typically aren't added. At some point we should be more sophistiacted in filtering this lmao
          }
         },
-    ]
-    '''
         {'name': 'Green College',
          'file': 'https://greencollege.ubc.ca/civicrm/event/ical',
          'create_function': Event.objects.ical_create_event,
@@ -572,7 +565,6 @@ async def update_events():
          }
         },
     ]
-    '''
 
     for f in ical_files:
         tasks.append(asyncio.create_task(Event.objects.read_ical(f)))
