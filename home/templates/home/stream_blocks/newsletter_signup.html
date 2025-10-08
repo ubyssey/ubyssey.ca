@@ -1,7 +1,15 @@
 <div class="c-home-sidebar--newsletter-signup">
     {{self.text|safe}}
 
+    <!-- Embed Envoke Form -->
+    <div id="nvkEmbed26c32250a8b0bc43a7468e5b17796fe5" class="nvkEmbed"></div>
+    <script async src="https://e1.envoke.com/ext/embed/engagements/26c32250a8b0bc43a7468e5b17796fe5.js"></script>
+    <!-- End Embed Envoke Form -->
+
+    {% comment %}
+    Old Beehiiv newsletter signup
     <iframe src="https://embeds.beehiiv.com/8cc31358-f28d-486d-b3ad-99cdf843ce88?slim=true" data-test-id="beehiiv-embed" height="52" frameborder="0" scrolling="no" style="margin: 0; border-radius: 0px !important; background-color: transparent; width: 100%;"></iframe>
+    {% endcomment %}
 
     {% comment %}
     I would like it to be native but we have to verify ourselves with Stripe which I don't want to do right now

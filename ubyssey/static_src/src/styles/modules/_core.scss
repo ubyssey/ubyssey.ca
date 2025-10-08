@@ -238,6 +238,7 @@ a {
 
 html {
   transition: background 0.5s ease, color 0.5s ease;
+  --ubyssey_blue-classic: #{variables.$color-ubyssey-blue-classic};
 }
 
 html[color-css-theme="light"] {

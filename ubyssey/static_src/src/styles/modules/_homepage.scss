@@ -824,6 +824,38 @@ html.hairlines {
     }
    }
 
+   #e33cca0ca5fc3ed2a93d7942f6738064 {
+    background: none;
+    padding: 0;
+    #e99366d1f3948398ef668cad6a1eabab {
+      display: none;
+    }
+    .nvkSubmitButton {
+      text-align: right;
+      button {
+        width: fit-content;
+        border: none;
+        background: var(--ubyssey_blue-classic);
+        color: white;
+      }
+    }
+  }
+  .nvkContent .form-control {
+    padding: 0.5em 1em;
+    height: auto;
+    border-radius: 0.3em;
+    border: 2px solid var(--ubyssey_blue-classic);
+
+    font-size: 1.1em;
+    line-height: 2em;
+    letter-spacing: 0.05em;
+    font-family: fonts.$font-default;
+
+    &::placeholder {
+      color: var(--text_color_supporting);
+    }
+  }
+
   .c-home-sidebar--newsletter-signup--form {
     display: flex;
 
