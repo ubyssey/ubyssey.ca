@@ -840,6 +840,9 @@ html.hairlines {
       }
     }
   }
+  .nvkContent {
+    background: none;
+  }
   .nvkContent .form-control {
     padding: 0.5em 1em;
     height: auto;
@@ -852,7 +855,7 @@ html.hairlines {
     font-family: fonts.$font-default;
 
     &::placeholder {
-      color: var(--text_color_supporting);
+      color: #999;
     }
   }
 
