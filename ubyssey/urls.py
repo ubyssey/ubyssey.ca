@@ -27,6 +27,7 @@ from newsletter.urls import urlpatterns as newsletter_urls
 from django.conf.urls import handler500
 
 from publishing_analytics import views as publishing_analytics_views 
+from content_tracker.views import story_assignment_api_list
 
 from rest_framework import routers
 
@@ -91,6 +92,8 @@ urlpatterns += [
     re_path(r'^admin/publish_committee_workflow_api/', publish_committee_workflow_api),
     path('admin/articlepage_drafts_api/<int:id>/', articlepage_drafts_api),
     path('admin/articlepage_drafts_api/', articlepage_drafts_api_list),
+
+    path('admin/story_assignment_api/', story_assignment_api_list),
 
     # Events
     re_path(r'^events/$', include(events_urls)),

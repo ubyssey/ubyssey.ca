@@ -95,12 +95,14 @@ def articlepage_drafts_api_list(request):
 
         if 'timeCursor' in request.query_params:
             timeCursor = int(request.query_params['timeCursor'])
-            upperBound = timezone.datetime.now() - (timeCursor * timezone.timedelta(days=7))
+            print(f"time cursor: {timeCursor}")
+            upperBound = timezone.datetime.now() + (timeCursor * timezone.timedelta(days=7))
             article = article.filter(first_published_at__lte=upperBound)
 
         if 'timeScale' in request.query_params:
             timeScale = int(request.query_params['timeScale'])
-            lowerBound = timezone.datetime.now() - (timeScale * timezone.timedelta(days=7)) - (timeCursor * timezone.timedelta(days=7))
+            print(f"time scale: {timeScale}")
+            lowerBound = timezone.datetime.now() - (timeScale * timezone.timedelta(days=7)) + (timeCursor * timezone.timedelta(days=7))
             article = article.filter(first_published_at__gte=lowerBound)
 
         if article != None:
