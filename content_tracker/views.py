@@ -10,12 +10,40 @@ from rest_framework import serializers
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from authors.models import AuthorPage
 from article.models import ArticlePage
 from content_tracker.models import StoryAssignment, VisualAssignment
 from home.views import ArticleHomePageCuratedSerializer 
 
 story_assignment_chooser_viewset = ChooserViewSet("story_assignment_chooser")
 
+class AssigneeSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    full_name = serializers.CharField(source="assignee.full_name")
+    slug = serializers.CharField(source="assignee.slug")
+    image = serializers.URLField(source="assignee.get_image_url")
+
+    class Meta:
+        model = AuthorPage
+        fields = ('id', 'full_name', 'slug', 'image')
+
+class VisualAssignmentSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+
+    memo  = serializers.URLField()
+    request = serializers.CharField()
+    visual_type = serializers.CharField()
+
+    created = serializers.DateTimeField()
+    deadline = serializers.DateField()
+
+    state = serializers.CharField()
+
+    assignees = AssigneeSerializer(source="visual_assignees", many=True)
+
+    class Meta:
+        model = VisualAssignment
+        fields = ('id', 'memo', 'request', 'visual_type', 'created', 'deadline', 'state', 'assignees')
 
 class StoryAssignmentSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
@@ -31,14 +59,18 @@ class StoryAssignmentSerializer(serializers.ModelSerializer):
     deadline = serializers.DateField()
     target = serializers.DateField()
 
-    state = serializers.CharField()
+    state = serializers.IntegerField()
 
     article_page = ArticleHomePageCuratedSerializer(many=False)
+
+    visual_requests = VisualAssignmentSerializer(many=True)
+
+    assignees = AssigneeSerializer(source="story_assignees", many=True)
 
     class Meta:
         model = StoryAssignment
         fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder', 
-                  'manuscript', 'created', 'deadline', 'target', 'state', 'article_page')
+                  'manuscript', 'created', 'deadline', 'target', 'state', 'article_page', 'visual_requests', 'assignees')
 
 
 @api_view(['GET'])
@@ -54,6 +86,9 @@ def story_assignment_api_list(request):
 
         timeCursor = 0
 
+        if 'active' in request.query_params:
+            assignment = assignment.exclude(state=StoryAssignment.StateChoices.PUBLISHED)
+
         if 'timeCursor' in request.query_params:
             timeCursor = int(request.query_params['timeCursor'])
             print(f"time cursor: {timeCursor}")
@@ -67,6 +102,12 @@ def story_assignment_api_list(request):
             assignment = assignment.filter(target__gte=lowerBound)
 
         if assignment != None:
+
+            if 'orderby' in request.query_params:
+                assignment_serialized = StoryAssignmentSerializer(assignment.order_by(request.query_params['orderby'])[:1000], many=True)                    
+
+                return Response(assignment_serialized.data)
+
             assignment_serialized = StoryAssignmentSerializer(assignment.order_by("-target")[:1000], many=True)
         
             return Response(assignment_serialized.data)
