@@ -880,6 +880,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     #-----Properties, getters, setters, etc.-----
     
+    def get_featured_media_image_url(self):
+        if self.featured_media.exists():
+            if self.featured_media.first().image:
+                return self.featured_media.first().image.file.url
+        return None
+
     # TIMELINESS
     def get_relevance_score(self):
         relevance_delta = {
