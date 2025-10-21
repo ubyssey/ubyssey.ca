@@ -4,6 +4,8 @@ from rest_framework import serializers
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from django.utils import timezone
+
 from wagtail.models import Site, TaskState, Workflow, WorkflowState
 
 from article.models import ArticlePage
@@ -11,14 +13,16 @@ from article.models import ArticlePage
 class ArticleHomePageCuratedSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     title = serializers.CharField()
+    current_section = serializers.CharField()
     url = serializers.URLField(source="get_url")
     datetime = serializers.DateTimeField(source="first_published_at")
     live = serializers.BooleanField()
     timeliness = serializers.IntegerField()
+    image = serializers.URLField(source="get_featured_media_image_url")
 
     class Meta:
         model = ArticlePage
-        fields = ('id', 'title', 'url', 'datetime', 'live', 'timeliness')
+        fields = ('id', 'title', 'current_section', 'url', 'datetime', 'live', 'timeliness', 'image')
 
 class ArticleHomePageReadySerializer(serializers.ModelSerializer):
     article = serializers.SerializerMethodField()
@@ -74,6 +78,39 @@ def publish_committee_workflow_api(request):
         return Response({
             "workflows": articles_serialized.data,
             })
+    
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def articlepage_drafts_api_list(request):
+    """
+    List all code snippets, or create a new snippet.
+    """
+
+    if request.method == 'GET':
+        article = ArticlePage.objects.all()
+
+        timeCursor = 0
+
+        if 'timeCursor' in request.query_params:
+            timeCursor = int(request.query_params['timeCursor'])
+            print(f"time cursor: {timeCursor}")
+            upperBound = timezone.datetime.now() + (timeCursor * timezone.timedelta(days=7))
+            article = article.filter(first_published_at__lte=upperBound)
+
+        if 'timeScale' in request.query_params:
+            timeScale = int(request.query_params['timeScale'])
+            print(f"time scale: {timeScale}")
+            lowerBound = timezone.datetime.now() - (timeScale * timezone.timedelta(days=7)) + (timeCursor * timezone.timedelta(days=7))
+            article = article.filter(first_published_at__gte=lowerBound)
+
+        if article != None:
+            article_serialized = ArticleHomePageCuratedSerializer(article.order_by("-first_published_at")[:1000], many=True)
+        
+            return Response(article_serialized.data)
+        
+        return Response(status=404)
     
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])

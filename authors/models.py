@@ -344,6 +344,11 @@ class AuthorPage(RoutablePageMixin, Page):
 
     def __str__(self):
         return self.full_name
+
+    def get_image_url(self):
+        if self.image:
+            return self.image.file.url
+        return None
     
     class Meta:
         ordering = ["full_name"]

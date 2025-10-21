@@ -1,8 +1,13 @@
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
-from wagtail.signals import page_published
-from .models import ArticlePage, ArticleTopic
 from django.utils.text import slugify
+
+from wagtail.signals import page_published
+from wagtail.log_actions import log
+
+from .models import ArticlePage, ArticleTopic
+from content_tracker.models import StoryAssignment
+
 import asyncio
 from asgiref.sync import async_to_sync, sync_to_async
 
@@ -15,6 +20,14 @@ def update_default_explicit_published_at(instance, sender, **kwargs):
                 author.author.last_activity = instance.first_published_at
                 author.author.save()
             instance.save()
+
+@receiver(page_published)
+def update_story_assignment_on_publish(instance, sender, **kwargs):
+    if issubclass(sender, ArticlePage):
+        for assignment in instance.assignment.exclude(state=StoryAssignment.StateChoices.PUBLISHED.value):
+            assignment.state = StoryAssignment.StateChoices.PUBLISHED.value
+            log(instance=assignment, action='wagtail.edit')
+            assignment.save()
 
 @receiver(page_published)
 def update_primary_tag(instance, sender, **kwargs):
