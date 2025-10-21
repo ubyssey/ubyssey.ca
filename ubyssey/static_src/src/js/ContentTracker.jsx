@@ -173,7 +173,7 @@ function ContentTrackerActiveStoryAssignments({activeStoryAssignments, setViewed
             <table className="listing">
                 <thead>
                     <tr>
-                        <th>Story assignment</th>
+                        <th>Story</th>
                         <th>Story type</th>
                         <th>Assignee(s)</th>
                         <th>State</th>
