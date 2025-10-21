@@ -20,6 +20,9 @@ main {
                 resize: horizontal;
                 overflow: auto;
                 flex-shrink: 0;
+                .w-tabs__list {
+                    padding-inline: 0;
+                }
             }
             .c-content-tracker--upper-left--header {
                 margin: 0.5em 0;

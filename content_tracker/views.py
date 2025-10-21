@@ -45,6 +45,7 @@ class VisualAssignmentSerializer(serializers.ModelSerializer):
         model = VisualAssignment
         fields = ('id', 'memo', 'request', 'visual_type', 'created', 'deadline', 'state', 'assignees')
 
+
 class StoryAssignmentSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     subject = serializers.CharField()
@@ -63,14 +64,28 @@ class StoryAssignmentSerializer(serializers.ModelSerializer):
 
     article_page = ArticleHomePageCuratedSerializer(many=False)
 
-    visual_requests = VisualAssignmentSerializer(many=True)
-
     assignees = AssigneeSerializer(source="story_assignees", many=True)
 
     class Meta:
         model = StoryAssignment
         fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder', 
-                  'manuscript', 'created', 'deadline', 'target', 'state', 'article_page', 'visual_requests', 'assignees')
+                  'manuscript', 'created', 'deadline', 'target', 'state', 'article_page', 'assignees')
+
+class VisualAssignmentWithStoryAssignmentSerializer(VisualAssignmentSerializer):
+    story_assignment = StoryAssignmentSerializer(many=False)
+
+    class Meta:
+        model = VisualAssignment
+        fields = ('id', 'memo', 'request', 'visual_type', 'created', 'deadline', 'state', 'assignees', 'story_assignment')
+
+
+class StoryAssignmentWithVisualRequestsSerializer(StoryAssignmentSerializer):
+    visual_requests = VisualAssignmentSerializer(many=True)
+
+    class Meta:
+        model = StoryAssignment
+        fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder', 
+                  'manuscript', 'created', 'deadline', 'target', 'state', 'article_page', 'assignees', 'visual_requests',)
 
 
 @api_view(['GET'])
@@ -104,11 +119,38 @@ def story_assignment_api_list(request):
         if assignment != None:
 
             if 'orderby' in request.query_params:
-                assignment_serialized = StoryAssignmentSerializer(assignment.order_by(request.query_params['orderby'])[:1000], many=True)                    
+                assignment_serialized = StoryAssignmentWithVisualRequestsSerializer(assignment.order_by(request.query_params['orderby'])[:1000], many=True)                    
 
                 return Response(assignment_serialized.data)
 
-            assignment_serialized = StoryAssignmentSerializer(assignment.order_by("-target")[:1000], many=True)
+            assignment_serialized = StoryAssignmentWithVisualRequestsSerializer(assignment.order_by("-target")[:1000], many=True)
+        
+            return Response(assignment_serialized.data)
+        
+        return Response(status=404)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def visual_assignment_api_list(request):
+    """
+    List all code snippets, or create a new snippet.
+    """
+
+    if request.method == 'GET':
+        assignment = VisualAssignment.objects.all()
+
+        if 'active' in request.query_params:
+            assignment = assignment.exclude(state=VisualAssignment.StateChoices.COMPLETED)
+
+        if assignment != None:
+
+            if 'orderby' in request.query_params:
+                assignment_serialized = VisualAssignmentWithStoryAssignmentSerializer(assignment.order_by(request.query_params['orderby'])[:1000], many=True)                    
+
+                return Response(assignment_serialized.data)
+
+            assignment_serialized = VisualAssignmentWithStoryAssignmentSerializer(assignment.order_by("-created")[:1000], many=True)
         
             return Response(assignment_serialized.data)
         

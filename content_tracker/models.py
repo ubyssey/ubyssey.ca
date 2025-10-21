@@ -58,14 +58,19 @@ class StoryAssignment(ClusterableModel):
 
     story_type = models.CharField(max_length=50, choices=[
         ("event-report", "Event report"),
-        ("essay", "Personal or Opinion essay"),
+        ("extended-report", "Extended report"),
+        ("public-service-announcement", "Public Service Announcement"),
+        ("opinion-essay", "Opinion essay"),
+        ("personal-essay", "Personal essay"),
         ("review", "Review"),
-        ("explainer", "Explainer/Guide"),
+        ("guide", "Guide"),
+        ("explainer", "Explainer"),
+        ("profile", "Profile"),
         ])    
     assigning_section = models.CharField(max_length=50, choices=[
         ("news", "News"),
         ("culture", "Culture"),
-        ("features", "features"),
+        ("features", "Features"),
         ("opinion", "Opinion"),
         ("humour", "Humour"),
         ("research", "Research"),
@@ -129,7 +134,7 @@ class VisualAssignment(ClusterableModel):
     
     created = models.DateTimeField(auto_now=True)
     deadline = models.DateField()
-    completed_at = models.DateTimeField(null=True, blank=True)
+    completed = models.DateTimeField(null=True, blank=True)
 
     class StateChoices(models.IntegerChoices):
         NEW = 0, ("New")
@@ -166,9 +171,8 @@ class VisualAssignment(ClusterableModel):
 
     def save(self, *args, **kwargs):
         if "state" in kwargs:
-            if kwargs["state"] == self.StateChoices.COMPLETED.value and self.complated_at == None:
-                print(f"completed")
-                self.complated_at = timezone.now()
+            if kwargs["state"] == self.StateChoices.COMPLETED.value and self.completed == None:
+                self.completed = timezone.now()
 
         super(ClusterableModel, self).save(*args, **kwargs)
 
