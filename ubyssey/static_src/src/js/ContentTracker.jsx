@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 const storyAssignmentState = [
     "None",
-    "Awaiting",
+    "Assigned",
     "Editing",
     "Ready",
     "Published"
@@ -46,12 +46,13 @@ function humanizeTimeliness(timeliness) {
     return labels[timeliness - 1];
 }
 
-function labelDate(dateNumber) {
+function labelDate(dateString) {
+    const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
     const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
     
-    const date = dateNumber % 100;
+    const datetime = changeTimezone(dateString, "America/Vancouver");
 
-    return months[Math.floor(dateNumber /100) % 100] + " " + String(date);    
+    return daysOfWeek[datetime.getDay()] + " " + months[datetime.getMonth()] + " " + String(datetime.getDate());    
 }
 
 function pad(num, size) {
@@ -62,11 +63,10 @@ function pad(num, size) {
 
 function dateNumber(datetime) {
     datetime = changeTimezone(datetime, "America/Vancouver");
-    return parseInt(
-        String(datetime.getFullYear()) + 
-        pad(datetime.getMonth(), 2) +
+    return String(datetime.getFullYear()) + "-" +
+        pad(datetime.getMonth() + 1, 2) + "-" +
         pad(datetime.getDate(), 2)        
-    );
+    ;
 }
 
 function VisualAssignmentProgress({visual_request}) {
@@ -88,7 +88,7 @@ function ContentTrackerArticleProgress({article}) {
     return (
         <>
             <div className="o-content-tracker--timeline-article--progress-item">    
-                <svg class={"icon " + (article.state == 4 ? "icon-circle-check" : article.state < 3 ? "icon-radio-empty": "icon-radio-full") + " default"} aria-hidden="true"><use href={(article.state == 4 ? "#icon-circle-check" : article.state < 3 ? "#icon-radio-empty": "#icon-radio-full")}></use></svg> {storyAssignmentState[article.state]}
+                <svg class={"icon " + (article.state == 4 ? "icon-circle-check" : article.state < 2 ? "icon-radio-empty": "icon-radio-full") + " default"} aria-hidden="true"><use href={(article.state == 4 ? "#icon-circle-check" : article.state < 2 ? "#icon-radio-empty": "#icon-radio-full")}></use></svg> {storyAssignmentState[article.state]}
                 {article.state == 4 ?
                 <></>
                 : article.state > 1 ? 
@@ -314,8 +314,8 @@ function ContentTrackerTimeline({dateRange, sections, articlesBySectionByDate, l
                             <th className="c-content-tracker--gap past"></th>
                             {dateRange.map(date => 
                             <>
-                                <th className={(date == todayNumber? "today": "") + (date < todayNumber? " past": "")}>
-                                    {labelDate(date) + (date == todayNumber? " Today": "")}
+                                <th className={(date == todayNumber? "today": "") + (date < todayNumber? " past": "") + " week-" + String(changeTimezone(date, "America/Vancouver").getDay())}>
+                                    {labelDate(date) + (date == todayNumber? " (Today)": "")}
                                 </th>
                                 {date == todayNumber? 
                                 <th className="late">
@@ -331,7 +331,7 @@ function ContentTrackerTimeline({dateRange, sections, articlesBySectionByDate, l
                             <td className="c-content-tracker--gap past"></td>
                             {dateRange.map(date => 
                             <>
-                                <td className={(date == todayNumber? "today": "") + (date < todayNumber? " past": "")}>
+                                <td className={(date == todayNumber? "today": "") + (date < todayNumber? " past": "")+ " week-" + String(changeTimezone(date, "America/Vancouver").getDay())}>
                                     {section in articlesBySectionByDate ?
                                     <>
                                         {date in articlesBySectionByDate[section] && 
@@ -428,7 +428,7 @@ export default function ContentTracker() {
     const [viewedAssignments, setViewedAssignments] = useState("story");
 
     const sections = ["news", "culture", "features", "opinion", "humour", "research", "sports"];
-    const visualTypes = ["illustration", "photo", "webdesign"];
+    const visualTypes = ["illustration", "photo", "web-design"];
     const todayNumber = dateNumber(new Date());
 
     function getArticles(timeCursor, timeScale) {

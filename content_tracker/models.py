@@ -147,7 +147,7 @@ class VisualAssignment(ClusterableModel):
     visual_type = models.CharField(max_length=50, choices=[
         ("illustration", "Illustration"),
         ("photo", "Photo"),
-        ("web-design", "Webdesign"),
+        ("web-design", "Web design"),
     ])
 
     image = models.ForeignKey(
@@ -170,9 +170,11 @@ class VisualAssignment(ClusterableModel):
     ]
 
     def save(self, *args, **kwargs):
-        if "state" in kwargs:
-            if kwargs["state"] == self.StateChoices.COMPLETED.value and self.completed == None:
-                self.completed = timezone.now()
+
+        if self.state == self.StateChoices.COMPLETED.value and self.completed == None:
+            self.completed = timezone.now()
+        elif self.state != self.StateChoices.COMPLETED.value and self.completed != None:
+            self.completed = None
 
         super(ClusterableModel, self).save(*args, **kwargs)
 

@@ -148,7 +148,7 @@ main {
                 
                 td {
                     padding: 0.5em;
-                    border-right: 1px solid var(--w-color-border-field-default);
+                    border-right: 1px solid color-mix(in hsl, transparent, var(--w-color-border-field-default) 25%);
                     vertical-align: top;
                     background: var(--cell-color);
                     
@@ -225,6 +225,14 @@ main {
                 td.past {
                     border-bottom: 1px dashed var(--w-color-black-20);
                     border-right: 1px solid var(--w-color-black-10);
+                }
+                th, td {
+                    &.week-0 {
+                        border-right: 1px solid var(--w-color-border-field-default);
+                    }
+                    &.week-5 {
+                        border-right: 1px solid var(--w-color-border-field-default);
+                    }
                 }
             }
         }
