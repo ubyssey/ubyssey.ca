@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.utils import timezone
+from django.db.models import Q
 from wagtail.admin.viewsets.chooser import ChooserViewSet
 
 
@@ -104,15 +105,16 @@ def story_assignment_api_list(request):
         if 'active' in request.query_params:
             assignment = assignment.exclude(state=StoryAssignment.StateChoices.PUBLISHED)
 
+        if 'late' in request.query_params:
+            assignment = assignment.filter(target__lte=timezone.now()).exclude(state=StoryAssignment.StateChoices.PUBLISHED)
+
         if 'timeCursor' in request.query_params:
             timeCursor = int(request.query_params['timeCursor'])
-            print(f"time cursor: {timeCursor}")
             upperBound = timezone.datetime.now() + (timeCursor * timezone.timedelta(days=7))
             assignment = assignment.filter(target__lte=upperBound)
 
         if 'timeScale' in request.query_params:
             timeScale = int(request.query_params['timeScale'])
-            print(f"time scale: {timeScale}")
             lowerBound = timezone.datetime.now() - (timeScale * timezone.timedelta(days=7)) + (timeCursor * timezone.timedelta(days=7))
             assignment = assignment.filter(target__gte=lowerBound)
 

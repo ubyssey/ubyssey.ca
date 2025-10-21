@@ -301,7 +301,7 @@ function ContentTrackerViewVisualAssignment({visualAssignment}) {
     )
 }
 
-function ContentTrackerTimeline({dateRange, sections, articlesBySectionByDate, setViewedStoryAssignment, todayNumber}) {
+function ContentTrackerTimeline({dateRange, sections, articlesBySectionByDate, lateStoryAssignments, setViewedStoryAssignment, todayNumber}) {
     return (
         
         <div className="c-content-tracker--timeline-container">
@@ -348,7 +348,10 @@ function ContentTrackerTimeline({dateRange, sections, articlesBySectionByDate, s
                                 </td>
                                 {date == todayNumber? 
                                     <td className="late">
-
+                                        <div className="c-content-tracker--timeline-articles-container">
+                                            {lateStoryAssignments.filter(({assigning_section}) => assigning_section==section).map((article) =>
+                                            <ContentTrackerTimelineArticle article={article} setViewedStoryAssignment={setViewedStoryAssignment} />
+                                        )}</div>
                                     </td>
                                 : <></>}
                             </>
@@ -409,6 +412,7 @@ function ViewedAssignmentsTabs({viewedAssignments, setViewedAssignments}) {
 export default function ContentTracker() {
     const [activeStoryAssignments, setActiveStoryAssignments] = useState([]);
     const [activeVisualAssignments, setActiveVisualAssignments] = useState([]);
+    const [lateStoryAssignments, setLateStoryAssignments] = useState([]);
     
     const [articles, setArticles] = useState([]);
     const [articlesBySectionByDate, setArticlesBySectionByDate] = useState({});
@@ -438,6 +442,13 @@ export default function ContentTracker() {
         const apiUrl = "/admin/story_assignment_api/?active=true&orderby=deadline";
         fetch(apiUrl).then((response) => response.json().then((json) => {
             setActiveStoryAssignments(json);
+        }));        
+    }
+
+    function getLateStoryAssignments() {
+        const apiUrl = "/admin/story_assignment_api/?late=true&orderby=deadline";
+        fetch(apiUrl).then((response) => response.json().then((json) => {
+            setLateStoryAssignments(json);
         }));        
     }
 
@@ -497,6 +508,7 @@ export default function ContentTracker() {
     useEffect(() => {
         getActiveStoryAssignments();
         getActiveVisualAssignments();
+        getLateStoryAssignments();
     }, []);
 
     return (
@@ -528,7 +540,7 @@ export default function ContentTracker() {
 
     <div className="c-content-tracker--below">
         <ContentTrackerMenu setTimeCursor={setTimeCursor}/>
-        <ContentTrackerTimeline dateRange={dateRange} sections={sections} articlesBySectionByDate={articlesBySectionByDate} setViewedStoryAssignment={setViewedStoryAssignment} todayNumber={todayNumber}/>
+        <ContentTrackerTimeline dateRange={dateRange} sections={sections} articlesBySectionByDate={articlesBySectionByDate} lateStoryAssignments={lateStoryAssignments} setViewedStoryAssignment={setViewedStoryAssignment} todayNumber={todayNumber}/>
     </div>
     </>
     );
