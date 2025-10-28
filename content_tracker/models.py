@@ -132,7 +132,7 @@ class StoryAssignmentAssigneesOrderable(Orderable):
 @register_snippet
 class VisualAssignment(ClusterableModel):
     story_assignment = models.ForeignKey(StoryAssignment, related_name="visual_requests", on_delete=models.CASCADE, null=True, blank=True)
-    memo = models.URLField()
+    memo = models.URLField(verbose_name="Visual request form")
     
     created = models.DateTimeField(auto_now=True)
     deadline = models.DateField()
@@ -162,7 +162,7 @@ class VisualAssignment(ClusterableModel):
 
     panels = [
         FieldPanel("story_assignment"),
-        FieldPanel("memo", label="Visual request form"),
+        FieldPanel("memo"),
         FieldPanel("request"),
         FieldPanel("deadline"),
         FieldPanel("state"),
