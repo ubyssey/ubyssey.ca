@@ -1,7 +1,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-{% if self.click_to_enlarge or self.style == 'default' %}
+{% if self.click_to_enlarge or self.style == 'default' or not self.style%}
     {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=self %}
 {% else %}
     {% image self.image width-1000 format-webp as image %}

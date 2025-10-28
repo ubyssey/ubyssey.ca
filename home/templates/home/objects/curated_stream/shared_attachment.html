@@ -1,0 +1,20 @@
+{% load wagtailcore_tags %}
+<div class="o-curated_group--shared-attachment">
+    {% for headline in self.headline %}
+        {% include_block headline%}
+    {% endfor %}
+
+    <div class="o-curated_group--shared-attachment-flex">
+        <div class="o-curated_group--shared-attachment-flex-left">
+            {% for left in self.left %}
+                {% include_block left %}
+            {% endfor %}
+        </div>
+
+        <div class="o-curated_group--shared-attachment-flex-right">
+            {% for right in self.right %}
+            {%include_block right %}
+            {% endfor %}
+        </div>
+    </div>
+</div>

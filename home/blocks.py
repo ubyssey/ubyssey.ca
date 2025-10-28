@@ -3,6 +3,7 @@ Blocks used on the home page of the site
 """
 from wagtail.models import Site
 from wagtail import blocks
+from wagtail.documents.blocks import DocumentChooserBlock
 
 from django.db.models import Q
 from django.utils import timezone
@@ -13,6 +14,42 @@ from django.template.loader import render_to_string
 from article.models import ArticlePage
 from article.blocks_storystream import StoryStreamBlockTypes
 from topics.views import cluster_articles_by_topic
+import images.blocks as image_blocks
+
+
+# Shared attachment options
+
+class SportsGameScore(blocks.StructBlock):
+    teams = blocks.ListBlock(
+        blocks.StructBlock([
+            ('svg', DocumentChooserBlock()),
+            ('name', blocks.TextBlock()),
+            ('points', blocks.IntegerBlock(required=False)),
+            ('style', blocks.ChoiceBlock(required=False, choices=[
+                ('winner', 'Winner'),
+                ('loser', 'Loser'),
+                ])),
+        ])
+    )
+
+    style = blocks.ChoiceBlock(required=True, choices=[
+        ('vertical', 'Teams vertical'),
+        ('horizontal', 'Teams horizontal'),
+    ])
+
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage")
+
+    title = blocks.TextBlock(required=False)
+    link = blocks.URLBlock(required=False)
+
+    def get_articles(self, value):
+        return [value["article"]]
+
+    class Meta:
+        template = "home/objects/sports_blocks/sports_game_score.html"
+
+
+# Mid Stream
 
 class LinksStreamBlock(blocks.StructBlock):
 
@@ -154,6 +191,49 @@ class CuratedGroupHeadline(blocks.StructBlock):
     class Meta:
         template = 'home/objects/group_headline.html'
 
+
+class CuratedStreamSharedAttachment(blocks.StructBlock):
+    headline = blocks.StreamBlock([
+        ('normal_headline', CuratedGroupHeadline())
+    ],
+    required=False,
+    max_num=1
+    )
+
+    left = blocks.StreamBlock([
+        ("sports_game_score", SportsGameScore()),
+        ("raw_html", blocks.RawHTMLBlock()),
+    ])
+    right = blocks.StreamBlock([
+        ("image", image_blocks.CaptionedImageBlock()),
+        ("raw_html", blocks.RawHTMLBlock()),
+    ])
+
+    def get_articles(self, values):
+        articles = []
+
+        for i in self.to_python(values)['left']:
+            if hasattr( i.block, 'get_articles' ) and callable( i.block.get_articles ):
+                articles = articles + i.block.get_articles(i.get_prep_value()['value'])
+
+        return articles
+
+
+    def render(self, value, context=None):
+        #block_template = value.get('template')
+        block_template = "shared_attachment"
+        if block_template != '':
+            template = f"home/objects/curated_stream/{block_template}.html"
+        else:
+            return self.render_basic(value, context=context)
+
+        if context is None:
+            new_context = self.get_context(value)
+        else:
+            new_context = self.get_context(value, parent_context=dict(context))
+
+        return mark_safe(render_to_string(template, new_context))
+
 class CuratedGroup(blocks.StructBlock):
     headline = blocks.StreamBlock([
             ('normal_headline', CuratedGroupHeadline())
@@ -164,6 +244,7 @@ class CuratedGroup(blocks.StructBlock):
     items = blocks.StreamBlock([
             ('storystream_item', StorystreamItem()),
             ('article_list', CuratedStreamArticleList()),
+            ('shared_attachment', CuratedStreamSharedAttachment()),
         ])
     
     def get_articles(self, values):

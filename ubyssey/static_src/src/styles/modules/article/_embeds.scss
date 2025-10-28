@@ -626,6 +626,10 @@ div.article-content blockquote.pull-quote {
     font-style: italic;
     font-size: 0.77em;
 
+    a {
+      text-decoration: underline;
+    }
+
     .playAudioQuote {
       display: block;
     }
