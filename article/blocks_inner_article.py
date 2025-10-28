@@ -422,6 +422,8 @@ class ImageGrid(blocks.StructBlock):
 
     width = blocks.ChoiceBlock(
         choices=[
+            ('auto', "auto"),
+            ('fit-content', "Retain aspect ratio"),
             ('600px', "600"),
             ('800px', "800"),
             ('1000px', "1000"),
