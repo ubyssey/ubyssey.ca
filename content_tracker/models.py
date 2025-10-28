@@ -66,6 +66,8 @@ class StoryAssignment(ClusterableModel):
         ("guide", "Guide"),
         ("explainer", "Explainer"),
         ("profile", "Profile"),
+        ("q_&_a", "Q&A"),
+        ("humour", "Humour"),
         ])    
     assigning_section = models.CharField(max_length=50, choices=[
         ("news", "News"),
@@ -160,7 +162,7 @@ class VisualAssignment(ClusterableModel):
 
     panels = [
         FieldPanel("story_assignment"),
-        FieldPanel("memo"),
+        FieldPanel("memo", label="Visual request form"),
         FieldPanel("request"),
         FieldPanel("deadline"),
         FieldPanel("state"),
