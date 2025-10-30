@@ -2,6 +2,6 @@
 
 <div class="c-curated_stream">
 {% for group in self.curated_stream %}
-    {% include_block group %}
+    {% include_block group with group_id=group.id %}
 {% endfor %}
 </div>

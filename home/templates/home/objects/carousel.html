@@ -1,0 +1,38 @@
+{% load wagtailcore_tags %}
+{% load static %}
+
+{% if self.items|length == 1 %}
+    {% for element in self.items.0 %}
+    {% include_block element %}
+    {% endfor %}
+{% else %}
+    <div id="{{group_id}}{{item_id}}" class="carousel carousel-dark slide {% if indicators != "false" %}indicators {% endif %} {{style}} {{width}}">
+
+        {% if indicators != "false" %}
+            <div class="carousel-indicators">
+            {% for item in self.items %}
+                <button type="button" data-bs-target="#{{group_id}}{{item_id}}" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="carousel-inner">
+            {% for item in self.items %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                {% for element in item %}
+                {% include_block element %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#{{group_id}}{{item_id}}" data-bs-slide="prev" style="position: absolute;">
+            <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#{{group_id}}{{item_id}}" data-bs-slide="next" style="position: absolute;">
+            <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+{% endif %}

@@ -1,0 +1,17 @@
+<div class="o-author_commentary">
+    <div class="o-author_commentary--authors">
+        <div class="o-author_commentary--authors--img">
+        {% for author in self.authors %}
+            {% if author.image %}
+                <img src="{{author.image.file.url}}" alt="{{author.full_name}}">
+            {% endif %}
+        {% endfor %}
+        </div>
+        <div class="o-author_commentary--authors--name">
+        {{authors_with_urls|safe}}
+        </div>
+    </div>
+    <div class="o-author_commentary--commentary">
+        {{self.commentary|safe}}
+    </div>
+</div>

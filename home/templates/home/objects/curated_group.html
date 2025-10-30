@@ -6,6 +6,6 @@
 {% endfor %}
 
 {% for item in self.items %}
-    {% include_block item %}
+    {% include_block item with item_id=item.id %}
 {% endfor %}
 </div>

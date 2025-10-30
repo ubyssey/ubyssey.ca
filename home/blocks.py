@@ -17,8 +17,9 @@ from topics.views import cluster_articles_by_topic
 import images.blocks as image_blocks
 
 
-# Shared attachment options
+### Shared attachment options
 
+# Left
 class SportsGameScore(blocks.StructBlock):
     teams = blocks.ListBlock(
         blocks.StructBlock([
@@ -37,7 +38,7 @@ class SportsGameScore(blocks.StructBlock):
         ('horizontal', 'Teams horizontal'),
     ])
 
-    article = blocks.PageChooserBlock(page_type="article.ArticlePage")
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage", required=False)
 
     title = blocks.TextBlock(required=False)
     link = blocks.URLBlock(required=False)
@@ -48,8 +49,32 @@ class SportsGameScore(blocks.StructBlock):
     class Meta:
         template = "home/objects/sports_blocks/sports_game_score.html"
 
+# Right
+class AuthorCommentary(blocks.StructBlock):
+    commentary = blocks.RichTextBlock(required=True)
+    authors = blocks.ListBlock(blocks.PageChooserBlock(page_type="authors.AuthorPage"))
 
-# Mid Stream
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        
+        context["authors_with_urls"] = ",".join(map(lambda author: f"<a href='{author.full_url}'>{author.full_name}</a>", value["authors"]))
+
+        return context
+
+    class Meta:
+        template = "home/objects/author_commentary.html"
+
+class Carousel(blocks.StructBlock):
+    items = blocks.ListBlock(blocks.StreamBlock([
+        ("image", image_blocks.CaptionedImageBlock()),
+        ("raw_html", blocks.RawHTMLBlock()),
+        ("author_commentary", AuthorCommentary()),
+    ]))
+
+    class Meta:
+        template = "home/objects/carousel.html"
+
+### Mid Stream
 
 class LinksStreamBlock(blocks.StructBlock):
 
@@ -204,10 +229,7 @@ class CuratedStreamSharedAttachment(blocks.StructBlock):
         ("sports_game_score", SportsGameScore()),
         ("raw_html", blocks.RawHTMLBlock()),
     ])
-    right = blocks.StreamBlock([
-        ("image", image_blocks.CaptionedImageBlock()),
-        ("raw_html", blocks.RawHTMLBlock()),
-    ])
+    right = Carousel()
 
     def get_articles(self, values):
         articles = []
