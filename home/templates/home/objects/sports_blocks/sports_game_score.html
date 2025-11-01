@@ -4,7 +4,7 @@
         {% for team in self.teams %}
         <div class="o-sports_game_score--team {{team.style}} {% if team.points %}points{% endif %}">
             <img class="o-sports_game_score--team-img" src="{{team.svg.file.url}}" alt="{{team.name}}" title="{{team.name}}">
-            {% if team.points %}
+            {% if team.points or team.points == 0 %}
             <div class="o-sports_game_score--team-points">
                 {{team.points}}
             </div>

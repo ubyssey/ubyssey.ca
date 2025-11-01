@@ -107,6 +107,9 @@
         aspect-ratio: 1;
         height: auto;
         position: relative;
+        &:hover {
+          opacity: 0.75;
+        }
       }
 
       ion-icon {
