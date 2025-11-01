@@ -25,11 +25,15 @@
     </div>
 
     <button class="carousel-control-prev" type="button" data-bs-target="#{{first.url|slugify}}" data-bs-slide="prev" style="position: absolute;">
+      <div class="carousel-control-container">
       <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
       <span class="visually-hidden">Previous</span>
+      </div>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#{{first.url|slugify}}" data-bs-slide="next" style="position: absolute;">
+      <div class="carousel-control-container">
       <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
       <span class="visually-hidden">Next</span>
+      </div>
     </button>
   </div>

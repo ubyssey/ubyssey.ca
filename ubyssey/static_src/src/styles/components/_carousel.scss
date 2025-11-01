@@ -96,28 +96,31 @@
       opacity: 1;
       font-size: 1em;
       line-height: 1em;
-
-      background: #0071c9;
-      border-radius: 100%;
-      width: 1.5em;
-      aspect-ratio: 1;
-      height: auto;
+      width: 15%;
+      display: flex;
+      
+      .carousel-control-container {
+        margin: auto;
+        background: #0071c9;
+        border-radius: 100%;
+        width: 1.5em;
+        aspect-ratio: 1;
+        height: auto;
+        position: relative;
+      }
 
       ion-icon {
         margin: 0;
         padding: 0;
-        position: relative;
-        width: 1em;
-        .icon-inner {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
 
-          aspect-ratio: 1;
-          height: 75%;
-          width: auto;
-        }
+        aspect-ratio: 1;
+        height: 75%;
+        width: auto;
+
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
       }
     }
   }
