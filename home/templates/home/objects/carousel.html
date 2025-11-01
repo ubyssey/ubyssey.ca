@@ -6,7 +6,7 @@
     {% include_block element %}
     {% endfor %}
 {% else %}
-    <div id="c{{group_id}}{{item_id}}" class="carousel carousel-dark slide {% if indicators != "false" %}indicators {% endif %} {{style}} {{width}}">
+    <div id="c{{group_id}}{{item_id}}" class="carousel slide {% if indicators != "false" %}indicators {% endif %} {{style}} {{width}}">
 
         {% if indicators != "false" %}
             <div class="carousel-indicators">

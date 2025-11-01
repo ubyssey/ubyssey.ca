@@ -913,21 +913,13 @@ html.hairlines {
       flex-grow: 1;
       width: 100%;
 
-      > * {
-        height: 400px;
-      }
-
       .image-attachment img {
         height: 100%;
         object-fit: cover;
       }
 
-      > .image-attachment {
-        display: flex;
-        flex-direction: column;
-      }
-
       > .carousel {
+        height: 400px;
         &.indicators {
           padding-bottom: 2em;
         }
@@ -951,11 +943,14 @@ html.hairlines {
           position: absolute;
           top: auto;
           left: auto;
-          z-index: 1000;
+          z-index: 150;
         }
         .carousel-control-prev {
-          right: 3em;
-        }        
+          right: 4em;
+        }
+        .carousel-control-next {
+          right: 1em;
+        }
       }
     } 
 
@@ -1066,7 +1061,8 @@ html.hairlines {
 
 
 .o-author_commentary {
-  padding: 0.5em;
+  padding: 0.5em 1em;
+  border-top: 1px solid var(--light-border-grey);
   border-bottom: 1px solid var(--light-border-grey);
 
   display: flex;

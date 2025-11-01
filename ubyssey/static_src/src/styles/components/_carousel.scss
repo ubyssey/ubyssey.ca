@@ -51,14 +51,17 @@
       bottom: 0;
       z-index: 100;
 
+      --active-indicator-colour: #545454;
+      --inactive-indicator-colour: #a9a9a9;
+
       button {
         opacity: 1;
-        background-color: #A9A9A9;
+        background-color: var(--inactive-indicator-colour);
         background-image: none;
         transition: background-color .6s ease;
 
         &.active {
-          background-color: #545454;
+          background-color: var(--active-indicator-colour);
         }
       }
     }
@@ -94,15 +97,17 @@
       font-size: 1em;
       line-height: 1em;
 
+      background: #0071c9;
+      border-radius: 100%;
+      width: 1.5em;
+      aspect-ratio: 1;
+      height: auto;
+
       ion-icon {
         margin: 0;
-        padding: 4px;
+        padding: 0;
         position: relative;
-        width: 20px;
-        height: auto;
-        aspect-ratio: 1;
-        background: variables.$color-ubyssey-blue;
-        border-radius: 100%;
+        width: 1em;
         .icon-inner {
           position: absolute;
           left: 50%;
@@ -114,5 +119,12 @@
           width: auto;
         }
       }
+    }
+  }
+
+  [color-css-theme="dark"] {
+    .carousel .carousel-indicators {
+      --active-indicator-colour: #a9a9a9;
+      --inactive-indicator-colour: #545454;
     }
   }
