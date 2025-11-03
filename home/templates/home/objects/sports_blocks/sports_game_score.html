@@ -14,9 +14,9 @@
     </div>
     <div class="o-sports_game_score--title">
         {% if self.article %}
-            <h3><a href="{% pageurl self.article %}">{% if self.title %}{{title|safe}}{% else %}{{self.article.title|safe}}{% endif %}</a></h3>
+            <h3><a href="{% pageurl self.article %}">{% if self.title %}{{self.title|safe}}{% else %}{{self.article.title|safe}}{% endif %}</a></h3>
         {% elif self.link %}
-            <h3><a href="{% pageurl self.link %}">{{self.title|safe}}</a></h3>
+            <h3><a href="{{ self.link }}">{{self.title|safe}}</a></h3>
         {% else %}
             <h3>{{self.title|safe}}</h3>
         {% endif %}

@@ -48,7 +48,8 @@ function useIsMobile() {
   return isMobile;
 }
 
-function getDateString(date) {
+function getDateString(dateInitial) {
+    const date = changeTimezone(new Date(dateInitial), "America/Vancouver");
     var str = String(date.getFullYear()) + "-";
     if (String(date.getMonth()+1).length < 2) {
         str = str + "0" + String(date.getMonth()+1) + "-";
@@ -362,7 +363,11 @@ function displayEventTime(start, end) {
             return displayMonthDay(start) + ", " + displayTime(start) + " - " + displayTime(end);
         }
     } else if (end.getHours() == start.getHours()) {
-        return displayMonthDay(start) + " - " + displayMonthDay(end);
+        if (end.getHours() == 0 && end.getMinutes() == 0) {
+            return displayMonthDay(start) + " - " + displayMonthDay(new Date(end.getTime() - d));
+        } else {
+            return displayMonthDay(start) + " - " + displayMonthDay(end);
+        }
     } else {
         return displayMonthDay(start) + ", " + displayTime(start) + " - " + displayMonthDay(end) + ", " + displayTime(end)
     }
@@ -580,6 +585,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
             };
             for(let a=0; a<7; a++) {
                 var day = {
+                    'dateString': getDateString(cur),
                     'day': cur.getDate(),
                     'phase': 'today',
                     'day_of_week': weekDays[cur.getDay()],
@@ -598,7 +604,7 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                     week['month'] = months[cur.getMonth()];
                     week['month_short'] = shortenedMonths[cur.getMonth()];
                 }
-                var cur = new Date(cur.getTime() + (h * 25));
+                var cur = new Date(cur.getTime() + (h * 27));
                 cur.setHours(0, 0, 0, 0);
                 week['days'].push(day);
             }
@@ -613,12 +619,26 @@ function EventsCalendar({events, start, setStart, numberOfWeeks, setNumberOfWeek
                 event.displayTime = "";
             }
 
+            if (getDateString(event.start_time) == "2025-11-03") {
+                console.log(event.title + " " + String(cur));
+            }
+
+            console.log("start: " + String(start));
+
             while(cur < new Date(event.end_time) || cur.valueOf() == event.start_time.valueOf()) {
-                var delta = Math.floor((cur.getTime() - start.getTime()) / d);
-                if (getDateString(new Date(start.getTime() + (d*delta))) != getDateString(cur)) {
-                    delta = delta + 1;
-                }
+                var delta = Math.round((cur.getTime() - start.getTime()) / d);
+
+                //if (calendar[Math.floor(delta/7)]['days'][delta % 7]['dateString'] != getDateString(cur)) {
+                //    delta = delta + 1;
+                //}
+
                 if (delta >= 0 && delta < (7*(numberOfWeeks))) {
+                    if (getDateString(event.start_time) == "2025-11-03") {
+                        console.log("ADD: " + event.title + ", delta: " + String(delta));
+                        console.log("     - " + "delta: " + String(delta));
+                        console.log("     - " + "cur: " + String(cur));
+                    }
+
                     calendar[Math.floor(delta/7)]['days'][delta % 7]['events'].push(event);
                 }
                 cur = new Date(cur.getTime() + d);
