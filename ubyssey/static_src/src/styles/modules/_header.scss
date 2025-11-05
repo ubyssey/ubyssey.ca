@@ -444,6 +444,17 @@ header.topbar {
     overflow: hidden;
     vertical-align: middle;
   }
+
+  .progress-bar {
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: rgb(0, 113, 201);
+    transition: width 0.1s linear;
+    z-index: 1100;
+  }
 }
 
 .visual-essay  {

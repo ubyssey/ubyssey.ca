@@ -41,7 +41,7 @@
 		<!-- Menu created from parent page -->	 
 		{% children_menu self.parent_page_for_menu_generation template="navigation/headers/article-storyline.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
 	{% else %}
-        {% include 'navigation/headers/topbar.html' with section=self.current_section %}
+        {% include 'navigation/headers/topbar.html' with section=self.current_section show_progress_bar=True %}
     {% endif %}
 
     {% include 'navigation/headers/mobile.html' %}
