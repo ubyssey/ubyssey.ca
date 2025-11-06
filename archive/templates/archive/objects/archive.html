@@ -41,13 +41,7 @@
 			{% if page_obj|length > 0 %}
 			<div class="o-archive__main__list">
 				{% for object in page_obj %}
-
-					{% if is_orderable %}
-						{% include 'archive/objects/article_list.html' with article=object.article_page %}
-					{% else %}
-						{% include 'archive/objects/article_list.html' with article=object %}
-					{% endif %}
-
+					{% include 'archive/objects/article_list.html' with article=object %}
 				{% endfor %}
 			</div>
 
