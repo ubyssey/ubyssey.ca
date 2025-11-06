@@ -5,6 +5,7 @@ networks:
     external: true
   ubyssey-internal:
     driver: overlay
+    attachable: true
 
 services:
   mysql:
