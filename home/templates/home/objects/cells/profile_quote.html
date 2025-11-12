@@ -1,0 +1,21 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% if self.audio %}
+<audio id="a{{group_id}}{{item_id}}{{cell_id}}">
+    <source src="{{self.audio.url}}" type="audio/{{self.format}}">
+</audio>
+{% endif %}
+
+<div class="o-profile_quote_cell">
+    {% include "home/objects/cells/profile.html" %}
+    <div class="o-profile_quote_cell--quote-container">
+        <p class="o-profile_quote_cell--quote">{{self.quote|safe}}</p>
+        {% if self.audio %}
+            <button audio="a{{group_id}}{{item_id}}{{cell_id}}" class="playAudioQuote">
+                <ion-icon id="icon-a{{group_id}}{{item_id}}{{cell_id}}_mobile" class="volume" name="volume-off"></ion-icon>
+                <span class="source">Listen</span>
+            </button>
+        {% endif %}
+    </div>
+</div>

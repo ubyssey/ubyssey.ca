@@ -550,6 +550,15 @@ span.credit {
   color: var(--text_color_supporting-lighter);
 }
 
+.playAudioQuote {
+  padding: 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-variation-settings: "wght" 500;
+  color: inherit;
+}
+
 div.article-content blockquote.pull-quote {
   margin: 1.4em auto;
   text-align: center;
@@ -638,7 +647,6 @@ div.article-content blockquote.pull-quote {
       margin-left: 2em;
       display: inline-block;
       position: relative;
-      max-width: 40%;
       color: inherit;
     }
 
@@ -647,7 +655,7 @@ div.article-content blockquote.pull-quote {
       display: inline-block;
       width: 1em;
       
-      top: 0.25em;
+      top: 0.6em;
 
 
       &.volume-low {
@@ -754,7 +762,6 @@ div.article-content blockquote.pull-quote {
         margin-top: 0.5em;
         font-style: normal;
       span.source {
-        margin-left: 1em;
         max-width: none;
         font-size: 0.9em;
         text-transform: none;

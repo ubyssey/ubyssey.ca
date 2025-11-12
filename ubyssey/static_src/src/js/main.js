@@ -366,7 +366,7 @@ function initializeSearchButton() {
 }
 
 function initializeAudioQuote() {
-  $(document).on('click', 'a.playAudioQuote', function (e) {
+  $(document).on('click', 'button.playAudioQuote', function (e) {
     e.preventDefault();
   
     var id = this.getAttribute("audio");
@@ -374,8 +374,9 @@ function initializeAudioQuote() {
     var sound = document.getElementById(id);
     if (sound.paused) {   
       sound.play();
-    
-      var icon = document.getElementById("icon-" + id);
+      console.log(e);
+      var icon = this.getElementsByClassName("volume")[0];
+      //var icon = document.getElementById("icon-" + id);
       var frames = ["volume-off", "volume-low", "volume-high"];
     
       var animateIcon = setInterval(function () {

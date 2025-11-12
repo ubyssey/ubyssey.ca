@@ -20,6 +20,40 @@ import images.blocks as image_blocks
 ### Shared attachment options
 
 # Left
+class ProfileCell(blocks.StructBlock):
+    image = image_blocks.ReducedImageBlock()
+    text = blocks.RichTextBlock(required=False)
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage", required=False)
+    label = blocks.CharBlock(required=False)
+ 
+    def get_articles(self, value):
+        return [value["article"]]
+
+    class Meta:
+        template = "home/objects/cells/profile.html"
+
+class ProfileQuoteCell(ProfileCell):
+
+    audio = DocumentChooserBlock(required=False, help_text="Optional, file format: .m4a, .mp4, .mp, .wav, or .ogg")
+    quote = blocks.TextBlock(required=False)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        if value['audio']:
+            if value['audio'].url[-4:] == '.wav':
+                context['self'].format = 'wav'
+            elif value['audio'].url[-4:] == '.mp3':
+                context['self'].format = 'mpeg'
+            elif value['audio'].url[-4:] == '.ogg':
+                context['self'].format = 'ogg'
+            else:
+                context['self'].format = 'mp4'
+        return context
+
+    class Meta:
+        template = "home/objects/cells/profile_quote.html"   
+
+
 class SportsGameScore(blocks.StructBlock):
     teams = blocks.ListBlock(
         blocks.StructBlock([
@@ -47,7 +81,7 @@ class SportsGameScore(blocks.StructBlock):
         return [value["article"]]
 
     class Meta:
-        template = "home/objects/sports_blocks/sports_game_score.html"
+        template = "home/objects/cells/sports_game_score.html"
 
 # Right
 class AuthorCommentary(blocks.StructBlock):
@@ -219,14 +253,16 @@ class CuratedGroupHeadline(blocks.StructBlock):
 
 class CuratedStreamSharedAttachment(blocks.StructBlock):
     headline = blocks.StreamBlock([
-        ('normal_headline', CuratedGroupHeadline())
+        ('normal_headline', CuratedGroupHeadline()),
+        ('richtext', blocks.RichTextBlock()),
     ],
-    required=False,
-    max_num=1
+    required=False
     )
 
     left = blocks.StreamBlock([
         ("sports_game_score", SportsGameScore()),
+        ("profile", ProfileCell()),
+        ("profile_quote", ProfileQuoteCell()),
         ("raw_html", blocks.RawHTMLBlock()),
     ])
     right = Carousel()
@@ -256,17 +292,48 @@ class CuratedStreamSharedAttachment(blocks.StructBlock):
 
         return mark_safe(render_to_string(template, new_context))
 
+class CuratedStreamGrid(blocks.StructBlock):
+    headline = blocks.StreamBlock([
+        ('normal_headline', CuratedGroupHeadline()),
+        ('richtext', blocks.RichTextBlock()),
+    ],
+    required=False
+    )
+    items = blocks.StreamBlock([
+        ('profile', ProfileCell()),
+        ("profile_quote", ProfileQuoteCell()),
+        ('raw_html', blocks.RawHTMLBlock()),
+    ])
+    rows = blocks.ChoiceBlock(choices=[
+        ("three", "Three"),
+        ("four", "Four"),
+    ])
+
+    def get_articles(self, values):
+        articles = []
+
+        for i in self.to_python(values)['items']:
+            if hasattr( i.block, 'get_articles' ) and callable( i.block.get_articles ):
+                articles = articles + i.block.get_articles(i.get_prep_value()['value'])
+
+        return articles
+
+    class Meta:
+        template = "home/objects/curated_stream/grid.html"
+
+
 class CuratedGroup(blocks.StructBlock):
     headline = blocks.StreamBlock([
-            ('normal_headline', CuratedGroupHeadline())
-        ],
-        required=False,
-        max_num=1
-        )
+        ('normal_headline', CuratedGroupHeadline()),
+        ('richtext', blocks.RichTextBlock()),
+    ],
+    required=False
+    )
     items = blocks.StreamBlock([
             ('storystream_item', StorystreamItem()),
             ('article_list', CuratedStreamArticleList()),
             ('shared_attachment', CuratedStreamSharedAttachment()),
+            ('grid', CuratedStreamGrid())
         ])
     
     def get_articles(self, values):

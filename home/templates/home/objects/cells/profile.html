@@ -1,0 +1,18 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="o-profile_cell">
+    <div class="o-profile_cell--left">
+        <a href="{% pageurl self.article %}">
+        {% image self.image.image width-200 format-webp loading="lazy" class="o-profile_cell--image" alt=self.image.alt %}            
+        </a>
+        {% if self.article %}
+            <p class="o-profile_cell--link"><a href="{% pageurl self.article %}">
+                {% if self.label %}{{self.label|safe}}{% else %}{{self.article.title|safe}}{%endif%}
+            </a></p>
+        {% endif %}
+    </div>
+    <div class="o-profile_cell--right">
+        {{self.text|safe}}
+    </div>
+</div>
