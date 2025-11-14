@@ -8,14 +8,22 @@
 {% endif %}
 
 <div class="o-profile_quote_cell">
-    {% include "home/objects/cells/profile.html" %}
+    {% include "home/objects/cells/profile.html" with noLink="True" %}
     <div class="o-profile_quote_cell--quote-container">
         <p class="o-profile_quote_cell--quote">{{self.quote|safe}}</p>
-        {% if self.audio %}
-            <button audio="a{{group_id}}{{item_id}}{{cell_id}}" class="playAudioQuote">
-                <ion-icon id="icon-a{{group_id}}{{item_id}}{{cell_id}}_mobile" class="volume" name="volume-off"></ion-icon>
-                <span class="source">Listen</span>
-            </button>
-        {% endif %}
+        <div class="o-profile_quote_cell--buttons">
+            {% if self.audio %}
+                <button audio="a{{group_id}}{{item_id}}{{cell_id}}" class="playAudioQuote">
+                    <ion-icon id="icon-a{{group_id}}{{item_id}}{{cell_id}}_mobile" class="volume" name="volume-off"></ion-icon>
+                    <span class="source">Listen</span>
+                </button>
+            {% endif %}
+
+            {% if self.article %}
+                <div class="o-profile_cell--link"><a href="{% pageurl self.article %}">
+                    {% if self.label %}{{self.label|safe}}{% else %}{{self.article.title|safe}}{%endif%}
+                </a></div>
+            {% endif %}
+        </div>
     </div>
 </div>

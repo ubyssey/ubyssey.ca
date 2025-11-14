@@ -820,16 +820,26 @@ html.hairlines {
 
 .o-profile_quote_cell {
   .o-profile_quote_cell--quote-container {
-    margin-top: 0.5em;
     display: flex;
     flex-direction: column;
     color: var(--text_color);
+  }
+  .o-profile_quote_cell--buttons {
+    display: flex;
     .playAudioQuote {
-      margin-inline: auto;
+      margin-right: auto;
+      font-size: 0.8em;
+    }
+    .o-profile_cell--link {
+      margin-left: auto;
+      font-size: 0.8em;
+      a {
+        text-decoration: underline;
+      }
     }
   }
   .o-profile_quote_cell--quote {
-    margin: auto;
+    margin: 1em auto;
     padding-left: 1em;
     position: relative;
     font-size: 0.8em;
@@ -842,10 +852,6 @@ html.hairlines {
       left: 0;
       top: -0.35em;
     }
-  }
-  .playAudioQuote {
-    margin-top: 0.5em;
-    font-size: 0.8em;
   }
 }
 
