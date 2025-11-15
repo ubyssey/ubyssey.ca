@@ -514,6 +514,11 @@ html.hairlines {
       }
 
       color: var(--header_color);
+
+      p a {
+        text-decoration: underline;
+      }
+
       &.large {
         margin-top: 0;
         font-size: 3em;
@@ -691,6 +696,10 @@ html.hairlines {
 }
 
 .o-curated-stream-grid {
+  .o-curated-stream-grid--cell {
+    display: flex;
+    flex-direction: column;
+  }
   @media(variables.$bp-smaller-than-tablet) {
     padding-inline: 0.5em;
   }
@@ -816,6 +825,7 @@ html.hairlines {
 }
 
 .o-profile_quote_cell--buttons {
+  margin-top: auto;
   display: flex;
   .playAudioQuote {
     margin-right: auto;
@@ -831,6 +841,13 @@ html.hairlines {
 }
 
 .o-profile_quote_cell {
+  &:last-child {
+    flex-grow: 1;
+    .o-profile_quote_cell--quote-container {
+      height: 100%;
+    }
+  }
+
   .o-profile_quote_cell--quote-container {
     display: flex;
     flex-direction: column;
@@ -861,11 +878,8 @@ html.hairlines {
 .o-curated-stream-grid-rows--four {
   .o-profile_cell {
     gap: 0.75em;
-    .o-profile_cell--left {
-      width: 3.5rem;
-    }
     .o-profile_cell--image {
-      width: 3.5rem;
+      width: 5rem;
     }
     .o-profile_cell--right p,li {
       font-size: 0.75em;
