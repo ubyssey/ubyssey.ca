@@ -504,11 +504,15 @@ html.hairlines {
     }
 
     .o-home-group_headline {
-      margin-block: 2rem;
-      font-family: fonts.$font-home-headline;
-      font-variation-settings: "wght" 600;
-      font-weight: 600;
-      line-height: 1.25em;
+
+      &.headline {
+        margin-block: 2rem;
+        font-family: fonts.$font-home-headline;
+        font-variation-settings: "wght" 600;
+        font-weight: 600;
+        line-height: 1.25em;
+      }
+
       color: var(--header_color);
       &.large {
         margin-top: 0;
@@ -519,8 +523,8 @@ html.hairlines {
       }
 
       @media(variables.$bp-smaller-than-tablet) {
+        margin-inline: 0.5em;
         &.large, &.small {
-          margin-inline: 0.5em;
           font-variation-settings: "wght" 900;
         }
         &.large {
@@ -703,27 +707,19 @@ html.hairlines {
     .o-profile_quote_cell {
       display: flex;
       gap: 1em;
+
+      flex-direction: column;
       .o-profile_cell {
-        width: 40%;
-        flex-shrink: 0;
+        width: auto;
       }
+
       .o-profile_quote_cell--quote-container {
         .o-profile_quote_cell--quote {
-          margin: 0;
           font-variation-settings: "wght" 400;
         }
         .playAudioQuote {
           margin-left: 0;
         }
-      }
-    }
-  }
-
-  @media(variables.$bp-smaller-than-mobile) {
-    .o-profile_quote_cell {
-      flex-direction: column;
-      .o-profile_cell {
-        width: auto;
       }
     }
   }
@@ -773,11 +769,11 @@ html.hairlines {
 
 .o-profile_cell {
   display: flex;
+  flex-direction: column;
   gap: 1em;
   .o-profile_cell--left {
     display: flex;
     flex-direction: column;
-    width: 4rem;
   }
 
   .o-profile_cell--link {
@@ -789,8 +785,9 @@ html.hairlines {
   }
 
   .o-profile_cell--image {
+    margin-inline: auto;
     aspect-ratio: 1;
-    width: 4rem;
+    width: 10rem;
     height: auto;
     border-radius: 0.5em;
   }
@@ -818,39 +815,45 @@ html.hairlines {
   }
 }
 
+.o-profile_quote_cell--buttons {
+  display: flex;
+  .playAudioQuote {
+    margin-right: auto;
+    font-size: 0.8em;
+  }
+  .o-profile_cell--link {
+    margin-left: auto;
+    font-size: 0.8em;
+    a {
+      text-decoration: underline;
+    }
+  }
+}
+
 .o-profile_quote_cell {
   .o-profile_quote_cell--quote-container {
     display: flex;
     flex-direction: column;
     color: var(--text_color);
   }
-  .o-profile_quote_cell--buttons {
-    display: flex;
-    .playAudioQuote {
-      margin-right: auto;
-      font-size: 0.8em;
-    }
-    .o-profile_cell--link {
-      margin-left: auto;
-      font-size: 0.8em;
-      a {
-        text-decoration: underline;
-      }
-    }
-  }
+
   .o-profile_quote_cell--quote {
     margin: 1em auto;
-    padding-left: 1em;
+
     position: relative;
     font-size: 0.8em;
     font-variation-settings: "wght" 600;
-    &::before {
-      content: '“';
-      font-size: 2em;
-      float: left;
-      position: absolute;
-      left: 0;
-      top: -0.35em;
+
+    &.enlarged-quotation{
+      padding-left: 1em;
+      &::before {
+        content: '“';
+        font-size: 2em;
+        float: left;
+        position: absolute;
+        left: 0;
+        top: -0.35em;
+      }
     }
   }
 }

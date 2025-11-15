@@ -4,9 +4,11 @@
         {% include_block headline%}
     {% endfor %}
     <div class="o-curated-stream-grid o-curated-stream-grid-rows--{{self.rows}}">
-        {% for item in self.items %}
+        {% for cell in self.cells %}
             <div class="o-curated-stream-grid--cell">
-                {%include_block item with cell_id=item.id %}
+                {% for item in cell.items %}
+                    {% include_block item with cell_id=cell.id item_id=item.id %}
+                {% endfor %}
             </div>
         {% endfor %}
     </div>

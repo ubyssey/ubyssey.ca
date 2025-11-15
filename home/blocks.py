@@ -21,10 +21,8 @@ import images.blocks as image_blocks
 
 # Left
 class ProfileCell(blocks.StructBlock):
-    image = image_blocks.ReducedImageBlock()
+    image = blocks.ListBlock(image_blocks.ReducedImageBlock(), default=[], help_text="Optional!")
     text = blocks.RichTextBlock(required=False)
-    article = blocks.PageChooserBlock(page_type="article.ArticlePage", required=False)
-    label = blocks.CharBlock(required=False)
  
     def get_articles(self, value):
         return [value["article"]]
@@ -32,10 +30,18 @@ class ProfileCell(blocks.StructBlock):
     class Meta:
         template = "home/objects/cells/profile.html"
 
-class ProfileQuoteCell(ProfileCell):
+class QuoteCell(blocks.StructBlock):
 
     audio = DocumentChooserBlock(required=False, help_text="Optional, file format: .m4a, .mp4, .mp, .wav, or .ogg")
     quote = blocks.TextBlock(required=False)
+
+    style = blocks.ChoiceBlock(choices=[
+        ("enlarged-quotation", "Enlarged quotation"),
+        ("none", "None")
+    ])
+
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage", required=False)
+    label = blocks.CharBlock(required=False)
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
@@ -250,11 +256,16 @@ class CuratedGroupHeadline(blocks.StructBlock):
     class Meta:
         template = 'home/objects/group_headline.html'
 
+class CuratedGroupHeadlineRichtext(blocks.StructBlock):
+    text = blocks.RichTextBlock()
+
+    class Meta:
+        template = 'home/objects/group_headline_richtext.html'
 
 class CuratedStreamSharedAttachment(blocks.StructBlock):
     headline = blocks.StreamBlock([
         ('normal_headline', CuratedGroupHeadline()),
-        ('richtext', blocks.RichTextBlock()),
+        ('richtext', CuratedGroupHeadlineRichtext()),
     ],
     required=False
     )
@@ -262,7 +273,7 @@ class CuratedStreamSharedAttachment(blocks.StructBlock):
     left = blocks.StreamBlock([
         ("sports_game_score", SportsGameScore()),
         ("profile", ProfileCell()),
-        ("profile_quote", ProfileQuoteCell()),
+        ("quote", QuoteCell()),
         ("raw_html", blocks.RawHTMLBlock()),
     ])
     right = Carousel()
@@ -299,11 +310,14 @@ class CuratedStreamGrid(blocks.StructBlock):
     ],
     required=False
     )
-    items = blocks.StreamBlock([
-        ('profile', ProfileCell()),
-        ("profile_quote", ProfileQuoteCell()),
-        ('raw_html', blocks.RawHTMLBlock()),
-    ])
+    cells = blocks.ListBlock(blocks.StructBlock([
+        ('article', blocks.PageChooserBlock(page_type="article.ArticlePage", required=False)),
+        ('items', blocks.StreamBlock([
+            ('profile', ProfileCell()),
+            ("quote", QuoteCell()),
+            ('raw_html', blocks.RawHTMLBlock()),
+        ]))
+    ]))
     rows = blocks.ChoiceBlock(choices=[
         ("three", "Three"),
         ("four", "Four"),
@@ -311,10 +325,8 @@ class CuratedStreamGrid(blocks.StructBlock):
 
     def get_articles(self, values):
         articles = []
-
-        for i in self.to_python(values)['items']:
-            if hasattr( i.block, 'get_articles' ) and callable( i.block.get_articles ):
-                articles = articles + i.block.get_articles(i.get_prep_value()['value'])
+        for i in values['cells']:
+            articles = articles + [i["value"]["article"]]
 
         return articles
 
@@ -325,7 +337,7 @@ class CuratedStreamGrid(blocks.StructBlock):
 class CuratedGroup(blocks.StructBlock):
     headline = blocks.StreamBlock([
         ('normal_headline', CuratedGroupHeadline()),
-        ('richtext', blocks.RichTextBlock()),
+        ('richtext', CuratedGroupHeadlineRichtext()),
     ],
     required=False
     )

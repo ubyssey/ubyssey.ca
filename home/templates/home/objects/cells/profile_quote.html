@@ -8,9 +8,8 @@
 {% endif %}
 
 <div class="o-profile_quote_cell">
-    {% include "home/objects/cells/profile.html" with noLink="True" %}
     <div class="o-profile_quote_cell--quote-container">
-        <p class="o-profile_quote_cell--quote">{{self.quote|safe}}</p>
+        <p class="o-profile_quote_cell--quote {{self.style}}">{{self.quote|safe}}</p>
         <div class="o-profile_quote_cell--buttons">
             {% if self.audio %}
                 <button audio="a{{group_id}}{{item_id}}{{cell_id}}" class="playAudioQuote">

@@ -2,23 +2,19 @@
 {% load wagtailimages_tags %}
 
 <div class="o-profile_cell">
+    {% if self.image %}
     <div class="o-profile_cell--left">
         {% if self.article %}
         <a href="{% pageurl self.article %}">
-        {% image self.image.image width-200 format-webp loading="lazy" class="o-profile_cell--image" alt=self.image.alt %}            
-        </a>
-        {% else %}
-        {% image self.image.image width-200 format-webp loading="lazy" class="o-profile_cell--image" alt=self.image.alt %}            
         {% endif %}
-
-        {% if not noLink %}
+            {% for image in self.image %}
+                {% image image.image width-200 format-webp loading="lazy" class="o-profile_cell--image" alt=image.alt %}            
+            {% endfor %}
         {% if self.article %}
-            <p class="o-profile_cell--link"><a href="{% pageurl self.article %}">
-                {% if self.label %}{{self.label|safe}}{% else %}{{self.article.title|safe}}{%endif%}
-            </a></p>
-        {% endif %}
+        </a>
         {% endif %}
     </div>
+    {% endif %}
     <div class="o-profile_cell--right">
         {{self.text|safe}}
     </div>
