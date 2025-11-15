@@ -8,7 +8,7 @@
         <a href="{% pageurl self.article %}">
         {% endif %}
             {% for image in self.image %}
-                {% image image.image width-200 format-webp loading="lazy" class="o-profile_cell--image" alt=image.alt %}            
+                {% image image.image width-320 format-webp loading="lazy" class="o-profile_cell--image" alt=image.alt %}            
             {% endfor %}
         {% if self.article %}
         </a>
