@@ -517,6 +517,9 @@ html.hairlines {
 
       p a {
         text-decoration: underline;
+        &:hover{
+          color: variables.$color-ubyssey-blue;
+        }
       }
 
       &.large {
@@ -528,7 +531,7 @@ html.hairlines {
       }
 
       @media(variables.$bp-smaller-than-tablet) {
-        margin-inline: 0.5em;
+        margin-inline: 1rem;
         &.large, &.small {
           font-variation-settings: "wght" 900;
         }
@@ -701,7 +704,7 @@ html.hairlines {
     flex-direction: column;
   }
   @media(variables.$bp-smaller-than-tablet) {
-    padding-inline: 0.5em;
+    padding-inline: 1em;
   }
   @media(variables.$bp-smaller-than-phablet) {
     .o-curated-stream-grid--cell {
