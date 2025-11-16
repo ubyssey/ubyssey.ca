@@ -5,7 +5,7 @@ article.article--round_with_border {
     width: 100%;
     max-width: 300px;
     margin-right: 2em;
-    margin-bottom: 1em;
+    margin-block: 1em;
     border-bottom: 2px solid var(--borderColour);
 
     @media(variables.$bp-smaller-than-phablet) {
@@ -27,6 +27,7 @@ article.article--round_with_border {
 
     p.o-article__published {
         margin: 0;
+        margin-top: 1em;
         font-weight: 600;
         font-size: 0.75em;
         text-transform: uppercase;

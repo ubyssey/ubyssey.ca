@@ -389,6 +389,11 @@ class ManualArticles(AbstractArticleList):
         ),
         required=False,
     )
+    hide_mobile = field_block.BooleanBlock(
+        required=False,
+        help_text="If checked, will hide on small devices",
+        default=False
+        )
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)

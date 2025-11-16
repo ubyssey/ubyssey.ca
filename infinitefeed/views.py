@@ -14,12 +14,12 @@ def getArticles(filters, start, number):
 
     if "section" in filters and not "category" in filters:
         if filters["section"] == "home":
-            return ArticlePage.objects.live().public().order_by('-explicit_published_at')[int(start):int(start)+int(number)]
+            return ArticlePage.objects.live().public().order_by('-explicit_published_at', '-id')[int(start):int(start)+int(number)]
         else:
             section = SectionPage.objects.get(slug=filters["section"], depth=3)
-            articles = ArticlePage.objects.live().public().descendant_of(section).order_by('-explicit_published_at')
+            articles = ArticlePage.objects.live().public().descendant_of(section)
     else:
-        articles = ArticlePage.objects.live().public().order_by('-explicit_published_at')
+        articles = ArticlePage.objects.live().public()
 
     if "tag" in filters:
         articles = articles.filter(topics__id=filters["tag"])
@@ -28,9 +28,11 @@ def getArticles(filters, start, number):
         articles = articles.filter(category_page__slug=filters["category"])
 
     if "search_query" in filters:
-        return articles.search(Phrase(filters["search_query"]) | PlainText(filters["search_query"]))[int(start):int(start)+int(number)]
+        articles = articles.search(Phrase(filters["search_query"]) | PlainText(filters["search_query"]))
     else:
-        return articles.order_by('-explicit_published_at')[int(start):int(start)+int(number)]
+        articles = articles.order_by('-explicit_published_at', '-id')
+        
+    return articles[int(start):int(start)+int(number)]
 
 def infinitefeed(request):
     if request.method == 'GET':
