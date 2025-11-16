@@ -27,7 +27,7 @@ section = "{{filters.section}}"
   storystream = "true"
 {% endif %}
 >
-    {% for article in filters|preload_articles:"15" %}
+    {% for article in filters|preload_articles:"20" %}
       {% if storystream %}
         {% include_block article.storystream_view.0 %}
       {% else %}  

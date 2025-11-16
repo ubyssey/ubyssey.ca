@@ -52,8 +52,8 @@ function recievedata(data) {
   }  
 }
 
-loader.setAttribute("start", "15");
-loader.setAttribute("number", "15");
+loader.setAttribute("start", "20");
+loader.setAttribute("number", "20");
 
 
 function loadArticles() 
