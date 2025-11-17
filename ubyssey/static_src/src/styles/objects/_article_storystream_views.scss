@@ -90,6 +90,9 @@
         @media(variables.$bp-larger-than-phablet) {
             padding-inline: 3em;
             flex-direction: row-reverse;
+            .o-article__left {
+                width: 50%;
+            }
             .o-article__right {
                 margin: auto;
                 padding: 0;
