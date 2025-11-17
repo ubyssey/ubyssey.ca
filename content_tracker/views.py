@@ -40,12 +40,13 @@ class VisualAssignmentSerializer(serializers.ModelSerializer):
     completed = serializers.DateTimeField()
 
     state = serializers.CharField()
+    intended_use = serializers.CharField()
 
     assignees = AssigneeSerializer(source="visual_assignees", many=True)
 
     class Meta:
         model = VisualAssignment
-        fields = ('id', 'memo', 'request', 'visual_type', 'created', 'deadline', 'completed', 'state', 'assignees')
+        fields = ('id', 'memo', 'request', 'visual_type', 'created', 'deadline', 'completed', 'state', 'intended_use', 'assignees')
 
 
 class StoryAssignmentSerializer(serializers.ModelSerializer):
@@ -78,7 +79,7 @@ class VisualAssignmentWithStoryAssignmentSerializer(VisualAssignmentSerializer):
 
     class Meta:
         model = VisualAssignment
-        fields = ('id', 'memo', 'request', 'visual_type', 'created', 'deadline', 'completed', 'state', 'assignees', 'story_assignment')
+        fields = ('id', 'memo', 'request', 'visual_type', 'created', 'deadline', 'completed', 'state', 'intended_use', 'assignees', 'story_assignment')
 
 
 class StoryAssignmentWithVisualRequestsSerializer(StoryAssignmentSerializer):

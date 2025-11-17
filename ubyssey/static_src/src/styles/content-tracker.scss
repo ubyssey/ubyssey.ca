@@ -122,7 +122,7 @@ main {
     }
     
     .c-content-tracker--timeline-container {
-        --label-width: 100px;
+        --label-width: 10em;
         position: relative;
         .c-content-tracker--labels-background {
             position: absolute;
@@ -348,4 +348,24 @@ main {
 
 .button.text-replace.button--icon .icon {
     margin-bottom: 0.5em;
+}
+
+button.section-mover-button {
+    display: inline-block;
+    padding: 0;
+    height: auto;
+    background: none;
+    color: var(--w-color-text-context);
+    &:hover {
+        color: var(--w-color-text-link-default);
+    }
+    > svg {
+        width: 1.5em;
+        height: 1em;
+        color: inherit;
+    }
+}
+.section-label {
+    margin-left: 0.5em;
+    display: inline-block;
 }

@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 
 from wagtail.models import Orderable
+from wagtail.fields import StreamField
+from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.models import register_snippet
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -145,6 +147,12 @@ class VisualAssignment(ClusterableModel):
 
     state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.NEW.value)
 
+    intended_use = models.CharField(max_length=50, choices=[
+        ("print", "For print"),
+        ("web", "For web"),
+        ("web & print", "For web and print"),
+    ], default="unspecified")
+    
     request = models.TextField()
     visual_type = models.CharField(max_length=50, choices=[
         ("illustration", "Illustration"),
@@ -152,23 +160,21 @@ class VisualAssignment(ClusterableModel):
         ("web-design", "Web design"),
     ])
 
-    image = models.ForeignKey(
-        "images.UbysseyImage",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-    )
+    visuals = StreamField([
+        ("image", ImageChooserBlock(required=True))
+    ],
+    use_json_field=True, null=True, blank=True)
 
     panels = [
         FieldPanel("story_assignment"),
         FieldPanel("memo"),
         FieldPanel("request"),
         FieldPanel("deadline"),
+        FieldPanel("intended_use"),
         FieldPanel("state"),
         InlinePanel("visual_assignees", label="Assignees"),
         FieldPanel("visual_type"),
-        FieldPanel("image"),
+        FieldPanel("visuals"),
     ]
 
     def save(self, *args, **kwargs):

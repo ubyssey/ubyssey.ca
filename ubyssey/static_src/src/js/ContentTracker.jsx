@@ -228,7 +228,7 @@ function ContentTrackerActiveVisualAssignments({activeVisualAssignments, setView
                 {activeVisualAssignments.filter(({visual_type}) => visual_type == filter || filter == "all").map(article =>
                     <tr className="c-content-tracker--deadline-list-item" onClick={() => {setViewedStoryAssignment({...article, "viewed": "visual"})}}>
                         <td className="c-content-tracker--deadline-list-item--subject">{article.story_assignment ? article.story_assignment.subject : "[No story attached]"}</td>
-                        <td>{article.story_assignment && transformHypenedString(article.story_assignment.assigning_section) + " - "}{transformHypenedString(article.visual_type)}</td>
+                        <td>{article.story_assignment && transformHypenedString(article.story_assignment.assigning_section) + " - "}{transformHypenedString(article.visual_type)} {article.intended_use!="unspecified" && "(" + article.intended_use + ")"}</td>
                         <td>{article.assignees.map(({full_name}) => full_name).join(", ")}</td>
                         <td><span className="w-status">{visualAssignmentState[article.state]}</span></td>
                         <td className={"c-content-tracker--deadline-list-item--deadline"}>{dateformat(article.created)}</td>
@@ -282,10 +282,12 @@ function ContentTrackerViewStoryAssignment({storyAssignment}) {
                         <div class="bar" style={{"width": storyAssignmentStateProgress[storyAssignment.state]}}>{storyAssignmentState[storyAssignment.state]}</div>
                     </div>   
 
-
-                    {storyAssignment.visual_requests.map(visual_request =>
-                        <ContentTrackerVisualRequest visual_request={visual_request} />
-                    )}
+                    {storyAssignment.visual_requests && <>
+                        {storyAssignment.visual_requests.map(visual_request =>
+                            <ContentTrackerVisualRequest visual_request={visual_request} />
+                        )}
+                    </>}
+                    
                 </div>
             </div>
     )
@@ -296,12 +298,13 @@ function ContentTrackerViewVisualAssignment({visualAssignment}) {
         <div className="c-content-tracker--viewed-article">
                 <div className="c-content-tracker--viewed-assignment">
                     <ContentTrackerVisualRequest visual_request={visualAssignment} />
+                    {visualAssignment.story_assignment && <ContentTrackerViewStoryAssignment storyAssignment={visualAssignment.story_assignment} />}
                 </div>
             </div>
     )
 }
 
-function ContentTrackerTimeline({dateRange, sections, articlesBySectionByDate, lateStoryAssignments, setViewedStoryAssignment, todayNumber}) {
+function ContentTrackerTimeline({dateRange, sections, moveSection, articlesBySectionByDate, lateStoryAssignments, setViewedStoryAssignment, todayNumber}) {
     return (
         
         <div className="c-content-tracker--timeline-container">
@@ -327,7 +330,17 @@ function ContentTrackerTimeline({dateRange, sections, articlesBySectionByDate, l
                         </tr>
                     {sections.map((section) =>
                         <tr class="c-content-tracker--sections">
-                            <td className="c-content-tracker--labels">{transformHypenedString(section)}</td>
+                            <td className="c-content-tracker--labels">
+                                <button className="section-mover-button" onClick={() => moveSection(section, -1)}>
+                                    <svg width="32" height="32" fill="currentColor"><svg id="icon-arrow-up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M11.75 10.75a.743.743 0 0 1-.54-.21L8 7.327 4.766 10.54a.723.723 0 0 1-1.055 0 .723.723 0 0 1 0-1.055l3.75-3.75a.723.723 0 0 1 1.055 0l3.75 3.75a.723.723 0 0 1 0 1.055.727.727 0 0 1-.516.211Z"></path></svg>
+                                    </svg>
+                                </button>
+                                <button className="section-mover-button" onClick={() => moveSection(section, 1)}>
+                                    <svg width="32" height="32" fill="currentColor"><svg id="icon-arrow-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 11.5a.743.743 0 0 1-.54-.21L3.71 7.54a.723.723 0 0 1 0-1.056.723.723 0 0 1 1.056 0L8 9.695l3.21-3.21a.723.723 0 0 1 1.056 0 .723.723 0 0 1 0 1.054l-3.75 3.75A.727.727 0 0 1 8 11.5Z"></path></svg>
+                                    </svg>    
+                                </button>
+                                <span class="section-label">{transformHypenedString(section)}</span>
+                            </td>
                             <td className="c-content-tracker--gap past"></td>
                             {dateRange.map(date => 
                             <>
@@ -368,7 +381,7 @@ function ContentTrackerTimeline({dateRange, sections, articlesBySectionByDate, l
     )
 }
 
-function ContentTrackerMenu({setTimeCursor}) {
+function ContentTrackerMenu({setTimeCursor, timeCursor}) {
     return (
         <div className="c-content-tracker--menu">
             <div>
@@ -427,7 +440,7 @@ export default function ContentTracker() {
 
     const [viewedAssignments, setViewedAssignments] = useState("story");
 
-    const sections = ["news", "culture", "features", "opinion", "humour", "research", "sports"];
+    const [sections, setSections] = useState(["news", "culture", "features", "opinion", "humour", "research", "sports"]);
     const visualTypes = ["illustration", "photo", "web-design"];
     const todayNumber = dateNumber(new Date());
 
@@ -482,6 +495,43 @@ export default function ContentTracker() {
         return bySection;
     }
 
+    function getSectionOrderFromLocalStorage() {
+        console.log("getSectionOrderFromLocalStorage");
+        const defaultOrder = ["news", "culture", "features", "opinion", "humour", "research", "sports"];
+        let useLocalStorage = false;
+        if (localStorage.contentTrackerSectionOrder) {
+            let localStorageOrder = localStorage.contentTrackerSectionOrder.split(",");
+            
+            // Check storage order only includes correct sections
+            const correctSections = localStorageOrder.map((s) => defaultOrder.includes(s)).includes(false)==false;
+            const sameLength = localStorageOrder.length == defaultOrder.length;
+            useLocalStorage = correctSections && sameLength;
+
+            if (useLocalStorage) {
+                setSections(localStorageOrder);
+            }
+        } 
+
+        if (useLocalStorage == false) {
+            localStorage.contentTrackerSectionOrder = defaultOrder;
+            setSections(defaultOrder);
+        }
+    }
+
+    function moveSection(section, upDown) {
+        let i = sections.indexOf(section);
+        let sectionsCopy = sections.slice();
+
+        if (upDown+i > 0) {
+            sectionsCopy.splice(i, 1);
+            sectionsCopy.splice(i+upDown, 0, section);            
+        } else {
+            console.log("error moving section to position: " + String(upDown+i));
+        }
+        setSections(sectionsCopy);
+        localStorage.contentTrackerSectionOrder = sectionsCopy.join(",");
+    }
+
     useEffect(() => {
         getArticles(timeCursor, timeScale);
         const d = 24 * 60 * 60 * 1000;
@@ -509,6 +559,7 @@ export default function ContentTracker() {
         getActiveStoryAssignments();
         getActiveVisualAssignments();
         getLateStoryAssignments();
+        getSectionOrderFromLocalStorage();
     }, []);
 
     return (
@@ -539,8 +590,8 @@ export default function ContentTracker() {
     </div>
 
     <div className="c-content-tracker--below">
-        <ContentTrackerMenu setTimeCursor={setTimeCursor}/>
-        <ContentTrackerTimeline dateRange={dateRange} sections={sections} articlesBySectionByDate={articlesBySectionByDate} lateStoryAssignments={lateStoryAssignments} setViewedStoryAssignment={setViewedStoryAssignment} todayNumber={todayNumber}/>
+        <ContentTrackerMenu setTimeCursor={setTimeCursor} timeCursor={timeCursor}/>
+        <ContentTrackerTimeline dateRange={dateRange} sections={sections} moveSection={moveSection} articlesBySectionByDate={articlesBySectionByDate} lateStoryAssignments={lateStoryAssignments} setViewedStoryAssignment={setViewedStoryAssignment} todayNumber={todayNumber}/>
     </div>
     </>
     );
