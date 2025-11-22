@@ -136,6 +136,11 @@ jobs:
       - name: Upload nginx configuration
         run: scp nginx.conf production:/opt/ubyssey.ca/nginx/nginx.conf
 
+      - name: Upload certbot renewal script
+        run: |
+          ssh production "mkdir -p /opt/ubyssey.ca/scripts"
+          scp scripts/certbot-renewal-with-nginx-reload.sh production:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
+
       - name: Verify Docker secrets exist
         run: |
           echo "Verifying each docker secret exists..."
@@ -156,7 +161,7 @@ jobs:
           echo "All secrets verified"
 
       - name: Sync secrets from Google Cloud Platform
-        run: cat sync-secrets.sh | ssh production
+        run: cat ./scripts/sync-secrets.sh | ssh production
       
       - name: Create shared network
         run: ssh production "docker network create --driver=overlay proxy-shared || true"
