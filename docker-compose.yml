@@ -21,12 +21,6 @@ services:
       - ubyssey-internal
     volumes:
       - ./mysql-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD-SHELL", "mysql -h localhost -u root -p$$(cat /run/secrets/SQL_PASSWORD) --execute='SHOW DATABASES;' >/dev/null 2>&1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
 
   cache:
     image: memcached:1.6.10
