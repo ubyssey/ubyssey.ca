@@ -96,7 +96,7 @@ jobs:
           scp scripts/certbot-renewal-with-nginx-reload.sh staging:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
 
       - name: Sync secrets from Google Cloud Platform
-        run: cat ./scripts/sync-secrets.sh | ssh staging
+        run: cat scripts/sync-secrets.sh | ssh staging
 
       - name: Restart services
         run: ssh staging docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey

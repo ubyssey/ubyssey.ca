@@ -161,7 +161,7 @@ jobs:
           echo "All secrets verified"
 
       - name: Sync secrets from Google Cloud Platform
-        run: cat ./scripts/sync-secrets.sh | ssh production
+        run: cat scripts/sync-secrets.sh | ssh production
       
       - name: Create shared network
         run: ssh production "docker network create --driver=overlay proxy-shared || true"
