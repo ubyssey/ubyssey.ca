@@ -119,7 +119,7 @@ services:
       update_config:
         parallelism: 2
         delay: 10s
-        order: stop-first
+        order: start-first
         monitor: 30s
         failure_action: rollback
 
