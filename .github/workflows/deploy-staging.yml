@@ -87,10 +87,11 @@ jobs:
       - name: Upload nginx configuration
         run: scp nginx-staging.conf staging:/opt/ubyssey.ca/nginx/nginx.conf
 
-      - name: Upload certbot renewal script
+      - name: Upload certbot and nginx reload scripts
         run: |
           ssh staging "mkdir -p /opt/ubyssey.ca/scripts"
           scp scripts/certbot-renewal-with-nginx-reload.sh staging:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
+          scp scripts/nginx-reload-watcher.sh staging:/opt/ubyssey.ca/scripts/nginx-reload-watcher.sh
 
       - name: Sync secrets from Google Cloud Platform
         run: cat scripts/sync-secrets.sh | ssh staging

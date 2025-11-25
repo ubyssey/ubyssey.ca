@@ -115,6 +115,7 @@ services:
         delay: 10s
         order: stop-first
         monitor: 30s
+        max_failure_ratio: 0
         failure_action: rollback
 
       # Rollback if update fails
@@ -133,6 +134,8 @@ services:
       - ./nginx/:/etc/nginx/:ro
       - ./certbot/www/:/var/www/certbot/:ro
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:ro
+      - certbot-signals:/tmp/certbot-signals
+      - ./scripts/nginx-reload-watcher.sh:/nginx-reload-watcher.sh:ro
     networks:
       - proxy-shared
       - ubyssey-internal
@@ -141,6 +144,9 @@ services:
       - 443:443
     logging:
       driver: gcplogs
+    # Run nginx and the reload watcher in parallel
+    command: >
+      sh -c "nginx && /nginx-reload-watcher.sh & nginx -g 'daemon off;'"
 
     # Health check to ensure nginx is running and config is valid
     # This prevents bad configs from being deployed silently
@@ -163,6 +169,8 @@ services:
         parallelism: 1
         delay: 10s
         order: start-first
+        monitor: 30s
+        max_failure_ratio: 0
         failure_action: rollback
 
       # Rollback if update fails
@@ -179,17 +187,21 @@ services:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:rw
       - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - certbot-signals:/tmp/certbot-signals
       - ./scripts/certbot-renewal-with-nginx-reload.sh:/certbot-renewal-with-nginx-reload.sh:ro
     networks:
       - ubyssey-internal
-    # Run the certbot service script that handles renewal and nginx reload
+    # Run the certbot service script that signals nginx to reload via shared volume
     entrypoint: ["/bin/sh", "/certbot-renewal-with-nginx-reload.sh"]
     deploy:
       # Restart certbot on failure - background service should always run
       restart_policy:
         condition: on-failure
         delay: 5s
+
+volumes:
+  certbot-signals:
+    driver: local
 
 secrets:
   DJANGO_SECRET_KEY:
