@@ -192,6 +192,15 @@ services:
       - ubyssey-internal
     # Run the certbot service script that signals nginx to reload via shared volume
     entrypoint: ["/bin/sh", "/certbot-renewal-with-nginx-reload.sh"]
+
+    # Health check to verify renewal script is running and certificates exist
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f certbot-renewal-with-nginx-reload.sh && test -f /etc/letsencrypt/live/ubyssey.ca/fullchain.pem"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
     deploy:
       # Restart certbot on failure - background service should always run
       restart_policy:
