@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    # Run on push to new-deployment-strategy branch OR if production build was successful
+    # Only run if the production deployment workflow completed successfully
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     permissions:
