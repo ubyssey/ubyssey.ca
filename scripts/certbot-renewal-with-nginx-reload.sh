@@ -27,7 +27,7 @@ while :; do
     NGINX_ID=\$(docker ps -q -f 'name=nginx' | head -1)
     if [ -n \"\$NGINX_ID\" ]; then
       if docker exec \"\$NGINX_ID\" nginx -s reload; then
-        echo 'nginx reloaded successfully at \$(date)'
+        echo 'nginx reloaded successfully'
       else
         echo 'ERROR: Failed to reload nginx' >&2
       fi
