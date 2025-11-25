@@ -146,7 +146,7 @@ services:
       driver: gcplogs
     # Run nginx and the reload watcher in parallel
     command: >
-      sh -c "nginx && /nginx-reload-watcher.sh & nginx -g 'daemon off;'"
+      sh -c "sh /nginx-reload-watcher.sh & nginx -g 'daemon off;'"
 
     # Health check to ensure nginx is running and config is valid
     # This prevents bad configs from being deployed silently
