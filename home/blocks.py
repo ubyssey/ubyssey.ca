@@ -228,19 +228,8 @@ class CuratedStreamArticleList(blocks.StructBlock):
     def get_articles(self, value):
         return [article["value"] for article in value["articles"]]
 
-    def render(self, value, context=None):
-        block_template = value.get('template')
-        if block_template != '':
-            template = f"home/objects/curated_stream/{block_template}.html"
-        else:
-            return self.render_basic(value, context=context)
-
-        if context is None:
-            new_context = self.get_context(value)
-        else:
-            new_context = self.get_context(value, parent_context=dict(context))
-
-        return mark_safe(render_to_string(template, new_context))
+    class Meta:
+        template = "home/objects/curated_stream/article_list.html"
 
 class CuratedGroupHeadline(blocks.StructBlock):
     headline = blocks.CharBlock()

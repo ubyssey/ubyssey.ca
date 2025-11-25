@@ -19,7 +19,7 @@ getData("storystream");
 
 function getArticles() {
   loader.setAttribute("inactive", "True");
-  loader.classList.remove("hide");
+  //loader.classList.remove("hide");
   data["start"] = loader.getAttribute("start");
   data["number"] = loader.getAttribute("number");
 
@@ -47,7 +47,7 @@ function recievedata(data) {
     for (let i=0; i<data.length; i++) {
       feed.insertAdjacentHTML("beforeend", data[i]);
     }
-    loader.classList.add("hide");
+    //loader.classList.add("hide");
     loader.removeAttribute("inactive");
   }  
 }
@@ -58,6 +58,7 @@ loader.setAttribute("number", "20");
 
 function loadArticles() 
 { 
+  var loader = document.getElementById("loader");
   if(loader.hasAttribute("inactive") == false) {
     if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
       getArticles();

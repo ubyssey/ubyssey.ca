@@ -228,7 +228,7 @@ function ContentTrackerActiveVisualAssignments({activeVisualAssignments, setView
                 {activeVisualAssignments.filter(({visual_type}) => visual_type == filter || filter == "all").map(article =>
                     <tr className="c-content-tracker--deadline-list-item" onClick={() => {setViewedStoryAssignment({...article, "viewed": "visual"})}}>
                         <td className="c-content-tracker--deadline-list-item--subject">{article.story_assignment ? article.story_assignment.subject : "[No story attached]"}</td>
-                        <td>{article.story_assignment && transformHypenedString(article.story_assignment.assigning_section) + " - "}{transformHypenedString(article.visual_type)} {article.intended_use!="unspecified" && "(" + article.intended_use + ")"}</td>
+                        <td>{article.story_assignment && transformHypenedString(article.story_assignment.assigning_section) + " - "}{transformHypenedString(article.visual_type)} {article.intended_use.toLowerCase()!="unspecified" && "(" + article.intended_use + ")"}</td>
                         <td>{article.assignees.map(({full_name}) => full_name).join(", ")}</td>
                         <td><span className="w-status">{visualAssignmentState[article.state]}</span></td>
                         <td className={"c-content-tracker--deadline-list-item--deadline"}>{dateformat(article.created)}</td>
@@ -328,17 +328,21 @@ function ContentTrackerTimeline({dateRange, sections, moveSection, articlesBySec
                             </>
                             )}
                         </tr>
-                    {sections.map((section) =>
+                    {sections.map((section, i) =>
                         <tr class="c-content-tracker--sections">
                             <td className="c-content-tracker--labels">
-                                <button className="section-mover-button" onClick={() => moveSection(section, -1)}>
-                                    <svg width="32" height="32" fill="currentColor"><svg id="icon-arrow-up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M11.75 10.75a.743.743 0 0 1-.54-.21L8 7.327 4.766 10.54a.723.723 0 0 1-1.055 0 .723.723 0 0 1 0-1.055l3.75-3.75a.723.723 0 0 1 1.055 0l3.75 3.75a.723.723 0 0 1 0 1.055.727.727 0 0 1-.516.211Z"></path></svg>
-                                    </svg>
-                                </button>
-                                <button className="section-mover-button" onClick={() => moveSection(section, 1)}>
-                                    <svg width="32" height="32" fill="currentColor"><svg id="icon-arrow-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 11.5a.743.743 0 0 1-.54-.21L3.71 7.54a.723.723 0 0 1 0-1.056.723.723 0 0 1 1.056 0L8 9.695l3.21-3.21a.723.723 0 0 1 1.056 0 .723.723 0 0 1 0 1.054l-3.75 3.75A.727.727 0 0 1 8 11.5Z"></path></svg>
-                                    </svg>    
-                                </button>
+                                {i - 1 >= 0 &&
+                                    <button className="section-mover-button" onClick={() => moveSection(section, -1)}>
+                                        <svg width="32" height="32" fill="currentColor"><svg id="icon-arrow-up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M11.75 10.75a.743.743 0 0 1-.54-.21L8 7.327 4.766 10.54a.723.723 0 0 1-1.055 0 .723.723 0 0 1 0-1.055l3.75-3.75a.723.723 0 0 1 1.055 0l3.75 3.75a.723.723 0 0 1 0 1.055.727.727 0 0 1-.516.211Z"></path></svg>
+                                        </svg>
+                                    </button>                                
+                                }
+                                {i + 1 < sections.length &&
+                                    <button className="section-mover-button" onClick={() => moveSection(section, 1)}>
+                                        <svg width="32" height="32" fill="currentColor"><svg id="icon-arrow-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 11.5a.743.743 0 0 1-.54-.21L3.71 7.54a.723.723 0 0 1 0-1.056.723.723 0 0 1 1.056 0L8 9.695l3.21-3.21a.723.723 0 0 1 1.056 0 .723.723 0 0 1 0 1.054l-3.75 3.75A.727.727 0 0 1 8 11.5Z"></path></svg>
+                                        </svg>    
+                                    </button>
+                                }
                                 <span class="section-label">{transformHypenedString(section)}</span>
                             </td>
                             <td className="c-content-tracker--gap past"></td>
@@ -522,7 +526,7 @@ export default function ContentTracker() {
         let i = sections.indexOf(section);
         let sectionsCopy = sections.slice();
 
-        if (upDown+i > 0) {
+        if (upDown+i >= 0) {
             sectionsCopy.splice(i, 1);
             sectionsCopy.splice(i+upDown, 0, section);            
         } else {

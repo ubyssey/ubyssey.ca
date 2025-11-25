@@ -37,6 +37,6 @@ section = "{{filters.section}}"
 </div>
 
 
-  <div id="loader" class="hide" {% if inactive %}inactive="True"{%endif%}>
+  <div id="loader" {% if inactive %}inactive="True"{%endif%}>
     <img src="{% static 'ubyssey/images/throbber.svg' %}" class="spin" alt="Loading icon">
   </div>

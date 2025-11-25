@@ -1,0 +1,11 @@
+{% load wagtailcore_tags %}
+
+<div class="o-curated_group--cards-flex">
+    {% for article in self.articles %}
+    {% if article.live %}
+        {% include "home/objects/article_list_items/"|add:self.template|add:".html" %}
+    {% else %}
+        {% include "home/objects/article_list_items/"|add:self.template|add:".html" with article=article.get_latest_revision_as_object%}
+    {% endif %}
+    {% endfor %}
+</div>
