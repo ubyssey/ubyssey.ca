@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom'
 //import Search from './components/Search.jsx';
 //import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import NavSearch from './components/NavSearch.jsx';
-import { CookieDisclaimer } from './components/Cookies'
+import { CookieDisclaimer } from './components/Cookies';
+import JoinPopup from './components/JoinPopup.jsx';
 //import { Galleries } from './components/Gallery'
 
 
@@ -29,6 +30,11 @@ $(function () {
     ReactDOM.render(
         <NavSearch />,
         document.getElementById('nav-search')
+    );
+
+    ReactDOM.render(
+        <JoinPopup />,
+        document.getElementById('join-popup')
     );
     
 });

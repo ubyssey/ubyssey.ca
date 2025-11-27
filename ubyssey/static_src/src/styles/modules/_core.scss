@@ -239,25 +239,46 @@ a {
 html {
   transition: background 0.5s ease, color 0.5s ease;
   --ubyssey_blue-classic: #{variables.$color-ubyssey-blue-classic};
+
+  --ubyssey-black-1: black;
+  --ubyssey-black-2: #1b1b1b;
+  --ubyssey-black-3: #222;
+  --ubyssey-black-4: #333;
+
+  --ubyssey-grey-1: #444;
+  --ubyssey-grey-2: #666;
+  --ubyssey-grey-3: #888;
+  --ubyssey-grey-4: #999;
+
+  --ubyssey-white-1: white;
+  --ubyssey-white-2: #e4e4e4;
+  --ubyssey-white-3: #eee;
+  --ubyssey-white-4: #d9d9d9;
 }
 
 html[color-css-theme="light"] {
   --background-nav: rgba(255, 255, 255, 0.99);
-  --background: white;
-  --text_color: #1b1b1b;
-  --text_color_supporting: #666;
-  --text_color_supporting-lighter: #999;
-  --text_color_contrast: #333;
-  --header_color: #222;
-  --header_color_supporting: #333;
+  --background: var(--ubyssey-white-1);
+
+  --text_color: var(--ubyssey-black-2);
+  --text_color_supporting: var(--ubyssey-grey-2);;
+  --text_color_supporting-lighter: var(--ubyssey-black-4);
+  --text_color_contrast: var(--ubyssey-black-4);
+  
+  --header_color: var(--ubyssey-black-3);
+  --header_color_supporting: var(--ubyssey-black-4);
+  
   --article-publish: #1871C4;
+  
   --light-border: #{variables.$color-ubyssey-blue};
-  --light-border-grey: #eee;
-  --light-grey: #d9d9d9;
+  --light-border-grey: var(--ubyssey-white-3);
+  --light-grey: var(--ubyssey-white-4);
+  
   --contrast-color: #{variables.$color-ubyssey-blue-dark};
-  --shadow-color: #888;
-  --marked-read: #444;
-  --article-header-border: #e4e4e4;
+  --shadow-color: var(--ubyssey-grey-3);
+  --marked-read: var(--ubyssey-grey-1);
+  
+  --article-header-border: var(--ubyssey-white-2);
 
     // colours that should be removed or renamed
   --nav-mobile-background-barely-transparent: rgba(249, 249, 249, 0.99); 
