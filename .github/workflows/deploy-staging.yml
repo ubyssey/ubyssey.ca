@@ -1,9 +1,6 @@
 name: Deploy to staging
 
 on:
-  push:
-    branches:
-      - new-deployment-strategy
   workflow_run:
     workflows: ["Deploy to production"]
     types:
@@ -11,8 +8,8 @@ on:
 
 jobs:
   deploy:
-    # Run on push to new-deployment-strategy branch OR if production build was successful
-    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    # Run if production build was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     permissions:
       contents: 'read'
