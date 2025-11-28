@@ -28,6 +28,12 @@ services:
       - ubyssey-internal
     ports:
       - "11211:11211"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "timeout 5 bash -c '</dev/tcp/localhost/11211'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   django:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
@@ -78,6 +84,14 @@ services:
     logging:
       driver: gcplogs
 
+    # Health check to verify Django app is responding
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(curl -s http://localhost:8000/health/ | grep -c 'working') -eq 3 ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
     deploy:
       # Deploy 4 replicas of the Django app. This makes us more resilient to errors
       # that might cause a single container to crash momentarily.
@@ -99,8 +113,14 @@ services:
         parallelism: 2
         delay: 10s
         order: stop-first
+        monitor: 30s
+        max_failure_ratio: 0
+        failure_action: rollback
 
-      # TODO add a health check using curl http://localhost:8000/health/ endpoint
+      # Rollback if update fails
+      rollback_config:
+        parallelism: 2
+        delay: 10s
 
     depends_on:
       - mysql
@@ -113,6 +133,8 @@ services:
       - ./nginx/:/etc/nginx/:ro
       - ./certbot/www/:/var/www/certbot/:ro
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:ro
+      - certbot-signals:/tmp/certbot-signals
+      - ./scripts/nginx-reload-watcher.sh:/nginx-reload-watcher.sh:ro
     networks:
       - proxy-shared
       - ubyssey-internal
@@ -121,6 +143,40 @@ services:
       - 443:443
     logging:
       driver: gcplogs
+    # Run nginx and the reload watcher in parallel
+    command: >
+      sh -c "sh /nginx-reload-watcher.sh & nginx -g 'daemon off;'"
+
+    # Health check to ensure nginx is running and config is valid
+    # This prevents bad configs from being deployed silently
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    deploy:
+      # Restart containers on failure up to a maximum of 5 times
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        window: 120s
+
+      # Rolling update strategy - only update if health check passes
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: stop-first
+        monitor: 30s
+        max_failure_ratio: 0
+        failure_action: rollback
+
+      # Rollback if update fails
+      rollback_config:
+        parallelism: 1
+        delay: 5s
+
     depends_on:
       - django
 
@@ -130,10 +186,23 @@ services:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:rw
       - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
+      - certbot-signals:/tmp/certbot-signals
+      - ./scripts/certbot-renewal-with-nginx-reload.sh:/certbot-renewal-with-nginx-reload.sh:ro
     networks:
       - ubyssey-internal
-    # Attempt to renew TLS certificate every 12 hours
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    # Run the certbot service script that signals nginx to reload via shared volume
+    entrypoint: ["/bin/sh", "/certbot-renewal-with-nginx-reload.sh"]
+
+    deploy:
+      # Restart certbot on failure - background service should always run
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+
+volumes:
+  certbot-signals:
+    driver: local
 
 secrets:
   DJANGO_SECRET_KEY:
