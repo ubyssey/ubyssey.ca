@@ -157,6 +157,7 @@ class VisualAssignment(ClusterableModel):
     visual_type = models.CharField(max_length=50, choices=[
         ("illustration", "Illustration"),
         ("photo", "Photo"),
+        ("video", "Video"),
         ("web-design", "Web design"),
     ])
 

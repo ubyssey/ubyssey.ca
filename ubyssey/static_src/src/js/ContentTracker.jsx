@@ -445,7 +445,7 @@ export default function ContentTracker() {
     const [viewedAssignments, setViewedAssignments] = useState("story");
 
     const [sections, setSections] = useState(["news", "culture", "features", "opinion", "humour", "research", "sports"]);
-    const visualTypes = ["illustration", "photo", "web-design"];
+    const visualTypes = ["illustration", "photo", "web-design", "video"];
     const todayNumber = dateNumber(new Date());
 
     function getArticles(timeCursor, timeScale) {

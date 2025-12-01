@@ -60,7 +60,7 @@ function loadArticles()
 { 
   var loader = document.getElementById("loader");
   if(loader.hasAttribute("inactive") == false) {
-    if(document.documentElement.scrollTop > loader.offsetTop - document.body.offsetHeight){
+    if(document.documentElement.scrollTop > loader.offsetTop - window.screen.height){
       getArticles();
       loader.setAttribute("start", String(parseInt(loader.getAttribute("start"))+ parseInt(loader.getAttribute("number"))));
     }
