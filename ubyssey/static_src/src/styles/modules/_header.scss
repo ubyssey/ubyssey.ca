@@ -399,7 +399,7 @@ header.topbar {
           display: inline-block;
         }
         &.current, &:hover {
-          border-bottom: 3px solid rgba(52, 144, 214, 1);
+          // border-bottom: 3px solid rgba(52, 144, 214, 1);
           color: variables.$color-accent-blue;
         }
 
