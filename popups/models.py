@@ -10,7 +10,7 @@ from wagtail.contrib.settings.models import (
 )
 
 @register_setting
-class JoinPopupSettings(BaseGenericSetting):
+class PopupSettings(BaseGenericSetting):
     preview_text = RichTextField()
     
     popup_title = models.CharField(max_length=255)

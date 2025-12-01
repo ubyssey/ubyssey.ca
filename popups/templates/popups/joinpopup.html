@@ -1,15 +1,15 @@
 {% load wagtailsettings_tags %}
 {% get_settings as settings %}
 
-{% if settings.popups.JoinPopupSettings.active %}
+{% if settings.popups.PopupSettings.active %}
 <div id="join-popup" class="c-join-popup hidden" 
-    showonfirstview="{{settings.popups.JoinPopupSettings.show_on_first_view}}"
-    daysbetweenappearing="{{settings.popups.JoinPopupSettings.days_between_appearing}}"
-    secondsdelaybeforeappearing="{{settings.popups.JoinPopupSettings.seconds_delay_before_appearing}}"
+    showonfirstview="{{settings.popups.PopupSettings.show_on_first_view}}"
+    daysbetweenappearing="{{settings.popups.PopupSettings.days_between_appearing}}"
+    secondsdelaybeforeappearing="{{settings.popups.PopupSettings.seconds_delay_before_appearing}}"
     >
     <div class="c-join-popup--lip">
         <div class="c-join-popup--lip-container">
-            {{ settings.popups.JoinPopupSettings.preview_text|safe }}
+            {{ settings.popups.PopupSettings.preview_text|safe }}
             <button id="join-popup--toggle" class="c-join-popup--toggle">
                 <div class="c-join-popup--toggle-icon-container minimal-only">
                     <ion-icon name="chevron-up"></ion-icon>
@@ -22,8 +22,8 @@
     </div>
     <div class="c-join-popup--inner">
         <div class="c-join-popup--inner-text">
-            <h1><a href="https://join.ubyssey.ca/">{{ settings.popups.JoinPopupSettings.popup_title }}</a></h1>
-            {{ settings.popups.JoinPopupSettings.popup_text|safe }}
+            <h1><a href="https://join.ubyssey.ca/">{{ settings.popups.PopupSettings.popup_title }}</a></h1>
+            {{ settings.popups.PopupSettings.popup_text|safe }}
         </div>
     </div>
 </div>
