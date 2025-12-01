@@ -44,7 +44,7 @@
         {% include 'navigation/headers/topbar.html' with section=self.current_section show_progress_bar=True %}
     {% endif %}
 
-    {% include 'navigation/headers/mobile.html' %}
+    {% include 'navigation/headers/mobile.html' with show_progress_bar=True %}
     {% block banner_ad %}
         <div class="o-article-embed o-article-embed--advertisement o-advertisement--home-header-bar">
         {% cache 6000 article_header_ads %}

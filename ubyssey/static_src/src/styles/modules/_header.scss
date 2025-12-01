@@ -314,6 +314,18 @@ header.topbar, header.mobile {
   z-index: variables.$z-scale-2;
   transform: translate3d(0,0,0);
   top: 0;
+  
+  .progress-bar {
+    position: absolute;
+    display: block;
+    bottom: -4px;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: rgb(0, 113, 201);
+    transition: width 0.1s linear;
+    z-index: 1100;
+  }
 }
 
 header.topbar {
@@ -443,17 +455,6 @@ header.topbar {
     line-height: 100%;
     overflow: hidden;
     vertical-align: middle;
-  }
-
-  .progress-bar {
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    height: 4px;
-    width: 0%;
-    background: rgb(0, 113, 201);
-    transition: width 0.1s linear;
-    z-index: 1100;
   }
 }
 

@@ -28,7 +28,8 @@
         <div class="progress-bar"></div>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const progressBar = document.querySelector('.progress-bar');
+                const header = document.querySelector('header.topbar')
+                const progressBar = header.querySelector('.progress-bar');
                 const update = () => {
                     const scrollTop = window.scrollY;
                     const docHeight = document.body.scrollHeight - window.innerHeight;
