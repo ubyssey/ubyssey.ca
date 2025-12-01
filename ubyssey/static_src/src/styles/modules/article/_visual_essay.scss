@@ -76,17 +76,9 @@ div.article-content {
 
     .o-visual-essay__right-container {
         margin: auto;
-        display: contents;
         width: 40%;
         max-width: 600px;
         transition: margin 1s ease;
-
-        &::after {
-            content: "";
-            padding-top: 100vh;
-            display: block;
-            width: 0;
-        }
 
         @media (variables.$bp-smaller-than-phablet) {
             width: 100%;
@@ -181,6 +173,14 @@ div.article-content {
             
             position: relative;
             z-index: 2000;
+
+            display: contents;
+            &::after {
+                content: "";
+                padding-top: 100vh;
+                display: block;
+                width: 0;
+            }
         }
 
         &.vs-over-image--left {
@@ -200,6 +200,7 @@ div.article-content {
             @media (variables.$bp-larger-than-phablet) {
                 margin-inline: auto;
                 width: fit-content;
+                max-width: 40%;
             }
 
             &.in-view {
