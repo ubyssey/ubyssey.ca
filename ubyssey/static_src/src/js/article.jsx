@@ -31,11 +31,6 @@ $(function () {
         <NavSearch />,
         document.getElementById('nav-search')
     );
-
-    ReactDOM.render(
-        <JoinPopup />,
-        document.getElementById('join-popup')
-    );
     
 });
 /*

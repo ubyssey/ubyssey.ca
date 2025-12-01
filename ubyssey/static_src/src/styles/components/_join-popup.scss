@@ -9,7 +9,7 @@
 
     background: linear-gradient(rgba(255, 255, 255, 0.75), white), url('https://storage.googleapis.com/ubyssey/media/renditions/ubyssey-newsprint-collage-2.original.png');
     background-size: contain;
-    background-size: 300px auto;
+    background-size: 400px auto;
 
     transition-duration: 1s;
     .c-join-popup--lip {
@@ -31,7 +31,7 @@
 
             box-sizing: border-box;
             
-            .c-join-popup--button {
+            .c-join-popup--toggle {
                 background: none;
                 border: none;
                 color: var(--ubyssey-grey-3);
@@ -83,6 +83,10 @@
         }
     }
 
+    .c-join-popup--toggle-icon-container {
+        display: none;
+    }
+
     &.minimal {
         .c-join-popup--lip {
             height: auto;
@@ -92,13 +96,17 @@
         .c-join-popup--lip .c-join-popup--lip-container p {
             opacity: 1;
         }
+        .c-join-popup--toggle-icon-container.minimal-only {
+            display: contents;
+        }
     }
     &.active {
         
         filter: drop-shadow(0 0 1em black);
 
 
-        .c-join-popup--button {
+        .c-join-popup--lip .c-join-popup--lip-container .c-join-popup--toggle {
+            font-size: 1.5em;
             color: var(--ubyssey-black-1);
         }
 
@@ -107,6 +115,10 @@
             .c-join-popup--inner-text {
                 opacity: 1;
             }
+        }
+
+        .c-join-popup--toggle-icon-container.active-only {
+            display: contents;
         }
     }
 }

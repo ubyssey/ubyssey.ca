@@ -137,7 +137,7 @@
 	<div id="page-wrapper" class="{% block page_wrapper %}{% endblock %}">
 		<div id="cookie-disclaimer"></div>
 		<div id="adblock-splash"></div>
-		<div id="join-popup"></div>
+		{% include 'popups/joinpopup.html' %}
 		
 		{% block header %}
 		{% endblock %}
