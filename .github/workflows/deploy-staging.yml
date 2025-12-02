@@ -1,6 +1,9 @@
 name: Deploy to staging
 
 on:
+  push:
+    branches:
+      - add-load-testing
   workflow_run:
     workflows: ["Deploy to production"]
     types:
@@ -9,7 +12,7 @@ on:
 jobs:
   deploy:
     # Run if production build was successful
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.push && github.event.workflow_run.conclusion == 'success' }}
 
     permissions:
       contents: 'read'
@@ -92,6 +95,14 @@ jobs:
           ssh staging "mkdir -p /opt/ubyssey.ca/scripts"
           scp scripts/certbot-renewal-with-nginx-reload.sh staging:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
           scp scripts/nginx-reload-watcher.sh staging:/opt/ubyssey.ca/scripts/nginx-reload-watcher.sh
+
+      - name: Upload Locust load testing files
+        run: |
+          ssh staging "mkdir -p /opt/ubyssey.ca/locust"
+          scp locustfile.py staging:/opt/ubyssey.ca/locust/locustfile.py
+          scp docker-compose.locust.yml staging:/opt/ubyssey.ca/locust/docker-compose.locust.yml
+          scp locust-requirements.txt staging:/opt/ubyssey.ca/locust/locust-requirements.txt
+          scp LOCUST_LOAD_TESTING.md staging:/opt/ubyssey.ca/locust/README.md
 
       - name: Sync secrets from Google Cloud Platform
         run: cat scripts/sync-secrets.sh | ssh staging

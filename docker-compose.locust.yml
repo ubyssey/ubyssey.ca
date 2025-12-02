@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  locust:
+    image: locustio/locust:2.32.4
+    ports:
+      - "8089:8089"  # Locust web UI
+    volumes:
+      - ./locustfile.py:/home/locust/locustfile.py
+    command: -f /home/locust/locustfile.py --host=https://staging.ubyssey.ca
