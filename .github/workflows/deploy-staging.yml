@@ -11,8 +11,8 @@ on:
 
 jobs:
   deploy:
-    # Run if production build was successful
-    if: ${{ github.event.push && github.event.workflow_run.conclusion == 'success' }}
+    # Run if pushing to add-load-testing branch OR if production build was successful
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
 
     permissions:
       contents: 'read'
