@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 //import Search from './components/Search.jsx';
 //import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import NavSearch from './components/NavSearch.jsx';
-import { CookieDisclaimer } from './components/Cookies'
+import { CookieDisclaimer } from './components/Cookies';
 //import { Galleries } from './components/Gallery'
 
 

@@ -1,0 +1,89 @@
+{% load wagtailsettings_tags %}
+{% get_settings as settings %}
+
+{% if settings.popups.PopupSettings.active %}
+<div id="join-popup" class="c-join-popup hidden" 
+    showonfirstview="{{settings.popups.PopupSettings.show_on_first_view}}"
+    daysbetweenappearing="{{settings.popups.PopupSettings.days_between_appearing}}"
+    secondsdelaybeforeappearing="{{settings.popups.PopupSettings.seconds_delay_before_appearing}}"
+    >
+    <div class="c-join-popup--lip">
+        <div class="c-join-popup--lip-container">
+            {{ settings.popups.PopupSettings.preview_text|safe }}
+            <button id="join-popup--toggle" class="c-join-popup--toggle">
+                <div class="c-join-popup--toggle-icon-container minimal-only">
+                    <ion-icon name="chevron-up"></ion-icon>
+                </div>
+                <div class="c-join-popup--toggle-icon-container active-only">
+                    <ion-icon name="close-outline"></ion-icon>
+                </div>
+            </button>
+        </div>
+    </div>
+    <div class="c-join-popup--inner">
+        <div class="c-join-popup--inner-text">
+            <h1><a href="https://join.ubyssey.ca/">{{ settings.popups.PopupSettings.popup_title }}</a></h1>
+            {{ settings.popups.PopupSettings.popup_text|safe }}
+        </div>
+    </div>
+</div>
+
+<script>
+    const joinPopup = document.getElementById("join-popup");
+
+    const showOnFirstView = joinPopup.getAttribute("showonfirstview") == "True";
+    const daysBetweenAppearing = parseInt(joinPopup.getAttribute("daysbetweenappearing"));
+    const lastJoinPopupOpened = localStorage.getItem("lastJoinPopupOpened");
+    const SecondsDelayBeforeAppearing = parseInt(joinPopup.getAttribute("secondsdelaybeforeappearing"));
+
+    let setActive = false;
+
+
+    // We need to check this to make sure the join popup does not appear at the same time as the cookie popup
+    const cookie_accepted = document.cookie.includes("ubyssey_cookie_disclaimer=accepted");
+
+    if (cookie_accepted) {
+        if (lastJoinPopupOpened == null) {
+            if (showOnFirstView) {
+                // Show on first visit 
+                setActive = true;
+            } else {
+                // Set 'lastJoinPopupOpened' so that after daysBetweenAppearing days, we can show popup for the first time
+                localStorage.setItem("lastJoinPopupOpened", String(new Date()));
+            }
+        } else if (new Date().getTime() - new Date(lastJoinPopupOpened).getTime() > 60*60*24*daysBetweenAppearing) {
+            // Show 
+            setActive = true;
+        }
+
+        if (setActive) {
+            console.log("set active");
+            setTimeout(() => {
+                joinPopup.classList.remove("hidden");
+                joinPopup.classList.add("minimal");
+            }, 1000 * SecondsDelayBeforeAppearing);
+        }
+    }
+
+    function openJoinPopup() {
+        localStorage.setItem("lastJoinPopupOpened", String(new Date()));
+        joinPopup.classList.remove("minimal");
+        joinPopup.classList.add("active");       
+    }
+
+    joinPopup.addEventListener("click", () => {
+        if (joinPopup.classList.contains("minimal")) {
+            openJoinPopup();
+        }
+    });
+
+    document.getElementById("join-popup--toggle").addEventListener("click", () => {
+        if (joinPopup.classList.contains("minimal")) {
+            openJoinPopup();          
+        } else {
+            joinPopup.classList.remove("active");
+            joinPopup.classList.add("hidden");
+        }
+    })
+</script>
+{% endif %}
