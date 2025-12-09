@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom'
 //import { AdblockSplash, CookieDisclaimer } from './components/Cookies'
 import NavSearch from './components/NavSearch.jsx';
 import { CookieDisclaimer } from './components/Cookies';
-import JoinPopup from './components/JoinPopup.jsx';
 //import { Galleries } from './components/Gallery'
 
 
