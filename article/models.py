@@ -1891,3 +1891,123 @@ class StandardArticlePageWithRightColumn(StandardArticlePage):
     class Meta:
         verbose_name = "Standard Article Page with Right Column (for About Page, Contact, etc.)"
         verbose_name_plural = "Articles"
+
+class MultipartArticlePage(ArticlePage):
+    template = "article/multipart_article_templates/multipart_article_template__base.html"
+
+    content = StreamField(
+        [
+            ('content_container', blocks_inner_article.MultipartArticleContentContainer()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+
+    content_panels = Page.content_panels + [
+        FieldRowPanel(
+            [
+                FieldPanel("explicit_published_at"),
+                FieldPanel("show_last_modified"),
+            ],
+            heading="Publication Date",
+        ),
+        MultiFieldPanel(
+            [
+                HelpPanel(
+                    content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
+                ),
+                FieldPanel("content"),
+            ],
+            heading="Article Content",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
+                InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
+            ],
+            heading="Author(s)",
+            classname="collapsible",
+        ), # Author(s)
+        MultiFieldPanel(
+            [
+                FieldPanel("category_page"),
+                HelpPanel(
+                    content='''
+                        <h1>About Topics</h1>
+                        <p>Topics entered here will be listed in the topic page with the format <a href='https://ubyssey.ca/topic/top-stories/' target='_blank'>https://ubyssey.ca/topic/top-stories/</a>.</p>
+                        <p>Do NOT think of this like tagging an instagram post. It is NOT useless metadata or for SEO. <b><u>We tag articles so that ongoing subjects and stories are easy for readers to find and follow within our website</u></b>. These readers include everyone from students studying at UBC right now, to future Ubyssey editors, and journalists covering UBC at larger publications like the CBC and the Globe and Mail. <i>(More needs to be done to make use of topics and link to topic pages on the website. I'm working on it! - Sam Low)</i></p>
+                        <p>Make articles from our archive easier to find and they will be read more often. Tagging newspapers has a long history. The New York Times became known as the 'Paper of Record' because of its <a href='https://en.wikipedia.org/wiki/New_York_Times_Index' target='_blank'>New York Times Index</a> which rigoursly tagged every article of every paper by topic. This act unlocked the value of their archive and secured New York Times reporting center stage in the canon of history.</p>
+                        <h2>Tips for topics</h2>
+                        <ol>
+                            <li>1. Consistency is very important. Use the full name with correct capitalization every time.</li>
+                            <li>2. Tag the full name of every subject of the article. Subjects can include individuals, organizations, buildings, exhibits, concepts, etc.</li>
+                            <li>3. Add tags at all levels of specificity. For example 'AMS', 'AMS Candidate Profile'  'AMS elections', 'AMS elections 2025', 'AMS Candidate Profile 2025'.</li>
+                            <li>4. Decide on a full name for ongoing stories such as lawsuits.</li>
+                        </ol>
+
+                    '''
+                ),
+                TagsFieldPanel("topics"),
+                FieldPanel(
+                    "primary_tag_slug",
+                    widget=PrimaryTagSelect(),
+                ),
+
+                SuggestedBarFieldPanel(
+                    "filter_by_tags",
+                    widget=Select(choices=[
+                        (False, "Section"),
+                        (True, "Primary topic")
+                    ])
+                ),
+                MultiFieldPanel(
+                    [
+                        HelpPanel(content="<p>THIS OVERWRITES SUGGESTED BAR. Usually creating a topic or category is better because there will be a page dedicated to that topic or category and this article's suggested bar will update when new articles in that topic or category are published. But if you have specific related articles you want to recommend rather than a topic or subsection or column, then use this.</p>"),
+                        InlinePanel("connected_articles"),
+                    ],
+                    heading="Connected or Related Articles (Non-Series)",
+                    classname="collapsible collapsed",
+                ),
+            ],
+            heading="Categories, Topics, Suggested bar",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("lede"),
+                HelpPanel(content='''
+                    <h1>About storystream views</h1>
+                    <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>
+                    <p>Storystream views allow us to signal effort and differentiate our articles. They also allow us to move more of the value (journalism) from articles into the homepage - making the homepage valueable in and of itself (not just a set of links to click).</p>
+                    <p>Storystream views are used on the homepage and on topic pages. They display differently between these pages. Storystream views are titled according to how they are displayed in the topic pages and mobile because there is more variation between storystream views when presented on the topic pages than on the homepage.</p>
+                    <h2>Guidelines for choosing storystream</h2>
+                    <ol>
+                        <li>1. <b>For profiles:</b> select 'Image' and the 'Profile' template. Use a cutout image of the individual. Make sure empty space is cropped out. If you don't know how to cutout an image you can ask the photo editor or web developers!</li>  
+                        <li>2. <b>Quotes</b> Can be used for opinions, personal essays, interviews</li> 
+                        <li>3. <b>Featured (attachment above):</b> Use when the attachment (usually the featured media image) was created by us specifically for this article</li>
+                        <li>4. <b>Indent (lede + attachment below):</b> Use when there is an attachment in the article that is used as supporting information (a data visualization, a screenshot, an unedited video, a pdf, microblog post)</li>
+                        <li>5. <b>Large headline</b> Use when the article can mostly be reduced to the headline, there are no relevant attachments and the featured media image is not extremely related to the article (courtesy photo, file photo).</li>
+                        <li>6. <b>Indent (lede + richtext):</b> Use for meeting recaps (AMS, Senate, BoG) or other times when there is no relevant attachment and the headline cannot be sufficiently descriptive. You can use bullet points to outline what was discussed in the meeting.</li>
+                    </ol>
+                    '''),
+                FieldPanel("storystream_view"),
+            ],
+            heading="Front Page Stuff",
+            classname="collapsible",
+        ),
+    ] # content_panels
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(ArticlePage.promote_panels, heading='Promote'),
+            ObjectList(ArticlePage.settings_panels, heading='Settings'),
+            ObjectList(ArticlePage.customization_panels, heading='Special article stuff'),
+        ],
+    )
+
+    class Meta:
+        verbose_name = "Multi-part Article"
+        verbose_name_plural = "Multi-part Articles"

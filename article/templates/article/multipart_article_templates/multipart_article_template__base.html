@@ -1,0 +1,30 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% load cache %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load ubyssey_ad_filters %}
+{% load ubyssey_ad_tags %}
+{% load menu_tags %}
+
+
+{% block content %}
+    <main>
+        <div>
+            <nav>
+                <ul>
+                    {% for part in self.content %}
+                        {% include_block part with table_of_contents="True" %}
+                    {% endfor %}
+                </ul>
+            </nav>
+
+            <div>
+                {% for part in self.content %}
+                    {% include_block part %}
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock %}

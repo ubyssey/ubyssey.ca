@@ -1,0 +1,11 @@
+{% load wagtailcore_tags%}
+
+{% if table_of_contents %}
+    {% include_block self.table_of_contents_item.0 %}
+{% else %}
+    <article id="{{self.table_of_contents_item.0.title|slugify}}">
+        {% for block in self.content %}
+        {% include_block block %}
+        {% endfor %}
+    </article>
+{% endif %}

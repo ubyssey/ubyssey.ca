@@ -494,3 +494,39 @@ class CardContainer(blocks.StructBlock):
 
     class Meta:
         template = 'article/stream_blocks/card-container.html'
+
+# Multi-part article blocks
+
+# Multi-part article tables of contents
+class MultipartArticleTableofContentsItemDefault(blocks.StructBlock):
+    title = blocks.CharBlock(required=True)
+
+    class Meta:
+        template = "article/objects/multipart_article/table_of_contents__default.html"
+
+class MultipartArticleTableOfContentsItems(blocks.StreamBlock):
+    default = MultipartArticleTableofContentsItemDefault()
+
+# Multi-part article content blocks 
+class MultipartArticleContentStandardBody(blocks.StructBlock):
+    content = blocks.StreamBlock(
+        [
+            ('richtext', blocks.RichTextBlock()),
+            ('image', image_blocks.ImageBlock())
+        ]
+    )
+
+    class Meta:
+        template = "article/objects/multipart_article/content__standard_body.html"
+
+class MultipartArticleContents(blocks.StreamBlock):
+    standard_body = MultipartArticleContentStandardBody()
+
+# Multi-part article container
+
+class MultipartArticleContentContainer(blocks.StructBlock):
+    table_of_contents_item = MultipartArticleTableOfContentsItems(max_num=1)
+    content = MultipartArticleContents()
+
+    class Meta:
+        template = "article/objects/multipart_article/content_container.html"
