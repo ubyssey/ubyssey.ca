@@ -447,6 +447,83 @@ class ImageGrid(blocks.StructBlock):
     class Meta:
         template = "article/stream_blocks/image-grid.html"
 
+class ImageWallTwoTracks(blocks.StructBlock):
+    left = blocks.ListBlock(
+        image_blocks.ReducedImageBlock()
+    )
+    right = blocks.ListBlock(
+        image_blocks.ReducedImageBlock()
+    )
+    sizing = blocks.ChoiceBlock(
+        choices = [
+            ('sizing-large-left', "Large left"),
+            ('sizing-large-right', "Large right"),
+        ],
+        required=True,
+    )
+    height = blocks.ChoiceBlock(
+        choices = [
+            ('height-left', "Set left to full height"),
+            ('height-right', "Set right to full height"),
+        ],
+        required=True,
+    )
+
+    class Meta:
+        template = "article/stream_blocks/image_wall/two-tracks.html"
+
+class ImageWallRow(blocks.StructBlock):
+    images = blocks.ListBlock(
+        image_blocks.ReducedImageBlock()
+    )
+    height = blocks.ChoiceBlock(
+        choices=[
+            ('auto', "auto"),
+            ('300px', "300"),
+            ('400px', "400"),
+            ('500px', "500"),
+            ('600px', "600"),
+            ('800px', "800"),
+        ],
+        required=True,
+    )
+
+    class Meta:
+        template = "article/stream_blocks/image_wall/row.html"
+
+class ImageWall(blocks.StructBlock):
+
+    wall_blocks = blocks.StreamBlock(
+        [
+            ('two_tracks', ImageWallTwoTracks()),
+            ('row', ImageWallRow()),
+        ]
+    )
+
+    width = blocks.ChoiceBlock(
+        choices=[
+            ('auto', "auto"),
+            ('600px', "600"),
+            ('800px', "800"),
+            ('1000px', "1000"),
+            ('1200px', "1200"),
+            ('1500px', "1500")
+        ],
+        required=True,
+    )
+
+    caption = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+    credit = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+
+    class Meta:
+        template = "article/stream_blocks/image-wall-container.html"
+
 # Card block
 
 class CardBlock(blocks.StructBlock):

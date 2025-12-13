@@ -1357,6 +1357,7 @@ class StandardArticlePage(ArticlePage):
             ('audio', blocks_inner_article.AudioBlock()),
             ('image', image_blocks.ImageBlock()),
             ('image_grid', blocks_inner_article.ImageGrid()),
+            ('image_wall', blocks_inner_article.ImageWall()),
             ('pdf', blocks_inner_article.PdfBlock()),
             ('raw_html', blocks.RawHTMLBlock(
                 label = "Raw HTML Block",

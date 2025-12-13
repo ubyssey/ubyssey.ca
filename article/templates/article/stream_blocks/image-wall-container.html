@@ -1,0 +1,13 @@
+{% load wagtailcore_tags %}
+
+<div class="o-image-wall-attachment attachment" style="--wall-width: {{self.width}};">
+    {% for block in self.wall_blocks %}
+        {% include_block block %}
+    {% endfor%}
+
+    {% if self.caption or self.credit %}
+    <div class="caption">
+        {{ self.caption|safe }} <span class="credit">{% if self.credit %}{{ self.credit|safe }}{% endif %}</span>
+    </div>
+    {% endif %}
+</div>
