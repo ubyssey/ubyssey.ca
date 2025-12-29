@@ -336,3 +336,12 @@ CRONJOBS = [
 
 # Daphne
 ASGI_APPLICATION = "ubyssey.asgi.application"
+# Django channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}

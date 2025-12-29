@@ -33,7 +33,7 @@ class LiveBlogConsumer(WebsocketConsumer):
         )
 
     # Receive message from room group
-    def chat_message(self, event):
+    def liveblog_message(self, event):
         message = event["message"]
 
         # Send message to WebSocket
