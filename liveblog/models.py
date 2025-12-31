@@ -1,23 +1,31 @@
+from asgiref.sync import async_to_sync
+
 from django.db import models
-from django.forms import Media
+from django.forms import Media, HiddenInput
+from django.urls import reverse
+from django.template import loader
 
 from wagtail.fields import StreamField
 from wagtail import blocks
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel
 from wagtail.admin.panels.model_utils import extract_panel_definitions_from_model_class
 from wagtail.admin.panels import ObjectList
 from wagtail.admin.staticfiles import versioned_static
+from wagtail.admin.viewsets.model import ModelViewSet
+from wagtail.snippets.models import register_snippet
 
 from authors.models import AuthorPage
 from article.models import ArticlePage
 
-# Create your models here.
+from channels.layers import get_channel_layer
 
+# Create your models here.
+@register_snippet
 class LiveBlogMessage(models.Model):
     author_alias = models.CharField(max_length=250)
     author = models.ForeignKey(AuthorPage, on_delete=models.PROTECT)
 
-    publish_date = models.DateTimeField(auto_created=True)
+    publish_date = models.DateTimeField(auto_now_add=True)
 
     content = StreamField(
         [
@@ -30,12 +38,36 @@ class LiveBlogMessage(models.Model):
     room_name = models.CharField(max_length=250)
 
     panels = [
-        FieldPanel("author_alias"),
-        FieldPanel("author"),
+        FieldRowPanel(
+            [
+                FieldPanel("author"),
+                FieldPanel("author_alias"),
+            ]
+        ),
         FieldPanel("content"),
-        FieldPanel("room_name", read_only=True),
+        FieldPanel("room_name", widget=HiddenInput),
     ]
 
+    template = "liveblog/objects/liveblog-update.html"
+
+    def save(self, force_insert = None, force_update = None, using = None, update_fields = None):
+        print(self.author_alias)
+        
+        print("saving " + self.room_name)
+        if self.room_name:
+            channel_layer = get_channel_layer()
+            print(self.content)
+
+            html = loader.render_to_string(self.template, {"self": self})
+
+            async_to_sync(channel_layer.group_send)(
+                f"liveblog_{self.room_name}", {"type": "liveblog.message", "message": html}
+            )
+        else:
+            print("what the hecl?")
+
+        return super().save(force_insert, force_update, using, update_fields)
+ 
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/basic_liveblog.html"
 
@@ -56,6 +88,9 @@ class LiveBlogArticlePage(ArticlePage):
             form=form,
             request=request,
         )
+
+        action_url = "/admin/snippets/liveblog/liveblogmessage/add/"
+        context['action_url'] = action_url
 
         #media = context['panel'].media
 

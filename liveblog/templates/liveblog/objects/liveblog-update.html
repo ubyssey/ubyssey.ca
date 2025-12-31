@@ -1,0 +1,14 @@
+{% load wagtailcore_tags%}
+
+<div>
+    <div>
+        {% if self.author_alias %}
+            <a href="{% pageurl self.author %}">{{self.author_alias}}</a>
+        {% else %}
+            <a href="{% pageurl self.author %}">{{self.author.full_name}}</a>
+        {% endif %}
+    </div>
+    {% for block in self.content %}
+        {% include_block block %}
+    {% endfor %}
+</div>

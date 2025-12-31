@@ -20,14 +20,29 @@
 {% endblock %}
 
 {% block main_content %}
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <div id="liveblog"></div>
+
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
     {{ self.id|json_script:"room-name" }}
 
-
-    {{ panel.render_form_content|safe }}
-
+    <form
+        id="w-editor-form"
+        action="{{ action_url }}"
+        method="POST"
+        novalidate
+        {% if form_is_multipart or form.is_multipart %} enctype="multipart/form-data"{% endif %}
+        data-edit-form
+        data-controller="w-unsaved"
+        data-action="w-unsaved#submit beforeunload@window->w-unsaved#confirm change->w-unsaved#check keyup->w-unsaved#check"
+        data-w-unsaved-confirmation-value="true"
+        data-w-unsaved-force-value="{{ has_unsaved_changes|yesno:'true,false' }}"
+        data-w-unsaved-watch-value="edits"
+    >
+        {% csrf_token %}
+        {{ panel.render_form_content|safe }}
+    </form>
+        <button id="publish_update">Publish update</button>
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -41,7 +56,7 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            document.querySelector('#liveblog').innerHTML += (data.message + '\n');
         };
 
         chatSocket.onclose = function(e) {
@@ -63,6 +78,23 @@
             }));
             messageInputDom.value = '';
         };
+
+        function formDataToQuery(form) {
+            const formObject = Object.fromEntries(form);
+            return Object.keys(formObject).map((k) => k + "=" + formObject[k]).join("&");
+        }
+
+        document.getElementById("publish_update").addEventListener("click", async () => {
+            const form = new FormData(document.getElementById("w-editor-form"));
+            const response = await fetch("{{ action_url }}", {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                method: "POST",
+                body: formDataToQuery(form),
+            });
+
+        });
     </script>
 {% endblock %}
 
