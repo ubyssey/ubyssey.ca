@@ -16,7 +16,10 @@
 {% endblock %}
 
 {% block main_content %}
-    {% include "liveblog/components/liveblog.html" %}
+    <div class="c-liveblog-admin">
+        {% include "liveblog/components/liveblog_compose-form.html" %}
+        {% include "liveblog/components/liveblog.html" %}
+    </div>
 {% endblock %}
 
 {% block extra_js %}

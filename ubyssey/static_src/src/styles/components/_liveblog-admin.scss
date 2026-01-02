@@ -1,0 +1,22 @@
+@use "../modules/variables";
+
+.c-liveblog--compose-form {
+    padding-left: 5em;
+    max-width: 500px;
+}
+
+.c-liveblog-admin {
+    display: flex;
+    flex-direction: row-reverse;
+    .c-liveblog {
+        width: 500px;
+    }
+
+    @media(variables.$bp-smaller-than-tablet) {
+        flex-direction: column;
+
+        > * {
+            width: 100%;
+        }
+    }
+}

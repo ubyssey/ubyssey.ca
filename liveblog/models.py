@@ -53,22 +53,17 @@ class LiveBlogUpdate(models.Model):
     template = "liveblog/objects/liveblog-update.html"
 
     def save(self, force_insert = None, force_update = None, using = None, update_fields = None):
-        print(self.author_alias)
-        
-        print("saving " + self.room_name)
+        save = super().save(force_insert, force_update, using, update_fields)
         if self.room_name:
             channel_layer = get_channel_layer()
-            print(self.content)
 
             html = loader.render_to_string(self.template, {"update": self})
 
             async_to_sync(channel_layer.group_send)(
                 f"liveblog_{self.room_name}", {"type": "liveblog.message", "message": html}
             )
-        else:
-            print("what the hecl?")
 
-        return super().save(force_insert, force_update, using, update_fields)
+        return save
  
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
@@ -76,6 +71,7 @@ class LiveBlogArticlePage(ArticlePage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context['updates'] = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("publish_date")
+        context['update_order'] = "asc"
         return context
     
     def get_admin_context(self, request, *args, **kwargs):
@@ -95,6 +91,8 @@ class LiveBlogArticlePage(ArticlePage):
 
         action_url = "/admin/snippets/liveblog/liveblogupdate/add/"
         context['action_url'] = action_url
+        context['update_order'] = "desc"
+        context['updates'] = context['updates'].order_by("-publish_date")
 
         #media = context['panel'].media
         # Is there a way of obtaining the static files we need through the panel? Couldn't figure it out. - Sam Low 2025/12/30

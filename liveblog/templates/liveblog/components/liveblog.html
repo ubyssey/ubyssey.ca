@@ -7,26 +7,20 @@
     </div>
 
     {{ self.id|json_script:"room-name" }}
+    {{ update_order|json_script:"update-order" }}
 
-    <form
-        id="w-editor-form"
-        action="{{ action_url }}"
-        method="POST"
-        novalidate
-        {% if form_is_multipart or form.is_multipart %} enctype="multipart/form-data"{% endif %}
-        data-edit-form
-        data-controller="w-unsaved"
-        data-action="w-unsaved#submit beforeunload@window->w-unsaved#confirm change->w-unsaved#check keyup->w-unsaved#check"
-        data-w-unsaved-confirmation-value="true"
-        data-w-unsaved-force-value="{{ has_unsaved_changes|yesno:'true,false' }}"
-        data-w-unsaved-watch-value="edits"
-    >
-        {% csrf_token %}
-        {{ panel.render_form_content|safe }}
-    </form>
-        <button id="publish_update">Publish update</button>
+
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+        function setUpdateOrder(){
+            if (JSON.parse(document.getElementById('update-order').textContent) == "asc") {
+                return "asc";
+            }
+            return "desc";
+        }
+
+        const updateOrder = setUpdateOrder();
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -38,28 +32,16 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#liveblog').innerHTML += (data.message + '\n');
+
+            if (updateOrder=="asc") {
+                document.querySelector('#liveblog').innerHTML += (data.message + '\n');
+            } else {
+                document.querySelector('#liveblog').innerHTML = (data.message + '\n') + document.querySelector('#liveblog').innerHTML;
+            }
         };
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
-
-        function formDataToQuery(form) {
-            const formObject = Object.fromEntries(form);
-            return Object.keys(formObject).map((k) => k + "=" + formObject[k]).join("&");
-        }
-
-        document.getElementById("publish_update").addEventListener("click", async () => {
-            const form = new FormData(document.getElementById("w-editor-form"));
-            const response = await fetch("{{ action_url }}", {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                method: "POST",
-                body: formDataToQuery(form),
-            });
-
-        });
     </script>
 </div>
