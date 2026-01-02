@@ -121,10 +121,11 @@ jobs:
           SSH_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY_STAGING }}
           SSH_HOST: ${{ secrets.GCP_SSH_HOST_STAGING }}
           
-      - name: Set staging tag
+      - name: Set staging tag with version
         run: |
-          echo "STAGING_TAG=staging" >> $GITHUB_ENV
-          echo "Using staging tag: staging"
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          echo "STAGING_TAG=staging-${SHORT_SHA}" >> $GITHUB_ENV
+          echo "Using staging tag: staging-${SHORT_SHA}"
 
       - name: Set tag in docker-compose.yml
         run: sed -i "s/\${TAG}/${{ env.STAGING_TAG }}/g" docker-compose.yml
