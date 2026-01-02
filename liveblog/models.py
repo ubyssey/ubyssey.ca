@@ -4,6 +4,7 @@ from django.db import models
 from django.forms import Media, HiddenInput
 from django.urls import reverse
 from django.template import loader
+from django.shortcuts import render
 
 from wagtail.fields import StreamField
 from wagtail import blocks
@@ -13,6 +14,7 @@ from wagtail.admin.panels import ObjectList
 from wagtail.admin.staticfiles import versioned_static
 from wagtail.admin.viewsets.model import ModelViewSet
 from wagtail.snippets.models import register_snippet
+from wagtail.contrib.routable_page.models import route, RoutablePageMixin
 
 from authors.models import AuthorPage
 from article.models import ArticlePage
@@ -21,8 +23,8 @@ from channels.layers import get_channel_layer
 
 # Create your models here.
 @register_snippet
-class LiveBlogMessage(models.Model):
-    author_alias = models.CharField(max_length=250)
+class LiveBlogUpdate(models.Model):
+    author_alias = models.CharField(max_length=250, blank=True, null=True)
     author = models.ForeignKey(AuthorPage, on_delete=models.PROTECT)
 
     publish_date = models.DateTimeField(auto_now_add=True)
@@ -58,7 +60,7 @@ class LiveBlogMessage(models.Model):
             channel_layer = get_channel_layer()
             print(self.content)
 
-            html = loader.render_to_string(self.template, {"self": self})
+            html = loader.render_to_string(self.template, {"update": self})
 
             async_to_sync(channel_layer.group_send)(
                 f"liveblog_{self.room_name}", {"type": "liveblog.message", "message": html}
@@ -69,19 +71,21 @@ class LiveBlogMessage(models.Model):
         return super().save(force_insert, force_update, using, update_fields)
  
 class LiveBlogArticlePage(ArticlePage):
-    template = "liveblog/basic_liveblog.html"
+    template = "liveblog/liveblog_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        
-        #form_class = get_form_for_model(LiveBlogMessage)
+        context['updates'] = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("publish_date")
+        return context
+    
+    def get_admin_context(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
 
-        event = LiveBlogMessage(room_name=self.id)
-        #form = form_class(instance=event)
+        event = LiveBlogUpdate(room_name=self.id)
 
-        panels = extract_panel_definitions_from_model_class(LiveBlogMessage)
+        panels = extract_panel_definitions_from_model_class(LiveBlogUpdate)
         print(panels)
-        panel = ObjectList(panels).bind_to_model(LiveBlogMessage)
+        panel = ObjectList(panels).bind_to_model(LiveBlogUpdate)
         form = panel.get_form_class()(instance=event)
         context['panel'] = panel.get_bound_panel(
             instance=event,
@@ -89,11 +93,10 @@ class LiveBlogArticlePage(ArticlePage):
             request=request,
         )
 
-        action_url = "/admin/snippets/liveblog/liveblogmessage/add/"
+        action_url = "/admin/snippets/liveblog/liveblogupdate/add/"
         context['action_url'] = action_url
 
         #media = context['panel'].media
-
         # Is there a way of obtaining the static files we need through the panel? Couldn't figure it out. - Sam Low 2025/12/30
         media = Media(js=[
             versioned_static("wagtailadmin/js/date-time-chooser.js"),
@@ -117,8 +120,9 @@ class LiveBlogArticlePage(ArticlePage):
         ],
         css={
                 "all": [
+                    versioned_static("wagtailadmin/css/core.css"),
                     versioned_static("wagtailadmin/css/panels/streamfield.css"),
-                    versioned_static("wagtailadmin/css/panels/draftail.css")
+                    versioned_static("wagtailadmin/css/panels/draftail.css"),
                 ]
             },
         )
@@ -126,3 +130,7 @@ class LiveBlogArticlePage(ArticlePage):
         context['media'] = media
 
         return context
+
+    @route(r'^admin/$', name='admin_view')
+    def admin_view(self, request):
+        return render(request, "liveblog/liveblog_admin_page.html", self.get_admin_context(request))

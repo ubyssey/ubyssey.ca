@@ -1,0 +1,32 @@
+.o-liveblog-update {
+    margin: 1em auto;
+    padding-block: 0.5em;
+    border-bottom: 1px solid var(--light-border-grey);
+    max-width: 500px !important;
+
+    color: var(--text_color);
+
+    .o-liveblog-update--meta {
+        margin-bottom: 1em;
+        display: flex;
+        gap: 1em;
+        > * {
+            margin-block: auto;
+        }
+    }
+
+    .o-liveblog-update--meta--image {
+        width: 3em;
+        img {
+            border-radius: 100%;
+        }
+    }
+    .o-liveblog-update--meta--time {
+        font-size: 0.75em;
+        color: var(--text_color_supporting-lighter);
+    }
+    .o-liveblog-update--meta--author {
+        font-size: 0.75em;
+        font-variation-settings: "wght" 600;
+    }
+}

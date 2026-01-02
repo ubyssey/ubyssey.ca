@@ -1,0 +1,33 @@
+{% extends "wagtailadmin/generic/base.html" %}
+{% load static %}
+{% load i18n wagtailadmin_tags %}
+{% load wagtailcore_tags %} 
+{% block bodyclass %}editor-view{% endblock %}
+
+{% block main_header %}
+    <div class="nice-padding w-mt-8">
+        <h2 class="w-relative w-h1" id="header-title">
+            {% if header_icon %}
+                {% icon classname="w-absolute w-top-1 -w-left-11 w-max-w-[1em] w-max-h-[1em]" name=header_icon %}
+            {% endif %}
+            {{ self.title|safe }}
+        </h2>
+    </div>
+{% endblock %}
+
+{% block main_content %}
+    {% include "liveblog/components/liveblog.html" %}
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    {{ media.js }}
+    {% if edit_handler_data %}{{ edit_handler_data|json_script:"w-edit-handler-data" }}{% endif %}
+    {% include "wagtailadmin/pages/_editor_js.html" %}     
+{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    {{ media.css }}
+     <link rel="stylesheet" href="{% static 'ubyssey/css/liveblog.css' %}" type="text/css" />
+{% endblock %}

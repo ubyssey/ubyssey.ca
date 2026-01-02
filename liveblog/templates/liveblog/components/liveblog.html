@@ -1,29 +1,11 @@
-{% extends "wagtailadmin/generic/base.html" %}
-{% load static %}
-{% load i18n wagtailadmin_tags %}
 {% load wagtailcore_tags %} 
-{% block bodyclass %}editor-view{% endblock %}
+<div class="c-liveblog">
+    <div id="liveblog">
+        {% for update in updates %}
+            {% include "liveblog/objects/liveblog-update.html" %}
+        {% endfor %}
+    </div>
 
-{% block main_header %}
-    {% if breadcrumbs_items %}
-        <div class="nice-padding w-mt-8">
-            <h2 class="w-relative w-h1" id="header-title">
-                {% if header_icon %}
-                    {% icon classname="w-absolute w-top-1 -w-left-11 w-max-w-[1em] w-max-h-[1em]" name=header_icon %}
-                {% endif %}
-                {{ page_subtitle|default:page_title }}
-            </h2>
-        </div>
-    {% else %}
-        {{ block.super }}
-    {% endif %}
-{% endblock %}
-
-{% block main_content %}
-    <div id="liveblog"></div>
-
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
     {{ self.id|json_script:"room-name" }}
 
     <form
@@ -63,22 +45,6 @@
             console.error('Chat socket closed unexpectedly');
         };
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
-
         function formDataToQuery(form) {
             const formObject = Object.fromEntries(form);
             return Object.keys(formObject).map((k) => k + "=" + formObject[k]).join("&");
@@ -96,16 +62,4 @@
 
         });
     </script>
-{% endblock %}
-
-{% block extra_js %}
-    {{ block.super }}
-    {{ media.js }}
-    {% if edit_handler_data %}{{ edit_handler_data|json_script:"w-edit-handler-data" }}{% endif %}
-    {% include "wagtailadmin/pages/_editor_js.html" %}     
-{% endblock %}
-
-{% block extra_css %}
-    {{ block.super }}
-    {{ media.css }}
-{% endblock %}
+</div>

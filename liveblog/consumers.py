@@ -23,14 +23,17 @@ class LiveBlogConsumer(WebsocketConsumer):
         )
 
     # Receive message from WebSocket
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-
-        # Send message to room group
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name, {"type": "liveblog.message", "message": message}
-        )
+    # We do not implement as sending messages to the room group is handled in liveblogupdate save method
+    # See liveblog/models.py
+    # If we implemented this method, we would need to authenticate users using self.scope 
+    #def receive(self, text_data):
+    #    text_data_json = json.loads(text_data)
+    #    message = text_data_json["message"]
+    #
+    #    # Send message to room group
+    #    async_to_sync(self.channel_layer.group_send)(
+    #        self.room_group_name, {"type": "liveblog.message", "message": message}
+    #    )
 
     # Receive message from room group
     def liveblog_message(self, event):

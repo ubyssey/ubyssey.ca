@@ -1,0 +1,35 @@
+{% extends 'article/article_page.html' %}
+{% load static %}
+{% load wagtailimages_tags %}
+{% load wagtailcore_tags%}
+{% load ubyssey_ad_tags %}
+{% load menu_tags %}
+
+{% block head_scripts %}
+{% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}
+    {% gpt_define_tag orderable.ad_slot is_mobile %}
+{% endfor %}
+{% endblock %}
+
+{% block page_wrapper %}liveblog{% endblock %}
+
+{% block specific_article_class %}
+    c-article--liveblog
+{% endblock %}
+
+{% block banner %}
+    {% include "article/components/headers/no-image.html" with title=self.title article=self %}
+{% endblock %}
+
+{% block article-content %}
+    {% include "liveblog/components/liveblog.html" %}
+{% endblock %}
+
+{% block scripts %} 
+    {{ block.super }}
+ {% endblock %}
+
+{% block stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/liveblog.css' %}" type="text/css" />
+{% endblock %}
