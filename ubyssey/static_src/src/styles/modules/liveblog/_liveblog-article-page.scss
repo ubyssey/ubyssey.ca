@@ -1,0 +1,39 @@
+@use "../fonts";
+@use "../variables";
+
+.c-liveblog--end {
+    margin: 3em auto;
+    width: fit-content;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        
+        width: 550px;
+        max-width: 100%;
+        
+        border-bottom: 1px solid var(--light-grey);
+    }
+
+    .c-liveblog--end--contents {
+        margin-inline: 4em;
+        padding-inline: 1.5em;
+
+        position: relative;
+        width: fit-content;
+
+        background-color: var(--background);
+        transition: background-color 0.5s ease;
+        
+        font-size: 1em;
+        font-variation-settings: "wght" 600;
+    }
+}
+
+.c-article.c-article--liveblog {
+    --article-standard-content-width: 550px;
+}

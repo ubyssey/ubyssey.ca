@@ -7,7 +7,7 @@
             {% image update.author.image fill-350x350-c100 format-webp alt=update.author.full_name %}
         </div>
         <div>
-            <time class="o-liveblog-update--meta--time" datetime="{{update.publish_date}}">{{update.publish_date}}</time>
+            <time class="o-liveblog-update--meta--time liveblog-updating-time" datetime="{{update.publish_date|date:"c"}}">{{update.publish_date}}</time>
             <div class="o-liveblog-update--meta--author">
             {% if update.author_alias %}
                 <a href="{% pageurl update.author %}">{{update.author_alias}}</a>

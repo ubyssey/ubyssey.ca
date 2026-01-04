@@ -22,7 +22,7 @@
 }
 
 div.article-content .author_card {
-    max-width: 585px;
+    max-width: var(--article-standard-content-width);
 }
 
 .author_image {

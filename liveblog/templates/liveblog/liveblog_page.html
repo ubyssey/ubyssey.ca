@@ -18,12 +18,15 @@
 {% endblock %}
 
 {% block banner %}
-    {% include "article/components/headers/no-image.html" with title=self.title article=self %}
+    {% include "liveblog/components/liveblog_basic-header.html" %}
 {% endblock %}
 
 {% block article-content %}
-    {% include "liveblog/components/liveblog.html" %}
+    {% include "liveblog/components/liveblog_feed_react.html" %}
 {% endblock %}
+
+{% block time-stamp %}{% endblock %}
+{% block author-cards %}{% endblock %}
 
 {% block scripts %} 
     {{ block.super }}

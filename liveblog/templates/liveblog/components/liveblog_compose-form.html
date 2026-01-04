@@ -15,7 +15,7 @@
         {% csrf_token %}
         {{ panel.render_form_content|safe }}
     </form>
-    <button id="publish_update">Publish update</button>
+    <button class="button action-save button-longrunning" id="publish_update">Publish update</button>
 </div>
 <script>
     function formDataToQuery(form) {

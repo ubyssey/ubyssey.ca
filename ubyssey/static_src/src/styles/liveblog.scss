@@ -1,2 +1,4 @@
-@use 'objects/liveblog_update';
-@use 'components/liveblog-admin';
+@use 'modules/liveblog/liveblog_update';
+
+@use 'modules/liveblog/liveblog-admin';
+@use 'modules/liveblog/liveblog-article-page';

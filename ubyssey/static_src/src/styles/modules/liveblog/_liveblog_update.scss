@@ -1,3 +1,5 @@
+@use "../variables";
+
 .o-liveblog-update {
     margin: 1em auto;
     padding-block: 0.5em;
@@ -5,6 +7,10 @@
     max-width: 500px !important;
 
     color: var(--text_color);
+
+    &:last-child {
+        border-bottom: 1px solid var(--light-grey);
+    }
 
     .o-liveblog-update--meta {
         margin-bottom: 1em;
@@ -24,9 +30,19 @@
     .o-liveblog-update--meta--time {
         font-size: 0.75em;
         color: var(--text_color_supporting-lighter);
+
+        &.recent {
+            font-variation-settings: "wght" 600;
+        }
     }
     .o-liveblog-update--meta--author {
         font-size: 0.75em;
         font-variation-settings: "wght" 600;
+    }
+}
+
+.c-article .o-liveblog-update {
+    .o-liveblog-update--meta--time.recent {
+        color: variables.$color-ubyssey-blue;
     }
 }

@@ -1,4 +1,5 @@
 from asgiref.sync import async_to_sync
+import json
 
 from django.db import models
 from django.forms import Media, HiddenInput
@@ -50,20 +51,31 @@ class LiveBlogUpdate(models.Model):
         FieldPanel("room_name", widget=HiddenInput),
     ]
 
-    template = "liveblog/objects/liveblog-update.html"
-
     def save(self, force_insert = None, force_update = None, using = None, update_fields = None):
         save = super().save(force_insert, force_update, using, update_fields)
         if self.room_name:
             channel_layer = get_channel_layer()
 
-            html = loader.render_to_string(self.template, {"update": self})
-
             async_to_sync(channel_layer.group_send)(
-                f"liveblog_{self.room_name}", {"type": "liveblog.message", "message": html}
+                f"liveblog_{self.room_name}", {
+                    "type": "liveblog.message",
+                    "message": json.dumps(self.jsonFormat()),
+                }
             )
 
         return save
+    
+    def jsonFormat(self):
+        author_image_template = "liveblog/objects/liveblog_update_author-image.html"
+        content_template = "liveblog/objects/liveblog-update-content.html"
+        return {
+            "id": self.id,
+            "publish_date": self.publish_date.isoformat(),
+            "author_image": loader.render_to_string(author_image_template, {"update": self}),
+            "author_link": self.author.full_url,
+            "author_name": self.author_alias if self.author_alias else self.author.full_name,
+            "html": loader.render_to_string(content_template, {"update": self}),
+        }
  
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
@@ -128,6 +140,16 @@ class LiveBlogArticlePage(ArticlePage):
         context['media'] = media
 
         return context
+    
+    def updated_at(self):
+        time = LiveBlogUpdate.objects.all().order_by("-publish_date").first()
+        if time:
+            return time.publish_date
+        return None
+
+    def updateJsonFormat(self):
+        updates = LiveBlogUpdate.objects.all().order_by("-publish_date")
+        return [update.jsonFormat() for update in updates]
 
     @route(r'^admin/$', name='admin_view')
     def admin_view(self, request):
