@@ -8,6 +8,7 @@
 .c-liveblog-admin {
     display: flex;
     flex-direction: row-reverse;
+    justify-content: start;
     .c-liveblog {
         width: 500px;
     }

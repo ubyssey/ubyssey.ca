@@ -19,6 +19,8 @@ from wagtail.contrib.routable_page.models import route, RoutablePageMixin
 
 from authors.models import AuthorPage
 from article.models import ArticlePage
+from article import blocks_inner_article as blocks_inner_article
+from images.blocks import CaptionedImageBlock
 
 from channels.layers import get_channel_layer
 
@@ -36,6 +38,12 @@ class LiveBlogUpdate(models.Model):
                 label="Rich Text Block",
                 help_text = "Write your liveblog message contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
             )),
+            ('raw_html', blocks.RawHTMLBlock(
+                label = "Raw HTML Block",
+                help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
+            )),
+            ('quote', blocks_inner_article.PullQuoteBlock()),
+            ('image', CaptionedImageBlock()),
         ], use_json_field=True)
     
     room_name = models.CharField(max_length=250)

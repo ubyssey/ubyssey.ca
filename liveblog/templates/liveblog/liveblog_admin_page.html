@@ -5,6 +5,7 @@
 {% block bodyclass %}editor-view{% endblock %}
 
 {% block main_header %}
+    {% include 'wagtailadmin/shared/headers/page_edit_header.html' with title=self.title %}
     <div class="nice-padding w-mt-8">
         <h2 class="w-relative w-h1" id="header-title">
             {% if header_icon %}

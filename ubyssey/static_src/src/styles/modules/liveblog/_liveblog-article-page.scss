@@ -1,6 +1,10 @@
 @use "../fonts";
 @use "../variables";
 
+.c-liveblog, .c-liveblog-container {
+    overflow: clip;
+}
+
 .c-liveblog--end {
     margin: 3em auto;
     width: fit-content;
@@ -34,6 +38,99 @@
     }
 }
 
+.c-liveblog--update-notification {
+    position: sticky;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in;
+    &::before {
+        content: "";
+        margin: 0;
+        position: relative;
+
+        display: block;
+        height: 100px;
+        width: 100%;
+        background: radial-gradient(closest-side, variables.$color-ubyssey-blue, transparent);
+    }
+
+    button.c-liveblog--update-notification--button {
+        padding: 0.25em 1em;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: variables.$color-ubyssey-blue;
+
+        border: none;
+        border-radius: 1em;
+        color: white;
+        font-size: 1em;
+        font-variation-settings: "wght" 600;
+
+        filter: drop-shadow(0 0 0.25em #00000054);
+    }
+
+    &.top {
+        margin-top: -50px;
+        top: 0;
+        margin-bottom: -50px;
+        &::before {
+            top: 0;
+        }
+        button.c-liveblog--update-notification--button {
+            bottom: 0;
+        }
+    }
+
+    &.bottom {
+        margin-top: -100px;
+        bottom: 0;
+        &::before {
+            bottom: -50px;
+        }
+        button.c-liveblog--update-notification--button {
+            top: 0;
+        }
+    }
+
+    &.show {
+        opacity: 1;
+    }
+
+
+}
+
 .c-article.c-article--liveblog {
     --article-standard-content-width: 550px;
+}
+
+@keyframes throb {
+  from {width: 0.5em;}
+  to {width: 0.6em;}
+}
+
+.live-signal {
+    display: none;
+    position: relative;
+    padding-left: 1em;
+    &::before {
+        content: "";
+        display: inline-block;
+        width: 0.5em;
+        aspect-ratio: 1;
+        border-radius: 100%;
+        background-color: variables.$color-ubyssey-blue;
+        position: absolute;
+        top: 55%;
+        left: 0.5em;
+        transform: translate(-50%, -50%);
+        animation: throb alternate-reverse ease-in-out 0.5s infinite;
+    }
+}
+
+.live {
+    .live-signal {
+        display: inline;
+    }
 }

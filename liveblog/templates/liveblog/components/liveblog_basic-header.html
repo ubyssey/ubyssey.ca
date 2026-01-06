@@ -1,8 +1,8 @@
 <div class="fw-banner c-liveblog-header">
     <div class="headline-container headline-container--timely-style">
     
-        <h1 class="o-headline o-headline--article">{{self.title|safe}}</h1>
-        <div class="c-article__published-at">Updated: <time>{{self.updated_at}}</time></div>
+        <h1 class="o-headline o-headline--article"><span class="live-signal">Live: </span>{{self.title|safe}}</h1>
+        <div class="c-article__published-at">Updated: <time class="liveblog_updated_at">{{self.updated_at}}</time></div>
 
         <p class="o-article--header--above_cut_lede">
             {{self.lede|safe}}

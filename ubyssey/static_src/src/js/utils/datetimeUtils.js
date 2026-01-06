@@ -7,10 +7,8 @@ const weekDayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'F
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const shortMonthsNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-
-
 export function convertToMilliseconds(seconds, minutes, hours, days) {
-    return seconds * s + minutes * m + hours * h + days * d;
+    return (seconds * s) + (minutes * m) + (hours * h) + (days * d);
 }
 export function timezoneNameInitials(datetime) {
     return datetime.toLocaleDateString(undefined, {day:'2-digit',timeZoneName: 'long' }).substring(4).match(/\b(\w)/g).join('')
@@ -35,5 +33,5 @@ export function timeDeltaString(datetime, max = null) {
     } else if (delta > m) {
         return String(Math.floor(delta/m)) + "m ago";
     }
-    return String(delta) + "s ago"
+    return String(Math.floor(delta/s)) + "s ago"
 }
