@@ -1,0 +1,13 @@
+{% load wagtailimages_tags %}
+
+{% image self.image.image original as banner_image %}
+
+<div class="o-image-banner" style="--image_url: url('{{banner_image.full_url}}')" aria-label="{{self.image.alt_text}}">
+    <div class="o-image-banner--shadow">
+        <div class="o-image-banner--shadow-content">
+            <span class="o-image-banner--shadow-content--header">{{self.header|safe}}</span>
+            {{self.text|safe}}
+        </div>
+        <div class="o-image-banner--shadow--credit">{{self.image.credit|safe}}</div>
+    </div>
+</div>
