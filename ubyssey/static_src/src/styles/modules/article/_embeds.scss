@@ -673,11 +673,10 @@ div.article-content blockquote.pull-quote {
     }
   }
   .pull-quote-quote {
-    margin: auto;
     height: fit-content;
   }
 
-  p.quote {
+  .quote {
     margin-block: 0;
     font-weight: 600;
     font-variation-settings: "wght" 600;
@@ -685,6 +684,15 @@ div.article-content blockquote.pull-quote {
     line-height: 1.5em;
     font-family: fonts.$font-headline;
     color: inherit;
+    > * {
+      color: inherit;
+      &:first-child {
+        margin-top: 0;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   p.meta {
@@ -742,7 +750,7 @@ div.article-content blockquote.pull-quote {
     .pull-quote-quote {
       padding-inline: 1em;
     }
-    p.quote {
+    .quote {
       font-size: 1.25em;
     }
     p.meta .source {
@@ -783,7 +791,6 @@ div.article-content blockquote.pull-quote {
   &.enlarged_quotation {
     position: relative;
     padding-left: 3em;
-    padding-top: 1em;
     text-align: left;
     &.center {
       width: fit-content;
@@ -792,7 +799,7 @@ div.article-content blockquote.pull-quote {
       content: "“";
       position: absolute;
       left: 0;
-      top:0;
+      top: -0.4em;
       font-size: 4em;
       font-family: fonts.$font-headline;
     }
@@ -813,14 +820,20 @@ div.article-content blockquote.pull-quote {
     @media(variables.$bp-smaller-than-phablet) {
       margin-inline: 1em;
     }
-    p.quote {
+    .quote {
       font-size: 0.9em;
       font-weight: 400;
       font-family: fonts.$font-body;
       line-height: 1.75em;
+      h3 {
+        font-size: 1.5rem;
+      }
+      h4 {
+        font-size: 1.2rem;
+      }
     }
     p.meta {
-        margin-top: 0.5em;
+        margin-top: 1em;
         font-style: normal;
       span.source {
         max-width: none;

@@ -412,31 +412,6 @@
   }
 }
 
-.headline-container.headline-container--timely-style {
-  margin: 2em auto;
-  padding-block: 1em;
-  max-width: var(--article-standard-content-width);
-  border-bottom: 1px solid var(--light-grey);
-
-  color: var(--text_color);
-  h1 {
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-  .c-article__published-at {
-    margin: 1rem 0;
-    color: var(--text_color_supporting);
-  }
-  .o-article--header--above_cut_lede {
-    font-family: fonts.$font-body;
-    font-size: 1.15em;
-  }
-  .author-string {
-    font-variation-settings: "wght" 600;
-    font-size: .75em;
-  }
-}
-
 .c-article__published-at.video-pubdate {
   margin: 1em 0;
   font-size: 0.95em;

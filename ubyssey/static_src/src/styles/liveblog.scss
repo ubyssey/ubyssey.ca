@@ -2,3 +2,5 @@
 
 @use 'modules/liveblog/liveblog-admin';
 @use 'modules/liveblog/liveblog-article-page';
+
+@use 'objects/article_storystream_views';

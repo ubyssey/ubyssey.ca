@@ -32,10 +32,12 @@ export default function LiveBlogFeed() {
     }
 
     const updatesAtLoad = JSON.parse(document.getElementById('updates-at-load').textContent);
+    const isAdminAtLoad = JSON.parse(document.getElementById('is-admin').textContent);
     
     const [updates, setUpdates] = useState(updatesAtLoad);
     const [updateOrder, setUpdateOrder] = useState(getUpdateOrder());
     const [caughtUp, setCaughtUp] = useState(!isLive(updatesAtLoad));
+    const [isAdmin, setIsAdmin] = useState(isAdminAtLoad);
 
     function updateTimes() {
         const times = document.getElementsByclassNameName("liveblog-updating-time");
@@ -88,8 +90,8 @@ export default function LiveBlogFeed() {
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            console.log(data.message);
-            setUpdates([...updates, JSON.parse(data.message)]);
+            const newUpdate = JSON.parse(data.message);
+            setUpdates([...updates.filter((update) => update.id != newUpdate.id), newUpdate]);
             console.log(updates);
 
             setCaughtUp(false);
@@ -146,7 +148,7 @@ export default function LiveBlogFeed() {
         </div>
 
         <div id="liveblog">
-            {updates.sort((a,b) => sortUpdates(a,b,updateOrder)).map((update)=> <LiveblogUpdate update={update} />)}
+            {updates.sort((a,b) => sortUpdates(a,b,updateOrder)).map((update)=> <LiveblogUpdate update={update} isAdmin={isAdmin} />)}
         </div>
 
         <div id="liveblog-end" className="c-liveblog--end">

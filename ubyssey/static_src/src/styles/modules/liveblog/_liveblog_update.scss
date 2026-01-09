@@ -4,7 +4,7 @@
     margin: 1em auto;
     padding-block: 0.5em;
     border-bottom: 1px solid var(--light-border-grey);
-    max-width: 500px !important;
+    max-width: calc(var(--article-standard-content-width) - 2em) !important;
 
     color: var(--text_color);
 
@@ -22,27 +22,74 @@
     }
 
     .o-liveblog-update--meta--image {
-        width: 3em;
+        width: 2.5em;
         img {
             border-radius: 100%;
         }
     }
     .o-liveblog-update--meta--time {
         font-size: 0.75em;
-        color: var(--text_color_supporting-lighter);
-
-        &.recent {
-            font-variation-settings: "wght" 600;
-        }
+        color: var(--text_color_supporting);
+        font-variation-settings: "wght" 600;
     }
     .o-liveblog-update--meta--author {
         font-size: 0.75em;
+        color: var(--text_color);
+    }
+
+    .o-liveblog-update--edit-button {
+        margin-left: auto;
+        padding: 0.2em 0.5em;
+
+        font-size: 0.8em;
         font-variation-settings: "wght" 600;
+        color: white;
+
+        background: hsl(180.5, 100%, 24.7%);
+        border-radius: 0.25em;
+    }
+
+    // Storystream
+    .o-article_storystream {
+        margin-inline: 0;
+        margin-bottom: 1em;
+        padding: 1em;
+        border-radius: 0.5em;
+        border: 1px solid var(--light-grey);
+        overflow: clip;
+        h3 {
+            a {
+                background: none;
+                &:hover {
+                    color: inherit;
+                    text-decoration: underline variables.$color-ubyssey-blue;
+                }
+            }
+        }
+        iframe, .carousel {
+            margin: 0;
+        }
+        .carousel-control-prev {
+            left: 0;
+        }
+        .carousel-control-next {
+            right: 0;
+        }
+        &.o-article_storystream_feature {
+            padding: 0em;
+            .o-article__right {
+                padding: 1em;
+                margin: 0;
+            }
+        }
     }
 }
 
 .c-article .o-liveblog-update {
     .o-liveblog-update--meta--time.recent {
         color: variables.$color-ubyssey-blue;
+    }
+    .attachment, iframe {
+        margin-block: 0 1em;
     }
 }

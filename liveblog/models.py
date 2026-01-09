@@ -21,6 +21,7 @@ from authors.models import AuthorPage
 from article.models import ArticlePage
 from article import blocks_inner_article as blocks_inner_article
 from images.blocks import CaptionedImageBlock
+from home.blocks import StorystreamItem
 
 from channels.layers import get_channel_layer
 
@@ -44,6 +45,7 @@ class LiveBlogUpdate(models.Model):
             )),
             ('quote', blocks_inner_article.PullQuoteBlock()),
             ('image', CaptionedImageBlock()),
+            ('storystream_item', StorystreamItem()),
         ], use_json_field=True)
     
     room_name = models.CharField(max_length=250)
@@ -118,7 +120,6 @@ class LiveBlogArticlePage(ArticlePage):
         # Is there a way of obtaining the static files we need through the panel? Couldn't figure it out. - Sam Low 2025/12/30
         media = Media(js=[
             versioned_static("wagtailadmin/js/date-time-chooser.js"),
-            versioned_static("wagtailadmin/js/telepath/telepath.js"),
             versioned_static("wagtailadmin/js/telepath/widgets.js"),
             versioned_static("wagtailadmin/js/draftail.js"),
             versioned_static("wagtailembeds/js/embed-chooser-modal.js"),
@@ -133,8 +134,9 @@ class LiveBlogArticlePage(ArticlePage):
             versioned_static("wagtailimages/js/image-chooser-telepath.js"),
             versioned_static("wagtailimages/js/image-chooser.js"),
             versioned_static("wagtaildocs/js/document-chooser-telepath.js"),
-            versioned_static("wagtailadmin/js/page-chooser.js"),
             versioned_static("wagtaildocs/js/document-chooser.js"),
+            versioned_static("wagtailadmin/js/page-chooser-telepath.js"),
+            versioned_static("wagtailadmin/js/page-chooser.js"),
         ],
         css={
                 "all": [

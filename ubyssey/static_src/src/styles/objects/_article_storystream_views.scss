@@ -186,7 +186,7 @@
         li {
             margin-bottom: 1em;
         }
-        .attachment {
+        > .attachment {
             margin-block: 0 0.75rem;
             font-size: 0.9em;
             @media(variables.$bp-larger-than-phablet) {
@@ -201,7 +201,7 @@
             width: 100%;
             height: auto;
         }
-        *:last-child {
+        > *:last-child {
             margin-bottom: 0;
         }
     }

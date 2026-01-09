@@ -1,5 +1,6 @@
 {% load static %}
 
+{{ user.is_authenticated|json_script:"is-admin" }}
 {{ update_order|json_script:"update-order" }}
 {{ self.id|json_script:"room-name" }}
 {{ self.updateJsonFormat|json_script:"updates-at-load" }}

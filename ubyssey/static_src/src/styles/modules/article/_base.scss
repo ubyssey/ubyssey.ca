@@ -559,7 +559,7 @@ div.article-content blockquote.pull-quote, .o-extra-article-info {
     &.center {
       margin-inline: auto;
       width: fit-content;
-      max-width: 600px;
+      max-width: calc(var(--article-standard-content-width) - 1em);
     }
   }
 }

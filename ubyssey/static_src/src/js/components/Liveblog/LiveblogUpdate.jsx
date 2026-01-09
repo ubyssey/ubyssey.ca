@@ -1,6 +1,6 @@
 import { timeDeltaString, convertToMilliseconds } from "../../utils/datetimeUtils.js";
 
-export default function LiveblogUpdate({update}) {
+export default function LiveblogUpdate({update, isAdmin}) {
     function isRecent() {
         const cutoff = convertToMilliseconds(0,0,0,1);
         const delta = new Date().getTime() - new Date(update.publish_date).getTime();
@@ -17,6 +17,7 @@ export default function LiveblogUpdate({update}) {
                         <a href={update.author_link}>{update.author_name}</a>
                     </div>
                 </div>
+                {isAdmin && <a className="o-liveblog-update--edit-button" href={"/admin/snippets/liveblog/liveblogupdate/edit/" + update.id + "/"}>Edit</a>}
             </div>
             <div dangerouslySetInnerHTML={{__html: update.html}}></div>
         </div>

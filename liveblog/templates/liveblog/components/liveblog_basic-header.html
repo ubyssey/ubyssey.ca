@@ -1,15 +1,15 @@
 <div class="fw-banner c-liveblog-header">
     <div class="headline-container headline-container--timely-style">
     
-        <h1 class="o-headline o-headline--article"><span class="live-signal">Live: </span>{{self.title|safe}}</h1>
+        <div class="live-signal">LIVE</div>
+        <h1 class="o-headline o-headline--article">{{self.title|safe}}</h1>
         <div class="c-article__published-at">Updated: <time class="liveblog_updated_at">{{self.updated_at}}</time></div>
-
-        <p class="o-article--header--above_cut_lede">
-            {{self.lede|safe}}
-        </p>
 
         <div class="author-string">
             {{self.get_authors_with_urls|safe}}
         </div>
+    </div>
+    <div class="c-liveblog-summary">
+        {{self.lede|safe}}
     </div>
 </div>  
