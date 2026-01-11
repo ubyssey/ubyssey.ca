@@ -865,3 +865,47 @@ div.article-content>p.drop-cap {
 div.article-content>p.drop-cap:first-child {
   margin-top: 1em;
 }
+
+// Image banner
+.o-image-banner {
+  margin-block: 1.4em;
+
+  position: relative;
+  width: 100%;
+  height: 100vh;
+
+  background-image: var(--image_url);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: top;
+
+  .o-image-banner--shadow {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8em 2em 2em 2em;
+    
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background-image: linear-gradient(-180deg, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 0.84) 99%);
+    
+    color: #aaa;
+    font-family: fonts.$font-body;
+    .o-image-banner--shadow-content {
+      margin-right: auto;
+      width: 100%;
+      max-width: 600px;
+      .o-image-banner--shadow-content--header {
+        margin-right: 1em;
+        color: #d9d9d9;
+        font-variation-settings: "wght" 600;
+        font-family: fonts.$font-headline;
+      }
+    }
+    .o-image-banner--shadow--credit {
+      font-style: italic;
+    }
+  }
+}

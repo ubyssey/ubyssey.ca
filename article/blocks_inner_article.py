@@ -460,6 +460,7 @@ class ImageWallTwoTracks(blocks.StructBlock):
             ('sizing-large-right', "Large right"),
         ],
         required=True,
+        help_text="The large size will take up 2/3 of the width",
     )
     height = blocks.ChoiceBlock(
         choices = [
@@ -523,6 +524,14 @@ class ImageWall(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image-wall-container.html"
+
+class IntraArticleImageBanner(blocks.StructBlock):
+    image = image_blocks.ReducedImageBlock()
+    header = blocks.CharBlock()
+    text = blocks.CharBlock()
+
+    class Meta:
+        template = 'article/stream_blocks/image-banner.html'
 
 # Card block
 

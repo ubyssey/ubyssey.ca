@@ -1381,6 +1381,7 @@ class StandardArticlePage(ArticlePage):
                 template = 'article/stream_blocks/gallery.html',
             )),
             ('cards', blocks_inner_article.CardContainer()),
+            ('image_header', blocks_inner_article.IntraArticleImageBanner()),
         ],
         null=True,
         blank=True,
