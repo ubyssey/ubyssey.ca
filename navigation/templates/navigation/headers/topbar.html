@@ -23,5 +23,22 @@
             {% include 'article/objects/darkmode_button.html' with id="topbar" %}
         </div>
     </div>
+    {% if show_progress_bar %}
+        <!-- minimal reading progress bar -->
+        <div class="progress-bar"></div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const header = document.querySelector('header.topbar')
+                const progressBar = header.querySelector('.progress-bar');
+                const update = () => {
+                    const scrollTop = window.scrollY;
+                    const docHeight = document.body.scrollHeight - window.innerHeight;
+                    const progress = (scrollTop / docHeight) * 100;
+                    progressBar.style.width = progress + '%';
+                };
+                window.addEventListener('scroll', update);
+            });
+        </script>
+    {% endif %}
 </header>
 {% endcache %}

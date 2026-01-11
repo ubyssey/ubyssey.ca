@@ -31,5 +31,25 @@
         <img class="ubyssey_small_logo dark-logo" src="{% static 'ubyssey/images/logos/ubyssey-logo-blue-dark.svg' %}" alt="Ubyssey logo"/>
     </a>
     {% comment %} <a class="search right" href="{% url 'search' %}"><i class="fa fa-search"></i></a> {% endcomment %}
+
+    {% if show_progress_bar %}
+        <!-- minimal reading progress bar -->
+        <div class="progress-bar"></div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const header = document.querySelector('header.mobile')
+                const progressBar = header.querySelector('.progress-bar');
+                const update = () => {
+                    // const scrollTop = window.scrollY;
+                    // const docHeight = document.body.scrollHeight - window.innerHeight;
+                    const scrollTop = document.documentElement.scrollTop;
+                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const progress = (scrollTop / docHeight) * 100;
+                    progressBar.style.width = progress + '%';
+                };
+                window.addEventListener('scroll', update);
+            });
+        </script>
+    {% endif %}
 </header>
 {% endcache %}

@@ -313,6 +313,18 @@ header.topbar, header.mobile {
   z-index: variables.$z-scale-2;
   transform: translate3d(0,0,0);
   top: 0;
+  
+  .progress-bar {
+    position: absolute;
+    display: block;
+    bottom: -4px;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: rgb(0, 113, 201);
+    transition: width 0.1s linear;
+    z-index: 1100;
+  }
 }
 
 header.topbar {
@@ -398,7 +410,7 @@ header.topbar {
           display: inline-block;
         }
         &.current, &:hover {
-          border-bottom: 3px solid rgba(52, 144, 214, 1);
+          // border-bottom: 3px solid rgba(52, 144, 214, 1);
           color: variables.$color-accent-blue;
         }
 
