@@ -44,7 +44,7 @@
         margin: 0.5em 0;
     }
     .email-link {
-        color: variables.$color-ubyssey-blue;
+        color: var(--color-ubyssey_blue);
         text-decoration: none;
         &:hover {
             text-decoration: underline;

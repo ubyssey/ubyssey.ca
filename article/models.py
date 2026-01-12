@@ -1356,18 +1356,21 @@ class StandardArticlePage(ArticlePage):
             )),
             ('audio', blocks_inner_article.AudioBlock()),
             ('image', image_blocks.ImageBlock()),
+            ('gallery_block', blocks_inner_article.GalleryBlock(
+                label="Image carousel",
+            )),
             ('image_grid', blocks_inner_article.ImageGrid()),
             ('image_wall', blocks_inner_article.ImageWall()),
+            ('attachment_overlay', blocks_inner_article.AttachmentOverlay(
+                help_text = "The first attachment is the base. When this block is in view, the subsequent attachments fade in."
+            )),
+            ('image_header', blocks_inner_article.IntraArticleImageBanner()),
             ('pdf', blocks_inner_article.PdfBlock()),
             ('raw_html', blocks.RawHTMLBlock(
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
             ('quote', blocks_inner_article.PullQuoteBlock()),
-
-            ('gallery_block', blocks_inner_article.GalleryBlock(
-                label="Image carousel",
-            )),
             ('header_link', blocks_inner_article.HeaderLinkBlock()),
             ('header_menu', blocks_inner_article.HeaderMenuBlock()),
             ('visual_essay', blocks_inner_article.VisualEssayBlock()),
@@ -1381,7 +1384,6 @@ class StandardArticlePage(ArticlePage):
                 template = 'article/stream_blocks/gallery.html',
             )),
             ('cards', blocks_inner_article.CardContainer()),
-            ('image_header', blocks_inner_article.IntraArticleImageBanner()),
         ],
         null=True,
         blank=True,

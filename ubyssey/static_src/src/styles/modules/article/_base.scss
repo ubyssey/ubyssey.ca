@@ -53,12 +53,12 @@ div.article-content {
     padding-top: 0.75em;
     max-width: 585px;
 
-    color: variables.$color-ubyssey-blue;
+    color: var(--color-ubyssey_blue);
     font-family: fonts.$font-body;
 
     p {
       margin-top: 0;
-      color: variables.$color-ubyssey-blue;
+      color: var(--color-ubyssey_blue);
       line-height: 2em;
     }
 
@@ -165,7 +165,7 @@ div.article-content {
   max-width: none;
   z-index: 10;
 
-  background-color: variables.$color-ubyssey-blue;
+  background-color: var(--color-ubyssey_blue);
   border-radius: 4px;
   
   color: white;
@@ -250,7 +250,7 @@ div.article-content {
   h1, h2, h3, h4 {
     > a {
       text-decoration: none;
-      background-image: linear-gradient(variables.$color-ubyssey-blue, variables.$color-ubyssey-blue);
+      background-image: linear-gradient(var(--color-ubyssey_blue), var(--color-ubyssey_blue));
       background-position: 0 calc(100% - 0.1em);
       background-repeat: no-repeat;
       background-size: 100% 0.25em;
@@ -327,10 +327,10 @@ div.article-content, .o-visual-essay__right-div {
 
       font-weight: 600;
       transition-duration: 0.5s;
-      color: variables.$color-ubyssey-blue;
+      color: var(--color-ubyssey_blue);
 
       &:hover {
-        color: variables.$color-ubyssey-blue;
+        color: var(--color-ubyssey_blue);
       }
     }
   }
@@ -351,7 +351,7 @@ div.article-content, .o-visual-essay__right-div {
 
     a {
       text-transform: capitalize;
-      color: #0071c9;
+      color: var(--color-ubyssey_blue);
       text-decoration: none;
       border: none;
     }
@@ -404,7 +404,7 @@ div.article-content, .o-visual-essay__right-div {
 p.author-string>a {
   font-weight: 600;
   font-variation-settings: "wght" 600;
-  color: variables.$color-ubyssey-blue;
+  color: var(--color-ubyssey_blue);
 }
 
 p.c-article__published-at {
@@ -477,7 +477,7 @@ p.c-article__published-at {
 
   &.o-extra-article-info--highlight {
     padding: 1em 1.5em;
-    background-color: variables.$color-ubyssey-blue-light;
+    background-color: var(--color-ubyssey_blue-light);
 
     flex-direction: column;
     gap: 0;
@@ -496,7 +496,7 @@ p.c-article__published-at {
       margin: auto;
     }
     h2, p {
-      color: variables.$color-ubyssey-blue-dark;
+      color: var(--color-ubyssey_blue-dark);
     }
 
     @media(variables.$bp-larger-than-phablet) {
@@ -512,7 +512,7 @@ p.c-article__published-at {
 
   &.o-extra-article-info--editors-note {
     flex-direction: column;
-    border: variables.$color-ubyssey-blue solid 0.25em;
+    border: var(--color-ubyssey_blue) solid 0.25em;
 
     &::before {
       margin: 1em auto;

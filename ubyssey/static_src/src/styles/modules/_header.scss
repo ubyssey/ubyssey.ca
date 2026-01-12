@@ -119,7 +119,7 @@ header.main{
         vertical-align: baseline;
         fill: var(--header_color);
         &:hover {
-          fill: variables.$color-ubyssey-blue;
+          fill: var(--color-ubyssey_blue);
         }
       }
 
@@ -1263,7 +1263,7 @@ nav.branding-nav {
     margin: 0.5em 0.25em 1.5em 0.25em;
   }
   .c-nav-search--status a {
-    color: variables.$color-ubyssey-blue;
+    color: var(--color-ubyssey_blue);
     text-decoration: underline;
   }
   h3 {

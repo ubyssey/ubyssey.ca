@@ -19,7 +19,7 @@
     }
     .featured_event {
         &:hover * {
-            color: variables.$color-ubyssey-blue;
+            color: var(--color-ubyssey_blue);
         } 
         .featured_event__time {
             margin-block: 0;

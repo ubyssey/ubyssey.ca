@@ -446,6 +446,7 @@ class ImageGrid(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image-grid.html"
+        icon = "image"
 
 class ImageWallTwoTracks(blocks.StructBlock):
     left = blocks.ListBlock(
@@ -472,6 +473,7 @@ class ImageWallTwoTracks(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image_wall/two-tracks.html"
+        icon = "image"
 
 class ImageWallRow(blocks.StructBlock):
     images = blocks.ListBlock(
@@ -491,6 +493,7 @@ class ImageWallRow(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image_wall/row.html"
+        icon = "image"
 
 class ImageWall(blocks.StructBlock):
 
@@ -524,6 +527,49 @@ class ImageWall(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image-wall-container.html"
+        icon = "image"
+
+class VideoBlock(blocks.StructBlock):
+    video = DocumentChooserBlock(required=True, help_text="File format: .mp4")
+    class Meta:
+        template = 'article/stream_blocks/video.html'
+        icon = "media"
+
+class AttachmentOverlay(blocks.StructBlock):
+    position = blocks.ChoiceBlock(
+        choices=[
+            ('default', 'Center'),
+            ('left', 'Left'),
+            ('right', 'Right'),   
+        ],
+        default='default',
+    )
+    width = blocks.ChoiceBlock(
+        choices=[
+            ('full-width', 'Full width'),
+            ('full', 'Wide'),
+            ('large', 'Normal'),
+            ('medium', 'Medium'),
+            ('small', 'Small'),
+        ],
+        default='full',
+    )
+    attachments = blocks.StreamBlock([
+        ("image", image_blocks.AltTextImageBlock()),
+        ("video", VideoBlock()),
+    ])
+    caption = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+    credit = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/attachment-overlay.html'
+        icon = "image"
 
 class IntraArticleImageBanner(blocks.StructBlock):
     image = image_blocks.ReducedImageBlock()
@@ -532,6 +578,7 @@ class IntraArticleImageBanner(blocks.StructBlock):
 
     class Meta:
         template = 'article/stream_blocks/image-banner.html'
+        icon = "image"
 
 # Card block
 

@@ -95,8 +95,8 @@
         position: relative;
         padding: 0;
 
-        background-color: variables.$color-ubyssey-blue;
-        box-shadow: 0.4em 0 0 variables.$color-ubyssey-blue, -0.4em 0 0 variables.$color-ubyssey-blue;
+        background-color: var(--color-ubyssey_blue);
+        box-shadow: 0.4em 0 0 var(--color-ubyssey_blue), -0.4em 0 0 var(--color-ubyssey_blue);
         box-decoration-break: clone;
         filter: drop-shadow(-5px 10px 4px #0416201c);
 

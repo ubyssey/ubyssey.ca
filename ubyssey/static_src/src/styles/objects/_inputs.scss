@@ -324,7 +324,7 @@
 [color-css-theme="light"] {
 
 	.o-mobile-dropdown__button {
-		background: variables.$color-ubyssey-blue-dark;
+		background: var(--color-ubyssey_blue-dark);
 		color: #fff;
 		box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
 
@@ -345,7 +345,7 @@
 		&--is-active,
 		&--is-active a:hover,
 		&--is-active a:focus {
-			background: variables.$color-ubyssey-blue-dark;
+			background: var(--color-ubyssey_blue-dark);
 			color: #fff;
 		}
 	}
@@ -365,8 +365,8 @@
 [color-css-theme="dark"] {
 
 	.o-mobile-dropdown__button {
-		background: variables.$color-ubyssey-blue-light;
-		color: variables.$color-ubyssey-blue-dark;
+		background: var(--color-ubyssey_blue-light);
+		color: var(--color-ubyssey_blue-dark);
 		box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
 
 		&:hover,
@@ -388,7 +388,7 @@
 		&--is-active,
 		&--is-active a:hover,
 		&--is-active a:focus {
-			background: variables.$color-ubyssey-blue-dark;
+			background: var(--color-ubyssey_blue-dark);
 			color: #fff;
 		}
 	}
@@ -397,7 +397,7 @@
 		background: rgba(255, 255, 255, 0.97);
 
 		ul {
-			background: variables.$color-ubyssey-blue-light;
+			background: var(--color-ubyssey_blue-light);
 			border-top-color: #e8e8e8;
 			border-bottom-color: #e8e8e8;
 			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);

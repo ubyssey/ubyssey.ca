@@ -238,7 +238,10 @@ a {
 
 html {
   transition: background 0.5s ease, color 0.5s ease;
-  --ubyssey_blue-classic: #{variables.$color-ubyssey-blue-classic};
+  --color-ubyssey_blue-classic: #{variables.$color-ubyssey-blue-classic};
+  --color-ubyssey_blue: #{variables.$color-ubyssey-blue};
+  --color-ubyssey_blue-dark: #{variables.$color-ubyssey-blue-dark};
+  --color-ubyssey_blue-light: #{variables.$color-ubyssey-blue-light};
 }
 
 html[color-css-theme="light"] {

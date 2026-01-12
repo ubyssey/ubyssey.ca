@@ -207,7 +207,7 @@ html.hairlines {
 }
 
 .c-homepage__section__bullets {
-  color: variables.$color-ubyssey-blue;
+  color: var(--color-ubyssey_blue);
 }
 
 .o-storystream_group {
@@ -330,8 +330,8 @@ html.hairlines {
 
   .home_link_content {
     li {
-      color: variables.$color-ubyssey-blue-light;
-      background-color: variables.$color-ubyssey-blue-dark;
+      color: var(--color-ubyssey_blue-light);
+      background-color: var(--color-ubyssey_blue-dark);
 
       a:hover {
         color: white;
@@ -344,8 +344,8 @@ html.hairlines {
 
   .home_link_content {
     li {
-      color: variables.$color-ubyssey-blue-dark;
-      background-color: variables.$color-ubyssey-blue-light;
+      color: var(--color-ubyssey_blue-dark);
+      background-color: var(--color-ubyssey_blue-light);
     }
   }
 }
@@ -359,7 +359,7 @@ html.hairlines {
     background-color: variables.$color-ubyssey-blue-dark-2;
   }
   &.lightmode {
-    background-color: variables.$color-ubyssey-blue-light;
+    background-color: var(--color-ubyssey_blue-light);
   }
 
   padding-left: 20px;
@@ -379,7 +379,7 @@ html.hairlines {
 .home_infinitefeed_cutoff_seemore {
   display: block;
   border-radius: 10px;
-  background-color: variables.$color-ubyssey-blue-light;
+  background-color: var(--color-ubyssey_blue-light);
   cursor: pointer;
   text-align: center;
   padding: 5px;
@@ -408,10 +408,10 @@ html.hairlines {
     font-family: fonts.$font-home-headline;
     @media(variables.$bp-smaller-than-tablet) {
       margin-left: 1em;
-      border-bottom: 0.2em solid variables.$color-ubyssey-blue;
+      border-bottom: 0.2em solid var(--color-ubyssey_blue);
     }
     @media(variables.$bp-larger-than-tablet) {
-      border-left: 0.2em solid variables.$color-ubyssey-blue;
+      border-left: 0.2em solid var(--color-ubyssey_blue);
     }
     @media(variables.$bp-smaller-than-desktop) {
       margin: 1em auto;
@@ -518,7 +518,7 @@ html.hairlines {
       p a {
         text-decoration: underline;
         &:hover{
-          color: variables.$color-ubyssey-blue;
+          color: var(--color-ubyssey_blue);
         }
       }
 
@@ -937,7 +937,7 @@ html.hairlines {
       line-height: 1.25em;
       color: var(--text_color);
       a.marked {
-        //border-bottom: 2.5px dotted variables.$color-ubyssey-blue;
+        //border-bottom: 2.5px dotted var(--color-ubyssey_blue);
         //color: var(--text_color);
         //transition: border-color 0.25s;
         position: relative;
@@ -968,7 +968,7 @@ html.hairlines {
           }
         }
         &:hover {
-          color: variables.$color-ubyssey-blue;
+          color: var(--color-ubyssey_blue);
         }
       }
       .o-article__meta {
@@ -1048,7 +1048,7 @@ html.hairlines {
       button {
         width: fit-content;
         border: none;
-        background: var(--ubyssey_blue-classic);
+        background: var(--color-ubyssey_blue-classic);
         color: white;
       }
     }
@@ -1060,7 +1060,7 @@ html.hairlines {
     padding: 0.5em 1em;
     height: auto;
     border-radius: 0.3em;
-    border: 2px solid var(--ubyssey_blue-classic);
+    border: 2px solid var(--color-ubyssey_blue-classic);
 
     font-size: 1.1em;
     line-height: 2em;

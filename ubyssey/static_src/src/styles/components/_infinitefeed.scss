@@ -132,7 +132,7 @@
     margin: 5px;
     margin-bottom: 10px;
     list-style-type: none;
-    //background-color:variables.$color-ubyssey-blue;
+    //background-color:var(--color-ubyssey_blue);
     background-color: variables.$color-ubyssey-blue-classic;
     border: 1px solid var(--archive-text);
     width: 100px;
@@ -191,7 +191,7 @@
         li {
             padding-bottom: 0.5em;
             border-bottom: 1px solid #00000045;
-            color: variables.$color-ubyssey-blue-dark;
+            color: var(--color-ubyssey_blue-dark);
             a {
                 display: contents;
             }

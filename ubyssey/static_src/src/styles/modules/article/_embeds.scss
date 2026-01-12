@@ -909,3 +909,44 @@ div.article-content>p.drop-cap:first-child {
     }
   }
 }
+
+// attachment overlay (attachent fades over other with scroll)
+.o-attachment-overlay {
+  .o-attachment-overlay--attachments {
+    position: relative;
+    > *, .attachment {
+      margin: 0;
+    }
+    >:first-child {
+      width: 100%;
+    }
+    > *:not(:first-child) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      opacity: 0;
+      transition: opacity 1s;
+      img {
+        object-fit: contain;
+        height: 100%;
+        width: 100%;
+      }
+    }
+    &.in-view {
+      > *:not(:first-child) {
+        opacity: 1;
+      }
+    }
+    video.attachment {
+      max-width: none;
+      width: 100%;
+    }
+  }
+}
+
+video.attachment {
+  height: auto;
+}
