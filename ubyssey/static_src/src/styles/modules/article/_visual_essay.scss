@@ -146,6 +146,8 @@ div.article-content {
 
     .vs-over-image {
         display: block;
+        --visual_essay--bubble-background: #eee;
+        --visual_essay--bubble-text_colour: #1b1b1b;
         
         .o-visual-essay__left-image {
             height: 100%;
@@ -192,8 +194,8 @@ div.article-content {
         .o-visual-essay__right-div {
             position: relative;
             border-radius: 1em;
-            background-color: #eee;
-            --text_color: #1b1b1b;
+            background-color: var(--visual_essay--bubble-background);
+            --text_color: var(--visual_essay--bubble-text_colour);
             //opacity: 0;
             transition: opacity 1s, visibility 1s;
 
@@ -267,7 +269,7 @@ div.article-content {
             //width:40%;
             //max-width: 400px;
             //margin: auto;
-            border-left-style: solid;
+            //border-left-style: solid;
 
             @media (variables.$bp-smaller-than-phablet) {
                 border-left-style: none;
