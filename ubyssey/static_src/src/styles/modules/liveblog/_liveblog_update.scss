@@ -9,7 +9,7 @@
     color: var(--text_color);
 
     &:last-child {
-        border-bottom: 1px solid var(--light-grey);
+        border-bottom: 1px solid var(--border-grey);
     }
 
     .o-liveblog-update--meta {
@@ -55,7 +55,7 @@
         margin-bottom: 1em;
         padding: 1em;
         border-radius: 0.5em;
-        border: 1px solid var(--light-grey);
+        border: 1px solid var(--border-grey);
         overflow: clip;
         h3 {
             a {
