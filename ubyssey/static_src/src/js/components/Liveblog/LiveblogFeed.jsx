@@ -87,8 +87,13 @@ export default function LiveBlogFeed() {
         setCaughtUp(!isLive(updates))
 
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        let wsProtocol = "ws";
+        if (window.location.protocol.includes("https")) {
+            wsProtocol = "wss";
+        }
+
         chatSocket = new WebSocket(
-            'ws://'
+            wsProtocol + '://'
             + window.location.host
             + '/ws/liveblog/'
             + roomName
