@@ -147,15 +147,8 @@ class AudioBlock(blocks.StructBlock):
         icon = "media"
 
 class PullQuoteBlock(blocks.StructBlock):
-    content = blocks.CharBlock(required=True)
-    position = blocks.ChoiceBlock(
-        choices=[
-            ('center', 'Center'),
-            ('left', 'Left'),
-            ('right', 'Right'),   
-        ],
-        default='center',
-    )
+    content = blocks.RichTextBlock(required=True)
+
     style = blocks.ChoiceBlock(
         choices=[
             ('style_default', 'Default'),
@@ -185,6 +178,16 @@ class PullQuoteBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/quote.html',
         icon = "openquote"
+
+class PositionedPullQuote(PullQuoteBlock):
+    position = blocks.ChoiceBlock(
+        choices=[
+            ('center', 'Center'),
+            ('left', 'Left'),
+            ('right', 'Right'),   
+        ],
+        default='center',
+    )
 
 class ExtraArticleInfoBlock(blocks.StructBlock):
     header = blocks.CharBlock(required=False, help_text="Optional!")
@@ -519,6 +522,12 @@ class IntraArticleImageBanner(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/image-banner.html'
         icon = "image"
+
+class ArticlePromoBlock(blocks.StructBlock):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage")
+
+    class Meta:
+        template = 'article/stream_blocks/article-promo.html'
 
 # Card block
 

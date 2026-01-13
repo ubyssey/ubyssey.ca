@@ -35,6 +35,14 @@ services:
       retries: 5
       start_period: 10s
 
+  redis:
+    restart: always
+    image: redis:latest
+    volumes:
+      - redis-data:/var/lib/redis
+    ports:
+      - "6379:6379"
+
   django:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
     
@@ -50,7 +58,7 @@ services:
     # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
       bash -c "python manage.py migrate && python manage.py crontab add && service cron start 
-      && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
+      && gunicorn ubyssey.asgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
@@ -195,6 +203,7 @@ services:
 volumes:
   certbot-signals:
     driver: local
+  redis-data: {}
 
 secrets:
   DJANGO_SECRET_KEY:

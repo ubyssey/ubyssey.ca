@@ -256,6 +256,7 @@ html[color-css-theme="light"] {
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue};
   --light-border-grey: #eee;
+  --border-grey: #d9d9d9;
   --light-grey: #d9d9d9;
   --contrast-color: #{variables.$color-ubyssey-blue-dark};
   --shadow-color: #888;
@@ -293,6 +294,7 @@ html[color-css-theme="dark"] {
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue-light};
   --light-border-grey: #3d4b54;
+  --border-grey: #737373;
   --light-grey: #d9d9d9;
   --contrast-color: #{variables.$color-ubyssey-blue-light};
   --shadow-color: black;
