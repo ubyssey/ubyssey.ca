@@ -73,7 +73,7 @@ hyperlink==21.0.0
 icalendar==6.3.1
 idna==3.10
 Incremental==24.11.0
-ipython==8.37.0
+ipython
 isort==5.13.2
 jedi==0.19.2
 l18n==2021.3
