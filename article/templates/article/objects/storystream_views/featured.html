@@ -12,7 +12,7 @@
         {{ attachment|safe }}
 	</div>
 
-	<div class="o-article__right">
+	<div class="o-article__right o-article_storystream--meta">
 		{% include "article/objects/headline.html" %}
 		<p>{{article.lede|safe}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>
 		{% include "article/objects/meta_info.html" %}

@@ -157,6 +157,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         'article.StandardArticlePage',
         'article.StandardArticlePageWithRightColumn',
         'article.SpecialArticleLikePage',
+        'liveblog.LiveBlogArticlePage',
         'specialfeaturelanding.SpecialLandingPage',
         'section.CategoryPage',
     ]

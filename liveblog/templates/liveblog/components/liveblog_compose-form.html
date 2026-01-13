@@ -1,0 +1,37 @@
+<div class="c-liveblog--compose-form">
+    <form
+        id="w-editor-form"
+        action="{{ action_url }}"
+        method="POST"
+        novalidate
+        {% if form_is_multipart or form.is_multipart %} enctype="multipart/form-data"{% endif %}
+        data-edit-form
+        data-controller="w-unsaved"
+        data-action="w-unsaved#submit beforeunload@window->w-unsaved#confirm change->w-unsaved#check keyup->w-unsaved#check"
+        data-w-unsaved-confirmation-value="true"
+        data-w-unsaved-force-value="{{ has_unsaved_changes|yesno:'true,false' }}"
+        data-w-unsaved-watch-value="edits"
+    >
+        {% csrf_token %}
+        {{ panel.render_form_content|safe }}
+    </form>
+    <button class="button action-save" id="publish_update">Publish update</button>
+</div>
+<script>
+    function formDataToQuery(form) {
+        const formObject = Object.fromEntries(form);
+        return Object.keys(formObject).map((k) => k + "=" + formObject[k]).join("&");
+    }
+
+    document.getElementById("publish_update").addEventListener("click", async () => {
+        const form = new FormData(document.getElementById("w-editor-form"));
+        const response = await fetch("{{ action_url }}", {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            method: "POST",
+            body: formDataToQuery(form),
+        });
+
+    });
+</script>

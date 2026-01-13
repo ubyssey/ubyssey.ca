@@ -11,7 +11,7 @@
 {% if article %}
 <article class="o-article o-article_storystream o-article_storystream_indent" time="{{article.explicit_published_at|naturalday}}">
 
-	<div class="o-article__left">
+	<div class="o-article__left o-article_storystream--meta">
 		{% include "article/objects/headline.html" %}
 		{% include "article/objects/meta_info.html" %}
 		<p>{{article.lede|safe}} <a class="read-more" href="{% pageurl article %}">Read More.</a></p>

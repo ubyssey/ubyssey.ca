@@ -1,0 +1,28 @@
+{% extends 'article/article_page.html' %}
+{% load static %}
+{% load wagtailimages_tags %}
+{% load wagtailcore_tags%}
+{% load ubyssey_ad_tags %}
+{% load menu_tags %}
+
+{% block page_wrapper %}liveblog{% endblock %}
+
+{% block specific_article_class %}
+    c-article--liveblog
+{% endblock %}
+
+{% block banner %}
+    {% include "liveblog/components/liveblog_basic-header.html" %}
+{% endblock %}
+
+{% block article-content %}
+    {% include "liveblog/components/liveblog_feed_react.html" %}
+{% endblock %}
+
+{% block time-stamp %}{% endblock %}
+{% block author-cards %}{% endblock %}
+
+{% block stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/liveblog.css' %}" type="text/css" />
+{% endblock %}

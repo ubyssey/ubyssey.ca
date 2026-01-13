@@ -1370,7 +1370,7 @@ class StandardArticlePage(ArticlePage):
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', blocks_inner_article.PullQuoteBlock()),
+            ('quote', blocks_inner_article.PositionedPullQuote()),
             ('header_link', blocks_inner_article.HeaderLinkBlock()),
             ('header_menu', blocks_inner_article.HeaderMenuBlock()),
             ('visual_essay', blocks_inner_article.VisualEssayBlock()),
@@ -1384,6 +1384,7 @@ class StandardArticlePage(ArticlePage):
                 template = 'article/stream_blocks/gallery.html',
             )),
             ('cards', blocks_inner_article.CardContainer()),
+            ('article_promo', blocks_inner_article.ArticlePromoBlock()),
         ],
         null=True,
         blank=True,
