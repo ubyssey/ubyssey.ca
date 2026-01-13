@@ -30,7 +30,7 @@
                 bottom: 0;
                 z-index: 2;
 
-                background: linear-gradient(transparent 40%, rgb(255,255,255,0.25), variables.$color-ubyssey-blue-dark);
+                background: linear-gradient(transparent 40%, rgb(255,255,255,0.25), var(--color-ubyssey_blue-dark));
 
                 content: "";
                 border-radius: 1em;
@@ -105,11 +105,11 @@
 
         &.o-card--text {
             a {
-                color: variables.$color-ubyssey-blue;
+                color: var(--color-ubyssey_blue);
                 border-bottom: 1px solid;
                 transition: background 0.5s;
                 &:hover {
-                    background: variables.$color-ubyssey-blue-light;
+                    background: var(--color-ubyssey_blue-light);
                 }
             }
         }

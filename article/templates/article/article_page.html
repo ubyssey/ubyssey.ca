@@ -143,6 +143,7 @@
 
 <!-- Article-specific scripts -->
 {% block scripts %}
+    <script src="{% static 'ubyssey/js/article_content.js' %}" type="text/javascript"></script>
     {% for script_obj in self.scripts.all %}
         <script src="{{ script_obj.script.file.url }}" type="text/javascript"></script>
     {% endfor %}

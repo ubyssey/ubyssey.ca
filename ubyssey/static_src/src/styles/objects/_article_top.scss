@@ -93,7 +93,7 @@
     .o-article__byline {
         font-size: 0.7rem;
         padding-top: 5px;
-        color: variables.$color-ubyssey-blue-dark;
+        color: var(--color-ubyssey_blue-dark);
     }
 
     .o-article__published {
@@ -126,7 +126,7 @@
         bottom: 0;
         width: 50%;
         aspect-ratio: 1;
-        background-color: variables.$color-ubyssey-blue-dark;
+        background-color: var(--color-ubyssey_blue-dark);
         transform: translate(-50%, 50%);
         clip-path: inset(-20% -20% 0 50%);
         border-radius: 100%;
@@ -139,7 +139,7 @@
         width: 100%;
         color: white;
         font-weight: 600;
-        -webkit-text-stroke: variables.$color-ubyssey-blue-dark;
+        -webkit-text-stroke: var(--color-ubyssey_blue-dark);
         -webkit-text-stroke-width: 1px;
         font-size: 1.2rem;
         margin-bottom: 0.1rem;
@@ -185,10 +185,10 @@
     .o-article--top_article {
         border-color: white;
         .o-article__section-tag {
-            background-color: variables.$color-ubyssey-blue-dark;
+            background-color: var(--color-ubyssey_blue-dark);
         }
         .o-article__image, .o-article__meta__image  {
-            border-color: variables.$color-ubyssey-blue-dark;
+            border-color: var(--color-ubyssey_blue-dark);
         }
     }
 }

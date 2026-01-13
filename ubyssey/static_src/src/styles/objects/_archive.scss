@@ -160,7 +160,7 @@ $search-bar-height: 50px;
 
 		&--is-active a,
 		&--is-active a:hover {
-			background: variables.$color-ubyssey-blue-dark;
+			background: var(--color-ubyssey_blue-dark);
 			color: #fff;
 		}
 	}
@@ -174,13 +174,13 @@ $search-bar-height: 50px;
 		}
 
 		a:hover {
-			background: variables.$color-ubyssey-blue-dark;
+			background: var(--color-ubyssey_blue-dark);
 		}
 
 		&--is-active a,
 		&--is-active a:hover {
-			background: variables.$color-ubyssey-blue-light;
-			color: variables.$color-ubyssey-blue-dark;
+			background: var(--color-ubyssey_blue-light);
+			color: var(--color-ubyssey_blue-dark);
 		}
 	}
 }

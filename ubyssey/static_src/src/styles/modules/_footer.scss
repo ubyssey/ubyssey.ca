@@ -3,24 +3,27 @@
 $text-color: var(--text_color);
 
 footer {
+  --footer-background: var(--color-ubyssey_blue-dark);
+  --footer-primary: var(--color-ubyssey_blue);
+  --footer-text: var(--color-ubyssey_blue-light);
 
   padding: 15px 0;
-  border-top: 0.5em solid variables.$color-ubyssey-blue;
-  background-color: variables.$color-ubyssey-blue-dark;
-  color: variables.$color-ubyssey-blue-light;
+  border-top: 0.5em solid var(--footer-primary);
+  background-color: var(--footer-background);
+  color: var(--footer-text);
   position: relative;
   bottom: 0;
   left: 0;
   right: 0;
 
   h3 {
-    color: variables.$color-ubyssey-blue;
+    color: var(--footer-primary);
     text-transform: uppercase;
     font-size: 1em;
     font-variation-settings: "wght" 600;
   }
   h2, p, li, .footer-address {
-    color: variables.$color-ubyssey-blue-light;
+    color: var(--footer-text);
   }
 
   .about {
@@ -168,7 +171,7 @@ footer {
       width: 100%;
       h3 {
         margin-top: 1em;
-        color: #BBE3F1;
+        color: var(--footer-text);
       }
       ul {
         display: flex;

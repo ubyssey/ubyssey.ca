@@ -11,7 +11,7 @@
 
 .o-article--column {
     margin-bottom: 1rem;
-    background-color: variables.$color-ubyssey-blue;
+    background-color: var(--color-ubyssey_blue);
     position: relative;
     left: 0;
     transition-duration: 0.2s;
@@ -65,7 +65,7 @@
 
 
 .o-article--column-latest {
-    background-color: variables.$color-ubyssey-blue-light;
+    background-color: var(--color-ubyssey_blue-light);
 
     .o-article__meta__image .o-article__image {
         width: 5em;

@@ -275,67 +275,7 @@ class GapBlock(blocks.StructBlock):
         template = 'article/stream_blocks/ve_gap.html',
         icon = "arrows-up-down"
 
-class VisualEssayBlock(blocks.StructBlock):
-    view = ChooseViewBlock()
-    content = blocks.StreamBlock([
-        ('rich_text', blocks.StructBlock(
-            [
-                ('block', blocks.RichTextBlock(                                
-                    label="Rich Text Block",
-                    help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
-                )),
-                ('side',ChooseSideBlock(default=("right", "Right"))),
-            ], icon = "doc-full"
-        )),
-        ('image', blocks.StructBlock(
-            [
-                ('block', image_blocks.ImageBlock()),
-                ('side',ChooseSideBlock(default=("left", "Left"))),
-            ], icon = "image"
-        )),
-        ('video', blocks.StructBlock(
-            [
-                ('block', video_blocks.OneOffVideoBlock(
-                    label = "Credited/Captioned One-Off Video",
-                    help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
-                )),
-                ('side',ChooseSideBlock(default=("left", "Left"))),
-            ], icon = "media"
-        )),
-        ('audio', blocks.StructBlock(
-            [
-                ('block', AudioBlock()),
-                ('side',ChooseSideBlock(default=("left", "Left"))),
-            ], icon = "media"
-        )),
-        ('raw_html', blocks.StructBlock(
-            [
-                ('block', blocks.RawHTMLBlock(
-                    label = "Raw HTML Block",
-                    help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
-                )),
-                ('side',ChooseSideBlock(default=("left", "Left"))),
-            ], icon = "code"
-        )),
-        ('quote', blocks.StructBlock(
-            [
-                ('block', PullQuoteBlock()),
-                ('side',ChooseSideBlock(default=("left", "Left"))),
-            ], icon = "openquote"
-        )),
-        ('header_link', blocks.StructBlock(
-            [
-                ('block', HeaderLinkBlock()),
-                ('side',ChooseSideBlock(default=("right", "Right"))),
-            ], icon = "title"
-        )),
-        ('gap', GapBlock()),
-        ('switch_view', ChooseViewBlock()),
-    ])
 
-    class Meta:
-        template = 'article/stream_blocks/visual-essay.html',
-        icon = "form"
 
 class GalleryBlock(blocks.StructBlock):
     images = blocks.ListBlock(
@@ -449,6 +389,7 @@ class ImageGrid(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image-grid.html"
+        icon = "image"
 
 class ImageWallTwoTracks(blocks.StructBlock):
     left = blocks.ListBlock(
@@ -463,6 +404,7 @@ class ImageWallTwoTracks(blocks.StructBlock):
             ('sizing-large-right', "Large right"),
         ],
         required=True,
+        help_text="The large size will take up 2/3 of the width",
     )
     height = blocks.ChoiceBlock(
         choices = [
@@ -474,6 +416,7 @@ class ImageWallTwoTracks(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image_wall/two-tracks.html"
+        icon = "image"
 
 class ImageWallRow(blocks.StructBlock):
     images = blocks.ListBlock(
@@ -493,6 +436,7 @@ class ImageWallRow(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image_wall/row.html"
+        icon = "image"
 
 class ImageWall(blocks.StructBlock):
 
@@ -526,6 +470,58 @@ class ImageWall(blocks.StructBlock):
 
     class Meta:
         template = "article/stream_blocks/image-wall-container.html"
+        icon = "image"
+
+class VideoBlock(blocks.StructBlock):
+    video = DocumentChooserBlock(required=True, help_text="File format: .mp4")
+    class Meta:
+        template = 'article/stream_blocks/video.html'
+        icon = "media"
+
+class AttachmentOverlay(blocks.StructBlock):
+    position = blocks.ChoiceBlock(
+        choices=[
+            ('default', 'Center'),
+            ('left', 'Left'),
+            ('right', 'Right'),   
+        ],
+        default='default',
+    )
+    width = blocks.ChoiceBlock(
+        choices=[
+            ('full-width', 'Full width'),
+            ('full', 'Wide'),
+            ('large', 'Normal'),
+            ('medium', 'Medium'),
+            ('small', 'Small'),
+        ],
+        default='full',
+    )
+    attachments = blocks.StreamBlock([
+        ("image", image_blocks.AltTextImageBlock()),
+        ("video", VideoBlock()),
+    ])
+    caption = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+    credit = blocks.CharBlock(
+        max_length=255,
+        required=False,
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/attachment-overlay.html'
+        icon = "image"
+
+class IntraArticleImageBanner(blocks.StructBlock):
+    image = image_blocks.ReducedImageBlock()
+    header = blocks.CharBlock()
+    text = blocks.CharBlock()
+
+    class Meta:
+        template = 'article/stream_blocks/image-banner.html'
+        icon = "image"
 
 class ArticlePromoBlock(blocks.StructBlock):
     article = blocks.PageChooserBlock(page_type="article.ArticlePage")
@@ -580,3 +576,74 @@ class CardContainer(blocks.StructBlock):
 
     class Meta:
         template = 'article/stream_blocks/card-container.html'
+
+# Visual Essay block
+class VisualEssayBlock(blocks.StructBlock):
+    view = ChooseViewBlock()
+    content = blocks.StreamBlock([
+        ('rich_text', blocks.StructBlock(
+            [
+                ('block', blocks.RichTextBlock(                                
+                    label="Rich Text Block",
+                    help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
+                )),
+                ('side',ChooseSideBlock(default=("right", "Right"))),
+            ], icon = "doc-full"
+        )),
+        ('image', blocks.StructBlock(
+            [
+                ('block', image_blocks.ImageBlock()),
+                ('side',ChooseSideBlock(default=("left", "Left"))),
+            ], icon = "image"
+        )),
+        ('attachment_overlay', blocks.StructBlock(
+            [
+                ('block', AttachmentOverlay(
+                    help_text = "The first attachment is the base. When this block is in view, the subsequent attachments fade in."
+                )),
+                ('side',ChooseSideBlock(default=("left", "Left"))),
+            ], icon = "image"
+        )),
+        ('video', blocks.StructBlock(
+            [
+                ('block', video_blocks.OneOffVideoBlock(
+                    label = "Credited/Captioned One-Off Video",
+                    help_text = "Use this to credit or caption videos that will only be associated with this current article, rather than entered into our video library. You can also embed videos in a Rich Text Block."
+                )),
+                ('side',ChooseSideBlock(default=("left", "Left"))),
+            ], icon = "media"
+        )),
+        ('audio', blocks.StructBlock(
+            [
+                ('block', AudioBlock()),
+                ('side',ChooseSideBlock(default=("left", "Left"))),
+            ], icon = "media"
+        )),
+        ('raw_html', blocks.StructBlock(
+            [
+                ('block', blocks.RawHTMLBlock(
+                    label = "Raw HTML Block",
+                    help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
+                )),
+                ('side',ChooseSideBlock(default=("left", "Left"))),
+            ], icon = "code"
+        )),
+        ('quote', blocks.StructBlock(
+            [
+                ('block', PullQuoteBlock()),
+                ('side',ChooseSideBlock(default=("left", "Left"))),
+            ], icon = "openquote"
+        )),
+        ('header_link', blocks.StructBlock(
+            [
+                ('block', HeaderLinkBlock()),
+                ('side',ChooseSideBlock(default=("right", "Right"))),
+            ], icon = "title"
+        )),
+        ('gap', GapBlock()),
+        ('switch_view', ChooseViewBlock()),
+    ])
+
+    class Meta:
+        template = 'article/stream_blocks/visual-essay.html',
+        icon = "form"

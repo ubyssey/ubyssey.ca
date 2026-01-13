@@ -1356,8 +1356,15 @@ class StandardArticlePage(ArticlePage):
             )),
             ('audio', blocks_inner_article.AudioBlock()),
             ('image', image_blocks.ImageBlock()),
+            ('gallery_block', blocks_inner_article.GalleryBlock(
+                label="Image carousel",
+            )),
             ('image_grid', blocks_inner_article.ImageGrid()),
             ('image_wall', blocks_inner_article.ImageWall()),
+            ('attachment_overlay', blocks_inner_article.AttachmentOverlay(
+                help_text = "The first attachment is the base. When this block is in view, the subsequent attachments fade in."
+            )),
+            ('image_header', blocks_inner_article.IntraArticleImageBanner()),
             ('pdf', blocks_inner_article.PdfBlock()),
             ('raw_html', blocks.RawHTMLBlock(
                 label = "Raw HTML Block",

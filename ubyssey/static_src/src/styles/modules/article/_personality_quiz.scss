@@ -26,7 +26,7 @@
     }
     
     button.personality-quiz__answer.selected {
-        border-color: variables.$color-ubyssey-blue;
+        border-color: var(--color-ubyssey_blue);
         background-color: #0071c9;
         color: white;
         text-decoration: underline;
@@ -41,7 +41,7 @@
         border: none;
         border-radius: 0;
         background: none;
-        background-color: variables.$color-ubyssey-blue;
+        background-color: var(--color-ubyssey_blue);
         color: white;
     }
     
@@ -86,7 +86,7 @@
             display: inline;
             border-bottom: 1px solid;
             font-weight: 600;
-            color: variables.$color-ubyssey-blue;
+            color: var(--color-ubyssey_blue);
         }
     }
     

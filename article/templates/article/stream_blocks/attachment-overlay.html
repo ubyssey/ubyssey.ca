@@ -1,0 +1,12 @@
+{% load wagtailcore_tags %}
+
+<div class="o-attachment-overlay attachment image-attachment {{self.position}} {{self.width}}">
+    <div class="o-attachment-overlay--attachments">
+    {% for attachment in self.attachments %}
+        {% include_block attachment %}
+    {% endfor %}
+    </div>
+    <div class="caption">
+        {% if self.caption %}{{ self.caption|safe }}{% endif %} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
+    </div>
+</div>

@@ -214,7 +214,7 @@ ul.vertical-timeline {
         }
         h3.grouped_timeline--group-header-label {
             margin-top: 0.25em;
-            color: variables.$color-ubyssey-blue;
+            color: var(--color-ubyssey_blue);
             font-weight: 600;
         }
         &::after {
