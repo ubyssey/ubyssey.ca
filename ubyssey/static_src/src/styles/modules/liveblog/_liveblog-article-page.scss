@@ -154,6 +154,13 @@
     }
 }
 
+[color-css-theme="dark"] {
+    .c-liveblog-summary {
+        background: var(--color-ubyssey_blue-light);
+        color: var(--color-ubyssey_blue-dark);
+    }
+}
+
 .c-liveblog-header {
     padding-block: 2em;
     border-bottom: 1px solid var(--border-grey);

@@ -1371,10 +1371,6 @@ class StandardArticlePage(ArticlePage):
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
             ('quote', blocks_inner_article.PositionedPullQuote()),
-
-            ('gallery_block', blocks_inner_article.GalleryBlock(
-                label="Image carousel",
-            )),
             ('header_link', blocks_inner_article.HeaderLinkBlock()),
             ('header_menu', blocks_inner_article.HeaderMenuBlock()),
             ('visual_essay', blocks_inner_article.VisualEssayBlock()),

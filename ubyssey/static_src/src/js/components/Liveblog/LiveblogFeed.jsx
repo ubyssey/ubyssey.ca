@@ -31,18 +31,23 @@ export default function LiveBlogFeed() {
         return delta < convertToMilliseconds(0, 30, 0, 0);
     }
 
-    const updatesAtLoad = JSON.parse(document.getElementById('updates-at-load').textContent);
-    const isAdminAtLoad = JSON.parse(document.getElementById('is-admin').textContent);
-    
-    const [updates, setUpdates] = useState(updatesAtLoad);
-    const [updateOrder, setUpdateOrder] = useState(getUpdateOrder());
-    const [caughtUp, setCaughtUp] = useState(!isLive(updatesAtLoad));
-    const [isAdmin, setIsAdmin] = useState(isAdminAtLoad);
+    function updatesAtLoad() {
+        return JSON.parse(document.getElementById('updates-at-load').textContent);
+    };
+    function isAdminAtLoad() {
+        return JSON.parse(document.getElementById('is-admin').textContent);
+    };
+
+    const [updates, setUpdates] = useState(() => updatesAtLoad());
+    const [updateOrder, setUpdateOrder] = useState(() => getUpdateOrder());
+    const [caughtUp, setCaughtUp] = useState(() => !isLive(updates));
+    const [isAdmin, setIsAdmin] = useState(() => isAdminAtLoad());
+    const [presentTime, setPresentTime] = useState(new Date());
 
     function updateTimes() {
         const times = document.getElementsByclassNameName("liveblog-updating-time");
         for (const time of times) {
-            time.innerHTML = timeDeltaString(time.dateTime);
+            time.innerHTML = timeDeltaString(new Date(), new Date(time.dateTime));
         }
     }
 
@@ -79,6 +84,8 @@ export default function LiveBlogFeed() {
     let chatSocket = null;
 
     useEffect(() => {
+        setCaughtUp(!isLive(updates))
+
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         chatSocket = new WebSocket(
             'ws://'
@@ -88,11 +95,10 @@ export default function LiveBlogFeed() {
             + '/'
         );
 
-        chatSocket.onmessage = function(e) {
+        chatSocket.onmessage = (e) => {
             const data = JSON.parse(e.data);
             const newUpdate = JSON.parse(data.message);
-            setUpdates([...updates.filter((update) => update.id != newUpdate.id), newUpdate]);
-            console.log(updates);
+            setUpdates(prev => [...prev.filter((update) => update.id != newUpdate.id), newUpdate]);
 
             setCaughtUp(false);
             if (isAtRecent()) {
@@ -104,11 +110,16 @@ export default function LiveBlogFeed() {
             console.error('Chat socket closed unexpectedly');
         };
 
-        //setInterval(updateTimes, 10000);
+        setInterval(() => {
+            const updatedTime = timeUpdatedAt(updates);
+            for (let liveblog_updated_at of document.getElementsByClassName("liveblog_updated_at")) {
+                liveblog_updated_at.dateTime = updatedTime;
+                liveblog_updated_at.innerHTML = timeDeltaString(new Date(), new Date(updatedTime), convertToMilliseconds(0,0,0,1));
+            }
+        }, 5000);
+        setInterval(() => setPresentTime(new Date()), 1000);
 
         window.onscroll = (e) => {
-            console.log(window.scrollY);
-            console.log(updateOrder);
             if (updateOrder == -1) {
                 if (window.scrollY < getLiveblogRecentScrollHeight() || window.scrollY <= 0) {
                     setCaughtUp(true);
@@ -135,7 +146,7 @@ export default function LiveBlogFeed() {
         const updatedTime = timeUpdatedAt(updates);
         for (let liveblog_updated_at of document.getElementsByClassName("liveblog_updated_at")) {
             liveblog_updated_at.dateTime = updatedTime;
-            liveblog_updated_at.innerHTML = timeDeltaString(updatedTime, convertToMilliseconds(0,0,0,1));
+            liveblog_updated_at.innerHTML = timeDeltaString(new Date(), new Date(updatedTime), convertToMilliseconds(0,0,0,1));
         }
 
     }, [updates]);
@@ -148,7 +159,7 @@ export default function LiveBlogFeed() {
         </div>
 
         <div id="liveblog">
-            {updates.sort((a,b) => sortUpdates(a,b,updateOrder)).map((update)=> <LiveblogUpdate update={update} isAdmin={isAdmin} />)}
+            {updates.sort((a,b) => sortUpdates(a,b,updateOrder)).map((update)=> <LiveblogUpdate update={update} presentTime={presentTime} isAdmin={isAdmin} />)}
         </div>
 
         <div id="liveblog-end" className="c-liveblog--end">

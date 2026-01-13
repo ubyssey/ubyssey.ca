@@ -21,10 +21,18 @@
         }
     }
 
-    .o-liveblog-update--meta--image {
-        width: 2.5em;
-        img {
-            border-radius: 100%;
+    .o-liveblog-update--meta--images {
+        display: flex;
+        .o-liveblog-update--meta--image {
+            margin-left: -0.5em;
+            width: 2.5em;
+            
+            &:first-child {
+                margin-left: 0;
+            }
+            img {
+                border-radius: 100%;
+            }
         }
     }
     .o-liveblog-update--meta--time {
@@ -34,7 +42,17 @@
     }
     .o-liveblog-update--meta--author {
         font-size: 0.75em;
-        color: var(--text_color);
+        color: var(--text_color_supporting);
+        a {
+            margin-right: 0.25em;
+            color: var(--text_color);
+        }
+        span {
+            margin-left: 0.25em;
+            &:first-child {
+                margin-left: 0;
+            }
+        }
     }
 
     .o-liveblog-update--edit-button {
@@ -66,6 +84,9 @@
                 }
             }
         }
+        &.o-article_storystream_indent .o-article__right > .attachment {
+            padding-right: 0;
+        }
         iframe, .carousel {
             margin: 0;
         }
@@ -74,6 +95,9 @@
         }
         .carousel-control-next {
             right: 0;
+        }
+        .carousel-item img {
+            object-fit: cover;
         }
         &.o-article_storystream_feature {
             padding: 0em;

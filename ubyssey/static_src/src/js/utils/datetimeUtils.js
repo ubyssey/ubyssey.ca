@@ -17,13 +17,12 @@ export function fullDateTimeString(datetime) {
     return shortMonthsNames[datetime.getMonth()] + ". " + String(datetime.getDate()) + ", " + String(datetime.getFullYear()) + ", " + datetime.toLocaleTimeString("en-US") + " " + timezoneNameInitials(datetime);
 }
 
-export function timeDeltaString(datetime, max = null) {
-    datetime = new Date(datetime);
-    const delta = new Date().getTime() - datetime.getTime();
+export function timeDeltaString(datetimeA, datetimeB, max = null) {
+    const delta = datetimeA.getTime() - datetimeB.getTime();
     
     if (max != null) {
         if (delta > max) {
-            return fullDateTimeString(datetime);
+            return fullDateTimeString(datetimeA);
         }        
     }
     if (delta > d) {
@@ -32,6 +31,9 @@ export function timeDeltaString(datetime, max = null) {
         return String(Math.floor(delta/h)) + "h ago";
     } else if (delta > m) {
         return String(Math.floor(delta/m)) + "m ago";
+    } else if (delta < 5 *s) {
+        return "Now"
     }
+
     return String(Math.floor(delta/s)) + "s ago"
 }
