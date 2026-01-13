@@ -38,6 +38,8 @@ services:
   redis:
     restart: always
     image: redis:latest
+    networks:
+      - ubyssey-internal
     volumes:
       - redis-data:/var/lib/redis
     ports:
@@ -58,7 +60,7 @@ services:
     # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
       bash -c "python manage.py migrate && python manage.py crontab add && service cron start 
-      && gunicorn ubyssey.asgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
+      && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
@@ -125,6 +127,7 @@ services:
     depends_on:
       - mysql
       - cache
+      - redis
 
   nginx:
     image: nginx:1.27
