@@ -17,7 +17,7 @@ ua-parser==0.10.0
 user-agents==2.2.0
 django-user_agents==0.4.0
 gunicorn==21.2.0
-uvicorn==0.40.0
+uvicorn
 Pillow==10.4.*
 google-cloud-datastore==2.17.0
 google-cloud-storage==1.44.0
