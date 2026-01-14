@@ -109,29 +109,23 @@
     --article-standard-content-width: 550px;
 }
 
-@keyframes throb {
-  from {width: 0.6em;}
-  to {width: 0.7em;}
-}
-
 .live-signal {
     display: none;
     position: relative;
-    padding-left: 1.2em;
+    padding-left: 1.6em;
 
-    font-variation-settings: "wght" 600;
-    color: var(--text_color_supporting);
+    font-variation-settings: "wght" 800;
+    color: var(--color-ubyssey_blue);
     &::before {
         content: "";
         display: inline-block;
-        width: 0.6em;
+        width: 0.75em;
         aspect-ratio: 1;
         border-radius: 100%;
         background-color: variables.$color-ubyssey-blue;
         position: absolute;
-        top: 50%;
-        left: 0.6em;
-        transform: translate(-50%, -50%);
+        top: 0.2em;
+        left: 0.25em;
         animation: throb alternate-reverse ease-in-out 0.5s infinite;
     }
 }

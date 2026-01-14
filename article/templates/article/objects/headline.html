@@ -3,7 +3,11 @@
 {% load video_filters %}
 {% load articletags %}
 
-<div class="o-article__published">{{ article.published_at|display_pubdate }}</div>
+{% if article.is_live %}
+    <div class="o-article__published live">LIVE</div>
+{% else %}
+    <div class="o-article__published">{{ article.published_at|display_pubdate }}</div>
+{% endif %}
 <h3 class="o-article__headline">
     <a href="{% pageurl article %}">
         {{ article.title|safe }}

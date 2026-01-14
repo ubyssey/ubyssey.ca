@@ -506,3 +506,8 @@ ion-icon {
   from {transform: rotate(0deg);}
   to {transform: rotate(359deg);}
 }
+
+@keyframes throb {
+  from {scale: 1; opacity:1;}
+  to {scale: 1.15; opacity: 0.95;}
+}

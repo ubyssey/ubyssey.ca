@@ -6,6 +6,7 @@ from django.forms import Media, HiddenInput
 from django.urls import reverse
 from django.template import loader
 from django.shortcuts import render
+from django.utils import timezone
 
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -208,6 +209,12 @@ class LiveBlogArticlePage(ArticlePage):
         if time:
             return time.publish_date
         return None
+
+    def is_live(self):
+        updated = self.updated_at()
+        if updated:
+            return timezone.now() - updated < timezone.timedelta(minutes=30)
+        return False
 
     def updateJsonFormat(self):
         updates = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("-publish_date")

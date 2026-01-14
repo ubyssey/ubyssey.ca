@@ -1295,6 +1295,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if self.explicit_published_at - self.first_published_at < timezone.timedelta(days=5):
                 return self.first_published_at
         return self.explicit_published_at
+    
+    def is_live(self):
+        # maybe this is a stupid way to check, but I wanted to leave the possibility of multiple liveblog page types in the future - Sam Low 2026-01-14
+        if "live" in str(self.specific_class):
+            return self.specific.is_live()
+        return False
 
     class Meta:
         # TODO Should probably index on:
