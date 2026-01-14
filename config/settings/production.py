@@ -15,6 +15,8 @@ ALLOWED_HOSTS = ['localhost', '*']
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 
+CSRF_TRUSTED_ORIGINS = ['https://ubyssey.ca', 'https://*.ubyssey.ca']
+
 # Sessions are used to anonymously keep track of individual site visitors
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
