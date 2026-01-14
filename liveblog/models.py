@@ -182,13 +182,13 @@ class LiveBlogArticlePage(ArticlePage):
         return context
     
     def updated_at(self):
-        time = LiveBlogUpdate.objects.all().order_by("-publish_date").first()
+        time = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("-publish_date").first()
         if time:
             return time.publish_date
         return None
 
     def updateJsonFormat(self):
-        updates = LiveBlogUpdate.objects.all().order_by("-publish_date")
+        updates = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("-publish_date")
         return [update.jsonFormat() for update in updates]
 
     @route(r'^admin/$', name='admin_view')
