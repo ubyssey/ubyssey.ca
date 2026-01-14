@@ -60,7 +60,7 @@ services:
     # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
       bash -c "python manage.py migrate && python manage.py crontab add && service cron start 
-      && daphne ubyssey.asgi:application --bind 0.0.0.0:8000"
+      && daphne ubyssey.asgi:application --bind 0.0.0.0 -p 8000"
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
