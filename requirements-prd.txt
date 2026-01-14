@@ -8,7 +8,8 @@ django-crontab==0.7.1
 channels==4.3.2
 channels_redis==4.3.0
 daphne==4.2.1
-pymemcache==4.0.0
+#pymemcache==4.0.0
+pylibmc==1.6.3
 mysqlclient==2.2.6
 beautifulsoup4==4.11.2
 feedparser==6.0.10
