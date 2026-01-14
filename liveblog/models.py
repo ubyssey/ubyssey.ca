@@ -12,9 +12,20 @@ from modelcluster.models import ClusterableModel
 
 from wagtail.fields import StreamField
 from wagtail import blocks
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel, InlinePanel
+from wagtail.admin.panels import (
+    # Panels
+    FieldPanel,
+    FieldRowPanel,
+    HelpPanel,
+    InlinePanel,
+    MultiFieldPanel,
+    # Custom admin tabs
+    ObjectList,
+    TabbedInterface,
+    TitleFieldPanel
+)
 from wagtail.admin.panels.model_utils import extract_panel_definitions_from_model_class
-from wagtail.admin.panels import ObjectList
+from wagtail.admin.panels import ObjectList, Panel
 from wagtail.admin.staticfiles import versioned_static
 from wagtail.admin.viewsets.model import ModelViewSet
 from wagtail.snippets.models import register_snippet
@@ -90,7 +101,7 @@ class LiveBlogUpdate(ClusterableModel):
     panels = [
         FieldPanel("authors"),
         FieldPanel("content"),
-        FieldPanel("room_name", widget=HiddenInput),
+        FieldPanel("room_name", widget=HiddenInput)
     ]
 
     def save(self, *args, **kwargs):
@@ -119,6 +130,17 @@ class LiveBlogUpdate(ClusterableModel):
  
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
+
+    content_panels = [HelpPanel(template="liveblog/objects/liveblog-nav-link.html")] + ArticlePage.content_panels
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(ArticlePage.promote_panels, heading='Promote'),
+            ObjectList(ArticlePage.settings_panels, heading='Settings'),
+            ObjectList(ArticlePage.customization_panels, heading='Special article stuff'),
+        ],
+    )
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -190,7 +212,3 @@ class LiveBlogArticlePage(ArticlePage):
     def updateJsonFormat(self):
         updates = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("-publish_date")
         return [update.jsonFormat() for update in updates]
-
-    @route(r'^admin/$', name='admin_view')
-    def admin_view(self, request):
-        return render(request, "liveblog/liveblog_admin_page.html", self.get_admin_context(request))
