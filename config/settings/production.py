@@ -15,6 +15,8 @@ ALLOWED_HOSTS = ['localhost', '*']
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']
 
+CSRF_TRUSTED_ORIGINS = ['https://ubyssey.ca', 'https://*.ubyssey.ca']
+
 # Sessions are used to anonymously keep track of individual site visitors
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
@@ -40,8 +42,8 @@ ADS_TXT_URL = 'https://ubyssey.storage.googleapis.com/ads.txt'
 MEDIA_URL = 'https://ubyssey.storage.googleapis.com/media/'
 MEDIA_ROOT = ''
 
-GS_ACCESS_KEY_ID = env('GS_ACCESS_KEY_ID', default='') or read_file(env('GS_ACCESS_KEY_ID_FILE'))
-GS_SECRET_ACCESS_KEY = env('GS_SECRET_ACCESS_KEY', default='') or read_file(env('GS_SECRET_ACCESS_KEY_FILE'))
+GS_ACCESS_KEY_ID = env('GS_ACCESS_KEY_ID', default='') or read_file(env('GS_ACCESS_KEY_ID_FILE', default=''))
+GS_SECRET_ACCESS_KEY = env('GS_SECRET_ACCESS_KEY', default='') or read_file(env('GS_SECRET_ACCESS_KEY_FILE', default=''))
 # GS_CREDENTIALS = service_account.Credentials.from_service_account_file('ubyssey-prd-ee6290e6327f.json')
 # GS_CREDENTIALS = env('GOOGLE_APPLICATION_CREDENTIALS')
 GS_BUCKET_NAME = 'ubyssey'
@@ -53,7 +55,7 @@ GS_FILE_OVERWRITE = False
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'noreply@ubyssey.ca'
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='') or read_file(env('EMAIL_HOST_PASSWORD_FILE'))
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='') or read_file(env('EMAIL_HOST_PASSWORD_FILE', default=''))
 EMAIL_USE_SSL = True
 UBYSSEY_ADVERTISING_EMAIL = 'advertising@ubyssey.ca'
 
