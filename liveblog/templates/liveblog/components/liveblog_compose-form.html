@@ -20,7 +20,9 @@
 <script>
     function formDataToQuery(form) {
         const formObject = Object.fromEntries(form);
-        return Object.keys(formObject).map((k) => k + "=" + formObject[k]).join("&");
+        const body = Object.keys(formObject).map((k) => k + "=" + encodeURIComponent(formObject[k])).join("&");
+        console.log(body);
+        return body;
     }
 
     document.getElementById("publish_update").addEventListener("click", async () => {

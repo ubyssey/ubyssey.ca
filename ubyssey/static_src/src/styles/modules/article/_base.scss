@@ -66,6 +66,13 @@ div.article-content {
       text-decoration: underline;
     }
   }
+
+  .c-article--post-content-meta {
+    max-width: var(--article-standard-content-width);
+    @media(variables.$bp-smaller-than-phablet) {
+      padding-inline: 1em;
+    }
+  }
 }
 
 .c-article {
@@ -365,6 +372,8 @@ div.article-content, .o-visual-essay__right-div {
 
   .time-stamp {
     font-style: italic;
+    font-family: fonts.$font-body;
+    font-size: 1.2em;
     span {
       display: inline-block;
     }
@@ -378,6 +387,7 @@ div.article-content, .o-visual-essay__right-div {
     color: var(--text_color);
     font-family: fonts.$font-default;
     font-weight: 400;
+    border-bottom: 1px solid;
     }
   }
 }
@@ -417,6 +427,7 @@ p.c-article__published-at {
   font-family: fonts.$font-default;
   font-weight: 600;
   font-variation-settings: "wght" 600;
+  font-size: 1.2em;
 
   .share-bsky svg {
     vertical-align: initial;

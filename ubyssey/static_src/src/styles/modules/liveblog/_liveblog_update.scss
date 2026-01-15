@@ -67,6 +67,23 @@
         border-radius: 0.25em;
     }
 
+    .o-liveblog-update--content {
+        >p {
+            a {
+            padding: 0px 3px;
+            border-bottom: 1px solid;
+
+            font-weight: 600;
+            transition-duration: 0.5s;
+            color: var(--color-ubyssey_blue);
+
+            &:hover {
+                color: var(--color-ubyssey_blue);
+            }
+            }
+        }
+    }
+
     // Storystream
     .o-article_storystream {
         margin-inline: 0;

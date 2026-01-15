@@ -46,8 +46,11 @@
     position: sticky;
     left: 0;
     right: 0;
+    z-index: -1;
+
     opacity: 0;
-    transition: opacity 1s ease-in;
+    transition: opacity 0.25s 0s ease-in, z-index 0s 1.25s;
+    
     &::before {
         content: "";
         margin: 0;
@@ -100,6 +103,8 @@
 
     &.show {
         opacity: 1;
+        z-index: 0;
+        transition: opacity 0.25s 0.25s ease-in;
     }
 
 

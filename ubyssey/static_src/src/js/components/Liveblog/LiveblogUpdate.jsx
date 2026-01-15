@@ -25,7 +25,7 @@ export default function LiveblogUpdate({update, isAdmin, presentTime}) {
                 </div>
                 {isAdmin && <a className="o-liveblog-update--edit-button" href={"/admin/snippets/liveblog/liveblogupdate/edit/" + update.id + "/"}>Edit</a>}
             </div>
-            <div dangerouslySetInnerHTML={{__html: update.html}}></div>
+            <div className="o-liveblog-update--content" dangerouslySetInnerHTML={{__html: update.html}}></div>
         </div>
     )
 }

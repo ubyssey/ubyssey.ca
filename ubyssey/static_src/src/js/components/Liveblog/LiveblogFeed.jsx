@@ -43,6 +43,7 @@ export default function LiveBlogFeed() {
     const [caughtUp, setCaughtUp] = useState(() => !isLive(updates));
     const [isAdmin, setIsAdmin] = useState(() => isAdminAtLoad());
     const [presentTime, setPresentTime] = useState(new Date());
+    const [connectionCount, setConnectionCount] = useState(1);
 
     function updateTimes() {
         const times = document.getElementsByclassNameName("liveblog-updating-time");
@@ -86,35 +87,6 @@ export default function LiveBlogFeed() {
     useEffect(() => {
         setCaughtUp(!isLive(updates))
 
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
-        let wsProtocol = "ws";
-        if (window.location.protocol.includes("https")) {
-            wsProtocol = "wss";
-        }
-
-        chatSocket = new WebSocket(
-            wsProtocol + '://'
-            + window.location.host
-            + '/ws/liveblog/'
-            + roomName
-            + '/'
-        );
-
-        chatSocket.onmessage = (e) => {
-            const data = JSON.parse(e.data);
-            const newUpdate = JSON.parse(data.message);
-            setUpdates(prev => [...prev.filter((update) => update.id != newUpdate.id), newUpdate]);
-
-            setCaughtUp(false);
-            if (isAtRecent()) {
-                setTimeout(() => setCaughtUp(true), 2000);
-            }
-        };
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
         setInterval(() => {
             const updatedTime = timeUpdatedAt(updates);
             for (let liveblog_updated_at of document.getElementsByClassName("liveblog_updated_at")) {
@@ -138,6 +110,41 @@ export default function LiveBlogFeed() {
             setTimeout(() => setCaughtUp(true), 1000);
         }
     }, []);
+
+    useEffect(() => {
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        let wsProtocol = "ws";
+        if (window.location.protocol.includes("https")) {
+            wsProtocol = "wss";
+        }
+        chatSocket = new WebSocket(
+            wsProtocol + '://'
+            + window.location.host
+            + '/ws/liveblog/'
+            + roomName
+            + '/'
+        );
+
+        chatSocket.onopen = () => {
+            console.log("Web socket connection opened");
+        };
+
+        chatSocket.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            const newUpdate = JSON.parse(data.message);
+            setUpdates(prev => [...prev.filter((update) => update.id != newUpdate.id), newUpdate]);
+
+            setCaughtUp(false);
+            if (isAtRecent()) {
+                setTimeout(() => setCaughtUp(true), 2000);
+            }
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Web socket closed unexpectedly');
+            setTimeout(() => {setConnectionCount(connectionCount + 1);}, 5000);
+        };        
+    }, [connectionCount]);
 
     useEffect(() => {
         const live = isLive(updates);

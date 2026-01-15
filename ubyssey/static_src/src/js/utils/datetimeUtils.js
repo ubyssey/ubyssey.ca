@@ -22,7 +22,7 @@ export function timeDeltaString(datetimeA, datetimeB, max = null) {
     
     if (max != null) {
         if (delta > max) {
-            return fullDateTimeString(datetimeA);
+            return fullDateTimeString(datetimeB);
         }        
     }
     if (delta > d) {
