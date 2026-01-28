@@ -245,7 +245,7 @@ function ContentTrackerViewStoryAssignment({storyAssignment}) {
     return (
         <div className="c-content-tracker--viewed-article">
                 <div className="c-content-tracker--viewed-assignment">
-                    <h3>{storyAssignment.subject} <a href={"/admin/snippets/content_tracker/storyassignment/edit/" + storyAssignment.id} target="_blank" className="button button--icon text-replace white"><svg class="icon icon-edit icon" aria-hidden="true"><use href="#icon-edit"></use></svg>edit</a></h3>
+                    <h3>{storyAssignment.subject} <a href={"/admin/snippets/content_tracker/storyassignment/edit/" + storyAssignment.id + "/"} target="_blank" className="button button--icon text-replace white"><svg class="icon icon-edit icon" aria-hidden="true"><use href="#icon-edit"></use></svg>edit</a></h3>
                     <dl>
                         <dt>{transformHypenedString(storyAssignment.assigning_section)} - {transformHypenedString(storyAssignment.story_type)}</dt>
                         <dd>{storyAssignment.summary}</dd>

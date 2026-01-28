@@ -146,6 +146,8 @@ div.article-content {
 
     .vs-over-image {
         display: block;
+        --visual_essay--bubble-background: #eee;
+        --visual_essay--bubble-text_colour: #1b1b1b;
         
         .o-visual-essay__left-image {
             height: 100%;
@@ -192,8 +194,8 @@ div.article-content {
         .o-visual-essay__right-div {
             position: relative;
             border-radius: 1em;
-            background-color: #eee;
-            --text_color: #1b1b1b;
+            background-color: var(--visual_essay--bubble-background);
+            --text_color: var(--visual_essay--bubble-text_colour);
             //opacity: 0;
             transition: opacity 1s, visibility 1s;
 
@@ -218,12 +220,12 @@ div.article-content {
         .vs-side-by-side {
             .o-visual-essay__left-container {
                 @media (variables.$bp-smaller-than-phablet) {
-                    border-image: linear-gradient(to right, #ffffff00, variables.$color-ubyssey-blue-dark, #ffffff00) 30 stretch;
+                    border-image: linear-gradient(to right, #ffffff00, var(--color-ubyssey_blue-dark), #ffffff00) 30 stretch;
                 }
             }
 
             .o-visual-essay__right-container {
-                border-image: linear-gradient(#ffffff00, variables.$color-ubyssey-blue-dark, #ffffff00) 30 stretch;
+                border-image: linear-gradient(#ffffff00, var(--color-ubyssey_blue-dark), #ffffff00) 30 stretch;
             }
         }
     }
@@ -232,12 +234,12 @@ div.article-content {
         .vs-side-by-side {
             .o-visual-essay__left-container {
                 @media (variables.$bp-smaller-than-phablet) {
-                    border-image: linear-gradient(to right, #ffffff00, variables.$color-ubyssey-blue-light, #ffffff00) 30 stretch;
+                    border-image: linear-gradient(to right, #ffffff00, var(--color-ubyssey_blue-light), #ffffff00) 30 stretch;
                 }
             }
 
             .o-visual-essay__right-container {
-                border-image: linear-gradient(#ffffff00, variables.$color-ubyssey-blue-light, #ffffff00) 30 stretch;
+                border-image: linear-gradient(#ffffff00, var(--color-ubyssey_blue-light), #ffffff00) 30 stretch;
             }
         }
     }
@@ -267,7 +269,7 @@ div.article-content {
             //width:40%;
             //max-width: 400px;
             //margin: auto;
-            border-left-style: solid;
+            //border-left-style: solid;
 
             @media (variables.$bp-smaller-than-phablet) {
                 border-left-style: none;

@@ -1,0 +1,191 @@
+@use "../fonts";
+@use "../variables";
+
+.c-liveblog {
+    padding-inline: 1em;
+}
+
+.c-liveblog, .c-liveblog-container {
+    overflow: clip;
+}
+
+.c-liveblog--end {
+    margin: 3em auto;
+    width: fit-content;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        
+        width: 550px;
+        max-width: 100%;
+        
+        border-bottom: 1px solid var(--light-grey);
+    }
+
+    .c-liveblog--end--contents {
+        margin-inline: 4em;
+        padding-inline: 1.5em;
+
+        position: relative;
+        width: fit-content;
+
+        background-color: var(--background);
+        transition: background-color 0.5s ease;
+        
+        font-size: 1em;
+        font-variation-settings: "wght" 600;
+    }
+}
+
+.c-liveblog--update-notification {
+    position: sticky;
+    left: 0;
+    right: 0;
+    z-index: -1;
+
+    opacity: 0;
+    transition: opacity 0.25s 0s ease-in, z-index 0s 1.25s;
+    
+    &::before {
+        content: "";
+        margin: 0;
+        position: relative;
+
+        display: block;
+        height: 100px;
+        width: 100%;
+        background: radial-gradient(closest-side, variables.$color-ubyssey-blue, transparent);
+    }
+
+    button.c-liveblog--update-notification--button {
+        padding: 0.25em 1em;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: variables.$color-ubyssey-blue;
+
+        border: none;
+        border-radius: 1em;
+        color: white;
+        font-size: 1em;
+        font-variation-settings: "wght" 600;
+
+        filter: drop-shadow(0 0 0.25em #00000054);
+    }
+
+    &.top {
+        margin-top: -50px;
+        top: 0;
+        margin-bottom: -50px;
+        &::before {
+            top: 0;
+        }
+        button.c-liveblog--update-notification--button {
+            bottom: 0;
+        }
+    }
+
+    &.bottom {
+        margin-top: -100px;
+        bottom: 0;
+        &::before {
+            bottom: -50px;
+        }
+        button.c-liveblog--update-notification--button {
+            top: 0;
+        }
+    }
+
+    &.show {
+        opacity: 1;
+        z-index: 0;
+        transition: opacity 0.25s 0.25s ease-in;
+    }
+
+
+}
+
+.c-article.c-article--liveblog {
+    --article-standard-content-width: 550px;
+}
+
+.live-signal {
+    display: none;
+    position: relative;
+    padding-left: 1.6em;
+
+    font-variation-settings: "wght" 800;
+    color: var(--color-ubyssey_blue);
+    &::before {
+        content: "";
+        display: inline-block;
+        width: 0.75em;
+        aspect-ratio: 1;
+        border-radius: 100%;
+        background-color: variables.$color-ubyssey-blue;
+        position: absolute;
+        top: 0.2em;
+        left: 0.25em;
+        animation: throb alternate-reverse ease-in-out 0.5s infinite;
+    }
+}
+
+.live {
+    .live-signal {
+        display: inline;
+    }
+}
+
+.c-liveblog-summary {
+    margin-inline: auto;
+    padding: 1em;
+
+    max-width: var(--article-standard-content-width);
+    background: #eee;
+    color: #656565;
+    @media(variables.$bp-larger-than-phablet) {
+        border-radius: 0.25em;
+    }
+}
+
+[color-css-theme="dark"] {
+    .c-liveblog-summary {
+        background: var(--color-ubyssey_blue-light);
+        color: var(--color-ubyssey_blue-dark);
+    }
+}
+
+.c-liveblog-header {
+    padding-block: 2em;
+    border-bottom: 1px solid var(--border-grey);
+    max-width: var(--article-standard-content-width);
+
+    .headline-container.headline-container--timely-style {
+        margin: auto;
+        padding: 1em;
+        max-width: var(--article-standard-content-width);
+
+        color: var(--text_color);
+        h1 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .c-article__published-at {
+            margin: 1rem 0;
+            color: var(--text_color_supporting);
+        }
+        .o-article--header--above_cut_lede {
+            font-family: fonts.$font-body;
+            font-size: 1.15em;
+        }
+        .author-string {
+            font-variation-settings: "wght" 600;
+            font-size: .75em;
+        }
+    }
+}

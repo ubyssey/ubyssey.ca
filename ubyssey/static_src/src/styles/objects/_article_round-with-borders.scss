@@ -48,7 +48,7 @@ article.article--round_with_border {
 
     h3.o-article__headline {
       padding-bottom: 0.5em;
-      color: variables.$color-ubyssey-blue-dark;
+      color: var(--color-ubyssey_blue-dark);
     }
 
     p.o-article__published {

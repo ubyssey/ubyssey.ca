@@ -51,14 +51,14 @@ div.article-content {
     margin: 2em auto;
     border-top: 2px solid;
     padding-top: 0.75em;
-    max-width: 585px;
+    max-width: var(--article-standard-content-width);
 
-    color: variables.$color-ubyssey-blue;
+    color: var(--color-ubyssey_blue);
     font-family: fonts.$font-body;
 
     p {
       margin-top: 0;
-      color: variables.$color-ubyssey-blue;
+      color: var(--color-ubyssey_blue);
       line-height: 2em;
     }
 
@@ -66,6 +66,17 @@ div.article-content {
       text-decoration: underline;
     }
   }
+
+  .c-article--post-content-meta {
+    max-width: var(--article-standard-content-width);
+    @media(variables.$bp-smaller-than-phablet) {
+      padding-inline: 1em;
+    }
+  }
+}
+
+.c-article {
+  --article-standard-content-width: 585px;
 }
 
 .c-article--default {
@@ -165,7 +176,7 @@ div.article-content {
   max-width: none;
   z-index: 10;
 
-  background-color: variables.$color-ubyssey-blue;
+  background-color: var(--color-ubyssey_blue);
   border-radius: 4px;
   
   color: white;
@@ -226,11 +237,9 @@ div.article-content {
 
   @media(variables.$bp-larger-than-tablet) {
     display: table-cell;
-    padding-right: 15px;
     padding-left: 0;
     vertical-align: top;
     box-sizing: border-box;
-    width: 65%;
   }
 
   .redacted {
@@ -250,7 +259,7 @@ div.article-content {
   h1, h2, h3, h4 {
     > a {
       text-decoration: none;
-      background-image: linear-gradient(variables.$color-ubyssey-blue, variables.$color-ubyssey-blue);
+      background-image: linear-gradient(var(--color-ubyssey_blue), var(--color-ubyssey_blue));
       background-position: 0 calc(100% - 0.1em);
       background-repeat: no-repeat;
       background-size: 100% 0.25em;
@@ -295,7 +304,7 @@ div.article-content {
   > div.c-widget-event,
   > .attachment.pull-quote {
     padding: 0;
-    max-width: 585px;
+    max-width: var(--article-standard-content-width);
   }
 
   >ul, >ol {
@@ -304,7 +313,7 @@ div.article-content {
 
     @media(variables.$bp-larger-than-phablet) {
       padding-left: variables.$article-content-ul-padding-left;
-      max-width: 585px - variables.$article-content-ul-padding-left;
+      max-width: var(--article-standard-content-width) - variables.$article-content-ul-padding-left;
       padding-right: 0;
     }
   }
@@ -327,10 +336,10 @@ div.article-content, .o-visual-essay__right-div {
 
       font-weight: 600;
       transition-duration: 0.5s;
-      color: variables.$color-ubyssey-blue;
+      color: var(--color-ubyssey_blue);
 
       &:hover {
-        color: variables.$color-ubyssey-blue;
+        color: var(--color-ubyssey_blue);
       }
     }
   }
@@ -351,7 +360,7 @@ div.article-content, .o-visual-essay__right-div {
 
     a {
       text-transform: capitalize;
-      color: #0071c9;
+      color: var(--color-ubyssey_blue);
       text-decoration: none;
       border: none;
     }
@@ -363,6 +372,8 @@ div.article-content, .o-visual-essay__right-div {
 
   .time-stamp {
     font-style: italic;
+    font-family: fonts.$font-body;
+    font-size: 1.2em;
     span {
       display: inline-block;
     }
@@ -376,6 +387,7 @@ div.article-content, .o-visual-essay__right-div {
     color: var(--text_color);
     font-family: fonts.$font-default;
     font-weight: 400;
+    border-bottom: 1px solid;
     }
   }
 }
@@ -404,7 +416,7 @@ div.article-content, .o-visual-essay__right-div {
 p.author-string>a {
   font-weight: 600;
   font-variation-settings: "wght" 600;
-  color: variables.$color-ubyssey-blue;
+  color: var(--color-ubyssey_blue);
 }
 
 p.c-article__published-at {
@@ -415,6 +427,7 @@ p.c-article__published-at {
   font-family: fonts.$font-default;
   font-weight: 600;
   font-variation-settings: "wght" 600;
+  font-size: 1.2em;
 
   .share-bsky svg {
     vertical-align: initial;
@@ -477,7 +490,7 @@ p.c-article__published-at {
 
   &.o-extra-article-info--highlight {
     padding: 1em 1.5em;
-    background-color: variables.$color-ubyssey-blue-light;
+    background-color: var(--color-ubyssey_blue-light);
 
     flex-direction: column;
     gap: 0;
@@ -496,7 +509,7 @@ p.c-article__published-at {
       margin: auto;
     }
     h2, p {
-      color: variables.$color-ubyssey-blue-dark;
+      color: var(--color-ubyssey_blue-dark);
     }
 
     @media(variables.$bp-larger-than-phablet) {
@@ -512,7 +525,7 @@ p.c-article__published-at {
 
   &.o-extra-article-info--editors-note {
     flex-direction: column;
-    border: variables.$color-ubyssey-blue solid 0.25em;
+    border: var(--color-ubyssey_blue) solid 0.25em;
 
     &::before {
       margin: 1em auto;
@@ -557,7 +570,7 @@ div.article-content blockquote.pull-quote, .o-extra-article-info {
     &.center {
       margin-inline: auto;
       width: fit-content;
-      max-width: 600px;
+      max-width: calc(var(--article-standard-content-width) - 1em);
     }
   }
 }

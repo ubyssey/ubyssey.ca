@@ -11,6 +11,7 @@ module.exports = {
     vendors: './src/js/vendors.js',
     a_new: './src/js/advertise_new.js',
     'visual-essay': './src/js/visual-essay.js',
+    'article_content': './src/js/article_content.js',
     'scrollTop': './src/js/scrollTop.js',
     'one-year-later': './src/js/one-year-later.js',
     'sport-series': './src/js/sport-series.js',
@@ -37,6 +38,7 @@ module.exports = {
     'widgets/auto-update-suggested-bar-choice': './src/js/widgets/auto-update-suggested-bar-choice.js',
     'passing-2025': './src/js/passing-2025.js',
     'contentTracker': './src/js/ContentTracker.jsx',
+    'liveblog': './src/js/liveblog.jsx',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),

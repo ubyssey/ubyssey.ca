@@ -874,8 +874,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             index.SearchField('full_name'),
             index.AutocompleteField('full_name'),
         ]),
-        
-        index.FilterField('author_id')
     ]
 
     #-----Properties, getters, setters, etc.-----
@@ -1295,6 +1293,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if self.explicit_published_at - self.first_published_at < timezone.timedelta(days=5):
                 return self.first_published_at
         return self.explicit_published_at
+    
+    def is_live(self):
+        # maybe this is a stupid way to check, but I wanted to leave the possibility of multiple liveblog page types in the future - Sam Low 2026-01-14
+        if "live" in str(self.specific_class):
+            return self.specific.is_live()
+        return False
 
     class Meta:
         # TODO Should probably index on:
@@ -1356,17 +1360,21 @@ class StandardArticlePage(ArticlePage):
             )),
             ('audio', blocks_inner_article.AudioBlock()),
             ('image', image_blocks.ImageBlock()),
+            ('gallery_block', blocks_inner_article.GalleryBlock(
+                label="Image carousel",
+            )),
             ('image_grid', blocks_inner_article.ImageGrid()),
+            ('image_wall', blocks_inner_article.ImageWall()),
+            ('attachment_overlay', blocks_inner_article.AttachmentOverlay(
+                help_text = "The first attachment is the base. When this block is in view, the subsequent attachments fade in."
+            )),
+            ('image_header', blocks_inner_article.IntraArticleImageBanner()),
             ('pdf', blocks_inner_article.PdfBlock()),
             ('raw_html', blocks.RawHTMLBlock(
                 label = "Raw HTML Block",
                 help_text = "WARNING: DO NOT use this unless you really know what you're doing!"
             )),
-            ('quote', blocks_inner_article.PullQuoteBlock()),
-
-            ('gallery_block', blocks_inner_article.GalleryBlock(
-                label="Image carousel",
-            )),
+            ('quote', blocks_inner_article.PositionedPullQuote()),
             ('header_link', blocks_inner_article.HeaderLinkBlock()),
             ('header_menu', blocks_inner_article.HeaderMenuBlock()),
             ('visual_essay', blocks_inner_article.VisualEssayBlock()),
@@ -1380,6 +1388,7 @@ class StandardArticlePage(ArticlePage):
                 template = 'article/stream_blocks/gallery.html',
             )),
             ('cards', blocks_inner_article.CardContainer()),
+            ('article_promo', blocks_inner_article.ArticlePromoBlock()),
         ],
         null=True,
         blank=True,
@@ -1747,8 +1756,6 @@ class StandardArticlePage(ArticlePage):
             index.SearchField('full_name'),
             index.AutocompleteField('full_name'),
         ]),
-        
-        index.FilterField('author_id')
     ]
 
     #-----Properties, getters, setters, etc.-----

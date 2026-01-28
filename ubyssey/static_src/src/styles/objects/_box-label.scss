@@ -78,7 +78,7 @@
   
     .o-boxLabel {
         &.sticky {
-            box-shadow: 0 5px 20px 6px variables.$color-ubyssey-blue-dark;
+            box-shadow: 0 5px 20px 6px var(--color-ubyssey_blue-dark);
         }
     }
   

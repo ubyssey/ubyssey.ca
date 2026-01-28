@@ -20,7 +20,7 @@
     {% endif %}
 
     <div class="pull-quote-quote">
-        <p class="quote">{{ self.content|safe }}</p>
+        <div class="quote">{{ self.content|safe }}</div>
         {% if self.audio or self.source %}
         <p class="meta">
             {% if self.audio %}

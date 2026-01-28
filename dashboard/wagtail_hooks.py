@@ -304,12 +304,18 @@ from django.urls import path, reverse
 from wagtail.admin.menu import MenuItem
 
 from .views import content_tracker
-
+from liveblog.views import liveblog_admin
 
 @hooks.register('register_admin_urls')
 def register_calendar_url():
     return [
         path('content_tracker/', content_tracker, name='content-tracker'),
+    ]
+
+@hooks.register('register_admin_urls')
+def register_liveblog_admin_url():
+    return [
+        path('liveblog/<int:id>/', liveblog_admin, name='liveblog'),
     ]
 
 

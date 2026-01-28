@@ -20,7 +20,7 @@ article.minimal {
             text-transform: uppercase;
         }
         span.o-article__published {
-            color: variables.$color-ubyssey-blue;
+            color: var(--color-ubyssey_blue);
         }
     }
     .o-article__headline {

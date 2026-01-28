@@ -40,10 +40,10 @@ main.events-page {
         .events-info {
             max-width: 500px;
             max-height: 81vh;
-            border: 0.35em solid variables.$color-ubyssey-blue-dark;
+            border: 0.35em solid var(--color-ubyssey_blue-dark);
             border-radius: 1em;
 
-            background-color: variables.$color-ubyssey-blue-dark;
+            background-color: var(--color-ubyssey_blue-dark);
             overflow: auto;
 
             h2.event-info--time {
@@ -87,6 +87,32 @@ main.events-page {
                 }
                 p>a {
                     border-bottom: 1px solid;
+                }
+
+                table {
+                    margin-block: 1em;
+                    border-collapse: collapse;
+                    tbody {
+                        font-size: 0.8em;
+                        line-height: 1em;
+                        tr:nth-child(2n+1) {
+                            background-color: #eee;
+                        }
+                    }
+                    td {
+                        padding: 0.5em;
+                    }
+                    th {
+                        padding: 0.25rem;
+                        text-align: left;
+                    }
+                    thead {
+                        font-size: 0.9em;
+                        font-variation-settings: "wght" 600;
+                        tr {
+                            background: #ddd;
+                        }
+                    }
                 }
 
                 #edit_link {
@@ -200,7 +226,7 @@ div.day{
         color: black;
     }
     &.today {
-        background-color: variables.$color-ubyssey-blue;
+        background-color: var(--color-ubyssey_blue);
         color: white;
         li.selected {
             color: white;
@@ -208,7 +234,7 @@ div.day{
         }
     }
     &.future {
-        background-color: variables.$color-ubyssey-blue-light;
+        background-color: var(--color-ubyssey_blue-light);
         color: black;
     }
 
@@ -651,7 +677,7 @@ header.events{
         
         line-height: 1.5em;
         color: white;
-        background-color: variables.$color-ubyssey-blue;
+        background-color: var(--color-ubyssey_blue);
         
         text-align: center;
         text-decoration: none;

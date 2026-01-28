@@ -35,6 +35,16 @@ services:
       retries: 5
       start_period: 10s
 
+  redis:
+    restart: always
+    image: redis:latest
+    networks:
+      - ubyssey-internal
+    volumes:
+      - redis-data:/var/lib/redis
+    ports:
+      - "6379:6379"
+
   django:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
     
@@ -50,7 +60,7 @@ services:
     # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
       bash -c "python manage.py migrate && python manage.py crontab add && service cron start 
-      && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
+      && gunicorn ubyssey.asgi:application --workers=4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
@@ -83,14 +93,6 @@ services:
     # Ref: https://docs.docker.com/engine/logging/drivers/gcplogs/
     logging:
       driver: gcplogs
-
-    # Health check to verify Django app is responding
-    healthcheck:
-      test: ["CMD-SHELL", "[ $$(curl -s http://localhost:8000/health/ | grep -c 'working') -eq 3 ]"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
 
     deploy:
       # Deploy 4 replicas of the Django app. This makes us more resilient to errors
@@ -125,6 +127,7 @@ services:
     depends_on:
       - mysql
       - cache
+      - redis
 
   nginx:
     image: nginx:1.27
@@ -203,6 +206,7 @@ services:
 volumes:
   certbot-signals:
     driver: local
+  redis-data: {}
 
 secrets:
   DJANGO_SECRET_KEY:

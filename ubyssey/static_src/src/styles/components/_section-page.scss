@@ -289,7 +289,7 @@ svg.banner-title text{
   padding-inline: 2em;
 
   padding-top: 0.5em;
-  border-bottom: 2px solid variables.$color-ubyssey-blue;
+  border-bottom: 2px solid var(--color-ubyssey_blue);
 
   text-align: center;
   font-family: fonts.$font-headline;
@@ -301,7 +301,7 @@ svg.banner-title text{
     margin-bottom: 0;
     font-size: 1.5em;
     text-transform: uppercase;
-    color: variables.$color-ubyssey-blue;
+    color: var(--color-ubyssey_blue);
   }
 }
 

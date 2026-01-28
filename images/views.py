@@ -20,7 +20,7 @@ class UbysseyImageViewSet(ImageChooserViewSet):
     choose_view_class = UbysseyImageChooseView
 
 ubyssey_image_viewset = UbysseyImageViewSet(
-    "wagtailimages_chooser",
+    "ubyssey_wagtailimages_chooser",
     model=get_image_model(),
     url_prefix="images/chooser",
 )

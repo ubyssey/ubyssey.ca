@@ -1,0 +1,12 @@
+<div class="o-image-wall--item o-image-wall--two-tracks {{self.sizing}} {{self.height}}">
+    <div class="o-image-wall--two-tracks--left">
+        {% for image in self.left %}
+            {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=image click_to_enlarge="true" %}
+        {% endfor %}
+    </div>
+    <div class="o-image-wall--two-tracks--right">
+        {% for image in self.right %}
+            {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=image click_to_enlarge="true" %}
+        {% endfor %}
+    </div>
+</div>

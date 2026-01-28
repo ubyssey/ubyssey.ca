@@ -1,0 +1,78 @@
+{% load wagtailcore_tags %} 
+<div class="c-liveblog">
+    <div id="liveblog">
+        {% for update in updates %}
+            {% include "liveblog/objects/liveblog-update.html" %}
+        {% endfor %}
+    </div>
+    <div class="c-liveblog--end">
+        <div class="c-liveblog--end--contents">
+            You're caught up
+        </div>
+    </div>
+
+    {{ self.id|json_script:"room-name" }}
+    {{ update_order|json_script:"update-order" }}
+
+
+    <script>
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+        function setUpdateOrder(){
+            if (JSON.parse(document.getElementById('update-order').textContent) == "asc") {
+                return "asc";
+            }
+            return "desc";
+        }
+
+        const updateOrder = setUpdateOrder();
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/liveblog/'
+            + roomName
+            + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+
+            if (updateOrder=="asc") {
+                document.querySelector('#liveblog').innerHTML += (data.message.html + '\n');
+            } else {
+                document.querySelector('#liveblog').innerHTML = (data.message.html + '\n') + document.querySelector('#liveblog').innerHTML;
+            }
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+
+        function formatDatetime(datetime) {
+            const m = 60;
+            const h = m * m;
+            const delta = new Date().getTime() - datetime.getTime();
+            console.log(delta);
+            if (delta > 24 * h) {
+                return datetime.toDateString();
+            } else if (delta > h) {
+                return String(Math.floor(delta/h)) + "h ago";
+            } else if (delta > m) {
+                return String(Math.floor(delta/m)) + "m ago";
+            }
+            return String(delta) + "s ago"
+        }
+        function updateTimes() {
+            const times = document.getElementsByClassName("liveblog-updating-time");
+            for (const time of times) {
+                console.log(time);
+                console.log(time.dateTime);
+                time.innerHTML = formatDatetime(new Date(time.dateTime));
+            }
+        }
+
+        setInterval(updateTimes, 10000);
+    </script>
+</div>

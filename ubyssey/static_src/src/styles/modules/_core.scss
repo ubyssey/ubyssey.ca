@@ -238,7 +238,10 @@ a {
 
 html {
   transition: background 0.5s ease, color 0.5s ease;
-  --ubyssey_blue-classic: #{variables.$color-ubyssey-blue-classic};
+  --color-ubyssey_blue-classic: #{variables.$color-ubyssey-blue-classic};
+  --color-ubyssey_blue: #{variables.$color-ubyssey-blue};
+  --color-ubyssey_blue-dark: #{variables.$color-ubyssey-blue-dark};
+  --color-ubyssey_blue-light: #{variables.$color-ubyssey-blue-light};
 }
 
 html[color-css-theme="light"] {
@@ -253,6 +256,7 @@ html[color-css-theme="light"] {
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue};
   --light-border-grey: #eee;
+  --border-grey: #d9d9d9;
   --light-grey: #d9d9d9;
   --contrast-color: #{variables.$color-ubyssey-blue-dark};
   --shadow-color: #888;
@@ -290,6 +294,7 @@ html[color-css-theme="dark"] {
   --article-publish: #1871C4;
   --light-border: #{variables.$color-ubyssey-blue-light};
   --light-border-grey: #3d4b54;
+  --border-grey: #737373;
   --light-grey: #d9d9d9;
   --contrast-color: #{variables.$color-ubyssey-blue-light};
   --shadow-color: black;
@@ -500,4 +505,9 @@ ion-icon {
 @keyframes spin {
   from {transform: rotate(0deg);}
   to {transform: rotate(359deg);}
+}
+
+@keyframes throb {
+  from {scale: 1; opacity:1;}
+  to {scale: 1.15; opacity: 0.95;}
 }

@@ -48,6 +48,12 @@ env = environ.Env(
 
 SITE_ID = 1
 
+# Silence system warnings from third-party packages
+# wagtailmenus 4.0.1 still uses deprecated content_panels/settings_panels for snippets
+SILENCED_SYSTEM_CHECKS = [
+    'wagtailadmin.W002',  # wagtailmenus FlatMenu and MainMenu panel configuration warnings
+]
+
 BASE_DIR = environ.Path(__file__) - 3
 
 SECRET_KEY = env('SECRET_KEY') or read_file(env('SECRET_KEY_FILE')) or 'thisisakey'
@@ -57,6 +63,8 @@ DEBUG = env('DEBUG')
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+
     'ubyssey', # For some reason, using ubyssey.apps.UbysseyConfig breaks static file finding?
     'users',
     'home',
@@ -71,6 +79,7 @@ INSTALLED_APPS = [
     'navigation',
     'dashboard',
     'infinitefeed',
+    'liveblog',
     'events',
     'tests_ubyssey',
     'publishing_analytics',
@@ -330,3 +339,15 @@ CRONJOBS = [
     ('*/5 * * * *', 'ubyssey.views.main.publish_scheduled'),
     ('0 */6 * * *', 'events.views.update_events')
 ]
+
+# Daphne
+ASGI_APPLICATION = "ubyssey.asgi.application"
+# Django channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
