@@ -61,8 +61,11 @@ class LiveBlogUpdateAuthorBlock(blocks.StructBlock):
     def jsonFormat(self, value):
         value = self.to_python(value)
         author_image_template = "liveblog/objects/liveblog_update_author-image.html"
+        author_image = None
+        if value['author'].image:
+            author_image = loader.render_to_string(author_image_template, {"author": value['author']})
         return {
-            "author_image": loader.render_to_string(author_image_template, {"author": value['author']}),
+            "author_image": author_image,
             "author_link": value['author'].full_url,
             "author_name": value['author'].full_name,
             "author_role": value['author_role'],
@@ -119,6 +122,19 @@ class LiveBlogUpdate(ClusterableModel):
             )
 
         return save
+
+    def delete(self, *args, **kwargs):
+
+        if self.room_name:
+            channel_layer = get_channel_layer()
+
+            async_to_sync(channel_layer.group_send)(
+                f"liveblog_{self.room_name}", {
+                    "type": "liveblog.delete",
+                    "id": self.id,
+                }
+            )
+        return super().delete(*args, **kwargs)
     
     def jsonFormat(self):
         content_template = "liveblog/objects/liveblog-update-content.html"
