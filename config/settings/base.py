@@ -210,7 +210,6 @@ DATABASES = {
         'USER': env('SQL_USER'),
         'PASSWORD': SQL_PASSWORD,
         'PORT': '3306',
-        "CONN_MAX_AGE": 60,
         "OPTIONS": {
             "charset": "utf8mb4",
             "collation": "utf8mb4_0900_ai_ci",
