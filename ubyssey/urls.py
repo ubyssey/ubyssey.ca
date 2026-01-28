@@ -97,7 +97,7 @@ urlpatterns += [
     path('admin/visual_assignment_api/', visual_assignment_api_list),
 
     # Events
-    re_path(r'^events/$', include(events_urls)),
+    re_path(r'^events/', include(events_urls)),
     re_path(r'^events/ical/$', create_ical, name="events_ical"),
     re_path(r'^events/rss/$', EventsFeed(), name='events-feed'),  
     re_path(r'^api/', include(api.urls)),

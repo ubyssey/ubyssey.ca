@@ -874,8 +874,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             index.SearchField('full_name'),
             index.AutocompleteField('full_name'),
         ]),
-        
-        index.FilterField('author_id')
     ]
 
     #-----Properties, getters, setters, etc.-----
@@ -1758,8 +1756,6 @@ class StandardArticlePage(ArticlePage):
             index.SearchField('full_name'),
             index.AutocompleteField('full_name'),
         ]),
-        
-        index.FilterField('author_id')
     ]
 
     #-----Properties, getters, setters, etc.-----

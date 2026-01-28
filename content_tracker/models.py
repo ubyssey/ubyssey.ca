@@ -99,7 +99,7 @@ class StoryAssignment(ClusterableModel):
 
     state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.ASSIGNED.value)
     
-    article_page = models.ForeignKey(ArticlePage, related_name="assignment", unique=True, on_delete=models.SET_NULL, null=True, blank=True)
+    article_page = models.OneToOneField(ArticlePage, related_name="assignment", on_delete=models.SET_NULL, null=True, blank=True)
     
     panels = [
         FieldPanel("subject"),
