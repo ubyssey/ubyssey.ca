@@ -1024,7 +1024,7 @@ function EventInfoBox({event}) {
                 <p>
                     <a href={event.event_url.replace("__AND__", "&")} target="blank" id="source_link">{shortenUrl(event.event_url)}</a>
                     {document.getElementById('calendar').getAttribute("authenticated")=="True" && 
-                    <a href={"/admin/snippets/events/event/edit/" + event.id} id="edit_link">edit</a>
+                    <a href={"/admin/snippets/events/event/edit/" + event.id + "/"} id="edit_link">edit</a>
                     }
                 </p>
         </div>

@@ -10,6 +10,8 @@ export default function LiveBlogFeed() {
         return -1;
     }
 
+    const defaultUpdateOrder = getUpdateOrder();
+
     function sortUpdates(a, b, order) {
         return (new Date(a.publish_date).getTime() - new Date(b.publish_date).getTime()) * order;
     }
@@ -39,8 +41,8 @@ export default function LiveBlogFeed() {
     };
 
     const [updates, setUpdates] = useState(() => updatesAtLoad());
-    const [updateOrder, setUpdateOrder] = useState(() => getUpdateOrder());
     const [caughtUp, setCaughtUp] = useState(() => !isLive(updates));
+    const [updateOrder, setUpdateOrder] = useState(() => getUpdateOrder());
     const [isAdmin, setIsAdmin] = useState(() => isAdminAtLoad());
     const [presentTime, setPresentTime] = useState(new Date());
     const [connectionCount, setConnectionCount] = useState(1);
@@ -130,13 +132,19 @@ export default function LiveBlogFeed() {
         };
 
         chatSocket.onmessage = (e) => {
+            console.log(e.data);
             const data = JSON.parse(e.data);
-            const newUpdate = JSON.parse(data.message);
-            setUpdates(prev => [...prev.filter((update) => update.id != newUpdate.id), newUpdate]);
 
-            setCaughtUp(false);
-            if (isAtRecent()) {
-                setTimeout(() => setCaughtUp(true), 2000);
+            if (data.message) {
+                const newUpdate = JSON.parse(data.message);
+                setUpdates(prev => [...prev.filter((update) => update.id != newUpdate.id), newUpdate]);
+
+                setCaughtUp(false);
+                if (isAtRecent()) {
+                    setTimeout(() => setCaughtUp(true), 2000);
+                }
+            } else if (data.delete) {
+                setUpdates(prev => prev.filter((update) => update.id != data.delete));
             }
         };
 
@@ -161,12 +169,18 @@ export default function LiveBlogFeed() {
             liveblog_updated_at.innerHTML = timeDeltaString(new Date(), new Date(updatedTime), convertToMilliseconds(0,0,0,1));
         }
 
+        if (live) {
+            setUpdateOrder(-1);
+        } else {
+            setUpdateOrder(defaultUpdateOrder);
+        }
+
     }, [updates]);
 
     return (
     <div className="c-liveblog">
 
-        <div className={"c-liveblog--update-notification top " + (!caughtUp && updateOrder == -1 ? "show" : "")}>
+        <div className={"c-liveblog--update-notification top " + (!caughtUp && defaultUpdateOrder == -1 ? "show" : "")}>
             <button className="c-liveblog--update-notification--button" onClick={scrollToRecent}>New update</button>
         </div>
 
@@ -180,7 +194,7 @@ export default function LiveBlogFeed() {
             </div>
         </div>
 
-        <div className={"c-liveblog--update-notification bottom " + (!caughtUp && updateOrder == 1 ? "show" : "")}>
+        <div className={"c-liveblog--update-notification bottom " + (!caughtUp && defaultUpdateOrder == 1 ? "show" : "")}>
             <button className="c-liveblog--update-notification--button" onClick={scrollToRecent}>New update!</button>
         </div>
     </div>

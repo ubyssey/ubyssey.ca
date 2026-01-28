@@ -11,7 +11,7 @@ export default function LiveblogUpdate({update, isAdmin, presentTime}) {
         <div key={update.id} className="o-liveblog-update">
             <div className="o-liveblog-update--meta">
                 <div className={"o-liveblog-update--meta--images"}>
-                    {update.authors.map((author) => 
+                    {update.authors.filter((author) => author.author_image != null).map((author) => 
                         <div className="o-liveblog-update--meta--image" dangerouslySetInnerHTML={{__html: author.author_image}}></div>
                     )}
                 </div>
