@@ -24,10 +24,12 @@ def update_default_explicit_published_at(instance, sender, **kwargs):
 @receiver(page_published)
 def update_story_assignment_on_publish(instance, sender, **kwargs):
     if issubclass(sender, ArticlePage):
-        for assignment in instance.assignment.exclude(state=StoryAssignment.StateChoices.PUBLISHED.value):
-            assignment.state = StoryAssignment.StateChoices.PUBLISHED.value
-            log(instance=assignment, action='wagtail.edit')
-            assignment.save()
+        if hasattr(instance, "assignment"):
+            assignment = instance.assignment
+            if assignment.state!=StoryAssignment.StateChoices.PUBLISHED.value:
+                assignment.state = StoryAssignment.StateChoices.PUBLISHED.value
+                log(instance=assignment, action='wagtail.edit')
+                assignment.save()
 
 @receiver(page_published)
 def update_primary_tag(instance, sender, **kwargs):
