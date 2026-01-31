@@ -204,7 +204,7 @@ SQL_PASSWORD = env('SQL_PASSWORD') or read_file(env('SQL_PASSWORD_FILE')) or 'ub
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'dj_db_conn_pool.backends.mysql',
         'HOST': env('SQL_HOST'),
         'NAME': env('SQL_DATABASE'),
         'USER': env('SQL_USER'),
@@ -214,6 +214,11 @@ DATABASES = {
             "charset": "utf8mb4",
             "collation": "utf8mb4_0900_ai_ci",
         },
+        'POOL_OPTIONS': {
+            'POOL_SIZE': 10,
+            'MAX_OVERFLOW': 10,
+            'RECYCLE': 24 * 60 * 60
+        }
     },
 }
 
