@@ -29,9 +29,11 @@
             <p>We are facing an internal server problem. Kindly come back again later</p>
             <p>Questions? Contact EMAIL: <a class="email-link"
                     href="mailto:webmaster@ubyssey.ca">webmaster@ubyssey.ca</a></p>
+            {% comment %}
             {% if request.path|get_id %}
             <a class="admin-edit-link" href="/admin/pages/{{ request.path|get_id }}/edit">Edit this page in admin</a>
             {% endif %}
+            {% endcomment %}
         </div>
     </div>
 </main>
