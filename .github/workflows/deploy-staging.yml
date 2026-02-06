@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - staging
+      - add-wsgi-and-asgi
 
 env:
   REGISTRY: ghcr.io
