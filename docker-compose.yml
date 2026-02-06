@@ -45,9 +45,10 @@ services:
     ports:
       - "6379:6379"
 
-  django:
+  # WSGI worker for regular HTTP traffic
+  django-wsgi:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
-    
+
     # The number of gunicorn workers below is derived from the number of CPU cores
     # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
     #
@@ -59,8 +60,8 @@ services:
     #
     # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     command: >
-      bash -c "python manage.py migrate && python manage.py crontab add && service cron start 
-      && gunicorn ubyssey.asgi:application --workers=4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
+      bash -c "python manage.py migrate && python manage.py crontab add && service cron start
+      && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
@@ -129,6 +130,79 @@ services:
       - cache
       - redis
 
+  # ASGI worker for WebSocket traffic at /ws/
+  django-asgi:
+    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
+
+    # Use Gunicorn with Uvicorn workers for ASGI/WebSocket support
+    # Using 2 workers per replica for WebSocket connections
+    command: >
+      bash -c "gunicorn ubyssey.asgi:application --workers=2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --access-logfile - --error-logfile -"
+
+    environment:
+      SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
+      SQL_HOST: mysql
+      SQL_USER: root
+      SQL_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
+      SQL_DATABASE: ubyssey
+      GS_ACCESS_KEY_ID_FILE: /run/secrets/GS_ACCESS_KEY_ID
+      GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
+      STATIC_URL: https://storage.googleapis.com/ubyssey/static/
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
+      EMAIL_HOST_PASSWORD_FILE: /run/secrets/EMAIL_HOST_PASSWORD
+
+    secrets:
+      - DJANGO_SECRET_KEY
+      - SQL_PASSWORD
+      - GS_ACCESS_KEY_ID
+      - GS_SECRET_ACCESS_KEY
+      - GOOGLE_APPLICATION_CREDENTIALS
+      - EMAIL_HOST_PASSWORD
+
+    networks:
+      - proxy-shared
+      - ubyssey-internal
+
+    expose:
+      - 8001
+
+    # Send container logs to Google Cloud Logging
+    # Ref: https://docs.docker.com/engine/logging/drivers/gcplogs/
+    logging:
+      driver: gcplogs
+
+    deploy:
+      # Deploy 2 replicas for WebSocket handling
+      mode: replicated
+      replicas: 2
+
+      # Restart containers on failure up to a maximum of 10 times.
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#restart_policy
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        window: 120s
+
+      # Update 1 container at a time for WebSocket connections
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#update_config
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: stop-first
+        monitor: 30s
+        max_failure_ratio: 0
+        failure_action: rollback
+
+      # Rollback if update fails
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+
+    depends_on:
+      - mysql
+      - cache
+      - redis
+
   nginx:
     image: nginx:1.27
     restart: always
@@ -181,7 +255,8 @@ services:
         delay: 5s
 
     depends_on:
-      - django
+      - django-wsgi
+      - django-asgi
 
   certbot:
     image: certbot/certbot:v4.0.0
