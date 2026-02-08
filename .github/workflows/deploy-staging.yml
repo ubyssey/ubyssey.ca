@@ -132,11 +132,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set tag in docker-compose.yml
-        run: sed -i "s/\${TAG}/${{ env.STAGING_TAG }}/g" docker-compose.yml
+      - name: Set tag in docker-compose-staging.yml
+        run: sed -i "s/\${TAG}/${{ env.STAGING_TAG }}/g" docker-compose-staging.yml
 
       - name: Upload Docker Compose configuration
-        run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
+        run: scp docker-compose-staging.yml staging:/opt/ubyssey.ca/docker-compose.yml
 
       - name: Upload nginx configuration
         run: scp nginx-staging.conf staging:/opt/ubyssey.ca/nginx/nginx.conf
@@ -150,5 +150,9 @@ jobs:
       - name: Sync secrets from Google Cloud Platform
         run: cat scripts/sync-secrets.sh | ssh staging
 
-      - name: Restart services
-        run: ssh staging docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+      - name: Deploy stack
+        run: ssh staging docker stack deploy --resolve-image always --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+
+      - name: Force update all services
+        run: |
+          ssh staging "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"

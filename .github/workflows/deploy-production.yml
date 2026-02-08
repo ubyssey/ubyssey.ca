@@ -167,8 +167,35 @@ jobs:
       - name: Create shared network
         run: ssh production "docker network create --driver=overlay proxy-shared || true"
 
-      - name: Restart services
-        run: ssh production docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+      - name: Deploy stack
+        run: ssh production docker stack deploy --resolve-image always --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+
+      - name: Force update all services
+        run: |
+          ssh production "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"
+
+      - name: Verify deployment succeeded
+        run: |
+          # Wait for update to complete
+          sleep 30
+
+          # Check if services are running the expected image
+          EXPECTED_IMAGE="ghcr.io/ubyssey/ubyssey.ca:${{ github.ref_name }}"
+
+          for service in ubyssey_django-wsgi ubyssey_django-asgi; do
+            ACTUAL_IMAGE=$(ssh production "docker service inspect $service --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}' | cut -d@ -f1")
+            echo "Service $service is running: $ACTUAL_IMAGE"
+
+            if [[ "$ACTUAL_IMAGE" != "$EXPECTED_IMAGE" ]]; then
+              echo "ERROR: Service $service is not running expected image!"
+              echo "Expected: $EXPECTED_IMAGE"
+              echo "Actual: $ACTUAL_IMAGE"
+              echo "Deployment may have been rolled back!"
+              exit 1
+            fi
+          done
+
+          echo "All services verified to be running correct image"
 
       - name: Check health of the application
         run: |
