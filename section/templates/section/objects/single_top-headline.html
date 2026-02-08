@@ -6,6 +6,8 @@
 {% load video_filters %}
 {% load articletags %}
 
+{% if self.article %}
 <div class="article-timeline landing_stream_block u-container u-container--large">
     {%include 'article/objects/article_top-headline.html' with article=self.article %}
 </div>
+{% endif %}

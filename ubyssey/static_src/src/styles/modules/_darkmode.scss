@@ -6,6 +6,9 @@
   background: transparent;
   cursor: pointer;
   float: right;
+  img, svg {
+    vertical-align: middle;
+  }
 }
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
     transform-origin: center;

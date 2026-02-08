@@ -437,6 +437,9 @@
         .o-article__right {
           margin: auto 1.5em auto 0;
         }
+        .o-article__left {
+          max-width: 500px;
+        }
       }
 
       .o-article__right {
@@ -444,7 +447,6 @@
         height: fit-content;
       }
       .o-article__left {
-        max-width: 500px;
         height: fit-content;
         flex-shrink: 0;
       }

@@ -40,6 +40,10 @@ class AllAuthorsPage(Page):
         'home.HomePage',
     ]
     max_count_per_parent = 1
+
+    def serve(self, request):
+        return render(request, '404.html', {}, status=404)
+
     class Meta:
         verbose_name = "Author Management"
         verbose_name_plural = "Author Management Pages"
