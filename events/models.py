@@ -172,6 +172,10 @@ class EventManager(models.Manager):
     async def wp_events_api_create_event(self, event_json, api, host, categorize, locations):
         if len(event_json['link']) > 150 and "?" in event_json['link']:
             event_json['link'] = event_json['link'].split("?")[0]
+        event_json['title'] = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
+        
+        if len(event_json['title']) > 255:
+           event_json['title'] = event_json['title'][:252] + "..."
         try:
             if not await self.filter(event_url=event_json['link'], start_time=datetime.fromisoformat(event_json['start']).astimezone(timezone.get_current_timezone())).aexists():
                 event = await self.acreate(
@@ -184,7 +188,7 @@ class EventManager(models.Manager):
                 if event.update_mode != 2:
                     return None
 
-            event.title = str(event_json['title']['rendered'].encode('utf-8'), 'UTF-8')
+            event.title = event_json['title']
 
             if event.hash == "":
                 event.hash = self.hashing(event_json['link'] + str(event_json['start']))

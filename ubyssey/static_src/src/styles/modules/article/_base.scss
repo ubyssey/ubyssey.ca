@@ -313,7 +313,7 @@ div.article-content {
 
     @media(variables.$bp-larger-than-phablet) {
       padding-left: variables.$article-content-ul-padding-left;
-      max-width: var(--article-standard-content-width) - variables.$article-content-ul-padding-left;
+      max-width: calc(var(--article-standard-content-width) - variables.$article-content-ul-padding-left);
       padding-right: 0;
     }
   }

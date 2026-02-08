@@ -81,9 +81,7 @@
                     {% if not self.is_explicit %}
                         {% filter inject_ads:is_mobile %}                            
                         <!-- Article text -->
-                        {% for block in self.content %}
-                            {% include_block block with id=block.id %}
-                        {% endfor %}
+                        {% for block in self.content %}{% include_block block with id=block.id %}{% endfor %}
                         {% endfilter %}
                     {% else %}
                         <!-- Article text -->

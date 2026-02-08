@@ -6,8 +6,9 @@
 {% load video_filters %}
 {% load articletags %}
 
+{% if self.article %}
 <article class="article-promo u-container u-container--large u-container--padded">
-    <div class="o-article__section">From <a href="{{self.article.get_parent.url}}">{{self.article.get_parent.title}}</a></div>
+    <div class="o-article__section">From <a href="/{{self.article.current_section}}/">{{self.article.current_section}}</a></div>
     <h2><a href="{% pageurl self.article %}">{{self.article.title}}</a></h2>
     <div class="article-midsection-promo-div">
         <div class="image">
@@ -16,3 +17,4 @@
         <p class="lede"><b>{{ self.article.published_at|date:'N j' }}</b> {{self.article.lede|safe}} <i><a href="{% pageurl self.article %}">Read more.</a></i></p>
     </div>
 </article>
+{% endif %}

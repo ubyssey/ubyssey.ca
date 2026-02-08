@@ -4,7 +4,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
 
 from specialfeaturelanding.models import SpecialLandingPage
-from section.models import CategoryPage
+from section.models import CategoryPage, SectionPage
 from article.models import ArticlePage
 from modelcluster.fields import ParentalKey
 
@@ -268,21 +268,24 @@ class ArchivePage(RoutablePageMixin, Page):
         context['section_slug'] = sections_slug
 
         search_query = context["q"]
-        
-        articles = ArticlePage.objects.from_section(section_slug=sections_slug).live().public()
-        
-        if context["order"]:
-            articles = self.get_order_objects(context["order"], articles, video_section)           
-        
-        if self.year:
-            articles = self.get_year_objects(articles, video_section)
-        
-        if search_query:
-            articles = self.get_search_objects(search_query, articles, video_section)
 
-        context = self.get_paginated_articles(context, articles, video_section, request)
+        if SectionPage.objects.filter(slug=sections_slug).exists():
+            
+            articles = ArticlePage.objects.from_section(section_slug=sections_slug).live().public()
+            
+            if context["order"]:
+                articles = self.get_order_objects(context["order"], articles, video_section)           
+            
+            if self.year:
+                articles = self.get_year_objects(articles, video_section)
+            
+            if search_query:
+                articles = self.get_search_objects(search_query, articles, video_section)
 
-        return render(request, "archive/archive_page.html", context)
+            context = self.get_paginated_articles(context, articles, video_section, request)
+
+            return render(request, "archive/archive_page.html", context)
+        return render(request, '404.html', {}, status=404)
     
     '''
     @route(r'^videos/$', name="videos_view")
