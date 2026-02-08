@@ -64,6 +64,7 @@ EMAIL_HOST_USER = 'noreply@ubyssey.ca'
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='') or read_file(env('EMAIL_HOST_PASSWORD_FILE', default=''))
 EMAIL_USE_SSL = True
 UBYSSEY_ADVERTISING_EMAIL = 'advertising@ubyssey.ca'
+UBYSSEY_WEBMASTER_EMAIL = 'webmaster@ubyssey.ca'
 
 # Use in-memory file handler on Google App Engine
 FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.MemoryFileUploadHandler',]

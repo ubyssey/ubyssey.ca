@@ -109,7 +109,7 @@ urlpatterns += [
     re_path(r'^topic/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),
 
     # Publish analytics
-    re_path(r'^overview/$', publishing_analytics_views.overview),
+    #re_path(r'^overview/$', publishing_analytics_views.overview), Removed because gathering the data takes too long
     re_path(r'^overview/(?P<year>[0-9]{4})/$', publishing_analytics_views.year_overview),
     re_path(r'^overview/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', publishing_analytics_views.month_overview),
     re_path(r'^overview/(?P<section>[-\w]+)/$', publishing_analytics_views.section_overview),
