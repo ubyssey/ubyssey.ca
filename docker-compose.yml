@@ -58,7 +58,7 @@ services:
     #
     # Workers per replica = floor(17 / 4) = 4
     #
-    # Ref: https://docs.gunicorn.org/en/latest/design.html#how-many-workers
+    # Ref: https://medium.com/@jleonro/finetunne-number-of-workers-in-gunicorn-ab1907b06cae
     command: >
       bash -c "python manage.py migrate && python manage.py crontab add && service cron start
       && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
@@ -135,7 +135,20 @@ services:
     image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
 
     # Use Gunicorn with Uvicorn workers for ASGI/WebSocket support
-    # Using 2 workers per replica for WebSocket connections
+    #
+    # Worker configuration: 2 workers per replica × 2 replicas = 4 total ASGI workers
+    #
+    # Why 4 ASGI workers?
+    # - Total CPU budget: (2 × 8 cores) + 1 = 17 workers for BOTH WSGI + ASGI combined
+    # - Traffic split: Majority is HTTP (WSGI), minimal WebSocket traffic (ASGI)
+    # - Resource allocation: WSGI handles bulk of requests, ASGI dedicated to WebSocket-only
+    # - Each ASGI worker is async and multiplexes many concurrent WebSocket connections
+    #
+    # Why 2 replicas?
+    # - Provides fault tolerance (if 1 replica fails, 50% capacity remains)
+    # - Enables zero-downtime updates (update 1 replica at a time)
+    #
+    # Ref: https://medium.com/@jleonro/finetunne-number-of-workers-in-gunicorn-ab1907b06cae
     command: >
       bash -c "gunicorn ubyssey.asgi:application --workers=2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --access-logfile - --error-logfile -"
 
