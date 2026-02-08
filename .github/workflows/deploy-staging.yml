@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - staging
+      - force-update-docker-container
 
 env:
   REGISTRY: ghcr.io
@@ -132,11 +132,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set tag in docker-compose.yml
-        run: sed -i "s/\${TAG}/${{ env.STAGING_TAG }}/g" docker-compose.yml
+      - name: Set tag in docker-compose-staging.yml
+        run: sed -i "s/\${TAG}/${{ env.STAGING_TAG }}/g" docker-compose-staging.yml
 
       - name: Upload Docker Compose configuration
-        run: scp docker-compose.yml staging:/opt/ubyssey.ca/docker-compose.yml
+        run: scp docker-compose-staging.yml staging:/opt/ubyssey.ca/docker-compose.yml
 
       - name: Upload nginx configuration
         run: scp nginx-staging.conf staging:/opt/ubyssey.ca/nginx/nginx.conf
