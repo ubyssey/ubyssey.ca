@@ -167,8 +167,12 @@ jobs:
       - name: Create shared network
         run: ssh production "docker network create --driver=overlay proxy-shared || true"
 
-      - name: Restart services
-        run: ssh production docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+      - name: Deploy stack
+        run: ssh production docker stack deploy --resolve-image always --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+
+      - name: Force update all services
+        run: |
+          ssh production "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"
 
       - name: Check health of the application
         run: |

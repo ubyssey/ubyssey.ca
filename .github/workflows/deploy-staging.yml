@@ -150,5 +150,9 @@ jobs:
       - name: Sync secrets from Google Cloud Platform
         run: cat scripts/sync-secrets.sh | ssh staging
 
-      - name: Restart services
-        run: ssh staging docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+      - name: Deploy stack
+        run: ssh staging docker stack deploy --resolve-image always --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+
+      - name: Force update all services
+        run: |
+          ssh staging "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"
