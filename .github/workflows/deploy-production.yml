@@ -51,6 +51,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: deployment/docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -127,20 +128,20 @@ jobs:
       - name: Create ubyssey.ca directory
         run: ssh production "mkdir -p /opt/ubyssey.ca"
 
-      - name: Set tag in docker-compose.yml
-        run: sed -i "s/\${TAG}/${{ github.ref_name }}/g" docker-compose.yml
+      - name: Set tag in docker-compose.production.yml
+        run: sed -i "s/\${TAG}/${{ github.ref_name }}/g" deployment/compose/docker-compose.production.yml
 
       - name: Upload Docker Compose configuration
-        run: scp docker-compose.yml production:/opt/ubyssey.ca/docker-compose.yml
+        run: scp deployment/compose/docker-compose.production.yml production:/opt/ubyssey.ca/docker-compose.yml
 
       - name: Upload nginx configuration
-        run: scp nginx.conf production:/opt/ubyssey.ca/nginx/nginx.conf
+        run: scp deployment/nginx/nginx.production.conf production:/opt/ubyssey.ca/nginx/nginx.conf
 
       - name: Upload certbot and nginx reload scripts
         run: |
           ssh production "mkdir -p /opt/ubyssey.ca/scripts"
-          scp scripts/certbot-renewal-with-nginx-reload.sh production:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
-          scp scripts/nginx-reload-watcher.sh production:/opt/ubyssey.ca/scripts/nginx-reload-watcher.sh
+          scp deployment/scripts/certbot-renewal-with-nginx-reload.sh production:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
+          scp deployment/scripts/nginx-reload-watcher.sh production:/opt/ubyssey.ca/scripts/nginx-reload-watcher.sh
 
       - name: Verify Docker secrets exist
         run: |
