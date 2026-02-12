@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - force-update-docker-container
+      - update-packages-nishim
 
 env:
   REGISTRY: ghcr.io
@@ -83,7 +83,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.12'
 
       - name: Install Python dependencies
         run: python -m pip install -r requirements.txt
