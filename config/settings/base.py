@@ -272,7 +272,7 @@ GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readth
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 USE_TZ = True
-TIME_ZONE = 'Canada/Pacific'
+TIME_ZONE = 'America/Vancouver'
 
 # Wagtail settings
 # Ref: https://docs.wagtail.org/en/stable/reference/settings.html
