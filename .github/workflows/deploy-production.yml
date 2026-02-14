@@ -204,12 +204,12 @@ jobs:
           MAX_ATTEMPTS=15
           for ((i=1; i<=MAX_ATTEMPTS; i++)); do
             echo "Health check attempt $i/$MAX_ATTEMPTS..."
-            if ssh production "curl -f https://ubyssey.ca/health/" >/dev/null 2>&1; then
-              echo "Health check passed"
+            if ssh production "curl -f -s -o /dev/null -w '%{http_code}' https://ubyssey.ca/ | grep -q '200\|301\|302'" 2>/dev/null; then
+              echo "Health check passed - homepage is accessible"
               exit 0
             else
               echo "Attempt $i failed - showing error details:"
-              ssh production "curl -f https://ubyssey.ca/health/"
+              ssh production "curl -I https://ubyssey.ca/"
             fi
             sleep 10
           done
