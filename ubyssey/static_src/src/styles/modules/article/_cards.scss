@@ -88,6 +88,21 @@
                 background-size: 100px;
                 background-repeat: no-repeat;
                 background-position-y: 1em;
+                p {
+                    margin-block: 0.5rem;
+                }
+                h3:first-child {
+                    margin-block: 0;
+                }
+                h3:first-child + p {
+                    margin-top: 0.25rem;
+                }
+                a {
+                    text-decoration: underline;
+                    &:hover {
+                        color: var(--color-ubyssey_blue); 
+                    }
+                }
             }
         }
     }
