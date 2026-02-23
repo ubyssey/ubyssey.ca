@@ -155,6 +155,14 @@ class AuthorPage(RoutablePageMixin, Page):
         blank=True,
     )
 
+    noindex = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        verbose_name="Add 'noindex' tag?",
+        help_text="Warning: Only to be used when an article is requested to be unpublished, as per unpublishing policy. Should be FALSE in all but exceptional circumstances!",
+    )
+
     objects = AuthorsPageManager()
 
     # For editting in wagtail:
