@@ -894,8 +894,6 @@ html.hairlines {
 }
 
 .c-home-top--sidebar {
-  overflow: clip;
-  height: fit-content;
   color: var(--text_color);
   @media(variables.$bp-larger-than-tablet) {
     padding-left: 1.25em;

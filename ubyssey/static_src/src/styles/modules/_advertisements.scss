@@ -233,3 +233,7 @@ main.article .o-advertisement--leaderboard {
     flex-direction: column;
   }
 }
+
+.sidebar-block--advertisement {
+  overflow: clip;
+}
