@@ -188,6 +188,17 @@ class AuthorPage(RoutablePageMixin, Page):
             heading="Optional Stuff",
         ),
     ]
+
+    promote_panels = Page.promote_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel("noindex"),
+            ],
+            heading="Special search engine-related meta tagging",
+        ),
+    ]
+
+
     #-----Search fields etc-----
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [
