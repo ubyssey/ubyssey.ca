@@ -56,6 +56,11 @@ SILENCED_SYSTEM_CHECKS = [
 
 BASE_DIR = environ.Path(__file__) - 3
 
+# Set env variables in development environment
+env_file = os.path.join(BASE_DIR, 'tmp/.env')
+if os.path.isfile(env_file):
+    environ.Env.read_env(env_file)
+
 SECRET_KEY = env('SECRET_KEY') or read_file(env('SECRET_KEY_FILE')) or 'thisisakey'
 
 DEBUG = env('DEBUG')
