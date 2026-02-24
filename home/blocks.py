@@ -308,9 +308,14 @@ class CuratedStreamGrid(blocks.StructBlock):
         ]))
     ]))
     rows = blocks.ChoiceBlock(choices=[
+        ("two", "Two"),
         ("three", "Three"),
         ("four", "Four"),
     ])
+    layout = blocks.ChoiceBlock(choices=[
+        ("headline_top", "Headline top"),
+        ("headline_left", "Headline left"),
+    ], default="headline_top")
 
     def get_articles(self, values):
         articles = []
