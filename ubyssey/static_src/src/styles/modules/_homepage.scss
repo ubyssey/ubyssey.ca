@@ -749,6 +749,18 @@ html.hairlines {
   @media(variables.$bp-larger-than-phablet) {
     display: grid;
 
+    &.o-curated-stream-grid-rows--one {
+      grid-template-columns: auto;
+      .o-curated-stream-grid--cell {
+        padding: 1em;
+        border-right: none;
+        border-top: 1px solid var(--light-border-grey);
+        &:nth-child(1){
+          border-top: none;
+        }
+      }
+    }
+
     &.o-curated-stream-grid-rows--two {
       grid-template-columns: auto auto;
       .o-curated-stream-grid--cell {
@@ -852,7 +864,6 @@ html.hairlines {
     }
     a {
       text-decoration: underline;
-      color: var(--text_color);
     }
   }
 }

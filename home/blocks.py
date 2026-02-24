@@ -308,6 +308,7 @@ class CuratedStreamGrid(blocks.StructBlock):
         ]))
     ]))
     rows = blocks.ChoiceBlock(choices=[
+        ("one", "One"),
         ("two", "Two"),
         ("three", "Three"),
         ("four", "Four"),
