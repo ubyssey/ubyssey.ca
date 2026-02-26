@@ -92,7 +92,9 @@ export default function LiveBlog() {
 
     useEffect(() => {
         setCaughtUp(!isLive(updates))
-
+        
+        setInterval(() => setPresentTime(new Date()), 1000);
+        
         window.onscroll = (e) => {
             if (updateOrder == -1) {
                 if (window.scrollY < getLiveblogRecentScrollHeight() || window.scrollY <= 0) {
@@ -145,7 +147,7 @@ export default function LiveBlog() {
 
         chatSocket.onclose = function(e) {
             console.error('Web socket closed unexpectedly');
-            setTimeout(() => {setConnectionCount(connectionCount + 1);}, 5000);
+            setTimeout(() => {setConnectionCount(connectionCount + 1);}, 250);
         };        
     }, [connectionCount]);
 

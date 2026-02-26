@@ -1,4 +1,4 @@
-from wagtail.blocks import StructBlock, RichTextBlock
+from wagtail.blocks import StructBlock, RichTextBlock, RawHTMLBlock
 
 
 class LiveblogHeader(StructBlock):
@@ -6,3 +6,6 @@ class LiveblogHeader(StructBlock):
 
 class LiveblogSummary(StructBlock):
     richtext = RichTextBlock(required=True)
+
+class LiveblogRawHTML(StructBlock):
+    raw_html = RawHTMLBlock(required=True)

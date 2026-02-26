@@ -2,7 +2,6 @@ import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtil
 
 function LiveblogStageHeader({value, meta}) {
     return (
-    <div class="fw-banner c-liveblog-header">
         <div class="headline-container headline-container--timely-style">
         
             <div class="live-signal">LIVE</div>
@@ -11,7 +10,6 @@ function LiveblogStageHeader({value, meta}) {
 
             <div class="author-string" dangerouslySetInnerHTML={{__html: meta.page.authors}}></div>
         </div>
-    </div>  
     )
 }
 
@@ -21,13 +19,20 @@ function LiveblogStageSummary({value}) {
     )
 }
 
+function LiveblogRawHTML({value}) {
+    return (
+        <div class="c-liveblog-stage--rawhtml" dangerouslySetInnerHTML={{__html: value.raw_html}}></div>
+    )
+}
+
 function LiveblogStageItem({type, value, meta}) {
     if (type=="header") {
         return <LiveblogStageHeader value={value} meta={meta} />
     } else if (type=="summary") {
         return <LiveblogStageSummary value={value} />
+    } else if (type="raw_html") {
+        return <LiveblogRawHTML value={value} />
     }
-    
 }
 
 function LiveblogStageItemList({list, meta}) {
@@ -40,7 +45,7 @@ function LiveblogStageItemList({list, meta}) {
 
 export default function LiveblogStage({stage, meta}) {
     return (
-        <div class="c-liveblog--stage">
+        <div className="c-liveblog--stage c-liveblog--stage--header">
             <LiveblogStageItemList list={stage} meta={meta} />
         </div>
     )

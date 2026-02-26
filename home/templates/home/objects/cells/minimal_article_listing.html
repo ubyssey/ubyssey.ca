@@ -1,0 +1,5 @@
+{% load wagtailcore_tags %}
+<div class="o-minimal_article_listing">
+    <h3><a href="{%pageurl self.article %}">{{self.article.title|safe}}</a></h3>
+    <p>{{self.article.get_authors_with_urls|safe}}</p>
+</div>

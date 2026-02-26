@@ -89,6 +89,15 @@ class SportsGameScore(blocks.StructBlock):
     class Meta:
         template = "home/objects/cells/sports_game_score.html"
 
+class MinimalArticleListing(blocks.StructBlock):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage", required=True)
+
+    def get_articles(self, value):
+        return [value["article"]]
+
+    class Meta:
+        template = "home/objects/cells/minimal_article_listing.html"
+
 # Right
 class AuthorCommentary(blocks.StructBlock):
     commentary = blocks.RichTextBlock(required=True)
@@ -264,6 +273,7 @@ class CuratedStreamSharedAttachment(blocks.StructBlock):
         ("profile", ProfileCell()),
         ("quote", QuoteCell()),
         ("raw_html", blocks.RawHTMLBlock()),
+        ("article_listing", MinimalArticleListing()),
     ])
     right = Carousel()
 
@@ -312,6 +322,7 @@ class CuratedStreamGrid(blocks.StructBlock):
         ("two", "Two"),
         ("three", "Three"),
         ("four", "Four"),
+        ("five", "Five"),
     ])
     layout = blocks.ChoiceBlock(choices=[
         ("headline_top", "Headline top"),

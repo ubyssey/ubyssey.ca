@@ -39,7 +39,7 @@ from article import blocks_inner_article as blocks_inner_article
 from images.blocks import CaptionedImageBlock
 from home.blocks import StorystreamItem
 
-from liveblog.blocks import LiveblogHeader, LiveblogSummary
+from liveblog.blocks import LiveblogHeader, LiveblogSummary, LiveblogRawHTML
 
 from channels.layers import get_channel_layer
 
@@ -152,7 +152,8 @@ class LiveBlogArticlePage(ArticlePage):
 
     stage = StreamField([
             ("header", LiveblogHeader()),
-            ('summary', LiveblogSummary())
+            ("summary", LiveblogSummary()),
+            ("raw_html", LiveblogRawHTML())
         ],
         default=[{"type": "header", "value":{}}],
         use_json_field=True,
