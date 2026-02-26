@@ -1,6 +1,6 @@
 import LiveblogUpdate from "./LiveblogUpdate.jsx";
 
-export default function LiveBlogFeed({updates, updateOrder, defaultUpdateOrder, presentTime, caughtUp, scrollToRecent, isAdmin}) {
+export default function LiveBlogFeed({updates, isLive, updateOrder, defaultUpdateOrder, presentTime, caughtUp, scrollToRecent, isAdmin}) {
 
     return (
     <div className="c-liveblog">
@@ -10,7 +10,7 @@ export default function LiveBlogFeed({updates, updateOrder, defaultUpdateOrder, 
         </div>
 
         <div id="liveblog">
-            {updates.sort((a,b) => sortUpdates(a,b,updateOrder)).map((update)=> <LiveblogUpdate update={update} presentTime={presentTime} isAdmin={isAdmin} />)}
+            {updates.map((update)=> <LiveblogUpdate update={update} presentTime={presentTime} isAdmin={isAdmin} />)}
         </div>
 
         <div id="liveblog-end" className="c-liveblog--end">

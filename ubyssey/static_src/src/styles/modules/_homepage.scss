@@ -131,7 +131,7 @@ html.hairlines {
     margin-top: -30px;
     filter: drop-shadow(-7px 10px 4px #0416201c);
     width: 415px;
-    border: 2px var(--header_color) solid;
+    border: 2px var(--header_color-100) solid;
     margin-bottom: 40px;
   }
 }
@@ -419,13 +419,13 @@ html.hairlines {
   }
   .landing_stream_block {
     padding-block: 1em;
-    border-block: 1px dashed var(--header_color);
+    border-block: 1px dashed var(--header_color-100);
 
     @media(variables.$bp-larger-than-desktop) {    
       &.landing_stream_block--one-large-left {
         .o-section_row_block {
           padding-left: 1.25em;
-          border-left: 1px dashed var(--header_color);
+          border-left: 1px dashed var(--header_color-100);
           width: 30%;
 
           display: flex;
@@ -474,7 +474,7 @@ html.hairlines {
 
   .o-curated_group {
     margin-top: 2rem;
-    border-bottom: 1px dashed var(--header_color);
+    border-bottom: 1px dashed var(--header_color-100);
 
     @media(variables.$bp-smaller-than-tablet) {
       > p {
@@ -513,7 +513,7 @@ html.hairlines {
         line-height: 1.25em;
       }
 
-      color: var(--header_color);
+      color: var(--header_color-100);
 
       p a {
         text-decoration: underline;
@@ -860,7 +860,7 @@ html.hairlines {
       margin-block: 0.5em;
       font-size: 0.8em;
       line-height: 1.5em;
-      color: var(--text_color_supporting);
+      color: var(--text_color-300);
     }
     a {
       text-decoration: underline;
@@ -895,7 +895,7 @@ html.hairlines {
   .o-profile_quote_cell--quote-container {
     display: flex;
     flex-direction: column;
-    color: var(--text_color);
+    color: var(--text_color-100);
   }
 
   .o-profile_quote_cell--quote {
@@ -963,11 +963,11 @@ html.hairlines {
 }
 
 .c-home-top--sidebar {
-  color: var(--text_color);
+  color: var(--text_color-100);
   @media(variables.$bp-larger-than-tablet) {
     padding-left: 1.25em;
     width: 30%;
-    border-left: 1px dashed var(--header_color);
+    border-left: 1px dashed var(--header_color-100);
   }
   @media(variables.$bp-smaller-than-tablet) {
     padding: 1em;
@@ -981,7 +981,7 @@ html.hairlines {
 
   > section {
     margin-bottom: 2em;
-    border-bottom: 1px dashed var(--header_color);
+    border-bottom: 1px dashed var(--header_color-100);
   }
 }
 
@@ -1004,15 +1004,15 @@ html.hairlines {
       display: flex;
       justify-content: space-between;
       line-height: 1.25em;
-      color: var(--text_color);
+      color: var(--text_color-100);
       a.marked {
         //border-bottom: 2.5px dotted var(--color-ubyssey_blue);
-        //color: var(--text_color);
+        //color: var(--text_color-100);
         //transition: border-color 0.25s;
         position: relative;
         padding-left: 1em;
 
-        color: var(--header_color);
+        color: var(--header_color-100);
         &::before {
           display: block;
           position: absolute;
@@ -1048,7 +1048,7 @@ html.hairlines {
           font-size: 1em;
         }
         .o-article__published {
-          color: var(--text_color_supporting);
+          color: var(--text_color-300);
         }
       }
       .right {
@@ -1073,7 +1073,7 @@ html.hairlines {
     font-size: 0.9em;
     font-weight: 400;
     font-variation-settings: "wght" 400;
-    color: var(--header_color);
+    color: var(--header_color-100);
     a {
       text-decoration: underline;
     }
@@ -1082,7 +1082,7 @@ html.hairlines {
 
 .c-home-recent-stories--day-list--clustered {
   ul.c-home-recent-stories--article-list {
-    border-bottom: 1px dashed var(--header_color);
+    border-bottom: 1px dashed var(--header_color-100);
     li {
       margin-bottom: 1em;
       padding-bottom: 0.25em;
@@ -1300,7 +1300,7 @@ html.hairlines {
         height: fit-content;
         min-width: 2.25rem;
 
-        color: var(--header_color);
+        color: var(--header_color-100);
         font-size: 0.9em;
         font-variation-settings: "wght" 600;
         text-align: center;
@@ -1318,7 +1318,7 @@ html.hairlines {
           transform: translateY(-50%);
 
           border-block: 0.3em solid transparent;
-          border-right: 0.35em solid var(--header_color);
+          border-right: 0.35em solid var(--header_color-100);
         }
         img.o-sports_game_score--team-img {
           height: 4em;
@@ -1393,7 +1393,7 @@ html.hairlines {
       font-size: 0.75em;
       font-variation-settings: "wght" 600;
       text-align: center;
-      color: var(--header_color);
+      color: var(--header_color-100);
     }
   }
 }

@@ -160,7 +160,7 @@ button.events-calendar--enlarge-toggle {
     border: none;
     background: none;
     line-height: 1em;
-    color: var(--header_color);
+    color: var(--header_color-100);
 }
 
 .events-calendar--days-of-week {
@@ -365,7 +365,7 @@ header.events{
       top: 1em;
       z-index: 500;
       button.dark-mode-switcher {
-        color: var(--header_color);
+        color: var(--header_color-100);
       }
       
       @media (variables.$bp-larger-than-desktop) {

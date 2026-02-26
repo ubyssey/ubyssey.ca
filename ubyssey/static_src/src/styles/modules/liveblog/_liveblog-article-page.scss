@@ -160,24 +160,24 @@
     }
 }
 
-.c-liveblog-header {
-    padding-block: 2em;
+div.c-liveblog-header {
+    padding-block: 2em 1.5em;
     border-bottom: 1px solid var(--border-grey);
     max-width: var(--article-standard-content-width);
 
     .headline-container.headline-container--timely-style {
         margin: auto;
-        padding: 1em;
+        padding: 1em 1em 0 1em;
         max-width: var(--article-standard-content-width);
 
-        color: var(--text_color);
+        color: var(--text_color-100);
         h1 {
             font-weight: 600;
             margin-bottom: 1rem;
         }
         .c-article__published-at {
             margin: 1rem 0;
-            color: var(--text_color_supporting);
+            color: var(--text_color-300);
         }
         .o-article--header--above_cut_lede {
             font-family: fonts.$font-body;

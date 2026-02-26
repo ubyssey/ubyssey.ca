@@ -128,7 +128,7 @@
   font-weight: 600;
   font-size: 0.65em;
   text-transform: capitalize;
-  color: var(--header_color_supporting);
+  color: var(--header_color-200);
   a {
       color: inherit;
   }
@@ -412,7 +412,7 @@ div.article-content h2.header {
   background: linear-gradient(transparent calc(100% - 0.25em), var(--linkColour) 0%);
   background-size: 100% 1.5em;
   
-  color: var(--header_color);
+  color: var(--header_color-100);
   line-height: 1.5em;
   font-weight: 600;
 
@@ -455,7 +455,7 @@ div.article-content h2.header {
       }
       .o-article__section, .o-article__byline {
         font-size: 0.85em;
-        color: var(--header_color_supporting);
+        color: var(--header_color-200);
       }
       .o-article__byline {
         font-weight: 400;

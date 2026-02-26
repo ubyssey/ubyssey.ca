@@ -3,7 +3,7 @@ import LiveblogStage from "./LiveblogStage.jsx";
 import LiveBlogFeed from "./LiveblogFeed.jsx";
 import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtils.js";
 
-export default function LiveBlogFeed() {
+export default function LiveBlog() {
     function getUpdateOrder(){
         if (JSON.parse(document.getElementById('update-order').textContent) == "asc") {
             return 1;
@@ -34,6 +34,9 @@ export default function LiveBlogFeed() {
         return delta < convertToMilliseconds(0, 30, 0, 0);
     }
 
+    function pageMetaAtLoad() {
+        return JSON.parse(document.getElementById('page_meta-at-load').textContent);
+    };
     function stageAtLoad() {
         return JSON.parse(document.getElementById('stage-at-load').textContent);
     };
@@ -44,20 +47,16 @@ export default function LiveBlogFeed() {
         return JSON.parse(document.getElementById('is-admin').textContent);
     };
 
+    const [pageMeta, setPageMeta] = useState(() => pageMetaAtLoad());
     const [stage, setStage] = useState(() => stageAtLoad());
     const [updates, setUpdates] = useState(() => updatesAtLoad());
-    const [caughtUp, setCaughtUp] = useState(() => !isLive(updates));
+    const [live, setLive] = useState(() => isLive(updates));
+    const [caughtUp, setCaughtUp] = useState(() => true);
+    const [updatedTime, setUpdatedTime] = useState(() => timeUpdatedAt(updates));
     const [updateOrder, setUpdateOrder] = useState(() => getUpdateOrder());
     const [isAdmin, setIsAdmin] = useState(() => isAdminAtLoad());
     const [presentTime, setPresentTime] = useState(new Date());
     const [connectionCount, setConnectionCount] = useState(1);
-
-    function updateTimes() {
-        const times = document.getElementsByclassNameName("liveblog-updating-time");
-        for (const time of times) {
-            time.innerHTML = timeDeltaString(new Date(), new Date(time.dateTime));
-        }
-    }
 
     function getLiveblogRecentScrollHeight() {
         const liveblogElem = document.getElementById('liveblog');
@@ -93,15 +92,6 @@ export default function LiveBlogFeed() {
 
     useEffect(() => {
         setCaughtUp(!isLive(updates))
-
-        setInterval(() => {
-            const updatedTime = timeUpdatedAt(updates);
-            for (let liveblog_updated_at of document.getElementsByClassName("liveblog_updated_at")) {
-                liveblog_updated_at.dateTime = updatedTime;
-                liveblog_updated_at.innerHTML = timeDeltaString(new Date(), new Date(updatedTime), convertToMilliseconds(0,0,0,1));
-            }
-        }, 5000);
-        setInterval(() => setPresentTime(new Date()), 1000);
 
         window.onscroll = (e) => {
             if (updateOrder == -1) {
@@ -142,14 +132,14 @@ export default function LiveBlogFeed() {
 
             if (data.message) {
                 const newUpdate = JSON.parse(data.message);
-                setUpdates(prev => [...prev.filter((update) => update.id != newUpdate.id), newUpdate]);
+                setUpdates(prev => [...prev.filter((update) => update.id != newUpdate.id), newUpdate].sort((a,b) => sortUpdates(a,b,updateOrder)));
 
                 setCaughtUp(false);
                 if (isAtRecent()) {
                     setTimeout(() => setCaughtUp(true), 2000);
                 }
             } else if (data.delete) {
-                setUpdates(prev => prev.filter((update) => update.id != data.delete));
+                setUpdates(prev => prev.filter((update) => update.id != data.delete).sort((a,b) => sortUpdates(a,b,updateOrder)));
             }
         };
 
@@ -160,19 +150,9 @@ export default function LiveBlogFeed() {
     }, [connectionCount]);
 
     useEffect(() => {
-        const live = isLive(updates);
-        if (document.body.classList.contains("live") && !live) {
-            document.body.classList.remove("live");
-        }
-        if (live) {
-            document.body.classList.add("live");
-        }
+        setLive(isLive(updates));
 
-        const updatedTime = timeUpdatedAt(updates);
-        for (let liveblog_updated_at of document.getElementsByClassName("liveblog_updated_at")) {
-            liveblog_updated_at.dateTime = updatedTime;
-            liveblog_updated_at.innerHTML = timeDeltaString(new Date(), new Date(updatedTime), convertToMilliseconds(0,0,0,1));
-        }
+        setUpdatedTime(timeUpdatedAt(updates));
 
         if (live) {
             setUpdateOrder(-1);
@@ -182,10 +162,20 @@ export default function LiveBlogFeed() {
 
     }, [updates]);
 
+    function liveStageMeta() {
+        return {
+            'page': pageMeta,
+            'updates': {
+                'live': live,
+                'updatedTime': updatedTime
+            }
+        }
+    }
+
     return (
         <>
-            <LiveblogStage stage={stage} />
-            <LiveBlogFeed updates={updates} updateOrder={updateOrder} defaultUpdateOrder={defaultUpdateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
+            <LiveblogStage stage={stage} meta={liveStageMeta()} />
+            <LiveBlogFeed updates={updates} isLive={isLive} updateOrder={updateOrder} defaultUpdateOrder={defaultUpdateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
         </>
     )
 }
