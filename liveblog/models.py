@@ -39,6 +39,8 @@ from article import blocks_inner_article as blocks_inner_article
 from images.blocks import CaptionedImageBlock
 from home.blocks import StorystreamItem
 
+from liveblog.blocks import LiveblogHeader
+
 from channels.layers import get_channel_layer
 
 # Create your models here.
@@ -148,7 +150,17 @@ class LiveBlogUpdate(ClusterableModel):
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
 
-    content_panels = [HelpPanel(template="liveblog/objects/liveblog-nav-link.html")] + ArticlePage.content_panels
+    stage = StreamField([
+            ("header", LiveblogHeader()),
+        ],
+        default=[{"type": "header", "value":{}}],
+        use_json_field=True,
+    )
+
+    content_panels = [
+            HelpPanel(template="liveblog/objects/liveblog-nav-link.html"),
+            FieldPanel("stage"),
+        ] + ArticlePage.content_panels
 
     edit_handler = TabbedInterface(
         [
@@ -158,6 +170,16 @@ class LiveBlogArticlePage(ArticlePage):
             ObjectList(ArticlePage.customization_panels, heading='Special article stuff'),
         ],
     )
+
+    def get_page_meta(self):
+        return {
+            "title": self.title,
+            "lede": self.lede,
+            "authors": self.get_authors_string()
+        }
+    
+    def get_stage(self):
+        return list(self.stage.raw_data)
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

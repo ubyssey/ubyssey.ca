@@ -4,6 +4,8 @@
 {{ update_order|json_script:"update-order" }}
 {{ self.id|json_script:"room-name" }}
 {{ self.updateJsonFormat|json_script:"updates-at-load" }}
+{{ self.get_stage|json_script:"stage-at-load" }}
+{{ self.get_page_meta|json_script:"page_meta-at-load" }}
 <div class="c-liveblog-container" id="liveblog-feed"></div>
 
 <script src="{% static 'ubyssey/js/liveblog.js' %}" type="text/javascript"></script>
