@@ -12,6 +12,7 @@ daphne==4.2.1
 pymemcache==4.0.0
 mysqlclient==2.2.6
 beautifulsoup4==4.11.2
+html5lib==1.1
 feedparser==6.0.10
 pyyaml==6.0.1
 ua-parser==0.10.0
