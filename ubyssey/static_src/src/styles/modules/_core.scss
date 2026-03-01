@@ -512,6 +512,25 @@ ion-icon {
   font-size: 25px;
 }
 
+.linear-dots-loader {
+  --linear-dots-color: var(--color-ubyssey_blue);
+  --linear-dots-color-transparent: color-mix(in hsl, var(--color-ubyssey_blue), transparent 50%);
+  --linear-dots-width: 0.75em;
+  --linear-dots-gap-ratio: 2;
+  --linear-dots-gap: calc(var(--linear-dots-width) * var(--linear-dots-gap-ratio));
+
+  width: var(--linear-dots-width);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: linear-dots 1s infinite linear alternate;
+}
+@keyframes linear-dots {
+    0%  {box-shadow: var(--linear-dots-gap) 0 var(--linear-dots-color),            calc(-1 * var(--linear-dots-gap)) 0 var(--linear-dots-color-transparent);background: var(--linear-dots-color)}
+    33% {box-shadow: var(--linear-dots-gap) 0 var(--linear-dots-color),            calc(-1 * var(--linear-dots-gap)) 0 var(--linear-dots-color-transparent);background: var(--linear-dots-color-transparent)}
+    66% {box-shadow: var(--linear-dots-gap) 0 var(--linear-dots-color-transparent),calc(-1 * var(--linear-dots-gap)) 0 var(--color-ubyssey_blue);           background: var(--linear-dots-color-transparent)}
+    100%{box-shadow: var(--linear-dots-gap) 0 var(--linear-dots-color-transparent),calc(-1 * var(--linear-dots-gap)) 0 var(--linear-dots-color);            background: var(--linear-dots-color) }
+}
+
 @keyframes spin {
   from {transform: rotate(0deg);}
   to {transform: rotate(359deg);}

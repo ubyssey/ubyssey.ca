@@ -5,7 +5,9 @@
 {{ self.id|json_script:"room-name" }}
 {{ self.updateJsonFormat|json_script:"updates-at-load" }}
 {{ self.get_stage|json_script:"stage-at-load" }}
-{{ self.get_page_meta|json_script:"page_meta-at-load" }}
+{{ pageMeta|json_script:"page_meta-at-load" }}
+{{ self.get_suggested|json_script:"suggested" }}
+{{ admin_view|json_script:"admin-view" }}
 <div class="c-liveblog-container" id="liveblog"></div>
 
 <script src="{% static 'ubyssey/js/liveblog.js' %}" type="text/javascript"></script>

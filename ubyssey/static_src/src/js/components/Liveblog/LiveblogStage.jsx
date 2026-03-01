@@ -45,7 +45,7 @@ function LiveblogStageItemList({list, meta}) {
 
 export default function LiveblogStage({stage, meta}) {
     return (
-        <div className="c-liveblog--stage c-liveblog--stage--header">
+        <div className={"c-liveblog--stage "+ (meta.page.layout=="default" ? "c-liveblog--stage--header" : "")}>
             <LiveblogStageItemList list={stage} meta={meta} />
         </div>
     )

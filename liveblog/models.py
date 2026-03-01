@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.template import loader
 from django.shortcuts import render
 from django.utils import timezone
+from django.forms.widgets import Select
 
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -159,9 +160,26 @@ class LiveBlogArticlePage(ArticlePage):
         use_json_field=True,
     )
 
+    layout = models.CharField(
+        null=False,
+        blank=False,
+        default='default',
+        verbose_name='Article Layout',
+        max_length=100,
+    )
+
     content_panels = [
             HelpPanel(template="liveblog/objects/liveblog-nav-link.html"),
             FieldPanel("stage"),
+            FieldPanel(
+                    "layout",
+                    widget=Select(
+                        choices=[
+                            ('default', 'Default'),
+                            ('split_view', 'Split view'),
+                        ],
+                    ),
+                ),
         ] + ArticlePage.content_panels
 
     edit_handler = TabbedInterface(
@@ -173,13 +191,18 @@ class LiveBlogArticlePage(ArticlePage):
         ],
     )
 
-    def get_page_meta(self):
+    def get_nav_html(self, request):
+        return loader.render_to_string("navigation/headers/topbar.html", {"section": self.current_section, "request": request})
+
+    def get_page_meta(self, request):
         return {
             "title": self.title,
             "lede": self.lede,
-            "authors": self.get_authors_with_urls()
+            "authors": self.get_authors_with_urls(),
+            "layout": self.layout,
+            "nav": self.get_nav_html(request),
         }
-    
+
     def get_stage(self):
         return list(self.stage.raw_data)
 
@@ -187,6 +210,8 @@ class LiveBlogArticlePage(ArticlePage):
         context = super().get_context(request, *args, **kwargs)
         context['updates'] = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("publish_date")
         context['update_order'] = "asc"
+        context['pageMeta'] = self.get_page_meta(request)
+        context['admin_view'] = False
         return context
     
     def get_admin_context(self, request, *args, **kwargs):
@@ -208,6 +233,8 @@ class LiveBlogArticlePage(ArticlePage):
         context['action_url'] = action_url
         context['update_order'] = "desc"
         context['updates'] = context['updates'].order_by("-publish_date")
+
+        context['admin_view'] = True
 
         #media = context['panel'].media
         # Is there a way of obtaining the static files we need through the panel? Couldn't figure it out. - Sam Low 2025/12/30

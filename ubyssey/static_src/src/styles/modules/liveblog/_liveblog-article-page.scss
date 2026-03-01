@@ -80,13 +80,13 @@
 
     &.top {
         margin-top: -50px;
-        top: 0;
+        top: -50px;
         margin-bottom: -50px;
         &::before {
             top: 0;
         }
         button.c-liveblog--update-notification--button {
-            bottom: 0;
+            bottom: -2em;
         }
     }
 
@@ -103,15 +103,97 @@
 
     &.show {
         opacity: 1;
-        z-index: 0;
+        z-index: 25;
         transition: opacity 0.25s 0.25s ease-in;
     }
+}
 
+.c-liveblog--loader-container {
+    padding: 2em 1em 0em 1em;
+    .linear-dots-loader {
+        margin: auto;
+    }
+}
 
+.c-liveblog-admin {
+    .c-liveblog--update-notification {
+        &.top {
+            top: 0;
+            button.c-liveblog--update-notification--button {
+                bottom: 0;
+            }
+        }
+    }
 }
 
 .c-article.c-article--liveblog {
     --article-standard-content-width: 550px;
+
+    &.c-article--liveblog--default {
+        .article-content {
+            overflow: clip;
+        }
+    }
+
+    &.c-article--liveblog--split_view {
+        display: flex;
+        border-bottom: 1px solid var(--border-grey);
+        .c-liveblog--stage {
+            --article-standard-content-width: 700px;
+
+            padding: 0;
+            height: 100vh;
+
+            position: sticky;
+            top: 0;
+
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+
+            div.c-liveblog-summary {
+                margin: 1.25em auto 2em auto;
+                width: 100%;
+            }
+        }
+
+        .c-liveblog--update-notification.top {
+            margin-top: 1em;
+            top: -5px;
+        }
+
+        .c-liveblog--loader-container {
+            margin-top: -100px;
+            padding-top: 1em;
+            padding-left: 0;
+            padding-bottom: 0.25em;
+
+            border-bottom: 1px solid var(--light-grey);
+            
+            position: sticky;
+            top: 0;
+            z-index: 50;
+
+            background: var(--background);
+
+            font-variation-settings: "wght" 700;
+            color: var(--color-ubyssey_blue);
+
+            .linear-dots-loader {
+                display: inline-block;
+                margin-inline: calc(var(--linear-dots-width) * 3);
+                --linear-dots-width: 0.5em;
+                --linear-dots-gap-ratio: 1.5;
+                margin-block: 0.1em;
+            }
+        }
+
+        .article-content {
+            margin-bottom: 0;
+            border-left: 1px solid var(--border-grey);
+            max-width: var(--article-standard-content-width);
+        }
+    }
 }
 
 .live-signal {
@@ -148,6 +230,31 @@
     }
 }
 
+div.headline-container.headline-container--timely-style {
+    margin: auto;
+    padding: 1em 1em 0 1em;
+    max-width: var(--article-standard-content-width);
+    width: 100%;
+
+    color: var(--text_color-100);
+    h1 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    .c-article__published-at {
+        margin: 1rem 0;
+        color: var(--text_color-300);
+    }
+    .o-article--header--above_cut_lede {
+        font-family: fonts.$font-body;
+        font-size: 1.15em;
+    }
+    .author-string {
+        font-variation-settings: "wght" 600;
+        font-size: .75em;
+    }
+}
+
 div.c-liveblog--stage {
     &.c-liveblog--stage--header {
         margin-inline: auto;
@@ -165,28 +272,8 @@ div.c-liveblog--stage {
         }
     }
 
-    div.headline-container.headline-container--timely-style {
-        margin: auto;
-        padding: 1em 1em 0 1em;
-        max-width: var(--article-standard-content-width);
-
-        color: var(--text_color-100);
-        h1 {
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        .c-article__published-at {
-            margin: 1rem 0;
-            color: var(--text_color-300);
-        }
-        .o-article--header--above_cut_lede {
-            font-family: fonts.$font-body;
-            font-size: 1.15em;
-        }
-        .author-string {
-            font-variation-settings: "wght" 600;
-            font-size: .75em;
-        }
+    .headline-container:first-child {
+        margin-top: 1em;
     }
 
     div.c-liveblog-summary {
@@ -211,5 +298,8 @@ div.c-liveblog--stage {
             margin: 0 auto;
             max-width: 100%;
         }
+    }
+    .c-liveblog-stage--rawhtml:first-child {
+        margin-top: 0;
     }
 }
