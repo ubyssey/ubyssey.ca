@@ -115,6 +115,15 @@ class LiveBlogUpdate(ClusterableModel):
 
     def getParentLiveBlogPage(self):
         return Page.objects.filter(id=int(self.room_name)).first()
+    
+    def clearParentLiveBlogPageCache(self):
+        def match_exact_url(url):
+            """Return a regular expression that exactly matches the provided URL."""
+            return '%s$' % url
+    
+        parent = self.getParentLiveBlogPage()
+        if parent:          
+            clear_cache([match_exact_url(parent.full_url)])
 
     def save(self, *args, **kwargs):
         save = super().save(*args, **kwargs)
@@ -128,10 +137,8 @@ class LiveBlogUpdate(ClusterableModel):
                     "message": json.dumps(self.jsonFormat()),
                 }
             )
-
-            parent = self.getParentLiveBlogPage()
-            if parent:          
-                clear_cache([parent])
+            
+            self.clearParentLiveBlogPageCache()
 
         return save
 
@@ -147,11 +154,11 @@ class LiveBlogUpdate(ClusterableModel):
                 }
             )
 
-            parent = self.getParentLiveBlogPage()
-            if parent:          
-                clear_cache([parent])
+        delete = super().delete(*args, **kwargs)
 
-        return super().delete(*args, **kwargs)
+        self.clearParentLiveBlogPageCache()
+
+        return delete
     
     def jsonFormat(self):
         content_template = "liveblog/objects/liveblog-update-content.html"

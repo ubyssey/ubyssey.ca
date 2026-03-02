@@ -1,25 +1,35 @@
 import LiveblogUpdate from "./LiveblogUpdate.jsx";
 
 function UpdateNotification({meta, caughtUp, updateOrder, position, scrollToRecent}) {
-    let positionOrder = 1;
-    if (position == "top") {
-        positionOrder = -1;
+
+    function positionOrder(position) {
+        return {"top": -1, "bottom": 1}[position];
     }
 
-    function showUpdateNotification(caughtUp, updateOrder, positionOrder) {
-        return !caughtUp && updateOrder == positionOrder;
+    function showUpdateNotification(caughtUp, updateOrder, position) {
+        return !caughtUp && updateOrder == positionOrder(position);
+    }
+
+    function loaderText(meta) {
+        if (meta.isAdminView) {
+            return;
+        }
+
+        if (meta.page.layout == "split_view") {
+            return (<span>LIVE</span>);
+        }
     }
 
     if (meta.live) {
         return (
             <>
-            <div className={"c-liveblog--update-notification " + position + " " + (showUpdateNotification(caughtUp, updateOrder, positionOrder) ? "show" : "")}>
+            <div className={"c-liveblog--update-notification " + position + " " + (showUpdateNotification(caughtUp, updateOrder, position) ? "show" : "")}>
                 <button className="c-liveblog--update-notification--button" onClick={() => scrollToRecent(updateOrder)}>New update</button>
             </div>
 
-            {(updateOrder == positionOrder && meta.live) &&
+            {(updateOrder == positionOrder(position) && meta.live) &&
             <div className="c-liveblog--loader-container">
-                {meta.page.layout == "split_view" && <span>LIVE</span>}<div className="linear-dots-loader"></div>
+                {loaderText(meta)}<div className="linear-dots-loader"></div>
             </div>}
             </>
         )

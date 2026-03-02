@@ -75,9 +75,6 @@ export default function LiveBlog() {
     function suggestedHtml() {
         return JSON.parse(document.getElementById('suggested-html').textContent);
     };
-    //function stageAtLoad() {
-    //    return JSON.parse(document.getElementById('stage-at-load').textContent);
-    //};
     function updatesAtLoad() {
         return JSON.parse(document.getElementById('updates-at-load').textContent);
     };
@@ -88,8 +85,6 @@ export default function LiveBlog() {
         return JSON.parse(document.getElementById('admin-view').textContent);
     };
 
-    //const [pageMeta, setPageMeta] = useState(() => pageMetaAtLoad());
-    //const [stage, setStage] = useState(() => stageAtLoad());
     const [pageInfo, setPageInfo] = useState(() => pageInfoAtLoad());
     const [updates, setUpdates] = useState(() => updatesAtLoad());
     const [live, setLive] = useState(() => isLive(updates));
@@ -143,7 +138,7 @@ export default function LiveBlog() {
     let chatSocket = null;
 
     useEffect(() => {
-        
+
         setInterval(() => setPresentTime(new Date()), 1000);
         
         window.onscroll = (e) => onScroll(e, updateOrder);
@@ -213,7 +208,9 @@ export default function LiveBlog() {
         return {
             'page': pageInfo.meta,
             'live': live,
-            'updatedTime': updatedTime
+            'updatedTime': updatedTime,
+            'isAdminView': isAdminView(),
+            'isAdmin': isAdmin,
         }
     }
 
@@ -231,7 +228,7 @@ export default function LiveBlog() {
             <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageInfo.meta.layout}>
                     <LiveblogStage stage={pageInfo.stage} meta={getMeta()} />
                     <div className="article-content">
-                        <LiveBlogFeed meta={getMeta()} updates={updates} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
+                        <LiveBlogFeed meta={getMeta()} updates={updates.sort((a,b) => sortUpdates(a,b,updateOrder))} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
                         {pageInfo.meta.layout!="split_view" && <ShareBar />}
                     </div>
                     {pageInfo.meta.layout == "default" && 
