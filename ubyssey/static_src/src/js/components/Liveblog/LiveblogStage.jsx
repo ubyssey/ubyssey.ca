@@ -1,12 +1,17 @@
 import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtils.js";
 
 function LiveblogStageHeader({value, meta}) {
+    function showThrobber(meta) {
+        return meta.live && meta.page.layout != "split-view"; 
+    }
+
     return (
         <div class="headline-container headline-container--timely-style">
-        
-            <div class="live-signal">LIVE</div>
+            {showThrobber(meta) && <div class="live-signal">LIVE</div>}
             <h1 class="o-headline o-headline--article" dangerouslySetInnerHTML={{__html: meta.page.title}}></h1>
-            <div class="c-article__published-at">Updated: <time class="liveblog_updated_at" dateTime={meta.updates.updatedTime}>{timeDeltaString(new Date(), new Date(meta.updates.updatedTime), convertToMilliseconds(0,0,0,1))}</time></div>
+            {meta.updatedTime != null && 
+                <div class="c-article__published-at">Updated: <time class="liveblog_updated_at" dateTime={meta.updatedTime}>{timeDeltaString(new Date(), new Date(meta.updatedTime), convertToMilliseconds(0,0,0,1))}</time></div>            
+            }
 
             <div class="author-string" dangerouslySetInnerHTML={{__html: meta.page.authors}}></div>
         </div>

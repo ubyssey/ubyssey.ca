@@ -135,69 +135,79 @@
         }
     }
 
+
     &.c-article--liveblog--split_view {
+        @media(variables.$bp-larger-than-tablet) {
         display: flex;
         border-bottom: 1px solid var(--border-grey);
-        .c-liveblog--stage {
-            --article-standard-content-width: 700px;
+            .c-liveblog--stage {
+                --article-standard-content-width: 700px;
 
-            padding: 0;
-            height: 100vh;
+                padding: 0;
+                height: 100vh;
 
-            position: sticky;
-            top: 0;
+                position: sticky;
+                top: 0;
 
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
 
-            div.c-liveblog-summary {
-                margin: 1.25em auto 2em auto;
-                width: 100%;
+                div.c-liveblog-summary {
+                    margin: 1.25em auto 2em auto;
+                    width: 100%;
+                }
+            }
+
+            .c-liveblog--update-notification.top {
+                margin-top: 1em;
+                top: -5px;
+            }
+
+            .c-liveblog--loader-container {
+                margin-top: -100px;
+                padding-top: 1em;
+                padding-left: 0;
+                padding-bottom: 0.25em;
+
+                border-bottom: 1px solid var(--light-grey);
+                
+                position: sticky;
+                top: 0;
+                z-index: 50;
+
+                background: var(--background);
+
+                font-variation-settings: "wght" 700;
+                color: var(--color-ubyssey_blue);
+
+                .linear-dots-loader {
+                    display: inline-block;
+                    margin-inline: calc(var(--linear-dots-width) * 3);
+                    --linear-dots-width: 0.5em;
+                    --linear-dots-gap-ratio: 1.5;
+                    margin-block: 0.1em;
+                }
+            }
+
+            .article-content {
+                margin-bottom: 0;
+                border-left: 1px solid var(--border-grey);
+                max-width: var(--article-standard-content-width);
             }
         }
 
-        .c-liveblog--update-notification.top {
-            margin-top: 1em;
-            top: -5px;
-        }
-
-        .c-liveblog--loader-container {
-            margin-top: -100px;
-            padding-top: 1em;
-            padding-left: 0;
-            padding-bottom: 0.25em;
-
-            border-bottom: 1px solid var(--light-grey);
-            
-            position: sticky;
-            top: 0;
-            z-index: 50;
-
-            background: var(--background);
-
-            font-variation-settings: "wght" 700;
-            color: var(--color-ubyssey_blue);
-
-            .linear-dots-loader {
-                display: inline-block;
-                margin-inline: calc(var(--linear-dots-width) * 3);
-                --linear-dots-width: 0.5em;
-                --linear-dots-gap-ratio: 1.5;
-                margin-block: 0.1em;
+        @media(variables.$bp-smaller-than-tablet) {
+            .c-liveblog--loader-container span {
+                display: none;
             }
-        }
-
-        .article-content {
-            margin-bottom: 0;
-            border-left: 1px solid var(--border-grey);
-            max-width: var(--article-standard-content-width);
         }
     }
+
 }
 
 .live-signal {
-    display: none;
+    display: inline;
     position: relative;
     padding-left: 1.6em;
 
@@ -217,12 +227,6 @@
     }
 }
 
-.live {
-    .live-signal {
-        display: inline;
-    }
-}
-
 [color-css-theme="dark"] {
     .c-liveblog-summary {
         background: var(--color-ubyssey_blue-light);
@@ -233,6 +237,7 @@
 div.headline-container.headline-container--timely-style {
     margin: auto;
     padding: 1em 1em 0 1em;
+    box-sizing: border-box;
     max-width: var(--article-standard-content-width);
     width: 100%;
 
@@ -287,6 +292,17 @@ div.c-liveblog--stage {
         @media(variables.$bp-larger-than-phablet) {
             border-radius: 0.25em;
         }
+
+        h2 {
+            font-size: 1.25em;
+        }
+        h3 {
+            font-size: 1em;
+        }
+        a {
+            text-decoration: underline;
+            color: var(--text_color-200);
+        }
     }
 
     .c-liveblog-stage--rawhtml {
@@ -297,6 +313,10 @@ div.c-liveblog--stage {
         iframe {
             margin: 0 auto;
             max-width: 100%;
+            &.youtube-16-9 {
+                aspect-ratio: 16/9;
+                height: auto;
+            }
         }
     }
     .c-liveblog-stage--rawhtml:first-child {

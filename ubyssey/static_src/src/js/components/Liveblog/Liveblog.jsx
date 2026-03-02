@@ -29,14 +29,21 @@ function ShareBar() {
 }
 
 export default function LiveBlog() {
-    function getUpdateOrder(){
+    function getDefaultUpdateOrder(){
         if (JSON.parse(document.getElementById('update-order').textContent) == "asc") {
             return 1;
         }
         return -1;
     }
 
-    const defaultUpdateOrder = getUpdateOrder();
+    const defaultUpdateOrder = getDefaultUpdateOrder();
+
+    function getUpdateOrder(live) {
+        if (live) {
+            return -1;
+        }
+        return defaultUpdateOrder;
+    }
 
     function sortUpdates(a, b, order) {
         return (new Date(a.publish_date).getTime() - new Date(b.publish_date).getTime()) * order;
@@ -53,18 +60,24 @@ export default function LiveBlog() {
     function isLive(consideredUpdates) {
         const time = timeUpdatedAt(consideredUpdates);
         if (time==null) {
-            return false;
+            return true;
         }
         const delta = new Date().getTime() - new Date(time).getTime();
         return delta < convertToMilliseconds(0, 30, 0, 0);
     }
 
-    function pageMetaAtLoad() {
-        return JSON.parse(document.getElementById('page_meta-at-load').textContent);
+    function pageInfoAtLoad() {
+        return JSON.parse(document.getElementById('page-info-at-load').textContent);
+    }
+    function navHtml() {
+        return JSON.parse(document.getElementById('nav-html').textContent);
     };
-    function stageAtLoad() {
-        return JSON.parse(document.getElementById('stage-at-load').textContent);
+    function suggestedHtml() {
+        return JSON.parse(document.getElementById('suggested-html').textContent);
     };
+    //function stageAtLoad() {
+    //    return JSON.parse(document.getElementById('stage-at-load').textContent);
+    //};
     function updatesAtLoad() {
         return JSON.parse(document.getElementById('updates-at-load').textContent);
     };
@@ -75,13 +88,14 @@ export default function LiveBlog() {
         return JSON.parse(document.getElementById('admin-view').textContent);
     };
 
-    const [pageMeta, setPageMeta] = useState(() => pageMetaAtLoad());
-    const [stage, setStage] = useState(() => stageAtLoad());
+    //const [pageMeta, setPageMeta] = useState(() => pageMetaAtLoad());
+    //const [stage, setStage] = useState(() => stageAtLoad());
+    const [pageInfo, setPageInfo] = useState(() => pageInfoAtLoad());
     const [updates, setUpdates] = useState(() => updatesAtLoad());
     const [live, setLive] = useState(() => isLive(updates));
     const [caughtUp, setCaughtUp] = useState(true);
     const [updatedTime, setUpdatedTime] = useState(() => timeUpdatedAt(updates));
-    const [updateOrder, setUpdateOrder] = useState(() => getUpdateOrder());
+    const [updateOrder, setUpdateOrder] = useState(() => getUpdateOrder(live));
     const [isAdmin, setIsAdmin] = useState(() => isAdminAtLoad());
     const [presentTime, setPresentTime] = useState(new Date());
     const [connectionCount, setConnectionCount] = useState(1);
@@ -116,22 +130,23 @@ export default function LiveBlog() {
         return false;
     }
 
+    function onScroll(e, updateOrder) {
+        if (updateOrder == -1) {
+            if (window.scrollY < getLiveblogRecentScrollHeight(updateOrder) || window.scrollY <= 0) {
+                setCaughtUp(true);
+            }
+        } else if (window.scrollY > getLiveblogRecentScrollHeight(updateOrder)) {
+            setCaughtUp(true);
+        }
+    }
+
     let chatSocket = null;
 
     useEffect(() => {
-        setCaughtUp(!isLive(updates))
         
         setInterval(() => setPresentTime(new Date()), 1000);
         
-        window.onscroll = (e) => {
-            if (updateOrder == -1) {
-                if (window.scrollY < getLiveblogRecentScrollHeight(updateOrder) || window.scrollY <= 0) {
-                    setCaughtUp(true);
-                }
-            } else if (window.scrollY > getLiveblogRecentScrollHeight(updateOrder)) {
-                setCaughtUp(true);
-            }
-        };
+        window.onscroll = (e) => onScroll(e, updateOrder);
 
         if (!caughtUp && isAtRecent(updateOrder)) {
             setTimeout(() => setCaughtUp(true), 1000);
@@ -170,6 +185,10 @@ export default function LiveBlog() {
                 }
             } else if (data.delete) {
                 setUpdates(prev => prev.filter((update) => update.id != data.delete).sort((a,b) => sortUpdates(a,b,updateOrder)));
+            } else if (data.page_update) {
+                setPageInfo(JSON.parse(data.page_update));
+            } else {
+                console.log(data);
             }
         };
 
@@ -184,41 +203,40 @@ export default function LiveBlog() {
 
         setUpdatedTime(timeUpdatedAt(updates));
 
-        if (live) {
-            setUpdateOrder(-1);
-        } else {
-            setUpdateOrder(defaultUpdateOrder);
-        }
-
     }, [updates]);
 
-    function liveStageMeta() {
+    useEffect(() => {
+        setUpdateOrder(getUpdateOrder(live));
+    }, [live]);
+
+    function getMeta() {
         return {
-            'page': pageMeta,
-            'updates': {
-                'live': live,
-                'updatedTime': updatedTime
-            }
+            'page': pageInfo.meta,
+            'live': live,
+            'updatedTime': updatedTime
         }
     }
 
     if (isAdminView()) {
         
         return (
-            <LiveBlogFeed meta={pageMeta} updates={updates} live={live} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
+            <LiveBlogFeed meta={getMeta()} updates={updates} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
         ) 
     }
     
     return (
         <>
-        <div id="nav" dangerouslySetInnerHTML={{__html: pageMeta.nav}}></div>
+        <div id="nav" dangerouslySetInnerHTML={{__html: navHtml()}}></div>
         <main className="article">
-            <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageMeta.layout}>
-                    <LiveblogStage stage={stage} meta={liveStageMeta()} />
+            <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageInfo.meta.layout}>
+                    <LiveblogStage stage={pageInfo.stage} meta={getMeta()} />
                     <div className="article-content">
-                        <LiveBlogFeed meta={pageMeta} updates={updates} live={live} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
-                        {pageMeta.layout!="split_view" && <ShareBar />}
+                        <LiveBlogFeed meta={getMeta()} updates={updates} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
+                        {pageInfo.meta.layout!="split_view" && <ShareBar />}
                     </div>
+                    {pageInfo.meta.layout == "default" && 
+                        <div dangerouslySetInnerHTML={{__html: suggestedHtml()}}></div>
+                    }
             </article>
         </main>
         </>

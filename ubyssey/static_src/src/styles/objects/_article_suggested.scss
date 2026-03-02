@@ -23,16 +23,14 @@
     }
 }
 
-@media(variables.$bp-smaller-than-phablet) {
-    .c-suggested-bar--primary-title {
-        margin-left: 1em;
-    }
-}
 
 .c-suggested-bar {
     margin-bottom: 3em;
+    padding-inline: 1em;
     display: flex;
     width: fit-content;
+    max-width: calc(1275px + 2em);
+    
 
     @media(variables.$bp-smaller-than-tablet) {
         flex-direction: column;
