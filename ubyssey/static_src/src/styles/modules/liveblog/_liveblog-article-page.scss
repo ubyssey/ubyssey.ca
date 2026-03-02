@@ -227,13 +227,6 @@
     }
 }
 
-[color-css-theme="dark"] {
-    .c-liveblog-summary {
-        background: var(--color-ubyssey_blue-light);
-        color: var(--color-ubyssey_blue-dark);
-    }
-}
-
 div.headline-container.headline-container--timely-style {
     margin: auto;
     padding: 1em 1em 0 1em;
@@ -287,8 +280,8 @@ div.c-liveblog--stage {
         padding: 1em;
 
         max-width: var(--article-standard-content-width);
-        background: #eee;
-        color: #656565;
+        background: var(--light-border-grey);
+
         @media(variables.$bp-larger-than-phablet) {
             border-radius: 0.25em;
         }
@@ -296,12 +289,14 @@ div.c-liveblog--stage {
         h2 {
             font-size: 1.25em;
         }
-        h3 {
+        h3, h4 {
             font-size: 1em;
+        }
+        p {
+            color: var(--text_color-200);
         }
         a {
             text-decoration: underline;
-            color: var(--text_color-200);
         }
     }
 
