@@ -227,6 +227,8 @@ DATABASES = {
     },
 }
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000
+
 # Substitute a custom user model.
 # Ref: https://docs.djangoproject.com/en/4.2/topics/auth/customizing/#auth-custom-user
 

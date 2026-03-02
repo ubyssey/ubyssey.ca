@@ -2,7 +2,7 @@
 @use "../footer" as footer;
 @use "../variables";
 
-$text-color: var(--text_color);
+$text-color: var(--text_color-100);
 
 .featured-media {
   margin-bottom: 2em;
@@ -207,7 +207,7 @@ div.article-content {
   margin-bottom: 50px;
   width: 100%;
 
-  color: var(--text_color);
+  color: var(--text_color-100);
 
   * {
     max-width: 100%;
@@ -281,6 +281,13 @@ div.article-content {
     margin-top: 1.8em;
     margin-bottom: 0;
     padding-inline: 10px;
+  }
+
+  h2, h3, h4 {
+    font-family: fonts.$font-headline;
+    font-weight: 500;
+    font-variation-settings: "wght" 500;
+    color: var(--header_color-200);
   }
 
   >h3,
@@ -384,7 +391,7 @@ div.article-content, .o-visual-essay__right-div {
     a {
     display: inline-block;
     margin-right: 1em;
-    color: var(--text_color);
+    color: var(--text_color-100);
     font-family: fonts.$font-default;
     font-weight: 400;
     border-bottom: 1px solid;
@@ -434,7 +441,7 @@ p.c-article__published-at {
     padding-top: 0.15em;
     height: 1em;
     width: auto;
-    fill: var(--text_color);
+    fill: var(--text_color-100);
   }
 
   span.c-share-buttons {
@@ -443,7 +450,7 @@ p.c-article__published-at {
     > a{
       position: relative;
       padding: 0px 4px 10px 4px;
-      color: var(--text_color);
+      color: var(--text_color-100);
       border: none;
     }
   }

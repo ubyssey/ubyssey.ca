@@ -14,27 +14,6 @@
         font-size: 0.9em;
         font-weight: 600;
         font-variation-settings: "wght" 600;
-
-        &.live {
-            position: relative;
-            padding-left: 1.7em;
-            font-variation-settings: "wght" 800;
-            &::before {
-                content: "";
-                display: inline-block;
-                
-                position: absolute;
-                left: 0.25em;
-                top: 0.325em;
-                
-                width: 0.75em;
-                aspect-ratio: 1;
-                border-radius: 100%;
-                background: var(--color-ubyssey_blue);
-
-                animation: throb alternate-reverse ease-in-out 0.5s infinite;
-            }
-        }
     }
     .o-article__headline span.subtitle {
         font-weight: 400;

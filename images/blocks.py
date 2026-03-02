@@ -89,3 +89,8 @@ class CaptionedImageBlock(ReducedImageBlock):
         max_length=255,
         required=False,
     )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context['click_to_enlarge'] = True
+        return context

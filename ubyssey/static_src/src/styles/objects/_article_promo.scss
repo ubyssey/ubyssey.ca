@@ -48,7 +48,7 @@ article.article-promo {
       font-family: noto-serif, serif;
   
       background-size: 1px 2em;
-      background-image: linear-gradient(transparent calc(100% - 1px), var(--header_color));
+      background-image: linear-gradient(transparent calc(100% - 1px), var(--header_color-100));
       b {
         margin-right: 0.5em;
       }

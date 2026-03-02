@@ -1,9 +1,15 @@
 {% load static %}
 
 {{ user.is_authenticated|json_script:"is-admin" }}
-{{ update_order|json_script:"update-order" }}
 {{ self.id|json_script:"room-name" }}
+
+{{ update_order|json_script:"update-order" }}
 {{ self.updateJsonFormat|json_script:"updates-at-load" }}
-<div class="c-liveblog-container" id="liveblog-feed"></div>
+{{ self.get_page_info|json_script:"page-info-at-load" }}
+
+{{ nav_html|json_script:"nav-html" }}
+{{ suggested_html|json_script:"suggested-html" }}
+{{ admin_view|json_script:"admin-view" }}
+<div class="c-liveblog-container" id="liveblog"></div>
 
 <script src="{% static 'ubyssey/js/liveblog.js' %}" type="text/javascript"></script>

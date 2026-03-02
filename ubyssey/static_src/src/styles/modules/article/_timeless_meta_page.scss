@@ -47,7 +47,7 @@
 
         .caption {
           border: none;
-          color: var(--header_color);
+          color: var(--header_color-100);
           font-style: normal;
           a {
             text-decoration: underline;
@@ -107,7 +107,7 @@
     text-align: center;
     text-transform: uppercase;
     --header_color: black;
-    color: var(--header_color);
+    color: var(--header_color-100);
     font-family: fonts.$font-default;
 
     z-index: 10;

@@ -250,7 +250,7 @@
       }
       .o-article__published, .o-article__seemore {
         margin-bottom: 0.5em;
-        color: var(--header_color);
+        color: var(--header_color-100);
         font-size: 0.8em;
         font-weight: 600;
       }
@@ -327,7 +327,7 @@
   .menu-title {
     border: none;
     background: linear-gradient(transparent calc(100% - 0.25em), var(--linkColour) 0);
-    color: var(--header_color);
+    color: var(--header_color-100);
     a {
       margin: auto;
       width: fit-content;
@@ -410,7 +410,7 @@
     }
     .o-article__byline {
       font-size: 0.75em;
-      color: var(--text_color_supporting);
+      color: var(--text_color-300);
     }
 
     &.o-article--suggested_article--large {  
@@ -533,7 +533,7 @@
       font-variation-settings: "wght" 600;
       font-size: 1.2em;
       line-height: 1em;
-      color: var(--header_color);
+      color: var(--header_color-100);
     }
   }
 }
