@@ -144,11 +144,13 @@
                 --article-standard-content-width: 700px;
 
                 padding: 0;
-                height: 100vh;
-
+                height: fit-content;
+                max-height: 100vh;
+        
                 position: sticky;
                 top: 0;
 
+                flex-grow: 1;
                 display: flex;
                 flex-direction: column;
                 overflow-y: auto;
@@ -228,7 +230,7 @@
 }
 
 div.headline-container.headline-container--timely-style {
-    margin: auto;
+    margin-inline: auto;
     padding: 1em 1em 0 1em;
     box-sizing: border-box;
     max-width: var(--article-standard-content-width);
@@ -278,6 +280,7 @@ div.c-liveblog--stage {
         margin-top: 1em;
         margin-inline: auto;
         padding: 1em;
+        box-sizing: border-box;
 
         max-width: var(--article-standard-content-width);
         background: var(--light-border-grey);

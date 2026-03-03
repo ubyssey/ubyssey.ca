@@ -747,6 +747,7 @@ html.hairlines {
   }
 
   @media(variables.$bp-larger-than-phablet) {
+    margin-top: 1.25em;
     display: grid;
 
     &.o-curated-stream-grid-rows--one {
@@ -763,6 +764,9 @@ html.hairlines {
         .o-profile_cell {
           flex-direction: row;
           gap: 1em;
+          .o-profile_cell--left {
+            flex-shrink: 0;
+          }
         }
       }
     }

@@ -783,7 +783,7 @@ div.article-content blockquote.pull-quote {
   &.contrast {
     padding: 1em;
     background: var(--color-ubyssey_blue-light);
-    --text_color: black;
+    --text_color-100: black;
     color: black;
     
     @media(variables.$bp-larger-than-phablet) {

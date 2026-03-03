@@ -2,7 +2,7 @@
 @use '../variables';
 
 .timeless-meta-page .branding-nav {
-  --header_color: black;
+  --header_color-100: black;
 }
 
 .c-article--timeless-meta-page {
@@ -106,7 +106,7 @@
     
     text-align: center;
     text-transform: uppercase;
-    --header_color: black;
+    --header_color-100: black;
     color: var(--header_color-100);
     font-family: fonts.$font-default;
 

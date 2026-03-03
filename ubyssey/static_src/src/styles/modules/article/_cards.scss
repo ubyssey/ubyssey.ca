@@ -65,8 +65,8 @@
         flex-direction: column;
         .o-card {
             --background: var(--light-grey);
-            --text_color: #272727;
-            --header_color: ;
+            --text_color-100: #272727;
+            --header_color-100: ;
             filter: drop-shadow(-0.25em .25em 0.5em var(--shadow-color));
         }      
     }

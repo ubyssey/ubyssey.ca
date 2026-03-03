@@ -878,8 +878,8 @@ nav.branding-nav {
       right: 0;
       z-index: 1000;
       background: var(--header-background-color);
-      --header_color: var(--header-text-color);
-      --text_color: var(--header-text-color);
+      --header_color-100: var(--header-text-color);
+      --text_color-100: var(--header-text-color);
       --text_color_supporting: #ddd;
 
       .c-nav-search--status {
@@ -1156,8 +1156,8 @@ nav.branding-nav {
       right: 0;
       z-index: 1000;
       background: var(--header-background-color);
-      --header_color: var(--header-text-color);
-      --text_color: var(--header-text-color);
+      --header_color-100: var(--header-text-color);
+      --text_color-100: var(--header-text-color);
       --text_color_supporting: #ddd;
 
       .c-nav-search--status {
