@@ -101,7 +101,6 @@
     flex-direction: column;
     @media (variables.$bp-larger-than-tablet) {
         flex-direction: row;
-        justify-content: space-evenly;
     }
 }
 

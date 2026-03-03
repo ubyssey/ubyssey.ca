@@ -189,13 +189,14 @@
   position: relative;
   a, form, input {
     cursor: pointer;
-    color: var(--header_color-100);
+    color: var(--header_color-200);
+    border: none;
     &:hover {
       color: variables.$color-accent-blue;
     }
   }
   a > p {
-    color: var(--header_color-100);
+    color: var(--header_color-200);
 
     &:hover{
       color: variables.$color-accent-blue;
@@ -237,17 +238,15 @@
   display: flex;
 
   margin-block: 2em;
-  border-bottom: 2px solid var(--header_color-100);
+  border-bottom: 2px solid var(--border-grey);
 
   color: footer.$text-color;
 
   h2.c-section__info-header {
     max-width: fit-content;
-    margin-right: 1em;
     margin-block: auto;
 
     font-size: 1.25em;
-    text-transform: uppercase;
 
     @media(variables.$bp-smaller-than-mobile) {
       display: none;
