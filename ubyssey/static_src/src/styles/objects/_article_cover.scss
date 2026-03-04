@@ -122,7 +122,7 @@
     }
     
     .o-article__author {
-      color: var(--text_color);
+      color: var(--text_color-100);
     }
   
     .o-article__byline {
@@ -136,7 +136,7 @@
   
     .o-article__snippet {
       line-height: 1.5em;
-      color: var(--header_color);
+      color: var(--header_color-100);
       font-size: 1.2em;
     }
   }

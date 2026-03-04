@@ -155,6 +155,14 @@ class AuthorPage(RoutablePageMixin, Page):
         blank=True,
     )
 
+    noindex = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        verbose_name="Add 'noindex' tag?",
+        help_text="Warning: Only to be used when an article is requested to be unpublished, as per unpublishing policy. Should be FALSE in all but exceptional circumstances!",
+    )
+
     objects = AuthorsPageManager()
 
     # For editting in wagtail:
@@ -180,6 +188,17 @@ class AuthorPage(RoutablePageMixin, Page):
             heading="Optional Stuff",
         ),
     ]
+
+    promote_panels = Page.promote_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel("noindex"),
+            ],
+            heading="Special search engine-related meta tagging",
+        ),
+    ]
+
+
     #-----Search fields etc-----
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [

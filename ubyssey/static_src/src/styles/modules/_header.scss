@@ -101,7 +101,7 @@ header.main{
       display: inline-block;
       height: 100%;
       line-height: 1em;
-      color: var(--header_color);
+      color: var(--header_color-100);
     }
   
     .middle {
@@ -117,7 +117,7 @@ header.main{
       .bluesky-icon svg {
         height: 0.85em;
         vertical-align: baseline;
-        fill: var(--header_color);
+        fill: var(--header_color-100);
         &:hover {
           fill: var(--color-ubyssey_blue);
         }
@@ -185,7 +185,7 @@ header.main{
         font-family: fonts.$font-default;
         font-size: 0.75em;
         font-weight: fonts.$font-weight-semi-bold;
-        color: var(--header_color);
+        color: var(--header_color-100);
         text-transform: uppercase;
         
         &.elections a {
@@ -250,7 +250,7 @@ header.main{
         li {
           font-family: fonts.$font-default;
           font-size: fonts.font-size(10);
-          color: var(--text_color);
+          color: var(--text_color-100);
           margin: 0 6px;
           line-height: 2.2em;
           font-weight: 600;
@@ -363,7 +363,7 @@ header.topbar {
       border: none;
       background: none;
 
-      color: var(--header_color);
+      color: var(--header_color-100);
       font-size: 1.2em;
       vertical-align: baseline;
       ion-icon {
@@ -477,7 +477,7 @@ header.topbar.c-article-storyline {
     display: inline;
     flex-shrink: 0;
     font-weight: 600;
-    color: var(--header_color)
+    color: var(--header_color-100)
   }
   .c-article-storyline--nav {
     display: inline-block;
@@ -710,7 +710,7 @@ nav.branding-nav {
     transform: translateX(-50%);
 
     svg {
-        fill: var(--header_color);
+        fill: var(--header_color-100);
         max-width: 150px;
     }
     a {
@@ -878,14 +878,14 @@ nav.branding-nav {
       right: 0;
       z-index: 1000;
       background: var(--header-background-color);
-      --header_color: var(--header-text-color);
-      --text_color: var(--header-text-color);
-      --text_color_supporting: #ddd;
+      --header_color-100: var(--header-text-color);
+      --text_color-100: var(--header-text-color);
+      --text_color-300:#ddd;
 
       .c-nav-search--status {
         margin-block: 1em;
         a {
-          color: var(--text_color);
+          color: var(--text_color-100);
         } 
       }
       ul {
@@ -1156,14 +1156,14 @@ nav.branding-nav {
       right: 0;
       z-index: 1000;
       background: var(--header-background-color);
-      --header_color: var(--header-text-color);
-      --text_color: var(--header-text-color);
-      --text_color_supporting: #ddd;
+      --header_color-100: var(--header-text-color);
+      --text_color-100: var(--header-text-color);
+      --text_color-300:#ddd;
 
       .c-nav-search--status {
         margin-block: 1em;
         a {
-          color: var(--text_color);
+          color: var(--text_color-100);
         } 
       }
       ul {
@@ -1237,7 +1237,7 @@ nav.branding-nav {
   background: var(--background);
   border-radius: 0.5em;
 
-  color: var(--text_color);
+  color: var(--text_color-100);
   text-align: left;
 
   display: none;
@@ -1288,7 +1288,7 @@ nav.branding-nav {
         white-space: nowrap;
         text-overflow: ellipsis;
         font-size: 0.75em;
-        color: var(--text_color_supporting);
+        color: var(--text_color-300);
       }
     }
 

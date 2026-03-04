@@ -89,6 +89,29 @@ class SportsGameScore(blocks.StructBlock):
     class Meta:
         template = "home/objects/cells/sports_game_score.html"
 
+class SharedAttachmentBasicArticleListing(blocks.StructBlock):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage", required=True)
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('article_listing--minimal', "Minimal"),
+            ('article_listing--minimal-lede', "Minimal with lede"),
+        ],
+        required=True,
+    )
+
+    def get_articles(self, value):
+        return [value["article"]]
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        if '-lede' in value['template']:
+            context['lede'] = True
+        return context
+
+    class Meta:
+        template = "home/objects/cells/article_listing--minimal.html"
+
 # Right
 class AuthorCommentary(blocks.StructBlock):
     commentary = blocks.RichTextBlock(required=True)
@@ -264,6 +287,7 @@ class CuratedStreamSharedAttachment(blocks.StructBlock):
         ("profile", ProfileCell()),
         ("quote", QuoteCell()),
         ("raw_html", blocks.RawHTMLBlock()),
+        ("article_listing", SharedAttachmentBasicArticleListing()),
     ])
     right = Carousel()
 
@@ -308,9 +332,16 @@ class CuratedStreamGrid(blocks.StructBlock):
         ]))
     ]))
     rows = blocks.ChoiceBlock(choices=[
+        ("one", "One"),
+        ("two", "Two"),
         ("three", "Three"),
         ("four", "Four"),
+        ("five", "Five"),
     ])
+    layout = blocks.ChoiceBlock(choices=[
+        ("headline_top", "Headline top"),
+        ("headline_left", "Headline left"),
+    ], default="headline_top")
 
     def get_articles(self, values):
         articles = []

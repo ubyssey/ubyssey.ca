@@ -65,8 +65,8 @@
         flex-direction: column;
         .o-card {
             --background: var(--light-grey);
-            --text_color: #272727;
-            --header_color: ;
+            --text_color-100: #272727;
+            --header_color-100: ;
             filter: drop-shadow(-0.25em .25em 0.5em var(--shadow-color));
         }      
     }
@@ -88,6 +88,21 @@
                 background-size: 100px;
                 background-repeat: no-repeat;
                 background-position-y: 1em;
+                p {
+                    margin-block: 0.5rem;
+                }
+                h3:first-child {
+                    margin-block: 0;
+                }
+                h3:first-child + p {
+                    margin-top: 0.25rem;
+                }
+                a {
+                    text-decoration: underline;
+                    &:hover {
+                        color: var(--color-ubyssey_blue); 
+                    }
+                }
             }
         }
     }
@@ -96,7 +111,7 @@
         padding: 1em;
         border-radius: 1em;
 
-        color: var(--text_color);
+        color: var(--text_color-100);
         background-color: var(--background);
 
         &.o-card--image {

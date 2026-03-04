@@ -6,7 +6,7 @@
     border-bottom: 1px solid var(--light-border-grey);
     max-width: calc(var(--article-standard-content-width) - 2em) !important;
 
-    color: var(--text_color);
+    color: var(--text_color-100);
 
     &:last-child {
         border-bottom: 1px solid var(--border-grey);
@@ -37,15 +37,15 @@
     }
     .o-liveblog-update--meta--time {
         font-size: 0.75em;
-        color: var(--text_color_supporting);
+        color: var(--text_color-300);
         font-variation-settings: "wght" 600;
     }
     .o-liveblog-update--meta--author {
         font-size: 0.75em;
-        color: var(--text_color_supporting);
+        color: var(--text_color-400);
         a {
             margin-right: 0.25em;
-            color: var(--text_color);
+            color: var(--text_color-200);
         }
         span {
             margin-left: 0.25em;
@@ -69,6 +69,7 @@
 
     .o-liveblog-update--content {
         >p {
+            line-height: 1.75em;
             a {
             padding: 0px 3px;
             border-bottom: 1px solid;
@@ -81,6 +82,15 @@
                 color: var(--color-ubyssey_blue);
             }
             }
+        }
+
+        .caption {
+            margin-inline: 0;
+            padding-bottom: 0;
+        }
+
+        .attachment, iframe {
+            margin-block: 0 1em;
         }
     }
 
@@ -129,8 +139,5 @@
 .c-article .o-liveblog-update {
     .o-liveblog-update--meta--time.recent {
         color: variables.$color-ubyssey-blue;
-    }
-    .attachment, iframe {
-        margin-block: 0 1em;
     }
 }

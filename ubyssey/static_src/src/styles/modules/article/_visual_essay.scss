@@ -195,7 +195,7 @@ div.article-content {
             position: relative;
             border-radius: 1em;
             background-color: var(--visual_essay--bubble-background);
-            --text_color: var(--visual_essay--bubble-text_colour);
+            --text_color-100: var(--visual_essay--bubble-text_colour);
             //opacity: 0;
             transition: opacity 1s, visibility 1s;
 

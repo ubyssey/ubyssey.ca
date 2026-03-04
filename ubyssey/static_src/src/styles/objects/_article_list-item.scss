@@ -6,7 +6,7 @@ article.o-article_list-item {
     width: 300px;
     display: flex;
     gap: 1em;
-    border-bottom: 1px dashed var(--header_color);
+    border-bottom: 1px dashed var(--header_color-100);
 
     .o-article__headline {
         font-size: 1em;
@@ -18,7 +18,7 @@ article.o-article_list-item {
         margin-block: 0;
         font-weight: 400;
         font-size: 0.75em;
-        color: var(--text_color_supporting);
+        color: var(--text_color-300);
     }
     .left {
         width: 100%;

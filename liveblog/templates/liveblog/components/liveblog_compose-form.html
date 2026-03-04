@@ -15,7 +15,9 @@
         {% csrf_token %}
         {{ panel.render_form_content|safe }}
     </form>
-    <button class="button action-save" id="publish_update">Publish update</button>
+    <button class="button button-longrunning action-save"  data-action="w-progress#activate" data-w-progress-duration-value="500" data-w-progress-label-value="Publishing" data-w-progress-loading-value="false" id="publish_update" >
+        <svg class="icon icon-spinner icon" aria-hidden="true"><use href="#icon-spinner"></use></svg>Publish update</button>
+
 </div>
 <script>
     function formDataToQuery(form) {

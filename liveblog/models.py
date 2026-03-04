@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.template import loader
 from django.shortcuts import render
 from django.utils import timezone
+from django.forms.widgets import Select
 
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -31,13 +32,17 @@ from wagtail.admin.staticfiles import versioned_static
 from wagtail.admin.viewsets.model import ModelViewSet
 from wagtail.snippets.models import register_snippet
 from wagtail.contrib.routable_page.models import route, RoutablePageMixin
-from wagtail.models import Orderable
+from wagtail.models import Orderable, Page
+
+from wagtailcache.cache import clear_cache
 
 from authors.models import AuthorPage
 from article.models import ArticlePage
 from article import blocks_inner_article as blocks_inner_article
 from images.blocks import CaptionedImageBlock
 from home.blocks import StorystreamItem
+
+from liveblog.blocks import LiveblogHeader, LiveblogSummary, LiveblogRawHTML
 
 from channels.layers import get_channel_layer
 
@@ -108,6 +113,18 @@ class LiveBlogUpdate(ClusterableModel):
         FieldPanel("room_name", widget=HiddenInput)
     ]
 
+    def getParentLiveBlogPage(self):
+        return Page.objects.filter(id=int(self.room_name)).first()
+    
+    def clearParentLiveBlogPageCache(self):
+        def match_exact_url(url):
+            """Return a regular expression that exactly matches the provided URL."""
+            return '%s$' % url
+    
+        parent = self.getParentLiveBlogPage()
+        if parent:          
+            clear_cache([match_exact_url(parent.full_url)])
+
     def save(self, *args, **kwargs):
         save = super().save(*args, **kwargs)
 
@@ -120,6 +137,8 @@ class LiveBlogUpdate(ClusterableModel):
                     "message": json.dumps(self.jsonFormat()),
                 }
             )
+            
+            self.clearParentLiveBlogPageCache()
 
         return save
 
@@ -134,7 +153,12 @@ class LiveBlogUpdate(ClusterableModel):
                     "id": self.id,
                 }
             )
-        return super().delete(*args, **kwargs)
+
+        delete = super().delete(*args, **kwargs)
+
+        self.clearParentLiveBlogPageCache()
+
+        return delete
     
     def jsonFormat(self):
         content_template = "liveblog/objects/liveblog-update-content.html"
@@ -148,7 +172,36 @@ class LiveBlogUpdate(ClusterableModel):
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
 
-    content_panels = [HelpPanel(template="liveblog/objects/liveblog-nav-link.html")] + ArticlePage.content_panels
+    stage = StreamField([
+            ("header", LiveblogHeader()),
+            ("summary", LiveblogSummary()),
+            ("raw_html", LiveblogRawHTML())
+        ],
+        default=[{"type": "header", "value":{}}],
+        use_json_field=True,
+    )
+
+    layout = models.CharField(
+        null=False,
+        blank=False,
+        default='default',
+        verbose_name='Article Layout',
+        max_length=100,
+    )
+
+    content_panels = [
+            HelpPanel(template="liveblog/objects/liveblog-nav-link.html"),
+            FieldPanel("stage"),
+            FieldPanel(
+                    "layout",
+                    widget=Select(
+                        choices=[
+                            ('default', 'Default'),
+                            ('split_view', 'Split view'),
+                        ],
+                    ),
+                ),
+        ] + ArticlePage.content_panels
 
     edit_handler = TabbedInterface(
         [
@@ -159,10 +212,50 @@ class LiveBlogArticlePage(ArticlePage):
         ],
     )
 
+    def save(self, *args, **kwargs):
+        save = super().save(*args, **kwargs)
+
+        channel_layer = get_channel_layer()
+
+        async_to_sync(channel_layer.group_send)(
+            f"liveblog_{self.id}", {
+                "type": "liveblog.page_update",
+                "page": json.dumps(self.get_page_info()),
+            }
+        )
+
+        return save
+
+    def get_nav_html(self, request):
+        return loader.render_to_string("article/objects/article-navigation.html", {"self": self, "section": self.current_section, "request": request})
+    
+    def get_suggested_html(self, request):
+        return loader.render_to_string("article/objects/suggested_articles.html", {"suggested": self.get_suggested(), "request": request})
+
+    def get_page_meta(self):
+        return {
+            "title": self.title,
+            "lede": self.lede,
+            "authors": self.get_authors_with_urls(),
+            "layout": self.layout,
+        }
+
+    def get_stage(self):
+        return [{"type": child.block_type, "value": child.block.stageValue(child.get_prep_value()["value"])} for child in self.stage]
+
+    def get_page_info(self):
+        return {
+            "meta": self.get_page_meta(),
+            "stage": self.get_stage(),
+        }
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context['updates'] = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("publish_date")
         context['update_order'] = "asc"
+        context['admin_view'] = False
+        context['nav_html'] = self.get_nav_html(request)
+        context['suggested_html'] = self.get_suggested_html(request)
         return context
     
     def get_admin_context(self, request, *args, **kwargs):
@@ -184,6 +277,8 @@ class LiveBlogArticlePage(ArticlePage):
         context['action_url'] = action_url
         context['update_order'] = "desc"
         context['updates'] = context['updates'].order_by("-publish_date")
+
+        context['admin_view'] = True
 
         #media = context['panel'].media
         # Is there a way of obtaining the static files we need through the panel? Couldn't figure it out. - Sam Low 2025/12/30
