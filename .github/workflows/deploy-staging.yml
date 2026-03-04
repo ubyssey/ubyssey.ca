@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - update-packages-nishim
+      - update-packages-nishim-merged-with-develop
 
 env:
   REGISTRY: ghcr.io

@@ -203,6 +203,11 @@ services:
         max_failure_ratio: 0
         failure_action: pause
 
+    resources:
+      limits:
+        cpus: '0.2'
+        memory: 2gb
+
     depends_on:
       - mysql
       - cache
