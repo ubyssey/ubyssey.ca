@@ -10,11 +10,12 @@ img.featured {
 h1.section,
 h2.title,
 h2.block-title {
-  text-align: center;
-  font-family: fonts.$font-secondary;
   margin-top: 0;
   margin-bottom: 0;
-  padding-bottom: 0.5em;
+
+  text-align: center;
+  font-family: fonts.$font-secondary;
+  font-size: 1em;
 }
 
 html.hairlines {

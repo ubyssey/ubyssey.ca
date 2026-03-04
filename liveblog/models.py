@@ -189,6 +189,15 @@ class LiveBlogArticlePage(ArticlePage):
         max_length=100,
     )
 
+    live_policy = models.CharField(
+        null=False,
+        blank=False,
+        default='auto-30m',
+        help_text='Determines when the article is considered "Live".',
+        verbose_name='Live policy',
+        max_length=100,
+    )
+
     content_panels = [
             HelpPanel(template="liveblog/objects/liveblog-nav-link.html"),
             FieldPanel("stage"),
@@ -198,6 +207,16 @@ class LiveBlogArticlePage(ArticlePage):
                         choices=[
                             ('default', 'Default'),
                             ('split_view', 'Split view'),
+                        ],
+                    ),
+                ),
+            FieldPanel(
+                    "live_policy",
+                    widget=Select(
+                        choices=[
+                            ('manual-live', 'Live'),
+                            ('manual-not-live', 'Not live'),
+                            ('auto-30m', 'Auto (Live within 30 minutes of an update)'),
                         ],
                     ),
                 ),
@@ -238,6 +257,7 @@ class LiveBlogArticlePage(ArticlePage):
             "lede": self.lede,
             "authors": self.get_authors_with_urls(),
             "layout": self.layout,
+            "live_policy": self.live_policy,
         }
 
     def get_stage(self):
@@ -323,9 +343,12 @@ class LiveBlogArticlePage(ArticlePage):
 
     def is_live(self):
         updated = self.updated_at()
-        if updated:
-            return timezone.now() - updated < timezone.timedelta(minutes=30)
-        return False
+        if self.live_policy == 'auto-30m':
+            if updated:
+                return timezone.now() - updated < timezone.timedelta(minutes=30)
+            return False
+        
+        return self.live_policy == 'manual-live'
 
     def updateJsonFormat(self):
         updates = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("-publish_date")

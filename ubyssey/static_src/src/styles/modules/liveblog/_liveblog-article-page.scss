@@ -138,8 +138,11 @@
 
     &.c-article--liveblog--split_view {
         @media(variables.$bp-larger-than-tablet) {
-        display: flex;
-        border-bottom: 1px solid var(--border-grey);
+            margin-inline: auto;
+            display: flex;
+            max-width: 1450px;
+            border-bottom: 1px solid var(--border-grey);
+        
             .c-liveblog--stage {
                 --article-standard-content-width: 700px;
 

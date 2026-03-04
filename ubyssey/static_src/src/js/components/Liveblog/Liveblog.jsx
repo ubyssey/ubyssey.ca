@@ -57,13 +57,17 @@ export default function LiveBlog() {
         return null;
     }
 
-    function isLive(consideredUpdates) {
-        const time = timeUpdatedAt(consideredUpdates);
-        if (time==null) {
-            return true;
+    function isLive(consideredUpdates, live_policy) {
+        if (live_policy.includes("auto")) {
+            const time = timeUpdatedAt(consideredUpdates);
+            if (time==null) {
+                return true;
+            }
+            const delta = new Date().getTime() - new Date(time).getTime();
+            return delta < convertToMilliseconds(0, 30, 0, 0);
         }
-        const delta = new Date().getTime() - new Date(time).getTime();
-        return delta < convertToMilliseconds(0, 30, 0, 0);
+        
+        return live_policy == "manual-live";
     }
 
     function pageInfoAtLoad() {
@@ -87,7 +91,7 @@ export default function LiveBlog() {
 
     const [pageInfo, setPageInfo] = useState(() => pageInfoAtLoad());
     const [updates, setUpdates] = useState(() => updatesAtLoad());
-    const [live, setLive] = useState(() => isLive(updates));
+    const [live, setLive] = useState(() => isLive(updates, pageInfo.meta.live_policy));
     const [caughtUp, setCaughtUp] = useState(true);
     const [updatedTime, setUpdatedTime] = useState(() => timeUpdatedAt(updates));
     const [updateOrder, setUpdateOrder] = useState(() => getUpdateOrder(live));
@@ -194,11 +198,12 @@ export default function LiveBlog() {
     }, [connectionCount]);
 
     useEffect(() => {
-        setLive(isLive(updates));
-
         setUpdatedTime(timeUpdatedAt(updates));
-
     }, [updates]);
+
+    useEffect(() => {
+            setLive(isLive(updates, pageInfo.meta.live_policy));
+    }, [updates, pageInfo.meta.live_policy]);
 
     useEffect(() => {
         setUpdateOrder(getUpdateOrder(live));

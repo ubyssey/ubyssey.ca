@@ -306,7 +306,8 @@ svg.banner-title text{
 
 .section_infinitefeed {
   @media (variables.$bp-larger-than-tablet) {
-    max-width: 630px;
+    width: 630px;
+    max-width: 100%;
   }
 
   #feed {

@@ -2,7 +2,7 @@ import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtil
 
 function LiveblogStageHeader({value, meta}) {
     function showThrobber(meta) {
-        return meta.live && meta.page.layout != "split-view"; 
+        return meta.live && meta.page.layout != "split_view"; 
     }
 
     return (
