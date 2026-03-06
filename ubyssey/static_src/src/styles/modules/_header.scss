@@ -357,6 +357,7 @@ header.topbar {
     height: 45px;
 
     button.search {
+      margin-right: 0.25em;
       padding-top: 0.8em;
       height: 45px;
 
@@ -366,6 +367,7 @@ header.topbar {
       color: var(--header_color-100);
       font-size: 1.2em;
       vertical-align: baseline;
+      cursor: pointer;
       ion-icon {
         padding-bottom: 0.1em;
       }

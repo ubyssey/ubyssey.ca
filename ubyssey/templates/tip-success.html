@@ -1,0 +1,30 @@
+{% extends 'ubyssey/base.html' %}
+{% comment %} //load in static {% endcomment %}
+{% load static %}
+{% comment %} // block of content for actual page {% endcomment %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/tip-success.css' %}" type="text/css" />
+{% endblock %}
+
+{% block header %}
+{% include 'navigation/headers/topbar.html' with section="none" %}
+{% include 'navigation/headers/mobile.html' %}
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="u-container c-tip-success">
+
+        <div class="c-tip-success--message">
+            <h1>Thank you for sharing your tip with the <i>The Ubyssey</i>!</h1>
+            <p>Your file(s) were successfully emailed to our news team.</p>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

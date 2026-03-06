@@ -503,6 +503,41 @@ a.image {
   color: white;
 }
 
+dialog div.modal-inner-container {
+  position: fixed;
+  padding: 2em 7%;
+
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  max-width: 900px;
+  max-height: 60%;
+  width: 100%;
+  height: fit-content;
+
+  overflow-y: auto;
+  background-color: var(--background);
+  text-align: left;
+
+  @media(variables.$bp-larger-than-phablet){
+    border-radius: 0.5em;
+  }
+
+  button.close-modal {
+    position: absolute;
+    right: 0;
+    top: 1em;
+
+    border: none;
+
+    background: none;
+
+    font-size: 1em;
+    color: var(--text_color-400);
+  }
+}
+
 ion-icon {
   margin-bottom: -0.1em;
 }

@@ -206,6 +206,7 @@ class ExtraArticleInfoBlock(blocks.StructBlock):
         choices=[
             ('editors-note', "Editor's note"),
             ('highlight', "Highlight"),
+            ('tip-form', 'Tip form'),
         ],
         required=True,
     )
@@ -216,7 +217,7 @@ class ExtraArticleInfoBlock(blocks.StructBlock):
             if block_template in ["editors-note", "highlight"]:
                 template = "article/stream_blocks/extra-article-info.html"
             else:
-                template = block_template
+                template = 'article/stream_blocks/' + block_template + '.html'
         else:
             return self.render_basic(value, context=context)
 

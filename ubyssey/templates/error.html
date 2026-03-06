@@ -1,0 +1,30 @@
+{% extends 'ubyssey/base.html' %}
+{% comment %} //load in static {% endcomment %}
+{% load static %}
+{% comment %} // block of content for actual page {% endcomment %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/error-page.css' %}" type="text/css" />
+{% endblock %}
+
+{% block header %}
+{% include 'navigation/headers/topbar.html' with section="none" %}
+{% include 'navigation/headers/mobile.html' %}
+{% endblock %}
+
+{% block content %}
+<main class="404">
+    <div class="u-container u-container--padded error-page">
+
+        <div class="center-container">
+            <h1>{{code}}</h1>
+            <p>{{description|safe}}</p>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

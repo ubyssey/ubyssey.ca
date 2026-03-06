@@ -1,0 +1,55 @@
+{% load wagtailcore_tags %}
+
+<div class="o-extra-article-info o-tip-form">
+    <div class="o-tip-form--text">
+    {% if self.header %}<h2>{{self.header|safe}}</h2>{% endif %}
+    {{self.content|richtext}}
+    </div>
+    <div class="o-tip-form--form-container setup-modal">
+        <button class="o-tip-form--file-upload" id="file-upload-{{id|slugify}}">Click to upload files</button>
+
+        <dialog id="file-modal-{{id|slugify}}" class="modal" aria-modal="true">
+            <div class="js-dropdown-container close-modal"></div>
+
+            <div class="o-tip-form--modal modal-inner-container">
+                <button class="close-modal">
+                <ion-icon name="close"></ion-icon>
+                </button>
+
+                <h1>Submit this tip to <i>The Ubyssey</i>?</h1>
+
+                <p>The following file(s) will be emailed to <a href="mailto:news@ubyssey.ca">news@ubyssey.ca</a>.</p>
+
+                <ul id="file-list-{{id|slugify}}"></ul>
+
+                <form action="/email/tip/" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" id="files-{{id|slugify}}" name="files[]" multiple>
+                    <input type="submit" id="submit-{{id|slugify}}" value="Send tip" disabled>
+                </form>
+            </div>
+        </dialog>
+        <script>
+            const uploadContainer = document.getElementById('file-upload-{{id|slugify}}');
+            const filesInput =  document.getElementById('files-{{id|slugify}}');
+            const submitButton =  document.getElementById('submit-{{id|slugify}}');
+            const fileList =  document.getElementById('file-list-{{id|slugify}}');
+            const modal = document.getElementById('file-modal-{{id|slugify}}');
+            uploadContainer.addEventListener('click', function () {
+                filesInput.click();
+            });
+            filesInput.addEventListener("change", (e) => {
+                if (filesInput.files.length == 0) {
+                    submitButton.setAttribute("disabled", "");
+                    modal.closeModal();
+                    modal.classList.remove("show");
+                } else {
+                    submitButton.removeAttribute("disabled");
+                    fileList.innerHTML = Array.from(filesInput.files).map((file) => "<li>" + file.name + "</li>").join("");
+                    modal.showModal();
+                    modal.classList.add("show");
+                }
+            })
+        </script>
+    </div>
+</div>
