@@ -181,7 +181,8 @@
                 top: 0;
                 z-index: 50;
 
-                background: var(--background);
+                background-color: var(--background);
+                transition: background-color 0.5s ease;
 
                 font-variation-settings: "wght" 700;
                 color: var(--color-ubyssey_blue);

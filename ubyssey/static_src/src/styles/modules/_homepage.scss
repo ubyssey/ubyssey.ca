@@ -875,7 +875,7 @@ html.hairlines {
     margin-inline: auto;
     aspect-ratio: 1;
     object-fit: cover;
-    max-width: 10rem;
+    max-width: 9rem;
     height: auto;
     border-radius: 0.5em;
   }
@@ -954,8 +954,13 @@ html.hairlines {
 }
 
 .o-curated-stream-grid--container {
-  .o-curated-stream-grid--headline-container .o-home-group_headline.headline {
-    margin-bottom: 1rem;
+  .o-curated-stream-grid--headline-container {
+    .o-home-group_headline.headline {
+      margin-bottom: 1rem;
+    }
+    p > a {
+      text-decoration: underline;
+    }
   }
   @media(variables.$bp-smaller-than-phablet) {
     .o-curated-stream-grid--headline-container p {
@@ -1238,6 +1243,8 @@ html.hairlines {
         }
         .carousel-indicators {
           margin: 0;
+          left: 4em;
+          right: 4em;
         }
         .carousel-inner {
           height: 100%;
@@ -1259,10 +1266,10 @@ html.hairlines {
           z-index: 150;
         }
         .carousel-control-prev {
-          right: 4em;
+          right: 3em;
         }
         .carousel-control-next {
-          right: 1em;
+          right: 0;
         }
       }
     } 
