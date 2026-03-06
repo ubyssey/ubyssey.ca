@@ -8,6 +8,9 @@ class TipForm(object):
         '''Sends emails to news@ubyssey.ca'''
         if request.method == 'POST':
     
+            if len(request.FILES.getlist('files[]')) == 0:
+                return render(request, 'error.html', {"code": "400", "description": "Bad request. Must include a file."}, status=400)
+
             recipient = [settings.UBYSSEY_TIP_EMAIL]
             
             body = "Sent anonymously from " + request.META["HTTP_REFERER"] + "\n    - " + "\n   - ".join([file.name for file in request.FILES.getlist('files[]')])

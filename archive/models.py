@@ -181,7 +181,7 @@ class ArchivePage(RoutablePageMixin, Page):
             context["current_page"] = page
         except PageNotAnInteger:
             # If the ?page=x is not an int; show the first page
-            paginated_articles = paginator.page(1)
+            paginated_articles = []
         except EmptyPage:
             # If the ?page=x is out of range (too high most likely)
             # Then return the last page

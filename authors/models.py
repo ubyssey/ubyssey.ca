@@ -245,9 +245,9 @@ class AuthorPage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(page)
             context["current_page"] = page
         except PageNotAnInteger:
-            # If the ?page=x is not an int; show the first page
-            paginated_articles = paginator.page(1)
-            context["current_page"] = 1
+            # If the ?page=x is not an int; return none
+            context["paginated_articles"] = []
+            return context
         except EmptyPage:
             # If the ?page=x is out of range (too high most likely)
             # Then return the last page
@@ -289,7 +289,7 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.organize_media(self.main_media_type, request, context)
 
         return context
-    
+        
     def save(self, *args, **kwargs):
         import requests
         from urllib.parse import urlparse

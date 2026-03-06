@@ -492,6 +492,8 @@ p.c-article__published-at {
 
   .o-tip-form--file-upload {
     padding: 1em;
+    box-sizing: border-box;
+    
     width: 100%;
     
     border: 2px dashed var(--border-grey);

@@ -506,6 +506,7 @@ a.image {
 dialog div.modal-inner-container {
   position: fixed;
   padding: 2em 7%;
+  box-sizing: border-box;
 
   top: 45%;
   left: 50%;
@@ -536,6 +537,11 @@ dialog div.modal-inner-container {
     font-size: 1em;
     color: var(--text_color-400);
   }
+}
+
+small {
+  font-size: .875em;
+  color: var(--text_color-200);
 }
 
 ion-icon {
