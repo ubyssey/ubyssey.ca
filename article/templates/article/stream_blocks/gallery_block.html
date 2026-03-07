@@ -4,7 +4,7 @@
 
 {% image self.images.0.image width-100 as first %}
 
-  <div id="{{first.url|slugify}}" class="carousel carousel-dark slide {% if indicators != "false" %}indicators {% endif %}{% if nocaption %}no-caption {% endif %}{{self.images.0.style}} {{self.images.0.width}}"  style="--aspect-ratio: calc({{self.images.0.image.width}} / {{self.images.0.image.height}});">
+  <div id="{{first.url|slugify}}" class="carousel slide {% if indicators != "false" %}indicators {% endif %}{% if nocaption %}no-caption {% endif %}{{self.images.0.style}} {{self.images.0.width}}"  style="--aspect-ratio: calc({{self.images.0.image.width}} / {{self.images.0.image.height}});">
     
     {% if indicators != "false" %}
       <div class="carousel-indicators">

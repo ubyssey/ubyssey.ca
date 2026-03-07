@@ -11,16 +11,18 @@ function dateformat(datetime) {
 }
 
 function ResultList({results, name}) {
-    return (
-    <>
-        {results.length > 0 && <h3>{name}</h3>}
-        <ul className={name.toLowerCase()}>{results.map((result) => 
-            <li>
-                {result.datetime && <time datetime={result.datetime}>{dateformat(result.datetime)}</time>}<a href={result.url} dangerouslySetInnerHTML={{__html: result.title}}></a>
-            </li>
-        )}</ul>
-    </>
-    )
+    if (results.length > 0) {
+        return (
+        <>
+            <h3>{name}</h3>
+            <ul className={name.toLowerCase()}>{results.map((result) => 
+                <li>
+                    {result.datetime && <time datetime={result.datetime}>{dateformat(result.datetime)}</time>}<a href={result.url} dangerouslySetInnerHTML={{__html: result.title}}></a>
+                </li>
+            )}</ul>
+        </>
+        )
+    }
 }
 export default function NavSearch() {
     const [pending, setPending] = useState(false);
