@@ -26,8 +26,8 @@ export default function NavSearch() {
     const [pending, setPending] = useState(false);
     const [query, setQuery] = useState("");
     const [queried, setQueried] = useState("");
-    const [articles, setArticles] = useState([]); 
-    const [topics, setTopics] = useState([]);
+
+    const [result, setResult] = useState({"topics":[], "articles":[], "authors":[]});
     let results = {};
 
     let searchTimeout = setTimeout(() => {}, 0);
@@ -47,9 +47,7 @@ export default function NavSearch() {
                 
                 if (document.getElementById("nav-search-input").value == current_query) {
                     const result = await response.json();
-                    setArticles(result["articles"]);
-                    setTopics(result["topics"]);
-
+                    setResult(result);
                     console.log(result);
                     setPending(false);
                     setQueried(current_query);
@@ -70,8 +68,9 @@ export default function NavSearch() {
         {!pending ?
         (<>
         {queried.length > 0 && <div class="c-nav-search--status">Results for <a href={"/archive/?q=" + queried}>"<i>{queried}</i>"</a></div>}
-        <ResultList results={topics} name={"Topics"} />
-        <ResultList results={articles} name={"Articles"} />
+        <ResultList results={result["topics"]} name={"Topics"} />
+        <ResultList results={result["articles"]} name={"Articles"} />
+        <ResultList results={result["authors"]} name={"Authors"} />
         </>)
         : 
         (<>{queried.length > 0 && <div class="c-nav-search--status">Pending results for <a href={"/archive/?q=" + query}>"<i>{query}</i>"</a></div>}</>)

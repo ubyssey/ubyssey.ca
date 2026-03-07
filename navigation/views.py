@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 
 from article.models import ArticlePage, ArticleTopic
+from authors.models import AuthorPage
 
 class ArticleNavSearchSerializer(serializers.ModelSerializer):
     title = serializers.CharField()
@@ -29,6 +30,14 @@ class TopicNavSearchSerializer(serializers.ModelSerializer):
         model = ArticleTopic
         fields = ('title', 'url', 'datetime')
 
+class AuthorsNavSearchSerializer(serializers.ModelSerializer):
+    title = serializers.CharField()
+    url = serializers.URLField(source="get_url")
+
+    class Meta:
+        model = ArticlePage
+        fields = ('title', 'url')
+
 # Create your views here.
 
 @api_view(['GET'])
@@ -38,27 +47,33 @@ def nav_search(request):
     """
 
     MAX_ARTICLES = 5
+    MAX_AUTHORS = 3
 
     if request.method == 'GET':
         if 'q' in request.query_params:
             query = request.query_params["q"]
+            site =  Site.find_for_request(request)
 
+            # Topics
             topics = ArticleTopic.objects.filter(name__icontains = query).order_by("-tagged_articles_count")[:3]
             topics_serialized = TopicNavSearchSerializer(topics, many=True)
 
-            site =  Site.find_for_request(request)
-            
+            # Articles            
             articles = ArticlePage.objects.live().public().descendant_of(site.root_page).filter(Q(title__icontains=query) | Q(seo_keyword__icontains=query)).order_by("-explicit_published_at")
             if articles.count() < MAX_ARTICLES:
                 articles = ArticlePage.objects.live().public().descendant_of(site.root_page).search(Phrase(query) | PlainText(query))
             articles = articles[:MAX_ARTICLES]
-            
             articles_serialized = ArticleNavSearchSerializer(articles, many=True)
+            
+            # Authors
+            authors = AuthorPage.objects.live().filter(Q(title__istartswith=query) | Q(title__icontains=" " + query)).order_by("-last_activity")
+            authors = authors[:MAX_AUTHORS]
+            authors_serialized = AuthorsNavSearchSerializer(authors, many=True)
 
             return Response({
                 "topics": topics_serialized.data,
                 "articles": articles_serialized.data,
-                "authors": [],
+                "authors": authors_serialized.data,
                 })
         else:
             return render(request, '404.html', {}, status=404) 
