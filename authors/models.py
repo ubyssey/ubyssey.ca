@@ -245,9 +245,8 @@ class AuthorPage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(page)
             context["current_page"] = page
         except PageNotAnInteger:
-            # If the ?page=x is not an int; return none
+            # If the ?page=x is not an int;
             context["paginated_articles"] = paginator.page(1)
-            return context
         except EmptyPage:
             # If the ?page=x is out of range (too high most likely)
             # Then return the last page
