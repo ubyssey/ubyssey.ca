@@ -29,7 +29,6 @@ from django.conf.urls import handler500
 
 from publishing_analytics import views as publishing_analytics_views 
 from content_tracker.views import story_assignment_api_list, visual_assignment_api_list
-
 from rest_framework import routers
 
 handler500 = 'ubyssey.views.main.custom_500'

@@ -1,0 +1,517 @@
+// Google Docs-inspired TipTap editor — Wagtail admin + public viewer
+
+// ─── Tokens ──────────────────────────────────────────────────────────────────
+$tt-white:        #ffffff;
+$tt-page-bg:      #f9fbfd;
+$tt-toolbar-bg:   #f1f3f4;
+$tt-border:       #dadce0;
+$tt-text:         #202124;
+$tt-muted:        #5f6368;
+$tt-active-bg:    #e8eaed;
+$tt-active-ring:  #1a73e8;
+$tt-accent:       #1a73e8;
+$tt-danger:       #c5221f;
+$tt-page-width:   816px;      // US-letter width in px at 96 dpi
+$tt-page-pad:     64px;
+$tt-font:         'Arial', sans-serif;
+$tt-prose-font:   Arial, sans-serif;
+
+// ─── Editor wrapper ───────────────────────────────────────────────────────────
+
+.tt-editor-wrap {
+  display: flex;
+  flex-direction: column;
+  background: $tt-page-bg;
+  border: 1px solid $tt-border;
+  border-radius: 4px;
+  font-family: $tt-font;
+  color: $tt-text;
+  min-height: 600px;
+}
+
+// ─── Toolbar ──────────────────────────────────────────────────────────────────
+
+.tt-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1px;
+  padding: 6px 8px;
+  background: $tt-toolbar-bg;
+  border-bottom: 1px solid $tt-border;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.tt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  font-size: 13px;
+  font-family: $tt-font;
+  color: $tt-text;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s;
+
+  &:hover:not(:disabled) {
+    background: $tt-active-bg;
+    border-color: $tt-border;
+  }
+
+  &--active {
+    background: #d2e3fc;
+    border-color: $tt-active-ring;
+    color: $tt-accent;
+  }
+
+  &--disabled,
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.tt-sep {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background: $tt-border;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+// ─── Dropdowns ────────────────────────────────────────────────────────────────
+
+.tt-dropdown {
+  position: relative;
+
+  &__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    height: 28px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: transparent;
+    font-size: 13px;
+    font-family: $tt-font;
+    color: $tt-text;
+    cursor: pointer;
+    white-space: nowrap;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+      background: $tt-active-bg;
+      border-color: $tt-border;
+    }
+  }
+
+  &__caret {
+    font-size: 10px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  &__menu {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    z-index: 100;
+    background: $tt-white;
+    border: 1px solid $tt-border;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    min-width: 160px;
+    padding: 4px 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  &__item {
+    display: block;
+    width: 100%;
+    padding: 6px 16px;
+    text-align: left;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-family: $tt-font;
+    color: $tt-text;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+      background: $tt-active-bg;
+    }
+
+    &--active {
+      background: #e8f0fe;
+      color: $tt-accent;
+    }
+  }
+}
+
+// ─── Color picker ─────────────────────────────────────────────────────────────
+
+.tt-color-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  .tt-color-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 5px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    pointer-events: none;
+
+    &--highlight {
+      background: rgba(255, 255, 0, 0.5);
+    }
+
+    &:hover { background: $tt-active-bg; }
+  }
+
+  .tt-color-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 0;
+  }
+
+  &:hover .tt-color-icon {
+    background: $tt-active-bg;
+    border-color: $tt-border;
+  }
+}
+
+// ─── Link / Image dialog ──────────────────────────────────────────────────────
+
+.tt-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tt-link-dialog {
+  background: $tt-white;
+  border: 1px solid $tt-border;
+  border-radius: 6px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 380px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+  input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid $tt-border;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: $tt-font;
+    outline: none;
+
+    &:focus { border-color: $tt-active-ring; box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2); }
+  }
+
+  button {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 4px;
+    background: $tt-accent;
+    color: $tt-white;
+    font-size: 13px;
+    font-family: $tt-font;
+    cursor: pointer;
+    align-self: flex-start;
+
+    &:hover { background: #1557b0; }
+
+    & + button {
+      background: transparent;
+      color: $tt-danger;
+      border: 1px solid $tt-danger;
+      &:hover { background: rgba($tt-danger, 0.05); }
+    }
+  }
+}
+
+// ─── Table grid picker ─────────────────────────────────────────────────────────
+
+.tt-table-picker {
+  padding: 8px;
+
+  &__label {
+    text-align: center;
+    font-size: 12px;
+    color: $tt-muted;
+    margin-bottom: 6px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(8, 20px);
+    gap: 2px;
+  }
+
+  &__cell {
+    width: 20px;
+    height: 20px;
+    border: 1px solid $tt-border;
+    border-radius: 2px;
+    cursor: pointer;
+    background: $tt-white;
+
+    &--active {
+      background: #d2e3fc;
+      border-color: $tt-active-ring;
+    }
+
+    &:hover {
+      border-color: $tt-active-ring;
+    }
+  }
+}
+
+// ─── Page area (paper) ────────────────────────────────────────────────────────
+
+.tt-page-area {
+  flex: 1;
+  padding: 40px 0 60px;
+  display: flex;
+  justify-content: center;
+  background: $tt-page-bg;
+  overflow-y: auto;
+}
+
+.tt-document {
+  width: $tt-page-width;
+  max-width: 100%;
+  background: $tt-white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  padding: $tt-page-pad;
+  min-height: 1056px; // US letter height at 96 dpi
+  box-sizing: border-box;
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.tt-footer {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  background: $tt-toolbar-bg;
+  border-top: 1px solid $tt-border;
+  font-size: 12px;
+  color: $tt-muted;
+}
+
+.tt-word-count {
+  font-size: 12px;
+  color: $tt-muted;
+}
+
+// ─── Prose styles (shared by admin editor + public viewer) ─────────────────────
+
+%tt-prose {
+  font-family: $tt-prose-font;
+  font-size: 11pt;
+  line-height: 1.7;
+  color: $tt-text;
+  outline: none;
+
+  p { margin: 0 0 0.6em; }
+
+  h1 { font-size: 20pt; font-weight: 700; margin: 1.2em 0 0.4em; line-height: 1.2; }
+  h2 { font-size: 16pt; font-weight: 700; margin: 1em 0 0.3em; }
+  h3 { font-size: 14pt; font-weight: 600; margin: 0.9em 0 0.25em; }
+  h4 { font-size: 12pt; font-weight: 600; margin: 0.8em 0 0.2em; }
+  h5, h6 { font-size: 11pt; font-weight: 600; margin: 0.7em 0 0.2em; }
+
+  ul, ol { padding-left: 1.5em; margin: 0.4em 0 0.6em; }
+  li { margin-bottom: 0.2em; }
+
+  // Task list
+  ul[data-type="taskList"] {
+    list-style: none;
+    padding-left: 0.25em;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5em;
+
+      > label { display: flex; align-items: center; padding-top: 2px; }
+      > div { flex: 1; }
+
+      input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+
+      &[data-checked="true"] > div {
+        text-decoration: line-through;
+        color: $tt-muted;
+      }
+    }
+  }
+
+  blockquote {
+    border-left: 3px solid $tt-border;
+    padding-left: 1em;
+    margin: 0.8em 0;
+    color: $tt-muted;
+    font-style: italic;
+  }
+
+  code {
+    background: #f8f9fa;
+    border: 1px solid $tt-border;
+    border-radius: 3px;
+    padding: 0.1em 0.35em;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+  }
+
+  pre {
+    background: #f8f9fa;
+    border: 1px solid $tt-border;
+    border-radius: 4px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin: 0.8em 0;
+    code { background: none; border: none; padding: 0; font-size: 0.88em; }
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid $tt-border;
+    margin: 1.5em 0;
+  }
+
+  a { color: $tt-accent; text-decoration: underline; }
+
+  img { max-width: 100%; height: auto; border-radius: 2px; display: block; margin: 0.8em 0; }
+
+  // Tables
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    margin: 1em 0;
+    overflow: hidden;
+
+    th, td {
+      border: 1px solid $tt-border;
+      padding: 6px 10px;
+      vertical-align: top;
+      font-size: 11pt;
+      min-width: 60px;
+      position: relative;
+    }
+
+    th {
+      background: #f1f3f4;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .selectedCell:after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(26, 115, 232, 0.1);
+      pointer-events: none;
+    }
+  }
+
+  // Resize handle (TipTap table)
+  .column-resize-handle {
+    position: absolute;
+    right: -2px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: $tt-active-ring;
+    cursor: col-resize;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 5;
+  }
+
+  &:hover .column-resize-handle { opacity: 0.4; }
+
+  .tableWrapper { overflow-x: auto; }
+
+  // Placeholder
+  .is-editor-empty p:first-child::before,
+  p.is-empty.is-editor-empty::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #adb5bd;
+    pointer-events: none;
+    height: 0;
+  }
+
+  ::selection { background: rgba(26, 115, 232, 0.15); }
+}
+
+// Apply prose to admin editor
+.tt-document .ProseMirror { @extend %tt-prose; }
+
+// ─── Public viewer ────────────────────────────────────────────────────────────
+
+.tiptap-article-page {
+  max-width: 816px;
+  margin: 2rem auto;
+  padding: 0 1rem 4rem;
+
+  &__title-wrap { margin-bottom: 0.25rem; }
+
+  &__title {
+    font-family: Arial, sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #202124;
+    margin: 0 0 0.5rem;
+  }
+}
+
+.tiptap-article {
+  &__lede {
+    font-family: Arial, sans-serif;
+    font-size: 1.1rem;
+    color: #5f6368;
+    margin: 0 0 1.5rem;
+  }
+
+  &__editor .ProseMirror { @extend %tt-prose; }
+}

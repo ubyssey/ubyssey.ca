@@ -59,7 +59,7 @@ from wagtail.snippets.views.snippets import SnippetViewSet
 
 from wagtailmenus.models import FlatMenu
 
-
+from article.widgets import TipTapAdminWidget
 from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
 
@@ -1810,6 +1810,38 @@ class StandardArticlePage(ArticlePage):
         # Author then article
         verbose_name = "Standard Article"
         verbose_name_plural = "Standard Articles"
+
+
+class TipTapArticlePage(Page):
+    """
+    A Notion-like article page.  Content is stored as TipTap JSON.
+    Editing happens inside the Wagtail admin via TipTapAdminWidget;
+    the public page renders the saved JSON in a read-only TipTap instance.
+    """
+    lede = models.TextField(blank=True, default='')
+    body = models.JSONField(default=dict, blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('lede'),
+        FieldPanel('body', widget=TipTapAdminWidget()),
+    ]
+
+    parent_page_types = ['wagtailcore.Page', 'section.SectionPage', 'home.HomePage']
+    subpage_types = []
+
+    def get_context(self, request, *args, **kwargs):
+        import json as _json
+        context = super().get_context(request, *args, **kwargs)
+        context['body_json'] = _json.dumps(self.body or {})
+        context['lede_json'] = _json.dumps(self.lede or '')
+        return context
+
+    def get_template(self, request, *args, **kwargs):
+        return 'article/tiptap_article_page.html'
+
+    class Meta:
+        verbose_name = "TipTap Article Page"
+        verbose_name_plural = "TipTap Article Pages"
 
 
 class SpecialArticleLikePage(ArticlePage):

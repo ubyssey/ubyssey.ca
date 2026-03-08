@@ -1,0 +1,37 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% load wagtailcore_tags %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/tiptap-article.css' %}" type="text/css" />
+{% endblock %}
+
+{% block header %}
+    {% include 'navigation/headers/topbar.html' %}
+    {% include 'navigation/headers/mobile.html' %}
+{% endblock %}
+
+{% block content %}
+    <main class="tiptap-article-page">
+        <div class="tiptap-article-page__title-wrap">
+            <h1 class="tiptap-article-page__title">{{ page.title }}</h1>
+        </div>
+
+        {% if page.lede %}
+            <p class="tiptap-article__lede">{{ page.lede }}</p>
+        {% endif %}
+
+        {# Bootstrap the read-only React viewer with pre-serialised JSON from get_context #}
+        <script>
+        window.__TIPTAP_PAGE_ID__         = {{ page.id }};
+        window.__TIPTAP_INITIAL_LEDE__    = {{ lede_json|safe }};
+        window.__TIPTAP_INITIAL_CONTENT__ = {{ body_json|safe }};
+        </script>
+
+        <div id="tiptap-article-root"></div>
+    </main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'ubyssey/js/tiptap-article.js' %}" type="text/javascript"></script>
+{% endblock %}

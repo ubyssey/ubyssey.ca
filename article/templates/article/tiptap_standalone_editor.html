@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor — Wagtail</title>
+  <link rel="stylesheet" href="{% static 'ubyssey/css/tiptap-standalone-editor.css' %}" />
+</head>
+<body>
+  <div id="tts-root"></div>
+
+  <script>
+    window.__TIPTAP_PAGE_ID__         = {{ page_id|default:"null" }};
+    window.__TIPTAP_PAGE_TITLE__      = {{ title_json|safe }};
+    window.__TIPTAP_INITIAL_LEDE__    = {{ lede_json|safe }};
+    window.__TIPTAP_INITIAL_CONTENT__ = {{ body_json|safe }};
+    window.__TIPTAP_VIEW_URL__        = "{{ view_url }}";
+    window.__TIPTAP_CSRF__            = "{{ csrf_token }}";
+    window.__TIPTAP_API_BASE__        = "{{ api_base }}";
+    window.__TIPTAP_LIST_URL__        = "{{ list_url }}";
+  </script>
+  <script src="{% static 'ubyssey/js/tiptap-standalone-editor.js' %}"></script>
+</body>
+</html>

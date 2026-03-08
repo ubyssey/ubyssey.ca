@@ -1,0 +1,542 @@
+// Google Docs-inspired standalone full-page editor
+// Imports the shared toolbar tokens from tiptap-article.scss
+
+// ─── Reset / base ─────────────────────────────────────────────────────────────
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f9fbfd;
+  color: #202124;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// ─── App shell ────────────────────────────────────────────────────────────────
+
+.tts-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// ─── Header bar ───────────────────────────────────────────────────────────────
+
+.tts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 12px 0 8px;
+  background: #fff;
+  border-bottom: 1px solid #dadce0;
+  flex-shrink: 0;
+  z-index: 30;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    text-decoration: none;
+    border-radius: 4px;
+    padding: 2px;
+    &:hover { background: #f1f3f4; }
+  }
+
+  &__doc-title {
+    font-size: 18px;
+    font-weight: 400;
+    color: #202124;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: background 0.15s;
+
+    &--ghost {
+      background: transparent;
+      color: #1a73e8;
+      border-color: #dadce0;
+      &:hover { background: #f1f3f4; }
+    }
+
+    &--primary {
+      background: #1a73e8;
+      color: #fff;
+      border-color: #1a73e8;
+      &:hover { background: #1557b0; }
+      &:disabled { opacity: 0.5; cursor: default; }
+    }
+  }
+}
+
+// ─── Save status ──────────────────────────────────────────────────────────────
+
+.tts-save-status {
+  font-size: 13px;
+  min-width: 80px;
+  text-align: right;
+
+  &--saving   { color: #80868b; }
+  &--saved    { color: #188038; }
+  &--published{ color: #188038; font-weight: 500; }
+  &--error    { color: #c5221f; }
+  &--idle     { color: transparent; }
+}
+
+// ─── Toolbar ──────────────────────────────────────────────────────────────────
+
+.tts-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1px;
+  padding: 5px 8px;
+  background: #f1f3f4;
+  border-bottom: 1px solid #dadce0;
+  flex-shrink: 0;
+  z-index: 20;
+
+  // Reuse tt-* classes from tiptap-article.scss
+  .tt-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: transparent;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    color: #202124;
+    cursor: pointer;
+
+    &:hover:not(:disabled) { background: #e8eaed; border-color: #dadce0; }
+    &--active { background: #d2e3fc; border-color: #1a73e8; color: #1a73e8; }
+    &--disabled, &:disabled { opacity: 0.4; cursor: default; }
+  }
+
+  .tt-sep {
+    display: inline-block;
+    width: 1px;
+    height: 20px;
+    background: #dadce0;
+    margin: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .tt-dropdown {
+    position: relative;
+
+    &__trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      height: 28px;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      background: transparent;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+      color: #202124;
+      cursor: pointer;
+      white-space: nowrap;
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &:hover { background: #e8eaed; border-color: #dadce0; }
+    }
+
+    &__caret { font-size: 9px; opacity: 0.6; flex-shrink: 0; }
+
+    &__menu {
+      position: absolute;
+      top: calc(100% + 2px);
+      left: 0;
+      z-index: 100;
+      background: #fff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      min-width: 160px;
+      padding: 4px 0;
+      display: flex;
+      flex-direction: column;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    &__item {
+      display: block;
+      width: 100%;
+      padding: 6px 16px;
+      text-align: left;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+      color: #202124;
+      cursor: pointer;
+      white-space: nowrap;
+      &:hover { background: #f1f3f4; }
+      &--active { background: #e8f0fe; color: #1a73e8; }
+    }
+  }
+
+  .tt-color-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+
+    .tt-color-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      padding: 0 5px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 700;
+      pointer-events: none;
+      &--highlight { background: rgba(255,255,0,0.5); }
+    }
+
+    .tt-color-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 0;
+    }
+
+    &:hover .tt-color-icon { background: #e8eaed; border-color: #dadce0; }
+  }
+
+  .tt-table-picker {
+    padding: 8px;
+    &__label { text-align: center; font-size: 12px; color: #5f6368; margin-bottom: 6px; }
+    &__grid { display: grid; grid-template-columns: repeat(8, 20px); gap: 2px; }
+    &__cell {
+      width: 20px; height: 20px;
+      border: 1px solid #dadce0;
+      border-radius: 2px;
+      cursor: pointer;
+      background: #fff;
+      &--active { background: #d2e3fc; border-color: #1a73e8; }
+      &:hover { border-color: #1a73e8; }
+    }
+  }
+}
+
+// ─── Scrollable content area ──────────────────────────────────────────────────
+
+.tts-content {
+  flex: 1;
+  overflow-y: auto;
+  background: #f9fbfd;
+  padding: 32px 0 80px;
+  display: flex;
+  justify-content: center;
+}
+
+// ─── The paper (white page) ───────────────────────────────────────────────────
+
+.tts-paper {
+  width: 816px;
+  max-width: calc(100vw - 40px);
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  padding: 72px 80px 96px;
+  min-height: 1056px;
+
+  &__title {
+    font-size: 32px;
+    font-weight: 700;
+    font-family: Arial, sans-serif;
+    color: #202124;
+    line-height: 1.2;
+    outline: none;
+    margin: 0 0 12px;
+    display: block;
+
+    &:empty::before {
+      content: attr(data-placeholder);
+      color: #bdc1c6;
+      pointer-events: none;
+    }
+  }
+
+  &__lede {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    color: #5f6368;
+    line-height: 1.5;
+    outline: none;
+    margin: 0 0 8px;
+    display: block;
+
+    &:empty::before {
+      content: attr(data-placeholder);
+      color: #dadce0;
+      pointer-events: none;
+    }
+  }
+
+  &__divider {
+    border: none;
+    border-top: 1px solid #e8eaed;
+    margin: 20px 0 28px;
+  }
+
+  &__body {
+    .ProseMirror {
+      outline: none;
+      font-family: Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #202124;
+      min-height: 400px;
+
+      p { margin: 0 0 0.6em; }
+      h1 { font-size: 20pt; font-weight: 700; margin: 1.2em 0 0.4em; line-height: 1.2; }
+      h2 { font-size: 16pt; font-weight: 700; margin: 1em 0 0.3em; }
+      h3 { font-size: 14pt; font-weight: 600; margin: 0.9em 0 0.25em; }
+      h4, h5, h6 { font-size: 12pt; font-weight: 600; margin: 0.7em 0 0.2em; }
+
+      ul, ol { padding-left: 1.5em; margin: 0.4em 0 0.6em; }
+      li { margin-bottom: 0.2em; }
+
+      ul[data-type="taskList"] {
+        list-style: none;
+        padding-left: 0.25em;
+        li {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.5em;
+          > label { display: flex; align-items: center; padding-top: 3px; }
+          > div { flex: 1; }
+          input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
+          &[data-checked="true"] > div { text-decoration: line-through; color: #80868b; }
+        }
+      }
+
+      blockquote {
+        border-left: 3px solid #dadce0;
+        padding-left: 1em;
+        margin: 0.8em 0;
+        color: #5f6368;
+        font-style: italic;
+      }
+
+      code {
+        background: #f8f9fa;
+        border: 1px solid #e8eaed;
+        border-radius: 3px;
+        padding: 0.1em 0.35em;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+      }
+
+      pre {
+        background: #f8f9fa;
+        border: 1px solid #e8eaed;
+        border-radius: 4px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        margin: 0.8em 0;
+        code { background: none; border: none; padding: 0; }
+      }
+
+      hr { border: none; border-top: 1px solid #e8eaed; margin: 1.5em 0; }
+
+      a { color: #1a73e8; text-decoration: underline; }
+
+      img { max-width: 100%; height: auto; border-radius: 2px; display: block; margin: 0.8em 0; }
+
+      table {
+        border-collapse: collapse;
+        table-layout: fixed;
+        width: 100%;
+        margin: 1em 0;
+        overflow: hidden;
+
+        th, td {
+          border: 1px solid #dadce0;
+          padding: 7px 12px;
+          vertical-align: top;
+          font-size: 11pt;
+          min-width: 60px;
+          position: relative;
+        }
+
+        th {
+          background: #f1f3f4;
+          font-weight: 600;
+          text-align: left;
+        }
+
+        .selectedCell::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: rgba(26, 115, 232, 0.08);
+          pointer-events: none;
+        }
+      }
+
+      .tableWrapper { overflow-x: auto; }
+
+      .column-resize-handle {
+        position: absolute;
+        right: -2px;
+        top: 0; bottom: 0;
+        width: 4px;
+        background: #1a73e8;
+        cursor: col-resize;
+        opacity: 0;
+        z-index: 5;
+        &:hover { opacity: 0.5; }
+      }
+
+      // Placeholder
+      p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #bdc1c6;
+        pointer-events: none;
+        height: 0;
+      }
+
+      ::selection { background: rgba(26,115,232,0.15); }
+    }
+  }
+}
+
+// ─── Footer status bar ────────────────────────────────────────────────────────
+
+.tts-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 16px;
+  background: #f1f3f4;
+  border-top: 1px solid #dadce0;
+  font-size: 12px;
+  color: #5f6368;
+  flex-shrink: 0;
+
+  &__dot { opacity: 0.5; }
+}
+
+// ─── Dialogs ─────────────────────────────────────────────────────────────────
+
+.tt-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tt-link-dialog {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px 28px;
+  min-width: 400px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__label {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    color: #202124;
+  }
+
+  input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    outline: none;
+    &:focus { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid #dadce0;
+    background: #fff;
+    color: #202124;
+    &:hover { background: #f1f3f4; }
+
+    &--primary {
+      background: #1a73e8;
+      color: #fff;
+      border-color: #1a73e8;
+      &:hover { background: #1557b0; }
+    }
+
+    &--danger {
+      color: #c5221f;
+      border-color: #c5221f;
+      &:hover { background: rgba(197,34,31,0.05); }
+    }
+  }
+}
