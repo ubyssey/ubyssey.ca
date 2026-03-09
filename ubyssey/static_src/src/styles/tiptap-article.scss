@@ -518,6 +518,14 @@ $tt-font:         Arial, 'Helvetica Neue', sans-serif;
     font-size: 11pt;
     line-height: 1.75;
     color: $tt-text;
+
+    // Empty paragraphs (from pressing Enter) collapse to zero height on the
+    // public page because getHTML() strips ProseMirror's cursor <br>.
+    // Give them the same height as a normal line of text.
+    &:empty,
+    &:has(> br:only-child) {
+      min-height: 1.75em;
+    }
   }
 
   h1 { font-family: Arial, 'Helvetica Neue', sans-serif; font-size: 22pt; font-weight: 700; margin: 1.4em 0 0.4em; line-height: 1.2; color: #1f1f1f; }
