@@ -576,12 +576,6 @@ p.c-article__published-at {
       height: auto;
     }
 
-    &.left, &.right {
-      text-align: center;
-      li {
-        text-align: left;
-      }
-    }
     h2 {
       font-size: 1.2em;
     }
@@ -633,21 +627,39 @@ p.c-article__published-at {
   }
 
   &.o-extra-article-info--editors-note {
+    padding: 0;
     flex-direction: column;
-    border: var(--color-ubyssey_blue) solid 0.25em;
+    border: solid 0.25em var(--color-ubyssey_blue-classic);
+    border-top: 4.25em solid var(--color-ubyssey_blue-classic);
+    max-width: var(--article-standard-content-width);
+
+    position: relative;
+
 
     &::before {
-      margin: 1em auto;
       display: block;
       width: 2.5em; 
       aspect-ratio: 1;
 
+      position: absolute;
+      top: -3.25em;
+      left: 50%;
+      z-index: 10;
+      transform: translateX(-50%);
+
       content: "";
-      background-image: url("https://storage.googleapis.com/ubyssey/static/ubyssey/images/logos/dingbat-blue.svg");
+      background-image: url("https://storage.googleapis.com/ubyssey/static/ubyssey/images/logos/dingbat-white.svg");
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
     }
+    @media(variables.$bp-smaller-than-desktop) {
+      margin-inline: auto;
+    }
+    @media(variables.$bp-smaller-than-phablet) {
+      margin-inline: 0.5em;
+    }
+
     .o-extra-article-info__content {
       padding-inline: 1em;
     }
@@ -658,15 +670,20 @@ p.c-article__published-at {
         padding-inline: 0.5em;
       }
     }
+    p {
+      line-height: 1.75em;
+      color: var(--text_color-200);
+    }
   }
 }
 
 div.article-content blockquote.pull-quote, .o-extra-article-info {
-  @media(variables.$bp-larger-than-tablet) {
+  @media(variables.$bp-larger-than-desktophd) {
     &.right {
-      margin-right: calc(50% - 450px);
+      margin-right: calc(calc(50% - var(--article-standard-content-width)) - 1.4em );
       margin-left: 1.4em;
       float: right;
+      position: relative;
     }
     &.left {
       margin-left: calc(50% - 450px);
