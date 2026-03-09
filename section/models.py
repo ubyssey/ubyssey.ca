@@ -154,6 +154,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     template = 'section/section_page.html'
 
     subpage_types = [
+        'article.TipTapArticlePage',
         'article.StandardArticlePage',
         'article.StandardArticlePageWithRightColumn',
         'article.SpecialArticleLikePage',

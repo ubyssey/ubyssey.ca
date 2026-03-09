@@ -383,6 +383,9 @@ function TipTapAdminEditor({ textarea }) {
     content: initialContent,
     onUpdate({ editor }) {
       textarea.value = editor.getHTML();
+      // Dispatch a native input event so Wagtail's change-detection,
+      // commenting system, and future real-time editing can observe updates.
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
     },
   });
 

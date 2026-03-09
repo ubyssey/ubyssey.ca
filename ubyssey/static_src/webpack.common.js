@@ -41,7 +41,6 @@ module.exports = {
     'liveblog': './src/js/liveblog.jsx',
     'tiptap-article': './src/js/tiptap-article.jsx',
     'tiptap-wagtail-widget': './src/js/tiptap-wagtail-widget.jsx',
-    'tiptap-standalone-editor': './src/js/tiptap-standalone-editor.jsx',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),

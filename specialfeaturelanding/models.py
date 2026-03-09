@@ -91,6 +91,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     ]
 
     subpage_types = [
+        'article.TipTapArticlePage',
         'specialfeaturelanding.SpecialLandingPage',
         'article.ArticlePage',
     ]

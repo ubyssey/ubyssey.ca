@@ -1814,9 +1814,13 @@ class StandardArticlePage(ArticlePage):
 
 class TipTapArticlePage(Page):
     """
-    A rich-text article page. Body is stored as HTML produced by TipTap's
-    getHTML(). The public page renders it directly — no client-side JS needed.
-    Editing happens in the Wagtail admin via TipTapAdminWidget.
+    A rich-text article page using TipTap as the body editor.
+    Body is stored as HTML produced by TipTap's getHTML().
+    The public page renders it directly — no client-side JS needed.
+
+    Editing uses the standard Wagtail page editor, giving automatic support
+    for revision history, draft/publish workflow, editorial comments, and
+    page locking.
     """
     lede = models.TextField(blank=True, default='')
     body = models.TextField(blank=True, default='')
@@ -1826,7 +1830,16 @@ class TipTapArticlePage(Page):
         FieldPanel('body', widget=TipTapAdminWidget()),
     ]
 
-    parent_page_types = ['wagtailcore.Page', 'section.SectionPage', 'home.HomePage']
+    edit_handler = TabbedInterface([
+        ObjectList(content_panels, heading='Content'),
+        ObjectList(Page.promote_panels, heading='Promote'),
+        ObjectList(Page.settings_panels, heading='Settings'),
+    ])
+
+    parent_page_types = [
+        'specialfeaturelanding.SpecialLandingPage',
+        'section.SectionPage',
+    ]
     subpage_types = []
 
     def get_template(self, request, *args, **kwargs):
