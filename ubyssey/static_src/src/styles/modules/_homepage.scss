@@ -1555,12 +1555,8 @@ html.hairlines {
   }
 
   .o-profile_cell {
-    --per-row: 4;
+    --per-row: 3;
     width: calc(calc(100% / var(--per-row)) - 1em);
-    
-    @media(variables.$bp-smaller-than-desktop) {
-      --per-row: 3;
-    }
   }
 
   .o-profile_cell--left > img {
@@ -1570,7 +1566,7 @@ html.hairlines {
 
   .o-profile_cell--right {
     > h3, > h4 {
-      font-size: 0.75em;
+      font-size: 0.9em;
       color: var(--header_color-200);
     }
     > p {
