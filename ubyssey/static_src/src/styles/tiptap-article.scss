@@ -1,20 +1,22 @@
-// Google Docs-inspired TipTap editor — Wagtail admin + public viewer
+// Google Docs-inspired TipTap editor — Wagtail admin widget + public viewer
 
-// ─── Tokens ──────────────────────────────────────────────────────────────────
+// ─── Design tokens ────────────────────────────────────────────────────────────
 $tt-white:        #ffffff;
-$tt-page-bg:      #f9fbfd;
-$tt-toolbar-bg:   #f1f3f4;
-$tt-border:       #dadce0;
+$tt-page-bg:      #f0f4f9;
+$tt-toolbar-bg:   #ffffff;
+$tt-border:       #e0e0e0;
+$tt-border-dark:  #c6c6c6;
 $tt-text:         #202124;
 $tt-muted:        #5f6368;
 $tt-active-bg:    #e8eaed;
+$tt-hover-bg:     #f1f3f4;
 $tt-active-ring:  #1a73e8;
 $tt-accent:       #1a73e8;
+$tt-accent-dark:  #1557b0;
 $tt-danger:       #c5221f;
-$tt-page-width:   816px;      // US-letter width in px at 96 dpi
-$tt-page-pad:     64px;
-$tt-font:         'Arial', sans-serif;
-$tt-prose-font:   Arial, sans-serif;
+$tt-page-width:   816px;
+$tt-page-pad:     72px;
+$tt-font:         Arial, 'Helvetica Neue', sans-serif;
 
 // ─── Editor wrapper ───────────────────────────────────────────────────────────
 
@@ -23,10 +25,10 @@ $tt-prose-font:   Arial, sans-serif;
   flex-direction: column;
   background: $tt-page-bg;
   border: 1px solid $tt-border;
-  border-radius: 4px;
+  border-radius: 6px;
   font-family: $tt-font;
   color: $tt-text;
-  min-height: 600px;
+  min-height: 640px;
 }
 
 // ─── Toolbar ──────────────────────────────────────────────────────────────────
@@ -35,60 +37,72 @@ $tt-prose-font:   Arial, sans-serif;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1px;
-  padding: 6px 8px;
+  gap: 2px;
+  padding: 6px 10px;
   background: $tt-toolbar-bg;
   border-bottom: 1px solid $tt-border;
   position: sticky;
   top: 0;
   z-index: 20;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
+
+// ─── Icon button ─────────────────────────────────────────────────────────────
 
 .tt-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  padding: 0 5px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   border: 1px solid transparent;
-  border-radius: 3px;
+  border-radius: 4px;
   background: transparent;
-  font-size: 13px;
-  font-family: $tt-font;
-  color: $tt-text;
+  color: #444746;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.1s;
+  transition: background 0.08s, border-color 0.08s;
+  flex-shrink: 0;
+
+  svg { display: block; }
 
   &:hover:not(:disabled) {
-    background: $tt-active-bg;
+    background: $tt-hover-bg;
     border-color: $tt-border;
+    color: $tt-text;
   }
 
   &--active {
-    background: #d2e3fc;
-    border-color: $tt-active-ring;
-    color: $tt-accent;
+    background: #d3e3fd;
+    border-color: #a8c7fa;
+    color: #041e49;
+
+    &:hover {
+      background: #c4d9fc;
+    }
   }
 
   &--disabled,
   &:disabled {
-    opacity: 0.4;
+    opacity: 0.38;
     cursor: default;
+    pointer-events: none;
   }
 }
+
+// ─── Separator ───────────────────────────────────────────────────────────────
 
 .tt-sep {
   display: inline-block;
   width: 1px;
-  height: 20px;
+  height: 24px;
   background: $tt-border;
   margin: 0 4px;
   flex-shrink: 0;
+  align-self: center;
 }
 
-// ─── Dropdowns ────────────────────────────────────────────────────────────────
+// ─── Dropdown ────────────────────────────────────────────────────────────────
 
 .tt-dropdown {
   position: relative;
@@ -96,54 +110,62 @@ $tt-prose-font:   Arial, sans-serif;
   &__trigger {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    height: 28px;
-    padding: 0 8px;
+    gap: 2px;
+    height: 32px;
+    padding: 0 6px;
     border: 1px solid transparent;
-    border-radius: 3px;
+    border-radius: 4px;
     background: transparent;
     font-size: 13px;
     font-family: $tt-font;
-    color: $tt-text;
+    color: #444746;
     cursor: pointer;
     white-space: nowrap;
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
 
     &:hover {
-      background: $tt-active-bg;
+      background: $tt-hover-bg;
       border-color: $tt-border;
+      color: $tt-text;
     }
   }
 
-  &__caret {
-    font-size: 10px;
-    opacity: 0.7;
-    flex-shrink: 0;
+  &__label {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  &--wide &__trigger {
+    min-width: 120px;
+    max-width: 160px;
+    justify-content: space-between;
   }
 
   &__menu {
     position: absolute;
-    top: calc(100% + 2px);
+    top: calc(100% + 3px);
     left: 0;
-    z-index: 100;
+    z-index: 200;
     background: $tt-white;
-    border: 1px solid $tt-border;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid $tt-border-dark;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(0,0,0,0.08);
     min-width: 160px;
-    padding: 4px 0;
+    padding: 6px 0;
     display: flex;
     flex-direction: column;
-    max-height: 280px;
+    max-height: 300px;
     overflow-y: auto;
   }
 
   &__item {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     width: 100%;
-    padding: 6px 16px;
+    padding: 7px 14px 7px 8px;
     text-align: left;
     border: none;
     background: transparent;
@@ -152,155 +174,287 @@ $tt-prose-font:   Arial, sans-serif;
     color: $tt-text;
     cursor: pointer;
     white-space: nowrap;
+    position: relative;
 
-    &:hover {
-      background: $tt-active-bg;
-    }
+    &:hover { background: $tt-hover-bg; }
 
     &--active {
       background: #e8f0fe;
       color: $tt-accent;
     }
   }
+
+  &__check {
+    width: 18px;
+    font-size: 12px;
+    color: $tt-accent;
+    flex-shrink: 0;
+  }
 }
 
-// ─── Color picker ─────────────────────────────────────────────────────────────
+// ─── Text style labels (in heading dropdown) ──────────────────────────────────
 
-.tt-color-wrap {
+.tt-style-label {
+  font-family: $tt-font;
+
+  &--p   { font-size: 13px; color: $tt-text; }
+  &--h1  { font-size: 20px; font-weight: 700; color: $tt-text; }
+  &--h2  { font-size: 16px; font-weight: 700; color: $tt-text; }
+  &--h3  { font-size: 14px; font-weight: 600; color: $tt-text; }
+  &--h4  { font-size: 13px; font-weight: 600; color: $tt-text; }
+  &--code { font-family: 'Courier New', monospace; font-size: 13px; color: #5f6368; }
+}
+
+// ─── Color swatch picker ──────────────────────────────────────────────────────
+
+.tt-color-picker {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
 
-  .tt-color-icon {
+  &__trigger {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    min-width: 28px;
-    height: 28px;
-    padding: 0 5px;
+    gap: 1px;
+    height: 32px;
+    padding: 0 4px;
     border: 1px solid transparent;
-    border-radius: 3px;
-    font-size: 13px;
-    font-weight: 700;
+    border-radius: 4px;
+    background: transparent;
+    color: #444746;
     cursor: pointer;
-    pointer-events: none;
 
-    &--highlight {
-      background: rgba(255, 255, 0, 0.5);
+    &:hover {
+      background: $tt-hover-bg;
+      border-color: $tt-border;
+      color: $tt-text;
     }
-
-    &:hover { background: $tt-active-bg; }
   }
 
-  .tt-color-input {
+  &__menu {
     position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-    border: none;
-    padding: 0;
+    top: calc(100% + 3px);
+    left: 0;
+    z-index: 200;
+    background: $tt-white;
+    border: 1px solid $tt-border-dark;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+    padding: 10px;
+    width: 196px;
   }
 
-  &:hover .tt-color-icon {
-    background: $tt-active-bg;
-    border-color: $tt-border;
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(8, 20px);
+    gap: 3px;
+    margin-bottom: 8px;
+  }
+
+  &__swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.12);
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+      transform: scale(1.2);
+      border-color: rgba(0,0,0,0.3);
+    }
+  }
+
+  &__custom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: $tt-muted;
+    cursor: pointer;
+    border-top: 1px solid $tt-border;
+    padding-top: 8px;
+
+    input[type="color"] {
+      width: 28px;
+      height: 22px;
+      border: 1px solid $tt-border;
+      border-radius: 3px;
+      padding: 0;
+      cursor: pointer;
+      background: none;
+    }
   }
 }
 
-// ─── Link / Image dialog ──────────────────────────────────────────────────────
+// ─── Dialog (link / image) ────────────────────────────────────────────────────
 
 .tt-dialog-overlay {
   position: fixed;
   inset: 0;
-  z-index: 200;
-  background: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.tt-link-dialog {
+.tt-dialog {
   background: $tt-white;
-  border: 1px solid $tt-border;
-  border-radius: 6px;
-  padding: 20px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 380px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  min-width: 420px;
+  max-width: 90vw;
+  overflow: hidden;
 
-  input {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: $tt-text;
+    border-bottom: 1px solid $tt-border;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: $tt-muted;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 3px;
+    &:hover { background: $tt-hover-bg; color: $tt-text; }
+  }
+
+  &__body {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__input {
     width: 100%;
-    padding: 8px 10px;
-    border: 1px solid $tt-border;
-    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid $tt-border-dark;
+    border-radius: 5px;
     font-size: 14px;
     font-family: $tt-font;
     outline: none;
+    color: $tt-text;
+    transition: border-color 0.15s, box-shadow 0.15s;
 
-    &:focus { border-color: $tt-active-ring; box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2); }
+    &:focus {
+      border-color: $tt-active-ring;
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.18);
+    }
   }
 
-  button {
-    padding: 8px 18px;
-    border: none;
-    border-radius: 4px;
-    background: $tt-accent;
-    color: $tt-white;
+  &__footer {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px 16px;
+    justify-content: flex-end;
+  }
+
+  &__btn {
+    padding: 8px 20px;
+    border-radius: 5px;
     font-size: 13px;
     font-family: $tt-font;
+    font-weight: 500;
     cursor: pointer;
-    align-self: flex-start;
+    border: 1px solid $tt-border-dark;
+    background: $tt-white;
+    color: $tt-text;
 
-    &:hover { background: #1557b0; }
+    &:hover { background: $tt-hover-bg; }
 
-    & + button {
-      background: transparent;
-      color: $tt-danger;
-      border: 1px solid $tt-danger;
-      &:hover { background: rgba($tt-danger, 0.05); }
+    &--primary {
+      background: $tt-accent;
+      border-color: $tt-accent;
+      color: $tt-white;
+      &:hover { background: $tt-accent-dark; border-color: $tt-accent-dark; }
     }
   }
 }
 
-// ─── Table grid picker ─────────────────────────────────────────────────────────
+// ─── Table grid picker ────────────────────────────────────────────────────────
 
 .tt-table-picker {
-  padding: 8px;
+  padding: 10px;
 
   &__label {
     text-align: center;
     font-size: 12px;
     color: $tt-muted;
     margin-bottom: 6px;
+    min-height: 16px;
   }
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(8, 20px);
+    grid-template-columns: repeat(8, 22px);
     gap: 2px;
   }
 
   &__cell {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border: 1px solid $tt-border;
     border-radius: 2px;
     cursor: pointer;
     background: $tt-white;
+    transition: background 0.05s;
 
     &--active {
-      background: #d2e3fc;
+      background: #d3e3fd;
       border-color: $tt-active-ring;
     }
 
-    &:hover {
-      border-color: $tt-active-ring;
+    &:hover { border-color: $tt-active-ring; }
+  }
+}
+
+// ─── Bubble menu (inline formatting on selection) ─────────────────────────────
+
+.tt-bubble {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: #2d2d2d;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
+  .tt-btn {
+    color: #e8eaed;
+    width: 28px;
+    height: 28px;
+
+    &:hover:not(:disabled) {
+      background: rgba(255,255,255,0.12);
+      border-color: transparent;
+      color: #ffffff;
     }
+
+    &--active {
+      background: rgba(168,199,250,0.25);
+      border-color: transparent;
+      color: #a8c7fa;
+    }
+  }
+
+  &__sep {
+    display: inline-block;
+    width: 1px;
+    height: 18px;
+    background: rgba(255,255,255,0.2);
+    margin: 0 3px;
+    align-self: center;
   }
 }
 
@@ -308,7 +462,8 @@ $tt-prose-font:   Arial, sans-serif;
 
 .tt-page-area {
   flex: 1;
-  padding: 40px 0 60px;
+  min-height: 500px;
+  padding: 32px 24px 60px;
   display: flex;
   justify-content: center;
   background: $tt-page-bg;
@@ -319,10 +474,11 @@ $tt-prose-font:   Arial, sans-serif;
   width: $tt-page-width;
   max-width: 100%;
   background: $tt-white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
   padding: $tt-page-pad;
-  min-height: 1056px; // US letter height at 96 dpi
+  min-height: 1056px;
   box-sizing: border-box;
+  border-radius: 2px;
 }
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
@@ -330,7 +486,7 @@ $tt-prose-font:   Arial, sans-serif;
 .tt-footer {
   display: flex;
   align-items: center;
-  padding: 6px 16px;
+  padding: 5px 14px;
   background: $tt-toolbar-bg;
   border-top: 1px solid $tt-border;
   font-size: 12px;
@@ -340,75 +496,98 @@ $tt-prose-font:   Arial, sans-serif;
 .tt-word-count {
   font-size: 12px;
   color: $tt-muted;
+  letter-spacing: 0.01em;
 }
 
-// ─── Prose styles (shared by admin editor + public viewer) ─────────────────────
+// ─── Prose styles (shared by admin editor + public viewer) ────────────────────
 
 %tt-prose {
-  font-family: $tt-prose-font;
+  font-family: Arial, 'Helvetica Neue', sans-serif;
   font-size: 11pt;
-  line-height: 1.7;
+  line-height: 1.75;
   color: $tt-text;
   outline: none;
 
-  p { margin: 0 0 0.6em; }
+  > * + * { margin-top: 0; }
 
-  h1 { font-size: 20pt; font-weight: 700; margin: 1.2em 0 0.4em; line-height: 1.2; }
-  h2 { font-size: 16pt; font-weight: 700; margin: 1em 0 0.3em; }
-  h3 { font-size: 14pt; font-weight: 600; margin: 0.9em 0 0.25em; }
-  h4 { font-size: 12pt; font-weight: 600; margin: 0.8em 0 0.2em; }
-  h5, h6 { font-size: 11pt; font-weight: 600; margin: 0.7em 0 0.2em; }
+  // Explicitly set font on all text elements so they win over any
+  // direct rules in main.css (inherited values lose to direct rules).
+  p {
+    margin: 0 0 0.5em;
+    font-family: Arial, 'Helvetica Neue', sans-serif;
+    font-size: 11pt;
+    line-height: 1.75;
+    color: $tt-text;
+  }
 
-  ul, ol { padding-left: 1.5em; margin: 0.4em 0 0.6em; }
-  li { margin-bottom: 0.2em; }
+  h1 { font-family: Arial, 'Helvetica Neue', sans-serif; font-size: 22pt; font-weight: 700; margin: 1.4em 0 0.4em; line-height: 1.2; color: #1f1f1f; }
+  h2 { font-family: Arial, 'Helvetica Neue', sans-serif; font-size: 17pt; font-weight: 700; margin: 1.2em 0 0.3em; line-height: 1.3; color: #1f1f1f; }
+  h3 { font-family: Arial, 'Helvetica Neue', sans-serif; font-size: 14pt; font-weight: 600; margin: 1em 0 0.25em; color: $tt-text; }
+  h4 { font-family: Arial, 'Helvetica Neue', sans-serif; font-size: 12pt; font-weight: 600; margin: 0.8em 0 0.2em; color: $tt-text; }
+  h5, h6 { font-family: Arial, 'Helvetica Neue', sans-serif; font-size: 11pt; font-weight: 600; margin: 0.7em 0 0.2em; color: $tt-text; }
 
-  // Task list
+  ul, ol { padding-left: 1.6em; margin: 0.2em 0 0.5em; }
+  li {
+    margin-bottom: 0.2em;
+    font-family: Arial, 'Helvetica Neue', sans-serif;
+    font-size: 11pt;
+    line-height: 1.75;
+    color: $tt-text;
+  }
+
   ul[data-type="taskList"] {
     list-style: none;
-    padding-left: 0.25em;
+    padding-left: 0;
 
     li {
       display: flex;
       align-items: flex-start;
       gap: 0.5em;
+      margin-bottom: 0.3em;
 
-      > label { display: flex; align-items: center; padding-top: 2px; }
+      > label { display: flex; align-items: center; padding-top: 3px; }
       > div { flex: 1; }
+      input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; flex-shrink: 0; accent-color: $tt-accent; }
 
-      input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
-
-      &[data-checked="true"] > div {
-        text-decoration: line-through;
-        color: $tt-muted;
-      }
+      &[data-checked="true"] > div { text-decoration: line-through; color: $tt-muted; }
     }
   }
 
   blockquote {
-    border-left: 3px solid $tt-border;
-    padding-left: 1em;
+    border-left: 3px solid #c6c6c6;
+    padding: 4px 0 4px 16px;
     margin: 0.8em 0;
-    color: $tt-muted;
+    color: #5f6368;
     font-style: italic;
+    font-family: Arial, 'Helvetica Neue', sans-serif;
+    font-size: 11pt;
+    line-height: 1.75;
   }
 
   code {
-    background: #f8f9fa;
-    border: 1px solid $tt-border;
-    border-radius: 3px;
-    padding: 0.1em 0.35em;
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 4px;
+    padding: 1px 6px;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9em;
+    font-size: 0.88em;
+    color: #c7254e;
   }
 
   pre {
-    background: #f8f9fa;
-    border: 1px solid $tt-border;
-    border-radius: 4px;
-    padding: 14px 16px;
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 14px 18px;
     overflow-x: auto;
-    margin: 0.8em 0;
-    code { background: none; border: none; padding: 0; font-size: 0.88em; }
+    margin: 1em 0;
+    code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.88em;
+      color: $tt-text;
+    }
   }
 
   hr {
@@ -419,9 +598,14 @@ $tt-prose-font:   Arial, sans-serif;
 
   a { color: $tt-accent; text-decoration: underline; }
 
-  img { max-width: 100%; height: auto; border-radius: 2px; display: block; margin: 0.8em 0; }
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+    margin: 1em 0;
+  }
 
-  // Tables
   table {
     border-collapse: collapse;
     table-layout: fixed;
@@ -431,29 +615,31 @@ $tt-prose-font:   Arial, sans-serif;
 
     th, td {
       border: 1px solid $tt-border;
-      padding: 6px 10px;
+      padding: 7px 11px;
       vertical-align: top;
+      font-family: Arial, 'Helvetica Neue', sans-serif;
       font-size: 11pt;
+      line-height: 1.75;
+      color: $tt-text;
       min-width: 60px;
       position: relative;
     }
 
     th {
-      background: #f1f3f4;
+      background: #f8f9fa;
       font-weight: 600;
       text-align: left;
     }
 
-    .selectedCell:after {
+    .selectedCell::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(26, 115, 232, 0.1);
+      background: rgba(26, 115, 232, 0.08);
       pointer-events: none;
     }
   }
 
-  // Resize handle (TipTap table)
   .column-resize-handle {
     position: absolute;
     right: -2px;
@@ -463,15 +649,14 @@ $tt-prose-font:   Arial, sans-serif;
     background: $tt-active-ring;
     cursor: col-resize;
     opacity: 0;
-    transition: opacity 0.15s;
     z-index: 5;
+    transition: opacity 0.15s;
   }
 
-  &:hover .column-resize-handle { opacity: 0.4; }
+  &:hover .column-resize-handle { opacity: 0.5; }
 
   .tableWrapper { overflow-x: auto; }
 
-  // Placeholder
   .is-editor-empty p:first-child::before,
   p.is-empty.is-editor-empty::before {
     content: attr(data-placeholder);
@@ -484,15 +669,14 @@ $tt-prose-font:   Arial, sans-serif;
   ::selection { background: rgba(26, 115, 232, 0.15); }
 }
 
-// Apply prose to admin editor
 .tt-document .ProseMirror { @extend %tt-prose; }
 
-// ─── Public viewer ────────────────────────────────────────────────────────────
+// ─── Public article page ──────────────────────────────────────────────────────
 
 .tiptap-article-page {
-  max-width: 816px;
+  max-width: 760px;
   margin: 2rem auto;
-  padding: 0 1rem 4rem;
+  padding: 0 1.5rem 4rem;
 
   &__title-wrap { margin-bottom: 0.25rem; }
 
@@ -500,8 +684,9 @@ $tt-prose-font:   Arial, sans-serif;
     font-family: Arial, sans-serif;
     font-size: 2rem;
     font-weight: 700;
-    color: #202124;
+    color: #1f1f1f;
     margin: 0 0 0.5rem;
+    line-height: 1.2;
   }
 }
 
@@ -509,9 +694,11 @@ $tt-prose-font:   Arial, sans-serif;
   &__lede {
     font-family: Arial, sans-serif;
     font-size: 1.1rem;
-    color: #5f6368;
+    color: $tt-muted;
     margin: 0 0 1.5rem;
+    line-height: 1.5;
   }
 
-  &__editor .ProseMirror { @extend %tt-prose; }
+  &__body .ProseMirror,
+  &__body { @extend %tt-prose; }
 }
