@@ -1822,11 +1822,9 @@ class TipTapArticlePage(Page):
     for revision history, draft/publish workflow, editorial comments, and
     page locking.
     """
-    lede = models.TextField(blank=True, default='')
     body = models.TextField(blank=True, default='')
 
     content_panels = Page.content_panels + [
-        FieldPanel('lede'),
         FieldPanel('body', widget=TipTapAdminWidget()),
     ]
 

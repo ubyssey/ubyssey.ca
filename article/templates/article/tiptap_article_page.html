@@ -14,14 +14,6 @@
 
 {% block content %}
     <main class="tiptap-article-page">
-        <div class="tiptap-article-page__title-wrap">
-            <h1 class="tiptap-article-page__title">{{ page.title }}</h1>
-        </div>
-
-        {% if page.lede %}
-            <p class="tiptap-article__lede">{{ page.lede }}</p>
-        {% endif %}
-
         <div class="tiptap-article">
             <div class="tiptap-article__body">
                 {{ page.body|safe }}
