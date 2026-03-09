@@ -66,12 +66,16 @@ def tiptap_admin_editor_view(request, page_id=None):
     if page_id:
         page = get_object_or_404(TipTapArticlePage, id=page_id)
 
+    view_url = ''
+    if page and page.live and page.url:
+        view_url = request.build_absolute_uri(page.url)
+
     return render(request, 'article/tiptap_standalone_editor.html', {
         'page_id': page.id if page else '',
         'title_json': json.dumps(page.title if page else ''),
         'lede_json': json.dumps(page.lede if page else ''),
-        'body_json': json.dumps(page.body if page else {}),
-        'view_url': page.full_url if (page and page.live) else '',
+        'body_json': json.dumps(page.body if page else ''),
+        'view_url': view_url,
         'api_base': API_BASE,
         'list_url': ADMIN_PREFIX,
     })
@@ -95,16 +99,21 @@ def tiptap_create_page(request):
     page = TipTapArticlePage(
         title=title,
         lede=data.get('lede', ''),
-        body=data.get('body', {}),
+        body=data.get('body', ''),
         slug=unique_slug,
     )
     parent.add_child(instance=page)
-    page.save_revision()
+    revision = page.save_revision()
+    if data.get('publish'):
+        revision.publish()
+        page.refresh_from_db()
 
+    view_url = request.build_absolute_uri(page.url) if (data.get('publish') and page.url) else ''
     return JsonResponse({
-        'status': 'created',
+        'status': 'published' if data.get('publish') else 'created',
         'page_id': page.id,
         'edit_url': f'{ADMIN_PREFIX}{page.id}/',
+        'view_url': view_url,
     })
 
 
@@ -118,7 +127,7 @@ def save_tiptap_page(request, page_id):
     page = get_object_or_404(TipTapArticlePage, id=page_id)
     page.title = (data.get('title') or '').strip() or page.title
     page.lede = data.get('lede', page.lede)
-    page.body = data.get('body', page.body)
+    page.body = data.get('body', page.body)  # HTML string
     page.save_revision()
 
     return JsonResponse({'status': 'saved'})
@@ -138,4 +147,7 @@ def publish_tiptap_page(request, page_id):
     page.save_revision().publish()
     page.refresh_from_db()
 
-    return JsonResponse({'status': 'published', 'view_url': page.full_url})
+    return JsonResponse({
+        'status': 'published',
+        'view_url': request.build_absolute_uri(page.url) if page.url else '',
+    })

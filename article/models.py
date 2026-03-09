@@ -1814,12 +1814,12 @@ class StandardArticlePage(ArticlePage):
 
 class TipTapArticlePage(Page):
     """
-    A Notion-like article page.  Content is stored as TipTap JSON.
-    Editing happens inside the Wagtail admin via TipTapAdminWidget;
-    the public page renders the saved JSON in a read-only TipTap instance.
+    A rich-text article page. Body is stored as HTML produced by TipTap's
+    getHTML(). The public page renders it directly — no client-side JS needed.
+    Editing happens in the Wagtail admin via TipTapAdminWidget.
     """
     lede = models.TextField(blank=True, default='')
-    body = models.JSONField(default=dict, blank=True)
+    body = models.TextField(blank=True, default='')
 
     content_panels = Page.content_panels + [
         FieldPanel('lede'),
@@ -1828,13 +1828,6 @@ class TipTapArticlePage(Page):
 
     parent_page_types = ['wagtailcore.Page', 'section.SectionPage', 'home.HomePage']
     subpage_types = []
-
-    def get_context(self, request, *args, **kwargs):
-        import json as _json
-        context = super().get_context(request, *args, **kwargs)
-        context['body_json'] = _json.dumps(self.body or {})
-        context['lede_json'] = _json.dumps(self.lede or '')
-        return context
 
     def get_template(self, request, *args, **kwargs):
         return 'article/tiptap_article_page.html'

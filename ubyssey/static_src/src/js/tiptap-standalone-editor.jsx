@@ -55,26 +55,31 @@ function useDebounce(fn, delay) {
 
 // ─── Editable plain-text div (title / lede) ───────────────────────────────────
 
-function EditableDiv({ className, placeholder, initialValue, onChange, onEnter }) {
-  const ref = useRef();
+const EditableDiv = React.forwardRef(function EditableDiv(
+  { className, placeholder, initialValue, onChange, onEnter },
+  ref,
+) {
+  const innerRef = useRef();
+  const resolvedRef = ref || innerRef;
+
   useEffect(() => {
-    if (ref.current) ref.current.innerText = initialValue || '';
-  }, []); // set once on mount only
+    if (resolvedRef.current) resolvedRef.current.innerText = initialValue || '';
+  }, []); // set once on mount
 
   return (
     <div
-      ref={ref}
+      ref={resolvedRef}
       contentEditable
       suppressContentEditableWarning
       className={className}
       data-placeholder={placeholder}
-      onInput={(e) => onChange(e.currentTarget.innerText)}
+      onInput={(e) => onChange && onChange(e.currentTarget.innerText)}
       onKeyDown={(e) => {
         if (e.key === 'Enter') { e.preventDefault(); onEnter && onEnter(); }
       }}
     />
   );
-}
+});
 
 // ─── Toolbar primitives ───────────────────────────────────────────────────────
 
@@ -339,7 +344,7 @@ function Header({ docTitle, saveStatus, viewUrl, onPublish, onAdminLink }) {
           </a>
         )}
         <button type="button" className="tts-header__btn tts-header__btn--primary" onClick={onPublish}
-          disabled={saveStatus === 'saving'}>
+          disabled={saveStatus === 'saving' || !docTitle.trim()}>
           Publish
         </button>
       </div>
@@ -408,10 +413,7 @@ function StandaloneEditor() {
             : 'Start writing… (Markdown shortcuts: ## Heading, **bold**, - list, > quote)',
       }),
     ],
-    content: (() => {
-      const c = window.__TIPTAP_INITIAL_CONTENT__ || {};
-      return Object.keys(c).length ? c : '';
-    })(),
+    content: window.__TIPTAP_INITIAL_CONTENT__ || '',
     onUpdate({ editor }) {
       editorRef.current = editor;
       triggerAutoSave();
@@ -425,15 +427,16 @@ function StandaloneEditor() {
   const getSaveData = () => ({
     title: titleRef.current?.innerText?.trim() || 'Untitled',
     lede: ledeRef.current?.innerText?.trim() || '',
-    body: editorRef.current?.getJSON() || {},
+    body: editorRef.current?.getHTML() || '',
   });
 
   const doSave = useCallback(async (publish = false) => {
     setSaveStatus('saving');
     try {
-      const data = getSaveData();
+      const data = { ...getSaveData(), ...(publish ? { publish: true } : {}) };
       let url;
       if (!pageIdRef.current) {
+        // New page — create endpoint handles publish flag too
         url = `${API_BASE}create/`;
       } else if (publish) {
         url = `${API_BASE}${pageIdRef.current}/publish/`;

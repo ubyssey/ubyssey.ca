@@ -3,6 +3,7 @@
 {% load wagtailcore_tags %}
 
 {% block stylesheet %}
+    {{ block.super }}
     <link rel="stylesheet" href="{% static 'ubyssey/css/tiptap-article.css' %}" type="text/css" />
 {% endblock %}
 
@@ -21,17 +22,10 @@
             <p class="tiptap-article__lede">{{ page.lede }}</p>
         {% endif %}
 
-        {# Bootstrap the read-only React viewer with pre-serialised JSON from get_context #}
-        <script>
-        window.__TIPTAP_PAGE_ID__         = {{ page.id }};
-        window.__TIPTAP_INITIAL_LEDE__    = {{ lede_json|safe }};
-        window.__TIPTAP_INITIAL_CONTENT__ = {{ body_json|safe }};
-        </script>
-
-        <div id="tiptap-article-root"></div>
+        <div class="tiptap-article">
+            <div class="tiptap-article__body">
+                {{ page.body|safe }}
+            </div>
+        </div>
     </main>
-{% endblock %}
-
-{% block scripts %}
-    <script src="{% static 'ubyssey/js/tiptap-article.js' %}" type="text/javascript"></script>
 {% endblock %}

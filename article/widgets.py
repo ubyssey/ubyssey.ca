@@ -1,14 +1,12 @@
-import json
-
 from django import forms
 
 
 class TipTapAdminWidget(forms.Textarea):
     """
-    A Textarea whose value is TipTap JSON.  The textarea is hidden with CSS;
+    A Textarea whose value is TipTap HTML. The textarea is hidden with CSS;
     a TipTap editor is mounted next to it by tiptap-wagtail-widget.jsx.
-    Wagtail's standard form submission reads the (JS-kept-in-sync) textarea value
-    and Django's JSONField deserialises it — no custom save API required.
+    Wagtail's form submission reads the (JS-kept-in-sync) textarea value
+    and Django saves it to the body TextField directly.
     """
 
     def __init__(self, *args, **kwargs):
@@ -18,11 +16,7 @@ class TipTapAdminWidget(forms.Textarea):
         super().__init__(*args, **kwargs)
 
     def format_value(self, value):
-        if value is None:
-            return '{}'
-        if isinstance(value, (dict, list)):
-            return json.dumps(value)
-        return value or '{}'
+        return value or ''
 
     class Media:
         js = ['ubyssey/js/tiptap-wagtail-widget.js']

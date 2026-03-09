@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor — Wagtail</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article Editor</title>
+  <link rel="stylesheet" href="{% static 'ubyssey/css/tiptap-article.css' %}" />
   <link rel="stylesheet" href="{% static 'ubyssey/css/tiptap-standalone-editor.css' %}" />
 </head>
 <body>
   <div id="tts-root"></div>
-
   <script>
     window.__TIPTAP_PAGE_ID__         = {{ page_id|default:"null" }};
     window.__TIPTAP_PAGE_TITLE__      = {{ title_json|safe }};

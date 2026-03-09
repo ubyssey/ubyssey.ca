@@ -349,11 +349,7 @@ function TipTapAdminEditor({ textarea }) {
   const [showLink, setShowLink] = useState(false);
   const [showImage, setShowImage] = useState(false);
 
-  let initialContent = {};
-  try {
-    const raw = textarea.value.trim();
-    if (raw && raw !== '{}') initialContent = JSON.parse(raw);
-  } catch (_) {}
+  const initialContent = textarea.value.trim() || '';
 
   const editor = useEditor({
     extensions: [
@@ -384,9 +380,9 @@ function TipTapAdminEditor({ textarea }) {
             : 'Start writing… (Markdown shortcuts work: ## Heading, **bold**, - list)',
       }),
     ],
-    content: Object.keys(initialContent).length ? initialContent : '',
+    content: initialContent,
     onUpdate({ editor }) {
-      textarea.value = JSON.stringify(editor.getJSON());
+      textarea.value = editor.getHTML();
     },
   });
 
