@@ -3,6 +3,10 @@
   "version": "1.11.1",
   "description": "The Ubyssey's frontend framework.",
   "author": "Peter Siemens <peter@ubyssey.ca>",
+  "scripts": {
+    "watch": "gulp watch",
+    "build": "gulp buildDev"
+  },
   "homepage": "https://www.ubyssey.ca",
   "contributors": [
     "Rowan Baker-French <rowan@ubyssey.ca>",
