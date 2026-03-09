@@ -1379,6 +1379,7 @@ class StandardArticlePage(ArticlePage):
             ('header_menu', blocks_inner_article.HeaderMenuBlock()),
             ('visual_essay', blocks_inner_article.VisualEssayBlock()),
             ('personality_quiz', blocks_inner_article.PersonalityQuizBlock()),
+            ('D3_chart', blocks_inner_article.D3ChartBlock()),
             ('plaintext', blocks.TextBlock(
                 label="Plain Text Block",
                 help_text = "Warning: Rich Text Blocks preferred! Plain text primarily exists for importing old Dispatch text."

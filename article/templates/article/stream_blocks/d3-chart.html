@@ -1,0 +1,17 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% with chart_id="d3-chart-"|add:block.id %}
+<div class="d3-wrapper">
+    {% if self.chart_title %}<h3>{{ self.chart_title }}</h3>{% endif %}
+
+    <div id="{{ chart_id }}" 
+         class="d3-chart-container" 
+         data-type="{{ self.chart_type }}">
+    </div>
+
+    <script id="data-{{ chart_id }}" type="text/plain">
+        {{ self.data|safe }}
+    </script>
+</div>
+{% endwith %}
