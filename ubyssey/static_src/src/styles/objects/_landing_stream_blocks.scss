@@ -6,16 +6,17 @@
     margin: 3em auto 5em auto;
   
     .landing_stream_block--header {
-      margin-block: 2em;
+      margin-block: 1em;
       font-family: fonts.$font-default;
       font-weight: 800;
       h2 {
         display: inline;
         margin-right: 0.5em;
         scroll-margin-top: 5em;
-        font-size: 2.5em;
+        font-size: 1.5em;
         font-family: fonts.$font-headline;
-        font-variation-settings: "wght" 800;
+        font-variation-settings: "wght" 600;
+        font-weight: 600;
       }
       p {
         margin-right: 0.5em;
@@ -318,6 +319,10 @@
         }
       }
     }
+  }
+
+  .blurb_with_pinned {
+    width: 100%;
   }
 }
 
