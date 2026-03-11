@@ -25,7 +25,8 @@ def inject_ads(value, is_mobile):
 
     # Break down content into paragraphs
     soup = BeautifulSoup(value, 'html.parser')
-    removeShortParagraphs = lambda p : len(p.encode_contents()) >= ACCEPTABLE_PARAGRAPH_LENGTH
+
+    removeShortParagraphs = lambda p : len(p.get_text()) >= ACCEPTABLE_PARAGRAPH_LENGTH
     removeNonParagraphNextSibling = lambda p : p.next_sibling.name == 'p' if p.next_sibling else False
     paragraphs = soup.find_all('p', recursive=False)
     paragraphs = list(filter(removeNonParagraphNextSibling, filter(removeShortParagraphs, paragraphs)))

@@ -362,8 +362,9 @@ ul.article-list, ol.article-list {
 }
 
 // Page link headers
-.header-menu {
+div.header-menu {
   margin-block: 1em;
+  max-width: calc(var(--article-standard-content-width) + 8em);
   ul {
     list-style-type: none;
     display: flex;
@@ -422,7 +423,7 @@ div.article-content h2.header {
 // Scroll to top button
 #myBtn {
   position: fixed;
-  bottom: 20px;
+  bottom: -60px;
   right: 30px;
   z-index: 99;
   border: none;
@@ -436,9 +437,14 @@ div.article-content h2.header {
   padding: 15px;
   border-radius: 10px;
   font-size: 18px;
-  opacity: 0.9;
+  opacity: 0;
   transition-duration: 0.5s;
-  transition-property: opacity;
+  transition-property: opacity, bottom;
+
+  &.show {
+    bottom: 20px;
+    opacity: 0.9;
+  }
 
   &:hover {
     background-color: #555;
