@@ -13,6 +13,7 @@ from events.views import EventsDashboardViewSet
 from content_tracker.views import story_assignment_chooser_viewset, StoryAssignmentViewSet, VisualAssignmentViewSet
 from content_tracker.models import StoryAssignment
 from content_tracker.signals import send_assignment_notification
+from content_tracker.tasks import CopyEditTask, EngagementTask  # noqa: F401 — registers task types with Wagtail
 
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
