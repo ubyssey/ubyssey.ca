@@ -421,8 +421,55 @@ function ViewedAssignmentsTabs({viewedAssignments, setViewedAssignments}) {
                     Visual assignments
                 </a>
 
+                <a id="tab-label-tab-3" href="#tab-tab-3" onClick={() => setViewedAssignments("mine")} className="w-tabs__tab " role="tab" aria-selected={viewedAssignments=="mine"} tabindex="-1" aria-controls="tab-tab-3">
+                    My assignments
+                </a>
+
             </div>
         </div>
+    )
+}
+
+function ContentTrackerMyAssignments({myAssignments, authorLoaded, setViewedStoryAssignment}) {
+    if (authorLoaded && myAssignments === null) {
+        return (
+            <div className="c-content-tracker--upper-left--header">
+                <p>Your user account is not linked to an author profile. Ask an admin to connect your account.</p>
+            </div>
+        );
+    }
+    return (
+        <>
+            <div className="c-content-tracker--upper-left--header">
+                <h1>My assignments</h1>
+            </div>
+            {myAssignments.length === 0 ? (
+                <p style={{padding: "16px"}}>No active assignments for you right now.</p>
+            ) : (
+                <table className="listing">
+                    <thead>
+                        <tr>
+                            <th>Story</th>
+                            <th>Section</th>
+                            <th>State</th>
+                            <th>Deadline</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {myAssignments.map(article =>
+                        <tr className="c-content-tracker--deadline-list-item" onClick={() => {setViewedStoryAssignment({...article, "viewed": "story"})}}>
+                            <td className="c-content-tracker--deadline-list-item--subject" title={article.subject}>{article.subject}</td>
+                            <td>{transformHypenedString(article.assigning_section)}</td>
+                            <td><span className="w-status">{storyAssignmentState[article.state]}</span></td>
+                            <td className={"c-content-tracker--deadline-list-item--deadline " + (new Date(article.deadline) < new Date() ? "late": "")}>{dateformat(article.deadline)}</td>
+                            <td className={"c-content-tracker--deadline-list-item--deadline " + (new Date(article.target) < new Date() ? "late": "")}>{dateformat(article.target)}</td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+            )}
+        </>
     )
 }
 
@@ -430,6 +477,8 @@ export default function ContentTracker() {
     const [activeStoryAssignments, setActiveStoryAssignments] = useState([]);
     const [activeVisualAssignments, setActiveVisualAssignments] = useState([]);
     const [lateStoryAssignments, setLateStoryAssignments] = useState([]);
+    const [myAssignments, setMyAssignments] = useState([]);
+    const [authorLoaded, setAuthorLoaded] = useState(false);
     
     const [articles, setArticles] = useState([]);
     const [articlesBySectionByDate, setArticlesBySectionByDate] = useState({});
@@ -474,6 +523,19 @@ export default function ContentTracker() {
         fetch(apiUrl).then((response) => response.json().then((json) => {
             setActiveVisualAssignments(json);
         }));        
+    }
+
+    function getMyAssignments() {
+        fetch("/admin/current_author_api/").then((response) => response.json().then((author) => {
+            setAuthorLoaded(true);
+            if (!author.id) {
+                setMyAssignments(null);
+                return;
+            }
+            fetch("/admin/story_assignment_api/?active=true&mine=true&orderby=deadline").then((r) => r.json().then((json) => {
+                setMyAssignments(json);
+            }));
+        }));
     }
 
     function getArticlesBySectionByDate(articles) {
@@ -557,6 +619,7 @@ export default function ContentTracker() {
         getActiveStoryAssignments();
         getActiveVisualAssignments();
         getLateStoryAssignments();
+        getMyAssignments();
         getSectionOrderFromLocalStorage();
     }, []);
 
@@ -567,8 +630,10 @@ export default function ContentTracker() {
             <ViewedAssignmentsTabs viewedAssignments={viewedAssignments} setViewedAssignments={setViewedAssignments} />
             {viewedAssignments == "story" ?
                 <ContentTrackerActiveStoryAssignments setViewedStoryAssignment={setViewedStoryAssignment} activeStoryAssignments={activeStoryAssignments} filter={sectionFilter} setFilter={setsectionFilter} sections={sections}/>            
-            :
+            : viewedAssignments == "visual" ?
                 <ContentTrackerActiveVisualAssignments setViewedStoryAssignment={setViewedStoryAssignment} activeVisualAssignments={activeVisualAssignments} filter={visualFilter} setFilter={setVisualFilter} visualTypes={visualTypes} />
+            :
+                <ContentTrackerMyAssignments myAssignments={myAssignments} authorLoaded={authorLoaded} setViewedStoryAssignment={setViewedStoryAssignment} />
             }
 
         </div>

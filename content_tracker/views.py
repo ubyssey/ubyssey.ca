@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.db.models import Q
 from wagtail.admin.viewsets.chooser import ChooserViewSet
@@ -127,9 +127,40 @@ class StoryAssignmentWithVisualRequestsSerializer(StoryAssignmentSerializer):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
+def current_author_api(request):
+    """Return the AuthorPage linked to the currently logged-in user, if one exists."""
+    try:
+        author = request.user.author_page
+        return Response({
+            'id': author.pk,
+            'full_name': author.full_name,
+            'slug': author.slug,
+        })
+    except Exception:
+        return Response({'id': None, 'full_name': None, 'slug': None})
+
+
+@api_view(['PATCH'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def story_assignment_state_patch(request, pk):
+    """Update only the state field of a StoryAssignment."""
+    assignment = get_object_or_404(StoryAssignment, pk=pk)
+    new_state = request.data.get('state')
+    valid_states = [c[0] for c in StoryAssignment.StateChoices.choices]
+    if new_state is None or int(new_state) not in valid_states:
+        return Response({'error': 'Invalid state value.'}, status=400)
+    assignment.state = int(new_state)
+    assignment.save(update_fields=['state'])
+    return Response({'id': assignment.pk, 'state': assignment.state})
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def story_assignment_api_list(request):
     """
-    List all code snippets, or create a new snippet.
+    List story assignments with optional filters.
     """
 
     if request.method == 'GET':
@@ -142,6 +173,9 @@ def story_assignment_api_list(request):
 
         if 'late' in request.query_params:
             assignment = assignment.filter(target__lte=timezone.now()).exclude(state=StoryAssignment.StateChoices.PUBLISHED)
+
+        if 'mine' in request.query_params:
+            assignment = assignment.filter(story_assignees__assignee__user=request.user)
 
         if 'timeCursor' in request.query_params:
             timeCursor = int(request.query_params['timeCursor'])
@@ -156,14 +190,14 @@ def story_assignment_api_list(request):
         if assignment != None:
 
             if 'orderby' in request.query_params:
-                assignment_serialized = StoryAssignmentWithVisualRequestsSerializer(assignment.order_by(request.query_params['orderby'])[:1000], many=True)                    
+                assignment_serialized = StoryAssignmentWithVisualRequestsSerializer(assignment.order_by(request.query_params['orderby'])[:1000], many=True)
 
                 return Response(assignment_serialized.data)
 
             assignment_serialized = StoryAssignmentWithVisualRequestsSerializer(assignment.order_by("-target")[:1000], many=True)
-        
+
             return Response(assignment_serialized.data)
-        
+
         return Response(status=404)
 
 @api_view(['GET'])
