@@ -2,8 +2,7 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.db.models import Q
 from wagtail.admin.viewsets.chooser import ChooserViewSet
-
-
+from wagtail.snippets.views.snippets import SnippetViewSet
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
@@ -14,9 +13,33 @@ from rest_framework.permissions import IsAuthenticated
 from authors.models import AuthorPage
 from article.models import ArticlePage
 from content_tracker.models import StoryAssignment, VisualAssignment
-from home.views import ArticleHomePageCuratedSerializer 
+from home.views import ArticleHomePageCuratedSerializer
 
 story_assignment_chooser_viewset = ChooserViewSet("story_assignment_chooser")
+
+
+class StoryAssignmentViewSet(SnippetViewSet):
+    model = StoryAssignment
+    icon = "doc-full"
+    menu_label = "Story Assignments"
+    menu_name = "story-assignments"
+    add_to_admin_menu = True
+    list_display = ["subject", "assigning_section", "story_type", "state", "deadline", "target"]
+    list_filter = ["assigning_section", "state", "story_type"]
+    search_fields = ["subject", "summary"]
+    ordering = ["-target"]
+
+
+class VisualAssignmentViewSet(SnippetViewSet):
+    model = VisualAssignment
+    icon = "image"
+    menu_label = "Visual Assignments"
+    menu_name = "visual-assignments"
+    add_to_admin_menu = True
+    list_display = ["__str__", "visual_type", "state", "intended_use", "deadline"]
+    list_filter = ["visual_type", "state", "intended_use"]
+    search_fields = ["request"]
+    ordering = ["-created"]
 
 class AssigneeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
@@ -62,8 +85,14 @@ class StoryAssignmentSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField()
     deadline = serializers.DateField()
     target = serializers.DateField()
+    calendar_date = serializers.DateField()
 
     state = serializers.IntegerField()
+
+    is_print = serializers.BooleanField()
+    is_podcast = serializers.BooleanField()
+    promotion_ready = serializers.BooleanField()
+    promotion_type = serializers.CharField()
 
     article_page = ArticleHomePageCuratedSerializer(many=False)
 
@@ -71,8 +100,10 @@ class StoryAssignmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StoryAssignment
-        fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder', 
-                  'manuscript', 'created', 'deadline', 'target', 'state', 'article_page', 'assignees')
+        fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder',
+                  'manuscript', 'created', 'deadline', 'target', 'calendar_date', 'state',
+                  'is_print', 'is_podcast', 'promotion_ready', 'promotion_type',
+                  'article_page', 'assignees')
 
 class VisualAssignmentWithStoryAssignmentSerializer(VisualAssignmentSerializer):
     story_assignment = StoryAssignmentSerializer(many=False)
@@ -87,8 +118,10 @@ class StoryAssignmentWithVisualRequestsSerializer(StoryAssignmentSerializer):
 
     class Meta:
         model = StoryAssignment
-        fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder', 
-                  'manuscript', 'created', 'deadline', 'target', 'state', 'article_page', 'assignees', 'visual_requests',)
+        fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder',
+                  'manuscript', 'created', 'deadline', 'target', 'calendar_date', 'state',
+                  'is_print', 'is_podcast', 'promotion_ready', 'promotion_type',
+                  'article_page', 'assignees', 'visual_requests')
 
 
 @api_view(['GET'])

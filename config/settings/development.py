@@ -7,6 +7,8 @@ from .base import *
 
 WAGTAILADMIN_BASE_URL = 'http://localhost:8000/'
 
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 ALLOWED_HOSTS = ['localhost', '*']
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0', 'localhost']

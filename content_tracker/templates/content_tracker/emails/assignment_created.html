@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Georgia, serif; color: #1a1a1a; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 22px; margin-bottom: 4px; }
+        .section-badge { display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #666; margin-bottom: 16px; }
+        .meta { margin: 16px 0; }
+        .meta dt { font-weight: bold; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; color: #555; margin-top: 12px; }
+        .meta dd { margin: 4px 0 0 0; }
+        .dates { display: flex; gap: 24px; margin: 16px 0; padding: 12px; background: #f5f5f5; }
+        .dates div { flex: 1; }
+        .dates label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: #666; display: block; }
+        .dates span { font-weight: bold; }
+        .memo-content { margin: 16px 0; padding: 16px; border-left: 3px solid #1a1a1a; background: #fafafa; }
+        a { color: #0066cc; }
+        .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #ddd; font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+    <h1>{{ subject }}</h1>
+    <div class="section-badge">{{ section }} &middot; {{ story_type }}</div>
+
+    <dl class="meta">
+        <dt>Summary</dt>
+        <dd>{{ summary }}</dd>
+    </dl>
+
+    {% if memo %}
+    <div class="memo-content">
+        {{ memo|safe }}
+    </div>
+    {% endif %}
+
+    <div class="dates">
+        <div>
+            <label>Deadline</label>
+            <span>{{ deadline|date:"N j, Y" }}</span>
+        </div>
+        <div>
+            <label>Target publication</label>
+            <span>{{ target|date:"N j, Y" }}</span>
+        </div>
+    </div>
+
+    {% if article_file_folder or manuscript %}
+    <dl class="meta">
+        {% if article_file_folder %}
+        <dt>File folder</dt>
+        <dd><a href="{{ article_file_folder }}">{{ article_file_folder }}</a></dd>
+        {% endif %}
+        {% if manuscript %}
+        <dt>Manuscript</dt>
+        <dd><a href="{{ manuscript }}">{{ manuscript }}</a></dd>
+        {% endif %}
+    </dl>
+    {% endif %}
+
+    <div class="footer">
+        This notification was sent by The Ubyssey CMS because you were assigned to this story.
+    </div>
+</body>
+</html>

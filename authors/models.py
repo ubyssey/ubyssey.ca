@@ -87,6 +87,14 @@ class AuthorPage(RoutablePageMixin, Page):
         blank=False,
         null=False,
     )
+    user = models.OneToOneField(
+        'users.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='author_page',
+        help_text="Link to the CMS user account for this author. Required for receiving assignment notifications.",
+    )
     image = models.ForeignKey(
         "images.UbysseyImage",
         on_delete=models.SET_NULL,
@@ -169,6 +177,7 @@ class AuthorPage(RoutablePageMixin, Page):
     content_panels = [
         # title not present, title should NOT be directly editable
         TitleFieldPanel("full_name", targets=['slug']),
+        FieldPanel("user"),
         MultiFieldPanel(
             [
                 FieldPanel("image"),

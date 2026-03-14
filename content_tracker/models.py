@@ -2,15 +2,18 @@ from django.db import models
 from django.utils import timezone
 
 from wagtail.models import Orderable
-from wagtail.fields import StreamField
+from wagtail.fields import StreamField, RichTextField
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.snippets.models import register_snippet
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import (
     FieldPanel,
+    FieldRowPanel,
+    HelpPanel,
     MultiFieldPanel,
     InlinePanel,
+    ObjectList,
+    TabbedInterface,
 )
 
 from article.models import ArticlePage
@@ -54,7 +57,6 @@ Some problems/design tensions with content trackers:
     All Editors to see which stories are being targeted for which day
 '''
 
-@register_snippet
 class StoryAssignment(ClusterableModel):
     subject = models.CharField(max_length=50)
 
@@ -70,7 +72,7 @@ class StoryAssignment(ClusterableModel):
         ("profile", "Profile"),
         ("q_&_a", "Q&A"),
         ("humour", "Humour"),
-        ])    
+    ])
     assigning_section = models.CharField(max_length=50, choices=[
         ("news", "News"),
         ("culture", "Culture"),
@@ -79,17 +81,26 @@ class StoryAssignment(ClusterableModel):
         ("humour", "Humour"),
         ("research", "Research"),
         ("sports", "Sports"),
-        ("photo", "Photo")
-    ])    
-    
+        ("photo", "Photo"),
+    ])
+
     summary = models.TextField()
 
-    article_file_folder = models.URLField()
-    manuscript = models.URLField()
+    memo = RichTextField(
+        blank=True,
+        help_text="Rich-text assignment brief for the reporter. Replaces external assignment memo documents.",
+    )
 
-    created = models.DateTimeField(auto_now=True)
+    article_file_folder = models.URLField(blank=True)
+    manuscript = models.URLField(blank=True)
+
+    created = models.DateTimeField(auto_now_add=True)
     deadline = models.DateField()
     target = models.DateField()
+    calendar_date = models.DateField(
+        null=True, blank=True,
+        help_text="Pin this assignment to a specific date on the editorial calendar.",
+    )
 
     class StateChoices(models.IntegerChoices):
         ASSIGNED = 1, ("Assigned")
@@ -98,22 +109,79 @@ class StoryAssignment(ClusterableModel):
         PUBLISHED = 4, ("Published")
 
     state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.ASSIGNED.value)
-    
+
     article_page = models.OneToOneField(ArticlePage, related_name="assignment", on_delete=models.SET_NULL, null=True, blank=True)
-    
-    panels = [
+
+    is_print = models.BooleanField(default=False, verbose_name="Bound for print")
+    is_podcast = models.BooleanField(default=False, verbose_name="Bound for podcast")
+
+    promotion_ready = models.BooleanField(default=False, verbose_name="Ready for promotion")
+    promotion_type = models.CharField(
+        max_length=50,
+        blank=True,
+        choices=[
+            ("social", "Social media"),
+            ("newsletter", "Newsletter"),
+            ("podcast", "Podcast"),
+            ("print", "Print"),
+            ("social+newsletter", "Social + Newsletter"),
+        ],
+    )
+    promotion_notes = models.TextField(blank=True)
+
+    assignment_panels = [
         FieldPanel("subject"),
         FieldPanel("story_type"),
         FieldPanel("assigning_section"),
         FieldPanel("summary"),
+        FieldPanel("memo"),
+        InlinePanel("story_assignees", label="Assignees"),
+    ]
+
+    schedule_panels = [
+        FieldRowPanel([
+            FieldPanel("deadline"),
+            FieldPanel("target"),
+        ]),
+        FieldPanel("calendar_date"),
+        FieldPanel("state"),
+    ]
+
+    draft_panels = [
+        HelpPanel(content="<p>Link external documents and the CMS article page for this assignment.</p>"),
         FieldPanel("article_file_folder"),
         FieldPanel("manuscript"),
-        FieldPanel("deadline"),
-        FieldPanel("target"),
-        FieldPanel("state"),
-        InlinePanel("story_assignees", label="Assignees"),        
         FieldPanel("article_page"),
     ]
+
+    promotion_panels = [
+        MultiFieldPanel(
+            [
+                FieldRowPanel([
+                    FieldPanel("is_print"),
+                    FieldPanel("is_podcast"),
+                ]),
+            ],
+            heading="Derivative products",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("promotion_ready"),
+                FieldPanel("promotion_type"),
+                FieldPanel("promotion_notes"),
+            ],
+            heading="Engagement handoff",
+            classname="collapsible collapsed",
+        ),
+    ]
+
+    edit_handler = TabbedInterface([
+        ObjectList(assignment_panels, heading="Assignment"),
+        ObjectList(schedule_panels, heading="Schedule"),
+        ObjectList(draft_panels, heading="Draft"),
+        ObjectList(promotion_panels, heading="Promotion"),
+    ])
 
     def __str__(self):
         return self.subject
@@ -131,7 +199,6 @@ class StoryAssignmentAssigneesOrderable(Orderable):
         ),
     ]
 
-@register_snippet
 class VisualAssignment(ClusterableModel):
     story_assignment = models.ForeignKey(StoryAssignment, related_name="visual_requests", on_delete=models.CASCADE, null=True, blank=True)
     memo = models.URLField(verbose_name="Visual request form")

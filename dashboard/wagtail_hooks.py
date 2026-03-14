@@ -10,7 +10,9 @@ from authors.views import author_chooser_viewset
 from images.views import ubyssey_image_viewset
 from article.views import ArticleTopicViewSet
 from events.views import EventsDashboardViewSet
-from content_tracker.views import story_assignment_chooser_viewset
+from content_tracker.views import story_assignment_chooser_viewset, StoryAssignmentViewSet, VisualAssignmentViewSet
+from content_tracker.models import StoryAssignment
+from content_tracker.signals import send_assignment_notification
 
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
@@ -320,6 +322,60 @@ def register_image_chooser_viewset():
 register_snippet(ArticleTopicViewSet)
 
 register_snippet(EventsDashboardViewSet)
+
+register_snippet(StoryAssignmentViewSet)
+
+register_snippet(VisualAssignmentViewSet)
+
+
+@hooks.register('after_create_snippet')
+def notify_assignees_after_create(request, instance):
+    """
+    After a new StoryAssignment is created, email all assignees whose
+    AuthorPage is linked to a User account. Uses the Wagtail hook rather
+    than post_save because ClusterableModel uses bulk_create for child
+    orderables, which does not fire Django's post_save signal.
+    """
+    if not isinstance(instance, StoryAssignment):
+        return
+    for rel in instance.story_assignees.all():
+        send_assignment_notification(instance, rel.assignee)
+
+
+@hooks.register('after_edit_snippet')
+def notify_new_assignees_after_edit(request, instance):
+    """
+    After a StoryAssignment is edited, email any assignees who were just
+    added. We detect 'new' assignees by comparing the current assignee IDs
+    against those stored in the session before the save.
+    """
+    if not isinstance(instance, StoryAssignment):
+        return
+
+    session_key = f'assignment_{instance.pk}_assignee_ids'
+    previous_ids = set(request.session.get(session_key, []))
+    current_ids = set(instance.story_assignees.values_list('assignee_id', flat=True))
+    new_ids = current_ids - previous_ids
+
+    for rel in instance.story_assignees.filter(assignee_id__in=new_ids):
+        send_assignment_notification(instance, rel.assignee)
+
+    # Update session with current assignees for the next edit
+    request.session[session_key] = list(current_ids)
+
+
+@hooks.register('before_edit_snippet')
+def store_assignees_before_edit(request, instance):
+    """
+    Before a StoryAssignment edit form is served, store the current
+    assignee IDs in the session so after_edit_snippet can diff against them.
+    """
+    if not isinstance(instance, StoryAssignment):
+        return
+    session_key = f'assignment_{instance.pk}_assignee_ids'
+    request.session[session_key] = list(
+        instance.story_assignees.values_list('assignee_id', flat=True)
+    )
 
 
 @hooks.register('construct_page_chooser_queryset')
