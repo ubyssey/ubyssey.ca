@@ -1,11 +1,6 @@
-import logging
-
-from django.conf import settings
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
-logger = logging.getLogger(__name__)
+from wagtail.admin.mail import send_mail
 
 
 def send_assignment_notification(assignment, author):
@@ -40,17 +35,9 @@ def send_assignment_notification(assignment, author):
     )
     plain_message = strip_tags(html_message)
 
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@ubyssey.ca')
-
-    try:
-        send_mail(
-            subject=f"New assignment: {assignment.subject}",
-            message=plain_message,
-            from_email=from_email,
-            recipient_list=[user.email],
-            html_message=html_message,
-            fail_silently=False,
-        )
-        logger.info("Assignment notification sent to %s for '%s'.", user.email, assignment.subject)
-    except Exception:
-        logger.exception("Failed to send assignment notification to %s.", user.email)
+    send_mail(
+        subject=f"New assignment: {assignment.subject}",
+        message=plain_message,
+        recipient_list=[user.email],
+        html_message=html_message,
+    )

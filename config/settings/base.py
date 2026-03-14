@@ -285,6 +285,7 @@ TIME_ZONE = 'Canada/Pacific'
 # Ref: https://docs.wagtail.org/en/stable/reference/settings.html
 
 WAGTAIL_SITE_NAME = 'The Ubyssey'
+WAGTAILADMIN_NOTIFICATION_FROM_EMAIL = 'noreply@ubyssey.ca'
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
 
 WAGTAILADMIN_NOTIFICATION_INCLUDE_SUPERUSERS = False

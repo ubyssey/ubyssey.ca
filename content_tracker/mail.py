@@ -6,32 +6,14 @@ since Wagtail 5.2's EmailNotificationMixin is not available as a public API.
 Handlers are connected at the bottom of this module and registered when Django
 starts via ContentTrackerConfig.ready().
 """
-import logging
-
-from django.conf import settings
-from django.core.mail import send_mail
-
+from wagtail.admin.mail import send_mail
 from wagtail.signals import task_submitted, task_approved, task_rejected
-
-logger = logging.getLogger(__name__)
-
-_FROM = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@ubyssey.ca')
 
 
 def _send(subject, message, recipients):
     if not recipients:
         return
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=_FROM,
-            recipient_list=recipients,
-            fail_silently=False,
-        )
-        logger.info("Sent '%s' to %s", subject, recipients)
-    except Exception:
-        logger.exception("Failed to send '%s'", subject)
+    send_mail(subject=subject, message=message, recipient_list=recipients)
 
 
 def _emails_for_group(group):
