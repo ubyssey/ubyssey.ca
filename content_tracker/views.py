@@ -85,8 +85,6 @@ class StoryAssignmentSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField()
     deadline = serializers.DateField()
     target = serializers.DateField()
-    calendar_date = serializers.DateField()
-
     state = serializers.IntegerField()
 
     is_print = serializers.BooleanField()
@@ -101,7 +99,7 @@ class StoryAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = StoryAssignment
         fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder',
-                  'manuscript', 'created', 'deadline', 'target', 'calendar_date', 'state',
+                  'manuscript', 'created', 'deadline', 'target', 'state',
                   'is_print', 'is_podcast', 'promotion_ready', 'promotion_type',
                   'article_page', 'assignees')
 
@@ -119,7 +117,7 @@ class StoryAssignmentWithVisualRequestsSerializer(StoryAssignmentSerializer):
     class Meta:
         model = StoryAssignment
         fields = ('id', 'subject', 'story_type', 'assigning_section', 'summary', 'article_file_folder',
-                  'manuscript', 'created', 'deadline', 'target', 'calendar_date', 'state',
+                  'manuscript', 'created', 'deadline', 'target', 'state',
                   'is_print', 'is_podcast', 'promotion_ready', 'promotion_type',
                   'article_page', 'assignees', 'visual_requests')
 

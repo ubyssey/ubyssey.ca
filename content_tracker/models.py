@@ -97,11 +97,6 @@ class StoryAssignment(ClusterableModel):
     created = models.DateTimeField(auto_now_add=True)
     deadline = models.DateField()
     target = models.DateField()
-    calendar_date = models.DateField(
-        null=True, blank=True,
-        help_text="Pin this assignment to a specific date on the editorial calendar.",
-    )
-
     class StateChoices(models.IntegerChoices):
         ASSIGNED = 1, ("Assigned")
         EDITING = 2, ("Editing")
@@ -143,7 +138,6 @@ class StoryAssignment(ClusterableModel):
             FieldPanel("deadline"),
             FieldPanel("target"),
         ]),
-        FieldPanel("calendar_date"),
         FieldPanel("state"),
     ]
 
