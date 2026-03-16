@@ -1,13 +1,15 @@
 {% load wagtailcore_tags%}
-<div class="o-curated-stream-grid--container">
+<div class="o-curated-stream-grid--container {{self.layout}}">
+    <div class="o-curated-stream-grid--headline-container">
     {% for headline in self.headline %}
         {% include_block headline%}
     {% endfor %}
+    </div>
     <div class="o-curated-stream-grid o-curated-stream-grid-rows--{{self.rows}}">
         {% for cell in self.cells %}
             <div class="o-curated-stream-grid--cell">
                 {% for item in cell.items %}
-                    {% include_block item with cell_id=cell.id item_id=item.id %}
+                    {% include_block item with cell_id=cell.id item_id=item.id article=cell.article %}
                 {% endfor %}
             </div>
         {% endfor %}

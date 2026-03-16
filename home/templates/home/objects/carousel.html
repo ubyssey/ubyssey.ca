@@ -18,7 +18,7 @@
 
         <div class="carousel-inner">
             {% for item in self.items %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="carousel-item o-curated_group--shared-attachment--content {% if forloop.first %}active{% endif %}">
                 {% for element in item %}
                 {% include_block element %}
                 {% endfor %}

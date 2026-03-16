@@ -15,6 +15,7 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
+from ubyssey.views.tip import TipForm
 from ubyssey.views.tag import TagPage, redirect_tag_feed_to_topic, redirect_tag_to_topic
 from events.views import update_events_http, create_ical, EventsFeed, EventsViewSet
 from events.urls import urlpatterns as events_urls
@@ -33,6 +34,7 @@ from rest_framework import routers
 
 handler500 = 'ubyssey.views.main.custom_500'
 
+tip = TipForm()
 advertise = AdvertiseTheme()
 tag = TagPage()
 
@@ -117,6 +119,9 @@ urlpatterns += [
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
+
+    # Tip form
+    re_path(r'^email/tip/$', tip.email_tip, name='email-tip'),
 
     # Cron job
     re_path(r'^cron/update-events/$', update_events_http, name='update_events'),

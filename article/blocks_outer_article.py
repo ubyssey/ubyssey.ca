@@ -143,6 +143,9 @@ class ArticleGathererBlock(AbstractArticleList):
             else:
                 context['articles'] = []
 
+        if 'exclude' in context:
+            context['articles'] = context['articles'].exclude(id__in=context['exclude'])
+
         if not 'gather_title' in context:
             context['gather_title'] = "Latest stories"
 
@@ -355,10 +358,14 @@ class ArticleGathererWithPinnedBlock(ArticleGathererBlock):
         required=False,
     )
     def get_context(self, value, parent_context=None):
+        if parent_context == None:
+            parent_context = {}
+        pinned = [article for article in value['pinned']]
+        parent_context['exclude'] = [p.id for p in pinned]
         context = super().get_context(value, parent_context=parent_context)
         if value['pinned_title']:
             context['pinned_title'] = value['pinned_title']
-        context["pinned"] = [article for article in value['pinned']]
+        context['pinned'] = pinned
         return context
     
 class SpecialLandingPageBlock(AbstractArticleList):

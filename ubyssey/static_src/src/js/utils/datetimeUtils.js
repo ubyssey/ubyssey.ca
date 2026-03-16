@@ -14,12 +14,12 @@ export function timezoneNameInitials(datetime) {
     return datetime.toLocaleDateString(undefined, {day:'2-digit',timeZoneName: 'long' }).substring(4).match(/\b(\w)/g).join('')
 }
 export function fullDateTimeString(datetime) {
-    return shortMonthsNames[datetime.getMonth()] + ". " + String(datetime.getDate()) + ", " + String(datetime.getFullYear()) + ", " + datetime.toLocaleTimeString("en-US") + " " + timezoneNameInitials(datetime);
+    return shortMonthsNames[datetime.getMonth()] + ". " + String(datetime.getDate()) + ", " + String(datetime.getFullYear()) + ", " + datetime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) + " " + timezoneNameInitials(datetime);
 }
 
 export function timeDeltaString(datetimeA, datetimeB, max = null) {
     const delta = datetimeA.getTime() - datetimeB.getTime();
-    
+
     if (max != null) {
         if (delta > max) {
             return fullDateTimeString(datetimeB);

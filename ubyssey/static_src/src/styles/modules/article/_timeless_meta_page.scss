@@ -2,12 +2,13 @@
 @use '../variables';
 
 .timeless-meta-page .branding-nav {
-  --header_color: black;
+  --header_color-100: black;
 }
 
 .c-article--timeless-meta-page {
     .article-content {
         margin-inline: auto;
+        margin-bottom: 5em;
         padding-inline: 1.5em;
 
         display: block;
@@ -43,11 +44,12 @@
 
         p {
           margin-block: 1.4rem;
+          font-size: 1.1em;
         }
 
         .caption {
           border: none;
-          color: var(--header_color);
+          color: var(--header_color-100);
           font-style: normal;
           a {
             text-decoration: underline;
@@ -106,8 +108,8 @@
     
     text-align: center;
     text-transform: uppercase;
-    --header_color: black;
-    color: var(--header_color);
+    --header_color-100: black;
+    color: var(--header_color-100);
     font-family: fonts.$font-default;
 
     z-index: 10;
@@ -128,6 +130,48 @@
       }
       h1 {
         font-size: 3em;
+      }
+    }
+  }
+}
+
+.c-communications-header {
+  background: var(--light-border-grey);
+  border-bottom: 1px solid var(--light-grey);
+
+  .c-communications-header--container {
+    padding-top: 6em;
+    margin-inline: auto;
+    max-width: 1225px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--light-grey);
+    .c-communications-header--headline-container {
+      padding: 0 1.5em;
+      max-width: 1050px;
+
+      h1.o-headline--article {
+        font-size: 3.5em;
+        font-variation-settings: "wght" 600;
+        font-weight: 600;
+        @media(variables.$bp-smaller-than-phablet) {
+          font-size: 2em;
+        }
+      }
+      .c-article__info {
+        display: block;
+        padding: 0;
+      }
+      .c-article__published-at {
+        margin: 1em 0 2.25em 0;
+        color: var(--text_color-300);
+      }
+      .o-article--header--above_cut_lede p {
+        color: var(--text_color-200);
+        font-size: 1.25em;
+        line-height: 1.5em;
+        @media(variables.$bp-smaller-than-phablet) {
+          font-size: 1em;
+        }
       }
     }
   }

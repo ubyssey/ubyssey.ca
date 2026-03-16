@@ -595,7 +595,7 @@ div.caption {
 
   line-height: 1.25em;
 
-  color: var(--text_color_supporting);
+  color: var(--text_color-300);
   font-family: fonts.$font-body;
 
   a {
@@ -608,7 +608,7 @@ span.credit {
   margin-left: 0.5em;
   font-style: italic;
   font-size: 0.9em;
-  color: var(--text_color_supporting-lighter);
+  color: var(--text_color-400);
 }
 
 .playAudioQuote {
@@ -783,7 +783,7 @@ div.article-content blockquote.pull-quote {
   &.contrast {
     padding: 1em;
     background: var(--color-ubyssey_blue-light);
-    --text_color: black;
+    --text_color-100: black;
     color: black;
     
     @media(variables.$bp-larger-than-phablet) {
@@ -813,7 +813,7 @@ div.article-content blockquote.pull-quote {
     transition: border-color 0.5s ease;
     
     text-align: left;
-    color: var(--text_color_supporting);
+    color: var(--text_color-300);
     @media(variables.$bp-larger-than-phablet) {
       &.right {
         margin-left: 1.5em;

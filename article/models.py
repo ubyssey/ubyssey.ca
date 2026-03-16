@@ -1114,7 +1114,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         Defines the title and articles in the suggested box
         """
         suggested = {}
-        MIN_ARTICLES = 2
+        MIN_ARTICLES = 3
         if len(self.connected_articles.all()) > 0:
             suggested = {}
             suggested['title'] = "Related stories"
@@ -1142,11 +1142,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if not suggested:
             section_articles = self.get_section_articles(max=number_suggested)
-            if len(section_articles) >= MIN_ARTICLES:
-                suggested = {}
-                suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a>"
-                suggested['articles'] = section_articles[:number_suggested]
-                suggested['type'] = 'section'
+            #if len(section_articles) >= MIN_ARTICLES:
+            suggested = {}
+            suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a>"
+            suggested['articles'] = section_articles[:number_suggested]
+            suggested['type'] = 'section'
         
         if not suggested:
             suggested = False

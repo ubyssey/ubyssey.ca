@@ -5,13 +5,13 @@
     {% endfor %}
 
     <div class="o-curated_group--shared-attachment-flex">
-        <div class="o-curated_group--shared-attachment-flex-left">
+        <div class="o-curated_group--shared-attachment-flex-left o-curated_group--shared-attachment--content">
             {% for left in self.left %}
                 {% include_block left %}
             {% endfor %}
         </div>
 
-        <div class="o-curated_group--shared-attachment-flex-right">
+        <div class="o-curated_group--shared-attachment-flex-right o-curated_group--shared-attachment--content">
             {%include_block self.right %}
         </div>
     </div>
