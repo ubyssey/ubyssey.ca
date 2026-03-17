@@ -16,7 +16,6 @@ class UbysseyImageChooseView(
     pass
 
 class UbysseyImageViewSet(ImageChooserViewSet):
-    per_page = 50
     choose_view_class = UbysseyImageChooseView
 
 ubyssey_image_viewset = UbysseyImageViewSet(

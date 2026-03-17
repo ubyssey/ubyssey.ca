@@ -134,9 +134,6 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
-    'health_check',                    
-    'health_check.db',                 
-    'health_check.cache',              
 ]
 
 if DEBUG:
@@ -279,13 +276,14 @@ GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readth
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 USE_TZ = True
-TIME_ZONE = 'Canada/Pacific'
+TIME_ZONE = 'America/Vancouver'
 
 # Wagtail settings
 # Ref: https://docs.wagtail.org/en/stable/reference/settings.html
 
 WAGTAIL_SITE_NAME = 'The Ubyssey'
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
+WAGTAILIMAGES_CHOOSER_PAGE_SIZE = 100
 
 WAGTAILADMIN_NOTIFICATION_INCLUDE_SUPERUSERS = False
 
