@@ -82,7 +82,7 @@ def cluster_articles_by_topic(considered_articles, items=12, clusters=None, max_
         # eg. if first topic is "ams elections 2026", next topic shouldn't be a superset like "ams elections" or "ams"
         unique = True
         for c in cluster:
-            if len(list(filter(lambda a: a not in articles_by_topic[c['topic']], cluster_articles))) == 0:
+            if len(list(filter(lambda a: a not in articles_by_topic[c['topic'].name], cluster_articles))) == 0:
                 unique = False
                 break
 

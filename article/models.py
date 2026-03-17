@@ -1180,6 +1180,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 "type": "category",
             })
         
+        QUERY_LENGTH_CUTOFF = 15
         time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
 
         if self.current_section in ['opinion', 'humour', 'features'] and self.primary_tag_slug:
@@ -1187,7 +1188,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if primary_topic != None:
                 topic_articles.append({
                     "topic": f'News: <a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
-                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:QUERY_LENGTH_CUTOFF],
                     "type": "other section",
                 })
 
@@ -1198,7 +1199,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     topic_articles.append(
                         {
                             "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
-                            "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                            "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:QUERY_LENGTH_CUTOFF],
                             "type": "topic",
                         }
                 )
@@ -1212,7 +1213,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         topic_articles = topic_articles + list(sorted([
             {
                 "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
-                "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:QUERY_LENGTH_CUTOFF],
                 "type": "topic",
             } for topic in listed_topics
         ], key= lambda topic: topic["considered_articles"][0].first_published_at.timestamp() if len(topic["considered_articles"]) > 0 else 0, reverse=True))
