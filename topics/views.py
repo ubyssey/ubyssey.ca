@@ -75,11 +75,19 @@ def cluster_articles_by_topic(considered_articles, items=12, clusters=None, max_
         cluster_articles = []
         for article in articles_in_topic:
             cluster_articles.append(article)
-            seen_articles.append(article)
-            if len(seen_articles) >= items or len(cluster_articles) >= max_in_cluster:
+            if len(seen_articles) + len(cluster_articles) >= items or len(cluster_articles) >= max_in_cluster:
                 break
 
-        if len(cluster_articles) > 0:
+        # Ensure all articles in cluster_articles don't all shared a topic with a previously selected tag
+        # eg. if first topic is "ams elections 2026", next topic shouldn't be a superset like "ams elections" or "ams"
+        unique = True
+        for c in cluster:
+            if len(list(filter(lambda a: a not in articles_by_topic[c['topic']], cluster_articles))) == 0:
+                unique = False
+                break
+
+        if len(cluster_articles) > 0 and unique:
+            seen_articles = seen_articles + cluster_articles
             cluster.append({"topic": topic, "articles": cluster_articles})
         if len(seen_articles) >= items:
             break
