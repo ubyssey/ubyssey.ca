@@ -63,6 +63,7 @@ from wagtailmenus.models import FlatMenu
 from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
 
+from asgiref.sync import async_to_sync, sync_to_async
 
 UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17) 
 
@@ -431,15 +432,38 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
 
     tagged_articles_count = models.IntegerField(default=0, editable=False)
 
+    relevance_score = models.IntegerField(default=0, editable=False)
+
     panels = [
         FieldPanel("name"),
         FieldPanel("slug", widget=SlugInput()),
         FieldPanel("description"),
         FieldPanel("listed")
     ]
-    
+
     def get_count_of_tagged_articles(self):
         return TaggedArticlePage.objects.filter(tag=self).count()
+
+    def calc_relevence_score(self, count, recency):
+        import math
+        time_score = (recency.replace(tzinfo=None) - timezone.datetime(year=1970, month=1, day=1)).days
+        return pow(time_score, 2) * math.sqrt(count)
+
+    async def update_topic(self, date=None):
+        if date:
+            if self.last_used_at == None:
+                self.last_used_at = date
+            elif self.last_used_at <= date:
+                self.last_used_at = date
+        else:
+            self.last_used_at = await sync_to_async(self.last_tagged_at)()
+
+        count = await sync_to_async(self.get_count_of_tagged_articles)()
+
+        self.tagged_articles_count = count
+        self.relevance_score = self.calc_relevence_score(count, self.last_used_at)
+        print(self.relevance_score)
+        await self.asave()
 
     def recent_sections(self):
         return ", ".join(set([tagged.content_object.current_section for tagged in TaggedArticlePage.objects.filter(tag=self).order_by("-id")[:5]]))
@@ -451,7 +475,6 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
 
     def last_tagged_at(self):
         tagged = TaggedArticlePage.objects.filter(tag=self).aggregate(Max("content_object__first_published_at"))
-        print(tagged)
         if tagged == None:
             return 0
         return tagged["content_object__first_published_at__max"]

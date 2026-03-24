@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'tests_ubyssey',
     'publishing_analytics',
     'content_tracker',
+    'topics',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
