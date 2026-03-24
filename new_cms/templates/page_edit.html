@@ -1,0 +1,40 @@
+<a href="{% url 'new_cms:index' %}">All Pages</a>
+<h1>{{ page.title }}</h1>
+
+<form method="post">
+{% csrf_token %}
+
+<label for="id_title">Title</label>
+<input type="text" id="id_title" name="title" value="{{ page.title }}" required>
+
+<label for="id_slug">Slug</label>
+<input type="text" id="id_slug" name="slug" value="{{ page.slug }}" required>
+
+<label for="id_lede">Lede</label>
+<input type="text" id="id_lede" name="lede" value="{{ page.lede }}">
+
+{% for field_name, json_str in stream_data.items %}
+<h3>Streamfield: {{field_name}}</h3>
+<textarea id="stream_{{field_name}}" name="stream_{{field_name}}" rows="15" cols="50">{{json_str}}</textarea>
+{% endfor %}
+
+<br>
+<br>
+<br>
+
+<button type="submit" name="action" value="publish">Save &amp; Publish</button>
+<button type="submit" name="action" value="draft">Save as Draft</button>
+
+{% if page.live %}
+<p>Status: Live</p>
+{% else %}
+<p>Status: Draft</p>
+{% endif %}
+
+{% if page.last_published_at %}
+<p>Last Published: {{ page.last_published_at|date:"M j, Y H:i"}}</p>
+{% endif %}
+
+<a href="{{ page.url }}">View Live</a>
+</form>
+
