@@ -93,6 +93,9 @@ INSTALLED_APPS = [
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
 
+    'new_cms',
+    'wagtail.api.v2',
+
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
     'wagtail.contrib.settings',

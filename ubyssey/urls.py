@@ -11,6 +11,8 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
+from new_cms.api import api_router as cms_api_router
+
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled_http
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
@@ -84,6 +86,8 @@ urlpatterns += [
 
     re_path(r'^djadmin/', admin.site.urls),
 
+    path('cms-api/v2/', cms_api_router.urls),
+
     # re_path(r'^admin', include(admin_urls)),
     # re_path(r'^api/', include(api_urls)),
     # re_path(r'^podcasts/', include(podcasts_urls)),
@@ -97,6 +101,8 @@ urlpatterns += [
 
     path('admin/story_assignment_api/', story_assignment_api_list),
     path('admin/visual_assignment_api/', visual_assignment_api_list),
+
+    path('new-admin/', include('new_cms.urls')),
 
     # Events
     re_path(r'^events/', include(events_urls)),
