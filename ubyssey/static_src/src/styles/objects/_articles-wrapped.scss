@@ -9,7 +9,7 @@
 
     article.o-article {
         min-width: 200px; 
-        border-bottom: 1px solid var(--light-border);
+        border-bottom: 1px solid var(--light-border-grey);
         flex: 1 1 calc(25% - 24px); /* 4 articles per row */
         box-sizing: border-box;
     }

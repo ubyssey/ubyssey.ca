@@ -50,6 +50,7 @@
         <div class="c-section__description banner-description">
           {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|richtext}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
         </div>
+        {% include "section/objects/category_bar.html" %}
       {%else%}
         <div class="c-section__heading">
           {% if parent %}<p><a href="{% pageurl parent %}">{{parent.title}}</a></p>{% endif %}
@@ -57,6 +58,8 @@
           <div class="c-section__description">
             {{self.description|richtext}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
           </div>
+          {% include "section/objects/category_bar.html" %}
+
         </div>
       {% endif %}
 
@@ -64,41 +67,7 @@
         {% include_block block %}
       {% endfor %}
 
-      <div class="c-section__info">
-        <h2 class="c-section__info-header">{{self.title}}</h1>
-        {% if self.category_menu.count %}
-        <div class="featured_categories">
-          <ul>
-            {% for category_menu_item in self.category_menu.all %}
-              {% if category_menu_item.category_page %}
-                <li><a href="{% pageurl category_menu_item.category_page %}" title="{{ category_menu_item.category_page.title }}">{{ category_menu_item.category_page.title }}</a></li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-        {% endif %}
-        
-        <div class="c-section__buttons">
-          <div class="o-archive__search c-section__button-label">
-            <form method="get">
-              <label class="o-archive__search__label" for="c-articles-list__searchbar"><ion-icon name="search"></ion-icon></label>
-              <input class="o-archive__search__input" name="q" id="c-articles-list__searchbar" type="text"
-                {% if search_query %}value="{{ search_query }}" {% endif %} placeholder="Search" />
-            </form>
-          </div>
-      
-          <div class="setup-modal c-section__button-label">
-            <a class="open-modal" href="#"> 
-              <p><ion-icon name="pricetag"></ion-icon> {% if parent %}Other {% endif %}Categories</p>
-            </a>
-
-            {% include "section/objects/category_modal.html" with section=section_slug %}
-
-          </div>
-        </div>
-      </div>
-
-      <div class="o-feed-item">
+      <div class="o-feed-item c-section__all-articles-list">
         <div class="lightmode section_infinitefeed">
 
         {% if error %}

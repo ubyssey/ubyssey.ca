@@ -58,6 +58,8 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
+        ('section/objects/single_large-image-left.html', 'Single (large image left)'),
+        ('section/objects/single_large-image-left_timeline.html', 'Single (large image left with timeline)'),
     ]
 
 class AbstractArticleList(TemplateSelectStructBlock):

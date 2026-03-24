@@ -1,0 +1,14 @@
+{% load humanize %}
+{% load cache %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+{% if self.article %}
+<div class="landing_stream_block article-timeline u-container u-container--large">
+    {%include 'article/objects/article_left-image.html' with article=self.article style="headline-top-articles o-article--default large-left" pubdate="true" lede="true" byline="true" %}
+    {%include 'section/objects/timeline_primary-tag.html' %}
+</div>
+{% endif %}

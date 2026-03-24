@@ -3,7 +3,7 @@
 
 // Shared classes among landing stream blocks
 .landing_stream_block {
-    margin: 3em auto 5em auto;
+    margin: 3em auto;
   
     .landing_stream_block--header {
       margin-block: 1em;
@@ -207,6 +207,7 @@
               font-size: 1em;
               font-weight: 400;
               font-variation-settings: "wght" 400;
+              color: var(--header_color-200);
           }
         }
 
