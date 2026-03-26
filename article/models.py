@@ -447,10 +447,18 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
 
     def calc_relevence_score(self, count, recency):
         import math
+
+        # At some point the relevance score will get too large and will always max out just due to recency.
+        # TO DO: We should run update_all_topics on a cron job every year. Then we can set the epoch to a constant distance from the present year.
+        EPOCH = 2010
+        MAX_VALUE = 2147483647 # necessary because constraint in integer field
+
         if recency is None:
-            return math.sqrt(count)
-        time_score = (recency.replace(tzinfo=None) - timezone.datetime(year=2000, month=1, day=1)).days
-        return pow(time_score, 1.1) * math.sqrt(count)
+            return count
+        if count < 1:
+            return 0
+        time_score = (recency.replace(tzinfo=None) - timezone.datetime(year=EPOCH, month=1, day=1)).days 
+        return min(pow(time_score, 1.25) * math.log(count), MAX_VALUE)
 
     async def update_topic(self, date=None):
         if date:
