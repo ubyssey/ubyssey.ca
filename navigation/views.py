@@ -55,7 +55,7 @@ def nav_search(request):
             site =  Site.find_for_request(request)
 
             # Topics
-            topics = ArticleTopic.objects.filter(name__icontains = query).order_by("-tagged_articles_count")[:3]
+            topics = ArticleTopic.objects.filter(name__icontains = query).order_by("-relevance_score")[:3]
             topics_serialized = TopicNavSearchSerializer(topics, many=True)
 
             # Articles
