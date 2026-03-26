@@ -447,6 +447,8 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
 
     def calc_relevence_score(self, count, recency):
         import math
+        if recency is None:
+            return math.sqrt(count)
         time_score = (recency.replace(tzinfo=None) - timezone.datetime(year=1970, month=1, day=1)).days
         return pow(time_score, 2) * math.sqrt(count)
 
