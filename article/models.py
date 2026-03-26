@@ -449,8 +449,8 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
         import math
         if recency is None:
             return math.sqrt(count)
-        time_score = (recency.replace(tzinfo=None) - timezone.datetime(year=1970, month=1, day=1)).days
-        return pow(time_score, 2) * math.sqrt(count)
+        time_score = (recency.replace(tzinfo=None) - timezone.datetime(year=2000, month=1, day=1)).days
+        return pow(time_score, 1.1) * math.sqrt(count)
 
     async def update_topic(self, date=None):
         if date:
