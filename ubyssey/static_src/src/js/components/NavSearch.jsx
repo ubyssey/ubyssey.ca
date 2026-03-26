@@ -65,7 +65,9 @@ export default function NavSearch() {
 
     return (
     <>
-        <input id="nav-search-input" type="text" onChange={e => search(e.target.value)} placeholder="Search"></input>
+        <form action="/archive/" method="get" autocomplete="off">
+            <input id="nav-search-input" name="q" type="text" onChange={e => search(e.target.value)} placeholder="Search"></input>
+        </form>
         <div class="c-nav-search--results">
         {!pending ?
         (<>

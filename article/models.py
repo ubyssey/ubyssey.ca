@@ -53,6 +53,7 @@ from wagtail.models import Page, PageManager, Orderable, RevisionMixin, Previewa
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.search import index
+from wagtail.search.query import Phrase, PlainText
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
@@ -553,6 +554,27 @@ class ArticlePageManager(PageManager):
             except SectionPage.DoesNotExist:
                 articles = SectionPage.objects.none()
             
+        return articles
+
+    def custom_search(self, objects, query, order=True, site=None, max_articles=None):
+
+        if len(query) == 1:
+            articles = objects.filter(title__istartswith=query)
+        elif len(query) < 4:
+            articles = objects.filter(Q(title__istartswith=query) | Q(title__icontains=" " + query))
+        else:
+            articles = objects.filter(Q(title__icontains=query) | Q(seo_keyword__icontains=query))
+        
+        if order:
+            articles = articles.order_by("-explicit_published_at")
+        
+        if max_articles is not None and articles.count() < max_articles:
+            alt_articles = objects.search(Phrase(query) | PlainText(query))
+            if articles.count() < alt_articles.count():
+                articles = alt_articles
+
+        if max_articles is not None:
+            return articles[:max_articles]
         return articles
 
 #-----Page models-----

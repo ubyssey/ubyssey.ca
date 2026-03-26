@@ -60,19 +60,7 @@ def nav_search(request):
 
             # Articles
             articles = ArticlePage.objects.live().public().descendant_of(site.root_page)
-            if len(query) == 1:
-                articles = articles.filter(title__istartswith=query)
-            elif len(query) < 4:
-                articles = articles.filter(Q(title__istartswith=query) | Q(title__icontains=" " + query))
-            else:
-                articles = articles.filter(Q(title__icontains=query) | Q(seo_keyword__icontains=query))
-            articles = articles.order_by("-explicit_published_at")
-            if articles.count() < MAX_ARTICLES:
-                alt_articles = ArticlePage.objects.live().public().descendant_of(site.root_page).search(Phrase(query) | PlainText(query))
-                if articles.count() < alt_articles.count():
-                    articles = alt_articles
-
-            articles = articles[:MAX_ARTICLES]
+            articles = ArticlePage.objects.custom_search(articles, query, site=site, max_articles=MAX_ARTICLES)
             articles_serialized = ArticleNavSearchSerializer(articles, many=True)
             
             # Authors
