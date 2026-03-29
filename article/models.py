@@ -1709,7 +1709,7 @@ class StandardArticlePage(ArticlePage):
                             ('science-2024', 'Science Supplement (2024)'),
                             ('femme-2024', 'Femme Culture Special Issue (2024)'),
                             ('nocturne-2024', 'Nocturne Features Supplement (2024)'),
-                            ('passing-2025', 'Passing Special Article (2025)')
+                            ('passing-2025', 'Passing Special Article (2025)'),
                             ('spoof-2026', 'Spoof (2026 style)'),
                         ],
                     ),

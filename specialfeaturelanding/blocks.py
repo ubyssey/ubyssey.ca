@@ -403,17 +403,63 @@ class StreamTitle(TemplateSelectStructBlock):
     )
     template = blocks.ChoiceBlock(
         choices=[('spoof_2024_title.html', 'spoof_2024_title.html')])
+class VogueCardBlock(TemplateSelectStructBlock):
+    """Card block for Vogue 2026 spoof: supports 3 visual types via template selection."""
+
+    class_name = blocks.CharBlock(
+        required=True,
+        default='vogue-col-left',
+        help_text='CSS class for grid placement: vogue-col-left, vogue-col-center, vogue-col-right',
+    )
+    section_label = blocks.CharBlock(
+        required=False,
+        help_text='Category label e.g. WEDDINGS, PARTIES, WELLNESS',
+    )
+    card_title = blocks.CharBlock(
+        required=True,
+        help_text='Article headline',
+    )
+    card_author = blocks.CharBlock(
+        required=False,
+        help_text='Author credit e.g. BY SHELBY WAX',
+    )
+    card_photo_credit = blocks.CharBlock(
+        required=False,
+        help_text='Photography credit e.g. PHOTOGRAPHY BY CAROLINE XIA',
+    )
+    card_image = ImageChooserBlock(
+        required=True,
+    )
+    card_page = blocks.PageChooserBlock(
+        required=True,
+    )
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('vogue_card_image.html', 'Image Card (left column)'),
+            ('vogue_card_hero.html', 'Hero Card (center)'),
+            ('vogue_card_sidebar.html', 'Sidebar Card (right column)'),
+            ('vogue_row_card.html', 'Row Card (article row)'),
+        ],
+        required=True,
+    )
+
 class CardStream(blocks.StreamBlock):
     card_spoof = CardBlock2024()
+    vogue_card = VogueCardBlock()
 class CardStreamBlock(TemplateSelectStructBlock):
-    class_selector = blocks.CharBlock()    
+    class_selector = blocks.CharBlock()
     stream = CardStream()
     template = blocks.ChoiceBlock(
         choices=[
-            ('', 'Wagtail default'),('card_stream_block.html', 'card stream block')
+            ('', 'Wagtail default'),
+            ('card_stream_block.html', 'card stream block'),
+            ('vogue_card_stream.html', 'Vogue Card Stream'),
+            ('vogue_row.html', 'Vogue Article Row'),
         ],
         required=False,
     )
+
+
 class FlexStream(blocks.StreamBlock):
     raw_html = blocks.RawHTMLBlock()
     rich_text = blocks.RichTextBlock()
