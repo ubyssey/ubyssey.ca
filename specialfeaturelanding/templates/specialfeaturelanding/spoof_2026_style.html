@@ -27,10 +27,10 @@
 	{% comment %} {% flat_menu 'guide2021' template="navigation/headers/guide/2021/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True %} {% endcomment %}
 	{% if page.menu %}
 		<!-- Manually selected menu: {{ page.menu.handle }} -->
-		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns_spoof.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns_spoof_2026.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
 	{% elif create_menu_from_parent %}
 		<!-- Menu created from parent page -->	 
-		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns_spoof.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns_spoof_2026.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
 	{% endif %}
 {% endblock %}
 
@@ -91,18 +91,6 @@
           <li><a href="/sports/">Sports</a></li>
           <li><a href="/newsletter/">Newsletter</a></li>
           <li><a href="/about/">About</a></li>
-        </ul>
-      </div>
-      <div class="spoof-footer__col">
-        <h3 class="spoof-footer__col-title">See More Stories</h3>
-        <ul>
-          <li><a href="/humour/">Satire</a></li>
-          <li><a href="/culture/">Arts &amp; Culture</a></li>
-          <li><a href="/science/">Science</a></li>
-          <li><a href="/sports/">Sports</a></li>
-          <li><a href="/news/">Campus</a></li>
-          <li><a href="/photos/">Photos</a></li>
-          <li><a href="/video/">Video</a></li>
         </ul>
       </div>
     </div>
