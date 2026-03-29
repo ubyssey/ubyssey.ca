@@ -96,8 +96,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var prevBtn = row.querySelector('.vogue-row__prev');
     var nextBtn = row.querySelector('.vogue-row__next');
     var nav = row.querySelector('.vogue-row__nav');
+    var dotsContainer = row.querySelector('.vogue-row__dots');
 
-    var perPage = window.innerWidth <= 576 ? 2 : 4;
+    // Desktop pagination (on mobile, CSS display:block !important overrides hiding)
+    var perPage = 4;
     var page = 0;
     var pages = Math.ceil(cards.length / perPage);
 
@@ -115,6 +117,30 @@ document.addEventListener('DOMContentLoaded', function () {
     prevBtn.addEventListener('click', function () { if (page > 0) { page--; render(); } });
     nextBtn.addEventListener('click', function () { if (page < pages - 1) { page++; render(); } });
     render();
+
+    // Mobile: dots synced to scroll
+    if (dotsContainer) {
+      cards.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.style.cssText = 'width:8px;height:8px;border-radius:50%;border:none;padding:0;cursor:pointer;background:' + (i === 0 ? '#000' : '#ccc') + ';';
+        dot.setAttribute('aria-label', 'Go to card ' + (i + 1));
+        dot.addEventListener('click', function () {
+          track.scrollTo({ left: cards[i].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+        });
+        dotsContainer.appendChild(dot);
+      });
+
+      track.addEventListener('scroll', function () {
+        var center = track.scrollLeft + track.clientWidth / 2;
+        var active = 0;
+        cards.forEach(function (c, i) {
+          if (c.offsetLeft - track.offsetLeft <= center) { active = i; }
+        });
+        dotsContainer.querySelectorAll('button').forEach(function (d, i) {
+          d.style.background = i === active ? '#000' : '#ccc';
+        });
+      }, { passive: true });
+    }
   });
 });
 </script>

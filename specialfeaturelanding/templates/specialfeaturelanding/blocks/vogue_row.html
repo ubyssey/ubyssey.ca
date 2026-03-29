@@ -1,5 +1,31 @@
 {% load wagtailcore_tags %}
 
+<style>
+.vogue-row__track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .vogue-row__track {
+    display: flex !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.75rem;
+    scrollbar-width: none;
+  }
+  .vogue-row__track::-webkit-scrollbar { display: none; }
+  .vogue-row-card {
+    flex: 0 0 88%;
+    scroll-snap-align: start;
+    display: block !important;
+  }
+  .vogue-row__nav { display: none !important; }
+  .vogue-row__dots { display: flex !important; }
+}
+</style>
+
 <section class="vogue-row" data-vogue-row>
   <div class="vogue-row__header" style="margin-bottom:1.25rem; display:block;">
     <div style="height:1px; background:#000;"></div>
@@ -14,9 +40,12 @@
     </div>
     <div style="height:1px; background:#000;"></div>
   </div>
-  <div class="vogue-row__track" style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem;">
+
+  <div class="vogue-row__track">
     {% for card in self.stream %}
       {% include_block card %}
     {% endfor %}
   </div>
+
+  <div class="vogue-row__dots" style="display:none; justify-content:center; gap:0.4rem; margin-top:1rem;"></div>
 </section>
