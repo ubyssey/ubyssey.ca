@@ -403,17 +403,6 @@ class StreamTitle(TemplateSelectStructBlock):
     )
     template = blocks.ChoiceBlock(
         choices=[('spoof_2024_title.html', 'spoof_2024_title.html')])
-class CardStream(blocks.StreamBlock):
-    card_spoof = CardBlock2024()
-class CardStreamBlock(TemplateSelectStructBlock):
-    class_selector = blocks.CharBlock()    
-    stream = CardStream()
-    template = blocks.ChoiceBlock(
-        choices=[
-            ('', 'Wagtail default'),('card_stream_block.html', 'card stream block')
-        ],
-        required=False,
-    )
 class VogueCardBlock(TemplateSelectStructBlock):
     """Card block for Vogue 2026 spoof: supports 3 visual types via template selection."""
 
@@ -453,22 +442,16 @@ class VogueCardBlock(TemplateSelectStructBlock):
         required=True,
     )
 
-
-class VogueCardStream(blocks.StreamBlock):
+class CardStream(blocks.StreamBlock):
+    card_spoof = CardBlock2024()
     vogue_card = VogueCardBlock()
-
-
-class VogueCardStreamBlock(TemplateSelectStructBlock):
-    """Container block for the Vogue 3-column grid layout."""
-    class_selector = blocks.CharBlock(
-        required=True,
-        default='vogue-grid',
-        help_text='CSS class for the grid container',
-    )
-    stream = VogueCardStream()
+class CardStreamBlock(TemplateSelectStructBlock):
+    class_selector = blocks.CharBlock()
+    stream = CardStream()
     template = blocks.ChoiceBlock(
         choices=[
             ('', 'Wagtail default'),
+            ('card_stream_block.html', 'card stream block'),
             ('vogue_card_stream.html', 'Vogue Card Stream'),
         ],
         required=False,
@@ -484,7 +467,6 @@ class FlexStream(blocks.StreamBlock):
     card_spoof = CardBlock2024()
     card_stream_block = CardStreamBlock()
     stream_title = StreamTitle()
-    vogue_card_stream_block = VogueCardStreamBlock()
 
 class DivStreamBlock(TemplateSelectStructBlock):
     class_selector = blocks.CharBlock()    
