@@ -92,7 +92,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
     subpage_types = [
         'specialfeaturelanding.SpecialLandingPage',
-        'article.ArticlePage',
+        'article.StandardArticlePage',
     ]
     
     show_in_menus_default = True

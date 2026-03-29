@@ -54,14 +54,14 @@
     {% endblock %}
 
 
-    <main class="c-article">
+    <article class="c-article">
+        <div class="u-container u-container--content u-container--padded">
         {% block banner %}
-            <div class="u-container u-container--content u-container--padded">
-                {% if self.header.0.value.layout == 'right-image' %}
-                    <div class="header-container">
-                        <div class="left">
+                {% if self.header.0 %}
+                    <header class="header {{self.header.0.value.layout}}">
+                        <div class="header-content">
                             <div class="left-container">
-                                <div class="section-tag black">{{self.get_parent.title}}</div>
+                                <div class="section-tag">{{self.title_tag}}</div>
                                 <h1 class="c-article__title">{{ self.title|safe }}</h1>
                                 {% if self.header.0.value.above_cut_lede %}
                                     <p class="above_cut_lede">{{ self.header.0.value.above_cut_lede }}</p>
@@ -71,15 +71,15 @@
                                         {% include 'objects/social-icons.html' with article=article layout='top' %}
                                     {% endcomment %}
                                     <p class="byline">By {{self.get_authors_with_urls|safe}}</p>
-                                    <p class="pubdate">{{ self.published_at }}</p>
+                                    <time class="pubdate" datetime="{{ self.published_at }}">{{ self.published_at }}</time>
                                 </div>
                             </div>
                         </div>
-                        <div class="right">
+                        <div class="header-asset">
                             <div class="full-width featured-media">
                                 {% if self.featured_media.first.image %}
                                     {% with self.featured_media.first as featured_image_object %}
-                                        {% image featured_image_object.image original as featured_image %}
+                                        {% image featured_image_object.image height-2400 as featured_image %}
                                         <img
                                             class="article-attachment"
                                             data-id="{{ featured_image_object.image.id }}"
@@ -92,73 +92,10 @@
                                     {% endwith %}
                                 {% endif %}
                             </div>
+                            <div class="caption">{{self.featured_media.first.caption|safe}}</div>
                         </div>
-                    </div>
-                    {% if self.featured_media.first.image %}
-                    {% with self.featured_media.first as featured_image_object %}
-                    {% if featured_image_object.caption or featured_image_object.credit %}
-                    <div class="caption">
-                        {% if featured_image_object.caption %}
-                            {{ featured_image_object.caption }}, 
-                        {% endif %}
-                        {% if featured_image_object.credit %}
-                            <span class="credit">
-                                {{ featured_image_object.credit }}
-                            </span>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-                    {% endwith %}
-                    {% endif %}
-                {% elif self.header.0.value.layout == 'top-image' %}
-                    <div class="section-tag black">{{self.get_parent.title}}</div>
-                    <h1 class="c-article__title">{{ self.title|safe }}</h1>
-                    {% if self.header.0.value.above_cut_lede %}
-                        <p class="above_cut_lede">{{ self.header.0.value.above_cut_lede }}</p>
-                    {% endif %}
-                    <div class="c-article__info">
-                        {% comment %}
-                            {% include 'objects/social-icons.html' with article=article layout='top' %}
-                        {% endcomment %}
-                        <p class="byline">By {{self.get_authors_with_urls|safe}}</p>
-                        <p class="pubdate">{{ self.published_at }}</p>
-                    </div>
-                    {% comment %}
-                    <div class="c-article__info">
-                        {% include 'article/objects/share_bar.html' %}
-                    </div>
-                    {% endcomment %}
-                    <div class="full-width featured-media">
-
-                        {% with self.featured_media.first as featured_image_object %}
-                            {% srcset_image featured_image_object.image width-{340,750,1500} format-webp webpquality-70 as featured_image_renditions %}     
-                            <img
-                                class="article-attachment"
-                                data-id="{{ featured_image_object.image.id }}"
-                                data-caption="{{ featured_image_object.caption }}"
-                                data-url="{{ featured_image_renditions.renditions.0.url }}"
-                                data-credit="{{ featured_image_object.credit }}"
-                                src="{{ featured_image_renditions.renditions.0.url }}"
-                                width="{{ featured_image_renditions.renditions.0.width }}"
-                                height="{{ featured_image_renditions.renditions.0.height }}"
-                                srcset="{{ featured_image_renditions.renditions.0.url }} 340w, {{ featured_image_renditions.renditions.1.url }} 750w, {{ featured_image_renditions.renditions.2.url }} 1500w"
-                                sizes="(max-width: 600px) 340px, (max-width: 1200px) 750px, 1500px"
-                                alt="{{ featured_image_object.alt_text }}"
-                            />
-                            {% if featured_image_object.caption or featured_image_object.credit %}
-                                <div class="caption">
-                                    {% if featured_image_object.caption %}
-                                        {{ featured_image_object.caption }}
-                                    {% endif %}
-                                    {% if featured_image_object.credit %}
-                                        <span class="credit">{{ featured_image_object.credit }}</span>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        {% endwith %}
-                    </div>
-                </div>
-            {% endif %}
+                    </header>
+                {% endif %}
         {% endblock %}
         <div class="article-container">
 
@@ -172,65 +109,27 @@
             </div>
         </div>
         <div class="suggested">
-            <h1>More From MA</h1>
-            <div class="suggested-articles">
-            {% for article in suggested.articles %}
-                {% if forloop.counter|divisibleby:2 or not forloop.last %}
+            <header>Read more</header>
+            <ul class="suggested-articles">
+            {% for article in self.get_section_articles %}
                 {% image article.featured_media.first.image width-1000 as featured_image %}
-                <article style="background-image:url('{{featured_image.url}}')" aria-label="{{article.featured_media.first.alt_text}}">
-                    <a href="{% pageurl article%}">
-                    <div class="overlay"></div>
+                <li>
+                <a href="{% pageurl article%}">
+                <article style="background-image:url('{{featured_image.url}}'); background-position: {{featured_image.background_position_style}}" aria-label="{{article.featured_media.first.alt_text}};">
                     <div class="o-article__meta">
-                    <div class="section-tag white">{{article.get_parent.title}}</div>
-                    <h3 class="o-article__headline">
-                        {{ article.title|safe }}
-                    </h3>
-                    <p class="byline">By {{article.get_authors_string}}</p>
+                        <div class="section-tag white">{{article.get_parent.title}}</div>
+                        <h3 class="o-article__headline">
+                            {{ article.title|safe }}
+                        </h3>
+                        <p class="byline">By {{article.get_authors_string}}</p>
                     </div>
-                    </a>
                 </article>
-                {% endif %}
+                </a>
+                </li>
             {% endfor %}
-            </div>
+            </ul>
         </div>
-    </main>
-    <div id="popup" aria-modal="true" class="popUpHide">
-        <a id="closePopup" href="#" tabindex="1"><ion-icon name="chevron-down-outline"></ion-icon></a>
-        <div class="m-container">
-            <h1 id="toptext"></h1>
-            <p id="bottomtext"></p>
-        </div>
-    </div>
-    <script>
-        document.getElementById("closePopup").addEventListener("click", function(e) {
-            e.preventDefault();
-            document.getElementById("popup").classList.add("popUpHide");
-            document.getElementById("popup").classList.remove("popUpShow");
-            setTimeout(function () {
-                document.getElementById("popup").remove();
-            }, 2000);
-        });
-        setTimeout(function () {
-            document.getElementById("popup").classList.add("popUpShow");
-            document.getElementById("popup").classList.remove("popUpHide");
-        }, 2000);
-
-        var popupJokes = [
-        ["Wait... are you reading a website?", "I thought we ended those circa 2015."],
-        ["Popup Ads", "Am I right?"],
-        ["Ah! Omg so sorry!", "Didn't mean to get in your way. Just ignore me. Push me back down even."],
-        ["Popup Ads", "Proudly funding the past decade of garbage on the internet."],
-        ["We have things to sell to you or something!!!", "If you even care 🙄."],
-        ["Yeah, go on. Close me", "Is anyone even going to read this anyway?"],
-        ["Woah there buddy!", "Looks like you tried to load a webpage WITHOUT seeing an ad???"],
-        ["Everywhere you go", "I follow."],
-        ];
-
-        var joke = popupJokes[Math.floor(Math.random() * popupJokes.length)];
-        document.getElementById("toptext").innerHTML = joke[0];
-        document.getElementById("bottomtext").innerHTML = joke[1];
-
-    </script>
+    </article>
 </main>
 
 {% endblock %}
