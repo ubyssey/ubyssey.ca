@@ -1,0 +1,134 @@
+// Vogue-style article row — grid layout via inline styles, SCSS handles visuals only
+
+.vogue-row {
+  margin: 2.5rem auto;
+  max-width: 1200px;
+  padding: 0 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
+}
+
+// ── Header: rule | TITLE | rule | nav ─────────────────────────────────────────
+
+.vogue-row__header {
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+.vogue-row__rule {
+  flex: 1;
+  height: 1px;
+  background: #000;
+}
+
+.vogue-row__title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin: 0;
+  color: #000;
+}
+
+.vogue-row__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+.vogue-row__prev,
+.vogue-row__next {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0 2px;
+  color: #000;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+}
+
+.vogue-row__counter {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+// ── Card track (grid set via inline style in template) ────────────────────────
+
+.vogue-row__track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ── Row card ──────────────────────────────────────────────────────────────────
+
+.vogue-row-card__img-link {
+  display: block;
+}
+
+.vogue-row-card__img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.vogue-row-card__body {
+  padding-top: 0.6rem;
+}
+
+.vogue-row-card__label {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #333;
+  margin-bottom: 0.3rem;
+}
+
+.vogue-row-card__title {
+  font-family: Georgia, serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: #000;
+  margin: 0 0 0.25rem;
+}
+
+.vogue-row-card__link {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover .vogue-row-card__title {
+    text-decoration: underline;
+  }
+}
+
+.vogue-row-card__byline {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0;
+}

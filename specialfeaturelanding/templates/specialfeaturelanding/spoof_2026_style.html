@@ -87,4 +87,35 @@
 
 {% block scripts %}
 <script src="{% static 'ubyssey/js/guide-2021.js' %}" type="text/javascript"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-vogue-row]').forEach(function (row) {
+    var track = row.querySelector('.vogue-row__track');
+    var cards = Array.from(track.querySelectorAll('.vogue-row-card'));
+    var counter = row.querySelector('.vogue-row__counter');
+    var prevBtn = row.querySelector('.vogue-row__prev');
+    var nextBtn = row.querySelector('.vogue-row__next');
+    var nav = row.querySelector('.vogue-row__nav');
+
+    var perPage = window.innerWidth <= 576 ? 2 : 4;
+    var page = 0;
+    var pages = Math.ceil(cards.length / perPage);
+
+    if (pages <= 1) { nav.style.display = 'none'; }
+
+    function render() {
+      cards.forEach(function (c, i) {
+        c.style.display = Math.floor(i / perPage) !== page ? 'none' : '';
+      });
+      counter.textContent = (page + 1) + ' / ' + pages;
+      prevBtn.disabled = page === 0;
+      nextBtn.disabled = page === pages - 1;
+    }
+
+    prevBtn.addEventListener('click', function () { if (page > 0) { page--; render(); } });
+    nextBtn.addEventListener('click', function () { if (page < pages - 1) { page++; render(); } });
+    render();
+  });
+});
+</script>
 {% endblock %}

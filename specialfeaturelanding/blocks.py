@@ -438,6 +438,7 @@ class VogueCardBlock(TemplateSelectStructBlock):
             ('vogue_card_image.html', 'Image Card (left column)'),
             ('vogue_card_hero.html', 'Hero Card (center)'),
             ('vogue_card_sidebar.html', 'Sidebar Card (right column)'),
+            ('vogue_row_card.html', 'Row Card (article row)'),
         ],
         required=True,
     )
@@ -453,6 +454,7 @@ class CardStreamBlock(TemplateSelectStructBlock):
             ('', 'Wagtail default'),
             ('card_stream_block.html', 'card stream block'),
             ('vogue_card_stream.html', 'Vogue Card Stream'),
+            ('vogue_row.html', 'Vogue Article Row'),
         ],
         required=False,
     )
