@@ -5,6 +5,7 @@
   <div class="u-container u-container--large">
     <div class="branding row">
       <div class="middle">
+      
         <img src="{% static 'ubyssey/images/logos/dingbat-blue.svg' %}">
 
         <svg class="top-logo" width="6544" height="705" viewBox="0 0 6544 705" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -21,6 +22,7 @@
         </svg>          
 
       </div>
+      
       <div class="right">
         <p class="since-line">
           {% if tagline_url %}
@@ -33,7 +35,7 @@
         <p>
           {% now "F d, Y" as date %}
           {% now "l" as dayOfWeek %}
-          {{date}} <b>{{dayOfWeek}}</b>
+          {{date}}
         </p>       
 
         <div>
