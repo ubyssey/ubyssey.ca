@@ -1,0 +1,16 @@
+{% load video_filters %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load articletags %}
+
+{% load humanize %}
+
+<article class="o-article o-article--suggested_article{% if padded %} o-article--padded{% endif %}">
+  <div class="o-article__right">
+    <div class="o-article__meta">
+      <p class="o-article__headline-featured">
+        <a href="{% pageurl article %}">{{ article.title|safe }}</a>
+      </p>
+    </div>
+  </div>
+</article>

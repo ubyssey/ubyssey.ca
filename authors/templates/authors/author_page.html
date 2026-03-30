@@ -39,20 +39,37 @@
 				</p>
 			</div>
 		</div>
-		
-		<div class="options" id="results">
-			{% for type in media_types %}
-				<h2 class="author-heading {% if media_type == type.0 %}selected{% endif %}"><a href="/authors/{{self.slug}}/{{type.0}}/#results">{{type.1}}</a></h2>
-			{% endfor %}
-		</div>
+		<hr>
+        <div class="bottom-half">
+            <div class="article">
+            <div class="options" id="results">
+                {% for type in media_types %}
+                    <h2 class="author-heading {% if media_type == type.0 %}selected{% endif %}"><a href="/authors/{{self.slug}}/{{type.0}}/#results">{{type.1}}</a></h2>
+                {% endfor %}
+            </div>
+        
+            {% if media_type == "articles" or media_type == "visuals" %}
+                {% include 'archive/objects/archive.html' with page_obj=paginated_articles current_page_articles=current_page_articles %}
+            {% elif media_type == "photos" %}
+                {% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
+            {% elif media_type == "videos" %}
+                {% include 'archive/objects/archive.html' with page_obj=paginated_articles video_section=true%}
+            {% endif %}
+        </div>
 
-		{% if media_type == "articles" or media_type == "visuals" %}
-			{% include 'archive/objects/archive.html' with page_obj=paginated_articles current_page_articles=current_page_articles %}
-		{% elif media_type == "photos" %}
-			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
-		{% elif media_type == "videos" %}
-			{% include 'archive/objects/archive.html' with page_obj=paginated_articles video_section=true%}
-		{% endif %}
+            {% if self.pinned_articles.count > 0 and current_page == 1 %}
+                <div class="author-pinned_list">
+                    <h2 class="author-heading">Featured</h2>
+                    <ol class = "author-pinned_article">
+                    {% for article in self.pinned_articles.all %}
+                        <li>	
+                            {% include 'article/objects/featured-articles.html' with article=article.article %}
+                        </li>
+                    {% endfor %}
+                    </ol>
+                </div>
+            {% endif %} 
+        </div>
 	</div>
 </main>
 {% endblock %}

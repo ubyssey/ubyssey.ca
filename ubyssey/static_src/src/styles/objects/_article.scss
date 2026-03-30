@@ -34,6 +34,27 @@
   }
 }
 
+.o-article__headline-featured {
+    // Structure
+  margin-top: 0;
+
+  // Text
+  font-family: fonts.$font-headline;
+  line-height: 1.15em;
+  font-size: 1em;
+
+  a {
+    // Text
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      // Text
+      color: variables.$color-accent-blue;
+    }
+  }
+}
+
 .o-article__meta {
   // Structure
   margin-bottom: 0.5rem;
