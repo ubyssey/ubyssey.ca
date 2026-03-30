@@ -1,0 +1,103 @@
+{% load static %}
+{% load menu_tags %}
+
+<header class="spoof-nav" id="spoofNavHeader">
+
+  <!-- Top promo bar -->
+  <div class="spoof-nav__promo">
+    <span>The Ubyssey &rsquo;s Annual Spoof Issue &mdash; </span>
+    <a href="/humour/">Read Now</a>
+  </div>
+
+  <!-- Middle: subscribe | logo | icons -->
+  <div class="spoof-nav__middle">
+    <div class="spoof-nav__middle-left">
+      <a class="spoof-nav__subscribe" href="/newsletter/">Subscribe</a>
+    </div>
+    <div class="spoof-nav__middle-center">
+      <a class="spoof-nav__logo" href="{{ menu_items.0.href }}">{{ menu_items.0.text }}</a>
+    </div>
+    <div class="spoof-nav__middle-right">
+      <a class="spoof-nav__subscribe-mobile" href="/newsletter/">Subscribe</a>
+      <button class="spoof-nav__hamburger" id="spoofNavToggle" aria-label="Open menu" onclick="spoofNavOpen()">
+        <span class="spoof-nav__hamburger-label">MENU</span>
+        <ion-icon name="menu-outline"></ion-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom: category nav links (desktop only) -->
+  <nav class="spoof-nav__categories spoof-nav__desktop-only" aria-label="Spoof navigation">
+    <ul>
+      {% for item in menu_items %}
+        {% if forloop.counter0 > 0 %}
+          <li>
+            <a href="{{ item.href }}"{% if item.active_class %} class="{{ item.active_class }}"{% endif %}>{{ item.text }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
+
+</header>
+
+<!-- Backdrop -->
+<div class="spoof-nav__backdrop" id="spoofNavBackdrop" onclick="spoofNavClose()"></div>
+
+<!-- Mobile drawer menu (no own header — starts below sticky nav) -->
+<div class="spoof-nav__drawer" id="spoofNavOverlay" aria-hidden="true">
+  <nav aria-label="Mobile navigation">
+    <ul class="spoof-nav__drawer-list">
+      {% for item in menu_items %}
+        {% if forloop.counter0 > 0 %}
+          <li><a href="{{ item.href }}">{{ item.text }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+    <div class="spoof-nav__drawer-more">
+      <span class="spoof-nav__drawer-more-label">More</span>
+      <ul>
+        <li><a href="/newsletter/">Newsletter</a></li>
+        <li><a href="https://www.instagram.com/ubyssey.ca/" target="_blank" rel="nofollow">Instagram</a></li>
+        <li><a href="https://www.tiktok.com/@theubyssey" target="_blank" rel="nofollow">TikTok</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/">The Ubyssey</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<script>
+function spoofNavOpen() {
+  var navHeight = document.getElementById('spoofNavHeader').offsetHeight;
+  var drawer = document.getElementById('spoofNavOverlay');
+  var backdrop = document.getElementById('spoofNavBackdrop');
+  var toggle = document.getElementById('spoofNavToggle');
+
+  drawer.style.top = navHeight + 'px';
+  backdrop.style.top = navHeight + 'px';
+
+  drawer.classList.add('is-open');
+  backdrop.classList.add('is-open');
+  drawer.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  toggle.innerHTML = '<ion-icon name="close-outline"></ion-icon>';
+  toggle.setAttribute('aria-label', 'Close menu');
+  toggle.setAttribute('onclick', 'spoofNavClose()');
+}
+function spoofNavClose() {
+  var drawer = document.getElementById('spoofNavOverlay');
+  var backdrop = document.getElementById('spoofNavBackdrop');
+  var toggle = document.getElementById('spoofNavToggle');
+
+  drawer.classList.remove('is-open');
+  backdrop.classList.remove('is-open');
+  drawer.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+
+  toggle.innerHTML = 'MENU <ion-icon name="menu-outline"></ion-icon>';
+  toggle.setAttribute('aria-label', 'Open menu');
+  toggle.setAttribute('onclick', 'spoofNavOpen()');
+}
+</script>

@@ -1557,6 +1557,8 @@ class StandardArticlePage(ArticlePage):
             return "article/article_page_magazine_2024.html"
         elif self.layout == 'spoof-2024':
             return "article/article_page_spoof_2024.html"
+        elif self.layout == 'spoof-2026':
+            return "article/article_page_spoof_2026.html"
         elif self.layout == 'guide-2024':
             return "article/article_page_guide_2024.html"
         elif self.layout == 'science-2024':
@@ -1707,7 +1709,8 @@ class StandardArticlePage(ArticlePage):
                             ('science-2024', 'Science Supplement (2024)'),
                             ('femme-2024', 'Femme Culture Special Issue (2024)'),
                             ('nocturne-2024', 'Nocturne Features Supplement (2024)'),
-                            ('passing-2025', 'Passing Special Article (2025)')
+                            ('passing-2025', 'Passing Special Article (2025)'),
+                            ('spoof-2026', 'Spoof (2026 style)'),
                         ],
                     ),
                 ),

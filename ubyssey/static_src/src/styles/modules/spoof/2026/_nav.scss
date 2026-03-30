@@ -1,0 +1,214 @@
+@use "base";
+
+.spoof-nav {
+  border-bottom: 1px solid #e0e0e0;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  &__promo {
+    background: #f7e8e3;
+    text-align: center;
+    padding: 0.3rem 1rem;
+    font-family: base.$font-sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #333;
+
+    a {
+      color: #000;
+      font-weight: 700;
+      text-decoration: none;
+      margin-left: 0.4rem;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  &__middle {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+  }
+
+  &__middle-left { display: flex; align-items: center; }
+  &__middle-center { text-align: center; }
+  &__middle-right { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
+
+  // Shared subscribe button style (desktop + mobile)
+  &__subscribe,
+  &__subscribe-mobile {
+    font-family: base.$font-sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #fff;
+    background: #000;
+    padding: 0.4rem 0.75rem;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    &:visited { color: #fff; }
+    &:hover { background: #333; color: #fff; }
+    &:active { background: #444; color: #fff; }
+  }
+
+  &__subscribe-mobile { display: none; }
+
+  &__logo {
+    font-family: base.$font-nameplate;
+    font-size: 3rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    line-height: 1;
+    &:hover { color: #333; }
+  }
+
+  &__categories {
+    border-top: 1px solid #e0e0e0;
+
+    ul {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      list-style: none;
+      margin: 0 auto;
+      padding: 0;
+      max-width: 1400px;
+    }
+
+    li a {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      font-family: base.$font-sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #000;
+      text-decoration: none;
+      white-space: nowrap;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  &__desktop-only {
+    @media (max-width: 768px) { display: none !important; }
+  }
+
+  &__hamburger {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #000;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    ion-icon { font-size: 22px; }
+  }
+
+  &__hamburger-label {
+    font-family: base.$font-sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    &__promo { font-size: 9px; }
+    &__middle { padding: 0.6rem 1rem; grid-template-columns: 1fr auto; }
+    &__middle-left { display: none; }
+    &__middle-center { text-align: left; }
+    &__logo { font-size: 1.6rem; }
+    &__hamburger-label { display: none; }
+    &__subscribe-mobile { display: flex; align-items: center; }
+  }
+}
+
+.spoof-nav__backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 9998;
+  &.is-open { display: block; }
+}
+
+.spoof-nav__drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 88%;
+  max-width: 400px;
+  height: 100%;
+  background: #fff;
+  z-index: 9999;
+  overflow-y: auto;
+  display: none;
+  &.is-open { display: block; }
+
+  %drawer-item {
+    display: block;
+    padding: 0.65rem 1.5rem;
+    font-family: base.$font-sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    &:hover { background: #f5f5f5; }
+    &:active { background: #e8e8e8; }
+  }
+
+  &-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li a { @extend %drawer-item; }
+  }
+
+  &-more {
+    margin-top: 1.25rem;
+
+    &-label {
+      display: block;
+      padding: 0.65rem 1.5rem;
+      font-family: base.$font-sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #aaa;
+    }
+
+    ul { list-style: none; margin: 0; padding: 0; }
+    ul li a { @extend %drawer-item; }
+  }
+
+  &-utilities {
+    padding: 1.25rem 1.5rem 2rem;
+
+    a {
+      display: block;
+      padding: 0.4rem 0;
+      font-family: base.$font-sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      color: #555;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      -webkit-tap-highlight-color: transparent;
+      &:hover { color: #000; background: #f5f5f5; }
+      &:active { background: #e8e8e8; color: #000; }
+    }
+  }
+}
