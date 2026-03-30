@@ -1,22 +1,22 @@
 {% load wagtailimages_tags %}
-{% image self.card_image width-900 as hero_img %}
+{% image card_image width-900 as hero_img %}
 
 <div class="{{ self.class_name }}">
   <a href="{{ self.card_page.url }}" class="vogue-card__image-link">
-    <img src="{{ hero_img.url }}" alt="{{ self.card_title }}" class="vogue-card__hero-image">
+    <img src="{{ hero_img.url }}" alt="{{ card_title }}" class="vogue-card__hero-image">
   </a>
   <div class="vogue-card__body">
-    {% if self.section_label %}
-      <span class="vogue-card__label">{{ self.section_label }}</span>
+    {% if section_label %}
+      <span class="vogue-card__label">{{ section_label }}</span>
     {% endif %}
     <a href="{{ self.card_page.url }}" class="vogue-card__title-link">
-      <h2 class="vogue-card__hero-title">{{ self.card_title }}</h2>
+      <h2 class="vogue-card__hero-title">{{ card_title }}</h2>
     </a>
-    {% if self.card_author %}
-      <p class="vogue-card__byline">{{ self.card_author }}</p>
+    {% if card_author %}
+      <div class="vogue-card__byline">{{ card_author }}</div>
     {% endif %}
-    {% if self.card_photo_credit %}
-      <p class="vogue-card__photo-credit">{{ self.card_photo_credit }}</p>
+    {% if card_photo_credit %}
+      <div class="vogue-card__photo-credit">{{ card_photo_credit }}</div>
     {% endif %}
   </div>
 </div>

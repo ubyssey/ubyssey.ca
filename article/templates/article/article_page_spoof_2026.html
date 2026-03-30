@@ -75,6 +75,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% if self.header.0.value.layout != "no-image" %}
                         <div class="header-asset">
                             <div class="full-width featured-media">
                                 {% if self.featured_media.first.image %}
@@ -94,6 +95,7 @@
                             </div>
                             <div class="caption">{{self.featured_media.first.caption|safe}}</div>
                         </div>
+                        {% endif %}
                     </header>
                 {% endif %}
         {% endblock %}

@@ -128,21 +128,32 @@
                 height: auto;
             }
 
+            > .image-grid-attachment {
+                display: flex;
+                gap: 1em;
+                .image-attachment {
+                    img {
+                        height: var(--image-height);
+                        width: auto;
+                        object-fit: cover;
+                    }
+                }
+            }
+
             .o-card-container {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 1em;
 
-                min-width: var(--content-width);
-                width: fit-content;
-
+                width: max(fit-content, var(--content-width));
                 &.o-card-container--promo-staggered {
                     .o-card--image {
                         padding: 1em;
                         position: relative;
                         aspect-ratio: 2/3;
 
-                        max-width: 200px;
+                        width: 200px;
+                        max-width: 100%;
                         background-size: auto 100%;
                         background-position: center;
                         

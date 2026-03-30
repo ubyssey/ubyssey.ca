@@ -68,7 +68,6 @@
   text-transform: uppercase;
   color: #333;
   margin-bottom: 0.4rem;
-  font-family: base.$font-sans-serif;
 }
 
 .vogue-card__title-link {
@@ -87,7 +86,6 @@
   line-height: 1.35;
   color: #000;
   margin: 0 0 0.4rem;
-  font-family: base.$font-serif;
 }
 
 .vogue-card__hero-title {
@@ -96,7 +94,6 @@
   line-height: 1.2;
   color: #000;
   margin: 0.5rem 0 0.4rem;
-  font-family: base.$font-serif;
 
   @media (max-width: 1024px) {
     font-size: 22px;
@@ -110,7 +107,6 @@
   text-transform: uppercase;
   color: #000;
   margin: 0;
-  font-family: base.$font-sans-serif;
 }
 
 .vogue-card__photo-credit {
@@ -120,7 +116,6 @@
   text-transform: uppercase;
   color: #000;
   margin: 0.2rem 0 0;
-  font-family: base.$font-sans-serif;
 }
 
 .vogue-card__body {

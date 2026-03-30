@@ -9,6 +9,65 @@
   @media (max-width: 768px) {
     padding: 0 1rem;
   }
+
+  .vogue-row__header {
+    margin-bottom: 1.25rem;
+    padding-block: 1rem 1.25rem;
+    display: block;
+    border-block: 1px solid rgb(224, 224, 224);
+  }
+
+  .vogue-row__title {
+    font-size: 22px;
+    line-height: 1.07682em;
+    font-weight: 400;
+    letter-spacing: 0.0818182em;
+    text-transform: uppercase;
+    margin: 0;
+    color: #000;
+    text-align: center;
+  }
+
+  .vogue-row__nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem;
+  }
+
+  button.vogue-row__prev {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0 2px;
+    color: #000;
+  }
+
+  .vogue-row__counter {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    min-width: 2.5rem;
+    text-align: center;
+  }
+
+  button.vogue-row__next {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0 2px;
+    color: #000;
+  }
+}
+
+.vogue-row__dots {
+  margin-top: 1rem;
+  display: none;
+  justify-content: center;
+  gap: 0.4rem;
 }
 
 .vogue-row__prev,
@@ -43,17 +102,15 @@
   font-weight: 400;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #333;
   margin-bottom: 0.3rem;
 }
 
 .vogue-row-card__title {
-  font-family: base.$font-serif;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.35;
-  color: #000;
   margin: 0 0 0.25rem;
+
+  font-size: 18px;
+  line-height: 1.22222em;
+  font-weight: 400;
 }
 
 .vogue-row-card__link {
@@ -73,4 +130,39 @@
   text-transform: uppercase;
   color: #000;
   margin: 0;
+}
+
+.vogue-row__track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .vogue-row__track {
+    display: flex !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.75rem;
+    scrollbar-width: none;
+  }
+
+  .vogue-row__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vogue-row-card {
+    flex: 0 0 88%;
+    scroll-snap-align: start;
+    display: block !important;
+  }
+
+  .vogue-row__nav {
+    display: none !important;
+  }
+
+  .vogue-row__dots {
+    display: flex !important;
+  }
 }

@@ -407,7 +407,7 @@ class VogueCardBlock(TemplateSelectStructBlock):
     """Card block for Vogue 2026 spoof: supports 3 visual types via template selection."""
 
     class_name = blocks.CharBlock(
-        required=True,
+        required=False,
         default='vogue-col-left',
         help_text='CSS class for grid placement: vogue-col-left, vogue-col-center, vogue-col-right',
     )
@@ -416,7 +416,7 @@ class VogueCardBlock(TemplateSelectStructBlock):
         help_text='Category label e.g. WEDDINGS, PARTIES, WELLNESS',
     )
     card_title = blocks.CharBlock(
-        required=True,
+        required=False,
         help_text='Article headline',
     )
     card_author = blocks.CharBlock(
@@ -428,9 +428,10 @@ class VogueCardBlock(TemplateSelectStructBlock):
         help_text='Photography credit e.g. PHOTOGRAPHY BY CAROLINE XIA',
     )
     card_image = ImageChooserBlock(
-        required=True,
+        required=False,
     )
     card_page = blocks.PageChooserBlock(
+        page_type="article.ArticlePage",
         required=True,
     )
     template = blocks.ChoiceBlock(
@@ -442,6 +443,31 @@ class VogueCardBlock(TemplateSelectStructBlock):
         ],
         required=True,
     )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+
+        attributes = ["card_image", "card_photo_credit", "card_author", "card_title", "section_label"]
+
+        for a in attributes:
+            context[a] = value[a]
+
+        if context["card_image"] == None:
+            if value["card_page"].featured_media.exists():
+                featured_media =  value["card_page"].featured_media.first()
+                context["card_image"] = featured_media.image
+                context["card_photo_credit"] = featured_media.credit
+
+        if context["card_author"] in [None, ""]:
+            context["card_author"] = value["card_page"].get_authors_split_out_visual_bylines(links=False)
+
+        if context["card_title"] in [None, ""]:
+            context["card_title"] = value["card_page"].title
+
+        if context["section_label"] in [None, ""]:
+            context["section_label"] = value["card_page"].title_tag
+
+        return context
 
 class CardStream(blocks.StreamBlock):
     card_spoof = CardBlock2024()

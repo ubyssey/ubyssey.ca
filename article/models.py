@@ -1080,7 +1080,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         return ', '.join(authors_strings)
     authors_with_roles = property(fget=get_authors_with_roles)
  
-    def get_authors_split_out_visual_bylines(self) -> str:
+    def get_authors_split_out_visual_bylines(self, links=True) -> str:
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
 
@@ -1105,7 +1105,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         words_byline = ""
         if 'author' in authors_by_role:
             word_authors = list(map(lambda author: author.author, authors_by_role['author']))
-            words_byline = self.get_authors_string(links=True, authors_list=authors_by_role['author'])
+            words_byline = self.get_authors_string(links=links, authors_list=authors_by_role['author'])
     
         visuals = []
         has_multi_contribution_author = False
@@ -1116,7 +1116,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 has_multi_contribution_author = True
             only_visuals_authors = list(filter(lambda author: not author.author in word_authors, v))
             if len(only_visuals_authors) > 0:
-                visuals.append([k, self.get_authors_string(links=True, authors_list=only_visuals_authors)])
+                visuals.append([k, self.get_authors_string(links=links, authors_list=only_visuals_authors)])
         visuals.sort(key=lambda s: role_types.index(s[0]))
         
         visuals_byline = ''
