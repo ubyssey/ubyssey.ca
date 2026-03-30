@@ -5,7 +5,7 @@
   <div class="u-container u-container--large">
     <div class="branding row">
       <div class="hamburger">
-         <a class="open-modal menu left" href="#"><ion-icon name="menu"></ion-icon></a>
+         <a class="open-modal menu left" href="#"><ion-icon class = "menu" name="menu"></ion-icon></a>
       </div>
 
       <div class="middle">
@@ -30,11 +30,9 @@
 
     </div>
 
-    <nav class="main row">
-      <div class="middle sections">
-        <div id="nav-search" class="c-nav-search--container"></div>  
+  
+      <nav class="middle sections">
 
-        <div class="middle-left">
           {% main_menu %}
 
           <button class="search open-nav-search">
@@ -42,31 +40,8 @@
           </button>
         </div>
 
-        <div class="middle-right">
-          <div class="dropdown">
-            <a class="more-dropdown preventDefault" href="#">More <ion-icon name="caret-down" class="dropdown-hidden"></ion-icon><ion-icon class="dropdown-show" name="caret-up"></ion-icon></a>
-            <div class="more-list dropdown-content">
-              {% flat_menu 'dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-            </div>
-          </div>
-
-          <div class="dropdown">
-            <a class="more-dropdown preventDefault" href="#">About <ion-icon name="caret-down" class="dropdown-hidden"></ion-icon><ion-icon class="dropdown-show" name="caret-up"></ion-icon></a>
-            <div class="more-list dropdown-content">
-              {% flat_menu 'about_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-            </div>
-          </div>
-
-          <div class="dropdown">
-            <a class="more-dropdown preventDefault" href="#">Contact <ion-icon name="caret-down" class="dropdown-hidden"></ion-icon><ion-icon class="dropdown-show" name="caret-up"></ion-icon></a>
-            <div class="more-list dropdown-content">
-              {% flat_menu 'contact_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-            </div>
-          </div>
-
-          {% flat_menu 'right_header_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-        </div>
-      </div>
-    </nav>
+    
+      </nav>
+  
   </div>
 </header>
