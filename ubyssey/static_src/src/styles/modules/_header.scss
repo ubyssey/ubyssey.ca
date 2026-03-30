@@ -52,18 +52,22 @@ header.main{
   .branding.row {
     margin-block: 2em;
     font-size: 13px;
+    display: flex;
+    align-items: center;
+
+
+    .left.hamburger {
+      width: 63px;
+      height: 56px;
+    }
 
     .middle {
       position: relative;
-      width: 100%;
-      max-width: 520px;
-      img {
-        position: absolute;
-        margin-inline: 0em;
-        height: calc(100%);
-        bottom: -0.5em;
-        left: 1em;
-      }
+      aspect-ratio: 560/117;
+      width: 627px;
+      height: 131px;
+      
+      
       svg.top-logo {
         margin: 1.5em 0 1.5em 11em;
         height: 4em;
@@ -728,7 +732,6 @@ nav.branding-nav {
   --header-text-color: white;
   --header-border-color: white;
 
-  padding: 1em;
   border-block: 2px solid var(--light-grey);
 
   position: relative;
@@ -761,13 +764,43 @@ nav.branding-nav {
   .branding.row {
     position: relative;
     display: flex;
-    align-items: center;
+    align-items: center !important;
     justify-content: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 1rem;
+    min-height: 152px;
+    height: auto;
+    padding: 0 1rem;
 
     .hamburger {
-      display: none;
+      position: absolute;
+      left: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 63px;
+      height: 56px;
+      z-index: 5;
+
+      a {
+        color: var(--header-text-color);
+        font-size: 1.25rem;
+      }
+    }
+
+    .since-line {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
+    }
+
+    .hamburger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: center;
       margin-right: 1rem;
 
       a {
@@ -780,11 +813,15 @@ nav.branding-nav {
       position: relative;
       width: 100%;
       max-width: 650px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
 
       svg.top-logo {
-        margin: 0.5em;
-        height: 3.5em;
+        display: block;
+        height: 100%;
+        max-height: 120px;
         width: auto;
         max-width: 100%;
         fill: var(--header-text-color);
