@@ -15,3 +15,20 @@ $bp-larger-than-desktop     : "min-width: #{$bp-desktop-size}px" !default;
 $bp-smaller-than-desktop    : "max-width: #{$bp-desktop-size - 1}px" !default;
 $bp-larger-than-desktophd   : "min-width: #{$bp-desktophd-size}px" !default;
 $bp-smaller-than-desktophd  : "max-width: #{$bp-desktophd-size - 1}px" !default;
+
+// Fonts
+$font-nameplate: "linotype-didot-headline",serif;
+$font-sans-serif: "itc-avant-garde-gothic-pro",sans-serif;
+$font-serif: "adobe-garamond-pro",serif;
+
+body {
+    font-family: $font-sans-serif
+}
+
+p {
+    font-family: $font-serif;
+}
+
+h1, h2 {
+    font-family: $font-sans-serif;
+}

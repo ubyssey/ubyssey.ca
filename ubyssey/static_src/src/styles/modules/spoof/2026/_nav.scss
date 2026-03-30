@@ -1,3 +1,5 @@
+@use "base";
+
 .spoof-nav {
   border-bottom: 1px solid #e0e0e0;
   background: #fff;
@@ -9,7 +11,7 @@
     background: #f7e8e3;
     text-align: center;
     padding: 0.3rem 1rem;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: base.$font-sans-serif;
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -38,7 +40,7 @@
   // Shared subscribe button style (desktop + mobile)
   &__subscribe,
   &__subscribe-mobile {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: base.$font-sans-serif;
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 0.15em;
@@ -56,7 +58,7 @@
   &__subscribe-mobile { display: none; }
 
   &__logo {
-    font-family: 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, serif;
+    font-family: base.$font-nameplate;
     font-size: 3rem;
     font-weight: 400;
     letter-spacing: 0.2em;
@@ -83,7 +85,7 @@
     li a {
       display: block;
       padding: 0.5rem 0.75rem;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: base.$font-sans-serif;
       font-size: 10px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -112,7 +114,7 @@
   }
 
   &__hamburger-label {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: base.$font-sans-serif;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.15em;
@@ -155,7 +157,7 @@
   %drawer-item {
     display: block;
     padding: 0.65rem 1.5rem;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: base.$font-sans-serif;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -180,7 +182,7 @@
     &-label {
       display: block;
       padding: 0.65rem 1.5rem;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: base.$font-sans-serif;
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -198,7 +200,7 @@
     a {
       display: block;
       padding: 0.4rem 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: base.$font-sans-serif;
       font-size: 12px;
       font-weight: 400;
       color: #555;
