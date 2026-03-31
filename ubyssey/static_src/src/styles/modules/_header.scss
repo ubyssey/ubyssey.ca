@@ -608,58 +608,92 @@ header.mobile {
 }
 
 nav.mobile {
-  position: absolute;
-  padding: 10px 20px;
-  height: calc(100vh - 54px);
-  box-sizing: border-box;
-  top: 54px;
-  left: 0;
-  right: 0;
+    position: absolute;
+    padding: 10px 20px;
+    height: calc(100vh - 54px);
+    box-sizing: border-box;
+    top: 54px;
+    left: 0;
+    right: 0;
 
-  background: $nav-mobile-background-barely-transparent; // Barely transparent
-  border-top: 1px solid rgb(178,178,178);
-  overflow: auto;
-  color: $nav-span-color;
-  z-index: 200;
+    background: $nav-mobile-background-barely-transparent; // Barely transparent
+    border-top: 1px solid rgb(178, 178, 178);
+    overflow: auto;
+    color: $nav-span-color;
+    z-index: 200;
 
-  transition: background 0.5s ease, color 0.5s ease;
+    transition: background 0.5s ease, color 0.5s ease;
 
-  h2 {
-    font-size: 1.5em;
-    margin-top: 0;
-  }
+    .mobile-search-bar {
+        display: flex;
+        align-items: center;
+        width: 80vw;
+        margin-bottom: 40px;
+        margin-right: 40px;
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    #magazine-more{
-      display: none;
-      margin-left: 10px;
+        form {
+            height: 50px;
+            width: 100%;
+            gap: 5px;
+            display: flex;
+            align-items: stretch;
+
+            input {
+                width: 80%;
+            }
+
+            button {
+                width: 20%;
+                background-color: #0071c9;
+                color: white;
+                border: #0071c9;
+            }
+        }
+
     }
-    #culture-more{
-      display: none;
-      margin-left: 10px;
+
+    h2 {
+        font-size: 1.5em;
+        margin-top: 0;
     }
-    li a {
-      padding: 10px 0;
-      width: fit-content;
-      display: block;
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 1.5em;
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        #magazine-more {
+            display: none;
+            margin-left: 10px;
+        }
+
+        #culture-more {
+            display: none;
+            margin-left: 10px;
+        }
+
+        li a {
+            padding: 10px 0;
+            width: fit-content;
+            display: block;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 1.5em;
+        }
     }
-  }
-  .left, .right {
-    float: left;
-    width: 50%;
-  }
-  h3 {
-    font-size: 14px;
-    text-transform: uppercase;
-    font-weight: 500;
-    color: $nav-h3-color;
-  }
+
+    .left,
+    .right {
+        width: 50%;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 500;
+        color: $nav-h3-color;
+    }
 }
 
 html.hairlines {
