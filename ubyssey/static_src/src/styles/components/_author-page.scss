@@ -90,7 +90,7 @@
     flex-direction: column;
     align-items: flex-start;
     width:30%;
-    padding:1em;
+    margin-left:45px;
 
     @media(variables.$bp-smaller-than-phablet) {
         display:none;
