@@ -610,9 +610,9 @@ header.mobile {
 nav.mobile {
     position: absolute;
     padding: 10px 20px;
-    height: calc(100vh - 54px);
+    height: 100vh;
     box-sizing: border-box;
-    top: 54px;
+    top: 20px;
     left: 0;
     right: 0;
 
@@ -640,6 +640,7 @@ nav.mobile {
 
             input {
                 width: 80%;
+                font-variation-settings: "wght" 400;
             }
 
             button {
@@ -647,6 +648,13 @@ nav.mobile {
                 background-color: #0071c9;
                 color: white;
                 border: #0071c9;
+                font-size: smaller;
+            }
+
+            @media (variables.$bp-larger-than-mobile) {
+                button {
+                    font-size: medium;
+                }
             }
         }
 
@@ -688,7 +696,7 @@ nav.mobile {
         margin-bottom: 20px;
     }
 
-    @media (min-width: 652px) {
+    @media (variables.$bp-larger-than-mobile) {
     .left,
     .right {
         float: left;
