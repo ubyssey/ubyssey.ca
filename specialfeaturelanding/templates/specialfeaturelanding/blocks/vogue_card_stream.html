@@ -1,6 +1,22 @@
 {% load wagtailcore_tags %}
 <div class="{{ self.class_selector }}">
+  <div class="vogue-left-stack">
+    {% for card in self.stream %}
+      {% if card.value.class_name == 'vogue-col-left' %}
+        {% include_block card %}
+      {% endif %}
+    {% endfor %}
+  </div>
   {% for card in self.stream %}
-    {% include_block card %}
+    {% if card.value.class_name == 'vogue-col-center' %}
+      {% include_block card %}
+    {% endif %}
   {% endfor %}
+  <div class="vogue-right-stack">
+    {% for card in self.stream %}
+      {% if card.value.class_name == 'vogue-col-right' %}
+        {% include_block card %}
+      {% endif %}
+    {% endfor %}
+  </div>
 </div>
