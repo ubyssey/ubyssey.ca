@@ -9,7 +9,7 @@
 
 <div class="o-profile_quote_cell">
     <div class="o-profile_quote_cell--quote-container">
-        <p class="o-profile_quote_cell--quote {{self.style}}">{{self.quote|safe}}</p>
+        <blockquote class="o-profile_quote_cell--quote {{self.style}}">{{self.quote|safe}}</blockquote>
         <div class="o-profile_quote_cell--buttons">
             {% if self.audio %}
                 <button audio="a{{group_id}}{{item_id}}{{cell_id}}" class="playAudioQuote">
@@ -18,11 +18,15 @@
                 </button>
             {% endif %}
 
-            {% if self.article %}
-                <div class="o-profile_cell--link"><a href="{% pageurl self.article %}">
+            <div class="o-profile_cell--link">
+                {% if self.article %}
+                    <a href="{% pageurl self.article %}">
                     {% if self.label %}{{self.label|safe}}{% else %}{{self.article.title|safe}}{%endif%}
-                </a></div>
-            {% endif %}
+                    </a>
+                {% elif self.label %}
+                    {{self.label|safe}}
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

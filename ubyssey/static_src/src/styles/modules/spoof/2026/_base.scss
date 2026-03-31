@@ -1,0 +1,38 @@
+// Breakpoints
+$bp-mobile-size             : 501;
+$bp-phablet-size            : 760;
+$bp-tablet-size             : 960;
+$bp-desktop-size            : 1200;
+$bp-desktophd-size          : 1400;
+
+$bp-larger-than-mobile      : "min-width: #{$bp-mobile-size}px" !default;
+$bp-smaller-than-mobile     : "max-width: #{$bp-mobile-size - 1}px" !default;
+$bp-larger-than-phablet     : "min-width: #{$bp-phablet-size}px" !default;
+$bp-smaller-than-phablet    : "max-width: #{$bp-phablet-size - 1}px" !default;
+$bp-larger-than-tablet      : "min-width: #{$bp-tablet-size}px" !default;
+$bp-smaller-than-tablet     : "max-width: #{$bp-tablet-size - 1}px" !default;
+$bp-larger-than-desktop     : "min-width: #{$bp-desktop-size}px" !default;
+$bp-smaller-than-desktop    : "max-width: #{$bp-desktop-size - 1}px" !default;
+$bp-larger-than-desktophd   : "min-width: #{$bp-desktophd-size}px" !default;
+$bp-smaller-than-desktophd  : "max-width: #{$bp-desktophd-size - 1}px" !default;
+
+// Fonts
+$font-nameplate: "linotype-didot-headline",serif;
+$font-sans-serif: "itc-avant-garde-gothic-pro",sans-serif;
+$font-serif: "adobe-garamond-pro",serif;
+
+body {
+    font-family: $font-sans-serif
+}
+
+p {
+    font-family: $font-serif;
+}
+
+h1, h2 {
+    font-family: $font-sans-serif;
+}
+
+a {
+    color: inherit;
+}

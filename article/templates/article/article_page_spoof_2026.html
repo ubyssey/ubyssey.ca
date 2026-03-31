@@ -1,0 +1,150 @@
+{% extends 'ubyssey/base.html' %}
+
+{% comment %} {% extends 'specialfeaturelanding/guide/base.html' %} {% endcomment %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load wagtailuserbar %}
+{% load ubyssey_ad_filters %}
+{% load ubyssey_ad_tags %}
+{% load menu_tags %}
+
+{% block root %}{%endblock%}
+{% block darkmode %}{%endblock%}
+
+{% block stylesheet %}
+<!-- Adobe fonts -->
+<link rel="stylesheet" href="https://use.typekit.net/qri0ucm.css">
+
+<!-- Bootstrap styling -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'ubyssey/css/spoof-2026.css' %}" type="text/css" />
+{% endblock %}
+
+{% block head_scripts %}
+<!-- Needed for Bootstrap-->
+<meta charset="utf-8">
+
+<!-- Bootstrap 5 for Guide stuff -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block header %}
+	{% comment %} {% flat_menu 'guide2021' template="navigation/headers/guide/2021/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True %} {% endcomment %}
+	{% if page.menu %}
+		<!-- Manually selected menu: {{ page.menu.handle }} -->
+		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns_spoof_2026.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% elif create_menu_from_parent %}
+		<!-- Menu created from parent page -->	 
+		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns_spoof_2026.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% endif %}
+{% endblock %}
+
+{% block pre_main_content %}
+{% endblock %}
+
+{% block content %}
+<main class="{{ self.main_class_name }} o-site-wrapper">
+    {% block banner_ad %}
+    <!-- Article Page header ads go here -->
+        {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
+            {% gpt_define_tag orderable.ad_slot is_mobile %}
+        {% endfor %}
+    {% endblock %}
+
+
+    <article class="c-article">
+        <div class="u-container u-container--content u-container--padded">
+        {% block banner %}
+                {% if self.header.0 %}
+                    <header class="header {{self.header.0.value.layout}}">
+                        <div class="header-content">
+                            <div class="left-container">
+                                <div class="section-tag">{{self.title_tag}}</div>
+                                <h1 class="c-article__title">{{ self.title|safe }}</h1>
+                                {% if self.header.0.value.above_cut_lede %}
+                                    <p class="above_cut_lede">{{ self.header.0.value.above_cut_lede }}</p>
+                                {% endif %}
+                                <div class="c-article__info">
+                                    {% comment %}
+                                        {% include 'objects/social-icons.html' with article=article layout='top' %}
+                                    {% endcomment %}
+                                    <div class="byline">By {{self.get_authors_with_urls|safe}}</div>
+                                    <time class="pubdate" datetime="{{ self.published_at }}">{{ self.published_at }}</time>
+                                </div>
+                            </div>
+                        </div>
+                        {% if self.header.0.value.layout != "no-image" %}
+                        <div class="header-asset">
+                            <div class="full-width featured-media">
+                                {% if self.featured_media.first.image %}
+                                    {% with self.featured_media.first as featured_image_object %}
+                                        {% image featured_image_object.image height-2400 as featured_image %}
+                                        <img
+                                            class="article-attachment"
+                                            data-id="{{ featured_image_object.image.id }}"
+                                            data-caption="{{ featured_image_object.caption }}"
+                                            data-url="{{ featured_image.url }}"
+                                            data-credit="{{ featured_image_object.credits }}"
+                                            src="{{ featured_image.url }}"
+                                            alt="{{featured_image_object.alt_text}}"
+                                        />
+                                    {% endwith %}
+                                {% endif %}
+                            </div>
+                            <div class="caption">{{self.featured_media.first.caption|safe}}</div>
+                        </div>
+                        {% endif %}
+                    </header>
+                {% endif %}
+        {% endblock %}
+        <div class="article-container">
+
+            <div class="c-article__content">
+                {% comment %} <div class="advertisement box sidebar">
+                    {% include 'objects/advertisement.html' with size='box' name='Box_A' id=3 article=article.id %}
+                </div> {% endcomment %}
+                {% for block in self.content %}
+                    {% include_block block with id=block.id %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="suggested">
+            <header>Read more</header>
+            <ul class="suggested-articles">
+            {% for article in self.get_section_articles %}
+                {% image article.featured_media.first.image width-1000 as featured_image %}
+                <li>
+                <a href="{% pageurl article%}">
+                <article style="background-image:url('{{featured_image.url}}'); {{featured_image.background_position_style}}" aria-label="{{article.featured_media.first.alt_text}};">
+                    <div class="o-article__meta">
+                        <div class="section-tag white">{{article.get_parent.title}}</div>
+                        <h3 class="o-article__headline">
+                            {{ article.title|safe }}
+                        </h3>
+                        <div class="byline">By {{article.get_authors_string}}</div>
+                    </div>
+                </article>
+                </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </article>
+</main>
+
+{% endblock %}
+
+{% block post_main_content %}
+{% wagtailuserbar %}
+{% endblock %}
+
+
+{% block footer %}
+{% include "specialfeaturelanding/spoof/2026/footer.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ubyssey/js/guide-2021.js' %}" type="text/javascript"></script>
+{% endblock %}

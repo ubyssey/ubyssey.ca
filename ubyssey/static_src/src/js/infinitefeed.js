@@ -41,7 +41,7 @@ function recievedata(data) {
     loader.setAttribute("inactive", "True");
     loader.setAttribute("end", "True");
     var congratz = document.createElement("p");
-    congratz.innerHTML = "You reached the end! 🥳";
+    congratz.innerHTML = "You reached the end!";
     loader.replaceChildren(congratz);
   } else {
     for (let i=0; i<data.length; i++) {

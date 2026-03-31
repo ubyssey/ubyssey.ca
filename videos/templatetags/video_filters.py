@@ -12,7 +12,7 @@ from django import template
 register = template.Library()
 import re as regex
 
-YOUTUBE_REGEX_STRING = r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})'
+YOUTUBE_REGEX_STRING = r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|shorts/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})'
 
 @register.filter(name='youtube_embed_id')
 def youtube_embed_id(url):

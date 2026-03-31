@@ -70,13 +70,13 @@
             color: #1871C4;
         }
         .author-desc {
-            color: var(--text_color);
+            color: var(--text_color-100);
         }
     }
 }
 .author-links {
     margin-bottom: 0;
-    color: var(--header_color);
+    color: var(--header_color-100);
     @media(variables.$bp-larger-than-phablet) {
     
     }

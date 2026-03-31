@@ -71,7 +71,7 @@ services:
       SQL_DATABASE: ubyssey
       GS_ACCESS_KEY_ID_FILE: /run/secrets/GS_ACCESS_KEY_ID
       GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
-      STATIC_URL: https://storage.googleapis.com/ubyssey/static/
+      STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
       EMAIL_HOST_PASSWORD_FILE: /run/secrets/EMAIL_HOST_PASSWORD
 
@@ -156,7 +156,7 @@ services:
       SQL_DATABASE: ubyssey
       GS_ACCESS_KEY_ID_FILE: /run/secrets/GS_ACCESS_KEY_ID
       GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
-      STATIC_URL: https://storage.googleapis.com/ubyssey/static/
+      STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
       EMAIL_HOST_PASSWORD_FILE: /run/secrets/EMAIL_HOST_PASSWORD
 

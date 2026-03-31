@@ -53,6 +53,7 @@ from wagtail.models import Page, PageManager, Orderable, RevisionMixin, Previewa
 from wagtail.documents.models import Document
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.search import index
+from wagtail.search.query import Phrase, PlainText
 from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
@@ -63,6 +64,7 @@ from wagtailmenus.models import FlatMenu
 from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
 
+from asgiref.sync import async_to_sync, sync_to_async
 
 UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17) 
 
@@ -431,15 +433,48 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
 
     tagged_articles_count = models.IntegerField(default=0, editable=False)
 
+    relevance_score = models.IntegerField(default=0, editable=False)
+
     panels = [
         FieldPanel("name"),
         FieldPanel("slug", widget=SlugInput()),
         FieldPanel("description"),
         FieldPanel("listed")
     ]
-    
+
     def get_count_of_tagged_articles(self):
         return TaggedArticlePage.objects.filter(tag=self).count()
+
+    def calc_relevence_score(self, count, recency):
+        import math
+
+        # At some point the relevance score will get too large and will always max out just due to recency.
+        # TO DO: We should run update_all_topics on a cron job every year. Then we can set the epoch to a constant distance from the present year.
+        EPOCH = 2010
+        MAX_VALUE = 2147483647 # necessary because constraint in integer field
+
+        if recency is None:
+            return count
+        if count < 1:
+            return 0
+        time_score = (recency.replace(tzinfo=None) - timezone.datetime(year=EPOCH, month=1, day=1)).days 
+        return min(pow(time_score, 1.25) * math.log(count), MAX_VALUE)
+
+    async def update_topic(self, date=None):
+        if date:
+            if self.last_used_at == None:
+                self.last_used_at = date
+            elif self.last_used_at <= date:
+                self.last_used_at = date
+        else:
+            self.last_used_at = await sync_to_async(self.last_tagged_at)()
+
+        count = await sync_to_async(self.get_count_of_tagged_articles)()
+
+        self.tagged_articles_count = count
+        self.relevance_score = self.calc_relevence_score(count, self.last_used_at)
+        print(self.relevance_score)
+        await self.asave()
 
     def recent_sections(self):
         return ", ".join(set([tagged.content_object.current_section for tagged in TaggedArticlePage.objects.filter(tag=self).order_by("-id")[:5]]))
@@ -451,7 +486,6 @@ class ArticleTopic(TagBase, PreviewableMixin, RevisionMixin):
 
     def last_tagged_at(self):
         tagged = TaggedArticlePage.objects.filter(tag=self).aggregate(Max("content_object__first_published_at"))
-        print(tagged)
         if tagged == None:
             return 0
         return tagged["content_object__first_published_at__max"]
@@ -553,6 +587,27 @@ class ArticlePageManager(PageManager):
             except SectionPage.DoesNotExist:
                 articles = SectionPage.objects.none()
             
+        return articles
+
+    def custom_search(self, objects, query, order=True, site=None, max_articles=None):
+
+        if len(query) == 1:
+            articles = objects.filter(title__istartswith=query)
+        elif len(query) < 4:
+            articles = objects.filter(Q(title__istartswith=query) | Q(title__icontains=" " + query))
+        else:
+            articles = objects.filter(Q(title__icontains=query) | Q(seo_keyword__icontains=query))
+        
+        if order:
+            articles = articles.order_by("-explicit_published_at")
+        
+        if max_articles is not None and articles.count() < max_articles:
+            alt_articles = objects.search(Phrase(query) | PlainText(query))
+            if articles.count() < alt_articles.count():
+                articles = alt_articles
+
+        if max_articles is not None:
+            return articles[:max_articles]
         return articles
 
 #-----Page models-----
@@ -1025,7 +1080,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         return ', '.join(authors_strings)
     authors_with_roles = property(fget=get_authors_with_roles)
  
-    def get_authors_split_out_visual_bylines(self) -> str:
+    def get_authors_split_out_visual_bylines(self, links=True) -> str:
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
 
@@ -1050,7 +1105,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         words_byline = ""
         if 'author' in authors_by_role:
             word_authors = list(map(lambda author: author.author, authors_by_role['author']))
-            words_byline = self.get_authors_string(links=True, authors_list=authors_by_role['author'])
+            words_byline = self.get_authors_string(links=links, authors_list=authors_by_role['author'])
     
         visuals = []
         has_multi_contribution_author = False
@@ -1061,7 +1116,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 has_multi_contribution_author = True
             only_visuals_authors = list(filter(lambda author: not author.author in word_authors, v))
             if len(only_visuals_authors) > 0:
-                visuals.append([k, self.get_authors_string(links=True, authors_list=only_visuals_authors)])
+                visuals.append([k, self.get_authors_string(links=links, authors_list=only_visuals_authors)])
         visuals.sort(key=lambda s: role_types.index(s[0]))
         
         visuals_byline = ''
@@ -1114,7 +1169,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         Defines the title and articles in the suggested box
         """
         suggested = {}
-        MIN_ARTICLES = 2
+        MIN_ARTICLES = 3
         if len(self.connected_articles.all()) > 0:
             suggested = {}
             suggested['title'] = "Related stories"
@@ -1142,11 +1197,11 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
         if not suggested:
             section_articles = self.get_section_articles(max=number_suggested)
-            if len(section_articles) >= MIN_ARTICLES:
-                suggested = {}
-                suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a>"
-                suggested['articles'] = section_articles[:number_suggested]
-                suggested['type'] = 'section'
+            #if len(section_articles) >= MIN_ARTICLES:
+            suggested = {}
+            suggested['title'] = "More from <a href='" + self.get_parent().url + "'>" + self.get_parent().title + "</a>"
+            suggested['articles'] = section_articles[:number_suggested]
+            suggested['type'] = 'section'
         
         if not suggested:
             suggested = False
@@ -1180,6 +1235,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                 "type": "category",
             })
         
+        QUERY_LENGTH_CUTOFF = 15
         time_cutoff = timezone.now() - timezone.timedelta(weeks=150)
 
         if self.current_section in ['opinion', 'humour', 'features'] and self.primary_tag_slug:
@@ -1187,7 +1243,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             if primary_topic != None:
                 topic_articles.append({
                     "topic": f'News: <a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
-                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                    "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section="news", explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:QUERY_LENGTH_CUTOFF],
                     "type": "other section",
                 })
 
@@ -1198,7 +1254,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
                     topic_articles.append(
                         {
                             "topic": f'<a href="/topic/{primary_topic.slug}/">{primary_topic.name}</a>',
-                            "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                            "considered_articles": ArticlePage.objects.filter(topics=primary_topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:QUERY_LENGTH_CUTOFF],
                             "type": "topic",
                         }
                 )
@@ -1212,7 +1268,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         topic_articles = topic_articles + list(sorted([
             {
                 "topic": f'<a href="/topic/{topic.slug}/">{topic.name}</a>',
-                "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:5],
+                "considered_articles": ArticlePage.objects.filter(topics=topic, current_section=self.current_section, explicit_published_at__gte=time_cutoff).order_by("-first_published_at")[:QUERY_LENGTH_CUTOFF],
                 "type": "topic",
             } for topic in listed_topics
         ], key= lambda topic: topic["considered_articles"][0].first_published_at.timestamp() if len(topic["considered_articles"]) > 0 else 0, reverse=True))
@@ -1501,6 +1557,8 @@ class StandardArticlePage(ArticlePage):
             return "article/article_page_magazine_2024.html"
         elif self.layout == 'spoof-2024':
             return "article/article_page_spoof_2024.html"
+        elif self.layout == 'spoof-2026':
+            return "article/article_page_spoof_2026.html"
         elif self.layout == 'guide-2024':
             return "article/article_page_guide_2024.html"
         elif self.layout == 'science-2024':
@@ -1651,7 +1709,8 @@ class StandardArticlePage(ArticlePage):
                             ('science-2024', 'Science Supplement (2024)'),
                             ('femme-2024', 'Femme Culture Special Issue (2024)'),
                             ('nocturne-2024', 'Nocturne Features Supplement (2024)'),
-                            ('passing-2025', 'Passing Special Article (2025)')
+                            ('passing-2025', 'Passing Special Article (2025)'),
+                            ('spoof-2026', 'Spoof (2026 style)'),
                         ],
                     ),
                 ),

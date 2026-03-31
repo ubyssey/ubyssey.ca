@@ -1,0 +1,226 @@
+// Vogue-style 3-column card grid for Spoof 2026
+@use "base";
+
+.vogue-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-auto-flow: row dense;
+  align-items: start;
+  gap: 0;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+}
+
+// Left column: image cards stacked vertically
+.vogue-col-left {
+  grid-column: 1;
+  padding: 0 1.5rem 1rem 0;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+    padding: 1rem 0;
+  }
+}
+
+// Center column: hero card spanning full height of left column
+.vogue-col-center {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  padding: 0 1.5rem;
+  align-self: start;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+    grid-row: auto;
+    padding: 1rem 0;
+  }
+}
+
+// Right column: sidebar article list
+.vogue-col-right {
+  grid-column: 3;
+  padding: 0 0 0.75rem 1.5rem;
+
+  & + .vogue-col-right {
+    padding-top: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+    padding: 1rem 0;
+  }
+}
+
+// ── Shared card elements ──────────────────────────────────────────────────────
+
+.vogue-card__label {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+
+.vogue-card__title-link {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover .vogue-card__title,
+  &:hover .vogue-card__hero-title {
+    text-decoration: underline;
+  }
+}
+
+.vogue-card__title {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: #000;
+  margin: 0 0 0.4rem;
+}
+
+.vogue-card__hero-title {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #000;
+  margin: 0.5rem 0 0.4rem;
+
+  @media (max-width: 1024px) {
+    font-size: 22px;
+  }
+}
+
+.vogue-card__byline {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0;
+}
+
+.vogue-card__photo-credit {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0.2rem 0 0;
+}
+
+.vogue-card__body {
+  padding-top: 0.75rem;
+}
+
+// ── Image card (left column) ──────────────────────────────────────────────────
+
+.vogue-col-left {
+  .vogue-card__image-link {
+    display: block;
+  }
+
+  .vogue-card__image {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .vogue-card__body {
+    text-align: center;
+    padding-top: 0.75rem;
+  }
+
+  .vogue-card__title {
+    font-style: normal;
+  }
+
+  .vogue-card__byline,
+  .vogue-card__photo-credit {
+    display: block;
+    text-align: center;
+  }
+}
+
+// ── Hero card (center column) ─────────────────────────────────────────────────
+
+.vogue-col-center {
+  .vogue-card__hero-image {
+    width: 100%;
+    display: block;
+  }
+
+  .vogue-card__body {
+    text-align: center;
+    padding: 1rem 1rem 0;
+  }
+
+  .vogue-card__label {
+    margin-top: 0;
+  }
+
+  .vogue-card__hero-title {
+    font-size: 32px;
+    font-style: normal;
+    margin: 0.5rem 0;
+  }
+
+  .vogue-card__byline,
+  .vogue-card__photo-credit {
+    display: block;
+    text-align: center;
+  }
+}
+
+// ── Sidebar card (right column) ───────────────────────────────────────────────
+
+.vogue-col-right {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+
+  .vogue-card__sidebar-content {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .vogue-card__label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.3rem;
+  }
+
+  .vogue-card__title {
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 400;
+    margin-bottom: 0.3rem;
+  }
+
+  .vogue-card__byline {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .vogue-card__thumb-link {
+    flex: 0 0 38%;
+  }
+
+  .vogue-card__thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}

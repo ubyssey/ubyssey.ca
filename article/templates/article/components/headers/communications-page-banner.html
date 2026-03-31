@@ -1,0 +1,31 @@
+<div class="fw-banner c-communications-header">
+    <div class="c-communications-header--container">
+        <div class="c-communications-header--headline-container">
+
+            {% if article.title_tag_str %}
+                <p class="title-tag">{{article.title_tag_str}}//</p>
+            {% endif %}
+
+            <header>
+                <h1 class="o-headline o-headline--article">
+                    {{ title|safe }}
+                </h1>
+
+                {% if self.subtitle %}
+                    <p class="subtitle">{{self.subtitle|safe}}</p>    
+                {% endif %}
+            </header>
+
+            {% if self.above_cut_lede %}
+                <div class="o-article--header--above_cut_lede">
+                {{ self.above_cut_lede|safe }}
+                </div>
+            {% endif %}
+
+            <div class="c-article__info">
+                <p class="c-article__published-at">{{ article.published_at|date:'N j, Y' }}</p>
+            </div>
+
+        </div>
+    </div>
+</div>

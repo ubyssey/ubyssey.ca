@@ -27,7 +27,7 @@ def validate_colour_hex(value):
             params={'value': value},
         )
 def validate_youtube_url(value):
-    """
+    r"""
     Matches value against the regular expression:
     (https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})
 

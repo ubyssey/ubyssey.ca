@@ -30,22 +30,26 @@ class AdvertiseTheme(object):
 
             content = f'THIS EMAIL IS FROM noreply@ubyssey.ca. TO FOLLOW UP THIS INQUIRY, CONTACT THE EMAIL ADDRESS BELOW\n\n{fields_content}\n\nSent from https://ubyssey.ca/advertise/#contact.\nDo not reply.'
 
+            blacklist = ['testing@example.com']
+
             if name and email:
-                
-                if trap in ['', None]:
-                    # This is a dumb way to filter out bots. The input is inaccessible to a regular user, so should be empty.
-                    recipient = [settings.UBYSSEY_ADVERTISING_EMAIL]
-                else:
-                    # If the trap field has content, send to webmaster email so that we have logs of this activity
-                    recipient = [settings.UBYSSEY_WEBMASTER_EMAIL]
-                
-                send_mail(
-                    'Advertising inquiry from %s' % name,
-                    content,
-                    settings.EMAIL_HOST_USER,
-                    recipient,
-                    fail_silently=False,
-                )
+                if email not in blacklist:
+                    if trap in ['', None]:
+                        # This is a dumb way to filter out bots. The input is inaccessible to a regular user, so should be empty.
+                        recipient = [settings.UBYSSEY_ADVERTISING_EMAIL]
+                    else:
+                        # If the trap field has content, send to webmaster email so that we have logs of this activity
+                        #recipient = [settings.UBYSSEY_WEBMASTER_EMAIL]
+                        # Actually don't do this cause gmail has a cap on frequency of authentications
+                        pass
+                    
+                    send_mail(
+                        'Advertising inquiry from %s' % name,
+                        content,
+                        settings.EMAIL_HOST_USER,
+                        recipient,
+                        fail_silently=False,
+                    )
 
 
         return render(request, 'advertise/index.html', {})

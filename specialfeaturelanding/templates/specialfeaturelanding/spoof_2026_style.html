@@ -1,0 +1,132 @@
+{% extends 'ubyssey/base.html' %}
+
+{% comment %} {% extends 'specialfeaturelanding/guide/base.html' %} {% endcomment %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailuserbar %}
+{% load menu_tags %}
+
+{% block stylesheet %}
+<!-- Adobe fonts from sports email account -->
+<link rel="stylesheet" href="https://use.typekit.net/qri0ucm.css">
+<!-- Bootstrap styling -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'ubyssey/css/spoof-2026.css' %}" type="text/css" />
+{% endblock %}
+
+{% block head_scripts %}
+<!-- Needed for Bootstrap-->
+<meta charset="utf-8">
+
+<!-- Bootstrap 5 for Guide stuff -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block header %}
+	{% comment %} {% flat_menu 'guide2021' template="navigation/headers/guide/2021/header.html"  show_menu_heading=False  fall_back_to_default_site_menus=True %} {% endcomment %}
+	{% if page.menu %}
+		<!-- Manually selected menu: {{ page.menu.handle }} -->
+		{% flat_menu page.menu.handle template="navigation/bootstrap/topbar_with_dropdowns_spoof_2026.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% elif create_menu_from_parent %}
+		<!-- Menu created from parent page -->	 
+		{% children_menu parent_page_for_menu_generation template="navigation/bootstrap/topbar_with_dropdowns_spoof_2026.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
+	{% endif %}
+{% endblock %}
+
+{% block pre_main_content %}
+{% if page.pre_main_stream %}
+	{% for block in page.pre_main_stream %}
+		{% include_block block %}
+	{% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<main class="{{ self.main_class_name }} o-site-wrapper">
+	{% if page.editorial_stream %}
+	<div class="editorial-container">
+		{% for block in page.editorial_stream %}
+			{% include_block block %}
+		{% endfor %}
+	</div>
+	{% endif %}
+</main>
+
+{% endblock %}
+
+{% block post_main_content %}
+
+
+{% for block in self.content %}
+{% include_block block %}
+{% endfor %}
+
+{% wagtailuserbar %}
+{% endblock %}
+
+
+{% block footer %}
+{% include "specialfeaturelanding/spoof/2026/footer.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ubyssey/js/guide-2021.js' %}" type="text/javascript"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-vogue-row]').forEach(function (row) {
+    var track = row.querySelector('.vogue-row__track');
+    var cards = Array.from(track.querySelectorAll('.vogue-row-card'));
+    var counter = row.querySelector('.vogue-row__counter');
+    var prevBtn = row.querySelector('.vogue-row__prev');
+    var nextBtn = row.querySelector('.vogue-row__next');
+    var nav = row.querySelector('.vogue-row__nav');
+    var dotsContainer = row.querySelector('.vogue-row__dots');
+
+    // Desktop pagination (on mobile, CSS display:block !important overrides hiding)
+    var perPage = 4;
+    var page = 0;
+    var pages = Math.ceil(cards.length / perPage);
+
+    if (pages <= 1) { nav.style.display = 'none'; }
+
+    function render() {
+      cards.forEach(function (c, i) {
+        c.style.display = Math.floor(i / perPage) !== page ? 'none' : '';
+      });
+      counter.textContent = (page + 1) + ' / ' + pages;
+      prevBtn.disabled = page === 0;
+      nextBtn.disabled = page === pages - 1;
+    }
+
+    prevBtn.addEventListener('click', function () { if (page > 0) { page--; render(); } });
+    nextBtn.addEventListener('click', function () { if (page < pages - 1) { page++; render(); } });
+    render();
+
+    // Mobile: dots synced to scroll
+    if (dotsContainer) {
+      cards.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.style.cssText = 'width:8px;height:8px;border-radius:50%;border:none;padding:0;cursor:pointer;background:' + (i === 0 ? '#000' : '#ccc') + ';';
+        dot.setAttribute('aria-label', 'Go to card ' + (i + 1));
+        dot.addEventListener('click', function () {
+          track.scrollTo({ left: cards[i].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+        });
+        dotsContainer.appendChild(dot);
+      });
+
+      track.addEventListener('scroll', function () {
+        var center = track.scrollLeft + track.clientWidth / 2;
+        var active = 0;
+        cards.forEach(function (c, i) {
+          if (c.offsetLeft - track.offsetLeft <= center) { active = i; }
+        });
+        dotsContainer.querySelectorAll('button').forEach(function (d, i) {
+          d.style.background = i === active ? '#000' : '#ccc';
+        });
+      }, { passive: true });
+    }
+  });
+});
+</script>
+{% endblock %}

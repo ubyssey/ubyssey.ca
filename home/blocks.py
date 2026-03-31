@@ -30,6 +30,19 @@ class ProfileCell(blocks.StructBlock):
     class Meta:
         template = "home/objects/cells/profile.html"
 
+class ProfileCellArticle(ProfileCell):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage", required=False)
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context['article'] = value['article']
+        return context
+
+    def get_articles(self, value):
+        if value["article"]:
+            return [value["article"]]
+        return []
+
 class QuoteCell(blocks.StructBlock):
 
     audio = DocumentChooserBlock(required=False, help_text="Optional, file format: .m4a, .mp4, .mp, .wav, or .ogg")
@@ -89,6 +102,29 @@ class SportsGameScore(blocks.StructBlock):
     class Meta:
         template = "home/objects/cells/sports_game_score.html"
 
+class SharedAttachmentBasicArticleListing(blocks.StructBlock):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage", required=True)
+
+    template = blocks.ChoiceBlock(
+        choices=[
+            ('article_listing--minimal', "Minimal"),
+            ('article_listing--minimal-lede', "Minimal with lede"),
+        ],
+        required=True,
+    )
+
+    def get_articles(self, value):
+        return [value["article"]]
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        if '-lede' in value['template']:
+            context['lede'] = True
+        return context
+
+    class Meta:
+        template = "home/objects/cells/article_listing--minimal.html"
+
 # Right
 class AuthorCommentary(blocks.StructBlock):
     commentary = blocks.RichTextBlock(required=True)
@@ -103,13 +139,44 @@ class AuthorCommentary(blocks.StructBlock):
 
     class Meta:
         template = "home/objects/author_commentary.html"
+    
+class SharedAttachmentProfileGrid(blocks.StructBlock):
+    profiles = blocks.StreamBlock([
+        ("profile", ProfileCellArticle())
+    ])
+    style = blocks.ChoiceBlock(choices=[
+        ("circle", "Circle"),
+        ("square", "Square"),
+        ("author", "Author")
+    ])
+
+    def get_articles(self, values):
+        articles = []
+        for i in self.to_python(values)['profiles']:
+            if hasattr( i.block, 'get_articles' ) and callable( i.block.get_articles ):
+                articles = articles + i.block.get_articles(i.get_prep_value()['value'])
+        return articles
+
+    class Meta:
+        template = "home/objects/profile_grid.html"
+
 
 class Carousel(blocks.StructBlock):
     items = blocks.ListBlock(blocks.StreamBlock([
         ("image", image_blocks.CaptionedImageBlock()),
         ("raw_html", blocks.RawHTMLBlock()),
         ("author_commentary", AuthorCommentary()),
+        ("richtext", blocks.RichTextBlock()),
+        ("profile_grid", SharedAttachmentProfileGrid()),
     ]))
+
+    def get_articles(self, values):
+        articles = []
+        for item in self.to_python(values)['items']:
+            for i in item:
+                if hasattr( i.block, 'get_articles' ) and callable( i.block.get_articles ):
+                    articles = articles + i.block.get_articles(i.get_prep_value()['value'])
+        return articles
 
     class Meta:
         template = "home/objects/carousel.html"
@@ -236,6 +303,7 @@ class CuratedGroupHeadline(blocks.StructBlock):
     style = blocks.ChoiceBlock(
         choices=[
             ('small', 'Small'),
+            ('medium', 'Medium'),
             ('large', 'Large'),
         ],
         default='small',
@@ -264,6 +332,9 @@ class CuratedStreamSharedAttachment(blocks.StructBlock):
         ("profile", ProfileCell()),
         ("quote", QuoteCell()),
         ("raw_html", blocks.RawHTMLBlock()),
+        ("article_listing", SharedAttachmentBasicArticleListing()),
+        ("richtext", blocks.RichTextBlock()),
+        ("profile_grid", SharedAttachmentProfileGrid()),
     ])
     right = Carousel()
 
@@ -273,6 +344,8 @@ class CuratedStreamSharedAttachment(blocks.StructBlock):
         for i in self.to_python(values)['left']:
             if hasattr( i.block, 'get_articles' ) and callable( i.block.get_articles ):
                 articles = articles + i.block.get_articles(i.get_prep_value()['value'])
+
+        articles = articles + self.to_python(values)['right'].block.get_articles(values['right'])
 
         return articles
 
@@ -308,9 +381,16 @@ class CuratedStreamGrid(blocks.StructBlock):
         ]))
     ]))
     rows = blocks.ChoiceBlock(choices=[
+        ("one", "One"),
+        ("two", "Two"),
         ("three", "Three"),
         ("four", "Four"),
+        ("five", "Five"),
     ])
+    layout = blocks.ChoiceBlock(choices=[
+        ("headline_top", "Headline top"),
+        ("headline_left", "Headline left"),
+    ], default="headline_top")
 
     def get_articles(self, values):
         articles = []

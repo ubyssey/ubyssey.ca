@@ -65,8 +65,8 @@
         flex-direction: column;
         .o-card {
             --background: var(--light-grey);
-            --text_color: #272727;
-            --header_color: ;
+            --text_color-100: #272727;
+            --header_color-100: ;
             filter: drop-shadow(-0.25em .25em 0.5em var(--shadow-color));
         }      
     }
@@ -78,16 +78,21 @@
         .o-card {
             width: 100%;
             max-width: 350px;
+            display: flex;
+            gap: 1.5em;
 
             @media (variables.$bp-smaller-than-phablet) {
                 max-width: none;
             }
 
-            &.o-card--image {
-                padding-left: calc(100px + 1em);
-                background-size: 100px;
-                background-repeat: no-repeat;
-                background-position-y: 1em;
+            &.o-card--profile {
+                .o-card--profile--left {
+                    width: 100px;
+                    flex-shrink: 0;
+                    img {
+                        border-radius: 100%;
+                    }
+                }
                 p {
                     margin-block: 0.5rem;
                 }
@@ -111,7 +116,7 @@
         padding: 1em;
         border-radius: 1em;
 
-        color: var(--text_color);
+        color: var(--text_color-100);
         background-color: var(--background);
 
         &.o-card--image {

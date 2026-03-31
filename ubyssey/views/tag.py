@@ -17,7 +17,7 @@ class TagPage(object):
                 "object": tag,
                 "storystream": "true",
                 "filters": {"tag": tag.id},
-                "meta": {"title": tag.name,
+                "meta": {"title": f'{tag.name} - The Ubyssey',
                          "slug": tag.slug,
                          "url": site.root_url + "/topic/" + tag.slug + "/",
                          "description": "Stories tagged '" + tag.name + "' from The Ubyssey."},

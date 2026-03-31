@@ -4,7 +4,7 @@
         <div class="o-author_commentary--authors--img">
         {% for author in self.authors %}
             {% if author.image %}
-            {% image author.image width-200 format-webp loading="lazy" class="author_image" alt=author.full_name %}            
+            {% image author.image fill-200x200-c100 format-webp loading="lazy" class="author_image" alt=author.full_name %}            
             {% endif %}
         {% endfor %}
         </div>
