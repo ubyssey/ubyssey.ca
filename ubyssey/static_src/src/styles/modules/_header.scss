@@ -688,6 +688,15 @@ nav.mobile {
         margin-bottom: 20px;
     }
 
+    @media (min-width: 652px) {
+    .left,
+    .right {
+        float: left;
+        width: 50%;
+        margin-bottom: 20px;
+    }
+}
+
     h3 {
         font-size: 14px;
         text-transform: uppercase;
