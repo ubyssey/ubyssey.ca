@@ -24,7 +24,11 @@
 
             h1 {
                 font-size: 42px;
-                line-height: 1.2em;            
+                line-height: 1.2em;
+
+                @media (base.$bp-smaller-than-phablet) {
+                    font-size: 1.5em;
+                }
             }
 
             .c-article__info {
@@ -107,12 +111,16 @@
                 color: #1f1f1f;
                 text-decoration: underline;
             }
-            > p {
+            > p, > ul > li {
+                font-family: base.$font-serif;
                 letter-spacing: normal;
                 line-break: auto;
                 line-height: 1.5em;
                 font-size: 20px;
                 font-weight: 400;
+            }
+            > ul > li {
+                margin-bottom: 1em;
             }
             > h2 {
                 margin-top: 40px;
@@ -131,10 +139,12 @@
             > .image-grid-attachment {
                 display: flex;
                 gap: 1em;
+                flex-wrap: wrap;
                 .image-attachment {
                     img {
                         height: var(--image-height);
                         width: auto;
+                        max-width: 100%;
                         object-fit: cover;
                     }
                 }
