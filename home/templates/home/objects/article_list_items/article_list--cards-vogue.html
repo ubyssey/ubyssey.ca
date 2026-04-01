@@ -3,9 +3,9 @@
 
 
 <article class="o-article o-curated_group--cards--card vogue-style">
-    {% image article.featured_media.first.image original as rendered_image %}
+    
     <a href="{% pageurl article %}" title="{{article.title}}">
-        <img class="article-attachment" loading="lazy" width="{{rendered_image.width}}" height="{{rendered_image.height}}" decoding="async" data-id="{{ rendered_image.id }}" data-url="{{ rendered_image.url }}" src="{{ rendered_image.url }}" alt="{{ alt_text }}" />	
+        {% image article.featured_media.first.image fill-600x600-c100 class="article-attachment" alt=alt_text loading="lazy" %}
     </a>
 
     <div class="o-curated_group--cards--card--headline">

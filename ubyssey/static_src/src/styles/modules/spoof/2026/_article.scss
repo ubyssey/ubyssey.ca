@@ -310,9 +310,16 @@
             flex-wrap: wrap;
             gap: 1em;
             li {
-                width: 30%;
-                max-width: 50%;
                 flex-grow: 1;
+
+                @media (base.$bp-larger-than-phablet) {
+                    width: 30%;
+                    max-width: 50%;
+                }
+                @media (base.$bp-smaller-than-phablet) {
+                    width: 100%;
+                }
+
                 a {                    
                     text-decoration: none;
                 }
