@@ -1,0 +1,23 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+
+<article class="o-article o-curated_group--cards--card vogue-style">
+    {% image article.featured_media.first.image original as rendered_image %}
+    <a href="{% pageurl article %}" title="{{article.title}}">
+        <img class="article-attachment" loading="lazy" width="{{rendered_image.width}}" height="{{rendered_image.height}}" decoding="async" data-id="{{ rendered_image.id }}" data-url="{{ rendered_image.url }}" src="{{ rendered_image.url }}" alt="{{ alt_text }}" />	
+    </a>
+
+    <div class="o-curated_group--cards--card--headline">
+        {% if article.title_tag %}
+        <span class="vogue-card__label">{{ article.title_tag }}</span>
+        {% endif %}
+
+        <a href="{% pageurl article %}" title="{{article.title}}" class="vogue-card__title-link">
+            <h3 class="vogue-card__title">{{ article.title|safe }}</h3>
+        </a>
+
+        <div class="vogue-card__byline">{{ article.get_authors_split_out_visual_bylines|safe }}</div>
+    </div>
+
+</article>

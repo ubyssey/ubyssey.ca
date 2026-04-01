@@ -35,4 +35,7 @@ h1, h2 {
 
 a {
     color: inherit;
+    &:hover {
+        color: inherit;
+    }
 }

@@ -1,9 +1,8 @@
 {% load wagtailimages_tags %}
-{% image card_image width-900 as hero_img %}
 
 <div class="{{ self.class_name }}">
   <a href="{{ self.card_page.url }}" class="vogue-card__image-link">
-    <img src="{{ hero_img.url }}" alt="{{ card_title }}" class="vogue-card__hero-image">
+    {% image card_image width-900 alt=card_title class="vogue-card__hero-image" %}
   </a>
   <div class="vogue-card__body">
     {% if section_label %}

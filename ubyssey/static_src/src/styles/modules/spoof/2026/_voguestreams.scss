@@ -158,10 +158,9 @@
 
   .vogue-card__image {
     width: 100%;
-    aspect-ratio: 3 / 2;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
   }
 
   .vogue-card__body {
@@ -185,6 +184,7 @@
 .vogue-col-center {
   .vogue-card__hero-image {
     width: 100%;
+    height: auto;
     display: block;
   }
 
@@ -241,7 +241,7 @@
   }
 
   .vogue-card__thumb-link {
-    flex: 0 0 38%;
+    width: 75px;
   }
 
   .vogue-card__thumbnail {
