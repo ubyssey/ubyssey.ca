@@ -4,7 +4,7 @@
 {% cache 6000 category_modal section %}
 <dialog class="modal" aria-modal="true">
     <div class="js-dropdown-container close-modal"></div>
-    <div class="category_menu u-container u-container--padded">
+    <div class="category_menu modal-inner-container u-container u-container--padded">
     <a href="#" class="c-section__modal_close close-modal">
     <ion-icon name="close"></ion-icon>
     </a>
@@ -12,10 +12,10 @@
     {% if parent %}
     <p><a href="{% pageurl parent %}">{{parent.title}}</a></p> 
     {% else %}
-    <p><a href="{% pageurl self %}">{{self.title}}</a></p>
+    <p><a href="{% pageurl page %}">{{page.title}}</a></p>
     {% endif %}
 
-    {% for group in self.all_categories %}
+    {% for group in page.all_categories %}
     <h2>{{group.group}}</h2>
     <ul>
     {% for category in group.categories %}

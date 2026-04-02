@@ -2,19 +2,6 @@
 @use "../modules/variables";
 
 article.headline-top-articles {
-    .o-article__left {
-      margin-bottom: 1em;
-
-      .o-article__image {
-        display: block;
-        height: 100%;
-
-        img {
-          border-radius: 1em;
-          border: 2px solid;
-        }
-      }
-    }
 
     .above-headline {
         margin-bottom: 0.5em;
@@ -29,22 +16,22 @@ article.headline-top-articles {
         margin-right: 0.5em;
         color: var(--color-ubyssey_blue);
         font-weight: 600;
+        font-variation-settings: "wght" 600;
     }
     .o-article__headline {
         margin-block: 0.5em;
         font-family: fonts.$font-headline;
-        font-size: 2.5em;
         line-height: 1.25em;
+        font-size: 1.5em;
+        text-wrap: balance;
     }
-
-    .o-article--default {
-        padding-block: 1em;
+    > .o-article__default {
+        margin-top: 1.5em;
     }
-
-    .left{
+    .o-article__left{
         margin: auto;
         width: 100%;
-        max-width: 475px;
+        max-width: 650px;
         flex-shrink: 0;
         img {
         width: 100%;
@@ -54,16 +41,13 @@ article.headline-top-articles {
         object-fit: cover;
         }
     }
-    .right{
+    .o-article__right{
         margin-left: 2em;
         width: 100%;
-        @media(variables.$bp-larger-than-phablet) {
-            margin-block: auto;
-            padding-bottom: 2em;
-        }
-        .lede {
+
+        .o-article__snippet {
             margin-block: 0.25em;
-            font-size: 1.25em;
+            font-size: 1em;
             line-height: 1.5em;
             a {
                 color: var(--color-ubyssey_blue);
@@ -73,37 +57,55 @@ article.headline-top-articles {
             }
         }
         .read-more {
-        display: inline-block;
-        font-style: italic;
+            display: inline-block;
+            font-style: italic;
         }
         .o-article__byline {
-        font-size: 1em;
+            font-size: 1em;
+            font-weight: 500;
+            font-variation-settings: "wght" 500;
         }
     }
-
     @media(variables.$bp-smaller-than-desktop) {
         padding-inline: 1em;   
     }
+    @media(variables.$bp-larger-than-phablet) { 
+        .o-article__left {
+            width: 50%;
+        }
+    }
+    @media(variables.$bp-larger-than-tablet) { 
+        .o-article__headline {
+            font-size: 2.5em;
+        }
+
+        &.large-left .o-article__headline {
+            font-size: 2.25em;
+        }
+
+        .o-article__right {
+            padding-bottom: 2em;
+            .o-article__snippet {
+                font-size: 1.25em;
+            }
+        }
+    }
+    @media(variables.$bp-larger-than-desktop) { 
+        .o-article__left {
+            width: 100%;
+        }
+    }
     @media(variables.$bp-smaller-than-phablet) { 
         padding-inline: 0;
-        .o-article__headline {
-            font-size: 1.5em;
+        > .o-article__headline, > .above-headline {
+            margin-inline: 1.5em;
         }
-        .o-article__headline, .above-headline {
-            margin-inline: 15px;
-        }
-        h2 {
-            font-size: 1.5em;
-        }
-        .left {
+        .o-article__left {
             max-width: 100%;
         }
-        .right {
+        .o-article__right {
             margin: 1.5em;
             width: auto;
-            .lede {
-                font-size: 1.2em;
-            }
         }
     }
 }

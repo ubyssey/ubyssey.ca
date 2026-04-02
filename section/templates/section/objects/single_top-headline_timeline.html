@@ -9,24 +9,6 @@
 {% if self.article %}
 <div class="article-timeline landing_stream_block u-container u-container--large">
     {%include 'article/objects/article_top-headline.html' with article=self.article %}
-
-    {% with self.article.get_articles_by_tag as tagArticles %}
-    {% if tagArticles %}
-    <div class="timeline">
-        <div class="timeline-title">More on '{{self.article.get_primary_tag_link|safe}}'</div>
-        <ul class="horizontal-timeline">
-            {% for tagArticle in tagArticles %}
-            <li {% ifchanged tagArticle.published_at|display_pubdate %}class="timeline-dot"{% endifchanged %} >
-                
-                {% ifchanged tagArticle.published_at|display_pubdate %}
-                    <div class="o-article__published">{{tagArticle.published_at|display_pubdate}}</div>
-                {% endifchanged %}
-                <div class="o-article__headline"><a href="{% pageurl tagArticle %}">{{tagArticle.title|safe}}</a></div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-    {% endwith %}
+    {%include 'section/objects/timeline_primary-tag.html' %}
 </div>
 {% endif %}

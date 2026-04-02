@@ -44,7 +44,6 @@ class TemplateSelectStructBlock(blocks.StructBlock):
 class MidStreamListTemplates(blocks.ChoiceBlock):
  
     choices=[
-        ('section/objects/promo_glm.html', 'GIRLS LOWERMAINLAND PROMO'),
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_horizontal.html', 'Horizontal'),
@@ -58,6 +57,10 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
+        ('section/objects/single_large-image-left.html', 'Single (large image left)'),
+        ('section/objects/single_large-image-left_timeline.html', 'Single (large image left with timeline)'),
+        
+        ('section/objects/spoof-2026-promo.html', 'VAGUE PROMO'),
     ]
 
 class AbstractArticleList(TemplateSelectStructBlock):
