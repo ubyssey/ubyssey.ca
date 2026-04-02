@@ -106,11 +106,11 @@ function copyFontsTask() {
 }
 
 function watchTask() { 
-  watch('./src/js/**/*', series(cleanJsTask, webpackBuildDevTask));
-  watch('./src/styles/**/*', series(cleanCssTask, sassBuildDevTask));
-  watch('./src/images/**/*', series(cleanImagesTask, copyImagesTask));
-  watch('./src/videos/**/*', series(cleanVideosTask, copyVideosTask));
-  watch('./src/fonts/**/*',  series(cleanFontsTask, copyFontsTask));
+  watch('./src/js/**/*', series(webpackBuildDevTask));
+  watch('./src/styles/**/*', series(sassBuildDevTask));
+  watch('./src/images/**/*', series(copyImagesTask));
+  watch('./src/videos/**/*', series(copyVideosTask));
+  watch('./src/fonts/**/*',  series(copyFontsTask));
 }
 
 exports.jasmine = jasmineTask

@@ -288,6 +288,7 @@ class CuratedStreamArticleList(blocks.StructBlock):
             ('article_list--cards', "Cards"),
             ('article_list--cards-with-lede', "Cards with lede"),
             ('article_list--small-row', "Small row"),
+            ('article_list--cards-vogue', "Vogue"), # Remove after spoof is off the homepage!
         ],
         required=True,
     )
@@ -305,6 +306,8 @@ class CuratedGroupHeadline(blocks.StructBlock):
             ('small', 'Small'),
             ('medium', 'Medium'),
             ('large', 'Large'),
+
+            ('vogue', 'Vogue'), # Remove after spoof is off the homepage
         ],
         default='small',
         )

@@ -3,7 +3,11 @@
 {% load wagtailimages_tags %}
 
 {% if self %}
+    {% if self.title|striptags|safe == "The Ubyssey" %}
     <title>{{ self.title|striptags|safe }}</title>
+    {% else %}
+    <title>{{ self.title|striptags|safe }} - The Ubyssey</title>
+    {% endif %}
     <link rel="canonical" href="https://ubyssey.ca{% pageurl self %}">
     
     {% if self.noindex %}
