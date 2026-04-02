@@ -99,6 +99,11 @@
   width: 0;
   overflow-x: auto;
 
+  .featured_categories__section_heading {
+    font-weight: 600;
+    font-variation-settings: "wght" 600;
+  }
+
   p {
     margin-bottom: 0;
   }
@@ -218,7 +223,6 @@
 
 .c-section__description {
   margin-block: 1em;
-  display: inline-block;
   box-sizing: border-box;
 
   @media(variables.$bp-smaller-than-phablet) {
@@ -245,6 +249,10 @@
 
   color: footer.$text-color;
 
+  @media(variables.$bp-smaller-than-tablet) {
+    padding-inline: 1em;
+  }
+
   h2.c-section__info-header {
     max-width: fit-content;
     margin-block: auto;
@@ -264,15 +272,14 @@
 .c-section__heading .c-section__info {
   margin-block: 0;
   border: none;
-  border-top: 1px solid var(--border-grey);
 }
 
 .c-section__all-articles-list {
-  padding-top: 2em;
+  padding-block: 2em;
   border-top: 2px solid var(--border-grey);
 }
 
-.c-section__info + .c-section__all-articles-list {
+.c-section__info + .c-section__all-articles-list, .c-section__heading + .c-section__all-articles-list {
   padding-top: 0;
   border-top: none;
 }
@@ -302,8 +309,6 @@ svg.banner-title text{
 
   padding-top: 0.5em;
   border-bottom: 2px solid var(--border-grey);
-
-  font-family: fonts.$font-headline;
 
   @media (variables.$bp-smaller-than-tablet) {
     padding-inline: 1em;

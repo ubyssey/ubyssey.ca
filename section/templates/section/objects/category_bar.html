@@ -1,16 +1,21 @@
 {% load wagtailcore_tags %}
 <div class="c-section__info">
-{% if self.category_menu.count %}
+
 <div class="featured_categories">
     <ul>
-    {% for category_menu_item in self.category_menu.all %}
-        {% if category_menu_item.category_page %}
-        <li><a href="{% pageurl category_menu_item.category_page %}" title="{{ category_menu_item.category_page.title }}">{{ category_menu_item.category_page.title }}</a></li>
+        {% if parent %}
+            <li class="featured_categories__section_heading"><a href="{% pageurl parent %}" title="{{ parent.title }}">{{ parent.title }}</a></li>
+        {% else %}
+            <li class="featured_categories__section_heading"><a href="{% pageurl page %}" title="{{ page.title }}">{{ page.title }}</a></li>
         {% endif %}
-    {% endfor %}
+
+        {% for category_menu_item in page.category_menu.all %}
+            {% if category_menu_item.category_page %}
+            <li><a href="{% pageurl category_menu_item.category_page %}" title="{{ category_menu_item.category_page.title }}">{{ category_menu_item.category_page.title }}</a></li>
+            {% endif %}
+        {% endfor %}
     </ul>
 </div>
-{% endif %}
 
 <div class="c-section__buttons">
     <div class="o-archive__search c-section__button-label">

@@ -1,0 +1,18 @@
+{% load humanize %}
+{% load cache %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load video_filters %}
+{% load articletags %}
+
+<div class="vogue-style landing_stream_block u-container u-container--large">
+
+    <h2 class="vogue-headline"><a href="https://ubyssey.ca/humour/vague/">Vague</a><span><i>The Ubyssey's</i> 2026 spoof issue</span></h2>
+
+    <div class="vogue-style__articles">
+    {% for article in self.articles %}
+        {% include "home/objects/article_list_items/article_list--cards-vogue.html" %}
+    {% endfor %}
+    </div>
+</div>

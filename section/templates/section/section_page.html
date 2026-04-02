@@ -10,6 +10,8 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}" type="text/css" />
+
+<link rel="stylesheet" href="https://use.typekit.net/qri0ucm.css"> <!-- Remove once spoof 2026 is over -->
 {% endblock %}
 
 {% block head_scripts %}
@@ -40,27 +42,21 @@
     
     <div class="u-container u-container--mid">
 
-      {% if self.banner %}
-        {% image self.banner fill-2200x734-c100 format-webp as banner_image %}
-        <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{self.title}} Banner" >
-          <svg class="banner-title" viewBox="0 0 450 70">
-            <text x="10" y="50">{{self.title}}</text>
-          </svg>
-        </div>
-        <div class="c-section__description banner-description">
-          {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|richtext}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
-        </div>
-        {% include "section/objects/category_bar.html" %}
-      {%else%}
-        <div class="c-section__heading">
-          {% if parent %}<p><a href="{% pageurl parent %}">{{parent.title}}</a></p>{% endif %}
-          <h1 class="">{{self.title}}</h1>
-          <div class="c-section__description">
-            {{self.description|richtext}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+      {% if self.top_stream|length == 0 %}
+        {% if self.banner %}
+          {% image self.banner fill-2200x734-c100 format-webp as banner_image %}
+          <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{self.title}} Banner" >
+            <svg class="banner-title" viewBox="0 0 450 70">
+              <text x="10" y="50">{{self.title}}</text>
+            </svg>
           </div>
-          {% include "section/objects/category_bar.html" %}
-
-        </div>
+          <div class="c-section__description banner-description">
+            {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|richtext}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+          </div>
+          {% include "section/objects/category_bar.html" with section=self%}
+        {% else %}
+          {% include "section/objects/section_heading.html" with section=self parent=parent %}
+        {% endif %}
       {% endif %}
 
       {% for block in self.top_stream %}

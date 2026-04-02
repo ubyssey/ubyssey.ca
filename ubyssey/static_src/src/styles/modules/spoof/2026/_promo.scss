@@ -1,0 +1,79 @@
+@use "../../variables";
+
+.vogue-style {
+    &__articles {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap-reverse;
+        gap: 1em
+    }
+}
+article.vogue-style {
+    padding-inline: 0.5em;
+    box-sizing: border-box;
+
+    width: 100%;
+    max-width: 100%;
+    flex-grow: 1;
+    
+    text-align: center;
+    text-wrap: balance;
+
+    @media (variables.$bp-larger-than-phablet) {
+        padding-inline: 0;
+        width: 30%;
+        max-width: 50%;
+    }
+
+    .o-curated_group--cards--card--headline {
+        padding: 1em 0.75em;
+    }
+
+    .vogue-card__title, .vogue-card__byline, .vogue-card__label {
+        font-family: "itc-avant-garde-gothic-pro",sans-serif;
+    }
+    .vogue-card__label {
+        margin-bottom: .4rem;
+        font-size: 10px;
+        font-weight: 400;
+        letter-spacing: .15em;
+        text-transform: uppercase;
+        color: var(--header_color-200);
+    }
+    .vogue-card__title {
+        margin: 0.5rem 0;
+        font-size: 1.5em;
+        line-height: 1.22222em;
+        font-weight: 400;
+    }
+    .vogue-card__byline {
+        font-size: 10px;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--header_color-200);
+    }
+}
+
+.vogue-headline {
+    padding-block: 0.25em;
+    border-block: 1px solid var(--light-border-grey);
+    
+    font-family: "linotype-didot-headline", serif;
+    font-weight: 400;
+    font-size: 65px;
+    letter-spacing: -0.1em;
+    text-transform: uppercase;
+    color: var(--header_color-100);
+    text-decoration: none;
+    line-height: 1;
+    text-align: center;
+    
+    span {
+        margin-block: 1em;
+        display: block;
+        font-family: "itc-avant-garde-gothic-pro", sans-serif;
+        font-size: 10px;
+        letter-spacing: 3px;
+    }
+}
