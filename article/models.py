@@ -1163,7 +1163,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return category_articles[:max]
         return category_articles
     
-    def get_section_articles(self, order='-first_published_at', max=10) -> QuerySet:
+    def get_section_articles(self, order='-first_published_at', max=12) -> QuerySet:
         """
         Returns a list of articles within the Article's section
         """
