@@ -1,9 +1,9 @@
 {% load wagtailcore_tags %}
 
 <div class="c-section__heading">
-    <h1 class="">{{section.title}}</h1>
+    <h1 class="">{{page.title}}</h1>
     <div class="c-section__description">
-    {{section.description|richtext}} <a href="{% pageurl section %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
+    {{page.description|richtext}} <a href="{% pageurl page %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
     </div>
     {% include "section/objects/category_bar.html" %}
 </div>
