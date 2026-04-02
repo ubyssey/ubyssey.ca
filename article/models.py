@@ -60,7 +60,7 @@ from wagtail.snippets.views.snippets import SnippetViewSet
 
 from wagtailmenus.models import FlatMenu
 
-
+from article.widgets import TipTapAdminWidget
 from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
 
@@ -1887,6 +1887,42 @@ class StandardArticlePage(ArticlePage):
         # Author then article
         verbose_name = "Standard Article"
         verbose_name_plural = "Standard Articles"
+
+
+class TipTapArticlePage(Page):
+    """
+    A rich-text article page using TipTap as the body editor.
+    Body is stored as HTML produced by TipTap's getHTML().
+    The public page renders it directly — no client-side JS needed.
+
+    Editing uses the standard Wagtail page editor, giving automatic support
+    for revision history, draft/publish workflow, editorial comments, and
+    page locking.
+    """
+    body = models.TextField(blank=True, default='')
+
+    content_panels = Page.content_panels + [
+        FieldPanel('body', widget=TipTapAdminWidget()),
+    ]
+
+    edit_handler = TabbedInterface([
+        ObjectList(content_panels, heading='Content'),
+        ObjectList(Page.promote_panels, heading='Promote'),
+        ObjectList(Page.settings_panels, heading='Settings'),
+    ])
+
+    parent_page_types = [
+        'specialfeaturelanding.SpecialLandingPage',
+        'section.SectionPage',
+    ]
+    subpage_types = []
+
+    def get_template(self, request, *args, **kwargs):
+        return 'article/tiptap_article_page.html'
+
+    class Meta:
+        verbose_name = "TipTap Article Page"
+        verbose_name_plural = "TipTap Article Pages"
 
 
 class SpecialArticleLikePage(ArticlePage):

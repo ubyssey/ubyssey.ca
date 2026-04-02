@@ -1,0 +1,23 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% load wagtailcore_tags %}
+
+{% block stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/tiptap-article.css' %}" type="text/css" />
+{% endblock %}
+
+{% block header %}
+    {% include 'navigation/headers/topbar.html' %}
+    {% include 'navigation/headers/mobile.html' %}
+{% endblock %}
+
+{% block content %}
+    <main class="tiptap-article-page">
+        <div class="tiptap-article">
+            <div class="tiptap-article__body">
+                {{ page.body|safe }}
+            </div>
+        </div>
+    </main>
+{% endblock %}

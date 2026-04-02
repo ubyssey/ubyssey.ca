@@ -1,12 +1,9 @@
-from django.shortcuts import render
-
-# Create your views here.
-from wagtail.admin.panels import FieldPanel, ObjectList, TabbedInterface
 from wagtail.admin.ui.tables import UpdatedAtColumn
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
 from article.models import ArticleTopic
+
 
 class ArticleTopicViewSet(SnippetViewSet):
     model = ArticleTopic
