@@ -1997,8 +1997,8 @@ class StaticArticlePage(ArticlePage):
 
     def serve(self, request, *args, **kwargs):
         r = requests.get(self.static_file)
-        return HttpResponse(r.text)
+        return HttpResponse(r.content.decode(encoding="utf-8"))
 
     def serve_preview(self, request, mode_name):
         r = requests.get(self.static_file)
-        return HttpResponse(r.text)
+        return HttpResponse(r.content.decode(encoding="utf-8"))
