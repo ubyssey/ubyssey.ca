@@ -1,6 +1,6 @@
 import datetime
 import json
-from tabnanny import verbose
+import requests
 
 from images.models import GallerySnippet
 
@@ -14,6 +14,7 @@ from django.db.models.query import QuerySet
 from django.forms.widgets import Select, Widget
 from django.utils import timezone
 from django_user_agents.utils import get_user_agent
+from django.http import HttpResponse
 
 from itertools import groupby
 from images import blocks as image_blocks
@@ -65,6 +66,7 @@ from wagtail_color_panel.fields import ColorField
 from wagtail_color_panel.edit_handlers import NativeColorPanel
 
 from asgiref.sync import async_to_sync, sync_to_async
+
 
 UBYSSEY_FOUNDING_DATE = datetime.date(1918,10,17) 
 
@@ -2001,3 +2003,28 @@ class StandardArticlePageWithRightColumn(StandardArticlePage):
     class Meta:
         verbose_name = "Standard Article Page with Right Column (for About Page, Contact, etc.)"
         verbose_name_plural = "Articles"
+
+class StaticArchivedArticlePage(ArticlePage):
+    static_file = fields.URLField(help_text="A link to the storage bucket where articles from our archive are stored as static files.")
+
+    content_panels = [
+        FieldPanel("static_file"),
+    ]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(ArticlePage.content_panels, heading='Meta'),
+            ObjectList(ArticlePage.promote_panels, heading='Promote'),
+            ObjectList(ArticlePage.settings_panels, heading='Settings'),
+            ObjectList(ArticlePage.customization_panels, heading='Special article stuff'),
+        ],
+    )
+
+    def serve(self, request, *args, **kwargs):
+        r = requests.get(self.static_file)
+        return HttpResponse(r.text)
+
+    def serve_preview(self, request, mode_name):
+        r = requests.get(self.static_file)
+        return HttpResponse(r.text)
