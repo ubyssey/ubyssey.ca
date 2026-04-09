@@ -13,7 +13,7 @@ from section.models import SectionPage
 
 ARCHIVE_BASE = os.path.normpath(os.path.join(
     os.path.dirname(__file__),
-    '..', '..', '..', '..', '..', 'ubyssey-static-archive',
+    '..', '..', '..', '..', 'ubyssey-static-archive',
 ))
 MANIFEST_PATH = os.path.join(ARCHIVE_BASE, 'manifest.csv')
 AUTHORS_PATH = os.path.join(ARCHIVE_BASE, 'authors.csv')
@@ -92,9 +92,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--dry-run', action='store_true')
+        parser.add_argument('--limit', type=int, default=None, help='Stop after importing this many articles.')
 
     def handle(self, *args, **options):
         dry_run = options['dry_run']
+        limit = options['limit']
 
         authors_csv = load_authors_csv()
         author_pages = {p.slug: p for p in AuthorPage.objects.all()}
@@ -103,7 +105,7 @@ class Command(BaseCommand):
         skip_ids = load_skip_ids()
         existing_slugs = set(ArticlePage.objects.values_list('slug', flat=True))
 
-        skipped = imported = failed = 0
+        skipped_existing = skipped_blocklist = imported = failed = 0
 
         log = open(FAILED_LOG_PATH, 'w', encoding='utf-8') if not dry_run else None
         try:
@@ -111,8 +113,12 @@ class Command(BaseCommand):
                 for row in csv.DictReader(f):
                     row = {k: v.strip() for k, v in row.items()}
 
-                    if row['id'] in skip_ids or row['slug'] in existing_slugs:
-                        skipped += 1
+                    if row['id'] in skip_ids:
+                        skipped_blocklist += 1
+                        continue
+
+                    if row['slug'] in existing_slugs:
+                        skipped_existing += 1
                         continue
 
                     if not row['file_location']:
@@ -122,28 +128,32 @@ class Command(BaseCommand):
 
                     parent_page = section_pages.get(row['category'])
                     if parent_page is None:
-                        self._fail(log, 'no_section', row, f"category={row['category']}")
+                        self._fail(log, 'no_section', row, row['category'])
                         failed += 1
                         continue
 
                     if dry_run:
                         self.stdout.write(f"  WOULD IMPORT: [{row['category']}] {row['slug']} — \"{row['title']}\"")
                         imported += 1
+                        if limit and imported >= limit:
+                            break
                         continue
 
-                    try:
-                        author_page = get_or_create_author(
-                            row['author_username'], row['author'],
-                            authors_csv, author_pages, authors_page,
-                        )
-                        if isinstance(author_page, tuple):
-                            author_page, _ = author_page
-                            self.stdout.write(f"    CREATED AUTHOR: {author_page.slug}")
+                    author_page = get_or_create_author(
+                        row['author_username'], row['author'],
+                        authors_csv, author_pages, authors_page,
+                    )
+                    if isinstance(author_page, tuple):
+                        author_page, _ = author_page
+                        self.stdout.write(f"    CREATED AUTHOR: {author_page.slug}")
 
+                    try:
                         create_article_page(row, parent_page, author_page)
                         existing_slugs.add(row['slug'])
                         imported += 1
                         self.stdout.write(f"  IMPORTED: [{row['category']}] {row['slug']}")
+                        if limit and imported >= limit:
+                            break
 
                     except Exception:
                         log.write(f"exception\t{row['id']}\t{row['slug']}\n{traceback.format_exc()}\n")
@@ -154,12 +164,14 @@ class Command(BaseCommand):
                 log.close()
 
         self.stdout.write(self.style.SUCCESS(
-            f'\nDone. imported={imported}, skipped={skipped}, failed={failed}'
+            f'\nDone. imported={imported}, failed={failed}, '
+            f'skipped_existing={skipped_existing}, skipped_blocklist={skipped_blocklist}'
         ))
         if not dry_run and failed:
             self.stdout.write(f'Failed imports logged to: {FAILED_LOG_PATH}')
 
     def _fail(self, log, reason, row, detail=''):
-        self.stdout.write(self.style.WARNING(f"  FAIL ({reason}): {row['slug']}"))
+        suffix = f" ({detail})" if detail else ""
+        self.stdout.write(self.style.WARNING(f"  FAIL ({reason}){suffix}: {row['slug']}"))
         if log:
             log.write(f"{reason}\t{row['id']}\t{row['slug']}\t{detail}\n")
