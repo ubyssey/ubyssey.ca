@@ -1931,6 +1931,32 @@ class SpecialArticleLikePage(ArticlePage):
         verbose_name = "Special Article-Like Page (for About Page, Contact, etc.)"
         verbose_name_plural = "Articles"
 
+class StaticArticlePage(ArticlePage):
+    """
+    A read-only archived article whose content is stored as raw HTML,
+    imported from the static archive.
+    """
+    html_content = models.TextField(blank=True, default='')
+
+    parent_page_types = [
+        'section.SectionPage',
+        'wagtailcore.Page',
+    ]
+    subpage_types = []
+
+    content_panels = Page.content_panels + [
+        FieldPanel('html_content'),
+    ]
+
+    def serve(self, request, *args, **kwargs):
+        from django.http import HttpResponse
+        return HttpResponse(self.html_content, content_type='text/html; charset=utf-8')
+
+    class Meta:
+        verbose_name = "Static Archive Article"
+        verbose_name_plural = "Static Archive Articles"
+
+
 class StandardArticlePageWithRightColumn(StandardArticlePage):
 
     right_column_content = StreamField(
