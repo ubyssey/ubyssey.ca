@@ -15,7 +15,6 @@ ARCHIVE_BASE = os.path.normpath(os.path.join(
     os.path.dirname(__file__),
     '..', '..', '..', '..', '..', 'ubyssey-static-archive',
 ))
-ARCHIVE_DIR = os.path.join(ARCHIVE_BASE, 'archive')
 MANIFEST_PATH = os.path.join(ARCHIVE_BASE, 'manifest.csv')
 AUTHORS_PATH = os.path.join(ARCHIVE_BASE, 'authors.csv')
 SKIP_PATH = os.path.join(ARCHIVE_BASE, 'skip.txt')
@@ -75,11 +74,7 @@ def create_article_page(row, parent_page, author_page):
     slug = row['slug']
     published_at = parse_published_at(row['published_at'])
 
-    html_path = os.path.join(ARCHIVE_DIR, row['category'], slug, 'index.html')
-    with open(html_path, 'r', encoding='utf-8', errors='replace') as f:
-        html_content = f.read()
-
-    page = StaticArticlePage(title=row['title'], slug=slug, html_content=html_content)
+    page = StaticArticlePage(title=row['title'], slug=slug, static_file=row['file_location'])
     parent_page.add_child(instance=page)
 
     if author_page is not None:
@@ -120,9 +115,8 @@ class Command(BaseCommand):
                         skipped += 1
                         continue
 
-                    html_path = os.path.join(ARCHIVE_DIR, row['category'], row['slug'], 'index.html')
-                    if not os.path.isfile(html_path):
-                        self._fail(log, 'missing_html', row, html_path)
+                    if not row['file_location']:
+                        self._fail(log, 'missing_file_location', row)
                         failed += 1
                         continue
 
