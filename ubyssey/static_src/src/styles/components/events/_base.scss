@@ -21,12 +21,7 @@ main.events-page {
         font-variation-settings: "wght" 500;
     }
     header.events {
-        width: 100vw; 
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
+        width: calc(100% - 8.5em);
       }
         h1.title {
         margin: 0 1em 0.5em 1em;
@@ -51,7 +46,6 @@ main.events-page {
             width: 100%;
         }
         .events-info {
-            max-width: 500px;
             max-height: 81vh;
             border: 0.35em solid var(--color-ubyssey_blue-dark);
             border-radius: 1em;
@@ -351,7 +345,6 @@ button.events-calendar--number {
 
 header.events{
     width: fit-content;
-    margin-left: 4em;
   
     .logo-area {
       margin-top: 20px;
