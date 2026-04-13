@@ -645,6 +645,11 @@ nav.mobile {
       input {
         padding-inline: 0.5em;
         width: 80%;
+        
+        background: transparent;
+        border: 1px solid var(--border-grey);
+        transition: border 0.5s;
+
         font-variation-settings: "wght" 400;
       }
 
@@ -736,7 +741,7 @@ nav.mobile {
     svg {
       margin-right: 1em;
       position: relative;
-      top: 0.4em;
+      top: -0.1em;
       font-size: 11px;
     }
     .dark-mode-switcher--label {
