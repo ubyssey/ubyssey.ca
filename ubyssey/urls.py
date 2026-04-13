@@ -15,6 +15,7 @@ from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_schedul
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
+from ubyssey.views.tip import TipForm
 from ubyssey.views.tag import TagPage, redirect_tag_feed_to_topic, redirect_tag_to_topic
 from events.views import update_events_http, create_ical, EventsFeed, EventsViewSet
 from events.urls import urlpatterns as events_urls
@@ -33,6 +34,7 @@ from rest_framework import routers
 
 handler500 = 'ubyssey.views.main.custom_500'
 
+tip = TipForm()
 advertise = AdvertiseTheme()
 tag = TagPage()
 
@@ -109,7 +111,7 @@ urlpatterns += [
     re_path(r'^topic/(?P<slug>[-\w]+)/rss/$', TagFeed(), name='tag-page-feed'),
 
     # Publish analytics
-    re_path(r'^overview/$', publishing_analytics_views.overview),
+    #re_path(r'^overview/$', publishing_analytics_views.overview), Removed because gathering the data takes too long
     re_path(r'^overview/(?P<year>[0-9]{4})/$', publishing_analytics_views.year_overview),
     re_path(r'^overview/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', publishing_analytics_views.month_overview),
     re_path(r'^overview/(?P<section>[-\w]+)/$', publishing_analytics_views.section_overview),
@@ -117,6 +119,9 @@ urlpatterns += [
 
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
+
+    # Tip form
+    re_path(r'^email/tip/$', tip.email_tip, name='email-tip'),
 
     # Cron job
     re_path(r'^cron/update-events/$', update_events_http, name='update_events'),
@@ -130,7 +135,7 @@ urlpatterns += [
     re_path(r'^authors/(?P<slug>[-\w]+)/rss/$', AuthorFeed(), name='author-feed'),
     re_path(r'^blog/', redirect_blog_to_humour),
     re_path(r'^sitemap.xml$', sitemap),
-    re_path(r'^health/', include('health_check.urls')),
+    # re_path(r'^health/', include('health_check.urls')),  # Removed - not needed
     path('', include(wagtail_urls)),
     # # standard Ubyssey site
     # re_path(r'^$', HomePageView.as_view(), name='home'),

@@ -20,6 +20,14 @@ main.events-page {
         font-weight: 500;
         font-variation-settings: "wght" 500;
     }
+    header.events {
+        width: calc(100% - 8.5em);
+      }
+        h1.title {
+        margin: 0 1em 0.5em 1em;
+        font-size: 3em;
+        text-align: center;
+    }
 
     .events-flex {
         display: flex;
@@ -32,17 +40,16 @@ main.events-page {
             height: 100vh;
             display: flex;
         }
-        .events-info-container--div {
-            margin: auto 0;
+        .events-info-container--div {            
+            margin: auto;
             min-height: 70vh;
             width: 100%;
         }
         .events-info {
-            max-width: 500px;
             max-height: 81vh;
             border: 0.35em solid var(--color-ubyssey_blue-dark);
             border-radius: 1em;
-
+            margin: 0 auto;
             background-color: var(--color-ubyssey_blue-dark);
             overflow: auto;
 
@@ -126,8 +133,8 @@ main.events-page {
     border: 1px solid red;
 }
 .events-calendar {
-    width: 500px;
-    max-width: 1200px;
+    width: 50vw;
+    // max-width: 1200px;
     padding: 0 2.5% 0 4%;;
     flex-grow: 1;
 }
@@ -160,7 +167,7 @@ button.events-calendar--enlarge-toggle {
     border: none;
     background: none;
     line-height: 1em;
-    color: var(--header_color);
+    color: var(--header_color-100);
 }
 
 .events-calendar--days-of-week {
@@ -217,7 +224,7 @@ div.day{
     }
 
     li a:hover, li a:focus {
-        color: inherit;
+        color: var(--color-ubyssey_blue);
         text-decoration: underline;
     }
 
@@ -338,7 +345,6 @@ button.events-calendar--number {
 
 header.events{
     width: fit-content;
-    margin-left: 4em;
   
     .logo-area {
       margin-top: 20px;
@@ -353,11 +359,6 @@ header.events{
         background-repeat: no-repeat;
       }  
     }
-  
-    h1.title {
-        margin: 0 1em 0.5em 1em;
-        font-size: 3em;
-    }
 
     .darkmode-toggle {
       position: absolute;
@@ -365,9 +366,9 @@ header.events{
       top: 1em;
       z-index: 500;
       button.dark-mode-switcher {
-        color: var(--header_color);
+        color: var(--header_color-100);
       }
-      
+
       @media (variables.$bp-larger-than-desktop) {
         button.dark-mode-switcher {
         color: #ffffff;

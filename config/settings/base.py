@@ -56,6 +56,11 @@ SILENCED_SYSTEM_CHECKS = [
 
 BASE_DIR = environ.Path(__file__) - 3
 
+# Set env variables in development environment
+env_file = os.path.join(BASE_DIR, 'tmp/.env')
+if os.path.isfile(env_file):
+    environ.Env.read_env(env_file)
+
 SECRET_KEY = env('SECRET_KEY') or read_file(env('SECRET_KEY_FILE')) or 'thisisakey'
 
 DEBUG = env('DEBUG')
@@ -84,6 +89,7 @@ INSTALLED_APPS = [
     'tests_ubyssey',
     'publishing_analytics',
     'content_tracker',
+    'topics',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
@@ -129,9 +135,6 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
-    'health_check',                    
-    'health_check.db',                 
-    'health_check.cache',              
 ]
 
 if DEBUG:
@@ -222,6 +225,8 @@ DATABASES = {
     },
 }
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000
+
 # Substitute a custom user model.
 # Ref: https://docs.djangoproject.com/en/4.2/topics/auth/customizing/#auth-custom-user
 
@@ -272,13 +277,14 @@ GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readth
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 USE_TZ = True
-TIME_ZONE = 'Canada/Pacific'
+TIME_ZONE = 'America/Vancouver'
 
 # Wagtail settings
 # Ref: https://docs.wagtail.org/en/stable/reference/settings.html
 
 WAGTAIL_SITE_NAME = 'The Ubyssey'
 WAGTAILIMAGES_IMAGE_MODEL = 'images.UbysseyImage'
+WAGTAILIMAGES_CHOOSER_PAGE_SIZE = 100
 
 WAGTAILADMIN_NOTIFICATION_INCLUDE_SUPERUSERS = False
 

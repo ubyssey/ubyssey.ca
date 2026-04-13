@@ -9,6 +9,9 @@
   .dark-mode-switcher--label {
     display: none;
   }
+  img, svg {
+    vertical-align: middle;
+  }
 }
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
     transform-origin: center;
@@ -108,7 +111,7 @@
 }
 .right {
   .dark-mode-switcher{
-    color: var(--header_color);
+    color: var(--header_color-100);
   }
 }
 
@@ -121,7 +124,7 @@
       float: left;
       display: block;
       margin-left: 0;
-      color: var(--header_color);
+      color: var(--header_color-100);
     }
   }
 }

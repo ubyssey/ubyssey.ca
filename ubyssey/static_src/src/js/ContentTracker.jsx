@@ -477,10 +477,8 @@ export default function ContentTracker() {
     }
 
     function getArticlesBySectionByDate(articles) {
-        console.log(articles);
         let bySection = Object.groupBy(articles, ({assigning_section})=> assigning_section);
         
-        console.log(bySection);
         for (let k of Object.keys(bySection)) {
             bySection[k] = Object.groupBy(bySection[k], ({target, article_page}) => {
                 if (article_page) {
@@ -494,13 +492,11 @@ export default function ContentTracker() {
                 return dateNumber(target);
             });
         }
-        console.log(bySection);
 
         return bySection;
     }
 
     function getSectionOrderFromLocalStorage() {
-        console.log("getSectionOrderFromLocalStorage");
         const defaultOrder = ["news", "culture", "features", "opinion", "humour", "research", "sports"];
         let useLocalStorage = false;
         if (localStorage.contentTrackerSectionOrder) {
@@ -530,7 +526,6 @@ export default function ContentTracker() {
             sectionsCopy.splice(i, 1);
             sectionsCopy.splice(i+upDown, 0, section);            
         } else {
-            console.log("error moving section to position: " + String(upDown+i));
         }
         setSections(sectionsCopy);
         localStorage.contentTrackerSectionOrder = sectionsCopy.join(",");
@@ -548,7 +543,6 @@ export default function ContentTracker() {
 
         let range = [];
         for (let i=lower; i < upper; i=new Date(new Date(i.getTime() + (d * 1.3)).setHours(0, 0, 0, 0))) {
-            console.log(i)
             range.push(dateNumber(i));
         }
 

@@ -3,19 +3,20 @@
 
 // Shared classes among landing stream blocks
 .landing_stream_block {
-    margin: 3em auto 5em auto;
+    margin: 3em auto;
   
     .landing_stream_block--header {
-      margin-block: 2em;
+      margin-block: 1em;
       font-family: fonts.$font-default;
       font-weight: 800;
       h2 {
         display: inline;
         margin-right: 0.5em;
         scroll-margin-top: 5em;
-        font-size: 2.5em;
+        font-size: 1.5em;
         font-family: fonts.$font-headline;
-        font-variation-settings: "wght" 800;
+        font-variation-settings: "wght" 600;
+        font-weight: 600;
       }
       p {
         margin-right: 0.5em;
@@ -206,6 +207,7 @@
               font-size: 1em;
               font-weight: 400;
               font-variation-settings: "wght" 400;
+              color: var(--header_color-200);
           }
         }
 
@@ -250,7 +252,7 @@
       }
       .o-article__published, .o-article__seemore {
         margin-bottom: 0.5em;
-        color: var(--header_color);
+        color: var(--header_color-100);
         font-size: 0.8em;
         font-weight: 600;
       }
@@ -319,6 +321,10 @@
       }
     }
   }
+
+  .blurb_with_pinned {
+    width: 100%;
+  }
 }
 
 .section .header-menu 
@@ -327,7 +333,7 @@
   .menu-title {
     border: none;
     background: linear-gradient(transparent calc(100% - 0.25em), var(--linkColour) 0);
-    color: var(--header_color);
+    color: var(--header_color-100);
     a {
       margin: auto;
       width: fit-content;
@@ -394,7 +400,7 @@
 
         font-variation-settings: "wght" 400;
         text-overflow: ellipsis;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 11;
         -webkit-box-orient: vertical;
       }
     }
@@ -410,7 +416,7 @@
     }
     .o-article__byline {
       font-size: 0.75em;
-      color: var(--text_color_supporting);
+      color: var(--text_color-300);
     }
 
     &.o-article--suggested_article--large {  
@@ -437,6 +443,9 @@
         .o-article__right {
           margin: auto 1.5em auto 0;
         }
+        .o-article__left {
+          max-width: 500px;
+        }
       }
 
       .o-article__right {
@@ -444,7 +453,6 @@
         height: fit-content;
       }
       .o-article__left {
-        max-width: 500px;
         height: fit-content;
         flex-shrink: 0;
       }
@@ -531,7 +539,7 @@
       font-variation-settings: "wght" 600;
       font-size: 1.2em;
       line-height: 1em;
-      color: var(--header_color);
+      color: var(--header_color-100);
     }
   }
 }

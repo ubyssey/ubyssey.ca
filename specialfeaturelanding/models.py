@@ -83,6 +83,8 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
             return "specialfeaturelanding/mag_2024_style.html"
         elif self.layout == 'spoof-2024':
             return "specialfeaturelanding/spoof_2024_style.html"
+        elif self.layout == 'spoof-2026':
+            return "specialfeaturelanding/spoof_2026_style.html"
         return "specialfeaturelanding/base.html"
 
     parent_page_types = [
@@ -92,7 +94,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
     subpage_types = [
         'specialfeaturelanding.SpecialLandingPage',
-        'article.ArticlePage',
+        'article.StandardArticlePage',
     ]
     
     show_in_menus_default = True
@@ -207,12 +209,13 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
                         choices=[
                             ('default', 'Default'), 
                             ('guide-2020', 'Guide (2020 style)'),
-                             ('guide-2020-section', 'Guide (2020 Section Landing Page)'),
+                            ('guide-2020-section', 'Guide (2020 Section Landing Page)'),
                             ('guide-2022', 'Guide (2022 style)'),
                             ('mag-2023', 'Magazine (2023 style)'),
                             ('guide-2023', 'Guide (2023 style)'),
                             ('mag-2024', 'Magazine (2024 style)'),
                             ('spoof-2024', 'Spoof (2024 style)'),
+                            ('spoof-2026', 'Spoof (2026 style)'),
                         ],
                     ),
                 ),

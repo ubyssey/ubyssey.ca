@@ -40,6 +40,10 @@ class AllAuthorsPage(Page):
         'home.HomePage',
     ]
     max_count_per_parent = 1
+
+    def serve(self, request):
+        return render(request, '404.html', {}, status=404)
+
     class Meta:
         verbose_name = "Author Management"
         verbose_name_plural = "Author Management Pages"
@@ -151,6 +155,14 @@ class AuthorPage(RoutablePageMixin, Page):
         blank=True,
     )
 
+    noindex = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        verbose_name="Add 'noindex' tag?",
+        help_text="Warning: Only to be used when an article is requested to be unpublished, as per unpublishing policy. Should be FALSE in all but exceptional circumstances!",
+    )
+
     objects = AuthorsPageManager()
 
     # For editting in wagtail:
@@ -176,6 +188,17 @@ class AuthorPage(RoutablePageMixin, Page):
             heading="Optional Stuff",
         ),
     ]
+
+    promote_panels = Page.promote_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel("noindex"),
+            ],
+            heading="Special search engine-related meta tagging",
+        ),
+    ]
+
+
     #-----Search fields etc-----
     #See https://docs.wagtail.org/en/stable/topics/search/indexing.html
     search_fields = Page.search_fields + [
@@ -222,7 +245,7 @@ class AuthorPage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(page)
             context["current_page"] = page
         except PageNotAnInteger:
-            # If the ?page=x is not an int; show the first page
+            # If the ?page=x is not an int;
             paginated_articles = paginator.page(1)
             context["current_page"] = 1
         except EmptyPage:
@@ -266,7 +289,7 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.organize_media(self.main_media_type, request, context)
 
         return context
-    
+        
     def save(self, *args, **kwargs):
         import requests
         from urllib.parse import urlparse

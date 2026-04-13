@@ -10,42 +10,55 @@ credit
 {% endcomment%}
 {% load video_filters %}
 {% load static %}
+{% load wagtailcore_tags%}
 
 <script src="{% static 'ubyssey/js/youtube.js' %}" type="text/javascript"></script>
 
-{% with url=value.video_embed.url|youtube_embed_id %}
+{% with url=self.video_embed.url|youtube_embed_id %}
 
 {% if url%}
-<div class="o-article-embed o-article-embed--video js-video-youtube" data-id="{{ url }}">
-    <div class="o-article-embed--video__wrapper js-video-launch">
-        <div class="o-article-embed--video__inner" style="background-image: url('https://img.youtube.com/vi/{{ value.video_embed.url|youtube_embed_id }}/0.jpg');">
 
-                <div class="o-article-embed--video__play-large">
-                    <div class="o-article-embed--video__play-large__inner"></div>
+    <div class="o-article-embed o-article-embed--video js-video-youtube" data-id="{{ url }}">
+
+    {% if youtube_short %}
+
+        <iframe width="394" height="700" src="https://www.youtube.com/embed/{{ self.video_embed.url|youtube_embed_id }}" title="{{ self.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div class="caption">{{self.caption|safe}} <span class="credit">{{ self.credit }}</span></div>
+        
+    {% else %}
+        
+        <div class="o-article-embed--video__wrapper js-video-launch">
+            <div class="o-article-embed--video__inner" style="background-image: url('https://img.youtube.com/vi/{{ value.video_embed.url|youtube_embed_id }}/0.jpg');">
+
+                    <div class="o-article-embed--video__play-large">
+                        <div class="o-article-embed--video__play-large__inner"></div>
+                    </div>
+
+                <div class="o-article-embed--video__info o-article-embed__overlay">
+                    <div class="o-article-embed--video__play-small">
+                        &#9658; &nbsp;Play video
+                    </div>
+                    <div class="o-article-embed--video__tag">Video</div>
+                    <h2 class="o-article-embed--video__title">{{ self.title }}</h2>
+                    {% if value.caption %}
+                    <p class="o-article-embed--video__caption">{{ self.caption|safe }}</p>
+                    {% endif %}
                 </div>
 
-            <div class="o-article-embed--video__info o-article-embed__overlay">
-                <div class="o-article-embed--video__play-small">
-                    &#9658; &nbsp;Play video
-                </div>
-                <div class="o-article-embed--video__tag">Video</div>
-                <h2 class="o-article-embed--video__title">{{ title }}</h2>
-                {% if value.caption %}
-                <p class="o-article-embed--video__caption">{{ value.caption|safe }}</p>
-                {% endif %}
             </div>
-
         </div>
-    </div>
-    <div class="o-article-embed--video__container" id="video-{{ value.video_embed.url|youtube_embed_id }}"></div>
-
-    <div class="caption">
-        {% if credit %}
-        <span class="credit">{{ value.credit }}</span>
+        <div class="o-article-embed--video__container" id="video-{{ self.video_embed.url|youtube_embed_id }}"></div>
+        
+        {% if self.credit %}
+            <div class="caption">
+                <span class="credit">{{ self.credit }}</span>    
+            </div>
         {% endif %}
+
+    {% endif %}
     </div>
-</div>
+
 {% else %}
- <p style="color: red">[Sorry, video not found. You can contact webmaster@ubyssey.ca to fix the issue]</p>
-{% endif %}
+     <p style="color: red">[Sorry, video not found. You can contact webmaster@ubyssey.ca to fix the issue]</p>
+{% endif%}
 {% endwith %}

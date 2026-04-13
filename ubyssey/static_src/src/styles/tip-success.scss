@@ -1,0 +1,39 @@
+@use 'modules/core';
+@use 'modules/fonts';
+@use 'modules/font_faces';
+@use 'modules/variables';
+@use 'modules/mixins';
+
+// Ubyssey site-specific files
+@use 'modules/header';
+@use 'modules/buttons';
+@use 'modules/darkmode';  
+
+@use 'components/adblock-splash';
+@use 'components/cookie-disclaimer';
+
+.c-tip-success {
+    display: flex;
+    height: calc(100vh - 10em);
+}
+
+.c-tip-success--message {
+    margin: auto;
+    padding: 1.5em;
+    border-radius: 0.5em;
+    background-color: var(--light-border-grey);
+
+    transition: background-color 0.5s, color 0.5s;
+
+    @media(variables.$bp-smaller-than-mobile){
+        border-radius: 0;
+    }
+
+    h1 {
+        font-size: 1em;
+        color: var(--header_color-200);
+    }
+    p {
+        color: var(--text_color-200);
+    }
+}

@@ -1,0 +1,7 @@
+{% load wagtailcore_tags %}
+
+<div class="o-profile-grid o-profile-grid--{{self.style}}">
+    {% for profile in self.profiles %}
+        {% include_block profile %}
+    {% endfor %}
+</div>

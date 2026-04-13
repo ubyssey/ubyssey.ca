@@ -19,6 +19,13 @@ class OneOffVideoBlock(blocks.StructBlock):
         required=False,
     )
 
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+
+        context["youtube_short"] = "/shorts/" in value["video_embed"].url
+
+        return context
+
     class Meta:
         template = 'videos/stream_blocks/one_off_video.html'
         icon = 'media'

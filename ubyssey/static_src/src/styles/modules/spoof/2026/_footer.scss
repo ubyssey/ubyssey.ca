@@ -1,0 +1,149 @@
+@use "base";
+
+.spoof-footer {
+  margin-top: 3rem;
+  padding-top: 3rem;
+
+  background: #000;
+  color: #fff;
+  font-family: base.$font-sans-serif;
+
+  &__main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem 2.5rem;
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 3rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  &__logo {
+    display: block;
+    font-family: base.$font-nameplate;
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    color: #fff;
+    text-decoration: none;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  &__desc, &__credits > li {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #aaa;
+    margin: 0 0 1.25rem;
+    max-width: 300px;
+    font-family: base.$font-sans-serif;
+    a {
+      display: inline-block;
+    }
+  }
+
+  &__credits {
+    margin-block: 1.25rem 2rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__credits > li {
+    margin-bottom: 0.5em;
+  }
+
+  &__social {
+    display: flex;
+    gap: 1rem;
+
+    a {
+      color: #fff;
+      font-size: 20px;
+      text-decoration: none;
+
+      &:hover { color: #ccc; }
+    }
+  }
+
+  &__links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__col-title {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #333;
+  }
+
+  &__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li { margin-bottom: 0.6rem; }
+
+    a {
+      font-size: 11px;
+      color: #aaa;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+
+      &:hover { color: #fff; }
+    }
+  }
+
+  &__bottom {
+    border-top: 1px solid #333;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__bottom-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+
+    a {
+      font-size: 10px;
+      color: #888;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+
+      &:hover { color: #fff; }
+    }
+  }
+
+  &__copyright {
+    font-size: 10px;
+    color: #888;
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+}

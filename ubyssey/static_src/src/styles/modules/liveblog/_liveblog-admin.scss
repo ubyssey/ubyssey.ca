@@ -6,6 +6,11 @@
 }
 
 .c-liveblog-admin {
+    --color-ubyssey_blue: #0071c9;
+    --light-border-grey: var(--w-color-border-furniture);
+    --border-grey: var(--w-color-border-field-default);
+    --light-border: var(--w-color-border-furniture-more-contrast);
+
     display: flex;
     flex-direction: row-reverse;
     justify-content: start;

@@ -51,6 +51,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: deployment/docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -87,7 +88,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.12'
 
       - name: Install Python dependencies
         run: python -m pip install -r requirements.txt
@@ -127,20 +128,20 @@ jobs:
       - name: Create ubyssey.ca directory
         run: ssh production "mkdir -p /opt/ubyssey.ca"
 
-      - name: Set tag in docker-compose.yml
-        run: sed -i "s/\${TAG}/${{ github.ref_name }}/g" docker-compose.yml
+      - name: Set tag in docker-compose.production.yml
+        run: sed -i "s/\${TAG}/${{ github.ref_name }}/g" deployment/compose/docker-compose.production.yml
 
       - name: Upload Docker Compose configuration
-        run: scp docker-compose.yml production:/opt/ubyssey.ca/docker-compose.yml
+        run: scp deployment/compose/docker-compose.production.yml production:/opt/ubyssey.ca/docker-compose.yml
 
       - name: Upload nginx configuration
-        run: scp nginx.conf production:/opt/ubyssey.ca/nginx/nginx.conf
+        run: scp deployment/nginx/nginx.production.conf production:/opt/ubyssey.ca/nginx/nginx.conf
 
       - name: Upload certbot and nginx reload scripts
         run: |
           ssh production "mkdir -p /opt/ubyssey.ca/scripts"
-          scp scripts/certbot-renewal-with-nginx-reload.sh production:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
-          scp scripts/nginx-reload-watcher.sh production:/opt/ubyssey.ca/scripts/nginx-reload-watcher.sh
+          scp deployment/scripts/certbot-renewal-with-nginx-reload.sh production:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
+          scp deployment/scripts/nginx-reload-watcher.sh production:/opt/ubyssey.ca/scripts/nginx-reload-watcher.sh
 
       - name: Verify Docker secrets exist
         run: |
@@ -167,8 +168,36 @@ jobs:
       - name: Create shared network
         run: ssh production "docker network create --driver=overlay proxy-shared || true"
 
-      - name: Restart services
-        run: ssh production docker stack deploy --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+      - name: Deploy stack
+        run: ssh production docker stack deploy --resolve-image always --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
+
+      - name: Update all services
+        run: |
+          #  this is a force update which restarts the database. Causes a few seconds of downtime ->      ssh production "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"
+          ssh production "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update \$service; done"
+
+      - name: Verify deployment succeeded
+        run: |
+          # Wait for update to complete
+          sleep 30
+
+          # Check if services are running the expected image
+          EXPECTED_IMAGE="ghcr.io/ubyssey/ubyssey.ca:${{ github.ref_name }}"
+
+          for service in ubyssey_django-wsgi ubyssey_django-asgi; do
+            ACTUAL_IMAGE=$(ssh production "docker service inspect $service --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}' | cut -d@ -f1")
+            echo "Service $service is running: $ACTUAL_IMAGE"
+
+            if [[ "$ACTUAL_IMAGE" != "$EXPECTED_IMAGE" ]]; then
+              echo "ERROR: Service $service is not running expected image!"
+              echo "Expected: $EXPECTED_IMAGE"
+              echo "Actual: $ACTUAL_IMAGE"
+              echo "Deployment may have been rolled back!"
+              exit 1
+            fi
+          done
+
+          echo "All services verified to be running correct image"
 
       - name: Check health of the application
         run: |
@@ -176,12 +205,12 @@ jobs:
           MAX_ATTEMPTS=15
           for ((i=1; i<=MAX_ATTEMPTS; i++)); do
             echo "Health check attempt $i/$MAX_ATTEMPTS..."
-            if ssh production "curl -f https://ubyssey.ca/health/" >/dev/null 2>&1; then
-              echo "Health check passed"
+            if ssh production "curl -f -s -o /dev/null -w '%{http_code}' https://ubyssey.ca/ | grep -q '200\|301\|302'" 2>/dev/null; then
+              echo "Health check passed - homepage is accessible"
               exit 0
             else
               echo "Attempt $i failed - showing error details:"
-              ssh production "curl -f https://ubyssey.ca/health/"
+              ssh production "curl -I https://ubyssey.ca/"
             fi
             sleep 10
           done

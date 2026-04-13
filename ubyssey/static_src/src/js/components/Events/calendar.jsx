@@ -63,7 +63,23 @@ function getDateString(dateInitial) {
     }
     return str;
 }
-
+function getClosestFutureEvent(events) {
+    if (!events || events.length === 0) return null;
+    const now = new Date().getTime();
+    let closestEvent = null;
+    let smallestDiff = Infinity;
+    for (let i = 0; i < events.length; i++) {
+        const eventTime = new Date(events[i].start_time).getTime();
+        if (eventTime >= now) {
+            const diff = eventTime - now;
+            if (diff < smallestDiff) {
+                smallestDiff = diff;
+                closestEvent = events[i];
+            }
+        }
+    }
+    return closestEvent || events[events.length - 1];
+}
 export function QueryEventsCalendar() {
     const h = 60 * 60 * 1000;
     const d = 24 * h;
@@ -956,7 +972,15 @@ function EventInfo({events}) {
             }
         }
     }
-
+    else if (!widthMode && events && events.length > 0) {
+        let closestEvent = getClosestFutureEvent(events);
+        if (closestEvent) {
+            event = closestEvent;
+            if (event.description == null) {
+                event.description = "";
+            }
+        }
+    }
     useLayoutEffect(()=> {
 
         window.addEventListener('resize', ()=> {

@@ -1,0 +1,20 @@
+{% load wagtailcore_tags %}
+
+<section id="{{ self.class_selector|slugify }}" class="vogue-row" data-vogue-row>
+  <div class="vogue-row__header">
+      <h2 class="vogue-row__title">{{ self.class_selector }}</h2>
+      <div class="vogue-row__nav">
+        <button class="vogue-row__prev">&#8249;</button>
+        <span class="vogue-row__counter"></span>
+        <button class="vogue-row__next" aria-label="Next" >&#8250;</button>
+      </div>
+  </div>
+
+  <div class="vogue-row__track">
+    {% for card in self.stream %}
+      {% include_block card %}
+    {% endfor %}
+  </div>
+
+  <div class="vogue-row__dots"></div>
+</section>
