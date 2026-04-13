@@ -6,7 +6,8 @@
   grid-template-columns: 1fr 2fr 1fr;
   grid-auto-flow: row dense;
   align-items: start;
-  gap: 0;
+  column-gap: 1.5rem;
+  row-gap: 0;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -18,13 +19,28 @@
   }
 }
 
-// Left column: image cards stacked vertically
-.vogue-col-left {
+// Left column wrapper: single grid item containing stacked image cards
+.vogue-left-stack {
   grid-column: 1;
-  padding: 0 1.5rem 1rem 0;
+  grid-row: 1 / span 2;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-self: start;
 
   @media (max-width: 768px) {
     grid-column: 1;
+    grid-row: auto;
+    padding: 0;
+  }
+}
+
+// Left column: image cards stacked vertically
+.vogue-col-left {
+  padding: 0;
+
+  @media (max-width: 768px) {
     padding: 1rem 0;
   }
 }
@@ -33,7 +49,7 @@
 .vogue-col-center {
   grid-column: 2;
   grid-row: 1 / span 2;
-  padding: 0 1.5rem;
+  padding: 0;
   align-self: start;
 
   @media (max-width: 768px) {
@@ -43,17 +59,28 @@
   }
 }
 
-// Right column: sidebar article list
-.vogue-col-right {
+// Right column wrapper: single grid item containing stacked sidebar cards
+.vogue-right-stack {
   grid-column: 3;
-  padding: 0 0 0.75rem 1.5rem;
-
-  & + .vogue-col-right {
-    padding-top: 0.75rem;
-  }
+  grid-row: 1 / span 2;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-self: start;
 
   @media (max-width: 768px) {
     grid-column: 1;
+    grid-row: auto;
+    padding: 0;
+  }
+}
+
+// Right column: sidebar article list
+.vogue-col-right {
+  padding: 0;
+
+  @media (max-width: 768px) {
     padding: 1rem 0;
   }
 }
@@ -131,10 +158,9 @@
 
   .vogue-card__image {
     width: 100%;
-    aspect-ratio: 3 / 2;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
   }
 
   .vogue-card__body {
@@ -158,6 +184,7 @@
 .vogue-col-center {
   .vogue-card__hero-image {
     width: 100%;
+    height: auto;
     display: block;
   }
 
@@ -214,7 +241,7 @@
   }
 
   .vogue-card__thumb-link {
-    flex: 0 0 38%;
+    width: 75px;
   }
 
   .vogue-card__thumbnail {

@@ -66,13 +66,13 @@
                                 {% if self.header.0.value.above_cut_lede %}
                                     <p class="above_cut_lede">{{ self.header.0.value.above_cut_lede }}</p>
                                 {% endif %}
-                                <div class="c-article__info">
-                                    {% comment %}
-                                        {% include 'objects/social-icons.html' with article=article layout='top' %}
-                                    {% endcomment %}
-                                    <div class="byline">By {{self.get_authors_with_urls|safe}}</div>
-                                    <time class="pubdate" datetime="{{ self.published_at }}">{{ self.published_at }}</time>
-                                </div>
+                            </div>
+                            <div class="c-article__info">
+                                {% comment %}
+                                    {% include 'objects/social-icons.html' with article=article layout='top' %}
+                                {% endcomment %}
+                                <div class="byline">By {{self.get_authors_with_urls|safe}}</div>
+                                <time class="pubdate" datetime="{{ self.published_at }}">{{ self.published_at }}</time>
                             </div>
                         </div>
                         {% if self.header.0.value.layout != "no-image" %}
@@ -108,6 +108,12 @@
                 {% for block in self.content %}
                     {% include_block block with id=block.id %}
                 {% endfor %}
+            </div>
+            <div class="c-article__ad-container">
+                <div id="sidebarAd" class="c-sidebar-ad">
+                    <img class="c-sidebar-ad--img" src="https://storage.googleapis.com/ubyssey/media/renditions/2Back2CoverAd.original.jpg" alt="Purse with papers popping out. One reads 'You fail' while another displays a 14% exam grade.">
+                    <div class="c-sidebar-ad--text" id="sidebarAdText"></div>
+                </div>
             </div>
         </div>
         <div class="suggested">
@@ -146,5 +152,28 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'ubyssey/js/guide-2021.js' %}" type="text/javascript"></script>
+<script>
+
+const adsJokes = [
+    "Keep reading. You look like you could use our help.",
+    "Looking slightly worse than usual today? Luckily you can have purse.",
+    "Pur!se.  01011011101b!uy pu!rse b. u0101!y p urse buy! purse b!!uy purse 010",
+    "Boyfriend dump you? Luckily buy purse.",
+    "Existenial dread? Purse can hold that.",
+    "Bring purse on your next vacation to Oak Island for special treasure",
+    "PURSE",
+];
+
+const adFormat = ["tall-image-shadow-text", "box-text", "top-box-text"];
+
+const randomJoke = adsJokes[Math.floor(Math.random() * adsJokes.length)];
+const randomFormat = adFormat[Math.floor(Math.random() * adFormat.length)];
+
+const adContainer = document.getElementById("sidebarAd");
+const adText = document.getElementById("sidebarAdText");
+
+adContainer.classList.add(randomFormat);
+adText.innerHTML = randomJoke;
+
+</script>
 {% endblock %}

@@ -34,12 +34,26 @@
     text-transform: uppercase;
   }
 
-  &__desc {
+  &__desc, &__credits > li {
     font-size: 11px;
     line-height: 1.6;
     color: #aaa;
     margin: 0 0 1.25rem;
     max-width: 300px;
+    font-family: base.$font-sans-serif;
+    a {
+      display: inline-block;
+    }
+  }
+
+  &__credits {
+    margin-block: 1.25rem 2rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__credits > li {
+    margin-bottom: 0.5em;
   }
 
   &__social {

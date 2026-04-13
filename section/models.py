@@ -5,6 +5,7 @@ from article.models import ArticlePage
 from home import blocks as homeblocks
 from article import blocks_outer_article
 from article import blocks_inner_article
+from section import blocks as section_blocks
 from ubyssey import blocks as general_blocks
 
 from django.core.cache import cache
@@ -192,6 +193,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
     top_stream = StreamField(
         [
+            ('section_heading', section_blocks.SectionHeading()),
+            ('section_category_bar', section_blocks.SectionCategoryBar()),
             ('article_gatherer', blocks_outer_article.ArticleGathererBlock()),
             ('landing', blocks_outer_article.SpecialLandingPageBlock()),
             ('article_manual', blocks_outer_article.ManualArticles()),

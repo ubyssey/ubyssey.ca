@@ -5,14 +5,18 @@
 
   <!-- Top promo bar -->
   <div class="spoof-nav__promo">
-    <span>The Ubyssey &rsquo;s Annual Spoof Issue &mdash; </span>
-    <a href="/humour/">Read Now</a>
+    <span>The Ubyssey's Annual Spoof Issue</span>
   </div>
 
   <!-- Middle: subscribe | logo | icons -->
   <div class="spoof-nav__middle">
     <div class="spoof-nav__middle-left">
-      <a class="spoof-nav__subscribe" href="/newsletter/">Subscribe</a>
+      <div id="subscribe-button" class="spoof-nav__subscribe">
+        Subscribe
+        <div id="subscribe-joke-container" class="spoof-nav__subscribe__joke">
+          Haha
+        </div>
+      </div>
     </div>
     <div class="spoof-nav__middle-center">
       <a class="spoof-nav__logo" href="{{ menu_items.0.href }}">{{ menu_items.0.text }}</a>
@@ -27,7 +31,7 @@
   </div>
 
   <!-- Bottom: category nav links (desktop only) -->
-  <nav class="spoof-nav__categories spoof-nav__desktop-only" aria-label="Spoof navigation">
+  <nav id="spoofNavCategories" class="spoof-nav__categories spoof-nav__desktop-only" aria-label="Spoof navigation">
     <ul>
       {% for item in menu_items %}
         {% if forloop.counter0 > 0 %}
@@ -60,7 +64,7 @@
         <li><a href="/newsletter/">Newsletter</a></li>
         <li><a href="https://www.instagram.com/ubyssey.ca/" target="_blank" rel="nofollow">Instagram</a></li>
         <li><a href="https://www.tiktok.com/@theubyssey" target="_blank" rel="nofollow">TikTok</a></li>
-        <li><a href="/about/">About</a></li>
+        <li><a href="/about/our-journalism/">About</a></li>
         <li><a href="/">The Ubyssey</a></li>
       </ul>
     </div>
@@ -100,4 +104,47 @@ function spoofNavClose() {
   toggle.setAttribute('aria-label', 'Open menu');
   toggle.setAttribute('onclick', 'spoofNavOpen()');
 }
+
+function writeJoke(i, interval) {
+  const container = document.getElementById("subscribe-joke-container");
+  const joke = container.getAttribute("joke");
+
+  if (i < joke.length && container.innerHTML.length == i) {
+    container.innerHTML = container.innerHTML + joke[i];
+    setTimeout(() => {writeJoke(i + 1)}, interval);
+  }
+}
+
+function subscribeJokes() {
+  const jokes = [
+    "who the fuck would subscribe to this shit anyways?",
+    "are you a bot?",
+    "give us your credit card info and your first born child to receive infinite access to Vague",
+    "The Ubyssey is ending the humour section as of April 10th we’re all getting fired help us :(",
+  ];
+
+  const container = document.getElementById("subscribe-joke-container");
+  const button = document.getElementById("subscribe-button");
+
+  button.addEventListener("mouseover", (e) => {
+    const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+    container.setAttribute("joke", randomJoke);
+    container.innerHTML = "";
+    writeJoke(0, 250);
+  });
+}
+
+subscribeJokes();
+
+document.addEventListener("scroll", (e) => {
+  const header = document.getElementById('spoofNavHeader');
+  if (scrollY > 100) {
+    if (!header.classList.contains("scrolled")) {
+      header.classList.add("scrolled");
+    }
+  } else if (header.classList.contains("scrolled")) {
+    header.classList.remove("scrolled");
+  }
+})
+
 </script>

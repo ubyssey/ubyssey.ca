@@ -95,10 +95,14 @@
 
 .featured_categories {
   display: flex;
-  margin-left: 1em;
   flex-grow: 1;
   width: 0;
   overflow-x: auto;
+
+  .featured_categories__section_heading {
+    font-weight: 600;
+    font-variation-settings: "wght" 600;
+  }
 
   p {
     margin-bottom: 0;
@@ -117,9 +121,15 @@
       list-style: none;
       display: inline;
       max-width: 250px;
+
       white-space: nowrap;
       overflow: clip;
       text-overflow: ellipsis;
+      color: var(--header_color-200);
+
+      &:first-child {
+        margin-left: 0;
+      }
     }
   }
   @media(variables.$bp-smaller-than-phablet) { 
@@ -213,11 +223,8 @@
 
 .c-section__description {
   margin-block: 1em;
-  padding-inline: 1em; 
-  display: inline-block;
   box-sizing: border-box;
-
-  font-size: 0.9em;
+  max-width: 600px;
 
   @media(variables.$bp-smaller-than-phablet) {
     width:100%;
@@ -226,7 +233,8 @@
   p {
     margin-right: 0.5em;
     display: inline;
-    max-width: 600px;
+    color: var(--text_color-200);
+    line-height: 1.5em;
     a {
       font-style: italic;
       text-decoration: underline;
@@ -242,6 +250,10 @@
 
   color: footer.$text-color;
 
+  @media(variables.$bp-smaller-than-tablet) {
+    padding-inline: 1em;
+  }
+
   h2.c-section__info-header {
     max-width: fit-content;
     margin-block: auto;
@@ -256,11 +268,21 @@
   .o-archive__search {
     margin-bottom: 0;
   }
+}
 
-  @media(variables.$bp-smaller-than-desktop) {
-    margin: 1em;
-    margin-top: 0;
-  }
+.c-section__heading .c-section__info {
+  margin-block: 0;
+  border: none;
+}
+
+.c-section__all-articles-list {
+  padding-block: 2em;
+  border-top: 2px solid var(--border-grey);
+}
+
+.c-section__info + .c-section__all-articles-list, .c-section__heading + .c-section__all-articles-list {
+  padding-top: 0;
+  border-top: none;
 }
 
 .c-section__modal_close {
@@ -284,23 +306,25 @@ svg.banner-title text{
 }
 
 .c-section__heading {
-  margin-block: 1em 2em;
-  padding-inline: 2em;
+  margin-block: 2em;
 
   padding-top: 0.5em;
-  border-bottom: 2px solid var(--color-ubyssey_blue);
+  border-bottom: 2px solid var(--border-grey);
 
-  text-align: center;
-  font-family: fonts.$font-headline;
-
-  @media (variables.$bp-larger-than-phablet) {
-    padding-inline: 20%;
+  @media (variables.$bp-smaller-than-tablet) {
+    padding-inline: 1em;
   }
+
   h1 {
-    margin-bottom: 0;
+
+    display: inline;
+    margin-right: 0.5em;
+    margin-bottom: 1rem;
+
+    font-family: fonts.$font-default;
     font-size: 1.5em;
     text-transform: uppercase;
-    color: var(--color-ubyssey_blue);
+    color: var(--header_color-100);
   }
 }
 

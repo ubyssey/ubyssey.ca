@@ -162,6 +162,13 @@ class ArticleAuthorsOrderable(Orderable):
         blank=True,
         default='author',
     )
+    author_alias = CharField(        
+        max_length=255,
+        null=True,
+        blank=True,
+        default=None,
+        help_text="To be used for humour articles only. Overwrites the author's name."
+    )
     panels = [
         MultiFieldPanel(
             [
@@ -181,6 +188,13 @@ class ArticleAuthorsOrderable(Orderable):
                 ),
             ],
             heading="Author",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("author_alias")
+            ],
+            heading="Options",
+            classname="collapsed",
         ),
     ] # panels for ArticleAuthorsOrderable
 
@@ -967,9 +981,13 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
           links: Whether the author names link to their respective pages.
         """
         def format_author(article_author):
+            name = article_author.author_alias
+            if not article_author.author_alias:
+                name = article_author.author.full_name
+
             if links and article_author.author.live:
-                return '<a href="%s">%s</a>' % (article_author.author.full_url, article_author.author.full_name)
-            return article_author.author.full_name
+                return '<a href="%s">%s</a>' % (article_author.author.full_url, name)
+            return name
 
         if not authors_list:
             authors_list = self.article_authors.all()
@@ -1145,7 +1163,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             return category_articles[:max]
         return category_articles
     
-    def get_section_articles(self, order='-first_published_at', max=10) -> QuerySet:
+    def get_section_articles(self, order='-first_published_at', max=12) -> QuerySet:
         """
         Returns a list of articles within the Article's section
         """
