@@ -224,7 +224,8 @@
 .c-section__description {
   margin-block: 1em;
   box-sizing: border-box;
-  max-width: 600px;
+  text-wrap: balance;
+  line-height: 1.5em;
 
   @media(variables.$bp-smaller-than-phablet) {
     width:100%;
@@ -234,7 +235,6 @@
     margin-right: 0.5em;
     display: inline;
     color: var(--text_color-200);
-    line-height: 1.5em;
     a {
       font-style: italic;
       text-decoration: underline;
