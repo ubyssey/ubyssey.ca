@@ -22,7 +22,8 @@ class OneOffVideoBlock(blocks.StructBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
 
-        context["youtube_short"] = "/shorts/" in value["video_embed"].url
+        if value["video_embed"]:
+            context["youtube_short"] = "/shorts/" in value["video_embed"].url
 
         return context
 
