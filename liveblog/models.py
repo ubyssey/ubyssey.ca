@@ -78,7 +78,11 @@ class LiveBlogUpdateAuthorBlock(blocks.StructBlock):
 
 @register_snippet
 class LiveBlogUpdate(ClusterableModel):
-    publish_date = models.DateTimeField(auto_now_add=True)
+    publish_date = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="You can leave this blank (it will auto populate). It's only necessary for changing the order of the blocks"
+    )
 
     authors = StreamField(
         [
@@ -110,6 +114,7 @@ class LiveBlogUpdate(ClusterableModel):
     panels = [
         FieldPanel("authors"),
         FieldPanel("content"),
+        FieldPanel("publish_date"),
         FieldPanel("room_name", widget=HiddenInput)
     ]
 
@@ -126,6 +131,9 @@ class LiveBlogUpdate(ClusterableModel):
             clear_cache([match_exact_url(parent.full_url)])
 
     def save(self, *args, **kwargs):
+        if (self.publish_date == None):
+            self.publish_date = timezone.now()
+
         save = super().save(*args, **kwargs)
 
         if self.room_name:
