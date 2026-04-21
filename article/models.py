@@ -1471,6 +1471,10 @@ class StandardArticlePage(ArticlePage):
         null=True,
         blank=True,
         use_json_field=True,
+        default = [
+            {"type": "richtext",
+            "value": {}}
+        ],
     )
     
     disclaimer = RichTextField(
