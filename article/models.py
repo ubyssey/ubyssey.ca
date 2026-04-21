@@ -1620,7 +1620,7 @@ class StandardArticlePage(ArticlePage):
         MultiFieldPanel(
             [ 
                 FieldPanel('title_tag'),
-                InlinePanel("featured_media", label="Featured Image or Video"),
+                InlinePanel("featured_media", label="Featured Image or Video", min_num=1),
                 FieldPanel("header"),
             ],
             heading = "Header/Banner Fields",
