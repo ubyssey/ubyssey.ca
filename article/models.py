@@ -677,6 +677,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         use_json_field=True,
         min_num = 1,
         max_num = 1,
+        default = [
+            {"type": "no_attachment",
+            "value": {}}
+        ],
     )
 
     #-----Category and Tag stuff-----
@@ -1467,6 +1471,10 @@ class StandardArticlePage(ArticlePage):
         null=True,
         blank=True,
         use_json_field=True,
+        default = [
+            {"type": "richtext",
+            "value": {}}
+        ],
     )
     
     disclaimer = RichTextField(
@@ -1602,9 +1610,17 @@ class StandardArticlePage(ArticlePage):
             heading="Publication Date",
         ),
         MultiFieldPanel(
+            [
+                HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
+                InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
+            ],
+            heading="Author(s)",
+            classname="collapsible",
+        ), # Author(s)
+        MultiFieldPanel(
             [ 
                 FieldPanel('title_tag'),
-                InlinePanel("featured_media", label="Featured Image or Video"),
+                InlinePanel("featured_media", label="Featured Image or Video", min_num=1),
                 FieldPanel("header"),
             ],
             heading = "Header/Banner Fields",
@@ -1621,14 +1637,6 @@ class StandardArticlePage(ArticlePage):
             heading="Article Content",
             classname="collapsible",
         ),
-        MultiFieldPanel(
-            [
-                HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
-                InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
-            ],
-            heading="Author(s)",
-            classname="collapsible",
-        ), # Author(s)
         MultiFieldPanel(
             [
                 FieldPanel("category_page"),

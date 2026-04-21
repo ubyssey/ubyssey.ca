@@ -114,8 +114,14 @@ class LiveBlogUpdate(ClusterableModel):
     panels = [
         FieldPanel("authors"),
         FieldPanel("content"),
-        FieldPanel("publish_date"),
-        FieldPanel("room_name", widget=HiddenInput)
+        MultiFieldPanel(
+            [
+                FieldPanel("publish_date"),
+                FieldPanel("room_name", widget=HiddenInput)],
+            heading="Advanced Fields",
+            classname="collapsible collapsed",
+        )
+        
     ]
 
     def getParentLiveBlogPage(self):
