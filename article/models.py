@@ -677,6 +677,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         use_json_field=True,
         min_num = 1,
         max_num = 1,
+        default = [
+            {"type": "no_attachment",
+            "value": {}}
+        ],
     )
 
     #-----Category and Tag stuff-----
