@@ -1602,6 +1602,14 @@ class StandardArticlePage(ArticlePage):
             heading="Publication Date",
         ),
         MultiFieldPanel(
+            [
+                HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
+                InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
+            ],
+            heading="Author(s)",
+            classname="collapsible",
+        ), # Author(s)
+        MultiFieldPanel(
             [ 
                 FieldPanel('title_tag'),
                 InlinePanel("featured_media", label="Featured Image or Video"),
@@ -1621,14 +1629,6 @@ class StandardArticlePage(ArticlePage):
             heading="Article Content",
             classname="collapsible",
         ),
-        MultiFieldPanel(
-            [
-                HelpPanel(content="Authors may be created by creating an \"Author Page\", then selected here."),
-                InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
-            ],
-            heading="Author(s)",
-            classname="collapsible",
-        ), # Author(s)
         MultiFieldPanel(
             [
                 FieldPanel("category_page"),
