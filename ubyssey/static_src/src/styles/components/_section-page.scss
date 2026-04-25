@@ -95,10 +95,14 @@
 
 .featured_categories {
   display: flex;
-  margin-left: 1em;
   flex-grow: 1;
   width: 0;
   overflow-x: auto;
+
+  .featured_categories__section_heading {
+    font-weight: 600;
+    font-variation-settings: "wght" 600;
+  }
 
   p {
     margin-bottom: 0;
@@ -107,7 +111,7 @@
   ul {
     display: flex;
     //gap: 1px;
-    //background-color: var(--text_color);
+    //background-color: var(--text_color-100);
     //width: fit-content;
     margin-block: auto;
     padding: 0;
@@ -117,9 +121,15 @@
       list-style: none;
       display: inline;
       max-width: 250px;
+
       white-space: nowrap;
       overflow: clip;
       text-overflow: ellipsis;
+      color: var(--header_color-200);
+
+      &:first-child {
+        margin-left: 0;
+      }
     }
   }
   @media(variables.$bp-smaller-than-phablet) { 
@@ -189,13 +199,14 @@
   position: relative;
   a, form, input {
     cursor: pointer;
-    color: var(--header_color);
+    color: var(--header_color-200);
+    border: none;
     &:hover {
       color: variables.$color-accent-blue;
     }
   }
   a > p {
-    color: var(--header_color);
+    color: var(--header_color-200);
 
     &:hover{
       color: variables.$color-accent-blue;
@@ -212,11 +223,9 @@
 
 .c-section__description {
   margin-block: 1em;
-  padding-inline: 1em; 
-  display: inline-block;
   box-sizing: border-box;
-
-  font-size: 0.9em;
+  text-wrap: balance;
+  line-height: 1.5em;
 
   @media(variables.$bp-smaller-than-phablet) {
     width:100%;
@@ -225,7 +234,7 @@
   p {
     margin-right: 0.5em;
     display: inline;
-    max-width: 600px;
+    color: var(--text_color-200);
     a {
       font-style: italic;
       text-decoration: underline;
@@ -237,17 +246,19 @@
   display: flex;
 
   margin-block: 2em;
-  border-bottom: 2px solid var(--header_color);
+  border-bottom: 2px solid var(--border-grey);
 
   color: footer.$text-color;
 
+  @media(variables.$bp-smaller-than-tablet) {
+    padding-inline: 1em;
+  }
+
   h2.c-section__info-header {
     max-width: fit-content;
-    margin-right: 1em;
     margin-block: auto;
 
     font-size: 1.25em;
-    text-transform: uppercase;
 
     @media(variables.$bp-smaller-than-mobile) {
       display: none;
@@ -257,11 +268,21 @@
   .o-archive__search {
     margin-bottom: 0;
   }
+}
 
-  @media(variables.$bp-smaller-than-desktop) {
-    margin: 1em;
-    margin-top: 0;
-  }
+.c-section__heading .c-section__info {
+  margin-block: 0;
+  border: none;
+}
+
+.c-section__all-articles-list {
+  padding-block: 2em;
+  border-top: 2px solid var(--border-grey);
+}
+
+.c-section__info + .c-section__all-articles-list, .c-section__heading + .c-section__all-articles-list {
+  padding-top: 0;
+  border-top: none;
 }
 
 .c-section__modal_close {
@@ -271,7 +292,7 @@
 }
 
 svg.banner-title text{
-  fill: var(--header_color);
+  fill: var(--header_color-100);
   stroke: var(--background);
   stroke-width: 0.5em;
   stroke-linejoin: round;
@@ -285,29 +306,32 @@ svg.banner-title text{
 }
 
 .c-section__heading {
-  margin-block: 1em 2em;
-  padding-inline: 2em;
+  margin-block: 2em;
 
   padding-top: 0.5em;
-  border-bottom: 2px solid var(--color-ubyssey_blue);
+  border-bottom: 2px solid var(--border-grey);
 
-  text-align: center;
-  font-family: fonts.$font-headline;
-
-  @media (variables.$bp-larger-than-phablet) {
-    padding-inline: 20%;
+  @media (variables.$bp-smaller-than-tablet) {
+    padding-inline: 1em;
   }
+
   h1 {
-    margin-bottom: 0;
+
+    display: inline;
+    margin-right: 0.5em;
+    margin-bottom: 1rem;
+
+    font-family: fonts.$font-default;
     font-size: 1.5em;
     text-transform: uppercase;
-    color: var(--color-ubyssey_blue);
+    color: var(--header_color-100);
   }
 }
 
 .section_infinitefeed {
   @media (variables.$bp-larger-than-tablet) {
-    max-width: 630px;
+    width: 630px;
+    max-width: 100%;
   }
 
   #feed {
@@ -420,7 +444,7 @@ main.tag {
 }
 
 .o-analytics_month {
-  color: var(--text_color);
+  color: var(--text_color-100);
 
   h1 {
     span.year {
@@ -496,7 +520,7 @@ main.tag {
           .pubdate {
             margin-right: 0.5em;
             font-size: 0.8em;
-            color: var(--text_color_supporting);
+            color: var(--text_color-300);
           }
           .o-article__left {
             margin-bottom: 1em;

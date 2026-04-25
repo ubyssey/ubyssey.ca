@@ -1,0 +1,10 @@
+{% load wagtailcore_tags %}
+<div class="o-minimal_article_listing {% if lede %}larger-headline{% endif %}">
+    {% if self.article.is_live %}
+        <div class="o-article__published live">LIVE</div>
+    {% endif %}
+    <h3><a href="{%pageurl self.article %}">{{self.article.title|safe}}</a></h3>
+    {% if lede %}
+    <p>{{self.article.lede|safe}}</p>
+    {% endif %}
+</div>

@@ -2,6 +2,6 @@
 
 <div class="o-card-container o-card-container--{{self.container_type}}">
     {% for card in self.cards %}
-        {% include_block card %}
+        {% include_block card with container_type=self.container_type %}
     {% endfor %}
 </div>

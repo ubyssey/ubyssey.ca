@@ -12,6 +12,6 @@
 
     <div class="o-extra-article-info__content">
         {% if self.header %}<h2>{{self.header|safe}}</h2>{% endif %}
-        {{self.content|safe}}
+        {{self.content|richtext}}
     </div>
 </div>

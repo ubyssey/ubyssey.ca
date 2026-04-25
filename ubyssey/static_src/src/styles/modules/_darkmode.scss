@@ -6,6 +6,12 @@
   background: transparent;
   cursor: pointer;
   float: right;
+  .dark-mode-switcher--label {
+    display: none;
+  }
+  img, svg {
+    vertical-align: middle;
+  }
 }
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
     transform-origin: center;
@@ -39,6 +45,14 @@
 
 [color-css-theme="dark"] .sun-and-moon > .moon > circle {
     transform: translateX(-7px);
+}
+
+[color-css-theme="dark"] .dark-mode-switcher--label-light {
+  display: none !important;
+}
+
+[color-css-theme="light"] .dark-mode-switcher--label-dark {
+  display: none !important;
 }
 
 @supports (cx: 1) {
@@ -97,7 +111,7 @@
 }
 .right {
   .dark-mode-switcher{
-    color: var(--header_color);
+    color: var(--header_color-100);
   }
 }
 
@@ -110,7 +124,7 @@
       float: left;
       display: block;
       margin-left: 0;
-      color: var(--header_color);
+      color: var(--header_color-100);
     }
   }
 }

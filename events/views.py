@@ -494,26 +494,18 @@ async def update_events():
         {'name': 'UBC CS', 
          'file': "https://www.cs.ubc.ca/views/ical/related_events/calendar.ics", 
          'create_function': Event.objects.cs_ubc_create_event},
-
-        {'name': 'UBC Statistics', 
-         'file': "https://www.stat.ubc.ca/events-calendar-feed/", 
-         'create_function': Event.objects.stats_ubc_create_event},
+        
+        # Statistics website has removed ical file. We now need to write unique parser for it
+        #{'name': 'UBC Statistics', 
+        # 'file': "https://www.stat.ubc.ca/events-calendar-feed/", 
+        # 'create_function': Event.objects.stats_ubc_create_event},
 
         {'name': 'UBCevents', 
          'file': "https://events.ubc.ca/events/?ical=1", 
          'create_function': Event.objects.ubcevents_create_event},
 
         {'name': 'Thunderbird Arena', 
-         'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % datetime.now().month) + "-01&ical=1", 
-         'create_function': Event.objects.ical_create_event,
-         'instructions': {
-            'category': lambda e: 'entertainment',
-            'description_transform': lambda d : "",    
-         }
-        },
-
-        {'name': 'Thunderbird Arena', 
-         'file': "https://thunderbirdarena.ubc.ca/?tribe-bar-date=2024-" + str("%02d" % ((datetime.now().month%12) + 1)) + "-01&ical=1", 
+         'file': f"https://thunderbirdarena.ubc.ca/?tribe-bar-date={str(datetime.now().year)}-{str('%02d' % ((datetime.now().month%12) + 1))}-01&ical=1", 
          'create_function': Event.objects.ical_create_event,
          'instructions': {
             'category': lambda e: 'entertainment',
@@ -590,16 +582,19 @@ def create_ical(request):
     import icalendar
 
     cal = icalendar.Calendar()
+    window_start = timezone.now() - timezone.timedelta(days=30)
+    window_end   = timezone.now() + timezone.timedelta(days=90)
+    all_events = Event.objects.filter(hidden=False, start_time__gte=window_start, end_time__lte=window_end).exclude(start_time=None, end_time=None)
+
     if request.GET.get('category'):
         cal['X-WR-CALNAME'] = request.GET.get('category').capitalize() + ' Around Campus from The Ubyssey'
         cal['X-ORIGINAL-URL'] = 'https://ubyssey.ca/events/?category=' + request.GET.get('category')
         cal['X-WR-CALDESC'] = request.GET.get('category').capitalize() + ' at UBC collected by The Ubyssey'
-        all_events = Event.objects.filter(hidden=False, category=request.GET.get("category")).exclude(start_time=None, end_time=None)
+        all_events = all_events.filter(category=request.GET.get("category"))
     else:
         cal['X-WR-CALNAME'] = 'Events Around Campus from The Ubyssey'
         cal['X-ORIGINAL-URL'] = 'https://ubyssey.ca/events'
         cal['X-WR-CALDESC'] = 'Events at UBC collected by The Ubyssey'
-        all_events = Event.objects.filter(hidden=False).exclude(category='seminar', start_time=None, end_time=None)
 
     for event in all_events:
         ical_event = icalendar.Event()

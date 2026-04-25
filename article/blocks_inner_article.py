@@ -38,6 +38,7 @@ class HeaderLayoutBlock(blocks.ChoiceBlock):
         ('banner-image--full-height--headline-left--headline-mid--headline-one-third-width', 'Full Height Banner Image (Mid, Left Headline)'),
         ('banner-image--full-height--headline-right--headline-mid--headline-one-third-width', 'Full Height Banner Image (Mid, Right Headline)'),
         ('timeless-meta-page-banner', 'Timeless Meta Page Banner'),
+        ('communications-page-banner', 'Communications Page Banner'),
     ]
 
 class HeaderWithYoutubeVideoLayoutBlock(HeaderLayoutBlock):
@@ -66,10 +67,17 @@ class StandardHeader(blocks.StructBlock):
         required=False,
         help_text="Articles that use a special header/banner often contain a second lede/abstract summary ",
     )
+    overwrite_image = blocks.ListBlock(
+        image_blocks.CaptionedImageBlock(),
+        max_num = 1,
+        default = [],
+        help_text="ONLY SET THIS IF YOU WANT SEPARATE IMAGES FOR THE HEADER AND THE ARTICLE LISTING WITHIN SECTION PAGES.")
     
     media_type = "image"
 
     def get_featured_media(self, value, context):
+        if len(value['overwrite_image']):
+            return value['overwrite_image'][0]
         return dict(context)["self"].featured_media.first
 
     def render(self, value, context=None):
@@ -206,6 +214,7 @@ class ExtraArticleInfoBlock(blocks.StructBlock):
         choices=[
             ('editors-note', "Editor's note"),
             ('highlight', "Highlight"),
+            ('tip-form', 'Tip form'),
         ],
         required=True,
     )
@@ -216,7 +225,7 @@ class ExtraArticleInfoBlock(blocks.StructBlock):
             if block_template in ["editors-note", "highlight"]:
                 template = "article/stream_blocks/extra-article-info.html"
             else:
-                template = block_template
+                template = 'article/stream_blocks/' + block_template + '.html'
         else:
             return self.render_basic(value, context=context)
 

@@ -218,8 +218,6 @@ function initializeModals() {
 
     var parent = $(this).closest('.setup-modal');
     var modal = $(parent).find('.modal')[0];
-    console.log(parent);
-    console.log(modal);
 
     if (modal.classList.contains("show")) {
       closeModal(modal);
@@ -235,8 +233,6 @@ function initializeModals() {
     e.preventDefault();
     var parent = $(this).closest('.setup-modal');
     var modal = $(parent).find('.modal')[0];
-    console.log(parent);
-    console.log(modal);
 
     closeModal(modal);
   });
@@ -355,11 +351,9 @@ function initializeSearchButton() {
     e.preventDefault();
     const navSearchInput = document.getElementById("nav-search-input");
     const navSearch = document.getElementById("nav-search");
-    console.log(navSearchInput);
     if (navSearchInput && navSearch) {
       navSearch.style = "display: block";
       navSearchInput.focus();
-      console.log("focused");
       navSearch.style = "";
     }  
   });
@@ -374,7 +368,6 @@ function initializeAudioQuote() {
     var sound = document.getElementById(id);
     if (sound.paused) {   
       sound.play();
-      console.log(e);
       var icon = this.getElementsByClassName("volume")[0];
       //var icon = document.getElementById("icon-" + id);
       var frames = ["volume-off", "volume-low", "volume-high"];

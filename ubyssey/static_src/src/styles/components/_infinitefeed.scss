@@ -82,7 +82,8 @@
 
 .c-section__sidebar {
     margin-left: 20px;
-    width: 37%;
+    padding-inline: 1em;
+    flex-grow: 1;
     top:100px;
 
     .sidebar-block--advertisement, .o-advertisement--ad-page-promo {
@@ -101,7 +102,6 @@
     flex-direction: column;
     @media (variables.$bp-larger-than-tablet) {
         flex-direction: row;
-        justify-content: space-evenly;
     }
 }
 
@@ -117,10 +117,13 @@
 }
 
 .sidebar-issue ul {
-    color:white;
+    margin-top: 0;
     padding:0;
+
     display: flex;
     flex-wrap: wrap;
+
+    color:white;
     @media(variables.$bp-smaller-than-phablet){
       text-align: center;
     }

@@ -23,8 +23,8 @@
                                     <span class="o-article__published">{{ article.explicit_published_at|display_pubdate }}</span>
                                 </div>
                             </div>
-                            <div class="right">
                             {% if article.featured_media.first %}
+                            <div class="right">
                                 <a class="o-article__image" href="{% pageurl article %}">
                                 {% if article.featured_media.first.image %}
                                 {% image article.featured_media.first.image format-webp fill-200x200 loading="lazy" alt=article.featured_media.first.alt_text %}
@@ -32,8 +32,8 @@
                                 <img src='http://img.youtube.com/vi/{{ article.featured_media.first.video|youtube_embed_id|safe }}/0.jpg' alt="{{article.featured_media.first.alt_text}}">
                                 {% endif %}
                                 </a>
-                            {% endif %}
                             </div>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>

@@ -196,6 +196,41 @@ def register_redacted_feature(features):
 
 # Richtext option for editors to suggest deletions inline
 @hooks.register('register_rich_text_features')
+def register_small_text_feature(features):
+    feature_name = 'small text'
+    type_ = 'SMALL_TEXT'
+    tag = 'small'
+
+    control = {
+        'type': type_,
+        'label': 'small',
+        'description': 'Small text',
+        'style': {'font-size': '0.75em'},
+    }
+
+    features.register_editor_plugin(
+        'draftail', feature_name, draftail_features.InlineStyleFeature(control)
+    )
+
+    db_conversion = {
+        'from_database_format': {tag: InlineStyleElementHandler(type_)},
+        'to_database_format': 
+            {
+                'style_map': {
+                    type_: 
+                    {
+                        "element": tag,
+                    } 
+                }
+            },
+    }
+
+    features.register_converter_rule('contentstate', feature_name, db_conversion)
+
+    features.default_features.append(feature_name)
+
+# Richtext option for editors to suggest deletions inline
+@hooks.register('register_rich_text_features')
 def register_deletion_feature(features):
     feature_name = 'deletion'
     type_ = 'DELETION'

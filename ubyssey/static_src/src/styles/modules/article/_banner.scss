@@ -49,6 +49,7 @@
     h1.o-headline, p.subtitle {
       font-weight: 400;
       font-variation-settings: "wght" 400;
+      text-wrap: balance;
     }
     
     .title-tag {
@@ -265,7 +266,7 @@
       }
 
       .o-article--header--above_cut_lede {
-        --text_color: white;
+        --text_color-100: white;
         font-family: fonts.$font-default;
 
         width: 100%;
@@ -308,9 +309,9 @@
     }
 
     .caption {
-      color: var(--text_color_supporting-lighter);
+      color: var(--text_color-400);
       span.credit {
-        color: var(--text_color_supporting);
+        color: var(--text_color-300);
       }
     }
 

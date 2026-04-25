@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import ReactDOM from 'react-dom';
-import LiveBlogFeed from "./components/Liveblog/LiveblogFeed.jsx";
+import LiveBlog from "./components/Liveblog/Liveblog.jsx";
 
 ReactDOM.render(
-    <LiveBlogFeed />,
-    document.getElementById('liveblog-feed')
+    <LiveBlog />,
+    document.getElementById('liveblog')
 );

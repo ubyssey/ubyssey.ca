@@ -48,3 +48,9 @@ class LiveBlogConsumer(WebsocketConsumer):
 
         # Send id to WebSocket
         self.send(text_data=json.dumps({"delete": id}))
+
+    def liveblog_page_update(self, event):
+        page = event["page"]
+
+        # Send stage to WebSocket
+        self.send(text_data=json.dumps({"page_update": page}))

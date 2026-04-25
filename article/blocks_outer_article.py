@@ -44,7 +44,6 @@ class TemplateSelectStructBlock(blocks.StructBlock):
 class MidStreamListTemplates(blocks.ChoiceBlock):
  
     choices=[
-        ('section/objects/promo_glm.html', 'GIRLS LOWERMAINLAND PROMO'),
         ('section/objects/section_bulleted.html', 'Default'),
         ('section/objects/section_timeline.html', 'Timeline'),
         ('section/objects/section_horizontal.html', 'Horizontal'),
@@ -58,6 +57,10 @@ class MidStreamListTemplates(blocks.ChoiceBlock):
         ('section/objects/single_promo.html', 'Single (promo)'),
         ('section/objects/single_top-headline.html', 'Single (top headline)'),
         ('section/objects/single_top-headline_timeline.html', 'Single (top headline with timeline)'),
+        ('section/objects/single_large-image-left.html', 'Single (large image left)'),
+        ('section/objects/single_large-image-left_timeline.html', 'Single (large image left with timeline)'),
+        
+        ('section/objects/spoof-2026-promo.html', 'VAGUE PROMO'),
     ]
 
 class AbstractArticleList(TemplateSelectStructBlock):
@@ -142,6 +145,9 @@ class ArticleGathererBlock(AbstractArticleList):
                 context['articles'] = context['articles'].filter(topics__slug=value["tag_slug"])
             else:
                 context['articles'] = []
+
+        if 'exclude' in context:
+            context['articles'] = context['articles'].exclude(id__in=context['exclude'])
 
         if not 'gather_title' in context:
             context['gather_title'] = "Latest stories"
@@ -355,10 +361,14 @@ class ArticleGathererWithPinnedBlock(ArticleGathererBlock):
         required=False,
     )
     def get_context(self, value, parent_context=None):
+        if parent_context == None:
+            parent_context = {}
+        pinned = [article for article in value['pinned']]
+        parent_context['exclude'] = [p.id for p in pinned]
         context = super().get_context(value, parent_context=parent_context)
         if value['pinned_title']:
             context['pinned_title'] = value['pinned_title']
-        context["pinned"] = [article for article in value['pinned']]
+        context['pinned'] = pinned
         return context
     
 class SpecialLandingPageBlock(AbstractArticleList):

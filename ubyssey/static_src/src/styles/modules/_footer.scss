@@ -1,6 +1,6 @@
 @use 'variables';
 
-$text-color: var(--text_color);
+$text-color: var(--text_color-100);
 
 footer {
   --footer-background: var(--color-ubyssey_blue-dark);

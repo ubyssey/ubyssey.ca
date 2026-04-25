@@ -42,13 +42,13 @@ $search-bar-height: 50px;
   text-overflow: ellipsis;
   line-height: $search-bar-height;
   font-size: fonts.font-size(16);
-  color: var(--header_color);
+  color: var(--header_color-100);
 
   // Transition
   transition-duration: 0.2s;
 
   &:focus {
-	border-color: var(--header_color);
+	border-color: var(--header_color-100);
     outline: 0;
 	width:100% !important;
 	opacity: 1;

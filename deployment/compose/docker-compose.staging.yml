@@ -1,0 +1,299 @@
+version: "3.7"
+
+networks:
+  proxy-shared:
+    external: true
+  ubyssey-internal:
+    driver: overlay
+    attachable: true
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ubyssey
+      MYSQL_USER: ubyssey
+      MYSQL_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
+    secrets:
+       - SQL_PASSWORD
+    networks:
+      - ubyssey-internal
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+  cache:
+    image: memcached:1.6.10
+    networks:
+      - ubyssey-internal
+    ports:
+      - "11211:11211"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "timeout 5 bash -c '</dev/tcp/localhost/11211'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    restart: always
+    image: redis:latest
+    networks:
+      - ubyssey-internal
+    volumes:
+      - redis-data:/var/lib/redis
+    ports:
+      - "6379:6379"
+
+  # WSGI worker for regular HTTP traffic
+  django-wsgi:
+    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
+
+    # The number of gunicorn workers below is derived from the number of CPU cores
+    # on the VM using this formula: (2 x $num_cores) + 1, where $num_cores is 8.
+    #
+    # Total workers = (2 x 8) + 1 = 17
+    #
+    # We then further divide by the number of container replicas (4):
+    #
+    # Workers per replica = floor(17 / 4) = 4
+    #
+    # Ref: https://medium.com/@jleonro/finetunne-number-of-workers-in-gunicorn-ab1907b06cae
+    command: >
+      bash -c "python manage.py migrate && python manage.py crontab add && service cron start
+      && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
+
+    environment:
+      SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
+      SQL_HOST: mysql
+      SQL_USER: root
+      SQL_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
+      SQL_DATABASE: ubyssey
+      GS_ACCESS_KEY_ID_FILE: /run/secrets/GS_ACCESS_KEY_ID
+      GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
+      STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
+      EMAIL_HOST_PASSWORD_FILE: /run/secrets/EMAIL_HOST_PASSWORD
+
+    secrets:
+      - DJANGO_SECRET_KEY
+      - SQL_PASSWORD
+      - GS_ACCESS_KEY_ID
+      - GS_SECRET_ACCESS_KEY
+      - GOOGLE_APPLICATION_CREDENTIALS
+      - EMAIL_HOST_PASSWORD
+
+    networks:
+      - proxy-shared
+      - ubyssey-internal
+
+    expose:
+      - 8000
+
+    # Send container logs to Google Cloud Logging
+    # Ref: https://docs.docker.com/engine/logging/drivers/gcplogs/
+    logging:
+      driver: gcplogs
+
+    deploy:
+      # Deploy 4 replicas of the Django app. This makes us more resilient to errors
+      # that might cause a single container to crash momentarily.
+      #
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#replicas
+      mode: replicated
+      replicas: 4
+
+      # Restart containers on failure up to a maximum of 10 times.
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#restart_policy
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        window: 120s
+
+      # Update 2 containers at a time. This prevents downtime when releasing an update.
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#update_config
+      # NOTE: No rollback for staging - we want to see what breaks
+      update_config:
+        parallelism: 2
+        delay: 10s
+        order: stop-first
+        monitor: 30s
+        max_failure_ratio: 0
+        failure_action: pause
+
+    depends_on:
+      - mysql
+      - cache
+      - redis
+
+  # ASGI worker for WebSocket traffic at /ws/
+  django-asgi:
+    image: ghcr.io/ubyssey/ubyssey.ca:${TAG}
+
+    # Use Gunicorn with Uvicorn workers for ASGI/WebSocket support
+    #
+    # Worker configuration: 2 workers per replica × 2 replicas = 4 total ASGI workers
+    #
+    # Why 4 ASGI workers?
+    # - Total CPU budget: (2 × 8 cores) + 1 = 17 workers for BOTH WSGI + ASGI combined
+    # - Traffic split: Majority is HTTP (WSGI), minimal WebSocket traffic (ASGI)
+    # - Resource allocation: WSGI handles bulk of requests, ASGI dedicated to WebSocket-only
+    # - Each ASGI worker is async and multiplexes many concurrent WebSocket connections
+    #
+    # Why 2 replicas?
+    # - Provides fault tolerance (if 1 replica fails, 50% capacity remains)
+    # - Enables zero-downtime updates (update 1 replica at a time)
+    #
+    # Ref: https://medium.com/@jleonro/finetunne-number-of-workers-in-gunicorn-ab1907b06cae
+    command: >
+      bash -c "gunicorn ubyssey.asgi:application --workers=2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --access-logfile - --error-logfile -"
+
+    environment:
+      SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
+      SQL_HOST: mysql
+      SQL_USER: root
+      SQL_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
+      SQL_DATABASE: ubyssey
+      GS_ACCESS_KEY_ID_FILE: /run/secrets/GS_ACCESS_KEY_ID
+      GS_SECRET_ACCESS_KEY_FILE: /run/secrets/GS_SECRET_ACCESS_KEY
+      STATIC_URL: https://storage.googleapis.com/ubyssey-staging/static/
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/GOOGLE_APPLICATION_CREDENTIALS
+      EMAIL_HOST_PASSWORD_FILE: /run/secrets/EMAIL_HOST_PASSWORD
+
+    secrets:
+      - DJANGO_SECRET_KEY
+      - SQL_PASSWORD
+      - GS_ACCESS_KEY_ID
+      - GS_SECRET_ACCESS_KEY
+      - GOOGLE_APPLICATION_CREDENTIALS
+      - EMAIL_HOST_PASSWORD
+
+    networks:
+      - proxy-shared
+      - ubyssey-internal
+
+    expose:
+      - 8001
+
+    # Send container logs to Google Cloud Logging
+    # Ref: https://docs.docker.com/engine/logging/drivers/gcplogs/
+    logging:
+      driver: gcplogs
+
+    deploy:
+      # Deploy 2 replicas for WebSocket handling
+      mode: replicated
+      replicas: 2
+
+      # Restart containers on failure up to a maximum of 10 times.
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#restart_policy
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        window: 120s
+
+      # Update 1 container at a time for WebSocket connections
+      # Ref: https://docs.docker.com/reference/compose-file/deploy/#update_config
+      # NOTE: No rollback for staging - we want to see what breaks
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: stop-first
+        monitor: 30s
+        max_failure_ratio: 0
+        failure_action: pause
+
+    depends_on:
+      - mysql
+      - cache
+      - redis
+
+  nginx:
+    image: nginx:1.27
+    restart: always
+    volumes:
+      - ./nginx/:/etc/nginx/:ro
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:ro
+      - certbot-signals:/tmp/certbot-signals
+      - ./scripts/nginx-reload-watcher.sh:/nginx-reload-watcher.sh:ro
+    networks:
+      - proxy-shared
+      - ubyssey-internal
+    ports:
+      - 80:80
+      - 443:443
+    logging:
+      driver: gcplogs
+    # Run nginx and the reload watcher in parallel
+    command: >
+      sh -c "sh /nginx-reload-watcher.sh & nginx -g 'daemon off;'"
+
+    # Health check to ensure nginx is running and config is valid
+    # This prevents bad configs from being deployed silently
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    deploy:
+      # Restart containers on failure up to a maximum of 5 times
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        window: 120s
+
+      # Rolling update strategy - only update if health check passes
+      # NOTE: No rollback for staging - we want to see what breaks
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: stop-first
+        monitor: 30s
+        max_failure_ratio: 0
+        failure_action: pause
+
+    depends_on:
+      - django-wsgi
+      - django-asgi
+
+  certbot:
+    image: certbot/certbot:v4.0.0
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/letsencrypt-etc/:/etc/letsencrypt/:rw
+      - ./certbot/letsencrypt-lib/:/var/lib/letsencrypt/:rw
+      - certbot-signals:/tmp/certbot-signals
+      - ./scripts/certbot-renewal-with-nginx-reload.sh:/certbot-renewal-with-nginx-reload.sh:ro
+    networks:
+      - ubyssey-internal
+    # Run the certbot service script that signals nginx to reload via shared volume
+    entrypoint: ["/bin/sh", "/certbot-renewal-with-nginx-reload.sh"]
+
+    deploy:
+      # Restart certbot on failure - background service should always run
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+
+volumes:
+  certbot-signals:
+    driver: local
+  redis-data: {}
+
+secrets:
+  DJANGO_SECRET_KEY:
+    external: true
+  SQL_PASSWORD:
+    external: true
+  GS_ACCESS_KEY_ID:
+    external: true
+  GS_SECRET_ACCESS_KEY:
+    external: true
+  GOOGLE_APPLICATION_CREDENTIALS:
+    file: ./service-account.json
+  EMAIL_HOST_PASSWORD:
+    external: true
