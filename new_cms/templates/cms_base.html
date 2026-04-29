@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New CMS</title>
+    <style>
+        .container {
+            width: 100%;
+            display: grid;
+            grid-template-areas: "sidebar main";
+            grid-template-columns: 200px auto;
+        }
+        .sidebar {
+            grid-area: sidebar;
+            height: 100%;
+        }
+
+        .sidebar a {
+            display: block;
+        }
+
+        .main {
+            grid-area: main;
+            height: 100%;
+        }
+    </style>
+    {% block stylesheet %}
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>New CMS</h1>
+            <a href="{% url 'new_cms:index' %}">Home</a>
+            <a href="{% url 'new_cms:manuscript_editor' 1 %}">Manuscript Editor</a>
+            <a>Blank A</a>
+            <a>Blank B</a>
+            <a>Blank C</a>
+        </div>
+        <div class="main">
+            {% block content %}
+            {% endblock %}
+            {% block scripts %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

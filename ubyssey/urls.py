@@ -102,7 +102,7 @@ urlpatterns += [
     path('admin/story_assignment_api/', story_assignment_api_list),
     path('admin/visual_assignment_api/', visual_assignment_api_list),
 
-    path('new-admin/', include('new_cms.urls')),
+    path('new-cms/', include('new_cms.urls')),
 
     # Events
     re_path(r'^events/', include(events_urls)),
