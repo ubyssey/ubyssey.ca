@@ -7,5 +7,6 @@ app_name = "new_cms"
 urlpatterns = [
     path("", views.index, name="index"),
     path("page/<int:page_id>", views.manuscript_editor, name="manuscript_editor"),
+    path("homepage", views.homepage_editor, name="homepage_editor"),
     # I'll add more later
 ]
