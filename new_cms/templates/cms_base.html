@@ -34,9 +34,7 @@
             <h1>New CMS</h1>
             <a href="{% url 'new_cms:index' %}">Home</a>
             <a href="{% url 'new_cms:manuscript_editor' 1 %}">Manuscript Editor</a>
-            <a>Blank A</a>
-            <a>Blank B</a>
-            <a>Blank C</a>
+            <a href="{% url 'new_cms:homepage_editor' %}">Homepage Editor</a>
         </div>
         <div class="main">
             {% block content %}

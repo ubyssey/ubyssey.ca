@@ -74,3 +74,7 @@ def manuscript_editor(request, page_id):
     return render(
         request, "manuscript_editor.html", {"page": page, "stream_data": stream_data}
     )
+
+@login_required
+def homepage_editor(request):
+    return render(request, "homepage_editor.html")
