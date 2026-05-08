@@ -10,24 +10,33 @@ from wagtail.models import Page
 from article.models import StandardArticlePage
 from section.models import SectionPage
 
+from wagtail.telepath import JSContext
+
 
 # Helper
 def get_streamfields(page):
-    result = {}
+    streamfield_blocks = {}
+    packed_blocks = {}
+    js_context = JSContext()
     for field in page._meta.get_fields():
         if not isinstance(field, WagtailStreamField):
             continue
         value = getattr(page, field.name)
         if value is None:
-            result[field.name] = "[]"
+            streamfield_blocks[field.name] = "[]"
             continue
         try:
             raw = field.stream_block.get_prep_value(value)
-            result[field.name] = json.dumps(raw, indent=2, default=str)
+            streamfield_blocks[field.name] = json.dumps(raw, indent=2, default=str)
         except Exception:
-            result[field.name] = "[]"
+            streamfield_blocks[field.name] = "[]"
             print("Failed to get field: " + field.name)
-    return result
+        try: 
+            packed_blocks[field.name] = js_context.pack(field.stream_block)
+        except Exception:
+            packed_blocks[field.name] = None
+            print("Failed to pack block: " + field.name)
+    return streamfield_blocks, packed_blocks, js_context.media
 
 
 @login_required
@@ -60,19 +69,24 @@ def manuscript_editor(request, page_id):
             except:
                 print("Failed to edit field:" + field.name)
 
-    try:
-        revision = page.save_revision(user=request.user)
-        if request.POST.get("action") == "publish":
-            revision.publish(user=request.user)
-            print("Revised page")
-        else:
-            print("Draft Saved")
-    except:
-        print("Failed to update page:" + page.title)
+        try:
+            revision = page.save_revision(user=request.user)
+            if request.POST.get("action") == "publish":
+                revision.publish(user=request.user)
+                print("Revised page")
+            else:
+                print("Draft Saved")
+        except:
+            print("Failed to update page:" + page.title)
 
-    stream_data = get_streamfields(page)
+    stream_data, packed_blocks, telepath_media = get_streamfields(page)
+
     return render(
-        request, "manuscript_editor.html", {"page": page, "stream_data": stream_data}
+        request, "manuscript_editor.html", 
+        {"page": page, 
+         "stream_data": stream_data, 
+         "packed_blocks": packed_blocks,
+         "telepath_media": telepath_media}
     )
 
 @login_required
