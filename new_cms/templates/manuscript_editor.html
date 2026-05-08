@@ -1,6 +1,14 @@
 {% extends "cms_base.html" %}
 
+{# Lazy Head Change #}
+{% block stylesheet %}
+{{ telepath_media }}
+{% endblock %}
+
 {% block content %}
+
+{{ packed_blocks|json_script:"packed-blocks" }}
+
 <a href="{% url 'new_cms:index' %}">All Pages</a>
 <h1>{{ page.title }}</h1>
 
@@ -20,6 +28,9 @@
 <h3>Streamfield: {{field_name}}</h3>
 <textarea id="stream_{{field_name}}" name="stream_{{field_name}}" rows="15" cols="50">{{json_str}}</textarea>
 {% endfor %}
+
+<br>
+<textarea rows="30" cols="100">{{ packed_blocks | pprint }}</textarea>
 
 <br>
 <br>
