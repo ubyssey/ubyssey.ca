@@ -62,12 +62,21 @@
   "dependencies": {
     "@svgr/webpack": "^8.1.0",
     "axios": "^1.7.4",
+    "css-loader": "^7.1.4",
     "global": "^4.3.2",
     "gsap": "^3.13.0",
     "js-cookie": "^2.2.0",
+    "prosemirror-example-setup": "^1.2.3",
+    "prosemirror-model": "^1.25.4",
+    "prosemirror-schema-basic": "^1.2.4",
+    "prosemirror-schema-list": "^1.5.1",
+    "prosemirror-state": "^1.4.4",
+    "prosemirror-view": "^1.41.8",
     "react-loader-spinner": "^6.1.6",
     "react-router": "^6.26.1",
     "react-router-dom": "^6.26.1",
-    "tough-cookie": "^2.3.4"
+    "style-loader": "^4.0.0",
+    "tough-cookie": "^2.3.4",
+    "uuid": "^14.0.0"
   }
 }
