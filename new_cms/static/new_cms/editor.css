@@ -1,0 +1,43 @@
+.pm-stream-block {
+    border: 2px solid blue;
+}
+
+.pm-stream-block__header {
+    border: 2px solid green;
+}
+
+.pm-stream-block__heading {
+    border: 2px solid yellow;
+}
+
+.pm-stream-block__title {
+    border: 2px solid purple;
+}
+
+.pm-stream-block__meta {
+    border: 2px solid red;
+}
+
+.pm-stream-block__content {
+    border: 2px solid cyan;
+}
+
+.pm-stream-block__empty {
+    border: 2px solid orange;
+}
+
+.pm-editable-field__label {
+    border: 2px solid black;
+}
+
+.pm-editable-field__content {
+    border: 2px solid black;
+}
+
+.pm-control-field__label {
+    border: 2px solid black;
+}
+
+.pm-control-field__input {
+    border: 2px solid black;
+}
