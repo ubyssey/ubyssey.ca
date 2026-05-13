@@ -23,6 +23,7 @@
 {% endblock %}
 
 {% block header %}
+{% if settings.ads.AdTagSettings.section_header_placements.all %}
   <div class="o-advertisement--above-sticky-nav-bar">
   {% include 'navigation/headers/mobile.html' %}
       <!-- Place header ads for section page -->
@@ -30,7 +31,8 @@
       {% gpt_placement_tag orderable.ad_slot %}
     {% endfor %}
   </div>
-    {% include 'navigation/headers/topbar.html' with section="none" %}
+{% endif %}
+  {% include 'navigation/headers/topbar.html' with section="none" %}
 {% endblock %}
 
 {% block content %}

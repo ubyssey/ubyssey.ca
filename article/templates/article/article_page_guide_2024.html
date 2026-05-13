@@ -45,12 +45,14 @@
 <main class="{{ self.main_class_name }} o-site-wrapper">
 
     {% block banner_ad %}
+    {% if settings.ads.AdTagSettings.article_header_placements.all %}
     <div class="guide-ads">
     <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
             {% gpt_placement_tag orderable.ad_slot %}
         {% endfor %}
     </div>
+    {% endif %}
     {% endblock %}
 
     {% with self.featured_media.first as featured_image_object %}
