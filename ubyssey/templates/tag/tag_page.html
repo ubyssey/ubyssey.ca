@@ -23,9 +23,9 @@
 {% endblock %}
 
 {% block header %}
+  {% include 'navigation/headers/mobile.html' %}
 {% if settings.ads.AdTagSettings.section_header_placements.all %}
   <div class="o-advertisement--above-sticky-nav-bar">
-  {% include 'navigation/headers/mobile.html' %}
       <!-- Place header ads for section page -->
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
       {% gpt_placement_tag orderable.ad_slot %}

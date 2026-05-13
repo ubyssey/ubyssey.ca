@@ -25,6 +25,7 @@
 {% endblock %}
 
 {% block header %}
+  {% include 'navigation/headers/mobile.html' %}
 {% if settings.ads.AdTagSettings.section_header_placements.all %}
   <div class="o-advertisement--above-sticky-nav-bar">
     {% cache 6000 section_header_ads %}
@@ -35,7 +36,6 @@
     {% endcache %}
   </div>
 {% endif%}
-  {% include 'navigation/headers/mobile.html' %}
   {% include 'navigation/headers/topbar.html' with section=section_slug %}
 {% endblock %}
 
