@@ -23,8 +23,21 @@
 <script>
     window.googletag = window.googletag || {cmd: []};
     googletag.cmd.push(function() {
+      googletag.setConfig({ singleRequest: true });
+
+      googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+        if(!event.isEmpty) {
+          const slot = document.getElementById(event.slot.getSlotElementId());
+          if(slot) {
+            const container = slot.closest(".advertising-container");
+            if(container) {
+              container.hidden = false;
+            }
+          }
+        }
+      });
+
       googletag.defineSlot('/61222807/{{ dfp }}', {{ size }}, '{{ div_id }}').addService(googletag.pubads());
-      googletag.pubads().enableSingleRequest();
       googletag.enableServices();
     });
 </script>
