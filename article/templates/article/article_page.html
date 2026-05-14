@@ -47,7 +47,7 @@
     {% include 'navigation/headers/mobile.html' %}
     {% block banner_ad %}
     {% if settings.ads.AdTagSettings.article_header_placements.all %}
-        <div class="o-article-embed o-article-embed--advertisement o-advertisement--home-header-bar">
+        <div class="o-article-embed o-article-embed--advertisement o-advertisement--home-header-bar advertising-container" hidden>
         {% cache 6000 article_header_ads %}
         <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}

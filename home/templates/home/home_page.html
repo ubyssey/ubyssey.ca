@@ -30,7 +30,7 @@
 {% include 'navigation/headers/mobile.html' with class='homepage' %}
 
 {% if settings.ads.AdTagSettings.home_header_placements.all %}
-<div class="o-advertisement--home-header-bar">
+<div class="o-advertisement--home-header-bar advertising-container" hidden>
 	<!-- Place header ads for home page -->
 	{% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
 	{% gpt_placement_tag orderable.ad_slot %}

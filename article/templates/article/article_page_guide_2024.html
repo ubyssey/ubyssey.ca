@@ -46,7 +46,7 @@
 
     {% block banner_ad %}
     {% if settings.ads.AdTagSettings.article_header_placements.all %}
-    <div class="guide-ads">
+    <div class="guide-ads advertising-container" hidden>
     <!-- Article Page header ads go here -->
         {% for orderable in settings.ads.AdTagSettings.article_header_placements.all %}
             {% gpt_placement_tag orderable.ad_slot %}

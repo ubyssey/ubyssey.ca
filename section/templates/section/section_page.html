@@ -27,7 +27,7 @@
 {% block header %}
   {% include 'navigation/headers/mobile.html' %}
 {% if settings.ads.AdTagSettings.section_header_placements.all %}
-  <div class="o-advertisement--above-sticky-nav-bar">
+  <div class="o-advertisement--above-sticky-nav-bar advertising-container" hidden>
     {% cache 6000 section_header_ads %}
     <!-- Place header ads for section page -->
     {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
