@@ -29,12 +29,14 @@
 {% block header %}
 {% include 'navigation/headers/mobile.html' with class='homepage' %}
 
-<div class="o-advertisement--home-header-bar">
-<!-- Place header ads for home page -->
-{% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
-{% gpt_placement_tag orderable.ad_slot %}
-{% endfor %}
+{% if settings.ads.AdTagSettings.home_header_placements.all %}
+<div class="o-advertisement--home-header-bar advertising-container" hidden>
+	<!-- Place header ads for home page -->
+	{% for orderable in settings.ads.AdTagSettings.home_header_placements.all %}
+	{% gpt_placement_tag orderable.ad_slot %}
+	{% endfor %}
 </div>
+{% endif %}
 
 {% include 'navigation/headers/home-desktop-header--symmetric.html' with tagline=self.tagline tagline_url=self.tagline_url %}
 {% endblock %}
