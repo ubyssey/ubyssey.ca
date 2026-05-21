@@ -41,8 +41,12 @@
           }
         });
       }
-
-      googletag.defineSlot('/61222807/{{ dfp }}', {{ size }}, '{{ div_id }}').addService(googletag.pubads());
+      if ('{{ dfp }}' !== 'Ad Unit Name') {
+        const slot = googletag.defineSlot('/61222807/{{ dfp }}', {{ size }}, '{{ div_id }}');
+        if(slot) {
+          slot.addService(googletag.pubads());
+        }
+      }
       googletag.enableServices();
     });
 </script>
