@@ -5,7 +5,8 @@
     "background_color": "#ffffff",
     "description": "UBC’s student newspaper since 1918",
     "display": "fullscreen",
-    "start_url": "/",
+    "start_url": "./",
+    "scope": ".",
     "icons": [
         {
             "src": "/static/ubyssey/images/favicons/android-chrome-36x36.png",
