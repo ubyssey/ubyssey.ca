@@ -9,8 +9,25 @@ import { Schema, DOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { schema as basicSchema } from "prosemirror-schema-basic";
 import { addListNodes } from "prosemirror-schema-list";
 import { exampleSetup } from "prosemirror-example-setup";
-// Aparently how Wagtail generates block IDs? Not 100% sure.
+// Apparently how Wagtail generates block IDs.
 import { v4 as uuidv4 } from "uuid";
+
+// Should be deleted before save
+const RICH_TEXT_CHROME_SELECTORS = [
+  ".pm-stream-block__header",
+  ".pm-stream-block__label",
+  ".pm-stream-block__title",
+  ".pm-stream-block__meta",
+  ".pm-editable-field__label",
+];
+
+// Should be deleted before save, but contents should remain
+const RICH_TEXT_WRAPPER_SELECTORS = [
+  ".pm-stream-block",
+  ".pm-stream-block__content",
+  ".pm-editable-field",
+  ".pm-editable-field__content",
+];
 
 // Image/Document API
 const mediaCache = {
@@ -28,16 +45,17 @@ async function fetchWagtailMedia(kind, id) {
     return cache.get(cacheKey);
   }
 
-  const promise = fetch(
-    `/new-cms/api/v2/${kind}/${encodeURIComponent(id)}/`, { credentials: "same-origin", })
+  const promise = fetch(`/new-cms/api/v2/${kind}/${encodeURIComponent(id)}/`, {
+    credentials: "same-origin",
+  })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`${endpoint} ${id} returned ${response.status}`);
+        throw new Error(`${kind} ${id} returned ${response.status}`);
       }
       return response.json();
     })
     .catch((error) => {
-      console.warn(`Could not fetch Wagtail ${endpoint} ${id}.`, error);
+      console.warn(`Could not fetch Wagtail ${kind} ${id}.`, error);
       return null;
     });
 
@@ -146,8 +164,7 @@ const nodes = baseNodesWithLists.remove("doc").append({
   },
 });
 
-// Nothing for now
-const marks = basicSchema.spec.marks.append({})
+const marks = basicSchema.spec.marks.append({});
 
 const richTextSchema = new Schema({
   nodes: baseNodesWithLists,
@@ -256,53 +273,14 @@ class StreamBlockView {
   insertBlock(blockType) {
     const pos = this.getPos();
 
-    const pmNode = streamSchema.nodeFromJSON(
-      streamBlockToPmNode(
-        {
-          type: blockType,
-          value: (() => {
-            const blockDefinition = this.blockRegistry?.byStreamField?.[this.streamFieldName]?.[blockType];
-
-            if (blockDefinition?.defaultValue !== undefined) {
-              return JSON.parse(JSON.stringify(blockDefinition.defaultValue));
-            }
-
-            if (blockType === "richtext") {
-              return "";
-            }
-
-            const fieldEntries = Object.entries(blockDefinition?.fields);
-
-            if (!fieldEntries.length) {
-              return "";
-            }
-
-            const value = {};
-
-            for (const [fieldName, fieldMeta] of fieldEntries) {
-              if (fieldMeta?.kind === "boolean") {
-                value[fieldName] = false;
-              } else if (fieldMeta?.kind === "image" || fieldMeta?.kind === "document") {
-                value[fieldName] = null;
-              } else if (fieldMeta?.kind === "choice") {
-                const options = Array.isArray(fieldMeta.options) ? fieldMeta.options : [];
-                const firstRealOption = options.find(
-                  (option) => String(option.value || "") !== "",
-                );
-                value[fieldName] = firstRealOption?.value ?? options[0]?.value ?? "";
-              } else {
-                value[fieldName] = "";
-              }
-            }
-
-            return value;
-          })(),
-          id: uuidv4(),
-        },
-        this.blockRegistry,
-        this.streamFieldName,
-      ),
-    );
+    const blockDefinition = this.blockRegistry?.byStreamField?.[this.streamFieldName]?.[blockType] || {};
+    const defaultValue = blockDefinition.defaultValue !== undefined ? blockDefinition.defaultValue : "";
+    const pmNode = streamSchema.nodeFromJSON(streamBlockToPmNode({
+      type: blockType,
+      id: uuidv4(),
+      value: clone(defaultValue),
+      fields: clone(blockDefinition.defaultFields || []),
+    }));
 
     const insertPos = pos + this.node.nodeSize;
     const tr = this.view.state.tr.insert(insertPos, pmNode);
@@ -423,6 +401,7 @@ class StreamBlockView {
   }
 }
 
+// For direct prosemirror editable fields like Rich Text
 class EditableFieldView {
   constructor(node) {
     this.node = node;
@@ -442,13 +421,12 @@ class EditableFieldView {
   }
 }
 
+// For control fields like choice or document which should not be edited directly in Prosemirror
 class ControlFieldView {
   constructor(node, view, getPos) {
     this.node = node;
     this.view = view;
     this.getPos = getPos;
-    this.previewRequestId = 0;
-
     this.dom = document.createElement("div");
     this.dom.className = `pm-control-field pm-control-field--${node.attrs.controlType || "text"}`;
 
@@ -491,7 +469,7 @@ class ControlFieldView {
 
     if (controlType === "choice") {
       const select = document.createElement("select");
-      const options = node.attrs.options;
+      const options = node.attrs.options || [];
 
       for (const option of options) {
         const optionElement = document.createElement("option");
@@ -686,16 +664,12 @@ class ControlFieldView {
 const editorInstances = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  const packedBlocks = JSON.parse(document.getElementById("packed-blocks").textContent);
-  const registry = { byStreamField: {}, };
-
-  for (const [streamFieldName, packedValue] of Object.entries( packedBlocks || {} )) {
-    registry.byStreamField[streamFieldName] = extractBlockDefinitions(packedValue);
-  }
+  const blockRegistry = { byStreamField: readJsonScript("block-registry") };
+  const editorData = readJsonScript("editor-data");
 
   const textareas = Array.from(document.querySelectorAll("[data-stream-json]"));
   for (const textarea of textareas) {
-    createStreamEditor(textarea, registry);
+    createStreamEditor(textarea, blockRegistry, editorData[textarea.dataset.streamField] || []);
   }
 
   const form = document.querySelector("[data-manuscript-form]");
@@ -707,18 +681,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   window.manuscriptEditors = editorInstances;
-  window.manuscriptBlockRegistry = registry;
+  window.manuscriptBlockRegistry = blockRegistry;
 });
 
-function createStreamEditor(textarea, blockRegistry) {
+function createStreamEditor(textarea, blockRegistry, streamValue) {
   const fieldName = textarea.dataset.streamField;
   const mount = document.querySelector(`[data-stream-editor="${window.CSS.escape(fieldName)}"]`);
 
-  let streamValue = JSON.parse(textarea.value || "[]");
-
-  const content = streamValue.map((block) => {
-    return streamBlockToPmNode(block, blockRegistry, fieldName);
-  });
+  const content = streamValue.map(streamBlockToPmNode);
+  const streamRegistry = blockRegistry?.byStreamField?.[fieldName] || {};
+  const availableBlockTypes = Array.from(new Set([
+    ...Object.keys(streamRegistry),
+    ...streamValue.map((block) => block.type),
+  ])).sort((a, b) => a.localeCompare(b));
 
   const doc = {
     type: "doc",
@@ -738,16 +713,7 @@ function createStreamEditor(textarea, blockRegistry) {
         return new StreamBlockView(node, view, getPos, {
           blockRegistry,
           streamFieldName: fieldName,
-          availableBlockTypes: (() => {
-            const streamRegistry = blockRegistry?.byStreamField?.[fieldName] || {};
-            const types = new Set(Object.keys(streamRegistry));
-
-            for (const block of streamValue) {
-              types.add(block.type);
-            }
-
-            return Array.from(types).sort((a, b) => a.localeCompare(b));
-          })(),
+          availableBlockTypes,
         });
       },
 
@@ -785,531 +751,181 @@ function createStreamEditor(textarea, blockRegistry) {
   editorInstances.push(instance);
 }
 
-// Parse Wagtail/Telepath
-function extractBlockDefinitions(packedValue) {
-  const definitions = {};
-
-  walkPackedValue(packedValue, {
-    onBlockDefinition(blockName, definition) {
-      if (!blockName) return;
-
-      if (!definitions[blockName]) {
-        definitions[blockName] = { fields: {}, defaultValue: definition.defaultValue};
-      }
-
-      Object.assign(definitions[blockName].fields, definition.fields || {});
-
-      if (definitions[blockName].defaultValue === undefined && definition.defaultValue !== undefined) {
-        definitions[blockName].defaultValue = definition.defaultValue;
-      }
-    },
-  });
-
-  return definitions;
-}
-
-function walkPackedValue(value, handlers, context = {}) {
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      walkPackedValue(item, handlers, context);
-    }
-    return;
-  }
-
-  if (!value || typeof value !== "object") {
-    return;
-  }
-
-  const wagtailType = value._type || "";
-
-  if (value._args && typeof value._args[0] === "string" && String(wagtailType || "").startsWith("wagtail.blocks.")) {
-    const ownName = value._args[0];
-
-    if (!String(wagtailType || "").includes("FieldBlock")) {
-      const fields = {};
-      const args = Array.isArray(value?._args) ? value._args : [];
-      const children = Array.isArray(args[1]) ? args[1] : [];
-
-      for (const child of children) {
-        if (!child || typeof child !== "object") continue;
-
-        if (String(child._type || "").includes("FieldBlock")) {
-          const fieldInfo = extractFieldBlockInfo(child._args);
-
-          if (fieldInfo) {
-            fields[fieldInfo.name] = fieldInfo;
-          }
-        }
-      }
-
-      // FieldBlock: ["name", widget, meta]
-      // StructBlock: ["name", children, meta] or ["name", children, default, meta]
-      // ListBlock: ["name", childDef, default, meta]
-      // StreamBlock: ["name", childDefs, default, meta]
-      const defaultValue = value._args.length >= 4 ? value._args[2] : undefined;
-      handlers.onBlockDefinition(ownName, { fields, defaultValue });
-    }
-  }
-
-  if (String(wagtailType || "").includes("FieldBlock")) {
-    const fieldInfo = extractFieldBlockInfo(value._args);
-
-    if (context.blockName && fieldInfo) {
-      handlers.onBlockDefinition(context.blockName, {
-        fields: {
-          [fieldInfo.name]: fieldInfo,
-        },
-      });
-    }
-  }
-
-  if (value._args && typeof value._args[0] === "string" && String(wagtailType || "").startsWith("wagtail.blocks.")) {
-    const ownName = value._args[0];
-
-    for (const child of value._args.slice(1)) {
-      walkPackedValue(child, handlers, {...context, blockName: ownName});
-    }
-  }
-
-  for (const child of Object.values(value)) {
-    if (child === value._args) {
-      continue;
-    }
-    walkPackedValue(child, handlers, context);
-  }
-}
-
-function extractFieldBlockInfo(args) {
-  if (!Array.isArray(args) || args.length < 2) {
-    return null;
-  }
-
-  const [fieldName, widgetDef, meta] = args;
-
-  if (typeof fieldName !== "string") {
-    return null;
-  }
-
-  const widgetType = widgetDef._type || "";
-  const widgetArgs = widgetDef?._args;
-  const widgetHtml =widgetArgs[0];
-  const label = meta?.label || meta?._dict?.label || fieldName;
-
-  if (String(widgetType).includes("DraftailRichTextArea")) {
-    return {
-      name: fieldName,
-      label,
-      kind: "richtext",
-    };
-  }
-
-  if (String(widgetType).includes("ImageChooser")) {
-    return {
-      name: fieldName,
-      label,
-      kind: "image",
-    };
-  }
-
-  if (String(widgetType).includes("DocumentChooser")) {
-    return {
-      name: fieldName,
-      label,
-      kind: "document",
-    };
-  }
-
-  if (widgetHtml.includes("<select")) {
-    return {
-      name: fieldName,
-      label,
-      kind: "choice",
-      options: (() => {
-        const wrapper = document.createElement("div");
-        wrapper.innerHTML = widgetHtml;
-
-        return Array.from(wrapper.querySelectorAll("option")).map((option) => ({
-          value: option.getAttribute("value") || "",
-          label: option.textContent.trim() || option.getAttribute("value") || "",
-        }));
-      })(),
-    };
-  }
-
-  if (widgetHtml.includes('type="checkbox"')) {
-    return {
-      name: fieldName,
-      label,
-      kind: "boolean",
-    };
-  }
-
-  if (widgetHtml.includes('type="text"') || widgetHtml.includes('type="url"') || widgetHtml.includes("<textarea")) {
-    return {
-      name: fieldName,
-      label,
-      kind: "plain_text",
-    };
-  }
-
-  return {
-    name: fieldName,
-    label,
-    kind: "unknown",
-  };
-}
-
 // Wagtail -> Prosemirror
 function createEmptyRichTextBlock() {
-  return {
-    type: "stream_block",
-    attrs: {
-      id: uuidv4(),
-      blockType: "richtext",
-      originalValue: "",
-    },
-    content: [
-      {
-        type: "editable_field",
-        attrs: {
-          path: [],
-          label: "Rich text",
-          mode: "richtext",
-        },
-        content: [
-          {
-            type: "paragraph",
-          },
-        ],
-      },
-    ],
-  };
+  return streamBlockToPmNode({
+    type: "richtext",
+    id: uuidv4(),
+    value: "",
+    fields: [{
+      kind: "editable",
+      path: [],
+      label: "Rich text",
+      mode: "richtext",
+      value: "",
+    }],
+  });
 }
 
-function streamBlockToPmNode(block, blockRegistry, streamFieldName) {
+function streamBlockToPmNode(block) {
   const blockType = block?.type || "unknown";
-  const blockId = block?.id || uuidv4();
-  const originalValue = JSON.parse(JSON.stringify(block?.value));
-  const fields = extractEditableFields(originalValue, { blockType, blockRegistry, streamFieldName });
 
   return {
     type: "stream_block",
     attrs: {
-      id: blockId,
+      id: block?.id || uuidv4(),
       blockType,
-      originalValue,
+      originalValue: clone(block?.value),
     },
-    content: fields.map((field) => {
-      if (field.kind === "control") {
-        return {
-          type: "control_field",
-          attrs: {
-            path: field.path,
-            label: field.label,
-            controlType: field.controlType,
-            value: field.value,
-            options: field.options || null,
-          },
-        };
-      }
-
-      const content = field.mode === "plain_text" ? (() => {
-        const value = String(field.value || "");
-
-        if (!value.trim()) {
-          return [{ type: "paragraph" }];
-        }
-
-        return value.split(/\n{2,}/).map((paragraphText) => ({
-          type: "paragraph",
-          content: paragraphText ? [{ type: "text", text: paragraphText }] : undefined,
-        }));
-
-      })() : (() => {
-        const wrapper = document.createElement("div");
-        wrapper.innerHTML = field.value || "";
-        const chromeSelectors = [
-          ".pm-stream-block__header",
-          ".pm-stream-block__label",
-          ".pm-stream-block__title",
-          ".pm-stream-block__meta",
-          ".pm-editable-field__label",
-        ];
-
-        wrapper.querySelectorAll(chromeSelectors.join(",")).forEach((element) => {
-          element.remove();
-        });
-
-        wrapper.querySelectorAll(".pm-stream-block, .pm-stream-block__content, .pm-editable-field, .pm-editable-field__content",
-        ).forEach((element) => {
-          element.replaceWith(...Array.from(element.childNodes));
-        });
-        
-        const parsedDoc = DOMParser.fromSchema(richTextSchema).parse(wrapper);
-        const json = parsedDoc.toJSON();
-        return Array.isArray(json.content) && json.content.length ? json.content : [{ type: "paragraph" }];
-      })();
-
-      return {
-        type: "editable_field",
-        attrs: {
-          path: field.path,
-          label: field.label,
-          mode: field.mode,
-        },
-        content,
-      };
-    }),
+    content: (block?.fields || []).map(fieldToPmNode),
   };
 }
 
-function extractEditableFields(value, options = {}) {
-  const fields = [];
-  const blockType = options.blockType || "block";
-  const streamRegistry = options.blockRegistry?.byStreamField?.[options.streamFieldName];
-  const blockDefinition = streamRegistry?.[blockType];
-  const topLevelMeta = blockDefinition?.fields?.[blockType] || null;
-
-  if (typeof value === "string") {
-    if (topLevelMeta?.kind === "richtext" || blockType === "richtext") {
-      fields.push({
-        kind: "editable",
-        path: [],
-        label: topLevelMeta?.label || blockType || "Content",
-        mode: "richtext",
-        value,
-      });
-    } else if (topLevelMeta?.kind === "plain_text") {
-      fields.push({
-        kind: "editable",
-        path: [],
-        label: topLevelMeta?.label || blockType || "Content",
-        mode: "plain_text",
-        value,
-      });
-    }
-
-    return fields;
+function fieldToPmNode(field) {
+  if (field.kind === "control") {
+    return {
+      type: "control_field",
+      attrs: {
+        path: field.path,
+        label: field.label,
+        controlType: field.controlType,
+        value: field.value,
+        options: field.options || null,
+      },
+    };
   }
 
-  walkValue(value, [], fields, blockType, options);
-
-  return fields;
+  return {
+    type: "editable_field",
+    attrs: {
+      path: field.path,
+      label: field.label,
+      mode: field.mode,
+    },
+    content: field.mode === "plain_text" ? plainTextToPmContent(field.value) : richTextToPmContent(field.value),
+  };
 }
 
-function walkValue(value, path, fields, blockType, options = {}) {
-  let fieldName = null;
+function plainTextToPmContent(value) {
+  const text = String(value || "");
 
-  for (let index = path.length - 1; index >= 0; index -= 1) {
-    if (typeof path[index] === "string") {
-      fieldName = path[index];
-      break;
-    }
+  if (!text.trim()) {
+    return [{ type: "paragraph" }];
   }
 
-  const streamRegistry = options.blockRegistry?.byStreamField?.[options.streamFieldName];
-  const blockDefinition = streamRegistry?.[blockType];
-  const fieldMeta = fieldName ? blockDefinition?.fields?.[fieldName] || null : null;
+  return text.split(/\n{2,}/).map((paragraphText) => ({
+    type: "paragraph",
+    content: paragraphText ? [{ type: "text", text: paragraphText }] : undefined,
+  }));
+}
 
-  if (fieldMeta?.kind === "image" || fieldMeta?.kind === "document") {
-    if (
-      value === null ||
-      value === undefined ||
-      typeof value === "number" ||
-      typeof value === "string"
-    ) {
-      fields.push({
-        kind: "control",
-        path,
-        label: fieldMeta.label || path.filter((part) => typeof part === "string").join(" / ") || blockType || "Content",
-        controlType: fieldMeta.kind,
-        value,
-        options: null,
-      });
+function richTextToPmContent(value) {
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = value || "";
+  stripEditorChrome(wrapper);
 
-      return;
-    }
-  }
+  const json = DOMParser.fromSchema(richTextSchema).parse(wrapper).toJSON();
+  return Array.isArray(json.content) && json.content.length ? json.content : [{ type: "paragraph" }];
+}
 
-  if (typeof value === "string") {
-    if (fieldMeta?.kind === "richtext") {
-      fields.push({
-        kind: "editable",
-        path,
-        label: fieldMeta?.label || path.filter((part) => typeof part === "string").join(" / ") || blockType || "Content",
-        mode: "richtext",
-        value,
-      });
-    } else if (fieldMeta?.kind === "plain_text") {
-      fields.push({
-        kind: "editable",
-        path,
-        label: fieldMeta.label || path.filter((part) => typeof part === "string").join(" / ") || blockType || "Content",
-        mode: "plain_text",
-        value,
-      });
-    } else if (fieldMeta?.kind === "choice") {
-      fields.push({
-        kind: "control",
-        path,
-        label: fieldMeta.label || path.filter((part) => typeof part === "string").join(" / ") || blockType || "Content",
-        controlType: "choice",
-        value,
-        options: fieldMeta.options || [],
-      });
-    }
+function stripEditorChrome(wrapper) {
+  wrapper.querySelectorAll(RICH_TEXT_CHROME_SELECTORS.join(",")).forEach((element) => {
+    element.remove();
+  });
 
-    return;
-  }
-
-  if (typeof value === "boolean") {
-    if (fieldMeta?.kind === "boolean") {
-      fields.push({
-        kind: "control",
-        path,
-        label: fieldMeta.label || path.filter((part) => typeof part === "string").join(" / ") || blockType || "Content",
-        controlType: "boolean",
-        value,
-      });
-    }
-
-    return;
-  }
-
-  if (Array.isArray(value)) {
-    if (fieldMeta?.kind === "choice" && value.length <= 1) {
-      fields.push({
-        kind: "control",
-        path,
-        label: fieldMeta.label || path.filter((part) => typeof part === "string").join(" / ") || blockType || "Content",
-        controlType: "choice",
-        value: value[0] ?? "",
-        options: fieldMeta.options || [],
-      });
-      return;
-    }
-
-    value.forEach((item, index) => {
-      walkValue(item, path.concat(index), fields, blockType, options);
-    });
-
-    return;
-  }
-
-  if (value && typeof value === "object") {
-    for (const [key, childValue] of Object.entries(value)) {
-      walkValue(childValue, path.concat(key), fields, blockType, options);
-    }
-  }
+  wrapper.querySelectorAll(RICH_TEXT_WRAPPER_SELECTORS.join(",")).forEach((element) => {
+    element.replaceWith(...Array.from(element.childNodes));
+  });
 }
 
 // Prosemirror -> Wagtail
 function pmStreamBlockToWagtailBlock(node) {
   const attrs = node.attrs || {};
-
   const block = {
     type: attrs.blockType || "unknown",
-    value: JSON.parse(JSON.stringify(attrs.originalValue)),
+    value: clone(attrs.originalValue),
   };
 
   if (attrs.id) {
     block.id = attrs.id;
   }
 
-  const childNodes = Array.isArray(node.content) ? node.content : [];
-
-  for (const childNode of childNodes) {
+  for (const childNode of node.content || []) {
     const fieldAttrs = childNode.attrs || {};
     const path = Array.isArray(fieldAttrs.path) ? fieldAttrs.path : [];
 
     if (childNode.type === "editable_field") {
-      const nextValue = (fieldAttrs.mode || "richtext") === "plain_text" ? (childNode.content || [])
-        .map((pmBlock) => streamSchema.nodeFromJSON(pmBlock).textContent)
-        .join("\n\n") : (() => { 
-          // PM to HTML conversion
-          const cleanBlocks = (childNode.content || []).filter((block) => {
-            return (
-              block.type !== "stream_block" &&
-              block.type !== "editable_field" &&
-              block.type !== "control_field"
-            );
-          });
-
-          const richTextNodes = cleanBlocks.map((block) =>
-            richTextSchema.nodeFromJSON(block),
-          );
-          const fragment = Fragment.fromArray(richTextNodes);
-
-          const serializer = DOMSerializer.fromSchema(richTextSchema);
-          const domFragment = serializer.serializeFragment(fragment);
-
-          const wrapper = document.createElement("div");
-          wrapper.appendChild(domFragment);
-
-          return wrapper.innerHTML;
-        })();
-
-      if (path.length === 0) {
-        block.value = nextValue;
-      } else {
-        setValueAtPath(block.value, path, nextValue);
-      }
-    }
-
-    if (childNode.type === "control_field") {
-      let nextValue = fieldAttrs.value;
-      const controlType = fieldAttrs.controlType || "text";
-
-      if (controlType === "boolean") {
-        nextValue = Boolean(nextValue);
-      }
-
-      if ((controlType === "image" || controlType === "document") && nextValue === "") {
-        nextValue = null;
-      }
-
-      let originalValue = block.value;
-
-      for (const key of path) {
-        if (originalValue == null || typeof originalValue !== "object") {
-          originalValue = undefined;
-          break;
-        }
-
-        originalValue = originalValue[key];
-      }
-
-      if (Array.isArray(originalValue)) {
-        nextValue = [nextValue];
-      }
-
-      if (path.length === 0) {
-        block.value = nextValue;
-      } else {
-        setValueAtPath(block.value, path, nextValue);
-      }
+      setBlockValue(block, path, editableFieldValue(childNode, fieldAttrs.mode));
+    } else if (childNode.type === "control_field") {
+      setBlockValue(block, path, controlFieldValue(fieldAttrs, getValueAtPath(block.value, path)));
     }
   }
 
   return block;
 }
 
-// Example
-// root = { one { value: two }}
-// setValueAtPath(root, ["one", "two"], "three")
-// Now root = { one { value: three }}
+function editableFieldValue(node, mode = "richtext") {
+  if (mode === "plain_text") {
+    return (node.content || [])
+      .map((pmBlock) => streamSchema.nodeFromJSON(pmBlock).textContent)
+      .join("\n\n");
+  }
+
+  const richTextNodes = (node.content || [])
+    .filter((block) => !["stream_block", "editable_field", "control_field"].includes(block.type))
+    .map((block) => richTextSchema.nodeFromJSON(block));
+  const domFragment = DOMSerializer
+    .fromSchema(richTextSchema)
+    .serializeFragment(Fragment.fromArray(richTextNodes));
+  const wrapper = document.createElement("div");
+  wrapper.appendChild(domFragment);
+  return wrapper.innerHTML;
+}
+
+function controlFieldValue(fieldAttrs, originalValue) {
+  let value = fieldAttrs.value;
+  const controlType = fieldAttrs.controlType || "text";
+
+  if (controlType === "boolean") {
+    value = Boolean(value);
+  }
+
+  if (["image", "document"].includes(controlType) && value === "") {
+    value = null;
+  }
+
+  return Array.isArray(originalValue) ? [value] : value;
+}
+
+function setBlockValue(block, path, value) {
+  if (path.length === 0) {
+    block.value = value;
+  } else {
+    setValueAtPath(block.value, path, value);
+  }
+}
+
+function getValueAtPath(root, path) {
+  let current = root;
+
+  for (const key of path) {
+    if (current == null || typeof current !== "object") {
+      return undefined;
+    }
+    current = current[key];
+  }
+
+  return current;
+}
 
 function setValueAtPath(root, path, value) {
-  if (!path.length) {
-    return value;
-  }
   let current = root;
 
   for (let index = 0; index < path.length - 1; index += 1) {
     const key = path[index];
 
     if (current == null || typeof current !== "object") {
-      return root;
+      return;
     }
 
     current = current[key];
@@ -1320,6 +936,12 @@ function setValueAtPath(root, path, value) {
   if (current && typeof current === "object") {
     current[finalKey] = value;
   }
+}
 
-  return root;
+function clone(value) {
+  return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
+}
+
+function readJsonScript(id) {
+  return JSON.parse(document.getElementById(id).textContent) || {};
 }

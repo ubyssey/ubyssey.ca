@@ -4,16 +4,16 @@
 {# Add new head block to replace stylesheet #}
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'new_cms/editor.css' %}"></link>
-{{ telepath_media }}
 <script defer src="{% static 'new_cms/editor_bundle.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 
-{{ packed_blocks|json_script:"packed-blocks" }}
+{{ block_registry|json_script:"block-registry" }}
+{{ editor_data|json_script:"editor-data" }}
 
 <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
-{{ packed_blocks|pprint }}
+{{ block_registry|pprint }}
 </textarea>-->
 
 <a href="{% url 'new_cms:index' %}">All Pages</a>
