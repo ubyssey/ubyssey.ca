@@ -365,3 +365,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+LOGIN_URL = "/admin/login/"
