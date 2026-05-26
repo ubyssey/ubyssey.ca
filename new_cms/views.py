@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render
+from django.core.exceptions import ValidationError
 from wagtail.fields import StreamField as WagtailStreamField
 from wagtail.models import Page
 
@@ -22,6 +23,7 @@ def index(request):
 @login_required
 def manuscript_editor(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
+    editor_errors = {}
 
     if request.method == "POST":
         page.title = request.POST.get("title", page.title).strip()
@@ -37,17 +39,33 @@ def manuscript_editor(request, page_id):
             try:
                 setattr(page, field.name, json.loads(json_str))
             except:
-                print("Failed to edit field:" + field.name)
+                editor_errors[field.name] = ["Invalid JSON for this field."]
 
-        try:
-            revision = page.save_revision(user=request.user)
-            if request.POST.get("action") == "publish":
-                revision.publish(user=request.user)
-                print("Revised page")
+        siblings = page.get_siblings().exclude(id=page.id)
+        if siblings.filter(slug=page.slug).exists():
+            editor_errors["slug"] = ["Slug must be unique among siblings."]
+        else:
+            try:
+                page.full_clean()
+            except ValidationError as e:
+                for field, field_errors in e.message_dict.items():
+                    if field in editor_errors:
+                        editor_errors[field].extend(field_errors)
+                    else:
+                        editor_errors[field] = field_errors
             else:
-                print("Draft Saved")
-        except:
-            print("Failed to update page:" + page.title)
+                try:
+                    revision = page.save_revision(user=request.user)
+                    if request.POST.get("action") == "publish":
+                        revision.publish(user=request.user)
+                        print("Revised page")
+                    else:
+                        print("Draft Saved")
+                except:
+                    print("Failed to update page:" + page.title)
+
+    if (editor_errors):
+        print(f"Validation Error: {editor_errors}")
 
     stream_data, block_registry, editor_data = get_streamfields(page)
 
@@ -56,7 +74,8 @@ def manuscript_editor(request, page_id):
         {"page": page,
          "stream_data": stream_data,
          "block_registry": block_registry,
-         "editor_data": editor_data}
+         "editor_data": editor_data,
+         "editor_errors": editor_errors}
     )
 
 

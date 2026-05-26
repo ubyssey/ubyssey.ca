@@ -666,6 +666,11 @@ const editorInstances = [];
 document.addEventListener("DOMContentLoaded", () => {
   const blockRegistry = { byStreamField: readJsonScript("block-registry") };
   const editorData = readJsonScript("editor-data");
+  const editorErrors = readJsonScript("editor-errors");
+
+  if (JSON.stringify(editorErrors) !== "{}") {
+    alert("Failed to save due to errors: " + JSON.stringify(editorErrors));
+  }
 
   const textareas = Array.from(document.querySelectorAll("[data-stream-json]"));
   for (const textarea of textareas) {
