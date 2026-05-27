@@ -25,19 +25,28 @@
     googletag.cmd.push(function() {
       googletag.setConfig({ singleRequest: true });
 
-      googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-        if(!event.isEmpty) {
-          const slot = document.getElementById(event.slot.getSlotElementId());
-          if(slot) {
-            const container = slot.closest(".advertising-container");
-            if(container) {
-              container.hidden = false;
+      // Only attach the event listener once
+      if(!window.googletagSlotRenderEndedEventListenerExists) {
+        window.googletagSlotRenderEndedEventListenerExists = true;
+
+        googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+          if(!event.isEmpty) {
+            const slot = document.getElementById(event.slot.getSlotElementId());
+            if(slot) {
+              const container = slot.closest(".advertising-container");
+              if(container) {
+                container.hidden = false;
+              }
             }
           }
+        });
+      }
+      if ('{{ dfp }}' !== 'Ad Unit Name') {
+        const slot = googletag.defineSlot('/61222807/{{ dfp }}', {{ size }}, '{{ div_id }}');
+        if(slot) {
+          slot.addService(googletag.pubads());
         }
-      });
-
-      googletag.defineSlot('/61222807/{{ dfp }}', {{ size }}, '{{ div_id }}').addService(googletag.pubads());
+      }
       googletag.enableServices();
     });
 </script>
