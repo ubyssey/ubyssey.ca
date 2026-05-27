@@ -1,6 +1,6 @@
 Django==5.2.0
 setuptools>=69.0.0
-wagtail==7.0
+wagtail==7.4.1
 git+https://github.com/ubyssey/django-google-storage.git@v0.5.4#egg=django-google-storage-updated
 django-storages[google]==1.14.2
 django-canonical-domain==0.3.0
@@ -11,7 +11,7 @@ channels_redis==4.3.0
 daphne==4.2.1
 pymemcache==4.0.0
 mysqlclient==2.2.6
-beautifulsoup4==4.11.2
+beautifulsoup4==4.13.3
 html5lib==1.1
 feedparser==6.0.10
 pyyaml==6.0.1

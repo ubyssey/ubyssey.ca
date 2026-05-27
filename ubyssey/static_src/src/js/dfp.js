@@ -56,15 +56,18 @@ class DFP {
       // If the slot is not already on the page
       // Sets const slot to a newly constructed ad slot with a given ad unit path and size 
       // and associates it with the ID of a div element on the page that will contain the ad.
-      if (!priorSlotNames.includes(slotName)) {
+      if (!priorSlotNames.includes(slotName) && $(dfpslot).data('dfp')) {
         const slot = googletag.defineSlot(
           `/61222807/${$(dfpslot).data('dfp')}`, // Full ad unit path with the network code and unit code.
                                                  // Number = identifier for Ad Manager network (should it be hard-coded?)
           SIZES[$(dfpslot).data('size')], // Width and height of the added slot
           slotName // ID of the div that will contain this ad unit.
-        )
-        .setCollapseEmptyDiv(true) // Ad slot will be collapsed after no ads detected available for the slot
-        .addService(googletag.pubads());
+        );
+        
+        if (slot) {
+          slot.setCollapseEmptyDiv(true); // Ad slot will be collapsed after no ads detected available for the slot
+          slot.addService(googletag.pubads());
+        }
   
         this.adslots.push([slotName, slot]); // add new adslot to array of adslots
       }
