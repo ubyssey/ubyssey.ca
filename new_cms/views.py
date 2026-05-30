@@ -71,7 +71,7 @@ def manuscript_editor(request, page_id):
 
     return render(
         request, "manuscript_editor.html",
-        {"page": page,
+        {"self": page,
          "stream_data": stream_data,
          "block_registry": block_registry,
          "editor_data": editor_data,
