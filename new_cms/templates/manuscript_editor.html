@@ -1,5 +1,6 @@
 {% extends "cms_base.html" %}
 {% load static %}
+{% load wagtailcore_tags %}
 
 {# Add new head block to replace stylesheet #}
 {% block stylesheet %}
@@ -13,24 +14,61 @@
 {{ editor_data|json_script:"editor-data" }}
 {{ editor_errors|json_script:"editor-errors" }}
 
+<div
+  id="article-shadow"
+  data-article-shadow
+  data-shadow-editor-css="{% static 'new_cms/shadow_editor.css' %}"
+>
+  <!-- These are taken from article_page.html - we should figure out a way to avoid duplication-->
+  {% if self.styles.all|length == 0 %}
+    <link data-article-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
+  {% else %}
+    {% for style_obj in self.styles.all %}
+      <link data-article-stylesheet rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+    {% endfor %}
+  {% endif %}
+
+  <article class="c-article c-article--fw-story js-article">
+    {% for header_block in self.header %}
+      <div data-article-block>
+      {% include_block header_block %}  
+      </div>
+    {% endfor %}
+
+    <div class="clearfix">
+        {% for block in self.content %}
+          <div class="cell left article-content" data-article-block>
+            {% include_block block %}
+          </div>
+        {% endfor %}
+
+      {% comment %}
+      {% if self.disclaimer %}
+        <div class="disclaimer" data-article-block>{{self.disclaimer|safe}}</div>
+      {% endif %}
+      {% endcomment %}
+    </div>
+  </article>
+</div>
+
 <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
 {{ block_registry|pprint }}
 </textarea>-->
 
 <a href="{% url 'new_cms:index' %}">All Pages</a>
-<h1>{{ page.title }}</h1>
+<h1>{{ self.title }}</h1>
 
 <form method="post" data-manuscript-form class="manuscript-editor-form" id="manuscript-editor-form">
   {% csrf_token %}
 
   <label for="id_title">Title</label>
-  <input type="text" id="id_title" name="title" value="{{ page.title }}" required>
+  <input type="text" id="id_title" name="title" value="{{ self.title }}" required>
 
   <label for="id_slug">Slug</label>
-  <input type="text" id="id_slug" name="slug" value="{{ page.slug }}" required>
+  <input type="text" id="id_slug" name="slug" value="{{ self.slug }}" required>
 
   <label for="id_lede">Lede</label>
-  <input type="text" id="id_lede" name="lede" value="{{ page.lede }}">
+  <input type="text" id="id_lede" name="lede" value="{{ self.lede }}">
 
   {% for field_name, json_str in stream_data.items %}
     <section class="editor-section">
@@ -63,15 +101,15 @@
   </div>
 </form>
 
-{% if page.live %}
+{% if self.live %}
 <p>Status: Live</p>
 {% else %}
 <p>Status: Draft</p>
 {% endif %}
 
-{% if page.last_published_at %}
-<p>Last Published: {{ page.last_published_at|date:"M j, Y H:i"}}</p>
+{% if self.last_published_at %}
+<p>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</p>
 {% endif %}
 
-<a href="{{ page.url }}">View Live</a>
+<a href="{{ self.url }}">View Live</a>
 {% endblock %}

@@ -41,3 +41,7 @@
 .pm-control-field__input {
     border: 2px solid black;
 }
+
+#article-shadow {
+    border: 2px solid pink;
+}

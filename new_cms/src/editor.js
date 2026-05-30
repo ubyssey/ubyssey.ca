@@ -663,7 +663,49 @@ class ControlFieldView {
 // Initialization
 const editorInstances = [];
 
+function setupArticleShadow() {
+  const host = document.querySelector("[data-article-shadow]");
+  if (!host) {
+    return;
+  }
+
+  const articleStylesheets = Array.from(host.querySelectorAll("[data-article-stylesheet]"));
+  const articleStylesheetHrefs = articleStylesheets
+    .map((stylesheet) => stylesheet.getAttribute("href"))
+    .filter(Boolean);
+
+  for (const stylesheet of articleStylesheets) {
+    stylesheet.remove();
+  }
+
+  const articleHtml = host.innerHTML;
+  host.innerHTML = "";
+
+  const shadowRoot = host.shadowRoot || host.attachShadow({ mode: "open" });
+  shadowRoot.innerHTML = "";
+
+  const stylesheets = [
+    host.dataset.typekitCss,
+    host.dataset.bootstrapCss,
+    ...articleStylesheetHrefs,
+    host.dataset.shadowEditorCss,
+  ].filter(Boolean);
+
+  for (const href of stylesheets) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    shadowRoot.appendChild(link);
+  }
+
+  const wrapper = document.createElement("main");
+  wrapper.className = "article-shadow-preview article";
+  wrapper.innerHTML = articleHtml;
+  shadowRoot.appendChild(wrapper);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  setupArticleShadow();
   const blockRegistry = { byStreamField: readJsonScript("block-registry") };
   const editorData = readJsonScript("editor-data");
   const editorErrors = readJsonScript("editor-errors");
