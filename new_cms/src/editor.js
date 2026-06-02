@@ -17,6 +17,7 @@ const RICH_TEXT_CHROME_SELECTORS = [
   ".pm-stream-block__header",
   ".pm-stream-block__label",
   ".pm-stream-block__title",
+  ".pm-stream-block__id",
   ".pm-stream-block__meta",
   ".pm-editable-field__label",
 ];
@@ -29,50 +30,26 @@ const RICH_TEXT_WRAPPER_SELECTORS = [
   ".pm-editable-field__content",
 ];
 
-// Image/Document API
-const mediaCache = {
-  images: new Map(),
-  documents: new Map(),
-};
+const mediaCache = new Map();
 
-async function fetchWagtailMedia(kind, id) {
-  if (!id) return null;
+async function fetchMedia(type, id) {
+  const kind = type === "image" ? "images" : "documents";
+  const key = `${kind}:${id}`;
 
-  const cache = mediaCache[kind];
-  const cacheKey = String(id);
-
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
+  if (!mediaCache.has(key)) {
+    mediaCache.set(key, fetch(`/new-cms/api/v2/${kind}/${encodeURIComponent(id)}/`, { credentials: "same-origin" })
+      .then((response) => response.ok ? response.json() : null)
+      .catch(() => null));
   }
 
-  const promise = fetch(`/new-cms/api/v2/${kind}/${encodeURIComponent(id)}/`, {
-    credentials: "same-origin",
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`${kind} ${id} returned ${response.status}`);
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.warn(`Could not fetch Wagtail ${kind} ${id}.`, error);
-      return null;
-    });
-
-  cache.set(cacheKey, promise);
-  return promise;
+  return mediaCache.get(key);
 }
 
-function getMediaUrl(item) {
-  return (
-    item?.meta?.download_url ||
-    item?.download_url ||
-    item?.file ||
-    item?.url ||
-    "");
+function mediaUrl(item) {
+  return item?.meta?.download_url || item?.download_url || item?.file || item?.url || "";
 }
 
-function getMediaTitle(item, fallback = "") {
+function mediaTitle(item, fallback) {
   return item?.title || item?.meta?.slug || fallback;
 }
 
@@ -89,7 +66,7 @@ const nodes = baseNodesWithLists.remove("doc").append({
   },
 
   stream_block: {
-    content: "(editable_field | control_field)*",
+    content: "(editable_field | control_field | list_field)*",
     isolating: true,
     defining: true,
     attrs: {
@@ -162,6 +139,38 @@ const nodes = baseNodesWithLists.remove("doc").append({
       ];
     },
   },
+
+  list_field: {
+    content: "list_item*",
+    isolating: true,
+    defining: true,
+    attrs: {
+      path: { default: [] },
+      label: { default: "List" },
+      itemValue: { default: null },
+      itemFields: { default: [] },
+    },
+    toDOM(node) {
+      return [
+        "div",
+        { class: "pm-list-field", "data-field-label": node.attrs.label || "List" },
+        ["div", { class: "pm-list-field__label" }, node.attrs.label || "List"],
+        ["div", { class: "pm-list-field__items" }, 0],
+      ];
+    },
+  },
+
+  list_item: {
+    content: "(editable_field | control_field | list_field)*",
+    isolating: true,
+    defining: true,
+    attrs: {
+      originalValue: { default: null },
+    },
+    toDOM() {
+      return ["div", { class: "pm-list-item" }, ["div", { class: "pm-list-item__content" }, 0]];
+    },
+  },
 });
 
 const marks = basicSchema.spec.marks.append({});
@@ -177,6 +186,19 @@ const streamSchema = new Schema({
 });
 
 // Nodeviews -> https://prosemirror.net/docs/ref/#view.NodeView
+function makeButton(text, onClick, title = text, className = "") {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className;
+  button.textContent = text;
+  button.title = title;
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    onClick();
+  });
+  return button;
+}
+
 class StreamBlockView {
   constructor(node, view, getPos, options = {}) {
     this.node = node;
@@ -200,11 +222,11 @@ class StreamBlockView {
     this.title.className = "pm-stream-block__title";
     this.title.textContent = node.attrs.blockType || "block";
 
-    this.meta = document.createElement("div");
-    this.meta.className = "pm-stream-block__meta";
+    this.id = document.createElement("div");
+    this.id.className = "pm-stream-block__id";
 
     titleWrap.appendChild(this.title);
-    titleWrap.appendChild(this.meta);
+    titleWrap.appendChild(this.id);
 
     this.controls = this.createControls();
 
@@ -213,10 +235,6 @@ class StreamBlockView {
 
     this.contentDOM = document.createElement("div");
     this.contentDOM.className = "pm-stream-block__content";
-
-    this.emptyMessage = document.createElement("div");
-    this.emptyMessage.className = "pm-stream-block__empty";
-    this.emptyMessage.textContent = "Unimplemented Block";
 
     this.dom.appendChild(this.header);
     this.dom.appendChild(this.contentDOM);
@@ -239,13 +257,13 @@ class StreamBlockView {
       this.insertSelect.appendChild(option);
     }
 
-    this.insertButton = this.createButton("Insert block", () => {
+    this.insertButton = makeButton("+", () => {
       this.insertBlock(this.insertSelect.value);
-    });
+    }, "Insert", "pm-stream-block__button");
 
-    this.moveUpButton = this.createButton("↑", () => { this.moveBlock(-1); }, "Move block up");
-    this.moveDownButton = this.createButton("↓", () => { this.moveBlock(1); }, "Move block down");
-    this.deleteButton = this.createButton("Delete", () => { this.deleteBlock(); }, "Delete block");
+    this.moveUpButton = makeButton("↑", () => { this.moveBlock(-1); }, "Up", "pm-stream-block__button");
+    this.moveDownButton = makeButton("↓", () => { this.moveBlock(1); }, "Down", "pm-stream-block__button");
+    this.deleteButton = makeButton("Del", () => { this.deleteBlock(); }, "Delete", "pm-stream-block__button");
     this.deleteButton.classList.add("pm-stream-block__button--danger");
 
     controls.appendChild(this.insertSelect);
@@ -255,19 +273,6 @@ class StreamBlockView {
     controls.appendChild(this.deleteButton);
 
     return controls;
-  }
-
-  createButton(text, onClick, title = text) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "pm-stream-block__button";
-    button.textContent = text;
-    button.title = title;
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      onClick();
-    });
-    return button;
   }
 
   insertBlock(blockType) {
@@ -362,15 +367,10 @@ class StreamBlockView {
   }
 
   refreshUI(node) {
-    const editableCount = node.childCount;
+    const blockId = node.attrs.id || "";
     this.title.textContent = node.attrs.blockType || "block";
-    this.meta.textContent = editableCount ? `${editableCount} editable field${editableCount === 1 ? "" : "s"}` : "not editable";
-
-    if (!editableCount && !this.emptyMessage.parentNode) {
-      this.contentDOM.appendChild(this.emptyMessage);
-    } else if (editableCount && this.emptyMessage.parentNode) {
-      this.emptyMessage.remove();
-    }
+    this.id.textContent = blockId;
+    this.id.title = blockId ? `id ${blockId}` : "";
 
     const pos = this.getPos();
     const info = this.getTopLevelBlockInfoAtPos(this.view.state.doc, pos);
@@ -401,7 +401,6 @@ class StreamBlockView {
   }
 }
 
-// For direct prosemirror editable fields like Rich Text
 class EditableFieldView {
   constructor(node) {
     this.node = node;
@@ -412,7 +411,7 @@ class EditableFieldView {
 
     const label = document.createElement("div");
     label.className = "pm-editable-field__label";
-    label.textContent = isManuscriptOwned ? "Edited in manuscript" : (node.attrs.label || "Content");
+    label.textContent = node.attrs.label || "Content";
 
     this.contentDOM = document.createElement("div");
     this.contentDOM.className = "pm-editable-field__content";
@@ -422,7 +421,152 @@ class EditableFieldView {
   }
 }
 
-// For control fields like choice or document which should not be edited directly in Prosemirror
+class ListFieldView {
+  constructor(node, view, getPos) {
+    this.node = node;
+    this.view = view;
+    this.getPos = getPos;
+
+    this.dom = document.createElement("div");
+    this.dom.className = "pm-list-field";
+
+    this.header = document.createElement("div");
+    this.header.className = "pm-list-field__header";
+
+    this.label = document.createElement("div");
+    this.label.className = "pm-list-field__label";
+    this.label.textContent = node.attrs.label || "List";
+
+    this.addButton = makeButton("+", () => { this.addItem(); }, "Add");
+
+    this.header.appendChild(this.label);
+    this.header.appendChild(this.addButton);
+
+    this.contentDOM = document.createElement("div");
+    this.contentDOM.className = "pm-list-field__items";
+
+    this.dom.appendChild(this.header);
+    this.dom.appendChild(this.contentDOM);
+  }
+
+  addItem() {
+    const item = streamSchema.nodeFromJSON(listItemToPmNode(this.node.attrs));
+    const pos = this.getPos() + this.node.nodeSize - 1;
+    this.view.dispatch(this.view.state.tr.insert(pos, item));
+    this.view.focus();
+  }
+
+  update(node) {
+    if (node.type !== this.node.type) return false;
+    this.node = node;
+    this.label.textContent = node.attrs.label || "List";
+    return true;
+  }
+
+  stopEvent(event) {
+    return ["BUTTON"].includes(event.target?.nodeName);
+  }
+
+  ignoreMutation(mutation) {
+    return (mutation.target === this.header || this.header.contains(mutation.target));
+  }
+}
+
+class ListItemView {
+  constructor(node, view, getPos) {
+    this.node = node;
+    this.view = view;
+    this.getPos = getPos;
+
+    this.dom = document.createElement("div");
+    this.dom.className = "pm-list-item";
+
+    this.header = document.createElement("div");
+    this.header.className = "pm-list-item__header";
+
+    this.title = document.createElement("div");
+    this.title.className = "pm-list-item__title";
+
+    this.upButton = makeButton("↑", () => { this.moveItem(-1); }, "Up");
+    this.downButton = makeButton("↓", () => { this.moveItem(1); }, "Down");
+    this.deleteButton = makeButton("Del", () => { this.deleteItem(); }, "Delete");
+
+    this.header.appendChild(this.title);
+    this.header.appendChild(this.upButton);
+    this.header.appendChild(this.downButton);
+    this.header.appendChild(this.deleteButton);
+
+    this.contentDOM = document.createElement("div");
+    this.contentDOM.className = "pm-list-item__content";
+
+    this.dom.appendChild(this.header);
+    this.dom.appendChild(this.contentDOM);
+    this.refreshUI();
+  }
+
+  itemInfo() {
+    const pos = this.getPos();
+    const resolved = this.view.state.doc.resolve(pos);
+    const parent = resolved.parent;
+    const index = resolved.index();
+    let start = resolved.start();
+
+    for (let itemIndex = 0; itemIndex < index; itemIndex += 1) {
+      start += parent.child(itemIndex).nodeSize;
+    }
+
+    const node = parent.child(index);
+    return { parent, index, node, start, end: start + node.nodeSize };
+  }
+
+  deleteItem() {
+    const info = this.itemInfo();
+    this.view.dispatch(this.view.state.tr.delete(info.start, info.end));
+    this.view.focus();
+  }
+
+  moveItem(direction) {
+    const info = this.itemInfo();
+    const targetIndex = info.index + direction;
+
+    if (targetIndex < 0 || targetIndex >= info.parent.childCount) return;
+
+    let targetStart = this.view.state.doc.resolve(this.getPos()).start();
+    for (let index = 0; index < targetIndex; index += 1) {
+      targetStart += info.parent.child(index).nodeSize;
+    }
+
+    const targetNode = info.parent.child(targetIndex);
+    const targetEnd = targetStart + targetNode.nodeSize;
+    const tr = this.view.state.tr.delete(info.start, info.end);
+    tr.insert(direction < 0 ? targetStart : targetEnd - info.node.nodeSize, info.node);
+    this.view.dispatch(tr);
+    this.view.focus();
+  }
+
+  refreshUI() {
+    const info = this.itemInfo();
+    this.title.textContent = `#${info.index + 1}`;
+    this.upButton.disabled = info.index === 0;
+    this.downButton.disabled = info.index === info.parent.childCount - 1;
+  }
+
+  update(node) {
+    if (node.type !== this.node.type) return false;
+    this.node = node;
+    this.refreshUI();
+    return true;
+  }
+
+  stopEvent(event) {
+    return ["BUTTON"].includes(event.target?.nodeName);
+  }
+
+  ignoreMutation(mutation) {
+    return (mutation.target === this.header || this.header.contains(mutation.target));
+  }
+}
+
 class ControlFieldView {
   constructor(node, view, getPos) {
     this.node = node;
@@ -439,11 +583,11 @@ class ControlFieldView {
     this.inputWrap.className = "pm-control-field__input";
 
     this.input = this.createInput(node);
-    this.preview = this.createPreview(node);
-
     this.inputWrap.appendChild(this.input);
 
-    if (this.preview) {
+    if (["image", "document"].includes(node.attrs.controlType)) {
+      this.preview = document.createElement("div");
+      this.preview.className = "pm-media-preview";
       this.inputWrap.appendChild(this.preview);
       this.refreshPreview();
     }
@@ -454,7 +598,7 @@ class ControlFieldView {
 
   createInput(node) {
     const controlType = node.attrs.controlType;
-    const value = node.attrs.value || "";
+    const value = node.attrs.value ?? "";
 
     if (controlType === "boolean") {
       const input = document.createElement("input");
@@ -487,10 +631,21 @@ class ControlFieldView {
       return select;
     }
 
-    if (controlType === "image" || controlType === "document") {
-      const wrapper = document.createElement("div");
-      wrapper.className = "pm-media-control";
+    if (controlType === "number") {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.value = value;
 
+      input.addEventListener("input", () => {
+        const rawValue = input.value.trim();
+        const nextValue = rawValue === "" ? null : Number(rawValue);
+        this.updateValue(Number.isNaN(nextValue) ? null : nextValue);
+      });
+
+      return input;
+    }
+
+    if (controlType === "image" || controlType === "document") {
       const input = document.createElement("input");
       input.type = "number";
       input.min = "1";
@@ -503,9 +658,7 @@ class ControlFieldView {
         this.updateValue(Number.isNaN(nextValue) ? null : nextValue);
       });
 
-      wrapper.appendChild(input);
-
-      return wrapper;
+      return input;
     }
 
     const input = document.createElement("input");
@@ -519,18 +672,6 @@ class ControlFieldView {
     return input;
   }
 
-  createPreview(node) {
-    if (!["image", "document"].includes(node.attrs.controlType)) {
-      return null;
-    }
-
-    const preview = document.createElement("div");
-    preview.className = "pm-media-preview";
-    preview.textContent = "No media selected";
-
-    return preview;
-  }
-
   updateValue(value) {
     const pos = this.getPos();
 
@@ -542,114 +683,46 @@ class ControlFieldView {
 
   update(node) {
     this.node = node;
-
     if (node.attrs.controlType === "boolean") {
       this.input.checked = Boolean(node.attrs.value);
-    } else if (node.attrs.controlType === "image" || node.attrs.controlType === "document") {
-      const input = this.input.querySelector("input");
-      if (input) {
-        input.value = node.attrs.value || "";
-      }
-      this.refreshPreview();
     } else {
-      this.input.value = node.attrs.value || "";
+      this.input.value = node.attrs.value ?? "";
+      this.refreshPreview();
     }
     return true;
   }
 
   async refreshPreview() {
-    if (!this.preview) {
-      return;
-    }
+    if (!this.preview) return;
 
-    const controlType = this.node.attrs.controlType;
-    const value = this.node.attrs.value;
+    const { controlType, value } = this.node.attrs;
+    this.preview.textContent = value ? "Loading..." : "";
+    if (!value) return;
 
-    this.preview.innerHTML = "";
-
-    if (!value) {
-      this.preview.textContent = "No media selected";
-      return;
-    }
-
-    this.preview.textContent = "Loading…";
-    const item = controlType === "image" ? await fetchWagtailMedia("images", value) : await fetchWagtailMedia("documents", value);
-    this.preview.innerHTML = "";
-
+    const item = await fetchMedia(controlType, value);
+    this.preview.textContent = "";
     if (!item) {
-      this.preview.textContent = `${controlType} ${value} could not be loaded`;
+      this.preview.textContent = `${controlType} ${value} not found`;
       return;
     }
 
-    if (controlType === "image") {
-      this.renderImagePreview(item);
-    } else {
-      this.renderDocumentPreview(item);
-    }
-  }
-
-  renderImagePreview(image) {
-    const previewUrl = getMediaUrl(image);
-    const title = getMediaTitle(image, `Image ${this.node.attrs.value}`);
-
-    const card = document.createElement("div");
-    card.className = "pm-media-card pm-media-card--image";
-
-    if (previewUrl) {
+    const url = mediaUrl(item);
+    if (controlType === "image" && url) {
       const img = document.createElement("img");
-      img.className = "pm-media-card__image";
-      img.src = previewUrl;
-      img.alt = title;
-      card.appendChild(img);
+      img.src = url;
+      img.alt = mediaTitle(item, `Image ${value}`);
+      this.preview.appendChild(img);
+      return;
     }
 
-    const body = document.createElement("div");
-    body.className = "pm-media-card__body";
-
-    const heading = document.createElement("div");
-    heading.className = "pm-media-card__title";
-    heading.textContent = title;
-
-    const meta = document.createElement("div");
-    meta.className = "pm-media-card__meta";
-    meta.textContent = `Image ID: ${this.node.attrs.value}`;
-
-    body.appendChild(heading);
-    body.appendChild(meta);
-    card.appendChild(body);
-
-    this.preview.appendChild(card);
-  }
-
-  renderDocumentPreview(documentItem) {
-    const url = getMediaUrl(documentItem);
-    const title = getMediaTitle(documentItem, `Document ${this.node.attrs.value}`);
-
-    const card = document.createElement("div");
-    card.className = "pm-media-card pm-media-card--document";
-
-    const body = document.createElement("div");
-    body.className = "pm-media-card__body";
-
-    const heading = document.createElement(url ? "a" : "div");
-    heading.className = "pm-media-card__title";
-    heading.textContent = title;
-
+    const link = document.createElement(url ? "a" : "span");
+    link.textContent = mediaTitle(item, `${controlType} ${value}`);
     if (url) {
-      heading.href = url;
-      heading.target = "_blank";
-      heading.rel = "noreferrer";
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noreferrer";
     }
-
-    const meta = document.createElement("div");
-    meta.className = "pm-media-card__meta";
-    meta.textContent = `Document ID: ${this.node.attrs.value}`;
-
-    body.appendChild(heading);
-    body.appendChild(meta);
-    card.appendChild(body);
-
-    this.preview.appendChild(card);
+    this.preview.appendChild(link);
   }
 
   stopEvent(event) {
@@ -735,6 +808,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   createManuscriptRichTextEditors(manuscriptRoot);
   setupMetadataResize();
+  setupMetadataTabs();
 
   const form = document.querySelector("[data-manuscript-form]");
 
@@ -748,6 +822,24 @@ document.addEventListener("DOMContentLoaded", () => {
   window.manuscriptRichTextEditors = manuscriptRichTextEditors;
   window.manuscriptBlockRegistry = blockRegistry;
 });
+
+
+function setupMetadataTabs() {
+  const tabs = Array.from(document.querySelectorAll("[data-metadata-tab]"));
+  const panels = Array.from(document.querySelectorAll("[data-metadata-panel]"));
+
+  for (const tab of tabs) {
+    tab.addEventListener("click", () => {
+      const selected = tab.dataset.metadataTab;
+      for (const item of tabs) {
+        item.setAttribute("aria-selected", String(item === tab));
+      }
+      for (const panel of panels) {
+        panel.hidden = panel.dataset.metadataPanel !== selected;
+      }
+    });
+  }
+}
 
 function setupMetadataResize() {
   const editor = document.querySelector("[data-manuscript-editor]");
@@ -822,6 +914,14 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
 
       editable_field(node) {
         return new EditableFieldView(node);
+      },
+
+      list_field(node, view, getPos) {
+        return new ListFieldView(node, view, getPos);
+      },
+
+      list_item(node, view, getPos) {
+        return new ListItemView(node, view, getPos);
       },
 
       control_field(node, view, getPos) {
@@ -977,6 +1077,19 @@ function streamBlockToPmNode(block) {
 }
 
 function fieldToPmNode(field) {
+  if (field.kind === "list") {
+    return {
+      type: "list_field",
+      attrs: {
+        path: field.path,
+        label: field.label,
+        itemValue: field.itemValue,
+        itemFields: field.itemFields || [],
+      },
+      content: (field.items || []).map((item) => listItemToPmNode(field, item)),
+    };
+  }
+
   if (field.kind === "control") {
     return {
       type: "control_field",
@@ -998,6 +1111,15 @@ function fieldToPmNode(field) {
       mode: field.mode,
     },
     content: field.mode === "plain_text" ? plainTextToPmContent(field.value) : richTextToPmContent(field.value),
+  };
+}
+
+function listItemToPmNode(field, item = null) {
+  const value = item ? item.value : clone(field.itemValue);
+  return {
+    type: "list_item",
+    attrs: { originalValue: clone(value) },
+    content: ((item && item.fields) || field.itemFields || []).map(fieldToPmNode),
   };
 }
 
@@ -1053,10 +1175,38 @@ function pmStreamBlockToWagtailBlock(node) {
       setBlockValue(block, path, editableFieldValue(childNode, fieldAttrs.mode));
     } else if (childNode.type === "control_field") {
       setBlockValue(block, path, controlFieldValue(fieldAttrs, getValueAtPath(block.value, path)));
+    } else if (childNode.type === "list_field") {
+      setBlockValue(block, path, listFieldValue(childNode));
     }
   }
 
   return block;
+}
+
+function listFieldValue(node) {
+  return (node.content || [])
+    .filter((item) => item.type === "list_item")
+    .map((item) => listItemValue(item, node.attrs || {}));
+}
+
+function listItemValue(node, listAttrs) {
+  let value = clone(node.attrs?.originalValue);
+  if (value === undefined) value = clone(listAttrs.itemValue);
+
+  for (const childNode of node.content || []) {
+    const fieldAttrs = childNode.attrs || {};
+    const path = Array.isArray(fieldAttrs.path) ? fieldAttrs.path : [];
+
+    if (childNode.type === "editable_field") {
+      value = setFieldValue(value, path, editableFieldValue(childNode, fieldAttrs.mode));
+    } else if (childNode.type === "control_field") {
+      value = setFieldValue(value, path, controlFieldValue(fieldAttrs, getValueAtPath(value, path)));
+    } else if (childNode.type === "list_field") {
+      value = setFieldValue(value, path, listFieldValue(childNode));
+    }
+  }
+
+  return value;
 }
 
 function editableFieldValue(node, mode = "richtext") {
@@ -1089,15 +1239,21 @@ function controlFieldValue(fieldAttrs, originalValue) {
     value = null;
   }
 
+  if (controlType === "number") {
+    value = value === "" || value == null ? null : Number(value);
+  }
+
   return Array.isArray(originalValue) ? [value] : value;
 }
 
 function setBlockValue(block, path, value) {
-  if (path.length === 0) {
-    block.value = value;
-  } else {
-    setValueAtPath(block.value, path, value);
-  }
+  block.value = setFieldValue(block.value, path, value);
+}
+
+function setFieldValue(root, path, value) {
+  if (path.length === 0) return value;
+  setValueAtPath(root, path, value);
+  return root;
 }
 
 function getValueAtPath(root, path) {
