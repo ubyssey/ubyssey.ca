@@ -82,3 +82,18 @@
     outline: 2px solid purple;
     outline-offset: 4px;
 }
+
+.pm-manuscript-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--background, white);
+}
+
+.pm-manuscript-toolbar:empty {
+    display: none;
+}
+
+.pm-manuscript-toolbar .ProseMirror-menubar {
+    min-height: 0 !important;
+}

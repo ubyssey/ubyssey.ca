@@ -47,10 +47,25 @@
 }
 
 .manuscript-editor {
+    --metadata-width: 420px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
-    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) 8px minmax(0, var(--metadata-width));
+    gap: 0;
     align-items: start;
+}
+
+.manuscript {
+    min-width: 0;
+    padding-right: 24px;
+}
+
+.metadata-resize-handle {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    border-left: 1px solid #d9d9d9;
+    cursor: col-resize;
+    touch-action: none;
 }
 
 .metadata-editor {
@@ -61,7 +76,6 @@
     overflow-x: hidden;
     padding: 16px;
     box-sizing: border-box;
-    border-left: 1px solid #d9d9d9;
     background: #fff;
     max-width: 100%;
 }
@@ -76,4 +90,8 @@
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
+}
+
+.pm-editable-field--manuscript-owned {
+    display: none;
 }
