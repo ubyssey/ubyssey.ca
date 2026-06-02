@@ -14,7 +14,9 @@
 {{ editor_data|json_script:"editor-data" }}
 {{ editor_errors|json_script:"editor-errors" }}
 
-<div class="manuscript-editor">
+<form method="post" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor>
+  {% csrf_token %}
+
   <main class="manuscript">
   <a href="{% url 'new_cms:index' %}">Home</a>
     <div
@@ -33,15 +35,24 @@
 
       <article class="c-article c-article--fw-story js-article">
         {% for header_block in self.header %}
-          <div data-article-block>
-          {% include_block header_block %}  
+          <div data-article-block
+            data-stream-field="header"
+            data-stream-block-id="{{ header_block.id }}"
+            data-stream-block-index="{{ forloop.counter0 }}"
+          >
+          {% include_block header_block with id=header_block.id %}  
           </div>
         {% endfor %}
 
         <div class="clearfix">
             {% for block in self.content %}
-              <div class="cell left article-content" data-article-block>
-                {% include_block block %}
+              <div class="cell left article-content"
+                data-article-block
+                data-stream-field="content"
+                data-stream-block-id="{{ block.id }}"
+                data-stream-block-index="{{ forloop.counter0 }}"
+              >
+                {% include_block block with id=block.id %}
               </div>
             {% endfor %}
 
@@ -69,51 +80,49 @@
     {% endif %}
 
     <a href="{{ self.url }}">View Live</a>
+
+    <div class="manuscript-actions">
+      <button type="submit" name="action" value="publish">
+        Save &amp; Publish
+      </button>
+
+      <button type="submit" name="action" value="draft">
+        Save as Draft
+      </button>
+    </div>
   </main>
 
-  <aside class="metadata-editor">
-    <form method="post" data-manuscript-form class="manuscript-editor-form" id="manuscript-editor-form">
-      {% csrf_token %}
+  <div class="metadata-resize-handle" data-metadata-resize-handle role="separator" aria-orientation="vertical" aria-label="Resize metadata sidebar"></div>
 
-      <label for="id_title">Title</label>
-      <input type="text" id="id_title" name="title" value="{{ self.title }}" required>
+  <aside class="metadata-editor" data-metadata-editor>
+    <label for="id_title">Title</label>
+    <input type="text" id="id_title" name="title" value="{{ self.title }}" required>
 
-      <label for="id_slug">Slug</label>
-      <input type="text" id="id_slug" name="slug" value="{{ self.slug }}" required>
+    <label for="id_slug">Slug</label>
+    <input type="text" id="id_slug" name="slug" value="{{ self.slug }}" required>
 
-      <label for="id_lede">Lede</label>
-      <input type="text" id="id_lede" name="lede" value="{{ self.lede }}">
+    <label for="id_lede">Lede</label>
+    <input type="text" id="id_lede" name="lede" value="{{ self.lede }}">
 
-      {% for field_name, json_str in stream_data.items %}
-        <section class="editor-section">
-          <h3>StreamField: {{ field_name }}</h3>
+    {% for field_name, json_str in stream_data.items %}
+      <section class="editor-section">
+        <h3>StreamField: {{ field_name }}</h3>
 
-          <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
+        <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
 
-          <details class="stream-json">
-            <summary>Streamfield JSON</summary>
-            <textarea
-              id="stream_{{ field_name }}"
-              name="stream_{{ field_name }}"
-              data-stream-json
-              data-stream-field="{{ field_name }}"
-              rows="18"
-              cols="100"
-            >{{ json_str }}</textarea>
-          </details>
-        </section>
-      {% endfor %}
-
-      <div class="manuscript-actions">
-        <button type="submit" name="action" value="publish">
-          Save &amp; Publish
-        </button>
-
-        <button type="submit" name="action" value="draft">
-          Save as Draft
-        </button>
-      </div>
-    </form>
+        <details class="stream-json">
+          <summary>Streamfield JSON</summary>
+          <textarea
+            id="stream_{{ field_name }}"
+            name="stream_{{ field_name }}"
+            data-stream-json
+            data-stream-field="{{ field_name }}"
+            rows="18"
+            cols="100"
+          >{{ json_str }}</textarea>
+        </details>
+      </section>
+    {% endfor %}
   </aside>
-</div>
+</form>
 {% endblock %}

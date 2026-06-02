@@ -405,13 +405,14 @@ class StreamBlockView {
 class EditableFieldView {
   constructor(node) {
     this.node = node;
+    const isManuscriptOwned = node.attrs.mode === "richtext";
 
     this.dom = document.createElement("div");
-    this.dom.className = "pm-editable-field";
+    this.dom.className = `pm-editable-field${isManuscriptOwned ? " pm-editable-field--manuscript-owned" : ""}`;
 
     const label = document.createElement("div");
     label.className = "pm-editable-field__label";
-    label.textContent = node.attrs.label || "Content";
+    label.textContent = isManuscriptOwned ? "Edited in manuscript" : (node.attrs.label || "Content");
 
     this.contentDOM = document.createElement("div");
     this.contentDOM.className = "pm-editable-field__content";
@@ -662,11 +663,12 @@ class ControlFieldView {
 
 // Initialization
 const editorInstances = [];
+const manuscriptRichTextEditors = [];
 
 function setupArticleShadow() {
   const host = document.querySelector("[data-article-shadow]");
   if (!host) {
-    return;
+    return null;
   }
 
   const articleStylesheets = Array.from(host.querySelectorAll("[data-article-stylesheet]"));
@@ -698,14 +700,26 @@ function setupArticleShadow() {
     shadowRoot.appendChild(link);
   }
 
+  for (const style of document.querySelectorAll("style")) {
+    if (style.textContent?.includes("ProseMirror")) {
+      shadowRoot.appendChild(style.cloneNode(true));
+    }
+  }
+
+  const toolbar = document.createElement("div");
+  toolbar.className = "pm-manuscript-toolbar";
+  shadowRoot.appendChild(toolbar);
+
   const wrapper = document.createElement("main");
   wrapper.className = "article-shadow-preview article";
   wrapper.innerHTML = articleHtml;
   shadowRoot.appendChild(wrapper);
+
+  return shadowRoot;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setupArticleShadow();
+  const manuscriptRoot = setupArticleShadow();
   const blockRegistry = { byStreamField: readJsonScript("block-registry") };
   const editorData = readJsonScript("editor-data");
   const editorErrors = readJsonScript("editor-errors");
@@ -719,6 +733,9 @@ document.addEventListener("DOMContentLoaded", () => {
     createStreamEditor(textarea, blockRegistry, editorData[textarea.dataset.streamField] || []);
   }
 
+  createManuscriptRichTextEditors(manuscriptRoot);
+  setupMetadataResize();
+
   const form = document.querySelector("[data-manuscript-form]");
 
   form.addEventListener("submit", () => {
@@ -728,8 +745,47 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   window.manuscriptEditors = editorInstances;
+  window.manuscriptRichTextEditors = manuscriptRichTextEditors;
   window.manuscriptBlockRegistry = blockRegistry;
 });
+
+function setupMetadataResize() {
+  const editor = document.querySelector("[data-manuscript-editor]");
+  const handle = document.querySelector("[data-metadata-resize-handle]");
+  const aside = document.querySelector("[data-metadata-editor]");
+  if (!editor || !handle || !aside) return;
+
+  const setWidth = (width) => {
+    const max = Math.min(1080, window.innerWidth - 180);
+    editor.style.setProperty("--metadata-width", `${Math.max(280, Math.min(max, width))}px`);
+  };
+
+  setWidth(Number(localStorage.getItem("metadataEditorWidth")) || aside.getBoundingClientRect().width);
+
+  handle.addEventListener("pointerdown", (event) => {
+    handle.setPointerCapture(event.pointerId);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    const onMove = (moveEvent) => {
+      const width = editor.getBoundingClientRect().right - moveEvent.clientX;
+      setWidth(width);
+      localStorage.setItem("metadataEditorWidth", Math.round(width));
+    };
+
+    const onUp = () => {
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      handle.removeEventListener("pointermove", onMove);
+      handle.removeEventListener("pointerup", onUp);
+      handle.removeEventListener("pointercancel", onUp);
+    };
+
+    handle.addEventListener("pointermove", onMove);
+    handle.addEventListener("pointerup", onUp);
+    handle.addEventListener("pointercancel", onUp);
+  });
+}
 
 function createStreamEditor(textarea, blockRegistry, streamValue) {
   const fieldName = textarea.dataset.streamField;
@@ -784,7 +840,7 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
     },
 
     getStreamValue() {
-      const pmDoc = view.state.doc.toJSON();
+      const pmDoc = applyManuscriptRichTextOverrides(fieldName, view.state.doc.toJSON());
       return pmDoc.content
         .filter((node) => node.type === "stream_block")
         .map(pmStreamBlockToWagtailBlock);
@@ -796,6 +852,98 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
   };
 
   editorInstances.push(instance);
+  return instance;
+}
+
+function createManuscriptRichTextEditors(manuscriptRoot) {
+  if (!manuscriptRoot) return;
+
+  const toolbar = manuscriptRoot.querySelector(".pm-manuscript-toolbar");
+
+  for (const instance of editorInstances) {
+    const articleBlocks = Array.from(manuscriptRoot.querySelectorAll("[data-article-block]"))
+      .filter((element) => element.dataset.streamField === instance.fieldName);
+
+    (instance.view.state.doc.toJSON().content || []).forEach((block, blockIndex) => {
+      const field = (block.content || []).find((child) => (
+        child.type === "editable_field" &&
+        child.attrs?.mode === "richtext" &&
+        JSON.stringify(child.attrs?.path || []) === "[]"
+      ));
+
+      if (block.attrs?.blockType !== "richtext" || !field || (block.content || []).some((child) => child.type === "control_field")) {
+        return;
+      }
+
+      const blockId = block.attrs?.id;
+      const articleBlock = (
+        blockId && articleBlocks.find((element) => element.dataset.streamBlockId === String(blockId))
+      ) || articleBlocks.find((element) => Number(element.dataset.streamBlockIndex) === blockIndex);
+
+      if (!articleBlock) return;
+
+      const view = new EditorView({ mount: articleBlock }, {
+        state: EditorState.create({
+          doc: richTextSchema.nodeFromJSON({
+            type: "doc",
+            content: field.content?.length ? field.content : [{ type: "paragraph" }],
+          }),
+          plugins: exampleSetup({ schema: richTextSchema, floatingMenu: false }),
+        }),
+
+        attributes: {
+          class: `${articleBlock.className} pm-manuscript-rich-text`,
+        },
+      });
+
+      const wrapper = view.dom.parentNode;
+      const menu = wrapper?.querySelector(".ProseMirror-menubar");
+      if (toolbar && menu) {
+        wrapper.style.minHeight = "";
+        menu.style.minHeight = "";
+        for (const use of menu.querySelectorAll("use")) {
+          const id = (use.href?.baseVal || "").split("#")[1];
+          const symbol = id && (manuscriptRoot.getElementById(id) || document.getElementById(id));
+          const svg = use.closest("svg");
+          if (symbol && svg) {
+            svg.setAttribute("viewBox", symbol.getAttribute("viewBox"));
+            svg.replaceChildren(...Array.from(symbol.childNodes).map((node) => node.cloneNode(true)));
+          }
+        }
+        menu.hidden = toolbar.children.length > 0;
+        toolbar.appendChild(menu);
+        view.dom.addEventListener("focus", () => {
+          Array.from(toolbar.children).forEach((child) => { child.hidden = true; });
+          menu.hidden = false;
+        }, true);
+      }
+
+      manuscriptRichTextEditors.push({
+        fieldName: instance.fieldName,
+        blockId,
+        blockIndex,
+        view,
+      });
+    });
+  }
+}
+
+function applyManuscriptRichTextOverrides(fieldName, pmDoc) {
+  const nextDoc = clone(pmDoc);
+  const blocks = nextDoc.content || [];
+
+  for (const editor of manuscriptRichTextEditors.filter((item) => item.fieldName === fieldName)) {
+    const block = (
+      editor.blockId && blocks.find((node) => node.attrs?.id === editor.blockId)
+    ) || blocks[editor.blockIndex];
+    const field = (block?.content || []).find((child) => child.type === "editable_field" && child.attrs?.mode === "richtext");
+
+    if (field) {
+      field.content = editor.view.state.doc.toJSON().content || [{ type: "paragraph" }];
+    }
+  }
+
+  return nextDoc;
 }
 
 // Wagtail -> Prosemirror
