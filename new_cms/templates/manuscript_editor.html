@@ -95,34 +95,65 @@
   <div class="metadata-resize-handle" data-metadata-resize-handle role="separator" aria-orientation="vertical" aria-label="Resize metadata sidebar"></div>
 
   <aside class="metadata-editor" data-metadata-editor>
-    <label for="id_title">Title</label>
-    <input type="text" id="id_title" name="title" value="{{ self.title }}" required>
+    <div role="tablist" aria-label="Editor panels">
+      <button type="button" role="tab" aria-selected="true" aria-controls="metadata-article" data-metadata-tab="article">article</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="metadata-settings" data-metadata-tab="settings">settings</button>
+    </div>
 
-    <label for="id_slug">Slug</label>
-    <input type="text" id="id_slug" name="slug" value="{{ self.slug }}" required>
+    <section id="metadata-article" role="tabpanel" data-metadata-panel="article">
+      {% for field_name, json_str in stream_data.items %}
+        {% if field_name == "header" or field_name == "content" %}
+          <section class="editor-section">
+            <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
+            <textarea
+              id="stream_{{ field_name }}"
+              name="stream_{{ field_name }}"
+              data-stream-json
+              data-stream-field="{{ field_name }}"
+              hidden
+            >{{ json_str }}</textarea>
+          </section>
+        {% endif %}
+      {% endfor %}
+    </section>
 
-    <label for="id_lede">Lede</label>
-    <input type="text" id="id_lede" name="lede" value="{{ self.lede }}">
+    <section id="metadata-settings" role="tabpanel" data-metadata-panel="settings" hidden>
+      {{ page_form.non_field_errors }}
+      {% for field in page_form %}
+        <div class="page-field">
+          {{ field.label_tag }}
+          {{ field }}
+          {{ field.errors }}
+        </div>
+      {% endfor %}
 
-    {% for field_name, json_str in stream_data.items %}
-      <section class="editor-section">
-        <h3>StreamField: {{ field_name }}</h3>
+      {% if featured_media_form %}
+        {{ featured_media_form.non_field_errors }}
+        <div>Featured Image or Video</div>
+        {% for field in featured_media_form %}
+          <div class="page-field">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+      {% endif %}
 
-        <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
-
-        <details class="stream-json">
-          <summary>Streamfield JSON</summary>
-          <textarea
-            id="stream_{{ field_name }}"
-            name="stream_{{ field_name }}"
-            data-stream-json
-            data-stream-field="{{ field_name }}"
-            rows="18"
-            cols="100"
-          >{{ json_str }}</textarea>
-        </details>
-      </section>
-    {% endfor %}
+      {% for field_name, json_str in stream_data.items %}
+        {% if field_name != "header" and field_name != "content" %}
+          <section class="editor-section">
+            <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
+            <textarea
+              id="stream_{{ field_name }}"
+              name="stream_{{ field_name }}"
+              data-stream-json
+              data-stream-field="{{ field_name }}"
+              hidden
+            >{{ json_str }}</textarea>
+          </section>
+        {% endif %}
+      {% endfor %}
+    </section>
   </aside>
 </form>
 {% endblock %}
