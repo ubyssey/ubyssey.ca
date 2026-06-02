@@ -45,3 +45,35 @@
 #article-shadow {
     border: 2px solid pink;
 }
+
+.manuscript-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    gap: 24px;
+    align-items: start;
+}
+
+.metadata-editor {
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+    box-sizing: border-box;
+    border-left: 1px solid #d9d9d9;
+    background: #fff;
+    max-width: 100%;
+}
+
+.manuscript-editor img,
+.manuscript-editor picture,
+.manuscript-editor video,
+.manuscript-editor-form input,
+.manuscript-editor-form textarea,
+.manuscript-editor-form select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}

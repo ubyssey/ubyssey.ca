@@ -14,102 +14,106 @@
 {{ editor_data|json_script:"editor-data" }}
 {{ editor_errors|json_script:"editor-errors" }}
 
-<div
-  id="article-shadow"
-  data-article-shadow
-  data-shadow-editor-css="{% static 'new_cms/shadow_editor.css' %}"
->
-  <!-- These are taken from article_page.html - we should figure out a way to avoid duplication-->
-  {% if self.styles.all|length == 0 %}
-    <link data-article-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
-  {% else %}
-    {% for style_obj in self.styles.all %}
-      <link data-article-stylesheet rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
-    {% endfor %}
-  {% endif %}
+<div class="manuscript-editor">
+  <main class="manuscript">
+  <a href="{% url 'new_cms:index' %}">Home</a>
+    <div
+      id="article-shadow"
+      data-article-shadow
+      data-shadow-editor-css="{% static 'new_cms/shadow_editor.css' %}"
+    >
+      <!-- These are taken from article_page.html - we should figure out a way to avoid duplication-->
+      {% if self.styles.all|length == 0 %}
+        <link data-article-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
+      {% else %}
+        {% for style_obj in self.styles.all %}
+          <link data-article-stylesheet rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+        {% endfor %}
+      {% endif %}
 
-  <article class="c-article c-article--fw-story js-article">
-    {% for header_block in self.header %}
-      <div data-article-block>
-      {% include_block header_block %}  
-      </div>
-    {% endfor %}
-
-    <div class="clearfix">
-        {% for block in self.content %}
-          <div class="cell left article-content" data-article-block>
-            {% include_block block %}
+      <article class="c-article c-article--fw-story js-article">
+        {% for header_block in self.header %}
+          <div data-article-block>
+          {% include_block header_block %}  
           </div>
         {% endfor %}
 
-      {% comment %}
-      {% if self.disclaimer %}
-        <div class="disclaimer" data-article-block>{{self.disclaimer|safe}}</div>
-      {% endif %}
-      {% endcomment %}
+        <div class="clearfix">
+            {% for block in self.content %}
+              <div class="cell left article-content" data-article-block>
+                {% include_block block %}
+              </div>
+            {% endfor %}
+
+          {% comment %}
+          {% if self.disclaimer %}
+            <div class="disclaimer" data-article-block>{{self.disclaimer|safe}}</div>
+          {% endif %}
+          {% endcomment %}
+        </div>
+      </article>
     </div>
-  </article>
+
+    <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
+    {{ block_registry|pprint }}
+    </textarea>-->
+
+    {% if self.live %}
+    <p>Status: Live</p>
+    {% else %}
+    <p>Status: Draft</p>
+    {% endif %}
+
+    {% if self.last_published_at %}
+    <p>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</p>
+    {% endif %}
+
+    <a href="{{ self.url }}">View Live</a>
+  </main>
+
+  <aside class="metadata-editor">
+    <form method="post" data-manuscript-form class="manuscript-editor-form" id="manuscript-editor-form">
+      {% csrf_token %}
+
+      <label for="id_title">Title</label>
+      <input type="text" id="id_title" name="title" value="{{ self.title }}" required>
+
+      <label for="id_slug">Slug</label>
+      <input type="text" id="id_slug" name="slug" value="{{ self.slug }}" required>
+
+      <label for="id_lede">Lede</label>
+      <input type="text" id="id_lede" name="lede" value="{{ self.lede }}">
+
+      {% for field_name, json_str in stream_data.items %}
+        <section class="editor-section">
+          <h3>StreamField: {{ field_name }}</h3>
+
+          <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
+
+          <details class="stream-json">
+            <summary>Streamfield JSON</summary>
+            <textarea
+              id="stream_{{ field_name }}"
+              name="stream_{{ field_name }}"
+              data-stream-json
+              data-stream-field="{{ field_name }}"
+              rows="18"
+              cols="100"
+            >{{ json_str }}</textarea>
+          </details>
+        </section>
+      {% endfor %}
+
+      <div class="manuscript-actions">
+        <button type="submit" name="action" value="publish">
+          Save &amp; Publish
+        </button>
+
+        <button type="submit" name="action" value="draft">
+          Save as Draft
+        </button>
+      </div>
+    </form>
+  </aside>
 </div>
-
-<!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
-{{ block_registry|pprint }}
-</textarea>-->
-
-<a href="{% url 'new_cms:index' %}">All Pages</a>
-<h1>{{ self.title }}</h1>
-
-<form method="post" data-manuscript-form class="manuscript-editor-form" id="manuscript-editor-form">
-  {% csrf_token %}
-
-  <label for="id_title">Title</label>
-  <input type="text" id="id_title" name="title" value="{{ self.title }}" required>
-
-  <label for="id_slug">Slug</label>
-  <input type="text" id="id_slug" name="slug" value="{{ self.slug }}" required>
-
-  <label for="id_lede">Lede</label>
-  <input type="text" id="id_lede" name="lede" value="{{ self.lede }}">
-
-  {% for field_name, json_str in stream_data.items %}
-    <section class="editor-section">
-      <h3>StreamField: {{ field_name }}</h3>
-
-      <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
-
-      <details class="stream-json">
-        <summary>Streamfield JSON</summary>
-        <textarea
-          id="stream_{{ field_name }}"
-          name="stream_{{ field_name }}"
-          data-stream-json
-          data-stream-field="{{ field_name }}"
-          rows="18"
-          cols="100"
-        >{{ json_str }}</textarea>
-      </details>
-    </section>
-  {% endfor %}
-
-  <div class="manuscript-actions">
-    <button type="submit" name="action" value="publish">
-      Save &amp; Publish
-    </button>
-
-    <button type="submit" name="action" value="draft">
-      Save as Draft
-    </button>
-  </div>
-</form>
-
-{% if self.live %}
-<p>Status: Live</p>
-{% else %}
-<p>Status: Draft</p>
-{% endif %}
-
-{% if self.last_published_at %}
-<p>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</p>
-{% endif %}
-
-<a href="{{ self.url }}">View Live</a>
 {% endblock %}
