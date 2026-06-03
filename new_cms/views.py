@@ -1,9 +1,12 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
 from wagtail.fields import StreamField as WagtailStreamField
 from wagtail.models import Page
 
@@ -24,35 +27,11 @@ def index(request):
 def manuscript_editor(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
     editor_errors = {}
-
-    page_form = get_page_form(page, request.POST if request.method == "POST" else None)
-    featured_media_form = get_featured_media_form(page, request.POST if request.method == "POST" else None)
+    page_form = get_page_form(page)
+    featured_media_form = get_featured_media_form(page)
 
     if request.method == "POST":
-        if page_form.is_valid():
-            for field_name, value in page_form.cleaned_data.items():
-                setattr(page, field_name, value)
-        else:
-            for field_name, field_errors in page_form.errors.items():
-                editor_errors[field_name] = list(field_errors)
-
-        if featured_media_form:
-            if featured_media_form.is_valid():
-                save_featured_media_form(page, featured_media_form)
-            else:
-                for field_name, field_errors in featured_media_form.errors.items():
-                    editor_errors[f"featured_media.{field_name}"] = list(field_errors)
-
-        for field in page._meta.get_fields():
-            if not isinstance(field, WagtailStreamField):
-                continue
-            json_str = request.POST.get(f"stream_{field.name}", "").strip()
-            if not json_str:
-                continue
-            try:
-                setattr(page, field.name, json.loads(json_str))
-            except:
-                editor_errors[field.name] = ["Invalid JSON for this field."]
+        editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST)
 
         if not editor_errors:
             siblings = page.get_siblings().exclude(id=page.id)
@@ -63,10 +42,7 @@ def manuscript_editor(request, page_id):
                     page.full_clean()
                 except ValidationError as e:
                     for field, field_errors in e.message_dict.items():
-                        if field in editor_errors:
-                            editor_errors[field].extend(field_errors)
-                        else:
-                            editor_errors[field] = field_errors
+                        editor_errors.setdefault(field, []).extend(field_errors)
                 else:
                     try:
                         revision = page.save_revision(user=request.user)
@@ -75,10 +51,10 @@ def manuscript_editor(request, page_id):
                             print("Revised page")
                         else:
                             print("Draft Saved")
-                    except:
+                    except Exception:
                         print("Failed to update page:" + page.title)
 
-    if (editor_errors):
+    if editor_errors:
         print(f"Validation Error: {editor_errors}")
 
     stream_data, block_registry, editor_data = get_streamfields(page)
@@ -93,6 +69,61 @@ def manuscript_editor(request, page_id):
          "editor_data": editor_data,
          "editor_errors": editor_errors}
     )
+
+
+@login_required
+@require_POST
+def manuscript_preview(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST)
+
+    if editor_errors:
+        return JsonResponse({"errors": editor_errors}, status=400)
+
+    return JsonResponse({
+        "html": render_to_string(
+            "new_cms/manuscript_article_preview.html",
+            {"self": page, "page_form": page_form, "featured_media_form": featured_media_form},
+            request=request,
+        )
+    })
+
+
+def apply_editor_post(page, data):
+    editor_errors = {}
+    page_form = get_page_form(page, data)
+    featured_media_form = get_featured_media_form(page, data)
+
+    if page_form.is_valid():
+        for field_name, value in page_form.cleaned_data.items():
+            setattr(page, field_name, value)
+    else:
+        add_form_errors(editor_errors, page_form)
+
+    if featured_media_form:
+        if featured_media_form.is_valid():
+            save_featured_media_form(page, featured_media_form)
+        else:
+            add_form_errors(editor_errors, featured_media_form, "featured_media")
+
+    for field in page._meta.get_fields():
+        if not isinstance(field, WagtailStreamField):
+            continue
+        json_str = data.get(f"stream_{field.name}", "").strip()
+        if not json_str:
+            continue
+        try:
+            setattr(page, field.name, json.loads(json_str))
+        except json.JSONDecodeError:
+            editor_errors[field.name] = ["Invalid JSON for this field."]
+
+    return editor_errors, page_form, featured_media_form
+
+
+def add_form_errors(editor_errors, form, prefix=None):
+    for field_name, field_errors in form.errors.items():
+        key = f"{prefix}.{field_name}" if prefix else field_name
+        editor_errors[key] = list(field_errors)
 
 
 @login_required

@@ -737,6 +737,7 @@ class ControlFieldView {
 // Initialization
 const editorInstances = [];
 const manuscriptRichTextEditors = [];
+let scheduleManuscriptPreview = () => {};
 
 function setupArticleShadow() {
   const host = document.querySelector("[data-article-shadow]");
@@ -811,6 +812,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMetadataTabs();
 
   const form = document.querySelector("[data-manuscript-form]");
+  setupServerPreview(form, manuscriptRoot);
 
   form.addEventListener("submit", () => {
     for (const instance of editorInstances) {
@@ -823,6 +825,86 @@ document.addEventListener("DOMContentLoaded", () => {
   window.manuscriptBlockRegistry = blockRegistry;
 });
 
+
+function setupServerPreview(form, manuscriptRoot) {
+  if (!form?.dataset.previewUrl || !manuscriptRoot) return;
+
+  let timer = null;
+  let controller = null;
+  let previewId = 0;
+
+  scheduleManuscriptPreview = () => {
+    clearTimeout(timer);
+    timer = setTimeout(sendPreview, 500);
+  };
+
+  form.addEventListener("input", scheduleManuscriptPreview);
+  form.addEventListener("change", scheduleManuscriptPreview);
+
+  async function sendPreview() {
+    const streamDocs = currentStreamDocs();
+    writeStreamTextareas(streamDocs);
+
+    if (controller) controller.abort();
+    controller = new AbortController();
+    const currentPreviewId = ++previewId;
+
+    try {
+      const response = await fetch(form.dataset.previewUrl, {
+        method: "POST",
+        body: new FormData(form),
+        credentials: "same-origin",
+        signal: controller.signal,
+      });
+      const payload = await response.json();
+
+      if (currentPreviewId !== previewId) return;
+
+      if (response.ok && payload.html) {
+        window.manuscriptPreviewErrors = {};
+        refreshArticlePreview(manuscriptRoot, payload.html, streamDocs);
+      } else {
+        window.manuscriptPreviewErrors = payload.errors || {};
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        window.manuscriptPreviewErrors = { preview: ["Preview failed."] };
+      }
+    }
+  }
+}
+
+function currentStreamDocs() {
+  const docs = new Map();
+
+  for (const instance of editorInstances) {
+    docs.set(instance.fieldName, applyManuscriptRichTextOverrides(instance.fieldName, instance.view.state.doc.toJSON()));
+  }
+
+  return docs;
+}
+
+function writeStreamTextareas(streamDocs = currentStreamDocs()) {
+  for (const instance of editorInstances) {
+    instance.textarea.value = JSON.stringify(pmDocToStreamValue(streamDocs.get(instance.fieldName)), null, 2);
+  }
+}
+
+function refreshArticlePreview(manuscriptRoot, html, streamDocs) {
+  const wrapper = manuscriptRoot.querySelector(".article-shadow-preview");
+  if (!wrapper) return;
+
+  for (const editor of manuscriptRichTextEditors) {
+    editor.view.destroy();
+  }
+  manuscriptRichTextEditors.length = 0;
+
+  const toolbar = manuscriptRoot.querySelector(".pm-manuscript-toolbar");
+  if (toolbar) toolbar.replaceChildren();
+
+  wrapper.innerHTML = html;
+  createManuscriptRichTextEditors(manuscriptRoot, streamDocs);
+}
 
 function setupMetadataTabs() {
   const tabs = Array.from(document.querySelectorAll("[data-metadata-tab]"));
@@ -895,13 +977,19 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
     content: content.length ? content : [createEmptyRichTextBlock()],
   };
 
-  const view = new EditorView(mount, {
+  let view;
+  view = new EditorView(mount, {
     state: EditorState.create({
       doc: streamSchema.nodeFromJSON(doc),
       plugins: exampleSetup({
         schema: streamSchema,
       }),
     }),
+
+    dispatchTransaction(transaction) {
+      view.updateState(view.state.apply(transaction));
+      if (transaction.docChanged) scheduleManuscriptPreview();
+    },
 
     nodeViews: {
       stream_block(node, view, getPos) {
@@ -940,10 +1028,7 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
     },
 
     getStreamValue() {
-      const pmDoc = applyManuscriptRichTextOverrides(fieldName, view.state.doc.toJSON());
-      return pmDoc.content
-        .filter((node) => node.type === "stream_block")
-        .map(pmStreamBlockToWagtailBlock);
+      return pmDocToStreamValue(applyManuscriptRichTextOverrides(fieldName, view.state.doc.toJSON()));
     },
 
     writeBackToTextarea() {
@@ -955,7 +1040,7 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
   return instance;
 }
 
-function createManuscriptRichTextEditors(manuscriptRoot) {
+function createManuscriptRichTextEditors(manuscriptRoot, streamDocs = null) {
   if (!manuscriptRoot) return;
 
   const toolbar = manuscriptRoot.querySelector(".pm-manuscript-toolbar");
@@ -963,8 +1048,9 @@ function createManuscriptRichTextEditors(manuscriptRoot) {
   for (const instance of editorInstances) {
     const articleBlocks = Array.from(manuscriptRoot.querySelectorAll("[data-article-block]"))
       .filter((element) => element.dataset.streamField === instance.fieldName);
+    const doc = streamDocs?.get(instance.fieldName) || instance.view.state.doc.toJSON();
 
-    (instance.view.state.doc.toJSON().content || []).forEach((block, blockIndex) => {
+    (doc.content || []).forEach((block, blockIndex) => {
       const field = (block.content || []).find((child) => (
         child.type === "editable_field" &&
         child.attrs?.mode === "richtext" &&
@@ -1044,6 +1130,12 @@ function applyManuscriptRichTextOverrides(fieldName, pmDoc) {
   }
 
   return nextDoc;
+}
+
+function pmDocToStreamValue(pmDoc) {
+  return (pmDoc.content || [])
+    .filter((node) => node.type === "stream_block")
+    .map(pmStreamBlockToWagtailBlock);
 }
 
 // Wagtail -> Prosemirror
