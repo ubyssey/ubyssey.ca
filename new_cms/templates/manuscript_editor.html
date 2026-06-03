@@ -17,7 +17,7 @@
 <form method="post" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'new_cms:manuscript_preview' self.id %}">
   {% csrf_token %}
 
-  <main class="manuscript">
+  <main class="manuscript nav-border">
     <div
       id="article-shadow"
       data-article-shadow
@@ -39,24 +39,24 @@
     {{ block_registry|pprint }}
     </textarea>-->
 
-    {% if self.live %}
-    <p>Status: Live</p>
-    {% else %}
-    <p>Status: Draft</p>
-    {% endif %}
+    <div class="manuscript-publish-source" data-article-toolbar-source>
+      {% if self.live %}
+      <span data-article-status>Status: Live</span>
+      {% else %}
+      <span data-article-status>Status: Draft</span>
+      {% endif %}
 
-    {% if self.last_published_at %}
-    <p>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</p>
-    {% endif %}
+      {% if self.last_published_at %}
+      <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
+      {% endif %}
 
-    <a href="{{ self.url }}">View Live</a>
+      <a href="{{ self.url }}" target="_blank" rel="noopener" data-article-live-link>View Live</a>
 
-    <div class="manuscript-actions">
-      <button type="submit" name="action" value="publish">
+      <button type="submit" name="action" value="publish" data-article-action="publish">
         Save &amp; Publish
       </button>
 
-      <button type="submit" name="action" value="draft">
+      <button type="submit" name="action" value="draft" data-article-action="draft">
         Save as Draft
       </button>
     </div>
