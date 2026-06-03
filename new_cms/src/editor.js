@@ -199,6 +199,30 @@ function makeButton(text, onClick, title = text, className = "") {
   return button;
 }
 
+function refreshMoveControls(view) {
+  const groups = [
+    {
+      items: Array.from(view.dom.children).filter((element) => element.classList?.contains("pm-stream-block")),
+      upSelector: ":scope > .pm-stream-block__header button[title='Up']",
+      downSelector: ":scope > .pm-stream-block__header button[title='Down']",
+    },
+    ...Array.from(view.dom.querySelectorAll(".pm-list-field__items")).map((listItems) => ({
+      items: Array.from(listItems.children).filter((element) => element.classList?.contains("pm-list-item")),
+      upSelector: ":scope > .pm-list-item__header button[title='Up']",
+      downSelector: ":scope > .pm-list-item__header button[title='Down']",
+    })),
+  ];
+
+  for (const { items, upSelector, downSelector } of groups) {
+    items.forEach((item, index) => {
+      const upButton = item.querySelector(upSelector);
+      const downButton = item.querySelector(downSelector);
+      if (upButton) upButton.disabled = index === 0;
+      if (downButton) downButton.disabled = index === items.length - 1;
+    });
+  }
+}
+
 class StreamBlockView {
   constructor(node, view, getPos, options = {}) {
     this.node = node;
@@ -325,8 +349,7 @@ class StreamBlockView {
   }
 
   moveBlock(direction) {
-    const pos = this.getPos();
-    const blockInfo = this.getTopLevelBlockInfoAtPos(this.view.state.doc, pos);
+    const blockInfo = this.getTopLevelBlockInfoAtPos(this.view.state.doc, this.getPos());
 
     if (!blockInfo) {
       return;
@@ -338,31 +361,17 @@ class StreamBlockView {
       return;
     }
 
-    const targetNode = this.view.state.doc.child(targetIndex);
-    let targetStart = 0;
-
-    for (let index = 0; index < targetIndex; index += 1) {
-      targetStart += this.view.state.doc.child(index).nodeSize;
+    const blocks = [];
+    for (let index = 0; index < this.view.state.doc.childCount; index += 1) {
+      blocks.push(this.view.state.doc.child(index));
     }
 
-    const targetInfo = {
-      index: targetIndex,
-      node: targetNode,
-      start: targetStart,
-      end: targetStart + targetNode.nodeSize,
-    };
-
-    const movingNode = blockInfo.node;
-    const tr = this.view.state.tr;
-
-    if (direction < 0) {
-      tr.delete(blockInfo.start, blockInfo.end);
-      tr.insert(targetInfo.start, movingNode);
-    } else {
-      tr.delete(blockInfo.start, blockInfo.end);
-      tr.insert(targetInfo.end - movingNode.nodeSize, movingNode);
-    }
-    this.view.dispatch(tr);
+    [blocks[blockInfo.index], blocks[targetIndex]] = [blocks[targetIndex], blocks[blockInfo.index]];
+    this.view.dispatch(this.view.state.tr.replaceWith(
+      0,
+      this.view.state.doc.content.size,
+      Fragment.fromArray(blocks),
+    ));
     this.view.focus();
   }
 
@@ -510,13 +519,15 @@ class ListItemView {
     const parent = resolved.parent;
     const index = resolved.index();
     let start = resolved.start();
+    const parentStart = start;
+    const parentEnd = resolved.end();
 
     for (let itemIndex = 0; itemIndex < index; itemIndex += 1) {
       start += parent.child(itemIndex).nodeSize;
     }
 
     const node = parent.child(index);
-    return { parent, index, node, start, end: start + node.nodeSize };
+    return { parent, index, node, start, end: start + node.nodeSize, parentStart, parentEnd };
   }
 
   deleteItem() {
@@ -531,16 +542,17 @@ class ListItemView {
 
     if (targetIndex < 0 || targetIndex >= info.parent.childCount) return;
 
-    let targetStart = this.view.state.doc.resolve(this.getPos()).start();
-    for (let index = 0; index < targetIndex; index += 1) {
-      targetStart += info.parent.child(index).nodeSize;
+    const items = [];
+    for (let index = 0; index < info.parent.childCount; index += 1) {
+      items.push(info.parent.child(index));
     }
 
-    const targetNode = info.parent.child(targetIndex);
-    const targetEnd = targetStart + targetNode.nodeSize;
-    const tr = this.view.state.tr.delete(info.start, info.end);
-    tr.insert(direction < 0 ? targetStart : targetEnd - info.node.nodeSize, info.node);
-    this.view.dispatch(tr);
+    [items[info.index], items[targetIndex]] = [items[targetIndex], items[info.index]];
+    this.view.dispatch(this.view.state.tr.replaceWith(
+      info.parentStart,
+      info.parentEnd,
+      Fragment.fromArray(items),
+    ));
     this.view.focus();
   }
 
@@ -988,6 +1000,7 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
 
     dispatchTransaction(transaction) {
       view.updateState(view.state.apply(transaction));
+      refreshMoveControls(view);
       if (transaction.docChanged) scheduleManuscriptPreview();
     },
 
