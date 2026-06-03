@@ -78,9 +78,63 @@
     color: var(--text_color-100);
 }
 
-[data-article-block]:hover {
-    outline: 2px solid purple;
-    outline-offset: 4px;
+.pm-article-block-controls-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+}
+
+.pm-article-block-controls {
+    display: none;
+    position: fixed;
+    align-items: center;
+    gap: 4px;
+    max-width: min(calc(100vw - 12px), 560px);
+    padding: 4px;
+    background: var(--background, #fff);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    box-sizing: border-box;
+    pointer-events: auto;
+}
+
+.pm-article-block-controls-layer.is-active .pm-article-block-outline {
+    display: block;
+}
+
+.pm-article-block-controls-layer.is-active .pm-article-block-controls {
+    display: flex;
+}
+
+.pm-article-block-controls__select,
+.pm-article-block-controls__button {
+    width: auto;
+    max-width: 180px;
+    min-height: 28px;
+    box-sizing: border-box;
+    border: 1px solid #bbb;
+    background: #fff;
+    color: #1b1b1b;
+    font: 12px/1.2 sans-serif;
+}
+
+.pm-article-block-controls__select {
+    min-width: 120px;
+}
+
+.pm-article-block-controls__button {
+    min-width: 28px;
+    padding: 0 8px;
+    cursor: pointer;
+}
+
+.pm-article-block-controls__button:disabled {
+    cursor: default;
+    opacity: 0.45;
+}
+
+.pm-article-block-controls__button--danger {
+    color: #8b0000;
 }
 
 .pm-manuscript-toolbar {

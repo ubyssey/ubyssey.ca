@@ -19,6 +19,9 @@ const RICH_TEXT_CHROME_SELECTORS = [
   ".pm-stream-block__title",
   ".pm-stream-block__id",
   ".pm-stream-block__meta",
+  ".pm-article-block-controls",
+  ".pm-article-block-controls-layer",
+  ".pm-article-block-outline",
   ".pm-editable-field__label",
 ];
 
@@ -29,29 +32,6 @@ const RICH_TEXT_WRAPPER_SELECTORS = [
   ".pm-editable-field",
   ".pm-editable-field__content",
 ];
-
-const mediaCache = new Map();
-
-async function fetchMedia(type, id) {
-  const kind = type === "image" ? "images" : "documents";
-  const key = `${kind}:${id}`;
-
-  if (!mediaCache.has(key)) {
-    mediaCache.set(key, fetch(`/new-cms/api/v2/${kind}/${encodeURIComponent(id)}/`, { credentials: "same-origin" })
-      .then((response) => response.ok ? response.json() : null)
-      .catch(() => null));
-  }
-
-  return mediaCache.get(key);
-}
-
-function mediaUrl(item) {
-  return item?.meta?.download_url || item?.download_url || item?.file || item?.url || "";
-}
-
-function mediaTitle(item, fallback) {
-  return item?.title || item?.meta?.slug || fallback;
-}
 
 // Schema :(
 const baseNodesWithLists = addListNodes(
@@ -236,6 +216,8 @@ class StreamBlockView {
     this.dom = document.createElement("section");
     this.dom.className = "pm-stream-block";
     this.dom.dataset.blockType = node.attrs.blockType || "";
+    this.dom.dataset.streamBlockId = node.attrs.id || "";
+    this.dom.dataset.streamBlockIndex = "";
 
     this.header = document.createElement("div");
     this.header.className = "pm-stream-block__header";
@@ -378,6 +360,8 @@ class StreamBlockView {
 
   refreshUI(node) {
     const blockId = node.attrs.id || "";
+    this.dom.dataset.blockType = node.attrs.blockType || "";
+    this.dom.dataset.streamBlockId = blockId;
     this.title.textContent = node.attrs.blockType || "block";
     this.id.textContent = blockId;
     this.id.title = blockId ? `id ${blockId}` : "";
@@ -386,6 +370,7 @@ class StreamBlockView {
     const info = this.getTopLevelBlockInfoAtPos(this.view.state.doc, pos);
 
     if (info) {
+      this.dom.dataset.streamBlockIndex = String(info.index);
       this.moveUpButton.disabled = info.index === 0;
       this.moveDownButton.disabled = info.index === this.view.state.doc.childCount - 1;
     }
@@ -407,7 +392,11 @@ class StreamBlockView {
   }
 
   ignoreMutation(mutation) {
-    return (mutation.target === this.header || this.header.contains(mutation.target));
+    return (
+      (mutation.type === "attributes" && mutation.target === this.dom) ||
+      mutation.target === this.header ||
+      this.header.contains(mutation.target)
+    );
   }
 }
 
@@ -598,13 +587,6 @@ class ControlFieldView {
     this.input = this.createInput(node);
     this.inputWrap.appendChild(this.input);
 
-    if (["image", "document"].includes(node.attrs.controlType)) {
-      this.preview = document.createElement("div");
-      this.preview.className = "pm-media-preview";
-      this.inputWrap.appendChild(this.preview);
-      this.refreshPreview();
-    }
-
     this.dom.appendChild(this.label);
     this.dom.appendChild(this.inputWrap);
   }
@@ -700,46 +682,12 @@ class ControlFieldView {
       this.input.checked = Boolean(node.attrs.value);
     } else {
       this.input.value = node.attrs.value ?? "";
-      this.refreshPreview();
     }
     return true;
   }
 
-  async refreshPreview() {
-    if (!this.preview) return;
-
-    const { controlType, value } = this.node.attrs;
-    this.preview.textContent = value ? "Loading..." : "";
-    if (!value) return;
-
-    const item = await fetchMedia(controlType, value);
-    this.preview.textContent = "";
-    if (!item) {
-      this.preview.textContent = `${controlType} ${value} not found`;
-      return;
-    }
-
-    const url = mediaUrl(item);
-    if (controlType === "image" && url) {
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = mediaTitle(item, `Image ${value}`);
-      this.preview.appendChild(img);
-      return;
-    }
-
-    const link = document.createElement(url ? "a" : "span");
-    link.textContent = mediaTitle(item, `${controlType} ${value}`);
-    if (url) {
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noreferrer";
-    }
-    this.preview.appendChild(link);
-  }
-
   stopEvent(event) {
-    return ["INPUT", "SELECT", "OPTION", "LABEL", "BUTTON", "A"].includes(event.target?.nodeName);
+    return ["INPUT", "SELECT", "OPTION", "LABEL", "BUTTON"].includes(event.target?.nodeName);
   }
 
   ignoreMutation() {
@@ -750,6 +698,11 @@ class ControlFieldView {
 // Initialization
 const editorInstances = [];
 const manuscriptRichTextEditors = [];
+let articleBlockControlsState = null;
+let selectedArticleBlock = null;
+let suppressedArticleHoverBlock = null;
+let suppressedArticleHoverTimer = null;
+const articleInsertBlockTypes = new Map();
 let scheduleManuscriptPreview = () => {};
 
 function setupArticleShadow() {
@@ -821,6 +774,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   createManuscriptRichTextEditors(manuscriptRoot);
+  createArticleBlockControls(manuscriptRoot);
+  setupArticleBlockKeyboard(manuscriptRoot);
   setupMetadataResize();
   setupMetadataTabs();
 
@@ -845,14 +800,35 @@ function setupServerPreview(form, manuscriptRoot) {
   let timer = null;
   let controller = null;
   let previewId = 0;
+  let previewRevision = 0;
+  let deferredManuscriptPreview = false;
 
-  scheduleManuscriptPreview = () => {
+  scheduleManuscriptPreview = ({ deferIfManuscriptFocused = false } = {}) => {
+    previewRevision += 1;
     clearTimeout(timer);
+
+    if (deferIfManuscriptFocused && focusedManuscriptRichText(manuscriptRoot)) {
+      deferredManuscriptPreview = true;
+      return;
+    }
+
+    deferredManuscriptPreview = false;
     timer = setTimeout(sendPreview, 500);
   };
 
-  form.addEventListener("input", scheduleManuscriptPreview);
-  form.addEventListener("change", scheduleManuscriptPreview);
+  const flushDeferredPreview = () => {
+    if (!deferredManuscriptPreview || focusedManuscriptRichText(manuscriptRoot)) return;
+    scheduleManuscriptPreview();
+  };
+
+  const scheduleFromForm = (event) => {
+    if (eventFromManuscriptRichText(event)) return;
+    scheduleManuscriptPreview();
+  };
+
+  form.addEventListener("input", scheduleFromForm);
+  form.addEventListener("change", scheduleFromForm);
+  manuscriptRoot.addEventListener("focusout", () => { setTimeout(flushDeferredPreview, 0); });
 
   async function sendPreview() {
     const streamDocs = currentStreamDocs();
@@ -861,6 +837,7 @@ function setupServerPreview(form, manuscriptRoot) {
     if (controller) controller.abort();
     controller = new AbortController();
     const currentPreviewId = ++previewId;
+    const requestRevision = previewRevision;
 
     try {
       const response = await fetch(form.dataset.previewUrl, {
@@ -871,7 +848,7 @@ function setupServerPreview(form, manuscriptRoot) {
       });
       const payload = await response.json();
 
-      if (currentPreviewId !== previewId) return;
+      if (currentPreviewId !== previewId || requestRevision !== previewRevision) return;
 
       if (response.ok && payload.html) {
         window.manuscriptPreviewErrors = {};
@@ -885,6 +862,17 @@ function setupServerPreview(form, manuscriptRoot) {
       }
     }
   }
+}
+
+function focusedManuscriptRichText(manuscriptRoot) {
+  const active = manuscriptRoot?.activeElement;
+  return Boolean(active?.closest?.(".pm-manuscript-rich-text, .pm-manuscript-toolbar"));
+}
+
+function eventFromManuscriptRichText(event) {
+  return (event.composedPath?.() || []).some((element) => (
+    element?.classList?.contains("pm-manuscript-rich-text")
+  ));
 }
 
 function currentStreamDocs() {
@@ -917,22 +905,22 @@ function refreshArticlePreview(manuscriptRoot, html, streamDocs) {
 
   wrapper.innerHTML = html;
   createManuscriptRichTextEditors(manuscriptRoot, streamDocs);
+  createArticleBlockControls(manuscriptRoot);
+  restoreSelectedArticleBlock(manuscriptRoot);
 }
 
 function setupMetadataTabs() {
-  const tabs = Array.from(document.querySelectorAll("[data-metadata-tab]"));
-  const panels = Array.from(document.querySelectorAll("[data-metadata-panel]"));
+  for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
+    tab.addEventListener("click", () => { selectMetadataTab(tab.dataset.metadataTab); });
+  }
+}
 
-  for (const tab of tabs) {
-    tab.addEventListener("click", () => {
-      const selected = tab.dataset.metadataTab;
-      for (const item of tabs) {
-        item.setAttribute("aria-selected", String(item === tab));
-      }
-      for (const panel of panels) {
-        panel.hidden = panel.dataset.metadataPanel !== selected;
-      }
-    });
+function selectMetadataTab(selected) {
+  for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
+    tab.setAttribute("aria-selected", String(tab.dataset.metadataTab === selected));
+  }
+  for (const panel of document.querySelectorAll("[data-metadata-panel]")) {
+    panel.hidden = panel.dataset.metadataPanel !== selected;
   }
 }
 
@@ -1002,6 +990,7 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
     dispatchTransaction(transaction) {
       view.updateState(view.state.apply(transaction));
       refreshMoveControls(view);
+      filterArticleEditorToBlock(selectedArticleBlock);
       if (transaction.docChanged) scheduleManuscriptPreview();
     },
 
@@ -1036,6 +1025,9 @@ function createStreamEditor(textarea, blockRegistry, streamValue) {
     fieldName,
     textarea,
     view,
+    mount,
+    blockRegistry,
+    availableBlockTypes,
 
     getJSON() {
       return view.state.doc.toJSON();
@@ -1082,7 +1074,8 @@ function createManuscriptRichTextEditors(manuscriptRoot, streamDocs = null) {
 
       if (!articleBlock) return;
 
-      const view = new EditorView({ mount: articleBlock }, {
+      let view;
+      view = new EditorView({ mount: articleBlock }, {
         state: EditorState.create({
           doc: richTextSchema.nodeFromJSON({
             type: "doc",
@@ -1090,6 +1083,11 @@ function createManuscriptRichTextEditors(manuscriptRoot, streamDocs = null) {
           }),
           plugins: exampleSetup({ schema: richTextSchema, floatingMenu: false }),
         }),
+
+        dispatchTransaction(transaction) {
+          view.updateState(view.state.apply(transaction));
+          if (transaction.docChanged) scheduleManuscriptPreview({ deferIfManuscriptFocused: true });
+        },
 
         attributes: {
           class: `${articleBlock.className} pm-manuscript-rich-text`,
@@ -1128,6 +1126,469 @@ function createManuscriptRichTextEditors(manuscriptRoot, streamDocs = null) {
   }
 }
 
+const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
+const ARTICLE_STREAM_FIELDS = new Set(["header", "content"]);
+const ARTICLE_KEY_DIRECTIONS = {
+  ArrowDown: 1,
+  ArrowRight: 1,
+  ArrowUp: -1,
+  ArrowLeft: -1,
+};
+
+function createArticleBlockControls(manuscriptRoot) {
+  if (!manuscriptRoot) return;
+
+  articleBlockControlsState?.cleanup?.();
+  articleBlockControlsState = null;
+  manuscriptRoot.querySelectorAll(".pm-article-block-controls, .pm-article-block-controls-layer").forEach((element) => { element.remove(); });
+  if (!manuscriptRoot.querySelector(ARTICLE_BLOCK_SELECTOR)) return;
+
+  const element = (tag, className) => Object.assign(document.createElement(tag), { className });
+
+  const layer = element("div", "pm-article-block-controls-layer");
+  const outline = element("div", "pm-article-block-outline");
+  const controls = element("div", "pm-article-block-controls");
+  const select = element("select", "pm-article-block-controls__select");
+  const buttons = {};
+
+  select.setAttribute("aria-label", "Block type to insert");
+  controls.appendChild(select);
+
+  const addButton = (key, label, title, callback, extraClass = "") => {
+    buttons[key] = makeButton(label, () => {
+      const { instance, articleBlock } = articleBlockControlsState || {};
+      if (instance && articleBlock) callback(instance, articleBlock, select.value);
+    }, title, `pm-article-block-controls__button ${extraClass}`.trim());
+    controls.appendChild(buttons[key]);
+  };
+
+  [
+    ["insert", "+", "Insert after", insertStreamBlockAfter],
+    ["up", "↑", "Move up", (instance, articleBlock) => { moveArticleStreamBlock(instance, articleBlock, -1); }],
+    ["down", "↓", "Move down", (instance, articleBlock) => { moveArticleStreamBlock(instance, articleBlock, 1); }],
+    ["delete", "Del", "Delete", deleteArticleStreamBlock, "pm-article-block-controls__button--danger"],
+  ].forEach((args) => { addButton(...args); });
+
+  layer.appendChild(outline);
+  layer.appendChild(controls);
+  manuscriptRoot.appendChild(layer);
+
+  const state = {
+    articleBlock: null,
+    instance: null,
+    hideTimer: null,
+
+    cleanup() {
+      clearTimeout(this.hideTimer);
+      for (const [target, eventName, listener, options] of listeners) {
+        target.removeEventListener(eventName, listener, options);
+      }
+      layer.remove();
+    },
+
+    hide() {
+      clearTimeout(this.hideTimer);
+      this.articleBlock = null;
+      this.instance = null;
+      layer.classList.remove("is-active");
+    },
+
+    setActive(articleBlock) {
+      const instance = editorInstances.find((item) => item.fieldName === articleBlock.dataset.streamField);
+      const info = instance && streamBlockInfoForArticleBlock(instance, articleBlock);
+      if (!instance || !info) {
+        this.hide();
+        return;
+      }
+
+      clearTimeout(this.hideTimer);
+      this.articleBlock = articleBlock;
+      this.instance = instance;
+      fillSelect(instance);
+      buttons.up.disabled = info.index === 0;
+      buttons.down.disabled = info.index === instance.view.state.doc.childCount - 1;
+      positionControls();
+    },
+  };
+
+  select.addEventListener("change", () => {
+    if (state.instance) articleInsertBlockTypes.set(state.instance.fieldName, select.value);
+  });
+
+  const fillSelect = (instance) => {
+    const blockTypes = instance.availableBlockTypes || [];
+    const preferredValue = articleInsertBlockTypes.get(instance.fieldName);
+    const currentValue = select.value;
+
+    select.replaceChildren(...blockTypes.map((blockType) => {
+      const option = document.createElement("option");
+      option.value = blockType;
+      option.textContent = blockType;
+      return option;
+    }));
+
+    const nextValue = [preferredValue, currentValue, blockTypes[0]].find((value) => value && blockTypes.includes(value));
+    if (nextValue) {
+      select.value = nextValue;
+      articleInsertBlockTypes.set(instance.fieldName, nextValue);
+    }
+  };
+
+  const positionControls = () => {
+    if (!state.articleBlock) return;
+
+    const rect = state.articleBlock.getBoundingClientRect();
+    if (!rect.width || !rect.height) {
+      state.hide();
+      return;
+    }
+
+    const offset = 4;
+    const padding = 6;
+    layer.classList.add("is-active");
+    Object.assign(outline.style, {
+      left: `${rect.left - offset}px`,
+      top: `${rect.top - offset}px`,
+      width: `${rect.width + (offset * 2)}px`,
+      height: `${rect.height + (offset * 2)}px`,
+    });
+
+    Object.assign(controls.style, { left: "0px", top: "0px" });
+    const controlsRect = controls.getBoundingClientRect();
+    const left = Math.max(padding, Math.min(rect.left - offset, window.innerWidth - controlsRect.width - padding));
+    const topCandidate = rect.top - offset - controlsRect.height;
+    const top = Math.max(padding, Math.min(
+      topCandidate < padding ? rect.top + offset : topCandidate,
+      window.innerHeight - controlsRect.height - padding,
+    ));
+    Object.assign(controls.style, { left: `${left}px`, top: `${top}px` });
+  };
+
+  const insideActiveArea = (target) => Boolean(target && (
+    controls.contains(target) || state.articleBlock?.contains(target)
+  ));
+
+  const showFromTarget = (target, shouldSelect = false) => {
+    if (controls.contains(target)) {
+      clearTimeout(state.hideTimer);
+      return;
+    }
+
+    const articleBlock = target.closest?.(ARTICLE_BLOCK_SELECTOR);
+    if (!articleBlock) return;
+
+    if (!shouldSelect && articleBlock === suppressedArticleHoverBlock) return;
+    if (shouldSelect || articleBlock !== suppressedArticleHoverBlock) clearSuppressedArticleHover();
+
+    state.setActive(articleBlock);
+    if (shouldSelect) selectArticleBlock(articleBlock);
+  };
+
+  const scheduleHide = () => {
+    clearTimeout(state.hideTimer);
+    state.hideTimer = setTimeout(() => {
+      if (!insideActiveArea(manuscriptRoot.activeElement)) state.hide();
+    }, 120);
+  };
+
+  const onOver = (event) => { showFromTarget(event.target); };
+  const onFocusIn = (event) => { showFromTarget(event.target, true); };
+  const onClick = (event) => { showFromTarget(event.target, true); };
+  const onOut = (event) => {
+    if (suppressedArticleHoverBlock?.contains(event.target) && !suppressedArticleHoverBlock.contains(event.relatedTarget)) {
+      clearSuppressedArticleHover();
+    }
+    if (insideActiveArea(event.target) && !insideActiveArea(event.relatedTarget)) scheduleHide();
+  };
+  const onFocusOut = () => { setTimeout(scheduleHide, 0); };
+  const listeners = [
+    [manuscriptRoot, "mouseover", onOver],
+    [manuscriptRoot, "focusin", onFocusIn],
+    [manuscriptRoot, "click", onClick],
+    [manuscriptRoot, "mouseout", onOut],
+    [manuscriptRoot, "focusout", onFocusOut],
+    [window, "scroll", positionControls, true],
+    [window, "resize", positionControls],
+  ];
+
+  for (const [target, eventName, listener, options] of listeners) {
+    target.addEventListener(eventName, listener, options);
+  }
+
+  articleBlockControlsState = state;
+}
+
+function hideArticleBlockControls() {
+  articleBlockControlsState?.hide();
+}
+
+function streamBlockInfoForArticleBlock(instance, articleBlock) {
+  const blockId = articleBlock.dataset.streamBlockId;
+  const blockIndex = Number(articleBlock.dataset.streamBlockIndex);
+  return streamBlockInfo(instance.view.state.doc, ({ node, index }) => (
+    (blockId && node.attrs?.id === blockId) || (!blockId && index === blockIndex)
+  ));
+}
+
+function streamBlockInfo(doc, matches) {
+  let start = 0;
+  for (let index = 0; index < doc.childCount; index += 1) {
+    const node = doc.child(index);
+    const end = start + node.nodeSize;
+    if (matches({ node, index, start, end })) {
+      return { node, index, start, end };
+    }
+    start = end;
+  }
+  return null;
+}
+
+function createStreamBlockNode(instance, blockType) {
+  const blockDefinition = instance.blockRegistry?.byStreamField?.[instance.fieldName]?.[blockType] || {};
+  const defaultValue = blockDefinition.defaultValue !== undefined ? blockDefinition.defaultValue : "";
+  return streamSchema.nodeFromJSON(streamBlockToPmNode({
+    type: blockType,
+    id: uuidv4(),
+    value: clone(defaultValue),
+    fields: clone(blockDefinition.defaultFields || []),
+  }));
+}
+
+function insertStreamBlockAfter(instance, articleBlock, blockType) {
+  const info = streamBlockInfoForArticleBlock(instance, articleBlock);
+  if (!info || !blockType) return;
+
+  const newBlock = createStreamBlockNode(instance, blockType);
+  const descriptor = {
+    fieldName: instance.fieldName,
+    blockId: newBlock.attrs?.id || "",
+    blockIndex: info.index + 1,
+  };
+
+  suppressArticleHover(articleBlock);
+  selectedArticleBlock = descriptor;
+  instance.view.dispatch(instance.view.state.tr.insert(info.end, newBlock));
+  selectArticleBlockDescriptor(descriptor, articleBlock.getRootNode());
+  hideArticleBlockControls();
+}
+
+function moveArticleStreamBlock(instance, articleBlock, direction) {
+  const info = streamBlockInfoForArticleBlock(instance, articleBlock);
+  if (!info) return;
+
+  const targetIndex = info.index + direction;
+  if (targetIndex < 0 || targetIndex >= instance.view.state.doc.childCount) return;
+
+  const blocks = [];
+  for (let index = 0; index < instance.view.state.doc.childCount; index += 1) {
+    blocks.push(instance.view.state.doc.child(index));
+  }
+
+  [blocks[info.index], blocks[targetIndex]] = [blocks[targetIndex], blocks[info.index]];
+  instance.view.dispatch(instance.view.state.tr.replaceWith(
+    0,
+    instance.view.state.doc.content.size,
+    Fragment.fromArray(blocks),
+  ));
+  moveArticleBlockElement(articleBlock, direction);
+}
+
+function deleteArticleStreamBlock(instance, articleBlock) {
+  const info = streamBlockInfoForArticleBlock(instance, articleBlock);
+  if (!info) return;
+
+  const { doc, tr } = instance.view.state;
+  selectedArticleBlock = null;
+  if (doc.childCount <= 1) {
+    instance.view.dispatch(tr.replaceWith(info.start, info.end, streamSchema.nodeFromJSON(createEmptyRichTextBlock())));
+    filterArticleEditorToBlock(null);
+    hideArticleBlockControls();
+    return;
+  }
+
+  instance.view.dispatch(tr.delete(info.start, info.end));
+  removeArticleBlockElement(articleBlock);
+  filterArticleEditorToBlock(null);
+  hideArticleBlockControls();
+}
+
+function streamFieldArticleBlocks(root, fieldName) {
+  return Array.from(root.querySelectorAll(`${ARTICLE_BLOCK_SELECTOR}[data-stream-field="${window.CSS.escape(fieldName)}"]`));
+}
+
+function refreshArticleBlockIndexes(root, fieldName) {
+  streamFieldArticleBlocks(root, fieldName).forEach((block, index) => {
+    block.dataset.streamBlockIndex = index;
+  });
+}
+
+function moveArticleBlockElement(articleBlock, direction) {
+  const root = articleBlock.getRootNode();
+  const fieldName = articleBlock.dataset.streamField;
+  const articleBlocks = streamFieldArticleBlocks(root, fieldName);
+  const target = articleBlocks[articleBlocks.indexOf(articleBlock) + direction];
+  if (!target) return;
+
+  if (direction < 0) target.before(articleBlock);
+  else target.after(articleBlock);
+
+  refreshArticleBlockIndexes(root, fieldName);
+  articleBlockControlsState?.setActive?.(articleBlock);
+  selectArticleBlock(articleBlock);
+}
+
+function removeArticleBlockElement(articleBlock) {
+  const root = articleBlock.getRootNode();
+  const fieldName = articleBlock.dataset.streamField;
+  articleBlock.remove();
+  refreshArticleBlockIndexes(root, fieldName);
+}
+
+function selectArticleBlock(articleBlock) {
+  selectArticleBlockDescriptor(articleBlockDescriptor(articleBlock), articleBlock.getRootNode());
+}
+
+function selectArticleBlockDescriptor(descriptor, manuscriptRoot = null, options = {}) {
+  if (!descriptor) return false;
+
+  selectedArticleBlock = descriptor;
+  selectMetadataTab("article");
+  filterArticleEditorToBlock(descriptor);
+
+  const articleBlock = manuscriptRoot && articleBlockFromDescriptor(manuscriptRoot, descriptor);
+  if (articleBlock) {
+    articleBlockControlsState?.setActive?.(articleBlock);
+    if (options.reveal) articleBlock.scrollIntoView({ block: "nearest" });
+  }
+
+  return true;
+}
+
+function articleBlockDescriptor(articleBlock) {
+  const instance = editorInstances.find((item) => item.fieldName === articleBlock.dataset.streamField);
+  const info = instance && streamBlockInfoForArticleBlock(instance, articleBlock);
+  if (!instance || !info) return null;
+
+  return {
+    fieldName: instance.fieldName,
+    blockId: info.node.attrs?.id || articleBlock.dataset.streamBlockId || "",
+    blockIndex: info.index,
+  };
+}
+
+function restoreSelectedArticleBlock(manuscriptRoot) {
+  const articleBlock = selectedArticleBlock && articleBlockFromDescriptor(manuscriptRoot, selectedArticleBlock);
+  if (articleBlock) {
+    selectedArticleBlock = articleBlockDescriptor(articleBlock) || selectedArticleBlock;
+  } else if (selectedArticleBlock && !articleBlockDescriptors().some((item) => sameArticleBlockDescriptor(item, selectedArticleBlock))) {
+    selectedArticleBlock = null;
+  }
+
+  filterArticleEditorToBlock(selectedArticleBlock);
+}
+
+function articleBlockFromDescriptor(root, descriptor) {
+  const blocks = streamFieldArticleBlocks(root, descriptor.fieldName);
+  return (
+    descriptor.blockId && blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId))
+  ) || blocks[descriptor.blockIndex] || null;
+}
+
+function filterArticleEditorToBlock(descriptor) {
+  for (const instance of editorInstances) {
+    if (!ARTICLE_STREAM_FIELDS.has(instance.fieldName)) continue;
+
+    const section = instance.mount.closest(".editor-section");
+    const isSelectedField = descriptor?.fieldName === instance.fieldName;
+    if (section) section.hidden = Boolean(descriptor && !isSelectedField);
+
+    const blocks = Array.from(instance.mount.querySelectorAll(".pm-stream-block"));
+    const selectedBlock = isSelectedField ? selectedEditorBlock(blocks, descriptor) : null;
+    blocks.forEach((block) => {
+      block.hidden = Boolean(descriptor && block !== selectedBlock);
+    });
+  }
+}
+
+function selectedEditorBlock(blocks, descriptor) {
+  return (
+    descriptor.blockId && blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId))
+  ) || blocks.find((block) => Number(block.dataset.streamBlockIndex) === descriptor.blockIndex) || null;
+}
+
+function suppressArticleHover(articleBlock) {
+  clearSuppressedArticleHover();
+  suppressedArticleHoverBlock = articleBlock;
+  suppressedArticleHoverTimer = setTimeout(() => {
+    if (suppressedArticleHoverBlock === articleBlock) clearSuppressedArticleHover();
+  }, 1200);
+}
+
+function clearSuppressedArticleHover() {
+  if (suppressedArticleHoverTimer) clearTimeout(suppressedArticleHoverTimer);
+  suppressedArticleHoverTimer = null;
+  suppressedArticleHoverBlock = null;
+}
+
+function setupArticleBlockKeyboard(manuscriptRoot) {
+  document.addEventListener("keydown", (event) => {
+    const direction = ARTICLE_KEY_DIRECTIONS[event.key];
+    const isEditing = (event.composedPath?.() || []).some((element) => (
+      ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(element?.nodeName) ||
+      element?.isContentEditable ||
+      element?.classList?.contains("ProseMirror")
+    ));
+
+    if (
+      !direction || isEditing || event.defaultPrevented ||
+      event.altKey || event.ctrlKey || event.metaKey || event.shiftKey
+    ) return;
+
+    if (selectAdjacentArticleBlock(direction, manuscriptRoot)) event.preventDefault();
+  });
+}
+
+function selectAdjacentArticleBlock(direction, manuscriptRoot) {
+  const descriptors = articleBlockDescriptors();
+  if (!descriptors.length) return false;
+
+  const currentIndex = selectedArticleBlock
+    ? descriptors.findIndex((descriptor) => sameArticleBlockDescriptor(descriptor, selectedArticleBlock))
+    : -1;
+  const nextIndex = currentIndex < 0
+    ? (direction > 0 ? 0 : descriptors.length - 1)
+    : Math.max(0, Math.min(descriptors.length - 1, currentIndex + direction));
+
+  if (nextIndex === currentIndex) return false;
+  clearSuppressedArticleHover();
+  return selectArticleBlockDescriptor(descriptors[nextIndex], manuscriptRoot, { reveal: true });
+}
+
+function articleBlockDescriptors() {
+  const descriptors = [];
+
+  for (const fieldName of ARTICLE_STREAM_FIELDS) {
+    const instance = editorInstances.find((item) => item.fieldName === fieldName);
+    if (!instance) continue;
+
+    for (let blockIndex = 0; blockIndex < instance.view.state.doc.childCount; blockIndex += 1) {
+      const node = instance.view.state.doc.child(blockIndex);
+      descriptors.push({
+        fieldName,
+        blockId: node.attrs?.id || "",
+        blockIndex,
+      });
+    }
+  }
+
+  return descriptors;
+}
+
+function sameArticleBlockDescriptor(left, right) {
+  if (!left || !right || left.fieldName !== right.fieldName) return false;
+  return left.blockId || right.blockId ? left.blockId === right.blockId : left.blockIndex === right.blockIndex;
+}
+
 function applyManuscriptRichTextOverrides(fieldName, pmDoc) {
   const nextDoc = clone(pmDoc);
   const blocks = nextDoc.content || [];
@@ -1135,7 +1596,7 @@ function applyManuscriptRichTextOverrides(fieldName, pmDoc) {
   for (const editor of manuscriptRichTextEditors.filter((item) => item.fieldName === fieldName)) {
     const block = (
       editor.blockId && blocks.find((node) => node.attrs?.id === editor.blockId)
-    ) || blocks[editor.blockIndex];
+    ) || (!editor.blockId && blocks[editor.blockIndex]);
     const field = (block?.content || []).find((child) => child.type === "editable_field" && child.attrs?.mode === "richtext");
 
     if (field) {
