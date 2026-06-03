@@ -151,7 +151,7 @@ def get_block_definitions(stream_block):
     definitions = {}
 
     for name, block in stream_block.child_blocks.items():
-        fields = get_editable_fields(block, name)
+        fields = get_editable_fields(block, name, include_name=False)
         default = get_default_value(block, fields, name)
         definitions[name] = {
             "fields": fields,
@@ -162,37 +162,45 @@ def get_block_definitions(stream_block):
     return definitions
 
 
-def get_editable_fields(block, name=None):
-    field = get_field_info(block, name) if name else None
+def get_editable_fields(block, name=None, path=None, include_name=True):
+    path = path or []
+    field_path = path + [name] if name else path
+    field = get_field_info(block, name, field_path) if name else None
 
     if field:
         return {name: field}
 
     fields = {}
+    child_path = path + ([name] if name and include_name else [])
 
     for child_name, child_block in getattr(block, "child_blocks", {}).items():
-        fields.update(get_editable_fields(child_block, child_name))
+        fields.update(get_editable_fields(child_block, child_name, child_path))
 
     child_block = getattr(block, "child_block", None)
     if child_block:
-        fields.update(get_editable_fields(child_block, name))
-        fields.update(get_editable_fields(child_block))
+        if getattr(child_block, "child_blocks", None):
+            fields.update(get_editable_fields(child_block, path=[], include_name=False))
+        else:
+            fields.update(get_editable_fields(child_block, name, []))
 
     return fields
 
 
-def get_field_info(block, name):
+def get_field_info(block, name, path=None):
     kind = get_field_kind(block)
 
     if not kind:
         return None
 
-    field = {"name": name, "label": getattr(block, "label", None) or name, "kind": kind}
+    field = {"name": name, "label": getattr(block, "label", None) or name, "kind": kind, "path": path or [name]}
 
     if kind == "choice":
         field["options"] = get_choice_options(block)
     elif kind == "list":
-        child_fields = get_editable_fields(block.child_block, name)
+        if getattr(block.child_block, "child_blocks", None):
+            child_fields = get_editable_fields(block.child_block, path=[], include_name=False)
+        else:
+            child_fields = get_editable_fields(block.child_block, name, [])
         item_value = get_default_value(block.child_block, child_fields, name)
         field.update({
             "itemValue": item_value,
@@ -293,7 +301,7 @@ def get_editor_fields(value, field_meta, block_type):
     if value is None and meta:
         if meta["kind"] in ("richtext", "plain_text"):
             fields.append(editable_field([], meta, ""))
-        elif meta["kind"] in ("boolean", "choice", "image", "document", "number"):
+        elif meta["kind"] in ("boolean", "choice", "image", "document", "number", "unknown"):
             fields.append(control_field([], meta, get_empty_value(meta), meta["kind"]))
         return fields
 
@@ -304,6 +312,8 @@ def get_editor_fields(value, field_meta, block_type):
             fields.append(control_field([], meta, value, "choice"))
         elif meta and meta["kind"] in ("image", "document"):
             fields.append(control_field([], meta, value, meta["kind"]))
+        elif meta and meta["kind"] == "unknown":
+            fields.append(control_field([], meta, value, "unknown"))
         return fields
 
     if isinstance(value, bool):
@@ -316,6 +326,8 @@ def get_editor_fields(value, field_meta, block_type):
             fields.append(control_field([], meta, value, "number"))
         elif meta and meta["kind"] in ("image", "document"):
             fields.append(control_field([], meta, value, meta["kind"]))
+        elif meta and meta["kind"] == "unknown":
+            fields.append(control_field([], meta, value, "unknown"))
         return fields
 
     walk_value(value, [], fields, field_meta, block_type)
@@ -331,7 +343,7 @@ def walk_value(value, path, fields, field_meta, block_type):
             fields.append(editable_field(path, meta, ""))
         elif meta["kind"] == "list":
             fields.append(list_field(path, meta, []))
-        elif meta["kind"] in ("boolean", "choice", "image", "document", "number"):
+        elif meta["kind"] in ("boolean", "choice", "image", "document", "number", "unknown"):
             fields.append(control_field(path, meta, get_empty_value(meta), meta["kind"]))
         return
 
@@ -344,6 +356,8 @@ def walk_value(value, path, fields, field_meta, block_type):
             fields.append(editable_field(path, meta, value))
         elif meta and meta["kind"] == "choice":
             fields.append(control_field(path, meta, value, "choice"))
+        elif meta and meta["kind"] == "unknown":
+            fields.append(control_field(path, meta, value, "unknown"))
         return
 
     if isinstance(value, bool):
@@ -354,6 +368,8 @@ def walk_value(value, path, fields, field_meta, block_type):
     if isinstance(value, (int, float)):
         if meta and meta["kind"] == "number":
             fields.append(control_field(path, meta, value, "number"))
+        elif meta and meta["kind"] == "unknown":
+            fields.append(control_field(path, meta, value, "unknown"))
         return
 
     if isinstance(value, list):
@@ -370,6 +386,24 @@ def walk_value(value, path, fields, field_meta, block_type):
     if isinstance(value, dict):
         for key, child_value in value.items():
             walk_value(child_value, path + [key], fields, field_meta, block_type)
+
+        for missing_field in direct_missing_fields(value, path, field_meta):
+            meta = field_meta[missing_field]
+            missing_path = path + [missing_field]
+            if meta["kind"] in ("richtext", "plain_text"):
+                fields.append(editable_field(missing_path, meta, ""))
+            elif meta["kind"] == "list":
+                fields.append(list_field(missing_path, meta, []))
+            elif meta["kind"] in ("boolean", "choice", "image", "document", "number", "unknown"):
+                fields.append(control_field(missing_path, meta, get_empty_value(meta), meta["kind"]))
+
+
+def direct_missing_fields(value, path, field_meta):
+    missing = []
+    for field_name, meta in field_meta.items():
+        if meta.get("path") == path + [field_name] and field_name not in value:
+            missing.append(field_name)
+    return missing
 
 
 def list_field(path, meta, value):

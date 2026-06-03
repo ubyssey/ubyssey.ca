@@ -99,6 +99,7 @@ const nodes = baseNodesWithLists.remove("doc").append({
       path: { default: [] },
       label: { default: "Content" },
       mode: { default: "richtext" },
+      manuscriptOwned: { default: false },
     },
     toDOM(node) {
       return [
@@ -413,7 +414,7 @@ class StreamBlockView {
 class EditableFieldView {
   constructor(node) {
     this.node = node;
-    const isManuscriptOwned = node.attrs.mode === "richtext";
+    const isManuscriptOwned = Boolean(node.attrs.manuscriptOwned);
 
     this.dom = document.createElement("div");
     this.dom.className = `pm-editable-field${isManuscriptOwned ? " pm-editable-field--manuscript-owned" : ""}`;
@@ -1177,11 +1178,11 @@ function streamBlockToPmNode(block) {
       blockType,
       originalValue: clone(block?.value),
     },
-    content: (block?.fields || []).map(fieldToPmNode),
+    content: (block?.fields || []).map((field) => fieldToPmNode(field, blockType)),
   };
 }
 
-function fieldToPmNode(field) {
+function fieldToPmNode(field, blockType = null) {
   if (field.kind === "list") {
     return {
       type: "list_field",
@@ -1214,6 +1215,7 @@ function fieldToPmNode(field) {
       path: field.path,
       label: field.label,
       mode: field.mode,
+      manuscriptOwned: blockType === "richtext" && field.mode === "richtext" && JSON.stringify(field.path || []) === "[]",
     },
     content: field.mode === "plain_text" ? plainTextToPmContent(field.value) : richTextToPmContent(field.value),
   };
