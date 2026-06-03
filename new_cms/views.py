@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
+from wagtail.documents import get_document_model
 from wagtail.fields import StreamField as WagtailStreamField
 from wagtail.models import Page
 
@@ -75,7 +76,7 @@ def manuscript_editor(request, page_id):
 @require_POST
 def manuscript_preview(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
-    editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST)
+    editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST, preview=True)
 
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=400)
@@ -89,7 +90,7 @@ def manuscript_preview(request, page_id):
     })
 
 
-def apply_editor_post(page, data):
+def apply_editor_post(page, data, preview=False):
     editor_errors = {}
     page_form = get_page_form(page, data)
     featured_media_form = get_featured_media_form(page, data)
@@ -113,11 +114,50 @@ def apply_editor_post(page, data):
         if not json_str:
             continue
         try:
-            setattr(page, field.name, json.loads(json_str))
+            value = json.loads(json_str)
+            if preview:
+                value = sanitize_preview_stream_value(value)
+            setattr(page, field.name, value)
         except json.JSONDecodeError:
             editor_errors[field.name] = ["Invalid JSON for this field."]
 
     return editor_errors, page_form, featured_media_form
+
+
+def sanitize_preview_stream_value(value):
+    if isinstance(value, list):
+        items = []
+        for item in value:
+            sanitized_item = sanitize_preview_stream_value(item)
+            if sanitized_item is not None or not (isinstance(item, dict) and item.get("type") == "audio"):
+                items.append(sanitized_item)
+        return items
+
+    if isinstance(value, dict) and value.get("type") == "audio":
+        block_value = value.get("value")
+        if not isinstance(block_value, dict) or not block_value:
+            return None
+
+        audio_id = block_value.get("audio")
+        nested_block = block_value.get("block")
+        if audio_id is None and isinstance(nested_block, dict):
+            audio_id = nested_block.get("audio")
+
+        if not audio_id:
+            return None
+
+        try:
+            audio_id = int(audio_id)
+        except (TypeError, ValueError):
+            return None
+
+        if not get_document_model().objects.filter(id=audio_id).exists():
+            return None
+
+    if isinstance(value, dict):
+        return {key: sanitize_preview_stream_value(item) for key, item in value.items()}
+
+    return value
 
 
 def add_form_errors(editor_errors, form, prefix=None):
