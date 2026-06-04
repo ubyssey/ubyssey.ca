@@ -83,7 +83,7 @@ def manuscript_preview(request, page_id):
 
     return JsonResponse({
         "html": render_to_string(
-            "new_cms/manuscript_article_preview.html",
+            "preview/manuscript_article_preview.html",
             {"self": page, "page_form": page_form, "featured_media_form": featured_media_form},
             request=request,
         )

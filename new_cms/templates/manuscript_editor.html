@@ -4,8 +4,8 @@
 
 {# Add new head block to replace stylesheet #}
 {% block stylesheet %}
-<link rel="stylesheet" href="{% static 'new_cms/editor.css' %}"></link>
-<script defer src="{% static 'new_cms/editor_bundle.js' %}"></script>
+<link rel="stylesheet" href="{% static 'ubyssey/css/new_cms/manuscript_editor.css' %}"></link>
+<script defer src="{% static 'ubyssey/js/new_cms/manuscript_editor.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -21,7 +21,7 @@
     <div
       id="article-shadow"
       data-article-shadow
-      data-shadow-editor-css="{% static 'new_cms/shadow_editor.css' %}"
+      data-shadow-editor-css="{% static 'ubyssey/css/new_cms/manuscript_shadow_editor.css' %}"
     >
       <!-- These are taken from article_page.html - we should figure out a way to avoid duplication-->
       {% if self.styles.all|length == 0 %}
@@ -32,7 +32,7 @@
         {% endfor %}
       {% endif %}
 
-      {% include "new_cms/manuscript_article_preview.html" %}
+      {% include "preview/manuscript_article_preview.html" %}
     </div>
 
     <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
