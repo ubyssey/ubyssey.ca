@@ -479,7 +479,8 @@ function createArticleBlockControls(manuscriptRoot) {
       return;
     }
 
-    const offset = 4;
+    // Set to zero for now since makes it hard to select on non-desktop
+    const offset = 0;
     const padding = 6;
     layer.classList.add("is-active");
     Object.assign(outline.style, {
