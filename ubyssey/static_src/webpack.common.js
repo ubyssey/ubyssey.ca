@@ -40,6 +40,7 @@ module.exports = {
     'contentTracker': './src/js/ContentTracker.jsx',
     'liveblog': './src/js/liveblog.jsx',
     'new_cms/manuscript_editor': './src/new_cms/manuscript_editor.js',
+    'new_cms/content_tracker': './src/new_cms/content_tracker.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
@@ -49,7 +50,7 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
         }
