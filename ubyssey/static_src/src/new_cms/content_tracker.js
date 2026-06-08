@@ -7,12 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
     setupStatus();
     setupFilters();
     setupPreview();
+    setupMetadataPanel();
 });
 
 var focusedAssignment = -1;
 
 function setupPreview() {
-    console.log("setup");
     var elements = document.getElementsByClassName("preview-icon");
     console.log(elements.length);
     for (var i = 0; i < elements.length; i++) {
@@ -21,14 +21,29 @@ function setupPreview() {
 }
 
 function handlePreviewClicked(event) {
-    console.log("clicked");
     previewButtonElement = event.target;
     assignmentId = getWagtailId(previewButtonElement.id);
-    console.log("ID: " + assignmentId);
 
     setFocusedAssignment(assignmentId);
     selectMetadataPanel("preview");
     updatePreviewPane();
+}
+
+function setupMetadataPanel() {
+
+    var elements = document.getElementsByClassName("metadata-nav");
+    console.log(elements.length);
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].addEventListener('click', handleMetaNavClicked, false);
+        if (elements[i].id != "metadata-selection-create") {
+            elements[i].classList.add("selection-option-disabled");
+        }
+    }
+}
+
+function handleMetaNavClicked(event) {
+    var trigerringButton = event.target;
+    console.log(trigerringButton);
 }
 
 // this actually is more complicated than I'd like: https://lincolnloop.com/blog/how-wagtail-stores-draft-previews-and-why-your-links-break/
@@ -45,10 +60,27 @@ function updatePreviewPane() {
 
 function setFocusedAssignment(wagtailId) {
     focusedAssignment = wagtailId;
+    var noneSelected = focusedAssignment === -1;
+    var elements = document.getElementsByClassName("metadata-nav");
+
+    for (var i = 0; i < elements.length; i++) {
+        if (noneSelected && focusedAssignment === -1 && elements[i].id != "metadata-selection-create") {
+            elements[i].classList.add("selection-option-disabled");
+        } else {
+            elements[i].classList.remove("selection-option-disabled");
+        }
+    }
+
+    var selectedRows = document.getElementsByClassName("content-row-selected")
+    for (var i = 0; i < selectedRows.length; i++) {
+        selectedRows[i].classList.remove("content-row-selected");
+    }
+    
+
+    document.getElementById("content-row-"+wagtailId).classList.add("content-row-selected");
 }
 
 function getWagtailId(elementId) {
-    console.log("element id" + elementId);
     return elementId.replace(/\D/g, "");
 }
 
@@ -57,16 +89,18 @@ function selectMetadataPanel(selectedPanel) {
 
     var metadataSelectionElement = document.getElementById("metadata-panel-select");
     var selectionOptions = metadataSelectionElement.querySelectorAll(".selection-option");
-    console.log(selectionOptions.length);
 
     for (var i = 0; i < selectionOptions.length; i++) {
         var option = selectionOptions[i];
         if (option.id === idPrefix + selectedPanel) {
             option.classList.remove("selection-option-inactive");
             option.classList.add("selection-option-active");
+            document.getElementById(option.id + "-pane").hidden = false;
         } else {
             option.classList.remove("selection-option-active");
             option.classList.add("selection-option-inactive");
+            document.getElementById(option.id + "-pane").hidden = true;
+
         }
     }
 }

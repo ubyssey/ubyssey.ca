@@ -76,6 +76,10 @@ flex-direction: column;
     padding: 4px;
 }
 
+.content-row-selected {
+  background-color: lightgrey;
+}
+
 // =========================
 // ------Show Published-----
 // =========================
@@ -171,6 +175,14 @@ input:checked + .slider:before {
     // visibility: hidden;
 }
 
+.visuals-cell {
+  text-align: center;
+}
+
+.media-cell {
+  text-align: center;
+}
+
 
 // =========================
 // ------Metadata Panel-----
@@ -196,7 +208,7 @@ input:checked + .slider:before {
     z-index: 10;
     width: var(--metadata-width);
     height: 100vh;
-    overflow-y: auto;
+    overflow-y:hidden;
     overflow-x: hidden;
     padding: 16px;
     box-sizing: border-box;
@@ -217,5 +229,5 @@ input:checked + .slider:before {
 
 .draft-preview {
     width: var(--metadata-width);
-    height: 80vh;
+    height: 95vh;
 }

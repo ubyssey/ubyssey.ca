@@ -89,7 +89,11 @@
             </td>
             <td class="status-cell"> 
 
-                <select class="status-field" id="status-field-{{ p.id }}" name="status">
+                <select class="status-field" id="status-field-{{ p.id }}" 
+                    {% if p.live %}
+                        disabled
+                    {% endif %}
+                    name="status">
                     <option value="assigned"
                     {% if not p.live %}
                     selected
@@ -103,16 +107,12 @@
                     {% if p.live %}
                     selected
                     {% endif %}
+                    disabled
                     >Published</option>
                 </select>
-                {% comment %} {% if p.live %}
-                <span>Live</span>
-                {% else %}
-                <span>Draft</span>
-                {% endif %} {% endcomment %}
             </td>
-            <td></td>
-            <td></td>
+            <td class="visuals-cell">❗️</td>
+            <td class="media-cell">❗️</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -129,16 +129,23 @@
             <div id="metadata-options">
                 <div class="selection-bar" id="metadata-panel-select">
                     <ul>
-                        <li class="selection-option selection-option-inactive" id="metadata-selection-create"><a class="selection-bar-left">Create</a></li>
-                        <li class="selection-option selection-option-active" id="metadata-selection-edit"><a>Edit</a></li>
-                        <li class="selection-option selection-option-inactive" id="metadata-selection-preview"><a  class="selection-bar-right">Preview</a></li>
+                        <li class="selection-option selection-option-active" id="metadata-selection-create"><a class="selection-bar-left metadata-nav-button">Create</a></li>
+                        <li class="selection-option selection-option-inactive selection-option-disabled" id="metadata-selection-edit"><a class="metadata-nav-button">Edit</a></li>
+                        <li class="selection-option selection-option-inactive" id="metadata-selection-preview"><a  class="selection-bar-right metadata-nav-button">Preview</a></li>
                     </ul>
                 <div>
             </div>
 
-        <div>
+        <div id="metadata-selection-preview-pane" hidden>
             <iframe id="article-preview-pane" src="http://localhost:8000/admin/pages/19/edit/preview/" class="draft-preview">
             </iframe>
+        </div>
+        <div id="metadata-selection-create-pane">
+            <h2>Create
+
+        </div>
+        <div id="metadata-selection-edit-pane" hidden>
+            <h2>Edit
         </div>
     </aside>
 </div>
