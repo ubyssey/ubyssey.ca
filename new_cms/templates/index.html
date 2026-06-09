@@ -76,15 +76,18 @@
                 <button class="preview-icon" id="preview-icon-{{ p.id }}">👁️</button>
             </td>
             <td id="byline-cell">
-                <input name="byline-options" class="byline-field" id="byline-field-{{ p.id }}" type="text" autocomplete="on" list="byline-options" value="Spencer Izen"/> 
+                <input name="byline-options" class="byline-field" id="byline-field-{{ p.id }}" type="text" autocomplete="on" list="byline-options" value="{{p.authors_string}}"/> 
+                {% comment %} make this multi select and also make the authors separate {% endcomment %}
             </td>
             <td><input type="date"/></td>
-            <td><select class="beat-field" id="beat-field-{{ p.id }}" >
+            <td><select class="beat-field" id="beat-field-{{ p.id }}" value="{{p.get_primary_topic}}">
                 <option value="AMS">AMS</option>
         <option value="Senate">Senate</option>
         <option value="Community">Community</option>
         <option value="Theatre">Theatre</option>
-            </input>
+            </select>
+
+            {{p.get_primary_topic}}
 
             </td>
             <td class="status-cell"> 
@@ -126,20 +129,21 @@
 <div class="metadata-resize-handle" data-metadata-resize-handle role="separator" aria-orientation="vertical" aria-label="Resize metadata sidebar"></div>
 
     <aside class="metadata-editor" data-metadata-editor>
-            <div id="metadata-options">
-                <div class="selection-bar" id="metadata-panel-select">
-                    <ul>
-                        <li class="selection-option selection-option-active" id="metadata-selection-create"><a class="selection-bar-left metadata-nav-button">Create</a></li>
-                        <li class="selection-option selection-option-inactive selection-option-disabled" id="metadata-selection-edit"><a class="metadata-nav-button">Edit</a></li>
-                        <li class="selection-option selection-option-inactive" id="metadata-selection-preview"><a  class="selection-bar-right metadata-nav-button">Preview</a></li>
-                    </ul>
-                <div>
-            </div>
-
+        <div id="metadata-options">
+            <div class="selection-bar" id="metadata-panel-select">
+                <ul>
+                    <li class="selection-option selection-option-active sidebar-nav" id="metadata-selection-create"><a class="selection-bar-left metadata-nav-button" name="create">Create</a></li>
+                    <li class="selection-option selection-option-inactive sidebar-nav selection-option-disabled" id="metadata-selection-edit"><a class="metadata-nav-button" name="edit">Edit</a></li>
+                    <li class="selection-option selection-option-inactive sidebar-nav selection-option-disabled" id="metadata-selection-preview"><a  class="selection-bar-right metadata-nav-button" name="preview">Preview</a></li>
+                </ul>
+            <div>
+        </div>
+        <div>
         <div id="metadata-selection-preview-pane" hidden>
             <iframe id="article-preview-pane" src="http://localhost:8000/admin/pages/19/edit/preview/" class="draft-preview">
             </iframe>
         </div>
+
         <div id="metadata-selection-create-pane">
             <h2>Create
 
@@ -147,6 +151,7 @@
         <div id="metadata-selection-edit-pane" hidden>
             <h2>Edit
         </div>
+    </div>
     </aside>
 </div>
 </div>

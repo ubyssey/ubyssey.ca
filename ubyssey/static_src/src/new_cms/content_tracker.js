@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupStatus();
     setupFilters();
     setupPreview();
-    setupMetadataPanel();
+    setupSidebar();
 });
 
 var focusedAssignment = -1;
@@ -25,26 +25,32 @@ function handlePreviewClicked(event) {
     assignmentId = getWagtailId(previewButtonElement.id);
 
     setFocusedAssignment(assignmentId);
-    selectMetadataPanel("preview");
+    selectSidebarPanel("preview");
     updatePreviewPane();
 }
 
-function setupMetadataPanel() {
+function setupSidebar() {
 
-    var elements = document.getElementsByClassName("metadata-nav");
-    console.log(elements.length);
+    var elements = document.getElementsByClassName("metadata-nav-button");
+    console.log("SIDEBAR: " + elements.length);
     for (var i = 0; i < elements.length; i++) {
-        elements[i].addEventListener('click', handleMetaNavClicked, false);
+        elements[i].addEventListener('click', handleSidebarNavClicked, false);
         if (elements[i].id != "metadata-selection-create") {
             elements[i].classList.add("selection-option-disabled");
         }
     }
 }
 
-function handleMetaNavClicked(event) {
-    var trigerringButton = event.target;
-    console.log(trigerringButton);
+function handleSidebarNavClicked(event) {
+    var triggerringButton = event.target;
+    var panel = triggerringButton.name;
+    if (!triggerringButton.parentElement.classList.contains("selection-option-disabled")) {
+        selectSidebarPanel(panel);
+    }
+
 }
+
+
 
 // this actually is more complicated than I'd like: https://lincolnloop.com/blog/how-wagtail-stores-draft-previews-and-why-your-links-break/
 function updatePreviewPane() {
@@ -61,10 +67,11 @@ function updatePreviewPane() {
 function setFocusedAssignment(wagtailId) {
     focusedAssignment = wagtailId;
     var noneSelected = focusedAssignment === -1;
-    var elements = document.getElementsByClassName("metadata-nav");
+    var elements = document.getElementsByClassName("sidebar-nav");
 
     for (var i = 0; i < elements.length; i++) {
-        if (noneSelected && focusedAssignment === -1 && elements[i].id != "metadata-selection-create") {
+        console.log("NONE SELECTED: " + noneSelected);
+        if (noneSelected && elements[i].id != "metadata-selection-create") {
             elements[i].classList.add("selection-option-disabled");
         } else {
             elements[i].classList.remove("selection-option-disabled");
@@ -84,7 +91,7 @@ function getWagtailId(elementId) {
     return elementId.replace(/\D/g, "");
 }
 
-function selectMetadataPanel(selectedPanel) {
+function selectSidebarPanel(selectedPanel) {
     var idPrefix = "metadata-selection-"
 
     var metadataSelectionElement = document.getElementById("metadata-panel-select");

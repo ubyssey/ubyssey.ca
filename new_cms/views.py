@@ -10,16 +10,21 @@ from django.views.decorators.http import require_POST
 from wagtail.documents import get_document_model
 from wagtail.fields import StreamField as WagtailStreamField
 from wagtail.models import Page
+from article.models import ArticlePage
 
 from new_cms.editor import get_featured_media_form, get_page_form, get_streamfields, save_featured_media_form
 
 
 @login_required
 def index(request):
-    qs = Page.objects.all().order_by("-last_published_at", "-pk")
+    qs = ArticlePage.objects.all().order_by("-last_published_at", "-pk")
 
     paginator = Paginator(qs, 50)
-    pages = paginator.get_page(request.GET.get("page", 1))
+    pages = paginator.get_page(request.GET.get("article-page", 1))
+    print(pages)
+    print(dir(pages[0]))
+    print(pages[10].get_authors_in_order().pop().author)
+    # print(pages[11].authors)
 
     return render(request, "index.html", {"pages": pages})
 
