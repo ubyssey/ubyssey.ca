@@ -13,8 +13,9 @@
 {{ block_registry|json_script:"block-registry" }}
 {{ editor_data|json_script:"editor-data" }}
 {{ editor_errors|json_script:"editor-errors" }}
+{{ article_media_choices|json_script:"article-media-choices" }}
 
-<form method="post" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'new_cms:manuscript_preview' self.id %}">
+<form method="post" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'new_cms:manuscript_preview' self.id %}" data-media-upload-url="{% url 'new_cms:article_media_upload' self.id %}">
   {% csrf_token %}
 
   <main class="manuscript nav-border">
@@ -67,6 +68,7 @@
   <aside class="metadata-editor" data-metadata-editor>
     <div role="tablist" aria-label="Editor panels">
       <button type="button" role="tab" aria-selected="true" aria-controls="metadata-article" data-metadata-tab="article">article</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="metadata-media" data-metadata-tab="media">media</button>
       <button type="button" role="tab" aria-selected="false" aria-controls="metadata-settings" data-metadata-tab="settings">settings</button>
     </div>
 
@@ -85,6 +87,24 @@
           </section>
         {% endif %}
       {% endfor %}
+    </section>
+
+    <section id="metadata-media" role="tabpanel" data-metadata-panel="media" hidden>
+      {{ article_media_upload_form.non_field_errors }}
+      {% for field in article_media_upload_form %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% else %}
+          <div class="page-field" {% if field.name == "description" %}data-article-media-image-only{% endif %}>
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endif %}
+      {% endfor %}
+      <button type="button" data-article-media-upload-button>Upload</button>
+
+      {% include "article_media_gallery.html" %}
     </section>
 
     <section id="metadata-settings" role="tabpanel" data-metadata-panel="settings" hidden>

@@ -318,6 +318,26 @@ class ArticleFeaturedMediaOrderable(Orderable):
         ),
     ]
 
+class ArticleMediaOrderable(Orderable):
+    article_page = ParentalKey(
+        "article.ArticlePage",
+        related_name="article_media",
+    )
+    image = models.ForeignKey(
+        "images.UbysseyImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    document = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
 class ArticleStyleOrderable(Orderable):
     css = models.ForeignKey(
         'wagtaildocs.Document',

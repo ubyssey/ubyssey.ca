@@ -11,7 +11,15 @@ from wagtail.documents import get_document_model
 from wagtail.fields import StreamField as WagtailStreamField
 from wagtail.models import Page
 
-from new_cms.editor import get_featured_media_form, get_page_form, get_streamfields, save_featured_media_form
+from new_cms.editor import (
+    get_article_media_choices,
+    get_article_media_upload_form,
+    get_featured_media_form,
+    get_page_form,
+    get_streamfields,
+    save_article_media_upload,
+    save_featured_media_form,
+)
 
 
 @login_required
@@ -30,7 +38,6 @@ def manuscript_editor(request, page_id):
     editor_errors = {}
     page_form = get_page_form(page)
     featured_media_form = get_featured_media_form(page)
-
     if request.method == "POST":
         editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST)
 
@@ -59,12 +66,27 @@ def manuscript_editor(request, page_id):
         print(f"Validation Error: {editor_errors}")
 
     stream_data, block_registry, editor_data = get_streamfields(page)
+    article_media = page.article_media.all()
+
+    # self: contains information like page title, slug, etc, for form fields = for preview rendering 
+    # page_form: contains the form for the page fields
+    # featured_media_form: contains the form for the featured media
+    # article_media_upload_form: contains the form for uploading article media
+    # article_media: contains the list of existing article images/documents in this page
+    # article_media_choices: contains options for media selection dropdowns
+    # stream_data: contains information within blocks ie the text inside a RichTextBlock, this is mostly for saving which is why we have both stream_data and editor_data
+    # block_registry: contains the field types/options for each block
+    # editor_data: same as stream_data but in a preprocessed format (was originally processed on the JS side, but moved here to clean up the JS, maybe worth switching back?)
+    # editor_errors: contains any errors from form submission
 
     return render(
         request, "manuscript_editor.html",
         {"self": page,
          "page_form": page_form,
          "featured_media_form": featured_media_form,
+         "article_media_upload_form": get_article_media_upload_form(),
+         "article_media": article_media,
+         "article_media_choices": get_article_media_choices(article_media),
          "stream_data": stream_data,
          "block_registry": block_registry,
          "editor_data": editor_data,
@@ -90,11 +112,32 @@ def manuscript_preview(request, page_id):
     })
 
 
+@login_required
+@require_POST
+def article_media_upload(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    form = get_article_media_upload_form(request.POST, request.FILES)
+
+    if not form.is_valid():
+        return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+    item = save_article_media_upload(page, form, request.user)
+    if not item:
+        return JsonResponse({"errors": {"file": [{"message": "Choose a file to upload."}]}}, status=400)
+
+    article_media = page.article_media.all()
+    media = item.image or item.document
+    return JsonResponse({
+        "item": {"kind": "image" if item.image else "document", "id": media.id, "title": media.title},
+        "gallery": render_to_string("article_media_gallery.html", {"article_media": article_media}, request=request),
+        "choices": get_article_media_choices(article_media),
+    })
+
+
 def apply_editor_post(page, data, preview=False):
     editor_errors = {}
     page_form = get_page_form(page, data)
     featured_media_form = get_featured_media_form(page, data)
-
     if page_form.is_valid():
         for field_name, value in page_form.cleaned_data.items():
             setattr(page, field_name, value)

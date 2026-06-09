@@ -1,0 +1,21 @@
+{% load wagtailimages_tags %}
+
+<div class="article-media-gallery" data-article-media-gallery>
+  {% for item in article_media %}
+    {% if item.image %}
+      {% image item.image fill-96x64 as thumb %}
+      <div class="article-media-item" data-article-media-item data-kind="image" data-id="{{ item.image_id }}" data-title="{{ item.image.title }}" data-author="{{ item.image.author_id|default_if_none:'' }}" data-description="{{ item.image.description|default_if_none:'' }}" data-tags="{{ item.image.tags.names|join:", " }}" tabindex="0" role="button">
+        <img src="{{ thumb.url }}" alt="">
+        <div>{{ item.image.title }}</div>
+        <small>Image #{{ item.image_id }}</small>
+      </div>
+    {% elif item.document %}
+      <div class="article-media-item" data-article-media-item data-kind="document" data-id="{{ item.document_id }}" data-title="{{ item.document.title }}" data-author="" data-description="" data-tags="{{ item.document.tags.names|join:", " }}" tabindex="0" role="button">
+        <a href="{{ item.document.url }}" target="_blank" rel="noopener">{{ item.document.title }}</a>
+        <small>Document #{{ item.document_id }}</small>
+      </div>
+    {% endif %}
+  {% empty %}
+    <p>No article media yet.</p>
+  {% endfor %}
+</div>

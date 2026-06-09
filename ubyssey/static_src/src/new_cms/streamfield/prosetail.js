@@ -606,19 +606,34 @@ class ControlFieldView {
     }
 
     if (controlType === "image" || controlType === "document") {
-      const input = document.createElement("input");
-      input.type = "number";
-      input.min = "1";
-      input.placeholder = controlType === "image" ? "Image ID" : "Document ID";
-      input.value = value;
+      const select = document.createElement("select");
+      const options = window.articleMediaChoices?.[controlType] || [];
+      const blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = controlType === "image" ? "No image" : "No document";
+      select.appendChild(blank);
 
-      input.addEventListener("input", () => {
-        const rawValue = input.value.trim();
-        const nextValue = rawValue ? Number(rawValue) : null;
+      for (const option of options) {
+        const optionElement = document.createElement("option");
+        optionElement.value = String(option.value);
+        optionElement.textContent = option.label;
+        select.appendChild(optionElement);
+      }
+
+      if (value && !options.some((option) => String(option.value) === String(value))) {
+        const current = document.createElement("option");
+        current.value = String(value);
+        current.textContent = `${controlType} #${value}`;
+        select.appendChild(current);
+      }
+
+      select.value = value ?? "";
+      select.addEventListener("change", () => {
+        const nextValue = select.value ? Number(select.value) : null;
         this.updateValue(Number.isNaN(nextValue) ? null : nextValue);
       });
 
-      return input;
+      return select;
     }
 
     const input = document.createElement("input");

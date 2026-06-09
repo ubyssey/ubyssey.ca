@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const blockRegistry = { byStreamField: readJsonScript("block-registry") };
   const editorData = readJsonScript("editor-data");
   const editorErrors = readJsonScript("editor-errors");
+  window.articleMediaChoices = readJsonScript("article-media-choices");
 
   if (JSON.stringify(editorErrors) !== "{}") {
     alert("Failed to save due to errors: " + JSON.stringify(editorErrors));
@@ -138,6 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
   createArticleBlockControls(manuscriptRoot);
   setupArticleBlockKeyboard(manuscriptRoot);
   setupMetadataResize();
+  setupArticleMediaUploadFields();
   for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
     tab.addEventListener("click", () => { selectMetadataTab(tab.dataset.metadataTab); });
   }
@@ -263,6 +265,82 @@ function selectMetadataTab(selected) {
   for (const panel of document.querySelectorAll("[data-metadata-panel]")) {
     panel.hidden = panel.dataset.metadataPanel !== selected;
   }
+}
+
+function setupArticleMediaUploadFields() {
+  const form = document.querySelector("[data-manuscript-form]");
+  const button = document.querySelector("[data-article-media-upload-button]");
+  if (!form || !button) return;
+
+  const input = (name) => form.querySelector(`#id_article_media-${name}`);
+  const kind = input("kind");
+  if (!kind) return;
+
+  const reset = () => {
+    for (const field of form.querySelectorAll("[name^='article_media-']")) {
+      if (field !== kind) field.value = "";
+    }
+    delete form.dataset.articleMediaEditKind;
+    button.textContent = "Upload";
+  };
+
+  const sync = () => {
+    for (const row of document.querySelectorAll("[data-article-media-image-only]")) row.hidden = kind.value !== "image";
+    if (input("media_id")?.value && kind.value !== form.dataset.articleMediaEditKind) reset();
+  };
+
+  const edit = (card) => {
+    for (const name of ["id", "kind", "title", "author", "description", "tags"]) {
+      const field = input(name === "id" ? "media_id" : name);
+      if (field) field.value = card.dataset[name] || "";
+    }
+    input("file").value = "";
+    form.dataset.articleMediaEditKind = card.dataset.kind;
+    button.textContent = "Edit";
+    sync();
+  };
+
+  const editFromGallery = (event) => {
+    if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
+    const card = event.target.closest("[data-article-media-item]");
+    if (!card) return;
+    event.preventDefault();
+    edit(card);
+  };
+  form.addEventListener("click", editFromGallery);
+  form.addEventListener("keydown", editFromGallery);
+  kind.addEventListener("change", sync);
+  sync();
+
+  if (!form.dataset.mediaUploadUrl) return;
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    try {
+      const response = await fetch(form.dataset.mediaUploadUrl, { method: "POST", body: new FormData(form) });
+      const payload = await response.json();
+      if (!response.ok) {
+        alert(`Upload failed: ${JSON.stringify(payload.errors || payload)}`);
+        return;
+      }
+
+      document.querySelector("[data-article-media-gallery]").outerHTML = payload.gallery;
+      window.articleMediaChoices = payload.choices || window.articleMediaChoices;
+
+      const selector = `.pm-control-field--${payload.item.kind} select${payload.item.kind === "image" ? ",select[name='featured_media-image']" : ""}`;
+      for (const select of document.querySelectorAll(selector)) {
+        const option = Array.from(select.options).find((item) => String(item.value) === String(payload.item.id)) || select.appendChild(new Option());
+        option.value = payload.item.id;
+        option.textContent = payload.item.title;
+      }
+
+      reset();
+      sync();
+    } catch (error) {
+      alert("Upload failed.");
+    } finally {
+      button.disabled = false;
+    }
+  });
 }
 
 function setupMetadataResize() {

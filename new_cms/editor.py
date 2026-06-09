@@ -3,8 +3,10 @@ import json
 from django import forms
 from django.core.exceptions import FieldDoesNotExist
 from wagtail import blocks
+from wagtail.documents import get_document_model
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.fields import RichTextField as WagtailRichTextField, StreamField as WagtailStreamField
+from wagtail.images import get_image_model
 from wagtail.images.blocks import ImageChooserBlock
 
 # I'm only including clearly useful fields for now
@@ -29,7 +31,7 @@ PAGE_FORM_LABELS = {
 FEATURED_MEDIA_FIELDS = ("image", "video", "caption", "credit", "alt_text")
 
 FEATURED_MEDIA_LABELS = {
-    "image": "Image ID",
+    "image": "Image",
     "video": "Video",
     "alt_text": "Alt text",
 }
@@ -70,27 +72,27 @@ def get_featured_media_form(page, data=None):
 
     form_class = get_featured_media_form_class(model)
     instance = manager.first() or model(**{featured_media_parent_field(model): page, "sort_order": 0})
-    return form_class(data=data, instance=instance, prefix="featured_media") if data is not None else form_class(instance=instance, prefix="featured_media")
+    kwargs = {"instance": instance, "prefix": "featured_media", "page": page}
+    if data is not None:
+        kwargs["data"] = data
+    return form_class(**kwargs)
 
 
 def get_featured_media_form_class(model):
     image_model = model._meta.get_field("image").remote_field.model
 
     class FeaturedMediaForm(forms.ModelForm):
-        image = forms.IntegerField(required=False, label=FEATURED_MEDIA_LABELS["image"])
+        image = forms.ModelChoiceField(queryset=image_model.objects.none(), required=False, label=FEATURED_MEDIA_LABELS["image"])
 
         def __init__(self, *args, **kwargs):
+            page = kwargs.pop("page")
             super().__init__(*args, **kwargs)
+            article_media = getattr(page, "article_media", None)
+            ids = [item.image_id for item in article_media.all() if item.image_id] if article_media else []
+            if self.instance.image_id:
+                ids.append(self.instance.image_id)
+            self.fields["image"].queryset = image_model.objects.filter(id__in=ids)
             self.fields["image"].initial = self.instance.image_id
-
-        def clean_image(self):
-            image_id = self.cleaned_data.get("image")
-            if not image_id:
-                return None
-            image = image_model.objects.filter(id=image_id).first()
-            if not image:
-                raise forms.ValidationError("Image not found.")
-            return image
 
     return forms.modelform_factory(
         model,
@@ -121,6 +123,83 @@ def featured_media_parent_field(model):
         for field in model._meta.fields
         if getattr(getattr(field, "remote_field", None), "related_name", None) == "featured_media"
     )
+
+
+def get_article_media_upload_form(data=None, files=None):
+    author_model = get_image_model()._meta.get_field("author").remote_field.model
+
+    class ArticleMediaUploadForm(forms.Form):
+        media_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
+        kind = forms.ChoiceField(choices=(("image", "Image"), ("document", "Document")), initial="image", required=False)
+        title = forms.CharField(required=False)
+        file = forms.FileField(required=False)
+        author = forms.ModelChoiceField(queryset=author_model.objects.all(), required=False)
+        description = forms.CharField(widget=forms.Textarea, required=False)
+        tags = forms.CharField(required=False, help_text="Separate tags with commas.")
+
+        def clean(self):
+            cleaned = super().clean()
+            is_edit = cleaned.get("media_id")
+            has_anything = is_edit or any(cleaned.get(name) for name in ("title", "file", "author", "tags"))
+            has_anything = has_anything or (cleaned.get("kind") == "image" and cleaned.get("description"))
+            if has_anything and not cleaned.get("title"):
+                self.add_error("title", "Title is required for uploads.")
+            if has_anything and not is_edit and not cleaned.get("file"):
+                self.add_error("file", "Choose a file to upload.")
+            return cleaned
+
+    return ArticleMediaUploadForm(data=data, files=files, prefix="article_media")
+
+
+def save_article_media_upload(page, form, user=None):
+    data = form.cleaned_data
+    is_image = data.get("kind") != "document"
+    model = get_image_model() if is_image else get_document_model()
+    item = model.objects.filter(id=data.get("media_id")).first() if data.get("media_id") else None
+
+    if data.get("media_id") and not item:
+        return None
+    if not item and not data.get("file"):
+        return None
+
+    if not item:
+        item = model()
+        if user and hasattr(item, "uploaded_by_user"):
+            item.uploaded_by_user = user
+
+    item.title = data["title"]
+    if data.get("file"):
+        item.file = data["file"]
+    if is_image:
+        item.author = data.get("author")
+        item.description = data.get("description") or ""
+
+    item.save()
+    item.tags.clear()
+    tags = [tag.strip() for tag in (data.get("tags") or "").split(",") if tag.strip()]
+    if tags:
+        item.tags.add(*tags)
+
+    manager = getattr(page, "article_media", None)
+    model = getattr(manager, "model", None)
+    if not manager or not model:
+        return None
+
+    image = item if is_image else None
+    document = item if not is_image else None
+    rows = list(manager.all())
+    for row in rows:
+        if (image and row.image_id == image.id) or (document and row.document_id == document.id):
+            return row
+
+    return model.objects.create(article_page=page, image=image, document=document, sort_order=len(rows))
+
+
+def get_article_media_choices(items):
+    return {
+        "image": [{"value": item.image_id, "label": item.image.title} for item in items if item.image_id],
+        "document": [{"value": item.document_id, "label": item.document.title} for item in items if item.document_id],
+    }
 
 
 def get_streamfields(page):
