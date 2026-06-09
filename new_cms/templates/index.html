@@ -1,4 +1,4 @@
-{% extends "cms_base.html" %}
+{% extends "new_cms_base.html" %}
 
 {% block stylesheet %}
 <style>
@@ -20,12 +20,30 @@
             </tr>
         </thead>
         <tbody>
-            {% for p in pages%}
+            {% for p in pages %}
             <tr>
             <td>
+                {% if p.content_type.model == "authorpage" %}
+                <a href="{% url 'new_cms:author_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% elif p.content_type.model == "homepage" %}
+                <a href="{% url 'new_cms:homepage_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% elif p.content_type.model == "sectionpage" %}
+                <a href="{% url 'new_cms:section_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% elif p.content_type.model == "liveblogarticlepage" %}
+                <a href="{% url 'new_cms:liveblog_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% else %}
                 <a href="{% url 'new_cms:manuscript_editor' p.id %}">
                     {{ p.title }}
                 </a>
+                {% endif %}
             </td>
             <td>
                 <span>{{ p.content_type.model }}</span>

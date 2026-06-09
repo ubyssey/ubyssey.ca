@@ -1,0 +1,17 @@
+{% extends "new_cms_base.html" %}
+{% load static %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<div id="article-shadow" data-article-shadow">
+    {% if self.styles.all|length == 0 %}
+        <link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}" type="text/css" />
+    {% else %}
+    {% for style_obj in self.styles.all %}
+        <link rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+    {% endfor %}
+    {% endif %}
+
+    {% include "editors/preview/homepage_preview.html" %}
+</div>
+{% endblock %}

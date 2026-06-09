@@ -1,4 +1,4 @@
-{% extends "cms_base.html" %}
+{% extends "new_cms_base.html" %}
 {% load static %}
 {% load wagtailcore_tags %}
 
@@ -33,7 +33,7 @@
         {% endfor %}
       {% endif %}
 
-      {% include "preview/manuscript_article_preview.html" %}
+      {% include "editors/preview/manuscript_preview.html" %}
     </div>
 
     <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
@@ -104,7 +104,7 @@
       {% endfor %}
       <button type="button" data-article-media-upload-button>Upload</button>
 
-      {% include "article_media_gallery.html" %}
+      {% include "editors/components/article_media_gallery.html" %}
     </section>
 
     <section id="metadata-settings" role="tabpanel" data-metadata-panel="settings" hidden>

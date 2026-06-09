@@ -24,8 +24,9 @@ from new_cms.editor import (
 
 @login_required
 def index(request):
-    qs = Page.objects.all().order_by("-last_published_at", "-pk")
-
+    editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
+    qs = Page.objects.filter(content_type__model__in=editable_pages).order_by("-last_published_at", "-pk")
+    #qs = Page.objects.all().order_by("-last_published_at", "-pk")
     paginator = Paginator(qs, 50)
     pages = paginator.get_page(request.GET.get("page", 1))
 
@@ -80,7 +81,7 @@ def manuscript_editor(request, page_id):
     # editor_errors: contains any errors from form submission
 
     return render(
-        request, "manuscript_editor.html",
+        request, "editors/manuscript_editor.html",
         {"self": page,
          "page_form": page_form,
          "featured_media_form": featured_media_form,
@@ -105,7 +106,7 @@ def manuscript_preview(request, page_id):
 
     return JsonResponse({
         "html": render_to_string(
-            "preview/manuscript_article_preview.html",
+            "editors/preview/manuscript_preview.html",
             {"self": page, "page_form": page_form, "featured_media_form": featured_media_form},
             request=request,
         )
@@ -129,7 +130,7 @@ def article_media_upload(request, page_id):
     media = item.image or item.document
     return JsonResponse({
         "item": {"kind": "image" if item.image else "document", "id": media.id, "title": media.title},
-        "gallery": render_to_string("article_media_gallery.html", {"article_media": article_media}, request=request),
+        "gallery": render_to_string("editors/components/article_media_gallery.html", {"article_media": article_media}, request=request),
         "choices": get_article_media_choices(article_media),
     })
 
@@ -210,5 +211,21 @@ def add_form_errors(editor_errors, form, prefix=None):
 
 
 @login_required
-def homepage_editor(request):
-    return render(request, "homepage_editor.html")
+def homepage_editor(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return render(request, "editors/homepage_editor.html", {"self": page})
+
+@login_required
+def author_editor(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return render(request, "editors/author_editor.html", {"self": page})
+
+@login_required
+def liveblog_editor(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return render(request, "editors/liveblog_editor.html", {"self": page})
+
+@login_required
+def section_editor(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return render(request, "editors/section_editor.html", {"self": page})
