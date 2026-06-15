@@ -15,6 +15,7 @@ from wagtail.coreutils import string_to_ascii
 from wagtail.images.models import Image, AbstractImage, AbstractRendition
 from wagtail.snippets.models import register_snippet
 from wagtail.search import index
+import wagtail.fields
 
 #-----Custom Image Model-----
 
@@ -61,10 +62,11 @@ class UbysseyImage(AbstractImage):
         blank=True,
         default='',
     )
-    description = models.TextField(
+    description = wagtail.fields.RichTextField(
         null=False,
         blank=True,
         default='',
+        features=['bold', 'italic', 'link']
     )
     admin_form_fields = Image.admin_form_fields + (
         'author',
