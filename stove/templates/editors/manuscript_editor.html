@@ -10,11 +10,8 @@
 
 {% block content %}
 
-{{ block_registry|json_script:"block-registry" }}
-{{ editor_data|json_script:"editor-data" }}
+{{ stream_editors|json_script:"stream-editors" }}
 {{ editor_errors|json_script:"editor-errors" }}
-{{ article_media_choices|json_script:"article-media-choices" }}
-{{ history|json_script:"history" }}
 
 <form method="post" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}">
   {% csrf_token %}
@@ -38,7 +35,7 @@
     </div>
 
     <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
-    {{ block_registry|pprint }}
+    {{ stream_editors|pprint }}
     </textarea>-->
 
     <div class="manuscript-publish-source" data-article-toolbar-source>
@@ -75,7 +72,7 @@
     </div>
 
     <section id="metadata-article" role="tabpanel" data-metadata-panel="article">
-      {% for field_name, json_str in stream_data.items %}
+      {% for field_name, stream_editor in stream_editors.items %}
         {% if field_name == "header" or field_name == "content" %}
           <section class="editor-section">
             <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
@@ -85,7 +82,7 @@
               data-stream-json
               data-stream-field="{{ field_name }}"
               hidden
-            >{{ json_str }}</textarea>
+            ></textarea>
           </section>
         {% endif %}
       {% endfor %}
@@ -138,7 +135,7 @@
         {% endfor %}
       {% endif %}
 
-      {% for field_name, json_str in stream_data.items %}
+      {% for field_name, stream_editor in stream_editors.items %}
         {% if field_name != "header" and field_name != "content" %}
           <section class="editor-section">
             <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
@@ -148,7 +145,7 @@
               data-stream-json
               data-stream-field="{{ field_name }}"
               hidden
-            >{{ json_str }}</textarea>
+            ></textarea>
           </section>
         {% endif %}
       {% endfor %}

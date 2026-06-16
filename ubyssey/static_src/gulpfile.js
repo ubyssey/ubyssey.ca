@@ -80,7 +80,7 @@ function sassStylesBuildTask() {
 }
 
 function sassStoveBuildTask() {
-  return src('./src/stove/*.scss')
+  return src('./src/stove/styles/*.scss')
       .pipe(sass({ style: 'compressed' }).on('error', sass.logError))
       .pipe(dest('../static/ubyssey/css/stove/'));
 }
@@ -99,7 +99,7 @@ function sassStylesBuildDevTask(){
 }
 
 function sassStoveBuildDevTask(){
-  return src('./src/stove/*.scss')
+  return src('./src/stove/styles/*.scss')
     .pipe(sourcemaps.init())
     .on('end', function(){ log('Almost there...'); })
     .pipe(sass().on('error', sass.logError))
@@ -132,7 +132,7 @@ function watchTask() {
   watch('./src/images/**/*', series(cleanImagesTask, copyImagesTask));
   watch('./src/videos/**/*', series(cleanVideosTask, copyVideosTask));
   watch('./src/fonts/**/*',  series(cleanFontsTask, copyFontsTask));
-  watch('./src/stove/*.scss', series(cleanCssTask, sassBuildDevTask));  
+  watch('./src/stove/styles/*.scss', series(cleanCssTask, sassBuildDevTask));  
   watch('./src/stove/**/*.js', series(cleanJsTask, webpackBuildDevTask));
 }
 

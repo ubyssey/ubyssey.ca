@@ -1,38 +1,18 @@
-//
-// Handles Pure Prosemirror Stuff for stove
-//
+// Pure prosemirror stuff, like toolbar
 
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-gapcursor/style/gapcursor.css";
 
+// Lots of plugins
 import { Schema } from "prosemirror-model";
 import { schema as basicSchema } from "prosemirror-schema-basic";
 import { addListNodes, liftListItem, sinkListItem, splitListItem, wrapInList } from "prosemirror-schema-list";
-import {
-  baseKeymap,
-  chainCommands,
-  exitCode,
-  joinDown,
-  joinUp,
-  lift,
-  selectParentNode,
-  setBlockType,
-  toggleMark,
-  wrapIn,
-} from "prosemirror-commands";
+import { baseKeymap, chainCommands, exitCode, joinDown, joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from "prosemirror-commands";
 import { undo, redo, history } from "prosemirror-history";
 import { keymap } from "prosemirror-keymap";
 import { dropCursor } from "prosemirror-dropcursor";
 import { gapCursor } from "prosemirror-gapcursor";
-import {
-  ellipsis,
-  emDash,
-  inputRules,
-  smartQuotes,
-  textblockTypeInputRule,
-  undoInputRule,
-  wrappingInputRule,
-} from "prosemirror-inputrules";
+import { ellipsis, emDash, inputRules, smartQuotes, textblockTypeInputRule, undoInputRule, wrappingInputRule } from "prosemirror-inputrules";
 
 export const baseNodesWithLists = addListNodes(
   basicSchema.spec.nodes,
@@ -78,6 +58,7 @@ function buildEditorKeymap(schema) {
   const bind = (key, command) => { keys[key] = command; };
   let type;
 
+  // Mod is platform agnostic ctrl/cmd
   bind("Mod-z", undo);
   bind("Shift-Mod-z", redo);
   bind("Backspace", undoInputRule);
@@ -430,4 +411,3 @@ function toolbarCommand(view, key) {
   };
   return commands[key] || null;
 }
-

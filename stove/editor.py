@@ -5,7 +5,7 @@ from django.core.exceptions import FieldDoesNotExist
 from wagtail import blocks
 from wagtail.documents import get_document_model
 from wagtail.documents.blocks import DocumentChooserBlock
-from wagtail.fields import RichTextField as WagtailRichTextField, StreamField as WagtailStreamField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.images import get_image_model
 from wagtail.images.blocks import ImageChooserBlock
 
@@ -36,13 +36,17 @@ FEATURED_MEDIA_LABELS = {
     "alt_text": "Alt text",
 }
 
+CONTROL_FIELD_KINDS = {"boolean", "choice", "image", "document", "number", "unknown"}
+
+
+# Page form
 
 def get_page_form(page, data=None):
     names = get_page_field_names(page)
     widgets = {
         name: forms.Textarea
         for name in names
-        if isinstance(page._meta.get_field(name), WagtailRichTextField)
+        if isinstance(page._meta.get_field(name), RichTextField)
     }
     form_class = forms.modelform_factory(page.__class__, fields=names, widgets=widgets, labels=PAGE_FORM_LABELS)
     return form_class(data=data, instance=page) if data is not None else form_class(instance=page)
@@ -58,11 +62,13 @@ def is_page_form_field(page, name):
     except FieldDoesNotExist:
         return False
 
-    if isinstance(field, WagtailStreamField) or field.is_relation:
+    if isinstance(field, StreamField) or field.is_relation:
         return False
 
     return field.editable and field.concrete and field.formfield() is not None
 
+
+# Featured media form
 
 def get_featured_media_form(page, data=None):
     manager = getattr(page, "featured_media", None)
@@ -124,6 +130,8 @@ def featured_media_parent_field(model):
         if getattr(getattr(field, "remote_field", None), "related_name", None) == "featured_media"
     )
 
+
+# Article media upload form
 
 def get_article_media_upload_form(data=None, files=None):
     author_model = get_image_model()._meta.get_field("author").remote_field.model
@@ -195,20 +203,13 @@ def save_article_media_upload(page, form, user=None):
     return model.objects.create(article_page=page, image=image, document=document, sort_order=len(rows))
 
 
-def get_article_media_choices(items):
-    return {
-        "image": [{"value": item.image_id, "label": item.image.title} for item in items if item.image_id],
-        "document": [{"value": item.document_id, "label": item.document.title} for item in items if item.document_id],
-    }
+# StreamField editors
 
-
-def get_streamfields(page):
-    streamfield_blocks = {}
-    block_registry = {}
-    editor_data = {}
+def get_streamfield_editors(page):
+    editors = {}
 
     for field in page._meta.get_fields():
-        if not isinstance(field, WagtailStreamField):
+        if not isinstance(field, StreamField):
             continue
 
         registry = get_block_definitions(field.stream_block)
@@ -219,11 +220,22 @@ def get_streamfields(page):
         except Exception:
             print("Failed to get field: " + field.name)
 
-        streamfield_blocks[field.name] = json.dumps(raw, indent=2, default=str)
-        block_registry[field.name] = registry
-        editor_data[field.name] = get_editor_blocks(raw, registry)
+        editors[field.name] = {
+            "blocks": get_editor_blocks(raw, registry),
+            "blockTypes": get_editor_block_types(registry),
+        }
 
-    return streamfield_blocks, block_registry, editor_data
+    return editors
+
+
+def get_editor_block_types(registry):
+    return {
+        name: {
+            "defaultValue": definition["defaultValue"],
+            "defaultFields": definition["defaultFields"],
+        }
+        for name, definition in registry.items()
+    }
 
 
 def get_block_definitions(stream_block):
@@ -240,6 +252,24 @@ def get_block_definitions(stream_block):
 
     return definitions
 
+
+def get_editor_blocks(raw_blocks, registry):
+    return [
+        {
+            "type": block.get("type", "unknown"),
+            "id": block.get("id"),
+            "value": block.get("value"),
+            "fields": get_editor_fields(
+                block.get("value"),
+                registry.get(block.get("type", "unknown"), {}).get("fields", {}),
+                block.get("type", "unknown"),
+            ),
+        }
+        for block in raw_blocks
+    ]
+
+
+# StreamField block fields
 
 def get_editable_fields(block, name=None, path=None, include_name=True):
     path = path or []
@@ -349,132 +379,78 @@ def get_choice_options(block):
     ]
 
 
-def get_editor_blocks(raw_blocks, registry):
-    return [
-        {
-            "type": block.get("type", "unknown"),
-            "id": block.get("id"),
-            "value": block.get("value"),
-            "fields": get_editor_fields(
-                block.get("value"),
-                registry.get(block.get("type", "unknown"), {}).get("fields", {}),
-                block.get("type", "unknown"),
-            ),
-        }
-        for block in raw_blocks
-    ]
-
-
 def get_editor_fields(value, field_meta, block_type):
+    field = editor_field_for_value([], field_meta.get(block_type), value)
+    if field:
+        return [field]
+
     fields = []
-    meta = field_meta.get(block_type)
-
-    if isinstance(value, list):
-        if meta and meta["kind"] == "list":
-            fields.append(list_field([], meta, value))
-            return fields
-        if meta and meta["kind"] == "choice" and len(value) <= 1:
-            fields.append(control_field([], meta, value[0] if value else "", "choice"))
-            return fields
-
-    if value is None and meta:
-        if meta["kind"] in ("richtext", "plain_text"):
-            fields.append(editable_field([], meta, ""))
-        elif meta["kind"] in ("boolean", "choice", "image", "document", "number", "unknown"):
-            fields.append(control_field([], meta, get_empty_value(meta), meta["kind"]))
-        return fields
-
-    if isinstance(value, str):
-        if meta and meta["kind"] in ("richtext", "plain_text"):
-            fields.append(editable_field([], meta, value))
-        elif meta and meta["kind"] == "choice":
-            fields.append(control_field([], meta, value, "choice"))
-        elif meta and meta["kind"] in ("image", "document"):
-            fields.append(control_field([], meta, value, meta["kind"]))
-        elif meta and meta["kind"] == "unknown":
-            fields.append(control_field([], meta, value, "unknown"))
-        return fields
-
-    if isinstance(value, bool):
-        if meta and meta["kind"] == "boolean":
-            fields.append(control_field([], meta, value, "boolean"))
-        return fields
-
-    if isinstance(value, (int, float)):
-        if meta and meta["kind"] == "number":
-            fields.append(control_field([], meta, value, "number"))
-        elif meta and meta["kind"] in ("image", "document"):
-            fields.append(control_field([], meta, value, meta["kind"]))
-        elif meta and meta["kind"] == "unknown":
-            fields.append(control_field([], meta, value, "unknown"))
-        return fields
-
-    walk_value(value, [], fields, field_meta, block_type)
+    walk_value(value, [], fields, field_meta)
     return fields
 
 
-def walk_value(value, path, fields, field_meta, block_type):
+def walk_value(value, path, fields, field_meta):
     name = next((part for part in reversed(path) if isinstance(part, str)), None)
-    meta = field_meta.get(name)
-
-    if value is None and meta:
-        if meta["kind"] in ("richtext", "plain_text"):
-            fields.append(editable_field(path, meta, ""))
-        elif meta["kind"] == "list":
-            fields.append(list_field(path, meta, []))
-        elif meta["kind"] in ("boolean", "choice", "image", "document", "number", "unknown"):
-            fields.append(control_field(path, meta, get_empty_value(meta), meta["kind"]))
-        return
-
-    if meta and meta["kind"] in ("image", "document") and isinstance(value, (int, str)):
-        fields.append(control_field(path, meta, value, meta["kind"]))
-        return
-
-    if isinstance(value, str):
-        if meta and meta["kind"] in ("richtext", "plain_text"):
-            fields.append(editable_field(path, meta, value))
-        elif meta and meta["kind"] == "choice":
-            fields.append(control_field(path, meta, value, "choice"))
-        elif meta and meta["kind"] == "unknown":
-            fields.append(control_field(path, meta, value, "unknown"))
-        return
-
-    if isinstance(value, bool):
-        if meta and meta["kind"] == "boolean":
-            fields.append(control_field(path, meta, value, "boolean"))
-        return
-
-    if isinstance(value, (int, float)):
-        if meta and meta["kind"] == "number":
-            fields.append(control_field(path, meta, value, "number"))
-        elif meta and meta["kind"] == "unknown":
-            fields.append(control_field(path, meta, value, "unknown"))
+    field = editor_field_for_value(path, field_meta.get(name), value)
+    if field:
+        fields.append(field)
         return
 
     if isinstance(value, list):
-        if meta and meta["kind"] == "list":
-            fields.append(list_field(path, meta, value))
-            return
-        if meta and meta["kind"] == "choice" and len(value) <= 1:
-            fields.append(control_field(path, meta, value[0] if value else "", "choice"))
-            return
         for index, item in enumerate(value):
-            walk_value(item, path + [index], fields, field_meta, block_type)
+            walk_value(item, path + [index], fields, field_meta)
         return
 
     if isinstance(value, dict):
         for key, child_value in value.items():
-            walk_value(child_value, path + [key], fields, field_meta, block_type)
+            walk_value(child_value, path + [key], fields, field_meta)
 
         for missing_field in direct_missing_fields(value, path, field_meta):
-            meta = field_meta[missing_field]
-            missing_path = path + [missing_field]
-            if meta["kind"] in ("richtext", "plain_text"):
-                fields.append(editable_field(missing_path, meta, ""))
-            elif meta["kind"] == "list":
-                fields.append(list_field(missing_path, meta, []))
-            elif meta["kind"] in ("boolean", "choice", "image", "document", "number", "unknown"):
-                fields.append(control_field(missing_path, meta, get_empty_value(meta), meta["kind"]))
+            field = empty_editor_field(path + [missing_field], field_meta[missing_field])
+            if field:
+                fields.append(field)
+
+
+def editor_field_for_value(path, meta, value):
+    if not meta:
+        return None
+
+    kind = meta["kind"]
+
+    if value is None:
+        return empty_editor_field(path, meta)
+
+    if isinstance(value, list):
+        if kind == "list":
+            return list_field(path, meta, value)
+        if kind == "choice" and len(value) <= 1:
+            return control_field(path, meta, value[0] if value else "", "choice")
+        return None
+
+    if isinstance(value, str):
+        if kind in ("richtext", "plain_text"):
+            return editable_field(path, meta, value)
+        if kind in ("choice", "image", "document", "unknown"):
+            return control_field(path, meta, value, kind)
+        return None
+
+    if isinstance(value, bool):
+        return control_field(path, meta, value, "boolean") if kind == "boolean" else None
+
+    if isinstance(value, (int, float)) and kind in ("number", "image", "document", "unknown"):
+        return control_field(path, meta, value, kind)
+
+    return None
+
+
+def empty_editor_field(path, meta):
+    if meta["kind"] in ("richtext", "plain_text"):
+        return editable_field(path, meta, "")
+    if meta["kind"] == "list":
+        return list_field(path, meta, [])
+    if meta["kind"] in CONTROL_FIELD_KINDS:
+        return control_field(path, meta, get_empty_value(meta), meta["kind"])
+    return None
 
 
 def direct_missing_fields(value, path, field_meta):
@@ -538,6 +514,84 @@ def get_empty_value(field):
     return ""
 
 
+# Editor Post Handling
+
+def apply_editor_post(page, data, preview=False):
+    editor_errors = {}
+    page_form = get_page_form(page, data)
+    featured_media_form = get_featured_media_form(page, data)
+    if page_form.is_valid():
+        for field_name, value in page_form.cleaned_data.items():
+            setattr(page, field_name, value)
+    else:
+        add_form_errors(editor_errors, page_form)
+
+    if featured_media_form:
+        if featured_media_form.is_valid():
+            save_featured_media_form(page, featured_media_form)
+        else:
+            add_form_errors(editor_errors, featured_media_form, "featured_media")
+
+    for field in page._meta.get_fields():
+        if not isinstance(field, StreamField):
+            continue
+        json_str = data.get(f"stream_{field.name}", "").strip()
+        if not json_str:
+            continue
+        try:
+            value = json.loads(json_str)
+            if preview:
+                value = sanitize_preview_stream_value(value)
+            setattr(page, field.name, value)
+        except json.JSONDecodeError:
+            editor_errors[field.name] = ["Invalid JSON for this field."]
+
+    return editor_errors, page_form, featured_media_form
+
+
+def sanitize_preview_stream_value(value):
+    if isinstance(value, list):
+        items = []
+        for item in value:
+            sanitized_item = sanitize_preview_stream_value(item)
+            if sanitized_item is not None or not (isinstance(item, dict) and item.get("type") == "audio"):
+                items.append(sanitized_item)
+        return items
+
+    if isinstance(value, dict) and value.get("type") == "audio":
+        block_value = value.get("value")
+        if not isinstance(block_value, dict) or not block_value:
+            return None
+
+        audio_id = block_value.get("audio")
+        nested_block = block_value.get("block")
+        if audio_id is None and isinstance(nested_block, dict):
+            audio_id = nested_block.get("audio")
+
+        if not audio_id:
+            return None
+
+        try:
+            audio_id = int(audio_id)
+        except (TypeError, ValueError):
+            return None
+
+        if not get_document_model().objects.filter(id=audio_id).exists():
+            return None
+
+    if isinstance(value, dict):
+        return {key: sanitize_preview_stream_value(item) for key, item in value.items()}
+
+    return value
+
+
+# Utils
+
 def json_safe(value):
     return json.loads(json.dumps(value, default=str))
 
+
+def add_form_errors(editor_errors, form, prefix=None):
+    for field_name, field_errors in form.errors.items():
+        key = f"{prefix}.{field_name}" if prefix else field_name
+        editor_errors[key] = list(field_errors)

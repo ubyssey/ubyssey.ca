@@ -1,41 +1,10 @@
-//
-// Handles Prosemirror/Wagtail Integration Stuff
-//
+// Prosemirror and Wagtail Schema Integration
 
-import { EditorState } from "prosemirror-state";
-import { EditorView } from "prosemirror-view";
-import { Schema, DOMParser, DOMSerializer, Fragment } from "prosemirror-model";
-import { v4 as uuidv4 } from "uuid";
+import { Schema, Fragment } from "prosemirror-model";
+import { baseNodesWithLists, marks, makeButton } from "./prosemirror_base";
+import { createEmptyRichTextBlock, createStreamBlockNodeFromRegistry } from "./stream_serialization";
 
-import {
-  baseNodesWithLists,
-  createEditorToolbar,
-  editorPlugins,
-  makeButton,
-  marks,
-  richTextSchema,
-} from "../prosemirror/base";
-
-const RICH_TEXT_CHROME_SELECTORS = [
-  ".pm-stream-block__header",
-  ".pm-stream-block__label",
-  ".pm-stream-block__title",
-  ".pm-stream-block__id",
-  ".pm-stream-block__meta",
-  ".pm-article-block-controls",
-  ".pm-article-block-controls-layer",
-  ".pm-article-block-outline",
-  ".pm-editor-toolbar",
-  ".pm-editable-field__label",
-];
-
-const RICH_TEXT_WRAPPER_SELECTORS = [
-  ".pm-stream-block",
-  ".pm-stream-block__content",
-  ".pm-editable-field",
-  ".pm-editable-field__content",
-];
-
+// Document Schema
 const streamNodes = baseNodesWithLists.remove("doc").append({
   doc: {
     content: "stream_block+",
@@ -50,6 +19,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
       blockType: { default: null },
       originalValue: { default: null },
     },
+
     toDOM(node) {
       return [
         "section",
@@ -77,6 +47,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
       mode: { default: "richtext" },
       manuscriptOwned: { default: false },
     },
+
     toDOM(node) {
       return [
         "div",
@@ -105,6 +76,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
       value: { default: null },
       options: { default: null },
     },
+
     toDOM(node) {
       return [
         "div",
@@ -127,6 +99,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
       itemValue: { default: null },
       itemFields: { default: [] },
     },
+
     toDOM(node) {
       return [
         "div",
@@ -144,6 +117,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
     attrs: {
       originalValue: { default: null },
     },
+
     toDOM() {
       return ["div", { class: "pm-list-item" }, ["div", { class: "pm-list-item__content" }, 0]];
     },
@@ -155,7 +129,66 @@ export const streamSchema = new Schema({
   marks,
 });
 
-function refreshMoveControls(view) {
+
+export function topLevelBlockInfo(doc, matcher) {
+  let offset = 0;
+
+  for (let index = 0; index < doc.childCount; index += 1) {
+    const node = doc.child(index);
+    const start = offset;
+    const end = start + node.nodeSize;
+
+    if (matcher({ node, index, start, end })) {
+      return { node, index, start, end };
+    }
+
+    offset = end;
+  }
+
+  return null;
+}
+
+export function topLevelBlockInfoAtPos(doc, pos) {
+  return topLevelBlockInfo(doc, ({ start }) => pos === start);
+}
+
+export function topLevelBlockInfoByIdOrIndex(doc, blockId, blockIndex) {
+  return topLevelBlockInfo(doc, ({ node, index }) => (
+    (blockId && node.attrs?.id === blockId) || (!blockId && index === blockIndex)
+  ));
+}
+
+export function moveTopLevelBlock(view, fromIndex, direction) {
+  const targetIndex = fromIndex + direction;
+  if (targetIndex < 0 || targetIndex >= view.state.doc.childCount) return false;
+
+  const blocks = [];
+  for (let index = 0; index < view.state.doc.childCount; index += 1) {
+    blocks.push(view.state.doc.child(index));
+  }
+
+  [blocks[fromIndex], blocks[targetIndex]] = [blocks[targetIndex], blocks[fromIndex]];
+  view.dispatch(view.state.tr.replaceWith(
+    0,
+    view.state.doc.content.size,
+    Fragment.fromArray(blocks),
+  ));
+  return true;
+}
+
+export function deleteTopLevelBlock(view, info) {
+  const { doc, tr } = view.state;
+
+  if (doc.childCount <= 1) {
+    view.dispatch(tr.replaceWith(info.start, info.end, streamSchema.nodeFromJSON(createEmptyRichTextBlock())));
+    return "replaced";
+  }
+
+  view.dispatch(tr.delete(info.start, info.end));
+  return "deleted";
+}
+
+export function refreshMoveControls(view) {
   const groups = [
     {
       items: Array.from(view.dom.children).filter((element) => element.classList?.contains("pm-stream-block")),
@@ -179,13 +212,13 @@ function refreshMoveControls(view) {
   }
 }
 
-class StreamBlockView {
+// Overarching container block type that handles inserts/moves/deletes
+export class StreamBlockView {
   constructor(node, view, getPos, options = {}) {
     this.node = node;
     this.view = view;
     this.getPos = getPos;
-    this.blockRegistry = options.blockRegistry;
-    this.streamFieldName = options.streamFieldName;
+    this.blockTypes = options.blockTypes || {};
     this.availableBlockTypes = options.availableBlockTypes || [];
 
     this.dom = document.createElement("section");
@@ -259,7 +292,7 @@ class StreamBlockView {
 
   insertBlock(blockType) {
     const pos = this.getPos();
-    const pmNode = createStreamBlockNodeFromRegistry(this.blockRegistry, this.streamFieldName, blockType);
+    const pmNode = createStreamBlockNodeFromRegistry(this.blockTypes, blockType);
     const insertPos = pos + this.node.nodeSize;
     const tr = this.view.state.tr.insert(insertPos, pmNode);
     this.view.dispatch(tr);
@@ -267,60 +300,16 @@ class StreamBlockView {
   }
 
   deleteBlock() {
-    const pos = this.getPos();
-    const { doc, tr } = this.view.state;
+    const info = topLevelBlockInfoAtPos(this.view.state.doc, this.getPos());
+    if (!info) return;
 
-    if (doc.childCount <= 1) {
-      const replacement = streamSchema.nodeFromJSON(createEmptyRichTextBlock());
-      this.view.dispatch(tr.replaceWith(pos, pos + this.node.nodeSize, replacement));
-      this.view.focus();
-      return;
-    }
-
-    this.view.dispatch(tr.delete(pos, pos + this.node.nodeSize));
+    deleteTopLevelBlock(this.view, info);
     this.view.focus();
-  }
-
-  getTopLevelBlockInfoAtPos(doc, pos) {
-    let offset = 0;
-    for (let index = 0; index < doc.childCount; index += 1) {
-      const node = doc.child(index);
-      const start = offset;
-      const end = start + node.nodeSize;
-
-      if (pos === start) {
-        return { index, node, start, end };
-      }
-      offset = end;
-    }
-    return null;
   }
 
   moveBlock(direction) {
-    const blockInfo = this.getTopLevelBlockInfoAtPos(this.view.state.doc, this.getPos());
-
-    if (!blockInfo) {
-      return;
-    }
-
-    const targetIndex = blockInfo.index + direction;
-
-    if (targetIndex < 0 || targetIndex >= this.view.state.doc.childCount) {
-      return;
-    }
-
-    const blocks = [];
-    for (let index = 0; index < this.view.state.doc.childCount; index += 1) {
-      blocks.push(this.view.state.doc.child(index));
-    }
-
-    [blocks[blockInfo.index], blocks[targetIndex]] = [blocks[targetIndex], blocks[blockInfo.index]];
-    this.view.dispatch(this.view.state.tr.replaceWith(
-      0,
-      this.view.state.doc.content.size,
-      Fragment.fromArray(blocks),
-    ));
-    this.view.focus();
+    const info = topLevelBlockInfoAtPos(this.view.state.doc, this.getPos());
+    if (info && moveTopLevelBlock(this.view, info.index, direction)) this.view.focus();
   }
 
   refreshUI(node) {
@@ -332,7 +321,7 @@ class StreamBlockView {
     this.id.title = blockId ? `id ${blockId}` : "";
 
     const pos = this.getPos();
-    const info = this.getTopLevelBlockInfoAtPos(this.view.state.doc, pos);
+    const info = topLevelBlockInfoAtPos(this.view.state.doc, pos);
 
     if (info) {
       this.dom.dataset.streamBlockIndex = String(info.index);
@@ -365,7 +354,7 @@ class StreamBlockView {
   }
 }
 
-class EditableFieldView {
+export class EditableFieldView {
   constructor(node) {
     this.node = node;
     const isManuscriptOwned = Boolean(node.attrs.manuscriptOwned);
@@ -385,7 +374,7 @@ class EditableFieldView {
   }
 }
 
-class ListFieldView {
+export class ListFieldView {
   constructor(node, view, getPos) {
     this.node = node;
     this.view = view;
@@ -436,7 +425,7 @@ class ListFieldView {
   }
 }
 
-class ListItemView {
+export class ListItemView {
   constructor(node, view, getPos) {
     this.node = node;
     this.view = view;
@@ -534,7 +523,12 @@ class ListItemView {
   }
 }
 
-class ControlFieldView {
+function articleMediaOptions(kind) {
+  return Array.from(document.querySelectorAll(`[data-article-media-item][data-kind="${window.CSS.escape(kind)}"]`))
+    .map((item) => ({ value: item.dataset.id, label: item.dataset.title }));
+}
+
+export class ControlFieldView {
   constructor(node, view, getPos) {
     this.node = node;
     this.view = view;
@@ -556,6 +550,7 @@ class ControlFieldView {
     this.dom.appendChild(this.inputWrap);
   }
 
+  // Custom input creation by type
   createInput(node) {
     const controlType = node.attrs.controlType;
     const value = node.attrs.value ?? "";
@@ -607,7 +602,7 @@ class ControlFieldView {
 
     if (controlType === "image" || controlType === "document") {
       const select = document.createElement("select");
-      const options = window.articleMediaChoices?.[controlType] || [];
+      const options = articleMediaOptions(controlType);
       const blank = document.createElement("option");
       blank.value = "";
       blank.textContent = controlType === "image" ? "No image" : "No document";
@@ -671,344 +666,4 @@ class ControlFieldView {
   ignoreMutation() {
     return true;
   }
-}
-
-export function createStreamEditor(textarea, blockRegistry, streamValue, options = {}) {
-  const {
-    createToolbar = createEditorToolbar,
-    getDocForSave = (_, doc) => doc,
-    onDocChanged = () => {},
-    onTransaction = () => {},
-  } = options;
-  const fieldName = textarea.dataset.streamField;
-  const mount = document.querySelector(`[data-stream-editor="${window.CSS.escape(fieldName)}"]`);
-
-  const content = streamValue.map(streamBlockToPmNode);
-  const streamRegistry = blockRegistry?.byStreamField?.[fieldName] || {};
-  const availableBlockTypes = Array.from(new Set([
-    ...Object.keys(streamRegistry),
-    ...streamValue.map((block) => block.type),
-  ])).sort((a, b) => a.localeCompare(b));
-
-  const doc = {
-    type: "doc",
-    content: content.length ? content : [createEmptyRichTextBlock()],
-  };
-
-  let instance;
-  let sidebarToolbar;
-  let view;
-  view = new EditorView(mount, {
-    state: EditorState.create({
-      doc: streamSchema.nodeFromJSON(doc),
-      plugins: editorPlugins(streamSchema),
-    }),
-
-    dispatchTransaction(transaction) {
-      view.updateState(view.state.apply(transaction));
-      sidebarToolbar?.update();
-      refreshMoveControls(view);
-      onTransaction({ transaction, instance, view });
-      if (transaction.docChanged) onDocChanged({ transaction, instance, view });
-    },
-
-    nodeViews: {
-      stream_block(node, view, getPos) {
-        return new StreamBlockView(node, view, getPos, {
-          blockRegistry,
-          streamFieldName: fieldName,
-          availableBlockTypes,
-        });
-      },
-
-      editable_field(node) {
-        return new EditableFieldView(node);
-      },
-
-      list_field(node, view, getPos) {
-        return new ListFieldView(node, view, getPos);
-      },
-
-      list_item(node, view, getPos) {
-        return new ListItemView(node, view, getPos);
-      },
-
-      control_field(node, view, getPos) {
-        return new ControlFieldView(node, view, getPos);
-      },
-    },
-  });
-
-  const toolbarMount = document.createElement("div");
-  toolbarMount.className = "pm-sidebar-toolbar";
-  mount.before(toolbarMount);
-  sidebarToolbar = createToolbar(toolbarMount, { view });
-
-  instance = {
-    fieldName,
-    textarea,
-    view,
-    mount,
-    blockRegistry,
-    availableBlockTypes,
-
-    getJSON() {
-      return view.state.doc.toJSON();
-    },
-
-    getStreamValue() {
-      return pmDocToStreamValue(getDocForSave(fieldName, view.state.doc.toJSON()));
-    },
-
-    writeBackToTextarea() {
-      textarea.value = JSON.stringify(this.getStreamValue(), null, 2);
-    },
-  };
-
-  return instance;
-}
-
-export function createStreamBlockNode(instance, blockType) {
-  return createStreamBlockNodeFromRegistry(instance.blockRegistry, instance.fieldName, blockType);
-}
-
-function createStreamBlockNodeFromRegistry(blockRegistry, fieldName, blockType) {
-  const blockDefinition = blockRegistry?.byStreamField?.[fieldName]?.[blockType] || {};
-  const defaultValue = blockDefinition.defaultValue !== undefined ? blockDefinition.defaultValue : "";
-  return streamSchema.nodeFromJSON(streamBlockToPmNode({
-    type: blockType,
-    id: uuidv4(),
-    value: clone(defaultValue),
-    fields: clone(blockDefinition.defaultFields || []),
-  }));
-}
-
-export function pmDocToStreamValue(pmDoc) {
-  return (pmDoc.content || [])
-    .filter((node) => node.type === "stream_block")
-    .map(pmStreamBlockToWagtailBlock);
-}
-
-export function createEmptyRichTextBlock() {
-  return streamBlockToPmNode({
-    type: "richtext",
-    id: uuidv4(),
-    value: "",
-    fields: [{
-      kind: "editable",
-      path: [],
-      label: "Rich text",
-      mode: "richtext",
-      value: "",
-    }],
-  });
-}
-
-function streamBlockToPmNode(block) {
-  const blockType = block?.type || "unknown";
-
-  return {
-    type: "stream_block",
-    attrs: {
-      id: block?.id || uuidv4(),
-      blockType,
-      originalValue: clone(block?.value),
-    },
-    content: (block?.fields || []).map((field) => fieldToPmNode(field, blockType)),
-  };
-}
-
-function fieldToPmNode(field, blockType = null) {
-  if (field.kind === "list") {
-    return {
-      type: "list_field",
-      attrs: {
-        path: field.path,
-        label: field.label,
-        itemValue: field.itemValue,
-        itemFields: field.itemFields || [],
-      },
-      content: (field.items || []).map((item) => listItemToPmNode(field, item)),
-    };
-  }
-
-  if (field.kind === "control") {
-    return {
-      type: "control_field",
-      attrs: {
-        path: field.path,
-        label: field.label,
-        controlType: field.controlType,
-        value: field.value,
-        options: field.options || null,
-      },
-    };
-  }
-
-  let content;
-  if (field.mode === "plain_text") {
-    const text = String(field.value || "");
-    content = text.trim()
-      ? text.split(/\n{2,}/).map((paragraphText) => ({
-        type: "paragraph",
-        content: paragraphText ? [{ type: "text", text: paragraphText }] : undefined,
-      }))
-      : [{ type: "paragraph" }];
-  } else {
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = field.value || "";
-    wrapper.querySelectorAll(RICH_TEXT_CHROME_SELECTORS.join(",")).forEach((element) => {
-      element.remove();
-    });
-    wrapper.querySelectorAll(RICH_TEXT_WRAPPER_SELECTORS.join(",")).forEach((element) => {
-      element.replaceWith(...Array.from(element.childNodes));
-    });
-
-    const json = DOMParser.fromSchema(richTextSchema).parse(wrapper).toJSON();
-    content = Array.isArray(json.content) && json.content.length ? json.content : [{ type: "paragraph" }];
-  }
-
-  return {
-    type: "editable_field",
-    attrs: {
-      path: field.path,
-      label: field.label,
-      mode: field.mode,
-      manuscriptOwned: blockType === "richtext" && field.mode === "richtext" && JSON.stringify(field.path || []) === "[]",
-    },
-    content,
-  };
-}
-
-function listItemToPmNode(field, item = null) {
-  const value = item ? item.value : clone(field.itemValue);
-  return {
-    type: "list_item",
-    attrs: { originalValue: clone(value) },
-    content: ((item && item.fields) || field.itemFields || []).map(fieldToPmNode),
-  };
-}
-
-function clone(value) {
-  return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
-}
-
-function pmStreamBlockToWagtailBlock(node) {
-  const attrs = node.attrs || {};
-  const block = {
-    type: attrs.blockType || "unknown",
-    value: clone(attrs.originalValue),
-  };
-
-  if (attrs.id) {
-    block.id = attrs.id;
-  }
-
-  for (const childNode of node.content || []) {
-    const fieldAttrs = childNode.attrs || {};
-    const path = Array.isArray(fieldAttrs.path) ? fieldAttrs.path : [];
-
-    if (childNode.type === "editable_field") {
-      setBlockValue(block, path, editableFieldValue(childNode, fieldAttrs.mode));
-    } else if (childNode.type === "control_field") {
-      setBlockValue(block, path, controlFieldValue(fieldAttrs, getValueAtPath(block.value, path)));
-    } else if (childNode.type === "list_field") {
-      setBlockValue(block, path, listFieldValue(childNode));
-    }
-  }
-
-  return block;
-}
-
-function listFieldValue(node) {
-  return (node.content || [])
-    .filter((item) => item.type === "list_item")
-    .map((item) => {
-      let value = clone(item.attrs?.originalValue);
-      if (value === undefined) value = clone(node.attrs?.itemValue);
-
-      for (const childNode of item.content || []) {
-        const fieldAttrs = childNode.attrs || {};
-        const path = Array.isArray(fieldAttrs.path) ? fieldAttrs.path : [];
-
-        if (childNode.type === "editable_field") {
-          value = setFieldValue(value, path, editableFieldValue(childNode, fieldAttrs.mode));
-        } else if (childNode.type === "control_field") {
-          value = setFieldValue(value, path, controlFieldValue(fieldAttrs, getValueAtPath(value, path)));
-        } else if (childNode.type === "list_field") {
-          value = setFieldValue(value, path, listFieldValue(childNode));
-        }
-      }
-
-      return value;
-    });
-}
-
-function editableFieldValue(node, mode = "richtext") {
-  if (mode === "plain_text") {
-    return (node.content || [])
-      .map((pmBlock) => streamSchema.nodeFromJSON(pmBlock).textContent)
-      .join("\n\n");
-  }
-
-  const richTextNodes = (node.content || [])
-    .filter((block) => !["stream_block", "editable_field", "control_field"].includes(block.type))
-    .map((block) => richTextSchema.nodeFromJSON(block));
-  const domFragment = DOMSerializer
-    .fromSchema(richTextSchema)
-    .serializeFragment(Fragment.fromArray(richTextNodes));
-  const wrapper = document.createElement("div");
-  wrapper.appendChild(domFragment);
-  return wrapper.innerHTML;
-}
-
-function controlFieldValue(fieldAttrs, originalValue) {
-  let value = fieldAttrs.value;
-  const controlType = fieldAttrs.controlType || "text";
-
-  if (controlType === "boolean") {
-    value = Boolean(value);
-  }
-
-  if (["image", "document"].includes(controlType) && value === "") {
-    value = null;
-  }
-
-  if (controlType === "number") {
-    value = value === "" || value == null ? null : Number(value);
-  }
-
-  return Array.isArray(originalValue) ? [value] : value;
-}
-
-function setBlockValue(block, path, value) {
-  block.value = setFieldValue(block.value, path, value);
-}
-
-function setFieldValue(root, path, value) {
-  if (path.length === 0) return value;
-
-  let current = root;
-  for (let index = 0; index < path.length - 1; index += 1) {
-    const key = path[index];
-    if (current == null || typeof current !== "object") return root;
-    current = current[key];
-  }
-
-  const finalKey = path[path.length - 1];
-  if (current && typeof current === "object") current[finalKey] = value;
-  return root;
-}
-
-function getValueAtPath(root, path) {
-  let current = root;
-
-  for (const key of path) {
-    if (current == null || typeof current !== "object") {
-      return undefined;
-    }
-    current = current[key];
-  }
-
-  return current;
 }
