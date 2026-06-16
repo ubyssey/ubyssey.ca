@@ -1,5 +1,5 @@
 //
-// Handles Pure Prosemirror Stuff for new_cms
+// Handles Pure Prosemirror Stuff for stove
 //
 
 import "prosemirror-view/style/prosemirror.css";

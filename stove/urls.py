@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 from .api import api_router
 
-app_name = "new_cms"
+app_name = "stove"
 
 urlpatterns = [
     path("", views.index, name="index"),

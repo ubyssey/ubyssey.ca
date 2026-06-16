@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New CMS</title>
+    <title>Stove</title>
     <style>
         .container {
             width: 100%;
@@ -24,6 +24,9 @@
             grid-area: main;
             height: 100%;
         }
+        .home {
+            font-size: 1.5em;
+        }
     </style>
     {% block stylesheet %}
     {% endblock %}
@@ -31,8 +34,7 @@
 <body>
     <div class="container">
         <div class="sidebar">
-            <h1>New CMS</h1>
-            <a href="{% url 'new_cms:index' %}">Home</a>
+            <a class="home" href="{% url 'stove:index' %}">Stove</a>
         </div>
         <div class="main">
             {% block content %}

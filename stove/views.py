@@ -12,7 +12,7 @@ from wagtail.fields import StreamField as WagtailStreamField
 from wagtail.models import Page
 from wagtail.admin.views.pages.history import PageHistoryView
 
-from new_cms.editor import (
+from stove.editor import (
     get_article_media_choices,
     get_article_media_upload_form,
     get_featured_media_form,
