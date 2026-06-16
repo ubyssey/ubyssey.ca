@@ -14,6 +14,7 @@
 {{ editor_data|json_script:"editor-data" }}
 {{ editor_errors|json_script:"editor-errors" }}
 {{ article_media_choices|json_script:"article-media-choices" }}
+{{ history|json_script:"history" }}
 
 <form method="post" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'new_cms:manuscript_preview' self.id %}" data-media-upload-url="{% url 'new_cms:article_media_upload' self.id %}">
   {% csrf_token %}
@@ -69,6 +70,7 @@
     <div role="tablist" aria-label="Editor panels">
       <button type="button" role="tab" aria-selected="true" aria-controls="metadata-article" data-metadata-tab="article">article</button>
       <button type="button" role="tab" aria-selected="false" aria-controls="metadata-media" data-metadata-tab="media">media</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="history" data-metadata-tab="history">history</button>
       <button type="button" role="tab" aria-selected="false" aria-controls="metadata-settings" data-metadata-tab="settings">settings</button>
     </div>
 
@@ -105,6 +107,13 @@
       <button type="button" data-article-media-upload-button>Upload</button>
 
       {% include "editors/components/article_media_gallery.html" %}
+    </section>
+
+    <section id="metadata-history" role="tabpanel" data-metadata-panel="history">
+      <button type="button" data-history-button data-revision-id="current">current</button>
+      {% for h in history %}
+        <button type="button" data-history-button data-revision-id="{{ h.id }}">{{ h.user }} {{ h.created_at }}</button>
+      {% endfor %}
     </section>
 
     <section id="metadata-settings" role="tabpanel" data-metadata-panel="settings" hidden>

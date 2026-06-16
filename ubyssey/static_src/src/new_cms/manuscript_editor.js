@@ -107,57 +107,6 @@ function setupArticleShadow() {
   return shadowRoot;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const manuscriptRoot = setupArticleShadow();
-  const blockRegistry = { byStreamField: readJsonScript("block-registry") };
-  const editorData = readJsonScript("editor-data");
-  const editorErrors = readJsonScript("editor-errors");
-  window.articleMediaChoices = readJsonScript("article-media-choices");
-
-  if (JSON.stringify(editorErrors) !== "{}") {
-    alert("Failed to save due to errors: " + JSON.stringify(editorErrors));
-  }
-
-  const textareas = Array.from(document.querySelectorAll("[data-stream-json]"));
-  for (const textarea of textareas) {
-    editorInstances.push(createStreamEditor(
-      textarea,
-      blockRegistry,
-      editorData[textarea.dataset.streamField] || [],
-      {
-        getDocForSave: applyManuscriptRichTextOverrides,
-        onDocChanged: () => { scheduleManuscriptPreview(); },
-        onTransaction: () => { filterArticleEditorToBlock(selectedArticleBlock); },
-      },
-    ));
-  }
-
-  articleEditorToolbar = createEditorToolbar(manuscriptRoot?.querySelector(".pm-manuscript-toolbar"), {
-    publishSource: document.querySelector("[data-article-toolbar-source]"),
-  });
-  createManuscriptRichTextEditors(manuscriptRoot);
-  createArticleBlockControls(manuscriptRoot);
-  setupArticleBlockKeyboard(manuscriptRoot);
-  setupMetadataResize();
-  setupArticleMediaUploadFields();
-  for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
-    tab.addEventListener("click", () => { selectMetadataTab(tab.dataset.metadataTab); });
-  }
-
-  const form = document.querySelector("[data-manuscript-form]");
-  setupServerPreview(form, manuscriptRoot);
-
-  form.addEventListener("submit", () => {
-    for (const instance of editorInstances) {
-      instance.writeBackToTextarea();
-    }
-  });
-
-  window.manuscriptEditors = editorInstances;
-  window.manuscriptRichTextEditors = manuscriptRichTextEditors;
-  window.manuscriptBlockRegistry = blockRegistry;
-});
-
 function setupServerPreview(form, manuscriptRoot) {
   if (!form?.dataset.previewUrl || !manuscriptRoot) return;
 
@@ -877,3 +826,140 @@ function applyManuscriptRichTextOverrides(fieldName, pmDoc) {
 
   return nextDoc;
 }
+
+function setupHistoryPreview(manuscriptRoot) {
+  const form = document.querySelector("[data-manuscript-form]");
+  const historyButtons = document.querySelectorAll("[data-history-button]");
+  if (!form || !manuscriptRoot) return;
+
+  for (const btn of historyButtons) {
+    btn.addEventListener("click", async () => {
+      try {
+        const revisionId = btn.dataset.revisionId;
+        const isCurrent = revisionId === "current";
+        const formData = new FormData(form);
+        let streamDocs = null;
+
+        formData.set("revision", revisionId);
+
+        if (isCurrent) {
+          streamDocs = new Map();
+
+          for (const instance of editorInstances) {
+            streamDocs.set(instance.fieldName, applyManuscriptRichTextOverrides(instance.fieldName, instance.view.state.doc.toJSON()));
+          }
+
+          for (const instance of editorInstances) {
+            instance.textarea.value = JSON.stringify(pmDocToStreamValue(streamDocs.get(instance.fieldName)), null, 2);
+          }
+        }
+
+        const response = await fetch(form.dataset.previewUrl, {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+        });
+
+        const payload = await response.json();
+
+        if (response.ok && payload.html) {
+          window.manuscriptPreviewErrors = {};
+
+          const wrapper = manuscriptRoot.querySelector(".article-shadow-preview");
+          if (!wrapper) return;
+
+          for (const editor of manuscriptRichTextEditors) {
+            editor.view.destroy();
+          }
+
+          manuscriptRichTextEditors.length = 0;
+          articleEditorToolbar?.setView(null);
+          articleBlockControlsState?.cleanup?.();
+          articleBlockControlsState = null;
+
+          wrapper.innerHTML = payload.html;
+
+          if (isCurrent) {
+            createManuscriptRichTextEditors(manuscriptRoot, streamDocs);
+            createArticleBlockControls(manuscriptRoot);
+
+            const articleBlock = selectedArticleBlock && articleBlockFromDescriptor(manuscriptRoot, selectedArticleBlock);
+
+            if (articleBlock) {
+              selectedArticleBlock = articleBlockDescriptor(articleBlock) || selectedArticleBlock;
+            } else if (
+              selectedArticleBlock &&
+              !articleBlockDescriptors().some((item) => sameArticleBlockDescriptor(item, selectedArticleBlock))
+            ) {
+              selectedArticleBlock = null;
+            }
+
+            filterArticleEditorToBlock(selectedArticleBlock);
+          } else {
+            selectedArticleBlock = null;
+            filterArticleEditorToBlock(null);
+          }
+        } else {
+          window.manuscriptPreviewErrors = payload.errors || {};
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          window.manuscriptPreviewErrors = { preview: ["Preview failed."] };
+          console.error(error);
+        }
+      }
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const manuscriptRoot = setupArticleShadow();
+  const blockRegistry = { byStreamField: readJsonScript("block-registry") };
+  const editorData = readJsonScript("editor-data");
+  const editorErrors = readJsonScript("editor-errors");
+  window.articleMediaChoices = readJsonScript("article-media-choices");
+
+  if (JSON.stringify(editorErrors) !== "{}") {
+    alert("Failed to save due to errors: " + JSON.stringify(editorErrors));
+  }
+
+  const textareas = Array.from(document.querySelectorAll("[data-stream-json]"));
+  for (const textarea of textareas) {
+    editorInstances.push(createStreamEditor(
+      textarea,
+      blockRegistry,
+      editorData[textarea.dataset.streamField] || [],
+      {
+        getDocForSave: applyManuscriptRichTextOverrides,
+        onDocChanged: () => { scheduleManuscriptPreview(); },
+        onTransaction: () => { filterArticleEditorToBlock(selectedArticleBlock); },
+      },
+    ));
+  }
+
+  articleEditorToolbar = createEditorToolbar(manuscriptRoot?.querySelector(".pm-manuscript-toolbar"), {
+    publishSource: document.querySelector("[data-article-toolbar-source]"),
+  });
+  createManuscriptRichTextEditors(manuscriptRoot);
+  createArticleBlockControls(manuscriptRoot);
+  setupArticleBlockKeyboard(manuscriptRoot);
+  setupMetadataResize();
+  setupArticleMediaUploadFields();
+  for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
+    tab.addEventListener("click", () => { selectMetadataTab(tab.dataset.metadataTab); });
+  }
+
+  const form = document.querySelector("[data-manuscript-form]");
+  setupServerPreview(form, manuscriptRoot);
+  setupHistoryPreview(manuscriptRoot);
+
+  form.addEventListener("submit", () => {
+    for (const instance of editorInstances) {
+      instance.writeBackToTextarea();
+    }
+  });
+
+  window.manuscriptEditors = editorInstances;
+  window.manuscriptRichTextEditors = manuscriptRichTextEditors;
+  window.manuscriptBlockRegistry = blockRegistry;
+});

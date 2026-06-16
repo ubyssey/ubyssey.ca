@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from wagtail.documents import get_document_model
 from wagtail.fields import StreamField as WagtailStreamField
 from wagtail.models import Page
+from wagtail.admin.views.pages.history import PageHistoryView
 
 from new_cms.editor import (
     get_article_media_choices,
@@ -39,6 +40,12 @@ def manuscript_editor(request, page_id):
     editor_errors = {}
     page_form = get_page_form(page)
     featured_media_form = get_featured_media_form(page)
+
+    # History
+    history = []
+    for revision in page.revisions.all().order_by("-created_at"):
+        history.append({"id" : str(revision.id), "user" : str(revision.user), "created_at" : str(revision.created_at) })
+
     if request.method == "POST":
         editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST)
 
@@ -91,7 +98,8 @@ def manuscript_editor(request, page_id):
          "stream_data": stream_data,
          "block_registry": block_registry,
          "editor_data": editor_data,
-         "editor_errors": editor_errors}
+         "editor_errors": editor_errors,
+         "history" : history}
     )
 
 
@@ -99,8 +107,17 @@ def manuscript_editor(request, page_id):
 @require_POST
 def manuscript_preview(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
-    editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST, preview=True)
-
+    editor_errors = {}
+    
+    revision_id = request.POST.get("revision")
+    if revision_id and revision_id != "current":
+        revision = get_object_or_404(page.revisions, id=revision_id)
+        page = revision.as_object()
+        page_form = get_page_form(page)
+        featured_media_form = get_featured_media_form(page)
+    else:
+        editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST, preview=True)
+    
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=400)
 
