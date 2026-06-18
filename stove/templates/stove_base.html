@@ -33,14 +33,14 @@
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-            <a class="home" href="{% url 'stove:index' %}">Stove</a>
-        </div>
         <div class="main">
             {% block content %}
             {% endblock %}
             {% block scripts %}
             {% endblock %}
+        </div>
+        <div class="sidebar">
+            <a class="home" href="{% url 'stove:index' %}">Stove</a>
         </div>
     </div>
 </body>

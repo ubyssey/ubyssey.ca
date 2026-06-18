@@ -131,7 +131,7 @@ function fieldToPmNode(field, blockType = null) {
   };
 }
 
-function listItemToPmNode(field, item = null) {
+export function listItemToPmNode(field, item = null) {
   const value = item ? item.value : clone(field.itemValue);
   return {
     type: "list_item",

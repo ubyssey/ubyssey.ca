@@ -2,7 +2,7 @@
 
 import { Schema, Fragment } from "prosemirror-model";
 import { baseNodesWithLists, marks, makeButton } from "./prosemirror_base";
-import { createEmptyRichTextBlock, createStreamBlockNodeFromRegistry } from "./stream_serialization";
+import { createEmptyRichTextBlock, createStreamBlockNodeFromRegistry, listItemToPmNode } from "./stream_serialization";
 
 // Document Schema
 const streamNodes = baseNodesWithLists.remove("doc").append({
@@ -230,22 +230,9 @@ export class StreamBlockView {
     this.header = document.createElement("div");
     this.header.className = "pm-stream-block__header";
 
-    const titleWrap = document.createElement("div");
-    titleWrap.className = "pm-stream-block__heading";
-
-    this.title = document.createElement("div");
-    this.title.className = "pm-stream-block__title";
-    this.title.textContent = node.attrs.blockType || "block";
-
-    this.id = document.createElement("div");
-    this.id.className = "pm-stream-block__id";
-
-    titleWrap.appendChild(this.title);
-    titleWrap.appendChild(this.id);
 
     this.controls = this.createControls();
 
-    this.header.appendChild(titleWrap);
     this.header.appendChild(this.controls);
 
     this.contentDOM = document.createElement("div");
@@ -316,9 +303,6 @@ export class StreamBlockView {
     const blockId = node.attrs.id || "";
     this.dom.dataset.blockType = node.attrs.blockType || "";
     this.dom.dataset.streamBlockId = blockId;
-    this.title.textContent = node.attrs.blockType || "block";
-    this.id.textContent = blockId;
-    this.id.title = blockId ? `id ${blockId}` : "";
 
     const pos = this.getPos();
     const info = topLevelBlockInfoAtPos(this.view.state.doc, pos);

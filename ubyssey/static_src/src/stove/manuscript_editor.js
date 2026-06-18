@@ -3,7 +3,7 @@
 import { createEditorToolbar } from "./prosemirror_base";
 import { createStreamEditor } from "./stream_editor";
 import { setupArticleBlockControls, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_block_controls";
-import { setupMediaUpload, selectMetadataTab, setupSidebarResize } from "./sidebar";
+import { setupMediaUpload, selectMetadataTab } from "./sidebar";
 import { setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./manuscript_preview";
 import { setupArticleRichTextEditors } from "./manuscript_preview";
 
@@ -17,6 +17,7 @@ export const editorState = {
   suppressedHoverTimer: null,
   preferredInsertTypes: new Map(),
   schedulePreview: () => {},
+  cancelPreviewRefresh: () => {},
 };
 
 function readJsonScript(id) {
@@ -51,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupArticleRichTextEditors(manuscriptRoot);
   setupArticleBlockControls(manuscriptRoot);
   setupArticleBlockKeyboard(manuscriptRoot);
-  setupSidebarResize();
   setupMediaUpload();
 
   for (const tab of document.querySelectorAll("[data-metadata-tab]")) {

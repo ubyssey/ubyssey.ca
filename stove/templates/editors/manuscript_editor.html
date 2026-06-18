@@ -16,62 +16,25 @@
 <form method="post" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}">
   {% csrf_token %}
 
-  <main class="manuscript nav-border">
-    <div
-      id="article-shadow"
-      data-article-shadow
-      data-shadow-editor-css="{% static 'ubyssey/css/stove/manuscript_shadow_editor.css' %}"
-    >
-      <!-- These are taken from article_page.html - we should figure out a way to avoid duplication-->
-      {% if self.styles.all|length == 0 %}
-        <link data-article-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
-      {% else %}
-        {% for style_obj in self.styles.all %}
-          <link data-article-stylesheet rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
-        {% endfor %}
-      {% endif %}
-
-      {% include "editors/preview/manuscript_preview.html" %}
+  <header class="manuscript-topbar">
+    <a href="{% url 'stove:index' %}">Stove</a>
+    <div class="manuscript-topbar__actions">
+      <button type="button" class="manuscript-topbar__button" data-article-media-open-upload>Upload media</button>
+      <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>View gallery</button>
+      <label class="manuscript-version-picker">
+        <span>Version</span>
+        <select data-history-select aria-label="Version preview">
+          <option value="current">Current draft</option>
+          {% for h in history %}
+            <option value="{{ h.id }}">{{ h.user }} {{ h.created_at }}</option>
+          {% endfor %}
+        </select>
+      </label>
     </div>
+  </header>
 
-    <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
-    {{ stream_editors|pprint }}
-    </textarea>-->
-
-    <div class="manuscript-publish-source" data-article-toolbar-source>
-      {% if self.live %}
-      <span data-article-status>Status: Live</span>
-      {% else %}
-      <span data-article-status>Status: Draft</span>
-      {% endif %}
-
-      {% if self.last_published_at %}
-      <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
-      {% endif %}
-
-      <a href="{{ self.url }}" target="_blank" rel="noopener" data-article-live-link>View Live</a>
-
-      <button type="submit" name="action" value="publish" data-article-action="publish">
-        Save &amp; Publish
-      </button>
-
-      <button type="submit" name="action" value="draft" data-article-action="draft">
-        Save as Draft
-      </button>
-    </div>
-  </main>
-
-  <div class="metadata-resize-handle" data-metadata-resize-handle role="separator" aria-orientation="vertical" aria-label="Resize metadata sidebar"></div>
-
-  <aside class="metadata-editor" data-metadata-editor>
-    <div role="tablist" aria-label="Editor panels">
-      <button type="button" role="tab" aria-selected="true" aria-controls="metadata-article" data-metadata-tab="article">article</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="metadata-media" data-metadata-tab="media">media</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="history" data-metadata-tab="history">history</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="metadata-settings" data-metadata-tab="settings">settings</button>
-    </div>
-
-    <section id="metadata-article" role="tabpanel" data-metadata-panel="article">
+  <aside class="metadata-editor metadata-editor--left" aria-label="Article editor">
+    <section id="metadata-article">
       {% for field_name, stream_editor in stream_editors.items %}
         {% if field_name == "header" or field_name == "content" %}
           <section class="editor-section">
@@ -87,8 +50,15 @@
         {% endif %}
       {% endfor %}
     </section>
+  </aside>
 
-    <section id="metadata-media" role="tabpanel" data-metadata-panel="media" hidden>
+  <div class="article-media-modal" data-article-media-upload-modal role="dialog" aria-modal="true" aria-labelledby="article-media-upload-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close media upload"></button>
+    <section class="article-media-modal__panel">
+      <header class="article-media-modal__header">
+        <h2 id="article-media-upload-title" data-article-media-upload-title>Upload media</h2>
+        <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close media upload">x</button>
+      </header>
       {{ article_media_upload_form.non_field_errors }}
       {% for field in article_media_upload_form %}
         {% if field.is_hidden %}
@@ -101,19 +71,26 @@
           </div>
         {% endif %}
       {% endfor %}
-      <button type="button" data-article-media-upload-button>Upload</button>
+      <footer class="article-media-modal__footer">
+        <button type="button" data-article-media-upload-button>Upload</button>
+        <button type="button" data-article-media-close>Cancel</button>
+      </footer>
+    </section>
+  </div>
 
+  <div class="article-media-modal" data-article-media-gallery-modal role="dialog" aria-modal="true" aria-labelledby="article-media-gallery-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close media gallery"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--gallery">
+      <header class="article-media-modal__header">
+        <h2 id="article-media-gallery-title">Media gallery</h2>
+        <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close media gallery">x</button>
+      </header>
       {% include "editors/components/article_media_gallery.html" %}
     </section>
+  </div>
 
-    <section id="metadata-history" role="tabpanel" data-metadata-panel="history">
-      <button type="button" data-history-button data-revision-id="current">current</button>
-      {% for h in history %}
-        <button type="button" data-history-button data-revision-id="{{ h.id }}">{{ h.user }} {{ h.created_at }}</button>
-      {% endfor %}
-    </section>
-
-    <section id="metadata-settings" role="tabpanel" data-metadata-panel="settings" hidden>
+  <aside class="metadata-editor metadata-editor--right" aria-label="Settings">
+    <section id="metadata-settings">
       {{ page_form.non_field_errors }}
       {% for field in page_form %}
         <div class="page-field">
@@ -151,5 +128,45 @@
       {% endfor %}
     </section>
   </aside>
+
+  <main class="manuscript nav-border">
+    <div
+      id="article-shadow"
+      data-article-shadow
+      data-shadow-editor-css="{% static 'ubyssey/css/stove/manuscript_shadow_editor.css' %}"
+    >
+      <!-- These are taken from article_page.html - we should figure out a way to avoid duplication-->
+      {% if self.styles.all|length == 0 %}
+        <link data-article-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
+      {% else %}
+        {% for style_obj in self.styles.all %}
+          <link data-article-stylesheet rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+        {% endfor %}
+      {% endif %}
+
+      {% include "editors/preview/manuscript_preview.html" %}
+    </div>
+
+    <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
+    {{ stream_editors|pprint }}
+    </textarea>-->
+
+    <div class="manuscript-publish-source" data-article-toolbar-source>
+      {% if self.live %}
+      <span data-article-status>Status: Live</span>
+      {% else %}
+      <span data-article-status>Status: Draft</span>
+      {% endif %}
+
+      {% if self.last_published_at %}
+      <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
+      {% endif %}
+
+      <a href="{{ self.url }}" target="_blank" rel="noopener" data-article-live-link>View Live</a>
+
+      <button type="submit" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
+      <button type="submit" name="action" value="draft" data-article-action="draft">Save</button>
+    </div>
+  </main>
 </form>
 {% endblock %}

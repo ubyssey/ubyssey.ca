@@ -191,8 +191,10 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
   let previewId = 0;
   let previewRevision = 0;
   let deferredManuscriptPreview = false;
+  const historySelect = document.querySelector("[data-history-select]");
 
   editorState.schedulePreview = ({ deferIfManuscriptFocused = false } = {}) => {
+    if (historySelect) historySelect.value = "current";
     previewRevision += 1;
     clearTimeout(timer);
 
@@ -205,12 +207,20 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
     timer = setTimeout(sendPreview, 500);
   };
 
+  editorState.cancelPreviewRefresh = () => {
+    previewRevision += 1;
+    clearTimeout(timer);
+    if (controller) controller.abort();
+    deferredManuscriptPreview = false;
+  };
+
   const flushDeferredPreview = () => {
     if (!deferredManuscriptPreview || focusedArticleRichText(manuscriptRoot)) return;
     editorState.schedulePreview();
   };
 
   const scheduleFromForm = (event) => {
+    if ((event.composedPath?.() || []).some((element) => element?.matches?.("[data-history-select], .manuscript-topbar, .manuscript-topbar *"))) return;
     if ((event.composedPath?.() || []).some((element) => element?.classList?.contains("pm-manuscript-rich-text"))) return;
     editorState.schedulePreview();
   };
@@ -248,31 +258,39 @@ function focusedArticleRichText(manuscriptRoot) {
 export function setupHistoryPreviewButtons(manuscriptRoot) {
   const form = document.querySelector("[data-manuscript-form]");
   const historyButtons = document.querySelectorAll("[data-history-button]");
+  const historySelect = document.querySelector("[data-history-select]");
   if (!form || !manuscriptRoot) return;
 
-  for (const btn of historyButtons) {
-    btn.addEventListener("click", async () => {
-      try {
-        const revisionId = btn.dataset.revisionId;
-        const isCurrent = revisionId === "current";
-        const formData = new FormData(form);
-        const streamDocs = isCurrent ? writeStreamTextareas() : null;
+  const previewRevision = async (revisionId) => {
+    try {
+      editorState.cancelPreviewRefresh();
+      const isCurrent = revisionId === "current";
+      const formData = new FormData(form);
+      const streamDocs = isCurrent ? writeStreamTextareas() : null;
 
-        formData.set("revision", revisionId);
+      formData.set("revision", revisionId);
 
-        const html = await fetchPreviewHtml(form, formData);
-        if (!html || !replaceArticlePreviewHtml(manuscriptRoot, html)) return;
+      const html = await fetchPreviewHtml(form, formData);
+      if (!html || !replaceArticlePreviewHtml(manuscriptRoot, html)) return;
 
-        if (isCurrent) {
-          restoreCurrentArticleControls(manuscriptRoot, streamDocs);
-        } else {
-          editorState.selectedArticleBlock = null;
-          showSelectedArticleBlockEditor(null);
-        }
-      } catch (error) {
-        if (error.name !== "AbortError") console.error(error);
+      if (isCurrent) {
+        restoreCurrentArticleControls(manuscriptRoot, streamDocs);
+      } else {
+        editorState.selectedArticleBlock = null;
+        showSelectedArticleBlockEditor(null);
       }
-    });
+    } catch (error) {
+      if (error.name !== "AbortError") console.error(error);
+    }
+  };
+
+  historySelect?.addEventListener("change", (event) => {
+    event.stopPropagation();
+    previewRevision(historySelect.value);
+  });
+
+  for (const btn of historyButtons) {
+    btn.addEventListener("click", () => { previewRevision(btn.dataset.revisionId); });
   }
 }
 

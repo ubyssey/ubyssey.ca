@@ -9,43 +9,6 @@ export function selectMetadataTab(selected) {
   }
 }
 
-export function setupSidebarResize() {
-  const editor = document.querySelector("[data-manuscript-editor]");
-  const handle = document.querySelector("[data-metadata-resize-handle]");
-  const aside = document.querySelector("[data-metadata-editor]");
-  if (!editor || !handle || !aside) return;
-
-  const setWidth = (width) => {
-    const max = Math.min(1080, window.innerWidth - 180);
-    editor.style.setProperty("--metadata-width", `${Math.max(280, Math.min(max, width))}px`);
-  };
-
-  setWidth(Number(localStorage.getItem("metadataEditorWidth")) || aside.getBoundingClientRect().width);
-
-  handle.addEventListener("pointerdown", (event) => {
-    handle.setPointerCapture(event.pointerId);
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
-
-    const onMove = (moveEvent) => {
-      const width = editor.getBoundingClientRect().right - moveEvent.clientX;
-      setWidth(width);
-      localStorage.setItem("metadataEditorWidth", Math.round(width));
-    };
-
-    const onUp = () => {
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-      handle.removeEventListener("pointermove", onMove);
-      handle.removeEventListener("pointerup", onUp);
-      handle.removeEventListener("pointercancel", onUp);
-    };
-
-    handle.addEventListener("pointermove", onMove);
-    handle.addEventListener("pointerup", onUp);
-    handle.addEventListener("pointercancel", onUp);
-  });
-}
 
 // todo: replace alerts
 export function setupMediaUpload() {
@@ -53,16 +16,51 @@ export function setupMediaUpload() {
   const button = document.querySelector("[data-article-media-upload-button]");
   if (!form || !button) return;
 
+  const openUploadButton = document.querySelector("[data-article-media-open-upload]");
+  const openGalleryButton = document.querySelector("[data-article-media-open-gallery]");
+  const uploadModal = document.querySelector("[data-article-media-upload-modal]");
+  const galleryModal = document.querySelector("[data-article-media-gallery-modal]");
+  const uploadTitle = document.querySelector("[data-article-media-upload-title]");
+
   const input = (name) => form.querySelector(`#id_article_media-${name}`);
   const kind = input("kind");
   if (!kind) return;
+
+  const setUploadMode = (mode) => {
+    const editing = mode === "edit";
+    if (uploadTitle) uploadTitle.textContent = editing ? "Edit media" : "Upload media";
+    button.textContent = editing ? "Save" : "Upload";
+  };
+
+  const openModal = (modal, focusTarget = null) => {
+    if (!modal) return;
+    modal.hidden = false;
+    document.body.classList.add("article-media-modal-open");
+    window.requestAnimationFrame(() => {
+      (focusTarget || modal.querySelector("input:not([type='hidden']), select, textarea, button"))?.focus();
+    });
+  };
+
+  const closeModal = (modal) => {
+    if (!modal) return;
+    modal.hidden = true;
+    if (!document.querySelector(".article-media-modal:not([hidden])")) {
+      document.body.classList.remove("article-media-modal-open");
+    }
+  };
 
   const reset = () => {
     for (const field of form.querySelectorAll("[name^='article_media-']")) {
       if (field !== kind) field.value = "";
     }
     delete form.dataset.articleMediaEditKind;
-    button.textContent = "Upload";
+    setUploadMode("upload");
+  };
+
+  const closeUploadModal = () => {
+    closeModal(uploadModal);
+    reset();
+    sync();
   };
 
   const sync = () => {
@@ -75,21 +73,53 @@ export function setupMediaUpload() {
       const field = input(name === "id" ? "media_id" : name);
       if (field) field.value = card.dataset[name] || "";
     }
-    input("file").value = "";
+    const file = input("file");
+    if (file) file.value = "";
     form.dataset.articleMediaEditKind = card.dataset.kind;
-    button.textContent = "Edit";
+    setUploadMode("edit");
     sync();
+    closeModal(galleryModal);
+    openModal(uploadModal, input("title"));
   };
 
-  const editFromGallery = (event) => {
-    if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
-    const card = event.target.closest("[data-article-media-item]");
+  form.addEventListener("click", (event) => {
+    const editButton = event.target.closest("[data-article-media-edit-button]");
+    if (!editButton) return;
+
+    const card = editButton.closest("[data-article-media-item]");
     if (!card) return;
+
     event.preventDefault();
     edit(card);
-  };
-  form.addEventListener("click", editFromGallery);
-  form.addEventListener("keydown", editFromGallery);
+  });
+
+  openUploadButton?.addEventListener("click", () => {
+    reset();
+    sync();
+    openModal(uploadModal, input("kind"));
+  });
+
+  openGalleryButton?.addEventListener("click", () => {
+    openModal(galleryModal, galleryModal?.querySelector("[data-article-media-edit-button], a, button"));
+  });
+
+  for (const closeButton of document.querySelectorAll("[data-article-media-close]")) {
+    closeButton.addEventListener("click", () => {
+      const modal = closeButton.closest("[data-article-media-upload-modal], [data-article-media-gallery-modal]");
+      if (modal === uploadModal) {
+        closeUploadModal();
+      } else {
+        closeModal(modal);
+      }
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (!uploadModal?.hidden) closeUploadModal();
+    if (!galleryModal?.hidden) closeModal(galleryModal);
+  });
+
   kind.addEventListener("change", sync);
   sync();
 
@@ -112,6 +142,7 @@ export function setupMediaUpload() {
         option.textContent = payload.item.title;
       }
 
+      closeModal(uploadModal);
       reset();
       sync();
     } catch (error) {
