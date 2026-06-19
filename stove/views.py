@@ -40,7 +40,7 @@ def manuscript_editor(request, page_id):
     # History
     history = []
     for revision in page.revisions.all().order_by("-created_at"):
-        history.append({"id" : str(revision.id), "user" : str(revision.user), "created_at" : str(revision.created_at) })
+        history.append({"id" : str(revision.id), "user" : str(revision.user), "created_at" : revision.created_at })
 
     if request.method == "POST":
         editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST)

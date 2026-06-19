@@ -222,6 +222,7 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
   const scheduleFromForm = (event) => {
     if ((event.composedPath?.() || []).some((element) => element?.matches?.("[data-history-select], .manuscript-topbar, .manuscript-topbar *"))) return;
     if ((event.composedPath?.() || []).some((element) => element?.classList?.contains("pm-manuscript-rich-text"))) return;
+    if (editorState.blockEditorModalOpen) return;
     editorState.schedulePreview();
   };
 

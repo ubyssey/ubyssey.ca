@@ -1,5 +1,6 @@
 // Handles the sidebar
 
+
 export function selectMetadataTab(selected) {
   for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
     tab.setAttribute("aria-selected", String(tab.dataset.metadataTab === selected));
@@ -9,18 +10,20 @@ export function selectMetadataTab(selected) {
   }
 }
 
-
 // todo: replace alerts
 export function setupMediaUpload() {
   const form = document.querySelector("[data-manuscript-form]");
   const button = document.querySelector("[data-article-media-upload-button]");
   if (!form || !button) return;
 
+  const openSettingsButton = document.querySelector("[data-manuscript-open-settings]");
   const openUploadButton = document.querySelector("[data-article-media-open-upload]");
   const openGalleryButton = document.querySelector("[data-article-media-open-gallery]");
+  const settingsModal = document.querySelector("[data-manuscript-settings-modal]");
   const uploadModal = document.querySelector("[data-article-media-upload-modal]");
   const galleryModal = document.querySelector("[data-article-media-gallery-modal]");
   const uploadTitle = document.querySelector("[data-article-media-upload-title]");
+  let uploadReturnsToGallery = false;
 
   const input = (name) => form.querySelector(`#id_article_media-${name}`);
   const kind = input("kind");
@@ -49,6 +52,13 @@ export function setupMediaUpload() {
     }
   };
 
+  const focusGallery = () => {
+    if (galleryModal?.hidden) return;
+    window.requestAnimationFrame(() => {
+      galleryModal.querySelector("[data-article-media-edit-button], a, button")?.focus();
+    });
+  };
+
   const reset = () => {
     for (const field of form.querySelectorAll("[name^='article_media-']")) {
       if (field !== kind) field.value = "";
@@ -58,9 +68,13 @@ export function setupMediaUpload() {
   };
 
   const closeUploadModal = () => {
+    const shouldFocusGallery = uploadReturnsToGallery;
     closeModal(uploadModal);
+    uploadModal?.classList.remove("article-media-modal--stacked");
+    uploadReturnsToGallery = false;
     reset();
     sync();
+    if (shouldFocusGallery) focusGallery();
   };
 
   const sync = () => {
@@ -78,7 +92,8 @@ export function setupMediaUpload() {
     form.dataset.articleMediaEditKind = card.dataset.kind;
     setUploadMode("edit");
     sync();
-    closeModal(galleryModal);
+    uploadReturnsToGallery = !galleryModal?.hidden;
+    uploadModal?.classList.toggle("article-media-modal--stacked", uploadReturnsToGallery);
     openModal(uploadModal, input("title"));
   };
 
@@ -93,7 +108,13 @@ export function setupMediaUpload() {
     edit(card);
   });
 
+  openSettingsButton?.addEventListener("click", () => {
+    openModal(settingsModal, settingsModal?.querySelector("input, textarea, select, button"));
+  });
+
   openUploadButton?.addEventListener("click", () => {
+    uploadReturnsToGallery = false;
+    uploadModal?.classList.remove("article-media-modal--stacked");
     reset();
     sync();
     openModal(uploadModal, input("kind"));
@@ -103,9 +124,9 @@ export function setupMediaUpload() {
     openModal(galleryModal, galleryModal?.querySelector("[data-article-media-edit-button], a, button"));
   });
 
-  for (const closeButton of document.querySelectorAll("[data-article-media-close]")) {
+  for (const closeButton of document.querySelectorAll("[data-article-media-close], [data-manuscript-settings-close]")) {
     closeButton.addEventListener("click", () => {
-      const modal = closeButton.closest("[data-article-media-upload-modal], [data-article-media-gallery-modal]");
+      const modal = closeButton.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-gallery-modal]");
       if (modal === uploadModal) {
         closeUploadModal();
       } else {
@@ -116,8 +137,15 @@ export function setupMediaUpload() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    if (!uploadModal?.hidden) closeUploadModal();
-    if (!galleryModal?.hidden) closeModal(galleryModal);
+    if (!uploadModal?.hidden) {
+      closeUploadModal();
+      return;
+    }
+    if (!galleryModal?.hidden) {
+      closeModal(galleryModal);
+      return;
+    }
+    if (!settingsModal?.hidden) closeModal(settingsModal);
   });
 
   kind.addEventListener("change", sync);
@@ -142,9 +170,7 @@ export function setupMediaUpload() {
         option.textContent = payload.item.title;
       }
 
-      closeModal(uploadModal);
-      reset();
-      sync();
+      closeUploadModal();
     } catch (error) {
       alert("Upload failed.");
     } finally {

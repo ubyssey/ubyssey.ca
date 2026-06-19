@@ -39,7 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
       textarea,
       streamEditors[textarea.dataset.streamField] || {},
       {
-        onDocChanged: () => { editorState.schedulePreview(); },
+        onDocChanged: () => {
+          if (!editorState.blockEditorModalOpen) editorState.schedulePreview();
+        },
         onTransaction: () => { showSelectedArticleBlockEditor(editorState.selectedArticleBlock); },
       },
     ));

@@ -19,6 +19,7 @@
   <header class="manuscript-topbar">
     <a href="{% url 'stove:index' %}">Stove</a>
     <div class="manuscript-topbar__actions">
+      <button type="button" class="manuscript-topbar__button" data-manuscript-open-settings>Settings</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-upload>Upload media</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>View gallery</button>
       <label class="manuscript-version-picker">
@@ -26,14 +27,14 @@
         <select data-history-select aria-label="Version preview">
           <option value="current">Current draft</option>
           {% for h in history %}
-            <option value="{{ h.id }}">{{ h.user }} {{ h.created_at }}</option>
+            <option value="{{ h.id }}">{{ h.user }} {{ h.created_at|date:"M j, Y H:i" }}</option>
           {% endfor %}
         </select>
       </label>
     </div>
   </header>
 
-  <aside class="metadata-editor metadata-editor--left" aria-label="Article editor">
+  <aside class="metadata-editor metadata-editor--right" aria-label="Article editor">
     <section id="metadata-article">
       {% for field_name, stream_editor in stream_editors.items %}
         {% if field_name == "header" or field_name == "content" %}
@@ -89,8 +90,14 @@
     </section>
   </div>
 
-  <aside class="metadata-editor metadata-editor--right" aria-label="Settings">
-    <section id="metadata-settings">
+  <div class="article-media-modal" data-manuscript-settings-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-settings-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-manuscript-settings-close aria-label="Close settings"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--settings">
+      <header class="article-media-modal__header">
+        <h2 id="manuscript-settings-title">Settings</h2>
+        <button type="button" class="article-media-modal__close" data-manuscript-settings-close aria-label="Close settings">x</button>
+      </header>
+      <section id="metadata-settings">
       {{ page_form.non_field_errors }}
       {% for field in page_form %}
         <div class="page-field">
@@ -126,8 +133,9 @@
           </section>
         {% endif %}
       {% endfor %}
+      </section>
     </section>
-  </aside>
+  </div>
 
   <main class="manuscript nav-border">
     <div

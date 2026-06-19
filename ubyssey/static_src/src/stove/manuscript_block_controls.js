@@ -15,6 +15,53 @@ const ARTICLE_KEY_DIRECTIONS = {
   ArrowLeft: -1,
 };
 
+const CONTROL_EVENTS = ["click", "mousedown", "pointerdown", "mouseup", "change", "input"];
+const FOCUSABLE = "input, textarea, select, button";
+
+const element = (tag, className, textContent = "") => Object.assign(document.createElement(tag), { className, textContent });
+const targetInside = (target, elements) => Boolean(target && elements.some((item) => item.contains(target)));
+const eventInside = (event, elements) => {
+  const path = event.composedPath?.() || [];
+  return elements.some((item) => path.includes(item));
+};
+
+function focusFirst(root, preferred = null) {
+  window.requestAnimationFrame(() => {
+    (preferred || root.querySelector(FOCUSABLE))?.focus();
+  });
+}
+
+function stopEvents(elements) {
+  for (const target of elements) {
+    for (const eventName of CONTROL_EVENTS) {
+      target.addEventListener(eventName, (event) => { event.stopPropagation(); });
+    }
+  }
+}
+
+function createBlockEditorModal() {
+  const modal = element("div", "article-block-editor-modal");
+  modal.hidden = true;
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "article-block-editor-title");
+  modal.innerHTML = `
+    <button type="button" class="article-block-editor-modal__backdrop" data-article-block-editor-close aria-label="Close block editor"></button>
+    <section class="article-block-editor-modal__panel">
+      <header class="article-block-editor-modal__header">
+        <h2 id="article-block-editor-title">Edit block</h2>
+        <button type="button" class="article-block-editor-modal__close" data-article-block-editor-close aria-label="Close block editor">x</button>
+      </header>
+      <div class="article-block-editor-modal__body" data-article-block-editor-body></div>
+      <footer class="article-block-editor-modal__footer">
+        <button type="button" data-article-block-editor-close>Done</button>
+      </footer>
+    </section>
+  `;
+  return { modal, body: modal.querySelector("[data-article-block-editor-body]") };
+}
+
+
 export function setupArticleBlockControls(manuscriptRoot) {
   if (!manuscriptRoot) return;
 
@@ -22,35 +69,199 @@ export function setupArticleBlockControls(manuscriptRoot) {
   manuscriptRoot.querySelectorAll(".pm-article-block-controls, .pm-article-block-controls-layer").forEach((element) => { element.remove(); });
   if (!manuscriptRoot.querySelector(ARTICLE_BLOCK_SELECTOR)) return;
 
-  const element = (tag, className) => Object.assign(document.createElement(tag), { className });
+  const controlsHost = manuscriptRoot.querySelector(".article-shadow-preview");
+  if (!controlsHost) return;
 
   const layer = element("div", "pm-article-block-controls-layer");
-  const outline = element("div", "pm-article-block-outline");
-  const controls = element("div", "pm-article-block-controls");
+  const topControls = element("div", "pm-article-block-controls pm-article-block-controls--top");
+  const insertDialog = element("div", "pm-article-block-dialog pm-article-block-dialog--insert");
+  const deleteDialog = element("div", "pm-article-block-dialog pm-article-block-dialog--delete");
+  const dialogs = [insertDialog, deleteDialog];
+  const controls = [topControls, ...dialogs];
   const select = element("select", "pm-article-block-controls__select");
   const buttons = {};
 
   select.setAttribute("aria-label", "Block type to insert");
-  controls.appendChild(select);
+
+  const { modal: blockEditorModal, body: blockEditorBody } = createBlockEditorModal();
+  const manuscriptForm = document.querySelector("[data-manuscript-form]");
+  (manuscriptForm || document.body).appendChild(blockEditorModal);
+  let blockEditorHome = null;
+  let pendingAdd = null;
+
+  const withActiveBlock = (callback) => {
+    const { instance, articleBlock } = editorState.articleBlockControls || {};
+    if (instance && articleBlock) callback(instance, articleBlock);
+  };
+
+  const isDialogOpen = () => dialogs.some((dialog) => dialog.classList.contains("is-open"));
+  const closeDialogs = () => { dialogs.forEach((dialog) => { dialog.classList.remove("is-open"); }); };
+
+  const cancelInsertDialog = () => {
+    removePendingAdd();
+    closeDialogs();
+    closeBlockEditorModal();
+  };
+
+  const commitInsertDialog = () => {
+    if (!pendingAdd) addSelectedBlockForEditing();
+    if (!pendingAdd) return;
+
+    pendingAdd = null;
+    closeDialogs();
+    closeBlockEditorModal({ keepSelection: true });
+  };
+
+  const editorSectionForDescriptor = (descriptor) => {
+    const instance = editorState.streamEditors.find((item) => item.fieldName === descriptor?.fieldName);
+    const section = instance?.mount.closest(".editor-section");
+    return section ? { instance, section } : null;
+  };
+
+  const restoreBlockEditorHome = () => {
+    const restoredInstance = blockEditorHome?.instance;
+    if (blockEditorHome?.section && blockEditorHome.parent) {
+      blockEditorHome.parent.insertBefore(blockEditorHome.section, blockEditorHome.nextSibling);
+    }
+    blockEditorHome = null;
+    restoredInstance?.view?.updateRoot?.();
+  };
+
+  const closeBlockEditorModal = ({ keepSelection = false, refreshPreview = true } = {}) => {
+    restoreBlockEditorHome();
+    blockEditorModal.hidden = true;
+    editorState.blockEditorModalOpen = false;
+    if (!keepSelection) {
+      editorState.selectedArticleBlock = null;
+      showSelectedArticleBlockEditor(null);
+    }
+    if (refreshPreview) editorState.schedulePreview();
+  };
+
+  const moveBlockEditorTo = (descriptor, target) => {
+    const editorSection = editorSectionForDescriptor(descriptor);
+    if (!editorSection) return false;
+
+    if (blockEditorHome?.section !== editorSection.section) restoreBlockEditorHome();
+    if (!blockEditorHome) {
+      blockEditorHome = {
+        instance: editorSection.instance,
+        section: editorSection.section,
+        parent: editorSection.section.parentNode,
+        nextSibling: editorSection.section.nextSibling,
+      };
+    }
+
+    editorState.selectedArticleBlock = descriptor;
+    editorState.blockEditorModalOpen = true;
+    showSelectedArticleBlockEditor(descriptor);
+    target.appendChild(editorSection.section);
+    editorSection.instance.view.updateRoot?.();
+    return true;
+  };
+
+  const openBlockEditorModal = (descriptor) => {
+    if (!moveBlockEditorTo(descriptor, blockEditorBody)) return;
+    blockEditorModal.hidden = false;
+    focusFirst(blockEditorBody);
+  };
+
+  blockEditorModal.querySelectorAll("[data-article-block-editor-close]").forEach((button) => {
+    button.addEventListener("click", closeBlockEditorModal);
+  });
+  blockEditorModal.querySelector(".article-block-editor-modal__panel")?.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  const openDialog = (dialog, focusTarget = null) => {
+    if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
+    else closeDialogs();
+    dialog.classList.add("is-open");
+    positionControls();
+    focusFirst(dialog, focusTarget);
+  };
 
   const addButton = (key, label, title, callback, extraClass = "") => {
     buttons[key] = makeButton(label, () => {
-      const { instance, articleBlock } = editorState.articleBlockControls || {};
-      if (instance && articleBlock) callback(instance, articleBlock, select.value);
+      withActiveBlock(callback);
     }, title, `pm-article-block-controls__button ${extraClass}`.trim());
-    controls.appendChild(buttons[key]);
+    return buttons[key];
   };
 
-  [
-    ["insert", "+", "Insert after", insertBlockAfter],
-    ["up", "↑", "Move up", (instance, articleBlock) => { moveArticleBlock(instance, articleBlock, -1); }],
-    ["down", "↓", "Move down", (instance, articleBlock) => { moveArticleBlock(instance, articleBlock, 1); }],
-    ["delete", "Del", "Delete", deleteArticleBlock, "pm-article-block-controls__button--danger"],
-  ].forEach((args) => { addButton(...args); });
+  const removePendingAdd = () => {
+    if (!pendingAdd) return;
+    const info = topLevelBlockInfoByIdOrIndex(
+      pendingAdd.instance.view.state.doc,
+      pendingAdd.descriptor.blockId,
+      pendingAdd.descriptor.blockIndex,
+    );
+    if (info) deleteTopLevelBlock(pendingAdd.instance.view, info);
+    pendingAdd = null;
+  };
 
-  layer.appendChild(outline);
-  layer.appendChild(controls);
-  manuscriptRoot.appendChild(layer);
+  const addSelectedBlockForEditing = () => {
+    const active = editorState.articleBlockControls || {};
+    const root = active.articleBlock?.getRootNode?.();
+    const anchorBlock = (
+      pendingAdd?.anchor && root && findArticleBlock(root, pendingAdd.anchor)
+    ) || active.articleBlock;
+    const instance = pendingAdd?.instance || active.instance;
+    if (!instance || !anchorBlock) return;
+
+    editorState.blockEditorModalOpen = true;
+    restoreBlockEditorHome();
+    blockEditorModal.hidden = true;
+    removePendingAdd();
+
+    const anchor = describeArticleBlock(anchorBlock);
+    const descriptor = insertBlockAfter(instance, anchorBlock, select.value, { keepControls: true });
+    if (descriptor && moveBlockEditorTo(descriptor, insertEditorBody)) {
+      pendingAdd = { instance, descriptor, anchor };
+      insertDialog.classList.add("is-open");
+      positionControls();
+    }
+  };
+
+  buttons.insert = makeButton("+", () => {
+    openDialog(insertDialog, select);
+  }, "Add block", "pm-article-block-controls__button pm-article-block-controls__button--insert");
+  buttons.edit = makeButton("Edit", () => {
+    withActiveBlock((instance, articleBlock) => {
+      const descriptor = describeArticleBlock(articleBlock);
+      if (descriptor) openBlockEditorModal(descriptor);
+    });
+  }, "Edit block", "pm-article-block-controls__button pm-article-block-controls__button--edit");
+
+  topControls.append(
+    addButton("delete", "X", "Delete", () => { openDialog(deleteDialog); }, "pm-article-block-controls__button--danger"),
+    addButton("up", "", "Move up", (instance, articleBlock) => { moveArticleBlock(instance, articleBlock, -1); }, "pm-article-block-controls__button--move pm-article-block-controls__button--up"),
+    addButton("down", "", "Move down", (instance, articleBlock) => { moveArticleBlock(instance, articleBlock, 1); }, "pm-article-block-controls__button--move pm-article-block-controls__button--down"),
+    buttons.edit,
+    buttons.insert,
+  );
+
+  const insertTitle = element("div", "pm-article-block-dialog__title", "Add block");
+  const insertEditorBody = element("div", "pm-article-block-dialog__editor");
+  const insertActions = element("div", "pm-article-block-dialog__actions");
+  insertActions.appendChild(makeButton("Add", commitInsertDialog, "Add selected block", "pm-article-block-dialog__button pm-article-block-dialog__button--primary"));
+  insertActions.appendChild(makeButton("Cancel", cancelInsertDialog, "Cancel", "pm-article-block-dialog__button"));
+  insertDialog.append(insertTitle, select, insertEditorBody, insertActions);
+
+  const deleteTitle = element("div", "pm-article-block-dialog__title", "Noooooooo");
+  const deleteActions = element("div", "pm-article-block-dialog__actions");
+  deleteActions.appendChild(makeButton("Delete", () => {
+    withActiveBlock((instance, articleBlock) => {
+      deleteArticleBlock(instance, articleBlock);
+      closeDialogs();
+    });
+  }, "Delete block", "pm-article-block-dialog__button pm-article-block-dialog__button--danger"));
+  deleteActions.appendChild(makeButton("Cancel", closeDialogs, "Cancel", "pm-article-block-dialog__button"));
+  deleteDialog.append(deleteTitle, deleteActions);
+
+  stopEvents(controls);
+
+  layer.append(...controls);
+  controlsHost.appendChild(layer);
 
   const state = {
     articleBlock: null,
@@ -62,6 +273,9 @@ export function setupArticleBlockControls(manuscriptRoot) {
       for (const [target, eventName, listener, options] of listeners) {
         target.removeEventListener(eventName, listener, options);
       }
+      removePendingAdd();
+      closeBlockEditorModal({ refreshPreview: false });
+      blockEditorModal.remove();
       layer.remove();
     },
 
@@ -69,6 +283,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
       clearTimeout(this.hideTimer);
       this.articleBlock = null;
       this.instance = null;
+      closeDialogs();
       layer.classList.remove("is-active");
     },
 
@@ -92,6 +307,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
   select.addEventListener("change", () => {
     if (state.instance) editorState.preferredInsertTypes.set(state.instance.fieldName, select.value);
+    if (insertDialog.classList.contains("is-open")) addSelectedBlockForEditing();
   });
 
   const fillSelect = (instance) => {
@@ -113,45 +329,64 @@ export function setupArticleBlockControls(manuscriptRoot) {
     }
   };
 
-  const positionControls = () => {
+  const positionAbsoluteElement = (target, left, top, width = target.offsetWidth, height = target.offsetHeight, padding = 6) => {
+    const maxLeft = Math.max(padding, controlsHost.clientWidth - width - padding);
+    const maxTop = Math.max(padding, controlsHost.clientHeight - height - padding);
+    const nextLeft = Math.max(padding, Math.min(left, maxLeft));
+    const nextTop = Math.max(padding, Math.min(top, maxTop));
+    Object.assign(target.style, { left: `${nextLeft}px`, top: `${nextTop}px` });
+  };
+
+  function positionControls() {
     if (!state.articleBlock) return;
 
     const rect = state.articleBlock.getBoundingClientRect();
-    if (!rect.width || !rect.height) {
+    const hostRect = controlsHost.getBoundingClientRect();
+    if (!rect.width || !rect.height || !hostRect.width || !hostRect.height) {
       state.hide();
       return;
     }
 
-    // Set to zero for now since makes it hard to select on non-desktop
-    const offset = 0;
     const padding = 6;
+    const blockLeft = rect.left - hostRect.left + controlsHost.scrollLeft;
+    const blockTop = rect.top - hostRect.top + controlsHost.scrollTop;
     layer.classList.add("is-active");
-    Object.assign(outline.style, {
-      left: `${rect.left - offset}px`,
-      top: `${rect.top - offset}px`,
-      width: `${rect.width + (offset * 2)}px`,
-      height: `${rect.height + (offset * 2)}px`,
-    });
+    Object.assign(topControls.style, { left: "0px", top: "0px" });
+    positionAbsoluteElement(
+      topControls,
+      blockLeft + rect.width + 8,
+      blockTop,
+      topControls.offsetWidth,
+      topControls.offsetHeight,
+      padding,
+    );
 
-    Object.assign(controls.style, { left: "0px", top: "0px" });
-    const controlsRect = controls.getBoundingClientRect();
-    const left = Math.max(padding, Math.min(rect.left - offset, window.innerWidth - controlsRect.width - padding));
-    const topCandidate = rect.top - offset - controlsRect.height;
-    const top = Math.max(padding, Math.min(
-      topCandidate < padding ? rect.top + offset : topCandidate,
-      window.innerHeight - controlsRect.height - padding,
-    ));
-    Object.assign(controls.style, { left: `${left}px`, top: `${top}px` });
-  };
+    for (const dialog of dialogs) {
+      if (!dialog.classList.contains("is-open")) continue;
+      Object.assign(dialog.style, { left: "0px", top: "0px" });
+      positionAbsoluteElement(
+        dialog,
+        blockLeft + (rect.width / 2) - (dialog.offsetWidth / 2),
+        blockTop + (rect.height / 2) - (dialog.offsetHeight / 2),
+        dialog.offsetWidth,
+        dialog.offsetHeight,
+        padding,
+      );
+    }
+  }
 
-  const insideActiveArea = (target) => Boolean(target && (
-    controls.contains(target) || state.articleBlock?.contains(target)
-  ));
+  const insideActiveArea = (target) => targetInside(target, controls) || Boolean(state.articleBlock?.contains(target));
 
   const showFromTarget = (target, shouldSelect = false) => {
-    if (controls.contains(target)) {
+    if (targetInside(target, controls)) {
       clearTimeout(state.hideTimer);
       return;
+    }
+
+    if (isDialogOpen()) {
+      if (!shouldSelect) return;
+      if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
+      else closeDialogs();
     }
 
     const articleBlock = target.closest?.(ARTICLE_BLOCK_SELECTOR);
@@ -164,30 +399,49 @@ export function setupArticleBlockControls(manuscriptRoot) {
     if (shouldSelect) selectArticleBlockElement(articleBlock);
   };
 
-  // Delays hiding so pointer can move between block and toolbar (not a good approach lol)
   const scheduleHide = () => {
+    if (isDialogOpen()) return;
     clearTimeout(state.hideTimer);
     state.hideTimer = setTimeout(() => {
       if (!insideActiveArea(manuscriptRoot.activeElement)) state.hide();
     }, 120);
   };
 
-  const onOver = (event) => { showFromTarget(event.target); };
-  const onFocusIn = (event) => { showFromTarget(event.target, true); };
-  const onClick = (event) => { showFromTarget(event.target, true); };
+  const onOver = (event) => {
+    if (!isDialogOpen()) showFromTarget(event.target);
+  };
+  const onFocusIn = (event) => {
+    if (isDialogOpen() && eventInside(event, dialogs)) return;
+    showFromTarget(event.target, true);
+  };
+  const onClick = (event) => {
+    if (eventInside(event, controls)) return;
+    if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
+    else if (isDialogOpen()) closeDialogs();
+    showFromTarget(event.target, true);
+  };
   const onOut = (event) => {
+    if (isDialogOpen()) return;
     if (editorState.suppressedHoverArticleBlock?.contains(event.target) && !editorState.suppressedHoverArticleBlock.contains(event.relatedTarget)) {
       clearSuppressedHover();
     }
     if (insideActiveArea(event.target) && !insideActiveArea(event.relatedTarget)) scheduleHide();
   };
-  const onFocusOut = () => { setTimeout(scheduleHide, 0); };
+  const onFocusOut = () => {
+    if (!isDialogOpen()) setTimeout(scheduleHide, 0);
+  };
+  const onKeyDown = (event) => {
+    if (event.key !== "Escape") return;
+    if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
+    else closeDialogs();
+  };
   const listeners = [
     [manuscriptRoot, "mouseover", onOver],
     [manuscriptRoot, "focusin", onFocusIn],
     [manuscriptRoot, "click", onClick],
     [manuscriptRoot, "mouseout", onOut],
     [manuscriptRoot, "focusout", onFocusOut],
+    [manuscriptRoot, "keydown", onKeyDown],
     [window, "scroll", positionControls, true],
     [window, "resize", positionControls],
   ];
@@ -212,7 +466,7 @@ function streamBlockInfoForArticleBlock(instance, articleBlock) {
   );
 }
 
-function insertBlockAfter(instance, articleBlock, blockType) {
+function insertBlockAfter(instance, articleBlock, blockType, { keepControls = false } = {}) {
   const info = streamBlockInfoForArticleBlock(instance, articleBlock);
   if (!info || !blockType) return;
 
@@ -231,7 +485,8 @@ function insertBlockAfter(instance, articleBlock, blockType) {
   editorState.selectedArticleBlock = descriptor;
   instance.view.dispatch(instance.view.state.tr.insert(info.end, newBlock));
   selectArticleBlock(descriptor, articleBlock.getRootNode());
-  editorState.articleBlockControls?.hide();
+  if (!keepControls) editorState.articleBlockControls?.hide();
+  return descriptor;
 }
 
 function moveArticleBlock(instance, articleBlock, direction) {
@@ -242,14 +497,17 @@ function moveArticleBlock(instance, articleBlock, direction) {
   const fieldName = articleBlock.dataset.streamField;
   const articleBlocks = articleBlocksForStreamField(root, fieldName);
   const target = articleBlocks[articleBlocks.indexOf(articleBlock) + direction];
-  if (!target) return;
 
-  if (direction < 0) target.before(articleBlock);
-  else target.after(articleBlock);
+  if (target) {
+    if (direction < 0) target.before(articleBlock);
+    else target.after(articleBlock);
 
-  refreshArticleBlockIndexes(root, fieldName);
-  editorState.articleBlockControls?.setActive?.(articleBlock);
-  selectArticleBlockElement(articleBlock);
+    refreshArticleBlockIndexes(root, fieldName);
+    editorState.articleBlockControls?.setActive?.(articleBlock);
+    selectArticleBlockElement(articleBlock);
+  }
+
+  editorState.schedulePreview();
 }
 
 function deleteArticleBlock(instance, articleBlock) {
@@ -327,8 +585,11 @@ export function showSelectedArticleBlockEditor(descriptor) {
     if (section) section.hidden = Boolean(descriptor && !isSelectedField);
 
     const blocks = Array.from(instance.mount.querySelectorAll(".pm-stream-block"));
-    const selectedBlock = (descriptor.blockId && blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId)));
-    
+    const selectedBlock = descriptor && (
+      (descriptor.blockId && blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId))) ||
+      blocks[descriptor.blockIndex]
+    );
+
     blocks.forEach((block) => {
       block.hidden = Boolean(descriptor && block !== selectedBlock);
     });
