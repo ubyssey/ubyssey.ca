@@ -22,6 +22,9 @@
       <button type="button" class="manuscript-topbar__button" data-manuscript-open-settings>Settings</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-upload>Upload media</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>View gallery</button>
+      <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
+      <button type="submit" class="manuscript-topbar__button" name="action" value="draft" data-article-action="draft">Save</button> 
+      <button type="submit" class="manuscript-topbar__button" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
       <label class="manuscript-version-picker">
         <span>Version</span>
         <select data-history-select aria-label="Version preview">
@@ -169,11 +172,6 @@
       {% if self.last_published_at %}
       <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
       {% endif %}
-
-      <a href="{{ self.url }}" target="_blank" rel="noopener" data-article-live-link>View Live</a>
-
-      <button type="submit" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
-      <button type="submit" name="action" value="draft" data-article-action="draft">Save</button>
     </div>
   </main>
 </form>

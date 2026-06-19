@@ -23,7 +23,7 @@ body {
     --sidebar-width: 360px;
     --topbar-height: 48px;
     display: grid;
-    grid-template-columns: minmax(0, var(--sidebar-width)) minmax(0, 1fr) minmax(0, var(--sidebar-width));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr) minmax(0, 1fr);
     grid-template-rows: var(--topbar-height) minmax(0, 1fr);
     gap: 0;
     align-items: start;
@@ -38,9 +38,9 @@ body {
     z-index: 0;
     display: flex;
     justify-content: center;
-    min-width: 0;
     padding: 0 24px;
     box-sizing: border-box;
+    background-color: #fff;
 }
 
 .nav-border {
@@ -49,13 +49,12 @@ body {
 
 .metadata-editor {
     position: fixed;
+    width: 1%;
     top: var(--topbar-height);
     bottom: 0;
     z-index: 10;
-    width: var(--sidebar-width);
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 16px;
     box-sizing: border-box;
     background: #fff;
 }
@@ -102,7 +101,7 @@ body {
     contain: paint;
     width: 100%;
     max-width: 960px;
-    margin: 0 auto;
+    padding: 0 auto;
 }
 
 .manuscript-topbar__actions {
@@ -128,6 +127,10 @@ body {
     font: 13px/1.2 sans-serif;
     text-decoration: none;
     cursor: pointer;
+}
+
+.manuscript-topbar__button:hover {
+    color: #0071c9;
 }
 
 .manuscript-version-picker {
