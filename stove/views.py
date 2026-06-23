@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from wagtail.models import Page
+from article.models import ArticlePage
 
 from stove.editor import (
     get_page_form,
@@ -22,10 +23,10 @@ from stove.editor import (
 @login_required
 def index(request):
     editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
-    qs = Page.objects.filter(content_type__model__in=editable_pages).order_by("-last_published_at", "-pk")
-    #qs = Page.objects.all().order_by("-last_published_at", "-pk")
+    qs = ArticlePage.objects.all().order_by("-last_published_at", "-pk")
+
     paginator = Paginator(qs, 50)
-    pages = paginator.get_page(request.GET.get("page", 1))
+    pages = paginator.get_page(request.GET.get("article-page", 1))
 
     return render(request, "index.html", {"pages": pages})
 

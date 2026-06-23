@@ -39,7 +39,7 @@ module.exports = {
     'passing-2025': './src/js/passing-2025.js',
     'contentTracker': './src/js/ContentTracker.jsx',
     'liveblog': './src/js/liveblog.jsx',
-    'new_cms/content_tracker': './src/new_cms/content_tracker.js',
+    'stove/content_tracker': './src/stove/content_tracker.js',
     'stove/manuscript_editor': './src/stove/manuscript_editor.js',
   },
   output: {
