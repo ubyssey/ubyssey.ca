@@ -979,6 +979,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     # TIMELINESS
     def get_relevance_score(self):
+        print("GETTING RELEVANCE: ")
         relevance_delta = {
             self.TimelinessChoices.A_DAY: 1,
             self.TimelinessChoices.A_FEW_DAYS: 3,
@@ -994,8 +995,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         if self.published_at > relevance_cutoff:
             return 1
         else:
-            return 0
-
+            return 0    
     # AUTHORS STRINGS
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
