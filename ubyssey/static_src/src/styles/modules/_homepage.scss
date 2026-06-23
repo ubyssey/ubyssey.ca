@@ -258,15 +258,15 @@ html.hairlines {
     .o-article__headline {
       font-size: 2em;
     }
-    .left {
+    .o-article__left {
       margin: 0 1.5em 1.5em 0;
       max-width: 325px;
       float: left;
     }
-    .right {
+    .o-article__right {
       margin: 0;
     }
-    .right .lede {
+    .o-article__right .lede {
       font-size: 1.25em;
     }
   }
@@ -537,6 +537,30 @@ html.hairlines {
         font-size: 1.5em;
       }
 
+      &.vogue {
+        // Remove onces spoof is off the homepage
+        padding-block: 0.25em;
+        border-block: 1px solid var(--light-border-grey);
+        
+        font-family: "linotype-didot-headline", serif;
+        font-weight: 400;
+        font-size: 65px;
+        letter-spacing: -0.1em;
+        text-transform: uppercase;
+        color: var(--header_color-100);
+        text-decoration: none;
+        line-height: 1;
+        text-align: center;
+        
+        span {
+          margin-block: 1em;
+          display: block;
+          font-family: "itc-avant-garde-gothic-pro", sans-serif;
+          font-size: 10px;
+          letter-spacing: 3px;
+        }
+      }
+
       @media(variables.$bp-smaller-than-tablet) {
         margin-inline: 1rem;
         &.large, &.small {
@@ -550,7 +574,7 @@ html.hairlines {
     
     .o-curated_group--cards-flex {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: wrap-reverse;
       gap: 1em;
 
       @media(variables.$bp-smaller-than-tablet) {

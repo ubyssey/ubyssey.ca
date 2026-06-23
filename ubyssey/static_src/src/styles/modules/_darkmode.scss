@@ -6,6 +6,9 @@
   background: transparent;
   cursor: pointer;
   float: right;
+  .dark-mode-switcher--label {
+    display: none;
+  }
   img, svg {
     vertical-align: middle;
   }
@@ -42,6 +45,14 @@
 
 [color-css-theme="dark"] .sun-and-moon > .moon > circle {
     transform: translateX(-7px);
+}
+
+[color-css-theme="dark"] .dark-mode-switcher--label-light {
+  display: none !important;
+}
+
+[color-css-theme="light"] .dark-mode-switcher--label-dark {
+  display: none !important;
 }
 
 @supports (cx: 1) {

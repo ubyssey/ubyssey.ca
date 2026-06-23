@@ -1,0 +1,76 @@
+{% extends "stove_base.html" %}
+
+{% block stylesheet %}
+<style>
+    table, th, td {
+        border: 1px solid;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Last Published</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pages %}
+            <tr>
+            <td>
+                {% if p.content_type.model == "authorpage" %}
+                <a href="{% url 'stove:author_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% elif p.content_type.model == "homepage" %}
+                <a href="{% url 'stove:homepage_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% elif p.content_type.model == "sectionpage" %}
+                <a href="{% url 'stove:section_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% elif p.content_type.model == "liveblogarticlepage" %}
+                <a href="{% url 'stove:liveblog_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% else %}
+                <a href="{% url 'stove:manuscript_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                {% endif %}
+            </td>
+            <td>
+                <span>{{ p.content_type.model }}</span>
+            </td>
+            <td> 
+                {% if p.live %}
+                <span>Live</span>
+                {% else %}
+                <span>Draft</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if p.last_published_at %}
+                {{ p.last_published_at|date:"M j, Y H:i" }}
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% if pages.has_other_pages %}
+<div class="pagination">
+    Implement pagination here
+</div>
+{% endif %}
+{% endblock %}
+

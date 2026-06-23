@@ -171,9 +171,10 @@ jobs:
       - name: Deploy stack
         run: ssh production docker stack deploy --resolve-image always --compose-file /opt/ubyssey.ca/docker-compose.yml ubyssey
 
-      - name: Force update all services
+      - name: Update all services
         run: |
-          ssh production "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"
+          #  this is a force update which restarts the database. Causes a few seconds of downtime ->      ssh production "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"
+          ssh production "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update \$service; done"
 
       - name: Verify deployment succeeded
         run: |

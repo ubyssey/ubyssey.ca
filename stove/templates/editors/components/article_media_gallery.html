@@ -1,0 +1,27 @@
+{% load wagtailimages_tags %}
+
+<div class="article-media-gallery" data-article-media-gallery>
+  {% for item in article_media %}
+    {% if item.image %}
+      {% image item.image fill-96x64 as thumb %}
+      <div class="article-media-item" data-article-media-item data-kind="image" data-id="{{ item.image_id }}" data-title="{{ item.image.title }}" data-author="{{ item.image.author_id|default_if_none:'' }}" data-description="{{ item.image.description|default_if_none:'' }}" data-tags="{{ item.image.tags.names|join:", " }}">
+        <img src="{{ thumb.url }}" alt="">
+        <div class="article-media-item__details">
+          <div>{{ item.image.title }}</div>
+          <small>{{ item.image.author|default:"No author" }}</small>
+        </div>
+        <button type="button" data-article-media-edit-button>Edit</button>
+      </div>
+    {% elif item.document %}
+      <div class="article-media-item" data-article-media-item data-kind="document" data-id="{{ item.document_id }}" data-title="{{ item.document.title }}" data-author="" data-description="" data-tags="{{ item.document.tags.names|join:", " }}">
+        <div class="article-media-item__details">
+          <a href="{{ item.document.url }}" target="_blank" rel="noopener">{{ item.document.title }}</a>
+          <small>{{ item.document.uploaded_by_user.get_full_name|default:item.document.uploaded_by_user|default:"No author" }}</small>
+        </div>
+        <button type="button" data-article-media-edit-button>Edit</button>
+      </div>
+    {% endif %}
+  {% empty %}
+    <p>No article media yet.</p>
+  {% endfor %}
+</div>

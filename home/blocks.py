@@ -288,6 +288,7 @@ class CuratedStreamArticleList(blocks.StructBlock):
             ('article_list--cards', "Cards"),
             ('article_list--cards-with-lede', "Cards with lede"),
             ('article_list--small-row', "Small row"),
+            ('article_list--cards-vogue', "Vogue"), # Remove after spoof is off the homepage!
         ],
         required=True,
     )
@@ -305,6 +306,8 @@ class CuratedGroupHeadline(blocks.StructBlock):
             ('small', 'Small'),
             ('medium', 'Medium'),
             ('large', 'Large'),
+
+            ('vogue', 'Vogue'), # Remove after spoof is off the homepage
         ],
         default='small',
         )
@@ -440,9 +443,9 @@ class RecentStoriesByDay(blocks.StructBlock):
         if request:
             site = Site.find_for_request(request)
 
-            articleQuery = ArticlePage.objects.live().public().descendant_of(site.root_page).exclude(current_section__in = ["pages","about", "contact"])
+            articleQuery = ArticlePage.objects.live().public().descendant_of(site.root_page).exclude(current_section__in = ["pages","about", "contact", 'humour', 'research', 'features']) 
         else:
-            articleQuery = ArticlePage.objects.live().public().exclude(current_section__in = ["pages","about", "contact"])
+            articleQuery = ArticlePage.objects.live().public().exclude(current_section__in = ["pages","about", "contact", 'humour', 'research', 'features'])
 
         articles = articleQuery.filter(explicit_published_at__gte=cutoff).order_by("-explicit_published_at")
 
@@ -489,7 +492,7 @@ class RecentStoriesByDay(blocks.StructBlock):
 class RecentStoriesByTopic(blocks.StructBlock):
 
     def get_recent_stories_by_topic(self, exclude, request):       
-        articleQuery = ArticlePage.objects.live().public().filter(timeliness__lte=ArticlePage.TimelinessChoices.A_FEW_DAYS.value).exclude(Q(page_ptr_id__in=exclude) | Q(current_section__in=["pages","about", "contact"])).order_by("-explicit_published_at")
+        articleQuery = ArticlePage.objects.live().public().filter(timeliness__lte=ArticlePage.TimelinessChoices.A_FEW_DAYS.value).exclude(Q(page_ptr_id__in=exclude) | Q(current_section__in=["pages","about", "contact", 'humour', 'research', 'features'])).order_by("-explicit_published_at") 
         if request:
             site = Site.find_for_request(request)
             articleQuery = articleQuery.descendant_of(site.root_page)

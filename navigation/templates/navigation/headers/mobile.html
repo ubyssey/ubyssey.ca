@@ -6,18 +6,24 @@
 <header class="mobile dark-mode">
     <div class="setup-modal">
         <a class="open-modal menu left" href="#"><ion-icon name="menu"></ion-icon></a>
+        
         <nav class="mobile dark-mode modal hide">
-            <div class="toggle-container">
-                {% include 'article/objects/darkmode_button.html' with id="mobile"%}
+
+            <div class="mobile-search-bar"> 
+                <form class="search-form" method="get" action="/archive/">
+                    <input class="mobile-search-input" type="search" name="q" placeholder="Search the Ubyssey">
+                    <button class="mobile-search-submit">Search</button>
+                </form>
             </div>
 
             <div class="left">
                 
                 <h2>Sections</h2>
-                    {% main_menu %}
+                {% main_menu %}
                     {% comment %} {% for menu_item in settings.navigation.SitewideMenus.main_header_menu.all %}
         =                <li><a href="{{ menu_item.link }}">{{ menu_item.text }}</a></li>
                     {% endfor %} {% endcomment %}
+                {% include 'article/objects/darkmode_button.html' with id="mobile"%}
             </div>
             <div class="right">
                 <h2>Links</h2>

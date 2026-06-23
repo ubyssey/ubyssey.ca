@@ -11,7 +11,7 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
-from new_cms.api import api_router as cms_api_router
+from stove.api import api_router as cms_api_router
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled_http
 
@@ -102,7 +102,7 @@ urlpatterns += [
     path('admin/story_assignment_api/', story_assignment_api_list),
     path('admin/visual_assignment_api/', visual_assignment_api_list),
 
-    path('new-cms/', include('new_cms.urls')),
+    path('stove/', include('stove.urls')),
 
     # Events
     re_path(r'^events/', include(events_urls)),

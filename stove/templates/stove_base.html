@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stove</title>
+    <style>
+        .container {
+            width: 100%;
+            display: grid;
+            grid-template-areas: "sidebar main";
+            grid-template-columns: 225px auto;
+        }
+        .sidebar {
+            grid-area: sidebar;
+            height: 100%;
+        }
+
+        .sidebar a {
+            display: block;
+        }
+
+        .main {
+            grid-area: main;
+            height: 100%;
+        }
+        .home {
+            font-size: 1.5em;
+        }
+    </style>
+    {% block stylesheet %}
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+        <div class="main">
+            {% block content %}
+            {% endblock %}
+            {% block scripts %}
+            {% endblock %}
+        </div>
+        <div class="sidebar">
+            <a class="home" href="{% url 'stove:index' %}">Stove</a>
+        </div>
+    </div>
+</body>
+</html>

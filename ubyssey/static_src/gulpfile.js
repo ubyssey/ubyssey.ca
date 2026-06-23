@@ -79,13 +79,13 @@ function sassStylesBuildTask() {
       .pipe(dest('../static/ubyssey/css/'));
 }
 
-function sassNewCmsBuildTask() {
-  return src('./src/new_cms/*.scss')
+function sassStoveBuildTask() {
+  return src('./src/stove/styles/*.scss')
       .pipe(sass({ style: 'compressed' }).on('error', sass.logError))
-      .pipe(dest('../static/ubyssey/css/new_cms/'));
+      .pipe(dest('../static/ubyssey/css/stove/'));
 }
 
-const sassBuildTask = parallel(sassStylesBuildTask, sassNewCmsBuildTask);
+const sassBuildTask = parallel(sassStylesBuildTask, sassStoveBuildTask);
 
 function sassStylesBuildDevTask(){
   return src('./src/styles/**/*.scss')
@@ -98,18 +98,18 @@ function sassStylesBuildDevTask(){
     .on('end', function(){ log('Done!'); });
 }
 
-function sassNewCmsBuildDevTask(){
-  return src('./src/new_cms/*.scss')
+function sassStoveBuildDevTask(){
+  return src('./src/stove/styles/*.scss')
     .pipe(sourcemaps.init())
     .on('end', function(){ log('Almost there...'); })
     .pipe(sass().on('error', sass.logError))
     .on('end', function(){ log('Almost there...'); })
     .pipe(sourcemaps.write())
-    .pipe(dest('../static/ubyssey/css/new_cms/'))
+    .pipe(dest('../static/ubyssey/css/stove/'))
     .on('end', function(){ log('Done!'); });
 }
 
-const sassBuildDevTask = parallel(sassStylesBuildDevTask, sassNewCmsBuildDevTask);
+const sassBuildDevTask = parallel(sassStylesBuildDevTask, sassStoveBuildDevTask);
 
 function copyImagesTask() {
   return src('./src/images/**/*')
@@ -132,8 +132,8 @@ function watchTask() {
   watch('./src/images/**/*', series(cleanImagesTask, copyImagesTask));
   watch('./src/videos/**/*', series(cleanVideosTask, copyVideosTask));
   watch('./src/fonts/**/*',  series(cleanFontsTask, copyFontsTask));
-  watch('./src/new_cms/*.scss', series(cleanCssTask, sassBuildDevTask));  
-  watch('./src/new_cms/**/*.js', series(cleanJsTask, webpackBuildDevTask));
+  watch('./src/stove/styles/*.scss', series(cleanCssTask, sassBuildDevTask));  
+  watch('./src/stove/**/*.js', series(cleanJsTask, webpackBuildDevTask));
 }
 
 exports.jasmine = jasmineTask

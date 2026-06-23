@@ -44,7 +44,7 @@ export default function NavSearch() {
 
                 const current_query = searchQuery;
                 console.log("api request to " + current_query);
-                const response = await fetch("/search/?q=" + current_query);
+                const response = await fetch(`/search/?q=${encodeURIComponent(current_query)}`);
                 console.log(response);
                 
                 if (document.getElementById("nav-search-input").value == current_query) {
@@ -65,17 +65,19 @@ export default function NavSearch() {
 
     return (
     <>
-        <input id="nav-search-input" type="text" onChange={e => search(e.target.value)} placeholder="Search"></input>
-        <div class="c-nav-search--results">
+        <form action="/archive/" method="get" autoComplete="off">
+            <input id="nav-search-input" name="q" type="text" onChange={e => search(e.target.value)} placeholder="Search"></input>
+        </form>
+        <div className="c-nav-search--results">
         {!pending ?
         (<>
-        {queried.length > 0 && <div class="c-nav-search--status">Results for <a href={"/archive/?q=" + queried}>"<i>{queried}</i>"</a></div>}
+        {queried.length > 0 && <div className="c-nav-search--status">Results for <a href={`/archive/?q=${encodeURIComponent(queried)}`}>"<i>{queried}</i>"</a></div>}
         <ResultList results={result["topics"]} name={"Topics"} />
         <ResultList results={result["articles"]} name={"Articles"} />
         <ResultList results={result["authors"]} name={"Authors"} />
         </>)
         : 
-        (<>{queried.length > 0 && <div class="c-nav-search--status">Pending results for <a href={"/archive/?q=" + query}>"<i>{query}</i>"</a></div>}</>)
+        (<>{queried.length > 0 && <div className="c-nav-search--status">Pending results for <a href={`/archive/?q=${encodeURIComponent(query)}`}>"<i>{query}</i>"</a></div>}</>)
         }
         </div>
 

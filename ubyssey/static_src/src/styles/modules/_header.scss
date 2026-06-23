@@ -610,57 +610,143 @@ header.mobile {
 }
 
 nav.mobile {
-  position: absolute;
-  padding: 10px 20px;
-  height: calc(100vh - 54px);
+  padding: 2em 1.5em 4em 1.5em;
   box-sizing: border-box;
-  top: 54px;
+
+  height: calc(100vh - 51px);
+
+
+  position: absolute;
+  top: 52px;
   left: 0;
   right: 0;
 
   background: $nav-mobile-background-barely-transparent; // Barely transparent
-  border-top: 1px solid rgb(178,178,178);
+  border-top: 1px solid rgb(178, 178, 178);
   overflow: auto;
   color: $nav-span-color;
   z-index: 200;
 
   transition: background 0.5s ease, color 0.5s ease;
 
+  .mobile-search-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2em;
+    margin-right: 1em;
+
+    form {
+      height: 50px;
+      width: 100%;
+      gap: 5px;
+      display: flex;
+      align-items: stretch;
+
+      input {
+        padding-inline: 0.5em;
+        width: 80%;
+        
+        background: transparent;
+        border: 1px solid var(--border-grey);
+        transition: border 0.5s;
+
+        font-variation-settings: "wght" 400;
+      }
+
+      button {
+        padding-inline: 1em;
+        
+        background-color: variables.$color-ubyssey-blue;
+        background-image: none;
+        
+        border: none;
+
+        color: white;
+        font-weight: 500;
+        font-variation-settings: "wght" 500;
+      }
+
+      @media (variables.$bp-larger-than-mobile) {
+        button {
+            font-size: medium;
+        }
+      }
+    }
+  }
+
   h2 {
-    font-size: 1.5em;
-    margin-top: 0;
+      font-size: 1.5em;
+      margin-top: 0;
   }
 
   ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    #magazine-more{
-      display: none;
-      margin-left: 10px;
-    }
-    #culture-more{
-      display: none;
-      margin-left: 10px;
-    }
-    li a {
-      padding: 10px 0;
-      width: fit-content;
-      display: block;
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 1.5em;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      #magazine-more {
+          display: none;
+          margin-left: 10px;
+      }
+
+      #culture-more {
+          display: none;
+          margin-left: 10px;
+      }
+
+      li a {
+          padding: 10px 0;
+          width: fit-content;
+          display: block;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 1.5em;
+      }
+  }
+
+  .left,
+  .right {
+      width: 50%;
+      margin-bottom: 20px;
+  }
+
+  @media (variables.$bp-larger-than-mobile) {
+    .left,
+    .right {
+        float: left;
+        width: 50%;
+        margin-bottom: 20px;
     }
   }
-  .left, .right {
-    float: left;
-    width: 50%;
-  }
+
   h3 {
-    font-size: 14px;
-    text-transform: uppercase;
-    font-weight: 500;
-    color: $nav-h3-color;
+      font-size: 14px;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: $nav-h3-color;
+  }
+
+  button.dark-mode-switcher {
+    padding: 0;
+    float: none;
+    
+    position: absolute;
+    left: 1.5em;
+    bottom: 1.5em;
+    z-index: 100;
+
+    font-variation-settings: "wght" 500;
+    font-size: 15px;
+    color: var(--text_color-100);
+    svg {
+      margin-right: 1em;
+      position: relative;
+      top: -0.1em;
+      font-size: 11px;
+    }
+    .dark-mode-switcher--label {
+      display: inline-block;
+    }
   }
 }
 
@@ -1043,13 +1129,17 @@ nav.branding-nav {
 
     li {
       padding: 0.75em 0 0.25em 0;
+      display: flex;
       border-bottom: 1px solid var(--light-border-grey);
+
+      text-wrap: balance;
       line-height: 1.5em;
       time {
         margin-right: 1em;
         width: 7.5em;
         display: inline-block;
         overflow: clip;
+        flex-shrink: 0;
 
         white-space: nowrap;
         text-overflow: ellipsis;

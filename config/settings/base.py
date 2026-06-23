@@ -89,11 +89,12 @@ INSTALLED_APPS = [
     'tests_ubyssey',
     'publishing_analytics',
     'content_tracker',
+    'topics',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
 
-    'new_cms',
+    'stove',
     'wagtail.api.v2',
 
     'wagtail.contrib.forms',
