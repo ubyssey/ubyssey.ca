@@ -656,3 +656,25 @@ class VisualEssayBlock(blocks.StructBlock):
     class Meta:
         template = 'article/stream_blocks/visual-essay.html',
         icon = "form"
+
+class D3ChartBlock(blocks.StructBlock):
+    chart_title = blocks.CharBlock(required=False)
+    
+    chart_type = blocks.ChoiceBlock(
+        choices=[
+            ('scatter-plot', 'Scatter Plot'),
+            ('pie-chart', 'Pie Chart'),
+            ('histogram', 'Histogram'),
+        ],
+        default='scatter-plot',
+        required=True,
+    )
+
+    data = blocks.TextBlock(
+        required=True,
+        help_text="Enter your data here (csv format)",
+        rows=10
+    )
+
+    class Meta:
+        template = 'article/stream_blocks/d3-chart.html'

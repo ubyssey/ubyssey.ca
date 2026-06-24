@@ -1,0 +1,78 @@
+@use '../variables';
+@use '../fonts';
+
+.d3-wrapper {
+    // Does not work - currently controlling via chart-container width
+    //max-width: 500px;
+    //margin: 2rem auto;
+    
+    h3 {
+        font-family: fonts.$font-headline;
+        color: var(--header_color-100);
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+}
+
+.d3-chart-container {
+    margin: auto;
+    width: 40%;
+    font-family: fonts.$font-default;
+
+    @media(variables.$bp-smaller-than-phablet) {
+        max-width: 100%;
+        padding: 0 variables.$article-content-div-child-padding;
+    }
+
+    svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+
+        text {
+            fill: var(--text_color-200);
+            font-size: fonts.$font-size-14px;
+            font-weight: fonts.$font-weight-normal;
+            letter-spacing: fonts.$letter-spacing-noto-sans;
+        }
+
+        .domain,
+        .tick line {
+            stroke: var(--border-grey);
+            stroke-width: 1px;
+        }
+
+        // Scatter Plot Circles
+        circle {
+            fill: variables.$color-ubyssey-blue;
+            transition: r 0.2s ease, opacity 0.2s ease;
+            &:hover {
+                r: 7; // Radius
+                cursor: pointer;
+                fill: variables.$color-ubyssey-blue-classic;
+            }
+        }
+
+        // Histogram Bars
+        rect {
+            fill: variables.$color-ubyssey-blue-light;
+            &:hover {
+                cursor: pointer;
+                fill: variables.$color-ubyssey-blue;
+            }
+        }
+
+        // Pie Chart Paths
+        path {
+            stroke: var(--background); // Maybe should change back to old theme
+            stroke-width: 2px;
+            transition: transform 0.2s ease;
+
+            &:hover {
+                opacity: 0.9;
+                cursor: pointer;
+            }
+        }
+    }
+}
