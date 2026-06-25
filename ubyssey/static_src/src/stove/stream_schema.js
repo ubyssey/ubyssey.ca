@@ -153,9 +153,8 @@ export function topLevelBlockInfoAtPos(doc, pos) {
 }
 
 export function topLevelBlockInfoByIdOrIndex(doc, blockId, blockIndex) {
-  return topLevelBlockInfo(doc, ({ node, index }) => (
-    (blockId && node.attrs?.id === blockId) || (!blockId && index === blockIndex)
-  ));
+  const byId = blockId && topLevelBlockInfo(doc, ({ node }) => node.attrs?.id === blockId);
+  return byId || topLevelBlockInfo(doc, ({ index }) => index === blockIndex);
 }
 
 export function moveTopLevelBlock(view, fromIndex, direction) {

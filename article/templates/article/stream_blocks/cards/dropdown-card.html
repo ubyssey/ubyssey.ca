@@ -1,6 +1,6 @@
-<details class="o-card o-card--dropdown">
-    <summary>{{self.header}}</summary>
+<details class="o-card o-card--dropdown" {% if article_editable_path_prefix %}data-article-editable-path-prefix="{{ article_editable_path_prefix }}"{% endif %}>
+    <summary data-article-editable-stream-field="content" data-article-editable-path="header">{{self.header}}</summary>
     {% if self.text %}
-    {{self.text|safe}}
+    <div data-article-editable-stream-field="content" data-article-editable-path="text" data-article-editable-mode="richtext">{{self.text|safe}}</div>
     {% endif %}
 </details>

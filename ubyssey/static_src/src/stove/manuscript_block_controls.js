@@ -58,7 +58,11 @@ function createBlockEditorModal() {
       </footer>
     </section>
   `;
-  return { modal, body: modal.querySelector("[data-article-block-editor-body]") };
+  return {
+    modal,
+    body: modal.querySelector("[data-article-block-editor-body]"),
+    title: modal.querySelector("#article-block-editor-title"),
+  };
 }
 
 
@@ -83,7 +87,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
   select.setAttribute("aria-label", "Block type to insert");
 
-  const { modal: blockEditorModal, body: blockEditorBody } = createBlockEditorModal();
+  const { modal: blockEditorModal, body: blockEditorBody, title: blockEditorTitle } = createBlockEditorModal();
   const manuscriptForm = document.querySelector("[data-manuscript-form]");
   (manuscriptForm || document.body).appendChild(blockEditorModal);
   let blockEditorHome = null;
@@ -116,6 +120,13 @@ export function setupArticleBlockControls(manuscriptRoot) {
     const instance = editorState.streamEditors.find((item) => item.fieldName === descriptor?.fieldName);
     const section = instance?.mount.closest(".editor-section");
     return section ? { instance, section } : null;
+  };
+
+  const blockNameForDescriptor = (descriptor) => {
+    const instance = editorState.streamEditors.find((item) => item.fieldName === descriptor?.fieldName);
+    const block = instance && topLevelBlockInfoByIdOrIndex(instance.view.state.doc, descriptor?.blockId, descriptor?.blockIndex)?.node;
+    const label = String(block?.attrs?.blockType || "block").replace(/[_-]+/g, " ").trim() || "block";
+    return label.charAt(0).toUpperCase() + label.slice(1);
   };
 
   const restoreBlockEditorHome = () => {
@@ -162,6 +173,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
   const openBlockEditorModal = (descriptor) => {
     if (!moveBlockEditorTo(descriptor, blockEditorBody)) return;
+    blockEditorTitle.textContent = `Edit ${blockNameForDescriptor(descriptor)}`;
     blockEditorModal.hidden = false;
     focusFirst(blockEditorBody);
   };
@@ -376,9 +388,21 @@ export function setupArticleBlockControls(manuscriptRoot) {
   }
 
   const insideActiveArea = (target) => targetInside(target, controls) || Boolean(state.articleBlock?.contains(target));
+  // Allows clicks inside direct edit area to not hide the controls
+  const eventInsideDirectEdit = (event) => (event.composedPath?.() || [])
+    .some((target) => target.matches?.(".pm-manuscript-direct-edit, .pm-manuscript-direct-edit *"));
+  const articleBlockFromEvent = (event) => {
+    const fromPath = (event.composedPath?.() || [event.target])
+      .map((target) => target.closest?.(ARTICLE_BLOCK_SELECTOR))
+      .find(Boolean);
+    const fromPoint = Number.isFinite(event.clientX) && Number.isFinite(event.clientY)
+      ? controlsHost.getRootNode().elementFromPoint?.(event.clientX, event.clientY)?.closest?.(ARTICLE_BLOCK_SELECTOR)
+      : null;
+    return fromPath || fromPoint;
+  };
 
-  const showFromTarget = (target, shouldSelect = false) => {
-    if (targetInside(target, controls)) {
+  const showFromEvent = (event, shouldSelect = false) => {
+    if (eventInside(event, controls)) {
       clearTimeout(state.hideTimer);
       return;
     }
@@ -389,7 +413,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
       else closeDialogs();
     }
 
-    const articleBlock = target.closest?.(ARTICLE_BLOCK_SELECTOR);
+    const articleBlock = articleBlockFromEvent(event);
     if (!articleBlock) return;
 
     if (!shouldSelect && articleBlock === editorState.suppressedHoverArticleBlock) return;
@@ -408,17 +432,18 @@ export function setupArticleBlockControls(manuscriptRoot) {
   };
 
   const onOver = (event) => {
-    if (!isDialogOpen()) showFromTarget(event.target);
+    if (!isDialogOpen()) showFromEvent(event);
   };
   const onFocusIn = (event) => {
+    if (eventInsideDirectEdit(event)) return;
     if (isDialogOpen() && eventInside(event, dialogs)) return;
-    showFromTarget(event.target, true);
+    showFromEvent(event, true);
   };
   const onClick = (event) => {
-    if (eventInside(event, controls)) return;
+    if (eventInside(event, controls) || eventInsideDirectEdit(event)) return;
     if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
     else if (isDialogOpen()) closeDialogs();
-    showFromTarget(event.target, true);
+    showFromEvent(event, true);
   };
   const onOut = (event) => {
     if (isDialogOpen()) return;
@@ -437,6 +462,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
   };
   const listeners = [
     [manuscriptRoot, "mouseover", onOver],
+    [manuscriptRoot, "pointermove", onOver],
     [manuscriptRoot, "focusin", onFocusIn],
     [manuscriptRoot, "click", onClick],
     [manuscriptRoot, "mouseout", onOut],

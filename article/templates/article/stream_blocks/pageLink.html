@@ -10,7 +10,7 @@
                     }
                </style>
                <li class="menu-title pageLink{{item.id|slugify}}">
-                    <a href="#{{item.id|slugify}}">{{item.title}}</a>
+                    <a href="#{{item.id|slugify}}"><span data-article-editable-stream-field="content" data-article-editable-path="list.{{ forloop.counter0 }}.title">{{item.title}}</span></a>
                </li>
           {% endfor %}
      </ul>

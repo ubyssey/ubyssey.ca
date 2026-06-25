@@ -13,23 +13,23 @@
         {% for image in self.images %}
             {% image image.image format-webp loading='lazy' alt=image.alt_text width-600 %}
             {% if image.credit %}
-                <div class="pull-quote-images--credit">{{image.credit | safe}}</div>
+                <div class="pull-quote-images--credit" data-article-editable-stream-field="content" data-article-editable-path="images.{{ forloop.counter0 }}.credit">{{image.credit | safe}}</div>
             {% endif %}
         {% endfor %}
         </div>
     {% endif %}
 
     <div class="pull-quote-quote">
-        <div class="quote">{{ self.content|safe }}</div>
+        <div class="quote" data-article-editable-stream-field="content" data-article-editable-path="content" data-article-editable-mode="richtext">{{ self.content|safe }}</div>
         {% if self.audio or self.source %}
         <p class="meta">
             {% if self.audio %}
                 <button audio="{{id|slugify}}" class="playAudioQuote">
                     <ion-icon id="icon-{{id|slugify}}" class="volume" name="volume-off"></ion-icon>
-                    <span class="source">{% if self.source %}Listen to {{ self.source|safe }}{% else %}Listen{% endif %}</span>
+                    <span class="source">{% if self.source %}Listen to <span data-article-editable-stream-field="content" data-article-editable-path="source">{{ self.source|safe }}</span>{% else %}Listen{% endif %}</span>
                 </button>
             {% elif self.source %}
-                <span class="source">— {{ self.source|safe }}</span>
+                <span class="source">— <span data-article-editable-stream-field="content" data-article-editable-path="source">{{ self.source|safe }}</span></span>
             {% endif %}
         </p>
         {% endif%}

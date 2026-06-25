@@ -2,14 +2,14 @@
 
 import { createEditorToolbar } from "./prosemirror_base";
 import { createStreamEditor } from "./stream_editor";
-import { setupArticleBlockControls, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_block_controls";
+import { showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_block_controls";
 import { setupMediaUpload, selectMetadataTab } from "./sidebar";
-import { setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./manuscript_preview";
-import { setupArticleRichTextEditors } from "./manuscript_preview";
+import { setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./manuscript_preview";
 
 export const editorState = {
   streamEditors: [],
   articleRichTextEditors: [],
+  articleDirectTextEditors: [],
   articleBlockControls: null,
   richTextToolbar: null,
   selectedArticleBlock: null,
@@ -39,8 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
       textarea,
       streamEditors[textarea.dataset.streamField] || {},
       {
-        onDocChanged: () => {
-          if (!editorState.blockEditorModalOpen) editorState.schedulePreview();
+        onDocChanged: ({ transaction }) => {
+          if (!editorState.blockEditorModalOpen) {
+            editorState.schedulePreview({ deferIfManuscriptFocused: Boolean(transaction.getMeta("deferPreviewIfFocused")) });
+          }
         },
         onTransaction: () => { showSelectedArticleBlockEditor(editorState.selectedArticleBlock); },
       },
@@ -51,8 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     publishSource: document.querySelector("[data-article-toolbar-source]"),
   });
 
-  setupArticleRichTextEditors(manuscriptRoot);
-  setupArticleBlockControls(manuscriptRoot);
+  setupArticlePreviewEditors(manuscriptRoot);
   setupArticleBlockKeyboard(manuscriptRoot);
   setupMediaUpload();
 

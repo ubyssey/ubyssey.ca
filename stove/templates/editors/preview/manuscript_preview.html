@@ -26,7 +26,9 @@
     {% endfor %}
 
     {% if self.disclaimer %}
-      <div class="disclaimer" data-article-block>{{ self.disclaimer|safe }}</div>
+      <div class="cell left article-content">
+        <div class="disclaimer" data-article-block data-article-editable-page-field="disclaimer" data-article-editable-mode="richtext">{{ self.disclaimer|safe }}</div>
+      </div>
     {% endif %}
   </div>
 </article>
