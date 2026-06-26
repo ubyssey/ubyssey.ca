@@ -64,5 +64,70 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("[data-manuscript-form]");
   setupServerPreviewRefresh(form, manuscriptRoot);
   setupHistoryPreviewButtons(manuscriptRoot);
-  form.addEventListener("submit", () => { writeStreamTextareas(); });
+
+  if (form) {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const submitter = event.submitter || form.querySelector('[data-article-action="draft"]');
+      const originalText = submitter?.textContent;
+      const saveButtons = form.querySelectorAll("[data-article-action]");
+
+      writeStreamTextareas();
+      const formData = new FormData(form);
+      if (submitter?.name) formData.set(submitter.name, submitter.value);
+
+      for (const button of saveButtons) button.disabled = true;
+      if (submitter) submitter.textContent = "Saving...";
+
+      try {
+        const saveUrl = form.getAttribute("action") || window.location.href;
+        const response = await fetch(saveUrl, {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+        });
+        const isJson = (response.headers.get("content-type") || "").includes("application/json");
+        const payload = isJson ? await response.json() : {};
+
+        if (!response.ok || payload.errors) {
+          const message = payload.errors
+            ? Object.entries(payload.errors)
+              .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`)
+              .join("\n")
+            : `Save failed with status ${response.status}: ${saveUrl}`;
+          alert(message);
+          return;
+        }
+
+        const historySelect = document.querySelector("[data-history-select]");
+        if (historySelect && payload.revision?.id) {
+          const revisionId = String(payload.revision.id);
+          const exists = Array.from(historySelect.options).some((option) => option.value === revisionId);
+          if (!exists) {
+            const option = document.createElement("option");
+            option.value = revisionId;
+            option.textContent = payload.revision.label || `Revision ${revisionId}`;
+            historySelect.insertBefore(option, historySelect.options[1] || null);
+          }
+          historySelect.value = "current";
+        }
+
+        if (submitter) {
+          submitter.textContent = payload.action === "publish" ? "Published" : "Saved";
+          window.setTimeout(() => { submitter.textContent = originalText; }, 1400);
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Failed to save.");
+      } finally {
+        for (const button of saveButtons) button.disabled = false;
+        if (submitter?.textContent === "Saving...") submitter.textContent = originalText;
+      }
+    });
+  }
 });

@@ -6,6 +6,8 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
+from django.utils.dateformat import format as date_format
+from django.utils.timezone import localtime
 from django.views.decorators.http import require_POST
 from wagtail.models import Page
 from article.models import ArticlePage
@@ -31,19 +33,22 @@ def index(request):
     return render(request, "index.html", {"pages": pages})
 
 
+# We need latest draft here not latest live
+def get_manuscript_page(page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return page.get_latest_revision_as_object()
+
+
 @login_required
 def manuscript_editor(request, page_id):
-    page = get_object_or_404(Page, id=page_id).specific
+    page = get_manuscript_page(page_id)
     editor_errors = {}
     page_form = get_page_form(page)
     featured_media_form = get_featured_media_form(page)
 
-    # History
-    history = []
-    for revision in page.revisions.all().order_by("-created_at"):
-        history.append({"id" : str(revision.id), "user" : str(revision.user), "created_at" : revision.created_at })
-
     if request.method == "POST":
+        action = request.POST.get("action") or "draft"
+        saved_revision = None
         editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST)
 
         if not editor_errors:
@@ -58,17 +63,34 @@ def manuscript_editor(request, page_id):
                         editor_errors.setdefault(field, []).extend(field_errors)
                 else:
                     try:
-                        revision = page.save_revision(user=request.user)
-                        if request.POST.get("action") == "publish":
-                            revision.publish(user=request.user)
+                        saved_revision = page.save_revision(user=request.user)
+                        if action == "publish":
+                            saved_revision.publish(user=request.user)
+                            page = get_object_or_404(Page, id=page_id).specific
                             print("Revised page")
                         else:
                             print("Draft Saved")
                     except Exception:
+                        editor_errors["__all__"] = ["Failed to update page."]
                         print("Failed to update page:" + page.title)
+
+        if request.headers.get("x-requested-with") == "XMLHttpRequest" or "application/json" in request.headers.get("accept", ""):
+            if editor_errors:
+                return JsonResponse({"errors": editor_errors}, status=400)
+            revision = saved_revision and {
+                "id": str(saved_revision.id),
+                "label": f"{saved_revision.user} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
+            }
+            return JsonResponse({"ok": True, "action": action, "revision": revision})
 
     if editor_errors:
         print(f"Validation Error: {editor_errors}")
+
+    # History
+    history = [
+        {"id": str(revision.id), "user": str(revision.user), "created_at": revision.created_at}
+        for revision in page.revisions.all().order_by("-created_at")
+    ]
 
     stream_editors = get_streamfield_editors(page)
     article_media = page.article_media.all()
@@ -98,7 +120,7 @@ def manuscript_editor(request, page_id):
 @login_required
 @require_POST
 def manuscript_preview(request, page_id):
-    page = get_object_or_404(Page, id=page_id).specific
+    page = get_manuscript_page(page_id)
     editor_errors = {}
 
     revision_id = request.POST.get("revision")

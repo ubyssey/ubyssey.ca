@@ -13,7 +13,7 @@
 {{ stream_editors|json_script:"stream-editors" }}
 {{ editor_errors|json_script:"editor-errors" }}
 
-<form method="post" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}">
+<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}">
   {% csrf_token %}
 
   <header class="manuscript-topbar">
