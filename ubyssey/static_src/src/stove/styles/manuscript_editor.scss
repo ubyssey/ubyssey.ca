@@ -281,6 +281,8 @@ body {
 }
 
 .article-block-editor-modal__body {
+    display: grid;
+    gap: 10px;
     min-width: 0;
     overflow: auto;
 }
@@ -289,7 +291,6 @@ body {
     display: block;
 }
 
-.article-block-editor-modal__body .metadata-editor--right > *,
 .article-block-editor-modal__body * {
     visibility: visible;
     pointer-events: auto;
@@ -318,6 +319,65 @@ body {
 .article-block-editor-modal__close {
     width: 30px;
     padding: 0;
+}
+
+.article-block-editor-modal__body .pm-article-block-dialog__title {
+    margin: 0;
+    font: 600 13px/1.2 sans-serif;
+}
+
+.article-block-editor-modal__body .pm-article-block-controls__select {
+    min-height: 30px;
+    border: 1px solid #bbb;
+    background: #fff;
+    color: #1b1b1b;
+    font: 13px/1.2 sans-serif;
+}
+
+.article-block-editor-modal__body .pm-article-block-dialog__editor {
+    max-height: min(520px, calc(100vh - 220px));
+    overflow: auto;
+}
+
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-sidebar-toolbar,
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__header,
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__controls {
+    display: none;
+}
+
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block {
+    margin: 0;
+}
+
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__content {
+    display: grid;
+    gap: 10px;
+}
+
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field,
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-control-field {
+    padding: 5px 0;
+}
+
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field__label,
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-control-field__label {
+    font: 13px/1.2 sans-serif;
+}
+
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field__content {
+    border: 1px solid black;
+}
+
+.article-block-editor-modal__panel .pm-article-block-dialog__button--primary {
+    border-color: #008fcb;
+    background: #00a7e1;
+    color: #fff;
+}
+
+.article-block-editor-modal__panel .pm-article-block-dialog__button--danger {
+    border-color: #d10000;
+    background: #ff2a2a;
+    color: #000;
 }
 
 .manuscript-editor img,

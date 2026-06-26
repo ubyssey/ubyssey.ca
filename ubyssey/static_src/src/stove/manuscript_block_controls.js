@@ -24,6 +24,7 @@ const eventInside = (event, elements) => {
   const path = event.composedPath?.() || [];
   return elements.some((item) => path.includes(item));
 };
+let articleBlockModalCount = 0;
 
 function focusFirst(root, preferred = null) {
   window.requestAnimationFrame(() => {
@@ -39,29 +40,30 @@ function stopEvents(elements) {
   }
 }
 
-function createBlockEditorModal() {
+function createBlockModal(titleText, closeLabel) {
+  articleBlockModalCount += 1;
+  const titleId = `article-block-modal-title-${articleBlockModalCount}`;
   const modal = element("div", "article-block-editor-modal");
   modal.hidden = true;
   modal.setAttribute("role", "dialog");
   modal.setAttribute("aria-modal", "true");
-  modal.setAttribute("aria-labelledby", "article-block-editor-title");
+  modal.setAttribute("aria-labelledby", titleId);
   modal.innerHTML = `
-    <button type="button" class="article-block-editor-modal__backdrop" data-article-block-editor-close aria-label="Close block editor"></button>
+    <button type="button" class="article-block-editor-modal__backdrop" data-article-block-modal-close aria-label="${closeLabel}"></button>
     <section class="article-block-editor-modal__panel">
       <header class="article-block-editor-modal__header">
-        <h2 id="article-block-editor-title">Edit block</h2>
-        <button type="button" class="article-block-editor-modal__close" data-article-block-editor-close aria-label="Close block editor">x</button>
+        <h2 id="${titleId}">${titleText}</h2>
+        <button type="button" class="article-block-editor-modal__close" data-article-block-modal-close aria-label="${closeLabel}">x</button>
       </header>
       <div class="article-block-editor-modal__body" data-article-block-editor-body></div>
-      <footer class="article-block-editor-modal__footer">
-        <button type="button" data-article-block-editor-close>Done</button>
-      </footer>
+      <footer class="article-block-editor-modal__footer"></footer>
     </section>
   `;
   return {
     modal,
     body: modal.querySelector("[data-article-block-editor-body]"),
-    title: modal.querySelector("#article-block-editor-title"),
+    title: modal.querySelector(`#${titleId}`),
+    footer: modal.querySelector(".article-block-editor-modal__footer"),
   };
 }
 
@@ -78,18 +80,18 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
   const layer = element("div", "pm-article-block-controls-layer");
   const topControls = element("div", "pm-article-block-controls pm-article-block-controls--top");
-  const insertDialog = element("div", "pm-article-block-dialog pm-article-block-dialog--insert");
-  const deleteDialog = element("div", "pm-article-block-dialog pm-article-block-dialog--delete");
-  const dialogs = [insertDialog, deleteDialog];
-  const controls = [topControls, ...dialogs];
+  const controls = [topControls];
   const select = element("select", "pm-article-block-controls__select");
   const buttons = {};
 
   select.setAttribute("aria-label", "Block type to insert");
 
-  const { modal: blockEditorModal, body: blockEditorBody, title: blockEditorTitle } = createBlockEditorModal();
+  const { modal: blockEditorModal, body: blockEditorBody, title: blockEditorTitle, footer: blockEditorFooter } = createBlockModal("Edit block", "Close block editor");
+  const { modal: insertDialog, body: insertBody, footer: insertFooter } = createBlockModal("Add block", "Close add block");
+  const { modal: deleteDialog, body: deleteBody, footer: deleteFooter } = createBlockModal("Delete block", "Close delete block");
+  const dialogs = [insertDialog, deleteDialog];
   const manuscriptForm = document.querySelector("[data-manuscript-form]");
-  (manuscriptForm || document.body).appendChild(blockEditorModal);
+  (manuscriptForm || document.body).append(blockEditorModal, insertDialog, deleteDialog);
   let blockEditorHome = null;
   let pendingAdd = null;
 
@@ -98,8 +100,15 @@ export function setupArticleBlockControls(manuscriptRoot) {
     if (instance && articleBlock) callback(instance, articleBlock);
   };
 
-  const isDialogOpen = () => dialogs.some((dialog) => dialog.classList.contains("is-open"));
-  const closeDialogs = () => { dialogs.forEach((dialog) => { dialog.classList.remove("is-open"); }); };
+  const anyBlockModalOpen = () => [blockEditorModal, ...dialogs].some((modal) => !modal.hidden);
+  const syncBlockModalOpenState = () => {
+    editorState.blockEditorModalOpen = anyBlockModalOpen();
+  };
+  const isDialogOpen = () => dialogs.some((dialog) => !dialog.hidden);
+  const closeDialogs = () => {
+    dialogs.forEach((dialog) => { dialog.hidden = true; });
+    syncBlockModalOpenState();
+  };
 
   const cancelInsertDialog = () => {
     removePendingAdd();
@@ -141,7 +150,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
   const closeBlockEditorModal = ({ keepSelection = false, refreshPreview = true } = {}) => {
     restoreBlockEditorHome();
     blockEditorModal.hidden = true;
-    editorState.blockEditorModalOpen = false;
+    syncBlockModalOpenState();
     if (!keepSelection) {
       editorState.selectedArticleBlock = null;
       showSelectedArticleBlockEditor(null);
@@ -164,32 +173,41 @@ export function setupArticleBlockControls(manuscriptRoot) {
     }
 
     editorState.selectedArticleBlock = descriptor;
-    editorState.blockEditorModalOpen = true;
     showSelectedArticleBlockEditor(descriptor);
     target.appendChild(editorSection.section);
     editorSection.instance.view.updateRoot?.();
+    syncBlockModalOpenState();
     return true;
   };
 
   const openBlockEditorModal = (descriptor) => {
+    closeDialogs();
     if (!moveBlockEditorTo(descriptor, blockEditorBody)) return;
     blockEditorTitle.textContent = `Edit ${blockNameForDescriptor(descriptor)}`;
     blockEditorModal.hidden = false;
+    syncBlockModalOpenState();
     focusFirst(blockEditorBody);
   };
 
-  blockEditorModal.querySelectorAll("[data-article-block-editor-close]").forEach((button) => {
-    button.addEventListener("click", closeBlockEditorModal);
-  });
-  blockEditorModal.querySelector(".article-block-editor-modal__panel")?.addEventListener("click", (event) => {
-    event.stopPropagation();
-  });
+  blockEditorFooter.appendChild(makeButton("Done", closeBlockEditorModal));
+
+  const bindModalClose = (modal, callback) => {
+    modal.querySelectorAll("[data-article-block-modal-close]").forEach((button) => {
+      button.addEventListener("click", callback);
+    });
+    modal.querySelector(".article-block-editor-modal__panel")?.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+  };
+  bindModalClose(blockEditorModal, closeBlockEditorModal);
+  bindModalClose(insertDialog, cancelInsertDialog);
+  bindModalClose(deleteDialog, closeDialogs);
 
   const openDialog = (dialog, focusTarget = null) => {
-    if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
+    if (!insertDialog.hidden) cancelInsertDialog();
     else closeDialogs();
-    dialog.classList.add("is-open");
-    positionControls();
+    dialog.hidden = false;
+    syncBlockModalOpenState();
     focusFirst(dialog, focusTarget);
   };
 
@@ -220,7 +238,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
     const instance = pendingAdd?.instance || active.instance;
     if (!instance || !anchorBlock) return;
 
-    editorState.blockEditorModalOpen = true;
     restoreBlockEditorHome();
     blockEditorModal.hidden = true;
     removePendingAdd();
@@ -229,8 +246,8 @@ export function setupArticleBlockControls(manuscriptRoot) {
     const descriptor = insertBlockAfter(instance, anchorBlock, select.value, { keepControls: true });
     if (descriptor && moveBlockEditorTo(descriptor, insertEditorBody)) {
       pendingAdd = { instance, descriptor, anchor };
-      insertDialog.classList.add("is-open");
-      positionControls();
+      insertDialog.hidden = false;
+      syncBlockModalOpenState();
     }
   };
 
@@ -252,23 +269,19 @@ export function setupArticleBlockControls(manuscriptRoot) {
     buttons.insert,
   );
 
-  const insertTitle = element("div", "pm-article-block-dialog__title", "Add block");
   const insertEditorBody = element("div", "pm-article-block-dialog__editor");
-  const insertActions = element("div", "pm-article-block-dialog__actions");
-  insertActions.appendChild(makeButton("Add", commitInsertDialog, "Add selected block", "pm-article-block-dialog__button pm-article-block-dialog__button--primary"));
-  insertActions.appendChild(makeButton("Cancel", cancelInsertDialog, "Cancel", "pm-article-block-dialog__button"));
-  insertDialog.append(insertTitle, select, insertEditorBody, insertActions);
+  insertBody.append(select, insertEditorBody);
+  insertFooter.appendChild(makeButton("Add", commitInsertDialog, "Add selected block", "pm-article-block-dialog__button--primary"));
+  insertFooter.appendChild(makeButton("Cancel", cancelInsertDialog));
 
-  const deleteTitle = element("div", "pm-article-block-dialog__title", "Noooooooo");
-  const deleteActions = element("div", "pm-article-block-dialog__actions");
-  deleteActions.appendChild(makeButton("Delete", () => {
+  deleteBody.appendChild(element("p", "pm-article-block-dialog__title", "Noooooooo"));
+  deleteFooter.appendChild(makeButton("Delete", () => {
     withActiveBlock((instance, articleBlock) => {
       deleteArticleBlock(instance, articleBlock);
       closeDialogs();
     });
-  }, "Delete block", "pm-article-block-dialog__button pm-article-block-dialog__button--danger"));
-  deleteActions.appendChild(makeButton("Cancel", closeDialogs, "Cancel", "pm-article-block-dialog__button"));
-  deleteDialog.append(deleteTitle, deleteActions);
+  }, "Delete block", "pm-article-block-dialog__button--danger"));
+  deleteFooter.appendChild(makeButton("Cancel", closeDialogs));
 
   stopEvents(controls);
 
@@ -286,8 +299,11 @@ export function setupArticleBlockControls(manuscriptRoot) {
         target.removeEventListener(eventName, listener, options);
       }
       removePendingAdd();
+      closeDialogs();
       closeBlockEditorModal({ refreshPreview: false });
       blockEditorModal.remove();
+      insertDialog.remove();
+      deleteDialog.remove();
       layer.remove();
     },
 
@@ -319,7 +335,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
   select.addEventListener("change", () => {
     if (state.instance) editorState.preferredInsertTypes.set(state.instance.fieldName, select.value);
-    if (insertDialog.classList.contains("is-open")) addSelectedBlockForEditing();
+    if (!insertDialog.hidden) addSelectedBlockForEditing();
   });
 
   const fillSelect = (instance) => {
@@ -373,18 +389,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
       padding,
     );
 
-    for (const dialog of dialogs) {
-      if (!dialog.classList.contains("is-open")) continue;
-      Object.assign(dialog.style, { left: "0px", top: "0px" });
-      positionAbsoluteElement(
-        dialog,
-        blockLeft + (rect.width / 2) - (dialog.offsetWidth / 2),
-        blockTop + (rect.height / 2) - (dialog.offsetHeight / 2),
-        dialog.offsetWidth,
-        dialog.offsetHeight,
-        padding,
-      );
-    }
   }
 
   const insideActiveArea = (target) => targetInside(target, controls) || Boolean(state.articleBlock?.contains(target));
@@ -409,7 +413,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
     if (isDialogOpen()) {
       if (!shouldSelect) return;
-      if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
+      if (!insertDialog.hidden) cancelInsertDialog();
       else closeDialogs();
     }
 
@@ -441,7 +445,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
   };
   const onClick = (event) => {
     if (eventInside(event, controls) || eventInsideDirectEdit(event)) return;
-    if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
+    if (!insertDialog.hidden) cancelInsertDialog();
     else if (isDialogOpen()) closeDialogs();
     showFromEvent(event, true);
   };
@@ -457,7 +461,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
   };
   const onKeyDown = (event) => {
     if (event.key !== "Escape") return;
-    if (insertDialog.classList.contains("is-open")) cancelInsertDialog();
+    if (!insertDialog.hidden) cancelInsertDialog();
     else closeDialogs();
   };
   const listeners = [
@@ -467,7 +471,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
     [manuscriptRoot, "click", onClick],
     [manuscriptRoot, "mouseout", onOut],
     [manuscriptRoot, "focusout", onFocusOut],
-    [manuscriptRoot, "keydown", onKeyDown],
+    [document, "keydown", onKeyDown],
     [window, "scroll", positionControls, true],
     [window, "resize", positionControls],
   ];
