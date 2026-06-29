@@ -43,20 +43,20 @@ function stopEvents(elements) {
 function createBlockModal(titleText, closeLabel) {
   articleBlockModalCount += 1;
   const titleId = `article-block-modal-title-${articleBlockModalCount}`;
-  const modal = element("div", "article-block-editor-modal");
+  const modal = element("div", "article-media-modal article-block-editor-modal");
   modal.hidden = true;
   modal.setAttribute("role", "dialog");
   modal.setAttribute("aria-modal", "true");
   modal.setAttribute("aria-labelledby", titleId);
   modal.innerHTML = `
-    <button type="button" class="article-block-editor-modal__backdrop" data-article-block-modal-close aria-label="${closeLabel}"></button>
-    <section class="article-block-editor-modal__panel">
-      <header class="article-block-editor-modal__header">
+    <button type="button" class="article-media-modal__backdrop article-block-editor-modal__backdrop" data-article-block-modal-close aria-label="${closeLabel}"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--settings article-block-editor-modal__panel">
+      <header class="article-media-modal__header article-block-editor-modal__header">
         <h2 id="${titleId}">${titleText}</h2>
-        <button type="button" class="article-block-editor-modal__close" data-article-block-modal-close aria-label="${closeLabel}">x</button>
+        <button type="button" class="article-media-modal__close article-block-editor-modal__close" data-article-block-modal-close aria-label="${closeLabel}">x</button>
       </header>
       <div class="article-block-editor-modal__body" data-article-block-editor-body></div>
-      <footer class="article-block-editor-modal__footer"></footer>
+      <footer class="article-media-modal__footer article-block-editor-modal__footer"></footer>
     </section>
   `;
   return {
@@ -92,6 +92,8 @@ export function setupArticleBlockControls(manuscriptRoot) {
   const dialogs = [insertDialog, deleteDialog];
   const manuscriptForm = document.querySelector("[data-manuscript-form]");
   (manuscriptForm || document.body).append(blockEditorModal, insertDialog, deleteDialog);
+  const blockEditorContent = element("div", "pm-article-block-dialog__editor");
+  blockEditorBody.appendChild(blockEditorContent);
   let blockEditorHome = null;
   let pendingAdd = null;
 
@@ -182,11 +184,11 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
   const openBlockEditorModal = (descriptor) => {
     closeDialogs();
-    if (!moveBlockEditorTo(descriptor, blockEditorBody)) return;
+    if (!moveBlockEditorTo(descriptor, blockEditorContent)) return;
     blockEditorTitle.textContent = `Edit ${blockNameForDescriptor(descriptor)}`;
     blockEditorModal.hidden = false;
     syncBlockModalOpenState();
-    focusFirst(blockEditorBody);
+    focusFirst(blockEditorContent);
   };
 
   blockEditorFooter.appendChild(makeButton("Done", closeBlockEditorModal));
