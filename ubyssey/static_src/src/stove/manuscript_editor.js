@@ -1,8 +1,9 @@
 // Entrypoint
 
 import { createEditorToolbar } from "./prosemirror_base";
+import { setupCommentSidebar } from "./comments";
 import { createStreamEditor } from "./stream_editor";
-import { showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_block_controls";
+import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_block_controls";
 import { setupMediaUpload, selectMetadataTab } from "./sidebar";
 import { setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./manuscript_preview";
 
@@ -12,6 +13,7 @@ export const editorState = {
   articleDirectTextEditors: [],
   articleBlockControls: null,
   richTextToolbar: null,
+  commentSidebar: null,
   selectedArticleBlock: null,
   suppressedHoverArticleBlock: null,
   suppressedHoverTimer: null,
@@ -44,7 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
             editorState.schedulePreview({ deferIfManuscriptFocused: Boolean(transaction.getMeta("deferPreviewIfFocused")) });
           }
         },
-        onTransaction: () => { showSelectedArticleBlockEditor(editorState.selectedArticleBlock); },
+        onTransaction: () => {
+          showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
+          refreshBlockCommentBorders(manuscriptRoot);
+          editorState.commentSidebar?.update();
+        },
       },
     ));
   }
@@ -53,7 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
     publishSource: document.querySelector("[data-article-toolbar-source]"),
   });
 
+  editorState.commentSidebar = setupCommentSidebar(document.querySelector("[data-comment-sidebar]"), {
+    getViews: () => {
+      const manuscriptViews = [
+        ...editorState.articleRichTextEditors.map((editor) => editor.view),
+        ...editorState.articleDirectTextEditors.map((editor) => editor.view),
+      ];
+      return manuscriptViews.length ? manuscriptViews : editorState.streamEditors.map((editor) => editor.view);
+    },
+    getThreads: collectBlockCommentThreads,
+  });
+
   setupArticlePreviewEditors(manuscriptRoot);
+  editorState.commentSidebar?.update();
   setupArticleBlockKeyboard(manuscriptRoot);
   setupMediaUpload();
 

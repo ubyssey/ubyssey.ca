@@ -18,6 +18,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
       id: { default: null },
       blockType: { default: null },
       originalValue: { default: null },
+      blockComments: { default: [] },
     },
 
     toDOM(node) {

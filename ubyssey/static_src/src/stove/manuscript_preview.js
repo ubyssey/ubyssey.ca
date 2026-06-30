@@ -7,7 +7,7 @@ import { editorPlugins, richTextSchema } from "./prosemirror_base";
 import { pmDocToStreamValue, clone } from "./stream_serialization";
 import { topLevelBlockInfoByIdOrIndex } from "./stream_schema";
 import { editorState } from "./manuscript_editor";
-import { describeArticleBlock, articleBlockDescriptors, findArticleBlock, cleanupArticleBlockControls, setupArticleBlockControls, showSelectedArticleBlockEditor, sameArticleBlock } from "./manuscript_block_controls";
+import { describeArticleBlock, articleBlockDescriptors, findArticleBlock, cleanupArticleBlockControls, refreshBlockCommentBorders, setupArticleBlockControls, showSelectedArticleBlockEditor, sameArticleBlock } from "./manuscript_block_controls";
 
 const theme = "light" // Add setting in future
 const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
@@ -134,6 +134,7 @@ function createArticleRichTextView(mount, content, className, onDocChanged) {
     dispatchTransaction(transaction) {
       view.updateState(view.state.apply(transaction));
       editorState.richTextToolbar?.update();
+      editorState.commentSidebar?.update();
       if (transaction.docChanged) onDocChanged(view, transaction);
     },
 
@@ -147,6 +148,7 @@ function destroyEditorViews(editors) {
   for (const editor of editors) editor.view.destroy();
   editors.length = 0;
   editorState.richTextToolbar?.setView(null);
+  editorState.commentSidebar?.update();
 }
 
 function directEditableSource(target, { allowPage = true } = {}) {
@@ -525,4 +527,5 @@ function restoreCurrentArticleControls(manuscriptRoot, streamDocs) {
   }
 
   showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
+  editorState.commentSidebar?.update();
 }

@@ -64,15 +64,21 @@ body {
     border-right: 1px solid #d9d9d9;
 }
 
-.metadata-editor--right > * {
-    visibility: hidden;
-    pointer-events: none;
-}
-
 .metadata-editor--right {
     right: 0;
+    width: var(--sidebar-width);
+    padding: 16px 12px 24px;
+    background: #f5f6f6;
+}
+
+// Hide everything in right sidebar except comments -> TODO move streamfields out of sidebar
+.metadata-editor--right > :not(.pm-comment-sidebar) {
+    position: absolute;
     width: 0;
-    background: transparent;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .manuscript-topbar {
@@ -479,4 +485,122 @@ body {
 
 .page-field label {
     font: 13px/1.2 sans-serif;
+}
+
+.pm-comment-sidebar {
+    display: grid;
+    gap: 12px;
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-comment-sidebar__list {
+    display: grid;
+    gap: 12px;
+}
+
+.pm-comment-thread {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #d8d8d8;
+    background: #fff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+}
+
+.pm-comment-thread--collapsed {
+    padding-bottom: 10px;
+}
+
+.pm-comment-thread__collapse {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border: 1px solid #9a9a9a;
+    border-radius: 3px;
+    background: #fff;
+    color: #1b1b1b;
+    box-sizing: border-box;
+    font: 600 14px/1 sans-serif;
+    cursor: pointer;
+}
+
+.pm-comment-thread__collapse[aria-pressed="true"] {
+    border-color: #7c3aed;
+    background: #eadcff;
+    color: #4c1d95;
+}
+
+.pm-comment-thread__comments {
+    display: grid;
+    gap: 10px;
+}
+
+.pm-comment {
+    display: grid;
+    gap: 4px;
+}
+
+.pm-comment__meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.pm-comment__meta strong {
+    min-width: 0;
+    font: 600 13px/1.2 sans-serif;
+    overflow-wrap: anywhere;
+}
+
+.pm-comment__meta time {
+    flex: 0 0 auto;
+    color: #666;
+    font: 11px/1.2 sans-serif;
+}
+
+.pm-comment p {
+    margin: 0;
+    color: #222;
+    overflow-wrap: anywhere;
+}
+
+.pm-comment-reply {
+    display: grid;
+    gap: 6px;
+}
+
+.pm-comment-reply__author {
+    color: #555;
+    font: 600 12px/1.2 sans-serif;
+}
+
+.pm-comment-reply textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 7px 8px;
+    border: 1px solid #c7c7c7;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background: #fff;
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+    resize: vertical;
+}
+
+.pm-comment-reply button {
+    justify-self: end;
+    min-height: 28px;
+    padding: 0 10px;
+    border: 1px solid #0071c9;
+    border-radius: 4px;
+    background: #0071c9;
+    color: #fff;
+    font: 13px/1.2 sans-serif;
+    cursor: pointer;
 }

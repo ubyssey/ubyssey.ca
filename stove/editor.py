@@ -1,4 +1,5 @@
 import json
+import re
 
 from django import forms
 from django.core.exceptions import FieldDoesNotExist
@@ -205,6 +206,31 @@ def save_article_media_upload(page, form, user=None):
 
 # StreamField editors
 
+
+# Hide comments when sending page to readers TODO add footnotes
+def public_stream_value(value):
+    if isinstance(value, list):
+        return [public_stream_value(item) for item in value]
+    if isinstance(value, dict):
+        return {
+            key: public_stream_value(child_value)
+            for key, child_value in value.items()
+            if key != "comments" or not ("type" in value and "value" in value)
+        }
+    if isinstance(value, str) and "data-comment-" in value:
+        previous = None
+        stripped = value
+        while previous != stripped:
+            previous = stripped
+            stripped = COMMENT_ANCHOR_RE.sub(r'\1', stripped)
+        return COMMENT_ATTR_RE.sub('', stripped)
+    return value
+
+
+COMMENT_ANCHOR_RE = re.compile(r'<(?:span|mark)\b(?=[^>]*\bdata-comment-thread-id=)[^>]*>(.*?)</(?:span|mark)>', re.IGNORECASE | re.DOTALL)
+COMMENT_ATTR_RE = re.compile(r'\sdata-comment-(?:thread-id|comments|pending|resolved)=("[^"]*"|\'[^\']*\'|[^\s>]+)', re.IGNORECASE)
+
+
 def get_streamfield_editors(page):
     editors = {}
 
@@ -216,7 +242,11 @@ def get_streamfield_editors(page):
         raw = []
 
         try:
-            raw = json_safe(field.stream_block.get_prep_value(getattr(page, field.name))) or []
+            comments = getattr(page, "stove_comment_data", None) or {}
+            if isinstance(comments, dict) and field.name in comments:
+                raw = comments.get(field.name) or []
+            else:
+                raw = json_safe(field.stream_block.get_prep_value(getattr(page, field.name))) or []
         except Exception:
             print("Failed to get field: " + field.name)
 
@@ -259,6 +289,7 @@ def get_editor_blocks(raw_blocks, registry):
             "type": block.get("type", "unknown"),
             "id": block.get("id"),
             "value": block.get("value"),
+            "comments": block.get("comments") or [],
             "fields": get_editor_fields(
                 block.get("value"),
                 registry.get(block.get("type", "unknown"), {}).get("fields", {}),
@@ -542,7 +573,18 @@ def apply_editor_post(page, data, preview=False):
             value = json.loads(json_str)
             if preview:
                 value = sanitize_preview_stream_value(value)
-            setattr(page, field.name, value)
+                if hasattr(page, "stove_comment_data"):
+                    value = public_stream_value(value)
+                setattr(page, field.name, value)
+            else:
+                if hasattr(page, "stove_comment_data"):
+                    comments = getattr(page, "stove_comment_data", None) or {}
+                    if not isinstance(comments, dict):
+                        comments = {}
+                    comments[field.name] = json_safe(value) or []
+                    page.stove_comment_data = comments
+                    value = public_stream_value(value)
+                setattr(page, field.name, value)
         except json.JSONDecodeError:
             editor_errors[field.name] = ["Invalid JSON for this field."]
 

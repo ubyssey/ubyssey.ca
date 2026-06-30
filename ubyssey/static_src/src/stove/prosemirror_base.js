@@ -13,6 +13,7 @@ import { keymap } from "prosemirror-keymap";
 import { dropCursor } from "prosemirror-dropcursor";
 import { gapCursor } from "prosemirror-gapcursor";
 import { ellipsis, emDash, inputRules, smartQuotes, textblockTypeInputRule, undoInputRule, wrappingInputRule } from "prosemirror-inputrules";
+import { v4 as uuidv4 } from "uuid";
 
 export const baseNodesWithLists = addListNodes(
   basicSchema.spec.nodes,
@@ -31,6 +32,31 @@ export const marks = basicSchema.spec.marks.append({
     ],
     toDOM() {
       return ["u", 0];
+    },
+  },
+  comment: {
+    attrs: {
+      threadId: { default: null },
+      comments: { default: [] },
+      pending: { default: false },
+      resolved: { default: false },
+    },
+    parseDOM: [
+      { tag: "mark[data-comment-thread-id]", getAttrs: readCommentAttrs },
+      { tag: "span[data-comment-thread-id]", getAttrs: readCommentAttrs },
+      {
+        style: "text-decoration",
+        getAttrs: (value) => String(value).includes("comment") ? null : false,
+      },
+    ],
+    toDOM(mark) {
+      const attrs = mark.attrs || {};
+      return ["span", {
+        "data-comment-thread-id": attrs.threadId || "",
+        "data-comment-comments": JSON.stringify(attrs.comments || []),
+        "data-comment-pending": attrs.pending ? "true" : "false",
+        "data-comment-resolved": attrs.resolved ? "true" : "false",
+      }, 0];
     },
   },
 });
@@ -160,6 +186,7 @@ const TOOLBAR_ITEMS = [
   ["link", "Link", "Insert link"],
   ["bulletList", "•", "Bullet list"],
   ["orderedList", "1.", "Ordered list"],
+  ["comment", "💬", "Comment"]
 ];
 
 export function createEditorToolbar(root, { view = null, publishSource = null } = {}) {
@@ -204,7 +231,7 @@ export function createEditorToolbar(root, { view = null, publishSource = null } 
       let active = false;
       if (activeView) {
         const { state } = activeView;
-        const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link" };
+        const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link", comment: "comment" };
         const listNames = { bulletList: "bullet_list", orderedList: "ordered_list" };
         const mark = state.schema.marks[markNames[key]];
         const nodeType = state.schema.nodes[listNames[key]];
@@ -408,6 +435,145 @@ function toolbarCommand(view, key) {
     link: schema.marks.link && promptLinkCommand(schema.marks.link),
     bulletList: schema.nodes.bullet_list && wrapInList(schema.nodes.bullet_list),
     orderedList: schema.nodes.ordered_list && wrapInList(schema.nodes.ordered_list),
+    comment: schema.marks.comment && startCommentCommand(schema.marks.comment),
   };
   return commands[key] || null;
+}
+
+// Potentially move below to comments.js
+function readCommentAttrs(dom) {
+  return {
+    threadId: dom.getAttribute("data-comment-thread-id"),
+    comments: parseCommentPayload(dom.getAttribute("data-comment-comments")),
+    pending: dom.getAttribute("data-comment-pending") === "true",
+    resolved: dom.getAttribute("data-comment-resolved") === "true",
+  };
+}
+
+function parseCommentPayload(value) {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function startCommentCommand(commentMark) {
+  return (state, dispatch) => {
+    const { from, to, empty } = state.selection;
+    if (empty) return false;
+    if (!dispatch) return true;
+
+    const threadId = uuidv4();
+    dispatch(state.tr
+      .removeMark(from, to, commentMark)
+      .addMark(from, to, commentMark.create({ threadId, comments: [], pending: true, resolved: false }))
+      .scrollIntoView());
+    return true;
+  };
+}
+
+export function startCommentOnSelection(view) {
+  const commentMark = view?.state?.schema?.marks?.comment;
+  if (!commentMark) return false;
+  return startCommentCommand(commentMark)(view.state, view.dispatch, view);
+}
+
+export function collectCommentThreads(view) {
+  const commentMark = view?.state?.schema?.marks?.comment;
+  if (!commentMark) return [];
+
+  const threads = new Map();
+  view.state.doc.descendants((node) => {
+    if (!node.isText) return true;
+    const mark = commentMark.isInSet(node.marks);
+    if (!mark?.attrs?.threadId || threads.has(mark.attrs.threadId)) return true;
+
+    threads.set(mark.attrs.threadId, {
+      threadId: mark.attrs.threadId,
+      comments: Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [],
+      pending: Boolean(mark.attrs.pending),
+      resolved: Boolean(mark.attrs.resolved),
+      view,
+    });
+    return true;
+  });
+
+  return Array.from(threads.values());
+}
+
+export function appendCommentToThread(view, threadId, comment) {
+  const thread = findCommentThread(view, threadId);
+  if (!thread) return false;
+
+  return replaceCommentThread(view, thread, {
+    comments: [...thread.comments, comment],
+    pending: false,
+    resolved: false,
+  });
+}
+
+export function setCommentThreadResolved(view, threadId, resolved) {
+  const thread = findCommentThread(view, threadId);
+  if (!thread) return false;
+  return replaceCommentThread(view, thread, { resolved: Boolean(resolved) });
+}
+
+function findCommentThread(view, threadId) {
+  const commentMark = view?.state?.schema?.marks?.comment;
+  if (!commentMark || !threadId) return null;
+
+  const thread = {
+    commentMark,
+    threadId,
+    ranges: [],
+    comments: [],
+    pending: false,
+    resolved: false,
+  };
+
+  view.state.doc.descendants((node, pos) => {
+    if (!node.isText) return true;
+    const mark = commentMark.isInSet(node.marks);
+    if (mark?.attrs?.threadId !== threadId) return true;
+
+    thread.ranges.push({ from: pos, to: pos + node.nodeSize });
+    thread.comments = Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [];
+    thread.pending = Boolean(mark.attrs.pending);
+    thread.resolved = Boolean(mark.attrs.resolved);
+    return true;
+  });
+
+  return thread.ranges.length ? thread : null;
+}
+
+function replaceCommentThread(view, thread, attrs) {
+  let tr = view.state.tr;
+  const nextAttrs = {
+    threadId: thread.threadId,
+    comments: thread.comments,
+    pending: thread.pending,
+    resolved: thread.resolved,
+    ...attrs,
+  };
+
+  for (const range of thread.ranges) {
+    tr = tr
+      .removeMark(range.from, range.to, thread.commentMark)
+      .addMark(range.from, range.to, thread.commentMark.create(nextAttrs));
+  }
+  view.dispatch(tr);
+  return true;
+}
+
+export function removeCommentThread(view, threadId) {
+  const thread = findCommentThread(view, threadId);
+  if (!thread) return false;
+
+  let tr = view.state.tr;
+  for (const range of thread.ranges) tr = tr.removeMark(range.from, range.to, thread.commentMark);
+  view.dispatch(tr);
+  return true;
 }

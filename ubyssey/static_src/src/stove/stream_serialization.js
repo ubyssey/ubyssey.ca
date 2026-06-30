@@ -66,6 +66,7 @@ export function streamBlockToPmNode(block) {
       id: block?.id || uuidv4(),
       blockType,
       originalValue: clone(block?.value),
+      blockComments: clone(block?.blockComments || block?.comments || []),
     },
     content: (block?.fields || []).map((field) => fieldToPmNode(field, blockType)),
   };
@@ -155,6 +156,12 @@ function pmStreamBlockToWagtailBlock(node) {
     block.id = attrs.id;
   }
 
+  const blockComments = (Array.isArray(attrs.blockComments) ? attrs.blockComments : [])
+    .filter((thread) => !thread.pending && Array.isArray(thread.comments) && thread.comments.length);
+  if (blockComments.length) {
+    block.comments = clone(blockComments);
+  }
+
   for (const childNode of node.content || []) {
     const fieldAttrs = childNode.attrs || {};
     const path = Array.isArray(fieldAttrs.path) ? fieldAttrs.path : [];
@@ -200,7 +207,7 @@ function editableFieldValue(node, mode = "richtext") {
       .map((pmBlock) => streamSchema.nodeFromJSON(pmBlock).textContent)
       .join("\n\n");
   }
-
+  
   const richTextNodes = (node.content || [])
     .filter((block) => !["stream_block", "editable_field", "control_field"].includes(block.type))
     .map((block) => richTextSchema.nodeFromJSON(block));

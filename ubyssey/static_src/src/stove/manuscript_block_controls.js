@@ -1,6 +1,6 @@
 // Handles floating block controls in article preview
 
-import { makeButton } from "./prosemirror_base";
+import { makeButton, startCommentOnSelection } from "./prosemirror_base";
 import { createStreamBlockNode } from "./stream_editor";
 import { deleteTopLevelBlock, moveTopLevelBlock, topLevelBlockInfoByIdOrIndex } from "./stream_schema";
 import { editorState } from "./manuscript_editor";
@@ -256,17 +256,60 @@ export function setupArticleBlockControls(manuscriptRoot) {
   buttons.insert = makeButton("+", () => {
     openDialog(insertDialog, select);
   }, "Add block", "pm-article-block-controls__button pm-article-block-controls__button--insert");
-  buttons.edit = makeButton("Edit", () => {
+  buttons.edit = makeButton("🖉", () => {
     withActiveBlock((instance, articleBlock) => {
       const descriptor = describeArticleBlock(articleBlock);
       if (descriptor) openBlockEditorModal(descriptor);
     });
   }, "Edit block", "pm-article-block-controls__button pm-article-block-controls__button--edit");
+  // TODO Fix focus in shadow dom
+  buttons.comment = makeButton("💬", () => {
+    withActiveBlock((instance, articleBlock) => {
+      const selectedTextEditor = [
+        ...editorState.articleRichTextEditors,
+        ...editorState.articleDirectTextEditors,
+      ].find(({ view }) => (
+        view?.state?.schema?.marks?.comment &&
+        !view.state.selection.empty &&
+        (articleBlock === view.dom || articleBlock.contains(view.dom))
+      ));
+
+      if (selectedTextEditor) {
+        const started = startCommentOnSelection(selectedTextEditor.view);
+        if (started) {
+          selectedTextEditor.view.focus();
+          editorState.commentSidebar?.update();
+          return;
+        }
+      }
+
+      const descriptor = describeArticleBlock(articleBlock);
+      const info = descriptor && topLevelBlockInfoByIdOrIndex(instance.view.state.doc, descriptor.blockId, descriptor.blockIndex);
+      if (!descriptor || !info) return;
+
+      selectArticleBlockElement(articleBlock);
+      const currentComments = blockCommentsForNode(info.node);
+      const existingPending = currentComments.find((thread) => thread.pending);
+      const nextComments = existingPending ? currentComments : [
+        ...currentComments,
+        {
+          threadId: (typeof crypto !== "undefined" && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          comments: [],
+          pending: true,
+          resolved: false,
+        },
+      ];
+      updateStreamBlockAttrs(instance, info, { blockComments: nextComments });
+      refreshBlockCommentBorders(articleBlock.getRootNode());
+      editorState.commentSidebar?.update();
+    });
+  }, "Comment", "pm-article-block-controls__button pm-article-block-controls__button--comment");
 
   topControls.append(
     addButton("delete", "X", "Delete", () => { openDialog(deleteDialog); }, "pm-article-block-controls__button--danger"),
     addButton("up", "", "Move up", (instance, articleBlock) => { moveArticleBlock(instance, articleBlock, -1); }, "pm-article-block-controls__button--move pm-article-block-controls__button--up"),
     addButton("down", "", "Move down", (instance, articleBlock) => { moveArticleBlock(instance, articleBlock, 1); }, "pm-article-block-controls__button--move pm-article-block-controls__button--down"),
+    buttons.comment,
     buttons.edit,
     buttons.insert,
   );
@@ -483,6 +526,81 @@ export function setupArticleBlockControls(manuscriptRoot) {
   }
 
   editorState.articleBlockControls = state;
+  refreshBlockCommentBorders(manuscriptRoot);
+}
+
+
+function blockCommentsForNode(node) {
+  return Array.isArray(node?.attrs?.blockComments) ? node.attrs.blockComments : [];
+}
+
+function updateStreamBlockAttrs(instance, info, attrs) {
+  instance.view.dispatch(instance.view.state.tr.setNodeMarkup(info.start, undefined, {
+    ...info.node.attrs,
+    ...attrs,
+  }));
+}
+
+function updateBlockCommentThread(instance, descriptor, updater) {
+  const info = topLevelBlockInfoByIdOrIndex(instance.view.state.doc, descriptor.blockId, descriptor.blockIndex);
+  if (!info) return false;
+
+  const nextComments = updater(blockCommentsForNode(info.node));
+  updateStreamBlockAttrs(instance, info, { blockComments: nextComments });
+  refreshBlockCommentBorders(document.querySelector("[data-article-shadow]")?.shadowRoot);
+  return true;
+}
+
+export function collectBlockCommentThreads() {
+  const threads = [];
+
+  for (const instance of editorState.streamEditors) {
+    if (!ARTICLE_STREAM_FIELDS.has(instance.fieldName)) continue;
+
+    for (let blockIndex = 0; blockIndex < instance.view.state.doc.childCount; blockIndex += 1) {
+      const node = instance.view.state.doc.child(blockIndex);
+      const blockId = node.attrs?.id || "";
+      const descriptor = { fieldName: instance.fieldName, blockId, blockIndex };
+
+      for (const thread of blockCommentsForNode(node)) {
+        if (!thread?.pending && !(thread?.comments || []).length) continue;
+        threads.push({
+          threadId: thread.threadId,
+          comments: Array.isArray(thread.comments) ? thread.comments : [],
+          pending: Boolean(thread.pending),
+          resolved: Boolean(thread.resolved),
+          commit(comment) {
+            return updateBlockCommentThread(instance, descriptor, (comments) => comments.map((item) => (
+              item.threadId === thread.threadId
+                ? { ...item, pending: false, resolved: false, comments: [...(Array.isArray(item.comments) ? item.comments : []), comment] }
+                : item
+            )));
+          },
+          setResolved(resolved) {
+            return updateBlockCommentThread(instance, descriptor, (comments) => comments.map((item) => (
+              item.threadId === thread.threadId ? { ...item, resolved: Boolean(resolved) } : item
+            )));
+          },
+          remove() {
+            return updateBlockCommentThread(instance, descriptor, (comments) => comments.filter((item) => item.threadId !== thread.threadId));
+          },
+        });
+      }
+    }
+  }
+
+  return threads;
+}
+
+export function refreshBlockCommentBorders(manuscriptRoot = null) {
+  if (!manuscriptRoot) return;
+
+  for (const articleBlock of manuscriptRoot.querySelectorAll(ARTICLE_BLOCK_SELECTOR)) {
+    const instance = editorState.streamEditors.find((item) => item.fieldName === articleBlock.dataset.streamField);
+    const info = instance && streamBlockInfoForArticleBlock(instance, articleBlock);
+    const hasComments = blockCommentsForNode(info?.node).some((thread) => !thread.resolved && (thread.pending || (thread.comments || []).length));
+    articleBlock.classList.toggle("pm-article-block--commented", Boolean(hasComments));
+  }
 }
 
 export function cleanupArticleBlockControls() {

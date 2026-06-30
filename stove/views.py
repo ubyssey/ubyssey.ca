@@ -111,6 +111,8 @@ def manuscript_editor(request, page_id):
          "stream_editors": stream_editors,
          "editor_errors": editor_errors,
          "history" : history,
+         # Probably saved somewhere else here -> How did I do it for history?
+         "current_editor_username": str(request.user),
          "featured_media_form": featured_media_form,
          "article_media_upload_form": get_article_media_upload_form(),
          "article_media": article_media}

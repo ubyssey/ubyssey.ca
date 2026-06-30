@@ -1504,6 +1504,14 @@ class StandardArticlePage(ArticlePage):
         help_text = "Used for Opinion articles or when corrections are made"
     )
 
+    stove_comment_data = models.JSONField(
+        null=False,
+        blank=True,
+        default=dict,
+        editable=False,
+        help_text="Stove comment metadata. Not rendered to readers.",
+    )
+
     # template #TODO
 
     #-----Hidden stuff: editors don't get to modify these, but they may be programatically changed-----
