@@ -251,7 +251,7 @@ def get_streamfield_editors(page):
         raw = []
 
         try:
-            comments = getattr(page, "stove_comment_data", None) or {}
+            comments = getattr(page, "editor_article_version", None) or {}
             if isinstance(comments, dict) and field.name in comments:
                 raw = comments.get(field.name) or []
             else:
@@ -582,16 +582,16 @@ def apply_editor_post(page, data, preview=False):
             value = json.loads(json_str)
             if preview:
                 value = sanitize_preview_stream_value(value)
-                if hasattr(page, "stove_comment_data"):
+                if hasattr(page, "editor_article_version"):
                     value = public_stream_value(value)
                 setattr(page, field.name, value)
             else:
-                if hasattr(page, "stove_comment_data"):
-                    editor_data = getattr(page, "stove_comment_data", None) or {}
+                if hasattr(page, "editor_article_version"):
+                    editor_data = getattr(page, "editor_article_version", None) or {}
                     if not isinstance(editor_data, dict):
                         editor_data = {}
                     editor_data[field.name] = json_safe(value) or []
-                    page.stove_comment_data = editor_data
+                    page.editor_article_version = editor_data
                     value = public_stream_value(value)
                 setattr(page, field.name, value)
         except json.JSONDecodeError:

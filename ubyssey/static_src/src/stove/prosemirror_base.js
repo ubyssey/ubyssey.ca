@@ -215,7 +215,7 @@ const TOOLBAR_ITEMS = [
   ["bulletList", "•", "Bullet list"],
   ["orderedList", "1.", "Ordered list"],
   ["comment", "💬", "Comment"],
-  ["footnote", "†", "Footnote"],
+  ["footnote", "*", "Footnote"],
 ];
 
 export function createEditorToolbar(root, { view = null, publishSource = null } = {}) {
