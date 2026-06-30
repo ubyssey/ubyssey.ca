@@ -13,6 +13,7 @@
     font-size: inherit;
     font-variation-settings: inherit;
     -webkit-font-smoothing: inherit;
+    counter-reset: stove-footnote;
     background: var(--background);
     color: var(--text_color-100);
 }
@@ -28,6 +29,35 @@ mark[data-comment-resolved="true"],
 span[data-comment-resolved="true"] {
   background: transparent;
   box-shadow: none;
+}
+
+span[data-footnote-id] {
+  cursor: text;
+}
+
+span[data-footnote-anchor="true"] {
+  display: inline-block;
+  position: relative;
+  width: auto;
+  color: transparent;
+  caret-color: #1b1b1b;
+  white-space: pre;
+}
+
+// TODO Fix styling for more than single digit footnotes
+span[data-footnote-anchor="true"]::after {
+  margin-left: 0.5em;
+  margin-right: 0.15em;
+}
+
+span[data-footnote-id]::after {
+  counter-increment: stove-footnote;
+  content: counter(stove-footnote);
+  margin-left: -0.5em;
+  color: #0071c9;
+  font-size: 0.72em;
+  font-weight: 600;
+  vertical-align: super;
 }
 
 /*[data-article-block]:hover {

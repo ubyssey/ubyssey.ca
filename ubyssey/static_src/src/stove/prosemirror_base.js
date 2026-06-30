@@ -59,6 +59,34 @@ export const marks = basicSchema.spec.marks.append({
       }, 0];
     },
   },
+  footnote: {
+    inclusive:false,
+    attrs: {
+      footnoteId: { default: null },
+      text: { default: "" },
+      anchor: { default: false },
+    },
+    parseDOM: [
+      {
+        tag: "span[data-footnote-id]",
+        getAttrs(dom) {
+          return {
+            footnoteId: dom.getAttribute("data-footnote-id"),
+            text: dom.getAttribute("data-footnote-text") || "",
+            anchor: dom.getAttribute("data-footnote-anchor") === "true",
+          };
+        },
+      },
+    ],
+    toDOM(mark) {
+      const attrs = mark.attrs || {};
+      return ["span", {
+        "data-footnote-id": attrs.footnoteId || "",
+        "data-footnote-text": attrs.text || "",
+        "data-footnote-anchor": attrs.anchor ? "true" : "false",
+      }, 0];
+    },
+  },
 });
 
 export const richTextSchema = new Schema({
@@ -186,7 +214,8 @@ const TOOLBAR_ITEMS = [
   ["link", "Link", "Insert link"],
   ["bulletList", "•", "Bullet list"],
   ["orderedList", "1.", "Ordered list"],
-  ["comment", "💬", "Comment"]
+  ["comment", "💬", "Comment"],
+  ["footnote", "†", "Footnote"],
 ];
 
 export function createEditorToolbar(root, { view = null, publishSource = null } = {}) {
@@ -231,14 +260,16 @@ export function createEditorToolbar(root, { view = null, publishSource = null } 
       let active = false;
       if (activeView) {
         const { state } = activeView;
-        const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link", comment: "comment" };
+        const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link", comment: "comment", footnote: "footnote" };
         const listNames = { bulletList: "bullet_list", orderedList: "ordered_list" };
         const mark = state.schema.marks[markNames[key]];
         const nodeType = state.schema.nodes[listNames[key]];
 
         if (mark) {
           const { from, $from, to, empty } = state.selection;
-          active = empty ? Boolean(mark.isInSet(state.storedMarks || $from.marks())) : state.doc.rangeHasMark(from, to, mark);
+          active = empty
+            ? Boolean(key === "footnote" ? markRangeAtCursor(state, mark) : mark.isInSet(state.storedMarks || $from.marks()))
+            : state.doc.rangeHasMark(from, to, mark);
         } else if (nodeType) {
           const { from, $from, to } = state.selection;
           for (let depth = $from.depth; depth > 0; depth -= 1) {
@@ -436,11 +467,111 @@ function toolbarCommand(view, key) {
     bulletList: schema.nodes.bullet_list && wrapInList(schema.nodes.bullet_list),
     orderedList: schema.nodes.ordered_list && wrapInList(schema.nodes.ordered_list),
     comment: schema.marks.comment && startCommentCommand(schema.marks.comment),
+    footnote: schema.marks.footnote && startFootnoteCommand(schema.marks.footnote),
   };
   return commands[key] || null;
 }
 
-// Potentially move below to comments.js
+const FOOTNOTE_ANCHOR_TEXT = "\u00a0";
+
+function startFootnoteCommand(footnoteMark) {
+  return (state, dispatch) => {
+    const { from, to, empty, $from } = state.selection;
+    const activeMark = empty ? footnoteMark.isInSet(state.storedMarks || $from.marks()) : null;
+    if (!dispatch) return true;
+
+    if (empty && activeMark) {
+      const range = markRangeAtCursor(state, footnoteMark, activeMark.attrs);
+      let tr = state.tr.removeStoredMark(footnoteMark);
+      if (range) tr = activeMark.attrs.anchor ? tr.delete(range.from, range.to) : tr.removeMark(range.from, range.to, footnoteMark);
+      dispatch(tr.scrollIntoView());
+      return true;
+    }
+
+    if (!empty && state.doc.rangeHasMark(from, to, footnoteMark)) {
+      dispatch(state.tr.removeMark(from, to, footnoteMark).removeStoredMark(footnoteMark).scrollIntoView());
+      return true;
+    }
+
+    const footnoteId = uuidv4();
+    const mark = footnoteMark.create({ footnoteId, text: "", anchor: empty });
+    if (empty) {
+      dispatch(state.tr
+        .replaceSelectionWith(state.schema.text(FOOTNOTE_ANCHOR_TEXT, [mark]), false)
+        .removeStoredMark(footnoteMark)
+        .scrollIntoView());
+      return true;
+    }
+
+    dispatch(state.tr
+      .removeMark(from, to, footnoteMark)
+      .addMark(from, to, mark)
+      .removeStoredMark(footnoteMark)
+      .scrollIntoView());
+    return true;
+  };
+}
+
+export function collectFootnotes(view) {
+  const footnotes = new Map();
+  visitFootnoteMarks(view, ({ mark }) => {
+    if (footnotes.has(mark.attrs.footnoteId)) return;
+    footnotes.set(mark.attrs.footnoteId, {
+      footnoteId: mark.attrs.footnoteId,
+      text: mark.attrs.text || "",
+      view,
+    });
+  });
+  return Array.from(footnotes.values());
+}
+
+export function updateFootnote(view, footnoteId, text) {
+  const ranges = [];
+  const footnoteMark = visitFootnoteMarks(view, ({ mark, from, to }) => {
+    if (mark.attrs.footnoteId === footnoteId) ranges.push({ from, to, anchor: Boolean(mark.attrs.anchor) });
+  });
+  if (!footnoteMark || !ranges.length) return false;
+
+  let tr = view.state.tr;
+  for (const range of ranges) {
+    tr = tr
+      .removeMark(range.from, range.to, footnoteMark)
+      .addMark(range.from, range.to, footnoteMark.create({ footnoteId, text, anchor: range.anchor }));
+  }
+  view.dispatch(tr);
+  return true;
+}
+
+export function removeFootnote(view, footnoteId) {
+  const ranges = [];
+  const footnoteMark = visitFootnoteMarks(view, ({ mark, node, from, to }) => {
+    if (mark.attrs.footnoteId === footnoteId) ranges.push({ from, to, removeText: mark.attrs.anchor || node.text === FOOTNOTE_ANCHOR_TEXT });
+  });
+  if (!footnoteMark || !ranges.length) return false;
+
+  let tr = view.state.tr;
+  for (const range of ranges.reverse()) {
+    tr = range.removeText
+      ? tr.delete(range.from, range.to)
+      : tr.removeMark(range.from, range.to, footnoteMark);
+  }
+  view.dispatch(tr.removeStoredMark(footnoteMark).scrollIntoView());
+  return true;
+}
+
+function visitFootnoteMarks(view, callback) {
+  const footnoteMark = view?.state?.schema?.marks?.footnote;
+  if (!footnoteMark) return null;
+
+  view.state.doc.descendants((node, pos) => {
+    if (!node.isText) return true;
+    const mark = footnoteMark.isInSet(node.marks);
+    if (mark?.attrs?.footnoteId) callback({ mark, node, from: pos, to: pos + node.nodeSize });
+    return true;
+  });
+  return footnoteMark;
+}
+
 function readCommentAttrs(dom) {
   return {
     threadId: dom.getAttribute("data-comment-thread-id"),

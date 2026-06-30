@@ -21,6 +21,7 @@ body {
 
 .manuscript-editor {
     --sidebar-width: 360px;
+    --footnote-sidebar-width: 320px;
     --topbar-height: 48px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 3fr) minmax(0, 1fr);
@@ -48,8 +49,6 @@ body {
 }
 
 .metadata-editor {
-    position: fixed;
-    width: 1%;
     top: var(--topbar-height);
     bottom: 0;
     z-index: 10;
@@ -60,13 +59,15 @@ body {
 }
 
 .metadata-editor--left {
-    left: 0;
-    border-right: 1px solid #d9d9d9;
+    grid-column: 1;
+    grid-row: 2;
+    padding: 16px 12px 24px;
+    background: #f5f6f6;
 }
 
 .metadata-editor--right {
-    right: 0;
-    width: var(--sidebar-width);
+    grid-column: 3;
+    grid-row: 2;
     padding: 16px 12px 24px;
     background: #f5f6f6;
 }
@@ -485,6 +486,52 @@ body {
 
 .page-field label {
     font: 13px/1.2 sans-serif;
+}
+
+.pm-footnote-sidebar {
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-footnote-panel {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #d8d8d8;
+    background: #fff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
+}
+
+.pm-footnote-panel__header {
+    margin: 0;
+    color: #1b1b1b;
+    font: 600 13px/1.2 sans-serif;
+}
+
+.pm-footnote {
+    display: grid;
+    grid-template-columns: 4px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+}
+
+.pm-footnote__number {
+    font: 600 13px sans-serif;
+    color: #0071c9;
+}
+
+.pm-footnote textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 0px 0px;
+    border: 1px solid #c7c7c7;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background: #fff;
+    color: #1b1b1b;
+    overflow: hidden;
+    font: 13px/1.35 sans-serif;
+    resize: vertical;
 }
 
 .pm-comment-sidebar {

@@ -2,6 +2,7 @@
 
 import { createEditorToolbar } from "./prosemirror_base";
 import { setupCommentSidebar } from "./comments";
+import { setupFootnoteSidebar } from "./footnotes";
 import { createStreamEditor } from "./stream_editor";
 import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_block_controls";
 import { setupMediaUpload, selectMetadataTab } from "./sidebar";
@@ -14,6 +15,7 @@ export const editorState = {
   articleBlockControls: null,
   richTextToolbar: null,
   commentSidebar: null,
+  footnoteSidebar: null,
   selectedArticleBlock: null,
   suppressedHoverArticleBlock: null,
   suppressedHoverTimer: null,
@@ -50,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
           showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
           refreshBlockCommentBorders(manuscriptRoot);
           editorState.commentSidebar?.update();
+          editorState.footnoteSidebar?.update();
         },
       },
     ));
@@ -59,19 +62,25 @@ document.addEventListener("DOMContentLoaded", () => {
     publishSource: document.querySelector("[data-article-toolbar-source]"),
   });
 
+  const articleTextViews = () => {
+    const manuscriptViews = [
+      ...editorState.articleRichTextEditors.map((editor) => editor.view),
+      ...editorState.articleDirectTextEditors.map((editor) => editor.view),
+    ];
+    return manuscriptViews.length ? manuscriptViews : editorState.streamEditors.map((editor) => editor.view);
+  };
+
   editorState.commentSidebar = setupCommentSidebar(document.querySelector("[data-comment-sidebar]"), {
-    getViews: () => {
-      const manuscriptViews = [
-        ...editorState.articleRichTextEditors.map((editor) => editor.view),
-        ...editorState.articleDirectTextEditors.map((editor) => editor.view),
-      ];
-      return manuscriptViews.length ? manuscriptViews : editorState.streamEditors.map((editor) => editor.view);
-    },
+    getViews: articleTextViews,
     getThreads: collectBlockCommentThreads,
+  });
+  editorState.footnoteSidebar = setupFootnoteSidebar(document.querySelector("[data-footnote-sidebar]"), {
+    getViews: articleTextViews,
   });
 
   setupArticlePreviewEditors(manuscriptRoot);
   editorState.commentSidebar?.update();
+  editorState.footnoteSidebar?.update();
   setupArticleBlockKeyboard(manuscriptRoot);
   setupMediaUpload();
 

@@ -279,6 +279,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
         if (started) {
           selectedTextEditor.view.focus();
           editorState.commentSidebar?.update();
+          editorState.footnoteSidebar?.update();
           return;
         }
       }

@@ -135,6 +135,7 @@ function createArticleRichTextView(mount, content, className, onDocChanged) {
       view.updateState(view.state.apply(transaction));
       editorState.richTextToolbar?.update();
       editorState.commentSidebar?.update();
+      editorState.footnoteSidebar?.update();
       if (transaction.docChanged) onDocChanged(view, transaction);
     },
 
@@ -149,6 +150,7 @@ function destroyEditorViews(editors) {
   editors.length = 0;
   editorState.richTextToolbar?.setView(null);
   editorState.commentSidebar?.update();
+  editorState.footnoteSidebar?.update();
 }
 
 function directEditableSource(target, { allowPage = true } = {}) {
@@ -528,4 +530,5 @@ function restoreCurrentArticleControls(manuscriptRoot, streamDocs) {
 
   showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
   editorState.commentSidebar?.update();
+  editorState.footnoteSidebar?.update();
 }
