@@ -18,9 +18,7 @@ export function setupFootnoteSidebar(root, { getViews = () => [] } = {}) {
       .filter((view) => view?.state?.doc)
       .flatMap((view) => collectFootnotes(view));
     const footnoteIds = new Set(footnotes.map((footnote) => footnote.footnoteId));
-    const newFootnote = hasRendered
-      ? footnotes.find((footnote) => !renderedFootnoteIds.has(footnote.footnoteId))
-      : null;
+    const newFootnote = hasRendered ? footnotes.find((footnote) => !renderedFootnoteIds.has(footnote.footnoteId)) : null;
     root.replaceChildren();
 
     if (!footnotes.length) {

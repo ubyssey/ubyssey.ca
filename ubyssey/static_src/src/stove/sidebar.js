@@ -113,8 +113,8 @@ export function setupMediaUpload() {
   });
 
   openUploadButton?.addEventListener("click", () => {
-    uploadReturnsToGallery = false;
-    uploadModal?.classList.remove("article-media-modal--stacked");
+    uploadReturnsToGallery = !galleryModal?.hidden;
+    uploadModal?.classList.toggle("article-media-modal--stacked", uploadReturnsToGallery);
     reset();
     sync();
     openModal(uploadModal, input("kind"));
