@@ -186,9 +186,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const option = document.createElement("option");
             option.value = revisionId;
             option.textContent = payload.revision.label || `Revision ${revisionId}`;
-            historySelect.insertBefore(option, historySelect.options[1] || null);
+            historySelect.insertBefore(option, historySelect.options[0] || null);
           }
-          historySelect.value = "current";
+          historySelect.selectedIndex = 0;
         }
 
         if (submitter) {

@@ -291,7 +291,7 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
   const historySelect = document.querySelector("[data-history-select]");
 
   editorState.schedulePreview = ({ deferIfManuscriptFocused = false } = {}) => {
-    if (historySelect) historySelect.value = "current";
+    if (historySelect) historySelect.selectedIndex = 0;
     previewRevision += 1;
     clearTimeout(timer);
 
@@ -357,16 +357,22 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
   const form = document.querySelector("[data-manuscript-form]");
   const historyButtons = document.querySelectorAll("[data-history-button]");
   const historySelect = document.querySelector("[data-history-select]");
+  const restoreButton = document.querySelector("[data-history-restore]");
   if (!form || !manuscriptRoot) return;
 
-  const previewRevision = async (revisionId) => {
+  const selectedRevision = () => historySelect?.value || "";
+  const selectedRevisionIsCurrent = () => !historySelect || historySelect.selectedIndex <= 0;
+  const updateRestoreButton = () => {
+    if (restoreButton) restoreButton.disabled = selectedRevisionIsCurrent();
+  };
+
+  const previewRevision = async (revisionId, isCurrent = false) => {
     try {
       editorState.cancelPreviewRefresh();
-      const isCurrent = revisionId === "current";
       const formData = new FormData(form);
       const streamDocs = isCurrent ? writeStreamTextareas() : null;
 
-      formData.set("revision", revisionId);
+      if (!isCurrent) formData.set("revision", revisionId);
 
       const html = await fetchPreviewHtml(form, formData);
       if (!html || !replaceArticlePreviewHtml(manuscriptRoot, html)) return;
@@ -384,8 +390,51 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
 
   historySelect?.addEventListener("change", (event) => {
     event.stopPropagation();
-    previewRevision(historySelect.value);
+    updateRestoreButton();
+    previewRevision(historySelect.value, selectedRevisionIsCurrent());
   });
+
+  restoreButton?.addEventListener("click", async () => {
+    const revisionId = selectedRevision();
+    if (!form.dataset.restoreUrl || selectedRevisionIsCurrent()) return;
+    if (!window.confirm("Restore this version as the current draft?")) return;
+    
+    const originalText = restoreButton.textContent;
+    restoreButton.disabled = true;
+    restoreButton.textContent = "Restoring...";
+    try {
+      const formData = new FormData(form);
+      formData.set("revision", revisionId);
+      const response = await fetch(form.dataset.restoreUrl, {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      });
+      const payload = await response.json();
+      if (!response.ok || payload.errors) {
+        const message = payload.errors
+          ? Object.entries(payload.errors)
+            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`)
+            .join("\n")
+          : "Failed to restore version.";
+        alert(message);
+        return;
+      }
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to restore version.");
+    } finally {
+      restoreButton.textContent = originalText;
+      updateRestoreButton();
+    }
+  });
+
+  updateRestoreButton();
 
   for (const btn of historyButtons) {
     btn.addEventListener("click", () => { previewRevision(btn.dataset.revisionId); });

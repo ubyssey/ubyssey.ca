@@ -13,7 +13,7 @@
 {{ stream_editors|json_script:"stream-editors" }}
 {{ editor_errors|json_script:"editor-errors" }}
 
-<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-current-editor-username="{{ current_editor_username }}">
+<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-current-editor-username="{{ current_editor_username }}">
   {% csrf_token %}
 
   <header class="manuscript-topbar">
@@ -27,12 +27,12 @@
       <label class="manuscript-version-picker">
         <span>Version</span>
         <select data-history-select aria-label="Version preview">
-          <option value="current">Current draft</option>
           {% for h in history %}
             <option value="{{ h.id }}">{{ h.user }} {{ h.created_at|date:"M j, Y H:i" }}</option>
           {% endfor %}
         </select>
       </label>
+      <button type="button" class="manuscript-topbar__button" data-history-restore disabled>Restore</button>
     </div>
   </header>
 

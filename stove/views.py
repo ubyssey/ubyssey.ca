@@ -124,6 +124,31 @@ def manuscript_editor(request, page_id):
 
 @login_required
 @require_POST
+def manuscript_restore(request, page_id):
+    page = get_manuscript_page(page_id)
+    revision_id = request.POST.get("revision")
+
+    if not revision_id or revision_id == "current":
+        return JsonResponse({"errors": {"revision": ["Choose a version to restore."]}}, status=400)
+
+    revision = get_object_or_404(page.revisions, id=revision_id)
+    restored_page = revision.as_object()
+    try:
+        saved_revision = restored_page.save_revision(user=request.user)
+    except Exception:
+        return JsonResponse({"errors": {"__all__": ["Failed to restore version."]}}, status=400)
+
+    return JsonResponse({
+        "ok": True,
+        "revision": {
+            "id": str(saved_revision.id),
+            "label": f"{saved_revision.user} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
+        }
+    })
+
+
+@login_required
+@require_POST
 def manuscript_preview(request, page_id):
     page = get_manuscript_page(page_id)
     editor_errors = {}
