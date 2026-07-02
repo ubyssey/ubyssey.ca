@@ -28,6 +28,52 @@ function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
 }
 
+// todo Either create authors.js or move other setup functions here
+function setupArticleAuthorsPanel() {
+  const panel = document.querySelector("[data-article-authors-panel]");
+  if (!panel) return;
+
+  const rows = panel.querySelector("[data-article-author-rows]");
+  const form = panel.closest("form");
+  const notifyChanged = () => {
+    form?.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+
+  const resetRow = (row) => {
+    for (const select of row.querySelectorAll("select")) select.selectedIndex = 0;
+  };
+
+  panel.addEventListener("click", (event) => {
+    const addButton = event.target.closest("[data-article-author-add]");
+    if (addButton && rows) {
+      event.preventDefault();
+      const sourceRow = rows.querySelector("[data-article-author-row]");
+      if (!sourceRow) return;
+      const row = sourceRow.cloneNode(true);
+      resetRow(row);
+      rows.appendChild(row);
+      row.querySelector("[data-article-author-select]")?.focus();
+      notifyChanged();
+      return;
+    }
+
+    const removeButton = event.target.closest("[data-article-author-remove]");
+    if (!removeButton || !rows) return;
+
+    event.preventDefault();
+    const row = removeButton.closest("[data-article-author-row]");
+    const allRows = Array.from(rows.querySelectorAll("[data-article-author-row]"));
+    if (allRows.length <= 1) {
+      resetRow(row);
+    } else {
+      row.remove();
+    }
+    notifyChanged();
+  });
+
+  panel.addEventListener("change", notifyChanged);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const manuscriptRoot = setupArticleShadow();
   const streamEditors = readJsonScript("stream-editors");
@@ -83,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
   editorState.footnoteSidebar?.update();
   setupArticleBlockKeyboard(manuscriptRoot);
   setupMediaUpload();
+  setupArticleAuthorsPanel();
 
   for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
     tab.addEventListener("click", () => { selectMetadataTab(tab.dataset.metadataTab); });

@@ -651,3 +651,80 @@ body {
     font: 13px/1.2 sans-serif;
     cursor: pointer;
 }
+
+.pm-author-panel {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #d8d8d8;
+    background: #fff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-author-panel__header {
+    margin: 0;
+    color: #1b1b1b;
+    font: 600 13px/1.2 sans-serif;
+}
+
+.pm-author-panel__rows {
+    display: grid;
+    gap: 8px;
+}
+
+.pm-author-panel__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(92px, 0.65fr) 28px;
+    gap: 6px;
+    align-items: end;
+}
+
+.pm-author-panel__row label {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    font: 600 12px/1.2 sans-serif;
+}
+
+.pm-author-panel__row select {
+    width: 100%;
+    min-height: 30px;
+    border: 1px solid #c7c7c7;
+    border-radius: 4px;
+    background: #fff;
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-author-panel__add,
+.pm-author-panel__remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    border: 1px solid #c7c7c7;
+    border-radius: 4px;
+    background: #fff;
+    color: #1b1b1b;
+    font: 13px/1.2 sans-serif;
+    cursor: pointer;
+}
+
+.pm-author-panel__add {
+    justify-self: start;
+    padding: 0 10px;
+}
+
+.pm-author-panel__remove {
+    width: 28px;
+    padding: 0;
+}
+
+.pm-author-panel .errorlist {
+    margin: 0;
+    padding-left: 18px;
+    color: #d10000;
+}

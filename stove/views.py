@@ -14,6 +14,7 @@ from article.models import ArticlePage
 
 from stove.editor import (
     get_page_form,
+    get_article_authors_form,
     get_streamfield_editors,
     apply_editor_post,
     get_article_media_upload_form,
@@ -44,12 +45,13 @@ def manuscript_editor(request, page_id):
     page = get_manuscript_page(page_id)
     editor_errors = {}
     page_form = get_page_form(page)
+    article_authors_form = get_article_authors_form(page)
     featured_media_form = get_featured_media_form(page)
 
     if request.method == "POST":
         action = request.POST.get("action") or "draft"
         saved_revision = None
-        editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST)
+        editor_errors, page_form, article_authors_form, featured_media_form = apply_editor_post(page, request.POST)
 
         if not editor_errors:
             siblings = page.get_siblings().exclude(id=page.id)
@@ -108,6 +110,7 @@ def manuscript_editor(request, page_id):
         request, "editors/manuscript_editor.html",
         {"self": page,
          "page_form": page_form,
+         "article_authors_form": article_authors_form,
          "stream_editors": stream_editors,
          "editor_errors": editor_errors,
          "history" : history,
@@ -130,9 +133,10 @@ def manuscript_preview(request, page_id):
         revision = get_object_or_404(page.revisions, id=revision_id)
         page = revision.as_object()
         page_form = get_page_form(page)
+        article_authors_form = get_article_authors_form(page)
         featured_media_form = get_featured_media_form(page)
     else:
-        editor_errors, page_form, featured_media_form = apply_editor_post(page, request.POST, preview=True)
+        editor_errors, page_form, article_authors_form, featured_media_form = apply_editor_post(page, request.POST, preview=True)
 
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=400)
@@ -140,7 +144,7 @@ def manuscript_preview(request, page_id):
     return JsonResponse({
         "html": render_to_string(
             "editors/preview/manuscript_preview.html",
-            {"self": page, "page_form": page_form, "featured_media_form": featured_media_form},
+            {"self": page, "page_form": page_form, "article_authors_form": article_authors_form, "featured_media_form": featured_media_form},
             request=request,
         )
     })
