@@ -39,7 +39,7 @@ export function setupFootnoteSidebar(root, { getViews = () => [] } = {}) {
       const item = document.createElement("label");
       item.className = "pm-footnote";
 
-      const number = document.createElement("span");
+      const number = document.createElement("h3");
       number.className = "pm-footnote__number";
       number.textContent = String(index + 1);
 

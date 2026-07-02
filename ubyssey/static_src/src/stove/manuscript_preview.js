@@ -502,6 +502,7 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
         (activeView) => {
           if (source.kind !== "stream") {
             source.input.value = richTextHtmlFromDoc(activeView.state.doc);
+            source.input.dispatchEvent(new Event("input", { bubbles: true }));
             return;
           }
 
@@ -539,6 +540,7 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
       const nextValue = target.textContent.trim();
       if (activeSource.kind !== "stream") {
         activeSource.input.value = nextValue;
+        activeSource.input.dispatchEvent(new Event("input", { bubbles: true }));
         editorState.schedulePreview({ deferIfManuscriptFocused: true });
         return;
       }

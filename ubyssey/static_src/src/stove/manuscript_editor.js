@@ -28,7 +28,39 @@ function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
 }
 
-// todo Either create authors.js or move other setup functions here
+// todo Either create js files for these or move other setup functions here
+function setupPageFieldToggles() {
+  const form = document.querySelector("[data-manuscript-form]");
+  if (!form) return;
+
+  for (const toggle of document.querySelectorAll("[data-page-field-toggle]")) {
+    const fieldName = toggle.dataset.pageFieldToggle;
+    const field = form.elements?.namedItem(fieldName) || form.querySelector(`[name="${window.CSS.escape(fieldName)}"]`);
+    if (!field) continue;
+
+    const syncToggle = () => {
+      toggle.checked = Boolean(String(field.value || "").trim());
+    };
+    syncToggle();
+    field.addEventListener("input", syncToggle);
+    toggle.addEventListener("change", () => {
+      if (toggle.checked) {
+        field.value = toggle.dataset.pageFieldBoilerplate || "";
+      } else {
+        const hasValue = Boolean(String(field.value || "").trim());
+        if (hasValue && !window.confirm("Remove this field? Its current text will not be saved.")) {
+          toggle.checked = true;
+          return;
+        }
+        field.value = "";
+      }
+      field.dispatchEvent(new Event("input", { bubbles: true }));
+      form.dispatchEvent(new Event("input", { bubbles: true }));
+      editorState.schedulePreview();
+    });
+  }
+}
+
 function setupArticleAuthorsPanel() {
   const panel = document.querySelector("[data-article-authors-panel]");
   if (!panel) return;
@@ -129,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
   editorState.footnoteSidebar?.update();
   setupArticleBlockKeyboard(manuscriptRoot);
   setupMediaUpload();
+  setupPageFieldToggles();
   setupArticleAuthorsPanel();
 
   for (const tab of document.querySelectorAll("[data-metadata-tab]")) {

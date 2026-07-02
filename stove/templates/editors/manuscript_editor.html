@@ -37,6 +37,22 @@
   </header>
 
   <aside class="metadata-editor metadata-editor--left" aria-label="Article notes">
+    <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
+      <div id="metadata-sidebar-settings">
+          <span> Title Tag
+              <label class="switch filter">
+                  <input type="checkbox" id="title-tag-toggle" data-page-field-toggle="title_tag" data-page-field-boilerplate="Title Tag" {% if page_form.title_tag.value %}checked{% endif %}>
+                  <span class="slider round"></span>
+              </label>
+          <span>
+          <span> Disclaimer
+              <label class="switch filter" >
+                  <input type="checkbox" id="disclaimer-toggle" data-page-field-toggle="disclaimer" data-page-field-boilerplate="&lt;p&gt;disclaimer&lt;/p&gt;" {% if page_form.disclaimer.value %}checked{% endif %}>
+                  <span class="slider round"></span>
+              </label>
+          <span>
+      </div>
+    </section>
     {% if article_authors_form %}
       <section class="pm-author-panel" data-article-authors-panel>
         <h3 id="pm-author-panel-title" class="pm-author-panel__header">Authors</h3>

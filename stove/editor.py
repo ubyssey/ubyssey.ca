@@ -15,14 +15,11 @@ from authors.models import AuthorPage
 
 # I'm only including clearly useful fields for now
 PAGE_FORM_FIELDS = (
-    "title",
-    "title_tag",
     "seo_description",
     "timeliness",
     "slug",
     "explicit_published_at",
     "show_last_modified",
-    "disclaimer",
 )
 
 PAGE_FORM_LABELS = {
