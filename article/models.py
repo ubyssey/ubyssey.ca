@@ -676,6 +676,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         default = False,
         help_text = "Check this to alert readers the article has been revised since its publication.",
     )
+    deadline = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Deadline",
+        help_text = "The targeted deadline for a writer's initial submission of the piece.",
+    )
 
     class TimelinessChoices(models.IntegerChoices):
         A_DAY = 1, ("Timely for a day")
@@ -914,6 +920,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ],
             heading="Special search engine-related meta tagging",
         ),
+        FieldPanel("deadline", help_text="This field sets the deadline for a contributor to file a draft."),
         
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [

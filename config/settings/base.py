@@ -112,6 +112,7 @@ INSTALLED_APPS = [
     'wagtail.contrib.routable_page',
     'wagtail.contrib.sitemaps',
     'wagtail.contrib.styleguide',
+    # 'wagtail_headless_preview',
 
     'taggit',
     'modelcluster',
@@ -367,3 +368,15 @@ CHANNEL_LAYERS = {
 }
 
 LOGIN_URL = "/admin/login/"
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+}
+
+# WAGTAIL_HEADLESS_PREVIEW = {
+#     "CLIENT_URLS": {
+#         "default": "http://localhost:8000",
+#     }
+# }

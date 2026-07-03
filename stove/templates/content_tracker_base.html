@@ -11,6 +11,13 @@
 
 
 {% block content %}
+{% csrf_token %}
+
+{% comment %} <script>
+    var beats = '{{beats|escapejs}}'
+</script> {% endcomment %}
+
+
 
 <div class="content-tracker">
 <div class="main-panel">
@@ -80,17 +87,15 @@
                 <input name="byline-options" class="byline-field" id="byline-field-{{ p.id }}" type="text" autocomplete="on" list="byline-options" value="{{ p.authors_string }}"/> 
                 {% comment %} make this multi select and also make the authors separate {% endcomment %}
             </td>
-            <td><input type="date"/></td>
-            <td><select class="beat-field" id="beat-field-{{ p.id }}" value="{{p.get_primary_topic}}">
-                <option value="No beat">Select a beat</option>
-                <option value="Men's Hockey">Men's Hockey</option>
-                <option value="AMS">AMS</option>
-                <option value="Senate">Senate</option>
-                <option value="Community">Community</option>
-                <option value="Theatre">Theatre</option>
-            </select>
-
-
+            <td><input type="datetime-local" value="{{p.deadline|date:"Y-m-d"}}T{{p.deadline|time:"H:i"}}"/></td>            
+            <td>
+                <div class="autocomplete">
+                    <input class="beat-input autocomplete-field" type="text" name="beat-{{ p.id }}" placeholder="Beat"
+                    {% if p.get_primary_topic|stringformat:"s" != "None" %}
+                        value="{{p.get_primary_topic}}"
+                    {% endif %}
+                    >
+                </div>
             </td>
             <td class="status-cell"> 
 
@@ -112,7 +117,7 @@
                     {% if p.live %}
                     selected
                     {% endif %}
-                    disabled
+                    readonly
                     >Published</option>
                 </select>
             </td>
@@ -151,11 +156,37 @@
 
         </div>
         <div id="metadata-selection-edit-pane" hidden>
-            <h2>Edit
+            {% csrf_token %}
+            <div>Slug:</div> <div><input type="text" id="edit-title" name="edit-title"></div>
+            <div>Byline:</div> <div><input type="text" id="edit-byline" name="edit-byline"></div>
+            <div>Deadline:</div> <div><input type="text" id="edit-deadline" name="edit-deadline"></div>
+            <div>Beat:</div> <div><input type="text" class="beat-input autocomplete-field" id="edit-beat" name="edit-beat"></div>
+            <button id="edit-submit">Update</button>
         </div>
     </div>
     </aside>
 </div>
 </div>
-{% endblock %}
+{{ beats|json_script:"beats-data" }}
+<script>
+    // create a collection of page information.
+    var pages = {}
+    {% autoescape off %}
+    {% for p in pages%}
+    pages[{{ p.id }}] = {{p.to_json}}
+    {% endfor %}
+    {% endautoescape %}
+    
+    let updateEndpoint = "{% url 'stove:update_content_tracker' 1918 %}"
 
+    // Function to get the CSRF token from the cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    const csrfToken = getCookie('csrftoken');
+    const requiredHeader = {'X-CSRFToken': csrfToken}
+    </script>
+{% endblock %}

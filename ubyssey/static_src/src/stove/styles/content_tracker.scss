@@ -1,7 +1,8 @@
 .content-tracker {
     --metadata-width: 420px;
     --rounding-radius: 32px;
-    --active-color: lightskyblue;
+    --ubyssey-light-blue: #44c3d5;
+    --ubyssey-blue: #263a7b;
     --inactive-color: #ccc;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 8px minmax(0, var(--metadata-width));
@@ -36,7 +37,7 @@ flex-direction: column;
 }
 
 .selection-option-active a {
-    background-color: var(--active-color);
+    background-color: var(--ubyssey-light-blue);
 }
 
 .selection-option-inactive a {
@@ -124,11 +125,11 @@ flex-direction: column;
 }
 
 input:checked + .slider {
-  background-color: var(--active-color);
+  background-color: var(--ubyssey-light-blue);
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px var(--active-color);
+  box-shadow: 0 0 1px var(--ubyssey-light-blue);
 }
 
 input:checked + .slider:before {
@@ -151,7 +152,7 @@ input:checked + .slider:before {
 // =========================
 
 .content-table {
-    width: 40vw;
+    width: 50vw;
 }
 
 .slug-header {
@@ -171,6 +172,11 @@ input:checked + .slider:before {
 .slug-link {
     width: 100%;
 }
+.beat-header {
+  width: 15vw;
+  min-width: 150px;
+}
+
 .preview-icon {
     // visibility: hidden;
 }
@@ -230,4 +236,48 @@ input:checked + .slider:before {
 .draft-preview {
     width: var(--metadata-width);
     height: 95vh;
+}
+
+#metadata-selection-edit-pane {
+  display: grid;
+  grid-template-columns: auto auto;
+  background-color: dodgerblue;
+  padding: 10px;
+}
+
+
+// ============
+
+.autocomplete {
+  /*the container must be positioned relative:*/
+  // position: relative;
+  // display: inline-block;
+  // width: 400px;
+}
+input.autocomplete-field {
+  border: 1px solid transparent;
+  width: 90%;
+  margin: 4px;
+}
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+}
+.autocomplete-items div {
+  padding: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9;
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important;
+  color: #ffffff;
 }
