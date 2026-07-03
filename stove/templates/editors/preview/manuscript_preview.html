@@ -1,0 +1,34 @@
+{% load wagtailcore_tags %}
+
+<article class="c-article c-article--fw-story js-article">
+  {% for header_block in self.header %}
+    <div
+      data-article-block
+      data-stream-field="header"
+      data-stream-block-id="{{ header_block.id }}"
+      data-stream-block-index="{{ forloop.counter0 }}"
+    >
+      {% include_block header_block with id=header_block.id %}
+    </div>
+  {% endfor %}
+
+  <div class="clearfix">
+    {% for block in self.content %}
+      <div
+        class="cell left article-content"
+        data-article-block
+        data-stream-field="content"
+        data-stream-block-id="{{ block.id }}"
+        data-stream-block-index="{{ forloop.counter0 }}"
+      >
+        {% include_block block with id=block.id %}
+      </div>
+    {% endfor %}
+
+    {% if self.disclaimer %}
+      <div class="cell left article-content">
+        <div class="disclaimer" data-article-block data-article-editable-page-field="disclaimer" data-article-editable-mode="richtext">{{ self.disclaimer|safe }}</div>
+      </div>
+    {% endif %}
+  </div>
+</article>

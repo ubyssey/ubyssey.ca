@@ -27,10 +27,10 @@
             {% if featured_image_object.caption or featured_image_object.credit %}
                 <div class="caption">
                     {% if featured_image_object.caption %}
-                        {{ featured_image_object.caption|safe }}
+                        <span data-article-editable-stream-field="header" data-article-editable-path="overwrite_image.0.caption" data-article-editable-featured-media-field="caption">{{ featured_image_object.caption|safe }}</span>
                     {% endif %}
                     {% if featured_image_object.credit %}
-                        <span class="credit">{{ featured_image_object.credit }}</span>
+                        <span class="credit" data-article-editable-stream-field="header" data-article-editable-path="overwrite_image.0.credit" data-article-editable-featured-media-field="credit">{{ featured_image_object.credit }}</span>
                     {% endif %}
                 </div>
             {% endif %}

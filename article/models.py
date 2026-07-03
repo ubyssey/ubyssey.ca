@@ -318,6 +318,26 @@ class ArticleFeaturedMediaOrderable(Orderable):
         ),
     ]
 
+class ArticleMediaOrderable(Orderable):
+    article_page = ParentalKey(
+        "article.ArticlePage",
+        related_name="article_media",
+    )
+    image = models.ForeignKey(
+        "images.UbysseyImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    document = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
 class ArticleStyleOrderable(Orderable):
     css = models.ForeignKey(
         'wagtaildocs.Document',
@@ -959,6 +979,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     # TIMELINESS
     def get_relevance_score(self):
+        print("GETTING RELEVANCE: ")
         relevance_delta = {
             self.TimelinessChoices.A_DAY: 1,
             self.TimelinessChoices.A_FEW_DAYS: 3,
@@ -974,8 +995,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         if self.published_at > relevance_cutoff:
             return 1
         else:
-            return 0
-
+            return 0    
     # AUTHORS STRINGS
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
@@ -1482,6 +1502,14 @@ class StandardArticlePage(ArticlePage):
         blank=True,
         default='',
         help_text = "Used for Opinion articles or when corrections are made"
+    )
+
+    editor_article_version = models.JSONField(
+        null=False,
+        blank=True,
+        default=dict,
+        editable=False,
+        help_text="Contains editor version of page with footnotes and comments",
     )
 
     # template #TODO

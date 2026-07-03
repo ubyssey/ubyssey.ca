@@ -39,6 +39,8 @@ module.exports = {
     'passing-2025': './src/js/passing-2025.js',
     'contentTracker': './src/js/ContentTracker.jsx',
     'liveblog': './src/js/liveblog.jsx',
+    'stove/content_tracker': './src/stove/content_tracker.js',
+    'stove/manuscript_editor': './src/stove/manuscript_editor.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
@@ -48,10 +50,14 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
         }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|jpe?g|gif|mp4)$/i,

@@ -94,6 +94,9 @@ INSTALLED_APPS = [
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
 
+    'stove',
+    'wagtail.api.v2',
+
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
     'wagtail.contrib.settings',
@@ -362,3 +365,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+LOGIN_URL = "/admin/login/"

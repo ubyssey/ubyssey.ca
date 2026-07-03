@@ -6,21 +6,31 @@
 <p class="c-article__published-at">{{ article.published_at|date:'N j, Y' }}</p>
 
 {% if article.title_tag_str %}
-    <p class="title-tag">{{article.title_tag_str}}//</p>
+    <p class="title-tag"><span data-article-editable-page-field="title_tag">{{article.title_tag_str}}</span>//</p>
 {% endif %}
 
 <header>
-    <h1 class="o-headline o-headline--article">
+    <h1
+        class="o-headline o-headline--article"
+        data-article-editable-stream-field="header"
+        data-article-editable-path="title"
+        data-article-editable-page-field="title"
+    >
         {{ title|safe }}
     </h1>
 
     {% if self.subtitle %}
-        <p class="subtitle">{{self.subtitle|safe}}</p>    
+        <p class="subtitle" data-article-editable-stream-field="header" data-article-editable-path="subtitle">{{self.subtitle|safe}}</p>    
     {% endif %}
 </header>
 
 {% if self.above_cut_lede %}
-    <div class="o-article--header--above_cut_lede">
+    <div
+        class="o-article--header--above_cut_lede"
+        data-article-editable-stream-field="header"
+        data-article-editable-path="above_cut_lede"
+        data-article-editable-mode="richtext"
+    >
     {{ self.above_cut_lede|safe }}
     </div>
 {% endif %}

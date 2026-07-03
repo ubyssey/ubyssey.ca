@@ -1,0 +1,286 @@
+@use "../../styles/modules/core";
+
+:host {
+    font-family: "librefranklin", "noto-sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-size: 16px;
+    font-variation-settings: "wght" 400;
+    -webkit-font-smoothing: antialiased;
+}
+
+.article-shadow-preview {
+    position: relative;
+    font-family: inherit;
+    font-size: inherit;
+    font-variation-settings: inherit;
+    -webkit-font-smoothing: inherit;
+    counter-reset: stove-footnote;
+    background: var(--background);
+    color: var(--text_color-100);
+}
+
+mark[data-comment-thread-id],
+span[data-comment-thread-id] {
+  background: #eadcff;
+  box-shadow: inset 0 -2px 0 #7c3aed;
+  cursor: pointer;
+}
+
+mark[data-comment-resolved="true"],
+span[data-comment-resolved="true"] {
+  background: transparent;
+  box-shadow: none;
+}
+
+span[data-footnote-id] {
+  cursor: text;
+}
+
+span[data-footnote-anchor="true"] {
+  display: inline-block;
+  position: relative;
+  width: auto;
+  color: transparent;
+  caret-color: #1b1b1b;
+  white-space: pre;
+}
+
+// TODO Fix styling for more than single digit footnotes
+span[data-footnote-anchor="true"]::after {
+  margin-left: 0.5em;
+  margin-right: 0.15em;
+}
+
+span[data-footnote-id]::after {
+  counter-increment: stove-footnote;
+  content: counter(stove-footnote);
+  margin-left: -0.5em;
+  color: #0071c9;
+  font-size: 0.72em;
+  font-weight: 600;
+  vertical-align: super;
+}
+
+/*[data-article-block]:hover {
+    outline-color: #008fcb;
+    background: rgba(0, 143, 203, 0.08);
+    outline: 1px dashed transparent;
+    outline-offset: 4px;
+}*/
+
+.pm-manuscript-rich-text,
+.pm-manuscript-direct-edit {
+    cursor: text;
+    outline: 1px dashed transparent;
+    outline-offset: -1px;
+}
+
+.pm-manuscript-rich-text:hover,
+.pm-manuscript-rich-text:focus,
+.pm-manuscript-rich-text.ProseMirror-focused,
+.pm-manuscript-direct-edit:hover,
+.pm-manuscript-direct-edit:focus,
+.pm-manuscript-direct-edit.ProseMirror-focused {
+    outline-color: #000;
+}
+
+.pm-manuscript-direct-plain-text {
+    white-space: pre-wrap;
+}
+
+.pm-manuscript-direct-rich-text {
+    min-height: 1.2em;
+}
+
+.pm-manuscript-direct-rich-text p:last-child {
+    margin-bottom: 0;
+}
+
+.pm-article-block-controls-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    pointer-events: none;
+}
+
+.pm-article-block-outline {
+    display: none;
+    position: absolute;
+    border: 1px solid #008fcb;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.pm-article-block-controls {
+    display: none;
+    position: absolute;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    box-sizing: border-box;
+    pointer-events: auto;
+}
+
+.pm-article-block-controls-layer.is-active .pm-article-block-controls {
+    display: flex;
+}
+
+.pm-article-block-controls__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 26px;
+    min-width: 42px;
+    min-height: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: #fff;
+    z-index: 1001;
+    font: 12px/1 sans-serif;
+    cursor: pointer;
+}
+
+.pm-article-block-controls__button:disabled {
+    cursor: default;
+    opacity: 0.35;
+}
+
+.pm-article-block-controls__button--move {
+    background: #707070;
+}
+
+.pm-article-block-controls__button--move::before {
+    display: block;
+    color: #fff;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.pm-article-block-controls__button--up::before {
+    content: "↑";
+}
+
+.pm-article-block-controls__button--down::before {
+    content: "↓";
+}
+
+.pm-article-block-controls__button--danger {
+    background: #ff2a2a;
+}
+
+.pm-article-block-controls__button--insert {
+    background: #00a7e1;
+    font-size: 18px;
+}
+
+.pm-article-block-controls__button--edit {
+    background: #4f8fcb;
+    font-size: 11px;
+}
+
+.pm-article-block-controls__button--comment {
+    background: #7c3aed;
+    color: #1b1b1b;
+    font-size: 15px;
+}
+
+.pm-article-block--commented {
+    outline: 2px solid #7c3aed;
+    outline-offset: -1px;
+}
+
+.pm-manuscript-toolbar {
+    position: sticky;
+    top: var(--topbar-height, 48px);
+    z-index: 20;
+    background: var(--background, white);
+}
+
+.pm-manuscript-toolbar:empty {
+    display: none;
+}
+
+.pm-editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-height: 42px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-grey, #d9d9d9);
+    box-sizing: border-box;
+    color: var(--text_color-100, #1b1b1b);
+    font: 13px/1.2 sans-serif;
+}
+
+.pm-editor-toolbar__tools,
+.pm-editor-toolbar__publish {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.pm-editor-toolbar__publish {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.pm-editor-toolbar__button,
+.pm-editor-toolbar__action,
+.pm-editor-toolbar__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    min-width: 30px;
+    padding: 0 8px;
+    border: 1px solid var(--border-grey, #c7c7c7);
+    border-radius: 4px;
+    background: var(--background, #fff);
+    color: var(--text_color-100, #1b1b1b);
+    box-sizing: border-box;
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 0;
+}
+
+.pm-editor-toolbar__button[aria-pressed="true"] {
+    background: var(--color-ubyssey_blue-light, #e8f2f8);
+    border-color: var(--color-ubyssey_blue, #0071c9);
+    color: #1b1b1b;
+}
+
+.pm-editor-toolbar__button:disabled {
+    cursor: default;
+    opacity: 0.4;
+}
+
+.pm-editor-toolbar__button--bold {
+    font-weight: 700;
+}
+
+.pm-editor-toolbar__button--italic {
+    font-style: italic;
+}
+
+.pm-editor-toolbar__button--underline {
+    text-decoration: underline;
+}
+
+.pm-editor-toolbar__meta {
+    border-color: black;
+    color: var(--text_color-200, #555);
+    white-space: nowrap;
+}
+
+.pm-editor-toolbar__action--publish {
+    border-color: var(--color-ubyssey_blue, #0071c9);
+    background: var(--color-ubyssey_blue, #0071c9);
+    color: #fff;
+}

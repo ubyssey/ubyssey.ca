@@ -1,0 +1,236 @@
+{% extends "stove_base.html" %}
+{% load static %}
+{% load wagtailcore_tags %}
+
+{# Add new head block to replace stylesheet #}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/stove/manuscript_editor.css' %}"></link>
+<script defer src="{% static 'ubyssey/js/stove/manuscript_editor.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+{{ stream_editors|json_script:"stream-editors" }}
+{{ editor_errors|json_script:"editor-errors" }}
+
+<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-current-editor-username="{{ current_editor_username }}">
+  {% csrf_token %}
+
+  <header class="manuscript-topbar">
+    <a href="{% url 'stove:index' %}">Stove</a>
+    <div class="manuscript-topbar__actions">
+      <button type="button" class="manuscript-topbar__button" data-manuscript-open-settings>Settings</button>
+      <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>Media</button>
+      <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
+      <button type="submit" class="manuscript-topbar__button" name="action" value="draft" data-article-action="draft">Save</button> 
+      <button type="submit" class="manuscript-topbar__button" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
+      <label class="manuscript-version-picker">
+        <span>Version</span>
+        <select data-history-select aria-label="Version preview">
+          {% for h in history %}
+            <option value="{{ h.id }}">{{ h.user }} {{ h.created_at|date:"M j, Y H:i" }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="button" class="manuscript-topbar__button" data-history-restore disabled>Restore</button>
+    </div>
+  </header>
+
+  <aside class="metadata-editor metadata-editor--left" aria-label="Article notes">
+    <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
+      <div id="metadata-sidebar-settings">
+          <span> Title Tag
+              <label class="switch filter">
+                  <input type="checkbox" id="title-tag-toggle" data-page-field-toggle="title_tag" data-page-field-boilerplate="Title Tag" {% if page_form.title_tag.value %}checked{% endif %}>
+                  <span class="slider round"></span>
+              </label>
+          <span>
+          <span> Disclaimer
+              <label class="switch filter" >
+                  <input type="checkbox" id="disclaimer-toggle" data-page-field-toggle="disclaimer" data-page-field-boilerplate="&lt;p&gt;disclaimer&lt;/p&gt;" {% if page_form.disclaimer.value %}checked{% endif %}>
+                  <span class="slider round"></span>
+              </label>
+          <span>
+      </div>
+    </section>
+    {% if article_authors_form %}
+      <section class="pm-author-panel" data-article-authors-panel>
+        <h3 id="pm-author-panel-title" class="pm-author-panel__header">Authors</h3>
+        {{ article_authors_form.non_field_errors }}
+        <div class="pm-author-panel__rows" data-article-author-rows>
+          {% for row in article_authors_form.rows %}
+            <div class="pm-author-panel__row" data-article-author-row>
+              <label>
+                <span>Author</span>
+                <select name="article_authors-author" data-article-author-select>
+                  <option value="">Select author</option>
+                  {% for author in article_authors_form.author_options %}
+                    {% with author_id=author.pk|stringformat:"s" %}
+                      <option value="{{ author_id }}" {% if author_id == row.author_id %}selected{% endif %}>{{ author }}</option>
+                    {% endwith %}
+                  {% endfor %}
+                </select>
+              </label>
+              <label>
+                <span>Role</span>
+                <select name="article_authors-role">
+                  {% for value, label in article_authors_form.role_options %}
+                    <option value="{{ value }}" {% if value == row.author_role %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+              <button type="button" class="pm-author-panel__remove" data-article-author-remove>x</button>
+            </div>
+          {% endfor %}
+        </div>
+        <button type="button" class="pm-author-panel__add" data-article-author-add>Add author</button>
+      </section>
+    {% endif %}
+    <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
+  </aside>
+
+  <aside class="metadata-editor metadata-editor--right" aria-label="Article editor">
+    <section id="metadata-article">
+      {% for field_name, stream_editor in stream_editors.items %}
+        {% if field_name == "header" or field_name == "content" %}
+          <section class="editor-section">
+            <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
+            <textarea
+              id="stream_{{ field_name }}"
+              name="stream_{{ field_name }}"
+              data-stream-json
+              data-stream-field="{{ field_name }}"
+              hidden
+            ></textarea>
+          </section>
+        {% endif %}
+      {% endfor %}
+    </section>
+    <section class="pm-comment-sidebar" data-comment-sidebar aria-label="Comments"></section>
+  </aside>
+
+  <div class="article-media-modal" data-article-media-upload-modal role="dialog" aria-modal="true" aria-labelledby="article-media-upload-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close media upload"></button>
+    <section class="article-media-modal__panel">
+      <header class="article-media-modal__header">
+        <h2 id="article-media-upload-title" data-article-media-upload-title>Upload media</h2>
+        <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close media upload">x</button>
+      </header>
+      {{ article_media_upload_form.non_field_errors }}
+      {% for field in article_media_upload_form %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% else %}
+          <div class="page-field" {% if field.name == "description" %}data-article-media-image-only{% endif %}>
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endif %}
+      {% endfor %}
+      <footer class="article-media-modal__footer">
+        <button type="button" data-article-media-upload-button>Upload</button>
+        <button type="button" data-article-media-close>Cancel</button>
+      </footer>
+    </section>
+  </div>
+
+  <div class="article-media-modal" data-article-media-gallery-modal role="dialog" aria-modal="true" aria-labelledby="article-media-gallery-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close media gallery"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--gallery">
+      <header class="article-media-modal__header">
+        <h2 id="article-media-gallery-title">Media gallery</h2>
+        <div class="article-media-modal__actions">
+          <button type="button" data-article-media-open-upload>Upload media</button>
+          <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close media gallery">x</button>
+        </div>
+      </header>
+      {% include "editors/components/article_media_gallery.html" %}
+    </section>
+  </div>
+
+  <div class="article-media-modal" data-manuscript-settings-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-settings-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-manuscript-settings-close aria-label="Close settings"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--settings">
+      <header class="article-media-modal__header">
+        <h2 id="manuscript-settings-title">Settings</h2>
+        <button type="button" class="article-media-modal__close" data-manuscript-settings-close aria-label="Close settings">x</button>
+      </header>
+      <section id="metadata-settings">
+      {{ page_form.non_field_errors }}
+      {% for field in page_form %}
+        <div class="page-field">
+          {{ field.label_tag }}
+          {{ field }}
+          {{ field.errors }}
+        </div>
+      {% endfor %}
+
+      {% if featured_media_form %}
+        {{ featured_media_form.non_field_errors }}
+        <div>Featured Image or Video</div>
+        {% for field in featured_media_form %}
+          <div class="page-field">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% for field_name, stream_editor in stream_editors.items %}
+        {% if field_name != "header" and field_name != "content" %}
+          <section class="editor-section">
+            <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
+            <textarea
+              id="stream_{{ field_name }}"
+              name="stream_{{ field_name }}"
+              data-stream-json
+              data-stream-field="{{ field_name }}"
+              hidden
+            ></textarea>
+          </section>
+        {% endif %}
+      {% endfor %}
+      </section>
+    </section>
+  </div>
+
+  <main class="manuscript nav-border">
+    <div
+      id="article-shadow"
+      data-article-shadow
+      data-typekit-css="https://use.typekit.net/ihx1bdj.css"
+      data-bootstrap-css="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      data-shadow-editor-css="{% static 'ubyssey/css/stove/manuscript_shadow_editor.css' %}"
+    >
+      <!-- These are taken from article_page.html - we should figure out a way to avoid duplication-->
+      {% if self.styles.all|length == 0 %}
+        <link data-article-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
+      {% else %}
+        {% for style_obj in self.styles.all %}
+          <link data-article-stylesheet rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+        {% endfor %}
+      {% endif %}
+
+      {% include "editors/preview/manuscript_preview.html" %}
+    </div>
+
+    <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
+    {{ stream_editors|pprint }}
+    </textarea>-->
+
+    <div class="manuscript-publish-source" data-article-toolbar-source>
+      {% if self.live %}
+      <span data-article-status>Status: Live</span>
+      {% else %}
+      <span data-article-status>Status: Draft</span>
+      {% endif %}
+
+      {% if self.last_published_at %}
+      <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
+      {% endif %}
+    </div>
+  </main>
+</form>
+{% endblock %}
