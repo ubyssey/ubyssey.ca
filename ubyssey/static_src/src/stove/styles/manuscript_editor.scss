@@ -52,10 +52,12 @@ body {
     top: var(--topbar-height);
     bottom: 0;
     z-index: 10;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     box-sizing: border-box;
     background: #fff;
+    position: sticky;
+    height: 100vh;
 }
 
 .metadata-editor--left {
@@ -516,6 +518,7 @@ body {
 .pm-footnote__number {
     font: 600 13px sans-serif;
     color: #0071c9;
+    margin: 0;
 }
 
 .pm-footnote textarea {
