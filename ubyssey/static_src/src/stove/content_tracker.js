@@ -1,7 +1,6 @@
 const { filter } = require("keymaster");
 const { redirect } = require("react-router");
 
-var beats = JSON.parse(document.getElementById('beats-data').textContent);
 // var pages = JSON.parse(document.getElementById('pages-data').textContent);
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -21,10 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function setupBeats() {
     var elements = document.getElementsByClassName("beat-input");
-    console.log(elements.length);
+    let beatNames = []
+    Object.values(beats).forEach(element => {
+        beatNames.push(element.title)
+    });
 
     for (var i = 0; i < elements.length; i++) {
-        autocomplete(elements[i], beats);
+        autocomplete(elements[i], Object.values(beatNames));
     }
 }
 
@@ -50,13 +52,22 @@ function updateEditPane() {
 
 
     document.getElementById("edit-title").value = pages[focusedAssignment].title;
-    // if (focusedAssignment != -1) {
-    //     previewPanel.src = urlStart + focusedAssignment + urlEnd;
-    // }
+    if (pages[focusedAssignment].category_page) {
+        document.getElementById("edit-beat").value = beats[pages[focusedAssignment].category_page].title
+    } else {
+        document.getElementById("edit-beat").value = ""
+    }
+    let deadline = new Date(pages[focusedAssignment].deadline)
+    deadline.setHours(deadline.getHours() - 7);
+    document.getElementById("edit-deadline").value = deadline.toISOString().slice(0, 16);
+    console.log(deadline.toISOString().slice(0, 16))
+
 }
 var button = document.getElementById("edit-submit")
 button.addEventListener("click", async () => {
     const titleInput = document.getElementById("edit-title");
+    const beatInput = document.getElementById("edit-beat");
+    const deadlineInput = document.getElementById("edit-deadline");
     try {
         let headers = {content_type: "application/json"}
         for (key of Object.keys(requiredHeader)) {
@@ -64,7 +75,11 @@ button.addEventListener("click", async () => {
             headers[key] = requiredHeader[key]
         }
 
-        let body = {"title": titleInput.value, "testing": true}
+        let body = {"title": titleInput.value, "category": beatInput.value}
+
+        if (titleInput != "") body["title"] = titleInput.value;
+        if (beatInput != "") body["category"] = beatInput.value;
+        if (deadlineInput != "") body["deadline"] = deadlineInput.value;
 
       const response = await fetch(updateEndpoint.replace("1918", focusedAssignment.toString()), { method: "POST", headers: headers, body: JSON.stringify(body),
         credentials: "same-origin"});
@@ -230,7 +245,7 @@ function filterAssignments() {
 
 function isAssignedToMe(element) {
     var bylineElement = element.querySelector('.byline-field');
-    return bylineElement.value === "Quyen Schroeder";
+    return bylineElement.value === currentUser;
 }
 
 // =======================================
@@ -342,7 +357,7 @@ function autocomplete(inp, arr) {
   var currentFocus;
   /*execute a function when someone writes in the text field:*/
   inp.addEventListener("input", createDropdown);
-  inp.addEventListener("click", createDropdown)
+  inp.addEventListener("click", createDropdown);
 
   function createDropdown(e) {
       var a, b, i, val = this.value;
@@ -368,7 +383,7 @@ function autocomplete(inp, arr) {
           b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
           b.innerHTML += arr[i].substr(val.length);
           /*insert a input field that will hold the current array item's value:*/
-          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          b.innerHTML += "<input type='hidden' value=\"" + arr[i] + "\">";
           /*execute a function when someone clicks on the item value (DIV element):*/
               b.addEventListener("click", function(e) {
               /*insert the value for the autocomplete text field:*/

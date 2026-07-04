@@ -10,6 +10,9 @@ from django.views.decorators.http import require_POST
 from django.utils.text import slugify
 from wagtail.models import Page
 from article.models import ArticlePage
+from section.models import CategoryPage
+from authors.models import AuthorPage
+
 
 from stove.editor import (
     get_page_form,
@@ -34,14 +37,15 @@ def content_tracker_base(request):
     print(dir(pages[0]))
     # print(pages[0].word_count)
     
-    beats = ["Music", "Theatre", "Film", "Art", "Architecture", "Food", "Books", "Lifestyle", "Fashion", "Men’s Soccer", "Women’s Soccer", "Men’s Basketball",
-                "Women’s Basketball", "Men’s Volleyball", "Women’s Volleyball", "Men’s Hockey", "Women’s Hockey", "Football", "Women’s Rugby", "Alma Mater Society",
-                "Senate", "Board of Governors", "Community", "Immigration", "Research Policy", "Economy", "Law", "Post-Secondary Policy",
-                "Housing", "Transportation", "Health", "Technology", "Climate", "Point of Inquiry", "Powers that Be",
-                "Close Up", "Move Fast, Break Things", "AMS"
-    ]
 
-    return render(request, "content_tracker_base.html", {"pages": pages, "beats": beats})
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    print(authors[0].to_json())
+
+    print (beats[0].to_json())
+
+
+    return render(request, "content_tracker_base.html", {"pages": pages, "beats": beats, "authors": authors})
 
 @login_required
 @require_POST
@@ -53,25 +57,26 @@ def update_content_tracker(request, page_id):
     data = request.body.decode('utf-8')
     data = json.loads(request.body.decode('utf-8'))
 
+
     if (data["title"]):
         page.title = data["title"]
-        print("Updated title")
-
-    print(page.topics)
-    # print("PRIMARY" + page.get_primary_topic().name)
-    print(dir(page.topics))
-    print(page.topics.get_queryset()
-    )
-    oldTopics = page.topics.get_queryset()
-    page.topics.remove(page.get_primary_topic().name)
-    page.topics.add("Community")
-
-    page.primary_tag_slug = slugify("Community")
+        print("Updated title: " + page.title)
+    if (data["category"]):
+        page.topics.remove(page.get_primary_topic().name)
+        page.topics.add(data["category"])
+        page.primary_tag_slug = slugify(data["category"])
+        page.category_page = get_object_or_404(CategoryPage, title=data["category"])
+        print("Updated category (beat): " + page.category_page.title)
+    if (data["deadline"]):
+        page.deadline = data["deadline"]
+        print("Updated deadline: " + page.deadline)
     page.save()
+
     return JsonResponse({
         "html": page_id,
-        "old-title": page.title,
-        "new-title": data["title"]
+        "new-title": data["title"],
+        "new-category": data["category"],
+        "new-deadline": data["deadline"]
         # "beat": page.get_primary_topic()
     })
 
