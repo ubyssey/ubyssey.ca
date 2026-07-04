@@ -44,13 +44,13 @@
                   <input type="checkbox" id="title-tag-toggle" data-page-field-toggle="title_tag" data-page-field-boilerplate="Title Tag" {% if page_form.title_tag.value %}checked{% endif %}>
                   <span class="slider round"></span>
               </label>
-          <span>
+          </span>
           <span> Disclaimer
               <label class="switch filter" >
                   <input type="checkbox" id="disclaimer-toggle" data-page-field-toggle="disclaimer" data-page-field-boilerplate="&lt;p&gt;disclaimer&lt;/p&gt;" {% if page_form.disclaimer.value %}checked{% endif %}>
                   <span class="slider round"></span>
               </label>
-          <span>
+          </span>
       </div>
     </section>
     {% if article_authors_form %}
@@ -159,11 +159,18 @@
       <section id="metadata-settings">
       {{ page_form.non_field_errors }}
       {% for field in page_form %}
-        <div class="page-field">
-          {{ field.label_tag }}
-          {{ field }}
-          {{ field.errors }}
-        </div>
+        {% if field.name in public_page_form_fields %}
+          <div class="page-field">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% else %}
+          <div hidden>
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endif %}
       {% endfor %}
 
       {% if featured_media_form %}
