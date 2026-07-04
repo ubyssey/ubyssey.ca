@@ -22,6 +22,12 @@ PAGE_FORM_FIELDS = (
     "show_last_modified",
 )
 
+PAGE_FORM_HIDDEN_FIELDS = (
+    "title",
+    "title_tag",
+    "disclaimer",
+)
+
 PAGE_FORM_LABELS = {
     "title_tag": "Title Tag",
     "seo_description": "Meta Description",
@@ -54,7 +60,7 @@ def get_page_form(page, data=None):
 
 
 def get_page_field_names(page):
-    return [name for name in PAGE_FORM_FIELDS if is_page_form_field(page, name)]
+    return [name for name in (*PAGE_FORM_HIDDEN_FIELDS, *PAGE_FORM_FIELDS) if is_page_form_field(page, name)]
 
 
 def is_page_form_field(page, name):

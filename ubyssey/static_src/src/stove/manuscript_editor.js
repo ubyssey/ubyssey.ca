@@ -56,7 +56,7 @@ function setupPageFieldToggles() {
       }
       field.dispatchEvent(new Event("input", { bubbles: true }));
       form.dispatchEvent(new Event("input", { bubbles: true }));
-      editorState.schedulePreview();
+      editorState.schedulePreview({ immediate: true });
     });
   }
 }

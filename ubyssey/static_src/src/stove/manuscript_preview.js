@@ -290,7 +290,7 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
   let deferredManuscriptPreview = false;
   const historySelect = document.querySelector("[data-history-select]");
 
-  editorState.schedulePreview = ({ deferIfManuscriptFocused = false } = {}) => {
+  editorState.schedulePreview = ({ deferIfManuscriptFocused = false, immediate = false } = {}) => {
     if (historySelect) historySelect.selectedIndex = 0;
     previewRevision += 1;
     clearTimeout(timer);
@@ -301,7 +301,7 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
     }
 
     deferredManuscriptPreview = false;
-    timer = setTimeout(sendPreview, 500);
+    timer = setTimeout(sendPreview, immediate ? 0 : 500);
   };
 
   editorState.cancelPreviewRefresh = () => {
@@ -517,7 +517,7 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
     }
 
     const initialText = source.kind === "stream" ? source.field.textContent : source.input.value;
-    if (initialText) target.textContent = initialText;
+    target.textContent = String(initialText || "").trim();
 
     target.classList.add("pm-manuscript-direct-edit", "pm-manuscript-direct-plain-text");
     Object.assign(target, { contentEditable: "plaintext-only" });

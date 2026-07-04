@@ -13,6 +13,7 @@ from wagtail.models import Page
 from article.models import ArticlePage
 
 from stove.editor import (
+    PAGE_FORM_FIELDS,
     get_page_form,
     get_article_authors_form,
     get_streamfield_editors,
@@ -110,6 +111,7 @@ def manuscript_editor(request, page_id):
         request, "editors/manuscript_editor.html",
         {"self": page,
          "page_form": page_form,
+         "public_page_form_fields": PAGE_FORM_FIELDS,
          "article_authors_form": article_authors_form,
          "stream_editors": stream_editors,
          "editor_errors": editor_errors,
