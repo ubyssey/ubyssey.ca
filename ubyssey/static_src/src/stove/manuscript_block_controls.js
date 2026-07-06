@@ -4,7 +4,6 @@ import { makeButton, startCommentOnSelection } from "./prosemirror_base";
 import { createStreamBlockNode } from "./stream_editor";
 import { deleteTopLevelBlock, moveTopLevelBlock, topLevelBlockInfoByIdOrIndex } from "./stream_schema";
 import { editorState } from "./manuscript_editor";
-import { selectMetadataTab } from "./sidebar";
 
 const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
 const ARTICLE_STREAM_FIELDS = new Set(["header", "content"]);
@@ -709,7 +708,12 @@ export function selectArticleBlock(descriptor, manuscriptRoot = null, options = 
   if (!descriptor) return false;
 
   editorState.selectedArticleBlock = descriptor;
-  selectMetadataTab("article");
+  document.querySelectorAll("[data-metadata-tab]").forEach((tab) => {
+    tab.setAttribute("aria-selected", String(tab.dataset.metadataTab === "article"));
+  });
+  document.querySelectorAll("[data-metadata-panel]").forEach((panel) => {
+    panel.hidden = panel.dataset.metadataPanel !== "article";
+  });
   showSelectedArticleBlockEditor(descriptor);
 
   const articleBlock = manuscriptRoot && findArticleBlock(manuscriptRoot, descriptor);
