@@ -7,6 +7,7 @@ app_name = "stove"
 
 urlpatterns = [
     path("", views.content_tracker_base, name="content_tracker_base"),
+    path("react/", views.content_tracker_react, name="content_tracker_react"),
     path("content/<int:page_id>/update", views.update_content_tracker, name="update_content_tracker"),
     path("page/<int:page_id>", views.manuscript_editor, name="manuscript_editor"),
     path("page/<int:page_id>/preview", views.manuscript_preview, name="manuscript_preview"),

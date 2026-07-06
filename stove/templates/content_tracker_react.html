@@ -1,0 +1,76 @@
+{% extends "stove_base.html" %}
+{% load static %}
+
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/stove/content_tracker.css' %}"></link>
+{% endblock %}
+
+<script src="{% static 'ubyssey/js/stove/content_tracker_react.js' %}" type="text/javascript"></script>
+
+
+{% block content %}
+{% csrf_token %}
+
+<div id="content-tracker">
+
+</div>
+
+<script>
+    // create a collection of page information.
+    let pages = {}
+    let beats = {}
+    let beatOptions = []
+    let authors = []
+    let currentUser = "{{ request.user.get_full_name }}"
+    {% autoescape off %}
+    {% for p in pages%}
+    pages[{{ p.id }}] = {{p.to_json}}
+    {% endfor %}
+    {% for b in beats %}
+    beats[{{b.pk}}] = {{b.to_json}}
+    beatOptions.push({value: {{b.pk}}, label: "{{b.title}}"})
+    {% endfor %}
+    {% for a in authors %}
+    authors.push({ value: {{a.id}}, label: '{{a.full_name}}' })
+    {% endfor %}
+    {% endautoescape %}
+
+    beatOptions = [{
+        label: 'Opinion',
+        options: [
+        { value: 1, label: 'Powers that Be' },
+        { value: 2, label: 'Point of Inquiry' }
+        ]
+    },
+    {
+        label: 'News',
+        options: [
+        { value: 3, label: 'Alma Mater Society' },
+        { value: 4, label: 'Senate' }
+        ]
+    }]
+    console.log(authors)
+    console.log(beatOptions)
+
+
+
+    
+    let updateEndpoint = "{% url 'stove:update_content_tracker' 1918 %}"
+
+    const csrfToken = getCookie('csrftoken');
+    const requiredHeader = {'X-CSRFToken': csrfToken}
+
+    // getting the CSRF token from the cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    </script>
+<datalist id="byline-options">
+    {% for author in authors %}
+    <option value="{{author.full_name}}"></option>
+    {% endfor %}
+</datalist>
+{% endblock %}

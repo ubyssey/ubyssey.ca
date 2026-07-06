@@ -23,6 +23,28 @@ from stove.editor import (
     save_article_media_upload
 )
 
+@login_required
+def content_tracker_react(request):
+    editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
+    qs = ArticlePage.objects.all().order_by("-last_published_at", "-pk")
+    # qs = ArticlePage.objects.from_section("news").order_by("-last_published_at", "-pk")
+
+
+    paginator = Paginator(qs, 50)
+    pages = paginator.get_page(request.GET.get("article-page", 1))
+    # for page in pages:
+    print(dir(pages[0]))
+    # print(pages[0].word_count)
+    
+
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    print(authors[0].to_json())
+
+    print (beats[0].to_json())
+
+
+    return render(request, "content_tracker_react.html", {"pages": pages, "beats": beats, "authors": authors})
 
 @login_required
 def content_tracker_base(request):

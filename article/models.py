@@ -691,6 +691,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.A_FEW_DAYS.value)
 
+    class ArticleStatus(models.IntegerChoices):
+        ASSIGNED = 1, ("Assigned")
+        FILED = 2, ("Filed")
+        EDITING = 3, ("Editing")
+        COPY = 4, ("Copy")
+        READY = 5, ("Ready")
+        PUBLISHED = 6, ("Published")
+
+    article_status = models.IntegerField(choices=ArticleStatus.choices, default=ArticleStatus.ASSIGNED.value)
+
+
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
         null=False,
@@ -921,6 +932,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             heading="Special search engine-related meta tagging",
         ),
         FieldPanel("deadline", help_text="This field sets the deadline for a contributor to file a draft."),
+        FieldPanel("article_status", help_text = "This field indicates the current status of an article."),
         
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [

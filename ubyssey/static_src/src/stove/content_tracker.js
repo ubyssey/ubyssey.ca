@@ -2,6 +2,7 @@ const { filter } = require("keymaster");
 const { redirect } = require("react-router");
 
 // var pages = JSON.parse(document.getElementById('pages-data').textContent);
+let beatNames;
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -20,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function setupBeats() {
     var elements = document.getElementsByClassName("beat-input");
-    let beatNames = []
+    beatNames = []
     Object.values(beats).forEach(element => {
         beatNames.push(element.title)
     });
@@ -49,8 +50,6 @@ function handleEditClicked(event) {
 }
 
 function updateEditPane() {
-
-
     document.getElementById("edit-title").value = pages[focusedAssignment].title;
     if (pages[focusedAssignment].category_page) {
         document.getElementById("edit-beat").value = beats[pages[focusedAssignment].category_page].title
@@ -78,7 +77,13 @@ button.addEventListener("click", async () => {
         let body = {"title": titleInput.value, "category": beatInput.value}
 
         if (titleInput != "") body["title"] = titleInput.value;
-        if (beatInput != "") body["category"] = beatInput.value;
+        if (beatInput != "") {
+            if (!beatNames.includes(beatInput.value)) {
+                alert("\""+ beatInput.value + "\" is not a valid beat.");
+                return;
+            }
+            body["category"] = beatInput.value;
+        }
         if (deadlineInput != "") body["deadline"] = deadlineInput.value;
 
       const response = await fetch(updateEndpoint.replace("1918", focusedAssignment.toString()), { method: "POST", headers: headers, body: JSON.stringify(body),
