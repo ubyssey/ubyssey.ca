@@ -74,8 +74,7 @@ body {
     background: #f5f6f6;
 }
 
-// Hide everything in right sidebar except comments -> TODO move streamfields out of sidebar
-.metadata-editor--right > :not(.pm-comment-sidebar) {
+.manuscript-stream-state {
     position: absolute;
     width: 0;
     height: 0;
