@@ -122,6 +122,7 @@ function CommentReplyForm({ thread, username, refresh }) {
         };
         if (thread.commit) thread.commit(comment);
         else appendCommentToThread(thread.view, thread.threadId, comment);
+        textarea.value = "";
         refresh();
       }}
     >
