@@ -232,6 +232,26 @@ body {
     padding: 0;
 }
 
+.pm-link-modal__panel {
+    width: min(420px, 100%);
+}
+
+.pm-link-modal__field {
+    display: grid;
+    gap: 6px;
+    color: #1b1b1b;
+    font: 13px/1.2 sans-serif;
+}
+
+.pm-link-modal__field input {
+    min-height: 32px;
+    padding: 6px 8px;
+    border: 1px solid #c7c7c7;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font: 14px/1.2 sans-serif;
+}
+
 
 .article-block-editor-modal__panel {
     grid-template-rows: auto minmax(0, 1fr) auto;

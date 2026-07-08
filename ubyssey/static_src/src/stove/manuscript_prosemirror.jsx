@@ -4,6 +4,7 @@ import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-gapcursor/style/gapcursor.css";
 
 // Lots of plugins
+import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Schema } from "prosemirror-model";
 import { schema as basicSchema } from "prosemirror-schema-basic";
@@ -229,6 +230,7 @@ function toolbarItemIsActive(view, key) {
     if (empty) {
       return Boolean(key === "footnote" ? markRangeAtCursor(state, mark) : mark.isInSet(state.storedMarks || $from.marks()));
     }
+    if (key === "footnote" || key === "link") return false;
     return state.doc.rangeHasMark(from, to, mark);
   }
 
@@ -286,67 +288,146 @@ function PublishToolbar({ source }) {
 }
 
 function promptLinkCommand(linkMark) {
-  return (state, dispatch) => {
-    if (!dispatch) return true;
+  return (state, dispatch, view) => {
+    if (!state.selection.empty) return false;
+    if (!dispatch || !view) return true;
 
-    const attrs = linkMarkAttrsAtSelection(state, linkMark);
-    const rawHref = window.prompt("Enter link URL. Leave blank to remove link.", attrs?.href || "");
-    if (rawHref === null) return false;
+    const range = markRangeAtCursor(state, linkMark);
+    const attrs = range?.attrs || linkMark.isInSet(state.storedMarks || state.selection.$from.marks())?.attrs;
 
-    let href = String(rawHref || "").trim();
-    if (/^(javascript|data):/i.test(href)) {
-      window.alert("Links cannot use javascript: or data: URLs.");
-      return false;
-    }
-    if (href && !/^[a-z][a-z0-9+.-]*:/i.test(href) && !/^[#/?]/.test(href)) href = `https://${href}`;
+    openLinkModal({
+      href: attrs?.href || "",
+      alias: range ? state.doc.textBetween(range.from, range.to) : "",
+      onSubmit: (values) => applyLink(view, linkMark, range, values),
+      onCancel: () => { view.focus(); },
+    });
 
-    const { from, to, empty } = state.selection;
-    if (!href) {
-      const range = empty ? markRangeAtCursor(state, linkMark, attrs) : null;
-      let tr = state.tr;
-      if (range) tr = tr.removeMark(range.from, range.to, linkMark);
-      else if (empty) tr = tr.removeStoredMark(linkMark);
-      else tr = tr.removeMark(from, to, linkMark);
-      dispatch(tr.scrollIntoView());
-      return true;
-    }
-
-    const mark = linkMark.create({ href });
-    if (empty) {
-      const range = attrs ? markRangeAtCursor(state, linkMark, attrs) : null;
-      if (range) {
-        dispatch(state.tr.removeMark(range.from, range.to, linkMark).addMark(range.from, range.to, mark).scrollIntoView());
-        return true;
-      }
-
-      const text = window.prompt("Link text", href);
-      if (text === null || !text.trim()) return false;
-      dispatch(state.tr.replaceSelectionWith(state.schema.text(text, [mark]), false).scrollIntoView());
-      return true;
-    }
-
-    dispatch(state.tr.removeMark(from, to, linkMark).addMark(from, to, mark).scrollIntoView());
     return true;
   };
 }
 
-function linkMarkAttrsAtSelection(state, linkMark) {
-  const { from, to, empty, $from } = state.selection;
+function applyLink(view, linkMark, range, { href: rawHref, alias: rawAlias }) {
+  let href = String(rawHref || "").trim();
+  if (/^(javascript|data):/i.test(href)) {
+    window.alert("Links cannot use javascript: or data: URLs.");
+    return false;
+  }
+  if (href && !/^[a-z][a-z0-9+.-]*:/i.test(href) && !/^[#/?]/.test(href)) href = `https://${href}`;
 
-  if (empty) {
-    const range = markRangeAtCursor(state, linkMark);
-    if (range) return range.attrs;
-    return linkMark.isInSet(state.storedMarks || $from.marks())?.attrs || null;
+  let tr = view.state.tr;
+  if (!href) {
+    tr = range ? tr.removeMark(range.from, range.to, linkMark) : tr.removeStoredMark(linkMark);
+  } else {
+    const text = String(rawAlias || "").trim() || href;
+    const mark = linkMark.create({ href });
+    tr = range
+      ? tr.replaceWith(range.from, range.to, view.state.schema.text(text, [mark]))
+      : tr.replaceSelectionWith(view.state.schema.text(text, [mark]), false);
+    tr = tr.removeStoredMark(linkMark);
   }
 
-  let attrs = null;
-  state.doc.nodesBetween(from, to, (node) => {
-    const mark = linkMark.isInSet(node.marks);
-    if (!mark) return true;
-    attrs = mark.attrs;
-    return false;
-  });
-  return attrs;
+  view.dispatch(tr.scrollIntoView());
+  view.focus();
+  return true;
+}
+
+function openLinkModal(props) {
+  const mount = document.body.appendChild(document.createElement("div"));
+  const root = createRoot(mount);
+  const close = () => {
+    root.unmount();
+    mount.remove();
+  };
+
+  root.render(
+    <LinkModal
+      {...props}
+      onSubmit={(values) => {
+        if (props.onSubmit(values)) close();
+      }}
+      onCancel={() => {
+        close();
+        props.onCancel?.();
+      }}
+    />,
+  );
+}
+
+function LinkModal({ href, alias, onSubmit, onCancel }) {
+  const [values, setValues] = useState({ href, alias });
+  const aliasInput = useRef(null);
+  const hrefInput = useRef(null);
+  const updateValue = (key) => (event) => {
+    setValues((current) => ({ ...current, [key]: event.currentTarget.value }));
+  };
+
+  useEffect(() => {
+    (alias ? hrefInput.current : aliasInput.current)?.focus();
+  }, [alias]);
+
+  return (
+    <div
+      className="article-media-modal pm-link-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pm-link-modal-title"
+      onKeyDown={(event) => {
+        if (event.key === "Escape") onCancel();
+      }}
+    >
+      <button
+        type="button"
+        className="article-media-modal__backdrop"
+        aria-label="Close link dialog"
+        onClick={onCancel}
+      />
+      <form
+        className="article-media-modal__panel pm-link-modal__panel"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSubmit(values);
+        }}
+      >
+        <header className="article-media-modal__header">
+          <h2 id="pm-link-modal-title">Insert Link</h2>
+          <button
+            type="button"
+            className="article-media-modal__close"
+            aria-label="Close link dialog"
+            onClick={onCancel}
+          >
+            x
+          </button>
+        </header>
+        <label className="pm-link-modal__field">
+          <span>Alias</span>
+          <input
+            ref={aliasInput}
+            name="alias"
+            type="text"
+            placeholder="example"
+            value={values.alias}
+            onChange={updateValue("alias")}
+          />
+        </label>
+        <label className="pm-link-modal__field">
+          <span>Link</span>
+          <input
+            ref={hrefInput}
+            name="href"
+            type="text"
+            placeholder="example.com"
+            value={values.href}
+            onChange={updateValue("href")}
+          />
+        </label>
+        <footer className="article-media-modal__footer">
+          <button type="button" onClick={onCancel}>Cancel</button>
+          <button type="submit">Insert</button>
+        </footer>
+      </form>
+    </div>
+  );
 }
 
 function toolbarCommand(view, key) {

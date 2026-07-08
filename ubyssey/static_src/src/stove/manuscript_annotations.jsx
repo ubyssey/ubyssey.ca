@@ -421,11 +421,13 @@ const FOOTNOTE_ANCHOR_TEXT = "\u00a0";
 
 export function startFootnoteCommand(footnoteMark) {
   return (state, dispatch) => {
-    const { from, to, empty, $from } = state.selection;
-    const activeMark = empty ? footnoteMark.isInSet(state.storedMarks || $from.marks()) : null;
+    const { empty, $from } = state.selection;
+    if (!empty) return false;
+
+    const activeMark = footnoteMark.isInSet(state.storedMarks || $from.marks());
     if (!dispatch) return true;
 
-    if (empty && activeMark) {
+    if (activeMark) {
       const range = markRangeAtCursor(state, footnoteMark, activeMark.attrs);
       let tr = state.tr.removeStoredMark(footnoteMark);
       if (range) tr = activeMark.attrs.anchor ? tr.delete(range.from, range.to) : tr.removeMark(range.from, range.to, footnoteMark);
@@ -433,24 +435,10 @@ export function startFootnoteCommand(footnoteMark) {
       return true;
     }
 
-    if (!empty && state.doc.rangeHasMark(from, to, footnoteMark)) {
-      dispatch(state.tr.removeMark(from, to, footnoteMark).removeStoredMark(footnoteMark).scrollIntoView());
-      return true;
-    }
-
     const footnoteId = uuidv4();
-    const mark = footnoteMark.create({ footnoteId, text: "", anchor: empty });
-    if (empty) {
-      dispatch(state.tr
-        .replaceSelectionWith(state.schema.text(FOOTNOTE_ANCHOR_TEXT, [mark]), false)
-        .removeStoredMark(footnoteMark)
-        .scrollIntoView());
-      return true;
-    }
-
+    const mark = footnoteMark.create({ footnoteId, text: "", anchor: true });
     dispatch(state.tr
-      .removeMark(from, to, footnoteMark)
-      .addMark(from, to, mark)
+      .replaceSelectionWith(state.schema.text(FOOTNOTE_ANCHOR_TEXT, [mark]), false)
       .removeStoredMark(footnoteMark)
       .scrollIntoView());
     return true;
