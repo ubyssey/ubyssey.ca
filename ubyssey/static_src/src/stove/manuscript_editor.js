@@ -1,12 +1,10 @@
-// Entrypoint
+// Entrypoint + State
 
-import { createEditorToolbar } from "./prosemirror_base";
-import { setupCommentSidebar } from "./comments.jsx";
-import { setupFootnoteSidebar } from "./footnotes.jsx";
-import { createStreamEditor } from "./stream_editor";
-import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_block_controls";
-import { mountManuscriptChrome } from "./manuscript_chrome.jsx";
-import { setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./manuscript_preview";
+import { createEditorToolbar } from "./manuscript_prosemirror.jsx";
+import { setupCommentSidebar, setupFootnoteSidebar } from "./manuscript_annotations.jsx";
+import { createStreamEditor } from "./manuscript_prosetail.jsx";
+import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_blocks.jsx";
+import { mountManuscriptChrome, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./manuscript_document.jsx";
 
 export const editorState = {
   streamEditors: [],
