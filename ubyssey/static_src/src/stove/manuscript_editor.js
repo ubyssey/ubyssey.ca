@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       streamEditors[textarea.dataset.streamField] || {},
       {
         onDocChanged: ({ transaction }) => {
-          if (!editorState.blockEditorModalOpen) {
+          if (!editorState.blockEditorModalOpen && !transaction.getMeta("skipPreview")) {
             editorState.schedulePreview({ deferIfManuscriptFocused: Boolean(transaction.getMeta("deferPreviewIfFocused")) });
           }
         },

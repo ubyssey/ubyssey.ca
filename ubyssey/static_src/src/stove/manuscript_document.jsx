@@ -588,7 +588,7 @@ function writeStreamFieldContent(source, fragment) {
   if (latestField) {
     view.dispatch(view.state.tr
       .replaceWith(latestField.pos + 1, latestField.pos + 1 + latestField.node.content.size, fragment)
-      .setMeta("deferPreviewIfFocused", true));
+      .setMeta("skipPreview", true));
   }
 }
 
@@ -606,11 +606,6 @@ function richTextHtmlFromDoc(doc) {
 
 function stopDirectEditEvents(target) {
   target.addEventListener("input", (event) => { event.stopPropagation(); });
-}
-
-function schedulePreviewAfterDirectEditBlur(event) {
-  if (event.relatedTarget?.closest?.(".pm-manuscript-direct-edit")) return;
-  editorState.schedulePreview();
 }
 
 export function setupServerPreviewRefresh(form, manuscriptRoot) {
@@ -815,9 +810,7 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
       const articleBlock = (blockId && articleBlocks.find((element) => element.dataset.streamBlockId === String(blockId))) || articleBlocks.find((element) => Number(element.dataset.streamBlockIndex) === blockIndex);
       if (!articleBlock) return;
 
-      const editor = createArticleRichTextEditor(articleBlock, field.content, `${articleBlock.className} pm-manuscript-rich-text`, () => {
-        editorState.schedulePreview({ deferIfManuscriptFocused: true });
-      });
+      const editor = createArticleRichTextEditor(articleBlock, field.content, `${articleBlock.className} pm-manuscript-rich-text`, () => {});
       editorState.articleRichTextEditors.push({ ...editor, fieldName: instance.fieldName, blockId, blockIndex });
     });
   }
@@ -836,7 +829,6 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
         (activeView) => {
           if (source.kind !== "stream") {
             source.input.value = richTextHtmlFromDoc(activeView.state.doc);
-            source.input.dispatchEvent(new Event("input", { bubbles: true }));
             return;
           }
 
@@ -845,7 +837,6 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
         },
       );
       stopDirectEditEvents(editor.view.dom);
-      editor.view.dom.addEventListener("blur", schedulePreviewAfterDirectEditBlur, true);
       editorState.articleDirectTextEditors.push(editor);
       continue;
     }
@@ -874,8 +865,6 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
       const nextValue = target.textContent.trim();
       if (activeSource.kind !== "stream") {
         activeSource.input.value = nextValue;
-        activeSource.input.dispatchEvent(new Event("input", { bubbles: true }));
-        editorState.schedulePreview({ deferIfManuscriptFocused: true });
         return;
       }
 
@@ -884,7 +873,6 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
         schema.nodes.paragraph.create(null, paragraphText ? schema.text(paragraphText) : null)
       ))));
     });
-    target.addEventListener("blur", schedulePreviewAfterDirectEditBlur);
   }
 }
 
