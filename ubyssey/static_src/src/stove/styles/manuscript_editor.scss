@@ -49,22 +49,21 @@ body {
 }
 
 .metadata-editor {
-    top: var(--topbar-height);
     bottom: 0;
     z-index: 10;
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
     box-sizing: border-box;
     background: #fff;
-    position: sticky;
-    height: 100vh;
 }
 
 .metadata-editor--left {
     grid-column: 1;
     grid-row: 2;
-    padding: 16px 12px 24px;
+    padding: 0px 12px;
     background: #f5f6f6;
+    position: sticky;
+    top: var(--topbar-height);
 }
 
 .metadata-editor--right {
@@ -72,6 +71,7 @@ body {
     grid-row: 2;
     padding: 16px 12px 24px;
     background: #f5f6f6;
+    position: relative;
 }
 
 .manuscript-stream-state {
@@ -572,7 +572,6 @@ body {
     padding: 12px;
     border: 1px solid #d8d8d8;
     background: #fff;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
 }
 
 .pm-comment-thread--collapsed {
