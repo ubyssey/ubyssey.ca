@@ -6,25 +6,52 @@ import { v4 as uuidv4 } from "uuid";
 export function setupCommentSidebar(root, { getViews, getThreads }) {
   const username = document.querySelector("[data-current-editor-username]").dataset.currentEditorUsername;
   const reactRoot = createRoot(root);
+  let activeThreadId = null;
+  let positionFrame = null;
 
   const currentThreads = () => [
     ...getViews().flatMap((view) => collectCommentThreads(view)),
     ...getThreads(),
   ];
 
-  const update = () => {
-    reactRoot.render(
-      <CommentSidebar
-        threads={currentThreads()}
-        username={username}
-        refresh={update}
-      />,
-    );
+  const setActiveThread = (threadId) => {
+    activeThreadId = threadId;
+    update();
   };
 
-  const removePendingThreads = (event) => {
-    if (root.contains(event.target)) return;
+  const clearActiveThread = () => {
+    if (!activeThreadId) return;
+    activeThreadId = null;
+    update();
+  };
 
+  const update = () => {
+    const threads = currentThreads();
+    if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId && !thread.resolved)) activeThreadId = null;
+    reactRoot.render(
+      <CommentSidebar
+        threads={threads}
+        username={username}
+        refresh={update}
+        activeThreadId={activeThreadId}
+        setActiveThread={setActiveThread}
+      />,
+    );
+    scheduleCommentPositions();
+    updateActiveCommentMarks(activeThreadId, threads);
+  };
+
+  const eventPath = (event) => event.composedPath?.() || [];
+  const eventCommentCard = (event) => eventPath(event)
+    .find((element) => element?.matches?.(".pm-comment-thread"));
+  const eventCommentMark = (event) => eventPath(event)
+    .find((element) => element?.matches?.("[data-comment-thread-id]"));
+
+  const removePendingThreads = (event) => {
+    const commentMark = eventCommentMark(event);
+    if (eventCommentCard(event) || commentMark) return;
+
+    clearActiveThread();
     let changed = false;
     currentThreads().forEach((thread) => {
       if (!thread.pending) return;
@@ -33,14 +60,103 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     if (changed) update();
   };
 
+  const onCommentMarkClick = (event) => {
+    const mark = eventCommentMark(event);
+    if (mark?.dataset.commentResolved === "true") return;
+    if (mark?.dataset.commentThreadId) setActiveThread(mark.dataset.commentThreadId);
+  };
+
+  const scheduleCommentPositions = () => {
+    if (positionFrame) return;
+    positionFrame = window.requestAnimationFrame(() => {
+      positionFrame = null;
+      positionCommentThreads(root, currentThreads());
+    });
+  };
+
   document.addEventListener("pointerdown", removePendingThreads, true);
   document.addEventListener("focusin", removePendingThreads, true);
+  document.querySelector("[data-article-shadow]")?.shadowRoot?.addEventListener("click", onCommentMarkClick);
+  window.addEventListener("scroll", scheduleCommentPositions, true);
+  window.addEventListener("resize", scheduleCommentPositions);
   update();
 
   return { update };
 }
 
-function CommentSidebar({ threads, username, refresh }) {
+function cssEscape(value) {
+  return window.CSS?.escape ? window.CSS.escape(String(value)) : String(value).replace(/["\\]/g, "\\$&");
+}
+
+function commentAnchorElement(thread) {
+  const shadowRoot = document.querySelector("[data-article-shadow]")?.shadowRoot;
+  if (!shadowRoot || !thread?.threadId) return null;
+
+  const inlineMark = shadowRoot.querySelector(`[data-comment-thread-id="${cssEscape(thread.threadId)}"]`);
+  if (inlineMark) return inlineMark;
+
+  if (!thread.fieldName) return null;
+  const blockSelector = `[data-article-block][data-stream-field="${cssEscape(thread.fieldName)}"]`;
+  const blocks = Array.from(shadowRoot.querySelectorAll(blockSelector));
+  return (thread.blockId && blocks.find((block) => block.dataset.streamBlockId === String(thread.blockId))) || blocks[thread.blockIndex] || null;
+}
+
+function positionCommentThreads(root, threads) {
+  const list = root.querySelector(".pm-comment-sidebar__list");
+  if (!list) return;
+
+  const listRect = list.getBoundingClientRect();
+  const placements = threads.map((thread) => {
+    const card = list.querySelector(`[data-comment-thread-id="${cssEscape(thread.threadId)}"]`);
+    const anchor = commentAnchorElement(thread);
+    return { thread, card, anchor };
+  }).filter(({ card }) => card);
+
+  const orderedPlacements = placements.map((placement, index) => {
+    const anchorRect = placement.anchor?.getBoundingClientRect();
+    return {
+      ...placement,
+      index,
+      targetTop: anchorRect ? Math.max(0, anchorRect.top - listRect.top) : null,
+    };
+  }).sort((left, right) => (left.targetTop ?? Number.MAX_SAFE_INTEGER) - (right.targetTop ?? Number.MAX_SAFE_INTEGER) || left.index - right.index);
+
+  let nextTop = 0;
+  const gap = 12;
+  for (const placement of orderedPlacements) {
+    const targetTop = placement.targetTop ?? nextTop;
+    const top = Math.max(targetTop, nextTop);
+    placement.card.style.top = `${top}px`;
+    placement.card.style.left = "0px";
+    placement.card.style.right = "0px";
+    nextTop = top + placement.card.offsetHeight + gap;
+  }
+
+  list.style.minHeight = placements.length ? `${nextTop - gap}px` : "";
+}
+
+function updateActiveCommentMarks(activeThreadId, threads = []) {
+  const shadowRoot = document.querySelector("[data-article-shadow]")?.shadowRoot;
+  if (!shadowRoot) return;
+
+  shadowRoot.querySelectorAll("[data-comment-active]").forEach((element) => {
+    element.removeAttribute("data-comment-active");
+  });
+  shadowRoot.querySelectorAll(".pm-article-block--comment-active").forEach((element) => {
+    element.classList.remove("pm-article-block--comment-active");
+  });
+  if (!activeThreadId) return;
+
+  shadowRoot.querySelectorAll(`[data-comment-thread-id="${cssEscape(activeThreadId)}"]`).forEach((element) => {
+    element.setAttribute("data-comment-active", "true");
+  });
+
+  const activeThread = threads.find((thread) => thread.threadId === activeThreadId);
+  const block = activeThread && activeThread.fieldName ? commentAnchorElement(activeThread) : null;
+  block?.classList?.add("pm-article-block--comment-active");
+}
+
+function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveThread }) {
   if (!threads.length) return null;
 
   return (
@@ -51,17 +167,28 @@ function CommentSidebar({ threads, username, refresh }) {
           thread={thread}
           username={username}
           refresh={refresh}
+          active={thread.threadId === activeThreadId && !thread.resolved}
+          setActiveThread={setActiveThread}
         />
       ))}
     </div>
   );
 }
 
-function CommentThread({ thread, username, refresh }) {
+function CommentThread({ thread, username, refresh, active, setActiveThread }) {
   const resolved = !thread.pending && Boolean(thread.resolved);
+  const className = [
+    "pm-comment-thread",
+    resolved ? "pm-comment-thread--collapsed" : "",
+    active ? "pm-comment-thread--active" : "",
+  ].filter(Boolean).join(" ");
 
   return (
-    <section className={`pm-comment-thread${resolved ? " pm-comment-thread--collapsed" : ""}`}>
+    <section
+      className={className}
+      data-comment-thread-id={thread.threadId}
+      onClick={() => { if (!resolved) setActiveThread(thread.threadId); }}
+    >
       {!thread.pending && (
         <button
           type="button"
@@ -69,7 +196,8 @@ function CommentThread({ thread, username, refresh }) {
           title={resolved ? "Reopen comment" : "Resolve comment"}
           aria-label={resolved ? "Reopen comment" : "Resolve comment"}
           aria-pressed={String(resolved)}
-          onClick={() => {
+          onClick={(event) => {
+            event.stopPropagation();
             const nextResolved = !thread.resolved;
             const changed = thread.setResolved
               ? thread.setResolved(nextResolved)
@@ -131,7 +259,6 @@ function CommentReplyForm({ thread, username, refresh }) {
         name="comment"
         placeholder={thread.pending ? "Comment" : "Reply"}
         rows="3"
-        autoFocus={thread.pending}
       />
       <button type="submit">{thread.pending ? "Comment" : "Reply"}</button>
     </form>

@@ -562,16 +562,21 @@ body {
 }
 
 .pm-comment-sidebar__list {
-    display: grid;
-    gap: 12px;
+    position: relative;
 }
 
 .pm-comment-thread {
+    position: absolute;
     display: grid;
     gap: 10px;
     padding: 12px;
     border: 1px solid #d8d8d8;
     background: #fff;
+}
+
+.pm-comment-thread--active {
+    border-color: #9a9a9a;
+    background: #f0f0f0;
 }
 
 .pm-comment-thread--collapsed {

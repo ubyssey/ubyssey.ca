@@ -671,6 +671,9 @@ export function collectBlockCommentThreads() {
           comments: Array.isArray(thread.comments) ? thread.comments : [],
           pending: Boolean(thread.pending),
           resolved: Boolean(thread.resolved),
+          fieldName: descriptor.fieldName,
+          blockId: descriptor.blockId,
+          blockIndex: descriptor.blockIndex,
           commit(comment) {
             return updateBlockCommentThread(instance, descriptor, (comments) => comments.map((item) => (
               item.threadId === thread.threadId
