@@ -110,9 +110,17 @@ span[data-footnote-id]::after {
     pointer-events: none;
 }
 
-.pm-article-block-controls {
+.pm-article-block-controls-wrapper {
     display: none;
     position: absolute;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.pm-article-block-controls {
+    display: flex;
+    position: sticky;
+    top: var(--pm-article-block-controls-top, 54px);
     flex-direction: column;
     align-items: stretch;
     gap: 4px;
@@ -120,8 +128,8 @@ span[data-footnote-id]::after {
     pointer-events: auto;
 }
 
-.pm-article-block-controls-layer.is-active .pm-article-block-controls {
-    display: flex;
+.pm-article-block-controls-layer.is-active .pm-article-block-controls-wrapper {
+    display: block;
 }
 
 .pm-article-block-controls__button {

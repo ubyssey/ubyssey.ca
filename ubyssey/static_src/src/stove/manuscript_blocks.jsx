@@ -51,6 +51,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
   const layerRoot = createRoot(layer);
   const modalRoot = createRoot(modalMount);
   const refs = {
+    controlsWrapper: null,
     topControls: null,
     blockEditorContent: null,
     insertEditorBody: null,
@@ -403,12 +404,10 @@ export function setupArticleBlockControls(manuscriptRoot) {
     editorState.preferredInsertTypes.set(instance.fieldName, nextValue);
   };
 
-  const positionAbsoluteElement = (target, left, top, width = target.offsetWidth, height = target.offsetHeight, padding = 6) => {
+  const positionBlockControlsWrapper = (target, left, top, width, height, padding = 6) => {
     const maxLeft = Math.max(padding, controlsHost.clientWidth - width - padding);
-    const maxTop = Math.max(padding, controlsHost.clientHeight - height - padding);
     const nextLeft = Math.max(padding, Math.min(left, maxLeft));
-    const nextTop = Math.max(padding, Math.min(top, maxTop));
-    Object.assign(target.style, { left: `${nextLeft}px`, top: `${nextTop}px` });
+    Object.assign(target.style, { left: nextLeft + "px", top: top + "px", height: height + "px" });
   };
 
   function positionControls() {
@@ -425,13 +424,16 @@ export function setupArticleBlockControls(manuscriptRoot) {
     const blockLeft = rect.left - hostRect.left + controlsHost.scrollLeft;
     const blockTop = rect.top - hostRect.top + controlsHost.scrollTop;
     layer.classList.add("is-active");
-    Object.assign(refs.topControls.style, { left: "0px", top: "0px" });
-    positionAbsoluteElement(
-      refs.topControls,
+    const controlsHeight = refs.topControls.offsetHeight;
+    const topbarBottom = document.querySelector(".manuscript-topbar")?.getBoundingClientRect().bottom || 0;
+    const toolbarBottom = manuscriptRoot.querySelector(".pm-manuscript-toolbar:not(:empty)")?.getBoundingClientRect().bottom || 0;
+    refs.topControls.style.setProperty("--pm-article-block-controls-top", Math.max(topbarBottom, toolbarBottom) + padding + "px");
+    positionBlockControlsWrapper(
+      refs.controlsWrapper,
       blockLeft + rect.width + 8,
       blockTop,
       refs.topControls.offsetWidth,
-      refs.topControls.offsetHeight,
+      Math.max(rect.height, controlsHeight),
       padding,
     );
   }
@@ -516,7 +518,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
     [manuscriptRoot, "mouseout", onOut],
     [manuscriptRoot, "focusout", onFocusOut],
     [document, "keydown", onKeyDown],
-    [window, "scroll", positionControls, true],
     [window, "resize", positionControls],
   ];
 
@@ -530,22 +531,24 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
 function ArticleBlockControlsLayer({ refs, ui, actions }) {
   return (
-    <div
-      ref={(element) => { refs.topControls = element; }}
-      className="pm-article-block-controls pm-article-block-controls--top"
-      onClick={(event) => { event.stopPropagation(); }}
-      onMouseDown={(event) => { event.stopPropagation(); }}
-      onPointerDown={(event) => { event.stopPropagation(); }}
-      onMouseUp={(event) => { event.stopPropagation(); }}
-      onChange={(event) => { event.stopPropagation(); }}
-      onInput={(event) => { event.stopPropagation(); }}
-    >
-      <button type="button" title="Delete" className="pm-article-block-controls__button pm-article-block-controls__button--danger" onClick={actions.delete}>X</button>
-      <button type="button" title="Move up" className="pm-article-block-controls__button pm-article-block-controls__button--move pm-article-block-controls__button--up" disabled={ui.upDisabled} onClick={actions.moveUp} />
-      <button type="button" title="Move down" className="pm-article-block-controls__button pm-article-block-controls__button--move pm-article-block-controls__button--down" disabled={ui.downDisabled} onClick={actions.moveDown} />
-      <button type="button" title="Comment" className="pm-article-block-controls__button pm-article-block-controls__button--comment" onClick={actions.comment}>💬</button>
-      <button type="button" title="Edit block" className="pm-article-block-controls__button pm-article-block-controls__button--edit" onClick={actions.edit}>🖉</button>
-      <button type="button" title="Add block" className="pm-article-block-controls__button pm-article-block-controls__button--insert" onClick={actions.insert}>+</button>
+    <div ref={(element) => { refs.controlsWrapper = element; }} className="pm-article-block-controls-wrapper">
+      <div
+        ref={(element) => { refs.topControls = element; }}
+        className="pm-article-block-controls pm-article-block-controls--top"
+        onClick={(event) => { event.stopPropagation(); }}
+        onMouseDown={(event) => { event.stopPropagation(); }}
+        onPointerDown={(event) => { event.stopPropagation(); }}
+        onMouseUp={(event) => { event.stopPropagation(); }}
+        onChange={(event) => { event.stopPropagation(); }}
+        onInput={(event) => { event.stopPropagation(); }}
+      >
+        <button type="button" title="Delete" className="pm-article-block-controls__button pm-article-block-controls__button--danger" onClick={actions.delete}>X</button>
+        <button type="button" title="Move up" className="pm-article-block-controls__button pm-article-block-controls__button--move pm-article-block-controls__button--up" disabled={ui.upDisabled} onClick={actions.moveUp} />
+        <button type="button" title="Move down" className="pm-article-block-controls__button pm-article-block-controls__button--move pm-article-block-controls__button--down" disabled={ui.downDisabled} onClick={actions.moveDown} />
+        <button type="button" title="Comment" className="pm-article-block-controls__button pm-article-block-controls__button--comment" onClick={actions.comment}>💬</button>
+        <button type="button" title="Edit block" className="pm-article-block-controls__button pm-article-block-controls__button--edit" onClick={actions.edit}>🖉</button>
+        <button type="button" title="Add block" className="pm-article-block-controls__button pm-article-block-controls__button--insert" onClick={actions.insert}>+</button>
+      </div>
     </div>
   );
 }
