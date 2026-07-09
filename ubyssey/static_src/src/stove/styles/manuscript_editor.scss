@@ -49,22 +49,21 @@ body {
 }
 
 .metadata-editor {
-    top: var(--topbar-height);
     bottom: 0;
     z-index: 10;
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
     box-sizing: border-box;
     background: #fff;
-    position: sticky;
-    height: 100vh;
 }
 
 .metadata-editor--left {
     grid-column: 1;
     grid-row: 2;
-    padding: 16px 12px 24px;
+    padding: 0px 12px;
     background: #f5f6f6;
+    position: sticky;
+    top: var(--topbar-height);
 }
 
 .metadata-editor--right {
@@ -72,10 +71,10 @@ body {
     grid-row: 2;
     padding: 16px 12px 24px;
     background: #f5f6f6;
+    position: relative;
 }
 
-// Hide everything in right sidebar except comments -> TODO move streamfields out of sidebar
-.metadata-editor--right > :not(.pm-comment-sidebar) {
+.manuscript-stream-state {
     position: absolute;
     width: 0;
     height: 0;
@@ -231,6 +230,26 @@ body {
 .article-media-modal__close {
     width: 30px;
     padding: 0;
+}
+
+.pm-link-modal__panel {
+    width: min(420px, 100%);
+}
+
+.pm-link-modal__field {
+    display: grid;
+    gap: 6px;
+    color: #1b1b1b;
+    font: 13px/1.2 sans-serif;
+}
+
+.pm-link-modal__field input {
+    min-height: 32px;
+    padding: 6px 8px;
+    border: 1px solid #c7c7c7;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font: 14px/1.2 sans-serif;
 }
 
 
@@ -510,23 +529,18 @@ body {
 
 .pm-footnote {
     display: grid;
-    grid-template-columns: 4px minmax(0, 1fr);
+    grid-template-columns: 1fr 10fr;
     gap: 8px;
     align-items: start;
 }
 
-.pm-footnote__number {
+.pm-footnote button {
     font: 600 13px sans-serif;
     color: #0071c9;
     margin: 0;
 }
 
 .pm-footnote textarea {
-    width: 100%;
-    min-width: 0;
-    padding: 0px 0px;
-    border: 1px solid #c7c7c7;
-    border-radius: 4px;
     box-sizing: border-box;
     background: #fff;
     color: #1b1b1b;
@@ -543,17 +557,21 @@ body {
 }
 
 .pm-comment-sidebar__list {
-    display: grid;
-    gap: 12px;
+    position: relative;
 }
 
 .pm-comment-thread {
+    position: absolute;
     display: grid;
     gap: 10px;
     padding: 12px;
     border: 1px solid #d8d8d8;
     background: #fff;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+}
+
+.pm-comment-thread--active {
+    border-color: #9a9a9a;
+    background: #f0f0f0;
 }
 
 .pm-comment-thread--collapsed {

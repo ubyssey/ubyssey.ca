@@ -1,15 +1,343 @@
+// Deals with document level stuff like shadow dom/preview and direct inline editing
 // Shadow Dom, preview refresh, history, text editor writeback
 
+import { useEffect } from "react";
+import { flushSync } from "react-dom";
+import { createRoot } from "react-dom/client";
+import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
-import { editorPlugins, richTextSchema } from "./prosemirror_base";
-import { pmDocToStreamValue, clone } from "./stream_serialization";
-import { topLevelBlockInfoByIdOrIndex } from "./stream_schema";
-import { editorState } from "./manuscript_editor";
-import { describeArticleBlock, articleBlockDescriptors, findArticleBlock, cleanupArticleBlockControls, refreshBlockCommentBorders, setupArticleBlockControls, showSelectedArticleBlockEditor, sameArticleBlock } from "./manuscript_block_controls";
+import { editorPlugins, richTextSchema } from "./manuscript_prosemirror.jsx";
+import { clone, pmDocToStreamValue, topLevelBlockInfoByIdOrIndex } from "./manuscript_prosetail.jsx";
+import { editorState } from "./manuscript_editor.js";
+import { articleBlockDescriptors, cleanupArticleBlockControls, describeArticleBlock, findArticleBlock, refreshBlockCommentBorders, sameArticleBlock, setupArticleBlockControls, showSelectedArticleBlockEditor } from "./manuscript_blocks.jsx";
 
-const theme = "light" // Add setting in future
+// Non hidden inputs
+const focusableSelector = "input:not([type='hidden']), select, textarea, button";
+
+function on(target, eventName, callback, options) {
+  target.addEventListener(eventName, callback, options);
+  return () => target.removeEventListener(eventName, callback, options);
+}
+
+function setModalOpen(modal, isOpen, focusTarget = null) {
+  modal.hidden = !isOpen;
+  document.body.classList.toggle(
+    "article-media-modal-open",
+    Boolean(document.querySelector(".article-media-modal:not([hidden])")),
+  );
+
+  if (isOpen) {
+    window.requestAnimationFrame(() => {
+      (focusTarget || modal.querySelector(focusableSelector)).focus();
+    });
+  }
+}
+
+function usePageFieldToggles(form, schedulePreview) {
+  useEffect(() => {
+    const cleanups = Array.from(document.querySelectorAll("[data-page-field-toggle]")).flatMap((toggle) => {
+      const field = form.elements.namedItem(toggle.dataset.pageFieldToggle);
+
+      const syncToggle = () => {
+        toggle.checked = Boolean(String(field.value).trim());
+      };
+      const onToggleChange = () => {
+        if (toggle.checked) {
+          field.value = toggle.dataset.pageFieldBoilerplate;
+        } else if (String(field.value).trim() && !window.confirm("Remove this field? Its current text will not be saved.")) {
+          toggle.checked = true;
+          return;
+        } else {
+          field.value = "";
+        }
+
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+        form.dispatchEvent(new Event("input", { bubbles: true }));
+        schedulePreview({ immediate: true });
+      };
+
+      syncToggle();
+      return [
+        on(field, "input", syncToggle),
+        on(toggle, "change", onToggleChange),
+      ];
+    });
+
+    return () => cleanups.forEach((cleanup) => cleanup());
+  }, [form, schedulePreview]);
+}
+
+function useArticleAuthorsPanel() {
+  useEffect(() => {
+    const panel = document.querySelector("[data-article-authors-panel]");
+    if (!panel) return undefined;
+
+    const rows = panel.querySelector("[data-article-author-rows]");
+    const form = panel.closest("form");
+    const notifyChanged = () => {
+      form.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+
+    const cleanups = [
+      on(panel, "click", (event) => {
+        const addButton = event.target.closest("[data-article-author-add]");
+        const removeButton = event.target.closest("[data-article-author-remove]");
+        if (!addButton && !removeButton) return;
+
+        event.preventDefault();
+
+        if (addButton) {
+          const row = rows.querySelector("[data-article-author-row]").cloneNode(true);
+          row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
+          rows.appendChild(row);
+          window.requestAnimationFrame(() => {
+            row.querySelector("[data-article-author-select]").focus();
+          });
+        } else {
+          const row = removeButton.closest("[data-article-author-row]");
+          const allRows = rows.querySelectorAll("[data-article-author-row]");
+          if (allRows.length === 1) row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
+          else row.remove();
+        }
+
+        notifyChanged();
+      }),
+      on(panel, "change", notifyChanged),
+    ];
+
+    return () => cleanups.forEach((cleanup) => cleanup());
+  }, []);
+}
+
+function useMetadataTabs() {
+  useEffect(() => {
+    const cleanups = Array.from(document.querySelectorAll("[data-metadata-tab]")).map((tab) => (
+      on(tab, "click", () => {
+        document.querySelectorAll("[data-metadata-tab]").forEach((item) => {
+          item.setAttribute("aria-selected", String(item.dataset.metadataTab === tab.dataset.metadataTab));
+        });
+        document.querySelectorAll("[data-metadata-panel]").forEach((panel) => {
+          panel.hidden = panel.dataset.metadataPanel !== tab.dataset.metadataTab;
+        });
+      })
+    ));
+    return () => cleanups.forEach((cleanup) => cleanup());
+  }, []);
+}
+
+function useMediaAndSettingsModals(form) {
+  useEffect(() => {
+    const uploadButton = document.querySelector("[data-article-media-upload-button]");
+    const settingsModal = document.querySelector("[data-manuscript-settings-modal]");
+    const uploadModal = document.querySelector("[data-article-media-upload-modal]");
+    const galleryModal = document.querySelector("[data-article-media-gallery-modal]");
+    const uploadTitle = document.querySelector("[data-article-media-upload-title]");
+    const kind = form.elements.namedItem("article_media-kind");
+    let uploadReturnsToGallery = false;
+
+    const mediaField = (name) => form.querySelector(`#id_article_media-${name}`);
+    const setUploadMode = (mode) => {
+      const editing = mode === "edit";
+      uploadTitle.textContent = editing ? "Edit media" : "Upload media";
+      uploadButton.textContent = editing ? "Save" : "Upload";
+    };
+    const reset = () => {
+      form.querySelectorAll("[name^='article_media-']").forEach((field) => {
+        if (field !== kind) field.value = "";
+      });
+      delete form.dataset.articleMediaEditKind;
+      setUploadMode("upload");
+    };
+    const syncImageFields = () => {
+      document.querySelectorAll("[data-article-media-image-only]").forEach((row) => {
+        row.hidden = kind.value !== "image";
+      });
+      if (mediaField("media_id").value && kind.value !== form.dataset.articleMediaEditKind) reset();
+    };
+    const closeUpload = () => {
+      const shouldFocusGallery = uploadReturnsToGallery;
+      setModalOpen(uploadModal, false);
+      uploadModal.classList.remove("article-media-modal--stacked");
+      uploadReturnsToGallery = false;
+      reset();
+      syncImageFields();
+      if (shouldFocusGallery) {
+        window.requestAnimationFrame(() => {
+          galleryModal.querySelector("[data-article-media-edit-button], a, button").focus();
+        });
+      }
+    };
+
+    syncImageFields();
+
+    const cleanups = [
+      on(document.querySelector("[data-manuscript-open-settings]"), "click", () => {
+        setModalOpen(settingsModal, true, settingsModal.querySelector(focusableSelector));
+      }),
+      on(document.querySelector("[data-article-media-open-upload]"), "click", () => {
+        uploadReturnsToGallery = !galleryModal.hidden;
+        uploadModal.classList.toggle("article-media-modal--stacked", uploadReturnsToGallery);
+        reset();
+        syncImageFields();
+        setModalOpen(uploadModal, true, kind);
+      }),
+      on(document.querySelector("[data-article-media-open-gallery]"), "click", () => {
+        setModalOpen(galleryModal, true, galleryModal.querySelector("[data-article-media-edit-button], a, button"));
+      }),
+      on(form, "click", (event) => {
+        const editButton = event.target.closest("[data-article-media-edit-button]");
+        if (!editButton) return;
+
+        const card = editButton.closest("[data-article-media-item]");
+        event.preventDefault();
+
+        ["id", "kind", "title", "author", "description", "tags"].forEach((name) => {
+          const field = mediaField(name === "id" ? "media_id" : name);
+          field.value = card.dataset[name] || "";
+        });
+        mediaField("file").value = "";
+        form.dataset.articleMediaEditKind = card.dataset.kind;
+        setUploadMode("edit");
+        syncImageFields();
+        uploadReturnsToGallery = !galleryModal.hidden;
+        uploadModal.classList.toggle("article-media-modal--stacked", uploadReturnsToGallery);
+        setModalOpen(uploadModal, true, mediaField("title"));
+      }),
+      ...Array.from(document.querySelectorAll("[data-article-media-close], [data-manuscript-settings-close]")).map((button) => (
+        on(button, "click", () => {
+          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-gallery-modal]");
+          if (modal === uploadModal) closeUpload();
+          else setModalOpen(modal, false);
+        })
+      )),
+      on(document, "keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (!uploadModal.hidden) closeUpload();
+        else if (!galleryModal.hidden) setModalOpen(galleryModal, false);
+        else if (!settingsModal.hidden) setModalOpen(settingsModal, false);
+      }),
+      on(kind, "change", syncImageFields),
+      on(uploadButton, "click", async () => {
+        uploadButton.disabled = true;
+        try {
+          const response = await fetch(form.dataset.mediaUploadUrl, { method: "POST", body: new FormData(form) });
+          const payload = await response.json();
+          if (!response.ok) {
+            window.alert(`Upload failed: ${JSON.stringify(payload.errors || payload)}`);
+            return;
+          }
+
+          document.querySelector("[data-article-media-gallery]").outerHTML = payload.gallery;
+          const selector = `.pm-control-field--${payload.item.kind} select${payload.item.kind === "image" ? ",select[name='featured_media-image']" : ""}`;
+          document.querySelectorAll(selector).forEach((select) => {
+            const existingOption = Array.from(select.options).find((item) => String(item.value) === String(payload.item.id));
+            const option = existingOption || select.appendChild(new Option());
+            option.value = payload.item.id;
+            option.textContent = payload.item.title;
+          });
+
+          closeUpload();
+        } catch (error) {
+          window.alert("Upload failed.");
+        } finally {
+          uploadButton.disabled = false;
+        }
+      }),
+    ];
+    return () => cleanups.forEach((cleanup) => cleanup());
+  }, [form]);
+}
+
+function useAsyncSave(form, writeBeforeSave) {
+  useEffect(() => {
+    const cleanup = on(form, "submit", async (event) => {
+      event.preventDefault();
+
+      const submitter = event.submitter;
+      const originalText = submitter.textContent;
+      const saveButtons = form.querySelectorAll("[data-article-action]");
+
+      writeBeforeSave();
+      const formData = new FormData(form);
+      formData.set(submitter.name, submitter.value);
+
+      saveButtons.forEach((button) => { button.disabled = true; });
+      submitter.textContent = "Saving...";
+
+      try {
+        const response = await fetch(form.getAttribute("action"), {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+        });
+        const payload = (response.headers.get("content-type") || "").includes("application/json")
+          ? await response.json()
+          : {};
+
+        if (!response.ok || payload.errors) {
+          const message = payload.errors
+            ? Object.entries(payload.errors)
+              .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`)
+              .join("\n")
+            : `Save failed with status ${response.status}: ${form.getAttribute("action")}`;
+          window.alert(message);
+          return;
+        }
+
+        const historySelect = document.querySelector("[data-history-select]");
+        if (historySelect && payload.revision) {
+          const revisionId = String(payload.revision.id);
+          const existingOption = Array.from(historySelect.options).find((option) => option.value === revisionId);
+          if (!existingOption) {
+            const option = document.createElement("option");
+            option.value = revisionId;
+            option.textContent = payload.revision.label || `Revision ${revisionId}`;
+            historySelect.insertBefore(option, historySelect.options[0]);
+          }
+          historySelect.selectedIndex = 0;
+        }
+
+        submitter.textContent = payload.action === "publish" ? "Published" : "Saved";
+        window.setTimeout(() => { submitter.textContent = originalText; }, 1400);
+      } catch (error) {
+        console.error(error);
+        window.alert("Failed to save.");
+      } finally {
+        saveButtons.forEach((button) => { button.disabled = false; });
+        if (submitter.textContent === "Saving...") submitter.textContent = originalText;
+      }
+    });
+
+    return cleanup;
+  }, [form, writeBeforeSave]);
+}
+
+function ManuscriptChrome({ form, schedulePreview, writeBeforeSave }) {
+  usePageFieldToggles(form, schedulePreview);
+  useArticleAuthorsPanel();
+  useMetadataTabs();
+  useMediaAndSettingsModals(form);
+  useAsyncSave(form, writeBeforeSave);
+
+  return null;
+}
+
+export function mountManuscriptChrome(props) {
+  const mount = document.createElement("div");
+  mount.hidden = true;
+  mount.dataset.manuscriptChromeRoot = "";
+  document.body.appendChild(mount);
+  createRoot(mount).render(<ManuscriptChrome {...props} />);
+}
+
+// Shadow Dom, preview refresh, history, text editor writeback
+
+const theme = "light" // todo Add setting in future
 const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
 const DIRECT_EDITABLE_SELECTOR = "[data-article-editable-page-field], [data-article-editable-featured-media-field], [data-article-editable-stream-field][data-article-editable-path]";
 const EMPTY_RICH_TEXT = [{ type: "paragraph" }];
@@ -107,7 +435,7 @@ export function writeStreamTextareas(streamDocs = currentStreamDocs()) {
   return streamDocs;
 }
 
-function createArticleRichTextView(mount, content, className, onDocChanged) {
+function createArticleRichTextEditor(mount, content, className, onDocChanged) {
   const attributes = { class: className };
   for (const attr of [
     "data-article-block",
@@ -142,11 +470,16 @@ function createArticleRichTextView(mount, content, className, onDocChanged) {
     attributes,
   });
   view.dom.addEventListener("focus", () => { editorState.richTextToolbar?.setView(view); }, true);
-  return view;
+  return {
+    view,
+    destroy() {
+      view.destroy();
+    },
+  };
 }
 
 function destroyEditorViews(editors) {
-  for (const editor of editors) editor.view.destroy();
+  for (const editor of editors) editor.destroy();
   editors.length = 0;
   editorState.richTextToolbar?.setView(null);
   editorState.commentSidebar?.update();
@@ -255,7 +588,7 @@ function writeStreamFieldContent(source, fragment) {
   if (latestField) {
     view.dispatch(view.state.tr
       .replaceWith(latestField.pos + 1, latestField.pos + 1 + latestField.node.content.size, fragment)
-      .setMeta("deferPreviewIfFocused", true));
+      .setMeta("skipPreview", true));
   }
 }
 
@@ -273,11 +606,6 @@ function richTextHtmlFromDoc(doc) {
 
 function stopDirectEditEvents(target) {
   target.addEventListener("input", (event) => { event.stopPropagation(); });
-}
-
-function schedulePreviewAfterDirectEditBlur(event) {
-  if (event.relatedTarget?.closest?.(".pm-manuscript-direct-edit")) return;
-  editorState.schedulePreview();
 }
 
 export function setupServerPreviewRefresh(form, manuscriptRoot) {
@@ -421,6 +749,7 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
             .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`)
             .join("\n")
           : "Failed to restore version.";
+        // todo replace alerts with modal maybe
         alert(message);
         return;
       }
@@ -481,10 +810,8 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
       const articleBlock = (blockId && articleBlocks.find((element) => element.dataset.streamBlockId === String(blockId))) || articleBlocks.find((element) => Number(element.dataset.streamBlockIndex) === blockIndex);
       if (!articleBlock) return;
 
-      const view = createArticleRichTextView(articleBlock, field.content, `${articleBlock.className} pm-manuscript-rich-text`, () => {
-        editorState.schedulePreview({ deferIfManuscriptFocused: true });
-      });
-      editorState.articleRichTextEditors.push({ fieldName: instance.fieldName, blockId, blockIndex, view });
+      const editor = createArticleRichTextEditor(articleBlock, field.content, `${articleBlock.className} pm-manuscript-rich-text`, () => {});
+      editorState.articleRichTextEditors.push({ ...editor, fieldName: instance.fieldName, blockId, blockIndex });
     });
   }
 
@@ -495,14 +822,13 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
     if (!source) continue;
 
     if (target.dataset.articleEditableMode === "richtext") {
-      const view = createArticleRichTextView(
+      const editor = createArticleRichTextEditor(
         target,
         source.kind === "stream" ? source.field.node.toJSON().content : richTextContentFromHtml(source.input.value),
         `${target.className} pm-manuscript-direct-edit pm-manuscript-direct-rich-text`,
         (activeView) => {
           if (source.kind !== "stream") {
             source.input.value = richTextHtmlFromDoc(activeView.state.doc);
-            source.input.dispatchEvent(new Event("input", { bubbles: true }));
             return;
           }
 
@@ -510,9 +836,8 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
           writeStreamFieldContent(source, Fragment.fromArray((activeView.state.doc.toJSON().content || EMPTY_RICH_TEXT).map((node) => schema.nodeFromJSON(node))));
         },
       );
-      stopDirectEditEvents(view.dom);
-      view.dom.addEventListener("blur", schedulePreviewAfterDirectEditBlur, true);
-      editorState.articleDirectTextEditors.push({ view });
+      stopDirectEditEvents(editor.view.dom);
+      editorState.articleDirectTextEditors.push(editor);
       continue;
     }
 
@@ -540,8 +865,6 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
       const nextValue = target.textContent.trim();
       if (activeSource.kind !== "stream") {
         activeSource.input.value = nextValue;
-        activeSource.input.dispatchEvent(new Event("input", { bubbles: true }));
-        editorState.schedulePreview({ deferIfManuscriptFocused: true });
         return;
       }
 
@@ -550,9 +873,7 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
         schema.nodes.paragraph.create(null, paragraphText ? schema.text(paragraphText) : null)
       ))));
     });
-    target.addEventListener("blur", schedulePreviewAfterDirectEditBlur);
   }
-
 }
 
 function replaceArticlePreviewHtml(manuscriptRoot, html) {

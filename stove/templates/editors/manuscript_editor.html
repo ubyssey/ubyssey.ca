@@ -89,23 +89,25 @@
     <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
   </aside>
 
-  <aside class="metadata-editor metadata-editor--right" aria-label="Article editor">
-    <section id="metadata-article">
-      {% for field_name, stream_editor in stream_editors.items %}
-        {% if field_name == "header" or field_name == "content" %}
-          <section class="editor-section">
-            <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
-            <textarea
-              id="stream_{{ field_name }}"
-              name="stream_{{ field_name }}"
-              data-stream-json
-              data-stream-field="{{ field_name }}"
-              hidden
-            ></textarea>
-          </section>
-        {% endif %}
-      {% endfor %}
-    </section>
+  {# Stores the actual stream data #}
+  <div class="manuscript-stream-state" data-manuscript-stream-state aria-hidden="true">
+    {% for field_name, stream_editor in stream_editors.items %}
+      {% if field_name == "header" or field_name == "content" %}
+        <section class="editor-section">
+          <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
+          <textarea
+            id="stream_{{ field_name }}"
+            name="stream_{{ field_name }}"
+            data-stream-json
+            data-stream-field="{{ field_name }}"
+            hidden
+          ></textarea>
+        </section>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <aside class="metadata-editor metadata-editor--right" aria-label="Comments">
     <section class="pm-comment-sidebar" data-comment-sidebar aria-label="Comments"></section>
   </aside>
 

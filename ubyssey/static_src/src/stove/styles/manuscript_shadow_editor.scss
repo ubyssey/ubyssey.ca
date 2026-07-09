@@ -25,6 +25,12 @@ span[data-comment-thread-id] {
   cursor: pointer;
 }
 
+mark[data-comment-active="true"],
+span[data-comment-active="true"] {
+  background: #d8b4fe;
+  box-shadow: inset 0 -2px 0 #5b21b6;
+}
+
 mark[data-comment-resolved="true"],
 span[data-comment-resolved="true"] {
   background: transparent;
@@ -110,9 +116,17 @@ span[data-footnote-id]::after {
     pointer-events: none;
 }
 
-.pm-article-block-controls {
+.pm-article-block-controls-wrapper {
     display: none;
     position: absolute;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.pm-article-block-controls {
+    display: flex;
+    position: sticky;
+    top: var(--pm-article-block-controls-top, 54px);
     flex-direction: column;
     align-items: stretch;
     gap: 4px;
@@ -120,8 +134,8 @@ span[data-footnote-id]::after {
     pointer-events: auto;
 }
 
-.pm-article-block-controls-layer.is-active .pm-article-block-controls {
-    display: flex;
+.pm-article-block-controls-layer.is-active .pm-article-block-controls-wrapper {
+    display: block;
 }
 
 .pm-article-block-controls__button {
@@ -189,6 +203,11 @@ span[data-footnote-id]::after {
 .pm-article-block--commented {
     outline: 2px solid #7c3aed;
     outline-offset: -1px;
+}
+
+.pm-article-block--comment-active {
+    outline-color: #5b21b6;
+    background: rgba(216, 180, 254, 0.18);
 }
 
 .pm-manuscript-toolbar {
