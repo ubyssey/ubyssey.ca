@@ -489,7 +489,15 @@ function FootnotePanel({ footnotes, refresh }) {
       <h3 className="pm-footnote-panel__header">Footnotes</h3>
       {footnotes.map((footnote, index) => (
         <label className="pm-footnote" key={footnote.footnoteId}>
-          <h3 className="pm-footnote__number">{index + 1}</h3>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.preventDefault();
+              focusPreviewFootnote(footnote.footnoteId);
+            }}
+          >
+            {index + 1}
+          </button>
           <textarea
             defaultValue={footnote.text}
             data-footnote-id={footnote.footnoteId}
@@ -515,6 +523,16 @@ function FootnotePanel({ footnotes, refresh }) {
       ))}
     </section>
   );
+}
+
+function focusPreviewFootnote(footnoteId) {
+  const shadowRoot = document.querySelector("[data-article-shadow]")?.shadowRoot;
+  const footnote = shadowRoot?.querySelector(`[data-footnote-id="${cssEscape(footnoteId)}"][data-footnote-anchor="true"]`);
+  if (!footnote) return;
+
+  footnote.setAttribute("tabindex", "-1");
+  footnote.scrollIntoView({ block: "center", inline: "nearest" });
+  footnote.focus({ preventScroll: true });
 }
 
 export const footnoteMarkSpec = {

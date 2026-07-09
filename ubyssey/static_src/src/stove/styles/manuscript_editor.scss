@@ -529,23 +529,18 @@ body {
 
 .pm-footnote {
     display: grid;
-    grid-template-columns: 4px minmax(0, 1fr);
+    grid-template-columns: 1fr 10fr;
     gap: 8px;
     align-items: start;
 }
 
-.pm-footnote__number {
+.pm-footnote button {
     font: 600 13px sans-serif;
     color: #0071c9;
     margin: 0;
 }
 
 .pm-footnote textarea {
-    width: 100%;
-    min-width: 0;
-    padding: 0px 0px;
-    border: 1px solid #c7c7c7;
-    border-radius: 4px;
     box-sizing: border-box;
     background: #fff;
     color: #1b1b1b;
