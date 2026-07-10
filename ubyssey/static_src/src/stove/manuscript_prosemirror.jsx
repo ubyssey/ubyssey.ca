@@ -363,7 +363,8 @@ function LinkModal({ href, alias, onSubmit, onCancel }) {
   const aliasInput = useRef(null);
   const hrefInput = useRef(null);
   const updateValue = (key) => (event) => {
-    setValues((current) => ({ ...current, [key]: event.currentTarget.value }));
+    const { value } = event.currentTarget;
+    setValues((current) => ({ ...current, [key]: value }));
   };
 
   useEffect(() => {
