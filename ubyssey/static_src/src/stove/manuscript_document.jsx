@@ -364,8 +364,8 @@ export function setupArticleShadow() {
   const stylesheets = [
     host.dataset.typekitCss,
     host.dataset.bootstrapCss,
-    host.dataset.shadowEditorCss,
     ...articleStylesheetHrefs,
+    host.dataset.shadowEditorCss,
   ].filter(Boolean);
 
   for (const href of stylesheets) {

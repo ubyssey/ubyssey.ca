@@ -149,6 +149,7 @@ const TOOLBAR_ITEMS = [
   ["bold", "B", "Bold"],
   ["italic", "I", "Italic"],
   ["underline", "U", "Underline"],
+  ["heading3", "h3", "Heading 3"],
   ["link", "Link", "Insert link"],
   ["bulletList", "•", "Bullet list"],
   ["orderedList", "1.", "Ordered list"],
@@ -221,9 +222,11 @@ function EditorToolbar({ view, publishSource, refresh }) {
 function toolbarItemIsActive(view, key) {
   const { state } = view;
   const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link", comment: "comment", footnote: "footnote" };
+  const headingLevels = { heading3: 3 };
+  const headingLevel = headingLevels[key];
   const listNames = { bulletList: "bullet_list", orderedList: "ordered_list" };
   const mark = state.schema.marks[markNames[key]];
-  const nodeType = state.schema.nodes[listNames[key]];
+  const nodeType = headingLevel ? state.schema.nodes.heading : state.schema.nodes[listNames[key]];
 
   if (mark) {
     const { from, $from, to, empty } = state.selection;
@@ -238,13 +241,15 @@ function toolbarItemIsActive(view, key) {
 
   const { from, $from, to } = state.selection;
   for (let depth = $from.depth; depth > 0; depth -= 1) {
-    if ($from.node(depth).type === nodeType) return true;
+    const node = $from.node(depth);
+    if (node.type === nodeType) return headingLevel ? node.attrs.level === headingLevel : true;
   }
 
   let active = false;
   if (to > from) {
     state.doc.nodesBetween(from, to, (node) => {
       if (node.type !== nodeType) return true;
+      if (headingLevel && node.attrs.level !== headingLevel) return true;
       active = true;
       return false;
     });
@@ -358,7 +363,8 @@ function LinkModal({ href, alias, onSubmit, onCancel }) {
   const aliasInput = useRef(null);
   const hrefInput = useRef(null);
   const updateValue = (key) => (event) => {
-    setValues((current) => ({ ...current, [key]: event.currentTarget.value }));
+    const { value } = event.currentTarget;
+    setValues((current) => ({ ...current, [key]: value }));
   };
 
   useEffect(() => {
@@ -438,6 +444,10 @@ function toolbarCommand(view, key) {
     bold: schema.marks.strong && toggleMark(schema.marks.strong),
     italic: schema.marks.em && toggleMark(schema.marks.em),
     underline: schema.marks.underline && toggleMark(schema.marks.underline),
+    // setBlockType is a Prosemirror function and is unrelated to wagtail blocks
+    heading3: schema.nodes.heading && schema.nodes.paragraph && (toolbarItemIsActive(view, "heading3")
+      ? setBlockType(schema.nodes.paragraph)
+      : setBlockType(schema.nodes.heading, { level: 3 })),
     link: schema.marks.link && promptLinkCommand(schema.marks.link),
     bulletList: schema.nodes.bullet_list && wrapInList(schema.nodes.bullet_list),
     orderedList: schema.nodes.ordered_list && wrapInList(schema.nodes.ordered_list),
