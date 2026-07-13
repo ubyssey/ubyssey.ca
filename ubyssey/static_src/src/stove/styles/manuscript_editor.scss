@@ -563,8 +563,8 @@ body {
 .pm-comment-thread {
     position: absolute;
     display: grid;
-    gap: 10px;
-    padding: 12px;
+    gap: 8px;
+    padding: 8px;
     border: 1px solid #d8d8d8;
     background: #fff;
 }
@@ -579,7 +579,7 @@ body {
 }
 
 .pm-comment-thread__collapse {
-    justify-self: end;
+    flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -603,7 +603,7 @@ body {
 
 .pm-comment-thread__comments {
     display: grid;
-    gap: 10px;
+    gap: 8px;
 }
 
 .pm-comment {
@@ -614,8 +614,7 @@ body {
 .pm-comment__meta {
     display: flex;
     align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
 }
 
 .pm-comment__meta strong {
@@ -625,6 +624,7 @@ body {
 }
 
 .pm-comment__meta time {
+    margin-left: auto;
     flex: 0 0 auto;
     color: #666;
     font: 11px/1.2 sans-serif;
@@ -634,6 +634,17 @@ body {
     margin: 0;
     color: #222;
     overflow-wrap: anywhere;
+}
+
+.pm-comment__more,
+.pm-comment-thread__reply {
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #0071c9;
+    font: 12px/1.2 sans-serif;
+    cursor: pointer;
 }
 
 .pm-comment-reply {
@@ -649,7 +660,7 @@ body {
 .pm-comment-reply textarea {
     width: 100%;
     min-width: 0;
-    padding: 7px 8px;
+    padding: 5px 7px;
     border: 1px solid #c7c7c7;
     border-radius: 4px;
     box-sizing: border-box;

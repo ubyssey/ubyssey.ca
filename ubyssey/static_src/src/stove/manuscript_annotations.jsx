@@ -1,5 +1,6 @@
 // Handles footnotes, comments, marks
 
+import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { v4 as uuidv4 } from "uuid";
 
@@ -74,9 +75,14 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     });
   };
 
+  const articleShadow = document.querySelector("[data-article-shadow]");
+  const layoutObserver = new ResizeObserver(scheduleCommentPositions);
+  layoutObserver.observe(root);
+  if (articleShadow) layoutObserver.observe(articleShadow);
+
   document.addEventListener("pointerdown", removePendingThreads, true);
   document.addEventListener("focusin", removePendingThreads, true);
-  document.querySelector("[data-article-shadow]")?.shadowRoot?.addEventListener("click", onCommentMarkClick);
+  articleShadow?.shadowRoot?.addEventListener("click", onCommentMarkClick);
   window.addEventListener("scroll", scheduleCommentPositions, true);
   window.addEventListener("resize", scheduleCommentPositions);
   update();
@@ -175,7 +181,18 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
   );
 }
 
+const commentPreviewLength = 64;
+
 function CommentThread({ thread, username, refresh, active, setActiveThread }) {
+  const [replying, setReplying] = useState(thread.pending);
+  const [expanded, setExpanded] = useState(false);
+  const wasActive = useRef(active);
+
+  useEffect(() => {
+    if (wasActive.current && !active) setExpanded(false);
+    wasActive.current = active;
+  }, [active]);
+
   const resolved = !thread.pending && Boolean(thread.resolved);
   const className = [
     "pm-comment-thread",
@@ -183,55 +200,101 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
     active ? "pm-comment-thread--active" : "",
   ].filter(Boolean).join(" ");
 
+  const isLong = thread.comments.length > 2
+    || thread.comments.reduce((length, comment) => length + comment.text.length, 0) > commentPreviewLength;
+  let remainingLength = commentPreviewLength;
+  const visibleComments = expanded || !isLong ? thread.comments : thread.comments.slice(0, 2).flatMap((comment) => {
+    if (remainingLength <= 0) return [];
+
+    const truncated = comment.text.length > remainingLength;
+    const text = truncated ? `${comment.text.slice(0, remainingLength).trimEnd()}…` : comment.text;
+    remainingLength -= comment.text.length;
+    return [{ ...comment, text }];
+  });
+  
+  const resolveButton = !thread.pending && (
+    <button
+      type="button"
+      className="pm-comment-thread__collapse"
+      title={resolved ? "Reopen comment" : "Resolve comment"}
+      aria-label={resolved ? "Reopen comment" : "Resolve comment"}
+      aria-pressed={String(resolved)}
+      onClick={(event) => {
+        event.stopPropagation();
+        const nextResolved = !thread.resolved;
+        const changed = thread.setResolved
+          ? thread.setResolved(nextResolved)
+          : setCommentThreadResolved(thread.view, thread.threadId, nextResolved);
+        if (changed) refresh();
+      }}
+    >
+      {resolved ? "✓" : ""}
+    </button>
+  );
+
   return (
     <section
       className={className}
       data-comment-thread-id={thread.threadId}
       onClick={() => { if (!resolved) setActiveThread(thread.threadId); }}
     >
-      {!thread.pending && (
-        <button
-          type="button"
-          className="pm-comment-thread__collapse"
-          title={resolved ? "Reopen comment" : "Resolve comment"}
-          aria-label={resolved ? "Reopen comment" : "Resolve comment"}
-          aria-pressed={String(resolved)}
-          onClick={(event) => {
-            event.stopPropagation();
-            const nextResolved = !thread.resolved;
-            const changed = thread.setResolved
-              ? thread.setResolved(nextResolved)
-              : setCommentThreadResolved(thread.view, thread.threadId, nextResolved);
-            if (changed) refresh();
-          }}
-        >
-          {resolved ? "✓" : ""}
-        </button>
-      )}
+      {resolved && resolveButton}
 
       {!resolved && (
         <>
           {thread.comments.length > 0 && (
             <div className="pm-comment-thread__comments">
-              {thread.comments.map((comment) => (
-                <article className="pm-comment" key={`${comment.createdAt}-${comment.username}-${comment.text}`}>
-                  <div className="pm-comment__meta">
-                    <strong>{comment.username}</strong>
-                    <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
-                  </div>
-                  <p>{comment.text}</p>
-                </article>
+              {visibleComments.map((comment, index) => (
+                <Comment
+                  key={`${comment.createdAt}-${comment.username}-${comment.text}`}
+                  comment={comment}
+                  resolveButton={index === 0 ? resolveButton : null}
+                />
               ))}
             </div>
           )}
-          <CommentReplyForm thread={thread} username={username} refresh={refresh} />
+          {isLong && !expanded && (
+            <button type="button" className="pm-comment__more" onClick={() => { setExpanded(true); }}>
+              Show more
+            </button>
+          )}
+          {(!isLong || expanded) && (replying ? (
+            <CommentReplyForm
+              thread={thread}
+              username={username}
+              refresh={refresh}
+              close={() => { setReplying(false); }}
+            />
+          ) : (
+            <button type="button" className="pm-comment-thread__reply" onClick={() => { setReplying(true); }}>
+              Reply
+            </button>
+          ))}
+          {isLong && expanded && (
+            <button type="button" className="pm-comment__more" onClick={() => { setExpanded(false); }}>
+              Show less
+            </button>
+          )}
         </>
       )}
     </section>
   );
 }
 
-function CommentReplyForm({ thread, username, refresh }) {
+function Comment({ comment, resolveButton }) {
+  return (
+    <article className="pm-comment">
+      <div className="pm-comment__meta">
+        {resolveButton}
+        <strong>{comment.username}</strong>
+        <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
+      </div>
+      <p>{comment.text}</p>
+    </article>
+  );
+}
+
+function CommentReplyForm({ thread, username, refresh, close }) {
   return (
     <form
       className="pm-comment-reply"
@@ -251,6 +314,7 @@ function CommentReplyForm({ thread, username, refresh }) {
         if (thread.commit) thread.commit(comment);
         else appendCommentToThread(thread.view, thread.threadId, comment);
         textarea.value = "";
+        close();
         refresh();
       }}
     >
@@ -258,7 +322,7 @@ function CommentReplyForm({ thread, username, refresh }) {
       <textarea
         name="comment"
         placeholder={thread.pending ? "Comment" : "Reply"}
-        rows="3"
+        rows="2"
       />
       <button type="submit">{thread.pending ? "Comment" : "Reply"}</button>
     </form>
