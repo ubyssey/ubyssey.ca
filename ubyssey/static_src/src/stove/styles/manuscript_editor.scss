@@ -788,6 +788,37 @@ input:checked + .slider:before {
     font: 13px/1.35 sans-serif;
 }
 
+.pm-author-panel__select {
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-author-panel-select__control {
+    min-height: 30px !important;
+    border-color: #c7c7c7 !important;
+    box-shadow: none !important;
+}
+
+.pm-author-panel-select__value-container {
+    padding: 0 8px !important;
+}
+
+.pm-author-panel-select__input-container {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.pm-author-panel-select__indicators {
+    height: 28px;
+}
+
+.pm-author-panel-select__indicator-separator {
+    display: none;
+}
+
+.pm-author-panel-select__dropdown-indicator {
+    padding: 4px !important;
+}
+
 .pm-author-panel__add,
 .pm-author-panel__remove {
     display: inline-flex;

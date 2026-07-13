@@ -4,6 +4,7 @@
 import { useEffect } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
+import Select from "react-select";
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
@@ -75,9 +76,36 @@ function useArticleAuthorsPanel() {
 
     const rows = panel.querySelector("[data-article-author-rows]");
     const form = panel.closest("form");
+    const selectRoots = new Map();
     const notifyChanged = () => {
       form.dispatchEvent(new Event("input", { bubbles: true }));
     };
+    const setupAuthorSelect = (select) => {
+      const options = Array.from(select.options).map((option) => ({
+        label: option.text,
+        value: option.value,
+      }));
+      const container = document.createElement("div");
+      const root = createRoot(container);
+
+      container.className = "pm-author-panel__select";
+      select.hidden = true;
+      select.parentNode.insertBefore(container, select.nextSibling);
+      root.render(
+        <Select
+          classNamePrefix="pm-author-panel-select"
+          defaultValue={options.find((option) => option.value === select.value)}
+          options={options}
+          onChange={(option) => {
+            select.value = option.value;
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+          }}
+        />,
+      );
+      selectRoots.set(container, root);
+    };
+
+    panel.querySelectorAll("[data-article-author-select]").forEach(setupAuthorSelect);
 
     const cleanups = [
       on(panel, "click", (event) => {
@@ -89,16 +117,29 @@ function useArticleAuthorsPanel() {
 
         if (addButton) {
           const row = rows.querySelector("[data-article-author-row]").cloneNode(true);
+          row.querySelector(".pm-author-panel__select").remove();
+          row.querySelectorAll("label > span").forEach((label) => { label.remove(); });
           row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
           rows.appendChild(row);
+          setupAuthorSelect(row.querySelector("[data-article-author-select]"));
           window.requestAnimationFrame(() => {
-            row.querySelector("[data-article-author-select]").focus();
+            row.querySelector(".pm-author-panel-select__input input").focus();
           });
         } else {
           const row = removeButton.closest("[data-article-author-row]");
           const allRows = rows.querySelectorAll("[data-article-author-row]");
-          if (allRows.length === 1) row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
-          else row.remove();
+          const authorSelect = row.querySelector("[data-article-author-select]");
+          const container = authorSelect.nextElementSibling;
+
+          selectRoots.get(container).unmount();
+          selectRoots.delete(container);
+          container.remove();
+          if (allRows.length === 1) {
+            row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
+            setupAuthorSelect(authorSelect);
+          } else {
+            row.remove();
+          }
         }
 
         notifyChanged();
@@ -106,7 +147,10 @@ function useArticleAuthorsPanel() {
       on(panel, "change", notifyChanged),
     ];
 
-    return () => cleanups.forEach((cleanup) => cleanup());
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+      selectRoots.forEach((root) => root.unmount());
+    };
   }, []);
 }
 

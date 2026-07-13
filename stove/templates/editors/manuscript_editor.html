@@ -62,7 +62,7 @@
           {% for row in article_authors_form.rows %}
             <div class="pm-author-panel__row" data-article-author-row>
               <label>
-                <span>Author</span>
+                {% if forloop.first %}<span>Author</span>{% endif %}
                 <select name="article_authors-author" data-article-author-select>
                   <option value="">Select author</option>
                   {% for author in article_authors_form.author_options %}
@@ -73,7 +73,7 @@
                 </select>
               </label>
               <label>
-                <span>Role</span>
+                {% if forloop.first %}<span>Role</span>{% endif %}
                 <select name="article_authors-role">
                   {% for value, label in article_authors_form.role_options %}
                     <option value="{{ value }}" {% if value == row.author_role %}selected{% endif %}>{{ label }}</option>
