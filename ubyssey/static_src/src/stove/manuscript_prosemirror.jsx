@@ -7,6 +7,8 @@ import "prosemirror-gapcursor/style/gapcursor.css";
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Schema } from "prosemirror-model";
+import { Plugin, PluginKey } from "prosemirror-state";
+import { Decoration, DecorationSet } from "prosemirror-view";
 import { schema as basicSchema } from "prosemirror-schema-basic";
 import { addListNodes, liftListItem, sinkListItem, splitListItem, wrapInList } from "prosemirror-schema-list";
 import { baseKeymap, chainCommands, exitCode, joinDown, joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from "prosemirror-commands";
@@ -49,6 +51,7 @@ const isMac = typeof navigator !== "undefined" && /Mac|iP(hone|[oa]d)/.test(navi
 
 export function editorPlugins(schema) {
   return [
+    activeCommentPlugin(schema),
     buildEditorInputRules(schema),
     keymap(buildEditorKeymap(schema)),
     keymap(baseKeymap),
@@ -56,6 +59,41 @@ export function editorPlugins(schema) {
     gapCursor(),
     history(),
   ];
+}
+
+
+// Highlights currently active comment thread text - maybe overkill but fixed annoying synchronization issue
+const activeCommentPluginKey = new PluginKey("activeComment");
+function activeCommentPlugin(schema) {
+  const commentMark = schema.marks.comment;
+  return new Plugin({
+    key: activeCommentPluginKey,
+    state: {
+      init: () => ({ threadId: null, decorations: DecorationSet.empty }),
+      apply(transaction, value) {
+        const nextThreadId = transaction.getMeta("activeCommentThread");
+        const threadId = nextThreadId === undefined ? value.threadId : nextThreadId;
+        if (!transaction.docChanged && threadId === value.threadId) return value;
+        if (!commentMark || !threadId) return { threadId, decorations: DecorationSet.empty };
+
+        const decorations = [];
+        transaction.doc.descendants((node, position) => {
+          if (!node.isText) return true;
+          const mark = commentMark.isInSet(node.marks);
+          if (mark?.attrs.threadId === threadId) {
+            decorations.push(Decoration.inline(position, position + node.nodeSize, {
+              "data-comment-active": "true",
+            }));
+          }
+          return true;
+        });
+        return { threadId, decorations: DecorationSet.create(transaction.doc, decorations) };
+      },
+    },
+    props: {
+      decorations: (state) => activeCommentPluginKey.getState(state).decorations,
+    },
+  });
 }
 
 function buildEditorKeymap(schema) {

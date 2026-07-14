@@ -1,33 +1,57 @@
 // Handles footnotes, comments, marks
 
-import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { v4 as uuidv4 } from "uuid";
 
 export function setupCommentSidebar(root, { getViews, getThreads }) {
   const username = document.querySelector("[data-current-editor-username]").dataset.currentEditorUsername;
+  const articleShadow = document.querySelector("[data-article-shadow]");
   const reactRoot = createRoot(root);
   let activeThreadId = null;
   let positionFrame = null;
+  let hasRendered = false;
+  let renderedThreadIds = new Set();
+  let scrollActiveThread = null;
+  let commentOffset = 0;
 
   const currentThreads = () => [
     ...getViews().flatMap((view) => collectCommentThreads(view)),
     ...getThreads(),
   ];
 
-  const setActiveThread = (threadId) => {
+  const setActiveThread = (threadId, scroll = "center") => {
+    if (scroll === "nearest") {
+      const thread = currentThreads().find((item) => item.threadId === threadId);
+      const anchor = commentAnchorElement(thread);
+      const anchorRect = anchor?.getBoundingClientRect();
+      const topbarBottom = document.querySelector(".manuscript-topbar")?.getBoundingClientRect().bottom || 0;
+      const toolbarRect = articleShadow?.shadowRoot?.querySelector(".pm-manuscript-toolbar")?.getBoundingClientRect();
+      const visibleTop = toolbarRect?.top <= topbarBottom ? Math.max(topbarBottom, toolbarRect.bottom) : topbarBottom;
+      if (anchorRect && (anchorRect.bottom <= visibleTop || anchorRect.top >= window.innerHeight)) {
+        anchor.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      }
+    }
     activeThreadId = threadId;
+    scrollActiveThread = scroll;
     update();
   };
 
   const clearActiveThread = () => {
     if (!activeThreadId) return;
     activeThreadId = null;
+    scrollActiveThread = null;
     update();
   };
 
   const update = () => {
     const threads = currentThreads();
+    const newThread = hasRendered ? threads.find((thread) => thread.pending && !renderedThreadIds.has(thread.threadId)) : null;
+    hasRendered = true;
+    renderedThreadIds = new Set(threads.map((thread) => thread.threadId));
+    if (newThread) {
+      activeThreadId = newThread.threadId;
+      scrollActiveThread = "center";
+    }
     if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId && !thread.resolved)) activeThreadId = null;
     reactRoot.render(
       <CommentSidebar
@@ -49,6 +73,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     .find((element) => element?.matches?.("[data-comment-thread-id]"));
 
   const removePendingThreads = (event) => {
+    if (event.type === "focusin" && eventPath(event).includes(articleShadow)) return;
     const commentMark = eventCommentMark(event);
     if (eventCommentCard(event) || commentMark) return;
 
@@ -64,18 +89,33 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   const onCommentMarkClick = (event) => {
     const mark = eventCommentMark(event);
     if (mark?.dataset.commentResolved === "true") return;
-    if (mark?.dataset.commentThreadId) setActiveThread(mark.dataset.commentThreadId);
+    const threadId = mark?.dataset.commentThreadId;
+    if (threadId) setActiveThread(threadId);
   };
 
   const scheduleCommentPositions = () => {
     if (positionFrame) return;
     positionFrame = window.requestAnimationFrame(() => {
       positionFrame = null;
-      positionCommentThreads(root, currentThreads());
+      const threads = currentThreads();
+      root.querySelectorAll(".pm-comment-thread").forEach((comment) => {
+        layoutObserver.observe(comment);
+      });
+      positionCommentThreads(root, threads, commentOffset);
+      if (scrollActiveThread && activeThreadId) {
+        const comment = root.querySelector(`[data-comment-thread-id="${cssEscape(activeThreadId)}"]`);
+        const commentRect = comment?.getBoundingClientRect();
+        if (commentRect && scrollActiveThread === "center") {
+          commentOffset += commentRect.top - (window.innerHeight - commentRect.height) / 2;
+        } else if (commentRect?.bottom > window.innerHeight) {
+          commentOffset += commentRect.bottom - window.innerHeight + 12;
+        }
+        positionCommentThreads(root, threads, commentOffset);
+        scrollActiveThread = null;
+      }
     });
   };
 
-  const articleShadow = document.querySelector("[data-article-shadow]");
   const layoutObserver = new ResizeObserver(scheduleCommentPositions);
   layoutObserver.observe(root);
   if (articleShadow) layoutObserver.observe(articleShadow);
@@ -103,11 +143,14 @@ function commentAnchorElement(thread) {
 
   if (!thread.fieldName) return null;
   const blockSelector = `[data-article-block][data-stream-field="${cssEscape(thread.fieldName)}"]`;
-  const blocks = Array.from(shadowRoot.querySelectorAll(blockSelector));
+  const blocks = Array.from(shadowRoot.querySelectorAll(blockSelector)).filter((block) => {
+    const parentBlock = block.parentElement?.closest(blockSelector);
+    return !parentBlock || !shadowRoot.contains(parentBlock);
+  });
   return (thread.blockId && blocks.find((block) => block.dataset.streamBlockId === String(thread.blockId))) || blocks[thread.blockIndex] || null;
 }
 
-function positionCommentThreads(root, threads) {
+function positionCommentThreads(root, threads, offset) {
   const list = root.querySelector(".pm-comment-sidebar__list");
   if (!list) return;
 
@@ -123,11 +166,11 @@ function positionCommentThreads(root, threads) {
     return {
       ...placement,
       index,
-      targetTop: anchorRect ? Math.max(0, anchorRect.top - listRect.top) : null,
+      targetTop: anchorRect ? anchorRect.top - listRect.top - offset : null,
     };
   }).sort((left, right) => (left.targetTop ?? Number.MAX_SAFE_INTEGER) - (right.targetTop ?? Number.MAX_SAFE_INTEGER) || left.index - right.index);
 
-  let nextTop = 0;
+  let nextTop = -offset;
   const gap = 12;
   for (const placement of orderedPlacements) {
     const targetTop = placement.targetTop ?? nextTop;
@@ -135,7 +178,8 @@ function positionCommentThreads(root, threads) {
     placement.card.style.top = `${top}px`;
     placement.card.style.left = "0px";
     placement.card.style.right = "0px";
-    nextTop = top + placement.card.offsetHeight + gap;
+    const height = placement.card.offsetHeight;
+    nextTop = top + height + gap;
   }
 
   list.style.minHeight = placements.length ? `${nextTop - gap}px` : "";
@@ -151,6 +195,13 @@ function updateActiveCommentMarks(activeThreadId, threads = []) {
   shadowRoot.querySelectorAll(".pm-article-block--comment-active").forEach((element) => {
     element.classList.remove("pm-article-block--comment-active");
   });
+
+  new Set(threads.map((thread) => thread.view).filter(Boolean)).forEach((view) => {
+    if (view.activeCommentThreadId === activeThreadId) return;
+    view.activeCommentThreadId = activeThreadId;
+    view.dispatch(view.state.tr.setMeta("activeCommentThread", activeThreadId));
+  });
+
   if (!activeThreadId) return;
 
   shadowRoot.querySelectorAll(`[data-comment-thread-id="${cssEscape(activeThreadId)}"]`).forEach((element) => {
@@ -181,18 +232,7 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
   );
 }
 
-const commentPreviewLength = 64;
-
 function CommentThread({ thread, username, refresh, active, setActiveThread }) {
-  const [replying, setReplying] = useState(thread.pending);
-  const [expanded, setExpanded] = useState(false);
-  const wasActive = useRef(active);
-
-  useEffect(() => {
-    if (wasActive.current && !active) setExpanded(false);
-    wasActive.current = active;
-  }, [active]);
-
   const resolved = !thread.pending && Boolean(thread.resolved);
   const className = [
     "pm-comment-thread",
@@ -200,18 +240,6 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
     active ? "pm-comment-thread--active" : "",
   ].filter(Boolean).join(" ");
 
-  const isLong = thread.comments.length > 2
-    || thread.comments.reduce((length, comment) => length + comment.text.length, 0) > commentPreviewLength;
-  let remainingLength = commentPreviewLength;
-  const visibleComments = expanded || !isLong ? thread.comments : thread.comments.slice(0, 2).flatMap((comment) => {
-    if (remainingLength <= 0) return [];
-
-    const truncated = comment.text.length > remainingLength;
-    const text = truncated ? `${comment.text.slice(0, remainingLength).trimEnd()}…` : comment.text;
-    remainingLength -= comment.text.length;
-    return [{ ...comment, text }];
-  });
-  
   const resolveButton = !thread.pending && (
     <button
       type="button"
@@ -236,7 +264,11 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
     <section
       className={className}
       data-comment-thread-id={thread.threadId}
-      onClick={() => { if (!resolved) setActiveThread(thread.threadId); }}
+      onPointerDown={() => {
+        if (!resolved && !active) window.requestAnimationFrame(() => {
+          setActiveThread(thread.threadId, "nearest");
+        });
+      }}
     >
       {resolved && resolveButton}
 
@@ -244,7 +276,7 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
         <>
           {thread.comments.length > 0 && (
             <div className="pm-comment-thread__comments">
-              {visibleComments.map((comment, index) => (
+              {thread.comments.map((comment, index) => (
                 <Comment
                   key={`${comment.createdAt}-${comment.username}-${comment.text}`}
                   comment={comment}
@@ -253,27 +285,12 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
               ))}
             </div>
           )}
-          {isLong && !expanded && (
-            <button type="button" className="pm-comment__more" onClick={() => { setExpanded(true); }}>
-              Show more
-            </button>
-          )}
-          {(!isLong || expanded) && (replying ? (
+          {active && (
             <CommentReplyForm
               thread={thread}
               username={username}
-              refresh={refresh}
-              close={() => { setReplying(false); }}
+              close={() => { setActiveThread(null, null); }}
             />
-          ) : (
-            <button type="button" className="pm-comment-thread__reply" onClick={() => { setReplying(true); }}>
-              Reply
-            </button>
-          ))}
-          {isLong && expanded && (
-            <button type="button" className="pm-comment__more" onClick={() => { setExpanded(false); }}>
-              Show less
-            </button>
           )}
         </>
       )}
@@ -294,7 +311,7 @@ function Comment({ comment, resolveButton }) {
   );
 }
 
-function CommentReplyForm({ thread, username, refresh, close }) {
+function CommentReplyForm({ thread, username, close }) {
   return (
     <form
       className="pm-comment-reply"
@@ -315,7 +332,6 @@ function CommentReplyForm({ thread, username, refresh, close }) {
         else appendCommentToThread(thread.view, thread.threadId, comment);
         textarea.value = "";
         close();
-        refresh();
       }}
     >
       <div className="pm-comment-reply__author">{username}</div>
