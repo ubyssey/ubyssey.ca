@@ -7,7 +7,7 @@ import "prosemirror-gapcursor/style/gapcursor.css";
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Schema } from "prosemirror-model";
-import { Plugin, PluginKey } from "prosemirror-state";
+import { Plugin, PluginKey, TextSelection } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { schema as basicSchema } from "prosemirror-schema-basic";
 import { addListNodes, liftListItem, sinkListItem, splitListItem, wrapInList } from "prosemirror-schema-list";
@@ -51,6 +51,7 @@ const isMac = typeof navigator !== "undefined" && /Mac|iP(hone|[oa]d)/.test(navi
 
 export function editorPlugins(schema) {
   return [
+    linkBubblePlugin(schema),
     activeCommentPlugin(schema),
     buildEditorInputRules(schema),
     keymap(buildEditorKeymap(schema)),
@@ -61,6 +62,63 @@ export function editorPlugins(schema) {
   ];
 }
 
+function linkBubblePlugin(schema) {
+  const linkMark = schema.marks.link;
+  const linkFromEvent = (event) => event.target.closest?.("a[href]");
+  return new Plugin({
+    props: {
+      handleDOMEvents: {
+        mousedown(view, event) {
+          const clickedLink = linkFromEvent(event);
+          if (!clickedLink) return false;
+
+          event.preventDefault();
+          const position = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos ?? view.posAtDOM(clickedLink, 0);
+          view.dispatch(view.state.tr.setSelection(TextSelection.near(view.state.doc.resolve(position))));
+          view.focus();
+          return true;
+        },
+        click(_, event) {
+          if (!linkFromEvent(event)) return false;
+          event.preventDefault();
+          return true;
+        },
+      },
+    },
+    view(editorView) {
+      const bubble = document.createElement("div");
+      const link = document.createElement("a");
+      
+      bubble.className = "pm-link-bubble";
+      bubble.hidden = true;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      bubble.appendChild(link);
+      editorView.dom.parentNode.appendChild(bubble);
+      return {
+        update(view) {
+          const range = markRangeAtCursor(view.state, linkMark);
+          const href = range?.attrs.href;
+          if (!href || /^(javascript|data):/i.test(href)) {
+            bubble.hidden = true;
+            return;
+          }
+          link.href = href;
+          link.textContent = href;
+          bubble.hidden = false;
+          const start = view.coordsAtPos(range.from);
+          const end = view.coordsAtPos(range.to);
+          const offset = bubble.offsetParent.getBoundingClientRect();
+          bubble.style.left = `${(start.left + end.right) / 2 - offset.left}px`;
+          bubble.style.top = `${Math.min(start.top, end.top) - offset.top}px`;
+        },
+        destroy() {
+          bubble.remove();
+        },
+      };
+    },
+  });
+}
 
 // Highlights currently active comment thread text - maybe overkill but fixed annoying synchronization issue
 const activeCommentPluginKey = new PluginKey("activeComment");
