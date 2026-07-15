@@ -56,13 +56,12 @@
     </section>
     {% if article_authors_form %}
       <section class="pm-author-panel" data-article-authors-panel>
-        <h3 id="pm-author-panel-title" class="pm-author-panel__header">Authors</h3>
+        <h3 id="pm-author-panel-title" class="pm-author-panel__header">Contributors</h3>
         {{ article_authors_form.non_field_errors }}
         <div class="pm-author-panel__rows" data-article-author-rows>
           {% for row in article_authors_form.rows %}
             <div class="pm-author-panel__row" data-article-author-row>
               <label>
-                {% if forloop.first %}<span>Author</span>{% endif %}
                 <select name="article_authors-author" data-article-author-select>
                   <option value="">Select author</option>
                   {% for author in article_authors_form.author_options %}
@@ -73,7 +72,6 @@
                 </select>
               </label>
               <label>
-                {% if forloop.first %}<span>Role</span>{% endif %}
                 <select name="article_authors-role">
                   {% for value, label in article_authors_form.role_options %}
                     <option value="{{ value }}" {% if value == row.author_role %}selected{% endif %}>{{ label }}</option>
@@ -84,7 +82,7 @@
             </div>
           {% endfor %}
         </div>
-        <button type="button" class="pm-author-panel__add" data-article-author-add>Add author</button>
+        <button type="button" class="pm-author-panel__add" data-article-author-add>Add contributor</button>
       </section>
     {% endif %}
     <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
