@@ -39,15 +39,40 @@
 
 mark[data-comment-thread-id],
 span[data-comment-thread-id] {
-  background: #eadcff;
-  box-shadow: inset 0 -2px 0 #7c3aed;
+  background: #fff3bf;
+  box-shadow: inset 0 -2px 0 #e0a800;
   cursor: pointer;
 }
 
-mark[data-comment-active="true"],
-span[data-comment-active="true"] {
-  background: #b570ff;
-  box-shadow: inset 0 -2px 0 #5807db;
+span[data-comment-suggestion="add"],
+span[data-comment-suggestion="delete"] {
+  background: transparent;
+  box-shadow: none;
+}
+
+span[data-comment-suggestion="add"] {
+  color: #188038;
+}
+
+span[data-comment-suggestion="delete"] {
+  color: #d93025;
+  text-decoration: line-through;
+}
+
+span[data-comment-active="true"][data-comment-suggestion="add"] {
+  background: #ceead6;
+  box-shadow: inset 0 -2px 0 #188038;
+}
+
+span[data-comment-active="true"][data-comment-suggestion="delete"] {
+  background: #f6aea9;
+  box-shadow: inset 0 -2px 0 #d93025;
+}
+
+mark[data-comment-active="true"]:not([data-comment-suggestion="add"]):not([data-comment-suggestion="delete"]),
+span[data-comment-active="true"]:not([data-comment-suggestion="add"]):not([data-comment-suggestion="delete"]) {
+  background: #ffe066;
+  box-shadow: inset 0 -2px 0 #8a6500;
 }
 
 mark[data-comment-resolved="true"],
@@ -214,19 +239,29 @@ span[data-footnote-id]::after {
 }
 
 .pm-article-block-controls__button--comment {
-    background: #7c3aed;
+    background: #ffdc4e;
     color: #1b1b1b;
     font-size: 15px;
 }
 
+.pm-article-block-controls__button--suggestion {
+    background: #707070;
+    font-size: 10px;
+}
+
+.pm-article-block-controls__button--suggestion[aria-pressed="true"] {
+    background: #ed3ae4;
+    color: #fff;
+}
+
 .pm-article-block--commented {
-    outline: 2px solid #7c3aed;
+    outline: 2px solid #e0a800;
     outline-offset: -1px;
 }
 
 .pm-article-block--comment-active {
-    outline-color: #5b21b6;
-    background: rgba(216, 180, 254, 0.18);
+    outline-color: #8a6500;
+    background: rgba(255, 224, 102, 0.22);
 }
 
 .pm-manuscript-toolbar {

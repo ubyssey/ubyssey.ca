@@ -127,7 +127,12 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   window.addEventListener("resize", scheduleCommentPositions);
   update();
 
-  return { update };
+  return {
+    update,
+    activateThread(threadId) {
+      setActiveThread(threadId, null);
+    },
+  };
 }
 
 function cssEscape(value) {
@@ -232,27 +237,57 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
   );
 }
 
+// Should probably inline but I'm too lazy right now (this used to do more)
+export function commentSuggestion(comments) {
+  return comments?.[0]?.suggestion || null;
+}
+
+const suggestionLabel = (suggestion) => suggestion.charAt(0).toUpperCase() + suggestion.slice(1).toLowerCase();
+
+export function createSuggestionMark(commentMark, suggestion, text, threadId = uuidv4(), suggestionPart = null) {
+  const username = document.querySelector("[data-current-editor-username]")?.dataset.currentEditorUsername || "";
+  return commentMark.create({
+    threadId,
+    comments: [{
+      username,
+      suggestion,
+      text,
+      createdAt: new Date().toISOString(),
+    }],
+    suggestionPart,
+    pending: false,
+    resolved: false,
+  });
+}
+
 function CommentThread({ thread, username, refresh, active, setActiveThread }) {
   const resolved = !thread.pending && Boolean(thread.resolved);
+  const suggestion = thread.view && commentSuggestion(thread.comments);
   const className = [
     "pm-comment-thread",
     resolved ? "pm-comment-thread--collapsed" : "",
     active ? "pm-comment-thread--active" : "",
   ].filter(Boolean).join(" ");
 
+  const resolveLabel = suggestion ? "Accept suggestion" : resolved ? "Reopen comment" : "Resolve comment";
   const resolveButton = !thread.pending && (
     <button
       type="button"
       className="pm-comment-thread__collapse"
-      title={resolved ? "Reopen comment" : "Resolve comment"}
-      aria-label={resolved ? "Reopen comment" : "Resolve comment"}
-      aria-pressed={String(resolved)}
+      title={resolveLabel}
+      aria-label={resolveLabel}
+      aria-pressed={suggestion ? undefined : String(resolved)}
       onClick={(event) => {
         event.stopPropagation();
-        const nextResolved = !thread.resolved;
-        const changed = thread.setResolved
-          ? thread.setResolved(nextResolved)
-          : setCommentThreadResolved(thread.view, thread.threadId, nextResolved);
+        let changed;
+        if (suggestion) {
+          changed = acceptCommentSuggestion(thread.view, thread.threadId, suggestion);
+        } else {
+          const nextResolved = !thread.resolved;
+          changed = thread.setResolved
+            ? thread.setResolved(nextResolved)
+            : setCommentThreadResolved(thread.view, thread.threadId, nextResolved);
+        }
         if (changed) refresh();
       }}
     >
@@ -306,8 +341,19 @@ function Comment({ comment, resolveButton }) {
         <strong>{comment.username}</strong>
         <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
       </div>
-      <p>{comment.text}</p>
+      <p><CommentText comment={comment} /></p>
     </article>
+  );
+}
+
+function CommentText({ comment }) {
+  if (!comment.suggestion) return comment.text;
+
+  return (
+    <>
+      <strong>{suggestionLabel(comment.suggestion)}:</strong>
+      {comment.text && ` ${comment.text}`}
+    </>
   );
 }
 
@@ -362,6 +408,7 @@ export const commentMarkSpec = {
   attrs: {
     threadId: { default: null },
     comments: { default: [] },
+    suggestionPart: { default: null },
     pending: { default: false },
     resolved: { default: false },
   },
@@ -380,6 +427,8 @@ export const commentMarkSpec = {
       "data-comment-comments": JSON.stringify(attrs.comments || []),
       "data-comment-pending": attrs.pending ? "true" : "false",
       "data-comment-resolved": attrs.resolved ? "true" : "false",
+      "data-comment-suggestion": attrs.suggestionPart || commentSuggestion(attrs.comments) || "",
+      "data-comment-suggestion-part": attrs.suggestionPart || "",
     }, 0];
   },
 };
@@ -388,6 +437,7 @@ function readCommentAttrs(dom) {
   return {
     threadId: dom.getAttribute("data-comment-thread-id"),
     comments: parseCommentPayload(dom.getAttribute("data-comment-comments")),
+    suggestionPart: dom.getAttribute("data-comment-suggestion-part") || null,
     pending: dom.getAttribute("data-comment-pending") === "true",
     resolved: dom.getAttribute("data-comment-resolved") === "true",
   };
@@ -462,6 +512,22 @@ function setCommentThreadResolved(view, threadId, resolved) {
   return replaceCommentThread(view, thread, { resolved: Boolean(resolved) });
 }
 
+function acceptCommentSuggestion(view, threadId, suggestion) {
+  if (suggestion === "add") return removeCommentThread(view, threadId);
+
+  const thread = findCommentThread(view, threadId);
+  if (!thread) return false;
+
+  let tr = view.state.tr;
+  for (const range of [...thread.ranges].reverse()) {
+    tr = suggestion === "delete" || range.suggestionPart === "delete"
+      ? tr.delete(range.from, range.to)
+      : tr.removeMark(range.from, range.to, thread.commentMark);
+  }
+  view.dispatch(tr.scrollIntoView());
+  return true;
+}
+
 function findCommentThread(view, threadId) {
   const commentMark = view.state.schema.marks.comment;
   if (!commentMark || !threadId) return null;
@@ -480,7 +546,11 @@ function findCommentThread(view, threadId) {
     const mark = commentMark.isInSet(node.marks);
     if (!mark || mark.attrs.threadId !== threadId) return true;
 
-    thread.ranges.push({ from: pos, to: pos + node.nodeSize });
+    thread.ranges.push({
+      from: pos,
+      to: pos + node.nodeSize,
+      suggestionPart: mark.attrs.suggestionPart,
+    });
     thread.comments = Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [];
     thread.pending = Boolean(mark.attrs.pending);
     thread.resolved = Boolean(mark.attrs.resolved);
@@ -503,7 +573,10 @@ function replaceCommentThread(view, thread, attrs) {
   for (const range of thread.ranges) {
     tr = tr
       .removeMark(range.from, range.to, thread.commentMark)
-      .addMark(range.from, range.to, thread.commentMark.create(nextAttrs));
+      .addMark(range.from, range.to, thread.commentMark.create({
+        ...nextAttrs,
+        suggestionPart: range.suggestionPart,
+      }));
   }
   view.dispatch(tr);
   return true;

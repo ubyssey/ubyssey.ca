@@ -8,7 +8,7 @@ import Select from "react-select";
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { editorPlugins, richTextSchema } from "./manuscript_prosemirror.jsx";
+import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins, richTextSchema } from "./manuscript_prosemirror.jsx";
 import { clone, pmDocToStreamValue, topLevelBlockInfoByIdOrIndex } from "./manuscript_prosetail.jsx";
 import { editorState } from "./manuscript_editor.js";
 import { articleBlockDescriptors, cleanupArticleBlockControls, describeArticleBlock, findArticleBlock, refreshBlockCommentBorders, sameArticleBlock, setupArticleBlockControls, showSelectedArticleBlockEditor } from "./manuscript_blocks.jsx";
@@ -504,9 +504,11 @@ function createArticleRichTextEditor(mount, content, className, onDocChanged) {
     }),
 
     dispatchTransaction(transaction) {
+      const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
       view.updateState(view.state.apply(transaction));
       editorState.richTextToolbar?.update();
-      editorState.commentSidebar?.update();
+      if (activeSuggestionThreadId) editorState.commentSidebar?.activateThread(activeSuggestionThreadId);
+      else editorState.commentSidebar?.update();
       editorState.footnoteSidebar?.update();
       if (transaction.docChanged) onDocChanged(view, transaction);
     },
