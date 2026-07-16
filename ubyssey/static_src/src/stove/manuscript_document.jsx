@@ -179,6 +179,13 @@ function useMediaAndSettingsModals(form) {
     const uploadTitle = document.querySelector("[data-article-media-upload-title]");
     const kind = form.elements.namedItem("article_media-kind");
     let uploadReturnsToGallery = false;
+    const existingModal = document.querySelector("[data-article-media-existing-modal]");
+    const existingKind = document.querySelector("[data-article-media-existing-kind]");
+    const existingSelectMount = document.querySelector("[data-article-media-existing-select]");
+    const existingAddButton = document.querySelector("[data-article-media-existing-add]");
+    const existingOptions = JSON.parse(document.getElementById("article-media-options").textContent);
+    const existingSelectRoot = createRoot(existingSelectMount);
+    let existingSelection = null;
 
     const mediaField = (name) => form.querySelector(`#id_article_media-${name}`);
     const setUploadMode = (mode) => {
@@ -213,6 +220,46 @@ function useMediaAndSettingsModals(form) {
       }
     };
 
+    const renderExistingSelect = () => {
+      existingSelection = null;
+      existingAddButton.disabled = true;
+      flushSync(() => {
+        existingSelectRoot.render(
+          <Select
+            key={existingKind.value}
+            classNamePrefix="article-media-existing-select"
+            options={existingOptions[existingKind.value]}
+            placeholder="Search media..."
+            onChange={(option) => {
+              existingSelection = option;
+              existingAddButton.disabled = !option;
+            }}
+          />,
+        );
+      });
+    };
+
+    const closeExisting = () => {
+      setModalOpen(existingModal, false);
+      existingModal.classList.remove("article-media-modal--stacked");
+      existingSelection = null;
+      existingAddButton.disabled = true;
+      window.requestAnimationFrame(() => {
+        galleryModal.querySelector("[data-article-media-edit-button], a, button").focus();
+      });
+    };
+
+    const applyMediaResponse = (payload) => {
+      document.querySelector("[data-article-media-gallery]").outerHTML = payload.gallery;
+      const selector = `.pm-control-field--${payload.item.kind} select${payload.item.kind === "image" ? ",select[name='featured_media-image']" : ""}`;
+      document.querySelectorAll(selector).forEach((select) => {
+        const existingOption = Array.from(select.options).find((item) => String(item.value) === String(payload.item.id));
+        const option = existingOption || select.appendChild(new Option());
+        option.value = payload.item.id;
+        option.textContent = payload.item.title;
+      });
+    };
+
     syncImageFields();
 
     const cleanups = [
@@ -225,6 +272,11 @@ function useMediaAndSettingsModals(form) {
         reset();
         syncImageFields();
         setModalOpen(uploadModal, true, kind);
+      }),
+      on(document.querySelector("[data-article-media-open-existing]"), "click", () => {
+        existingModal.classList.add("article-media-modal--stacked");
+        renderExistingSelect();
+        setModalOpen(existingModal, true, existingKind);
       }),
       on(document.querySelector("[data-article-media-open-gallery]"), "click", () => {
         setModalOpen(galleryModal, true, galleryModal.querySelector("[data-article-media-edit-button], a, button"));
@@ -250,18 +302,21 @@ function useMediaAndSettingsModals(form) {
       }),
       ...Array.from(document.querySelectorAll("[data-article-media-close], [data-manuscript-settings-close]")).map((button) => (
         on(button, "click", () => {
-          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-gallery-modal]");
+          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-existing-modal], [data-article-media-gallery-modal]");
           if (modal === uploadModal) closeUpload();
+          else if (modal === existingModal) closeExisting();
           else setModalOpen(modal, false);
         })
       )),
       on(document, "keydown", (event) => {
         if (event.key !== "Escape") return;
         if (!uploadModal.hidden) closeUpload();
+        else if (!existingModal.hidden) closeExisting();
         else if (!galleryModal.hidden) setModalOpen(galleryModal, false);
         else if (!settingsModal.hidden) setModalOpen(settingsModal, false);
       }),
       on(kind, "change", syncImageFields),
+      on(existingKind, "change", renderExistingSelect),
       on(uploadButton, "click", async () => {
         uploadButton.disabled = true;
         try {
@@ -272,14 +327,7 @@ function useMediaAndSettingsModals(form) {
             return;
           }
 
-          document.querySelector("[data-article-media-gallery]").outerHTML = payload.gallery;
-          const selector = `.pm-control-field--${payload.item.kind} select${payload.item.kind === "image" ? ",select[name='featured_media-image']" : ""}`;
-          document.querySelectorAll(selector).forEach((select) => {
-            const existingOption = Array.from(select.options).find((item) => String(item.value) === String(payload.item.id));
-            const option = existingOption || select.appendChild(new Option());
-            option.value = payload.item.id;
-            option.textContent = payload.item.title;
-          });
+          applyMediaResponse(payload);
 
           closeUpload();
         } catch (error) {
@@ -288,8 +336,33 @@ function useMediaAndSettingsModals(form) {
           uploadButton.disabled = false;
         }
       }),
+      on(existingAddButton, "click", async () => {
+        if (!existingSelection) return;
+        existingAddButton.disabled = true;
+        const data = new FormData();
+        data.set("csrfmiddlewaretoken", form.elements.namedItem("csrfmiddlewaretoken").value);
+        data.set("kind", existingKind.value);
+        data.set("media_id", existingSelection.value);
+        try {
+          const response = await fetch(form.dataset.mediaExistingUrl, { method: "POST", body: data });
+          const payload = await response.json();
+          if (!response.ok) {
+            window.alert(`Add failed: ${JSON.stringify(payload.errors || payload)}`);
+            return;
+          }
+          applyMediaResponse(payload);
+          closeExisting();
+        } catch (error) {
+          window.alert("Add failed.");
+        } finally {
+          existingAddButton.disabled = !existingSelection;
+        }
+      }),
     ];
-    return () => cleanups.forEach((cleanup) => cleanup());
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+      existingSelectRoot.unmount();
+    };
   }, [form]);
 }
 

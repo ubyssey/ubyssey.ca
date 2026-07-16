@@ -166,6 +166,27 @@ def get_article_media_upload_form(data=None, files=None):
     return ArticleMediaUploadForm(data=data, files=files, prefix="article_media")
 
 
+def add_article_media(page, item, is_image):
+    manager = getattr(page, "article_media", None)
+    model = getattr(manager, "model", None)
+    if not manager or not model:
+        return None
+
+    image = item if is_image else None
+    document = item if not is_image else None
+    rows = list(manager.all())
+    for row in rows:
+        if (image and row.image_id == image.id) or (document and row.document_id == document.id):
+            return row
+
+    return model.objects.create(
+        article_page=page,
+        image=image,
+        document=document,
+        sort_order=len(rows),
+    )
+
+
 def save_article_media_upload(page, form, user=None):
     data = form.cleaned_data
     is_image = data.get("kind") != "document"
@@ -195,19 +216,7 @@ def save_article_media_upload(page, form, user=None):
     if tags:
         item.tags.add(*tags)
 
-    manager = getattr(page, "article_media", None)
-    model = getattr(manager, "model", None)
-    if not manager or not model:
-        return None
-
-    image = item if is_image else None
-    document = item if not is_image else None
-    rows = list(manager.all())
-    for row in rows:
-        if (image and row.image_id == image.id) or (document and row.document_id == document.id):
-            return row
-
-    return model.objects.create(article_page=page, image=image, document=document, sort_order=len(rows))
+    return add_article_media(page, item, is_image)
 
 
 # StreamField editors

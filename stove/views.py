@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import localtime
 from django.views.decorators.http import require_GET, require_POST
+from wagtail.documents import get_document_model
+from wagtail.images import get_image_model
 from wagtail.models import Page
 from article.models import ArticlePage
 
@@ -20,7 +22,8 @@ from stove.editor import (
     apply_editor_post,
     get_article_media_upload_form,
     get_featured_media_form,
-    save_article_media_upload
+    add_article_media,
+    save_article_media_upload,
 )
 
 
@@ -45,6 +48,16 @@ def get_user_display_name(user):
     if not user:
         return ""
     return user.get_full_name() or user.email
+
+
+def get_article_media_options():
+    def options(model):
+        return [
+            {"value": str(media.id), "label": f"{media.title} — {media.filename}"}
+            for media in model.objects.all().order_by("title")
+        ]
+
+    return {"image": options(get_image_model()), "document": options(get_document_model())}
 
 
 @login_required
@@ -126,6 +139,7 @@ def manuscript_editor(request, page_id):
          "current_editor_username": get_user_display_name(request.user),
          "featured_media_form": featured_media_form,
          "article_media_upload_form": get_article_media_upload_form(),
+         "article_media_options": get_article_media_options(),
          "article_media": article_media}
     )
 
@@ -193,6 +207,15 @@ def manuscript_full_preview(request, page_id):
     )
 
 
+def article_media_response(request, page, item):
+    article_media = page.article_media.all()
+    media = item.image or item.document
+    return JsonResponse({
+        "item": {"kind": "image" if item.image else "document", "id": media.id, "title": media.title},
+        "gallery": render_to_string("editors/components/article_media_gallery.html", {"article_media": article_media}, request=request)
+    })
+
+
 @login_required
 @require_POST
 def article_media_upload(request, page_id):
@@ -206,12 +229,26 @@ def article_media_upload(request, page_id):
     if not item:
         return JsonResponse({"errors": {"file": [{"message": "Choose a file to upload."}]}}, status=400)
 
-    article_media = page.article_media.all()
-    media = item.image or item.document
-    return JsonResponse({
-        "item": {"kind": "image" if item.image else "document", "id": media.id, "title": media.title},
-        "gallery": render_to_string("editors/components/article_media_gallery.html", {"article_media": article_media}, request=request)
-    })
+    return article_media_response(request, page, item)
+
+
+@login_required
+@require_POST
+def article_media_add_existing(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    kind = request.POST.get("kind")
+    media_id = request.POST.get("media_id")
+    if kind not in ("image", "document") or not media_id or not media_id.isdigit():
+        return JsonResponse({"errors": {"media": ["Choose valid media."]}}, status=400)
+
+    is_image = kind == "image"
+    model = get_image_model() if is_image else get_document_model()
+    media = model.objects.filter(id=media_id).first()
+    if not media:
+        return JsonResponse({"errors": {"media": ["Media not found."]}}, status=404)
+
+    item = add_article_media(page, media, is_image)
+    return article_media_response(request, page, item)
 
 
 @login_required

@@ -204,6 +204,11 @@ body {
     box-shadow: 0 18px 50px rgb(0 0 0 / 0.18);
 }
 
+.article-media-modal__panel--existing {
+    max-height: none;
+    overflow: visible;
+}
+
 .article-media-modal__panel--gallery {
     width: min(720px, 100%);
 }
