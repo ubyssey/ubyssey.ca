@@ -39,6 +39,18 @@
     color: var(--text_color-100);
 }
 
+.article-shadow-preview div.article-content[data-article-block] {
+    margin-bottom: 0;
+}
+
+.article-shadow-preview .o-extra-article-info.right {
+    margin-right: 1.4em;
+}
+
+.article-shadow-preview .o-extra-article-info.left {
+    margin-left: 1.4em;
+}
+
 mark[data-comment-thread-id],
 span[data-comment-thread-id] {
     background: #fff3bf;

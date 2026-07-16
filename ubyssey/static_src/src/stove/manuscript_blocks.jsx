@@ -554,7 +554,7 @@ function ArticleBlockControlsLayer({ refs, ui, actions }) {
         <button type="button" title="Move up" className="pm-article-block-controls__button pm-article-block-controls__button--move pm-article-block-controls__button--up" disabled={ui.upDisabled} onClick={actions.moveUp} />
         <button type="button" title="Move down" className="pm-article-block-controls__button pm-article-block-controls__button--move pm-article-block-controls__button--down" disabled={ui.downDisabled} onClick={actions.moveDown} />
         <button type="button" title="Comment" className="pm-article-block-controls__button pm-article-block-controls__button--comment" onClick={actions.comment}>💬</button>
-        <button type="button" title="Toggle suggestion mode" className="pm-article-block-controls__button pm-article-block-controls__button--suggestion" onClick={actions.toggleSuggestion}>Suggest</button>
+        <button type="button" title="Toggle suggestion mode" className="pm-article-block-controls__button pm-article-block-controls__button--suggestion" aria-pressed={String(ui.suggestionMode)} onClick={actions.toggleSuggestion}>Suggest</button>
         <button type="button" title="Edit block" className="pm-article-block-controls__button pm-article-block-controls__button--edit" onClick={actions.edit}>Edit</button>
         <button type="button" title="Add block" className="pm-article-block-controls__button pm-article-block-controls__button--insert" onClick={actions.insert}>+</button>
       </div>
