@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import localtime
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 from wagtail.models import Page
 from article.models import ArticlePage
 
@@ -175,6 +175,16 @@ def manuscript_preview(request, page_id):
             request=request,
         )
     })
+
+
+@login_required
+@require_GET
+def manuscript_full_preview(request, page_id):
+    page = get_manuscript_page(page_id)
+    return page.make_preview_request(
+        request,
+        page.default_preview_mode,
+    )
 
 
 @login_required
