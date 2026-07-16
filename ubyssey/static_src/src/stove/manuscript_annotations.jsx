@@ -237,7 +237,6 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
   );
 }
 
-// Should probably inline but I'm too lazy right now (this used to do more)
 export function commentSuggestion(comments) {
   return comments?.[0]?.suggestion || null;
 }
@@ -277,6 +276,7 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
       title={resolveLabel}
       aria-label={resolveLabel}
       aria-pressed={suggestion ? undefined : String(resolved)}
+      onPointerDown={(event) => { event.stopPropagation(); }}
       onClick={(event) => {
         event.stopPropagation();
         let changed;
@@ -715,7 +715,7 @@ export const footnoteMarkSpec = {
   },
 };
 
-const FOOTNOTE_ANCHOR_TEXT = "\u00a0";
+const FOOTNOTE_ANCHOR_TEXT = "\u200b";
 
 export function startFootnoteCommand(footnoteMark) {
   return (state, dispatch) => {

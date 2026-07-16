@@ -96,16 +96,10 @@ span[data-footnote-anchor="true"] {
     white-space: pre;
 }
 
-// TODO Fix styling for more than single digit footnotes
-span[data-footnote-anchor="true"]::after {
-    margin-left: 0.5em;
-    margin-right: 0.15em;
-}
-
-span[data-footnote-id]::after {
+span[data-footnote-id]::before {
     counter-increment: stove-footnote;
     content: counter(stove-footnote);
-    margin-left: -0.5em;
+    margin-right: 0.15em;
     color: #0071c9;
     font-size: 0.72em;
     font-weight: 600;
