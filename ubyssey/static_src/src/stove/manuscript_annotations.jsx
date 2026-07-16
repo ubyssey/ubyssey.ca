@@ -1,5 +1,6 @@
 // Handles footnotes, comments, marks
 
+import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { v4 as uuidv4 } from "uuid";
 
@@ -12,6 +13,8 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   let hasRendered = false;
   let renderedThreadIds = new Set();
   let scrollActiveThread = null;
+  let scrollEndCleanup = null;
+  let moveTimer = null;
   let commentOffset = 0;
 
   const currentThreads = () => [
@@ -19,7 +22,33 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     ...getThreads(),
   ];
 
+  // Scrolls after scroll to comment associated text, so comment is onscreen
+  const centerThreadAfterScroll = (threadId) => {
+    scrollEndCleanup?.();
+    let timer = null;
+    const cleanup = () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll, true);
+      if (scrollEndCleanup === cleanup) scrollEndCleanup = null;
+    };
+    const finish = () => {
+      cleanup();
+      if (activeThreadId !== threadId) return;
+      scrollActiveThread = "center";
+      scheduleCommentPositions();
+    };
+    const onScroll = () => {
+      clearTimeout(timer);
+      timer = setTimeout(finish, 120);
+    };
+
+    scrollEndCleanup = cleanup;
+    window.addEventListener("scroll", onScroll, true);
+    onScroll();
+  };
+
   const setActiveThread = (threadId, scroll = "center") => {
+    let anchorScrolled = false;
     if (scroll === "nearest") {
       const thread = currentThreads().find((item) => item.threadId === threadId);
       const anchor = commentAnchorElement(thread);
@@ -29,11 +58,13 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
       const visibleTop = toolbarRect?.top <= topbarBottom ? Math.max(topbarBottom, toolbarRect.bottom) : topbarBottom;
       if (anchorRect && (anchorRect.bottom <= visibleTop || anchorRect.top >= window.innerHeight)) {
         anchor.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        anchorScrolled = true;
       }
     }
     activeThreadId = threadId;
     scrollActiveThread = scroll;
     update();
+    if (anchorScrolled) centerThreadAfterScroll(threadId);
   };
 
   const clearActiveThread = () => {
@@ -53,15 +84,17 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
       scrollActiveThread = "center";
     }
     if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId && !thread.resolved)) activeThreadId = null;
-    reactRoot.render(
-      <CommentSidebar
-        threads={threads}
-        username={username}
-        refresh={update}
-        activeThreadId={activeThreadId}
-        setActiveThread={setActiveThread}
-      />,
-    );
+    flushSync(() => {
+      reactRoot.render(
+        <CommentSidebar
+          threads={threads}
+          username={username}
+          refresh={update}
+          activeThreadId={activeThreadId}
+          setActiveThread={setActiveThread}
+        />,
+      );
+    });
     scheduleCommentPositions();
     updateActiveCommentMarks(activeThreadId, threads);
   };
@@ -97,6 +130,11 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     if (positionFrame) return;
     positionFrame = window.requestAnimationFrame(() => {
       positionFrame = null;
+      if (scrollActiveThread) {
+        clearTimeout(moveTimer);
+        moveTimer = null;
+        root.classList.remove("pm-comment-sidebar--moving");
+      }
       const threads = currentThreads();
       root.querySelectorAll(".pm-comment-thread").forEach((comment) => {
         layoutObserver.observe(comment);
@@ -110,7 +148,13 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
         } else if (commentRect?.bottom > window.innerHeight) {
           commentOffset += commentRect.bottom - window.innerHeight + 12;
         }
+        root.classList.add("pm-comment-sidebar--moving");
+        void root.offsetHeight;
         positionCommentThreads(root, threads, commentOffset);
+        moveTimer = setTimeout(() => {
+          moveTimer = null;
+          root.classList.remove("pm-comment-sidebar--moving");
+        }, 200);
         scrollActiveThread = null;
       }
     });
