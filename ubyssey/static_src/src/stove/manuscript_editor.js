@@ -15,6 +15,8 @@ export const editorState = {
   commentSidebar: null,
   footnoteSidebar: null,
   selectedArticleBlock: null,
+  revealSelectedArticleBlock: null,
+  blockEditorModalOpen: false,
   suppressedHoverArticleBlock: null,
   suppressedHoverTimer: null,
   preferredInsertTypes: new Map(),

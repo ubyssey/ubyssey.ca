@@ -43,6 +43,12 @@
     margin-bottom: 0;
 }
 
+.article-shadow-preview [data-article-block][data-stream-field] {
+    outline: 2px solid transparent;
+    outline-offset: -1px;
+    transition: outline-color 200ms ease;
+}
+
 .article-shadow-preview .o-extra-article-info.right {
     margin-right: 1.4em;
 }
@@ -54,14 +60,13 @@
 mark[data-comment-thread-id],
 span[data-comment-thread-id] {
     background: #fff3bf;
-    box-shadow: inset 0 -2px 0 #e0a800;
+    box-shadow: none;
     cursor: pointer;
 }
 
 span[data-comment-suggestion="add"],
 span[data-comment-suggestion="delete"] {
     background: transparent;
-    box-shadow: none;
 }
 
 span[data-comment-suggestion="add"] {
@@ -75,24 +80,20 @@ span[data-comment-suggestion="delete"] {
 
 span[data-comment-active="true"][data-comment-suggestion="add"] {
     background: #ceead6;
-    box-shadow: inset 0 -2px 0 #188038;
 }
 
 span[data-comment-active="true"][data-comment-suggestion="delete"] {
     background: #f6aea9;
-    box-shadow: inset 0 -2px 0 #d93025;
 }
 
 mark[data-comment-active="true"]:not([data-comment-suggestion="add"]):not([data-comment-suggestion="delete"]),
 span[data-comment-active="true"]:not([data-comment-suggestion="add"]):not([data-comment-suggestion="delete"]) {
     background: #ffe066;
-    box-shadow: inset 0 -2px 0 #8a6500;
 }
 
 mark[data-comment-resolved="true"],
 span[data-comment-resolved="true"] {
     background: transparent;
-    box-shadow: none;
 }
 
 span[data-footnote-id] {
@@ -374,4 +375,8 @@ span[data-footnote-id]::before {
     border-color: var(--color-ubyssey_blue, #0071c9);
     background: var(--color-ubyssey_blue, #0071c9);
     color: #fff;
+}
+
+.pm-article-block--selected {
+    outline-color: #f28c00 !important;
 }

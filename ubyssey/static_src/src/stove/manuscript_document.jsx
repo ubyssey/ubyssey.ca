@@ -11,7 +11,7 @@ import { EditorView } from "prosemirror-view";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins, richTextSchema } from "./manuscript_prosemirror.jsx";
 import { clone, pmDocToStreamValue, topLevelBlockInfoByIdOrIndex } from "./manuscript_prosetail.jsx";
 import { editorState } from "./manuscript_editor.js";
-import { articleBlockDescriptors, cleanupArticleBlockControls, describeArticleBlock, findArticleBlock, refreshBlockCommentBorders, sameArticleBlock, setupArticleBlockControls, showSelectedArticleBlockEditor } from "./manuscript_blocks.jsx";
+import { articleBlockDescriptors, describeArticleBlock, findArticleBlock, refreshBlockCommentBorders, sameArticleBlock, setupArticleBlockControls, showSelectedArticleBlockEditor } from "./manuscript_blocks.jsx";
 
 // Non hidden inputs
 const focusableSelector = "input:not([type='hidden']), select, textarea, button";
@@ -446,8 +446,11 @@ export function setupArticleShadow() {
   shadowBody.appendChild(toolbar);
 
   const wrapper = document.createElement("main");
+  const content = document.createElement("div");
   wrapper.className = "article-shadow-preview article";
-  wrapper.innerHTML = articleHtml;
+  content.dataset.articlePreviewContent = "";
+  content.innerHTML = articleHtml;
+  wrapper.appendChild(content);
   shadowBody.appendChild(wrapper);
 
   return shadowRoot;
@@ -686,6 +689,7 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
   };
 
   const flushDeferredPreview = () => {
+    if (editorState.blockEditorModalOpen) return;
     if (!deferredManuscriptPreview || focusedArticleRichText(manuscriptRoot)) return;
     editorState.schedulePreview();
   };
@@ -714,7 +718,15 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
       if (currentPreviewId !== previewId || requestRevision !== previewRevision || !html) return;
 
       if (replaceArticlePreviewHtml(manuscriptRoot, html)) {
+        const reveal = editorState.revealSelectedArticleBlock;
         restoreCurrentArticleControls(manuscriptRoot, streamDocs);
+        if (reveal) {
+          editorState.revealSelectedArticleBlock = null;
+          window.requestAnimationFrame(() => {
+            const articleBlock = findArticleBlock(manuscriptRoot, reveal);
+            articleBlock?.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+        }
       }
     } catch (error) {
       if (error.name !== "AbortError") console.error(error);
@@ -830,7 +842,8 @@ async function fetchPreviewHtml(form, formData, signal = null) {
 export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
   if (!manuscriptRoot) return;
 
-  setupArticleBlockControls(manuscriptRoot);
+  if (!editorState.articleBlockControls) setupArticleBlockControls(manuscriptRoot);
+  else refreshBlockCommentBorders(manuscriptRoot);
 
   // Inline RichText Editors
   const articleBlocksByField = new Map();
@@ -923,13 +936,12 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
 }
 
 function replaceArticlePreviewHtml(manuscriptRoot, html) {
-  const wrapper = manuscriptRoot.querySelector(".article-shadow-preview");
-  if (!wrapper) return false;
+  const content = manuscriptRoot.querySelector("[data-article-preview-content]");
+  if (!content) return false;
 
   destroyEditorViews(editorState.articleDirectTextEditors);
   destroyEditorViews(editorState.articleRichTextEditors);
-  cleanupArticleBlockControls();
-  wrapper.innerHTML = html;
+  content.innerHTML = html;
   return true;
 }
 
@@ -947,6 +959,10 @@ function restoreCurrentArticleControls(manuscriptRoot, streamDocs) {
   }
 
   showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
+  if (articleBlock) {
+    articleBlock.classList.add("pm-article-block--selected");
+    editorState.articleBlockControls?.setActive?.(articleBlock);
+  }
   editorState.commentSidebar?.update();
   editorState.footnoteSidebar?.update();
 }

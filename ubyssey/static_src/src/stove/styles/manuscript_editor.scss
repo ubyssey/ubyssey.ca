@@ -139,7 +139,8 @@ body {
     cursor: pointer;
 }
 
-.manuscript-topbar__button:hover {
+.manuscript-topbar__button:hover,
+.article-media-modal__panel button:hover {
     color: #0071c9;
 }
 
