@@ -1,6 +1,6 @@
 // Entrypoint + State
 
-import { createEditorToolbar } from "./manuscript_prosemirror.jsx";
+import { ACTIVE_SUGGESTION_THREAD_META, createEditorToolbar } from "./manuscript_prosemirror.jsx";
 import { setupCommentSidebar, setupFootnoteSidebar } from "./manuscript_annotations.jsx";
 import { createStreamEditor } from "./manuscript_prosetail.jsx";
 import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_blocks.jsx";
@@ -48,11 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
             editorState.schedulePreview({ deferIfManuscriptFocused: Boolean(transaction.getMeta("deferPreviewIfFocused")) });
           }
         },
-        onTransaction: () => {
+        onTransaction: ({ transaction }) => {
+          const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
           editorState.richTextToolbar?.update();
           showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
           refreshBlockCommentBorders(manuscriptRoot);
-          editorState.commentSidebar.update();
+          if (activeSuggestionThreadId) editorState.commentSidebar?.activateThread(activeSuggestionThreadId);
+          else editorState.commentSidebar?.update();
           editorState.footnoteSidebar.update();
         },
       },
