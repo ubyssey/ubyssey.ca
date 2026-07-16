@@ -41,6 +41,12 @@ def get_manuscript_page(page_id):
     return page.get_latest_revision_as_object()
 
 
+def get_user_display_name(user):
+    if not user:
+        return ""
+    return user.get_full_name() or user.email
+
+
 @login_required
 def manuscript_editor(request, page_id):
     page = get_manuscript_page(page_id)
@@ -82,7 +88,7 @@ def manuscript_editor(request, page_id):
                 return JsonResponse({"errors": editor_errors}, status=400)
             revision = saved_revision and {
                 "id": str(saved_revision.id),
-                "label": f"{saved_revision.user} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
+                "label": f"{get_user_display_name(saved_revision.user)} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
             }
             return JsonResponse({"ok": True, "action": action, "revision": revision})
 
@@ -91,7 +97,7 @@ def manuscript_editor(request, page_id):
 
     # History
     history = [
-        {"id": str(revision.id), "user": str(revision.user), "created_at": revision.created_at}
+        {"id": str(revision.id), "user": get_user_display_name(revision.user), "created_at": revision.created_at}
         for revision in page.revisions.all().order_by("-created_at")
     ]
 
@@ -117,7 +123,7 @@ def manuscript_editor(request, page_id):
          "editor_errors": editor_errors,
          "history" : history,
          # Probably saved somewhere else here -> How did I do it for history?
-         "current_editor_username": str(request.user),
+         "current_editor_username": get_user_display_name(request.user),
          "featured_media_form": featured_media_form,
          "article_media_upload_form": get_article_media_upload_form(),
          "article_media": article_media}
@@ -144,7 +150,7 @@ def manuscript_restore(request, page_id):
         "ok": True,
         "revision": {
             "id": str(saved_revision.id),
-            "label": f"{saved_revision.user} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
+            "label": f"{get_user_display_name(saved_revision.user)} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
         }
     })
 
