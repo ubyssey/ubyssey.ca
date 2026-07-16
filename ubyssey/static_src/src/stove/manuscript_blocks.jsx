@@ -19,7 +19,6 @@ const ARTICLE_KEY_DIRECTIONS = {
 
 const FOCUSABLE = "input, textarea, select, button";
 
-const targetInside = (target, elements) => Boolean(target && elements.some((item) => item.contains(target)));
 const eventInside = (event, elements) => {
   const path = event.composedPath?.() || [];
   return elements.some((item) => path.includes(item));
@@ -78,6 +77,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
   let pendingAdd = null;
   let state = null;
   let mounted = true;
+  let pointerPosition = null;
 
   const controls = () => [refs.topControls].filter(Boolean);
   const dialogs = () => [refs.insertDialog, refs.deleteDialog].filter(Boolean);
@@ -189,7 +189,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
   };
 
   const openBlockEditorModal = (descriptor) => {
-    clearTimeout(state.hideTimer);
     closeDialogs();
     restoreBlockEditorHome();
     ui.blockEditorOpen = true;
@@ -207,7 +206,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
   };
 
   const openDialog = (name, focusTarget = null) => {
-    clearTimeout(state.hideTimer);
     editorState.cancelPreviewRefresh();
     if (ui.insertOpen) removePendingAdd();
     ui.insertOpen = name === "insert";
@@ -348,12 +346,10 @@ export function setupArticleBlockControls(manuscriptRoot) {
   state = {
     articleBlock: null,
     instance: null,
-    hideTimer: null,
 
     cleanup() {
       if (!mounted) return;
 
-      clearTimeout(this.hideTimer);
       for (const [target, eventName, listener, options] of listeners) {
         target.removeEventListener(eventName, listener, options);
       }
@@ -370,7 +366,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
     hide() {
       if (!mounted || anyBlockModalOpen()) return;
 
-      clearTimeout(this.hideTimer);
       this.articleBlock = null;
       this.instance = null;
       closeDialogs();
@@ -387,7 +382,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
         return;
       }
 
-      clearTimeout(this.hideTimer);
       this.articleBlock = articleBlock;
       this.instance = instance;
       fillInsertTypes(instance);
@@ -446,22 +440,22 @@ export function setupArticleBlockControls(manuscriptRoot) {
     );
   }
 
-  const insideActiveArea = (target) => targetInside(target, controls()) || Boolean(state.articleBlock && state.articleBlock.contains(target));
   const eventInsideDirectEdit = (event) => event.composedPath()
     .some((target) => target.matches && target.matches(".pm-manuscript-direct-edit, .pm-manuscript-direct-edit *"));
+  const articleBlockAtPoint = ({ x, y }) => controlsHost.getRootNode()
+    .elementFromPoint(x, y)?.closest(ARTICLE_BLOCK_SELECTOR);
   const articleBlockFromEvent = (event) => {
     const fromPath = event.composedPath()
       .map((target) => target.closest && target.closest(ARTICLE_BLOCK_SELECTOR))
       .find(Boolean);
     const fromPoint = Number.isFinite(event.clientX) && Number.isFinite(event.clientY)
-      ? controlsHost.getRootNode().elementFromPoint(event.clientX, event.clientY).closest(ARTICLE_BLOCK_SELECTOR)
+      ? articleBlockAtPoint({ x: event.clientX, y: event.clientY })
       : null;
     return fromPath || fromPoint;
   };
 
   const showFromEvent = (event, shouldSelect = false) => {
     if (eventInside(event, controls())) {
-      clearTimeout(state.hideTimer);
       return;
     }
 
@@ -481,15 +475,8 @@ export function setupArticleBlockControls(manuscriptRoot) {
     if (shouldSelect) selectArticleBlockElement(articleBlock);
   };
 
-  const scheduleHide = () => {
-    if (!mounted || anyBlockModalOpen()) return;
-    clearTimeout(state.hideTimer);
-    state.hideTimer = setTimeout(() => {
-      if (!anyBlockModalOpen() && !insideActiveArea(manuscriptRoot.activeElement)) state.hide();
-    }, 120);
-  };
-
   const onOver = (event) => {
+    pointerPosition = { x: event.clientX, y: event.clientY };
     if (!isDialogOpen()) showFromEvent(event);
   };
   const onFocusIn = (event) => {
@@ -504,19 +491,25 @@ export function setupArticleBlockControls(manuscriptRoot) {
     showFromEvent(event, true);
   };
   const onOut = (event) => {
+    if (!manuscriptRoot.contains(event.relatedTarget)) pointerPosition = null;
     if (isDialogOpen()) return;
     if (editorState.suppressedHoverArticleBlock && editorState.suppressedHoverArticleBlock.contains(event.target) && !editorState.suppressedHoverArticleBlock.contains(event.relatedTarget)) {
       clearSuppressedHover();
     }
-    if (insideActiveArea(event.target) && !insideActiveArea(event.relatedTarget)) scheduleHide();
-  };
-  const onFocusOut = () => {
-    if (!isDialogOpen()) setTimeout(scheduleHide, 0);
   };
   const onKeyDown = (event) => {
     if (event.key !== "Escape") return;
     if (ui.insertOpen) cancelInsertDialog();
     else closeDialogs();
+  };
+  const onScroll = () => {
+    if (!pointerPosition || isDialogOpen()) return;
+
+    const articleBlock = articleBlockAtPoint(pointerPosition);
+    if (!articleBlock || articleBlock === state.articleBlock || articleBlock === editorState.suppressedHoverArticleBlock) return;
+
+    clearSuppressedHover();
+    state.setActive(articleBlock);
   };
   const listeners = [
     [manuscriptRoot, "mouseover", onOver],
@@ -524,9 +517,9 @@ export function setupArticleBlockControls(manuscriptRoot) {
     [manuscriptRoot, "focusin", onFocusIn],
     [manuscriptRoot, "click", onClick],
     [manuscriptRoot, "mouseout", onOut],
-    [manuscriptRoot, "focusout", onFocusOut],
     [document, "keydown", onKeyDown],
     [window, "resize", positionControls],
+    [document, "scroll", onScroll, true],
   ];
 
   for (const [target, eventName, listener, options] of listeners) {
