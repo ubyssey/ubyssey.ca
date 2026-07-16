@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         },
         onTransaction: () => {
+          editorState.richTextToolbar?.update();
           showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
           refreshBlockCommentBorders(manuscriptRoot);
           editorState.commentSidebar.update();
@@ -60,13 +61,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   editorState.richTextToolbar = createEditorToolbar(manuscriptRoot.querySelector(".pm-manuscript-toolbar"), {
     publishSource: document.querySelector("[data-article-toolbar-source]"),
+    onHistoryCommand: () => {
+      window.requestAnimationFrame(() => {
+        editorState.schedulePreview({ immediate: true });
+      });
+    },
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || editorState.blockEditorModalOpen || event.altKey || (!event.ctrlKey && !event.metaKey)) return;
+    if (event.target.closest?.("input, textarea, [contenteditable], .ProseMirror")) return;
+
+    const key = event.key.toLowerCase();
+    const action = key === "z" ? (event.shiftKey ? "redo" : "undo") : key === "y" && event.ctrlKey && !event.shiftKey ? "redo" : null;
+    if (!action || !editorState.richTextToolbar.runHistory(action)) return;
+
+    event.preventDefault();
   });
 
   const articleTextViews = () => {
     const manuscriptViews = [
       ...editorState.articleRichTextEditors.map((editor) => editor.view),
       ...editorState.articleDirectTextEditors.map((editor) => editor.view),
-    ];
+    ].filter((view) => view.dom.isConnected);
     return manuscriptViews.length ? manuscriptViews : editorState.streamEditors.map((editor) => editor.view);
   };
 

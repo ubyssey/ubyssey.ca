@@ -429,39 +429,61 @@ const TOOLBAR_ITEMS = [
   ["footnote", "*", "Footnote"],
 ];
 
-export function createEditorToolbar(root, { view = null, publishSource = null } = {}) {
+export function createEditorToolbar(root, { view = null, publishSource = null, onHistoryCommand = () => {} } = {}) {
   if (!root) return null;
 
   let activeView = view;
+  let historyView = view;
   const reactRoot = createRoot(root);
 
   function update() {
     reactRoot.render(
       <EditorToolbar
         view={activeView}
+        historyView={historyView}
         publishSource={publishSource}
+        onHistoryCommand={onHistoryCommand}
         refresh={update}
       />,
     );
   }
 
+  function runHistory(key) {
+    const command = historyView && toolbarCommand(historyView, key);
+    if (!command || !command(historyView.state, historyView.dispatch, historyView)) return false;
+
+    if (historyView === activeView) activeView.focus();
+    onHistoryCommand();
+    update();
+    return true;
+  }
+
   update();
   return {
     setView(nextView) {
+      if (!nextView && historyView === activeView) historyView = null;
       activeView = nextView;
+      if (nextView) historyView = nextView;
       update();
     },
+    setHistoryView(nextView) {
+      historyView = nextView;
+      update();
+    },
+    runHistory,
     update,
   };
 }
 
-function EditorToolbar({ view, publishSource, refresh }) {
+function EditorToolbar({ view, historyView, publishSource, onHistoryCommand, refresh }) {
   return (
     <div className={`pm-editor-toolbar${publishSource ? " pm-editor-toolbar--article" : ""}`}>
       <div className="pm-editor-toolbar__tools">
         {TOOLBAR_ITEMS.map(([key, label, title]) => {
-          const command = view && toolbarCommand(view, key);
-          const enabled = Boolean(command && command(view.state));
+          const isHistoryCommand = ["undo", "redo"].includes(key);
+          const commandView = isHistoryCommand ? historyView : view;
+          const command = commandView && toolbarCommand(commandView, key);
+          const enabled = Boolean(command && command(commandView.state));
           const active = view ? toolbarItemIsActive(view, key) : false;
 
           return (
@@ -475,8 +497,9 @@ function EditorToolbar({ view, publishSource, refresh }) {
               disabled={!enabled}
               onMouseDown={(event) => { event.preventDefault(); }}
               onClick={() => {
-                if (command(view.state, view.dispatch, view)) {
-                  view.focus();
+                if (command(commandView.state, commandView.dispatch, commandView)) {
+                  if (commandView === view) view.focus();
+                  if (isHistoryCommand) onHistoryCommand();
                   refresh();
                 }
               }}

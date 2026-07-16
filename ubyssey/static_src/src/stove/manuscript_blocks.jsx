@@ -241,10 +241,12 @@ export function setupArticleBlockControls(manuscriptRoot) {
     if (!pendingAdd) addSelectedBlockForEditing();
     if (!pendingAdd) return;
 
+    const historyView = pendingAdd.instance.view;
     editorState.revealSelectedArticleBlock = pendingAdd.descriptor;
     pendingAdd = null;
     closeDialogs();
     closeBlockEditorModal({ keepSelection: true, refreshPreview: false });
+    editorState.richTextToolbar?.setHistoryView(historyView);
     editorState.schedulePreview({ immediate: true });
   };
 
@@ -330,8 +332,9 @@ export function setupArticleBlockControls(manuscriptRoot) {
     confirmDelete() {
       withActiveBlock((instance, articleBlock) => {
         deleteArticleBlock(instance, articleBlock);
-        closeDialogs();
       });
+      closeDialogs();
+      editorState.schedulePreview({ immediate: true });
     },
     setInsertType(blockType) {
       ui.insertType = blockType;
@@ -771,6 +774,7 @@ function deleteArticleBlock(instance, articleBlock) {
   if (!info) return;
 
   const action = deleteTopLevelBlock(instance.view, info);
+  editorState.richTextToolbar?.setHistoryView(instance.view);
   editorState.selectedArticleBlock = null;
 
   if (action === "deleted") {
