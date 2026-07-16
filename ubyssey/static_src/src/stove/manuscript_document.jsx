@@ -817,15 +817,19 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
   const historyButtons = document.querySelectorAll("[data-history-button]");
   const historySelect = document.querySelector("[data-history-select]");
   const restoreButton = document.querySelector("[data-history-restore]");
+  const returnButton = document.querySelector("[data-history-return]");
   if (!form || !manuscriptRoot) return;
+  let historyPreviewId = 0;
 
   const selectedRevision = () => historySelect?.value || "";
   const selectedRevisionIsCurrent = () => !historySelect || historySelect.selectedIndex <= 0;
-  const updateRestoreButton = () => {
+  const updateHistoryMode = () => {
+    form.classList.toggle("manuscript-editor--history", !selectedRevisionIsCurrent());
     if (restoreButton) restoreButton.disabled = selectedRevisionIsCurrent();
   };
 
   const previewRevision = async (revisionId, isCurrent = false) => {
+    const currentPreviewId = ++historyPreviewId;
     try {
       editorState.cancelPreviewRefresh();
       const formData = new FormData(form);
@@ -834,7 +838,7 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
       if (!isCurrent) formData.set("revision", revisionId);
 
       const html = await fetchPreviewHtml(form, formData);
-      if (!html || !replaceArticlePreviewHtml(manuscriptRoot, html)) return;
+      if (currentPreviewId !== historyPreviewId || !html || !replaceArticlePreviewHtml(manuscriptRoot, html)) return;
 
       if (isCurrent) {
         restoreCurrentArticleControls(manuscriptRoot, streamDocs);
@@ -849,8 +853,13 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
 
   historySelect?.addEventListener("change", (event) => {
     event.stopPropagation();
-    updateRestoreButton();
+    updateHistoryMode();
     previewRevision(historySelect.value, selectedRevisionIsCurrent());
+  });
+
+  returnButton?.addEventListener("click", () => {
+    historySelect.selectedIndex = 0;
+    historySelect.dispatchEvent(new Event("change", { bubbles: true }));
   });
 
   restoreButton?.addEventListener("click", async () => {
@@ -890,11 +899,11 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
       alert("Failed to restore version.");
     } finally {
       restoreButton.textContent = originalText;
-      updateRestoreButton();
+      updateHistoryMode();
     }
   });
 
-  updateRestoreButton();
+  updateHistoryMode();
 
   for (const btn of historyButtons) {
     btn.addEventListener("click", () => { previewRevision(btn.dataset.revisionId); });

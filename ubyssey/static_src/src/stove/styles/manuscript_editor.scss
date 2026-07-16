@@ -32,6 +32,19 @@ body {
     background: #f5f6f6;
 }
 
+.manuscript-editor--history {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.manuscript-editor--history .metadata-editor,
+.manuscript-editor--history .manuscript-topbar__actions > :not([data-history-control]) {
+    display: none;
+}
+
+.manuscript-editor--history .manuscript {
+    grid-column: 1;
+}
+
 .manuscript {
     grid-column: 2;
     grid-row: 2;
@@ -120,6 +133,10 @@ body {
     justify-content: flex-end;
     gap: 8px;
     min-width: 0;
+}
+
+.manuscript-editor:not(.manuscript-editor--history) [data-history-return] {
+    display: none;
 }
 
 .manuscript-topbar__button,
