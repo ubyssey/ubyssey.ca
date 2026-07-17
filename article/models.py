@@ -279,7 +279,7 @@ class ArticleFeaturedMediaOrderable(Orderable):
         related_name="featured_media",
     )
 
-    caption = models.TextField(blank=True, null=False, default='')
+    caption = RichTextField(blank=True, null=False, default='')
     credit = models.TextField(blank=True, null=False, default='')
     alt_text = models.TextField(blank=True, null=False, default='',
         help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
@@ -783,13 +783,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article."
     )
 
-    title_tag = models.CharField(
+    title_tag = RichTextField(
         null=False,
         blank=True,
         default='',
         verbose_name='Title Tag (Optional)',
         help_text="This appears above the title. It mimics the title tags in the print issue.",
-        max_length=255,
     )
     
     #-----For Wagtail's user interface-----

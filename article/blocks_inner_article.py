@@ -15,7 +15,7 @@ class FeaturedImage(blocks.StructBlock):
     image = ImageChooserBlock(
         required=True,
     )
-    caption = blocks.CharBlock(blank=True, null=False, default='')
+    caption = blocks.RichTextBlock(required=False, default='')
     credit = blocks.CharBlock(blank=True, null=False, default='')
     alt_text = blocks.CharBlock(blank=True, null=False, default='',
         help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
@@ -52,11 +52,10 @@ class HeaderWithYoutubeVideoLayoutBlock(HeaderLayoutBlock):
 class StandardHeader(blocks.StructBlock):
     layout = HeaderLayoutBlock(default='bottom-image')
     
-    title = blocks.CharBlock(
+    title = blocks.RichTextBlock(
         required=False,
         label="Alternate title",
         help_text="When there is a \"special feature\" or full-width style article, sometimes we would like to override the title as it render in the template",
-        max_length=255,
     )
     subtitle = blocks.CharBlock(
         required=False,
@@ -135,7 +134,7 @@ class StandardHeaderWithYoutTubeVideo(StandardHeader):
 # Article blocks
 
 class AudioBlock(blocks.StructBlock):
-    caption =  blocks.CharBlock(required=False)
+    caption = blocks.RichTextBlock(required=False)
     audio = DocumentChooserBlock(required=True, help_text="File format: .m4a, .mp4, .mp, .wav, or .ogg")
     
     def get_context(self, value, parent_context=None):
@@ -353,10 +352,7 @@ class PersonalityQuizBlock(blocks.StructBlock):
 class PdfBlock(blocks.StructBlock):
     pdf = DocumentChooserBlock(required=True, help_text="File format: .pdf")
     
-    caption = blocks.CharBlock(
-        max_length=255,
-        required=False,
-    )
+    caption = blocks.RichTextBlock(required=False)
     
     credit = blocks.CharBlock(
         max_length=255,
@@ -468,10 +464,7 @@ class ImageWall(blocks.StructBlock):
         required=True,
     )
 
-    caption = blocks.CharBlock(
-        max_length=255,
-        required=False,
-    )
+    caption = blocks.RichTextBlock(required=False)
     credit = blocks.CharBlock(
         max_length=255,
         required=False,
@@ -510,10 +503,7 @@ class AttachmentOverlay(blocks.StructBlock):
         ("image", image_blocks.AltTextImageBlock()),
         ("video", VideoBlock()),
     ])
-    caption = blocks.CharBlock(
-        max_length=255,
-        required=False,
-    )
+    caption = blocks.RichTextBlock(required=False)
     credit = blocks.CharBlock(
         max_length=255,
         required=False,

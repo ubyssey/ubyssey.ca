@@ -111,6 +111,7 @@ def get_featured_media_form_class(model):
         model,
         form=FeaturedMediaForm,
         fields=FEATURED_MEDIA_FIELDS,
+        widgets={"caption": forms.Textarea},
         labels=FEATURED_MEDIA_LABELS,
     )
 
