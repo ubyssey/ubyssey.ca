@@ -165,3 +165,8 @@ jobs:
       - name: Force update all services
         run: |
           ssh staging "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"
+
+      - name: Prune Unused Containers and Images
+        run: |
+          ssh staging "docker container prune"
+          ssh staging "docker image prune -a"
