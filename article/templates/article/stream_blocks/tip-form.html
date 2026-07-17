@@ -2,8 +2,10 @@
 
 <div class="o-extra-article-info o-tip-form">
     <div class="o-tip-form--text">
-    {% if self.header %}<h2>{{self.header|safe}}</h2>{% endif %}
-    {{self.content|richtext}}
+    {% if self.header %}<h2 data-article-editable-stream-field="content" data-article-editable-path="header">{{self.header|safe}}</h2>{% endif %}
+    <div class="o-extra-article-info__body" data-article-editable-stream-field="content" data-article-editable-path="content" data-article-editable-mode="richtext">
+        {{self.content|richtext}}
+    </div>
     </div>
     <div class="o-tip-form--form-container setup-modal">
         <button class="o-tip-form--file-upload" id="file-upload-{{id|slugify}}">Click to upload files</button>

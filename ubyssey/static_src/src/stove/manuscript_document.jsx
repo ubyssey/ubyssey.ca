@@ -4,13 +4,14 @@
 import { useEffect } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
+import Select from "react-select";
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { editorPlugins, richTextSchema } from "./manuscript_prosemirror.jsx";
+import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins, richTextSchema } from "./manuscript_prosemirror.jsx";
 import { clone, pmDocToStreamValue, topLevelBlockInfoByIdOrIndex } from "./manuscript_prosetail.jsx";
 import { editorState } from "./manuscript_editor.js";
-import { articleBlockDescriptors, cleanupArticleBlockControls, describeArticleBlock, findArticleBlock, refreshBlockCommentBorders, sameArticleBlock, setupArticleBlockControls, showSelectedArticleBlockEditor } from "./manuscript_blocks.jsx";
+import { articleBlockDescriptors, describeArticleBlock, findArticleBlock, refreshBlockCommentBorders, sameArticleBlock, setupArticleBlockControls, showSelectedArticleBlockEditor } from "./manuscript_blocks.jsx";
 
 // Non hidden inputs
 const focusableSelector = "input:not([type='hidden']), select, textarea, button";
@@ -75,9 +76,36 @@ function useArticleAuthorsPanel() {
 
     const rows = panel.querySelector("[data-article-author-rows]");
     const form = panel.closest("form");
+    const selectRoots = new Map();
     const notifyChanged = () => {
       form.dispatchEvent(new Event("input", { bubbles: true }));
     };
+    const setupAuthorSelect = (select) => {
+      const options = Array.from(select.options).map((option) => ({
+        label: option.text,
+        value: option.value,
+      }));
+      const container = document.createElement("div");
+      const root = createRoot(container);
+
+      container.className = "pm-author-panel__select";
+      select.hidden = true;
+      select.parentNode.insertBefore(container, select.nextSibling);
+      root.render(
+        <Select
+          classNamePrefix="pm-author-panel-select"
+          defaultValue={options.find((option) => option.value === select.value)}
+          options={options}
+          onChange={(option) => {
+            select.value = option.value;
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+          }}
+        />,
+      );
+      selectRoots.set(container, root);
+    };
+
+    panel.querySelectorAll("[data-article-author-select]").forEach(setupAuthorSelect);
 
     const cleanups = [
       on(panel, "click", (event) => {
@@ -89,16 +117,29 @@ function useArticleAuthorsPanel() {
 
         if (addButton) {
           const row = rows.querySelector("[data-article-author-row]").cloneNode(true);
+          row.querySelector(".pm-author-panel__select").remove();
+          row.querySelectorAll("label > span").forEach((label) => { label.remove(); });
           row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
           rows.appendChild(row);
+          setupAuthorSelect(row.querySelector("[data-article-author-select]"));
           window.requestAnimationFrame(() => {
-            row.querySelector("[data-article-author-select]").focus();
+            row.querySelector(".pm-author-panel-select__input input").focus();
           });
         } else {
           const row = removeButton.closest("[data-article-author-row]");
           const allRows = rows.querySelectorAll("[data-article-author-row]");
-          if (allRows.length === 1) row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
-          else row.remove();
+          const authorSelect = row.querySelector("[data-article-author-select]");
+          const container = authorSelect.nextElementSibling;
+
+          selectRoots.get(container).unmount();
+          selectRoots.delete(container);
+          container.remove();
+          if (allRows.length === 1) {
+            row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
+            setupAuthorSelect(authorSelect);
+          } else {
+            row.remove();
+          }
         }
 
         notifyChanged();
@@ -106,7 +147,10 @@ function useArticleAuthorsPanel() {
       on(panel, "change", notifyChanged),
     ];
 
-    return () => cleanups.forEach((cleanup) => cleanup());
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+      selectRoots.forEach((root) => root.unmount());
+    };
   }, []);
 }
 
@@ -135,6 +179,13 @@ function useMediaAndSettingsModals(form) {
     const uploadTitle = document.querySelector("[data-article-media-upload-title]");
     const kind = form.elements.namedItem("article_media-kind");
     let uploadReturnsToGallery = false;
+    const existingModal = document.querySelector("[data-article-media-existing-modal]");
+    const existingKind = document.querySelector("[data-article-media-existing-kind]");
+    const existingSelectMount = document.querySelector("[data-article-media-existing-select]");
+    const existingAddButton = document.querySelector("[data-article-media-existing-add]");
+    const existingOptions = JSON.parse(document.getElementById("article-media-options").textContent);
+    const existingSelectRoot = createRoot(existingSelectMount);
+    let existingSelection = null;
 
     const mediaField = (name) => form.querySelector(`#id_article_media-${name}`);
     const setUploadMode = (mode) => {
@@ -169,6 +220,46 @@ function useMediaAndSettingsModals(form) {
       }
     };
 
+    const renderExistingSelect = () => {
+      existingSelection = null;
+      existingAddButton.disabled = true;
+      flushSync(() => {
+        existingSelectRoot.render(
+          <Select
+            key={existingKind.value}
+            classNamePrefix="article-media-existing-select"
+            options={existingOptions[existingKind.value]}
+            placeholder="Search media..."
+            onChange={(option) => {
+              existingSelection = option;
+              existingAddButton.disabled = !option;
+            }}
+          />,
+        );
+      });
+    };
+
+    const closeExisting = () => {
+      setModalOpen(existingModal, false);
+      existingModal.classList.remove("article-media-modal--stacked");
+      existingSelection = null;
+      existingAddButton.disabled = true;
+      window.requestAnimationFrame(() => {
+        galleryModal.querySelector("[data-article-media-edit-button], a, button").focus();
+      });
+    };
+
+    const applyMediaResponse = (payload) => {
+      document.querySelector("[data-article-media-gallery]").outerHTML = payload.gallery;
+      const selector = `.pm-control-field--${payload.item.kind} select${payload.item.kind === "image" ? ",select[name='featured_media-image']" : ""}`;
+      document.querySelectorAll(selector).forEach((select) => {
+        const existingOption = Array.from(select.options).find((item) => String(item.value) === String(payload.item.id));
+        const option = existingOption || select.appendChild(new Option());
+        option.value = payload.item.id;
+        option.textContent = payload.item.title;
+      });
+    };
+
     syncImageFields();
 
     const cleanups = [
@@ -181,6 +272,11 @@ function useMediaAndSettingsModals(form) {
         reset();
         syncImageFields();
         setModalOpen(uploadModal, true, kind);
+      }),
+      on(document.querySelector("[data-article-media-open-existing]"), "click", () => {
+        existingModal.classList.add("article-media-modal--stacked");
+        renderExistingSelect();
+        setModalOpen(existingModal, true, existingKind);
       }),
       on(document.querySelector("[data-article-media-open-gallery]"), "click", () => {
         setModalOpen(galleryModal, true, galleryModal.querySelector("[data-article-media-edit-button], a, button"));
@@ -206,18 +302,21 @@ function useMediaAndSettingsModals(form) {
       }),
       ...Array.from(document.querySelectorAll("[data-article-media-close], [data-manuscript-settings-close]")).map((button) => (
         on(button, "click", () => {
-          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-gallery-modal]");
+          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-existing-modal], [data-article-media-gallery-modal]");
           if (modal === uploadModal) closeUpload();
+          else if (modal === existingModal) closeExisting();
           else setModalOpen(modal, false);
         })
       )),
       on(document, "keydown", (event) => {
         if (event.key !== "Escape") return;
         if (!uploadModal.hidden) closeUpload();
+        else if (!existingModal.hidden) closeExisting();
         else if (!galleryModal.hidden) setModalOpen(galleryModal, false);
         else if (!settingsModal.hidden) setModalOpen(settingsModal, false);
       }),
       on(kind, "change", syncImageFields),
+      on(existingKind, "change", renderExistingSelect),
       on(uploadButton, "click", async () => {
         uploadButton.disabled = true;
         try {
@@ -228,14 +327,7 @@ function useMediaAndSettingsModals(form) {
             return;
           }
 
-          document.querySelector("[data-article-media-gallery]").outerHTML = payload.gallery;
-          const selector = `.pm-control-field--${payload.item.kind} select${payload.item.kind === "image" ? ",select[name='featured_media-image']" : ""}`;
-          document.querySelectorAll(selector).forEach((select) => {
-            const existingOption = Array.from(select.options).find((item) => String(item.value) === String(payload.item.id));
-            const option = existingOption || select.appendChild(new Option());
-            option.value = payload.item.id;
-            option.textContent = payload.item.title;
-          });
+          applyMediaResponse(payload);
 
           closeUpload();
         } catch (error) {
@@ -244,8 +336,33 @@ function useMediaAndSettingsModals(form) {
           uploadButton.disabled = false;
         }
       }),
+      on(existingAddButton, "click", async () => {
+        if (!existingSelection) return;
+        existingAddButton.disabled = true;
+        const data = new FormData();
+        data.set("csrfmiddlewaretoken", form.elements.namedItem("csrfmiddlewaretoken").value);
+        data.set("kind", existingKind.value);
+        data.set("media_id", existingSelection.value);
+        try {
+          const response = await fetch(form.dataset.mediaExistingUrl, { method: "POST", body: data });
+          const payload = await response.json();
+          if (!response.ok) {
+            window.alert(`Add failed: ${JSON.stringify(payload.errors || payload)}`);
+            return;
+          }
+          applyMediaResponse(payload);
+          closeExisting();
+        } catch (error) {
+          window.alert("Add failed.");
+        } finally {
+          existingAddButton.disabled = !existingSelection;
+        }
+      }),
     ];
-    return () => cleanups.forEach((cleanup) => cleanup());
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+      existingSelectRoot.unmount();
+    };
   }, [form]);
 }
 
@@ -402,8 +519,11 @@ export function setupArticleShadow() {
   shadowBody.appendChild(toolbar);
 
   const wrapper = document.createElement("main");
+  const content = document.createElement("div");
   wrapper.className = "article-shadow-preview article";
-  wrapper.innerHTML = articleHtml;
+  content.dataset.articlePreviewContent = "";
+  content.innerHTML = articleHtml;
+  wrapper.appendChild(content);
   shadowBody.appendChild(wrapper);
 
   return shadowRoot;
@@ -460,9 +580,11 @@ function createArticleRichTextEditor(mount, content, className, onDocChanged) {
     }),
 
     dispatchTransaction(transaction) {
+      const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
       view.updateState(view.state.apply(transaction));
       editorState.richTextToolbar?.update();
-      editorState.commentSidebar?.update();
+      if (activeSuggestionThreadId) editorState.commentSidebar?.activateThread(activeSuggestionThreadId);
+      else editorState.commentSidebar?.update();
       editorState.footnoteSidebar?.update();
       if (transaction.docChanged) onDocChanged(view, transaction);
     },
@@ -640,6 +762,7 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
   };
 
   const flushDeferredPreview = () => {
+    if (editorState.blockEditorModalOpen) return;
     if (!deferredManuscriptPreview || focusedArticleRichText(manuscriptRoot)) return;
     editorState.schedulePreview();
   };
@@ -668,7 +791,15 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
       if (currentPreviewId !== previewId || requestRevision !== previewRevision || !html) return;
 
       if (replaceArticlePreviewHtml(manuscriptRoot, html)) {
+        const reveal = editorState.revealSelectedArticleBlock;
         restoreCurrentArticleControls(manuscriptRoot, streamDocs);
+        if (reveal) {
+          editorState.revealSelectedArticleBlock = null;
+          window.requestAnimationFrame(() => {
+            const articleBlock = findArticleBlock(manuscriptRoot, reveal);
+            articleBlock?.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+        }
       }
     } catch (error) {
       if (error.name !== "AbortError") console.error(error);
@@ -686,15 +817,19 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
   const historyButtons = document.querySelectorAll("[data-history-button]");
   const historySelect = document.querySelector("[data-history-select]");
   const restoreButton = document.querySelector("[data-history-restore]");
+  const returnButton = document.querySelector("[data-history-return]");
   if (!form || !manuscriptRoot) return;
+  let historyPreviewId = 0;
 
   const selectedRevision = () => historySelect?.value || "";
   const selectedRevisionIsCurrent = () => !historySelect || historySelect.selectedIndex <= 0;
-  const updateRestoreButton = () => {
+  const updateHistoryMode = () => {
+    form.classList.toggle("manuscript-editor--history", !selectedRevisionIsCurrent());
     if (restoreButton) restoreButton.disabled = selectedRevisionIsCurrent();
   };
 
   const previewRevision = async (revisionId, isCurrent = false) => {
+    const currentPreviewId = ++historyPreviewId;
     try {
       editorState.cancelPreviewRefresh();
       const formData = new FormData(form);
@@ -703,7 +838,7 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
       if (!isCurrent) formData.set("revision", revisionId);
 
       const html = await fetchPreviewHtml(form, formData);
-      if (!html || !replaceArticlePreviewHtml(manuscriptRoot, html)) return;
+      if (currentPreviewId !== historyPreviewId || !html || !replaceArticlePreviewHtml(manuscriptRoot, html)) return;
 
       if (isCurrent) {
         restoreCurrentArticleControls(manuscriptRoot, streamDocs);
@@ -718,8 +853,13 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
 
   historySelect?.addEventListener("change", (event) => {
     event.stopPropagation();
-    updateRestoreButton();
+    updateHistoryMode();
     previewRevision(historySelect.value, selectedRevisionIsCurrent());
+  });
+
+  returnButton?.addEventListener("click", () => {
+    historySelect.selectedIndex = 0;
+    historySelect.dispatchEvent(new Event("change", { bubbles: true }));
   });
 
   restoreButton?.addEventListener("click", async () => {
@@ -759,11 +899,11 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
       alert("Failed to restore version.");
     } finally {
       restoreButton.textContent = originalText;
-      updateRestoreButton();
+      updateHistoryMode();
     }
   });
 
-  updateRestoreButton();
+  updateHistoryMode();
 
   for (const btn of historyButtons) {
     btn.addEventListener("click", () => { previewRevision(btn.dataset.revisionId); });
@@ -784,7 +924,8 @@ async function fetchPreviewHtml(form, formData, signal = null) {
 export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
   if (!manuscriptRoot) return;
 
-  setupArticleBlockControls(manuscriptRoot);
+  if (!editorState.articleBlockControls) setupArticleBlockControls(manuscriptRoot);
+  else refreshBlockCommentBorders(manuscriptRoot);
 
   // Inline RichText Editors
   const articleBlocksByField = new Map();
@@ -877,13 +1018,12 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
 }
 
 function replaceArticlePreviewHtml(manuscriptRoot, html) {
-  const wrapper = manuscriptRoot.querySelector(".article-shadow-preview");
-  if (!wrapper) return false;
+  const content = manuscriptRoot.querySelector("[data-article-preview-content]");
+  if (!content) return false;
 
   destroyEditorViews(editorState.articleDirectTextEditors);
   destroyEditorViews(editorState.articleRichTextEditors);
-  cleanupArticleBlockControls();
-  wrapper.innerHTML = html;
+  content.innerHTML = html;
   return true;
 }
 
@@ -901,6 +1041,10 @@ function restoreCurrentArticleControls(manuscriptRoot, streamDocs) {
   }
 
   showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
+  if (articleBlock) {
+    articleBlock.classList.add("pm-article-block--selected");
+    editorState.articleBlockControls?.setActive?.(articleBlock);
+  }
   editorState.commentSidebar?.update();
   editorState.footnoteSidebar?.update();
 }

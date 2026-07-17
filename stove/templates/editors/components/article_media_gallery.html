@@ -8,6 +8,7 @@
         <img src="{{ thumb.url }}" alt="">
         <div class="article-media-item__details">
           <div>{{ item.image.title }}</div>
+          <small>{{ item.image.filename }}</small>
           <small>{{ item.image.author|default:"No author" }}</small>
         </div>
         <button type="button" data-article-media-edit-button>Edit</button>
@@ -16,6 +17,7 @@
       <div class="article-media-item" data-article-media-item data-kind="document" data-id="{{ item.document_id }}" data-title="{{ item.document.title }}" data-author="" data-description="" data-tags="{{ item.document.tags.names|join:", " }}">
         <div class="article-media-item__details">
           <a href="{{ item.document.url }}" target="_blank" rel="noopener">{{ item.document.title }}</a>
+          <small>{{ item.document.filename }}</small>
           <small>{{ item.document.uploaded_by_user.get_full_name|default:item.document.uploaded_by_user|default:"No author" }}</small>
         </div>
         <button type="button" data-article-media-edit-button>Edit</button>

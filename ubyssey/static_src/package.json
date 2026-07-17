@@ -78,6 +78,7 @@
     "react-reconciler": "^0.29.0",
     "react-router": "^6.26.1",
     "react-router-dom": "^6.26.1",
+    "react-select": "^5.10.2",
     "tough-cookie": "^2.3.4",
     "uuid": "^14.0.0"
   }
