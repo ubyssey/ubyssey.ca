@@ -637,9 +637,32 @@ function removeCommentThread(view, threadId) {
 }
 
 export function setupFootnoteSidebar(root, { getViews }) {
+  const articleShadowRoot = document.querySelector("[data-article-shadow]")?.shadowRoot;
   const reactRoot = createRoot(root);
   let hasRendered = false;
   let renderedFootnoteIds = new Set();
+
+  const focusFootnote = (footnoteId) => {
+    const input = root.querySelector(`[data-footnote-id="${cssEscape(footnoteId)}"]`);
+    if (!input) return false;
+
+    // Potentially add depth to bottom of footnotes so we can scroll the lowest footnote to the middle
+    const rootRect = root.getBoundingClientRect();
+    const inputRect = input.getBoundingClientRect();
+    const centeredTop = root.scrollTop + inputRect.top - rootRect.top - (root.clientHeight - inputRect.height) / 2;
+    root.scrollTo({ top: Math.max(0, centeredTop), behavior: "smooth" });
+    input.focus({ preventScroll: true });
+    input.setSelectionRange(input.value.length, input.value.length);
+    return true;
+  };
+
+  articleShadowRoot?.addEventListener("click", (event) => {
+    const anchor = event.target.closest?.('[data-footnote-id][data-footnote-anchor="true"]');
+    if (!anchor || !articleShadowRoot.contains(anchor)) return;
+
+    event.preventDefault();
+    focusFootnote(anchor.dataset.footnoteId);
+  });
 
   const update = () => {
     const activeTextarea = root.contains(document.activeElement) ? document.activeElement : null;
