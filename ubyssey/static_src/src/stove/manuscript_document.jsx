@@ -185,9 +185,32 @@ function useMediaAndSettingsModals(form) {
     const existingAddButton = document.querySelector("[data-article-media-existing-add]");
     const existingOptions = JSON.parse(document.getElementById("article-media-options").textContent);
     const existingSelectRoot = createRoot(existingSelectMount);
+    const tagOptions = JSON.parse(document.getElementById("article-media-tag-options").textContent);
+    const tagField = form.querySelector("#id_article_media-tags");
+    const tagSelectMount = document.createElement("div");
+    const tagSelectRoot = createRoot(tagSelectMount);
     let existingSelection = null;
 
     const mediaField = (name) => form.querySelector(`#id_article_media-${name}`);
+
+    const setTags = (tags) => {
+      const selectedTags = tagOptions.filter((option) => tags.includes(option.value));
+      tagField.value = selectedTags.map((option) => option.value).join(", ");
+      tagSelectRoot.render(
+        <Select
+          isMulti
+          classNamePrefix="article-media-tag-select"
+          options={tagOptions}
+          placeholder="search"
+          value={selectedTags}
+          onChange={(options) => setTags(options.map((option) => option.value))}
+        />,
+      );
+    };
+    tagField.hidden = true;
+    tagField.parentNode.insertBefore(tagSelectMount, tagField.nextSibling);
+    setTags([]);
+
     const setUploadMode = (mode) => {
       const editing = mode === "edit";
       uploadTitle.textContent = editing ? "Edit media" : "Upload media";
@@ -197,6 +220,7 @@ function useMediaAndSettingsModals(form) {
       form.querySelectorAll("[name^='article_media-']").forEach((field) => {
         if (field !== kind) field.value = "";
       });
+      setTags([]);
       delete form.dataset.articleMediaEditKind;
       setUploadMode("upload");
     };
@@ -292,6 +316,7 @@ function useMediaAndSettingsModals(form) {
           const field = mediaField(name === "id" ? "media_id" : name);
           field.value = card.dataset[name] || "";
         });
+        setTags((card.dataset.tags || "").split(",").map((tag) => tag.trim()));
         mediaField("file").value = "";
         form.dataset.articleMediaEditKind = card.dataset.kind;
         setUploadMode("edit");
@@ -362,6 +387,7 @@ function useMediaAndSettingsModals(form) {
     return () => {
       cleanups.forEach((cleanup) => cleanup());
       existingSelectRoot.unmount();
+      tagSelectRoot.unmount();
     };
   }, [form]);
 }

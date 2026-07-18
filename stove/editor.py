@@ -13,6 +13,8 @@ from wagtail.images.blocks import ImageChooserBlock
 from article.models import ArticleAuthorsOrderable
 from authors.models import AuthorPage
 
+from taggit.models import Tag
+
 # I'm only including clearly useful fields for now
 PAGE_FORM_FIELDS = (
     "seo_description",
@@ -151,7 +153,14 @@ def get_article_media_upload_form(data=None, files=None):
         file = forms.FileField(required=False)
         author = forms.ModelChoiceField(queryset=author_model.objects.all(), required=False)
         description = forms.CharField(widget=forms.Textarea, required=False)
-        tags = forms.CharField(required=False, help_text="Separate tags with commas.")
+        tags = forms.CharField(required=False, help_text="Select one or more pre-existing tags.")
+
+        def clean_tags(self):
+            tags = [tag.strip() for tag in self.cleaned_data.get("tags", "").split(",") if tag.strip()]
+            existing_tags = set(Tag.objects.filter(name__in=tags).values_list("name", flat=True))
+            if any(tag not in existing_tags for tag in tags):
+                raise forms.ValidationError("Select pre-existing tags only.")
+            return ", ".join(tags)
 
         def clean(self):
             cleaned = super().clean()

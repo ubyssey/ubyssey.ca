@@ -13,6 +13,7 @@ from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
 from wagtail.models import Page
 from article.models import ArticlePage
+from taggit.models import Tag
 
 from stove.editor import (
     PAGE_FORM_FIELDS,
@@ -56,8 +57,14 @@ def get_article_media_options():
             {"value": str(media.id), "label": f"{media.title} — {media.filename}"}
             for media in model.objects.all().order_by("title")
         ]
-
     return {"image": options(get_image_model()), "document": options(get_document_model())}
+
+
+def get_article_media_tag_options():
+    return [
+        {"value": tag.name, "label": tag.name}
+        for tag in Tag.objects.all().order_by("name")
+    ]
 
 
 @login_required
@@ -140,6 +147,7 @@ def manuscript_editor(request, page_id):
          "featured_media_form": featured_media_form,
          "article_media_upload_form": get_article_media_upload_form(),
          "article_media_options": get_article_media_options(),
+         "article_media_tag_options": get_article_media_tag_options(),
          "article_media": article_media}
     )
 
