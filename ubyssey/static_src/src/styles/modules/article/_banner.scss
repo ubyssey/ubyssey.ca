@@ -167,7 +167,7 @@
       max-width: 900px;
       margin-inline: auto;
     }
-    p.title-tag {
+    .title-tag {
       font-weight: 600;
     }
     h1.o-headline--article {
@@ -281,7 +281,7 @@
       bottom: 0;
       padding: 70px 0 3em 0;
       background-image: linear-gradient(-180deg, transparent, rgba(0, 0, 0, 0.33) 20%, rgba(0, 0, 0, 0.87) 99%);
-      h1.headline, p.subtitle, p.title-tag, p.fw-description, div.article-byline, span.author, span.published {
+      h1.headline, p.subtitle, .title-tag, p.fw-description, div.article-byline, span.author, span.published {
         color: #fff;
       }
       h1.headline {

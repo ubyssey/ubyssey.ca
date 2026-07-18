@@ -14,15 +14,15 @@
         <header class="u-container u-container--padded">
             
             {% if article.title_tag_str %}
-                <p class="title-tag"><span data-article-editable-page-field="title_tag" data-article-editable-mode="richtext">{{article.title_tag_str|safe}}</span>//</p>
+                <div class="title-tag">
+                    <div data-article-editable-page-field="title_tag" data-article-editable-mode="richtext">{{article.title_tag_str|safe}}</div>
+                    <span>//</span>
+                </div>
             {% endif %}
             
             <h1
                 class="headline"
-                data-article-editable-stream-field="header"
-                data-article-editable-path="title"
                 data-article-editable-page-field="title"
-                data-article-editable-mode="richtext"
             >
                 {{ title|safe }}
             </h1>

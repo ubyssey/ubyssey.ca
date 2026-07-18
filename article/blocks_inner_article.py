@@ -52,10 +52,11 @@ class HeaderWithYoutubeVideoLayoutBlock(HeaderLayoutBlock):
 class StandardHeader(blocks.StructBlock):
     layout = HeaderLayoutBlock(default='bottom-image')
     
-    title = blocks.RichTextBlock(
+    title = blocks.CharBlock(
         required=False,
         label="Alternate title",
         help_text="When there is a \"special feature\" or full-width style article, sometimes we would like to override the title as it render in the template",
+        max_length=255,
     )
     subtitle = blocks.CharBlock(
         required=False,
@@ -94,13 +95,14 @@ class StandardHeader(blocks.StructBlock):
         else:
             new_context = self.get_context(value, parent_context=dict(context))
 
-            new_context["title"] = value.get('title')
+            article = dict(context)["self"]
+            new_context["title"] = article.title if new_context.get("stove_editor") else value.get('title')
             if not new_context["title"]:
-                new_context["title"] = dict(context)["self"].title
+                new_context["title"] = article.title
 
             new_context["featured_media"] = self.get_featured_media(value, context)
 
-            new_context["article"] = dict(context)["self"]
+            new_context["article"] = article
             new_context["media_type"] = self.media_type
 
         layout = value.get('layout').split("--")
