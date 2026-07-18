@@ -17,6 +17,7 @@ from taggit.models import Tag
 
 # I'm only including clearly useful fields for now
 PAGE_FORM_FIELDS = (
+    "fw_alternate_title",
     "seo_description",
     "timeliness",
     "slug",
