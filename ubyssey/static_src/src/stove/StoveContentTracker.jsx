@@ -15,6 +15,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { ToastContainer, toast } from "react-toastify";
@@ -93,17 +94,21 @@ function findAuthorName(authorId) {
       {role: "author", color: "#e6e6e6"},
       {role: "author", color: "#e6e6e6"}
     ];
+  const roleColours = {
+    "author": "#e6e6e6",
+    "backfield_editor": "#f5c554",
+    "copy_editor": "#77c0d2" 
+  }
 
-function AuthorsSelect ({currentAuthors, handleUpdateAuthors, articleStatus}) {
+function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType}) {
   let initialAuthors = [];
   for (const authorId in currentAuthors) {
     const author = currentAuthors[authorId]
-    if (author["author_role"] == responsibleRole[articleStatus].role) {
+    if (author["author_role"] == authorType) {
       initialAuthors.push({value: author["author"], label: findAuthorName(author["author"])})
     }
   }
 
-  console.log(initialAuthors)
 
   return <Select 
     options={authors} 
@@ -113,7 +118,7 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, articleStatus}) {
     styles={{
       multiValue: (base) => ({
         ...base,
-        backgroundColor: responsibleRole[articleStatus].color,
+        backgroundColor: roleColours[authorType],
       }),
       container: (base) => ({
         ...base,
@@ -142,13 +147,26 @@ function resolveAfter2Seconds() {
   });
 }
 
+async function updateTitle(page, newTitle, updatePage) {
 
-async function updateAuthors(page, newAuthorList, updatePage) {
+  page.title = newTitle
 
-  page.article_authors = page.article_authors.filter((author) => author.author_role != responsibleRole[page.article_status].role)
+  updatePage(page)
+
+  handleRemoteUpdate(page, {"title": page.title}, updatePage,
+    "Updating title for " + page.title, 
+    "Updated title for " + page.title, 
+    "Failed to title for " + page.title)
+
+}
+
+
+async function updateAuthors(page, newAuthorList, role, updatePage) {
+
+  page.article_authors = page.article_authors.filter((author) => author.author_role != role)
 
   for (const author of newAuthorList) {
-    page.article_authors.push({article_page: page.pk, author_role: responsibleRole[page.article_status].role, author: author.value})
+    page.article_authors.push({article_page: page.pk, author_role: role, author: author.value})
   } 
 
   updatePage(page)
@@ -190,7 +208,8 @@ async function updateBeat(page, newBeat, updatePage) {
 }
 
 async function handleRemoteUpdate(page, changes, updatePage, pendingText, successText, errorText) {
-  toast.info("UPDATING REMOTE")
+  toast.info("UPDATING REMOTE", {
+          autoClose: 250})
   toast.promise(
       remoteUpdatePage(page, changes),
       {
@@ -288,8 +307,9 @@ function ArticleStatus ({status, updateStatus}) {
 
   
   return <Select 
+    className="status-select"
     options={statuses} 
-    defaultValue={statuses[status-1]} 
+    value={statuses[status-1]} 
     styles={{
       singleValue: (base) => ({
         ...base,
@@ -298,9 +318,11 @@ function ArticleStatus ({status, updateStatus}) {
         background: statuses[status-1].color,
         color: statuses[status-1].textColor,
         fontWeight: "bold",
-        textAlign: 'center',
-        display: 'flex',
       }),
+      valueContainer: (base) => ({
+        ...base,
+        padding: 0,
+      })
     }}
     onChange={updateStatus}
     components={{
@@ -322,7 +344,7 @@ function beatLabel(beatPk) {
 function BeatSelect ({beat, updateBeat}) {
   return <Select 
     options={beatOptions}
-    defaultValue={beat ? {"value": beat, "label": beatLabel(beat)} : undefined}
+    value={beat ? {"value": beat, "label": beatLabel(beat)} : undefined}
     onChange={updateBeat}
     formatGroupLabel={formatGroupLabel}
     components={{
@@ -339,14 +361,12 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
       selectedClass="row-selected";
     }
 
-    console.log(page.article_status)
-
     return <tr key={page.pk} className={selectedClass}>
-            <td class="slug-cell"><a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a></td>
+            <td class="slug-cell"><a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a> <button onClick={() => setSelectedArticleId(page.pk)}>!!!</button></td>
             <td><AuthorsSelect 
               currentAuthors={page.article_authors} 
-              handleUpdateAuthors={(newAuthorList) => updateAuthors(page, newAuthorList, updatePage)}
-              articleStatus={page.article_status}
+              handleUpdateAuthors={(newAuthorList) => updateAuthors(page, newAuthorList, responsibleRole[page.article_status].role, updatePage)}
+              authorType={responsibleRole[page.article_status].role}
               />
             </td>
             <td><DateInput date={page.deadline} handleUpdateDate={(newDate) => updateDeadline(page, newDate, updatePage)}/></td>
@@ -358,7 +378,8 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
 }
 
 function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticleId}) {
-    toast("Rerender")
+    toast("Rerender",{
+          autoClose: 250})
 
 
   const rows = []
@@ -371,7 +392,7 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   
   return (
     <div>
-    <h1>All Articles Table</h1>
+    <h1>All Articles Table - {selectedArticleId}</h1>
     <Table striped bordered hover>
        <thead>
             <tr class="table-header">
@@ -485,12 +506,64 @@ function MainPanel({allPages, addPages, updatePage, selectedArticleId, setSelect
           updatePage={updatePage}
           selectedArticleId={selectedArticleId}
           setSelectedArticleId={setSelectedArticleId}/>
-      <ToastContainer />
     </div>
   )
 }
 
-function SidebarViewsSelector() {
+function EditSidebar({selectedPage, updatePage}) {
+  if (!selectedPage) {
+    return <div>No article selected</div>
+  }
+
+  const [title, changeTitle] = useState(selectedPage["title"]);
+
+  useEffect(() => {
+    changeTitle(selectedPage["title"]);
+  }, [selectedPage]);
+  return <div>
+    <div><h2>{selectedPage["title"]}</h2></div>
+    <textarea 
+      style={{
+        width: "100%",
+      }}
+      value={title} // ...force the input's value to match the state variable...
+      onChange={e => changeTitle(e.target.value.replace("\n", ""))}
+      onBlur={(e) => updateTitle(selectedPage, e.target.value, updatePage)}></textarea>
+    <div>
+      <h3>Authors</h3>
+      <div>Reportage <AuthorsSelect 
+        currentAuthors={selectedPage.article_authors} 
+        handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "author", updatePage)}
+        authorType={"author"}
+        />
+      </div>
+      <div>Backfield Editing <AuthorsSelect 
+        currentAuthors={selectedPage.article_authors} 
+        handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "backfield_editor", updatePage)}
+        authorType={"backfield_editor"}
+        />
+      </div>
+      <div>Copy Editing <AuthorsSelect 
+        currentAuthors={selectedPage.article_authors} 
+        handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "copy_editor", updatePage)}
+        authorType={"copy_editor"}
+        />
+      </div>
+    </div>
+    <div>
+      <h3>Assignment Management</h3>
+      <div>Deadline<br/><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/></div>
+      <div>Status<ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/></div>
+    </div>
+    <div>
+      <h3>Organization</h3>
+      <div>Beat<BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)}/></div>
+    </div>
+   
+  </div>
+}
+
+function SidebarViewsSelector({selectedPage, updatePage, createPage}) {
   return (
     <Tabs
       defaultActiveKey="create"
@@ -502,21 +575,24 @@ function SidebarViewsSelector() {
         Tab content for Create
       </Tab>
       <Tab eventKey="edit" title="Edit">
-        Tab content for Edit
+        <EditSidebar 
+          selectedPage={selectedPage}
+          updatePage={updatePage} />
       </Tab>
-      <Tab eventKey="view" title="View">
+      <Tab eventKey="view" title="View" disabled>
         Tab content for View
       </Tab>
     </Tabs>
   );
 }
 
-function Sidebar() {
-  return (
-    <div className="metadata-editor">
-      <SidebarViewsSelector/>
-    </div>
-  );
+function Sidebar({selectedPage, updatePage, createPage}) {
+  return <div className="metadata-editor">
+      <SidebarViewsSelector
+        selectedPage={selectedPage}
+        updatePage={updatePage}
+        createPage={createPage}/>
+    </div>;
 }
 
 function ContentTracker() {
@@ -552,7 +628,7 @@ function ContentTracker() {
       <Group className="grouping">
       <Panel className="panel" minSize="40%" defaultSize="80%">
         <MainPanel 
-          allPages={new Map(JSON.parse(JSON.stringify([...allPages])))} 
+          allPages={allPages} 
           addPages={addPages}
           updatePage={updatePage}
           selectedArticleId={selectedArticleId}
@@ -562,13 +638,13 @@ function ContentTracker() {
       <Separator className="sidebar-resize-handle"/>
       <Panel className="panel content-sidebar" collapsible minSize={275}>
         <Sidebar 
-          allPages={allPages}
+          selectedPage={allPages.get(selectedArticleId)}
           updatePage={updatePage}
           createPage={(page) => {addPages([page])}}
-          selectedArticleId={selectedArticleId}
         />
         </Panel>
     </Group>
+    <ToastContainer />
     </div>
   );
 }
