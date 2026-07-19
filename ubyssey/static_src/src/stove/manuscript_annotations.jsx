@@ -1,42 +1,100 @@
 // Handles footnotes, comments, marks
 
+import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { v4 as uuidv4 } from "uuid";
 
 export function setupCommentSidebar(root, { getViews, getThreads }) {
   const username = document.querySelector("[data-current-editor-username]").dataset.currentEditorUsername;
+  const articleShadow = document.querySelector("[data-article-shadow]");
   const reactRoot = createRoot(root);
   let activeThreadId = null;
   let positionFrame = null;
+  let hasRendered = false;
+  let renderedThreadIds = new Set();
+  let scrollActiveThread = null;
+  let scrollEndCleanup = null;
+  let moveTimer = null;
+  let commentOffset = 0;
 
   const currentThreads = () => [
     ...getViews().flatMap((view) => collectCommentThreads(view)),
     ...getThreads(),
   ];
 
-  const setActiveThread = (threadId) => {
+  // Scrolls after scroll to comment associated text, so comment is onscreen
+  const centerThreadAfterScroll = (threadId) => {
+    scrollEndCleanup?.();
+    let timer = null;
+    const cleanup = () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll, true);
+      if (scrollEndCleanup === cleanup) scrollEndCleanup = null;
+    };
+    const finish = () => {
+      cleanup();
+      if (activeThreadId !== threadId) return;
+      scrollActiveThread = "center";
+      scheduleCommentPositions();
+    };
+    const onScroll = () => {
+      clearTimeout(timer);
+      timer = setTimeout(finish, 120);
+    };
+
+    scrollEndCleanup = cleanup;
+    window.addEventListener("scroll", onScroll, true);
+    onScroll();
+  };
+
+  const setActiveThread = (threadId, scroll = "center") => {
+    let anchorScrolled = false;
+    if (scroll === "nearest") {
+      const thread = currentThreads().find((item) => item.threadId === threadId);
+      const anchor = commentAnchorElement(thread);
+      const anchorRect = anchor?.getBoundingClientRect();
+      const topbarBottom = document.querySelector(".manuscript-topbar")?.getBoundingClientRect().bottom || 0;
+      const toolbarRect = articleShadow?.shadowRoot?.querySelector(".pm-manuscript-toolbar")?.getBoundingClientRect();
+      const visibleTop = toolbarRect?.top <= topbarBottom ? Math.max(topbarBottom, toolbarRect.bottom) : topbarBottom;
+      if (anchorRect && (anchorRect.bottom <= visibleTop || anchorRect.top >= window.innerHeight)) {
+        anchor.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        anchorScrolled = true;
+      }
+    }
     activeThreadId = threadId;
+    scrollActiveThread = scroll;
     update();
+    if (anchorScrolled) centerThreadAfterScroll(threadId);
   };
 
   const clearActiveThread = () => {
     if (!activeThreadId) return;
     activeThreadId = null;
+    scrollActiveThread = null;
     update();
   };
 
   const update = () => {
     const threads = currentThreads();
+    const newThread = hasRendered ? threads.find((thread) => thread.pending && !renderedThreadIds.has(thread.threadId)) : null;
+    hasRendered = true;
+    renderedThreadIds = new Set(threads.map((thread) => thread.threadId));
+    if (newThread) {
+      activeThreadId = newThread.threadId;
+      scrollActiveThread = "center";
+    }
     if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId && !thread.resolved)) activeThreadId = null;
-    reactRoot.render(
-      <CommentSidebar
-        threads={threads}
-        username={username}
-        refresh={update}
-        activeThreadId={activeThreadId}
-        setActiveThread={setActiveThread}
-      />,
-    );
+    flushSync(() => {
+      reactRoot.render(
+        <CommentSidebar
+          threads={threads}
+          username={username}
+          refresh={update}
+          activeThreadId={activeThreadId}
+          setActiveThread={setActiveThread}
+        />,
+      );
+    });
     scheduleCommentPositions();
     updateActiveCommentMarks(activeThreadId, threads);
   };
@@ -48,6 +106,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     .find((element) => element?.matches?.("[data-comment-thread-id]"));
 
   const removePendingThreads = (event) => {
+    if (event.type === "focusin" && eventPath(event).includes(articleShadow)) return;
     const commentMark = eventCommentMark(event);
     if (eventCommentCard(event) || commentMark) return;
 
@@ -63,25 +122,61 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   const onCommentMarkClick = (event) => {
     const mark = eventCommentMark(event);
     if (mark?.dataset.commentResolved === "true") return;
-    if (mark?.dataset.commentThreadId) setActiveThread(mark.dataset.commentThreadId);
+    const threadId = mark?.dataset.commentThreadId;
+    if (threadId) setActiveThread(threadId);
   };
 
   const scheduleCommentPositions = () => {
     if (positionFrame) return;
     positionFrame = window.requestAnimationFrame(() => {
       positionFrame = null;
-      positionCommentThreads(root, currentThreads());
+      if (scrollActiveThread) {
+        clearTimeout(moveTimer);
+        moveTimer = null;
+        root.classList.remove("pm-comment-sidebar--moving");
+      }
+      const threads = currentThreads();
+      root.querySelectorAll(".pm-comment-thread").forEach((comment) => {
+        layoutObserver.observe(comment);
+      });
+      positionCommentThreads(root, threads, commentOffset);
+      if (scrollActiveThread && activeThreadId) {
+        const comment = root.querySelector(`[data-comment-thread-id="${cssEscape(activeThreadId)}"]`);
+        const commentRect = comment?.getBoundingClientRect();
+        if (commentRect && scrollActiveThread === "center") {
+          commentOffset += commentRect.top - (window.innerHeight - commentRect.height) / 2;
+        } else if (commentRect?.bottom > window.innerHeight) {
+          commentOffset += commentRect.bottom - window.innerHeight + 12;
+        }
+        root.classList.add("pm-comment-sidebar--moving");
+        void root.offsetHeight;
+        positionCommentThreads(root, threads, commentOffset);
+        moveTimer = setTimeout(() => {
+          moveTimer = null;
+          root.classList.remove("pm-comment-sidebar--moving");
+        }, 200);
+        scrollActiveThread = null;
+      }
     });
   };
 
+  const layoutObserver = new ResizeObserver(scheduleCommentPositions);
+  layoutObserver.observe(root);
+  if (articleShadow) layoutObserver.observe(articleShadow);
+
   document.addEventListener("pointerdown", removePendingThreads, true);
   document.addEventListener("focusin", removePendingThreads, true);
-  document.querySelector("[data-article-shadow]")?.shadowRoot?.addEventListener("click", onCommentMarkClick);
+  articleShadow?.shadowRoot?.addEventListener("click", onCommentMarkClick);
   window.addEventListener("scroll", scheduleCommentPositions, true);
   window.addEventListener("resize", scheduleCommentPositions);
   update();
 
-  return { update };
+  return {
+    update,
+    activateThread(threadId) {
+      setActiveThread(threadId, null);
+    },
+  };
 }
 
 function cssEscape(value) {
@@ -97,11 +192,14 @@ function commentAnchorElement(thread) {
 
   if (!thread.fieldName) return null;
   const blockSelector = `[data-article-block][data-stream-field="${cssEscape(thread.fieldName)}"]`;
-  const blocks = Array.from(shadowRoot.querySelectorAll(blockSelector));
+  const blocks = Array.from(shadowRoot.querySelectorAll(blockSelector)).filter((block) => {
+    const parentBlock = block.parentElement?.closest(blockSelector);
+    return !parentBlock || !shadowRoot.contains(parentBlock);
+  });
   return (thread.blockId && blocks.find((block) => block.dataset.streamBlockId === String(thread.blockId))) || blocks[thread.blockIndex] || null;
 }
 
-function positionCommentThreads(root, threads) {
+function positionCommentThreads(root, threads, offset) {
   const list = root.querySelector(".pm-comment-sidebar__list");
   if (!list) return;
 
@@ -117,11 +215,11 @@ function positionCommentThreads(root, threads) {
     return {
       ...placement,
       index,
-      targetTop: anchorRect ? Math.max(0, anchorRect.top - listRect.top) : null,
+      targetTop: anchorRect ? anchorRect.top - listRect.top - offset : null,
     };
   }).sort((left, right) => (left.targetTop ?? Number.MAX_SAFE_INTEGER) - (right.targetTop ?? Number.MAX_SAFE_INTEGER) || left.index - right.index);
 
-  let nextTop = 0;
+  let nextTop = -offset;
   const gap = 12;
   for (const placement of orderedPlacements) {
     const targetTop = placement.targetTop ?? nextTop;
@@ -129,7 +227,8 @@ function positionCommentThreads(root, threads) {
     placement.card.style.top = `${top}px`;
     placement.card.style.left = "0px";
     placement.card.style.right = "0px";
-    nextTop = top + placement.card.offsetHeight + gap;
+    const height = placement.card.offsetHeight;
+    nextTop = top + height + gap;
   }
 
   list.style.minHeight = placements.length ? `${nextTop - gap}px` : "";
@@ -145,6 +244,13 @@ function updateActiveCommentMarks(activeThreadId, threads = []) {
   shadowRoot.querySelectorAll(".pm-article-block--comment-active").forEach((element) => {
     element.classList.remove("pm-article-block--comment-active");
   });
+
+  new Set(threads.map((thread) => thread.view).filter(Boolean)).forEach((view) => {
+    if (view.activeCommentThreadId === activeThreadId) return;
+    view.activeCommentThreadId = activeThreadId;
+    view.dispatch(view.state.tr.setMeta("activeCommentThread", activeThreadId));
+  });
+
   if (!activeThreadId) return;
 
   shadowRoot.querySelectorAll(`[data-comment-thread-id="${cssEscape(activeThreadId)}"]`).forEach((element) => {
@@ -175,63 +281,127 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
   );
 }
 
+export function commentSuggestion(comments) {
+  return comments?.[0]?.suggestion || null;
+}
+
+const suggestionLabel = (suggestion) => suggestion.charAt(0).toUpperCase() + suggestion.slice(1).toLowerCase();
+
+export function createSuggestionMark(commentMark, suggestion, text, threadId = uuidv4(), suggestionPart = null) {
+  const username = document.querySelector("[data-current-editor-username]")?.dataset.currentEditorUsername || "";
+  return commentMark.create({
+    threadId,
+    comments: [{
+      username,
+      suggestion,
+      text,
+      createdAt: new Date().toISOString(),
+    }],
+    suggestionPart,
+    pending: false,
+    resolved: false,
+  });
+}
+
 function CommentThread({ thread, username, refresh, active, setActiveThread }) {
   const resolved = !thread.pending && Boolean(thread.resolved);
+  const suggestion = thread.view && commentSuggestion(thread.comments);
   const className = [
     "pm-comment-thread",
     resolved ? "pm-comment-thread--collapsed" : "",
     active ? "pm-comment-thread--active" : "",
   ].filter(Boolean).join(" ");
 
+  const resolveLabel = suggestion ? "Accept suggestion" : resolved ? "Reopen comment" : "Resolve comment";
+  const resolveButton = !thread.pending && (
+    <button
+      type="button"
+      className="pm-comment-thread__collapse"
+      title={resolveLabel}
+      aria-label={resolveLabel}
+      aria-pressed={suggestion ? undefined : String(resolved)}
+      onPointerDown={(event) => { event.stopPropagation(); }}
+      onClick={(event) => {
+        event.stopPropagation();
+        let changed;
+        if (suggestion) {
+          changed = acceptCommentSuggestion(thread.view, thread.threadId, suggestion);
+        } else {
+          const nextResolved = !thread.resolved;
+          changed = thread.setResolved
+            ? thread.setResolved(nextResolved)
+            : setCommentThreadResolved(thread.view, thread.threadId, nextResolved);
+        }
+        if (changed) refresh();
+      }}
+    >
+      {resolved ? "✓" : ""}
+    </button>
+  );
+
   return (
     <section
       className={className}
       data-comment-thread-id={thread.threadId}
-      onClick={() => { if (!resolved) setActiveThread(thread.threadId); }}
+      onPointerDown={() => {
+        if (!resolved && !active) window.requestAnimationFrame(() => {
+          setActiveThread(thread.threadId, "nearest");
+        });
+      }}
     >
-      {!thread.pending && (
-        <button
-          type="button"
-          className="pm-comment-thread__collapse"
-          title={resolved ? "Reopen comment" : "Resolve comment"}
-          aria-label={resolved ? "Reopen comment" : "Resolve comment"}
-          aria-pressed={String(resolved)}
-          onClick={(event) => {
-            event.stopPropagation();
-            const nextResolved = !thread.resolved;
-            const changed = thread.setResolved
-              ? thread.setResolved(nextResolved)
-              : setCommentThreadResolved(thread.view, thread.threadId, nextResolved);
-            if (changed) refresh();
-          }}
-        >
-          {resolved ? "✓" : ""}
-        </button>
-      )}
+      {resolved && resolveButton}
 
       {!resolved && (
         <>
           {thread.comments.length > 0 && (
             <div className="pm-comment-thread__comments">
-              {thread.comments.map((comment) => (
-                <article className="pm-comment" key={`${comment.createdAt}-${comment.username}-${comment.text}`}>
-                  <div className="pm-comment__meta">
-                    <strong>{comment.username}</strong>
-                    <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
-                  </div>
-                  <p>{comment.text}</p>
-                </article>
+              {thread.comments.map((comment, index) => (
+                <Comment
+                  key={`${comment.createdAt}-${comment.username}-${comment.text}`}
+                  comment={comment}
+                  resolveButton={index === 0 ? resolveButton : null}
+                />
               ))}
             </div>
           )}
-          <CommentReplyForm thread={thread} username={username} refresh={refresh} />
+          {active && (
+            <CommentReplyForm
+              thread={thread}
+              username={username}
+              close={() => { setActiveThread(null, null); }}
+            />
+          )}
         </>
       )}
     </section>
   );
 }
 
-function CommentReplyForm({ thread, username, refresh }) {
+function Comment({ comment, resolveButton }) {
+  return (
+    <article className="pm-comment">
+      <div className="pm-comment__meta">
+        {resolveButton}
+        <strong>{comment.username}</strong>
+        <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
+      </div>
+      <p><CommentText comment={comment} /></p>
+    </article>
+  );
+}
+
+function CommentText({ comment }) {
+  if (!comment.suggestion) return comment.text;
+
+  return (
+    <>
+      <strong>{suggestionLabel(comment.suggestion)}:</strong>
+      {comment.text && ` ${comment.text}`}
+    </>
+  );
+}
+
+function CommentReplyForm({ thread, username, close }) {
   return (
     <form
       className="pm-comment-reply"
@@ -251,14 +421,14 @@ function CommentReplyForm({ thread, username, refresh }) {
         if (thread.commit) thread.commit(comment);
         else appendCommentToThread(thread.view, thread.threadId, comment);
         textarea.value = "";
-        refresh();
+        close();
       }}
     >
       <div className="pm-comment-reply__author">{username}</div>
       <textarea
         name="comment"
         placeholder={thread.pending ? "Comment" : "Reply"}
-        rows="3"
+        rows="2"
       />
       <button type="submit">{thread.pending ? "Comment" : "Reply"}</button>
     </form>
@@ -282,6 +452,7 @@ export const commentMarkSpec = {
   attrs: {
     threadId: { default: null },
     comments: { default: [] },
+    suggestionPart: { default: null },
     pending: { default: false },
     resolved: { default: false },
   },
@@ -300,6 +471,8 @@ export const commentMarkSpec = {
       "data-comment-comments": JSON.stringify(attrs.comments || []),
       "data-comment-pending": attrs.pending ? "true" : "false",
       "data-comment-resolved": attrs.resolved ? "true" : "false",
+      "data-comment-suggestion": attrs.suggestionPart || commentSuggestion(attrs.comments) || "",
+      "data-comment-suggestion-part": attrs.suggestionPart || "",
     }, 0];
   },
 };
@@ -308,6 +481,7 @@ function readCommentAttrs(dom) {
   return {
     threadId: dom.getAttribute("data-comment-thread-id"),
     comments: parseCommentPayload(dom.getAttribute("data-comment-comments")),
+    suggestionPart: dom.getAttribute("data-comment-suggestion-part") || null,
     pending: dom.getAttribute("data-comment-pending") === "true",
     resolved: dom.getAttribute("data-comment-resolved") === "true",
   };
@@ -382,6 +556,22 @@ function setCommentThreadResolved(view, threadId, resolved) {
   return replaceCommentThread(view, thread, { resolved: Boolean(resolved) });
 }
 
+function acceptCommentSuggestion(view, threadId, suggestion) {
+  if (suggestion === "add") return removeCommentThread(view, threadId);
+
+  const thread = findCommentThread(view, threadId);
+  if (!thread) return false;
+
+  let tr = view.state.tr;
+  for (const range of [...thread.ranges].reverse()) {
+    tr = suggestion === "delete" || range.suggestionPart === "delete"
+      ? tr.delete(range.from, range.to)
+      : tr.removeMark(range.from, range.to, thread.commentMark);
+  }
+  view.dispatch(tr.scrollIntoView());
+  return true;
+}
+
 function findCommentThread(view, threadId) {
   const commentMark = view.state.schema.marks.comment;
   if (!commentMark || !threadId) return null;
@@ -400,7 +590,11 @@ function findCommentThread(view, threadId) {
     const mark = commentMark.isInSet(node.marks);
     if (!mark || mark.attrs.threadId !== threadId) return true;
 
-    thread.ranges.push({ from: pos, to: pos + node.nodeSize });
+    thread.ranges.push({
+      from: pos,
+      to: pos + node.nodeSize,
+      suggestionPart: mark.attrs.suggestionPart,
+    });
     thread.comments = Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [];
     thread.pending = Boolean(mark.attrs.pending);
     thread.resolved = Boolean(mark.attrs.resolved);
@@ -423,7 +617,10 @@ function replaceCommentThread(view, thread, attrs) {
   for (const range of thread.ranges) {
     tr = tr
       .removeMark(range.from, range.to, thread.commentMark)
-      .addMark(range.from, range.to, thread.commentMark.create(nextAttrs));
+      .addMark(range.from, range.to, thread.commentMark.create({
+        ...nextAttrs,
+        suggestionPart: range.suggestionPart,
+      }));
   }
   view.dispatch(tr);
   return true;
@@ -440,9 +637,32 @@ function removeCommentThread(view, threadId) {
 }
 
 export function setupFootnoteSidebar(root, { getViews }) {
+  const articleShadowRoot = document.querySelector("[data-article-shadow]")?.shadowRoot;
   const reactRoot = createRoot(root);
   let hasRendered = false;
   let renderedFootnoteIds = new Set();
+
+  const focusFootnote = (footnoteId) => {
+    const input = root.querySelector(`[data-footnote-id="${cssEscape(footnoteId)}"]`);
+    if (!input) return false;
+
+    // Potentially add depth to bottom of footnotes so we can scroll the lowest footnote to the middle
+    const rootRect = root.getBoundingClientRect();
+    const inputRect = input.getBoundingClientRect();
+    const centeredTop = root.scrollTop + inputRect.top - rootRect.top - (root.clientHeight - inputRect.height) / 2;
+    root.scrollTo({ top: Math.max(0, centeredTop), behavior: "smooth" });
+    input.focus({ preventScroll: true });
+    input.setSelectionRange(input.value.length, input.value.length);
+    return true;
+  };
+
+  articleShadowRoot?.addEventListener("click", (event) => {
+    const anchor = event.target.closest?.('[data-footnote-id][data-footnote-anchor="true"]');
+    if (!anchor || !articleShadowRoot.contains(anchor)) return;
+
+    event.preventDefault();
+    focusFootnote(anchor.dataset.footnoteId);
+  });
 
   const update = () => {
     const activeTextarea = root.contains(document.activeElement) ? document.activeElement : null;
@@ -562,7 +782,7 @@ export const footnoteMarkSpec = {
   },
 };
 
-const FOOTNOTE_ANCHOR_TEXT = "\u00a0";
+const FOOTNOTE_ANCHOR_TEXT = "\u200b";
 
 export function startFootnoteCommand(footnoteMark) {
   return (state, dispatch) => {

@@ -20,7 +20,7 @@
 
     {% if imageBlock.caption or imageBlock.credit %}
         <div class="caption">
-            <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption">{% if imageBlock.caption %}{{ imageBlock.caption|safe }}{% endif %}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if imageBlock.credit %}{{ imageBlock.credit }}{% endif %}</span>
+            <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption" data-article-editable-mode="richtext">{% if imageBlock.caption %}{{ imageBlock.caption|safe }}{% endif %}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if imageBlock.credit %}{{ imageBlock.credit }}{% endif %}</span>
         </div>
     {% endif %}
 </div>

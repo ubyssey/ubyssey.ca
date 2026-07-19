@@ -6,14 +6,15 @@
 <p class="c-article__published-at">{{ article.published_at|date:'N j, Y' }}</p>
 
 {% if article.title_tag_str %}
-    <p class="title-tag"><span data-article-editable-page-field="title_tag">{{article.title_tag_str}}</span>//</p>
+    <div class="title-tag">
+        <div data-article-editable-page-field="title_tag" data-article-editable-mode="richtext">{{article.title_tag_str|safe}}</div>
+        <span>//</span>
+    </div>
 {% endif %}
 
 <header>
     <h1
         class="o-headline o-headline--article"
-        data-article-editable-stream-field="header"
-        data-article-editable-path="title"
         data-article-editable-page-field="title"
     >
         {{ title|safe }}

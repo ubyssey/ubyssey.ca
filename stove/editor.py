@@ -13,8 +13,11 @@ from wagtail.images.blocks import ImageChooserBlock
 from article.models import ArticleAuthorsOrderable
 from authors.models import AuthorPage
 
+from taggit.models import Tag
+
 # I'm only including clearly useful fields for now
 PAGE_FORM_FIELDS = (
+    "fw_alternate_title",
     "seo_description",
     "timeliness",
     "slug",
@@ -111,6 +114,7 @@ def get_featured_media_form_class(model):
         model,
         form=FeaturedMediaForm,
         fields=FEATURED_MEDIA_FIELDS,
+        widgets={"caption": forms.Textarea},
         labels=FEATURED_MEDIA_LABELS,
     )
 
@@ -150,7 +154,14 @@ def get_article_media_upload_form(data=None, files=None):
         file = forms.FileField(required=False)
         author = forms.ModelChoiceField(queryset=author_model.objects.all(), required=False)
         description = forms.CharField(widget=forms.Textarea, required=False)
-        tags = forms.CharField(required=False, help_text="Separate tags with commas.")
+        tags = forms.CharField(required=False, help_text="Select one or more pre-existing tags.")
+
+        def clean_tags(self):
+            tags = [tag.strip() for tag in self.cleaned_data.get("tags", "").split(",") if tag.strip()]
+            existing_tags = set(Tag.objects.filter(name__in=tags).values_list("name", flat=True))
+            if any(tag not in existing_tags for tag in tags):
+                raise forms.ValidationError("Select pre-existing tags only.")
+            return ", ".join(tags)
 
         def clean(self):
             cleaned = super().clean()
@@ -164,6 +175,27 @@ def get_article_media_upload_form(data=None, files=None):
             return cleaned
 
     return ArticleMediaUploadForm(data=data, files=files, prefix="article_media")
+
+
+def add_article_media(page, item, is_image):
+    manager = getattr(page, "article_media", None)
+    model = getattr(manager, "model", None)
+    if not manager or not model:
+        return None
+
+    image = item if is_image else None
+    document = item if not is_image else None
+    rows = list(manager.all())
+    for row in rows:
+        if (image and row.image_id == image.id) or (document and row.document_id == document.id):
+            return row
+
+    return model.objects.create(
+        article_page=page,
+        image=image,
+        document=document,
+        sort_order=len(rows),
+    )
 
 
 def save_article_media_upload(page, form, user=None):
@@ -195,19 +227,7 @@ def save_article_media_upload(page, form, user=None):
     if tags:
         item.tags.add(*tags)
 
-    manager = getattr(page, "article_media", None)
-    model = getattr(manager, "model", None)
-    if not manager or not model:
-        return None
-
-    image = item if is_image else None
-    document = item if not is_image else None
-    rows = list(manager.all())
-    for row in rows:
-        if (image and row.image_id == image.id) or (document and row.document_id == document.id):
-            return row
-
-    return model.objects.create(article_page=page, image=image, document=document, sort_order=len(rows))
+    return add_article_media(page, item, is_image)
 
 
 # StreamField editors

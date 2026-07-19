@@ -8,7 +8,7 @@
       data-stream-block-id="{{ header_block.id }}"
       data-stream-block-index="{{ forloop.counter0 }}"
     >
-      {% include_block header_block with id=header_block.id %}
+      {% include_block header_block with id=header_block.id stove_editor=True %}
     </div>
   {% endfor %}
 

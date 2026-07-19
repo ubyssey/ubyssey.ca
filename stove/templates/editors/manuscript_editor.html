@@ -13,8 +13,10 @@
 
 {{ stream_editors|json_script:"stream-editors" }}
 {{ editor_errors|json_script:"editor-errors" }}
+{{ article_media_options|json_script:"article-media-options" }}
+{{ article_media_tag_options|json_script:"article-media-tag-options" }}
 
-<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-current-editor-username="{{ current_editor_username }}">
+<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}" data-current-editor-username="{{ current_editor_username }}">
   {% csrf_token %}
 
   <header class="manuscript-topbar">
@@ -23,9 +25,11 @@
       <button type="button" class="manuscript-topbar__button" data-manuscript-open-settings>Settings</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>Media</button>
       <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
+      <a href="{% url 'stove:manuscript_full_preview' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View Preview</a>
       <button type="submit" class="manuscript-topbar__button" name="action" value="draft" data-article-action="draft">Save</button> 
       <button type="submit" class="manuscript-topbar__button" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
-      <label class="manuscript-version-picker">
+      <button type="button" class="manuscript-topbar__button" data-history-control data-history-return>Return</button>
+      <label class="manuscript-version-picker" data-history-control>
         <span>Version</span>
         <select data-history-select aria-label="Version preview">
           {% for h in history %}
@@ -33,7 +37,7 @@
           {% endfor %}
         </select>
       </label>
-      <button type="button" class="manuscript-topbar__button" data-history-restore disabled>Restore</button>
+      <button type="button" class="manuscript-topbar__button" data-history-control data-history-restore disabled>Restore</button>
     </div>
   </header>
 
@@ -56,13 +60,12 @@
     </section>
     {% if article_authors_form %}
       <section class="pm-author-panel" data-article-authors-panel>
-        <h3 id="pm-author-panel-title" class="pm-author-panel__header">Authors</h3>
+        <h3 id="pm-author-panel-title" class="pm-author-panel__header">Contributors</h3>
         {{ article_authors_form.non_field_errors }}
         <div class="pm-author-panel__rows" data-article-author-rows>
           {% for row in article_authors_form.rows %}
             <div class="pm-author-panel__row" data-article-author-row>
               <label>
-                <span>Author</span>
                 <select name="article_authors-author" data-article-author-select>
                   <option value="">Select author</option>
                   {% for author in article_authors_form.author_options %}
@@ -73,7 +76,6 @@
                 </select>
               </label>
               <label>
-                <span>Role</span>
                 <select name="article_authors-role">
                   {% for value, label in article_authors_form.role_options %}
                     <option value="{{ value }}" {% if value == row.author_role %}selected{% endif %}>{{ label }}</option>
@@ -84,7 +86,7 @@
             </div>
           {% endfor %}
         </div>
-        <button type="button" class="pm-author-panel__add" data-article-author-add>Add author</button>
+        <button type="button" class="pm-author-panel__add" data-article-author-add>Add contributor</button>
       </section>
     {% endif %}
     <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
@@ -138,13 +140,39 @@
     </section>
   </div>
 
+  <div class="article-media-modal" data-article-media-existing-modal role="dialog" aria-modal="true" aria-labelledby="article-media-existing-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close preexisting media picker"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--existing">
+      <header class="article-media-modal__header">
+        <h2 id="article-media-existing-title">Add Preexisting Media to Article</h2>
+        <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close preexisting media picker">x</button>
+      </header>
+      <div class="page-field">
+        <label for="article-media-existing-kind">Media type</label>
+        <select id="article-media-existing-kind" data-article-media-existing-kind>
+          <option value="image">Image</option>
+          <option value="document">Document</option>
+        </select>
+      </div>
+      <div class="page-field">
+        <label>Media</label>
+        <div data-article-media-existing-select></div>
+      </div>
+      <footer class="article-media-modal__footer">
+        <button type="button" data-article-media-existing-add disabled>Add</button>
+        <button type="button" data-article-media-close>Cancel</button>
+      </footer>
+    </section>
+  </div>
+
   <div class="article-media-modal" data-article-media-gallery-modal role="dialog" aria-modal="true" aria-labelledby="article-media-gallery-title" hidden>
     <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close media gallery"></button>
     <section class="article-media-modal__panel article-media-modal__panel--gallery">
       <header class="article-media-modal__header">
-        <h2 id="article-media-gallery-title">Media gallery</h2>
+        <h2 id="article-media-gallery-title">Article Media</h2>
         <div class="article-media-modal__actions">
           <button type="button" data-article-media-open-upload>Upload media</button>
+          <button type="button" data-article-media-open-existing>Add Preexisting Media to Article</button>
           <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close media gallery">x</button>
         </div>
       </header>
@@ -213,7 +241,7 @@
       data-bootstrap-css="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
       data-shadow-editor-css="{% static 'ubyssey/css/stove/manuscript_shadow_editor.css' %}"
     >
-      <!-- These are taken from article_page.html - we should figure out a way to avoid duplication-->
+      {# These are taken from article_page.html - we should figure out a way to avoid duplication #}
       {% if self.styles.all|length == 0 %}
         <link data-article-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
       {% else %}
@@ -225,9 +253,8 @@
       {% include "editors/preview/manuscript_preview.html" %}
     </div>
 
-    <!-- <textarea rows="40" style="width: 100%; font-family: monospace;" readonly>
-    {{ stream_editors|pprint }}
-    </textarea>-->
+    {# <textarea rows="40" style="width: 100%; font-family: monospace;" readonly> #}
+    {# {{ stream_editors|pprint }} </textarea> #}
 
     <div class="manuscript-publish-source" data-article-toolbar-source>
       {% if self.live %}

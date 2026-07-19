@@ -11,7 +11,7 @@
 
     {% if self.caption or self.credit %}
     <div class="caption">
-        <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption">{{ self.caption|safe }}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if self.credit %}{{ self.credit|safe }}{% endif %}</span>
+        <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption" data-article-editable-mode="richtext">{{ self.caption|safe }}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if self.credit %}{{ self.credit|safe }}{% endif %}</span>
     </div>
     {% endif %}
 </div>

@@ -10,6 +10,11 @@ import { ProseMirror, ProseMirrorDoc, reactKeys, useEditorEffect, useEditorEvent
 import { v4 as uuidv4 } from "uuid";
 import { baseNodesWithLists, createEditorToolbar, editorPlugins, marks, richTextSchema } from "./manuscript_prosemirror.jsx";
 
+// Changes block names to be nice
+export function blockTypeLabel(blockType) {
+  return String(blockType || "block").replace(/[_-]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 // Document Schema
 const streamNodes = baseNodesWithLists.remove("doc").append({
   doc: {
@@ -510,7 +515,7 @@ function StreamBlockNodeView({ blockTypes, availableBlockTypes }) {
               onChange={(event) => { setInsertType(event.currentTarget.value); }}
             >
               {availableBlockTypes.map((blockType) => (
-                <option key={blockType} value={blockType}>{blockType}</option>
+                <option key={blockType} value={blockType}>{blockTypeLabel(blockType)}</option>
               ))}
             </select>
             <button type="button" title="Insert" className="pm-stream-block__button" onClick={insertBlock}>+</button>
