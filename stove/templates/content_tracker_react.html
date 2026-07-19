@@ -3,11 +3,11 @@
 
 
 {% block stylesheet %}
-<link rel="stylesheet" href="{% static 'ubyssey/css/stove/content_tracker.css' %}"></link>
+<link rel="stylesheet" href="{% static 'ubyssey/css/stove/content_tracker_react.css' %}"></link>
+<script defer src="{% static 'ubyssey/js/stove/stove_content_tracker.js' %}"></script>
+
+
 {% endblock %}
-
-<script src="{% static 'ubyssey/js/stove/content_tracker_react.js' %}" type="text/javascript"></script>
-
 
 {% block content %}
 {% csrf_token %}
@@ -16,45 +16,32 @@
 
 </div>
 
+
 <script>
     // create a collection of page information.
-    let pages = {}
-    let beats = {}
-    let beatOptions = []
+    let pages = new Map()
     let authors = []
-    let currentUser = "{{ request.user.get_full_name }}"
+    const currentUser = "{{ request.user.get_full_name }}"
+    const articleUrl = "{% url 'stove:manuscript_editor' 1918 %}"
+    const loadArticlesUrl = "{% url 'stove:content_tracker_load_pages' section 1918 %}"
+    console.log("Section: {{section}}")
     {% autoescape off %}
+    
+    
     {% for p in pages%}
-    pages[{{ p.id }}] = {{p.to_json}}
+    pages.set({{p.id}}, {{p.to_json}})
     {% endfor %}
-    {% for b in beats %}
-    beats[{{b.pk}}] = {{b.to_json}}
-    beatOptions.push({value: {{b.pk}}, label: "{{b.title}}"})
-    {% endfor %}
+
     {% for a in authors %}
     authors.push({ value: {{a.id}}, label: '{{a.full_name}}' })
     {% endfor %}
+
+    const beats = JSON.parse(`{{ beats }}`)
+    const beatOptions = []
+    for (const [section, options] of Object.entries(beats)) {
+        beatOptions.push({label: section, options: options})
+    }
     {% endautoescape %}
-
-    beatOptions = [{
-        label: 'Opinion',
-        options: [
-        { value: 1, label: 'Powers that Be' },
-        { value: 2, label: 'Point of Inquiry' }
-        ]
-    },
-    {
-        label: 'News',
-        options: [
-        { value: 3, label: 'Alma Mater Society' },
-        { value: 4, label: 'Senate' }
-        ]
-    }]
-    console.log(authors)
-    console.log(beatOptions)
-
-
-
     
     let updateEndpoint = "{% url 'stove:update_content_tracker' 1918 %}"
 

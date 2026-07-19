@@ -79,7 +79,7 @@ function MultiSelect() {
     return (
         <div className="w-tabs" data-tabs="">
            <AuthorsSelect />
-           <Select options={beatOptions} formatGroupLabel={formatGroupLabel} styles={colourStyles}/>
+           <Select options={beatOptions} formatGroupLabel={formatGroupLabel}/>
            <ShowTime />
         </div>
     );

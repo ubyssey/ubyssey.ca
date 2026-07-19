@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,11 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stove</title>
     <style>
-        .container {
+        .application-container {
             width: 100%;
             display: grid;
             grid-template-areas: "sidebar main";
             grid-template-columns: 225px auto;
+            margin: 0px;
         }
         .sidebar {
             grid-area: sidebar;
@@ -24,17 +27,19 @@
             grid-area: main;
             height: 100%;
         }
-        .home {
+        .home-icon {
             font-size: 1.5em;
+            width: 3em;
+            margin-left: 2px;
         }
     </style>
     {% block stylesheet %}
     {% endblock %}
 </head>
 <body>
-    <div class="container">
+    <div class="application-container">
         <div class="sidebar">
-            <a class="home" href="{% url 'stove:content_tracker_base' %}">Stove</a>
+            <a class="home" href="{% url 'stove:content_tracker_base' %}"><img class="home-icon" src="{% static 'ubyssey/images/logos/stove-icon-blue.svg' %}" alt="The Ubyssey"/></a>
         </div>
         <div class="main">
             {% block content %}

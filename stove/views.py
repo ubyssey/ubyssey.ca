@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from django.utils.text import slugify
 from wagtail.models import Page
 from article.models import ArticlePage
+from article.models import ArticleAuthorsOrderable
 from section.models import CategoryPage
 from authors.models import AuthorPage
 
@@ -23,49 +24,64 @@ from stove.editor import (
     save_article_media_upload
 )
 
+
+# include editors, copy editors
 @login_required
-def content_tracker_react(request):
+def content_tracker_react(request, section="all"):
     editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
-    qs = ArticlePage.objects.all().order_by("-last_published_at", "-pk")
-    # qs = ArticlePage.objects.from_section("news").order_by("-last_published_at", "-pk")
+    qs = ArticlePage.objects
+    if (section != "all"):
+        qs = qs.from_section(section)
+    
+    qs = qs.all().order_by("-last_published_at", "-pk")
 
 
     paginator = Paginator(qs, 50)
     pages = paginator.get_page(request.GET.get("article-page", 1))
-    # for page in pages:
-    print(dir(pages[0]))
-    # print(pages[0].word_count)
-    
 
     beats = CategoryPage.objects.all().filter(beat=True)
     authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
-    print(authors[0].to_json())
 
-    print (beats[0].to_json())
+    beatExport = {}
+    for beat in beats:
+        beatSection = beat.get_parent().title
+        if not beatSection in beatExport: 
+            beatExport[beatSection] = []
+        beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
 
-    return render(request, "content_tracker_react.html", {"pages": pages, "beats": beats, "authors": authors})
+    old_authors = pages[0].article_authors.all()
+    return render(request, "content_tracker_react.html", {"pages": pages, "beats": json.dumps(beatExport), "authors": authors, "section": section})
+
+@login_required
+def load_pages(request, section="all", page=1):
+    qs = ArticlePage.objects
+    if (section != "all"):
+        qs = qs.from_section(section)
+    
+    qs = qs.all().order_by("-last_published_at", "-pk")
+
+    paginator = Paginator(qs, 50)
+
+    pages = paginator.get_page(request.GET.get("article-page", page))
+
+    result = "["
+    for page in pages: 
+        result += page.to_json() + ","
+    result = result[:-1] + "]"
+    return JsonResponse(result, safe=False)
+
 
 @login_required
 def content_tracker_base(request):
     editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
     qs = ArticlePage.objects.all().order_by("-last_published_at", "-pk")
-    # qs = ArticlePage.objects.from_section("news").order_by("-last_published_at", "-pk")
-
 
     paginator = Paginator(qs, 50)
     pages = paginator.get_page(request.GET.get("article-page", 1))
-    # for page in pages:
-    print(dir(pages[0]))
-    # print(pages[0].word_count)
     
-
     beats = CategoryPage.objects.all().filter(beat=True)
-    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
-    print(authors[0].to_json())
-
-    print (beats[0].to_json())
-
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")    
 
     return render(request, "content_tracker_base.html", {"pages": pages, "beats": beats, "authors": authors})
 
@@ -73,34 +89,39 @@ def content_tracker_base(request):
 @require_POST
 def update_content_tracker(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
-    print(dir(page))
-    print(dir(page.title))
-    print(page.deadline)
     data = request.body.decode('utf-8')
     data = json.loads(request.body.decode('utf-8'))
 
-
-    if (data["title"]):
+    if ("title" in data):
         page.title = data["title"]
         print("Updated title: " + page.title)
-    if (data["category"]):
-        page.topics.remove(page.get_primary_topic().name)
+    if ("category" in data):
+        if (page.get_primary_topic()): page.topics.remove(page.get_primary_topic().name)
         page.topics.add(data["category"])
         page.primary_tag_slug = slugify(data["category"])
         page.category_page = get_object_or_404(CategoryPage, title=data["category"])
         print("Updated category (beat): " + page.category_page.title)
-    if (data["deadline"]):
+    if ("deadline" in data):
         page.deadline = data["deadline"]
         print("Updated deadline: " + page.deadline)
+    if ("article_status" in data):
+        page.article_status = data["article_status"]
+        print("Updated article_status: " + str(page.article_status))
+    if ("authors" in data):
+        new_authors = data["authors"]  
+        items = [
+            ArticleAuthorsOrderable(
+                author=get_object_or_404(AuthorPage, id=item["author"]),
+                author_role=item["author_role"],
+                sort_order=index,
+            )
+            for index, item in enumerate(new_authors or [])
+        ]
+        page.article_authors.set(items)
+
     page.save()
 
-    return JsonResponse({
-        "html": page_id,
-        "new-title": data["title"],
-        "new-category": data["category"],
-        "new-deadline": data["deadline"]
-        # "beat": page.get_primary_topic()
-    })
+    return JsonResponse(get_object_or_404(ArticlePage, id=page_id).to_json(), safe=False)
 
 @login_required
 def manuscript_editor(request, page_id):
