@@ -87,7 +87,7 @@ function findAuthorName(authorId) {
     [
       {role: "author", color: "#e6e6e6"},
       {role: "author", color: "#e6e6e6"},
-      {role: "editor", color: "#f5c554"},
+      {role: "backfield_editor", color: "#f5c554"},
       {role: "author", color: "#e6e6e6"},
       {role: "copy_editor", color: "#77c0d2"},
       {role: "author", color: "#e6e6e6"},
@@ -96,19 +96,19 @@ function findAuthorName(authorId) {
 
 function AuthorsSelect ({currentAuthors, handleUpdateAuthors, articleStatus}) {
   let initialAuthors = [];
-
-  for (let authorId in currentAuthors) {
+  for (const authorId in currentAuthors) {
     const author = currentAuthors[authorId]
     if (author["author_role"] == responsibleRole[articleStatus].role) {
       initialAuthors.push({value: author["author"], label: findAuthorName(author["author"])})
     }
   }
 
+  console.log(initialAuthors)
 
   return <Select 
     options={authors} 
     onChange = {handleUpdateAuthors} 
-    defaultValue={initialAuthors} 
+    value={initialAuthors} 
     isMulti 
     styles={{
       multiValue: (base) => ({
@@ -207,7 +207,11 @@ async function handleRemoteUpdate(page, changes, updatePage, pendingText, succes
         
       }
     )
-    .then((result) => updatePage(JSON.parse(result)))
+    .then((result) => {
+      console.log(JSON.parse(result))
+      updatePage(JSON.parse(result))
+    }
+    )
     .catch((error) => console.log(error))
 }
 
@@ -334,6 +338,8 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
     if (page.pk === selectedArticleId) {
       selectedClass="row-selected";
     }
+
+    console.log(page.article_status)
 
     return <tr key={page.pk} className={selectedClass}>
             <td class="slug-cell"><a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a></td>
@@ -469,6 +475,7 @@ function MainViewSelector({allPages, addPages, updatePage, selectedArticleId, se
 }
 
 function MainPanel({allPages, addPages, updatePage, selectedArticleId, setSelectedArticleId}) {
+  console.log(allPages)
 
   return (
     <div className="main-panel">
@@ -516,7 +523,6 @@ function ContentTracker() {
   const [allPages, setAllPages] = useState(
     pages
   );
-  console.log(JSON.stringify(allPages))
 
 
 

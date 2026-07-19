@@ -30,6 +30,7 @@ from stove.editor import (
 def content_tracker_react(request, section="all"):
     editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
     qs = ArticlePage.objects
+    
     if (section != "all"):
         qs = qs.from_section(section)
     
@@ -49,9 +50,11 @@ def content_tracker_react(request, section="all"):
             beatExport[beatSection] = []
         beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
+    pageExport = []
+    for page in pages:
+        pageExport = pageExport + [page.get_latest_revision_as_object()]
 
-    old_authors = pages[0].article_authors.all()
-    return render(request, "content_tracker_react.html", {"pages": pages, "beats": json.dumps(beatExport), "authors": authors, "section": section})
+    return render(request, "content_tracker_react.html", {"pages": pageExport, "beats": json.dumps(beatExport), "authors": authors, "section": section})
 
 @login_required
 def load_pages(request, section="all", page=1):
@@ -67,7 +70,7 @@ def load_pages(request, section="all", page=1):
 
     result = "["
     for page in pages: 
-        result += page.to_json() + ","
+        result += page.get_latest_revision_as_object().to_json() + ","
     result = result[:-1] + "]"
     return JsonResponse(result, safe=False)
 
@@ -88,25 +91,21 @@ def content_tracker_base(request):
 @login_required
 @require_POST
 def update_content_tracker(request, page_id):
-    page = get_object_or_404(Page, id=page_id).specific
+    page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
     data = request.body.decode('utf-8')
     data = json.loads(request.body.decode('utf-8'))
 
     if ("title" in data):
         page.title = data["title"]
-        print("Updated title: " + page.title)
     if ("category" in data):
         if (page.get_primary_topic()): page.topics.remove(page.get_primary_topic().name)
         page.topics.add(data["category"])
         page.primary_tag_slug = slugify(data["category"])
         page.category_page = get_object_or_404(CategoryPage, title=data["category"])
-        print("Updated category (beat): " + page.category_page.title)
     if ("deadline" in data):
         page.deadline = data["deadline"]
-        print("Updated deadline: " + page.deadline)
     if ("article_status" in data):
         page.article_status = data["article_status"]
-        print("Updated article_status: " + str(page.article_status))
     if ("authors" in data):
         new_authors = data["authors"]  
         items = [
@@ -119,9 +118,10 @@ def update_content_tracker(request, page_id):
         ]
         page.article_authors.set(items)
 
-    page.save()
+    page.save_revision(user=request.user)
 
-    return JsonResponse(get_object_or_404(ArticlePage, id=page_id).to_json(), safe=False)
+    latest_revision = page.get_latest_revision_as_object()
+    return JsonResponse(latest_revision.to_json(), safe=False)
 
 @login_required
 def manuscript_editor(request, page_id):

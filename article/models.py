@@ -182,6 +182,8 @@ class ArticleAuthorsOrderable(Orderable):
                             ('photographer','Photographer'),
                             ('videographer','Videographer'),
                             ('designer','Designer'),
+                            ('backfield_editor', "Backfield editor"),
+                            ('copy_editor', "Copy editor"),
                             ('org_role', 'Show organization role'),
                         ],
                     ),
@@ -1154,12 +1156,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             'org_role': '',
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
-
+        extended_byline_roles = ['backfield_editor', 'copy_editor']
         authors_by_role = {}
         for author in self.article_authors.all():
             if author.author_role in authors_by_role:
                 authors_by_role[author.author_role].append(author)
-            else:
+            elif not author.author_role in extended_byline_roles:
                 authors_by_role[author.author_role] = [author]
 
         word_authors = []
