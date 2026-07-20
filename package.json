@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@mantine/dates": "^9.4.1",
+    "dayjs": "^1.11.21",
+    "react-data-grid": "^7.0.0-beta.59",
+    "react-modern-datetime-picker": "^0.0.3"
+  }
+}
