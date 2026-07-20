@@ -29,12 +29,11 @@ from stove.editor import (
 @login_required
 def content_tracker_react(request, section="all"):
     editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
-    qs = ArticlePage.objects
-    
+    qs = ArticlePage.objects.all()
     if (section != "all"):
-        qs = qs.from_section(section)
+        qs = qs.filter(current_section=section.lower())
     
-    qs = qs.all().order_by("-last_published_at", "-pk")
+    qs = qs.order_by("-last_published_at", "-pk")
 
 
     paginator = Paginator(qs, 50)

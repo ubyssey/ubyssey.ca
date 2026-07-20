@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import chroma from 'chroma-js';
 
 import { Group, Panel, Separator} from "react-resizable-panels";
-import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline } from 'react-ionicons'
+import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline } from 'react-ionicons'
 
 
 import Tab from 'react-bootstrap/Tab';
@@ -125,6 +125,7 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType}) {
         maxWidth: "20em",
       })
     }}
+    placeholder = {"Add " + authorType.replace("_", " ") + "..."}
     components={{
       DropdownIndicator: null, 
       ClearIndicator: null
@@ -318,10 +319,17 @@ function ArticleStatus ({status, updateStatus}) {
         background: statuses[status-1].color,
         color: statuses[status-1].textColor,
         fontWeight: "bold",
+        textAlign: "center",
       }),
       valueContainer: (base) => ({
         ...base,
         padding: 0,
+      }),
+      control: (base) => ({
+        ...base,
+        border: "none",
+        background: "none",
+        boxShadow: "none",
       })
     }}
     onChange={updateStatus}
@@ -362,8 +370,12 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
     }
 
     return <tr key={page.pk} className={selectedClass}>
-            <td class="slug-cell"><a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a> <button onClick={() => setSelectedArticleId(page.pk)}>!!!</button></td>
-            <td><AuthorsSelect 
+            <td class="slug-cell">
+              <button class="edit-button" onClick={() => setSelectedArticleId(page.pk)}><PencilOutline
+                color={'#00000'} 
+              /></button>
+              <a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a> </td>
+            <td class="authors-cell"><AuthorsSelect 
               currentAuthors={page.article_authors} 
               handleUpdateAuthors={(newAuthorList) => updateAuthors(page, newAuthorList, responsibleRole[page.article_status].role, updatePage)}
               authorType={responsibleRole[page.article_status].role}
@@ -392,7 +404,7 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   
   return (
     <div>
-    <h1>All Articles Table - {selectedArticleId}</h1>
+    <h1>{pageSection} Articles</h1>
     <Table striped bordered hover>
        <thead>
             <tr class="table-header">
@@ -566,12 +578,12 @@ function EditSidebar({selectedPage, updatePage}) {
 function SidebarViewsSelector({selectedPage, updatePage, createPage}) {
   return (
     <Tabs
-      defaultActiveKey="create"
+      defaultActiveKey="edit"
       transition={false}
       id="noanim-tab-example"
       className="mb-3"
     >
-      <Tab eventKey="create" title="Create">
+      <Tab eventKey="create" title="Create" disabled>
         Tab content for Create
       </Tab>
       <Tab eventKey="edit" title="Edit">
@@ -636,7 +648,7 @@ function ContentTracker() {
         />
       </Panel>
       <Separator className="sidebar-resize-handle"/>
-      <Panel className="panel content-sidebar" collapsible minSize={275}>
+      <Panel className="panel content-sidebar" collapsible minSize={275} maxSize={"40vw"}>
         <Sidebar 
           selectedPage={allPages.get(selectedArticleId)}
           updatePage={updatePage}

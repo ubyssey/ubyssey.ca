@@ -161,8 +161,26 @@ input:checked + .slider:before {
     min-width: 10em;
 }
 
+.slug-cell {
+  max-width: 20em;
+}
+
+.edit-button {
+  border: none;
+  background: none;
+  float: right;
+}
+
+.edit-button:hover {
+  background-color: hsl(192, 50%, 85%);
+}
+
 .byline-header {
-  min-width: 10em;
+  min-width: 6em;
+}
+
+.authors-cell {
+  max-width: 15em;
 }
 
 .deadline-header {
@@ -179,7 +197,7 @@ input:checked + .slider:before {
 }
 
 .status-select {
-  width: 6em;
+  width: 6.5em;
 }
 
 // .slug-cell {
