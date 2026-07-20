@@ -12,6 +12,7 @@ PAGE_FORM_FIELDS = (
     "seo_description",
     "timeliness",
     "slug",
+    "deadline",
     "explicit_published_at",
     "show_last_modified",
 )

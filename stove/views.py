@@ -17,9 +17,6 @@ from django.utils.timezone import localtime
 from django.views.decorators.http import require_GET, require_POST
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
-from wagtail.models import Page
-from article.models import ArticlePage
-from taggit.models import Tag
 
 from stove.manuscript_editor import (
     PAGE_FORM_FIELDS,
