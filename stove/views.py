@@ -6,13 +6,17 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
+from django.utils.text import slugify
+from wagtail.models import Page
+from article.models import ArticlePage
+from article.models import ArticleAuthorsOrderable
+from section.models import CategoryPage
+from authors.models import AuthorPage
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import localtime
 from django.views.decorators.http import require_GET, require_POST
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
-from wagtail.models import Page
-from article.models import ArticlePage
 from taggit.models import Tag
 
 from stove.editor import (
@@ -28,16 +32,102 @@ from stove.editor import (
 )
 
 
+# include editors, copy editors
 @login_required
-def index(request):
+def content_tracker_react(request, section="all"):
+    editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
+    qs = ArticlePage.objects.all()
+    if (section != "all"):
+        qs = qs.filter(current_section=section.lower())
+    
+    qs = qs.order_by("-last_published_at", "-pk")
+
+
+    paginator = Paginator(qs, 50)
+    pages = paginator.get_page(request.GET.get("article-page", 1))
+
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+
+    beatExport = {}
+    for beat in beats:
+        beatSection = beat.get_parent().title
+        if not beatSection in beatExport: 
+            beatExport[beatSection] = []
+        beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
+
+    pageExport = []
+    for page in pages:
+        pageExport = pageExport + [page.get_latest_revision_as_object()]
+
+    return render(request, "content_tracker_react.html", {"pages": pageExport, "beats": json.dumps(beatExport), "authors": authors, "section": section})
+
+@login_required
+def load_pages(request, section="all", page=1):
+    qs = ArticlePage.objects
+    if (section != "all"):
+        qs = qs.from_section(section)
+    
+    qs = qs.all().order_by("-last_published_at", "-pk")
+
+    paginator = Paginator(qs, 50)
+
+    pages = paginator.get_page(request.GET.get("article-page", page))
+
+    result = "["
+    for page in pages: 
+        result += page.get_latest_revision_as_object().to_json() + ","
+    result = result[:-1] + "]"
+    return JsonResponse(result, safe=False)
+
+
+@login_required
+def content_tracker_base(request):
     editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
     qs = ArticlePage.objects.all().order_by("-last_published_at", "-pk")
 
     paginator = Paginator(qs, 50)
     pages = paginator.get_page(request.GET.get("article-page", 1))
+    
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")    
 
-    return render(request, "index.html", {"pages": pages})
+    return render(request, "content_tracker_base.html", {"pages": pages, "beats": beats, "authors": authors})
 
+@login_required
+@require_POST
+def update_content_tracker(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
+    data = request.body.decode('utf-8')
+    data = json.loads(request.body.decode('utf-8'))
+
+    if ("title" in data):
+        page.title = data["title"]
+    if ("category" in data):
+        if (page.get_primary_topic()): page.topics.remove(page.get_primary_topic().name)
+        page.topics.add(data["category"])
+        page.primary_tag_slug = slugify(data["category"])
+        page.category_page = get_object_or_404(CategoryPage, title=data["category"])
+    if ("deadline" in data):
+        page.deadline = data["deadline"]
+    if ("article_status" in data):
+        page.article_status = data["article_status"]
+    if ("authors" in data):
+        new_authors = data["authors"]  
+        items = [
+            ArticleAuthorsOrderable(
+                author=get_object_or_404(AuthorPage, id=item["author"]),
+                author_role=item["author_role"],
+                sort_order=index,
+            )
+            for index, item in enumerate(new_authors or [])
+        ]
+        page.article_authors.set(items)
+
+    page.save_revision(user=request.user)
+
+    latest_revision = page.get_latest_revision_as_object()
+    return JsonResponse(latest_revision.to_json(), safe=False)
 
 # We need latest draft here not latest live
 def get_manuscript_page(page_id):

@@ -41,6 +41,10 @@ module.exports = {
     'liveblog': './src/js/liveblog.jsx',
     'stove/content_tracker': './src/stove/content_tracker.js',
     'stove/manuscript_editor': './src/stove/manuscript_editor.js',
+    'stove/content_tracker_select': './src/stove/ContentTrackerSelect.jsx',
+    'stove/stove_content_tracker': './src/stove/StoveContentTracker.jsx',
+
+
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),

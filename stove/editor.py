@@ -21,6 +21,7 @@ PAGE_FORM_FIELDS = (
     "seo_description",
     "timeliness",
     "slug",
+    "deadline",
     "explicit_published_at",
     "show_last_modified",
 )
@@ -674,6 +675,8 @@ def sanitize_preview_stream_value(value):
 AUTHOR_ROLE = "author"
 AUTHOR_ROLE_CHOICES = (
     ("author", "Author"),
+    ("backfield_editor", "Backfield Editor"),
+    ("copy_editor", "Copy Editor"),
     ("illustrator", "Illustrator"),
     ("photographer", "Photographer"),
     ("videographer", "Videographer"),

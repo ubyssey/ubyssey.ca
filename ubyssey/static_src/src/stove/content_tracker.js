@@ -1,20 +1,120 @@
 const { filter } = require("keymaster");
 const { redirect } = require("react-router");
 
+// var pages = JSON.parse(document.getElementById('pages-data').textContent);
+let beatNames;
+
 document.addEventListener("DOMContentLoaded", () => {
 
     setupMetadataResize();
     setupStatus();
     setupFilters();
     setupPreview();
+    setupEditPanel();
     setupSidebar();
+    setupBeats();
+    console.log(pages)
+    console.log(pages[11])
+
+    console.log(requiredHeader)
 });
+
+function setupBeats() {
+    var elements = document.getElementsByClassName("beat-input");
+    beatNames = []
+    Object.values(beats).forEach(element => {
+        beatNames.push(element.title)
+    });
+
+    for (var i = 0; i < elements.length; i++) {
+        autocomplete(elements[i], Object.values(beatNames));
+    }
+}
 
 var focusedAssignment = -1;
 
+function setupEditPanel() {
+    var elements = document.getElementsByClassName("edit-icon");
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].addEventListener('click', handleEditClicked, false);
+    }
+}
+
+function handleEditClicked(event) {
+    previewButtonElement = event.target;
+    assignmentId = getWagtailId(previewButtonElement.id);
+
+    setFocusedAssignment(assignmentId);
+    selectSidebarPanel("edit");
+    updateEditPane()
+}
+
+function updateEditPane() {
+    document.getElementById("edit-title").value = pages[focusedAssignment].title;
+    if (pages[focusedAssignment].category_page) {
+        document.getElementById("edit-beat").value = beats[pages[focusedAssignment].category_page].title
+    } else {
+        document.getElementById("edit-beat").value = ""
+    }
+    let deadline = new Date(pages[focusedAssignment].deadline)
+    deadline.setHours(deadline.getHours() - 7);
+    document.getElementById("edit-deadline").value = deadline.toISOString().slice(0, 16);
+    console.log(deadline.toISOString().slice(0, 16))
+
+}
+var button = document.getElementById("edit-submit")
+button.addEventListener("click", async () => {
+    const titleInput = document.getElementById("edit-title");
+    const beatInput = document.getElementById("edit-beat");
+    const deadlineInput = document.getElementById("edit-deadline");
+    try {
+        let headers = {content_type: "application/json"}
+        for (key of Object.keys(requiredHeader)) {
+            console.log(key)
+            headers[key] = requiredHeader[key]
+        }
+
+        let body = {"title": titleInput.value, "category": beatInput.value}
+
+        if (titleInput != "") body["title"] = titleInput.value;
+        if (beatInput != "") {
+            if (!beatNames.includes(beatInput.value)) {
+                alert("\""+ beatInput.value + "\" is not a valid beat.");
+                return;
+            }
+            body["category"] = beatInput.value;
+        }
+        if (deadlineInput != "") body["deadline"] = deadlineInput.value;
+
+      const response = await fetch(updateEndpoint.replace("1918", focusedAssignment.toString()), { method: "POST", headers: headers, body: JSON.stringify(body),
+        credentials: "same-origin"});
+      const payload = await response.json();
+      console.log(response)
+      console.log(payload)
+      if (!response.ok) {
+        alert(`Upload failed: ${JSON.stringify(payload.errors || payload)}`);
+        return;
+      }
+
+    //   document.querySelector("[data-article-media-gallery]").outerHTML = payload.gallery;
+    //   const selector = `.pm-control-field--${payload.item.kind} select${payload.item.kind === "image" ? ",select[name='featured_media-image']" : ""}`;
+    //   for (const select of document.querySelectorAll(selector)) {
+    //     const option = Array.from(select.options).find((item) => String(item.value) === String(payload.item.id)) || select.appendChild(new Option());
+    //     option.value = payload.item.id;
+    //     option.textContent = payload.item.title;
+    //   }
+
+    //   closeUploadModal();
+    } catch (error) {
+        alert(error)
+    //   alert("Upload failed.");
+    } finally {
+    //   button.disabled = false;
+    }
+  });
+
 function setupPreview() {
     var elements = document.getElementsByClassName("preview-icon");
-    console.log(elements.length);
     for (var i = 0; i < elements.length; i++) {
         elements[i].addEventListener('click', handlePreviewClicked, false);
     }
@@ -110,6 +210,10 @@ function selectSidebarPanel(selectedPanel) {
 
         }
     }
+
+    if (selectedPanel == "edit") updateEditPane();
+    if (selectedPanel == "preview") updatePreviewPane();
+
 }
 
 
@@ -146,8 +250,12 @@ function filterAssignments() {
 
 function isAssignedToMe(element) {
     var bylineElement = element.querySelector('.byline-field');
-    return bylineElement.value === "Quyen Schroeder";
+    return bylineElement.value === currentUser;
 }
+
+// =======================================
+// ----------------STATUS-----------------
+// =======================================
 
 function isPublished(element) {
     var statusElement = element.querySelector('.status-field');
@@ -188,11 +296,16 @@ function determineStatusColor(statusName) {
 }
 
 
+// =======================================
+// ----------------BEAT-------------------
+// =======================================
 
 
 
 
-
+// =======================================
+// --------------SIDEBAR------------------
+// =======================================
 function selectMetadataTab(selected) {
   for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
     tab.setAttribute("aria-selected", String(tab.dataset.metadataTab === selected));
@@ -238,4 +351,115 @@ function setupMetadataResize() {
     handle.addEventListener("pointerup", onUp);
     handle.addEventListener("pointercancel", onUp);
   });
+}
+
+////=============
+
+
+function autocomplete(inp, arr) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", createDropdown);
+  inp.addEventListener("click", createDropdown);
+
+  function createDropdown(e) {
+      var a, b, i, val = this.value;
+      var limit = false;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+      if (!val) { limit = true;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      var itemsAdded = 0;
+      for (i = 0; i < arr.length; i++) { //todo make this not just the start
+        /*check if the item starts with the same letters as the text field value:*/
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value=\"" + arr[i] + "\">";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+              b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+              /*close the list of autocompleted values,
+              (or any other open lists of autocompleted values:*/
+              closeAllLists();
+          });
+          a.appendChild(b);
+          itemsAdded++;
+
+          if (limit && itemsAdded > 10) return;
+        }
+      }
+  }
+
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+      x[i].parentNode.removeChild(x[i]);
+    }
+  }
+
+} 
+
+/*execute a function when someone clicks in the document:*/
+document.addEventListener("click", function (e) {
+    closeAllLists(e.target); //TODO make this not scuffed
+});
 }

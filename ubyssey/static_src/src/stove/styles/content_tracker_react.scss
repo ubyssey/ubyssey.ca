@@ -1,13 +1,9 @@
+
 .content-tracker {
-    --metadata-width: 420px;
     --rounding-radius: 32px;
     --ubyssey-light-blue: #44c3d5;
     --ubyssey-blue: #263a7b;
     --inactive-color: #ccc;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 8px minmax(0, var(--metadata-width));
-    gap: 0;
-    align-items: start;
 }
 
 table, th, td {
@@ -16,11 +12,24 @@ table, th, td {
 
 
 .main-panel {
-display: flex;
-justify-content: center;
-align-items: center;   
-flex-direction: column;    
+  display: flex;
+  justify-content: center;
+  align-items: center;   
+  flex-direction: column;  
+}
 
+.main-content-panel {
+  display: flex;
+  flex-direction: column;  
+  justify-content: flex-start;
+  align-items: center;
+  vertical-align: top;
+  flex-wrap: nowrap;
+}
+
+.stove-logo {
+  width: 10em;
+  padding-bottom: 1em;
 }
 
 
@@ -29,43 +38,44 @@ flex-direction: column;
 // =========================
 
 
-.selection-bar ul {
+.selection-bar {
   list-style-type: none;
   margin: 0;
   padding: 0;
   display: flex;
   align-items: center;
+  height: 4vh;
 }
 
-.selection-option-active a {
-    background-color: var(--ubyssey-light-blue);
-}
 
-.selection-option-inactive a {
-    background-color: var(--inactive-color);
-}
 
-.selection-option-disabled a:hover {
-  background-color: lightblue;
-  cursor:not-allowed
-}
 
-.selection-option-inactive a:hover {
-  background-color: lightblue;
-}
 
-.selection-option a {
+.view-selector {
   display: block;
   color: black;
   padding: 10px 10px;
   text-decoration: none;
+  background-color: var(--inactive-color);
+  border: none;
 }
 
-.selection-bar-left {
+.view-selector-unselected:hover {
+  background-color: lightblue;
+}
+.view-selector-selected {
+    background-color: var(--ubyssey-light-blue);
+}
+
+.view-selector:active {
+    background-color: var(--ubyssey-light-blue);
+}
+
+.view-selector-left {
     border-top-left-radius:var(--rounding-radius);
     border-bottom-left-radius:var(--rounding-radius);   
 }
-.selection-bar-right {
+.view-selector-right {
     border-top-right-radius:var(--rounding-radius);
     border-bottom-right-radius:var(--rounding-radius);   
 }
@@ -157,36 +167,82 @@ input:checked + .slider:before {
 }
 
 .slug-header {
-    width: 15vw;
-}
-
-.byline-header {
-    width: 10vw;
+    min-width: 10em;
 }
 
 .slug-cell {
-    display: flex;
-    vertical-align: middle;
-    min-height: 28px;
+  max-width: 20em;
+}
+
+.edit-button {
+  border: none;
+  background: none;
+  float: right;
+}
+
+.edit-button:hover {
+  background-color: hsl(192, 50%, 85%);
+}
+
+.byline-header {
+  min-width: 6em;
+}
+
+.authors-cell {
+  max-width: 15em;
+}
+
+.deadline-header {
+  width: 8em;
+}
+
+.visuals-header {
+  width: 6em;
+  min-width: 6em;
+}
+
+.media-header {
+  width: 3.5em;
+}
+
+.status-select {
+  width: 6.5em;
+}
+
+// .slug-cell {
+//     display: flex;
+//     vertical-align: middle;
+//     min-height: 28px;
+// }
+
+.slug-link:hover {
+    background-color: hsl(192, 50%, 85%);
 }
 
 .slug-link {
-    width: 100%;
+  text-decoration: inherit;
+  color: inherit;
+
 }
+
 .beat-header {
-  width: 15vw;
-  min-width: 150px;
+  width: 15em;
+  min-width: 10em;
 }
 
 .preview-icon {
     // visibility: hidden;
 }
 
+
+
 .visuals-cell {
+  align-items: center;
   text-align: center;
 }
 
 .media-cell {
+  align-items: center;
   text-align: center;
 }
 
@@ -195,38 +251,42 @@ input:checked + .slider:before {
 // ------Metadata Panel-----
 // =========================
 
-.metadata-resize-handle {
-    position: fixed;
-    top: 0;
-    right: var(--metadata-width);
-    z-index: 11;
-    width: 8px;
-    height: 100vh;
-    border-left: 1px solid #d9d9d9;
-    cursor: col-resize;
-    touch-action: none;
+.container {
+  margin: 0px;
+}
+
+.grouping {
+  display: flex;
+  align-items: center;
+  height: 80vh;
 }
 
 .sidebar-resize-handle {
-    width: 8px;
-    height: 100vh;
-    border-left: 2px solid #d9d9d9;
+    width: 6px;
+    margin: 2px;
+    height: 40vh;
+    background-color: #dddddd;
+    border-radius: 3px;
     cursor: col-resize;
 }
 
 .panel {
-  background-color: #ccc;
+  // background-color: #ccc;
 }
 
 .metadata-editor {
     z-index: 10;
-    height: 100vh;
+    height: 99vh;
+    margin: 4px;
     overflow-y:hidden;
     overflow-x: hidden;
     padding: 16px;
     box-sizing: border-box;
-    background: red;
+    background: #eeeeee;
     max-width: 100%;
+    border-radius: 8px;
+    // display: grid;
+    // justify-content: center;
 }
 
 #metadata-options {
