@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import Select from 'react-select';
@@ -374,6 +374,10 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
       selectedClass="row-selected";
     }
 
+    useEffect(() => {
+      if(page.last_published_at != null && page.article_status != 6) updateArticleStatus(page, statuses[5], updatePage)
+    }, page)
+
     return <tr key={page.pk} className={selectedClass}>
             <td class="slug-cell">
               <button class="edit-button" onClick={() => setSelectedArticleId(page.pk)}><PencilOutline
@@ -641,7 +645,7 @@ function SectionNavigationSidebar() {
   return <div class="navigation-panel">
             <div className="stove-logo-container"><a href="/stove/oven"><SvgStoveNameplateBlue className="stove-logo"/></a></div>
           <SectionGroup groupName="Reportage" sections={["Arts", "Culture", "News", "Opinion", "Sports"]}/>
-          <SectionGroup groupName="Visuals" sections={["Graphics", "Photography", "Video"]}/>
+          <SectionGroup groupName="Visuals" sections={["Graphics", "Photo", "Video"]}/>
           <SectionGroup groupName="Product" sections={["Audio", "Print", "Socials"]}/>
   </div>
 }
