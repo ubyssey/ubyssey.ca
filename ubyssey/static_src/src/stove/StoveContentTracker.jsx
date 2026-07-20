@@ -16,6 +16,9 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import SvgStoveNameplateBlue from './stove-nameplate-blue.svg';
 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -391,6 +394,18 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
     </tr>
 }
 
+function ArticleRowSkeleton() {
+  return <tr>
+    <td class="slug-cell"><Skeleton width="20em"/></td>
+    <td class="authors-cell"><Skeleton width="20em"/></td>
+    <td><Skeleton width="15em"/></td>
+    <td><Skeleton/></td>
+    <td><Skeleton/></td>
+    <td><Skeleton/></td>
+    <td><Skeleton/></td>
+    </tr>
+}
+
 function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticleId}) {
     toast("Rerender",{
           autoClose: 250})
@@ -403,6 +418,10 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
       ArticleRow({updatePage: updatePage, page: page, selectedArticleId: selectedArticleId, setSelectedArticleId: setSelectedArticleId})
     )
   }
+
+  toast(allPages.size)
+  if (rows.length == 0) rows.push(<ArticleRowSkeleton/>)
+  // if (allPages.size == 0) return <div class="article-list"> <Skeleton count={20} /> </div>
   
   return (
     <div class="article-list">
@@ -429,12 +448,10 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
 
 function MoreArticlesButton({addPages, pkInPages}) {
   const [isLoading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [allPagesLoaded, setAllPagesLoaded] = useState(false)
 
-  useEffect(() => {
-
-    function fetchNextPage() {
+  function fetchNextPage() {
       return fetch(loadArticlesUrl.replace("1918", currentPage + 1), { method: "GET", headers: headers, credentials: "same-origin"})
         .then(async (response) => {
           if (response.status != 200) {
@@ -457,6 +474,11 @@ function MoreArticlesButton({addPages, pkInPages}) {
         })
         .catch((error) => console.log(error));
     }
+  useEffect(() => {
+    fetchNextPage()
+  }, [])
+
+  useEffect(() => {
 
     if (isLoading) {
       fetchNextPage().then(() => {
@@ -487,6 +509,8 @@ function MoreArticlesButton({addPages, pkInPages}) {
 
 
 function MainViewSelector({allPages, addPages, updatePage, selectedArticleId, setSelectedArticleId}) {
+    toast(allPages.size)
+    console.log(allPages.size)
   return (
     <Tabs
       defaultActiveKey="list"

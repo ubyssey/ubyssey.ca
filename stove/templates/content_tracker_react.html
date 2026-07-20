@@ -24,14 +24,9 @@
     const loadArticlesUrl = "{% url 'stove:content_tracker_load_pages' section 1918 %}"
     const pageSection = "{{section|title}}"
     {% autoescape off %}
-    
-    
-    {% for p in pages%}
-    pages.set({{p.id}}, {{p.to_json}})
-    {% endfor %}
 
     {% for a in authors %}
-    authors.push({ value: {{a.id}}, label: '{{a.full_name}}' })
+    authors.push({ value: {{a.id}}, label: "{{a.full_name}}" })
     {% endfor %}
 
     const beats = JSON.parse(`{{ beats }}`)
