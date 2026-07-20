@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import Select from 'react-select';
@@ -338,9 +338,10 @@ function ArticleStatus ({status, updateStatus}) {
       })
     }}
     onChange={updateStatus}
+    isDisabled= {status==6}
     components={{
       DropdownIndicator: null, 
-      placeholder: "Select status..."}} 
+      placeholder: "Select status..."}}  
   />;
 }
 
@@ -374,9 +375,6 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
       selectedClass="row-selected";
     }
 
-    useEffect(() => {
-      if(page.last_published_at != null && page.article_status != 6) updateArticleStatus(page, statuses[5], updatePage)
-    }, page)
 
     return <tr key={page.pk} className={selectedClass}>
             <td class="slug-cell">
@@ -416,7 +414,7 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
 
 
   const rows = []
-
+  
   for (const [id, page] of allPages) { // [id, page]
     rows.push(
       ArticleRow({updatePage: updatePage, page: page, selectedArticleId: selectedArticleId, setSelectedArticleId: setSelectedArticleId})
@@ -424,8 +422,13 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   }
 
   if (rows.length == 0) rows.push(<ArticleRowSkeleton/>)
-  // if (allPages.size == 0) return <div class="article-list"> <Skeleton count={20} /> </div>
-  
+
+  useEffect(() => {
+    for (const [id, page] of allPages) {
+      if(page.first_published_at != null && page.article_status != 6) updateArticleStatus(page, statuses[5], updatePage)
+    }
+  }, [allPages])
+
   return (
     <div class="article-list">
     <Table striped bordered hover>
