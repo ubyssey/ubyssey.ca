@@ -59,10 +59,12 @@ def load_pages(request, section="all", page=1):
 
     pages = paginator.get_page(request.GET.get("article-page", page))
 
-    result = "["
-    for page in pages: 
-        result += page.get_latest_revision_as_object().to_json() + ","
-    result = result[:-1] + "]"
+    result="[]"
+    if (len(pages) > 0):
+        result = "["
+        for page in pages: 
+            result += page.get_latest_revision_as_object().to_json() + ","
+        result = result[:-1] + "]"
     return JsonResponse(result, safe=False)
 
 

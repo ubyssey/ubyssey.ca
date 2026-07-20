@@ -4,6 +4,7 @@
     --ubyssey-light-blue: #44c3d5;
     --ubyssey-blue: #263a7b;
     --inactive-color: #ccc;
+    --hover-color: hsl(192, 50%, 85%);
 }
 
 table, th, td {
@@ -13,23 +14,61 @@ table, th, td {
 
 .main-panel {
   display: flex;
-  justify-content: center;
-  align-items: center;   
-  flex-direction: column;  
+  align-items: center; 
+  vertical-align: top;  
+  flex-direction: column;
 }
 
 .main-content-panel {
   display: flex;
   flex-direction: column;  
   justify-content: flex-start;
-  align-items: center;
-  vertical-align: top;
-  flex-wrap: nowrap;
+  align-items: center; // x axis
+}
+// .grouping
+.stove-logo-container {
+  width: 100%;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+}
+.stove-logo {
+  width: 100%;
+  padding-bottom: 1em;
 }
 
-.stove-logo {
-  width: 10em;
-  padding-bottom: 1em;
+.navigation-panel {
+  width: 15em;
+  background-color: #dddddd;
+  height: 100%;
+}
+
+.section-navigation-grouping {
+    list-style-type: none;
+}
+
+.section-navigation-title {
+  font-weight: bold;
+}
+
+.section-navigation-item > a {
+  text-decoration: inherit;
+  color: inherit;
+  padding-left: 1em;
+}
+
+.section-navigation-item:hover{
+  background-color: var(--hover-color);
+}
+
+@media screen and (max-width: calc(1100px + 15em)) {
+    .navigation-panel {
+        display: none !important;
+    }
 }
 
 
@@ -268,6 +307,10 @@ input:checked + .slider:before {
     background-color: #dddddd;
     border-radius: 3px;
     cursor: col-resize;
+}
+
+.sidebar-resize-handle:hover {
+  background-color: hsl(192, 50%, 85%);
 }
 
 .panel {

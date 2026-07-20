@@ -419,7 +419,6 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
     )
   }
 
-  toast(allPages.size)
   if (rows.length == 0) rows.push(<ArticleRowSkeleton/>)
   // if (allPages.size == 0) return <div class="article-list"> <Skeleton count={20} /> </div>
   
@@ -509,8 +508,6 @@ function MoreArticlesButton({addPages, pkInPages}) {
 
 
 function MainViewSelector({allPages, addPages, updatePage, selectedArticleId, setSelectedArticleId}) {
-    toast(allPages.size)
-    console.log(allPages.size)
   return (
     <Tabs
       defaultActiveKey="list"
@@ -633,6 +630,22 @@ function Sidebar({selectedPage, updatePage, createPage}) {
     </div>;
 }
 
+function SectionNavigationSidebar() {
+  function SectionGroup({groupName, sections}) {
+    const sectionItems = sections.map(section => <li className="section-navigation-item"><a href={"/stove/oven/" + section}>{section}</a></li>)
+    return <ul className="section-navigation-grouping">
+      <span className="section-navigation-title">{groupName}</span>
+      {sectionItems}
+    </ul>
+  }
+  return <div class="navigation-panel">
+            <div className="stove-logo-container"><a href="/stove/oven"><SvgStoveNameplateBlue className="stove-logo"/></a></div>
+          <SectionGroup groupName="Reportage" sections={["Arts", "Culture", "News", "Opinion", "Sports"]}/>
+          <SectionGroup groupName="Visuals" sections={["Graphics", "Photography", "Video"]}/>
+          <SectionGroup groupName="Product" sections={["Audio", "Print", "Socials"]}/>
+  </div>
+}
+
 function ContentTracker() {
   const [allPages, setAllPages] = useState(
     pages
@@ -664,15 +677,15 @@ function ContentTracker() {
   return (
       <div className="content-tracker">
         <Group className="grouping">
-        <Panel className="panel main-content-panel" minSize="40%" defaultSize="80%">
-          <div className="stove-logo"><a href="/stove/oven"><SvgStoveNameplateBlue/></a></div>
-          <MainPanel 
-            allPages={allPages} 
-            addPages={addPages}
-            updatePage={updatePage}
-            selectedArticleId={selectedArticleId}
-            setSelectedArticleId={setSelectedArticleId}
-          />
+        <SectionNavigationSidebar/>
+        <Panel className="panel main-content-panel" minSize="1100px" defaultSize="80%">
+            <MainPanel 
+              allPages={allPages} 
+              addPages={addPages}
+              updatePage={updatePage}
+              selectedArticleId={selectedArticleId}
+              setSelectedArticleId={setSelectedArticleId}
+            />
         </Panel>
         <Separator className="sidebar-resize-handle"/>
         <Panel className="panel content-sidebar" collapsible minSize={275} maxSize={"40vw"}>
