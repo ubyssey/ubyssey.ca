@@ -419,7 +419,6 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
     )
   }
 
-  toast(allPages.size)
   if (rows.length == 0) rows.push(<ArticleRowSkeleton/>)
   // if (allPages.size == 0) return <div class="article-list"> <Skeleton count={20} /> </div>
   
@@ -509,8 +508,6 @@ function MoreArticlesButton({addPages, pkInPages}) {
 
 
 function MainViewSelector({allPages, addPages, updatePage, selectedArticleId, setSelectedArticleId}) {
-    toast(allPages.size)
-    console.log(allPages.size)
   return (
     <Tabs
       defaultActiveKey="list"
