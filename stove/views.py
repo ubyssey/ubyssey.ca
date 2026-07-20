@@ -35,17 +35,6 @@ from stove.editor import (
 # include editors, copy editors
 @login_required
 def content_tracker_react(request, section="all"):
-    editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
-    qs = ArticlePage.objects.all()
-    if (section != "all"):
-        qs = qs.filter(current_section=section.lower())
-    
-    qs = qs.order_by("-last_published_at", "-pk")
-
-
-    paginator = Paginator(qs, 50)
-    pages = paginator.get_page(request.GET.get("article-page", 1))
-
     beats = CategoryPage.objects.all().filter(beat=True)
     authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
 
@@ -56,21 +45,17 @@ def content_tracker_react(request, section="all"):
             beatExport[beatSection] = []
         beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
-    pageExport = []
-    for page in pages:
-        pageExport = pageExport + [page.get_latest_revision_as_object()]
-
-    return render(request, "content_tracker_react.html", {"pages": pageExport, "beats": json.dumps(beatExport), "authors": authors, "section": section})
+    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "section": section})
 
 @login_required
 def load_pages(request, section="all", page=1):
-    qs = ArticlePage.objects
+    qs = ArticlePage.objects.all()
     if (section != "all"):
-        qs = qs.from_section(section)
+        qs = qs.filter(current_section=section.lower())
     
-    qs = qs.all().order_by("-last_published_at", "-pk")
+    qs = qs.order_by("-last_published_at", "-pk")
 
-    paginator = Paginator(qs, 50)
+    paginator = Paginator(qs, 20)
 
     pages = paginator.get_page(request.GET.get("article-page", page))
 
