@@ -26,7 +26,7 @@
     {% autoescape off %}
 
     {% for a in authors %}
-    authors.push({ value: {{a.id}}, label: "{{a.full_name}}" })
+    authors.push({ value: {{a.id}}, label: ```{{a.full_name}}``` })
     {% endfor %}
 
     const beats = JSON.parse(`{{ beats }}`)
