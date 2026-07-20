@@ -2,12 +2,16 @@
 
 <div class="o-image-wall-attachment attachment" style="--wall-width: {{self.width}};">
     {% for block in self.wall_blocks %}
-        {% include_block block %}
+        {% with index=forloop.counter0|stringformat:"s" %}
+            {% with article_editable_path_prefix="wall_blocks."|add:index|add:".value" %}
+                {% include_block block with article_editable_path_prefix=article_editable_path_prefix %}
+            {% endwith %}
+        {% endwith %}
     {% endfor%}
 
     {% if self.caption or self.credit %}
     <div class="caption">
-        {{ self.caption|safe }} <span class="credit">{% if self.credit %}{{ self.credit|safe }}{% endif %}</span>
+        <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption" data-article-editable-mode="richtext">{{ self.caption|safe }}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if self.credit %}{{ self.credit|safe }}{% endif %}</span>
     </div>
     {% endif %}
 </div>

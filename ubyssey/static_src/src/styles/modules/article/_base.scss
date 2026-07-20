@@ -45,6 +45,15 @@ $text-color: var(--text_color-100);
   text-transform: uppercase;
 }
 
+.title-tag {
+  display: flex;
+  align-items: baseline;
+
+  p {
+    margin: 0;
+  }
+}
+
 div.article-content {
   
   .disclaimer {

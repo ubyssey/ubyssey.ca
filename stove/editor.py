@@ -1,4 +1,5 @@
 import json
+import re
 
 from django import forms
 from django.core.exceptions import FieldDoesNotExist
@@ -9,16 +10,25 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.images import get_image_model
 from wagtail.images.blocks import ImageChooserBlock
 
+from article.models import ArticleAuthorsOrderable
+from authors.models import AuthorPage
+
+from taggit.models import Tag
+
 # I'm only including clearly useful fields for now
 PAGE_FORM_FIELDS = (
-    "title",
-    "title_tag",
+    "fw_alternate_title",
     "seo_description",
     "timeliness",
     "slug",
     "deadline",
     "explicit_published_at",
     "show_last_modified",
+)
+
+PAGE_FORM_HIDDEN_FIELDS = (
+    "title",
+    "title_tag",
     "disclaimer",
 )
 
@@ -54,7 +64,7 @@ def get_page_form(page, data=None):
 
 
 def get_page_field_names(page):
-    return [name for name in PAGE_FORM_FIELDS if is_page_form_field(page, name)]
+    return [name for name in (*PAGE_FORM_HIDDEN_FIELDS, *PAGE_FORM_FIELDS) if is_page_form_field(page, name)]
 
 
 def is_page_form_field(page, name):
@@ -105,6 +115,7 @@ def get_featured_media_form_class(model):
         model,
         form=FeaturedMediaForm,
         fields=FEATURED_MEDIA_FIELDS,
+        widgets={"caption": forms.Textarea},
         labels=FEATURED_MEDIA_LABELS,
     )
 
@@ -144,7 +155,14 @@ def get_article_media_upload_form(data=None, files=None):
         file = forms.FileField(required=False)
         author = forms.ModelChoiceField(queryset=author_model.objects.all(), required=False)
         description = forms.CharField(widget=forms.Textarea, required=False)
-        tags = forms.CharField(required=False, help_text="Separate tags with commas.")
+        tags = forms.CharField(required=False, help_text="Select one or more pre-existing tags.")
+
+        def clean_tags(self):
+            tags = [tag.strip() for tag in self.cleaned_data.get("tags", "").split(",") if tag.strip()]
+            existing_tags = set(Tag.objects.filter(name__in=tags).values_list("name", flat=True))
+            if any(tag not in existing_tags for tag in tags):
+                raise forms.ValidationError("Select pre-existing tags only.")
+            return ", ".join(tags)
 
         def clean(self):
             cleaned = super().clean()
@@ -158,6 +176,27 @@ def get_article_media_upload_form(data=None, files=None):
             return cleaned
 
     return ArticleMediaUploadForm(data=data, files=files, prefix="article_media")
+
+
+def add_article_media(page, item, is_image):
+    manager = getattr(page, "article_media", None)
+    model = getattr(manager, "model", None)
+    if not manager or not model:
+        return None
+
+    image = item if is_image else None
+    document = item if not is_image else None
+    rows = list(manager.all())
+    for row in rows:
+        if (image and row.image_id == image.id) or (document and row.document_id == document.id):
+            return row
+
+    return model.objects.create(
+        article_page=page,
+        image=image,
+        document=document,
+        sort_order=len(rows),
+    )
 
 
 def save_article_media_upload(page, form, user=None):
@@ -189,22 +228,44 @@ def save_article_media_upload(page, form, user=None):
     if tags:
         item.tags.add(*tags)
 
-    manager = getattr(page, "article_media", None)
-    model = getattr(manager, "model", None)
-    if not manager or not model:
-        return None
-
-    image = item if is_image else None
-    document = item if not is_image else None
-    rows = list(manager.all())
-    for row in rows:
-        if (image and row.image_id == image.id) or (document and row.document_id == document.id):
-            return row
-
-    return model.objects.create(article_page=page, image=image, document=document, sort_order=len(rows))
+    return add_article_media(page, item, is_image)
 
 
 # StreamField editors
+
+
+# Creates public version of page
+def public_stream_value(value):
+    if isinstance(value, list):
+        return [public_stream_value(item) for item in value]
+    if isinstance(value, dict):
+        return {
+            key: public_stream_value(child_value)
+            for key, child_value in value.items()
+            if key != "comments" or not ("type" in value and "value" in value)
+        }
+    if isinstance(value, str) and ("data-comment-" in value or "data-footnote-" in value):
+        previous = None
+        stripped = value
+        stripped = EDITOR_NOTE_EMPTY_ANCHOR_RE.sub('', stripped)
+        while previous != stripped:
+            previous = stripped
+            stripped = EDITOR_NOTE_ANCHOR_RE.sub(r'\1', stripped)
+        stripped = EDITOR_NOTE_ATTR_RE.sub('', stripped)
+        previous = None
+        while previous != stripped:
+            previous = stripped
+            stripped = ADJACENT_LINK_RE.sub(r'<a\g<attrs>>\g<left>\g<right></a>', stripped)
+        return stripped
+    return value
+
+
+EDITOR_NOTE_EMPTY_ANCHOR_RE = re.compile(r'<span\b(?=[^>]*\bdata-footnote-anchor=(?:"true"|\'true\'))[^>]*>.*?</span>', re.IGNORECASE | re.DOTALL)
+EDITOR_NOTE_ANCHOR_RE = re.compile(r'<(?:span|mark)\b(?=[^>]*\bdata-(?:comment-thread|footnote)-id=)[^>]*>(.*?)</(?:span|mark)>', re.IGNORECASE | re.DOTALL)
+EDITOR_NOTE_ATTR_RE = re.compile(r'\sdata-(?:comment-(?:thread-id|comments|pending|resolved)|footnote-(?:id|text|anchor))=("[^"]*"|\'[^\']*\'|[^\s>]+)', re.IGNORECASE)
+# Placing footnotes inside links broke them in public version -> possible issue for other elements too
+ADJACENT_LINK_RE = re.compile(r'<a\b(?P<attrs>[^>]*)>(?P<left>.*?)</a>\s*<a\b(?P=attrs)>(?P<right>.*?)</a>', re.IGNORECASE | re.DOTALL)
+
 
 def get_streamfield_editors(page):
     editors = {}
@@ -217,7 +278,11 @@ def get_streamfield_editors(page):
         raw = []
 
         try:
-            raw = json_safe(field.stream_block.get_prep_value(getattr(page, field.name))) or []
+            comments = getattr(page, "editor_article_version", None) or {}
+            if isinstance(comments, dict) and field.name in comments:
+                raw = comments.get(field.name) or []
+            else:
+                raw = json_safe(field.stream_block.get_prep_value(getattr(page, field.name))) or []
         except Exception:
             print("Failed to get field: " + field.name)
 
@@ -260,6 +325,7 @@ def get_editor_blocks(raw_blocks, registry):
             "type": block.get("type", "unknown"),
             "id": block.get("id"),
             "value": block.get("value"),
+            "comments": block.get("comments") or [],
             "fields": get_editor_fields(
                 block.get("value"),
                 registry.get(block.get("type", "unknown"), {}).get("fields", {}),
@@ -520,12 +586,19 @@ def get_empty_value(field):
 def apply_editor_post(page, data, preview=False):
     editor_errors = {}
     page_form = get_page_form(page, data)
+    article_authors_form = get_article_authors_form(page, data)
     featured_media_form = get_featured_media_form(page, data)
     if page_form.is_valid():
         for field_name, value in page_form.cleaned_data.items():
             setattr(page, field_name, value)
     else:
         add_form_errors(editor_errors, page_form)
+
+    if article_authors_form:
+        if article_authors_form.is_valid():
+            save_article_authors_form(page, article_authors_form)
+        else:
+            add_form_errors(editor_errors, article_authors_form, "article_authors")
 
     if featured_media_form:
         if featured_media_form.is_valid():
@@ -543,11 +616,22 @@ def apply_editor_post(page, data, preview=False):
             value = json.loads(json_str)
             if preview:
                 value = sanitize_preview_stream_value(value)
-            setattr(page, field.name, value)
+                if hasattr(page, "editor_article_version"):
+                    value = public_stream_value(value)
+                setattr(page, field.name, value)
+            else:
+                if hasattr(page, "editor_article_version"):
+                    editor_data = getattr(page, "editor_article_version", None) or {}
+                    if not isinstance(editor_data, dict):
+                        editor_data = {}
+                    editor_data[field.name] = json_safe(value) or []
+                    page.editor_article_version = editor_data
+                    value = public_stream_value(value)
+                setattr(page, field.name, value)
         except json.JSONDecodeError:
             editor_errors[field.name] = ["Invalid JSON for this field."]
 
-    return editor_errors, page_form, featured_media_form
+    return editor_errors, page_form, article_authors_form, featured_media_form
 
 
 def sanitize_preview_stream_value(value):
@@ -584,6 +668,108 @@ def sanitize_preview_stream_value(value):
         return {key: sanitize_preview_stream_value(item) for key, item in value.items()}
 
     return value
+
+
+# Author Management
+
+AUTHOR_ROLE = "author"
+AUTHOR_ROLE_CHOICES = (
+    ("author", "Author"),
+    ("illustrator", "Illustrator"),
+    ("photographer", "Photographer"),
+    ("videographer", "Videographer"),
+    ("designer", "Designer"),
+    ("org_role", "Show organization role"),
+)
+AUTHOR_ROLE_VALUES = {value for value, _label in AUTHOR_ROLE_CHOICES}
+
+
+def empty_author_row():
+    return {"author_id": "", "author_role": AUTHOR_ROLE}
+
+
+class ArticleAuthorsForm(forms.Form):
+    def __init__(self, *args, initial_rows=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.initial_rows = initial_rows or []
+        self.author_options = list(AuthorPage.objects.live().order_by("title"))
+        self.role_options = AUTHOR_ROLE_CHOICES
+
+    @property
+    def rows(self):
+        if not self.is_bound:
+            return self.initial_rows or [empty_author_row()]
+
+        rows = self.posted_rows()
+        return rows or [empty_author_row()]
+
+    def posted_rows(self):
+        author_ids = self.data.getlist(self.add_prefix("author"))
+        roles = self.data.getlist(self.add_prefix("role"))
+        row_count = max(len(author_ids), len(roles), 1)
+        rows = []
+
+        for index in range(row_count):
+            author_id = author_ids[index] if index < len(author_ids) else ""
+            author_role = roles[index] if index < len(roles) else AUTHOR_ROLE
+            if author_id or author_role != AUTHOR_ROLE:
+                rows.append({"author_id": author_id, "author_role": author_role})
+
+        return rows
+
+    def clean(self):
+        cleaned_data = super().clean()
+        rows = self.posted_rows()
+        selected_author_ids = [row["author_id"] for row in rows if row["author_id"]]
+        authors_by_id = {
+            str(author.pk): author
+            for author in AuthorPage.objects.live().filter(pk__in=selected_author_ids)
+        }
+        items = []
+
+        for row in rows:
+            author_id = row["author_id"]
+            author_role = row["author_role"]
+            if not author_id:
+                continue
+            if author_role not in AUTHOR_ROLE_VALUES:
+                raise forms.ValidationError("Choose a valid author role.")
+            author = authors_by_id.get(str(author_id))
+            if not author:
+                raise forms.ValidationError("Choose a valid author.")
+            items.append({"author": author, "author_role": author_role})
+
+        cleaned_data["items"] = items
+        return cleaned_data
+
+
+def get_article_authors_form(page, data=None):
+    if not hasattr(page, "article_authors"):
+        return None
+
+    initial_rows = [
+        {"author_id": str(item.author_id), "author_role": item.author_role or AUTHOR_ROLE}
+        for item in page.article_authors.all()
+    ]
+    kwargs = {"prefix": "article_authors", "initial_rows": initial_rows}
+    if data is not None:
+        kwargs["data"] = data
+    return ArticleAuthorsForm(**kwargs)
+
+
+def save_article_authors_form(page, form):
+    if not hasattr(page, "article_authors"):
+        return
+
+    items = [
+        ArticleAuthorsOrderable(
+            author=item["author"],
+            author_role=item["author_role"],
+            sort_order=index,
+        )
+        for index, item in enumerate(form.cleaned_data.get("items") or [])
+    ]
+    page.article_authors.set(items)
 
 
 # Utils

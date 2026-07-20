@@ -133,7 +133,7 @@ function watchTask() {
   watch('./src/videos/**/*', series(cleanVideosTask, copyVideosTask));
   watch('./src/fonts/**/*',  series(cleanFontsTask, copyFontsTask));
   watch('./src/stove/styles/*.scss', series(cleanCssTask, sassBuildDevTask));  
-  watch('./src/stove/**/*.js', series(cleanJsTask, webpackBuildDevTask));
+  watch('./src/stove/**/*.{js,jsx}', series(cleanJsTask, webpackBuildDevTask));
 }
 
 exports.jasmine = jasmineTask

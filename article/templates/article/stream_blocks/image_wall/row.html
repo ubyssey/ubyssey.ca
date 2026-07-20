@@ -1,5 +1,15 @@
 <div class="o-image-wall--item o-image-wall--row" style="--row-height: {{self.height}};">
     {% for image in self.images %}
-        {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=image click_to_enlarge="true" %}
+        {% with index=forloop.counter0|stringformat:"s" %}
+            {% if article_editable_path_prefix %}
+                {% with child_prefix=article_editable_path_prefix|add:".images."|add:index %}
+                    {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=image click_to_enlarge="true" article_editable_path_prefix=child_prefix %}
+                {% endwith %}
+            {% else %}
+                {% with child_prefix="images."|add:index %}
+                    {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=image click_to_enlarge="true" article_editable_path_prefix=child_prefix %}
+                {% endwith %}
+            {% endif %}
+        {% endwith %}
     {% endfor %}
 </div>

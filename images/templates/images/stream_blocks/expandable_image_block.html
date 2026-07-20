@@ -1,7 +1,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<div class="image-attachment attachment {{ imageBlock.style }} {{ imageBlock.width }} setup-modal image-modal" >
+<div class="image-attachment attachment {{ imageBlock.style }} {{ imageBlock.width }} setup-modal image-modal" {% if article_editable_path_prefix %}data-article-editable-path-prefix="{{ article_editable_path_prefix }}"{% endif %}>
     {% image imageBlock.image width-1000 format-webp as image %}
     {% image imageBlock.image original as ogImage %}
     {% if imageBlock.click_to_enlarge or click_to_enlarge %}
@@ -20,7 +20,7 @@
 
     {% if imageBlock.caption or imageBlock.credit %}
         <div class="caption">
-            {% if imageBlock.caption %}{{ imageBlock.caption|safe }}{% endif %} <span class="credit">{% if imageBlock.credit %}{{ imageBlock.credit }}{% endif %}</span>
+            <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption" data-article-editable-mode="richtext">{% if imageBlock.caption %}{{ imageBlock.caption|safe }}{% endif %}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if imageBlock.credit %}{{ imageBlock.credit }}{% endif %}</span>
         </div>
     {% endif %}
 </div>

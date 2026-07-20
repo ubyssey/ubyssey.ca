@@ -1,18 +1,22 @@
-// Entrypoint
+// Entrypoint + State
 
-import { createEditorToolbar } from "./prosemirror_base";
-import { createStreamEditor } from "./stream_editor";
-import { setupArticleBlockControls, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_block_controls";
-import { setupMediaUpload, selectMetadataTab } from "./sidebar";
-import { setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./manuscript_preview";
-import { setupArticleRichTextEditors } from "./manuscript_preview";
+import { ACTIVE_SUGGESTION_THREAD_META, createEditorToolbar } from "./manuscript_prosemirror.jsx";
+import { setupCommentSidebar, setupFootnoteSidebar } from "./manuscript_annotations.jsx";
+import { createStreamEditor } from "./manuscript_prosetail.jsx";
+import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./manuscript_blocks.jsx";
+import { mountManuscriptChrome, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./manuscript_document.jsx";
 
 export const editorState = {
   streamEditors: [],
   articleRichTextEditors: [],
+  articleDirectTextEditors: [],
   articleBlockControls: null,
   richTextToolbar: null,
+  commentSidebar: null,
+  footnoteSidebar: null,
   selectedArticleBlock: null,
+  revealSelectedArticleBlock: null,
+  blockEditorModalOpen: false,
   suppressedHoverArticleBlock: null,
   suppressedHoverTimer: null,
   preferredInsertTypes: new Map(),
@@ -39,29 +43,71 @@ document.addEventListener("DOMContentLoaded", () => {
       textarea,
       streamEditors[textarea.dataset.streamField] || {},
       {
-        onDocChanged: () => {
-          if (!editorState.blockEditorModalOpen) editorState.schedulePreview();
+        onDocChanged: ({ transaction }) => {
+          if (!editorState.blockEditorModalOpen && !transaction.getMeta("skipPreview")) {
+            editorState.schedulePreview({ deferIfManuscriptFocused: Boolean(transaction.getMeta("deferPreviewIfFocused")) });
+          }
         },
-        onTransaction: () => { showSelectedArticleBlockEditor(editorState.selectedArticleBlock); },
+        onTransaction: ({ transaction }) => {
+          const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
+          editorState.richTextToolbar?.update();
+          showSelectedArticleBlockEditor(editorState.selectedArticleBlock);
+          refreshBlockCommentBorders(manuscriptRoot);
+          if (activeSuggestionThreadId) editorState.commentSidebar?.activateThread(activeSuggestionThreadId);
+          else editorState.commentSidebar?.update();
+          editorState.footnoteSidebar.update();
+        },
       },
     ));
   }
 
-  editorState.richTextToolbar = createEditorToolbar(manuscriptRoot?.querySelector(".pm-manuscript-toolbar"), {
+  editorState.richTextToolbar = createEditorToolbar(manuscriptRoot.querySelector(".pm-manuscript-toolbar"), {
     publishSource: document.querySelector("[data-article-toolbar-source]"),
+    onHistoryCommand: () => {
+      window.requestAnimationFrame(() => {
+        editorState.schedulePreview({ immediate: true });
+      });
+    },
   });
 
-  setupArticleRichTextEditors(manuscriptRoot);
-  setupArticleBlockControls(manuscriptRoot);
-  setupArticleBlockKeyboard(manuscriptRoot);
-  setupMediaUpload();
+  document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || editorState.blockEditorModalOpen || event.altKey || (!event.ctrlKey && !event.metaKey)) return;
+    if (event.target.closest?.("input, textarea, [contenteditable], .ProseMirror")) return;
 
-  for (const tab of document.querySelectorAll("[data-metadata-tab]")) {
-    tab.addEventListener("click", () => { selectMetadataTab(tab.dataset.metadataTab); });
-  }
+    const key = event.key.toLowerCase();
+    const action = key === "z" ? (event.shiftKey ? "redo" : "undo") : key === "y" && event.ctrlKey && !event.shiftKey ? "redo" : null;
+    if (!action || !editorState.richTextToolbar.runHistory(action)) return;
+
+    event.preventDefault();
+  });
+
+  const articleTextViews = () => {
+    const manuscriptViews = [
+      ...editorState.articleRichTextEditors.map((editor) => editor.view),
+      ...editorState.articleDirectTextEditors.map((editor) => editor.view),
+    ].filter((view) => view.dom.isConnected);
+    return manuscriptViews.length ? manuscriptViews : editorState.streamEditors.map((editor) => editor.view);
+  };
+
+  editorState.commentSidebar = setupCommentSidebar(document.querySelector("[data-comment-sidebar]"), {
+    getViews: articleTextViews,
+    getThreads: collectBlockCommentThreads,
+  });
+  editorState.footnoteSidebar = setupFootnoteSidebar(document.querySelector("[data-footnote-sidebar]"), {
+    getViews: articleTextViews,
+  });
+
+  setupArticlePreviewEditors(manuscriptRoot);
+  editorState.commentSidebar.update();
+  editorState.footnoteSidebar.update();
+  setupArticleBlockKeyboard(manuscriptRoot);
 
   const form = document.querySelector("[data-manuscript-form]");
   setupServerPreviewRefresh(form, manuscriptRoot);
   setupHistoryPreviewButtons(manuscriptRoot);
-  form.addEventListener("submit", () => { writeStreamTextareas(); });
+  mountManuscriptChrome({
+    form,
+    schedulePreview: (...args) => editorState.schedulePreview(...args),
+    writeBeforeSave: writeStreamTextareas,
+  });
 });

@@ -2,7 +2,7 @@
     <iframe class="pdf" src="{{self.pdf.url}}" width="800" height="500"></iframe>
     {% if self.caption or self.credit %}
     <div class="caption">
-        {{ self.caption|safe }} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
+        <span data-article-editable-stream-field="content" data-article-editable-path="caption" data-article-editable-mode="richtext">{{ self.caption|safe }}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
     </div>
 {% endif %}
 </div>
