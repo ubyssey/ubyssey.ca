@@ -314,7 +314,7 @@ function ArticleStatus ({status, updateStatus}) {
   
   return <Select 
     className="status-select"
-    options={statuses} 
+    options={statuses.slice(0, -1)} 
     value={statuses[status-1]} 
     styles={{
       singleValue: (base) => ({
@@ -422,12 +422,12 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   }
 
   if (rows.length == 0) rows.push(<ArticleRowSkeleton/>)
-
   useEffect(() => {
     for (const [id, page] of allPages) {
-      if(page.first_published_at != null && page.article_status != 6) updateArticleStatus(page, statuses[5], updatePage)
+      if(page.live && page.article_status != 6) updateArticleStatus(page, statuses[5], updatePage)
+      if(!page.live && page.article_status == 6) updateArticleStatus(page, statuses[4], updatePage)
     }
-  }, [allPages])
+  }, [allPages.size])
 
   return (
     <div class="article-list">
