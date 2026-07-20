@@ -7,7 +7,7 @@
     {% if imageBlock.click_to_enlarge or click_to_enlarge %}
     <a class="open-modal" aria-label="Enlarge image">
     {% endif %}
-    <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ imageBlock.caption }}" data-credit="{{ imageBlock.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if imageBlock.alt_text %}{{ imageBlock.alt_text }}{% else %}{{imageBlock.caption}}{% endif %}" />
+    <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ imageBlock.caption|force_escape }}" data-credit="{{ imageBlock.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if imageBlock.alt_text %}{{ imageBlock.alt_text }}{% else %}{{ imageBlock.caption|striptags|force_escape }}{% endif %}" />
     {% if imageBlock.click_to_enlarge or click_to_enlarge %}
     </a>
     <dialog class="modal close-modal hide js-dropdown-container">

@@ -13,18 +13,19 @@ from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
 from wagtail.models import Page
 from article.models import ArticlePage
-from taggit.models import Tag
 
-from stove.editor import (
+from stove.manuscript_editor import (
     PAGE_FORM_FIELDS,
     get_page_form,
     get_article_authors_form,
     get_streamfield_editors,
     apply_editor_post,
     get_article_media_upload_form,
+    get_article_media_options,
+    get_article_media_tag_options,
     get_featured_media_form,
     add_article_media,
-    save_article_media_upload,
+    save_article_media,
 )
 
 
@@ -37,34 +38,6 @@ def index(request):
     pages = paginator.get_page(request.GET.get("article-page", 1))
 
     return render(request, "index.html", {"pages": pages})
-
-
-# We need latest draft here not latest live
-def get_manuscript_page(page_id):
-    page = get_object_or_404(Page, id=page_id).specific
-    return page.get_latest_revision_as_object()
-
-
-def get_user_display_name(user):
-    if not user:
-        return ""
-    return user.get_full_name() or user.email
-
-
-def get_article_media_options():
-    def options(model):
-        return [
-            {"value": str(media.id), "label": f"{media.title} — {media.filename}"}
-            for media in model.objects.all().order_by("title")
-        ]
-    return {"image": options(get_image_model()), "document": options(get_document_model())}
-
-
-def get_article_media_tag_options():
-    return [
-        {"value": tag.name, "label": tag.name}
-        for tag in Tag.objects.all().order_by("name")
-    ]
 
 
 @login_required
@@ -215,15 +188,6 @@ def manuscript_full_preview(request, page_id):
     )
 
 
-def article_media_response(request, page, item):
-    article_media = page.article_media.all()
-    media = item.image or item.document
-    return JsonResponse({
-        "item": {"kind": "image" if item.image else "document", "id": media.id, "title": media.title},
-        "gallery": render_to_string("editors/components/article_media_gallery.html", {"article_media": article_media}, request=request)
-    })
-
-
 @login_required
 @require_POST
 def article_media_upload(request, page_id):
@@ -233,7 +197,7 @@ def article_media_upload(request, page_id):
     if not form.is_valid():
         return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
-    item = save_article_media_upload(page, form, request.user)
+    item = save_article_media(page, form, request.user)
     if not item:
         return JsonResponse({"errors": {"file": [{"message": "Choose a file to upload."}]}}, status=400)
 
@@ -281,3 +245,26 @@ def liveblog_editor(request, page_id):
 def section_editor(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
     return render(request, "editors/section_editor.html", {"self": page})
+
+
+#  Helpers
+
+# We need latest draft here not latest live
+def get_manuscript_page(page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return page.get_latest_revision_as_object()
+
+
+def get_user_display_name(user):
+    if not user:
+        return ""
+    return user.get_full_name() or user.email
+
+
+def article_media_response(request, page, item):
+    article_media = page.article_media.all()
+    media = item.image or item.document
+    return JsonResponse({
+        "item": {"kind": "image" if item.image else "document", "id": media.id, "title": media.title},
+        "gallery": render_to_string("editors/components/article_media_gallery.html", {"article_media": article_media}, request=request)
+    })
