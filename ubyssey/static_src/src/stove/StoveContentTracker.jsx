@@ -14,6 +14,8 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import SvgStoveNameplateBlue from './stove-nameplate-blue.svg';
+
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -403,8 +405,7 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   }
   
   return (
-    <div>
-    <h1>{pageSection} Articles</h1>
+    <div class="article-list">
     <Table striped bordered hover>
        <thead>
             <tr class="table-header">
@@ -493,7 +494,8 @@ function MainViewSelector({allPages, addPages, updatePage, selectedArticleId, se
       id="noanim-tab-example"
       className="mb-3"
     >
-      <Tab eventKey="list" title="List">
+      <Tab eventKey="list" title="List" >
+        <h1>{pageSection} Articles</h1>
         <ArticleList allPages={allPages} 
           updatePage={updatePage}
           selectedArticleId={selectedArticleId}
@@ -636,28 +638,29 @@ function ContentTracker() {
   );
 
   return (
-    <div className="content-tracker">
-      <Group className="grouping">
-      <Panel className="panel" minSize="40%" defaultSize="80%">
-        <MainPanel 
-          allPages={allPages} 
-          addPages={addPages}
-          updatePage={updatePage}
-          selectedArticleId={selectedArticleId}
-          setSelectedArticleId={setSelectedArticleId}
-        />
-      </Panel>
-      <Separator className="sidebar-resize-handle"/>
-      <Panel className="panel content-sidebar" collapsible minSize={275} maxSize={"40vw"}>
-        <Sidebar 
-          selectedPage={allPages.get(selectedArticleId)}
-          updatePage={updatePage}
-          createPage={(page) => {addPages([page])}}
-        />
+      <div className="content-tracker">
+        <Group className="grouping">
+        <Panel className="panel main-content-panel" minSize="40%" defaultSize="80%">
+          <div className="stove-logo"><a href="/stove/oven"><SvgStoveNameplateBlue/></a></div>
+          <MainPanel 
+            allPages={allPages} 
+            addPages={addPages}
+            updatePage={updatePage}
+            selectedArticleId={selectedArticleId}
+            setSelectedArticleId={setSelectedArticleId}
+          />
         </Panel>
-    </Group>
-    <ToastContainer />
-    </div>
+        <Separator className="sidebar-resize-handle"/>
+        <Panel className="panel content-sidebar" collapsible minSize={275} maxSize={"40vw"}>
+          <Sidebar 
+            selectedPage={allPages.get(selectedArticleId)}
+            updatePage={updatePage}
+            createPage={(page) => {addPages([page])}}
+          />
+          </Panel>
+      </Group>
+      <ToastContainer />
+      </div>
   );
 }
 

@@ -4,9 +4,6 @@
     --ubyssey-light-blue: #44c3d5;
     --ubyssey-blue: #263a7b;
     --inactive-color: #ccc;
-    display: grid;
-    gap: 0;
-    align-items: start;
 }
 
 table, th, td {
@@ -19,8 +16,20 @@ table, th, td {
   justify-content: center;
   align-items: center;   
   flex-direction: column;  
-  // float: top;
-  height: 100vh;
+}
+
+.main-content-panel {
+  display: flex;
+  flex-direction: column;  
+  justify-content: flex-start;
+  align-items: center;
+  vertical-align: top;
+  flex-wrap: nowrap;
+}
+
+.stove-logo {
+  width: 10em;
+  padding-bottom: 1em;
 }
 
 
