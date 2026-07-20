@@ -662,14 +662,14 @@ function ContentTracker() {
       <div className="content-tracker">
         <Group className="grouping">
         <Panel className="panel main-content-panel" minSize="40%" defaultSize="80%">
-          <div className="stove-logo"><a href="/stove/oven"><SvgStoveNameplateBlue/></a></div>
-          <MainPanel 
-            allPages={allPages} 
-            addPages={addPages}
-            updatePage={updatePage}
-            selectedArticleId={selectedArticleId}
-            setSelectedArticleId={setSelectedArticleId}
-          />
+          <div className="stove-logo-container"><a href="/stove/oven"><SvgStoveNameplateBlue className="stove-logo"/></a></div>
+            <MainPanel 
+              allPages={allPages} 
+              addPages={addPages}
+              updatePage={updatePage}
+              selectedArticleId={selectedArticleId}
+              setSelectedArticleId={setSelectedArticleId}
+            />
         </Panel>
         <Separator className="sidebar-resize-handle"/>
         <Panel className="panel content-sidebar" collapsible minSize={275} maxSize={"40vw"}>
