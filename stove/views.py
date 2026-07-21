@@ -53,7 +53,7 @@ def load_pages(request, section="all", page=1):
     if (section != "all"):
         qs = qs.filter(current_section=section.lower())
     
-    qs = qs.order_by("-last_published_at", "-pk")
+    qs = qs.order_by("-latest_revision_created_at", "-pk")
 
     paginator = Paginator(qs, 20)
 
