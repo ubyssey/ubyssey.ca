@@ -5,6 +5,7 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import chroma from 'chroma-js';
+import Switch from "react-switch";
 
 import { Group, Panel, Separator} from "react-resizable-panels";
 import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline } from 'react-ionicons'
@@ -452,13 +453,18 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   )
 }
 
-function MoreArticlesButton({addPages, pkInPages}) {
+function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, isIncludingPublished}) {
   const [isLoading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [allPagesLoaded, setAllPagesLoaded] = useState(false)
 
   function fetchNextPage() {
-      return fetch(loadArticlesUrl.replace("1918", currentPage + 1), { method: "GET", headers: headers, credentials: "same-origin"})
+      const params = new URLSearchParams();
+      if (isOnlyUserFilter) params.append("username", currentUser);
+      if (!isIncludingPublished) params.append("include_published", "false")
+
+      console.log(loadArticlesUrl.replace("1918", currentPage + 1) + "?" + params)
+      return fetch(loadArticlesUrl.replace("1918", currentPage + 1) + "?" + params, { method: "GET", headers: headers, credentials: "same-origin"})
         .then(async (response) => {
           if (response.status != 200) {
             throw new Error(response)
@@ -493,6 +499,12 @@ function MoreArticlesButton({addPages, pkInPages}) {
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    setLoading(true)
+    setCurrentPage(0)
+    clearPages()
+  }, [isOnlyUserFilter, isIncludingPublished])
+
   let headers = {content_type: "application/json"}
 
   for (const key of Object.keys(requiredHeader)) {
@@ -512,9 +524,37 @@ function MoreArticlesButton({addPages, pkInPages}) {
   );
 }
 
+function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPublished, setIsIncludingPublished}) {
+  return <div className="query-panel">
+    <div className="query-toggle query-item">
+      <span className="query-label">Assigned to me </span>
+      <Switch 
+      checked={isOnlyUserFilter}
+      onChange={setOnlyUserFilter}
+      height={21}
+      width={42}
+      checkedIcon={null}
+      uncheckedIcon={null}
+      />
+    </div>
+    <div className="query-toggle query-item">
+      <span className="query-label">Include published</span> 
+      <Switch 
+      checked={isIncludingPublished}
+      onChange={setIsIncludingPublished}
+      height={21}
+      width={42}
+      checkedIcon={null}
+      uncheckedIcon={null}
+      />
+    </div>
+  </div>
+}
 
+function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId}) {
+  const [isOnlyUserFilter, setOnlyUserFilter] = useState(false);
+  const [isIncludingPublished, setIsIncludingPublished] = useState(true);
 
-function MainViewSelector({allPages, addPages, updatePage, selectedArticleId, setSelectedArticleId}) {
   return (
     <Tabs
       defaultActiveKey="list"
@@ -524,11 +564,21 @@ function MainViewSelector({allPages, addPages, updatePage, selectedArticleId, se
     >
       <Tab eventKey="list" title="List" >
         <h1>{pageSection} Articles</h1>
+        <QueryFilterPanel 
+          isOnlyUserFilter={isOnlyUserFilter} 
+          setOnlyUserFilter={setOnlyUserFilter}
+          isIncludingPublished={isIncludingPublished}
+          setIsIncludingPublished={setIsIncludingPublished}/>
         <ArticleList allPages={allPages} 
           updatePage={updatePage}
           selectedArticleId={selectedArticleId}
           setSelectedArticleId={setSelectedArticleId}/>
-        <MoreArticlesButton addPages={addPages} pkInPages={(pk) => allPages.get(pk) != undefined }/>
+        <MoreArticlesButton 
+          addPages={addPages} 
+          clearPages={clearPages}
+          pkInPages={(pk) => allPages.get(pk) != undefined } 
+          isOnlyUserFilter={isOnlyUserFilter}
+          isIncludingPublished={isIncludingPublished}/>
       </Tab>
       <Tab eventKey="calendar" title="Calendar" disabled>
         Tab content for Calendar
@@ -537,7 +587,7 @@ function MainViewSelector({allPages, addPages, updatePage, selectedArticleId, se
   );
 }
 
-function MainPanel({allPages, addPages, updatePage, selectedArticleId, setSelectedArticleId}) {
+function MainPanel({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId}) {
   console.log(allPages)
 
   return (
@@ -546,6 +596,7 @@ function MainPanel({allPages, addPages, updatePage, selectedArticleId, setSelect
           allPages={allPages} 
           addPages={addPages}
           updatePage={updatePage}
+          clearPages={clearPages}
           selectedArticleId={selectedArticleId}
           setSelectedArticleId={setSelectedArticleId}/>
     </div>
@@ -664,9 +715,6 @@ function ContentTracker() {
     const updatedPages = new Map(allPages)
     updatedPages.set(newPage.pk, newPage)
     setAllPages(updatedPages)
-
-    // setAllPages(allPages.set(newPage.pk, newPage))
-    // setSelectedArticleId(5)
   }
 
   function addPages(newPages) {
@@ -675,6 +723,10 @@ function ContentTracker() {
       updatedPages.set(page.pk, page)
     }
     setAllPages(updatedPages);
+  }
+
+  function clearPages() {
+    setAllPages(new Map)
   }
 
   const [selectedArticleId, setSelectedArticleId] = useState(
@@ -690,6 +742,7 @@ function ContentTracker() {
               allPages={allPages} 
               addPages={addPages}
               updatePage={updatePage}
+              clearPages={clearPages}
               selectedArticleId={selectedArticleId}
               setSelectedArticleId={setSelectedArticleId}
             />
