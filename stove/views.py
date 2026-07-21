@@ -3,7 +3,6 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
@@ -50,11 +49,9 @@ def content_tracker_react(request, section="all"):
 
 @login_required
 def load_pages(request, section="all", page=1):
-    data = request.body.decode('utf-8')
-    # data = json.loads(request.body.decode('utf-8'))
     username = request.GET.get('username', '')
     include_published = request.GET.get('include_published', '')
-    print(include_published)
+    
     qs = ArticlePage.objects.all()
     if (section != "all"):
         qs = qs.filter(current_section=section.lower())
