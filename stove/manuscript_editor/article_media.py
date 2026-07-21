@@ -19,7 +19,13 @@ class ArticleMediaUploadForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         author_model = get_image_model()._meta.get_field("author").remote_field.model
-        self.fields["author"].queryset = author_model.objects.all()
+        author_field = self.fields["author"]
+        author_field.queryset = (
+            author_model.objects.all() if self.is_bound else author_model.objects.none()
+        )
+        author_field.widget.attrs["data-article-media-author-select"] = ""
+        if not self.is_bound:
+            author_field.empty_label = "Loading authors"
 
     # Reject non existing tags, remove if we want to allow this (but I think we should add a media-tag adder in the content tracker or something)
     def clean_tags(self):

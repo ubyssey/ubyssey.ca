@@ -65,6 +65,25 @@ function usePageFieldToggles(form, schedulePreview) {
   }, [form, schedulePreview]);
 }
 
+let authorOptionsRequest;
+
+function fetchAuthorOptions(form) {
+  if (!authorOptionsRequest) {
+    authorOptionsRequest = fetch(form.dataset.authorsUrl, {
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+    }).then(async (response) => {
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(`Authors request failed status ${response.status}`);
+      }
+      return payload;
+    });
+  }
+
+  return authorOptionsRequest;
+}
+
 function useArticleAuthorsPanel() {
   useEffect(() => {
     const panel = document.querySelector("[data-article-authors-panel]");
@@ -116,14 +135,7 @@ function useArticleAuthorsPanel() {
 
     const loadAuthorOptions = async () => {
       try {
-        const response = await fetch(form.dataset.authorsUrl, {
-          credentials: "same-origin",
-          headers: { Accept: "application/json" },
-        });
-        const payload = await response.json();
-        if (!response.ok) {
-          throw new Error(`Authors request failed status ${response.status}`);
-        }
+        const payload = await fetchAuthorOptions(form);
 
         const options = [
           { value: "", label: "Select author" },
@@ -244,6 +256,25 @@ function useMediaAndSettingsModals(form) {
     let existingSelection = null;
 
     const mediaField = (name) => form.querySelector(`#id_article_media-${name}`);
+    const mediaAuthorField = form.querySelector("[data-article-media-author-select]");
+    let mediaAuthorsLoaded = false;
+    const mediaAuthorOptionsReady = fetchAuthorOptions(form).then((payload) => {
+      const selectedAuthorId = mediaAuthorField.dataset.pendingValue ?? mediaAuthorField.value;
+      const options = [
+        new Option("Select author", ""),
+        ...(payload.authors || []).map((author) => new Option(author.label, author.id)),
+      ];
+
+      mediaAuthorField.replaceChildren(...options);
+      mediaAuthorField.value = selectedAuthorId;
+      mediaAuthorsLoaded = true;
+      delete mediaAuthorField.dataset.pendingValue;
+      return true;
+    }).catch((error) => {
+      console.error(error);
+      mediaAuthorField.options[0].textContent = "Failed to fetch authors";
+      return false;
+    });
 
     const setTags = (tags) => {
       const selectedTags = tagOptions.filter((option) => tags.includes(option.value));
@@ -273,6 +304,7 @@ function useMediaAndSettingsModals(form) {
         if (field !== kind) field.value = "";
       });
       setTags([]);
+      delete mediaAuthorField.dataset.pendingValue;
       delete form.dataset.articleMediaEditKind;
       setUploadMode("upload");
     };
@@ -366,7 +398,11 @@ function useMediaAndSettingsModals(form) {
 
         ["id", "kind", "title", "author", "description", "tags"].forEach((name) => {
           const field = mediaField(name === "id" ? "media_id" : name);
-          field.value = card.dataset[name] || "";
+          const value = card.dataset[name] || "";
+          if (name === "author" && !mediaAuthorsLoaded) {
+            field.dataset.pendingValue = value;
+          }
+          field.value = value;
         });
         setTags((card.dataset.tags || "").split(",").map((tag) => tag.trim()));
         mediaField("file").value = "";
@@ -397,6 +433,11 @@ function useMediaAndSettingsModals(form) {
       on(uploadButton, "click", async () => {
         uploadButton.disabled = true;
         try {
+          const authorsAvailable = await mediaAuthorOptionsReady;
+          if (!authorsAvailable && mediaField("media_id").value) {
+            window.alert("Cannot edit media until authors are loaded. Though it probably shouldn't be taking this long.");
+            return;
+          }
           const response = await fetch(form.dataset.mediaUploadUrl, { method: "POST", body: new FormData(form) });
           const payload = await response.json();
           if (!response.ok) {
