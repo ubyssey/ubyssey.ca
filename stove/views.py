@@ -195,6 +195,18 @@ def manuscript_editor(request, page_id):
 
 @login_required
 @require_GET
+def manuscript_authors(request, page_id):
+    get_object_or_404(Page, id=page_id)
+    authors = AuthorPage.objects.live().only("id", "title").order_by("title")
+
+    return JsonResponse({"authors": [
+        {"id": str(author.pk), "label": str(author)}
+        for author in authors
+    ]})
+
+
+@login_required
+@require_GET
 def manuscript_revisions(request, page_id):
     page = get_object_or_404(Page, id=page_id)
     revisions = page.revisions.select_related("user").only(

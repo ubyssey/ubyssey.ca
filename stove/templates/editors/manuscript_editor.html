@@ -16,7 +16,7 @@
 {{ article_media_options|json_script:"article-media-options" }}
 {{ article_media_tag_options|json_script:"article-media-tag-options" }}
 
-<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-history-url="{% url 'stove:manuscript_revisions' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}" data-current-editor-username="{{ current_editor_username }}">
+<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-history-url="{% url 'stove:manuscript_revisions' self.id %}" data-authors-url="{% url 'stove:manuscript_authors' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}" data-current-editor-username="{{ current_editor_username }}">
   {% csrf_token %}
 
   <header class="manuscript-topbar">
@@ -64,13 +64,8 @@
           {% for row in article_authors_form.rows %}
             <div class="pm-author-panel__row" data-article-author-row>
               <label>
-                <select name="article_authors-author" data-article-author-select>
-                  <option value="">Select author</option>
-                  {% for author in article_authors_form.author_options %}
-                    {% with author_id=author.pk|stringformat:"s" %}
-                      <option value="{{ author_id }}" {% if author_id == row.author_id %}selected{% endif %}>{{ author }}</option>
-                    {% endwith %}
-                  {% endfor %}
+                <select name="article_authors-author" data-article-author-select data-selected-author-id="{{ row.author_id }}" data-authors-loading="true">
+                  <option value="{{ row.author_id }}" selected>Loading authors</option>
                 </select>
               </label>
               <label>

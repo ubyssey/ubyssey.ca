@@ -90,6 +90,7 @@ function useArticleAuthorsPanel() {
       root.render(
         <Select
           classNamePrefix="pm-author-panel-select"
+          isDisabled={select.dataset.authorsLoading === "true"}
           defaultValue={options.find((option) => option.value === select.value)}
           options={options}
           onChange={(option) => {
@@ -102,6 +103,55 @@ function useArticleAuthorsPanel() {
     };
 
     panel.querySelectorAll("[data-article-author-select]").forEach(setupAuthorSelect);
+    const refreshAuthorSelect = (select) => {
+      const container = select.nextElementSibling;
+      const root = selectRoots.get(container);
+      if (root) {
+        root.unmount();
+        selectRoots.delete(container);
+        container.remove();
+      }
+      setupAuthorSelect(select);
+    };
+
+    const loadAuthorOptions = async () => {
+      try {
+        const response = await fetch(form.dataset.authorsUrl, {
+          credentials: "same-origin",
+          headers: { Accept: "application/json" },
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(`Authors request failed status ${response.status}`);
+        }
+
+        const options = [
+          { value: "", label: "Select author" },
+          ...(payload.authors || []).map((author) => ({ value: author.id, label: author.label })),
+        ];
+
+        panel.querySelectorAll("[data-article-author-select]").forEach((select) => {
+          const selectedAuthorId = select.dataset.selectedAuthorId || "";
+          select.replaceChildren(...options.map((item) => {
+            const option = document.createElement("option");
+            option.value = item.value;
+            option.textContent = item.label;
+            return option;
+          }));
+          select.value = selectedAuthorId;
+          delete select.dataset.authorsLoading;
+          refreshAuthorSelect(select);
+        });
+      } catch (error) {
+        console.error(error);
+        panel.querySelectorAll("[data-article-author-select]").forEach((select) => {
+          select.options[0].textContent = "Failed to fetch authors";
+          refreshAuthorSelect(select);
+        });
+      }
+    };
+
+    loadAuthorOptions();
 
     const cleanups = [
       on(panel, "click", (event) => {
@@ -116,6 +166,9 @@ function useArticleAuthorsPanel() {
           row.querySelector(".pm-author-panel__select").remove();
           row.querySelectorAll("label > span").forEach((label) => { label.remove(); });
           row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
+          const authorSelect = row.querySelector("[data-article-author-select]");
+          authorSelect.dataset.selectedAuthorId = "";
+          authorSelect.value = "";
           rows.appendChild(row);
           setupAuthorSelect(row.querySelector("[data-article-author-select]"));
           window.requestAnimationFrame(() => {
@@ -132,6 +185,8 @@ function useArticleAuthorsPanel() {
           container.remove();
           if (allRows.length === 1) {
             row.querySelectorAll("select").forEach((select) => { select.selectedIndex = 0; });
+            authorSelect.dataset.selectedAuthorId = "";
+            authorSelect.value = "";
             setupAuthorSelect(authorSelect);
           } else {
             row.remove();

@@ -30,8 +30,6 @@ class ArticleAuthorsForm(forms.Form):
     def __init__(self, *args, initial_rows=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial_rows = initial_rows or []
-        # Where author options are taken from
-        self.author_options = list(AuthorPage.objects.live().order_by("title"))
         self.role_options = AUTHOR_ROLE_CHOICES
 
     @property
