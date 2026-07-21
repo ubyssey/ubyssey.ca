@@ -16,7 +16,7 @@
 {{ article_media_options|json_script:"article-media-options" }}
 {{ article_media_tag_options|json_script:"article-media-tag-options" }}
 
-<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}" data-current-editor-username="{{ current_editor_username }}">
+<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-history-url="{% url 'stove:manuscript_revisions' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}" data-current-editor-username="{{ current_editor_username }}">
   {% csrf_token %}
 
   <header class="manuscript-topbar">
@@ -31,10 +31,8 @@
       <button type="button" class="manuscript-topbar__button" data-history-control data-history-return>Return</button>
       <label class="manuscript-version-picker" data-history-control>
         <span>Version</span>
-        <select data-history-select aria-label="Version preview">
-          {% for h in history %}
-            <option value="{{ h.id }}">{{ h.user }} {{ h.created_at|date:"M j, Y H:i" }}</option>
-          {% endfor %}
+        <select data-history-select aria-label="Version preview" disabled>
+          <option value="">Loading versions</option>
         </select>
       </label>
       <button type="button" class="manuscript-topbar__button" data-history-control data-history-restore disabled>Restore</button>

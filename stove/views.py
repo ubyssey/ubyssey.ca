@@ -165,12 +165,6 @@ def manuscript_editor(request, page_id):
     if editor_errors:
         print(f"Validation Error: {editor_errors}")
 
-    # History
-    history = [
-        {"id": str(revision.id), "user": get_user_display_name(revision.user), "created_at": revision.created_at}
-        for revision in page.revisions.all().order_by("-created_at")
-    ]
-
     stream_editors = get_streamfield_editors(page)
     article_media = page.article_media.all()
 
@@ -178,7 +172,6 @@ def manuscript_editor(request, page_id):
     # page_form: contains the form for the page fields
     # stream_editors: contains streamField names, block definitions, and preprocessed values
     # editor_errors: contains any errors from form submission
-    # history: contains the revision history for this page
     # featured_media_form: contains the form for the featured media
     # article_media_upload_form: contains the form for uploading article media
     # article_media: contains the list of existing article images/documents in this page
@@ -191,8 +184,6 @@ def manuscript_editor(request, page_id):
          "article_authors_form": article_authors_form,
          "stream_editors": stream_editors,
          "editor_errors": editor_errors,
-         "history" : history,
-         # Probably saved somewhere else here -> How did I do it for history?
          "current_editor_username": get_user_display_name(request.user),
          "featured_media_form": featured_media_form,
          "article_media_upload_form": get_article_media_upload_form(),
@@ -200,6 +191,28 @@ def manuscript_editor(request, page_id):
          "article_media_tag_options": get_article_media_tag_options(),
          "article_media": article_media}
     )
+
+
+@login_required
+@require_GET
+def manuscript_revisions(request, page_id):
+    page = get_object_or_404(Page, id=page_id)
+    revisions = page.revisions.select_related("user").only(
+        "id",
+        "created_at",
+        "user_id",
+        "user__first_name",
+        "user__last_name",
+        "user__email",
+    ).order_by("-created_at")
+
+    return JsonResponse({"revisions": [
+        {
+            "id": str(revision.id),
+            "label": f"{get_user_display_name(revision.user)} {date_format(localtime(revision.created_at), 'M j, Y H:i')}",
+        }
+        for revision in revisions
+    ]})
 
 
 @login_required

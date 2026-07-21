@@ -12,6 +12,7 @@ urlpatterns = [
     re_path(r"^oven/(?P<section>\w+)/(?P<page>\d+)$", views.load_pages, name="content_tracker_load_pages"),
     path("content/<int:page_id>/update", views.update_content_tracker, name="update_content_tracker"),
     path("page/<int:page_id>", views.manuscript_editor, name="manuscript_editor"),
+    path("page/<int:page_id>/revisions", views.manuscript_revisions, name="manuscript_revisions"),
     path("page/<int:page_id>/preview", views.manuscript_preview, name="manuscript_preview"),
     path("page/<int:page_id>/full-preview", views.manuscript_full_preview, name="manuscript_full_preview"),
     path("page/<int:page_id>/restore", views.manuscript_restore, name="manuscript_restore"),

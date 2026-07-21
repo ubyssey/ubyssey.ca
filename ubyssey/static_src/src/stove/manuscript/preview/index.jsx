@@ -331,6 +331,35 @@ function focusedArticleRichText(manuscriptRoot) {
   return Boolean(active?.closest?.(".pm-manuscript-rich-text, .pm-manuscript-direct-edit, .pm-manuscript-toolbar"));
 }
 
+// Lazy loading Revision History
+async function loadRevisionHistory(form, historySelect) {
+  if (!form.dataset.historyUrl || !historySelect) return;
+
+  try {
+    const response = await fetch(form.dataset.historyUrl, {
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+    });
+    const payload = await response.json();
+    if (!response.ok) {
+      throw new Error(`History request failed status ${response.status}`);
+    }
+
+    const options = (payload.revisions || []).map((revision) => {
+      const option = document.createElement("option");
+      option.value = revision.id;
+      option.textContent = revision.label;
+      return option;
+    });
+
+    historySelect.replaceChildren(...options);
+    historySelect.disabled = false;
+  } catch (error) {
+    console.error(error);
+    historySelect.options[0].textContent = "Failed to fetch history";
+  }
+}
+
 export function setupHistoryPreviewButtons(manuscriptRoot) {
   const form = document.querySelector("[data-manuscript-form]");
   const historyButtons = document.querySelectorAll("[data-history-button]");
@@ -339,6 +368,7 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
   const returnButton = document.querySelector("[data-history-return]");
   if (!form || !manuscriptRoot) return;
   let historyPreviewId = 0;
+  loadRevisionHistory(form, historySelect);
 
   const selectedRevision = () => historySelect?.value || "";
   const selectedRevisionIsCurrent = () => !historySelect || historySelect.selectedIndex <= 0;
