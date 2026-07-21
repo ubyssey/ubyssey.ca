@@ -25,7 +25,6 @@ from stove.manuscript_editor import (
     get_streamfield_editors,
     apply_editor_post,
     get_article_media_upload_form,
-    get_article_media_options,
     get_article_media_tag_options,
     get_featured_media_form,
     add_article_media,
@@ -187,7 +186,6 @@ def manuscript_editor(request, page_id):
          "current_editor_username": get_user_display_name(request.user),
          "featured_media_form": featured_media_form,
          "article_media_upload_form": get_article_media_upload_form(),
-         "article_media_options": get_article_media_options(),
          "article_media_tag_options": get_article_media_tag_options(),
          "article_media": article_media}
     )

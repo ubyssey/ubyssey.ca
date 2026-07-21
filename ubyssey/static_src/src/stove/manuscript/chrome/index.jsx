@@ -13,6 +13,7 @@ const focusableSelector = "input:not([type='hidden']), select, textarea, button"
 // Creates eventlistener, and returns cleanup function
 // see useMediaAndSettingsModals
 function on(target, eventName, callback, options) {
+  if (!target) return () => {};
   target.addEventListener(eventName, callback, options);
   return () => target.removeEventListener(eventName, callback, options);
 }
@@ -247,7 +248,8 @@ function useMediaAndSettingsModals(form) {
     const existingKind = document.querySelector("[data-article-media-existing-kind]");
     const existingSelectMount = document.querySelector("[data-article-media-existing-select]");
     const existingAddButton = document.querySelector("[data-article-media-existing-add]");
-    const existingOptions = JSON.parse(document.getElementById("article-media-options").textContent);
+    // Disabling for now
+    const existingOptions = document.getElementById("article-media-options") ? JSON.parse(existingOptionsScript.textContent) : { image: [], document: [] };
     const existingSelectRoot = createRoot(existingSelectMount);
     const tagOptions = JSON.parse(document.getElementById("article-media-tag-options").textContent);
     const tagField = form.querySelector("#id_article_media-tags");
@@ -380,11 +382,6 @@ function useMediaAndSettingsModals(form) {
         reset();
         syncImageFields();
         setModalOpen(uploadModal, true, kind);
-      }),
-      on(document.querySelector("[data-article-media-open-existing]"), "click", () => {
-        existingModal.classList.add("article-media-modal--stacked");
-        renderExistingSelect();
-        setModalOpen(existingModal, true, existingKind);
       }),
       on(document.querySelector("[data-article-media-open-gallery]"), "click", () => {
         setModalOpen(galleryModal, true, galleryModal.querySelector("[data-article-media-edit-button], a, button"));

@@ -107,15 +107,6 @@ def save_article_media(page, form, user=None):
     return add_article_media(page, item, is_image)
 
 
-# Moved from views.py
-def get_article_media_options():
-    def options(model):
-        return [
-            {"value": str(media.id), "label": f"{media.title} — {media.filename}"}
-            for media in model.objects.all().order_by("title")
-        ]
-    return {"image": options(get_image_model()), "document": options(get_document_model())}
-
 
 def get_article_media_tag_options():
     return [
