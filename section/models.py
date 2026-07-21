@@ -497,6 +497,19 @@ class CategoryPage(SectionPage):
     ]
     subpage_types = []
 
+    beat = BooleanField(
+        default=False
+    )
+
+    content_panels = SectionPage.content_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel('beat'),
+            ],
+            heading="Beat"
+        )
+    ]
+
     def get_filter(self):
         filters = {"section": self.get_parent().slug, "category": self.slug}
         return filters

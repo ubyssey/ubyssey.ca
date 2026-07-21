@@ -10,10 +10,7 @@ class OneOffVideoBlock(blocks.StructBlock):
         max_length=255,
         required=False,
     )
-    caption = blocks.CharBlock(
-        max_length=255,
-        required=False,
-    )
+    caption = blocks.RichTextBlock(required=False)
     credit = blocks.CharBlock(
         max_length=255,
         required=False,

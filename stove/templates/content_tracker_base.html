@@ -1,0 +1,247 @@
+{% extends "stove_base.html" %}
+{% load static %}
+
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/stove/content_tracker.css' %}"></link>
+<script defer src="{% static 'ubyssey/js/stove/content_tracker.js' %}"></script>
+
+
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="content-tracker">
+<div class="main-panel">
+    <div class="selection-bar" id='view-option-navbar'>
+        <ul>
+            <li class="selection-option selection-option-active"><a class="selection-bar-left">List</a></li>
+            <li class="selection-option selection-option-inactive selection-option-disabled"><a  class="selection-bar-right">Calendar</a></li>
+        </ul>
+    </div>
+    <br>
+    <h1> All Articles Table </h1>
+
+    <div id="content-table-settings">
+        <span> Assigned to me
+            <label class="switch filter">
+                <input type="checkbox" id="show-assigned-to-me" unchecked>
+                <span class="slider round"></span>
+            </label>
+        </span>
+        <span> Show Published
+            <label class="switch filter" >
+                <input type="checkbox" id="show-published" unchecked>
+                <span class="slider round"></span>
+            </label>
+        </span>
+    </div>
+    
+    
+    <datalist id="beat-options">
+        <option value="AMS">AMS</option>
+        <option value="Senate">Senate</option>
+        <option value="Community">Community</option>
+        <option value="Theatre">Theatre</option>
+    </datalist>
+    
+
+    <table class="content-table">
+        <thead>
+            <tr class="table-header">
+                <th class="slug-header">Slug</th>
+                <th class="byline-header">Byline</th>
+                <th class="deadline-header">Deadline</th>
+                <th class="beat-header">Beat</th>
+                <th class="status-header">Status</th>
+                <th class="visuals-header">Visuals</th>
+                <th class="media-header">Media</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pages%}
+            <tr class="content-row" id="content-row-{{ p.id }}">
+            <td class="slug-cell">
+                <a class="slug-link" href="{% url 'stove:manuscript_editor' p.id %}">
+                    {{ p.title }}
+                </a>
+                <button class="edit-icon" id="edit-icon-{{ p.id }}">✎</button>
+                <button class="preview-icon" id="preview-icon-{{ p.id }}">👁️</button>
+            </td>
+            <td id="byline-cell">
+                <input name="byline-options" class="byline-field" id="byline-field-{{ p.id }}" type="text" autocomplete="on" list="byline-options" value="{{ p.authors_string }}"/> 
+                {% comment %} make this multi select and also make the authors separate {% endcomment %}
+            </td>
+            <td><input type="datetime-local" value="{{p.deadline|date:"Y-m-d"}}T{{p.deadline|time:"H:i"}}"/></td>            
+            <td>
+                <div class="autocomplete">
+                    <input class="beat-input autocomplete-field" type="text" name="beat-{{ p.id }}" placeholder="Beat"
+                    {% if p.category_page|stringformat:"s" != "None" %}
+                        value="{{p.category_page}}"
+                    {% endif %}
+                    >
+                </div>
+            </td>
+            <td class="status-cell"> 
+
+                <select class="status-field" id="status-field-{{ p.id }}" 
+                    {% if p.live %}
+                        disabled
+                    {% endif %}
+                    name="status">
+                    <option value="assigned"
+                    {% if p.article_status == 1 %}
+                    selected
+                    {% endif %}
+                    >Assigned</option>
+                    <option value="filed" 
+                    {% if p.article_status == 2 %}
+                    selected
+                    {% endif %}>Filed</option>
+                    <option value="editing" {% if p.article_status == 3 %}
+                    selected
+                    {% endif %}>Editing</option>
+                    <option value="copy" {% if p.article_status == 4 %}
+                    selected
+                    {% endif %}>Copy</option>
+                    <option value="ready" {% if p.article_status == 5 %}
+                    selected
+                    {% endif %}>Ready</option>
+                    <option value="published" 
+                    {% if p.article_status == 6 or p.live%}
+                    selected
+                    {% endif %}
+                    readonly
+                    >Published</option>
+                </select>
+            </td>
+            <td class="visuals-cell">❗️</td>
+            <td class="media-cell">❗️</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="content-tracker-select" class="c-content-tracker-select"></div>
+
+    <script src="{% static 'ubyssey/js/stove/content_tracker_select.js' %}" type="text/javascript"></script>
+
+</div>
+{% if pages.has_other_pages %}
+<div class="pagination">
+    Implement pagination here
+</div>
+{% endif %}
+<div class="metadata-resize-handle" data-metadata-resize-handle role="separator" aria-orientation="vertical" aria-label="Resize metadata sidebar"></div>
+    <aside class="metadata-editor" data-metadata-editor>
+        <div id="metadata-options">
+            <div class="selection-bar" id="metadata-panel-select">
+                <ul>
+                    <li class="selection-option selection-option-active sidebar-nav" id="metadata-selection-create"><a class="selection-bar-left metadata-nav-button" name="create">Create</a></li>
+                    <li class="selection-option selection-option-inactive sidebar-nav selection-option-disabled" id="metadata-selection-edit"><a class="metadata-nav-button" name="edit">Edit</a></li>
+                    <li class="selection-option selection-option-inactive sidebar-nav selection-option-disabled" id="metadata-selection-preview"><a  class="selection-bar-right metadata-nav-button" name="preview">Preview</a></li>
+                </ul>
+            <div>
+        </div>
+        <div>
+        <div id="metadata-selection-preview-pane" hidden>
+            <iframe id="article-preview-pane" src="http://localhost:8000/admin/pages/19/edit/preview/" class="draft-preview">
+            </iframe>
+        </div>
+        <div id="metadata-selection-create-pane">
+            <h2>Create
+
+        </div>
+        <div id="metadata-selection-edit-pane" hidden>
+            {% csrf_token %}
+            <div>Slug:</div> <div><input type="text" id="edit-title" name="edit-title"></div>
+            <div>Byline:</div> <div><input type="text" id="edit-byline" name="edit-byline"></div>
+            <div>Deadline:</div> <div><input type="datetime-local" id="edit-deadline" name="edit-deadline"></div>
+            <div>Beat:</div> <div><input type="text" class="beat-input autocomplete-field" id="edit-beat" name="edit-beat"></div>
+            <button id="edit-submit">Update</button>
+        </div>
+    </div>
+    </aside>
+</div>
+</div>
+
+
+<script>
+    // create a collection of page information.
+    let pages = {}
+    let beats = {}
+    let beatOptions = []
+    let authors = []
+    let currentUser = "{{ request.user.get_full_name }}"
+    {% autoescape off %}
+    {% for p in pages%}
+    pages[{{ p.id }}] = {{p.to_json}}
+    {% endfor %}
+    {% for b in beats %}
+    beats[{{b.pk}}] = {{b.to_json}}
+    beatOptions.push({value: {{b.pk}}, label: "{{b.title}}"})
+    {% endfor %}
+    {% for a in authors %}
+    authors.push({ value: {{a.id}}, label: '{{a.full_name}}' })
+    {% endfor %}
+    {% endautoescape %}
+
+    beatOptions = [{
+        label: 'Opinion',
+        options: [
+        { value: 1, label: 'Powers that Be' },
+        { value: 2, label: 'Point of Inquiry' },
+        { value: 3, label: 'Move Fast, Break Things'},
+        { value: 13, label: 'Op-ed'},
+        { value: 14, label: 'Editorial'}
+        ]
+    },
+    {
+        label: 'News',
+        options: [
+        { value: 4, label: 'Alma Mater Society' },
+        { value: 5, label: 'Senate' },
+        { value: 6, label: 'Health'},
+        { value: 7, label: 'Climate'}
+        ]
+    },
+    {
+        label: 'Arts',
+        options: [
+        { value: 8, label: 'Theatre'},
+        { value: 9, label: 'Music'},
+        { value: 10, label: 'Books'},
+        { value: 11, label: 'Fashion'}
+        ]
+    },
+    {
+        label: 'Other',
+        options: [
+        { value: 12, label: 'Margins'}
+        ]
+    }]
+    console.log(authors)
+    console.log(beatOptions)
+
+
+
+    
+    let updateEndpoint = "{% url 'stove:update_content_tracker' 1918 %}"
+
+    const csrfToken = getCookie('csrftoken');
+    const requiredHeader = {'X-CSRFToken': csrfToken}
+
+    // getting the CSRF token from the cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    </script>
+<datalist id="byline-options">
+    {% for author in authors %}
+    <option value="{{author.full_name}}"></option>
+    {% endfor %}
+</datalist>
+{% endblock %}
