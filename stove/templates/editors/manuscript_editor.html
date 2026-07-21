@@ -25,7 +25,10 @@
       <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
       <a href="{% url 'stove:manuscript_full_preview' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View Preview</a>
       <button type="submit" class="manuscript-topbar__button" name="action" value="draft" data-article-action="draft">Save</button> 
-      <button type="submit" class="manuscript-topbar__button" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
+      {% comment %}
+        Save and Publish button hidden for now 
+        <button type="submit" class="manuscript-topbar__button" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
+      {% endcomment %}
       <button type="button" class="manuscript-topbar__button" data-history-control data-history-return>Return</button>
       <label class="manuscript-version-picker" data-history-control>
         <span>Version</span>
