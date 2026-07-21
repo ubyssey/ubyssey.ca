@@ -7,7 +7,7 @@
     {% if imageBlock.click_to_enlarge or click_to_enlarge %}
     <a class="open-modal" aria-label="Enlarge image">
     {% endif %}
-    <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ imageBlock.caption|force_escape }}" data-credit="{{ imageBlock.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if imageBlock.alt_text %}{{ imageBlock.alt_text }}{% else %}{{ imageBlock.caption|striptags|force_escape }}{% endif %}" />
+    <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ imageBlock.caption|stringformat:'s'|force_escape }}" data-credit="{{ imageBlock.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if imageBlock.alt_text %}{{ imageBlock.alt_text }}{% else %}{{ imageBlock.caption|stringformat:'s'|striptags|force_escape }}{% endif %}" />
     {% if imageBlock.click_to_enlarge or click_to_enlarge %}
     </a>
     <dialog class="modal close-modal hide js-dropdown-container">
@@ -20,7 +20,7 @@
 
     {% if imageBlock.caption or imageBlock.credit %}
         <div class="caption">
-            <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption" data-article-editable-mode="richtext">{% if imageBlock.caption %}{{ imageBlock.caption|safe }}{% endif %}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if imageBlock.credit %}{{ imageBlock.credit }}{% endif %}</span>
+            <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption" data-article-editable-mode="richtext">{% if imageBlock.caption %}{{ imageBlock.caption|stringformat:'s'|safe }}{% endif %}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if imageBlock.credit %}{{ imageBlock.credit }}{% endif %}</span>
         </div>
     {% endif %}
 </div>

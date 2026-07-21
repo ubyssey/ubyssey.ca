@@ -5,5 +5,5 @@
     {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=self %}
 {% else %}
     {% image self.image width-1000 format-webp as image %}
-    <img class="image-attachment attachment article-attachment {{ self.style }} {{ self.width }}" style="shape-outside: url('{{image.url}}')" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ self.caption|force_escape }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{ self.caption|striptags|force_escape }}{% endif %}" />
+    <img class="image-attachment attachment article-attachment {{ self.style }} {{ self.width }}" style="shape-outside: url('{{image.url}}')" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ self.caption|stringformat:'s'|force_escape }}" data-credit="{{ self.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if self.alt_text %}{{ self.alt_text }}{% else %}{{ self.caption|stringformat:'s'|striptags|force_escape }}{% endif %}" />
 {% endif %}
