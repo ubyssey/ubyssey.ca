@@ -186,7 +186,6 @@ def manuscript_editor(request, page_id):
          "current_editor_username": get_user_display_name(request.user),
          "featured_media_form": featured_media_form,
          "article_media_upload_form": get_article_media_upload_form(),
-         "article_media_tag_options": get_article_media_tag_options(),
          "article_media": article_media}
     )
 
@@ -201,6 +200,13 @@ def manuscript_authors(request, page_id):
         {"id": str(author.pk), "label": str(author)}
         for author in authors
     ]})
+
+
+@login_required
+@require_GET
+def manuscript_media_tags(request, page_id):
+    get_object_or_404(Page, id=page_id)
+    return JsonResponse({"tags": get_article_media_tag_options()})
 
 
 @login_required

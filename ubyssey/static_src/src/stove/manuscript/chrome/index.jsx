@@ -249,9 +249,11 @@ function useMediaAndSettingsModals(form) {
     const existingSelectMount = document.querySelector("[data-article-media-existing-select]");
     const existingAddButton = document.querySelector("[data-article-media-existing-add]");
     // Disabling for now
-    const existingOptions = document.getElementById("article-media-options") ? JSON.parse(existingOptionsScript.textContent) : { image: [], document: [] };
+    const existingOptions = { image: [], document: [] };
     const existingSelectRoot = createRoot(existingSelectMount);
-    const tagOptions = JSON.parse(document.getElementById("article-media-tag-options").textContent);
+    let tagOptions = [];
+    let tagOptionsStatus = "loading";
+    let pendingTags = [];
     const tagField = form.querySelector("#id_article_media-tags");
     const tagSelectMount = document.createElement("div");
     const tagSelectRoot = createRoot(tagSelectMount);
@@ -279,14 +281,17 @@ function useMediaAndSettingsModals(form) {
     });
 
     const setTags = (tags) => {
+      pendingTags = tags.filter(Boolean);
       const selectedTags = tagOptions.filter((option) => tags.includes(option.value));
-      tagField.value = selectedTags.map((option) => option.value).join(", ");
+      const fieldTags = tagOptionsStatus === "loaded" ? selectedTags.map((option) => option.value) : pendingTags;
+      tagField.value = fieldTags.join(", ");
       tagSelectRoot.render(
         <Select
           isMulti
+          isDisabled={tagOptionsStatus !== "loaded"}
           classNamePrefix="article-media-tag-select"
           options={tagOptions}
-          placeholder="search"
+          placeholder={tagOptionsStatus === "failed" ? "Failed to fetch tags" : "Loading tags"}
           value={selectedTags}
           onChange={(options) => setTags(options.map((option) => option.value))}
         />,
@@ -295,6 +300,22 @@ function useMediaAndSettingsModals(form) {
     tagField.hidden = true;
     tagField.parentNode.insertBefore(tagSelectMount, tagField.nextSibling);
     setTags([]);
+    fetch(form.dataset.mediaTagsUrl, {
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+    }).then(async (response) => {
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(`Media tags request failed status ${response.status}`);
+      }
+      tagOptions = payload.tags || [];
+      tagOptionsStatus = "loaded";
+      setTags(pendingTags);
+    }).catch((error) => {
+      console.error(error);
+      tagOptionsStatus = "failed";
+      setTags(pendingTags);
+    });
 
     const setUploadMode = (mode) => {
       const editing = mode === "edit";
