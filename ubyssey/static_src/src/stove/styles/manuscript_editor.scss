@@ -135,7 +135,8 @@ body {
     min-width: 0;
 }
 
-.manuscript-editor:not(.manuscript-editor--history) [data-history-return] {
+.manuscript-editor:not(.manuscript-editor--history) [data-history-return],
+.manuscript-editor:not(.manuscript-editor--history) [data-history-restore] {
     display: none;
 }
 

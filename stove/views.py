@@ -49,11 +49,19 @@ def content_tracker_react(request, section="all"):
 
 @login_required
 def load_pages(request, section="all", page=1):
+    username = request.GET.get('username', '')
+    include_published = request.GET.get('include_published', '')
+    
     qs = ArticlePage.objects.all()
     if (section != "all"):
         qs = qs.filter(current_section=section.lower())
+    if (username):
+        author_page = get_object_or_404(AuthorPage, full_name=username)
+        qs = qs.filter(article_authors__author=author_page)
+    if (include_published.lower() == "false"):
+        qs = qs.filter(live=False)
     
-    qs = qs.order_by("-last_published_at", "-pk")
+    qs = qs.order_by("-latest_revision_created_at", "-pk")
 
     paginator = Paginator(qs, 20)
 
@@ -66,20 +74,6 @@ def load_pages(request, section="all", page=1):
             result += page.get_latest_revision_as_object().to_json() + ","
         result = result[:-1] + "]"
     return JsonResponse(result, safe=False)
-
-
-@login_required
-def content_tracker_base(request):
-    editable_pages = ["authorpage", "homepage", "standardarticlepage", "liveblogarticlepage", "sectionpage"]
-    qs = ArticlePage.objects.all().order_by("-last_published_at", "-pk")
-
-    paginator = Paginator(qs, 50)
-    pages = paginator.get_page(request.GET.get("article-page", 1))
-    
-    beats = CategoryPage.objects.all().filter(beat=True)
-    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")    
-
-    return render(request, "content_tracker_base.html", {"pages": pages, "beats": beats, "authors": authors})
 
 @login_required
 @require_POST

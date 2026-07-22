@@ -201,6 +201,23 @@ input:checked + .slider:before {
 // ------Table Headers------
 // =========================
 
+.query-panel {
+  display: flex;
+  flex-direction: horizontal;
+}
+
+.query-item {
+  display: flex;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-right: 2em;
+  align-items: center;
+}
+
+.query-label {
+  padding-right: 0.5em;
+}
+
 .content-table {
     width: 50vw;
 }
