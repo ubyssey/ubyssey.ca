@@ -212,6 +212,13 @@ function editableFieldValue(node, mode = "richtext") {
   const richTextNodes = (node.content || [])
     .filter((block) => !["stream_block", "editable_field", "control_field"].includes(block.type))
     .map((block) => richTextSchema.nodeFromJSON(block));
+
+  // Checks if content is empty and doesn't serialize
+  const hasContent = richTextNodes.some((richTextNode) => (
+    richTextNode.textContent.trim() != ""
+  ))
+  if(!hasContent) return "";
+
   const domFragment = DOMSerializer
     .fromSchema(richTextSchema)
     .serializeFragment(Fragment.fromArray(richTextNodes));
