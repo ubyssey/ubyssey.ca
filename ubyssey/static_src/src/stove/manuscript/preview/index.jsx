@@ -288,7 +288,7 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
 
   const scheduleFromForm = (event) => {
     if ((event.composedPath?.() || []).some((element) => element?.matches?.("[data-history-select], .manuscript-topbar, .manuscript-topbar *"))) return;
-    if ((event.composedPath?.() || []).some((element) => element?.matches?.(".pm-manuscript-rich-text, .pm-manuscript-direct-edit"))) return;
+    if ((event.composedPath?.() || []).some((element) => element?.matches?.(".pm-manuscript-rich-text, .pm-manuscript-direct-edit, .pm-comment-reply"))) return;
     if (manuscriptSession.blockEditorModalOpen) return;
     manuscriptSession.schedulePreview();
   };

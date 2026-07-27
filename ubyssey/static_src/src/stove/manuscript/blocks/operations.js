@@ -18,11 +18,13 @@ export function blockCommentsForNode(node) {
   return Array.isArray(node?.attrs?.blockComments) ? node.attrs.blockComments : [];
 }
 
-export function updateStreamBlockAttrs(instance, info, attrs) {
-  instance.view.dispatch(instance.view.state.tr.setNodeMarkup(info.start, undefined, {
+export function updateStreamBlockAttrs(instance, info, attrs, { skipPreview = false } = {}) {
+  const transaction = instance.view.state.tr.setNodeMarkup(info.start, undefined, {
     ...info.node.attrs,
     ...attrs,
-  }));
+  });
+  if (skipPreview) transaction.setMeta("skipPreview", true);
+  instance.view.dispatch(transaction);
 }
 
 export function updateBlockCommentThread(instance, descriptor, updater) {
@@ -30,7 +32,7 @@ export function updateBlockCommentThread(instance, descriptor, updater) {
   if (!info) return false;
 
   const nextComments = updater(blockCommentsForNode(info.node));
-  updateStreamBlockAttrs(instance, info, { blockComments: nextComments });
+  updateStreamBlockAttrs(instance, info, { blockComments: nextComments }, { skipPreview: true });
   refreshBlockCommentBorders(document.querySelector("[data-article-shadow]")?.shadowRoot);
   return true;
 }

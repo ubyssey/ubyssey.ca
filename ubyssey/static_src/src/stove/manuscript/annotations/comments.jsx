@@ -10,6 +10,7 @@ import {
   collectCommentThreads,
   commentSuggestion,
   removeCommentThread,
+  rejectCommentSuggestion,
   setCommentThreadResolved,
   suggestionLabel,
 } from "./comment_model.js";
@@ -30,14 +31,19 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   const currentThreads = () => [
     ...getViews().flatMap((view) => collectCommentThreads(view)),
     ...getThreads(),
-  ];
+  ].filter((thread) => !thread.resolved);
 
-  // Scrolls after scroll to comment associated text, so comment is onscreen
+  const activeDraftHasText = () => Boolean(
+    root.querySelector(".pm-comment-thread--active textarea")?.value.trim(),
+  );
+
   const centerThreadAfterScroll = (threadId) => {
     scrollEndCleanup?.();
     let timer = null;
+
     const cleanup = () => {
       clearTimeout(timer);
+      document.removeEventListener("scrollend", finish);
       window.removeEventListener("scroll", onScroll, true);
       if (scrollEndCleanup === cleanup) scrollEndCleanup = null;
     };
@@ -49,15 +55,20 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     };
     const onScroll = () => {
       clearTimeout(timer);
-      timer = setTimeout(finish, 120);
+      timer = setTimeout(finish, 200);
     };
 
     scrollEndCleanup = cleanup;
-    window.addEventListener("scroll", onScroll, true);
-    onScroll();
+    if ("onscrollend" in document) {
+      document.addEventListener("scrollend", finish, { once: true });
+    } else {
+      window.addEventListener("scroll", onScroll, true);
+      onScroll();
+    }
   };
 
   const setActiveThread = (threadId, scroll = "center") => {
+    if (threadId && threadId !== activeThreadId && activeDraftHasText()) return;
     let anchorScrolled = false;
     if (scroll === "nearest") {
       const thread = currentThreads().find((item) => item.threadId === threadId);
@@ -118,7 +129,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   const removePendingThreads = (event) => {
     if (event.type === "focusin" && eventPath(event).includes(articleShadow)) return;
     const commentMark = eventCommentMark(event);
-    if (eventCommentCard(event) || commentMark) return;
+    if (eventCommentCard(event) || commentMark || activeDraftHasText()) return;
 
     clearActiveThread();
     let changed = false;
@@ -283,7 +294,7 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
           thread={thread}
           username={username}
           refresh={refresh}
-          active={thread.threadId === activeThreadId && !thread.resolved}
+          active={thread.threadId === activeThreadId}
           setActiveThread={setActiveThread}
         />
       ))}
@@ -292,22 +303,17 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
 }
 
 function CommentThread({ thread, username, refresh, active, setActiveThread }) {
-  const resolved = !thread.pending && Boolean(thread.resolved);
   const suggestion = thread.view && commentSuggestion(thread.comments);
-  const className = [
-    "pm-comment-thread",
-    resolved ? "pm-comment-thread--collapsed" : "",
-    active ? "pm-comment-thread--active" : "",
-  ].filter(Boolean).join(" ");
+  const refocusEditor = () => window.requestAnimationFrame(() => thread.view?.focus());
+  const className = active ? "pm-comment-thread pm-comment-thread--active" : "pm-comment-thread";
 
-  const resolveLabel = suggestion ? "Accept suggestion" : resolved ? "Reopen comment" : "Resolve comment";
+  const resolveLabel = suggestion ? "Accept suggestion" : "Resolve comment";
   const resolveButton = !thread.pending && (
     <button
       type="button"
       className="pm-comment-thread__collapse"
       title={resolveLabel}
       aria-label={resolveLabel}
-      aria-pressed={suggestion ? undefined : String(resolved)}
       onPointerDown={(event) => { event.stopPropagation(); }}
       onClick={(event) => {
         event.stopPropagation();
@@ -315,15 +321,35 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
         if (suggestion) {
           changed = acceptCommentSuggestion(thread.view, thread.threadId, suggestion);
         } else {
-          const nextResolved = !thread.resolved;
           changed = thread.setResolved
-            ? thread.setResolved(nextResolved)
-            : setCommentThreadResolved(thread.view, thread.threadId, nextResolved);
+            ? thread.setResolved(true)
+            : setCommentThreadResolved(thread.view, thread.threadId, true);
         }
-        if (changed) refresh();
+        if (changed) {
+          refresh();
+          if (suggestion) refocusEditor();
+        }
       }}
     >
-      {resolved ? "✓" : ""}
+      ✓
+    </button>
+  );
+  const rejectButton = suggestion && (
+    <button
+      type="button"
+      className="pm-comment-thread__collapse"
+      title="Reject suggestion"
+      aria-label="Reject suggestion"
+      onPointerDown={(event) => { event.stopPropagation(); }}
+      onClick={(event) => {
+        event.stopPropagation();
+        if (rejectCommentSuggestion(thread.view, thread.threadId, suggestion)) {
+          refresh();
+          refocusEditor();
+        }
+      }}
+    >
+      X
     </button>
   );
 
@@ -332,34 +358,40 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
       className={className}
       data-comment-thread-id={thread.threadId}
       onPointerDown={() => {
-        if (!resolved && !active) window.requestAnimationFrame(() => {
+        if (!active) window.requestAnimationFrame(() => {
           setActiveThread(thread.threadId, "nearest");
         });
       }}
     >
-      {resolved && resolveButton}
-
-      {!resolved && (
-        <>
-          {thread.comments.length > 0 && (
-            <div className="pm-comment-thread__comments">
-              {thread.comments.map((comment, index) => (
-                <Comment
-                  key={`${comment.createdAt}-${comment.username}-${comment.text}`}
-                  comment={comment}
-                  resolveButton={index === 0 ? resolveButton : null}
-                />
-              ))}
-            </div>
-          )}
-          {active && (
-            <CommentReplyForm
-              thread={thread}
-              username={username}
-              close={() => { setActiveThread(null, null); }}
+      {thread.comments.length > 0 && (
+        <div className="pm-comment-thread__comments">
+          {thread.comments.map((comment, index) => (
+            <Comment
+              key={`${comment.createdAt}-${comment.username}-${comment.text}`}
+              comment={comment}
+              resolveButton={index === 0 ? (
+                <>
+                  {resolveButton}
+                  {rejectButton}
+                </>
+              ) : null}
             />
-          )}
-        </>
+          ))}
+        </div>
+      )}
+      {active && (
+        <CommentReplyForm
+          thread={thread}
+          username={username}
+          close={() => { setActiveThread(null, null); }}
+          cancel={() => {
+            if (thread.pending) {
+              if (thread.remove) thread.remove();
+              else removeCommentThread(thread.view, thread.threadId);
+            }
+            setActiveThread(null, null);
+          }}
+        />
       )}
     </section>
   );
@@ -369,9 +401,9 @@ function Comment({ comment, resolveButton }) {
   return (
     <article className="pm-comment">
       <div className="pm-comment__meta">
-        {resolveButton}
         <strong>{comment.username}</strong>
         <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
+        {resolveButton}
       </div>
       <p><CommentText comment={comment} /></p>
     </article>
@@ -389,7 +421,7 @@ function CommentText({ comment }) {
   );
 }
 
-function CommentReplyForm({ thread, username, close }) {
+function CommentReplyForm({ thread, username, close, cancel }) {
   return (
     <form
       className="pm-comment-reply"
@@ -418,7 +450,10 @@ function CommentReplyForm({ thread, username, close }) {
         placeholder={thread.pending ? "Comment" : "Reply"}
         rows="2"
       />
-      <button type="submit">{thread.pending ? "Comment" : "Reply"}</button>
+      <div className="pm-comment-reply__actions">
+        <button type="submit">{thread.pending ? "Comment" : "Reply"}</button>
+        <button type="button" className="pm-comment-reply__cancel" onClick={cancel}>Cancel</button>
+      </div>
     </form>
   );
 }

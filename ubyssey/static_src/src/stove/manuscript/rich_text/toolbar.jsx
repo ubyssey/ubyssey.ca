@@ -54,7 +54,7 @@ export function createEditorToolbar(root, {
     const command = historyView && toolbarCommand(historyView, key);
     if (!command || !command(historyView.state, historyView.dispatch, historyView)) return false;
 
-    if (historyView === activeView) activeView.focus();
+    if (historyView === activeView) activeView.dom.focus({ preventScroll: true });
     onHistoryCommand();
     update();
     return true;

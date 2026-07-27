@@ -83,6 +83,7 @@ export function startCommentCommand(commentMark) {
     dispatch(state.tr
       .removeMark(from, to, commentMark)
       .addMark(from, to, commentMark.create({ threadId, comments: [], pending: true, resolved: false }))
+      .setMeta("skipPreview", true)
       .scrollIntoView());
     return true;
   };
@@ -148,6 +149,20 @@ export function acceptCommentSuggestion(view, threadId, suggestion) {
   return true;
 }
 
+export function rejectCommentSuggestion(view, threadId, suggestion) {
+  const thread = findCommentThread(view, threadId);
+  if (!thread) return false;
+
+  let tr = view.state.tr;
+  for (const range of [...thread.ranges].reverse()) {
+    tr = suggestion === "add" || range.suggestionPart === "add"
+      ? tr.delete(range.from, range.to)
+      : tr.removeMark(range.from, range.to, thread.commentMark);
+  }
+  view.dispatch(tr.scrollIntoView());
+  return true;
+}
+
 export function findCommentThread(view, threadId) {
   const commentMark = view.state.schema.marks.comment;
   if (!commentMark || !threadId) return null;
@@ -198,7 +213,7 @@ export function replaceCommentThread(view, thread, attrs) {
         suggestionPart: range.suggestionPart,
       }));
   }
-  view.dispatch(tr);
+  view.dispatch(tr.setMeta("skipPreview", true));
   return true;
 }
 
@@ -208,6 +223,6 @@ export function removeCommentThread(view, threadId) {
 
   let tr = view.state.tr;
   for (const range of thread.ranges) tr = tr.removeMark(range.from, range.to, thread.commentMark);
-  view.dispatch(tr);
+  view.dispatch(tr.setMeta("skipPreview", true));
   return true;
 }

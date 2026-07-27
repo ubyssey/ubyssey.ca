@@ -306,7 +306,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
         resolved: false,
       },
     ];
-    updateStreamBlockAttrs(instance, info, { blockComments: nextComments });
+    updateStreamBlockAttrs(instance, info, { blockComments: nextComments }, { skipPreview: true });
     refreshBlockCommentBorders(articleBlock.getRootNode());
     manuscriptSession.commentSidebar.update();
   };
