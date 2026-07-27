@@ -451,15 +451,16 @@ export function setupArticleBlockControls(manuscriptRoot) {
     const blockTop = rect.top - hostRect.top + controlsHost.scrollTop;
     layer.classList.add("is-active");
     const controlsHeight = refs.topControls.offsetHeight;
+    const controlsTop = Math.min(blockTop + 8, window.innerHeight - controlsHeight - padding - hostRect.top + controlsHost.scrollTop);
     const topbarBottom = document.querySelector(".manuscript-topbar")?.getBoundingClientRect().bottom || 0;
     const toolbarBottom = manuscriptRoot.querySelector(".pm-manuscript-toolbar:not(:empty)")?.getBoundingClientRect().bottom || 0;
     refs.topControls.style.setProperty("--pm-article-block-controls-top", Math.max(topbarBottom, toolbarBottom) + padding + "px");
     positionBlockControlsWrapper(
       refs.controlsWrapper,
       blockLeft + rect.width + 8,
-      blockTop + 8,
+      controlsTop,
       refs.topControls.offsetWidth,
-      Math.max(rect.height - 8, controlsHeight),
+      Math.max(blockTop + rect.height - controlsTop, controlsHeight),
       padding,
     );
   }
