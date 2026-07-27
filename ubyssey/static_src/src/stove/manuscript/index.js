@@ -5,7 +5,7 @@ import { createEditorToolbar } from "./rich_text/toolbar.jsx";
 import { setupCommentSidebar, setupFootnoteSidebar } from "./annotations/index.js";
 import { createStreamEditor } from "./stream/index.jsx";
 import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
-import { mountManuscriptChrome, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./preview/index.jsx";
+import { currentStreamDocs, mountManuscriptChrome, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./preview/index.jsx";
 import { manuscriptSession } from "./session.js";
 
 function readJsonScript(id) {
@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   manuscriptSession.richTextToolbar = createEditorToolbar(manuscriptRoot.querySelector(".pm-manuscript-toolbar"), {
     publishSource: document.querySelector("[data-article-toolbar-source]"),
+    getContentDoc: () => currentStreamDocs().get("content"),
     onHistoryCommand: () => {
       window.requestAnimationFrame(() => {
         manuscriptSession.schedulePreview({ immediate: true });

@@ -25,7 +25,12 @@ const TOOLBAR_ITEMS = [
   ["footnote", "*", "Footnote"],
 ];
 
-export function createEditorToolbar(root, { view = null, publishSource = null, onHistoryCommand = () => {} } = {}) {
+export function createEditorToolbar(root, {
+  view = null,
+  publishSource = null,
+  getContentDoc = () => null,
+  onHistoryCommand = () => {},
+} = {}) {
   if (!root) return null;
 
   let activeView = view;
@@ -38,6 +43,7 @@ export function createEditorToolbar(root, { view = null, publishSource = null, o
         view={activeView}
         historyView={historyView}
         publishSource={publishSource}
+        contentDoc={getContentDoc()}
         onHistoryCommand={onHistoryCommand}
         refresh={update}
       />,
@@ -71,7 +77,10 @@ export function createEditorToolbar(root, { view = null, publishSource = null, o
   };
 }
 
-function EditorToolbar({ view, historyView, publishSource, onHistoryCommand, refresh }) {
+function EditorToolbar({ view, historyView, publishSource, contentDoc, onHistoryCommand, refresh }) {
+  const highlightedWords = view && !view.state.selection.empty
+    ? countWords(view.state.doc.textBetween(view.state.selection.from, view.state.selection.to, " ")) : null;
+
   return (
     <div className={`pm-editor-toolbar${publishSource ? " pm-editor-toolbar--article" : ""}`}>
       <div className="pm-editor-toolbar__tools">
@@ -105,7 +114,13 @@ function EditorToolbar({ view, historyView, publishSource, onHistoryCommand, ref
           );
         })}
       </div>
-      {publishSource && <PublishToolbar source={publishSource} />}
+      {publishSource && (
+        <PublishToolbar
+          source={publishSource}
+          highlightedWords={highlightedWords}
+          wordCount={contentWordCount(contentDoc)}
+        />
+      )}
     </div>
   );
 }
@@ -149,7 +164,25 @@ function toolbarItemIsActive(view, key) {
   return active;
 }
 
-function PublishToolbar({ source }) {
+function countWords(text) {
+  const words = String(text || "").trim();
+  return words ? words.split(/\s+/).length : 0;
+}
+
+function contentWordCount(doc) {
+  let text = "";
+  const readText = (node) => {
+    if (node.type === "text") text += ` ${node.text}`;
+    (node.content || []).forEach(readText);
+  };
+
+  (doc?.content || [])
+    .filter((block) => block.attrs?.blockType === "richtext")
+    .forEach(readText);
+  return countWords(text);
+}
+
+function PublishToolbar({ source, wordCount, highlightedWords }) {
   const status = source.querySelector("[data-article-status]");
   const published = source.querySelector("[data-article-published]");
   const liveLink = source.querySelector("[data-article-live-link]");
@@ -158,6 +191,12 @@ function PublishToolbar({ source }) {
 
   return (
     <div className="pm-editor-toolbar__publish">
+      {highlightedWords !== null && (
+        <span className="pm-editor-toolbar__meta">
+          Highlighted: {highlightedWords}
+        </span>
+      )}
+      <span className="pm-editor-toolbar__meta">Word count: {wordCount}</span>
       {status && <span className="pm-editor-toolbar__meta">{status.textContent.trim()}</span>}
       {published && <span className="pm-editor-toolbar__meta">{published.textContent.trim()}</span>}
       {liveLink && liveLink.href && (

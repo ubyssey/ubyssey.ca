@@ -14,7 +14,7 @@ import { writeStreamTextareas } from "./persistence.js";
 
 export { mountManuscriptChrome } from "../chrome/index.jsx";
 export { setupArticleShadow } from "./shadow_root.js";
-export { writeStreamTextareas } from "./persistence.js";
+export { currentStreamDocs, writeStreamTextareas } from "./persistence.js";
 
 const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
 const DIRECT_EDITABLE_SELECTOR = "[data-article-editable-page-field], [data-article-editable-featured-media-field], [data-article-editable-stream-field][data-article-editable-path]";

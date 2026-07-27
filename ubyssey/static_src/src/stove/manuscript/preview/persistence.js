@@ -53,7 +53,7 @@ content: [{
 
 writeStreamTextareas handles the actual writeback
 */
-function currentStreamDocs() {
+export function currentStreamDocs() {
   const streamDocs = new Map();
   for (const instance of manuscriptSession.streamEditors) {
     const nextDoc = clone(instance.view.state.doc.toJSON());
