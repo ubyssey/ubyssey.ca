@@ -40,9 +40,6 @@ export function ArticleBlockModals({ refs, ui, actions }) {
         onClose={actions.done}
       >
         <div ref={(element) => { refs.blockEditorContent = element; }} className="pm-article-block-dialog__editor" />
-        <footer className="article-media-modal__footer article-block-editor-modal__footer">
-          <button type="button" onClick={actions.done}>Apply Changes</button>
-        </footer>
       </ArticleBlockModal>
 
       <ArticleBlockModal
