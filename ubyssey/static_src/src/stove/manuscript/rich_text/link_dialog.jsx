@@ -7,14 +7,15 @@ import { markRangeAtCursor } from "../annotations/index.js";
 
 export function promptLinkCommand(linkMark) {
   return (state, dispatch, view) => {
-    if (!state.selection.empty) return false;
     if (!dispatch || !view) return true;
 
-    const range = markRangeAtCursor(state, linkMark);
+    const { from, to, empty } = state.selection;
+
+    const range = empty ? markRangeAtCursor(state, linkMark) : {from, to};
     const attrs = range?.attrs || linkMark.isInSet(state.storedMarks || state.selection.$from.marks())?.attrs;
 
     openLinkModal({
-      href: attrs?.href || "",
+      href: attrs?.href || "",  
       alias: range ? state.doc.textBetween(range.from, range.to) : "",
       onSubmit: (values) => applyLink(view, linkMark, range, values),
       onCancel: () => { view.focus(); },
