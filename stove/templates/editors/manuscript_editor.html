@@ -15,8 +15,27 @@
 
 {{ stream_editors|json_script:"stream-editors" }}
 {{ editor_errors|json_script:"editor-errors" }}
+{{ current_editor|json_script:"current-editor" }}
 
-<form method="post" action="{% url 'stove:manuscript_editor' self.id %}" data-manuscript-form class="manuscript-editor manuscript-editor-form" id="manuscript-editor-form" data-manuscript-editor data-preview-url="{% url 'stove:manuscript_preview' self.id %}" data-restore-url="{% url 'stove:manuscript_restore' self.id %}" data-history-url="{% url 'stove:manuscript_revisions' self.id %}" data-authors-url="{% url 'stove:manuscript_authors' self.id %}" data-media-tags-url="{% url 'stove:manuscript_media_tags' self.id %}" data-media-options-url="{% url 'stove:manuscript_media_options' self.id %}" data-media-upload-url="{% url 'stove:article_media_upload' self.id %}" data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}" data-current-editor-username="{{ current_editor_username }}">
+<form
+  method="post"
+  action="{% url 'stove:manuscript_editor' self.id %}"
+  id="manuscript-editor-form"
+  class="manuscript-editor manuscript-editor-form"
+  data-manuscript-form
+  data-manuscript-editor
+  data-manuscript-page-id="{{ self.id }}"
+  data-preview-url="{% url 'stove:manuscript_preview' self.id %}"
+  data-restore-url="{% url 'stove:manuscript_restore' self.id %}"
+  data-history-url="{% url 'stove:manuscript_revisions' self.id %}"
+  data-authors-url="{% url 'stove:manuscript_authors' self.id %}"
+  data-media-tags-url="{% url 'stove:manuscript_media_tags' self.id %}"
+  data-media-options-url="{% url 'stove:manuscript_media_options' self.id %}"
+  data-media-upload-url="{% url 'stove:article_media_upload' self.id %}"
+  data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}"
+  {# Replace with current_editor at some point #}
+  data-current-editor-username="{{ current_editor.name }}"
+>
   {% csrf_token %}
 
   <header class="manuscript-topbar">
@@ -24,6 +43,7 @@
       <img src="{% static 'ubyssey/images/stove/favicon.ico' %}">
     </a>
     <div class="manuscript-topbar__actions">
+      <div class="manuscript-connected-users" data-connected-users></div>
       <button type="button" class="manuscript-topbar__button" data-manuscript-open-settings>Settings</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>Media</button>
       <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>

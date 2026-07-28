@@ -11,12 +11,13 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
 django_asgi_app = get_asgi_application()
 
 from liveblog.routing import websocket_urlpatterns
+from stove.routing import websocket_urlpatterns as stove_websocket_patterns
 
 application = ProtocolTypeRouter(
     {
         "http": django_asgi_app,
         "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+            AuthMiddlewareStack(URLRouter(websocket_urlpatterns + stove_websocket_patterns))
         ),
     }
 )

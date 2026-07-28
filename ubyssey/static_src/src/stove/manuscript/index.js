@@ -7,6 +7,7 @@ import { createStreamEditor } from "./stream/index.jsx";
 import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
 import { currentStreamDocs, mountManuscriptChrome, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./preview/index.jsx";
 import { manuscriptSession } from "./session.js";
+import { setupUsers } from "./socket/users.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
@@ -80,6 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
   setupArticleBlockKeyboard(manuscriptRoot);
 
   const form = document.querySelector("[data-manuscript-form]");
+  manuscriptSession.websocket = setupUsers(
+    form.dataset.manuscriptPageId,
+    document.querySelector("[data-connected-users]"),
+    readJsonScript("current-editor"),
+  );
+
   setupServerPreviewRefresh(form, manuscriptRoot);
   setupHistoryPreviewButtons(manuscriptRoot);
   mountManuscriptChrome({

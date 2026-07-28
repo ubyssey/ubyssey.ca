@@ -15,6 +15,7 @@ from authors.models import AuthorPage
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import localtime
 from django.views.decorators.http import require_GET, require_POST
+from wagtail.admin.templatetags.wagtailadmin_tags import avatar_url
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
 
@@ -171,16 +172,21 @@ def manuscript_editor(request, page_id):
 
     return render(
         request, "editors/manuscript_editor.html",
-        {"self": page,
-         "page_form": page_form,
-         "public_page_form_fields": PAGE_FORM_FIELDS,
-         "article_authors_form": article_authors_form,
-         "stream_editors": stream_editors,
-         "editor_errors": editor_errors,
-         "current_editor_username": get_user_display_name(request.user),
-         "featured_media_form": featured_media_form,
-         "article_media_upload_form": get_article_media_upload_form(),
-         "article_media": article_media}
+        {
+            "self": page,
+            "page_form": page_form,
+            "public_page_form_fields": PAGE_FORM_FIELDS,
+            "article_authors_form": article_authors_form,
+            "stream_editors": stream_editors,
+            "editor_errors": editor_errors,
+            "current_editor": {
+                "name": get_user_display_name(request.user),
+                "avatar_url": avatar_url(request.user, size=64),
+            },
+            "featured_media_form": featured_media_form,
+            "article_media_upload_form": get_article_media_upload_form(),
+            "article_media": article_media,
+        },
     )
 
 

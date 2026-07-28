@@ -135,6 +135,20 @@ body {
     min-width: 0;
 }
 
+.manuscript-connected-users {
+    display: flex;
+    gap: 4px;
+    padding-left: 8px;
+}
+
+.manuscript-connected-users__avatar {
+    width: 28px;
+    height: 28px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .manuscript-editor:not(.manuscript-editor--history) [data-history-return],
 .manuscript-editor:not(.manuscript-editor--history) [data-history-restore] {
     display: none;
