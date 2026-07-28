@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import Select from "react-select";
+import AsyncSelect from "react-select/async";
 
 // Non hidden inputs
 const focusableSelector = "input:not([type='hidden']), select, textarea, button";
@@ -244,13 +245,14 @@ function useMediaAndSettingsModals(form) {
     const kind = form.elements.namedItem("article_media-kind");
     let uploadReturnsToGallery = false;
     // Sometimes there are layered modals
-    const existingModal = document.querySelector("[data-article-media-existing-modal]");
+    const existingMediaModal = document.querySelector("[data-article-media-existing-modal]");
     const existingKind = document.querySelector("[data-article-media-existing-kind]");
     const existingSelectMount = document.querySelector("[data-article-media-existing-select]");
     const existingAddButton = document.querySelector("[data-article-media-existing-add]");
-    // Disabling for now
-    const existingOptions = { image: [], document: [] };
     const existingSelectRoot = createRoot(existingSelectMount);
+    let existingMediaSearchController = null;
+    let existingMediaSearchTimer = null;
+    let resolvePendingExistingMediaSearch = null;
     let tagOptions = [];
     let tagOptionsStatus = "loading";
     let pendingTags = [];
@@ -351,16 +353,65 @@ function useMediaAndSettingsModals(form) {
       }
     };
 
-    const renderExistingSelect = () => {
+    const cancelExistingMediaSearch = () => {
+      if (existingMediaSearchTimer) window.clearTimeout(existingMediaSearchTimer);
+      existingMediaSearchTimer = null;
+
+      if (existingMediaSearchController) existingMediaSearchController.abort();
+      existingMediaSearchController = null;
+
+      if (resolvePendingExistingMediaSearch) resolvePendingExistingMediaSearch([]);
+      resolvePendingExistingMediaSearch = null;
+    };
+
+    const loadExistingMediaOptions = (inputValue) => new Promise((resolve) => {
+      cancelExistingMediaSearch();
+      resolvePendingExistingMediaSearch = resolve;
+
+      // Timer so that it doesn't search per character if typing fast
+      existingMediaSearchTimer = window.setTimeout(async () => {
+        existingMediaSearchTimer = null;
+
+        const controller = new AbortController();
+        existingMediaSearchController = controller;
+        const url = new URL(form.dataset.mediaOptionsUrl, window.location.origin);
+        url.searchParams.set("kind", existingKind.value);
+        url.searchParams.set("q", inputValue.trim());
+
+        try {
+          const response = await fetch(url, {
+            credentials: "same-origin",
+            headers: { Accept: "application/json" },
+            signal: controller.signal,
+          });
+          const payload = await response.json();
+          if (!response.ok) throw new Error("Media Search Failed: " + response.status);
+          resolve(payload.options || []);
+        } catch (error) {
+          if (error.name !== "AbortError") console.error(error);
+          resolve([]);
+        } finally {
+          if (existingMediaSearchController === controller) existingMediaSearchController = null;
+          if (resolvePendingExistingMediaSearch === resolve) resolvePendingExistingMediaSearch = null;
+        }
+      }, 250);
+    });
+
+    const renderExistingMediaSelect = () => {
+      cancelExistingMediaSearch();
       existingSelection = null;
       existingAddButton.disabled = true;
       flushSync(() => {
         existingSelectRoot.render(
-          <Select
+          <AsyncSelect
             key={existingKind.value}
+            cacheOptions
+            defaultOptions
             classNamePrefix="article-media-existing-select"
-            options={existingOptions[existingKind.value]}
+            loadOptions={loadExistingMediaOptions}
             placeholder="Search media..."
+            loadingMessage={() => "Loading media..."}
+            noOptionsMessage={({ inputValue }) => (inputValue ? "No matching media" : "No media found")}
             onChange={(option) => {
               existingSelection = option;
               existingAddButton.disabled = !option;
@@ -371,8 +422,9 @@ function useMediaAndSettingsModals(form) {
     };
 
     const closeExisting = () => {
-      setModalOpen(existingModal, false);
-      existingModal.classList.remove("article-media-modal--stacked");
+      cancelExistingMediaSearch();
+      setModalOpen(existingMediaModal, false);
+      existingMediaModal.classList.remove("article-media-modal--stacked");
       existingSelection = null;
       existingAddButton.disabled = true;
       window.requestAnimationFrame(() => {
@@ -403,6 +455,11 @@ function useMediaAndSettingsModals(form) {
         reset();
         syncImageFields();
         setModalOpen(uploadModal, true, kind);
+      }),
+      on(document.querySelector("[data-article-media-open-existing]"), "click", () => {
+        existingMediaModal.classList.add("article-media-modal--stacked");
+        renderExistingMediaSelect();
+        setModalOpen(existingMediaModal, true, existingKind);
       }),
       on(document.querySelector("[data-article-media-open-gallery]"), "click", () => {
         setModalOpen(galleryModal, true, galleryModal.querySelector("[data-article-media-edit-button], a, button"));
@@ -435,19 +492,19 @@ function useMediaAndSettingsModals(form) {
         on(button, "click", () => {
           const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-existing-modal], [data-article-media-gallery-modal]");
           if (modal === uploadModal) closeUpload();
-          else if (modal === existingModal) closeExisting();
+          else if (modal === existingMediaModal) closeExisting();
           else setModalOpen(modal, false);
         })
       )),
       on(document, "keydown", (event) => {
         if (event.key !== "Escape") return;
         if (!uploadModal.hidden) closeUpload();
-        else if (!existingModal.hidden) closeExisting();
+        else if (!existingMediaModal.hidden) closeExisting();
         else if (!galleryModal.hidden) setModalOpen(galleryModal, false);
         else if (!settingsModal.hidden) setModalOpen(settingsModal, false);
       }),
       on(kind, "change", syncImageFields),
-      on(existingKind, "change", renderExistingSelect),
+      on(existingKind, "change", renderExistingMediaSelect),
       on(uploadButton, "click", async () => {
         uploadButton.disabled = true;
         try {
@@ -497,6 +554,7 @@ function useMediaAndSettingsModals(form) {
     ];
     return () => {
       cleanups.forEach((cleanup) => cleanup());
+      cancelExistingMediaSearch();
       existingSelectRoot.unmount();
       tagSelectRoot.unmount();
     };

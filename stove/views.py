@@ -205,6 +205,27 @@ def manuscript_media_tags(request, page_id):
 
 @login_required
 @require_GET
+def manuscript_media_options(request, page_id):
+    get_object_or_404(Page, id=page_id)
+    kind = request.GET.get("kind")
+    query = request.GET.get("q", "").strip()[:100]
+    model = get_image_model() if kind == "image" else get_document_model()
+    media = model.objects.only("id", "title", "file")
+    if query:
+        media = media.filter(title__icontains=query).order_by("title", "id")
+    else:
+        media = media.order_by("-id")
+
+    return JsonResponse(
+        {"options": [
+            {"value": str(item.id), "label": f"{item.title} — {item.filename}"}
+            for item in media[:50]
+        ]}
+    )
+
+
+@login_required
+@require_GET
 def manuscript_revisions(request, page_id):
     page = get_object_or_404(Page, id=page_id)
     revisions = page.revisions.select_related("user").only(

@@ -20,6 +20,7 @@ urlpatterns = [
     path("page/<int:page_id>/restore", views.manuscript_restore, name="manuscript_restore"),
     path("page/<int:page_id>/media-upload", views.article_media_upload, name="article_media_upload"),
     path("page/<int:page_id>/media-tags", views.manuscript_media_tags, name="manuscript_media_tags"),
+    path("page/<int:page_id>/media-options", views.manuscript_media_options, name="manuscript_media_options"),
     path("page/<int:page_id>/media-existing", views.article_media_add_existing, name="article_media_add_existing"),
     
     path("author/<int:page_id>", views.author_editor, name="author_editor"),
