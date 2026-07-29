@@ -1,0 +1,13 @@
+{% load wagtailcore_tags %}
+<a class="join-unit-card" href="{% pageurl unit %}">
+    <span class="join-unit-card__heading">
+        <span class="join-unit-card__title">{{ unit.title }}</span>
+        <span class="join-unit-card__type">{{ unit.unit_type }}</span>
+    </span>
+    <span class="join-unit-card__description">{{ unit.card_description }}</span>
+    {% if unit.is_accepting_applications %}
+        <span class="join-status join-status--open">Apply Now</span>
+    {% else %}
+        <span class="join-status join-status--closed">Not Accepting Applications</span>
+    {% endif %}
+</a>

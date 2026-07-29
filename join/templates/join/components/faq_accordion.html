@@ -1,0 +1,10 @@
+{% load wagtailcore_tags %}
+<details class="join-accordion join-faq" data-join-accordion>
+    <summary class="join-accordion__summary">
+        <span>{{ faq.question }}</span>
+        <ion-icon class="join-accordion__chevron" name="chevron-down-outline" aria-hidden="true"></ion-icon>
+    </summary>
+    <div class="join-accordion__content">
+        {{ faq.answer|richtext }}
+    </div>
+</details>

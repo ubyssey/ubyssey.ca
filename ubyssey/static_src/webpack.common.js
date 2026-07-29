@@ -39,6 +39,7 @@ module.exports = {
     'passing-2025': './src/js/passing-2025.js',
     'contentTracker': './src/js/ContentTracker.jsx',
     'liveblog': './src/js/liveblog.jsx',
+    'join': './src/js/join.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
