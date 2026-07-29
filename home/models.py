@@ -53,6 +53,7 @@ class HomePage(Page):
         'authors.AllAuthorsPage',
         'videos.VideosPage',
         'archive.ArchivePage',
+        'join.JoinLandingPage',
     ]
 
     tagline = models.CharField(
