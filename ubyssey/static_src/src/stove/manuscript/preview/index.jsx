@@ -5,6 +5,7 @@
 
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
+import { Step, StepMap } from "prosemirror-transform";
 import { EditorView } from "prosemirror-view";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins, richTextSchema } from "../rich_text/index.jsx";
 import { topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
@@ -19,6 +20,10 @@ export { currentStreamDocs, writeStreamTextareas } from "./persistence.js";
 const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
 const DIRECT_EDITABLE_SELECTOR = "[data-article-editable-page-field], [data-article-editable-featured-media-field], [data-article-editable-stream-field][data-article-editable-path]";
 const EMPTY_RICH_TEXT = [{ type: "paragraph" }];
+// Fake Rendered Inside Article Editor
+const INLINE_EDITOR_META = "inlineEditor";
+// Real Cool (kinda) Hidden Editor
+const STREAM_EDITOR_META = "streamEditor";
 
 // We marked the actual article HTML with content-editable for prosemirror
 function createArticleRichTextEditor(mount, content, className, onDocChanged) {
@@ -53,7 +58,9 @@ function createArticleRichTextEditor(mount, content, className, onDocChanged) {
       if (activeSuggestionThreadId) manuscriptSession.commentSidebar?.activateThread(activeSuggestionThreadId);
       else manuscriptSession.commentSidebar?.update();
       manuscriptSession.footnoteSidebar?.update();
-      if (transaction.docChanged) onDocChanged(view, transaction);
+      if (transaction.docChanged && !transaction.getMeta(STREAM_EDITOR_META)) {
+        onDocChanged(view, transaction);
+      }
     },
 
     attributes,
@@ -106,7 +113,14 @@ function directEditableSource(target, { allowPage = true } = {}) {
   const paths = editablePaths(target);
   const block = instance && articleBlock && paths.length && topLevelBlockInfoByIdOrIndex(instance.view.state.doc, articleBlock.dataset.streamBlockId, Number(articleBlock.dataset.streamBlockIndex));
   const field = block && paths.map((path) => editableFieldInfo(block, path)).find(Boolean);
-  const streamSource = field && { kind: "stream", instance, block, field };
+  const streamSource = field && {
+    kind: "stream",
+    instance,
+    blockId: block.node.attrs?.id,
+    blockIndex: block.index,
+    path: field.path,
+    field,
+  };
   const pageFieldName = target.dataset.articleEditablePageField;
   const featuredMediaFieldName = target.dataset.articleEditableFeaturedMediaField;
   const form = (allowPage && document.querySelector("[data-manuscript-form]")) || null;
@@ -246,14 +260,78 @@ function samePath(left = [], right = []) {
   return JSON.stringify(left || []) === JSON.stringify(right || []);
 }
 
+function currentEditableField(source, doc = source.instance.view.state.doc) {
+  const block = topLevelBlockInfoByIdOrIndex(doc, source.blockId, source.blockIndex);
+  return block && editableFieldInfo(block, source.path || []);
+}
+
 function writeStreamFieldContent(source, fragment) {
   const { view } = source.instance;
-  const latestBlock = topLevelBlockInfoByIdOrIndex(view.state.doc, source.block.node.attrs?.id, source.block.index);
-  const latestField = latestBlock && editableFieldInfo(latestBlock, source.field.path || source.field.node.attrs?.path || []);
+  const latestField = currentEditableField(source);
   if (latestField) {
     view.dispatch(view.state.tr
       .replaceWith(latestField.pos + 1, latestField.pos + 1 + latestField.node.content.size, fragment)
       .setMeta("skipPreview", true));
+  }
+}
+
+// Maps transactions between inline and stream editors
+// Inline: doc -> paragraph/list/heading…
+// Stream: doc -> stream_block ->editable_field ->paragraph/list/heading…
+function mapStep(step, schema, offset) {
+  try {
+    return Step.fromJSON(schema, step.toJSON()).map(StepMap.offset(offset));
+  } catch {
+    return null;
+  }
+}
+
+// Projects inline editor transactions into related streamfield
+function projectInlineTransaction(source, inlineView, transaction) {
+  const field = currentEditableField(source);
+  if (!field) return;
+
+  const streamTransaction = source.instance.view.state.tr;
+  for (const step of transaction.steps) {
+    const projectedStep = mapStep(step, source.instance.view.state.schema, field.pos + 1);
+    if (!projectedStep || streamTransaction.maybeStep(projectedStep).failed) {
+      const schema = source.instance.view.state.schema;
+      const content = inlineView.state.doc.toJSON().content || EMPTY_RICH_TEXT;
+      writeStreamFieldContent(source, Fragment.fromArray(content.map((node) => schema.nodeFromJSON(node))));
+      return;
+    }
+  }
+
+  source.instance.view.dispatch(streamTransaction
+    .setMeta(INLINE_EDITOR_META, inlineView)
+    .setMeta("skipPreview", true));
+}
+
+// Reverse of above, projects stream into inline
+export function syncArticlePreviewEditors({ transaction, instance }) {
+  if (!transaction.docChanged) return;
+
+  const sourceEditor = transaction.getMeta(INLINE_EDITOR_META);
+  const editors = [
+    ...manuscriptSession.articleRichTextEditors,
+    ...manuscriptSession.articleDirectTextEditors,
+  ].filter((editor) => editor.streamSource?.instance === instance && editor.view !== sourceEditor);
+
+  for (const editor of editors) {
+    const inlineTransaction = editor.view.state.tr;
+    let changed = false;
+
+    transaction.steps.forEach((step, index) => {
+      const field = currentEditableField(editor.streamSource, transaction.docs[index]);
+      const projectedStep = field && mapStep(step, editor.view.state.schema, -(field.pos + 1));
+      if (projectedStep && !inlineTransaction.maybeStep(projectedStep).failed) changed = true;
+    });
+
+    if (changed) {
+      editor.view.dispatch(inlineTransaction
+        .setMeta(STREAM_EDITOR_META, true)
+        .setMeta("addToHistory", false));
+    }
   }
 }
 
@@ -524,8 +602,27 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
       const articleBlock = (blockId && articleBlocks.find((element) => element.dataset.streamBlockId === String(blockId))) || articleBlocks.find((element) => Number(element.dataset.streamBlockIndex) === blockIndex);
       if (!articleBlock) return;
 
-      const editor = createArticleRichTextEditor(articleBlock, field.content, `${articleBlock.className} pm-manuscript-rich-text`, () => {});
-      manuscriptSession.articleRichTextEditors.push({ ...editor, fieldName: instance.fieldName, blockId, blockIndex });
+      const streamSource = {
+        instance,
+        blockId,
+        blockIndex,
+        path: field.attrs?.path || [],
+      };
+      const editor = createArticleRichTextEditor(
+        articleBlock,
+        field.content,
+        `${articleBlock.className} pm-manuscript-rich-text`,
+        (activeView, transaction) => {
+          projectInlineTransaction(streamSource, activeView, transaction);
+        },
+      );
+      manuscriptSession.articleRichTextEditors.push({
+        ...editor,
+        fieldName: instance.fieldName,
+        blockId,
+        blockIndex,
+        streamSource,
+      });
     });
   }
 
@@ -536,22 +633,22 @@ export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null) {
     if (!source) continue;
 
     if (target.dataset.articleEditableMode === "richtext") {
+      const streamSource = source.kind === "stream" ? source : null;
       const editor = createArticleRichTextEditor(
         target,
         source.kind === "stream" ? source.field.node.toJSON().content : richTextContentFromHtml(source.input.value),
         `${target.className} pm-manuscript-direct-edit pm-manuscript-direct-rich-text`,
-        (activeView) => {
+        (activeView, transaction) => {
           if (source.kind !== "stream") {
             source.input.value = richTextHtmlFromDoc(activeView.state.doc);
             return;
           }
 
-          const schema = source.instance.view.state.schema;
-          writeStreamFieldContent(source, Fragment.fromArray((activeView.state.doc.toJSON().content || EMPTY_RICH_TEXT).map((node) => schema.nodeFromJSON(node))));
+          projectInlineTransaction(streamSource, activeView, transaction);
         },
       );
       stopDirectEditEvents(editor.view.dom);
-      manuscriptSession.articleDirectTextEditors.push(editor);
+      manuscriptSession.articleDirectTextEditors.push({ ...editor, streamSource });
       continue;
     }
 
