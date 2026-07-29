@@ -1,0 +1,13 @@
+<section class="join-unit-group" id="{{ group.slug }}" aria-labelledby="{{ group.slug }}-heading">
+    <header class="join-section-heading">
+        <h2 id="{{ group.slug }}-heading">{{ group.heading }}</h2>
+        {% if group.description %}<p>{{ group.description }}</p>{% endif %}
+    </header>
+    <div class="join-unit-grid">
+        {% for unit in group.units %}
+            {% include "join/components/unit_card.html" %}
+        {% empty %}
+            <p class="join-unit-group__empty">Unit pages will appear here when they are published.</p>
+        {% endfor %}
+    </div>
+</section>

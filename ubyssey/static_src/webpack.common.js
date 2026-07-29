@@ -43,6 +43,7 @@ module.exports = {
     'stove/manuscript_editor': './src/stove/manuscript/index.js',
     'stove/content_tracker_select': './src/stove/ContentTrackerSelect.jsx',
     'stove/stove_content_tracker': './src/stove/StoveContentTracker.jsx',
+    'join': './src/js/join.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),

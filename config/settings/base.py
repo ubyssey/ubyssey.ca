@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     'publishing_analytics',
     'content_tracker',
     'topics',
+    'join.apps.JoinConfig',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
