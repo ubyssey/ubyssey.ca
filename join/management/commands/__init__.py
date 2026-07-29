@@ -1,1 +1,1 @@
-
+"""Join management command implementations."""

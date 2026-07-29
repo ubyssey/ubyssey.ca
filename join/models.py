@@ -226,7 +226,7 @@ class JoinUnitPage(Page):
 
     template = "join/join_unit_page.html"
     parent_page_types = ["join.JoinLandingPage"]
-    subpage_types = []
+    subpage_types: list[str] = []
 
     category = models.CharField(
         max_length=20,

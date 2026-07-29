@@ -1,3 +1,6 @@
+# flake8: noqa
+# isort: skip_file
+
 """
 base.py, default settings, originating from Dispatch module.
 Use: place .env file containing app configuration in /ubyssey.ca/
