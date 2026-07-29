@@ -378,6 +378,29 @@ span[data-footnote-id]::before {
     color: #fff;
 }
 
+// Each editor overrides with their assigned color.
 .pm-article-block--selected {
-    outline-color: #f28c00 !important;
+    outline-color: var(--current-editor-color, #f28c00) !important;
+    caret-color: var(--current-editor-color, #f28c00);
+}
+
+.pm-article-block--remote-selected {
+    outline: 2px solid var(--remote-editor-color) !important;
+}
+
+.pm-remote-cursor {
+    position: absolute;
+    z-index: 30;
+    width: 2px;
+    min-height: 1em;
+    pointer-events: none;
+    transform: translateX(-1px);
+}
+
+.pm-remote-selection {
+    position: absolute;
+    z-index: 25;
+    border-radius: 2px;
+    opacity: 0.4;
+    pointer-events: none;
 }

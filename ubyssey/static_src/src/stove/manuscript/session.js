@@ -17,7 +17,7 @@ export class ManuscriptSession {
     this.preferredInsertTypes = new Map();
     this.schedulePreview = () => {};
     this.cancelPreviewRefresh = () => {};
-    this.websocket = null;
+    this.users = null;
   }
 
   registerStreamEditor(editor) {

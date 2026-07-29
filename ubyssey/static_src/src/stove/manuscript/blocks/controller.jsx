@@ -18,7 +18,7 @@ import {
   moveArticleBlock,
   refreshBlockCommentBorders,
   selectArticleBlockElement,
-  showSelectedArticleBlockEditor,
+  syncSelectedArticleBlockEditor,
   streamBlockInfoForArticleBlock,
   updateBlockCommentThread,
 } from "./operations.js";
@@ -33,7 +33,7 @@ export {
   sameArticleBlock,
   selectArticleBlock,
   setupArticleBlockKeyboard,
-  showSelectedArticleBlockEditor,
+  syncSelectedArticleBlockEditor,
 } from "./operations.js";
 
 const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
@@ -172,7 +172,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
     render();
     if (!keepSelection) {
       manuscriptSession.selectedArticleBlock = null;
-      showSelectedArticleBlockEditor(null);
+      syncSelectedArticleBlockEditor(null);
     }
     if (refreshPreview) manuscriptSession.schedulePreview();
   };
@@ -200,9 +200,9 @@ export function setupArticleBlockControls(manuscriptRoot) {
     manuscriptSession.selectedArticleBlock = descriptor;
     target.appendChild(editorSection.section);
     editorSection.instance.view.updateRoot();
-    showSelectedArticleBlockEditor(descriptor);
+    syncSelectedArticleBlockEditor(descriptor);
     window.requestAnimationFrame(() => {
-      showSelectedArticleBlockEditor(descriptor);
+      syncSelectedArticleBlockEditor(descriptor);
       editorSection.instance.view.updateRoot();
     });
     syncBlockModalOpenState();

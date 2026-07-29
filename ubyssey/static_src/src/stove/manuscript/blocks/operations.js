@@ -164,7 +164,7 @@ export function deleteArticleBlock(instance, articleBlock) {
     refreshArticleBlockIndexes(root, fieldName);
   }
 
-  showSelectedArticleBlockEditor(null);
+  syncSelectedArticleBlockEditor(null);
   manuscriptSession.articleBlockControls?.hide();
 }
 
@@ -208,7 +208,7 @@ export function selectArticleBlock(descriptor, manuscriptRoot = null, options = 
   document.querySelectorAll("[data-metadata-panel]").forEach((panel) => {
     panel.hidden = panel.dataset.metadataPanel !== "article";
   });
-  showSelectedArticleBlockEditor(descriptor);
+  syncSelectedArticleBlockEditor(descriptor);
 
   const articleBlock = manuscriptRoot && findArticleBlock(manuscriptRoot, descriptor);
   manuscriptRoot?.querySelectorAll(".pm-article-block--selected").forEach((block) => {
@@ -229,8 +229,13 @@ export function findArticleBlock(root, descriptor) {
   return (descriptor.blockId && blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId))) || blocks[descriptor.blockIndex] || null;
 }
 
+export function syncSelectedArticleBlockEditor(descriptor) {
+  manuscriptSession.users?.sendSelection(descriptor);
+  showSelectedArticleBlockEditor(descriptor);
+}
+
 // Hides unrelated sidebar blocks (maybe not the best approach but works for now)
-export function showSelectedArticleBlockEditor(descriptor) {
+function showSelectedArticleBlockEditor(descriptor) {
   for (const instance of manuscriptSession.streamEditors) {
     if (!ARTICLE_STREAM_FIELDS.has(instance.fieldName)) continue;
 

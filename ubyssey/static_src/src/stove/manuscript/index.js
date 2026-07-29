@@ -4,7 +4,7 @@ import { ACTIVE_SUGGESTION_THREAD_META } from "./rich_text/index.jsx";
 import { createEditorToolbar } from "./rich_text/toolbar.jsx";
 import { setupCommentSidebar, setupFootnoteSidebar } from "./annotations/index.js";
 import { createStreamEditor } from "./stream/index.jsx";
-import { collectBlockCommentThreads, refreshBlockCommentBorders, showSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
+import { collectBlockCommentThreads, refreshBlockCommentBorders, syncSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
 import { currentStreamDocs, mountManuscriptChrome, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./preview/index.jsx";
 import { manuscriptSession } from "./session.js";
 import { setupUsers } from "./socket/users.js";
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         onTransaction: ({ transaction }) => {
           const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
           manuscriptSession.richTextToolbar?.update();
-          showSelectedArticleBlockEditor(manuscriptSession.selectedArticleBlock);
+          syncSelectedArticleBlockEditor(manuscriptSession.selectedArticleBlock);
           refreshBlockCommentBorders(manuscriptRoot);
           if (activeSuggestionThreadId) manuscriptSession.commentSidebar?.activateThread(activeSuggestionThreadId);
           else manuscriptSession.commentSidebar?.update();
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupArticleBlockKeyboard(manuscriptRoot);
 
   const form = document.querySelector("[data-manuscript-form]");
-  manuscriptSession.websocket = setupUsers(
+  manuscriptSession.users = setupUsers(
     form.dataset.manuscriptPageId,
     document.querySelector("[data-connected-users]"),
     readJsonScript("current-editor"),

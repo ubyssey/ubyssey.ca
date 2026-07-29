@@ -9,7 +9,7 @@ import { EditorView } from "prosemirror-view";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins, richTextSchema } from "../rich_text/index.jsx";
 import { topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
 import { manuscriptSession } from "../session.js";
-import { articleBlockDescriptors, describeArticleBlock, findArticleBlock, refreshBlockCommentBorders, sameArticleBlock, setupArticleBlockControls, showSelectedArticleBlockEditor } from "../blocks/controller.jsx";
+import { articleBlockDescriptors, describeArticleBlock, findArticleBlock, refreshBlockCommentBorders, sameArticleBlock, setupArticleBlockControls, syncSelectedArticleBlockEditor } from "../blocks/controller.jsx";
 import { writeStreamTextareas } from "./persistence.js";
 
 export { mountManuscriptChrome } from "../chrome/index.jsx";
@@ -48,6 +48,7 @@ function createArticleRichTextEditor(mount, content, className, onDocChanged) {
     dispatchTransaction(transaction) {
       const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
       view.updateState(view.state.apply(transaction));
+      sendCursor();
       manuscriptSession.richTextToolbar?.update();
       if (activeSuggestionThreadId) manuscriptSession.commentSidebar?.activateThread(activeSuggestionThreadId);
       else manuscriptSession.commentSidebar?.update();
@@ -57,7 +58,30 @@ function createArticleRichTextEditor(mount, content, className, onDocChanged) {
 
     attributes,
   });
-  view.dom.addEventListener("focus", () => { manuscriptSession.richTextToolbar?.setView(view); }, true);
+
+  // Sends on refocus callback
+  function sendCursor() {
+    const articleBlock = view.dom.closest(ARTICLE_BLOCK_SELECTOR);
+    const descriptor = articleBlock && describeArticleBlock(articleBlock);
+    if (!descriptor) return;
+
+    const editors = [articleBlock, ...articleBlock.querySelectorAll(".ProseMirror")]
+      .filter((element) => element.matches(".ProseMirror"));
+    
+    manuscriptSession.users?.sendSelection({
+      ...descriptor,
+      cursor: view.state.selection.head,
+      from: view.state.selection.from,
+      to: view.state.selection.to,
+      editorIndex: editors.indexOf(view.dom),
+    });
+  }
+
+  view.dom.addEventListener("focus", () => {
+    manuscriptSession.richTextToolbar?.setView(view);
+    sendCursor();
+  }, true);
+
   return {
     view,
     destroy() {
@@ -393,7 +417,7 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
         restoreCurrentArticleControls(manuscriptRoot, streamDocs);
       } else {
         manuscriptSession.selectedArticleBlock = null;
-        showSelectedArticleBlockEditor(null);
+        syncSelectedArticleBlockEditor(null);
       }
     } catch (error) {
       if (error.name !== "AbortError") console.error(error);
@@ -589,11 +613,12 @@ function restoreCurrentArticleControls(manuscriptRoot, streamDocs) {
     manuscriptSession.selectedArticleBlock = null;
   }
 
-  showSelectedArticleBlockEditor(manuscriptSession.selectedArticleBlock);
+  syncSelectedArticleBlockEditor(manuscriptSession.selectedArticleBlock);
   if (articleBlock) {
     articleBlock.classList.add("pm-article-block--selected");
     manuscriptSession.articleBlockControls?.setActive?.(articleBlock);
   }
+  manuscriptSession.users?.renderLocations();
   manuscriptSession.commentSidebar?.update();
   manuscriptSession.footnoteSidebar?.update();
 }

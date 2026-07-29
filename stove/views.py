@@ -180,6 +180,7 @@ def manuscript_editor(request, page_id):
             "stream_editors": stream_editors,
             "editor_errors": editor_errors,
             "current_editor": {
+                "id": request.user.pk,
                 "name": get_user_display_name(request.user),
                 "avatar_url": avatar_url(request.user, size=64),
             },
