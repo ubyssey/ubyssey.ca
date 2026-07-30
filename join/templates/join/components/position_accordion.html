@@ -1,0 +1,33 @@
+{% load wagtailcore_tags %}
+<details
+    class="join-accordion join-position{% if not position.is_accepting_applications %} join-position--closed{% endif %}"
+    data-join-accordion
+>
+    <summary class="join-accordion__summary">
+        <span class="join-position__heading">
+            <span class="join-position__title">{{ position.title }}</span>
+            {% if position.is_accepting_applications %}
+                <span class="join-position__availability join-position__availability--open">Apply Now</span>
+            {% else %}
+                <span class="join-position__availability">Not Accepting Applications</span>
+            {% endif %}
+        </span>
+        <ion-icon class="join-accordion__chevron" name="chevron-down-outline" aria-hidden="true"></ion-icon>
+    </summary>
+    <div class="join-accordion__content">
+        <div class="join-position__description">
+            {{ position.description|richtext }}
+        </div>
+        {% if position.is_accepting_applications %}
+            <a
+                class="join-apply-button"
+                href="{{ position.resolved_application_url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Apply Now
+                <span class="sr-only"> for {{ position.title }} (opens in a new tab)</span>
+            </a>
+        {% endif %}
+    </div>
+</details>

@@ -1,0 +1,111 @@
+{% extends "ubyssey/base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block darkmode %}
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fcf9f8">
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'ubyssey/css/join.css' %}?v=5" type="text/css">
+{% endblock %}
+
+{% block page_wrapper %}join-page{% endblock %}
+
+{% block header %}
+    {% include "join/components/header.html" %}
+{% endblock %}
+
+{% block content %}
+<main class="join-main">
+    <section class="join-hero join-hero--landing">
+        {% if page.hero_image %}
+            {% image page.hero_image fill-1600x1100 as hero_image %}
+            <img class="join-hero__image" src="{{ hero_image.url }}" alt="">
+        {% else %}
+            <img class="join-hero__image" src="{% static 'join/media/hero_join.webp' %}" alt="">
+        {% endif %}
+        <div class="join-hero__overlay"></div>
+        <div class="join-hero__content">
+            <p class="join-hero__eyebrow">{{ page.hero_eyebrow }}</p>
+            <h1>{{ page.hero_heading }}</h1>
+            <a class="join-hero__button" href="#application-process">Learn More</a>
+        </div>
+    </section>
+
+    {% if page.introduction %}
+        <div class="join-introduction">
+            {{ page.introduction|richtext }}
+        </div>
+    {% endif %}
+
+    <section
+        class="join-application-section"
+        id="application-process"
+        aria-labelledby="application-process-heading"
+    >
+        <div class="join-wide-container">
+            <header class="join-section-heading">
+                <h2 id="application-process-heading">{{ page.application_process_heading }}</h2>
+                {% if page.application_process_introduction %}
+                    <p>{{ page.application_process_introduction }}</p>
+                {% endif %}
+            </header>
+            <ol class="join-application-list">
+                {% for step in page.application_steps.all %}
+                    <li class="join-application-step">
+                        <span class="join-application-step__number">{{ forloop.counter }}</span>
+                        <div class="join-application-step__content">
+                            <h3>{{ step.title }}</h3>
+                            <p>{{ step.description }}</p>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </section>
+
+    <div class="join-departments">
+        {% for group in unit_groups %}
+            {% include "join/components/unit_group.html" %}
+        {% endfor %}
+    </div>
+
+    <section class="join-faq-section" id="faq" aria-labelledby="faq-heading">
+        <div class="join-wide-container">
+            <h2 id="faq-heading">{{ page.faq_heading }}</h2>
+            <div class="join-faq-list">
+                {% for faq in page.faqs.all %}
+                    {% include "join/components/faq_accordion.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="join-career-section" id="career-path" aria-labelledby="career-heading">
+        <div class="join-career-container">
+            <h2 id="career-heading">{{ page.career_heading }}</h2>
+            {% if page.career_introduction %}
+                <p class="join-career-section__intro">{{ page.career_introduction }}</p>
+            {% endif %}
+            <ol class="join-career-list">
+                {% for stage in page.career_stages.all %}
+                    <li class="join-career-stage">
+                        <span class="join-career-stage__marker">{{ forloop.counter }}</span>
+                        <div class="join-career-stage__content">
+                            <h3>{{ stage.title }}</h3>
+                            {% if stage.subtitle %}<p class="join-career-stage__subtitle">{{ stage.subtitle }}</p>{% endif %}
+                            <p>{{ stage.description }}</p>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'join/js/join.js' %}" type="text/javascript"></script>
+{% endblock %}

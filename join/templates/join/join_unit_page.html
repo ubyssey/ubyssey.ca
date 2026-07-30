@@ -1,0 +1,75 @@
+{% extends "ubyssey/base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block darkmode %}
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fcf9f8">
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'ubyssey/css/join.css' %}?v=5" type="text/css">
+{% endblock %}
+
+{% block page_wrapper %}join-page{% endblock %}
+
+{% block header %}
+    {% include "join/components/header.html" %}
+{% endblock %}
+
+{% block content %}
+<main class="join-main">
+    <section class="join-hero join-hero--unit">
+        {% if page.hero_image %}
+            {% image page.hero_image fill-1600x700 as hero_image %}
+            <img class="join-hero__image" src="{{ hero_image.url }}" alt="">
+        {% elif page.static_hero_image %}
+            <img class="join-hero__image" src="{% static page.static_hero_image %}?v=2" alt="">
+        {% endif %}
+        <div class="join-hero__overlay"></div>
+        <div class="join-hero__content">
+            <h1>{{ page.title }}</h1>
+        </div>
+    </section>
+
+    <div class="join-unit-content">
+        <section class="join-unit-intro">
+            <h2>{{ page.title }}</h2>
+            <div class="join-richtext">{{ page.introduction|richtext }}</div>
+        </section>
+
+        <section class="join-positions" aria-labelledby="positions-heading">
+            <h2 id="positions-heading">Positions</h2>
+            <div class="join-position-list">
+                {% for position in page.positions.all %}
+                    {% include "join/components/position_accordion.html" %}
+                {% empty %}
+                    <p>There are no positions listed right now.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {% if page.unit_email or page.contact_name or page.contact_email %}
+        <section class="join-contact" aria-labelledby="contact-heading">
+            <h2 id="contact-heading">Contact</h2>
+            {% if page.unit_email %}
+                <p><strong>{{ page.unit_type }} email:</strong> <a href="mailto:{{ page.unit_email }}">{{ page.unit_email }}</a></p>
+            {% endif %}
+            {% if page.contact_name or page.contact_email %}
+                <p>
+                    {% if page.contact_role %}<strong>{{ page.contact_role }}:</strong>{% endif %}
+                    {% if page.contact_name %} {{ page.contact_name }}{% endif %}
+                    {% if page.contact_email %}
+                        (<a href="mailto:{{ page.contact_email }}">{{ page.contact_email }}</a>)
+                    {% endif %}
+                </p>
+            {% endif %}
+        </section>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'join/js/join.js' %}" type="text/javascript"></script>
+{% endblock %}
