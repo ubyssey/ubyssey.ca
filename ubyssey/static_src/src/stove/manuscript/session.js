@@ -5,6 +5,7 @@ export class ManuscriptSession {
     this.streamEditors = [];
     this.articleRichTextEditors = [];
     this.articleDirectTextEditors = [];
+    this.articleDirectPlainTextEditors = [];
     this.articleBlockControls = null;
     this.richTextToolbar = null;
     this.commentSidebar = null;
@@ -12,6 +13,8 @@ export class ManuscriptSession {
     this.selectedArticleBlock = null;
     this.revealSelectedArticleBlock = null;
     this.blockEditorModalOpen = false;
+    this.blockEditorDirty = false;
+    this.blockEditorEditing = false;
     this.suppressedHoverArticleBlock = null;
     this.suppressedHoverTimer = null;
     this.preferredInsertTypes = new Map();
@@ -36,6 +39,13 @@ export class ManuscriptSession {
     return previewViews.length
       ? previewViews
       : this.streamEditors.map((editor) => editor.view);
+  }
+
+  // Returns hidden stream editors, which are the source of truth
+  currentCollaborativeTextViews() {
+    return this.streamEditors
+      .map((editor) => editor.view)
+      .filter(Boolean);
   }
 
   setPreviewService({ schedule, cancel }) {

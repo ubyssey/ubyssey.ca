@@ -8,6 +8,9 @@ import { createRoot } from "react-dom/client";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 
+// Sends author events to collab below in useArticleAuthorsPanel
+import { AUTHORS_CHANGED_EVENT, AUTHORS_UPDATED_EVENT, setupMetadataCollaboration } from "../collab/metadata/index.js";
+
 // Non hidden inputs
 const focusableSelector = "input:not([type='hidden']), select, textarea, button";
 
@@ -95,6 +98,7 @@ function useArticleAuthorsPanel() {
     const form = panel.closest("form");
     const selectRoots = new Map();
     const notifyChanged = () => {
+      panel.dispatchEvent(new Event(AUTHORS_CHANGED_EVENT, { bubbles: true }));
       form.dispatchEvent(new Event("input", { bubbles: true }));
     };
     const setupAuthorSelect = (select) => {
@@ -121,6 +125,32 @@ function useArticleAuthorsPanel() {
         />,
       );
       selectRoots.set(container, root);
+    };
+
+    const applyCollaborativeRows = (event) => {
+      const existingRow = rows.querySelector("[data-article-author-row]");
+      if (!existingRow) return;
+
+      const template = existingRow.cloneNode(true);
+      template.querySelector(".pm-author-panel__select")?.remove();
+      selectRoots.forEach((root) => root.unmount());
+      selectRoots.clear();
+      rows.replaceChildren();
+
+      const collaborativeRows = event.detail?.length ? event.detail : [{ authorId: "", role: "author" }];
+      collaborativeRows.forEach((item) => {
+        const row = template.cloneNode(true);
+        row.querySelector(".pm-author-panel__select")?.remove();
+        const authorSelect = row.querySelector("[data-article-author-select]");
+        const roleSelect = row.querySelector("[name='article_authors-role']");
+        const authorId = String(item.authorId || "");
+
+        authorSelect.dataset.selectedAuthorId = authorId;
+        authorSelect.value = authorId;
+        roleSelect.value = item.role || "author";
+        rows.appendChild(row);
+        setupAuthorSelect(authorSelect);
+      });
     };
 
     panel.querySelectorAll("[data-article-author-select]").forEach(setupAuthorSelect);
@@ -210,6 +240,8 @@ function useArticleAuthorsPanel() {
         notifyChanged();
       }),
       on(panel, "change", notifyChanged),
+      // Handles incoming author updated above sends
+      on(panel, AUTHORS_UPDATED_EVENT, applyCollaborativeRows),
     ];
 
     return () => {
@@ -629,9 +661,10 @@ function useAsyncSave(form, writeBeforeSave) {
   }, [form, writeBeforeSave]);
 }
 
-function ManuscriptChrome({ form, schedulePreview, writeBeforeSave }) {
+function ManuscriptChrome({ form, metadata, schedulePreview, writeBeforeSave }) {
   usePageFieldToggles(form, schedulePreview);
   useArticleAuthorsPanel();
+  useEffect(() => setupMetadataCollaboration(form, metadata), [form, metadata]);
   useMetadataTabs();
   useMediaAndSettingsModals(form);
   useAsyncSave(form, writeBeforeSave);

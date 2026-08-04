@@ -105,6 +105,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
   const anyBlockModalOpen = () => ui.blockEditorOpen || ui.insertOpen || ui.deleteOpen;
   const syncBlockModalOpenState = () => {
     manuscriptSession.blockEditorModalOpen = anyBlockModalOpen();
+    manuscriptSession.blockEditorEditing = ui.blockEditorOpen;
   };
   const isDialogOpen = () => ui.insertOpen || ui.deleteOpen;
   const withActiveBlock = (callback) => {
@@ -166,6 +167,8 @@ export function setupArticleBlockControls(manuscriptRoot) {
   };
 
   const closeBlockEditorModal = ({ keepSelection = false, refreshPreview = true } = {}) => {
+    const wasEditing = ui.blockEditorOpen;
+    const changed = manuscriptSession.blockEditorDirty;
     restoreBlockEditorHome();
     ui.blockEditorOpen = false;
     syncBlockModalOpenState();
@@ -174,7 +177,12 @@ export function setupArticleBlockControls(manuscriptRoot) {
       manuscriptSession.selectedArticleBlock = null;
       syncSelectedArticleBlockEditor(null);
     }
-    if (refreshPreview) manuscriptSession.schedulePreview();
+    manuscriptSession.blockEditorDirty = false;
+    if (refreshPreview && wasEditing && changed) {
+      manuscriptSession.schedulePreview({ blockOnly: true, immediate: true });
+    } else if (refreshPreview && !wasEditing) {
+      manuscriptSession.schedulePreview();
+    }
   };
 
   const cancelInsertDialog = () => {
@@ -210,6 +218,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
   };
 
   const openBlockEditorModal = (descriptor) => {
+    manuscriptSession.blockEditorDirty = false;
     closeDialogs();
     restoreBlockEditorHome();
     ui.blockEditorOpen = true;

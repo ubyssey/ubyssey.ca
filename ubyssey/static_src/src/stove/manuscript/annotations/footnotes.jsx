@@ -1,8 +1,10 @@
 // Footnotes
 
+import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { v4 as uuidv4 } from "uuid";
 
+import { manuscriptSession } from "../session.js";
 import { cssEscape } from "./comments.jsx";
 import { markRangeAtCursor } from "./marks.js";
 
@@ -60,6 +62,7 @@ export function setupFootnoteSidebar(root, { getViews }) {
 
     window.requestAnimationFrame(() => {
       const nextInput = root.querySelector(`[data-footnote-id="${nextActiveFootnoteId}"]`);
+      if (!nextInput) return;
       nextInput.focus({ preventScroll: true });
       if (activeFootnoteId && Number.isInteger(selectionStart) && Number.isInteger(selectionEnd)) {
         nextInput.setSelectionRange(selectionStart, selectionEnd);
@@ -89,30 +92,40 @@ function FootnotePanel({ footnotes, refresh }) {
           >
             {index + 1}
           </button>
-          <textarea
-            defaultValue={footnote.text}
-            data-footnote-id={footnote.footnoteId}
-            rows="1"
-            onKeyDown={(event) => {
-              if (event.key !== "Backspace" || event.currentTarget.value) return;
-              event.preventDefault();
-              removeFootnote(footnote.view, footnote.footnoteId);
-              refresh();
-            }}
-            onInput={(event) => {
-              updateFootnote(footnote.view, footnote.footnoteId, event.currentTarget.value);
-              event.currentTarget.style.height = "auto";
-              event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`;
-            }}
-            ref={(textarea) => {
-              if (!textarea) return;
-              textarea.style.height = "auto";
-              textarea.style.height = `${textarea.scrollHeight}px`;
-            }}
-          />
+          <FootnoteTextarea footnote={footnote} refresh={refresh} />
         </label>
       ))}
     </section>
+  );
+}
+
+// Individual footnote textarea
+function FootnoteTextarea({ footnote, refresh }) {
+  const [text, setText] = useState(footnote.text);
+
+  useEffect(() => {
+    setText(footnote.text);
+  }, [footnote.text]);
+
+  return (
+    <textarea
+      value={text}
+      data-footnote-id={footnote.footnoteId}
+      rows="1"
+      // We used to delete footnotes here if empty and backspaced, but removed since not sure if we want that
+      onChange={(event) => {
+        const nextText = event.currentTarget.value;
+        setText(nextText);
+        updateFootnote(footnote.view, footnote.footnoteId, nextText);
+        event.currentTarget.style.height = "auto";
+        event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`;
+      }}
+      ref={(textarea) => {
+        if (!textarea) return;
+        textarea.style.height = "auto";
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }}
+    />
   );
 }
 

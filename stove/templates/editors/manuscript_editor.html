@@ -47,9 +47,8 @@
       <button type="button" class="manuscript-topbar__button" data-manuscript-open-settings>Settings</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>Media</button>
       <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>
-      <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
       <a href="{% url 'stove:manuscript_full_preview' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View Preview</a>
-      <button type="submit" class="manuscript-topbar__button" name="action" value="draft" data-article-action="draft">Save</button> 
+      <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
       {% comment %}
         Save and Publish button hidden for now 
         <button type="submit" class="manuscript-topbar__button" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
@@ -210,13 +209,13 @@
       {{ page_form.non_field_errors }}
       {% for field in page_form %}
         {% if field.name in public_page_form_fields %}
-          <div class="page-field">
+          <div class="page-field" data-collaborative-metadata>
             {{ field.label_tag }}
             {{ field }}
             {{ field.errors }}
           </div>
         {% else %}
-          <div hidden>
+          <div hidden data-collaborative-metadata>
             {{ field }}
             {{ field.errors }}
           </div>
@@ -227,7 +226,7 @@
         {{ featured_media_form.non_field_errors }}
         <div>Featured Image or Video</div>
         {% for field in featured_media_form %}
-          <div class="page-field">
+          <div class="page-field" data-collaborative-metadata>
             {{ field.label_tag }}
             {{ field }}
             {{ field.errors }}
@@ -285,6 +284,9 @@
       {% if self.last_published_at %}
       <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
       {% endif %}
+      <span data-article-saved data-last-saved-at="{% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:'c' }}{% endif %}">
+        Last Saved: {% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:"M j, Y H:i" }}{% else %}Not yet{% endif %}
+      </span>
     </div>
   </main>
 </form>

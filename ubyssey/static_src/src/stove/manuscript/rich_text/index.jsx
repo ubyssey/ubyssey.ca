@@ -51,17 +51,21 @@ export const richTextSchema = new Schema({
 
 const isMac = typeof navigator !== "undefined" && /Mac|iP(hone|[oa]d)/.test(navigator.platform);
 
-export function editorPlugins(schema) {
+export function editorPlugins(schema, {
+  includeHistory = true,
+  undoCommand = undo,
+  redoCommand = redo,
+} = {}) {
   return [
     linkBubblePlugin(schema),
     activeCommentPlugin(schema),
     suggestionPlugin(schema),
     buildEditorInputRules(schema),
-    keymap(buildEditorKeymap(schema)),
+    keymap(buildEditorKeymap(schema, { undoCommand, redoCommand })),
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),
-    history(),
+    ...(includeHistory ? [history()] : []),
   ];
 }
 
@@ -331,16 +335,16 @@ function activeCommentPlugin(schema) {
   });
 }
 
-function buildEditorKeymap(schema) {
+function buildEditorKeymap(schema, { undoCommand, redoCommand }) {
   const keys = {};
   const bind = (key, command) => { keys[key] = command; };
   let type;
 
   // Mod is platform agnostic ctrl/cmd
-  bind("Mod-z", undo);
-  bind("Shift-Mod-z", redo);
+  bind("Mod-z", undoCommand);
+  bind("Shift-Mod-z", redoCommand);
   bind("Backspace", undoInputRule);
-  if (!isMac) bind("Mod-y", redo);
+  if (!isMac) bind("Mod-y", redoCommand);
   bind("Alt-ArrowUp", joinUp);
   bind("Alt-ArrowDown", joinDown);
   bind("Mod-BracketLeft", lift);
