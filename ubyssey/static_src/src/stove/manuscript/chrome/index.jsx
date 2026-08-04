@@ -271,6 +271,7 @@ function useMediaAndSettingsModals(form) {
   useEffect(() => {
     const uploadButton = document.querySelector("[data-article-media-upload-button]");
     const settingsModal = document.querySelector("[data-manuscript-settings-modal]");
+    const coverModal = document.querySelector("[data-manuscript-cover-modal]");
     const uploadModal = document.querySelector("[data-article-media-upload-modal]");
     const galleryModal = document.querySelector("[data-article-media-gallery-modal]");
     const uploadTitle = document.querySelector("[data-article-media-upload-title]");
@@ -478,6 +479,9 @@ function useMediaAndSettingsModals(form) {
     syncImageFields();
 
     const cleanups = [
+      on(document.querySelector("[data-manuscript-open-cover]"), "click", () => {
+        setModalOpen(coverModal, true, coverModal.querySelector(focusableSelector));
+      }),
       on(document.querySelector("[data-manuscript-open-settings]"), "click", () => {
         setModalOpen(settingsModal, true, settingsModal.querySelector(focusableSelector));
       }),
@@ -520,9 +524,9 @@ function useMediaAndSettingsModals(form) {
         uploadModal.classList.toggle("article-media-modal--stacked", uploadReturnsToGallery);
         setModalOpen(uploadModal, true, mediaField("title"));
       }),
-      ...Array.from(document.querySelectorAll("[data-article-media-close], [data-manuscript-settings-close]")).map((button) => (
+      ...Array.from(document.querySelectorAll("[data-article-media-close], [data-manuscript-settings-close], [data-manuscript-cover-close]")).map((button) => (
         on(button, "click", () => {
-          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-existing-modal], [data-article-media-gallery-modal]");
+          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-existing-modal], [data-article-media-gallery-modal], [data-manuscript-cover-modal]");
           if (modal === uploadModal) closeUpload();
           else if (modal === existingMediaModal) closeExisting();
           else setModalOpen(modal, false);
@@ -534,6 +538,7 @@ function useMediaAndSettingsModals(form) {
         else if (!existingMediaModal.hidden) closeExisting();
         else if (!galleryModal.hidden) setModalOpen(galleryModal, false);
         else if (!settingsModal.hidden) setModalOpen(settingsModal, false);
+        else if (!coverModal.hidden) setModalOpen(coverModal, false);
       }),
       on(kind, "change", syncImageFields),
       on(existingKind, "change", renderExistingMediaSelect),
