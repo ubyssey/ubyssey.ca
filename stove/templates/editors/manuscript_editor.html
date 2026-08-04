@@ -285,7 +285,7 @@
       <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
       {% endif %}
       <span data-article-saved data-last-saved-at="{% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:'c' }}{% endif %}">
-        Last Saved: {% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:"M j, Y H:i" }}{% else %}Not yet{% endif %}
+        {% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:"M j, Y H:i" }}{% endif %}
       </span>
     </div>
   </main>
