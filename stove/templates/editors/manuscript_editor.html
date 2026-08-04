@@ -2,7 +2,7 @@
 {% load static %}
 {% load wagtailcore_tags %}
 
-{% block title %}Manuscript Editor{% endblock %}
+{% block title %}{% if self.title %}{{ self.title }}{% else %}Manuscript Editor{% endif%}{% endblock %}
 
 {# Add new head block to replace stylesheet #}
 {% block stylesheet %}
