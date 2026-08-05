@@ -293,26 +293,48 @@ function useMediaAndSettingsModals(form) {
     const tagField = form.querySelector("#id_article_media-tags");
     const tagSelectMount = document.createElement("div");
     const tagSelectRoot = createRoot(tagSelectMount);
+    const authorSelectMount = document.createElement("div");
+    const authorSelectRoot = createRoot(authorSelectMount);
     let existingSelection = null;
 
     const mediaField = (name) => form.querySelector(`#id_article_media-${name}`);
     const mediaAuthorField = form.querySelector("[data-article-media-author-select]");
+    const renderAuthorSelect = (options, isDisabled = false) => {
+      authorSelectRoot.render(
+        <Select
+          classNamePrefix="article-media-author-select"
+          isDisabled={isDisabled}
+          options={options}
+          placeholder={isDisabled ? "Loading authors" : "Select author"}
+          value={options.find((option) => String(option.value) === String(mediaAuthorField.value)) || null}
+          onChange={(option) => {
+            mediaAuthorField.value = option?.value || "";
+            mediaAuthorField.dispatchEvent(new Event("change", { bubbles: true }));
+          }}
+        />,
+      );
+    };
+    mediaAuthorField.hidden = true;
+    mediaAuthorField.parentNode.insertBefore(authorSelectMount, mediaAuthorField.nextSibling);
+    renderAuthorSelect([], true);
     let mediaAuthorsLoaded = false;
     const mediaAuthorOptionsReady = fetchAuthorOptions(form).then((payload) => {
       const selectedAuthorId = mediaAuthorField.dataset.pendingValue ?? mediaAuthorField.value;
       const options = [
-        new Option("Select author", ""),
-        ...(payload.authors || []).map((author) => new Option(author.label, author.id)),
+        { value: "", label: "Select author" },
+        ...(payload.authors || []).map((author) => ({ value: author.id, label: author.label })),
       ];
 
-      mediaAuthorField.replaceChildren(...options);
+      mediaAuthorField.replaceChildren(...options.map((option) => new Option(option.label, option.value)));
       mediaAuthorField.value = selectedAuthorId;
       mediaAuthorsLoaded = true;
       delete mediaAuthorField.dataset.pendingValue;
+      renderAuthorSelect(options);
       return true;
     }).catch((error) => {
       console.error(error);
       mediaAuthorField.options[0].textContent = "Failed to fetch authors";
+      renderAuthorSelect([], true);
       return false;
     });
 
@@ -363,6 +385,7 @@ function useMediaAndSettingsModals(form) {
         if (field !== kind) field.value = "";
       });
       setTags([]);
+      renderAuthorSelect(Array.from(mediaAuthorField.options).map((option) => ({ value: option.value, label: option.text })), !mediaAuthorsLoaded);
       delete mediaAuthorField.dataset.pendingValue;
       delete form.dataset.articleMediaEditKind;
       setUploadMode("upload");
@@ -520,6 +543,7 @@ function useMediaAndSettingsModals(form) {
           field.value = value;
         });
         setTags((card.dataset.tags || "").split(",").map((tag) => tag.trim()));
+        renderAuthorSelect(Array.from(mediaAuthorField.options).map((option) => ({ value: option.value, label: option.text })), !mediaAuthorsLoaded);
         mediaField("file").value = "";
         form.dataset.articleMediaEditKind = card.dataset.kind;
         setUploadMode("edit");
@@ -599,6 +623,7 @@ function useMediaAndSettingsModals(form) {
       cancelExistingMediaSearch();
       existingSelectRoot.unmount();
       tagSelectRoot.unmount();
+      authorSelectRoot.unmount();
     };
   }, [form]);
 }
