@@ -135,6 +135,12 @@ body {
     min-width: 0;
 }
 
+[data-article-saved] {
+    font: 13px/1.2 sans-serif;
+    color: var(--text_color-200, #555);
+    margin-right: auto
+}
+
 .manuscript-connected-users {
     display: flex;
     gap: 4px;

@@ -41,7 +41,10 @@
   <header class="manuscript-topbar">
     <a href="{% url 'stove:content_tracker_base' %}">
       <img src="{% static 'ubyssey/images/stove/favicon.ico' %}">
-    </a>
+    </a>  
+    <span data-article-saved data-last-saved-at="{% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:'c' }}{% endif %}">
+        {% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:"M j, Y H:i" }}{% endif %}
+    </span>
     <div class="manuscript-topbar__actions">
       <div class="manuscript-connected-users" data-connected-users></div>
       <button type="button" class="manuscript-topbar__button" data-manuscript-open-guide>Guide</button>
@@ -309,9 +312,6 @@
       {% if self.last_published_at %}
       <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
       {% endif %}
-      <span data-article-saved data-last-saved-at="{% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:'c' }}{% endif %}">
-        {% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:"M j, Y H:i" }}{% endif %}
-      </span>
     </div>
   </main>
 </form>

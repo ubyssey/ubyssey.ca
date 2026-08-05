@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     savedStatusTimer = window.setTimeout(() => {
       const savedAt = new Date();
       savedStatus.dataset.lastSavedAt = savedAt.toISOString();
-      savedStatus.textContent = `Autosaved at: ${formatSavedAt(savedAt)}`;
+      savedStatus.textContent = `Saved: ${formatSavedAt(savedAt)}`;
       manuscriptSession.richTextToolbar?.update();
     }, 750);
   };
