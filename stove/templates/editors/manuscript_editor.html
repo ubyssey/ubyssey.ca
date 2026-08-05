@@ -44,6 +44,7 @@
     </a>
     <div class="manuscript-topbar__actions">
       <div class="manuscript-connected-users" data-connected-users></div>
+      <button type="button" class="manuscript-topbar__button" data-manuscript-open-guide>Guide</button>
       <button type="button" class="manuscript-topbar__button" data-manuscript-open-cover>Cover</button>
       <button type="button" class="manuscript-topbar__button" data-manuscript-open-settings>Settings</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>Media</button>
@@ -259,6 +260,19 @@
           </section>
         {% endif %}
       {% endfor %}
+      </section>
+    </section>
+  </div>
+
+  <div class="article-media-modal" data-manuscript-guide-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-guide-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-manuscript-guide-close aria-label="Close Guide"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--settings">
+      <header class="article-media-modal__header">
+        <h2 id="manuscript-guide-title">Guide</h2>
+        <button type="button" class="article-media-modal__close" data-manuscript-guide-close aria-label="Close Guide">x</button>
+      </header>
+      <section id="guide" class="guide-section">
+        <div id="guide-container"></div>
       </section>
     </section>
   </div>
