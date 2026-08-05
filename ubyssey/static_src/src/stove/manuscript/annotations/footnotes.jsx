@@ -137,15 +137,18 @@ function FootnoteText({ footnote }) {
     });
 
     observer = () => {
-      const nextText = sharedText.toString();
-      if (nextText !== footnoteText(view)) {
-        const selection = Math.min(view.state.selection.from, nextText.length + 1);
-        const tr = view.state.tr.replaceWith(0, view.state.doc.content.size, linkFootnoteDoc(footnoteDoc(nextText)).content);
-        view.dispatch(tr
-          .setSelection(TextSelection.create(tr.doc, selection))
-          .setMeta("addToHistory", false));
-      }
-      updateFootnote(footnote.view, footnote.footnoteId, nextText);
+      queueMicrotask(() => {
+        if(cancelled) return;
+        const nextText = sharedText.toString();
+        if (nextText !== footnoteText(view)) {
+          const selection = Math.min(view.state.selection.from, nextText.length + 1);
+          const tr = view.state.tr.replaceWith(0, view.state.doc.content.size, linkFootnoteDoc(footnoteDoc(nextText)).content);
+          view.dispatch(tr
+            .setSelection(TextSelection.create(tr.doc, selection))
+            .setMeta("addToHistory", false));
+        }
+        updateFootnote(footnote.view, footnote.footnoteId, nextText);
+      });
     };
     sharedText.observe(observer);
     observer();
