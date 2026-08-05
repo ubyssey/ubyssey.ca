@@ -142,7 +142,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (localBlockEdit) manuscriptSession.blockEditorDirty = true;
 
     window.requestAnimationFrame(() => {
-      manuscriptSession.streamEditors.forEach((instance) => refreshArticlePreviewEditorsFromStream(instance));
+      manuscriptSession.streamEditors.forEach((instance) => refreshArticlePreviewEditorsFromStream(instance, {
+        preserveFocused: true,
+      }));
       manuscriptSession.footnoteSidebar?.update();
       if (localBlockEdit) {
         manuscriptSession.schedulePreview({ blockOnly: true, debounceMs: MODAL_PREVIEW_DEBOUNCE_MS });
