@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const currentEditor = readJsonScript("current-editor");
 
   const collaboration = await setupCollaboration(form.dataset.manuscriptPageId, streamEditors, currentEditor, form);
+  manuscriptSession.footnoteTexts = collaboration.ydoc.getMap("footnoteTexts");
 
   if (Object.keys(editorErrors).length) {
     alert("Failed to save due to errors: " + JSON.stringify(editorErrors));
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     getThreads: collectBlockCommentThreads,
   });
   manuscriptSession.footnoteSidebar = setupFootnoteSidebar(document.querySelector("[data-footnote-sidebar]"), {
-    getViews: () => manuscriptSession.currentCollaborativeTextViews(),
+    getViews: () => manuscriptSession.currentArticleTextViews(),
   });
 
   setupArticlePreviewEditors(manuscriptRoot);

@@ -21,6 +21,7 @@ export class ManuscriptSession {
     this.schedulePreview = () => {};
     this.cancelPreviewRefresh = () => {};
     this.users = null;
+    this.footnoteTexts = null;
   }
 
   registerStreamEditor(editor) {
@@ -36,9 +37,13 @@ export class ManuscriptSession {
       .map((editor) => editor.view)
       .filter((view) => view.dom.isConnected);
 
-    return previewViews.length
-      ? previewViews
-      : this.streamEditors.map((editor) => editor.view);
+    if (previewViews.length) {
+      return previewViews.sort((a, b) => (
+        a.dom.compareDocumentPosition(b.dom) & Node.DOCUMENT_POSITION_PRECEDING ? 1 : -1
+      ));
+    }
+
+    return this.streamEditors.map((editor) => editor.view);
   }
 
   // Returns hidden stream editors, which are the source of truth

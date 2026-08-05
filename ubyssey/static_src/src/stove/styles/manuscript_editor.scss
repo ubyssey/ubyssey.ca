@@ -367,13 +367,13 @@ body {
 }
 
 .article-block-editor-modal__panel .pm-article-block-dialog__button--primary {
-    background: #3564a8;
+    background-color: #3564a8;
     color: #fff;
     border: none;
 }
 
 .article-block-editor-modal__panel .pm-article-block-dialog__button--danger {
-    background: #d23732;
+    background-color: #d23732;
     color: #fff;
     border: none;
 }
@@ -598,13 +598,26 @@ body {
     background-color: #4d7ab9;
 }
 
-.pm-footnote textarea {
+.pm-footnote-editor {
+    min-width: 0;
+}
+
+.pm-footnote-editor .ProseMirror {
     box-sizing: border-box;
+    width: 100%;
     background: #fff;
+    border: 1px solid #555;
     color: #1b1b1b;
     overflow: hidden;
     font: 13px/1.35 sans-serif;
     resize: vertical;
+    white-space: pre-wrap;
+}
+
+.pm-footnote-editor .ProseMirror a {
+    color: #0071c9;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .pm-comment-sidebar {

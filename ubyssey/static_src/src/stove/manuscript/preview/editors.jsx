@@ -96,6 +96,7 @@ function createArticleRichTextEditor(mount, content, className, onDocChanged, st
     });
   }
 
+  view.streamSource = streamSource;
   view.dom.addEventListener("focus", () => {
     manuscriptSession.richTextToolbar?.setView(view);
     sendCursor();
