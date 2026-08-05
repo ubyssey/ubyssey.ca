@@ -8,6 +8,9 @@ import { createRoot } from "react-dom/client";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 
+// Sends author events to collab below in useArticleAuthorsPanel
+import { AUTHORS_CHANGED_EVENT, AUTHORS_UPDATED_EVENT, setupMetadataCollaboration } from "../collab/metadata/index.js";
+
 // Non hidden inputs
 const focusableSelector = "input:not([type='hidden']), select, textarea, button";
 
@@ -95,6 +98,7 @@ function useArticleAuthorsPanel() {
     const form = panel.closest("form");
     const selectRoots = new Map();
     const notifyChanged = () => {
+      panel.dispatchEvent(new Event(AUTHORS_CHANGED_EVENT, { bubbles: true }));
       form.dispatchEvent(new Event("input", { bubbles: true }));
     };
     const setupAuthorSelect = (select) => {
@@ -121,6 +125,32 @@ function useArticleAuthorsPanel() {
         />,
       );
       selectRoots.set(container, root);
+    };
+
+    const applyCollaborativeRows = (event) => {
+      const existingRow = rows.querySelector("[data-article-author-row]");
+      if (!existingRow) return;
+
+      const template = existingRow.cloneNode(true);
+      template.querySelector(".pm-author-panel__select")?.remove();
+      selectRoots.forEach((root) => root.unmount());
+      selectRoots.clear();
+      rows.replaceChildren();
+
+      const collaborativeRows = event.detail?.length ? event.detail : [{ authorId: "", role: "author" }];
+      collaborativeRows.forEach((item) => {
+        const row = template.cloneNode(true);
+        row.querySelector(".pm-author-panel__select")?.remove();
+        const authorSelect = row.querySelector("[data-article-author-select]");
+        const roleSelect = row.querySelector("[name='article_authors-role']");
+        const authorId = String(item.authorId || "");
+
+        authorSelect.dataset.selectedAuthorId = authorId;
+        authorSelect.value = authorId;
+        roleSelect.value = item.role || "author";
+        rows.appendChild(row);
+        setupAuthorSelect(authorSelect);
+      });
     };
 
     panel.querySelectorAll("[data-article-author-select]").forEach(setupAuthorSelect);
@@ -210,6 +240,8 @@ function useArticleAuthorsPanel() {
         notifyChanged();
       }),
       on(panel, "change", notifyChanged),
+      // Handles incoming author updated above sends
+      on(panel, AUTHORS_UPDATED_EVENT, applyCollaborativeRows),
     ];
 
     return () => {
@@ -239,6 +271,8 @@ function useMediaAndSettingsModals(form) {
   useEffect(() => {
     const uploadButton = document.querySelector("[data-article-media-upload-button]");
     const settingsModal = document.querySelector("[data-manuscript-settings-modal]");
+    const coverModal = document.querySelector("[data-manuscript-cover-modal]");
+    const guideModal = document.querySelector("[data-manuscript-guide-modal]");
     const uploadModal = document.querySelector("[data-article-media-upload-modal]");
     const galleryModal = document.querySelector("[data-article-media-gallery-modal]");
     const uploadTitle = document.querySelector("[data-article-media-upload-title]");
@@ -259,26 +293,48 @@ function useMediaAndSettingsModals(form) {
     const tagField = form.querySelector("#id_article_media-tags");
     const tagSelectMount = document.createElement("div");
     const tagSelectRoot = createRoot(tagSelectMount);
+    const authorSelectMount = document.createElement("div");
+    const authorSelectRoot = createRoot(authorSelectMount);
     let existingSelection = null;
 
     const mediaField = (name) => form.querySelector(`#id_article_media-${name}`);
     const mediaAuthorField = form.querySelector("[data-article-media-author-select]");
+    const renderAuthorSelect = (options, isDisabled = false) => {
+      authorSelectRoot.render(
+        <Select
+          classNamePrefix="article-media-author-select"
+          isDisabled={isDisabled}
+          options={options}
+          placeholder={isDisabled ? "Loading authors" : "Select author"}
+          value={options.find((option) => String(option.value) === String(mediaAuthorField.value)) || null}
+          onChange={(option) => {
+            mediaAuthorField.value = option?.value || "";
+            mediaAuthorField.dispatchEvent(new Event("change", { bubbles: true }));
+          }}
+        />,
+      );
+    };
+    mediaAuthorField.hidden = true;
+    mediaAuthorField.parentNode.insertBefore(authorSelectMount, mediaAuthorField.nextSibling);
+    renderAuthorSelect([], true);
     let mediaAuthorsLoaded = false;
     const mediaAuthorOptionsReady = fetchAuthorOptions(form).then((payload) => {
       const selectedAuthorId = mediaAuthorField.dataset.pendingValue ?? mediaAuthorField.value;
       const options = [
-        new Option("Select author", ""),
-        ...(payload.authors || []).map((author) => new Option(author.label, author.id)),
+        { value: "", label: "Select author" },
+        ...(payload.authors || []).map((author) => ({ value: author.id, label: author.label })),
       ];
 
-      mediaAuthorField.replaceChildren(...options);
+      mediaAuthorField.replaceChildren(...options.map((option) => new Option(option.label, option.value)));
       mediaAuthorField.value = selectedAuthorId;
       mediaAuthorsLoaded = true;
       delete mediaAuthorField.dataset.pendingValue;
+      renderAuthorSelect(options);
       return true;
     }).catch((error) => {
       console.error(error);
       mediaAuthorField.options[0].textContent = "Failed to fetch authors";
+      renderAuthorSelect([], true);
       return false;
     });
 
@@ -329,6 +385,7 @@ function useMediaAndSettingsModals(form) {
         if (field !== kind) field.value = "";
       });
       setTags([]);
+      renderAuthorSelect(Array.from(mediaAuthorField.options).map((option) => ({ value: option.value, label: option.text })), !mediaAuthorsLoaded);
       delete mediaAuthorField.dataset.pendingValue;
       delete form.dataset.articleMediaEditKind;
       setUploadMode("upload");
@@ -446,6 +503,12 @@ function useMediaAndSettingsModals(form) {
     syncImageFields();
 
     const cleanups = [
+      on(document.querySelector("[data-manuscript-open-guide]"), "click", () => {
+        setModalOpen(guideModal, true, guideModal.querySelector(focusableSelector));
+      }),
+      on(document.querySelector("[data-manuscript-open-cover]"), "click", () => {
+        setModalOpen(coverModal, true, coverModal.querySelector(focusableSelector));
+      }),
       on(document.querySelector("[data-manuscript-open-settings]"), "click", () => {
         setModalOpen(settingsModal, true, settingsModal.querySelector(focusableSelector));
       }),
@@ -480,6 +543,7 @@ function useMediaAndSettingsModals(form) {
           field.value = value;
         });
         setTags((card.dataset.tags || "").split(",").map((tag) => tag.trim()));
+        renderAuthorSelect(Array.from(mediaAuthorField.options).map((option) => ({ value: option.value, label: option.text })), !mediaAuthorsLoaded);
         mediaField("file").value = "";
         form.dataset.articleMediaEditKind = card.dataset.kind;
         setUploadMode("edit");
@@ -488,9 +552,9 @@ function useMediaAndSettingsModals(form) {
         uploadModal.classList.toggle("article-media-modal--stacked", uploadReturnsToGallery);
         setModalOpen(uploadModal, true, mediaField("title"));
       }),
-      ...Array.from(document.querySelectorAll("[data-article-media-close], [data-manuscript-settings-close]")).map((button) => (
+      ...Array.from(document.querySelectorAll("[data-article-media-close], [data-manuscript-settings-close], [data-manuscript-cover-close], [data-manuscript-guide-close]")).map((button) => (
         on(button, "click", () => {
-          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-existing-modal], [data-article-media-gallery-modal]");
+          const modal = button.closest("[data-manuscript-settings-modal], [data-article-media-upload-modal], [data-article-media-existing-modal], [data-article-media-gallery-modal], [data-manuscript-cover-modal], [data-manuscript-guide-modal]");
           if (modal === uploadModal) closeUpload();
           else if (modal === existingMediaModal) closeExisting();
           else setModalOpen(modal, false);
@@ -502,6 +566,8 @@ function useMediaAndSettingsModals(form) {
         else if (!existingMediaModal.hidden) closeExisting();
         else if (!galleryModal.hidden) setModalOpen(galleryModal, false);
         else if (!settingsModal.hidden) setModalOpen(settingsModal, false);
+        else if (!coverModal.hidden) setModalOpen(coverModal, false);
+        else if (!guideModal.hidden) setModalOpen(guideModal, false);
       }),
       on(kind, "change", syncImageFields),
       on(existingKind, "change", renderExistingMediaSelect),
@@ -557,6 +623,7 @@ function useMediaAndSettingsModals(form) {
       cancelExistingMediaSearch();
       existingSelectRoot.unmount();
       tagSelectRoot.unmount();
+      authorSelectRoot.unmount();
     };
   }, [form]);
 }
@@ -629,9 +696,10 @@ function useAsyncSave(form, writeBeforeSave) {
   }, [form, writeBeforeSave]);
 }
 
-function ManuscriptChrome({ form, schedulePreview, writeBeforeSave }) {
+function ManuscriptChrome({ form, metadata, schedulePreview, writeBeforeSave }) {
   usePageFieldToggles(form, schedulePreview);
   useArticleAuthorsPanel();
+  useEffect(() => setupMetadataCollaboration(form, metadata), [form, metadata]);
   useMetadataTabs();
   useMediaAndSettingsModals(form);
   useAsyncSave(form, writeBeforeSave);

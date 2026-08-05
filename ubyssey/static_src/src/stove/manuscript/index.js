@@ -5,18 +5,24 @@ import { createEditorToolbar } from "./rich_text/toolbar.jsx";
 import { setupCommentSidebar, setupFootnoteSidebar } from "./annotations/index.js";
 import { createStreamEditor } from "./stream/index.jsx";
 import { collectBlockCommentThreads, refreshBlockCommentBorders, syncSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
-import { currentStreamDocs, mountManuscriptChrome, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, syncArticlePreviewEditors, writeStreamTextareas } from "./preview/index.jsx";
+import { currentStreamDocs, MODAL_PREVIEW_DEBOUNCE_MS, mountManuscriptChrome, refreshArticlePreviewEditorsFromStream, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, syncArticlePreviewEditors, writeStreamTextareas } from "./preview/index.jsx";
 import { manuscriptSession } from "./session.js";
-import { setupUsers } from "./socket/users.js";
+import { setupUsers } from "./collab/presence.js";
+import { setupCollaboration } from "./collab/collaboration.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const manuscriptRoot = setupArticleShadow();
   const streamEditors = readJsonScript("stream-editors");
   const editorErrors = readJsonScript("editor-errors");
+  const form = document.querySelector("[data-manuscript-form]");
+  const currentEditor = readJsonScript("current-editor");
+
+  const collaboration = await setupCollaboration(form.dataset.manuscriptPageId, streamEditors, currentEditor, form);
+  manuscriptSession.footnoteTexts = collaboration.ydoc.getMap("footnoteTexts");
 
   if (Object.keys(editorErrors).length) {
     alert("Failed to save due to errors: " + JSON.stringify(editorErrors));
@@ -28,13 +34,25 @@ document.addEventListener("DOMContentLoaded", () => {
       textarea,
       streamEditors[textarea.dataset.streamField] || {},
       {
+        collaboration: {
+          fragment: collaboration.ydoc.getXmlFragment(textarea.dataset.streamField),
+          awareness: collaboration.awareness,
+        },
         onDocChanged: ({ transaction }) => {
-          if (!manuscriptSession.blockEditorModalOpen && !transaction.getMeta("skipPreview")) {
+          if (!manuscriptSession.blockEditorEditing && !transaction.getMeta("skipPreview")) {
             manuscriptSession.schedulePreview({ deferIfManuscriptFocused: Boolean(transaction.getMeta("deferPreviewIfFocused")) });
           }
         },
         onTransaction: ({ transaction, instance }) => {
           syncArticlePreviewEditors({ transaction, instance });
+          if (transaction.docChanged && manuscriptSession.blockEditorEditing) {
+            manuscriptSession.blockEditorDirty = true;
+            refreshArticlePreviewEditorsFromStream(instance);
+            manuscriptSession.schedulePreview({
+              blockOnly: true,
+              debounceMs: MODAL_PREVIEW_DEBOUNCE_MS,
+            });
+          }
           const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
           manuscriptSession.richTextToolbar?.update();
           syncSelectedArticleBlockEditor(manuscriptSession.selectedArticleBlock);
@@ -81,17 +99,63 @@ document.addEventListener("DOMContentLoaded", () => {
   manuscriptSession.footnoteSidebar.update();
   setupArticleBlockKeyboard(manuscriptRoot);
 
-  const form = document.querySelector("[data-manuscript-form]");
   manuscriptSession.users = setupUsers(
-    form.dataset.manuscriptPageId,
     document.querySelector("[data-connected-users]"),
-    readJsonScript("current-editor"),
+    currentEditor,
+    collaboration.awareness,
   );
 
   setupServerPreviewRefresh(form, manuscriptRoot);
+
+  // Saved Status Indicator
+  const savedStatus = document.querySelector("[data-article-saved]");
+  let savedStatusTimer = null;
+
+  const formatSavedAt = (date) => date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  const updateSavedStatus = () => {
+    if (!savedStatus) return;
+    savedStatus.textContent = "Saving...";
+    manuscriptSession.richTextToolbar?.update();
+    clearTimeout(savedStatusTimer);
+    savedStatusTimer = window.setTimeout(() => {
+      const savedAt = new Date();
+      savedStatus.dataset.lastSavedAt = savedAt.toISOString();
+      savedStatus.textContent = `Saved: ${formatSavedAt(savedAt)}`;
+      manuscriptSession.richTextToolbar?.update();
+    }, 750);
+  };
+
+  // YJS Collaboration Update Handler
+  collaboration.ydoc.on("update", (_update, origin) => {
+    updateSavedStatus();
+    const remoteUpdate = collaboration.provider && origin === collaboration.provider;
+    const localBlockEdit = !remoteUpdate && manuscriptSession.blockEditorEditing;
+    if (!remoteUpdate && !localBlockEdit) return;
+
+    if (localBlockEdit) manuscriptSession.blockEditorDirty = true;
+
+    window.requestAnimationFrame(() => {
+      manuscriptSession.streamEditors.forEach((instance) => refreshArticlePreviewEditorsFromStream(instance));
+      manuscriptSession.footnoteSidebar?.update();
+      if (localBlockEdit) {
+        manuscriptSession.schedulePreview({ blockOnly: true, debounceMs: MODAL_PREVIEW_DEBOUNCE_MS });
+      } else {
+        manuscriptSession.schedulePreview({ deferIfManuscriptFocused: true });
+      }
+    });
+  });
+
   setupHistoryPreviewButtons(manuscriptRoot);
   mountManuscriptChrome({
     form,
+    metadata: collaboration.metadata,
     schedulePreview: (...args) => manuscriptSession.schedulePreview(...args),
     writeBeforeSave: writeStreamTextareas,
   });

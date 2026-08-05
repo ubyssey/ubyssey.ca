@@ -10,6 +10,14 @@ import {
   reactKeys,
   useEditorEffect,
 } from "@handlewithcare/react-prosemirror";
+// https://docs.yjs.dev/ecosystem/editor-bindings/prosemirror
+import {
+  initProseMirrorDoc,
+  redoCommand as yRedo,
+  undoCommand as yUndo,
+  ySyncPlugin,
+  yUndoPlugin,
+} from "y-prosemirror";
 
 import { editorPlugins } from "../rich_text/index.jsx";
 import { createEditorToolbar } from "../rich_text/toolbar.jsx";
@@ -33,6 +41,7 @@ export {
 export function createStreamEditor(textarea, streamEditor, options = {}) {
   const {
     createToolbar = createEditorToolbar,
+    collaboration = null,
     onDocChanged = () => {},
     onTransaction = () => {},
   } = options;
@@ -47,14 +56,27 @@ export function createStreamEditor(textarea, streamEditor, options = {}) {
     ...blocks.map((block) => block.type),
   ])).sort((a, b) => a.localeCompare(b));
 
+  const localDoc = streamSchema.nodeFromJSON({
+    type: "doc",
+    content: content.length ? content : [createEmptyRichTextBlock()],
+  });
+
+  const yjsDoc = collaboration && initProseMirrorDoc(collaboration.fragment, streamSchema);
+  const collaborationPlugins = collaboration ? [
+    ySyncPlugin(collaboration.fragment, { mapping: yjsDoc.mapping }),
+    yUndoPlugin(),
+  ] : [];
+
   const defaultState = EditorState.create({
-    doc: streamSchema.nodeFromJSON({
-      type: "doc",
-      content: content.length ? content : [createEmptyRichTextBlock()],
-    }),
+    doc: yjsDoc ? yjsDoc.doc : localDoc,
     plugins: [
+      ...collaborationPlugins,
       reactKeys(),
-      ...editorPlugins(streamSchema),
+      ...editorPlugins(streamSchema, {
+        includeHistory: !collaboration,
+        undoCommand: collaboration ? yUndo : undefined,
+        redoCommand: collaboration ? yRedo : undefined,
+      }),
     ],
   });
 

@@ -4,6 +4,7 @@
 import { createRoot } from "react-dom/client";
 import { setBlockType, toggleMark } from "prosemirror-commands";
 import { undo, redo } from "prosemirror-history";
+import { redoCommand as yRedo, undoCommand as yUndo, yUndoPluginKey } from "y-prosemirror";
 import { wrapInList } from "prosemirror-schema-list";
 
 import { markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "../annotations/index.js";
@@ -18,11 +19,13 @@ const TOOLBAR_ITEMS = [
   ["underline", "U", "Underline"],
   ["heading3", "h3", "Heading 3"],
   ["link", "Link", "Insert link"],
-  ["bulletList", "•", "Bullet list"],
-  ["orderedList", "1.", "Ordered list"],
-  ["comment", "💬", "Comment"],
-  ["suggestionMode", "Suggest", "Toggle suggestion mode"],
-  ["footnote", "*", "Footnote"],
+  // Can't figure out why these two don't work with history
+  //["bulletList", "•", "Bullet list"],
+  //["orderedList", "1.", "Ordered list"],
+  // Only going to use as floating block controls
+  //["comment", "💬", "Comment"],
+  //["suggestionMode", "Suggest", "Toggle suggestion mode"],
+  ["footnote", "Footnote", "Footnote"],
 ];
 
 export function createEditorToolbar(root, {
@@ -185,6 +188,7 @@ function contentWordCount(doc) {
 function PublishToolbar({ source, wordCount, highlightedWords }) {
   const status = source.querySelector("[data-article-status]");
   const published = source.querySelector("[data-article-published]");
+  const saved = source.querySelector("[data-article-saved]");
   const liveLink = source.querySelector("[data-article-live-link]");
   const draftButton = source.querySelector('[data-article-action="draft"]');
   const publishButton = source.querySelector('[data-article-action="publish"]');
@@ -199,6 +203,7 @@ function PublishToolbar({ source, wordCount, highlightedWords }) {
       <span className="pm-editor-toolbar__meta">Word count: {wordCount}</span>
       {status && <span className="pm-editor-toolbar__meta">{status.textContent.trim()}</span>}
       {published && <span className="pm-editor-toolbar__meta">{published.textContent.trim()}</span>}
+      {saved && <span className="pm-editor-toolbar__meta">{saved.textContent.trim()}</span>}
       {liveLink && liveLink.href && (
         <a className="pm-editor-toolbar__link" href={liveLink.href} target="_blank" rel="noopener">
           {liveLink.textContent.trim() || "View Live"}
@@ -225,13 +230,15 @@ function PublishToolbar({ source, wordCount, highlightedWords }) {
 
 function toolbarCommand(view, key) {
   const { schema } = view.state;
+  // Use yjs history for hidden streamfields which have yjs undo installed, preview editors still use prosemirror history
+  const collaborative = Boolean(yUndoPluginKey.getState(view.state));
   const commands = {
-    suggestionMode: (state, dispatch) => {
+    /*suggestionMode: (state, dispatch) => {
       if (dispatch) toggleSuggestionMode();
       return true;
-    },
-    undo,
-    redo,
+    },*/
+    undo: collaborative ? yUndo : undo,
+    redo: collaborative ? yRedo : redo,
     bold: schema.marks.strong && toggleMark(schema.marks.strong),
     italic: schema.marks.em && toggleMark(schema.marks.em),
     underline: schema.marks.underline && toggleMark(schema.marks.underline),
@@ -240,9 +247,11 @@ function toolbarCommand(view, key) {
       ? setBlockType(schema.nodes.paragraph)
       : setBlockType(schema.nodes.heading, { level: 3 })),
     link: schema.marks.link && promptLinkCommand(schema.marks.link),
-    bulletList: schema.nodes.bullet_list && wrapInList(schema.nodes.bullet_list),
-    orderedList: schema.nodes.ordered_list && wrapInList(schema.nodes.ordered_list),
-    comment: schema.marks.comment && startCommentCommand(schema.marks.comment),
+    // Disabled for now as I can't get them to work with history properly
+    //bulletList: schema.nodes.bullet_list && wrapInList(schema.nodes.bullet_list),
+    //orderedList: schema.nodes.ordered_list && wrapInList(schema.nodes.ordered_list),
+    // I think this makes more sense to leave as a floating control
+    //comment: schema.marks.comment && startCommentCommand(schema.marks.comment),
     footnote: schema.marks.footnote && startFootnoteCommand(schema.marks.footnote),
   };
   return commands[key] || null;

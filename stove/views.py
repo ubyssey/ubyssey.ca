@@ -3,7 +3,8 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.db import transaction
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
@@ -18,7 +19,12 @@ from django.views.decorators.http import require_GET, require_POST
 from wagtail.admin.templatetags.wagtailadmin_tags import avatar_url
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from pycrdt import Doc
 
+from stove.consumers import restore_group_name
+from stove.models import ManuscriptCollaboration
 from stove.manuscript_editor import (
     PAGE_FORM_FIELDS,
     get_page_form,
@@ -31,6 +37,7 @@ from stove.manuscript_editor import (
     add_article_media,
     save_article_media,
 )
+from stove.manuscript_editor.revisions import autosave_manuscript_revision
 
 
 # include editors, copy editors
@@ -111,6 +118,34 @@ def update_content_tracker(request, page_id):
     latest_revision = page.get_latest_revision_as_object()
     return JsonResponse(latest_revision.to_json(), safe=False)
 
+
+@login_required
+@require_POST
+def manuscript_collaboration(request, page_id):
+    # Initalization before websockets kick in
+    if not request.body or len(request.body) > 10 * 1024 * 1024:
+        return HttpResponse(status=400)
+
+    try:
+        ydoc = Doc()
+        ydoc.apply_update(request.body)
+    except Exception:
+        return HttpResponse(status=400)
+
+    with transaction.atomic():
+        page = get_object_or_404(
+            Page.objects.select_for_update().only("pk"),
+            pk=page_id,
+        )
+        session, _ = ManuscriptCollaboration.objects.get_or_create(page=page)
+        if not session.document:
+            session.document = request.body
+            session.save(update_fields=["document", "updated_at"])
+        document = bytes(session.document)
+
+    return HttpResponse(document, content_type="application/octet-stream")
+
+
 @login_required
 def manuscript_editor(request, page_id):
     page = get_manuscript_page(page_id)
@@ -161,6 +196,7 @@ def manuscript_editor(request, page_id):
 
     stream_editors = get_streamfield_editors(page)
     article_media = page.article_media.all()
+    last_saved_manuscript = ManuscriptCollaboration.objects.filter(page_id=page_id).only("updated_at").first()
 
     # self: contains information like page title, slug, etc, for form fields = for preview rendering
     # page_form: contains the form for the page fields
@@ -169,6 +205,7 @@ def manuscript_editor(request, page_id):
     # featured_media_form: contains the form for the featured media
     # article_media_upload_form: contains the form for uploading article media
     # article_media: contains the list of existing article images/documents in this page
+    # last_saved_manuscript: sends last updated at for toolbar
 
     return render(
         request, "editors/manuscript_editor.html",
@@ -187,6 +224,7 @@ def manuscript_editor(request, page_id):
             "featured_media_form": featured_media_form,
             "article_media_upload_form": get_article_media_upload_form(),
             "article_media": article_media,
+            "last_saved_manuscript": last_saved_manuscript,
         },
     )
 
@@ -264,10 +302,27 @@ def manuscript_restore(request, page_id):
 
     revision = get_object_or_404(page.revisions, id=revision_id)
     restored_page = revision.as_object()
+
+    # Attempts to save the last version of the page before restoration
     try:
+        current_data = request.POST.copy()
+        current_data.pop("revision", None)
+        current_page = page.get_latest_revision_as_object()
+        apply_editor_post(current_page, current_data)
+        current_page.save_revision(user=request.user)
+
         saved_revision = restored_page.save_revision(user=request.user)
     except Exception:
         return JsonResponse({"errors": {"__all__": ["Failed to restore version."]}}, status=400)
+
+    # Delete cause this is a full restore of the page not a change
+    ManuscriptCollaboration.objects.filter(page_id=page_id).delete()
+    channel_layer = get_channel_layer()
+    if channel_layer is not None:
+        async_to_sync(channel_layer.group_send)(
+            restore_group_name(page_id),
+            {"type": "manuscript.restored"},
+        )
 
     return JsonResponse({
         "ok": True,
@@ -293,11 +348,10 @@ def manuscript_preview(request, page_id):
         featured_media_form = get_featured_media_form(page)
     else:
         editor_errors, page_form, article_authors_form, featured_media_form = apply_editor_post(page, request.POST, preview=True)
-
-    if editor_errors:
-        return JsonResponse({"errors": editor_errors}, status=400)
+        autosave_manuscript_revision(page_id, request.POST, request.user)
 
     return JsonResponse({
+        "errors": editor_errors,
         "html": render_to_string(
             "editors/preview/manuscript_preview.html",
             {"self": page, "page_form": page_form, "article_authors_form": article_authors_form, "featured_media_form": featured_media_form},

@@ -2,7 +2,7 @@
 {% load static %}
 {% load wagtailcore_tags %}
 
-{% block title %}Manuscript Editor{% endblock %}
+{% block title %}{% if self.title %}{{ self.title }}{% else %}Manuscript Editor{% endif%}{% endblock %}
 
 {# Add new head block to replace stylesheet #}
 {% block stylesheet %}
@@ -41,15 +41,19 @@
   <header class="manuscript-topbar">
     <a href="{% url 'stove:content_tracker_base' %}">
       <img src="{% static 'ubyssey/images/stove/favicon.ico' %}">
-    </a>
+    </a>  
+    <span data-article-saved data-last-saved-at="{% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:'c' }}{% endif %}">
+        {% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:"M j, Y H:i" }}{% endif %}
+    </span>
     <div class="manuscript-topbar__actions">
       <div class="manuscript-connected-users" data-connected-users></div>
+      <button type="button" class="manuscript-topbar__button" data-manuscript-open-guide>Guide</button>
+      <button type="button" class="manuscript-topbar__button" data-manuscript-open-cover>Cover</button>
       <button type="button" class="manuscript-topbar__button" data-manuscript-open-settings>Settings</button>
       <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>Media</button>
       <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>
-      <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
       <a href="{% url 'stove:manuscript_full_preview' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View Preview</a>
-      <button type="submit" class="manuscript-topbar__button" name="action" value="draft" data-article-action="draft">Save</button> 
+      <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
       {% comment %}
         Save and Publish button hidden for now 
         <button type="submit" class="manuscript-topbar__button" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
@@ -210,31 +214,41 @@
       {{ page_form.non_field_errors }}
       {% for field in page_form %}
         {% if field.name in public_page_form_fields %}
-          <div class="page-field">
+          <div class="page-field" data-collaborative-metadata>
             {{ field.label_tag }}
             {{ field }}
             {{ field.errors }}
           </div>
         {% else %}
-          <div hidden>
+          <div hidden data-collaborative-metadata>
             {{ field }}
             {{ field.errors }}
           </div>
         {% endif %}
       {% endfor %}
+      </section>
+    </section>
+  </div>
 
+  <div class="article-media-modal" data-manuscript-cover-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-cover-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-manuscript-cover-close aria-label="Close cover settings"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--cover">
+      <header class="article-media-modal__header">
+        <h2 id="manuscript-cover-title">Cover Settings</h2>
+        <button type="button" class="article-media-modal__close" data-manuscript-cover-close aria-label="Close cover settings">x</button>
+      </header>
+      <section id="cover-settings">
       {% if featured_media_form %}
         {{ featured_media_form.non_field_errors }}
         <div>Featured Image or Video</div>
         {% for field in featured_media_form %}
-          <div class="page-field">
+          <div class="page-field" data-collaborative-metadata>
             {{ field.label_tag }}
             {{ field }}
             {{ field.errors }}
           </div>
-        {% endfor %}
+      {% endfor %}
       {% endif %}
-
       {% for field_name, stream_editor in stream_editors.items %}
         {% if field_name != "header" and field_name != "content" %}
           <section class="editor-section">
@@ -249,6 +263,19 @@
           </section>
         {% endif %}
       {% endfor %}
+      </section>
+    </section>
+  </div>
+
+  <div class="article-media-modal" data-manuscript-guide-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-guide-title" hidden>
+    <button type="button" class="article-media-modal__backdrop" data-manuscript-guide-close aria-label="Close Guide"></button>
+    <section class="article-media-modal__panel article-media-modal__panel--settings">
+      <header class="article-media-modal__header">
+        <h2 id="manuscript-guide-title">Guide</h2>
+        <button type="button" class="article-media-modal__close" data-manuscript-guide-close aria-label="Close Guide">x</button>
+      </header>
+      <section id="guide" class="guide-section">
+        <div id="guide-container"></div>
       </section>
     </section>
   </div>

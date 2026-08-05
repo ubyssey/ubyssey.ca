@@ -5,6 +5,7 @@ export class ManuscriptSession {
     this.streamEditors = [];
     this.articleRichTextEditors = [];
     this.articleDirectTextEditors = [];
+    this.articleDirectPlainTextEditors = [];
     this.articleBlockControls = null;
     this.richTextToolbar = null;
     this.commentSidebar = null;
@@ -12,12 +13,15 @@ export class ManuscriptSession {
     this.selectedArticleBlock = null;
     this.revealSelectedArticleBlock = null;
     this.blockEditorModalOpen = false;
+    this.blockEditorDirty = false;
+    this.blockEditorEditing = false;
     this.suppressedHoverArticleBlock = null;
     this.suppressedHoverTimer = null;
     this.preferredInsertTypes = new Map();
     this.schedulePreview = () => {};
     this.cancelPreviewRefresh = () => {};
     this.users = null;
+    this.footnoteTexts = null;
   }
 
   registerStreamEditor(editor) {
@@ -33,9 +37,20 @@ export class ManuscriptSession {
       .map((editor) => editor.view)
       .filter((view) => view.dom.isConnected);
 
-    return previewViews.length
-      ? previewViews
-      : this.streamEditors.map((editor) => editor.view);
+    if (previewViews.length) {
+      return previewViews.sort((a, b) => (
+        a.dom.compareDocumentPosition(b.dom) & Node.DOCUMENT_POSITION_PRECEDING ? 1 : -1
+      ));
+    }
+
+    return this.streamEditors.map((editor) => editor.view);
+  }
+
+  // Returns hidden stream editors, which are the source of truth
+  currentCollaborativeTextViews() {
+    return this.streamEditors
+      .map((editor) => editor.view)
+      .filter(Boolean);
   }
 
   setPreviewService({ schedule, cancel }) {

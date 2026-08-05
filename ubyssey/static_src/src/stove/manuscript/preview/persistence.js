@@ -53,16 +53,18 @@ content: [{
 
 writeStreamTextareas handles the actual writeback
 */
-export function currentStreamDocs() {
+export function currentStreamDocs({ includePreviewEdits = true } = {}) {
   const streamDocs = new Map();
   for (const instance of manuscriptSession.streamEditors) {
     const nextDoc = clone(instance.view.state.doc.toJSON());
     const blocks = nextDoc.content || [];
 
-    for (const editor of manuscriptSession.articleRichTextEditors.filter((item) => item.fieldName === instance.fieldName)) {
-      const block = (editor.blockId && blocks.find((node) => node.attrs?.id === editor.blockId)) || (!editor.blockId && blocks[editor.blockIndex]);
-      const field = (block?.content || []).find((child) => child.type === "editable_field" && child.attrs?.mode === "richtext");
-      if (field) field.content = editor.view.state.doc.toJSON().content || EMPTY_RICH_TEXT;
+    if (includePreviewEdits) {
+      for (const editor of manuscriptSession.articleRichTextEditors.filter((item) => item.fieldName === instance.fieldName)) {
+        const block = (editor.blockId && blocks.find((node) => node.attrs?.id === editor.blockId)) || (!editor.blockId && blocks[editor.blockIndex]);
+        const field = (block?.content || []).find((child) => child.type === "editable_field" && child.attrs?.mode === "richtext");
+        if (field) field.content = editor.view.state.doc.toJSON().content || EMPTY_RICH_TEXT;
+      }
     }
 
     streamDocs.set(instance.fieldName, nextDoc);

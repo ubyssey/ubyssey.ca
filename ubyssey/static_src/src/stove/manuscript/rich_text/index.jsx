@@ -7,6 +7,7 @@
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-gapcursor/style/gapcursor.css";
 
+import { createRoot } from "react-dom/client";
 import { Schema } from "prosemirror-model";
 import { Plugin, PluginKey, TextSelection } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
@@ -20,6 +21,20 @@ import { gapCursor } from "prosemirror-gapcursor";
 import { ellipsis, emDash, inputRules, smartQuotes, textblockTypeInputRule, undoInputRule, wrappingInputRule } from "prosemirror-inputrules";
 import { commentMarkSpec, commentSuggestion, createSuggestionMark, footnoteMarkSpec, markRangeAtCursor } from "../annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
+
+// Change here buildEditorKeymap for actual functionality
+const shortcutDefinitions = [
+  { label: "Undo", key: "Mod-z" },
+  { label: "Redo", key: "Mod-Shift-z" },
+  { label: "Bold", key: "Mod-b" },
+  { label: "Italic", key: "Mod-i" },
+  { label: "Underline", key: "Mod-u" },
+  { label: "Insert Link", key: "Mod-k" },
+];
+
+// Todo don't be lazy
+const container = document.getElementById("guide-container");
+const root = createRoot(container);
 
 export const baseNodesWithLists = addListNodes(
   basicSchema.spec.nodes,
@@ -49,19 +64,20 @@ export const richTextSchema = new Schema({
   marks,
 });
 
-const isMac = typeof navigator !== "undefined" && /Mac|iP(hone|[oa]d)/.test(navigator.platform);
-
-export function editorPlugins(schema) {
+export function editorPlugins(schema, {
+  includeHistory = true,
+  undoCommand = undo,
+  redoCommand = redo,
+} = {}) {
   return [
     linkBubblePlugin(schema),
     activeCommentPlugin(schema),
     suggestionPlugin(schema),
-    buildEditorInputRules(schema),
-    keymap(buildEditorKeymap(schema)),
+    keymap(buildEditorKeymap(schema, { undoCommand, redoCommand })),
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),
-    history(),
+    ...(includeHistory ? [history()] : []),
   ];
 }
 
@@ -331,20 +347,15 @@ function activeCommentPlugin(schema) {
   });
 }
 
-function buildEditorKeymap(schema) {
+function buildEditorKeymap(schema, { undoCommand, redoCommand }) {
   const keys = {};
   const bind = (key, command) => { keys[key] = command; };
   let type;
 
   // Mod is platform agnostic ctrl/cmd
-  bind("Mod-z", undo);
-  bind("Shift-Mod-z", redo);
+  bind("Mod-z", undoCommand);
+  bind("Shift-Mod-z", redoCommand);
   bind("Backspace", undoInputRule);
-  if (!isMac) bind("Mod-y", redo);
-  bind("Alt-ArrowUp", joinUp);
-  bind("Alt-ArrowDown", joinDown);
-  bind("Mod-BracketLeft", lift);
-  bind("Escape", selectParentNode);
 
   if ((type = schema.marks.strong)) {
     bind("Mod-b", toggleMark(type));
@@ -354,64 +365,35 @@ function buildEditorKeymap(schema) {
     bind("Mod-i", toggleMark(type));
     bind("Mod-I", toggleMark(type));
   }
-  if ((type = schema.marks.code)) bind("Mod-`", toggleMark(type));
   if ((type = schema.marks.underline)) {
     bind("Mod-u", toggleMark(type));
     bind("Mod-U", toggleMark(type));
   }
   if ((type = schema.marks.link)) bind("Mod-k", promptLinkCommand(type));
-  if ((type = schema.nodes.bullet_list)) bind("Shift-Ctrl-8", wrapInList(type));
-  if ((type = schema.nodes.ordered_list)) bind("Shift-Ctrl-9", wrapInList(type));
-  if ((type = schema.nodes.blockquote)) bind("Ctrl->", wrapIn(type));
-  if ((type = schema.nodes.hard_break)) {
-    const br = type;
-    const insertBreak = chainCommands(exitCode, (state, dispatch) => {
-      if (dispatch) dispatch(state.tr.replaceSelectionWith(br.create()).scrollIntoView());
-      return true;
-    });
-    bind("Mod-Enter", insertBreak);
-    bind("Shift-Enter", insertBreak);
-    if (isMac) bind("Ctrl-Enter", insertBreak);
-  }
-  if ((type = schema.nodes.list_item)) {
-    bind("Enter", splitListItem(type));
-    bind("Mod-[", liftListItem(type));
-    bind("Mod-]", sinkListItem(type));
-  }
-  if ((type = schema.nodes.paragraph)) bind("Shift-Ctrl-0", setBlockType(type));
-  if ((type = schema.nodes.code_block)) bind("Shift-Ctrl-\\", setBlockType(type));
   if ((type = schema.nodes.heading)) {
-    for (let level = 1; level <= 6; level += 1) bind(`Shift-Ctrl-${level}`, setBlockType(type, { level }));
+      bind("Mod-h", setBlockType(schema.nodes.heading, { level: 3 }));
   }
-  if ((type = schema.nodes.horizontal_rule)) {
-    const hr = type;
-    bind("Mod-_", (state, dispatch) => {
-      if (dispatch) dispatch(state.tr.replaceSelectionWith(hr.create()).scrollIntoView());
-      return true;
-    });
-  }
+
+  root.render(<ShortcutDocumentation/>)
 
   return keys;
 }
 
-function buildEditorInputRules(schema) {
-  const rules = [...smartQuotes, ellipsis, emDash];
-  let type;
+function ShortcutDocumentation() {
+  const modifierKeyPrefix =
+  navigator.platform.startsWith("Mac") || navigator.platform === "iPhone"
+    ? "⌘" // command key
+    : "Ctrl"; // control key
 
-  if ((type = schema.nodes.blockquote)) rules.push(wrappingInputRule(/^\s*>\s$/, type));
-  if ((type = schema.nodes.ordered_list)) {
-    rules.push(wrappingInputRule(
-      /^(\d+)\.\s$/,
-      type,
-      (match) => ({ order: Number(match[1]) }),
-      (match, node) => node.childCount + node.attrs.order === Number(match[1]),
-    ));
-  }
-  if ((type = schema.nodes.bullet_list)) rules.push(wrappingInputRule(/^\s*([-+*])\s$/, type));
-  if ((type = schema.nodes.code_block)) rules.push(textblockTypeInputRule(/^```$/, type));
-  if ((type = schema.nodes.heading)) {
-    rules.push(textblockTypeInputRule(/^(#{1,6})\s$/, type, (match) => ({ level: match[1].length })));
-  }
-
-  return inputRules({ rules });
+  return <div className="shortcut-documentation">
+    <h3>Shortcuts</h3>
+    <ul>
+      {shortcutDefinitions.map((shortcut, index) => {
+        const formattedKey = shortcut.key.replace("Mod", modifierKeyPrefix)
+        return (
+          <li key={index}><b>{ shortcut.label }:</b> { formattedKey }</li>
+        )
+      })}
+    </ul>
+  </div>
 }

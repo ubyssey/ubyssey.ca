@@ -1,10 +1,21 @@
 // Footnotes
 
+import { useEffect, useRef } from "react";
+import * as Y from "yjs";
+import { Schema } from "prosemirror-model";
+import { EditorState, Plugin, TextSelection } from "prosemirror-state";
+import { EditorView } from "prosemirror-view";
+import { baseKeymap } from "prosemirror-commands";
+import { history, redo, undo } from "prosemirror-history";
+import { keymap } from "prosemirror-keymap";
+import { schema as basicSchema } from "prosemirror-schema-basic";
 import { createRoot } from "react-dom/client";
 import { v4 as uuidv4 } from "uuid";
 
+import { manuscriptSession } from "../session.js";
 import { cssEscape } from "./comments.jsx";
 import { markRangeAtCursor } from "./marks.js";
+import { newSharedText, updateSharedText } from "../collab/metadata/shared.js";
 
 export function setupFootnoteSidebar(root, { getViews }) {
   const articleShadowRoot = document.querySelector("[data-article-shadow]")?.shadowRoot;
@@ -22,7 +33,6 @@ export function setupFootnoteSidebar(root, { getViews }) {
     const centeredTop = root.scrollTop + inputRect.top - rootRect.top - (root.clientHeight - inputRect.height) / 2;
     root.scrollTo({ top: Math.max(0, centeredTop), behavior: "smooth" });
     input.focus({ preventScroll: true });
-    input.setSelectionRange(input.value.length, input.value.length);
     return true;
   };
 
@@ -35,10 +45,8 @@ export function setupFootnoteSidebar(root, { getViews }) {
   });
 
   const update = () => {
-    const activeTextarea = root.contains(document.activeElement) ? document.activeElement : null;
-    const activeFootnoteId = activeTextarea && activeTextarea.dataset.footnoteId;
-    const selectionStart = activeTextarea && activeTextarea.selectionStart;
-    const selectionEnd = activeTextarea && activeTextarea.selectionEnd;
+    const activeInput = root.contains(document.activeElement) ? document.activeElement : null;
+    const activeFootnoteId = activeInput && activeInput.dataset.footnoteId;
     const footnotes = getViews().flatMap((view) => collectFootnotes(view));
     const footnoteIds = new Set(footnotes.map((footnote) => footnote.footnoteId));
     const newFootnote = hasRendered
@@ -60,10 +68,8 @@ export function setupFootnoteSidebar(root, { getViews }) {
 
     window.requestAnimationFrame(() => {
       const nextInput = root.querySelector(`[data-footnote-id="${nextActiveFootnoteId}"]`);
+      if (!nextInput) return;
       nextInput.focus({ preventScroll: true });
-      if (activeFootnoteId && Number.isInteger(selectionStart) && Number.isInteger(selectionEnd)) {
-        nextInput.setSelectionRange(selectionStart, selectionEnd);
-      }
     });
   };
 
@@ -79,7 +85,7 @@ function FootnotePanel({ footnotes, refresh }) {
     <section className="pm-footnote-panel">
       <h3 className="pm-footnote-panel__header">Footnotes</h3>
       {footnotes.map((footnote, index) => (
-        <label className="pm-footnote" key={footnote.footnoteId}>
+        <div className="pm-footnote" key={footnote.footnoteId}>
           <button
             type="button"
             onClick={(event) => {
@@ -89,31 +95,140 @@ function FootnotePanel({ footnotes, refresh }) {
           >
             {index + 1}
           </button>
-          <textarea
-            defaultValue={footnote.text}
-            data-footnote-id={footnote.footnoteId}
-            rows="1"
-            onKeyDown={(event) => {
-              if (event.key !== "Backspace" || event.currentTarget.value) return;
-              event.preventDefault();
-              removeFootnote(footnote.view, footnote.footnoteId);
-              refresh();
-            }}
-            onInput={(event) => {
-              updateFootnote(footnote.view, footnote.footnoteId, event.currentTarget.value);
-              event.currentTarget.style.height = "auto";
-              event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`;
-            }}
-            ref={(textarea) => {
-              if (!textarea) return;
-              textarea.style.height = "auto";
-              textarea.style.height = `${textarea.scrollHeight}px`;
-            }}
-          />
-        </label>
+          <FootnoteText footnote={footnote} refresh={refresh} />
+        </div>
       ))}
     </section>
   );
+}
+
+// Individual footnote editor
+function FootnoteText({ footnote }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const sharedText = sharedFootnoteText(footnote);
+    let cancelled = false;
+    let observer = null;
+    let view = null;
+
+    if (cancelled || !ref.current) return;
+
+    view = new EditorView(ref.current, {
+      state: EditorState.create({
+        doc: linkFootnoteDoc(footnoteDoc(sharedText.toString())),
+        plugins: [history(), footnoteLinkPlugin(), footnoteKeymap(), keymap(baseKeymap)],
+      }),
+      dispatchTransaction(transaction) {
+        view.updateState(view.state.apply(transaction));
+        if (transaction.docChanged && !transaction.getMeta("footnoteLinkRefresh")) {
+          updateSharedText(manuscriptSession.footnoteTexts, sharedText, footnoteText(view));
+
+          const linkedDoc = linkFootnoteDoc(view.state.doc);
+          if (!linkedDoc.eq(view.state.doc)) view.dispatch(view.state.tr
+            .replaceWith(0, view.state.doc.content.size, linkedDoc.content)
+            .setMeta("addToHistory", false)
+            .setMeta("footnoteLinkRefresh", true));
+        }
+      },
+      attributes: {
+        "data-footnote-id": footnote.footnoteId,
+      },
+    });
+
+    observer = () => {
+      queueMicrotask(() => {
+        if(cancelled) return;
+        const nextText = sharedText.toString();
+        if (nextText !== footnoteText(view)) {
+          const selection = Math.min(view.state.selection.from, nextText.length + 1);
+          const tr = view.state.tr.replaceWith(0, view.state.doc.content.size, linkFootnoteDoc(footnoteDoc(nextText)).content);
+          view.dispatch(tr
+            .setSelection(TextSelection.create(tr.doc, selection))
+            .setMeta("addToHistory", false));
+        }
+        updateFootnote(footnote.view, footnote.footnoteId, nextText);
+      });
+    };
+    sharedText.observe(observer);
+    observer();
+
+    return () => {
+      cancelled = true;
+      if (observer) sharedText.unobserve(observer);
+      if (view) view.destroy();
+    };
+  }, [footnote.footnoteId, footnote.view]);
+
+  return <div className="pm-footnote-editor" ref={ref} />;
+}
+
+const footnoteTextSchema = new Schema({
+  nodes: basicSchema.spec.nodes,
+  marks: basicSchema.spec.marks,
+});
+
+function sharedFootnoteText(footnote) {
+  const footnoteTexts = manuscriptSession.footnoteTexts;
+  if (!footnoteTexts) return newSharedText(footnote.text);
+
+  if (!(footnoteTexts.get(footnote.footnoteId) instanceof Y.Text)) {
+    footnoteTexts.set(footnote.footnoteId, newSharedText(footnote.text));
+  }
+  return footnoteTexts.get(footnote.footnoteId);
+}
+
+function footnoteDoc(text) {
+  return footnoteTextSchema.node("doc", null, [
+    footnoteTextSchema.node("paragraph", null, text ? footnoteTextSchema.text(text) : null),
+  ]);
+}
+
+function footnoteText(view) {
+  return view.state.doc.textBetween(0, view.state.doc.content.size, "\n");
+}
+
+function footnoteKeymap() {
+  return keymap({
+    "Mod-z": undo,
+    "Mod-Z": undo,
+    "Mod-Shift-z": redo,
+    "Mod-Shift-Z": redo,
+  });
+}
+
+function footnoteLinkPlugin() {
+  return new Plugin({
+    props: {
+      handleDOMEvents: {
+        mousedown(_view, event) {
+          const link = event.target.closest?.("a[href]");
+          if (!link) return false;
+
+          event.preventDefault();
+          window.open(link.href, "_blank", "noopener,noreferrer");
+          return true;
+        },
+      },
+    },
+  });
+}
+
+function linkFootnoteDoc(doc) {
+  const linkMark = footnoteTextSchema.marks.link;
+  let tr = null;
+
+  doc.descendants((node, pos) => {
+    if (!node.isText) return true;
+    for (const match of node.text.matchAll(/\bhttps?:\/\/[^\s<]+/g)) {
+      const from = pos + match.index;
+      const to = from + match[0].length;
+      tr = (tr || EditorState.create({ doc }).tr).addMark(from, to, linkMark.create({ href: match[0] }));
+    }
+    return true;
+  });
+
+  return tr ? tr.doc : doc;
 }
 
 function focusPreviewFootnote(footnoteId) {
@@ -198,19 +313,20 @@ function collectFootnotes(view) {
 }
 
 function updateFootnote(view, footnoteId, text) {
+  const targetView = view.streamSource ? view.streamSource.instance.view : view;
   const ranges = [];
-  const footnoteMark = visitFootnoteMarks(view, ({ mark, from, to }) => {
+  const footnoteMark = visitFootnoteMarks(targetView, ({ mark, from, to }) => {
     if (mark.attrs.footnoteId === footnoteId) ranges.push({ from, to, anchor: Boolean(mark.attrs.anchor) });
   });
   if (!footnoteMark || !ranges.length) return false;
 
-  let tr = view.state.tr;
+  let tr = targetView.state.tr;
   for (const range of ranges) {
     tr = tr
       .removeMark(range.from, range.to, footnoteMark)
       .addMark(range.from, range.to, footnoteMark.create({ footnoteId, text, anchor: range.anchor }));
   }
-  view.dispatch(tr);
+  targetView.dispatch(tr);
   return true;
 }
 
