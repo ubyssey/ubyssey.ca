@@ -626,6 +626,10 @@ body {
     text-decoration: underline;
 }
 
+.pm-footnote-editor .ProseMirror p {
+    margin: 2px;
+}
+
 .pm-comment-sidebar {
     display: grid;
     gap: 12px;
