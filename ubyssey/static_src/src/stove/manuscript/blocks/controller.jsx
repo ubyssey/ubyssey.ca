@@ -501,6 +501,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
     const articleBlock = articleBlockFromEvent(event);
     if (!articleBlock) return;
+    if (articleBlock.classList.contains("pm-article-block--remote-selected")) return;
 
     if (!shouldSelect && articleBlock === manuscriptSession.suppressedHoverArticleBlock) return;
     if (shouldSelect || articleBlock !== manuscriptSession.suppressedHoverArticleBlock) clearSuppressedHover();

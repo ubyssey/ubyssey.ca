@@ -201,6 +201,10 @@ export function selectArticleBlockElement(articleBlock) {
 export function selectArticleBlock(descriptor, manuscriptRoot = null, options = {}) {
   if (!descriptor) return false;
 
+  // Doesn't allow selection if already selected by someone else
+  const articleBlock = manuscriptRoot && findArticleBlock(manuscriptRoot, descriptor);
+  if (articleBlock?.classList.contains("pm-article-block--remote-selected")) return false;
+
   manuscriptSession.selectedArticleBlock = descriptor;
   document.querySelectorAll("[data-metadata-tab]").forEach((tab) => {
     tab.setAttribute("aria-selected", String(tab.dataset.metadataTab === "article"));
@@ -210,7 +214,6 @@ export function selectArticleBlock(descriptor, manuscriptRoot = null, options = 
   });
   syncSelectedArticleBlockEditor(descriptor);
 
-  const articleBlock = manuscriptRoot && findArticleBlock(manuscriptRoot, descriptor);
   manuscriptRoot?.querySelectorAll(".pm-article-block--selected").forEach((block) => {
     block.classList.remove("pm-article-block--selected");
   });

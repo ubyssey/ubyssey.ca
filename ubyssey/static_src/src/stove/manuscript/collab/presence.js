@@ -7,12 +7,26 @@ import { clearDocumentCursors, renderPlainTextCursor, renderRichTextCursor } fro
 
 const FALLBACK_COLOR = "#f28c00";
 
+function setBlockLocked(block, locked) {
+  const editors = [block, ...block.querySelectorAll("[contenteditable]")]
+    .filter((element) => element.hasAttribute("contenteditable"));
+
+  for (const editor of editors) {
+    if (locked) {
+      editor.setAttribute("contenteditable", "false");
+      continue;
+    }
+    editor.setAttribute("contenteditable", "true");
+  }
+}
+
 // Border + Calls Render Cursor
 function renderEditorLocations(users, connectionId) {
   const root = document.querySelector("[data-article-shadow]")?.shadowRoot;
   if (!root) return;
 
   root.querySelectorAll(".pm-article-block--remote-selected").forEach((block) => {
+    setBlockLocked(block, false);
     block.classList.remove("pm-article-block--remote-selected");
     block.style.removeProperty("--remote-editor-color");
   });
@@ -25,6 +39,7 @@ function renderEditorLocations(users, connectionId) {
     if (!block) continue;
 
     block.classList.add("pm-article-block--remote-selected");
+    setBlockLocked(block, true);
     block.style.setProperty("--remote-editor-color", user.colour);
     if (user.selection.kind === "plainText") renderPlainTextCursor(root, user, block);
     else renderRichTextCursor(root, user, block);

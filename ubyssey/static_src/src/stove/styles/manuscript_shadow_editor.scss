@@ -384,6 +384,11 @@ span[data-footnote-id]::before {
     outline: 2px solid var(--remote-editor-color) !important;
 }
 
+.pm-article-block--remote-selected:hover,
+.pm-article-block--remote-selected:hover [contenteditable] {
+    cursor: not-allowed;
+}
+
 .pm-remote-cursor {
     position: absolute;
     z-index: 30;
