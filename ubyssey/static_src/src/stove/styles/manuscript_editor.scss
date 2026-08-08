@@ -652,12 +652,13 @@ body {
     padding: 8px;
     border: 1px solid #d8d8d8;
     border-radius: 2px;
-    background: #fff;
+    background: #fcf9f8;
 }
 
 .pm-comment-thread--active {
     border-color: #9a9a9a;
-    background: #fcf9f8;
+    background: #fff;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.6);
 }
 
 .pm-comment-thread__collapse {
