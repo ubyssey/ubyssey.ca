@@ -918,31 +918,35 @@ input:checked + .slider:before {
     min-height: 28px;
     border: none;
     border-radius: 2px;
-    background: #3564a8;
     color: #fff;
     font: 13px/1.2 sans-serif;
     cursor: pointer;
 }
 
 .pm-author-panel__add {
+    background: #3564a8;
     justify-self: start;
     padding: 0 10px;
 }
 
 .pm-author-panel__remove {
+    background: #922a2b;
     width: 28px;
     padding: 0;
 }
 
-.pm-author-panel__add:hover,
-.pm-author-panel__remove:hover {    
+.pm-author-panel__add:hover {
     background-color: #4d7ab9;
+}
+
+.pm-author-panel__remove:hover {    
+    background-color: #d23732;
 }
 
 .pm-author-panel .errorlist {
     margin: 0;
     padding-left: 18px;
-    color: #d10000;
+    color: #d23732;
 }
 
 .pm-footnote--remote-selected {
