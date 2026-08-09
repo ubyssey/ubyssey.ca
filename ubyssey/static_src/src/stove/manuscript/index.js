@@ -161,4 +161,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     schedulePreview: (...args) => manuscriptSession.schedulePreview(...args),
     writeBeforeSave: writeStreamTextareas,
   });
+
+  // Prevent Spacebar scrolling
+  window.addEventListener("keydown", (event) => {
+    if (event.code !== "Space") return;
+
+    const editableSelector = "input, textarea, select, [contenteditable], .ProseMirror";
+    const isEditable = (element) => element instanceof Element && Boolean(
+      element.closest(editableSelector),
+    );
+    
+    const editable = event.composedPath().some(isEditable);
+    if (!editable) event.preventDefault();
+  });
 });
