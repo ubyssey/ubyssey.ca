@@ -396,11 +396,32 @@ body {
     background-color: #fff;
     font-size: large;
     font-weight: bolder;
+    cursor: pointer;
 }
 
 .manuscript-guide-button:hover {
     background-color: #f7f7f7;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.6);
+}
+
+.manuscript-metadata-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    border: none;
+    border-radius: 2px;
+    color: #fff;
+    font: 13px/1.2 sans-serif;
+    cursor: pointer;
+    background: #3564a8;
+    justify-self: start;
+    padding: 0 10px;
+    margin-top: 12px;
+}
+
+.manuscript-metadata-button:hover {
+    background-color: #4d7ab9;
 }
 
 .manuscript-editor img,
