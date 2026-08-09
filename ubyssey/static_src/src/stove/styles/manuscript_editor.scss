@@ -384,6 +384,25 @@ body {
     border: none;
 }
 
+.manuscript-guide-button {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    border: solid 1px #c4c4c4;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    z-index: 1011;
+    background-color: #fff;
+    font-size: large;
+    font-weight: bolder;
+}
+
+.manuscript-guide-button:hover {
+    background-color: #f7f7f7;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.6);
+}
+
 .manuscript-editor img,
 .manuscript-editor picture,
 .manuscript-editor video,
