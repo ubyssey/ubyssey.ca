@@ -6,7 +6,7 @@ import { EditorView } from "prosemirror-view";
 import { absolutePositionToRelativePosition, ySyncPluginKey } from "y-prosemirror";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins, richTextSchema } from "../rich_text/index.jsx";
 import { manuscriptSession } from "../session.js";
-import { describeArticleBlock, refreshBlockCommentBorders, setupArticleBlockControls } from "../blocks/controller.jsx";
+import { describeArticleBlock, refreshBlockCommentBorders, selectArticleBlockElement } from "../blocks/controller.jsx";
 import { ARTICLE_BLOCK_SELECTOR, DIRECT_EDITABLE_SELECTOR, EMPTY_RICH_TEXT, STREAM_EDITOR_META } from "./constants.js";
 import { projectInlineTransaction, writeStreamFieldContent } from "./projection.js";
 import { currentEditableField, directEditableSource, samePath } from "./sources.js";
@@ -81,6 +81,7 @@ function createArticleRichTextEditor(mount, content, className, onDocChanged, st
     const articleBlock = view.dom.closest(ARTICLE_BLOCK_SELECTOR);
     const descriptor = articleBlock && describeArticleBlock(articleBlock);
     if (!descriptor) return;
+    selectArticleBlockElement(articleBlock);
 
     const editors = [articleBlock, ...articleBlock.querySelectorAll(".ProseMirror")]
       .filter((element) => element.matches(".ProseMirror"));
@@ -173,6 +174,7 @@ function sendPlainTextCursor(target) {
   const descriptor = articleBlock && describeArticleBlock(articleBlock);
   const selection = target.getRootNode()?.getSelection?.() || target.ownerDocument.getSelection();
   if (!descriptor || !selection || !target.contains(selection.anchorNode) || !target.contains(selection.focusNode)) return;
+  selectArticleBlockElement(articleBlock);
 
   const anchorOffset = textOffsetWithin(target, selection.anchorNode, selection.anchorOffset);
   const focusOffset = textOffsetWithin(target, selection.focusNode, selection.focusOffset);
@@ -233,8 +235,7 @@ export function syncDirectPageEditorsFromMetadata(manuscriptRoot, event) {
 export function setupArticlePreviewEditors(manuscriptRoot, streamDocs = null, scopeBlock = null) {
   if (!manuscriptRoot) return;
 
-  if (!manuscriptSession.articleBlockControls) setupArticleBlockControls(manuscriptRoot);
-  else refreshBlockCommentBorders(manuscriptRoot);
+  refreshBlockCommentBorders(manuscriptRoot);
 
   // Inline RichText Editors
   const articleBlocksByField = new Map();

@@ -156,7 +156,6 @@ export function restoreCurrentArticleControls(manuscriptRoot, streamDocs) {
   syncSelectedArticleBlockEditor(manuscriptSession.selectedArticleBlock);
   if (articleBlock) {
     articleBlock.classList.add("pm-article-block--selected");
-    manuscriptSession.articleBlockControls?.setActive?.(articleBlock);
   }
   manuscriptSession.users?.renderLocations();
   manuscriptSession.commentSidebar?.update();

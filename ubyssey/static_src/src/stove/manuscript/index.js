@@ -4,7 +4,7 @@ import { ACTIVE_SUGGESTION_THREAD_META } from "./rich_text/index.jsx";
 import { createEditorToolbar } from "./rich_text/toolbar.jsx";
 import { setupCommentSidebar, setupFootnoteSidebar } from "./annotations/index.js";
 import { createStreamEditor } from "./stream/index.jsx";
-import { collectBlockCommentThreads, refreshBlockCommentBorders, syncSelectedArticleBlockEditor, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
+import { collectBlockCommentThreads, refreshBlockCommentBorders, setupArticleBlockActions, setupArticleBlockKeyboard, syncSelectedArticleBlockEditor } from "./blocks/controller.jsx";
 import { currentStreamDocs, MODAL_PREVIEW_DEBOUNCE_MS, mountManuscriptChrome, refreshArticlePreviewEditorsFromStream, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, syncArticlePreviewEditors, writeStreamTextareas } from "./preview/index.jsx";
 import { manuscriptSession } from "./session.js";
 import { setupUsers } from "./collab/presence.js";
@@ -95,6 +95,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   setupArticlePreviewEditors(manuscriptRoot);
+  setupArticleBlockActions(manuscriptRoot);
+  manuscriptSession.richTextToolbar.update();
   manuscriptSession.commentSidebar.update();
   manuscriptSession.footnoteSidebar.update();
   setupArticleBlockKeyboard(manuscriptRoot);

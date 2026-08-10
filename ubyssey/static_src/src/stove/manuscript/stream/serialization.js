@@ -21,8 +21,6 @@ const RICH_TEXT_CHROME_SELECTORS = [
   ".pm-stream-block__title",
   ".pm-stream-block__id",
   ".pm-stream-block__meta",
-  ".pm-article-block-controls",
-  ".pm-article-block-controls-layer",
   ".pm-article-block-outline",
   ".pm-editor-toolbar",
   ".pm-editable-field__label",

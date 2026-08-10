@@ -6,7 +6,7 @@ export class ManuscriptSession {
     this.articleRichTextEditors = [];
     this.articleDirectTextEditors = [];
     this.articleDirectPlainTextEditors = [];
-    this.articleBlockControls = null;
+    this.articleBlockActions = null;
     this.richTextToolbar = null;
     this.commentSidebar = null;
     this.footnoteSidebar = null;
@@ -15,8 +15,6 @@ export class ManuscriptSession {
     this.blockEditorModalOpen = false;
     this.blockEditorDirty = false;
     this.blockEditorEditing = false;
-    this.suppressedHoverArticleBlock = null;
-    this.suppressedHoverTimer = null;
     this.preferredInsertTypes = new Map();
     this.schedulePreview = () => {};
     this.cancelPreviewRefresh = () => {};

@@ -10,6 +10,7 @@ import { wrapInList } from "prosemirror-schema-list";
 import { markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "../annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
 import { suggestionModeIsActive, toggleSuggestionMode } from "./index.jsx";
+import { manuscriptSession } from "../session.js";
 
 const TOOLBAR_ITEMS = [
   ["undo", "↶", "Undo"],
@@ -22,9 +23,8 @@ const TOOLBAR_ITEMS = [
   // Can't figure out why these two don't work with history
   //["bulletList", "•", "Bullet list"],
   //["orderedList", "1.", "Ordered list"],
-  // Only going to use as floating block controls
-  //["comment", "💬", "Comment"],
-  //["suggestionMode", "Suggest", "Toggle suggestion mode"],
+  ["comment", "💬", "Comment"],
+  ["suggestionMode", "Suggest", "Toggle suggestion mode"],
   ["footnote", "Footnote", "Footnote"],
 ];
 
@@ -116,6 +116,7 @@ function EditorToolbar({ view, historyView, publishSource, contentDoc, onHistory
             </button>
           );
         })}
+        <BlockControls actions={manuscriptSession.articleBlockActions} />
       </div>
       {publishSource && (
         <PublishToolbar
@@ -125,6 +126,42 @@ function EditorToolbar({ view, historyView, publishSource, contentDoc, onHistory
         />
       )}
     </div>
+  );
+}
+
+function BlockControls({ actions }) {
+  const state = actions?.getState() || {
+    selected: false,
+    upDisabled: true,
+    downDisabled: true,
+    editDisabled: true,
+  };
+  const buttons = [
+    ["delete", "X", "Delete block", !state.selected],
+    ["moveUp", "↑", "Move block up", state.upDisabled],
+    ["moveDown", "↓", "Move block down", state.downDisabled],
+    ["edit", "Edit", "Edit block", !state.selected || state.editDisabled],
+    ["insert", "+", "Add block", !state.selected],
+  ];
+
+  return (
+    <>
+      <span className="pm-editor-toolbar__separator" aria-hidden="true" />
+      {buttons.map(([action, label, title, disabled]) => (
+        <button
+          key={action}
+          type="button"
+          className={"pm-editor-toolbar__button pm-editor-toolbar__button--block-" + action}
+          title={title}
+          aria-label={title}
+          disabled={disabled}
+          onMouseDown={(event) => { event.preventDefault(); }}
+          onClick={() => { actions?.[action](); }}
+        >
+          {label}
+        </button>
+      ))}
+    </>
   );
 }
 
@@ -233,10 +270,10 @@ function toolbarCommand(view, key) {
   // Use yjs history for hidden streamfields which have yjs undo installed, preview editors still use prosemirror history
   const collaborative = Boolean(yUndoPluginKey.getState(view.state));
   const commands = {
-    /*suggestionMode: (state, dispatch) => {
+    suggestionMode: (_state, dispatch) => {
       if (dispatch) toggleSuggestionMode();
       return true;
-    },*/
+    },
     undo: collaborative ? yUndo : undo,
     redo: collaborative ? yRedo : redo,
     bold: schema.marks.strong && toggleMark(schema.marks.strong),
@@ -250,8 +287,7 @@ function toolbarCommand(view, key) {
     // Disabled for now as I can't get them to work with history properly
     //bulletList: schema.nodes.bullet_list && wrapInList(schema.nodes.bullet_list),
     //orderedList: schema.nodes.ordered_list && wrapInList(schema.nodes.ordered_list),
-    // I think this makes more sense to leave as a floating control
-    //comment: schema.marks.comment && startCommentCommand(schema.marks.comment),
+    comment: schema.marks.comment && startCommentCommand(schema.marks.comment),
     footnote: schema.marks.footnote && startFootnoteCommand(schema.marks.footnote),
   };
   return commands[key] || null;

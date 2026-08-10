@@ -325,7 +325,7 @@ body {
     font: 600 13px/1.2 sans-serif;
 }
 
-.article-block-editor-modal__body .pm-article-block-controls__select {
+.article-block-editor-modal__body .pm-article-block-dialog__select {
     min-height: 30px;
     border: 1px solid #bbb;
     background: #fff;
@@ -484,6 +484,13 @@ body {
     align-items: center;
     gap: 4px;
     min-width: 0;
+}
+
+.pm-editor-toolbar__separator {
+    width: 1px;
+    height: 24px;
+    margin: 0 4px;
+    background: var(--border-grey, #c7c7c7);
 }
 
 .pm-editor-toolbar__publish {

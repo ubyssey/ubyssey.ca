@@ -92,10 +92,6 @@ export function refreshBlockCommentBorders(manuscriptRoot = null) {
   }
 }
 
-export function cleanupArticleBlockControls() {
-  manuscriptSession.articleBlockControls?.cleanup();
-  manuscriptSession.articleBlockControls = null;
-}
 
 export function streamBlockInfoForArticleBlock(instance, articleBlock) {
   return topLevelBlockInfoByIdOrIndex(
@@ -105,7 +101,7 @@ export function streamBlockInfoForArticleBlock(instance, articleBlock) {
   );
 }
 
-export function insertBlockAfter(instance, articleBlock, blockType, { keepControls = false } = {}) {
+export function insertBlockAfter(instance, articleBlock, blockType) {
   const info = streamBlockInfoForArticleBlock(instance, articleBlock);
   if (!info || !blockType) return;
 
@@ -116,15 +112,9 @@ export function insertBlockAfter(instance, articleBlock, blockType, { keepContro
     blockIndex: info.index + 1,
   };
 
-  clearSuppressedHover();
-  manuscriptSession.suppressedHoverArticleBlock = articleBlock;
-  manuscriptSession.suppressedHoverTimer = setTimeout(() => {
-    if (manuscriptSession.suppressedHoverArticleBlock === articleBlock) clearSuppressedHover();
-  }, 1200);
   manuscriptSession.selectedArticleBlock = descriptor;
   instance.view.dispatch(instance.view.state.tr.insert(info.end, newBlock));
   selectArticleBlock(descriptor, articleBlock.getRootNode());
-  if (!keepControls) manuscriptSession.articleBlockControls?.hide();
   return descriptor;
 }
 
@@ -142,7 +132,6 @@ export function moveArticleBlock(instance, articleBlock, direction) {
     else target.after(articleBlock);
 
     refreshArticleBlockIndexes(root, fieldName);
-    manuscriptSession.articleBlockControls?.setActive?.(articleBlock);
     selectArticleBlockElement(articleBlock);
   }
 
@@ -165,7 +154,6 @@ export function deleteArticleBlock(instance, articleBlock) {
   }
 
   syncSelectedArticleBlockEditor(null);
-  manuscriptSession.articleBlockControls?.hide();
 }
 
 export function articleBlocksForStreamField(root, fieldName) {
@@ -220,10 +208,10 @@ export function selectArticleBlock(descriptor, manuscriptRoot = null, options = 
 
   if (articleBlock) {
     articleBlock.classList.add("pm-article-block--selected");
-    manuscriptSession.articleBlockControls?.setActive?.(articleBlock);
     if (options.reveal) articleBlock.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
+  manuscriptSession.richTextToolbar?.update();
   return true;
 }
 
@@ -263,11 +251,6 @@ function showSelectedArticleBlockEditor(descriptor) {
   }
 }
 
-export function clearSuppressedHover() {
-  if (manuscriptSession.suppressedHoverTimer) clearTimeout(manuscriptSession.suppressedHoverTimer);
-  manuscriptSession.suppressedHoverTimer = null;
-  manuscriptSession.suppressedHoverArticleBlock = null;
-}
 
 // Arrow key navigation
 export function setupArticleBlockKeyboard(manuscriptRoot) {
@@ -288,7 +271,6 @@ export function setupArticleBlockKeyboard(manuscriptRoot) {
     const nextIndex = currentIndex < 0 ? (direction > 0 ? 0 : descriptors.length - 1) : Math.max(0, Math.min(descriptors.length - 1, currentIndex + direction));
 
     if (nextIndex === currentIndex) return;
-    clearSuppressedHover();
     if (selectArticleBlock(descriptors[nextIndex], manuscriptRoot, { reveal: true })) event.preventDefault();
   });
 }
