@@ -20,6 +20,22 @@ import SvgStoveNameplateBlue from './stove-nameplate-blue.svg';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
+import "prosemirror-view/style/prosemirror.css";
+import { EditorState } from "prosemirror-state";
+import { history } from 'prosemirror-history'
+import { Schema } from 'prosemirror-model'
+import { toggleMark, joinBackward } from 'prosemirror-commands'
+import { undo, redo } from 'prosemirror-history'
+import { baseKeymap } from 'prosemirror-commands'
+import { keymap } from 'prosemirror-keymap'
+import { marks } from 'prosemirror-schema-basic'
+
+
+import {
+  ProseMirror,
+  ProseMirrorDoc,
+  reactKeys,
+} from "@handlewithcare/react-prosemirror";
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -477,8 +493,6 @@ function ArticleRowSkeleton() {
 }
 
 function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticleId}) {
-    // toast("Rerender",{
-    //       autoClose: 250})
 
 
   const rows = []
@@ -720,6 +734,7 @@ function EditSidebar({selectedPage, updatePage}) {
       <div className="edit-field--side-label">Deadline</div><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/>
       
       </div>
+      <AssignmentMemo/>
     </div>
     <div>
       <h4>Organization</h4>
@@ -732,6 +747,58 @@ function EditSidebar({selectedPage, updatePage}) {
     </div>
    
   </div>
+}
+
+
+const doc = {
+  content: 'block+',
+  toDOM: () => ['article', 0],
+}
+
+const text = {
+  group: 'inline',
+}
+
+const paragraph = {
+  content: 'inline*',
+  group: 'block',
+  parseDOM: [{ tag: 'p' }],
+  toDOM: () => ['p', 0],
+}
+
+const schema = new Schema({
+  nodes: { doc, text, paragraph },
+  marks: marks,
+})
+
+
+
+function AssignmentMemo({selectedPage, updatePage}) {
+  console.log("SCHEMA")
+  console.log(schema)
+    return (
+    <ProseMirror
+      defaultState={EditorState.create({
+        schema,
+        plugins: [
+          // The reactKeys plugin is required for the ProseMirror component to work!
+          reactKeys(),
+          history(),
+          keymap({
+            ...baseKeymap,
+            'Mod-z': undo,
+            'Shift-Mod-z': redo,
+            Backspace: joinBackward,
+            'Mod-b': toggleMark(schema.marks.strong),
+            'Mod-i': toggleMark(schema.marks.em),
+            'Mod-k': toggleMark(schema.marks.link)
+          }),
+        ],
+      })}
+    >
+      <ProseMirrorDoc />
+    </ProseMirror>
+  );
 }
 
 function SidebarViewsSelector({selectedPage, updatePage, createPage}) {
@@ -859,3 +926,6 @@ function DateInput ({date, handleUpdateDate}) {
 const container = document.getElementById('content-tracker');
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
 root.render(<ContentTracker />);
+
+
+// https://codesandbox.io/p/sandbox/prosemirror-simple-i8yul?file=%2Fsrc%2Findex.ts%3A12%2C3
