@@ -106,7 +106,7 @@ function findAuthorName(authorId) {
     "copy_editor": "#77c0d2" 
   }
 
-function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType}) {
+function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType}) {
   let initialAuthors = [];
   for (const authorId in currentAuthors) {
     const author = currentAuthors[authorId]
@@ -115,22 +115,51 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType}) {
     }
   }
 
+  let style = {
+    multiValue: (base) => ({
+        ...base,
+        backgroundColor: roleColours[authorType],
+  })};
+
+  if (styleType == "edit-field") {
+    style = {
+      ...style, 
+      control: (base) => ({
+        ...base,
+        border: "none",
+      }),
+      valueContainer: (base) => ({
+        ...base,
+        backgroundColor: "#eeeeee",
+        padding: "5px",
+        ':hover': {
+          backgroundColor: "var(--hover-color)"
+        }
+      }),
+      selectContainer: (base) => ({
+        ...base,
+        padding: "0",
+        margin: "0",
+        backgroundColor: "#eeeeee"
+      })
+      
+    }
+  } else {
+    style = {
+      ...style, 
+      container: (base) => ({
+        ...base,
+        maxWidth: "20em",
+      })
+    }
+  }
 
   return <Select 
     options={authors} 
     onChange = {handleUpdateAuthors} 
     value={initialAuthors} 
     isMulti 
-    styles={{
-      multiValue: (base) => ({
-        ...base,
-        backgroundColor: roleColours[authorType],
-      }),
-      container: (base) => ({
-        ...base,
-        maxWidth: "20em",
-      })
-    }}
+    styles={style}
     placeholder = {"Add " + authorType.replace("_", " ") + "..."}
     components={{
       DropdownIndicator: null, 
@@ -356,11 +385,49 @@ function beatLabel(beatPk) {
   return "[No label provided]"
 }
 
-function BeatSelect ({beat, updateBeat}) {
+function BeatSelect ({beat, updateBeat, styleType}) {
+
+ let style = {};
+
+  if (styleType == "edit-field") {
+    style = {
+      ...style, 
+      control: (base) => ({
+        ...base,
+        border: "none",
+      }),
+      valueContainer: (base) => ({
+        ...base,
+        backgroundColor: "#eeeeee",
+        padding: "5px",
+        ':hover': {
+          backgroundColor: "var(--hover-color)"
+        }
+      }),
+      selectContainer: (base) => ({
+        ...base,
+        padding: "0",
+        margin: "0",
+        backgroundColor: "#eeeeee"
+      }), 
+      singleValue: (base) => ({
+        ...base,
+        padding: 5,
+        borderRadius: 5,
+        background: "#fafafa",
+      }),
+      container: (base) => ({
+        ...base,
+        maxWidth: "20em",
+      })
+    }
+  }
+
   return <Select 
     options={beatOptions}
     value={beat ? {"value": beat, "label": beatLabel(beat)} : undefined}
     onChange={updateBeat}
+    styles={style}
     formatGroupLabel={formatGroupLabel}
     components={{
       DropdownIndicator: null, 
@@ -410,8 +477,8 @@ function ArticleRowSkeleton() {
 }
 
 function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticleId}) {
-    toast("Rerender",{
-          autoClose: 250})
+    // toast("Rerender",{
+    //       autoClose: 250})
 
 
   const rows = []
@@ -614,43 +681,54 @@ function EditSidebar({selectedPage, updatePage}) {
     changeTitle(selectedPage["title"]);
   }, [selectedPage]);
   return <div>
-    <div><h2>{selectedPage["title"]}</h2></div>
     <textarea 
       style={{
         width: "100%",
       }}
+      className="edit-field--title"
       value={title} // ...force the input's value to match the state variable...
       onChange={e => changeTitle(e.target.value.replace("\n", ""))}
       onBlur={(e) => updateTitle(selectedPage, e.target.value, updatePage)}></textarea>
     <div>
-      <h3>Authors</h3>
-      <div>Reportage <AuthorsSelect 
+      <h4>Authors</h4>
+      <div className="edit-field--sidebyside">
+        <div className="edit-field--side-label">Reportage</div> <AuthorsSelect 
         currentAuthors={selectedPage.article_authors} 
         handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "author", updatePage)}
         authorType={"author"}
+        styleType={"edit-field"}
         />
-      </div>
-      <div>Backfield Editing <AuthorsSelect 
+      <div className="edit-field--side-label">Backfield</div> <AuthorsSelect 
         currentAuthors={selectedPage.article_authors} 
         handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "backfield_editor", updatePage)}
         authorType={"backfield_editor"}
+        styleType={"edit-field"}
         />
-      </div>
-      <div>Copy Editing <AuthorsSelect 
+      <div className="edit-field--side-label">Copy</div> <AuthorsSelect 
         currentAuthors={selectedPage.article_authors} 
         handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "copy_editor", updatePage)}
         authorType={"copy_editor"}
+        styleType={"edit-field"}
         />
       </div>
     </div>
     <div>
-      <h3>Assignment Management</h3>
-      <div>Deadline<br/><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/></div>
-      <div>Status<ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/></div>
+      <h4>Assignment Management</h4>
+      <div className="edit-field--sidebyside">
+
+      <div className="edit-field--side-label">Status</div> <ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/>
+      <div className="edit-field--side-label">Deadline</div><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/>
+      
+      </div>
     </div>
     <div>
-      <h3>Organization</h3>
-      <div>Beat<BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)}/></div>
+      <h4>Organization</h4>
+
+      <div className="edit-field--sidebyside">
+
+      <div className="edit-field--side-label">Beat</div><BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)} styleType={"edit-field"}/>
+
+      </div>
     </div>
    
   </div>

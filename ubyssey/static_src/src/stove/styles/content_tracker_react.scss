@@ -17,6 +17,7 @@ table, th, td {
   align-items: center; 
   vertical-align: top;  
   flex-direction: column;
+  height: 100vh;
 }
 
 .main-content-panel {
@@ -333,6 +334,43 @@ input:checked + .slider:before {
 .panel {
   // background-color: #ccc;
 }
+
+.edit-field--title {
+  width: 100%;
+  background-color: inherit;
+  font-size: xx-large;
+  border: none;
+  field-sizing: content;
+  line-height: 1.1;
+  min-height: 1lh;
+  max-height: 4lh;
+  margin-bottom: 24px;
+  resize: none;
+}
+
+.edit-field--title:hover {
+  background-color: var(--hover-color);;
+}
+
+.edit-field--sidebyside {
+  display: grid;
+  grid-template-columns: 80px auto;
+  padding: 4px;
+}
+
+.edit-field--side-label {
+  padding-top: 10px;
+  padding-right: 4px;
+  vertical-align: middle;
+  justify-content: center;
+}
+
+.edit-field--author {
+  background-color: inherit;
+  border: none;
+  padding: 0;
+}
+
 
 .metadata-editor {
     z-index: 10;
