@@ -223,9 +223,28 @@ function suggestionPlugin(schema) {
     return true;
   };
 
+  // When you type next to a suggestion, it shouldn't be a suggestion if suggestion toggle off
+  const insertPlainTextBesideSuggestion = (view, from, to, text) => {
+    if (suggestionMode || from !== to || !text) return false;
+
+    const { state } = view;
+    const $from = state.doc.resolve(from);
+    const isSuggestion = (node) => commentSuggestion(commentMark.isInSet(node?.marks || [])?.attrs?.comments);
+    const beforeIsSuggestion = isSuggestion($from.nodeBefore);
+    const afterIsSuggestion = isSuggestion($from.nodeAfter);
+    if (beforeIsSuggestion === afterIsSuggestion) return false;
+    const tr = state.tr
+      .insertText(text, from, to)
+      .removeMark(from, from + text.length, commentMark);
+    view.dispatch(tr.scrollIntoView());
+    return true;
+  };
+
   return new Plugin({
     props: {
-      handleTextInput: insertSuggestion,
+      handleTextInput(view, from, to, text) {
+        return insertSuggestion(view, from, to, text) || insertPlainTextBesideSuggestion(view, from, to, text);
+      },
       handleKeyDown(view, event) {
         if (!suggestionMode || !["Backspace", "Delete"].includes(event.key)) return false;
 
