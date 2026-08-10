@@ -11,7 +11,7 @@ from django.utils.text import slugify
 from wagtail.models import Page
 from article.models import ArticlePage
 from article.models import ArticleAuthorsOrderable
-from section.models import CategoryPage
+from section.models import CategoryPage, SectionPage
 from authors.models import AuthorPage
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import localtime
@@ -45,6 +45,7 @@ from stove.manuscript_editor.revisions import autosave_manuscript_revision
 def content_tracker_react(request, section="all"):
     beats = CategoryPage.objects.all().filter(beat=True)
     authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    sections = SectionPage.objects.exact_type(SectionPage)
 
     beatExport = {}
     for beat in beats:
@@ -53,7 +54,11 @@ def content_tracker_react(request, section="all"):
             beatExport[beatSection] = []
         beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
-    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "section": section})
+    sectionExport = []
+    for s in sections:
+        sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
+
+    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
 def load_pages(request, section="all", page=1):
@@ -112,7 +117,10 @@ def update_content_tracker(request, page_id):
             for index, item in enumerate(new_authors or [])
         ]
         page.article_authors.set(items)
-
+    if ("assignment_memo" in data):
+        page.assignment_memo = data["assignment_memo"]
+        print("NEW ASSIGNMENT MEMO")
+        print(page.assignment_memo)
     page.save_revision(user=request.user)
 
     latest_revision = page.get_latest_revision_as_object()

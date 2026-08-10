@@ -29,6 +29,9 @@ import { undo, redo } from 'prosemirror-history'
 import { baseKeymap } from 'prosemirror-commands'
 import { keymap } from 'prosemirror-keymap'
 import { marks } from 'prosemirror-schema-basic'
+import { DOMParser } from "prosemirror-model";
+import { autolink } from "prosemirror-autolink";
+
 
 
 import {
@@ -257,6 +260,21 @@ async function updateBeat(page, newBeat, updatePage) {
     "Updating beat for " + page.title + " to " + newBeat.label, 
     "Updated beat for " + page.title + " to " + newBeat.label, 
     "Failed to update beat for " + page.title + " to " + newBeat.label)
+}
+
+async function updateAssignmentMemo(page, newMemo, updatePage) {
+  if (page["assignment_memo"] == newMemo) return;
+
+  page["assignment_memo"] = newMemo
+
+  updatePage(page)
+
+
+  handleRemoteUpdate(page, {"assignment_memo": newMemo}, updatePage,
+    "Updating assignment memo for " + page.title, 
+    "Updated assignment memo for " + page.title, 
+    "Failed to assignment memo for " + page.title)
+
 }
 
 async function handleRemoteUpdate(page, changes, updatePage, pendingText, successText, errorText) {
@@ -734,13 +752,15 @@ function EditSidebar({selectedPage, updatePage}) {
       <div className="edit-field--side-label">Deadline</div><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/>
       
       </div>
-      <AssignmentMemo/>
+      <h5>Assignment Memo</h5>
+      <AssignmentMemo selectedPage={selectedPage} updatePage={updatePage}/>
     </div>
     <div>
       <h4>Organization</h4>
 
       <div className="edit-field--sidebyside">
-
+      <div className="edit-field--side-label">Section</div><Select 
+          options={allSections} />
       <div className="edit-field--side-label">Beat</div><BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)} styleType={"edit-field"}/>
 
       </div>
@@ -775,10 +795,17 @@ const schema = new Schema({
 
 function AssignmentMemo({selectedPage, updatePage}) {
   console.log("SCHEMA")
-  console.log(schema)
+  console.log(selectedPage.assignment_memo)
+
+  const domElement = new window.DOMParser().parseFromString(selectedPage.assignment_memo, "text/html").body;
+
+  const defaultNode = DOMParser.fromSchema(schema).parse(domElement);
+
+
     return (
     <ProseMirror
       defaultState={EditorState.create({
+        doc: defaultNode,
         schema,
         plugins: [
           // The reactKeys plugin is required for the ProseMirror component to work!
@@ -790,13 +817,25 @@ function AssignmentMemo({selectedPage, updatePage}) {
             'Shift-Mod-z': redo,
             Backspace: joinBackward,
             'Mod-b': toggleMark(schema.marks.strong),
-            'Mod-i': toggleMark(schema.marks.em),
-            'Mod-k': toggleMark(schema.marks.link)
+            'Mod-i': toggleMark(schema.marks.em)
           }),
+          ...autolink({
+            openOnClick: true,
+            enableEnterTrigger: true,
+            excludedTrailingChars: ['.', ',', '!', '?', ':', ';', ')', ']', '}']
+          })
         ],
       })}
     >
-      <ProseMirrorDoc />
+      <ProseMirrorDoc 
+        onBlur={(e) => updateAssignmentMemo(selectedPage, e.target.innerHTML, updatePage)}
+        style={{
+          backgroundColor: "#fdfdfd",
+          padding: "10px",
+          paddingBottom: "0",
+          minHeight: "6lh"
+        }}
+        />
     </ProseMirror>
   );
 }
