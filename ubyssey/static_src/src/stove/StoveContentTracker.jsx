@@ -264,6 +264,16 @@ async function updateBeat(page, newBeat, updatePage) {
     "Failed to update beat for " + page.title + " to " + newBeat.label)
 }
 
+async function updateSection(page, newSection, updatePage) {
+  updatePage({... page, current_section: newSection.value})
+  console.log(newSection)
+
+  handleRemoteUpdate(page, {"current_section": newSection.value}, updatePage,
+    "Updating beat for " + page.title + " to " + newSection.label, 
+    "Updated beat for " + page.title + " to " + newSection.label, 
+    "Failed to update beat for " + page.title + " to " + newSection.label)
+}
+
 async function updateAssignmentMemo(page, newMemo, updatePage) {
   if (page["assignment_memo"] == newMemo) return;
 
@@ -473,7 +483,7 @@ function BeatSelect ({beat, updateBeat, styleType}) {
       })
     }
   }
-  return <Select 
+    return <Select 
     options={beatOptions}
     value={beat ? {"value": beat, "label": beatLabel(beat)} : undefined}
     onChange={updateBeat}
@@ -482,6 +492,65 @@ function BeatSelect ({beat, updateBeat, styleType}) {
     components={{
       DropdownIndicator: null, 
       placeholder: "Choose beat..."} }/>
+}
+
+function SectionSelect ({section, updateSection, styleType}) {
+
+  let style = {};
+
+  if (styleType == "edit-field") {
+    style = {
+      ...style, 
+      control: (base) => ({
+        ...base,
+        border: "none",
+      }),
+      valueContainer: (base) => ({
+        ...base,
+        backgroundColor: "#eeeeee",
+        padding: "5px",
+        ':hover': {
+          backgroundColor: "var(--hover-color)"
+        }
+      }),
+      selectContainer: (base) => ({
+        ...base,
+        padding: "0",
+        margin: "0",
+        backgroundColor: "#eeeeee"
+      }), 
+      singleValue: (base) => ({
+        ...base,
+        padding: 5,
+        borderRadius: 5,
+        background: "#fafafa",
+      }),
+      container: (base) => ({
+        ...base,
+        maxWidth: "20em",
+      })
+    }
+  }
+
+  function findSection(sectionSlug) {
+    for (const s of allSections) {
+      console.log(s)
+      if (s.slug == sectionSlug) return s
+    }
+    return undefined
+  }
+
+  console.log(section)
+
+  return <Select 
+    options={allSections}
+    value={section ? findSection(section) : undefined}
+    onChange={updateSection}
+    styles={style}
+    formatGroupLabel={formatGroupLabel}
+    components={{
+      DropdownIndicator: null, 
+      placeholder: "Choose section..."} }/>
 }
 
 function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId}) {
@@ -772,8 +841,8 @@ function EditSidebar({selectedPage, updatePage}) {
       <h4>Assignment Management</h4>
       <div className="edit-field--sidebyside">
 
-      <div className="edit-field--side-label">Status</div> <ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/>
-      <div className="edit-field--side-label">Deadline</div><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/>
+        <div className="edit-field--side-label">Status</div> <ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/>
+        <div className="edit-field--side-label">Deadline</div><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/>
       
       </div>
       <h5>Assignment Notes </h5>

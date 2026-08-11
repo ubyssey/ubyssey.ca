@@ -67,7 +67,7 @@ def load_pages(request, section="all", page=1):
     
     qs = ArticlePage.objects.all()
     if (section != "all"):
-        qs = qs.filter(current_section=section.lower())
+        qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
     if (username):
         author_page = get_object_or_404(AuthorPage, full_name=username)
         qs = qs.filter(article_authors__author=author_page)
@@ -102,6 +102,14 @@ def update_content_tracker(request, page_id):
         page.topics.add(data["category"])
         page.primary_tag_slug = slugify(data["category"])
         page.category_page = get_object_or_404(CategoryPage, title=data["category"])
+    if ("current_section" in data):
+        section = SectionPage.objects.get(id=data["current_section"])
+        if (page.can_move_to(section)):
+            page.move(section, pos='last-child')
+            page.current_section = section.slug
+            print(page.current_section)
+        else:
+            raise Exception("Page can't move to section")
     if ("deadline" in data):
         page.deadline = data["deadline"]
     if ("article_status" in data):

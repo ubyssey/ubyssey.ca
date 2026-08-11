@@ -335,6 +335,11 @@ input:checked + .slider:before {
   // background-color: #ccc;
 }
 
+.tab-content {
+  overflow: scroll;
+  height: calc(100vh - 90px);
+}
+
 .edit-field--title {
   width: 100%;
   background-color: inherit;
@@ -369,6 +374,25 @@ input:checked + .slider:before {
   background-color: inherit;
   border: none;
   padding: 0;
+}
+
+.edit-field--richtext-editor {
+  position: relative;
+}
+
+.edit-field--richtext-help {
+  display: flex;
+  background-color: #f3f3f3;
+  font-weight: bold;
+  height: 1.3lh;
+  width: 1.3lh;
+  border-radius: 50%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
 }
 
 
