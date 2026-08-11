@@ -711,6 +711,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         help_text="Advice from a section editor about how to approach a story",
     )
 
+    ethics_notes = RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Ethics Notes',
+        help_text="Advice from a section editor about the ethics of a story",
+    )
+
 
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead

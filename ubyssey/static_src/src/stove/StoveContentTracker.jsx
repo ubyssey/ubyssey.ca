@@ -31,6 +31,8 @@ import { keymap } from 'prosemirror-keymap'
 import { marks } from 'prosemirror-schema-basic'
 import { DOMParser } from "prosemirror-model";
 import { autolink } from "prosemirror-autolink";
+import { Tooltip } from 'react-tooltip';
+
 
 
 
@@ -277,9 +279,24 @@ async function updateAssignmentMemo(page, newMemo, updatePage) {
 
 }
 
+async function updateEthicsNotes(page, newEthics, updatePage) {
+  if (page.ethics_notes == newEthics) return;
+
+  page.ethics_notes = newEthics
+
+  updatePage(page)
+
+
+  handleRemoteUpdate(page, {"ethics_notes": newEthics}, updatePage,
+    "Updating ethics notes for " + page.title, 
+    "Updated ethics notes for " + page.title, 
+    "Failed to update ethics notes for " + page.title)
+
+}
+
 async function handleRemoteUpdate(page, changes, updatePage, pendingText, successText, errorText) {
-  toast.info("UPDATING REMOTE", {
-          autoClose: 250})
+  // toast.info("UPDATING REMOTE", {
+  //         autoClose: 250})
   toast.promise(
       remoteUpdatePage(page, changes),
       {
@@ -456,7 +473,6 @@ function BeatSelect ({beat, updateBeat, styleType}) {
       })
     }
   }
-
   return <Select 
     options={beatOptions}
     value={beat ? {"value": beat, "label": beatLabel(beat)} : undefined}
@@ -712,7 +728,7 @@ function EditSidebar({selectedPage, updatePage}) {
   useEffect(() => {
     changeTitle(selectedPage["title"]);
   }, [selectedPage]);
-  return <div>
+  return <div className="edit-content">
     <textarea 
       style={{
         width: "100%",
@@ -745,6 +761,14 @@ function EditSidebar({selectedPage, updatePage}) {
       </div>
     </div>
     <div>
+      <h4>Organization</h4>
+
+      <div className="edit-field--sidebyside">
+        <div className="edit-field--side-label">Section</div><SectionSelect section={selectedPage.current_section} updateSection={(newSection) => updateSection(selectedPage, newSection, updatePage)} styleType={"edit-field"}/>
+        <div className="edit-field--side-label">Beat</div><BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)} styleType={"edit-field"}/>
+      </div>
+    </div>
+    <div>
       <h4>Assignment Management</h4>
       <div className="edit-field--sidebyside">
 
@@ -752,20 +776,11 @@ function EditSidebar({selectedPage, updatePage}) {
       <div className="edit-field--side-label">Deadline</div><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/>
       
       </div>
-      <h5>Assignment Memo</h5>
+      <h5>Assignment Notes </h5>
       <AssignmentMemo selectedPage={selectedPage} updatePage={updatePage}/>
+      <h5>Ethics Notes </h5>
+      <EthicsNotes selectedPage={selectedPage} updatePage={updatePage}/>
     </div>
-    <div>
-      <h4>Organization</h4>
-
-      <div className="edit-field--sidebyside">
-      <div className="edit-field--side-label">Section</div><Select 
-          options={allSections} />
-      <div className="edit-field--side-label">Beat</div><BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)} styleType={"edit-field"}/>
-
-      </div>
-    </div>
-   
   </div>
 }
 
@@ -791,20 +806,20 @@ const schema = new Schema({
   marks: marks,
 })
 
-
+function EthicsNotes({selectedPage, updatePage}) {
+  return <RichTextEditor onBlurCallback={(e) => updateEthicsNotes(selectedPage, e.target.innerHTML, updatePage)} defaultText={selectedPage.ethics_notes}/>
+}
 
 function AssignmentMemo({selectedPage, updatePage}) {
-  console.log("SCHEMA")
-  console.log(selectedPage.assignment_memo)
+  return <RichTextEditor onBlurCallback={(e) => updateAssignmentMemo(selectedPage, e.target.innerHTML, updatePage)} defaultText={selectedPage.assignment_memo}/>
+}
 
-  const domElement = new window.DOMParser().parseFromString(selectedPage.assignment_memo, "text/html").body;
-
+function RichTextEditor({onBlurCallback, defaultText}) {
+  const domElement = new window.DOMParser().parseFromString(defaultText, "text/html").body;
   const defaultNode = DOMParser.fromSchema(schema).parse(domElement);
 
-
-    return (
-    <ProseMirror
-      defaultState={EditorState.create({
+  const [editorState, setEditorState] = useState(
+    EditorState.create({
         doc: defaultNode,
         schema,
         plugins: [
@@ -825,10 +840,27 @@ function AssignmentMemo({selectedPage, updatePage}) {
             excludedTrailingChars: ['.', ',', '!', '?', ':', ';', ')', ']', '}']
           })
         ],
-      })}
+      })
+  )
+
+  useEffect(() => {
+    const newState = editorState;
+    newState.doc=defaultNode;
+    setEditorState(newState);
+  }, [defaultText]);
+  
+
+    return (
+    <ProseMirror
+      state={editorState}
+      dispatchTransaction={(tr) => {
+        setEditorState((s) => s.apply(tr));
+      }}
     >
+      <div className="edit-field--richtext-editor">
+        
       <ProseMirrorDoc 
-        onBlur={(e) => updateAssignmentMemo(selectedPage, e.target.innerHTML, updatePage)}
+        onBlur={onBlurCallback}
         style={{
           backgroundColor: "#fdfdfd",
           padding: "10px",
@@ -836,6 +868,27 @@ function AssignmentMemo({selectedPage, updatePage}) {
           minHeight: "6lh"
         }}
         />
+        <div className="edit-field--richtext-help"><a data-tooltip-id="richtext-info">?</a></div>
+        <Tooltip
+          id={"richtext-info"}
+          place={'top-end'}
+          style={{ 
+            backgroundColor: "#f6f6f6", 
+            fontSize: "small", 
+            color: "black", 
+            width: "200px", 
+            filter: 'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.2))'
+          }}
+        >
+          <span><strong>Shortcuts</strong></span>
+          <ul>
+            <li><strong>Bold</strong>. Cmd/Ctrl + B</li>
+            <li><i>Italics</i>. Cmd/Ctrl + I</li>
+            <li><a href="ubyssey.ca">Link</a>. Paste a link from your clipboard using Cmd/Ctrl + V</li>
+          </ul>
+        </Tooltip>
+        </div>
+        
     </ProseMirror>
   );
 }
@@ -885,6 +938,7 @@ function SectionNavigationSidebar() {
           <SectionGroup groupName="Reportage" sections={["Arts", "Culture", "News", "Opinion", "Sports"]}/>
           <SectionGroup groupName="Visuals" sections={["Graphics", "Photo", "Video"]}/>
           <SectionGroup groupName="Product" sections={["Audio", "Print", "Socials"]}/>
+          <SectionGroup groupName="More" sections={["Copy", "Games", "Homepage"]}/>
   </div>
 }
 

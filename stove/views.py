@@ -119,8 +119,8 @@ def update_content_tracker(request, page_id):
         page.article_authors.set(items)
     if ("assignment_memo" in data):
         page.assignment_memo = data["assignment_memo"]
-        print("NEW ASSIGNMENT MEMO")
-        print(page.assignment_memo)
+    if ("ethics_notes" in data):
+        page.ethics_notes = data["ethics_notes"]
     page.save_revision(user=request.user)
 
     latest_revision = page.get_latest_revision_as_object()
