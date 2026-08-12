@@ -8,7 +8,7 @@ import chroma from 'chroma-js';
 import Switch from "react-switch";
 
 import { Group, Panel, Separator} from "react-resizable-panels";
-import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline } from 'react-ionicons'
+import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline, FolderOpen, FolderOpenOutline, Folder } from 'react-ionicons'
 
 
 import Tab from 'react-bootstrap/Tab';
@@ -217,6 +217,37 @@ async function updateTitle(page, newTitle, updatePage) {
 
 }
 
+function isValidUrl(url) {
+  const urlRegex = /https?:\/\/.*\..*/g
+
+  return url.match(urlRegex)
+}
+
+async function updateAssignmentFolder(page, newAssignmentFolder, updatePage) {
+  if (page.assignment_folder == newAssignmentFolder) return;
+
+  if (newAssignmentFolder.indexOf("http://") != 0 && newAssignmentFolder.indexOf("https://") !=0) {
+    newAssignmentFolder = "http://" + newAssignmentFolder;
+  }
+  if (!isValidUrl(newAssignmentFolder)) {
+    toast.error(
+      newAssignmentFolder + " is not a valid URL.", 
+      {position: 'bottom-left'}
+    )
+    return;
+  }
+
+  page.assignment_folder = newAssignmentFolder
+
+  updatePage(page)
+
+  handleRemoteUpdate(page, {"assignment_folder": newAssignmentFolder}, updatePage,
+    "Updating assignment folder for " + page.title, 
+    "Updated assignment folder for " + page.title, 
+    "Failed to update assignment folder for " + page.title)
+
+}
+
 
 async function updateAuthors(page, newAuthorList, role, updatePage) {
 
@@ -266,7 +297,6 @@ async function updateBeat(page, newBeat, updatePage) {
 
 async function updateSection(page, newSection, updatePage) {
   updatePage({... page, current_section: newSection.value})
-  console.log(newSection)
 
   handleRemoteUpdate(page, {"current_section": newSection.value}, updatePage,
     "Updating beat for " + page.title + " to " + newSection.label, 
@@ -521,13 +551,10 @@ function SectionSelect ({section, updateSection, styleType="edit-field"}) {
 
   function findSection(sectionSlug) {
     for (const s of allSections) {
-      console.log(s)
       if (s.slug == sectionSlug) return s
     }
     return undefined
   }
-
-  console.log(section)
 
   return <Select 
     options={allSections}
@@ -538,6 +565,49 @@ function SectionSelect ({section, updateSection, styleType="edit-field"}) {
     components={{
       DropdownIndicator: null, 
       placeholder: "Choose section..."} }/>
+}
+
+function LinkInput ({selectedPage, updatePage}) {
+  const [assignmentFolder, changeAssignmentFolder] = useState(selectedPage.assignment_folder);
+
+  useEffect(() => {
+    if (selectedPage.assignment_folder != null) {
+      changeAssignmentFolder(selectedPage.assignment_folder)
+    } else {
+      changeAssignmentFolder('')
+    }
+  }, [selectedPage]);
+
+  return <div class="edit-field--hyperlink-container">
+          <input class="edit-field--plaintext" 
+            placeholder="Assignment folder link..." 
+            value={assignmentFolder}
+            onChange={e => changeAssignmentFolder(e.target.value)}
+            onBlur={(e) => updateAssignmentFolder(selectedPage, e.target.value, updatePage)}>
+            </input>
+            <LinkOpenButton url={assignmentFolder}/>
+          </div>
+}
+
+function LinkOpenButton ({url}) {
+  let button;
+
+  if (url != null && url != '') {
+    const activeButton = isValidUrl(url)
+
+    if (isValidUrl(url)) {
+      button = <a href={url} target="_blank" rel="noopener noreferrer"><FolderOpen /></a>
+    } else {
+      button = <FolderOpen color={"#d23732"}/>
+    }
+  } else {
+    button = <FolderOpenOutline />
+  }
+
+  return (<div className="edit-field--hyperlink-open">
+
+             {button}
+            </div>);
 }
 
 function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId}) {
@@ -785,6 +855,7 @@ function EditSidebar({selectedPage, updatePage}) {
   useEffect(() => {
     changeTitle(selectedPage["title"]);
   }, [selectedPage]);
+
   return <div className="edit-content">
     <textarea 
       style={{
@@ -830,7 +901,8 @@ function EditSidebar({selectedPage, updatePage}) {
       
       <div className="edit-field--sidebyside">
 
-        <div className="edit-field--side-label">Folder</div><input class="edit-field--plaintext" placeholder="Assignment folder link..."></input>
+        <div className="edit-field--side-label">Folder</div>
+          <LinkInput selectedPage={selectedPage} updatePage={updatePage}/>
         <div className="edit-field--side-label">Status</div> <ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/>
         <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/></div>
       </div>

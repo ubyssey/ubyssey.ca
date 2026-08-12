@@ -5,6 +5,7 @@
     --ubyssey-blue: #263a7b;
     --inactive-color: #ccc;
     --hover-color: hsl(192, 50%, 85%);
+    --invalid-hover-color: hsl(6, 69%, 85%);
 }
 
 table, th, td {
@@ -404,6 +405,28 @@ input:checked + .slider:before {
   padding-right: 8px;
   padding-top: 4px;
   padding-bottom: 4px;
+}
+
+.edit-field--hyperlink-container {
+  display: grid;
+  grid-template-columns: auto 30px;
+  width: 100%;
+  max-width: 20em;
+}
+
+.edit-field--hyperlink-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-field--hyperlink-open:has(a):hover {
+  background-color: var(--hover-color);
+}
+
+.edit-field--hyperlink-open:not(:has(a)):hover {
+  background-color: var(--invalid-hover-color);
+  cursor: not-allowed;
 }
 
 .edit-field--plaintext:hover {

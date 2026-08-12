@@ -97,6 +97,8 @@ def update_content_tracker(request, page_id):
 
     if ("title" in data):
         page.title = data["title"]
+    if ("assignment_folder" in data):
+        page.assignment_folder = data["assignment_folder"]
     if ("category" in data):
         if (page.get_primary_topic()): page.topics.remove(page.get_primary_topic().name)
         page.topics.add(data["category"])
