@@ -127,7 +127,7 @@ function findAuthorName(authorId) {
     "copy_editor": "#77c0d2" 
   }
 
-function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType, disabled}) {
+function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType="edit-field", disabled}) {
   let initialAuthors = [];
   for (const authorId in currentAuthors) {
     const author = currentAuthors[authorId]
@@ -148,10 +148,10 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleT
       control: (base) => ({
         ...base,
         border: "none",
+        backgroundColor: "inherit",
       }),
       valueContainer: (base) => ({
         ...base,
-        backgroundColor: "#eeeeee",
         padding: "5px",
         ':hover': {
           backgroundColor: "var(--hover-color)"
@@ -161,7 +161,6 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleT
         ...base,
         padding: "0",
         margin: "0",
-        backgroundColor: "#eeeeee"
       })
       
     }
@@ -447,7 +446,7 @@ function beatLabel(beatPk) {
   return "[No label provided]"
 }
 
-function BeatSelect ({beat, updateBeat, styleType, disabled}) {
+function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
 
  let style = {};
 
@@ -457,10 +456,10 @@ function BeatSelect ({beat, updateBeat, styleType, disabled}) {
       control: (base) => ({
         ...base,
         border: "none",
+        backgroundColor: "inherit",
       }),
       valueContainer: (base) => ({
         ...base,
-        backgroundColor: "#eeeeee",
         padding: "5px",
         ':hover': {
           backgroundColor: "var(--hover-color)"
@@ -470,14 +469,7 @@ function BeatSelect ({beat, updateBeat, styleType, disabled}) {
         ...base,
         padding: "0",
         margin: "0",
-        backgroundColor: "#eeeeee"
       }), 
-      singleValue: (base) => ({
-        ...base,
-        padding: 5,
-        borderRadius: 5,
-        background: "#fafafa",
-      }),
       container: (base) => ({
         ...base,
         maxWidth: "20em",
@@ -496,7 +488,7 @@ function BeatSelect ({beat, updateBeat, styleType, disabled}) {
       placeholder: "Choose beat..."} }/>
 }
 
-function SectionSelect ({section, updateSection, styleType}) {
+function SectionSelect ({section, updateSection, styleType="edit-field"}) {
 
   let style = {};
 
@@ -506,10 +498,10 @@ function SectionSelect ({section, updateSection, styleType}) {
       control: (base) => ({
         ...base,
         border: "none",
+        backgroundColor: "inherit",
       }),
       valueContainer: (base) => ({
         ...base,
-        backgroundColor: "#eeeeee",
         padding: "5px",
         ':hover': {
           backgroundColor: "var(--hover-color)"
@@ -519,14 +511,7 @@ function SectionSelect ({section, updateSection, styleType}) {
         ...base,
         padding: "0",
         margin: "0",
-        backgroundColor: "#eeeeee"
       }), 
-      singleValue: (base) => ({
-        ...base,
-        padding: 5,
-        borderRadius: 5,
-        background: "#fafafa",
-      }),
       container: (base) => ({
         ...base,
         maxWidth: "20em",
@@ -842,11 +827,12 @@ function EditSidebar({selectedPage, updatePage}) {
     </div>
     <div>
       <h4>Assignment Management</h4>
+      
       <div className="edit-field--sidebyside">
 
+        <div className="edit-field--side-label">Folder</div><input class="edit-field--plaintext" placeholder="Assignment folder link..."></input>
         <div className="edit-field--side-label">Status</div> <ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/>
-        <div className="edit-field--side-label">Deadline</div><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/>
-      
+        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/></div>
       </div>
       <h5>Assignment Notes </h5>
       <AssignmentMemo selectedPage={selectedPage} updatePage={updatePage}/>

@@ -368,6 +368,7 @@ input:checked + .slider:before {
   padding-right: 4px;
   vertical-align: middle;
   justify-content: center;
+  transform: translateY(-2px); 
 }
 
 .edit-field--author {
@@ -395,6 +396,36 @@ input:checked + .slider:before {
   right: 4px;
 }
 
+.edit-field--plaintext {
+  height: 36px;
+  background-color: inherit;
+  border: none;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.edit-field--plaintext:hover {
+  background-color: var(--hover-color);
+}
+
+.react-datepicker-wrapper:hover {
+  background-color: var(--hover-color);
+}
+.react-datepicker__input-container > input {
+  background-color: inherit;
+  border: none;
+  height: 36px;
+  width: 100%;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.edit-field--date > .react-datepicker-wrapper {
+  max-width: 20em;
+  width: 100%;
+}
 
 .metadata-editor {
     z-index: 10;
