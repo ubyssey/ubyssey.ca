@@ -127,7 +127,7 @@ function findAuthorName(authorId) {
     "copy_editor": "#77c0d2" 
   }
 
-function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType}) {
+function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType, disabled}) {
   let initialAuthors = [];
   for (const authorId in currentAuthors) {
     const author = currentAuthors[authorId]
@@ -176,6 +176,7 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleT
   }
 
   return <Select 
+    isDisabled = {disabled}
     options={authors} 
     onChange = {handleUpdateAuthors} 
     value={initialAuthors} 
@@ -446,7 +447,7 @@ function beatLabel(beatPk) {
   return "[No label provided]"
 }
 
-function BeatSelect ({beat, updateBeat, styleType}) {
+function BeatSelect ({beat, updateBeat, styleType, disabled}) {
 
  let style = {};
 
@@ -484,6 +485,7 @@ function BeatSelect ({beat, updateBeat, styleType}) {
     }
   }
     return <Select 
+    isDisabled={disabled}
     options={beatOptions}
     value={beat ? {"value": beat, "label": beatLabel(beat)} : undefined}
     onChange={updateBeat}
@@ -570,13 +572,14 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
               /></button>
               <a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a> </td>
             <td class="authors-cell"><AuthorsSelect 
+              disabled = {page.live}
               currentAuthors={page.article_authors} 
               handleUpdateAuthors={(newAuthorList) => updateAuthors(page, newAuthorList, responsibleRole[page.article_status].role, updatePage)}
               authorType={responsibleRole[page.article_status].role}
               />
             </td>
-            <td><DateInput date={page.deadline} handleUpdateDate={(newDate) => updateDeadline(page, newDate, updatePage)}/></td>
-            <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)}/></td>
+            <td><DateInput date={page.deadline} handleUpdateDate={(newDate) => updateDeadline(page, newDate, updatePage)} disabled={page.live}/></td>
+            <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)} disabled={page.live}/></td>
             <td><ArticleStatus status={page["article_status"]} updateStatus={(newStatus) => updateArticleStatus(page, newStatus, updatePage)}/></td>
             <td><Image color={'#257e4d'} height="1.5em" width="1.5em" /> <BrushOutline color={'#00000'} height="1.5em" width="1.5em" /><VideocamOutline color={'#00000'} height="1.5em" width="1.5em" /></td>
             <td><PrintOutline color={'#00000'} height="1.5em" width="1.5em" /><Headset color={'#faa33a'} height="1.5em" width="1.5em" /></td>
@@ -737,7 +740,7 @@ function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPubli
 
 function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId}) {
   const [isOnlyUserFilter, setOnlyUserFilter] = useState(false);
-  const [isIncludingPublished, setIsIncludingPublished] = useState(true);
+  const [isIncludingPublished, setIsIncludingPublished] = useState(false);
 
   return (
     <Tabs
@@ -1069,8 +1072,9 @@ function ContentTracker() {
 }
 
 
-function DateInput ({date, handleUpdateDate}) {
+function DateInput ({date, handleUpdateDate, disabled}) {
   return <DatePicker
+    disabled={disabled}
     selected={date ? new Date(date) : undefined}
     onChange={(newDate) => {
       handleUpdateDate(newDate)
