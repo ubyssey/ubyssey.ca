@@ -21,12 +21,14 @@
     // create a collection of page information.
     let pages = new Map()
     let authors = []
+    
     const currentUser = "{{ request.user.get_full_name }}"
     const articleUrl = "{% url 'stove:manuscript_editor' 1918 %}"
     const loadArticlesUrl = "{% url 'stove:content_tracker_load_pages' section 1918 %}"
     const pageSection = "{{section|title}}"
     
     {% autoescape off %}
+    let allSections = {{ sections }}
     
     {% for a in authors %}
     authors.push({ value: {{a.id}}, label: `{{a.full_name}}` })

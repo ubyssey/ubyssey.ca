@@ -11,7 +11,7 @@ from django.utils.text import slugify
 from wagtail.models import Page
 from article.models import ArticlePage
 from article.models import ArticleAuthorsOrderable
-from section.models import CategoryPage
+from section.models import CategoryPage, SectionPage
 from authors.models import AuthorPage
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import localtime
@@ -45,6 +45,7 @@ from stove.manuscript_editor.revisions import autosave_manuscript_revision
 def content_tracker_react(request, section="all"):
     beats = CategoryPage.objects.all().filter(beat=True)
     authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    sections = SectionPage.objects.exact_type(SectionPage)
 
     beatExport = {}
     for beat in beats:
@@ -53,7 +54,11 @@ def content_tracker_react(request, section="all"):
             beatExport[beatSection] = []
         beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
-    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "section": section})
+    sectionExport = []
+    for s in sections:
+        sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
+
+    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
 def load_pages(request, section="all", page=1):
@@ -62,7 +67,7 @@ def load_pages(request, section="all", page=1):
     
     qs = ArticlePage.objects.all()
     if (section != "all"):
-        qs = qs.filter(current_section=section.lower())
+        qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
     if (username):
         author_page = get_object_or_404(AuthorPage, full_name=username)
         qs = qs.filter(article_authors__author=author_page)
@@ -92,11 +97,21 @@ def update_content_tracker(request, page_id):
 
     if ("title" in data):
         page.title = data["title"]
+    if ("assignment_folder" in data):
+        page.assignment_folder = data["assignment_folder"]
     if ("category" in data):
         if (page.get_primary_topic()): page.topics.remove(page.get_primary_topic().name)
         page.topics.add(data["category"])
         page.primary_tag_slug = slugify(data["category"])
         page.category_page = get_object_or_404(CategoryPage, title=data["category"])
+    if ("current_section" in data):
+        section = SectionPage.objects.get(id=data["current_section"])
+        if (page.can_move_to(section)):
+            page.move(section, pos='last-child')
+            page.current_section = section.slug
+            print(page.current_section)
+        else:
+            raise Exception("Page can't move to section")
     if ("deadline" in data):
         page.deadline = data["deadline"]
     if ("article_status" in data):
@@ -112,7 +127,10 @@ def update_content_tracker(request, page_id):
             for index, item in enumerate(new_authors or [])
         ]
         page.article_authors.set(items)
-
+    if ("assignment_memo" in data):
+        page.assignment_memo = data["assignment_memo"]
+    if ("ethics_notes" in data):
+        page.ethics_notes = data["ethics_notes"]
     page.save_revision(user=request.user)
 
     latest_revision = page.get_latest_revision_as_object()
