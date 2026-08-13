@@ -127,6 +127,19 @@ export function createStreamEditor(textarea, streamEditor, options = {}) {
     deleteBlock(index) {
       fragment.delete(index, 1);
     },
+    moveBlock(fromIndex, direction) {
+      const targetIndex = fromIndex + direction;
+      const blocks = fragment.toArray();
+      const firstIndex = Math.min(fromIndex, targetIndex);
+      const swapped = direction < 0
+        ? [blocks[fromIndex].clone(), blocks[targetIndex].clone()]
+        : [blocks[targetIndex].clone(), blocks[fromIndex].clone()];
+
+      this.transact(() => {
+        fragment.delete(firstIndex, 2);
+        fragment.insert(firstIndex, swapped);
+      }, { checkStructure: false, skipPreview: true });
+    },
     updateDoc(update, change = {}) {
       const before = this.doc;
       const transaction = update(

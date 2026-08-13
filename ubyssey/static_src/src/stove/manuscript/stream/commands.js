@@ -2,8 +2,6 @@
 
 // Find/Move/Delete/Calculate range of blocks
 
-import { Fragment } from "prosemirror-model";
-
 import { createEmptyRichTextBlock } from "./serialization.js";
 import { streamSchema } from "./schema.js";
 
@@ -40,12 +38,9 @@ export function moveTopLevelBlock(transaction, fromIndex, direction) {
 
   const from = topLevelBlockInfoByIdOrIndex(transaction.doc, null, fromIndex);
   const target = topLevelBlockInfoByIdOrIndex(transaction.doc, null, targetIndex);
-  const blocks = direction < 0 ? [from.node, target.node] : [target.node, from.node];
-  return transaction.replaceWith(
-    Math.min(from.start, target.start),
-    Math.max(from.end, target.end),
-    Fragment.fromArray(blocks),
-  );
+  const destination = direction < 0 ? target.start : target.end;
+  transaction.delete(from.start, from.end);
+  return transaction.insert(transaction.mapping.map(destination), from.node);
 }
 
 export function deleteTopLevelBlock(transaction, info) {

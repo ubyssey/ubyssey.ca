@@ -1,7 +1,7 @@
 // Block operations, like inserting/moving/deleting, block comments
 // controller connects these with components.jsx, and state/DOM events
 
-import { deleteTopLevelBlock, moveTopLevelBlock, topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
+import { deleteTopLevelBlock, topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
 import { manuscriptSession } from "../session.js";
 
 const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
@@ -117,7 +117,8 @@ export function streamBlockInfoForArticleBlock(instance, articleBlock) {
 export function moveArticleBlock(instance, articleBlock, direction) {
   const info = streamBlockInfoForArticleBlock(instance, articleBlock);
   if (!info) return;
-  instance.updateDoc((transaction) => moveTopLevelBlock(transaction, info.index, direction));
+  instance.moveBlock(info.index, direction);
+  manuscriptSession.schedulePreview({ immediate: true });
 }
 
 export function deleteArticleBlock(instance, articleBlock) {

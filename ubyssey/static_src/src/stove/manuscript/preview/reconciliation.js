@@ -162,7 +162,7 @@ export function reconcilePreviewBlocks({ before, doc, instance }) {
   ));
 
   const activeBlock = root?.activeElement?.closest?.(ARTICLE_BLOCK_SELECTOR);
-  const positionAnchor = retainedArticleBlocks.includes(activeBlock)
+  const positionAnchor = changes.moved.length ? null : retainedArticleBlocks.includes(activeBlock)
     ? activeBlock
     : retainedArticleBlocks.find((block) => {
       const bounds = block.getBoundingClientRect();
