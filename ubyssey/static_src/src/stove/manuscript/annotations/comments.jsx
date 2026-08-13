@@ -188,7 +188,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   layoutObserver.observe(root);
   if (articleShadow) layoutObserver.observe(articleShadow);
 
-  document.addEventListener("pointerdown", removePendingThreads, true);
+  document.addEventListener("click", removePendingThreads, true);
   document.addEventListener("focusin", removePendingThreads, true);
   articleShadow?.shadowRoot?.addEventListener("click", onCommentMarkClick);
   window.addEventListener("scroll", scheduleCommentPositions, true);
@@ -391,6 +391,7 @@ function CommentThread({ thread, username, refresh, active, setActiveThread, com
           thread={thread}
           username={username}
           draft={commentDrafts.get(thread.threadId) || ""}
+          autoFocus={!suggestion}
           setStoredDraft={(value) => { commentDrafts.set(thread.threadId, value); }}
           close={() => { setActiveThread(null, null); }}
           cancel={() => {
@@ -431,7 +432,7 @@ function CommentText({ comment }) {
   );
 }
 
-function CommentReplyForm({ thread, username, draft: initialDraft, setStoredDraft, close, cancel }) {
+function CommentReplyForm({ thread, username, draft: initialDraft, setStoredDraft, autoFocus, close, cancel }) {
   // Comment Draft State
   const [draft, setDraft] = useState(initialDraft);
   const updateDraft = (value) => {
@@ -465,7 +466,7 @@ function CommentReplyForm({ thread, username, draft: initialDraft, setStoredDraf
       <textarea
         name="comment"
         value={draft}
-        autoFocus
+        autoFocus={autoFocus}
         onChange={(event) => { updateDraft(event.currentTarget.value); }}
         placeholder={thread.pending ? "Comment" : "Reply"}
         rows="2"

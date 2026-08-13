@@ -8,6 +8,7 @@ import { wrapInList } from "prosemirror-schema-list";
 import { markRangeAtCursor, startFootnoteCommand, startCommentCommand } from "../annotations/index.js";
 import { manuscriptSession } from "../session.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
+import { suggestionModeIsActive, toggleSuggestionMode } from "./index.jsx";
 
 const TOOLBAR_ITEMS = [
   ["undo", "↶", "Undo"],
@@ -156,6 +157,8 @@ function BlockControls({ actions }) {
 }
 
 function toolbarItemIsActive(view, key) {
+  if (key === "suggestionMode") return suggestionModeIsActive();
+
   const { state } = view;
   const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link", footnote: "footnote" };
   const headingLevel = key === "heading3" ? 3 : null;
