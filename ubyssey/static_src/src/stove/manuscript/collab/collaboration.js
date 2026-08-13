@@ -10,10 +10,16 @@ import { streamSchema } from "../stream/schema.js";
 const RESTORE_CLOSE_CODE = 4410;
 
 const date = new Date().getDate();
+const EDITOR_COLOURS = [
+  "#9ec756",
+  "#f1b643",
+  "#3564a8",
+  "#d23723",
+];
 
-// Different colour each day of the month for each user lol
+// Unless someone has an idea for mapping integers to RGB
 function editorColour(id) {
-  return `hsl(${((Number(id) + date) * 137.5) % 360} 70% 40%)`;
+  return EDITOR_COLOURS[(Number(id) + date) % EDITOR_COLOURS.length];
 }
 
 // Default Initial PM doc
@@ -81,7 +87,7 @@ export async function setupCollaboration(pageId, streamEditors, currentEditor, f
     color: editorColour(currentEditor.id),
   });
 
-  provider.ws.addEventListener("close", (event) => {
+  provider.on("connection-close", (event) => {
     if (event.code === RESTORE_CLOSE_CODE) window.location.reload();
   });
 

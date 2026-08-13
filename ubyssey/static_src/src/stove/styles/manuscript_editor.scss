@@ -1001,27 +1001,6 @@ input:checked + .slider:before {
     outline: 2px solid var(--remote-editor-color);
 }
 
-.pm-remote-cursor--document {
-    position: fixed;
-    z-index: 10000;
-    width: 2px;
-    min-height: 1em;
-    pointer-events: none;
-    transform: translateX(-1px);
-}
-
-.pm-remote-cursor--document .pm-remote-cursor__label {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    padding: 1px 4px;
-    border-radius: 3px 3px 3px 0;
-    color: #fff;
-    font: 600 11px/1.3 sans-serif;
-    white-space: nowrap;
-    user-select: none;
-}
-
 .ProseMirror-yjs-cursor {
     position: relative;
     margin-right: -1px;

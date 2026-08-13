@@ -11,7 +11,7 @@ from wagtail.fields import StreamField
 from .authors import get_article_authors_form, save_article_authors_form
 from .featured_media import get_featured_media_form, save_featured_media_form
 from .page_forms import get_page_form
-from .stream_serialization import public_stream_value, sanitize_preview_stream_value
+from .stream_serialization import public_stream_value
 
 
 def json_safe(value):
@@ -55,20 +55,15 @@ def apply_editor_post(page, data, preview=False):
             continue
         try:
             value = json.loads(json_str)
-            if preview:
-                value = sanitize_preview_stream_value(value)
-                if hasattr(page, "editor_article_version"):
-                    value = public_stream_value(value)
-                setattr(page, field.name, value)
-            else:
-                if hasattr(page, "editor_article_version"):
+            if hasattr(page, "editor_article_version"):
+                if not preview:
                     editor_data = getattr(page, "editor_article_version", None) or {}
                     if not isinstance(editor_data, dict):
                         editor_data = {}
                     editor_data[field.name] = json_safe(value) or []
                     page.editor_article_version = editor_data
-                    value = public_stream_value(value)
-                setattr(page, field.name, value)
+                value = public_stream_value(value)
+            setattr(page, field.name, value)
         except json.JSONDecodeError:
             editor_errors[field.name] = ["Invalid JSON for this field."]
 

@@ -136,7 +136,7 @@ export function listItemToPmNode(field, item = null) {
   return {
     type: "list_item",
     attrs: { originalValue: clone(value) },
-    content: ((item && item.fields) || field.itemFields || []).map(fieldToPmNode),
+    content: ((item && item.fields) || field.itemFields || []).map((itemField) => fieldToPmNode(itemField)),
   };
 }
 
@@ -144,7 +144,7 @@ export function clone(value) {
   return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 }
 
-function pmStreamBlockToWagtailBlock(node) {
+export function pmStreamBlockToWagtailBlock(node) {
   const attrs = node.attrs || {};
   const block = {
     type: attrs.blockType || "unknown",
@@ -166,7 +166,10 @@ function pmStreamBlockToWagtailBlock(node) {
     const path = Array.isArray(fieldAttrs.path) ? fieldAttrs.path : [];
 
     if (childNode.type === "editable_field") {
-      setBlockValue(block, path, editableFieldValue(childNode, fieldAttrs.mode));
+      const structuredValue = block.value !== null && typeof block.value === "object" && !Array.isArray(block.value);
+      if (path.length || !structuredValue){
+        setBlockValue(block, path, editableFieldValue(childNode, fieldAttrs.mode));
+      }
     } else if (childNode.type === "control_field") {
       setBlockValue(block, path, controlFieldValue(fieldAttrs, getValueAtPath(block.value, path)));
     } else if (childNode.type === "list_field") {

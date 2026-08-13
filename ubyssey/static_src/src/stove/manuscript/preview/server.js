@@ -16,6 +16,7 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
   if (!form?.dataset.previewUrl || !manuscriptRoot) return;
 
   let timer = null;
+  let timerDelay = null;
   let controller = null;
   let previewId = 0;
   let previewRevision = 0;
@@ -25,6 +26,9 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
   const historySelect = document.querySelector("[data-history-select]");
 
   manuscriptSession.schedulePreview = ({ deferIfManuscriptFocused = false, immediate = false, debounceMs = null, blockOnly = false } = {}) => {
+    const delay = debounceMs ?? (immediate ? 0 : 500);
+    if (timer && timerDelay === 0 && delay > 0) return;
+
     if (historySelect) historySelect.selectedIndex = 0;
     previewRevision += 1;
     clearTimeout(timer);
@@ -41,14 +45,16 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
       deferredManuscriptPreview = false;
     }
 
-    const delay = debounceMs ?? (immediate ? 0 : 500);
+    timerDelay = delay;
     timer = setTimeout(sendPreview, delay);
   };
 
   manuscriptSession.cancelPreviewRefresh = () => {
     previewRevision += 1;
     clearTimeout(timer);
-    if (controller) controller.abort();
+    controller?.abort();
+    timer = null;
+    timerDelay = null;
     deferredManuscriptPreview = false;
     scheduledPreviewBlock = null;
     scheduledPreserveFocusedBlock = false;
@@ -80,12 +86,14 @@ export function setupServerPreviewRefresh(form, manuscriptRoot) {
 
   // Fetches HTML, and writes to textareas
   async function sendPreview() {
+    timer = null;
+    timerDelay = null;
     const requestedBlock = scheduledPreviewBlock;
     const preserveFocusedBlock = scheduledPreserveFocusedBlock;
-    const streamDocs = currentStreamDocs({ includePreviewEdits: !requestedBlock });
+    const streamDocs = currentStreamDocs();
     writeStreamTextareas(streamDocs);
 
-    if (controller) controller.abort();
+    controller?.abort();
     controller = new AbortController();
     const currentPreviewId = ++previewId;
     const requestRevision = previewRevision;

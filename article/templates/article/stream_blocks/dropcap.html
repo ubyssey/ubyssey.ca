@@ -1,4 +1,4 @@
 {% load wagtailcore_tags %}
 <p class="drop-cap" data-article-editable-stream-field="content" data-article-editable-path="">
-    {{ value|safe }}
+    {{ value|striptags }}
 </p>

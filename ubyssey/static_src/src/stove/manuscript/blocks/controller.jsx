@@ -3,20 +3,20 @@
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 
-import { topLevelBlockInfoByIdOrIndex, deleteTopLevelBlock } from "../stream/index.jsx";
+import { createStreamBlockDraft, topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
 import { manuscriptSession } from "../session.js";
 import { ArticleBlockModals } from "./components.jsx";
 import {
   deleteArticleBlock,
   describeArticleBlock,
   findArticleBlock,
-  insertBlockAfter,
   moveArticleBlock,
   streamBlockInfoForArticleBlock,
   syncSelectedArticleBlockEditor,
 } from "./operations.js";
 
 export {
+  articleBlocksForStreamField,
   articleBlockDescriptors,
   collectBlockCommentThreads,
   describeArticleBlock,
@@ -103,19 +103,14 @@ export function setupArticleBlockActions(manuscriptRoot) {
 
   const restoreBlockEditorHome = () => {
     if (!blockEditorHome) return;
+    blockEditorHome.instance.unmountEditor();
     blockEditorHome.parent.insertBefore(blockEditorHome.section, blockEditorHome.nextSibling);
-    blockEditorHome.instance.view.updateRoot();
     blockEditorHome = null;
   };
 
   const removePendingAdd = () => {
     if (!pendingAdd) return;
-    const info = topLevelBlockInfoByIdOrIndex(
-      pendingAdd.instance.view.state.doc,
-      pendingAdd.descriptor.blockId,
-      pendingAdd.descriptor.blockIndex,
-    );
-    if (info) deleteTopLevelBlock(pendingAdd.instance.view, info);
+    pendingAdd.draft.destroy();
     pendingAdd = null;
   };
 
@@ -150,21 +145,23 @@ export function setupArticleBlockActions(manuscriptRoot) {
     window.requestAnimationFrame(() => (preferred || root.querySelector("input, textarea, select, button"))?.focus());
   };
 
-  const moveBlockEditorTo = (descriptor, target) => {
-    const instance = manuscriptSession.streamEditors.find((item) => item.fieldName === descriptor.fieldName);
+  const moveBlockEditorTo = (descriptor, target, options = {}) => {
+    const { instance: suppliedInstance = null, publishSelection = true } = options;
+    const instance = suppliedInstance || manuscriptSession.streamEditors
+      .find((item) => item.fieldName === descriptor.fieldName);
     const section = instance?.mount.closest(".editor-section");
     if (!instance || !section || !target) return false;
     if (blockEditorHome && blockEditorHome.section !== section) restoreBlockEditorHome();
     if (!blockEditorHome) {
       blockEditorHome = { instance, section, parent: section.parentNode, nextSibling: section.nextSibling };
     }
-    manuscriptSession.selectedArticleBlock = descriptor;
+    if (publishSelection) manuscriptSession.selectedArticleBlock = descriptor;
     target.appendChild(section);
-    instance.view.updateRoot();
-    syncSelectedArticleBlockEditor(descriptor);
+    instance.mountEditor().updateRoot();
+    if (publishSelection) syncSelectedArticleBlockEditor(descriptor);
     window.requestAnimationFrame(() => {
-      syncSelectedArticleBlockEditor(descriptor);
-      instance.view.updateRoot();
+      if (publishSelection) syncSelectedArticleBlockEditor(descriptor);
+      instance.view?.updateRoot();
     });
     return true;
   };
@@ -199,18 +196,56 @@ export function setupArticleBlockActions(manuscriptRoot) {
     const active = selectedBlock();
     const root = active?.articleBlock?.getRootNode();
     const anchorBlock = pendingAdd?.anchor && root ? findArticleBlock(root, pendingAdd.anchor) : active?.articleBlock;
-    const instance = pendingAdd?.instance || active?.instance;
-    if (!instance || !anchorBlock) return;
+    const liveInstance = pendingAdd?.liveInstance || active?.instance;
+    if (!liveInstance || !anchorBlock) return;
     restoreBlockEditorHome();
     ui.blockEditorOpen = false;
     removePendingAdd();
     const anchor = describeArticleBlock(anchorBlock);
-    const descriptor = insertBlockAfter(instance, anchorBlock, ui.insertType);
-    if (descriptor && moveBlockEditorTo(descriptor, refs.insertEditorBody)) {
-      pendingAdd = { instance, descriptor, anchor };
+    const draft = createStreamBlockDraft(liveInstance, ui.insertType);
+    const draftBlock = draft.instance.doc.firstChild;
+    const descriptor = {
+      fieldName: liveInstance.fieldName,
+      blockId: draftBlock.attrs?.id || "",
+      blockIndex: 0,
+    };
+    if (moveBlockEditorTo(descriptor, refs.insertEditorBody, {
+      instance: draft.instance,
+      publishSelection: false,
+    })) {
+      pendingAdd = { liveInstance, draft, anchor };
       ui.insertOpen = true;
       syncModalState();
+    } else {
+      draft.destroy();
     }
+  };
+
+  const commitInsertDialog = () => {
+    if (!pendingAdd) addSelectedBlockForEditing();
+    if (!pendingAdd) return;
+
+    const { liveInstance, draft, anchor } = pendingAdd;
+    const anchorInfo = topLevelBlockInfoByIdOrIndex(liveInstance.doc, anchor.blockId, anchor.blockIndex);
+    if (!anchorInfo) return;
+
+    const block = draft.instance.doc.firstChild;
+    const descriptor = {
+      fieldName: liveInstance.fieldName,
+      blockId: block.attrs?.id || "",
+      blockIndex: anchorInfo.index + 1,
+    };
+    liveInstance.updateDoc((transaction) => transaction.insert(anchorInfo.end, block));
+
+    pendingAdd = null;
+    restoreBlockEditorHome();
+    draft.destroy();
+    manuscriptSession.selectedArticleBlock = descriptor;
+    manuscriptSession.revealSelectedArticleBlock = descriptor;
+    closeDialogs();
+    closeBlockEditorModal({ keepSelection: true, refreshPreview: false });
+    syncSelectedArticleBlockEditor(descriptor);
+    manuscriptSession.schedulePreview({ immediate: true });
   };
 
   const actions = {
@@ -244,15 +279,7 @@ export function setupArticleBlockActions(manuscriptRoot) {
       closeBlockEditorModal();
     },
     commitInsert() {
-      if (!pendingAdd) addSelectedBlockForEditing();
-      if (!pendingAdd) return;
-      const historyView = pendingAdd.instance.view;
-      manuscriptSession.revealSelectedArticleBlock = pendingAdd.descriptor;
-      pendingAdd = null;
-      closeDialogs();
-      closeBlockEditorModal({ keepSelection: true, refreshPreview: false });
-      manuscriptSession.richTextToolbar?.setHistoryView(historyView);
-      manuscriptSession.schedulePreview({ immediate: true });
+      commitInsertDialog();
     },
     closeDialogs,
     confirmDelete() {
@@ -278,7 +305,7 @@ export function setupArticleBlockActions(manuscriptRoot) {
       return {
         selected: true,
         upDisabled: active.info.index === 0,
-        downDisabled: active.info.index === active.instance.view.state.doc.childCount - 1,
+        downDisabled: active.info.index === active.instance.doc.childCount - 1,
         editDisabled: ui.blockType === "richtext",
       };
     },

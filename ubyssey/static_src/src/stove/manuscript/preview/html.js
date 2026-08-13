@@ -26,7 +26,7 @@ export function replaceSelectedBlockPreviewHtml(manuscriptRoot, html, streamDocs
   setupArticlePreviewEditors(manuscriptRoot, streamDocs, replacement);
 
   replacement.classList.add("pm-article-block--selected");
-  manuscriptSession.users?.renderLocations();
+  manuscriptSession.users?.renderBlockSelection();
   window.requestAnimationFrame(() => {
     const offset = replacement.getBoundingClientRect().top - previousTop;
     if (Math.abs(offset) > 0.5) window.scrollBy(0, offset);
@@ -76,7 +76,7 @@ export function replaceUnfocusedArticleBlocks(manuscriptRoot, html, streamDocs) 
     }
   }
 
-  manuscriptSession.users?.renderLocations();
+  manuscriptSession.users?.renderBlockSelection();
   manuscriptSession.commentSidebar?.update();
   manuscriptSession.footnoteSidebar?.update();
   LAST_PREVIEW_HTML.delete(content);
@@ -157,7 +157,7 @@ export function restoreCurrentArticleControls(manuscriptRoot, streamDocs) {
   if (articleBlock) {
     articleBlock.classList.add("pm-article-block--selected");
   }
-  manuscriptSession.users?.renderLocations();
+  manuscriptSession.users?.renderBlockSelection();
   manuscriptSession.commentSidebar?.update();
   manuscriptSession.footnoteSidebar?.update();
 }

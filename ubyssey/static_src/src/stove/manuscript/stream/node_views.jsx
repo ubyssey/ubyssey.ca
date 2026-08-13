@@ -44,12 +44,19 @@ function StreamBlockNodeView({ blockTypes, availableBlockTypes }) {
       view.focus();
     });
     const deleteBlock = useEditorEventCallback((view) => {
-      deleteTopLevelBlock(view, topLevelBlockInfoAtPos(view.state.doc, getPos()));
+      view.dispatch(deleteTopLevelBlock(
+        view.state.tr,
+        topLevelBlockInfoAtPos(view.state.doc, getPos()),
+      ));
       view.focus();
     });
     const moveBlock = useEditorEventCallback((view, direction) => {
       const latest = topLevelBlockInfoAtPos(view.state.doc, getPos());
-      if (moveTopLevelBlock(view, latest.index, direction)) view.focus();
+      const transaction = moveTopLevelBlock(view.state.tr, latest.index, direction);
+      if (transaction) {
+        view.dispatch(transaction);
+        view.focus();
+      }
     });
 
     useStopEvent((view, event) => ["BUTTON", "SELECT", "OPTION"].includes(event.target.nodeName));

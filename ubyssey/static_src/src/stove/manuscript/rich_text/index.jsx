@@ -392,6 +392,14 @@ function buildEditorKeymap(schema, { undoCommand, redoCommand }) {
   if ((type = schema.nodes.heading)) {
       bind("Mod-h", setBlockType(schema.nodes.heading, { level: 3 }));
   }
+  // Allows newlines without creating new block for RichText
+  const hardBreak = schema.nodes.hard_break;
+  if (hardBreak) {
+    bind("Shift-Enter", chainCommands(exitCode, (state, dispatch) => {
+      if (dispatch) dispatch(state.tr.replaceSelectionWith(hardBreak.create()).scrollIntoView());
+      return true;
+    }));
+  }
 
   root.render(<ShortcutDocumentation/>)
 

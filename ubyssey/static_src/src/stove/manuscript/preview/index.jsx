@@ -7,9 +7,9 @@
 
 export { mountManuscriptChrome } from "../chrome/index.jsx";
 export { setupArticleShadow } from "./shadow_root.js";
-export { currentStreamDocs, writeStreamTextareas } from "./persistence.js";
+export { currentStreamDocs, writeStreamTextarea, writeStreamTextareas } from "./persistence.js";
 export { MODAL_PREVIEW_DEBOUNCE_MS } from "./constants.js";
-export { setupArticlePreviewEditors } from "./editors.jsx";
+export { refreshPlainTextEditorsFromStream, setupArticlePreviewEditors } from "./editors.jsx";
 export { setupHistoryPreviewButtons } from "./history.js";
-export { refreshArticlePreviewEditorsFromStream, syncArticlePreviewEditors } from "./projection.js";
+export { reconcilePreviewBlocks } from "./reconciliation.js";
 export { setupServerPreviewRefresh } from "./server.js";
