@@ -20,8 +20,7 @@ import { newSharedText, updateSharedText } from "../collab/metadata/shared.js";
 export function setupFootnoteSidebar(root, { getViews }) {
   const articleShadowRoot = document.querySelector("[data-article-shadow]")?.shadowRoot;
   const reactRoot = createRoot(root);
-  let hasRendered = false;
-  let renderedFootnoteIds = new Set();
+  const footnoteTexts = manuscriptSession.footnoteTexts;
 
   const focusFootnote = (footnoteId) => {
     const input = root.querySelector(`[data-footnote-id="${cssEscape(footnoteId)}"]`);
@@ -48,10 +47,6 @@ export function setupFootnoteSidebar(root, { getViews }) {
     const activeInput = root.contains(document.activeElement) ? document.activeElement : null;
     const activeFootnoteId = activeInput && activeInput.dataset.footnoteId;
     const footnotes = getViews().flatMap((view) => collectFootnotes(view));
-    const footnoteIds = new Set(footnotes.map((footnote) => footnote.footnoteId));
-    const newFootnote = hasRendered
-      ? footnotes.find((footnote) => !renderedFootnoteIds.has(footnote.footnoteId))
-      : null;
 
     reactRoot.render(
       <FootnotePanel
@@ -60,10 +55,7 @@ export function setupFootnoteSidebar(root, { getViews }) {
       />,
     );
 
-    hasRendered = true;
-    renderedFootnoteIds = footnoteIds;
-
-    const nextActiveFootnoteId = activeFootnoteId || (newFootnote && newFootnote.footnoteId);
+    const nextActiveFootnoteId = activeFootnoteId;
     if (!nextActiveFootnoteId) return;
 
     window.requestAnimationFrame(() => {
@@ -73,6 +65,7 @@ export function setupFootnoteSidebar(root, { getViews }) {
     });
   };
 
+  footnoteTexts?.observe(update);
   update();
   return { update };
 }
@@ -105,9 +98,10 @@ function FootnotePanel({ footnotes, refresh }) {
 // Individual footnote editor
 function FootnoteText({ footnote }) {
   const ref = useRef(null);
+  const currentSharedText = manuscriptSession.footnoteTexts?.get(footnote.footnoteId);
 
   useEffect(() => {
-    const sharedText = sharedFootnoteText(footnote);
+    const sharedText = currentSharedText instanceof Y.Text ? currentSharedText : sharedFootnoteText(footnote);
     let cancelled = false;
     let observer = null;
     let view = null;
@@ -158,7 +152,7 @@ function FootnoteText({ footnote }) {
       if (observer) sharedText.unobserve(observer);
       if (view) view.destroy();
     };
-  }, [footnote.footnoteId, footnote.view]);
+  }, [footnote.footnoteId, footnote.view, currentSharedText]);
 
   return <div className="pm-footnote-editor" ref={ref} />;
 }
@@ -313,21 +307,27 @@ function collectFootnotes(view) {
 }
 
 function updateFootnote(view, footnoteId, text) {
-  const targetView = view.streamSource ? view.streamSource.instance.view : view;
-  const ranges = [];
-  const footnoteMark = visitFootnoteMarks(targetView, ({ mark, from, to }) => {
-    if (mark.attrs.footnoteId === footnoteId) ranges.push({ from, to, anchor: Boolean(mark.attrs.anchor) });
-  });
-  if (!footnoteMark || !ranges.length) return false;
+  const targetViews = view.streamSource ? manuscriptSession.currentArticleTextViews().filter((targetView) => (targetView.streamSource?.instance === view.streamSource.instance)) : [view];
+  let changed = false;
+  for (const targetView of targetViews) {
+    const ranges = [];
+    const footnoteMark = visitFootnoteMarks(targetView, ({ mark, from, to }) => {
+      if (mark.attrs.footnoteId === footnoteId && mark.attrs.text !== text) {
+        ranges.push({ from, to, anchor: Boolean(mark.attrs.anchor) });
+      }
+    });
+    if (!footnoteMark || !ranges.length) continue;
 
-  let tr = targetView.state.tr;
-  for (const range of ranges) {
-    tr = tr
+    let tr = targetView.state.tr;
+    for (const range of ranges) {
+      tr = tr
       .removeMark(range.from, range.to, footnoteMark)
       .addMark(range.from, range.to, footnoteMark.create({ footnoteId, text, anchor: range.anchor }));
+    }
+    targetView.dispatch(tr);
+    changed = true;
   }
-  targetView.dispatch(tr);
-  return true;
+  return changed;
 }
 
 function removeFootnote(view, footnoteId) {

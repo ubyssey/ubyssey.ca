@@ -4,12 +4,9 @@
 import { createRoot } from "react-dom/client";
 import { setBlockType, toggleMark } from "prosemirror-commands";
 import { undo, redo } from "prosemirror-history";
-import { redoCommand as yRedo, undoCommand as yUndo, yUndoPluginKey } from "y-prosemirror";
 import { wrapInList } from "prosemirror-schema-list";
-
-import { markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "../annotations/index.js";
+import { markRangeAtCursor, startFootnoteCommand } from "../annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
-import { suggestionModeIsActive, toggleSuggestionMode } from "./index.jsx";
 
 const TOOLBAR_ITEMS = [
   ["undo", "↶", "Undo"],
@@ -37,14 +34,12 @@ export function createEditorToolbar(root, {
   if (!root) return null;
 
   let activeView = view;
-  let historyView = view;
   const reactRoot = createRoot(root);
 
   function update() {
     reactRoot.render(
       <EditorToolbar
         view={activeView}
-        historyView={historyView}
         publishSource={publishSource}
         contentDoc={getContentDoc()}
         onHistoryCommand={onHistoryCommand}
@@ -54,10 +49,10 @@ export function createEditorToolbar(root, {
   }
 
   function runHistory(key) {
-    const command = historyView && toolbarCommand(historyView, key);
-    if (!command || !command(historyView.state, historyView.dispatch, historyView)) return false;
+    const command = activeView && toolbarCommand(activeView, key);
+    if (!command || !command(activeView.state, activeView.dispatch, activeView)) return false;
 
-    if (historyView === activeView) activeView.dom.focus({ preventScroll: true });
+    activeView.dom.focus({ preventScroll: true });
     onHistoryCommand();
     update();
     return true;
@@ -66,21 +61,18 @@ export function createEditorToolbar(root, {
   update();
   return {
     setView(nextView) {
-      if (!nextView && historyView === activeView) historyView = null;
       activeView = nextView;
-      if (nextView) historyView = nextView;
-      update();
-    },
-    setHistoryView(nextView) {
-      historyView = nextView;
       update();
     },
     runHistory,
     update,
+    destroy() {
+      reactRoot.unmount();
+    },
   };
 }
 
-function EditorToolbar({ view, historyView, publishSource, contentDoc, onHistoryCommand, refresh }) {
+function EditorToolbar({ view, publishSource, contentDoc, onHistoryCommand, refresh }) {
   const highlightedWords = view && !view.state.selection.empty
     ? countWords(view.state.doc.textBetween(view.state.selection.from, view.state.selection.to, " ")) : null;
 
@@ -88,10 +80,8 @@ function EditorToolbar({ view, historyView, publishSource, contentDoc, onHistory
     <div className={`pm-editor-toolbar${publishSource ? " pm-editor-toolbar--article" : ""}`}>
       <div className="pm-editor-toolbar__tools">
         {TOOLBAR_ITEMS.map(([key, label, title]) => {
-          const isHistoryCommand = ["undo", "redo"].includes(key);
-          const commandView = isHistoryCommand ? historyView : view;
-          const command = commandView && toolbarCommand(commandView, key);
-          const enabled = Boolean(command && command(commandView.state));
+          const command = view && toolbarCommand(view, key);
+          const enabled = Boolean(command && command(view.state));
           const active = view ? toolbarItemIsActive(view, key) : false;
 
           return (
@@ -105,9 +95,9 @@ function EditorToolbar({ view, historyView, publishSource, contentDoc, onHistory
               disabled={!enabled}
               onMouseDown={(event) => { event.preventDefault(); }}
               onClick={() => {
-                if (command(commandView.state, commandView.dispatch, commandView)) {
-                  if (commandView === view) view.focus();
-                  if (isHistoryCommand) onHistoryCommand();
+                if (command(view.state, view.dispatch, view)) {
+                  view.focus();
+                  if (["undo", "redo"].includes(key)) onHistoryCommand();
                   refresh();
                 }
               }}
@@ -130,13 +120,10 @@ function EditorToolbar({ view, historyView, publishSource, contentDoc, onHistory
 
 function toolbarItemIsActive(view, key) {
   const { state } = view;
-  if (key === "suggestionMode") return suggestionModeIsActive();
-  const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link", comment: "comment", footnote: "footnote" };
-  const headingLevels = { heading3: 3 };
-  const headingLevel = headingLevels[key];
-  const listNames = { bulletList: "bullet_list", orderedList: "ordered_list" };
+  const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link", footnote: "footnote" };
+  const headingLevel = key === "heading3" ? 3 : null;
   const mark = state.schema.marks[markNames[key]];
-  const nodeType = headingLevel ? state.schema.nodes.heading : state.schema.nodes[listNames[key]];
+  const nodeType = headingLevel ? state.schema.nodes.heading : null;
 
   if (mark) {
     const { from, $from, to, empty } = state.selection;
@@ -174,14 +161,9 @@ function countWords(text) {
 
 function contentWordCount(doc) {
   let text = "";
-  const readText = (node) => {
-    if (node.type === "text") text += ` ${node.text}`;
-    (node.content || []).forEach(readText);
-  };
-
-  (doc?.content || [])
-    .filter((block) => block.attrs?.blockType === "richtext")
-    .forEach(readText);
+  doc?.forEach((block) => {
+    if (block.attrs?.blockType === "richtext") text += ` ${block.textContent}`;
+  });
   return countWords(text);
 }
 
@@ -230,15 +212,11 @@ function PublishToolbar({ source, wordCount, highlightedWords }) {
 
 function toolbarCommand(view, key) {
   const { schema } = view.state;
-  // Use yjs history for hidden streamfields which have yjs undo installed, preview editors still use prosemirror history
-  const collaborative = Boolean(yUndoPluginKey.getState(view.state));
+  // We don't use YJS history cause each RichText block has it's own EditorView, Prosemirror History is used for Page Fields for Direct Django Forms
+  const sharedHistory = view.streamSource?.instance.history;
   const commands = {
-    /*suggestionMode: (state, dispatch) => {
-      if (dispatch) toggleSuggestionMode();
-      return true;
-    },*/
-    undo: collaborative ? yUndo : undo,
-    redo: collaborative ? yRedo : redo,
+    undo: sharedHistory ? sharedHistoryCommand(sharedHistory, "undo") : undo,
+    redo: sharedHistory ? sharedHistoryCommand(sharedHistory, "redo") : redo,
     bold: schema.marks.strong && toggleMark(schema.marks.strong),
     italic: schema.marks.em && toggleMark(schema.marks.em),
     underline: schema.marks.underline && toggleMark(schema.marks.underline),
@@ -255,4 +233,12 @@ function toolbarCommand(view, key) {
     footnote: schema.marks.footnote && startFootnoteCommand(schema.marks.footnote),
   };
   return commands[key] || null;
+}
+
+// Adapts stream history to Prosemirror commands
+function sharedHistoryCommand(history, action) {
+  return (_state, dispatch) => {
+    if (!dispatch) return action === "undo" ? history.canUndo() : history.canRedo();
+    return history[action]();
+  };
 }

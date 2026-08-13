@@ -1,7 +1,9 @@
 <div class="audio attachment">
-    <p class="caption" data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption">{{ self.caption|striptags }}</p>
+    <div class="caption" data-article-editable-stream-field="content" data-article-editable-path="caption" data-article-editable-mode="richtext">{{ self.caption }}</div>
     <audio controls>
+        {% if self.audio %}
         <source src="{{self.audio.url}}" type="audio/{{self.format}}">
+        {% endif %}
         Your browser does not support the audio element.
     </audio>
 </div>

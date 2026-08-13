@@ -20,6 +20,8 @@ export function setupArticleShadow() {
   host.innerHTML = "";
 
   const shadowRoot = host.shadowRoot || host.attachShadow({ mode: "open" });
+  // CreateRange soemtimes doesn't exist in shadow dom root 
+  shadowRoot.createRange ||= () => document.createRange();
   shadowRoot.innerHTML = "";
 
   const stylesheets = [

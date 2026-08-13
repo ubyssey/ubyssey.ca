@@ -20,7 +20,9 @@ export class ManuscriptSession {
     this.preferredInsertTypes = new Map();
     this.schedulePreview = () => {};
     this.cancelPreviewRefresh = () => {};
+    this.scheduleEditorUiRefresh = () => {};
     this.users = null;
+    this.awareness = null;
     this.footnoteTexts = null;
   }
 
@@ -43,19 +45,8 @@ export class ManuscriptSession {
       ));
     }
 
-    return this.streamEditors.map((editor) => editor.view);
-  }
-
-  // Returns hidden stream editors, which are the source of truth
-  currentCollaborativeTextViews() {
-    return this.streamEditors
-      .map((editor) => editor.view)
-      .filter(Boolean);
-  }
-
-  setPreviewService({ schedule, cancel }) {
-    this.schedulePreview = schedule;
-    this.cancelPreviewRefresh = cancel;
+    // Filters out unmounted editors
+    return this.streamEditors.map((editor) => editor.view).filter(Boolean);
   }
 }
 

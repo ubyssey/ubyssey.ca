@@ -1,7 +1,7 @@
 // Block operations, like inserting/moving/deleting, block comments
 // controller connects these with components.jsx, and state/DOM events
 
-import { createStreamBlockNode, deleteTopLevelBlock, moveTopLevelBlock, topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
+import { deleteTopLevelBlock, moveTopLevelBlock, topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
 import { manuscriptSession } from "../session.js";
 
 const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
@@ -19,16 +19,14 @@ export function blockCommentsForNode(node) {
 }
 
 export function updateStreamBlockAttrs(instance, info, attrs, { skipPreview = false } = {}) {
-  const transaction = instance.view.state.tr.setNodeMarkup(info.start, undefined, {
+  instance.updateDoc((transaction) => transaction.setNodeMarkup(info.start, undefined, {
     ...info.node.attrs,
-    ...attrs,
-  });
-  if (skipPreview) transaction.setMeta("skipPreview", true);
-  instance.view.dispatch(transaction);
+    ...attrs, 
+  }), { checkStructure: false, skipPreview });
 }
 
 export function updateBlockCommentThread(instance, descriptor, updater) {
-  const info = topLevelBlockInfoByIdOrIndex(instance.view.state.doc, descriptor.blockId, descriptor.blockIndex);
+  const info = topLevelBlockInfoByIdOrIndex(instance.doc, descriptor.blockId, descriptor.blockIndex);
   if (!info) return false;
 
   const nextComments = updater(blockCommentsForNode(info.node));
@@ -43,8 +41,9 @@ export function collectBlockCommentThreads() {
   for (const instance of manuscriptSession.streamEditors) {
     if (!ARTICLE_STREAM_FIELDS.has(instance.fieldName)) continue;
 
-    for (let blockIndex = 0; blockIndex < instance.view.state.doc.childCount; blockIndex += 1) {
-      const node = instance.view.state.doc.child(blockIndex);
+    const doc = instance.doc;
+    for (let blockIndex = 0; blockIndex < doc.childCount; blockIndex += 1) {
+      const node = doc.child(blockIndex);
       const blockId = node.attrs?.id || "";
       const descriptor = { fieldName: instance.fieldName, blockId, blockIndex };
 
@@ -84,10 +83,24 @@ export function collectBlockCommentThreads() {
 export function refreshBlockCommentBorders(manuscriptRoot = null) {
   if (!manuscriptRoot) return;
 
+  // Builds block lookup for each StreamField to avoid walking each time
+  const blocksByField = new Map();
+  for (const instance of manuscriptSession.streamEditors) {
+    if (!ARTICLE_STREAM_FIELDS.has(instance.fieldName)) continue;
+    const blocks = [];
+    const blocksById = new Map();
+    instance.doc.forEach((node) => {
+      blocks.push(node);
+      if (node.attrs?.id) blocksById.set(String(node.attrs.id), node);
+    });
+    blocksByField.set(instance.fieldName, { blocks, blocksById });
+  }
+
   for (const articleBlock of manuscriptRoot.querySelectorAll(ARTICLE_BLOCK_SELECTOR)) {
-    const instance = manuscriptSession.streamEditors.find((item) => item.fieldName === articleBlock.dataset.streamField);
-    const info = instance && streamBlockInfoForArticleBlock(instance, articleBlock);
-    const hasComments = blockCommentsForNode(info?.node).some((thread) => !thread.resolved && (thread.pending || (thread.comments || []).length));
+    const fieldBlocks = blocksByField.get(articleBlock.dataset.streamField);
+    const blockId = articleBlock.dataset.streamBlockId;
+    const node = blockId ? fieldBlocks?.blocksById.get(blockId) : fieldBlocks?.blocks[Number(articleBlock.dataset.streamBlockIndex)];
+    const hasComments = blockCommentsForNode(node).some((thread) => !thread.resolved && (thread.pending || (thread.comments || []).length));
     articleBlock.classList.toggle("pm-article-block--commented", Boolean(hasComments));
   }
 }
@@ -99,71 +112,25 @@ export function cleanupArticleBlockControls() {
 
 export function streamBlockInfoForArticleBlock(instance, articleBlock) {
   return topLevelBlockInfoByIdOrIndex(
-    instance.view.state.doc,
+    instance.doc,
     articleBlock.dataset.streamBlockId,
     Number(articleBlock.dataset.streamBlockIndex),
   );
 }
 
-export function insertBlockAfter(instance, articleBlock, blockType, { keepControls = false } = {}) {
-  const info = streamBlockInfoForArticleBlock(instance, articleBlock);
-  if (!info || !blockType) return;
-
-  const newBlock = createStreamBlockNode(instance, blockType);
-  const descriptor = {
-    fieldName: instance.fieldName,
-    blockId: newBlock.attrs?.id || "",
-    blockIndex: info.index + 1,
-  };
-
-  clearSuppressedHover();
-  manuscriptSession.suppressedHoverArticleBlock = articleBlock;
-  manuscriptSession.suppressedHoverTimer = setTimeout(() => {
-    if (manuscriptSession.suppressedHoverArticleBlock === articleBlock) clearSuppressedHover();
-  }, 1200);
-  manuscriptSession.selectedArticleBlock = descriptor;
-  instance.view.dispatch(instance.view.state.tr.insert(info.end, newBlock));
-  selectArticleBlock(descriptor, articleBlock.getRootNode());
-  if (!keepControls) manuscriptSession.articleBlockControls?.hide();
-  return descriptor;
-}
 
 export function moveArticleBlock(instance, articleBlock, direction) {
   const info = streamBlockInfoForArticleBlock(instance, articleBlock);
-  if (!info || !moveTopLevelBlock(instance.view, info.index, direction)) return;
-
-  const root = articleBlock.getRootNode();
-  const fieldName = articleBlock.dataset.streamField;
-  const articleBlocks = articleBlocksForStreamField(root, fieldName);
-  const target = articleBlocks[articleBlocks.indexOf(articleBlock) + direction];
-
-  if (target && !articleBlock.contains(target) && !target.contains(articleBlock)) {
-    if (direction < 0) target.before(articleBlock);
-    else target.after(articleBlock);
-
-    refreshArticleBlockIndexes(root, fieldName);
-    manuscriptSession.articleBlockControls?.setActive?.(articleBlock);
-    selectArticleBlockElement(articleBlock);
-  }
-
-  manuscriptSession.schedulePreview();
+  if (!info) return;
+  instance.updateDoc((transaction) => moveTopLevelBlock(transaction, info.index, direction));
 }
 
 export function deleteArticleBlock(instance, articleBlock) {
   const info = streamBlockInfoForArticleBlock(instance, articleBlock);
   if (!info) return;
 
-  const action = deleteTopLevelBlock(instance.view, info);
-  manuscriptSession.richTextToolbar?.setHistoryView(instance.view);
+  instance.updateDoc((transaction) => deleteTopLevelBlock(transaction, info));
   manuscriptSession.selectedArticleBlock = null;
-
-  if (action === "deleted") {
-    const root = articleBlock.getRootNode();
-    const fieldName = articleBlock.dataset.streamField;
-    articleBlock.remove();
-    refreshArticleBlockIndexes(root, fieldName);
-  }
-
   syncSelectedArticleBlockEditor(null);
   manuscriptSession.articleBlockControls?.hide();
 }
@@ -176,21 +143,14 @@ export function articleBlocksForStreamField(root, fieldName) {
   });
 }
 
-export function refreshArticleBlockIndexes(root, fieldName) {
-  articleBlocksForStreamField(root, fieldName).forEach((block, index) => {
-    block.dataset.streamBlockIndex = index;
-  });
-}
-
 export function describeArticleBlock(articleBlock) {
   const instance = manuscriptSession.streamEditors.find((item) => item.fieldName === articleBlock.dataset.streamField);
-  const info = instance && streamBlockInfoForArticleBlock(instance, articleBlock);
-  if (!instance || !info) return null;
+  if (!instance) return null;
 
   return {
     fieldName: instance.fieldName,
-    blockId: info.node.attrs?.id || articleBlock.dataset.streamBlockId || "",
-    blockIndex: info.index,
+    blockId: articleBlock.dataset.streamBlockId || "",
+    blockIndex: articleBlock.dataset.streamBlockIndex,
   };
 }
 
@@ -201,9 +161,7 @@ export function selectArticleBlockElement(articleBlock) {
 export function selectArticleBlock(descriptor, manuscriptRoot = null, options = {}) {
   if (!descriptor) return false;
 
-  // Doesn't allow selection if already selected by someone else
   const articleBlock = manuscriptRoot && findArticleBlock(manuscriptRoot, descriptor);
-  if (articleBlock?.classList.contains("pm-article-block--remote-selected")) return false;
 
   manuscriptSession.selectedArticleBlock = descriptor;
   document.querySelectorAll("[data-metadata-tab]").forEach((tab) => {
@@ -229,11 +187,14 @@ export function selectArticleBlock(descriptor, manuscriptRoot = null, options = 
 
 export function findArticleBlock(root, descriptor) {
   const blocks = articleBlocksForStreamField(root, descriptor.fieldName);
-  return (descriptor.blockId && blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId))) || blocks[descriptor.blockIndex] || null;
+  if (descriptor.blockId) {
+    return blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId)) || null;
+  }
+  return blocks[descriptor.blockIndex] || null;
 }
 
 export function syncSelectedArticleBlockEditor(descriptor) {
-  manuscriptSession.users?.sendSelection(descriptor);
+  manuscriptSession.users?.sendBlockSelection(descriptor);
   showSelectedArticleBlockEditor(descriptor);
 }
 
@@ -252,10 +213,7 @@ function showSelectedArticleBlockEditor(descriptor) {
       continue;
     }
 
-    const selectedBlock = (
-      (descriptor.blockId && blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId))) ||
-      blocks[descriptor.blockIndex]
-    );
+    const selectedBlock = descriptor.blockId ? blocks.find((block) => block.dataset.streamBlockId === String(descriptor.blockId)) : blocks[descriptor.blockIndex];
 
     blocks.forEach((block) => {
       block.hidden = Boolean(isSelectedField && selectedBlock && block !== selectedBlock);
@@ -300,8 +258,9 @@ export function articleBlockDescriptors() {
     const instance = manuscriptSession.streamEditors.find((item) => item.fieldName === fieldName);
     if (!instance) continue;
 
-    for (let blockIndex = 0; blockIndex < instance.view.state.doc.childCount; blockIndex += 1) {
-      const node = instance.view.state.doc.child(blockIndex);
+    const doc = instance.doc;
+    for (let blockIndex = 0; blockIndex < doc.childCount; blockIndex += 1) {
+      const node = doc.child(blockIndex);
       descriptors.push({
         fieldName,
         blockId: node.attrs?.id || "",

@@ -217,7 +217,10 @@ function commentAnchorElement(thread) {
     const parentBlock = block.parentElement?.closest(blockSelector);
     return !parentBlock || !shadowRoot.contains(parentBlock);
   });
-  return (thread.blockId && blocks.find((block) => block.dataset.streamBlockId === String(thread.blockId))) || blocks[thread.blockIndex] || null;
+  if (thread.blockId) {
+    return blocks.find((block) => block.dataset.streamBlockId === String(thread.blockId)) || null;
+  }
+  return blocks[thread.blockIndex] || null;
 }
 
 function positionCommentThreads(root, threads, offset) {

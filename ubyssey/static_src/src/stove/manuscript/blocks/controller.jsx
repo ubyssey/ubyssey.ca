@@ -4,7 +4,7 @@ import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { startCommentOnSelection } from "../annotations/index.js";
 import { suggestionModeIsActive, toggleSuggestionMode } from "../rich_text/index.jsx";
-import { blockTypeLabel, deleteTopLevelBlock, topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
+import { blockTypeLabel, createStreamBlockDraft, topLevelBlockInfoByIdOrIndex } from "../stream/index.jsx";
 import { manuscriptSession } from "../session.js";
 import { ArticleBlockControlsLayer, ArticleBlockModals } from "./components.jsx";
 import {
@@ -14,7 +14,6 @@ import {
   deleteArticleBlock,
   describeArticleBlock,
   findArticleBlock,
-  insertBlockAfter,
   moveArticleBlock,
   refreshBlockCommentBorders,
   selectArticleBlockElement,
@@ -24,6 +23,7 @@ import {
 } from "./operations.js";
 
 export {
+  articleBlocksForStreamField,
   articleBlockDescriptors,
   cleanupArticleBlockControls,
   collectBlockCommentThreads,
@@ -143,12 +143,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
   const removePendingAdd = () => {
     if (!pendingAdd) return;
-    const info = topLevelBlockInfoByIdOrIndex(
-      pendingAdd.instance.view.state.doc,
-      pendingAdd.descriptor.blockId,
-      pendingAdd.descriptor.blockIndex,
-    );
-    if (info) deleteTopLevelBlock(pendingAdd.instance.view, info);
+    pendingAdd.draft.destroy();
     pendingAdd = null;
   };
 
@@ -160,8 +155,8 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
   const restoreBlockEditorHome = () => {
     if (blockEditorHome) {
+      blockEditorHome.instance.unmountEditor();
       blockEditorHome.parent.insertBefore(blockEditorHome.section, blockEditorHome.nextSibling);
-      blockEditorHome.instance.view.updateRoot();
       blockEditorHome = null;
     }
   };
@@ -191,8 +186,11 @@ export function setupArticleBlockControls(manuscriptRoot) {
     closeBlockEditorModal();
   };
 
-  const moveBlockEditorTo = (descriptor, target) => {
-    const editorSection = editorSectionForDescriptor(descriptor);
+  const moveBlockEditorTo = (descriptor, target, options = {}) => {
+    const { instance = null, publishSelection = true } = options;
+    const editorSection = instance
+      ? { instance, section: instance.mount.closest(".editor-section") }
+      : editorSectionForDescriptor(descriptor);
     if (!editorSection) return false;
 
     if (blockEditorHome && blockEditorHome.section !== editorSection.section) restoreBlockEditorHome();
@@ -205,13 +203,13 @@ export function setupArticleBlockControls(manuscriptRoot) {
       };
     }
 
-    manuscriptSession.selectedArticleBlock = descriptor;
+    if (publishSelection) manuscriptSession.selectedArticleBlock = descriptor;
     target.appendChild(editorSection.section);
-    editorSection.instance.view.updateRoot();
-    syncSelectedArticleBlockEditor(descriptor);
+    editorSection.instance.mountEditor().updateRoot();
+    if (publishSelection) syncSelectedArticleBlockEditor(descriptor);
     window.requestAnimationFrame(() => {
-      syncSelectedArticleBlockEditor(descriptor);
-      editorSection.instance.view.updateRoot();
+      if (publishSelection) syncSelectedArticleBlockEditor(descriptor);
+      editorSection.instance.view?.updateRoot();
     });
     syncBlockModalOpenState();
     return true;
@@ -251,19 +249,30 @@ export function setupArticleBlockControls(manuscriptRoot) {
     const anchorBlock = (
       pendingAdd && pendingAdd.anchor && root && findArticleBlock(root, pendingAdd.anchor)
     ) || active.articleBlock;
-    const instance = (pendingAdd && pendingAdd.instance) || active.instance;
-    if (!instance || !anchorBlock) return;
+    const liveInstance = (pendingAdd && pendingAdd.liveInstance) || active.instance;
+    if (!liveInstance || !anchorBlock) return;
 
     restoreBlockEditorHome();
     ui.blockEditorOpen = false;
     removePendingAdd();
 
     const anchor = describeArticleBlock(anchorBlock);
-    const descriptor = insertBlockAfter(instance, anchorBlock, ui.insertType, { keepControls: true });
-    if (descriptor && moveBlockEditorTo(descriptor, refs.insertEditorBody)) {
-      pendingAdd = { instance, descriptor, anchor };
+    const draft = createStreamBlockDraft(liveInstance, ui.insertType);
+    const draftBlock = draft.instance.doc.firstChild;
+    const descriptor = {
+      fieldName: liveInstance.fieldName,
+      blockId: draftBlock.attrs?.id || "",
+      blockIndex: 0,
+    };
+    if (moveBlockEditorTo(descriptor, refs.insertEditorBody, {
+      instance: draft.instance,
+      publishSelection: false,
+    })) {
+      pendingAdd = { liveInstance, draft, anchor };
       ui.insertOpen = true;
       syncBlockModalOpenState();
+    } else {
+      draft.destroy();
     }
   };
 
@@ -271,12 +280,26 @@ export function setupArticleBlockControls(manuscriptRoot) {
     if (!pendingAdd) addSelectedBlockForEditing();
     if (!pendingAdd) return;
 
-    const historyView = pendingAdd.instance.view;
-    manuscriptSession.revealSelectedArticleBlock = pendingAdd.descriptor;
+    const { liveInstance, draft, anchor } = pendingAdd;
+    const anchorInfo = topLevelBlockInfoByIdOrIndex(liveInstance.doc, anchor.blockId, anchor.blockIndex);
+    if (!anchorInfo) return;
+
+    const block = draft.instance.doc.firstChild;
+    const descriptor = {
+      fieldName: liveInstance.fieldName,
+      blockId: block.attrs?.id || "",
+      blockIndex: anchorInfo.index + 1,
+    };
+    liveInstance.updateDoc((transaction) => transaction.insert(anchorInfo.end, block));
+
     pendingAdd = null;
+    restoreBlockEditorHome();
+    draft.destroy();
+    manuscriptSession.selectedArticleBlock = descriptor;
+    manuscriptSession.revealSelectedArticleBlock = descriptor;
     closeDialogs();
     closeBlockEditorModal({ keepSelection: true, refreshPreview: false });
-    manuscriptSession.richTextToolbar?.setHistoryView(historyView);
+    syncSelectedArticleBlockEditor(descriptor);
     manuscriptSession.schedulePreview({ immediate: true });
   };
 
@@ -301,7 +324,8 @@ export function setupArticleBlockControls(manuscriptRoot) {
     }
 
     const descriptor = describeArticleBlock(articleBlock);
-    const info = topLevelBlockInfoByIdOrIndex(instance.view.state.doc, descriptor.blockId, descriptor.blockIndex);
+    const info = topLevelBlockInfoByIdOrIndex(instance.doc, descriptor.blockId, descriptor.blockIndex);
+    if (!info) return;
 
     selectArticleBlockElement(articleBlock);
     const currentComments = blockCommentsForNode(info.node);
@@ -421,7 +445,7 @@ export function setupArticleBlockControls(manuscriptRoot) {
       ui.blockType = info.node.attrs.blockType;
       ui.fieldName = instance.fieldName;
       ui.upDisabled = info.index === 0;
-      ui.downDisabled = info.index === instance.view.state.doc.childCount - 1;
+      ui.downDisabled = info.index === instance.doc.childCount - 1;
       ui.suggestionMode = suggestionModeIsActive();
       render();
       positionControls();
@@ -474,8 +498,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
     );
   }
 
-  const eventInsideDirectEdit = (event) => event.composedPath()
-    .some((target) => target.matches && target.matches(".pm-manuscript-direct-edit, .pm-manuscript-direct-edit *"));
   const articleBlockAtPoint = ({ x, y }) => controlsHost.getRootNode()
     .elementFromPoint(x, y)?.closest(ARTICLE_BLOCK_SELECTOR);
   const articleBlockFromEvent = (event) => {
@@ -501,7 +523,6 @@ export function setupArticleBlockControls(manuscriptRoot) {
 
     const articleBlock = articleBlockFromEvent(event);
     if (!articleBlock) return;
-    if (articleBlock.classList.contains("pm-article-block--remote-selected")) return;
 
     if (!shouldSelect && articleBlock === manuscriptSession.suppressedHoverArticleBlock) return;
     if (shouldSelect || articleBlock !== manuscriptSession.suppressedHoverArticleBlock) clearSuppressedHover();
@@ -515,12 +536,11 @@ export function setupArticleBlockControls(manuscriptRoot) {
     if (!isDialogOpen()) showFromEvent(event);
   };
   const onFocusIn = (event) => {
-    if (eventInsideDirectEdit(event)) return;
     if (isDialogOpen() && eventInside(event, dialogs())) return;
     showFromEvent(event, true);
   };
   const onClick = (event) => {
-    if (eventInside(event, controls()) || eventInsideDirectEdit(event)) return;
+    if (eventInside(event, controls())) return;
     if (ui.insertOpen) cancelInsertDialog();
     else if (isDialogOpen()) closeDialogs();
     showFromEvent(event, true);

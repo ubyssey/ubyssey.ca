@@ -129,3 +129,13 @@ export const streamSchema = new Schema({
   nodes: streamNodes,
   marks,
 });
+
+// Each richtext field has it's own prosemirror EditorView, binded to a Y.XmlElement with ySyncPlugin
+// Normally the document root is a doc node, but here it has to be the same name as the element it's binding too, so editable_field
+export const manuscriptRichTextSchema = new Schema({
+  nodes: baseNodesWithLists.remove("doc").append({
+    editable_field: streamNodes.get("editable_field"),
+  }),
+  marks,
+  topNode: "editable_field",
+});
