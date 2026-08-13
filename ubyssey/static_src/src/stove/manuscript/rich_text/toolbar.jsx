@@ -5,7 +5,8 @@ import { createRoot } from "react-dom/client";
 import { setBlockType, toggleMark } from "prosemirror-commands";
 import { undo, redo } from "prosemirror-history";
 import { wrapInList } from "prosemirror-schema-list";
-import { markRangeAtCursor, startFootnoteCommand } from "../annotations/index.js";
+import { markRangeAtCursor, startFootnoteCommand, startCommentCommand } from "../annotations/index.js";
+import { manuscriptSession } from "../session.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
 
 const TOOLBAR_ITEMS = [

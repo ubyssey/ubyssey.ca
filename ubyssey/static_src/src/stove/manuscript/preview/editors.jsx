@@ -7,7 +7,7 @@ import { yCursorPlugin, ySyncPlugin } from "y-prosemirror";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins, richTextSchema } from "../rich_text/index.jsx";
 import { handleStreamRichTextKeyDown } from "../rich_text/block_commands.js";
 import { manuscriptSession } from "../session.js";
-import { refreshBlockCommentBorders, setupArticleBlockControls } from "../blocks/controller.jsx";
+import { refreshBlockCommentBorders } from "../blocks/controller.jsx";
 import { ARTICLE_BLOCK_SELECTOR, DIRECT_EDITABLE_SELECTOR, EMPTY_RICH_TEXT, SYNCED_EDITOR_META } from "./constants.js";
 import { currentEditableField, directEditableSource, samePath, sharedFieldType } from "./sources.js";
 import { manuscriptRichTextSchema, streamSchema } from "../stream/schema.js";

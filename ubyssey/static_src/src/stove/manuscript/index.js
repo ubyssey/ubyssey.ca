@@ -4,7 +4,7 @@ import { ACTIVE_SUGGESTION_THREAD_META } from "./rich_text/index.jsx";
 import { createEditorToolbar } from "./rich_text/toolbar.jsx";
 import { setupCommentSidebar, setupFootnoteSidebar } from "./annotations/index.js";
 import { createStreamEditor } from "./stream/index.jsx";
-import { collectBlockCommentThreads, refreshBlockCommentBorders, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
+import { collectBlockCommentThreads, refreshBlockCommentBorders, setupArticleBlockActions, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
 import { MODAL_PREVIEW_DEBOUNCE_MS, mountManuscriptChrome, reconcilePreviewBlocks, refreshPlainTextEditorsFromStream, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./preview/index.jsx";
 import { manuscriptSession } from "./session.js";
 import { setupUsers } from "./collab/presence.js";
