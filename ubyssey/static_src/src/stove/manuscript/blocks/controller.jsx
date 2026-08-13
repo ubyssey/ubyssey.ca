@@ -11,6 +11,7 @@ import {
   describeArticleBlock,
   findArticleBlock,
   moveArticleBlock,
+  selectArticleBlockElement,
   streamBlockInfoForArticleBlock,
   syncSelectedArticleBlockEditor,
 } from "./operations.js";
@@ -66,6 +67,21 @@ export function setupArticleBlockActions(manuscriptRoot) {
       modalRoot.render(<ArticleBlockModals refs={refs} ui={ui} actions={actions} />);
     });
   };
+
+  const selectClickedBlock = (event) => {
+    const ARTICLE_BLOCK_SELECTOR = "[data-article-block][data-stream-field]";
+    let articleBlock = event.composedPath().map((target) => target.closest?.(ARTICLE_BLOCK_SELECTOR)).find(Boolean);
+    if (!articleBlock) return;
+
+    let parentBlock = articleBlock.parentElement?.closest(ARTICLE_BLOCK_SELECTOR);
+
+    while (parentBlock && manuscriptRoot.contains(parentBlock)) {
+      articleBlock = parentBlock;
+      parentBlock = articleBlock.parentElement?.closest(ARTICLE_BLOCK_SELECTOR);
+    }
+    selectArticleBlockElement(articleBlock);
+  };
+  manuscriptRoot.addEventListener("click", selectClickedBlock, true);
 
   const syncModalState = () => {
     manuscriptSession.blockEditorModalOpen = ui.blockEditorOpen || ui.insertOpen || ui.deleteOpen;
@@ -311,6 +327,7 @@ export function setupArticleBlockActions(manuscriptRoot) {
     },
     cleanup() {
       if (!mounted) return;
+      manuscriptRoot.removeEventListener("click", selectClickedBlock, true);
       removePendingAdd();
       restoreBlockEditorHome();
       mounted = false;
