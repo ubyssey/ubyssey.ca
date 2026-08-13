@@ -57,10 +57,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       streamEditors[textarea.dataset.streamField] || {},
       {
         fragment: collaboration.ydoc.getXmlFragment(textarea.dataset.streamField),
-        onChange: ({ before, doc, transaction, instance, checkStructure = true, skipPreview = false }) => {
-          const blockReconciliation = checkStructure ? reconcilePreviewBlocks({ before, doc, instance }) : { previewReconciled: false, structureChanged: false };
+        onChange: ({ before, doc, transaction, instance, checkStructure = true, skipPreview = false, sendRemotePreview = false }) => {
+          const blockReconciliation = checkStructure && !sendRemotePreview ? reconcilePreviewBlocks({ before, doc, instance }) : { previewReconciled: false, structureChanged: sendRemotePreview };
           const previewHandled = (blockReconciliation.previewReconciled || skipPreview || Boolean(transaction?.getMeta("skipPreview")));
-          if (manuscriptSession.blockEditorEditing) {
+          if (sendRemotePreview) {
+            manuscriptSession.schedulePreview({ immediate: true });
+          } else if (manuscriptSession.blockEditorEditing) {
             manuscriptSession.blockEditorDirty = true;
             refreshPlainTextEditorsFromStream(instance);
             manuscriptSession.schedulePreview({

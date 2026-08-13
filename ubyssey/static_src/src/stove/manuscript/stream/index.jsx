@@ -249,7 +249,14 @@ export function createStreamEditor(textarea, streamEditor, options = {}) {
     const nextDoc = yXmlFragmentToProseMirrorRootNode(fragment, streamSchema);
     const before = observedDoc;
     observedDoc = nextDoc;
-    onChange({ before, doc: nextDoc, instance, transaction: null, ...change });
+    onChange({
+      before,
+      doc: nextDoc,
+      instance,
+      transaction: null,
+      sendRemotePreview: !(transaction.origin instanceof StreamModelUpdate),
+      ...change,
+    });
   });
 
   return instance;
@@ -341,12 +348,15 @@ function transactionObserverPlugin(instance, { onTransaction, onChange, updateTo
       updateToolbar();
       onTransaction({ transaction, instance, view: instance.view });
       if (transaction.docChanged) {
+        const topLevelStructureChanged = changesTopLevelStructure(transaction);
+        const yjsStructureChange = topLevelStructureChanged && Boolean(transaction.getMeta(ySyncPluginKey)?.isChangeOrigin);
         onChange({
           before: transaction.before,
           doc: transaction.doc,
           instance,
           transaction,
-          checkStructure: changesTopLevelStructure(transaction),
+          checkStructure: topLevelStructureChanged,
+          sendRemotePreview: yjsStructureChange,
           ...(transaction.getMeta(MODEL_CHANGE_META) || {}),
         });
       }
