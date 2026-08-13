@@ -1,6 +1,7 @@
 // Comment UI
 // todo: figure out why transitions only work on some computers (performance?)
 
+import { useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 
@@ -27,6 +28,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   let scrollEndCleanup = null;
   let moveTimer = null;
   let commentOffset = 0;
+  const commentDrafts = new Map();
 
   const currentThreads = () => [
     ...getViews().flatMap((view) => collectCommentThreads(view)),
@@ -113,6 +115,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
           refresh={update}
           activeThreadId={activeThreadId}
           setActiveThread={setActiveThread}
+          commentDrafts={commentDrafts}
         />,
       );
     });
@@ -286,7 +289,7 @@ function updateActiveCommentMarks(activeThreadId, threads = []) {
   block?.classList?.add("pm-article-block--comment-active");
 }
 
-function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveThread }) {
+function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveThread, commentDrafts }) {
   if (!threads.length) return null;
 
   return (
@@ -299,13 +302,14 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
           refresh={refresh}
           active={thread.threadId === activeThreadId}
           setActiveThread={setActiveThread}
+          commentDrafts={commentDrafts}
         />
       ))}
     </div>
   );
 }
 
-function CommentThread({ thread, username, refresh, active, setActiveThread }) {
+function CommentThread({ thread, username, refresh, active, setActiveThread, commentDrafts }) {
   const suggestion = thread.view && commentSuggestion(thread.comments);
   const refocusEditor = () => window.requestAnimationFrame(() => thread.view?.focus());
   const className = active ? "pm-comment-thread pm-comment-thread--active" : "pm-comment-thread";
@@ -386,8 +390,11 @@ function CommentThread({ thread, username, refresh, active, setActiveThread }) {
         <CommentReplyForm
           thread={thread}
           username={username}
+          draft={commentDrafts.get(thread.threadId) || ""}
+          setStoredDraft={(value) => { commentDrafts.set(thread.threadId, value); }}
           close={() => { setActiveThread(null, null); }}
           cancel={() => {
+            commentDrafts.delete(thread.threadId);
             if (thread.pending) {
               if (thread.remove) thread.remove();
               else removeCommentThread(thread.view, thread.threadId);
@@ -424,7 +431,14 @@ function CommentText({ comment }) {
   );
 }
 
-function CommentReplyForm({ thread, username, close, cancel }) {
+function CommentReplyForm({ thread, username, draft: initialDraft, setStoredDraft, close, cancel }) {
+  // Comment Draft State
+  const [draft, setDraft] = useState(initialDraft);
+  const updateDraft = (value) => {
+    setStoredDraft(value);
+    setDraft(value);
+  };
+
   return (
     <form
       className="pm-comment-reply"
@@ -443,13 +457,16 @@ function CommentReplyForm({ thread, username, close, cancel }) {
         };
         if (thread.commit) thread.commit(comment);
         else appendCommentToThread(thread.view, thread.threadId, comment);
-        textarea.value = "";
+        updateDraft("");
         close();
       }}
     >
       <div className="pm-comment-reply__author">{username}</div>
       <textarea
         name="comment"
+        value={draft}
+        autoFocus
+        onChange={(event) => { updateDraft(event.currentTarget.value); }}
         placeholder={thread.pending ? "Comment" : "Reply"}
         rows="2"
       />
