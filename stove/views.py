@@ -195,7 +195,7 @@ def manuscript_editor(request, page_id):
         print(f"Validation Error: {editor_errors}")
 
     stream_editors = get_streamfield_editors(page)
-    article_media = page.article_media.all()
+    article_media = get_object_or_404(Page, id=page_id).specific.article_media.all()
     last_saved_manuscript = ManuscriptCollaboration.objects.filter(page_id=page_id).only("updated_at").first()
 
     # self: contains information like page title, slug, etc, for form fields = for preview rendering
