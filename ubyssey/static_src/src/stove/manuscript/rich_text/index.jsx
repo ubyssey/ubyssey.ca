@@ -312,7 +312,7 @@ function linkBubblePlugin(schema) {
         update(view) {
           const range = markRangeAtCursor(view.state, linkMark);
           const href = range?.attrs.href;
-          if (!articleBlock.classList.contains("pm-article-block--selected") || !href || /^(javascript|data):/i.test(href)) {
+          if ((articleBlock && !articleBlock.classList.contains("pm-article-block--selected")) || !href || /^(javascript|data):/i.test(href)) {
             bubble.hidden = true;
             return;
           }
