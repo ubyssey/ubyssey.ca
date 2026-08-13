@@ -306,11 +306,13 @@ function linkBubblePlugin(schema) {
       link.rel = "noopener noreferrer";
       bubble.appendChild(link);
       editorView.dom.parentNode.appendChild(bubble);
+      const articleBlock = editorView.dom.closest("[data-article-block]");
+
       return {
         update(view) {
           const range = markRangeAtCursor(view.state, linkMark);
           const href = range?.attrs.href;
-          if (!href || /^(javascript|data):/i.test(href)) {
+          if (!articleBlock.classList.contains("pm-article-block--selected") || !href || /^(javascript|data):/i.test(href)) {
             bubble.hidden = true;
             return;
           }
