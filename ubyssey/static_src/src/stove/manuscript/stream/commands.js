@@ -2,8 +2,6 @@
 
 // Find/Move/Delete/Calculate range of blocks
 
-import { Fragment } from "prosemirror-model";
-
 import { createEmptyRichTextBlock } from "./serialization.js";
 import { streamSchema } from "./schema.js";
 
@@ -30,37 +28,26 @@ export function topLevelBlockInfoAtPos(doc, pos) {
 }
 
 export function topLevelBlockInfoByIdOrIndex(doc, blockId, blockIndex) {
-  const byId = blockId && topLevelBlockInfo(doc, ({ node }) => node.attrs?.id === blockId);
-  return byId || topLevelBlockInfo(doc, ({ index }) => index === blockIndex);
+  if (blockId) return topLevelBlockInfo(doc, ({ node }) => node.attrs?.id === blockId);
+  return topLevelBlockInfo(doc, ({ index }) => index === blockIndex);
 }
 
-export function moveTopLevelBlock(view, fromIndex, direction) {
+export function moveTopLevelBlock(transaction, fromIndex, direction) {
   const targetIndex = fromIndex + direction;
-  if (targetIndex < 0 || targetIndex >= view.state.doc.childCount) return false;
+  if (targetIndex < 0 || targetIndex >= transaction.doc.childCount) return null;
 
-  const blocks = [];
-  for (let index = 0; index < view.state.doc.childCount; index += 1) {
-    blocks.push(view.state.doc.child(index));
-  }
-
-  [blocks[fromIndex], blocks[targetIndex]] = [blocks[targetIndex], blocks[fromIndex]];
-  view.dispatch(view.state.tr.replaceWith(
-    0,
-    view.state.doc.content.size,
-    Fragment.fromArray(blocks),
-  ));
-  return true;
+  const from = topLevelBlockInfoByIdOrIndex(transaction.doc, null, fromIndex);
+  const target = topLevelBlockInfoByIdOrIndex(transaction.doc, null, targetIndex);
+  const destination = direction < 0 ? target.start : target.end;
+  transaction.delete(from.start, from.end);
+  return transaction.insert(transaction.mapping.map(destination), from.node);
 }
 
-export function deleteTopLevelBlock(view, info) {
-  const { doc, tr } = view.state;
-
-  if (doc.childCount <= 1) {
+export function deleteTopLevelBlock(transaction, info) {
+  if (transaction.doc.childCount <= 1) {
     // Creates RichTextBlock if streamfield is empty (maybe change for header)
-    view.dispatch(tr.replaceWith(info.start, info.end, streamSchema.nodeFromJSON(createEmptyRichTextBlock())));
-    return "replaced";
+    return transaction.replaceWith(info.start, info.end, streamSchema.nodeFromJSON(createEmptyRichTextBlock()));
   }
 
-  view.dispatch(tr.delete(info.start, info.end));
-  return "deleted";
+  return transaction.delete(info.start, info.end);
 }

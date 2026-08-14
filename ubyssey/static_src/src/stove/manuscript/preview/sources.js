@@ -11,7 +11,7 @@ export function directEditableSource(target, { allowPage = true } = {}) {
   const instance = manuscriptSession.streamEditors.find((item) => item.fieldName === target.dataset.articleEditableStreamField);
   const articleBlock = target.closest?.(ARTICLE_BLOCK_SELECTOR);
   const paths = editablePaths(target);
-  const block = instance && articleBlock && paths.length && topLevelBlockInfoByIdOrIndex(instance.view.state.doc, articleBlock.dataset.streamBlockId, Number(articleBlock.dataset.streamBlockIndex));
+  const block = instance && articleBlock && paths.length && topLevelBlockInfoByIdOrIndex(instance.doc, articleBlock.dataset.streamBlockId, Number(articleBlock.dataset.streamBlockIndex));
   const field = block && paths.map((path) => editableFieldInfo(block, path)).find(Boolean);
   const streamSource = field && {
     kind: "stream",
@@ -20,6 +20,8 @@ export function directEditableSource(target, { allowPage = true } = {}) {
     blockIndex: block.index,
     path: field.path,
     field,
+    // Makes sure custom RichText actions only happen in preview RichText Blocks
+    manuscriptRichText: Boolean(block.node.attrs?.blockType === "richtext" && field.node.attrs?.manuscriptOwned && samePath(field.path, [])),
   };
   const pageFieldName = target.dataset.articleEditablePageField;
   const featuredMediaFieldName = target.dataset.articleEditableFeaturedMediaField;
@@ -160,7 +162,12 @@ export function samePath(left = [], right = []) {
   return JSON.stringify(left || []) === JSON.stringify(right || []);
 }
 
-export function currentEditableField(source, doc = source.instance.view.state.doc) {
+export function currentEditableField(source, doc = source.instance.doc) {
   const block = topLevelBlockInfoByIdOrIndex(doc, source.blockId, source.blockIndex);
   return block && editableFieldInfo(block, source.path || []);
+}
+
+// Returns Yjs editable-field type
+export function sharedFieldType(source) {
+  return source.instance.fieldType(source.blockId, source.path || []);
 }

@@ -8,7 +8,5 @@ export const LAST_PREVIEW_HTML = new WeakMap();
 // Debounce is a delay to avoid sending tons of updates when user typing quickly
 export const MODAL_PREVIEW_DEBOUNCE_MS = 250;
 
-// Transaction originated from the backing stream editor.
-export const STREAM_EDITOR_META = "streamEditor";
-// Transaction originated from an inline preview editor.
-export const INLINE_EDITOR_META = "inlineEditor";
+// Marks a transaction as incoming synch update rather than user edit, which prevents feedback loop
+export const SYNCED_EDITOR_META = "syncedEditor";

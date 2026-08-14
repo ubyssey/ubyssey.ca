@@ -1,9 +1,9 @@
 import { manuscriptSession } from "../session.js";
 import { clone, pmDocToStreamValue } from "../stream/index.jsx";
-
-const EMPTY_RICH_TEXT = [{ type: "paragraph" }];
-
 /*
+This is somewhat old now, but I'm going to keep it as a reference
+The backing stream editor/preview editor design has been replaced with a YJS Xml node structure
+
 Currently the right sidebar (though I think I might have moved it, though it doesn't really matter), contains
 the actual editor fields, which are hidden, and are what is returned on a save
 
@@ -53,29 +53,26 @@ content: [{
 
 writeStreamTextareas handles the actual writeback
 */
-export function currentStreamDocs({ includePreviewEdits = true } = {}) {
+
+// Now just clones each stream instances shared document
+// TODO rename, and potentially remove
+export function currentStreamDocs() {
   const streamDocs = new Map();
   for (const instance of manuscriptSession.streamEditors) {
-    const nextDoc = clone(instance.view.state.doc.toJSON());
-    const blocks = nextDoc.content || [];
-
-    if (includePreviewEdits) {
-      for (const editor of manuscriptSession.articleRichTextEditors.filter((item) => item.fieldName === instance.fieldName)) {
-        const block = (editor.blockId && blocks.find((node) => node.attrs?.id === editor.blockId)) || (!editor.blockId && blocks[editor.blockIndex]);
-        const field = (block?.content || []).find((child) => child.type === "editable_field" && child.attrs?.mode === "richtext");
-        if (field) field.content = editor.view.state.doc.toJSON().content || EMPTY_RICH_TEXT;
-      }
-    }
-
-    streamDocs.set(instance.fieldName, nextDoc);
+    streamDocs.set(instance.fieldName, clone(instance.doc.toJSON()));
   }
   return streamDocs;
+}
+
+export function writeStreamTextarea(instance, doc = instance.doc) {
+  const json = typeof doc.toJSON === "function" ? doc.toJSON() : doc;
+  instance.textarea.value = JSON.stringify(pmDocToStreamValue(json), null, 2);
 }
 
 // Serializes every stream editor into its hidden textarea for preview/save
 export function writeStreamTextareas(streamDocs = currentStreamDocs()) {
   for (const instance of manuscriptSession.streamEditors) {
-    instance.textarea.value = JSON.stringify(pmDocToStreamValue(streamDocs.get(instance.fieldName)), null, 2);
+    writeStreamTextarea(instance, streamDocs.get(instance.fieldName));
   }
   return streamDocs;
 }

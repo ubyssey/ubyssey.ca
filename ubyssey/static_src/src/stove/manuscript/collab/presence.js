@@ -1,48 +1,26 @@
 import { findArticleBlock } from "../blocks/operations.js";
-import { manuscriptSession } from "../session.js";
-import { clearDocumentCursors, renderPlainTextCursor, renderRichTextCursor } from "./cursors.js";
 
 // Presence is stuff like the cursors and images at top
 // In YJS called awareness as well for some reason
 
 const FALLBACK_COLOR = "#f28c00";
 
-function setBlockLocked(block, locked) {
-  const editors = [block, ...block.querySelectorAll("[contenteditable]")]
-    .filter((element) => element.hasAttribute("contenteditable"));
-
-  for (const editor of editors) {
-    if (locked) {
-      editor.setAttribute("contenteditable", "false");
-      continue;
-    }
-    editor.setAttribute("contenteditable", "true");
-  }
-}
-
-// Border + Calls Render Cursor
-function renderEditorLocations(users, connectionId) {
+// Previously locked blocks here, now just highlights selected
+function renderBlockSelections(users, connectionId) {
   const root = document.querySelector("[data-article-shadow]")?.shadowRoot;
   if (!root) return;
 
   root.querySelectorAll(".pm-article-block--remote-selected").forEach((block) => {
-    setBlockLocked(block, false);
     block.classList.remove("pm-article-block--remote-selected");
     block.style.removeProperty("--remote-editor-color");
   });
-  root.querySelectorAll(".pm-remote-cursor, .pm-remote-selection").forEach((marker) => { marker.remove(); });
-  clearDocumentCursors();
-
   for (const [id, user] of users) {
-    if (id === connectionId || !user.selection) continue;
-    const block = findArticleBlock(root, user.selection);
+    if (id === connectionId || !user.selectedBlock) continue;
+    const block = findArticleBlock(root, user.selectedBlock);
     if (!block) continue;
 
     block.classList.add("pm-article-block--remote-selected");
-    setBlockLocked(block, true);
     block.style.setProperty("--remote-editor-color", user.colour);
-    if (user.selection.kind === "plainText") renderPlainTextCursor(root, user, block);
-    else renderRichTextCursor(root, user, block);
   }
 }
 
@@ -62,7 +40,7 @@ function renderUsers(container, users, connectionId) {
   const root = document.querySelector("[data-article-shadow]")?.shadowRoot;
   const localUser = users.get(connectionId);
   root?.host.style.setProperty("--current-editor-color", localUser?.colour || FALLBACK_COLOR);
-  renderEditorLocations(users, connectionId);
+  renderBlockSelections(users, connectionId);
 }
 
 function userState(awareness, currentUser) {
@@ -71,7 +49,7 @@ function userState(awareness, currentUser) {
       ...currentUser,
       avatarUrl: currentUser.avatar_url,
       colour: FALLBACK_COLOR,
-      selection: null,
+      selectedBlock: null,
     }]]);
   }
 
@@ -82,19 +60,17 @@ function userState(awareness, currentUser) {
       name: user.name || `Editor ${clientId}`,
       avatarUrl: user.avatarUrl || user.avatar_url || "",
       colour: user.color || FALLBACK_COLOR,
-      selection: state.previewSelection || null,
-      previewCursor: state.cursor || null,
+      selectedBlock: state.selectedBlock || null,
     }];
   }));
 }
 
 export function setupUsers(container, currentUser, awareness) {
   const connectionId = awareness?.clientID ?? "local";
-  const footnoteSidebar = document.querySelector("[data-footnote-sidebar]");
-  let lastSelection = "";
+  let lastSelectedBlock = "";
 
-  function renderLocations() {
-    renderEditorLocations(userState(awareness, currentUser), connectionId);
+  function renderBlockSelection() {
+    renderBlockSelections(userState(awareness, currentUser), connectionId);
   }
 
   function render() {
@@ -102,35 +78,19 @@ export function setupUsers(container, currentUser, awareness) {
   }
 
   awareness?.on("change", render);
-  window.addEventListener("resize", renderLocations);
-  footnoteSidebar?.addEventListener("scroll", renderLocations);
   render();
 
   return {
-    renderLocations,
-    sendSelection(selection) {
-      const localSelection = awareness?.getLocalState()?.previewSelection;
-      if (
-        selection?.cursor === undefined
-        && localSelection?.fieldName === selection?.fieldName
-        && localSelection?.blockIndex === selection?.blockIndex
-      ) return;
+    renderBlockSelection,
+    sendBlockSelection(selectedBlock) {
+      const serialized = JSON.stringify(selectedBlock);
+      if (serialized === lastSelectedBlock) return;
 
-      const serialized = JSON.stringify(selection);
-      if (serialized === lastSelection) return;
-
-      lastSelection = serialized;
-      if (selection?.previewCursor !== undefined) {
-        awareness?.setLocalStateField("cursor", selection.previewCursor || null);
-      } else if (selection?.kind || selection?.cursor === undefined) {
-        awareness?.setLocalStateField("cursor", null);
-      }
-      awareness?.setLocalStateField("previewSelection", selection || null);
+      lastSelectedBlock = serialized;
+      awareness?.setLocalStateField("selectedBlock", selectedBlock || null);
     },
     destroy() {
       awareness?.off("change", render);
-      window.removeEventListener("resize", renderLocations);
-      footnoteSidebar?.removeEventListener("scroll", renderLocations);
     },
   };
 }

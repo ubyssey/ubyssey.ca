@@ -18,6 +18,11 @@ async function loadRevisionHistory(form, historySelect) {
       throw new Error(`History request failed status ${response.status}`);
     }
 
+    // Current draft option in revision dropdown
+    const currentOption = document.createElement("option");
+    currentOption.value = "";
+    currentOption.textContent = "Current draft";
+
     const options = (payload.revisions || []).map((revision) => {
       const option = document.createElement("option");
       option.value = revision.id;
@@ -25,7 +30,7 @@ async function loadRevisionHistory(form, historySelect) {
       return option;
     });
 
-    historySelect.replaceChildren(...options);
+    historySelect.replaceChildren(currentOption, ...options);
     historySelect.disabled = false;
   } catch (error) {
     console.error(error);
@@ -44,7 +49,7 @@ export function setupHistoryPreviewButtons(manuscriptRoot) {
   loadRevisionHistory(form, historySelect);
 
   const selectedRevision = () => historySelect?.value || "";
-  const selectedRevisionIsCurrent = () => !historySelect || historySelect.selectedIndex <= 0;
+  const selectedRevisionIsCurrent = () => !historySelect || historySelect.value === "";
   const updateHistoryMode = () => {
     form.classList.toggle("manuscript-editor--history", !selectedRevisionIsCurrent());
     if (restoreButton) restoreButton.disabled = selectedRevisionIsCurrent();

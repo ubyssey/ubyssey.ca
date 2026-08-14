@@ -306,11 +306,13 @@ function linkBubblePlugin(schema) {
       link.rel = "noopener noreferrer";
       bubble.appendChild(link);
       editorView.dom.parentNode.appendChild(bubble);
+      const articleBlock = editorView.dom.closest("[data-article-block]");
+
       return {
         update(view) {
           const range = markRangeAtCursor(view.state, linkMark);
           const href = range?.attrs.href;
-          if (!href || /^(javascript|data):/i.test(href)) {
+          if ((articleBlock && !articleBlock.classList.contains("pm-article-block--selected")) || !href || /^(javascript|data):/i.test(href)) {
             bubble.hidden = true;
             return;
           }
@@ -391,6 +393,14 @@ function buildEditorKeymap(schema, { undoCommand, redoCommand }) {
   if ((type = schema.marks.link)) bind("Mod-k", promptLinkCommand(type));
   if ((type = schema.nodes.heading)) {
       bind("Mod-h", setBlockType(schema.nodes.heading, { level: 3 }));
+  }
+  // Allows newlines without creating new block for RichText
+  const hardBreak = schema.nodes.hard_break;
+  if (hardBreak) {
+    bind("Shift-Enter", chainCommands(exitCode, (state, dispatch) => {
+      if (dispatch) dispatch(state.tr.replaceSelectionWith(hardBreak.create()).scrollIntoView());
+      return true;
+    }));
   }
 
   root.render(<ShortcutDocumentation/>)

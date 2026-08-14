@@ -4,8 +4,8 @@ import { ACTIVE_SUGGESTION_THREAD_META } from "./rich_text/index.jsx";
 import { createEditorToolbar } from "./rich_text/toolbar.jsx";
 import { setupCommentSidebar, setupFootnoteSidebar } from "./annotations/index.js";
 import { createStreamEditor } from "./stream/index.jsx";
-import { collectBlockCommentThreads, refreshBlockCommentBorders, setupArticleBlockActions, setupArticleBlockKeyboard, syncSelectedArticleBlockEditor } from "./blocks/controller.jsx";
-import { currentStreamDocs, MODAL_PREVIEW_DEBOUNCE_MS, mountManuscriptChrome, refreshArticlePreviewEditorsFromStream, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, syncArticlePreviewEditors, writeStreamTextareas } from "./preview/index.jsx";
+import { collectBlockCommentThreads, refreshBlockCommentBorders, setupArticleBlockActions, setupArticleBlockKeyboard } from "./blocks/controller.jsx";
+import { MODAL_PREVIEW_DEBOUNCE_MS, mountManuscriptChrome, reconcilePreviewBlocks, refreshPlainTextEditorsFromStream, setupArticlePreviewEditors, setupArticleShadow, setupHistoryPreviewButtons, setupServerPreviewRefresh, writeStreamTextareas } from "./preview/index.jsx";
 import { manuscriptSession } from "./session.js";
 import { setupUsers } from "./collab/presence.js";
 import { setupCollaboration } from "./collab/collaboration.js";
@@ -22,11 +22,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   const currentEditor = readJsonScript("current-editor");
 
   const collaboration = await setupCollaboration(form.dataset.manuscriptPageId, streamEditors, currentEditor, form);
+  manuscriptSession.awareness = collaboration.awareness;
   manuscriptSession.footnoteTexts = collaboration.ydoc.getMap("footnoteTexts");
 
   if (Object.keys(editorErrors).length) {
     alert("Failed to save due to errors: " + JSON.stringify(editorErrors));
   }
+
+  // Initialized before stream editors, so we can update during setup
+  manuscriptSession.commentSidebar = setupCommentSidebar(document.querySelector("[data-comment-sidebar]"), {
+    getViews: () => manuscriptSession.currentArticleTextViews(),
+    getThreads: collectBlockCommentThreads,
+  });
+  manuscriptSession.footnoteSidebar = setupFootnoteSidebar(document.querySelector("[data-footnote-sidebar]"), {
+    getViews: () => manuscriptSession.currentArticleTextViews(),
+  });
+  // 100ms debouncwd refresh for toolbar/comments/footnotes, todo convert to proper YJS callbacks
+  let editorUiRefreshTimer = null;
+  manuscriptSession.scheduleEditorUiRefresh = () => {
+    clearTimeout(editorUiRefreshTimer);
+    editorUiRefreshTimer = window.setTimeout(() => {
+      editorUiRefreshTimer = null;
+      manuscriptSession.richTextToolbar?.update();
+      manuscriptSession.commentSidebar?.update();
+      manuscriptSession.footnoteSidebar?.update();
+      refreshBlockCommentBorders(manuscriptRoot);
+    }, 100);
+  };
 
   const textareas = Array.from(document.querySelectorAll("[data-stream-json]"));
   for (const textarea of textareas) {
@@ -34,32 +56,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       textarea,
       streamEditors[textarea.dataset.streamField] || {},
       {
-        collaboration: {
-          fragment: collaboration.ydoc.getXmlFragment(textarea.dataset.streamField),
-          awareness: collaboration.awareness,
-        },
-        onDocChanged: ({ transaction }) => {
-          if (!manuscriptSession.blockEditorEditing && !transaction.getMeta("skipPreview")) {
-            manuscriptSession.schedulePreview({ deferIfManuscriptFocused: Boolean(transaction.getMeta("deferPreviewIfFocused")) });
-          }
-        },
-        onTransaction: ({ transaction, instance }) => {
-          syncArticlePreviewEditors({ transaction, instance });
-          if (transaction.docChanged && manuscriptSession.blockEditorEditing) {
+        fragment: collaboration.ydoc.getXmlFragment(textarea.dataset.streamField),
+        onChange: ({ before, doc, transaction, instance, checkStructure = true, skipPreview = false, sendRemotePreview = false }) => {
+          const blockReconciliation = checkStructure && !sendRemotePreview ? reconcilePreviewBlocks({ before, doc, instance }) : { previewReconciled: false, structureChanged: sendRemotePreview };
+          const previewHandled = (blockReconciliation.previewReconciled || skipPreview || Boolean(transaction?.getMeta("skipPreview")));
+          if (sendRemotePreview) {
+            manuscriptSession.schedulePreview({ immediate: true });
+          } else if (manuscriptSession.blockEditorEditing) {
             manuscriptSession.blockEditorDirty = true;
-            refreshArticlePreviewEditorsFromStream(instance);
+            refreshPlainTextEditorsFromStream(instance);
             manuscriptSession.schedulePreview({
               blockOnly: true,
               debounceMs: MODAL_PREVIEW_DEBOUNCE_MS,
             });
+          } else if (!manuscriptSession.blockEditorModalOpen && !previewHandled) {
+            manuscriptSession.schedulePreview({
+              deferIfManuscriptFocused: true,
+              immediate: blockReconciliation.structureChanged,
+            });
           }
+          manuscriptSession.scheduleEditorUiRefresh();
+        },
+        onTransaction: ({ transaction }) => {
           const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
-          manuscriptSession.richTextToolbar?.update();
-          syncSelectedArticleBlockEditor(manuscriptSession.selectedArticleBlock);
-          refreshBlockCommentBorders(manuscriptRoot);
           if (activeSuggestionThreadId) manuscriptSession.commentSidebar?.activateThread(activeSuggestionThreadId);
-          else manuscriptSession.commentSidebar?.update();
-          manuscriptSession.footnoteSidebar.update();
         },
       },
     ));
@@ -67,12 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   manuscriptSession.richTextToolbar = createEditorToolbar(manuscriptRoot.querySelector(".pm-manuscript-toolbar"), {
     publishSource: document.querySelector("[data-article-toolbar-source]"),
-    getContentDoc: () => currentStreamDocs().get("content"),
-    onHistoryCommand: () => {
-      window.requestAnimationFrame(() => {
-        manuscriptSession.schedulePreview({ immediate: true });
-      });
-    },
+    getContentDoc: () => manuscriptSession.streamEditors.find((instance) => instance.fieldName === "content")?.doc,
   });
 
   document.addEventListener("keydown", (event) => {
@@ -84,14 +99,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!action || !manuscriptSession.richTextToolbar.runHistory(action)) return;
 
     event.preventDefault();
-  });
-
-  manuscriptSession.commentSidebar = setupCommentSidebar(document.querySelector("[data-comment-sidebar]"), {
-    getViews: () => manuscriptSession.currentArticleTextViews(),
-    getThreads: collectBlockCommentThreads,
-  });
-  manuscriptSession.footnoteSidebar = setupFootnoteSidebar(document.querySelector("[data-footnote-sidebar]"), {
-    getViews: () => manuscriptSession.currentArticleTextViews(),
   });
 
   setupArticlePreviewEditors(manuscriptRoot);
@@ -111,7 +118,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Saved Status Indicator
   const savedStatus = document.querySelector("[data-article-saved]");
-  let savedStatusTimer = null;
 
   const formatSavedAt = (date) => date.toLocaleString(undefined, {
     month: "short",
@@ -121,45 +127,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     minute: "2-digit",
   });
 
-  const updateSavedStatus = () => {
+  // Updates to Saving... when local doc changes
+  const updateSavingStatus = () => {
     if (!savedStatus) return;
     savedStatus.textContent = "Saving...";
-    manuscriptSession.richTextToolbar?.update();
-    clearTimeout(savedStatusTimer);
-    savedStatusTimer = window.setTimeout(() => {
-      const savedAt = new Date();
-      savedStatus.dataset.lastSavedAt = savedAt.toISOString();
-      savedStatus.textContent = `Saved: ${formatSavedAt(savedAt)}`;
-      manuscriptSession.richTextToolbar?.update();
-    }, 750);
+    manuscriptSession.scheduleEditorUiRefresh();
   };
 
-  // YJS Collaboration Update Handler
-  collaboration.ydoc.on("update", (_update, origin) => {
-    updateSavedStatus();
-    const remoteUpdate = collaboration.provider && origin === collaboration.provider;
-    const localBlockEdit = !remoteUpdate && manuscriptSession.blockEditorEditing;
-    if (!remoteUpdate && !localBlockEdit) return;
+  // Updates to Saved: Date when receives ack from server that it merged
+  const updateSavedStatus = () => {
+    if (!savedStatus) return;
+    const savedAt = new Date();
+    savedStatus.dataset.lastSavedAt = savedAt.toISOString();
+    savedStatus.textContent = "Saved: " + formatSavedAt(savedAt);
+    manuscriptSession.scheduleEditorUiRefresh();
+  };
 
-    if (localBlockEdit) manuscriptSession.blockEditorDirty = true;
-
-    window.requestAnimationFrame(() => {
-      manuscriptSession.streamEditors.forEach((instance) => refreshArticlePreviewEditorsFromStream(instance, {
-        preserveFocused: true,
-      }));
-      manuscriptSession.footnoteSidebar?.update();
-      if (localBlockEdit) {
-        manuscriptSession.schedulePreview({ blockOnly: true, debounceMs: MODAL_PREVIEW_DEBOUNCE_MS });
-      } else {
-        manuscriptSession.schedulePreview({ deferIfManuscriptFocused: true });
-      }
-    });
-  });
+  collaboration.ydoc.on("update", updateSavingStatus);
+  collaboration.provider?.on("persistence-ack", updateSavedStatus);
 
   setupHistoryPreviewButtons(manuscriptRoot);
   mountManuscriptChrome({
     form,
     metadata: collaboration.metadata,
+    mediaUpdates: collaboration.ydoc.getMap("articleMediaUpdates"),
+    revisionUpdates: collaboration.ydoc.getMap("revisionUpdates"),
     schedulePreview: (...args) => manuscriptSession.schedulePreview(...args),
     writeBeforeSave: writeStreamTextareas,
   });

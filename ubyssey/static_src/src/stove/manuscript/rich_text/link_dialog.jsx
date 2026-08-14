@@ -143,7 +143,7 @@ function LinkModal({ href, alias, onSubmit, onCancel }) {
         </label>
         <footer className="article-media-modal__footer">
           <button type="button" onClick={onCancel}>Cancel</button>
-          <button type="submit">Insert</button>
+          <button type="submit" onClick={(event) => { onSubmit(values); }}>Insert</button>
         </footer>
       </form>
     </div>

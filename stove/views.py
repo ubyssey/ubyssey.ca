@@ -213,7 +213,7 @@ def manuscript_editor(request, page_id):
         print(f"Validation Error: {editor_errors}")
 
     stream_editors = get_streamfield_editors(page)
-    article_media = page.article_media.all()
+    article_media = get_object_or_404(Page, id=page_id).specific.article_media.all()
     last_saved_manuscript = ManuscriptCollaboration.objects.filter(page_id=page_id).only("updated_at").first()
 
     # self: contains information like page title, slug, etc, for form fields = for preview rendering
@@ -223,7 +223,7 @@ def manuscript_editor(request, page_id):
     # featured_media_form: contains the form for the featured media
     # article_media_upload_form: contains the form for uploading article media
     # article_media: contains the list of existing article images/documents in this page
-    # last_saved_manuscript: sends last updated at for toolbar
+    # last_saved_manuscript: sends last updated manuscript for saved info
 
     return render(
         request, "editors/manuscript_editor.html",
