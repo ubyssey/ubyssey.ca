@@ -267,7 +267,7 @@ function useMetadataTabs() {
   }, []);
 }
 
-function useMediaAndSettingsModals(form) {
+function useMediaAndSettingsModals(form, mediaUpdates) {
   useEffect(() => {
     const uploadButton = document.querySelector("[data-article-media-upload-button]");
     const settingsModal = document.querySelector("[data-manuscript-settings-modal]");
@@ -489,7 +489,7 @@ function useMediaAndSettingsModals(form) {
       });
     };
 
-    const applyMediaResponse = (payload) => {
+    const applyMediaResponse = (payload, publish = true) => {
       document.querySelector("[data-article-media-gallery]").outerHTML = payload.gallery;
       const selector = `.pm-control-field--${payload.item.kind} select${payload.item.kind === "image" ? ",select[name='featured_media-image']" : ""}`;
       document.querySelectorAll(selector).forEach((select) => {
@@ -498,7 +498,16 @@ function useMediaAndSettingsModals(form) {
         option.value = payload.item.id;
         option.textContent = payload.item.title;
       });
+      if (publish) mediaUpdates.doc.transact(() => {
+        mediaUpdates.set("latest", { ...payload, revision: Date.now() });
+      }, "article-media");
     };
+    const syncRemoteMedia = (event) => {
+      if (event.transaction.origin === "article-media") return;
+      const payload = mediaUpdates.get("latest");
+      if (payload) applyMediaResponse(payload, false);
+    };
+    mediaUpdates.observe(syncRemoteMedia);
 
     syncImageFields();
 
@@ -621,11 +630,12 @@ function useMediaAndSettingsModals(form) {
     return () => {
       cleanups.forEach((cleanup) => cleanup());
       cancelExistingMediaSearch();
+      mediaUpdates.unobserve(syncRemoteMedia);
       existingSelectRoot.unmount();
       tagSelectRoot.unmount();
       authorSelectRoot.unmount();
     };
-  }, [form]);
+  }, [form, mediaUpdates]);
 }
 
 function useAsyncSave(form, writeBeforeSave) {
@@ -696,12 +706,12 @@ function useAsyncSave(form, writeBeforeSave) {
   }, [form, writeBeforeSave]);
 }
 
-function ManuscriptChrome({ form, metadata, schedulePreview, writeBeforeSave }) {
+function ManuscriptChrome({ form, metadata, mediaUpdates, schedulePreview, writeBeforeSave }) {
   usePageFieldToggles(form, schedulePreview);
   useArticleAuthorsPanel();
   useEffect(() => setupMetadataCollaboration(form, metadata), [form, metadata]);
   useMetadataTabs();
-  useMediaAndSettingsModals(form);
+  useMediaAndSettingsModals(form, mediaUpdates);
   useAsyncSave(form, writeBeforeSave);
 
   return null;

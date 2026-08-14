@@ -148,6 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   mountManuscriptChrome({
     form,
     metadata: collaboration.metadata,
+    mediaUpdates: collaboration.ydoc.getMap("articleMediaUpdates"),
     schedulePreview: (...args) => manuscriptSession.schedulePreview(...args),
     writeBeforeSave: writeStreamTextareas,
   });
