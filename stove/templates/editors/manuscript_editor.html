@@ -42,8 +42,8 @@
     <a href="{% url 'stove:content_tracker_base' %}">
       <img src="{% static 'ubyssey/images/stove/favicon.ico' %}">
     </a>  
-    <span data-article-saved data-last-saved-at="{% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:'c' }}{% endif %}">
-        {% if manuscript_collaboration %}{{ manuscript_collaboration.updated_at|date:"M j, Y H:i" }}{% endif %}
+    <span data-article-saved data-last-saved-at="{% if last_saved_manuscript %}{{ last_saved_manuscript.updated_at|date:'c' }}{% endif %}">
+        {% if last_saved_manuscript %}Saved: {{ last_saved_manuscript.updated_at|date:"M j, Y H:i" }}{% endif %}
     </span>
     <div class="manuscript-topbar__actions">
       <div class="manuscript-connected-users" data-connected-users></div>

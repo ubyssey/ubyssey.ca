@@ -118,7 +118,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Saved Status Indicator
   const savedStatus = document.querySelector("[data-article-saved]");
-  let savedStatusTimer = null;
 
   const formatSavedAt = (date) => date.toLocaleString(undefined, {
     month: "short",
@@ -128,27 +127,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     minute: "2-digit",
   });
 
-  const updateSavedStatus = () => {
+  // Updates to Saving... when local doc changes
+  const updateSavingStatus = () => {
     if (!savedStatus) return;
     savedStatus.textContent = "Saving...";
     manuscriptSession.scheduleEditorUiRefresh();
-    clearTimeout(savedStatusTimer);
-    savedStatusTimer = window.setTimeout(() => {
-      const savedAt = new Date();
-      savedStatus.dataset.lastSavedAt = savedAt.toISOString();
-      savedStatus.textContent = `Saved: ${formatSavedAt(savedAt)}`;
-      manuscriptSession.scheduleEditorUiRefresh();
-    }, 750);
   };
 
-  // Only responsibility now to update save status
-  collaboration.ydoc.on("update", updateSavedStatus);
+  // Updates to Saved: Date when receives ack from server that it merged
+  const updateSavedStatus = () => {
+    if (!savedStatus) return;
+    const savedAt = new Date();
+    savedStatus.dataset.lastSavedAt = savedAt.toISOString();
+    savedStatus.textContent = "Saved: " + formatSavedAt(savedAt);
+    manuscriptSession.scheduleEditorUiRefresh();
+  };
+
+  collaboration.ydoc.on("update", updateSavingStatus);
+  collaboration.provider?.on("persistence-ack", updateSavedStatus);
 
   setupHistoryPreviewButtons(manuscriptRoot);
   mountManuscriptChrome({
     form,
     metadata: collaboration.metadata,
     mediaUpdates: collaboration.ydoc.getMap("articleMediaUpdates"),
+    revisionUpdates: collaboration.ydoc.getMap("revisionUpdates"),
     schedulePreview: (...args) => manuscriptSession.schedulePreview(...args),
     writeBeforeSave: writeStreamTextareas,
   });

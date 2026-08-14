@@ -9,6 +9,9 @@ import { streamSchema } from "../stream/schema.js";
 // See consumers.py, code sent on restore
 const RESTORE_CLOSE_CODE = 4410;
 
+// Sends message that changes were merged in
+const PERSISTENCE_ACK_MESSAGE = 4;
+
 const date = new Date().getDate();
 const EDITOR_COLOURS = [
   "#9ec756",
@@ -79,6 +82,10 @@ export async function setupCollaboration(pageId, streamEditors, currentEditor, f
     "yjs",
     ydoc,
   );
+
+  provider.messageHandlers[PERSISTENCE_ACK_MESSAGE] = () => {
+    provider.emit("persistence-ack", []);
+  };
 
   provider.awareness.setLocalStateField("user", {
     id: currentEditor.id,

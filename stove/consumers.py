@@ -18,6 +18,9 @@ PERSISTENCE_BATCH_DELAY_SECONDS = 0.1
 # Used in collabaration.js, code sent which tells clients to reload vs applying local YJS state (maybe a bad move)
 RESTORE_CLOSE_CODE = 4410
 
+# Sent after changes are merged in
+PERSISTENCE_ACK_MESSAGE = 4
+
 
 # This channel is used to tell all connected editors that a restore happened
 def restore_group_name(page_id):
@@ -67,6 +70,7 @@ class ManuscriptYjsConsumer(YjsConsumer):
             updates = self._pending_updates
             self._pending_updates = []
             await self._merge_document(updates)
+            await self.group_send_message(bytes([PERSISTENCE_ACK_MESSAGE]))
 
     def make_room_name(self):
         return f"stove_yjs_{self.page_id}"
@@ -124,6 +128,7 @@ class ManuscriptYjsConsumer(YjsConsumer):
                 updates = self._pending_updates[:batch_size]
                 await self._merge_document(updates)
                 del self._pending_updates[:batch_size]
+                await self.group_send_message(bytes([PERSISTENCE_ACK_MESSAGE]))
         finally:
             self._persistence_task = None
 

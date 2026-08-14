@@ -638,8 +638,34 @@ function useMediaAndSettingsModals(form, mediaUpdates) {
   }, [form, mediaUpdates]);
 }
 
-function useAsyncSave(form, writeBeforeSave) {
+function useAsyncSave(form, writeBeforeSave, revisionUpdates) {
   useEffect(() => {
+    const historySelect = document.querySelector("[data-history-select]");
+    
+    // Adds new revision to dropdown after current draft if new one created
+    const applyRevision = (revision, selectCurrent = false) => {
+      if (!historySelect || !revision) return;
+      
+      const revisionId = String(revision.id);
+      const existingOption = Array.from(historySelect.options).find((option) => option.value === revisionId);
+      
+      if (!existingOption) {
+        const option = document.createElement("option");
+        option.value = revisionId;
+        option.textContent = revision.label || "Revision " + revisionId;
+        historySelect.options[0].after(option);
+      }
+      
+      if (selectCurrent) historySelect.selectedIndex = 0;
+    };
+    
+    const syncRemoteRevision = (event) => {
+      if (event.transaction.origin === "revision-save") return;
+      applyRevision(revisionUpdates.get("latest"));
+    };
+    
+    revisionUpdates.observe(syncRemoteRevision);
+
     const cleanup = on(form, "submit", async (event) => {
       event.preventDefault();
 
@@ -678,17 +704,12 @@ function useAsyncSave(form, writeBeforeSave) {
           return;
         }
 
-        const historySelect = document.querySelector("[data-history-select]");
-        if (historySelect && payload.revision) {
-          const revisionId = String(payload.revision.id);
-          const existingOption = Array.from(historySelect.options).find((option) => option.value === revisionId);
-          if (!existingOption) {
-            const option = document.createElement("option");
-            option.value = revisionId;
-            option.textContent = payload.revision.label || `Revision ${revisionId}`;
-            historySelect.insertBefore(option, historySelect.options[0]);
-          }
-          historySelect.selectedIndex = 0;
+        if (payload.revision) {
+          applyRevision(payload.revision, true);
+
+          revisionUpdates.doc.transact(() => {
+            revisionUpdates.set("latest", payload.revision);
+          }, "revision-save");
         }
 
         submitter.textContent = payload.action === "publish" ? "Published" : "Saved";
@@ -702,17 +723,20 @@ function useAsyncSave(form, writeBeforeSave) {
       }
     });
 
-    return cleanup;
-  }, [form, writeBeforeSave]);
+    return () => {
+      cleanup();
+      revisionUpdates.unobserve(syncRemoteRevision);
+    };
+  }, [form, writeBeforeSave, revisionUpdates]);
 }
 
-function ManuscriptChrome({ form, metadata, mediaUpdates, schedulePreview, writeBeforeSave }) {
+function ManuscriptChrome({ form, metadata, mediaUpdates, revisionUpdates, schedulePreview, writeBeforeSave }) {
   usePageFieldToggles(form, schedulePreview);
   useArticleAuthorsPanel();
   useEffect(() => setupMetadataCollaboration(form, metadata), [form, metadata]);
   useMetadataTabs();
   useMediaAndSettingsModals(form, mediaUpdates);
-  useAsyncSave(form, writeBeforeSave);
+  useAsyncSave(form, writeBeforeSave, revisionUpdates);
 
   return null;
 }

@@ -205,7 +205,7 @@ def manuscript_editor(request, page_id):
     # featured_media_form: contains the form for the featured media
     # article_media_upload_form: contains the form for uploading article media
     # article_media: contains the list of existing article images/documents in this page
-    # last_saved_manuscript: sends last updated at for toolbar
+    # last_saved_manuscript: sends last updated manuscript for saved info
 
     return render(
         request, "editors/manuscript_editor.html",
