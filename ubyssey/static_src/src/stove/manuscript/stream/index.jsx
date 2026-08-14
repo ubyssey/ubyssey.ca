@@ -234,7 +234,7 @@ export function createStreamEditor(textarea, streamEditor, options = {}) {
   fragment.observeDeep((events, transaction) => {
     if (instance.view) return;
     const fields = events.map((event) => {
-      let current = event;
+      let current = event.target;
       while (current && current.nodeName !== "editable_field") current = current.parent;
       return current;
     });
