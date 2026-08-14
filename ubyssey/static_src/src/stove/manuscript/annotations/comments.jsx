@@ -1,7 +1,7 @@
 // Comment UI
 // todo: figure out why transitions only work on some computers (performance?)
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 
@@ -21,6 +21,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   const articleShadow = document.querySelector("[data-article-shadow]");
   const reactRoot = createRoot(root);
   let activeThreadId = null;
+  let focusActiveReply = false;
   let positionFrame = null;
   let hasRendered = false;
   let renderedThreadIds = new Set();
@@ -69,7 +70,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     }
   };
 
-  const setActiveThread = (threadId, scroll = "center") => {
+  const setActiveThread = (threadId, scroll = "center", focusReply = false) => {
     if (threadId && threadId !== activeThreadId && activeDraftHasText()) return;
     let anchorScrolled = false;
     if (scroll === "nearest") {
@@ -85,6 +86,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
       }
     }
     activeThreadId = threadId;
+    focusActiveReply = focusReply;
     scrollActiveThread = scroll;
     update();
     if (anchorScrolled) centerThreadAfterScroll(threadId);
@@ -93,6 +95,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   const clearActiveThread = () => {
     if (!activeThreadId) return;
     activeThreadId = null;
+    focusActiveReply = false;
     scrollActiveThread = null;
     update();
   };
@@ -104,6 +107,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     renderedThreadIds = new Set(threads.map((thread) => thread.threadId));
     if (newThread) {
       activeThreadId = newThread.threadId;
+      focusActiveReply = true;
       scrollActiveThread = "center";
     }
     if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId && !thread.resolved)) activeThreadId = null;
@@ -114,6 +118,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
           username={username}
           refresh={update}
           activeThreadId={activeThreadId}
+          focusActiveReply={focusActiveReply}
           setActiveThread={setActiveThread}
           commentDrafts={commentDrafts}
         />,
@@ -289,7 +294,7 @@ function updateActiveCommentMarks(activeThreadId, threads = []) {
   block?.classList?.add("pm-article-block--comment-active");
 }
 
-function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveThread, commentDrafts }) {
+function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiveReply, setActiveThread, commentDrafts }) {
   if (!threads.length) return null;
 
   return (
@@ -301,6 +306,7 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
           username={username}
           refresh={refresh}
           active={thread.threadId === activeThreadId}
+          focusReply={thread.threadId === activeThreadId && focusActiveReply}
           setActiveThread={setActiveThread}
           commentDrafts={commentDrafts}
         />
@@ -309,7 +315,7 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, setActiveT
   );
 }
 
-function CommentThread({ thread, username, refresh, active, setActiveThread, commentDrafts }) {
+function CommentThread({ thread, username, refresh, active, focusReply, setActiveThread, commentDrafts }) {
   const suggestion = thread.view && commentSuggestion(thread.comments);
   const refocusEditor = () => window.requestAnimationFrame(() => thread.view?.focus());
   const className = active ? "pm-comment-thread pm-comment-thread--active" : "pm-comment-thread";
@@ -366,7 +372,7 @@ function CommentThread({ thread, username, refresh, active, setActiveThread, com
       data-comment-thread-id={thread.threadId}
       onPointerDown={() => {
         if (!active) window.requestAnimationFrame(() => {
-          setActiveThread(thread.threadId, "nearest");
+          setActiveThread(thread.threadId, "nearest", true);
         });
       }}
     >
@@ -391,7 +397,7 @@ function CommentThread({ thread, username, refresh, active, setActiveThread, com
           thread={thread}
           username={username}
           draft={commentDrafts.get(thread.threadId) || ""}
-          autoFocus={!suggestion}
+          focusOnMount={focusReply && !suggestion}
           setStoredDraft={(value) => { commentDrafts.set(thread.threadId, value); }}
           close={() => { setActiveThread(null, null); }}
           cancel={() => {
@@ -432,9 +438,15 @@ function CommentText({ comment }) {
   );
 }
 
-function CommentReplyForm({ thread, username, draft: initialDraft, setStoredDraft, autoFocus, close, cancel }) {
+function CommentReplyForm({ thread, username, draft: initialDraft, setStoredDraft, focusOnMount, close, cancel }) {
   // Comment Draft State
   const [draft, setDraft] = useState(initialDraft);
+
+  const textareaRef = useRef(null);
+  useEffect(() => {
+    if (focusOnMount) textareaRef.current?.focus({ preventScroll: true });
+  }, [focusOnMount]);
+  
   const updateDraft = (value) => {
     setStoredDraft(value);
     setDraft(value);
@@ -464,9 +476,9 @@ function CommentReplyForm({ thread, username, draft: initialDraft, setStoredDraf
     >
       <div className="pm-comment-reply__author">{username}</div>
       <textarea
+        ref={textareaRef}
         name="comment"
         value={draft}
-        autoFocus={autoFocus}
         onChange={(event) => { updateDraft(event.currentTarget.value); }}
         placeholder={thread.pending ? "Comment" : "Reply"}
         rows="2"

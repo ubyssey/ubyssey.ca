@@ -83,8 +83,7 @@ export function startCommentCommand(commentMark) {
     dispatch(state.tr
       .removeMark(from, to, commentMark)
       .addMark(from, to, commentMark.create({ threadId, comments: [], pending: true, resolved: false }))
-      .setMeta("skipPreview", true)
-      .scrollIntoView());
+      .setMeta("skipPreview", true));
     return true;
   };
 }
