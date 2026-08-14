@@ -8,7 +8,7 @@ import chroma from 'chroma-js';
 import Switch from "react-switch";
 
 import { Group, Panel, Separator} from "react-resizable-panels";
-import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline, FolderOpen, FolderOpenOutline, Folder } from 'react-ionicons'
+import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline, FolderOpen, FolderOpenOutline, Folder, Eye } from 'react-ionicons'
 
 
 import Tab from 'react-bootstrap/Tab';
@@ -119,15 +119,16 @@ function findAuthorName(authorId) {
       {role: "author", color: "#e6e6e6"},
       {role: "copy_editor", color: "#77c0d2"},
       {role: "author", color: "#e6e6e6"},
-      {role: "author", color: "#e6e6e6"}
+      {role: "author", color: "#77d27cff"}
     ];
   const roleColours = {
     "author": "#e6e6e6",
     "backfield_editor": "#f5c554",
-    "copy_editor": "#77c0d2" 
+    "copy_editor": "#77c0d2",
+    "published_author":  "#c0e5bd"
   }
 
-function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType="edit-field", disabled}) {
+function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType="edit-field", disabled, isPublished}) {
   let initialAuthors = [];
   for (const authorId in currentAuthors) {
     const author = currentAuthors[authorId]
@@ -139,8 +140,12 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleT
   let style = {
     multiValue: (base) => ({
         ...base,
-        backgroundColor: roleColours[authorType],
-  })};
+        backgroundColor: isPublished ? roleColours["published_author"] : roleColours[authorType],
+    }),
+    menu: (base) => ({
+      ...base,
+      marginTop: "-4px"
+    })};
 
   if (styleType == "edit-field") {
     style = {
@@ -170,6 +175,34 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleT
       container: (base) => ({
         ...base,
         maxWidth: "20em",
+      })
+    }
+  }
+  
+  if (disabled) {
+    style = {
+      ...style,
+      container: (base) => ({
+        ...base,
+        pointerEvents: "auto",
+      }),
+      valueContainer: (base) => ({
+        ... base,
+        ':hover': {
+          cursor: "not-allowed",
+          backgroundColor: "var(--invalid-hover-color)"
+        },
+        ':active': {
+          pointerEvents: "none",
+          backgroundColor: "var(--invalid-hover-color)"
+        }
+      }),
+      multiValueRemove: (base) => ({
+        ...base,
+        ':hover': {
+          cursor: "not-allowed",
+          backgroundColor: "inherit"
+        },
       })
     }
   }
@@ -218,7 +251,7 @@ async function updateTitle(page, newTitle, updatePage) {
 }
 
 function isValidUrl(url) {
-  const urlRegex = /https?:\/\/.*\..*/g
+  const urlRegex = /https?:\/\/..*\...*/g
 
   return url.match(urlRegex)
 }
@@ -456,6 +489,10 @@ function ArticleStatus ({status, updateStatus}) {
         border: "none",
         background: "none",
         boxShadow: "none",
+      }),
+      menu: (base) => ({
+        ...base,
+        marginTop: "-4px"
       })
     }}
     onChange={updateStatus}
@@ -478,7 +515,13 @@ function beatLabel(beatPk) {
 
 function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
 
- let style = {};
+ let style = {
+  ...style,
+  menu: (base) => ({
+    ...base,
+    marginTop: "-4px"
+  })
+ };
 
   if (styleType == "edit-field") {
     style = {
@@ -503,6 +546,31 @@ function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
       container: (base) => ({
         ...base,
         maxWidth: "20em",
+      })
+    }
+  }
+
+  if (disabled) {
+    style = {
+      ...style,
+      container: (base) => ({
+        ...base,
+        pointerEvents: "auto",
+      }),
+      valueContainer: (base) => ({
+        ... base,
+        ':hover': {
+          cursor: "not-allowed",
+          backgroundColor: "var(--invalid-hover-color)"
+        },
+        ':active': {
+          pointerEvents: "none",
+          backgroundColor: "var(--invalid-hover-color)"
+        }
+      }),
+      singleValue: (base) => ({
+        ...base,
+        color: "inherit"
       })
     }
   }
@@ -579,33 +647,42 @@ function LinkInput ({selectedPage, updatePage}) {
   }, [selectedPage]);
 
   return <div class="edit-field--hyperlink-container">
+          <LinkOpenButton url={assignmentFolder} className={"edit-field--hyperlink-open"}/>
           <input class="edit-field--plaintext" 
             placeholder="Assignment folder link..." 
             value={assignmentFolder}
             onChange={e => changeAssignmentFolder(e.target.value)}
             onBlur={(e) => updateAssignmentFolder(selectedPage, e.target.value, updatePage)}>
             </input>
-            <LinkOpenButton url={assignmentFolder}/>
           </div>
 }
 
-function LinkOpenButton ({url}) {
+function LinkOpenButton ({url, className, iconSize}) {
   let button;
 
   if (url != null && url != '') {
     const activeButton = isValidUrl(url)
 
-    if (isValidUrl(url)) {
-      button = <a href={url} target="_blank" rel="noopener noreferrer"><FolderOpen /></a>
+    if (isValidUrl(url) || isValidUrl("http://" + url)) {
+      button = <a href={url} target="_blank" rel="noopener noreferrer">
+          <FolderOpen 
+            width={iconSize}
+            height={iconSize}
+          />
+        </a>
     } else {
-      button = <FolderOpen color={"#d23732"}/>
+      button = <FolderOpenOutline 
+        color={"#d23732"}
+        width={iconSize}
+        height={iconSize}/>
     }
   } else {
-    button = <FolderOpenOutline />
+    button = <FolderOpenOutline 
+        width={iconSize}
+        height={iconSize}/>
   }
 
-  return (<div className="edit-field--hyperlink-open">
-
+  return (<div className={className}>
              {button}
             </div>);
 }
@@ -622,29 +699,48 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
 
     return <tr key={page.pk} className={selectedClass}>
             <td class="slug-cell">
-              <button class="edit-button" onClick={() => setSelectedArticleId(page.pk)}><PencilOutline
+              <span class="slug-link--container">
+              <a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a>
+              </span> 
+              <div className="slug-cell--button-panel">
+              <button class="slug-cell--edit-button" onClick={() => setSelectedArticleId(page.pk)}><PencilOutline
                 color={'#00000'} 
+                height={"18px"}
+                width={"18px"}
               /></button>
-              <a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a> </td>
+              <button class="slug-cell--preview-button" onClick={() => setSelectedArticleId(page.pk)}><Eye 
+                className
+                height={"18px"}
+                width={"18px"}/>
+              </button>
+              
+              <LinkOpenButton url={page.assignment_folder} className={"slug-cell--hyperlink-open"} iconSize={"18px"}/>
+              </div></td>
             <td class="authors-cell"><AuthorsSelect 
               disabled = {page.live}
               currentAuthors={page.article_authors} 
               handleUpdateAuthors={(newAuthorList) => updateAuthors(page, newAuthorList, responsibleRole[page.article_status].role, updatePage)}
               authorType={responsibleRole[page.article_status].role}
+              isPublished={page.live}
               />
             </td>
             <td><DateInput date={page.deadline} handleUpdateDate={(newDate) => updateDeadline(page, newDate, updatePage)} disabled={page.live}/></td>
             <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)} disabled={page.live}/></td>
             <td><ArticleStatus status={page["article_status"]} updateStatus={(newStatus) => updateArticleStatus(page, newStatus, updatePage)}/></td>
-            <td><Image color={'#257e4d'} height="1.5em" width="1.5em" /> <BrushOutline color={'#00000'} height="1.5em" width="1.5em" /><VideocamOutline color={'#00000'} height="1.5em" width="1.5em" /></td>
-            <td><PrintOutline color={'#00000'} height="1.5em" width="1.5em" /><Headset color={'#faa33a'} height="1.5em" width="1.5em" /></td>
+            <td>
+              <ImageOutline color={'#000000'} height="1.5em" width="1.5em" /> 
+              <BrushOutline color={'#000000'} height="1.5em" width="1.5em" />
+              <VideocamOutline color={'#000000'} height="1.5em" width="1.5em" /></td> {/*#257e4d*/}
+            <td>
+              <PrintOutline color={'#000000'} height="1.5em" width="1.5em" />
+              <HeadsetOutline color={'#000000'} height="1.5em" width="1.5em" /></td> {/*#faa33a*/}
     </tr>
 }
 
 function ArticleRowSkeleton() {
   return <tr>
-    <td class="slug-cell"><Skeleton width="20em"/></td>
-    <td class="authors-cell"><Skeleton width="20em"/></td>
+    <td class="slug-cell"><Skeleton width="15em"/></td>
+    <td class="authors-cell"><Skeleton width="10em"/></td>
     <td><Skeleton width="15em"/></td>
     <td><Skeleton/></td>
     <td><Skeleton/></td>

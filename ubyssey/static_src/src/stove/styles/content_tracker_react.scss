@@ -44,7 +44,7 @@ table, th, td {
 }
 
 .navigation-panel {
-  width: 15em;
+  width: 12em;
   background-color: #dddddd;
   height: 100%;
 }
@@ -232,14 +232,59 @@ input:checked + .slider:before {
   max-width: 20em;
 }
 
-.edit-button {
-  border: none;
-  background: none;
+.slug-cell--button-panel {
   float: right;
+  display: none;
 }
 
-.edit-button:hover {
-  background-color: hsl(192, 50%, 85%);
+.slug-cell:hover > .slug-cell--button-panel {
+  display: initial;
+}
+
+.slug-cell--hyperlink-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+}
+
+.slug-cell--hyperlink-open:has(a):hover {
+  background-color: var(--hover-color);
+}
+
+.slug-cell--hyperlink-open:not(:has(a)):hover {
+  background-color: var(--invalid-hover-color);
+  cursor: not-allowed;
+}
+
+.slug-cell--edit-button {
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+}
+
+.slug-cell--edit-button:hover {
+  background-color: var(--hover-color);
+}
+
+.slug-cell--preview-button {
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+}
+
+.slug-cell--preview-button:hover {
+  background-color: var(--invalid-hover-color);
+  cursor: not-allowed;
 }
 
 .byline-header {
@@ -251,7 +296,7 @@ input:checked + .slider:before {
 }
 
 .deadline-header {
-  width: 8em;
+  min-width: 8em;
 }
 
 .visuals-header {
@@ -260,7 +305,7 @@ input:checked + .slider:before {
 }
 
 .media-header {
-  width: 4em;
+  min-width: 4.2em;
 }
 
 .status-select {
@@ -273,8 +318,21 @@ input:checked + .slider:before {
 //     min-height: 28px;
 // }
 
-.slug-link:hover {
-    background-color: hsl(192, 50%, 85%);
+.slug-link--container {
+  display: inline-block;
+  width: 100%;
+  min-height: 2lh;
+  padding: 4px;
+}
+
+.slug-cell:hover > .slug-link--container {
+  display: inline-block;
+  width: calc(100% - 25px);
+  min-height: 3.5lh;
+}
+
+.slug-link--container:hover {
+  background-color: hsl(192, 50%, 85%);
 }
 
 .slug-link {
@@ -409,9 +467,8 @@ input:checked + .slider:before {
 
 .edit-field--hyperlink-container {
   display: grid;
-  grid-template-columns: auto 30px;
+  grid-template-columns: 30px auto;
   width: 100%;
-  max-width: 20em;
 }
 
 .edit-field--hyperlink-open {
@@ -433,8 +490,17 @@ input:checked + .slider:before {
   background-color: var(--hover-color);
 }
 
+.react-datepicker-wrapper:has(> * > input:disabled):hover {
+  background-color: var(--invalid-hover-color);
+  cursor: not-allowed;
+}
 .react-datepicker-wrapper:hover {
   background-color: var(--hover-color);
+}
+
+.react-datepicker__input-container > input:disabled {
+  cursor: not-allowed;
+  color: inherit;
 }
 .react-datepicker__input-container > input {
   background-color: inherit;
