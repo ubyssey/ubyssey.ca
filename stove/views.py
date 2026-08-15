@@ -218,7 +218,6 @@ def update_content_tracker(request, page_id):
         if (page.can_move_to(section)):
             page.move(section, pos='last-child')
             page.current_section = section.slug
-            print(page.current_section)
         else:
             raise Exception("Page can't move to section")
     if ("deadline" in data):

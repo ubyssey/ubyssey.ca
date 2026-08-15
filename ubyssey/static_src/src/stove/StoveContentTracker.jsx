@@ -295,8 +295,6 @@ async function updateAuthors(page, newAuthorList, role, updatePage, isLocalOnly=
     page.article_authors.push({article_page: page.pk, author_role: role, author: author.value})
   } 
 
-  console.log(page)
-
   updatePage(page)
 
   if (!isLocalOnly) {
@@ -437,11 +435,8 @@ async function remoteCreatePage(page) {
   return fetch(createPageUrl.replace("1918", page.current_section), { method: "POST", headers: headers, body: JSON.stringify(page),
     credentials: "same-origin"})
     .then(async (response) => {
-      console.log("PROCESSING")
-      // console.log(response)
       if (response.status != 200) {
         const errorText = await response.text()
-        console.log(errorText)
         throw new Error(errorText)
       } else {
         return response.json()
@@ -1028,7 +1023,6 @@ function CreateSidebar({createPage}) {
   }, [newPage]);
 
   function handlePageCreation() {
-    console.log(newPage)
     toast.promise(
       remoteCreatePage(newPage),
       {
