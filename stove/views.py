@@ -22,6 +22,8 @@ from wagtail.images import get_image_model
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from pycrdt import Doc
+import warnings
+
 
 from stove.consumers import restore_group_name
 from stove.models import ManuscriptCollaboration
@@ -179,15 +181,19 @@ def load_partial_pages(request, section="all", page=1):
     if (len(pages) > 0):
         result = "["
         for currentPage in pages: 
-            currentPage = currentPage.latest_revision.content
+            try: 
+                currentPage = currentPage.latest_revision.content
+            except:
+                warnings.warn("Cannot get content for page " + str(currentPage.pk))
+                print("Cannot get content for page " + str(currentPage.pk))
+                continue 
             result += "{"
             result += "\"title\": \"" + currentPage.get("title") + "\", "
             result += "\"live\": " + str(currentPage.get("live")).lower() + ", "
             result += "\"pk\": " + str(currentPage.get("pk")) + ", "
             result += "\"assignment_folder\": \"" + (currentPage.get("assignment_folder") if currentPage.get("assignment_folder") else "") + "\", "
             result += "\"article_authors\": \"\", "
-            result += "\"article_authors\": \"" + "\", "
-            result += "\"article_status\": " + str(currentPage.get("article_status")) + ", "
+            result += "\"article_status\": " + str(currentPage.get("article_status") if currentPage.get("article_status") else 1) + ", "
             result += "\"category_page\": \"" + (str(currentPage.get("category_page")) if currentPage.get("category_page") else "")+ "\", "
             result += "\"deadline\": \"" + (str(currentPage.get("deadline")) if currentPage.get("deadline") else "")+ "\"},"
             
@@ -218,6 +224,7 @@ def update_content_tracker(request, page_id):
         if (page.can_move_to(section)):
             page.move(section, pos='last-child')
             page.current_section = section.slug
+            print(page.current_section)
         else:
             raise Exception("Page can't move to section")
     if ("deadline" in data):
