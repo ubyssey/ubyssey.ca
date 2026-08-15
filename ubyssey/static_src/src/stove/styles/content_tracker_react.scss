@@ -318,6 +318,10 @@ input:checked + .slider:before {
 //     min-height: 28px;
 // }
 
+.article-list--skeleton {
+  margin-bottom: 0.5lh;
+}
+
 .slug-link--container {
   display: inline-block;
   width: 100%;

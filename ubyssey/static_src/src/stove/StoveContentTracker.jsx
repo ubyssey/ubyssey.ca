@@ -260,7 +260,7 @@ function isValidUrl(url) {
   return url.match(urlRegex)
 }
 
-async function updateAssignmentFolder(page, newAssignmentFolder, updatePage) {
+async function updateAssignmentFolder(page, newAssignmentFolder, updatePage, isLocalOnly=false) {
   if (page.assignment_folder == newAssignmentFolder) return;
 
   if (newAssignmentFolder.indexOf("http://") != 0 && newAssignmentFolder.indexOf("https://") !=0) {
@@ -278,15 +278,16 @@ async function updateAssignmentFolder(page, newAssignmentFolder, updatePage) {
 
   updatePage(page)
 
-  handleRemoteUpdate(page, {"assignment_folder": newAssignmentFolder}, updatePage,
-    "Updating assignment folder for " + page.title, 
-    "Updated assignment folder for " + page.title, 
-    "Failed to update assignment folder for " + page.title)
-
+  if (!isLocalOnly) {
+    handleRemoteUpdate(page, {"assignment_folder": newAssignmentFolder}, updatePage,
+      "Updating assignment folder for " + page.title, 
+      "Updated assignment folder for " + page.title, 
+      "Failed to update assignment folder for " + page.title)
+  }
 }
 
 
-async function updateAuthors(page, newAuthorList, role, updatePage) {
+async function updateAuthors(page, newAuthorList, role, updatePage, isLocalOnly=false) {
 
   page.article_authors = page.article_authors.filter((author) => author.author_role != role)
 
@@ -294,86 +295,93 @@ async function updateAuthors(page, newAuthorList, role, updatePage) {
     page.article_authors.push({article_page: page.pk, author_role: role, author: author.value})
   } 
 
+  console.log(page)
+
   updatePage(page)
 
-
-  handleRemoteUpdate(page, {"authors": page.article_authors}, updatePage,
-    "Updating authors for " + page.title, 
-    "Updated authors for " + page.title, 
-    "Failed to authors for " + page.title)
+  if (!isLocalOnly) {
+    handleRemoteUpdate(page, {"authors": page.article_authors}, updatePage,
+      "Updating authors for " + page.title, 
+      "Updated authors for " + page.title, 
+      "Failed to authors for " + page.title)
+  }
 
 }
 
 
-async function updateArticleStatus(page, newStatus, updatePage) {
+async function updateArticleStatus(page, newStatus, updatePage, isLocalOnly=false) {
   updatePage({... page, article_status: newStatus.value})
   
-  handleRemoteUpdate(page, {"article_status": newStatus.value}, updatePage,
-    "Updating status for " + page.title + " to " + newStatus.label, 
-    "Updated status for " + page.title + " to " + newStatus.label, 
-    "Failed to update status for " + page.title + " to " + newStatus.label)
+  if (!isLocalOnly) {
+    handleRemoteUpdate(page, {"article_status": newStatus.value}, updatePage,
+      "Updating status for " + page.title + " to " + newStatus.label, 
+      "Updated status for " + page.title + " to " + newStatus.label, 
+      "Failed to update status for " + page.title + " to " + newStatus.label)
+  }
 }
 
-async function updateDeadline(page, newDate, updatePage) {
+async function updateDeadline(page, newDate, updatePage, isLocalOnly=false) {
   updatePage({... page, deadline: newDate.toISOString()})
 
-  handleRemoteUpdate(page, {"deadline": newDate.toISOString()}, updatePage,
-    "Updating deadline for " + page.title, 
-    "Updated deadline for " + page.title, 
-    "Failed to update deadline for " + page.title)
+  if (!isLocalOnly) {
+    handleRemoteUpdate(page, {"deadline": newDate.toISOString()}, updatePage,
+      "Updating deadline for " + page.title, 
+      "Updated deadline for " + page.title, 
+      "Failed to update deadline for " + page.title)
+  }
 }
 
-async function updateBeat(page, newBeat, updatePage) {
+async function updateBeat(page, newBeat, updatePage, isLocalOnly=false) {
   updatePage({... page, category_page: newBeat.value})
 
+  if (!isLocalOnly) {
   handleRemoteUpdate(page, {"category": newBeat.label}, updatePage,
     "Updating beat for " + page.title + " to " + newBeat.label, 
     "Updated beat for " + page.title + " to " + newBeat.label, 
     "Failed to update beat for " + page.title + " to " + newBeat.label)
+  }
 }
 
-async function updateSection(page, newSection, updatePage) {
+async function updateSection(page, newSection, updatePage, isLocalOnly=false) {
   updatePage({... page, current_section: newSection.value})
 
-  handleRemoteUpdate(page, {"current_section": newSection.value}, updatePage,
-    "Updating beat for " + page.title + " to " + newSection.label, 
-    "Updated beat for " + page.title + " to " + newSection.label, 
-    "Failed to update beat for " + page.title + " to " + newSection.label)
+  if (!isLocalOnly) {
+    handleRemoteUpdate(page, {"current_section": newSection.value}, updatePage,
+      "Updating beat for " + page.title + " to " + newSection.label, 
+      "Updated beat for " + page.title + " to " + newSection.label, 
+      "Failed to update beat for " + page.title + " to " + newSection.label)
+  }
 }
 
-async function updateAssignmentMemo(page, newMemo, updatePage) {
+async function updateAssignmentMemo(page, newMemo, updatePage, isLocalOnly = false) {
   if (page["assignment_memo"] == newMemo) return;
 
-  page["assignment_memo"] = newMemo
+  updatePage({...page, assignment_memo: newMemo})
 
-  updatePage(page)
-
-
-  handleRemoteUpdate(page, {"assignment_memo": newMemo}, updatePage,
-    "Updating assignment memo for " + page.title, 
-    "Updated assignment memo for " + page.title, 
-    "Failed to assignment memo for " + page.title)
+  if(!isLocalOnly) {
+    handleRemoteUpdate(page, {"assignment_memo": newMemo}, updatePage,
+      "Updating assignment memo for " + page.title, 
+      "Updated assignment memo for " + page.title, 
+      "Failed to assignment memo for " + page.title)
+  }
 
 }
 
-async function updateEthicsNotes(page, newEthics, updatePage) {
+async function updateEthicsNotes(page, newEthics, updatePage, isLocalOnly = false) {
   if (page.ethics_notes == newEthics) return;
 
-  page.ethics_notes = newEthics
-
-  updatePage(page)
+  updatePage({...page, ethics_notes: newEthics})
 
 
-  handleRemoteUpdate(page, {"ethics_notes": newEthics}, updatePage,
-    "Updating ethics notes for " + page.title, 
-    "Updated ethics notes for " + page.title, 
-    "Failed to update ethics notes for " + page.title)
-
+  if(!isLocalOnly) {
+    handleRemoteUpdate(page, {"ethics_notes": newEthics}, updatePage,
+      "Updating ethics notes for " + page.title, 
+      "Updated ethics notes for " + page.title, 
+      "Failed to update ethics notes for " + page.title)
+  }
 }
 
 async function handleRemoteUpdate(page, changes, updatePage, pendingText, successText, errorText) {
-  // toast.info("UPDATING REMOTE", {
-  //         autoClose: 250})
   toast.promise(
       remoteUpdatePage(page, changes),
       {
@@ -409,6 +417,32 @@ async function remoteUpdatePage(page, body) {
     .then(async (response) => {
       if (response.status != 200) {
         throw new Error(response)
+      } else {
+        return response.json()
+      }}
+    );
+  // const payload = await response.json();
+}
+
+async function remoteCreatePage(page) {
+  let headers = {content_type: "application/json"}
+
+  for (const key of Object.keys(requiredHeader)) {
+      headers[key] = requiredHeader[key]
+  }
+
+  if (page.current_section === "") {
+    throw new Error("Pages must have a section")
+  }
+  return fetch(createPageUrl.replace("1918", page.current_section), { method: "POST", headers: headers, body: JSON.stringify(page),
+    credentials: "same-origin"})
+    .then(async (response) => {
+      console.log("PROCESSING")
+      // console.log(response)
+      if (response.status != 200) {
+        const errorText = await response.text()
+        console.log(errorText)
+        throw new Error(errorText)
       } else {
         return response.json()
       }}
@@ -581,7 +615,7 @@ function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
     return <Select 
     isDisabled={disabled}
     options={beatOptions}
-    value={beat ? {"value": beat, "label": beatLabel(beat)} : undefined}
+    value={beat ? {"value": beat, "label": beatLabel(beat)} : ''}
     onChange={updateBeat}
     styles={style}
     formatGroupLabel={formatGroupLabel}
@@ -589,6 +623,13 @@ function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
       DropdownIndicator: null, 
       placeholder: "Choose beat..."} }/>
 }
+
+function findSection(sectionSlug) {
+    for (const s of allSections) {
+      if (s.slug == sectionSlug) return s
+    }
+    return undefined
+  }
 
 function SectionSelect ({section, updateSection, styleType="edit-field"}) {
 
@@ -621,16 +662,9 @@ function SectionSelect ({section, updateSection, styleType="edit-field"}) {
     }
   }
 
-  function findSection(sectionSlug) {
-    for (const s of allSections) {
-      if (s.slug == sectionSlug) return s
-    }
-    return undefined
-  }
-
   return <Select 
     options={allSections}
-    value={section ? findSection(section) : undefined}
+    value={ section ? findSection(section) : ''}
     onChange={updateSection}
     styles={style}
     formatGroupLabel={formatGroupLabel}
@@ -639,7 +673,7 @@ function SectionSelect ({section, updateSection, styleType="edit-field"}) {
       placeholder: "Choose section..."} }/>
 }
 
-function LinkInput ({selectedPage, updatePage}) {
+function LinkInput ({selectedPage, updatePage, isLocalOnly=false}) {
   const [assignmentFolder, changeAssignmentFolder] = useState(selectedPage.assignment_folder);
 
   useEffect(() => {
@@ -656,7 +690,7 @@ function LinkInput ({selectedPage, updatePage}) {
             placeholder="Assignment folder link..." 
             value={assignmentFolder}
             onChange={e => changeAssignmentFolder(e.target.value)}
-            onBlur={(e) => updateAssignmentFolder(selectedPage, e.target.value, updatePage)}>
+            onBlur={(e) => updateAssignmentFolder(selectedPage, e.target.value, updatePage, isLocalOnly)}>
             </input>
           </div>
 }
@@ -691,7 +725,7 @@ function LinkOpenButton ({url, className, iconSize}) {
             </div>);
 }
 
-function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId}) {
+function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
 
 
     let selectedClass = "";
@@ -700,19 +734,25 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
       selectedClass="row-selected";
     }
 
+    function setSidebar(mode) {
+      setSelectedArticleId(page.pk)
+      setActiveSidebar(mode)
+    }
 
     return <tr key={page.pk} className={selectedClass}>
             <td class="slug-cell">
-              <span class="slug-link--container">
-              <a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a>
+                <span class="slug-link--container">
+              <a class="slug-link" href={articleUrl.replace("1918", page.pk)}>
+              {page["title"]}
+              </a>
               </span> 
               <div className="slug-cell--button-panel">
-              <button class="slug-cell--edit-button" onClick={() => setSelectedArticleId(page.pk)}><PencilOutline
+              <button class="slug-cell--edit-button" onClick={() => setSidebar(SIDEBAR.EDIT)}><PencilOutline
                 color={'#00000'} 
                 height={"18px"}
                 width={"18px"}
               /></button>
-              <button class="slug-cell--preview-button" onClick={() => setSelectedArticleId(page.pk)}><Eye 
+              <button class="slug-cell--preview-button" onClick={() => setSidebar(SIDEBAR.PREVIEW)}><Eye 
                 className
                 height={"18px"}
                 width={"18px"}/>
@@ -741,30 +781,19 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
     </tr>
 }
 
-function ArticleRowSkeleton() {
-  return <tr>
-    <td class="slug-cell"><Skeleton width="15em"/></td>
-    <td class="authors-cell"><Skeleton width="10em"/></td>
-    <td><Skeleton width="15em"/></td>
-    <td><Skeleton/></td>
-    <td><Skeleton/></td>
-    <td><Skeleton/></td>
-    <td><Skeleton/></td>
-    </tr>
-}
 
-function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticleId}) {
+function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
 
 
   const rows = []
   
   for (const [id, page] of allPages) { // [id, page]
     rows.push(
-      ArticleRow({updatePage: updatePage, page: page, selectedArticleId: selectedArticleId, setSelectedArticleId: setSelectedArticleId})
+      ArticleRow({updatePage: updatePage, page: page, selectedArticleId: selectedArticleId, setSelectedArticleId: setSelectedArticleId, setActiveSidebar: setActiveSidebar})
     )
   }
 
-  if (rows.length == 0) rows.push(<ArticleRowSkeleton/>)
+  if (rows.length == 0) return <div class="article-list"><Skeleton className={"article-list--skeleton"} height="1.5lh" width="82em"/><Skeleton className={"article-list--skeleton"} height="3lh" width="82em" count={10}/></div>
   useEffect(() => {
     for (const [id, page] of allPages) {
       if(page.live && page.article_status != 6) updateArticleStatus(page, statuses[5], updatePage)
@@ -866,6 +895,7 @@ function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, 
 
   useEffect(() => {
     setLoading(true)
+    setAllPagesLoaded(false)
     setCurrentPage(0)
     clearPages()
   }, [isOnlyUserFilter, isIncludingPublished])
@@ -918,7 +948,13 @@ function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPubli
   </div>
 }
 
-function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId}) {
+const SIDEBAR = {
+  CREATE: "create",
+  EDIT: "edit",
+  PREVIEW: "preview"
+}
+
+function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
   const [isOnlyUserFilter, setOnlyUserFilter] = useState(false);
   const [isIncludingPublished, setIsIncludingPublished] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -941,7 +977,8 @@ function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedA
         <ArticleList allPages={allPages} 
           updatePage={updatePage}
           selectedArticleId={selectedArticleId}
-          setSelectedArticleId={setSelectedArticleId}/>
+          setSelectedArticleId={setSelectedArticleId}
+          setActiveSidebar={setActiveSidebar}/>
         <MoreArticlesButton 
           addPages={addPages} 
           clearPages={clearPages}
@@ -958,7 +995,7 @@ function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedA
   );
 }
 
-function MainPanel({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId}) {
+function MainPanel({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
   console.log(allPages)
 
   return (
@@ -969,9 +1006,128 @@ function MainPanel({allPages, addPages, updatePage, clearPages, selectedArticleI
           updatePage={updatePage}
           clearPages={clearPages}
           selectedArticleId={selectedArticleId}
-          setSelectedArticleId={setSelectedArticleId}/>
+          setSelectedArticleId={setSelectedArticleId}
+          setActiveSidebar={setActiveSidebar}/>
     </div>
   )
+}
+
+function CreateSidebar({createPage}) {
+  const [title, changeTitle] = useState("");
+  const [newPage, updateNewPage] = useState({
+    title: title,
+    article_authors: [],
+    article_status: 1,
+    assignment_memo: '',
+    ethics_notes: '',
+    current_section: ''
+  });
+
+  useEffect(() => {
+    changeTitle(newPage["title"]);
+  }, [newPage]);
+
+  function handlePageCreation() {
+    console.log(newPage)
+    toast.promise(
+      remoteCreatePage(newPage),
+      {
+        pending: {
+          render(){
+            return "Creating page " + newPage.title
+          },
+          position: 'bottom-left',
+        },
+        success: {
+          render() {return "Created page " + newPage.title},
+          autoClose: 1500},
+        error: {
+          render({data}) {
+            return "Failed to create page " + newPage.title + ": " + data.message
+          }
+          
+        }
+        
+      }
+    ).then((pageJson) => {
+        createPage(JSON.parse(pageJson))
+        changeTitle("")
+        updateNewPage({
+          article_authors: [],
+          article_status: 1,
+          ethics_notes: '',
+          assignment_memo: ''
+        })
+      })
+      .catch(async (error) => {
+        console.log(error)
+      })
+    
+    
+  }
+
+  return <div className="edit-content">
+    <textarea 
+      style={{
+        width: "100%",
+      }}
+      className="edit-field--title"
+      placeholder="Add title..."
+      value={title} // ...force the input's value to match the state variable...
+      onChange={e => changeTitle(e.target.value.replace("\n", ""))}
+      onBlur={e => updateNewPage({
+        ...newPage, title: e.target.value
+      })}></textarea>
+    <div>
+      <h4>Authors</h4>
+      <div className="edit-field--sidebyside">
+        <div className="edit-field--side-label">Reportage</div> <AuthorsSelect 
+        currentAuthors={newPage.article_authors} 
+        handleUpdateAuthors={(newAuthorList) => updateAuthors(newPage, newAuthorList, "author", (e) => updateNewPage({...e}), true)}
+        authorType={"author"}
+        styleType={"edit-field"}
+        />
+      <div className="edit-field--side-label">Backfield</div> <AuthorsSelect 
+        currentAuthors={newPage.article_authors} 
+        handleUpdateAuthors={(newAuthorList) => updateAuthors(newPage, newAuthorList, "backfield_editor", (e) => updateNewPage({...e}), true)}
+        authorType={"backfield_editor"}
+        styleType={"edit-field"}
+        />
+      <div className="edit-field--side-label">Copy</div> <AuthorsSelect 
+        currentAuthors={newPage.article_authors} 
+        handleUpdateAuthors={(newAuthorList) => updateAuthors(newPage, newAuthorList, "copy_editor", (e) => updateNewPage({...e}), true)}
+        authorType={"copy_editor"}
+        styleType={"edit-field"}
+        />
+      </div>
+    </div>
+    <div>
+      <h4>Organization</h4>
+
+      <div className="edit-field--sidebyside">
+        <div className="edit-field--side-label">Section</div><SectionSelect section={newPage.current_section} updateSection={(newSection) => updateSection(newPage, newSection, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
+        <div className="edit-field--side-label">Beat</div><BeatSelect beat={newPage.category_page} updateBeat={(newBeat) => updateBeat(newPage, newBeat, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
+      </div>
+    </div>
+    <div>
+      <h4>Assignment Management</h4>
+      
+      <div className="edit-field--sidebyside">
+
+        <div className="edit-field--side-label">Folder</div>
+          <LinkInput selectedPage={newPage} updatePage={(e) => updateNewPage(e)} isLocalOnly={true}/>
+        <div className="edit-field--side-label">Status</div> <ArticleStatus status={newPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(newPage, newStatus, (e) => updateNewPage(e), true)}/>
+        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={newPage.deadline} handleUpdateDate={(newDate) => updateDeadline(newPage, newDate, (e) => updateNewPage(e), true)}/></div>
+      </div>
+      <h5>Assignment Notes </h5>
+      <AssignmentMemo selectedPage={newPage} updatePage={(e) => updateNewPage(e)} isLocalOnly={true}/>
+      <h5>Ethics Notes </h5>
+      <EthicsNotes selectedPage={newPage} updatePage={(e) => {
+        updateNewPage(e)
+      }} isLocalOnly={true}/>
+    </div>
+    <button onClick={handlePageCreation}>Create</button>
+  </div>
 }
 
 function EditSidebar({selectedPage, updatePage}) {
@@ -1065,12 +1221,12 @@ const schema = new Schema({
   marks: marks,
 })
 
-function EthicsNotes({selectedPage, updatePage}) {
-  return <RichTextEditor onBlurCallback={(e) => updateEthicsNotes(selectedPage, e.target.innerHTML, updatePage)} defaultText={selectedPage.ethics_notes}/>
+function EthicsNotes({selectedPage, updatePage, isLocalOnly = false}) {
+  return <RichTextEditor onBlurCallback={(e) => updateEthicsNotes(selectedPage, e.target.innerHTML, updatePage, isLocalOnly)} defaultText={selectedPage.ethics_notes}/>
 }
 
-function AssignmentMemo({selectedPage, updatePage}) {
-  return <RichTextEditor onBlurCallback={(e) => updateAssignmentMemo(selectedPage, e.target.innerHTML, updatePage)} defaultText={selectedPage.assignment_memo}/>
+function AssignmentMemo({selectedPage, updatePage, isLocalOnly = false}) {
+  return <RichTextEditor onBlurCallback={(e) => updateAssignmentMemo(selectedPage, e.target.innerHTML, updatePage, isLocalOnly)} defaultText={selectedPage.assignment_memo}/>
 }
 
 function RichTextEditor({onBlurCallback, defaultText}) {
@@ -1152,35 +1308,49 @@ function RichTextEditor({onBlurCallback, defaultText}) {
   );
 }
 
-function SidebarViewsSelector({selectedPage, updatePage, createPage}) {
+function SidebarViewsSelector({selectedPage, updatePage, createPage, activeSidebar, setActiveSidebar}) {
   return (
     <Tabs
-      defaultActiveKey="edit"
+      activeKey={activeSidebar}
+      onToggle={(e) => console.log(e)}
+      onClick={(e) => {
+        let element = e.target
+        let dataset = e.target.dataset;
+        if (dataset != null) {
+          let value = dataset.rrUiEventKey
+          if (value != null) {
+            setActiveSidebar(value)
+          }
+        }
+      }}
       transition={false}
       id="noanim-tab-example"
       className="mb-3"
     >
-      <Tab eventKey="create" title="Create" disabled>
-        Tab content for Create
+      <Tab eventKey={SIDEBAR.CREATE} title="Create">
+        <CreateSidebar 
+          createPage={createPage} />
       </Tab>
-      <Tab eventKey="edit" title="Edit">
+      <Tab eventKey={SIDEBAR.EDIT} title="Edit">
         <EditSidebar 
           selectedPage={selectedPage}
           updatePage={updatePage} />
       </Tab>
-      <Tab eventKey="view" title="View" disabled>
+      <Tab eventKey={SIDEBAR.PREVIEW} title="Preview" disabled>
         Tab content for View
       </Tab>
     </Tabs>
   );
 }
 
-function Sidebar({selectedPage, updatePage, createPage}) {
+function Sidebar({selectedPage, updatePage, createPage, activeSidebar, setActiveSidebar}) {
   return <div className="metadata-editor">
       <SidebarViewsSelector
         selectedPage={selectedPage}
         updatePage={updatePage}
-        createPage={createPage}/>
+        createPage={createPage}
+        activeSidebar={activeSidebar}
+        setActiveSidebar={setActiveSidebar}/>
     </div>;
 }
 
@@ -1205,8 +1375,7 @@ function ContentTracker() {
   const [allPages, setAllPages] = useState(
     pages
   );
-
-
+  const [activeSidebar, setActiveSidebar] = useState(SIDEBAR.CREATE);
 
   function updatePage(newPage) {
     const updatedPages = new Map(allPages)
@@ -1245,6 +1414,7 @@ function ContentTracker() {
               clearPages={clearPages}
               selectedArticleId={selectedArticleId}
               setSelectedArticleId={setSelectedArticleId}
+              setActiveSidebar={setActiveSidebar}
             />
         </Panel>
         <Separator className="sidebar-resize-handle"/>
@@ -1252,7 +1422,13 @@ function ContentTracker() {
           <Sidebar 
             selectedPage={allPages.get(selectedArticleId)}
             updatePage={updatePage}
-            createPage={(page) => {addPages([page])}}
+            createPage={(page) => {
+              const newPages = new Map()
+              newPages.set(page.pk, page)
+              setAllPages(new Map([...newPages, ...allPages]))
+            }}
+            activeSidebar={activeSidebar}
+            setActiveSidebar={setActiveSidebar}
           />
           </Panel>
       </Group>

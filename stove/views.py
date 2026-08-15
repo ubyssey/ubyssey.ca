@@ -4,12 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 from wagtail.models import Page
-from article.models import ArticlePage
+from article.models import ArticlePage, StandardArticlePage
 from article.models import ArticleAuthorsOrderable
 from section.models import CategoryPage, SectionPage
 from authors.models import AuthorPage
@@ -89,8 +89,67 @@ def load_pages(request, section="all", page=1):
     return JsonResponse(result, safe=False)
 
 @login_required
-def load_page(request, page_id):
+@require_POST
+def create_page(request, section_id):
+    data = request.body.decode('utf-8')
+    data = json.loads(request.body.decode('utf-8'))
 
+    if not data['title']:
+        response = HttpResponseBadRequest("Title needed to create page")
+        return response
+    section = get_object_or_404(SectionPage, pk=section_id)
+
+    newPage = StandardArticlePage(
+        title=data["title"],
+        depth=4,
+        slug=slugify(data["title"]),
+        content="",
+        live=False
+    )
+
+    if "assignment_folder" in data:
+        newPage.assignment_folder = data["assignment_folder"]
+    if "deadline" in data:
+        newPage.deadline = data["deadline"]
+    if ("category_page" in data):
+        if (newPage.get_primary_topic()): newPage.topics.remove(newPage.get_primary_topic().name)
+        try: 
+            newPage.category_page = get_object_or_404(CategoryPage, pk=data["category_page"])
+        except: 
+            return HttpResponseBadRequest('Unable to find category page') 
+        newPage.topics.add(newPage.category_page.title)
+        newPage.primary_tag_slug = slugify(newPage.category_page.title)
+    if ("article_status" in data):
+        newPage.article_status = data["article_status"]
+    if ("article_authors" in data):
+        new_authors = data["article_authors"]  
+        items = [
+            ArticleAuthorsOrderable(
+                author=get_object_or_404(AuthorPage, id=item["author"]),
+                author_role=item["author_role"],
+                sort_order=index,
+            )
+            for index, item in enumerate(new_authors or [])
+        ]
+        newPage.article_authors.set(items)
+    if ("assignment_memo" in data):
+        newPage.assignment_memo = data["assignment_memo"]
+    if ("ethics_notes" in data):
+        newPage.ethics_notes = data["ethics_notes"]
+
+    section.add_child(instance=newPage)
+
+    try: 
+        newPage.save_revision()
+    except ValidationError as err:
+        newPage.delete()
+        return HttpResponseBadRequest(err.messages) 
+    
+
+    return JsonResponse(newPage.get_latest_revision_as_object().to_json(), safe=False)
+
+@login_required
+def load_page(request, page_id):
     pageObject = get_object_or_404(ArticlePage, pk=page_id)
 
     pageJson = pageObject.get_latest_revision_as_object().to_json()
@@ -145,6 +204,8 @@ def update_content_tracker(request, page_id):
 
     if ("title" in data):
         page.title = data["title"]
+        if not page.live:
+            page.slug = slugify(data["title"])
     if ("assignment_folder" in data):
         page.assignment_folder = data["assignment_folder"]
     if ("category" in data):
