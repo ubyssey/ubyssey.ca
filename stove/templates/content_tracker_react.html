@@ -25,6 +25,7 @@
     const currentUser = "{{ request.user.get_full_name }}"
     const articleUrl = "{% url 'stove:manuscript_editor' 1918 %}"
     const loadArticlesUrl = "{% url 'stove:content_tracker_load_pages' section 1918 %}"
+    const loadPageUrl = "{% url 'stove:content_tracker_load_page' 1918 %}"
     const pageSection = "{{section|title}}"
     
     {% autoescape off %}

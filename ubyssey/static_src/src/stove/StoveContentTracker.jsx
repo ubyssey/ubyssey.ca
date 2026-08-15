@@ -129,6 +129,10 @@ function findAuthorName(authorId) {
   }
 
 function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType="edit-field", disabled, isPublished}) {
+  if (currentAuthors === "") {
+    return <Skeleton width="14em"/>
+  }
+  
   let initialAuthors = [];
   for (const authorId in currentAuthors) {
     const author = currentAuthors[authorId]
@@ -387,7 +391,6 @@ async function handleRemoteUpdate(page, changes, updatePage, pendingText, succes
       }
     )
     .then((result) => {
-      console.log(JSON.parse(result))
       updatePage(JSON.parse(result))
     }
     )
@@ -507,7 +510,7 @@ function beatLabel(beatPk) {
 
   for (const {label, options} of beatOptions) {
     for (const beat of options) {
-      if (beatPk === beat.value) return beat.label
+      if (+beatPk === beat.value) return beat.label
     }
   }
   return "[No label provided]"
@@ -574,6 +577,7 @@ function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
       })
     }
   }
+
     return <Select 
     isDisabled={disabled}
     options={beatOptions}
@@ -791,17 +795,21 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   )
 }
 
-function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, isIncludingPublished}) {
-  const [isLoading, setLoading] = useState(false);
+function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, isIncludingPublished, isLoading, setLoading}) {
   const [currentPage, setCurrentPage] = useState(0);
   const [allPagesLoaded, setAllPagesLoaded] = useState(false)
+
+  function loadPageJson(pk) {
+    return fetch(loadPageUrl.replace("1918", pk), {method: "GET", headers: headers, credentials: "same-origin"}).then((response) => {
+          return response.json()
+        })
+  }
 
   function fetchNextPage() {
       const params = new URLSearchParams();
       if (isOnlyUserFilter) params.append("username", currentUser);
       if (!isIncludingPublished) params.append("include_published", "false")
 
-      console.log(loadArticlesUrl.replace("1918", currentPage + 1) + "?" + params)
       return fetch(loadArticlesUrl.replace("1918", currentPage + 1) + "?" + params, { method: "GET", headers: headers, credentials: "same-origin"})
         .then(async (response) => {
           if (response.status != 200) {
@@ -820,7 +828,26 @@ function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, 
             } else {
               addPages(newPages)
             }
-            return json
+            return newPages
+        }).then((pages) => {
+          let pagePromises = []
+          for (const page of pages) {
+            pagePromises = [...pagePromises, loadPageJson(page.pk) ]
+          }
+          const chunkSize = 5;
+          const chunkPromises = [];
+          for (let i = 0; i < pagePromises.length; i += chunkSize) {
+            chunkPromises.push(
+              Promise.all(pagePromises.slice(i, i + chunkSize)).then((pages) => {
+                let jsonPages = []
+                for (const page of pages) {
+                  jsonPages.push(JSON.parse(page))
+                }
+                addPages(jsonPages)
+              return jsonPages;
+            }));
+          }
+          return Promise.all(chunkPromises)
         })
         .catch((error) => console.log(error));
     }
@@ -862,7 +889,7 @@ function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, 
   );
 }
 
-function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPublished, setIsIncludingPublished}) {
+function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPublished, setIsIncludingPublished, isLoading}) {
   return <div className="query-panel">
     <div className="query-toggle query-item">
       <span className="query-label">Assigned to me </span>
@@ -873,6 +900,7 @@ function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPubli
       width={42}
       checkedIcon={null}
       uncheckedIcon={null}
+      disabled={isLoading}
       />
     </div>
     <div className="query-toggle query-item">
@@ -884,6 +912,7 @@ function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPubli
       width={42}
       checkedIcon={null}
       uncheckedIcon={null}
+      disabled={isLoading}
       />
     </div>
   </div>
@@ -892,6 +921,7 @@ function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPubli
 function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId}) {
   const [isOnlyUserFilter, setOnlyUserFilter] = useState(false);
   const [isIncludingPublished, setIsIncludingPublished] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   return (
     <Tabs
@@ -906,7 +936,8 @@ function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedA
           isOnlyUserFilter={isOnlyUserFilter} 
           setOnlyUserFilter={setOnlyUserFilter}
           isIncludingPublished={isIncludingPublished}
-          setIsIncludingPublished={setIsIncludingPublished}/>
+          setIsIncludingPublished={setIsIncludingPublished}
+          isLoading={isLoading}/>
         <ArticleList allPages={allPages} 
           updatePage={updatePage}
           selectedArticleId={selectedArticleId}
@@ -916,7 +947,9 @@ function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedA
           clearPages={clearPages}
           pkInPages={(pk) => allPages.get(pk) != undefined } 
           isOnlyUserFilter={isOnlyUserFilter}
-          isIncludingPublished={isIncludingPublished}/>
+          isIncludingPublished={isIncludingPublished}
+          isLoading={isLoading}
+          setLoading={setLoading}/>
       </Tab>
       <Tab eventKey="calendar" title="Calendar" disabled>
         Tab content for Calendar
@@ -1182,11 +1215,14 @@ function ContentTracker() {
   }
 
   function addPages(newPages) {
-    const updatedPages = new Map(allPages)
-    for (const page of newPages) {
-      updatedPages.set(page.pk, page)
-    }
-    setAllPages(updatedPages);
+      setAllPages(currentPages => {
+        const updatedPages = new Map(currentPages)
+        for (const page of newPages) {
+          updatedPages.set(page.pk, page)
+        }
+        return updatedPages;
+    });
+
   }
 
   function clearPages() {

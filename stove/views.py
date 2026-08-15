@@ -89,6 +89,54 @@ def load_pages(request, section="all", page=1):
     return JsonResponse(result, safe=False)
 
 @login_required
+def load_page(request, page_id):
+
+    pageObject = get_object_or_404(ArticlePage, pk=page_id)
+
+    pageJson = pageObject.get_latest_revision_as_object().to_json()
+    return JsonResponse(pageJson, safe=False)
+
+@login_required
+def load_partial_pages(request, section="all", page=1):
+    username = request.GET.get('username', '')
+    include_published = request.GET.get('include_published', '')
+    
+    qs = ArticlePage.objects.all()
+    if (section != "all"):
+        qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
+    if (username):
+        author_page = get_object_or_404(AuthorPage, full_name=username)
+        qs = qs.filter(article_authors__author=author_page)
+    if (include_published.lower() == "false"):
+        qs = qs.filter(live=False)
+    
+    qs = qs.order_by("-latest_revision_created_at", "-pk")
+
+    paginator = Paginator(qs, 20)
+
+    pages = paginator.get_page(request.GET.get("article-page", page))
+
+    result="[]"
+    if (len(pages) > 0):
+        result = "["
+        for currentPage in pages: 
+            currentPage = currentPage.latest_revision.content
+            result += "{"
+            result += "\"title\": \"" + currentPage.get("title") + "\", "
+            result += "\"live\": " + str(currentPage.get("live")).lower() + ", "
+            result += "\"pk\": " + str(currentPage.get("pk")) + ", "
+            result += "\"assignment_folder\": \"" + (currentPage.get("assignment_folder") if currentPage.get("assignment_folder") else "") + "\", "
+            result += "\"article_authors\": \"\", "
+            result += "\"article_authors\": \"" + "\", "
+            result += "\"article_status\": " + str(currentPage.get("article_status")) + ", "
+            result += "\"category_page\": \"" + (str(currentPage.get("category_page")) if currentPage.get("category_page") else "")+ "\", "
+            result += "\"deadline\": \"" + (str(currentPage.get("deadline")) if currentPage.get("deadline") else "")+ "\"},"
+            
+
+        result = result[:-1] + "]"
+    return JsonResponse(result, safe=False)
+
+@login_required
 @require_POST
 def update_content_tracker(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
