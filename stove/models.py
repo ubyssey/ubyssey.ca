@@ -1,7 +1,8 @@
 from django.db import models
 
+
 # Relates Wagtail Page to YJS binary document
-class ManuscriptCollaboration(models.Model):
+class PageCollaboration(models.Model):
     page = models.OneToOneField(
         "wagtailcore.Page",
         on_delete=models.CASCADE,

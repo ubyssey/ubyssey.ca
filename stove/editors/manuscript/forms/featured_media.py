@@ -31,7 +31,7 @@ class FeaturedMediaForm(forms.ModelForm):
 
 
 # Some pages don't have featured media, so sometimes returns None
-def get_featured_media_form(page, data=None):
+def create_form(page, data=None):
     manager = getattr(page, "featured_media", None)
     model = getattr(manager, "model", None)
     if not manager or not model:
@@ -45,18 +45,7 @@ def get_featured_media_form(page, data=None):
     return form_class(**kwargs)
 
 
-# Creates a form class depending on the article page's featured media model
-def get_featured_media_form_class(model):
-    return forms.modelform_factory(
-        model,
-        form=FeaturedMediaForm,
-        fields=FEATURED_MEDIA_FIELDS,
-        widgets={"caption": forms.Textarea},
-        labels=FEATURED_MEDIA_LABELS,
-    )
-
-
-def save_featured_media_form(page, form):
+def apply_form(page, form, user=None):
     manager = page.featured_media
 
     if not any(form.cleaned_data.get(name) for name in FEATURED_MEDIA_FIELDS):
@@ -69,6 +58,18 @@ def save_featured_media_form(page, form):
     item.sort_order = items[0].sort_order if items else 0
 
     manager.set([item] + items[1:] if items else [item])
+
+
+# Creates a form class depending on the article page's featured media model
+def get_featured_media_form_class(model):
+    return forms.modelform_factory(
+        model,
+        form=FeaturedMediaForm,
+        fields=FEATURED_MEDIA_FIELDS,
+        widgets={"caption": forms.Textarea},
+        labels=FEATURED_MEDIA_LABELS,
+    )
+
 
 
 # Finds the parent page type, so doesn't break if not basic article page

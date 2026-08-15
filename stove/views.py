@@ -1,9 +1,7 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
@@ -19,24 +17,25 @@ from django.views.decorators.http import require_GET, require_POST
 from wagtail.admin.templatetags.wagtailadmin_tags import avatar_url
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-from pycrdt import Doc
+from stove.editors.collaboration.persistence import initialize_page_collaboration
+from stove.models import PageCollaboration
 
-from stove.editors.collaboration.consumers import restore_group_name
-from stove.models import ManuscriptCollaboration
-from stove.editors.manuscript.forms.article_media import (
+from stove.editors.manuscript.media import (
     add_article_media,
     get_article_media_tag_options,
     get_article_media_upload_form,
     save_article_media,
 )
-from stove.editors.manuscript.forms.authors import get_article_authors_form
-from stove.editors.manuscript.forms.featured_media import get_featured_media_form
-from stove.editors.manuscript.forms.metadata import PAGE_FORM_FIELDS, get_page_form
+from stove.editors.manuscript.forms.authors import create_form as create_article_authors_form
+from stove.editors.manuscript.forms.featured_media import create_form as create_featured_media_form
+from stove.editors.manuscript.forms.metadata import PAGE_FORM_FIELDS, create_form as create_page_form
 from stove.editors.manuscript.schema import get_streamfield_editors
-from stove.editors.manuscript.serialization import apply_editor_post
-from stove.editors.collaboration.revisions import autosave_manuscript_revision
+from stove.editors.manuscript.preview import prepare_preview
+from stove.editors.manuscript.submission import process_submitted_page
+from stove.editors.collaboration.revisions import (
+    restore_page_revision,
+    save_page_revision,
+)
 
 
 # include editors, copy editors
@@ -120,27 +119,15 @@ def update_content_tracker(request, page_id):
 
 @login_required
 @require_POST
-def manuscript_collaboration(request, page_id):
+def page_collaboration(request, page_id):
     # Initalization before websockets kick in
     if not request.body or len(request.body) > 10 * 1024 * 1024:
         return HttpResponse(status=400)
 
     try:
-        ydoc = Doc()
-        ydoc.apply_update(request.body)
-    except Exception:
-        return HttpResponse(status=400)
-
-    with transaction.atomic():
-        page = get_object_or_404(
-            Page.objects.select_for_update().only("pk"),
-            pk=page_id,
-        )
-        session, _ = ManuscriptCollaboration.objects.get_or_create(page=page)
-        if not session.document:
-            session.document = request.body
-            session.save(update_fields=["document", "updated_at"])
-        document = bytes(session.document)
+        document = initialize_page_collaboration(page_id, request.body)
+    except Page.DoesNotExist:
+        return HttpResponse(status=404)
 
     return HttpResponse(document, content_type="application/octet-stream")
 
@@ -149,37 +136,18 @@ def manuscript_collaboration(request, page_id):
 def manuscript_editor(request, page_id):
     page = get_manuscript_page(page_id)
     editor_errors = {}
-    page_form = get_page_form(page)
-    article_authors_form = get_article_authors_form(page)
-    featured_media_form = get_featured_media_form(page)
+    page_form = create_page_form(page)
+    article_authors_form = create_article_authors_form(page)
+    featured_media_form = create_featured_media_form(page)
 
     if request.method == "POST":
         action = request.POST.get("action") or "draft"
         saved_revision = None
-        editor_errors, page_form, article_authors_form, featured_media_form = apply_editor_post(page, request.POST)
+        editor_errors, page_form, article_authors_form, featured_media_form = process_submitted_page(page, request.POST)
 
         if not editor_errors:
-            siblings = page.get_siblings().exclude(id=page.id)
-            if siblings.filter(slug=page.slug).exists():
-                editor_errors["slug"] = ["Slug must be unique among siblings."]
-            else:
-                try:
-                    page.full_clean()
-                except ValidationError as e:
-                    for field, field_errors in e.message_dict.items():
-                        editor_errors.setdefault(field, []).extend(field_errors)
-                else:
-                    try:
-                        saved_revision = page.save_revision(user=request.user)
-                        if action == "publish":
-                            saved_revision.publish(user=request.user)
-                            page = get_object_or_404(Page, id=page_id).specific
-                            print("Revised page")
-                        else:
-                            print("Draft Saved")
-                    except Exception:
-                        editor_errors["__all__"] = ["Failed to update page."]
-                        print("Failed to update page:" + page.title)
+            page, saved_revision, save_errors = save_page_revision(page, action, request.user)
+            editor_errors.update(save_errors)
 
         if request.headers.get("x-requested-with") == "XMLHttpRequest" or "application/json" in request.headers.get("accept", ""):
             if editor_errors:
@@ -195,7 +163,7 @@ def manuscript_editor(request, page_id):
 
     stream_editors = get_streamfield_editors(page)
     article_media = get_object_or_404(Page, id=page_id).specific.article_media.all()
-    last_saved_manuscript = ManuscriptCollaboration.objects.filter(page_id=page_id).only("updated_at").first()
+    last_saved_manuscript = PageCollaboration.objects.filter(page_id=page_id).only("updated_at").first()
 
     # self: contains information like page title, slug, etc, for form fields = for preview rendering
     # page_form: contains the form for the page fields
@@ -300,28 +268,10 @@ def manuscript_restore(request, page_id):
         return JsonResponse({"errors": {"revision": ["Choose a version to restore."]}}, status=400)
 
     revision = get_object_or_404(page.revisions, id=revision_id)
-    restored_page = revision.as_object()
-
-    # Attempts to save the last version of the page before restoration
     try:
-        current_data = request.POST.copy()
-        current_data.pop("revision", None)
-        current_page = page.get_latest_revision_as_object()
-        apply_editor_post(current_page, current_data)
-        current_page.save_revision(user=request.user)
-
-        saved_revision = restored_page.save_revision(user=request.user)
+        saved_revision = restore_page_revision(page, revision, request.POST, request.user)
     except Exception:
         return JsonResponse({"errors": {"__all__": ["Failed to restore version."]}}, status=400)
-
-    # Delete cause this is a full restore of the page not a change
-    ManuscriptCollaboration.objects.filter(page_id=page_id).delete()
-    channel_layer = get_channel_layer()
-    if channel_layer is not None:
-        async_to_sync(channel_layer.group_send)(
-            restore_group_name(page_id),
-            {"type": "manuscript.restored"},
-        )
 
     return JsonResponse({
         "ok": True,
@@ -336,18 +286,13 @@ def manuscript_restore(request, page_id):
 @require_POST
 def manuscript_preview(request, page_id):
     page = get_manuscript_page(page_id)
-    editor_errors = {}
+    revision = None
 
     revision_id = request.POST.get("revision")
     if revision_id and revision_id != "current":
         revision = get_object_or_404(page.revisions, id=revision_id)
-        page = revision.as_object()
-        page_form = get_page_form(page)
-        article_authors_form = get_article_authors_form(page)
-        featured_media_form = get_featured_media_form(page)
-    else:
-        editor_errors, page_form, article_authors_form, featured_media_form = apply_editor_post(page, request.POST, preview=True)
-        autosave_manuscript_revision(page_id, request.POST, request.user)
+
+    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_preview(page, request.POST, request.user, revision)
 
     return JsonResponse({
         "errors": editor_errors,
@@ -428,7 +373,7 @@ def section_editor(request, page_id):
     return render(request, "editors/section_editor.html", {"self": page})
 
 
-#  Helpers
+#  Helpers - We should probably move these at some point
 
 # We need latest draft here not latest live
 def get_manuscript_page(page_id):

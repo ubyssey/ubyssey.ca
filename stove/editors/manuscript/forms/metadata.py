@@ -34,9 +34,14 @@ PAGE_FORM_LABELS = {
     "show_last_modified": "Show last modified",
 }
 
-def get_page_form(page, data=None):
+def create_form(page, data=None):
     form_class = get_page_form_class(page.__class__)
     return form_class(data=data, instance=page) if data is not None else form_class(instance=page)
+
+
+def apply_form(page, form, user=None):
+    for field_name, value in form.cleaned_data.items():
+        setattr(page, field_name, value)
 
 
 # We create a custom form class based on the specific page model, but we filter for only the fields above

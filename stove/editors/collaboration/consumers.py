@@ -10,7 +10,7 @@ from pycrdt.websocket.django_channels_consumer import (
 )
 
 from wagtail.models import Page
-from stove.models import ManuscriptCollaboration
+from stove.models import PageCollaboration
 
 # Formerly was 0.25
 PERSISTENCE_BATCH_DELAY_SECONDS = 0.1
@@ -23,19 +23,19 @@ PERSISTENCE_ACK_MESSAGE = 4
 
 
 # This channel is used to tell all connected editors that a restore happened
-def restore_group_name(page_id):
+def page_restore_group_name(page_id):
     return f"stove_yjs_restore_{page_id}"
 
 
-# Sync Y document with manuscript page
-class ManuscriptYjsConsumer(YjsConsumer):
+# Sync Y document with a Wagtail page
+class PageYjsConsumer(YjsConsumer):
 
     def __init__(self):
         super().__init__()
         self.page_id = None
         self._pending_updates = []
         self._persistence_task = None
-        # Manuscript Collaboration object PK
+        # Page collaboration object PK
         self.collaboration_id = None
 
     # Figure out proper authentification here, maybe use assignment manager assignments?
@@ -51,14 +51,14 @@ class ManuscriptYjsConsumer(YjsConsumer):
 
         await super().connect()
         await self.channel_layer.group_add(
-            restore_group_name(self.page_id),
+            page_restore_group_name(self.page_id),
             self.channel_name,
         )
 
     async def disconnect(self, code):
         if self.page_id is not None:
             await self.channel_layer.group_discard(
-                restore_group_name(self.page_id),
+                page_restore_group_name(self.page_id),
                 self.channel_name,
             )
         if self.room_name:
@@ -75,7 +75,7 @@ class ManuscriptYjsConsumer(YjsConsumer):
     def make_room_name(self):
         return f"stove_yjs_{self.page_id}"
 
-    async def manuscript_restored(self, event):
+    async def page_restored(self, event):
         await self.close(code=RESTORE_CLOSE_CODE)
 
     async def make_ydoc(self):
@@ -139,7 +139,7 @@ class ManuscriptYjsConsumer(YjsConsumer):
     @database_sync_to_async
     def _load_document(self):
         session = (
-            ManuscriptCollaboration.objects.filter(page_id=self.page_id)
+            PageCollaboration.objects.filter(page_id=self.page_id)
             .values_list("id", "document")
             .first()
         )
@@ -152,7 +152,7 @@ class ManuscriptYjsConsumer(YjsConsumer):
     def _merge_document(self, updates):
         with transaction.atomic():
             Page.objects.select_for_update().only("pk").get(pk=self.page_id)
-            session = ManuscriptCollaboration.objects.select_for_update().filter(
+            session = PageCollaboration.objects.select_for_update().filter(
                 pk=self.collaboration_id,
                 page_id=self.page_id,
             ).first()
