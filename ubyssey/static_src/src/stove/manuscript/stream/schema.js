@@ -4,14 +4,13 @@ import { Schema } from "prosemirror-model";
 import { baseNodesWithLists, marks } from "../rich_text/index.jsx";
 
 // Document Schema
-// structblocks are flattened which is why they don't show up here
 const streamNodes = baseNodesWithLists.remove("doc").append({
   doc: {
     content: "stream_block+",
   },
 
   stream_block: {
-    content: "(editable_field | control_field | list_field)*",
+    content: "field*",
     isolating: true,
     defining: true,
     attrs: {
@@ -38,7 +37,36 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
     },
   },
 
+  struct_field: {
+    group: "field",
+    content: "field*",
+    isolating: true,
+    defining: true,
+    attrs: {
+      path: { default: [] },
+      label: { default: "Field" },
+      originalValue: { default: {} },
+    },
+
+    toDOM(node) {
+      return [
+        "div",
+        {
+          class: "pm-struct-field",
+          "data-field-label": node.attrs.label || "Field",
+        },
+        [
+          "div",
+          { class: "pm-struct-field__label" },
+          node.attrs.label || "Field",
+        ],
+        ["div", { class: "pm-struct-field__content" }, 0],
+      ];
+    },
+  },
+
   editable_field: {
+    group: "field",
     content: "block*",
     isolating: true,
     defining: true,
@@ -67,6 +95,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
   },
 
   control_field: {
+    group: "field",
     atom: true,
     selectable: false,
     isolating: true,
@@ -91,6 +120,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
   },
 
   list_field: {
+    group: "field",
     content: "list_item*",
     isolating: true,
     defining: true,
@@ -98,6 +128,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
       path: { default: [] },
       label: { default: "List" },
       itemValue: { default: null },
+      itemField: { default: null },
       itemFields: { default: [] },
     },
 
@@ -112,7 +143,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
   },
 
   list_item: {
-    content: "(editable_field | control_field | list_field)*",
+    content: "field*",
     isolating: true,
     defining: true,
     attrs: {

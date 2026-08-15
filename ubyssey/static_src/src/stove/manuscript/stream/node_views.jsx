@@ -27,6 +27,7 @@ export function streamNodeViews({ blockTypes, availableBlockTypes }) {
   return {
     stream_block: StreamBlockNodeView({ blockTypes, availableBlockTypes }),
     editable_field: EditableFieldNodeView,
+    struct_field: StructFieldNodeView,
     control_field: ControlFieldNodeView,
     list_field: ListFieldNodeView,
     list_item: ListItemNodeView,
@@ -93,6 +94,16 @@ function StreamBlockNodeView({ blockTypes, availableBlockTypes }) {
     );
   });
 }
+
+const StructFieldNodeView = forwardRef(function StructFieldNodeView({ children, nodeProps }, ref) {
+  return (
+    <div ref={ref} className="pm-struct-field">
+      {/* TODO figure out styling in the modals */}
+      <div className="pm-struct-field__label">{nodeProps.node.attrs.label}</div>
+      <div className="pm-struct-field__content" ref={nodeProps.contentDOMRef}>{children}</div>
+    </div>
+  );
+});
 
 const ListFieldNodeView = forwardRef(function ListFieldNodeView({ children, nodeProps }, ref) {
   const { node, getPos } = nodeProps;

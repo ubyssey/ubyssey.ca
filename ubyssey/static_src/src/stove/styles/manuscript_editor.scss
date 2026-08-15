@@ -6,6 +6,11 @@
     border: 1px solid black;
 }
 
+.pm-struct-field__content {
+    display: grid;
+    gap: 10px;
+}
+
 body {
     margin: 0;
 }
@@ -364,6 +369,7 @@ body {
 }
 
 .article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field__label,
+.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-struct-field__label,
 .article-block-editor-modal__body .pm-article-block-dialog__editor .pm-control-field__label {
     font: 13px/1.2 sans-serif;
 }

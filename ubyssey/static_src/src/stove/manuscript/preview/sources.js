@@ -129,6 +129,9 @@ function editableFieldInfoInNode(parent, targetPath, pathPrefix = [], startPos =
     if (node.type.name === "editable_field") {
       const path = pathPrefix.concat(node.attrs?.path || []);
       if (samePath(path, targetPath)) return { node, path, pos, textContent: node.textContent || "" };
+    } else if (node.type.name === "struct_field") {
+      const match = editableFieldInfoInNode(node, targetPath, pathPrefix.concat(node.attrs?.path || []), pos + 1);
+      if (match) return match;
     } else if (node.type.name === "list_field") {
       const match = editableFieldInfoInListField(node, targetPath, pathPrefix.concat(node.attrs?.path || []), pos + 1);
       if (match) return match;

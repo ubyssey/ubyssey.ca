@@ -277,13 +277,17 @@ function findYEditableField(fragment, blockId, targetPath) {
     for (const child of parent.toArray()) {
       const path = pathPrefix.concat(child.getAttribute?.("path") || []);
       if (child.nodeName === "editable_field" && samePath(path, targetPath)) return child;
+      if (child.nodeName === "struct_field") {
+        const field = visit(child, path);
+        if (field) return field;
+      }
       if (child.nodeName === "list_field") {
         const items = child.toArray().filter((item) => item.nodeName === "list_item");
         for (let index = 0; index < items.length; index += 1) {
           const field = visit(items[index], path.concat(index));
           if (field) return field;
         }
-      } else if (child.nodeName && child.toArray) {
+      } else if (child.nodeName !== "struct_field" && child.nodeName && child.toArray) {
         const field = visit(child, pathPrefix);
         if (field) return field;
       }
