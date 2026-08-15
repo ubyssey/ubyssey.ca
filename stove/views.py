@@ -23,21 +23,20 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from pycrdt import Doc
 
-from stove.consumers import restore_group_name
+from stove.editors.collaboration.consumers import restore_group_name
 from stove.models import ManuscriptCollaboration
-from stove.manuscript_editor import (
-    PAGE_FORM_FIELDS,
-    get_page_form,
-    get_article_authors_form,
-    get_streamfield_editors,
-    apply_editor_post,
-    get_article_media_upload_form,
-    get_article_media_tag_options,
-    get_featured_media_form,
+from stove.editors.manuscript.forms.article_media import (
     add_article_media,
+    get_article_media_tag_options,
+    get_article_media_upload_form,
     save_article_media,
 )
-from stove.manuscript_editor.revisions import autosave_manuscript_revision
+from stove.editors.manuscript.forms.authors import get_article_authors_form
+from stove.editors.manuscript.forms.featured_media import get_featured_media_form
+from stove.editors.manuscript.forms.metadata import PAGE_FORM_FIELDS, get_page_form
+from stove.editors.manuscript.schema import get_streamfield_editors
+from stove.editors.manuscript.serialization import apply_editor_post
+from stove.editors.collaboration.revisions import autosave_manuscript_revision
 
 
 # include editors, copy editors

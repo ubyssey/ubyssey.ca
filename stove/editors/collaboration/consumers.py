@@ -10,7 +10,7 @@ from pycrdt.websocket.django_channels_consumer import (
 )
 
 from wagtail.models import Page
-from .models import ManuscriptCollaboration
+from stove.models import ManuscriptCollaboration
 
 # Formerly was 0.25
 PERSISTENCE_BATCH_DELAY_SECONDS = 0.1

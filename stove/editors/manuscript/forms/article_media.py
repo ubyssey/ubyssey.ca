@@ -5,7 +5,6 @@ from taggit.models import Tag
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
 
-# todo: look into combining add and save article media usage in views.py (considering save calls add)
 
 class ArticleMediaUploadForm(forms.Form):
     media_id = forms.IntegerField(widget=forms.HiddenInput, required=False)

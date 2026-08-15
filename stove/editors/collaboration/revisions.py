@@ -8,7 +8,7 @@ from wagtail.models import Page
 
 from stove.models import ManuscriptCollaboration
 
-from .submission import apply_editor_post
+from stove.editors.manuscript.serialization import apply_editor_post
 
 
 # seconds between autosaves to revision (not sure what a good value should be)

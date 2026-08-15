@@ -1,5 +1,7 @@
 # Author Management
 
+# Is shown as contributor on frontend given the number of roles, but here we use author given the Django App
+
 from django import forms
 
 from article.models import ArticleAuthorsOrderable
@@ -8,6 +10,7 @@ from authors.models import AuthorPage
 # Default role
 AUTHOR_ROLE = "author"
 # Taken from ArticleAuthorsOrderable model, update if model changes
+# Alternatively look into automating
 AUTHOR_ROLE_CHOICES = (
     ("author", "Author"),
     ("backfield_editor", "Backfield Editor"),
