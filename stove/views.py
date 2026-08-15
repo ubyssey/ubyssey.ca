@@ -153,6 +153,14 @@ def create_page(request, section_id):
 @login_required
 def load_page(request, page_id):
     pageObject = get_object_or_404(ArticlePage, pk=page_id)
+    if (pageObject.live and pageObject.article_status != 6):
+        pageObject = pageObject.specific.get_latest_revision_as_object()
+        pageObject.article_status = 6
+        pageObject.save_revision(user=request.user)
+    if ((not pageObject.live) and pageObject.article_status == 6):
+        pageObject = pageObject.specific.get_latest_revision_as_object()
+        pageObject.article_status = 5
+        pageObject.save_revision(user=request.user)
 
     pageJson = pageObject.get_latest_revision_as_object().to_json()
     return JsonResponse(pageJson, safe=False)

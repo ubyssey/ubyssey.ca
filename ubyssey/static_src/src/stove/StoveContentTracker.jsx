@@ -789,12 +789,6 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   }
 
   if (rows.length == 0) return <div class="article-list"><Skeleton className={"article-list--skeleton"} height="1.5lh" width="82em"/><Skeleton className={"article-list--skeleton"} height="3lh" width="82em" count={10}/></div>
-  useEffect(() => {
-    for (const [id, page] of allPages) {
-      if(page.live && page.article_status != 6) updateArticleStatus(page, statuses[5], updatePage)
-      if(!page.live && page.article_status == 6) updateArticleStatus(page, statuses[4], updatePage)
-    }
-  }, [allPages.size])
 
   return (
     <div class="article-list">
