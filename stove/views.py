@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 from wagtail.models import Page
-from article.models import ArticlePage, StandardArticlePage
+from article.models import ArticlePage, StandardArticlePage, ArticleDeadline
 from article.models import ArticleAuthorsOrderable
 from section.models import CategoryPage, SectionPage
 from authors.models import AuthorPage
@@ -152,17 +152,36 @@ def create_page(request, section_id):
 
 @login_required
 def load_page(request, page_id):
-    pageObject = get_object_or_404(ArticlePage, pk=page_id)
+    pageObject = get_object_or_404(ArticlePage, pk=page_id).specific.get_latest_revision_as_object()
     if (pageObject.live and pageObject.article_status != 6):
-        pageObject = pageObject.specific.get_latest_revision_as_object()
+        print("Updating status for published article \"" + pageObject.title + "\"")
         pageObject.article_status = 6
         pageObject.save_revision(user=request.user)
     if ((not pageObject.live) and pageObject.article_status == 6):
-        pageObject = pageObject.specific.get_latest_revision_as_object()
+        print("Updating status for unpublished article \"" + pageObject.title + "\"")
         pageObject.article_status = 5
         pageObject.save_revision(user=request.user)
 
-    pageJson = pageObject.get_latest_revision_as_object().to_json()
+    def hasDraftInDeadline(page):
+        for deadline in page.deadline_list.all():
+            if deadline.description == "Draft in":
+                return True
+        return False
+    if (pageObject.deadline):
+        print("Migrating deadline for " + pageObject.title)
+        if (not hasDraftInDeadline(pageObject)):
+
+            pageObject.deadline_list = list(pageObject.deadline_list.all()) + [
+                ArticleDeadline(
+                    description="Draft in",
+                    date=pageObject.deadline,
+                    completed=False
+                )
+            ]
+        pageObject.deadline = None
+        pageObject.save_revision(user=request.user)
+
+    pageJson = pageObject.to_json()
     return JsonResponse(pageJson, safe=False)
 
 @login_required
@@ -196,15 +215,14 @@ def load_partial_pages(request, section="all", page=1):
                 print("Cannot get content for page " + str(currentPage.pk))
                 continue 
             result += "{"
-            result += "\"title\": \"" + currentPage.get("title") + "\", "
+            result += "\"title\": \"" + currentPage.get("title").replace('"', '\\"') + "\", "
             result += "\"live\": " + str(currentPage.get("live")).lower() + ", "
             result += "\"pk\": " + str(currentPage.get("pk")) + ", "
             result += "\"assignment_folder\": \"" + (currentPage.get("assignment_folder") if currentPage.get("assignment_folder") else "") + "\", "
             result += "\"article_authors\": \"\", "
             result += "\"article_status\": " + str(currentPage.get("article_status") if currentPage.get("article_status") else 1) + ", "
             result += "\"category_page\": \"" + (str(currentPage.get("category_page")) if currentPage.get("category_page") else "")+ "\", "
-            result += "\"deadline\": \"" + (str(currentPage.get("deadline")) if currentPage.get("deadline") else "")+ "\"},"
-            
+            result += "\"deadline_list\": " + (str(currentPage.get("deadline_list")).replace("'", '"').replace("True", "true").replace("False", "false").replace("None", "null") if currentPage.get("deadline_list") else "[]")+ "},"
 
         result = result[:-1] + "]"
     return JsonResponse(result, safe=False)
@@ -235,8 +253,6 @@ def update_content_tracker(request, page_id):
             print(page.current_section)
         else:
             raise Exception("Page can't move to section")
-    if ("deadline" in data):
-        page.deadline = data["deadline"]
     if ("article_status" in data):
         page.article_status = data["article_status"]
     if ("authors" in data):
@@ -254,7 +270,18 @@ def update_content_tracker(request, page_id):
         page.assignment_memo = data["assignment_memo"]
     if ("ethics_notes" in data):
         page.ethics_notes = data["ethics_notes"]
-    page.save_revision(user=request.user)
+    if ("deadline_list" in data):
+        print(list(page.deadline_list.all()))
+        page.deadline_list = [
+            ArticleDeadline(
+                    description=deadline.get("description"),
+                    date=deadline.get("date"),
+                    completed=deadline.get("completed")
+            )
+            for index, deadline in enumerate(data["deadline_list"] or [])
+        ]
+        page.deadline_list.commit()
+    revision = page.save_revision(user=request.user, log_action=True, changed=False)
 
     latest_revision = page.get_latest_revision_as_object()
     return JsonResponse(latest_revision.to_json(), safe=False)

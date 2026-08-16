@@ -318,15 +318,66 @@ async function updateArticleStatus(page, newStatus, updatePage, isLocalOnly=fals
   }
 }
 
-async function updateDeadline(page, newDate, updatePage, isLocalOnly=false) {
-  updatePage({... page, deadline: newDate.toISOString()})
+function getDeadlineDate(page, deadlineDescription) {
+  for (const deadline of page.deadline_list) {
+    if (deadline.description == deadlineDescription) {
+      return deadline.date;
+    }
+  }
+  return null;
+}
+
+async function updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly=false) {
+  updatePage({... page, deadline_list: newDeadlineList})
+
+  console.log("SENDING")
+  console.log(newDeadlineList)
 
   if (!isLocalOnly) {
-    handleRemoteUpdate(page, {"deadline": newDate.toISOString()}, updatePage,
+    handleRemoteUpdate(page, {"deadline_list": newDeadlineList}, updatePage,
       "Updating deadline for " + page.title, 
       "Updated deadline for " + page.title, 
       "Failed to update deadline for " + page.title)
   }
+}
+
+const DEADLINE = {
+  DRAFT_IN: "Draft in",
+  RESEARCH: "Research",
+  QUESTIONS: "Questions",
+  SOURCES: "Sources",
+  PUBLISHING: "Publishing"
+}
+
+async function updateDeadline(page, newDate, deadlineType=DEADLINE.DRAFT_IN, updatePage, isLocalOnly=false) { //TODO
+  let deadlineList = [...page.deadline_list]
+  console.log([...deadlineList])
+  let updated = false
+
+  deadlineList = deadlineList.map(deadline => {
+    console.log(deadline)
+    if (deadline.description !== deadlineType) {
+      return deadline
+    } else {
+      updated=true;
+      deadline.date = newDate.toISOString()
+      return deadline;
+    }
+  })
+  if (!updated) {
+    deadlineList = [... deadlineList,
+      {
+        completed: false,
+        date: newDate.toISOString(),
+        description: deadlineType
+      }
+    ]
+  }
+  console.log(page.deadline_list)
+  console.log(deadlineList)
+
+  updateDeadlineList(page, deadlineList, updatePage, isLocalOnly)
+
 }
 
 async function updateBeat(page, newBeat, updatePage, isLocalOnly=false) {
@@ -720,6 +771,10 @@ function LinkOpenButton ({url, className, iconSize}) {
             </div>);
 }
 
+
+
+
+
 function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
 
 
@@ -763,7 +818,7 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
               isPublished={page.live}
               />
             </td>
-            <td><DateInput date={page.deadline} handleUpdateDate={(newDate) => updateDeadline(page, newDate, updatePage)} disabled={page.live}/></td>
+            <td><DateInput date={getDeadlineDate(page, DEADLINE.DRAFT_IN)} handleUpdateDate={(newDate) => updateDeadline(page, newDate, DEADLINE.DRAFT_IN, updatePage)} disabled={page.live}/></td>
             <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)} disabled={page.live}/></td>
             <td><ArticleStatus status={page["article_status"]} updateStatus={(newStatus) => updateArticleStatus(page, newStatus, updatePage)}/></td>
             <td>
@@ -775,6 +830,8 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
               <HeadsetOutline color={'#000000'} height="1.5em" width="1.5em" /></td> {/*#faa33a*/}
     </tr>
 }
+
+
 
 
 function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
@@ -828,7 +885,7 @@ function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, 
       if (isOnlyUserFilter) params.append("username", currentUser);
       if (!isIncludingPublished) params.append("include_published", "false")
 
-      return fetch(loadArticlesUrl.replace("1918", currentPage + 1) + "?" + params, { method: "GET", headers: headers, credentials: "same-origin"})
+        return fetch(loadArticlesUrl.replace("1918", currentPage + 1) + "?" + params, { method: "GET", headers: headers, credentials: "same-origin"})
         .then(async (response) => {
           if (response.status != 200) {
             throw new Error(response)
@@ -869,9 +926,6 @@ function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, 
         })
         .catch((error) => console.log(error));
     }
-  useEffect(() => {
-    fetchNextPage()
-  }, [])
 
   useEffect(() => {
 
@@ -946,7 +1000,7 @@ const SIDEBAR = {
 function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
   const [isOnlyUserFilter, setOnlyUserFilter] = useState(false);
   const [isIncludingPublished, setIsIncludingPublished] = useState(false);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   return (
     <Tabs
@@ -1009,7 +1063,8 @@ function CreateSidebar({createPage}) {
     article_status: 1,
     assignment_memo: '',
     ethics_notes: '',
-    current_section: ''
+    current_section: '',
+    deadline_list: []
   });
 
   useEffect(() => {
@@ -1105,7 +1160,7 @@ function CreateSidebar({createPage}) {
         <div className="edit-field--side-label">Folder</div>
           <LinkInput selectedPage={newPage} updatePage={(e) => updateNewPage(e)} isLocalOnly={true}/>
         <div className="edit-field--side-label">Status</div> <ArticleStatus status={newPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(newPage, newStatus, (e) => updateNewPage(e), true)}/>
-        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={newPage.deadline} handleUpdateDate={(newDate) => updateDeadline(newPage, newDate, (e) => updateNewPage(e), true)}/></div>
+        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={getDeadlineDate(newPage, DEADLINE.DRAFT_IN)} handleUpdateDate={(newDate) => updateDeadline(newPage, newDate, DEADLINE.DRAFT_IN, (e) => updateNewPage(e), true)}/></div>
       </div>
       <h5>Assignment Notes </h5>
       <AssignmentMemo selectedPage={newPage} updatePage={(e) => updateNewPage(e)} isLocalOnly={true}/>
@@ -1177,7 +1232,7 @@ function EditSidebar({selectedPage, updatePage}) {
         <div className="edit-field--side-label">Folder</div>
           <LinkInput selectedPage={selectedPage} updatePage={updatePage}/>
         <div className="edit-field--side-label">Status</div> <ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/>
-        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/></div>
+        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={getDeadlineDate(selectedPage, DEADLINE.DRAFT_IN)} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, DEADLINE.DRAFT_IN, updatePage)}/></div>
       </div>
       <h5>Assignment Notes </h5>
       <AssignmentMemo selectedPage={selectedPage} updatePage={updatePage}/>
