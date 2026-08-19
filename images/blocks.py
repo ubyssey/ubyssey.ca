@@ -29,10 +29,7 @@ class ImageBlock(blocks.StructBlock):
         ],
         default='full',
     )
-    caption = blocks.CharBlock(
-        max_length=255,
-        required=False,
-    )
+    caption = blocks.RichTextBlock(required=False)
     credit = blocks.CharBlock(
         max_length=255,
         required=False,
@@ -85,10 +82,7 @@ class ReducedImageBlock(blocks.StructBlock):
         icon = 'image'
 
 class CaptionedImageBlock(ReducedImageBlock):
-    caption = blocks.CharBlock(
-        max_length=255,
-        required=False,
-    )
+    caption = blocks.RichTextBlock(required=False)
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)

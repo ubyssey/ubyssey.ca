@@ -1,3 +1,6 @@
+# flake8: noqa
+# isort: skip_file
+
 """
 base.py, default settings, originating from Dispatch module.
 Use: place .env file containing app configuration in /ubyssey.ca/
@@ -90,9 +93,13 @@ INSTALLED_APPS = [
     'publishing_analytics',
     'content_tracker',
     'topics',
+    'join.apps.JoinConfig',
 
     'newsletter.apps.NewsletterConfig',
     'magazine.apps.MagazineConfig',
+
+    'stove',
+    'wagtail.api.v2',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -109,6 +116,7 @@ INSTALLED_APPS = [
     'wagtail.contrib.routable_page',
     'wagtail.contrib.sitemaps',
     'wagtail.contrib.styleguide',
+    # 'wagtail_headless_preview',
 
     'taggit',
     'modelcluster',
@@ -362,3 +370,17 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+LOGIN_URL = "/admin/login/"
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+}
+
+# WAGTAIL_HEADLESS_PREVIEW = {
+#     "CLIENT_URLS": {
+#         "default": "http://localhost:8000",
+#     }
+# }

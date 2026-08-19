@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - update-packages-nishim
+      - staging
 
 env:
   REGISTRY: ghcr.io
@@ -71,7 +71,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '14.x'
+          node-version: '24.x'
 
       - run: |
           npm install
@@ -148,6 +148,14 @@ jobs:
           scp deployment/scripts/certbot-renewal-with-nginx-reload.sh staging:/opt/ubyssey.ca/scripts/certbot-renewal-with-nginx-reload.sh
           scp deployment/scripts/nginx-reload-watcher.sh staging:/opt/ubyssey.ca/scripts/nginx-reload-watcher.sh
 
+      - name: Upload Locust load testing files
+        run: |
+          ssh staging "mkdir -p /opt/ubyssey.ca/locust"
+          scp locustfile.py staging:/opt/ubyssey.ca/locust/locustfile.py
+          scp docker-compose.locust.yml staging:/opt/ubyssey.ca/locust/docker-compose.locust.yml
+          scp locust-requirements.txt staging:/opt/ubyssey.ca/locust/locust-requirements.txt
+          scp LOCUST_LOAD_TESTING.md staging:/opt/ubyssey.ca/locust/README.md
+
       - name: Sync secrets from Google Cloud Platform
         run: cat scripts/sync-secrets.sh | ssh staging
 
@@ -157,3 +165,8 @@ jobs:
       - name: Force update all services
         run: |
           ssh staging "for service in \$(docker stack services ubyssey --format '{{.Name}}'); do docker service update --force \$service; done"
+
+      - name: Prune Unused Containers and Images
+        run: |
+          ssh staging "docker container prune"
+          ssh staging "docker image prune -a"

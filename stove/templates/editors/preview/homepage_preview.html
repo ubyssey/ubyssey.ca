@@ -1,0 +1,38 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load articletags %}
+
+{% block content %}
+
+	<main class="homepage">
+		{% comment %}
+		breaking_news_article is passed through from context and it contains all of the breaking articles from each section
+		{% endcomment %}
+		{% for article in breaking_news_article %}
+		<a class="o-breaking-news" href={% pageurl article %}>
+			<h3>BREAKING: {{ article.title|safe }}</h3>
+		</a>
+		{% endfor %}
+
+		<div class="c-home-top u-container u-container--large">
+			{% include "home/components/curated_stream.html" %}
+
+			<div class="c-home-top--sidebar">
+				{% for sidebar in self.sidebar_stream %}
+					{% include_block sidebar %}
+				{% endfor %}
+			</div>
+		</div>
+
+		{% for block in self.middle_stream %}
+			{% include_block block %}
+		{% endfor %}
+
+		<div class="u-container u-container--large c-home-section_stream">
+			{% for section in self.sections_stream %}
+				{% include_block section %}
+			{% endfor %}
+		</div>
+		
+	</main>
+{% endblock %}

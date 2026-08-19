@@ -1,0 +1,50 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'ubyssey/images/stove/favicon.ico' %}">
+    <title>Stove</title>
+    <style>
+        .application-container {
+            width: 100%;
+            display: grid;
+            grid-template-areas: "sidebar main";
+            grid-template-columns: 50px auto;
+            margin: 0px;
+        }
+        .sidebar {
+            grid-area: sidebar;
+            height: 100%;
+        }
+
+        .sidebar a {
+            display: block;
+        }
+
+        .main {
+            grid-area: main;
+            height: 100%;
+        }
+        .home-icon {
+            font-size: 1.5em;
+            width: 3em;
+            margin-left: 2px;
+        }
+    </style>
+    {% block stylesheet %}
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+        <div class="main">
+            {% block content %}
+            {% endblock %}
+            {% block scripts %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

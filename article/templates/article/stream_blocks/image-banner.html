@@ -5,9 +5,9 @@
 <div class="o-image-banner" style="--image_url: url('{{banner_image.full_url}}')" aria-label="{{self.image.alt_text}}">
     <div class="o-image-banner--shadow">
         <div class="o-image-banner--shadow-content">
-            <span class="o-image-banner--shadow-content--header">{{self.header|safe}}</span>
-            {{self.text|safe}}
+            <span class="o-image-banner--shadow-content--header" data-article-editable-stream-field="content" data-article-editable-path="header">{{self.header|safe}}</span>
+            <span data-article-editable-stream-field="content" data-article-editable-path="text">{{self.text|safe}}</span>
         </div>
-        <div class="o-image-banner--shadow--credit">{{self.image.credit|safe}}</div>
+        <div class="o-image-banner--shadow--credit" data-article-editable-stream-field="content" data-article-editable-path="image.credit">{{self.image.credit|safe}}</div>
     </div>
 </div>

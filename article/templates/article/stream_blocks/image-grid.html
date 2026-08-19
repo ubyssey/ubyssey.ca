@@ -1,6 +1,10 @@
 {% load wagtailcore_tags %}
 <div class="image-grid-attachment attachment {% if self.width == "fit-content" %}width--fit-content{% endif %}" style="--grid-width: {{self.width}}; --image-height: {{self.height}};">
 {% for image in self.images %}
-    {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=image click_to_enlarge="true" %}
+    {% with index=forloop.counter0|stringformat:"s" %}
+        {% with article_editable_path_prefix="images."|add:index %}
+            {% include "images/stream_blocks/expandable_image_block.html" with imageBlock=image click_to_enlarge="true" article_editable_path_prefix=article_editable_path_prefix %}
+        {% endwith %}
+    {% endwith %}
 {% endfor %}
 </div>

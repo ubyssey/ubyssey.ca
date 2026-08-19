@@ -18,7 +18,11 @@
       {% for image_block in self.images %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
 
-          {% include_block image_block %}
+          {% with index=forloop.counter0|stringformat:"s" %}
+            {% with article_editable_path_prefix="images."|add:index %}
+              {% include_block image_block with article_editable_path_prefix=article_editable_path_prefix %}
+            {% endwith %}
+          {% endwith %}
 
         </div>
       {% endfor %}

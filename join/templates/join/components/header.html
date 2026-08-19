@@ -1,0 +1,22 @@
+{% load static wagtailcore_tags %}
+<header class="join-header">
+    <div class="join-header__inner">
+        <a class="join-header__brand" href="/" aria-label="The Ubyssey homepage">
+            <img
+                class="join-header__dingbat"
+                src="{% static 'ubyssey/images/logos/dingbat-blue.svg' %}"
+                width="28"
+                height="32"
+                alt=""
+            >
+            <span>The Ubyssey</span>
+        </a>
+
+        <nav class="join-header__nav" aria-label="Join page">
+            <a href="{% pageurl join_landing|default:page %}#application-process">Application Process</a>
+            <a href="{% pageurl join_landing|default:page %}#reportage">Sections</a>
+            <a href="{% pageurl join_landing|default:page %}#faq">FAQ</a>
+            <a href="{% pageurl join_landing|default:page %}#career-path">Career Path</a>
+        </nav>
+    </div>
+</header>

@@ -182,6 +182,8 @@ class ArticleAuthorsOrderable(Orderable):
                             ('photographer','Photographer'),
                             ('videographer','Videographer'),
                             ('designer','Designer'),
+                            ('backfield_editor', "Backfield editor"),
+                            ('copy_editor', "Copy editor"),
                             ('org_role', 'Show organization role'),
                         ],
                     ),
@@ -279,7 +281,7 @@ class ArticleFeaturedMediaOrderable(Orderable):
         related_name="featured_media",
     )
 
-    caption = models.TextField(blank=True, null=False, default='')
+    caption = RichTextField(blank=True, null=False, default='')
     credit = models.TextField(blank=True, null=False, default='')
     alt_text = models.TextField(blank=True, null=False, default='',
         help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
@@ -317,6 +319,26 @@ class ArticleFeaturedMediaOrderable(Orderable):
             heading="Caption/Credits",
         ),
     ]
+
+class ArticleMediaOrderable(Orderable):
+    article_page = ParentalKey(
+        "article.ArticlePage",
+        related_name="article_media",
+    )
+    image = models.ForeignKey(
+        "images.UbysseyImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    document = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
 class ArticleStyleOrderable(Orderable):
     css = models.ForeignKey(
@@ -656,6 +678,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         default = False,
         help_text = "Check this to alert readers the article has been revised since its publication.",
     )
+    deadline = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Deadline",
+        help_text = "The targeted deadline for a writer's initial submission of the piece.",
+    )
 
     class TimelinessChoices(models.IntegerChoices):
         A_DAY = 1, ("Timely for a day")
@@ -664,6 +692,17 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         EVERGREEN = 4, ("Evergreen")
 
     timeliness = models.IntegerField(choices=TimelinessChoices.choices, default=TimelinessChoices.A_FEW_DAYS.value)
+
+    class ArticleStatus(models.IntegerChoices):
+        ASSIGNED = 1, ("Assigned")
+        FILED = 2, ("Filed")
+        EDITING = 3, ("Editing")
+        COPY = 4, ("Copy")
+        READY = 5, ("Ready")
+        PUBLISHED = 6, ("Published")
+
+    article_status = models.IntegerField(choices=ArticleStatus.choices, default=ArticleStatus.ASSIGNED.value)
+
 
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
@@ -763,13 +802,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         help_text = "Check if this article contains advertiser-unfriendly content. Disables ads for this specific article."
     )
 
-    title_tag = models.CharField(
+    title_tag = RichTextField(
         null=False,
         blank=True,
         default='',
         verbose_name='Title Tag (Optional)',
         help_text="This appears above the title. It mimics the title tags in the print issue.",
-        max_length=255,
     )
     
     #-----For Wagtail's user interface-----
@@ -894,6 +932,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             ],
             heading="Special search engine-related meta tagging",
         ),
+        FieldPanel("deadline", help_text="This field sets the deadline for a contributor to file a draft."),
+        FieldPanel("article_status", help_text = "This field indicates the current status of an article."),
         
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
@@ -959,6 +999,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     # TIMELINESS
     def get_relevance_score(self):
+        print("GETTING RELEVANCE: ")
         relevance_delta = {
             self.TimelinessChoices.A_DAY: 1,
             self.TimelinessChoices.A_FEW_DAYS: 3,
@@ -974,8 +1015,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         if self.published_at > relevance_cutoff:
             return 1
         else:
-            return 0
-
+            return 0    
     # AUTHORS STRINGS
     def get_authors_string(self, links=False, authors_list=[]) -> str:
         """
@@ -1115,12 +1155,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             'org_role': '',
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
-
+        extended_byline_roles = ['backfield_editor', 'copy_editor']
         authors_by_role = {}
         for author in self.article_authors.all():
             if author.author_role in authors_by_role:
                 authors_by_role[author.author_role].append(author)
-            else:
+            elif not author.author_role in extended_byline_roles:
                 authors_by_role[author.author_role] = [author]
 
         word_authors = []
@@ -1482,6 +1522,14 @@ class StandardArticlePage(ArticlePage):
         blank=True,
         default='',
         help_text = "Used for Opinion articles or when corrections are made"
+    )
+
+    editor_article_version = models.JSONField(
+        null=False,
+        blank=True,
+        default=dict,
+        editable=False,
+        help_text="Contains editor version of page with footnotes and comments",
     )
 
     # template #TODO

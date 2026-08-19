@@ -2,22 +2,22 @@
 {% load wagtailimages_tags %}
 
 {% if container_type == "profiles" %}
-<div class="o-card o-card--profile">
+<div class="o-card o-card--profile" {% if article_editable_path_prefix %}data-article-editable-path-prefix="{{ article_editable_path_prefix }}"{% endif %}>
     <div class="o-card--profile--left">
     {% image self.image fill-200x200-c100 %}
     </div>
 
     {% if self.text %}
     <div class="o-card--profile--right">
-    {{self.text|richtext}}
+    <div data-article-editable-stream-field="content" data-article-editable-path="text" data-article-editable-mode="richtext">{{self.text|richtext}}</div>
     </div>
     {% endif %}
 </div>
 {% else %}
 {% image self.image width-600 as card_image %}
-<div class="o-card o-card--image" style="background-image: url('{{card_image.url}}')">
+<div class="o-card o-card--image" style="background-image: url('{{card_image.url}}')" {% if article_editable_path_prefix %}data-article-editable-path-prefix="{{ article_editable_path_prefix }}"{% endif %}>
     {% if self.text %}
-    {{self.text|safe}}
+    <div data-article-editable-stream-field="content" data-article-editable-path="text" data-article-editable-mode="richtext">{{self.text|safe}}</div>
     {% endif %}
 </div>
 {% endif %}

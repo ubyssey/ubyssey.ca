@@ -1,0 +1,55 @@
+{% load static %}
+
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'ubyssey/css/stove/content_tracker_react.css' %}"></link>
+<script defer src="{% static 'ubyssey/js/stove/stove_content_tracker.js' %}"></script>
+
+{# Temporarily adding this here since it doesn't extend stove base #}
+<link rel="icon" href="{% static 'ubyssey/images/stove/favicon.ico' %}">
+
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div id="content-tracker">
+
+</div>
+
+
+<script>
+    // create a collection of page information.
+    let pages = new Map()
+    let authors = []
+    const currentUser = "{{ request.user.get_full_name }}"
+    const articleUrl = "{% url 'stove:manuscript_editor' 1918 %}"
+    const loadArticlesUrl = "{% url 'stove:content_tracker_load_pages' section 1918 %}"
+    const pageSection = "{{section|title}}"
+    
+    {% autoescape off %}
+    
+    {% for a in authors %}
+    authors.push({ value: {{a.id}}, label: `{{a.full_name}}` })
+    {% endfor %}
+    
+
+    const beats = JSON.parse(`{{ beats }}`)
+    const beatOptions = []
+    for (const [section, options] of Object.entries(beats)) {
+        beatOptions.push({label: section, options: options})
+    }
+    {% endautoescape %}
+    
+    let updateEndpoint = "{% url 'stove:update_content_tracker' 1918 %}"
+
+    const csrfToken = getCookie('csrftoken');
+    const requiredHeader = {'X-CSRFToken': csrfToken}
+
+    // getting the CSRF token from the cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    </script>
+{% endblock %}
