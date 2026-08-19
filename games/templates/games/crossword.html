@@ -1,0 +1,10 @@
+{% extends "games_base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Crossword</h2>
+<a href="{% url 'games:home' %}">Home</a>
+<p>{{ id }}</p>
+<p>{{ test_data|json_script:"test_data" }}</p>
+<p>Test</p>
+{% endblock %}

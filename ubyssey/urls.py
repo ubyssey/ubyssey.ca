@@ -123,6 +123,9 @@ urlpatterns += [
     re_path(r'^overview/(?P<section>[-\w]+)/$', publishing_analytics_views.section_overview),
     re_path(r'^overview/(?P<section>[-\w]+)/(?P<year0>[0-9]{4})-(?P<year1>[0-9]{4})/$', publishing_analytics_views.section_year_overview),
 
+    # Games
+    path('games/', include('games.urls')),
+
     # Advertising
     re_path(r'^advertise/$', advertise.new, name='advertise-new'),
 
