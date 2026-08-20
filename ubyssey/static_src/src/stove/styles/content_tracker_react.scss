@@ -422,16 +422,158 @@ input:checked + .slider:before {
 
 .edit-field--sidebyside {
   display: grid;
-  grid-template-columns: 80px auto;
+  grid-template-columns: clamp(80px, 20%, 120px) auto;
+  padding: 4px;
+  transition: grid-template-columns 0.5s;
+}
+.edit-field--sidebyside:has(+ .edit-field--deadlines) {
+  padding-bottom: 0px;
+}
+
+h5 + .edit-field--deadlines {
+  padding-top: 0px;
+}
+
+.edit-field--sidebyside:has(> .edit-field--deadlines) {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+
+.edit-field--sidebyside:has(*):has(.edit-field--deadline-label:hover) {
+  grid-template-columns: clamp(120px, 30%, 180px) auto;
+}
+
+.edit-field--create-deadline {
+  grid-template-columns: 100% auto;
+}
+
+.edit-field--more-deadlines {
+  width: min(440px, 100%);
+}
+
+.edit-field--deadlines > .edit-field--more-deadlines {
+  visibility: hidden;
+  opacity: 0;
+  height: 0px;
+  transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  overflow: hidden;
+  text-align: center;
+  color: #999999;
   padding: 4px;
 }
+
+.edit-field--add-deadline-input {
+  background-color: inherit;
+  border: none;
+  width: min(440px, 100%);
+  height: 1.5lh;
+  text-align: center;
+}
+
+.edit-field--add-deadline-input:hover {
+  background-color: var(--hover-color)
+}
+
+.edit-field--deadlines:hover > .edit-field--more-deadlines {
+  visibility: visible;
+  opacity: 1;
+  height: 1.5lh;
+}
+
+.edit-field--more-deadlines:hover {
+  background-color: var(--hover-color);
+}
+
+.edit-field--checked {
+  position: relative;
+  color: #777777;
+}
+
+.edit-field--checked:before {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  border-bottom: 2px solid #777777;
+  width: min(440px, 100%);
+  transform: translateX(0);
+  cursor: not-allowed;
+  transition: width 0.5s, transform 0.5s;
+}
+
+.edit-field--checked:has(> .edit-field--deadline-label:hover):before {
+  width: calc(min(440px, 100%) - 1lh - 4px);
+  transform: translateX(calc(1lh + 4px));
+}
+
+.edit-field--checkbox {
+  visibility: hidden;
+  opacity: 0;
+  width: 0px;
+  height: 1lh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.5s, opacity 0.5s;
+  overflow: hidden;
+  color: #777777;
+}
+
+.edit-field--deadline-label:hover > .edit-field--checkbox {
+  visibility: visible;
+  opacity: 1;
+  width: 1lh;
+}
+
+.edit-field--checkbox:hover {
+  background-color: var(--hover-color);
+}
+
+.edit-field--checkbox-invalid:hover {
+  background-color: var(--invalid-hover-color);
+  cursor: not-allowed;
+}
+
+.edit-field--deadline-label {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
 
 .edit-field--side-label {
   padding-top: 10px;
   padding-right: 4px;
   vertical-align: middle;
-  justify-content: center;
+  justify-content: left;
   transform: translateY(-2px); 
+}
+.edit-field--deadline-entry {
+  transform: translateY(-4px); 
+}
+.edit-field--label-text {
+  width: 100%;
+  transition: width 0.5s;
+  justify-content: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+}
+
+.edit-field--label-editable {
+  min-width: 3em;
+}
+
+.edit-field--label-editable:hover {
+  background-color: var(--hover-color);
+}
+
+.edit-field--label-editable:focus {
+  overflow: visible;
+  text-wrap: wrap;
+}
+
+.edit-field--label-editable:hover {
+  min-width: 80px;
 }
 
 .edit-field--author {
@@ -515,9 +657,39 @@ input:checked + .slider:before {
   padding-right: 8px;
 }
 
-.edit-field--date > .react-datepicker-wrapper {
+.edit-field--date > * > .react-datepicker-wrapper {
   max-width: 20em;
   width: 100%;
+}
+
+.edit-field--date-clearable {
+  display: grid;
+  width: min(100%, 20em);
+  grid-template-columns: min(100%, 20em) auto;
+  transition: grid-template-columns 0.5s;
+}
+
+.edit-field--date-clearable:hover {
+  grid-template-columns: calc(min(100%, 20em) - 1lh - 4px) auto;
+}
+
+.edit-field--date-clear {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777777;
+  transition: opacity 0.5s;
+}
+
+.edit-field--date-clearable:hover > .edit-field--date-clear {
+  opacity: 1;
+}
+
+.edit-field--date-clear:hover {
+  background-color: var(--hover-color);
 }
 
 .metadata-editor {

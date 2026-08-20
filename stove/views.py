@@ -111,8 +111,15 @@ def create_page(request, section_id):
 
     if "assignment_folder" in data:
         newPage.assignment_folder = data["assignment_folder"]
-    if "deadline" in data:
-        newPage.deadline = data["deadline"]
+    if "deadline_list" in data:
+        for deadline in data["deadline_list"]: 
+            newPage.deadline_list = list(newPage.deadline_list.all()) + [
+                    ArticleDeadline(
+                        description=deadline.get("description"),
+                        date=deadline.get("date"),
+                        completed=deadline.get("completed")
+                    )
+                ]
     if ("category_page" in data):
         if (newPage.get_primary_topic()): newPage.topics.remove(newPage.get_primary_topic().name)
         try: 
@@ -250,7 +257,6 @@ def update_content_tracker(request, page_id):
         if (page.can_move_to(section)):
             page.move(section, pos='last-child')
             page.current_section = section.slug
-            print(page.current_section)
         else:
             raise Exception("Page can't move to section")
     if ("article_status" in data):
@@ -271,7 +277,6 @@ def update_content_tracker(request, page_id):
     if ("ethics_notes" in data):
         page.ethics_notes = data["ethics_notes"]
     if ("deadline_list" in data):
-        print(list(page.deadline_list.all()))
         page.deadline_list = [
             ArticleDeadline(
                     description=deadline.get("description"),

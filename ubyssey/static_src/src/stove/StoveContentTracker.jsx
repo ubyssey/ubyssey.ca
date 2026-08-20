@@ -8,7 +8,7 @@ import chroma from 'chroma-js';
 import Switch from "react-switch";
 
 import { Group, Panel, Separator} from "react-resizable-panels";
-import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline, FolderOpen, FolderOpenOutline, Folder, Eye } from 'react-ionicons'
+import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline, FolderOpen, FolderOpenOutline, Folder, Eye, SquareOutline, CheckboxOutline, CloseOutline } from 'react-ionicons'
 
 
 import Tab from 'react-bootstrap/Tab';
@@ -327,11 +327,17 @@ function getDeadlineDate(page, deadlineDescription) {
   return null;
 }
 
+function getDeadlineByDescription(page, deadlineDescription) {
+  for (const deadline of page.deadline_list) {
+    if (deadline.description == deadlineDescription) {
+      return deadline;
+    }
+  }
+  return null;
+}
+
 async function updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly=false) {
   updatePage({... page, deadline_list: newDeadlineList})
-
-  console.log("SENDING")
-  console.log(newDeadlineList)
 
   if (!isLocalOnly) {
     handleRemoteUpdate(page, {"deadline_list": newDeadlineList}, updatePage,
@@ -346,35 +352,38 @@ const DEADLINE = {
   RESEARCH: "Research",
   QUESTIONS: "Questions",
   SOURCES: "Sources",
+  EDITING: "Editing",
   PUBLISHING: "Publishing"
 }
 
-async function updateDeadline(page, newDate, deadlineType=DEADLINE.DRAFT_IN, updatePage, isLocalOnly=false) { //TODO
+async function updateDeadline(page, newDeadline, updatePage, isLocalOnly=false) { //TODO
+  let {date, description, completed} = newDeadline
   let deadlineList = [...page.deadline_list]
-  console.log([...deadlineList])
   let updated = false
 
+  if (typeof date !== "string") {
+    date=date.toISOString()
+  }
+
   deadlineList = deadlineList.map(deadline => {
-    console.log(deadline)
-    if (deadline.description !== deadlineType) {
+    if (deadline.description !== description) {
       return deadline
     } else {
       updated=true;
-      deadline.date = newDate.toISOString()
+      deadline.date = date;
+      deadline.completed = completed;
       return deadline;
     }
   })
   if (!updated) {
     deadlineList = [... deadlineList,
       {
-        completed: false,
-        date: newDate.toISOString(),
-        description: deadlineType
+        completed: completed,
+        date: date,
+        description: description
       }
     ]
   }
-  console.log(page.deadline_list)
-  console.log(deadlineList)
 
   updateDeadlineList(page, deadlineList, updatePage, isLocalOnly)
 
@@ -480,7 +489,7 @@ async function remoteCreatePage(page) {
       headers[key] = requiredHeader[key]
   }
 
-  if (page.current_section === "") {
+  if (!page.current_section) {
     throw new Error("Pages must have a section")
   }
   return fetch(createPageUrl.replace("1918", page.current_section), { method: "POST", headers: headers, body: JSON.stringify(page),
@@ -818,7 +827,7 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
               isPublished={page.live}
               />
             </td>
-            <td><DateInput date={getDeadlineDate(page, DEADLINE.DRAFT_IN)} handleUpdateDate={(newDate) => updateDeadline(page, newDate, DEADLINE.DRAFT_IN, updatePage)} disabled={page.live}/></td>
+            <td><DateInput date={getDeadlineDate(page, DEADLINE.DRAFT_IN)} handleUpdateDate={(newDate) => updateDeadline(page, {date: newDate, description: DEADLINE.DRAFT_IN, completed: false}, updatePage)} disabled={page.live}/></td>
             <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)} disabled={page.live}/></td>
             <td><ArticleStatus status={page["article_status"]} updateStatus={(newStatus) => updateArticleStatus(page, newStatus, updatePage)}/></td>
             <td>
@@ -1039,8 +1048,6 @@ function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedA
 }
 
 function MainPanel({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
-  console.log(allPages)
-
   return (
     <div className="main-panel">
       <MainViewSelector 
@@ -1099,7 +1106,8 @@ function CreateSidebar({createPage}) {
           article_authors: [],
           article_status: 1,
           ethics_notes: '',
-          assignment_memo: ''
+          assignment_memo: '',
+          deadline_list: []
         })
       })
       .catch(async (error) => {
@@ -1160,8 +1168,12 @@ function CreateSidebar({createPage}) {
         <div className="edit-field--side-label">Folder</div>
           <LinkInput selectedPage={newPage} updatePage={(e) => updateNewPage(e)} isLocalOnly={true}/>
         <div className="edit-field--side-label">Status</div> <ArticleStatus status={newPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(newPage, newStatus, (e) => updateNewPage(e), true)}/>
-        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={getDeadlineDate(newPage, DEADLINE.DRAFT_IN)} handleUpdateDate={(newDate) => updateDeadline(newPage, newDate, DEADLINE.DRAFT_IN, (e) => updateNewPage(e), true)}/></div>
       </div>
+        <DeadlineListEdit
+          page={newPage}
+          updatePage={updateNewPage}
+          isLocalOnly={true}
+          />
       <h5>Assignment Notes </h5>
       <AssignmentMemo selectedPage={newPage} updatePage={(e) => updateNewPage(e)} isLocalOnly={true}/>
       <h5>Ethics Notes </h5>
@@ -1232,14 +1244,150 @@ function EditSidebar({selectedPage, updatePage}) {
         <div className="edit-field--side-label">Folder</div>
           <LinkInput selectedPage={selectedPage} updatePage={updatePage}/>
         <div className="edit-field--side-label">Status</div> <ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/>
-        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={getDeadlineDate(selectedPage, DEADLINE.DRAFT_IN)} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, DEADLINE.DRAFT_IN, updatePage)}/></div>
       </div>
+      <DeadlineListEdit page={selectedPage} updatePage={updatePage}/>
       <h5>Assignment Notes </h5>
       <AssignmentMemo selectedPage={selectedPage} updatePage={updatePage}/>
       <h5>Ethics Notes </h5>
       <EthicsNotes selectedPage={selectedPage} updatePage={updatePage}/>
     </div>
   </div>
+}
+
+function DeadlineCheckbox({completed, updateChecked, invalid = false}) {
+  return <div className={`edit-field--checkbox ${invalid ? "edit-field--checkbox-invalid" : ""}`}
+    onClick={()=>updateChecked(!completed)}>
+    {completed ? <CheckboxOutline height="1lh"/> : <SquareOutline height={"1lh"}/>}
+  </div>
+}
+
+function DeadlineClear({clearDeadline}) {
+
+  return <div className={`edit-field--date-clear`}
+    onClick={clearDeadline}>
+      <CloseOutline height="1lh" />
+  </div>
+}
+
+function DeadlineItem({deadline, updateDeadline, clearDeadline, canEditName=false, overrideDescription=false}) {
+  let description, completed, date;
+  if (deadline != null) {
+    description = deadline.description;
+    completed = deadline.completed;
+    date = deadline.date;
+  } else {
+    description = ""
+    completed = false
+    date = null
+  }
+
+  return <div className={`edit-field--sidebyside ${completed ? "edit-field--checked" : ""}`}>
+    <div 
+      className="edit-field--side-label edit-field--deadline-entry edit-field--deadline-label"
+      >
+      <DeadlineCheckbox
+        completed = {completed}
+        updateChecked={(newValue) => updateDeadline({date: date, description: description, completed: newValue})}
+        invalid = {!date}
+        />
+      <div className={`edit-field--label-text ${canEditName ? "edit-field--label-editable" : ""}`} contentEditable={canEditName}>{overrideDescription ? "Deadline" : description.toString()}</div></div>
+    <div className={`edit-field--date ${date || canEditName ? "edit-field--date-clearable" : ""}`} >
+          <DateInput 
+            date={date} 
+            handleUpdateDate={(newDate) => updateDeadline({date: newDate, description: description, completed: completed})}
+            disabled={completed}/>
+          {date || canEditName ? <DeadlineClear 
+            clearDeadline={() => clearDeadline(deadline)}/> : ""}
+    </div>
+  </div>
+}
+
+function AddDeadlineItem({addDeadline}) {
+
+  function processInput(e) {
+    if (e.target.value) addDeadline({description: e.target.value, date: null, completed: false})
+    e.target.value = ""
+  }
+
+  return <div className={`edit-field--add-deadline`} >
+        <input 
+          className="edit-field--add-deadline-input" 
+          type="text" 
+          placeholder="Add..." 
+          onBlur={processInput}
+          onKeyDown={ (event) => {
+            if (event.key == "Enter") processInput(event)
+          }}></input></div>
+
+}
+
+function DeadlineListEdit({page, updatePage, isLocalOnly=false}) {
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => setExpanded(false), [page.pk])
+
+  function clearDeadline(deadline) {
+    let newDeadlineList = []
+    for (const existingDeadline of page.deadline_list) {
+      if (existingDeadline.description != deadline.description) newDeadlineList.push(existingDeadline)
+    }
+    updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly)
+  }
+
+  if (page.deadline_list.length <= 1 && !expanded) {
+    return <div className="edit-field--deadlines">
+        <DeadlineItem 
+          deadline={getDeadlineByDescription(page, DEADLINE.DRAFT_IN)}
+          updateDeadline={(newDeadline) => updateDeadline(page, {...newDeadline, description: DEADLINE.DRAFT_IN}, updatePage, isLocalOnly)}
+          overrideDescription={true}
+          clearDeadline={clearDeadline}
+        />
+      <div className="edit-field--more-deadlines" onClick={() => setExpanded(true)}>More...</div></div>
+  }
+  const deadlineHtml = []
+
+  if (expanded) {
+    let standardDeadlines = {}
+    for (const [key, label] of Object.entries(DEADLINE)) {
+      standardDeadlines[key] = getDeadlineByDescription(page, label)
+    }
+    for (const [key, deadline] of Object.entries(standardDeadlines)) {
+      deadlineHtml.push(
+        <DeadlineItem 
+          deadline={deadline ? deadline : {description: DEADLINE[key], completed: false, date: null}}
+          updateDeadline={(newDeadline) => updateDeadline(page, newDeadline, updatePage, isLocalOnly)}
+          overrideDescription={false}
+          clearDeadline={clearDeadline}
+        />
+      )
+    }
+  }
+
+  const deadlinesToDisplay = expanded ?
+    page.deadline_list.filter(({description}) => !Object.values(DEADLINE).includes(description)) :
+    page.deadline_list
+  for (const deadline of deadlinesToDisplay) {
+    deadlineHtml.push(
+      <DeadlineItem 
+          deadline={deadline}
+          updateDeadline={(newDeadline) => updateDeadline(page, newDeadline, updatePage, isLocalOnly)}
+          overrideDescription={false}
+          canEditName={!Object.values(DEADLINE).includes(deadline.description)}
+          clearDeadline={clearDeadline}
+        />)
+  }
+  return <>
+    <h5>Deadlines</h5>
+    <div className="edit-field--deadlines">
+
+        {deadlineHtml} 
+
+      {!expanded ? 
+        <div className="edit-field--more-deadlines" onClick={() => setExpanded(true)}>More...</div> : 
+        <AddDeadlineItem addDeadline={(newDeadline) => updatePage({...page, deadline_list: [...page.deadline_list, newDeadline]})}/>}
+    </div>
+    </>;
+
 }
 
 
@@ -1482,7 +1630,7 @@ function ContentTracker() {
 
 
 function DateInput ({date, handleUpdateDate, disabled}) {
-  return <DatePicker
+  return <div><DatePicker
     disabled={disabled}
     selected={date ? new Date(date) : undefined}
     onChange={(newDate) => {
@@ -1494,7 +1642,7 @@ function DateInput ({date, handleUpdateDate, disabled}) {
     timeCaption="time"
     dateFormat="MMMM d, h:mm aa"
     placeholderText="Add deadline"
-  />;
+  /></div>;
 };
 
 
