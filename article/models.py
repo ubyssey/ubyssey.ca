@@ -320,6 +320,35 @@ class ArticleFeaturedMediaOrderable(Orderable):
         ),
     ]
 
+class ArticleDeadline(Orderable):
+
+
+    article_page = ParentalKey(
+        "article.ArticlePage",
+        related_name="deadline_list",
+    )
+
+    description = models.TextField(blank=True, null=False, default='')
+    date = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Deadline",
+        help_text = "The targeted deadline for this deliverable.",
+    )
+    completed = models.BooleanField(
+        default=False,
+        help_text = "An indication as to whether the deliverable is completed"
+    )
+
+    def __str__(self):
+        return self.description + " (" + str(self.date) + ")"
+
+    panels = [
+        FieldPanel("description"),
+        FieldPanel("date"),
+        FieldPanel("completed"),
+    ]
+
 class ArticleMediaOrderable(Orderable):
     article_page = ParentalKey(
         "article.ArticlePage",
@@ -954,6 +983,8 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             heading="Special search engine-related meta tagging",
         ),
         FieldPanel("deadline", help_text="This field sets the deadline for a contributor to file a draft."),
+        # InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
+        InlinePanel("deadline_list"),
         FieldPanel("article_status", help_text = "This field indicates the current status of an article."),
         FieldPanel("assignment_memo", help_text="Guidance from a section editor about how to approach a story"),
         FieldPanel("ethics_notes", help_text="Advice from a section editor about the ethics of a story"),
