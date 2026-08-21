@@ -8,7 +8,7 @@ import chroma from 'chroma-js';
 import Switch from "react-switch";
 
 import { Group, Panel, Separator} from "react-resizable-panels";
-import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline } from 'react-ionicons'
+import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline, Image, Headset, BodyOutline, PencilOutline, FolderOpen, FolderOpenOutline, Folder } from 'react-ionicons'
 
 
 import Tab from 'react-bootstrap/Tab';
@@ -20,6 +20,27 @@ import SvgStoveNameplateBlue from './stove-nameplate-blue.svg';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
+import "prosemirror-view/style/prosemirror.css";
+import { EditorState } from "prosemirror-state";
+import { history } from 'prosemirror-history'
+import { Schema } from 'prosemirror-model'
+import { toggleMark, joinBackward } from 'prosemirror-commands'
+import { undo, redo } from 'prosemirror-history'
+import { baseKeymap } from 'prosemirror-commands'
+import { keymap } from 'prosemirror-keymap'
+import { marks } from 'prosemirror-schema-basic'
+import { DOMParser } from "prosemirror-model";
+import { autolink } from "prosemirror-autolink";
+import { Tooltip } from 'react-tooltip';
+
+
+
+
+import {
+  ProseMirror,
+  ProseMirrorDoc,
+  reactKeys,
+} from "@handlewithcare/react-prosemirror";
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -106,7 +127,7 @@ function findAuthorName(authorId) {
     "copy_editor": "#77c0d2" 
   }
 
-function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType}) {
+function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType, styleType="edit-field", disabled}) {
   let initialAuthors = [];
   for (const authorId in currentAuthors) {
     const author = currentAuthors[authorId]
@@ -115,22 +136,51 @@ function AuthorsSelect ({currentAuthors, handleUpdateAuthors, authorType}) {
     }
   }
 
-
-  return <Select 
-    options={authors} 
-    onChange = {handleUpdateAuthors} 
-    value={initialAuthors} 
-    isMulti 
-    styles={{
-      multiValue: (base) => ({
+  let style = {
+    multiValue: (base) => ({
         ...base,
         backgroundColor: roleColours[authorType],
+  })};
+
+  if (styleType == "edit-field") {
+    style = {
+      ...style, 
+      control: (base) => ({
+        ...base,
+        border: "none",
+        backgroundColor: "inherit",
       }),
+      valueContainer: (base) => ({
+        ...base,
+        padding: "5px",
+        ':hover': {
+          backgroundColor: "var(--hover-color)"
+        }
+      }),
+      selectContainer: (base) => ({
+        ...base,
+        padding: "0",
+        margin: "0",
+      })
+      
+    }
+  } else {
+    style = {
+      ...style, 
       container: (base) => ({
         ...base,
         maxWidth: "20em",
       })
-    }}
+    }
+  }
+
+  return <Select 
+    isDisabled = {disabled}
+    options={authors} 
+    onChange = {handleUpdateAuthors} 
+    value={initialAuthors} 
+    isMulti 
+    styles={style}
     placeholder = {"Add " + authorType.replace("_", " ") + "..."}
     components={{
       DropdownIndicator: null, 
@@ -164,6 +214,37 @@ async function updateTitle(page, newTitle, updatePage) {
     "Updating title for " + page.title, 
     "Updated title for " + page.title, 
     "Failed to title for " + page.title)
+
+}
+
+function isValidUrl(url) {
+  const urlRegex = /https?:\/\/.*\..*/g
+
+  return url.match(urlRegex)
+}
+
+async function updateAssignmentFolder(page, newAssignmentFolder, updatePage) {
+  if (page.assignment_folder == newAssignmentFolder) return;
+
+  if (newAssignmentFolder.indexOf("http://") != 0 && newAssignmentFolder.indexOf("https://") !=0) {
+    newAssignmentFolder = "http://" + newAssignmentFolder;
+  }
+  if (!isValidUrl(newAssignmentFolder)) {
+    toast.error(
+      newAssignmentFolder + " is not a valid URL.", 
+      {position: 'bottom-left'}
+    )
+    return;
+  }
+
+  page.assignment_folder = newAssignmentFolder
+
+  updatePage(page)
+
+  handleRemoteUpdate(page, {"assignment_folder": newAssignmentFolder}, updatePage,
+    "Updating assignment folder for " + page.title, 
+    "Updated assignment folder for " + page.title, 
+    "Failed to update assignment folder for " + page.title)
 
 }
 
@@ -214,9 +295,48 @@ async function updateBeat(page, newBeat, updatePage) {
     "Failed to update beat for " + page.title + " to " + newBeat.label)
 }
 
+async function updateSection(page, newSection, updatePage) {
+  updatePage({... page, current_section: newSection.value})
+
+  handleRemoteUpdate(page, {"current_section": newSection.value}, updatePage,
+    "Updating beat for " + page.title + " to " + newSection.label, 
+    "Updated beat for " + page.title + " to " + newSection.label, 
+    "Failed to update beat for " + page.title + " to " + newSection.label)
+}
+
+async function updateAssignmentMemo(page, newMemo, updatePage) {
+  if (page["assignment_memo"] == newMemo) return;
+
+  page["assignment_memo"] = newMemo
+
+  updatePage(page)
+
+
+  handleRemoteUpdate(page, {"assignment_memo": newMemo}, updatePage,
+    "Updating assignment memo for " + page.title, 
+    "Updated assignment memo for " + page.title, 
+    "Failed to assignment memo for " + page.title)
+
+}
+
+async function updateEthicsNotes(page, newEthics, updatePage) {
+  if (page.ethics_notes == newEthics) return;
+
+  page.ethics_notes = newEthics
+
+  updatePage(page)
+
+
+  handleRemoteUpdate(page, {"ethics_notes": newEthics}, updatePage,
+    "Updating ethics notes for " + page.title, 
+    "Updated ethics notes for " + page.title, 
+    "Failed to update ethics notes for " + page.title)
+
+}
+
 async function handleRemoteUpdate(page, changes, updatePage, pendingText, successText, errorText) {
-  toast.info("UPDATING REMOTE", {
-          autoClose: 250})
+  // toast.info("UPDATING REMOTE", {
+  //         autoClose: 250})
   toast.promise(
       remoteUpdatePage(page, changes),
       {
@@ -356,15 +476,138 @@ function beatLabel(beatPk) {
   return "[No label provided]"
 }
 
-function BeatSelect ({beat, updateBeat}) {
-  return <Select 
+function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
+
+ let style = {};
+
+  if (styleType == "edit-field") {
+    style = {
+      ...style, 
+      control: (base) => ({
+        ...base,
+        border: "none",
+        backgroundColor: "inherit",
+      }),
+      valueContainer: (base) => ({
+        ...base,
+        padding: "5px",
+        ':hover': {
+          backgroundColor: "var(--hover-color)"
+        }
+      }),
+      selectContainer: (base) => ({
+        ...base,
+        padding: "0",
+        margin: "0",
+      }), 
+      container: (base) => ({
+        ...base,
+        maxWidth: "20em",
+      })
+    }
+  }
+    return <Select 
+    isDisabled={disabled}
     options={beatOptions}
     value={beat ? {"value": beat, "label": beatLabel(beat)} : undefined}
     onChange={updateBeat}
+    styles={style}
     formatGroupLabel={formatGroupLabel}
     components={{
       DropdownIndicator: null, 
       placeholder: "Choose beat..."} }/>
+}
+
+function SectionSelect ({section, updateSection, styleType="edit-field"}) {
+
+  let style = {};
+
+  if (styleType == "edit-field") {
+    style = {
+      ...style, 
+      control: (base) => ({
+        ...base,
+        border: "none",
+        backgroundColor: "inherit",
+      }),
+      valueContainer: (base) => ({
+        ...base,
+        padding: "5px",
+        ':hover': {
+          backgroundColor: "var(--hover-color)"
+        }
+      }),
+      selectContainer: (base) => ({
+        ...base,
+        padding: "0",
+        margin: "0",
+      }), 
+      container: (base) => ({
+        ...base,
+        maxWidth: "20em",
+      })
+    }
+  }
+
+  function findSection(sectionSlug) {
+    for (const s of allSections) {
+      if (s.slug == sectionSlug) return s
+    }
+    return undefined
+  }
+
+  return <Select 
+    options={allSections}
+    value={section ? findSection(section) : undefined}
+    onChange={updateSection}
+    styles={style}
+    formatGroupLabel={formatGroupLabel}
+    components={{
+      DropdownIndicator: null, 
+      placeholder: "Choose section..."} }/>
+}
+
+function LinkInput ({selectedPage, updatePage}) {
+  const [assignmentFolder, changeAssignmentFolder] = useState(selectedPage.assignment_folder);
+
+  useEffect(() => {
+    if (selectedPage.assignment_folder != null) {
+      changeAssignmentFolder(selectedPage.assignment_folder)
+    } else {
+      changeAssignmentFolder('')
+    }
+  }, [selectedPage]);
+
+  return <div class="edit-field--hyperlink-container">
+          <input class="edit-field--plaintext" 
+            placeholder="Assignment folder link..." 
+            value={assignmentFolder}
+            onChange={e => changeAssignmentFolder(e.target.value)}
+            onBlur={(e) => updateAssignmentFolder(selectedPage, e.target.value, updatePage)}>
+            </input>
+            <LinkOpenButton url={assignmentFolder}/>
+          </div>
+}
+
+function LinkOpenButton ({url}) {
+  let button;
+
+  if (url != null && url != '') {
+    const activeButton = isValidUrl(url)
+
+    if (isValidUrl(url)) {
+      button = <a href={url} target="_blank" rel="noopener noreferrer"><FolderOpen /></a>
+    } else {
+      button = <FolderOpen color={"#d23732"}/>
+    }
+  } else {
+    button = <FolderOpenOutline />
+  }
+
+  return (<div className="edit-field--hyperlink-open">
+
+             {button}
+            </div>);
 }
 
 function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId}) {
@@ -384,13 +627,14 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId})
               /></button>
               <a class="slug-link" href={articleUrl.replace("1918", page.pk)}>{page["title"]}</a> </td>
             <td class="authors-cell"><AuthorsSelect 
+              disabled = {page.live}
               currentAuthors={page.article_authors} 
               handleUpdateAuthors={(newAuthorList) => updateAuthors(page, newAuthorList, responsibleRole[page.article_status].role, updatePage)}
               authorType={responsibleRole[page.article_status].role}
               />
             </td>
-            <td><DateInput date={page.deadline} handleUpdateDate={(newDate) => updateDeadline(page, newDate, updatePage)}/></td>
-            <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)}/></td>
+            <td><DateInput date={page.deadline} handleUpdateDate={(newDate) => updateDeadline(page, newDate, updatePage)} disabled={page.live}/></td>
+            <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)} disabled={page.live}/></td>
             <td><ArticleStatus status={page["article_status"]} updateStatus={(newStatus) => updateArticleStatus(page, newStatus, updatePage)}/></td>
             <td><Image color={'#257e4d'} height="1.5em" width="1.5em" /> <BrushOutline color={'#00000'} height="1.5em" width="1.5em" /><VideocamOutline color={'#00000'} height="1.5em" width="1.5em" /></td>
             <td><PrintOutline color={'#00000'} height="1.5em" width="1.5em" /><Headset color={'#faa33a'} height="1.5em" width="1.5em" /></td>
@@ -410,8 +654,6 @@ function ArticleRowSkeleton() {
 }
 
 function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticleId}) {
-    toast("Rerender",{
-          autoClose: 250})
 
 
   const rows = []
@@ -553,7 +795,7 @@ function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPubli
 
 function MainViewSelector({allPages, addPages, updatePage, clearPages, selectedArticleId, setSelectedArticleId}) {
   const [isOnlyUserFilter, setOnlyUserFilter] = useState(false);
-  const [isIncludingPublished, setIsIncludingPublished] = useState(true);
+  const [isIncludingPublished, setIsIncludingPublished] = useState(false);
 
   return (
     <Tabs
@@ -613,47 +855,172 @@ function EditSidebar({selectedPage, updatePage}) {
   useEffect(() => {
     changeTitle(selectedPage["title"]);
   }, [selectedPage]);
-  return <div>
-    <div><h2>{selectedPage["title"]}</h2></div>
+
+  return <div className="edit-content">
     <textarea 
       style={{
         width: "100%",
       }}
+      className="edit-field--title"
       value={title} // ...force the input's value to match the state variable...
       onChange={e => changeTitle(e.target.value.replace("\n", ""))}
       onBlur={(e) => updateTitle(selectedPage, e.target.value, updatePage)}></textarea>
     <div>
-      <h3>Authors</h3>
-      <div>Reportage <AuthorsSelect 
+      <h4>Authors</h4>
+      <div className="edit-field--sidebyside">
+        <div className="edit-field--side-label">Reportage</div> <AuthorsSelect 
         currentAuthors={selectedPage.article_authors} 
         handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "author", updatePage)}
         authorType={"author"}
+        styleType={"edit-field"}
         />
-      </div>
-      <div>Backfield Editing <AuthorsSelect 
+      <div className="edit-field--side-label">Backfield</div> <AuthorsSelect 
         currentAuthors={selectedPage.article_authors} 
         handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "backfield_editor", updatePage)}
         authorType={"backfield_editor"}
+        styleType={"edit-field"}
         />
-      </div>
-      <div>Copy Editing <AuthorsSelect 
+      <div className="edit-field--side-label">Copy</div> <AuthorsSelect 
         currentAuthors={selectedPage.article_authors} 
         handleUpdateAuthors={(newAuthorList) => updateAuthors(selectedPage, newAuthorList, "copy_editor", updatePage)}
         authorType={"copy_editor"}
+        styleType={"edit-field"}
         />
       </div>
     </div>
     <div>
-      <h3>Assignment Management</h3>
-      <div>Deadline<br/><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/></div>
-      <div>Status<ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/></div>
+      <h4>Organization</h4>
+
+      <div className="edit-field--sidebyside">
+        <div className="edit-field--side-label">Section</div><SectionSelect section={selectedPage.current_section} updateSection={(newSection) => updateSection(selectedPage, newSection, updatePage)} styleType={"edit-field"}/>
+        <div className="edit-field--side-label">Beat</div><BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)} styleType={"edit-field"}/>
+      </div>
     </div>
     <div>
-      <h3>Organization</h3>
-      <div>Beat<BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)}/></div>
+      <h4>Assignment Management</h4>
+      
+      <div className="edit-field--sidebyside">
+
+        <div className="edit-field--side-label">Folder</div>
+          <LinkInput selectedPage={selectedPage} updatePage={updatePage}/>
+        <div className="edit-field--side-label">Status</div> <ArticleStatus status={selectedPage["article_status"]} updateStatus={(newStatus) => updateArticleStatus(selectedPage, newStatus, updatePage)}/>
+        <div className="edit-field--side-label">Deadline</div><div className="edit-field--date"><DateInput date={selectedPage.deadline} handleUpdateDate={(newDate) => updateDeadline(selectedPage, newDate, updatePage)}/></div>
+      </div>
+      <h5>Assignment Notes </h5>
+      <AssignmentMemo selectedPage={selectedPage} updatePage={updatePage}/>
+      <h5>Ethics Notes </h5>
+      <EthicsNotes selectedPage={selectedPage} updatePage={updatePage}/>
     </div>
-   
   </div>
+}
+
+
+const doc = {
+  content: 'block+',
+  toDOM: () => ['article', 0],
+}
+
+const text = {
+  group: 'inline',
+}
+
+const paragraph = {
+  content: 'inline*',
+  group: 'block',
+  parseDOM: [{ tag: 'p' }],
+  toDOM: () => ['p', 0],
+}
+
+const schema = new Schema({
+  nodes: { doc, text, paragraph },
+  marks: marks,
+})
+
+function EthicsNotes({selectedPage, updatePage}) {
+  return <RichTextEditor onBlurCallback={(e) => updateEthicsNotes(selectedPage, e.target.innerHTML, updatePage)} defaultText={selectedPage.ethics_notes}/>
+}
+
+function AssignmentMemo({selectedPage, updatePage}) {
+  return <RichTextEditor onBlurCallback={(e) => updateAssignmentMemo(selectedPage, e.target.innerHTML, updatePage)} defaultText={selectedPage.assignment_memo}/>
+}
+
+function RichTextEditor({onBlurCallback, defaultText}) {
+  const domElement = new window.DOMParser().parseFromString(defaultText, "text/html").body;
+  const defaultNode = DOMParser.fromSchema(schema).parse(domElement);
+
+  const [editorState, setEditorState] = useState(
+    EditorState.create({
+        doc: defaultNode,
+        schema,
+        plugins: [
+          // The reactKeys plugin is required for the ProseMirror component to work!
+          reactKeys(),
+          history(),
+          keymap({
+            ...baseKeymap,
+            'Mod-z': undo,
+            'Shift-Mod-z': redo,
+            Backspace: joinBackward,
+            'Mod-b': toggleMark(schema.marks.strong),
+            'Mod-i': toggleMark(schema.marks.em)
+          }),
+          ...autolink({
+            openOnClick: true,
+            enableEnterTrigger: true,
+            excludedTrailingChars: ['.', ',', '!', '?', ':', ';', ')', ']', '}']
+          })
+        ],
+      })
+  )
+
+  useEffect(() => {
+    const newState = editorState;
+    newState.doc=defaultNode;
+    setEditorState(newState);
+  }, [defaultText]);
+  
+
+    return (
+    <ProseMirror
+      state={editorState}
+      dispatchTransaction={(tr) => {
+        setEditorState((s) => s.apply(tr));
+      }}
+    >
+      <div className="edit-field--richtext-editor">
+        
+      <ProseMirrorDoc 
+        onBlur={onBlurCallback}
+        style={{
+          backgroundColor: "#fdfdfd",
+          padding: "10px",
+          paddingBottom: "0",
+          minHeight: "6lh"
+        }}
+        />
+        <div className="edit-field--richtext-help"><a data-tooltip-id="richtext-info">?</a></div>
+        <Tooltip
+          id={"richtext-info"}
+          place={'top-end'}
+          style={{ 
+            backgroundColor: "#f6f6f6", 
+            fontSize: "small", 
+            color: "black", 
+            width: "200px", 
+            filter: 'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.2))'
+          }}
+        >
+          <span><strong>Shortcuts</strong></span>
+          <ul>
+            <li><strong>Bold</strong>. Cmd/Ctrl + B</li>
+            <li><i>Italics</i>. Cmd/Ctrl + I</li>
+            <li><a href="ubyssey.ca">Link</a>. Paste a link from your clipboard using Cmd/Ctrl + V</li>
+          </ul>
+        </Tooltip>
+        </div>
+        
+    </ProseMirror>
+  );
 }
 
 function SidebarViewsSelector({selectedPage, updatePage, createPage}) {
@@ -701,6 +1068,7 @@ function SectionNavigationSidebar() {
           <SectionGroup groupName="Reportage" sections={["Arts", "Culture", "News", "Opinion", "Sports"]}/>
           <SectionGroup groupName="Visuals" sections={["Graphics", "Photo", "Video"]}/>
           <SectionGroup groupName="Product" sections={["Audio", "Print", "Socials"]}/>
+          <SectionGroup groupName="More" sections={["Copy", "Games", "Homepage"]}/>
   </div>
 }
 
@@ -762,8 +1130,9 @@ function ContentTracker() {
 }
 
 
-function DateInput ({date, handleUpdateDate}) {
+function DateInput ({date, handleUpdateDate, disabled}) {
   return <DatePicker
+    disabled={disabled}
     selected={date ? new Date(date) : undefined}
     onChange={(newDate) => {
       handleUpdateDate(newDate)
@@ -781,3 +1150,6 @@ function DateInput ({date, handleUpdateDate}) {
 const container = document.getElementById('content-tracker');
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
 root.render(<ContentTracker />);
+
+
+// https://codesandbox.io/p/sandbox/prosemirror-simple-i8yul?file=%2Fsrc%2Findex.ts%3A12%2C3

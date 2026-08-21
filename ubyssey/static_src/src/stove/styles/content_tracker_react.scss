@@ -5,6 +5,7 @@
     --ubyssey-blue: #263a7b;
     --inactive-color: #ccc;
     --hover-color: hsl(192, 50%, 85%);
+    --invalid-hover-color: hsl(6, 69%, 85%);
 }
 
 table, th, td {
@@ -17,6 +18,7 @@ table, th, td {
   align-items: center; 
   vertical-align: top;  
   flex-direction: column;
+  height: 100vh;
 }
 
 .main-content-panel {
@@ -332,6 +334,120 @@ input:checked + .slider:before {
 
 .panel {
   // background-color: #ccc;
+}
+
+.tab-content {
+  overflow: scroll;
+  height: calc(100vh - 90px);
+}
+
+.edit-field--title {
+  width: 100%;
+  background-color: inherit;
+  font-size: xx-large;
+  border: none;
+  field-sizing: content;
+  line-height: 1.1;
+  min-height: 1lh;
+  max-height: 4lh;
+  margin-bottom: 24px;
+  resize: none;
+}
+
+.edit-field--title:hover {
+  background-color: var(--hover-color);;
+}
+
+.edit-field--sidebyside {
+  display: grid;
+  grid-template-columns: 80px auto;
+  padding: 4px;
+}
+
+.edit-field--side-label {
+  padding-top: 10px;
+  padding-right: 4px;
+  vertical-align: middle;
+  justify-content: center;
+  transform: translateY(-2px); 
+}
+
+.edit-field--author {
+  background-color: inherit;
+  border: none;
+  padding: 0;
+}
+
+.edit-field--richtext-editor {
+  position: relative;
+}
+
+.edit-field--richtext-help {
+  display: flex;
+  background-color: #f3f3f3;
+  font-weight: bold;
+  height: 1.3lh;
+  width: 1.3lh;
+  border-radius: 50%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}
+
+.edit-field--plaintext {
+  height: 36px;
+  background-color: inherit;
+  border: none;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.edit-field--hyperlink-container {
+  display: grid;
+  grid-template-columns: auto 30px;
+  width: 100%;
+  max-width: 20em;
+}
+
+.edit-field--hyperlink-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-field--hyperlink-open:has(a):hover {
+  background-color: var(--hover-color);
+}
+
+.edit-field--hyperlink-open:not(:has(a)):hover {
+  background-color: var(--invalid-hover-color);
+  cursor: not-allowed;
+}
+
+.edit-field--plaintext:hover {
+  background-color: var(--hover-color);
+}
+
+.react-datepicker-wrapper:hover {
+  background-color: var(--hover-color);
+}
+.react-datepicker__input-container > input {
+  background-color: inherit;
+  border: none;
+  height: 36px;
+  width: 100%;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.edit-field--date > .react-datepicker-wrapper {
+  max-width: 20em;
+  width: 100%;
 }
 
 .metadata-editor {

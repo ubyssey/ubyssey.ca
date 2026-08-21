@@ -703,6 +703,27 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     article_status = models.IntegerField(choices=ArticleStatus.choices, default=ArticleStatus.ASSIGNED.value)
 
+    assignment_memo = RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Assignment Memorandum',
+        help_text="Advice from a section editor about how to approach a story",
+    )
+
+    ethics_notes = RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        verbose_name='Ethics Notes',
+        help_text="Advice from a section editor about the ethics of a story",
+    )
+    assignment_folder = models.URLField(
+        null=True,
+        blank=True,
+        help_text="Link to the drive folder for storing assignment related materials",
+    )
+
 
     lede = models.TextField(
         # Was called "snippet" in Dispatch - do not want to reuse this work, so we call it 'lede' instead
@@ -934,6 +955,9 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         ),
         FieldPanel("deadline", help_text="This field sets the deadline for a contributor to file a draft."),
         FieldPanel("article_status", help_text = "This field indicates the current status of an article."),
+        FieldPanel("assignment_memo", help_text="Guidance from a section editor about how to approach a story"),
+        FieldPanel("ethics_notes", help_text="Advice from a section editor about the ethics of a story"),
+        FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials")
         
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
