@@ -224,8 +224,10 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
   const state = pageEditorState;
   const modalContainer = document.querySelector("[data-page-form]");
   const moveBlock = (instance, pageBlock, direction) => {
+    instance.history.stopCapturing();
     const moved = movePageBlock(instance, pageBlock, direction);
     if (moved) preview.refreshDoc({ immediate: true });
+    instance.history.stopCapturing();
     return moved;
   };
   state.blockActions?.cleanup();
@@ -415,8 +417,10 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
     if (!liveInstance || !anchorBlock) return;
     ui.blockEditorOpen = false;
     removePendingAdd();
+    const insertType = refs.insertSelect.value;
+    ui.insertType = insertType;
     const anchor = describePageBlock(anchorBlock);
-    const draft = createStreamBlockDraft(liveInstance, ui.insertType);
+    const draft = createStreamBlockDraft(liveInstance, insertType);
     const draftBlock = draft.instance.doc.firstChild;
     const descriptor = {
       fieldName: liveInstance.fieldName,
@@ -449,7 +453,9 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
       blockId: block.attrs?.id || "",
       blockIndex: anchorInfo.index + 1,
     };
+    liveInstance.history.stopCapturing();
     insertBlock(liveInstance, { after: anchor, block });
+    liveInstance.history.stopCapturing();
 
     pendingAdd = null;
     restoreBlockEditorHome();
@@ -498,7 +504,11 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
     closeDialogs,
     confirmDelete() {
       const active = selectedBlock();
-      if (active) deletePageBlock(active.instance, active.blockElement);
+      if (active) {
+        active.instance.history.stopCapturing();
+        deletePageBlock(active.instance, active.blockElement);
+        active.instance.history.stopCapturing();
+      }
       closeDialogs();
       preview.refreshDoc({ immediate: true });
     },

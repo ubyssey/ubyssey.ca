@@ -176,7 +176,11 @@ export function setupMetadataCollaboration(form, metadata) {
     const next = fieldValue(fields);
     if (sameValue(previous, next)) return;
     if (previous instanceof Y.Text && typeof next === "string") updateSharedText(metadata, previous, next);
-    else metadata.set(key, next);
+    else {
+      metadata.doc.transact(() => {
+        metadata.set(key, next);
+      }, "metadata-input");
+    }
   };
 
   // Writes local author row changes to YJS
@@ -186,7 +190,11 @@ export function setupMetadataCollaboration(form, metadata) {
     const authors = metadata.get(AUTHORS_KEY);
     if (sameValue(authors, rows)) return;
     if (authors instanceof Y.Array) updateSharedAuthors(metadata, authors, rows);
-    else metadata.set(AUTHORS_KEY, newSharedAuthors(rows));
+    else {
+      metadata.doc.transact(() => {
+        metadata.set(AUTHORS_KEY, newSharedAuthors(rows));
+      }, "metadata-input");
+    }
   };
 
   metadata.observe(onMetadata);

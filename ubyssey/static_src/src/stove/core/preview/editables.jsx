@@ -48,6 +48,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
   // Two editor modes, streamRichText for RichText Blocks, uses YJS cursor/history/sync plugin
   // And richTextSchema for modals, which works the same as before pretty much, with Prosemirror history writebacks use onContentChanged
   const schema = sharedType ? streamRichTextSchema : richTextSchema;
+  const pageHistory = pageEditorState.history;
   const doc = schema.nodeFromJSON({
     type: sharedType ? "editable_field" : "doc",
     attrs: sharedType ? editableFieldInfoForSource(streamSource)?.node.attrs : undefined,
@@ -61,7 +62,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       plugins: [
         ...(sharedType ? [ySyncPlugin(sharedType)] : []),
         ...(sharedType && pageEditorState.awareness ? [yCursorPlugin(pageEditorState.awareness)] : []),
-        ...editorPlugins(schema, { includeHistory: !sharedType }),
+        ...editorPlugins(schema, { includeHistory: !sharedType && !pageHistory }),
       ],
     }),
 
@@ -80,6 +81,12 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
 
     attributes,
     handleKeyDown(activeView, event) {
+      const key = event.key.toLowerCase();
+      const historyAction = key === "z" && (event.ctrlKey || event.metaKey) ? (event.shiftKey ? "redo" : "undo") : key === "y" && event.ctrlKey && !event.shiftKey ? "redo" : null;
+      if (historyAction && pageHistory?.[historyAction]()) {
+        event.preventDefault();
+        return true;
+      }
       if (inlineRichText && event.key === "Enter" && !event.isComposing) {
         event.preventDefault();
         return true;
@@ -91,6 +98,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
 
   view.streamSource = streamSource;
   const handleFocus = () => {
+    pageHistory?.stopCapturing();
     streamSource?.instance.history.stopCapturing();
     pageEditorState.richTextToolbar?.setView(view);
   };
@@ -323,10 +331,11 @@ export function setupPagePreviewEditors(pageRoot, streamDocs = null, scopeBlock 
     stopDirectEditEvents(target);
     if (source.kind === "stream") {
       pageEditorState.pageDirectPlainTextEditors.push({ element: target, streamSource: source });
-      target.addEventListener("focus", () => {
-        source.instance.history.stopCapturing();
-      });
     }
+    target.addEventListener("focus", () => {
+      pageEditorState.history?.stopCapturing();
+      source.instance?.history.stopCapturing();
+    });
 
     target.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {

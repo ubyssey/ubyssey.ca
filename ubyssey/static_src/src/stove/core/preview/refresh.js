@@ -6,7 +6,7 @@ import { findPageBlock, syncSelectedPageBlockEditor } from "./selection.js";
 import { pageEditorState } from "../state.js";
 import { formDataWithStreamDocuments, snapshotStreamDocuments } from "../prosemirror/persistence.js";
 import { syncPageEditorsFromMetadata } from "./editables.jsx";
-import { setupRevisionHistory } from "../revisions/history.js";
+import { setupRevisionHistory } from "../revisions/revision_history.js";
 import { focusedPageBlock, replacePagePreviewHtml, replaceSelectedBlockPreviewHtml, replaceUnfocusedPageBlocks, restoreCurrentPageControls } from "./dom.js";
 import { fetchPreviewHtml } from "./requests.js";
 

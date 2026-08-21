@@ -21,6 +21,7 @@ export class PageEditorState {
     this.users = null;
     this.awareness = null;
     this.footnoteTexts = null;
+    this.history = null;
   }
 
   registerStreamEditor(editor) {

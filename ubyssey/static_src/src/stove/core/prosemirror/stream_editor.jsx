@@ -12,19 +12,14 @@ import {
 import { samePath } from "./fields.js";
 import { clone, createStreamBlockNodeFromRegistry } from "./serialization.js";
 import { streamRichTextSchema, streamSchema } from "./stream_schema.js";
-
-// Contains info like if it was a content (block value changed) or structural (insert/move/delete block) doc change, it is a local change, undo manager info
-class StreamModelUpdate {
-  constructor(change) {
-    this.change = change;
-  }
-}
+import { StreamModelUpdate } from "../collaboration/history.js";
 
 // Stream editor per Wagtail StreamField/YJS fragment
 export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock }) {
   function createStreamEditor(fieldName, streamEditor, options = {}) {
     const {
       fragment,
+      history,
       onChange = () => {},
       onTransaction = () => {},
     } = options;
@@ -40,7 +35,7 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
     const changeListeners = new Set();
     const richTextTypes = new Map();
 
-    const undoManager = new Y.UndoManager(fragment, {
+    const undoManager = history || new Y.UndoManager(fragment, {
       trackedOrigins: new Set([ySyncPluginKey, StreamModelUpdate]),
       deleteFilter: (item) => defaultDeleteFilter(item, defaultProtectedNodes),
       captureTransaction: (transaction) => transaction.meta.get("addToHistory") !== false,
@@ -114,19 +109,19 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
       },
 
       history: {
-        canUndo: () => undoManager.undoStack.length > 0,
-        canRedo: () => undoManager.redoStack.length > 0,
+        canUndo: () => undoManager.canUndo(),
+        canRedo: () => undoManager.canRedo(),
         undo: () => {
-          if (!undoManager.undoStack.length) return false;
+          if (!undoManager.canUndo()) return false;
           undoManager.undo();
           return true;
         },
         redo: () => {
-          if (!undoManager.redoStack.length) return false;
+          if (!undoManager.canRedo()) return false;
           undoManager.redo();
           return true;
         },
-        stopCapturing: () => { undoManager.stopCapturing(); },
+        stopCapturing: () => undoManager.stopCapturing(),
       },
     };
 

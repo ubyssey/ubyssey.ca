@@ -1,5 +1,7 @@
 // Footnotes
 
+// Note: Footnotes are currently excluded from wider page history, but work locally
+
 import { useEffect, useRef } from "react";
 import * as Y from "yjs";
 import { Schema } from "prosemirror-model";
@@ -280,7 +282,7 @@ export function startFootnoteCommand(footnoteMark) {
       const range = markRangeAtCursor(state, footnoteMark, activeMark.attrs);
       let tr = state.tr.removeStoredMark(footnoteMark);
       if (range) tr = activeMark.attrs.anchor ? tr.delete(range.from, range.to) : tr.removeMark(range.from, range.to, footnoteMark);
-      dispatch(tr.scrollIntoView());
+      dispatch(tr.setMeta("addToHistory", false).scrollIntoView());
       return true;
     }
 
@@ -289,6 +291,7 @@ export function startFootnoteCommand(footnoteMark) {
     dispatch(state.tr
       .replaceSelectionWith(state.schema.text(FOOTNOTE_ANCHOR_TEXT, [mark]), false)
       .removeStoredMark(footnoteMark)
+      .setMeta("addToHistory", false)
       .scrollIntoView());
     return true;
   };

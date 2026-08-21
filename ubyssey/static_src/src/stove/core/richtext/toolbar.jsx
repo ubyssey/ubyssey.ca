@@ -28,6 +28,7 @@ export function createEditorToolbar(root, {
   view = null,
   publishSource = null,
   getContentDoc = () => null,
+  history = null,
   onHistoryCommand = () => {},
   renderExtraControls = () => null,
 } = {}) {
@@ -42,6 +43,7 @@ export function createEditorToolbar(root, {
         view={activeView}
         publishSource={publishSource}
         contentDoc={getContentDoc()}
+        history={history}
         onHistoryCommand={onHistoryCommand}
         extraControls={renderExtraControls()}
         refresh={update}
@@ -50,6 +52,13 @@ export function createEditorToolbar(root, {
   }
 
   function runHistory(key) {
+    if (history && ["undo", "redo"].includes(key)) {
+      if (!history[key]()) return false;
+      activeView?.dom.focus({ preventScroll: true });
+      onHistoryCommand();
+      update();
+      return true;
+    }
     const command = activeView && toolbarCommand(activeView, key);
     if (!command || !command(activeView.state, activeView.dispatch, activeView)) return false;
 
@@ -73,7 +82,7 @@ export function createEditorToolbar(root, {
   };
 }
 
-function EditorToolbar({ view, publishSource, contentDoc, onHistoryCommand, refresh, extraControls }) {
+function EditorToolbar({ view, publishSource, contentDoc, history, onHistoryCommand, refresh, extraControls }) {
   const highlightedWords = view && !view.state.selection.empty
     ? countWords(view.state.doc.textBetween(view.state.selection.from, view.state.selection.to, " ")) : null;
 
@@ -81,8 +90,9 @@ function EditorToolbar({ view, publishSource, contentDoc, onHistoryCommand, refr
     <div className={`pm-editor-toolbar${publishSource ? " pm-editor-toolbar--page" : ""}`}>
       <div className="pm-editor-toolbar__tools">
         {TOOLBAR_ITEMS.map(([key, label, title]) => {
+          const historyAction = history && ["undo", "redo"].includes(key);
           const command = view && toolbarCommand(view, key);
-          const enabled = Boolean(command && command(view.state));
+          const enabled = historyAction ? history[key === "undo" ? "canUndo" : "canRedo"]() : Boolean(command && command(view.state));
           const active = view ? toolbarItemIsActive(view, key) : false;
 
           return (
@@ -96,7 +106,8 @@ function EditorToolbar({ view, publishSource, contentDoc, onHistoryCommand, refr
               disabled={!enabled}
               onMouseDown={(event) => { event.preventDefault(); }}
               onClick={() => {
-                if (command(view.state, view.dispatch, view)) {
+                const handled = historyAction ? history[key]() : command?.(view.state, view.dispatch, view);
+                if (handled) {
                   view.focus();
                   if (["undo", "redo"].includes(key)) onHistoryCommand();
                   refresh();

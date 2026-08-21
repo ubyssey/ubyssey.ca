@@ -12,6 +12,7 @@ import { pageEditorState } from "../core/state.js";
 import { setupPageCollaboration } from "../core/collaboration/page.js";
 import { setupPresence } from "../core/collaboration/presence.js"
 import { seedMetadata } from "./metadata/collaboration.js";
+import { createPageHistory } from "../core/collaboration/history.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
@@ -38,6 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   pageEditorState.awareness = collaboration.awareness;
+  pageEditorState.history = createPageHistory(collaboration.ydoc, Object.keys(streamEditors));
   pageEditorState.footnoteTexts = collaboration.ydoc.getMap("footnoteTexts");
 
   if (Object.keys(editorErrors).length) {
@@ -80,6 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       streamEditor,
       {
         fragment: collaboration.ydoc.getXmlFragment(fieldName),
+        history: pageEditorState.history,
         onChange: (change) => preview.applyStreamChange(change),
         onTransaction: ({ transaction }) => {
           const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
@@ -93,14 +96,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     appendStreamDocumentsToFormData(event.formData, snapshotStreamDocuments(pageEditorState.streamEditors));
   });
 
+  form.addEventListener("focusin", (event) => {
+    if (event.target.closest?.("[data-collaborative-metadata]")) {
+      pageEditorState.history.stopCapturing();
+    }
+  });
+
   pageEditorState.richTextToolbar = createManuscriptToolbar(pageRoot.querySelector(".pm-page-toolbar"), {
+    history: pageEditorState.history,
     publishSource: document.querySelector("[data-article-toolbar-source]"),
     getContentDoc: () => pageEditorState.streamEditors.find((instance) => instance.fieldName === "content")?.doc,
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.defaultPrevented || pageEditorState.blockEditorModalOpen || event.altKey || (!event.ctrlKey && !event.metaKey)) return;
-    if (event.target.closest?.("input, textarea, [contenteditable], .ProseMirror")) return;
+    const editable = event.target.closest?.("input, textarea, [contenteditable], .ProseMirror");
+    if (editable && !event.target.closest?.("[data-collaborative-metadata], .pm-page-direct-edit")) return;
 
     const key = event.key.toLowerCase();
     const action = key === "z" ? (event.shiftKey ? "redo" : "undo") : key === "y" && event.ctrlKey && !event.shiftKey ? "redo" : null;
