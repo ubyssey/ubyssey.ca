@@ -1,7 +1,3 @@
-.pm-stream-block__controls {
-    display: none;
-}
-
 .pm-editable-field__content {
     border: 1px solid black;
 }
@@ -37,16 +33,16 @@ body {
     background: #f5f6f6;
 }
 
-.manuscript-editor--history {
+.page-editor--history {
     grid-template-columns: minmax(0, 1fr);
 }
 
-.manuscript-editor--history .metadata-editor,
-.manuscript-editor--history .manuscript-topbar__actions > :not([data-history-control]) {
+.page-editor--history .metadata-editor,
+.page-editor--history .page-editor-topbar__actions > :not([data-history-control]) {
     display: none;
 }
 
-.manuscript-editor--history .manuscript {
+.page-editor--history .manuscript {
     grid-column: 1;
 }
 
@@ -104,7 +100,7 @@ body {
     pointer-events: none;
 }
 
-.manuscript-topbar {
+.page-editor-topbar {
     grid-column: 1 / -1;
     grid-row: 1;
     position: fixed;
@@ -124,7 +120,7 @@ body {
     background: #fff;
 }
 
-#article-shadow {
+#page-shadow {
     position: relative;
     z-index: 0;
     isolation: isolate;
@@ -132,7 +128,7 @@ body {
     width: 100%;
 }
 
-.manuscript-topbar__actions {
+.page-editor-topbar__actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -140,19 +136,19 @@ body {
     min-width: 0;
 }
 
-[data-article-saved] {
+[data-page-saved] {
     font: 13px/1.2 sans-serif;
     color: var(--text_color-200, #555);
     margin-right: auto
 }
 
-.manuscript-connected-users {
+.stove-connected-users {
     display: flex;
     gap: 4px;
     padding-left: 8px;
 }
 
-.manuscript-connected-users__avatar {
+.stove-connected-users__avatar {
     width: 28px;
     height: 28px;
     border: 2px solid #fff;
@@ -160,13 +156,13 @@ body {
     object-fit: cover;
 }
 
-.manuscript-editor:not(.manuscript-editor--history) [data-history-return],
-.manuscript-editor:not(.manuscript-editor--history) [data-history-restore] {
+.manuscript-editor:not(.page-editor--history) [data-history-return],
+.manuscript-editor:not(.page-editor--history) [data-history-restore] {
     display: none;
 }
 
-.manuscript-topbar__button,
-.article-media-modal__panel button {
+.page-editor-topbar__button,
+.page-editor-modal__panel button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -182,8 +178,8 @@ body {
     cursor: pointer;
 }
 
-.manuscript-topbar__button:hover,
-.article-media-modal__panel button:hover {
+.page-editor-topbar__button:hover,
+.page-editor-modal__panel button:hover {
     background-color: rgba(221, 227, 234, .35);
 }
 
@@ -201,11 +197,11 @@ body {
 }
 
 
-.article-media-modal[hidden] {
+.page-editor-modal[hidden] {
     display: none;
 }
 
-.article-media-modal {
+.page-editor-modal {
     position: fixed;
     inset: 0;
     z-index: 100;
@@ -216,11 +212,11 @@ body {
     box-sizing: border-box;
 }
 
-.article-media-modal--stacked {
+.page-editor-modal--stacked {
     z-index: 110;
 }
 
-.article-media-modal__backdrop {
+.page-editor-modal__backdrop {
     position: absolute;
     inset: 0;
     min-height: 0;
@@ -231,7 +227,7 @@ body {
     cursor: default;
 }
 
-.article-media-modal__panel {
+.page-editor-modal__panel {
     position: relative;
     z-index: 1;
     display: grid;
@@ -247,37 +243,37 @@ body {
     box-shadow: 0 18px 50px rgb(0 0 0 / 0.18);
 }
 
-.article-media-modal__panel--existing {
+.page-editor-modal__panel--existing {
     max-height: none;
     overflow: visible;
 }
 
-.article-media-modal__panel--gallery {
+.page-editor-modal__panel--gallery {
     width: min(720px, 100%);
 }
 
-.article-media-modal__panel--settings {
+.page-editor-modal__panel--settings {
     width: min(620px, 100%);
 }
 
-.article-media-modal__header,
-.article-media-modal__footer {
+.page-editor-modal__header,
+.page-editor-modal__footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
 
-.article-media-modal__header h2 {
+.page-editor-modal__header h2 {
     margin: 0;
     font: 600 18px/1.2 sans-serif;
 }
 
-.article-media-modal__footer {
+.page-editor-modal__footer {
     justify-content: flex-end;
 }
 
-.article-media-modal__close {
+.page-editor-modal__close {
     width: 30px;
     padding: 0;
 }
@@ -303,34 +299,30 @@ body {
 }
 
 
-.article-block-editor-modal__panel {
+.page-block-editor-modal__panel {
     grid-template-rows: auto minmax(0, 1fr) auto;
     max-height: min(820px, calc(100vh - 48px));
     overflow: hidden;
 }
 
-.article-block-editor-modal__body {
+.page-block-editor-modal__body {
     display: grid;
     gap: 10px;
     min-width: 0;
     overflow: auto;
 }
 
-.article-block-editor-modal__body .editor-section {
-    display: block;
-}
-
-.article-block-editor-modal__body * {
+.page-block-editor-modal__body * {
     visibility: visible;
     pointer-events: auto;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__title {
+.page-block-editor-modal__body .pm-page-block-dialog__title {
     margin: 0;
     font: 600 13px/1.2 sans-serif;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__select {
+.page-block-editor-modal__body .pm-page-block-dialog__select {
     min-height: 30px;
     border: 1px solid #bbb;
     background: #fff;
@@ -338,53 +330,47 @@ body {
     font: 13px/1.2 sans-serif;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor {
+.page-block-editor-modal__body .pm-page-block-dialog__editor {
     max-height: min(520px, calc(100vh - 220px));
     overflow: auto;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .ProseMirror:focus,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .ProseMirror-focused {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .ProseMirror:focus,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .ProseMirror-focused {
     outline: none;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-sidebar-toolbar,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__header,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__controls {
-    display: none;
-}
-
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-block {
     margin: 0;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__content {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-block__content {
     display: grid;
     gap: 10px;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-control-field {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-editable-field,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-control-field {
     padding: 5px 0;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field__label,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-struct-field__label,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-control-field__label {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-editable-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-struct-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-control-field__label {
     font: 13px/1.2 sans-serif;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field__content {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-editable-field__content {
     border: 1px solid black;
 }
 
-.article-block-editor-modal__panel .pm-article-block-dialog__button--primary {
+.page-block-editor-modal__panel .pm-page-block-dialog__button--primary {
     background-color: #3564a8;
     color: #fff;
     border: none;
 }
 
-.article-block-editor-modal__panel .pm-article-block-dialog__button--danger {
+.page-block-editor-modal__panel .pm-page-block-dialog__button--danger {
     background-color: #d23732;
     color: #fff;
     border: none;
@@ -442,7 +428,7 @@ body {
     box-sizing: border-box;
 }
 
-.pm-editable-field--manuscript-owned {
+.pm-editable-field--stream-root {
     display: none;
 }
 
@@ -461,13 +447,6 @@ body {
 
 .manuscript-publish-source {
     display: none;
-}
-
-.pm-sidebar-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: #fff;
 }
 
 .pm-editor-toolbar {

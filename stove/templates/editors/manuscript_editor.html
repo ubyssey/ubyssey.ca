@@ -22,9 +22,9 @@
   action="{% url 'stove:manuscript_editor' self.id %}"
   id="manuscript-editor-form"
   class="manuscript-editor manuscript-editor-form"
-  data-manuscript-form
-  data-manuscript-editor
-  data-manuscript-page-id="{{ self.id }}"
+  data-page-form
+  data-page-editor
+  data-page-id="{{ self.id }}"
   data-preview-url="{% url 'stove:manuscript_preview' self.id %}"
   data-restore-url="{% url 'stove:manuscript_restore' self.id %}"
   data-history-url="{% url 'stove:manuscript_revisions' self.id %}"
@@ -33,31 +33,30 @@
   data-media-options-url="{% url 'stove:manuscript_media_options' self.id %}"
   data-media-upload-url="{% url 'stove:article_media_upload' self.id %}"
   data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}"
-  {# Replace with current_editor at some point #}
   data-current-editor-username="{{ current_editor.name }}"
 >
   {% csrf_token %}
 
-  <header class="manuscript-topbar">
+  <header class="page-editor-topbar">
     <a href="{% url 'stove:content_tracker_base' %}">
       <img src="{% static 'ubyssey/images/stove/favicon.ico' %}">
     </a>  
-    <span data-article-saved data-last-saved-at="{% if last_saved_manuscript %}{{ last_saved_manuscript.updated_at|date:'c' }}{% endif %}">
+    <span data-page-saved data-last-saved-at="{% if last_saved_manuscript %}{{ last_saved_manuscript.updated_at|date:'c' }}{% endif %}">
         {% if last_saved_manuscript %}Saved: {{ last_saved_manuscript.updated_at|date:"M j, Y H:i" }}{% endif %}
     </span>
-    <div class="manuscript-topbar__actions">
-      <div class="manuscript-connected-users" data-connected-users></div>
-      <button type="button" class="manuscript-topbar__button" data-manuscript-open-cover>Cover</button>
-      <button type="button" class="manuscript-topbar__button" data-article-media-open-gallery>Media</button>
-      <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>
-      <a href="{% url 'stove:manuscript_full_preview' self.id %}" class="manuscript-topbar__button" target="_blank" rel="noopener">View Preview</a>
-      <a href="{{ self.url }}" class="manuscript-topbar__button" target="_blank" rel="noopener" data-article-live-link>View Live</a>
+    <div class="page-editor-topbar__actions">
+      <div class="stove-connected-users" data-connected-users></div>
+      <button type="button" class="page-editor-topbar__button" data-manuscript-open-cover>Cover</button>
+      <button type="button" class="page-editor-topbar__button" data-article-media-open-gallery>Media</button>
+      <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="page-editor-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>
+      <a href="{% url 'stove:manuscript_full_preview' self.id %}" class="page-editor-topbar__button" target="_blank" rel="noopener">View Preview</a>
+      <a href="{{ self.url }}" class="page-editor-topbar__button" target="_blank" rel="noopener" data-page-live-link>View Live</a>
       {% comment %}
         Save and Publish button hidden for now 
-        <button type="submit" class="manuscript-topbar__button" name="action" value="publish" data-article-action="publish">Save &amp; Publish</button>
+        <button type="submit" class="page-editor-topbar__button" name="action" value="publish" data-editor-action="publish">Save &amp; Publish</button>
       {% endcomment %}
-      <button type="button" class="manuscript-topbar__button" data-history-control data-history-return>Return</button>
-      <button type="button" class="manuscript-topbar__button" data-history-control data-history-restore disabled>Restore</button>
+      <button type="button" class="page-editor-topbar__button" data-history-control data-history-return>Return</button>
+      <button type="button" class="page-editor-topbar__button" data-history-control data-history-restore disabled>Restore</button>
       <label class="manuscript-version-picker" data-history-control>
         <span>Version</span>
         <select data-history-select aria-label="Version preview" disabled>
@@ -115,34 +114,16 @@
     <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
   </aside>
 
-  {# Stores the actual stream data #}
-  <div class="manuscript-stream-state" data-manuscript-stream-state aria-hidden="true">
-    {% for field_name, stream_editor in stream_editors.items %}
-      {% if field_name == "header" or field_name == "content" %}
-        <section class="editor-section">
-          <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
-          <textarea
-            id="stream_{{ field_name }}"
-            name="stream_{{ field_name }}"
-            data-stream-json
-            data-stream-field="{{ field_name }}"
-            hidden
-          ></textarea>
-        </section>
-      {% endif %}
-    {% endfor %}
-  </div>
-
   <aside class="metadata-editor metadata-editor--right" aria-label="Comments">
     <section class="pm-comment-sidebar" data-comment-sidebar aria-label="Comments"></section>
   </aside>
 
-  <div class="article-media-modal" data-article-media-upload-modal role="dialog" aria-modal="true" aria-labelledby="article-media-upload-title" hidden>
-    <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close media upload"></button>
-    <section class="article-media-modal__panel">
-      <header class="article-media-modal__header">
+  <div class="page-editor-modal" data-article-media-upload-modal role="dialog" aria-modal="true" aria-labelledby="article-media-upload-title" hidden>
+    <button type="button" class="page-editor-modal__backdrop" data-article-media-close aria-label="Close media upload"></button>
+    <section class="page-editor-modal__panel">
+      <header class="page-editor-modal__header">
         <h2 id="article-media-upload-title" data-article-media-upload-title>Upload media</h2>
-        <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close media upload">x</button>
+        <button type="button" class="page-editor-modal__close" data-article-media-close aria-label="Close media upload">x</button>
       </header>
       {{ article_media_upload_form.non_field_errors }}
       {% for field in article_media_upload_form %}
@@ -156,19 +137,19 @@
           </div>
         {% endif %}
       {% endfor %}
-      <footer class="article-media-modal__footer">
+      <footer class="page-editor-modal__footer">
         <button type="button" data-article-media-upload-button>Upload</button>
         <button type="button" data-article-media-close>Cancel</button>
       </footer>
     </section>
   </div>
 
-  <div class="article-media-modal" data-article-media-existing-modal role="dialog" aria-modal="true" aria-labelledby="article-media-existing-title" hidden>
-    <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close preexisting media picker"></button>
-    <section class="article-media-modal__panel article-media-modal__panel--existing">
-      <header class="article-media-modal__header">
+  <div class="page-editor-modal" data-article-media-existing-modal role="dialog" aria-modal="true" aria-labelledby="article-media-existing-title" hidden>
+    <button type="button" class="page-editor-modal__backdrop" data-article-media-close aria-label="Close preexisting media picker"></button>
+    <section class="page-editor-modal__panel page-editor-modal__panel--existing">
+      <header class="page-editor-modal__header">
         <h2 id="article-media-existing-title">Add Preexisting Media to Article</h2>
-        <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close preexisting media picker">x</button>
+        <button type="button" class="page-editor-modal__close" data-article-media-close aria-label="Close preexisting media picker">x</button>
       </header>
       <div class="page-field">
         <label for="article-media-existing-kind">Media type</label>
@@ -181,34 +162,34 @@
         <label>Media</label>
         <div data-article-media-existing-select></div>
       </div>
-      <footer class="article-media-modal__footer">
+      <footer class="page-editor-modal__footer">
         <button type="button" data-article-media-existing-add disabled>Add</button>
         <button type="button" data-article-media-close>Cancel</button>
       </footer>
     </section>
   </div>
 
-  <div class="article-media-modal" data-article-media-gallery-modal role="dialog" aria-modal="true" aria-labelledby="article-media-gallery-title" hidden>
-    <button type="button" class="article-media-modal__backdrop" data-article-media-close aria-label="Close media gallery"></button>
-    <section class="article-media-modal__panel article-media-modal__panel--gallery">
-      <header class="article-media-modal__header">
+  <div class="page-editor-modal" data-article-media-gallery-modal role="dialog" aria-modal="true" aria-labelledby="article-media-gallery-title" hidden>
+    <button type="button" class="page-editor-modal__backdrop" data-article-media-close aria-label="Close media gallery"></button>
+    <section class="page-editor-modal__panel page-editor-modal__panel--gallery">
+      <header class="page-editor-modal__header">
         <h2 id="article-media-gallery-title">Article Media</h2>
-        <div class="article-media-modal__actions">
+        <div class="page-editor-modal__actions">
           <button type="button" data-article-media-open-upload>Upload media</button>
           <button type="button" data-article-media-open-existing>Add Preexisting Media to Article</button>
-          <button type="button" class="article-media-modal__close" data-article-media-close aria-label="Close media gallery">x</button>
+          <button type="button" class="page-editor-modal__close" data-article-media-close aria-label="Close media gallery">x</button>
         </div>
       </header>
       {% include "editors/components/article_media_gallery.html" %}
     </section>
   </div>
 
-  <div class="article-media-modal" data-manuscript-settings-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-settings-title" hidden>
-    <button type="button" class="article-media-modal__backdrop" data-manuscript-settings-close aria-label="Close settings"></button>
-    <section class="article-media-modal__panel article-media-modal__panel--settings">
-      <header class="article-media-modal__header">
+  <div class="page-editor-modal" data-manuscript-settings-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-settings-title" hidden>
+    <button type="button" class="page-editor-modal__backdrop" data-manuscript-settings-close aria-label="Close settings"></button>
+    <section class="page-editor-modal__panel page-editor-modal__panel--settings">
+      <header class="page-editor-modal__header">
         <h2 id="manuscript-settings-title">Metadata</h2>
-        <button type="button" class="article-media-modal__close" data-manuscript-settings-close aria-label="Close settings">x</button>
+        <button type="button" class="page-editor-modal__close" data-manuscript-settings-close aria-label="Close settings">x</button>
       </header>
       <section id="metadata-settings">
       {{ page_form.non_field_errors }}
@@ -230,12 +211,12 @@
     </section>
   </div>
 
-  <div class="article-media-modal" data-manuscript-cover-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-cover-title" hidden>
-    <button type="button" class="article-media-modal__backdrop" data-manuscript-cover-close aria-label="Close cover settings"></button>
-    <section class="article-media-modal__panel article-media-modal__panel--cover">
-      <header class="article-media-modal__header">
+  <div class="page-editor-modal" data-manuscript-cover-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-cover-title" hidden>
+    <button type="button" class="page-editor-modal__backdrop" data-manuscript-cover-close aria-label="Close cover settings"></button>
+    <section class="page-editor-modal__panel page-editor-modal__panel--cover">
+      <header class="page-editor-modal__header">
         <h2 id="manuscript-cover-title">Cover Settings</h2>
-        <button type="button" class="article-media-modal__close" data-manuscript-cover-close aria-label="Close cover settings">x</button>
+        <button type="button" class="page-editor-modal__close" data-manuscript-cover-close aria-label="Close cover settings">x</button>
       </header>
       <section id="cover-settings">
       {% if featured_media_form %}
@@ -249,30 +230,16 @@
           </div>
       {% endfor %}
       {% endif %}
-      {% for field_name, stream_editor in stream_editors.items %}
-        {% if field_name != "header" and field_name != "content" %}
-          <section class="editor-section">
-            <div class="editor-wrapper" data-stream-editor="{{ field_name }}"></div>
-            <textarea
-              id="stream_{{ field_name }}"
-              name="stream_{{ field_name }}"
-              data-stream-json
-              data-stream-field="{{ field_name }}"
-              hidden
-            ></textarea>
-          </section>
-        {% endif %}
-      {% endfor %}
       </section>
     </section>
   </div>
 
-  <div class="article-media-modal" data-manuscript-guide-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-guide-title" hidden>
-    <button type="button" class="article-media-modal__backdrop" data-manuscript-guide-close aria-label="Close Guide"></button>
-    <section class="article-media-modal__panel article-media-modal__panel--settings">
-      <header class="article-media-modal__header">
+  <div class="page-editor-modal" data-manuscript-guide-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-guide-title" hidden>
+    <button type="button" class="page-editor-modal__backdrop" data-manuscript-guide-close aria-label="Close Guide"></button>
+    <section class="page-editor-modal__panel page-editor-modal__panel--settings">
+      <header class="page-editor-modal__header">
         <h2 id="manuscript-guide-title">Guide</h2>
-        <button type="button" class="article-media-modal__close" data-manuscript-guide-close aria-label="Close Guide">x</button>
+        <button type="button" class="page-editor-modal__close" data-manuscript-guide-close aria-label="Close Guide">x</button>
       </header>
       <section id="guide" class="guide-section">
         <div id="guide-container"></div>
@@ -282,17 +249,18 @@
 
   <main class="manuscript nav-border">
     <div
-      id="article-shadow"
-      data-article-shadow
+      id="page-shadow"
+      data-page-shadow
+      data-page-preview-class="article"
       data-bootstrap-css="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
       data-shadow-editor-css="{% static 'ubyssey/css/stove/manuscript_shadow_editor.css' %}"
     >
       {# These are taken from article_page.html - we should figure out a way to avoid duplication #}
       {% if self.styles.all|length == 0 %}
-        <link data-article-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
+        <link data-page-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}" type="text/css" />
       {% else %}
         {% for style_obj in self.styles.all %}
-          <link data-article-stylesheet rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
+          <link data-page-stylesheet rel="stylesheet" href="{{ style_obj.css.file.url }}" type="text/css" />
         {% endfor %}
       {% endif %}
 
@@ -304,13 +272,13 @@
 
     <div class="manuscript-publish-source" data-article-toolbar-source>
       {% if self.live %}
-      <span data-article-status>Status: Live</span>
+      <span data-page-status>Status: Live</span>
       {% else %}
-      <span data-article-status>Status: Draft</span>
+      <span data-page-status>Status: Draft</span>
       {% endif %}
 
       {% if self.last_published_at %}
-      <span data-article-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
+      <span data-page-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
       {% endif %}
     </div>
   </main>

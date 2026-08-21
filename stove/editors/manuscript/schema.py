@@ -93,7 +93,7 @@ def get_editor_field(block, value, path=None):
             "fields": [
                 get_editor_field(
                     child_block,
-                    value.get(name, get_default_value(child_block)),
+                    (value[name] if name in value else get_default_value(child_block)),
                     [name],
                 )
                 for name, child_block in block.child_blocks.items()
@@ -140,16 +140,14 @@ def get_editor_field(block, value, path=None):
 
 
 def get_field_kind(block):
-    if isinstance(block, blocks.StructBlock):
-        return "struct"
-    if isinstance(block, blocks.ListBlock):
-        return "list"
     if isinstance(block, blocks.RichTextBlock):
         return "richtext"
     if isinstance(block, ImageChooserBlock):
         return "image"
     if isinstance(block, DocumentChooserBlock):
         return "document"
+    if isinstance(block, blocks.PageChooserBlock):
+        return "page"
     if isinstance(block, blocks.ChoiceBlock):
         return "choice"
     if isinstance(block, blocks.BooleanBlock):
@@ -158,6 +156,10 @@ def get_field_kind(block):
         return "number"
     if isinstance(block, (blocks.CharBlock, blocks.TextBlock, blocks.URLBlock, blocks.RawHTMLBlock)):
         return "plain_text"
+    if isinstance(block, blocks.StructBlock):
+        return "struct"
+    if isinstance(block, blocks.ListBlock):
+        return "list"
 
     widget = getattr(getattr(block, "field", None), "widget", None)
     input_type = getattr(widget, "input_type", "")
@@ -182,7 +184,7 @@ def get_default_value(block):
         return False
     if kind == "number":
         return 0
-    if kind in ("image", "document"):
+    if kind in ("image", "document", "page"):
         return None
     if kind == "choice":
         options = get_choice_options(block)
