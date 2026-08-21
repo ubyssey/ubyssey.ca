@@ -65,6 +65,9 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     if (event.code === RESTORE_CLOSE_CODE) window.location.reload();
   });
 
-  window.addEventListener("beforeunload", () => provider.destroy(), { once: true });
+  window.addEventListener("pagehide", () => {
+    provider.awareness.setLocalState(null);
+    provider.destroy();
+  }, { once: true });
   return { ydoc, awareness: provider.awareness, provider };
 }
