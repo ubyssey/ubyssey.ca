@@ -77,7 +77,6 @@ function FootnotePanel({ footnotes, footnoteTexts, getViews }) {
 
   return (
     <section className="pm-footnote-panel">
-      <h3 className="pm-footnote-panel__header">Footnotes</h3>
       {footnotes.map((footnote, index) => (
         <div className="pm-footnote" key={footnote.footnoteId}>
           <button

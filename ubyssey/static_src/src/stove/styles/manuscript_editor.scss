@@ -543,11 +543,26 @@ body {
     color: #fff;
 }
 
+.pm-sidebar-accordion {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.pm-sidebar-accordion__item {
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.pm-sidebar-accordion__item > summary {
+    padding: 12px;
+    color: #1b1b1b;
+    font: 600 13px/1.2 sans-serif;
+}
+
 .pm-article-info-sidebar {
     display: grid;
     gap: 6px;
     padding: 12px;
-    border-bottom: 1px solid #d8d8d8;
     color: #1b1b1b;
     font: 13px/1.35 sans-serif;
 }
@@ -625,13 +640,6 @@ body {
     display: grid;
     gap: 10px;
     padding: 12px;
-    border-bottom: 1px solid #d8d8d8;
-}
-
-.pm-footnote-panel__header {
-    margin: 0;
-    color: #1b1b1b;
-    font: 600 13px/1.2 sans-serif;
 }
 
 .pm-footnote {
@@ -813,7 +821,6 @@ body {
     display: grid;
     gap: 10px;
     padding: 12px;
-    border-bottom: 1px solid #d8d8d8;
     color: #1b1b1b;
     font: 13px/1.35 sans-serif;
 }
@@ -890,15 +897,8 @@ input:checked + .slider:before {
     gap: 10px;
     margin-bottom: 12px;
     padding: 12px;
-    border-bottom: 1px solid #d8d8d8;
     color: #1b1b1b;
     font: 13px/1.35 sans-serif;
-}
-
-.pm-author-panel__header {
-    margin: 0;
-    color: #1b1b1b;
-    font: 600 13px/1.2 sans-serif;
 }
 
 .pm-author-panel__rows {

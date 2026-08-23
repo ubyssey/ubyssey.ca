@@ -64,7 +64,10 @@
   </header>
 
   <aside class="metadata-editor metadata-editor--left" aria-label="Article notes">
-    <section class="pm-article-info-sidebar">
+    <div class="pm-sidebar-accordion" data-sidebar-accordion>
+      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item open>
+        <summary>Article Info</summary>
+        <section class="pm-article-info-sidebar">
       <div data-article-sidebar-target></div>
       <div class="manuscript-publish-source" data-article-toolbar-source>
         <span data-page-saved data-last-saved-at="{% if last_saved_manuscript %}{{ last_saved_manuscript.updated_at|date:'c' }}{% endif %}">
@@ -82,9 +85,12 @@
         {% if self.last_published_at %}
           <span data-page-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
         {% endif %}
-      </div>
-    </section>
-    <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
+        </div>
+        </section>
+      </details>
+      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
+        <summary>Metadata</summary>
+        <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
       <div id="metadata-sidebar-settings">
         <span> Title Tag
           <label class="switch filter">
@@ -101,10 +107,12 @@
         <br>
         <button type="button" class="manuscript-metadata-button" data-manuscript-open-settings>More Metadata</button>
       </div>
-    </section>
-    {% if article_authors_form %}
-      <section class="pm-author-panel" data-article-authors-panel>
-        <h3 id="pm-author-panel-title" class="pm-author-panel__header">Contributors</h3>
+        </section>
+      </details>
+      {% if article_authors_form %}
+        <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
+          <summary>Contributors</summary>
+          <section class="pm-author-panel" data-article-authors-panel>
         {{ article_authors_form.non_field_errors }}
         <div class="pm-author-panel__rows" data-article-author-rows>
           {% for row in article_authors_form.rows %}
@@ -126,9 +134,14 @@
           {% endfor %}
         </div>
         <button type="button" class="pm-author-panel__add" data-article-author-add>Add contributor</button>
-      </section>
-    {% endif %}
-    <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
+          </section>
+        </details>
+      {% endif %}
+      <details class="pm-sidebar-accordion__item pm-sidebar-accordion__item--footnotes" data-sidebar-accordion-item>
+        <summary>Footnotes</summary>
+        <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
+      </details>
+    </div>
   </aside>
 
   <aside class="metadata-editor metadata-editor--right" aria-label="Comments">
