@@ -44,7 +44,6 @@
     <div class="page-editor-topbar__actions">
       <div class="stove-connected-users" data-connected-users></div>
       <button type="button" class="page-editor-topbar__button" data-manuscript-open-cover>Cover</button>
-      <button type="button" class="page-editor-topbar__button" data-article-media-open-gallery>Media</button>
       <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="page-editor-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>
       <button type="submit" class="page-editor-topbar__button" formmethod="post" formaction="{% url 'stove:manuscript_full_preview' self.id %}" formtarget="_blank">View Preview</button>
       <a href="{{ self.url }}" class="page-editor-topbar__button" target="_blank" rel="noopener" data-page-live-link>View Live</a>
@@ -107,6 +106,16 @@
         <br>
         <button type="button" class="manuscript-metadata-button" data-manuscript-open-settings>More Metadata</button>
       </div>
+        </section>
+      </details>
+      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
+        <summary>Media</summary>
+        <section class="pm-metadata-sidebar-panel" data-article-media-gallery-modal aria-label="Media">
+          <div class="page-editor-modal__header">
+            <button type="button" class="page-editor-topbar__button" data-article-media-open-upload>Upload media</button>
+            <button type="button" class="page-editor-topbar__button" data-article-media-open-existing>Add Preexisting Media</button>
+          </div>
+          {% include "editors/components/article_media_gallery.html" %}
         </section>
       </details>
       {% if article_authors_form %}
@@ -196,21 +205,6 @@
         <button type="button" data-article-media-existing-add disabled>Add</button>
         <button type="button" data-article-media-close>Cancel</button>
       </footer>
-    </section>
-  </div>
-
-  <div class="page-editor-modal" data-article-media-gallery-modal role="dialog" aria-modal="true" aria-labelledby="article-media-gallery-title" hidden>
-    <button type="button" class="page-editor-modal__backdrop" data-article-media-close aria-label="Close media gallery"></button>
-    <section class="page-editor-modal__panel page-editor-modal__panel--gallery">
-      <header class="page-editor-modal__header">
-        <h2 id="article-media-gallery-title">Article Media</h2>
-        <div class="page-editor-modal__actions">
-          <button type="button" data-article-media-open-upload>Upload media</button>
-          <button type="button" data-article-media-open-existing>Add Preexisting Media to Article</button>
-          <button type="button" class="page-editor-modal__close" data-article-media-close aria-label="Close media gallery">x</button>
-        </div>
-      </header>
-      {% include "editors/components/article_media_gallery.html" %}
     </section>
   </div>
 

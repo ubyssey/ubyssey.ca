@@ -116,9 +116,6 @@ export function useMediaModals(form, mediaUpdates) {
         existingMedia.render();
         setModalOpen(existingMediaModal, true, existingKind);
       }),
-      addListener(document.querySelector("[data-article-media-open-gallery]"), "click", () => {
-        setModalOpen(galleryModal, true, galleryModal.querySelector("[data-article-media-edit-button], a, button"));
-      }),
       addListener(form, "click", (event) => {
         const editButton = event.target.closest("[data-article-media-edit-button]");
         if (!editButton) return;
@@ -157,7 +154,6 @@ export function useMediaModals(form, mediaUpdates) {
         if (event.key !== "Escape") return;
         if (!uploadModal.hidden) closeUpload();
         else if (!existingMediaModal.hidden) closeExisting();
-        else if (!galleryModal.hidden) setModalOpen(galleryModal, false);
         else if (!settingsModal.hidden) setModalOpen(settingsModal, false);
         else if (!coverModal.hidden) setModalOpen(coverModal, false);
         else if (!guideModal.hidden) setModalOpen(guideModal, false);
