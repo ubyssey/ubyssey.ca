@@ -37,6 +37,7 @@ from stove.editors.manuscript.submission import process_submitted_page
 from stove.editors.collaboration.revisions import (
     restore_page_revision,
     save_page_revision,
+    autosave_manuscript_revision,
 )
 
 
@@ -478,10 +479,19 @@ def manuscript_preview(request, page_id):
 
 
 @login_required
-@require_GET
+@require_POST
 def manuscript_full_preview(request, page_id):
     page = get_manuscript_page(page_id)
-    return page.make_preview_request(
+
+    editor_errors, _, _, _ = process_submitted_page(
+        page,
+        request.POST,
+    )
+    if editor_errors:
+        return JsonResponse({"errors": editor_errors}, status=400)
+
+    saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
+    return saved_revision.as_object().make_preview_request(
         request,
         page.default_preview_mode,
     )

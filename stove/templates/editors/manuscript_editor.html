@@ -49,7 +49,7 @@
       <button type="button" class="page-editor-topbar__button" data-manuscript-open-cover>Cover</button>
       <button type="button" class="page-editor-topbar__button" data-article-media-open-gallery>Media</button>
       <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="page-editor-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>
-      <a href="{% url 'stove:manuscript_full_preview' self.id %}" class="page-editor-topbar__button" target="_blank" rel="noopener">View Preview</a>
+      <button type="submit" class="page-editor-topbar__button" formmethod="post" formaction="{% url 'stove:manuscript_full_preview' self.id %}" formtarget="_blank">View Preview</button>
       <a href="{{ self.url }}" class="page-editor-topbar__button" target="_blank" rel="noopener" data-page-live-link>View Live</a>
       {% comment %}
         Save and Publish button hidden for now 

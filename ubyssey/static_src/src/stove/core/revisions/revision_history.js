@@ -36,6 +36,13 @@ export function setupRevisionHistory(form, { formDataBeforeRestore, onHistoryMod
   const returnButton = document.querySelector("[data-history-return]");
   if (!form) return;
   loadRevisionHistory(form, historySelect);
+  // Updates 2500ms after full preview
+  form.addEventListener("submit", () => {
+    const delay = 2500;
+      window.setTimeout(() => {
+        loadRevisionHistory(form, historySelect);
+      }, delay);
+  });
 
   const selectedRevision = () => historySelect?.value || "";
   const selectedRevisionIsCurrent = () => !historySelect || historySelect.value === "";
