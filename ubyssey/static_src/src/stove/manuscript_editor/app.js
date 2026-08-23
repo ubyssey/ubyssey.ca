@@ -13,6 +13,7 @@ import { setupPageCollaboration } from "../core/collaboration/page.js";
 import { setupPresence } from "../core/collaboration/presence.js"
 import { seedMetadata } from "./metadata/collaboration.js";
 import { createPageHistory } from "../core/collaboration/history.js";
+import { createArticleInfoSidebar } from "./chrome/article_info_sidebar.jsx";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
@@ -63,6 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     editorUiRefreshTimer = window.setTimeout(() => {
       editorUiRefreshTimer = null;
       pageEditorState.richTextToolbar?.update();
+      pageEditorState.articleInfoSidebar?.update();
       pageEditorState.commentSidebar?.update();
       pageEditorState.footnoteSidebar?.update();
     }, 100);
@@ -102,10 +104,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
+  const getContentDoc = () => pageEditorState.streamEditors.find((instance) => instance.fieldName === "content")?.doc;
+  pageEditorState.articleInfoSidebar = createArticleInfoSidebar(document.querySelector("[data-article-sidebar-target]"), {
+    source: document.querySelector("[data-article-toolbar-source]"),
+    getContentDoc,
+  });
+
   pageEditorState.richTextToolbar = createManuscriptToolbar(pageRoot.querySelector(".pm-page-toolbar"), {
     history: pageEditorState.history,
-    publishSource: document.querySelector("[data-article-toolbar-source]"),
-    getContentDoc: () => pageEditorState.streamEditors.find((instance) => instance.fieldName === "content")?.doc,
+    onViewChange: (view) => pageEditorState.articleInfoSidebar?.setView(view),
   });
 
   document.addEventListener("keydown", (event) => {

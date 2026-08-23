@@ -41,9 +41,6 @@
     <a href="{% url 'stove:content_tracker_base' %}">
       <img src="{% static 'ubyssey/images/stove/favicon.ico' %}">
     </a>  
-    <span data-page-saved data-last-saved-at="{% if last_saved_manuscript %}{{ last_saved_manuscript.updated_at|date:'c' }}{% endif %}">
-        {% if last_saved_manuscript %}Saved: {{ last_saved_manuscript.updated_at|date:"M j, Y H:i" }}{% endif %}
-    </span>
     <div class="page-editor-topbar__actions">
       <div class="stove-connected-users" data-connected-users></div>
       <button type="button" class="page-editor-topbar__button" data-manuscript-open-cover>Cover</button>
@@ -67,6 +64,26 @@
   </header>
 
   <aside class="metadata-editor metadata-editor--left" aria-label="Article notes">
+    <section class="pm-article-info-sidebar">
+      <div data-article-sidebar-target></div>
+      <div class="manuscript-publish-source" data-article-toolbar-source>
+        <span data-page-saved data-last-saved-at="{% if last_saved_manuscript %}{{ last_saved_manuscript.updated_at|date:'c' }}{% endif %}">
+          {% if last_saved_manuscript %}Saved: {{ last_saved_manuscript.updated_at|date:"M j, Y H:i" }}{% endif %}
+        </span>
+        {% if self.live %}
+          {% if self.has_unpublished_changes %}
+            <span data-page-status>Status: Live + Draft</span>
+          {% else %}
+            <span data-page-status>Status: Live</span>
+          {% endif %}
+        {% else %}
+          <span data-page-status>Status: Draft</span>
+        {% endif %}
+        {% if self.last_published_at %}
+          <span data-page-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
+        {% endif %}
+      </div>
+    </section>
     <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
       <div id="metadata-sidebar-settings">
         <span> Title Tag
@@ -265,21 +282,6 @@
       {% endif %}
 
       {% include "editors/preview/manuscript_preview.html" %}
-    </div>
-
-    {# <textarea rows="40" style="width: 100%; font-family: monospace;" readonly> #}
-    {# {{ stream_editors|pprint }} </textarea> #}
-
-    <div class="manuscript-publish-source" data-article-toolbar-source>
-      {% if self.live %}
-      <span data-page-status>Status: Live</span>
-      {% else %}
-      <span data-page-status>Status: Draft</span>
-      {% endif %}
-
-      {% if self.last_published_at %}
-      <span data-page-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
-      {% endif %}
     </div>
   </main>
   <button type="button" class="manuscript-guide-button" data-manuscript-open-guide>?</button>

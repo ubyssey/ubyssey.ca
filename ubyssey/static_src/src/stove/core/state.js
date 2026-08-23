@@ -8,6 +8,7 @@ export class PageEditorState {
     this.pageDirectPlainTextEditors = [];
     this.blockActions = null;
     this.richTextToolbar = null;
+    this.articleInfoSidebar = null;
     this.commentSidebar = null;
     this.footnoteSidebar = null;
     this.selectedBlock = null;

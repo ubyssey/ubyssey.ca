@@ -26,8 +26,7 @@ const TOOLBAR_ITEMS = [
 
 export function createEditorToolbar(root, {
   view = null,
-  publishSource = null,
-  getContentDoc = () => null,
+  onViewChange = () => {},
   history = null,
   onHistoryCommand = () => {},
   renderExtraControls = () => null,
@@ -41,8 +40,6 @@ export function createEditorToolbar(root, {
     reactRoot.render(
       <EditorToolbar
         view={activeView}
-        publishSource={publishSource}
-        contentDoc={getContentDoc()}
         history={history}
         onHistoryCommand={onHistoryCommand}
         extraControls={renderExtraControls()}
@@ -72,6 +69,7 @@ export function createEditorToolbar(root, {
   return {
     setView(nextView) {
       activeView = nextView;
+      onViewChange(nextView);
       update();
     },
     runHistory,
@@ -82,12 +80,10 @@ export function createEditorToolbar(root, {
   };
 }
 
-function EditorToolbar({ view, publishSource, contentDoc, history, onHistoryCommand, refresh, extraControls }) {
-  const highlightedWords = view && !view.state.selection.empty
-    ? countWords(view.state.doc.textBetween(view.state.selection.from, view.state.selection.to, " ")) : null;
+function EditorToolbar({ view, history, onHistoryCommand, refresh, extraControls }) {
 
   return (
-    <div className={`pm-editor-toolbar${publishSource ? " pm-editor-toolbar--page" : ""}`}>
+    <div className="pm-editor-toolbar">
       <div className="pm-editor-toolbar__tools">
         {TOOLBAR_ITEMS.map(([key, label, title]) => {
           const historyAction = history && ["undo", "redo"].includes(key);
@@ -120,13 +116,6 @@ function EditorToolbar({ view, publishSource, contentDoc, history, onHistoryComm
         })}
         {extraControls}
       </div>
-      {publishSource && (
-        <PublishToolbar
-          source={publishSource}
-          highlightedWords={highlightedWords}
-          wordCount={contentWordCount(contentDoc)}
-        />
-      )}
     </div>
   );
 }
@@ -167,62 +156,6 @@ function toolbarItemIsActive(view, key) {
     });
   }
   return active;
-}
-
-function countWords(text) {
-  const words = String(text || "").trim();
-  return words ? words.split(/\s+/).length : 0;
-}
-
-function contentWordCount(doc) {
-  let text = "";
-  doc?.forEach((block) => {
-    if (block.attrs?.blockType === "richtext") text += ` ${block.textContent}`;
-  });
-  return countWords(text);
-}
-
-function PublishToolbar({ source, wordCount, highlightedWords }) {
-  const status = source.querySelector("[data-page-status]");
-  const published = source.querySelector("[data-page-published]");
-  const saved = source.querySelector("[data-page-saved]");
-  const liveLink = source.querySelector("[data-page-live-link]");
-  const draftButton = source.querySelector('[data-editor-action="draft"]');
-  const publishButton = source.querySelector('[data-editor-action="publish"]');
-
-  return (
-    <div className="pm-editor-toolbar__publish">
-      {highlightedWords !== null && (
-        <span className="pm-editor-toolbar__meta">
-          Highlighted: {highlightedWords}
-        </span>
-      )}
-      <span className="pm-editor-toolbar__meta">Word count: {wordCount}</span>
-      {status && <span className="pm-editor-toolbar__meta">{status.textContent.trim()}</span>}
-      {published && <span className="pm-editor-toolbar__meta">{published.textContent.trim()}</span>}
-      {saved && <span className="pm-editor-toolbar__meta">{saved.textContent.trim()}</span>}
-      {liveLink && liveLink.href && (
-        <a className="pm-editor-toolbar__link" href={liveLink.href} target="_blank" rel="noopener">
-          {liveLink.textContent.trim() || "View Live"}
-        </a>
-      )}
-      {[ ["draft", draftButton], ["publish", publishButton] ].map(([action, sourceButton]) => (
-        sourceButton && (
-          <button
-            key={action}
-            type="button"
-            className={`pm-editor-toolbar__action pm-editor-toolbar__action--${action}`}
-            onClick={() => {
-              if (sourceButton.form.requestSubmit) sourceButton.form.requestSubmit(sourceButton);
-              else sourceButton.click();
-            }}
-          >
-            {sourceButton.textContent.trim()}
-          </button>
-        )
-      ))}
-    </div>
-  );
 }
 
 function toolbarCommand(view, key) {

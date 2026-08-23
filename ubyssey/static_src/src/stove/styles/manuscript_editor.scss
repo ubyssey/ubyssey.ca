@@ -139,7 +139,10 @@ body {
 [data-page-saved] {
     font: 13px/1.2 sans-serif;
     color: var(--text_color-200, #555);
-    margin-right: auto
+}
+
+.page-editor-topbar [data-page-saved] {
+    margin-right: auto;
 }
 
 .stove-connected-users {
@@ -538,6 +541,21 @@ body {
     border-color: #0071c9;
     background: #0071c9;
     color: #fff;
+}
+
+.pm-article-info-sidebar {
+    display: grid;
+    gap: 6px;
+    padding: 12px;
+    border-bottom: 1px solid #d8d8d8;
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-article-info-sidebar .pm-editor-toolbar__publish {
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
 }
 
 .article-media-gallery {
