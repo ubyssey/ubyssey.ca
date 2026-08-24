@@ -41,6 +41,9 @@
     <a href="{% url 'stove:content_tracker_base' %}">
       <img src="{% static 'ubyssey/images/stove/favicon.ico' %}">
     </a>  
+    <span data-page-saved data-last-saved-at="{% if last_saved_manuscript %}{{ last_saved_manuscript.updated_at|date:'c' }}{% endif %}">
+      {% if last_saved_manuscript %}Saved: {{ last_saved_manuscript.updated_at|date:"M j, Y H:i" }}{% endif %}
+    </span>
     <div class="page-editor-topbar__actions">
       <div class="stove-connected-users" data-connected-users></div>
       <button type="button" class="page-editor-topbar__button" data-manuscript-open-cover>Cover</button>
@@ -65,47 +68,49 @@
   <aside class="metadata-editor metadata-editor--left" aria-label="Article notes">
     <div class="pm-sidebar-accordion" data-sidebar-accordion>
       <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item open>
-        <summary>Article Info</summary>
+        <summary>Info</summary>
         <section class="pm-article-info-sidebar">
-      <div data-article-sidebar-target></div>
-      <div class="manuscript-publish-source" data-article-toolbar-source>
-        <span data-page-saved data-last-saved-at="{% if last_saved_manuscript %}{{ last_saved_manuscript.updated_at|date:'c' }}{% endif %}">
-          {% if last_saved_manuscript %}Saved: {{ last_saved_manuscript.updated_at|date:"M j, Y H:i" }}{% endif %}
-        </span>
-        {% if self.live %}
-          {% if self.has_unpublished_changes %}
-            <span data-page-status>Status: Live + Draft</span>
-          {% else %}
-            <span data-page-status>Status: Live</span>
+          <div data-article-sidebar-target></div>
+          {% if self.deadline_list %}
+            {% for deadline in self.deadline_list.all %}
+              <span class="pm-editor-toolbar__meta">{{ deadline.description }}: {{ deadline.date|date:"M j, Y, g:i A" }}</span>
+            {% endfor %}
           {% endif %}
-        {% else %}
-          <span data-page-status>Status: Draft</span>
-        {% endif %}
-        {% if self.last_published_at %}
-          <span data-page-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
-        {% endif %}
-        </div>
+          <div class="manuscript-publish-source" data-article-toolbar-source>
+            {% if self.live %}
+              {% if self.has_unpublished_changes %}
+                <span data-page-status>Status: Live + Draft</span>
+              {% else %}
+                <span data-page-status>Status: Live</span>
+              {% endif %}
+            {% else %}
+              <span data-page-status>Status: Draft</span>
+            {% endif %}
+            {% if self.last_published_at %}
+              <span data-page-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
+            {% endif %}
+          </div>
         </section>
       </details>
       <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
         <summary>Metadata</summary>
         <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
-      <div id="metadata-sidebar-settings">
-        <span> Title Tag
-          <label class="switch filter">
-            <input type="checkbox" id="title-tag-toggle" data-page-field-toggle="title_tag" data-page-field-boilerplate="Title Tag" {% if page_form.title_tag.value %}checked{% endif %}>
-            <span class="slider round"></span>
-          </label>
-        </span>
-        <span> Disclaimer
-          <label class="switch filter" >
-            <input type="checkbox" id="disclaimer-toggle" data-page-field-toggle="disclaimer" data-page-field-boilerplate="&lt;p&gt;disclaimer&lt;/p&gt;" {% if page_form.disclaimer.value %}checked{% endif %}>
-            <span class="slider round"></span>
-          </label>
-        </span>
-        <br>
-        <button type="button" class="manuscript-metadata-button" data-manuscript-open-settings>More Metadata</button>
-      </div>
+          <div id="metadata-sidebar-settings">
+            <span> Title Tag
+              <label class="switch filter">
+                <input type="checkbox" id="title-tag-toggle" data-page-field-toggle="title_tag" data-page-field-boilerplate="Title Tag" {% if page_form.title_tag.value %}checked{% endif %}>
+                <span class="slider round"></span>
+              </label>
+            </span>
+            <span> Disclaimer
+              <label class="switch filter" >
+                <input type="checkbox" id="disclaimer-toggle" data-page-field-toggle="disclaimer" data-page-field-boilerplate="&lt;p&gt;disclaimer&lt;/p&gt;" {% if page_form.disclaimer.value %}checked{% endif %}>
+                <span class="slider round"></span>
+              </label>
+            </span>
+            <br>
+            <button type="button" class="manuscript-metadata-button" data-manuscript-open-settings>More Metadata</button>
+          </div>
         </section>
       </details>
       <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
@@ -122,27 +127,27 @@
         <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
           <summary>Contributors</summary>
           <section class="pm-author-panel" data-article-authors-panel>
-        {{ article_authors_form.non_field_errors }}
-        <div class="pm-author-panel__rows" data-article-author-rows>
-          {% for row in article_authors_form.rows %}
-            <div class="pm-author-panel__row" data-article-author-row>
-              <label>
-                <select name="article_authors-author" data-article-author-select data-selected-author-id="{{ row.author_id }}" data-authors-loading="true">
-                  <option value="{{ row.author_id }}" selected>Loading authors</option>
-                </select>
-              </label>
-              <label>
-                <select name="article_authors-role">
-                  {% for value, label in article_authors_form.role_options %}
-                    <option value="{{ value }}" {% if value == row.author_role %}selected{% endif %}>{{ label }}</option>
-                  {% endfor %}
-                </select>
-              </label>
-              <button type="button" class="pm-author-panel__remove" data-article-author-remove>x</button>
+            {{ article_authors_form.non_field_errors }}
+            <div class="pm-author-panel__rows" data-article-author-rows>
+              {% for row in article_authors_form.rows %}
+                <div class="pm-author-panel__row" data-article-author-row>
+                  <label>
+                    <select name="article_authors-author" data-article-author-select data-selected-author-id="{{ row.author_id }}" data-authors-loading="true">
+                      <option value="{{ row.author_id }}" selected>Loading authors</option>
+                    </select>
+                  </label>
+                  <label>
+                    <select name="article_authors-role">
+                      {% for value, label in article_authors_form.role_options %}
+                        <option value="{{ value }}" {% if value == row.author_role %}selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  </label>
+                  <button type="button" class="pm-author-panel__remove" data-article-author-remove>x</button>
+                </div>
+              {% endfor %}
             </div>
-          {% endfor %}
-        </div>
-        <button type="button" class="pm-author-panel__add" data-article-author-add>Add contributor</button>
+            <button type="button" class="pm-author-panel__add" data-article-author-add>Add contributor</button>
           </section>
         </details>
       {% endif %}

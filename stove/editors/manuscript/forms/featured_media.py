@@ -23,7 +23,12 @@ class FeaturedMediaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         image_model = self._meta.model._meta.get_field("image").remote_field.model
         article_media = getattr(page, "article_media", None)
-        ids = [item.image_id for item in article_media.all() if item.image_id] if article_media else []
+        ids = list(
+            article_media.model.objects.filter(
+                article_page_id=page.pk, image_id__isnull=False
+            ).values_list("image_id", flat=True)
+        ) if article_media else []
+
         if self.instance.image_id:
             ids.append(self.instance.image_id)
         self.fields["image"].queryset = image_model.objects.filter(id__in=ids)
