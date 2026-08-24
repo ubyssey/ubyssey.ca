@@ -104,7 +104,6 @@ def create_page(request, section_id):
         title=data["title"],
         depth=4,
         slug=slugify(data["title"]),
-        content="",
         live=False
     )
 

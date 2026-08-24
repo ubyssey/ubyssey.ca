@@ -43,6 +43,21 @@ export function createEmptyRichTextBlock() {
   });
 }
 
+export function createDefaultRichTextBlock() {
+  return streamBlockToPmNode({
+    type: "richtext",
+    id: uuidv4(),
+    value: "",
+    field: {
+      kind: "editable",
+      path: [],
+      label: "Rich text",
+      mode: "richtext",
+      value: "<p>Lorem Ipsum</p>",
+    },
+  });
+}
+
 export function createStreamBlockNodeFromRegistry(blockTypes, blockType) {
   const blockDefinition = blockTypes[blockType];
   return streamSchema.nodeFromJSON(streamBlockToPmNode({

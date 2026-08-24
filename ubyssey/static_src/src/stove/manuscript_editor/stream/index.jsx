@@ -1,15 +1,15 @@
 import { createStreamEditorFactory } from "../../core/prosemirror/stream_editor.jsx";
 import { mountBlockEditor } from "../../core/preview/block_editor.jsx";
-import { createEmptyRichTextBlock, createStreamBlockNodeFromRegistry } from "../../core/prosemirror/serialization.js";
+import { createDefaultRichTextBlock, createStreamBlockNodeFromRegistry } from "../../core/prosemirror/serialization.js";
 import { streamSchema } from "../../core/prosemirror/stream_schema.js";
 import { blockTypeLabel, streamNodeViews } from "../../core/prosemirror/stream_node_views.jsx";
 
 // Different default block for each StreamField
-const createDefaultRichTextBlock = () => streamSchema.nodeFromJSON(createEmptyRichTextBlock());
+const createDefaultRichTextBlockNode = () => streamSchema.nodeFromJSON(createDefaultRichTextBlock());
 
 const emptyBlockForField = {
   header: (streamEditor) => createStreamBlockNodeFromRegistry(streamEditor.blockTypes, "standard_header"),
-  content: createDefaultRichTextBlock,
+  content: createDefaultRichTextBlockNode,
 };
 
 // Supplies image/document control options, everything else is left to core node views
@@ -26,7 +26,7 @@ export function createBlockEditor(instance, descriptor, target) {
   });
 }
 
-export const createEmptyBlock = (fieldName, streamEditor) => (emptyBlockForField[fieldName] || createDefaultRichTextBlock)(streamEditor);
+export const createEmptyBlock = (fieldName, streamEditor) => (emptyBlockForField[fieldName] || createDefaultRichTextBlockNode)(streamEditor);
 // TODO stop passing createEmptyBlock and use direct import
 export const { createStreamEditor, createStreamBlockDraft } = createStreamEditorFactory({ createEmptyBlock });
 export { blockTypeLabel };
