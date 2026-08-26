@@ -46,7 +46,6 @@
     </span>
     <div class="page-editor-topbar__actions">
       <div class="stove-connected-users" data-connected-users></div>
-      <button type="button" class="page-editor-topbar__button" data-manuscript-open-cover>Cover</button>
       <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="page-editor-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>
       <button type="submit" class="page-editor-topbar__button" formmethod="post" formaction="{% url 'stove:manuscript_full_preview' self.id %}" formtarget="_blank">View Preview</button>
       <a href="{{ self.url }}" class="page-editor-topbar__button" target="_blank" rel="noopener" data-page-live-link>View Live</a>
@@ -111,6 +110,21 @@
             <br>
             <button type="button" class="manuscript-metadata-button" data-manuscript-open-settings>More Metadata</button>
           </div>
+        </section>
+      </details>
+      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
+        <summary>Featured Media</summary>
+        <section class="pm-metadata-sidebar-panel pm-featured-media-sidebar" aria-label="Featured Media">
+          {% if featured_media_form %}
+            {{ featured_media_form.non_field_errors }}
+            {% for field in featured_media_form %}
+              <div class="page-field" data-collaborative-metadata>
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+              </div>
+            {% endfor %}
+          {% endif %}
         </section>
       </details>
       <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
@@ -240,28 +254,6 @@
     </section>
   </div>
 
-  <div class="page-editor-modal" data-manuscript-cover-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-cover-title" hidden>
-    <button type="button" class="page-editor-modal__backdrop" data-manuscript-cover-close aria-label="Close cover settings"></button>
-    <section class="page-editor-modal__panel page-editor-modal__panel--cover">
-      <header class="page-editor-modal__header">
-        <h2 id="manuscript-cover-title">Cover Settings</h2>
-        <button type="button" class="page-editor-modal__close" data-manuscript-cover-close aria-label="Close cover settings">x</button>
-      </header>
-      <section id="cover-settings">
-      {% if featured_media_form %}
-        {{ featured_media_form.non_field_errors }}
-        <div>Featured Image or Video</div>
-        {% for field in featured_media_form %}
-          <div class="page-field" data-collaborative-metadata>
-            {{ field.label_tag }}
-            {{ field }}
-            {{ field.errors }}
-          </div>
-      {% endfor %}
-      {% endif %}
-      </section>
-    </section>
-  </div>
 
   <div class="page-editor-modal" data-manuscript-guide-modal role="dialog" aria-modal="true" aria-labelledby="manuscript-guide-title" hidden>
     <button type="button" class="page-editor-modal__backdrop" data-manuscript-guide-close aria-label="Close Guide"></button>

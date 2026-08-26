@@ -33,6 +33,7 @@ class FeaturedMediaForm(forms.ModelForm):
             ids.append(self.instance.image_id)
         self.fields["image"].queryset = image_model.objects.filter(id__in=ids)
         self.fields["image"].initial = self.instance.image_id
+        self.fields["image"].empty_label = "Add Images in Media Tab"
 
 
 # Some pages don't have featured media, so sometimes returns None
@@ -71,7 +72,7 @@ def get_featured_media_form_class(model):
         model,
         form=FeaturedMediaForm,
         fields=FEATURED_MEDIA_FIELDS,
-        widgets={"caption": forms.Textarea},
+        widgets={"caption": forms.Textarea(attrs={"rows": 1})},
         labels=FEATURED_MEDIA_LABELS,
     )
 
