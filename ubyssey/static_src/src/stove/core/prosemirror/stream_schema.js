@@ -58,7 +58,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
         },
         [
           "div",
-          { class: "pm-struct-field__label" },
+          { class: "pm-struct-field__label", contenteditable: "false" },
           node.attrs.label || "Field",
         ],
         ["div", { class: "pm-struct-field__content" }, 0],
@@ -87,7 +87,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
         },
         [
           "div",
-          { class: "pm-editable-field__label" },
+          { class: "pm-editable-field__label", contenteditable: "false" },
           node.attrs.label || "Content",
         ],
         ["div", { class: "pm-editable-field__body" }, 0],
@@ -137,7 +137,7 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
       return [
         "div",
         { class: "pm-list-field", "data-field-label": node.attrs.label || "List" },
-        ["div", { class: "pm-list-field__label" }, node.attrs.label || "List"],
+        ["div", { class: "pm-list-field__label", contenteditable: "false" }, node.attrs.label || "List"],
         ["div", { class: "pm-list-field__items" }, 0],
       ];
     },

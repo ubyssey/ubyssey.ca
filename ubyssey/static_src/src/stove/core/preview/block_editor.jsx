@@ -316,6 +316,7 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
   const restoreBlockEditorHome = () => {
     if (!blockEditorHome) return;
     blockEditorHome.editor.destroy();
+    blockEditorHome.cleanup();
     state.blockEditorView = null;
     blockEditorHome = null;
   };
@@ -355,9 +356,6 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
     state.richTextToolbar?.update();
   };
 
-  const focusFirst = (container, preferred = null) => {
-    window.requestAnimationFrame(() => (preferred || container.querySelector("input, textarea, select, button"))?.focus());
-  };
 
   const streamEditorFor = (descriptor) => state.streamEditors
     .find((item) => item.fieldName === descriptor.fieldName);
@@ -374,7 +372,15 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
     const editor = createBlockEditor(instance, descriptor, target);
     if (!editor) return false;
 
-    blockEditorHome = { instance, editor };
+    // Marks contenteditable textboxes inside add/edit modals with data-editing when selected so we can apply styling 
+    const markEditableField = (event) => {
+      target.querySelectorAll("[data-editing]").forEach((field) => delete field.dataset.editing);
+      const field = event.target.closest?.(".pm-editable-field__content");
+      if (field) field.dataset.editing = "";
+    };
+    target.addEventListener("mousedown", markEditableField);
+    blockEditorHome = { instance, editor, cleanup: () => target.removeEventListener("mousedown", markEditableField) };
+    
     if (publishSelection) publishBlockSelection(descriptor);
     window.requestAnimationFrame(() => {
       if (publishSelection) syncSelectedPageBlockEditor(descriptor);
@@ -396,17 +402,15 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
       render();
       return;
     }
-    focusFirst(refs.blockEditorContent);
   };
 
-  const openDialog = (name, focusTarget = null) => {
+  const openDialog = (name) => {
     preview.cancel();
     if (ui.insertOpen) removePendingAdd();
     ui.insertOpen = name === "insert";
     ui.deleteOpen = name === "delete";
     syncModalState();
     render();
-    focusFirst(name === "insert" ? refs.insertDialog : refs.deleteDialog, focusTarget);
   };
 
   const addSelectedBlockForEditing = () => {
@@ -472,7 +476,7 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
     insert() {
       if (!syncActiveBlock()) return;
       ui.insertType = ui.blockTypes.includes("richtext") ? "richtext" : ui.blockTypes[0];
-      openDialog("insert", refs.insertSelect);
+      openDialog("insert");
     },
     edit() {
       const active = syncActiveBlock();

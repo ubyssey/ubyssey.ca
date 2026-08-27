@@ -40,8 +40,7 @@ const StreamBlockNodeView = forwardRef(function StreamBlock({ children, nodeProp
 const StructFieldNodeView = forwardRef(function StructFieldNodeView({ children, nodeProps }, ref) {
   return (
     <div ref={ref} className="pm-struct-field">
-      {/* TODO figure out styling in the modals */}
-      <div className="pm-struct-field__label">{nodeProps.node.attrs.label}</div>
+      <div className="pm-struct-field__label" contentEditable={false}>{nodeProps.node.attrs.label}</div>
       <div className="pm-struct-field__content" ref={nodeProps.contentDOMRef}>{children}</div>
     </div>
   );
@@ -60,7 +59,7 @@ const ListFieldNodeView = forwardRef(function ListFieldNodeView({ children, node
 
   return (
     <div ref={ref} className="pm-list-field">
-      <div className="pm-list-field__header">
+      <div className="pm-list-field__header" contentEditable={false}>
         <div className="pm-list-field__label">{node.attrs.label}</div>
         <button type="button" title="Add" onClick={addItem}>+</button>
       </div>
@@ -102,7 +101,7 @@ const ListItemNodeView = forwardRef(function ListItemNodeView({ children, nodePr
 
   return (
     <div ref={ref} className="pm-list-item">
-      <div className="pm-list-item__header">
+      <div className="pm-list-item__header" contentEditable={false}>
         <div className="pm-list-item__title">#{itemIndex + 1}</div>
         <button type="button" title="Up" disabled={itemIndex === 0} onClick={() => { moveItem(-1); }}>↑</button>
         <button type="button" title="Down" disabled={itemIndex === itemCount - 1} onClick={() => { moveItem(1); }}>↓</button>
@@ -146,14 +145,17 @@ function ControlFieldNodeView(controlOptions) {
 
   return (
     <div ref={ref} className={`pm-control-field pm-control-field--${controlType}`}>
-      <label className="pm-control-field__label">{node.attrs.label}</label>
-      <div className="pm-control-field__input">
+      <label className="pm-control-field__label" contentEditable={false}>{node.attrs.label}</label>
+      <div className="pm-control-field__input" contentEditable="false">
         {controlType === "boolean" && (
-          <input
-            type="checkbox"
-            checked={Boolean(node.attrs.value)}
-            onChange={(event) => { updateValue(event.currentTarget.checked); }}
-          />
+          <label className="switch filter">
+            <input
+              type="checkbox"
+              checked={Boolean(node.attrs.value)}
+              onChange={(event) => { updateValue(event.currentTarget.checked); }}
+            />
+            <span className="slider round"></span>
+          </label>
         )}
 
         {controlType === "choice" && (
@@ -215,7 +217,7 @@ const EditableFieldNodeView = forwardRef(function EditableFieldNodeView({ childr
 
   return (
     <div ref={ref} className={`pm-editable-field${isStreamRoot ? " pm-editable-field--stream-root" : ""}`}>
-      <div className="pm-editable-field__label">{nodeProps.node.attrs.label || "Content"}</div>
+      <div className="pm-editable-field__label" contentEditable={false}>{nodeProps.node.attrs.label || "Content"}</div>
       <div className="pm-editable-field__content" ref={nodeProps.contentDOMRef}>{children}</div>
     </div>
   );
