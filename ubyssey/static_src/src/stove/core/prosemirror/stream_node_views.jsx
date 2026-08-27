@@ -189,7 +189,7 @@ function ControlFieldNodeView(controlOptions) {
               updateValue(Number.isNaN(nextValue) ? null : nextValue);
             }}
           >
-            <option value="">{controlType === "image" ? "No image" : "No document"}</option>
+            <option value="">{controlType === "image" ? "No Image" : "No Document"}</option>
             {controlOptions(controlType).map((option) => (
               <option key={option.value} value={String(option.value)}>{option.label}</option>
             ))}
