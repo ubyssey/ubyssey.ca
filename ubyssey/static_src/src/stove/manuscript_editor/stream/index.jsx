@@ -12,11 +12,12 @@ const emptyBlockForField = {
   content: createDefaultRichTextBlockNode,
 };
 
-// Supplies image/document control options, everything else is left to core node views
+// Supplies image/document/page chooser options, everything else is left to core node views
 const createManuscriptNodeViews = () => streamNodeViews({
   controlOptions: (kind) => 
     Array.from(document.querySelectorAll('[data-article-media-item][data-kind="' + window.CSS.escape(kind) + '"]'))
       .map((item) => ({ value: item.dataset.id, label: item.dataset.title })),
+  pageOptionsUrl: document.querySelector("[data-page-form]").dataset.pageOptionsUrl,
 });
 
 export function createBlockEditor(instance, descriptor, target) {

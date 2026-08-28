@@ -532,6 +532,32 @@ def article_media_add_existing(request, page_id):
 
 
 @login_required
+@require_GET
+def manuscript_page_options(request, page_id):
+    get_object_or_404(Page, id=page_id)
+    query = request.GET.get("q", "").strip()[:100]
+    selected_id = request.GET.get("selected")
+    pages = Page.objects.type(ArticlePage)
+    if query:
+        pages = pages.filter(title__icontains=query)
+
+    pages = pages.only("id", "title")
+    pages = pages.order_by("title", "id") if query else pages.order_by("-id")
+    options = [
+        {"value": str(item.id), "label": item.title}
+        for item in pages[:25]
+    ]
+
+    # Adds currently selected page
+    if selected_id and not any(option["value"] == selected_id for option in options):
+        selected = pages.filter(id=selected_id).first()
+        if selected:
+            options.insert(0, {"value": str(selected.id), "label": selected.title})
+
+    return JsonResponse({"options": options})
+
+
+@login_required
 def homepage_editor(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
     return render(request, "editors/homepage_editor.html", {"self": page})

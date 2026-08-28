@@ -33,6 +33,7 @@
   data-media-options-url="{% url 'stove:manuscript_media_options' self.id %}"
   data-media-upload-url="{% url 'stove:article_media_upload' self.id %}"
   data-media-existing-url="{% url 'stove:article_media_add_existing' self.id %}"
+  data-page-options-url="{% url 'stove:manuscript_page_options' self.id %}"
   data-current-editor-username="{{ current_editor.name }}"
 >
   {% csrf_token %}

@@ -3,6 +3,7 @@ import { Fragment } from "prosemirror-model";
 import { useEditorEventCallback, useEditorStateSelector, useIgnoreMutation, useStopEvent } from "@handlewithcare/react-prosemirror";
 import { listItemToPmNode } from "./serialization.js";
 import { streamSchema } from "./stream_schema.js";
+import { PageChooser } from "./page_chooser.jsx";
 
 // Creates react node views, ie checkbox for boolean, dropdown for choice
 
@@ -11,12 +12,12 @@ export function blockTypeLabel(blockType) {
   return String(blockType || "block").replace(/[_-]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-export function streamNodeViews({ controlOptions = () => [] } = {}) {
+export function streamNodeViews({ controlOptions = () => [], pageOptionsUrl } = {}) {
   return {
     stream_block: StreamBlockNodeView,
     editable_field: EditableFieldNodeView,
     struct_field: StructFieldNodeView,
-    control_field: ControlFieldNodeView(controlOptions),
+    control_field: ControlFieldNodeView(controlOptions, pageOptionsUrl),
     list_field: ListFieldNodeView,
     list_item: ListItemNodeView,
   };
@@ -128,7 +129,7 @@ function listItemInfo(doc, pos) {
   return { parent, index, node, start, end: start + node.nodeSize, parentStart, parentEnd };
 }
 
-function ControlFieldNodeView(controlOptions) {
+function ControlFieldNodeView(controlOptions, pageOptionsUrl) {
   return forwardRef(function ControlFieldNodeView({ nodeProps }, ref) {
   const { node, getPos } = nodeProps;
   const controlType = node.attrs.controlType;
@@ -140,7 +141,10 @@ function ControlFieldNodeView(controlOptions) {
     }));
   });
 
-  useStopEvent((view, event) => ["INPUT", "SELECT", "OPTION", "LABEL", "BUTTON"].includes(event.target.nodeName));
+  useStopEvent((view, event) => (
+    event.target.closest(".pm-page-chooser")
+    || ["INPUT", "SELECT", "OPTION", "LABEL", "BUTTON"].includes(event.target.nodeName)
+  ));
   useIgnoreMutation(() => true);
 
   return (
@@ -181,6 +185,10 @@ function ControlFieldNodeView(controlOptions) {
           />
         )}
 
+        {controlType === "page" && pageOptionsUrl && (
+          <PageChooser value={value} optionsUrl={pageOptionsUrl} onChange={updateValue} />
+        )}
+
         {(controlType === "image" || controlType === "document") && (
           <select
             value={value ?? ""}
@@ -199,7 +207,7 @@ function ControlFieldNodeView(controlOptions) {
           </select>
         )}
 
-        {!(["boolean", "choice", "number", "image", "document"].includes(controlType)) && (
+        {!(["boolean", "choice", "number", "image", "document", "page"].includes(controlType)) && (
           <input
             type="text"
             value={value}

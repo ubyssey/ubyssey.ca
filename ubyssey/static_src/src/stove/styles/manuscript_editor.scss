@@ -305,15 +305,14 @@ body {
 .page-block-editor-modal__panel {
     grid-template-rows: auto minmax(0, 1fr) auto;
     max-height: min(820px, calc(100vh - 48px));
-    overflow: hidden;
+    overflow: auto;
 }
 
 .page-block-editor-modal__body {
     display: grid;
     gap: 10px;
     min-width: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: visible;
 }
 
 .page-block-editor-modal__body * {
@@ -337,9 +336,8 @@ body {
 .page-block-editor-modal__body .pm-page-block-dialog__editor {
     min-width: 0;
     max-width: 100%;
-    max-height: min(520px, calc(100vh - 220px));
-    overflow-x: hidden;
-    overflow-y: auto;
+    max-height: none;
+    overflow: visible;
 }
 
 .page-block-editor-modal__body .pm-page-block-dialog__editor .ProseMirror,
