@@ -120,7 +120,7 @@
             {{ featured_media_form.non_field_errors }}
             {% for field in featured_media_form %}
               <div class="page-field" data-collaborative-metadata>
-                {{ field.label_tag }}
+                <label class="pm-featured-media-sidebar__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
                 {{ field.errors }}
               </div>

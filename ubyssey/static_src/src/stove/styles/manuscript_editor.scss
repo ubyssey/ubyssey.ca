@@ -716,6 +716,11 @@ body {
     font: 13px/1.2 sans-serif;
 }
 
+// Didn't work until I got really specific -> todo clean up the CSS
+.page-field label.pm-featured-media-sidebar__label {
+    font: 700 13px/1.2 sans-serif;
+}
+
 .pm-footnote-sidebar {
     flex: 1 1 auto;
     min-height: 0;
@@ -912,7 +917,6 @@ body {
 
 .pm-metadata-sidebar-panel {
     display: grid;
-    gap: 10px;
     padding: 0 12px 12px 12px;
     color: #1b1b1b;
     font: 13px/1.35 sans-serif;
