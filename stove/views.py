@@ -1,34 +1,43 @@
 import json
+import warnings
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.db import transaction
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 from wagtail.models import Page
-from article.models import ArticlePage
+from article.models import ArticlePage, StandardArticlePage, ArticleDeadline
 from article.models import ArticleAuthorsOrderable
-from section.models import CategoryPage
+from section.models import CategoryPage, SectionPage
 from authors.models import AuthorPage
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import localtime
 from django.views.decorators.http import require_GET, require_POST
+from wagtail.admin.templatetags.wagtailadmin_tags import avatar_url
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
 
-from stove.manuscript_editor import (
-    PAGE_FORM_FIELDS,
-    get_page_form,
-    get_article_authors_form,
-    get_streamfield_editors,
-    apply_editor_post,
-    get_article_media_upload_form,
-    get_article_media_tag_options,
-    get_featured_media_form,
+from stove.editors.collaboration.persistence import initialize_page_collaboration
+from stove.models import PageCollaboration
+from stove.editors.manuscript.media import (
     add_article_media,
+    get_article_media_tag_options,
+    get_article_media_upload_form,
     save_article_media,
+)
+from stove.editors.manuscript.forms.authors import create_form as create_article_authors_form
+from stove.editors.manuscript.forms.featured_media import create_form as create_featured_media_form
+from stove.editors.manuscript.forms.metadata import PAGE_FORM_FIELDS, create_form as create_page_form
+from stove.editors.manuscript.schema import get_streamfield_editors
+from stove.editors.manuscript.preview import prepare_preview
+from stove.editors.manuscript.submission import process_submitted_page
+from stove.editors.collaboration.revisions import (
+    restore_page_revision,
+    save_page_revision,
+    autosave_manuscript_revision,
 )
 
 
@@ -37,6 +46,7 @@ from stove.manuscript_editor import (
 def content_tracker_react(request, section="all"):
     beats = CategoryPage.objects.all().filter(beat=True)
     authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    sections = SectionPage.objects.exact_type(SectionPage)
 
     beatExport = {}
     for beat in beats:
@@ -45,7 +55,11 @@ def content_tracker_react(request, section="all"):
             beatExport[beatSection] = []
         beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
-    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "section": section})
+    sectionExport = []
+    for s in sections:
+        sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
+
+    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
 def load_pages(request, section="all", page=1):
@@ -54,7 +68,7 @@ def load_pages(request, section="all", page=1):
     
     qs = ArticlePage.objects.all()
     if (section != "all"):
-        qs = qs.filter(current_section=section.lower())
+        qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
     if (username):
         author_page = get_object_or_404(AuthorPage, full_name=username)
         qs = qs.filter(article_authors__author=author_page)
@@ -77,6 +91,149 @@ def load_pages(request, section="all", page=1):
 
 @login_required
 @require_POST
+def create_page(request, section_id):
+    data = request.body.decode('utf-8')
+    data = json.loads(request.body.decode('utf-8'))
+
+    if not data['title']:
+        response = HttpResponseBadRequest("Title needed to create page")
+        return response
+    section = get_object_or_404(SectionPage, pk=section_id)
+
+    newPage = StandardArticlePage(
+        title=data["title"],
+        depth=4,
+        slug=slugify(data["title"]),
+        live=False
+    )
+
+    if "assignment_folder" in data:
+        newPage.assignment_folder = data["assignment_folder"]
+    if "deadline_list" in data:
+        for deadline in data["deadline_list"]: 
+            newPage.deadline_list = list(newPage.deadline_list.all()) + [
+                    ArticleDeadline(
+                        description=deadline.get("description"),
+                        date=deadline.get("date"),
+                        completed=deadline.get("completed")
+                    )
+                ]
+    if ("category_page" in data):
+        if (newPage.get_primary_topic()): newPage.topics.remove(newPage.get_primary_topic().name)
+        try: 
+            newPage.category_page = get_object_or_404(CategoryPage, pk=data["category_page"])
+        except: 
+            return HttpResponseBadRequest('Unable to find category page') 
+        newPage.topics.add(newPage.category_page.title)
+        newPage.primary_tag_slug = slugify(newPage.category_page.title)
+    if ("article_status" in data):
+        newPage.article_status = data["article_status"]
+    if ("article_authors" in data):
+        new_authors = data["article_authors"]  
+        items = [
+            ArticleAuthorsOrderable(
+                author=get_object_or_404(AuthorPage, id=item["author"]),
+                author_role=item["author_role"],
+                sort_order=index,
+            )
+            for index, item in enumerate(new_authors or [])
+        ]
+        newPage.article_authors.set(items)
+    if ("assignment_memo" in data):
+        newPage.assignment_memo = data["assignment_memo"]
+    if ("ethics_notes" in data):
+        newPage.ethics_notes = data["ethics_notes"]
+
+    section.add_child(instance=newPage)
+
+    try: 
+        newPage.save_revision()
+    except ValidationError as err:
+        newPage.delete()
+        return HttpResponseBadRequest(err.messages) 
+    
+
+    return JsonResponse(newPage.get_latest_revision_as_object().to_json(), safe=False)
+
+@login_required
+def load_page(request, page_id):
+    pageObject = get_object_or_404(ArticlePage, pk=page_id).specific.get_latest_revision_as_object()
+    if (pageObject.live and pageObject.article_status != 6):
+        print("Updating status for published article \"" + pageObject.title + "\"")
+        pageObject.article_status = 6
+        pageObject.save_revision(user=request.user)
+    if ((not pageObject.live) and pageObject.article_status == 6):
+        print("Updating status for unpublished article \"" + pageObject.title + "\"")
+        pageObject.article_status = 5
+        pageObject.save_revision(user=request.user)
+
+    def hasDraftInDeadline(page):
+        for deadline in page.deadline_list.all():
+            if deadline.description == "Draft in":
+                return True
+        return False
+    if (pageObject.deadline):
+        print("Migrating deadline for " + pageObject.title)
+        if (not hasDraftInDeadline(pageObject)):
+
+            pageObject.deadline_list = list(pageObject.deadline_list.all()) + [
+                ArticleDeadline(
+                    description="Draft in",
+                    date=pageObject.deadline,
+                    completed=False
+                )
+            ]
+        pageObject.deadline = None
+        pageObject.save_revision(user=request.user)
+
+    pageJson = pageObject.to_json()
+    return JsonResponse(pageJson, safe=False)
+
+@login_required
+def load_partial_pages(request, section="all", page=1):
+    username = request.GET.get('username', '')
+    include_published = request.GET.get('include_published', '')
+    
+    qs = ArticlePage.objects.all()
+    if (section != "all"):
+        qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
+    if (username):
+        author_page = get_object_or_404(AuthorPage, full_name=username)
+        qs = qs.filter(article_authors__author=author_page)
+    if (include_published.lower() == "false"):
+        qs = qs.filter(live=False)
+    
+    qs = qs.order_by("-latest_revision_created_at", "-pk")
+
+    paginator = Paginator(qs, 20)
+
+    pages = paginator.get_page(request.GET.get("article-page", page))
+
+    result="[]"
+    if (len(pages) > 0):
+        result = "["
+        for currentPage in pages: 
+            try: 
+                currentPage = currentPage.latest_revision.content
+            except:
+                warnings.warn("Cannot get content for page " + str(currentPage.pk))
+                print("Cannot get content for page " + str(currentPage.pk))
+                continue 
+            result += "{"
+            result += "\"title\": \"" + currentPage.get("title").replace('"', '\\"') + "\", "
+            result += "\"live\": " + str(currentPage.get("live")).lower() + ", "
+            result += "\"pk\": " + str(currentPage.get("pk")) + ", "
+            result += "\"assignment_folder\": \"" + (currentPage.get("assignment_folder") if currentPage.get("assignment_folder") else "") + "\", "
+            result += "\"article_authors\": \"\", "
+            result += "\"article_status\": " + str(currentPage.get("article_status") if currentPage.get("article_status") else 1) + ", "
+            result += "\"category_page\": \"" + (str(currentPage.get("category_page")) if currentPage.get("category_page") else "")+ "\", "
+            result += "\"deadline_list\": " + (str(currentPage.get("deadline_list")).replace("'", '"').replace("True", "true").replace("False", "false").replace("None", "null") if currentPage.get("deadline_list") else "[]")+ "},"
+
+        result = result[:-1] + "]"
+    return JsonResponse(result, safe=False)
+
+@login_required
+@require_POST
 def update_content_tracker(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
     data = request.body.decode('utf-8')
@@ -84,13 +241,22 @@ def update_content_tracker(request, page_id):
 
     if ("title" in data):
         page.title = data["title"]
+        if not page.live:
+            page.slug = slugify(data["title"])
+    if ("assignment_folder" in data):
+        page.assignment_folder = data["assignment_folder"]
     if ("category" in data):
         if (page.get_primary_topic()): page.topics.remove(page.get_primary_topic().name)
         page.topics.add(data["category"])
         page.primary_tag_slug = slugify(data["category"])
         page.category_page = get_object_or_404(CategoryPage, title=data["category"])
-    if ("deadline" in data):
-        page.deadline = data["deadline"]
+    if ("current_section" in data):
+        section = SectionPage.objects.get(id=data["current_section"])
+        if (page.can_move_to(section)):
+            page.move(section, pos='last-child')
+            page.current_section = section.slug
+        else:
+            raise Exception("Page can't move to section")
     if ("article_status" in data):
         page.article_status = data["article_status"]
     if ("authors" in data):
@@ -104,47 +270,57 @@ def update_content_tracker(request, page_id):
             for index, item in enumerate(new_authors or [])
         ]
         page.article_authors.set(items)
-
-    page.save_revision(user=request.user)
+    if ("assignment_memo" in data):
+        page.assignment_memo = data["assignment_memo"]
+    if ("ethics_notes" in data):
+        page.ethics_notes = data["ethics_notes"]
+    if ("deadline_list" in data):
+        page.deadline_list = [
+            ArticleDeadline(
+                    description=deadline.get("description"),
+                    date=deadline.get("date"),
+                    completed=deadline.get("completed")
+            )
+            for index, deadline in enumerate(data["deadline_list"] or [])
+        ]
+        page.deadline_list.commit()
+    revision = page.save_revision(user=request.user, log_action=True, changed=False)
 
     latest_revision = page.get_latest_revision_as_object()
     return JsonResponse(latest_revision.to_json(), safe=False)
+
+
+@login_required
+@require_POST
+def page_collaboration(request, page_id):
+    # Initalization before websockets kick in
+    if not request.body or len(request.body) > 10 * 1024 * 1024:
+        return HttpResponse(status=400)
+
+    try:
+        document = initialize_page_collaboration(page_id, request.body)
+    except Page.DoesNotExist:
+        return HttpResponse(status=404)
+
+    return HttpResponse(document, content_type="application/octet-stream")
+
 
 @login_required
 def manuscript_editor(request, page_id):
     page = get_manuscript_page(page_id)
     editor_errors = {}
-    page_form = get_page_form(page)
-    article_authors_form = get_article_authors_form(page)
-    featured_media_form = get_featured_media_form(page)
+    page_form = create_page_form(page)
+    article_authors_form = create_article_authors_form(page)
+    featured_media_form = create_featured_media_form(page)
 
     if request.method == "POST":
         action = request.POST.get("action") or "draft"
         saved_revision = None
-        editor_errors, page_form, article_authors_form, featured_media_form = apply_editor_post(page, request.POST)
+        editor_errors, page_form, article_authors_form, featured_media_form = process_submitted_page(page, request.POST)
 
         if not editor_errors:
-            siblings = page.get_siblings().exclude(id=page.id)
-            if siblings.filter(slug=page.slug).exists():
-                editor_errors["slug"] = ["Slug must be unique among siblings."]
-            else:
-                try:
-                    page.full_clean()
-                except ValidationError as e:
-                    for field, field_errors in e.message_dict.items():
-                        editor_errors.setdefault(field, []).extend(field_errors)
-                else:
-                    try:
-                        saved_revision = page.save_revision(user=request.user)
-                        if action == "publish":
-                            saved_revision.publish(user=request.user)
-                            page = get_object_or_404(Page, id=page_id).specific
-                            print("Revised page")
-                        else:
-                            print("Draft Saved")
-                    except Exception:
-                        editor_errors["__all__"] = ["Failed to update page."]
-                        print("Failed to update page:" + page.title)
+            page, saved_revision, save_errors = save_page_revision(page, action, request.user)
+            editor_errors.update(save_errors)
 
         if request.headers.get("x-requested-with") == "XMLHttpRequest" or "application/json" in request.headers.get("accept", ""):
             if editor_errors:
@@ -159,7 +335,8 @@ def manuscript_editor(request, page_id):
         print(f"Validation Error: {editor_errors}")
 
     stream_editors = get_streamfield_editors(page)
-    article_media = page.article_media.all()
+    article_media = get_object_or_404(Page, id=page_id).specific.article_media.all()
+    last_saved_manuscript = PageCollaboration.objects.filter(page_id=page_id).only("updated_at").first()
 
     # self: contains information like page title, slug, etc, for form fields = for preview rendering
     # page_form: contains the form for the page fields
@@ -168,19 +345,27 @@ def manuscript_editor(request, page_id):
     # featured_media_form: contains the form for the featured media
     # article_media_upload_form: contains the form for uploading article media
     # article_media: contains the list of existing article images/documents in this page
+    # last_saved_manuscript: sends last updated manuscript for saved info
 
     return render(
         request, "editors/manuscript_editor.html",
-        {"self": page,
-         "page_form": page_form,
-         "public_page_form_fields": PAGE_FORM_FIELDS,
-         "article_authors_form": article_authors_form,
-         "stream_editors": stream_editors,
-         "editor_errors": editor_errors,
-         "current_editor_username": get_user_display_name(request.user),
-         "featured_media_form": featured_media_form,
-         "article_media_upload_form": get_article_media_upload_form(),
-         "article_media": article_media}
+        {
+            "self": page,
+            "page_form": page_form,
+            "public_page_form_fields": PAGE_FORM_FIELDS,
+            "article_authors_form": article_authors_form,
+            "stream_editors": stream_editors,
+            "editor_errors": editor_errors,
+            "current_editor": {
+                "id": request.user.pk,
+                "name": get_user_display_name(request.user),
+                "avatar_url": avatar_url(request.user, size=64),
+            },
+            "featured_media_form": featured_media_form,
+            "article_media_upload_form": get_article_media_upload_form(),
+            "article_media": article_media,
+            "last_saved_manuscript": last_saved_manuscript,
+        },
     )
 
 
@@ -201,6 +386,27 @@ def manuscript_authors(request, page_id):
 def manuscript_media_tags(request, page_id):
     get_object_or_404(Page, id=page_id)
     return JsonResponse({"tags": get_article_media_tag_options()})
+
+
+@login_required
+@require_GET
+def manuscript_media_options(request, page_id):
+    get_object_or_404(Page, id=page_id)
+    kind = request.GET.get("kind")
+    query = request.GET.get("q", "").strip()[:100]
+    model = get_image_model() if kind == "image" else get_document_model()
+    media = model.objects.only("id", "title", "file")
+    if query:
+        media = media.filter(title__icontains=query).order_by("title", "id")
+    else:
+        media = media.order_by("-id")
+
+    return JsonResponse(
+        {"options": [
+            {"value": str(item.id), "label": f"{item.title} — {item.filename}"}
+            for item in media[:50]
+        ]}
+    )
 
 
 @login_required
@@ -235,9 +441,8 @@ def manuscript_restore(request, page_id):
         return JsonResponse({"errors": {"revision": ["Choose a version to restore."]}}, status=400)
 
     revision = get_object_or_404(page.revisions, id=revision_id)
-    restored_page = revision.as_object()
     try:
-        saved_revision = restored_page.save_revision(user=request.user)
+        saved_revision = restore_page_revision(page, revision, request.POST, request.user)
     except Exception:
         return JsonResponse({"errors": {"__all__": ["Failed to restore version."]}}, status=400)
 
@@ -254,22 +459,16 @@ def manuscript_restore(request, page_id):
 @require_POST
 def manuscript_preview(request, page_id):
     page = get_manuscript_page(page_id)
-    editor_errors = {}
+    revision = None
 
     revision_id = request.POST.get("revision")
     if revision_id and revision_id != "current":
         revision = get_object_or_404(page.revisions, id=revision_id)
-        page = revision.as_object()
-        page_form = get_page_form(page)
-        article_authors_form = get_article_authors_form(page)
-        featured_media_form = get_featured_media_form(page)
-    else:
-        editor_errors, page_form, article_authors_form, featured_media_form = apply_editor_post(page, request.POST, preview=True)
 
-    if editor_errors:
-        return JsonResponse({"errors": editor_errors}, status=400)
+    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_preview(page, request.POST, request.user, revision)
 
     return JsonResponse({
+        "errors": editor_errors,
         "html": render_to_string(
             "editors/preview/manuscript_preview.html",
             {"self": page, "page_form": page_form, "article_authors_form": article_authors_form, "featured_media_form": featured_media_form},
@@ -279,10 +478,19 @@ def manuscript_preview(request, page_id):
 
 
 @login_required
-@require_GET
+@require_POST
 def manuscript_full_preview(request, page_id):
     page = get_manuscript_page(page_id)
-    return page.make_preview_request(
+
+    editor_errors, _, _, _ = process_submitted_page(
+        page,
+        request.POST,
+    )
+    if editor_errors:
+        return JsonResponse({"errors": editor_errors}, status=400)
+
+    saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
+    return saved_revision.as_object().make_preview_request(
         request,
         page.default_preview_mode,
     )
@@ -324,6 +532,32 @@ def article_media_add_existing(request, page_id):
 
 
 @login_required
+@require_GET
+def manuscript_page_options(request, page_id):
+    get_object_or_404(Page, id=page_id)
+    query = request.GET.get("q", "").strip()[:100]
+    selected_id = request.GET.get("selected")
+    pages = Page.objects.type(ArticlePage)
+    if query:
+        pages = pages.filter(title__icontains=query)
+
+    pages = pages.only("id", "title")
+    pages = pages.order_by("title", "id") if query else pages.order_by("-id")
+    options = [
+        {"value": str(item.id), "label": item.title}
+        for item in pages[:25]
+    ]
+
+    # Adds currently selected page
+    if selected_id and not any(option["value"] == selected_id for option in options):
+        selected = pages.filter(id=selected_id).first()
+        if selected:
+            options.insert(0, {"value": str(selected.id), "label": selected.title})
+
+    return JsonResponse({"options": options})
+
+
+@login_required
 def homepage_editor(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
     return render(request, "editors/homepage_editor.html", {"self": page})
@@ -347,7 +581,7 @@ def section_editor(request, page_id):
     return render(request, "editors/section_editor.html", {"self": page})
 
 
-#  Helpers
+#  Helpers - We should probably move these at some point
 
 # We need latest draft here not latest live
 def get_manuscript_page(page_id):

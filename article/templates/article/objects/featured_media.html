@@ -24,10 +24,10 @@
             {% if featured_image_object.caption or featured_image_object.credit %}
                 <div class="caption">
                     {% if featured_image_object.caption %}
-                        <span data-article-editable-featured-media-field="caption" data-article-editable-mode="richtext">{{ featured_image_object.caption|safe }}</span>
+                        <span data-article-editable-page-field="featured_media-caption" data-article-editable-mode="richtext">{{ featured_image_object.caption|safe }}</span>
                     {% endif %}
                     {% if featured_image_object.credit %}
-                        <span class="credit" data-article-editable-featured-media-field="credit">
+                        <span class="credit" data-article-editable-page-field="featured_media-credit">
                             {{ featured_image_object.credit }}
                         </span>
                     {% endif %}
@@ -50,7 +50,7 @@
             </iframe>
             {% if featured_video_object.caption or featured_video_object.credit %}
                 <div class="caption">
-                    {% if featured_video_object.caption %}<span data-article-editable-featured-media-field="caption" data-article-editable-mode="richtext">{{ featured_video_object.caption|safe }}</span>{% endif %} {% if featured_video_object.credit %}<span class="credit" data-article-editable-featured-media-field="credit">{{ featured_video_object.credit }}</span>{% endif %}
+                    {% if featured_video_object.caption %}<span data-article-editable-page-field="featured_media-caption" data-article-editable-mode="richtext">{{ featured_video_object.caption|safe }}</span>{% endif %} {% if featured_video_object.credit %}<span class="credit" data-article-editable-page-field="featured_media-credit">{{ featured_video_object.credit }}</span>{% endif %}
                 </div>
             {% endif %}
         </div>

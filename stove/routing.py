@@ -1,0 +1,10 @@
+from django.urls import re_path
+
+from .editors.collaboration import consumers
+
+websocket_urlpatterns = [
+    re_path(
+        r"^ws/stove/manuscript/(?P<page_id>\d+)/yjs/?$",
+        consumers.PageYjsConsumer.as_asgi(),
+    ),
+]

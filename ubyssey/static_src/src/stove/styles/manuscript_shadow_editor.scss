@@ -15,20 +15,20 @@
     position: absolute;
     z-index: 30;
     padding: 6px 8px;
-    border: 1px solid #000000;
+    border: 1px solid #c4c6cf;
     border-radius: 4px;
-    background: #fff;
+    background: #fcf9f8;
     font: 12px/1.3 sans-serif;
     transform: translate(-50%, calc(-100% - 6px));
 }
 
 .pm-link-bubble a {
-    color: #0000FF;
+    color: var(--color-ubyssey_blue);
     text-decoration: underline;
     overflow-wrap: anywhere;
 }
 
-.article-shadow-preview {
+.page-shadow-preview {
     position: relative;
     font-family: inherit;
     font-size: inherit;
@@ -39,21 +39,23 @@
     color: var(--text_color-100);
 }
 
-.article-shadow-preview div.article-content[data-article-block] {
+.page-shadow-preview div.article-content[data-article-block] {
     margin-bottom: 0;
 }
 
-.article-shadow-preview [data-article-block][data-stream-field] {
+.page-shadow-preview [data-article-block][data-stream-field] {
+    // Min height so it shows block even if block is empty, so it can be edited to not be empty
+    min-height: 10px;
     outline: 2px solid transparent;
     outline-offset: -1px;
     transition: outline-color 200ms ease;
 }
 
-.article-shadow-preview .o-extra-article-info.right {
+.page-shadow-preview .o-extra-article-info.right {
     margin-right: 1.4em;
 }
 
-.article-shadow-preview .o-extra-article-info.left {
+.page-shadow-preview .o-extra-article-info.left {
     margin-left: 1.4em;
 }
 
@@ -127,167 +129,52 @@ span[data-footnote-id]::before {
     outline-offset: 4px;
 }*/
 
-.pm-manuscript-rich-text,
-.pm-manuscript-direct-edit {
+.pm-page-rich-text,
+.pm-page-direct-edit {
     cursor: text;
     outline: 1px dashed transparent;
     outline-offset: -1px;
 }
 
-.pm-manuscript-rich-text:hover,
-.pm-manuscript-rich-text:focus,
-.pm-manuscript-rich-text.ProseMirror-focused,
-.pm-manuscript-direct-edit:hover,
-.pm-manuscript-direct-edit:focus,
-.pm-manuscript-direct-edit.ProseMirror-focused {
+.pm-page-rich-text:hover,
+.pm-page-rich-text:focus,
+.pm-page-rich-text.ProseMirror-focused,
+.pm-page-direct-edit:hover,
+.pm-page-direct-edit:focus,
+.pm-page-direct-edit.ProseMirror-focused {
     outline-color: #000;
 }
 
-.pm-manuscript-direct-plain-text {
+.pm-page-direct-plain-text {
     white-space: pre-wrap;
 }
 
-.pm-manuscript-direct-rich-text {
+.pm-page-direct-rich-text {
     min-height: 1.2em;
 }
 
-.pm-manuscript-direct-rich-text p:last-child {
+.pm-page-direct-rich-text p:last-child {
     margin-bottom: 0;
 }
 
-.pm-article-block-controls-layer {
-    position: absolute;
-    inset: 0;
-    z-index: 15;
-    pointer-events: none;
-}
-
-.pm-article-block-outline {
-    display: none;
-    position: absolute;
-    border: 1px solid #008fcb;
-    box-sizing: border-box;
-    pointer-events: none;
-}
-
-.pm-article-block-controls-wrapper {
-    display: none;
-    position: absolute;
-    box-sizing: border-box;
-    pointer-events: none;
-}
-
-.pm-article-block-controls {
-    display: flex;
-    position: sticky;
-    top: var(--pm-article-block-controls-top, 54px);
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-    box-sizing: border-box;
-    pointer-events: auto;
-}
-
-.pm-article-block-controls-layer.is-active .pm-article-block-controls-wrapper {
-    display: block;
-}
-
-.pm-article-block-controls__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 26px;
-    min-width: 42px;
-    min-height: 26px;
-    padding: 0;
-    border: 0;
-    border-radius: 3px;
-    box-sizing: border-box;
-    color: #fff;
-    z-index: 1001;
-    font: 12px/1 sans-serif;
-    cursor: pointer;
-    transition: filter 120ms ease;
-}
-
-// Maybe do the colours properly in the future
-.pm-article-block-controls__button:hover:not(:disabled) {
-    filter: brightness(0.92);
-}
-
-.pm-article-block-controls__button:disabled {
-    cursor: default;
-    opacity: 0.35;
-}
-
-.pm-article-block-controls__button--move {
-    background: #707070;
-}
-
-.pm-article-block-controls__button--move::before {
-    display: block;
-    color: #fff;
-    font-size: 15px;
-    line-height: 1;
-}
-
-.pm-article-block-controls__button--up::before {
-    content: "↑";
-}
-
-.pm-article-block-controls__button--down::before {
-    content: "↓";
-}
-
-.pm-article-block-controls__button--danger {
-    background: #ff2a2a;
-}
-
-.pm-article-block-controls__button--insert {
-    background: #00a7e1;
-    font-size: 18px;
-}
-
-.pm-article-block-controls__button--edit {
-    background: #4f8fcb;
-    font-size: 11px;
-}
-
-.pm-article-block-controls__button--comment {
-    background: #ffdc4e;
-    color: #1b1b1b;
-    font-size: 15px;
-}
-
-.pm-article-block-controls__button--suggestion {
-    background: #707070;
-    font-size: 10px;
-}
-
-.pm-article-block-controls__button--suggestion[aria-pressed="true"] {
-    background: #ed3ae4;
-    color: #fff;
-}
-
-.pm-article-block--commented {
+.pm-page-block--commented {
     outline: 2px solid #e0a800;
     outline-offset: -1px;
 }
 
-.pm-article-block--comment-active {
+.pm-page-block--comment-active {
     outline-color: #8a6500;
     background: rgba(255, 224, 102, 0.22);
 }
 
-.pm-manuscript-toolbar {
+.pm-page-toolbar {
     position: sticky;
     top: var(--topbar-height, 48px);
     z-index: 20;
     background: var(--background, white);
 }
 
-.pm-manuscript-toolbar:empty {
+.pm-page-toolbar:empty {
     display: none;
 }
 
@@ -311,6 +198,13 @@ span[data-footnote-id]::before {
     align-items: center;
     gap: 4px;
     min-width: 0;
+}
+
+.pm-editor-toolbar__separator {
+    width: 1px;
+    height: 24px;
+    margin: 0 4px;
+    background: var(--border-grey, #c7c7c7);
 }
 
 .pm-editor-toolbar__publish {
@@ -378,6 +272,49 @@ span[data-footnote-id]::before {
     color: #fff;
 }
 
-.pm-article-block--selected {
-    outline-color: #f28c00 !important;
+// Each editor overrides with their assigned color.
+.pm-page-block--selected {
+    outline-color: var(--current-editor-color, #f28c00) !important;
+    caret-color: var(--current-editor-color, #f28c00);
+}
+
+.pm-block--remote-selected {
+    outline: 2px solid var(--remote-editor-color) !important;
+}
+
+.ProseMirror-yjs-cursor {
+    position: relative;
+    margin-right: -1px;
+    margin-left: -1px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    pointer-events: none;
+    word-break: normal;
+}
+
+.page-shadow-preview img.ProseMirror-separator {
+    width: 0;
+    height: 0;
+}
+
+.page-shadow-preview .ProseMirror-yjs-cursor > div {
+    position: absolute;
+    top: -1.3em;
+    left: -1px;
+    z-index: 30;
+    max-width: none;
+    padding: 1px 4px;
+    border-radius: 3px 3px 3px 0;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.3;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.ProseMirror-yjs-selection {
+    border-radius: 2px;
 }

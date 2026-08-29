@@ -1,6 +1,6 @@
 {% comment %} 
     This template object exists because both the "right image" and "top image" style fw articles were using almost identical contents when div class="headline-container"
-    It was seperated out to try to make the code more readable
+    It was separated out to try to make the code more readable
 {% endcomment %}
 
 <p class="c-article__published-at">{{ article.published_at|date:'N j, Y' }}</p>
@@ -16,6 +16,7 @@
     <h1
         class="o-headline o-headline--article"
         data-article-editable-page-field="title"
+        data-article-editable-mode="richtext-inline"
     >
         {{ title|safe }}
     </h1>

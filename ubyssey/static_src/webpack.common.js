@@ -40,9 +40,10 @@ module.exports = {
     'contentTracker': './src/js/ContentTracker.jsx',
     'liveblog': './src/js/liveblog.jsx',
     'stove/content_tracker': './src/stove/content_tracker.js',
-    'stove/manuscript_editor': './src/stove/manuscript/index.js',
+    'stove/manuscript_editor': './src/stove/manuscript_editor/app.js',
     'stove/content_tracker_select': './src/stove/ContentTrackerSelect.jsx',
     'stove/stove_content_tracker': './src/stove/StoveContentTracker.jsx',
+    'join': './src/js/join.js',
   },
   output: {
     path: path.join(__dirname, '..', 'static/ubyssey/js'),
