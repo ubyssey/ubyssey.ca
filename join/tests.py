@@ -5,12 +5,7 @@ from django.test import TestCase
 from wagtail.models import Page, Site
 
 from home.models import HomePage
-from join.models import (
-    JoinApplicationStep,
-    JoinLandingPage,
-    JoinPosition,
-    JoinUnitPage,
-)
+from join.models import JoinApplicationStep, JoinLandingPage, JoinPosition, JoinUnitPage
 
 
 class JoinPageTestCase(TestCase):

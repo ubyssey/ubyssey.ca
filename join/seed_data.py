@@ -132,97 +132,181 @@ CAREER_DESCRIPTION = (
 )
 
 UNIT_SPECS = [
-    ("News", "news", "reportage", "Section", [
-        "AMS Reporter",
-        "Governance Reporter",
-        "Community Reporter",
-        "Immigration Reporter",
-        "Research Policy Reporter",
-        "Economy Reporter",
-        "Law Reporter",
-        "Post-Secondary Policy Reporter",
-        "Housing Reporter",
-        "Transportation Reporter",
-        "Health Reporter",
-        "Climate Reporter",
-    ]),
-    ("Opinion", "opinion", "reportage", "Section", [
-        "AMS Columnist",
-        "Politics Columnist",
-        "Entertainment Columnist",
-        "Technology Columnist",
-        "Local History Columnist",
-    ]),
-    ("Arts", "arts", "reportage", "Section", [
-        "Music Critic",
-        "Theatre Critic",
-        "Film Critic",
-        "Visual Art Critic",
-        "Architecture Critic",
-    ]),
-    ("Culture", "culture", "reportage", "Section", [
-        "Food Critic",
-        "Book Critic",
-        "Lifestyle Reporter",
-        "Fashion Critic",
-    ]),
-    ("Sports", "sports", "reportage", "Section", [
-        "Men's Soccer Reporter",
-        "Women's Soccer Reporter",
-        "Men's Basketball Reporter",
-        "Women's Basketball Reporter",
-        "Men's Volleyball Reporter",
-        "Women's Volleyball Reporter",
-        "Men's Hockey Reporter",
-        "Women's Hockey Reporter",
-        "Football Reporter",
-        "Women's Rugby Reporter",
-    ]),
-    ("Copy", "copy", "reportage", "Department", [
-        "Copy Editor",
-    ]),
-    ("Graphics", "graphics", "visuals", "Department", [
-        "Opinion Illustrator",
-        "Opinion Collagist",
-        "Arts & Culture Illustrator",
-        "Sports Collagist",
-        "News Collagist",
-    ]),
-    ("Video", "video", "visuals", "Department", [
-        "Arts & Culture Videographer",
-        "Sports Videographer",
-        "Sports Videographer",
-        "News & Opinion Videographer",
-    ]),
-    ("Photography", "photography", "visuals", "Department", [
-        "Arts Photojournalist",
-        "Arts Photojournalist",
-        "Culture Photojournalist",
-        "Sports Photojournalist",
-        "News & Opinion Photojournalist",
-    ]),
-    ("Print", "print", "visuals", "Department", [
-        "News Page Designer",
-        "Sports Page Designer",
-        "Arts Page Designer",
-        "Culture Page Designer",
-        "News & Opinion Page Designer",
-    ]),
-    ("Digital", "digital", "visuals", "Department", [
-        "Digital Designer, Sports",
-        "Digital Designer, Arts & Culture",
-        "Digital Designer, News & Opinion",
-    ]),
-    ("Audience", "audience", "product", "Department", [
-        "Newsletter Assistant",
-        "Socials Assistant",
-    ]),
-    ("Audio", "audio", "product", "Department", [
-        "Audio Assistant",
-    ]),
-    ("Systems", "systems", "product", "Department", [
-        "Editorial Developer",
-    ]),
+    (
+        "News",
+        "news",
+        "reportage",
+        "Section",
+        [
+            "AMS Reporter",
+            "Governance Reporter",
+            "Community Reporter",
+            "Immigration Reporter",
+            "Research Policy Reporter",
+            "Economy Reporter",
+            "Law Reporter",
+            "Post-Secondary Policy Reporter",
+            "Housing Reporter",
+            "Transportation Reporter",
+            "Health Reporter",
+            "Climate Reporter",
+        ],
+    ),
+    (
+        "Opinion",
+        "opinion",
+        "reportage",
+        "Section",
+        [
+            "AMS Columnist",
+            "Politics Columnist",
+            "Entertainment Columnist",
+            "Technology Columnist",
+            "Local History Columnist",
+        ],
+    ),
+    (
+        "Arts",
+        "arts",
+        "reportage",
+        "Section",
+        [
+            "Music Critic",
+            "Theatre Critic",
+            "Film Critic",
+            "Visual Art Critic",
+            "Architecture Critic",
+        ],
+    ),
+    (
+        "Culture",
+        "culture",
+        "reportage",
+        "Section",
+        [
+            "Food Critic",
+            "Book Critic",
+            "Lifestyle Reporter",
+            "Fashion Critic",
+        ],
+    ),
+    (
+        "Sports",
+        "sports",
+        "reportage",
+        "Section",
+        [
+            "Men's Soccer Reporter",
+            "Women's Soccer Reporter",
+            "Men's Basketball Reporter",
+            "Women's Basketball Reporter",
+            "Men's Volleyball Reporter",
+            "Women's Volleyball Reporter",
+            "Men's Hockey Reporter",
+            "Women's Hockey Reporter",
+            "Football Reporter",
+            "Women's Rugby Reporter",
+        ],
+    ),
+    (
+        "Copy",
+        "copy",
+        "reportage",
+        "Department",
+        [
+            "Copy Editor",
+        ],
+    ),
+    (
+        "Graphics",
+        "graphics",
+        "visuals",
+        "Department",
+        [
+            "Opinion Illustrator",
+            "Opinion Collagist",
+            "Arts & Culture Illustrator",
+            "Sports Collagist",
+            "News Collagist",
+        ],
+    ),
+    (
+        "Video",
+        "video",
+        "visuals",
+        "Department",
+        [
+            "Arts & Culture Videographer",
+            "Sports Videographer",
+            "Sports Videographer",
+            "News & Opinion Videographer",
+        ],
+    ),
+    (
+        "Photography",
+        "photography",
+        "visuals",
+        "Department",
+        [
+            "Arts Photojournalist",
+            "Arts Photojournalist",
+            "Culture Photojournalist",
+            "Sports Photojournalist",
+            "News & Opinion Photojournalist",
+        ],
+    ),
+    (
+        "Print",
+        "print",
+        "visuals",
+        "Department",
+        [
+            "News Page Designer",
+            "Sports Page Designer",
+            "Arts Page Designer",
+            "Culture Page Designer",
+            "News & Opinion Page Designer",
+        ],
+    ),
+    (
+        "Digital",
+        "digital",
+        "visuals",
+        "Department",
+        [
+            "Digital Designer, Sports",
+            "Digital Designer, Arts & Culture",
+            "Digital Designer, News & Opinion",
+        ],
+    ),
+    (
+        "Audience",
+        "audience",
+        "product",
+        "Department",
+        [
+            "Newsletter Assistant",
+            "Socials Assistant",
+        ],
+    ),
+    (
+        "Audio",
+        "audio",
+        "product",
+        "Department",
+        [
+            "Audio Assistant",
+        ],
+    ),
+    (
+        "Systems",
+        "systems",
+        "product",
+        "Department",
+        [
+            "Editorial Developer",
+        ],
+    ),
 ]
 
 OPEN_POSITIONS = {
@@ -243,8 +327,7 @@ def unit_data():
                 "category": category,
                 "unit_type": unit_type,
                 "card_description": (
-                    f"Learn, collaborate and contribute to The Ubyssey's "
-                    f"{title} team."
+                    f"Learn, collaborate and contribute to The Ubyssey's {title} team."
                 ),
                 "introduction": (
                     f"<p>The {title} team gives students practical experience "

@@ -55,9 +55,7 @@ class Command(BaseCommand):
         home = self._get_home_page()
 
         landing = (
-            JoinLandingPage.objects.child_of(home)
-            .filter(slug=LANDING["slug"])
-            .first()
+            JoinLandingPage.objects.child_of(home).filter(slug=LANDING["slug"]).first()
         )
         landing_created = landing is None
         if landing_created:
@@ -88,9 +86,7 @@ class Command(BaseCommand):
         kept_units = 0
         for spec in unit_data():
             unit = (
-                JoinUnitPage.objects.child_of(landing)
-                .filter(slug=spec["slug"])
-                .first()
+                JoinUnitPage.objects.child_of(landing).filter(slug=spec["slug"]).first()
             )
             unit_created = unit is None
             page_fields = {
