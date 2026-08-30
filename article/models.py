@@ -732,6 +732,27 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     article_status = models.IntegerField(choices=ArticleStatus.choices, default=ArticleStatus.ASSIGNED.value)
 
+    class StoryType(blocks.ChoiceBlock):
+        choices = [
+        ('report', 'Report'),
+        ('live-update', 'Live Update'),
+        ('feature', 'Feature'),
+        ('profile', 'Profile'),
+        ('qa', 'Q&A'),
+        ('review', 'Review'),
+        ('game-analysis', 'Game Analysis'),
+        ('commentary', 'Commentary'),
+        ('essay', 'Essay'),
+        ('column', 'Column'),
+        ('editorial', 'Editorial'),
+        ('letter-to-editor', 'Letter to the editor'),
+        ('letter-from-editor', 'Letter from the editor'),
+        ('psa', 'Public Service Announcement'),
+        ('other', 'Other (this is an illegal option)')
+    ]
+
+    story_type = models.CharField(choices=StoryType.choices, null=False, blank=True, max_length=255)
+
     assignment_memo = RichTextField(
         null=False,
         blank=True,
@@ -986,9 +1007,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         # InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
         InlinePanel("deadline_list"),
         FieldPanel("article_status", help_text = "This field indicates the current status of an article."),
+        FieldPanel("story_type", help_text = "The story form, which affords different "),
         FieldPanel("assignment_memo", help_text="Guidance from a section editor about how to approach a story"),
         FieldPanel("ethics_notes", help_text="Advice from a section editor about the ethics of a story"),
-        FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials")
+        FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials"),
+        FieldPanel("story_type", help_text="The type of story")
+
         
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [

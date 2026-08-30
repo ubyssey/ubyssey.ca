@@ -130,6 +130,8 @@ def create_page(request, section_id):
         newPage.primary_tag_slug = slugify(newPage.category_page.title)
     if ("article_status" in data):
         newPage.article_status = data["article_status"]
+    if ("story_type" in data):
+        newPage.story_type = data["story_type"]
     if ("article_authors" in data):
         new_authors = data["article_authors"]  
         items = [
@@ -261,6 +263,8 @@ def update_content_tracker(request, page_id):
             raise Exception("Page can't move to section")
     if ("article_status" in data):
         page.article_status = data["article_status"]
+    if ("story_type" in data):
+        page.story_type = data["story_type"]
     if ("authors" in data):
         new_authors = data["authors"]  
         items = [

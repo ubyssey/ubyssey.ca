@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import Select from 'react-select';
+
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import chroma from 'chroma-js';
@@ -399,6 +400,16 @@ async function updateBeat(page, newBeat, updatePage, isLocalOnly=false) {
     "Failed to update beat for " + page.title + " to " + newBeat.label)
   }
 }
+async function updateStoryType(page, newStoryType, updatePage, isLocalOnly=false) {
+  updatePage({... page, story_type: newStoryType.value})
+
+  if (!isLocalOnly) {
+  handleRemoteUpdate(page, {"story_type": newStoryType.value}, updatePage,
+    "Updating story type for " + page.title + " to " + newStoryType.label, 
+    "Updated story type for " + page.title + " to " + newStoryType.label, 
+    "Failed to update story type for " + page.title + " to " + newStoryType.label)
+  }
+}
 
 async function updateSection(page, newSection, updatePage, isLocalOnly=false) {
   updatePage({... page, current_section: newSection.value})
@@ -605,6 +616,114 @@ function beatLabel(beatPk) {
   return "[No label provided]"
 }
 
+const storyTypeOptions = [
+  {value: 'report', label: "Report", description: "Reports are shorter stories about events with immediate relevance, written from a detached perspective."},
+  {value: 'live-update', label: "Live Update", description: "Live Updates are brief reports from journalists on-the-ground while news is happening."},
+  {value: 'feature', label: "Feature", description: "Features are longer stories about people or systems with long-term or widespread relevance, written from a reporter's perspective."},
+  {value: 'profile', label: "Profile", description: "Profiles tell the stories of individuals and their worldviews, written from a repoter's perspective."},
+  {value: 'qa', label: "Q&A", description: "Q&As are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity."},
+  {value: 'review', label: "Review", description: "Reviews are storiess about art and culture, written from a critical perspective."},
+  {value: 'game-analysis', label: "Game Analysis", description: "Game analyses are stories about individual games, written from an reporter's perspective."},
+  {value: 'commentary', label: "Commentary", description: "[Description TK]"},
+  {value: 'essay', label: "Essay", description: "Essays are stories about the author's views on the news, written from their own perspective but based on reporting."},
+  {value: 'column', label: "Column", description: "Columns are stories reported by columnists, opinion journalists who make abstract judgments about the news and the way the world should be."},
+  {value: 'editorial', label: "Editorial", description: "Editorials are stories by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day."},
+  {value: 'letter-to-editor', label: "Letter to the Editor", description: "Letters to the editor are 250-word responses to stories published in The Ubyssey, written by readers."},
+  {value: 'letter-from-editor', label: "Letter from the Editor", description: "Letters from the editor messages to readers from the The Ubyssey's Senior Masthead."},
+  {value: 'psa', label: "Public Service Announcement", description: "Annoucements of public interest information with imminent relevance, such as extreme weather or threats to public safety."},
+  {value: 'other', label: "Other", description: "Editors must seek approval from the senior masthead before publishing an 'other' story type."},
+    ]
+
+  function storyTypeLabel(storyTypeValue) {
+    for (const {value, label} of storyTypeOptions) {
+      if (value === storyTypeValue) return label;
+    }
+    return "[No label provided]"
+  }
+
+function StoryTypeSelect ({storyType, updateStoryType, styleType="edit-field", disabled}) {
+
+ let style = {
+  ...style,
+  menu: (base) => ({
+    ...base,
+    marginTop: "-4px"
+  })
+ };
+
+  if (styleType == "edit-field") {
+    style = {
+      ...style, 
+      control: (base) => ({
+        ...base,
+        border: "none",
+        backgroundColor: "inherit",
+      }),
+      valueContainer: (base) => ({
+        ...base,
+        padding: "5px",
+        ':hover': {
+          backgroundColor: "var(--hover-color)"
+        }
+      }),
+      selectContainer: (base) => ({
+        ...base,
+        padding: "0",
+        margin: "0",
+      }), 
+      container: (base) => ({
+        ...base,
+        maxWidth: "20em",
+      })
+    }
+  }
+
+  if (disabled) {
+    style = {
+      ...style,
+      container: (base) => ({
+        ...base,
+        pointerEvents: "auto",
+      }),
+      valueContainer: (base) => ({
+        ... base,
+        ':hover': {
+          cursor: "not-allowed",
+          backgroundColor: "var(--invalid-hover-color)"
+        },
+        ':active': {
+          pointerEvents: "none",
+          backgroundColor: "var(--invalid-hover-color)"
+        }
+      }),
+      singleValue: (base) => ({
+        ...base,
+        color: "inherit"
+      })
+    }
+  }
+
+  const formatOptionLabel = ({ value, label, description }) => (
+    <div style={{ display: "grid", gridTemplateColumns: "auto" }}>
+      <div>{label}</div>
+      <div style={{ color: "#555555", fontSize: "small" }}>
+        <i>{description}</i>
+      </div>
+    </div>
+  );
+
+    return <Select 
+    isDisabled={disabled}
+    options={storyTypeOptions}
+    value={storyType ? {"value": storyType, "label": storyTypeLabel(storyType)} : ''}
+    onChange={updateStoryType}
+    styles={style}
+    formatGroupLabel={formatGroupLabel}
+    formatOptionLabel={formatOptionLabel}
+    components={{
+      DropdownIndicator: null, 
+      placeholder: "Choose story type..."}}/>
+}
 function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
 
  let style = {
@@ -678,7 +797,6 @@ function BeatSelect ({beat, updateBeat, styleType="edit-field", disabled}) {
       DropdownIndicator: null, 
       placeholder: "Choose beat..."} }/>
 }
-
 function findSection(sectionSlug) {
     for (const s of allSections) {
       if (s.slug == sectionSlug) return s
@@ -793,6 +911,8 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
       selectedClass="row-selected";
     }
 
+    let hasStoryType = storyTypeLabel(page["story_type"]) != "[No label provided]";
+
     function setSidebar(mode) {
       setSelectedArticleId(page.pk)
       setActiveSidebar(mode)
@@ -818,7 +938,9 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
               </button>
               
               <LinkOpenButton url={page.assignment_folder} className={"slug-cell--hyperlink-open"} iconSize={"18px"}/>
-              </div></td>
+              </div>
+              <div className={`slug-cell--story-type ${hasStoryType ? "slug-cell--story-type-active" : "slug-cell--story-type-empty"}`}>{hasStoryType ? storyTypeLabel(page["story_type"]) : ""}</div>
+              </td>
             <td class="authors-cell"><AuthorsSelect 
               disabled = {page.live}
               currentAuthors={page.article_authors} 
@@ -1071,7 +1193,8 @@ function CreateSidebar({createPage}) {
     assignment_memo: '',
     ethics_notes: '',
     current_section: '',
-    deadline_list: []
+    deadline_list: [],
+    story_type: ""
   });
 
   useEffect(() => {
@@ -1107,7 +1230,8 @@ function CreateSidebar({createPage}) {
           article_status: 1,
           ethics_notes: '',
           assignment_memo: '',
-          deadline_list: []
+          deadline_list: [],
+          story_type: ""
         })
       })
       .catch(async (error) => {
@@ -1158,6 +1282,7 @@ function CreateSidebar({createPage}) {
       <div className="edit-field--sidebyside">
         <div className="edit-field--side-label">Section</div><SectionSelect section={newPage.current_section} updateSection={(newSection) => updateSection(newPage, newSection, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
         <div className="edit-field--side-label">Beat</div><BeatSelect beat={newPage.category_page} updateBeat={(newBeat) => updateBeat(newPage, newBeat, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
+        <div className="edit-field--side-label">Type</div><StoryTypeSelect storyType={newPage.story_type} updateStoryType={(newStoryType) => updateStoryType(newPage, newStoryType, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
       </div>
     </div>
     <div>
@@ -1234,6 +1359,7 @@ function EditSidebar({selectedPage, updatePage}) {
       <div className="edit-field--sidebyside">
         <div className="edit-field--side-label">Section</div><SectionSelect section={selectedPage.current_section} updateSection={(newSection) => updateSection(selectedPage, newSection, updatePage)} styleType={"edit-field"}/>
         <div className="edit-field--side-label">Beat</div><BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)} styleType={"edit-field"}/>
+        <div className="edit-field--side-label">Type</div><StoryTypeSelect storyType={selectedPage.story_type} updateStoryType={(newStoryType) => updateStoryType(selectedPage, newStoryType, updatePage)} styleType={"edit-field"}/>
       </div>
     </div>
     <div>
