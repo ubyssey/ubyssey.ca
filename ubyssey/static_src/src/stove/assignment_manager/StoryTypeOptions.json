@@ -1,0 +1,77 @@
+[
+  {
+    "value": "report", 
+    "label": "Report", 
+    "description": "Reports are shorter stories about events with immediate relevance, written from a detached perspective."
+  },
+  {
+    "value": "live-update", 
+    "label": "Live Update", 
+    "description": "Live Updates are brief reports from journalists on-the-ground while news is happening."
+  },
+  {
+    "value": "feature", 
+    "label": "Feature", 
+    "description": "Features are longer stories about people or systems with long-term or widespread relevance, written from a reporter's perspective."
+  },
+  {
+    "value": "profile", 
+    "label": "Profile", 
+    "description": "Profiles tell the stories of individuals and their worldviews, written from a repoter's perspective."
+  },
+  {
+    "value": "qa", 
+    "label": "Q&A", 
+    "description": "Q&As are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity."
+  },
+  {
+    "value": "review", 
+    "label": "Review", 
+    "description": "Reviews are storiess about art and culture, written from a critical perspective."
+  },
+  {
+    "value": "game-analysis", 
+    "label": "Game Analysis", 
+    "description": "Game analyses are stories about individual games, written from an reporter's perspective."
+  },
+  {
+    "value": "commentary", 
+    "label": "Commentary", 
+    "description": "[Description TK]"
+  },
+  {
+    "value": "essay", 
+    "label": "Essay", 
+    "description": "Essays are stories about the author's views on the news, written from their own perspective but based on reporting."
+  },
+  {
+    "value": "column", 
+    "label": "Column", 
+    "description": "Columns are stories reported by columnists, opinion journalists who make abstract judgments about the news and the way the world should be."
+  },
+  {
+    "value": "editorial", 
+    "label": "Editorial", 
+    "description": "Editorials are stories by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day."
+  },
+  {
+    "value": "letter-to-editor", 
+    "label": "Letter to the Editor", 
+    "description": "Letters to the editor are 250-word responses to stories published in The Ubyssey, written by readers."
+  },
+  {
+    "value": "letter-from-editor", 
+    "label": "Letter from the Editor", 
+    "description": "Letters from the editor messages to readers from the The Ubyssey's Senior Masthead."
+  },
+  {
+    "value": "psa", 
+    "label": "Public Service Announcement", 
+    "description": "Annoucements of public interest information with imminent relevance, such as extreme weather or threats to public safety."
+  },
+  {
+    "value": "other", 
+    "label": "Other", 
+    "description": "Editors must seek approval from the senior masthead before publishing an 'other' story type."
+  }
+]
