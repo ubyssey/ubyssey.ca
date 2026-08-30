@@ -19,8 +19,13 @@ from django.views.decorators.http import require_GET, require_POST
 from wagtail.admin.templatetags.wagtailadmin_tags import avatar_url
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
+from pycrdt import Array, Doc, Map
 
-from stove.editors.collaboration.persistence import initialize_page_collaboration
+from stove.editors.collaboration.persistence import (
+    ASSIGNMENT_AUTHOR_ROLES,
+    initialize_page_collaboration,
+    update_page_collaboration,
+)
 from stove.models import PageCollaboration
 from stove.editors.manuscript.media import (
     add_article_media,
@@ -187,6 +192,20 @@ def load_page(request, page_id):
         pageObject.save_revision(user=request.user)
 
     pageJson = pageObject.to_json()
+
+    # Uses current collaborative page version (as not always saved to revision) if it exists (meaning someone is editing)
+    collaboration = PageCollaboration.objects.filter(page_id=page_id).only("document").first()
+    if collaboration and collaboration.document:
+        document = Doc()
+        document.apply_update(bytes(collaboration.document))
+        authors = document.get("metadata", type=Map).get("articleAuthors")
+        if isinstance(authors, Array):
+            pageJson = json.loads(pageJson)
+            pageJson["article_authors"] = [
+                {"article_page": page_id, "author": item["authorId"], "author_role": item["role"]}
+                for item in authors.to_py()
+            ]
+            pageJson = json.dumps(pageJson)
     return JsonResponse(pageJson, safe=False)
 
 @login_required
@@ -236,7 +255,6 @@ def load_partial_pages(request, section="all", page=1):
 @require_POST
 def update_content_tracker(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
-    data = request.body.decode('utf-8')
     data = json.loads(request.body.decode('utf-8'))
 
     if ("title" in data):
@@ -260,16 +278,23 @@ def update_content_tracker(request, page_id):
     if ("article_status" in data):
         page.article_status = data["article_status"]
     if ("authors" in data):
-        new_authors = data["authors"]  
-        items = [
-            ArticleAuthorsOrderable(
-                author=get_object_or_404(AuthorPage, id=item["author"]),
-                author_role=item["author_role"],
-                sort_order=index,
-            )
-            for index, item in enumerate(new_authors or [])
-        ]
-        page.article_authors.set(items)
+        # Author role types not in assignment manager are saved first so they aren't overwritten
+        page.article_authors.set(
+            [
+                ArticleAuthorsOrderable(
+                    author=get_object_or_404(AuthorPage, id=item["author"]),
+                    author_role=item["author_role"],
+                    sort_order=index,
+                )
+                for index, item in enumerate(data["authors"] or [])
+                if item["author_role"] in ASSIGNMENT_AUTHOR_ROLES
+            ]
+            +
+            [
+                item for item in page.article_authors.all()
+                if item.author_role not in ASSIGNMENT_AUTHOR_ROLES
+            ]
+        )
     if ("assignment_memo" in data):
         page.assignment_memo = data["assignment_memo"]
     if ("ethics_notes" in data):
@@ -284,7 +309,9 @@ def update_content_tracker(request, page_id):
             for index, deadline in enumerate(data["deadline_list"] or [])
         ]
         page.deadline_list.commit()
-    revision = page.save_revision(user=request.user, log_action=True, changed=False)
+
+    page.save_revision(user=request.user, log_action=True, changed=False)
+    update_page_collaboration(page, data)
 
     latest_revision = page.get_latest_revision_as_object()
     return JsonResponse(latest_revision.to_json(), safe=False)

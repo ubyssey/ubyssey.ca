@@ -152,7 +152,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Updates to Saving... when local doc changes
-  const updateSavingStatus = () => {
+  const updateSavingStatus = (_update, origin) => {
+    if (origin === collaboration.provider) return;
     if (!savedStatus) return;
     savedStatus.textContent = "Saving...";
     pageEditorState.scheduleEditorUiRefresh();
