@@ -66,36 +66,37 @@ span[data-comment-thread-id] {
     cursor: pointer;
 }
 
-span[data-comment-suggestion="add"],
-span[data-comment-suggestion="delete"] {
-    background: transparent;
-}
-
-span[data-comment-suggestion="add"] {
-    color: #188038;
-}
-
-span[data-comment-suggestion="delete"] {
-    color: #d93025;
-    text-decoration: line-through;
-}
-
-span[data-comment-active="true"][data-comment-suggestion="add"] {
-    background: #ceead6;
-}
-
-span[data-comment-active="true"][data-comment-suggestion="delete"] {
-    background: #f6aea9;
-}
-
-mark[data-comment-active="true"]:not([data-comment-suggestion="add"]):not([data-comment-suggestion="delete"]),
-span[data-comment-active="true"]:not([data-comment-suggestion="add"]):not([data-comment-suggestion="delete"]) {
+mark[data-comment-active="true"]:not([data-suggestion-part="add"]):not([data-suggestion-part="delete"]),
+span[data-comment-active="true"]:not([data-suggestion-part="add"]):not([data-suggestion-part="delete"]) {
     background: #ffe066;
 }
 
 mark[data-comment-resolved="true"],
 span[data-comment-resolved="true"] {
     background: transparent;
+}
+
+mark[data-suggestion-thread-id],
+span[data-suggestion-thread-id] {
+    background: transparent;
+    cursor: pointer;
+}
+
+span[data-suggestion-part="add"] {
+    color: #188038;
+}
+
+span[data-suggestion-part="delete"] {
+    color: #d93025;
+    text-decoration: line-through;
+}
+
+span[data-comment-active="true"][data-suggestion-part="add"] {
+    background: #ceead6;
+}
+
+span[data-comment-active="true"][data-suggestion-part="delete"] {
+    background: #f6aea9;
 }
 
 span[data-footnote-id] {

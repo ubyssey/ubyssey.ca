@@ -3,7 +3,7 @@
 import { Schema } from "prosemirror-model";
 import { addListNodes } from "prosemirror-schema-list";
 import { schema as basicSchema } from "prosemirror-schema-basic";
-import { commentMarkSpec, footnoteMarkSpec } from "./annotations/index.js";
+import { commentMarkSpec, footnoteMarkSpec, suggestionMarkSpec } from "./annotations/index.js";
 
 export const baseNodesWithLists = addListNodes(
   basicSchema.spec.nodes,
@@ -25,6 +25,7 @@ export const marks = basicSchema.spec.marks.append({
     },
   },
   comment: commentMarkSpec,
+  suggestion: suggestionMarkSpec,
   footnote: footnoteMarkSpec,
 });
 

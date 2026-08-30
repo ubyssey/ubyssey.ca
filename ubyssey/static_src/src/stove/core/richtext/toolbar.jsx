@@ -4,7 +4,7 @@
 import { createRoot } from "react-dom/client";
 import { setBlockType, toggleMark } from "prosemirror-commands";
 import { undo, redo } from "prosemirror-history";
-import { markRangeAtCursor, startFootnoteCommand, startCommentCommand } from "./annotations/index.js";
+import { startFootnoteCommand, startCommentCommand } from "./annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
 import { suggestionModeIsActive, toggleSuggestionMode } from "./plugins.js";
 
@@ -122,9 +122,10 @@ function EditorToolbar({ view, history, onHistoryCommand, refresh, extraControls
 
 function toolbarItemIsActive(view, key) {
   if (key === "suggestionMode") return suggestionModeIsActive();
+  if (key === "footnote") return false;
 
   const { state } = view;
-  const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link", footnote: "footnote" };
+  const markNames = { bold: "strong", italic: "em", underline: "underline", link: "link" };
   const headingLevel = key === "heading3" ? 3 : null;
   const mark = state.schema.marks[markNames[key]];
   const nodeType = headingLevel ? state.schema.nodes.heading : null;
@@ -132,9 +133,9 @@ function toolbarItemIsActive(view, key) {
   if (mark) {
     const { from, $from, to, empty } = state.selection;
     if (empty) {
-      return Boolean(key === "footnote" ? markRangeAtCursor(state, mark) : mark.isInSet(state.storedMarks || $from.marks()));
+      return Boolean(mark.isInSet(state.storedMarks || $from.marks()));
     }
-    if (key === "footnote" || key === "link") return false;
+    if (key === "link") return false;
     return state.doc.rangeHasMark(from, to, mark);
   }
 

@@ -6,12 +6,12 @@ import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 
 import {
-  acceptCommentSuggestion,
-  appendCommentToThread,
-  collectCommentThreads,
+  acceptSuggestion,
+  appendThreadComment,
+  collectAnnotationThreads,
   commentSuggestion,
-  removeCommentThread,
-  rejectCommentSuggestion,
+  removeAnnotationThread,
+  rejectSuggestion,
   setCommentThreadResolved,
   suggestionLabel,
 } from "./comment_model.js";
@@ -29,10 +29,12 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   let scrollEndCleanup = null;
   let moveTimer = null;
   let commentOffset = 0;
+  let clickedThreadIds = [];
+  let clickedThreadIndex = 0;
   const commentDrafts = new Map();
 
   const currentThreads = () => [
-    ...getViews().flatMap((view) => collectCommentThreads(view)),
+    ...collectAnnotationThreads(getViews()),
     ...getThreads(),
   ].filter((thread) => !thread.resolved);
 
@@ -130,7 +132,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   const eventPath = (event) => event.composedPath?.() || [];
   const eventCommentCard = (event) => eventPath(event).find((element) => element?.matches?.(".pm-comment-thread"));
-  const eventCommentMark = (event) => eventPath(event).find((element) => element?.matches?.("[data-comment-thread-id]"));
+  const eventCommentMark = (event) => eventPath(event).find((element) => element?.matches?.("[data-comment-thread-id], [data-suggestion-thread-id]"));
 
   const removePendingThreads = (event) => {
     if (event.type === "focusin" && eventPath(event).includes(pageShadow)) return;
@@ -143,17 +145,30 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     let changed = false;
     currentThreads().forEach((thread) => {
       if (!thread.pending) return;
-      changed = (thread.remove ? thread.remove() : removeCommentThread(thread.view, thread.threadId)) || changed;
+      changed = (thread.remove ? thread.remove() : removeAnnotationThread(thread)) || changed;
     });
     if (changed) update();
   };
 
+  // switches selected overlapping suggestion/comment on second click
   const onCommentMarkClick = (event) => {
-    const mark = eventCommentMark(event);
-    if (mark?.dataset.commentResolved === "true") return;
-    
-    const threadId = mark?.dataset.commentThreadId;
-    if (threadId) setActiveThread(threadId);
+    const marks = eventPath(event).filter((element) => (
+      element?.matches?.("[data-comment-thread-id], [data-suggestion-thread-id]")
+      && element.dataset.commentResolved !== "true"
+      && element.dataset.suggestionResolved !== "true"
+    ));
+    const threadIds = [...new Set(marks.map((mark) => (
+      mark.dataset.commentThreadId || mark.dataset.suggestionThreadId
+    )))];
+    if (!threadIds.length) return;
+
+    if (threadIds.join(":") === clickedThreadIds.join(":")) {
+      clickedThreadIndex = (clickedThreadIndex + 1) % threadIds.length;
+    } else {
+      clickedThreadIds = threadIds;
+      clickedThreadIndex = 0;
+    }
+    setActiveThread(threadIds[clickedThreadIndex]);
   };
 
   const scheduleCommentPositions = () => {
@@ -224,7 +239,7 @@ function commentAnchorElement(thread) {
   const shadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
   if (!shadowRoot || !thread?.threadId) return null;
 
-  const inlineMark = shadowRoot.querySelector(`[data-comment-thread-id="${cssEscape(thread.threadId)}"]`);
+  const inlineMark = shadowRoot.querySelector(`[data-${thread.kind}-thread-id="${cssEscape(thread.threadId)}"]`);
   if (inlineMark) return inlineMark;
 
   if (!thread.fieldName) return null;
@@ -285,7 +300,7 @@ function updateActiveCommentMarks(activeThreadId, threads = []) {
     element.classList.remove("pm-page-block--comment-active");
   });
 
-  new Set(threads.map((thread) => thread.view).filter(Boolean)).forEach((view) => {
+  new Set(threads.flatMap((thread) => thread.views || [thread.view]).filter(Boolean)).forEach((view) => {
     if (view.activeCommentThreadId === activeThreadId) return;
     view.activeCommentThreadId = activeThreadId;
     view.dispatch(view.state.tr.setMeta("activeCommentThread", activeThreadId));
@@ -293,7 +308,7 @@ function updateActiveCommentMarks(activeThreadId, threads = []) {
 
   if (!activeThreadId) return;
 
-  shadowRoot.querySelectorAll(`[data-comment-thread-id="${cssEscape(activeThreadId)}"]`).forEach((element) => {
+  shadowRoot.querySelectorAll(`[data-comment-thread-id="${cssEscape(activeThreadId)}"], [data-suggestion-thread-id="${cssEscape(activeThreadId)}"]`).forEach((element) => {
     element.setAttribute("data-comment-active", "true");
   });
 
@@ -309,7 +324,7 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiv
     <div className="pm-comment-sidebar__list">
       {threads.map((thread) => (
         <CommentThread
-          key={thread.threadId}
+          key={`${thread.kind}:${thread.threadId}`}
           thread={thread}
           username={username}
           refresh={refresh}
@@ -324,7 +339,8 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiv
 }
 
 function CommentThread({ thread, username, refresh, active, focusReply, setActiveThread, commentDrafts }) {
-  const suggestion = thread.view && commentSuggestion(thread.comments);
+  const suggestion = thread.kind === "suggestion";
+  const suggestionType = commentSuggestion(thread.comments);
   const refocusEditor = () => window.requestAnimationFrame(() => thread.view?.focus());
   const className = active ? "pm-comment-thread pm-comment-thread--active" : "pm-comment-thread";
 
@@ -340,11 +356,11 @@ function CommentThread({ thread, username, refresh, active, focusReply, setActiv
         event.stopPropagation();
         let changed;
         if (suggestion) {
-          changed = acceptCommentSuggestion(thread.view, thread.threadId, suggestion);
+          changed = acceptSuggestion(thread, suggestionType);
         } else {
           changed = thread.setResolved
             ? thread.setResolved(true)
-            : setCommentThreadResolved(thread.view, thread.threadId, true);
+            : setCommentThreadResolved(thread, true);
         }
         if (changed) {
           refresh();
@@ -364,7 +380,7 @@ function CommentThread({ thread, username, refresh, active, focusReply, setActiv
       onPointerDown={(event) => { event.stopPropagation(); }}
       onClick={(event) => {
         event.stopPropagation();
-        if (rejectCommentSuggestion(thread.view, thread.threadId, suggestion)) {
+        if (rejectSuggestion(thread, suggestionType)) {
           refresh();
           refocusEditor();
         }
@@ -412,7 +428,7 @@ function CommentThread({ thread, username, refresh, active, focusReply, setActiv
             commentDrafts.delete(thread.threadId);
             if (thread.pending) {
               if (thread.remove) thread.remove();
-              else removeCommentThread(thread.view, thread.threadId);
+              else removeAnnotationThread(thread);
             }
             setActiveThread(null, null);
           }}
@@ -477,7 +493,7 @@ function CommentReplyForm({ thread, username, draft: initialDraft, setStoredDraf
           createdAt: new Date().toISOString(),
         };
         if (thread.commit) thread.commit(comment);
-        else appendCommentToThread(thread.view, thread.threadId, comment);
+        else appendThreadComment(thread, comment);
         updateDraft("");
         close();
       }}

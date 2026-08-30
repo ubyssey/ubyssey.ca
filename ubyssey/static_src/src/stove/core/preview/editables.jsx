@@ -6,6 +6,7 @@ import { EditorView } from "prosemirror-view";
 import { yCursorPlugin, ySyncPlugin } from "y-prosemirror";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins } from "../richtext/plugins.js";
 import { richTextSchema } from "../richtext/schema.js";
+import { migrateLegacySuggestionMarks } from "../richtext/annotations/index.js";
 import { createStreamRichTextKeyHandler } from "../prosemirror/stream_richtext.js";
 import { pageEditorState } from "../state.js";
 import { PAGE_BLOCK_SELECTOR, selectPageBlock } from "./selection.js";
@@ -97,6 +98,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
   const unregisterSharedType = sharedType ? streamSource.instance.registerRichTextType(sharedType) : null;
 
   view.streamSource = streamSource;
+  migrateLegacySuggestionMarks(view);
   const handleFocus = () => {
     pageHistory?.stopCapturing();
     streamSource?.instance.history.stopCapturing();
