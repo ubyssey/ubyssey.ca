@@ -8,9 +8,9 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
 
-import NavigationSidebar from "./assignment_manager/NavigationSidebar.jsx";
-import StorySidebar, {SIDEBAR_TYPES} from "./assignment_manager/StorySidebar.jsx";
-import StoryTable from "./assignment_manager/StoryTable.jsx";
+import NavigationSidebar from "./NavigationSidebar.jsx";
+import StorySidebar, {SIDEBAR_TYPES} from "./StorySidebar.jsx";
+import StoryTable from "./StoryTable.jsx";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
