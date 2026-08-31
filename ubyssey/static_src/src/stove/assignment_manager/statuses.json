@@ -1,0 +1,8 @@
+{
+      "1": {"value": 1, "label": "Assigned", "role": "author", "color": "#ea968d", "textColor": "#691b17"},
+      "2": {"value": 2, "label": "Filed", "role": "backfield_editor", "color": "#f9de9d", "textColor": "#80511f"},
+      "3": {"value": 3, "label": "Edited", "role": "author", "color": "#f5c554", "textColor": "#80511f"},
+      "4": {"value": 4, "label": "Copy", "role": "copy_editor", "color": "#77c0d2", "textColor": "#172448"},
+      "5": {"value": 5, "label": "Ready", "role": "author", "color": "#e3e455", "textColor": "#264b35"},
+      "6": {"value": 6, "label": "Published", "role": "author", "color": "#9ec756", "textColor": "#264b35"}
+}
