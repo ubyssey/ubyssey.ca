@@ -2,12 +2,16 @@
 {% load wagtailimages_tags %}
 
 <div class="o-article-promo">
+    {% if self.article %}
     <a href="{% pageurl self.article %}">
         {% image self.article.featured_media.first.image fill-340x238-c100 format-webp alt=self.article.featured_media.first.alt_text %}
     </a>
+    {% endif %}
     <div class="o-article-promo--meta">
         <h3>
+            {% if self.article %}
             <a href="{% pageurl self.article %}">{{self.article.title|safe}}</a>
+            {% endif %}
         </h3>
         <div class="o-article-promo--meta--pubtime"><time datetime="{{self.article.published_at}}">{{self.article.published_at}}</time></div>
         <p class="o-article-promo--meta--lede">{{self.article.lede|safe}}</p>

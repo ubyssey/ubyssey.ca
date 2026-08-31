@@ -1,9 +1,10 @@
-.pm-stream-block__controls {
-    display: none;
-}
-
 .pm-editable-field__content {
     border: 1px solid black;
+}
+
+.pm-struct-field__content {
+    display: grid;
+    gap: 10px;
 }
 
 body {
@@ -32,16 +33,16 @@ body {
     background: #f5f6f6;
 }
 
-.manuscript-editor--history {
+.page-editor--history {
     grid-template-columns: minmax(0, 1fr);
 }
 
-.manuscript-editor--history .metadata-editor,
-.manuscript-editor--history .manuscript-topbar__actions > :not([data-history-control]) {
+.page-editor--history .metadata-editor,
+.page-editor--history .page-editor-topbar__actions > :not([data-history-control]) {
     display: none;
 }
 
-.manuscript-editor--history .manuscript {
+.page-editor--history .manuscript {
     grid-column: 1;
 }
 
@@ -99,7 +100,7 @@ body {
     pointer-events: none;
 }
 
-.manuscript-topbar {
+.page-editor-topbar {
     grid-column: 1 / -1;
     grid-row: 1;
     position: fixed;
@@ -119,7 +120,7 @@ body {
     background: #fff;
 }
 
-#article-shadow {
+#page-shadow {
     position: relative;
     z-index: 0;
     isolation: isolate;
@@ -127,7 +128,7 @@ body {
     width: 100%;
 }
 
-.manuscript-topbar__actions {
+.page-editor-topbar__actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -135,19 +136,22 @@ body {
     min-width: 0;
 }
 
-[data-article-saved] {
+[data-page-saved] {
     font: 13px/1.2 sans-serif;
     color: var(--text_color-200, #555);
-    margin-right: auto
 }
 
-.manuscript-connected-users {
+.page-editor-topbar [data-page-saved] {
+    margin-right: auto;
+}
+
+.stove-connected-users {
     display: flex;
     gap: 4px;
     padding-left: 8px;
 }
 
-.manuscript-connected-users__avatar {
+.stove-connected-users__avatar {
     width: 28px;
     height: 28px;
     border: 2px solid #fff;
@@ -155,13 +159,13 @@ body {
     object-fit: cover;
 }
 
-.manuscript-editor:not(.manuscript-editor--history) [data-history-return],
-.manuscript-editor:not(.manuscript-editor--history) [data-history-restore] {
+.manuscript-editor:not(.page-editor--history) [data-history-return],
+.manuscript-editor:not(.page-editor--history) [data-history-restore] {
     display: none;
 }
 
-.manuscript-topbar__button,
-.article-media-modal__panel button {
+.page-editor-topbar__button,
+.page-editor-modal__panel button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -177,8 +181,8 @@ body {
     cursor: pointer;
 }
 
-.manuscript-topbar__button:hover,
-.article-media-modal__panel button:hover {
+.page-editor-topbar__button:hover,
+.page-editor-modal__panel button:hover {
     background-color: rgba(221, 227, 234, .35);
 }
 
@@ -196,11 +200,11 @@ body {
 }
 
 
-.article-media-modal[hidden] {
+.page-editor-modal[hidden] {
     display: none;
 }
 
-.article-media-modal {
+.page-editor-modal {
     position: fixed;
     inset: 0;
     z-index: 100;
@@ -211,11 +215,11 @@ body {
     box-sizing: border-box;
 }
 
-.article-media-modal--stacked {
+.page-editor-modal--stacked {
     z-index: 110;
 }
 
-.article-media-modal__backdrop {
+.page-editor-modal__backdrop {
     position: absolute;
     inset: 0;
     min-height: 0;
@@ -226,7 +230,7 @@ body {
     cursor: default;
 }
 
-.article-media-modal__panel {
+.page-editor-modal__panel {
     position: relative;
     z-index: 1;
     display: grid;
@@ -242,37 +246,37 @@ body {
     box-shadow: 0 18px 50px rgb(0 0 0 / 0.18);
 }
 
-.article-media-modal__panel--existing {
+.page-editor-modal__panel--existing {
     max-height: none;
     overflow: visible;
 }
 
-.article-media-modal__panel--gallery {
+.page-editor-modal__panel--gallery {
     width: min(720px, 100%);
 }
 
-.article-media-modal__panel--settings {
+.page-editor-modal__panel--settings {
     width: min(620px, 100%);
 }
 
-.article-media-modal__header,
-.article-media-modal__footer {
+.page-editor-modal__header,
+.page-editor-modal__footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
 
-.article-media-modal__header h2 {
+.page-editor-modal__header h2 {
     margin: 0;
     font: 600 18px/1.2 sans-serif;
 }
 
-.article-media-modal__footer {
+.page-editor-modal__footer {
     justify-content: flex-end;
 }
 
-.article-media-modal__close {
+.page-editor-modal__close {
     width: 30px;
     padding: 0;
 }
@@ -298,34 +302,30 @@ body {
 }
 
 
-.article-block-editor-modal__panel {
+.page-block-editor-modal__panel {
     grid-template-rows: auto minmax(0, 1fr) auto;
     max-height: min(820px, calc(100vh - 48px));
-    overflow: hidden;
-}
-
-.article-block-editor-modal__body {
-    display: grid;
-    gap: 10px;
-    min-width: 0;
     overflow: auto;
 }
 
-.article-block-editor-modal__body .editor-section {
-    display: block;
+.page-block-editor-modal__body {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+    overflow: visible;
 }
 
-.article-block-editor-modal__body * {
+.page-block-editor-modal__body * {
     visibility: visible;
     pointer-events: auto;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__title {
+.page-block-editor-modal__body .pm-page-block-dialog__title {
     margin: 0;
     font: 600 13px/1.2 sans-serif;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__select {
+.page-block-editor-modal__body .pm-page-block-dialog__select {
     min-height: 30px;
     border: 1px solid #bbb;
     background: #fff;
@@ -333,52 +333,111 @@ body {
     font: 13px/1.2 sans-serif;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor {
-    max-height: min(520px, calc(100vh - 220px));
-    overflow: auto;
+.page-block-editor-modal__body .pm-page-block-dialog__editor {
+    min-width: 0;
+    max-width: 100%;
+    max-height: none;
+    overflow: visible;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .ProseMirror:focus,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .ProseMirror-focused {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .ProseMirror,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-block,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-block__content {
+    min-width: 0;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .ProseMirror:focus,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .ProseMirror-focused {
     outline: none;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-sidebar-toolbar,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__header,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__controls {
-    display: none;
-}
-
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-block {
     margin: 0;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-stream-block__content {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-block__content {
     display: grid;
     gap: 10px;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-control-field {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-editable-field,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-control-field {
     padding: 5px 0;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field__label,
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-control-field__label {
-    font: 13px/1.2 sans-serif;
+// Hides the top level struct block name, since the modal title already contains it
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-block__content > .pm-struct-field > .pm-struct-field__label {
+    display: none;
 }
 
-.article-block-editor-modal__body .pm-article-block-dialog__editor .pm-editable-field__content {
-    border: 1px solid black;
+// Indents for list and struct blocks
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-block__content :is(.pm-struct-field, .pm-list-field) :is(.pm-struct-field, .pm-list-field) {
+    max-width: calc(100% - 16px);
+    margin-left: 16px;
 }
 
-.article-block-editor-modal__panel .pm-article-block-dialog__button--primary {
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__header,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__title {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__header {
+    margin: 8px 0 6px;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-editable-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-control-field__label {
+    display: block;
+    margin-bottom: 6px;
+    font: 600 13px/1.2 sans-serif;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-struct-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__label {
+    display: block;
+    margin-bottom: 8px;
+    font: 700 15px/1.2 sans-serif;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__header .pm-list-field__label {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-control-field__input > input,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-control-field__input > select,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-editable-field__content {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    background: #fff;
+}
+
+// Adds padding to sides of textbox
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-editable-field__content {
+    padding: 5px 7px;
+    box-sizing: border-box;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-editable-field__content[data-editing] {
+    border-color: #000;
+    box-shadow: 0 1px 4px rgb(53 100 168 / 0.3);
+}
+
+.page-block-editor-modal__panel .pm-page-block-dialog__button--primary {
     background-color: #3564a8;
     color: #fff;
     border: none;
 }
 
-.article-block-editor-modal__panel .pm-article-block-dialog__button--danger {
+.page-block-editor-modal__panel .pm-page-block-dialog__button--danger {
     background-color: #d23732;
     color: #fff;
     border: none;
@@ -424,6 +483,18 @@ body {
     background-color: #4d7ab9;
 }
 
+.pm-metadata-sidebar-panel[data-article-media-gallery-modal] .page-editor-topbar__button {
+    border: none;
+    border-radius: 2px;
+    background: #3564a8;
+    color: #fff;
+}
+
+.pm-metadata-sidebar-panel[data-article-media-gallery-modal] .page-editor-topbar__button:hover {
+    background-color: #4d7ab9;
+}
+
+
 .manuscript-editor img,
 .manuscript-editor picture,
 .manuscript-editor video,
@@ -436,7 +507,7 @@ body {
     box-sizing: border-box;
 }
 
-.pm-editable-field--manuscript-owned {
+.pm-editable-field--stream-root {
     display: none;
 }
 
@@ -455,13 +526,6 @@ body {
 
 .manuscript-publish-source {
     display: none;
-}
-
-.pm-sidebar-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: #fff;
 }
 
 .pm-editor-toolbar {
@@ -555,16 +619,50 @@ body {
     color: #fff;
 }
 
+.pm-sidebar-accordion {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.pm-sidebar-accordion__item {
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.pm-sidebar-accordion__item > summary {
+    padding: 12px;
+    color: #1b1b1b;
+    font: 600 13px/1.2 sans-serif;
+}
+
+.pm-article-info-sidebar {
+    display: grid;
+    gap: 6px;
+    padding: 0 12px 12px 12px;
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-article-info-sidebar .pm-editor-toolbar__publish {
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+.pm-featured-media-sidebar textarea {
+    resize: vertical;
+}
+
 .article-media-gallery {
     display: grid;
-    gap: 8px;
+    gap: 3px;
 }
 
 .article-media-item {
     display: grid;
     grid-template-columns: 96px minmax(0, 1fr) auto;
     align-items: center;
-    gap: 12px;
+    gap: 3px;
     padding: 10px 0;
     border-top: 1px solid #d9d9d9;
 }
@@ -588,6 +686,19 @@ body {
 .article-media-item__details > * {
     overflow-wrap: anywhere;
 }
+.article-media-item > button {
+    border: none;
+    border-radius: 2px;
+    background: #3564a8;
+    color: #fff;
+    font: 13px/1.2 sans-serif;
+    padding: 6px 12px 6px 12px;
+}
+
+.article-media-item > button:hover {
+    background-color: #4d7ab9;
+}
+
 
 .article-media-item small {
     color: #555;
@@ -603,6 +714,11 @@ body {
 
 .page-field label {
     font: 13px/1.2 sans-serif;
+}
+
+// Didn't work until I got really specific -> todo clean up the CSS
+.page-field label.pm-featured-media-sidebar__label {
+    font: 700 13px/1.2 sans-serif;
 }
 
 .pm-footnote-sidebar {
@@ -621,14 +737,7 @@ body {
 .pm-footnote-panel {
     display: grid;
     gap: 10px;
-    padding: 12px;
-    border-bottom: 1px solid #d8d8d8;
-}
-
-.pm-footnote-panel__header {
-    margin: 0;
-    color: #1b1b1b;
-    font: 600 13px/1.2 sans-serif;
+    padding: 0 12px 12px 12px;
 }
 
 .pm-footnote {
@@ -808,9 +917,7 @@ body {
 
 .pm-metadata-sidebar-panel {
     display: grid;
-    gap: 10px;
-    padding: 12px;
-    border-bottom: 1px solid #d8d8d8;
+    padding: 0 12px 12px 12px;
     color: #1b1b1b;
     font: 13px/1.35 sans-serif;
 }
@@ -886,16 +993,9 @@ input:checked + .slider:before {
     display: grid;
     gap: 10px;
     margin-bottom: 12px;
-    padding: 12px;
-    border-bottom: 1px solid #d8d8d8;
+    padding: 0 12px 12px 12px;
     color: #1b1b1b;
     font: 13px/1.35 sans-serif;
-}
-
-.pm-author-panel__header {
-    margin: 0;
-    color: #1b1b1b;
-    font: 600 13px/1.2 sans-serif;
 }
 
 .pm-author-panel__rows {

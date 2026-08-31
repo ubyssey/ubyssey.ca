@@ -1,1 +1,1 @@
-
+"""Join application."""

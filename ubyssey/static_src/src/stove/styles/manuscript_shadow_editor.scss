@@ -28,7 +28,7 @@
     overflow-wrap: anywhere;
 }
 
-.article-shadow-preview {
+.page-shadow-preview {
     position: relative;
     font-family: inherit;
     font-size: inherit;
@@ -39,11 +39,11 @@
     color: var(--text_color-100);
 }
 
-.article-shadow-preview div.article-content[data-article-block] {
+.page-shadow-preview div.article-content[data-article-block] {
     margin-bottom: 0;
 }
 
-.article-shadow-preview [data-article-block][data-stream-field] {
+.page-shadow-preview [data-article-block][data-stream-field] {
     // Min height so it shows block even if block is empty, so it can be edited to not be empty
     min-height: 10px;
     outline: 2px solid transparent;
@@ -51,11 +51,11 @@
     transition: outline-color 200ms ease;
 }
 
-.article-shadow-preview .o-extra-article-info.right {
+.page-shadow-preview .o-extra-article-info.right {
     margin-right: 1.4em;
 }
 
-.article-shadow-preview .o-extra-article-info.left {
+.page-shadow-preview .o-extra-article-info.left {
     margin-left: 1.4em;
 }
 
@@ -129,52 +129,52 @@ span[data-footnote-id]::before {
     outline-offset: 4px;
 }*/
 
-.pm-manuscript-rich-text,
-.pm-manuscript-direct-edit {
+.pm-page-rich-text,
+.pm-page-direct-edit {
     cursor: text;
     outline: 1px dashed transparent;
     outline-offset: -1px;
 }
 
-.pm-manuscript-rich-text:hover,
-.pm-manuscript-rich-text:focus,
-.pm-manuscript-rich-text.ProseMirror-focused,
-.pm-manuscript-direct-edit:hover,
-.pm-manuscript-direct-edit:focus,
-.pm-manuscript-direct-edit.ProseMirror-focused {
+.pm-page-rich-text:hover,
+.pm-page-rich-text:focus,
+.pm-page-rich-text.ProseMirror-focused,
+.pm-page-direct-edit:hover,
+.pm-page-direct-edit:focus,
+.pm-page-direct-edit.ProseMirror-focused {
     outline-color: #000;
 }
 
-.pm-manuscript-direct-plain-text {
+.pm-page-direct-plain-text {
     white-space: pre-wrap;
 }
 
-.pm-manuscript-direct-rich-text {
+.pm-page-direct-rich-text {
     min-height: 1.2em;
 }
 
-.pm-manuscript-direct-rich-text p:last-child {
+.pm-page-direct-rich-text p:last-child {
     margin-bottom: 0;
 }
 
-.pm-article-block--commented {
+.pm-page-block--commented {
     outline: 2px solid #e0a800;
     outline-offset: -1px;
 }
 
-.pm-article-block--comment-active {
+.pm-page-block--comment-active {
     outline-color: #8a6500;
     background: rgba(255, 224, 102, 0.22);
 }
 
-.pm-manuscript-toolbar {
+.pm-page-toolbar {
     position: sticky;
     top: var(--topbar-height, 48px);
     z-index: 20;
     background: var(--background, white);
 }
 
-.pm-manuscript-toolbar:empty {
+.pm-page-toolbar:empty {
     display: none;
 }
 
@@ -273,12 +273,12 @@ span[data-footnote-id]::before {
 }
 
 // Each editor overrides with their assigned color.
-.pm-article-block--selected {
+.pm-page-block--selected {
     outline-color: var(--current-editor-color, #f28c00) !important;
     caret-color: var(--current-editor-color, #f28c00);
 }
 
-.pm-article-block--remote-selected {
+.pm-block--remote-selected {
     outline: 2px solid var(--remote-editor-color) !important;
 }
 
@@ -292,12 +292,12 @@ span[data-footnote-id]::before {
     word-break: normal;
 }
 
-.article-shadow-preview img.ProseMirror-separator {
+.page-shadow-preview img.ProseMirror-separator {
     width: 0;
     height: 0;
 }
 
-.article-shadow-preview .ProseMirror-yjs-cursor > div {
+.page-shadow-preview .ProseMirror-yjs-cursor > div {
     position: absolute;
     top: -1.3em;
     left: -1px;
