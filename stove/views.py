@@ -492,15 +492,33 @@ def manuscript_preview(request, page_id):
     if revision_id and revision_id != "current":
         revision = get_object_or_404(page.revisions, id=revision_id)
 
-    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_preview(page, request.POST, request.user, revision)
+    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_preview(page, request.POST, revision)
 
-    return JsonResponse({
-        "errors": editor_errors,
-        "html": render_to_string(
+    if editor_errors:
+        return JsonResponse({"errors": editor_errors}, status=422)
+
+    # Attempt to render the latest changes, if it throws an error, don't save
+    try:
+        html = render_to_string(
             "editors/preview/manuscript_preview.html",
             {"self": page, "page_form": page_form, "article_authors_form": article_authors_form, "featured_media_form": featured_media_form},
             request=request,
         )
+    except Exception as error:
+        warnings.warn(f"Failed to render manuscript preview for page {page_id}: {error}")
+        return JsonResponse(
+            {"errors": {"__all__": ["Failed to save. Undo your last change, contact webmaster if this isn't resolved."]}},
+            status=422,
+        )
+
+    if revision is None:
+        saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
+        if saved_revision is None:
+            return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)
+
+    return JsonResponse({
+        "errors": editor_errors,
+        "html": html,
     })
 
 
@@ -516,11 +534,20 @@ def manuscript_full_preview(request, page_id):
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=400)
 
-    saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
-    return saved_revision.as_object().make_preview_request(
+    # Attempt to render the latest changes, if it throws an error, cancel
+    preview_response = page.make_preview_request(
         request,
         page.default_preview_mode,
     )
+    if preview_response.status_code >= 500:
+        warnings.warn(f"Failed to render manuscript preview for page {page_id}")
+        return HttpResponse("Failed to save. Undo your last change, contact webmaster if this isn't resolved.", status=422)
+
+    saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
+    if saved_revision is None:
+        return HttpResponse("Failed to save. Please try again.", status=422)
+
+    return preview_response
 
 
 @login_required
