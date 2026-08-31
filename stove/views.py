@@ -67,32 +67,23 @@ def content_tracker_react(request, section="all"):
     return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
-def load_pages(request, section="all", page=1):
-    username = request.GET.get('username', '')
-    include_published = request.GET.get('include_published', '')
-    
-    qs = ArticlePage.objects.all()
-    if (section != "all"):
-        qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
-    if (username):
-        author_page = get_object_or_404(AuthorPage, full_name=username)
-        qs = qs.filter(article_authors__author=author_page)
-    if (include_published.lower() == "false"):
-        qs = qs.filter(live=False)
-    
-    qs = qs.order_by("-latest_revision_created_at", "-pk")
+def copy(request, section="all"):
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    sections = SectionPage.objects.exact_type(SectionPage)
 
-    paginator = Paginator(qs, 20)
+    beatExport = {}
+    for beat in beats:
+        beatSection = beat.get_parent().title
+        if not beatSection in beatExport: 
+            beatExport[beatSection] = []
+        beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
-    pages = paginator.get_page(request.GET.get("article-page", page))
+    sectionExport = []
+    for s in sections:
+        sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    result="[]"
-    if (len(pages) > 0):
-        result = "["
-        for page in pages: 
-            result += page.get_latest_revision_as_object().to_json() + ","
-        result = result[:-1] + "]"
-    return JsonResponse(result, safe=False)
+    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
 @require_POST
@@ -211,13 +202,16 @@ def load_page(request, page_id):
     return JsonResponse(pageJson, safe=False)
 
 @login_required
-def load_partial_pages(request, section="all", page=1):
+def load_partial_stories(request, section="all", page=1):
     username = request.GET.get('username', '')
     include_published = request.GET.get('include_published', '')
+    article_status = request.GET.get('article_status', -1)
     
     qs = ArticlePage.objects.all()
     if (section != "all"):
         qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
+    if (article_status != -1):
+        qs = qs.filter(article_status=5)
     if (username):
         author_page = get_object_or_404(AuthorPage, full_name=username)
         qs = qs.filter(article_authors__author=author_page)
