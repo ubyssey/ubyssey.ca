@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Sections", 
+        "sections": [
+            {"name": "Arts", "path": "/stove/stories/arts" },
+            {"name": "Culture", "path": "/stove/stories/culture" },
+            {"name": "News", "path": "/stove/stories/news" },
+            {"name": "Opinion", "path": "/stove/stories/opinion" },
+            {"name": "Sports", "path": "/stove/stories/sports" }
+        ]   
+    },
+    {
+        "name": "Visuals", 
+        "sections": [
+            {"name": "Graphics", "path": "/stove/assignments/graphics", "disabled": true },
+            {"name": "Photo", "path": "/stove/assignemnts/photo", "disabled": true },
+            {"name": "Video", "path": "/stove/assignments/video", "disabled": true }
+        ]   
+    },
+    {
+        "name": "Product", 
+        "sections": [
+            {"name": "Audio", "path": "/stove/views/audio", "disabled": true },
+            {"name": "Digital", "path": "/stove/views/digital", "disabled": true },
+            {"name": "Print", "path": "/stove/views/print", "disabled": true },
+            {"name": "Socials", "path": "/stove/views/socials", "disabled": true }
+        ]   
+    },
+    {
+        "name": "More", 
+        "sections": [
+            {"name": "Copy", "path": "/stove/views/copy", "disabled": true },
+            {"name": "Games", "path": "/stove/games", "disabled": true },
+            {"name": "Homepage", "path": "/stove/homepage", "disabled": true },
+            {"name": "Margins", "path": "/stove/stories/margins" }
+        ]   
+    }
+]

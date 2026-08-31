@@ -67,6 +67,17 @@ table, th, td {
   background-color: var(--hover-color);
 }
 
+.section-navigation-item-disabled:hover {
+  cursor: not-allowed;
+  background-color: var(--invalid-hover-color);
+}
+
+.section-navigation-item-disabled:active {
+  pointer-events: none;
+  cursor: not-allowed;
+  background-color: var(--invalid-hover-color);
+}
+
 @media screen and (max-width: calc(1100px + 15em)) {
     .navigation-panel {
         display: none !important;
