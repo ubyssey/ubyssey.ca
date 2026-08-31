@@ -6,6 +6,7 @@
     --inactive-color: #ccc;
     --hover-color: hsl(192, 50%, 85%);
     --invalid-hover-color: hsl(6, 69%, 85%);
+    --overdue-color: '#dc4f3e'
 }
 
 table, th, td {
@@ -311,15 +312,19 @@ input:checked + .slider:before {
   max-width: 15em;
 }
 
-.deadline-cell-extended {
-  display: grid;
-  grid-template-columns: auto 20px;
+.deadline-cell--container {
+  display: flex;
+  flex-direction: row;
+}
+
+.deadline-cell--date-input {
+  width: calc(100% - 25px);
 }
 
 .deadline-cell--extended-indicator {
+  float: right;
   display: flex;
-  width: 100%;
-  height: 100%;
+  width: 22px;
   justify-content: center;
   align-items: center;
 }

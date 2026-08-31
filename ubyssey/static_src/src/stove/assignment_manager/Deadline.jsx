@@ -3,7 +3,10 @@ import { SquareOutline, CheckboxOutline, CloseOutline } from 'react-ionicons'
 import "react-datepicker/dist/react-datepicker.css";
 import deadlineOptions from './DeadlineOptions'
 import DateInput from "./DateInput.jsx";
-import { updateDeadline } from "./remoteManagement.js";
+import { updateDeadline, updateDeadlineList } from "./remoteManagement.js";
+
+import { CloudUploadOutline, CloudUpload, NewspaperOutline, Newspaper, ColorWandOutline, ColorWand, GlobeOutline, Globe, MicOutline, Mic, StarOutline, Star} from 'react-ionicons'
+
 
 
 export function getDeadlineDate(page, deadlineDescription) {
@@ -31,6 +34,67 @@ export function hasAdditionalDeadlines(page) {
     }
   }
   return false;
+}
+
+export function getEarliestUncompletedDeadline(page) {
+  let earliestUncompleteDeadline = {date: 8.64e15}
+  for (const currDeadline of page.deadline_list) {
+    if (!currDeadline.completed && new Date(currDeadline.date).valueOf() < new Date(earliestUncompleteDeadline.date).valueOf()) {
+      earliestUncompleteDeadline = currDeadline
+    }
+  }
+  if (earliestUncompleteDeadline.description != null) return earliestUncompleteDeadline;
+  return null;
+}
+
+export function getDeadlineIcon(deadline) {
+  const overdue = new Date(deadline.date).valueOf() < Date.now()
+
+  switch (deadline.description) {
+    case deadlineOptions.DRAFT_IN:
+      return overdue && deadline.date?
+        <Newspaper 
+          color={'#dc4f3e'} /> :
+        <NewspaperOutline/>
+    case deadlineOptions.RESEARCH:
+      return overdue ?
+        <Globe
+          color={'#dc4f3e'}/> :
+        <GlobeOutline />
+    case deadlineOptions.QUESTIONS:
+      return overdue ?
+        <div
+          style={{
+            color: '#dc4f3e',
+            fontWeight: "bold"
+          }}> ? </div> :
+        <div
+          style={{
+            fontWeight: "bold"
+          }}> ? </div>
+    case deadlineOptions.SOURCES:
+      return overdue ?
+        <Mic
+          color={'#dc4f3e'}/> :
+        <MicOutline />
+    case deadlineOptions.EDITING:
+      return overdue ?
+        <ColorWand
+          color={'#dc4f3e'}/> :
+        <ColorWandOutline />
+    case deadlineOptions.PUBLISHING:
+      return overdue ?
+        <CloudUpload
+          color={'#dc4f3e'}/> :
+        <CloudUploadOutline />
+    default:
+      return overdue ?
+        <Star
+          color={'#dc4f3e'}
+          />
+          :
+          <StarOutline />
+  }
 }
 
 function DeadlineCheckbox({completed, updateChecked, invalid = false}) {

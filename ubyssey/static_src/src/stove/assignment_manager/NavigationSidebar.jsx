@@ -16,7 +16,6 @@ export default function NavigationSidebar() {
   let sectionGroups = [];
 
   for (const group of sidebarSections) {
-    console.log(group)
     sectionGroups.push(
         <SectionGroup groupName={group.name} sections={group.sections} />
     )
