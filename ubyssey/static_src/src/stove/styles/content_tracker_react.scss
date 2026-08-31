@@ -311,6 +311,23 @@ input:checked + .slider:before {
   max-width: 15em;
 }
 
+.deadline-cell-extended {
+  display: grid;
+  grid-template-columns: auto 20px;
+}
+
+.deadline-cell--extended-indicator {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.deadline-cell--extended-indicator:hover {
+  background-color: var(--hover-color);
+}
+
 .deadline-header {
   min-width: 8em;
 }
@@ -469,6 +486,13 @@ h5 + .edit-field--deadlines {
 
 .edit-field--sidebyside:has(*):has(.edit-field--deadline-label:hover) {
   grid-template-columns: clamp(120px, 30%, 180px) auto;
+}
+
+.edit-field--deadlines > * > .edit-field--side-label {
+  padding-top: 8px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .edit-field--create-deadline {

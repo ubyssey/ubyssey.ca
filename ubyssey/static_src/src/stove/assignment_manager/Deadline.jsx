@@ -24,6 +24,15 @@ function getDeadlineByDescription(page, deadlineDescription) {
   return null;
 }
 
+export function hasAdditionalDeadlines(page) {
+  for (const deadline of page.deadline_list) {
+    if (deadline.description != deadlineOptions.DRAFT_IN) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function DeadlineCheckbox({completed, updateChecked, invalid = false}) {
   return <div className={`edit-field--checkbox ${invalid ? "edit-field--checkbox-invalid" : ""}`}
     onClick={()=>updateChecked(!completed)}>
