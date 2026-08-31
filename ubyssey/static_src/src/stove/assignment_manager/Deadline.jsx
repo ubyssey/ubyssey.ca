@@ -18,7 +18,7 @@ export function getDeadlineDate(page, deadlineDescription) {
   return null;
 }
 
-function getDeadlineByDescription(page, deadlineDescription) {
+export function getDeadlineByDescription(page, deadlineDescription) {
   for (const deadline of page.deadline_list) {
     if (deadline.description == deadlineDescription) {
       return deadline;
@@ -52,10 +52,15 @@ export function getDeadlineIcon(deadline) {
 
   switch (deadline.description) {
     case deadlineOptions.DRAFT_IN:
-      return overdue && deadline.date?
-        <Newspaper 
-          color={'#dc4f3e'} /> :
-        <NewspaperOutline/>
+      if (overdue&& deadline.date) {
+        return <Newspaper 
+          color={'#dc4f3e'} />
+      } else if (deadline.completed) {
+        return <NewspaperOutline color={'green'}/>
+      } else {
+        return <NewspaperOutline />
+      }
+        
     case deadlineOptions.RESEARCH:
       return overdue ?
         <Globe
@@ -177,7 +182,7 @@ export default function Deadline({page, updatePage, isLocalOnly=false}) {
     updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly)
   }
 
-  if (page.deadline_list.length <= 1 && !expanded) {
+  if ((page.deadline_list.length <= 1 && getDeadlineByDescription(page, deadlineOptions.DRAFT_IN) != null) && !expanded) {
     return <div className="edit-field--deadlines">
         <DeadlineItem 
           deadline={getDeadlineByDescription(page, deadlineOptions.DRAFT_IN)}

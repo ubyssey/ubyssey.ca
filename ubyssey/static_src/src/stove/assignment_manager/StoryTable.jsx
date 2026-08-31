@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
-import Deadline, {getDeadlineIcon, getEarliestUncompletedDeadline, hasAdditionalDeadlines} from "./Deadline.jsx";
+import Deadline, {getDeadlineIcon, getEarliestUncompletedDeadline, getDeadlineByDescription} from "./Deadline.jsx";
 import DateInput from "./DateInput.jsx";
 import deadlineOptions from './DeadlineOptions.json'
 import {updateArticleStatus, updateAuthors, updateBeat, updateDeadline} from "./remoteManagement.js";
@@ -39,9 +39,12 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
       setActiveSidebar(mode)
     }
 
-    let earliestUncompleteDeadline = getEarliestUncompletedDeadline(page)
-    if (earliestUncompleteDeadline == null) {
-      earliestUncompleteDeadline = {description: deadlineOptions.DRAFT_IN, date: null}
+    let earliestIncompleteDeadline = getEarliestUncompletedDeadline(page)
+    if (earliestIncompleteDeadline == null) {
+      earliestIncompleteDeadline = getDeadlineByDescription(page, deadlineOptions.DRAFT_IN)
+      if (earliestIncompleteDeadline == null) {
+        earliestIncompleteDeadline = {description: deadlineOptions.DRAFT_IN, date: null}
+      }
     }
 
     return <tr key={page.pk} className={selectedClass}>
@@ -77,8 +80,8 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
             </td>
             <td className={`deadline-cell`}>
               <div className="deadline-cell--container">
-              <DateInput className='deadline-cell--date-input' date={earliestUncompleteDeadline.date} handleUpdateDate={(newDate) => updateDeadline(page, {date: newDate, description: earliestUncompleteDeadline.description, completed: false}, updatePage)} disabled={page.live}/> 
-                 <div className='deadline-cell--extended-indicator' data-tooltip-id={`deadline-additional-${page.pk}`}>{getDeadlineIcon(earliestUncompleteDeadline)}</div>
+              <DateInput className='deadline-cell--date-input' date={earliestIncompleteDeadline.date} handleUpdateDate={(newDate) => updateDeadline(page, {date: newDate, description: earliestIncompleteDeadline.description, completed: false}, updatePage)} disabled={page.live}/> 
+                 <div className='deadline-cell--extended-indicator' data-tooltip-id={`deadline-additional-${page.pk}`}>{getDeadlineIcon(earliestIncompleteDeadline)}</div>
               </div>
               
               <Tooltip
