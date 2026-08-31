@@ -86,7 +86,7 @@ export async function updateBeat(page, newBeat, updatePage, isLocalOnly=false) {
   }
 }
 
-async function updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly=false) {
+export async function updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly=false) {
   updatePage({... page, deadline_list: newDeadlineList})
 
   if (!isLocalOnly) {

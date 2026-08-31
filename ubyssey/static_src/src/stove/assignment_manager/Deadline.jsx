@@ -3,7 +3,10 @@ import { SquareOutline, CheckboxOutline, CloseOutline } from 'react-ionicons'
 import "react-datepicker/dist/react-datepicker.css";
 import deadlineOptions from './DeadlineOptions'
 import DateInput from "./DateInput.jsx";
-import { updateDeadline } from "./remoteManagement.js";
+import { updateDeadline, updateDeadlineList } from "./remoteManagement.js";
+
+import { CloudUploadOutline, CloudUpload, NewspaperOutline, Newspaper, ColorWandOutline, ColorWand, GlobeOutline, Globe, MicOutline, Mic, StarOutline, Star} from 'react-ionicons'
+
 
 
 export function getDeadlineDate(page, deadlineDescription) {
@@ -15,13 +18,88 @@ export function getDeadlineDate(page, deadlineDescription) {
   return null;
 }
 
-function getDeadlineByDescription(page, deadlineDescription) {
+export function getDeadlineByDescription(page, deadlineDescription) {
   for (const deadline of page.deadline_list) {
     if (deadline.description == deadlineDescription) {
       return deadline;
     }
   }
   return null;
+}
+
+export function hasAdditionalDeadlines(page) {
+  for (const deadline of page.deadline_list) {
+    if (deadline.description != deadlineOptions.DRAFT_IN) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function getEarliestUncompletedDeadline(page) {
+  let earliestUncompleteDeadline = {date: 8.64e15}
+  for (const currDeadline of page.deadline_list) {
+    if (!currDeadline.completed && new Date(currDeadline.date).valueOf() < new Date(earliestUncompleteDeadline.date).valueOf()) {
+      earliestUncompleteDeadline = currDeadline
+    }
+  }
+  if (earliestUncompleteDeadline.description != null) return earliestUncompleteDeadline;
+  return null;
+}
+
+export function getDeadlineIcon(deadline) {
+  const overdue = new Date(deadline.date).valueOf() < Date.now()
+
+  switch (deadline.description) {
+    case deadlineOptions.DRAFT_IN:
+      if (overdue&& deadline.date) {
+        return <Newspaper 
+          color={'#dc4f3e'} />
+      } else if (deadline.completed) {
+        return <NewspaperOutline color={'green'}/>
+      } else {
+        return <NewspaperOutline />
+      }
+        
+    case deadlineOptions.RESEARCH:
+      return overdue ?
+        <Globe
+          color={'#dc4f3e'}/> :
+        <GlobeOutline />
+    case deadlineOptions.QUESTIONS:
+      return overdue ?
+        <div
+          style={{
+            color: '#dc4f3e',
+            fontWeight: "bold"
+          }}> ? </div> :
+        <div
+          style={{
+            fontWeight: "bold"
+          }}> ? </div>
+    case deadlineOptions.SOURCES:
+      return overdue ?
+        <Mic
+          color={'#dc4f3e'}/> :
+        <MicOutline />
+    case deadlineOptions.EDITING:
+      return overdue ?
+        <ColorWand
+          color={'#dc4f3e'}/> :
+        <ColorWandOutline />
+    case deadlineOptions.PUBLISHING:
+      return overdue ?
+        <CloudUpload
+          color={'#dc4f3e'}/> :
+        <CloudUploadOutline />
+    default:
+      return overdue ?
+        <Star
+          color={'#dc4f3e'}
+          />
+          :
+          <StarOutline />
+  }
 }
 
 function DeadlineCheckbox({completed, updateChecked, invalid = false}) {
@@ -104,7 +182,7 @@ export default function Deadline({page, updatePage, isLocalOnly=false}) {
     updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly)
   }
 
-  if (page.deadline_list.length <= 1 && !expanded) {
+  if ((page.deadline_list.length <= 1 && getDeadlineByDescription(page, deadlineOptions.DRAFT_IN) != null) && !expanded) {
     return <div className="edit-field--deadlines">
         <DeadlineItem 
           deadline={getDeadlineByDescription(page, deadlineOptions.DRAFT_IN)}

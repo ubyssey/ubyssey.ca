@@ -1,7 +1,7 @@
 import DatePicker from 'react-datepicker';
 
-export default function DateInput ({date, handleUpdateDate, disabled}) {
-  return <div><DatePicker
+export default function DateInput ({date, handleUpdateDate, disabled, className}) {
+  return <div className={className}><DatePicker
     disabled={disabled}
     selected={date ? new Date(date) : undefined}
     onChange={(newDate) => {

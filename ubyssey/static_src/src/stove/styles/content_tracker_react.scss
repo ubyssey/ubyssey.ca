@@ -6,6 +6,7 @@
     --inactive-color: #ccc;
     --hover-color: hsl(192, 50%, 85%);
     --invalid-hover-color: hsl(6, 69%, 85%);
+    --overdue-color: '#dc4f3e'
 }
 
 table, th, td {
@@ -311,6 +312,23 @@ input:checked + .slider:before {
   max-width: 15em;
 }
 
+.deadline-cell--container {
+  display: flex;
+  flex-direction: row;
+}
+
+.deadline-cell--date-input {
+  width: calc(100% - 25px);
+}
+
+.deadline-cell--extended-indicator {
+  float: right;
+  display: flex;
+  width: 22px;
+  justify-content: center;
+  align-items: center;
+}
+
 .deadline-header {
   min-width: 8em;
 }
@@ -469,6 +487,13 @@ h5 + .edit-field--deadlines {
 
 .edit-field--sidebyside:has(*):has(.edit-field--deadline-label:hover) {
   grid-template-columns: clamp(120px, 30%, 180px) auto;
+}
+
+.edit-field--deadlines > * > .edit-field--side-label {
+  padding-top: 8px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .edit-field--create-deadline {
