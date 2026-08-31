@@ -53,21 +53,29 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     provider.emit("persistence-ack", []);
   };
 
-  provider.awareness.setLocalStateField("user", {
+  const user = {
     id: currentEditor.id,
     name: currentEditor.name,
     avatarUrl: currentEditor.avatar_url,
     color: editorColour(currentEditor.id),
-  });
+  };
+  provider.awareness.setLocalStateField("user", user);
 
   // Restores currently reload for everyone so potentially pretty dangerous (not sure how else to implement)
   provider.on("connection-close", (event) => {
-    if (event.code === RESTORE_CLOSE_CODE) window.location.reload();
+    if (event?.code === RESTORE_CLOSE_CODE) window.location.reload();
   });
 
-  window.addEventListener("pagehide", () => {
+  window.addEventListener("pagehide", (event) => {
     provider.awareness.setLocalState(null);
-    provider.destroy();
-  }, { once: true });
+    if (event.persisted) provider.disconnect();
+    else provider.destroy();
+  });
+
+  window.addEventListener("pageshow", (event) => {
+    if (!event.persisted) return;
+    provider.connect();
+    provider.awareness.setLocalStateField("user", user);
+  });
   return { ydoc, awareness: provider.awareness, provider };
 }

@@ -285,10 +285,11 @@ export function startFootnoteCommand(footnoteMark) {
       return true;
     }
 
+    const marks = state.storedMarks || $from.marks();
     const footnoteId = uuidv4();
     const mark = footnoteMark.create({ footnoteId, text: "", anchor: true });
     dispatch(state.tr
-      .replaceSelectionWith(state.schema.text(FOOTNOTE_ANCHOR_TEXT, [mark]), false)
+      .replaceSelectionWith(state.schema.text(FOOTNOTE_ANCHOR_TEXT, [...marks.filter((item) => item.type !== footnoteMark), mark]), false)
       .removeStoredMark(footnoteMark)
       .setMeta("addToHistory", false)
       .scrollIntoView());

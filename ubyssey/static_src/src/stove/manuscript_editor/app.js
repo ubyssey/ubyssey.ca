@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Saved Status Indicator
   const savedStatus = document.querySelector("[data-page-saved]");
+  let saveFailed = false;
 
   const formatSavedAt = (date) => date.toLocaleString(undefined, {
     month: "short",
@@ -152,7 +153,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Updates to Saving... when local doc changes
-  const updateSavingStatus = () => {
+  const updateSavingStatus = (_update, origin) => {
+    if (origin === collaboration.provider) return;
     if (!savedStatus) return;
     savedStatus.textContent = "Saving...";
     pageEditorState.scheduleEditorUiRefresh();
@@ -160,12 +162,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Updates to Saved: Date when receives ack from server that it merged
   const updateSavedStatus = () => {
-    if (!savedStatus) return;
+    if (!savedStatus || saveFailed) return;
     const savedAt = new Date();
     savedStatus.dataset.lastSavedAt = savedAt.toISOString();
     savedStatus.textContent = "Saved: " + formatSavedAt(savedAt);
     pageEditorState.scheduleEditorUiRefresh();
   };
+
+  document.addEventListener("manuscript-save-failed", () => {
+    saveFailed = true;
+    if (!savedStatus) return;
+    savedStatus.textContent = "Failed to save. Undo your last change, contact webmaster if this isn't resolved.";
+    pageEditorState.scheduleEditorUiRefresh();
+  });
+
+  document.addEventListener("manuscript-save-succeeded", () => {
+    saveFailed = false;
+    updateSavedStatus();
+  });
 
   collaboration.ydoc.on("update", updateSavingStatus);
   collaboration.provider?.on("persistence-ack", updateSavedStatus);

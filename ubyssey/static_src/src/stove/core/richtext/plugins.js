@@ -40,14 +40,14 @@ export function toggleSuggestionMode() {
 }
 
 function suggestionPlugin(schema) {
-  const commentMark = schema.marks.comment;
+  const suggestionMark = schema.marks.suggestion;
   const suggestionPart = (mark) => mark?.attrs?.suggestionPart || commentSuggestion(mark?.attrs?.comments);
 
   const threadBounds = (state, threadId, part = null) => {
     let from = null;
     let to = null;
     state.doc.descendants((node, position) => {
-      const mark = node.isText && commentMark.isInSet(node.marks);
+      const mark = node.isText && suggestionMark.isInSet(node.marks);
       if (mark?.attrs?.threadId !== threadId || (part && suggestionPart(mark) !== part)) return true;
       from = from === null ? position : Math.min(from, position);
       to = Math.max(to || 0, position + node.nodeSize);
@@ -56,16 +56,16 @@ function suggestionPlugin(schema) {
     return from === null ? null : { from, to };
   };
 
-  const nearbyComments = (state, from, to) => [from, to].flatMap((position) => {
+  const nearbySuggestions = (state, from, to) => [from, to].flatMap((position) => {
     const $position = state.doc.resolve(position);
     return [
-      commentMark.isInSet($position.marks()),
-      commentMark.isInSet($position.nodeBefore?.marks || []),
-      commentMark.isInSet($position.nodeAfter?.marks || []),
+      suggestionMark.isInSet($position.marks()),
+      suggestionMark.isInSet($position.nodeBefore?.marks || []),
+      suggestionMark.isInSet($position.nodeAfter?.marks || []),
     ];
   });
 
-  const nearbySuggestion = (state, from, to, suggestion) => nearbyComments(state, from, to)
+  const nearbySuggestion = (state, from, to, suggestion) => nearbySuggestions(state, from, to)
     .find((mark) => (
       suggestionPart(mark) === suggestion
       && commentSuggestion(mark.attrs.comments) === suggestion
@@ -77,10 +77,10 @@ function suggestionPlugin(schema) {
     const markFrom = bounds ? Math.min(from, bounds.from) : from;
     const markTo = bounds ? Math.max(to, bounds.to) : to;
     const text = state.doc.textBetween(markFrom, markTo, " ");
-    const mark = createSuggestionMark(commentMark, suggestion, text, nearbyMark?.attrs?.threadId);
+    const mark = createSuggestionMark(suggestionMark, suggestion, text, nearbyMark?.attrs?.threadId);
 
     return tr
-      .removeMark(markFrom, markTo, commentMark)
+      .removeMark(markFrom, markTo, suggestionMark)
       .addMark(markFrom, markTo, mark)
       .setMeta(ACTIVE_SUGGESTION_THREAD_META, mark.attrs.threadId);
   };
@@ -91,7 +91,7 @@ function suggestionPlugin(schema) {
     state.doc.nodesBetween(from, to, (node) => {
       if (!node.isText) return true;
       foundText = true;
-      if (suggestionPart(commentMark.isInSet(node.marks)) !== suggestion) matches = false;
+      if (suggestionPart(suggestionMark.isInSet(node.marks)) !== suggestion) matches = false;
       return true;
     });
     return foundText && matches;
@@ -107,11 +107,11 @@ function suggestionPlugin(schema) {
     if (from < to && !rangeIsSuggestion(state, from, to, "add")) {
       const replacedText = state.doc.textBetween(from, to, " ");
       const replacement = `${replacedText} → ${text}`;
-      const deleteMark = createSuggestionMark(commentMark, "replace", replacement, undefined, "delete");
-      const addMark = createSuggestionMark(commentMark, "replace", replacement, deleteMark.attrs.threadId, "add");
+      const deleteMark = createSuggestionMark(suggestionMark, "replace", replacement, undefined, "delete");
+      const addMark = createSuggestionMark(suggestionMark, "replace", replacement, deleteMark.attrs.threadId, "add");
 
       tr = tr
-        .removeMark(from, to, commentMark)
+        .removeMark(from, to, suggestionMark)
         .addMark(from, to, deleteMark)
         .insertText(text, to)
         .addMark(to, to + text.length, addMark)
@@ -120,7 +120,7 @@ function suggestionPlugin(schema) {
       return true;
     }
 
-    const replacementMark = from === to && nearbyComments(state, insertAt, insertAt)
+    const replacementMark = from === to && nearbySuggestions(state, insertAt, insertAt)
       .find((mark) => suggestionPart(mark) === "add" && commentSuggestion(mark.attrs.comments) === "replace");
 
     if (replacementMark) {
@@ -135,13 +135,13 @@ function suggestionPlugin(schema) {
         insertAt + text.length,
       );
       const replacement = `${tr.doc.textBetween(deleteBounds.from, deleteBounds.to, " ")} → ${tr.doc.textBetween(addFrom, addTo, " ")}`;
-      const deleteMark = createSuggestionMark(commentMark, "replace", replacement, threadId, "delete");
-      const addMark = createSuggestionMark(commentMark, "replace", replacement, threadId, "add");
+      const deleteMark = createSuggestionMark(suggestionMark, "replace", replacement, threadId, "delete");
+      const addMark = createSuggestionMark(suggestionMark, "replace", replacement, threadId, "add");
 
       tr = tr
-        .removeMark(deleteBounds.from, deleteBounds.to, commentMark)
+        .removeMark(deleteBounds.from, deleteBounds.to, suggestionMark)
         .addMark(deleteBounds.from, deleteBounds.to, deleteMark)
-        .removeMark(addFrom, addTo, commentMark)
+        .removeMark(addFrom, addTo, suggestionMark)
         .addMark(addFrom, addTo, addMark)
         .setMeta(ACTIVE_SUGGESTION_THREAD_META, threadId);
       view.dispatch(tr.scrollIntoView());
@@ -159,10 +159,10 @@ function suggestionPlugin(schema) {
       ? Math.max(bounds.to + (insertAt <= bounds.to ? text.length : 0), insertAt + text.length)
       : insertAt + text.length;
     const addedText = tr.doc.textBetween(markFrom, markTo, " ");
-    const addMark = createSuggestionMark(commentMark, "add", addedText, nearbyMark?.attrs?.threadId);
+    const addMark = createSuggestionMark(suggestionMark, "add", addedText, nearbyMark?.attrs?.threadId);
 
     tr = tr
-      .removeMark(markFrom, markTo, commentMark)
+      .removeMark(markFrom, markTo, suggestionMark)
       .addMark(markFrom, markTo, addMark)
       .setMeta(ACTIVE_SUGGESTION_THREAD_META, addMark.attrs.threadId);
     view.dispatch(tr.scrollIntoView());
@@ -175,13 +175,13 @@ function suggestionPlugin(schema) {
 
     const { state } = view;
     const $from = state.doc.resolve(from);
-    const isSuggestion = (node) => commentSuggestion(commentMark.isInSet(node?.marks || [])?.attrs?.comments);
+    const isSuggestion = (node) => commentSuggestion(suggestionMark.isInSet(node?.marks || [])?.attrs?.comments);
     const beforeIsSuggestion = isSuggestion($from.nodeBefore);
     const afterIsSuggestion = isSuggestion($from.nodeAfter);
     if (beforeIsSuggestion === afterIsSuggestion) return false;
     const tr = state.tr
       .insertText(text, from, to)
-      .removeMark(from, from + text.length, commentMark);
+      .removeMark(from, from + text.length, suggestionMark);
     view.dispatch(tr.scrollIntoView());
     return true;
   };
@@ -283,6 +283,7 @@ function linkBubblePlugin(schema) {
 const activeCommentPluginKey = new PluginKey("activeComment");
 function activeCommentPlugin(schema) {
   const commentMark = schema.marks.comment;
+  const suggestionMark = schema.marks.suggestion;
   return new Plugin({
     key: activeCommentPluginKey,
     state: {
@@ -291,16 +292,18 @@ function activeCommentPlugin(schema) {
         const nextThreadId = transaction.getMeta("activeCommentThread");
         const threadId = nextThreadId === undefined ? value.threadId : nextThreadId;
         if (!transaction.docChanged && threadId === value.threadId) return value;
-        if (!commentMark || !threadId) return { threadId, decorations: DecorationSet.empty };
+        if (!threadId) return { threadId, decorations: DecorationSet.empty };
 
         const decorations = [];
         transaction.doc.descendants((node, position) => {
           if (!node.isText) return true;
-          const mark = commentMark.isInSet(node.marks);
-          if (mark?.attrs.threadId === threadId) {
+          const mark = [commentMark, suggestionMark]
+            .map((markType) => markType.isInSet(node.marks))
+            .find((item) => item?.attrs.threadId === threadId);
+          if (mark) {
             decorations.push(Decoration.inline(position, position + node.nodeSize, {
               "data-comment-active": "true",
-              "data-comment-suggestion": mark.attrs.suggestionPart || commentSuggestion(mark.attrs.comments) || "",
+              "data-suggestion-part": mark.attrs.suggestionPart || commentSuggestion(mark.attrs.comments) || "",
             }));
           }
           return true;
