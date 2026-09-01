@@ -14,6 +14,7 @@ import { setupPresence } from "../core/collaboration/presence.js"
 import { seedMetadata } from "./metadata/collaboration.js";
 import { createPageHistory } from "../core/collaboration/history.js";
 import { createArticleInfoSidebar } from "./chrome/article_info_sidebar.jsx";
+import { setupSidebarAccordion } from "./chrome/sidebar_accordian.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const editorErrors = readJsonScript("editor-errors");
   const form = document.querySelector("[data-page-form]");
   const currentEditor = readJsonScript("current-editor");
+  setupSidebarAccordion();
 
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   const pageId = form.dataset.pageId;

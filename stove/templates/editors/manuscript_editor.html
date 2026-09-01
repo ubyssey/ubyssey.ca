@@ -67,7 +67,7 @@
 
   <aside class="metadata-editor metadata-editor--left" aria-label="Article notes">
     <div class="pm-sidebar-accordion" data-sidebar-accordion>
-      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item open>
+      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item data-sidebar-accordion-key="info" open>
         <summary>Info</summary>
         <section class="pm-article-info-sidebar">
           <div data-article-sidebar-target></div>
@@ -92,7 +92,7 @@
           </div>
         </section>
       </details>
-      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
+      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item data-sidebar-accordion-key="metadata">
         <summary>Metadata</summary>
         <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
           <div id="metadata-sidebar-settings">
@@ -113,7 +113,7 @@
           </div>
         </section>
       </details>
-      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
+      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item data-sidebar-accordion-key="featured-media">
         <summary>Featured Media</summary>
         <section class="pm-metadata-sidebar-panel pm-featured-media-sidebar" aria-label="Featured Media">
           {% if featured_media_form %}
@@ -128,7 +128,7 @@
           {% endif %}
         </section>
       </details>
-      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
+      <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item data-sidebar-accordion-key="media">
         <summary>Media</summary>
         <section class="pm-metadata-sidebar-panel" data-article-media-gallery-modal aria-label="Media">
           <div class="page-editor-modal__header">
@@ -139,7 +139,7 @@
         </section>
       </details>
       {% if article_authors_form %}
-        <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item>
+        <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item data-sidebar-accordion-key="contributors">
           <summary>Contributors</summary>
           <section class="pm-author-panel" data-article-authors-panel>
             {{ article_authors_form.non_field_errors }}
@@ -166,7 +166,7 @@
           </section>
         </details>
       {% endif %}
-      <details class="pm-sidebar-accordion__item pm-sidebar-accordion__item--footnotes" data-sidebar-accordion-item>
+      <details class="pm-sidebar-accordion__item pm-sidebar-accordion__item--footnotes" data-sidebar-accordion-item data-sidebar-accordion-key="footnotes">
         <summary>Footnotes</summary>
         <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
       </details>
