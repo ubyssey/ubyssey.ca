@@ -8,12 +8,12 @@ app_name = "stove"
 
 urlpatterns = [
     path("", views.content_tracker_react, name="content_tracker_base"),
-    re_path(r"^stories/((?P<section>\w+)/)?$", views.content_tracker_react, name="content_tracker_react"),
+    re_path(r"^stories/((?P<section>\w+)/)?$", views.content_tracker_react, name="story_tracker"),
     re_path(r"^stories/(?P<section>\w+)/(?P<page>\d+)$", views.load_partial_stories, name="content_tracker_load_pages"),
     path("stories/<int:page_id>", views.load_page, name="content_tracker_load_page"),
     path("stories/<int:section_id>/create", views.create_page, name="content_tracker_create_page"),
     path("stories/<int:page_id>/update", views.update_content_tracker, name="update_content_tracker"),
-    path("views/copy", views.copy, name="copy_view"),
+    path("views/copy", views.copy, name="view_copy_department"),
 
     path("page/<int:page_id>", views.manuscript_editor, name="manuscript_editor"),
     path("page/<int:page_id>/authors", views.manuscript_authors, name="manuscript_authors"),

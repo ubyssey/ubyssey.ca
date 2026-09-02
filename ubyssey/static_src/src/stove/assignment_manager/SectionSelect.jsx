@@ -9,7 +9,7 @@ function findSection(sectionSlug) {
     return undefined
   }
 
-export default function SectionSelect ({section, updateSection, styleType="edit-field"}) {
+export default function SectionSelect ({section, updateSection, styleType="edit-field", disabled=false}) {
 
   let style = {};
 
@@ -40,9 +40,35 @@ export default function SectionSelect ({section, updateSection, styleType="edit-
     }
   }
 
+  if (disabled) {
+    style = {
+      ...style,
+      container: (base) => ({
+        ...base,
+        pointerEvents: "auto",
+      }),
+      valueContainer: (base) => ({
+        ... base,
+        ':hover': {
+          cursor: "not-allowed",
+          backgroundColor: "var(--invalid-hover-color)"
+        },
+        ':active': {
+          pointerEvents: "none",
+          backgroundColor: "var(--invalid-hover-color)"
+        }
+      }),
+      singleValue: (base) => ({
+        ...base,
+        color: "inherit"
+      })
+    }
+  }
+
   return <Select 
     options={allSections}
     value={ section ? findSection(section) : ''}
+    isDisabled={disabled}
     onChange={updateSection}
     styles={style}
     components={{

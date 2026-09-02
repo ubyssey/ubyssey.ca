@@ -64,7 +64,7 @@ def content_tracker_react(request, section="all"):
     for s in sections:
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
 def copy(request, section="all"):
@@ -83,7 +83,7 @@ def copy(request, section="all"):
     for s in sections:
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+    return render(request, "view_copy_department.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
 @require_POST
@@ -207,11 +207,17 @@ def load_partial_stories(request, section="all", page=1):
     include_published = request.GET.get('include_published', '')
     article_status = request.GET.get('article_status', -1)
     
-    qs = ArticlePage.objects.all()
+    qs = ArticlePage.objects
+    
+    if (article_status != -1):
+        print(article_status)
+        print(type(article_status))
+        print(type(int(article_status)))
+        qs = qs.filter(article_status=4)
+        print(list(qs))
+    qs = qs.all()
     if (section != "all"):
         qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
-    if (article_status != -1):
-        qs = qs.filter(article_status=5)
     if (username):
         author_page = get_object_or_404(AuthorPage, full_name=username)
         qs = qs.filter(article_authors__author=author_page)
@@ -253,6 +259,8 @@ def update_content_tracker(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
     data = json.loads(request.body.decode('utf-8'))
 
+    save_as_draft = False
+
     if ("title" in data):
         page.title = data["title"]
         if not page.live:
@@ -273,6 +281,7 @@ def update_content_tracker(request, page_id):
             raise Exception("Page can't move to section")
     if ("article_status" in data):
         page.article_status = data["article_status"]
+        save_as_draft = True
     if ("story_type" in data):
         page.story_type = data["story_type"]
     if ("authors" in data):
@@ -307,8 +316,9 @@ def update_content_tracker(request, page_id):
             for index, deadline in enumerate(data["deadline_list"] or [])
         ]
         page.deadline_list.commit()
-
     page.save_revision(user=request.user, log_action=True, changed=False)
+    if save_as_draft:
+        page.save(user=request.user)
     update_page_collaboration(page, data)
 
     latest_revision = page.get_latest_revision_as_object()

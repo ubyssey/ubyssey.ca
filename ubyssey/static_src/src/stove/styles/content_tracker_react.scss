@@ -27,6 +27,8 @@ table, th, td {
   flex-direction: column;  
   justify-content: flex-start;
   align-items: center; // x axis
+  padding-left: 8px;
+  padding-right: 8px;
 }
 // .grouping
 .stove-logo-container {
@@ -396,10 +398,119 @@ input:checked + .slider:before {
   min-width: 10em;
 }
 
+@media (max-width: 1150px) {
+  .beat-header {
+    display: none;
+  }
+  .beat-cell {
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .section-header {
+    display: none;
+  }
+  .section-cell {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .media-header {
+    display: none;
+  }
+  .media-cell {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .visuals-header {
+    display: none;
+  }
+  .visuals-cell {
+    display: none;
+  }
+}
+
+.section-header {
+  width: 10em;
+  min-width: 7em;
+}
 .preview-icon {
     // visibility: hidden;
 }
 
+.status-advancement--container {
+  display: flex;
+  flex-direction: row;
+}
+
+.status-advancement--label-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status-advancement--button, .status-advancement--label {
+  padding: 4px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 6px;
+  width: 5em;
+}
+
+.status-advancement--label-container > .status-advancement--label,
+.status-advancement--label-container > .status-advancement--button {
+  width: 10em;
+}
+
+.status-advancement--button + .status-advancement--button {
+  margin-left: 6px;
+}
+
+.status-advancement--button:hover {
+  cursor: pointer;
+}
+
+.status-advancement--return-edits-button {
+  background-color: #ea968d;
+  color: #691b17;
+}
+
+.status-advancement--mark-ready-button {
+  background-color: #9ec756;
+  color: #264b35;
+}
+
+.status-advancement--label-ready {
+  background-color: #e3e455;
+  color: #264b35;
+}
+.status-advancement--label-editing {
+  background-color: #f5c554;
+  color: #80511f;
+}
+
+.status-advancement--return-copy-button, .status-advancement--advance-copy-button {
+  background-color: #77c0d2;
+  color: #172448;
+}
+
+.status-advancement--label + .status-advancement--button {
+  display: none;
+}
+
+.status-advancement--label:hover + .status-advancement--button,
+.status-advancement--button:hover {
+  display: initial;
+}
+
+.status-advancement--label:hover, 
+.status-advancement--label:has(+ .status-advancement--button:hover){
+  display: none;
+}
 
 
 .visuals-cell {

@@ -29,7 +29,7 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
     let selectedClass = "";
 
     if (page.pk === selectedArticleId) {
-      selectedClass="row-selected";
+      selectedclassName="row-selected";
     }
 
     let hasStoryType = storyTypeLabel(page["story_type"]) != "[No label provided]";
@@ -48,19 +48,19 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
     }
 
     return <tr key={page.pk} className={selectedClass}>
-            <td class="slug-cell">
-                <span class="slug-link--container">
-              <a class="slug-link" href={articleUrl.replace("1918", page.pk)}>
+            <td className="slug-cell">
+                <span className="slug-link--container">
+              <a className="slug-link" href={articleUrl.replace("1918", page.pk)}>
               {page["title"]}
               </a>
               </span> 
               <div className="slug-cell--button-panel">
-              <button class="slug-cell--edit-button" onClick={() => setSidebar(SIDEBAR_TYPES.EDIT)}><PencilOutline
+              <button className="slug-cell--edit-button" onClick={() => setSidebar(SIDEBAR_TYPES.EDIT)}><PencilOutline
                 color={'#00000'} 
                 height={"18px"}
                 width={"18px"}
               /></button>
-              <button class="slug-cell--preview-button" onClick={() => setSidebar(SIDEBAR_TYPES.PREVIEW)}><Eye 
+              <button className="slug-cell--preview-button" onClick={() => setSidebar(SIDEBAR_TYPES.PREVIEW)}><Eye 
                 className
                 height={"18px"}
                 width={"18px"}/>
@@ -70,7 +70,7 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
               </div>
               <div className={`slug-cell--story-type ${hasStoryType ? "slug-cell--story-type-active" : "slug-cell--story-type-empty"}`}>{hasStoryType ? storyTypeLabel(page["story_type"]) : ""}</div>
               </td>
-            <td class="authors-cell"><AuthorsSelect 
+            <td className="authors-cell"><AuthorsSelect 
               disabled = {page.live}
               currentAuthors={page.article_authors} 
               handleUpdateAuthors={(newAuthorList) => updateAuthors(page, newAuthorList, statuses[page.article_status].role, updatePage)}
@@ -110,11 +110,11 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
               
             <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)} disabled={page.live}/></td>
             <td><ArticleStatus status={page["article_status"]} updateStatus={(newStatus) => updateArticleStatus(page, newStatus, updatePage)}/></td>
-            <td>
+            <td className="visuals-cell">
               <ImageOutline color={'#000000'} height="1.5em" width="1.5em" /> 
               <BrushOutline color={'#000000'} height="1.5em" width="1.5em" />
               <VideocamOutline color={'#000000'} height="1.5em" width="1.5em" /></td> {/*#257e4d*/}
-            <td>
+            <td className="media-cell">
               <PrintOutline color={'#000000'} height="1.5em" width="1.5em" />
               <HeadsetOutline color={'#000000'} height="1.5em" width="1.5em" /></td> {/*#faa33a*/}
     </tr>
@@ -133,20 +133,20 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
     )
   }
 
-  if (rows.length == 0) return <div class="article-list"><Skeleton className={"article-list--skeleton"} height="1.5lh" width="82em"/><Skeleton className={"article-list--skeleton"} height="3lh" width="82em" count={10}/></div>
+  if (rows.length == 0) return <div className="article-list"><Skeleton className={"article-list--skeleton"} height="1.5lh" width="82em"/><Skeleton className={"article-list--skeleton"} height="3lh" width="82em" count={10}/></div>
 
   return (
-    <div class="article-list">
+    <div className="article-list">
     <Table striped bordered hover>
        <thead>
-            <tr class="table-header">
-                <th class="slug-header">Slug</th>
-                <th class="byline-header">Assigned To</th>
-                <th class="deadline-header">Deadline</th>
-                <th class="beat-header">Beat</th>
-                <th class="status-header">Status</th>
-                <th class="visuals-header">Visuals</th>
-                <th class="media-header">Media</th>
+            <tr className="table-header">
+                <th className="slug-header">Slug</th>
+                <th className="byline-header">Assigned To</th>
+                <th className="deadline-header">Deadline</th>
+                <th className="beat-header">Beat</th>
+                <th className="status-header">Status</th>
+                <th className="visuals-header">Visuals</th>
+                <th className="media-header">Media</th>
             </tr>
         </thead>
         <tbody>
