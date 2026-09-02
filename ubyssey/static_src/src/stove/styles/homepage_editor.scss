@@ -1,0 +1,20 @@
+body {
+    margin: 0;
+    background: #f5f6f6;
+}
+
+.homepage-editor {
+    --topbar-height: 48px;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+    background: #f5f6f6;
+}
+
+.homepage-editor.page-editor--history .page-editor-topbar__actions > :not([data-history-control]) {
+    display: none;
+}
+
+.homepage-editor:not(.page-editor--history) .page-editor-topbar [data-history-return],
+.homepage-editor:not(.page-editor--history) .page-editor-topbar [data-history-restore] {
+    display: none;
+}

@@ -2,10 +2,18 @@
 
 import json
 
+from article.models import ArticlePage
 from wagtail.fields import StreamField
 
 from .forms import authors, featured_media, metadata
 from .serialization import generate_public_streamfield
+
+
+def process_editor_forms(page, data, preview=False):
+    if isinstance(page, ArticlePage):
+        return process_manuscript_forms(page, data, preview=preview)
+
+    return {}, None, None, None
 
 
 def json_safe(value):
@@ -18,7 +26,7 @@ def merge_form_errors(editor_errors, form, prefix=None):
         editor_errors[key] = list(field_errors)
 
 
-def process_submitted_page(page, data, preview=False):
+def process_manuscript_forms(page, data, preview=False):
     editor_errors = {}
 
     page_form = metadata.create_form(page, data)

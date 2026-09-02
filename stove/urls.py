@@ -16,10 +16,10 @@ urlpatterns = [
 
     path("page/<int:page_id>", views.manuscript_editor, name="manuscript_editor"),
     path("page/<int:page_id>/authors", views.manuscript_authors, name="manuscript_authors"),
-    path("page/<int:page_id>/revisions", views.manuscript_revisions, name="manuscript_revisions"),
-    path("page/<int:page_id>/preview", views.manuscript_preview, name="manuscript_preview"),
-    path("page/<int:page_id>/full-preview", views.manuscript_full_preview, name="manuscript_full_preview"),
-    path("page/<int:page_id>/restore", views.manuscript_restore, name="manuscript_restore"),
+    path("page/<int:page_id>/editor-revisions", views.editor_page_revisions, name="editor_page_revisions"),
+    path("page/<int:page_id>/editor-preview", views.editor_page_preview, name="editor_page_preview"),
+    path("page/<int:page_id>/editor-full-preview", views.editor_page_full_preview, name="editor_page_full_preview"),
+    path("page/<int:page_id>/editor-restore", views.editor_page_restore, name="editor_page_restore"),
     path("page/<int:page_id>/media-upload", views.article_media_upload, name="article_media_upload"),
     path("page/<int:page_id>/media-tags", views.manuscript_media_tags, name="manuscript_media_tags"),
     path("page/<int:page_id>/media-options", views.manuscript_media_options, name="manuscript_media_options"),
@@ -28,7 +28,7 @@ urlpatterns = [
     path("page/<int:page_id>/collaboration", views.page_collaboration, name="page_collaboration"),
 
     path("author/<int:page_id>", views.author_editor, name="author_editor"),
-    path("homepage/<int:page_id>", views.homepage_editor, name="homepage_editor"),
+    path("homepage", views.homepage_editor, name="homepage_editor"),
     path("section/<int:page_id>", views.section_editor, name="section_editor"),
     path("liveblog/<int:page_id>", views.liveblog_editor, name="liveblog_editor"),
     path("api/v2/", api_router.urls),

@@ -11,18 +11,18 @@ from wagtail.models import Page
 from stove.models import PageCollaboration
 
 from stove.editors.collaboration.consumers import page_restore_group_name
-from stove.editors.manuscript.submission import process_submitted_page
+from stove.editors.manuscript.submission import process_editor_forms
 
 
 # seconds between autosaves to revision (not sure what a good value should be)
 AUTOSAVE_REVISION_WINDOW_SECONDS = 60*15
 
 # Saves editor data as a draft, combining autosave revisions within the window into a single revision
-def autosave_manuscript_revision(page_id, data, user):
+def autosave_page_revision(page_id, data, user):
     with transaction.atomic():
         page_record = Page.objects.select_for_update().get(pk=page_id)
         page = page_record.specific.get_latest_revision_as_object()
-        process_submitted_page(page, data)
+        process_editor_forms(page, data)
 
         session, _ = PageCollaboration.objects.get_or_create(page=page_record)
         previous_autosave = session.autosave_revision
@@ -92,7 +92,7 @@ def restore_page_revision(page, revision, submitted_data, user):
     current_data = submitted_data.copy()
     current_data.pop("revision", None)
     current_page = page.get_latest_revision_as_object()
-    process_submitted_page(current_page, current_data)
+    process_editor_forms(current_page, current_data)
     current_page.save_revision(user=user)
 
     saved_revision = restored_page.save_revision(user=user)

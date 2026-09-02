@@ -40,6 +40,7 @@ module.exports = {
     'contentTracker': './src/js/ContentTracker.jsx',
     'liveblog': './src/js/liveblog.jsx',
     'stove/manuscript_editor': './src/stove/manuscript_editor/app.js',
+    'stove/homepage_editor': './src/stove/homepage_editor/app.js',
     'stove/story_tracker': './src/stove/StoryTracker.jsx',
     'join': './src/js/join.js',
   },
