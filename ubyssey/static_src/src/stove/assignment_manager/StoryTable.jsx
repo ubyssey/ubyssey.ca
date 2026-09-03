@@ -29,7 +29,7 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
     let selectedClass = "";
 
     if (page.pk === selectedArticleId) {
-      selectedclassName="row-selected";
+      selectedClass="row-selected";
     }
 
     let hasStoryType = storyTypeLabel(page["story_type"]) != "[No label provided]";
