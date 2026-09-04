@@ -4,11 +4,20 @@ function initializeRedesignNavigation() {
   const button = header.querySelector('.hp-nav__menu');
   const menu = header.querySelector('#hp-expanded-menu');
   let open = false;
+  let closeTimer;
   const setOpen = (nextOpen) => {
     open = nextOpen;
+    window.clearTimeout(closeTimer);
     button.setAttribute('aria-expanded', String(open));
-    menu.hidden = !open;
-    header.classList.toggle('menu-is-open', open);
+    menu.setAttribute('aria-hidden', String(!open));
+    if (open) {
+      menu.hidden = false;
+      window.requestAnimationFrame(() => header.classList.add('menu-is-open'));
+      menu.querySelector('input')?.focus({ preventScroll: true });
+    } else {
+      header.classList.remove('menu-is-open');
+      closeTimer = window.setTimeout(() => { menu.hidden = true; }, 320);
+    }
   };
   button.addEventListener('click', () => setOpen(!open));
   document.addEventListener('keydown', (event) => {
@@ -18,9 +27,9 @@ function initializeRedesignNavigation() {
     if (open && !header.contains(event.target)) setOpen(false);
   });
   const updateHeader = () => {
-    if (!header.classList.contains('is-compact') && window.scrollY > 110) {
+    if (!header.classList.contains('is-compact') && window.scrollY > 96) {
       header.classList.add('is-compact');
-    } else if (header.classList.contains('is-compact') && window.scrollY < 2) {
+    } else if (header.classList.contains('is-compact') && window.scrollY < 24) {
       header.classList.remove('is-compact');
     }
   };

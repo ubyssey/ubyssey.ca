@@ -277,7 +277,7 @@ class HomePage(Page):
                         title=story.get("headline", ""),
                         # Keep local fixture navigation inside the redesign so
                         # homepage-to-article review exercises the new shells.
-                        url=f"/redesign-preview/article/{preview_article_layouts[preview_index % 5]}/",
+                        url=f"/redesign-preview/article/{preview_article_layouts[preview_index % 5]}/?story={path_parts[-2] if len(path_parts) > 1 else ''}",
                         lede=story.get("lede", ""),
                         current_section=section if section in {"news", "opinion", "arts", "culture", "sports"} else "news",
                         category_page=SimpleNamespace(title=beat_name, url=f"/{section}/{beat_name.lower()}/"),

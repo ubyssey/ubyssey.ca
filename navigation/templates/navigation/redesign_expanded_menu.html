@@ -1,0 +1,15 @@
+{% load static %}
+<div class="hp-nav__expanded" id="{{ menu_id }}" hidden aria-hidden="true">
+  <form class="hp-nav__search" action="/archive/" method="get" role="search">
+    <label class="sr-only" for="{{ search_id }}">Search The Ubyssey archive</label>
+    <input id="{{ search_id }}" name="q" type="search" placeholder="Search The Ubyssey" required>
+    <button type="submit" aria-label="Search the archive"><img src="{% static 'ubyssey/images/homepage/search.svg' %}" alt=""></button>
+  </form>
+  <div class="hp-nav__expanded-grid">
+    <section><h2>Sections</h2><div class="hp-nav__links"><a href="/news/">News</a><a href="/opinion/">Opinion</a><a href="/arts/">Arts</a><a href="/culture/">Culture</a><a href="/sports/">Sports</a></div></section>
+    <section><h2>More</h2><div class="hp-nav__links"><a href="/events/">Events</a><a href="/photo/">Photo</a><a href="/video/">Video</a><a href="/archive/">Archive</a><a href="/the-vilest-rag/">Podcast</a><a href="/margins/">Margins</a><a href="{{ newsletter_href|default:'/#newsletter' }}">Newsletter</a></div></section>
+    <section class="hp-nav__about"><h2>About</h2><div class="hp-nav__links"><a href="/about/">Our Journalism</a><a href="/about/our-team/">Our Team</a><a href="/about/board/">UPS Board</a></div></section>
+    <section class="hp-nav__contact"><h2>Contact</h2><div class="hp-nav__links"><a href="/about/masthead/">Masthead</a><a href="/submit-a-tip/">Submit a Tip</a><a href="/advertise/">Advertising</a></div></section>
+    <section class="hp-nav__join"><h2>Join The Ubyssey</h2><p>Learn more about becoming part of our team, currently open positions and the application process</p><a href="/join/">JOIN</a></section>
+  </div>
+</div>

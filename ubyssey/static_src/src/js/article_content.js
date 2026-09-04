@@ -30,10 +30,20 @@ function initializeArticleNavigation() {
     const button = header.querySelector('.hp-nav__menu');
     const menu = header.querySelector('#ar-expanded-menu');
     let open = false;
+    let closeTimer;
     const setOpen = (next) => {
         open = next;
+        window.clearTimeout(closeTimer);
         button.setAttribute('aria-expanded', String(open));
-        menu.hidden = !open;
+        menu.setAttribute('aria-hidden', String(!open));
+        if (open) {
+            menu.hidden = false;
+            window.requestAnimationFrame(() => header.classList.add('menu-is-open'));
+            menu.querySelector('input')?.focus({ preventScroll: true });
+        } else {
+            header.classList.remove('menu-is-open');
+            closeTimer = window.setTimeout(() => { menu.hidden = true; }, 320);
+        }
     };
     button.addEventListener('click', () => setOpen(!open));
     document.addEventListener('keydown', (event) => {
@@ -78,6 +88,18 @@ function initializeKeepReading() {
     });
 }
 
+function alignArticleContextRail() {
+    const body = document.querySelector('.ar-body');
+    const rail = document.querySelector('.ar-reading__layout > .ar-context-rail');
+    if (!body || !rail || window.matchMedia('(max-width: 800px)').matches) return;
+    const paragraphs = [...body.querySelectorAll('p')].filter((paragraph) => !paragraph.closest('.o-extra-article-info, .ar-context-mobile, .ar-report'));
+    if (paragraphs.length > 1) {
+        rail.style.top = `${Math.max(0, paragraphs[1].getBoundingClientRect().top - body.getBoundingClientRect().top)}px`;
+    }
+}
+
 initializeArticleNavigation();
 initializeArticleSharing();
 initializeKeepReading();
+alignArticleContextRail();
+window.addEventListener('resize', alignArticleContextRail, { passive: true });

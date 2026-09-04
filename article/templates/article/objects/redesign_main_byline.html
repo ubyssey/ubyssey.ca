@@ -7,7 +7,7 @@
     <a data-share-bsky href="https://bsky.app/intent/compose?text={{ article.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" title="Share to Bluesky"><img src="{% static 'ubyssey/images/article/share-bluesky.svg' %}" alt=""></a>
     <a data-share-whatsapp href="https://wa.me/?text={{ article.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" title="Share to WhatsApp"><img src="{% static 'ubyssey/images/article/share-whatsapp.svg' %}" alt=""></a>
   </nav>
-  <div class="ar-main-byline__card">
+  <div class="ar-main-byline__card{% if not preview_author_image_url and not author.image %} ar-main-byline__card--no-avatar{% endif %}">
     {% if preview_author_image_url %}<img class="ar-main-byline__avatar" src="{{ preview_author_image_url }}" alt="{{ author.full_name }}">{% elif author.image %}{% image author.image fill-88x88-c100 format-webp class="ar-main-byline__avatar" alt=author.full_name %}{% endif %}
     <div>
       <a class="ar-main-byline__name" href="{{ author.url }}">{{ contributor.author_alias|default:author.full_name }}</a>

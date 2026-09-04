@@ -2,8 +2,8 @@
 <article class="hp-fixture" data-sport="{% if preview %}soccer-m{% else %}{{ game.sport }}{% endif %}"{% if not preview and game.starts_at %} data-starts-at="{{ game.starts_at|date:'c' }}"{% endif %}>
   <div class="hp-fixture__teams">
     <span class="hp-fixture__logos">{% if preview %}<i>U</i><i>U</i>{% else %}{% if game.away_team.icon %}{% image game.away_team.icon fill-50x50-c100 alt="" %}{% endif %}{% if game.home_team.icon %}{% image game.home_team.icon fill-50x50-c100 alt="" %}{% endif %}{% endif %}</span>
-    <strong>{% if preview %}UofC Dinos<br>UBC Thunderbirds{% else %}{{ game.away_team.name }}<br>{{ game.home_team.name }}{% endif %}</strong>
+    <strong>{% if preview %}<span>UofC Dinos{% if recent %}<b>2</b>{% endif %}</span><span>UBC Thunderbirds{% if recent %}<b>4</b>{% endif %}</span>{% else %}<span>{{ game.away_team.name }}{% if recent and game.away_team.score != None %}<b>{{ game.away_team.score }}</b>{% endif %}</span><span>{{ game.home_team.name }}{% if recent and game.home_team.score != None %}<b>{{ game.home_team.score }}</b>{% endif %}</span>{% endif %}</strong>
   </div>
-  <div class="hp-fixture__details">{% if preview %}<b>Sep 4, 4:30 P.M. (PT)</b><br>McMahon Stadium{% else %}{% if game.starts_at %}<b>{{ game.starts_at|date:"M j, g:i A" }}</b>{% endif %}{% if game.venue %}<br>{{ game.venue }}{% endif %}{% endif %}</div>
+  <div class="hp-fixture__details">{% if preview %}{% if recent %}<b>Final</b><br>Sep 1, 2026{% else %}<b>Sep 4, 4:30 P.M. (PT)</b><br>McMahon Stadium{% endif %}{% else %}{% if game.starts_at %}<b>{{ game.starts_at|date:"M j, g:i A" }}</b>{% endif %}{% if game.venue %}<br>{{ game.venue }}{% endif %}{% endif %}</div>
   <small>{% if preview %}Soccer (M){% else %}{{ game.sport }}{% endif %}</small>
 </article>
