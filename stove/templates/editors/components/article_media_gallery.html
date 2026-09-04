@@ -4,8 +4,9 @@
   {% for item in article_media %}
     {% if item.image %}
       {% image item.image fill-96x64 as thumb %}
+      {% image item.image width-1600 as full %}
       <div class="article-media-item" data-article-media-item data-kind="image" data-id="{{ item.image_id }}" data-title="{{ item.image.title }}" data-author="{{ item.image.author_id|default_if_none:'' }}" data-description="{{ item.image.description|default_if_none:'' }}" data-tags="{{ item.image.tags.names|join:", " }}">
-        <img src="{{ thumb.url }}" alt="">
+        <button type="button" class="article-media-item__image-button" data-article-media-enlarge data-full-url="{{ full.url }}" data-image-title="{{ item.image.title }}"><img src="{{ thumb.url }}" alt=""></button>
         <div class="article-media-item__details">
           <div>{{ item.image.title }}</div>
           <small>{{ item.image.filename }}</small>
