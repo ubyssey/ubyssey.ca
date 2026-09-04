@@ -1,4 +1,4 @@
-{% load wagtailcore_tags static %}
+{% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
 <div class="o-extra-article-info o-extra-article-info--{{self.template}} {{self.position}}">
@@ -11,7 +11,6 @@
     {% endif %}
 
     <div class="o-extra-article-info__content">
-        {% if self.template == 'editors-note' %}<img class="o-extra-article-info__mark" src="{% static 'ubyssey/images/ubyssey-dingbat-white.png' %}" alt="" aria-hidden="true">{% endif %}
         {% if self.header %}<h2 data-article-editable-stream-field="content" data-article-editable-path="header">{{self.header|safe}}</h2>{% endif %}
         <div class="o-extra-article-info__body" data-article-editable-stream-field="content" data-article-editable-path="content" data-article-editable-mode="richtext">
             {{self.content|richtext}}

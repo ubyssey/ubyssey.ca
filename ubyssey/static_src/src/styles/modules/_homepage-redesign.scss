@@ -74,8 +74,11 @@
 .hp-fixture__teams{grid-template-columns:43px 1fr}
 .hp-fixture__logos i,.hp-fixture__logos img{width:29px;height:29px}
 .hp-fixture__teams strong{font-size:12px;line-height:16px}
+.hp-fixture__teams strong b{margin-right:18px}
 .hp-fixture__details{font-size:11px;line-height:15px}
-.hp-newsletter__art:after{transform:none}
+.hp-newsletter__art:after{transform:scaleX(-1)}
+.hp-hero{border-bottom:0}
+.hp-nav__bar{background-position:center 9px,center 46px,center 49px;background-size:100% .5px,100% .5px,100% .35px}
 
 @media(max-width:760px){
   .hp-nav__bar{border:0;background-image:linear-gradient(var(--hp-text),var(--hp-text)),linear-gradient(var(--hp-text),var(--hp-text)),linear-gradient(var(--hp-text),var(--hp-text));background-position:center 0,center 46px,center 49px;background-size:100% .5px,100% .5px,100% .35px}
@@ -90,3 +93,14 @@
   .hp-fixture{height:68px;grid-template-columns:minmax(0,1.5fr) minmax(90px,1fr) 68px}
   .hp-fixture__teams{grid-template-columns:32px 1fr}.hp-fixture__logos i,.hp-fixture__logos img{width:25px;height:25px}
 }
+
+/* Keep the games surface inside the widget and use only the seated newsletter figure. */
+.hp-games{margin-bottom:30px}
+.hp-newsletter__art:after{content:none}
+.hp-newsletter__art{left:715px;top:250px;width:331.202px;height:348.414px;transform:none}
+.hp-scoreboard{height:auto;background:transparent;box-shadow:none}
+.hp-scoreboard__tabs{position:relative;z-index:1;background:var(--hp-bg)}
+.hp-scoreboard__panel{background:var(--hp-bg);box-shadow:0 6px 16px rgba(17,29,60,.08)}
+[color-css-theme=dark] .hp-scoreboard__panel{background:#161e30;box-shadow:0 6px 16px rgba(17,29,60,.08)}
+
+@media(max-width:760px){.hp-newsletter__art{left:auto;right:12px;top:248px;width:245px;height:258px}}

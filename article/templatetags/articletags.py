@@ -44,23 +44,36 @@ def format_redesign_extended_byline(contributors):
 
     sentences = []
     role_copy = {
-        "backfield_editor": ("was this story's backfield editor.", "were the backfield editors for this story."),
+        "backfield_editor": ("was this story's backfield editor for this story.", "were the backfield editors for this story."),
         "copy_editor": ("was the copy editor.", "were the copy editors."),
-        "videographer": ("shot the video.", "shot the videos."),
-        "designer": ("created the design.", "created the designs."),
     }
-    for role in ("backfield_editor", "copy_editor", "videographer", "designer"):
+    for role in ("backfield_editor", "copy_editor"):
         people = grouped.get(role, [])
         if people:
             singular, plural = role_copy[role]
             sentences.append(f"{_redesign_name_list(people)} {singular if len(people) == 1 else plural}")
 
     photographers = grouped.get("photographer", [])
-    if photographers:
+    photo_editors = grouped.get("photo_editor", [])
+    if photographers and photo_editors:
+        photographer_names = {str(_redesign_contributor_name(person)) for person in photographers}
+        photo_editor_names = {str(_redesign_contributor_name(person)) for person in photo_editors}
+        if photographer_names == photo_editor_names:
+            sentences.append(f"{_redesign_name_list(photographers)} took and edited the photos.")
+        else:
+            sentences.append(f"{_redesign_name_list(photographers)} took the photos, which were edited by {_redesign_name_list(photo_editors)}.")
+    elif photographers:
         sentences.append(f"{_redesign_name_list(photographers)} took the photos.")
+    elif photo_editors:
+        sentences.append(f"The photos were edited by {_redesign_name_list(photo_editors)}.")
     illustrators = grouped.get("illustrator", [])
-    if illustrators:
+    graphics_editors = grouped.get("graphics_editor", [])
+    if illustrators and graphics_editors:
+        sentences.append(f"{_redesign_name_list(illustrators)} created the graphics, which were edited by {_redesign_name_list(graphics_editors)}.")
+    elif illustrators:
         sentences.append(f"{_redesign_name_list(illustrators)} created the graphics.")
+    elif graphics_editors:
+        sentences.append(f"The graphics were edited by {_redesign_name_list(graphics_editors)}.")
     return mark_safe(" ".join(sentences))
 
 @register.filter(name='get_label')

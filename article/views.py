@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 
 from django.http import Http404
 from django.shortcuts import render
+from django.utils import timezone
 from wagtail.admin.ui.tables import UpdatedAtColumn
 from wagtail.snippets.views.snippets import SnippetViewSet
 
@@ -30,8 +31,8 @@ STORY_TYPE_COPY = {
     "Report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
     "Feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
     "Review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
-    "Game Analysis": "This article is a game analysis, which we define as a story about individual games, written from a reporter's perspective.",
-    "Essay": "This article is an essay. In journalism, opinion essays refer to an author's views on the news, written from their own perspective but based on reporting.",
+    "Game Analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
+    "Essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
 }
 
 
@@ -108,6 +109,18 @@ def _fixture_credit_contributors(story):
     return contributors
 
 
+def _preview_story_date(story):
+    """Use the selected sample story's publication date in redesign previews."""
+    if story:
+        source_date = story.get("date_attribute", "")
+        for date_format in ("%B %d, %Y", "%b. %d, %Y", "%b %d, %Y"):
+            try:
+                return timezone.make_aware(datetime.strptime(source_date, date_format))
+            except ValueError:
+                continue
+    return timezone.now()
+
+
 def redesign_preview(request, layout):
     if layout not in LAYOUTS:
         raise Http404
@@ -154,7 +167,7 @@ def redesign_preview(request, layout):
         lede="",
         featured_media=SimpleNamespace(first=SimpleNamespace(image=None, alt_text="A musician performs beside a Ukrainian flag at a candlelight vigil.", caption="Earlier that day, the Prime Minister weighed in.", credit="Photo by Aleah Kippan for The Ubyssey")),
         primary_author_orderable=contributor,
-        published_at=datetime(2026, 3, 2),
+        published_at=_preview_story_date(story),
         standpoint_disclosure=("<p>This contributor's relationship to the subject has been disclosed to editors. The disclosure is included so readers can evaluate the work with the relevant context.</p>" if story_type in {"Essay", "Feature"} or layout == "shared-components" else ""),
         story_type_description=STORY_TYPE_COPY[story_type],
         get_story_type_display=story_type,

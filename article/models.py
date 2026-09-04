@@ -180,8 +180,10 @@ class ArticleAuthorsOrderable(Orderable):
                             ('author', 'Author'), 
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
+                            ('photo_editor', 'Photo editor'),
                             ('videographer','Videographer'),
                             ('designer','Designer'),
+                            ('graphics_editor', 'Graphics editor'),
                             ('backfield_editor', "Backfield editor"),
                             ('copy_editor', "Copy editor"),
                             ('org_role', 'Show organization role'),
@@ -1445,23 +1447,24 @@ class StandardArticlePage(ArticlePage):
     show_in_menus = True
 
     STORY_TYPE_DEFINITIONS = {
-        "report": "Reports are shorter stories about events with immediate relevance, written from a detached perspective.",
-        "feature": "Features are longer stories about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
-        "profile": "Profiles tell the stories of individuals and their worldviews, written from a reporter's perspective.",
-        "q-and-a": "Q&As are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
-        "review": "Reviews are stories about art and culture, written from a critical perspective.",
-        "game-analysis": "Game analyses are stories about individual games, written from a reporter's perspective.",
-        "commentary": "Commentaries take a position on a sports event or topic and suggest a course of action.",
-        "analysis": "Analyses explain the reasoning and mechanics behind a subject from a beat writer's perspective.",
-        "essay": "Essays present the author's views on the news, grounded in reporting.",
-        "column": "Columns are reported opinion stories whose authors make judgments about the news and the way the world should be.",
-        "editorial": "Editorials represent positions debated and decided by The Ubyssey's Editorial Board.",
-        "letter-to-editor": "Letters to the editor are short responses to stories published by The Ubyssey, written by readers.",
-        "letter-from-editor": "Letters from the editor are written to readers by The Ubyssey's senior masthead.",
-        "public-service": "Public service announcements share information of imminent public interest, including extreme weather and safety threats.",
+        "report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
+        "live-update": "This article is a live update, which are a series of brief reports from journalists on the ground while news is happening.",
+        "feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
+        "profile": "This article is a profile, which tells the stories of individuals and their worldviews, written from a repoter's perspective.",
+        "q-and-a": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
+        "review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
+        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
+        "commentary": "This article is a commentary, which we define as a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense.",
+        "analysis": "This article is an analysis, which explains the reasoning and mechanics behind a subject from a reporter's perspective.",
+        "essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
+        "column": "This article is a column, which is a story reported by a columnists— an opinion journalists who makes abstract judgments about the news and the way the world should be.",
+        "editorial": "This article is an editorial, which is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day.",
+        "letter-to-editor": "This article is a letter to the editor, which are 250-word responses to stories published in The Ubyssey, written by readers like you.",
+        "letter-from-editor": "This article is a letter from the editor, which are messages to readers from the The Ubyssey's Senior Masthead.",
+        "public-service": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
     }
     STORY_TYPE_CHOICES = [
-        ("", "Not specified"), ("report", "Report"), ("feature", "Feature"),
+        ("", "Not specified"), ("report", "Report"), ("live-update", "Live Update"), ("feature", "Feature"),
         ("profile", "Profile"), ("q-and-a", "Q&A"), ("review", "Review"),
         ("game-analysis", "Game Analysis"), ("commentary", "Commentary"),
         ("analysis", "Analysis"), ("essay", "Essay"), ("column", "Column"),
@@ -1820,7 +1823,7 @@ class StandardArticlePage(ArticlePage):
 
     @property
     def story_type_description(self):
-        return self.STORY_TYPE_DEFINITIONS.get(self.story_type, "")
+        return self.STORY_TYPE_DEFINITIONS.get(self.story_type or "report", self.STORY_TYPE_DEFINITIONS["report"])
 
     @property
     def primary_author_orderable(self):
@@ -1828,7 +1831,7 @@ class StandardArticlePage(ArticlePage):
 
     @property
     def extended_contributors(self):
-        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "videographer", "illustrator", "designer"])
+        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "photo_editor", "illustrator", "graphics_editor"])
 
     promote_panels = ArticlePage.promote_panels
 
