@@ -4,6 +4,7 @@ Blocks used on the home page of the site
 from wagtail.models import Site
 from wagtail import blocks
 from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.images.blocks import ImageChooserBlock
 
 from django.db.models import Q
 from django.utils import timezone
@@ -15,6 +16,69 @@ from article.models import ArticlePage
 from article.blocks_storystream import StoryStreamBlockTypes
 from topics.views import cluster_articles_by_topic
 import images.blocks as image_blocks
+
+
+SPORT_CHOICES = [
+    ("all", "All sports"),
+    ("basketball-w", "Basketball (W)"),
+    ("basketball-m", "Basketball (M)"),
+    ("football", "Football"),
+    ("hockey-w", "Hockey (W)"),
+    ("hockey-m", "Hockey (M)"),
+    ("soccer-w", "Soccer (W)"),
+    ("soccer-m", "Soccer (M)"),
+    ("volleyball-w", "Volleyball (W)"),
+    ("volleyball-m", "Volleyball (M)"),
+]
+
+
+class GameAnalysisArticle(blocks.StructBlock):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage")
+    sport = blocks.ChoiceBlock(choices=SPORT_CHOICES[1:])
+
+
+class GameAnalysisTeam(blocks.StructBlock):
+    name = blocks.CharBlock(max_length=80)
+    icon = ImageChooserBlock(required=False)
+    score = blocks.IntegerBlock(required=False)
+
+
+class GameAnalysisFixture(blocks.StructBlock):
+    sport = blocks.ChoiceBlock(choices=SPORT_CHOICES[1:])
+    starts_at = blocks.DateTimeBlock(required=False)
+    venue = blocks.CharBlock(max_length=120, required=False)
+    away_team = GameAnalysisTeam()
+    home_team = GameAnalysisTeam()
+
+
+class GameAnalysisPanel(blocks.StructBlock):
+    active_sports = blocks.MultipleChoiceBlock(
+        choices=SPORT_CHOICES[1:],
+        required=False,
+        help_text="Sports shown in the homepage filter bar.",
+    )
+    articles = blocks.ListBlock(GameAnalysisArticle(), required=False, max_num=8)
+    upcoming_games = blocks.ListBlock(GameAnalysisFixture(), required=False, max_num=8)
+    recent_results = blocks.ListBlock(GameAnalysisFixture(), required=False, max_num=8)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+
+        def article_timestamp(item):
+            published_at = item["article"].first_published_at
+            return published_at.timestamp() if published_at else float("-inf")
+
+        def fixture_timestamp(item, missing):
+            starts_at = item["starts_at"]
+            return starts_at.timestamp() if starts_at else missing
+
+        context["analysis_articles"] = sorted(value["articles"], key=article_timestamp, reverse=True)
+        context["upcoming_games"] = sorted(value["upcoming_games"], key=lambda item: fixture_timestamp(item, float("inf")))
+        context["recent_results"] = sorted(value["recent_results"], key=lambda item: fixture_timestamp(item, float("-inf")), reverse=True)
+        return context
+
+    class Meta:
+        template = "home/stream_blocks/game_analysis.html"
 
 
 ### Shared attachment options

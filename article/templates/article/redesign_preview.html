@@ -1,0 +1,26 @@
+{% extends 'ubyssey/base.html' %}{% load static %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}">{% endblock %}
+{% block header %}{% include 'article/components/redesign_nav.html' with article=preview %}{% endblock %}
+{% block content %}<main id="main-content" class="ar-page ar-page--{{ preview.redesign_header_layout }}"><article class="ar-article">
+  {% include 'article/components/redesign_hero.html' with article=preview %}
+  <div class="ar-reading">{% include 'article/objects/redesign_main_byline.html' with article=preview %}<div class="ar-reading__layout">
+    {% include 'article/objects/redesign_context_rail.html' with article=preview %}
+    <div class="article-content ar-body">
+      <p>The story begins at a candlelight vigil, where students and community members gathered beneath the trees to reflect on four years of war. Speakers described the distance between campus life and the daily reality faced by families in Ukraine.</p>
+      <p>Organizers said the event was intended to make space for grief while also asking what sustained solidarity can look like. Music, testimony and a minute of silence brought together people whose relationships to the conflict were deeply personal.</p>
+      <p>As the crowd grew, attendees placed candles along the pavement and shared stories about relatives abroad. Several speakers connected the vigil to broader questions about displacement, international students and the responsibilities of public institutions.</p>
+      {% if preview_layout == 'shared-components' %}<aside class="o-extra-article-info o-extra-article-info--editors-note center"><div class="o-extra-article-info__content"><h2>Editor's Note</h2><div class="o-extra-article-info__body"><p>This editable note demonstrates the redesigned in-text treatment. On a production article, editors control both this heading and its body through the existing Extra Article Info block.</p><p>Right-positioned notes move into the rail on wide screens and return to the text flow on mobile.</p></div></div></aside>{% endif %}
+      <p>For many in attendance, the evening was less about finding a simple conclusion than preserving attention. The vigil closed with another song and an invitation to keep listening to people most directly affected.</p>
+      <div class="ar-context-mobile">{% include 'article/objects/redesign_context_rail.html' with article=preview %}</div>
+      <p class="ar-report"><a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Submit a complaint</a><a href="https://forms.gle/RbJjhEpqqt7tz4AF6">Report a correction</a></p>
+    </div></div></div>
+  <section class="c-suggested-bar ar-keep-reading" data-keep-reading><h2>Keep Reading</h2><div class="ar-keep-reading__viewport"><div class="ar-keep-reading__track">
+    <article><a href="/redesign-preview/article/body-width/"><img src="/redesign-sample/article-ukraine-vigil/media/01-what-we-know-about-the-centre-for-accessibility-s-ai-notetaker-genio--fc2fcd6c.webp" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">What we know about the Centre for Accessibility's AI notetaker</h3></a></article>
+    <article><a href="/redesign-preview/article/left-aligned/"><img src="/redesign-sample/article-ukraine-vigil/media/02-ta-union-files-for-mediation-saying-university-not-engaging-seriously-edf4716d.webp" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">TA union files for mediation with UBC</h3></a></article>
+    <article><a href="/redesign-preview/article/right-aligned/"><img src="/redesign-sample/article-ukraine-vigil/media/03-how-safe-is-our-data-thumbnail-df3204e8.webp" alt=""><span class="ar-suggested-kicker">Feature</span><h3 class="o-article__headline">How safe is our data?</h3></a></article>
+    <article><a href="/redesign-preview/article/full-bleed/"><img src="/redesign-sample/article-ukraine-vigil/media/01-what-we-know-about-the-centre-for-accessibility-s-ai-notetaker-genio--fc2fcd6c.webp" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">UBC researchers shape accessibility policy</h3></a></article>
+    <article><a href="/redesign-preview/article/big-centered/"><img src="/redesign-sample/article-ukraine-vigil/media/02-ta-union-files-for-mediation-saying-university-not-engaging-seriously-edf4716d.webp" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">Campus labour negotiations continue</h3></a></article>
+    <article><a href="/redesign-preview/article/shared-components/"><img src="/redesign-sample/article-ukraine-vigil/media/03-how-safe-is-our-data-thumbnail-df3204e8.webp" alt=""><span class="ar-suggested-kicker">Feature</span><h3 class="o-article__headline">Inside the systems that hold student data</h3></a></article>
+  </div></div><button class="ar-keep-reading__next" type="button">→</button><p class="ar-keep-reading__page"><span>01</span> / <span>02</span></p></section>
+</article></main>{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}"></script>{% endblock %}

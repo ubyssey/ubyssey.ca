@@ -1,0 +1,11 @@
+{% load wagtailimages_tags %}
+<article class="hp-story section-{{ article.current_section|default:'news' }}">
+  <time datetime="{{ article.explicit_published_at|date:'c' }}">{% if article.preview_date %}{{ article.preview_date }}{% else %}{{ article.explicit_published_at|date:'m/d/Y' }}{% endif %}</time>
+  <div class="hp-story__copy">
+    <a class="hp-beat" href="{% if article.category_page %}{{ article.category_page.url }}{% else %}/{{ article.current_section }}/{% endif %}">{% if article.category_page %}{{ article.category_page.title }}{% else %}{{ article.current_section }}{% endif %}</a>
+    <h2><a class="hover-swipe" href="{{ article.url }}">{{ article.title }}</a></h2>
+    <div class="hp-byline"><span class="hp-byline__prefix">By</span> {{ article.get_authors_split_out_visual_bylines|safe }}</div>
+    {% if article.lede %}<p>{{ article.lede|truncatewords:38 }}</p>{% endif %}
+  </div>
+  {% if article.preview_image %}<a class="hp-story__image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt }}" loading="lazy"></a>{% elif article.featured_media.first.image %}<a class="hp-story__image" href="{{ article.url }}">{% image article.featured_media.first.image fill-750x540-c100 loading="lazy" alt=article.featured_media.first.alt_text %}</a>{% endif %}
+</article>

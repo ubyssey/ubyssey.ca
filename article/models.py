@@ -1444,6 +1444,44 @@ class StandardArticlePage(ArticlePage):
     show_in_menus_default = True
     show_in_menus = True
 
+    STORY_TYPE_DEFINITIONS = {
+        "report": "Reports are shorter stories about events with immediate relevance, written from a detached perspective.",
+        "feature": "Features are longer stories about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
+        "profile": "Profiles tell the stories of individuals and their worldviews, written from a reporter's perspective.",
+        "q-and-a": "Q&As are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
+        "review": "Reviews are stories about art and culture, written from a critical perspective.",
+        "game-analysis": "Game analyses are stories about individual games, written from a reporter's perspective.",
+        "commentary": "Commentaries take a position on a sports event or topic and suggest a course of action.",
+        "analysis": "Analyses explain the reasoning and mechanics behind a subject from a beat writer's perspective.",
+        "essay": "Essays present the author's views on the news, grounded in reporting.",
+        "column": "Columns are reported opinion stories whose authors make judgments about the news and the way the world should be.",
+        "editorial": "Editorials represent positions debated and decided by The Ubyssey's Editorial Board.",
+        "letter-to-editor": "Letters to the editor are short responses to stories published by The Ubyssey, written by readers.",
+        "letter-from-editor": "Letters from the editor are written to readers by The Ubyssey's senior masthead.",
+        "public-service": "Public service announcements share information of imminent public interest, including extreme weather and safety threats.",
+    }
+    STORY_TYPE_CHOICES = [
+        ("", "Not specified"), ("report", "Report"), ("feature", "Feature"),
+        ("profile", "Profile"), ("q-and-a", "Q&A"), ("review", "Review"),
+        ("game-analysis", "Game Analysis"), ("commentary", "Commentary"),
+        ("analysis", "Analysis"), ("essay", "Essay"), ("column", "Column"),
+        ("editorial", "Editorial"), ("letter-to-editor", "Letter to the Editor"),
+        ("letter-from-editor", "Letter from the Editor"), ("public-service", "Public Service Announcement"),
+    ]
+
+    story_type = models.CharField(max_length=40, choices=STORY_TYPE_CHOICES, blank=True, default="")
+    standpoint_disclosure = RichTextField(
+        blank=True,
+        default="",
+        help_text="Optional context about the writer's standpoint or relationship to the subject.",
+    )
+    full_bleed_nav_color = models.CharField(
+        max_length=5,
+        choices=(("white", "White"), ("black", "Black")),
+        default="white",
+        help_text="Full-bleed articles only: choose the navigation colour that contrasts with the hero image.",
+    )
+
     #-----Field attributes-----
 
     header = StreamField(
@@ -1644,7 +1682,7 @@ class StandardArticlePage(ArticlePage):
         elif self.layout == 'passing-2025':
             return "article/supplements/article_page_supplement_2025_passing.html"
         elif self.layout == 'right-column':
-            return "article/article_like_special_page.html"
+            return "article/article_page.html"
 
         return "article/article_page.html"
 
@@ -1680,7 +1718,10 @@ class StandardArticlePage(ArticlePage):
                     content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
                 ),
                 FieldPanel("content"),
-                FieldPanel("disclaimer")
+                FieldPanel("disclaimer"),
+                FieldPanel("story_type"),
+                FieldPanel("standpoint_disclosure"),
+                FieldPanel("full_bleed_nav_color"),
             ],
             heading="Article Content",
             classname="collapsible",
@@ -1753,6 +1794,41 @@ class StandardArticlePage(ArticlePage):
             classname="collapsible",
         ),
     ] # content_panels
+
+    @property
+    def redesign_header_layout(self):
+        """Map every legacy header choice onto the five redesign layouts."""
+        layout = "bottom-image"
+        if self.header:
+            first = self.header[0]
+            if first.block_type in ("standard_header", "standard_header_with_youtube_video"):
+                layout = first.value.get("layout") or layout
+        return self.redesign_layout_for_header(layout)
+
+    @staticmethod
+    def redesign_layout_for_header(layout):
+        base = (layout or "bottom-image").split("--")[0]
+        return {
+            "bottom-image": "big-centered",
+            "top-image": "body-width",
+            "left-image": "left-aligned",
+            "right-image": "right-aligned",
+            "banner-image": "full-bleed",
+            "no-image": "body-width",
+            "video-banner": "full-bleed",
+        }.get(base, "big-centered")
+
+    @property
+    def story_type_description(self):
+        return self.STORY_TYPE_DEFINITIONS.get(self.story_type, "")
+
+    @property
+    def primary_author_orderable(self):
+        return self.article_authors.filter(author_role="author").first() or self.article_authors.first()
+
+    @property
+    def extended_contributors(self):
+        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "videographer", "illustrator", "designer"])
 
     promote_panels = ArticlePage.promote_panels
 

@@ -28,6 +28,7 @@ from infinitefeed.views import infinitefeed
 
 from newsletter.urls import urlpatterns as newsletter_urls
 from django.conf.urls import handler500
+from pathlib import Path
 
 from publishing_analytics import views as publishing_analytics_views 
 from content_tracker.views import story_assignment_api_list, visual_assignment_api_list
@@ -47,7 +48,9 @@ api.register(r'events', EventsViewSet)
 
 if settings.DEBUG:
     import debug_toolbar
+    from article.views import redesign_preview
     urlpatterns += [
+        path("redesign-preview/article/<slug:layout>/", redesign_preview, name="article-redesign-preview"),
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
         # tricks for testing error page, which is otherwise not viewable with DEBUG on. inspired by https://spapas.github.io/2015/04/29/django-show-404-page/ (which is outdated)
         # and https://stackoverflow.com/questions/42882243/how-do-you-pass-exception-argument-to-403-view for the need for kwargs
@@ -58,6 +61,11 @@ if settings.DEBUG:
     ]
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Local-only media captured from the production-shaped redesign fixture.
+    # This keeps visual QA deterministic without changing production storage.
+    redesign_sample_root = Path(settings.BASE_DIR).parent / "redesign" / "redesign_sample_content"
+    if redesign_sample_root.exists():
+        urlpatterns += static("/redesign-sample/", document_root=redesign_sample_root)
 
 urlpatterns += [
     #For Google Adsense, because of our serverless setup with GCP

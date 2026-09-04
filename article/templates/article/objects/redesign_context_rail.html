@@ -1,0 +1,19 @@
+<aside class="ar-context-rail">
+  {% if article.standpoint_disclosure %}
+  <section class="ar-context-box"><h2>Standpoint Disclosure</h2><div>{{ article.standpoint_disclosure|safe }}</div></section>
+  {% endif %}
+  {% if article.story_type_description or article.extended_contributors %}
+  <section class="ar-context-box"><h2>Extended Byline</h2>
+    {% if article.story_type_description %}<p><strong>{{ article.get_story_type_display }}:</strong> {{ article.story_type_description }}</p>{% endif %}
+    {% for contributor in article.extended_contributors %}<p>
+      {% if contributor.author_role == 'backfield_editor' %}This story's backfield editor was
+      {% elif contributor.author_role == 'copy_editor' %}Copyedited by
+      {% elif contributor.author_role == 'photographer' %}Photos by
+      {% elif contributor.author_role == 'videographer' %}Video by
+      {% elif contributor.author_role == 'illustrator' %}Illustrations by
+      {% elif contributor.author_role == 'designer' %}Designed by{% endif %}
+      <a href="{{ contributor.author.url }}">{{ contributor.author_alias|default:contributor.author.full_name }}</a>.
+    </p>{% endfor %}
+  </section>
+  {% endif %}
+</aside>

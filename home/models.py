@@ -17,6 +17,10 @@ from events import blocks as eventblocks
 from article import blocks_outer_article as articleblocks
 from django.utils import timezone
 import datetime
+import json
+from pathlib import Path
+from types import SimpleNamespace
+from django.conf import settings
 
 # Create your models here.
 
@@ -119,6 +123,21 @@ class HomePage(Page):
         use_json_field=True,
     )
 
+    game_analysis = StreamField(
+        [("panel", homeblocks.GameAnalysisPanel())],
+        null=True,
+        blank=True,
+        max_num=1,
+        use_json_field=True,
+        help_text="Homepage sports analysis stories, active sports, upcoming games and recent results.",
+    )
+
+    newsletter_action_url = models.URLField(
+        blank=True,
+        default="",
+        help_text="Mailchimp form action URL. Leave blank until the Mailchimp audience is configured; the preview form will remain disabled.",
+    )
+
     sidebar_stream = StreamField(
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
@@ -181,6 +200,8 @@ class HomePage(Page):
         FieldPanel("middle_stream", heading="Middle Stream"),
         FieldPanel("sidebar_stream", heading="Sidebar"),
         FieldPanel("sections_stream", heading="Sections"),
+        FieldPanel("game_analysis", heading="Game Analysis"),
+        FieldPanel("newsletter_action_url", heading="Newsletter integration"),
         # FieldPanel('home_leaderboard_ad_slot'),
         # FieldPanel('home_mobile_leaderboard_ad_slot'),
         # FieldPanel('home_sidebar_ad_slot1'),
@@ -198,5 +219,80 @@ class HomePage(Page):
         context = super().get_context(request, *args, **kwargs)
 
         context["curated_articles"] = self.get_curated_articles()
+
+        # Preserve the exact editorial ordering from the existing curated stream.
+        # Add recent stories only when a preview/homepage has fewer than the cards
+        # required by the redesigned layout.
+        ordered_articles = []
+        seen = set()
+        for article in context["curated_articles"]:
+            if article and article.pk not in seen:
+                ordered_articles.append(article.specific)
+                seen.add(article.pk)
+
+        if len(ordered_articles) < 17:
+            recent = (ArticlePage.objects.live().public()
+                      .descendant_of(self)
+                      .exclude(pk__in=seen)
+                      .order_by("-explicit_published_at")[:17 - len(ordered_articles)])
+            ordered_articles.extend(article.specific for article in recent)
+
+        if not ordered_articles and settings.DEBUG:
+            # A read-only, development-only fallback built from the supplied
+            # production snapshot. This keeps local visual review useful even
+            # when the developer database has no editorial content.
+            sample_root = Path(settings.BASE_DIR).parent / "redesign" / "redesign_sample_content"
+            sample_files = [sample_root / "section-news" / "content.json", sample_root / "archive" / "content.json"]
+            preview_stories = []
+            preview_urls = set()
+            for sample_file in sample_files:
+                if not sample_file.exists():
+                    continue
+                payload = json.loads(sample_file.read_text())
+                for story in payload.get("featured_stories", []) + payload.get("stories", []):
+                    if story.get("article_url") in preview_urls:
+                        continue
+                    preview_urls.add(story.get("article_url"))
+                    path_parts = story.get("article_url", "").split("/")
+                    section = path_parts[3] if len(path_parts) > 3 else "news"
+                    thumbnail = story.get("thumbnail", {})
+                    local_thumbnail = sample_file.parent / thumbnail.get("local_path", "")
+                    preview_index = len(preview_stories)
+                    preview_date = datetime.date(2026, 8, 28) - datetime.timedelta(days=preview_index * 3)
+                    preview_beats = {
+                        "news": ("Campus", "AMS", "Research"),
+                        "opinion": ("Opinion",),
+                        "arts": ("Arts",),
+                        "culture": ("Culture", "Music", "Film"),
+                        "sports": ("Sports", "Thunderbirds"),
+                    }
+                    beat_names = preview_beats.get(section, (section.title(),))
+                    beat_name = beat_names[preview_index % len(beat_names)]
+                    preview_article_layouts = (
+                        "big-centered", "body-width", "left-aligned",
+                        "right-aligned", "full-bleed",
+                    )
+                    preview_stories.append(SimpleNamespace(
+                        pk=f"preview-{len(preview_stories)}",
+                        title=story.get("headline", ""),
+                        # Keep local fixture navigation inside the redesign so
+                        # homepage-to-article review exercises the new shells.
+                        url=f"/redesign-preview/article/{preview_article_layouts[preview_index % 5]}/",
+                        lede=story.get("lede", ""),
+                        current_section=section if section in {"news", "opinion", "arts", "culture", "sports"} else "news",
+                        category_page=SimpleNamespace(title=beat_name, url=f"/{section}/{beat_name.lower()}/"),
+                        preview_image=(f"/redesign-sample/{sample_file.parent.name}/{thumbnail['local_path']}?v=2"
+                                       if local_thumbnail.is_file() else thumbnail.get("source_url", "")),
+                        image_alt=thumbnail.get("alt_text", ""),
+                        preview_date=preview_date.strftime("%m/%d/%Y"),
+                        get_authors_split_out_visual_bylines=story.get("byline_html", story.get("byline_text", "")),
+                    ))
+                    if len(preview_stories) == 17:
+                        break
+                if len(preview_stories) == 17:
+                    break
+            ordered_articles = preview_stories
+
+        context["redesign_articles"] = ordered_articles
 
         return context
