@@ -6,10 +6,11 @@ import { createRoot } from "react-dom/client";
 import { useAuthorsPanel } from "../metadata/author_panel.jsx";
 import { setupMetadataCollaboration } from "../metadata/collaboration.js";
 import { useMediaModals } from "../media/media_modals.jsx";
-import { usePageFieldToggles } from "./page_fields.js";
+import { useCopyEditingToggle, usePageFieldToggles } from "./page_fields.js";
 
 function ManuscriptChrome({ form, metadata, mediaUpdates, schedulePreview }) {
   usePageFieldToggles(form, schedulePreview);
+  useCopyEditingToggle();
   useAuthorsPanel();
   useEffect(() => setupMetadataCollaboration(form, metadata), [form, metadata]);
   useMediaModals(form, mediaUpdates);

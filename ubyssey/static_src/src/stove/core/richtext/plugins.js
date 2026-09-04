@@ -2,6 +2,7 @@
 
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-gapcursor/style/gapcursor.css";
+import "@guardian/prosemirror-invisibles/dist/style.css";
 
 import { Plugin, PluginKey, TextSelection } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
@@ -13,6 +14,13 @@ import { gapCursor } from "prosemirror-gapcursor";
 import { ellipsis, emDash, inputRules, smartQuotes, textblockTypeInputRule, undoInputRule, wrappingInputRule } from "prosemirror-inputrules";
 import { commentSuggestion, createSuggestionMark, markRangeAtCursor } from "./annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
+import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph as invisiblesParagraph } from "@guardian/prosemirror-invisibles/dist/index.mjs";
+
+export const COPY_EDITING_MODE_STORAGE_KEY = "manuscript-copy-editing-mode";
+
+export function isCopyEditingModeEnabled() {
+  return window.localStorage.getItem(COPY_EDITING_MODE_STORAGE_KEY) === "true";
+}
 
 export function editorPlugins(schema, {includeHistory = true, undoCommand = undo, redoCommand = redo} = {}) {
   return [
@@ -23,6 +31,7 @@ export function editorPlugins(schema, {includeHistory = true, undoCommand = undo
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),
+    createInvisiblesPlugin([invisiblesSpace, hardBreak, invisiblesParagraph], { shouldShowInvisibles: isCopyEditingModeEnabled() }),
     ...(includeHistory ? [history()] : []),
   ];
 }

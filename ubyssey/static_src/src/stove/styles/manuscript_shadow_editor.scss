@@ -319,3 +319,13 @@ span[data-footnote-id]::before {
 .ProseMirror-yjs-selection {
     border-radius: 2px;
 }
+
+// Override for visibility
+.invisible {
+    visibility: visible !important;
+}
+
+:host(.copy-editing-mode) .ProseMirror,
+:host(.copy-editing-mode) .ProseMirror * {
+    font-family: Arial, sans-serif !important;
+}
