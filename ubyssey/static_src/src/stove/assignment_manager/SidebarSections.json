@@ -29,7 +29,7 @@
     {
         "name": "More", 
         "sections": [
-            {"name": "Copy", "path": "/stove/views/copy", "disabled": true },
+            {"name": "Copy", "path": "/stove/views/copy" },
             {"name": "Games", "path": "/stove/games", "disabled": true },
             {"name": "Homepage", "path": "/stove/homepage", "disabled": true },
             {"name": "Margins", "path": "/stove/stories/margins" }

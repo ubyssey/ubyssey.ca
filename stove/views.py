@@ -64,35 +64,26 @@ def content_tracker_react(request, section="all"):
     for s in sections:
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
-def load_pages(request, section="all", page=1):
-    username = request.GET.get('username', '')
-    include_published = request.GET.get('include_published', '')
-    
-    qs = ArticlePage.objects.all()
-    if (section != "all"):
-        qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
-    if (username):
-        author_page = get_object_or_404(AuthorPage, full_name=username)
-        qs = qs.filter(article_authors__author=author_page)
-    if (include_published.lower() == "false"):
-        qs = qs.filter(live=False)
-    
-    qs = qs.order_by("-latest_revision_created_at", "-pk")
+def copy(request, section="all"):
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    sections = SectionPage.objects.exact_type(SectionPage)
 
-    paginator = Paginator(qs, 20)
+    beatExport = {}
+    for beat in beats:
+        beatSection = beat.get_parent().title
+        if not beatSection in beatExport: 
+            beatExport[beatSection] = []
+        beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
-    pages = paginator.get_page(request.GET.get("article-page", page))
+    sectionExport = []
+    for s in sections:
+        sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    result="[]"
-    if (len(pages) > 0):
-        result = "["
-        for page in pages: 
-            result += page.get_latest_revision_as_object().to_json() + ","
-        result = result[:-1] + "]"
-    return JsonResponse(result, safe=False)
+    return render(request, "view_copy_department.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
 @require_POST
@@ -211,11 +202,20 @@ def load_page(request, page_id):
     return JsonResponse(pageJson, safe=False)
 
 @login_required
-def load_partial_pages(request, section="all", page=1):
+def load_partial_stories(request, section="all", page=1):
     username = request.GET.get('username', '')
     include_published = request.GET.get('include_published', '')
+    article_status = request.GET.get('article_status', -1)
     
-    qs = ArticlePage.objects.all()
+    qs = ArticlePage.objects
+    
+    if (article_status != -1):
+        print(article_status)
+        print(type(article_status))
+        print(type(int(article_status)))
+        qs = qs.filter(article_status=4)
+        print(list(qs))
+    qs = qs.all()
     if (section != "all"):
         qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
     if (username):
@@ -259,6 +259,8 @@ def update_content_tracker(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
     data = json.loads(request.body.decode('utf-8'))
 
+    save_as_draft = False
+
     if ("title" in data):
         page.title = data["title"]
         if not page.live:
@@ -279,6 +281,7 @@ def update_content_tracker(request, page_id):
             raise Exception("Page can't move to section")
     if ("article_status" in data):
         page.article_status = data["article_status"]
+        save_as_draft = True
     if ("story_type" in data):
         page.story_type = data["story_type"]
     if ("authors" in data):
@@ -313,8 +316,9 @@ def update_content_tracker(request, page_id):
             for index, deadline in enumerate(data["deadline_list"] or [])
         ]
         page.deadline_list.commit()
-
     page.save_revision(user=request.user, log_action=True, changed=False)
+    if save_as_draft:
+        page.save(user=request.user)
     update_page_collaboration(page, data)
 
     latest_revision = page.get_latest_revision_as_object()
