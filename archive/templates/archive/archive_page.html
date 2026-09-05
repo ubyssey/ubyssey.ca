@@ -1,27 +1,15 @@
 {% extends 'ubyssey/base.html' %}
-{% load static %}
-{% block header %}
-{% include 'navigation/headers/topbar.html' with section="none" %}
-{% include 'navigation/headers/mobile.html' %}
-{% load archive_tags %}
-{% endblock %}
+{% load static wagtailcore_tags wagtailimages_tags archive_tags support_tags %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-1"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block page_wrapper %}listing-redesign aux-theme{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
+{% block content %}<main id="main-content" class="aux-page archive-page">
+  <header class="archive-hero{% if has_search %} archive-hero--results{% endif %}"><div class="page-shell"><p class="aux-kicker">The Ubyssey Archive</p>{% if has_search %}<h1>Results{% if q %} for “{{ q }}”{% endif %}</h1>{% else %}<h1>Search the Archive</h1>{% endif %}<form method="get" action="{{ request.path }}"><label class="sr-only" for="archive-query">Search the archive</label><input id="archive-query" name="q" type="search" value="{{ q|default:'' }}" placeholder="Search by keyword, subject or contributor"><button class="aux-button">{% if has_search %}Update search{% else %}Search{% endif %}</button></form></div></header>
+  {% if not has_search %}<section class="archive-browse page-shell"><h2>Browse the archive</h2><div class="archive-browse__group"><h3>By year</h3><div class="archive-pills">{% for y in years|slice:':7' %}<a href="?year={{ y }}">{{ y }}</a>{% endfor %}<a href="?from=2010-01-01&amp;to=2019-12-31">2010s</a><a href="?from=2000-01-01&amp;to=2009-12-31">2000s</a><a href="?from=1918-01-01&amp;to=1999-12-31&amp;order=oldest">1918–99</a></div></div><div class="archive-browse__group"><h3>By section</h3><div class="archive-pills">{% for item in self.sections_filters.all %}{% if item.section_filter %}<a href="?section={{ item.section_filter.slug }}">{{ item.section_filter.title }}</a>{% endif %}{% endfor %}<a href="?type=videos">Video</a><a href="?section=margins">Margins</a></div></div></section>
+  <section class="print-archive"><div class="page-shell"><div><p class="aux-kicker">Print issues</p><h2>Browse digitized editions of <em>The Ubyssey</em></h2></div><a class="aux-button" href="https://issuu.com/ubyssey">View print archive</a></div></section>
+  <section class="archive-recent page-shell"><h2>Recently published</h2>{% for article in recent_articles %}{% include 'archive/objects/redesign_result.html' %}{% endfor %}</section>
+  {% else %}<div class="archive-results page-shell"><div class="archive-chips">{% if selected_section %}<span>Section: {{ selected_section }}</span>{% endif %}{% if content_type %}<span>Type: {{ content_type }}</span>{% endif %}{% if year %}<span>{{ year }}</span>{% endif %}{% if contributor %}<span>Contributor: {{ contributor }}</span>{% endif %}<a href="{{ request.path }}">Clear all</a></div><div class="archive-results__bar"><strong>{{ result_count }} results</strong><form method="get"><input type="hidden" name="q" value="{{ q|default:'' }}"><select name="order" onchange="this.form.submit()"><option value="newest"{% if order == 'newest' %} selected{% endif %}>Newest</option><option value="oldest"{% if order == 'oldest' %} selected{% endif %}>Oldest</option></select></form></div>
+  <div class="archive-results__layout"><aside><form method="get"><input type="hidden" name="q" value="{{ q|default:'' }}"><fieldset><legend>Date range</legend><label>From<input type="date" name="from" value="{{ date_from }}"></label><label>To<input type="date" name="to" value="{{ date_to }}"></label></fieldset><fieldset><legend>Year</legend><select name="year"><option value="">All years</option>{% for y in years %}<option value="{{ y }}"{% if y == year %} selected{% endif %}>{{ y }}</option>{% endfor %}</select></fieldset><fieldset><legend>Section</legend><select name="section"><option value="">All sections</option>{% for item in self.sections_filters.all %}{% if item.section_filter %}<option value="{{ item.section_filter.slug }}"{% if selected_section == item.section_filter.slug %} selected{% endif %}>{{ item.section_filter.title }}</option>{% endif %}{% endfor %}</select></fieldset><fieldset><legend>Content type</legend><label><input type="radio" name="type" value=""{% if content_type != 'videos' %} checked{% endif %}> Articles</label><label><input type="radio" name="type" value="videos"{% if content_type == 'videos' %} checked{% endif %}> Videos</label></fieldset><fieldset><legend>Contributor</legend><input name="contributor" value="{{ contributor }}" placeholder="Name"></fieldset><fieldset><legend>Series / beat</legend><input name="series" value="{{ series }}" placeholder="Slug"></fieldset><button class="aux-button">Apply filters</button></form></aside><section class="archive-results__list">{% for article in page_obj %}{% include 'archive/objects/redesign_result.html' %}{% empty %}<div class="archive-empty"><h2>No results found</h2><p>Try a broader keyword or remove one of your filters.</p></div>{% endfor %}{% if page_obj.paginator.num_pages > 1 %}<nav class="archive-pagination">{% if page_obj.has_previous %}<a href="?{% modify_query_string 'page' page_obj.previous_page_number %}">← Previous</a>{% endif %}<span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% if page_obj.has_next %}<a href="?{% modify_query_string 'page' page_obj.next_page_number %}">Next →</a>{% endif %}</nav>{% endif %}</section></div></div>{% endif %}
+</main>{% endblock %}
 
-{% block content %}
-<main class="c-page c-page--archive">
-    <div class="u-container u-container--padded">
-
-        <div class="c-page__header">
-            <h1 class="c-page__heading">Search the Archive</h1>
-        </div>
-        <div class="c-page__header">
-            <a href="https://issuu.com/ubyssey">Print issues</a>
-        </div>
-        
-
-        {% include 'archive/objects/archive.html' %}
-
-    </div>
-</main>
-{% endblock %}
-
-
+{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}"></script>{% endblock %}

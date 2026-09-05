@@ -6,7 +6,11 @@
   <div class="ar-reading">{% include 'article/objects/redesign_main_byline.html' with article=preview %}<div class="ar-reading__layout">
     {% include 'article/objects/redesign_context_rail.html' with article=preview %}
     <div class="article-content ar-body">
-      {% for paragraph in preview_body %}<p>{{ paragraph }}</p>{% if forloop.counter == 3 and show_preview_note %}<aside class="o-extra-article-info o-extra-article-info--editors-note center"><div class="o-extra-article-info__content"><h2>Editor's Note</h2><div class="o-extra-article-info__body"><p>This editable note demonstrates the redesigned in-text treatment. Editors control both this heading and its body through the existing Extra Article Info block.</p><p>Notes remain in the article flow on narrow screens and may use the right rail on wide screens.</p></div></div></aside>{% endif %}{% endfor %}
+      {% for block in preview_content %}
+        {% if block.kind == 'html' %}{{ block.html|safe }}
+        {% elif block.kind == 'image' %}<figure class="image-attachment attachment default full"><img class="article-attachment" loading="eager" decoding="async" width="1000" height="562" src="{{ block.url }}" alt="{{ block.alt_text }}"><figcaption class="caption">{{ block.caption }}{% if block.credit %} <span class="credit">{{ block.credit }}</span>{% endif %}</figcaption></figure>
+        {% elif block.kind == 'note' %}<aside class="o-extra-article-info o-extra-article-info--editors-note center"><div class="o-extra-article-info__content"><h2>Editor's Note</h2><div class="o-extra-article-info__body"><p>This preview preserves the redesigned in-text note component while displaying the complete text and photography from the original article.</p><p>Editors can change both this heading and its body through the existing Extra Article Info block.</p></div></div></aside>{% endif %}
+      {% endfor %}
       <div class="ar-context-mobile">{% include 'article/objects/redesign_context_rail.html' with article=preview %}</div>
       <p class="ar-report"><a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Submit a complaint</a><a href="https://forms.gle/RbJjhEpqqt7tz4AF6">Report a correction</a></p>
     </div></div></div>

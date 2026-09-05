@@ -183,6 +183,15 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         default='',
     )
 
+    spotify_episode_url = models.URLField(
+        blank=True,
+        default="",
+        help_text=(
+            "For The Vilest Rag landing page: paste the public Spotify episode URL "
+            "used by the Latest Episode player. No iframe markup is required."
+        ),
+    )
+
     label_svg = models.ForeignKey(
         'wagtaildocs.Document',
         null=True,
@@ -234,6 +243,11 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 FieldPanel("description"),
             ],
             heading="Description",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("spotify_episode_url")],
+            heading="Podcast player",
+            classname="collapsible collapsed",
         ),
         MultiFieldPanel(
             [
@@ -311,6 +325,10 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
         context["filters"] = filters
         context["section_slug"] = self.slug
+        featured = list(self.get_featured_articles(number_featured=3))
+        all_articles = self.get_section_articles()[:20]
+        context["redesign_all_articles"] = all_articles
+        context["redesign_recent_articles"] = all_articles[len(featured):]
         
         # context["featured_articles"] = self.get_featured_articles()
 
@@ -318,7 +336,16 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             context["search_query"] = search_query
     
         return context
-    
+
+    def get_template(self, request, *args, **kwargs):
+        """Use the canonical auxiliary-page variants without changing old page types."""
+        templates = {
+            "photo": "section/photo_page.html",
+            "margins": "section/margins_page.html",
+            "the-vilest-rag": "section/podcast_page.html",
+        }
+        return templates.get(self.slug, self.template)
+
     def get_section_articles(self, order='-first_published_at') -> QuerySet:
         # order should be explicit_published_at but that is in the ArticlePage table and accessing slows down the query
         section_articles = ArticlePage.objects \
@@ -527,5 +554,3 @@ class CategoryPage(SectionPage):
     
     def get_recent_articles(self, max_items=10):
         return ArticlePage.objects.live().filter(category_page = self).order_by("-first_published_at")[:max_items]
-
-     

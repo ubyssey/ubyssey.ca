@@ -2,7 +2,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-{% if self %}
+{% if self and not redesign_page_url %}
     {% if self.title|striptags|safe == "The Ubyssey" %}
     <title>{{ self.title|striptags|safe }}</title>
     {% else %}

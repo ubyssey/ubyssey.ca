@@ -49,8 +49,22 @@ api.register(r'events', EventsViewSet)
 if settings.DEBUG:
     import debug_toolbar
     from article.views import redesign_preview
+    from section.views import redesign_preview as section_redesign_preview
+    from authors.views import redesign_preview as author_redesign_preview
+    from ubyssey.views.auxiliary_preview import auxiliary_preview
     urlpatterns += [
         path("redesign-preview/article/<slug:layout>/", redesign_preview, name="article-redesign-preview"),
+        path("redesign-preview/section/", section_redesign_preview, name="section-redesign-preview"),
+        path("redesign-preview/author/", author_redesign_preview, name="author-redesign-preview"),
+        path("video/", auxiliary_preview, {"page_key": "video"}, name="video-redesign-preview"),
+        path("photo/", auxiliary_preview, {"page_key": "photo"}, name="photo-redesign-preview"),
+        path("the-vilest-rag/", auxiliary_preview, {"page_key": "podcast"}, name="podcast-redesign-preview"),
+        path("margins/", auxiliary_preview, {"page_key": "margins"}, name="margins-redesign-preview"),
+        path("archive/", auxiliary_preview, {"page_key": "archive"}, name="archive-redesign-preview"),
+        path("about/our-journalism/", auxiliary_preview, {"page_key": "our-journalism"}, name="journalism-redesign-preview"),
+        path("about/our-team/", auxiliary_preview, {"page_key": "our-team"}, name="team-redesign-preview"),
+        path("contact/masthead/", auxiliary_preview, {"page_key": "masthead"}, name="masthead-redesign-preview"),
+        path("about/ups-board/", auxiliary_preview, {"page_key": "ups-board"}, name="board-redesign-preview"),
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
         # tricks for testing error page, which is otherwise not viewable with DEBUG on. inspired by https://spapas.github.io/2015/04/29/django-show-404-page/ (which is outdated)
         # and https://stackoverflow.com/questions/42882243/how-do-you-pass-exception-argument-to-403-view for the need for kwargs

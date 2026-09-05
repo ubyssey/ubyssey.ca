@@ -88,6 +88,9 @@
   .ar-body.article-content>p,.ar-body.article-content>ul,.ar-body.article-content>ol{font-size:23px;line-height:31px}.ar-context-mobile .ar-context-box{font-size:17px;line-height:23px}.ar-context-mobile .ar-context-box h2{font-size:20px;line-height:25px}.ar-report{font-size:14px!important;line-height:20px!important;flex-wrap:wrap}
   .ar-keep-reading article{height:270px}.ar-keep-reading .o-article__left,.ar-keep-reading .o-article__image,.ar-keep-reading .o-article__image img,.ar-keep-reading article>a>img{height:150px}
 }
+.ar-body.article-content>p a,.ar-body.article-content>ul a,.ar-body.article-content>ol a{border-bottom:0!important;color:#27376c;text-decoration:none}
+.ar-body.article-content>p a:hover,.ar-body.article-content>p a:focus-visible,.ar-body.article-content>ul a:hover,.ar-body.article-content>ul a:focus-visible,.ar-body.article-content>ol a:hover,.ar-body.article-content>ol a:focus-visible{text-decoration:underline;text-decoration-color:currentColor;text-decoration-thickness:1px;text-underline-offset:0}
+[color-css-theme=dark] .ar-body.article-content>p a,[color-css-theme=dark] .ar-body.article-content>ul a,[color-css-theme=dark] .ar-body.article-content>ol a{color:#77c0d2;text-decoration-color:#77c0d2}
 
 /* Final Figma reconciliation */
 .ar-nav .hp-nav__search button img{filter:none}
@@ -144,3 +147,17 @@
 [color-css-theme=dark] .ar-suggested-kicker{color:#c3cede}
 .ar-hero__media figcaption{font-size:18px;line-height:24px}
 @media(max-width:800px){.ar-body .o-extra-article-info--editors-note,.ar-body .o-extra-article-info--editors-note.center{width:100%;max-width:100%}.ar-keep-reading article{width:calc(100vw - 70px)!important}.ar-keep-reading__next{right:0}.ar-keep-reading.is-page-two .ar-keep-reading__track{transform:translateX(calc(-100vw + 34px))}.ar-hero__media figcaption{font-size:18px;line-height:24px}}
+
+/* Keep the article header full-width on phones. These intentionally follow
+   the desktop reconciliation rules above so they win the responsive cascade. */
+@media(max-width:800px){
+  .ar-nav__bar.page-shell,.ar-nav--full-bleed .ar-nav__bar.page-shell{width:calc(100% - 24px);grid-template-columns:40px minmax(0,1fr) 40px;padding-inline:0}
+  .ar-nav__nameplate{white-space:nowrap}
+  .ar-page .ar-hero,.ar-page .ar-hero--big-centered,.ar-page .ar-hero--body-width,.ar-page .ar-hero--left-aligned,.ar-page .ar-hero--right-aligned{box-sizing:border-box;display:flex;width:100%;max-width:none;height:auto;margin:0;padding:38px 18px 0;flex-direction:column}
+  .ar-page .ar-hero__copy,.ar-page .ar-hero--big-centered .ar-hero__copy,.ar-page .ar-hero--body-width .ar-hero__copy,.ar-page .ar-hero--left-aligned .ar-hero__copy,.ar-page .ar-hero--right-aligned .ar-hero__copy{box-sizing:border-box;width:100%;max-width:none;margin:0 0 25px}
+  .ar-page .ar-hero__media,.ar-page .ar-hero--big-centered .ar-hero__media,.ar-page .ar-hero--body-width .ar-hero__media,.ar-page .ar-hero--left-aligned .ar-hero__media,.ar-page .ar-hero--right-aligned .ar-hero__media{box-sizing:border-box;width:100vw;max-width:none;height:auto;margin-left:-18px;aspect-ratio:auto}
+  .ar-page .ar-hero__media img{display:block;width:100%;max-width:none;height:auto;object-fit:cover}
+  .ar-page .ar-hero__media figcaption{box-sizing:border-box;width:100%;padding:9px 18px 0}
+  .ar-page .ar-hero--full-bleed{width:100%;height:680px;padding:0}
+  .ar-page .ar-hero--full-bleed .ar-hero__media{width:100%;height:680px;margin:0}
+}

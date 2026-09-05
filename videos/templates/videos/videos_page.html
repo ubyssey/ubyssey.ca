@@ -1,62 +1,12 @@
 {% extends 'ubyssey/base.html' %}
-{% load humanize %}
-{% load static %}
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
-{% load wagtailuserbar %}
+{% load static humanize wagtailcore_tags video_filters %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-1"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block page_wrapper %}listing-redesign aux-theme{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
+{% block content %}<main id="main-content" class="aux-page video-page"><div class="page-shell"><h1 class="video-title">Video</h1>{% with featured=paginated_videos.0 %}{% if featured %}<section class="video-hero"><a class="video-hero__media" href="{{ featured.url }}"><img src="{% if featured.preview_image %}{{ featured.preview_image }}{% else %}https://img.youtube.com/vi/{{ featured.url|youtube_embed_id }}/maxresdefault.jpg{% endif %}" alt="{{ featured.title }}"><span class="play-icon">▶</span></a><div class="video-hero__copy"><time>{{ featured.created_at|date:'F j, Y' }}</time><h2><a href="{{ featured.url }}">{{ featured.title }}</a></h2><p>{{ featured.authors_string|safe }}</p><a class="aux-button" href="{{ featured.url }}">Watch video</a></div></section>{% endif %}{% endwith %}
+<nav class="aux-tabs"><div><a class="is-active" href="#latest">All</a><a href="#latest">Features</a><a href="#latest">Interviews</a><a href="#latest">Explainers</a><a href="#latest">Series</a></div><form action="/archive/" method="get"><input name="q" type="search" placeholder="Search"><button>⌕&nbsp; Search</button></form></nav>
+<section id="latest" class="aux-section"><h2>Latest videos</h2><div class="video-grid">{% for video in paginated_videos|slice:'1:7' %}<article class="video-card"><a class="video-card__media" href="{{ video.url }}"><img src="{% if video.preview_image %}{{ video.preview_image }}{% else %}https://img.youtube.com/vi/{{ video.url|youtube_embed_id }}/hqdefault.jpg{% endif %}" alt="{{ video.title }}" loading="lazy"><span class="play-icon">▶</span></a><time>{{ video.created_at|date:'F j, Y' }}</time><h3><a href="{{ video.url }}">{{ video.title }}</a></h3><p>{{ video.authors_string|safe }}</p></article>{% endfor %}</div></section></div>
+<section class="video-archive"><div class="page-shell"><h2>From the archive</h2><div>{% for video in paginated_videos|slice:'7:10' %}<article><a href="{{ video.url }}"><img src="{% if video.preview_image %}{{ video.preview_image }}{% else %}https://img.youtube.com/vi/{{ video.url|youtube_embed_id }}/hqdefault.jpg{% endif %}" alt="" loading="lazy"></a><span><h3><a href="{{ video.url }}">{{ video.title }}</a></h3><time>{{ video.created_at|date:'F j, Y' }}</time></span></article>{% endfor %}</div></div></section>
+</main>{% endblock %}
 
-{% block header %}
-  {% include 'navigation/headers/topbar.html' with section="none" %}
-  {% include 'navigation/headers/mobile.html' %}
-{% endblock %}
-
-{% block content %}
-<main class="section">
-  {% include 'objects/advertisement.html' with size='leaderboard' name='Leaderboard' id=1 %}
-  {% include 'objects/advertisement.html' with size='mobile-leaderboard' name='Mobile_Leaderboard' id=5 %}
-  <div class="u-container u-container--padded u-video-container">
-    <div class="c-page__header">
-      <h1 class="c-page__heading">Videos</h1>
-    </div>
-
-    {% comment %} Un-DRY alert: this div is repeated later {% endcomment %}
-    <div class="o-archive__pagination">
-      {% if paginated_videos.has_previous %}
-        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.previous_page_number }}"><ion-icon name="caret-back-outline" aria-hidden="true"></ion-icon> Previous</a>
-      {% endif %}
-
-      <span class="o-archive__pagination__current" >
-        Page {{ paginated_videos.number }} of {{ paginated_videos.paginator.num_pages }}
-      </span>
-
-      {% if paginated_videos.has_next %}
-        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.next_page_number }}">Next <ion-icon name="caret-forward-outline" aria-hidden="true"></ion-icon></a>
-      {% endif %}
-    </div>
-
-    <div class='c-video-episode-list'>
-      {% for video in paginated_videos %}
-          {% include 'videos/stream_blocks/video.html' with video=video %}
-      {% endfor %}
-    </div>
-
-    {% comment %} Un-DRY repetition of above {% endcomment %}
-    <div class="o-archive__pagination">
-      {% if paginated_videos.has_previous %}
-        <a class="o-button o-archive__pagination__prev" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.previous_page_number }}"><ion-icon name="caret-back-outline" aria-hidden="true"></ion-icon> Previous</a>
-      {% endif %}
-
-      <span class="o-archive__pagination__current" >
-        Page {{ paginated_videos.number }} of {{ paginated_videos.paginator.num_pages }}
-      </span>
-
-      {% if paginated_videos.has_next %}
-        <a class="o-button o-archive__pagination__next" href="{{ request.path }}{% if query_string %}{{ query_string }}&{% else %}?{% endif %}page={{ paginated_videos.next_page_number }}">Next <ion-icon name="caret-forward-outline" aria-hidden="true"></ion-icon></a>
-      {% endif %}
-    </div>
-
-  </div>
-
-</main>
-{% endblock %}
-
+{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}"></script>{% endblock %}

@@ -51,6 +51,36 @@ def _sample_story(slug):
     return None, None
 
 
+def _ukraine_article_fixture():
+    """Load the canonical local snapshot used by the article-layout previews."""
+    path = Path(__file__).resolve().parents[2] / "redesign" / "redesign_sample_content" / "article-ukraine-vigil" / "content.json"
+    if not path.exists():
+        return None
+    return json.loads(path.read_text())
+
+
+def _preview_content(article):
+    """Interleave the scraped article body, redesign note, and local inline media."""
+    content = []
+    media_after = {8: 0, 15: 1}
+    # The final five scraped blocks are legacy author boxes, now represented by
+    # the redesigned main and extended bylines instead of duplicated in-body.
+    for index, block in enumerate(article.get("content_blocks", [])[:26]):
+        content.append({"kind": "html", "html": block.get("html", "")})
+        if index == 2:
+            content.append({"kind": "note"})
+        if index in media_after:
+            media = article.get("inline_media", [])[media_after[index]]
+            content.append({
+                "kind": "image",
+                "url": f"/redesign-sample/article-ukraine-vigil/{media['local_path']}",
+                "alt_text": media.get("alt_text", ""),
+                "caption": media.get("caption", ""),
+                "credit": media.get("credit", ""),
+            })
+    return content
+
+
 def _story_type(story):
     path = urlparse(story.get("article_url", "")).path
     title = story.get("headline", "").lower()
@@ -126,6 +156,20 @@ def redesign_preview(request, layout):
         raise Http404
     mapped_layout = "big-centered" if layout == "shared-components" else layout
     story, story_directory = _sample_story(request.GET.get("story"))
+    snapshot = _ukraine_article_fixture()
+    snapshot_article = snapshot.get("article", {}) if snapshot else {}
+    if not story and snapshot_article:
+        header_media = snapshot_article.get("header_media") or {}
+        story = {
+            "headline": snapshot_article.get("headline", ""),
+            "lede": snapshot.get("page", {}).get("meta_description", ""),
+            "authors": snapshot_article.get("authors", []),
+            "byline_text": snapshot_article.get("byline_text", ""),
+            "article_url": snapshot.get("page", {}).get("canonical_url", "/news/ukraine-vigil-fourth-anniversary/"),
+            "date_attribute": snapshot_article.get("displayed_date", ""),
+            "thumbnail": header_media,
+        }
+        story_directory = "article-ukraine-vigil"
     story_authors = story.get("authors", []) if story else []
     primary = story_authors[0] if story_authors else {"text": "Juan Pablo Sastoque Vega", "url": "#"}
     author_fixture = _author_fixture(primary.get("text", "")) or {}
@@ -168,7 +212,7 @@ def redesign_preview(request, layout):
         featured_media=SimpleNamespace(first=SimpleNamespace(image=None, alt_text="A musician performs beside a Ukrainian flag at a candlelight vigil.", caption="Earlier that day, the Prime Minister weighed in.", credit="Photo by Aleah Kippan for The Ubyssey")),
         primary_author_orderable=contributor,
         published_at=_preview_story_date(story),
-        standpoint_disclosure=("<p>This contributor's relationship to the subject has been disclosed to editors. The disclosure is included so readers can evaluate the work with the relevant context.</p>" if story_type in {"Essay", "Feature"} or layout == "shared-components" else ""),
+        standpoint_disclosure="<p>Juan Pablo Sastoque Vega is The Ubyssey’s News Editor. This relationship is disclosed so readers can evaluate the reporting with the relevant context.</p>",
         story_type_description=STORY_TYPE_COPY[story_type],
         get_story_type_display=story_type,
         extended_contributors=[editor, *fixture_credits],
@@ -176,18 +220,15 @@ def redesign_preview(request, layout):
     thumbnail = story.get("thumbnail", {}) if story else {}
     local_image = (f"/redesign-sample/{story_directory}/{thumbnail.get('local_path')}" if story and thumbnail.get("local_path") else "/redesign-sample/article-ukraine-vigil/media/header-four-years-in-russia-s-war-on-ukraine-reverberates-on-campus-ed5698f1.jpg")
     preview.featured_media = SimpleNamespace(first=SimpleNamespace(image=None, alt_text=thumbnail.get("alt_text", "A musician performs beside a Ukrainian flag at a candlelight vigil."), caption=thumbnail.get("caption", "Earlier that day, the Prime Minister weighed in."), credit=thumbnail.get("credit", "Photo by Aleah Kippan for The Ubyssey")))
-    preview_body = [
-        lede,
-        "The reporting draws on interviews, public records and observations gathered by The Ubyssey. Editors reviewed the material for context, accuracy and relevance to the UBC community.",
-        "People closest to the issue described how the decisions affect their daily lives, while institutional representatives outlined the policies and timelines shaping what comes next.",
-        "The story remains part of a broader conversation on campus. The Ubyssey will continue following new information and will update its coverage when warranted.",
+    preview_content = _preview_content(snapshot_article) if snapshot_article and not request.GET.get("story") else [
+        {"kind": "html", "html": f"<p>{lede}</p>"},
+        {"kind": "note"},
     ]
     return render(request, "article/redesign_preview.html", {
         "preview": preview,
         "preview_layout": layout,
         "preview_image_url": local_image,
         "preview_author_image_url": author_fixture.get("image_url", ""),
-        "preview_body": preview_body,
-        "show_preview_note": layout == "shared-components" or (story and Path(story_path).name == "ubc-needs-pleasures-of-table"),
+        "preview_content": preview_content,
         "meta": {"title": f"Article redesign preview — {layout}", "url": request.build_absolute_uri(), "description": "Local article redesign preview", "noindex": True},
     })
