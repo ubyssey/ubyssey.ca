@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block editor_state %}
+{{ stream_editors|json_script:"stream-editors" }}
 {{ current_editor|json_script:"current-editor" }}
 {% endblock %}
 
@@ -33,6 +34,7 @@
         data-page-preview-class="homepage"
         data-typekit-css="https://use.typekit.net/qri0ucm.css"
         data-bootstrap-css="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        data-shadow-editor-css="{% static 'ubyssey/css/stove/homepage_shadow_editor.css' %}"
     >
         <link data-page-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}" type="text/css" />
         <link data-page-stylesheet rel="stylesheet" href="{% static 'ubyssey/css/stove/homepage_editor.css' %}" type="text/css" />

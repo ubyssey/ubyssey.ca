@@ -1,0 +1,9 @@
+.pm-page-block--selected {
+    outline: 2px solid var(--current-editor-color, #f28c00) !important;
+    outline-offset: -1px;
+    caret-color: var(--current-editor-color, #f28c00);
+}
+
+.pm-block--remote-selected {
+    outline: 2px solid var(--remote-editor-color) !important;
+}

@@ -17,18 +17,24 @@
 
 		<div class="c-home-top--sidebar">
 			{% for sidebar in self.sidebar_stream %}
-				{% include_block sidebar %}
+				<div data-article-block data-stream-field="sidebar_stream" data-stream-block-id="{{ sidebar.id }}" data-stream-block-index="{{ forloop.counter0 }}">
+					{% include_block sidebar with id=sidebar.id %}
+				</div>
 			{% endfor %}
 		</div>
 	</div>
 
 	{% for block in self.middle_stream %}
-		{% include_block block %}
+		<div data-article-block data-stream-field="middle_stream" data-stream-block-id="{{ block.id }}" data-stream-block-index="{{ forloop.counter0 }}">
+			{% include_block block with id=block.id %}
+		</div>
 	{% endfor %}
 
 	<div class="u-container u-container--large c-home-section_stream">
 		{% for section in self.sections_stream %}
-			{% include_block section %}
+			<div data-article-block data-stream-field="sections_stream" data-stream-block-id="{{ section.id }}" data-stream-block-index="{{ forloop.counter0 }}">
+				{% include_block section with id=section.id %}
+			</div>
 		{% endfor %}
 	</div>
 </main>

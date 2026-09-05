@@ -482,6 +482,7 @@ def homepage_editor(request):
                 "name": get_user_display_name(request.user),
                 "avatar_url": avatar_url(request.user, size=64),
             },
+            "stream_editors": get_streamfield_editors(page),
             "last_saved_page": last_saved_page,
         },
     )

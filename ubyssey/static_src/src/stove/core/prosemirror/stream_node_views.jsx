@@ -150,7 +150,7 @@ function ControlFieldNodeView(controlOptions, pageOptionsUrl) {
   return (
     <div ref={ref} className={`pm-control-field pm-control-field--${controlType}`}>
       <label className="pm-control-field__label" contentEditable={false}>{node.attrs.label}</label>
-      <div className="pm-control-field__input" contentEditable="false">
+      <div className="pm-control-field__input" contentEditable={false}>
         {controlType === "boolean" && (
           <label className="switch filter">
             <input

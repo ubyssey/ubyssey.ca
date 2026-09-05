@@ -66,3 +66,58 @@ body {
     background: #f5f6f6;
     position: relative;
 }
+
+// Toolbar
+.pm-editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-height: 40px;
+    padding: 6px 8px;
+    border-bottom: 1px solid #d9d9d9;
+    box-sizing: border-box;
+    color: #1b1b1b;
+    font: 13px/1.2 sans-serif;
+}
+
+.pm-editor-toolbar__tools {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.pm-editor-toolbar__button,
+.pm-editor-toolbar__action,
+.pm-editor-toolbar__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    min-width: 30px;
+    padding: 0 8px;
+    border: 1px solid #c7c7c7;
+    border-radius: 4px;
+    background: #fff;
+    color: #1b1b1b;
+    box-sizing: border-box;
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pm-editor-toolbar__button[aria-pressed="true"] {
+    background: #e8f2f8;
+    border-color: #0071c9;
+}
+
+.pm-editor-toolbar__button:hover:not(:disabled) {
+    color: #797979;
+}
+
+.pm-editor-toolbar__button:disabled {
+    cursor: default;
+    opacity: 0.4;
+}
