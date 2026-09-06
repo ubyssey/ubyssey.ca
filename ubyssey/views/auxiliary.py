@@ -9,6 +9,17 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 
 
+def _meta(request, title, description=""):
+    """Metadata for routes that are not backed by a Wagtail Page instance."""
+    return {
+        "title": f"{title} - The Ubyssey",
+        "url": request.build_absolute_uri(),
+        "description": description,
+        "image": "",
+        "noindex": False,
+    }
+
+
 def _staff_groups():
     from authors.models import AuthorPage
 
@@ -27,7 +38,11 @@ def _staff_groups():
 
 
 def our_team(request):
-    return render(request, "support/our_team.html", {"redesign_staff_groups": _staff_groups()})
+    return render(request, "support/our_team.html", {
+        "redesign_staff_groups": _staff_groups(),
+        "redesign_page_url": request.path,
+        "meta": _meta(request, "Our Team"),
+    })
 
 
 def video(request):
@@ -36,6 +51,8 @@ def video(request):
     return render(request, "videos/videos_page.html", {
         "self": SimpleNamespace(title="Video"),
         "paginated_videos": Paginator(VideoSnippet.objects.all(), 15).get_page(request.GET.get("page")),
+        "redesign_page_url": request.path,
+        "meta": _meta(request, "Video"),
     })
 
 
@@ -50,4 +67,9 @@ def podcast(request):
     page = landing or SimpleNamespace(
         title="The Vilest Rag", description="", spotify_episode_url=""
     )
-    return render(request, "section/podcast_page.html", {"self": page, "redesign_all_articles": episodes})
+    return render(request, "section/podcast_page.html", {
+        "self": page,
+        "redesign_all_articles": episodes,
+        "redesign_page_url": request.path,
+        "meta": _meta(request, "The Vilest Rag"),
+    })
