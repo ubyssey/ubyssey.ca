@@ -54,6 +54,8 @@
 .au-latest{border-top:0;padding-top:18px}.au-latest .lr-tabs{border-top:0}
 .au-more{border:0;color:inherit;cursor:pointer}.au-more:disabled{cursor:default;opacity:.7}
 .lr-story--author-row .lr-story__byline{font-size:11px;line-height:15px}
+.lr-story--author-row h2{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.lr-story--author-row .lr-story__summary{-webkit-line-clamp:2}
 .lr-story--row .lr-story__copy{height:245px;display:flex;flex-direction:column}
 .lr-story--row time{top:0}
 .lr-story--row h2{margin-top:0}
@@ -83,7 +85,7 @@
 
 /* Keep the fixed editorial hero grid inside the same shell as its rules. */
 @media(min-width:1341px){
-  .sr-hero{width:100%;max-width:100%;overflow:hidden;grid-template-columns:minmax(0,273px) 44px minmax(0,587px) 50px minmax(0,284px)}
+  .sr-hero{width:min(1238px,calc(100% - 202px));max-width:100%;margin-inline:auto;overflow:hidden;grid-template-columns:minmax(0,273px) 44px minmax(0,587px) 50px minmax(0,284px)}
   .sr-hero__rail,.sr-hero__lead,.sr-hero__secondary,.sr-hero__secondary .lr-story--secondary,.sr-hero__secondary .lr-story__copy{min-width:0;max-width:100%}
   .sr-hero__secondary .lr-story--secondary,.sr-hero__secondary .lr-story__image{width:100%;max-width:284px}
   .sr-hero__secondary h2,.sr-hero__secondary .lr-story__summary,.sr-hero__secondary .lr-story__byline{max-width:100%;overflow-wrap:anywhere}
