@@ -14,6 +14,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from stove.api import api_router as cms_api_router
 
 from ubyssey.views.main import ads_txt, redirect_blog_to_humour, publish_scheduled_http
+from ubyssey.views.auxiliary import our_team, podcast, video
 
 from ubyssey.views.feed import FrontpageFeed, SectionFeed, AuthorFeed, TagFeed
 from ubyssey.views.advertise import AdvertiseTheme
@@ -84,6 +85,11 @@ if settings.DEBUG:
         urlpatterns += static("/redesign-sample/", document_root=redesign_sample_root)
 
 urlpatterns += [
+    # Redesigned support pages are production routes. The fixture previews
+    # above remain DEBUG-only, but these contexts are backed by live CMS data.
+    path("about/our-team/", our_team, name="team-redesign"),
+    path("the-vilest-rag/", podcast, name="podcast-redesign"),
+    path("video/", video, name="video-redesign"),
     #For Google Adsense, because of our serverless setup with GCP
     re_path(r'^ads.txt$',ads_txt,name='ads-txt'),
 

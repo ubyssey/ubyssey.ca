@@ -79,3 +79,18 @@
 /* A flex parent blockifies the link, preventing the highlight from breaking per line. */
 .lr-story--lead h2{display:block;text-align:center}
 .lr-story--lead h2 a{display:inline;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+/* Keep the fixed editorial hero grid inside the same shell as its rules. */
+@media(min-width:1341px){
+  .sr-hero{width:100%;max-width:100%;overflow:hidden}
+  .sr-hero__rail,.sr-hero__lead,.sr-hero__secondary{min-width:0;max-width:100%}
+  .sr-hero__secondary .lr-story--secondary,.sr-hero__secondary .lr-story__image{width:100%;max-width:284px}
+}
+
+.au-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:28px}
+.au-gallery__item{min-width:0;margin:0;background:var(--lr-soft)}
+.au-gallery__item>a,.au-gallery__item img{display:block;width:100%}
+.au-gallery__item img{height:auto;aspect-ratio:1.2;object-fit:cover}
+.au-gallery__item figcaption{padding:12px 14px 15px;font:400 14px/19px "drummond-variable",Georgia,serif}
+.au-gallery__item figcaption strong,.au-gallery__item figcaption span{display:block}.au-gallery__item figcaption strong{margin-bottom:4px;font-family:"meursault-variable",Georgia,serif}
+@media(max-width:760px){.au-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.au-gallery__item figcaption{padding:9px 10px 12px;font-size:13px;line-height:17px}}

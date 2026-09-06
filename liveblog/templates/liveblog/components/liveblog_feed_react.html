@@ -1,4 +1,5 @@
 {% load static %}
+{% get_static_prefix as static_prefix %}
 
 {{ user.is_authenticated|json_script:"is-admin" }}
 {{ self.id|json_script:"room-name" }}
@@ -11,6 +12,6 @@
 {{ suggested_html|json_script:"suggested-html" }}
 {{ admin_view|json_script:"admin-view" }}
 {{ preview_mode|default:False|json_script:"preview-mode" }}
-<div class="c-liveblog-container" id="liveblog"></div>
+<div class="c-liveblog-container" id="liveblog" data-static-prefix="{{ static_prefix }}"></div>
 
 <script src="{% static 'ubyssey/js/liveblog.js' %}?v=redesign-a38d0112" type="text/javascript"></script>

@@ -4,12 +4,14 @@ import LiveBlogFeed from "./LiveblogFeed.jsx";
 import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtils.js";
 
 function ShareBar() {
+    const staticPrefix = document.getElementById("liveblog")?.dataset.staticPrefix || "/static/";
+    const icon = (name) => `${staticPrefix.replace(/\/$/, "")}/ubyssey/images/article/${name}`;
     return (
         <nav class="ar-share c-liveblog__share" aria-label="Share this article">
-            <button type="button" data-share-copy title="Copy link"><img src="/static/ubyssey/images/article/share-link.svg" alt="" /><span class="sr-only">Copy link</span></button>
-            <a data-share-email href={"mailto:?subject=" + encodeURIComponent(document.title) + "&body=" + encodeURIComponent(window.location.href)} title="Share by email"><img src="/static/ubyssey/images/article/share-email.svg" alt="" /></a>
-            <a data-share-bsky href={"https://bsky.app/intent/compose?text=" + encodeURIComponent(document.title + " " + window.location.href)} target="_blank" rel="noopener" title="Share to Bluesky"><img src="/static/ubyssey/images/article/share-bluesky.svg" alt="" /></a>
-            <a data-share-whatsapp href={"https://wa.me/?text=" + encodeURIComponent(document.title + " " + window.location.href)} target="_blank" rel="noopener" title="Share to WhatsApp"><img src="/static/ubyssey/images/article/share-whatsapp.svg" alt="" /></a>
+            <button type="button" data-share-copy title="Copy link"><img src={icon("share-link.svg")} alt="" /><span class="sr-only">Copy link</span></button>
+            <a data-share-email href={"mailto:?subject=" + encodeURIComponent(document.title) + "&body=" + encodeURIComponent(window.location.href)} title="Share by email"><img src={icon("share-email.svg")} alt="" /></a>
+            <a data-share-bsky href={"https://bsky.app/intent/compose?text=" + encodeURIComponent(document.title + " " + window.location.href)} target="_blank" rel="noopener" title="Share to Bluesky"><img src={icon("share-bluesky.svg")} alt="" /></a>
+            <a data-share-whatsapp href={"https://wa.me/?text=" + encodeURIComponent(document.title + " " + window.location.href)} target="_blank" rel="noopener" title="Share to WhatsApp"><img src={icon("share-whatsapp.svg")} alt="" /></a>
         </nav>
     )
 }
