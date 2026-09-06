@@ -8,8 +8,8 @@ import re
 
 # Regex to strip out editor only annotations
 EDITOR_NOTE_EMPTY_ANCHOR_RE = re.compile(r'<span\b(?=[^>]*\bdata-footnote-anchor=(?:"true"|\'true\'))[^>]*>.*?</span>', re.IGNORECASE | re.DOTALL)
-EDITOR_NOTE_ANCHOR_RE = re.compile(r'<(?:span|mark)\b(?=[^>]*\bdata-(?:comment-thread|footnote)-id=)[^>]*>(.*?)</(?:span|mark)>', re.IGNORECASE | re.DOTALL)
-EDITOR_NOTE_ATTR_RE = re.compile(r'\sdata-(?:comment-(?:thread-id|comments|pending|resolved)|footnote-(?:id|text|anchor))=("[^"]*"|\'[^\']*\'|[^\s>]+)', re.IGNORECASE)
+EDITOR_NOTE_ANCHOR_RE = re.compile(r'<(?:span|mark)\b(?=[^>]*\bdata-(?:comment-thread|suggestion-thread|footnote)-id=)[^>]*>(.*?)</(?:span|mark)>', re.IGNORECASE | re.DOTALL)
+EDITOR_NOTE_ATTR_RE = re.compile(r'\sdata-(?:comment-(?:thread-id|comments|pending|resolved)|suggestion-(?:thread-id|comments|pending|resolved|part)|footnote-(?:id|text|anchor))=("[^"]*"|\'[^\']*\'|[^\s>]+)', re.IGNORECASE)
 # Subs <br> for <br/> (weird YJS behaviour) otherwise crashes Wagtail
 BR_RE = re.compile(r'<br\s*/?>', re.IGNORECASE)
 # Placing footnotes inside links broke them in public version -> possible issue for other elements too
@@ -29,7 +29,7 @@ def generate_public_streamfield(value):
     # Browser serialized line breaks as <br> which breaks Wagtail
     if isinstance(value, str):
         value = BR_RE.sub('<br/>', value)
-    if isinstance(value, str) and ("data-comment-" in value or "data-footnote-" in value):
+    if isinstance(value, str) and ("data-comment-" in value or "data-suggestion-" in value or "data-footnote-" in value):
         previous = None
         stripped = value
         stripped = EDITOR_NOTE_EMPTY_ANCHOR_RE.sub('', stripped)

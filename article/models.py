@@ -734,6 +734,27 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     article_status = models.IntegerField(choices=ArticleStatus.choices, default=ArticleStatus.ASSIGNED.value)
 
+    class StoryType(blocks.ChoiceBlock):
+        choices = [
+        ('report', 'Report'),
+        ('live-update', 'Live Update'),
+        ('feature', 'Feature'),
+        ('profile', 'Profile'),
+        ('qa', 'Q&A'),
+        ('review', 'Review'),
+        ('game-analysis', 'Game Analysis'),
+        ('commentary', 'Commentary'),
+        ('essay', 'Essay'),
+        ('column', 'Column'),
+        ('editorial', 'Editorial'),
+        ('letter-to-editor', 'Letter to the editor'),
+        ('letter-from-editor', 'Letter from the editor'),
+        ('psa', 'Public Service Announcement'),
+        ('other', 'Other (this is an illegal option)')
+    ]
+
+    story_type = models.CharField(choices=StoryType.choices, null=False, blank=True, max_length=255)
+
     assignment_memo = RichTextField(
         null=False,
         blank=True,
@@ -988,9 +1009,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         # InlinePanel("article_authors", min_num=1, max_num=20, label="Author"),
         InlinePanel("deadline_list"),
         FieldPanel("article_status", help_text = "This field indicates the current status of an article."),
+        FieldPanel("story_type", help_text = "The story form, which affords different "),
         FieldPanel("assignment_memo", help_text="Guidance from a section editor about how to approach a story"),
         FieldPanel("ethics_notes", help_text="Advice from a section editor about the ethics of a story"),
-        FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials")
+        FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials"),
+        FieldPanel("story_type", help_text="The type of story")
+
         
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
@@ -1506,28 +1530,18 @@ class StandardArticlePage(ArticlePage):
         "live-update": "This article is a live update, which are a series of brief reports from journalists on the ground while news is happening.",
         "feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
         "profile": "This article is a profile, which tells the stories of individuals and their worldviews, written from a repoter's perspective.",
-        "q-and-a": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
+        "qa": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
         "review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
         "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
         "commentary": "This article is a commentary, which we define as a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense.",
-        "analysis": "This article is an analysis, which explains the reasoning and mechanics behind a subject from a reporter's perspective.",
         "essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
         "column": "This article is a column, which is a story reported by a columnists— an opinion journalists who makes abstract judgments about the news and the way the world should be.",
         "editorial": "This article is an editorial, which is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day.",
         "letter-to-editor": "This article is a letter to the editor, which are 250-word responses to stories published in The Ubyssey, written by readers like you.",
         "letter-from-editor": "This article is a letter from the editor, which are messages to readers from the The Ubyssey's Senior Masthead.",
-        "public-service": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
+        "psa": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
+        "other": "This article uses another approved story type.",
     }
-    STORY_TYPE_CHOICES = [
-        ("", "Not specified"), ("report", "Report"), ("live-update", "Live Update"), ("feature", "Feature"),
-        ("profile", "Profile"), ("q-and-a", "Q&A"), ("review", "Review"),
-        ("game-analysis", "Game Analysis"), ("commentary", "Commentary"),
-        ("analysis", "Analysis"), ("essay", "Essay"), ("column", "Column"),
-        ("editorial", "Editorial"), ("letter-to-editor", "Letter to the Editor"),
-        ("letter-from-editor", "Letter from the Editor"), ("public-service", "Public Service Announcement"),
-    ]
-
-    story_type = models.CharField(max_length=40, choices=STORY_TYPE_CHOICES, blank=True, default="")
     standpoint_disclosure = RichTextField(
         blank=True,
         default="",

@@ -6,6 +6,7 @@
     --inactive-color: #ccc;
     --hover-color: hsl(192, 50%, 85%);
     --invalid-hover-color: hsl(6, 69%, 85%);
+    --overdue-color: '#dc4f3e'
 }
 
 table, th, td {
@@ -26,6 +27,8 @@ table, th, td {
   flex-direction: column;  
   justify-content: flex-start;
   align-items: center; // x axis
+  padding-left: 8px;
+  padding-right: 8px;
 }
 // .grouping
 .stove-logo-container {
@@ -65,6 +68,17 @@ table, th, td {
 
 .section-navigation-item:hover{
   background-color: var(--hover-color);
+}
+
+.section-navigation-item-disabled:hover {
+  cursor: not-allowed;
+  background-color: var(--invalid-hover-color);
+}
+
+.section-navigation-item-disabled:active {
+  pointer-events: none;
+  cursor: not-allowed;
+  background-color: var(--invalid-hover-color);
 }
 
 @media screen and (max-width: calc(1100px + 15em)) {
@@ -230,6 +244,11 @@ input:checked + .slider:before {
 
 .slug-cell {
   max-width: 20em;
+  position: relative;
+}
+
+.slug-cell:hover:has(.slug-cell--story-type-active) {
+  padding-bottom: 20px;
 }
 
 .slug-cell--button-panel {
@@ -295,6 +314,23 @@ input:checked + .slider:before {
   max-width: 15em;
 }
 
+.deadline-cell--container {
+  display: flex;
+  flex-direction: row;
+}
+
+.deadline-cell--date-input {
+  width: calc(100% - 25px);
+}
+
+.deadline-cell--extended-indicator {
+  float: right;
+  display: flex;
+  width: 22px;
+  justify-content: center;
+  align-items: center;
+}
+
 .deadline-header {
   min-width: 8em;
 }
@@ -330,13 +366,25 @@ input:checked + .slider:before {
 }
 
 .slug-cell:hover > .slug-link--container {
-  display: inline-block;
   width: calc(100% - 25px);
   min-height: 3.5lh;
 }
 
 .slug-link--container:hover {
   background-color: hsl(192, 50%, 85%);
+}
+
+.slug-cell--story-type {
+  display: none;
+  font-size: small;
+  color: #555555;
+  position:absolute;
+  bottom: 4px;
+  left: 12px;
+}
+
+.slug-cell:hover > .slug-cell--story-type {
+  display: initial;
 }
 
 .slug-link {
@@ -350,10 +398,119 @@ input:checked + .slider:before {
   min-width: 10em;
 }
 
+@media (max-width: 1150px) {
+  .beat-header {
+    display: none;
+  }
+  .beat-cell {
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .section-header {
+    display: none;
+  }
+  .section-cell {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .media-header {
+    display: none;
+  }
+  .media-cell {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .visuals-header {
+    display: none;
+  }
+  .visuals-cell {
+    display: none;
+  }
+}
+
+.section-header {
+  width: 10em;
+  min-width: 7em;
+}
 .preview-icon {
     // visibility: hidden;
 }
 
+.status-advancement--container {
+  display: flex;
+  flex-direction: row;
+}
+
+.status-advancement--label-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status-advancement--button, .status-advancement--label {
+  padding: 4px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 6px;
+  width: 5em;
+}
+
+.status-advancement--label-container > .status-advancement--label,
+.status-advancement--label-container > .status-advancement--button {
+  width: 10em;
+}
+
+.status-advancement--button + .status-advancement--button {
+  margin-left: 6px;
+}
+
+.status-advancement--button:hover {
+  cursor: pointer;
+}
+
+.status-advancement--return-edits-button {
+  background-color: #ea968d;
+  color: #691b17;
+}
+
+.status-advancement--mark-ready-button {
+  background-color: #9ec756;
+  color: #264b35;
+}
+
+.status-advancement--label-ready {
+  background-color: #e3e455;
+  color: #264b35;
+}
+.status-advancement--label-editing {
+  background-color: #f5c554;
+  color: #80511f;
+}
+
+.status-advancement--return-copy-button, .status-advancement--advance-copy-button {
+  background-color: #77c0d2;
+  color: #172448;
+}
+
+.status-advancement--label + .status-advancement--button {
+  display: none;
+}
+
+.status-advancement--label:hover + .status-advancement--button,
+.status-advancement--button:hover {
+  display: initial;
+}
+
+.status-advancement--label:hover, 
+.status-advancement--label:has(+ .status-advancement--button:hover){
+  display: none;
+}
 
 
 .visuals-cell {
@@ -441,6 +598,13 @@ h5 + .edit-field--deadlines {
 
 .edit-field--sidebyside:has(*):has(.edit-field--deadline-label:hover) {
   grid-template-columns: clamp(120px, 30%, 180px) auto;
+}
+
+.edit-field--deadlines > * > .edit-field--side-label {
+  padding-top: 8px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .edit-field--create-deadline {

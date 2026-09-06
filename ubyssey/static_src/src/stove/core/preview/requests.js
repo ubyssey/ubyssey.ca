@@ -8,5 +8,9 @@ export async function fetchPreviewHtml(url, formData, signal = null) {
     signal,
   });
   const payload = await response.json();
+  if (!formData.get("revision")) {
+    const eventName = response.ok ? "manuscript-save-succeeded" : "manuscript-save-failed";
+    document.dispatchEvent(new Event(eventName));
+  }
   return response.ok && payload.html ? payload.html : null;
 }

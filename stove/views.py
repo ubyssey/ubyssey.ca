@@ -19,8 +19,13 @@ from django.views.decorators.http import require_GET, require_POST
 from wagtail.admin.templatetags.wagtailadmin_tags import avatar_url
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
+from pycrdt import Array, Doc, Map
 
-from stove.editors.collaboration.persistence import initialize_page_collaboration
+from stove.editors.collaboration.persistence import (
+    ASSIGNMENT_AUTHOR_ROLES,
+    initialize_page_collaboration,
+    update_page_collaboration,
+)
 from stove.models import PageCollaboration
 from stove.editors.manuscript.media import (
     add_article_media,
@@ -59,35 +64,26 @@ def content_tracker_react(request, section="all"):
     for s in sections:
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    return render(request, "content_tracker_react.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
-def load_pages(request, section="all", page=1):
-    username = request.GET.get('username', '')
-    include_published = request.GET.get('include_published', '')
-    
-    qs = ArticlePage.objects.all()
-    if (section != "all"):
-        qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
-    if (username):
-        author_page = get_object_or_404(AuthorPage, full_name=username)
-        qs = qs.filter(article_authors__author=author_page)
-    if (include_published.lower() == "false"):
-        qs = qs.filter(live=False)
-    
-    qs = qs.order_by("-latest_revision_created_at", "-pk")
+def copy(request, section="all"):
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    sections = SectionPage.objects.exact_type(SectionPage)
 
-    paginator = Paginator(qs, 20)
+    beatExport = {}
+    for beat in beats:
+        beatSection = beat.get_parent().title
+        if not beatSection in beatExport: 
+            beatExport[beatSection] = []
+        beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
 
-    pages = paginator.get_page(request.GET.get("article-page", page))
+    sectionExport = []
+    for s in sections:
+        sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    result="[]"
-    if (len(pages) > 0):
-        result = "["
-        for page in pages: 
-            result += page.get_latest_revision_as_object().to_json() + ","
-        result = result[:-1] + "]"
-    return JsonResponse(result, safe=False)
+    return render(request, "view_copy_department.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
 @require_POST
@@ -128,6 +124,8 @@ def create_page(request, section_id):
         newPage.primary_tag_slug = slugify(newPage.category_page.title)
     if ("article_status" in data):
         newPage.article_status = data["article_status"]
+    if ("story_type" in data):
+        newPage.story_type = data["story_type"]
     if ("article_authors" in data):
         new_authors = data["article_authors"]  
         items = [
@@ -187,14 +185,37 @@ def load_page(request, page_id):
         pageObject.save_revision(user=request.user)
 
     pageJson = pageObject.to_json()
+
+    # Uses current collaborative page version (as not always saved to revision) if it exists (meaning someone is editing)
+    collaboration = PageCollaboration.objects.filter(page_id=page_id).only("document").first()
+    if collaboration and collaboration.document:
+        document = Doc()
+        document.apply_update(bytes(collaboration.document))
+        authors = document.get("metadata", type=Map).get("articleAuthors")
+        if isinstance(authors, Array):
+            pageJson = json.loads(pageJson)
+            pageJson["article_authors"] = [
+                {"article_page": page_id, "author": item["authorId"], "author_role": item["role"]}
+                for item in authors.to_py()
+            ]
+            pageJson = json.dumps(pageJson)
     return JsonResponse(pageJson, safe=False)
 
 @login_required
-def load_partial_pages(request, section="all", page=1):
+def load_partial_stories(request, section="all", page=1):
     username = request.GET.get('username', '')
     include_published = request.GET.get('include_published', '')
+    article_status = request.GET.get('article_status', -1)
     
-    qs = ArticlePage.objects.all()
+    qs = ArticlePage.objects
+    
+    if (article_status != -1):
+        print(article_status)
+        print(type(article_status))
+        print(type(int(article_status)))
+        qs = qs.filter(article_status=4)
+        print(list(qs))
+    qs = qs.all()
     if (section != "all"):
         qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
     if (username):
@@ -236,8 +257,9 @@ def load_partial_pages(request, section="all", page=1):
 @require_POST
 def update_content_tracker(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
-    data = request.body.decode('utf-8')
     data = json.loads(request.body.decode('utf-8'))
+
+    save_as_draft = False
 
     if ("title" in data):
         page.title = data["title"]
@@ -259,17 +281,27 @@ def update_content_tracker(request, page_id):
             raise Exception("Page can't move to section")
     if ("article_status" in data):
         page.article_status = data["article_status"]
+        save_as_draft = True
+    if ("story_type" in data):
+        page.story_type = data["story_type"]
     if ("authors" in data):
-        new_authors = data["authors"]  
-        items = [
-            ArticleAuthorsOrderable(
-                author=get_object_or_404(AuthorPage, id=item["author"]),
-                author_role=item["author_role"],
-                sort_order=index,
-            )
-            for index, item in enumerate(new_authors or [])
-        ]
-        page.article_authors.set(items)
+        # Author role types not in assignment manager are saved first so they aren't overwritten
+        page.article_authors.set(
+            [
+                ArticleAuthorsOrderable(
+                    author=get_object_or_404(AuthorPage, id=item["author"]),
+                    author_role=item["author_role"],
+                    sort_order=index,
+                )
+                for index, item in enumerate(data["authors"] or [])
+                if item["author_role"] in ASSIGNMENT_AUTHOR_ROLES
+            ]
+            +
+            [
+                item for item in page.article_authors.all()
+                if item.author_role not in ASSIGNMENT_AUTHOR_ROLES
+            ]
+        )
     if ("assignment_memo" in data):
         page.assignment_memo = data["assignment_memo"]
     if ("ethics_notes" in data):
@@ -284,7 +316,10 @@ def update_content_tracker(request, page_id):
             for index, deadline in enumerate(data["deadline_list"] or [])
         ]
         page.deadline_list.commit()
-    revision = page.save_revision(user=request.user, log_action=True, changed=False)
+    page.save_revision(user=request.user, log_action=True, changed=False)
+    if save_as_draft:
+        page.save(user=request.user)
+    update_page_collaboration(page, data)
 
     latest_revision = page.get_latest_revision_as_object()
     return JsonResponse(latest_revision.to_json(), safe=False)
@@ -465,15 +500,33 @@ def manuscript_preview(request, page_id):
     if revision_id and revision_id != "current":
         revision = get_object_or_404(page.revisions, id=revision_id)
 
-    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_preview(page, request.POST, request.user, revision)
+    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_preview(page, request.POST, revision)
 
-    return JsonResponse({
-        "errors": editor_errors,
-        "html": render_to_string(
+    if editor_errors:
+        return JsonResponse({"errors": editor_errors}, status=422)
+
+    # Attempt to render the latest changes, if it throws an error, don't save
+    try:
+        html = render_to_string(
             "editors/preview/manuscript_preview.html",
             {"self": page, "page_form": page_form, "article_authors_form": article_authors_form, "featured_media_form": featured_media_form},
             request=request,
         )
+    except Exception as error:
+        warnings.warn(f"Failed to render manuscript preview for page {page_id}: {error}")
+        return JsonResponse(
+            {"errors": {"__all__": ["Failed to save. Undo your last change, contact webmaster if this isn't resolved."]}},
+            status=422,
+        )
+
+    if revision is None:
+        saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
+        if saved_revision is None:
+            return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)
+
+    return JsonResponse({
+        "errors": editor_errors,
+        "html": html,
     })
 
 
@@ -489,11 +542,20 @@ def manuscript_full_preview(request, page_id):
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=400)
 
-    saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
-    return saved_revision.as_object().make_preview_request(
+    # Attempt to render the latest changes, if it throws an error, cancel
+    preview_response = page.make_preview_request(
         request,
         page.default_preview_mode,
     )
+    if preview_response.status_code >= 500:
+        warnings.warn(f"Failed to render manuscript preview for page {page_id}")
+        return HttpResponse("Failed to save. Undo your last change, contact webmaster if this isn't resolved.", status=422)
+
+    saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
+    if saved_revision is None:
+        return HttpResponse("Failed to save. Please try again.", status=422)
+
+    return preview_response
 
 
 @login_required

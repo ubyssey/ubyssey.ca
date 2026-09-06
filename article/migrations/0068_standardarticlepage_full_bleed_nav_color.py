@@ -2,7 +2,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [("article", "0064_article_redesign_fields")]
+    dependencies = [("article", "0067_standardarticlepage_redesign_fields")]
     operations = [
         migrations.AddField(
             model_name="standardarticlepage",
