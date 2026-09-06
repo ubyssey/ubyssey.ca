@@ -66,7 +66,12 @@ def infinitefeed(request):
                     storystream_item = article.storystream_view[0]
                     articleHtml.append(storystream_item.render_as_block(context=data))
                 else:
-                    articleHtml.append(loader.render_to_string("article/objects/infinitefeed_item.html", data))
+                    if request.GET.get("redesign") == "section":
+                        data.update({"variant": "row", "show_date": True, "show_summary": True})
+                        template_name = "section/objects/redesign_story.html"
+                    else:
+                        template_name = "article/objects/infinitefeed_item.html"
+                    articleHtml.append(loader.render_to_string(template_name, data, request=request))
                    
             articleHtml_json = json.dumps(articleHtml)
             return HttpResponse(articleHtml_json, content_type ="application/json")

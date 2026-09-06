@@ -260,6 +260,8 @@
   .ar-nav .hp-nav__expanded-grid,.ar-nav .hp-nav__expanded-grid section{height:240px}
   .ar-nav .hp-nav__join{padding-top:24px}
   .ar-nav .hp-nav__join p{height:auto;margin-bottom:14px}
+  .ar-nav .hp-nav__expanded-grid>section:nth-child(3){height:148px}
+  .ar-nav .hp-nav__expanded-grid>section:nth-child(4){height:92px}
 }
 
 @media (max-width:800px){
@@ -314,7 +316,7 @@
 .ar-page .ar-hero__media figcaption{font:400 12px/16px "drummond-variable",Georgia,serif!important}
 .ar-page .ar-hero__media figcaption .credit{font-weight:400!important}
 @media(min-width:801px){
-  .ar-keep-reading__viewport{box-sizing:border-box;width:1152px!important;max-width:100%!important;margin:0!important;padding:0!important;overflow:hidden!important}
+  .ar-keep-reading__viewport{box-sizing:border-box;width:1152px!important;max-width:100%!important;margin:0!important;padding:0 0 8px!important;overflow:hidden!important}
   .ar-keep-reading .ar-keep-reading__track{display:flex!important;flex-wrap:nowrap!important;width:max-content!important;gap:36px!important;transform:translateX(0)}
   .ar-keep-reading article{flex:0 0 360px!important;width:360px!important;min-width:360px!important}
   .ar-keep-reading.is-page-two .ar-keep-reading__track{transform:translateX(-1188px)!important}

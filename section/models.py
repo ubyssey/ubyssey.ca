@@ -326,6 +326,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         context["filters"] = filters
         context["section_slug"] = self.slug
         featured = list(self.get_featured_articles(number_featured=3))
+        # Keep this ordering identical to /infinitefeed/ so the first deferred
+        # request begins exactly after the stories already rendered above.
         all_articles = self.get_section_articles()[:20]
         context["redesign_all_articles"] = all_articles
         context["redesign_recent_articles"] = all_articles[len(featured):]
@@ -346,12 +348,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         }
         return templates.get(self.slug, self.template)
 
-    def get_section_articles(self, order='-first_published_at') -> QuerySet:
-        # order should be explicit_published_at but that is in the ArticlePage table and accessing slows down the query
+    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+        """Published stories in the same order used by the redesigned feed."""
         section_articles = ArticlePage.objects \
-            .child_of(self) \
-            .order_by(order) \
-            .live()
+            .live() \
+            .public() \
+            .descendant_of(self) \
+            .order_by(order, '-id')
         
         return section_articles
 

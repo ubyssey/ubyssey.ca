@@ -140,4 +140,11 @@
 /* Final navigation and story-card refinements. */
 .hp-story>time{align-self:start;display:inline-flex;align-items:center;padding-bottom:0;border-bottom-width:2px;border-radius:0 0 2px 2px;font-size:13px;line-height:18px}
 @media (min-width:761px){.hp-nav__expanded{height:390px}.hp-nav__expanded-grid{height:240px}.hp-nav__expanded-grid section{height:240px}.hp-nav__join{padding-top:24px}.hp-nav__join p{height:auto;margin-bottom:14px}.ar-nav .hp-nav__expanded{height:390px}.ar-nav .hp-nav__expanded-grid{height:240px}.ar-nav .hp-nav__expanded-grid section{height:240px}.ar-nav .hp-nav__join{padding-top:24px}.ar-nav .hp-nav__join p{height:auto;margin-bottom:14px}}
+
+/* About and Contact share one column: their combined divider must stop with
+   the other menu dividers, not extend into the page beneath the menu. */
+@media (min-width:761px){
+  .hp-nav__expanded-grid>section:nth-child(3){height:148px}
+  .hp-nav__expanded-grid>section:nth-child(4){height:92px}
+}
 @media (max-width:760px){.hp-story>time{font-size:11px;line-height:16px}}
