@@ -7,4 +7,4 @@
 <nav class="aux-tabs page-shell"><div><a class="is-active" href="#galleries">Latest</a><a href="#galleries">Photo essays</a><a href="#galleries">This month</a><a href="#galleries">Behind the glow</a></div><form action="/archive/section/photo/" method="get"><input type="search" name="q" placeholder="Search"><button class="aux-search-button"><img src="{% static 'ubyssey/images/redesign/search.svg' %}" alt="">Search</button></form></nav>
 <section id="galleries" class="photo-grid page-shell" aria-label="Featured galleries">{% for article in redesign_all_articles|slice:':5' %}{% auxiliary_url article as article_url %}<article class="photo-card photo-card--{{ forloop.counter }}"><a href="{{ article_url }}">{% include 'section/objects/aux_story_image.html' with article=article %}<span><time>{{ article.explicit_published_at|date:'F j' }}</time><strong>{{ article.title|safe }}</strong></span></a></article>{% endfor %}</section></main>{% endblock %}
 
-{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}"></script>{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}?v=redesign-a38d0112"></script>{% endblock %}

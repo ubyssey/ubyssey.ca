@@ -9,4 +9,4 @@
 <section class="video-archive"><div class="page-shell"><h2>From the archive</h2><div>{% for video in paginated_videos|slice:'7:10' %}<article><a href="{{ video.url }}"><img src="{% if video.preview_image %}{{ video.preview_image }}{% else %}https://img.youtube.com/vi/{{ video.url|youtube_embed_id }}/hqdefault.jpg{% endif %}" alt="" loading="lazy"></a><span><h3><a href="{{ video.url }}">{{ video.title }}</a></h3><time>{{ video.created_at|date:'F j, Y' }}</time></span></article>{% endfor %}</div></div></section>
 </main>{% endblock %}
 
-{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}"></script>{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}?v=redesign-a38d0112"></script>{% endblock %}
