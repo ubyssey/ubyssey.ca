@@ -52,11 +52,11 @@ export function getDeadlineIcon(deadline) {
 
   switch (deadline.description) {
     case deadlineOptions.DRAFT_IN:
-      if (overdue&& deadline.date) {
+      if (deadline.completed) {
+        return <NewspaperOutline color={'green'}/>
+      } else if (overdue && deadline.date) {
         return <Newspaper 
           color={'#dc4f3e'} />
-      } else if (deadline.completed) {
-        return <NewspaperOutline color={'green'}/>
       } else {
         return <NewspaperOutline />
       }
@@ -182,7 +182,6 @@ export default function Deadline({page, updatePage, isLocalOnly=false}) {
     updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly)
   }
 
-  console.log(page.deadline_list)
   if ((page.deadline_list.length == 0 
         || (page.deadline_list.length == 1 && getDeadlineByDescription(page, deadlineOptions.DRAFT_IN) != null)) 
       && !expanded) {

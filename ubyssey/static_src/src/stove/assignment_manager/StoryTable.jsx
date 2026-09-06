@@ -6,6 +6,8 @@ import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutli
 
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -158,7 +160,7 @@ function ArticleList({allPages, updatePage, selectedArticleId, setSelectedArticl
   )
 }
 
-function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, isIncludingPublished, isLoading, setLoading}) {
+function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, isIncludingPublished, isLoading, setLoading, ordering}) {
   const [currentPage, setCurrentPage] = useState(0);
   const [allPagesLoaded, setAllPagesLoaded] = useState(false)
 
@@ -170,6 +172,7 @@ function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, 
 
   function fetchNextPage() {
       const params = new URLSearchParams();
+      params.append("order", ordering)
       if (isOnlyUserFilter) params.append("username", currentUser);
       if (!isIncludingPublished) params.append("include_published", "false")
 
@@ -229,7 +232,7 @@ function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, 
     setAllPagesLoaded(false)
     setCurrentPage(0)
     clearPages()
-  }, [isOnlyUserFilter, isIncludingPublished])
+  }, [isOnlyUserFilter, isIncludingPublished, ordering])
 
   let headers = {content_type: "application/json"}
 
@@ -250,7 +253,14 @@ function MoreArticlesButton({addPages, clearPages, pkInPages, isOnlyUserFilter, 
   );
 }
 
-function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPublished, setIsIncludingPublished, isLoading}) {
+function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPublished, setIsIncludingPublished, isLoading, ordering, setOrdering}) {
+
+  const orderingRadio = [
+    {name: 'Last modified', value: ORDER.LAST_MODIFIED},
+    {name: 'Nearest deadline', value: ORDER.NEXT_DEADLINE}
+  ]
+
+
   return <div className="query-panel">
     <div className="query-toggle query-item">
       <span className="query-label">Assigned to me </span>
@@ -276,12 +286,37 @@ function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isIncludingPubli
       disabled={isLoading}
       />
     </div>
+    <div className="query-item">
+      <ButtonGroup>
+        {orderingRadio.map((orderingOption, idx) => (
+          <ToggleButton
+            key={idx}
+            id={`radio-${idx}`}
+            type="radio"
+            variant="outline-secondary"
+            name="radio"
+            value={orderingOption.value}
+            checked={ordering == orderingOption.value}
+            onChange={(e) => setOrdering(e.currentTarget.value)}
+            disabled={isLoading}
+          >
+            {orderingOption.name}
+          </ToggleButton>
+        ))}
+      </ButtonGroup>
+    </div>
   </div>
+}
+
+const ORDER = {
+  LAST_MODIFIED: "last-modified",
+  NEXT_DEADLINE: "next-deadline"
 }
 
 export default function StoryTable({updatePage, selectedArticleId, setSelectedArticleId, setActiveSidebar, clearPages, allPages, addPages}) {
   const [isOnlyUserFilter, setOnlyUserFilter] = useState(false);
   const [isIncludingPublished, setIsIncludingPublished] = useState(false);
+  const [ordering, setOrdering] = useState(ORDER.LAST_MODIFIED)
   const [isLoading, setLoading] = useState(true);
   return <><h1>{pageSection} Articles</h1>
         <QueryFilterPanel 
@@ -289,7 +324,10 @@ export default function StoryTable({updatePage, selectedArticleId, setSelectedAr
           setOnlyUserFilter={setOnlyUserFilter}
           isIncludingPublished={isIncludingPublished}
           setIsIncludingPublished={setIsIncludingPublished}
-          isLoading={isLoading}/>
+          isLoading={isLoading}
+          ordering={ordering}
+          setOrdering={setOrdering}
+          />
         <ArticleList allPages={allPages} 
           updatePage={updatePage}
           selectedArticleId={selectedArticleId}
@@ -302,6 +340,8 @@ export default function StoryTable({updatePage, selectedArticleId, setSelectedAr
           isOnlyUserFilter={isOnlyUserFilter}
           isIncludingPublished={isIncludingPublished}
           isLoading={isLoading}
-          setLoading={setLoading}/>
+          setLoading={setLoading}
+          ordering={ordering}
+          />
         </>
 }
