@@ -20,6 +20,20 @@ function initializeRedesignNavigation() {
     }
   };
   button.addEventListener('click', () => setOpen(!open));
+  header.querySelectorAll('.hp-nav__nameplate, .hp-nav__compact-nameplate').forEach((nameplate) => {
+    nameplate.addEventListener('click', (event) => {
+      if (!document.querySelector('#newsletter')) return;
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+  header.querySelector('.hp-nav__newsletter')?.addEventListener('click', (event) => {
+    const target = document.querySelector('#newsletter');
+    if (!target) return;
+    event.preventDefault();
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height;
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+  });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && open) { setOpen(false); button.focus(); }
   });
@@ -65,6 +79,12 @@ function initializeGameAnalysis() {
           const active = scorePanel.dataset.scorePanel === selected;
           scorePanel.hidden = !active;
           scorePanel.classList.toggle('is-active', active);
+          if (active && scorePanel.animate) {
+            scorePanel.animate(
+              [{ opacity: 0, transform: 'translateY(5px)' }, { opacity: 1, transform: 'translateY(0)' }],
+              { duration: 220, easing: 'cubic-bezier(.22,1,.36,1)' },
+            );
+          }
         });
       });
     });

@@ -1,5 +1,7 @@
 import json
+import re
 from datetime import datetime
+from html import escape
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -17,11 +19,17 @@ def _fixture_article(item, directory):
             break
         except ValueError:
             pass
+    byline = re.sub(r"(?i)^\s*(?:words|videos?)\s+by\s+", "", item.get("byline_text", ""))
+    parts = re.split(r"(\s+and\s+|\s*,\s*|\s+(?:with\s+)?(?:photos?|video|illustrations?)\s+by\s+)", byline, flags=re.I)
+    formatted_byline = "".join(
+        escape(part) if index % 2 else (f'<a href="#">{escape(part.strip())}</a>' if part.strip() else "")
+        for index, part in enumerate(parts)
+    )
     return SimpleNamespace(
         title=item.get("headline", ""), lede=item.get("lede", ""),
         preview_url=f"/redesign-preview/article/big-thumbnail/?story={slug}",
         preview_image=f"/redesign-sample/{directory}/{thumbnail.get('local_path', '')}",
-        preview_alt=thumbnail.get("alt_text", ""), preview_byline=item.get("byline_text", ""),
+        preview_alt=thumbnail.get("alt_text", ""), preview_byline=formatted_byline,
         explicit_published_at=published,
     )
 

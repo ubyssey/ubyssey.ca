@@ -1,7 +1,7 @@
 {% extends 'ubyssey/base.html' %}
 {% load static cache wagtailcore_tags ubyssey_ad_filters ubyssey_ad_tags %}
 {% block head_scripts %}{% cache 6000 article_ad_tags %}{% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}{% gpt_define_tag orderable.ad_slot is_mobile %}{% endfor %}{% endcache %}{% endblock %}
-{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% if self.styles.all|length == 0 %}<link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-2">{% else %}{% for style_obj in self.styles.all %}<link rel="stylesheet" href="{{ style_obj.css.file.url }}">{% endfor %}{% endif %}{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% if self.styles.all|length == 0 %}<link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-9">{% else %}{% for style_obj in self.styles.all %}<link rel="stylesheet" href="{{ style_obj.css.file.url }}">{% endfor %}{% endif %}{% endblock %}
 {% block header %}{% include 'article/components/redesign_nav.html' with article=self %}{% endblock %}
 {% block content %}
 <main id="main-content" class="ar-page ar-page--{{ self.redesign_header_layout }}">
@@ -15,7 +15,7 @@
           {% if not self.is_explicit %}{% filter inject_ads:is_mobile %}{% for block in self.content %}{% include_block block with id=block.id %}{% endfor %}{% endfilter %}{% else %}{% for block in self.content %}{% include_block block with id=block.id %}{% endfor %}{% endif %}
           {% if self.disclaimer %}<div class="disclaimer">{{ self.disclaimer|safe }}</div>{% endif %}
           <div class="ar-context-mobile">{% include 'article/objects/redesign_context_rail.html' with article=self %}</div>
-          <p class="ar-report"><a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Submit a complaint</a><a href="https://forms.gle/RbJjhEpqqt7tz4AF6">Report a correction</a></p>
+          <p class="ar-report"><a href="https://forms.ubyssey.ca/erasure">Apply for erasure</a><a href="https://forms.ubyssey.ca/tips">Send a tip</a><a href="https://forms.ubyssey.ca/errors">Report an error</a></p>
         </div>
       </div>
     </div>

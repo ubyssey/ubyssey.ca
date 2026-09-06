@@ -1,5 +1,5 @@
 {% extends 'ubyssey/base.html' %}{% load static %}
-{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-9">{% endblock %}
 {% block header %}{% include 'article/components/redesign_nav.html' with article=preview %}{% endblock %}
 {% block content %}<main id="main-content" class="ar-page ar-page--{{ preview.redesign_header_layout }}"><article class="ar-article">
   {% include 'article/components/redesign_hero.html' with article=preview %}
@@ -12,7 +12,7 @@
         {% elif block.kind == 'note' %}<aside class="o-extra-article-info o-extra-article-info--editors-note center"><div class="o-extra-article-info__content"><h2>Editor's Note</h2><div class="o-extra-article-info__body"><p>This preview preserves the redesigned in-text note component while displaying the complete text and photography from the original article.</p><p>Editors can change both this heading and its body through the existing Extra Article Info block.</p></div></div></aside>{% endif %}
       {% endfor %}
       <div class="ar-context-mobile">{% include 'article/objects/redesign_context_rail.html' with article=preview %}</div>
-      <p class="ar-report"><a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Submit a complaint</a><a href="https://forms.gle/RbJjhEpqqt7tz4AF6">Report a correction</a></p>
+      <p class="ar-report"><a href="https://forms.ubyssey.ca/erasure">Apply for erasure</a><a href="https://forms.ubyssey.ca/tips">Send a tip</a><a href="https://forms.ubyssey.ca/errors">Report an error</a></p>
     </div></div></div>
   <section class="c-suggested-bar ar-keep-reading" data-keep-reading><h2>Keep Reading</h2><div class="ar-keep-reading__viewport"><div class="ar-keep-reading__track">
     <article><a href="/redesign-preview/article/body-width/"><img src="{% static 'ubyssey/images/article/keep-reading/ai-notetaker.webp' %}" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">What we know about the Centre for Accessibility's AI notetaker</h3></a></article>

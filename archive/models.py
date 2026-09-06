@@ -1,7 +1,10 @@
+from datetime import timedelta
+
 from django.db import models
 from django_user_agents.utils import get_user_agent
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
+from django.utils import timezone
 
 from specialfeaturelanding.models import SpecialLandingPage
 from section.models import CategoryPage, SectionPage
@@ -168,9 +171,10 @@ class ArchivePage(RoutablePageMixin, Page):
         context['series'] = request.GET.get('series', '')
         context['date_from'] = request.GET.get('from', '')
         context['date_to'] = request.GET.get('to', '')
+        context['selected_range'] = request.GET.get('range', '')
         context['has_search'] = any(
             request.GET.get(key) for key in
-            ('q', 'year', 'section', 'type', 'contributor', 'series', 'from', 'to', 'order')
+            ('q', 'year', 'section', 'type', 'contributor', 'series', 'from', 'to', 'range', 'order')
         )
         context['recent_articles'] = ArticlePage.objects.live().public().order_by('-explicit_published_at')[:5]
         context['meta'] = { 'title': 'Archive' }
@@ -181,8 +185,8 @@ class ArchivePage(RoutablePageMixin, Page):
         page = request.GET.get("page")
 
         if video_section == False:
-            # Paginate all posts by 15 per page
-            paginator = Paginator(objects, per_page=15)
+            # The redesigned archive shows twenty results per page.
+            paginator = Paginator(objects, per_page=20)
         else:
             # Paginate all posts by 15 per page
             paginator = Paginator(objects, per_page=5)
@@ -199,6 +203,7 @@ class ArchivePage(RoutablePageMixin, Page):
             paginated_articles = paginator.page(paginator.num_pages)
 
         context["page_obj"] = paginated_articles #this object is often called page_obj in Django docs. Careful, because but Page means something else in Wagtail
+        context["result_count"] = paginator.count
         
 
         return context
@@ -249,6 +254,9 @@ class ArchivePage(RoutablePageMixin, Page):
                 videos = self.get_order_objects(context['order'], videos, True)
             if self.year:
                 videos = self.get_year_objects(videos, True)
+            if context['selected_range'] in {'week', 'month', 'year'}:
+                days = {'week': 7, 'month': 30, 'year': 365}[context['selected_range']]
+                videos = videos.filter(created_at__date__gte=timezone.localdate() - timedelta(days=days))
             if search_query:
                 videos = self.get_search_objects(search_query, videos, True)
             context = self.get_paginated_articles(context, videos, True, request)
@@ -273,6 +281,9 @@ class ArchivePage(RoutablePageMixin, Page):
             articles = articles.filter(explicit_published_at__date__gte=context['date_from'])
         if context['date_to']:
             articles = articles.filter(explicit_published_at__date__lte=context['date_to'])
+        if context['selected_range'] in {'week', 'month', 'year'}:
+            days = {'week': 7, 'month': 30, 'year': 365}[context['selected_range']]
+            articles = articles.filter(explicit_published_at__date__gte=timezone.localdate() - timedelta(days=days))
  
         if context["order"]:
             articles = self.get_order_objects(context["order"], articles, video_section)     

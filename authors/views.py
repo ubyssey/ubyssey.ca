@@ -49,7 +49,7 @@ def redesign_preview(request):
     stories = [_fixture_article(item, "author-juan-pablo-sastoque-vega") for item in data.get("stories", [])]
     description = data["page"].get("meta_description", "")
     email_match = re.search(r"[\w.+'-]+@[\w.-]+\.[A-Za-z]{2,}", description)
-    page = SimpleNamespace(title="Juan Pablo Sastoque Vega", slug="juan-pablo-sastoque-vega", bio_description=description.split(" You can reach", 1)[0])
+    page = SimpleNamespace(title="Juan Pablo Sastoque Vega", slug="juan-pablo-sastoque-vega", ubyssey_role="News Editor", bio_description=description.split(" You can reach", 1)[0])
     return render(request, "authors/author_page.html", {
         "self": page, "redesign_preview_mode": True, "redesign_page_url": "/redesign-preview/author/",
         "redesign_profile_image": "/redesign-sample/author-juan-pablo-sastoque-vega/media/juan-pablo-sastoque-vega-portrait-ecb35616.webp",

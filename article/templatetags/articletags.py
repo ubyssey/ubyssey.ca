@@ -6,6 +6,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from section.models import SectionPage
 import datetime
+import html
 import re
 
 register = template.Library()
@@ -13,10 +14,41 @@ register = template.Library()
 @register.filter(name="normalize_redesign_byline")
 @stringfilter
 def normalize_redesign_byline(value):
-    """Remove legacy prose prefixes while preserving linked contributor names."""
-    value = re.sub(r"(?i)\b(?:words\s+by|with\s+(?:photos?|video|illustrations?)\s+by)\b\s*", "", value)
+    """Normalize legacy credit prose while preserving linked contributor names."""
+    def unwrap_credit_label(match):
+        label = re.sub(r"(?i)^with\s+", "", match.group(2)).lower()
+        return f"{label} {match.group(1)}{match.group(3).strip()}{match.group(4)}"
+
+    value = re.sub(
+        r'(?is)(<a\b[^>]*>)\s*((?:with\s+)?(?:photos?|video|illustrations?)\s+by)\s+([^<]+)(</a>)',
+        unwrap_credit_label,
+        value,
+    )
+    value = re.sub(r"(?i)^\s*(?:words|videos?)\s+by\s*", "", value)
+    value = re.sub(
+        r"(?i)\bwith\s+(photos?|video|illustrations?)\s+by\b\s*",
+        lambda match: f"{match.group(1).lower()} by ",
+        value,
+    )
+    value = re.sub(
+        r"(?i)\b(photos?|video|illustrations?)\s+by\b",
+        lambda match: f"{match.group(1).lower()} by",
+        value,
+    )
     value = re.sub(r"(?i)^\s*by\s+", "", value)
     return value.strip()
+
+
+@register.filter(name="caption_needs_credit")
+def caption_needs_credit(caption, credit):
+    """Avoid repeating a credit already present in a rich-text caption."""
+    def normalize(value):
+        plain = re.sub(r"<[^>]+>", " ", str(value or ""))
+        return " ".join(html.unescape(plain).lower().split())
+
+    caption_text = normalize(caption)
+    credit_text = normalize(credit)
+    return bool(credit_text and credit_text not in caption_text)
 
 
 def _redesign_contributor_name(contributor):

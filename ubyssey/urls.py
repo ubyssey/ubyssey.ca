@@ -49,10 +49,12 @@ api.register(r'events', EventsViewSet)
 if settings.DEBUG:
     import debug_toolbar
     from article.views import redesign_preview
+    from liveblog.views import redesign_preview as liveblog_redesign_preview
     from section.views import redesign_preview as section_redesign_preview
     from authors.views import redesign_preview as author_redesign_preview
     from ubyssey.views.auxiliary_preview import auxiliary_preview
     urlpatterns += [
+        path("redesign-preview/article/live-updates/<slug:state>/", liveblog_redesign_preview, name="liveblog-redesign-preview"),
         path("redesign-preview/article/<slug:layout>/", redesign_preview, name="article-redesign-preview"),
         path("redesign-preview/section/", section_redesign_preview, name="section-redesign-preview"),
         path("redesign-preview/author/", author_redesign_preview, name="author-redesign-preview"),

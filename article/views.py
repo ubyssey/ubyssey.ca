@@ -25,7 +25,10 @@ class ArticleTopicViewSet(SnippetViewSet):
     list_export = ["name", "tagged_articles_count", "most_frequent_section", "last_used_at"]
 
 
-LAYOUTS = {"big-centered", "body-width", "left-aligned", "right-aligned", "full-bleed", "shared-components"}
+LAYOUTS = {
+    "big-centered", "body-width", "left-aligned", "right-aligned",
+    "full-bleed", "left-full-bleed", "right-full-bleed", "shared-components",
+}
 
 STORY_TYPE_COPY = {
     "Report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",

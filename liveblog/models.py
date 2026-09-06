@@ -186,6 +186,14 @@ class LiveBlogUpdate(ClusterableModel):
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
 
+    @property
+    def redesign_header_layout(self):
+        return "big-centered"
+
+    @property
+    def full_bleed_nav_color(self):
+        return "white"
+
     stage = StreamField([
             ("header", LiveblogHeader()),
             ("summary", LiveblogSummary()),
@@ -260,7 +268,10 @@ class LiveBlogArticlePage(ArticlePage):
         return save
 
     def get_nav_html(self, request):
-        return loader.render_to_string("article/objects/article-navigation.html", {"self": self, "section": self.current_section, "request": request})
+        return loader.render_to_string(
+            "article/components/redesign_nav.html",
+            {"article": self, "request": request},
+        )
     
     def get_suggested_html(self, request):
         return loader.render_to_string("article/objects/suggested_articles.html", {"suggested": self.get_suggested(), "request": request})

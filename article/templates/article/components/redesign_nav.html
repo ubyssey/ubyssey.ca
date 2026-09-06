@@ -1,6 +1,6 @@
 {% load static %}
 <a class="hp-skip" href="#main-content">Skip to content</a>
-<header class="hp-nav ar-nav ar-nav--{{ article.redesign_header_layout }} ar-nav--ink-{{ article.full_bleed_nav_color|default:'white' }}" data-article-nav data-full-bleed="{% if article.redesign_header_layout == 'full-bleed' %}true{% else %}false{% endif %}">
+<header class="hp-nav ar-nav {% if article.redesign_header_layout == 'left-full-bleed' %}ar-nav--left-aligned ar-nav--cover{% elif article.redesign_header_layout == 'right-full-bleed' %}ar-nav--right-aligned ar-nav--cover{% elif article.redesign_header_layout == 'full-bleed' %}ar-nav--full-bleed ar-nav--cover{% else %}ar-nav--{{ article.redesign_header_layout }}{% endif %} ar-nav--ink-{{ article.full_bleed_nav_color|default:'white' }}" data-article-nav data-full-bleed="{% if article.redesign_header_layout == 'full-bleed' %}true{% else %}false{% endif %}">
   <div class="ar-nav__bar page-shell">
     <button class="hp-nav__menu" type="button" aria-expanded="false" aria-controls="ar-expanded-menu"><img src="{% static 'ubyssey/images/homepage/menu-search.svg' %}" alt=""><span class="sr-only">Open menu and search</span></button>
     <a class="ar-nav__nameplate" href="/" aria-label="The Ubyssey home">The Ubyssey</a>

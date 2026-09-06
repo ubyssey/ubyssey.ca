@@ -28,7 +28,7 @@ function initializeArticleNavigation() {
     const header = document.querySelector('[data-article-nav]');
     if (!header) return;
     const button = header.querySelector('.hp-nav__menu');
-    const menu = header.querySelector('#ar-expanded-menu');
+    const menu = header.querySelector('.hp-nav__expanded');
     let open = false;
     let closeTimer;
     const setOpen = (next) => {
@@ -53,11 +53,33 @@ function initializeArticleNavigation() {
         if (open && !header.contains(event.target)) setOpen(false);
     });
     const update = () => {
-        if (header.dataset.fullBleed === 'true') return;
+        if (header.dataset.fullBleed === 'true') {
+            const hero = document.querySelector('.ar-hero--full-bleed');
+            if (!hero) return;
+            const pastHero = window.scrollY >= hero.offsetTop + hero.offsetHeight - 8;
+            header.classList.toggle('is-full-bleed-past', pastHero);
+            header.classList.toggle('is-compact', pastHero);
+            return;
+        }
         header.classList.toggle('is-compact', window.scrollY > 70);
     };
     update();
     window.addEventListener('scroll', update, { passive: true });
+}
+
+function formatCaptionCredits() {
+    document.querySelectorAll('.ar-page figcaption .credit, .ar-page .caption .credit').forEach((credit) => {
+        if (credit.querySelector('.credit-name')) return;
+        const value = credit.textContent.trim();
+        let match = value.match(/^(.*?\bby\s+)(.+?)(\s+for\s+The\s+Ubyssey.*)$/i);
+        if (!match) match = value.match(/^(.*?\bby\s+)(.+)$/i);
+        if (!match) return;
+        credit.replaceChildren(
+            document.createTextNode(match[1]),
+            Object.assign(document.createElement('span'), { className: 'credit-name', textContent: match[2] }),
+            document.createTextNode(match[3] || ''),
+        );
+    });
 }
 
 function initializeArticleSharing() {
@@ -101,5 +123,6 @@ function alignArticleContextRail() {
 initializeArticleNavigation();
 initializeArticleSharing();
 initializeKeepReading();
+formatCaptionCredits();
 alignArticleContextRail();
 window.addEventListener('resize', alignArticleContextRail, { passive: true });

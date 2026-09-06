@@ -37,15 +37,27 @@ function UpdateNotification({meta, caughtUp, updateOrder, position, scrollToRece
 
 }
 
-export default function LiveBlogFeed({meta, updates, updateOrder, presentTime, caughtUp, scrollToRecent, isAdmin}) {
+export default function LiveBlogFeed({meta, updates, updateOrder, presentTime, caughtUp, scrollToRecent, isAdmin, toggleUpdateOrder, viewMode = "updates", toggleViewMode, isSorting}) {
 
     return (
     <div className="c-liveblog">
 
+        {!meta.isAdminView && <div className="c-liveblog__heading">
+            <h2>Updates</h2>
+            <div className="c-liveblog__controls">
+                <button className="c-liveblog__timeline-toggle" type="button" onClick={toggleViewMode} aria-pressed={viewMode === "timeline"}>
+                    {viewMode === "timeline" ? "Updates" : "Timeline"}
+                </button>
+                <button type="button" onClick={toggleUpdateOrder} aria-label={`Sort updates by ${updateOrder === -1 ? "oldest" : "latest"}`}>
+                    {updateOrder === -1 ? "Latest" : "Oldest"}<span aria-hidden="true">{updateOrder === -1 ? "↓" : "↑"}</span>
+                </button>
+            </div>
+        </div>}
+
         <UpdateNotification meta={meta} caughtUp={caughtUp} updateOrder={updateOrder} position={"top"} scrollToRecent={scrollToRecent} />
 
-        <div id="liveblog-feed">
-            {updates.map((update)=> <LiveblogUpdate update={update} presentTime={presentTime} isAdmin={isAdmin} />)}
+        <div id="liveblog-feed" className={(isSorting ? "is-sorting " : "") + (viewMode === "timeline" ? "is-timeline" : "")}>
+            {updates.map((update)=> <LiveblogUpdate key={update.id} update={update} presentTime={presentTime} isLive={meta.live} isAdmin={isAdmin} compact={viewMode === "timeline"} />)}
         </div>
 
         <div id="liveblog-end" className="c-liveblog--end">

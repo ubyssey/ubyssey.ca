@@ -21,6 +21,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 from django.conf import settings
+from wagtail.snippets.models import register_snippet
 
 # Create your models here.
 
@@ -43,6 +44,45 @@ class TopArticlesOrderable(Orderable):
             heading="Article"
         ),
     ]
+
+
+@register_snippet
+class ThunderbirdFixture(models.Model):
+    """A scheduled Thunderbird fixture. Scores are intentionally editor-managed."""
+
+    SPORT_CHOICES = homeblocks.SPORT_CHOICES[1:]
+    source_event = models.CharField(max_length=255, unique=True, editable=False)
+    sport = models.CharField(max_length=20, choices=SPORT_CHOICES)
+    starts_at = models.DateTimeField(db_index=True)
+    venue = models.CharField(max_length=180, blank=True)
+    away_name = models.CharField(max_length=100)
+    home_name = models.CharField(max_length=100)
+    away_logo = models.CharField(max_length=180, blank=True, editable=False)
+    home_logo = models.CharField(max_length=180, blank=True, editable=False)
+    away_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    home_score = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    panels = [
+        FieldPanel("sport"), FieldPanel("starts_at"), FieldPanel("venue"),
+        FieldPanel("away_name"), FieldPanel("home_name"),
+        MultiFieldPanel([FieldPanel("away_score"), FieldPanel("home_score")], heading="Result (enter after the game)"),
+    ]
+
+    class Meta:
+        ordering = ("starts_at",)
+        verbose_name = "Thunderbird fixture"
+        verbose_name_plural = "Thunderbird fixtures"
+
+    def __str__(self):
+        return f"{self.get_sport_display()}: {self.away_name} at {self.home_name} — {self.starts_at:%b %-d}"
+
+    @property
+    def away_team(self):
+        return SimpleNamespace(name=self.away_name, score=self.away_score, icon=None)
+
+    @property
+    def home_team(self):
+        return SimpleNamespace(name=self.home_name, score=self.home_score, icon=None)
 
 class HomePage(Page):
     show_in_menus_default = True
@@ -217,6 +257,13 @@ class HomePage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+
+        covered_sports = [choice[0] for choice in homeblocks.SPORT_CHOICES[1:]]
+        current_time = timezone.now()
+        fixtures = ThunderbirdFixture.objects.filter(sport__in=covered_sports)
+        context["panel_sports"] = covered_sports
+        context["upcoming_games"] = list(fixtures.filter(starts_at__gte=current_time).order_by("starts_at")[:5])
+        context["recent_results"] = list(fixtures.filter(starts_at__lt=current_time).order_by("-starts_at")[:5])
 
         context["curated_articles"] = self.get_curated_articles()
 

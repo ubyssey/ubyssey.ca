@@ -27,6 +27,7 @@ SPORT_CHOICES = [
     ("hockey-m", "Hockey (M)"),
     ("soccer-w", "Soccer (W)"),
     ("soccer-m", "Soccer (M)"),
+    ("rugby-w", "Rugby (W)"),
     ("volleyball-w", "Volleyball (W)"),
     ("volleyball-m", "Volleyball (M)"),
 ]
@@ -73,8 +74,21 @@ class GameAnalysisPanel(blocks.StructBlock):
             return starts_at.timestamp() if starts_at else missing
 
         context["analysis_articles"] = sorted(value["articles"], key=article_timestamp, reverse=True)
-        context["upcoming_games"] = sorted(value["upcoming_games"], key=lambda item: fixture_timestamp(item, float("inf")))
-        context["recent_results"] = sorted(value["recent_results"], key=lambda item: fixture_timestamp(item, float("-inf")), reverse=True)
+        # Fixtures live outside the homepage StreamField so the imported term
+        # schedule can progress automatically while editors add only scores.
+        from home.models import ThunderbirdFixture
+        # The panel's scope is editorially defined, rather than being limited
+        # by whichever story filters happen to be selected in the CMS.
+        active_sports = [choice[0] for choice in SPORT_CHOICES[1:]]
+        context["panel_sports"] = active_sports
+        now = timezone.now()
+        scheduled = ThunderbirdFixture.objects.filter(sport__in=active_sports)
+        context["upcoming_games"] = list(scheduled.filter(starts_at__gte=now).order_by("starts_at")[:5])
+        context["recent_results"] = list(scheduled.filter(starts_at__lt=now).order_by("-starts_at")[:5])
+        # Preserve manually entered fixtures until the calendar has been imported.
+        if not context["upcoming_games"] and not context["recent_results"]:
+            context["upcoming_games"] = sorted(value["upcoming_games"], key=lambda item: fixture_timestamp(item, float("inf")))[:5]
+            context["recent_results"] = sorted(value["recent_results"], key=lambda item: fixture_timestamp(item, float("-inf")), reverse=True)[:5]
         return context
 
     class Meta:

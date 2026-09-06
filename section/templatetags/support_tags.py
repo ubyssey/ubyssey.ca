@@ -18,6 +18,21 @@ def auxiliary_url(context, value):
     return getattr(value, "url", "#")
 
 
+@register.simple_tag(takes_context=True)
+def auxiliary_section(context, value):
+    """Return the stored section, falling back to the first URL segment."""
+    section = getattr(value, "current_section", "")
+    if section:
+        return str(section).replace("-", " ").title()
+    preview_url = getattr(value, "preview_url", "")
+    get_url = getattr(value, "get_url", None)
+    if not preview_url and get_url:
+        preview_url = get_url(request=context.get("request")) or ""
+    path = urlparse(preview_url).path
+    parts = [part for part in path.split("/") if part]
+    return parts[0].replace("-", " ").title() if parts else "Story"
+
+
 @register.filter
 def spotify_embed_url(value):
     """Convert a public Spotify episode URL to its iframe URL."""

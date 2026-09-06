@@ -1478,6 +1478,11 @@ class StandardArticlePage(ArticlePage):
         default="",
         help_text="Optional context about the writer's standpoint or relationship to the subject.",
     )
+    extended_byline_override = RichTextField(
+        blank=True,
+        default="",
+        help_text="Optional editor-authored extended byline. Leave blank to generate contributor credits from the article's assigned roles.",
+    )
     full_bleed_nav_color = models.CharField(
         max_length=5,
         choices=(("white", "White"), ("black", "Black")),
@@ -1724,6 +1729,7 @@ class StandardArticlePage(ArticlePage):
                 FieldPanel("disclaimer"),
                 FieldPanel("story_type"),
                 FieldPanel("standpoint_disclosure"),
+                FieldPanel("extended_byline_override"),
                 FieldPanel("full_bleed_nav_color"),
             ],
             heading="Article Content",
@@ -1810,7 +1816,12 @@ class StandardArticlePage(ArticlePage):
 
     @staticmethod
     def redesign_layout_for_header(layout):
-        base = (layout or "bottom-image").split("--")[0]
+        layout = layout or "bottom-image"
+        if layout.startswith("banner-image--full-height--headline-left"):
+            return "right-full-bleed"
+        if layout.startswith("banner-image--full-height--headline-right"):
+            return "left-full-bleed"
+        base = layout.split("--")[0]
         return {
             "bottom-image": "big-centered",
             "top-image": "body-width",

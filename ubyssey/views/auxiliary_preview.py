@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
+from urllib.parse import urlparse
 
 from django.core.paginator import Paginator
 from django.shortcuts import render
@@ -33,6 +34,7 @@ def _date(value):
 
 def _story(item, fixture):
     thumbnail = item.get("thumbnail") or {}
+    url_parts = [part for part in urlparse(item.get("article_url", "")).path.split("/") if part]
     return SimpleNamespace(
         title=item.get("headline", ""),
         lede=item.get("lede", ""),
@@ -41,7 +43,7 @@ def _story(item, fixture):
         preview_alt=thumbnail.get("alt_text", ""),
         authors_string=item.get("byline_html") or item.get("byline_text", ""),
         explicit_published_at=_date(item.get("date_attribute") or item.get("displayed_date")),
-        current_section=item.get("section") or "Story",
+        current_section=item.get("section") or (url_parts[0] if url_parts else "News"),
         reading_time=None,
     )
 
@@ -148,7 +150,7 @@ def auxiliary_preview(request, page_key):
                 ("opinion", "Opinion"), ("sports", "Sports & Rec"), ("photo", "Photo"),
             )
         )
-        page_obj = Paginator(stories, 15).get_page(request.GET.get("page"))
+        page_obj = Paginator(stories, 20).get_page(request.GET.get("page"))
         context.update({
             "q": query,
             "order": order,
@@ -160,6 +162,7 @@ def auxiliary_preview(request, page_key):
             "series": request.GET.get("series", ""),
             "date_from": request.GET.get("from", ""),
             "date_to": request.GET.get("to", ""),
+            "selected_range": request.GET.get("range", ""),
             "has_search": bool(request.GET),
             "recent_articles": stories[:5],
             "page_obj": page_obj,

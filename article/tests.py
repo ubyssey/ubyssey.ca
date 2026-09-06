@@ -14,7 +14,8 @@ class ArticleRedesignMappingTests(SimpleTestCase):
             "left-image": "left-aligned",
             "right-image": "right-aligned",
             "banner-image": "full-bleed",
-            "banner-image--full-height--headline-left--headline-bottom": "full-bleed",
+            "banner-image--full-height--headline-left--headline-bottom": "right-full-bleed",
+            "banner-image--full-height--headline-right--headline-bottom": "left-full-bleed",
             "no-image": "body-width",
         }
         for legacy, redesign in expected.items():

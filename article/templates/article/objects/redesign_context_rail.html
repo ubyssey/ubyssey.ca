@@ -1,6 +1,7 @@
 {% load articletags wagtailcore_tags %}<aside class="ar-context-rail">
-  <section class="ar-context-box"><h2>Standpoint Disclosure</h2>{% if article.standpoint_disclosure %}{{ article.standpoint_disclosure|richtext }}{% else %}<p>{{ article.story_type_description }}</p>{% endif %}</section>
+  {% if article.standpoint_disclosure %}<section class="ar-context-box"><h2>Standpoint Disclosure</h2>{{ article.standpoint_disclosure|richtext }}</section>{% endif %}
   <section class="ar-context-box"><h2>Extended Byline</h2>
-    {% with credit=article.extended_contributors|format_redesign_extended_byline %}{% if credit %}<p>{{ credit }}</p>{% endif %}{% endwith %}
+    <p>{{ article.story_type_description }}</p>
+    {% if article.extended_byline_override %}{{ article.extended_byline_override|richtext }}{% else %}{% with credit=article.extended_contributors|format_redesign_extended_byline %}{% if credit %}<p>{{ credit }}</p>{% endif %}{% endwith %}{% endif %}
   </section>
 </aside>

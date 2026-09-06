@@ -6,16 +6,18 @@
       <button data-sport="volleyball-w" type="button">Volleyball (W)</button>
       <button data-sport="soccer-m" type="button">Soccer (M)</button>
       <button data-sport="soccer-w" type="button">Soccer (W)</button>
+      <button data-sport="football" type="button">Football</button>
       <button data-sport="hockey-m" type="button">Hockey (M)</button>
       <button data-sport="hockey-w" type="button">Hockey (W)</button>
       <button data-sport="basketball-m" type="button">Basketball (M)</button>
       <button data-sport="basketball-w" type="button">Basketball (W)</button>
+      <button data-sport="rugby-w" type="button">Rugby (W)</button>
     </div>
     <div class="hp-games__layout">
       <div class="hp-games__stories">
         {% for article in redesign_articles|slice:":1" %}
           <article class="hp-game-lead" data-sport="">
-            <a class="hp-game-image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt }}"><span>Women’s hockey // March 27</span></a>
+            <a class="hp-game-image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt }}"><span>March 27</span></a>
             <h3><a class="hover-swipe" href="{{ article.url }}">{{ article.title }}</a></h3>
             <div class="hp-byline"><span class="hp-byline__prefix">By</span> {{ article.get_authors_split_out_visual_bylines|normalize_redesign_byline|safe }}</div>
           </article>
@@ -23,7 +25,7 @@
         <div class="hp-game-secondary">
           {% for article in redesign_articles|slice:"1:4" %}
             <article data-sport="">
-              <a class="hp-game-image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt }}"><span>Hockey (W) // March 26</span></a>
+              <a class="hp-game-image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt }}"><span>March 26</span></a>
               <div><h3><a class="hover-swipe" href="{{ article.url }}">{{ article.title }}</a></h3><div class="hp-byline"><span class="hp-byline__prefix">By</span> {{ article.get_authors_split_out_visual_bylines|normalize_redesign_byline|safe }}</div></div>
             </article>
           {% endfor %}
@@ -31,8 +33,8 @@
       </div>
       <div class="hp-scoreboard" data-scoreboard>
         <div class="hp-scoreboard__tabs"><button class="is-active" type="button" data-score-tab="upcoming">Upcoming Games</button><button type="button" data-score-tab="recent">Recent Results</button></div>
-        <div class="hp-scoreboard__panel is-active" data-score-panel="upcoming">{% include "home/components/redesign_fixture.html" with preview=True %}{% include "home/components/redesign_fixture.html" with preview=True %}{% include "home/components/redesign_fixture.html" with preview=True %}{% include "home/components/redesign_fixture.html" with preview=True %}{% include "home/components/redesign_fixture.html" with preview=True %}</div>
-        <div class="hp-scoreboard__panel" data-score-panel="recent" hidden>{% include "home/components/redesign_fixture.html" with preview=True recent=True %}{% include "home/components/redesign_fixture.html" with preview=True recent=True %}{% include "home/components/redesign_fixture.html" with preview=True recent=True %}{% include "home/components/redesign_fixture.html" with preview=True recent=True %}{% include "home/components/redesign_fixture.html" with preview=True recent=True %}</div>
+        <div class="hp-scoreboard__panel is-active" data-score-panel="upcoming">{% for game in upcoming_games %}{% include "home/components/redesign_fixture.html" with game=game %}{% empty %}{% include "home/components/redesign_fixture.html" with preview=True %}{% endfor %}</div>
+        <div class="hp-scoreboard__panel" data-score-panel="recent" hidden>{% for game in recent_results %}{% include "home/components/redesign_fixture.html" with game=game recent=True %}{% empty %}{% include "home/components/redesign_fixture.html" with preview=True recent=True %}{% endfor %}</div>
       </div>
     </div>
   </div>
