@@ -182,7 +182,10 @@ export default function Deadline({page, updatePage, isLocalOnly=false}) {
     updateDeadlineList(page, newDeadlineList, updatePage, isLocalOnly)
   }
 
-  if ((page.deadline_list.length <= 1 && getDeadlineByDescription(page, deadlineOptions.DRAFT_IN) != null) && !expanded) {
+  console.log(page.deadline_list)
+  if ((page.deadline_list.length == 0 
+        || (page.deadline_list.length == 1 && getDeadlineByDescription(page, deadlineOptions.DRAFT_IN) != null)) 
+      && !expanded) {
     return <div className="edit-field--deadlines">
         <DeadlineItem 
           deadline={getDeadlineByDescription(page, deadlineOptions.DRAFT_IN)}
