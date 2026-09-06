@@ -118,6 +118,17 @@ def get_editor_field(block, value, path=None):
             ],
         }
 
+    if kind == "stream":
+        value = json_safe(value) if value is not None else []
+        block_types = block.child_blocks
+        return {
+            "kind": "stream",
+            "path": path,
+            "label": label,
+            "blockTypes": get_editor_block_types(block_types),
+            "blocks": get_editor_blocks(value, block_types),
+        }
+
     if kind in ("richtext", "plain_text"):
         return {
             "kind": "editable",
@@ -160,6 +171,8 @@ def get_field_kind(block):
         return "struct"
     if isinstance(block, blocks.ListBlock):
         return "list"
+    if isinstance(block, blocks.StreamBlock):
+        return "stream"
 
     widget = getattr(getattr(block, "field", None), "widget", None)
     input_type = getattr(widget, "input_type", "")
@@ -177,6 +190,8 @@ def get_default_value(block):
             for name, child_block in block.child_blocks.items()
         }
     if kind == "list":
+        return []
+    if kind == "stream":
         return []
     if kind in ("richtext", "plain_text", "unknown"):
         return ""

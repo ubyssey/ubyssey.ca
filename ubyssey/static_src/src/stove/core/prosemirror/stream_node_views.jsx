@@ -1,7 +1,7 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import { Fragment } from "prosemirror-model";
 import { useEditorEventCallback, useEditorStateSelector, useIgnoreMutation, useStopEvent } from "@handlewithcare/react-prosemirror";
-import { listItemToPmNode } from "./serialization.js";
+import { createStreamItemNodeFromRegistry, listItemToPmNode } from "./serialization.js";
 import { streamSchema } from "./stream_schema.js";
 import { PageChooser } from "./page_chooser.jsx";
 
@@ -20,6 +20,8 @@ export function streamNodeViews({ controlOptions = () => [], pageOptionsUrl } = 
     control_field: ControlFieldNodeView(controlOptions, pageOptionsUrl),
     list_field: ListFieldNodeView,
     list_item: ListItemNodeView,
+    stream_field: StreamFieldNodeView,
+    stream_item: StreamItemNodeView,
   };
 }
 
@@ -128,6 +130,90 @@ function listItemInfo(doc, pos) {
   const node = parent.child(index);
   return { parent, index, node, start, end: start + node.nodeSize, parentStart, parentEnd };
 }
+
+const StreamFieldNodeView = forwardRef(function StreamFieldNodeView({ children, nodeProps }, ref) {
+  const { node, getPos } = nodeProps;
+  const blockTypes = node.attrs.blockTypes || {};
+  const availableBlockTypes = Object.keys(blockTypes).sort((left, right) => left.localeCompare(right));
+  const [selectedBlockType, setSelectedBlockType] = useState(availableBlockTypes[0] || "");
+  const addItem = useEditorEventCallback((view, blockType) => {
+    if (!blockTypes[blockType]) return;
+
+    const item = createStreamItemNodeFromRegistry(blockTypes, blockType);
+    view.dispatch(view.state.tr.insert(getPos() + node.nodeSize - 1, item));
+    view.focus();
+  });
+
+  useStopEvent((view, event) => event.target.nodeName === "BUTTON" || event.target.nodeName === "SELECT");
+  useIgnoreMutation((view, mutation) => mutation.target.classList?.contains("pm-stream-field__header") || mutation.target.closest?.(".pm-stream-field__header"));
+
+  return (
+    <div ref={ref} className="pm-stream-field">
+      <div className="pm-stream-field__header" contentEditable={false}>
+        <div className="pm-stream-field__label">{node.attrs.label}</div>
+        {availableBlockTypes.length > 0 && (
+          <>
+            <select
+              value={selectedBlockType}
+              aria-label="Block type to add"
+              onChange={(event) => { setSelectedBlockType(event.currentTarget.value); }}
+            >
+              {availableBlockTypes.map((blockType) => (
+                <option key={blockType} value={blockType}>{blockTypeLabel(blockType)}</option>
+              ))}
+            </select>
+            <button type="button" title="Add" onClick={() => { addItem(selectedBlockType); }}>+</button>
+          </>
+        )}
+      </div>
+      <div className="pm-stream-field__items" ref={nodeProps.contentDOMRef}>{children}</div>
+    </div>
+  );
+});
+
+const StreamItemNodeView = forwardRef(function StreamItemNodeView({ children, nodeProps }, ref) {
+  const { node, getPos } = nodeProps;
+  const itemIndex = useEditorStateSelector((state) => state.doc.resolve(getPos()).index());
+  const itemCount = useEditorStateSelector((state) => state.doc.resolve(getPos()).parent.childCount);
+  const deleteItem = useEditorEventCallback((view) => {
+    const latest = listItemInfo(view.state.doc, getPos());
+    view.dispatch(view.state.tr.delete(latest.start, latest.end));
+    view.focus();
+  });
+  const moveItem = useEditorEventCallback((view, direction) => {
+    const latest = listItemInfo(view.state.doc, getPos());
+    const targetIndex = latest.index + direction;
+    if (targetIndex < 0 || targetIndex >= latest.parent.childCount) return;
+
+    const items = [];
+    for (let index = 0; index < latest.parent.childCount; index += 1) {
+      items.push(latest.parent.child(index));
+    }
+
+    [items[latest.index], items[targetIndex]] = [items[targetIndex], items[latest.index]];
+    view.dispatch(view.state.tr.replaceWith(
+      latest.parentStart,
+      latest.parentEnd,
+      Fragment.fromArray(items),
+    ));
+    view.focus();
+  });
+
+  useStopEvent((view, event) => event.target.nodeName === "BUTTON");
+  useIgnoreMutation((view, mutation) => mutation.target.classList?.contains("pm-stream-item__header") || mutation.target.closest?.(".pm-stream-item__header"));
+
+  return (
+    <div ref={ref} className="pm-stream-item">
+      <div className="pm-stream-item__header" contentEditable={false}>
+        <div className="pm-stream-item__title">{blockTypeLabel(node.attrs.blockType)} #{itemIndex + 1}</div>
+        <button type="button" title="Up" disabled={itemIndex === 0} onClick={() => { moveItem(-1); }}>↑</button>
+        <button type="button" title="Down" disabled={itemIndex === itemCount - 1} onClick={() => { moveItem(1); }}>↓</button>
+        <button type="button" title="Delete" onClick={deleteItem}>Del</button>
+      </div>
+      <div className="pm-stream-item__content" ref={nodeProps.contentDOMRef}>{children}</div>
+    </div>
+  );
+});
 
 function ControlFieldNodeView(controlOptions, pageOptionsUrl) {
   return forwardRef(function ControlFieldNodeView({ nodeProps }, ref) {

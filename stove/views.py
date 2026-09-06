@@ -39,6 +39,7 @@ from stove.editors.manuscript.forms.featured_media import create_form as create_
 from stove.editors.manuscript.forms.metadata import PAGE_FORM_FIELDS, create_form as create_page_form
 from stove.editors.manuscript.schema import get_streamfield_editors
 from stove.editors.manuscript.preview import prepare_manuscript_preview
+from stove.editors.homepage.preview import prepare_homepage_preview
 from stove.editors.manuscript.submission import process_editor_forms
 from stove.editors.collaboration.revisions import (
     restore_page_revision,
@@ -659,6 +660,8 @@ def editor_page_full_preview(request, page_id):
 def prepare_editor_preview(page, submitted_data, revision=None):
     if isinstance(page, ArticlePage):
         return prepare_manuscript_preview(page, submitted_data, revision)
+    if isinstance(page, HomePage):
+        return prepare_homepage_preview(page, submitted_data, revision)
 
     return revision.as_object() if revision else page, {}, None, None, None
 

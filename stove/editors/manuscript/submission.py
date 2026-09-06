@@ -13,7 +13,7 @@ def process_editor_forms(page, data, preview=False):
     if isinstance(page, ArticlePage):
         return process_manuscript_forms(page, data, preview=preview)
 
-    return {}, None, None, None
+    return process_streamfields(page, data, preview=preview), None, None, None
 
 
 def json_safe(value):
@@ -50,6 +50,14 @@ def process_manuscript_forms(page, data, preview=False):
         else:
             merge_form_errors(editor_errors, featured_media_form, "featured_media")
 
+    editor_errors.update(process_streamfields(page, data, preview=preview))
+
+    return editor_errors, page_form, article_authors_form, featured_media_form
+
+
+def process_streamfields(page, data, preview=False):
+    editor_errors = {}
+
     for field in page._meta.get_fields():
         if not isinstance(field, StreamField):
             continue
@@ -71,4 +79,4 @@ def process_manuscript_forms(page, data, preview=False):
         except json.JSONDecodeError:
             editor_errors[field.name] = [f"Invalid JSON for {field.name}."]
 
-    return editor_errors, page_form, article_authors_form, featured_media_form
+    return editor_errors

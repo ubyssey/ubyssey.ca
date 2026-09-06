@@ -376,6 +376,18 @@ body {
     margin-left: 16px;
 }
 
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field {
+    margin: 8px 0;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__items {
+    display: grid;
+    gap: 8px;
+    margin-left: 16px;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__header,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-item__header,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__header,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__header {
     display: flex;
@@ -383,13 +395,15 @@ body {
     gap: 6px;
 }
 
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-item__title,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__label,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__title {
     flex: 1;
     margin-bottom: 0;
 }
 
-.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__header {
+.page-block-editor-modal__body .pm-page-block-dialog__editor :is(.pm-stream-item__header, .pm-list-item__header) {
     margin: 8px 0 6px;
 }
 
@@ -401,12 +415,14 @@ body {
 }
 
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-struct-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__label,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__label {
     display: block;
     margin-bottom: 8px;
     font: 700 15px/1.2 sans-serif;
 }
 
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__header .pm-stream-field__label,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__header .pm-list-field__label {
     flex: 1;
     margin-bottom: 0;

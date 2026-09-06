@@ -22,6 +22,7 @@
     data-preview-url="{% url 'stove:editor_page_preview' self.id %}"
     data-restore-url="{% url 'stove:editor_page_restore' self.id %}"
     data-history-url="{% url 'stove:editor_page_revisions' self.id %}"
+    data-page-options-url="{% url 'stove:manuscript_page_options' self.id %}"
 {% endblock %}
 
 {% block editor_content %}
