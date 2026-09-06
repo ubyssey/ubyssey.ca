@@ -62,7 +62,23 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         related_name='+',        
     )
 
+    spotify_episode_url = models.URLField(
+        blank=True,
+        default="",
+        help_text="Paste the public Spotify episode URL used by the Latest Episode player.",
+    )
+
     def get_template(self, request):
+        support_templates = {
+            "our-journalism": "support/our_journalism.html",
+            "our-team": "support/our_team.html",
+            "masthead": "support/masthead.html",
+            "ups-board": "support/ups_board.html",
+            "board": "support/ups_board.html",
+            "the-vilest-rag": "section/podcast_page.html",
+        }
+        if self.slug in support_templates:
+            return support_templates[self.slug]
         if not self.use_default_template:
             if self.db_template:
                 return self.db_template.name
@@ -228,6 +244,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 FieldPanel("featured_media"),
+                FieldPanel("spotify_episode_url"),
             ],
             heading="Meta Image",
         ),
@@ -236,6 +253,28 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
     def get_context(self, request, *args, **kwargs):        
         context = super().get_context(request, *args, **kwargs)
+        if self.slug == "the-vilest-rag":
+            from article.models import ArticlePage
+            episodes = ArticlePage.objects.live().public().descendant_of(self).order_by("-explicit_published_at")[:20]
+            if not episodes:
+                episodes = ArticlePage.objects.live().public().filter(current_section=self.slug).order_by("-explicit_published_at")[:20]
+            context["redesign_all_articles"] = episodes
+        if self.slug in {"our-team", "masthead"}:
+            from authors.models import AuthorPage
+            staff = list(AuthorPage.objects.live().exclude(ubyssey_role="").order_by("full_name"))
+            groups = {"senior": [], "reportage": [], "visuals": [], "product": []}
+            for person in staff:
+                role = person.ubyssey_role.lower()
+                if "editor-in-chief" in role or "managing editor" in role:
+                    groups["senior"].append(person)
+                elif any(word in role for word in ("visual", "photo", "video", "illustr", "audio", "design")):
+                    groups["visuals"].append(person)
+                elif any(word in role for word in ("product", "web", "developer", "engagement", "newsletter")):
+                    groups["product"].append(person)
+                else:
+                    groups["reportage"].append(person)
+            context["redesign_staff"] = staff
+            context["redesign_staff_groups"] = groups
         # for i, block in self.body:
         #     print('hello world ' + i)
         #     context['article' + i] = Article.objects.get(is_published=1, slug=block)

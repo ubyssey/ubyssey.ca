@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.db.models.query import QuerySet
 from videos.models import VideoAuthorsOrderable
@@ -164,6 +166,12 @@ class AuthorPage(RoutablePageMixin, Page):
     )
 
     objects = AuthorsPageManager()
+
+    @property
+    def redesign_contact_email(self):
+        """Expose legacy emails without adding a new CMS field or migration."""
+        match = re.search(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", self.bio_description or "", re.IGNORECASE)
+        return match.group(0) if match else ""
 
     # For editting in wagtail:
     content_panels = [

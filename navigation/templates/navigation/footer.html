@@ -1,62 +1,24 @@
-{% load static %}
-{% load cache %}
-{% load menu_tags %}
-
-{% cache 6000 footer %}
-<footer>
-    <div class="u-container u-container--large">
-
-        <div class="about">
-            <div class="footer-branding">
-                <img class="logo mobile" src="{% static 'ubyssey/images/logos/dingbat-blue.svg' %}" alt="The Ubyssey"/>
-                <img class="logo desktop" src="{% static 'ubyssey/images/logos/ubyssey-logo-blue-dark.svg' %}" alt="The Ubyssey"/>
-                <img class="funding mobile" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada"/>
-                <p>
-                    <b><i>The Ubyssey</i></b> is an independent, non-profit, public service student press covering the University of British Columbia community since 1918.
-                </p>
-                <img class="funding desktop" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada"/>
-                <div class="footer-address">
-                    <div class="footer-address-location"><b>NEST 2208</b>, 6133 University Blvd.<br>Vancouver, BC Canada V6T 1Z1</div> 
-                </div>
-            </div>
-            
-            <div class="footer-links">
-                <div class="footer-links-section">
-                    <h3>Sections</h3>
-                    {% main_menu show_multiple_levels=False apply_active_classes=False %}
-                </div>
-                <div class="footer-links-section">
-                    <h3>Connect</h3>
-                    <ul>
-                        <li><a href="/rss" target="_blank" title="RSS feed">RSS feed</a></li>
-                        <li><a href="/newsletter" target="_blank" title="Newsletter">Newsletter</a></li>
-                        <li><a href="https://bsky.app/profile/ubyssey.ca" target="_blank" title="The Ubyssey on Bluesky">Bluesky</a></li>
-                        <li><a href="https://www.youtube.com/@theubyssey1918" target="_blank" title="The Ubyssey on YouTube">YouTube</a></li>
-                        <li><a href="https://www.tiktok.com/@theubyssey" target="_blank" title="The Ubyssey on Tiktok">TikTok</a></li>
-                        <li><a href="https://www.instagram.com/ubyssey.ca/" target="_blank" title="The Ubyssey on Instagram">Instagram</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links-section">
-                    <h3>About</h3>
-                    {% flat_menu 'about_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-                </div>
-                <div class="footer-links-section">
-                    <h3>Contact</h3>
-                    {% flat_menu 'contact_dropdown_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-                </div>
-                <div class="footer-links-section">
-                    <h3>Join</h3>
-                    {% flat_menu 'join_footer_menu' max_levels=1 show_menu_heading=False fall_back_to_default_site_menus=True %}
-                </div>
-            </div>
-        </div>
-        <div class="land-acknowledgement">
-            <h3>Land Acknowledgement</h3>
-            <p>
-                <i>The Ubyssey</i> acknowledges we operate on the traditional, ancestral and stolen territories of the Coast Salish peoples including the xʷməθkʷəy̓əm (Musqueam), Sḵwx̱wú7mesh Úxwumixw (Squamish) and səlilwətaɬ (Tsleil-Waututh) nations.
-            </p>
-        </div>
-        <div class="copyright">&copy; {% now "Y" %} The Ubyssey</div>
+{% load static cache %}
+{% cache 6000 redesigned_footer_v5 %}
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <a href="/" aria-label="The Ubyssey home"><img src="{% static 'ubyssey/images/logos/ubyssey-footer-redesign.svg' %}" alt="The Ubyssey"></a>
+      <p>The Ubyssey is an independent, non-profit, public service student press covering the University of British Columbia community since 1918.</p>
+      <img class="site-footer__funding" src="{% static 'ubyssey/images/canada-funding-dark.png' %}" loading="lazy" alt="Funded by the Government of Canada">
+      <p class="site-footer__feedback">Have feedback? Email <a href="mailto:feedback@ubyssey.ca">feedback@ubyssey.ca</a>.</p>
     </div>
+    <nav class="site-footer__links" aria-label="Footer navigation">
+      <section><h2>Sections</h2><a href="/news/">News</a><a href="/opinion/">Opinion</a><a href="/arts/">Arts</a><a href="/culture/">Culture</a><a href="/sports/">Sports</a></section>
+      <section><h2>Connect</h2><a href="/rss/" target="_blank" rel="noopener">RSS feed</a><a href="https://bsky.app/profile/ubyssey.ca" target="_blank" rel="noopener">Bluesky</a><a href="https://www.youtube.com/@theubyssey1918" target="_blank" rel="noopener">YouTube</a><a href="https://www.tiktok.com/@theubyssey" target="_blank" rel="noopener">TikTok</a><a href="https://www.instagram.com/ubyssey.ca/" target="_blank" rel="noopener">Instagram</a></section>
+      <section><h2>About</h2><a href="/about/our-team/">Our Team</a></section>
+      <section><h2>Join</h2><a href="/join/">Apply</a></section>
+    </nav>
+    <div class="site-footer__land">
+      <h2>Land Acknowledgement</h2>
+      <p>The Ubyssey would like to acknowledge that our office resides and our production takes place on the ancestral, unceded territories of the xʷməθkʷəy̓əm (Musqueam), sḵwx̱wú7mesh (Squamish) and sel̓íl̓witulh (Tsleil-Waututh) nations.</p>
+    </div>
+    <p class="site-footer__copyright">© {% now "Y" %} The Ubyssey</p>
+  </div>
 </footer>
 {% endcache %}

@@ -1,0 +1,21 @@
+{% extends 'ubyssey/base.html' %}
+{% load static wagtailcore_tags wagtailimages_tags articletags support_tags %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-1"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block page_wrapper %}listing-redesign aux-theme{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
+{% block content %}
+<main id="main-content" class="aux-page podcast-page">
+  <section class="podcast-hero page-shell">
+    <div class="podcast-hero__art"><img src="{% static 'ubyssey/images/redesign/vilest-rag-logo.png' %}" alt="The Vilest Rag — The Ubyssey's podcast"></div>
+    <div class="podcast-hero__copy"><h1>The Vilest Rag</h1><div class="aux-lede">{% if self.description %}{{ self.description|richtext }}{% else %}<p>The Vilest Rag is a bi-weekly podcast brought to you by <em>The Ubyssey</em>. In each episode, we chat with reporters and editors to learn about what goes into making the news.</p>{% endif %}</div><p class="aux-kicker">Latest episode</p>
+      <iframe class="spotify-player" data-testid="embed-iframe" src="{{ self.spotify_episode_url|spotify_embed_url }}" width="100%" height="152" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Latest episode of The Vilest Rag on Spotify"></iframe>
+    </div>
+  </section>
+  <nav class="aux-tabs page-shell"><div><a class="is-active" href="#episodes">Episodes</a></div><form action="/archive/" method="get"><input type="search" name="q" placeholder="Search"><button class="aux-search-button"><img src="{% static 'ubyssey/images/redesign/search.svg' %}" alt="">Search</button></form></nav>
+  <section id="episodes" class="aux-section page-shell"><h2>Episodes</h2><div class="episode-list">
+    {% for article in redesign_all_articles|slice:':3' %}{% auxiliary_url article as article_url %}<article class="episode-card"><a class="episode-card__image" href="{{ article_url }}">{% include 'section/objects/aux_story_image.html' with article=article %}</a><div class="episode-card__body"><p class="aux-kicker">{{ article.explicit_published_at|date:'F j' }}{% if article.reading_time %} &nbsp;•&nbsp; {{ article.reading_time }} min{% endif %}</p><h3><a href="{{ article_url }}">{{ article.title|safe }}</a></h3><p>{{ article.lede|striptags|truncatewords:32 }}</p></div><div class="episode-card__action"><p>{{ article.authors_string|normalize_redesign_byline|safe }}</p><a class="aux-button" href="{{ article_url }}">Play</a></div></article>{% empty %}<p>No episodes are available yet.</p>{% endfor %}
+  </div></section>
+</main>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}?v=redesign-a38d0112"></script>{% endblock %}

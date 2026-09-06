@@ -10,6 +10,7 @@
 {{ nav_html|json_script:"nav-html" }}
 {{ suggested_html|json_script:"suggested-html" }}
 {{ admin_view|json_script:"admin-view" }}
+{{ preview_mode|default:False|json_script:"preview-mode" }}
 <div class="c-liveblog-container" id="liveblog"></div>
 
-<script src="{% static 'ubyssey/js/liveblog.js' %}" type="text/javascript"></script>
+<script src="{% static 'ubyssey/js/liveblog.js' %}?v=redesign-a38d0112" type="text/javascript"></script>

@@ -1,0 +1,11 @@
+{% extends 'support/base.html' %}
+{% load static wagtailimages_tags %}
+{% block support_content %}
+<header class="team-hero page-shell"><img src="{% static 'ubyssey/images/redesign/our-team-hero.jpg' %}" alt="Recent editions of The Ubyssey"><div><p class="aux-kicker">About The Ubyssey</p><h1><span>Our</span> Team</h1></div></header>
+<nav class="aux-tabs page-shell team-tabs"><div><a href="#senior">Senior Masthead</a><a href="#reportage">Reportage</a><a href="#visuals">Visuals</a><a href="#product">Product</a></div><a href="https://join.ubyssey.ca/">Join The Ubyssey →</a></nav>
+<section id="senior" class="team-section team-section--senior"><div class="page-shell"><h2>Senior Masthead</h2><div class="team-grid team-grid--senior">{% for person in redesign_staff_groups.senior %}{% include 'support/partials/person.html' %}{% endfor %}</div></div></section>
+<section id="reportage" class="team-section page-shell"><h2>Reportage</h2><div class="team-grid">{% for person in redesign_staff_groups.reportage %}{% include 'support/partials/person.html' %}{% endfor %}</div></section>
+<section id="visuals" class="team-section page-shell"><h2>Visuals</h2><div class="team-grid">{% for person in redesign_staff_groups.visuals %}{% include 'support/partials/person.html' %}{% endfor %}</div></section>
+<section id="product" class="team-section page-shell"><h2>Product</h2><div class="team-grid">{% for person in redesign_staff_groups.product %}{% include 'support/partials/person.html' %}{% endfor %}</div></section>
+<section class="join-band team-join"><div class="page-shell"><h2><span>Join</span><strong>The Ubyssey</strong></h2><div><p>Whether you want to report, create visuals, build products or learn how a newsroom works, there is a place for you here.</p><a href="https://join.ubyssey.ca/">Learn how to join</a></div></div></section>
+{% endblock %}

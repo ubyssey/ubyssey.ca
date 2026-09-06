@@ -1,0 +1,7 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-2"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block page_wrapper %}listing-redesign aux-theme{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
+{% block content %}<main id="main-content" class="aux-page support-page">{% block support_content %}{% endblock %}</main>{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}?v=redesign-a38d0112"></script>{% endblock %}

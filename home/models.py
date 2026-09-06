@@ -17,6 +17,11 @@ from events import blocks as eventblocks
 from article import blocks_outer_article as articleblocks
 from django.utils import timezone
 import datetime
+import json
+from pathlib import Path
+from types import SimpleNamespace
+from django.conf import settings
+from wagtail.snippets.models import register_snippet
 
 # Create your models here.
 
@@ -39,6 +44,45 @@ class TopArticlesOrderable(Orderable):
             heading="Article"
         ),
     ]
+
+
+@register_snippet
+class ThunderbirdFixture(models.Model):
+    """A scheduled Thunderbird fixture. Scores are intentionally editor-managed."""
+
+    SPORT_CHOICES = homeblocks.SPORT_CHOICES[1:]
+    source_event = models.CharField(max_length=255, unique=True, editable=False)
+    sport = models.CharField(max_length=20, choices=SPORT_CHOICES)
+    starts_at = models.DateTimeField(db_index=True)
+    venue = models.CharField(max_length=180, blank=True)
+    away_name = models.CharField(max_length=100)
+    home_name = models.CharField(max_length=100)
+    away_logo = models.CharField(max_length=180, blank=True, editable=False)
+    home_logo = models.CharField(max_length=180, blank=True, editable=False)
+    away_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    home_score = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    panels = [
+        FieldPanel("sport"), FieldPanel("starts_at"), FieldPanel("venue"),
+        FieldPanel("away_name"), FieldPanel("home_name"),
+        MultiFieldPanel([FieldPanel("away_score"), FieldPanel("home_score")], heading="Result (enter after the game)"),
+    ]
+
+    class Meta:
+        ordering = ("starts_at",)
+        verbose_name = "Thunderbird fixture"
+        verbose_name_plural = "Thunderbird fixtures"
+
+    def __str__(self):
+        return f"{self.get_sport_display()}: {self.away_name} at {self.home_name} — {self.starts_at:%b %-d}"
+
+    @property
+    def away_team(self):
+        return SimpleNamespace(name=self.away_name, score=self.away_score, icon=None)
+
+    @property
+    def home_team(self):
+        return SimpleNamespace(name=self.home_name, score=self.home_score, icon=None)
 
 class HomePage(Page):
     show_in_menus_default = True
@@ -120,6 +164,21 @@ class HomePage(Page):
         use_json_field=True,
     )
 
+    game_analysis = StreamField(
+        [("panel", homeblocks.GameAnalysisPanel())],
+        null=True,
+        blank=True,
+        max_num=1,
+        use_json_field=True,
+        help_text="Homepage sports analysis stories, active sports, upcoming games and recent results.",
+    )
+
+    newsletter_action_url = models.URLField(
+        blank=True,
+        default="",
+        help_text="Mailchimp form action URL. Leave blank until the Mailchimp audience is configured; the preview form will remain disabled.",
+    )
+
     sidebar_stream = StreamField(
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
@@ -182,6 +241,8 @@ class HomePage(Page):
         FieldPanel("middle_stream", heading="Middle Stream"),
         FieldPanel("sidebar_stream", heading="Sidebar"),
         FieldPanel("sections_stream", heading="Sections"),
+        FieldPanel("game_analysis", heading="Game Analysis"),
+        FieldPanel("newsletter_action_url", heading="Newsletter integration"),
         # FieldPanel('home_leaderboard_ad_slot'),
         # FieldPanel('home_mobile_leaderboard_ad_slot'),
         # FieldPanel('home_sidebar_ad_slot1'),
@@ -198,6 +259,88 @@ class HomePage(Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
+        covered_sports = [choice[0] for choice in homeblocks.SPORT_CHOICES[1:]]
+        current_time = timezone.now()
+        fixtures = ThunderbirdFixture.objects.filter(sport__in=covered_sports)
+        context["panel_sports"] = covered_sports
+        context["upcoming_games"] = list(fixtures.filter(starts_at__gte=current_time).order_by("starts_at")[:5])
+        context["recent_results"] = list(fixtures.filter(starts_at__lt=current_time).order_by("-starts_at")[:5])
+
         context["curated_articles"] = self.get_curated_articles()
+
+        # Preserve the exact editorial ordering from the existing curated stream.
+        # Add recent stories only when a preview/homepage has fewer than the cards
+        # required by the redesigned layout.
+        ordered_articles = []
+        seen = set()
+        for article in context["curated_articles"]:
+            if article and article.pk not in seen:
+                ordered_articles.append(article.specific)
+                seen.add(article.pk)
+
+        if len(ordered_articles) < 17:
+            recent = (ArticlePage.objects.live().public()
+                      .descendant_of(self)
+                      .exclude(pk__in=seen)
+                      .order_by("-explicit_published_at")[:17 - len(ordered_articles)])
+            ordered_articles.extend(article.specific for article in recent)
+
+        if not ordered_articles and settings.DEBUG:
+            # A read-only, development-only fallback built from the supplied
+            # production snapshot. This keeps local visual review useful even
+            # when the developer database has no editorial content.
+            sample_root = Path(settings.BASE_DIR).parent / "redesign" / "redesign_sample_content"
+            sample_files = [sample_root / "section-news" / "content.json", sample_root / "archive" / "content.json"]
+            preview_stories = []
+            preview_urls = set()
+            for sample_file in sample_files:
+                if not sample_file.exists():
+                    continue
+                payload = json.loads(sample_file.read_text())
+                for story in payload.get("featured_stories", []) + payload.get("stories", []):
+                    if story.get("article_url") in preview_urls:
+                        continue
+                    preview_urls.add(story.get("article_url"))
+                    path_parts = story.get("article_url", "").split("/")
+                    section = path_parts[3] if len(path_parts) > 3 else "news"
+                    thumbnail = story.get("thumbnail", {})
+                    local_thumbnail = sample_file.parent / thumbnail.get("local_path", "")
+                    preview_index = len(preview_stories)
+                    preview_date = datetime.date(2026, 8, 28) - datetime.timedelta(days=preview_index * 3)
+                    preview_beats = {
+                        "news": ("Campus", "AMS", "Research"),
+                        "opinion": ("Opinion",),
+                        "arts": ("Arts",),
+                        "culture": ("Culture", "Music", "Film"),
+                        "sports": ("Sports", "Thunderbirds"),
+                    }
+                    beat_names = preview_beats.get(section, (section.title(),))
+                    beat_name = beat_names[preview_index % len(beat_names)]
+                    preview_article_layouts = (
+                        "big-centered", "body-width", "left-aligned",
+                        "right-aligned", "full-bleed",
+                    )
+                    preview_stories.append(SimpleNamespace(
+                        pk=f"preview-{len(preview_stories)}",
+                        title=story.get("headline", ""),
+                        # Keep local fixture navigation inside the redesign so
+                        # homepage-to-article review exercises the new shells.
+                        url=f"/redesign-preview/article/{preview_article_layouts[preview_index % 5]}/?story={path_parts[-2] if len(path_parts) > 1 else ''}",
+                        lede=story.get("lede", ""),
+                        current_section=section if section in {"news", "opinion", "arts", "culture", "sports"} else "news",
+                        category_page=SimpleNamespace(title=beat_name, url=f"/{section}/{beat_name.lower()}/"),
+                        preview_image=(f"/redesign-sample/{sample_file.parent.name}/{thumbnail['local_path']}?v=2"
+                                       if local_thumbnail.is_file() else thumbnail.get("source_url", "")),
+                        image_alt=thumbnail.get("alt_text", ""),
+                        preview_date=preview_date.strftime("%m/%d/%Y"),
+                        get_authors_split_out_visual_bylines=story.get("byline_html", story.get("byline_text", "")),
+                    ))
+                    if len(preview_stories) == 17:
+                        break
+                if len(preview_stories) == 17:
+                    break
+            ordered_articles = preview_stories
+
+        context["redesign_articles"] = ordered_articles
 
         return context

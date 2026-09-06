@@ -1,0 +1,10 @@
+{% load wagtailimages_tags %}
+<article class="lr-story lr-story--author-row">
+  <div class="lr-story__copy">
+    <h2><a href="{{ image.file.url }}">{{ image.title }}</a></h2>
+    {% if image.legacy_authors %}<p class="lr-story__byline">By {{ image.legacy_authors }}</p>{% endif %}
+    {% if image.description %}<div class="lr-story__summary">{{ image.description|safe }}</div>{% endif %}
+    <time datetime="{{ image.created_at|date:'Y-m-d' }}">{{ image.created_at|date:'m/d/Y' }}</time>
+  </div>
+  <a class="lr-story__image" href="{{ image.file.url }}">{% image image fill-800x650-c100 format-webp loading='lazy' %}</a>
+</article>

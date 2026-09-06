@@ -1,0 +1,10 @@
+{% extends 'ubyssey/base.html' %}
+{% load static wagtailcore_tags wagtailimages_tags articletags support_tags %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-1"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block page_wrapper %}listing-redesign aux-theme{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
+{% block content %}<main id="main-content" class="aux-page photo-page"><header class="aux-title page-shell"><h1>Photo</h1><div class="aux-lede">{{ self.description|richtext }}</div></header>
+<nav class="aux-tabs page-shell"><div><a class="is-active" href="#galleries">Latest</a><a href="#galleries">Photo essays</a><a href="#galleries">This month</a><a href="#galleries">Behind the glow</a></div><form action="/archive/section/photo/" method="get"><input type="search" name="q" placeholder="Search"><button class="aux-search-button"><img src="{% static 'ubyssey/images/redesign/search.svg' %}" alt="">Search</button></form></nav>
+<section id="galleries" class="photo-grid page-shell" aria-label="Featured galleries">{% for article in redesign_all_articles|slice:':5' %}{% auxiliary_url article as article_url %}<article class="photo-card photo-card--{{ forloop.counter }}"><a href="{{ article_url }}">{% include 'section/objects/aux_story_image.html' with article=article %}<span><time>{{ article.explicit_published_at|date:'F j' }}</time><strong>{{ article.title|safe }}</strong></span></a></article>{% endfor %}</section></main>{% endblock %}
+
+{% block scripts %}<script src="{% static 'ubyssey/js/auxiliary.js' %}?v=redesign-a38d0112"></script>{% endblock %}

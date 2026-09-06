@@ -1,0 +1,11 @@
+{% load wagtailcore_tags wagtailimages_tags articletags %}
+<article class="lr-story{% if variant %} lr-story--{{ variant }}{% endif %}">
+  <div class="lr-story__copy">
+    {% if show_date %}<time datetime="{{ article.explicit_published_at|date:'Y-m-d' }}">{% if variant == 'lead' %}{{ article.explicit_published_at|date:'F j, Y' }}{% else %}{{ article.explicit_published_at|date:'m/d/Y' }}{% endif %}</time>{% endif %}
+    <h2><a href="{% if article.preview_url %}{{ article.preview_url }}{% else %}{% pageurl article %}{% endif %}">{{ article.title|safe }}</a></h2>
+    {% if show_summary %}<p class="lr-story__summary">{{ article.lede|striptags|truncatewords:35 }}</p>{% endif %}
+    <p class="lr-story__byline"><span>By</span> {% if article.authors_with_urls %}{{ article.authors_with_urls|normalize_redesign_byline|safe }}{% elif article.authors_string %}{{ article.authors_string|normalize_redesign_byline|safe }}{% else %}{{ article.preview_byline|normalize_redesign_byline|safe }}{% endif %}</p>
+  </div>
+  {% if not hide_image %}{% if article.preview_image %}<a class="lr-story__image" href="{{ article.preview_url }}"><img src="{{ article.preview_image }}" alt="{{ article.preview_alt }}" loading="lazy"></a>
+  {% elif article.featured_media.first.image %}<a class="lr-story__image" href="{% pageurl article %}">{% image article.featured_media.first.image fill-800x650-c100 format-webp loading='lazy' alt=article.featured_media.first.alt_text %}</a>{% endif %}{% endif %}
+</article>

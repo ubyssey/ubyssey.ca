@@ -1,62 +1,100 @@
-function initializeSeemore() {
-    $('#seemore').click(function (e) {
-        e.preventDefault();
-        openFeed();
+function initializeRedesignNavigation() {
+  const header = document.querySelector('[data-home-nav]');
+  if (!header) return;
+  const button = header.querySelector('.hp-nav__menu');
+  const menu = header.querySelector('#hp-expanded-menu');
+  let open = false;
+  let closeTimer;
+  const setOpen = (nextOpen) => {
+    open = nextOpen;
+    window.clearTimeout(closeTimer);
+    button.setAttribute('aria-expanded', String(open));
+    menu.setAttribute('aria-hidden', String(!open));
+    if (open) {
+      menu.hidden = false;
+      window.requestAnimationFrame(() => header.classList.add('menu-is-open'));
+      menu.querySelector('input')?.focus({ preventScroll: true });
+    } else {
+      header.classList.remove('menu-is-open');
+      closeTimer = window.setTimeout(() => { menu.hidden = true; }, 320);
+    }
+  };
+  button.addEventListener('click', () => setOpen(!open));
+  header.querySelectorAll('.hp-nav__nameplate, .hp-nav__compact-nameplate').forEach((nameplate) => {
+    nameplate.addEventListener('click', (event) => {
+      if (!document.querySelector('#newsletter')) return;
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+  });
+  header.querySelector('.hp-nav__newsletter')?.addEventListener('click', (event) => {
+    const target = document.querySelector('#newsletter');
+    if (!target) return;
+    event.preventDefault();
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height;
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && open) { setOpen(false); button.focus(); }
+  });
+  document.addEventListener('click', (event) => {
+    if (open && !header.contains(event.target)) setOpen(false);
+  });
+  const updateHeader = () => {
+    if (!header.classList.contains('is-compact') && window.scrollY > 96) {
+      header.classList.add('is-compact');
+    } else if (header.classList.contains('is-compact') && window.scrollY < 24) {
+      header.classList.remove('is-compact');
+    }
+  };
+  updateHeader();
+  window.addEventListener('scroll', updateHeader, { passive: true });
 }
-
-initializeSeemore();
-
-function openFeed() {
-    document.getElementById("feed-section").classList.remove("home_infinitefeed_cutoff");
-    document.getElementById("feed-shadow").remove();
-
-    document.getElementById("loader").removeAttribute("inactive");
+function initializeGameAnalysis() {
+  document.querySelectorAll('[data-game-analysis]').forEach((panel) => {
+    panel.querySelectorAll('[data-score-panel]').forEach((scorePanel) => {
+      const direction = scorePanel.dataset.scorePanel === 'recent' ? -1 : 1;
+      const datedFixtures = [...scorePanel.querySelectorAll('.hp-fixture[data-starts-at]')];
+      datedFixtures.sort((first, second) => direction * (new Date(first.dataset.startsAt) - new Date(second.dataset.startsAt)));
+      datedFixtures.forEach((fixture) => scorePanel.appendChild(fixture));
+    });
+    const buttons = panel.querySelectorAll('button[data-sport]');
+    let selectedSport = '';
+    const applySportFilter = () => {
+      buttons.forEach((item) => item.classList.toggle('is-active', item.dataset.sport === selectedSport));
+      panel.querySelectorAll('.hp-games__stories article[data-sport], .hp-fixture[data-sport]').forEach((item) => {
+        item.hidden = Boolean(selectedSport) && item.dataset.sport !== selectedSport;
+      });
+    };
+    buttons.forEach((button) => button.addEventListener('click', () => {
+      selectedSport = selectedSport === button.dataset.sport ? '' : button.dataset.sport;
+      applySportFilter();
+    }));
+    applySportFilter();
+    panel.querySelectorAll('[data-score-tab]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const selected = button.dataset.scoreTab;
+        panel.querySelectorAll('[data-score-tab]').forEach((tab) => tab.classList.toggle('is-active', tab === button));
+        panel.querySelectorAll('[data-score-panel]').forEach((scorePanel) => {
+          const active = scorePanel.dataset.scorePanel === selected;
+          scorePanel.hidden = !active;
+          scorePanel.classList.toggle('is-active', active);
+          if (active && scorePanel.animate) {
+            scorePanel.animate(
+              [{ opacity: 0, transform: 'translateY(5px)' }, { opacity: 1, transform: 'translateY(0)' }],
+              { duration: 220, easing: 'cubic-bezier(.22,1,.36,1)' },
+            );
+          }
+        });
+      });
+    });
+  });
 }
-function closeFeed() {
-    var shadow = document.createElement("div");
-    shadow.id = "feed-shadow";
-    shadow.classList.add("home_infinitefeed_cutoff_shadow");
-
-    var seemore = document.createElement("a");
-    seemore.id = "seemore";
-    seemore.href = "#";
-    seemore.classList.add("home_infinitefeed_cutoff_seemore");
-    seemore.innerHTML = "See more";
-
-    shadow.appendChild(seemore);
-    document.getElementById("feed-section").appendChild(shadow);
-
-    initializeSeemore();
-
-    document.getElementById("feed-section").classList.add("home_infinitefeed_cutoff");
-    document.getElementById("loader").setAttribute("inactive", "True");
+function initializeNewsletter() {
+  const form = document.querySelector('.hp-newsletter__form');
+  if (!form || form.dataset.configured === 'true') return;
+  form.addEventListener('submit', (event) => event.preventDefault());
 }
-
-updateTimeBox = setInterval(
-    function() {
-        var feed = document.getElementById("feed");
-        if(document.documentElement.scrollTop > document.getElementById("feed-section").offsetTop) {
-            var scroll = document.documentElement.scrollTop - document.getElementById("feed-section").offsetTop;
-            for(let i=0; i<feed.children.length; i++){
-                var article = feed.children[i];
-                if(article.classList.contains("article--infinitefeed")){
-                    if(article.offsetTop > scroll &&  article.offsetTop < scroll + 500) {
-                        document.getElementById("timeBox").innerHTML = "<strong>" + article.getAttribute("time") + "</strong>";
-                        break;
-                    }
-                }
-            }
-        } else {
-            if (document.getElementById("timeBox").innerHTML != "<strong>Today</strong>") {
-                document.getElementById("timeBox").innerHTML = "<strong>Today</strong>";
-            } 
-            if(document.documentElement.scrollTop < 100) {
-                if (loader.hasAttribute("end") == false) {
-                    if (document.getElementById("feed-section").classList.contains("home_infinitefeed_cutoff") == false) {
-                        closeFeed();
-                    }                    
-                }
-            }
-        }
-    }, 100);
+initializeRedesignNavigation();
+initializeGameAnalysis();
+initializeNewsletter();
