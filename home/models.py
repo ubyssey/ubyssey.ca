@@ -274,6 +274,14 @@ class HomePage(Page):
         ordered_articles = []
         seen = set()
         for article in context["curated_articles"]:
+            # ``get_prep_value`` returns PageChooser values as their raw
+            # database IDs. Resolve them before using page attributes so
+            # editorially curated homepage stories work in production.
+            if article and not hasattr(article, "pk"):
+                try:
+                    article = ArticlePage.objects.filter(pk=int(article)).first()
+                except (TypeError, ValueError):
+                    article = None
             if article and article.pk not in seen:
                 ordered_articles.append(article.specific)
                 seen.add(article.pk)
