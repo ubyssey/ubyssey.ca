@@ -1,5 +1,7 @@
 import json
 import warnings
+from django.db.models import Q
+
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -20,6 +22,7 @@ from wagtail.admin.templatetags.wagtailadmin_tags import avatar_url
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
 from pycrdt import Array, Doc, Map
+from django.db.models import Min
 
 from stove.editors.collaboration.persistence import (
     ASSIGNMENT_AUTHOR_ROLES,
@@ -204,6 +207,7 @@ def load_page(request, page_id):
 @login_required
 def load_partial_stories(request, section="all", page=1):
     username = request.GET.get('username', '')
+    order = request.GET.get('order', '')
     include_published = request.GET.get('include_published', '')
     article_status = request.GET.get('article_status', -1)
     
@@ -224,12 +228,16 @@ def load_partial_stories(request, section="all", page=1):
     if (include_published.lower() == "false"):
         qs = qs.filter(live=False)
     
-    qs = qs.order_by("-latest_revision_created_at", "-pk")
+    if order == "next-deadline":
+        qs = qs.annotate(
+            nearest_deadline=Min('deadline_list__date', filter=Q(deadline_list__completed=False))
+        ).filter(nearest_deadline__isnull=False).order_by("nearest_deadline")
+    else: 
+        qs = qs.order_by("-latest_revision_created_at", "-pk")
 
     paginator = Paginator(qs, 20)
 
     pages = paginator.get_page(request.GET.get("article-page", page))
-
     result="[]"
     if (len(pages) > 0):
         result = "["
@@ -302,6 +310,7 @@ def update_content_tracker(request, page_id):
                 if item.author_role not in ASSIGNMENT_AUTHOR_ROLES
             ]
         )
+        page.article_authors.commit()
     if ("assignment_memo" in data):
         page.assignment_memo = data["assignment_memo"]
     if ("ethics_notes" in data):
