@@ -1,0 +1,16 @@
+{% load wagtailimages_tags wagtailcore_tags articletags %}
+{% with featured=article.featured_media.first header=article.header.0.value %}
+<section class="ar-hero ar-hero--{{ article.redesign_header_layout }}" data-article-hero>
+  <div class="ar-hero__copy">
+    <p class="ar-kicker" data-section="{{ article.current_section|default:'News'|lower }}">{{ article.current_section|default:"News" }}{% if article.category_page %} / {{ article.category_page.title }}{% endif %}</p>
+    <h1>{{ header.title|default:article.title|safe }}</h1>
+    {% if header.subtitle %}<p class="ar-deck">{{ header.subtitle }}</p>{% elif header.above_cut_lede %}<div class="ar-deck">{{ header.above_cut_lede|richtext }}</div>{% elif article.lede %}<p class="ar-deck">{{ article.lede }}</p>{% endif %}
+  </div>
+  {% if preview_image_url or featured.image %}
+  <figure class="ar-hero__media">
+    {% if preview_image_url %}<img src="{{ preview_image_url }}" alt="{{ featured.alt_text }}">{% else %}{% image featured.image width-1800 format-webp as hero_image %}<img src="{{ hero_image.url }}" width="{{ hero_image.width }}" height="{{ hero_image.height }}" alt="{{ featured.alt_text }}">{% endif %}
+    {% if featured.caption or featured.credit %}<figcaption>{{ featured.caption|richtext }}{% if featured.credit and featured.caption|caption_needs_credit:featured.credit %}<span class="credit">{{ featured.credit }}</span>{% endif %}</figcaption>{% endif %}
+  </figure>
+  {% endif %}
+</section>
+{% endwith %}

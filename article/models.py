@@ -5,6 +5,7 @@ from tabnanny import verbose
 from images.models import GallerySnippet
 
 from dbtemplates.models import Template as DBTemplate
+from ubyssey.sports import SPORT_CHOICES as COVERED_SPORT_CHOICES
 
 from django.db import models
 from django.db.models import fields, Q, Max
@@ -180,8 +181,10 @@ class ArticleAuthorsOrderable(Orderable):
                             ('author', 'Author'), 
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
+                            ('photo_editor', 'Photo editor'),
                             ('videographer','Videographer'),
                             ('designer','Designer'),
+                            ('graphics_editor', 'Graphics editor'),
                             ('backfield_editor', "Backfield editor"),
                             ('copy_editor', "Copy editor"),
                             ('org_role', 'Show organization role'),
@@ -732,6 +735,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     article_status = models.IntegerField(choices=ArticleStatus.choices, default=ArticleStatus.ASSIGNED.value)
 
+    covered_sport = models.CharField(
+        choices=COVERED_SPORT_CHOICES,
+        max_length=20,
+        blank=True,
+        default='',
+        verbose_name="Sport",
+        help_text="Required for game analyses shown in a sport-specific homepage filter.",
+    )
+
     assignment_memo = RichTextField(
         null=False,
         blank=True,
@@ -932,6 +944,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 FieldPanel("lede"),
+                FieldPanel("covered_sport"),
                 HelpPanel(content='''
                     <h1>About storystream views</h1>
                     <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>
@@ -989,7 +1002,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         FieldPanel("assignment_memo", help_text="Guidance from a section editor about how to approach a story"),
         FieldPanel("ethics_notes", help_text="Advice from a section editor about the ethics of a story"),
         FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials")
-        
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
         MultiFieldPanel(
@@ -1499,6 +1511,23 @@ class StandardArticlePage(ArticlePage):
     show_in_menus_default = True
     show_in_menus = True
 
+    standpoint_disclosure = RichTextField(
+        blank=True,
+        default="",
+        help_text="Optional context about the writer's standpoint or relationship to the subject.",
+    )
+    extended_byline_override = RichTextField(
+        blank=True,
+        default="",
+        help_text="Optional editor-authored extended byline. Leave blank to generate contributor credits from the article's assigned roles.",
+    )
+    full_bleed_nav_color = models.CharField(
+        max_length=5,
+        choices=(("white", "White"), ("black", "Black")),
+        default="white",
+        help_text="Full-bleed articles only: choose the navigation colour that contrasts with the hero image.",
+    )
+
     #-----Field attributes-----
 
     header = StreamField(
@@ -1699,7 +1728,7 @@ class StandardArticlePage(ArticlePage):
         elif self.layout == 'passing-2025':
             return "article/supplements/article_page_supplement_2025_passing.html"
         elif self.layout == 'right-column':
-            return "article/article_like_special_page.html"
+            return "article/article_page.html"
 
         return "article/article_page.html"
 
@@ -1735,7 +1764,10 @@ class StandardArticlePage(ArticlePage):
                     content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
                 ),
                 FieldPanel("content"),
-                FieldPanel("disclaimer")
+                FieldPanel("disclaimer"),
+                FieldPanel("standpoint_disclosure"),
+                FieldPanel("extended_byline_override"),
+                FieldPanel("full_bleed_nav_color"),
             ],
             heading="Article Content",
             classname="collapsible",
@@ -1808,6 +1840,42 @@ class StandardArticlePage(ArticlePage):
             classname="collapsible",
         ),
     ] # content_panels
+
+    @property
+    def redesign_header_layout(self):
+        """Map every legacy header choice onto the five redesign layouts."""
+        layout = "bottom-image"
+        if self.header:
+            first = self.header[0]
+            if first.block_type in ("standard_header", "standard_header_with_youtube_video"):
+                layout = first.value.get("layout") or layout
+        return self.redesign_layout_for_header(layout)
+
+    @staticmethod
+    def redesign_layout_for_header(layout):
+        layout = layout or "bottom-image"
+        if layout.startswith("banner-image--full-height--headline-left"):
+            return "right-full-bleed"
+        if layout.startswith("banner-image--full-height--headline-right"):
+            return "left-full-bleed"
+        base = layout.split("--")[0]
+        return {
+            "bottom-image": "big-centered",
+            "top-image": "body-width",
+            "left-image": "left-aligned",
+            "right-image": "right-aligned",
+            "banner-image": "full-bleed",
+            "no-image": "body-width",
+            "video-banner": "full-bleed",
+        }.get(base, "big-centered")
+
+    @property
+    def primary_author_orderable(self):
+        return self.article_authors.filter(author_role="author").first() or self.article_authors.first()
+
+    @property
+    def extended_contributors(self):
+        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "photo_editor", "illustrator", "graphics_editor"])
 
     promote_panels = ArticlePage.promote_panels
 

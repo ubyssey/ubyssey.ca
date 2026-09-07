@@ -1,0 +1,17 @@
+{% load static wagtailsettings_tags %}{% get_settings %}
+{% with menu=settings.navigation.SitewideMenus %}
+<div class="hp-nav__expanded" id="{{ menu_id }}" hidden aria-hidden="true">
+  <form class="hp-nav__search" action="/archive/" method="get" role="search">
+    <label class="sr-only" for="{{ search_id }}">Search The Ubyssey archive</label>
+    <input id="{{ search_id }}" name="q" type="search" placeholder="Search The Ubyssey" required>
+    <button type="submit" aria-label="Search the archive"><img src="{% static 'ubyssey/images/homepage/search.svg' %}" alt=""></button>
+  </form>
+  <div class="hp-nav__expanded-grid">
+    <section><h2>Sections</h2><div class="hp-nav__links">{% if menu.redesign_expanded_sections.all %}{% for item in menu.redesign_expanded_sections.all %}<a href="{{ item.link }}">{{ item.text }}</a>{% endfor %}{% else %}<a href="/news/">News</a><a href="/opinion/">Opinion</a><a href="/arts/">Arts</a><a href="/culture/">Culture</a><a href="/sports/">Sports</a>{% endif %}</div></section>
+    <section><h2>More</h2><div class="hp-nav__links">{% if menu.redesign_expanded_more.all %}{% for item in menu.redesign_expanded_more.all %}<a href="{{ item.link }}">{{ item.text }}</a>{% endfor %}{% else %}<a href="/photo/">Photo</a><a href="/video/">Video</a><a href="/archive/">Archive</a><a href="/the-vilest-rag/">Podcast</a><a href="/margins/">Margins</a>{% endif %}</div></section>
+    <section class="hp-nav__about"><h2>About</h2><div class="hp-nav__links">{% if menu.redesign_expanded_about.all %}{% for item in menu.redesign_expanded_about.all %}<a href="{{ item.link }}">{{ item.text }}</a>{% endfor %}{% else %}<a href="/about/our-team/">Our Team</a>{% endif %}</div></section>
+    <section class="hp-nav__contact"><h2>Contact</h2><div class="hp-nav__links">{% if menu.redesign_expanded_contact.all %}{% for item in menu.redesign_expanded_contact.all %}<a href="{{ item.link }}">{{ item.text }}</a>{% endfor %}{% else %}<a href="/submit-a-tip/">Submit a Tip</a>{% endif %}</div></section>
+    <section class="hp-nav__join"><h2>Join The Ubyssey</h2><p>Learn more about becoming part of our team, currently open positions and the application process</p><a href="/join/">JOIN</a></section>
+  </div>
+</div>
+{% endwith %}

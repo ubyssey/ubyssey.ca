@@ -4,28 +4,24 @@ import LiveBlogFeed from "./LiveblogFeed.jsx";
 import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtils.js";
 
 function ShareBar() {
+    const staticPrefix = document.getElementById("liveblog")?.dataset.staticPrefix || "/static/";
+    const icon = (name) => `${staticPrefix.replace(/\/$/, "")}/ubyssey/images/article/${name}`;
     return (
-        <>
-            <p class="c-share">Share this article 
-            <span class="c-share-buttons">
-                <a href="#" class="share-link c-share_space" title="Copy Link to Clipboard"><ion-icon name="link" aria-hidden="true"></ion-icon><span id="custom-tooltip">copied!</span></a>
-                <a href="#" class="share-mastodon c-share_space" title="Share to Mastodon"><ion-icon name="logo-mastodon" aria-hidden="true"></ion-icon></a> 
-                <a href="#" class="share-facebook c-share_space" title="Share to Facebook"><ion-icon name="logo-facebook" aria-hidden="true"></ion-icon></a>
-                <a href="#" class="share-bsky c-share_space" title="Share to Bluesky">
-                    <svg viewBox="0 0 600 530" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                        <path d="m135.72 44.03c66.496 49.921 138.02 151.14 164.28 205.46 26.262-54.316 97.782-155.54 164.28-205.46 47.98-36.021 125.72-63.892 125.72 24.795 0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.3797-3.6904-10.832-3.7077-7.8964-0.0174-2.9357-1.1937 0.51669-3.7077 7.8964-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.26 82.697-152.22-67.108 11.421-142.55-7.4491-163.25-81.433-5.9562-21.282-16.111-152.36-16.111-170.07 0-88.687 77.742-60.816 125.72-24.795z"/>
-                    </svg>
-                </a>
-                <a href="#" class="share-reddit c-share_space" title="Share to Reddit"><ion-icon name="logo-reddit" aria-hidden="true"></ion-icon></a> 
-            </span>
-            </p>
-
-            <p class="report">
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSft99fUQ3oZZ4BZiZeIRZmVYY80daqXxjZxLj29or2HmTnmnA/viewform?usp=sharing">Submit a complaint</a>
-                <a href="https://forms.gle/RbJjhEpqqt7tz4AF6">Report a correction</a>
-            </p>
-        </>
+        <nav class="ar-share c-liveblog__share" aria-label="Share this article">
+            <button type="button" data-share-copy title="Copy link"><img src={icon("share-link.svg")} alt="" /><span class="sr-only">Copy link</span></button>
+            <a data-share-email href={"mailto:?subject=" + encodeURIComponent(document.title) + "&body=" + encodeURIComponent(window.location.href)} title="Share by email"><img src={icon("share-email.svg")} alt="" /></a>
+            <a data-share-bsky href={"https://bsky.app/intent/compose?text=" + encodeURIComponent(document.title + " " + window.location.href)} target="_blank" rel="noopener" title="Share to Bluesky"><img src={icon("share-bluesky.svg")} alt="" /></a>
+            <a data-share-whatsapp href={"https://wa.me/?text=" + encodeURIComponent(document.title + " " + window.location.href)} target="_blank" rel="noopener" title="Share to WhatsApp"><img src={icon("share-whatsapp.svg")} alt="" /></a>
+        </nav>
     )
+}
+
+function ReportLinks() {
+    return <p class="report">
+        <a href="https://forms.ubyssey.ca/erasure">Apply for erasure</a>
+        <a href="https://forms.ubyssey.ca/tips">Send a tip</a>
+        <a href="https://forms.ubyssey.ca/errors">Report an error</a>
+    </p>
 }
 
 export default function LiveBlog() {
@@ -50,7 +46,7 @@ export default function LiveBlog() {
     }
 
     function timeUpdatedAt(consideredUpdates) {
-        const sortedUpdates = consideredUpdates.sort((a, b) => sortUpdates(a, b, -1));
+        const sortedUpdates = [...consideredUpdates].sort((a, b) => sortUpdates(a, b, -1));
         if (sortedUpdates.length > 0) {
             return sortedUpdates[0].publish_date;
         }
@@ -88,6 +84,10 @@ export default function LiveBlog() {
     function isAdminView() {
         return JSON.parse(document.getElementById('admin-view').textContent);
     };
+    function isPreviewMode() {
+        const element = document.getElementById('preview-mode');
+        return element ? JSON.parse(element.textContent) : false;
+    }
 
     const [pageInfo, setPageInfo] = useState(() => pageInfoAtLoad());
     const [updates, setUpdates] = useState(() => updatesAtLoad());
@@ -98,6 +98,8 @@ export default function LiveBlog() {
     const [isAdmin, setIsAdmin] = useState(() => isAdminAtLoad());
     const [presentTime, setPresentTime] = useState(new Date());
     const [connectionCount, setConnectionCount] = useState(1);
+    const [isSorting, setIsSorting] = useState(false);
+    const [viewMode, setViewMode] = useState("updates");
 
     function getLiveblogRecentScrollHeight(updateOrder) {
         const liveblogElem = document.getElementById('liveblog-feed');
@@ -153,6 +155,7 @@ export default function LiveBlog() {
     }, []);
 
     useEffect(() => {
+        if (isPreviewMode()) return;
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         let wsProtocol = "ws";
         if (window.location.protocol.includes("https")) {
@@ -197,6 +200,22 @@ export default function LiveBlog() {
         };        
     }, [connectionCount]);
 
+    function toggleUpdateOrder() {
+        setIsSorting(true);
+        window.setTimeout(() => {
+            setUpdateOrder(current => current * -1);
+            window.setTimeout(() => setIsSorting(false), 40);
+        }, 150);
+    }
+
+    function toggleViewMode() {
+        setIsSorting(true);
+        window.setTimeout(() => {
+            setViewMode(current => current === "updates" ? "timeline" : "updates");
+            window.setTimeout(() => setIsSorting(false), 40);
+        }, 150);
+    }
+
     useEffect(() => {
         setUpdatedTime(timeUpdatedAt(updates));
     }, [updates]);
@@ -229,13 +248,14 @@ export default function LiveBlog() {
     return (
         <>
         <div id="nav" dangerouslySetInnerHTML={{__html: navHtml()}}></div>
-        <main className="article">
+        <main id="main-content" className="article c-liveblog-redesign">
             <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageInfo.meta.layout}>
                     <LiveblogStage stage={pageInfo.stage} meta={getMeta()} />
                     <div className="article-content">
-                        <LiveBlogFeed meta={getMeta()} updates={updates.sort((a,b) => sortUpdates(a,b,updateOrder))} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
                         {pageInfo.meta.layout!="split_view" && <ShareBar />}
+                        <LiveBlogFeed meta={getMeta()} updates={[...updates].sort((a,b) => sortUpdates(a,b,updateOrder))} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} toggleUpdateOrder={toggleUpdateOrder} viewMode={viewMode} toggleViewMode={toggleViewMode} isSorting={isSorting} />
                     </div>
+                    <ReportLinks />
                     {pageInfo.meta.layout == "default" && 
                         <div dangerouslySetInnerHTML={{__html: suggestedHtml()}}></div>
                     }

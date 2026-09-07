@@ -1,7 +1,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<div class="o-extra-article-info o-extra-article-info--{{self.template}} {{self.position}}">
+<div class="o-extra-article-info o-extra-article-info--{{self.template}} {% if not self.header %}o-extra-article-info--untitled {% endif %}{{self.position}}">
     {% if self.images %}
     <div class="o-extra-article-info__image">
         {% for image in self.images %}

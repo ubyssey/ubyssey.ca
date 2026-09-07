@@ -31,6 +31,9 @@ def getArticles(filters, start, number):
         articles = articles.search(Phrase(filters["search_query"]) | PlainText(filters["search_query"]))
     else:
         articles = articles.order_by('-explicit_published_at', '-id')
+
+    if "exclude" in filters:
+        articles = articles.exclude(pk__in=filters["exclude"])
         
     return articles[int(start):int(start)+int(number)]
 
@@ -49,6 +52,11 @@ def infinitefeed(request):
             filters["category"] = request.GET['category']
         if "search_query" in request.GET:
             filters["search_query"] = request.GET['search_query']
+        if "exclude" in request.GET:
+            try:
+                filters["exclude"] = [int(pk) for pk in request.GET["exclude"].split(",") if pk]
+            except ValueError:
+                return HttpResponse("Invalid excluded story list", status=400)
 
         articles = getArticles(filters, start, number)
 
@@ -66,7 +74,12 @@ def infinitefeed(request):
                     storystream_item = article.storystream_view[0]
                     articleHtml.append(storystream_item.render_as_block(context=data))
                 else:
-                    articleHtml.append(loader.render_to_string("article/objects/infinitefeed_item.html", data))
+                    if request.GET.get("redesign") == "section":
+                        data.update({"variant": "row", "show_date": True, "show_summary": True})
+                        template_name = "section/objects/redesign_story.html"
+                    else:
+                        template_name = "article/objects/infinitefeed_item.html"
+                    articleHtml.append(loader.render_to_string(template_name, data, request=request))
                    
             articleHtml_json = json.dumps(articleHtml)
             return HttpResponse(articleHtml_json, content_type ="application/json")

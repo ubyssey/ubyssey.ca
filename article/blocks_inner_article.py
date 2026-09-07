@@ -240,6 +240,7 @@ class ExtraArticleInfoBlock(blocks.StructBlock):
 
         return mark_safe(render_to_string(template, new_context))
 
+
 class HeaderMenuBlock(blocks.StructBlock):
 
     list = blocks.ListBlock(
