@@ -1,5 +1,6 @@
 from django.template.loader import get_template
 from django.test import SimpleTestCase
+from django import forms
 
 from home.blocks import GameAnalysisPanel
 
@@ -20,5 +21,9 @@ class HomepageRedesignTests(SimpleTestCase):
     def test_game_analysis_panel_exposes_editorial_fields(self):
         self.assertEqual(
             set(GameAnalysisPanel().child_blocks),
-            {"active_sports", "articles", "upcoming_games", "recent_results"},
+            {"active_sports", "articles"},
+        )
+        self.assertIsInstance(
+            GameAnalysisPanel().child_blocks["active_sports"].field.widget,
+            forms.CheckboxSelectMultiple,
         )

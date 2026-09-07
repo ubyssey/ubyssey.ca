@@ -196,7 +196,7 @@ class HomePage(Page):
         blank=True,
         max_num=1,
         use_json_field=True,
-        help_text="Homepage sports analysis stories, active sports, upcoming games and recent results.",
+        help_text="Homepage sports analysis stories and active sports. Fixtures and scores are managed in Sports Calendar.",
     )
 
     newsletter_action_url = models.URLField(
@@ -303,7 +303,7 @@ class HomePage(Page):
         FieldPanel("middle_stream", heading="Middle Stream"),
         FieldPanel("sidebar_stream", heading="Sidebar"),
         FieldPanel("sections_stream", heading="Sections"),
-        FieldPanel("game_analysis", heading="Game Analysis"),
+        FieldPanel("game_analysis", heading="Game Analyses: stories and active sports"),
         MultiFieldPanel(
             [
                 InlinePanel("redesign_story_queue", min_num=0, label="Story"),

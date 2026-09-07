@@ -6,6 +6,7 @@ from wagtail import blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
 
+from django import forms
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -50,17 +51,12 @@ class GameAnalysisPanel(blocks.StructBlock):
         choices=SPORT_CHOICES[1:],
         required=False,
         help_text="Sports shown in the homepage filter bar.",
+        widget=forms.CheckboxSelectMultiple,
     )
     articles = blocks.ListBlock(GameAnalysisArticle(), required=False)
-    upcoming_games = blocks.ListBlock(GameAnalysisFixture(), required=False, max_num=8)
-    recent_results = blocks.ListBlock(GameAnalysisFixture(), required=False, max_num=8)
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
-
-        def fixture_timestamp(item, missing):
-            starts_at = item["starts_at"]
-            return starts_at.timestamp() if starts_at else missing
 
         # ListBlock is deliberately ordered in the CMS: first is the lead, the
         # following three are the stacked cards, and later entries are filter
@@ -84,10 +80,6 @@ class GameAnalysisPanel(blocks.StructBlock):
         scheduled = ThunderbirdFixture.objects.filter(sport__in=active_sports)
         context["upcoming_games"] = list(scheduled.filter(starts_at__gte=now).order_by("starts_at")[:5])
         context["recent_results"] = list(scheduled.filter(starts_at__lt=now).order_by("-starts_at")[:5])
-        # Preserve manually entered fixtures until the calendar has been imported.
-        if not context["upcoming_games"] and not context["recent_results"]:
-            context["upcoming_games"] = sorted(value["upcoming_games"], key=lambda item: fixture_timestamp(item, float("inf")))[:5]
-            context["recent_results"] = sorted(value["recent_results"], key=lambda item: fixture_timestamp(item, float("-inf")), reverse=True)[:5]
         return context
 
     class Meta:
