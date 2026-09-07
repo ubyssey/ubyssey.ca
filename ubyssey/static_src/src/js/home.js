@@ -44,6 +44,7 @@ function initializeRedesignNavigation() {
   let scrollFrame;
   let settlingCompactState = false;
   let previousScrollY = window.scrollY;
+  let compactThreshold = 96;
   const setCompact = (nextCompact) => {
     if (nextCompact === compact) return;
     compact = nextCompact;
@@ -53,21 +54,27 @@ function initializeRedesignNavigation() {
     // compensating scroll event, which must not immediately reverse the state.
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
       previousScrollY = window.scrollY;
+      if (!compact) compactThreshold = previousScrollY + 96;
       settlingCompactState = false;
     }));
   };
   const updateHeader = () => {
     const scrollY = window.scrollY;
     const scrollingUp = scrollY < previousScrollY;
+    const scrollingDown = scrollY > previousScrollY;
     previousScrollY = scrollY;
     if (settlingCompactState) return;
-    if (!compact && scrollY > 96) {
+    if (!compact && scrollingDown && scrollY > compactThreshold) {
       setCompact(true);
     } else if (compact && scrollingUp && scrollY < 24) {
       setCompact(false);
     }
   };
-  updateHeader();
+  if (!compact && window.scrollY > compactThreshold) {
+    setCompact(true);
+  } else {
+    updateHeader();
+  }
   window.addEventListener('scroll', () => {
     if (scrollFrame) return;
     scrollFrame = window.requestAnimationFrame(() => {
