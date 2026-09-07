@@ -380,6 +380,11 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             # the initial feed begins at story four and the next request starts
             # at 20 in the same unfiltered query.
             context["redesign_recent_articles"] = feed[3:20]
+        # Auxiliary section templates (Photo, Margins, and Podcast) use this
+        # complete feed rather than the curated hero/feed split above.
+        # Supplying it here keeps those pages populated regardless of whether
+        # a section has configured featured stories.
+        context["redesign_all_articles"] = self.get_section_articles()
         # The initial feed and the deferred request use the exact same query,
         # so curated stories never repeat in the infinite list.
         context["redesign_editor"] = self.redesign_editor
