@@ -1,5 +1,5 @@
 {% extends 'ubyssey/base.html' %}{% load static %}
-{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-13">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-14">{% endblock %}
 {% block header %}{% include 'article/components/redesign_nav.html' with article=preview %}{% endblock %}
 {% block content %}<main id="main-content" class="ar-page ar-page--{{ preview.redesign_header_layout }}"><article class="ar-article">
   {% include 'article/components/redesign_hero.html' with article=preview %}
@@ -23,4 +23,4 @@
     <article><a href="/redesign-preview/article/shared-components/"><img src="{% static 'ubyssey/images/article/keep-reading/data-safety.webp' %}" alt=""><span class="ar-suggested-kicker">Feature</span><h3 class="o-article__headline">Inside the systems that hold student data</h3></a></article>
   </div></div><button class="ar-keep-reading__next" type="button">→</button><p class="ar-keep-reading__page"><span>01</span> / <span>02</span></p></section>
 </article></main>{% endblock %}
-{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-a38d0112"></script>{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-nav-stable-1"></script>{% endblock %}

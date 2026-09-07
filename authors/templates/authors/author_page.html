@@ -1,6 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static wagtailcore_tags wagtailimages_tags articletags %}
-{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/author.css' %}?v=author-redesign-8" type="text/css"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/author.css' %}?v=author-redesign-9" type="text/css"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
 {% block head_scripts %}<link rel="alternate" type="application/atom+xml" title="{{ self.title }} - Ubyssey feed" href="/authors/{{ self.slug }}/rss">{% endblock %}
 {% block page_wrapper %}listing-redesign{% endblock %}
 {% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
@@ -19,4 +19,4 @@
   </section>
 </main>
 {% endblock %}
-{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-a38d0112"></script><script>document.querySelector('[data-author-more]')?.addEventListener('click',function(){this.textContent='All stories shown';this.disabled=true;});</script>{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-nav-stable-1"></script><script>document.querySelector('[data-author-more]')?.addEventListener('click',function(){this.textContent='All stories shown';this.disabled=true;});</script>{% endblock %}

@@ -52,19 +52,34 @@ function initializeArticleNavigation() {
     document.addEventListener('click', (event) => {
         if (open && !header.contains(event.target)) setOpen(false);
     });
+    let compact = header.classList.contains('is-compact');
+    let scrollFrame;
+    const setCompact = (nextCompact) => {
+        if (nextCompact === compact) return;
+        compact = nextCompact;
+        header.classList.toggle('is-compact', compact);
+    };
     const update = () => {
         if (header.dataset.fullBleed === 'true') {
             const hero = document.querySelector('.ar-hero--full-bleed');
             if (!hero) return;
             const pastHero = window.scrollY >= hero.offsetTop + hero.offsetHeight - 8;
             header.classList.toggle('is-full-bleed-past', pastHero);
-            header.classList.toggle('is-compact', pastHero);
+            setCompact(pastHero);
             return;
         }
-        header.classList.toggle('is-compact', window.scrollY > 70);
+        // The separate return threshold prevents a header-height change from
+        // immediately reversing the state while the document is settling.
+        setCompact(compact ? window.scrollY >= 16 : window.scrollY > 70);
     };
     update();
-    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('scroll', () => {
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(() => {
+            scrollFrame = undefined;
+            update();
+        });
+    }, { passive: true });
 }
 
 function formatCaptionCredits() {
