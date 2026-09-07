@@ -1,5 +1,5 @@
 {% load wagtailimages_tags %}
 <figure class="au-gallery__item">
-  <a href="{{ image.file.url }}" data-author-gallery-item data-image-url="{{ image.file.url }}" data-image-alt="{{ image.title|default:'Photo' }}" data-image-caption="{{ image.description|striptags }}" aria-label="View {{ image.title|default:'photo' }} in the image viewer">{% image image fill-800x650-c100 format-webp loading='lazy' %}</a>
-  {% if image.title or image.description %}<figcaption>{% if image.title %}<strong>{{ image.title }}</strong>{% endif %}{% if image.description %}<span>{{ image.description|striptags }}</span>{% endif %}</figcaption>{% endif %}
+  <a href="{{ image.file.url }}" data-author-gallery-item data-image-url="{{ image.file.url }}" data-image-alt="{{ image.title|default:'Photo' }}" data-image-caption="{{ image.redesign_description|striptags }}" aria-label="View {{ image.title|default:'photo' }} in the image viewer">{% image image fill-800x650-c100 format-webp loading='lazy' %}</a>
+  {% if image.title or image.redesign_description %}<figcaption>{% if image.title %}<strong>{{ image.title }}</strong>{% endif %}{% if image.redesign_description %}<span>{{ image.redesign_description|striptags }}</span>{% endif %}</figcaption>{% endif %}
 </figure>
