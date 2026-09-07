@@ -141,6 +141,10 @@
 .hp-story>time{align-self:start;display:inline-flex;align-items:center;padding-bottom:0;border-bottom-width:2px;border-radius:0 0 2px 2px;font-size:13px;line-height:18px}
 @media (min-width:761px){.hp-nav__expanded{height:390px}.hp-nav__expanded-grid{height:240px}.hp-nav__expanded-grid section{height:240px}.hp-nav__join{padding-top:24px}.hp-nav__join p{height:auto;margin-bottom:14px}.ar-nav .hp-nav__expanded{height:390px}.ar-nav .hp-nav__expanded-grid{height:240px}.ar-nav .hp-nav__expanded-grid section{height:240px}.ar-nav .hp-nav__join{padding-top:24px}.ar-nav .hp-nav__join p{height:auto;margin-bottom:14px}}
 
+.hp-card--lead.is-headline-above{display:flex;flex-direction:column}.hp-card--lead.is-headline-above .hp-card__copy{order:-1}.hp-card--lead-compact h2{font-variation-settings:"wdth" 70,"wght" 650}.hp-card--lead-wide h2{font-variation-settings:"wdth" 100,"wght" 620}
+.hp-game-card{display:none}.hp-game-card.is-lead{display:block;grid-column:1;grid-row:1 / span 3}.hp-game-card.is-secondary{display:grid;grid-column:2;grid-template-columns:125px 1fr;gap:9px;min-height:0}.hp-game-card.is-secondary .hp-game-image{height:120px}.hp-game-card.is-secondary h3{margin:0;font-size:18px;line-height:22px}.hp-game-card.is-secondary .hp-byline{margin-top:10px}.hp-game-card.is-lead .hp-game-image{height:264px}.hp-game-card.is-lead h3{margin:10px 0 8px;color:var(--hp-text);font:600 24px/31px "meursault-variable",Georgia,serif;font-variation-settings:"wdth" 80,"wght" 600}
+@media(max-width:760px){.hp-game-card.is-lead,.hp-game-card.is-secondary{display:block}.hp-game-card.is-secondary{margin-block:20px}.hp-game-card.is-secondary .hp-game-image,.hp-game-card.is-lead .hp-game-image{height:auto;aspect-ratio:1.5}.hp-game-card.is-secondary h3{margin:10px 0 8px;font-size:24px;line-height:31px}.hp-game-card.is-secondary .hp-byline{margin-top:0}}
+
 /* About and Contact share one column: their combined divider must stop with
    the other menu dividers, not extend into the page beneath the menu. */
 @media (min-width:761px){

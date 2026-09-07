@@ -62,7 +62,14 @@ function initializeGameAnalysis() {
     let selectedSport = '';
     const applySportFilter = () => {
       buttons.forEach((item) => item.classList.toggle('is-active', item.dataset.sport === selectedSport));
-      panel.querySelectorAll('.hp-games__stories article[data-sport], .hp-fixture[data-sport]').forEach((item) => {
+      const cards = [...panel.querySelectorAll('[data-game-card]')];
+      const visibleCards = selectedSport ? cards.filter((item) => item.dataset.sport === selectedSport) : cards;
+      cards.forEach((item) => {
+        item.hidden = !visibleCards.slice(0, 4).includes(item);
+        item.classList.remove('is-lead', 'is-secondary');
+      });
+      visibleCards.slice(0, 4).forEach((item, index) => item.classList.add(index === 0 ? 'is-lead' : 'is-secondary'));
+      panel.querySelectorAll('.hp-fixture[data-sport]').forEach((item) => {
         item.hidden = Boolean(selectedSport) && item.dataset.sport !== selectedSport;
       });
     };

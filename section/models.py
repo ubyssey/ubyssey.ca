@@ -151,6 +151,22 @@ class CategoryMenuItem(wagtail_core_models.Orderable):
         FieldPanel("category_page"),
     ]
 
+
+class SectionRedesignFeaturedArticle(wagtail_core_models.Orderable):
+    section_page = ParentalKey(
+        "section.SectionPage", related_name="redesign_featured_articles", on_delete=models.CASCADE
+    )
+    article = ForeignKey(
+        "article.ArticlePage", null=False, blank=False, on_delete=models.CASCADE, related_name="+"
+    )
+
+    panels = [FieldPanel("article")]
+
+    class Meta:
+        ordering = ("sort_order",)
+        verbose_name = "Featured redesign story"
+        verbose_name_plural = "Featured redesign stories"
+
 class SectionPage(RoutablePageMixin, SectionablePage):
     template = 'section/section_page.html'
 
@@ -190,6 +206,14 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             "For The Vilest Rag landing page: paste the public Spotify episode URL "
             "used by the Latest Episode player. No iframe markup is required."
         ),
+    )
+
+    redesign_tip_title = models.CharField(max_length=100, blank=True, default="")
+    redesign_tip_body = models.TextField(blank=True, default="")
+    redesign_tip_link_text = models.CharField(max_length=50, blank=True, default="")
+    redesign_tip_link_url = models.URLField(blank=True, default="")
+    redesign_editor = models.ForeignKey(
+        "authors.AuthorPage", null=True, blank=True, on_delete=models.SET_NULL, related_name="edited_redesign_sections"
     )
 
     label_svg = models.ForeignKey(
@@ -243,6 +267,15 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 FieldPanel("description"),
             ],
             heading="Description",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("redesign_tip_title"), FieldPanel("redesign_tip_body"),
+                FieldPanel("redesign_tip_link_text"), FieldPanel("redesign_tip_link_url"),
+                FieldPanel("redesign_editor"), InlinePanel("redesign_featured_articles", max_num=3, label="Story"),
+            ],
+            heading="Redesign section page",
+            help_text="Add all three featured stories in display order: centre, upper-right, then lower-right.",
         ),
         MultiFieldPanel(
             [FieldPanel("spotify_episode_url")],
@@ -325,12 +358,24 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
         context["filters"] = filters
         context["section_slug"] = self.slug
-        featured = list(self.get_featured_articles(number_featured=3))
-        # Keep this ordering identical to /infinitefeed/ so the first deferred
-        # request begins exactly after the stories already rendered above.
-        all_articles = self.get_section_articles()[:20]
-        context["redesign_all_articles"] = all_articles
-        context["redesign_recent_articles"] = all_articles[len(featured):]
+        configured_featured = list(self.redesign_featured_articles.select_related("article").all())
+        if len(configured_featured) == 3:
+            featured = [item.article.specific for item in configured_featured]
+            feed = self.get_section_articles().exclude(pk__in=[article.pk for article in featured])
+            context["redesign_featured"] = featured
+            context["redesign_featured_ids"] = ",".join(str(article.pk) for article in featured)
+            context["redesign_recent_articles"] = feed[:20]
+        else:
+            featured = list(self.get_featured_articles(number_featured=3))
+            feed = self.get_section_articles()
+            context["redesign_featured_ids"] = ""
+            # The legacy automatic hero contains the first three stories, so
+            # the initial feed begins at story four and the next request starts
+            # at 20 in the same unfiltered query.
+            context["redesign_recent_articles"] = feed[3:20]
+        # The initial feed and the deferred request use the exact same query,
+        # so curated stories never repeat in the infinite list.
+        context["redesign_editor"] = self.redesign_editor
         
         # context["featured_articles"] = self.get_featured_articles()
 

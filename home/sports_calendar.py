@@ -1,7 +1,7 @@
 """Import helpers shared by the CMS calendar uploader and management command."""
 
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from io import TextIOWrapper
 
 from django.utils import timezone
@@ -57,7 +57,7 @@ def import_calendar(calendar):
     elif "b" in getattr(calendar, "mode", "b"):
         calendar = TextIOWrapper(calendar, encoding="utf-8-sig", newline="")
 
-    imported = skipped = 0
+    imported = skipped = reconciled = 0
     for row in csv.DictReader(calendar):
         sport = SPORT_MAP.get(row.get("Category", ""))
         if not sport:
@@ -77,10 +77,26 @@ def import_calendar(calendar):
         opponent_logo = LOGOS.get(opponent, "")
         if opponent == "University of Alberta" and row["Category"].startswith("Women's"):
             opponent_logo = LOGOS["University of Alberta Pandas"]
-        fixture, _ = ThunderbirdFixture.objects.get_or_create(
-            source_event=event + "|" + row["Start Date"] + "|" + (row.get("Start Time") or ""),
-            defaults={"sport": sport, "starts_at": starts_at, "away_name": away, "home_name": home},
-        )
+        source_event = event + "|" + row["Start Date"] + "|" + (row.get("Start Time") or "")
+        fixture = ThunderbirdFixture.objects.filter(source_event=source_event).first()
+        if fixture is None:
+            # Schedule publishers sometimes correct a start time or date. If
+            # exactly one otherwise-identical fixture is nearby, retain its
+            # editor-entered score rather than creating a duplicate result.
+            candidates = ThunderbirdFixture.objects.filter(
+                sport=sport,
+                away_name=away,
+                home_name=home,
+                starts_at__range=(starts_at - timedelta(days=14), starts_at + timedelta(days=14)),
+            )
+            if candidates.count() == 1:
+                fixture = candidates.first()
+                fixture.source_event = source_event
+                reconciled += 1
+            else:
+                fixture = ThunderbirdFixture(
+                    source_event=source_event, sport=sport, starts_at=starts_at, away_name=away, home_name=home
+                )
         fixture.sport = sport
         fixture.starts_at = starts_at
         fixture.venue = row.get("Facility") or row.get("Location") or ""
@@ -89,4 +105,4 @@ def import_calendar(calendar):
         fixture.home_logo = opponent_logo if ubc_is_away else LOGOS["UBC Thunderbirds"]
         fixture.save()
         imported += 1
-    return {"imported": imported, "skipped": skipped}
+    return {"imported": imported, "skipped": skipped, "reconciled": reconciled}

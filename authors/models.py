@@ -70,6 +70,19 @@ class PinnedArticlesOrderable(Orderable):
         ),
     ]
 
+
+class AuthorContactOrderable(Orderable):
+    author_page = ParentalKey("authors.AuthorPage", related_name="contact_options", on_delete=models.CASCADE)
+    label = models.CharField(max_length=40)
+    url = models.URLField(help_text="Use mailto: for an email address, or an https URL.")
+
+    panels = [FieldPanel("label"), FieldPanel("url")]
+
+    class Meta:
+        ordering = ("sort_order",)
+        verbose_name = "Contact option"
+        verbose_name_plural = "Contact options"
+
 class AuthorsPageManager(PageManager):
 
     def get_queryset(self):
@@ -140,6 +153,12 @@ class AuthorPage(RoutablePageMixin, Page):
         help_text="Please give a short bio in third person"
     )
 
+    contact_email = models.EmailField(
+        blank=True,
+        default="",
+        help_text="Primary public email used in the redesigned author and section-editor panels.",
+    )
+
     CHOICES = [("articles", "Articles"), ("photos", "Gallery"), ("videos", "Videos"), ('visuals', "Visual Bylines")]
     main_media_type = models.CharField(
         choices=CHOICES,
@@ -173,6 +192,10 @@ class AuthorPage(RoutablePageMixin, Page):
         match = re.search(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", self.bio_description or "", re.IGNORECASE)
         return match.group(0) if match else ""
 
+    @property
+    def public_contact_email(self):
+        return self.contact_email or self.redesign_contact_email
+
     # For editting in wagtail:
     content_panels = [
         # title not present, title should NOT be directly editable
@@ -191,6 +214,8 @@ class AuthorPage(RoutablePageMixin, Page):
                 FieldPanel("short_bio_description"),
                 FieldPanel("main_media_type"),
                 FieldPanel("links"),
+                FieldPanel("contact_email"),
+                InlinePanel("contact_options", label="Contact option"),
                 InlinePanel("pinned_articles", label="Pinned articles")
             ],
             heading="Optional Stuff",

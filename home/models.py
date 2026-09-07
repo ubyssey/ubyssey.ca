@@ -46,6 +46,32 @@ class TopArticlesOrderable(Orderable):
     ]
 
 
+class HomepageRedesignStory(Orderable):
+    """An editorial queue for the redesign's hero and four story rows.
+
+    The first 17 entries are rendered. Extra entries are retained as a safe
+    buffer, so moving a new story into the hero never silently drops a story.
+    """
+
+    home_page = ParentalKey(
+        "home.HomePage",
+        related_name="redesign_story_queue",
+        on_delete=models.CASCADE,
+    )
+    article = models.ForeignKey(
+        "article.ArticlePage",
+        related_name="+",
+        on_delete=models.CASCADE,
+    )
+
+    panels = [FieldPanel("article")]
+
+    class Meta:
+        ordering = ("sort_order",)
+        verbose_name = "Homepage story"
+        verbose_name_plural = "Homepage story queue"
+
+
 @register_snippet
 class ThunderbirdFixture(models.Model):
     """A scheduled Thunderbird fixture. Scores are intentionally editor-managed."""
@@ -179,6 +205,42 @@ class HomePage(Page):
         help_text="Mailchimp form action URL. Leave blank until the Mailchimp audience is configured; the preview form will remain disabled.",
     )
 
+    HERO_HEADLINE_POSITIONS = (
+        ("below", "Below the cover image (default)"),
+        ("above", "Above the cover image"),
+    )
+    HERO_HEADLINE_VARIANTS = (
+        ("default", "Default Meursault"),
+        ("compact", "Compact Meursault"),
+        ("wide", "Wide Meursault"),
+    )
+
+    redesign_hero_headline_position = models.CharField(
+        max_length=10,
+        choices=HERO_HEADLINE_POSITIONS,
+        default="below",
+    )
+    redesign_hero_headline_variant = models.CharField(
+        max_length=10,
+        choices=HERO_HEADLINE_VARIANTS,
+        default="default",
+    )
+    newsletter_title = models.CharField(max_length=80, blank=True, default="")
+    newsletter_copy = models.TextField(blank=True, default="")
+    newsletter_button_text = models.CharField(max_length=40, blank=True, default="")
+    newsletter_rss_url = models.URLField(blank=True, default="")
+    newsletter_honeypot_name = models.CharField(
+        max_length=160,
+        blank=True,
+        default="",
+        help_text="Only change this with the matching anti-bot field supplied by the newsletter provider.",
+    )
+    print_issue_image = models.ForeignKey(
+        "images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    print_issue_url = models.URLField(blank=True, default="")
+    print_issue_label = models.CharField(max_length=100, blank=True, default="")
+
     sidebar_stream = StreamField(
     [
         ("sidebar_advertisement_block", infinitefeedblocks.SidebarAdvertisementBlock()),
@@ -242,7 +304,31 @@ class HomePage(Page):
         FieldPanel("sidebar_stream", heading="Sidebar"),
         FieldPanel("sections_stream", heading="Sections"),
         FieldPanel("game_analysis", heading="Game Analysis"),
-        FieldPanel("newsletter_action_url", heading="Newsletter integration"),
+        MultiFieldPanel(
+            [
+                InlinePanel("redesign_story_queue", min_num=0, label="Story"),
+                FieldPanel("redesign_hero_headline_position"),
+                FieldPanel("redesign_hero_headline_variant"),
+            ],
+            heading="Homepage redesign editorial queue",
+            help_text=(
+                "Drag stories into order: positions 1–5 are the hero, then four groups of three. "
+                "Only the first 17 are rendered; later entries remain as a safe buffer. "
+                "The existing homepage remains visible until all 17 display positions are configured."
+            ),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("newsletter_action_url"), FieldPanel("newsletter_title"),
+                FieldPanel("newsletter_copy"), FieldPanel("newsletter_button_text"),
+                FieldPanel("newsletter_rss_url"), FieldPanel("newsletter_honeypot_name"),
+            ],
+            heading="Newsletter promotion",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("print_issue_image"), FieldPanel("print_issue_url"), FieldPanel("print_issue_label")],
+            heading="Print promotion",
+        ),
         # FieldPanel('home_leaderboard_ad_slot'),
         # FieldPanel('home_mobile_leaderboard_ad_slot'),
         # FieldPanel('home_sidebar_ad_slot1'),
@@ -259,7 +345,10 @@ class HomePage(Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        covered_sports = [choice[0] for choice in homeblocks.SPORT_CHOICES[1:]]
+        panel = next((item.value for item in self.game_analysis if item.block_type == "panel"), None)
+        covered_sports = list(panel.get("active_sports") or []) if panel else []
+        if not covered_sports:
+            covered_sports = [choice[0] for choice in homeblocks.SPORT_CHOICES[1:]]
         current_time = timezone.now()
         fixtures = ThunderbirdFixture.objects.filter(sport__in=covered_sports)
         context["panel_sports"] = covered_sports
@@ -349,6 +438,15 @@ class HomePage(Page):
                     break
             ordered_articles = preview_stories
 
-        context["redesign_articles"] = ordered_articles
+        configured_queue = list(self.redesign_story_queue.select_related("article").all())
+        # A partial queue must never replace the known-good homepage with a
+        # sparse layout. Editorial configuration takes over only when it can
+        # fill every visible story slot.
+        if len(configured_queue) >= 17:
+            context["redesign_articles"] = [item.article.specific for item in configured_queue[:17]]
+            context["redesign_queue_active"] = True
+        else:
+            context["redesign_articles"] = ordered_articles
+            context["redesign_queue_active"] = False
 
         return context

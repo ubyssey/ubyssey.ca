@@ -114,6 +114,7 @@ def sports_calendar_import(request):
             messages.success(
                 request,
                 f"Imported or refreshed {result['imported']} covered fixtures. "
+                f"{result['reconciled']} rescheduled fixture(s) kept their existing scores. "
                 f"{result['skipped']} incomplete rows were skipped; existing scores were preserved.",
             )
             return redirect("sports-calendar-import")

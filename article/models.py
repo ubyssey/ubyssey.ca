@@ -5,6 +5,7 @@ from tabnanny import verbose
 from images.models import GallerySnippet
 
 from dbtemplates.models import Template as DBTemplate
+from ubyssey.sports import SPORT_CHOICES as COVERED_SPORT_CHOICES
 
 from django.db import models
 from django.db.models import fields, Q, Max
@@ -755,6 +756,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     story_type = models.CharField(choices=StoryType.choices, null=False, blank=True, max_length=255)
 
+    covered_sport = models.CharField(
+        choices=COVERED_SPORT_CHOICES,
+        max_length=20,
+        blank=True,
+        default='',
+        verbose_name="Sport",
+        help_text="Required for game analyses shown in a sport-specific homepage filter.",
+    )
+
     assignment_memo = RichTextField(
         null=False,
         blank=True,
@@ -955,6 +965,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 FieldPanel("lede"),
+                FieldPanel("covered_sport"),
                 HelpPanel(content='''
                     <h1>About storystream views</h1>
                     <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>

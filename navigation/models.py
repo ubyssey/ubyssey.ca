@@ -146,6 +146,38 @@ class MobileLinksNavigationItem(NavigationMenuOrderable):
         related_name='mobile_links_menu',
     )
 
+
+class RedesignExpandedSectionsItem(NavigationMenuOrderable):
+    navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_expanded_sections")
+
+
+class RedesignExpandedMoreItem(NavigationMenuOrderable):
+    navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_expanded_more")
+
+
+class RedesignExpandedAboutItem(NavigationMenuOrderable):
+    navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_expanded_about")
+
+
+class RedesignExpandedContactItem(NavigationMenuOrderable):
+    navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_expanded_contact")
+
+
+class RedesignFooterSectionsItem(NavigationMenuOrderable):
+    navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_footer_sections")
+
+
+class RedesignFooterConnectItem(NavigationMenuOrderable):
+    navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_footer_connect")
+
+
+class RedesignFooterAboutItem(NavigationMenuOrderable):
+    navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_footer_about")
+
+
+class RedesignFooterJoinItem(NavigationMenuOrderable):
+    navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_footer_join")
+
 #-----Settings models-----
 class SitewideMenus(ClusterableModel, BaseSiteSetting):
     """    
@@ -162,6 +194,14 @@ class SitewideMenus(ClusterableModel, BaseSiteSetting):
             'main_footer_menu',
             'second_footer_menu',
             'mobile_links_menu',
+            'redesign_expanded_sections',
+            'redesign_expanded_more',
+            'redesign_expanded_about',
+            'redesign_expanded_contact',
+            'redesign_footer_sections',
+            'redesign_footer_connect',
+            'redesign_footer_about',
+            'redesign_footer_join',
         ) # these correspond to the template fragment names
         
     panels = [
@@ -199,6 +239,14 @@ class SitewideMenus(ClusterableModel, BaseSiteSetting):
             ], heading="Mobile \"Links\" Menu",
             help_text="Links that will appear in the mobile menu alongside the main header links",
         ),
+        MultiFieldPanel([InlinePanel("redesign_expanded_sections")], heading="Redesign menu: Sections"),
+        MultiFieldPanel([InlinePanel("redesign_expanded_more")], heading="Redesign menu: More"),
+        MultiFieldPanel([InlinePanel("redesign_expanded_about")], heading="Redesign menu: About"),
+        MultiFieldPanel([InlinePanel("redesign_expanded_contact")], heading="Redesign menu: Contact"),
+        MultiFieldPanel([InlinePanel("redesign_footer_sections")], heading="Redesign footer: Sections"),
+        MultiFieldPanel([InlinePanel("redesign_footer_connect")], heading="Redesign footer: Connect"),
+        MultiFieldPanel([InlinePanel("redesign_footer_about")], heading="Redesign footer: About"),
+        MultiFieldPanel([InlinePanel("redesign_footer_join")], heading="Redesign footer: Join"),
     ]
     def save(self, **kwargs):
         """
@@ -207,6 +255,7 @@ class SitewideMenus(ClusterableModel, BaseSiteSetting):
         for cache_name in self.CACHES:
             key = make_template_fragment_key(cache_name)
             cache.delete(key)        
+        cache.delete(make_template_fragment_key("redesigned_footer_v6"))
         for section in SectionPage.objects.all():
             # class name differs for section-specific topbar headers
             key = make_template_fragment_key("main_header_menu", vary_on=[section.slug])

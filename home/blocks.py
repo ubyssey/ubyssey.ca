@@ -13,29 +13,22 @@ from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
 from article.models import ArticlePage
+from ubyssey.sports import SPORT_CHOICES as COVERED_SPORT_CHOICES
 from article.blocks_storystream import StoryStreamBlockTypes
 from topics.views import cluster_articles_by_topic
 import images.blocks as image_blocks
 
 
-SPORT_CHOICES = [
-    ("all", "All sports"),
-    ("basketball-w", "Basketball (W)"),
-    ("basketball-m", "Basketball (M)"),
-    ("football", "Football"),
-    ("hockey-w", "Hockey (W)"),
-    ("hockey-m", "Hockey (M)"),
-    ("soccer-w", "Soccer (W)"),
-    ("soccer-m", "Soccer (M)"),
-    ("rugby-w", "Rugby (W)"),
-    ("volleyball-w", "Volleyball (W)"),
-    ("volleyball-m", "Volleyball (M)"),
-]
+SPORT_CHOICES = [("all", "All sports"), *COVERED_SPORT_CHOICES]
 
 
 class GameAnalysisArticle(blocks.StructBlock):
     article = blocks.PageChooserBlock(page_type="article.ArticlePage")
-    sport = blocks.ChoiceBlock(choices=SPORT_CHOICES[1:])
+    sport = blocks.ChoiceBlock(
+        choices=SPORT_CHOICES[1:],
+        required=False,
+        help_text="Legacy fallback. The article's Sport metadata is used when available.",
+    )
 
 
 class GameAnalysisTeam(blocks.StructBlock):
@@ -58,28 +51,27 @@ class GameAnalysisPanel(blocks.StructBlock):
         required=False,
         help_text="Sports shown in the homepage filter bar.",
     )
-    articles = blocks.ListBlock(GameAnalysisArticle(), required=False, max_num=8)
+    articles = blocks.ListBlock(GameAnalysisArticle(), required=False)
     upcoming_games = blocks.ListBlock(GameAnalysisFixture(), required=False, max_num=8)
     recent_results = blocks.ListBlock(GameAnalysisFixture(), required=False, max_num=8)
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
 
-        def article_timestamp(item):
-            published_at = item["article"].first_published_at
-            return published_at.timestamp() if published_at else float("-inf")
-
         def fixture_timestamp(item, missing):
             starts_at = item["starts_at"]
             return starts_at.timestamp() if starts_at else missing
 
-        context["analysis_articles"] = sorted(value["articles"], key=article_timestamp, reverse=True)
+        # ListBlock is deliberately ordered in the CMS: first is the lead, the
+        # following three are the stacked cards, and later entries are filter
+        # fallbacks. Never reorder it by publication date.
+        context["analysis_articles"] = list(value["articles"])
         # Fixtures live outside the homepage StreamField so the imported term
         # schedule can progress automatically while editors add only scores.
         from home.models import ThunderbirdFixture
         # The panel's scope is editorially defined, rather than being limited
         # by whichever story filters happen to be selected in the CMS.
-        active_sports = [choice[0] for choice in SPORT_CHOICES[1:]]
+        active_sports = list(value.get("active_sports") or [choice[0] for choice in SPORT_CHOICES[1:]])
         context["panel_sports"] = active_sports
         now = timezone.now()
         scheduled = ThunderbirdFixture.objects.filter(sport__in=active_sports)
