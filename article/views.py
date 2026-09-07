@@ -212,8 +212,9 @@ def redesign_preview(request, layout):
         category_page=SimpleNamespace(title="Campus" if section == "news" else section.title()),
         header=[header],
         lede="",
-        featured_media=SimpleNamespace(first=SimpleNamespace(image=None, alt_text="A musician performs beside a Ukrainian flag at a candlelight vigil.", caption="Earlier that day, the Prime Minister weighed in.", credit="Photo by Aleah Kippan for The Ubyssey")),
+        featured_media=SimpleNamespace(first=SimpleNamespace(image=None, alt_text="A musician performs beside a Ukrainian flag at a candlelight vigil.", caption="Earlier that day, the Prime Minister weighed in.", cover_caption="Earlier that day, the Prime Minister weighed in.", credit="Photo by Aleah Kippan for The Ubyssey")),
         primary_author_orderable=contributor,
+        primary_author_orderables=[contributor],
         published_at=_preview_story_date(story),
         standpoint_disclosure="<p>Juan Pablo Sastoque Vega is The Ubyssey’s News Editor. This relationship is disclosed so readers can evaluate the reporting with the relevant context.</p>",
         story_type_description=STORY_TYPE_COPY[story_type],
@@ -222,7 +223,7 @@ def redesign_preview(request, layout):
     )
     thumbnail = story.get("thumbnail", {}) if story else {}
     local_image = (f"/redesign-sample/{story_directory}/{thumbnail.get('local_path')}" if story and thumbnail.get("local_path") else "/redesign-sample/article-ukraine-vigil/media/header-four-years-in-russia-s-war-on-ukraine-reverberates-on-campus-ed5698f1.jpg")
-    preview.featured_media = SimpleNamespace(first=SimpleNamespace(image=None, alt_text=thumbnail.get("alt_text", "A musician performs beside a Ukrainian flag at a candlelight vigil."), caption=thumbnail.get("caption", "Earlier that day, the Prime Minister weighed in."), credit=thumbnail.get("credit", "Photo by Aleah Kippan for The Ubyssey")))
+    preview.featured_media = SimpleNamespace(first=SimpleNamespace(image=None, alt_text=thumbnail.get("alt_text", "A musician performs beside a Ukrainian flag at a candlelight vigil."), caption=thumbnail.get("caption", "Earlier that day, the Prime Minister weighed in."), cover_caption=thumbnail.get("caption", "Earlier that day, the Prime Minister weighed in."), credit=thumbnail.get("credit", "Photo by Aleah Kippan for The Ubyssey")))
     preview_content = _preview_content(snapshot_article) if snapshot_article and not request.GET.get("story") else [
         {"kind": "html", "html": f"<p>{lede}</p>"},
         {"kind": "note"},

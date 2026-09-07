@@ -1,7 +1,8 @@
+from django.template.loader import render_to_string
 from django.test import SimpleTestCase
 from types import SimpleNamespace
 
-from article.models import StandardArticlePage
+from article.models import ArticleFeaturedMediaOrderable, ArticlePage, StandardArticlePage
 from article.templatetags.articletags import format_redesign_extended_byline
 from article.views import _author_fixture, _fixture_credit_contributors, _sample_story
 
@@ -70,6 +71,51 @@ class ArticleRedesignMappingTests(SimpleTestCase):
         ]))
         self.assertIn("Aleah Kippan</a> took the photos, which were edited by <a href=\"/authors/sophia-clearwater/\">Sophia Clearwater</a>.", rendered)
         self.assertIn("Skye Shen</a> created the graphics, which were edited by <a href=\"/authors/quyen-schroeder/\">Quyen Schroeder</a>.", rendered)
+
+    def test_legacy_visual_byline_excludes_photo_and_graphics_editors(self):
+        class Contributors:
+            def __init__(self, contributors):
+                self.contributors = contributors
+
+            def all(self):
+                return self.contributors
+
+        reporter = SimpleNamespace(author=SimpleNamespace(full_name="Reporter"), author_role="author")
+        photo_editor = SimpleNamespace(author=SimpleNamespace(full_name="Photo Editor"), author_role="photo_editor")
+        graphics_editor = SimpleNamespace(author=SimpleNamespace(full_name="Graphics Editor"), author_role="graphics_editor")
+        article = SimpleNamespace(
+            article_authors=Contributors([reporter, photo_editor, graphics_editor]),
+            get_authors_string=lambda **kwargs: ", ".join(author.author.full_name for author in kwargs["authors_list"]),
+        )
+
+        self.assertEqual(ArticlePage.get_authors_split_out_visual_bylines(article).strip(), "Reporter")
+
+    def test_story_form_uses_the_approved_statement_and_is_opt_in(self):
+        report = SimpleNamespace(story_form="report")
+        unclassified = SimpleNamespace(story_form="")
+
+        self.assertEqual(
+            StandardArticlePage.story_form_statement.fget(report),
+            "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
+        )
+        self.assertEqual(StandardArticlePage.story_form_statement.fget(unclassified), "")
+
+    def test_empty_metadata_does_not_render_an_empty_context_rail_box(self):
+        article = SimpleNamespace(
+            story_form_statement="",
+            standpoint_disclosure="",
+            extended_byline_override="",
+            extended_contributors=[],
+        )
+
+        rendered = render_to_string("article/objects/redesign_context_rail.html", {"article": article})
+        self.assertNotIn("Extended Byline", rendered)
+        self.assertNotIn("Standpoint Statement", rendered)
+
+    def test_cover_caption_is_a_separate_empty_by_default_field(self):
+        field = ArticleFeaturedMediaOrderable._meta.get_field("cover_caption")
+        self.assertEqual(field.default, "")
+        self.assertIn("Existing legacy captions are not shown", field.help_text)
 
     def test_scraped_credit_parser_does_not_treat_coauthors_as_photographers(self):
         story, _ = _sample_story("council-new-approach-deliberation")

@@ -9,7 +9,7 @@
   {% if preview_image_url or featured.image %}
   <figure class="ar-hero__media">
     {% if preview_image_url %}<img src="{{ preview_image_url }}" alt="{{ featured.alt_text }}">{% else %}{% image featured.image width-1800 format-webp as hero_image %}<img src="{{ hero_image.url }}" width="{{ hero_image.width }}" height="{{ hero_image.height }}" alt="{{ featured.alt_text }}">{% endif %}
-    {% if featured.caption or featured.credit %}<figcaption>{{ featured.caption|richtext }}{% if featured.credit and featured.caption|caption_needs_credit:featured.credit %}<span class="credit">{{ featured.credit }}</span>{% endif %}</figcaption>{% endif %}
+    {% if featured.cover_caption or featured.credit %}<figcaption>{{ featured.cover_caption|richtext }}{% if featured.credit and featured.cover_caption|caption_needs_credit:featured.credit %}<span class="credit">{{ featured.credit }}</span>{% endif %}</figcaption>{% endif %}
   </figure>
   {% endif %}
 </section>
