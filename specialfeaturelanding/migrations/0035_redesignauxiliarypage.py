@@ -142,6 +142,7 @@ class Migration(migrations.Migration):
                     "verbose_name": "Redesigned auxiliary page",
                     "verbose_name_plural": "Redesigned auxiliary pages",
                 },
+                bases=("wagtailcore.page",),
             )],
         ),
         migrations.RunPython(create_auxiliary_table_if_missing, migrations.RunPython.noop),
