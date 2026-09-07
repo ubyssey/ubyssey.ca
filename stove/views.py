@@ -161,11 +161,11 @@ def load_page(request, page_id):
     pageObject = get_object_or_404(ArticlePage, pk=page_id).specific.get_latest_revision_as_object()
     if (pageObject.live and pageObject.article_status != 6):
         print("Updating status for published article \"" + pageObject.title + "\"")
-        pageObject.article_status = 6
+        pageObject = update_article_status(pageObject, 6, request.user)
         pageObject.save_revision(user=request.user)
     if ((not pageObject.live) and pageObject.article_status == 6):
         print("Updating status for unpublished article \"" + pageObject.title + "\"")
-        pageObject.article_status = 5
+        pageObject = update_article_status(pageObject, 5, request.user)
         pageObject.save_revision(user=request.user)
 
     def hasDraftInDeadline(page):
@@ -261,6 +261,23 @@ def load_partial_stories(request, section="all", page=1):
         result = result[:-1] + "]"
     return JsonResponse(result, safe=False)
 
+def update_article_status(page, status, user):
+    if page.article_status == status: return page
+
+    try: 
+        if status == 5:
+            workflow = page.get_workflow()
+            workflow.start(page, user)
+        if page.article_status == 5:
+            workflow_state = page.current_workflow_state
+            workflow_state.cancel(user)
+            print()
+    except Exception as error:
+        warnings.warn(f"Failed to update workflow status for {page.pk}: {error}")
+        
+    page.article_status = status
+    return page
+
 @login_required
 @require_POST
 def update_content_tracker(request, page_id):
@@ -288,7 +305,7 @@ def update_content_tracker(request, page_id):
         else:
             raise Exception("Page can't move to section")
     if ("article_status" in data):
-        page.article_status = data["article_status"]
+        page = update_article_status(page, data["article_status"], request.user)
         save_as_draft = True
     if ("story_type" in data):
         page.story_type = data["story_type"]
