@@ -98,3 +98,16 @@
 .au-gallery__item figcaption{padding:12px 14px 15px;font:400 14px/19px "drummond-variable",Georgia,serif}
 .au-gallery__item figcaption strong,.au-gallery__item figcaption span{display:block}.au-gallery__item figcaption strong{margin-bottom:4px;font-family:"meursault-variable",Georgia,serif}
 @media(max-width:760px){.au-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.au-gallery__item figcaption{padding:9px 10px 12px;font-size:13px;line-height:17px}}
+
+/* Final section and author-page typography pass. */
+.sr-tip h2,.sr-editor h2{font:700 16px/20px "meursault-variable",Georgia,serif;font-variation-settings:"wdth" 125,"wght" 700}
+.sr-tip p{font:400 16px/22px "meursault-variable",Georgia,serif;font-variation-settings:"wdth" 125,"wght" 400}
+.sr-tip>a{font:700 16px/20px "meursault-variable",Georgia,serif;font-variation-settings:"wdth" 125,"wght" 700;text-transform:none}
+.sr-editor__name{font:400 16px/22px "meursault-variable",Georgia,serif!important;font-variation-settings:"wdth" 125,"wght" 400}
+.sr-editor__description{font:400 14px/19px "meursault-variable", Georgia, serif!important}
+.sr-editor__reach{font:400 14px/19px "meursault-variable",Georgia,serif!important;font-variation-settings:"wdth" 125,"wght" 400}
+.sr-editor__reach a{font-weight:700!important}
+.lr-story--row time{font:700 14px/18px "articulat-cf",sans-serif;text-align:center}
+.lr-story--row time::after{content:"";display:block;width:100%;margin-top:4px;border-bottom:3px solid #21356f}
+.lr-story--row time{border-bottom:0}
+.lr-story--pinned h2,.lr-story--author-row h2{padding-bottom:3px;line-height:1.22}

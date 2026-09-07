@@ -215,6 +215,12 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     redesign_editor = models.ForeignKey(
         "authors.AuthorPage", null=True, blank=True, on_delete=models.SET_NULL, related_name="edited_redesign_sections"
     )
+    redesign_editor_description = models.CharField(
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="Custom copy for the Contact the editor box. This does not use the editor's author-profile bio.",
+    )
 
     label_svg = models.ForeignKey(
         'wagtaildocs.Document',
@@ -272,7 +278,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             [
                 FieldPanel("redesign_tip_title"), FieldPanel("redesign_tip_body"),
                 FieldPanel("redesign_tip_link_text"), FieldPanel("redesign_tip_link_url"),
-                FieldPanel("redesign_editor"), InlinePanel("redesign_featured_articles", max_num=3, label="Story"),
+                FieldPanel("redesign_editor"), FieldPanel("redesign_editor_description"),
+                InlinePanel("redesign_featured_articles", max_num=3, label="Story"),
             ],
             heading="Redesign section page",
             help_text="Add all three featured stories in display order: centre, upper-right, then lower-right.",
