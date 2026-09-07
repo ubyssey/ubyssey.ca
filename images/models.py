@@ -68,14 +68,26 @@ class UbysseyImage(AbstractImage):
         default='',
         features=['bold', 'italic', 'link']
     )
+    redesign_description = wagtail.fields.RichTextField(
+        null=False,
+        blank=True,
+        default='',
+        features=['bold', 'italic', 'link'],
+        help_text=(
+            "Optional description for redesigned pages. Legacy image descriptions "
+            "are not shown by the redesigned image viewer or galleries."
+        ),
+    )
     admin_form_fields = Image.admin_form_fields + (
         'author',
         'description',
+        'redesign_description',
     )
 
     search_fields = AbstractImage.search_fields + [
         index.FilterField('author_id'),
-        index.SearchField('description')
+        index.SearchField('description'),
+        index.SearchField('redesign_description'),
     ]
 
     def get_upload_to(self, filename):

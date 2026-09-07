@@ -65,15 +65,18 @@ class LiveBlogUpdateAuthorBlock(blocks.StructBlock):
 
     def jsonFormat(self, value):
         value = self.to_python(value)
+        author = value['author']
         author_image_template = "liveblog/objects/liveblog_update_author-image.html"
         author_image = None
-        if value['author'].image:
-            author_image = loader.render_to_string(author_image_template, {"author": value['author']})
+        if author.image:
+            author_image = loader.render_to_string(author_image_template, {"author": author})
         return {
             "author_image": author_image,
-            "author_link": value['author'].full_url,
-            "author_name": value['author'].full_name,
-            "author_role": value['author_role'],
+            "author_link": author.full_url,
+            "author_name": author.full_name,
+            "author_role": (
+                value['author_role'] or author.ubyssey_role or ''
+            ).strip(),
         }
 
 @register_snippet
