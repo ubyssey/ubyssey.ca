@@ -38,7 +38,14 @@ def _staff_groups():
 
 
 def our_team(request):
+    from specialfeaturelanding.models import SpecialLandingPage
+
+    # The public route intentionally resolves the same CMS page editors find
+    # in Pages by searching for “Our Team”; it must not be a separate,
+    # hard-coded rendering path.
+    page = SpecialLandingPage.objects.filter(slug="our-team").first()
     return render(request, "support/our_team.html", {
+        "self": page or SimpleNamespace(title="Our Team", featured_media=None),
         "redesign_staff_groups": _staff_groups(),
         "redesign_page_url": request.path,
         "meta": _meta(request, "Our Team"),
@@ -60,6 +67,9 @@ def podcast(request):
     from article.models import ArticlePage
     from specialfeaturelanding.models import SpecialLandingPage
 
+    # This is the same Wagtail page editors find under Pages by searching for
+    # “The Vilest Rag”. Keeping the public route and CMS source identical
+    # makes its Spotify field and child-episode feed dependable.
     landing = SpecialLandingPage.objects.filter(slug="the-vilest-rag").first()
     episodes = ArticlePage.objects.none()
     if landing:

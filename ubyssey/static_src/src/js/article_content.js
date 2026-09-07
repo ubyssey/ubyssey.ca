@@ -135,9 +135,68 @@ function alignArticleContextRail() {
     }
 }
 
+function initializeAuthorGallery() {
+    const viewer = document.querySelector('[data-author-gallery-viewer]');
+    const items = [...document.querySelectorAll('[data-author-gallery-item]')];
+    if (!viewer || !items.length) return;
+
+    const image = viewer.querySelector('[data-gallery-image]');
+    const caption = viewer.querySelector('[data-gallery-caption]');
+    const previous = viewer.querySelector('[data-gallery-previous]');
+    const next = viewer.querySelector('[data-gallery-next]');
+    const close = viewer.querySelector('[data-gallery-close]');
+    let index = 0;
+    let opener;
+    let touchStartX;
+
+    const show = (nextIndex) => {
+        index = (nextIndex + items.length) % items.length;
+        const item = items[index];
+        image.src = item.dataset.imageUrl;
+        image.alt = item.dataset.imageAlt || 'Photo';
+        caption.textContent = item.dataset.imageCaption || '';
+        previous.hidden = next.hidden = items.length < 2;
+    };
+    const open = (nextIndex, trigger) => {
+        opener = trigger;
+        show(nextIndex);
+        viewer.hidden = false;
+        document.body.classList.add('has-gallery-viewer');
+        close.focus({ preventScroll: true });
+    };
+    const closeViewer = () => {
+        viewer.hidden = true;
+        document.body.classList.remove('has-gallery-viewer');
+        opener?.focus({ preventScroll: true });
+    };
+
+    items.forEach((item, itemIndex) => item.addEventListener('click', (event) => {
+        event.preventDefault();
+        open(itemIndex, item);
+    }));
+    previous.addEventListener('click', () => show(index - 1));
+    next.addEventListener('click', () => show(index + 1));
+    close.addEventListener('click', closeViewer);
+    viewer.addEventListener('click', (event) => { if (event.target === viewer) closeViewer(); });
+    viewer.addEventListener('touchstart', (event) => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
+    viewer.addEventListener('touchend', (event) => {
+        if (touchStartX === undefined) return;
+        const distance = event.changedTouches[0].clientX - touchStartX;
+        touchStartX = undefined;
+        if (Math.abs(distance) > 45) show(index + (distance < 0 ? 1 : -1));
+    }, { passive: true });
+    document.addEventListener('keydown', (event) => {
+        if (viewer.hidden) return;
+        if (event.key === 'Escape') closeViewer();
+        if (event.key === 'ArrowLeft') show(index - 1);
+        if (event.key === 'ArrowRight') show(index + 1);
+    });
+}
+
 initializeArticleNavigation();
 initializeArticleSharing();
 initializeKeepReading();
 formatCaptionCredits();
 alignArticleContextRail();
+initializeAuthorGallery();
 window.addEventListener('resize', alignArticleContextRail, { passive: true });

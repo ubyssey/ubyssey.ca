@@ -10,10 +10,12 @@ from ubyssey import blocks as general_blocks
 
 from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields import CharField, BooleanField, TextField, SlugField
 from django.db.models.fields.related import ForeignKey
 from django.shortcuts import render
+from django import forms
 
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
@@ -151,6 +153,17 @@ class CategoryMenuItem(wagtail_core_models.Orderable):
         FieldPanel("category_page"),
     ]
 
+    def clean(self):
+        super().clean()
+        if not self.category_page_id or not self.section_id:
+            return
+        # A beat is a child CategoryPage. Allowing a category from another
+        # section would make a tab silently take readers to the wrong feed.
+        if self.category_page.get_parent().id != self.section_id:
+            raise ValidationError({
+                "category_page": "Choose a beat (Category page) that belongs directly to this section."
+            })
+
 
 class SectionRedesignFeaturedArticle(wagtail_core_models.Orderable):
     section_page = ParentalKey(
@@ -278,7 +291,8 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             [
                 FieldPanel("redesign_tip_title"), FieldPanel("redesign_tip_body"),
                 FieldPanel("redesign_tip_link_text"), FieldPanel("redesign_tip_link_url"),
-                FieldPanel("redesign_editor"), FieldPanel("redesign_editor_description"),
+                FieldPanel("redesign_editor"),
+                FieldPanel("redesign_editor_description", widget=forms.TextInput(attrs={"maxlength": 120})),
                 InlinePanel("redesign_featured_articles", max_num=3, label="Story"),
             ],
             heading="Redesign section page",
@@ -306,6 +320,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 InlinePanel("category_menu"),
             ],
             heading="Category Menu",
+            help_text="Add this section's beat pages in navigation order. Each beat opens its own filtered story feed.",
         ),
         MultiFieldPanel(
             [
@@ -318,6 +333,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     def get_filter(self):
         filters = {"section": self.current_section}
         return filters
+
+    def clean(self):
+        super().clean()
+        if len(self.redesign_editor_description or "") > 120:
+            raise ValidationError({
+                "redesign_editor_description": "Keep the Contact the editor description to 120 characters or fewer."
+            })
     filter = property(fget=get_filter) 
 
     def get_all_categories(self):
@@ -365,6 +387,20 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
         context["filters"] = filters
         context["section_slug"] = self.slug
+        configured_beats = [
+            item.category_page.specific
+            for item in self.category_menu.select_related("category_page").all()
+            if item.category_page
+        ]
+        # An explicit Category Menu gives editors control over the order. For
+        # older sections without one, every live child beat remains visible so
+        # the redesign cannot silently lose their navigation.
+        if not configured_beats:
+            configured_beats = [category.specific for category in CategoryPage.objects.live().child_of(self)]
+        context["redesign_topics"] = [
+            {"title": beat.title, "url": beat.get_url(request)}
+            for beat in configured_beats
+        ]
         configured_featured = list(self.redesign_featured_articles.select_related("article").all())
         if len(configured_featured) == 3:
             featured = [item.article.specific for item in configured_featured]

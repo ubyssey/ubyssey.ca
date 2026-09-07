@@ -7,7 +7,7 @@
 <main id="main-content" class="aux-page podcast-page">
   <section class="podcast-hero page-shell">
     <div class="podcast-hero__art"><img src="{% static 'ubyssey/images/redesign/vilest-rag-logo.png' %}" alt="The Vilest Rag — The Ubyssey's podcast"></div>
-    <div class="podcast-hero__copy"><h1>The Vilest Rag</h1><div class="aux-lede">{% if self.description %}{{ self.description|richtext }}{% else %}<p>The Vilest Rag is a bi-weekly podcast brought to you by <em>The Ubyssey</em>. In each episode, we chat with reporters and editors to learn about what goes into making the news.</p>{% endif %}</div><p class="aux-kicker">Latest episode</p>
+    <div class="podcast-hero__copy"><h1>{{ self.title|default:'The Vilest Rag' }}</h1><div class="aux-lede">{% if self.description %}{{ self.description|richtext }}{% else %}<p>The Vilest Rag is a bi-weekly podcast brought to you by <em>The Ubyssey</em>. In each episode, we chat with reporters and editors to learn about what goes into making the news.</p>{% endif %}</div><p class="aux-kicker">Latest episode</p>
       <iframe class="spotify-player" data-testid="embed-iframe" src="{{ self.spotify_episode_url|spotify_embed_url }}" width="100%" height="152" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Latest episode of The Vilest Rag on Spotify"></iframe>
     </div>
   </section>

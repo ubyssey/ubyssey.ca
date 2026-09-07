@@ -17,6 +17,12 @@
     {% if media_type == 'photos' and not redesign_articles %}<div id="results" class="au-gallery">{% for image in paginated_articles %}{% include 'authors/objects/redesign_photo.html' with image=image %}{% endfor %}</div>{% else %}<div id="results" class="lr-feed au-feed">{% for article in redesign_articles %}{% include 'section/objects/redesign_story.html' with article=article variant='author-row' show_date=True show_summary=True %}{% empty %}{% for article in paginated_articles %}{% include 'section/objects/redesign_story.html' with article=article variant='author-row' show_date=True show_summary=True %}{% endfor %}{% endfor %}</div>{% endif %}
     {% if paginated_articles.has_next %}<nav class="au-pagination" aria-label="More stories"><a class="au-more" href="?page={{ paginated_articles.next_page_number }}{% if q %}&amp;q={{ q|urlencode }}{% endif %}{% if order %}&amp;order={{ order|lower }}{% endif %}">Next page <span aria-hidden="true">→</span></a></nav>{% endif %}
   </section>
+  <div class="au-lightbox" data-author-gallery-viewer hidden role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="au-lightbox__close" type="button" data-gallery-close aria-label="Close image viewer">×</button>
+    <button class="au-lightbox__previous" type="button" data-gallery-previous aria-label="Previous image">←</button>
+    <figure><img data-gallery-image alt=""><figcaption data-gallery-caption></figcaption></figure>
+    <button class="au-lightbox__next" type="button" data-gallery-next aria-label="Next image">→</button>
+  </div>
 </main>
 {% endblock %}
-{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-nav-stable-1"></script><script>document.querySelector('[data-author-more]')?.addEventListener('click',function(){this.textContent='All stories shown';this.disabled=true;});</script>{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=author-gallery-1"></script><script>document.querySelector('[data-author-more]')?.addEventListener('click',function(){this.textContent='All stories shown';this.disabled=true;});</script>{% endblock %}

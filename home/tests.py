@@ -3,6 +3,7 @@ from django.test import SimpleTestCase
 from django import forms
 
 from home.blocks import GameAnalysisPanel
+from home.models import HomePage
 
 
 class HomepageRedesignTests(SimpleTestCase):
@@ -27,3 +28,13 @@ class HomepageRedesignTests(SimpleTestCase):
             GameAnalysisPanel().child_blocks["active_sports"].field.widget,
             forms.CheckboxSelectMultiple,
         )
+
+    def test_homepage_has_named_hero_positions(self):
+        fields = {field.name for field in HomePage._meta.get_fields()}
+        self.assertTrue({
+            "redesign_hero_top_left",
+            "redesign_hero_bottom_left",
+            "redesign_hero_centre",
+            "redesign_hero_top_right",
+            "redesign_hero_bottom_right",
+        }.issubset(fields))

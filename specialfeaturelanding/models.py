@@ -176,6 +176,13 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     )
 
     content_panels = Page.content_panels + UbysseyMenuMixin.menu_content_panels + [
+        HelpPanel(
+            content=(
+                "<p><strong>Redesigned auxiliary pages:</strong> the pages titled “Our Team” and “The Vilest Rag” "
+                "power their public routes directly. Find them in Pages by title. “Our Team” draws people from "
+                "Author pages; “The Vilest Rag” draws episodes from its child articles and uses the Spotify field below.</p>"
+            ),
+        ),
         MultiFieldPanel(
             [
                 HelpPanel(content='Used for targetting <main> by the css'),

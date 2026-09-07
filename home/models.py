@@ -3,6 +3,7 @@ from . import blocks as homeblocks
 from article.models import ArticlePage
 from section.models import SectionPage
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from ads.models import AdSlot
@@ -47,10 +48,12 @@ class TopArticlesOrderable(Orderable):
 
 
 class HomepageRedesignStory(Orderable):
-    """An editorial queue for the redesign's hero and four story rows.
+    """Legacy homepage queue entries retained only for migration safety.
 
-    The first 17 entries are rendered. Extra entries are retained as a safe
-    buffer, so moving a new story into the hero never silently drops a story.
+    The redesigned homepage now uses the five explicit hero fields on
+    :class:`HomePage`; stories below the hero are automatically chronological.
+    Keeping this model avoids discarding existing editor selections while the
+    migration copies the first five entries into their named hero slots.
     """
 
     home_page = ParentalKey(
@@ -225,6 +228,26 @@ class HomePage(Page):
         choices=HERO_HEADLINE_VARIANTS,
         default="default",
     )
+    redesign_hero_top_left = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", verbose_name="Top-left hero story",
+    )
+    redesign_hero_bottom_left = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", verbose_name="Bottom-left hero story",
+    )
+    redesign_hero_centre = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", verbose_name="Centre hero story",
+    )
+    redesign_hero_top_right = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", verbose_name="Top-right hero story",
+    )
+    redesign_hero_bottom_right = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", verbose_name="Bottom-right hero story",
+    )
     newsletter_title = models.CharField(max_length=80, blank=True, default="")
     newsletter_copy = models.TextField(blank=True, default="")
     newsletter_button_text = models.CharField(max_length=40, blank=True, default="")
@@ -306,22 +329,25 @@ class HomePage(Page):
         FieldPanel("game_analysis", heading="Game Analyses: stories and active sports"),
         MultiFieldPanel(
             [
-                InlinePanel("redesign_story_queue", min_num=0, label="Story"),
+                FieldPanel("redesign_hero_top_left"),
+                FieldPanel("redesign_hero_bottom_left"),
+                FieldPanel("redesign_hero_centre"),
+                FieldPanel("redesign_hero_top_right"),
+                FieldPanel("redesign_hero_bottom_right"),
                 FieldPanel("redesign_hero_headline_position"),
                 FieldPanel("redesign_hero_headline_variant"),
             ],
             heading="Homepage redesign editorial queue",
             help_text=(
-                "Drag stories into order: positions 1–5 are the hero, then four groups of three. "
-                "Only the first 17 are rendered; later entries remain as a safe buffer. "
-                "The existing homepage remains visible until all 17 display positions are configured."
+                "Set all five named hero positions. The Centre hero story uses the headline placement "
+                "and Meursault controls below. Every story below the hero fills automatically in newest-first "
+                "order, excluding these five stories."
             ),
         ),
         MultiFieldPanel(
             [
-                FieldPanel("newsletter_action_url"), FieldPanel("newsletter_title"),
-                FieldPanel("newsletter_copy"), FieldPanel("newsletter_button_text"),
-                FieldPanel("newsletter_rss_url"), FieldPanel("newsletter_honeypot_name"),
+                FieldPanel("newsletter_action_url"), FieldPanel("newsletter_rss_url"),
+                FieldPanel("newsletter_honeypot_name"),
             ],
             heading="Newsletter promotion",
         ),
@@ -341,6 +367,19 @@ class HomePage(Page):
             articles = articles + child.block.get_articles(child.get_prep_value()["value"])
 
         return articles
+
+    def clean(self):
+        super().clean()
+        hero_fields = (
+            "redesign_hero_top_left",
+            "redesign_hero_bottom_left",
+            "redesign_hero_centre",
+            "redesign_hero_top_right",
+            "redesign_hero_bottom_right",
+        )
+        selected_ids = [getattr(self, f"{field}_id") for field in hero_fields if getattr(self, f"{field}_id")]
+        if len(selected_ids) != len(set(selected_ids)):
+            raise ValidationError("Choose a different article for each homepage hero position.")
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -438,12 +477,25 @@ class HomePage(Page):
                     break
             ordered_articles = preview_stories
 
-        configured_queue = list(self.redesign_story_queue.select_related("article").all())
-        # A partial queue must never replace the known-good homepage with a
-        # sparse layout. Editorial configuration takes over only when it can
-        # fill every visible story slot.
-        if len(configured_queue) >= 17:
-            context["redesign_articles"] = [item.article.specific for item in configured_queue[:17]]
+        hero_fields = (
+            self.redesign_hero_top_left,
+            self.redesign_hero_bottom_left,
+            self.redesign_hero_centre,
+            self.redesign_hero_top_right,
+            self.redesign_hero_bottom_right,
+        )
+        # Named slots prevent an editor from having to count positions in an
+        # ordered list. Do not turn on the editorial layout until every hero
+        # position is present, so an incomplete edit cannot create a gap.
+        if all(hero_fields):
+            hero_articles = [article.specific for article in hero_fields]
+            hero_ids = [article.pk for article in hero_articles]
+            chronological_articles = list(
+                ArticlePage.objects.live().public().descendant_of(self)
+                .exclude(pk__in=hero_ids)
+                .order_by("-explicit_published_at", "-id")[:12]
+            )
+            context["redesign_articles"] = hero_articles + [article.specific for article in chronological_articles]
             context["redesign_queue_active"] = True
         else:
             context["redesign_articles"] = ordered_articles
