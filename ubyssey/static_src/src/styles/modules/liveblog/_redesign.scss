@@ -367,6 +367,8 @@
   --live-rule: #657087;
   --live-summary: #161e30;
   .o-liveblog-update .o-liveblog-update--content > p a { color: #77c0d2; }
+  .o-liveblog-update .o-liveblog-update--meta--author a:hover,
+  .o-liveblog-update .o-liveblog-update--meta--author a:focus-visible { color: #081839; background-color: #bce3f0; }
   .report a { color: #bce3f0; }
 }
 

@@ -40,15 +40,22 @@ function initializeRedesignNavigation() {
   document.addEventListener('click', (event) => {
     if (open && !header.contains(event.target)) setOpen(false);
   });
+  let compact = header.classList.contains('is-compact');
+  let scrollFrame;
   const updateHeader = () => {
-    if (!header.classList.contains('is-compact') && window.scrollY > 96) {
-      header.classList.add('is-compact');
-    } else if (header.classList.contains('is-compact') && window.scrollY < 24) {
-      header.classList.remove('is-compact');
-    }
+    const nextCompact = compact ? window.scrollY >= 24 : window.scrollY > 96;
+    if (nextCompact === compact) return;
+    compact = nextCompact;
+    header.classList.toggle('is-compact', compact);
   };
   updateHeader();
-  window.addEventListener('scroll', updateHeader, { passive: true });
+  window.addEventListener('scroll', () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = undefined;
+      updateHeader();
+    });
+  }, { passive: true });
 }
 function initializeGameAnalysis() {
   document.querySelectorAll('[data-game-analysis]').forEach((panel) => {
