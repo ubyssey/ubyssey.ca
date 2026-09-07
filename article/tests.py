@@ -52,7 +52,7 @@ class ArticleRedesignMappingTests(SimpleTestCase):
             contributor("Elena Massing", "backfield_editor"),
             contributor("Aleah Kippan", "photographer"),
         ]))
-        self.assertIn("Elena Massing</a> was this story's backfield editor for this story.", rendered)
+        self.assertIn("Elena Massing</a> was this story's backfield editor.", rendered)
         self.assertIn("Aleah Kippan</a> took the photos.", rendered)
 
     def test_extended_byline_combines_photo_and_graphics_editors(self):

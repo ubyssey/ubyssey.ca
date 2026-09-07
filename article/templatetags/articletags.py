@@ -76,7 +76,7 @@ def format_redesign_extended_byline(contributors):
 
     sentences = []
     role_copy = {
-        "backfield_editor": ("was this story's backfield editor for this story.", "were the backfield editors for this story."),
+        "backfield_editor": ("was this story's backfield editor.", "were the backfield editors for this story."),
         "copy_editor": ("was the copy editor.", "were the copy editors."),
     }
     for role in ("backfield_editor", "copy_editor"):
