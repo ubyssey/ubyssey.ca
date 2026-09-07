@@ -6,6 +6,21 @@ const liveblogHtmlOptions = {
     ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "loading", "referrerpolicy"],
 };
 
+function safeAuthorHref(url) {
+    try {
+        const parsed = new URL(url, window.location.origin);
+        const match = /^\/authors\/([-a-z0-9_]+)\/?$/i.exec(parsed.pathname);
+
+        if (parsed.origin !== window.location.origin || !match) {
+            return null;
+        }
+
+        return `/authors/${match[1]}/`;
+    } catch (_error) {
+        return null;
+    }
+}
+
 function LiveblogStageHeader({value, meta}) {
     function showThrobber(meta) {
         return meta.live && meta.page.layout != "split_view"; 
@@ -20,12 +35,14 @@ function LiveblogStageHeader({value, meta}) {
             }
 
             <div className="author-string">
-                {(meta.page.authors || []).map((author, index) =>
-                    <span key={`${author.url}-${index}`}>
+                {(meta.page.authors || []).map((author, index) => {
+                    const authorHref = safeAuthorHref(author.url);
+
+                    return <span key={`${author.url}-${index}`}>
                         {index > 0 && ", "}
-                        {author.url ? <a href={author.url}>{author.name}</a> : author.name}
+                        {authorHref ? <a href={authorHref}>{author.name}</a> : author.name}
                     </span>
-                )}
+                })}
             </div>
         </div>
     )
