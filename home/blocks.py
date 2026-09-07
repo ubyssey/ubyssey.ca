@@ -65,7 +65,14 @@ class GameAnalysisPanel(blocks.StructBlock):
         # ListBlock is deliberately ordered in the CMS: first is the lead, the
         # following three are the stacked cards, and later entries are filter
         # fallbacks. Never reorder it by publication date.
-        context["analysis_articles"] = list(value["articles"])
+        # A historic StreamField revision can retain a chooser reference to a
+        # page that has since been deleted. Wagtail resolves that reference to
+        # ``None`` in draft preview, and ``pageurl`` cannot render it. Skip
+        # only invalid entries so previews stay usable without changing the
+        # editorial order of valid game analyses.
+        context["analysis_articles"] = [
+            item for item in value["articles"] if item.get("article")
+        ]
         # Fixtures live outside the homepage StreamField so the imported term
         # schedule can progress automatically while editors add only scores.
         from home.models import ThunderbirdFixture
