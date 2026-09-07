@@ -42,11 +42,30 @@ function initializeRedesignNavigation() {
   });
   let compact = header.classList.contains('is-compact');
   let scrollFrame;
-  const updateHeader = () => {
-    const nextCompact = compact ? window.scrollY >= 24 : window.scrollY > 96;
+  let settlingCompactState = false;
+  let previousScrollY = window.scrollY;
+  const setCompact = (nextCompact) => {
     if (nextCompact === compact) return;
     compact = nextCompact;
+    settlingCompactState = true;
     header.classList.toggle('is-compact', compact);
+    // Collapsing a sticky element changes document layout. Chrome may emit a
+    // compensating scroll event, which must not immediately reverse the state.
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+      previousScrollY = window.scrollY;
+      settlingCompactState = false;
+    }));
+  };
+  const updateHeader = () => {
+    const scrollY = window.scrollY;
+    const scrollingUp = scrollY < previousScrollY;
+    previousScrollY = scrollY;
+    if (settlingCompactState) return;
+    if (!compact && scrollY > 96) {
+      setCompact(true);
+    } else if (compact && scrollingUp && scrollY < 24) {
+      setCompact(false);
+    }
   };
   updateHeader();
   window.addEventListener('scroll', () => {
