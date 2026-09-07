@@ -387,20 +387,10 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
         context["filters"] = filters
         context["section_slug"] = self.slug
-        configured_beats = [
-            item.category_page.specific
-            for item in self.category_menu.select_related("category_page").all()
-            if item.category_page
-        ]
-        # An explicit Category Menu gives editors control over the order. For
-        # older sections without one, every live child beat remains visible so
-        # the redesign cannot silently lose their navigation.
-        if not configured_beats:
-            configured_beats = [category.specific for category in CategoryPage.objects.live().child_of(self)]
-        context["redesign_topics"] = [
-            {"title": beat.title, "url": beat.get_url(request)}
-            for beat in configured_beats
-        ]
+        context["redesign_config"] = self
+        context["redesign_all_url"] = self.url
+        context["redesign_active_beat_id"] = None
+        context["redesign_topics"] = self.get_redesign_topics()
         configured_featured = list(self.redesign_featured_articles.select_related("article").all())
         if len(configured_featured) == 3:
             featured = [item.article.specific for item in configured_featured]
@@ -431,6 +421,25 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             context["search_query"] = search_query
     
         return context
+
+    def get_redesign_topics(self):
+        """Navigation-safe beat links for this section.
+
+        Explicit menu entries determine order. Older sections retain a
+        fallback to their live child beats. ``Page.url`` keeps a bad request
+        host from producing a missing/absolute URL in a rendered tab.
+        """
+        configured_beats = [
+            item.category_page.specific
+            for item in self.category_menu.select_related("category_page").all()
+            if item.category_page and item.category_page.live
+        ]
+        if not configured_beats:
+            configured_beats = [category.specific for category in CategoryPage.objects.live().child_of(self)]
+        return [
+            {"id": beat.id, "title": beat.title, "url": beat.url}
+            for beat in configured_beats
+        ]
 
     def get_template(self, request, *args, **kwargs):
         """Use the canonical auxiliary-page variants without changing old page types."""
@@ -644,9 +653,21 @@ class CategoryPage(SectionPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["parent"] = self.get_parent()
-        context["section_slug"] = context["parent"].slug
+        parent = self.get_parent().specific
+        # Category pages share the parent section's CMS configuration and
+        # navigation, but their hero and feed are strictly category-filtered.
+        # This avoids treating a beat as an independent section page.
+        context["parent"] = parent
+        context["section_slug"] = parent.slug
+        context["redesign_config"] = parent
+        context["redesign_all_url"] = parent.url
+        context["redesign_active_beat_id"] = self.id
+        context["redesign_topics"] = parent.get_redesign_topics()
         return context
+
+    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+        """The category's feed, ordered exactly like the parent section feed."""
+        return ArticlePage.objects.live().public().filter(category_page=self).order_by(order, '-id')
     
     def get_recent_articles(self, max_items=10):
         return ArticlePage.objects.live().filter(category_page = self).order_by("-first_published_at")[:max_items]

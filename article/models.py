@@ -284,7 +284,17 @@ class ArticleFeaturedMediaOrderable(Orderable):
         related_name="featured_media",
     )
 
+    # ``caption`` predates the redesign and has historically been used for a
+    # mixture of visual captions, credits and even alt text. Keep it intact
+    # for legacy templates, but use ``cover_caption`` for the redesign so old
+    # metadata is never unexpectedly surfaced beneath a cover image.
     caption = RichTextField(blank=True, null=False, default='')
+    cover_caption = RichTextField(
+        blank=True,
+        null=False,
+        default='',
+        help_text="Optional display caption for the redesigned article cover. Existing legacy captions are not shown here automatically.",
+    )
     credit = models.TextField(blank=True, null=False, default='')
     alt_text = models.TextField(blank=True, null=False, default='',
         help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
@@ -315,11 +325,16 @@ class ArticleFeaturedMediaOrderable(Orderable):
         ),
         MultiFieldPanel(
             [
-                FieldPanel("caption"),
+                FieldPanel("cover_caption"),
                 FieldPanel("credit"),
                 FieldPanel("alt_text"),
             ],
-            heading="Caption/Credits",
+            heading="Redesign cover caption / credits",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("caption")],
+            heading="Legacy caption (not shown below redesign covers)",
+            classname="collapsible collapsed",
         ),
     ]
 
@@ -1222,7 +1237,10 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
             'org_role': '',
         }
         role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
-        extended_byline_roles = ['backfield_editor', 'copy_editor']
+        # These roles belong in the extended byline, not the compact visual
+        # byline. Excluding all four prevents the legacy role-ordering code
+        # from trying to sort photo_editor/graphics_editor as unknown roles.
+        extended_byline_roles = ['backfield_editor', 'copy_editor', 'photo_editor', 'graphics_editor']
         authors_by_role = {}
         for author in self.article_authors.all():
             if author.author_role in authors_by_role:
@@ -1521,6 +1539,45 @@ class StandardArticlePage(ArticlePage):
         default="",
         help_text="Optional editor-authored extended byline. Leave blank to generate contributor credits from the article's assigned roles.",
     )
+    STORY_FORM_CHOICES = [
+        ("report", "Report"),
+        ("live-update", "Live Update"),
+        ("feature", "Feature"),
+        ("profile", "Profile"),
+        ("q-and-a", "Q&A"),
+        ("review", "Review"),
+        ("game-analysis", "Game Analysis"),
+        ("commentary", "Commentary"),
+        ("essay", "Essay"),
+        ("column", "Column"),
+        ("editorial", "Editorial"),
+        ("letter-to-the-editor", "Letter to the Editor"),
+        ("letter-from-the-editor", "Letter from the Editor"),
+        ("public-service-announcement", "Public Service Announcement"),
+    ]
+    STORY_FORM_STATEMENTS = {
+        "report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
+        "live-update": "This article is a live update, which are a series of brief reports from journalists on the ground while news is happening.",
+        "feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
+        "profile": "This article is a profile, which tells the stories of individuals and their worldviews, written from a repoter's perspective.",
+        "q-and-a": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
+        "review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
+        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
+        "commentary": "This article is a commentary, which we define as a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense.",
+        "essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
+        "column": "This article is a column, which is a story reported by a columnists— an opinion journalists who makes abstract judgments about the news and the way the world should be.",
+        "editorial": "This article is an editorial, which is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day.",
+        "letter-to-the-editor": "This article is a letter to the editor, which are 250-word responses to stories published in The Ubyssey, written by readers like you.",
+        "letter-from-the-editor": "This article is a letter from the editor, which are messages to readers from the The Ubyssey's Senior Masthead.",
+        "public-service-announcement": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
+    }
+    story_form = models.CharField(
+        max_length=50,
+        choices=STORY_FORM_CHOICES,
+        blank=True,
+        default="",
+        help_text="Optional. Select a story form to show its approved statement. Leave blank for legacy articles unless it is reviewed and intentionally classified.",
+    )
     full_bleed_nav_color = models.CharField(
         max_length=5,
         choices=(("white", "White"), ("black", "Black")),
@@ -1767,6 +1824,7 @@ class StandardArticlePage(ArticlePage):
                 FieldPanel("disclaimer"),
                 FieldPanel("standpoint_disclosure"),
                 FieldPanel("extended_byline_override"),
+                FieldPanel("story_form"),
                 FieldPanel("full_bleed_nav_color"),
             ],
             heading="Article Content",
@@ -1872,6 +1930,20 @@ class StandardArticlePage(ArticlePage):
     @property
     def primary_author_orderable(self):
         return self.article_authors.filter(author_role="author").first() or self.article_authors.first()
+
+    @property
+    def primary_author_orderables(self):
+        """Main reporting contributors, in editorial order.
+
+        A legacy article may have no contributor explicitly marked ``author``;
+        in that case retain the existing first-contributor fallback.
+        """
+        authors = list(self.article_authors.filter(author_role="author"))
+        return authors or list(self.article_authors.all()[:1])
+
+    @property
+    def story_form_statement(self):
+        return self.STORY_FORM_STATEMENTS.get(self.story_form, "")
 
     @property
     def extended_contributors(self):

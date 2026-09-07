@@ -320,6 +320,17 @@
 /* Final editorial typography and layout pass. */
 .ar-page .ar-hero:not(.ar-hero--full-bleed):not(.ar-hero--left-full-bleed):not(.ar-hero--right-full-bleed) .ar-hero__media figcaption{padding:14px 0 10px}
 .ar-page .ar-hero--full-bleed .ar-hero__media figcaption,.ar-page .ar-hero--left-full-bleed .ar-hero__media figcaption,.ar-page .ar-hero--right-full-bleed .ar-hero__media figcaption{padding:8px 10px}
+
+// A multi-reporter byline is intentionally compact: profile images overlap,
+// names and roles stay together, and individual bio copy is omitted.
+.ar-main-byline__card--multiple{grid-template-columns:auto 1fr;align-items:center;min-height:88px}
+.ar-main-byline__avatars{display:flex;min-width:88px;padding-right:10px}
+.ar-main-byline__avatars .ar-main-byline__avatar{width:52px;height:52px;border:2px solid var(--ar-bg,#fff)}
+.ar-main-byline__avatars .ar-main-byline__avatar + .ar-main-byline__avatar{margin-left:-18px}
+.ar-main-byline__multiple-names{margin:0 0 5px!important;font:600 18px/22px "drummond-variable",Georgia,serif!important}
+.ar-main-byline__role{font-weight:400}
+.ar-main-byline__separator{white-space:pre}
+@media(max-width:800px){.ar-main-byline__card--multiple{grid-template-columns:auto 1fr}.ar-main-byline__avatars{min-width:66px}.ar-main-byline__avatars .ar-main-byline__avatar{width:44px;height:44px}.ar-main-byline__multiple-names{font-size:17px!important;line-height:21px!important}}
 .ar-body.article-content>h1{margin:48px 0 30px;font:600 34px/39px "meursault-variable",Georgia,serif;font-variation-settings:"wght" 600}
 .ar-body.article-content>h2{margin:44px 0 28px;font:500 29px/34px "meursault-variable",Georgia,serif;font-variation-settings:"wght" 500}
 .ar-body.article-content>h3{margin:38px 0 24px;font:400 24px/29px "meursault-variable",Georgia,serif;font-variation-settings:"wght" 400}

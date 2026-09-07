@@ -1,5 +1,5 @@
 {% load wagtailimages_tags static %}
-{% with contributor=article.primary_author_orderable author=article.primary_author_orderable.author %}
+{% with contributors=article.primary_author_orderables %}
 <section class="ar-main-byline">
   <nav class="ar-share" aria-label="Share this article">
     <button type="button" data-share-copy title="Copy link"><img src="{% static 'ubyssey/images/article/share-link.svg' %}" alt=""><span class="sr-only">Copy link</span></button>
@@ -7,6 +7,12 @@
     <a data-share-bsky href="https://bsky.app/intent/compose?text={{ article.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" title="Share to Bluesky"><img src="{% static 'ubyssey/images/article/share-bluesky.svg' %}" alt=""></a>
     <a data-share-whatsapp href="https://wa.me/?text={{ article.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" title="Share to WhatsApp"><img src="{% static 'ubyssey/images/article/share-whatsapp.svg' %}" alt=""></a>
   </nav>
+  {% if contributors|length > 1 %}
+  <div class="ar-main-byline__card ar-main-byline__card--multiple">
+    <div class="ar-main-byline__avatars" aria-hidden="true">{% for contributor in contributors %}{% if contributor.author.image %}{% image contributor.author.image fill-88x88-c100 format-webp class="ar-main-byline__avatar" alt="" %}{% endif %}{% endfor %}</div>
+    <div><p class="ar-main-byline__multiple-names">{% for contributor in contributors %}<a class="ar-main-byline__name" href="{{ contributor.author.url }}">{{ contributor.author_alias|default:contributor.author.full_name }}</a>{% if contributor.author.ubyssey_role %}<span class="ar-main-byline__role"> · {{ contributor.author.ubyssey_role }}</span>{% endif %}{% if not forloop.last %}<span class="ar-main-byline__separator">, </span>{% endif %}{% endfor %}</p><time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"F j, Y" }}</time></div>
+  </div>
+  {% else %}{% with contributor=contributors.0 author=contributors.0.author %}
   <div class="ar-main-byline__card{% if not preview_author_image_url and not author.image %} ar-main-byline__card--no-avatar{% endif %}">
     {% if preview_author_image_url %}<img class="ar-main-byline__avatar" src="{{ preview_author_image_url }}" alt="{{ author.full_name }}">{% elif author.image %}{% image author.image fill-88x88-c100 format-webp class="ar-main-byline__avatar" alt=author.full_name %}{% endif %}
     <div>
@@ -14,6 +20,6 @@
       {% if author.short_bio_description %}<p>{{ author.short_bio_description }}</p>{% endif %}
       <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"F j, Y" }}</time>
     </div>
-  </div>
+  </div>{% endwith %}{% endif %}
 </section>
 {% endwith %}
