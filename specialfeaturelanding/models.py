@@ -87,6 +87,16 @@ class RedesignAuxiliaryPage(Page):
         FieldPanel("description"),
         FieldPanel("featured_media"),
         FieldPanel("spotify_episode_url"),
+        InlinePanel(
+            "team_members",
+            heading="Our Team roster",
+            label="Team member",
+            help_text=(
+                "For the Our Team page, add members in the order they should appear and "
+                "choose their department. Once at least one member is added, only this "
+                "curated roster is displayed."
+            ),
+        ),
     ]
 
     class Meta:
@@ -104,6 +114,16 @@ class RedesignAuxiliaryPage(Page):
             from authors.models import AuthorPage
 
             groups = {"senior": [], "reportage": [], "visuals": [], "product": []}
+            curated_members = list(self.team_members.select_related("author").all())
+            if curated_members:
+                for member in curated_members:
+                    groups[member.department].append(member)
+                context["redesign_staff_groups"] = groups
+                return context
+
+            # Existing pages retain their automatic roster until an editor adds
+            # the first curated member. This prevents the public page from
+            # becoming empty during the move to the new editorial workflow.
             for person in AuthorPage.objects.live().exclude(ubyssey_role="").order_by("full_name"):
                 role = person.ubyssey_role.casefold()
                 if "editor-in-chief" in role or "managing editor" in role:
@@ -117,14 +137,70 @@ class RedesignAuxiliaryPage(Page):
             context["redesign_staff_groups"] = groups
         else:
             from article.models import ArticlePage
+            from section.models import SectionPage
 
-            context["redesign_all_articles"] = (
-                ArticlePage.objects.live()
-                .public()
-                .filter(current_section="the-vilest-rag")
-                .order_by("-explicit_published_at")[:20]
+            # Production has used both a canonical section-page tree and the
+            # denormalized current_section field for podcast stories. Support
+            # both structures so existing episodes do not disappear during the
+            # redesigned-route migration.
+            podcast_section = SectionPage.objects.live().filter(slug="the-vilest-rag").first()
+            episodes = ArticlePage.objects.live().public().filter(
+                current_section="the-vilest-rag"
             )
+            if podcast_section:
+                episodes = episodes | ArticlePage.objects.live().public().descendant_of(
+                    podcast_section
+                )
+            context["redesign_all_articles"] = episodes.order_by(
+                "-explicit_published_at", "-id"
+            ).distinct()[:20]
         return context
+
+
+class RedesignTeamMember(Orderable):
+    """An explicitly curated author card on the redesigned Our Team page."""
+
+    SENIOR = "senior"
+    REPORTAGE = "reportage"
+    VISUALS = "visuals"
+    PRODUCT = "product"
+    DEPARTMENT_CHOICES = (
+        (SENIOR, "Senior Masthead"),
+        (REPORTAGE, "Reportage"),
+        (VISUALS, "Visuals"),
+        (PRODUCT, "Product"),
+    )
+
+    page = ParentalKey(
+        "specialfeaturelanding.RedesignAuxiliaryPage",
+        on_delete=models.CASCADE,
+        related_name="team_members",
+    )
+    author = models.ForeignKey(
+        "authors.AuthorPage",
+        on_delete=models.CASCADE,
+        related_name="+",
+    )
+    department = models.CharField(max_length=20, choices=DEPARTMENT_CHOICES)
+    description_override = models.TextField(
+        blank=True,
+        default="",
+        help_text=(
+            "Optional longer description for this card only. It overrides the "
+            "author page's short biography without changing the author page."
+        ),
+    )
+
+    panels = [
+        FieldPanel("department"),
+        FieldPanel("author"),
+        FieldPanel("description_override"),
+    ]
+
+    class Meta:
+        verbose_name = "Our Team member"
+        verbose_name_plural = "Our Team members"
+
 
 class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     """

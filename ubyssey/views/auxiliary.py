@@ -27,10 +27,11 @@ def _auxiliary_context(request, page_kind):
         raise Http404("The redesigned CMS page has not been created yet.")
 
     context = page.get_context(request)
+    description = getattr(page.description, "source", str(page.description))
     context.update({
         "self": page,
         "redesign_page_url": request.path,
-        "meta": _meta(request, page.display_title, page.description.source),
+        "meta": _meta(request, page.display_title, description),
     })
     return page, context
 
