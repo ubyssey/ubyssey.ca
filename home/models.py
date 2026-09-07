@@ -127,6 +127,7 @@ class HomePage(Page):
         'videos.VideosPage',
         'archive.ArchivePage',
         'join.JoinLandingPage',
+        'specialfeaturelanding.RedesignAuxiliaryPage',
     ]
 
     tagline = models.CharField(

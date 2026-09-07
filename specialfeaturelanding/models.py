@@ -21,10 +21,110 @@ from modelcluster.fields import ParentalKey
 
 from wagtail import blocks
 from wagtail.models import Page, Orderable
-from wagtail.fields import StreamField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.images.blocks import ImageChooserBlock
 
 from wagtailmenus.models import FlatMenu
+
+
+class RedesignAuxiliaryPage(Page):
+    """CMS owner for the redesigned routes that do not follow the page tree.
+
+    The public URLs for these two pages are intentionally stable
+    (``/about/our-team/`` and ``/the-vilest-rag/``).  Keeping a dedicated
+    Wagtail page for each gives editors the normal draft, preview and publish
+    workflow without having to repurpose a legacy landing page.
+    """
+
+    TEAM = "team"
+    PODCAST = "podcast"
+    PAGE_KIND_CHOICES = (
+        (TEAM, "Our Team"),
+        (PODCAST, "The Vilest Rag"),
+    )
+
+    page_kind = models.CharField(
+        max_length=20,
+        choices=PAGE_KIND_CHOICES,
+        unique=True,
+        editable=False,
+    )
+    display_title = models.CharField(
+        max_length=100,
+        help_text="The title displayed to readers. The CMS page title stays descriptive for editors.",
+    )
+    description = RichTextField(
+        blank=True,
+        default="",
+        help_text="Optional introductory copy displayed below the page title.",
+    )
+    featured_media = models.ForeignKey(
+        "images.UbysseyImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name="hero image",
+    )
+    spotify_episode_url = models.URLField(
+        blank=True,
+        default="",
+        help_text="The public Spotify episode URL for the Latest episode player.",
+    )
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types = []
+    show_in_menus_default = False
+
+    content_panels = Page.content_panels + [
+        HelpPanel(
+            content=(
+                "<p>This CMS page controls the redesigned public route directly. "
+                "Publish changes here, then view the public page from the link in the panel above.</p>"
+            ),
+        ),
+        FieldPanel("display_title"),
+        FieldPanel("description"),
+        FieldPanel("featured_media"),
+        FieldPanel("spotify_episode_url"),
+    ]
+
+    class Meta:
+        verbose_name = "Redesigned auxiliary page"
+        verbose_name_plural = "Redesigned auxiliary pages"
+
+    def get_template(self, request, *args, **kwargs):
+        if self.page_kind == self.TEAM:
+            return "support/our_team.html"
+        return "section/podcast_page.html"
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        if self.page_kind == self.TEAM:
+            from authors.models import AuthorPage
+
+            groups = {"senior": [], "reportage": [], "visuals": [], "product": []}
+            for person in AuthorPage.objects.live().exclude(ubyssey_role="").order_by("full_name"):
+                role = person.ubyssey_role.casefold()
+                if "editor-in-chief" in role or "managing editor" in role:
+                    groups["senior"].append(person)
+                elif any(word in role for word in ("visual", "photo", "video", "illustr", "audio", "design")):
+                    groups["visuals"].append(person)
+                elif any(word in role for word in ("product", "web", "developer", "engagement", "newsletter")):
+                    groups["product"].append(person)
+                else:
+                    groups["reportage"].append(person)
+            context["redesign_staff_groups"] = groups
+        else:
+            from article.models import ArticlePage
+
+            context["redesign_all_articles"] = (
+                ArticlePage.objects.live()
+                .public()
+                .filter(current_section="the-vilest-rag")
+                .order_by("-explicit_published_at")[:20]
+            )
+        return context
 
 class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     """

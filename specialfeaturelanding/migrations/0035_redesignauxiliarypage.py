@@ -1,0 +1,107 @@
+from django.db import migrations, models
+import django.db.models.deletion
+import wagtail.fields
+
+
+def create_redesigned_auxiliary_pages(apps, schema_editor):
+    """Create the two CMS pages which own the stable redesigned routes."""
+    HomePage = apps.get_model("home", "HomePage")
+    RedesignAuxiliaryPage = apps.get_model(
+        "specialfeaturelanding", "RedesignAuxiliaryPage"
+    )
+
+    home = HomePage.objects.order_by("path").first()
+    if home is None:
+        return
+
+    pages = (
+        {
+            "page_kind": "team",
+            "title": "Redesigned — Our Team",
+            "slug": "redesigned-our-team",
+            "display_title": "Our Team",
+        },
+        {
+            "page_kind": "podcast",
+            "title": "Redesigned — The Vilest Rag",
+            "slug": "redesigned-the-vilest-rag",
+            "display_title": "The Vilest Rag",
+        },
+    )
+    for values in pages:
+        if RedesignAuxiliaryPage.objects.filter(page_kind=values["page_kind"]).exists():
+            continue
+        page = RedesignAuxiliaryPage(**values)
+        home.add_child(instance=page)
+        page.save_revision().publish()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ("home", "0049_named_homepage_hero_slots"),
+        ("specialfeaturelanding", "0034_speciallandingpage_spotify_episode_url"),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name="RedesignAuxiliaryPage",
+            fields=[
+                (
+                    "page_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="wagtailcore.page",
+                    ),
+                ),
+                (
+                    "page_kind",
+                    models.CharField(
+                        choices=[("team", "Our Team"), ("podcast", "The Vilest Rag")],
+                        editable=False,
+                        max_length=20,
+                        unique=True,
+                    ),
+                ),
+                (
+                    "display_title",
+                    models.CharField(
+                        help_text="The title displayed to readers. The CMS page title stays descriptive for editors.",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "description",
+                    wagtail.fields.RichTextField(blank=True, default=""),
+                ),
+                (
+                    "spotify_episode_url",
+                    models.URLField(
+                        blank=True,
+                        default="",
+                        help_text="The public Spotify episode URL for the Latest episode player.",
+                    ),
+                ),
+                (
+                    "featured_media",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to="images.ubysseyimage",
+                        verbose_name="hero image",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name": "Redesigned auxiliary page",
+                "verbose_name_plural": "Redesigned auxiliary pages",
+            },
+        ),
+        migrations.RunPython(create_redesigned_auxiliary_pages, migrations.RunPython.noop),
+    ]
