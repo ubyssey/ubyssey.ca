@@ -179,6 +179,7 @@ class RedesignFooterJoinItem(NavigationMenuOrderable):
     navigation_menu = ParentalKey("navigation.SitewideMenus", on_delete=models.CASCADE, related_name="redesign_footer_join")
 
 #-----Settings models-----
+@register_setting
 class SitewideMenus(ClusterableModel, BaseSiteSetting):
     """    
     Collection of the NavigationMenus that are going to be used on many pages.
