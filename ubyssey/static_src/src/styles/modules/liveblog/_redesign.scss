@@ -108,7 +108,7 @@
   .c-liveblog__heading {
     display: flex;
     align-items: end;
-    justify-content: space-between;
+    justify-content: flex-end;
     margin-top: 105px;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--live-rule);
@@ -121,22 +121,28 @@
   .c-liveblog__controls {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
   .c-liveblog__heading button {
-    min-width: 74px;
-    height: 25px;
-    padding: 0 8px;
-    border: 0;
-    background: #172b63;
-    color: #fff;
-    font: 600 12px/25px "articulat-cf", sans-serif;
-    cursor: pointer;
-  }
-  .c-liveblog__heading .c-liveblog__timeline-toggle {
+    min-width: 0;
+    height: 31px;
+    padding: 0 11px;
+    border: 1px solid var(--live-rule);
     background: transparent;
+    color: var(--live-text);
+    font: 600 12px/29px "articulat-cf", sans-serif;
+    cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .c-liveblog__heading button:hover,
+  .c-liveblog__heading button:focus-visible { border-color: #243267; background: #243267; color: #fff; outline: 0; }
+  .c-liveblog__heading .c-liveblog__timeline-toggle {
+    border-color: var(--live-blue);
     color: var(--live-blue);
-    box-shadow: inset 0 0 0 1px var(--live-blue);
+  }
+  .c-liveblog__heading .c-liveblog__timeline-toggle[aria-pressed="true"] {
+    background: var(--live-blue);
+    color: #fff;
   }
   .c-liveblog__heading button span { margin-left: 8px; }
   #liveblog-feed {
@@ -241,6 +247,20 @@
     font: 500 16px/21px "meursault-variable", Georgia, serif;
   }
   .o-liveblog-update .o-liveblog-update--meta--author a { color: inherit; }
+  .o-liveblog-update .o-liveblog-update--meta--author a {
+    background-image: linear-gradient(#bce3f0, #bce3f0);
+    background-repeat: no-repeat;
+    background-position: 0 90%;
+    background-size: 0 78%;
+    box-decoration-break: slice;
+    -webkit-box-decoration-break: slice;
+    transition: background-size .22s ease, color .22s ease;
+  }
+  .o-liveblog-update .o-liveblog-update--meta--author a:hover,
+  .o-liveblog-update .o-liveblog-update--meta--author a:focus-visible {
+    background-size: 100% 78%;
+    text-decoration: none;
+  }
   .o-liveblog-update--author-name { font-weight: 700; font-variant: normal; text-decoration: none; }
   .o-liveblog-update--author-role { font-weight: 400; font-variant: normal; }
   .o-liveblog-update .o-liveblog-update--content > h2,

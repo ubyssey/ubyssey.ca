@@ -43,7 +43,6 @@ export default function LiveBlogFeed({meta, updates, updateOrder, presentTime, c
     <div className="c-liveblog">
 
         {!meta.isAdminView && <div className="c-liveblog__heading">
-            <h2>Updates</h2>
             <div className="c-liveblog__controls">
                 <button className="c-liveblog__timeline-toggle" type="button" onClick={toggleViewMode} aria-pressed={viewMode === "timeline"}>
                     {viewMode === "timeline" ? "Updates" : "Timeline"}

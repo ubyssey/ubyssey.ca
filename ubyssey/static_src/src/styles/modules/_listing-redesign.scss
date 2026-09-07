@@ -80,7 +80,7 @@
 @media(max-width:760px){.lr-story--lead{height:auto!important;min-height:0!important}.lr-story--lead h2 a{padding:0 .07em;background-position:0 100%;background-size:0 100%}.lr-story--lead h2 a:hover,.lr-story--lead h2 a:focus-visible{background-size:100% 100%}}
 
 /* A flex parent blockifies the link, preventing the highlight from breaking per line. */
-.lr-story--lead h2{display:block;text-align:center}
+.lr-story--lead h2{display:block;height:130px;min-height:130px;text-align:center}
 .lr-story--lead h2 a{display:inline;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 
 /* Keep the fixed editorial hero grid inside the same shell as its rules. */
@@ -107,7 +107,9 @@
 .sr-editor__description{font:400 14px/19px "meursault-variable", Georgia, serif!important}
 .sr-editor__reach{font:400 14px/19px "meursault-variable",Georgia,serif!important;font-variation-settings:"wdth" 125,"wght" 400}
 .sr-editor__reach a{font-weight:700!important}
-.lr-story--row time{font:700 14px/18px "articulat-cf",sans-serif;text-align:center}
-.lr-story--row time::after{content:"";display:block;width:100%;margin-top:4px;border-bottom:3px solid #21356f}
+.lr-story--row time{width:max-content;min-width:0;padding-bottom:0;font:700 14px/18px "articulat-cf",sans-serif;text-align:center}
+.lr-story--row time::after{width:100%;height:2px;margin-top:2px;border:0;border-radius:999px;background:#21356f;content:"";display:block}
 .lr-story--row time{border-bottom:0}
 .lr-story--pinned h2,.lr-story--author-row h2{padding-bottom:3px;line-height:1.22}
+.lr-story__byline a{background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:slice;-webkit-box-decoration-break:slice;transition:background-size .22s ease,color .22s ease}.lr-story__byline a:hover,.lr-story__byline a:focus-visible{background-size:100% 78%;text-decoration:none}
+@media(max-width:760px){.lr-story--lead h2{height:auto;min-height:0}}
