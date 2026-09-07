@@ -41,6 +41,7 @@ def create_auxiliary_table_if_missing(apps, schema_editor):
 def create_redesigned_auxiliary_pages(apps, schema_editor):
     """Create the two CMS pages which own the stable redesigned routes."""
     HomePage = apps.get_model("home", "HomePage")
+    Page = apps.get_model("wagtailcore", "Page")
     RedesignAuxiliaryPage = apps.get_model(
         "specialfeaturelanding", "RedesignAuxiliaryPage"
     )
@@ -49,6 +50,10 @@ def create_redesigned_auxiliary_pages(apps, schema_editor):
         home = HomePage.objects.order_by("path").first()
         if home is None:
             return
+        # This project's historical HomePage migration state predates the
+        # Wagtail tree inheritance metadata. Use its base Page node for the
+        # tree operation while retaining HomePage to identify the site root.
+        parent = Page.objects.get(pk=home.pk)
 
         pages = (
             {
@@ -68,7 +73,7 @@ def create_redesigned_auxiliary_pages(apps, schema_editor):
             if RedesignAuxiliaryPage.objects.filter(page_kind=values["page_kind"]).exists():
                 continue
             page = RedesignAuxiliaryPage(**values)
-            home.add_child(instance=page)
+            parent.add_child(instance=page)
             page.save_revision().publish()
 
     _with_migration_lock(schema_editor, create_pages)
