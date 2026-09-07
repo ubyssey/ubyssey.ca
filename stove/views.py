@@ -8,9 +8,10 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
-from wagtail.models import Page
+from wagtail.models import Page, Site
 from article.models import ArticlePage, StandardArticlePage, ArticleDeadline
 from article.models import ArticleAuthorsOrderable
+from home.models import HomePage
 from section.models import CategoryPage, SectionPage
 from authors.models import AuthorPage
 from django.utils.dateformat import format as date_format
@@ -37,12 +38,13 @@ from stove.editors.manuscript.forms.authors import create_form as create_article
 from stove.editors.manuscript.forms.featured_media import create_form as create_featured_media_form
 from stove.editors.manuscript.forms.metadata import PAGE_FORM_FIELDS, create_form as create_page_form
 from stove.editors.manuscript.schema import get_streamfield_editors
-from stove.editors.manuscript.preview import prepare_preview
-from stove.editors.manuscript.submission import process_submitted_page
+from stove.editors.manuscript.preview import prepare_manuscript_preview
+from stove.editors.homepage.preview import prepare_homepage_preview
+from stove.editors.manuscript.submission import process_editor_forms
 from stove.editors.collaboration.revisions import (
     restore_page_revision,
     save_page_revision,
-    autosave_manuscript_revision,
+    autosave_page_revision,
 )
 
 
@@ -342,7 +344,7 @@ def page_collaboration(request, page_id):
 
 @login_required
 def manuscript_editor(request, page_id):
-    page = get_manuscript_page(page_id)
+    page = get_latest_page(page_id)
     editor_errors = {}
     page_form = create_page_form(page)
     article_authors_form = create_article_authors_form(page)
@@ -351,7 +353,7 @@ def manuscript_editor(request, page_id):
     if request.method == "POST":
         action = request.POST.get("action") or "draft"
         saved_revision = None
-        editor_errors, page_form, article_authors_form, featured_media_form = process_submitted_page(page, request.POST)
+        editor_errors, page_form, article_authors_form, featured_media_form = process_editor_forms(page, request.POST)
 
         if not editor_errors:
             page, saved_revision, save_errors = save_page_revision(page, action, request.user)
@@ -371,7 +373,7 @@ def manuscript_editor(request, page_id):
 
     stream_editors = get_streamfield_editors(page)
     article_media = get_object_or_404(Page, id=page_id).specific.article_media.all()
-    last_saved_manuscript = PageCollaboration.objects.filter(page_id=page_id).only("updated_at").first()
+    last_saved_page = PageCollaboration.objects.filter(page_id=page_id).only("updated_at").first()
 
     # self: contains information like page title, slug, etc, for form fields = for preview rendering
     # page_form: contains the form for the page fields
@@ -380,7 +382,7 @@ def manuscript_editor(request, page_id):
     # featured_media_form: contains the form for the featured media
     # article_media_upload_form: contains the form for uploading article media
     # article_media: contains the list of existing article images/documents in this page
-    # last_saved_manuscript: sends last updated manuscript for saved info
+    # last_saved_page: sends last updated manuscript for saved info
 
     return render(
         request, "editors/manuscript_editor.html",
@@ -399,7 +401,7 @@ def manuscript_editor(request, page_id):
             "featured_media_form": featured_media_form,
             "article_media_upload_form": get_article_media_upload_form(),
             "article_media": article_media,
-            "last_saved_manuscript": last_saved_manuscript,
+            "last_saved_page": last_saved_page,
         },
     )
 
@@ -446,116 +448,73 @@ def manuscript_media_options(request, page_id):
 
 @login_required
 @require_GET
-def manuscript_revisions(request, page_id):
-    page = get_object_or_404(Page, id=page_id)
-    revisions = page.revisions.select_related("user").only(
-        "id",
-        "created_at",
-        "user_id",
-        "user__first_name",
-        "user__last_name",
-        "user__email",
-    ).order_by("-created_at")
+def manuscript_page_options(request, page_id):
+    get_object_or_404(Page, id=page_id)
+    query = request.GET.get("q", "").strip()[:100]
+    selected_id = request.GET.get("selected")
+    pages = Page.objects.type(ArticlePage)
+    if query:
+        pages = pages.filter(title__icontains=query)
 
-    return JsonResponse({"revisions": [
-        {
-            "id": str(revision.id),
-            "label": f"{get_user_display_name(revision.user)} {date_format(localtime(revision.created_at), 'M j, Y H:i')}",
-        }
-        for revision in revisions
-    ]})
+    pages = pages.only("id", "title")
+    pages = pages.order_by("title", "id") if query else pages.order_by("-id")
+    options = [
+        {"value": str(item.id), "label": item.title}
+        for item in pages[:25]
+    ]
 
+    # Adds currently selected page
+    if selected_id and not any(option["value"] == selected_id for option in options):
+        selected = pages.filter(id=selected_id).first()
+        if selected:
+            options.insert(0, {"value": str(selected.id), "label": selected.title})
 
-@login_required
-@require_POST
-def manuscript_restore(request, page_id):
-    page = get_manuscript_page(page_id)
-    revision_id = request.POST.get("revision")
-
-    if not revision_id or revision_id == "current":
-        return JsonResponse({"errors": {"revision": ["Choose a version to restore."]}}, status=400)
-
-    revision = get_object_or_404(page.revisions, id=revision_id)
-    try:
-        saved_revision = restore_page_revision(page, revision, request.POST, request.user)
-    except Exception:
-        return JsonResponse({"errors": {"__all__": ["Failed to restore version."]}}, status=400)
-
-    return JsonResponse({
-        "ok": True,
-        "revision": {
-            "id": str(saved_revision.id),
-            "label": f"{get_user_display_name(saved_revision.user)} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
-        }
-    })
+    return JsonResponse({"options": options})
 
 
 @login_required
-@require_POST
-def manuscript_preview(request, page_id):
-    page = get_manuscript_page(page_id)
-    revision = None
-
-    revision_id = request.POST.get("revision")
-    if revision_id and revision_id != "current":
-        revision = get_object_or_404(page.revisions, id=revision_id)
-
-    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_preview(page, request.POST, revision)
-
-    if editor_errors:
-        return JsonResponse({"errors": editor_errors}, status=422)
-
-    # Attempt to render the latest changes, if it throws an error, don't save
-    try:
-        html = render_to_string(
-            "editors/preview/manuscript_preview.html",
-            {"self": page, "page_form": page_form, "article_authors_form": article_authors_form, "featured_media_form": featured_media_form},
-            request=request,
-        )
-    except Exception as error:
-        warnings.warn(f"Failed to render manuscript preview for page {page_id}: {error}")
-        return JsonResponse(
-            {"errors": {"__all__": ["Failed to save. Undo your last change, contact webmaster if this isn't resolved."]}},
-            status=422,
-        )
-
-    if revision is None:
-        saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
-        if saved_revision is None:
-            return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)
-
-    return JsonResponse({
-        "errors": editor_errors,
-        "html": html,
-    })
-
-
-@login_required
-@require_POST
-def manuscript_full_preview(request, page_id):
-    page = get_manuscript_page(page_id)
-
-    editor_errors, _, _, _ = process_submitted_page(
-        page,
-        request.POST,
-    )
-    if editor_errors:
-        return JsonResponse({"errors": editor_errors}, status=400)
-
-    # Attempt to render the latest changes, if it throws an error, cancel
-    preview_response = page.make_preview_request(
+def homepage_editor(request):
+    site = Site.find_for_request(request)
+    page = get_object_or_404(HomePage, pk=site.root_page_id).specific
+    last_saved_page = PageCollaboration.objects.filter(page_id=site.root_page_id).only("updated_at").first()
+    return render(
         request,
-        page.default_preview_mode,
+        "editors/homepage_editor.html",
+        {
+            "self": page,
+            "current_editor": {
+                "id": request.user.pk,
+                "name": get_user_display_name(request.user),
+                "avatar_url": avatar_url(request.user, size=64),
+            },
+            "stream_editors": get_streamfield_editors(page),
+            "last_saved_page": last_saved_page,
+        },
     )
-    if preview_response.status_code >= 500:
-        warnings.warn(f"Failed to render manuscript preview for page {page_id}")
-        return HttpResponse("Failed to save. Undo your last change, contact webmaster if this isn't resolved.", status=422)
 
-    saved_revision = autosave_manuscript_revision(page.id, request.POST, request.user)
-    if saved_revision is None:
-        return HttpResponse("Failed to save. Please try again.", status=422)
 
-    return preview_response
+@login_required
+def author_editor(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return render(request, "editors/author_editor.html", {"self": page})
+
+
+@login_required
+def liveblog_editor(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return render(request, "editors/liveblog_editor.html", {"self": page})
+
+
+@login_required
+def section_editor(request, page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return render(request, "editors/section_editor.html", {"self": page})
+
+
+# We need latest draft here not latest live
+def get_latest_page(page_id):
+    page = get_object_or_404(Page, id=page_id).specific
+    return page.get_latest_revision_as_object()
 
 
 @login_required
@@ -595,60 +554,128 @@ def article_media_add_existing(request, page_id):
 
 @login_required
 @require_GET
-def manuscript_page_options(request, page_id):
-    get_object_or_404(Page, id=page_id)
-    query = request.GET.get("q", "").strip()[:100]
-    selected_id = request.GET.get("selected")
-    pages = Page.objects.type(ArticlePage)
-    if query:
-        pages = pages.filter(title__icontains=query)
+def editor_page_revisions(request, page_id):
+    page = get_object_or_404(Page, id=page_id)
+    revisions = page.revisions.select_related("user").only(
+        "id",
+        "created_at",
+        "user_id",
+        "user__first_name",
+        "user__last_name",
+        "user__email",
+    ).order_by("-created_at")
 
-    pages = pages.only("id", "title")
-    pages = pages.order_by("title", "id") if query else pages.order_by("-id")
-    options = [
-        {"value": str(item.id), "label": item.title}
-        for item in pages[:25]
-    ]
-
-    # Adds currently selected page
-    if selected_id and not any(option["value"] == selected_id for option in options):
-        selected = pages.filter(id=selected_id).first()
-        if selected:
-            options.insert(0, {"value": str(selected.id), "label": selected.title})
-
-    return JsonResponse({"options": options})
+    return JsonResponse({"revisions": [
+        {
+            "id": str(revision.id),
+            "label": f"{get_user_display_name(revision.user)} {date_format(localtime(revision.created_at), 'M j, Y H:i')}",
+        }
+        for revision in revisions
+    ]})
 
 
 @login_required
-def homepage_editor(request, page_id):
-    page = get_object_or_404(Page, id=page_id).specific
-    return render(request, "editors/homepage_editor.html", {"self": page})
+@require_POST
+def editor_page_restore(request, page_id):
+    page = get_latest_page(page_id)
+    revision_id = request.POST.get("revision")
+    if not revision_id:
+        return JsonResponse({"errors": {"revision": ["Choose a version to restore."]}}, status=400)
+
+    revision = get_object_or_404(page.revisions, id=revision_id)
+    try:
+        saved_revision = restore_page_revision(page, revision, request.POST, request.user)
+    except Exception:
+        return JsonResponse({"errors": {"__all__": ["Failed to restore version."]}}, status=400)
+
+    return JsonResponse({
+        "ok": True,
+        "revision": {
+            "id": str(saved_revision.id),
+            "label": f"{get_user_display_name(saved_revision.user)} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
+        }
+    })
 
 
 @login_required
-def author_editor(request, page_id):
-    page = get_object_or_404(Page, id=page_id).specific
-    return render(request, "editors/author_editor.html", {"self": page})
+@require_POST
+def editor_page_preview(request, page_id):
+    page = get_latest_page(page_id)
+    revision = None
+    revision_id = request.POST.get("revision")
+    if revision_id:
+        revision = get_object_or_404(page.revisions, id=revision_id)
+
+    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_editor_preview(page, request.POST, revision)
+
+    if editor_errors:
+        return JsonResponse({"errors": editor_errors}, status=422)
+
+    preview_context = {"self": page}
+    if page_form is not None:
+        preview_context.update({
+            "page_form": page_form,
+            "article_authors_form": article_authors_form,
+            "featured_media_form": featured_media_form,
+        })
+
+    # Attempt to render the latest changes, if it throws an error, don't save
+    try:
+        html = render_to_string(
+            get_editor_preview_template(page), preview_context, request=request
+        )
+    except Exception as error:
+        warnings.warn(f"Failed to render editor preview for page {page_id}: {error}")
+        return JsonResponse(
+            {"errors": {"__all__": ["Failed to save. Undo your last change, contact webmaster if this isn't resolved."]}},
+            status=422,
+        )
+
+    if revision is None:
+        saved_revision = autosave_page_revision(page.id, request.POST, request.user)
+        if saved_revision is None:
+            return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)
+
+    return JsonResponse({"errors": editor_errors, "html": html})
 
 
 @login_required
-def liveblog_editor(request, page_id):
-    page = get_object_or_404(Page, id=page_id).specific
-    return render(request, "editors/liveblog_editor.html", {"self": page})
+@require_POST
+def editor_page_full_preview(request, page_id):
+    page = get_latest_page(page_id)
+
+    editor_errors, _, _, _ = process_editor_forms(page, request.POST)
+    if editor_errors:
+        return JsonResponse({"errors": editor_errors}, status=400)
+
+    # Attempt to render the latest changes, if it throws an error, cancel
+    preview_response = page.make_preview_request(request, page.default_preview_mode)
+    if preview_response.status_code >= 500:
+        warnings.warn(f"Failed to render editor preview for page {page_id}")
+        return HttpResponse("Failed to save. Undo your last change, contact webmaster if this isn't resolved.", status=422)
+
+    saved_revision = autosave_page_revision(page.id, request.POST, request.user)
+    if saved_revision is None:
+        return HttpResponse("Failed to save. Please try again.", status=422)
+
+    return preview_response
 
 
-@login_required
-def section_editor(request, page_id):
-    page = get_object_or_404(Page, id=page_id).specific
-    return render(request, "editors/section_editor.html", {"self": page})
+def prepare_editor_preview(page, submitted_data, revision=None):
+    if isinstance(page, ArticlePage):
+        return prepare_manuscript_preview(page, submitted_data, revision)
+    if isinstance(page, HomePage):
+        return prepare_homepage_preview(page, submitted_data, revision)
+
+    return revision.as_object() if revision else page, {}, None, None, None
 
 
-#  Helpers - We should probably move these at some point
-
-# We need latest draft here not latest live
-def get_manuscript_page(page_id):
-    page = get_object_or_404(Page, id=page_id).specific
-    return page.get_latest_revision_as_object()
+def get_editor_preview_template(page):
+    if isinstance(page, ArticlePage):
+        return "editors/preview/manuscript_preview.html"
+    elif isinstance(page, HomePage):
+        return "editors/preview/homepage_preview.html"
+    return f"editors/preview/{page._meta.model_name}_preview.html"
 
 
 def get_user_display_name(user):

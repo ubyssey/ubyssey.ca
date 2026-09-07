@@ -182,6 +182,15 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
             const field = visit(items[index], path.concat(index));
             if (field) return field;
           }
+        } else if (child.nodeName === "stream_field") {
+          const items = child.toArray().filter((item) => item.nodeName === "stream_item");
+          for (let index = 0; index < items.length; index += 1) {
+            const field = visit(items[index], path.concat(index));
+            if (field) return field;
+          }
+        } else if (child.nodeName === "stream_item") {
+          const field = visit(child, path);
+          if (field) return field;
         } else if (child.nodeName !== "struct_field" && child.nodeName && child.toArray) {
           const field = visit(child, pathPrefix);
           if (field) return field;
