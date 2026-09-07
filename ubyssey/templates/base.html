@@ -86,35 +86,10 @@ if (window.devicePixelRatio && devicePixelRatio >= 2) {
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 </script>
-<script>
-  window.twttrRefresh = function() {};
-  window.twttr = (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0],
-      t = window.twttr || {};
-    if (d.getElementById(id)) return t;
-    js = d.createElement(s);
-    js.id = id;
-    js.src = 'https://platform.twitter.com/widgets.js';
-    fjs.parentNode.insertBefore(js, fjs);
 
-    t._e = [];
-    t.ready = function(f) {
-      t._e.push(f);
-    };
-
-    t.ready(function() {
-      window.twttrRefresh = function() {
-        window.twttr.widgets.on('load', function(){});
-      };
-    });
-
-    return t;
-  }(document, 'script', 'twitter-wjs'));
-</script>
 
 <div id="page-wrapper">
 <div id="cookie-disclaimer"></div>
-<div id="adblock-splash"></div>
 {% block header %}{% endblock %}
 <div id="search-form"></div>
 <div id="content-wrapper">

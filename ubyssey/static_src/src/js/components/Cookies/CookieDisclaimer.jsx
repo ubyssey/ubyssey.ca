@@ -44,13 +44,23 @@ class CookieDisclaimer extends React.Component {
         { this.state.showCookieDisclaimer &&
           <div className='cookie-disclaimer-wrapper'>
             <div className='cookie-disclaimer-container'>
-              <h3>Cookies on the Ubyssey website</h3>
+              <h3>Cookies on ubyssey.ca</h3>
               <div className='c-row'>
-                <p>
-                  This website uses cookies to give you the best experience possible.
-                  Using this website means you accept our use of cookies. You can disable cookies in your browser settings.
-                  We respect your privacy and you can read more about our cookie policy <em><a href={'https://www.ubyssey.ca/pages/cookie-policy-2020/'}>here</a></em>.
-                </p>
+                <div>
+                  <p style={{paddingBottom: '8px'}}>
+                    <i>The Ubyssey</i> uses one cookie — <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF">a CSRF token</a> — solely to prevent bad actors from performing a cross-site request forgery attack. 
+                    When you encounter an error, we record information about <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent">your device and your browser</a> to help us diagnose it. This is the same information your device sends to every website when it requests a webpage. 
+                    The information we record is only availible to the Senior System Developers, the Senior Editorial Designer, Digital and the designated staff developers who are fixing the error.
+                  </p>
+                  <p style={{paddingBottom: '8px'}}>  
+                    <i>The Ubyssey</i> doesn't use cookies to track how you use our website or monitor your reading between sessions. We don't share or sell your data.
+                  </p>
+                  <p>
+                    However, we use Google Ads to serve occassional paid advertisements sold by our Business Office. 
+                    Google Ads uses six cookies to determine how you engage with ads on our site. The company uses the data it receives from Google Ads to
+                    track your browsing habits across the internet. If you have a Google account, you can <a href="https://myactivity.google.com/u/0/activitycontrols/webandapp">limit tracking here.</a> 
+                  </p>
+                </div>
                 <button
                   className='c-button c-button--small'
                   onClick={() => {this.disableCookieDisclaimer()}}
