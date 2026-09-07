@@ -277,10 +277,22 @@ class LiveBlogArticlePage(ArticlePage):
         return loader.render_to_string("article/objects/suggested_articles.html", {"suggested": self.get_suggested(), "request": request})
 
     def get_page_meta(self):
+        authors = []
+        seen_authors = set()
+        for article_author in self.article_authors.all():
+            author = article_author.author
+            if author.id in seen_authors:
+                continue
+            seen_authors.add(author.id)
+            authors.append({
+                "name": article_author.author_alias or author.full_name,
+                "url": author.full_url if author.live else "",
+            })
+
         return {
             "title": self.title,
             "lede": self.lede,
-            "authors": self.get_authors_with_urls(),
+            "authors": authors,
             "layout": self.layout,
             "live_policy": self.live_policy,
         }

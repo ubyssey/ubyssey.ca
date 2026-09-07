@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
+import DOMPurify from "dompurify";
 import LiveblogStage from "./LiveblogStage.jsx";
 import LiveBlogFeed from "./LiveblogFeed.jsx";
 import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtils.js";
+
+const liveblogHtmlOptions = {
+    ADD_TAGS: ["iframe"],
+    ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "loading", "referrerpolicy"],
+};
 
 function ShareBar() {
     const staticPrefix = document.getElementById("liveblog")?.dataset.staticPrefix || "/static/";
@@ -247,7 +253,7 @@ export default function LiveBlog() {
     
     return (
         <>
-        <div id="nav" dangerouslySetInnerHTML={{__html: navHtml()}}></div>
+        <div id="nav" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(navHtml() || "", liveblogHtmlOptions)}}></div>
         <main id="main-content" className="article c-liveblog-redesign">
             <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageInfo.meta.layout}>
                     <LiveblogStage stage={pageInfo.stage} meta={getMeta()} />
@@ -257,7 +263,7 @@ export default function LiveBlog() {
                     </div>
                     <ReportLinks />
                     {pageInfo.meta.layout == "default" && 
-                        <div dangerouslySetInnerHTML={{__html: suggestedHtml()}}></div>
+                        <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(suggestedHtml() || "", liveblogHtmlOptions)}}></div>
                     }
             </article>
         </main>
