@@ -183,10 +183,10 @@ export async function updateSection(page, newSection, updatePage, isLocalOnly=fa
 }
 
 export async function updateStoryType(page, newStoryType, updatePage, isLocalOnly=false) {
-  updatePage({... page, story_type: newStoryType.value})
+  updatePage({... page, story_form: newStoryType.value})
 
   if (!isLocalOnly) {
-  handleRemoteUpdate(page, {"story_type": newStoryType.value}, updatePage,
+  handleRemoteUpdate(page, {"story_form": newStoryType.value}, updatePage,
     "Updating story type for " + page.title + " to " + newStoryType.label, 
     "Updated story type for " + page.title + " to " + newStoryType.label, 
     "Failed to update story type for " + page.title + " to " + newStoryType.label)

@@ -27,7 +27,7 @@ function ArticleRow({page, updatePage}) {
 
     let selectedClass = "";
 
-    let hasStoryType = storyTypeLabel(page["story_type"]) != "[No label provided]";
+    let hasStoryType = storyTypeLabel(page["story_form"]) != "[No label provided]";
 
     return <tr key={page.pk} className={selectedClass}>
             <td className="slug-cell">
@@ -39,7 +39,7 @@ function ArticleRow({page, updatePage}) {
               <div className="slug-cell--button-panel">
               <LinkOpenButton url={page.assignment_folder} className={"slug-cell--hyperlink-open"} iconSize={"18px"}/>
               </div>
-              <div className={`slug-cell--story-type ${hasStoryType ? "slug-cell--story-type-active" : "slug-cell--story-type-empty"}`}>{hasStoryType ? storyTypeLabel(page["story_type"]) : ""}</div>
+              <div className={`slug-cell--story-type ${hasStoryType ? "slug-cell--story-type-active" : "slug-cell--story-type-empty"}`}>{hasStoryType ? storyTypeLabel(page["story_form"]) : ""}</div>
               </td>
             <td className="authors-cell"><AuthorsSelect 
               disabled = {page.live}

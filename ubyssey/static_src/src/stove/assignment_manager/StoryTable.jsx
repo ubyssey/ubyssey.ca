@@ -34,7 +34,7 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
       selectedClass="row-selected";
     }
 
-    let hasStoryType = storyTypeLabel(page["story_type"]) != "[No label provided]";
+    let hasStoryType = storyTypeLabel(page["story_form"]) != "[No label provided]";
 
     function setSidebar(mode) {
       setSelectedArticleId(page.pk)
@@ -70,7 +70,7 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
               
               <LinkOpenButton url={page.assignment_folder} className={"slug-cell--hyperlink-open"} iconSize={"18px"}/>
               </div>
-              <div className={`slug-cell--story-type ${hasStoryType ? "slug-cell--story-type-active" : "slug-cell--story-type-empty"}`}>{hasStoryType ? storyTypeLabel(page["story_type"]) : ""}</div>
+              <div className={`slug-cell--story-type ${hasStoryType ? "slug-cell--story-type-active" : "slug-cell--story-type-empty"}`}>{hasStoryType ? storyTypeLabel(page["story_form"]) : ""}</div>
               </td>
             <td className="authors-cell"><AuthorsSelect 
               disabled = {page.live}
