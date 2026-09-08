@@ -326,3 +326,36 @@
   .hp-nav__join h2{margin-bottom:12px!important;font-size:35px!important}
   .hp-nav__join p{font-size:19px!important;line-height:1.12!important}
 }
+
+/* Final editorial alignment pass. */
+@media (min-width:761px){
+  .hp-nav{height:140px!important}
+  .hp-nav__mast{height:82px!important}
+  .hp-nav__mast>time{bottom:3px!important}
+  .hp-nav__expanded{top:140px!important}
+  .hp-nav__bar nav a{display:inline-block;padding:0 3px}
+}
+.hp-nav__menu,.hp-nav__menu img{width:20px!important;height:12px!important}
+.hp-nav .theme-toggle{width:20px!important;height:20px!important}
+.hp-nav .theme-toggle svg{width:14px!important;height:14px!important}
+.hp-nav__bar nav a{background-image:linear-gradient(#bce3f0,#bce3f0)!important;background-repeat:no-repeat!important;background-position:0 90%!important;background-size:0 78%!important;transition:background-size .22s ease,color .22s ease!important}
+.hp-nav__bar nav a:hover,.hp-nav__bar nav a:focus-visible{background-size:100% 78%!important;color:#081839!important;text-decoration:none!important}
+[color-css-theme=dark] .hp-nav__bar nav a:hover,[color-css-theme=dark] .hp-nav__bar nav a:focus-visible{color:#081839!important;background-color:#bce3f0!important}
+.hp-beat{box-sizing:border-box;min-height:0!important;height:16px!important;padding-block:0!important;line-height:16px!important;vertical-align:top}
+.hp-games h2 button:not(:disabled),.hp-games h2 button:not(:disabled):hover,.hp-games h2 button:not(:disabled):focus-visible{background:none!important;color:inherit!important;transition:none!important}
+/* Scope the Podcast kicker rule so hover wrappers retain the original title
+   and deck typography. */
+.hp-podcast .hp-promo__copy>span{color:#b8d1ff;font:700 12px/16px "late-serif",Georgia,serif;text-transform:uppercase}
+.hp-podcast .hp-promo__copy h2>span,.hp-podcast .hp-promo__copy p>span{color:inherit;font:inherit;text-transform:none}
+.hp-podcast:hover .hp-promo__copy>span,.hp-podcast:hover .hp-promo__copy h2>span,.hp-podcast:hover .hp-promo__copy p>span,.hp-podcast:focus-visible .hp-promo__copy>span,.hp-podcast:focus-visible .hp-promo__copy h2>span,.hp-podcast:focus-visible .hp-promo__copy p>span,.hp-margins:hover .hp-promo__copy h2>span,.hp-margins:hover .hp-promo__copy p>span,.hp-margins:focus-visible .hp-promo__copy h2>span,.hp-margins:focus-visible .hp-promo__copy p>span,.hp-newsletter p a:hover,.hp-newsletter p a:focus-visible{color:#081839!important;background-color:#bce3f0!important}
+
+/* The fifth grid track is deliberately the separate Join panel, not an
+   equal-sized menu column. */
+@media (min-width:1400px){
+  .hp-nav__expanded .hp-nav__search{left:calc(50% - 660px)!important;transform:none!important}
+  .hp-nav__expanded-grid{grid-template-columns:150px 150px 160px 220px 360px!important;column-gap:70px!important;row-gap:0!important}
+  .hp-nav__join h2{font-size:67px!important;line-height:.98!important}
+  .hp-nav__join p{font-size:27px!important;line-height:1.06!important}
+}
+@media (min-width:761px) and (max-width:1399px){.hp-nav__expanded-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(250px,1.5fr)!important;gap:32px!important}}
+@media(max-width:760px){.hp-nav__menu,.hp-nav__menu img{width:22px!important;height:13px!important}.hp-nav .theme-toggle svg{width:14px!important;height:14px!important}}

@@ -539,3 +539,24 @@
   .ar-keep-reading__grid{display:grid!important;width:calc(100% + 36px)!important;margin-right:-18px;grid-auto-columns:250px!important;grid-auto-flow:column!important;grid-template-columns:none!important;justify-content:start;gap:18px!important;padding:0 18px 12px 0;overflow-x:auto!important;scroll-snap-type:x proximity}
   .ar-keep-reading .ar-suggested-card{scroll-snap-align:start}
 }
+
+/* A divider lives halfway between neighbouring recommendation cards. */
+.ar-keep-reading.c-suggested-bar{padding-bottom:78px!important}
+.ar-keep-reading__grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;column-gap:32px!important;justify-content:stretch!important}
+.ar-keep-reading .ar-suggested-card{position:relative;width:auto!important;padding-right:0!important;border-right:0!important}
+.ar-keep-reading .ar-suggested-card:not(:last-child):after{content:"";position:absolute;top:0;right:-16px;width:1px;height:304px;background:#000}
+.ar-keep-reading .ar-suggested-card h3 a{background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s ease,color .22s ease}
+.ar-keep-reading .ar-suggested-card:hover h3 a,.ar-keep-reading .ar-suggested-card h3 a:focus-visible{background-size:100% 78%;color:#081839!important}
+[color-css-theme=dark] .ar-keep-reading .ar-suggested-card:hover h3 a,[color-css-theme=dark] .ar-keep-reading .ar-suggested-card h3 a:focus-visible{color:#081839!important;background-color:#bce3f0}
+
+/* The expanded menu is shared by article, section, and author headers. */
+.ar-nav .hp-nav__menu,.ar-nav .hp-nav__menu img{width:20px!important;height:12px!important}
+.ar-nav .theme-toggle svg{width:14px!important;height:14px!important}
+@media (min-width:1400px){
+  .ar-nav .hp-nav__expanded .hp-nav__search{left:calc(50% - 660px)!important;transform:none!important}
+  .ar-nav .hp-nav__expanded-grid{grid-template-columns:150px 150px 160px 220px 360px!important;column-gap:70px!important;row-gap:0!important}
+  .ar-nav .hp-nav__join h2{font-size:67px!important;line-height:.98!important}
+  .ar-nav .hp-nav__join p{font-size:27px!important;line-height:1.06!important}
+}
+@media (min-width:801px) and (max-width:1399px){.ar-nav .hp-nav__expanded-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(250px,1.5fr)!important;gap:32px!important}}
+@media(max-width:800px){.ar-nav .hp-nav__menu,.ar-nav .hp-nav__menu img{width:22px!important;height:13px!important}.ar-nav .theme-toggle svg{width:14px!important;height:14px!important}.ar-keep-reading.c-suggested-bar{padding-bottom:52px!important}.ar-keep-reading .ar-suggested-card:not(:last-child):after{display:none}}

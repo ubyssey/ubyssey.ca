@@ -43,8 +43,8 @@ function initializeRedesignNavigation() {
   let compact = header.classList.contains('is-compact');
   let scrollFrame;
   let settlingCompactState = false;
-  let previousScrollY = window.scrollY;
-  let compactThreshold = 96;
+  const compactAt = 76;
+  const expandAt = 16;
   const setCompact = (nextCompact) => {
     if (nextCompact === compact) return;
     compact = nextCompact;
@@ -53,24 +53,21 @@ function initializeRedesignNavigation() {
     // Collapsing a sticky element changes document layout. Chrome may emit a
     // compensating scroll event, which must not immediately reverse the state.
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
-      previousScrollY = window.scrollY;
-      if (!compact) compactThreshold = previousScrollY + 96;
       settlingCompactState = false;
     }));
   };
   const updateHeader = () => {
     const scrollY = window.scrollY;
-    const scrollingUp = scrollY < previousScrollY;
-    const scrollingDown = scrollY > previousScrollY;
-    previousScrollY = scrollY;
     if (settlingCompactState) return;
-    if (!compact && scrollingDown && scrollY > compactThreshold) {
+    // Fixed hysteresis matches the regular navigation while the settling lock
+    // absorbs Chrome's compensating scroll event after a height change.
+    if (!compact && scrollY > compactAt) {
       setCompact(true);
-    } else if (compact && scrollingUp && scrollY < 24) {
+    } else if (compact && scrollY < expandAt) {
       setCompact(false);
     }
   };
-  if (!compact && window.scrollY > compactThreshold) {
+  if (!compact && window.scrollY > compactAt) {
     setCompact(true);
   } else {
     updateHeader();
