@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { timeDeltaString, convertToMilliseconds } from "../../utils/datetimeUtils.js";
+import DOMPurify from "dompurify";
 
 function textFromMarkup(markup) {
     return markup.replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
@@ -70,7 +71,7 @@ export default function LiveblogUpdate({update, isAdmin, presentTime, isLive, co
                 {author_images(update).length > 0 && 
                     <div className={"o-liveblog-update--meta--images"}>
                         {author_images(update).map((image) => 
-                            <div className="o-liveblog-update--meta--image" dangerouslySetInnerHTML={{__html: image}}></div>
+                            <div className="o-liveblog-update--meta--image" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(image || "", liveblogHtmlOptions)}}></div>
                         )}
                     </div>
                 }
