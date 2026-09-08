@@ -560,3 +560,12 @@
 }
 @media (min-width:801px) and (max-width:1399px){.ar-nav .hp-nav__expanded-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(250px,1.5fr)!important;gap:32px!important}}
 @media(max-width:800px){.ar-nav .hp-nav__menu,.ar-nav .hp-nav__menu img{width:22px!important;height:13px!important}.ar-nav .theme-toggle svg{width:14px!important;height:14px!important}.ar-keep-reading.c-suggested-bar{padding-bottom:52px!important}.ar-keep-reading .ar-suggested-card:not(:last-child):after{display:none}}
+
+/* On small screens recommendation rows become readable two-card grids rather
+   than a clipped desktop carousel. */
+@media(max-width:800px){
+  .ar-keep-reading__grid{display:grid!important;width:100%!important;margin:0!important;padding:0!important;grid-auto-flow:row!important;grid-auto-columns:auto!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:28px 16px!important;overflow:visible!important}
+  .ar-keep-reading .ar-suggested-card{width:100%!important;min-width:0!important}
+  .ar-suggested-card__image,.ar-suggested-card__image img{width:100%!important;height:auto!important;aspect-ratio:250/225!important}
+  .ar-keep-reading .ar-suggested-card h3{min-height:0!important;height:65px!important;margin-top:10px!important;font-size:17px!important;line-height:21px!important}
+}
