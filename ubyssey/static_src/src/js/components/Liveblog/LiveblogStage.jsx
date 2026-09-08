@@ -34,7 +34,16 @@ function LiveblogStageHeader({value, meta}) {
                 <div className="c-article__published-at">Last updated <time className="liveblog_updated_at" dateTime={meta.updatedTime}>{new Intl.DateTimeFormat("en-CA", {month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(meta.updatedTime))}</time></div>
             }
 
-            <div className="author-string" dangerouslySetInnerHTML={{__html: meta.page.authors}}></div>
+            <div className="author-string">
+                {(meta.page.authors || []).map((author, index) => {
+                    const authorHref = safeAuthorHref(author.url);
+
+                    return <span key={`${author.url}-${index}`}>
+                        {index > 0 && ", "}
+                        {authorHref ? <a href={authorHref}>{author.name}</a> : author.name}
+                    </span>
+                })}
+            </div>
         </div>
     )
 }
