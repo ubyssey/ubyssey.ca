@@ -5,6 +5,7 @@ from tabnanny import verbose
 from images.models import GallerySnippet
 
 from dbtemplates.models import Template as DBTemplate
+from ubyssey.sports import SPORT_CHOICES as COVERED_SPORT_CHOICES
 
 from django.db import models
 from django.db.models import fields, Q, Max
@@ -180,8 +181,10 @@ class ArticleAuthorsOrderable(Orderable):
                             ('author', 'Author'), 
                             ('illustrator','Illustrator'),
                             ('photographer','Photographer'),
+                            ('photo_editor', 'Photo editor'),
                             ('videographer','Videographer'),
                             ('designer','Designer'),
+                            ('graphics_editor', 'Graphics editor'),
                             ('backfield_editor', "Backfield editor"),
                             ('copy_editor', "Copy editor"),
                             ('org_role', 'Show organization role'),
@@ -281,7 +284,17 @@ class ArticleFeaturedMediaOrderable(Orderable):
         related_name="featured_media",
     )
 
+    # ``caption`` predates the redesign and has historically been used for a
+    # mixture of visual captions, credits and even alt text. Keep it intact
+    # for legacy templates, but use ``cover_caption`` for the redesign so old
+    # metadata is never unexpectedly surfaced beneath a cover image.
     caption = RichTextField(blank=True, null=False, default='')
+    cover_caption = RichTextField(
+        blank=True,
+        null=False,
+        default='',
+        help_text="Optional display caption for the redesigned article cover. Existing legacy captions are not shown here automatically.",
+    )
     credit = models.TextField(blank=True, null=False, default='')
     alt_text = models.TextField(blank=True, null=False, default='',
         help_text="For accessibility to screen reader users, enter a description of this image. Included any relevant text inside the image.")
@@ -312,11 +325,16 @@ class ArticleFeaturedMediaOrderable(Orderable):
         ),
         MultiFieldPanel(
             [
-                FieldPanel("caption"),
+                FieldPanel("cover_caption"),
                 FieldPanel("credit"),
                 FieldPanel("alt_text"),
             ],
-            heading="Caption/Credits",
+            heading="Redesign cover caption / credits",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("caption")],
+            heading="Legacy caption (not shown below redesign covers)",
+            classname="collapsible collapsed",
         ),
     ]
 
@@ -732,6 +750,15 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
 
     article_status = models.IntegerField(choices=ArticleStatus.choices, default=ArticleStatus.ASSIGNED.value)
 
+    covered_sport = models.CharField(
+        choices=COVERED_SPORT_CHOICES,
+        max_length=20,
+        blank=True,
+        default='',
+        verbose_name="Sport",
+        help_text="Required for game analyses shown in a sport-specific homepage filter.",
+    )
+
     assignment_memo = RichTextField(
         null=False,
         blank=True,
@@ -932,6 +959,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 FieldPanel("lede"),
+                FieldPanel("covered_sport"),
                 HelpPanel(content='''
                     <h1>About storystream views</h1>
                     <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>
@@ -989,7 +1017,6 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         FieldPanel("assignment_memo", help_text="Guidance from a section editor about how to approach a story"),
         FieldPanel("ethics_notes", help_text="Advice from a section editor about the ethics of a story"),
         FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials")
-        
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
         MultiFieldPanel(
@@ -1201,55 +1228,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
 
-        role_types_words = {
-            'author': 'words by ',
-            'photographer': 'photos by ',
-            'illustrator': 'illustrations by ',
-            'videographer': 'videos by ',
-            'designer': 'design by ',
-            'org_role': '',
-        }
-        role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
-        extended_byline_roles = ['backfield_editor', 'copy_editor']
-        authors_by_role = {}
-        for author in self.article_authors.all():
-            if author.author_role in authors_by_role:
-                authors_by_role[author.author_role].append(author)
-            elif not author.author_role in extended_byline_roles:
-                authors_by_role[author.author_role] = [author]
-
-        word_authors = []
-        words_byline = ""
-        if 'author' in authors_by_role:
-            word_authors = list(map(lambda author: author.author, authors_by_role['author']))
-            words_byline = self.get_authors_string(links=links, authors_list=authors_by_role['author'])
-    
-        visuals = []
-        has_multi_contribution_author = False
-        for k in authors_by_role:
-            v = authors_by_role[k]
-            visual_authors = map(lambda author: author.author, v)
-            if True in [word_author in visual_authors for word_author in word_authors]:
-                has_multi_contribution_author = True
-            only_visuals_authors = list(filter(lambda author: not author.author in word_authors, v))
-            if len(only_visuals_authors) > 0:
-                visuals.append([k, self.get_authors_string(links=links, authors_list=only_visuals_authors)])
-        visuals.sort(key=lambda s: role_types.index(s[0]))
-        
-        visuals_byline = ''
-
-        if len(visuals) > 0:
-            visuals_byline = visuals_byline + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
-            if has_multi_contribution_author:
-                visuals_byline = 'with ' + visuals_byline
-
-        byline = ""
-        if words_byline != "":
-            byline = words_byline + " " + visuals_byline
-        elif len(visuals_byline) > 0:
-            byline = visuals_byline[0].upper() + visuals_byline[1:]
-
-        return byline
+        # Compact bylines are an attribution of the story's writer(s), not a
+        # complete credit roll. Visual and production roles appear in their
+        # dedicated contexts (for example the extended byline) instead.
+        authors = [
+            author for author in self.article_authors.all()
+            if author.author_role == "author"
+        ]
+        return self.get_authors_string(links=links, authors_list=authors) if authors else ""
         
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 
@@ -1431,7 +1417,32 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         # Ensure the number of topics is at or below the maximum
         orderd_topics = orderd_topics[:topic_max]
 
-        return {"primary": primary, "topics": orderd_topics}
+        # The redesigned article page deliberately presents two independent
+        # editorial rows: one from the parent section and one from the
+        # article's beat.  Keep the existing values above for legacy callers.
+        redesign_rows = []
+        section_articles = list(self.get_section_articles(max=4))
+        if section_articles:
+            parent = self.get_parent()
+            redesign_rows.append({
+                "title": parent.title,
+                "url": parent.url or "",
+                "articles": section_articles,
+            })
+
+        if self.category_page:
+            shown_ids = {article.id for article in section_articles}
+            category_articles = list(
+                self.get_category_articles().exclude(id__in=shown_ids)[:4]
+            )
+            if category_articles:
+                redesign_rows.append({
+                    "title": self.category_page.title,
+                    "url": self.category_page.url or "",
+                    "articles": category_articles,
+                })
+
+        return {"primary": primary, "topics": orderd_topics, "redesign_rows": redesign_rows}
 
 
     def get_title_tag(self) -> str:
@@ -1498,6 +1509,62 @@ class StandardArticlePage(ArticlePage):
 
     show_in_menus_default = True
     show_in_menus = True
+
+    standpoint_disclosure = RichTextField(
+        blank=True,
+        default="",
+        help_text="Optional context about the writer's standpoint or relationship to the subject.",
+    )
+    extended_byline_override = RichTextField(
+        blank=True,
+        default="",
+        help_text="Optional editor-authored extended byline. Leave blank to generate contributor credits from the article's assigned roles.",
+    )
+    STORY_FORM_CHOICES = [
+        ("report", "Report"),
+        ("live-update", "Live Update"),
+        ("feature", "Feature"),
+        ("profile", "Profile"),
+        ("q-and-a", "Q&A"),
+        ("review", "Review"),
+        ("game-analysis", "Game Analysis"),
+        ("commentary", "Commentary"),
+        ("essay", "Essay"),
+        ("column", "Column"),
+        ("editorial", "Editorial"),
+        ("letter-to-the-editor", "Letter to the Editor"),
+        ("letter-from-the-editor", "Letter from the Editor"),
+        ("public-service-announcement", "Public Service Announcement"),
+    ]
+    STORY_FORM_STATEMENTS = {
+        "report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
+        "live-update": "This article is a live update, which are a series of brief reports from journalists on the ground while news is happening.",
+        "feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
+        "profile": "This article is a profile, which tells the stories of individuals and their worldviews, written from a repoter's perspective.",
+        "q-and-a": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
+        "review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
+        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
+        "commentary": "This article is a commentary, which we define as a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense.",
+        "essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
+        "column": "This article is a column, which is a story reported by a columnists— an opinion journalists who makes abstract judgments about the news and the way the world should be.",
+        "editorial": "This article is an editorial, which is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day.",
+        "letter-to-the-editor": "This article is a letter to the editor, which are 250-word responses to stories published in The Ubyssey, written by readers like you.",
+        "letter-from-the-editor": "This article is a letter from the editor, which are messages to readers from the The Ubyssey's Senior Masthead.",
+        "public-service-announcement": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
+    }
+    story_form = models.CharField(
+        max_length=50,
+        choices=STORY_FORM_CHOICES,
+        blank=True,
+        default="",
+        help_text="Optional. Select a story form to show its approved statement. Leave blank for legacy articles unless it is reviewed and intentionally classified.",
+    )
+    full_bleed_nav_color = models.CharField(
+        max_length=5,
+        choices=(("white", "White"), ("black", "Black")),
+        default="white",
+        help_text="Full-bleed articles only: choose the navigation colour that contrasts with the hero image.",
+    )
 
     #-----Field attributes-----
 
@@ -1699,7 +1766,7 @@ class StandardArticlePage(ArticlePage):
         elif self.layout == 'passing-2025':
             return "article/supplements/article_page_supplement_2025_passing.html"
         elif self.layout == 'right-column':
-            return "article/article_like_special_page.html"
+            return "article/article_page.html"
 
         return "article/article_page.html"
 
@@ -1735,7 +1802,11 @@ class StandardArticlePage(ArticlePage):
                     content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
                 ),
                 FieldPanel("content"),
-                FieldPanel("disclaimer")
+                FieldPanel("disclaimer"),
+                FieldPanel("standpoint_disclosure"),
+                FieldPanel("extended_byline_override"),
+                FieldPanel("story_form"),
+                FieldPanel("full_bleed_nav_color"),
             ],
             heading="Article Content",
             classname="collapsible",
@@ -1808,6 +1879,56 @@ class StandardArticlePage(ArticlePage):
             classname="collapsible",
         ),
     ] # content_panels
+
+    @property
+    def redesign_header_layout(self):
+        """Map every legacy header choice onto the five redesign layouts."""
+        layout = "bottom-image"
+        if self.header:
+            first = self.header[0]
+            if first.block_type in ("standard_header", "standard_header_with_youtube_video"):
+                layout = first.value.get("layout") or layout
+        return self.redesign_layout_for_header(layout)
+
+    @staticmethod
+    def redesign_layout_for_header(layout):
+        layout = layout or "bottom-image"
+        if layout.startswith("banner-image--full-height--headline-left"):
+            return "right-full-bleed"
+        if layout.startswith("banner-image--full-height--headline-right"):
+            return "left-full-bleed"
+        base = layout.split("--")[0]
+        return {
+            "bottom-image": "big-centered",
+            "top-image": "body-width",
+            "left-image": "left-aligned",
+            "right-image": "right-aligned",
+            "banner-image": "full-bleed",
+            "no-image": "body-width",
+            "video-banner": "full-bleed",
+        }.get(base, "big-centered")
+
+    @property
+    def primary_author_orderable(self):
+        return self.article_authors.filter(author_role="author").first() or self.article_authors.first()
+
+    @property
+    def primary_author_orderables(self):
+        """Main reporting contributors, in editorial order.
+
+        A legacy article may have no contributor explicitly marked ``author``;
+        in that case retain the existing first-contributor fallback.
+        """
+        authors = list(self.article_authors.filter(author_role="author"))
+        return authors or list(self.article_authors.all()[:1])
+
+    @property
+    def story_form_statement(self):
+        return self.STORY_FORM_STATEMENTS.get(self.story_form, "")
+
+    @property
+    def extended_contributors(self):
+        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "photo_editor", "illustrator", "graphics_editor"])
 
     promote_panels = ArticlePage.promote_panels
 

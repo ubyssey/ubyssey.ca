@@ -17,7 +17,9 @@ YOUTUBE_REGEX_STRING = r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(
 @register.filter(name='youtube_embed_id')
 def youtube_embed_id(url):
     youtube_regex = regex.compile(YOUTUBE_REGEX_STRING)
-    match = youtube_regex.match(url)
+    # Legacy imports include a small number of missing URLs. Template filters
+    # must degrade to an empty thumbnail rather than aborting the whole page.
+    match = youtube_regex.match(url or "")
     if not match:
         return False
     return match.group('id')            
@@ -25,7 +27,7 @@ def youtube_embed_id(url):
 @register.filter(name='youtube_embed_url')
 def youtube_embed_url(url):
     youtube_regex = regex.compile(YOUTUBE_REGEX_STRING)
-    match = youtube_regex.match(url)
+    match = youtube_regex.match(url or "")
     if not match:
         #raise template.TemplateSyntaxError(
         #    "youtube_embed_url tag requires valid youtube URL as argument. url = %s" %url

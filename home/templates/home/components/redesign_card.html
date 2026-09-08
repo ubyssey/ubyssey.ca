@@ -1,0 +1,13 @@
+{% load wagtailimages_tags articletags %}
+<article class="hp-card hp-card--{{ variant }} section-{{ article.current_section|default:'news' }}{% if variant == 'lead' and lead_headline_position == 'above' %} is-headline-above{% endif %}{% if variant == 'lead' %} hp-card--lead-{{ lead_headline_variant|default:'default' }}{% endif %}">
+  {% if variant != "side-bottom" %}
+    {% if article.preview_image %}<a class="hp-card__image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt }}" loading="eager"></a>
+    {% elif article.featured_media.first.image %}<a class="hp-card__image" href="{{ article.url }}">{% image article.featured_media.first.image fill-1200x900-c100 loading="eager" alt=article.featured_media.first.alt_text %}</a>{% endif %}
+  {% endif %}
+  <div class="hp-card__copy">
+    {% if variant != "lead" %}<a class="hp-beat" href="{% if article.category_page %}{{ article.category_page.url }}{% else %}/{{ article.current_section }}/{% endif %}">{% if article.category_page %}{{ article.category_page.title }}{% else %}{{ article.current_section }}{% endif %}</a>{% endif %}
+    <h2><a class="hover-swipe" href="{{ article.url }}">{{ article.title }}</a></h2>
+    {% if variant != "lead" and article.lede %}<p class="hp-card__summary">{{ article.lede|truncatewords:26 }}</p>{% endif %}
+    <div class="hp-byline"><span class="hp-byline__prefix">By</span> {{ article.get_authors_split_out_visual_bylines|normalize_redesign_byline|safe }}</div>
+  </div>
+</article>

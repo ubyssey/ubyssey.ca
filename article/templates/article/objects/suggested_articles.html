@@ -1,29 +1,12 @@
-{% comment %} 
-Arguments: suggested_articles a list of article pages
-Used in both section pages and homepage
-{% endcomment %}
-
-{% load article_display %}
-
-<div class="c-suggested-bar u-container u-container--large">
-    <div class="c-suggested-bar--primary">
-        <h2 class="c-suggested-bar--primary-title">{{ suggested.primary.title|safe}}</h2>
-
-        <div class="c-suggested-bar--primary-articles">
-        {% for article in suggested.primary.articles %}
-            {% include 'article/objects/suggested_article.html' with article=article %}
-        {% endfor %}
+{% if suggested.redesign_rows %}
+  <section class="c-suggested-bar ar-keep-reading" aria-label="More stories">
+    {% for row in suggested.redesign_rows %}
+      <div class="ar-keep-reading__row">
+        <h2>More from <a href="{{ row.url }}">{{ row.title }}</a></h2>
+        <div class="ar-keep-reading__grid">
+          {% for article in row.articles %}<div class="ar-suggested-card-wrap{% if not forloop.last %} ar-suggested-card-wrap--divided{% endif %}">{% include 'article/objects/suggested_article.html' with article=article %}</div>{% endfor %}
         </div>
-    </div>
-
-    {% if suggested.topics %}
-        <div class="c-suggested-bar--topic-list">
-        {% for topic in suggested.topics %}
-            <span class="c-suggested-bar--topic-list__topic-title">{{topic.topic|safe}}</span>
-            {% for article in topic.articles %}
-                {% include 'article/objects/article_list-item.html' %}
-            {% endfor %}
-        {% endfor %}
-        </div>
-    {% endif %}
-</div>
+      </div>
+    {% endfor %}
+  </section>
+{% endif %}

@@ -1,4 +1,25 @@
 import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtils.js";
+import DOMPurify from "dompurify";
+
+const liveblogHtmlOptions = {
+    ADD_TAGS: ["iframe"],
+    ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "loading", "referrerpolicy"],
+};
+
+function safeAuthorHref(url) {
+    try {
+        const parsed = new URL(url, window.location.origin);
+        const match = /^\/authors\/([-a-z0-9_]+)\/?$/i.exec(parsed.pathname);
+
+        if (parsed.origin !== window.location.origin || !match) {
+            return null;
+        }
+
+        return `/authors/${match[1]}/`;
+    } catch (_error) {
+        return null;
+    }
+}
 
 function LiveblogStageHeader({value, meta}) {
     function showThrobber(meta) {
@@ -6,27 +27,36 @@ function LiveblogStageHeader({value, meta}) {
     }
 
     return (
-        <div class="headline-container headline-container--timely-style">
-            {showThrobber(meta) && <div class="live-signal">LIVE</div>}
-            <h1 class="o-headline o-headline--article" dangerouslySetInnerHTML={{__html: meta.page.title}}></h1>
+        <div className="headline-container headline-container--timely-style">
+            {showThrobber(meta) && <div className="live-signal">LIVE</div>}
+            <h1 className="o-headline o-headline--article">{meta.page.title}</h1>
             {meta.updatedTime != null && 
-                <div class="c-article__published-at">Updated: <time class="liveblog_updated_at" dateTime={meta.updatedTime}>{timeDeltaString(new Date(), new Date(meta.updatedTime), convertToMilliseconds(0,0,0,1))}</time></div>            
+                <div className="c-article__published-at">Last updated <time className="liveblog_updated_at" dateTime={meta.updatedTime}>{new Intl.DateTimeFormat("en-CA", {month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(meta.updatedTime))}</time></div>
             }
 
-            <div class="author-string" dangerouslySetInnerHTML={{__html: meta.page.authors}}></div>
+            <div className="author-string">
+                {(meta.page.authors || []).map((author, index) => {
+                    const authorHref = safeAuthorHref(author.url);
+
+                    return <span key={`${author.url}-${index}`}>
+                        {index > 0 && ", "}
+                        {authorHref ? <a href={authorHref}>{author.name}</a> : author.name}
+                    </span>
+                })}
+            </div>
         </div>
     )
 }
 
 function LiveblogStageSummary({value}) {
     return (
-        <div class="c-liveblog-summary" dangerouslySetInnerHTML={{__html: value.richtext}}></div>
+        <div className="c-liveblog-summary" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(value.richtext || "", liveblogHtmlOptions)}}></div>
     )
 }
 
 function LiveblogRawHTML({value}) {
     return (
-        <div class="c-liveblog-stage--rawhtml" dangerouslySetInnerHTML={{__html: value.raw_html}}></div>
+        <div className="c-liveblog-stage--rawhtml" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(value.raw_html || "", liveblogHtmlOptions)}}></div>
     )
 }
 
@@ -35,7 +65,7 @@ function LiveblogStageItem({type, value, meta}) {
         return <LiveblogStageHeader value={value} meta={meta} />
     } else if (type=="summary") {
         return <LiveblogStageSummary value={value} />
-    } else if (type="raw_html") {
+    } else if (type === "raw_html") {
         return <LiveblogRawHTML value={value} />
     }
 }
@@ -50,7 +80,7 @@ function LiveblogStageItemList({list, meta}) {
 
 export default function LiveblogStage({stage, meta}) {
     return (
-        <div className={"c-liveblog--stage "+ (meta.page.layout=="default" ? "c-liveblog--stage--header" : "")}>
+        <div className={"c-liveblog--stage c-liveblog-redesign__stage "+ (meta.page.layout=="default" ? "c-liveblog--stage--header" : "")}>
             <LiveblogStageItemList list={stage} meta={meta} />
         </div>
     )

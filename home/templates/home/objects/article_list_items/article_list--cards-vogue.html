@@ -1,5 +1,5 @@
 {% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
+{% load wagtailimages_tags articletags %}
 
 
 <article class="o-article o-curated_group--cards--card vogue-style">
@@ -17,7 +17,7 @@
             <h3 class="vogue-card__title">{{ article.title|safe }}</h3>
         </a>
 
-        <div class="vogue-card__byline">{{ article.get_authors_split_out_visual_bylines|safe }}</div>
+        <div class="vogue-card__byline">{{ article.get_authors_split_out_visual_bylines|normalize_redesign_byline|safe }}</div>
     </div>
 
 </article>

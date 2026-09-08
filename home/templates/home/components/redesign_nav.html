@@ -1,0 +1,17 @@
+{% load static %}
+<a class="hp-skip" href="#main-content">Skip to content</a>
+<header class="hp-nav" data-home-nav>
+  <div class="hp-nav__mast page-shell">
+    <a class="hp-nav__since hover-swipe" href="/archive/">Since 1918</a>
+    <a class="hp-nav__nameplate" href="/" aria-label="The Ubyssey home">The Ubyssey</a>
+    <a class="hp-nav__newsletter hover-swipe" href="#newsletter">Newsletter</a>
+    <time>{% now "F j, Y" %}</time>
+  </div>
+  <div class="hp-nav__bar page-shell">
+    <button class="hp-nav__menu" type="button" aria-expanded="false" aria-controls="hp-expanded-menu"><img src="{% static 'ubyssey/images/homepage/menu-search.svg' %}" alt=""><span class="sr-only">Open menu and search</span></button>
+    <nav aria-label="Primary"><a href="/news/">News</a><a href="/opinion/">Opinion</a><a href="/arts/">Arts</a><a href="/culture/">Culture</a><a href="/sports/">Sports</a></nav>
+    <a class="hp-nav__compact-nameplate" href="#top" aria-label="Back to top">The Ubyssey</a>
+    {% include 'article/objects/darkmode_button.html' with id="homepage" %}
+  </div>
+  {% include 'navigation/redesign_expanded_menu.html' with menu_id='hp-expanded-menu' search_id='hp-nav-search' newsletter_href='#newsletter' %}
+</header>

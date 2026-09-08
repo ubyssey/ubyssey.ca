@@ -65,15 +65,18 @@ class LiveBlogUpdateAuthorBlock(blocks.StructBlock):
 
     def jsonFormat(self, value):
         value = self.to_python(value)
+        author = value['author']
         author_image_template = "liveblog/objects/liveblog_update_author-image.html"
         author_image = None
-        if value['author'].image:
-            author_image = loader.render_to_string(author_image_template, {"author": value['author']})
+        if author.image:
+            author_image = loader.render_to_string(author_image_template, {"author": author})
         return {
             "author_image": author_image,
-            "author_link": value['author'].full_url,
-            "author_name": value['author'].full_name,
-            "author_role": value['author_role'],
+            "author_link": author.full_url,
+            "author_name": author.full_name,
+            "author_role": (
+                value['author_role'] or author.ubyssey_role or ''
+            ).strip(),
         }
 
 @register_snippet
@@ -186,6 +189,14 @@ class LiveBlogUpdate(ClusterableModel):
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
 
+    @property
+    def redesign_header_layout(self):
+        return "big-centered"
+
+    @property
+    def full_bleed_nav_color(self):
+        return "white"
+
     stage = StreamField([
             ("header", LiveblogHeader()),
             ("summary", LiveblogSummary()),
@@ -260,16 +271,31 @@ class LiveBlogArticlePage(ArticlePage):
         return save
 
     def get_nav_html(self, request):
-        return loader.render_to_string("article/objects/article-navigation.html", {"self": self, "section": self.current_section, "request": request})
+        return loader.render_to_string(
+            "article/components/redesign_nav.html",
+            {"article": self, "request": request},
+        )
     
     def get_suggested_html(self, request):
         return loader.render_to_string("article/objects/suggested_articles.html", {"suggested": self.get_suggested(), "request": request})
 
     def get_page_meta(self):
+        authors = []
+        seen_authors = set()
+        for article_author in self.article_authors.all():
+            author = article_author.author
+            if author.id in seen_authors:
+                continue
+            seen_authors.add(author.id)
+            authors.append({
+                "name": article_author.author_alias or author.full_name,
+                "url": author.full_url if author.live else "",
+            })
+
         return {
             "title": self.title,
             "lede": self.lede,
-            "authors": self.get_authors_with_urls(),
+            "authors": authors,
             "layout": self.layout,
             "live_policy": self.live_policy,
         }

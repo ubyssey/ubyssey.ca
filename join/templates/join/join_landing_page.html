@@ -8,13 +8,15 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'ubyssey/css/main.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'ubyssey/css/join.css' %}?v=5" type="text/css">
+<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">
+<link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-cover-6" type="text/css">
+<link rel="stylesheet" href="{% static 'ubyssey/css/join.css' %}?v=8" type="text/css">
 {% endblock %}
 
 {% block page_wrapper %}join-page{% endblock %}
 
 {% block header %}
-    {% include "join/components/header.html" %}
+    {% include "join/components/redesign_nav.html" %}
 {% endblock %}
 
 {% block content %}
@@ -108,4 +110,5 @@
 
 {% block scripts %}
 <script src="{% static 'join/js/join.js' %}" type="text/javascript"></script>
+<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-a38d0112" type="text/javascript"></script>
 {% endblock %}

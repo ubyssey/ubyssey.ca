@@ -10,10 +10,12 @@ from ubyssey import blocks as general_blocks
 
 from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields import CharField, BooleanField, TextField, SlugField
 from django.db.models.fields.related import ForeignKey
 from django.shortcuts import render
+from django import forms
 
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
@@ -151,6 +153,33 @@ class CategoryMenuItem(wagtail_core_models.Orderable):
         FieldPanel("category_page"),
     ]
 
+    def clean(self):
+        super().clean()
+        if not self.category_page_id or not self.section_id:
+            return
+        # A beat is a child CategoryPage. Allowing a category from another
+        # section would make a tab silently take readers to the wrong feed.
+        if self.category_page.get_parent().id != self.section_id:
+            raise ValidationError({
+                "category_page": "Choose a beat (Category page) that belongs directly to this section."
+            })
+
+
+class SectionRedesignFeaturedArticle(wagtail_core_models.Orderable):
+    section_page = ParentalKey(
+        "section.SectionPage", related_name="redesign_featured_articles", on_delete=models.CASCADE
+    )
+    article = ForeignKey(
+        "article.ArticlePage", null=False, blank=False, on_delete=models.CASCADE, related_name="+"
+    )
+
+    panels = [FieldPanel("article")]
+
+    class Meta:
+        ordering = ("sort_order",)
+        verbose_name = "Featured redesign story"
+        verbose_name_plural = "Featured redesign stories"
+
 class SectionPage(RoutablePageMixin, SectionablePage):
     template = 'section/section_page.html'
 
@@ -181,6 +210,29 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         null=False,
         blank=True,
         default='',
+    )
+
+    spotify_episode_url = models.URLField(
+        blank=True,
+        default="",
+        help_text=(
+            "For The Vilest Rag landing page: paste the public Spotify episode URL "
+            "used by the Latest Episode player. No iframe markup is required."
+        ),
+    )
+
+    redesign_tip_title = models.CharField(max_length=100, blank=True, default="")
+    redesign_tip_body = models.TextField(blank=True, default="")
+    redesign_tip_link_text = models.CharField(max_length=50, blank=True, default="")
+    redesign_tip_link_url = models.URLField(blank=True, default="")
+    redesign_editor = models.ForeignKey(
+        "authors.AuthorPage", null=True, blank=True, on_delete=models.SET_NULL, related_name="edited_redesign_sections"
+    )
+    redesign_editor_description = models.CharField(
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="Custom copy for the Contact the editor box. This does not use the editor's author-profile bio.",
     )
 
     label_svg = models.ForeignKey(
@@ -237,6 +289,22 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         ),
         MultiFieldPanel(
             [
+                FieldPanel("redesign_tip_title"), FieldPanel("redesign_tip_body"),
+                FieldPanel("redesign_tip_link_text"), FieldPanel("redesign_tip_link_url"),
+                FieldPanel("redesign_editor"),
+                FieldPanel("redesign_editor_description", widget=forms.TextInput(attrs={"maxlength": 120})),
+                InlinePanel("redesign_featured_articles", max_num=3, label="Story"),
+            ],
+            heading="Redesign section page",
+            help_text="Add all three featured stories in display order: centre, upper-right, then lower-right.",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("spotify_episode_url")],
+            heading="Podcast player",
+            classname="collapsible collapsed",
+        ),
+        MultiFieldPanel(
+            [
                 FieldPanel("top_stream"),
             ],
             heading="Top stream"
@@ -252,6 +320,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 InlinePanel("category_menu"),
             ],
             heading="Category Menu",
+            help_text="Add this section's beat pages in navigation order. Each beat opens its own filtered story feed.",
         ),
         MultiFieldPanel(
             [
@@ -264,6 +333,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     def get_filter(self):
         filters = {"section": self.current_section}
         return filters
+
+    def clean(self):
+        super().clean()
+        if len(self.redesign_editor_description or "") > 120:
+            raise ValidationError({
+                "redesign_editor_description": "Keep the Contact the editor description to 120 characters or fewer."
+            })
     filter = property(fget=get_filter) 
 
     def get_all_categories(self):
@@ -311,6 +387,33 @@ class SectionPage(RoutablePageMixin, SectionablePage):
 
         context["filters"] = filters
         context["section_slug"] = self.slug
+        context["redesign_config"] = self
+        context["redesign_all_url"] = self.url
+        context["redesign_active_beat_id"] = None
+        context["redesign_topics"] = self.get_redesign_topics()
+        configured_featured = list(self.redesign_featured_articles.select_related("article").all())
+        if len(configured_featured) == 3:
+            featured = [item.article.specific for item in configured_featured]
+            feed = self.get_section_articles().exclude(pk__in=[article.pk for article in featured])
+            context["redesign_featured"] = featured
+            context["redesign_featured_ids"] = ",".join(str(article.pk) for article in featured)
+            context["redesign_recent_articles"] = feed[:20]
+        else:
+            featured = list(self.get_featured_articles(number_featured=3))
+            feed = self.get_section_articles()
+            context["redesign_featured_ids"] = ""
+            # The legacy automatic hero contains the first three stories, so
+            # the initial feed begins at story four and the next request starts
+            # at 20 in the same unfiltered query.
+            context["redesign_recent_articles"] = feed[3:20]
+        # Auxiliary section templates (Photo, Margins, and Podcast) use this
+        # complete feed rather than the curated hero/feed split above.
+        # Supplying it here keeps those pages populated regardless of whether
+        # a section has configured featured stories.
+        context["redesign_all_articles"] = self.get_section_articles()
+        # The initial feed and the deferred request use the exact same query,
+        # so curated stories never repeat in the infinite list.
+        context["redesign_editor"] = self.redesign_editor
         
         # context["featured_articles"] = self.get_featured_articles()
 
@@ -318,13 +421,42 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             context["search_query"] = search_query
     
         return context
-    
-    def get_section_articles(self, order='-first_published_at') -> QuerySet:
-        # order should be explicit_published_at but that is in the ArticlePage table and accessing slows down the query
+
+    def get_redesign_topics(self):
+        """Navigation-safe beat links for this section.
+
+        Explicit menu entries determine order. Older sections retain a
+        fallback to their live child beats. ``Page.url`` keeps a bad request
+        host from producing a missing/absolute URL in a rendered tab.
+        """
+        configured_beats = [
+            item.category_page.specific
+            for item in self.category_menu.select_related("category_page").all()
+            if item.category_page and item.category_page.live
+        ]
+        if not configured_beats:
+            configured_beats = [category.specific for category in CategoryPage.objects.live().child_of(self)]
+        return [
+            {"id": beat.id, "title": beat.title, "url": beat.url}
+            for beat in configured_beats
+        ]
+
+    def get_template(self, request, *args, **kwargs):
+        """Use the canonical auxiliary-page variants without changing old page types."""
+        templates = {
+            "photo": "section/photo_page.html",
+            "margins": "section/margins_page.html",
+            "the-vilest-rag": "section/podcast_page.html",
+        }
+        return templates.get(self.slug, self.template)
+
+    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+        """Published stories in the same order used by the redesigned feed."""
         section_articles = ArticlePage.objects \
-            .child_of(self) \
-            .order_by(order) \
-            .live()
+            .live() \
+            .public() \
+            .descendant_of(self) \
+            .order_by(order, '-id')
         
         return section_articles
 
@@ -521,11 +653,26 @@ class CategoryPage(SectionPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["parent"] = self.get_parent()
-        context["section_slug"] = context["parent"].slug
+        parent = self.get_parent().specific
+        # Category pages share the parent section's CMS configuration and
+        # navigation, but their hero and feed are strictly category-filtered.
+        # This avoids treating a beat as an independent section page.
+        context["parent"] = parent
+        context["section_slug"] = parent.slug
+        context["redesign_config"] = parent
+        context["redesign_all_url"] = parent.url
+        context["redesign_active_beat_id"] = self.id
+        context["redesign_topics"] = parent.get_redesign_topics()
+        # Beat pages deliberately render a pure chronological feed.  They do
+        # not inherit the parent section's curated hero or its exclusions.
+        context["redesign_featured"] = []
+        context["redesign_featured_ids"] = ""
+        context["redesign_recent_articles"] = self.get_section_articles()[:20]
         return context
+
+    def get_section_articles(self, order='-explicit_published_at') -> QuerySet:
+        """The category's feed, ordered exactly like the parent section feed."""
+        return ArticlePage.objects.live().public().filter(category_page=self).order_by(order, '-id')
     
     def get_recent_articles(self, max_items=10):
         return ArticlePage.objects.live().filter(category_page = self).order_by("-first_published_at")[:max_items]
-
-     

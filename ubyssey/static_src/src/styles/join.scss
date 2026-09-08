@@ -7,8 +7,8 @@ $join-text: #1c1b1b;
 $join-muted: #44474e;
 $join-border: #c4c6cf;
 $join-footer: #031621;
-$join-serif: "libre-caslon-text", "adobe-caslon-pro", "noto-serif", Georgia, serif;
-$join-sans: "libre-franklin", "librefranklin", "noto-sans", "Helvetica Neue", Arial, sans-serif;
+$join-serif: "meursault-variable", serif;
+$join-sans: "articulat-cf", sans-serif;
 
 html:has(.join-page) {
   scroll-behavior: smooth;

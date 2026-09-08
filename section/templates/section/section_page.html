@@ -1,84 +1,27 @@
 {% extends 'ubyssey/base.html' %}
-{% load humanize %}
-{% load static %}
-{% load cache %}
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
-{% load wagtailuserbar %}
-{% load ubyssey_ad_tags %}
-{% load ubyssey_ad_filters %}
-
-{% block stylesheet %}
-<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}" type="text/css" />
-
-<link rel="stylesheet" href="https://use.typekit.net/qri0ucm.css"> <!-- Remove once spoof 2026 is over -->
-{% endblock %}
-
-{% block head_scripts %}
-<link rel="alternate" type="application/atom+xml" title="Ubyssey {{self.title}} feed" href="{% pageurl self %}rss/">
-  {% cache 6000 section_ad_tags %}
-  <!-- Register ads for section page -->
-  {% for orderable in settings.ads.AdTagSettings.section_head_tags.all %}
-    {% gpt_define_tag orderable.ad_slot %}
-  {% endfor %}
-  {% endcache %}
-{% endblock %}
-
-{% block header %}
-  {% include 'navigation/headers/mobile.html' %}
-{% if settings.ads.AdTagSettings.section_header_placements.all %}
-  <div class="o-advertisement--above-sticky-nav-bar advertising-container" hidden>
-    {% cache 6000 section_header_ads %}
-    <!-- Place header ads for section page -->
-    {% for orderable in settings.ads.AdTagSettings.section_header_placements.all %}
-      {% gpt_placement_tag orderable.ad_slot %}
-    {% endfor %}
-    {% endcache %}
-  </div>
-{% endif%}
-  {% include 'navigation/headers/topbar.html' with section=section_slug %}
-{% endblock %}
-
+{% load static wagtailcore_tags wagtailimages_tags articletags %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}?v=section-redesign-15" type="text/css"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block head_scripts %}<link rel="alternate" type="application/atom+xml" title="Ubyssey {{ self.title }} feed" href="{% if redesign_page_url %}{{ redesign_page_url }}{% else %}{% pageurl self %}{% endif %}rss/">{% endblock %}
+{% block page_wrapper %}listing-redesign{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
 {% block content %}
-  <main class="section">
-    
-    <div class="u-container u-container--mid">
-
-      {% if self.top_stream|length == 0 %}
-        {% if self.banner %}
-          {% image self.banner fill-2200x734-c100 format-webp as banner_image %}
-          <div class="banner" style="background-image: url('{{banner_image.full_url}}');" aria-label="{{self.title}} Banner" >
-            <svg class="banner-title" viewBox="0 0 450 70">
-              <text x="10" y="50">{{self.title}}</text>
-            </svg>
-          </div>
-          <div class="c-section__description banner-description">
-            {% if parent %}<b><a href="{% pageurl parent %}">From {{parent.title}}</a></b> &ensp;{% endif %}{{self.description|richtext}} <a href="{% pageurl self %}rss/" aria-label="Go to rss feed"><ion-icon name="logo-rss"></ion-icon></a>
-          </div>
-          {% include "section/objects/category_bar.html" with section=self%}
-        {% else %}
-          {% include "section/objects/section_heading.html" with section=self parent=parent %}
-        {% endif %}
-      {% endif %}
-
-      {% for block in self.top_stream %}
-        {% include_block block %}
-      {% endfor %}
-
-      <div class="o-feed-item c-section__all-articles-list">
-        <div class="lightmode section_infinitefeed">
-
-        {% if error %}
-          <p class="section-error"><a href="{% pageurl self %}">{{error}}</a></p>
-        {% else %}
-          {% include 'infinitefeed/infinitefeed.html' with filters=filters %}
-        {% endif %}
-        </div>
-        {% include 'infinitefeed/objects/infinitefeed-sidebar.html' with styling="c-section__sidebar" id="sidebar" sidebar_stream=self.sidebar_stream %}
-        {% if not error %}
-        <script src="{% static 'ubyssey/js/infinitefeed.js' %}" type="text/javascript"></script>
-        {% endif %}
-      </div>
-    </div>
-  </main>
+<main id="main-content" class="lr-page sr-page">
+  <header class="sr-intro page-shell"><h1>{{ self.title }}</h1><div class="sr-intro__description">{{ self.description|richtext }}</div></header>
+  <nav class="lr-tabs page-shell" aria-label="{{ self.title }} topics">
+    <div class="lr-tabs__links" data-section-beats><a{% if not redesign_active_beat_id %} class="is-active" aria-current="page"{% endif %} data-beat href="{% if redesign_page_url %}{{ redesign_page_url }}{% else %}{{ redesign_all_url }}{% endif %}">All</a>{% for topic in redesign_topics %}<a{% if topic.id == redesign_active_beat_id %} class="is-active" aria-current="page"{% endif %} data-beat href="{{ topic.url }}">{{ topic.title }}</a>{% endfor %}</div>
+    <div class="lr-tabs__tools"><form action="/archive/" method="get"><input type="hidden" name="section" value="{{ section_slug }}"><label><img src="{% static 'ubyssey/images/redesign/search.svg' %}" alt=""><span class="sr-only">Search {{ self.title }}</span><input name="q" type="search" value="{{ search_query|default:'' }}" placeholder="Search"></label></form><a href="/archive/?section={{ section_slug }}" title="Filter the archive to {{ self.title }} stories"><img src="{% static 'ubyssey/images/redesign/filter.svg' %}" alt=""> Filter</a></div>
+  </nav>
+  {% if not redesign_active_beat_id %}{% with lead=redesign_featured.0|default:self.featured_articles.0 side_one=redesign_featured.1|default:self.featured_articles.1 side_two=redesign_featured.2|default:self.featured_articles.2 %}
+  <section class="sr-hero page-shell" aria-label="Featured stories">
+    <aside class="sr-hero__rail">
+      <section class="sr-tip"><h2>{% if redesign_config.redesign_tip_title %}{{ redesign_config.redesign_tip_title }}{% else %}Have a story?{% endif %}</h2><p>{% if redesign_config.redesign_tip_body %}{{ redesign_config.redesign_tip_body }}{% else %}Tips are the information that leads to a story. If it’s true and newsworthy, we’ll look into it.{% endif %}</p><a href="{% if redesign_config.redesign_tip_link_url %}{{ redesign_config.redesign_tip_link_url }}{% else %}/submit-a-tip/{% endif %}">{% if redesign_config.redesign_tip_link_text %}{{ redesign_config.redesign_tip_link_text }}{% else %}Submit a tip{% endif %}</a></section>
+      <section class="sr-editor"><h2>Contact the editor</h2><p class="sr-editor__name">{{ redesign_config.redesign_editor.full_name|default:'The section editor' }}</p>{% if redesign_config.redesign_editor.image %}{% image redesign_config.redesign_editor.image fill-180x180-c100 as editor_portrait %}<img src="{{ editor_portrait.url }}" alt="{{ redesign_config.redesign_editor.full_name }}">{% endif %}{% if redesign_config.redesign_editor_description %}<p class="sr-editor__description">{{ redesign_config.redesign_editor_description }}</p>{% endif %}<p class="sr-editor__reach">Reach them at: <a href="mailto:{{ redesign_config.redesign_editor.public_contact_email|default:'news@ubyssey.ca' }}">{{ redesign_config.redesign_editor.public_contact_email|default:'news@ubyssey.ca' }}</a></p></section>
+    </aside>
+    <div class="sr-hero__lead">{% if lead %}{% include 'section/objects/redesign_story.html' with article=lead variant='lead' show_summary=False show_date=True %}{% endif %}</div>
+    <div class="sr-hero__secondary">{% if side_one %}{% include 'section/objects/redesign_story.html' with article=side_one variant='secondary' show_summary=True %}{% endif %}{% if side_two %}{% include 'section/objects/redesign_story.html' with article=side_two variant='secondary' show_summary=True hide_image=True %}{% endif %}</div>
+  </section>{% endwith %}{% endif %}
+  <section id="redesign-section-feed" class="lr-feed page-shell" aria-label="Latest {{ self.title }} stories">{% for article in redesign_articles %}{% include 'section/objects/redesign_story.html' with article=article variant='row' show_date=True show_summary=True %}{% empty %}{% for article in redesign_recent_articles %}{% include 'section/objects/redesign_story.html' with article=article variant='row' show_date=True show_summary=True %}{% endfor %}{% endfor %}</section>
+  {% if not redesign_page_url %}<div id="redesign-section-loader" class="sr-feed-loader" data-section="{{ section_slug }}"{% if redesign_active_beat_id %} data-category="{{ self.slug }}"{% else %} data-exclude="{{ redesign_featured_ids }}"{% endif %} data-start="20" data-number="20" aria-live="polite"><img src="{% static 'ubyssey/images/throbber.svg' %}" class="spin" alt="Loading more stories"></div>{% endif %}
+</main>
 {% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-nav-stable-1"></script><script>(function(){function fitLeadHeadlines(){document.querySelectorAll('[data-fit-headline]').forEach(function(headline){headline.style.fontSize='';headline.style.lineHeight='';if(window.matchMedia('(max-width: 760px)').matches)return;var size=42,minimum=23,maximum=64;function setSize(){headline.style.fontSize=size+'px';headline.style.lineHeight=(size*1.12)+'px'}setSize();while(headline.scrollHeight>headline.clientHeight&&size>minimum){size-=.5;setSize()}while(headline.scrollHeight<headline.clientHeight*.9&&size<maximum){size+=.5;setSize()}while(headline.scrollHeight>headline.clientHeight&&size>minimum){size-=.5;setSize()}})}var resizeTimer;window.addEventListener('resize',function(){window.clearTimeout(resizeTimer);resizeTimer=window.setTimeout(fitLeadHeadlines,100)});if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fitLeadHeadlines)}else{fitLeadHeadlines()}})();document.querySelectorAll('[data-section-beats] [data-beat]').forEach(function(beat){beat.addEventListener('click',function(event){if(beat.getAttribute('href')==='#')event.preventDefault();document.querySelectorAll('[data-section-beats] [data-beat]').forEach(function(item){item.classList.remove('is-active');item.removeAttribute('aria-current')});beat.classList.add('is-active');beat.setAttribute('aria-current','page')})});(function(){var feed=document.getElementById('redesign-section-feed'),loader=document.getElementById('redesign-section-loader');if(!feed||!loader||!window.IntersectionObserver)return;var loading=false,done=false;function load(){if(loading||done)return;loading=true;loader.classList.add('is-loading');var params=new URLSearchParams({section:loader.dataset.section,start:loader.dataset.start,number:loader.dataset.number,redesign:'section'});if(loader.dataset.category)params.set('category',loader.dataset.category);if(loader.dataset.exclude)params.set('exclude',loader.dataset.exclude);fetch('/infinitefeed/?'+params).then(function(response){if(!response.ok)throw new Error('Unable to load stories');return response.text()}).then(function(body){if(body==='End of feed'){done=true;loader.textContent='You reached the end.';return}var stories=JSON.parse(body);stories.forEach(function(story){feed.insertAdjacentHTML('beforeend',story)});loader.dataset.start=String(Number(loader.dataset.start)+Number(loader.dataset.number))}).catch(function(){loader.textContent='Unable to load more stories.';done=true}).finally(function(){loading=false;loader.classList.remove('is-loading')})}new IntersectionObserver(function(entries){if(entries.some(function(entry){return entry.isIntersecting}))load()},{rootMargin:'500px 0px'}).observe(loader)})();</script>{% endblock %}
