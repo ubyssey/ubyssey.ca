@@ -97,6 +97,11 @@
   .ar-keep-reading article{height:270px}.ar-keep-reading .o-article__left,.ar-keep-reading .o-article__image,.ar-keep-reading .o-article__image img,.ar-keep-reading article>a>img{height:150px}
 }
 
+/* The shared expanded menu uses the supplied white bitmap verbatim.  Earlier
+   legacy inversion rules turned that white artwork black. */
+.ar-nav .hp-nav__expanded .hp-nav__search button img{filter:none!important}
+.ar-nav .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-weight:400!important;font-variation-settings:"wdth" 50,"wght" 400!important}
+
 /* Contact and the regular-page header share the same expanded-menu grid as
    the homepage. Keep this at the end so it overrides the former carousel-era
    geometry without affecting compact/mobile navigation. */
@@ -669,9 +674,18 @@
   .ar-nav .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-size:21px!important;font-weight:400!important;font-stretch:condensed!important;font-variation-settings:"wdth" 50,"wght" 400!important;letter-spacing:-.012em}
   .ar-nav .hp-nav__join-link p span,.ar-nav .hp-nav__join-link:hover p span,.ar-nav .hp-nav__join-link:focus-visible p span{background:none!important;color:#fff!important}
 }
+
+/* Must follow the legacy expanded-menu declarations: this is a white source
+   asset and inversion makes it black. */
+.ar-nav .hp-nav__expanded .hp-nav__search button img{filter:none!important}
+.ar-nav .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-weight:400!important;font-variation-settings:"wdth" 50,"wght" 400!important}
 @media(max-width:800px){
   .ar-nav .hp-nav__expanded .hp-nav__search{height:44px!important}
   .ar-nav .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-size:21px!important;font-weight:400!important;font-stretch:condensed!important;font-variation-settings:"wdth" 50,"wght" 400!important}
   .ar-nav .hp-nav__expanded .hp-nav__search button img{filter:invert(1)!important}
   .ar-nav .hp-nav__join-link p span,.ar-nav .hp-nav__join-link:hover p span,.ar-nav .hp-nav__join-link:focus-visible p span{background:none!important;color:#fff!important}
 }
+
+/* AUTHORITATIVE shared-menu asset and typography overrides. */
+.ar-nav .hp-nav__expanded .hp-nav__search button img{filter:none!important}
+.ar-nav .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-weight:400!important;font-variation-settings:"wdth" 50,"wght" 400!important}
