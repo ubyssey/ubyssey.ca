@@ -1,7 +1,7 @@
 {% extends 'ubyssey/base.html' %}
 {% load static cache wagtailcore_tags ubyssey_ad_filters ubyssey_ad_tags %}
 {% block head_scripts %}{% cache 6000 article_ad_tags %}{% for orderable in settings.ads.AdTagSettings.article_head_tags.all %}{% gpt_define_tag orderable.ad_slot is_mobile %}{% endfor %}{% endcache %}{% endblock %}
-{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% if self.styles.all|length == 0 %}<link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-23">{% else %}{% for style_obj in self.styles.all %}<link rel="stylesheet" href="{{ style_obj.css.file.url }}">{% endfor %}{% endif %}{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% if self.styles.all|length == 0 %}<link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-24">{% else %}{% for style_obj in self.styles.all %}<link rel="stylesheet" href="{{ style_obj.css.file.url }}">{% endfor %}{% endif %}{% endblock %}
 {% block header %}{% include 'article/components/redesign_nav.html' with article=self %}{% endblock %}
 {% block content %}
 <main id="main-content" class="ar-page ar-page--{{ self.redesign_header_layout }}">

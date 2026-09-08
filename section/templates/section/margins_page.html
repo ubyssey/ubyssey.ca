@@ -1,6 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static wagtailcore_tags wagtailimages_tags articletags support_tags %}
-{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-4"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-5"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
 {% block page_wrapper %}listing-redesign aux-theme{% endblock %}
 {% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
 {% block content %}<main id="main-content" class="aux-page margins-page"><header class="margins-hero"><div class="margins-hero__eyebrow page-shell"><p class="aux-kicker">From inside the newsroom</p></div><h1>Margins</h1><div class="aux-lede">{% if self.description %}{{ self.description|richtext }}{% else %}<p>A blog about the people, processes and ideas behind <em>The Ubyssey’s</em> journalism.</p>{% endif %}</div></header>
