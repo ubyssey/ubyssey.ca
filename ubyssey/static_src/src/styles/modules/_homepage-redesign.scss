@@ -384,3 +384,45 @@
 .hp-podcast .hp-promo__copy>span,.hp-podcast .hp-promo__copy h2>span,.hp-margins .hp-promo__copy h2>span{background-image:none!important}
 .hp-podcast:hover .hp-promo__copy>span,.hp-podcast:focus-visible .hp-promo__copy>span,.hp-podcast:hover .hp-promo__copy h2>span,.hp-podcast:focus-visible .hp-promo__copy h2>span,.hp-margins:hover .hp-promo__copy h2>span,.hp-margins:focus-visible .hp-promo__copy h2>span{color:#fff!important;background-color:transparent!important}
 .site-footer__brand{width:440px!important}.site-footer__brand>a.site-footer__nameplate{width:440px!important;height:76px!important;padding-top:3px!important;font-size:56px!important;line-height:67px!important}
+
+/* Final alignment of the shared expanded menu and desktop homepage header. */
+@media (min-width:761px){
+  .hp-nav__bar nav a{
+    display:inline-block!important;
+    background-image:linear-gradient(#bce3f0,#bce3f0)!important;
+    background-repeat:no-repeat!important;
+    background-position:0 90%!important;
+    background-size:0 78%!important;
+    box-decoration-break:clone;
+    -webkit-box-decoration-break:clone;
+  }
+  .hp-nav__bar nav a:hover,.hp-nav__bar nav a:focus-visible{
+    background-size:100% 78%!important;
+    color:#081839!important;
+  }
+  .hp-nav__expanded .hp-nav__search{
+    top:46px!important;
+    left:max(20px,calc(50% - 619px))!important;
+    width:min(799px,calc(100% - 40px))!important;
+    height:48px!important;
+    transform:none!important;
+  }
+  .hp-nav__expanded-grid{
+    top:128px!important;
+    width:min(1238px,calc(100% - 40px))!important;
+    grid-template-columns:145px 145px 150px 185px minmax(0,1fr)!important;
+    column-gap:58px!important;
+  }
+  .hp-nav__join{
+    margin-left:42px!important;
+    text-align:center!important;
+  }
+  .hp-nav__join h2{font-size:58px!important;line-height:.98!important}
+  .hp-nav__join p{font-size:23px!important;line-height:1.08!important}
+}
+@media (min-width:761px) and (max-width:1120px){
+  .hp-nav__expanded .hp-nav__search{left:20px!important;width:calc(100% - 40px)!important}
+  .hp-nav__expanded-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(200px,1.35fr)!important;column-gap:24px!important}
+  .hp-nav__join{margin-left:12px!important}
+}
+[color-css-theme=dark] .hp-nav__bar nav a:hover,[color-css-theme=dark] .hp-nav__bar nav a:focus-visible{color:#081839!important;background-color:#bce3f0!important}

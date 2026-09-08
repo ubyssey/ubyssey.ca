@@ -97,6 +97,54 @@
   .ar-keep-reading article{height:270px}.ar-keep-reading .o-article__left,.ar-keep-reading .o-article__image,.ar-keep-reading .o-article__image img,.ar-keep-reading article>a>img{height:150px}
 }
 
+/* Contact and the regular-page header share the same expanded-menu grid as
+   the homepage. Keep this at the end so it overrides the former carousel-era
+   geometry without affecting compact/mobile navigation. */
+@media (min-width:801px){
+  .ar-nav .hp-nav__expanded .hp-nav__search{
+    top:46px!important;
+    left:max(20px,calc(50% - 619px))!important;
+    width:min(799px,calc(100% - 40px))!important;
+    height:48px!important;
+    transform:none!important;
+  }
+  .ar-nav .hp-nav__expanded-grid{
+    top:128px!important;
+    width:min(1238px,calc(100% - 40px))!important;
+    grid-template-columns:145px 145px 150px 185px minmax(0,1fr)!important;
+    column-gap:58px!important;
+  }
+  .ar-nav .hp-nav__join{margin-left:42px!important;text-align:center!important}
+  .ar-nav .hp-nav__join h2{font-size:58px!important;line-height:.98!important}
+  .ar-nav .hp-nav__join p{font-size:23px!important;line-height:1.08!important}
+}
+@media (min-width:801px) and (max-width:1120px){
+  .ar-nav .hp-nav__expanded .hp-nav__search{left:20px!important;width:calc(100% - 40px)!important}
+  .ar-nav .hp-nav__expanded-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(200px,1.35fr)!important;column-gap:24px!important}
+  .ar-nav .hp-nav__join{margin-left:12px!important}
+}
+
+/* Suggested stories use equal grid tracks: the image and headline share the
+   same 250px measure, and the grid background places each divider precisely
+   midway between neighbouring cards. */
+.ar-keep-reading__row>h2 a{text-decoration:underline!important;text-underline-offset:2px}
+.ar-keep-reading__grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  background-image:linear-gradient(to right,
+    transparent calc(25% - .5px),#2A2A2A calc(25% - .5px),#2A2A2A calc(25% + .5px),transparent calc(25% + .5px),
+    transparent calc(50% - .5px),#2A2A2A calc(50% - .5px),#2A2A2A calc(50% + .5px),transparent calc(50% + .5px),
+    transparent calc(75% - .5px),#2A2A2A calc(75% - .5px),#2A2A2A calc(75% + .5px),transparent calc(75% + .5px))!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 304px!important;
+}
+.ar-keep-reading .ar-suggested-card{width:250px!important;justify-self:center!important}
+.ar-keep-reading .ar-suggested-card:not(:last-child):after{display:none!important}
+@media(max-width:800px){
+  .ar-keep-reading__grid{background-image:none!important}
+  .ar-keep-reading .ar-suggested-card{width:100%!important}
+}
+
 @media(max-width:800px){
   .ar-page .ar-hero--left-full-bleed,.ar-page .ar-hero--right-full-bleed{display:flex;width:100%;height:auto;min-height:0;padding:38px 18px 0;flex-direction:column}
   .ar-page .ar-hero--left-full-bleed .ar-hero__copy,.ar-page .ar-hero--right-full-bleed .ar-hero__copy{box-sizing:border-box;width:100%;margin:0 0 25px}
@@ -569,3 +617,17 @@
   .ar-suggested-card__image,.ar-suggested-card__image img{width:100%!important;height:auto!important;aspect-ratio:250/225!important}
   .ar-keep-reading .ar-suggested-card h3{min-height:0!important;height:65px!important;margin-top:10px!important;font-size:17px!important;line-height:21px!important}
 }
+
+/* Authoritative final geometry for the shared menu and suggestions. */
+@media (min-width:801px){
+  .ar-nav .hp-nav__expanded .hp-nav__search{top:46px!important;left:max(20px,calc(50% - 619px))!important;width:min(799px,calc(100% - 40px))!important;height:48px!important;transform:none!important}
+  .ar-nav .hp-nav__expanded-grid{top:128px!important;width:min(1238px,calc(100% - 40px))!important;grid-template-columns:145px 145px 150px 185px minmax(0,1fr)!important;column-gap:58px!important}
+  .ar-nav .hp-nav__join{margin-left:42px!important;text-align:center!important}
+  .ar-nav .hp-nav__join h2{font-size:58px!important;line-height:.98!important}
+  .ar-nav .hp-nav__join p{font-size:23px!important;line-height:1.08!important}
+  .ar-keep-reading__grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;background-image:linear-gradient(to right,transparent calc(25% - .5px),#2A2A2A calc(25% - .5px),#2A2A2A calc(25% + .5px),transparent calc(25% + .5px),transparent calc(50% - .5px),#2A2A2A calc(50% - .5px),#2A2A2A calc(50% + .5px),transparent calc(50% + .5px),transparent calc(75% - .5px),#2A2A2A calc(75% - .5px),#2A2A2A calc(75% + .5px),transparent calc(75% + .5px))!important;background-repeat:no-repeat!important;background-size:100% 304px!important}
+  .ar-keep-reading .ar-suggested-card{width:250px!important;justify-self:center!important}
+  .ar-keep-reading .ar-suggested-card:not(:last-child):after{display:none!important}
+}
+.ar-keep-reading__row>h2 a{text-decoration:underline!important;text-underline-offset:2px}
+@media(max-width:800px){.ar-keep-reading__grid{background-image:none!important}.ar-keep-reading .ar-suggested-card{width:100%!important}}
