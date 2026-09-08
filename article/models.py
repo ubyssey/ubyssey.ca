@@ -1228,58 +1228,14 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         """Returns list of authors as a comma-separated string
         sorted by author type (with 'and' before last author)."""
 
-        role_types_words = {
-            'author': 'words by ',
-            'photographer': 'photos by ',
-            'illustrator': 'illustrations by ',
-            'videographer': 'videos by ',
-            'designer': 'design by ',
-            'org_role': '',
-        }
-        role_types = ['author', 'photographer', 'illustrator', 'videographer', 'designer', 'org_role']
-        # These roles belong in the extended byline, not the compact visual
-        # byline. Excluding all four prevents the legacy role-ordering code
-        # from trying to sort photo_editor/graphics_editor as unknown roles.
-        extended_byline_roles = ['backfield_editor', 'copy_editor', 'photo_editor', 'graphics_editor']
-        authors_by_role = {}
-        for author in self.article_authors.all():
-            if author.author_role in authors_by_role:
-                authors_by_role[author.author_role].append(author)
-            elif not author.author_role in extended_byline_roles:
-                authors_by_role[author.author_role] = [author]
-
-        word_authors = []
-        words_byline = ""
-        if 'author' in authors_by_role:
-            word_authors = list(map(lambda author: author.author, authors_by_role['author']))
-            words_byline = self.get_authors_string(links=links, authors_list=authors_by_role['author'])
-    
-        visuals = []
-        has_multi_contribution_author = False
-        for k in authors_by_role:
-            v = authors_by_role[k]
-            visual_authors = map(lambda author: author.author, v)
-            if True in [word_author in visual_authors for word_author in word_authors]:
-                has_multi_contribution_author = True
-            only_visuals_authors = list(filter(lambda author: not author.author in word_authors, v))
-            if len(only_visuals_authors) > 0:
-                visuals.append([k, self.get_authors_string(links=links, authors_list=only_visuals_authors)])
-        visuals.sort(key=lambda s: role_types.index(s[0]))
-        
-        visuals_byline = ''
-
-        if len(visuals) > 0:
-            visuals_byline = visuals_byline + ', '.join(map(lambda a: role_types_words[a[0]] + a[1], visuals))
-            if has_multi_contribution_author:
-                visuals_byline = 'with ' + visuals_byline
-
-        byline = ""
-        if words_byline != "":
-            byline = words_byline + " " + visuals_byline
-        elif len(visuals_byline) > 0:
-            byline = visuals_byline[0].upper() + visuals_byline[1:]
-
-        return byline
+        # Compact bylines are an attribution of the story's writer(s), not a
+        # complete credit roll. Visual and production roles appear in their
+        # dedicated contexts (for example the extended byline) instead.
+        authors = [
+            author for author in self.article_authors.all()
+            if author.author_role == "author"
+        ]
+        return self.get_authors_string(links=links, authors_list=authors) if authors else ""
         
     authors_split_out_visual_bylines = property(fget=get_authors_split_out_visual_bylines)    
 

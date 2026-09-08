@@ -46,6 +46,24 @@ def our_team(request):
     return render(request, page.get_template(request), context)
 
 
+def contact(request):
+    """Render the existing, CMS-managed contact directory at its public URL."""
+    from specialfeaturelanding.models import SpecialLandingPage
+
+    page = SpecialLandingPage.objects.live().filter(slug="masthead").first()
+    if page is None:
+        raise Http404("The contact directory has not been created yet.")
+    context = page.get_context(request)
+    context.update(
+        {
+            "self": page,
+            "redesign_page_url": request.path,
+            "meta": _meta(request, "Contact"),
+        }
+    )
+    return render(request, page.get_template(request), context)
+
+
 def video(request):
     from videos.models import VideoSnippet
 

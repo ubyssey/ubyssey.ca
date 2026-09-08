@@ -257,6 +257,7 @@ class SitewideMenus(ClusterableModel, BaseSiteSetting):
             key = make_template_fragment_key(cache_name)
             cache.delete(key)        
         cache.delete(make_template_fragment_key("redesigned_footer_v7"))
+        cache.delete(make_template_fragment_key("redesigned_footer_v8"))
         for section in SectionPage.objects.all():
             # class name differs for section-specific topbar headers
             key = make_template_fragment_key("main_header_menu", vary_on=[section.slug])
