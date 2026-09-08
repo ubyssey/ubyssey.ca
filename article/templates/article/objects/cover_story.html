@@ -44,7 +44,7 @@
     <div class="o-article__meta">
       <p class="o-article__snippet">{% if article.lede %}{{article.lede|safe}}{% else %}{{article.search_description|safe}}{% endif %}</p>
       <div class="o-article__byline">
-        <span class="o-article__author">{% if article.get_authors_split_out_visual_bylines %}{{article.authors_split_out_visual_bylines |safe }}{% else %}Ubyssey Staff{% endif %}</span>
+        <span class="o-article__author">{% if article.get_authors_split_out_visual_bylines %}{{article.authors_split_out_visual_bylines|normalize_redesign_byline|safe }}{% else %}Ubyssey Staff{% endif %}</span>
         <span> &nbsp;&nbsp; </span>
         {% with article.get_parent.specific as parent %}
         {% if parent.live %}

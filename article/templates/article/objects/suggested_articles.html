@@ -1,15 +1,12 @@
-{% comment %} 
-Arguments: suggested_articles a list of article pages
-Used in both section pages and homepage
-{% endcomment %}
-
-{% load article_display %}
-
-<div class="c-suggested-bar ar-keep-reading" data-keep-reading>
-    <h2>Keep Reading</h2>
-    <div class="ar-keep-reading__viewport"><div class="c-suggested-bar--primary-articles ar-keep-reading__track">
-      {% for article in suggested.primary.articles %}{% include 'article/objects/suggested_article.html' with article=article %}{% endfor %}
-    </div></div>
-    <button class="ar-keep-reading__next" type="button" aria-label="Show more stories">→</button>
-    <p class="ar-keep-reading__page"><span>01</span> / <span>{% if suggested.primary.articles|length > 3 %}02{% else %}01{% endif %}</span></p>
-</div>
+{% if suggested.redesign_rows %}
+  <section class="c-suggested-bar ar-keep-reading" aria-label="More stories">
+    {% for row in suggested.redesign_rows %}
+      <div class="ar-keep-reading__row">
+        <h2>More from <a href="{{ row.url }}">{{ row.title }}</a></h2>
+        <div class="ar-keep-reading__grid">
+          {% for article in row.articles %}{% include 'article/objects/suggested_article.html' with article=article %}{% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+{% endif %}

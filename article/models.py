@@ -1482,7 +1482,32 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         # Ensure the number of topics is at or below the maximum
         orderd_topics = orderd_topics[:topic_max]
 
-        return {"primary": primary, "topics": orderd_topics}
+        # The redesigned article page deliberately presents two independent
+        # editorial rows: one from the parent section and one from the
+        # article's beat.  Keep the existing values above for legacy callers.
+        redesign_rows = []
+        section_articles = list(self.get_section_articles(max=4))
+        if section_articles:
+            parent = self.get_parent()
+            redesign_rows.append({
+                "title": parent.title,
+                "url": parent.url or "",
+                "articles": section_articles,
+            })
+
+        if self.category_page:
+            shown_ids = {article.id for article in section_articles}
+            category_articles = list(
+                self.get_category_articles().exclude(id__in=shown_ids)[:4]
+            )
+            if category_articles:
+                redesign_rows.append({
+                    "title": self.category_page.title,
+                    "url": self.category_page.url or "",
+                    "articles": category_articles,
+                })
+
+        return {"primary": primary, "topics": orderd_topics, "redesign_rows": redesign_rows}
 
 
     def get_title_tag(self) -> str:

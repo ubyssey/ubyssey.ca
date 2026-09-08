@@ -663,6 +663,11 @@ class CategoryPage(SectionPage):
         context["redesign_all_url"] = parent.url
         context["redesign_active_beat_id"] = self.id
         context["redesign_topics"] = parent.get_redesign_topics()
+        # Beat pages deliberately render a pure chronological feed.  They do
+        # not inherit the parent section's curated hero or its exclusions.
+        context["redesign_featured"] = []
+        context["redesign_featured_ids"] = ""
+        context["redesign_recent_articles"] = self.get_section_articles()[:20]
         return context
 
     def get_section_articles(self, order='-explicit_published_at') -> QuerySet:

@@ -92,9 +92,14 @@ function initializeGameAnalysis() {
       datedFixtures.forEach((fixture) => scorePanel.appendChild(fixture));
     });
     const buttons = panel.querySelectorAll('button[data-sport]');
+    const resetButton = panel.querySelector('[data-game-analysis-reset]');
     let selectedSport = '';
     const applySportFilter = () => {
       buttons.forEach((item) => item.classList.toggle('is-active', item.dataset.sport === selectedSport));
+      if (resetButton) {
+        resetButton.disabled = !selectedSport;
+        resetButton.setAttribute('aria-disabled', String(!selectedSport));
+      }
       const cards = [...panel.querySelectorAll('[data-game-card]')];
       const visibleCards = selectedSport ? cards.filter((item) => item.dataset.sport === selectedSport) : cards;
       cards.forEach((item) => {
@@ -110,6 +115,11 @@ function initializeGameAnalysis() {
       selectedSport = selectedSport === button.dataset.sport ? '' : button.dataset.sport;
       applySportFilter();
     }));
+    resetButton?.addEventListener('click', () => {
+      if (!selectedSport) return;
+      selectedSport = '';
+      applySportFilter();
+    });
     applySportFilter();
     panel.querySelectorAll('[data-score-tab]').forEach((button) => {
       button.addEventListener('click', () => {

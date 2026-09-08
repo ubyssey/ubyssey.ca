@@ -34,7 +34,7 @@
 		</h3>
 		<p class="o-article__snippet">{{ article.lede|safe }}</p>
 		<p class="o-article__byline">
-			<span class="o-article__author">{{ article.get_authors_split_out_visual_bylines|safe }}</span>
+			<span class="o-article__author">{{ article.get_authors_split_out_visual_bylines|normalize_redesign_byline|safe }}</span>
 		</p>
 	</div>
 </article>

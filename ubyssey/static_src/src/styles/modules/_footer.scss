@@ -1,5 +1,13 @@
 @use 'variables';
 
+@font-face {
+  font-family: "Agincourt Std";
+  src: url("../fonts/AgincourtStd-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 $text-color: var(--text_color-100);
 
 .site-footer {
@@ -31,7 +39,7 @@ $text-color: var(--text_color-100);
     width: 357px;
 
     > a { display: block; width: 357px; height: 62px; overflow: hidden; }
-    > a img { display: block; width: 340px; height: 30px; margin: 15px 0 0 1px; object-fit: contain; }
+    > a.site-footer__nameplate { padding-top: 8px; color: #fff; font: 400 42px/50px "Agincourt Std", Georgia, serif; text-decoration: none; }
     > p { width: 335px; margin: 10px 0 0; font: 400 15px/20px "articulat-cf", sans-serif; }
   }
 

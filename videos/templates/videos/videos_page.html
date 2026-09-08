@@ -1,6 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static humanize wagtailcore_tags video_filters articletags %}
-{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-1"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-3"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
 {% block page_wrapper %}listing-redesign aux-theme{% endblock %}
 {% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
 {% block content %}<main id="main-content" class="aux-page video-page"><div class="page-shell"><h1 class="video-title">Video</h1>{% with featured=paginated_videos.0 %}{% if featured %}<section class="video-hero"><a class="video-hero__media" href="{{ featured.url }}"><img src="{% if featured.preview_image %}{{ featured.preview_image }}{% else %}https://img.youtube.com/vi/{{ featured.url|youtube_embed_id }}/maxresdefault.jpg{% endif %}" alt="{{ featured.title }}"><span class="play-icon">▶</span></a><div class="video-hero__copy"><time>{{ featured.created_at|date:'F j, Y' }}</time><h2><a href="{{ featured.url }}">{{ featured.title }}</a></h2><p class="video-byline">{{ featured.authors_string|normalize_redesign_byline|safe }}</p><a class="aux-button" href="{{ featured.url }}">Watch video</a></div></section>{% endif %}{% endwith %}

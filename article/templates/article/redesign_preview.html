@@ -1,5 +1,5 @@
 {% extends 'ubyssey/base.html' %}{% load static %}
-{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-15">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-17">{% endblock %}
 {% block header %}{% include 'article/components/redesign_nav.html' with article=preview %}{% endblock %}
 {% block content %}<main id="main-content" class="ar-page ar-page--{{ preview.redesign_header_layout }}"><article class="ar-article">
   {% include 'article/components/redesign_hero.html' with article=preview %}
@@ -14,13 +14,19 @@
       <div class="ar-context-mobile">{% include 'article/objects/redesign_context_rail.html' with article=preview %}</div>
       <p class="ar-report"><a href="https://forms.ubyssey.ca/erasure">Apply for erasure</a><a href="https://forms.ubyssey.ca/tips">Send a tip</a><a href="https://forms.ubyssey.ca/errors">Report an error</a></p>
     </div></div></div>
-  <section class="c-suggested-bar ar-keep-reading" data-keep-reading><h2>Keep Reading</h2><div class="ar-keep-reading__viewport"><div class="ar-keep-reading__track">
-    <article><a href="/redesign-preview/article/body-width/"><img src="{% static 'ubyssey/images/article/keep-reading/ai-notetaker.webp' %}" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">What we know about the Centre for Accessibility's AI notetaker</h3></a></article>
-    <article><a href="/redesign-preview/article/left-aligned/"><img src="{% static 'ubyssey/images/article/keep-reading/ta-union.webp' %}" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">TA union files for mediation with UBC</h3></a></article>
-    <article><a href="/redesign-preview/article/right-aligned/"><img src="{% static 'ubyssey/images/article/keep-reading/data-safety.webp' %}" alt=""><span class="ar-suggested-kicker">Feature</span><h3 class="o-article__headline">How safe is our data?</h3></a></article>
-    <article><a href="/redesign-preview/article/full-bleed/"><img src="{% static 'ubyssey/images/article/keep-reading/ai-notetaker.webp' %}" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">UBC researchers shape accessibility policy</h3></a></article>
-    <article><a href="/redesign-preview/article/big-centered/"><img src="{% static 'ubyssey/images/article/keep-reading/ta-union.webp' %}" alt=""><span class="ar-suggested-kicker">News</span><h3 class="o-article__headline">Campus labour negotiations continue</h3></a></article>
-    <article><a href="/redesign-preview/article/shared-components/"><img src="{% static 'ubyssey/images/article/keep-reading/data-safety.webp' %}" alt=""><span class="ar-suggested-kicker">Feature</span><h3 class="o-article__headline">Inside the systems that hold student data</h3></a></article>
-  </div></div><button class="ar-keep-reading__next" type="button">→</button><p class="ar-keep-reading__page"><span>01</span> / <span>02</span></p></section>
+  <section class="c-suggested-bar ar-keep-reading" aria-label="More stories">
+    <div class="ar-keep-reading__row"><h2>More from <a href="/news/">News</a></h2><div class="ar-keep-reading__grid">
+      <article class="ar-suggested-card"><a class="ar-suggested-card__image" href="/redesign-preview/article/body-width/"><img src="{% static 'ubyssey/images/article/keep-reading/ai-notetaker.webp' %}" alt=""></a><h3><a href="/redesign-preview/article/body-width/">What we know about the Centre for Accessibility's AI notetaker</a></h3></article>
+      <article class="ar-suggested-card"><a class="ar-suggested-card__image" href="/redesign-preview/article/left-aligned/"><img src="{% static 'ubyssey/images/article/keep-reading/ta-union.webp' %}" alt=""></a><h3><a href="/redesign-preview/article/left-aligned/">TA union files for mediation with UBC</a></h3></article>
+      <article class="ar-suggested-card"><a class="ar-suggested-card__image" href="/redesign-preview/article/right-aligned/"><img src="{% static 'ubyssey/images/article/keep-reading/data-safety.webp' %}" alt=""></a><h3><a href="/redesign-preview/article/right-aligned/">How safe is our data?</a></h3></article>
+      <article class="ar-suggested-card"><a class="ar-suggested-card__image" href="/redesign-preview/article/full-bleed/"><img src="{% static 'ubyssey/images/article/keep-reading/ai-notetaker.webp' %}" alt=""></a><h3><a href="/redesign-preview/article/full-bleed/">UBC researchers shape accessibility policy</a></h3></article>
+    </div></div>
+    <div class="ar-keep-reading__row"><h2>More from <a href="/news/campus/">Campus</a></h2><div class="ar-keep-reading__grid">
+      <article class="ar-suggested-card"><a class="ar-suggested-card__image" href="/redesign-preview/article/big-centered/"><img src="{% static 'ubyssey/images/article/keep-reading/ta-union.webp' %}" alt=""></a><h3><a href="/redesign-preview/article/big-centered/">Campus labour negotiations continue</a></h3></article>
+      <article class="ar-suggested-card"><a class="ar-suggested-card__image" href="/redesign-preview/article/shared-components/"><img src="{% static 'ubyssey/images/article/keep-reading/data-safety.webp' %}" alt=""></a><h3><a href="/redesign-preview/article/shared-components/">Inside the systems that hold student data</a></h3></article>
+      <article class="ar-suggested-card"><a class="ar-suggested-card__image" href="/redesign-preview/article/body-width/"><img src="{% static 'ubyssey/images/article/keep-reading/ai-notetaker.webp' %}" alt=""></a><h3><a href="/redesign-preview/article/body-width/">Students build a better way to learn</a></h3></article>
+      <article class="ar-suggested-card"><a class="ar-suggested-card__image" href="/redesign-preview/article/left-aligned/"><img src="{% static 'ubyssey/images/article/keep-reading/ta-union.webp' %}" alt=""></a><h3><a href="/redesign-preview/article/left-aligned/">A closer look at campus life this fall</a></h3></article>
+    </div></div>
+  </section>
 </article></main>{% endblock %}
 {% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-nav-stable-1"></script>{% endblock %}
