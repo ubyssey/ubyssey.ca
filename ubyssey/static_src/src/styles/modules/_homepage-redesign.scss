@@ -661,3 +661,129 @@
   .hp-nav__join h2 span{background:none!important;color:#fff!important;text-decoration:none!important}
   .hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span{background:none!important;color:#bce3f0!important;text-decoration:underline!important;text-decoration-thickness:2px!important;text-underline-offset:4px!important}
 }
+
+/* Homepage menu parity with the regular article/section header.  This lives
+   last so the earlier, legacy fixed-size Join CTA cannot re-enter the layout. */
+@media (min-width:761px){
+  /* Both masthead utility links share the same 16px line box and baseline. */
+  .hp-nav__mast>.hp-nav__newsletter{top:33px!important;line-height:16px!important}
+
+  .hp-nav__expanded,.hp-nav.is-compact .hp-nav__expanded{
+    height:292px!important;
+    padding-bottom:42px!important;
+  }
+  .hp-nav__expanded-grid{top:84px!important}
+  .hp-nav__expanded .hp-nav__links a{
+    font-family:"drummond-variable",Georgia,serif!important;
+    font-size:21px!important;
+    font-weight:700!important;
+    font-stretch:normal!important;
+    font-variation-settings:"wght" 700!important;
+    letter-spacing:0!important;
+  }
+
+  /* Centre the reduced Join block in the menu instead of pinning it to the
+     search row. Its parent and link are deliberately allowed to size to text. */
+  .hp-nav__join{
+    margin-left:27px!important;
+    transform:none!important;
+    text-align:center!important;
+  }
+  .hp-nav__join>a.hp-nav__join-link{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    background:none!important;
+    box-shadow:none!important;
+  }
+  .hp-nav__join h2{
+    margin:0 auto 10px!important;
+    font-size:46px!important;
+    line-height:.94!important;
+  }
+  .hp-nav__join p,.hp-nav__join p span{
+    width:max-content!important;
+    max-width:100%!important;
+    margin-inline:auto!important;
+    font-size:17px!important;
+    line-height:1.1!important;
+  }
+
+  /* Join is a text-only colour transition—never the blue hover block used by
+     navigation links. The supporting copy intentionally remains unchanged. */
+  .hp-nav__join-link,.hp-nav__join-link:hover,.hp-nav__join-link:focus-visible,
+  .hp-nav__join h2 span,.hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span{
+    background:none!important;
+    text-decoration:none!important;
+  }
+  .hp-nav__join h2 span{color:#fff!important;transition:color .2s ease!important}
+  .hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span{color:#bce3f0!important}
+  .hp-nav__join-link:hover p,.hp-nav__join-link:hover p span,.hp-nav__join-link:focus-visible p,.hp-nav__join-link:focus-visible p span{color:#fff!important}
+}
+
+@media (max-width:760px){
+  /* Match the regular header's natural two-column rhythm, with enough space
+     below the final CTA before page content resumes. */
+  .hp-nav__expanded,.hp-nav.is-compact .hp-nav__expanded{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding:18px 0 50px!important;
+    overflow:visible!important;
+  }
+  .hp-nav__expanded-grid{
+    width:calc(100% - 48px)!important;
+    margin:24px auto 0!important;
+    gap:18px 44px!important;
+  }
+  .hp-nav__expanded .hp-nav__links a{
+    font-family:"drummond-variable",Georgia,serif!important;
+    font-size:22px!important;
+    font-weight:700!important;
+    font-stretch:normal!important;
+    font-variation-settings:"wght" 700!important;
+    letter-spacing:0!important;
+  }
+  .hp-nav__join{
+    grid-column:1 / -1!important;
+    width:100%!important;
+    margin:14px 0 0!important;
+    padding:0!important;
+    text-align:left!important;
+  }
+  .hp-nav__join>a.hp-nav__join-link{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    background:none!important;
+    box-shadow:none!important;
+  }
+  .hp-nav__join h2{
+    width:max-content!important;
+    margin:0 0 10px!important;
+    font-size:38px!important;
+    line-height:.94!important;
+  }
+  .hp-nav__join p,.hp-nav__join p span{
+    display:block!important;
+    width:340px!important;
+    max-width:100%!important;
+    margin:0!important;
+    font-size:17px!important;
+    line-height:1.12!important;
+  }
+  .hp-nav__join-link,.hp-nav__join-link:hover,.hp-nav__join-link:focus-visible,
+  .hp-nav__join h2 span,.hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span{
+    background:none!important;
+    text-decoration:none!important;
+  }
+  .hp-nav__join h2 span{color:#fff!important;transition:color .2s ease!important}
+  .hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span{color:#bce3f0!important}
+  .hp-nav__join-link:hover p,.hp-nav__join-link:hover p span,.hp-nav__join-link:focus-visible p,.hp-nav__join-link:focus-visible p span{color:#fff!important}
+}
