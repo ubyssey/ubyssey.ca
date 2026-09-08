@@ -29,7 +29,7 @@ function LiveblogStageHeader({value, meta}) {
     return (
         <div className="headline-container headline-container--timely-style">
             {showThrobber(meta) && <div className="live-signal">LIVE</div>}
-            <h1 className="o-headline o-headline--article" dangerouslySetInnerHTML={{__html: meta.page.title}}></h1>
+            <h1 className="o-headline o-headline--article">{meta.page.title}</h1>
             {meta.updatedTime != null && 
                 <div className="c-article__published-at">Last updated <time className="liveblog_updated_at" dateTime={meta.updatedTime}>{new Intl.DateTimeFormat("en-CA", {month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(meta.updatedTime))}</time></div>
             }
