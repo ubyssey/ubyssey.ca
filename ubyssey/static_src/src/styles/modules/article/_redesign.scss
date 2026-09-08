@@ -655,3 +655,23 @@
   .ar-suggested-card-wrap--divided::after{display:none!important}
   .ar-context-mobile .ar-context-box h2{font:400 16px/20px "drummond-variable",Georgia,serif!important}
 }
+
+/* Match the compact, text-only Join treatment in the shared non-home menu. */
+@media (min-width:801px){
+  .ar-nav .hp-nav__expanded{height:340px!important}
+  .ar-nav .hp-nav__expanded .hp-nav__search{top:34px!important;height:40px!important}
+  .ar-nav .hp-nav__expanded-grid{top:106px!important}
+  .ar-nav .hp-nav__join{margin-left:0!important;transform:translateY(-72px);text-align:center!important}
+  .ar-nav .hp-nav__join-link{display:block!important;width:360px!important;margin:0!important}
+  .ar-nav .hp-nav__join h2{font-size:56px!important;line-height:.94!important}
+  .ar-nav .hp-nav__join p{font-size:21px!important;line-height:1.08!important}
+  .ar-nav .hp-nav__expanded .hp-nav__search button img{filter:invert(1)!important}
+  .ar-nav .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-size:21px!important;font-weight:400!important;font-stretch:condensed!important;font-variation-settings:"wdth" 50,"wght" 400!important;letter-spacing:-.012em}
+  .ar-nav .hp-nav__join-link p span,.ar-nav .hp-nav__join-link:hover p span,.ar-nav .hp-nav__join-link:focus-visible p span{background:none!important;color:#fff!important}
+}
+@media(max-width:800px){
+  .ar-nav .hp-nav__expanded .hp-nav__search{height:44px!important}
+  .ar-nav .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-size:21px!important;font-weight:400!important;font-stretch:condensed!important;font-variation-settings:"wdth" 50,"wght" 400!important}
+  .ar-nav .hp-nav__expanded .hp-nav__search button img{filter:invert(1)!important}
+  .ar-nav .hp-nav__join-link p span,.ar-nav .hp-nav__join-link:hover p span,.ar-nav .hp-nav__join-link:focus-visible p span{background:none!important;color:#fff!important}
+}
