@@ -708,6 +708,35 @@ body {
     grid-template-columns: minmax(0, 1fr) auto;
 }
 
+// Hides that images are buttons
+.article-media-item__image-button {
+    padding: 0 !important;
+    background: transparent !important;
+    cursor: pointer;
+}
+
+.article-media-preview {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+}
+
+.article-media-preview[hidden] {
+    display: none;
+}
+
+.article-media-preview > img {
+    display: block;
+    width: 95%;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
 .page-field {
     padding: 5px 0;
 }

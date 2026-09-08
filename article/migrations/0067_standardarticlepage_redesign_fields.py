@@ -3,7 +3,7 @@ import wagtail.fields
 
 
 class Migration(migrations.Migration):
-    dependencies = [("article", "0063_articledeadline")]
+    dependencies = [("article", "0064_articlepage_story_type_squashed_0066_alter_articlepage_story_type")]
     operations = [
         migrations.AddField(
             model_name="standardarticlepage",

@@ -16,6 +16,9 @@ export function useMediaModals(form, mediaUpdates) {
     const guideModal = document.querySelector("[data-manuscript-guide-modal]");
     const uploadModal = document.querySelector("[data-article-media-upload-modal]");
     const galleryModal = document.querySelector("[data-article-media-gallery-modal]");
+    const imageViewer = document.querySelector("[data-article-media-preview]");
+    const previewImage = document.querySelector("[data-article-media-preview-image]");
+
     const uploadTitle = document.querySelector("[data-article-media-upload-title]");
     const kind = form.elements.namedItem("article_media-kind");
     let uploadReturnsToGallery = false;
@@ -100,6 +103,15 @@ export function useMediaModals(form, mediaUpdates) {
       addListener(document.querySelector("[data-manuscript-open-settings]"), "click", () => {
         setModalOpen(settingsModal, true, settingsModal.querySelector(focusableSelector));
       }),
+      addListener(form, "click", (event) => {
+        const enlargeButton = event.target.closest("[data-article-media-enlarge]");
+        if (!enlargeButton) return;
+        event.preventDefault();
+        previewImage.src = enlargeButton.dataset.fullUrl;
+        previewImage.alt = enlargeButton.dataset.imageTitle;
+        imageViewer.hidden = false;
+      }),
+      addListener(imageViewer, "click", () => { imageViewer.hidden = true; }),
       addListener(document.querySelector("[data-article-media-open-upload]"), "click", () => {
         uploadReturnsToGallery = !galleryModal.hidden;
         uploadModal.classList.toggle("page-editor-modal--stacked", uploadReturnsToGallery);
@@ -148,7 +160,8 @@ export function useMediaModals(form, mediaUpdates) {
       )),
       addListener(document, "keydown", (event) => {
         if (event.key !== "Escape") return;
-        if (!uploadModal.hidden) closeUpload();
+        if (!imageViewer.hidden) imageViewer.hidden = true;
+        else if (!uploadModal.hidden) closeUpload();
         else if (!existingMediaModal.hidden) closeExisting();
         else if (!settingsModal.hidden) setModalOpen(settingsModal, false);
         else if (!guideModal.hidden) setModalOpen(guideModal, false);

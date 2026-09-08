@@ -27,6 +27,10 @@ def page_restore_group_name(page_id):
     return f"stove_yjs_restore_{page_id}"
 
 
+def page_yjs_group_name(page_id):
+    return f"stove_yjs_{page_id}"
+
+
 # Sync Y document with a Wagtail page
 class PageYjsConsumer(YjsConsumer):
 
@@ -73,7 +77,7 @@ class PageYjsConsumer(YjsConsumer):
             await self.group_send_message(bytes([PERSISTENCE_ACK_MESSAGE]))
 
     def make_room_name(self):
-        return f"stove_yjs_{self.page_id}"
+        return page_yjs_group_name(self.page_id)
 
     async def page_restored(self, event):
         await self.close(code=RESTORE_CLOSE_CODE)

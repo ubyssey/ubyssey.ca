@@ -8,9 +8,9 @@ export function commentSuggestion(comments) {
 
 export const suggestionLabel = (suggestion) => suggestion.charAt(0).toUpperCase() + suggestion.slice(1).toLowerCase();
 
-export function createSuggestionMark(commentMark, suggestion, text, threadId = uuidv4(), suggestionPart = null) {
+export function createSuggestionMark(suggestionMark, suggestion, text, threadId = uuidv4(), suggestionPart = null) {
   const username = document.querySelector("[data-current-editor-username]")?.dataset.currentEditorUsername || "";
-  return commentMark.create({
+  return suggestionMark.create({
     threadId,
     comments: [{
       username,
@@ -25,6 +25,7 @@ export function createSuggestionMark(commentMark, suggestion, text, threadId = u
 }
 
 export const commentMarkSpec = {
+  inclusive: false,
   attrs: {
     threadId: { default: null },
     comments: { default: [] },
@@ -53,6 +54,42 @@ export const commentMarkSpec = {
   },
 };
 
+// Separate from comment so both can exist at once on the same piece of text
+export const suggestionMarkSpec = {
+  inclusive: false,
+  attrs: {
+    threadId: { default: null },
+    comments: { default: [] },
+    suggestionPart: { default: null },
+    pending: { default: false },
+    resolved: { default: false },
+  },
+  parseDOM: [
+    { tag: "mark[data-suggestion-thread-id]", getAttrs: readSuggestionAttrs },
+    { tag: "span[data-suggestion-thread-id]", getAttrs: readSuggestionAttrs },
+  ],
+  toDOM(mark) {
+    const attrs = mark.attrs;
+    return ["span", {
+      "data-suggestion-thread-id": attrs.threadId || "",
+      "data-suggestion-comments": JSON.stringify(attrs.comments || []),
+      "data-suggestion-pending": attrs.pending ? "true" : "false",
+      "data-suggestion-resolved": attrs.resolved ? "true" : "false",
+      "data-suggestion-part": attrs.suggestionPart || commentSuggestion(attrs.comments) || "",
+    }, 0];
+  },
+};
+
+function readSuggestionAttrs(dom) {
+  return {
+    threadId: dom.getAttribute("data-suggestion-thread-id"),
+    comments: parseCommentPayload(dom.getAttribute("data-suggestion-comments")),
+    suggestionPart: dom.getAttribute("data-suggestion-part") || null,
+    pending: dom.getAttribute("data-suggestion-pending") === "true",
+    resolved: dom.getAttribute("data-suggestion-resolved") === "true",
+  };
+}
+
 function readCommentAttrs(dom) {
   return {
     threadId: dom.getAttribute("data-comment-thread-id"),
@@ -71,6 +108,27 @@ function parseCommentPayload(value) {
   } catch (error) {
     return [];
   }
+}
+
+export function migrateLegacySuggestionMarks(view) {
+  const commentMark = view.state.schema.marks.comment;
+  const suggestionMark = view.state.schema.marks.suggestion;
+
+  let tr = view.state.tr;
+  view.state.doc.descendants((node, position) => {
+    if (!node.isText) return true;
+    const mark = commentMark.isInSet(node.marks);
+    if (!mark || !commentSuggestion(mark.attrs.comments)) return true;
+
+    tr = tr
+      .removeMark(position, position + node.nodeSize, commentMark)
+      .addMark(position, position + node.nodeSize, suggestionMark.create(mark.attrs));
+    return true;
+  });
+
+  if (!tr.docChanged) return false;
+  view.dispatch(tr.setMeta("addToHistory", false));
+  return true;
 }
 
 export function startCommentCommand(commentMark) {
@@ -92,97 +150,54 @@ export function startCommentOnSelection(view) {
   return startCommentCommand(view.state.schema.marks.comment)(view.state, view.dispatch, view);
 }
 
-export function collectCommentThreads(view) {
-  const commentMark = view.state.schema.marks.comment;
-  if (!commentMark) return [];
-
+export function collectAnnotationThreads(views) {
   const threads = new Map();
-  view.state.doc.descendants((node) => {
-    if (!node.isText) return true;
-    const mark = commentMark.isInSet(node.marks);
-    if (!mark || !mark.attrs.threadId || threads.has(mark.attrs.threadId)) return true;
 
-    threads.set(mark.attrs.threadId, {
-      threadId: mark.attrs.threadId,
-      comments: Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [],
-      pending: Boolean(mark.attrs.pending),
-      resolved: Boolean(mark.attrs.resolved),
-      view,
-    });
-    return true;
-  });
+  for (const view of views) {
+    for (const kind of ["comment", "suggestion"]) {
+      const markType = view.state.schema.marks[kind];
+      view.state.doc.descendants((node) => {
+        if (!node.isText) return true;
+        const mark = markType.isInSet(node.marks);
+        if (!mark?.attrs.threadId) return true;
+
+        const key = `${kind}:${mark.attrs.threadId}`;
+        const thread = threads.get(key);
+        if (thread) {
+          if (!thread.views.includes(view)) thread.views.push(view);
+          return true;
+        }
+
+        threads.set(key, {
+          kind,
+          threadId: mark.attrs.threadId,
+          comments: Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [],
+          pending: Boolean(mark.attrs.pending),
+          resolved: Boolean(mark.attrs.resolved),
+          view,
+          views: [view],
+        });
+        return true;
+      });
+    }
+  }
 
   return Array.from(threads.values());
 }
 
-export function appendCommentToThread(view, threadId, comment) {
-  const thread = findCommentThread(view, threadId);
-  if (!thread) return false;
+function findAnnotationThread(view, kind, threadId) {
+  const markType = view.state.schema.marks[kind];
+  if (!threadId) return null;
 
-  return replaceCommentThread(view, thread, {
-    comments: [...thread.comments, comment],
-    pending: false,
-    resolved: false,
-  });
-}
-
-export function setCommentThreadResolved(view, threadId, resolved) {
-  const thread = findCommentThread(view, threadId);
-  if (!thread) return false;
-  return replaceCommentThread(view, thread, { resolved: Boolean(resolved) });
-}
-
-export function acceptCommentSuggestion(view, threadId, suggestion) {
-  if (suggestion === "add") return removeCommentThread(view, threadId);
-
-  const thread = findCommentThread(view, threadId);
-  if (!thread) return false;
-
-  let tr = view.state.tr;
-  for (const range of [...thread.ranges].reverse()) {
-    tr = suggestion === "delete" || range.suggestionPart === "delete"
-      ? tr.delete(range.from, range.to)
-      : tr.removeMark(range.from, range.to, thread.commentMark);
-  }
-  view.dispatch(tr.scrollIntoView());
-  return true;
-}
-
-export function rejectCommentSuggestion(view, threadId, suggestion) {
-  const thread = findCommentThread(view, threadId);
-  if (!thread) return false;
-
-  let tr = view.state.tr;
-  for (const range of [...thread.ranges].reverse()) {
-    tr = suggestion === "add" || range.suggestionPart === "add"
-      ? tr.delete(range.from, range.to)
-      : tr.removeMark(range.from, range.to, thread.commentMark);
-  }
-  view.dispatch(tr.scrollIntoView());
-  return true;
-}
-
-export function findCommentThread(view, threadId) {
-  const commentMark = view.state.schema.marks.comment;
-  if (!commentMark || !threadId) return null;
-
-  const thread = {
-    commentMark,
-    threadId,
-    ranges: [],
-    comments: [],
-    pending: false,
-    resolved: false,
-  };
-
-  view.state.doc.descendants((node, pos) => {
+  const thread = { markType, ranges: [], comments: [], pending: false, resolved: false };
+  view.state.doc.descendants((node, position) => {
     if (!node.isText) return true;
-    const mark = commentMark.isInSet(node.marks);
+    const mark = markType.isInSet(node.marks);
     if (!mark || mark.attrs.threadId !== threadId) return true;
 
     thread.ranges.push({
-      from: pos,
-      to: pos + node.nodeSize,
+      from: position,
+      to: position + node.nodeSize,
       suggestionPart: mark.attrs.suggestionPart,
     });
     thread.comments = Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [];
@@ -194,34 +209,100 @@ export function findCommentThread(view, threadId) {
   return thread.ranges.length ? thread : null;
 }
 
-export function replaceCommentThread(view, thread, attrs) {
-  let tr = view.state.tr;
-  const nextAttrs = {
-    threadId: thread.threadId,
-    comments: thread.comments,
-    pending: thread.pending,
-    resolved: thread.resolved,
-    ...attrs,
-  };
+function replaceAnnotationThread(thread, attrs) {
+  let changed = false;
 
-  for (const range of thread.ranges) {
-    tr = tr
-      .removeMark(range.from, range.to, thread.commentMark)
-      .addMark(range.from, range.to, thread.commentMark.create({
-        ...nextAttrs,
-        suggestionPart: range.suggestionPart,
-      }));
+  for (const view of thread.views) {
+    const fragment = findAnnotationThread(view, thread.kind, thread.threadId);
+    if (!fragment) continue;
+
+    let tr = view.state.tr;
+    const nextAttrs = {
+      threadId: thread.threadId,
+      comments: thread.comments,
+      pending: thread.pending,
+      resolved: thread.resolved,
+      ...attrs,
+    };
+    for (const range of fragment.ranges) {
+      tr = tr
+        .removeMark(range.from, range.to, fragment.markType)
+        .addMark(range.from, range.to, fragment.markType.create({
+          ...nextAttrs,
+          suggestionPart: range.suggestionPart,
+        }));
+    }
+    view.dispatch(tr.setMeta("skipPreview", true));
+    changed = true;
   }
-  view.dispatch(tr.setMeta("skipPreview", true));
-  return true;
+
+  return changed;
 }
 
-export function removeCommentThread(view, threadId) {
-  const thread = findCommentThread(view, threadId);
-  if (!thread) return false;
+export function appendThreadComment(thread, comment) {
+  return replaceAnnotationThread(thread, {
+    comments: [...thread.comments, comment],
+    pending: false,
+    resolved: false,
+  });
+}
 
-  let tr = view.state.tr;
-  for (const range of thread.ranges) tr = tr.removeMark(range.from, range.to, thread.commentMark);
-  view.dispatch(tr.setMeta("skipPreview", true));
-  return true;
+export function setCommentThreadResolved(thread, resolved) {
+  return replaceAnnotationThread(thread, { resolved: Boolean(resolved) });
+}
+
+export function removeAnnotationThread(thread) {
+  let changed = false;
+
+  for (const view of thread.views) {
+    const fragment = findAnnotationThread(view, thread.kind, thread.threadId);
+    if (!fragment) continue;
+
+    let tr = view.state.tr;
+    for (const range of fragment.ranges) tr = tr.removeMark(range.from, range.to, fragment.markType);
+    view.dispatch(tr.setMeta("skipPreview", true));
+    changed = true;
+  }
+
+  return changed;
+}
+
+export function acceptSuggestion(thread, suggestion) {
+  if (suggestion === "add") return removeAnnotationThread(thread);
+
+  let changed = false;
+  for (const view of thread.views) {
+    const fragment = findAnnotationThread(view, "suggestion", thread.threadId);
+    if (!fragment) continue;
+
+    let tr = view.state.tr;
+    for (const range of [...fragment.ranges].reverse()) {
+      tr = suggestion === "delete" || range.suggestionPart === "delete"
+        ? tr.delete(range.from, range.to)
+        : tr.removeMark(range.from, range.to, fragment.markType);
+    }
+    view.dispatch(tr.scrollIntoView());
+    changed = true;
+  }
+
+  return changed;
+}
+
+export function rejectSuggestion(thread, suggestion) {
+  let changed = false;
+  for (const view of thread.views) {
+    const fragment = findAnnotationThread(view, "suggestion", thread.threadId);
+    if (!fragment) continue;
+
+    let tr = view.state.tr;
+    for (const range of [...fragment.ranges].reverse()) {
+      tr = suggestion === "add" || range.suggestionPart === "add"
+        ? tr.delete(range.from, range.to)
+        : tr.removeMark(range.from, range.to, fragment.markType);
+    }
+    view.dispatch(tr.scrollIntoView());
+    changed = true;
+  }
+
+  return changed;
 }

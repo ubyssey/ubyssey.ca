@@ -9,9 +9,14 @@ from wagtail.fields import RichTextField, StreamField
 # Settings fields
 PAGE_FORM_FIELDS = (
     "fw_alternate_title",
+    "lede",
     "seo_description",
     "timeliness",
     "slug",
+    "story_form",
+    "standpoint_disclosure",
+    "extended_byline_override",
+    "full_bleed_nav_color",
     "deadline",
     "explicit_published_at",
     "show_last_modified",
@@ -26,8 +31,13 @@ PAGE_FORM_HIDDEN_FIELDS = (
 
 PAGE_FORM_LABELS = {
     "fw_alternate_title": "Alternate Title",
+    "lede": "Lede",
     "timeliness": "Timeliness",
     "slug": "Slug",
+    "story_form": "Story Form",
+    "standpoint_disclosure": "Standpoint Disclosure",
+    "extended_byline_override": "Extended Byline",
+    "full_bleed_nav_color": "Full-Bleed Navigation Colour",
     "title_tag": "Title Tag",
     "seo_description": "Meta Description",
     "explicit_published_at": "Publication Date",

@@ -1,0 +1,77 @@
+[
+  {
+    "value": "report", 
+    "label": "Report", 
+    "description": "A news report is a shorter story about events with immediate relevance, written from a detached perspective."
+  },
+  {
+    "value": "live-update", 
+    "label": "Live Update", 
+    "description": "A live update is a series of brief reports from journalists on the ground while news is happening."
+  },
+  {
+    "value": "feature", 
+    "label": "Feature", 
+    "description": "A feature is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective."
+  },
+  {
+    "value": "profile", 
+    "label": "Profile", 
+    "description": "A profile tells the stories of individuals and their worldviews, written from a repoter's perspective."
+  },
+  {
+    "value": "q-and-a", 
+    "label": "Q&A", 
+    "description": "A Q&A is a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity."
+  },
+  {
+    "value": "review", 
+    "label": "Review", 
+    "description": "A review is a story about art or culture, written from a critical perspective."
+  },
+  {
+    "value": "game-analysis", 
+    "label": "Game Analysis", 
+    "description": "A game analysis is a story about individual games, written from an reporter's perspective."
+  },
+  {
+    "value": "commentary", 
+    "label": "Commentary", 
+    "description": "A commentary is a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense."
+  },
+  {
+    "value": "essay", 
+    "label": "Essay", 
+    "description": "An opinion essay refers to author's views on the news, written from their own perspective but based on reporting."
+  },
+  {
+    "value": "column", 
+    "label": "Column", 
+    "description": "A column is a story reported by a columnists — an opinion journalists who makes abstract judgments about the news and the way the world should be."
+  },
+  {
+    "value": "editorial", 
+    "label": "Editorial", 
+    "description": "An n editorial is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day."
+  },
+  {
+    "value": "letter-to-the-editor", 
+    "label": "Letter to the Editor", 
+    "description": "A letter to the editor is a 250-word response to stories published in The Ubyssey, written by readers."
+  },
+  {
+    "value": "letter-from-the-editor", 
+    "label": "Letter from the Editor", 
+    "description": "A letter from the editor is a message to readers from the The Ubyssey's Senior Masthead."
+  },
+  {
+    "value": "public-service-announcement", 
+    "label": "Public Service Announcement", 
+    "description": "A public service announcement shares public interest information with imminent relevance, such as extreme weather or threats to public safety."
+  },
+  {
+    "value": "other", 
+    "label": "Other", 
+    "description": "Editors must seek approval from the senior masthead before publishing an 'other' story type."
+  }
+]

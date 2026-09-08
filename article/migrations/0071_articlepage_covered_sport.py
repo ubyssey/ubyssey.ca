@@ -10,7 +10,7 @@ SPORT_CHOICES = [
 
 
 class Migration(migrations.Migration):
-    dependencies = [("article", "0069_standardarticlepage_extended_byline_override")]
+    dependencies = [("article", "0070_alter_articlepage_story_type")]
 
     operations = [
         migrations.AddField(

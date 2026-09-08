@@ -33,21 +33,34 @@ function applyLink(view, linkMark, range, { href: rawHref, alias: rawAlias }) {
   }
   if (href && !/^[a-z][a-z0-9+.-]*:/i.test(href) && !/^[#/?]/.test(href)) href = `https://${href}`;
 
-  let tr = view.state.tr;
+  const { state } = view;
+  let tr = state.tr;
   if (!href) {
     tr = range ? tr.removeMark(range.from, range.to, linkMark) : tr.removeStoredMark(linkMark);
   } else {
     const text = String(rawAlias || "").trim() || href;
     const mark = linkMark.create({ href });
-    tr = range
-      ? tr.replaceWith(range.from, range.to, view.state.schema.text(text, [mark]))
-      : tr.replaceSelectionWith(view.state.schema.text(text, [mark]), false);
+    const oldText = range && state.doc.textBetween(range.from, range.to);
+
+    if (range && text === oldText) {
+      tr = tr.removeMark(range.from, range.to, linkMark).addMark(range.from, range.to, mark);
+    } else {
+      const marks = range ? marksAtRangeStart(state, range.from) : state.storedMarks || state.selection.$from.marks();
+      const textNode = state.schema.text(text, [...marks.filter((item) => item.type !== linkMark), mark]);
+      tr = range ? tr.replaceWith(range.from, range.to, textNode) : tr.replaceSelectionWith(textNode, false);
+    }
     tr = tr.removeStoredMark(linkMark);
   }
 
   view.dispatch(tr.scrollIntoView());
   view.focus();
   return true;
+}
+
+function marksAtRangeStart(state, position) {
+  const resolved = state.doc.resolve(position);
+  const marks = [...resolved.marks(), ...(resolved.nodeAfter?.marks || [])];
+  return marks.filter((mark, index) => marks.findIndex((item) => item.type === mark.type) === index);
 }
 
 function openLinkModal(props) {

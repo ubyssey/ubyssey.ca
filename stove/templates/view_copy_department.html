@@ -3,7 +3,7 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'ubyssey/css/stove/content_tracker_react.css' %}"></link>
-<script defer src="{% static 'ubyssey/js/stove/stove_content_tracker.js' %}"></script>
+<script defer src="{% static 'ubyssey/js/stove/copy_view.js' %}"></script>
 
 {# Temporarily adding this here since it doesn't extend stove base #}
 <link rel="icon" href="{% static 'ubyssey/images/stove/favicon.ico' %}">
@@ -24,10 +24,10 @@
     
     const currentUser = "{{ request.user.get_full_name }}"
     const articleUrl = "{% url 'stove:manuscript_editor' 1918 %}"
-    const loadArticlesUrl = "{% url 'stove:content_tracker_load_pages' section 1918 %}"
+    const loadArticlesUrl = "{% url 'stove:content_tracker_load_pages' 'all' 1918 %}"
     const loadPageUrl = "{% url 'stove:content_tracker_load_page' 1918 %}"
     const createPageUrl = "{% url 'stove:content_tracker_create_page' 1918 %}"
-    const pageSection = "{{section|title}}"
+    const pageSection = "Copy"
     
     {% autoescape off %}
     let allSections = {{ sections }}
