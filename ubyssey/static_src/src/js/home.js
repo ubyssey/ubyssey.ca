@@ -22,7 +22,6 @@ function initializeRedesignNavigation() {
   button.addEventListener('click', () => setOpen(!open));
   header.querySelectorAll('.hp-nav__nameplate, .hp-nav__compact-nameplate').forEach((nameplate) => {
     nameplate.addEventListener('click', (event) => {
-      if (!document.querySelector('#newsletter')) return;
       event.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -31,7 +30,11 @@ function initializeRedesignNavigation() {
     const target = document.querySelector('#newsletter');
     if (!target) return;
     event.preventDefault();
-    const targetTop = target.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height;
+    // Reaching the divider always puts the homepage into its compact state.
+    // Reserve that final header height, not the larger masthead height that
+    // happens to be present at the moment of the click.
+    const compactHeaderHeight = window.matchMedia('(min-width: 761px)').matches ? 68 : 58;
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - compactHeaderHeight;
     window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
   });
   document.addEventListener('keydown', (event) => {
@@ -52,11 +55,11 @@ function initializeRedesignNavigation() {
   const desktop = window.matchMedia('(min-width: 761px)');
   const setCompact = (nextCompact) => {
     if (nextCompact === compact) return;
-    const previousHeight = desktop.matches ? header.getBoundingClientRect().height : 0;
+    const previousHeight = header.getBoundingClientRect().height;
     compact = nextCompact;
     settlingCompactState = true;
     header.classList.toggle('is-compact', compact);
-    const nextHeight = desktop.matches ? header.getBoundingClientRect().height : 0;
+    const nextHeight = header.getBoundingClientRect().height;
     const layoutDelta = nextHeight - previousHeight;
     if (layoutDelta) window.scrollBy(0, layoutDelta);
     // Collapsing a sticky element changes document layout. Chrome may emit a
