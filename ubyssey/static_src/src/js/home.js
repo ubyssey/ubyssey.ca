@@ -22,7 +22,6 @@ function initializeRedesignNavigation() {
   button.addEventListener('click', () => setOpen(!open));
   header.querySelectorAll('.hp-nav__nameplate, .hp-nav__compact-nameplate').forEach((nameplate) => {
     nameplate.addEventListener('click', (event) => {
-      if (!document.querySelector('#newsletter')) return;
       event.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -31,7 +30,11 @@ function initializeRedesignNavigation() {
     const target = document.querySelector('#newsletter');
     if (!target) return;
     event.preventDefault();
-    const targetTop = target.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height;
+    // Reaching the divider always puts the homepage into its compact state.
+    // Reserve that final header height, not the larger masthead height that
+    // happens to be present at the moment of the click.
+    const compactHeaderHeight = window.matchMedia('(min-width: 761px)').matches ? 68 : 58;
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - compactHeaderHeight;
     window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
   });
   document.addEventListener('keydown', (event) => {
@@ -43,34 +46,40 @@ function initializeRedesignNavigation() {
   let compact = header.classList.contains('is-compact');
   let scrollFrame;
   let settlingCompactState = false;
-  let previousScrollY = window.scrollY;
-  let compactThreshold = 96;
+  // The mast is 72px tall on desktop. Collapse only after it has fully
+  // cleared the viewport, then retain that same visual reading position when
+  // the sticky header becomes shorter. The wide hysteresis prevents Chrome's
+  // compensating scroll event from toggling the two header states repeatedly.
+  const compactAt = 170;
+  const expandAt = 40;
+  const desktop = window.matchMedia('(min-width: 761px)');
   const setCompact = (nextCompact) => {
     if (nextCompact === compact) return;
+    const previousHeight = header.getBoundingClientRect().height;
     compact = nextCompact;
     settlingCompactState = true;
     header.classList.toggle('is-compact', compact);
+    const nextHeight = header.getBoundingClientRect().height;
+    const layoutDelta = nextHeight - previousHeight;
+    if (layoutDelta) window.scrollBy(0, layoutDelta);
     // Collapsing a sticky element changes document layout. Chrome may emit a
     // compensating scroll event, which must not immediately reverse the state.
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
-      previousScrollY = window.scrollY;
-      if (!compact) compactThreshold = previousScrollY + 96;
       settlingCompactState = false;
     }));
   };
   const updateHeader = () => {
     const scrollY = window.scrollY;
-    const scrollingUp = scrollY < previousScrollY;
-    const scrollingDown = scrollY > previousScrollY;
-    previousScrollY = scrollY;
     if (settlingCompactState) return;
-    if (!compact && scrollingDown && scrollY > compactThreshold) {
+    // Fixed hysteresis matches the regular navigation while the settling lock
+    // absorbs Chrome's compensating scroll event after a height change.
+    if (!compact && scrollY > compactAt) {
       setCompact(true);
-    } else if (compact && scrollingUp && scrollY < 24) {
+    } else if (compact && scrollY < expandAt) {
       setCompact(false);
     }
   };
-  if (!compact && window.scrollY > compactThreshold) {
+  if (!compact && window.scrollY > compactAt) {
     setCompact(true);
   } else {
     updateHeader();
@@ -82,6 +91,12 @@ function initializeRedesignNavigation() {
       updateHeader();
     });
   }, { passive: true });
+  const refreshForViewport = () => {
+    compact = header.classList.contains('is-compact');
+    updateHeader();
+  };
+  if (desktop.addEventListener) desktop.addEventListener('change', refreshForViewport);
+  else desktop.addListener(refreshForViewport);
 }
 function initializeGameAnalysis() {
   document.querySelectorAll('[data-game-analysis]').forEach((panel) => {

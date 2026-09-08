@@ -38,9 +38,11 @@ class RedesignAuxiliaryPage(Page):
 
     TEAM = "team"
     PODCAST = "podcast"
+    CONTACT = "contact"
     PAGE_KIND_CHOICES = (
         (TEAM, "Our Team"),
         (PODCAST, "The Vilest Rag"),
+        (CONTACT, "Contact"),
     )
 
     page_kind = models.CharField(
@@ -93,8 +95,17 @@ class RedesignAuxiliaryPage(Page):
             label="Team member",
             help_text=(
                 "For the Our Team page, add members in the order they should appear and "
-                "choose their department. Once at least one member is added, only this "
-                "curated roster is displayed."
+                "choose their department. This curated roster is also shown automatically "
+                "in the Contact directory."
+            ),
+        ),
+        InlinePanel(
+            "contact_entries",
+            heading="Contact-only directory entries",
+            label="Contact entry",
+            help_text=(
+                "Use on the Contact page for Business Office and other people who should "
+                "not appear on Our Team. These entries are ignored on other page types."
             ),
         ),
     ]
@@ -106,35 +117,25 @@ class RedesignAuxiliaryPage(Page):
     def get_template(self, request, *args, **kwargs):
         if self.page_kind == self.TEAM:
             return "support/our_team.html"
+        if self.page_kind == self.CONTACT:
+            return "support/masthead.html"
         return "section/podcast_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        if self.page_kind == self.TEAM:
-            from authors.models import AuthorPage
-
+        if self.page_kind in {self.TEAM, self.CONTACT}:
             groups = {"senior": [], "reportage": [], "visuals": [], "product": []}
-            curated_members = list(self.team_members.select_related("author").all())
-            if curated_members:
-                for member in curated_members:
+            # The Our Team page is the sole editorial source for staff. Contact
+            # mirrors it, rather than falling back to every historic author.
+            team_page = self
+            if self.page_kind == self.CONTACT:
+                team_page = type(self).objects.live().filter(page_kind=self.TEAM).first()
+            if team_page:
+                for member in team_page.team_members.select_related("author").all():
                     groups[member.department].append(member)
-                context["redesign_staff_groups"] = groups
-                return context
-
-            # Existing pages retain their automatic roster until an editor adds
-            # the first curated member. This prevents the public page from
-            # becoming empty during the move to the new editorial workflow.
-            for person in AuthorPage.objects.live().exclude(ubyssey_role="").order_by("full_name"):
-                role = person.ubyssey_role.casefold()
-                if "editor-in-chief" in role or "managing editor" in role:
-                    groups["senior"].append(person)
-                elif any(word in role for word in ("visual", "photo", "video", "illustr", "audio", "design")):
-                    groups["visuals"].append(person)
-                elif any(word in role for word in ("product", "web", "developer", "engagement", "newsletter")):
-                    groups["product"].append(person)
-                else:
-                    groups["reportage"].append(person)
             context["redesign_staff_groups"] = groups
+            if self.page_kind == self.CONTACT:
+                context["redesign_contact_entries"] = self.contact_entries.all()
         else:
             from article.models import ArticlePage
             from section.models import SectionPage
@@ -200,6 +201,29 @@ class RedesignTeamMember(Orderable):
     class Meta:
         verbose_name = "Our Team member"
         verbose_name_plural = "Our Team members"
+
+
+class RedesignContactEntry(Orderable):
+    """A Contact-directory person who is not a member of the Our Team roster."""
+
+    page = ParentalKey(
+        "specialfeaturelanding.RedesignAuxiliaryPage",
+        on_delete=models.CASCADE,
+        related_name="contact_entries",
+    )
+    role = models.CharField(max_length=120)
+    name = models.CharField(max_length=120)
+    email = models.EmailField(blank=True)
+
+    panels = [
+        FieldPanel("role"),
+        FieldPanel("name"),
+        FieldPanel("email"),
+    ]
+
+    class Meta:
+        verbose_name = "Contact-only directory entry"
+        verbose_name_plural = "Contact-only directory entries"
 
 
 class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):

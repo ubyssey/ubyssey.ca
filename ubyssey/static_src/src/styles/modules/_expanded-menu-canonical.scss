@@ -1,0 +1,249 @@
+/*
+ * Canonical redesign expanded menu
+ *
+ * All redesigned page types render the same menu partial. Header rails have
+ * intentionally different heights, but this file owns the menu surface,
+ * search control, typography and responsive grid so they cannot drift.
+ */
+
+@media (min-width:801px){
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded,
+  :is(.hp-nav,.ar-nav).is-compact .hp-nav__expanded{
+    height:292px!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding-bottom:42px!important;
+    overflow:visible!important;
+    background:#253377!important;
+  }
+
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__search{
+    top:24px!important;
+    height:34px!important;
+    border:.5px solid #fff!important;
+    border-radius:0!important;
+    background:transparent!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__search input{
+    padding-inline:18px 46px!important;
+    color:#fff!important;
+    font:400 17px/1 "drummond-variable",Georgia,serif!important;
+    font-variation-settings:"wght" 400!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__search button{
+    width:42px!important;
+    height:100%!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__search button img{
+    width:16px!important;
+    height:16px!important;
+    filter:none!important;
+  }
+
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded-grid{
+    top:78px!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    align-content:start!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__links a{
+    color:#fff!important;
+    font:400 19px/1.34 "meursault-variable",Georgia,serif!important;
+    font-stretch:normal!important;
+    font-variation-settings:"wdth" 75,"wght" 400!important;
+    letter-spacing:0!important;
+    background-image:linear-gradient(#bce3f0,#bce3f0)!important;
+    background-repeat:no-repeat!important;
+    background-position:0 90%!important;
+    background-size:0 78%!important;
+    transition:background-size .2s ease,color .2s ease!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__links a:hover,
+  :is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__links a:focus-visible{
+    background-size:100% 78%!important;
+    color:#253377!important;
+    text-decoration:none!important;
+  }
+
+  :is(.hp-nav,.ar-nav) .hp-nav__join{
+    transform:none!important;
+    text-align:center!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__join>a.hp-nav__join-link{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    background:none!important;
+    box-shadow:none!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__join h2{
+    width:max-content!important;
+    margin:0 auto 10px!important;
+    font-size:46px!important;
+    line-height:.94!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__join p,
+  :is(.hp-nav,.ar-nav) .hp-nav__join p span{
+    display:table!important;
+    width:max-content!important;
+    max-width:100%!important;
+    margin-inline:auto!important;
+    font-size:17px!important;
+    line-height:1.1!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link,
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:hover,
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:focus-visible,
+  :is(.hp-nav,.ar-nav) .hp-nav__join h2 span,
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:hover h2 span,
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:focus-visible h2 span{
+    background:none!important;
+    text-decoration:none!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__join h2 span{
+    color:#fff!important;
+    transition:color .2s ease!important;
+  }
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:hover h2 span,
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:focus-visible h2 span{color:#bce3f0!important}
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:hover p,
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:hover p span,
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:focus-visible p,
+  :is(.hp-nav,.ar-nav) .hp-nav__join-link:focus-visible p span{color:#fff!important}
+}
+
+/* The homepage switches to its mobile rail at 760px; regular headers keep
+ * their mobile rail through 800px. They otherwise use identical menu rules. */
+@media (max-width:800px){
+  .ar-nav .hp-nav__expanded,
+  .ar-nav.is-compact .hp-nav__expanded{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding:18px 0 58px!important;
+    overflow:visible!important;
+    background:#253377!important;
+  }
+  .ar-nav .hp-nav__expanded .hp-nav__search{
+    position:relative!important;
+    top:0!important;
+    height:32px!important;
+    border:.5px solid #fff!important;
+    border-radius:0!important;
+    background:transparent!important;
+  }
+  .ar-nav .hp-nav__expanded .hp-nav__search input{
+    padding-inline:14px 42px!important;
+    color:#fff!important;
+    font:400 16px/1 "drummond-variable",Georgia,serif!important;
+    font-variation-settings:"wght" 400!important;
+  }
+  .ar-nav .hp-nav__expanded .hp-nav__search button{width:40px!important;background:transparent!important}
+  .ar-nav .hp-nav__expanded .hp-nav__search button img{width:14px!important;height:14px!important;filter:none!important}
+  .ar-nav .hp-nav__expanded-grid{
+    position:relative!important;
+    top:0!important;
+    width:calc(100% - 48px)!important;
+    height:auto!important;
+    margin:24px auto 0!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:34px 44px!important;
+  }
+  .ar-nav .hp-nav__expanded .hp-nav__links a{
+    color:#fff!important;
+    font:400 20px/1.28 "meursault-variable",Georgia,serif!important;
+    font-stretch:normal!important;
+    font-variation-settings:"wdth" 75,"wght" 400!important;
+    letter-spacing:0!important;
+    background-image:linear-gradient(#bce3f0,#bce3f0)!important;
+    background-repeat:no-repeat!important;
+    background-position:0 90%!important;
+    background-size:0 78%!important;
+    transition:background-size .2s ease,color .2s ease!important;
+  }
+  .ar-nav .hp-nav__expanded .hp-nav__links a:hover,
+  .ar-nav .hp-nav__expanded .hp-nav__links a:focus-visible{background-size:100% 78%!important;color:#253377!important;text-decoration:none!important}
+  .ar-nav .hp-nav__join{
+    grid-column:1 / -1!important;
+    width:100%!important;
+    margin:14px 0 0!important;
+    padding:0!important;
+    text-align:left!important;
+  }
+  .ar-nav .hp-nav__join>a.hp-nav__join-link{display:block!important;width:100%!important;height:auto!important;margin:0!important;padding:0!important;background:none!important;box-shadow:none!important}
+  .ar-nav .hp-nav__join h2{width:max-content!important;margin:0 0 10px!important;font-size:38px!important;line-height:.94!important}
+  .ar-nav .hp-nav__join p,.ar-nav .hp-nav__join p span{display:block!important;width:340px!important;max-width:100%!important;margin:0!important;font-size:17px!important;line-height:1.12!important}
+}
+
+@media (max-width:760px){
+  .hp-nav .hp-nav__expanded,
+  .hp-nav.is-compact .hp-nav__expanded{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding:18px 0 58px!important;
+    overflow:visible!important;
+    background:#253377!important;
+  }
+  .hp-nav .hp-nav__expanded .hp-nav__search{
+    position:relative!important;
+    top:0!important;
+    height:32px!important;
+    border:.5px solid #fff!important;
+    border-radius:0!important;
+    background:transparent!important;
+  }
+  .hp-nav .hp-nav__expanded .hp-nav__search input{
+    padding-inline:14px 42px!important;
+    color:#fff!important;
+    font:400 16px/1 "drummond-variable",Georgia,serif!important;
+    font-variation-settings:"wght" 400!important;
+  }
+  .hp-nav .hp-nav__expanded .hp-nav__search button{width:40px!important;background:transparent!important}
+  .hp-nav .hp-nav__expanded .hp-nav__search button img{width:14px!important;height:14px!important;filter:none!important}
+  .hp-nav .hp-nav__expanded-grid{
+    position:relative!important;
+    top:0!important;
+    width:calc(100% - 48px)!important;
+    height:auto!important;
+    margin:24px auto 0!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:34px 44px!important;
+  }
+  .hp-nav .hp-nav__expanded .hp-nav__links a{
+    color:#fff!important;
+    font:400 20px/1.28 "meursault-variable",Georgia,serif!important;
+    font-stretch:normal!important;
+    font-variation-settings:"wdth" 75,"wght" 400!important;
+    letter-spacing:0!important;
+    background-image:linear-gradient(#bce3f0,#bce3f0)!important;
+    background-repeat:no-repeat!important;
+    background-position:0 90%!important;
+    background-size:0 78%!important;
+    transition:background-size .2s ease,color .2s ease!important;
+  }
+  .hp-nav .hp-nav__expanded .hp-nav__links a:hover,
+  .hp-nav .hp-nav__expanded .hp-nav__links a:focus-visible{background-size:100% 78%!important;color:#253377!important;text-decoration:none!important}
+  .hp-nav .hp-nav__join{
+    grid-column:1 / -1!important;
+    width:100%!important;
+    margin:14px 0 0!important;
+    padding:0!important;
+    text-align:left!important;
+  }
+  .hp-nav .hp-nav__join>a.hp-nav__join-link{display:block!important;width:100%!important;height:auto!important;margin:0!important;padding:0!important;background:none!important;box-shadow:none!important}
+  .hp-nav .hp-nav__join h2{width:max-content!important;margin:0 0 10px!important;font-size:38px!important;line-height:.94!important}
+  .hp-nav .hp-nav__join p,.hp-nav .hp-nav__join p span{display:block!important;width:340px!important;max-width:100%!important;margin:0!important;font-size:17px!important;line-height:1.12!important}
+  .hp-nav .hp-nav__join-link,.hp-nav .hp-nav__join-link:hover,.hp-nav .hp-nav__join-link:focus-visible,
+  .hp-nav .hp-nav__join h2 span,.hp-nav .hp-nav__join-link:hover h2 span,.hp-nav .hp-nav__join-link:focus-visible h2 span{background:none!important;text-decoration:none!important}
+  .hp-nav .hp-nav__join h2 span{color:#fff!important;transition:color .2s ease!important}
+  .hp-nav .hp-nav__join-link:hover h2 span,.hp-nav .hp-nav__join-link:focus-visible h2 span{color:#bce3f0!important}
+  .hp-nav .hp-nav__join-link:hover p,.hp-nav .hp-nav__join-link:hover p span,.hp-nav .hp-nav__join-link:focus-visible p,.hp-nav .hp-nav__join-link:focus-visible p span{color:#fff!important}
+}

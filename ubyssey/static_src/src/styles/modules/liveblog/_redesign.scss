@@ -356,8 +356,8 @@
   .c-liveblog__share { position: absolute; right:calc(100% + 44px); top:109px; display:flex; flex-direction:column; gap:9px; margin:0; }
   .c-liveblog__share button,.c-liveblog__share a { display:grid; width:21px; height:21px; place-items:center; padding:0; border:0; background:none; color:var(--live-text); font-size:20px; cursor:pointer; }
   .c-liveblog__share img { display:block; width:21px; height:21px; object-fit:contain; }
-  .report { display: flex; gap: 24px; margin:70px auto 32px; width:650px; max-width:calc(100% - 36px); }
-  .report a { color: #172b63; }
+  .report { display:flex; justify-content:flex-start; gap:11px; margin:70px auto 32px; width:650px; max-width:calc(100% - 36px); color:#172b63; font:400 16px/19px "drummond-variable", Georgia, serif; }
+  .report a { color:inherit; text-decoration:underline; text-underline-offset:2px; }
 }
 
 [color-css-theme=dark] .c-liveblog-redesign {
@@ -369,7 +369,7 @@
   .o-liveblog-update .o-liveblog-update--content > p a { color: #77c0d2; }
   .o-liveblog-update .o-liveblog-update--meta--author a:hover,
   .o-liveblog-update .o-liveblog-update--meta--author a:focus-visible { color: #081839; background-color: #bce3f0; }
-  .report a { color: #bce3f0; }
+  .report { color:#bce3f0; }
 }
 
 @keyframes live-pulse {
