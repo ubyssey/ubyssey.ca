@@ -47,3 +47,39 @@ class RedesignBeatPageTests(TestCase):
         other.save_revision().publish()
 
         self.assertEqual(list(self.beat.get_section_articles()), [matching])
+
+    def test_beat_page_renders_its_full_feed_without_the_parent_hero(self):
+        matching = StandardArticlePage(title="Campus story", slug="campus-story", category_page=self.beat)
+        self.section.add_child(instance=matching)
+        matching.save_revision().publish()
+
+        response = self.beat.serve(RequestFactory().get(self.beat.url))
+        response.render()
+
+        self.assertNotContains(response, 'class="sr-hero page-shell"')
+        self.assertEqual(list(response.context_data["redesign_recent_articles"]), [matching])
+
+    def test_article_suggestions_keep_section_and_beat_rows_distinct(self):
+        article = StandardArticlePage(title="Current campus story", slug="current-campus-story", category_page=self.beat)
+        self.section.add_child(instance=article)
+        article.save_revision().publish()
+
+        for index in range(5):
+            related = StandardArticlePage(
+                title=f"Campus suggestion {index}",
+                slug=f"campus-suggestion-{index}",
+                category_page=self.beat,
+            )
+            self.section.add_child(instance=related)
+            related.save_revision().publish()
+
+        suggested = article.get_suggested()["redesign_rows"]
+
+        self.assertEqual(suggested[0]["title"], self.section.title)
+        self.assertEqual(suggested[1]["title"], self.beat.title)
+        self.assertNotIn(article, suggested[0]["articles"])
+        self.assertNotIn(article, suggested[1]["articles"])
+        self.assertFalse(
+            {story.id for story in suggested[0]["articles"]}
+            & {story.id for story in suggested[1]["articles"]}
+        )

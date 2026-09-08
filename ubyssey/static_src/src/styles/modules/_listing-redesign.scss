@@ -115,3 +115,10 @@
 .lr-story__byline a{background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:slice;-webkit-box-decoration-break:slice;transition:background-size .22s ease,color .22s ease}.lr-story__byline a:hover,.lr-story__byline a:focus-visible{background-size:100% 78%;text-decoration:none}
 [color-css-theme=dark] .lr-story__byline a:hover,[color-css-theme=dark] .lr-story__byline a:focus-visible{color:#081839!important;background-color:#bce3f0}
 @media(max-width:760px){.lr-story--lead h2{height:auto;min-height:0}}
+
+/* A beat is a focused feed, not a second section landing page. */
+.lr-story--row .lr-story__copy{border-left:0}
+.lr-story--row .lr-story__copy>*{margin-left:0}
+.lr-story--row time::after{display:none}
+.lr-story--row time{border-bottom:0!important;padding-bottom:0!important}
+.sr-tip h2,.sr-editor h2{text-decoration:none}

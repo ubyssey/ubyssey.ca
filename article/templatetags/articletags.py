@@ -26,15 +26,14 @@ def normalize_redesign_byline(value):
     )
     value = re.sub(r"(?i)^\s*(?:words|videos?)\s+by\s*", "", value)
     value = re.sub(
-        r"(?i)\bwith\s+(photos?|video|illustrations?)\s+by\b\s*",
-        lambda match: f"{match.group(1).lower()} by ",
+        r"(?i)\bwith\s+(?:photos?|illustrations?)\s+by\s*",
+        "with ",
         value,
     )
-    value = re.sub(
-        r"(?i)\b(photos?|video|illustrations?)\s+by\b",
-        lambda match: f"{match.group(1).lower()} by",
-        value,
-    )
+    # Redesign story cards credit contributors by name only.  Their compact
+    # bylines deliberately omit legacy visual-role labels such as “photos by”
+    # and “illustrations by”; detailed credit wording remains on article pages.
+    value = re.sub(r"(?i)\b(?:photos?|illustrations?)\s+by\s*", "", value)
     value = re.sub(r"(?i)^\s*by\s+", "", value)
     return value.strip()
 

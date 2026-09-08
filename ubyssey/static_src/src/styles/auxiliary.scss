@@ -83,3 +83,14 @@
 [color-css-theme=dark] .aux-theme .team-hero>div:last-child .aux-kicker{color:var(--aux-blue)}
 
 @media(max-width:760px){.video-title{padding-top:60px}.archive-years{grid-template-columns:repeat(2,1fr)}}
+
+/* Department and Margins pages use the same editorial link treatment as the
+   main redesigned surfaces. Image-only and button links retain their roles. */
+.aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image){background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s ease,color .22s ease}
+.aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):hover,.aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):focus-visible{background-size:100% 78%;text-decoration:none}
+[color-css-theme=dark] .aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):hover,[color-css-theme=dark] .aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):focus-visible{color:#081839;background-color:#bce3f0}
+.photo-card>a{background-image:none!important}
+.photo-card>a>span{background:none!important}
+.photo-card>a>span time,.photo-card>a>span strong{display:table;background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s ease,color .22s ease}
+.photo-card>a:hover>span time,.photo-card>a:hover>span strong,.photo-card>a:focus-visible>span time,.photo-card>a:focus-visible>span strong{background-size:100% 78%}
+[color-css-theme=dark] .photo-card>a:hover>span time,[color-css-theme=dark] .photo-card>a:hover>span strong,[color-css-theme=dark] .photo-card>a:focus-visible>span time,[color-css-theme=dark] .photo-card>a:focus-visible>span strong{color:#081839;background-color:#bce3f0}

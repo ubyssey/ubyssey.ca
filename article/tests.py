@@ -3,7 +3,7 @@ from django.test import SimpleTestCase
 from types import SimpleNamespace
 
 from article.models import ArticleFeaturedMediaOrderable, ArticlePage, StandardArticlePage
-from article.templatetags.articletags import format_redesign_extended_byline
+from article.templatetags.articletags import format_redesign_extended_byline, normalize_redesign_byline
 from article.views import _author_fixture, _fixture_credit_contributors, _sample_story
 
 
@@ -86,6 +86,16 @@ class ArticleRedesignMappingTests(SimpleTestCase):
         )
 
         self.assertEqual(ArticlePage.get_authors_split_out_visual_bylines(article).strip(), "Reporter")
+
+    def test_compact_card_byline_omits_visual_role_labels(self):
+        byline = 'Reporter with photos by <a href="/authors/photo/">Photo Person</a>, illustrations by <a href="/authors/artist/">Artist Person</a>'
+
+        rendered = normalize_redesign_byline(byline)
+
+        self.assertEqual(
+            rendered,
+            'Reporter with <a href="/authors/photo/">Photo Person</a>, <a href="/authors/artist/">Artist Person</a>',
+        )
 
     def test_story_form_uses_the_approved_statement_and_is_opt_in(self):
         report = SimpleNamespace(story_form="report")
