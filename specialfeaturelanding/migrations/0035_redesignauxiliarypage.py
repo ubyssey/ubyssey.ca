@@ -72,7 +72,11 @@ def create_redesigned_auxiliary_pages(apps, schema_editor):
                 continue
             page = RedesignAuxiliaryPage(**values)
             home.add_child(instance=page)
-            page.save_revision().publish()
+            # ``RedesignAuxiliaryPage`` has reverse relations whose tables are
+            # introduced by the following migrations. Creating a Wagtail
+            # revision serializes those relations, so publishing here would
+            # query tables which do not exist yet on a fresh database. The
+            # pages are published once every dependent table exists in 0039.
 
     _with_migration_lock(schema_editor, create_pages)
 

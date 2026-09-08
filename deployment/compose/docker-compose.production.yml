@@ -60,7 +60,7 @@ services:
     #
     # Ref: https://medium.com/@jleonro/finetunne-number-of-workers-in-gunicorn-ab1907b06cae
     command: >
-      bash -c "python manage.py migrate && python manage.py crontab add && service cron start
+      bash -c "python manage.py migrate_with_lock && python manage.py crontab add && service cron start
       && gunicorn ubyssey.wsgi:application --workers=4 --bind 0.0.0.0:8000 --access-logfile - --error-logfile -"
 
     environment:
