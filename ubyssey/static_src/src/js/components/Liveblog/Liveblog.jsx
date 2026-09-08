@@ -253,7 +253,7 @@ export default function LiveBlog() {
     
     return (
         <>
-        <div id="nav" dangerouslySetInnerHTML={{__html: navHtml()}}></div>
+        <div id="nav" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(navHtml() || "", liveblogHtmlOptions)}}></div>
         <main id="main-content" className="article c-liveblog-redesign">
             <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageInfo.meta.layout}>
                     <LiveblogStage stage={pageInfo.stage} meta={getMeta()} />
