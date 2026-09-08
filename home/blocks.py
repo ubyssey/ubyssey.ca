@@ -4,7 +4,9 @@ Blocks used on the home page of the site
 from wagtail.models import Site
 from wagtail import blocks
 from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.images.blocks import ImageChooserBlock
 
+from django import forms
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -12,9 +14,76 @@ from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
 from article.models import ArticlePage
+from ubyssey.sports import SPORT_CHOICES as COVERED_SPORT_CHOICES
 from article.blocks_storystream import StoryStreamBlockTypes
 from topics.views import cluster_articles_by_topic
 import images.blocks as image_blocks
+
+
+SPORT_CHOICES = [("all", "All sports"), *COVERED_SPORT_CHOICES]
+
+
+class GameAnalysisArticle(blocks.StructBlock):
+    article = blocks.PageChooserBlock(page_type="article.ArticlePage")
+    sport = blocks.ChoiceBlock(
+        choices=SPORT_CHOICES[1:],
+        required=False,
+        help_text="Legacy fallback. The article's Sport metadata is used when available.",
+    )
+
+
+class GameAnalysisTeam(blocks.StructBlock):
+    name = blocks.CharBlock(max_length=80)
+    icon = ImageChooserBlock(required=False)
+    score = blocks.IntegerBlock(required=False)
+
+
+class GameAnalysisFixture(blocks.StructBlock):
+    sport = blocks.ChoiceBlock(choices=SPORT_CHOICES[1:])
+    starts_at = blocks.DateTimeBlock(required=False)
+    venue = blocks.CharBlock(max_length=120, required=False)
+    away_team = GameAnalysisTeam()
+    home_team = GameAnalysisTeam()
+
+
+class GameAnalysisPanel(blocks.StructBlock):
+    active_sports = blocks.MultipleChoiceBlock(
+        choices=SPORT_CHOICES[1:],
+        required=False,
+        help_text="Sports shown in the homepage filter bar.",
+        widget=forms.CheckboxSelectMultiple,
+    )
+    articles = blocks.ListBlock(GameAnalysisArticle(), required=False)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+
+        # ListBlock is deliberately ordered in the CMS: first is the lead, the
+        # following three are the stacked cards, and later entries are filter
+        # fallbacks. Never reorder it by publication date.
+        # A historic StreamField revision can retain a chooser reference to a
+        # page that has since been deleted. Wagtail resolves that reference to
+        # ``None`` in draft preview, and ``pageurl`` cannot render it. Skip
+        # only invalid entries so previews stay usable without changing the
+        # editorial order of valid game analyses.
+        context["analysis_articles"] = [
+            item for item in value["articles"] if item.get("article")
+        ]
+        # Fixtures live outside the homepage StreamField so the imported term
+        # schedule can progress automatically while editors add only scores.
+        from home.models import ThunderbirdFixture
+        # The panel's scope is editorially defined, rather than being limited
+        # by whichever story filters happen to be selected in the CMS.
+        active_sports = list(value.get("active_sports") or [choice[0] for choice in SPORT_CHOICES[1:]])
+        context["panel_sports"] = active_sports
+        now = timezone.now()
+        scheduled = ThunderbirdFixture.objects.filter(sport__in=active_sports)
+        context["upcoming_games"] = list(scheduled.filter(starts_at__gte=now).order_by("starts_at")[:5])
+        context["recent_results"] = list(scheduled.filter(starts_at__lt=now).order_by("-starts_at")[:5])
+        return context
+
+    class Meta:
+        template = "home/stream_blocks/game_analysis.html"
 
 
 ### Shared attachment options

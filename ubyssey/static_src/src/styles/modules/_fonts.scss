@@ -1,14 +1,14 @@
 @use "sass:math";
 
 // Font families
-$font-default: 'librefranklin', 'noto-sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-default: 'articulat-cf', sans-serif;
 
 $font-secondary: $font-default;
-$font-headline: 'canada-type-gibson', 'librefranklin', 'noto-sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-headline: 'articulat-cf', sans-serif;
 $font-banner: 'mercury-text', 'Georgia', serif;
 $font-display: 'playfair-display', 'mercury-text', 'Georgia', serif;
 $font-body: 'adobe-caslon-pro', 'libre-caslon', 'noto-serif', 'Georgia', serif;
-$font-home-headline: 'canada-type-gibson', 'reem-kufi', 'librefranklin', 'noto-sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-home-headline: 'articulat-cf', sans-serif;
 
 $font-size-base: 16;
 

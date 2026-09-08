@@ -1,0 +1,14 @@
+{% extends "wagtailadmin/base.html" %}
+
+{% block content %}
+  {% include "wagtailadmin/shared/header.html" with title="Sports calendar" icon="date" %}
+  <div class="nice-padding">
+    <p>Upload a current Thunderbird schedule CSV to refresh the homepage widget. Only the covered sports are imported. Existing fixtures are refreshed and editor-entered scores are never replaced.</p>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="button button-primary">Import calendar</button>
+    </form>
+    <p><a href="/admin/snippets/home/thunderbirdfixture/">Enter or update fixture scores</a> after games finish.</p>
+  </div>
+{% endblock %}

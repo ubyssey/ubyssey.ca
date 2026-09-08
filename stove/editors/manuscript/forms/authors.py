@@ -17,8 +17,10 @@ AUTHOR_ROLE_CHOICES = (
     ("copy_editor", "Copy Editor"),
     ("illustrator", "Illustrator"),
     ("photographer", "Photographer"),
+    ("photo_editor", "Photo Editor"),
     ("videographer", "Videographer"),
     ("designer", "Designer"),
+    ("graphics_editor", "Graphics Editor"),
     ("org_role", "Show organization role"),
 )
 AUTHOR_ROLE_VALUES = {value for value, _label in AUTHOR_ROLE_CHOICES}

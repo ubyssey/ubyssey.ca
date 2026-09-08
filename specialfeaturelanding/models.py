@@ -21,10 +21,186 @@ from modelcluster.fields import ParentalKey
 
 from wagtail import blocks
 from wagtail.models import Page, Orderable
-from wagtail.fields import StreamField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.images.blocks import ImageChooserBlock
 
 from wagtailmenus.models import FlatMenu
+
+
+class RedesignAuxiliaryPage(Page):
+    """CMS owner for the redesigned routes that do not follow the page tree.
+
+    The public URLs for these two pages are intentionally stable
+    (``/about/our-team/`` and ``/the-vilest-rag/``).  Keeping a dedicated
+    Wagtail page for each gives editors the normal draft, preview and publish
+    workflow without having to repurpose a legacy landing page.
+    """
+
+    TEAM = "team"
+    PODCAST = "podcast"
+    PAGE_KIND_CHOICES = (
+        (TEAM, "Our Team"),
+        (PODCAST, "The Vilest Rag"),
+    )
+
+    page_kind = models.CharField(
+        max_length=20,
+        choices=PAGE_KIND_CHOICES,
+        unique=True,
+        editable=False,
+    )
+    display_title = models.CharField(
+        max_length=100,
+        help_text="The title displayed to readers. The CMS page title stays descriptive for editors.",
+    )
+    description = RichTextField(
+        blank=True,
+        default="",
+        help_text="Optional introductory copy displayed below the page title.",
+    )
+    featured_media = models.ForeignKey(
+        "images.UbysseyImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name="hero image",
+    )
+    spotify_episode_url = models.URLField(
+        blank=True,
+        default="",
+        help_text="The public Spotify episode URL for the Latest episode player.",
+    )
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types = []
+    show_in_menus_default = False
+
+    content_panels = Page.content_panels + [
+        HelpPanel(
+            content=(
+                "<p>This CMS page controls the redesigned public route directly. "
+                "Publish changes here, then view the public page from the link in the panel above.</p>"
+            ),
+        ),
+        FieldPanel("display_title"),
+        FieldPanel("description"),
+        FieldPanel("featured_media"),
+        FieldPanel("spotify_episode_url"),
+        InlinePanel(
+            "team_members",
+            heading="Our Team roster",
+            label="Team member",
+            help_text=(
+                "For the Our Team page, add members in the order they should appear and "
+                "choose their department. Once at least one member is added, only this "
+                "curated roster is displayed."
+            ),
+        ),
+    ]
+
+    class Meta:
+        verbose_name = "Redesigned auxiliary page"
+        verbose_name_plural = "Redesigned auxiliary pages"
+
+    def get_template(self, request, *args, **kwargs):
+        if self.page_kind == self.TEAM:
+            return "support/our_team.html"
+        return "section/podcast_page.html"
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        if self.page_kind == self.TEAM:
+            from authors.models import AuthorPage
+
+            groups = {"senior": [], "reportage": [], "visuals": [], "product": []}
+            curated_members = list(self.team_members.select_related("author").all())
+            if curated_members:
+                for member in curated_members:
+                    groups[member.department].append(member)
+                context["redesign_staff_groups"] = groups
+                return context
+
+            # Existing pages retain their automatic roster until an editor adds
+            # the first curated member. This prevents the public page from
+            # becoming empty during the move to the new editorial workflow.
+            for person in AuthorPage.objects.live().exclude(ubyssey_role="").order_by("full_name"):
+                role = person.ubyssey_role.casefold()
+                if "editor-in-chief" in role or "managing editor" in role:
+                    groups["senior"].append(person)
+                elif any(word in role for word in ("visual", "photo", "video", "illustr", "audio", "design")):
+                    groups["visuals"].append(person)
+                elif any(word in role for word in ("product", "web", "developer", "engagement", "newsletter")):
+                    groups["product"].append(person)
+                else:
+                    groups["reportage"].append(person)
+            context["redesign_staff_groups"] = groups
+        else:
+            from article.models import ArticlePage
+            from section.models import SectionPage
+
+            # Production has used both a canonical section-page tree and the
+            # denormalized current_section field for podcast stories. Support
+            # both structures so existing episodes do not disappear during the
+            # redesigned-route migration.
+            podcast_section = SectionPage.objects.live().filter(slug="the-vilest-rag").first()
+            episodes = ArticlePage.objects.live().public().filter(
+                current_section="the-vilest-rag"
+            )
+            if podcast_section:
+                episodes = episodes | ArticlePage.objects.live().public().descendant_of(
+                    podcast_section
+                )
+            context["redesign_all_articles"] = episodes.order_by(
+                "-explicit_published_at", "-id"
+            ).distinct()[:20]
+        return context
+
+
+class RedesignTeamMember(Orderable):
+    """An explicitly curated author card on the redesigned Our Team page."""
+
+    SENIOR = "senior"
+    REPORTAGE = "reportage"
+    VISUALS = "visuals"
+    PRODUCT = "product"
+    DEPARTMENT_CHOICES = (
+        (SENIOR, "Senior Masthead"),
+        (REPORTAGE, "Reportage"),
+        (VISUALS, "Visuals"),
+        (PRODUCT, "Product"),
+    )
+
+    page = ParentalKey(
+        "specialfeaturelanding.RedesignAuxiliaryPage",
+        on_delete=models.CASCADE,
+        related_name="team_members",
+    )
+    author = models.ForeignKey(
+        "authors.AuthorPage",
+        on_delete=models.CASCADE,
+        related_name="+",
+    )
+    department = models.CharField(max_length=20, choices=DEPARTMENT_CHOICES)
+    description_override = models.TextField(
+        blank=True,
+        default="",
+        help_text=(
+            "Optional longer description for this card only. It overrides the "
+            "author page's short biography without changing the author page."
+        ),
+    )
+
+    panels = [
+        FieldPanel("department"),
+        FieldPanel("author"),
+        FieldPanel("description_override"),
+    ]
+
+    class Meta:
+        verbose_name = "Our Team member"
+        verbose_name_plural = "Our Team members"
+
 
 class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     """
@@ -62,7 +238,23 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         related_name='+',        
     )
 
+    spotify_episode_url = models.URLField(
+        blank=True,
+        default="",
+        help_text="Paste the public Spotify episode URL used by the Latest Episode player.",
+    )
+
     def get_template(self, request):
+        support_templates = {
+            "our-journalism": "support/our_journalism.html",
+            "our-team": "support/our_team.html",
+            "masthead": "support/masthead.html",
+            "ups-board": "support/ups_board.html",
+            "board": "support/ups_board.html",
+            "the-vilest-rag": "section/podcast_page.html",
+        }
+        if self.slug in support_templates:
+            return support_templates[self.slug]
         if not self.use_default_template:
             if self.db_template:
                 return self.db_template.name
@@ -160,6 +352,13 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
     )
 
     content_panels = Page.content_panels + UbysseyMenuMixin.menu_content_panels + [
+        HelpPanel(
+            content=(
+                "<p><strong>Redesigned auxiliary pages:</strong> the pages titled “Our Team” and “The Vilest Rag” "
+                "power their public routes directly. Find them in Pages by title. “Our Team” draws people from "
+                "Author pages; “The Vilest Rag” draws episodes from its child articles and uses the Spotify field below.</p>"
+            ),
+        ),
         MultiFieldPanel(
             [
                 HelpPanel(content='Used for targetting <main> by the css'),
@@ -228,6 +427,7 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
         MultiFieldPanel(
             [
                 FieldPanel("featured_media"),
+                FieldPanel("spotify_episode_url"),
             ],
             heading="Meta Image",
         ),
@@ -236,6 +436,28 @@ class SpecialLandingPage(SectionablePage, UbysseyMenuMixin):
 
     def get_context(self, request, *args, **kwargs):        
         context = super().get_context(request, *args, **kwargs)
+        if self.slug == "the-vilest-rag":
+            from article.models import ArticlePage
+            episodes = ArticlePage.objects.live().public().descendant_of(self).order_by("-explicit_published_at")[:20]
+            if not episodes:
+                episodes = ArticlePage.objects.live().public().filter(current_section=self.slug).order_by("-explicit_published_at")[:20]
+            context["redesign_all_articles"] = episodes
+        if self.slug in {"our-team", "masthead"}:
+            from authors.models import AuthorPage
+            staff = list(AuthorPage.objects.live().exclude(ubyssey_role="").order_by("full_name"))
+            groups = {"senior": [], "reportage": [], "visuals": [], "product": []}
+            for person in staff:
+                role = person.ubyssey_role.lower()
+                if "editor-in-chief" in role or "managing editor" in role:
+                    groups["senior"].append(person)
+                elif any(word in role for word in ("visual", "photo", "video", "illustr", "audio", "design")):
+                    groups["visuals"].append(person)
+                elif any(word in role for word in ("product", "web", "developer", "engagement", "newsletter")):
+                    groups["product"].append(person)
+                else:
+                    groups["reportage"].append(person)
+            context["redesign_staff"] = staff
+            context["redesign_staff_groups"] = groups
         # for i, block in self.body:
         #     print('hello world ' + i)
         #     context['article' + i] = Article.objects.get(is_published=1, slug=block)

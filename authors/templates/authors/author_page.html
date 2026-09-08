@@ -1,68 +1,28 @@
 {% extends 'ubyssey/base.html' %}
-{% load static %}
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
-{% load authors_tags %}
-
-{% block stylesheet %}
-<link rel="stylesheet" href="{% static 'ubyssey/css/author.css' %}" type="text/css" />
-{% endblock %}
-
-{% block head_scripts%}
-<link rel="alternate" type="application/atom+xml" title="{{self.title}} - Ubyssey feed" href="/authors/{{self.slug}}/rss">
-{% endblock %}
-
-{% block header %}
-	{% include 'navigation/headers/topbar.html' with section="none" %}
-	{% include 'navigation/headers/mobile.html' %}
-{% endblock %}
-
+{% load static wagtailcore_tags wagtailimages_tags articletags %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/author.css' %}?v=author-redesign-10" type="text/css"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block head_scripts %}<link rel="alternate" type="application/atom+xml" title="{{ self.title }} - Ubyssey feed" href="/authors/{{ self.slug }}/rss">{% endblock %}
+{% block page_wrapper %}listing-redesign{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
 {% block content %}
-<main class="c-page c-page--author">
-	<div class="u-container u-container--padded">
-
-		<div class="author-header">
-			{% if self.image %}
-				{% image self.image fill-350x350-c100 format-webp as pfp %}
-				<div class="author-img" style="background-image: url('{{pfp.full_url}}')" aria-label="{{ self.title }}"></div>
-			{% endif %}
-			<div class="author-info">
-				<h1 class="author-name">{{ self.title }}</h1>
-				<h2 class="author-role"> {{self.ubyssey_role}} </h2>
-				{% if self.bio_description %}<p class="author-desc">{{ self.bio_description|safe }}</p>{% endif %}
-				<p class="author-links">
-					<a class="social_media_links" href="/authors/{{self.slug}}/rss"><ion-icon name="logo-rss" style="font-size:1em;"></ion-icon>&nbsp;rss</a>
-					{% for icon in self.linkIcons %}
-						{{icon}}
-					{% endfor %}
-				</p>
-			</div>
-		</div>
-
-		{% if self.pinned_articles.count > 0 and current_page == 1 %}
-			<h2 class="author-heading">Pinned</h2>
-			<div class="author-pinned_list">
-				{% for article in self.pinned_articles.all %}
-					<div class="author-pinned_article">	
-						{% include 'article/objects/suggested_article.html' with article=article.article %}
-					</div>
-				{% endfor %}
-			</div>
-		{% endif %}
-		
-		<div class="options" id="results">
-			{% for type in media_types %}
-				<h2 class="author-heading {% if media_type == type.0 %}selected{% endif %}"><a href="/authors/{{self.slug}}/{{type.0}}/#results">{{type.1}}</a></h2>
-			{% endfor %}
-		</div>
-
-		{% if media_type == "articles" or media_type == "visuals" %}
-			{% include 'archive/objects/archive.html' with page_obj=paginated_articles current_page_articles=current_page_articles %}
-		{% elif media_type == "photos" %}
-			{% include 'archive/objects/gallery.html' with page_obj=paginated_articles %}
-		{% elif media_type == "videos" %}
-			{% include 'archive/objects/archive.html' with page_obj=paginated_articles video_section=true%}
-		{% endif %}
-	</div>
+<main id="main-content" class="lr-page au-page">
+  <header class="au-profile">
+    <div class="au-profile__identity">{% if redesign_profile_image %}<img src="{{ redesign_profile_image }}" alt="{{ self.title }}">{% elif self.image %}{% image self.image fill-350x350-c100 format-webp as portrait %}<img src="{{ portrait.url }}" alt="{{ self.title }}">{% endif %}<div><h1>{{ self.title }}</h1>{% if self.ubyssey_role %}<p class="au-profile__role">{{ self.ubyssey_role }}</p>{% endif %}<p>{{ self.bio_description|safe }}</p></div></div>
+    <div class="au-contact"><h2>Contact</h2><div>{% if redesign_email %}<a href="mailto:{{ redesign_email }}">{{ redesign_email }}</a>{% elif self.public_contact_email %}<a href="mailto:{{ self.public_contact_email }}">{{ self.public_contact_email }}</a>{% endif %}{% for option in self.contact_options.all %}{% if redesign_email or self.public_contact_email or not forloop.first %}<span>•</span>{% endif %}<a href="{{ option.url }}">{{ option.label }}</a>{% endfor %}<span>•</span><a href="/authors/{{ self.slug }}/rss">RSS</a><span>•</span><a href="/submit-a-tip/">send a tip</a></div></div>
+  </header>
+  {% if redesign_pinned or self.pinned_articles.count > 0 %}<section class="au-featured"><h2>Featured</h2><div class="au-featured__track">{% if redesign_pinned %}{% for article in redesign_pinned|slice:':3' %}{% include 'section/objects/redesign_story.html' with article=article variant='pinned' show_date=True %}{% endfor %}{% else %}{% for pinned in self.pinned_articles.all|slice:':3' %}{% include 'section/objects/redesign_story.html' with article=pinned.article variant='pinned' show_date=True %}{% endfor %}{% endif %}</div></section>{% endif %}
+  <section class="au-latest">
+    <nav class="lr-tabs" aria-label="Author work types"><div class="lr-tabs__links">{% for type in media_types %}<a class="{% if media_type == type.0 %}is-active{% endif %}" href="/authors/{{ self.slug }}/{{ type.0 }}/#results">{{ type.1|title }}</a>{% empty %}<a class="is-active" href="#results">Articles</a><a href="#results">Visuals</a><a href="#results">Gallery</a><a href="#results">Margins</a>{% endfor %}</div><div class="lr-tabs__tools"><form method="get"><label><img src="{% static 'ubyssey/images/redesign/search.svg' %}" alt=""><span class="sr-only">Search this author</span><input name="q" type="search" value="{{ q|default:'' }}" placeholder="Search"></label></form><a href="?order={% if order == 'Oldest' %}newest{% else %}oldest{% endif %}{% if q %}&amp;q={{ q|urlencode }}{% endif %}" title="Sort by {% if order == 'Oldest' %}newest{% else %}oldest{% endif %}"><img src="{% static 'ubyssey/images/redesign/filter.svg' %}" alt=""> {{ order|default:'Newest' }}</a></div></nav>
+    <p class="au-results">{% if paginated_articles %}{{ paginated_articles.paginator.count }}{% else %}{{ redesign_articles|length }}{% endif %} results</p>
+    {% if media_type == 'photos' and not redesign_articles %}<div id="results" class="au-gallery">{% for image in paginated_articles %}{% include 'authors/objects/redesign_photo.html' with image=image %}{% endfor %}</div>{% else %}<div id="results" class="lr-feed au-feed">{% for article in redesign_articles %}{% include 'section/objects/redesign_story.html' with article=article variant='author-row' show_date=True show_summary=True %}{% empty %}{% for article in paginated_articles %}{% include 'section/objects/redesign_story.html' with article=article variant='author-row' show_date=True show_summary=True %}{% endfor %}{% endfor %}</div>{% endif %}
+    {% if paginated_articles.has_next %}<nav class="au-pagination" aria-label="More stories"><a class="au-more" href="?page={{ paginated_articles.next_page_number }}{% if q %}&amp;q={{ q|urlencode }}{% endif %}{% if order %}&amp;order={{ order|lower }}{% endif %}">Next page <span aria-hidden="true">→</span></a></nav>{% endif %}
+  </section>
+  <div class="au-lightbox" data-author-gallery-viewer hidden role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="au-lightbox__close" type="button" data-gallery-close aria-label="Close image viewer">×</button>
+    <button class="au-lightbox__previous" type="button" data-gallery-previous aria-label="Previous image">←</button>
+    <figure><img data-gallery-image alt=""><figcaption data-gallery-caption></figcaption></figure>
+    <button class="au-lightbox__next" type="button" data-gallery-next aria-label="Next image">→</button>
+  </div>
 </main>
 {% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=author-gallery-1"></script><script>document.querySelector('[data-author-more]')?.addEventListener('click',function(){this.textContent='All stories shown';this.disabled=true;});</script>{% endblock %}

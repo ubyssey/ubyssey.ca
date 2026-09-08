@@ -19,7 +19,7 @@
   box-sizing: border-box;
 
   // Background
-  background-color: variables.$color-accent-blue;
+  background-color: #21356f;
 
   .cookie-disclaimer-container {
     // Structure
@@ -30,6 +30,7 @@
     h3 {
       color: white;
       margin-top: 0;
+      font: 600 24px/30px "meursault-variable",Georgia,serif;
     }
     .c-row {
       display: flex;
@@ -37,6 +38,7 @@
 
       // Text
       font-size: .8rem;
+      font: 350 14px/18px "drummond-variable",Georgia,serif;
 
       .c-button {
         // Structure
@@ -49,16 +51,17 @@
   
         // Text
         font-size: 1rem;
-        color: variables.$color-accent-blue;
+        font-weight: bold;
+        color: #21356f;
 
         cursor: pointer;
   
         &:hover {
           // Background
-          background-color: #338dd4;
+          background-color: #bce3f0;
   
           // Text
-          color: white;
+          color: #21356f;
         }
       }
 
@@ -68,8 +71,12 @@
       }
   
       a {
+        text-decoration: underline;
         &:hover {
           color: #DADADA;
+          color:#27376c;
+          background-image:linear-gradient(#bce3f0,#bce3f0);
+          transition: background-size .22s ease,color .22s ease;
           cursor: pointer;
         }
       }

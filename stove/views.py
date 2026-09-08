@@ -1,5 +1,7 @@
 import json
 import warnings
+from django.db.models import Q
+
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -21,6 +23,7 @@ from wagtail.admin.templatetags.wagtailadmin_tags import avatar_url
 from wagtail.documents import get_document_model
 from wagtail.images import get_image_model
 from pycrdt import Array, Doc, Map
+from django.db.models import Min
 
 from stove.editors.collaboration.persistence import (
     ASSIGNMENT_AUTHOR_ROLES,
@@ -160,11 +163,11 @@ def load_page(request, page_id):
     pageObject = get_object_or_404(ArticlePage, pk=page_id).specific.get_latest_revision_as_object()
     if (pageObject.live and pageObject.article_status != 6):
         print("Updating status for published article \"" + pageObject.title + "\"")
-        pageObject.article_status = 6
+        pageObject = update_article_status(pageObject, 6, request.user)
         pageObject.save_revision(user=request.user)
     if ((not pageObject.live) and pageObject.article_status == 6):
         print("Updating status for unpublished article \"" + pageObject.title + "\"")
-        pageObject.article_status = 5
+        pageObject = update_article_status(pageObject, 5, request.user)
         pageObject.save_revision(user=request.user)
 
     def hasDraftInDeadline(page):
@@ -206,6 +209,7 @@ def load_page(request, page_id):
 @login_required
 def load_partial_stories(request, section="all", page=1):
     username = request.GET.get('username', '')
+    order = request.GET.get('order', '')
     include_published = request.GET.get('include_published', '')
     article_status = request.GET.get('article_status', -1)
     
@@ -226,12 +230,16 @@ def load_partial_stories(request, section="all", page=1):
     if (include_published.lower() == "false"):
         qs = qs.filter(live=False)
     
-    qs = qs.order_by("-latest_revision_created_at", "-pk")
+    if order == "next-deadline":
+        qs = qs.annotate(
+            nearest_deadline=Min('deadline_list__date', filter=Q(deadline_list__completed=False))
+        ).filter(nearest_deadline__isnull=False).order_by("nearest_deadline")
+    else: 
+        qs = qs.order_by("-latest_revision_created_at", "-pk")
 
     paginator = Paginator(qs, 20)
 
     pages = paginator.get_page(request.GET.get("article-page", page))
-
     result="[]"
     if (len(pages) > 0):
         result = "["
@@ -254,6 +262,23 @@ def load_partial_stories(request, section="all", page=1):
 
         result = result[:-1] + "]"
     return JsonResponse(result, safe=False)
+
+def update_article_status(page, status, user):
+    if page.article_status == status: return page
+
+    try: 
+        if status == 5:
+            workflow = page.get_workflow()
+            workflow.start(page, user)
+        if page.article_status == 5:
+            workflow_state = page.current_workflow_state
+            workflow_state.cancel(user)
+            print()
+    except Exception as error:
+        warnings.warn(f"Failed to update workflow status for {page.pk}: {error}")
+        
+    page.article_status = status
+    return page
 
 @login_required
 @require_POST
@@ -282,7 +307,7 @@ def update_content_tracker(request, page_id):
         else:
             raise Exception("Page can't move to section")
     if ("article_status" in data):
-        page.article_status = data["article_status"]
+        page = update_article_status(page, data["article_status"], request.user)
         save_as_draft = True
     if ("story_type" in data):
         page.story_type = data["story_type"]
@@ -304,6 +329,7 @@ def update_content_tracker(request, page_id):
                 if item.author_role not in ASSIGNMENT_AUTHOR_ROLES
             ]
         )
+        page.article_authors.commit()
     if ("assignment_memo" in data):
         page.assignment_memo = data["assignment_memo"]
     if ("ethics_notes" in data):

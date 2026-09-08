@@ -1,0 +1,7 @@
+{% load articletags wagtailcore_tags %}<aside class="ar-context-rail">
+  {% if article.story_form_statement %}<section class="ar-context-box"><h2>Standpoint Statement</h2><p>{{ article.story_form_statement }}</p></section>{% endif %}
+  {% if article.standpoint_disclosure %}<section class="ar-context-box"><h2>Standpoint Disclosure</h2>{{ article.standpoint_disclosure|richtext }}</section>{% endif %}
+  {% with credit=article.extended_contributors|format_redesign_extended_byline %}{% if article.extended_byline_override or credit %}<section class="ar-context-box"><h2>Extended Byline</h2>
+    {% if article.extended_byline_override %}{{ article.extended_byline_override|richtext }}{% else %}<p>{{ credit }}</p>{% endif %}
+  </section>{% endif %}{% endwith %}
+</aside>
