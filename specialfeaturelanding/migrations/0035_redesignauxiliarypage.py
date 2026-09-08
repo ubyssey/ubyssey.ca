@@ -79,6 +79,11 @@ def create_redesigned_auxiliary_pages(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
+    # This migration creates its table from RunPython so an interrupted Swarm
+    # deploy can safely adopt an already-created table. MySQL cannot execute
+    # that DDL inside Django's migration transaction.
+    atomic = False
+
     dependencies = [
         ("home", "0049_named_homepage_hero_slots"),
         ("specialfeaturelanding", "0034_speciallandingpage_spotify_episode_url"),
