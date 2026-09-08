@@ -640,3 +640,24 @@
   .hp-nav__expanded-grid{left:auto!important;right:auto!important}
   .hp-nav__join p,.hp-nav__join p span{margin:0 auto!important}
 }
+
+/* Final repair: the mobile rail must be absolutely positioned before its
+   transition offset is applied. Keeping it in flow was creating an extra
+   masthead-height gap. */
+@media (min-width:761px){
+  .hp-nav__nameplate,.hp-nav.is-compact .hp-nav__nameplate{top:9px!important}
+  .hp-nav__mast>.hp-nav__newsletter{position:absolute!important;top:26px!important;right:0!important;z-index:5!important}
+  .hp-nav__expanded,.hp-nav.is-compact .hp-nav__expanded{height:252px!important}
+  .hp-nav__expanded .hp-nav__search{top:24px!important}
+  .hp-nav__expanded-grid{top:78px!important}
+  .hp-nav__join{transform:translateY(-54px)!important}
+  .hp-nav__join h2 span{background:none!important;color:#fff!important;text-decoration:none!important}
+  .hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span{background:none!important;color:#bce3f0!important;text-decoration:underline!important;text-decoration-thickness:2px!important;text-underline-offset:5px!important}
+}
+@media (max-width:760px){
+  .hp-nav__bar{position:absolute!important;right:0!important;left:0!important;z-index:5!important}
+  .hp-nav__mast>.hp-nav__newsletter{position:absolute!important;top:24px!important;right:0!important;z-index:6!important}
+  .hp-nav__join>a.hp-nav__join-link{height:auto!important}
+  .hp-nav__join h2 span{background:none!important;color:#fff!important;text-decoration:none!important}
+  .hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span{background:none!important;color:#bce3f0!important;text-decoration:underline!important;text-decoration-thickness:2px!important;text-underline-offset:4px!important}
+}
