@@ -38,9 +38,11 @@ class RedesignAuxiliaryPage(Page):
 
     TEAM = "team"
     PODCAST = "podcast"
+    CONTACT = "contact"
     PAGE_KIND_CHOICES = (
         (TEAM, "Our Team"),
         (PODCAST, "The Vilest Rag"),
+        (CONTACT, "Contact"),
     )
 
     page_kind = models.CharField(
@@ -106,15 +108,23 @@ class RedesignAuxiliaryPage(Page):
     def get_template(self, request, *args, **kwargs):
         if self.page_kind == self.TEAM:
             return "support/our_team.html"
+        if self.page_kind == self.CONTACT:
+            return "support/masthead.html"
         return "section/podcast_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        if self.page_kind == self.TEAM:
+        if self.page_kind in {self.TEAM, self.CONTACT}:
             from authors.models import AuthorPage
 
             groups = {"senior": [], "reportage": [], "visuals": [], "product": []}
-            curated_members = list(self.team_members.select_related("author").all())
+            # The Our Team page has an editorially curated roster. Contact is
+            # a directory, so it always reflects the current staff metadata.
+            curated_members = (
+                list(self.team_members.select_related("author").all())
+                if self.page_kind == self.TEAM
+                else []
+            )
             if curated_members:
                 for member in curated_members:
                     groups[member.department].append(member)

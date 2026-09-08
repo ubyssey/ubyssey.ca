@@ -43,13 +43,21 @@ function initializeRedesignNavigation() {
   let compact = header.classList.contains('is-compact');
   let scrollFrame;
   let settlingCompactState = false;
-  const compactAt = 76;
-  const expandAt = 16;
+  // The mast is 72px tall on desktop. Collapse only after it has fully
+  // cleared the viewport, then retain that same visual reading position when
+  // the sticky header becomes shorter. The wide hysteresis prevents Chrome's
+  // compensating scroll event from toggling the two header states repeatedly.
+  const compactAt = 170;
+  const expandAt = 40;
   const setCompact = (nextCompact) => {
     if (nextCompact === compact) return;
+    const previousHeight = header.getBoundingClientRect().height;
     compact = nextCompact;
     settlingCompactState = true;
     header.classList.toggle('is-compact', compact);
+    const nextHeight = header.getBoundingClientRect().height;
+    const layoutDelta = nextHeight - previousHeight;
+    if (layoutDelta) window.scrollBy(0, layoutDelta);
     // Collapsing a sticky element changes document layout. Chrome may emit a
     // compensating scroll event, which must not immediately reverse the state.
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
