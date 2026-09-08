@@ -1,6 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static wagtailcore_tags wagtailimages_tags ubyssey_ad_filters %}
-{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}?v=homepage-navigation-15">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}?v=homepage-navigation-16">{% endblock %}
 {% block header %}{% include "home/components/redesign_nav.html" %}{% endblock %}
 {% block content %}{% filter specify_homepage_sidebar_ads:request %}
 <main class="hp-redesign" id="main-content">
@@ -20,4 +20,4 @@
   <div class="hp-story-list page-shell">{% for article in redesign_articles|slice:"14:17" %}{% include "home/components/redesign_story_row.html" with article=article %}{% endfor %}</div>
 </main>{% endfilter %}{% endblock %}
 {% block footer %}{% include 'navigation/footer.html' with homepage=True %}{% endblock %}
-{% block scripts %}<script src="{% static 'ubyssey/js/home.js' %}?v=homepage-navigation-15"></script>{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/home.js' %}?v=homepage-navigation-16"></script>{% endblock %}
