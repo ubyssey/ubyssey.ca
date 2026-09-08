@@ -6,6 +6,7 @@
 @use 'modules/darkmode';
 @use 'modules/article/redesign';
 @use 'modules/listing-redesign';
+@use 'modules/expanded-menu-canonical';
 
 .aux-theme{--aux-bg:#fff;--aux-text:#0b0e13;--aux-muted:#666f80;--aux-blue:#21356f;--aux-rule:#d6deed;--aux-soft:#f2f6fc;background:var(--aux-bg);color:var(--aux-text)}
 [color-css-theme=dark] .aux-theme{--aux-bg:#091221;--aux-text:#f5f7fb;--aux-muted:#bac7db;--aux-blue:#7893df;--aux-rule:#46536b;--aux-soft:#172136}
