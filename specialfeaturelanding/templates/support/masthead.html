@@ -2,8 +2,8 @@
 {% block support_content %}
 <header class="support-hero masthead-hero"><div class="page-shell"><p class="aux-kicker">Contact The Ubyssey</p><h1>Contact</h1></div></header>
 <section class="directory page-shell"><h2>Contact directory</h2><div class="directory__grid">
-<section><h3>Senior Masthead</h3>{% for person in redesign_staff_groups.senior %}{% include 'support/partials/contact_row.html' %}{% endfor %}</section>
-<section><h3>Reportage</h3>{% for person in redesign_staff_groups.reportage %}{% include 'support/partials/contact_row.html' %}{% endfor %}</section>
-<section><h3>Visuals &amp; Product</h3>{% for person in redesign_staff_groups.visuals %}{% include 'support/partials/contact_row.html' %}{% endfor %}{% for person in redesign_staff_groups.product %}{% include 'support/partials/contact_row.html' %}{% endfor %}</section>
-<section><h3>Business</h3><div class="contact-row"><strong>Business Manager</strong><span>Business Office<a href="mailto:business@ubyssey.ca">business@ubyssey.ca</a></span></div><div class="contact-row"><strong>Advertising</strong><span>Advertising Team<a href="mailto:advertising@ubyssey.ca">advertising@ubyssey.ca</a></span></div></section>
+{% if redesign_staff_groups.senior %}<section><h3>Senior Masthead</h3>{% for member in redesign_staff_groups.senior %}{% include 'support/partials/contact_row.html' with person=member.author %}{% endfor %}</section>{% endif %}
+{% if redesign_staff_groups.reportage %}<section><h3>Reportage</h3>{% for member in redesign_staff_groups.reportage %}{% include 'support/partials/contact_row.html' with person=member.author %}{% endfor %}</section>{% endif %}
+{% if redesign_staff_groups.visuals or redesign_staff_groups.product %}<section><h3>Visuals &amp; Product</h3>{% for member in redesign_staff_groups.visuals %}{% include 'support/partials/contact_row.html' with person=member.author %}{% endfor %}{% for member in redesign_staff_groups.product %}{% include 'support/partials/contact_row.html' with person=member.author %}{% endfor %}</section>{% endif %}
+{% if redesign_contact_entries %}<section><h3>Business</h3>{% for entry in redesign_contact_entries %}<div class="contact-row"><strong>{{ entry.role }}</strong><span>{{ entry.name }}{% if entry.email %}<a href="mailto:{{ entry.email }}">{{ entry.email }}</a>{% endif %}</span></div>{% endfor %}</section>{% endif %}
 </div></section>{% endblock %}

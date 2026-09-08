@@ -4,7 +4,7 @@
       <div class="ar-keep-reading__row">
         <h2>More from <a href="{{ row.url }}">{{ row.title }}</a></h2>
         <div class="ar-keep-reading__grid">
-          {% for article in row.articles %}{% include 'article/objects/suggested_article.html' with article=article %}{% endfor %}
+          {% for article in row.articles %}<div class="ar-suggested-card-wrap{% if not forloop.last %} ar-suggested-card-wrap--divided{% endif %}">{% include 'article/objects/suggested_article.html' with article=article %}</div>{% endfor %}
         </div>
       </div>
     {% endfor %}

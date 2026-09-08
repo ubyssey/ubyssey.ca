@@ -178,6 +178,43 @@
 .hp-nav__bar nav a{background-image:linear-gradient(#bce3f0,#bce3f0)!important;background-repeat:no-repeat!important;background-position:0 90%!important;background-size:0 78%!important;transition:background-size .22s ease,color .22s ease!important}
 .hp-nav__bar nav a:hover,.hp-nav__bar nav a:focus-visible{background-size:100% 78%!important;color:inherit!important}
 [color-css-theme=dark] .hp-nav__bar nav a:hover,[color-css-theme=dark] .hp-nav__bar nav a:focus-visible{color:#081839!important;background-color:#bce3f0!important}
+
+/* The homepage mast collapses around its existing nameplate. This retains
+   one visual mark throughout the transition, while the sticky header height
+   changes only after JavaScript preserves the reader's scroll position. */
+@media (min-width:761px){
+  .hp-nav__mast{transition:height .24s ease,opacity .18s ease,transform .24s ease}
+  .hp-nav.is-compact{height:68px!important}
+  .hp-nav.is-compact .hp-nav__mast{height:68px!important;opacity:1!important;transform:none!important;overflow:visible!important;z-index:1}
+  .hp-nav.is-compact .hp-nav__mast>.hp-nav__since,
+  .hp-nav.is-compact .hp-nav__mast>.hp-nav__newsletter,
+  .hp-nav.is-compact .hp-nav__mast>time{opacity:0;visibility:hidden;transform:translateY(-8px);pointer-events:none}
+  .hp-nav.is-compact .hp-nav__nameplate{font-size:45px!important;line-height:68px!important}
+  .hp-nav.is-compact .hp-nav__bar{position:absolute;inset:0 0 auto;z-index:2;height:68px!important;background-image:none!important}
+  .hp-nav.is-compact .hp-nav__compact-nameplate{display:none!important}
+  .hp-nav.is-compact .hp-nav__expanded{top:68px!important}
+
+  /* A pseudo-element avoids the competing legacy background declarations
+     that were allowing only the hover-out animation to be seen. */
+  .hp-nav__bar nav a{position:relative!important;z-index:0;isolation:isolate;background:none!important}
+  .hp-nav__bar nav a::before{position:absolute;z-index:-1;inset:1px -3px 2px;content:"";background:#bce3f0;transform:scaleX(0);transform-origin:left;transition:transform .22s ease}
+  .hp-nav__bar nav a:hover::before,.hp-nav__bar nav a:focus-visible::before{transform:scaleX(1)}
+
+  .hp-nav__expanded .hp-nav__search button img{filter:none!important}
+  .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-weight:400!important;font-variation-settings:"wdth" 75,"wght" 400!important}
+  .hp-nav__join-link{background:none!important;box-shadow:none!important}
+  .hp-nav__join-link h2,.hp-nav__join-link p{width:max-content;max-width:100%;margin-inline:auto!important}
+  .hp-nav__join-link h2 span,.hp-nav__join-link p span{display:table;margin-inline:auto;background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s ease,color .22s ease}
+  .hp-nav__join-link h2{white-space:nowrap}
+  .hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span,.hp-nav__join-link:hover p span,.hp-nav__join-link:focus-visible p span{background-size:100% 78%;color:#081839!important}
+}
+@media (max-width:760px){
+  .hp-nav__expanded .hp-nav__links{gap:11px!important;justify-content:space-between}
+  .hp-nav__expanded .hp-nav__links a{font-family:"meursault-variable",Georgia,serif!important;font-size:22px!important;line-height:1.34!important;font-weight:400!important;font-variation-settings:"wdth" 75,"wght" 400!important}
+  .hp-nav__join-link{background:none!important;box-shadow:none!important}
+  .hp-nav__join-link h2 span,.hp-nav__join-link p span{display:table;margin-inline:auto;background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;transition:background-size .22s ease}
+  .hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span,.hp-nav__join-link:hover p span,.hp-nav__join-link:focus-visible p span{background-size:100% 78%;color:#081839!important}
+}
 .hp-beat{min-height:16px;padding-inline:6px;font-size:9px;line-height:16px}
 .hp-story>time{border-bottom:0!important;border-radius:0!important}
 .hp-games h2 button{margin:0;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit}

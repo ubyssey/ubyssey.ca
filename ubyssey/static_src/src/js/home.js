@@ -49,13 +49,14 @@ function initializeRedesignNavigation() {
   // compensating scroll event from toggling the two header states repeatedly.
   const compactAt = 170;
   const expandAt = 40;
+  const desktop = window.matchMedia('(min-width: 761px)');
   const setCompact = (nextCompact) => {
     if (nextCompact === compact) return;
-    const previousHeight = header.getBoundingClientRect().height;
+    const previousHeight = desktop.matches ? header.getBoundingClientRect().height : 0;
     compact = nextCompact;
     settlingCompactState = true;
     header.classList.toggle('is-compact', compact);
-    const nextHeight = header.getBoundingClientRect().height;
+    const nextHeight = desktop.matches ? header.getBoundingClientRect().height : 0;
     const layoutDelta = nextHeight - previousHeight;
     if (layoutDelta) window.scrollBy(0, layoutDelta);
     // Collapsing a sticky element changes document layout. Chrome may emit a
@@ -87,6 +88,12 @@ function initializeRedesignNavigation() {
       updateHeader();
     });
   }, { passive: true });
+  const refreshForViewport = () => {
+    compact = header.classList.contains('is-compact');
+    updateHeader();
+  };
+  if (desktop.addEventListener) desktop.addEventListener('change', refreshForViewport);
+  else desktop.addListener(refreshForViewport);
 }
 function initializeGameAnalysis() {
   document.querySelectorAll('[data-game-analysis]').forEach((panel) => {
