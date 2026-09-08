@@ -359,3 +359,28 @@
 }
 @media (min-width:761px) and (max-width:1399px){.hp-nav__expanded-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(250px,1.5fr)!important;gap:32px!important}}
 @media(max-width:760px){.hp-nav__menu,.hp-nav__menu img{width:22px!important;height:13px!important}.hp-nav .theme-toggle svg{width:14px!important;height:14px!important}}
+
+/* Keep the compact header authoritative after the shorter desktop masthead
+   refinement; the mast must leave layout entirely when scrolling. */
+@media (min-width:761px){
+  .hp-nav.is-compact{height:68px!important}
+  .hp-nav.is-compact .hp-nav__mast{height:0!important}
+  .hp-nav.is-compact .hp-nav__bar{height:68px!important}
+}
+
+/* Menu geometry follows the homepage hero shell. The search is deliberately
+   the width of the four link columns, while the Join panel fills the rest. */
+@media (min-width:761px){
+  .hp-nav__expanded .hp-nav__search{top:58px!important;left:50%!important;width:min(860px,calc(100% - 40px))!important;height:62px!important;transform:translateX(-50%)!important}
+  .hp-nav__expanded-grid{top:156px!important;width:min(1238px,calc(100% - 40px))!important;grid-template-columns:150px 150px 160px 220px minmax(0,1fr)!important;column-gap:60px!important;row-gap:0!important}
+  .hp-nav__join-link{background-color:transparent!important;box-shadow:none!important}
+}
+@media (min-width:761px) and (max-width:1120px){
+  .hp-nav__expanded-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(220px,1.25fr)!important;column-gap:26px!important}
+  .hp-nav__expanded .hp-nav__search{width:calc(100% - 40px)!important}
+}
+
+/* Only the small supporting text receives the divider hover treatment. */
+.hp-podcast .hp-promo__copy>span,.hp-podcast .hp-promo__copy h2>span,.hp-margins .hp-promo__copy h2>span{background-image:none!important}
+.hp-podcast:hover .hp-promo__copy>span,.hp-podcast:focus-visible .hp-promo__copy>span,.hp-podcast:hover .hp-promo__copy h2>span,.hp-podcast:focus-visible .hp-promo__copy h2>span,.hp-margins:hover .hp-promo__copy h2>span,.hp-margins:focus-visible .hp-promo__copy h2>span{color:#fff!important;background-color:transparent!important}
+.site-footer__brand{width:440px!important}.site-footer__brand>a.site-footer__nameplate{width:440px!important;height:76px!important;padding-top:3px!important;font-size:56px!important;line-height:67px!important}
