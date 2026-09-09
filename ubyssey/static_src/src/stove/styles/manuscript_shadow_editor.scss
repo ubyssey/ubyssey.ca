@@ -1,10 +1,14 @@
 @use "../../styles/modules/core";
 
 :host {
-    font-family: "librefranklin", "noto-sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-family: "drummond-variable", Georgia, serif;
     font-size: 16px;
     font-variation-settings: "wght" 400;
     -webkit-font-smoothing: antialiased;
+}
+
+.ProseMirror {
+    border: #000 1px dotted;
 }
 
 .ProseMirror a[href] {
@@ -35,11 +39,15 @@
     font-variation-settings: inherit;
     -webkit-font-smoothing: inherit;
     counter-reset: stove-footnote;
-    background: var(--background);
-    color: var(--text_color-100);
+    background: var(--ar-bg, var(--background, #fff));
+    color: var(--ar-text, var(--text_color-100, #0b0e13));
 }
 
-.page-shadow-preview div.article-content[data-article-block] {
+.page-shadow-preview .ar-page {
+    min-height: 100%;
+}
+
+.page-shadow-preview .ar-body.article-content[data-article-block] {
     margin-bottom: 0;
 }
 

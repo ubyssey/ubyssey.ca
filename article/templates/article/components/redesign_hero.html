@@ -3,8 +3,8 @@
 <section class="ar-hero ar-hero--{{ article.redesign_header_layout }}" data-article-hero>
   <div class="ar-hero__copy">
     <p class="ar-kicker" data-section="{{ article.current_section|default:'News'|lower }}">{{ article.current_section|default:"News" }}{% if article.category_page %} / {{ article.category_page.title }}{% endif %}</p>
-    <h1>{{ header.title|default:article.title|safe }}</h1>
-    {% if header.subtitle %}<p class="ar-deck">{{ header.subtitle }}</p>{% elif header.above_cut_lede %}<div class="ar-deck">{{ header.above_cut_lede|richtext }}</div>{% elif article.lede %}<p class="ar-deck">{{ article.lede }}</p>{% endif %}
+    {% if header.title %}<h1 data-article-editable-stream-field="header" data-article-editable-path="title">{{ header.title|safe }}</h1>{% else %}<h1 data-article-editable-page-field="title" data-article-editable-mode="richtext-inline">{{ article.title|safe }}</h1>{% endif %}
+    {% if header.subtitle %}<p class="ar-deck" data-article-editable-stream-field="header" data-article-editable-path="subtitle">{{ header.subtitle }}</p>{% elif header.above_cut_lede %}<div class="ar-deck" data-article-editable-stream-field="header" data-article-editable-path="above_cut_lede" data-article-editable-mode="richtext">{{ header.above_cut_lede|richtext }}</div>{% elif article.lede %}<p class="ar-deck">{{ article.lede }}</p>{% endif %}
   </div>
   {% if preview_image_url or featured.image %}
   <figure class="ar-hero__media">

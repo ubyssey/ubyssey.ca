@@ -33,7 +33,9 @@
             <div class="stove-connected-users" data-connected-users></div>
             <a href="{% url 'wagtailadmin_pages:edit' self.id %}" class="page-editor-topbar__button" target="_blank" rel="noopener">View in Wagtail</a>
             <button type="submit" class="page-editor-topbar__button" formmethod="post" formaction="{% block editor_full_preview_url %}{% url 'stove:editor_page_full_preview' self.id %}{% endblock %}" formtarget="_blank">View Preview</button>
-            <a href="{{ self.url }}" class="page-editor-topbar__button" target="_blank" rel="noopener" data-page-live-link>View Live</a>
+            {% if self.live %}
+                <a href="{{ self.url }}" class="page-editor-topbar__button" target="_blank" rel="noopener" data-page-live-link>View Live</a>
+            {% endif %}
             <button type="button" class="page-editor-topbar__button" data-history-control data-history-return>Return</button>
             <button type="button" class="page-editor-topbar__button" data-history-control data-history-restore disabled>Restore</button>
             <label class="manuscript-version-picker" data-history-control>

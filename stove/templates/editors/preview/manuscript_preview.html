@@ -1,6 +1,7 @@
 {% load wagtailcore_tags %}
 
-<article class="c-article c-article--fw-story js-article">
+<main id="main-content" class="ar-page ar-page--{{ self.redesign_header_layout }}">
+  <article id="article-{{ self.slug }}" class="ar-article js-article">
   {% for header_block in self.header %}
     <div
       data-article-block
@@ -8,27 +9,38 @@
       data-stream-block-id="{{ header_block.id }}"
       data-stream-block-index="{{ forloop.counter0 }}"
     >
-      {% include_block header_block with id=header_block.id stove_editor=True %}
+      {% include 'article/components/redesign_hero.html' with article=self stove_editor=True %}
     </div>
   {% endfor %}
 
-  <div class="clearfix">
-    {% for block in self.content %}
-      <div
-        class="cell left article-content"
-        data-article-block
-        data-stream-field="content"
-        data-stream-block-id="{{ block.id }}"
-        data-stream-block-index="{{ forloop.counter0 }}"
-      >
-        {% include_block block with id=block.id %}
-      </div>
-    {% endfor %}
+  <div class="ar-reading">
+    {% include 'article/objects/redesign_main_byline.html' with article=self %}
+    <div class="ar-reading__layout">
+      {% include 'article/objects/redesign_context_rail.html' with article=self %}
 
-    {% if self.disclaimer %}
-      <div class="cell left article-content">
-        <div class="disclaimer" data-article-block data-article-editable-page-field="disclaimer" data-article-editable-mode="richtext">{{ self.disclaimer|safe }}</div>
+      {% for block in self.content %}
+        <div
+          class="ar-body article-content"
+          data-article-block
+          data-stream-field="content"
+          data-stream-block-id="{{ block.id }}"
+          data-stream-block-index="{{ forloop.counter0 }}"
+        >
+          {% include_block block with id=block.id %}
+        </div>
+      {% endfor %}
+
+      {% if self.disclaimer %}
+        <div class="ar-body article-content">
+          <div class="disclaimer" data-article-editable-page-field="disclaimer" data-article-editable-mode="richtext">{{ self.disclaimer|safe }}</div>
+        </div>
+      {% endif %}
+
+      <div class="ar-body article-content">
+        <div class="ar-context-mobile">{% include 'article/objects/redesign_context_rail.html' with article=self %}</div>
+        <p class="ar-report"><a href="https://forms.ubyssey.ca/erasure">Apply for erasure</a><a href="https://forms.ubyssey.ca/tips">Send a tip</a><a href="https://forms.ubyssey.ca/errors">Report an error</a></p>
       </div>
-    {% endif %}
+    </div>
   </div>
-</article>
+  </article>
+</main>
