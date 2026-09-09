@@ -1,5 +1,20 @@
 import { useState } from "react";
 import { timeDeltaString, convertToMilliseconds } from "../../utils/datetimeUtils.js";
+import DOMPurify from "dompurify";
+
+const liveblogHtmlOptions = {
+    ADD_TAGS: ["iframe"],
+    ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "loading", "referrerpolicy"],
+};
+
+function safeAuthorHref(url) {
+    try {
+        const parsed = new URL(url, window.location.origin);
+        return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : "#";
+    } catch (_error) {
+        return "#";
+    }
+}
 
 function textFromMarkup(markup) {
     return markup.replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
@@ -70,16 +85,20 @@ export default function LiveblogUpdate({update, isAdmin, presentTime, isLive, co
                 {author_images(update).length > 0 && 
                     <div className={"o-liveblog-update--meta--images"}>
                         {author_images(update).map((image) => 
-                            <div className="o-liveblog-update--meta--image" dangerouslySetInnerHTML={{__html: image}}></div>
+                            <div className="o-liveblog-update--meta--image" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(image || "", liveblogHtmlOptions)}}></div>
                         )}
                     </div>
                 }
                 <div>
                     <time className={"o-liveblog-update--meta--time liveblog-updating-time " + (isRecent(presentTime) ? "recent" : "")} dateTime={update.publish_date}>{updateDate()}</time>
-                    <div className="o-liveblog-update--meta--author" dangerouslySetInnerHTML={{__html: 
-                        update.authors.map((author) => 
-                            '<span><a class="o-liveblog-update--author-name" href="' + author.author_link + '">' + author.author_name + '</a><span class="o-liveblog-update--author-role"> ' + author.author_role + '</span></span>'
-                        ).join(", ")}}>
+                    <div className="o-liveblog-update--meta--author">
+                        {update.authors.map((author, index) =>
+                            <span key={`${author.author_link}-${index}`}>
+                                {index > 0 && ", "}
+                                <a className="o-liveblog-update--author-name" href={safeAuthorHref(author.author_link)}>{author.author_name}</a>
+                                {author.author_role && <span className="o-liveblog-update--author-role"> {author.author_role}</span>}
+                            </span>
+                        )}
                     </div>
                 </div>
                 {isAdmin && <a className="o-liveblog-update--edit-button" href={"/admin/snippets/liveblog/liveblogupdate/edit/" + update.id + "/"}>Edit</a>}
@@ -89,7 +108,7 @@ export default function LiveblogUpdate({update, isAdmin, presentTime, isLive, co
                     <strong>{timelineContent(update.html).title}</strong>
                     {timelineContent(update.html).excerpt && <span>{timelineContent(update.html).excerpt}</span>}
                 </button>
-                : <div className="o-liveblog-update--content" dangerouslySetInnerHTML={{__html: update.html}}></div>
+                : <div className="o-liveblog-update--content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(update.html || "", liveblogHtmlOptions)}}></div>
             }
             {compact && expanded && <button className="o-liveblog-update__collapse" type="button" onClick={() => setExpanded(false)}>Collapse update</button>}
         </section>

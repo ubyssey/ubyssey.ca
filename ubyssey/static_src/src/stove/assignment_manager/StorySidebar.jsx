@@ -33,7 +33,7 @@ function CreateSidebar({createPage}) {
     ethics_notes: '',
     current_section: '',
     deadline_list: [],
-    story_type: ""
+    story_form: ""
   });
 
   useEffect(() => {
@@ -70,7 +70,7 @@ function CreateSidebar({createPage}) {
           ethics_notes: '',
           assignment_memo: '',
           deadline_list: [],
-          story_type: ""
+          story_form: ""
         })
       })
       .catch(async (error) => {
@@ -121,7 +121,7 @@ function CreateSidebar({createPage}) {
       <div className="edit-field--sidebyside">
         <div className="edit-field--side-label">Section</div><SectionSelect section={newPage.current_section} updateSection={(newSection) => updateSection(newPage, newSection, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
         <div className="edit-field--side-label">Beat</div><BeatSelect beat={newPage.category_page} updateBeat={(newBeat) => updateBeat(newPage, newBeat, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
-        <div className="edit-field--side-label">Type</div><StoryTypeSelect storyType={newPage.story_type} updateStoryType={(newStoryType) => updateStoryType(newPage, newStoryType, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
+        <div className="edit-field--side-label">Type</div><StoryTypeSelect storyType={newPage.story_form} updateStoryType={(newStoryType) => updateStoryType(newPage, newStoryType, (e) => updateNewPage(e), true)} styleType={"edit-field"}/>
       </div>
     </div>
     <div>
@@ -199,7 +199,7 @@ function EditSidebar({selectedPage, updatePage}) {
       <div className="edit-field--sidebyside">
         <div className="edit-field--side-label">Section</div><SectionSelect section={selectedPage.current_section} updateSection={(newSection) => updateSection(selectedPage, newSection, updatePage)} styleType={"edit-field"}/>
         <div className="edit-field--side-label">Beat</div><BeatSelect beat={selectedPage.category_page} updateBeat={(newBeat) => updateBeat(selectedPage, newBeat, updatePage)} styleType={"edit-field"}/>
-        <div className="edit-field--side-label">Type</div><StoryTypeSelect storyType={selectedPage.story_type} updateStoryType={(newStoryType) => updateStoryType(selectedPage, newStoryType, updatePage)} styleType={"edit-field"}/>
+        <div className="edit-field--side-label">Type</div><StoryTypeSelect storyType={selectedPage.story_form} updateStoryType={(newStoryType) => updateStoryType(selectedPage, newStoryType, updatePage)} styleType={"edit-field"}/>
       </div>
     </div>
     <div>

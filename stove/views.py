@@ -129,8 +129,8 @@ def create_page(request, section_id):
         newPage.primary_tag_slug = slugify(newPage.category_page.title)
     if ("article_status" in data):
         newPage.article_status = data["article_status"]
-    if ("story_type" in data):
-        newPage.story_type = data["story_type"]
+    if ("story_form" in data):
+        newPage.story_form = data["story_form"]
     if ("article_authors" in data):
         new_authors = data["article_authors"]  
         items = [
@@ -309,8 +309,8 @@ def update_content_tracker(request, page_id):
     if ("article_status" in data):
         page = update_article_status(page, data["article_status"], request.user)
         save_as_draft = True
-    if ("story_type" in data):
-        page.story_type = data["story_type"]
+    if ("story_form" in data):
+        page.story_form = data["story_form"]
     if ("authors" in data):
         # Author role types not in assignment manager are saved first so they aren't overwritten
         page.article_authors.set(

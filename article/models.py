@@ -1841,7 +1841,6 @@ class StandardArticlePage(ArticlePage):
                 ),
                 FieldPanel("content"),
                 FieldPanel("disclaimer"),
-                FieldPanel("story_type"),
                 FieldPanel("standpoint_disclosure"),
                 FieldPanel("extended_byline_override"),
                 FieldPanel("story_form"),

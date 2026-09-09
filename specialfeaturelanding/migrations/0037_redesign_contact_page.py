@@ -46,7 +46,9 @@ def create_contact_page(apps, schema_editor):
             display_title="Contact",
         )
         home.add_child(instance=page)
-        page.save_revision().publish()
+        # The contact-entry relation is created in 0038. As with the pages
+        # created in 0035, defer creating a Wagtail revision until every
+        # relation on this model has a backing table.
 
     _with_migration_lock(schema_editor, create_page)
 
