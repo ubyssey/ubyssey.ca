@@ -790,7 +790,16 @@ body {
     font: 13px/1.2 sans-serif;
 }
 
-// Didn't work until I got really specific -> todo clean up the CSS
+// Keeping the textarea font consistent
+[data-manuscript-settings-modal] textarea,
+.page-block-editor-modal textarea,
+.page-block-editor-modal .pm-editable-field__content {
+    font: 13px/1.35 sans-serif;
+}
+
+[data-manuscript-settings-modal] .page-field > label,
+[data-article-media-upload-modal] .page-field > label,
+[data-article-media-existing-modal] .page-field > label,
 .page-field label.pm-featured-media-sidebar__label {
     font: 700 13px/1.2 sans-serif;
 }
