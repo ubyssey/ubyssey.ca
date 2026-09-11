@@ -3,10 +3,10 @@
 from django import forms
 
 # Currently hiding video, we have youtube as an alternative
-# todo: render captions properly within settings, also add featured media tab
-FEATURED_MEDIA_FIELDS = ("image", "caption", "credit", "alt_text")
+FEATURED_MEDIA_FIELDS = ("image", "cover_caption", "credit", "alt_text")
 FEATURED_MEDIA_LABELS = {
     "image": "Image",
+    "cover_caption": "Caption",
     "alt_text": "Alt text",
 }
 
@@ -73,9 +73,9 @@ def get_featured_media_form_class(model):
         form=FeaturedMediaForm,
         fields=FEATURED_MEDIA_FIELDS,
         widgets={
-            "caption": forms.Textarea(attrs={"rows": 2}),
-            "credit": forms.Textarea(attrs={"rows": 2}),
-            "alt_text": forms.Textarea(attrs={"rows": 2}),
+            "cover_caption": forms.HiddenInput(),
+            "credit": forms.HiddenInput(),
+            "alt_text": forms.HiddenInput(),
         },
         labels=FEATURED_MEDIA_LABELS,
     )

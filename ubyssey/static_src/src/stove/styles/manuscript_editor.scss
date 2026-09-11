@@ -669,6 +669,35 @@ body {
     resize: vertical;
 }
 
+.pm-featured-media-sidebar__caption,
+.pm-featured-media-sidebar__plain-text {
+    box-sizing: border-box;
+    min-height: 58px;
+    padding: 7px 8px;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    background: #fff;
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-featured-media-sidebar__caption:hover,
+.pm-featured-media-sidebar__caption:focus,
+.pm-featured-media-sidebar__caption.ProseMirror-focused,
+.pm-featured-media-sidebar__plain-text:hover,
+.pm-featured-media-sidebar__plain-text:focus {
+    outline: 2px solid #3564a8;
+    outline-offset: -1px;
+}
+
+.pm-featured-media-sidebar__caption p {
+    margin: 0 0 0.6em;
+}
+
+.pm-featured-media-sidebar__caption p:last-child {
+    margin-bottom: 0;
+}
+
 .article-media-gallery {
     display: grid;
     gap: 3px;

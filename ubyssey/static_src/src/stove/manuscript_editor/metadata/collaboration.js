@@ -53,6 +53,13 @@ export function setupMetadataCollaboration(form, metadata) {
   const textObservers = new Map();
   let authorsObserver = null;
 
+  const notifyFieldApplied = (name, value, remote = false) => {
+    form.dispatchEvent(new CustomEvent(FIELD_APPLIED_EVENT, {
+      bubbles: true,
+      detail: { name, value, remote },
+    }));
+  };
+
   const applyField = (name, value, { remote = false } = {}) => {
     const fields = fieldGroups(form).get(name);
     const nextValue = sharedValueToJS(value);
@@ -71,10 +78,7 @@ export function setupMetadataCollaboration(form, metadata) {
     setFieldValue(fields, nextValue);
     if (preserveSelection) first.setSelectionRange(selectionStart, selectionEnd);
     first.dispatchEvent(new Event("input", { bubbles: true }));
-    form.dispatchEvent(new CustomEvent(FIELD_APPLIED_EVENT, {
-      bubbles: true,
-      detail: { name, value: nextValue, remote },
-    }));
+    notifyFieldApplied(name, nextValue, remote);
   };
 
   const applyAuthors = (authors) => {
@@ -181,6 +185,7 @@ export function setupMetadataCollaboration(form, metadata) {
         metadata.set(key, next);
       }, "metadata-input");
     }
+    notifyFieldApplied(field.name, next);
   };
 
   // Writes local author row changes to YJS

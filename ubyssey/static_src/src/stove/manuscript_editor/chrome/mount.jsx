@@ -7,12 +7,14 @@ import { useAuthorsPanel } from "../metadata/author_panel.jsx";
 import { setupMetadataCollaboration } from "../metadata/collaboration.js";
 import { useMediaModals } from "../media/media_modals.jsx";
 import { useCopyEditingToggle, usePageFieldToggles } from "./page_fields.js";
+import { setupFeaturedMediaSidebarEditors } from "../../core/preview/editables.jsx";
 
 function ManuscriptChrome({ form, metadata, mediaUpdates, schedulePreview }) {
   usePageFieldToggles(form, schedulePreview);
   useCopyEditingToggle();
   useAuthorsPanel();
   useEffect(() => setupMetadataCollaboration(form, metadata), [form, metadata]);
+  useEffect(() => setupFeaturedMediaSidebarEditors(form), [form]);
   useMediaModals(form, mediaUpdates);
 
   return null;

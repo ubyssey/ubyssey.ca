@@ -116,6 +116,44 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
   };
 }
 
+// Turned into helper now that there are sidebar plain text editors
+function createPlainTextEditor(target, { initialText, onFocus, onValueChanged }) {
+  target.textContent = String(initialText || "").trim();
+  target.classList.add("pm-page-direct-edit", "pm-page-direct-plain-text");
+  Object.assign(target, { contentEditable: "plaintext-only" });
+  target.setAttribute("role", "textbox");
+  target.setAttribute("tabindex", "0");
+  stopDirectEditEvents(target);
+
+  const onKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      target.blur();
+    }
+  };
+  const onPaste = (event) => {
+    event.preventDefault();
+    document.execCommand("insertText", false, event.clipboardData?.getData("text/plain") || "");
+  };
+  const onInput = () => onValueChanged(target.textContent.trim());
+
+  target.addEventListener("focus", onFocus);
+  target.addEventListener("keydown", onKeyDown);
+  target.addEventListener("paste", onPaste);
+  target.addEventListener("input", onInput);
+
+  return {
+    element: target,
+    destroy() {
+      target.removeEventListener("focus", onFocus);
+      target.removeEventListener("keydown", onKeyDown);
+      target.removeEventListener("paste", onPaste);
+      target.removeEventListener("input", onInput);
+    },
+  };
+}
+
+
 export function destroyEditorViews(editors) {
   for (const editor of editors) editor.destroy();
   editors.length = 0;
@@ -180,7 +218,7 @@ export function syncPageEditorsFromMetadata(pageRoot, event) {
   const htmlValue = String(value ?? "");
   const syncedRichTextEditors = new Set();
 
-  pageEditorState.pageDirectRichTextEditors.forEach((editor) => {
+  [...pageEditorState.pageDirectRichTextEditors, ...pageEditorState.sidebarRichTextEditors].forEach((editor) => {
     const target = editor.view.dom;
     if (target.dataset.articleEditablePageField !== name) return;
 
@@ -197,6 +235,12 @@ export function syncPageEditorsFromMetadata(pageRoot, event) {
       .replaceWith(0, editor.view.state.doc.content.size, nextDoc.content)
       .setMeta(SYNCED_EDITOR_META, true)
       .setMeta("addToHistory", false));
+  });
+
+  pageEditorState.sidebarPlainTextEditors.forEach(({ element }) => {
+    if (element.dataset.articleEditablePageField !== name) return;
+    if (!remote && element.getRootNode()?.activeElement === element) return;
+    if (element.textContent !== htmlValue) element.textContent = htmlValue;
   });
 
   pageRoot.querySelectorAll(selector).forEach((target) => {
@@ -324,50 +368,32 @@ export function setupPagePreviewEditors(pageRoot, streamDocs = null, scopeBlock 
     }
 
     const initialText = source.kind === "stream" ? source.field.textContent : source.input.value;
-    target.textContent = String(initialText || "").trim();
+    const editor = createPlainTextEditor(target, {
+      initialText,
+      onFocus() {
+        pageEditorState.history?.stopCapturing();
+        source.instance?.history.stopCapturing();
+      },
+      onValueChanged(nextValue) {
+        if (source.kind !== "stream") {
+          source.input.value = nextValue;
+          source.input.dispatchEvent(new CustomEvent("input", {
+            bubbles: true,
+            detail: { deferPreviewIfFocused: true },
+          }));
+          return;
+        }
 
-    target.classList.add("pm-page-direct-edit", "pm-page-direct-plain-text");
-    Object.assign(target, { contentEditable: "plaintext-only" });
-    target.setAttribute("role", "textbox");
-    target.setAttribute("tabindex", "0");
-    stopDirectEditEvents(target);
+        setFieldContent(source.instance, {
+          blockId: source.blockId,
+          path: source.path || [],
+          content: Fragment.from(streamSchema.nodes.paragraph.create(null, nextValue ? streamSchema.text(nextValue) : null)),
+        });
+      },
+    });
     if (source.kind === "stream") {
-      pageEditorState.pageDirectPlainTextEditors.push({ element: target, streamSource: source });
+      pageEditorState.pageDirectPlainTextEditors.push({ ...editor, streamSource: source });
     }
-    target.addEventListener("focus", () => {
-      pageEditorState.history?.stopCapturing();
-      source.instance?.history.stopCapturing();
-    });
-
-    target.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        target.blur();
-      }
-    });
-    target.addEventListener("paste", (event) => {
-      event.preventDefault();
-      document.execCommand("insertText", false, event.clipboardData?.getData("text/plain") || "");
-    });
-    target.addEventListener("input", () => {
-      const activeSource = source;
-      const nextValue = target.textContent.trim();
-      if (activeSource.kind !== "stream") {
-        activeSource.input.value = nextValue;
-        activeSource.input.dispatchEvent(new CustomEvent("input", {
-          bubbles: true,
-          detail: { deferPreviewIfFocused: true },
-        }));
-        return;
-      }
-
-      const schema = streamSchema;
-      setFieldContent(activeSource.instance, {
-        blockId: activeSource.blockId,
-        path: activeSource.path || [],
-        content: Fragment.from(schema.nodes.paragraph.create(null, nextValue ? schema.text(nextValue) : null)),
-      });
-    });
   }
 }
 
@@ -481,4 +507,65 @@ function editablePaths(target) {
 function parseEditablePath(path) {
   // Breaks example.0.item into ["example", 0, "item"]
   return path === "" ? [] : path.split(".").map((part) => /^\d+$/.test(part) ? Number(part) : part);
+}
+
+// Sidebar editors
+export function setupFeaturedMediaSidebarEditors(form) {
+  destroyEditorViews(pageEditorState.sidebarRichTextEditors);
+  destroySidebarPlainTextEditors();
+
+  form.querySelectorAll("[data-featured-media-richtext]").forEach((target) => {
+    const input = formInput(form, target.dataset.articleEditablePageField);
+    if (!input) return;
+
+    const editor = createPageRichTextEditor(
+      target,
+      richTextContentFromHtml(input.value),
+      target.className + " pm-page-direct-edit pm-page-direct-rich-text",
+      (activeView) => {
+        input.value = richTextHtmlFromDoc(activeView.state.doc);
+        input.dispatchEvent(new CustomEvent("input", {
+          bubbles: true,
+          detail: { deferPreviewIfFocused: true },
+        }));
+      },
+    );
+    stopDirectEditEvents(editor.view.dom);
+    pageEditorState.sidebarRichTextEditors.push(editor);
+  });
+
+  form.querySelectorAll("[data-featured-media-plaintext]").forEach((target) => {
+    const editor = createSidebarPlainTextEditor(form, target);
+    if (editor) pageEditorState.sidebarPlainTextEditors.push(editor);
+  });
+
+  return () => {
+    destroyEditorViews(pageEditorState.sidebarRichTextEditors);
+    destroySidebarPlainTextEditors();
+  };
+}
+
+function createSidebarPlainTextEditor(form, target) {
+  const input = formInput(form, target.dataset.articleEditablePageField);
+  if (!input) return null;
+
+  return createPlainTextEditor(target, {
+    initialText: input.value,
+    onFocus() {
+      pageEditorState.history?.stopCapturing();
+      pageEditorState.richTextToolbar?.setView(null);
+    },
+    onValueChanged(nextValue) {
+      input.value = nextValue;
+      input.dispatchEvent(new CustomEvent("input", {
+        bubbles: true,
+        detail: { deferPreviewIfFocused: true },
+      }));
+    },
+  });
+}
+
+function destroySidebarPlainTextEditors() {
+  pageEditorState.sidebarPlainTextEditors.forEach((editor) => editor.destroy());
+  pageEditorState.sidebarPlainTextEditors = [];
 }

@@ -6,6 +6,9 @@ export class PageEditorState {
     this.pageRichTextEditors = [];
     this.pageDirectRichTextEditors = [];
     this.pageDirectPlainTextEditors = [];
+    // So we don't have to use textareas which don't handle RichText well (plain is just to keep the functionality consistent)
+    this.sidebarRichTextEditors = [];
+    this.sidebarPlainTextEditors = [];
     this.blockActions = null;
     this.richTextToolbar = null;
     this.articleInfoSidebar = null;
@@ -34,6 +37,7 @@ export class PageEditorState {
     const previewViews = [
       ...this.pageRichTextEditors,
       ...this.pageDirectRichTextEditors,
+      ...this.sidebarRichTextEditors,
     ]
       .map((editor) => editor.view)
       .filter((view) => view.dom.isConnected);

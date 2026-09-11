@@ -97,8 +97,27 @@
           {{ featured_media_form.non_field_errors }}
           {% for field in featured_media_form %}
             <div class="page-field" data-collaborative-metadata>
-              <label class="pm-featured-media-sidebar__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-              {{ field }}
+              <label class="pm-featured-media-sidebar__label" for="{% if field.name == 'image' %}{{ field.id_for_label }}{% else %}{{ field.id_for_label }}-editor{% endif %}">{{ field.label }}</label>
+              {% if field.name == "cover_caption" %}
+                {{ field }}
+                <div
+                  id="{{ field.id_for_label }}-editor"
+                  class="pm-featured-media-sidebar__caption"
+                  data-featured-media-richtext
+                  data-article-editable-page-field="{{ field.html_name }}"
+                  data-article-editable-mode="richtext"
+                >{{ field.value|richtext }}</div>
+              {% elif field.name == "credit" or field.name == "alt_text" %}
+                {{ field }}
+                <div
+                  id="{{ field.id_for_label }}-editor"
+                  class="pm-featured-media-sidebar__plain-text"
+                  data-featured-media-plaintext
+                  data-article-editable-page-field="{{ field.html_name }}"
+                >{{ field.value }}</div>
+              {% else %}
+                {{ field }}
+              {% endif %}
               {{ field.errors }}
             </div>
           {% endfor %}
