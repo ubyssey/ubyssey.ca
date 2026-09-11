@@ -4,6 +4,7 @@ import { prosemirrorJSONToYDoc } from "y-prosemirror";
 import { connectYjs } from "./yjs.js";
 import { streamBlockToPmNode } from "../prosemirror/serialization.js";
 import { streamSchema } from "../prosemirror/stream_schema.js";
+import { normalizeSharedStreamDocuments } from "../prosemirror/stream_normalization.js";
 
 function initialProseMirrorDoc(fieldName, streamEditor, createEmptyBlock) {
   const content = (streamEditor.blocks || []).map(streamBlockToPmNode);
@@ -39,6 +40,9 @@ export async function setupPageCollaboration({createEmptyBlock, currentEditor, i
     initializationUrl,
     websocketUrl,
   });
+
+  // Check and fix stream docs before mounting
+  normalizeSharedStreamDocuments(collaboration.ydoc, streamEditors);
 
   return {
     ...collaboration,
