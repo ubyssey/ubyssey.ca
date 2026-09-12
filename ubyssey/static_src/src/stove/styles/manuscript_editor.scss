@@ -664,6 +664,19 @@ body {
     flex-direction: column;
 }
 
+.pm-article-info-sidebar__note {
+    display: grid;
+    gap: 4px;
+}
+
+.pm-article-info-sidebar__note > div > :first-child {
+    margin-top: 0;
+}
+
+.pm-article-info-sidebar__note > div > :last-child {
+    margin-bottom: 0;
+}
+
 .pm-featured-media-sidebar textarea {
     resize: vertical;
 }

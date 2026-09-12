@@ -47,6 +47,18 @@
             <span class="pm-editor-toolbar__meta">{{ deadline.description }}: {{ deadline.date|date:"M j, Y, g:i A" }}</span>
           {% endfor %}
         {% endif %}
+        {% if self.assignment_memo %}
+          <div class="pm-article-info-sidebar__note">
+            <strong>Article Memo</strong>
+            <div>{{ self.assignment_memo|richtext }}</div>
+          </div>
+        {% endif %}
+        {% if self.ethics_notes %}
+          <div class="pm-article-info-sidebar__note">
+            <strong>Ethics Notes</strong>
+            <div>{{ self.ethics_notes|richtext }}</div>
+          </div>
+        {% endif %}
         <div class="manuscript-publish-source" data-article-toolbar-source>
           {% if self.live %}
             {% if self.has_unpublished_changes %}
