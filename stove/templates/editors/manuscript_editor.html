@@ -67,13 +67,12 @@
       <summary>Metadata</summary>
       <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
         <div id="metadata-sidebar-settings">
-          <span> Disclaimer
+          <span class="sidebar-toggle-row"> Disclaimer
             <label class="switch filter" >
               <input type="checkbox" id="disclaimer-toggle" data-page-field-toggle="disclaimer" data-page-field-boilerplate="&lt;p&gt;disclaimer&lt;/p&gt;" {% if page_form.disclaimer.value %}checked{% endif %}>
               <span class="slider round"></span>
             </label>
           </span>
-          <br>
           <button type="button" class="manuscript-metadata-button" data-manuscript-open-settings>More Metadata</button>
         </div>
       </section>
@@ -82,9 +81,15 @@
       <summary>Copy Editing</summary>
       <section class="pm-metadata-sidebar-panel" aria-label="metadata-sidebar-panel">
         <div id="metadata-sidebar-settings">
-          <span> Copy Editing Mode
-            <label class="switch filter">
-              <input type="checkbox" id="copy-editing-toggle">
+          <span class="sidebar-toggle-row"> Arial
+            <label class="copyswitch switch filter">
+              <input type="checkbox" id="arial-toggle">
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="sidebar-toggle-row"> Invisible Characters
+            <label class="copyswitch switch filter">
+              <input type="checkbox" id="invisible-characters-toggle">
               <span class="slider round"></span>
             </label>
           </span>

@@ -16,10 +16,15 @@ import { commentSuggestion, createSuggestionMark, markRangeAtCursor } from "./an
 import { promptLinkCommand } from "./link_dialog.jsx";
 import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph as invisiblesParagraph } from "@guardian/prosemirror-invisibles/dist/index.mjs";
 
-export const COPY_EDITING_MODE_STORAGE_KEY = "manuscript-copy-editing-mode";
+export const ARIAL_MODE_STORAGE_KEY = "manuscript-arial-mode";
+export const INVISIBLE_CHARACTERS_STORAGE_KEY = "manuscript-invisible-characters";
 
-export function isCopyEditingModeEnabled() {
-  return window.localStorage.getItem(COPY_EDITING_MODE_STORAGE_KEY) === "true";
+export function isArialModeEnabled() {
+  return window.localStorage.getItem(ARIAL_MODE_STORAGE_KEY) === "true";
+}
+
+export function areInvisibleCharactersEnabled() {
+  return window.localStorage.getItem(INVISIBLE_CHARACTERS_STORAGE_KEY) === "true";
 }
 
 export function editorPlugins(schema, {includeHistory = true, undoCommand = undo, redoCommand = redo} = {}) {
@@ -31,7 +36,7 @@ export function editorPlugins(schema, {includeHistory = true, undoCommand = undo
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),
-    createInvisiblesPlugin([invisiblesSpace, hardBreak, invisiblesParagraph], { shouldShowInvisibles: isCopyEditingModeEnabled() }),
+    createInvisiblesPlugin([invisiblesSpace, hardBreak, invisiblesParagraph], { shouldShowInvisibles: areInvisibleCharactersEnabled() }),
     ...(includeHistory ? [history()] : []),
   ];
 }

@@ -492,7 +492,6 @@ body {
     background: #3564a8;
     justify-self: start;
     padding: 0 10px;
-    margin-top: 12px;
 }
 
 .manuscript-metadata-button:hover {
@@ -802,6 +801,15 @@ body {
 [data-article-media-existing-modal] .page-field > label,
 .page-field label.pm-featured-media-sidebar__label {
     font: 700 13px/1.2 sans-serif;
+}
+
+.sidebar-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 8px;
 }
 
 .pm-footnote-sidebar {

@@ -329,7 +329,7 @@ span[data-footnote-id]::before {
     visibility: visible !important;
 }
 
-:host(.copy-editing-mode) .ProseMirror,
-:host(.copy-editing-mode) .ProseMirror * {
+:host(.arial-mode) .ProseMirror,
+:host(.arial-mode) .ProseMirror * {
     font-family: Arial, sans-serif !important;
 }
