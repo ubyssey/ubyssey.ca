@@ -127,7 +127,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
       );
     });
     scheduleCommentPositions();
-    updateActiveCommentMarks(activeThreadId, threads);
+    updateActiveCommentMarks(activeThreadId, threads, getViews());
   };
 
   const eventPath = (event) => event.composedPath?.() || [];
@@ -289,7 +289,7 @@ function positionCommentThreads(root, threads, offset) {
   list.style.minHeight = placements.length ? `${nextTop - gap}px` : "";
 }
 
-function updateActiveCommentMarks(activeThreadId, threads = []) {
+function updateActiveCommentMarks(activeThreadId, threads = [], views = []) {
   const shadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
   if (!shadowRoot) return;
 
@@ -300,7 +300,10 @@ function updateActiveCommentMarks(activeThreadId, threads = []) {
     element.classList.remove("pm-page-block--comment-active");
   });
 
-  new Set(threads.flatMap((thread) => thread.views || [thread.view]).filter(Boolean)).forEach((view) => {
+  new Set([
+    ...views,
+    ...threads.flatMap((thread) => thread.views || [thread.view]),
+  ].filter(Boolean)).forEach((view) => {
     if (view.activeCommentThreadId === activeThreadId) return;
     view.activeCommentThreadId = activeThreadId;
     view.dispatch(view.state.tr.setMeta("activeCommentThread", activeThreadId));

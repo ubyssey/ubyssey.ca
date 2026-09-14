@@ -314,7 +314,7 @@ function activeCommentPlugin(schema) {
           const mark = [commentMark, suggestionMark]
             .map((markType) => markType.isInSet(node.marks))
             .find((item) => item?.attrs.threadId === threadId);
-          if (mark) {
+          if (mark && !mark.attrs.resolved) {
             decorations.push(Decoration.inline(position, position + node.nodeSize, {
               "data-comment-active": "true",
               "data-suggestion-part": mark.attrs.suggestionPart || commentSuggestion(mark.attrs.comments) || "",
