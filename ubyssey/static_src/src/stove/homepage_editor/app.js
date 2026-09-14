@@ -9,7 +9,6 @@ import { createStreamEditor, createStreamBlockDraft, createBlockEditor, createEm
 import { createPagePreview } from "../core/preview/index.jsx";
 import { pageEditorState } from "../core/state.js";
 import { createPageHistory } from "../core/collaboration/history.js";
-import { createBlockToolbar } from "../manuscript_editor/chrome/toolbar.jsx";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent);
@@ -61,7 +60,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     },
   });
 
-  pageEditorState.richTextToolbar = createBlockToolbar(pageRoot.querySelector(".pm-page-toolbar"), { history: pageEditorState.history });
   preview.mount();
-  pageEditorState.richTextToolbar.update();
 });
