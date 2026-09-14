@@ -503,20 +503,18 @@ def homepage_editor(request):
     site = Site.find_for_request(request)
     page = get_object_or_404(HomePage, pk=site.root_page_id).specific
     last_saved_page = PageCollaboration.objects.filter(page_id=site.root_page_id).only("updated_at").first()
-    return render(
-        request,
-        "editors/homepage_editor.html",
-        {
-            "self": page,
-            "current_editor": {
-                "id": request.user.pk,
-                "name": get_user_display_name(request.user),
-                "avatar_url": avatar_url(request.user, size=64),
-            },
-            "stream_editors": get_streamfield_editors(page),
-            "last_saved_page": last_saved_page,
+    context = page.get_context(request)
+    context.update({
+        "self": page,
+        "current_editor": {
+            "id": request.user.pk,
+            "name": get_user_display_name(request.user),
+            "avatar_url": avatar_url(request.user, size=64),
         },
-    )
+        "stream_editors": get_streamfield_editors(page),
+        "last_saved_page": last_saved_page,
+    })
+    return render(request, "editors/homepage_editor.html", context)
 
 
 @login_required
@@ -638,6 +636,11 @@ def editor_page_preview(request, page_id):
         return JsonResponse({"errors": editor_errors}, status=422)
 
     preview_context = {"self": page}
+
+    if isinstance(page, HomePage):
+        preview_context.update(page.get_context(request))
+        preview_context["self"] = page
+
     if page_form is not None:
         preview_context.update({
             "page_form": page_form,
