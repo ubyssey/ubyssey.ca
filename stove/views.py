@@ -107,6 +107,9 @@ def create_page(request, section_id):
         slug=slugify(data["title"]),
         live=False
     )
+    newPage.content = [
+        {"type": "richtext", "value": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>"},
+    ]
 
     if "assignment_folder" in data:
         newPage.assignment_folder = data["assignment_folder"]
