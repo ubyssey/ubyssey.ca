@@ -127,12 +127,10 @@ span[data-footnote-id]::before {
     vertical-align: super;
 }
 
-/*[data-article-block]:hover {
-    outline-color: #008fcb;
-    background: rgba(0, 143, 203, 0.08);
-    outline: 1px dashed transparent;
-    outline-offset: 4px;
-}*/
+.page-shadow-preview [data-article-block][data-stream-field]:hover:not(.pm-page-block--selected) {
+    outline: 1px dashed #000;
+    outline-offset: -1px;
+}
 
 .pm-page-rich-text,
 .pm-page-direct-edit {
