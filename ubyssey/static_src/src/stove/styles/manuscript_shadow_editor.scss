@@ -127,9 +127,9 @@ span[data-footnote-id]::before {
     vertical-align: super;
 }
 
-.page-shadow-preview [data-article-block][data-stream-field]:hover:not(.pm-page-block--selected) {
+.page-shadow-preview [data-article-block][data-stream-field="content"]:hover:not(.pm-page-block--selected) {
     outline: 1px dashed #000;
-    outline-offset: -1px;
+    outline-offset: 8px;
 }
 
 .pm-page-rich-text,
@@ -283,6 +283,15 @@ span[data-footnote-id]::before {
 
 .pm-block--remote-selected {
     outline: 2px solid var(--remote-editor-color) !important;
+    outline-offset: -1px !important;
+}
+
+.page-shadow-preview [data-article-block][data-stream-field="content"].pm-block--remote-selected {
+    outline-offset: 8px !important;
+}
+
+.page-shadow-preview [data-article-block][data-stream-field="content"].pm-page-block--selected {
+    outline-offset: 8px;
 }
 
 .ProseMirror-yjs-cursor {
