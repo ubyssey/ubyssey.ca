@@ -35,7 +35,10 @@ export function deleteBlock(stream, descriptor) {
     transaction.doc.childCount === 1
       ? transaction.replaceWith(block.start, block.end, stream.createEmptyBlock())
       : transaction.delete(block.start, block.end)
-  ));
+  ), {
+    kind: "structure",
+    deletedBlockIds: [block.node.attrs?.id].filter(Boolean),
+  });
 }
 
 // Inserts after (probably worth not appending after to the function name cause is the default)

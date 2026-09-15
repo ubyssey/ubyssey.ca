@@ -180,6 +180,18 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
           before,
         );
         if (!transaction?.docChanged) return false;
+        const beforeIds = topLevelBlockIds(before);
+        const afterIds = topLevelBlockIds(transaction.doc);
+        const allowedDeletedIds = new Set(change.deletedBlockIds || []);
+        const unexpectedDeletedIds = beforeIds.filter((id) => !afterIds.includes(id) && !allowedDeletedIds.has(id));
+        if (unexpectedDeletedIds.length) {
+          console.error("Blocked stream update that would delete blocks unexpectedly", {
+            fieldName,
+            deletedBlockIds: unexpectedDeletedIds,
+            change,
+          });
+          return false;
+        }
         fragment.doc.transact(() => {
           prosemirrorToYXmlFragment(transaction.doc, fragment);
         }, new StreamModelUpdate(change));
@@ -242,6 +254,14 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
     });
 
     return instance;
+  }
+
+  function topLevelBlockIds(doc) {
+    const ids = [];
+    doc.forEach((block) => {
+      if (block.attrs?.id) ids.push(block.attrs.id);
+    });
+    return ids;
   }
 
   // Walks Schema to find the editable_fields

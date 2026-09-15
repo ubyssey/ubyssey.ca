@@ -314,13 +314,17 @@ export function setupPagePreviewEditors(pageRoot, streamDocs = null, scopeBlock 
 
   for (const instance of pageEditorState.streamEditors) {
     const pageBlocks = pageBlocksByField.get(instance.fieldName) || [];
-    const doc = streamDocs?.get(instance.fieldName) || instance.doc.toJSON();
+    const doc = instance.doc.toJSON() || streamDocs?.get(instance.fieldName);
 
     (doc.content || []).forEach((block, blockIndex) => {
       const blockId = block.attrs?.id;
-      const pageBlock = blockId
+      let pageBlock = blockId
         ? pageBlocks.find((element) => element.dataset.streamBlockId === String(blockId))
         : pageBlocks.find((element) => Number(element.dataset.streamBlockIndex) === blockIndex);
+
+      if (!pageBlock) {
+        pageBlock = pageBlocks.find((element) => Number(element.dataset.streamBlockIndex) === blockIndex);
+      }
 
       if (pageBlock && blockId) pageBlock.dataset.streamBlockId = String(blockId);
       if (pageBlock) pageBlock.dataset.streamBlockIndex = String(blockIndex);

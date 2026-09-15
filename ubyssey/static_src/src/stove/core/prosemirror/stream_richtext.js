@@ -23,6 +23,14 @@ export function createStreamRichTextKeyHandler({state, streamSchema, createEmpty
       return navigateStreamRichTextBlock(activeView, source, event.key === "ArrowUp" ? -1 : 1);
     }
 
+    if (["ArrowLeft", "ArrowRight"].includes(event.key) && !event.shiftKey) {
+      const direction = event.key === "ArrowLeft" ? -1 : 1;
+      const atBlockEdge = direction < 0
+        ? activeView.state.selection.from === 1
+        : activeView.state.selection.to === activeView.state.doc.content.size - 1;
+      if (atBlockEdge) return navigateStreamRichTextBlock(activeView, source, direction, false);
+    }
+
     if (event.key === "Enter" && !event.shiftKey) {
       const handled = splitStreamRichTextBlock(activeView, source);
       if (handled) event.preventDefault();
@@ -68,6 +76,11 @@ export function createStreamRichTextKeyHandler({state, streamSchema, createEmpty
     if (!result) return false;
     if (!result.splittingAtStart) {
       focusRichTextEditor(source.instance, { blockId: result.blockId, position: 1 });
+    } else {
+      selectBlock({
+        fieldName: source.instance.fieldName,
+        blockId: source.blockId,
+      }, inlineView.dom.getRootNode());
     }
     return true;
   }
@@ -91,9 +104,9 @@ export function createStreamRichTextKeyHandler({state, streamSchema, createEmpty
   }
 
   // Arrow key navigation between RichText Blocks
-  function navigateStreamRichTextBlock(activeView, source, direction) {
+  function navigateStreamRichTextBlock(activeView, source, direction, vertical = true) {
     if (!activeView.state.selection.empty) return false;
-    if (!activeView.endOfTextblock(direction < 0 ? "up" : "down")) return false;
+    if (vertical && !activeView.endOfTextblock(direction < 0 ? "up" : "down")) return false;
 
     const doc = source.instance.doc;
     const currentBlock = topLevelBlockInfoByIdOrIndex(doc, source.blockId, source.blockIndex);
@@ -107,12 +120,15 @@ export function createStreamRichTextKeyHandler({state, streamSchema, createEmpty
     if (!targetEditor?.streamSource?.streamRichText) return false;
 
     const edgePosition = direction < 0 ? targetEditor.view.state.doc.content.size - 1 : 1;
-    const currentCoordinates = activeView.coordsAtPos(activeView.state.selection.head);
-    const edgeCoordinates = targetEditor.view.coordsAtPos(edgePosition);
-    const mappedPosition = targetEditor.view.posAtCoords({
-      left: currentCoordinates.left,
-      top: (edgeCoordinates.top + edgeCoordinates.bottom) / 2,
-    }).pos;
+    let mappedPosition = edgePosition;
+    if (vertical) {
+      const currentCoordinates = activeView.coordsAtPos(activeView.state.selection.head);
+      const edgeCoordinates = targetEditor.view.coordsAtPos(edgePosition);
+      mappedPosition = targetEditor.view.posAtCoords({
+        left: currentCoordinates.left,
+        top: (edgeCoordinates.top + edgeCoordinates.bottom) / 2,
+      }).pos;
+    }
 
     return focusRichTextBlock({
       fieldName: source.instance.fieldName,
@@ -128,6 +144,10 @@ export function createStreamRichTextKeyHandler({state, streamSchema, createEmpty
       if (!editor) return;
 
       setEditorSelection(editor, position);
+      selectBlock({
+        fieldName: instance.fieldName,
+        blockId,
+      }, editor.view.dom.getRootNode());
     });
   }
 
