@@ -136,9 +136,11 @@ function suggestionPlugin(schema) {
       .setMeta(ACTIVE_SUGGESTION_THREAD_META, deleteMark.attrs.threadId);
   };
 
-  const adjacentSuggestionMark = (state, from, to) => {
+  const adjacentSuggestionMark = (state, from, to, { preferBefore = false } = {}) => {
     const before = suggestionMark.isInSet(state.doc.resolve(from).nodeBefore?.marks || []);
     const after = suggestionMark.isInSet(state.doc.resolve(to).nodeAfter?.marks || []);
+    if (preferBefore) return before || after;
+
     const marks = [before, after].filter(Boolean);
     const threadIds = new Set(marks.map((mark) => mark.attrs.threadId));
     return threadIds.size === 1 ? marks[0] : null;
@@ -214,18 +216,20 @@ function suggestionPlugin(schema) {
     return null;
   };
 
-  const mergeDeletionIntoThread = (state, tr, mark, from, to) => {
+  const mergeDeletionIntoThread = (state, tr, mark, targetRanges) => {
     const threadId = mark.attrs.threadId;
     const suggestion = commentSuggestion(mark.attrs.comments);
+    const deleteRanges = mapRanges(tr, threadRanges(state, threadId, "delete"));
+    const addRanges = mapRanges(tr, threadRanges(state, threadId, "add"));
 
     if (suggestion === "add") {
-      return applyReplacement(tr, mark, [{ from, to }], threadRanges(state, threadId, "add"));
+      return applyReplacement(tr, mark, targetRanges, addRanges);
     }
 
     if (suggestion === "delete") {
       return applyDeletion(tr, mark, sortRanges([
-        ...threadRanges(state, threadId, "delete"),
-        { from, to },
+        ...deleteRanges,
+        ...targetRanges,
       ]));
     }
 
@@ -234,10 +238,10 @@ function suggestionPlugin(schema) {
         tr,
         mark,
         sortRanges([
-          ...threadRanges(state, threadId, "delete"),
-          { from, to },
+          ...deleteRanges,
+          ...targetRanges,
         ]),
-        threadRanges(state, threadId, "add"),
+        addRanges,
       );
     }
 
@@ -254,6 +258,93 @@ function suggestionPlugin(schema) {
       return true;
     });
     return foundText && matches;
+  };
+
+  // Deleting while in a suggestion can get weird
+  const deleteRangeWithSuggestions = (state, from, to) => {
+    const segments = [];
+    state.doc.nodesBetween(from, to, (node, position) => {
+      if (!node.isText) return true;
+      const segmentFrom = Math.max(from, position);
+      const segmentTo = Math.min(to, position + node.nodeSize);
+      if (segmentFrom >= segmentTo) return true;
+
+      const mark = suggestionMark.isInSet(node.marks);
+      const type = !mark ? "plain" : suggestionPart(mark) === "add" ? "add" : "protected";
+      segments.push({ from: segmentFrom, to: segmentTo, type, mark });
+      return true;
+    });
+
+    let tr = state.tr;
+    for (const segment of segments.filter(({ type }) => type === "add").sort((first, second) => second.from - first.from)) {
+      tr = tr.delete(segment.from, segment.to);
+    }
+
+    const plainRanges = mapRanges(tr, segments.filter(({ type }) => type === "plain"));
+    if (!plainRanges.length) return tr;
+
+    const nearbyMark = adjacentSuggestionMark(state, from, to, { preferBefore: true });
+    const firstSuggestion = segments.find(({ mark }) => mark)?.mark;
+    const mergeMark = nearbyMark || firstSuggestion;
+    if (mergeMark) {
+      const merged = mergeDeletionIntoThread(state, tr, mergeMark, plainRanges);
+      if (merged) return merged;
+    }
+
+    return applyDeletion(tr, null, plainRanges);
+  };
+
+  const mergeAdjacentDeletionThreads = (tr, activeThreadId) => {
+    if (!activeThreadId) return tr;
+    let ownerThreadId = activeThreadId;
+
+    const isSimpleDeletion = (mark) => mark
+      && suggestionPart(mark) === "delete"
+      && commentSuggestion(mark.attrs.comments) === "delete";
+
+    while (true) {
+      let previous = null;
+      let pair = null;
+      tr.doc.descendants((node, position) => {
+        if (!node.isText) {
+          previous = null;
+          return true;
+        }
+
+        const mark = suggestionMark.isInSet(node.marks);
+        if (!pair && previous && previous.to === position
+          && previous.mark && mark
+          && previous.mark.attrs.threadId !== mark.attrs.threadId
+          && [previous.mark.attrs.threadId, mark.attrs.threadId].includes(ownerThreadId)
+          && isSimpleDeletion(previous.mark)
+          && isSimpleDeletion(mark)) {
+          pair = { left: previous.mark, right: mark };
+        }
+        previous = { from: position, to: position + node.nodeSize, mark };
+        return true;
+      });
+
+      if (!pair) return tr;
+
+      const ranges = [];
+      tr.doc.descendants((node, position) => {
+        if (!node.isText) return true;
+        const mark = suggestionMark.isInSet(node.marks);
+        if ([pair.left.attrs.threadId, pair.right.attrs.threadId].includes(mark?.attrs?.threadId)) {
+          ranges.push({ from: position, to: position + node.nodeSize });
+        }
+        return true;
+      });
+      const mergedMark = suggestionMark.create({
+        ...pair.left.attrs,
+        comments: [
+          ...(Array.isArray(pair.left.attrs.comments) ? pair.left.attrs.comments : []),
+          ...(Array.isArray(pair.right.attrs.comments) ? pair.right.attrs.comments : []),
+        ],
+      });
+      tr = applyDeletion(tr, mergedMark, ranges);
+      ownerThreadId = pair.left.attrs.threadId;
+    }
   };
 
   const insertSuggestion = (view, from, to, text) => {
@@ -341,15 +432,9 @@ function suggestionPlugin(schema) {
         }
         event.preventDefault();
 
-        let tr = state.tr;
         const removesAddition = rangeIsSuggestion(state, from, to, "add");
-        if (removesAddition) {
-          tr = tr.delete(from, to);
-        } else if (!rangeHasSuggestion(state, from, to)) {
-          const nearbyMark = adjacentSuggestionMark(state, from, to);
-          tr = nearbyMark ? mergeDeletionIntoThread(state, tr, nearbyMark, from, to) : null;
-          if (!tr) tr = applyDeletion(tr || state.tr, null, [{ from, to }]);
-        }
+        let tr = deleteRangeWithSuggestions(state, from, to);
+        tr = mergeAdjacentDeletionThreads(tr, tr.getMeta(ACTIVE_SUGGESTION_THREAD_META));
 
         const cursor = Math.min(event.key === "Delete" && empty && !removesAddition ? to : from, tr.doc.content.size);
         view.dispatch(tr.setSelection(TextSelection.create(tr.doc, cursor)).scrollIntoView());

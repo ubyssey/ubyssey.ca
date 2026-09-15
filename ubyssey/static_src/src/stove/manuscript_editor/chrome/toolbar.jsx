@@ -27,11 +27,11 @@ function BlockControls({ actions }) {
     editDisabled: true,
   };
   const buttons = [
-    ["delete", "X", "Delete block", !state.selected],
+    ["insert", "+", "Add block", !state.selected],
+    ["edit", "Edit", "Edit block", !state.selected || state.editDisabled],
     ["moveUp", "↑", "Move block up", state.upDisabled],
     ["moveDown", "↓", "Move block down", state.downDisabled],
-    ["edit", "Edit", "Edit block", !state.selected || state.editDisabled],
-    ["insert", "+", "Add block", !state.selected],
+    ["delete", "X", "Delete block", !state.selected],
   ];
 
   return (
