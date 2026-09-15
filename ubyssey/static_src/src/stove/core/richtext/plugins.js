@@ -369,6 +369,7 @@ function suggestionPlugin(schema) {
         from: selectedRange.to,
         to: selectedRange.to + replacementText.length,
       }], addMark)
+        .setSelection(TextSelection.create(tr.doc, selectedRange.to + replacementText.length))
         .setMeta(ACTIVE_SUGGESTION_THREAD_META, deleteMark.attrs.threadId);
       view.dispatch(tr.scrollIntoView());
       return true;

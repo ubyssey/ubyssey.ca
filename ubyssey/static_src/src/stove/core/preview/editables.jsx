@@ -6,6 +6,7 @@ import { EditorView } from "prosemirror-view";
 import { yCursorPlugin, ySyncPlugin } from "y-prosemirror";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins } from "../richtext/plugins.js";
 import { richTextSchema } from "../richtext/schema.js";
+import { markRangeAtCursor } from "../richtext/marks.js";
 import { migrateLegacySuggestionMarks } from "../richtext/annotations/index.js";
 import { createStreamRichTextKeyHandler } from "../prosemirror/stream_richtext.js";
 import { pageEditorState } from "../state.js";
@@ -34,17 +35,12 @@ function annotationThreadAtSelection(state) {
   const { $from } = state.selection;
   const commentMark = state.schema.marks.comment;
   const suggestionMark = state.schema.marks.suggestion;
-  const marks = [
-    ...($from.nodeAfter?.marks || []),
-    ...($from.nodeBefore?.marks || []),
-  ];
-  const mark = marks.find((item) => (
-    (item.type === commentMark || item.type === suggestionMark) &&
-    item.attrs.threadId &&
-    !item.attrs.resolved
-  ));
+  const markTypes = [commentMark, suggestionMark].filter(Boolean);
+  const mark = markTypes
+    .map((markType) => markRangeAtCursor(state, markType))
+    .find((range) => range?.attrs?.threadId && !range.attrs.resolved);
 
-  return mark?.attrs.threadId || null;
+  return mark?.attrs?.threadId || null;
 }
 
 // We marked the page preview HTML with content-editable for prosemirror
