@@ -8,16 +8,21 @@ export function commentSuggestion(comments) {
 
 export const suggestionLabel = (suggestion) => suggestion.charAt(0).toUpperCase() + suggestion.slice(1).toLowerCase();
 
-export function createSuggestionMark(suggestionMark, suggestion, text, threadId = uuidv4(), suggestionPart = null) {
+export function createSuggestionMark(suggestionMark, suggestion, text, threadId = uuidv4(), suggestionPart = null, replacementText = null, existingComments = null) {
   const username = document.querySelector("[data-current-editor-username]")?.dataset.currentEditorUsername || "";
-  return suggestionMark.create({
-    threadId,
-    comments: [{
+  const comments = Array.isArray(existingComments) && existingComments.length
+    ? existingComments.map((comment, index) => index === 0 ? { ...comment, suggestion, text, replacementText } : comment)
+    : [{
       username,
       suggestion,
       text,
+      replacementText,
       createdAt: new Date().toISOString(),
-    }],
+    }];
+
+  return suggestionMark.create({
+    threadId,
+    comments,
     suggestionPart,
     pending: false,
     resolved: false,

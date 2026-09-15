@@ -57,46 +57,191 @@ function suggestionPlugin(schema) {
   const suggestionMark = schema.marks.suggestion;
   const suggestionPart = (mark) => mark?.attrs?.suggestionPart || commentSuggestion(mark?.attrs?.comments);
 
-  const threadBounds = (state, threadId, part = null) => {
-    let from = null;
-    let to = null;
-    state.doc.descendants((node, position) => {
-      const mark = node.isText && suggestionMark.isInSet(node.marks);
-      if (mark?.attrs?.threadId !== threadId || (part && suggestionPart(mark) !== part)) return true;
-      from = from === null ? position : Math.min(from, position);
-      to = Math.max(to || 0, position + node.nodeSize);
-      return true;
-    });
-    return from === null ? null : { from, to };
+  const createReplacementMarks = (replacedText, replacementText, threadId, existingMark = null) => {
+    const existingComments = existingMark?.attrs?.comments;
+    const deleteMark = createSuggestionMark(
+      suggestionMark, "replace", replacedText, threadId, "delete", replacementText, existingComments,
+    );
+    const addMark = createSuggestionMark(
+      suggestionMark, "replace", replacedText, deleteMark.attrs.threadId, "add", replacementText, existingComments,
+    );
+    return { deleteMark, addMark };
   };
 
-  const nearbySuggestions = (state, from, to) => [from, to].flatMap((position) => {
-    const $position = state.doc.resolve(position);
-    return [
-      suggestionMark.isInSet($position.marks()),
-      suggestionMark.isInSet($position.nodeBefore?.marks || []),
-      suggestionMark.isInSet($position.nodeAfter?.marks || []),
-    ];
-  });
+  const threadRanges = (state, threadId, part = null) => {
+    const ranges = [];
+    state.doc.descendants((node, from) => {
+      const mark = node.isText && suggestionMark.isInSet(node.marks);
+      if (mark?.attrs?.threadId === threadId && (!part || suggestionPart(mark) === part)) {
+        ranges.push({ from, to: from + node.nodeSize });
+      }
+      return true;
+    });
+    return ranges;
+  };
 
-  const nearbySuggestion = (state, from, to, suggestion) => nearbySuggestions(state, from, to)
-    .find((mark) => (
-      suggestionPart(mark) === suggestion
-      && commentSuggestion(mark.attrs.comments) === suggestion
-    ));
+  const sortRanges = (ranges) => [...ranges].sort((first, second) => first.from - second.from);
+  const textInRanges = (doc, ranges) => sortRanges(ranges)
+    .map(({ from, to }) => doc.textBetween(from, to, " "))
+    .join("");
 
-  const markSuggestion = (state, tr, from, to, suggestion) => {
-    const nearbyMark = nearbySuggestion(state, from, to, suggestion);
-    const bounds = nearbyMark && threadBounds(state, nearbyMark.attrs.threadId);
-    const markFrom = bounds ? Math.min(from, bounds.from) : from;
-    const markTo = bounds ? Math.max(to, bounds.to) : to;
-    const text = state.doc.textBetween(markFrom, markTo, " ");
-    const mark = createSuggestionMark(suggestionMark, suggestion, text, nearbyMark?.attrs?.threadId);
+  const mapRanges = (tr, ranges) => ranges.map(({ from, to }) => ({
+    from: tr.mapping.map(from, 1),
+    to: tr.mapping.map(to, -1),
+  })).filter(({ from, to }) => from < to);
 
-    return tr
-      .removeMark(markFrom, markTo, suggestionMark)
-      .addMark(markFrom, markTo, mark)
-      .setMeta(ACTIVE_SUGGESTION_THREAD_META, mark.attrs.threadId);
+  const applyMark = (tr, ranges, mark) => ranges.reduce(
+    (nextTransaction, { from, to }) => nextTransaction
+      .removeMark(from, to, suggestionMark)
+      .addMark(from, to, mark),
+    tr,
+  );
+
+  const applyAddition = (tr, existingMark, ranges) => {
+    const addMark = createSuggestionMark(
+      suggestionMark,
+      "add",
+      textInRanges(tr.doc, ranges),
+      existingMark?.attrs?.threadId,
+      null,
+      null,
+      existingMark?.attrs?.comments,
+    );
+    return applyMark(tr, ranges, addMark)
+      .setMeta(ACTIVE_SUGGESTION_THREAD_META, addMark.attrs.threadId);
+  };
+
+  const applyReplacement = (tr, existingMark, deleteRanges, addRanges) => {
+    const { deleteMark, addMark } = createReplacementMarks(
+      textInRanges(tr.doc, deleteRanges),
+      textInRanges(tr.doc, addRanges),
+      existingMark?.attrs?.threadId,
+      existingMark,
+    );
+    return applyMark(applyMark(tr, deleteRanges, deleteMark), addRanges, addMark)
+      .setMeta(ACTIVE_SUGGESTION_THREAD_META, deleteMark.attrs.threadId);
+  };
+
+  const applyDeletion = (tr, existingMark, ranges) => {
+    const deleteMark = createSuggestionMark(
+      suggestionMark,
+      "delete",
+      textInRanges(tr.doc, ranges),
+      existingMark?.attrs?.threadId,
+      null,
+      null,
+      existingMark?.attrs?.comments,
+    );
+    return applyMark(tr, ranges, deleteMark)
+      .setMeta(ACTIVE_SUGGESTION_THREAD_META, deleteMark.attrs.threadId);
+  };
+
+  const adjacentSuggestionMark = (state, from, to) => {
+    const before = suggestionMark.isInSet(state.doc.resolve(from).nodeBefore?.marks || []);
+    const after = suggestionMark.isInSet(state.doc.resolve(to).nodeAfter?.marks || []);
+    const marks = [before, after].filter(Boolean);
+    const threadIds = new Set(marks.map((mark) => mark.attrs.threadId));
+    return threadIds.size === 1 ? marks[0] : null;
+  };
+
+  const rangeHasSuggestion = (state, from, to) => {
+    let hasSuggestion = false;
+    state.doc.nodesBetween(from, to, (node) => {
+      if (node.isText && suggestionMark.isInSet(node.marks)) hasSuggestion = true;
+      return !hasSuggestion;
+    });
+    return hasSuggestion;
+  };
+
+  const wordRangeWithAdjacentSpace = (state, from, to) => {
+    const selectedText = state.doc.textBetween(from, to, "");
+    if (!selectedText || /\s/.test(selectedText)) return { from, to, spacePosition: null };
+
+    const $from = state.doc.resolve(from);
+    const $to = state.doc.resolve(to);
+    const trailingCharacter = $to.nodeAfter?.isText ? $to.nodeAfter.text.charAt(0) : "";
+    const leadingCharacter = $from.nodeBefore?.isText ? $from.nodeBefore.text.slice(-1) : "";
+    const isWordCharacter = (character) => /^[\p{L}\p{N}_]$/u.test(character);
+    const isWholeWord = !isWordCharacter(leadingCharacter) && !isWordCharacter(trailingCharacter);
+    if (!isWholeWord) return { from, to, spacePosition: null };
+
+    if (trailingCharacter === " ") return { from, to: to + 1, spacePosition: "trailing" };
+    if (leadingCharacter === " ") return { from: from - 1, to, spacePosition: "leading" };
+
+    return null;
+  };
+
+  const replacementWithCapturedSpace = (text, spacePosition) => {
+    if (spacePosition === "trailing") return `${text} `;
+    if (spacePosition === "leading") return ` ${text}`;
+    return text;
+  };
+
+  const insertIntoThread = (state, tr, mark, insertAt, text) => {
+    const threadId = mark.attrs.threadId;
+    const suggestion = commentSuggestion(mark.attrs.comments);
+    tr = tr.insertText(text, insertAt);
+    const insertedRange = { from: insertAt, to: insertAt + text.length };
+
+    if (suggestion === "add") {
+      return applyAddition(tr, mark, sortRanges([
+        ...mapRanges(tr, threadRanges(state, threadId, "add")),
+        insertedRange,
+      ]));
+    }
+
+    if (suggestion === "delete") {
+      return applyReplacement(
+        tr,
+        mark,
+        mapRanges(tr, threadRanges(state, threadId, "delete")),
+        [insertedRange],
+      );
+    }
+
+    if (suggestion === "replace") {
+      return applyReplacement(
+        tr,
+        mark,
+        mapRanges(tr, threadRanges(state, threadId, "delete")),
+        sortRanges([
+          ...mapRanges(tr, threadRanges(state, threadId, "add")),
+          insertedRange,
+        ]),
+      );
+    }
+
+    return null;
+  };
+
+  const mergeDeletionIntoThread = (state, tr, mark, from, to) => {
+    const threadId = mark.attrs.threadId;
+    const suggestion = commentSuggestion(mark.attrs.comments);
+
+    if (suggestion === "add") {
+      return applyReplacement(tr, mark, [{ from, to }], threadRanges(state, threadId, "add"));
+    }
+
+    if (suggestion === "delete") {
+      return applyDeletion(tr, mark, sortRanges([
+        ...threadRanges(state, threadId, "delete"),
+        { from, to },
+      ]));
+    }
+
+    if (suggestion === "replace") {
+      return applyReplacement(
+        tr,
+        mark,
+        sortRanges([
+          ...threadRanges(state, threadId, "delete"),
+          { from, to },
+        ]),
+        threadRanges(state, threadId, "add"),
+      );
+    }
+
+    return null;
   };
 
   const rangeIsSuggestion = (state, from, to, suggestion) => {
@@ -116,69 +261,39 @@ function suggestionPlugin(schema) {
 
     const { state } = view;
     let tr = state.tr;
-    const insertAt = from;
+    if (from < to) {
+      if (rangeHasSuggestion(state, from, to)) return false;
 
-    if (from < to && !rangeIsSuggestion(state, from, to, "add")) {
-      const replacedText = state.doc.textBetween(from, to, " ");
-      const replacement = `${replacedText} → ${text}`;
-      const deleteMark = createSuggestionMark(suggestionMark, "replace", replacement, undefined, "delete");
-      const addMark = createSuggestionMark(suggestionMark, "replace", replacement, deleteMark.attrs.threadId, "add");
+      const selectedRange = wordRangeWithAdjacentSpace(state, from, to);
+      if (!selectedRange || rangeHasSuggestion(state, selectedRange.from, selectedRange.to)) return true;
+      const replacementText = replacementWithCapturedSpace(text, selectedRange.spacePosition);
 
-      tr = tr
-        .removeMark(from, to, suggestionMark)
-        .addMark(from, to, deleteMark)
-        .insertText(text, to)
-        .addMark(to, to + text.length, addMark)
+      const { deleteMark, addMark } = createReplacementMarks(
+        state.doc.textBetween(selectedRange.from, selectedRange.to, " "),
+        replacementText,
+      );
+      tr = tr.insertText(replacementText, selectedRange.to);
+      tr = applyMark(tr, [{ from: selectedRange.from, to: selectedRange.to }], deleteMark);
+      tr = applyMark(tr, [{
+        from: selectedRange.to,
+        to: selectedRange.to + replacementText.length,
+      }], addMark)
         .setMeta(ACTIVE_SUGGESTION_THREAD_META, deleteMark.attrs.threadId);
       view.dispatch(tr.scrollIntoView());
       return true;
     }
 
-    const replacementMark = from === to && nearbySuggestions(state, insertAt, insertAt)
-      .find((mark) => suggestionPart(mark) === "add" && commentSuggestion(mark.attrs.comments) === "replace");
-
-    if (replacementMark) {
-      const threadId = replacementMark.attrs.threadId;
-      const deleteBounds = threadBounds(state, threadId, "delete");
-      const addBounds = threadBounds(state, threadId, "add");
-      tr = tr.insertText(text, insertAt);
-
-      const addFrom = Math.min(addBounds.from, insertAt);
-      const addTo = Math.max(
-        addBounds.to + (insertAt <= addBounds.to ? text.length : 0),
-        insertAt + text.length,
-      );
-      const replacement = `${tr.doc.textBetween(deleteBounds.from, deleteBounds.to, " ")} → ${tr.doc.textBetween(addFrom, addTo, " ")}`;
-      const deleteMark = createSuggestionMark(suggestionMark, "replace", replacement, threadId, "delete");
-      const addMark = createSuggestionMark(suggestionMark, "replace", replacement, threadId, "add");
-
-      tr = tr
-        .removeMark(deleteBounds.from, deleteBounds.to, suggestionMark)
-        .addMark(deleteBounds.from, deleteBounds.to, deleteMark)
-        .removeMark(addFrom, addTo, suggestionMark)
-        .addMark(addFrom, addTo, addMark)
-        .setMeta(ACTIVE_SUGGESTION_THREAD_META, threadId);
-      view.dispatch(tr.scrollIntoView());
-      return true;
+    const nearbyMark = adjacentSuggestionMark(state, from, to);
+    if (nearbyMark) {
+      tr = insertIntoThread(state, tr, nearbyMark, from, text);
+      if (tr) {
+        view.dispatch(tr.scrollIntoView());
+        return true;
+      }
     }
 
-    if (from < to) tr = tr.delete(from, to);
-
-    const nearbyMark = from < to ? null : nearbySuggestion(state, insertAt, insertAt, "add");
-    const bounds = nearbyMark && threadBounds(state, nearbyMark.attrs.threadId);
-    tr = tr.insertText(text, insertAt);
-
-    const markFrom = bounds ? Math.min(bounds.from, insertAt) : insertAt;
-    const markTo = bounds
-      ? Math.max(bounds.to + (insertAt <= bounds.to ? text.length : 0), insertAt + text.length)
-      : insertAt + text.length;
-    const addedText = tr.doc.textBetween(markFrom, markTo, " ");
-    const addMark = createSuggestionMark(suggestionMark, "add", addedText, nearbyMark?.attrs?.threadId);
-
-    tr = tr
-      .removeMark(markFrom, markTo, suggestionMark)
-      .addMark(markFrom, markTo, addMark)
-      .setMeta(ACTIVE_SUGGESTION_THREAD_META, addMark.attrs.threadId);
+    tr = tr.insertText(text, from);
+    tr = applyAddition(tr, null, [{ from, to: from + text.length }]);
     view.dispatch(tr.scrollIntoView());
     return true;
   };
@@ -215,14 +330,25 @@ function suggestionPlugin(schema) {
         if (empty && event.key === "Backspace" && $from.parentOffset > 0) from -= 1;
         else if (empty && event.key === "Delete" && $from.parentOffset < $from.parent.content.size) to += 1;
         else if (empty) return false;
+
+        if (!empty && !rangeHasSuggestion(state, from, to)) {
+          const selectedRange = wordRangeWithAdjacentSpace(state, from, to);
+          if (!selectedRange) {
+            event.preventDefault();
+            return true;
+          }
+          ({ from, to } = selectedRange);
+        }
         event.preventDefault();
 
         let tr = state.tr;
         const removesAddition = rangeIsSuggestion(state, from, to, "add");
         if (removesAddition) {
           tr = tr.delete(from, to);
-        } else if (!rangeIsSuggestion(state, from, to, "delete")) {
-          tr = markSuggestion(state, tr, from, to, "delete");
+        } else if (!rangeHasSuggestion(state, from, to)) {
+          const nearbyMark = adjacentSuggestionMark(state, from, to);
+          tr = nearbyMark ? mergeDeletionIntoThread(state, tr, nearbyMark, from, to) : null;
+          if (!tr) tr = applyDeletion(tr || state.tr, null, [{ from, to }]);
         }
 
         const cursor = Math.min(event.key === "Delete" && empty && !removesAddition ? to : from, tr.doc.content.size);

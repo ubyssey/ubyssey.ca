@@ -19,7 +19,7 @@ const TOOLBAR_ITEMS = [
   // Can't figure out why these two don't work with history
   //["bulletList", "•", "Bullet list"],
   //["orderedList", "1.", "Ordered list"],
-  ["comment", "💬", "Comment"],
+  ["comment", "Comment", "Comment"],
   ["suggestionMode", "Suggest", "Toggle suggestion mode"],
   ["footnote", "Footnote", "Footnote"],
 ];

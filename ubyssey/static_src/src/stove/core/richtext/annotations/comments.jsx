@@ -445,9 +445,13 @@ function Comment({ comment, resolveButton }) {
   return (
     <article className="pm-comment">
       <div className="pm-comment__meta">
-        <strong>{comment.username}</strong>
-        <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
-        {resolveButton}
+        <div className="pm-comment__author">
+          <strong>{comment.username}</strong>
+          <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
+        </div>
+        {resolveButton && (
+          <div className="pm-comment__actions">{resolveButton}</div>
+        )}
       </div>
       <p><CommentText comment={comment} /></p>
     </article>
@@ -457,10 +461,17 @@ function Comment({ comment, resolveButton }) {
 function CommentText({ comment }) {
   if (!comment.suggestion) return comment.text;
 
+  const text = comment.text || "";
+  const isReplacement = comment.suggestion === "replace" && typeof comment.replacementText === "string";
   return (
     <>
       <strong>{suggestionLabel(comment.suggestion)}:</strong>
-      {comment.text && ` ${comment.text}`}
+      {(text || isReplacement) && (
+        <>
+          {" "}<em>"{text}"</em>
+          {isReplacement && <> with <em>"{comment.replacementText}"</em></>}
+        </>
+      )}
     </>
   );
 }
@@ -522,11 +533,26 @@ function formatCommentDate(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Just now";
 
-  return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  const now = new Date();
+  const isSameDay = (first, second) => (
+    first.getFullYear() === second.getFullYear()
+    && first.getMonth() === second.getMonth()
+    && first.getDate() === second.getDate()
+  );
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const time = new Intl.DateTimeFormat(undefined, {
     hour: "numeric",
     minute: "2-digit",
   }).format(date);
+
+  if (isSameDay(date, now)) return `${time}, Today`;
+  if (isSameDay(date, yesterday)) return `${time}, Yesterday`;
+
+  const options = {
+    month: "short",
+    day: "numeric",
+  };
+  if (date.getFullYear() !== now.getFullYear()) options.year = "numeric";
+  return new Intl.DateTimeFormat(undefined, options).format(date);
 }

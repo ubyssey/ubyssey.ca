@@ -912,8 +912,8 @@ body {
     gap: 8px;
     padding: 8px;
     border: 1px solid #d8d8d8;
-    border-radius: 2px;
-    background: #fcf9f8;
+    border-radius: 6px;
+    background: #f7f9fc;
 }
 
 .pm-comment-thread--active {
@@ -922,20 +922,24 @@ body {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.6);
 }
 
+.pm-comment-thread:not(.pm-comment-thread--active):hover {
+    background: #f7f9fc;
+}
+
 .pm-comment-thread__collapse {
-    width: 16px;
-    height: 16px;
+    width: 25px;
+    height: 25px;
     padding: 0;
     border: none;
     border-radius: 50%;
-    background: #fff;
+    background: transparent;
     color: #1b1b1b;
-    font: 600 14px/1 sans-serif;
+    font: 600 16px/1 sans-serif;
     cursor: pointer;
 }
 
 .pm-comment-thread__collapse:hover {
-    background: #f5f5f5;
+    background: rgba(0, 0, 0, 0.08);
 }
 
 .pm-comment-thread__comments {
@@ -950,8 +954,15 @@ body {
 
 .pm-comment__meta {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     gap: 6px;
+}
+
+.pm-comment__author {
+    display: grid;
+    flex: 1 1 auto;
+    gap: 2px;
+    min-width: 0;
 }
 
 .pm-comment__meta strong {
@@ -961,10 +972,20 @@ body {
 }
 
 .pm-comment__meta time {
-    margin-left: auto;
-    flex: 0 0 auto;
     color: #666;
     font: 11px/1.2 sans-serif;
+}
+
+.pm-comment__actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0px;
+    visibility: hidden;
+}
+
+.pm-comment-thread:hover .pm-comment__actions,
+.pm-comment-thread:focus-within .pm-comment__actions {
+    visibility: visible;
 }
 
 .pm-comment p {
@@ -1014,10 +1035,25 @@ body {
     cursor: pointer;
 }
 
+.pm-comment-reply button:hover {
+    border-color: #005fa8;
+    background: #005fa8;
+}
+
 .pm-comment-reply .pm-comment-reply__cancel {
     border-color: #9a9a9a;
     background: #fff;
     color: #1b1b1b;
+}
+
+.pm-comment-reply .pm-comment-reply__cancel:hover {
+    border-color: #7a7a7a;
+    background: #f2f2f2;
+}
+
+.pm-comment-sidebar,
+.pm-comment-sidebar * {
+    font-family: Arial, sans-serif;
 }
 
 .pm-metadata-sidebar-panel {

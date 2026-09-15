@@ -86,21 +86,19 @@ span[data-suggestion-thread-id] {
     cursor: pointer;
 }
 
-span[data-suggestion-part="add"] {
+span[data-suggestion-part="add"],
+span[data-suggestion-part="delete"] {
     color: #188038;
 }
 
 span[data-suggestion-part="delete"] {
-    color: #d93025;
     text-decoration: line-through;
+    text-decoration-thickness: 3px;
 }
 
-span[data-comment-active="true"][data-suggestion-part="add"] {
-    background: #ceead6;
-}
-
+span[data-comment-active="true"][data-suggestion-part="add"],
 span[data-comment-active="true"][data-suggestion-part="delete"] {
-    background: #f6aea9;
+    background: #ceead6;
 }
 
 span[data-footnote-id] {
