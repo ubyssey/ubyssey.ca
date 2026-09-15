@@ -1,9 +1,8 @@
-import { Fragment } from "prosemirror-model";
 import { TextSelection } from "prosemirror-state";
+import { absolutePositionToRelativePosition, initProseMirrorDoc } from "y-prosemirror";
 
 import { editableFieldInfoForSource } from "./fields.js";
 import { topLevelBlockInfoByIdOrIndex } from "./blocks.js";
-import { deleteBlock, insertBlock, insertBlockBefore, setFieldContent } from "./document.js";
 
 // Deals with special RichText behaviour like new block (create or split) on enter, delete (or back merge) with backspace, arrow keys between blocks
 export function createStreamRichTextKeyHandler({state, streamSchema, createEmptyRichTextBlock, selectBlock}) {
@@ -40,102 +39,55 @@ export function createStreamRichTextKeyHandler({state, streamSchema, createEmpty
   }
 
   function splitStreamRichTextBlock(inlineView, source) {
-    const block = topLevelBlockInfoByIdOrIndex(source.instance.doc, source.blockId, source.blockIndex);
-    if (!block) return false;
+    const sharedType = source.instance.fieldType(source.blockId, source.path || []);
+    if (!sharedType) return false;
 
-    let transaction = inlineView.state.tr;
-    if (!transaction.selection.empty) transaction = transaction.deleteSelection();
-    const splitAt = transaction.selection.from;
-    const before = transaction.doc.slice(0, splitAt).content;
-    const after = transaction.doc.slice(splitAt).content;
-    const splittingAtStart = splitAt === 1;
-    const newBlock = richTextBlockWithContent(streamRichTextContent(splittingAtStart ? before : after));
+    const selection = inlineView.state.selection;
+    const mapping = initProseMirrorDoc(sharedType, inlineView.state.schema).mapping;
+    const relativePosition = (position) => absolutePositionToRelativePosition(
+      position,
+      sharedType,
+      mapping,
+    );
+    const splitPosition = relativePosition(selection.from);
+    const selectionFrom = selection.empty ? null : relativePosition(selection.from);
+    const selectionTo = selection.empty ? null : relativePosition(selection.to);
+    const block = streamSchema.nodeFromJSON(createEmptyRichTextBlock());
 
     source.instance.history.stopCapturing();
-    source.instance.transact(() => {
-      if (splittingAtStart) {
-        setFieldContent(source.instance, {
-          blockId: source.blockId,
-          path: source.path || [],
-          content: streamRichTextContent(after),
-        });
-        insertBlockBefore(source.instance, { before: source, block: newBlock });
-      } else {
-        setFieldContent(source.instance, {
-          blockId: source.blockId,
-          path: source.path || [],
-          content: streamRichTextContent(before),
-        });
-        insertBlock(source.instance, { after: source, block: newBlock });
-      }
-    }, { kind: "structure" });
+    const result = source.instance.splitRichTextBlock({
+      blockId: source.blockId,
+      path: source.path || [],
+      splitPosition,
+      selectionFrom,
+      selectionTo,
+      block,
+    });
     source.instance.history.stopCapturing();
 
-    if (!splittingAtStart) {
-      focusRichTextEditor(source.instance, { blockId: newBlock.attrs.id, position: 1 });
+    if (!result) return false;
+    if (!result.splittingAtStart) {
+      focusRichTextEditor(source.instance, { blockId: result.blockId, position: 1 });
     }
     return true;
-  }
-
-  // Creates a RichText block containing supplied content
-  function richTextBlockWithContent(content) {
-    const block = streamSchema.nodeFromJSON(createEmptyRichTextBlock());
-    return block.copy(Fragment.from(block.child(0).copy(content)));
-  }
-
-  // Converts PM fragment into streamSchema nodes, if none, returns one paragraph
-  function streamRichTextContent(content) {
-    const nodes = (content.toJSON() || []).map((node) => streamSchema.nodeFromJSON(node));
-    return Fragment.fromArray(nodes.length ? nodes : [streamSchema.nodes.paragraph.create()]);
   }
 
   function mergeStreamRichTextBlock(inlineView, source) {
     if (!inlineView.state.selection.empty || inlineView.state.selection.from !== 1) return false;
 
-    const doc = source.instance.doc;
-    const block = topLevelBlockInfoByIdOrIndex(doc, source.blockId, source.blockIndex);
-    const previousBlock = block && topLevelBlockInfoByIdOrIndex(doc, null, block.index - 1);
-    if (!previousBlock || previousBlock.node.attrs?.blockType !== "richtext") return false;
-
-    const previousSource = { ...source, blockId: previousBlock.node.attrs.id, blockIndex: previousBlock.index };
-    const previousField = editableFieldInfoForSource(previousSource, doc);
-    if (!previousField) return false;
-
-    const cursorPosition = previousField.node.content.size - 1;
-    const content = joinRichTextContent(previousField.node.content, streamRichTextContent(inlineView.state.doc.content));
-
     source.instance.history.stopCapturing();
-    source.instance.transact(() => {
-      setFieldContent(source.instance, {
-        blockId: previousSource.blockId,
-        path: previousSource.path || [],
-        content,
-      });
-      deleteBlock(source.instance, source);
-    }, { kind: "structure" });
-
+    const result = source.instance.mergeRichTextBlock({
+      blockId: source.blockId,
+      path: source.path || [],
+    });
     source.instance.history.stopCapturing();
-    
+
+    if (!result) return false;
     focusRichTextEditor(source.instance, {
-      blockId: previousSource.blockId,
-      position: cursorPosition,
+      blockId: result.blockId,
+      position: result.cursorPosition,
     });
     return true;
-  }
-
-  function joinRichTextContent(before, after) {
-    const beforeNodes = [];
-    const afterNodes = [];
-    before.forEach((node) => { beforeNodes.push(node); });
-    after.forEach((node) => { afterNodes.push(node); });
-
-    const left = beforeNodes[beforeNodes.length - 1];
-    const right = afterNodes[0];
-    if (left?.isTextblock && right?.isTextblock && left.sameMarkup(right)) {
-      beforeNodes[beforeNodes.length - 1] = left.copy(left.content.append(right.content));
-      afterNodes.shift();
-    }
-    return Fragment.fromArray([...beforeNodes, ...afterNodes]);
   }
 
   // Arrow key navigation between RichText Blocks

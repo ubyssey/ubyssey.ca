@@ -29,6 +29,14 @@ const handleStreamRichTextKeyDown = createStreamRichTextKeyHandler({
 
 // We marked the page preview HTML with content-editable for prosemirror
 function createPageRichTextEditor(mount, content, className, onContentChanged = null, streamSource = null, sharedType = null) {
+  if (streamSource && !sharedType) {
+    console.error("Richtext editor is unsynchronized", {
+      blockId: streamSource.blockId,
+      path: streamSource.path || [],
+    });
+    return null;
+  }
+
   const inlineRichText = mount.dataset.articleEditableMode === "richtext-inline";
   const attributes = { class: className };
   
@@ -319,6 +327,7 @@ export function setupPagePreviewEditors(pageRoot, streamDocs = null, scopeBlock 
         sharedType,
       );
       
+      if (!editor) return;
       pageEditorState.pageRichTextEditors.push({
         ...editor,
         fieldName: instance.fieldName,
@@ -362,6 +371,7 @@ export function setupPagePreviewEditors(pageRoot, streamDocs = null, scopeBlock 
         streamSource,
         sharedType,
       );
+      if (!editor) continue;
       stopDirectEditEvents(editor.view.dom);
       pageEditorState.pageDirectRichTextEditors.push({ ...editor, streamSource });
       continue;
