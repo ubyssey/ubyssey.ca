@@ -223,7 +223,7 @@ span[data-footnote-id]::before {
     min-height: 28px;
     min-width: 30px;
     padding: 0 8px;
-    border: 1px solid var(--border-grey, #c7c7c7);
+    border: none;
     border-radius: 4px;
     background: var(--background, #fff);
     color: var(--text_color-100, #1b1b1b);
@@ -236,12 +236,11 @@ span[data-footnote-id]::before {
 
 .pm-editor-toolbar__button[aria-pressed="true"] {
     background: var(--color-ubyssey_blue-light, #e8f2f8);
-    border-color: var(--color-ubyssey_blue, #0071c9);
     color: #1b1b1b;
 }
 
-.pm-editor-toolbar__button:hover:not(:disabled) {
-    color: var(--color-ubyssey_blue, #0071c9);
+.pm-editor-toolbar__button:hover:not(:disabled):not([aria-pressed="true"]) {
+    background: color-mix(in srgb, var(--background, #fff) 92%, #000);
 }
 
 .pm-editor-toolbar__button:disabled {

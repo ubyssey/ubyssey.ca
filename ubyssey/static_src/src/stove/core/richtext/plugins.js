@@ -12,7 +12,7 @@ import { keymap } from "prosemirror-keymap";
 import { dropCursor } from "prosemirror-dropcursor";
 import { gapCursor } from "prosemirror-gapcursor";
 import { ellipsis, emDash, inputRules, smartQuotes, textblockTypeInputRule, undoInputRule, wrappingInputRule } from "prosemirror-inputrules";
-import { commentSuggestion, createSuggestionMark, markRangeAtCursor } from "./annotations/index.js";
+import { commentSuggestion, createSuggestionMark, markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "./annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
 import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph as invisiblesParagraph } from "@guardian/prosemirror-invisibles/dist/index.mjs";
 
@@ -481,8 +481,23 @@ function buildEditorKeymap(schema, { undoCommand, redoCommand }) {
   }
   if ((type = schema.marks.link)) bind("Mod-k", promptLinkCommand(type));
   if ((type = schema.nodes.heading)) {
-      bind("Mod-h", setBlockType(schema.nodes.heading, { level: 3 }));
+    bind("Mod-h", setBlockType(type, { level: 3 }));
+    bind("Mod-Alt-3", setBlockType(type, { level: 3 }));
   }
+  // Doesn't seem to work
+  if ((type = schema.marks.comment)) {
+    bind("Mod-Alt-m", startCommentCommand(type));
+  }
+  if ((type = schema.marks.footnote)) {
+    bind("Mod-Alt-f", startFootnoteCommand(type));
+  }
+  bind("Mod-Alt-s", (state, dispatch) => {
+    if (!dispatch) return true;
+    toggleSuggestionMode();
+    dispatch(state.tr.setMeta("suggestionModeChanged", suggestionMode));
+    return true;
+  });
+
   // Allows newlines without creating new block for RichText
   const hardBreak = schema.nodes.hard_break;
   if (hardBreak) {

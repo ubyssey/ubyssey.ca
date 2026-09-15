@@ -10,6 +10,9 @@ const shortcutDefinitions = [
   { label: "Italic", key: "Mod-i" },
   { label: "Underline", key: "Mod-u" },
   { label: "Insert Link", key: "Mod-k" },
+  { label: "Heading 3", key: "Mod-Alt-3" },
+  { label: "Suggestion mode", key: "Mod-Alt-s" },
+  { label: "Insert Footnote", key: "Mod-Alt-f" },
 ];
 
 export function mountShortcutDocumentation(container) {
@@ -17,15 +20,19 @@ export function mountShortcutDocumentation(container) {
 }
 
 function ShortcutDocumentation() {
-  const modifierKeyPrefix = navigator.platform.startsWith("Mac") || navigator.platform === "iPhone" ? "⌘" : "Ctrl";
+  const applePlatform = navigator.platform.startsWith("Mac") || navigator.platform === "iPhone";
+  const modifierKeyPrefix = applePlatform ? "⌘" : "Ctrl";
+  const alternateKeyPrefix = applePlatform ? "⌥" : "Alt";
   return (
     <div className="shortcut-documentation">
       <h3>Shortcuts</h3>
       <ul>
         {shortcutDefinitions.map((shortcut) => {
-          const formattedKey = shortcut.key.replace("Mod", modifierKeyPrefix);
+          const formattedKey = shortcut.key.replace("Mod", modifierKeyPrefix).replace("Alt", alternateKeyPrefix);
           return (
-            <li key={shortcut.key}><b>{shortcut.label}:</b> {formattedKey}</li>
+            <li key={shortcut.key}>
+              <b>{shortcut.label}:</b> {formattedKey}
+            </li>
           );
         })}
       </ul>

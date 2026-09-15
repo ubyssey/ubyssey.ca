@@ -171,8 +171,8 @@ body {
     justify-content: center;
     min-height: 30px;
     padding: 0 10px;
-    border: 1px solid #c7c7c7;
-    border-radius: 1px;
+    border-style: hidden;
+    border-radius: 6px;
     background: #fff;
     color: #1c1b1b;
     box-sizing: border-box;
@@ -587,7 +587,7 @@ body {
     min-height: 28px;
     min-width: 30px;
     padding: 0 8px;
-    border: 1px solid #c7c7c7;
+    border: none;
     border-radius: 4px;
     background: #fff;
     color: #1b1b1b;
@@ -599,11 +599,10 @@ body {
 
 .pm-editor-toolbar__button[aria-pressed="true"] {
     background: #e8f2f8;
-    border-color: #0071c9;
 }
 
-.pm-editor-toolbar__button:hover:not(:disabled) {
-    color: #797979;
+.pm-editor-toolbar__button:hover:not(:disabled):not([aria-pressed="true"]) {
+    background: #f0f0f0;
 }
 
 .pm-editor-toolbar__button:disabled {
