@@ -94,15 +94,12 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
     dispatchTransaction(transaction) {
       const activeView = this;
       const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
-      const previousState = activeView.state;
       const nextState = activeView.state.apply(transaction);
       if (activeView.isDestroyed) return;
       activeView.updateState(nextState);
       if (activeSuggestionThreadId) pageEditorState.commentSidebar?.activateThread(activeSuggestionThreadId);
       else if (transaction.selectionSet) {
-        const previousThreadId = annotationThreadAtSelection(previousState);
-        const nextThreadId = annotationThreadAtSelection(nextState);
-        if (previousThreadId !== nextThreadId) pageEditorState.commentSidebar?.activateThread(nextThreadId);
+        pageEditorState.commentSidebar?.activateThread(annotationThreadAtSelection(nextState));
       }
       pageEditorState.scheduleEditorUiRefresh();
       if (onContentChanged && transaction.docChanged && !transaction.getMeta(SYNCED_EDITOR_META)) {
