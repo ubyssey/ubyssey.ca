@@ -162,6 +162,7 @@ function toolbarItemIsActive(view, key) {
 }
 
 function toolbarCommand(view, key) {
+  if (view.annotationsEnabled === false && ["comment", "suggestionMode", "footnote"].includes(key)) return null;
   const { schema } = view.state;
   // We don't use YJS history cause each RichText block has it's own EditorView, Prosemirror History is used for Page Fields for Direct Django Forms
   const sharedHistory = view.streamSource?.instance.history;

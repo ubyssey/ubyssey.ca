@@ -28,6 +28,26 @@
     overflow-wrap: anywhere;
 }
 
+.pm-selection-comment-bubble {
+    position: absolute;
+    z-index: 30;
+    transform: translate(6px, 6px);
+}
+
+.pm-selection-comment-bubble button {
+    padding: 6px 10px;
+    border: 1px solid #a17a00;
+    border-radius: 4px;
+    background: #ffe066;
+    color: #1b1b1b;
+    font: 600 12px/1 sans-serif;
+    cursor: pointer;
+}
+
+.pm-selection-comment-bubble button:hover {
+    background: #ffd43b;
+}
+
 .page-shadow-preview {
     position: relative;
     font-family: inherit;
@@ -94,6 +114,7 @@ span[data-suggestion-part="delete"] {
 span[data-suggestion-part="delete"] {
     text-decoration: line-through;
     text-decoration-thickness: 3px;
+    text-decoration-color: rgba(24, 136, 56, 0.7);
 }
 
 span[data-comment-active="true"][data-suggestion-part="add"],

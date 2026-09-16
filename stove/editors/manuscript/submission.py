@@ -29,7 +29,11 @@ def merge_form_errors(editor_errors, form, prefix=None):
 def process_manuscript_forms(page, data, preview=False):
     editor_errors = {}
 
-    page_form = metadata.create_form(page, data)
+    form_data = data.copy()
+    title = form_data.get("title")
+    if isinstance(title, str) and ("data-comment-" in title or "data-suggestion-" in title or "data-footnote-" in title):
+        form_data["title"] = generate_public_streamfield(title)
+    page_form = metadata.create_form(page, form_data)
     article_authors_form = authors.create_form(page, data)
     featured_media_form = featured_media.create_form(page, data)
 

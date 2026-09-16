@@ -54,6 +54,8 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
   }
 
   const inlineRichText = mount.dataset.articleEditableMode === "richtext-inline";
+  // Annotations in title break 255 character limit, we can find a workaround in the future probably
+  const allowAnnotations = mount.dataset.articleEditablePageField !== "title";
   const attributes = { class: className };
   
   for (const attr of [
@@ -87,7 +89,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       plugins: [
         ...(sharedType ? [ySyncPlugin(sharedType)] : []),
         ...(sharedType && pageEditorState.awareness ? [yCursorPlugin(pageEditorState.awareness)] : []),
-        ...editorPlugins(schema, { includeHistory: !sharedType && !pageHistory }),
+        ...editorPlugins(schema, { includeHistory: !sharedType && !pageHistory, allowAnnotations }),
       ],
     }),
 
@@ -125,6 +127,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
   const unregisterSharedType = sharedType ? streamSource.instance.registerRichTextType(sharedType) : null;
 
   view.streamSource = streamSource;
+  view.annotationsEnabled = allowAnnotations;
   migrateLegacySuggestionMarks(view);
   const handleFocus = () => {
     pageHistory?.stopCapturing();
@@ -210,9 +213,14 @@ export function destroyEditorViewsWithin(editors, root) {
   }
 }
 
-function richTextContentFromHtml(html) {
+function richTextContentFromHtml(html, { allowAnnotations = true } = {}) {
   const wrapper = document.createElement("div");
   wrapper.innerHTML = html || "";
+  if (!allowAnnotations) {
+    wrapper.querySelectorAll("[data-comment-thread-id], [data-suggestion-thread-id], [data-footnote-id]").forEach((mark) => {
+      mark.replaceWith(...mark.childNodes);
+    });
+  }
   return ProseMirrorDOMParser.fromSchema(richTextSchema).parse(wrapper).toJSON().content || EMPTY_RICH_TEXT;
 }
 
@@ -388,7 +396,9 @@ export function setupPagePreviewEditors(pageRoot, streamDocs = null, scopeBlock 
       };
       const editor = createPageRichTextEditor(
         target,
-        source.kind === "stream" ? source.field.node.toJSON().content : richTextContentFromHtml(source.input.value),
+        source.kind === "stream" ? source.field.node.toJSON().content : richTextContentFromHtml(source.input.value, {
+          allowAnnotations: target.dataset.articleEditablePageField !== "title",
+        }),
         `${target.className} pm-page-direct-edit pm-page-direct-rich-text`,
         onContentChanged,
         streamSource,

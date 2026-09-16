@@ -27,12 +27,13 @@ export function areInvisibleCharactersEnabled() {
   return window.localStorage.getItem(INVISIBLE_CHARACTERS_STORAGE_KEY) === "true";
 }
 
-export function editorPlugins(schema, {includeHistory = true, undoCommand = undo, redoCommand = redo} = {}) {
+export function editorPlugins(schema, {includeHistory = true, undoCommand = undo, redoCommand = redo, allowAnnotations = true} = {}) {
   return [
     linkBubblePlugin(schema),
-    activeCommentPlugin(schema),
-    suggestionPlugin(schema),
-    keymap(buildEditorKeymap(schema, { undoCommand, redoCommand })),
+    // Disabling for now, I don't have time to polish
+    //selectionCommentBubblePlugin(schema),
+    ...(allowAnnotations ? [activeCommentPlugin(schema), suggestionPlugin(schema)] : []),
+    keymap(buildEditorKeymap(schema, { undoCommand, redoCommand, allowAnnotations })),
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),
@@ -445,6 +446,49 @@ function suggestionPlugin(schema) {
   });
 }
 
+function selectionCommentBubblePlugin(schema) {
+  const commentMark = schema.marks.comment;
+  if (!commentMark) return new Plugin({});
+
+  return new Plugin({
+    view(editorView) {
+      const bubble = document.createElement("div");
+      const button = document.createElement("button");
+      bubble.className = "pm-selection-comment-bubble";
+      bubble.hidden = true;
+      button.type = "button";
+      button.textContent = "Comment";
+      bubble.appendChild(button);
+      editorView.dom.parentNode.appendChild(bubble);
+
+      button.addEventListener("mousedown", (event) => event.preventDefault());
+      button.addEventListener("click", () => {
+        startCommentCommand(commentMark)(editorView.state, editorView.dispatch, editorView);
+        editorView.focus();
+      });
+
+      return {
+        update(view) {
+          const { selection } = view.state;
+          if (!(selection instanceof TextSelection) || selection.empty) {
+            bubble.hidden = true;
+            return;
+          }
+
+          const cursor = view.coordsAtPos(selection.to);
+          const offset = bubble.offsetParent?.getBoundingClientRect() || { left: 0, top: 0 };
+          bubble.style.left = `${cursor.right - offset.left}px`;
+          bubble.style.top = `${cursor.bottom - offset.top}px`;
+          bubble.hidden = false;
+        },
+        destroy() {
+          bubble.remove();
+        },
+      };
+    },
+  });
+}
+
 function linkBubblePlugin(schema) {
   const linkMark = schema.marks.link;
   const linkFromEvent = (event) => event.target.closest?.("a[href]");
@@ -543,7 +587,7 @@ function activeCommentPlugin(schema) {
   });
 }
 
-function buildEditorKeymap(schema, { undoCommand, redoCommand }) {
+function buildEditorKeymap(schema, { undoCommand, redoCommand, allowAnnotations = true }) {
   const keys = {};
   const bind = (key, command) => { keys[key] = command; };
   let type;
@@ -571,18 +615,20 @@ function buildEditorKeymap(schema, { undoCommand, redoCommand }) {
     bind("Mod-Alt-3", setBlockType(type, { level: 3 }));
   }
   // Doesn't seem to work
-  if ((type = schema.marks.comment)) {
+  if (allowAnnotations && (type = schema.marks.comment)) {
     bind("Mod-Alt-m", startCommentCommand(type));
   }
-  if ((type = schema.marks.footnote)) {
+  if (allowAnnotations && (type = schema.marks.footnote)) {
     bind("Mod-Alt-f", startFootnoteCommand(type));
   }
-  bind("Mod-Alt-s", (state, dispatch) => {
-    if (!dispatch) return true;
-    toggleSuggestionMode();
-    dispatch(state.tr.setMeta("suggestionModeChanged", suggestionMode));
-    return true;
-  });
+  if (allowAnnotations) {
+    bind("Mod-Alt-s", (state, dispatch) => {
+      if (!dispatch) return true;
+      toggleSuggestionMode();
+      dispatch(state.tr.setMeta("suggestionModeChanged", suggestionMode));
+      return true;
+    });
+  }
 
   // Allows newlines without creating new block for RichText
   const hardBreak = schema.nodes.hard_break;

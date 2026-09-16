@@ -4,8 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
-
-const COMMENT_MARK_SELECTOR = "[data-comment-thread-id], [data-suggestion-thread-id]";
+import { selectPageBlockElement } from "../../preview/selection.js";
 
 import {
   acceptSuggestion,
@@ -17,6 +16,8 @@ import {
   setCommentThreadResolved,
   suggestionLabel,
 } from "./comment_model.js";
+
+const COMMENT_MARK_SELECTOR = "[data-comment-thread-id], [data-suggestion-thread-id]";
 
 export function setupCommentSidebar(root, { getViews, getThreads }) {
   const username = document.querySelector("[data-current-editor-username]").dataset.currentEditorUsername;
@@ -196,6 +197,14 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     if (changed) update();
   };
 
+  const selectCommentBlock = (event) => {
+    if (!eventCommentThreadIds(event).length) return;
+
+    const block = eventPath(event).find((element) => element?.matches?.("[data-article-block]"))
+      || editorViewForEvent(event)?.dom.closest("[data-article-block]");
+    if (block) selectPageBlockElement(block);
+  };
+
   // switches selected overlapping suggestion/comment on second click
   const onCommentMarkClick = (event) => {
     const threadIds = eventCommentThreadIds(event);
@@ -260,6 +269,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   document.addEventListener("click", removePendingThreads, true);
   document.addEventListener("focusin", removePendingThreads, true);
+  pageShadow?.shadowRoot?.addEventListener("mousedown", selectCommentBlock, true);
   pageShadow?.shadowRoot?.addEventListener("click", onCommentMarkClick);
   pageShadow?.shadowRoot?.addEventListener("keydown", () => { clickedAnnotationThreadId = null; });
   window.addEventListener("scroll", scheduleCommentPositions, true);
