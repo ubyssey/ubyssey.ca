@@ -2,6 +2,8 @@
 
 <div class="c-curated_stream">
 {% for group in self.curated_stream %}
-    {% include_block group with group_id=group.id %}
+    <div data-article-block data-stream-field="curated_stream" data-stream-block-id="{{ group.id }}" data-stream-block-index="{{ forloop.counter0 }}">
+        {% include_block group with group_id=group.id %}
+    </div>
 {% endfor %}
 </div>

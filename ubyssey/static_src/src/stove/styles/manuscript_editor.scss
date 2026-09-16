@@ -171,8 +171,8 @@ body {
     justify-content: center;
     min-height: 30px;
     padding: 0 10px;
-    border: 1px solid #c7c7c7;
-    border-radius: 1px;
+    border-style: hidden;
+    border-radius: 6px;
     background: #fff;
     color: #1c1b1b;
     box-sizing: border-box;
@@ -376,6 +376,18 @@ body {
     margin-left: 16px;
 }
 
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field {
+    margin: 8px 0;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__items {
+    display: grid;
+    gap: 8px;
+    margin-left: 16px;
+}
+
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__header,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-item__header,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__header,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__header {
     display: flex;
@@ -383,13 +395,15 @@ body {
     gap: 6px;
 }
 
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-item__title,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__label,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__title {
     flex: 1;
     margin-bottom: 0;
 }
 
-.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-item__header {
+.page-block-editor-modal__body .pm-page-block-dialog__editor :is(.pm-stream-item__header, .pm-list-item__header) {
     margin: 8px 0 6px;
 }
 
@@ -401,12 +415,14 @@ body {
 }
 
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-struct-field__label,
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__label,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__label {
     display: block;
     margin-bottom: 8px;
     font: 700 15px/1.2 sans-serif;
 }
 
+.page-block-editor-modal__body .pm-page-block-dialog__editor .pm-stream-field__header .pm-stream-field__label,
 .page-block-editor-modal__body .pm-page-block-dialog__editor .pm-list-field__header .pm-list-field__label {
     flex: 1;
     margin-bottom: 0;
@@ -476,7 +492,6 @@ body {
     background: #3564a8;
     justify-self: start;
     padding: 0 10px;
-    margin-top: 12px;
 }
 
 .manuscript-metadata-button:hover {
@@ -572,7 +587,7 @@ body {
     min-height: 28px;
     min-width: 30px;
     padding: 0 8px;
-    border: 1px solid #c7c7c7;
+    border: none;
     border-radius: 4px;
     background: #fff;
     color: #1b1b1b;
@@ -584,11 +599,10 @@ body {
 
 .pm-editor-toolbar__button[aria-pressed="true"] {
     background: #e8f2f8;
-    border-color: #0071c9;
 }
 
-.pm-editor-toolbar__button:hover:not(:disabled) {
-    color: #797979;
+.pm-editor-toolbar__button:hover:not(:disabled):not([aria-pressed="true"]) {
+    background: #f0f0f0;
 }
 
 .pm-editor-toolbar__button:disabled {
@@ -632,7 +646,7 @@ body {
 .pm-sidebar-accordion__item > summary {
     padding: 12px;
     color: #1b1b1b;
-    font: 600 13px/1.2 sans-serif;
+    font: 400 13px/1.2 sans-serif;
 }
 
 .pm-article-info-sidebar {
@@ -649,8 +663,51 @@ body {
     flex-direction: column;
 }
 
+.pm-article-info-sidebar__note {
+    display: grid;
+    gap: 4px;
+    color: #555;
+}
+
+.pm-article-info-sidebar__note > div > :first-child {
+    margin-top: 0;
+}
+
+.pm-article-info-sidebar__note > div > :last-child {
+    margin-bottom: 0;
+}
+
 .pm-featured-media-sidebar textarea {
     resize: vertical;
+}
+
+.pm-featured-media-sidebar__caption,
+.pm-featured-media-sidebar__plain-text {
+    box-sizing: border-box;
+    min-height: 58px;
+    padding: 7px 8px;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    background: #fff;
+    color: #1b1b1b;
+    font: 13px/1.35 sans-serif;
+}
+
+.pm-featured-media-sidebar__caption:hover,
+.pm-featured-media-sidebar__caption:focus,
+.pm-featured-media-sidebar__caption.ProseMirror-focused,
+.pm-featured-media-sidebar__plain-text:hover,
+.pm-featured-media-sidebar__plain-text:focus {
+    outline: 2px solid #3564a8;
+    outline-offset: -1px;
+}
+
+.pm-featured-media-sidebar__caption p {
+    margin: 0 0 0.6em;
+}
+
+.pm-featured-media-sidebar__caption p:last-child {
+    margin-bottom: 0;
 }
 
 .article-media-gallery {
@@ -745,9 +802,27 @@ body {
     font: 13px/1.2 sans-serif;
 }
 
-// Didn't work until I got really specific -> todo clean up the CSS
+// Keeping the textarea font consistent
+[data-manuscript-settings-modal] textarea,
+.page-block-editor-modal textarea,
+.page-block-editor-modal .pm-editable-field__content {
+    font: 13px/1.35 sans-serif;
+}
+
+[data-manuscript-settings-modal] .page-field > label,
+[data-article-media-upload-modal] .page-field > label,
+[data-article-media-existing-modal] .page-field > label,
 .page-field label.pm-featured-media-sidebar__label {
     font: 700 13px/1.2 sans-serif;
+}
+
+.sidebar-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 8px;
 }
 
 .pm-footnote-sidebar {
@@ -836,8 +911,8 @@ body {
     gap: 8px;
     padding: 8px;
     border: 1px solid #d8d8d8;
-    border-radius: 2px;
-    background: #fcf9f8;
+    border-radius: 6px;
+    background: #faf7f9
 }
 
 .pm-comment-thread--active {
@@ -846,20 +921,24 @@ body {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.6);
 }
 
+.pm-comment-thread:not(.pm-comment-thread--active):hover {
+    background: #faf7f9
+}
+
 .pm-comment-thread__collapse {
-    width: 16px;
-    height: 16px;
+    width: 25px;
+    height: 25px;
     padding: 0;
     border: none;
     border-radius: 50%;
-    background: #fff;
+    background: transparent;
     color: #1b1b1b;
-    font: 600 14px/1 sans-serif;
+    font: 600 16px/1 sans-serif;
     cursor: pointer;
 }
 
 .pm-comment-thread__collapse:hover {
-    background: #f5f5f5;
+    background: rgba(0, 0, 0, 0.08);
 }
 
 .pm-comment-thread__comments {
@@ -874,8 +953,15 @@ body {
 
 .pm-comment__meta {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     gap: 6px;
+}
+
+.pm-comment__author {
+    display: grid;
+    flex: 1 1 auto;
+    gap: 2px;
+    min-width: 0;
 }
 
 .pm-comment__meta strong {
@@ -885,10 +971,20 @@ body {
 }
 
 .pm-comment__meta time {
-    margin-left: auto;
-    flex: 0 0 auto;
     color: #666;
     font: 11px/1.2 sans-serif;
+}
+
+.pm-comment__actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0px;
+    visibility: hidden;
+}
+
+.pm-comment-thread:hover .pm-comment__actions,
+.pm-comment-thread:focus-within .pm-comment__actions {
+    visibility: visible;
 }
 
 .pm-comment p {
@@ -938,10 +1034,25 @@ body {
     cursor: pointer;
 }
 
+.pm-comment-reply button:hover {
+    border-color: #005fa8;
+    background: #005fa8;
+}
+
 .pm-comment-reply .pm-comment-reply__cancel {
     border-color: #9a9a9a;
     background: #fff;
     color: #1b1b1b;
+}
+
+.pm-comment-reply .pm-comment-reply__cancel:hover {
+    border-color: #7a7a7a;
+    background: #f2f2f2;
+}
+
+.pm-comment-sidebar,
+.pm-comment-sidebar * {
+    font-family: Arial, sans-serif;
 }
 
 .pm-metadata-sidebar-panel {

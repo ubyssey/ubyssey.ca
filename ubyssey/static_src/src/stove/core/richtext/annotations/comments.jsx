@@ -4,6 +4,8 @@
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
+import { selectPageBlockElement } from "../../preview/selection.js";
+import { markRangeAtCursor } from "../marks.js";
 
 import {
   acceptSuggestion,
@@ -15,6 +17,8 @@ import {
   setCommentThreadResolved,
   suggestionLabel,
 } from "./comment_model.js";
+
+const COMMENT_MARK_SELECTOR = "[data-comment-thread-id], [data-suggestion-thread-id]";
 
 export function setupCommentSidebar(root, { getViews, getThreads }) {
   const username = document.querySelector("[data-current-editor-username]").dataset.currentEditorUsername;
@@ -31,6 +35,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   let commentOffset = 0;
   let clickedThreadIds = [];
   let clickedThreadIndex = 0;
+  let clickedAnnotationThreadId = null;
   const commentDrafts = new Map();
 
   const currentThreads = () => [
@@ -95,6 +100,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   };
 
   const clearActiveThread = () => {
+    clickedAnnotationThreadId = null;
     if (!activeThreadId) return;
     activeThreadId = null;
     focusActiveReply = false;
@@ -127,18 +133,57 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
       );
     });
     scheduleCommentPositions();
-    updateActiveCommentMarks(activeThreadId, threads);
+    updateActiveCommentMarks(activeThreadId, threads, getViews());
   };
 
   const eventPath = (event) => event.composedPath?.() || [];
   const eventCommentCard = (event) => eventPath(event).find((element) => element?.matches?.(".pm-comment-thread"));
-  const eventCommentMark = (event) => eventPath(event).find((element) => element?.matches?.("[data-comment-thread-id], [data-suggestion-thread-id]"));
+  
+  const threadIdsFromMarks = (marks, includeResolved = false) => [...new Set(marks
+    .filter((mark) => includeResolved || (mark.dataset.commentResolved !== "true" && mark.dataset.suggestionResolved !== "true"))
+    .map((mark) => mark.dataset.commentThreadId || mark.dataset.suggestionThreadId)
+    .filter(Boolean)
+  )];
+
+  const editorViewForEvent = (event) => {
+    const editor = eventPath(event).find((element) => element?.classList?.contains("ProseMirror"));
+    return editor && getViews().find((view) => view.dom === editor || view.dom.contains(editor));
+  };
+
+  const threadIdsAtSelection = (view, includeResolved) => {
+    if (!view?.state.selection.empty) return [];
+
+    return [...new Set(["comment", "suggestion"].flatMap((kind) => {
+      const markType = view.state.schema.marks[kind];
+      const range = markType && markRangeAtCursor(view.state, markType);
+      const threadId = range?.attrs?.threadId;
+      return threadId && (includeResolved || !range.attrs.resolved) ? [threadId] : [];
+    }))];
+  };
+
+  const nearbyCommentMarks = (event) => {
+    if (!eventPath(event).includes(pageShadow) || !Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) return [];
+
+    return Array.from(pageShadow?.shadowRoot?.querySelectorAll(COMMENT_MARK_SELECTOR) || []).filter((mark) => (
+      Array.from(mark.getClientRects()).some((rect) => (
+        Math.max(rect.left - event.clientX, 0, event.clientX - rect.right, rect.top - event.clientY, 0, event.clientY - rect.bottom) <= 2
+      ))
+    ));
+  };
+  
+  const eventCommentThreadIds = (event, includeResolved = false) => {
+    const pathIds = threadIdsFromMarks(eventPath(event).filter((element) => element?.matches?.(COMMENT_MARK_SELECTOR)), includeResolved);
+    if (pathIds.length) return pathIds;
+
+    const view = editorViewForEvent(event);
+    const cursorIds = event.type === "click" && view ? threadIdsAtSelection(view, includeResolved): [];
+    return cursorIds.length ? cursorIds : threadIdsFromMarks(nearbyCommentMarks(event), includeResolved);
+  };
 
   const removePendingThreads = (event) => {
     if (event.type === "focusin" && eventPath(event).includes(pageShadow)) return;
 
-    const commentMark = eventCommentMark(event);
-    if (eventCommentCard(event) || commentMark || activeDraftHasText()) return;
+    if (eventCommentCard(event) || eventCommentThreadIds(event, true).length || activeDraftHasText()) return;
 
     clearActiveThread();
     
@@ -150,16 +195,17 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     if (changed) update();
   };
 
+  const selectCommentBlock = (event) => {
+    if (!eventCommentThreadIds(event).length) return;
+
+    const block = eventPath(event).find((element) => element?.matches?.("[data-article-block]"))
+      || editorViewForEvent(event)?.dom.closest("[data-article-block]");
+    if (block) selectPageBlockElement(block);
+  };
+
   // switches selected overlapping suggestion/comment on second click
   const onCommentMarkClick = (event) => {
-    const marks = eventPath(event).filter((element) => (
-      element?.matches?.("[data-comment-thread-id], [data-suggestion-thread-id]")
-      && element.dataset.commentResolved !== "true"
-      && element.dataset.suggestionResolved !== "true"
-    ));
-    const threadIds = [...new Set(marks.map((mark) => (
-      mark.dataset.commentThreadId || mark.dataset.suggestionThreadId
-    )))];
+    const threadIds = eventCommentThreadIds(event);
     if (!threadIds.length) return;
 
     if (threadIds.join(":") === clickedThreadIds.join(":")) {
@@ -168,7 +214,9 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
       clickedThreadIds = threadIds;
       clickedThreadIndex = 0;
     }
-    setActiveThread(threadIds[clickedThreadIndex]);
+    const threadId = threadIds[clickedThreadIndex];
+    clickedAnnotationThreadId = threadId;
+    window.requestAnimationFrame(() => setActiveThread(threadId));
   };
 
   const scheduleCommentPositions = () => {
@@ -180,6 +228,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
         clearTimeout(moveTimer);
         moveTimer = null;
         root.classList.remove("pm-comment-sidebar--moving");
+        void root.offsetHeight;
       }
 
       const threads = currentThreads();
@@ -218,7 +267,9 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   document.addEventListener("click", removePendingThreads, true);
   document.addEventListener("focusin", removePendingThreads, true);
+  pageShadow?.shadowRoot?.addEventListener("mousedown", selectCommentBlock, true);
   pageShadow?.shadowRoot?.addEventListener("click", onCommentMarkClick);
+  pageShadow?.shadowRoot?.addEventListener("keydown", () => { clickedAnnotationThreadId = null; });
   window.addEventListener("scroll", scheduleCommentPositions, true);
   window.addEventListener("resize", scheduleCommentPositions);
   update();
@@ -226,7 +277,8 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   return {
     update,
     activateThread(threadId) {
-      setActiveThread(threadId, null);
+      if (!threadId && clickedAnnotationThreadId) return;
+      setActiveThread(threadId);
     },
   };
 }
@@ -289,7 +341,7 @@ function positionCommentThreads(root, threads, offset) {
   list.style.minHeight = placements.length ? `${nextTop - gap}px` : "";
 }
 
-function updateActiveCommentMarks(activeThreadId, threads = []) {
+function updateActiveCommentMarks(activeThreadId, threads = [], views = []) {
   const shadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
   if (!shadowRoot) return;
 
@@ -300,7 +352,10 @@ function updateActiveCommentMarks(activeThreadId, threads = []) {
     element.classList.remove("pm-page-block--comment-active");
   });
 
-  new Set(threads.flatMap((thread) => thread.views || [thread.view]).filter(Boolean)).forEach((view) => {
+  new Set([
+    ...views,
+    ...threads.flatMap((thread) => thread.views || [thread.view]),
+  ].filter(Boolean)).forEach((view) => {
     if (view.activeCommentThreadId === activeThreadId) return;
     view.activeCommentThreadId = activeThreadId;
     view.dispatch(view.state.tr.setMeta("activeCommentThread", activeThreadId));
@@ -394,10 +449,8 @@ function CommentThread({ thread, username, refresh, active, focusReply, setActiv
     <section
       className={className}
       data-comment-thread-id={thread.threadId}
-      onPointerDown={() => {
-        if (!active) window.requestAnimationFrame(() => {
-          setActiveThread(thread.threadId, "nearest", true);
-        });
+      onClick={() => {
+        if (!active) setActiveThread(thread.threadId);
       }}
     >
       {thread.comments.length > 0 && (
@@ -442,9 +495,13 @@ function Comment({ comment, resolveButton }) {
   return (
     <article className="pm-comment">
       <div className="pm-comment__meta">
-        <strong>{comment.username}</strong>
-        <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
-        {resolveButton}
+        <div className="pm-comment__author">
+          <strong>{comment.username}</strong>
+          <time dateTime={comment.createdAt}>{formatCommentDate(comment.createdAt)}</time>
+        </div>
+        {resolveButton && (
+          <div className="pm-comment__actions">{resolveButton}</div>
+        )}
       </div>
       <p><CommentText comment={comment} /></p>
     </article>
@@ -454,10 +511,17 @@ function Comment({ comment, resolveButton }) {
 function CommentText({ comment }) {
   if (!comment.suggestion) return comment.text;
 
+  const text = comment.text || "";
+  const isReplacement = comment.suggestion === "replace" && typeof comment.replacementText === "string";
   return (
     <>
       <strong>{suggestionLabel(comment.suggestion)}:</strong>
-      {comment.text && ` ${comment.text}`}
+      {(text || isReplacement) && (
+        <>
+          {" "}<em>"{text}"</em>
+          {isReplacement && <> with <em>"{comment.replacementText}"</em></>}
+        </>
+      )}
     </>
   );
 }
@@ -519,11 +583,26 @@ function formatCommentDate(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Just now";
 
-  return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  const now = new Date();
+  const isSameDay = (first, second) => (
+    first.getFullYear() === second.getFullYear()
+    && first.getMonth() === second.getMonth()
+    && first.getDate() === second.getDate()
+  );
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const time = new Intl.DateTimeFormat(undefined, {
     hour: "numeric",
     minute: "2-digit",
   }).format(date);
+
+  if (isSameDay(date, now)) return `${time}, Today`;
+  if (isSameDay(date, yesterday)) return `${time}, Yesterday`;
+
+  const options = {
+    month: "short",
+    day: "numeric",
+  };
+  if (date.getFullYear() !== now.getFullYear()) options.year = "numeric";
+  return new Intl.DateTimeFormat(undefined, options).format(date);
 }

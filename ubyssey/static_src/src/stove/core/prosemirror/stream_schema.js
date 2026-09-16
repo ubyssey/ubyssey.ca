@@ -155,6 +155,46 @@ const streamNodes = baseNodesWithLists.remove("doc").append({
       return ["div", { class: "pm-list-item" }, ["div", { class: "pm-list-item__content" }, 0]];
     },
   },
+
+  stream_field: {
+    group: "field",
+    content: "stream_item*",
+    isolating: true,
+    defining: true,
+    attrs: {
+      path: { default: [] },
+      label: { default: "Stream" },
+      blockTypes: { default: {} },
+    },
+
+    toDOM(node) {
+      return [
+        "div",
+        { class: "pm-stream-field", "data-field-label": node.attrs.label || "Stream" },
+        ["div", { class: "pm-stream-field__label", contenteditable: "false" }, node.attrs.label || "Stream"],
+        ["div", { class: "pm-stream-field__items" }, 0],
+      ];
+    },
+  },
+
+  stream_item: {
+    content: "field*",
+    isolating: true,
+    defining: true,
+    attrs: {
+      id: { default: null },
+      blockType: { default: null },
+      originalValue: { default: null },
+    },
+
+    toDOM(node) {
+      return [
+        "div",
+        { class: "pm-stream-item", "data-block-type": node.attrs.blockType || "" },
+        ["div", { class: "pm-stream-item__content" }, 0],
+      ];
+    },
+  },
 });
 
 export const streamSchema = new Schema({

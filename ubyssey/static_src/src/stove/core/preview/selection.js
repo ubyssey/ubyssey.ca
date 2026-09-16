@@ -21,9 +21,19 @@ export function movePageBlock(instance, pageBlock, direction) {
 }
 
 export function deletePageBlock(instance, pageBlock) {
-  if (!deleteBlock(instance, describePageBlock(pageBlock))) return;
-  pageEditorState.selectedBlock = null;
-  syncSelectedPageBlockEditor(null);
+  const pageRoot = pageBlock.getRootNode();
+  const descriptor = describePageBlock(pageBlock);
+  const block = descriptor && blockInfoForElement(instance, pageBlock);
+  if (!descriptor || !block || !deleteBlock(instance, descriptor)) return;
+
+  const nextIndex = Math.min(block.index, instance.doc.childCount - 1);
+  const nextBlock = topLevelBlockInfoByIdOrIndex(instance.doc, null, nextIndex);
+  const nextDescriptor = nextBlock && {
+    fieldName: instance.fieldName,
+    blockId: nextBlock.node.attrs?.id || "",
+    blockIndex: nextBlock.index,
+  };
+  selectPageBlock(nextDescriptor, pageRoot);
 }
 
 export function pageBlocksForStreamField(root, fieldName) {

@@ -113,6 +113,18 @@ function fieldToPmNode(field, blockType = null) {
     };
   }
 
+  if (field.kind === "stream") {
+    return {
+      type: "stream_field",
+      attrs: {
+        path: field.path,
+        label: field.label,
+        blockTypes: field.blockTypes || {},
+      },
+      content: (field.blocks || []).map(streamItemToPmNode),
+    };
+  }
+
   if (field.kind === "control") {
     return {
       type: "control_field",
@@ -171,6 +183,27 @@ export function listItemToPmNode(field, item = null) {
   };
 }
 
+export function streamItemToPmNode(item) {
+  return {
+    type: "stream_item",
+    attrs: {
+      id: item.id || uuidv4(),
+      blockType: item.type || "unknown",
+      originalValue: clone(item.value),
+    },
+    content: item.field ? [fieldToPmNode(item.field, item.type)] : [],
+  };
+}
+
+export function createStreamItemNodeFromRegistry(blockTypes, blockType) {
+  const blockDefinition = blockTypes[blockType];
+  return streamSchema.nodeFromJSON(streamItemToPmNode({
+    type: blockType,
+    value: clone(blockDefinition.defaultValue),
+    field: clone(blockDefinition.defaultField),
+  }));
+}
+
 export function clone(value) {
   return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 }
@@ -212,6 +245,9 @@ function fieldValue(node, originalValue) {
   if (node.type === "list_field") {
     return listFieldValue(node);
   }
+  if (node.type === "stream_field") {
+    return streamFieldValue(node);
+  }
 
   return originalValue;
 }
@@ -239,6 +275,29 @@ function listFieldValue(node) {
         value = path.length ? setFieldValue(value, path, fieldContent) : fieldContent;
       }
       return value;
+    });
+}
+
+function streamFieldValue(node) {
+  return (node.content || [])
+    .filter((item) => item.type === "stream_item")
+    .map((item) => {
+      const attrs = item.attrs || {};
+      let value = clone(attrs.originalValue);
+
+      for (const field of item.content || []) {
+        const path = field.attrs?.path || [];
+        const originalValue = getValueAtPath(value, path);
+        const fieldValueResult = fieldValue(field, originalValue);
+        value = path.length ? setFieldValue(value, path, fieldValueResult) : fieldValueResult;
+      }
+
+      const streamItem = {
+        type: attrs.blockType || "unknown",
+        value,
+      };
+      if (attrs.id) streamItem.id = attrs.id;
+      return streamItem;
     });
 }
 

@@ -11,12 +11,14 @@ export function createPreviewController({ form, pageRoot }) {
     ...refresh,
 
     applyStreamChange(change) {
-      const { before, doc, transaction, instance, kind } = change;
+      const { before, doc, transaction, instance, kind, richTextOnly } = change;
       const reconciliation = kind === "structure" ? reconcilePreviewBlocks({ before, doc, instance, pageRoot }) : { previewReconciled: false, structureChanged: false };
       const previewHandled = reconciliation.previewReconciled || Boolean(transaction?.getMeta("skipPreview"));
 
       if (kind === "remote") {
-        refresh.refreshStream(instance.fieldName, { immediate: true });
+        if (!richTextOnly && !previewHandled) {
+          refresh.refreshStream(instance.fieldName, { immediate: true });
+        }
       } else if (pageEditorState.blockEditorEditing) {
         pageEditorState.blockEditorDirty = true;
         refreshPlainTextEditorsFromStream(instance);

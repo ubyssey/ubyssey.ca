@@ -29,6 +29,9 @@ function editableFieldInfoInNode(parent, targetPath, pathPrefix = [], startPos =
     } else if (node.type.name === "list_field") {
       const match = editableFieldInfoInListField(node, targetPath, pathPrefix.concat(node.attrs?.path || []), pos + 1);
       if (match) return match;
+    } else if (node.type.name === "stream_field") {
+      const match = editableFieldInfoInStreamField(node, targetPath, pathPrefix.concat(node.attrs?.path || []), pos + 1);
+      if (match) return match;
     } else if (node.childCount) {
       const match = editableFieldInfoInNode(node, targetPath, pathPrefix, pos + 1);
       if (match) return match;
@@ -51,6 +54,20 @@ function editableFieldInfoInListField(listField, targetPath, listPath, startPos)
     if (match) return match;
     offset += item.nodeSize;
   }
+  return null;
+}
+
+function editableFieldInfoInStreamField(streamField, targetPath, streamPath, startPos) {
+  let offset = 0;
+
+  for (let index = 0; index < streamField.childCount; index += 1) {
+    const item = streamField.child(index);
+    const itemPos = startPos + offset;
+    const match = editableFieldInfoInNode(item, targetPath, streamPath.concat(index), itemPos + 1);
+    if (match) return match;
+    offset += item.nodeSize;
+  }
+
   return null;
 }
 

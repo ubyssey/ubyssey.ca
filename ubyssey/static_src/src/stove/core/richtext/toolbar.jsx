@@ -19,7 +19,7 @@ const TOOLBAR_ITEMS = [
   // Can't figure out why these two don't work with history
   //["bulletList", "•", "Bullet list"],
   //["orderedList", "1.", "Ordered list"],
-  ["comment", "💬", "Comment"],
+  ["comment", "Comment", "Comment"],
   ["suggestionMode", "Suggest", "Toggle suggestion mode"],
   ["footnote", "Footnote", "Footnote"],
 ];
@@ -30,6 +30,7 @@ export function createEditorToolbar(root, {
   history = null,
   onHistoryCommand = () => {},
   renderExtraControls = () => null,
+  toolbarItems = TOOLBAR_ITEMS,
 } = {}) {
   if (!root) return null;
 
@@ -43,6 +44,7 @@ export function createEditorToolbar(root, {
         history={history}
         onHistoryCommand={onHistoryCommand}
         extraControls={renderExtraControls()}
+        toolbarItems={toolbarItems}
         refresh={update}
       />,
     );
@@ -80,12 +82,12 @@ export function createEditorToolbar(root, {
   };
 }
 
-function EditorToolbar({ view, history, onHistoryCommand, refresh, extraControls }) {
+function EditorToolbar({ view, history, onHistoryCommand, refresh, extraControls, toolbarItems }) {
 
   return (
     <div className="pm-editor-toolbar">
       <div className="pm-editor-toolbar__tools">
-        {TOOLBAR_ITEMS.map(([key, label, title]) => {
+        {toolbarItems.map(([key, label, title]) => {
           const historyAction = history && ["undo", "redo"].includes(key);
           const command = view && toolbarCommand(view, key);
           const enabled = historyAction ? history[key === "undo" ? "canUndo" : "canRedo"]() : Boolean(command && command(view.state));
@@ -160,6 +162,7 @@ function toolbarItemIsActive(view, key) {
 }
 
 function toolbarCommand(view, key) {
+  if (view.annotationsEnabled === false && ["comment", "suggestionMode", "footnote"].includes(key)) return null;
   const { schema } = view.state;
   // We don't use YJS history cause each RichText block has it's own EditorView, Prosemirror History is used for Page Fields for Direct Django Forms
   const sharedHistory = view.streamSource?.instance.history;

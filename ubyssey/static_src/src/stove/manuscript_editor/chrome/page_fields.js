@@ -2,26 +2,37 @@ import { useEffect } from "react";
 import { addListener } from "../../core/events.js";
 import { commands } from "@guardian/prosemirror-invisibles/dist/index.mjs";
 import { pageEditorState } from "../../core/state.js";
-import { COPY_EDITING_MODE_STORAGE_KEY, isCopyEditingModeEnabled } from "../../core/richtext/plugins.js";
+import { ARIAL_MODE_STORAGE_KEY, INVISIBLE_CHARACTERS_STORAGE_KEY, areInvisibleCharactersEnabled, isArialModeEnabled } from "../../core/richtext/plugins.js";
 
 // Move this in the future as not a page field
-export function useCopyEditingToggle() {
+export function useCopyEditingToggles() {
   useEffect(() => {
-    const toggle = document.querySelector("#copy-editing-toggle");
+    const arialToggle = document.querySelector("#arial-toggle");
+    const invisibleCharactersToggle = document.querySelector("#invisible-characters-toggle");
     const pageShadow = document.querySelector("[data-page-shadow]");
-    if (!toggle || !pageShadow) return undefined;
+    if (!arialToggle || !invisibleCharactersToggle || !pageShadow) return undefined;
 
-    const setVisibility = () => {
-      window.localStorage.setItem(COPY_EDITING_MODE_STORAGE_KEY, String(toggle.checked));
-      pageShadow.classList.toggle("copy-editing-mode", toggle.checked);
-      
-      const command = commands.setActiveState(toggle.checked);
+    const setArial = () => {
+      window.localStorage.setItem(ARIAL_MODE_STORAGE_KEY, String(arialToggle.checked));
+      pageShadow.classList.toggle("arial-mode", arialToggle.checked);
+    };
+
+    const setInvisibleCharacters = () => {
+      window.localStorage.setItem(INVISIBLE_CHARACTERS_STORAGE_KEY, String(invisibleCharactersToggle.checked));
+      const command = commands.setActiveState(invisibleCharactersToggle.checked);
       pageEditorState.currentPageTextViews().forEach((view) => command(view.state, view.dispatch));
     };
 
-    toggle.checked = isCopyEditingModeEnabled();
-    setVisibility();
-    return addListener(toggle, "change", setVisibility);
+    arialToggle.checked = isArialModeEnabled();
+    invisibleCharactersToggle.checked = areInvisibleCharactersEnabled();
+    setArial();
+    setInvisibleCharacters();
+
+    const cleanups = [
+      addListener(arialToggle, "change", setArial),
+      addListener(invisibleCharactersToggle, "change", setInvisibleCharacters),
+    ];
+    return () => cleanups.forEach((cleanup) => cleanup());
   }, []);
 }
 

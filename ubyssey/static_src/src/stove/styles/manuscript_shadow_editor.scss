@@ -1,7 +1,7 @@
 @use "../../styles/modules/core";
 
 :host {
-    font-family: "librefranklin", "noto-sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-family: "drummond-variable", Georgia, serif;
     font-size: 16px;
     font-variation-settings: "wght" 400;
     -webkit-font-smoothing: antialiased;
@@ -28,6 +28,26 @@
     overflow-wrap: anywhere;
 }
 
+.pm-selection-comment-bubble {
+    position: absolute;
+    z-index: 30;
+    transform: translate(6px, 6px);
+}
+
+.pm-selection-comment-bubble button {
+    padding: 6px 10px;
+    border: 1px solid #a17a00;
+    border-radius: 4px;
+    background: #ffe066;
+    color: #1b1b1b;
+    font: 600 12px/1 sans-serif;
+    cursor: pointer;
+}
+
+.pm-selection-comment-bubble button:hover {
+    background: #ffd43b;
+}
+
 .page-shadow-preview {
     position: relative;
     font-family: inherit;
@@ -35,11 +55,15 @@
     font-variation-settings: inherit;
     -webkit-font-smoothing: inherit;
     counter-reset: stove-footnote;
-    background: var(--background);
-    color: var(--text_color-100);
+    background: var(--ar-bg, var(--background, #fff));
+    color: var(--ar-text, var(--text_color-100, #0b0e13));
 }
 
-.page-shadow-preview div.article-content[data-article-block] {
+.page-shadow-preview .ar-page {
+    min-height: 100%;
+}
+
+.page-shadow-preview .ar-body.article-content[data-article-block] {
     margin-bottom: 0;
 }
 
@@ -48,7 +72,6 @@
     min-height: 10px;
     outline: 2px solid transparent;
     outline-offset: -1px;
-    transition: outline-color 200ms ease;
 }
 
 .page-shadow-preview .o-extra-article-info.right {
@@ -82,21 +105,20 @@ span[data-suggestion-thread-id] {
     cursor: pointer;
 }
 
-span[data-suggestion-part="add"] {
+span[data-suggestion-part="add"],
+span[data-suggestion-part="delete"] {
     color: #188038;
 }
 
 span[data-suggestion-part="delete"] {
-    color: #d93025;
     text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    text-decoration-color: rgba(24, 136, 56, 0.7);
 }
 
-span[data-comment-active="true"][data-suggestion-part="add"] {
-    background: #ceead6;
-}
-
+span[data-comment-active="true"][data-suggestion-part="add"],
 span[data-comment-active="true"][data-suggestion-part="delete"] {
-    background: #f6aea9;
+    background: #ceead6;
 }
 
 span[data-footnote-id] {
@@ -123,12 +145,10 @@ span[data-footnote-id]::before {
     vertical-align: super;
 }
 
-/*[data-article-block]:hover {
-    outline-color: #008fcb;
-    background: rgba(0, 143, 203, 0.08);
-    outline: 1px dashed transparent;
-    outline-offset: 4px;
-}*/
+.page-shadow-preview [data-article-block][data-stream-field="content"]:hover:not(.pm-page-block--selected) {
+    outline: 1px dashed #000;
+    outline-offset: 8px;
+}
 
 .pm-page-rich-text,
 .pm-page-direct-edit {
@@ -223,7 +243,7 @@ span[data-footnote-id]::before {
     min-height: 28px;
     min-width: 30px;
     padding: 0 8px;
-    border: 1px solid var(--border-grey, #c7c7c7);
+    border: none;
     border-radius: 4px;
     background: var(--background, #fff);
     color: var(--text_color-100, #1b1b1b);
@@ -236,12 +256,11 @@ span[data-footnote-id]::before {
 
 .pm-editor-toolbar__button[aria-pressed="true"] {
     background: var(--color-ubyssey_blue-light, #e8f2f8);
-    border-color: var(--color-ubyssey_blue, #0071c9);
     color: #1b1b1b;
 }
 
-.pm-editor-toolbar__button:hover:not(:disabled) {
-    color: var(--color-ubyssey_blue, #0071c9);
+.pm-editor-toolbar__button:hover:not(:disabled):not([aria-pressed="true"]) {
+    background: color-mix(in srgb, var(--background, #fff) 92%, #000);
 }
 
 .pm-editor-toolbar__button:disabled {
@@ -281,6 +300,15 @@ span[data-footnote-id]::before {
 
 .pm-block--remote-selected {
     outline: 2px solid var(--remote-editor-color) !important;
+    outline-offset: -1px !important;
+}
+
+.page-shadow-preview [data-article-block][data-stream-field="content"].pm-block--remote-selected {
+    outline-offset: 8px !important;
+}
+
+.page-shadow-preview [data-article-block][data-stream-field="content"].pm-page-block--selected {
+    outline-offset: 8px;
 }
 
 .ProseMirror-yjs-cursor {
@@ -325,7 +353,7 @@ span[data-footnote-id]::before {
     visibility: visible !important;
 }
 
-:host(.copy-editing-mode) .ProseMirror,
-:host(.copy-editing-mode) .ProseMirror * {
+:host(.arial-mode) .ProseMirror,
+:host(.arial-mode) .ProseMirror * {
     font-family: Arial, sans-serif !important;
 }

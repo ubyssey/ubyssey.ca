@@ -2,10 +2,18 @@
 
 import json
 
+from article.models import ArticlePage
 from wagtail.fields import StreamField
 
 from .forms import authors, featured_media, metadata
 from .serialization import generate_public_streamfield
+
+
+def process_editor_forms(page, data, preview=False):
+    if isinstance(page, ArticlePage):
+        return process_manuscript_forms(page, data, preview=preview)
+
+    return process_streamfields(page, data, preview=preview), None, None, None
 
 
 def json_safe(value):
@@ -18,10 +26,14 @@ def merge_form_errors(editor_errors, form, prefix=None):
         editor_errors[key] = list(field_errors)
 
 
-def process_submitted_page(page, data, preview=False):
+def process_manuscript_forms(page, data, preview=False):
     editor_errors = {}
 
-    page_form = metadata.create_form(page, data)
+    form_data = data.copy()
+    title = form_data.get("title")
+    if isinstance(title, str) and ("data-comment-" in title or "data-suggestion-" in title or "data-footnote-" in title):
+        form_data["title"] = generate_public_streamfield(title)
+    page_form = metadata.create_form(page, form_data)
     article_authors_form = authors.create_form(page, data)
     featured_media_form = featured_media.create_form(page, data)
 
@@ -41,6 +53,14 @@ def process_submitted_page(page, data, preview=False):
             featured_media.apply_form(page, featured_media_form)
         else:
             merge_form_errors(editor_errors, featured_media_form, "featured_media")
+
+    editor_errors.update(process_streamfields(page, data, preview=preview))
+
+    return editor_errors, page_form, article_authors_form, featured_media_form
+
+
+def process_streamfields(page, data, preview=False):
+    editor_errors = {}
 
     for field in page._meta.get_fields():
         if not isinstance(field, StreamField):
@@ -63,4 +83,4 @@ def process_submitted_page(page, data, preview=False):
         except json.JSONDecodeError:
             editor_errors[field.name] = [f"Invalid JSON for {field.name}."]
 
-    return editor_errors, page_form, article_authors_form, featured_media_form
+    return editor_errors

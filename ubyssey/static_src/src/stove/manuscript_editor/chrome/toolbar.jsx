@@ -8,6 +8,16 @@ export function createManuscriptToolbar(root, options = {}) {
   });
 }
 
+// This is the worst place for it, but I'll leave it for now
+// Creates block only toolbar for homepage editor
+export function createBlockToolbar(root, options = {}) {
+  return createRichTextToolbar(root, {
+    ...options,
+    toolbarItems: [],
+    renderExtraControls: () => <BlockControls actions={pageEditorState.blockActions} />,
+  });
+}
+
 // Not adding to core for now, though might make sense depending on how LiveBlog/Homepage go
 function BlockControls({ actions }) {
   const state = actions?.getState() || {
@@ -17,11 +27,11 @@ function BlockControls({ actions }) {
     editDisabled: true,
   };
   const buttons = [
-    ["delete", "X", "Delete block", !state.selected],
+    ["insert", "+", "Add block", !state.selected],
+    ["edit", "Edit", "Edit block", !state.selected || state.editDisabled],
     ["moveUp", "↑", "Move block up", state.upDisabled],
     ["moveDown", "↓", "Move block down", state.downDisabled],
-    ["edit", "Edit", "Edit block", !state.selected || state.editDisabled],
-    ["insert", "+", "Add block", !state.selected],
+    ["delete", "X", "Delete block", !state.selected],
   ];
 
   return (

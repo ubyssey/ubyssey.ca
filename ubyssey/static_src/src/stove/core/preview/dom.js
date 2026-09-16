@@ -90,8 +90,11 @@ export function replaceUnfocusedPageBlocks(pageRoot, html, streamDocs) {
   }
 
   pageEditorState.users.renderBlockSelection();
-  pageEditorState.commentSidebar.update();
-  pageEditorState.footnoteSidebar.update();
+
+  // Currently used by non-manuscript editors
+  pageEditorState.commentSidebar?.update();
+  pageEditorState.footnoteSidebar?.update();
+  
   lastPreviewHtml.delete(content);
   if (anchor) window.requestAnimationFrame(() => restorePreviewPosition(pageRoot, anchor));
   return true;
