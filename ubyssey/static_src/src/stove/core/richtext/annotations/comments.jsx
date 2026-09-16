@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { selectPageBlockElement } from "../../preview/selection.js";
+import { markRangeAtCursor } from "../marks.js";
 
 import {
   acceptSuggestion,
@@ -149,17 +150,15 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     return editor && getViews().find((view) => view.dom === editor || view.dom.contains(editor));
   };
 
-  const threadIdsAtCursorPosition = (view, position, includeResolved) => {
-    if (!Number.isInteger(position)) return [];
+  const threadIdsAtSelection = (view, includeResolved) => {
+    if (!view?.state.selection.empty) return [];
 
-    const $position = view.state.doc.resolve(position);
-    const marks = [...$position.marks(), ...($position.nodeBefore?.marks || []), ...($position.nodeAfter?.marks || []), ...($position.nodeBefore?.lastChild?.marks || []), ...($position.nodeAfter?.firstChild?.marks || [])];
-    const threadIds = [];
-    for (const kind of ["comment", "suggestion"]) {
-      const mark = view.state.schema.marks[kind]?.isInSet(marks);
-      if (mark?.attrs.threadId && (includeResolved || !mark.attrs.resolved)) threadIds.push(mark.attrs.threadId);
-    }
-    return [...new Set(threadIds)];
+    return [...new Set(["comment", "suggestion"].flatMap((kind) => {
+      const markType = view.state.schema.marks[kind];
+      const range = markType && markRangeAtCursor(view.state, markType);
+      const threadId = range?.attrs?.threadId;
+      return threadId && (includeResolved || !range.attrs.resolved) ? [threadId] : [];
+    }))];
   };
 
   const nearbyCommentMarks = (event) => {
@@ -177,8 +176,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     if (pathIds.length) return pathIds;
 
     const view = editorViewForEvent(event);
-    const position = view?.posAtCoords({ left: event.clientX, top: event.clientY })?.pos;
-    const cursorIds = view ? threadIdsAtCursorPosition(view, position, includeResolved) : [];
+    const cursorIds = event.type === "click" && view ? threadIdsAtSelection(view, includeResolved): [];
     return cursorIds.length ? cursorIds : threadIdsFromMarks(nearbyCommentMarks(event), includeResolved);
   };
 
