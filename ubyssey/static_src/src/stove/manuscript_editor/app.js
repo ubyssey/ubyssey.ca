@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         onChange: (change) => preview.applyStreamChange(change),
         onTransaction: ({ transaction }) => {
           const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
-          if (activeSuggestionThreadId) pageEditorState.commentSidebar?.activateThread(activeSuggestionThreadId);
+          if (activeSuggestionThreadId) window.queueMicrotask(() => pageEditorState.commentSidebar?.activateThread(activeSuggestionThreadId));
         },
       },
     ));

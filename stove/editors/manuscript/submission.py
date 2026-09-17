@@ -78,6 +78,7 @@ def process_streamfields(page, data, preview=False):
                         editor_data = {}
                     editor_data[field.name] = json_safe(value) or []
                     page.editor_article_version = editor_data
+            if not preview:
                 value = generate_public_streamfield(value)
             setattr(page, field.name, value)
         except json.JSONDecodeError:

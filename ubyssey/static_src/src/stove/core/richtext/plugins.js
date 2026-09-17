@@ -55,6 +55,7 @@ export function toggleSuggestionMode() {
 }
 
 function suggestionPlugin(schema) {
+  const commentMark = schema.marks.comment;
   const suggestionMark = schema.marks.suggestion;
   const suggestionPart = (mark) => mark?.attrs?.suggestionPart || commentSuggestion(mark?.attrs?.comments);
 
@@ -217,37 +218,6 @@ function suggestionPlugin(schema) {
     return null;
   };
 
-  const mergeDeletionIntoThread = (state, tr, mark, targetRanges) => {
-    const threadId = mark.attrs.threadId;
-    const suggestion = commentSuggestion(mark.attrs.comments);
-    const deleteRanges = mapRanges(tr, threadRanges(state, threadId, "delete"));
-    const addRanges = mapRanges(tr, threadRanges(state, threadId, "add"));
-
-    if (suggestion === "add") {
-      return applyReplacement(tr, mark, targetRanges, addRanges);
-    }
-
-    if (suggestion === "delete") {
-      return applyDeletion(tr, mark, sortRanges([
-        ...deleteRanges,
-        ...targetRanges,
-      ]));
-    }
-
-    if (suggestion === "replace") {
-      return applyReplacement(
-        tr,
-        mark,
-        sortRanges([
-          ...deleteRanges,
-          ...targetRanges,
-        ]),
-        addRanges,
-      );
-    }
-
-    return null;
-  };
 
   const rangeIsSuggestion = (state, from, to, suggestion) => {
     let foundText = false;
@@ -261,7 +231,6 @@ function suggestionPlugin(schema) {
     return foundText && matches;
   };
 
-  // Deleting while in a suggestion can get weird
   const deleteRangeWithSuggestions = (state, from, to) => {
     const segments = [];
     state.doc.nodesBetween(from, to, (node, position) => {
@@ -271,28 +240,43 @@ function suggestionPlugin(schema) {
       if (segmentFrom >= segmentTo) return true;
 
       const mark = suggestionMark.isInSet(node.marks);
-      const type = !mark ? "plain" : suggestionPart(mark) === "add" ? "add" : "protected";
-      segments.push({ from: segmentFrom, to: segmentTo, type, mark });
+      const comment = commentMark?.isInSet(node.marks);
+      const part = suggestionPart(mark);
+      segments.push({
+        from: segmentFrom,
+        to: segmentTo,
+        comment,
+        mark,
+        physicallyDelete: part === "add" && !comment,
+        needsDeletionMark: !mark || (part === "add" && Boolean(comment)),
+      });
       return true;
     });
 
     let tr = state.tr;
-    for (const segment of segments.filter(({ type }) => type === "add").sort((first, second) => second.from - first.from)) {
+    for (const segment of segments
+      .filter(({ physicallyDelete }) => physicallyDelete)
+      .sort((first, second) => second.from - first.from)) {
       tr = tr.delete(segment.from, segment.to);
     }
 
-    const plainRanges = mapRanges(tr, segments.filter(({ type }) => type === "plain"));
-    if (!plainRanges.length) return tr;
+    const rangesToMark = mapRanges(
+      tr,
+      segments.filter(({ needsDeletionMark }) => needsDeletionMark),
+    );
+    if (!rangesToMark.length) return tr;
 
-    const nearbyMark = adjacentSuggestionMark(state, from, to, { preferBefore: true });
-    const firstSuggestion = segments.find(({ mark }) => mark)?.mark;
-    const mergeMark = nearbyMark || firstSuggestion;
-    if (mergeMark) {
-      const merged = mergeDeletionIntoThread(state, tr, mergeMark, plainRanges);
-      if (merged) return merged;
-    }
+    const existingMark = segments.find(({ needsDeletionMark, mark }) => (
+      needsDeletionMark && mark && suggestionPart(mark) === "add"
+    ))?.mark;
+    const nearbyMark = adjacentSuggestionMark(
+      { doc: tr.doc },
+      rangesToMark[0].from,
+      rangesToMark[rangesToMark.length - 1].to,
+      { preferBefore: true },
+    );
 
-    return applyDeletion(tr, null, plainRanges);
+    return applyDeletion(tr, existingMark || nearbyMark, rangesToMark);
   };
 
   const mergeAdjacentDeletionThreads = (tr, activeThreadId) => {
@@ -568,7 +552,7 @@ function activeCommentPlugin(schema) {
         transaction.doc.descendants((node, position) => {
           if (!node.isText) return true;
           const mark = [commentMark, suggestionMark]
-            .map((markType) => markType.isInSet(node.marks))
+            .map((markType) => markType?.isInSet(node.marks))
             .find((item) => item?.attrs.threadId === threadId);
           if (mark && !mark.attrs.resolved) {
             decorations.push(Decoration.inline(position, position + node.nodeSize, {

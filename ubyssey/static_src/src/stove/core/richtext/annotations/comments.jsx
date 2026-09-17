@@ -79,6 +79,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   const setActiveThread = (threadId, scroll = "center", focusReply = false) => {
     if (threadId && threadId !== activeThreadId && activeDraftHasText()) return;
+    if (threadId === activeThreadId && !focusReply) return;
     let anchorScrolled = false;
     if (scroll === "nearest") {
       const thread = currentThreads().find((item) => item.threadId === threadId);
@@ -277,6 +278,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   return {
     update,
     activateThread(threadId) {
+      if (clickedAnnotationThreadId && threadId !== clickedAnnotationThreadId) return;
       if (!threadId && clickedAnnotationThreadId) return;
       setActiveThread(threadId);
     },
@@ -345,27 +347,17 @@ function updateActiveCommentMarks(activeThreadId, threads = [], views = []) {
   const shadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
   if (!shadowRoot) return;
 
-  shadowRoot.querySelectorAll("[data-comment-active]").forEach((element) => {
-    element.removeAttribute("data-comment-active");
-  });
   shadowRoot.querySelectorAll(".pm-page-block--comment-active").forEach((element) => {
     element.classList.remove("pm-page-block--comment-active");
   });
 
-  new Set([
-    ...views,
-    ...threads.flatMap((thread) => thread.views || [thread.view]),
-  ].filter(Boolean)).forEach((view) => {
+  views.forEach((view) => {
     if (view.activeCommentThreadId === activeThreadId) return;
     view.activeCommentThreadId = activeThreadId;
     view.dispatch(view.state.tr.setMeta("activeCommentThread", activeThreadId));
   });
 
   if (!activeThreadId) return;
-
-  shadowRoot.querySelectorAll(`[data-comment-thread-id="${cssEscape(activeThreadId)}"], [data-suggestion-thread-id="${cssEscape(activeThreadId)}"]`).forEach((element) => {
-    element.setAttribute("data-comment-active", "true");
-  });
 
   const activeThread = threads.find((thread) => thread.threadId === activeThreadId);
   const block = activeThread && activeThread.fieldName ? commentAnchorElement(activeThread) : null;

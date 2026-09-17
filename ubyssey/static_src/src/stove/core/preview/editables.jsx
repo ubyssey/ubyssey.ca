@@ -7,7 +7,6 @@ import { yCursorPlugin, ySyncPlugin } from "y-prosemirror";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins } from "../richtext/plugins.js";
 import { richTextSchema } from "../richtext/schema.js";
 import { markRangeAtCursor } from "../richtext/marks.js";
-import { migrateLegacySuggestionMarks } from "../richtext/annotations/index.js";
 import { createStreamRichTextKeyHandler } from "../prosemirror/stream_richtext.js";
 import { pageEditorState } from "../state.js";
 import { PAGE_BLOCK_SELECTOR, selectPageBlock } from "./selection.js";
@@ -99,10 +98,10 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       const nextState = activeView.state.apply(transaction);
       if (activeView.isDestroyed) return;
       activeView.updateState(nextState);
-      if (activeSuggestionThreadId) pageEditorState.commentSidebar?.activateThread(activeSuggestionThreadId);
-      else if (transaction.selectionSet) {
-        pageEditorState.commentSidebar?.activateThread(annotationThreadAtSelection(nextState));
-      }
+      const activateThread = activeSuggestionThreadId || (transaction.selectionSet ? annotationThreadAtSelection(nextState) : null);
+      if (activateThread) window.queueMicrotask(() => {
+        if (!activeView.isDestroyed) pageEditorState.commentSidebar?.activateThread(activateThread);
+      });
       pageEditorState.scheduleEditorUiRefresh();
       if (onContentChanged && transaction.docChanged && !transaction.getMeta(SYNCED_EDITOR_META)) {
         onContentChanged(activeView, transaction);
@@ -128,7 +127,6 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
 
   view.streamSource = streamSource;
   view.annotationsEnabled = allowAnnotations;
-  migrateLegacySuggestionMarks(view);
   const handleFocus = () => {
     pageHistory?.stopCapturing();
     streamSource?.instance.history.stopCapturing();
