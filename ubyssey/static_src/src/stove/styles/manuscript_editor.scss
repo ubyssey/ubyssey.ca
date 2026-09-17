@@ -86,9 +86,21 @@ body {
 .metadata-editor--right {
     grid-column: 3;
     grid-row: 2;
+    align-self: stretch;
     padding: 16px 12px 24px;
     background: #f5f6f6;
     position: relative;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.metadata-editor--right > .pm-comment-sidebar {
+    position: absolute;
+    top: 16px;
+    right: 12px;
+    bottom: 24px;
+    left: 12px;
+    min-height: 0;
 }
 
 .manuscript-stream-state {
