@@ -79,6 +79,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   const setActiveThread = (threadId, scroll = "center", focusReply = false) => {
     if (threadId && threadId !== activeThreadId && activeDraftHasText()) return;
+    if (threadId === activeThreadId && !focusReply) return;
     let anchorScrolled = false;
     if (scroll === "nearest") {
       const thread = currentThreads().find((item) => item.threadId === threadId);
@@ -224,7 +225,8 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     positionFrame = window.requestAnimationFrame(() => {
       positionFrame = null;
 
-      if (scrollActiveThread) {
+      const isMoving = Boolean(scrollActiveThread && activeThreadId);
+      if (isMoving) {
         clearTimeout(moveTimer);
         moveTimer = null;
         root.classList.remove("pm-comment-sidebar--moving");
@@ -235,23 +237,26 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
       root.querySelectorAll(".pm-comment-thread").forEach((comment) => {
         layoutObserver.observe(comment);
       });
-      
+
+      if (isMoving) {
+        const baseLayout = commentThreadLayout(root, threads, 0);
+        const activePlacement = baseLayout?.placements.find(
+          ({ thread }) => thread.threadId === activeThreadId,
+        );
+        const activeTop = activePlacement?.card && activePlacement.top;
+        const activeHeight = activePlacement?.card?.offsetHeight;
+        const targetTop = scrollActiveThread === "center" ? (window.innerHeight - activeHeight) / 2 : activePlacement?.card?.getBoundingClientRect().bottom > window.innerHeight ? window.innerHeight - activeHeight - 12 : null;
+
+        if (baseLayout && Number.isFinite(activeTop) && Number.isFinite(activeHeight) && targetTop !== null) {
+          commentOffset = baseLayout.listRect.top + activeTop - targetTop;
+          root.classList.add("pm-comment-sidebar--moving");
+          void root.offsetHeight;
+        }
+      }
+
       positionCommentThreads(root, threads, commentOffset);
 
-      if (scrollActiveThread && activeThreadId) {
-        const comment = root.querySelector(`[data-comment-thread-id="${cssEscape(activeThreadId)}"]`);
-        const commentRect = comment?.getBoundingClientRect();
-
-        if (commentRect && scrollActiveThread === "center") {
-          commentOffset += commentRect.top - (window.innerHeight - commentRect.height) / 2;
-        } else if (commentRect?.bottom > window.innerHeight) {
-          commentOffset += commentRect.bottom - window.innerHeight + 12;
-        }
-
-        root.classList.add("pm-comment-sidebar--moving");
-        void root.offsetHeight;
-        positionCommentThreads(root, threads, commentOffset);
-
+      if (isMoving) {
         moveTimer = setTimeout(() => {
           moveTimer = null;
           root.classList.remove("pm-comment-sidebar--moving");
@@ -270,13 +275,13 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   pageShadow?.shadowRoot?.addEventListener("mousedown", selectCommentBlock, true);
   pageShadow?.shadowRoot?.addEventListener("click", onCommentMarkClick);
   pageShadow?.shadowRoot?.addEventListener("keydown", () => { clickedAnnotationThreadId = null; });
-  window.addEventListener("scroll", scheduleCommentPositions, true);
   window.addEventListener("resize", scheduleCommentPositions);
   update();
 
   return {
     update,
     activateThread(threadId) {
+      if (clickedAnnotationThreadId && threadId !== clickedAnnotationThreadId) return;
       if (!threadId && clickedAnnotationThreadId) return;
       setActiveThread(threadId);
     },
@@ -306,9 +311,9 @@ function commentAnchorElement(thread) {
   return blocks[thread.blockIndex] || null;
 }
 
-function positionCommentThreads(root, threads, offset) {
+function commentThreadLayout(root, threads, offset) {
   const list = root.querySelector(".pm-comment-sidebar__list");
-  if (!list) return;
+  if (!list) return null;
 
   const listRect = list.getBoundingClientRect();
   const placements = threads.map((thread) => {
@@ -331,41 +336,46 @@ function positionCommentThreads(root, threads, offset) {
   for (const placement of orderedPlacements) {
     const targetTop = placement.targetTop ?? nextTop;
     const top = Math.max(targetTop, nextTop);
-    placement.card.style.top = `${top}px`;
-    placement.card.style.left = "0px";
-    placement.card.style.right = "0px";
+    placement.top = top;
     const height = placement.card.offsetHeight;
     nextTop = top + height + gap;
   }
 
-  list.style.minHeight = placements.length ? `${nextTop - gap}px` : "";
+  return {
+    list,
+    listRect,
+    placements: orderedPlacements,
+    minHeight: placements.length ? `${nextTop - gap}px` : "",
+  };
+}
+
+function positionCommentThreads(root, threads, offset) {
+  const layout = commentThreadLayout(root, threads, offset);
+  if (!layout) return;
+
+  layout.placements.forEach(({ card, top }) => {
+    card.style.top = `${top}px`;
+    card.style.left = "0px";
+    card.style.right = "0px";
+  });
+  layout.list.style.minHeight = layout.minHeight;
 }
 
 function updateActiveCommentMarks(activeThreadId, threads = [], views = []) {
   const shadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
   if (!shadowRoot) return;
 
-  shadowRoot.querySelectorAll("[data-comment-active]").forEach((element) => {
-    element.removeAttribute("data-comment-active");
-  });
   shadowRoot.querySelectorAll(".pm-page-block--comment-active").forEach((element) => {
     element.classList.remove("pm-page-block--comment-active");
   });
 
-  new Set([
-    ...views,
-    ...threads.flatMap((thread) => thread.views || [thread.view]),
-  ].filter(Boolean)).forEach((view) => {
+  views.forEach((view) => {
     if (view.activeCommentThreadId === activeThreadId) return;
     view.activeCommentThreadId = activeThreadId;
     view.dispatch(view.state.tr.setMeta("activeCommentThread", activeThreadId));
   });
 
   if (!activeThreadId) return;
-
-  shadowRoot.querySelectorAll(`[data-comment-thread-id="${cssEscape(activeThreadId)}"], [data-suggestion-thread-id="${cssEscape(activeThreadId)}"]`).forEach((element) => {
-    element.setAttribute("data-comment-active", "true");
-  });
 
   const activeThread = threads.find((thread) => thread.threadId === activeThreadId);
   const block = activeThread && activeThread.fieldName ? commentAnchorElement(activeThread) : null;

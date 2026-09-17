@@ -5,11 +5,34 @@
 # The prosemirror classes in article templates are necessary unless we maintain a duplicate version of the article html
 
 import re
+from bs4 import BeautifulSoup
 
-# Regex to strip out editor only annotations
-EDITOR_NOTE_EMPTY_ANCHOR_RE = re.compile(r'<span\b(?=[^>]*\bdata-footnote-anchor=(?:"true"|\'true\'))[^>]*>.*?</span>', re.IGNORECASE | re.DOTALL)
-EDITOR_NOTE_ANCHOR_RE = re.compile(r'<(?:span|mark)\b(?=[^>]*\bdata-(?:comment-thread|suggestion-thread|footnote)-id=)[^>]*>(.*?)</(?:span|mark)>', re.IGNORECASE | re.DOTALL)
-EDITOR_NOTE_ATTR_RE = re.compile(r'\sdata-(?:comment-(?:thread-id|comments|pending|resolved)|suggestion-(?:thread-id|comments|pending|resolved|part)|footnote-(?:id|text|anchor))=("[^"]*"|\'[^\']*\'|[^\s>]+)', re.IGNORECASE)
+
+def strip_editor_annotations(value):
+    soup = BeautifulSoup(value, "html.parser")
+
+    for element in soup.find_all(True):
+        if not element.attrs:
+            continue
+        if str(element.get("data-footnote-anchor", "")).lower() == "true":
+            element.decompose()
+
+    for element in soup.find_all(["span", "mark"]):
+        if any(attribute in element.attrs for attribute in (
+            "data-comment-thread-id",
+            "data-suggestion-thread-id",
+            "data-footnote-id",
+        )):
+            element.unwrap()
+
+    for element in soup.find_all(True):
+        for attribute in list(element.attrs):
+            if attribute.lower().startswith(("data-comment-", "data-suggestion-", "data-footnote-")):
+                del element.attrs[attribute]
+
+    return "".join(str(child) for child in soup.contents)
+
+
 # Subs <br> for <br/> (weird YJS behaviour) otherwise crashes Wagtail
 BR_RE = re.compile(r'<br\s*/?>', re.IGNORECASE)
 # Placing footnotes inside links broke them in public version -> possible issue for other elements too
@@ -30,13 +53,7 @@ def generate_public_streamfield(value):
     if isinstance(value, str):
         value = BR_RE.sub('<br/>', value)
     if isinstance(value, str) and ("data-comment-" in value or "data-suggestion-" in value or "data-footnote-" in value):
-        previous = None
-        stripped = value
-        stripped = EDITOR_NOTE_EMPTY_ANCHOR_RE.sub('', stripped)
-        while previous != stripped:
-            previous = stripped
-            stripped = EDITOR_NOTE_ANCHOR_RE.sub(r'\1', stripped)
-        stripped = EDITOR_NOTE_ATTR_RE.sub('', stripped)
+        stripped = strip_editor_annotations(value)
         previous = None
         while previous != stripped:
             previous = stripped

@@ -8,7 +8,7 @@ export {
   acceptSuggestion,
   rejectSuggestion,
   removeAnnotationThread,
-  migrateLegacySuggestionMarks,
+  migrateLegacySuggestionMarksInDoc,
   startCommentCommand,
   startCommentOnSelection,
 } from "./comment_model.js";

@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         onChange: (change) => preview.applyStreamChange(change),
         onTransaction: ({ transaction }) => {
           const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
-          if (activeSuggestionThreadId) pageEditorState.commentSidebar?.activateThread(activeSuggestionThreadId);
+          if (activeSuggestionThreadId) window.queueMicrotask(() => pageEditorState.commentSidebar?.activateThread(activeSuggestionThreadId));
         },
       },
     ));
@@ -139,8 +139,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.querySelector("[data-connected-users]"),
     currentEditor,
     collaboration.awareness,
-    { findBlock: preview.findBlock },
+    { findBlock: preview.findBlock, homeUrl: form.dataset.stoveHomeUrl },
   );
+
+  document.querySelector("[data-kick-other-users]")?.addEventListener("click", () => {
+    pageEditorState.users.kickOtherUsers();
+  });
 
   setupPageSaveStatus(collaboration, pageEditorState.scheduleEditorUiRefresh);
 

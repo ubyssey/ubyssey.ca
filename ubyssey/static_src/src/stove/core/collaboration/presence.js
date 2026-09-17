@@ -63,9 +63,13 @@ function renderPresence(users, connectionId, findBlock) {
   }
 }
 
-export function setupPresence(container, currentUser, awareness, { findBlock }) {
+export function setupPresence(container, currentUser, awareness, { findBlock, homeUrl } = {}) {
   const connectionId = awareness?.clientID ?? "local";
   let lastSelectedBlock = "";
+  let kickClearTimer = null;
+  let redirecting = false;
+
+  const stoveHomeUrl = homeUrl || document.querySelector("[data-page-form]")?.dataset.stoveHomeUrl || "/";
 
   function renderBlockSelection() {
     renderPresence(getConnectedUsers(awareness, currentUser), connectionId, findBlock);
@@ -77,8 +81,34 @@ export function setupPresence(container, currentUser, awareness, { findBlock }) 
     renderPresence(users, connectionId, findBlock);
   }
 
-  awareness?.on("change", render);
+  function announceLocalState() {
+    const state = awareness?.getLocalState();
+    if (state) awareness.setLocalState(state);
+  }
+
+  function handleAwarenessChange(change, origin) {
+    render();
+    if (origin !== "local" && change?.added?.length) announceLocalState();
+
+    if (origin === "local" || redirecting) return;
+
+    const changedClientIds = [
+      ...(change?.added || []),
+      ...(change?.updated || []),
+    ];
+    const anotherUserWasKicked = changedClientIds.some((clientId) => {
+      if (clientId === connectionId) return false;
+      return Boolean(awareness?.getStates().get(clientId)?.stoveKickToken);
+    });
+
+    if (!anotherUserWasKicked) return;
+    redirecting = true;
+    window.location.assign(stoveHomeUrl);
+  }
+
+  awareness?.on("change", handleAwarenessChange);
   render();
+  announceLocalState();
 
   return {
     renderBlockSelection,
@@ -89,8 +119,22 @@ export function setupPresence(container, currentUser, awareness, { findBlock }) 
       lastSelectedBlock = serialized;
       awareness?.setLocalStateField("selectedBlock", selectedBlock || null);
     },
+    kickOtherUsers() {
+      if (!awareness) return false;
+
+      const token = String(Date.now()) + "-" + String(Math.random());
+      awareness.setLocalStateField("stoveKickToken", token);
+      clearTimeout(kickClearTimer);
+      kickClearTimer = window.setTimeout(() => {
+        if (awareness.getLocalState()?.stoveKickToken === token) {
+          awareness.setLocalStateField("stoveKickToken", null);
+        }
+      }, 1000);
+      return true;
+    },
     destroy() {
-      awareness?.off("change", render);
+      clearTimeout(kickClearTimer);
+      awareness?.off("change", handleAwarenessChange);
     },
   };
 }

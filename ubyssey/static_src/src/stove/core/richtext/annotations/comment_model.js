@@ -1,6 +1,7 @@
 // Comment Model including Prosemirror Spec, UI is in comments.jsx
 
 import { v4 as uuidv4 } from "uuid";
+import { EditorState } from "prosemirror-state";
 
 export function commentSuggestion(comments) {
   return comments?.[0]?.suggestion || null;
@@ -115,25 +116,23 @@ function parseCommentPayload(value) {
   }
 }
 
-export function migrateLegacySuggestionMarks(view) {
-  const commentMark = view.state.schema.marks.comment;
-  const suggestionMark = view.state.schema.marks.suggestion;
+export function migrateLegacySuggestionMarksInDoc(doc) {
+  const commentMark = doc.type.schema.marks.comment;
+  const suggestionMark = doc.type.schema.marks.suggestion;
 
-  let tr = view.state.tr;
-  view.state.doc.descendants((node, position) => {
+  let tr = EditorState.create({ doc }).tr;
+  doc.descendants((node, position) => {
     if (!node.isText) return true;
     const mark = commentMark.isInSet(node.marks);
+    const suggestion = suggestionMark.isInSet(node.marks);
     if (!mark || !commentSuggestion(mark.attrs.comments)) return true;
 
-    tr = tr
-      .removeMark(position, position + node.nodeSize, commentMark)
-      .addMark(position, position + node.nodeSize, suggestionMark.create(mark.attrs));
+    tr = tr.removeMark(position, position + node.nodeSize, commentMark);
+    if (!suggestion) tr = tr.addMark(position, position + node.nodeSize, suggestionMark.create(mark.attrs));
     return true;
   });
 
-  if (!tr.docChanged) return false;
-  view.dispatch(tr.setMeta("addToHistory", false));
-  return true;
+  return tr.docChanged ? tr.doc : doc;
 }
 
 export function startCommentCommand(commentMark) {
