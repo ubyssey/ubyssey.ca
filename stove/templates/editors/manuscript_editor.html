@@ -23,6 +23,7 @@
   data-page-form
   data-page-editor
   data-page-id="{{ self.id }}"
+  data-stove-home-url="{% url 'stove:content_tracker_base' %}"
   data-preview-url="{% url 'stove:editor_page_preview' self.id %}"
   data-restore-url="{% url 'stove:editor_page_restore' self.id %}"
   data-history-url="{% url 'stove:editor_page_revisions' self.id %}"
@@ -182,6 +183,12 @@
     <details class="pm-sidebar-accordion__item pm-sidebar-accordion__item--footnotes" data-sidebar-accordion-item data-sidebar-accordion-key="footnotes">
       <summary>Footnotes</summary>
       <section class="pm-footnote-sidebar" data-footnote-sidebar aria-label="Footnotes"></section>
+    </details>
+    <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item data-sidebar-accordion-key="temporary">
+      <summary>Temporary</summary>
+      <section class="pm-metadata-sidebar-panel" aria-label="Temporary">
+        <button type="button" class="page-editor-topbar__button" data-kick-other-users>Kick other users</button>
+      </section>
     </details>
   </div>
 </aside>
