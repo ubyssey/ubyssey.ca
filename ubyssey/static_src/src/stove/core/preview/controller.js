@@ -1,5 +1,7 @@
 import { pageEditorState } from "../state.js";
-import { refreshPlainTextEditorsFromStream } from "./editables.jsx";
+import { diffStreamBlockStructure } from "../prosemirror/document.js";
+import { remapRichTextSelections } from "../prosemirror/stream_richtext.js";
+import { refreshPlainTextEditorsFromStream, restorePageRichTextSelections } from "./editables.jsx";
 import { reconcilePreviewBlocks } from "./dom.js";
 import { createPreviewRefresh, MODAL_PREVIEW_DEBOUNCE_MS } from "./refresh.js";
 
@@ -11,13 +13,25 @@ export function createPreviewController({ form, pageRoot }) {
     ...refresh,
 
     applyStreamChange(change) {
-      const { before, doc, transaction, instance, kind, richTextOnly } = change;
-      const reconciliation = kind === "structure" ? reconcilePreviewBlocks({ before, doc, instance, pageRoot }) : { previewReconciled: false, structureChanged: false };
+      const { before, doc, transaction, instance, kind, richTextOnly, richTextSelections } = change;
+      const structuralChanges = diffStreamBlockStructure(before, doc);
+      const reconciliation = structuralChanges.structureChanged
+        ? reconcilePreviewBlocks({ before, doc, instance, pageRoot, changes: structuralChanges })
+        : { previewReconciled: false, structureChanged: false };
+      
       const previewHandled = reconciliation.previewReconciled || Boolean(transaction?.getMeta("skipPreview"));
+      
+      if (kind === "remote" && reconciliation.previewReconciled) {
+        restorePageRichTextSelections(remapRichTextSelections(before, doc, richTextSelections));
+      }
 
       if (kind === "remote") {
         if (!richTextOnly && !previewHandled) {
-          refresh.refreshStream(instance.fieldName, { immediate: true });
+          refresh.refreshStream(instance.fieldName, {
+            immediate: true,
+            deferIfPageFocused: true,
+            deferUntilBlur: structuralChanges.structureChanged,
+          });
         }
       } else if (pageEditorState.blockEditorEditing) {
         pageEditorState.blockEditorDirty = true;

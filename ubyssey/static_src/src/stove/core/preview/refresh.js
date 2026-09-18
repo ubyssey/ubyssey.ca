@@ -27,7 +27,7 @@ export function createPreviewRefresh(form, pageRoot) {
   let scheduledPreserveFocusedBlock = false;
   const historySelect = document.querySelector("[data-history-select]");
 
-  const schedulePreview = ({ deferIfPageFocused = false, immediate = false, debounceMs = null, blockOnly = false, block = null } = {}) => {
+  const schedulePreview = ({ deferIfPageFocused = false, deferUntilBlur = false, immediate = false, debounceMs = null, blockOnly = false, block = null } = {}) => {
     const delay = debounceMs ?? (immediate ? 0 : 500);
     if (timer && timerDelay === 0 && delay > 0) return;
 
@@ -40,7 +40,7 @@ export function createPreviewRefresh(form, pageRoot) {
     scheduledPreserveFocusedBlock = Boolean(deferForFocus && focusedPageBlock(pageRoot));
     if (deferForFocus) {
       deferredPagePreview = true;
-      if (!scheduledPreserveFocusedBlock) return;
+      if (deferUntilBlur || !scheduledPreserveFocusedBlock) return;
     } else {
       deferredPagePreview = false;
     }

@@ -16,6 +16,7 @@ import { samePath } from "./fields.js";
 import { clone, createStreamBlockNodeFromRegistry } from "./serialization.js";
 import { streamRichTextSchema, streamSchema } from "./stream_schema.js";
 import { StreamModelUpdate } from "../collaboration/history.js";
+import { joinRichTextContent } from "./stream_richtext.js";
 
 // Stream editor per Wagtail StreamField/YJS fragment
 export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock }) {
@@ -37,6 +38,8 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
     let observedDoc = null;
     const changeListeners = new Set();
     const richTextTypes = new Map();
+    const richTextRegistrations = new Map();
+    const selectionsBeforeTransaction = new WeakMap();
 
     const undoManager = history || new Y.UndoManager(fragment, {
       trackedOrigins: new Set([ySyncPluginKey, StreamModelUpdate]),
@@ -69,12 +72,22 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
         return findYEditableField(fragment, blockId, path);
       },
 
-      registerRichTextType(type) {
+      registerRichTextType(type, registration = null) {
         richTextTypes.set(type, (richTextTypes.get(type) || 0) + 1);
+        if (registration) {
+          const registrations = richTextRegistrations.get(type) || new Set();
+          registrations.add(registration);
+          richTextRegistrations.set(type, registrations);
+        }
         return () => {
           const remaining = richTextTypes.get(type) - 1;
           if (remaining) richTextTypes.set(type, remaining);
           else richTextTypes.delete(type);
+
+          if (!registration) return;
+          const registrations = richTextRegistrations.get(type);
+          registrations?.delete(registration);
+          if (!registrations?.size) richTextRegistrations.delete(type);
         };
       },
 
@@ -152,17 +165,7 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
 
         const previousDoc = yXmlFragmentToProseMirrorRootNode(previousField, streamRichTextSchema);
         const currentDoc = yXmlFragmentToProseMirrorRootNode(currentField, streamRichTextSchema);
-        const previousNodes = [];
-        const currentNodes = [];
-        previousDoc.content.forEach((node) => previousNodes.push(node));
-        currentDoc.content.forEach((node) => currentNodes.push(node));
-        const left = previousNodes[previousNodes.length - 1];
-        const right = currentNodes[0];
-        if (left?.isTextblock && right?.isTextblock && left.sameMarkup(right)) {
-          previousNodes[previousNodes.length - 1] = left.copy(left.content.append(right.content));
-          currentNodes.shift();
-        }
-        const content = Fragment.fromArray([...previousNodes, ...currentNodes]);
+        const content = joinRichTextContent(previousDoc.content, currentDoc.content);
         const cursorPosition = previousDoc.content.size - 1;
 
         fragment.doc.transact(() => {
@@ -216,6 +219,22 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
     };
 
     observedDoc = instance.doc;
+
+    // Capture selections before remote transaction so we can restore
+    fragment.doc.on("beforeTransaction", (transaction) => {
+      const selections = [];
+      richTextRegistrations.forEach((registrations) => {
+        registrations.forEach((registration) => {
+          const selection = registration.getSelection?.();
+          if (!selection || !registration.source) return;
+          selections.push({
+            source: { ...registration.source },
+            selection,
+          });
+        });
+      });
+      if (selections.length) selectionsBeforeTransaction.set(transaction, selections);
+    });
     
     // Checks whether itself or nested children not just top level are changed
     fragment.observeDeep((events, transaction) => {
@@ -232,6 +251,7 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
         return current;
       });
       const change = transaction.origin instanceof StreamModelUpdate ? transaction.origin.change : {};
+      const richTextSelections = selectionsBeforeTransaction.get(transaction) || [];
       const nextDoc = yXmlFragmentToProseMirrorRootNode(fragment, streamSchema);
       const before = observedDoc;
       observedDoc = nextDoc;
@@ -248,6 +268,7 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
         ...change,
         kind,
         richTextOnly,
+        richTextSelections,
       };
       onChange(changeInfo);
       changeListeners.forEach((listener) => listener(changeInfo));
