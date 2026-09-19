@@ -122,3 +122,11 @@
 .lr-story--row time::after{display:none}
 .lr-story--row time{border-bottom:0!important;padding-bottom:0!important}
 .sr-tip h2,.sr-editor h2{text-decoration:none}
+
+.au-profile__identity--without-portrait{display:block;width:655px}
+.au-profile__pronouns{margin-left:8px;font:400 16px/20px "drummond-variable",Georgia,serif;white-space:nowrap}
+@media(max-width:760px){.au-profile__identity--without-portrait{width:100%}}
+
+/* Author tabs use the same colour-wash interaction as homepage navigation,
+   rather than adding a second, redundant underline state. */
+.au-latest .lr-tabs__links a{padding:2px 3px;text-decoration:none!important;background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;transition:background-size .2s ease,color .2s ease}.au-latest .lr-tabs__links a:hover,.au-latest .lr-tabs__links a:focus-visible{background-size:100% 78%;color:#081839!important}.au-latest .lr-tabs__links a.is-active{background-size:100% 10%;border-bottom:0}

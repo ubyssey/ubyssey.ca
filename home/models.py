@@ -3,7 +3,7 @@ from . import blocks as homeblocks
 from article.models import ArticlePage
 from section.models import SectionPage
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.utils import timezone
 
 from ads.models import AdSlot
@@ -79,7 +79,10 @@ class HomepageRedesignStory(Orderable):
 class ThunderbirdFixture(models.Model):
     """A scheduled Thunderbird fixture. Scores are intentionally editor-managed."""
 
-    SPORT_CHOICES = homeblocks.SPORT_CHOICES[1:]
+    # Preserve legacy choice labels so editors can still view historical
+    # Women's Rugby fixtures. The homepage panel itself filters to the active
+    # Game Analyses programme in ``get_context``.
+    SPORT_CHOICES = homeblocks.COVERED_SPORT_CHOICES
     source_event = models.CharField(max_length=255, unique=True, editable=False)
     sport = models.CharField(max_length=20, choices=SPORT_CHOICES)
     starts_at = models.DateTimeField(db_index=True)
@@ -112,6 +115,15 @@ class ThunderbirdFixture(models.Model):
     @property
     def home_team(self):
         return SimpleNamespace(name=self.home_name, score=self.home_score, icon=None)
+
+    @property
+    def game_analysis_story(self):
+        """Return the linked live Game Analysis story, if there is one."""
+        try:
+            article = self.game_analysis_article
+        except ObjectDoesNotExist:
+            return None
+        return article if article.live and article.story_form == "game-analysis" else None
 
 class HomePage(Page):
     show_in_menus_default = True
@@ -386,14 +398,33 @@ class HomePage(Page):
         context = super().get_context(request, *args, **kwargs)
 
         panel = next((item.value for item in self.game_analysis if item.block_type == "panel"), None)
-        covered_sports = list(panel.get("active_sports") or []) if panel else []
+        allowed_panel_sports = {choice[0] for choice in homeblocks.SPORT_CHOICES[1:]}
+        covered_sports = [
+            sport
+            for sport in (panel.get("active_sports") or [])
+            if sport in allowed_panel_sports
+        ] if panel else []
         if not covered_sports:
             covered_sports = [choice[0] for choice in homeblocks.SPORT_CHOICES[1:]]
         current_time = timezone.now()
-        fixtures = ThunderbirdFixture.objects.filter(sport__in=covered_sports)
+        fixtures = ThunderbirdFixture.objects.filter(sport__in=covered_sports).select_related(
+            "game_analysis_article"
+        )
         context["panel_sports"] = covered_sports
-        context["upcoming_games"] = list(fixtures.filter(starts_at__gte=current_time).order_by("starts_at")[:5])
-        context["recent_results"] = list(fixtures.filter(starts_at__lt=current_time).order_by("-starts_at")[:5])
+        context["upcoming_games"] = list(fixtures.filter(starts_at__gte=current_time).order_by("starts_at"))
+        context["recent_results"] = list(fixtures.filter(starts_at__lt=current_time).order_by("-starts_at"))
+        # When the optional StreamField panel has not been configured yet,
+        # the homepage still needs a fully functional Game Analyses module.
+        # Use every public Game Analysis story rather than borrowing the
+        # general homepage queue (which led to unrelated stories appearing
+        # when a sport was filtered).
+        context["analysis_articles"] = [
+            {"article": article, "sport": article.covered_sport}
+            for article in ArticlePage.objects.live().public().filter(
+                standardarticlepage__story_form="game-analysis",
+                covered_sport__in=covered_sports,
+            ).order_by("-explicit_published_at", "-id").specific()
+        ]
 
         context["curated_articles"] = self.get_curated_articles()
 

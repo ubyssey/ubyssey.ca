@@ -23,13 +23,14 @@ function textFromMarkup(markup) {
 function timelineContent(markup) {
     const heading = markup.match(/<h[2-3][^>]*>([\s\S]*?)<\/h[2-3]>/i);
     const paragraph = markup.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
-    const title = heading ? textFromMarkup(heading[1]) : "Update";
+    const title = heading ? textFromMarkup(heading[1]) : "";
     const excerpt = textFromMarkup(paragraph ? paragraph[1] : markup);
     return { title, excerpt: excerpt.length > 148 ? `${excerpt.slice(0, 145).trimEnd()}…` : excerpt };
 }
 
 export default function LiveblogUpdate({update, isAdmin, presentTime, isLive, compact = false}) {
     const [expanded, setExpanded] = useState(false);
+    const compactContent = compact && !expanded ? timelineContent(update.html || "") : null;
     function isRecent(presentTime) {
         const cutoff = convertToMilliseconds(0,0,0,1);
         const delta = presentTime.getTime() - new Date(update.publish_date).getTime();
@@ -103,10 +104,10 @@ export default function LiveblogUpdate({update, isAdmin, presentTime, isLive, co
                 </div>
                 {isAdmin && <a className="o-liveblog-update--edit-button" href={"/admin/snippets/liveblog/liveblogupdate/edit/" + update.id + "/"}>Edit</a>}
             </div>
-            {compact && !expanded ?
-                <button className="o-liveblog-update__timeline" type="button" onClick={() => setExpanded(true)} aria-label={`Expand update: ${timelineContent(update.html).title}`}>
-                    <strong>{timelineContent(update.html).title}</strong>
-                    {timelineContent(update.html).excerpt && <span>{timelineContent(update.html).excerpt}</span>}
+            {compactContent ?
+                <button className="o-liveblog-update__timeline" type="button" onClick={() => setExpanded(true)} aria-label={compactContent.title ? `Expand update: ${compactContent.title}` : "Expand update"}>
+                    {compactContent.title && <strong>{compactContent.title}</strong>}
+                    {compactContent.excerpt && <span>{compactContent.excerpt}</span>}
                 </button>
                 : <div className="o-liveblog-update--content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(update.html || "", liveblogHtmlOptions)}}></div>
             }

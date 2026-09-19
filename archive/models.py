@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.db import models
+from django.db.models import Q
 from django_user_agents.utils import get_user_agent
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
@@ -9,6 +10,7 @@ from django.utils import timezone
 from specialfeaturelanding.models import SpecialLandingPage
 from section.models import CategoryPage, SectionPage
 from article.models import ArticlePage
+from authors.models import AuthorPage
 from modelcluster.fields import ParentalKey
 
 from section.models import SectionPage
@@ -169,15 +171,18 @@ class ArchivePage(RoutablePageMixin, Page):
         context['content_type'] = request.GET.get('type', '')
         context['contributor'] = request.GET.get('contributor', '')
         context['series'] = request.GET.get('series', '')
+        context['selected_beat'] = request.GET.get('beat', '')
+        context['beats'] = CategoryPage.objects.live().order_by('title')
         context['date_from'] = request.GET.get('from', '')
         context['date_to'] = request.GET.get('to', '')
         context['selected_range'] = request.GET.get('range', '')
         context['has_search'] = any(
             request.GET.get(key) for key in
-            ('q', 'year', 'section', 'type', 'contributor', 'series', 'from', 'to', 'range', 'order')
+            ('q', 'year', 'section', 'type', 'contributor', 'series', 'beat', 'from', 'to', 'range', 'order')
         )
         context['recent_articles'] = ArticlePage.objects.live().public().order_by('-explicit_published_at')[:5]
         context['meta'] = { 'title': 'Archive' }
+        context['author_results'] = AuthorPage.objects.none()
 
         return context
     
@@ -258,6 +263,10 @@ class ArchivePage(RoutablePageMixin, Page):
                 days = {'week': 7, 'month': 30, 'year': 365}[context['selected_range']]
                 videos = videos.filter(created_at__date__gte=timezone.localdate() - timedelta(days=days))
             if search_query:
+                context['author_results'] = AuthorPage.objects.live().public().filter(
+                    Q(full_name__icontains=search_query)
+                    | Q(title__icontains=search_query)
+                ).order_by('-last_activity', 'full_name')[:10]
                 videos = self.get_search_objects(search_query, videos, True)
             context = self.get_paginated_articles(context, videos, True, request)
             context['video_section'] = True
@@ -271,12 +280,18 @@ class ArchivePage(RoutablePageMixin, Page):
         selected_section = context['selected_section']
         if selected_section:
             articles = articles.filter(current_section=selected_section)
+        if context['content_type'] == 'margins':
+            articles = articles.filter(current_section='margins')
+        elif context['content_type'] == 'podcast':
+            articles = articles.filter(current_section='the-vilest-rag')
         if context['contributor']:
             articles = articles.filter(
                 article_authors__author__full_name__icontains=context['contributor']
             ).distinct()
         if context['series']:
             articles = articles.filter(category_page__slug=context['series'])
+        if context['selected_beat']:
+            articles = articles.filter(category_page__slug=context['selected_beat'])
         if context['date_from']:
             articles = articles.filter(explicit_published_at__date__gte=context['date_from'])
         if context['date_to']:
@@ -293,8 +308,31 @@ class ArchivePage(RoutablePageMixin, Page):
       
         # The larger issue is that the search query in general search will always prioritize articles over videos. If users what to find videos then they have to select the videos section then search
         if search_query:
+            # Search results should surface the public profile itself as well
+            # as every story to which that person is credited. Wagtail's
+            # full-text index does not reliably include relational bylines.
+            author_results = AuthorPage.objects.live().public().filter(
+                Q(full_name__icontains=search_query)
+                | Q(title__icontains=search_query)
+            ).order_by('-last_activity', 'full_name')
+            context['author_results'] = author_results[:10]
             videos = VideoSnippet.objects.all()
-            articles = self.get_search_objects(search_query, articles, video_section)
+            text_matches = list(self.get_search_objects(search_query, articles, video_section))
+            byline_matches = list(
+                articles.filter(article_authors__author__in=author_results).distinct()
+            )
+            # Keep the requested chronological order while deduplicating a
+            # story that both mentions the name in its text and credits it.
+            articles = sorted(
+                {article.pk: article for article in [*text_matches, *byline_matches]}.values(),
+                key=lambda article: (
+                    (article.first_published_at or article.explicit_published_at).timestamp()
+                    if (article.first_published_at or article.explicit_published_at)
+                    else float("-inf"),
+                    article.pk,
+                ),
+                reverse=context['order'] != 'oldest',
+            )
             videos = self.get_search_objects(search_query, videos, True)
  
             if len(articles) < 1 and len(videos) > 0:

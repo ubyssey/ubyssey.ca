@@ -13,7 +13,6 @@ SPORT_MAP = {
     "Women's Basketball": "basketball-w", "Men's Basketball": "basketball-m",
     "Football": "football", "Women's Hockey": "hockey-w", "Men's Hockey": "hockey-m",
     "Women's Soccer": "soccer-w", "Men's Soccer": "soccer-m",
-    "Women's Rugby": "rugby-w",
     "Women's Volleyball": "volleyball-w", "Men's Volleyball": "volleyball-m",
 }
 

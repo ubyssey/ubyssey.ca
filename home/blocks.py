@@ -14,13 +14,19 @@ from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
 from article.models import ArticlePage
-from ubyssey.sports import SPORT_CHOICES as COVERED_SPORT_CHOICES
+from ubyssey.sports import (
+    GAME_ANALYSIS_ACTIVE_SPORT_CHOICES,
+    SPORT_CHOICES as COVERED_SPORT_CHOICES,
+)
 from article.blocks_storystream import StoryStreamBlockTypes
 from topics.views import cluster_articles_by_topic
 import images.blocks as image_blocks
 
 
-SPORT_CHOICES = [("all", "All sports"), *COVERED_SPORT_CHOICES]
+# Game Analyses represents the active Thunderbird programme.  Historical
+# Women's Rugby stories and fixtures retain their original taxonomy elsewhere,
+# but are intentionally absent from all current panel controls and queries.
+SPORT_CHOICES = [("all", "All sports"), *GAME_ANALYSIS_ACTIVE_SPORT_CHOICES]
 
 
 class GameAnalysisArticle(blocks.StructBlock):
@@ -66,20 +72,37 @@ class GameAnalysisPanel(blocks.StructBlock):
         # ``None`` in draft preview, and ``pageurl`` cannot render it. Skip
         # only invalid entries so previews stay usable without changing the
         # editorial order of valid game analyses.
-        context["analysis_articles"] = [
-            item for item in value["articles"] if item.get("article")
-        ]
+        # A StreamField chooser can retain a draft or deleted page reference.
+        # Resolve choices through the public queryset so the public panel never
+        # advertises unpublished Game Analysis stories.
+        allowed_sports = {choice[0] for choice in SPORT_CHOICES[1:]}
+        entries = [item for item in value["articles"] if item.get("article")]
+        live_articles = ArticlePage.objects.live().public().filter(
+            standardarticlepage__story_form="game-analysis"
+        ).in_bulk([item["article"].pk for item in entries])
+        context["analysis_articles"] = []
+        for item in entries:
+            article = live_articles.get(item["article"].pk)
+            sport = getattr(article, "covered_sport", "") or item.get("sport", "")
+            if article and sport in allowed_sports:
+                context["analysis_articles"].append({**item, "article": article, "sport": sport})
         # Fixtures live outside the homepage StreamField so the imported term
         # schedule can progress automatically while editors add only scores.
         from home.models import ThunderbirdFixture
         # The panel's scope is editorially defined, rather than being limited
         # by whichever story filters happen to be selected in the CMS.
-        active_sports = list(value.get("active_sports") or [choice[0] for choice in SPORT_CHOICES[1:]])
+        active_sports = [
+            sport for sport in value.get("active_sports", []) if sport in allowed_sports
+        ] or [choice[0] for choice in SPORT_CHOICES[1:]]
         context["panel_sports"] = active_sports
         now = timezone.now()
-        scheduled = ThunderbirdFixture.objects.filter(sport__in=active_sports)
-        context["upcoming_games"] = list(scheduled.filter(starts_at__gte=now).order_by("starts_at")[:5])
-        context["recent_results"] = list(scheduled.filter(starts_at__lt=now).order_by("-starts_at")[:5])
+        scheduled = ThunderbirdFixture.objects.filter(sport__in=active_sports).select_related(
+            "game_analysis_article"
+        )
+        # Fixtures are intentionally not globally capped. The client-side
+        # sport filters operate over this full, chronologically ordered set.
+        context["upcoming_games"] = list(scheduled.filter(starts_at__gte=now).order_by("starts_at"))
+        context["recent_results"] = list(scheduled.filter(starts_at__lt=now).order_by("-starts_at"))
         return context
 
     class Meta:

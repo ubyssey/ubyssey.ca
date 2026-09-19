@@ -2,7 +2,7 @@
 <div id="gallery-{{ self.pk }}" data-id="{{ self.id }}" data-title="{{ self.title }}" class="gallery-attachment attachment">
     <div class="gallery-cover">
         {% image self.gallery_images.all.0.image fill-800x600 as cover_image %}
-        <img class="gallery-thumb" data-id="{{ self.gallery_images.all.0.id }}" src="{{ cover_image.url }}" alt="Our gallery"/>
+        <img class="gallery-thumb" data-id="{{ self.gallery_images.all.0.id }}" src="{{ cover_image.url }}" alt="{{ self.gallery_images.all.0.image.alt_text|default:self.title }}"/>
         <div class="meta row">
             <div class="eight columns">
                 <h2>{{ self.title }}</h2>

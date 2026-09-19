@@ -2,7 +2,7 @@ from django.template.loader import get_template
 from django.test import SimpleTestCase
 from django import forms
 
-from home.blocks import GameAnalysisPanel
+from home.blocks import GameAnalysisPanel, SPORT_CHOICES
 from home.models import HomePage
 
 
@@ -28,6 +28,11 @@ class HomepageRedesignTests(SimpleTestCase):
             GameAnalysisPanel().child_blocks["active_sports"].field.widget,
             forms.CheckboxSelectMultiple,
         )
+
+    def test_game_analysis_panel_excludes_womens_rugby_from_current_controls(self):
+        self.assertNotIn("rugby-w", dict(SPORT_CHOICES))
+        active_sport_choices = GameAnalysisPanel().child_blocks["active_sports"].field.choices
+        self.assertNotIn("rugby-w", dict(active_sport_choices))
 
     def test_homepage_has_named_hero_positions(self):
         fields = {field.name for field in HomePage._meta.get_fields()}

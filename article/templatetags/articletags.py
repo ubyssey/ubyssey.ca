@@ -38,6 +38,28 @@ def normalize_redesign_byline(value):
     return value.strip()
 
 
+@register.filter(name="redesign_card_byline")
+def redesign_card_byline(article):
+    """Return only reporting contributors for compact redesign story cards.
+
+    Article pages retain their complete role-based credit list in the extended
+    byline. Cards intentionally follow the homepage's reporter-only rule.
+    """
+    # Querysets of Wagtail's base ArticlePage return a base page instance.
+    # Resolve it before reading the StandardArticlePage-only contributor
+    # helpers, otherwise Archive and section cards silently fall back to every
+    # credited role rather than the homepage's reporter-only convention.
+    specific_article = getattr(article, "specific", article)
+    primary_authors = getattr(specific_article, "primary_author_orderables", None)
+    if primary_authors is not None and hasattr(specific_article, "get_authors_string"):
+        return mark_safe(specific_article.get_authors_string(links=True, authors_list=primary_authors))
+    return (
+        getattr(specific_article, "authors_with_urls", "")
+        or getattr(specific_article, "authors_string", "")
+        or getattr(specific_article, "preview_byline", "")
+    )
+
+
 @register.filter(name="caption_needs_credit")
 def caption_needs_credit(caption, credit):
     """Avoid repeating a credit already present in a rich-text caption."""
@@ -105,6 +127,15 @@ def format_redesign_extended_byline(contributors):
         sentences.append(f"{_redesign_name_list(illustrators)} created the graphics.")
     elif graphics_editors:
         sentences.append(f"The graphics were edited by {_redesign_name_list(graphics_editors)}.")
+    videographers = grouped.get("videographer", [])
+    if videographers:
+        sentences.append(
+            f"{_redesign_name_list(videographers)} "
+            f"{'was' if len(videographers) == 1 else 'were'} the videographer{'s' if len(videographers) != 1 else ''}."
+        )
+    designers = grouped.get("designer", [])
+    if designers:
+        sentences.append(f"{_redesign_name_list(designers)} designed this article.")
     return mark_safe(" ".join(sentences))
 
 @register.filter(name='get_label')

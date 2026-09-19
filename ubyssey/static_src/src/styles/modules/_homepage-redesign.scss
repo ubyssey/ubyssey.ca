@@ -724,6 +724,36 @@
   .hp-nav__join-link:hover p,.hp-nav__join-link:hover p span,.hp-nav__join-link:focus-visible p,.hp-nav__join-link:focus-visible p span{color:#fff!important}
 }
 
+/* Match each primary-nav hover treatment to its section tag colour. */
+.hp-nav__bar nav a[data-section="news"]{--hp-nav-section-hover:#77c0d2}
+.hp-nav__bar nav a[data-section="opinion"]{--hp-nav-section-hover:#7880ce}
+.hp-nav__bar nav a[data-section="arts"]{--hp-nav-section-hover:#d23732}
+.hp-nav__bar nav a[data-section="culture"]{--hp-nav-section-hover:#f5c554}
+.hp-nav__bar nav a[data-section="sports"]{--hp-nav-section-hover:#9ec756}
+.hp-nav__bar nav a[data-section]{background-image:linear-gradient(var(--hp-nav-section-hover),var(--hp-nav-section-hover))!important}
+.hp-nav__bar nav a[data-section]:hover,.hp-nav__bar nav a[data-section]:focus-visible{background-size:100% 78%!important;color:#081839!important}
+
+/* An active Live Update is intentionally visible in the homepage's first
+   editorial fold without competing with the section/beat label. */
+.hp-live{display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;color:#c92a35;font:700 10px/13px "articulat-cf",sans-serif;letter-spacing:.08em;text-transform:uppercase}.hp-live::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 0 rgba(201,42,53,.5);animation:hp-live-pulse 1.9s ease-in-out infinite}.hp-card--live .hp-beat+.hp-live{margin-top:8px}@keyframes hp-live-pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,42,53,.48);opacity:1}50%{box-shadow:0 0 0 7px rgba(201,42,53,0);opacity:.68}}[color-css-theme=dark] .hp-live{color:#ff7a82}
+
+/* Fixtures form a full chronological queue. Long team names may wrap without
+   displacing scores, metadata, or an optional linked game-analysis story. */
+.hp-games{height:auto!important;overflow:visible!important;padding-bottom:30px}
+.hp-scoreboard{height:auto!important;min-height:0}
+.hp-scoreboard__panel{max-height:none!important}
+.hp-fixture{height:auto!important;min-height:66px;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) auto!important;gap:0}
+.hp-fixture__teams,.hp-fixture__teams strong{min-width:0}.hp-fixture__teams strong span{align-items:center}.hp-fixture__teams strong span:not(:has(b)){display:block;line-height:1.15}
+.hp-fixture__details{min-width:0;overflow-wrap:anywhere}.hp-fixture small{align-self:center}
+.hp-fixture__analysis{grid-column:1/-1;width:max-content;margin:0 0 7px 43px;color:#21356f;font:700 10px/14px "articulat-cf",sans-serif;text-decoration:underline;text-underline-offset:2px;text-transform:uppercase}
+.hp-games__empty{margin:18px 8px;color:var(--hp-text);font:400 16px/22px "drummond-variable",Georgia,serif;text-align:center}
+@media (min-width:761px) and (max-width:1000px){
+  .hp-games__filters{height:auto;min-height:70px;flex-wrap:wrap;justify-content:center;gap:10px 24px;padding:12px 0}
+  .hp-games__layout{grid-template-columns:1fr;gap:24px}
+  .hp-scoreboard{margin-top:0}
+}
+@media(max-width:760px){.hp-fixture{grid-template-columns:minmax(0,1.25fr) minmax(94px,1fr) auto!important}.hp-fixture__analysis{margin-left:32px}}
+
 @media (max-width:760px){
   /* Match the regular header's natural two-column rhythm, with enough space
      below the final CTA before page content resumes. */

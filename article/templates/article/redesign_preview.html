@@ -1,5 +1,5 @@
 {% extends 'ubyssey/base.html' %}{% load static %}
-{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-24">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/article.css' %}?v=article-redesign-mobile-26">{% endblock %}
 {% block header %}{% include 'article/components/redesign_nav.html' with article=preview %}{% endblock %}
 {% block content %}<main id="main-content" class="ar-page ar-page--{{ preview.redesign_header_layout }}"><article class="ar-article">
   {% include 'article/components/redesign_hero.html' with article=preview %}
@@ -13,6 +13,7 @@
       {% endfor %}
       <div class="ar-context-mobile">{% include 'article/objects/redesign_context_rail.html' with article=preview %}</div>
       <p class="ar-report"><a href="https://forms.ubyssey.ca/erasure">Apply for erasure</a><a href="https://forms.ubyssey.ca/tips">Send a tip</a><a href="https://forms.ubyssey.ca/errors">Report an error</a></p>
+      <nav class="ar-submit" aria-label="Contribute to The Ubyssey"><span>Have something to say?</span><a href="https://forms.ubyssey.ca/opinion">Write an op-ed</a><a href="https://forms.ubyssey.ca/letters">Write a letter</a><a href="https://forms.ubyssey.ca/coverage-request">Request coverage</a></nav>
     </div></div></div>
   <section class="c-suggested-bar ar-keep-reading" aria-label="More stories">
     <div class="ar-keep-reading__row"><h2>More from <a href="/news/">News</a></h2><div class="ar-keep-reading__grid">

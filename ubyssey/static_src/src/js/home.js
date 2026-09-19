@@ -108,31 +108,48 @@ function initializeGameAnalysis() {
     });
     const buttons = panel.querySelectorAll('button[data-sport]');
     const resetButton = panel.querySelector('[data-game-analysis-reset]');
-    let selectedSport = '';
+    const selectedSports = new Set();
     const applySportFilter = () => {
-      buttons.forEach((item) => item.classList.toggle('is-active', item.dataset.sport === selectedSport));
+      buttons.forEach((item) => {
+        const selected = selectedSports.has(item.dataset.sport);
+        item.classList.toggle('is-active', selected);
+        item.setAttribute('aria-pressed', String(selected));
+      });
       if (resetButton) {
-        resetButton.disabled = !selectedSport;
-        resetButton.setAttribute('aria-disabled', String(!selectedSport));
+        resetButton.disabled = selectedSports.size === 0;
+        resetButton.setAttribute('aria-disabled', String(selectedSports.size === 0));
       }
       const cards = [...panel.querySelectorAll('[data-game-card]')];
-      const visibleCards = selectedSport ? cards.filter((item) => item.dataset.sport === selectedSport) : cards;
+      const visibleCards = selectedSports.size
+        ? cards.filter((item) => selectedSports.has(item.dataset.sport))
+        : cards;
       cards.forEach((item) => {
         item.hidden = !visibleCards.slice(0, 4).includes(item);
         item.classList.remove('is-lead', 'is-secondary');
       });
       visibleCards.slice(0, 4).forEach((item, index) => item.classList.add(index === 0 ? 'is-lead' : 'is-secondary'));
-      panel.querySelectorAll('.hp-fixture[data-sport]').forEach((item) => {
-        item.hidden = Boolean(selectedSport) && item.dataset.sport !== selectedSport;
+      const storyEmpty = panel.querySelector('[data-story-empty]');
+      if (storyEmpty) storyEmpty.hidden = visibleCards.length > 0;
+      panel.querySelectorAll('[data-score-panel]').forEach((scorePanel) => {
+        const fixtures = [...scorePanel.querySelectorAll('.hp-fixture[data-sport]')];
+        const visibleFixtures = fixtures.filter((item) => (
+          selectedSports.size === 0 || selectedSports.has(item.dataset.sport)
+        ));
+        fixtures.forEach((item) => {
+          item.hidden = !visibleFixtures.includes(item);
+        });
+        const empty = scorePanel.querySelector('[data-fixture-empty]');
+        if (empty) empty.hidden = fixtures.length === 0 || visibleFixtures.length > 0;
       });
     };
     buttons.forEach((button) => button.addEventListener('click', () => {
-      selectedSport = selectedSport === button.dataset.sport ? '' : button.dataset.sport;
+      if (selectedSports.has(button.dataset.sport)) selectedSports.delete(button.dataset.sport);
+      else selectedSports.add(button.dataset.sport);
       applySportFilter();
     }));
     resetButton?.addEventListener('click', () => {
-      if (!selectedSport) return;
-      selectedSport = '';
+      if (selectedSports.size === 0) return;
+      selectedSports.clear();
       applySportFilter();
     });
     applySportFilter();
