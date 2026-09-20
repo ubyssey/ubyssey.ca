@@ -12,9 +12,11 @@ import { keymap } from "prosemirror-keymap";
 import { dropCursor } from "prosemirror-dropcursor";
 import { gapCursor } from "prosemirror-gapcursor";
 import { ellipsis, emDash, inputRules, smartQuotes, textblockTypeInputRule, undoInputRule, wrappingInputRule } from "prosemirror-inputrules";
+import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph as invisiblesParagraph } from "@guardian/prosemirror-invisibles/dist/index.mjs";
+import { ySyncPluginKey } from "y-prosemirror";
 import { commentSuggestion, createSuggestionMark, markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "./annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
-import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph as invisiblesParagraph } from "@guardian/prosemirror-invisibles/dist/index.mjs";
+import { pageEditorState } from "../state.js";
 
 export const ARIAL_MODE_STORAGE_KEY = "manuscript-arial-mode";
 export const INVISIBLE_CHARACTERS_STORAGE_KEY = "manuscript-invisible-characters";
@@ -32,7 +34,7 @@ export function editorPlugins(schema, {includeHistory = true, undoCommand = undo
     linkBubblePlugin(schema),
     // Disabling for now, I don't have time to polish
     //selectionCommentBubblePlugin(schema),
-    ...(allowAnnotations ? [activeCommentPlugin(schema), suggestionPlugin(schema)] : []),
+    ...(allowAnnotations ? [activeCommentPlugin(schema), frozenFootnotePlugin(schema), suggestionPlugin(schema)] : []),
     keymap(buildEditorKeymap(schema, { undoCommand, redoCommand, allowAnnotations })),
     keymap(baseKeymap),
     dropCursor(),
@@ -57,6 +59,7 @@ export function toggleSuggestionMode() {
 function suggestionPlugin(schema) {
   const commentMark = schema.marks.comment;
   const suggestionMark = schema.marks.suggestion;
+  const footnoteMark = schema.marks.footnote;
   const suggestionPart = (mark) => mark?.attrs?.suggestionPart || commentSuggestion(mark?.attrs?.comments);
 
   const createReplacementMarks = (replacedText, replacementText, threadId, existingMark = null) => {
@@ -238,6 +241,9 @@ function suggestionPlugin(schema) {
       const segmentFrom = Math.max(from, position);
       const segmentTo = Math.min(to, position + node.nodeSize);
       if (segmentFrom >= segmentTo) return true;
+
+      const footnote = footnoteMark?.isInSet(node.marks);
+      if (pageEditorState.footnotesFrozen && footnote?.attrs.anchor) return true;
 
       const mark = suggestionMark.isInSet(node.marks);
       const comment = commentMark?.isInSet(node.marks);
@@ -567,6 +573,86 @@ function activeCommentPlugin(schema) {
     },
     props: {
       decorations: (state) => activeCommentPluginKey.getState(state).decorations,
+    },
+  });
+}
+
+function frozenFootnotePlugin(schema) {
+  const footnoteMark = schema.marks.footnote;
+  if (!footnoteMark) return null;
+
+  const selectedFootnoteAnchorRanges = (state) => {
+    const { from, to } = state.selection;
+    if (from === to) return [];
+
+    const ranges = [];
+    state.doc.descendants((node, position) => {
+      const footnote = node.isText ? footnoteMark.isInSet(node.marks) : null;
+      if (footnote?.attrs.anchor && position >= from && position + node.nodeSize <= to) {
+        ranges.push({ from: position, to: position + node.nodeSize });
+      }
+      return true;
+    });
+    return ranges;
+  };
+
+  const deletedRangeContainsFootnoteAnchor = (doc, from, to) => {
+    let containsAnchor = false;
+    doc.descendants((node, position) => {
+      const footnote = node.isText ? footnoteMark.isInSet(node.marks) : null;
+      if (footnote?.attrs.anchor && position >= from && position + node.nodeSize <= to) containsAnchor = true;
+      return !containsAnchor;
+    });
+    return containsAnchor;
+  };
+
+  const deleteSelectionExceptFootnoteAnchors = (view) => {
+    const { state } = view;
+    const { from, to } = state.selection;
+    const anchors = selectedFootnoteAnchorRanges(state);
+    if (!anchors.length) return false;
+
+    let transaction = state.tr;
+    let rangeEnd = to;
+    for (const anchor of anchors.reverse()) {
+      if (anchor.to < rangeEnd) transaction = transaction.delete(anchor.to, rangeEnd);
+      rangeEnd = anchor.from;
+    }
+    if (from < rangeEnd) transaction = transaction.delete(from, rangeEnd);
+
+    const cursor = Math.min(from, transaction.doc.content.size);
+    view.dispatch(transaction.setSelection(TextSelection.create(transaction.doc, cursor)).scrollIntoView());
+    return true;
+  };
+
+  return new Plugin({
+    filterTransaction(transaction, state) {
+      if (!pageEditorState.footnotesFrozen || !transaction.docChanged) return true;
+      
+      // For collaborative refreshes
+      if (transaction.getMeta(ySyncPluginKey) || transaction.getMeta("syncedStream")) return true;
+
+      let doc = state.doc;
+      for (const step of transaction.steps) {
+        let deletesFootnoteAnchor = false;
+        step.getMap().forEach((from, to) => {
+          if (to > from && deletedRangeContainsFootnoteAnchor(doc, from, to)) deletesFootnoteAnchor = true;
+        });
+        if (deletesFootnoteAnchor) return false;
+
+        const result = step.apply(doc);
+        if (result.failed) return true;
+        doc = result.doc;
+      }
+      return true;
+    },
+    props: {
+      handleKeyDown(view, event) {
+        if (suggestionMode || !pageEditorState.footnotesFrozen || !["Backspace", "Delete"].includes(event.key)) return false;
+        if (!deleteSelectionExceptFootnoteAnchors(view)) return false;
+        event.preventDefault();
+        return true;
+      },
     },
   });
 }
